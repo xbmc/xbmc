@@ -19,6 +19,7 @@
  */
 
 #include "dialogs/GUIDialogOK.h"
+#include "epg/EpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "PVRRecordings.h"
@@ -417,4 +418,15 @@ void CPVRRecording::CopyClientInfo(CVideoInfoTag *target) const
 
   target->m_playCount   = m_playCount;
   target->m_resumePoint = m_resumePoint;
+}
+
+CPVRChannelPtr CPVRRecording::Channel(void) const
+{
+  if (m_iEpgEventId)
+  {
+    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(m_iEpgEventId);
+    if (epgTag)
+      return epgTag->ChannelTag();
+  }
+  return CPVRChannelPtr();
 }

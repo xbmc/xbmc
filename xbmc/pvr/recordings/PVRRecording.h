@@ -48,8 +48,10 @@ class CVideoDatabase;
 namespace PVR
 {
   class CPVRRecording;
-
   typedef std::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
+
+  class CPVRChannel;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 
   /*!
    * @brief Representation of a CPVRRecording unique ID.
@@ -202,6 +204,11 @@ namespace PVR
      * @return Broadcast id of the EPG event associated with this recording
      */
     int EpgEvent(void) const { return m_iEpgEventId; }
+
+    /*!
+     * @return Get the channel on which this recording is/was running
+     */
+    CPVRChannelPtr Channel(void) const;
 
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */

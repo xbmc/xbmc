@@ -76,7 +76,7 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "epg/EpgInfoTag.h"
+#include "epg/EpgContainer.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/recordings/PVRRecording.h"
 
@@ -414,7 +414,8 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "hasepg",           VIDEOPLAYER_HAS_EPG },
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING },
                                   { "isstereoscopic",   VIDEOPLAYER_IS_STEREOSCOPIC },
-                                  { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE }
+                                  { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE },
+                                  { "canresumelivetv",  VIDEOPLAYER_CAN_RESUME_LIVE_TV },
 };
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
@@ -2673,6 +2674,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       if(g_application.m_pPlayer->IsPlaying())
       {
         bReturn = !m_videoInfo.stereoMode.empty();
+      }
+      break;
+    case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
+      if (m_currentFile->HasPVRRecordingInfoTag())
+      {
+        EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->EpgEvent());
+        bReturn = (epgTag && epgTag->IsActive() && epgTag->ChannelTag());
       }
       break;
     default: // default, use integer value different from 0 as true
