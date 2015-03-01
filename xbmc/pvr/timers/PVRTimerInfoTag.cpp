@@ -71,7 +71,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannelPtr channe
   m_iClientId          = iClientId;
   m_iClientIndex       = timer.iClientIndex;
   m_iClientChannelUid  = channel ? channel->UniqueID() : timer.iClientChannelUid;
-  m_iChannelNumber     = channel ? g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->GetChannelNumber(*channel) : 0;
+  m_iChannelNumber     = channel ? g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->GetChannelNumber(channel) : 0;
   m_StartTime          = timer.startTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_StopTime           = timer.endTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_bIsRepeating       = timer.bIsRepeating;

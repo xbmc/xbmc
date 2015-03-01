@@ -152,7 +152,7 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const std::string &strName) con
   return empty;
 }
 
-void CPVRChannelGroups::RemoveFromAllGroups(const CPVRChannel &channel)
+void CPVRChannelGroups::RemoveFromAllGroups(const CPVRChannelPtr &channel)
 {
   CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)

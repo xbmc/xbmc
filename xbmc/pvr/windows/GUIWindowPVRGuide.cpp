@@ -112,8 +112,8 @@ void CGUIWindowPVRGuide::UpdateSelectedItemPath()
     CGUIEPGGridContainer *epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
     if (epgGridContainer)
     {
-      CPVRChannel* channel = epgGridContainer->GetChannel(epgGridContainer->GetSelectedChannel());
-      if (channel != NULL)
+      CPVRChannelPtr channel(epgGridContainer->GetChannel(epgGridContainer->GetSelectedChannel()));
+      if (channel)
         SetSelectedItemPath(m_bRadio, channel->Path());
     }
   }
@@ -266,15 +266,14 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVRGuide::UpdateViewChannel()
 {
-  CPVRChannelPtr currentChannel;
-  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(currentChannel);
+  CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
 
-  if (bGotCurrentChannel && currentChannel.get())
+  if (currentChannel)
     SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, currentChannel->ChannelName().c_str());
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetGroup()->GroupName());
 
   m_vecItems->Clear();
-  if (!bGotCurrentChannel || g_PVRManager.GetCurrentEpg(*m_vecItems) == 0)
+  if (!currentChannel || g_PVRManager.GetCurrentEpg(*m_vecItems) == 0)
   {
     CFileItemPtr item;
     item.reset(new CFileItem("pvr://guide/channel/empty.epg", false));

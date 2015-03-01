@@ -135,29 +135,31 @@ CFileItem::CFileItem(const CEpgInfoTagPtr& tag)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CPVRChannel& channel)
+CFileItem::CFileItem(const CPVRChannelPtr& channel)
 {
+  assert(channel.get());
+
   Initialize();
 
-  CEpgInfoTagPtr epgNow(channel.GetEPGNow());
+  CEpgInfoTagPtr epgNow(channel->GetEPGNow());
 
-  m_strPath = channel.Path();
+  m_strPath = channel->Path();
   m_bIsFolder = false;
-  *GetPVRChannelInfoTag() = channel;
-  SetLabel(channel.ChannelName());
+  m_pvrChannelInfoTag = channel;
+  SetLabel(channel->ChannelName());
   m_strLabel2 = epgNow ? epgNow->Title() :
       CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
                             "" : g_localizeStrings.Get(19055); // no information available
 
-  if (channel.IsRadio())
+  if (channel->IsRadio())
   {
     CMusicInfoTag* musictag = GetMusicInfoTag();
     if (musictag)
     {
-      musictag->SetURL(channel.Path());
+      musictag->SetURL(channel->Path());
       musictag->SetTitle(m_strLabel2);
-      musictag->SetArtist(channel.ChannelName());
-      musictag->SetAlbumArtist(channel.ChannelName());
+      musictag->SetArtist(channel->ChannelName());
+      musictag->SetAlbumArtist(channel->ChannelName());
       if (epgNow)
         musictag->SetGenre(epgNow->Genre());
       musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
@@ -167,12 +169,12 @@ CFileItem::CFileItem(const CPVRChannel& channel)
     }
   }
 
-  if (!channel.IconPath().empty())
-    SetIconImage(channel.IconPath());
+  if (!channel->IconPath().empty())
+    SetIconImage(channel->IconPath());
 
-  SetProperty("channelid", channel.ChannelID());
-  SetProperty("path", channel.Path());
-  SetArt("thumb", channel.IconPath());
+  SetProperty("channelid", channel->ChannelID());
+  SetProperty("path", channel->Path());
+  SetArt("thumb", channel->IconPath());
 
   FillInMimeType(false);
 }
@@ -234,7 +236,6 @@ CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_pvrChannelInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   *this = item;
@@ -318,13 +319,11 @@ CFileItem::~CFileItem(void)
 {
   delete m_musicInfoTag;
   delete m_videoInfoTag;
-  delete m_pvrChannelInfoTag;
   delete m_pvrTimerInfoTag;
   delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_pvrChannelInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
 }
@@ -371,18 +370,9 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_epgInfoTag.reset();
 
   if (item.HasPVRChannelInfoTag())
-  {
-    m_pvrChannelInfoTag = GetPVRChannelInfoTag();
-    if (m_pvrChannelInfoTag)
-      *m_pvrChannelInfoTag = *item.m_pvrChannelInfoTag;
-  }
+    m_pvrChannelInfoTag = item.m_pvrChannelInfoTag;
   else
-  {
-    if (m_pvrChannelInfoTag)
-      delete m_pvrChannelInfoTag;
-
-    m_pvrChannelInfoTag = NULL;
-  }
+    m_pvrChannelInfoTag.reset();
 
   if (item.m_pvrRecordingInfoTag)
     m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
@@ -438,7 +428,6 @@ void CFileItem::Initialize()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_pvrChannelInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   m_bLabelPreformated=false;
@@ -480,8 +469,7 @@ void CFileItem::Reset()
   delete m_videoInfoTag;
   m_videoInfoTag=NULL;
   m_epgInfoTag.reset();
-  delete m_pvrChannelInfoTag;
-  m_pvrChannelInfoTag=NULL;
+  m_pvrChannelInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
   delete m_pvrTimerInfoTag;
   m_pvrTimerInfoTag=NULL;
@@ -3152,14 +3140,6 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
     m_videoInfoTag = new CVideoInfoTag;
 
   return m_videoInfoTag;
-}
-
-CPVRChannel* CFileItem::GetPVRChannelInfoTag()
-{
-  if (!m_pvrChannelInfoTag)
-    m_pvrChannelInfoTag = new CPVRChannel;
-
-  return m_pvrChannelInfoTag;
 }
 
 CPVRTimerInfoTag* CFileItem::GetPVRTimerInfoTag()

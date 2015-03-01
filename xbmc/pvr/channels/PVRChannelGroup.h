@@ -116,7 +116,7 @@ namespace PVR
      * @param iChannelNumber The new channel number.
      * @param iSubChannelNumber The new sub channel number.
      */
-    bool SetChannelNumber(const CPVRChannel &channel, unsigned int iChannelNumber, unsigned int iSubChannelNumber = 0);
+    bool SetChannelNumber(const CPVRChannelPtr &channel, unsigned int iChannelNumber, unsigned int iSubChannelNumber = 0);
 
     /*!
      * @brief Move a channel from position iOldIndex to iNewIndex.
@@ -138,7 +138,7 @@ namespace PVR
      * @param channel The channel to remove.
      * @return True if the channel was found and removed, false otherwise.
      */
-    virtual bool RemoveFromGroup(const CPVRChannel &channel);
+    virtual bool RemoveFromGroup(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Add a channel to this container.
@@ -146,7 +146,7 @@ namespace PVR
      * @param iChannelNumber The channel number of the channel number to add. Use -1 to add it at the end.
      * @return True if the channel was added, false otherwise.
      */
-    virtual bool AddToGroup(CPVRChannel &channel, int iChannelNumber = 0);
+    virtual bool AddToGroup(const CPVRChannelPtr &channel, int iChannelNumber = 0);
 
     /*!
      * @brief Change the name of this group.
@@ -167,7 +167,7 @@ namespace PVR
      * @param channel The channel to find.
      * @return True if the channel was found, false otherwise.
      */
-    virtual bool IsGroupMember(const CPVRChannel &channel) const;
+    virtual bool IsGroupMember(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Check whether a channel is in this container.
@@ -282,14 +282,14 @@ namespace PVR
      * @param channel The channel to get the channel number for.
      * @return The channel number in this group or 0 if the channel isn't a member of this group.
      */
-    unsigned int GetChannelNumber(const CPVRChannel &channel) const;
+    unsigned int GetChannelNumber(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Get the sub channel number in this group of the given channel.
      * @param channel The channel to get the sub channel number for.
      * @return The sub channel number in this group or 0 if the channel isn't a member of this group.
      */
-    unsigned int GetSubChannelNumber(const CPVRChannel &channel) const;
+    unsigned int GetSubChannelNumber(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Get the next channel in this group.
@@ -317,7 +317,7 @@ namespace PVR
      * @param channel The channel to get the index for.
      * @return The index or -1 if it wasn't found.
      */
-    int GetIndex(const CPVRChannel &channel) const;
+    int GetIndex(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Get the list of channels in a group.

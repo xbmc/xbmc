@@ -36,6 +36,8 @@
 
 #include "GUIEPGGridContainer.h"
 
+#include <assert.h>
+
 using namespace PVR;
 using namespace EPG;
 using namespace std;
@@ -770,7 +772,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
                 itemsPointer.start = i;
               }
               iLastChannelID = iCurrentChannelID;
-              CGUIListItemPtr item(new CFileItem(*channel));
+              CGUIListItemPtr item(new CFileItem(channel));
               m_channelItems.push_back(item);
             }
           }
@@ -1086,13 +1088,15 @@ void CGUIEPGGridContainer::SetChannel(const std::string &channel)
   SetSelectedChannel(iChannelIndex);
 }
 
-void CGUIEPGGridContainer::SetChannel(const CPVRChannel &channel)
+void CGUIEPGGridContainer::SetChannel(const CPVRChannelPtr &channel)
 {
+  assert(channel.get());
+
   int iChannelIndex(-1);
   for (unsigned int iIndex = 0; iIndex < m_channelItems.size(); iIndex++)
   {
     int iChannelId = (int)m_channelItems[iIndex]->GetProperty("channelid").asInteger(-1);
-    if (iChannelId == channel.ChannelID())
+    if (iChannelId == channel->ChannelID())
     {
       iChannelIndex = iIndex;
       break;
@@ -1278,7 +1282,7 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
   return true;
 }
 
-CPVRChannel* CGUIEPGGridContainer::GetChannel(int iIndex)
+CPVRChannelPtr CGUIEPGGridContainer::GetChannel(int iIndex)
 {
   if (iIndex >= 0 && (size_t) iIndex < m_channelItems.size())
   {
@@ -1287,7 +1291,7 @@ CPVRChannel* CGUIEPGGridContainer::GetChannel(int iIndex)
       return fileItem->GetPVRChannelInfoTag();
   }
   
-  return NULL;
+  return CPVRChannelPtr();
 }
 
 void CGUIEPGGridContainer::SetSelectedChannel(int channelIndex)

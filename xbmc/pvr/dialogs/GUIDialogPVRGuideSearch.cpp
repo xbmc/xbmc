@@ -83,7 +83,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
     if (!channel || !channel->HasPVRChannelInfoTag())
       continue;
 
-    int iChannelNumber = group->GetChannelNumber(*channel->GetPVRChannelInfoTag());
+    int iChannelNumber = group->GetChannelNumber(channel->GetPVRChannelInfoTag());
     labels.push_back(std::make_pair(channel->GetPVRChannelInfoTag()->ChannelName(), iChannelNumber));
   }
 

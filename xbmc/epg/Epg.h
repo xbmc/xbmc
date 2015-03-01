@@ -57,7 +57,7 @@ namespace EPG
      * @param channel The channel to create the EPG for.
      * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CEpg(PVR::CPVRChannelPtr channel, bool bLoadedFromDb = false);
+    CEpg(const PVR::CPVRChannelPtr &channel, bool bLoadedFromDb = false);
 
     /*!
      * @brief Destroy this EPG instance.
@@ -86,7 +86,7 @@ namespace EPG
      * @brief Channel the channel tag linked to this EPG table.
      * @param channel The new channel tag.
      */
-    void SetChannel(PVR::CPVRChannelPtr channel);
+    void SetChannel(const PVR::CPVRChannelPtr &channel);
 
     /*!
      * @brief Get the name of the scraper to use for this table.

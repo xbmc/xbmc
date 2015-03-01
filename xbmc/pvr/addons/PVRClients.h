@@ -251,32 +251,31 @@ namespace PVR
 
     /*!
      * @brief Open a stream on the given channel.
-     * @param tag The channel to start playing.
+     * @param channel The channel to start playing.
      * @param bIsSwitchingChannel True when switching channels, false otherwise.
      * @return True if the stream was opened successfully, false otherwise.
      */
-    bool OpenStream(const CPVRChannel &tag, bool bIsSwitchingChannel);
+    bool OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel);
 
     /*!
      * @brief Get the URL for the stream to the given channel.
-     * @param tag The channel to get the stream url for.
+     * @param channel The channel to get the stream url for.
      * @return The requested stream url or an empty string if it wasn't found.
      */
-    std::string GetStreamURL(const CPVRChannel &tag);
+    std::string GetStreamURL(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Switch an opened live tv stream to another channel.
      * @param channel The channel to switch to.
      * @return True if the switch was successfull, false otherwise.
      */
-    bool SwitchChannel(const CPVRChannel &channel);
+    bool SwitchChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Get the channel that is currently playing.
-     * @param channel A copy of the channel that is currently playing.
-     * @return True if a channel is playing, false otherwise.
+     * @return the channel that is currently playing, NULL otherwise.
      */
-    bool GetPlayingChannel(CPVRChannelPtr &channel) const;
+    CPVRChannelPtr GetPlayingChannel() const;
 
     /*!
      * @return True if a recording is playing, false otherwise.
@@ -471,7 +470,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the EPG was transfered successfully, false otherwise.
      */
-    PVR_ERROR GetEPGForChannel(const CPVRChannel &channel, EPG::CEpg *epg, time_t start, time_t end);
+    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, EPG::CEpg *epg, time_t start, time_t end);
 
     //@}
 
@@ -563,28 +562,28 @@ namespace PVR
      * @param channel The channel to edit.
      * @return True if the edit was successfull, false otherwise.
      */
-    bool OpenDialogChannelAdd(const CPVRChannel &channel);
+    bool OpenDialogChannelAdd(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Open addon settings dialog to related channel
      * @param channel The channel to edit.
      * @return True if the edit was successfull, false otherwise.
      */
-    bool OpenDialogChannelSettings(const CPVRChannel &channel);
+    bool OpenDialogChannelSettings(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Inform addon to delete channel
      * @param channel The channel to delete.
      * @return True if it was successfull, false otherwise.
      */
-    bool DeleteChannel(const CPVRChannel &channel);
+    bool DeleteChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Request the client to rename given channel
      * @param channel The channel to rename
      * @return True if the edit was successfull, false otherwise.
      */
-    bool RenameChannel(const CPVRChannel &channel);
+    bool RenameChannel(const CPVRChannelPtr &channel);
 
     //@}
 

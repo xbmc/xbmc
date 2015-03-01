@@ -34,6 +34,8 @@
 #include "epg/EpgContainer.h"
 #include "pvr/addons/PVRClients.h"
 
+#include <assert.h>
+
 using namespace PVR;
 using namespace EPG;
 
@@ -430,7 +432,7 @@ bool CPVRTimers::GetDirectory(const std::string& strPath, CFileItemList &items) 
 
 /********** channel methods **********/
 
-bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteRepeating /* = true */, bool bCurrentlyActiveOnly /* = false */)
+bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDeleteRepeating /* = true */, bool bCurrentlyActiveOnly /* = false */)
 {
   bool bReturn = false;
   {
@@ -442,7 +444,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
       {
         bool bDeleteActiveItem = !bCurrentlyActiveOnly || (*timerIt)->IsRecording();
         bool bDeleteRepeatingItem = bDeleteRepeating || !(*timerIt)->m_bIsRepeating;
-        bool bChannelsMatch = *(*timerIt)->ChannelTag() == channel;
+        bool bChannelsMatch = (*timerIt)->ChannelTag() == channel;
 
         if (bDeleteActiveItem && bDeleteRepeatingItem && bChannelsMatch)
         {
@@ -464,24 +466,26 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
   return bReturn;
 }
 
-bool CPVRTimers::InstantTimer(const CPVRChannel &channel)
+bool CPVRTimers::InstantTimer(const CPVRChannelPtr &channel)
 {
+  assert(channel.get());
+
   if (!g_PVRManager.CheckParentalLock(channel))
     return false;
 
-  CEpgInfoTagPtr epgTag(channel.GetEPGNow());
+  CEpgInfoTagPtr epgTag(channel->GetEPGNow());
   CPVRTimerInfoTag *newTimer = epgTag ? CPVRTimerInfoTag::CreateFromEpg(*epgTag) : NULL;
   if (!newTimer)
   {
     newTimer = new CPVRTimerInfoTag;
     /* set the timer data */
     newTimer->m_iClientIndex      = -1;
-    newTimer->m_strTitle          = channel.ChannelName();
+    newTimer->m_strTitle          = channel->ChannelName();
     newTimer->m_strSummary        = g_localizeStrings.Get(19056);
-    newTimer->m_iChannelNumber    = channel.ChannelNumber();
-    newTimer->m_iClientChannelUid = channel.UniqueID();
-    newTimer->m_iClientId         = channel.ClientID();
-    newTimer->m_bIsRadio          = channel.IsRadio();
+    newTimer->m_iChannelNumber    = channel->ChannelNumber();
+    newTimer->m_iClientChannelUid = channel->UniqueID();
+    newTimer->m_iClientId         = channel->ClientID();
+    newTimer->m_bIsRadio          = channel->IsRadio();
 
     /* generate summary string */
     newTimer->m_strSummary = StringUtils::Format("%s %s %s %s %s",
@@ -529,7 +533,7 @@ bool CPVRTimers::AddTimer(const CPVRTimerInfoTag &item)
     return false;
   }
 
-  if (!g_PVRManager.CheckParentalLock(*item.m_channel))
+  if (!g_PVRManager.CheckParentalLock(item.m_channel))
     return false;
 
   return item.AddToClient();

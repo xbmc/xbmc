@@ -35,6 +35,7 @@ typedef enum
 namespace PVR
 {
   class CPVRChannel;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 }
 
 class CAction;
@@ -146,6 +147,6 @@ public:
   void  SetSubTitleDelay(float fValue = 0.0f);
   void  SetSubtitleVisible(bool bVisible);
   void  SetVolume(float volume);
-  bool  SwitchChannel(PVR::CPVRChannel &channel);
+  bool  SwitchChannel(const PVR::CPVRChannelPtr &channel);
   void  ToFFRW(int iSpeed = 0);
 };

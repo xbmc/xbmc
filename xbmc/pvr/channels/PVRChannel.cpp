@@ -33,6 +33,8 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 
+#include <assert.h>
+
 using namespace PVR;
 using namespace EPG;
 
@@ -107,44 +109,6 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   UpdateEncryptionName();
 }
 
-CPVRChannel::CPVRChannel(const CPVRChannel &channel)
-{
-  *this = channel;
-}
-
-CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
-{
-  m_iChannelId              = channel.m_iChannelId;
-  m_bIsRadio                = channel.m_bIsRadio;
-  m_bIsHidden               = channel.m_bIsHidden;
-  m_bIsUserSetIcon          = channel.m_bIsUserSetIcon;
-  m_bIsUserSetName          = channel.m_bIsUserSetName;
-  m_bIsLocked               = channel.m_bIsLocked;
-  m_strIconPath             = channel.m_strIconPath;
-  m_strChannelName          = channel.m_strChannelName;
-  m_iLastWatched            = channel.m_iLastWatched;
-  m_bEPGEnabled             = channel.m_bEPGEnabled;
-  m_strEPGScraper           = channel.m_strEPGScraper;
-  m_iUniqueId               = channel.m_iUniqueId;
-  m_iClientId               = channel.m_iClientId;
-  m_iClientChannelNumber.channel    = channel.m_iClientChannelNumber.channel;
-  m_iClientChannelNumber.subchannel = channel.m_iClientChannelNumber.subchannel;
-  m_strClientChannelName    = channel.m_strClientChannelName;
-  m_strInputFormat          = channel.m_strInputFormat;
-  m_strStreamURL            = channel.m_strStreamURL;
-  m_strFileNameAndPath      = channel.m_strFileNameAndPath;
-  m_iClientEncryptionSystem = channel.m_iClientEncryptionSystem;
-  m_iCachedChannelNumber    = channel.m_iCachedChannelNumber;
-  m_iCachedSubChannelNumber = channel.m_iCachedSubChannelNumber;
-  m_iEpgId                  = channel.m_iEpgId;
-  m_bEPGCreated             = channel.m_bEPGCreated;
-  m_bChanged                = channel.m_bChanged;
-
-  UpdateEncryptionName();
-
-  return *this;
-}
-
 void CPVRChannel::Serialize(CVariant& value) const
 {
   value["channelid"] = m_iChannelId;
@@ -208,24 +172,26 @@ CEpg *CPVRChannel::GetEPG(void) const
   return iEpgId > 0 ? g_EpgContainer.GetById(iEpgId) : NULL;
 }
 
-bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
+bool CPVRChannel::UpdateFromClient(const CPVRChannelPtr &channel)
 {
-  SetClientID(channel.ClientID());
-  SetStreamURL(channel.StreamURL());
+  assert(channel.get());
+
+  SetClientID(channel->ClientID());
+  SetStreamURL(channel->StreamURL());
 
   CSingleLock lock(m_critSection);
 
-  if (m_iClientChannelNumber.channel    != channel.ClientChannelNumber() ||
-      m_iClientChannelNumber.subchannel != channel.ClientSubChannelNumber() ||
-      m_strInputFormat                  != channel.InputFormat() ||
-      m_iClientEncryptionSystem         != channel.EncryptionSystem() ||
-      m_strClientChannelName            != channel.ClientChannelName())
+  if (m_iClientChannelNumber.channel    != channel->ClientChannelNumber() ||
+      m_iClientChannelNumber.subchannel != channel->ClientSubChannelNumber() ||
+      m_strInputFormat                  != channel->InputFormat() ||
+      m_iClientEncryptionSystem         != channel->EncryptionSystem() ||
+      m_strClientChannelName            != channel->ClientChannelName())
   {
-    m_iClientChannelNumber.channel    = channel.ClientChannelNumber();
-    m_iClientChannelNumber.subchannel = channel.ClientSubChannelNumber();
-    m_strInputFormat                  = channel.InputFormat();
-    m_iClientEncryptionSystem         = channel.EncryptionSystem();
-    m_strClientChannelName            = channel.ClientChannelName();
+    m_iClientChannelNumber.channel    = channel->ClientChannelNumber();
+    m_iClientChannelNumber.subchannel = channel->ClientSubChannelNumber();
+    m_strInputFormat                  = channel->InputFormat();
+    m_iClientEncryptionSystem         = channel->EncryptionSystem();
+    m_strClientChannelName            = channel->ClientChannelName();
 
     UpdateEncryptionName();
     SetChanged();
@@ -233,9 +199,9 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
 
   // only update the channel name and icon if the user hasn't changed them manually
   if (m_strChannelName.empty() || !IsUserSetName())
-    SetChannelName(channel.ClientChannelName());
+    SetChannelName(channel->ClientChannelName());
   if (m_strIconPath.empty() || !IsUserSetIcon())
-    SetIconPath(channel.IconPath());
+    SetIconPath(channel->IconPath());
 
   return m_bChanged;
 }

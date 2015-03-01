@@ -243,7 +243,7 @@ CFileItemPtr CPVRChannelGroupsContainer::GetByChannelIDFromAll(int iChannelID) c
 
   if (channel)
   {
-    CFileItemPtr retVal = CFileItemPtr(new CFileItem(*channel));
+    CFileItemPtr retVal = CFileItemPtr(new CFileItem(channel));
     return retVal;
   }
 

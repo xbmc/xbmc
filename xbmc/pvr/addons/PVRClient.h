@@ -161,28 +161,28 @@ namespace PVR
      * @param channel The channel to add
      * @return PVR_ERROR_NO_ERROR if the add has been fetched successfully.
      */
-    PVR_ERROR OpenDialogChannelAdd(const CPVRChannel &channel);
+    PVR_ERROR OpenDialogChannelAdd(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Request the client to open dialog about given channel settings
      * @param channel The channel to edit
      * @return PVR_ERROR_NO_ERROR if the edit has been fetched successfully.
      */
-    PVR_ERROR OpenDialogChannelSettings(const CPVRChannel &channel);
+    PVR_ERROR OpenDialogChannelSettings(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Request the client to delete given channel
      * @param channel The channel to delete
      * @return PVR_ERROR_NO_ERROR if the delete has been fetched successfully.
      */
-    PVR_ERROR DeleteChannel(const CPVRChannel &channel);
+    PVR_ERROR DeleteChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Request the client to rename given channel
      * @param channel The channel to rename
      * @return PVR_ERROR_NO_ERROR if the rename has been fetched successfully.
      */
-    PVR_ERROR RenameChannel(const CPVRChannel &channel);
+    PVR_ERROR RenameChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @return True if this add-on has menu hooks, false otherwise.
@@ -214,7 +214,7 @@ namespace PVR
      * @param bSaveInDb If true, tell the callback method to save any new entry in the database or not. see CAddonCallbacksPVR::PVRTransferEpgEntry()
      * @return PVR_ERROR_NO_ERROR if the table has been fetched successfully.
      */
-    PVR_ERROR GetEPGForChannel(const CPVRChannel &channel, EPG::CEpg *epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
+    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, EPG::CEpg *epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
 
     //@}
     /** @name PVR channel group methods */
@@ -387,7 +387,7 @@ namespace PVR
      * @param bIsSwitchingChannel True when switching channels, false otherwise.
      * @return True if the stream opened successfully, false otherwise.
      */
-    bool OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel);
+    bool OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel);
 
     /*!
      * @brief Close an open live stream.
@@ -435,7 +435,7 @@ namespace PVR
      * @param channel The channel to switch to.
      * @return True if the switch was successful, false otherwise.
      */
-    bool SwitchChannel(const CPVRChannel &channel);
+    bool SwitchChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Get the signal quality of the stream that's currently open.
@@ -449,7 +449,7 @@ namespace PVR
      * @param channel The channel to get the stream URL for.
      * @return The requested URL.
      */
-    std::string GetLiveStreamURL(const CPVRChannel &channel);
+    std::string GetLiveStreamURL(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Check whether PVR backend supports pausing the currently playing stream
@@ -538,8 +538,8 @@ namespace PVR
     bool IsPlayingEncryptedChannel(void) const;
     bool IsPlayingRecording(void) const;
     bool IsPlaying(void) const;
-    bool GetPlayingChannel(CPVRChannelPtr &channel) const;
     CPVRRecordingPtr GetPlayingRecording(void) const;
+    CPVRChannelPtr GetPlayingChannel() const;
 
     static const char *ToString(const PVR_ERROR error);
 
@@ -614,14 +614,14 @@ namespace PVR
      * @param xbmcChannel The channel on XBMC's side.
      * @param addonChannel The channel on the addon's side.
      */
-    static void WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNEL &addonChannel);
+    static void WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel);
 
     /*!
      * @brief Whether a channel can be played by this add-on
      * @param channel The channel to check.
      * @return True when it can be played, false otherwise.
      */
-    bool CanPlayChannel(const CPVRChannel &channel) const;
+    bool CanPlayChannel(const CPVRChannelPtr &channel) const;
 
     bool LogError(const PVR_ERROR error, const char *strMethod) const;
     void LogException(const std::exception &e, const char *strFunctionName) const;
