@@ -1050,6 +1050,8 @@ bool COMXAudio::ApplyVolume(void)
     return false;
 
   float fVolume = m_Mute ? VOLUME_MINIMUM : m_CurrentVolume;
+  // need to convert a log scale of 0.0=-60dB, 1.0=0dB to a linear scale (0.0=silence, 1.0=full)
+  fVolume = CAEUtil::GainToScale(CAEUtil::PercentToGain(fVolume));
 
   // the analogue volume is too quiet for some. Allow use of an advancedsetting to boost this (at risk of distortion) (deprecated)
   double gain = pow(10, (g_advancedSettings.m_ac3Gain - 12.0f) / 20.0);
