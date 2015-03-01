@@ -13,7 +13,7 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 #: system/settings/settings.xml
 msgctxt "#0"
 msgid "Programs"
@@ -413,12 +413,12 @@ msgctxt "#112"
 msgid "Paused"
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
+#: xbmc/addons/AddonInstaller.cpp
 msgctxt "#113"
 msgid "Update failed"
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
+#: xbmc/addons/AddonInstaller.cpp
 msgctxt "#114"
 msgid "Installation failed"
 msgstr ""
@@ -551,7 +551,7 @@ msgctxt "#136"
 msgid "Playlists"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#137"
 msgid "Search"
 msgstr ""
@@ -671,7 +671,7 @@ msgctxt "#165"
 msgid "Disc present"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 #: system/settings/settings.xml
 msgctxt "#166"
 msgid "Skin"
@@ -762,7 +762,7 @@ msgctxt "#185"
 msgid "Searching album"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/dialogs/GUIDialogSelect.cpp
 msgctxt "#186"
 msgid "OK"
@@ -818,7 +818,7 @@ msgctxt "#198"
 msgid "Loading movie details"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 #: system/settings/settings.xml
 msgctxt "#199"
 msgid "Web interface"
@@ -973,7 +973,7 @@ msgid "Video filters"
 msgstr ""
 
 #: system/peripherals.xml
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: system/settings/settings.xml
@@ -3525,17 +3525,17 @@ msgctxt "#1036"
 msgid "Favourites"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#1037"
 msgid "Video Add-ons"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#1038"
 msgid "Music Add-ons"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#1039"
 msgid "Picture Add-ons"
 msgstr ""
@@ -3553,7 +3553,7 @@ msgctxt "#1042"
 msgid "Retrieved %i of %i items"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#1043"
 msgid "Program Add-ons"
 msgstr ""
@@ -4358,7 +4358,7 @@ msgid "Scripts"
 msgstr ""
 
 msgctxt "#10021"
-msgid "Web Browser"
+msgid "Settings - TV"
 msgstr ""
 
 #empty strings from id 10022 to 10024
@@ -11482,7 +11482,7 @@ msgctxt "#21451"
 msgid "Internet connection required."
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#21452"
 msgid "Get More..."
@@ -12177,7 +12177,7 @@ msgstr ""
 #empty strings from id 23105 to 23999
 #strings 24000 thru 24299 reserved for the Add-ons framework
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24000"
 msgid "Add-on"
 msgstr ""
@@ -12197,74 +12197,74 @@ msgstr ""
 
 #empty string with id 24004
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24005"
 msgid "Media sources"
 msgstr ""
 
 #empty string with id 24006
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24007"
 msgid "Movie information"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24008"
 msgid "Screensaver"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24009"
 msgid "Script"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24010"
 msgid "Visualisation"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24011"
 msgid "Add-on repository"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24012"
 msgid "Subtitles"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24013"
 msgid "Lyrics"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24014"
 msgid "TV information"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24015"
 msgid "Music video information"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24016"
 msgid "Album information"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24017"
 msgid "Artist information"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24018"
 msgid "Services"
 msgstr ""
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24019"
 msgid "PVR clients"
 msgstr ""
@@ -12295,7 +12295,7 @@ msgstr ""
 
 #empty strings from id 24025 to 24026
 
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24027"
 msgid "Weather"
 msgstr ""
@@ -12322,7 +12322,7 @@ msgctxt "#24032"
 msgid "All Add-ons"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24033"
 msgid "Get Add-ons"
@@ -12348,28 +12348,28 @@ msgctxt "#24038"
 msgid "Install"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24039"
 msgid "Disabled Add-ons"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24040"
 msgid "(Clear the current setting)"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24041"
 msgid "Install from zip file"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24042"
 msgid "Downloading %i%%"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24043"
 msgid "Available Updates"
@@ -12381,12 +12381,12 @@ msgctxt "#24044"
 msgid "Dependencies not met. Please contact Add-on author."
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
+#: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
 msgstr ""
 
-#: xbmc/addons/guidialogaddoninfo.cpp
+#: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24046"
 msgid "%s is used by the following installed Add-on(s)"
 msgstr ""
@@ -12411,7 +12411,7 @@ msgctxt "#24050"
 msgid "Available Add-ons"
 msgstr ""
 
-#: xbmc/addons/addonversion.cpp
+#: xbmc/addons/AddonVersion.cpp
 msgctxt "#24051"
 msgid "Version:"
 msgstr ""
@@ -12427,7 +12427,7 @@ msgctxt "#24053"
 msgid "License:"
 msgstr ""
 
-#: xbmc/addons/guidialogaddoninfo.cpp
+#: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24054"
 msgid "Changelog"
 msgstr ""
@@ -12459,7 +12459,7 @@ msgctxt "#24061"
 msgid "Add-on update available!"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/filesystem/AndroidAppDirectory.cpp
 msgctxt "#24062"
@@ -12470,22 +12470,22 @@ msgctxt "#24063"
 msgid "Auto update"
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
+#: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24064"
 msgid "Add-on enabled"
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
+#: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24065"
 msgid "Add-on updated"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24066"
 msgid "Cancel Add-on download?"
 msgstr ""
 
-#: xbmc/addons/guiviewstateaddonbrowser.cpp
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
 msgstr ""
@@ -12523,7 +12523,7 @@ msgctxt "#24075"
 msgid "Disable"
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
+#: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24076"
 msgid "Add-on Required"
 msgstr ""
@@ -12535,25 +12535,25 @@ msgid "Try to reconnect?"
 msgstr ""
 
 #. The label in the add-ons manager for helper add-ons
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24081"
 msgid "Helper Add-ons"
 msgstr ""
 
 #. The label in the add-ons manager for add-on libraries
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24082"
 msgid "Add-on libraries"
 msgstr ""
 
 #. The label in the add-ons manager for information libraries
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24083"
 msgid "Information libraries"
 msgstr ""
 
 #. The label in the add-ons manager for visualisation libraries
-#: xbmc/addons/addon.cpp
+#: xbmc/addons/Addon.cpp
 msgctxt "#24084"
 msgid "Visualisation libraries"
 msgstr ""
@@ -12600,17 +12600,17 @@ msgctxt "#24098"
 msgid "Broken"
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
+#: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
+#: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
 msgstr ""
 
-#: xbmc/addons/addoninstaller.cpp
+#: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr ""
@@ -14984,7 +14984,7 @@ msgstr ""
 #. Description of settings category "Weather -> General" with label #16000
 #: system/settings/settings.xml
 msgctxt "#36316"
-msgid "Category containing settings for how weather addons are handled."
+msgid "Category containing settings for how weather add-ons are handled."
 msgstr ""
 
 #. Description of settings category "Weather -> General -> Locations with label #0

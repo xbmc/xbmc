@@ -50,6 +50,7 @@
 #include "TextureCache.h"
 #include "music/MusicDatabase.h"
 #include "URL.h"
+#include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
@@ -1065,6 +1066,12 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
 
       case CONTEXT_BUTTON_TAGS_REMOVE_ITEMS:
         result = RemoveItemsFromTag(item);
+        break;
+
+      case CONTEXT_BUTTON_MARK_WATCHED:
+      case CONTEXT_BUTTON_MARK_UNWATCHED:
+        CVideoLibraryQueue::Get().MarkAsWatched(item, (button == (CONTEXT_BUTTON)CONTEXT_BUTTON_MARK_WATCHED));
+        result = true;
         break;
 
       default:
