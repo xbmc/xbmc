@@ -347,23 +347,23 @@ int CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory()
           break;
       }
     }
-    pDlg->Add(strLabel);
+
+    // Load only dvdplayer rules
+    value = pRule->Attribute("player");
+    if (value.ToLower() == "dvdplayer")
+      pDlg->Add(strLabel);
+
     pRule = pRule->NextSiblingElement("rule");
     count++;
   }
-
 
   pDlg->Add(g_localizeStrings.Get(66002).c_str());
   pDlg->DoModal();
 
   selected = pDlg->GetSelectedLabel();
-  if (selected == count)
-    Get()->m_dsmanager->SetisNew(true);
-  else
-    Get()->m_dsmanager->SetisNew(false);
+  Get()->m_dsmanager->SetisNew(selected == count);
 
   Get()->m_dsmanager->SetConfigIndex(selected);
-
 
   if (selected > -1) g_windowManager.ActivateWindow(WINDOW_DIALOG_DSPLAYERCORE);
 

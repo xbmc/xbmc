@@ -564,10 +564,8 @@ int CGUIDialogDSRules::ShowDSRulesList()
 
   pDlg->DoModal();
   selected = pDlg->GetSelectedLabel();
-  if (selected == count)
-    Get()->m_dsmanager->SetisNew(true);
-  else
-    Get()->m_dsmanager->SetisNew(false);
+
+  Get()->m_dsmanager->SetisNew(selected == count);
 
   Get()->m_dsmanager->SetConfigIndex(selected);
 
