@@ -91,6 +91,7 @@ namespace MUSIC_INFO
 #define TMSG_CECACTIVATESOURCE    317
 #define TMSG_CECSTANDBY           318
 #define TMSG_SETVIDEORESOLUTION   319
+#define TMSG_SETPVRMANAGERSTATE   320
 
 #define TMSG_NETWORKMESSAGE         500
 
@@ -251,6 +252,11 @@ public:
 
   void SetSplashMessage(const std::string& message);
   void SetSplashMessage(int stringID);
+
+  /*! \brief Used to enable/disable PVR system without waiting.
+   \param onOff if true it becomes switched on otherwise off
+   */
+  void SetPVRManagerState(bool onOff);
   
   bool SetupDisplay();
   bool DestroyDisplay();
