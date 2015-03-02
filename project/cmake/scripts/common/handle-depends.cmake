@@ -60,11 +60,12 @@ function(add_addon_depends addon searchpath)
                        -DENABLE_STATIC=1
                        -DBUILD_SHARED_LIBS=0)
         # if there are no make rules override files available take care of manually passing on ARCH_DEFINES
-        # TODO: figure out if we should use -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS} ${ARCH_DEFINES}" and why it doesn't work
-        # TODO: figure out why this doesn't work for OSX32 and IOS/ATV2
-        if(NOT CMAKE_USER_MAKE_RULES_OVERRIDE AND NOT CMAKE_USER_MAKE_RULES_OVERRIDE_CXX AND NOT APPLE)
-          list(APPEND BUILD_ARGS -DCMAKE_C_FLAGS=${ARCH_DEFINES}
-                                 -DCMAKE_CXX_FLAGS=${ARCH_DEFINES})
+        if(NOT CMAKE_USER_MAKE_RULES_OVERRIDE AND NOT CMAKE_USER_MAKE_RULES_OVERRIDE_CXX)
+          # make sure we create strings, not lists
+          set(TMP_C_FLAGS "${CMAKE_C_FLAGS} ${ARCH_DEFINES}")
+          set(TMP_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCH_DEFINES}")
+          list(APPEND BUILD_ARGS -DCMAKE_C_FLAGS=${TMP_C_FLAGS}
+                                 -DCMAKE_CXX_FLAGS=${TMP_CXX_FLAGS})
         endif()
 
         if(CMAKE_TOOLCHAIN_FILE)
@@ -74,26 +75,24 @@ function(add_addon_depends addon searchpath)
         endif()
 
         # if there's a CMakeLists.txt use it to prepare the build
+        set(PATCH_FILE ${BUILD_DIR}/${id}/tmp/patch.cmake)
         if(EXISTS ${dir}/CMakeLists.txt)
-          file(APPEND ${BUILD_DIR}/${id}/tmp/patch.cmake
+          file(APPEND ${PATCH_FILE}
                "file(COPY ${dir}/CMakeLists.txt
                    DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")
-          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${BUILD_DIR}/${id}/tmp/patch.cmake)
-        else()
-          set(PATCH_COMMAND "")
         endif()
 
         # check if we have patches to apply
         file(GLOB patches ${dir}/*.patch)
         list(SORT patches)
         foreach(patch ${patches})
-          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${BUILD_DIR}/${id}/tmp/patch.cmake)
-          file(APPEND ${BUILD_DIR}/${id}/tmp/patch.cmake
+          file(APPEND ${PATCH_FILE}
                "execute_process(COMMAND patch -p1 -i ${patch})\n")
         endforeach()
 
 
         # if there's an install.txt use it to properly install the built files
+        set(INSTALL_COMMAND "")
         if(EXISTS ${dir}/install.txt)
           set(INSTALL_COMMAND INSTALL_COMMAND ${CMAKE_COMMAND}
                                               -DINPUTDIR=${BUILD_DIR}/${id}/src/${id}-build/
@@ -104,8 +103,6 @@ function(add_addon_depends addon searchpath)
                                               -P ${PROJECT_SOURCE_DIR}/install.cmake)
         elseif(EXISTS ${dir}/noinstall.txt)
           set(INSTALL_COMMAND INSTALL_COMMAND "")
-        else()
-          set(INSTALL_COMMAND "")
         endif()
 
         # check if there's a deps.txt containing dependencies on other libraries
@@ -116,13 +113,18 @@ function(add_addon_depends addon searchpath)
           set(deps)
         endif()
 
-        if(CROSS_AUTOCONF)
-          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${BUILD_DIR}/${id}/tmp/patch.cmake)
+        if(CROSS_AUTOCONF AND AUTOCONF_FILES)
           foreach(afile ${AUTOCONF_FILES})
-            file(APPEND ${BUILD_DIR}/${id}/tmp/patch.cmake
+            file(APPEND ${PATCH_FILE}
                  "message(STATUS \"AUTOCONF: copying ${afile} to ${BUILD_DIR}/${id}/src/${id}\")\n
                  file(COPY ${afile} DESTINATION ${BUILD_DIR}/${id}/src/${id})\n")
           endforeach()
+        endif()
+
+        # if the patch file exists we need to set the PATCH_COMMAND
+        set(PATCH_COMMAND "")
+        if (EXISTS ${PATCH_FILE})
+          set(PATCH_COMMAND ${CMAKE_COMMAND} -P ${PATCH_FILE})
         endif()
 
         # prepare the setup of the call to externalproject_add()
@@ -143,9 +145,8 @@ function(add_addon_depends addon searchpath)
                                 GIT_TAG ${revision}
                                 "${EXTERNALPROJECT_SETUP}")
           else()
-            if(WIN32)
-              set(CONFIGURE_COMMAND "")
-            else()
+            set(CONFIGURE_COMMAND "")
+            if(NOT WIN32)
               # manually specify the configure command to be able to pass in the custom PKG_CONFIG_PATH
               set(CONFIGURE_COMMAND PKG_CONFIG_PATH=${OUTPUT_DIR}/lib/pkgconfig
                                     ${CMAKE_COMMAND} -DCMAKE_LIBRARY_PATH=${OUTPUT_DIR}/lib ${extraflags} ${BUILD_ARGS}

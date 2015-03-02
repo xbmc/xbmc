@@ -2,7 +2,8 @@ AC_PREREQ(2.59)
 AC_INIT([xbmc-depends], [2.00], [http://trac.xbmc.org])
 :${CFLAGS=""}
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake])
+AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
+                 target/config-binaddons.site target/Toolchain_binaddons.cmake])
 AC_CANONICAL_HOST
 m4_include([../../m4/xbmc_arch.m4])
 m4_include([../../m4/ax_cxx_compile_stdcxx_11.m4])
@@ -498,6 +499,7 @@ AC_SUBST(use_toolchain)
 AC_SUBST(use_build_toolchain)
 AC_SUBST(use_tarballs)
 AC_SUBST(use_platform)
+AC_SUBST(use_firmware)
 AC_SUBST(cross_compiling)
 AC_SUBST(platform_cflags)
 AC_SUBST(platform_cxxflags)

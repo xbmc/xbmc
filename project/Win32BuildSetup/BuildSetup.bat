@@ -30,7 +30,6 @@ rem  CONFIG START
 SET buildmode=ask
 SET promptlevel=prompt
 SET buildmingwlibs=true
-SET buildpvraddons=true
 SET buildbinaryaddons=true
 SET exitcode=0
 SET useshell=rxvt
@@ -40,7 +39,6 @@ FOR %%b in (%1, %2, %3, %4, %5) DO (
   IF %%b==noclean SET buildmode=noclean
   IF %%b==noprompt SET promptlevel=noprompt
   IF %%b==nomingwlibs SET buildmingwlibs=false
-  IF %%b==nopvraddons SET buildpvraddons=false
   IF %%b==nobinaryaddons SET buildbinaryaddons=false
   IF %%b==sh SET useshell=sh
 )
@@ -215,18 +213,6 @@ set WORKSPACE=%CD%\..\..
   xcopy ..\..\sounds BUILD_WIN32\application\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   
   SET build_path=%CD%
-  IF %buildpvraddons%==true (
-    ECHO ------------------------------------------------------------
-    ECHO Building pvr addons...
-    call buildpvraddons.bat
-    IF %errorlevel%==1 (
-      set DIETEXT="failed to build pvr addons"
-      goto DIE
-    )
-      
-    IF EXIST error.log del error.log > NUL
-  )
-
   IF %buildbinaryaddons%==true (
     ECHO ------------------------------------------------------------
     ECHO Building addons...

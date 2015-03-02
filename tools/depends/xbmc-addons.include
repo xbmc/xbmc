@@ -1,3 +1,16 @@
+ADDON_DEPS_DIR := $(BUILDDIR)/$(PLATFORM)/build/depends
+TOOLCHAIN_FILE = $(ADDON_DEPS_DIR)/share/Toolchain_binaddons.cmake
+
+ifeq ($(CROSS_COMPILING),yes)
+  DEPS = $(TOOLCHAIN_FILE) $(abs_top_srcdir)/target/config-binaddons.site $(abs_top_srcdir)/target/Toolchain_binaddons.cmake $(CONFIG_SUB) $(CONFIG_GUESS)
+  TOOLCHAIN = -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE)
+  ifeq ($(OS),linux)
+    ifneq ($(TARGET_PLATFORM),raspberry-pi)
+      DEPS += linux-system-libs
+    endif
+  endif
+endif
+
 ifeq ($(PLATFORM),)
   PLATFORM = native
 endif
@@ -16,8 +29,9 @@ ifneq ($(PREFIX),)
     INSTALL_PREFIX = $(PREFIX)
   endif
 
-  CMAKE_EXTRA += -DDEPENDS_PATH=$(PREFIX) -DAUTOCONF_FILES="$(CONFIG_SUB) $(CONFIG_GUESS)"
+  CMAKE_EXTRA += -DAUTOCONF_FILES="$(CONFIG_SUB) $(CONFIG_GUESS)"
 endif
+
 
 all: .installed-$(PLATFORM)
 
@@ -28,16 +42,50 @@ clean:
 distclean:
 	rm -rf $(PLATFORM) .installed-$(PLATFORM) native
 
-.installed-$(PLATFORM):
+.installed-$(PLATFORM): $(DEPS)
+	cd ../../../../project/cmake/addons/ && (git clean -xfd || rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake build/*)
+	mkdir -p $(PLATFORM)
 ifeq ($(PREFIX),)
 	@echo
 	@echo "ERROR: please set PREFIX to the xbmc install path e.g. make PREFIX=/usr/local"
 	@exit 1
 endif
-	cd ../../../../project/cmake/addons/ && (git clean -xfd || rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake build/*)
-	mkdir -p $(PLATFORM); \
-         cd $(PLATFORM); \
+ifeq ($(CROSS_COMPILING),yes)
+	mkdir -p $(PLATFORM)/build/depends/share; \
+         cp -f $(abs_top_srcdir)/target/config-binaddons.site $(PLATFORM)/build/depends/share/config.site
+endif
+	cd $(PLATFORM); \
          $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) $(CMAKE_EXTRA) \
+         $(TOOLCHAIN) \
          -DADDONS_TO_BUILD=$(ADDONS) ../../../../../project/cmake/addons/ -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
          $(MAKE);
+ifneq ($(CROSS_COMPILING),yes)
+	@[ -w $(INSTALL_PREFIX) ] || $(MAKE) -C $(PLATFORM) install
+endif
 	touch $@
+
+$(TOOLCHAIN_FILE): $(abs_top_srcdir)/target/Toolchain_binaddons.cmake
+	mkdir -p $(ADDON_DEPS_DIR)/share
+	sed "s|@CMAKE_FIND_ROOT_PATH@|$(ADDON_DEPS_DIR)|g" $(abs_top_srcdir)/target/Toolchain_binaddons.cmake > $@
+
+linux-system-libs:
+	mkdir -p $(ADDON_DEPS_DIR)/lib/pkgconfig $(ADDON_DEPS_DIR)/include
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/x11.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/x11.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/x11.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xproto.pc ] || ln -s /usr/share/pkgconfig/xproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xproto.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/kbproto.pc ] || ln -s /usr/share/pkgconfig/kbproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/kbproto.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xcb.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xcb.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xcb.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/pthread-stubs.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/pthread-stubs.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/pthread-stubs.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xau.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xau.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xau.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xdmcp.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xdmcp.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xdmcp.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xext.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xext.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xext.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xextproto.pc ] || ln -s /usr/share/pkgconfig/xextproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xextproto.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xt.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xt.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xt.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/ice.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/ice.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/ice.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/sm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/sm.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/sm.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xmu.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xmu.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xmu.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/libdrm.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/gl.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/libGL.so ] || \
+          (ln -s /usr/lib/$(HOST)/mesa $(ADDON_DEPS_DIR)/lib/mesa && ln -s $(ADDON_DEPS_DIR)/lib/mesa/libGL.so $(ADDON_DEPS_DIR)/lib/libGL.so)
+	[ -f $(ADDON_DEPS_DIR)/include/GL ] || ln -s /usr/include/GL $(ADDON_DEPS_DIR)/include/GL
+

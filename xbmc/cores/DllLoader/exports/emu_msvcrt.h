@@ -111,7 +111,8 @@ extern "C"
   int dll_feof (FILE * stream);
   int dll_fread (void * buffer, size_t size, size_t count, FILE * stream);
   int dll_getc (FILE * stream);
-  FILE * dll_fopen (const char * filename, const char * mode);
+  FILE * dll_fopen(const char * filename, const char * mode);
+  int dll_fopen_s(FILE** pFile, const char * filename, const char * mode);
   int dll_fputc (int character, FILE * stream);
   int dll_putcchar (int character);
   int dll_fputs (const char * szLine , FILE* stream);

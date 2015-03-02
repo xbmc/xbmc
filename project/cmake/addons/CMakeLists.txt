@@ -69,7 +69,9 @@ set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
                -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
-               -DBUILD_SHARED_LIBS=1)
+               -DBUILD_SHARED_LIBS=1
+               -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+               -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS})
 
 if(PACKAGE_ZIP)
   # needed for project installing
@@ -107,6 +109,15 @@ endif()
 
 # include check_target_platform() function
 include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
+
+# check install permissions
+set(ADDON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+check_install_permissions(${CMAKE_INSTALL_PREFIX} can_write)
+if(NOT ${can_write} AND NOT WIN32)
+  set(NEED_SUDO TRUE)
+  set(ADDON_INSTALL_DIR ${CMAKE_BINARY_DIR}/.install)
+  message(STATUS "NEED_SUDO: ${NEED_SUDO}")
+endif()
 
 ### prepare the build environment for the binary addons
 # copy the prepare-env.cmake script to the depends path so that we can include it
@@ -202,8 +213,19 @@ endforeach()
 foreach(id ${downloaded_addons})
   externalproject_add(${id}
                       SOURCE_DIR ${BUILD_DIR}/${id}
-                      INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+                      INSTALL_DIR ${ADDON_INSTALL_DIR}
                       CMAKE_ARGS ${BUILD_ARGS})
+
+  # add a custom step to the external project between the configure and the build step which will always
+  # be executed and therefore forces a re-build of all changed files
+  externalproject_add_step(${id} forcebuild
+                           COMMAND ${CMAKE_COMMAND} -E echo "Force build of ${id}"
+                           DEPENDEES configure
+                           DEPENDERS build
+                           ALWAYS 1)
+
+  # add "kodi-platform" as a dependency to every addon
+  add_dependencies(${id} kodi-platform)
 
   set(${id}_DEPENDS_DIR ${BUILD_DIR}/${id}/depends)
 
@@ -216,3 +238,12 @@ foreach(id ${downloaded_addons})
     endif()
   endif()
 endforeach()
+
+if(NEED_SUDO)
+  add_custom_target(install
+                    COMMAND ${CMAKE_COMMAND} -E echo "\n\n"
+                    COMMAND ${CMAKE_COMMAND} -E echo "WARNING: sudo rights needed to install to ${CMAKE_INSTALL_PREFIX}\n"
+                    COMMAND sudo ${CMAKE_COMMAND} -E copy_directory ${ADDON_INSTALL_DIR}/ ${CMAKE_INSTALL_PREFIX}/
+                    COMMAND sudo ${CMAKE_COMMAND} -E remove_directory ${ADDON_INSTALL_DIR}/
+                    COMMAND sudo -k)
+endif()
