@@ -506,17 +506,36 @@ bool CWinSystemX11::IsCurrentOutput(std::string output)
 #if defined(HAS_EGL)
 EGLConfig getEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
 {
-  EGLint attributes[] = {
+  EGLint attributes[] =
+  {
+    EGL_DEPTH_SIZE, 24,
     EGL_NONE
   };
   EGLint numConfigs;
-  // TODO make dynamic
-  EGLConfig eglConfigs[1024];
+
+  if (!eglChooseConfig(eglDisplay, attributes, NULL, 0, &numConfigs))
+  {
+    CLog::Log(LOGERROR, "Failed to query number of egl configs");
+    return EGL_NO_CONFIG;
+  }
+  if (numConfigs == 0)
+  {
+    CLog::Log(LOGERROR, "No suitable egl configs found");
+    return EGL_NO_CONFIG;
+  }
+
+  EGLConfig *eglConfigs;
+  eglConfigs = (EGLConfig*)malloc(numConfigs * sizeof(EGLConfig));
+  if (!eglConfigs)
+  {
+    CLog::Log(LOGERROR, "eglConfigs malloc failed");
+    return EGL_NO_CONFIG;
+  }
   EGLConfig eglConfig = EGL_NO_CONFIG;
-  if (!eglChooseConfig(eglDisplay, attributes, eglConfigs, 1024, &numConfigs))
+  if (!eglChooseConfig(eglDisplay, attributes, eglConfigs, numConfigs, &numConfigs))
   {
     CLog::Log(LOGERROR, "Failed to query egl configs");
-    return EGL_NO_CONFIG;
+    goto Exit;
   }
   for (EGLint i = 0;i < numConfigs;++i)
   {
@@ -532,6 +551,8 @@ EGLConfig getEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
     }
   }
 
+Exit:
+  free(eglConfigs);
   return eglConfig;
 }
 
@@ -720,7 +741,8 @@ bool CWinSystemX11::RefreshGlxContext(bool force)
       }
     }
 
-    GLint contextAttributes[] = {
+    EGLint contextAttributes[] =
+    {
       EGL_CONTEXT_CLIENT_VERSION, 2,
       EGL_NONE
     };
@@ -1026,7 +1048,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     };
 #endif
 #if defined(HAS_EGL)
-    GLint att[] =
+    EGLint att[] =
     {
       EGL_RED_SIZE, 8,
       EGL_GREEN_SIZE, 8,
@@ -1080,17 +1102,27 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       CLog::Log(LOGERROR, "Failed to choose a config %d\n", eglGetError());
     }
 
-    XVisualInfo x11_visual_info_template;
-    if (!eglGetConfigAttrib(m_eglDisplay, eglConfig, EGL_NATIVE_VISUAL_ID, (EGLint*)&x11_visual_info_template.visualid)) {
+    EGLint eglVisualid;
+    if (!eglGetConfigAttrib(m_eglDisplay, eglConfig, EGL_NATIVE_VISUAL_ID, &eglVisualid))
+    {
       CLog::Log(LOGERROR, "Failed to query native visual id\n");
     }
+    XVisualInfo x11_visual_info_template;
+    x11_visual_info_template.visualid = eglVisualid;
     int num_visuals;
     vi = XGetVisualInfo(m_dpy,
                         VisualIDMask,
-			&x11_visual_info_template,
-			&num_visuals);
+                        &x11_visual_info_template,
+                        &num_visuals);
 
 #endif
+
+    if(!vi)
+    {
+      CLog::Log(LOGERROR, "Failed to find matching visual");
+      return false;
+    }
+
     cmap = XCreateColormap(m_dpy, RootWindow(m_dpy, vi->screen), vi->visual, AllocNone);
 
     bool hasWM = HasWindowManager();
