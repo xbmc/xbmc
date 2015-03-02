@@ -63,7 +63,7 @@ bool CPVRClients::IsInUse(const std::string& strAddonId) const
   CSingleLock lock(m_critSection);
 
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (itr->second->Enabled() && itr->second->ID() == strAddonId)
+    if (itr->second->ID() == strAddonId)
       return true;
   return false;
 }
@@ -175,14 +175,8 @@ int CPVRClients::GetFirstConnectedClientID(void)
 
 int CPVRClients::EnabledClientAmount(void) const
 {
-  int iReturn(0);
   CSingleLock lock(m_critSection);
-
-  for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (itr->second->Enabled())
-      ++iReturn;
-
-  return iReturn;
+  return m_clientMap.size();
 }
 
 bool CPVRClients::HasEnabledClients(void) const
@@ -997,9 +991,6 @@ int CPVRClients::RegisterClient(AddonPtr client, bool* newRegistration/*=NULL*/)
   if (newRegistration)
     *newRegistration = false;
 
-  if (!client->Enabled())
-    return -1;
-
   CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
 
   CPVRDatabase *database = GetPVRDatabase();
@@ -1061,8 +1052,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
   for (unsigned iClientPtr = 0; iClientPtr < map.size(); iClientPtr++)
   {
     const AddonPtr clientAddon = map.at(iClientPtr);
-    bool bEnabled = clientAddon->Enabled() &&
-        !CAddonMgr::Get().IsAddonDisabled(clientAddon->ID());
+    bool bEnabled = !CAddonMgr::Get().IsAddonDisabled(clientAddon->ID());
 
     if (!bEnabled && IsKnownClient(clientAddon))
     {
@@ -1102,7 +1092,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         }
 
         // throttle connection attempts, no more than 1 attempt per 5 seconds
-        if (!bDisabled && addon->Enabled())
+        if (!bDisabled)
         {
           time_t now;
           CDateTime::GetCurrentDateTime().GetAsTime(now);
@@ -1113,7 +1103,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         }
 
         // re-check the enabled status. newly installed clients get disabled when they're added to the db
-        if (!bDisabled && addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
+        if (!bDisabled && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
         {
           CLog::Log(LOGWARNING, "%s - failed to create add-on %s, status = %d", __FUNCTION__, clientAddon->Name().c_str(), status);
           if (!addon.get() || !addon->DllLoaded() || status == ADDON_STATUS_PERMANENT_FAILURE)
