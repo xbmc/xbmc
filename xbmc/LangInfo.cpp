@@ -39,8 +39,9 @@
 #include "utils/XMLUtils.h"
 
 #include <algorithm>
+#include <locale>
+#include <utility>
 
-using namespace std;
 using namespace PVR;
 
 static std::string shortDateFormats[] = {
@@ -281,23 +282,23 @@ void CLangInfo::CRegion::SetGlobalLocale()
     setlocale(LC_CTYPE, strLocale.c_str());
   }
 #else
-  locale current_locale = locale::classic(); // C-Locale
+  std::locale current_locale = std::locale::classic(); // C-Locale
   try
   {
-    locale lcl = locale(strLocale.c_str());
+    std::locale lcl = std::locale(strLocale.c_str());
     strLocale = lcl.name();
-    current_locale = current_locale.combine< collate<wchar_t> >(lcl);
-    current_locale = current_locale.combine< ctype<wchar_t> >(lcl);
+    current_locale = current_locale.combine< std::collate<wchar_t> >(lcl);
+    current_locale = current_locale.combine< std::ctype<wchar_t> >(lcl);
 
-    assert(use_facet< numpunct<char> >(current_locale).decimal_point() == '.');
+    assert(std::use_facet< std::numpunct<char> >(current_locale).decimal_point() == '.');
 
   } catch(...) {
-    current_locale = locale::classic();
+    current_locale = std::locale::classic();
     strLocale = "C";
   }
 
   g_langInfo.m_systemLocale = current_locale; // TODO: move to CLangInfo class
-  locale::global(current_locale);
+  std::locale::global(current_locale);
 #endif
   g_charsetConverter.resetSystemCharset();
   CLog::Log(LOGINFO, "global locale set to %s", strLocale.c_str());
@@ -369,7 +370,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
 {
   SetDefaults();
 
-  string strFileName = GetLanguageInfoPath(strLanguage);
+  std::string strFileName = GetLanguageInfoPath(strLanguage);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
@@ -515,7 +516,7 @@ std::string CLangInfo::GetLanguageInfoPath(const std::string &language)
   return URIUtils::AddFileToFolder(GetLanguagePath(language), "langinfo.xml");
 }
 
-void CLangInfo::LoadTokens(const TiXmlNode* pTokens, set<std::string>& vecTokens)
+void CLangInfo::LoadTokens(const TiXmlNode* pTokens, std::set<std::string>& vecTokens)
 {
   if (pTokens && !pTokens->NoChildren())
   {
@@ -916,7 +917,7 @@ const std::string& CLangInfo::MeridiemSymbolToString(MeridiemSymbol symbol)
 }
 
 // Fills the array with the region names available for this language
-void CLangInfo::GetRegionNames(vector<string>& array)
+void CLangInfo::GetRegionNames(std::vector<std::string>& array)
 {
   for (ITMAPREGIONS it=m_regions.begin(); it!=m_regions.end(); ++it)
   {
@@ -1116,10 +1117,10 @@ void CLangInfo::SettingOptionsLanguageNamesFiller(const CSetting *setting, std::
 void CLangInfo::SettingOptionsISO6391LanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   // get a list of language names
-  vector<string> languages = g_LangCodeExpander.GetLanguageNames(CLangCodeExpander::ISO_639_1, true);
+  std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(CLangCodeExpander::ISO_639_1, true);
   sort(languages.begin(), languages.end(), sortstringbyname());
   for (std::vector<std::string>::const_iterator language = languages.begin(); language != languages.end(); ++language)
-    list.push_back(make_pair(*language, *language));
+    list.push_back(std::make_pair(*language, *language));
 }
 
 void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
@@ -1133,15 +1134,15 @@ void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std
 
 void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  vector<string> regions;
+  std::vector<std::string> regions;
   g_langInfo.GetRegionNames(regions);
-  sort(regions.begin(), regions.end(), sortstringbyname());
+  std::sort(regions.begin(), regions.end(), sortstringbyname());
 
   bool match = false;
   for (unsigned int i = 0; i < regions.size(); ++i)
   {
     std::string region = regions[i];
-    list.push_back(make_pair(region, region));
+    list.push_back(std::make_pair(region, region));
 
     if (!match && region == ((CSettingString*)setting)->GetValue())
     {

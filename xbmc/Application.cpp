@@ -222,7 +222,6 @@
 #include "cores/FFmpeg.h"
 #include "utils/CharsetConverter.h"
 
-using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 #ifdef HAS_DVD_DRIVE
@@ -1159,7 +1158,7 @@ bool CApplication::Initialize()
     /* window id's 3000 - 3100 are reserved for python */
 
     // Make sure we have at least the default skin
-    string defaultSkin = ((const CSettingString*)CSettings::Get().GetSetting("lookandfeel.skin"))->GetDefault();
+    std::string defaultSkin = ((const CSettingString*)CSettings::Get().GetSetting("lookandfeel.skin"))->GetDefault();
     if (!LoadSkin(CSettings::Get().GetString("lookandfeel.skin")) && !LoadSkin(defaultSkin))
     {
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
@@ -1531,7 +1530,7 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
   g_windowManager.SendMessage(msg);
 
-  string newSkin = CSettings::Get().GetString("lookandfeel.skin");
+  std::string newSkin = CSettings::Get().GetString("lookandfeel.skin");
   if (LoadSkin(newSkin))
   {
     /* The Reset() or SetString() below will cause recursion, so the m_skinReverting boolean is set so as to not prompt the
@@ -1552,7 +1551,7 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
   else
   {
     // skin failed to load - we revert to the default only if we didn't fail loading the default
-    string defaultSkin = ((CSettingString*)CSettings::Get().GetSetting("lookandfeel.skin"))->GetDefault();
+    std::string defaultSkin = ((CSettingString*)CSettings::Get().GetSetting("lookandfeel.skin"))->GetDefault();
     if (newSkin != defaultSkin)
     {
       m_skinReverting = true;
@@ -1652,7 +1651,7 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   CGUIWindow* pWindow = g_windowManager.GetWindow(currentWindow);
   if (pWindow)
     iCtrlID = pWindow->GetFocusedControlID();
-  vector<int> currentModelessWindows;
+  std::vector<int> currentModelessWindows;
   g_windowManager.GetActiveModelessWindows(currentModelessWindows);
 
   UnloadSkin();
@@ -2763,7 +2762,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     CGUIDialogCache* dlgCache = new CGUIDialogCache(5000, g_localizeStrings.Get(10214), item.GetLabel());
 
     //is or could be a playlist
-    unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
+    std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
     bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.GetPath()));
 
     if (dlgCache)
@@ -2875,7 +2874,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
     //       Also, this is really just a hack for the slow load up times we have
     //       A much better solution is a fast reader of FPS and fileLength
     //       that we can use on a file to get it's time.
-    vector<int> times;
+    std::vector<int> times;
     bool haveTimes(false);
     CVideoDatabase dbs;
     if (dbs.Open())
@@ -4685,10 +4684,10 @@ float CApplication::GetCachePercentage() const
       float stackedTotalTime = (float) GetTotalTime();
       // We need to take into account the stack's total time vs. currently playing file's total time
       if (stackedTotalTime > 0.0f)
-        return min( 100.0f, GetPercentage() + (m_pPlayer->GetCachePercentage() * m_pPlayer->GetTotalTime() * 0.001f / stackedTotalTime ) );
+        return std::min( 100.0f, GetPercentage() + (m_pPlayer->GetCachePercentage() * m_pPlayer->GetTotalTime() * 0.001f / stackedTotalTime ) );
     }
     else
-      return min( 100.0f, m_pPlayer->GetPercentage() + m_pPlayer->GetCachePercentage() );
+      return std::min( 100.0f, m_pPlayer->GetPercentage() + m_pPlayer->GetCachePercentage() );
   }
   return 0.0f;
 }

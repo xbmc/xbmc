@@ -70,7 +70,6 @@
 #endif
 
 using namespace PVR;
-using namespace std;
 using namespace MUSIC_INFO;
 using namespace PERIPHERALS;
 
@@ -665,7 +664,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_PLAYLISTPLAYER_SWAP:
       if (pMsg->lpVoid)
       {
-        vector<int> *indexes = (vector<int> *)pMsg->lpVoid;
+        std::vector<int> *indexes = (std::vector<int> *)pMsg->lpVoid;
         if (indexes->size() == 2)
           g_playlistPlayer.Swap(pMsg->param1, indexes->at(0), indexes->at(1));
         delete indexes;
@@ -756,7 +755,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         if (pMsg->lpVoid)
         {
-          vector<string> *infoLabels = (vector<string> *)pMsg->lpVoid;
+          std::vector<std::string> *infoLabels = (std::vector<std::string> *)pMsg->lpVoid;
           for (unsigned int i = 0; i < pMsg->params.size(); i++)
             infoLabels->push_back(g_infoManager.GetLabel(g_infoManager.TranslateString(pMsg->params[i])));
         }
@@ -766,7 +765,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         if (pMsg->lpVoid)
         {
-          vector<bool> *infoLabels = (vector<bool> *)pMsg->lpVoid;
+          std::vector<bool> *infoLabels = (std::vector<bool> *)pMsg->lpVoid;
           for (unsigned int i = 0; i < pMsg->params.size(); i++)
             infoLabels->push_back(g_infoManager.EvaluateBool(pMsg->params[i]));
         }
@@ -914,7 +913,7 @@ void CApplicationMessenger::ExecBuiltIn(const std::string &command, bool wait)
   SendMessage(tMsg, wait);
 }
 
-void CApplicationMessenger::MediaPlay(string filename)
+void CApplicationMessenger::MediaPlay(std::string filename)
 {
   CFileItem item(filename, false);
   MediaPlay(item);
@@ -1091,7 +1090,7 @@ void CApplicationMessenger::PlayListPlayerSwap(int playlist, int indexItem1, int
 {
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_SWAP};
   tMsg.param1 = playlist;
-  vector<int> *indexes = new vector<int>();
+  std::vector<int> *indexes = new std::vector<int>();
   indexes->push_back(indexItem1);
   indexes->push_back(indexItem2);
   tMsg.lpVoid = (void *)indexes;
@@ -1106,14 +1105,14 @@ void CApplicationMessenger::PlayListPlayerRepeat(int playlist, int repeatState)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::PictureShow(string filename)
+void CApplicationMessenger::PictureShow(std::string filename)
 {
   ThreadMessage tMsg = {TMSG_PICTURE_SHOW};
   tMsg.strParam = filename;
   SendMessage(tMsg);
 }
 
-void CApplicationMessenger::PictureSlideShow(string pathname, bool addTBN /* = false */)
+void CApplicationMessenger::PictureSlideShow(std::string pathname, bool addTBN /* = false */)
 {
   unsigned int dwMessage = TMSG_PICTURE_SLIDESHOW;
   ThreadMessage tMsg = {dwMessage};
@@ -1240,7 +1239,7 @@ void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool wait
   SendMessage(tMsg, waitResult);
 }
 
-void CApplicationMessenger::ActivateWindow(int windowID, const vector<string> &params, bool swappingWindows, bool force  /* = false */)
+void CApplicationMessenger::ActivateWindow(int windowID, const std::vector<std::string> &params, bool swappingWindows, bool force  /* = false */)
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID};
   tMsg.param2 = (swappingWindows ? 0x01 : 0) | (force ? 0x02 : 0);
@@ -1279,9 +1278,9 @@ void CApplicationMessenger::SendText(const std::string &aTextString, bool closeK
   SendGUIMessage(msg, window->GetID());
 }
 
-vector<string> CApplicationMessenger::GetInfoLabels(const vector<string> &properties)
+std::vector<std::string> CApplicationMessenger::GetInfoLabels(const std::vector<std::string> &properties)
 {
-  vector<string> infoLabels;
+  std::vector<std::string> infoLabels;
 
   ThreadMessage tMsg = {TMSG_GUI_INFOLABEL};
   tMsg.params = properties;
@@ -1290,9 +1289,9 @@ vector<string> CApplicationMessenger::GetInfoLabels(const vector<string> &proper
   return infoLabels;
 }
 
-vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<string> &properties)
+std::vector<bool> CApplicationMessenger::GetInfoBooleans(const std::vector<std::string> &properties)
 {
-  vector<bool> infoLabels;
+  std::vector<bool> infoLabels;
 
   ThreadMessage tMsg = {TMSG_GUI_INFOBOOL};
   tMsg.params = properties;
@@ -1375,7 +1374,7 @@ void CApplicationMessenger::LoadProfile(unsigned int idx)
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::StartAndroidActivity(const vector<string> &params)
+void CApplicationMessenger::StartAndroidActivity(const std::vector<std::string> &params)
 {
   ThreadMessage tMsg = {TMSG_START_ANDROID_ACTIVITY};
   tMsg.params = params;
