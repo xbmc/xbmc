@@ -181,7 +181,7 @@ public:
   PlayBackRet PlayFile(const CFileItem& item, bool bRestart = false);
   void SaveFileState(bool bForeground = false);
   void UpdateFileState();
-  void LoadVideoSettings(const std::string &path);
+  void LoadVideoSettings(const CFileItem& item);
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();

@@ -3042,7 +3042,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
   // case 2: all other stacks
   else
   {
-    LoadVideoSettings(item.GetPath());
+    LoadVideoSettings(item);
     
     // see if we have the info in the database
     // TODO: If user changes the time speed (FPS via framerate conversion stuff)
@@ -3269,7 +3269,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   else
   {
     options.starttime = item.m_lStartOffset / 75.0;
-    LoadVideoSettings(item.GetPath());
+    LoadVideoSettings(item);
 
     if (item.IsVideo())
     {
@@ -3771,15 +3771,15 @@ void CApplication::UpdateFileState()
   }
 }
 
-void CApplication::LoadVideoSettings(const std::string &path)
+void CApplication::LoadVideoSettings(const CFileItem& item)
 {
   CVideoDatabase dbs;
   if (dbs.Open())
   {
-    CLog::Log(LOGDEBUG, "Loading settings for %s", path.c_str());
+    CLog::Log(LOGDEBUG, "Loading settings for %s", item.GetPath().c_str());
     
     // Load stored settings if they exist, otherwise use default
-    if (!dbs.GetVideoSettings(path, CMediaSettings::Get().GetCurrentVideoSettings()))
+    if (!dbs.GetVideoSettings(item, CMediaSettings::Get().GetCurrentVideoSettings()))
       CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
     
     dbs.Close();

@@ -567,7 +567,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     // check for custom stereomode setting in video settings
     CVideoSettings itemVideoSettings;
     m_videoDatabase->Open();
-    if (m_videoDatabase->GetVideoSettings(path, itemVideoSettings) && itemVideoSettings.m_StereoMode != RENDER_STEREO_MODE_OFF)
+    if (m_videoDatabase->GetVideoSettings(item, itemVideoSettings) && itemVideoSettings.m_StereoMode != RENDER_STEREO_MODE_OFF)
       stereoMode = CStereoscopicsManager::Get().ConvertGuiStereoModeToString( (RENDER_STEREO_MODE) itemVideoSettings.m_StereoMode );
     m_videoDatabase->Close();
 

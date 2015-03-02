@@ -3721,28 +3721,29 @@ void CVideoDatabase::GetTags(int media_id, const std::string &media_type, std::v
   }
 }
 
+bool CVideoDatabase::GetVideoSettings(const CFileItem &item, CVideoSettings &settings)
+{
+  return GetVideoSettings(GetFileId(item), settings);
+}
+
 /// \brief GetVideoSettings() obtains any saved video settings for the current file.
 /// \retval Returns true if the settings exist, false otherwise.
-bool CVideoDatabase::GetVideoSettings(const std::string &strFilenameAndPath, CVideoSettings &settings)
+bool CVideoDatabase::GetVideoSettings(const std::string &filePath, CVideoSettings &settings)
+{
+  return GetVideoSettings(GetFileId(filePath), settings);
+}
+
+bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
 {
   try
   {
-    // obtain the FileID (if it exists)
-#ifdef NEW_VIDEODB_METHODS
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-    std::string strPath, strFileName;
-    URIUtils::Split(strFilenameAndPath, strPath, strFileName);
-    std::string strSQL=PrepareSQL("select * from settings, files, path where settings.idFile=files.idFile and path.idPath=files.idPath and path.strPath='%s' and files.strFileName='%s'", strPath.c_str() , strFileName.c_str());
-#else
-    int idFile = GetFileId(strFilenameAndPath);
     if (idFile < 0) return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    // ok, now obtain the settings for this file
+
     std::string strSQL=PrepareSQL("select * from settings where settings.idFile = '%i'", idFile);
-#endif
     m_pDS->query( strSQL.c_str() );
+
     if (m_pDS->num_rows() > 0)
     { // get the video settings info
       settings.m_AudioDelay = m_pDS->fv("AudioDelay").get_asFloat();
