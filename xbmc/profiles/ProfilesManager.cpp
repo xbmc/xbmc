@@ -35,7 +35,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/ButtonTranslator.h"
-#include "input/MouseStat.h"
+#include "input/InputManager.h"
 #include "settings/Settings.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
@@ -262,7 +262,7 @@ bool CProfilesManager::LoadProfile(size_t index)
 
   CDatabaseManager::Get().Initialize();
 
-  g_Mouse.SetEnabled(CSettings::Get().GetBool("input.enablemouse"));
+  CInputManager::Get().SetMouseEnabled(CSettings::Get().GetBool("input.enablemouse"));
 
   g_infoManager.ResetCache();
   g_infoManager.ResetLibraryBools();

@@ -62,5 +62,3 @@ private:
 
   bool HandleRemoteEvent(CIrssMessage& message);
 };
-
-extern CRemoteControl g_RemoteControl;

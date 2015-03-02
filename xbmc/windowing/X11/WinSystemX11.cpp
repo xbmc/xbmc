@@ -46,7 +46,7 @@
 #endif
 
 #include "../WinEventsX11.h"
-#include "input/MouseStat.h"
+#include "input/InputManager.h"
 
 using namespace std;
 
@@ -993,7 +993,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 
   if (!m_mainWindow)
   {
-    g_Mouse.SetActive(false);
+    CInputManager::Get().SetMouseActive(false);
   }
 
   if (m_mainWindow && ((m_bFullScreen != fullscreen) || m_currentOutput.compare(output) != 0 || m_windowDirty))
@@ -1023,7 +1023,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       }
     }
 
-    g_Mouse.SetActive(false);
+    CInputManager::Get().SetMouseActive(false);
     OnLostDevice();
     DestroyWindow();
     m_windowDirty = true;

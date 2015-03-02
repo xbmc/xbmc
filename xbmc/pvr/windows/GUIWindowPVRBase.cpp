@@ -28,7 +28,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/StackDirectory.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "pvr/PVRManager.h"

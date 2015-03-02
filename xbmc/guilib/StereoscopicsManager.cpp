@@ -34,7 +34,7 @@
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "guilib/LocalizeStrings.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/ISettingCallback.h"

@@ -19,7 +19,7 @@
  */
 
 #include "GUIDialogFileStacking.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"

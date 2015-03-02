@@ -39,7 +39,7 @@
 #include "DVDFileInfo.h"
 
 #include "utils/LangCodeExpander.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 
 #include "utils/URIUtils.h"

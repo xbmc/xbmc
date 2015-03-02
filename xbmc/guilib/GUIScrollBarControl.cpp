@@ -19,7 +19,7 @@
  */
 
 #include "GUIScrollBarControl.h"
-#include "Key.h"
+#include "input/Key.h"
 #include "utils/StringUtils.h"
 
 #define MIN_NIB_SIZE 4.0f

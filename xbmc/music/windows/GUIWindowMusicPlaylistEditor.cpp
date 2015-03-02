@@ -35,7 +35,7 @@
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "GUIUserMessages.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "ContextMenuManager.h"
 

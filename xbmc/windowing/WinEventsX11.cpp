@@ -542,7 +542,7 @@ bool CWinEventsX11Imp::MessagePump()
       // lose mouse coverage
       case LeaveNotify:
       {
-        g_Mouse.SetActive(false);
+        CInputManager::Get().SetMouseActive(false);
         break;
       }
 
@@ -616,7 +616,7 @@ bool CWinEventsX11Imp::MessagePump()
       case SDL_JOYHATMOTION:
       case SDL_JOYDEVICEADDED:
       case SDL_JOYDEVICEREMOVED:
-        CInputManager::GetInstance().UpdateJoystick(event);
+        CInputManager::Get().UpdateJoystick(event);
         ret = true;
         break;
 

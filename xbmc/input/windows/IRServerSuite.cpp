@@ -29,8 +29,6 @@
 
 #define IRSS_PORT 24000
 
-CRemoteControl g_RemoteControl;
-
 CRemoteControl::CRemoteControl() : CThread("RemoteControl")
 {
   m_socket = INVALID_SOCKET;
@@ -75,7 +73,8 @@ void CRemoteControl::Reset()
 
 void CRemoteControl::Initialize()
 {
-  if (m_isConnecting || m_bInitialized) return;
+  if (m_isConnecting || m_bInitialized || IsRunning())
+    return;
   //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
 }

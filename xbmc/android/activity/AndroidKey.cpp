@@ -21,7 +21,7 @@
 #include "AndroidKey.h"
 #include "AndroidExtra.h"
 #include "XBMCApp.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "windowing/WinEvents.h"
 #include "android/jni/KeyCharacterMap.h"
 

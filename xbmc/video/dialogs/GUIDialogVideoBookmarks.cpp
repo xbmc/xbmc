@@ -39,7 +39,7 @@
 #include "guilib/Texture.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/Crc32.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

@@ -26,7 +26,8 @@
 #include "GUIWindowManager.h"
 #include "GUIControlProfiler.h"
 #include "input/MouseStat.h"
-#include "Key.h"
+#include "input/InputManager.h"
+#include "input/Key.h"
 
 using namespace std;
 
@@ -547,8 +548,8 @@ EVENT_RESULT CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent 
 // override this function to implement custom mouse behaviour
 bool CGUIControl::OnMouseOver(const CPoint &point)
 {
-  if (g_Mouse.GetState() != MOUSE_STATE_DRAG)
-    g_Mouse.SetState(MOUSE_STATE_FOCUS);
+  if (CInputManager::Get().GetMouseState() != MOUSE_STATE_DRAG)
+    CInputManager::Get().SetMouseState(MOUSE_STATE_FOCUS);
   if (!CanFocus()) return false;
   if (!HasFocus())
   {

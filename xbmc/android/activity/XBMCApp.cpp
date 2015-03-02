@@ -33,7 +33,7 @@
 
 #include "input/MouseStat.h"
 #include "input/XBMC_keysym.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "windowing/XBMC_events.h"
 #include <android/log.h>
 

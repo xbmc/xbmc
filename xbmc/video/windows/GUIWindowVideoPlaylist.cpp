@@ -32,7 +32,7 @@
 #include "filesystem/FavouritesDirectory.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"

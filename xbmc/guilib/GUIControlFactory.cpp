@@ -55,7 +55,7 @@
 #include "GUIListLabel.h"
 #include "GUIListGroup.h"
 #include "GUIInfoManager.h"
-#include "Key.h"
+#include "input/Key.h"
 #include "addons/Skin.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"

@@ -25,7 +25,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "cores/IPlayer.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUISliderControl.h"
 #include "dialogs/GUIDialogKaiToast.h"

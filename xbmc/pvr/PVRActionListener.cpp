@@ -22,7 +22,7 @@
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"

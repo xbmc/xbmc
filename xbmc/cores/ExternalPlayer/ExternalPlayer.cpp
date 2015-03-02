@@ -39,15 +39,10 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "input/InputManager.h"
 #if defined(TARGET_WINDOWS)
   #include "utils/CharsetConverter.h"
   #include "Windows.h"
-  #ifdef HAS_IRSERVERSUITE
-    #include "input/windows/IRServerSuite.h"
-  #endif
-#endif
-#if defined(HAS_LIRC)
-  #include "input/linux/LIRC.h"
 #endif
 #if defined(TARGET_ANDROID)
   #include "android/activity/XBMCApp.h"
@@ -466,18 +461,14 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
-#ifdef HAS_LIRC
-  bool remoteused = g_RemoteControl.IsInUse();
-  g_RemoteControl.Disconnect();
-  g_RemoteControl.setUsed(false);
-#endif
+
+  bool remoteUsed = CInputManager::Get().IsRemoteControlEnabled();
+  CInputManager::Get().DisableRemoteControl();
 
   int ret = system(strSwitches);
 
-#ifdef HAS_LIRC
-  g_RemoteControl.setUsed(remoteused);
-  g_RemoteControl.Initialize();
-#endif
+  if (remoteUsed)
+    CInputManager::Get().EnableRemoteControl();
 
   if (ret != 0)
   {

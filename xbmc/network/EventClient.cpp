@@ -34,7 +34,7 @@
 #include "utils/TimeUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GraphicContext.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 

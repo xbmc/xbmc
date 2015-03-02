@@ -37,7 +37,7 @@
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/GUIDialog.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/Resolution.h"
 #include "GUIInfoManager.h"

@@ -21,7 +21,7 @@
 #include "GUISelectButtonControl.h"
 #include "GUIWindowManager.h"
 #include "utils/TimeUtils.h"
-#include "Key.h"
+#include "input/Key.h"
 
 CGUISelectButtonControl::CGUISelectButtonControl(int parentID, int controlID,
     float posX, float posY,

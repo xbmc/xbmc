@@ -35,7 +35,7 @@
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "storage/MediaManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "GUIDialogYesNo.h"
 #include "addons/AddonManager.h"
 #include "FileItem.h"

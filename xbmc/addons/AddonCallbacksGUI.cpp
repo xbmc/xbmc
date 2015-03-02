@@ -30,7 +30,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/TextureManager.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIRadioButtonControl.h"

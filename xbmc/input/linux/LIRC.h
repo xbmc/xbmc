@@ -65,6 +65,4 @@ private:
   int         m_nrSending;
 };
 
-extern CRemoteControl g_RemoteControl;
-
 #endif

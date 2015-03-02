@@ -20,8 +20,9 @@
 
 #include "GUIDialogMusicOverlay.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "input/MouseStat.h"
+#include "input/InputManager.h"
 
 #define CONTROL_LOGO_PIC    1
 
@@ -58,7 +59,7 @@ EVENT_RESULT CGUIDialogMusicOverlay::OnMouseEvent(const CPoint &point, const CMo
   if (pControl && pControl->HitTest(point))
   {
     // send highlight message
-    g_Mouse.SetState(MOUSE_STATE_FOCUS);
+    CInputManager::Get().SetMouseState(MOUSE_STATE_FOCUS);
     if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
     { // send mouse message
       CGUIMessage message(GUI_MSG_FULLSCREEN, CONTROL_LOGO_PIC, GetID());
