@@ -23,7 +23,7 @@
 
 #include "addons/include/xbmc_vis_dll.h"
 #include <stdio.h>
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #include <GL/glew.h>
 #else
 #ifdef _WIN32
@@ -32,14 +32,14 @@
 #endif
 
 char g_visName[512];
-#ifndef HAS_SDL_OPENGL
+#ifndef HAS_GL
 LPDIRECT3DDEVICE9 g_device;
 #else
 void* g_device;
 #endif
 float g_fWaveform[2][512];
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 typedef struct {
   int X;
   int Y;
@@ -59,7 +59,7 @@ struct Vertex_t
   D3DCOLOR  col;
 };
 
-#ifndef HAS_SDL_OPENGL
+#ifndef HAS_GL
 #define VERTEX_FORMAT     (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 #endif
 
@@ -73,7 +73,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   VIS_PROPS* visProps = (VIS_PROPS*)props;
 
-#ifndef HAS_SDL_OPENGL  
+#ifndef HAS_GL
   g_device = (LPDIRECT3DDEVICE9)visProps->device;
 #else
   g_device = visProps->device;
@@ -122,13 +122,13 @@ extern "C" void Render()
 {
   Vertex_t  verts[512];
 
-#ifndef HAS_SDL_OPENGL
+#ifndef HAS_GL
   g_device->SetFVF(VERTEX_FORMAT);
   g_device->SetPixelShader(NULL);
 #endif
 
   // Left channel
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   GLenum errcode;
   glColor3f(1.0, 1.0, 1.0);
   glDisable(GL_BLEND);
@@ -142,22 +142,22 @@ extern "C" void Render()
     verts[i].x = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
     verts[i].y = g_viewport.Y + g_viewport.Height * 0.33f + (g_fWaveform[0][i] * g_viewport.Height * 0.15f);
     verts[i].z = 1.0;
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
     glVertex2f(verts[i].x, verts[i].y);
 #endif
   }
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   glEnd();
   if ((errcode=glGetError())!=GL_NO_ERROR) {
     printf("Houston, we have a GL problem: %s\n", gluErrorString(errcode));
   }
-#elif !defined(HAS_SDL_OPENGL)
+#elif !defined(HAS_GL)
   g_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 255, verts, sizeof(Vertex_t));
 #endif
 
   // Right channel
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   glBegin(GL_LINE_STRIP);
 #endif
   for (int i = 0; i < 256; i++)
@@ -166,19 +166,19 @@ extern "C" void Render()
     verts[i].x = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
     verts[i].y = g_viewport.Y + g_viewport.Height * 0.66f + (g_fWaveform[1][i] * g_viewport.Height * 0.15f);
     verts[i].z = 1.0;
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
     glVertex2f(verts[i].x, verts[i].y);
 #endif
   }
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   glEnd();
   glEnable(GL_BLEND);
   glPopMatrix();
   if ((errcode=glGetError())!=GL_NO_ERROR) {
     printf("Houston, we have a GL problem: %s\n", gluErrorString(errcode));
   }
-#elif !defined(HAS_SDL_OPENGL)
+#elif !defined(HAS_GL)
   g_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 255, verts, sizeof(Vertex_t));
 #endif
 

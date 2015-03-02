@@ -144,7 +144,6 @@
   #if defined(TARGET_DARWIN_OSX)
     #define HAS_GL
     #define HAS_SDL
-    #define HAS_SDL_OPENGL
     #define HAS_SDL_WIN_EVENTS
   #endif
   #define HAS_ZEROCONF
@@ -170,9 +169,6 @@
 #endif
 #ifdef HAVE_SDL
 #define HAS_SDL
-#ifndef HAS_SDL_OPENGL
-#define HAS_SDL_OPENGL
-#endif
 #ifndef HAVE_X11
 #define HAS_SDL_WIN_EVENTS
 #endif

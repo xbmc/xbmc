@@ -141,8 +141,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
           tograb = "@library_android";
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
           tograb = "@library_linux";
-#elif defined(TARGET_WINDOWS) && defined(HAS_SDL_OPENGL)
-          tograb = "@library_wingl";
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
           tograb = "@library_windx";
 #elif defined(TARGET_DARWIN)
@@ -794,8 +792,6 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
       if (*platform == "android")
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
       if (*platform == "linux")
-#elif defined(TARGET_WINDOWS) && defined(HAS_SDL_OPENGL)
-      if (*platform == "wingl")
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
       if (*platform == "windx")
 #elif defined(TARGET_DARWIN_OSX)
