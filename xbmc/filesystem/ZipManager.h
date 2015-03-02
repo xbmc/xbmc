@@ -23,6 +23,7 @@
 
 // See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
 #define ZIP_LOCAL_HEADER 0x04034b50
+#define ZIP_DATA_RECORD_HEADER 0x08074b50
 #define ZIP_CENTRAL_HEADER 0x02014b50
 #define ZIP_END_CENTRAL_HEADER 0x06054b50
 #define LHDR_SIZE 30

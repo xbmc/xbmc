@@ -82,7 +82,7 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   }
 
   unsigned int hdr;
-  if (mFile.Read(&hdr, 4)!=4 || Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
+  if (mFile.Read(&hdr, 4)!=4 || (Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER && Endian_SwapLE32(hdr) != ZIP_DATA_RECORD_HEADER))
   {
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
     mFile.Close();
