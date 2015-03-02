@@ -48,6 +48,11 @@
 #include "utils/Variant.h"
 #include "Util.h"
 #include "cores/IPlayer.h"
+#include "video/VideoThumbLoader.h"
+#include "filesystem/File.h"
+#include "TextureCache.h"
+#include "ApplicationMessenger.h"
+#include "settings/Settings.h"
 
 using namespace std;
 
@@ -61,10 +66,12 @@ using namespace std;
 #define CONTROL_THUMBS                11
 
 CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
-    : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml")
+    : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml"),
+    CJobQueue(false, 1, CJob::PRIORITY_NORMAL)
 {
   m_vecItems = new CFileItemList;
-  m_loadType = KEEP_IN_MEMORY;
+  m_loadType = LOAD_EVERY_TIME;
+  m_jobsStarted = 0;
 }
 
 CGUIDialogVideoBookmarks::~CGUIDialogVideoBookmarks()
@@ -134,7 +141,17 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_REFRESH_LIST:
     {
-      OnRefreshList();
+      switch (message.GetParam1())
+      {
+      case 0:
+        OnRefreshList();
+        break;
+      case 1:
+        UpdateItem(message.GetParam2());
+        break;
+      default:
+        break;
+      }
     }
     break;
   }
@@ -159,7 +176,7 @@ bool CGUIDialogVideoBookmarks::OnAction(const CAction &action)
 
 void CGUIDialogVideoBookmarks::OnPopupMenu(int item)
 {
-  if (item < 0 || item >= m_vecItems->Size())
+  if (item < 0 || item >= (int) m_bookmarks.size())
     return;
   
     // highlight the item
@@ -199,25 +216,41 @@ void CGUIDialogVideoBookmarks::Delete(int item)
   Update();
 }
 
+void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
+{
+  CSingleLock lock(m_refreshSection);
+  int itemPos = ((chapterIdx - 1) + m_chapterOffset);
+  if (itemPos < m_vecItems->Size())
+  {
+    std::string time = StringUtils::Format("chapter://%s/%i", m_filePath.c_str(), chapterIdx);
+    std::string cachefile = CTextureCache::Get().GetCachedPath(CTextureCache::Get().GetCacheFile(time) + ".jpg");
+    if (XFILE::CFile::Exists(cachefile))
+    {
+      (*m_vecItems)[itemPos]->SetArt("thumb", cachefile);
+    }
+  }
+}
+
 void CGUIDialogVideoBookmarks::OnRefreshList()
 {
   m_bookmarks.clear();
   CBookmark resumemark;
   
     // open the d/b and retrieve the bookmarks for the current movie
-  std::string path = g_application.CurrentFile();
+  m_filePath = g_application.CurrentFile();
   if (g_application.CurrentFileItem().HasProperty("original_listitem_url") && 
      !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
-    path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+     m_filePath = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.GetBookMarksForFile(path, m_bookmarks);
-  videoDatabase.GetBookMarksForFile(path, m_bookmarks, CBookmark::EPISODE, true);
+  videoDatabase.GetBookMarksForFile(m_filePath, m_bookmarks);
+  videoDatabase.GetBookMarksForFile(m_filePath, m_bookmarks, CBookmark::EPISODE, true);
   /* push in the resume mark first */
-  if( videoDatabase.GetResumeBookMark(path, resumemark) )
+  if (videoDatabase.GetResumeBookMark(m_filePath, resumemark))
     m_bookmarks.push_back(resumemark);
   
   videoDatabase.Close();
+  CSingleLock lock(m_refreshSection);
   m_vecItems->Clear();
     // cycle through each stored bookmark and add it to our list control
   for (unsigned int i = 0; i < m_bookmarks.size(); ++i)
@@ -233,6 +266,34 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     
     CFileItemPtr item(new CFileItem(bookmarkTime));
     item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
+    m_vecItems->Add(item);
+  }
+  // add chapters if around
+  m_chapterOffset = m_vecItems->Size();
+  for (int i=1;i<=g_application.m_pPlayer->GetChapterCount();++i)
+  {
+    std::string chapterName;
+    g_application.m_pPlayer->GetChapterName(chapterName, i);
+    if (chapterName.empty())
+      chapterName = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i);
+    int64_t pos = g_application.m_pPlayer->GetChapterPos(i);
+    std::string time = 
+      StringUtils::SecondsToTimeString((long) pos, TIME_FORMAT_HH_MM_SS);
+    std::string name = StringUtils::Format("%s (%s)",
+                                           chapterName.c_str(), time.c_str());
+    CFileItemPtr item(new CFileItem(name));
+    time = StringUtils::Format("chapter://%s/%i", m_filePath.c_str(), i);
+    std::string cachefile = CTextureCache::Get().GetCachedPath(CTextureCache::Get().GetCacheFile(time)+".jpg");
+    if (XFILE::CFile::Exists(cachefile))
+      item->SetArt("thumb", cachefile);
+    else if (i > m_jobsStarted && CSettings::Get().GetBool("myvideos.extractchapterthumbs"))
+    {
+      CFileItem item(m_filePath, false);
+      CJob* job = new CThumbExtractor(item, m_filePath, true, time, pos * 1000, false);
+      AddJob(job);
+      m_mapJobsChapter[job] = i;
+      m_jobsStarted++;
+    }
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);
@@ -284,11 +345,16 @@ void CGUIDialogVideoBookmarks::Clear()
 
 void CGUIDialogVideoBookmarks::GotoBookmark(int item)
 {
-  if (item < 0 || item >= (int)m_bookmarks.size()) return;
+  if (item < 0 || item >= (int)m_bookmarks.size()+g_application.m_pPlayer->GetChapterCount()) return;
   if (g_application.m_pPlayer->HasPlayer())
   {
-    g_application.m_pPlayer->SetPlayerState(m_bookmarks[item].playerState);
-    g_application.SeekTime((double)m_bookmarks[item].timeInSeconds);
+    if (item < (int) m_bookmarks.size())
+    {
+      g_application.m_pPlayer->SetPlayerState(m_bookmarks[item].playerState);
+      g_application.SeekTime((double)m_bookmarks[item].timeInSeconds);
+    }
+    else
+      g_application.m_pPlayer->SeekChapter(item-m_bookmarks.size()+1);
   }
 }
 
@@ -387,10 +453,17 @@ void CGUIDialogVideoBookmarks::OnWindowLoaded()
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(GetControl(CONTROL_THUMBS));
+  m_jobsStarted = 0;
+  m_mapJobsChapter.clear();
+  m_vecItems->Clear();
 }
 
 void CGUIDialogVideoBookmarks::OnWindowUnload()
 {
+  //stop running thumb extraction jobs
+  CancelJobs();
+  m_mapJobsChapter.clear();
+  m_vecItems->Clear();
   CGUIDialog::OnWindowUnload();
   m_viewControl.Reset();
 }
@@ -474,4 +547,19 @@ bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
   return bReturn;
 }
 
-
+void CGUIDialogVideoBookmarks::OnJobComplete(unsigned int jobID,
+                                             bool success, CJob* job)
+{
+  if (success && IsActive())
+  {
+    MAPJOBSCHAPS::iterator iter = m_mapJobsChapter.find(job);
+    if (iter != m_mapJobsChapter.end())
+    {
+      unsigned int chapterIdx = (*iter).second;
+      CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 1, chapterIdx);
+      CApplicationMessenger::Get().SendGUIMessage(m);
+      m_mapJobsChapter.erase(iter);
+    }
+  }
+  CJobQueue::OnJobComplete(jobID, success, job);
+}

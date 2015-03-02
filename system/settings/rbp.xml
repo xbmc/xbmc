@@ -16,6 +16,13 @@
         </setting>
       </group>
     </category>
+    <category id="myvideos">
+      <group id="1">
+        <setting id="myvideos.extractchapterthumbs">
+          <default>false</default>
+        </setting>
+      </group>
+    </category>
   </section>
 
   <section id="system">

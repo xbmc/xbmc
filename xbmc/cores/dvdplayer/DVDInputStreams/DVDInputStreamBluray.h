@@ -96,7 +96,8 @@ public:
 
   int GetChapter();
   int GetChapterCount();
-  void GetChapterName(std::string& name) {};
+  void GetChapterName(std::string& name, int ch=-1) {};
+  int64_t GetChapterPos(int ch);
   bool SeekChapter(int ch);
 
   int GetTotalTime();
