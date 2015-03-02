@@ -679,7 +679,21 @@ namespace VIDEO
 
     CVideoInfoTag showInfo;
     m_database.GetTvShowInfo("", showInfo, showID);
-    return OnProcessSeriesFolder(files, scraper, useLocal, showInfo, progress);
+    bool updatedSeasons = false;
+    INFO_RET ret = OnProcessSeriesFolder(files, scraper, useLocal, showInfo, updatedSeasons, progress);
+
+    if (ret == INFO_ADDED && updatedSeasons)
+    {
+      map<int, map<string, string> > seasonArt;
+      m_database.GetTvShowSeasonArt(showID, seasonArt);
+      GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal);
+      for (map<int, map<string, string> >::const_iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
+      {
+        int seasonID = m_database.AddSeason(showID, i->first);
+        m_database.SetArtForItem(seasonID, MediaTypeSeason, i->second);
+      }
+    }
+    return ret;
   }
 
   bool CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList)
@@ -1164,15 +1178,6 @@ namespace VIDEO
     {
       if (pItem->m_bIsFolder)
       {
-        map<int, map<string, string> > seasonArt;
-        if (!libraryImport)
-        { // get and cache season thumbs
-          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal);
-          for (map<int, map<string, string> >::iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
-            for (map<string, string>::iterator j = i->second.begin(); j != i->second.end(); ++j)
-              CTextureCache::Get().BackgroundCacheImage(j->second);
-        }
-
         /*
          multipaths are not stored in the database, so in the case we have one,
          we split the paths, and compute the parent paths in each case.
@@ -1183,6 +1188,11 @@ namespace VIDEO
         vector< pair<string, string> > paths;
         for (vector<string>::const_iterator i = multipath.begin(); i != multipath.end(); ++i)
           paths.push_back(make_pair(*i, URIUtils::GetParentPath(*i)));
+
+        map<int, map<string, string> > seasonArt;
+
+        if (!libraryImport)
+          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal);
 
         lResult = m_database.SetDetailsForTvShow(paths, movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
@@ -1378,7 +1388,7 @@ namespace VIDEO
     return fanart;
   }
 
-  INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(EPISODELIST& files, const ADDON::ScraperPtr &scraper, bool useLocal, const CVideoInfoTag& showInfo, CGUIDialogProgress* pDlgProgress /* = NULL */)
+  INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(EPISODELIST& files, const ADDON::ScraperPtr &scraper, bool useLocal, const CVideoInfoTag& showInfo, bool& updatedSeasons, CGUIDialogProgress* pDlgProgress /* = NULL */)
   {
     if (pDlgProgress)
     {
@@ -1390,7 +1400,12 @@ namespace VIDEO
     }
 
     EPISODELIST episodes;
+    updatedSeasons = false;
     bool hasEpisodeGuide = false;
+
+    // grab currently known seasons
+    map<int, int> seasons;
+    m_database.GetTvShowSeasons(showInfo.m_iDbId, seasons);
 
     int iMax = files.size();
     int iCurr = 1;
@@ -1437,6 +1452,9 @@ namespace VIDEO
         }
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, true, &showInfo) < 0)
           return INFO_ERROR;
+
+        if (seasons.find(item.GetVideoInfoTag()->m_iSeason) == seasons.end())
+          updatedSeasons = true;
         continue;
       }
 
@@ -1566,6 +1584,9 @@ namespace VIDEO
           
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
           return INFO_ERROR;
+
+        if (seasons.find(item.GetVideoInfoTag()->m_iSeason) == seasons.end())
+          updatedSeasons = true;
       }
       else
       {
@@ -1844,6 +1865,11 @@ namespace VIDEO
     }
     for (int season = -1; season <= maxSeasons; season++)
     {
+      // skip if we already have some art
+      map<int, map<string, string> >::const_iterator it = seasonArt.find(season);
+      if (it != seasonArt.end() && !it->second.empty())
+        continue;
+
       map<string, string> art;
       if (useLocal)
       {
@@ -1897,7 +1923,7 @@ namespace VIDEO
           art.insert(make_pair(artTypes.front(), image));
       }
 
-      seasonArt.insert(make_pair(season, art));
+      seasonArt[season] = art;
     }
   }
 
