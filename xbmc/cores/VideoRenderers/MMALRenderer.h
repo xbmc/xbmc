@@ -20,8 +20,6 @@
  *
  */
 
-#ifdef HAS_MMAL
-
 #include "guilib/GraphicContext.h"
 #include "RenderFlags.h"
 #include "RenderFormats.h"
@@ -124,7 +122,3 @@ protected:
   void ReleaseBuffers();
   void UnInitMMAL();
 };
-
-#else
-#include "LinuxRenderer.h"
-#endif
