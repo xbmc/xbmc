@@ -452,6 +452,7 @@ void MysqlDatabase::commit_transaction() {
   if (active)
   {
     mysql_commit(conn);
+    mysql_autocommit(conn, true);
     CLog::Log(LOGDEBUG,"Mysql commit transaction");
     _in_transaction = false;
   }
@@ -461,6 +462,7 @@ void MysqlDatabase::rollback_transaction() {
   if (active)
   {
     mysql_rollback(conn);
+    mysql_autocommit(conn, true);
     CLog::Log(LOGDEBUG,"Mysql rollback transaction");
     _in_transaction = false;
   }
