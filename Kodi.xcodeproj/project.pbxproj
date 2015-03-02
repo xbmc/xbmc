@@ -212,6 +212,15 @@
 		395C29F61A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29F51A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp */; };
 		395C29F71A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29F51A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp */; };
 		395C29F81A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29F51A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp */; };
+		395C29FB1A9CD20C00EBC7AD /* ContextMenuManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29F91A9CD20C00EBC7AD /* ContextMenuManager.cpp */; };
+		395C29FC1A9CD20C00EBC7AD /* ContextMenuManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29F91A9CD20C00EBC7AD /* ContextMenuManager.cpp */; };
+		395C29FD1A9CD20C00EBC7AD /* ContextMenuManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29F91A9CD20C00EBC7AD /* ContextMenuManager.cpp */; };
+		395C2A041A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A021A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp */; };
+		395C2A051A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A021A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp */; };
+		395C2A061A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A021A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp */; };
+		395C2A1F1A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
+		395C2A201A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
+		395C2A211A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
 		395F6DDD1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDE1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDF1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
@@ -3681,6 +3690,12 @@
 		395C29EA1A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPPythonWsgiInvoker.cpp; sourceTree = "<group>"; };
 		395C29EB1A98A16300EBC7AD /* HTTPPythonWsgiInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPPythonWsgiInvoker.h; sourceTree = "<group>"; };
 		395C29F51A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonModuleXbmcwsgi.cpp; sourceTree = "<group>"; };
+		395C29F91A9CD20C00EBC7AD /* ContextMenuManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenuManager.cpp; sourceTree = "<group>"; };
+		395C29FA1A9CD20C00EBC7AD /* ContextMenuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenuManager.h; sourceTree = "<group>"; };
+		395C2A021A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ContextItemAddonInvoker.cpp; path = python/ContextItemAddonInvoker.cpp; sourceTree = "<group>"; };
+		395C2A031A9CD25100EBC7AD /* ContextItemAddonInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContextItemAddonInvoker.h; path = python/ContextItemAddonInvoker.h; sourceTree = "<group>"; };
+		395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextItemAddon.cpp; sourceTree = "<group>"; };
+		395C2A1E1A9F96A700EBC7AD /* ContextItemAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextItemAddon.h; sourceTree = "<group>"; };
 		395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSimpleMenu.cpp; sourceTree = "<group>"; };
 		395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSimpleMenu.h; sourceTree = "<group>"; };
 		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
@@ -6100,6 +6115,8 @@
 				18B700E013A6A5750009C1AF /* AddonVersion.h */,
 				7CF34D9D1930264A00D543C5 /* AudioEncoder.cpp */,
 				7CF34D9E1930264A00D543C5 /* AudioEncoder.h */,
+				395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */,
+				395C2A1E1A9F96A700EBC7AD /* ContextItemAddon.h */,
 				18B49FF61152BFA5001AF8A6 /* DllAddon.h */,
 				18B7C38612942090009E7A26 /* GUIDialogAddonInfo.cpp */,
 				18B7C38712942090009E7A26 /* GUIDialogAddonInfo.h */,
@@ -7840,6 +7857,8 @@
 				DFD882F517DD1A5B001516FE /* AddonPythonInvoker.h */,
 				F502BFDA160F34B900C96C76 /* CallbackHandler.cpp */,
 				F502BFDB160F34B900C96C76 /* CallbackHandler.h */,
+				395C2A021A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp */,
+				395C2A031A9CD25100EBC7AD /* ContextItemAddonInvoker.h */,
 				F502BFE4160F34DC00C96C76 /* LanguageHook.cpp */,
 				F502BFE5160F34DC00C96C76 /* LanguageHook.h */,
 				DFB02DE816629DBA00F37752 /* PyContext.cpp */,
@@ -8360,6 +8379,8 @@
 				E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */,
 				E38E14730D25F9F900618676 /* BackgroundInfoLoader.h */,
 				F5B413131065900C0035D105 /* config.h */,
+				395C29F91A9CD20C00EBC7AD /* ContextMenuManager.cpp */,
+				395C29FA1A9CD20C00EBC7AD /* ContextMenuManager.h */,
 				E38E167E0D25F9FA00618676 /* CueDocument.cpp */,
 				E38E167F0D25F9FA00618676 /* CueDocument.h */,
 				7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */,
@@ -10542,6 +10563,7 @@
 				E38E20730D25F9FD00618676 /* VideoDatabaseDirectory.cpp in Sources */,
 				E38E20740D25F9FD00618676 /* VirtualDirectory.cpp in Sources */,
 				E38E20770D25F9FD00618676 /* ZipDirectory.cpp in Sources */,
+				395C2A041A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */,
 				E38E20780D25F9FD00618676 /* ZipManager.cpp in Sources */,
 				E38E207B0D25F9FD00618676 /* GUIDialogBoxBase.cpp in Sources */,
 				E38E207C0D25F9FD00618676 /* GUIDialogBusy.cpp in Sources */,
@@ -11330,6 +11352,7 @@
 				7C1409A9184015C9009F9411 /* InfoExpression.cpp in Sources */,
 				AE32174218313ADF0003FAFC /* XSLTUtils.cpp in Sources */,
 				7C15DCBC1892481400FCE564 /* InfoBool.cpp in Sources */,
+				395C2A1F1A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */,
 				F5CC228B1814F7E9006B5E91 /* AESinkDARWINOSX.cpp in Sources */,
 				F5CC22EB1814FF3B006B5E91 /* ActiveAE.cpp in Sources */,
 				F5CC22EC1814FF3B006B5E91 /* ActiveAEBuffer.cpp in Sources */,
@@ -11419,6 +11442,7 @@
 				7CCDA7FA192756250074CF51 /* NptQueue.cpp in Sources */,
 				7CCDA803192756250074CF51 /* NptResults.cpp in Sources */,
 				7CCDA806192756250074CF51 /* NptRingBuffer.cpp in Sources */,
+				395C29FB1A9CD20C00EBC7AD /* ContextMenuManager.cpp in Sources */,
 				7CCDA80F192756250074CF51 /* NptSimpleMessageQueue.cpp in Sources */,
 				7CCDA818192756250074CF51 /* NptSockets.cpp in Sources */,
 				7CCDA821192756250074CF51 /* NptStreams.cpp in Sources */,
@@ -11495,6 +11519,7 @@
 				DFF0F10E17528350002DA3A4 /* savepos.cpp in Sources */,
 				DFF0F10F17528350002DA3A4 /* scantree.cpp in Sources */,
 				DFF0F11017528350002DA3A4 /* sha1.cpp in Sources */,
+				395C29FD1A9CD20C00EBC7AD /* ContextMenuManager.cpp in Sources */,
 				DFF0F11117528350002DA3A4 /* strfn.cpp in Sources */,
 				DFF0F11217528350002DA3A4 /* strlist.cpp in Sources */,
 				DFF0F11317528350002DA3A4 /* system.cpp in Sources */,
@@ -11869,6 +11894,7 @@
 				DFF0F29217528350002DA3A4 /* GUIKeyboardFactory.cpp in Sources */,
 				DFF0F29317528350002DA3A4 /* GUILabel.cpp in Sources */,
 				DFF0F29417528350002DA3A4 /* GUILabelControl.cpp in Sources */,
+				395C2A061A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */,
 				DFF0F29517528350002DA3A4 /* GUIListContainer.cpp in Sources */,
 				DFF0F29617528350002DA3A4 /* GUIListGroup.cpp in Sources */,
 				DFF0F29717528350002DA3A4 /* GUIListItem.cpp in Sources */,
@@ -12017,6 +12043,7 @@
 				DFF0F32417528350002DA3A4 /* HTTPVfsHandler.cpp in Sources */,
 				DFF0F32517528350002DA3A4 /* HTTPWebinterfaceAddonsHandler.cpp in Sources */,
 				DFF0F32617528350002DA3A4 /* HTTPWebinterfaceHandler.cpp in Sources */,
+				395C2A211A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */,
 				DFF0F32717528350002DA3A4 /* IHTTPRequestHandler.cpp in Sources */,
 				DFF0F32817528350002DA3A4 /* NetworkLinux.cpp in Sources */,
 				DFF0F32917528350002DA3A4 /* ZeroconfBrowserOSX.cpp in Sources */,
@@ -12695,6 +12722,7 @@
 				E4991206174E5D4500741B6D /* Edl.cpp in Sources */,
 				E4991207174E5D4A00741B6D /* ExternalPlayer.cpp in Sources */,
 				E4991209174E5D5A00741B6D /* ASAPCodec.cpp in Sources */,
+				395C29FC1A9CD20C00EBC7AD /* ContextMenuManager.cpp in Sources */,
 				E499120A174E5D5A00741B6D /* AudioDecoder.cpp in Sources */,
 				E499120B174E5D5A00741B6D /* CodecFactory.cpp in Sources */,
 				E499120C174E5D5A00741B6D /* DVDPlayerCodec.cpp in Sources */,
@@ -12819,6 +12847,7 @@
 				E4991283174E5D9900741B6D /* DirectoryNodeAlbumRecentlyPlayedSong.cpp in Sources */,
 				E4991284174E5D9900741B6D /* DirectoryNodeAlbumTop100.cpp in Sources */,
 				E4991285174E5D9900741B6D /* DirectoryNodeAlbumTop100Song.cpp in Sources */,
+				395C2A051A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */,
 				E4991286174E5D9900741B6D /* DirectoryNodeArtist.cpp in Sources */,
 				E4991287174E5D9900741B6D /* DirectoryNodeGrouped.cpp in Sources */,
 				E4991288174E5D9900741B6D /* DirectoryNodeOverview.cpp in Sources */,
@@ -12892,6 +12921,7 @@
 				E49912C9174E5DA000741B6D /* DirectoryNodeRecentlyAddedMusicVideos.cpp in Sources */,
 				E49912CA174E5DA000741B6D /* DirectoryNodeRoot.cpp in Sources */,
 				E49912CB174E5DA000741B6D /* DirectoryNodeSeasons.cpp in Sources */,
+				395C2A201A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */,
 				E49912CC174E5DA000741B6D /* DirectoryNodeTitleMovies.cpp in Sources */,
 				E49912CD174E5DA000741B6D /* DirectoryNodeTitleMusicVideos.cpp in Sources */,
 				E49912CE174E5DA000741B6D /* DirectoryNodeTitleTvShows.cpp in Sources */,

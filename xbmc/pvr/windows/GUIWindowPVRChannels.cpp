@@ -20,6 +20,7 @@
 
 #include "GUIWindowPVRChannels.h"
 
+#include "ContextMenuManager.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -86,6 +87,8 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
     
   buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
+
+  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
 }
 
 std::string CGUIWindowPVRChannels::GetDirectoryPath(void)

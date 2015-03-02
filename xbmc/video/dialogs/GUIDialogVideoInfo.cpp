@@ -46,6 +46,7 @@
 #include "settings/Settings.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "ContextMenuManager.h"
 #include "GUIUserMessages.h"
 #include "TextureCache.h"
 #include "music/MusicDatabase.h"
@@ -1012,6 +1013,8 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
 
   buttons.Add(CONTEXT_BUTTON_DELETE, 646);
 
+  CContextMenuManager::Get().AddVisibleItems(item, buttons, CONTEXT_MENU_GROUP_MANAGE);
+
   bool result = false;
   int button = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
   if (button >= 0)
@@ -1074,7 +1077,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
         break;
 
       default:
-        result = false;
+        result = CContextMenuManager::Get().Execute(button, item);
         break;
     }
   }

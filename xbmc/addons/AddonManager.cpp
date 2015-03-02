@@ -47,6 +47,7 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
+#include "ContextItemAddon.h"
 #include "Util.h"
 #include "addons/Webinterface.h"
 
@@ -173,6 +174,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CAddonLibrary(props));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(props));
+    case ADDON_CONTEXT_ITEM:
+      return AddonPtr(new CContextItemAddon(props));
     default:
       break;
   }
@@ -758,6 +761,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CAudioEncoder(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
+    case ADDON_CONTEXT_ITEM:
+      return AddonPtr(new CContextItemAddon(addonProps));
     default:
       break;
   }
