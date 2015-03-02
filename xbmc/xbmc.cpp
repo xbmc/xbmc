@@ -18,6 +18,7 @@
  *
  */
 
+#include "xbmc.h"
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
 
@@ -25,21 +26,38 @@
 #include "linux/RBP.h"
 #endif
 
-extern "C" int XBMC_Run(bool renderGUI)
+CAppOptions::CAppOptions()
 {
+  fullscreen = false;
+  standalone = false;
+  portable = false;
+  renderGUI = true;
+#ifdef _DEBUG
+  debug = true;
+#else
+  debug = false;
+#endif
+}
+
+extern "C" int XBMC_Run(const CAppOptions &options)
+{
+  g_application.SetStandAlone(options.standalone);
+  g_application.EnablePlatformDirectories(!options.portable);
+
+  for (std::vector<std::string>::const_iterator itr = options.settings.begin(); itr != options.settings.end(); itr++)
+    g_advancedSettings.AddSettingsFile(*itr);
+
   int status = -1;
 
   if (!g_advancedSettings.Initialized())
   {
-#ifdef _DEBUG
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
+    g_advancedSettings.m_logLevel     = options.debug ? LOG_LEVEL_DEBUG : LOG_LEVEL_NORMAL;
+    g_advancedSettings.m_logLevelHint = options.debug ? LOG_LEVEL_DEBUG : LOG_LEVEL_NORMAL;
+
     g_advancedSettings.Initialize();
   }
+
+  g_advancedSettings.m_startFullScreen = options.fullscreen;
 
   if (!g_application.Create())
   {
@@ -53,7 +71,7 @@ extern "C" int XBMC_Run(bool renderGUI)
   g_RBP.LogFirmwareVerison();
 #endif
 
-  if (renderGUI && !g_application.CreateGUI())
+  if (options.renderGUI && !g_application.CreateGUI())
   {
     fprintf(stderr, "ERROR: Unable to create GUI. Exiting\n");
     return status;

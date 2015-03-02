@@ -20,10 +20,6 @@
 
 #include "system.h"
 #include "AppParamParser.h"
-#include "settings/AdvancedSettings.h"
-#include "FileItem.h"
-#include "PlayListPlayer.h"
-#include "utils/log.h"
 #include "xbmc.h"
 #ifdef TARGET_POSIX
 #include <sys/resource.h>
@@ -37,27 +33,12 @@
   #endif
 #include <locale.h>
 #endif
-#ifdef HAS_LIRC
-#include "input/linux/LIRC.h"
-#endif
 #include "XbmcContext.h"
 
 int main(int argc, char* argv[])
 {
   // set up some xbmc specific relationships
   XBMC::Context context;
-
-  bool renderGUI = true;
-  //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
-  //the loglevel set with the --debug flag
-#ifdef _DEBUG
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
-  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
 #ifdef TARGET_POSIX
 #if defined(DEBUG)
@@ -68,11 +49,13 @@ int main(int argc, char* argv[])
 #endif
 #endif
   setlocale(LC_NUMERIC, "C");
-  g_advancedSettings.Initialize();
+
+  CAppOptions options;
 
 #ifndef TARGET_WINDOWS
   CAppParamParser appParamParser;
-  appParamParser.Parse((const char **)argv, argc);
+  appParamParser.Parse((const char **)argv, argc, options);
 #endif
-  return XBMC_Run(renderGUI);
+
+  return XBMC_Run(options);
 }
