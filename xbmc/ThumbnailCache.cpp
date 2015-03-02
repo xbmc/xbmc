@@ -25,7 +25,6 @@
 #include "FileItem.h"
 #include "video/VideoDatabase.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 

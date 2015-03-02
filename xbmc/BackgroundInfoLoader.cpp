@@ -23,8 +23,6 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-using namespace std;
-
 CBackgroundInfoLoader::CBackgroundInfoLoader() : m_thread (NULL)
 {
   m_bStop = true;
@@ -48,7 +46,7 @@ void CBackgroundInfoLoader::Run()
       OnLoaderStart();
 
       // Stage 1: All "fast" stuff we have already cached
-      for (vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
+      for (std::vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
       {
         CFileItemPtr pItem = *iter;
 
@@ -68,7 +66,7 @@ void CBackgroundInfoLoader::Run()
       }
 
       // Stage 2: All "slow" stuff that we need to lookup
-      for (vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
+      for (std::vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
       {
         CFileItemPtr pItem = *iter;
 

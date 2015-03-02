@@ -31,7 +31,6 @@
 
 #include <vector>
 
-using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 
@@ -88,7 +87,7 @@ CNfoFile::NFOResult CNfoFile::Create(const std::string& strPath, const ScraperPt
     }
   }
 
-  vector<ScraperPtr> vecScrapers;
+  std::vector<ScraperPtr> vecScrapers;
 
   // add selected scraper - first proirity
   if (m_info)

@@ -66,7 +66,6 @@
 
 #include <set>
 
-using namespace std;
 using namespace XFILE;
 
 // Stuff for read CUE data from different sources.
@@ -209,9 +208,9 @@ void CCueDocument::UpdateMediaFile(const std::string& oldMediaFile, const std::s
   }
 }
 
-void CCueDocument::GetMediaFiles(vector<std::string>& mediaFiles)
+void CCueDocument::GetMediaFiles(std::vector<std::string>& mediaFiles)
 {
-  typedef set<std::string> TSet;
+  typedef std::set<std::string> TSet;
   TSet uniqueFiles;
   for (Tracks::const_iterator it = m_tracks.begin(); it != m_tracks.end(); ++it)
     uniqueFiles.insert(it->strFile);
@@ -441,7 +440,7 @@ int CCueDocument::ExtractTimeFromIndex(const std::string &index)
   }
   StringUtils::TrimLeft(numberTime);
   // split the resulting string
-  vector<string> time = StringUtils::Split(numberTime, ":");
+  std::vector<std::string> time = StringUtils::Split(numberTime, ":");
   if (time.size() != 3)
     return -1;
 
