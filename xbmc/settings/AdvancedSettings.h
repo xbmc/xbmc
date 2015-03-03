@@ -263,7 +263,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_musicThumbs;
     std::string m_fanartImages;
 
-    bool m_bMusicLibraryHideAllItems;
     int m_iMusicLibraryRecentlyAddedItems;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
@@ -275,7 +274,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_videoItemSeparator;
     std::vector<std::string> m_musicTagsFromFileFilters;
 
-    bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
     int m_iVideoLibraryRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;

@@ -354,6 +354,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.hideallitems" type="boolean" label="38011" help="38012">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.groupmoviesets" type="boolean" label="20458" help="36145">
           <level>0</level>
           <default>false</default>
@@ -1572,6 +1577,11 @@
         </setting>
       </group>
       <group id="4">
+        <setting id="musiclibrary.hideallitems" type="boolean" label="38011" help="38012">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="musiclibrary.cleanup" type="action" label="334" help="36148">
           <level>2</level>
           <control type="button" format="action" />

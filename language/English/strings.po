@@ -16335,3 +16335,15 @@ msgstr ""
 msgctxt "#38010"
 msgid "GPU accelerated"
 msgstr ""
+
+#. Setting #38011 "Videos -> Library -> Hide All Items entry"
+#: system/settings/settings.xml
+msgctxt "#38011"
+msgid "Hide "All Items" entry"
+msgstr ""
+
+#. Description of setting "Videos -> Library -> Hide All Items entry"
+#: system/settings/settings.xml
+msgctxt "#38012"
+msgid "Hide "All Items" entry in directory (for example All Albums or All Seasons)"
+msgstr ""
