@@ -44,7 +44,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
-#include "settings/settings.h"
+#include "settings/Settings.h"
 
 using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
