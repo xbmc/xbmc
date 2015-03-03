@@ -159,7 +159,7 @@ namespace MathUtils
   {
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast<double>(INT_MAX / 2) + 1.0);
-    return x;
+    return static_cast<int>(x);
   }
 
   inline int64_t abs(int64_t a)
