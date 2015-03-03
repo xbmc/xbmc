@@ -558,6 +558,17 @@ namespace PVR
      */
     time_t GetBufferTimeEnd() const;
 
+    /*!
+     * @return True when this add-on can be auto-configured via avahi, false otherwise
+     */
+    bool CanAutoconfigure(void) const;
+
+    /*!
+     * Try to auto-configure this add-on via avahi
+     * @return True when auto-configured and the configured was accepted by the user, false otherwise
+     */
+    bool Autoconfigure(void);
+
   private:
     /*!
      * @brief Checks whether the provided API version is compatible with XBMC
@@ -647,6 +658,9 @@ namespace PVR
     /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */
     std::string m_strUserPath;    /*!< @brief translated path to the user profile */
     std::string m_strClientPath;  /*!< @brief translated path to this add-on */
+    std::string m_strAvahiType;
+    std::string m_strAvahiIpSetting;
+    std::string m_strAvahiPortSetting;
 
     CCriticalSection m_critSection;
 

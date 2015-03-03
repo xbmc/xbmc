@@ -20,9 +20,11 @@
 
 #include "Application.h"
 #include "PVRClient.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "epg/Epg.h"
+#include "network/ZeroconfBrowser.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -52,6 +54,10 @@ CPVRClient::CPVRClient(const cp_extension_t *ext) :
     m_apiVersion("0.0.0")
 {
   ResetProperties();
+
+  m_strAvahiType = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_type");
+  m_strAvahiIpSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_ip_setting");
+  m_strAvahiPortSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_port_setting");
 }
 
 CPVRClient::~CPVRClient(void)
@@ -1741,4 +1747,69 @@ time_t CPVRClient::GetBufferTimeEnd(void) const
     catch (std::exception &e) { LogException(e, __FUNCTION__); }
   }
   return time;
+}
+
+bool CPVRClient::CanAutoconfigure(void) const
+{
+  /** can only auto-configure when avahi details are provided in addon.xml */
+  return !m_strAvahiType.empty() &&
+      !m_strAvahiIpSetting.empty() &&
+      !m_strAvahiPortSetting.empty();
+}
+
+bool CPVRClient::Autoconfigure(void)
+{
+  bool bReturn(false);
+
+  if (!CanAutoconfigure())
+    return bReturn;
+
+  /** TODO make CZeroconfBrowser::AddServiceType() public
+  CZeroconfBrowser::GetInstance()->AddServiceType(m_strAvahiType); */
+  CLog::Log(LOGDEBUG, "%s - trying to auto-configure %s", __FUNCTION__, Name().c_str());
+
+  std::vector<CZeroconfBrowser::ZeroconfService> found_services = CZeroconfBrowser::GetInstance()->GetFoundServices();
+  for(std::vector<CZeroconfBrowser::ZeroconfService>::iterator it = found_services.begin(); !bReturn && it != found_services.end(); ++it)
+  {
+    /** found the type that we are looking for */
+    if ((*it).GetType() == m_strAvahiType)
+    {
+      /** try to resolve */
+      if(!CZeroconfBrowser::GetInstance()->ResolveService((*it)))
+      {
+        CLog::Log(LOGWARNING, "%s - %s service found but the host name couldn't be resolved", __FUNCTION__, (*it).GetName().c_str());
+      }
+      else
+      {
+        // %s service found at %s
+        std::string strLogLine(StringUtils::Format(g_localizeStrings.Get(19689).c_str(), (*it).GetName().c_str(), (*it).GetIP().c_str()));
+        CLog::Log(LOGDEBUG, "%s - %s", __FUNCTION__, strLogLine.c_str());
+
+        if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(19688), // Scanning for PVR services
+                                              strLogLine,
+                                              "",
+                                              g_localizeStrings.Get(19690) // Do you want to use this service?
+                                              ))
+        {
+          CLog::Log(LOGDEBUG, "%s - %s service found but not enabled by the user", __FUNCTION__, (*it).GetName().c_str());
+        }
+        else
+        {
+          /** update the settings and return */
+          std::string strPort(StringUtils::Format("%d", (*it).GetPort()));
+          UpdateSetting(m_strAvahiIpSetting, (*it).GetIP());
+          UpdateSetting(m_strAvahiPortSetting, strPort);
+          SaveSettings();
+          CLog::Log(LOGNOTICE, "%s - auto-configured %s using host '%s' and port '%d'", __FUNCTION__, (*it).GetName().c_str(), (*it).GetIP().c_str(), (*it).GetPort());
+
+          bReturn = true;
+        }
+      }
+    }
+  }
+
+  if (!bReturn)
+    CLog::Log(LOGDEBUG, "%s - failed to configure %s with type '%s'", __FUNCTION__, Name().c_str(), m_strAvahiType.c_str());
+
+  return bReturn;
 }

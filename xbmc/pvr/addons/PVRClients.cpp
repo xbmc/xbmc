@@ -23,8 +23,10 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "GUIUserMessages.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "network/ZeroconfBrowser.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRDatabase.h"
 #include "guilib/GUIWindowManager.h"
@@ -1069,9 +1071,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       CSingleLock lock(m_critSection);
       /* stop the client and remove it from the db */
       StopClient(clientAddon, false);
-      VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), clientAddon);
-      if (addonPtr != m_addons.end())
-        m_addons.erase(addonPtr);
+      disableAddons.push_back(clientAddon);
 
     }
     else if (bEnabled && (bInitialiseAllClients || !IsKnownClient(clientAddon) || !IsConnectedClient(clientAddon)))
@@ -1167,11 +1167,81 @@ void CPVRClients::Process(void)
     {
       bCheckedEnabledClientsOnStartup = true;
       if (!HasEnabledClients() && !m_bNoAddonWarningDisplayed)
-        ShowDialogNoClientsEnabled();
+      {
+        if (AutoconfigureClients())
+          m_bNoAddonWarningDisplayed = true;
+        else
+          ShowDialogNoClientsEnabled();
+      }
     }
-
-    Sleep(1000);
+    else
+    {
+      Sleep(1000);
+    }
   }
+}
+
+bool CPVRClients::AutoconfigureClients(void)
+{
+  bool bReturn(false);
+  std::vector<PVR_CLIENT> autoConfigAddons;
+  PVR_CLIENT addon;
+  VECADDONS map;
+  CAddonMgr::Get().GetAddons(ADDON_PVRDLL, map, false);
+
+  /** get the auto-configurable add-ons */
+  for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
+  {
+    if (CAddonMgr::Get().IsAddonDisabled((*it)->ID()))
+    {
+      addon = std::dynamic_pointer_cast<CPVRClient>(*it);
+      if (addon->CanAutoconfigure())
+        autoConfigAddons.push_back(addon);
+    }
+  }
+
+  /** no configurable add-ons found */
+  if (autoConfigAddons.size() == 0)
+    return bReturn;
+
+  /** display a progress bar while trying to auto-configure add-ons */
+  CGUIDialogExtendedProgressBar *loadingProgressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+  CGUIDialogProgressBarHandle* progressHandle = loadingProgressDialog->GetHandle(g_localizeStrings.Get(19688)); // Scanning for PVR services
+  progressHandle->SetPercentage(0);
+  progressHandle->SetText(g_localizeStrings.Get(19688)); //Scanning for PVR services
+
+  /** start zeroconf and wait a second to get some responses */
+  CZeroconfBrowser::GetInstance()->Start();
+  Sleep(1000);
+  float percentage = 20.0f;
+  float percentageStep = 80.0f / autoConfigAddons.size();
+  progressHandle->SetPercentage(percentage);
+
+  /** check each disabled add-on */
+  for (std::vector<PVR_CLIENT>::iterator it = autoConfigAddons.begin(); !bReturn && it != autoConfigAddons.end(); ++it)
+  {
+    if (addon->Autoconfigure())
+    {
+      progressHandle->SetPercentage(100.0f);
+      progressHandle->MarkFinished();
+
+      /** enable the add-on */
+      CAddonMgr::Get().DisableAddon((*it)->ID(), false);
+      CSingleLock lock(m_critSection);
+      m_addons.push_back(*it);
+      bReturn = true;
+    }
+    else
+    {
+      /** failed, try the next add-on */
+      percentage += percentageStep;
+      progressHandle->SetPercentage(percentage);
+    }
+  }
+
+  progressHandle->SetPercentage(100.0f);
+  progressHandle->MarkFinished();
+  return bReturn;
 }
 
 void CPVRClients::ShowDialogNoClientsEnabled(void)

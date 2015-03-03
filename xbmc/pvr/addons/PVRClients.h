@@ -676,6 +676,12 @@ namespace PVR
 
     int GetClientId(const ADDON::AddonPtr client) const;
 
+    /*!
+     * Try to automatically configure clients
+     * @return True when at least one was configured
+     */
+    bool AutoconfigureClients(void);
+
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
     bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
