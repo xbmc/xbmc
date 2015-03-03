@@ -193,19 +193,21 @@ CFileItem::CFileItem(const CPVRRecordingPtr& record)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
+CFileItem::CFileItem(const CPVRTimerInfoTagPtr& timer)
 {
+  assert(timer.get());
+
   Initialize();
 
-  m_strPath = timer.Path();
   m_bIsFolder = false;
-  *GetPVRTimerInfoTag() = timer;
-  SetLabel(timer.Title());
-  m_strLabel2 = timer.Summary();
-  m_dateTime = timer.StartAsLocalTime();
+  m_pvrTimerInfoTag = timer;
+  m_strPath = timer->Path();
+  SetLabel(timer->Title());
+  m_strLabel2 = timer->Summary();
+  m_dateTime = timer->StartAsLocalTime();
 
-  if (!timer.ChannelIcon().empty())
-    SetIconImage(timer.ChannelIcon());
+  if (!timer->ChannelIcon().empty())
+    SetIconImage(timer->ChannelIcon());
 
   FillInMimeType(false);
 }
@@ -236,7 +238,6 @@ CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   *this = item;
 }
@@ -319,12 +320,10 @@ CFileItem::~CFileItem(void)
 {
   delete m_musicInfoTag;
   delete m_videoInfoTag;
-  delete m_pvrTimerInfoTag;
   delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
 }
 
@@ -379,19 +378,10 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   else
     m_pvrRecordingInfoTag.reset();
 
-  if (item.HasPVRTimerInfoTag())
-  {
-    m_pvrTimerInfoTag = GetPVRTimerInfoTag();
-    if (m_pvrTimerInfoTag)
-      *m_pvrTimerInfoTag = *item.m_pvrTimerInfoTag;
-  }
+  if (item.m_pvrTimerInfoTag)
+    m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
   else
-  {
-    if (m_pvrTimerInfoTag)
-      delete m_pvrTimerInfoTag;
-
-    m_pvrTimerInfoTag = NULL;
-  }
+    m_pvrTimerInfoTag.reset();
 
   if (item.HasPictureInfoTag())
   {
@@ -428,7 +418,6 @@ void CFileItem::Initialize()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   m_bLabelPreformated=false;
   m_bIsAlbum = false;
@@ -471,8 +460,7 @@ void CFileItem::Reset()
   m_epgInfoTag.reset();
   m_pvrChannelInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
-  delete m_pvrTimerInfoTag;
-  m_pvrTimerInfoTag=NULL;
+  m_pvrTimerInfoTag.reset();
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.clear();
@@ -3140,14 +3128,6 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
     m_videoInfoTag = new CVideoInfoTag;
 
   return m_videoInfoTag;
-}
-
-CPVRTimerInfoTag* CFileItem::GetPVRTimerInfoTag()
-{
-  if (!m_pvrTimerInfoTag)
-    m_pvrTimerInfoTag = new CPVRTimerInfoTag;
-
-  return m_pvrTimerInfoTag;
 }
 
 CPictureInfoTag* CFileItem::GetPictureInfoTag()

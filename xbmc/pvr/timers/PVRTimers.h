@@ -55,7 +55,7 @@ namespace PVR
     /**
      * Add a timer entry to this container, called by the client callback.
      */
-    bool UpdateFromClient(const CPVRTimerInfoTag &timer);
+    bool UpdateFromClient(const CPVRTimerInfoTagPtr &timer);
 
     /*!
      * @return The timer that will be active next (state scheduled), or an empty fileitemptr if none.
@@ -138,7 +138,7 @@ namespace PVR
      * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will do this.
      * @return True if it was sent correctly, false if not.
      */
-    static bool AddTimer(const CPVRTimerInfoTag &item);
+    static bool AddTimer(const CPVRTimerInfoTagPtr &item);
 
     /*!
      * @brief Delete a timer on the client. Doesn't delete the timer from the container. The backend will do this.

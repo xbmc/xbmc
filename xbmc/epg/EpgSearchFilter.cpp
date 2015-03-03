@@ -245,7 +245,7 @@ int EpgSearchFilter::FilterTimers(CFileItemList &results)
     if (!fileItem || !fileItem->HasPVRTimerInfoTag())
       continue;
 
-    CPVRTimerInfoTag *timer = fileItem->GetPVRTimerInfoTag();
+    CPVRTimerInfoTagPtr timer = fileItem->GetPVRTimerInfoTag();
     if (!timer)
       continue;
 

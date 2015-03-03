@@ -76,11 +76,10 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTagPtr &tag)
     if (pDialog->IsConfirmed())
     {
       Close();
-      CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
+      CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(tag);
       if (newTimer)
       {
-        bReturn = CPVRTimers::AddTimer(*newTimer);
-        delete newTimer;
+        bReturn = CPVRTimers::AddTimer(newTimer);
       }
       else
       {
