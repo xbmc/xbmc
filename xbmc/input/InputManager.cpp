@@ -760,6 +760,15 @@ bool CInputManager::IsRemoteControlEnabled()
 #endif
 }
 
+bool CInputManager::IsRemoteControlInitialized()
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  return m_RemoteControl.IsInitialized();
+#else
+  return false;
+#endif
+}
+
 void CInputManager::EnableRemoteControl()
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)

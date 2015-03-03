@@ -196,6 +196,12 @@ public:
    */
   bool IsRemoteControlEnabled();
 
+  /*! \brief Check if the remote control is initialized
+   *
+   * \return true if initialized, false otherwise 
+   */
+  bool IsRemoteControlInitialized();
+
   /*! \brief Set the device name to use with LIRC, does nothing 
    *   if IRServerSuite is used
    *
