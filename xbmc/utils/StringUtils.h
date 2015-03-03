@@ -194,3 +194,11 @@ public:
 private:
   static std::string m_lastUUID;
 };
+
+struct sortstringbyname
+{
+  bool operator()(const std::string& strItem1, const std::string& strItem2)
+  {
+    return StringUtils::CompareNoCase(strItem1, strItem2) < 0;
+  }
+};

@@ -22,6 +22,7 @@
 #include "AddonCallbacksPVR.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 
 #include "epg/EpgContainer.h"
