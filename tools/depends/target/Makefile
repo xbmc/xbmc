@@ -80,7 +80,7 @@ libvorbis: libogg
 libflac: libogg gettext
 libass: fontconfig libpng freetype2 expat $(ICONV)
 librtmp: openssl
-libmicrohttpd: openssl libgpg-error libgcrypt
+libmicrohttpd: gnutls libgcrypt libgpg-error
 python26: expat gettext libxml2 sqlite3 openssl libffi
 libcdio: $(ICONV)
 libplist: libxml2 $(ZLIB)
