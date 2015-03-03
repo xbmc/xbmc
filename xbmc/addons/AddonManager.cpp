@@ -628,10 +628,6 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
     return false;
 
   CSingleLock lock(m_critSection);
-  // can't disable an already disabled addon
-  if (IsAddonDisabled(ID))
-    return false;
-
   AddonPtr localAddon;
   // can't disable an addon that isn't installed
   if (!IsAddonInstalled(ID, localAddon))
