@@ -269,6 +269,114 @@ std::string CGUIWindowVideoNav::GetQuickpathName(const std::string& strPath) con
   }
 }
 
+SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem()
+{
+  if (m_vecItems->IsVideoDb())
+  {
+    NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath());
+
+    if (nodeType == NODE_TYPE_SEASONS || nodeType == NODE_TYPE_EPISODES)
+    {
+      int iValue = CSettings::Get().GetInt("videolibrary.tvshowsselectfirstunwatcheditem");
+      if (iValue >= SelectFirstUnwatchedItem::NEVER && iValue <= SelectFirstUnwatchedItem::ALWAYS)
+        return (SelectFirstUnwatchedItem)iValue;
+    }
+  }
+
+  return SelectFirstUnwatchedItem::NEVER;
+}
+
+IncludeAllSeasonsAndSpecials CGUIWindowVideoNav::GetSettingIncludeAllSeasonsAndSpecials()
+{
+  int iValue = CSettings::Get().GetInt("videolibrary.tvshowsincludeallseasonsandspecials");
+  if (iValue >= IncludeAllSeasonsAndSpecials::NEITHER && iValue <= IncludeAllSeasonsAndSpecials::SPECIALS)
+    return (IncludeAllSeasonsAndSpecials)iValue;
+
+  return IncludeAllSeasonsAndSpecials::NEITHER;
+}
+
+int CGUIWindowVideoNav::GetFirstUnwatchedItemIndex(bool includeAllSeasons, bool includeSpecials)
+{
+  int iIndex = 0;
+  int iUnwatchedSeason = INT_MAX;
+
+  // Run through the list of items and find the season number of the first season with unwatched episodes
+  for (int i = 0; i < m_vecItems->Size(); ++i)
+  {
+    CFileItemPtr pItem = m_vecItems->Get(i);
+    if (pItem->IsParentFolder() || !pItem->HasVideoInfoTag())
+      continue;
+
+    CVideoInfoTag *pTag = pItem->GetVideoInfoTag();
+
+    if ((!includeAllSeasons && pTag->m_iSeason < 0) || (!includeSpecials && pTag->m_iSeason == 0))
+      continue;
+
+    // Is the season unwatched, and is its season number lower than the currently identified
+    // first unwatched season
+    if (pTag->m_playCount == 0 && pTag->m_iSeason < iUnwatchedSeason)
+    {
+      iUnwatchedSeason = pTag->m_iSeason;
+      iIndex = i;
+    }
+  }
+
+  NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath());
+  if (nodeType == NODE_TYPE::NODE_TYPE_EPISODES)
+  {
+    iIndex = 0;
+    int iUnwatchedEpisode = INT_MAX;
+
+    // Now run through the list of items and check episodes from the season identified above
+    // to find the first (lowest episode number) unwatched epsisode.
+    for (int i = 0; i < m_vecItems->Size(); ++i)
+    {
+      CFileItemPtr pItem = m_vecItems->Get(i);
+      if (pItem->IsParentFolder() || !pItem->HasVideoInfoTag())
+        continue;
+
+      CVideoInfoTag *pTag = pItem->GetVideoInfoTag();
+
+      // Does the episode belong to the unwatched season and Is the episode unwatched, and is its epsiode number 
+      // lower than the currently identified first unwatched episode
+      if (pTag->m_iSeason == iUnwatchedSeason && pTag->m_playCount == 0 && pTag->m_iEpisode < iUnwatchedEpisode)
+      {
+        iUnwatchedEpisode = pTag->m_iEpisode;
+        iIndex = i;
+      }
+    }
+  }
+
+  return iIndex;
+}
+
+bool CGUIWindowVideoNav::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
+{
+  if (!CGUIWindowVideoBase::Update(strDirectory, updateFilterPath))
+    return false;
+
+  // Check if we should select the first unwatched item
+  SelectFirstUnwatchedItem selectFirstUnwatched = GetSettingSelectFirstUnwatchedItem();
+  if (selectFirstUnwatched != SelectFirstUnwatchedItem::NEVER)
+  {
+    bool bIsItemSelected = (m_viewControl.GetSelectedItem() > 0);
+
+    if (selectFirstUnwatched == SelectFirstUnwatchedItem::ALWAYS ||
+      (selectFirstUnwatched == SelectFirstUnwatchedItem::ON_FIRST_ENTRY && !bIsItemSelected))
+    {
+      IncludeAllSeasonsAndSpecials incAllSeasonsSpecials = GetSettingIncludeAllSeasonsAndSpecials();
+
+      bool bIncludeAllSeasons = (incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::BOTH || incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::ALL_SEASONS);
+      bool bIncludeSpecials = (incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::BOTH || incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::SPECIALS);
+
+      int iIndex = GetFirstUnwatchedItemIndex(bIncludeAllSeasons, bIncludeSpecials);
+      m_viewControl.SetSelectedItem(iIndex);
+    }
+  }
+
+  return true;
+}
+
 bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   if (m_thumbLoader.IsLoading())

@@ -56,7 +56,6 @@ public:
   void SetPlaylistDirectory(const std::string& strDirectory);
   bool IsCurrentPlaylistDirectory(const std::string& strDirectory);
   virtual bool AutoPlayNextItem();
-  virtual bool JumpToFirstUnplayedItem();
 
   virtual std::string GetLockType();
   virtual std::string GetExtensions();

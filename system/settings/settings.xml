@@ -349,10 +349,33 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="videolibrary.jumptofirstunplayeditem" type="boolean" label="21416" help="21466">
+        <setting id="videolibrary.tvshowsselectfirstunwatcheditem" type="integer" label="21416" help="21466">
           <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
+          <default>0</default> <!-- Never -->
+          <constraints>
+            <options>
+              <option label="20420">0</option> <!-- Never -->
+              <option label="21471">1</option> <!-- On first entry -->
+              <option label="20422">2</option> <!-- Always -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="videolibrary.tvshowsincludeallseasonsandspecials" type="integer" parent="videolibrary.tvshowsselectfirstunwatcheditem" label="21472" help="21473">
+          <level>2</level>
+          <default>0</default> <!-- Neither -->
+          <constraints>
+            <options>
+              <option label="21474">0</option> <!-- Neither -->
+              <option label="21475">1</option> <!-- Both -->
+              <option label="21476">2</option> <!-- Just All Seasons -->
+              <option label="21477">3</option> <!-- Just Specials -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="videolibrary.tvshowsselectfirstunwatcheditem" operator="!is">0</dependency> <!-- Never -->
+          </dependencies>
+          <control type="spinner" format="string" />
         </setting>
         <setting id="videolibrary.hideallitems" type="boolean" label="38011" help="38012">
           <level>2</level>
