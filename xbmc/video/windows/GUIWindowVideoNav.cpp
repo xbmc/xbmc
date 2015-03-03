@@ -689,16 +689,19 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
 
 void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 {
-  m_database.Open(); // since we can be called from the music library without being inited
-  if (pItem->IsVideoDb())
-    scraper = m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath);
-  else
+  if (!scraper || scraper->Content() == CONTENT_NONE)
   {
-    std::string strPath,strFile;
-    URIUtils::Split(pItem->GetPath(),strPath,strFile);
-    scraper = m_database.GetScraperForPath(strPath);
+    m_database.Open(); // since we can be called from the music library without being inited
+    if (pItem->IsVideoDb())
+      scraper = m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath);
+    else
+    {
+      std::string strPath,strFile;
+      URIUtils::Split(pItem->GetPath(),strPath,strFile);
+      scraper = m_database.GetScraperForPath(strPath);
+    }
+    m_database.Close();
   }
-  m_database.Close();
   CGUIWindowVideoBase::OnInfo(pItem,scraper);
 }
 
