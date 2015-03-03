@@ -30,7 +30,7 @@
 #include "IInputHandler.h"
 
 #include "xbmc.h"
-#include "android/jni/Context.h"
+#include "android/jni/Activity.h"
 #include "android/jni/BroadcastReceiver.h"
 #include "threads/Event.h"
 
@@ -52,8 +52,7 @@ struct androidPackage
   std::string packageLabel;
 };
 
-
-class CXBMCApp : public IActivityHandler, public CJNIContext, public CJNIBroadcastReceiver
+class CXBMCApp : public IActivityHandler, public CJNIApplicationMainActivity, public CJNIBroadcastReceiver
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
