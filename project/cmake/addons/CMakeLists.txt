@@ -92,6 +92,10 @@ else()
   separate_arguments(ADDONS_TO_BUILD)
 endif()
 
+if(ADDON_SRC_PREFIX)
+  message(STATUS "Overriding addon source directory prefix: ${ADDON_SRC_PREFIX}")
+endif()
+
 if(NOT KODI_LIB_DIR)
   set(KODI_LIB_DIR "${DEPENDS_PATH}/lib/kodi")
 else()
@@ -160,17 +164,22 @@ foreach(addon ${addons})
         list(GET def 1 url)
 
         set(archive_name ${id})
-        set(SOURCE_DIR "")
+        if(ADDON_SRC_PREFIX)
+          set(SOURCE_DIR ${ADDON_SRC_PREFIX}/${id})
+          set(archive_name "")
+        else()
+          set(SOURCE_DIR "")
+        endif()
 
-          # if there is a 3rd parameter in the file, we consider it a git revision
-        if(deflength GREATER 2)
+        # if there is a 3rd parameter in the file, we consider it a git revision
+        if(deflength GREATER 2 AND "${SOURCE_DIR}" STREQUAL "")
           list(GET def 2 revision)
 
           # Note: downloading specific revisions via http in the format below is probably github specific
           # if we ever use other repositories, this might need adapting
           set(url ${url}/archive/${revision}.tar.gz)
           set(archive_name ${archive_name}-${revision})
-        else()
+        elseif("${SOURCE_DIR}" STREQUAL "")
           # check if the URL starts with file://
           string(REGEX MATCH "^file://.*$" local_url "${url}")
 

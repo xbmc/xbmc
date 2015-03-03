@@ -29,6 +29,9 @@ executing cmake with the -D<variable-name>=<value> option) to e.g. access
 specific paths:
   * ADDONS_TO_BUILD is a quoted, space delimited list of <addon-id>s that
     you want to build (default is "all").
+  * ADDON_SRC_PREFIX can be used to override the addon repository location.
+    It must point to the locally available parent directory of the addon(s) to build
+    <addon-id> will be appended to this path automatically
   * CMAKE_BUILD_TYPE specifies the type of the build. This can be either "Debug"
     or "Release" (default is "Release").
   * CMAKE_INSTALL_PREFIX points to the directory where the built addons and their
