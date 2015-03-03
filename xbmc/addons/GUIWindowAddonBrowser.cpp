@@ -54,6 +54,7 @@
 #define CONTROL_SHUTUP        6
 #define CONTROL_FOREIGNFILTER 7
 #define CONTROL_BROKENFILTER  8
+#define CONTROL_CHECK_FOR_UPDATES  9
 
 using namespace ADDON;
 using namespace XFILE;
@@ -120,6 +121,11 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         Refresh();
         return true;
       }
+      else if (iControl == CONTROL_CHECK_FOR_UPDATES)
+      {
+        CAddonInstaller::Get().UpdateRepos(true);
+        return true;
+      }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
         // get selected item
@@ -164,65 +170,31 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& 
     return;
 
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (!pItem->IsPath("addons://enabled/"))
-    buttons.Add(CONTEXT_BUTTON_SCAN,24034);
-  
-  AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID").asString(), addon, ADDON_UNKNOWN, false)) // allow disabled addons
-    return;
-
-  if (addon->Type() == ADDON_REPOSITORY && pItem->m_bIsFolder)
+  std::string addonId = pItem->GetProperty("Addon.ID").asString();
+  if (!addonId.empty())
   {
-    buttons.Add(CONTEXT_BUTTON_SCAN,24034);
-    buttons.Add(CONTEXT_BUTTON_REFRESH,24035);
+    buttons.Add(CONTEXT_BUTTON_INFO, 24003);
+
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(addonId, addon, ADDON_UNKNOWN, false) && addon->HasSettings())
+      buttons.Add(CONTEXT_BUTTON_SETTINGS, 24020);
   }
-
-  buttons.Add(CONTEXT_BUTTON_INFO,24003);
-
-  if (addon->HasSettings())
-    buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
 
   CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
 }
 
-bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
-                                             CONTEXT_BUTTON button)
+bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (pItem->IsPath("addons://enabled/"))
-  {
-    if (button == CONTEXT_BUTTON_SCAN)
-    {
-      CAddonMgr::Get().FindAddons();
-      return true;
-    }
-  }
 
+  std::string addonId = pItem->GetProperty("Addon.ID").asString();
   AddonPtr addon;
-  if (CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID").asString(), addon, ADDON_UNKNOWN, false))
+  if (!addonId.empty() && CAddonMgr::Get().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
   {
     if (button == CONTEXT_BUTTON_SETTINGS)
       return CGUIDialogAddonSettings::ShowAndGetInput(addon);
-
-    if (button == CONTEXT_BUTTON_REFRESH)
-    {
-      CAddonDatabase database;
-      database.Open();
-      database.DeleteRepository(addon->ID());
-      button = CONTEXT_BUTTON_SCAN;
-    }
-
-    if (button == CONTEXT_BUTTON_SCAN)
-    {
-      CAddonInstaller::Get().UpdateRepos(true);
-      return true;
-    }
-
     if (button == CONTEXT_BUTTON_INFO)
-    {
-      CGUIDialogAddonInfo::ShowForItem(pItem);
-      return true;
-    }
+      return CGUIDialogAddonInfo::ShowForItem(pItem);
   }
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
@@ -330,6 +302,7 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP, CSettings::Get().GetBool("general.addonnotifications"));
   SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER, CSettings::Get().GetBool("general.addonforeignfilter"));
   SET_CONTROL_SELECTED(GetID(),CONTROL_BROKENFILTER, CSettings::Get().GetBool("general.addonbrokenfilter"));
+  CONTROL_ENABLE(CONTROL_CHECK_FOR_UPDATES);
   CGUIMediaWindow::UpdateButtons();
 }
 
