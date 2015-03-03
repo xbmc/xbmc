@@ -84,6 +84,7 @@ CInputManager& CInputManager::Get()
 void CInputManager::InitializeInputs()
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  m_RemoteControl.setUsed(true);
   m_RemoteControl.Initialize();
 #endif
 
@@ -760,12 +761,23 @@ bool CInputManager::IsRemoteControlEnabled()
 #endif
 }
 
+bool CInputManager::IsRemoteControlInitialized()
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  return m_RemoteControl.IsInitialized();
+#else
+  return false;
+#endif
+}
+
 void CInputManager::EnableRemoteControl()
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   m_RemoteControl.setUsed(true);
   if (!m_RemoteControl.IsInitialized())
+  {
     m_RemoteControl.Initialize();
+  }
 #endif
 }
 
@@ -777,10 +789,18 @@ void CInputManager::DisableRemoteControl()
 #endif
 }
 
+void CInputManager::InitializeRemoteControl()
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  if (!m_RemoteControl.IsInitialized())
+    m_RemoteControl.Initialize();
+#endif
+}
+
 void CInputManager::SetRemoteControlName(const std::string& name)
 {
 #if defined(HAS_LIRC)
-  m_RemoteControl.setDeviceName(name);
+  m_RemoteControl.SetDeviceName(name);
 #endif
 }
 
