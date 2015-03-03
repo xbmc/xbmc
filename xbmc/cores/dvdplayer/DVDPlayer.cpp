@@ -4512,7 +4512,7 @@ std::string CDVDPlayer::GetPlayingTitle()
   return "";
 }
 
-bool CDVDPlayer::SwitchChannel(CPVRChannelPtr &channel)
+bool CDVDPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 {
   if (!g_PVRManager.CheckParentalLock(channel))
     return false;

@@ -287,7 +287,7 @@ public:
 
   virtual std::string GetPlayingTitle();
 
-  virtual bool SwitchChannel(PVR::CPVRChannelPtr &channel);
+  virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
   virtual bool CachePVRStream(void) const;
 
   enum ECacheState
