@@ -661,7 +661,7 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID)
 
 bool CAddonMgr::IsAddonInstalled(const std::string& ID, AddonPtr& addon)
 {
-  return GetAddon(ID, addon);
+  return GetAddon(ID, addon, ADDON_UNKNOWN, false);
 }
 
 bool CAddonMgr::CanAddonBeInstalled(const std::string& ID)
