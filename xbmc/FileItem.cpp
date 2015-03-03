@@ -782,7 +782,7 @@ bool CFileItem::IsAudio() const
      return true;
   }
 
-  return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_musicExtensions);
+  return URIUtils::HasExtension(m_strPath, g_advancedSettings.GetMusicExtensions());
 }
 
 bool CFileItem::IsKaraoke() const
@@ -2236,7 +2236,7 @@ void CFileItemList::FilterCueItems()
                 }
                 else
                 { // try replacing the extension with one of our allowed ones.
-                  vector<string> extensions = StringUtils::Split(g_advancedSettings.m_musicExtensions, "|");
+                  vector<string> extensions = StringUtils::Split(g_advancedSettings.GetMusicExtensions(), "|");
                   for (vector<string>::const_iterator i = extensions.begin(); i != extensions.end(); ++i)
                   {
                     strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), *i);

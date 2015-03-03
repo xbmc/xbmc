@@ -677,7 +677,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             // request came from
             string supported = g_advancedSettings.m_pictureExtensions + "|"
                              + g_advancedSettings.m_videoExtensions + "|"
-                             + g_advancedSettings.m_musicExtensions + "|"
+                             + g_advancedSettings.GetMusicExtensions() + "|"
                              + g_advancedSettings.m_discStubExtensions;
             CDirectory::GetDirectory((const char*)parent_id, items, supported);
             DefaultSortItems(items);

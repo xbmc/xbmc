@@ -223,6 +223,9 @@
 		395C2A1F1A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
 		395C2A201A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
 		395C2A211A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
+		395C2A241AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */; };
+		395C2A251AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */; };
+		395C2A261AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */; };
 		395F6DDD1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDE1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDF1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
@@ -3696,6 +3699,8 @@
 		395C2A031A9CD25100EBC7AD /* ContextItemAddonInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContextItemAddonInvoker.h; path = python/ContextItemAddonInvoker.h; sourceTree = "<group>"; };
 		395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextItemAddon.cpp; sourceTree = "<group>"; };
 		395C2A1E1A9F96A700EBC7AD /* ContextItemAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextItemAddon.h; sourceTree = "<group>"; };
+		395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioDecoder.cpp; sourceTree = "<group>"; };
+		395C2A231AA4C32100EBC7AD /* AudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioDecoder.h; sourceTree = "<group>"; };
 		395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSimpleMenu.cpp; sourceTree = "<group>"; };
 		395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSimpleMenu.h; sourceTree = "<group>"; };
 		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
@@ -6113,6 +6118,8 @@
 				F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */,
 				18B700DF13A6A5750009C1AF /* AddonVersion.cpp */,
 				18B700E013A6A5750009C1AF /* AddonVersion.h */,
+				395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */,
+				395C2A231AA4C32100EBC7AD /* AudioDecoder.h */,
 				7CF34D9D1930264A00D543C5 /* AudioEncoder.cpp */,
 				7CF34D9E1930264A00D543C5 /* AudioEncoder.h */,
 				395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */,
@@ -10838,6 +10845,7 @@
 				7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */,
 				7C779E3B104A57E500F444C4 /* RenderSystemGL.cpp in Sources */,
 				7C779E3C104A57E500F444C4 /* WinEventsSDL.cpp in Sources */,
+				395C2A241AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */,
 				7C779E3D104A57E500F444C4 /* WinSystem.cpp in Sources */,
 				7C779E3E104A57E500F444C4 /* WinSystemOSX.mm in Sources */,
 				7C779E3F104A57E500F444C4 /* WinSystemOSXGL.mm in Sources */,
@@ -11547,6 +11555,7 @@
 				DFF0F12817528350002DA3A4 /* Repository.cpp in Sources */,
 				DFF0F12917528350002DA3A4 /* Scraper.cpp in Sources */,
 				DFF0F12A17528350002DA3A4 /* ScreenSaver.cpp in Sources */,
+				395C2A261AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */,
 				DFF0F12B17528350002DA3A4 /* Service.cpp in Sources */,
 				DFF0F12C17528350002DA3A4 /* Skin.cpp in Sources */,
 				DFF0F12D17528350002DA3A4 /* Visualisation.cpp in Sources */,
@@ -12990,6 +12999,7 @@
 				E4991309174E5DAD00741B6D /* GUIRadioButtonControl.cpp in Sources */,
 				E499130A174E5DAD00741B6D /* GUIRenderingControl.cpp in Sources */,
 				E499130B174E5DAD00741B6D /* GUIResizeControl.cpp in Sources */,
+				395C2A251AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */,
 				E499130C174E5DAD00741B6D /* GUIRSSControl.cpp in Sources */,
 				E499130D174E5DAD00741B6D /* GUIScrollBarControl.cpp in Sources */,
 				E499130E174E5DAD00741B6D /* GUISelectButtonControl.cpp in Sources */,

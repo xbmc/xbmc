@@ -749,7 +749,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (item.m_bIsFolder)
     {
       CFileItemList items;
-      std::string extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.m_musicExtensions;
+      std::string extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.GetMusicExtensions();
       CDirectory::GetDirectory(item.GetPath(),items,extensions);
 
       bool containsMusic = false, containsVideo = false;

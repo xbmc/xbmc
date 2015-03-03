@@ -139,7 +139,7 @@ void URIUtils::RemoveExtension(std::string& strFileName)
 
     std::string strFileMask;
     strFileMask = g_advancedSettings.m_pictureExtensions;
-    strFileMask += "|" + g_advancedSettings.m_musicExtensions;
+    strFileMask += "|" + g_advancedSettings.GetMusicExtensions();
     strFileMask += "|" + g_advancedSettings.m_videoExtensions;
     strFileMask += "|" + g_advancedSettings.m_subtitlesExtensions;
 #if defined(TARGET_DARWIN)

@@ -3177,6 +3177,9 @@
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPPythonHandler.cpp">
       <Filter>network\httprequesthandler</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AudioDecoder.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">

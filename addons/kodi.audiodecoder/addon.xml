@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="kodi.audiodecoder" version="1.0.0" provider-name="Team-Kodi">
+  <backwards-compatibility abi="1.0.0"/>
+  <requires>
+    <import addon="xbmc.core" version="0.1.0"/>
+  </requires>
+</addon>

@@ -39,6 +39,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "addons/IAddon.h"
 #include "addons/AddonManager.h"
+#include "addons/AudioDecoder.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "CompileInfo.h"
 #if defined(TARGET_DARWIN_IOS)
@@ -1407,4 +1408,20 @@ void CAdvancedSettings::setExtraLogLevel(const std::vector<CVariant> &components
 
     m_extraLogLevels |= static_cast<int>(it->asInteger());
   }
+}
+
+std::string CAdvancedSettings::GetMusicExtensions() const
+{
+  std::string result(m_musicExtensions);
+
+  VECADDONS codecs;
+  CAddonMgr::Get().GetAddons(ADDON_AUDIODECODER, codecs);
+  for (size_t i=0;i<codecs.size();++i)
+  {
+    std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
+    result += '|';
+    result += dec->GetExtensions();
+  }
+
+  return result;
 }
