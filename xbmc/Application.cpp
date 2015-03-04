@@ -4748,7 +4748,7 @@ void CApplication::StartVideoCleanup(bool userInitiated /* = true */)
   if (userInitiated)
     CVideoLibraryQueue::Get().CleanLibraryModal(paths);
   else
-    CVideoLibraryQueue::Get().CleanLibrary(paths, false);
+    CVideoLibraryQueue::Get().CleanLibrary(paths, true);
 }
 
 void CApplication::StartVideoScan(const std::string &strDirectory, bool userInitiated /* = true */, bool scanAll /* = false */)
