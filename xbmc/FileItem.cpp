@@ -339,11 +339,13 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
   m_dateTime = item.m_dateTime;
   m_dwSize = item.m_dwSize;
-  if (item.HasMusicInfoTag())
+
+  if (item.m_musicInfoTag)
   {
-    m_musicInfoTag = GetMusicInfoTag();
     if (m_musicInfoTag)
       *m_musicInfoTag = *item.m_musicInfoTag;
+    else
+      m_musicInfoTag = new MUSIC_INFO::CMusicInfoTag(*item.m_musicInfoTag);
   }
   else
   {
@@ -351,11 +353,12 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_musicInfoTag = NULL;
   }
 
-  if (item.HasVideoInfoTag())
+  if (item.m_videoInfoTag)
   {
-    m_videoInfoTag = GetVideoInfoTag();
     if (m_videoInfoTag)
       *m_videoInfoTag = *item.m_videoInfoTag;
+    else
+      m_videoInfoTag = new CVideoInfoTag(*item.m_videoInfoTag);
   }
   else
   {
@@ -363,37 +366,23 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_videoInfoTag = NULL;
   }
 
-  if (item.HasEPGInfoTag())
-    m_epgInfoTag = item.m_epgInfoTag;
-  else
-    m_epgInfoTag.reset();
-
-  if (item.HasPVRChannelInfoTag())
-    m_pvrChannelInfoTag = item.m_pvrChannelInfoTag;
-  else
-    m_pvrChannelInfoTag.reset();
-
-  if (item.m_pvrRecordingInfoTag)
-    m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
-  else
-    m_pvrRecordingInfoTag.reset();
-
-  if (item.m_pvrTimerInfoTag)
-    m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
-  else
-    m_pvrTimerInfoTag.reset();
-
-  if (item.HasPictureInfoTag())
+  if (item.m_pictureInfoTag)
   {
-    m_pictureInfoTag = GetPictureInfoTag();
     if (m_pictureInfoTag)
       *m_pictureInfoTag = *item.m_pictureInfoTag;
+    else
+      m_pictureInfoTag = new CPictureInfoTag(*item.m_pictureInfoTag);
   }
   else
   {
     delete m_pictureInfoTag;
     m_pictureInfoTag = NULL;
   }
+
+  m_epgInfoTag = item.m_epgInfoTag;
+  m_pvrChannelInfoTag = item.m_pvrChannelInfoTag;
+  m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
+  m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
 
   m_lStartOffset = item.m_lStartOffset;
   m_lStartPartNumber = item.m_lStartPartNumber;
