@@ -68,12 +68,13 @@ CContextItemAddon::CContextItemAddon(const cp_extension_t *ext)
 
 bool CContextItemAddon::OnPreInstall()
 {
-  return CContextMenuManager::Get().Unregister(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
+  CContextMenuManager::Get().Unregister(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
+  return true;
 }
 
-void CContextItemAddon::OnPostInstall(bool restart, bool update, bool modal)
+void CContextItemAddon::OnPostInstall(bool update, bool modal)
 {
-  if (restart)
+  if (!CAddonMgr::Get().IsAddonDisabled(ID()))
   {
     // need to grab the local addon so we have the correct library path to run
     AddonPtr localAddon;

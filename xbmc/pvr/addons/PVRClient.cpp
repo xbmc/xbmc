@@ -88,10 +88,10 @@ bool CPVRClient::OnPreInstall()
 {
   // stop the pvr manager, so running pvr add-ons are stopped and closed
   PVR::CPVRManager::Get().Stop();
-  return false;
+  return true;
 }
 
-void CPVRClient::OnPostInstall(bool restart, bool update, bool modal)
+void CPVRClient::OnPostInstall(bool update, bool modal)
 {
   // (re)start the pvr manager
   PVR::CPVRManager::Get().Start(true);

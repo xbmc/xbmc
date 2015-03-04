@@ -192,9 +192,11 @@ public:
    */
   virtual AddonPtr GetRunningInstance() const { return AddonPtr(); }
 
-  /*! \brief callbacks for special install/uninstall behaviour */
-  virtual bool OnPreInstall() { return false; };
-  virtual void OnPostInstall(bool restart, bool update, bool modal) {};
+  /*! \brief Called before add-on is installed. Return true on success, otherwise false.*/
+  virtual bool OnPreInstall() { return true; };
+
+  /*! \brief Called if pre-install and install succeeded.*/
+  virtual void OnPostInstall(bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
   virtual bool CanInstall(const std::string& referer) { return true; }
