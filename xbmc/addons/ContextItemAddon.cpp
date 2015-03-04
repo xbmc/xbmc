@@ -51,10 +51,7 @@ CContextItemAddon::CContextItemAddon(const cp_extension_t *ext)
 
     m_label = CAddonMgr::Get().GetExtValue(item, "label");
     if (StringUtils::IsNaturalNumber(m_label))
-    {
       m_label = GetString(boost::lexical_cast<int>(m_label.c_str()));
-      ClearStrings();
-    }
 
     m_parent = CAddonMgr::Get().GetExtValue(item, "parent");
 
