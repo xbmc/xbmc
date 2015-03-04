@@ -71,7 +71,7 @@ bool CContextItemAddon::OnPreInstall()
   return CContextMenuManager::Get().Unregister(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
 }
 
-void CContextItemAddon::OnPostInstall(bool restart, bool update)
+void CContextItemAddon::OnPostInstall(bool restart, bool update, bool modal)
 {
   if (restart)
   {
