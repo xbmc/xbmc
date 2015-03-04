@@ -44,14 +44,16 @@ using namespace EPG;
 
 CPVRClient::CPVRClient(const AddonProps& props) :
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(props),
-    m_apiVersion("0.0.0")
+    m_apiVersion("0.0.0"),
+    m_bAvahiServiceAdded(false)
 {
   ResetProperties();
 }
 
 CPVRClient::CPVRClient(const cp_extension_t *ext) :
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(ext),
-    m_apiVersion("0.0.0")
+    m_apiVersion("0.0.0"),
+    m_bAvahiServiceAdded(false)
 {
   ResetProperties();
 
@@ -62,6 +64,8 @@ CPVRClient::CPVRClient(const cp_extension_t *ext) :
 
 CPVRClient::~CPVRClient(void)
 {
+  if (m_bAvahiServiceAdded)
+    CZeroconfBrowser::GetInstance()->RemoveServiceType(m_strAvahiType);
   Destroy();
   SAFE_DELETE(m_pInfo);
 }
@@ -1757,6 +1761,18 @@ bool CPVRClient::CanAutoconfigure(void) const
       !m_strAvahiPortSetting.empty();
 }
 
+bool CPVRClient::AutoconfigureRegisterType(void)
+{
+  if (!m_strAvahiType.empty())
+  {
+    // AddServiceType() returns false when already registered
+    m_bAvahiServiceAdded |= CZeroconfBrowser::GetInstance()->AddServiceType(m_strAvahiType);
+    return true;
+  }
+
+  return false;
+}
+
 bool CPVRClient::Autoconfigure(void)
 {
   bool bReturn(false);
@@ -1764,8 +1780,6 @@ bool CPVRClient::Autoconfigure(void)
   if (!CanAutoconfigure())
     return bReturn;
 
-  /** TODO make CZeroconfBrowser::AddServiceType() public
-  CZeroconfBrowser::GetInstance()->AddServiceType(m_strAvahiType); */
   CLog::Log(LOGDEBUG, "%s - trying to auto-configure %s", __FUNCTION__, Name().c_str());
 
   std::vector<CZeroconfBrowser::ZeroconfService> found_services = CZeroconfBrowser::GetInstance()->GetFoundServices();

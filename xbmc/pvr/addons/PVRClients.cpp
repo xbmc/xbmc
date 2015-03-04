@@ -1212,6 +1212,8 @@ bool CPVRClients::AutoconfigureClients(void)
 
   /** start zeroconf and wait a second to get some responses */
   CZeroconfBrowser::GetInstance()->Start();
+  for (std::vector<PVR_CLIENT>::iterator it = autoConfigAddons.begin(); !bReturn && it != autoConfigAddons.end(); ++it)
+    (*it)->AutoconfigureRegisterType();
   Sleep(1000);
   float percentage = 20.0f;
   float percentageStep = 80.0f / autoConfigAddons.size();

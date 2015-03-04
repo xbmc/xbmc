@@ -559,13 +559,19 @@ namespace PVR
     time_t GetBufferTimeEnd() const;
 
     /*!
-     * @return True when this add-on can be auto-configured via avahi, false otherwise
+     * @return True if this add-on can be auto-configured via avahi, false otherwise
      */
     bool CanAutoconfigure(void) const;
 
     /*!
+     * Registers the avahi type for this add-on
+     * @return True if registered, false if not.
+     */
+    bool AutoconfigureRegisterType(void);
+
+    /*!
      * Try to auto-configure this add-on via avahi
-     * @return True when auto-configured and the configured was accepted by the user, false otherwise
+     * @return True if auto-configured and the configured was accepted by the user, false otherwise
      */
     bool Autoconfigure(void);
 
@@ -669,5 +675,6 @@ namespace PVR
     bool                m_bIsPlayingRecording;
     CPVRRecordingPtr    m_playingRecording;
     ADDON::AddonVersion m_apiVersion;
+    bool                m_bAvahiServiceAdded;
   };
 }
