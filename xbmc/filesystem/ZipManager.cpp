@@ -82,12 +82,18 @@ bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
   }
 
   unsigned int hdr;
-  if (mFile.Read(&hdr, 4)!=4 || Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
+  if (mFile.Read(&hdr, 4)!=4 || (Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER &&
+                                 Endian_SwapLE32(hdr) != ZIP_DATA_RECORD_HEADER &&
+                                 Endian_SwapLE32(hdr) != ZIP_SPLIT_ARCHIVE_HEADER))
   {
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
     mFile.Close();
     return false;
   }
+
+  if (Endian_SwapLE32(hdr) == ZIP_SPLIT_ARCHIVE_HEADER)
+    CLog::LogF(LOGWARNING, "ZIP split archive header found. Trying to process as a single archive..");
+
   // push date for update detection
   mZipDate.insert(make_pair(strFile,m_StatData.st_mtime));
 
