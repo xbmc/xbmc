@@ -26,7 +26,6 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "network/ZeroconfBrowser.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRDatabase.h"
 #include "guilib/GUIWindowManager.h"
@@ -42,6 +41,11 @@
 using namespace ADDON;
 using namespace PVR;
 using namespace EPG;
+
+/** number of iterations when scanning for add-ons. don't use a timer because the user may block in the dialog */
+#define PVR_CLIENT_AVAHI_SCAN_ITERATIONS   (20)
+/** sleep time in milliseconds when no auto-configured add-ons were found */
+#define PVR_CLIENT_AVAHI_SLEEP_TIME_MS     (250)
 
 CPVRClients::CPVRClients(void) :
     CThread("PVRClient"),
@@ -1214,30 +1218,37 @@ bool CPVRClients::AutoconfigureClients(void)
   CZeroconfBrowser::GetInstance()->Start();
   for (std::vector<PVR_CLIENT>::iterator it = autoConfigAddons.begin(); !bReturn && it != autoConfigAddons.end(); ++it)
     (*it)->AutoconfigureRegisterType();
-  Sleep(1000);
-  float percentage = 20.0f;
-  float percentageStep = 80.0f / autoConfigAddons.size();
+
+  unsigned iIterations(0);
+  float percentage(0.0f);
+  float percentageStep(100.0f / PVR_CLIENT_AVAHI_SCAN_ITERATIONS);
   progressHandle->SetPercentage(percentage);
 
-  /** check each disabled add-on */
-  for (std::vector<PVR_CLIENT>::iterator it = autoConfigAddons.begin(); !bReturn && it != autoConfigAddons.end(); ++it)
+  /** while no add-ons were configured within 20 iterations */
+  while (!bReturn && iIterations++ < PVR_CLIENT_AVAHI_SCAN_ITERATIONS)
   {
-    if (addon->Autoconfigure())
+    /** check each disabled add-on */
+    for (std::vector<PVR_CLIENT>::iterator it = autoConfigAddons.begin(); !bReturn && it != autoConfigAddons.end(); ++it)
     {
-      progressHandle->SetPercentage(100.0f);
-      progressHandle->MarkFinished();
+      if (addon->Autoconfigure())
+      {
+        progressHandle->SetPercentage(100.0f);
+        progressHandle->MarkFinished();
 
-      /** enable the add-on */
-      CAddonMgr::Get().DisableAddon((*it)->ID(), false);
-      CSingleLock lock(m_critSection);
-      m_addons.push_back(*it);
-      bReturn = true;
+        /** enable the add-on */
+        CAddonMgr::Get().DisableAddon((*it)->ID(), false);
+        CSingleLock lock(m_critSection);
+        m_addons.push_back(*it);
+        bReturn = true;
+      }
     }
-    else
+
+    /** wait a while and try again */
+    if (!bReturn)
     {
-      /** failed, try the next add-on */
       percentage += percentageStep;
       progressHandle->SetPercentage(percentage);
+      Sleep(PVR_CLIENT_AVAHI_SLEEP_TIME_MS);
     }
   }
 

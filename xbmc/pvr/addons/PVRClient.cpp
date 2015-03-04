@@ -24,7 +24,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "epg/Epg.h"
-#include "network/ZeroconfBrowser.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -1780,13 +1779,12 @@ bool CPVRClient::Autoconfigure(void)
   if (!CanAutoconfigure())
     return bReturn;
 
-  CLog::Log(LOGDEBUG, "%s - trying to auto-configure %s", __FUNCTION__, Name().c_str());
-
+  std::string strHostPort;
   std::vector<CZeroconfBrowser::ZeroconfService> found_services = CZeroconfBrowser::GetInstance()->GetFoundServices();
   for(std::vector<CZeroconfBrowser::ZeroconfService>::iterator it = found_services.begin(); !bReturn && it != found_services.end(); ++it)
   {
     /** found the type that we are looking for */
-    if ((*it).GetType() == m_strAvahiType)
+    if ((*it).GetType() == m_strAvahiType && std::find(m_rejectedAvahiHosts.begin(), m_rejectedAvahiHosts.end(), *it) == m_rejectedAvahiHosts.end())
     {
       /** try to resolve */
       if(!CZeroconfBrowser::GetInstance()->ResolveService((*it)))
@@ -1806,6 +1804,7 @@ bool CPVRClient::Autoconfigure(void)
                                               ))
         {
           CLog::Log(LOGDEBUG, "%s - %s service found but not enabled by the user", __FUNCTION__, (*it).GetName().c_str());
+          m_rejectedAvahiHosts.push_back(*it);
         }
         else
         {
@@ -1821,9 +1820,6 @@ bool CPVRClient::Autoconfigure(void)
       }
     }
   }
-
-  if (!bReturn)
-    CLog::Log(LOGDEBUG, "%s - failed to configure %s with type '%s'", __FUNCTION__, Name().c_str(), m_strAvahiType.c_str());
 
   return bReturn;
 }

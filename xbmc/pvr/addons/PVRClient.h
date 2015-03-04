@@ -22,6 +22,7 @@
 #include "addons/Addon.h"
 #include "addons/AddonDll.h"
 #include "addons/DllPVRClient.h"
+#include "network/ZeroconfBrowser.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecordings.h"
 
@@ -662,11 +663,12 @@ namespace PVR
     std::string            m_strBackendHostname;    /*!< the cached backend hostname */
 
     /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */
-    std::string m_strUserPath;    /*!< @brief translated path to the user profile */
-    std::string m_strClientPath;  /*!< @brief translated path to this add-on */
-    std::string m_strAvahiType;
-    std::string m_strAvahiIpSetting;
-    std::string m_strAvahiPortSetting;
+    std::string                                    m_strUserPath;         /*!< @brief translated path to the user profile */
+    std::string                                    m_strClientPath;       /*!< @brief translated path to this add-on */
+    std::string                                    m_strAvahiType;        /*!< avahi service type */
+    std::string                                    m_strAvahiIpSetting;   /*!< add-on setting name to change to the found ip address */
+    std::string                                    m_strAvahiPortSetting; /*!< add-on setting name to change to the found port number */
+    std::vector<CZeroconfBrowser::ZeroconfService> m_rejectedAvahiHosts;  /*!< hosts that were rejected by the user */
 
     CCriticalSection m_critSection;
 
