@@ -32,7 +32,7 @@
 using namespace std;
 
 CVideoLibraryQueue::CVideoLibraryQueue()
-  : CJobQueue(false, 1, CJob::PRIORITY_LOW_PAUSABLE),
+  : CJobQueue(false, 1, CJob::PRIORITY_LOW),
     m_jobs(),
     m_cleaning(false)
 { }
