@@ -152,13 +152,21 @@ void CVideoLibraryQueue::CancelJob(CVideoLibraryJob *job)
     return;
 
   CSingleLock lock(m_critical);
+  // remember the job type needed later because the job might be deleted
+  // in the call to CJobQueue::CancelJob()
+  std::string jobType;
+  if (job->GetType() != NULL)
+    jobType = job->GetType();
+
+  // check if the job supports cancellation and cancel it
   if (job->CanBeCancelled())
     job->Cancel();
 
+  // remove the job from the job queue
   CJobQueue::CancelJob(job);
 
   // remove the job from our list of queued/running jobs
-  VideoLibraryJobMap::iterator jobsIt = m_jobs.find(job->GetType());
+  VideoLibraryJobMap::iterator jobsIt = m_jobs.find(jobType);
   if (jobsIt != m_jobs.end())
     jobsIt->second.erase(job);
 }
