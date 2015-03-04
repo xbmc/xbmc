@@ -2487,16 +2487,6 @@ if test "$host_vendor" = "apple" ; then
   LIBS="$LIBS -L\$(abs_top_srcdir)/lib/ffmpeg/libswscale -lswscale"
 fi
 
-USE_PVR_ADDONS=0
-DISABLE_PVR_ADDON_CONFIG=1
-if [[ -f "pvr-addons/Makefile.am" ]]; then
-  final_message="$final_message\n  PVR add-ons:\t\tYes"
-  USE_PVR_ADDONS=1
-  DISABLE_PVR_ADDON_CONFIG=0
-else
-  final_message="$final_message\n  PVR add-ons:\t\tNo"
-fi
-
 OUTPUT_FILES="Makefile \
     Makefile.include \
     addons/skin.confluence/media/Makefile \
@@ -2681,7 +2671,6 @@ AC_SUBST(USE_OMXLIB)
 AC_SUBST(USE_ANDROID)
 AC_SUBST(GTEST_CONFIGURED)
 AC_SUBST(USE_DOXYGEN)
-AC_SUBST(USE_PVR_ADDONS)
 AC_SUBST(UPNP_DEFINES)
 AC_SUBST(USE_SSE4)
 AC_SUBST(USE_MMAL)
@@ -2877,18 +2866,6 @@ XB_CONFIG_MODULE([lib/gtest], [
     --enable-static \
     --with-pthreads
 ], [$SKIP_CONFIG_GTEST])
-
-XB_CONFIG_MODULE([pvr-addons], [
-  ./configure \
-    --prefix="${prefix}" \
-    --host=$host_alias \
-    --build=$build_alias \
-    --target=$target_alias \
-    CC="$CC" \
-    CXX="$CXX" \
-    CFLAGS="$CFLAGS" \
-    CXXFLAGS="$CXXFLAGS"
-], [$DISABLE_PVR_ADDON_CONFIG])
 
 AC_OUTPUT
 
