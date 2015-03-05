@@ -127,20 +127,6 @@ public:
 
   virtual void ProcessResults() {}
 
-protected:
-  // pure virtual methods to implement for OS specific implementations
-  virtual bool doAddServiceType(const std::string& fcr_service_type) = 0;
-  virtual bool doRemoveServiceType(const std::string& fcr_service_type) = 0;
-  virtual std::vector<ZeroconfService> doGetFoundServices() = 0;
-  virtual bool doResolveService(ZeroconfService& fr_service, double f_timeout) = 0;
-
-protected:
-  //singleton: we don't want to get instantiated nor copied or deleted from outside
-  CZeroconfBrowser();
-  CZeroconfBrowser(const CZeroconfBrowser&);
-  virtual ~CZeroconfBrowser();
-
-private:
   /// methods for browsing and getting results of it
   ///@{
   /// adds a service type for browsing
@@ -153,6 +139,19 @@ private:
   /// @return if it was not found
   bool RemoveServiceType(const std::string& fcr_service_type);
 
+protected:
+  //singleton: we don't want to get instantiated nor copied or deleted from outside
+  CZeroconfBrowser();
+  CZeroconfBrowser(const CZeroconfBrowser&);
+  virtual ~CZeroconfBrowser();
+
+  // pure virtual methods to implement for OS specific implementations
+  virtual bool doAddServiceType(const std::string& fcr_service_type) = 0;
+  virtual bool doRemoveServiceType(const std::string& fcr_service_type) = 0;
+  virtual std::vector<ZeroconfService> doGetFoundServices() = 0;
+  virtual bool doResolveService(ZeroconfService& fr_service, double f_timeout) = 0;
+
+private:
   struct ServiceInfo
   {
     std::string type;

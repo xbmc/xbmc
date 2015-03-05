@@ -22,6 +22,7 @@
 #include "addons/Addon.h"
 #include "addons/AddonDll.h"
 #include "addons/DllPVRClient.h"
+#include "network/ZeroconfBrowser.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecordings.h"
 
@@ -558,6 +559,23 @@ namespace PVR
      */
     time_t GetBufferTimeEnd() const;
 
+    /*!
+     * @return True if this add-on can be auto-configured via avahi, false otherwise
+     */
+    bool CanAutoconfigure(void) const;
+
+    /*!
+     * Registers the avahi type for this add-on
+     * @return True if registered, false if not.
+     */
+    bool AutoconfigureRegisterType(void);
+
+    /*!
+     * Try to auto-configure this add-on via avahi
+     * @return True if auto-configured and the configured was accepted by the user, false otherwise
+     */
+    bool Autoconfigure(void);
+
   private:
     /*!
      * @brief Checks whether the provided API version is compatible with XBMC
@@ -645,8 +663,12 @@ namespace PVR
     std::string            m_strBackendHostname;    /*!< the cached backend hostname */
 
     /* stored strings to make sure const char* members in PVR_PROPERTIES stay valid */
-    std::string m_strUserPath;    /*!< @brief translated path to the user profile */
-    std::string m_strClientPath;  /*!< @brief translated path to this add-on */
+    std::string                                    m_strUserPath;         /*!< @brief translated path to the user profile */
+    std::string                                    m_strClientPath;       /*!< @brief translated path to this add-on */
+    std::string                                    m_strAvahiType;        /*!< avahi service type */
+    std::string                                    m_strAvahiIpSetting;   /*!< add-on setting name to change to the found ip address */
+    std::string                                    m_strAvahiPortSetting; /*!< add-on setting name to change to the found port number */
+    std::vector<CZeroconfBrowser::ZeroconfService> m_rejectedAvahiHosts;  /*!< hosts that were rejected by the user */
 
     CCriticalSection m_critSection;
 
@@ -655,5 +677,6 @@ namespace PVR
     bool                m_bIsPlayingRecording;
     CPVRRecordingPtr    m_playingRecording;
     ADDON::AddonVersion m_apiVersion;
+    bool                m_bAvahiServiceAdded;
   };
 }

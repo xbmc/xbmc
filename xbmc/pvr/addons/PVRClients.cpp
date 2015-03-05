@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "GUIUserMessages.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "pvr/PVRManager.h"
@@ -40,6 +41,11 @@
 using namespace ADDON;
 using namespace PVR;
 using namespace EPG;
+
+/** number of iterations when scanning for add-ons. don't use a timer because the user may block in the dialog */
+#define PVR_CLIENT_AVAHI_SCAN_ITERATIONS   (20)
+/** sleep time in milliseconds when no auto-configured add-ons were found */
+#define PVR_CLIENT_AVAHI_SLEEP_TIME_MS     (250)
 
 CPVRClients::CPVRClients(void) :
     CThread("PVRClient"),
@@ -1069,9 +1075,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       CSingleLock lock(m_critSection);
       /* stop the client and remove it from the db */
       StopClient(clientAddon, false);
-      VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), clientAddon);
-      if (addonPtr != m_addons.end())
-        m_addons.erase(addonPtr);
+      disableAddons.push_back(clientAddon);
 
     }
     else if (bEnabled && (bInitialiseAllClients || !IsKnownClient(clientAddon) || !IsConnectedClient(clientAddon)))
@@ -1167,11 +1171,90 @@ void CPVRClients::Process(void)
     {
       bCheckedEnabledClientsOnStartup = true;
       if (!HasEnabledClients() && !m_bNoAddonWarningDisplayed)
-        ShowDialogNoClientsEnabled();
+      {
+        if (AutoconfigureClients())
+          m_bNoAddonWarningDisplayed = true;
+        else
+          ShowDialogNoClientsEnabled();
+      }
+    }
+    else
+    {
+      Sleep(1000);
+    }
+  }
+}
+
+bool CPVRClients::AutoconfigureClients(void)
+{
+  bool bReturn(false);
+  std::vector<PVR_CLIENT> autoConfigAddons;
+  PVR_CLIENT addon;
+  VECADDONS map;
+  CAddonMgr::Get().GetAddons(ADDON_PVRDLL, map, false);
+
+  /** get the auto-configurable add-ons */
+  for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
+  {
+    if (CAddonMgr::Get().IsAddonDisabled((*it)->ID()))
+    {
+      addon = std::dynamic_pointer_cast<CPVRClient>(*it);
+      if (addon->CanAutoconfigure())
+        autoConfigAddons.push_back(addon);
+    }
+  }
+
+  /** no configurable add-ons found */
+  if (autoConfigAddons.size() == 0)
+    return bReturn;
+
+  /** display a progress bar while trying to auto-configure add-ons */
+  CGUIDialogExtendedProgressBar *loadingProgressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+  CGUIDialogProgressBarHandle* progressHandle = loadingProgressDialog->GetHandle(g_localizeStrings.Get(19688)); // Scanning for PVR services
+  progressHandle->SetPercentage(0);
+  progressHandle->SetText(g_localizeStrings.Get(19688)); //Scanning for PVR services
+
+  /** start zeroconf and wait a second to get some responses */
+  CZeroconfBrowser::GetInstance()->Start();
+  for (std::vector<PVR_CLIENT>::iterator it = autoConfigAddons.begin(); !bReturn && it != autoConfigAddons.end(); ++it)
+    (*it)->AutoconfigureRegisterType();
+
+  unsigned iIterations(0);
+  float percentage(0.0f);
+  float percentageStep(100.0f / PVR_CLIENT_AVAHI_SCAN_ITERATIONS);
+  progressHandle->SetPercentage(percentage);
+
+  /** while no add-ons were configured within 20 iterations */
+  while (!bReturn && iIterations++ < PVR_CLIENT_AVAHI_SCAN_ITERATIONS)
+  {
+    /** check each disabled add-on */
+    for (std::vector<PVR_CLIENT>::iterator it = autoConfigAddons.begin(); !bReturn && it != autoConfigAddons.end(); ++it)
+    {
+      if (addon->Autoconfigure())
+      {
+        progressHandle->SetPercentage(100.0f);
+        progressHandle->MarkFinished();
+
+        /** enable the add-on */
+        CAddonMgr::Get().DisableAddon((*it)->ID(), false);
+        CSingleLock lock(m_critSection);
+        m_addons.push_back(*it);
+        bReturn = true;
+      }
     }
 
-    Sleep(1000);
+    /** wait a while and try again */
+    if (!bReturn)
+    {
+      percentage += percentageStep;
+      progressHandle->SetPercentage(percentage);
+      Sleep(PVR_CLIENT_AVAHI_SLEEP_TIME_MS);
+    }
   }
+
+  progressHandle->SetPercentage(100.0f);
+  progressHandle->MarkFinished();
+  return bReturn;
 }
 
 void CPVRClients::ShowDialogNoClientsEnabled(void)

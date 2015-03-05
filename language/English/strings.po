@@ -9378,7 +9378,22 @@ msgctxt "#19686"
 msgid "The PVR backend is busy. Shutdown anyway?"
 msgstr ""
 
-#empty strings from id 19687 to 19999
+#: xbmc/pvr/addons/PVRClients.cpp
+msgctxt "#19688"
+msgid "Scanning for PVR services"
+msgstr ""
+
+#: xbmc/pvr/addons/PVRClients.cpp
+msgctxt "#19689"
+msgid "%s service found at %s"
+msgstr ""
+
+#: xbmc/pvr/addons/PVRClient.cpp
+msgctxt "#19690"
+msgid "Do you want to use this service?"
+msgstr ""
+
+#empty strings from id 19691 to 19999
 
 #: system/settings/settings.xml
 msgctxt "#20000"
