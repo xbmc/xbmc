@@ -198,6 +198,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
           timerNotifications.push_back(strMessage);
         }
 
+        /** clear the EPG tag explicitly here, because it no longer happens automatically with shared pointers */
+        timer->ClearEpgTag();
         it->second->erase(it->second->begin() + iTimerPtr);
 
         bChanged = true;
