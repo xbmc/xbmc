@@ -59,7 +59,7 @@ CRemoteControl::~CRemoteControl()
     fclose(m_file);
 }
 
-void CRemoteControl::setUsed(bool value)
+void CRemoteControl::SetEnabled(bool value)
 {
   m_used=value;
   if (!value)

@@ -41,7 +41,7 @@ public:
    */
   unsigned int GetHoldTime() const;
   void SetDeviceName(const std::string& value);
-  void setUsed(bool value);
+  void SetEnabled(bool value);
   bool IsInUse() const { return m_used; }
   bool IsInitialized() const { return m_bInitialized; }
   void AddSendCommand(const std::string& command);

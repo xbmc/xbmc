@@ -483,7 +483,3 @@ unsigned int CRemoteControl::GetHoldTime() const
 {
   return 0;
 }
-
-void CRemoteControl::setUsed(bool value)
-{
-}

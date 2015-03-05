@@ -27,7 +27,7 @@ class CRemoteControl : CThread
 {
 public:
   CRemoteControl();
-  ~CRemoteControl();
+  virtual ~CRemoteControl();
   void Initialize();
   void Disconnect();
   void Reset();
@@ -38,7 +38,8 @@ public:
 
   //lirc stuff, not implemented
   bool IsInUse() {return false;}
-  void setUsed(bool value);
+  void SetEnabled(bool) { }
+  void SetDeviceName(const std::string&) { }
   void AddSendCommand(const std::string& command) {}
 
 protected:
