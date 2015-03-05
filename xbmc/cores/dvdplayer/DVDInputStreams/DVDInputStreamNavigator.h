@@ -194,5 +194,7 @@ protected:
 
   uint8_t m_lastblock[DVD_VIDEO_BLOCKSIZE];
   int     m_lastevent;
+
+  std::map<int, std::map<int, int64_t>> m_mapTitleChapters;
 };
 
