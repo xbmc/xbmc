@@ -25,7 +25,7 @@
 #include "filesystem/ZipManager.h"
 #include "XMLUtils.h"
 #include "utils/POUtils.h"
-#include "Temperature.h"
+#include "utils/Temperature.h"
 #include "network/Network.h"
 #include "Application.h"
 #include "settings/lib/Setting.h"

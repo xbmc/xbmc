@@ -244,6 +244,9 @@
 		395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
+		397877D81AAAF87700F98A45 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D31AAAF87700F98A45 /* Temperature.cpp */; };
+		397877D91AAAF87700F98A45 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D31AAAF87700F98A45 /* Temperature.cpp */; };
+		397877DA1AAAF87700F98A45 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D31AAAF87700F98A45 /* Temperature.cpp */; };
 		3994425B1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442591A8DD8D0006C39E9 /* ProgressJob.cpp */; };
 		3994425C1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442591A8DD8D0006C39E9 /* ProgressJob.cpp */; };
 		3994425D1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 399442591A8DD8D0006C39E9 /* ProgressJob.cpp */; };
@@ -1828,7 +1831,6 @@
 		DFF0F44517528350002DA3A4 /* PlayListPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DE90D25F9FD00618676 /* PlayListPlayer.cpp */; };
 		DFF0F44617528350002DA3A4 /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */; };
 		DFF0F44717528350002DA3A4 /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
-		DFF0F44817528350002DA3A4 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E160D25F9FD00618676 /* Temperature.cpp */; };
 		DFF0F44917528350002DA3A4 /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
 		DFF0F44A17528350002DA3A4 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
 		DFF0F44B17528350002DA3A4 /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
@@ -2192,7 +2194,6 @@
 		E38E22B40D25F9FE00618676 /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E010D25F9FD00618676 /* VideoSettings.cpp */; };
 		E38E22B80D25F9FE00618676 /* SlideShowPicture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E090D25F9FD00618676 /* SlideShowPicture.cpp */; };
 		E38E22BA0D25F9FE00618676 /* Song.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E0D0D25F9FD00618676 /* Song.cpp */; };
-		E38E22BE0D25F9FE00618676 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E160D25F9FD00618676 /* Temperature.cpp */; };
 		E38E22BF0D25F9FE00618676 /* ThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */; };
 		E38E22C00D25F9FE00618676 /* ThumbnailCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E1A0D25F9FD00618676 /* ThumbnailCache.cpp */; };
 		E38E22C20D25F9FE00618676 /* URL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E1E0D25F9FD00618676 /* URL.cpp */; };
@@ -3071,7 +3072,6 @@
 		E4991540174E642900741B6D /* PlayListPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DE90D25F9FD00618676 /* PlayListPlayer.cpp */; };
 		E4991541174E642900741B6D /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */; };
 		E4991542174E642900741B6D /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
-		E4991543174E642900741B6D /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E160D25F9FD00618676 /* Temperature.cpp */; };
 		E4991544174E642900741B6D /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
 		E4991545174E642900741B6D /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
 		E4991546174E642900741B6D /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
@@ -3708,6 +3708,8 @@
 		395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSimpleMenu.h; sourceTree = "<group>"; };
 		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
 		395F6DE11A81FACF0088CC74 /* HTTPImageTransformationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageTransformationHandler.h; sourceTree = "<group>"; };
+		397877D31AAAF87700F98A45 /* Temperature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Temperature.cpp; sourceTree = "<group>"; };
+		397877D41AAAF87700F98A45 /* Temperature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Temperature.h; sourceTree = "<group>"; };
 		399442591A8DD8D0006C39E9 /* ProgressJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProgressJob.cpp; sourceTree = "<group>"; };
 		3994425A1A8DD8D0006C39E9 /* ProgressJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressJob.h; sourceTree = "<group>"; };
 		399442611A8DD920006C39E9 /* VideoLibraryCleaningJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryCleaningJob.cpp; sourceTree = "<group>"; };
@@ -5488,8 +5490,6 @@
 		E38E1E0D0D25F9FD00618676 /* Song.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Song.cpp; sourceTree = "<group>"; };
 		E38E1E0E0D25F9FD00618676 /* Song.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Song.h; sourceTree = "<group>"; };
 		E38E1E100D25F9FD00618676 /* SortFileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortFileItem.h; sourceTree = "<group>"; };
-		E38E1E160D25F9FD00618676 /* Temperature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Temperature.cpp; sourceTree = "<group>"; };
-		E38E1E170D25F9FD00618676 /* Temperature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Temperature.h; sourceTree = "<group>"; };
 		E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThumbLoader.cpp; sourceTree = "<group>"; };
 		E38E1E190D25F9FD00618676 /* ThumbLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbLoader.h; sourceTree = "<group>"; };
 		E38E1E1A0D25F9FD00618676 /* ThumbnailCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThumbnailCache.cpp; sourceTree = "<group>"; };
@@ -8421,8 +8421,6 @@
 				E38E1DFF0D25F9FD00618676 /* SectionLoader.h */,
 				E38E1E100D25F9FD00618676 /* SortFileItem.h */,
 				C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */,
-				E38E1E160D25F9FD00618676 /* Temperature.cpp */,
-				E38E1E170D25F9FD00618676 /* Temperature.h */,
 				7C8A14541154CB2600E5FCFA /* TextureCache.cpp */,
 				7C8A14551154CB2600E5FCFA /* TextureCache.h */,
 				7C1A85631520522500C63311 /* TextureCacheJob.cpp */,
@@ -9582,6 +9580,8 @@
 				DFD882E617DD189E001516FE /* StringValidation.h */,
 				E38E1E830D25F9FD00618676 /* SystemInfo.cpp */,
 				E38E1E840D25F9FD00618676 /* SystemInfo.h */,
+				397877D31AAAF87700F98A45 /* Temperature.cpp */,
+				397877D41AAAF87700F98A45 /* Temperature.h */,
 				C848291D156D003E005A996F /* TextSearch.cpp */,
 				C848291E156D003E005A996F /* TextSearch.h */,
 				7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */,
@@ -10692,7 +10692,6 @@
 				E38E22B40D25F9FE00618676 /* VideoSettings.cpp in Sources */,
 				E38E22B80D25F9FE00618676 /* SlideShowPicture.cpp in Sources */,
 				E38E22BA0D25F9FE00618676 /* Song.cpp in Sources */,
-				E38E22BE0D25F9FE00618676 /* Temperature.cpp in Sources */,
 				E38E22BF0D25F9FE00618676 /* ThumbLoader.cpp in Sources */,
 				E38E22C00D25F9FE00618676 /* ThumbnailCache.cpp in Sources */,
 				E38E22C20D25F9FE00618676 /* URL.cpp in Sources */,
@@ -10912,6 +10911,7 @@
 				18B7C7B51294222E009E7A26 /* GUICheckMarkControl.cpp in Sources */,
 				18B7C7B61294222E009E7A26 /* GUIColorManager.cpp in Sources */,
 				18B7C7B71294222E009E7A26 /* GUIControl.cpp in Sources */,
+				397877D81AAAF87700F98A45 /* Temperature.cpp in Sources */,
 				18B7C7B81294222E009E7A26 /* GUIControlFactory.cpp in Sources */,
 				18B7C7B91294222E009E7A26 /* GUIControlGroup.cpp in Sources */,
 				18B7C7BA1294222E009E7A26 /* GUIControlGroupList.cpp in Sources */,
@@ -12081,6 +12081,7 @@
 				DFF0F34D17528350002DA3A4 /* PeripheralHID.cpp in Sources */,
 				DFF0F34E17528350002DA3A4 /* PeripheralImon.cpp in Sources */,
 				DFF0F34F17528350002DA3A4 /* PeripheralNIC.cpp in Sources */,
+				397877DA1AAAF87700F98A45 /* Temperature.cpp in Sources */,
 				DFF0F35017528350002DA3A4 /* PeripheralNyxboard.cpp in Sources */,
 				DFF0F35117528350002DA3A4 /* PeripheralTuner.cpp in Sources */,
 				DFF0F35217528350002DA3A4 /* GUIDialogPeripheralManager.cpp in Sources */,
@@ -12313,7 +12314,6 @@
 				DFF0F44517528350002DA3A4 /* PlayListPlayer.cpp in Sources */,
 				DFF0F44617528350002DA3A4 /* SectionLoader.cpp in Sources */,
 				DFF0F44717528350002DA3A4 /* SystemGlobals.cpp in Sources */,
-				DFF0F44817528350002DA3A4 /* Temperature.cpp in Sources */,
 				DFF0F44917528350002DA3A4 /* TextureCache.cpp in Sources */,
 				DFF0F44A17528350002DA3A4 /* TextureCacheJob.cpp in Sources */,
 				DFF0F44B17528350002DA3A4 /* TextureDatabase.cpp in Sources */,
@@ -12641,6 +12641,7 @@
 				E49911B5174E5D0A00741B6D /* emu_msvcrt.cpp in Sources */,
 				E49911B6174E5D0A00741B6D /* coff.cpp in Sources */,
 				E49911B7174E5D0A00741B6D /* dll.cpp in Sources */,
+				397877D91AAAF87700F98A45 /* Temperature.cpp in Sources */,
 				E49911B8174E5D0A00741B6D /* dll_tracker.cpp in Sources */,
 				E49911B9174E5D0A00741B6D /* dll_tracker_file.cpp in Sources */,
 				DF4BF0171A4EF31E0053AC56 /* cc_decoder.c in Sources */,
@@ -13390,7 +13391,6 @@
 				E4991540174E642900741B6D /* PlayListPlayer.cpp in Sources */,
 				E4991541174E642900741B6D /* SectionLoader.cpp in Sources */,
 				E4991542174E642900741B6D /* SystemGlobals.cpp in Sources */,
-				E4991543174E642900741B6D /* Temperature.cpp in Sources */,
 				E4991544174E642900741B6D /* TextureCache.cpp in Sources */,
 				E4991545174E642900741B6D /* TextureCacheJob.cpp in Sources */,
 				E4991546174E642900741B6D /* TextureDatabase.cpp in Sources */,

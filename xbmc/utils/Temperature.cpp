@@ -18,29 +18,30 @@
  *
  */
 
+#include <assert.h>
+
+#include "Temperature.h"
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
-#include "Temperature.h"
-#include "utils/StringUtils.h"
 #include "utils/Archive.h"
-#include <assert.h>
+#include "utils/StringUtils.h"
 
 CTemperature::CTemperature()
 {
   m_value=0.0f;
-  m_state=invalid;
+  m_valid=false;
 }
 
 CTemperature::CTemperature(const CTemperature& temperature)
 {
   m_value=temperature.m_value;
-  m_state=temperature.m_state;
+  m_valid=temperature.m_valid;
 }
 
 CTemperature::CTemperature(double value)
 {
   m_value=value;
-  m_state=valid;
+  m_valid=true;
 }
 
 bool CTemperature::operator >(const CTemperature& right) const
@@ -102,7 +103,7 @@ bool CTemperature::operator !=(const CTemperature& right) const
 
 const CTemperature& CTemperature::operator =(const CTemperature& right)
 {
-  m_state=right.m_state;
+  m_valid=right.m_valid;
   m_value=right.m_value;
   return *this;
 }
@@ -151,7 +152,7 @@ CTemperature CTemperature::operator +(const CTemperature& right) const
   CTemperature temp(*this);
 
   if (!IsValid() || !right.IsValid())
-    temp.SetState(invalid);
+    temp.SetValid(false);
   else
     temp.m_value+=right.m_value;
 
@@ -165,7 +166,7 @@ CTemperature CTemperature::operator -(const CTemperature& right) const
 
   CTemperature temp(*this);
   if (!IsValid() || !right.IsValid())
-    temp.SetState(invalid);
+    temp.SetValid(false);
   else
     temp.m_value-=right.m_value;
 
@@ -179,7 +180,7 @@ CTemperature CTemperature::operator *(const CTemperature& right) const
 
   CTemperature temp(*this);
   if (!IsValid() || !right.IsValid())
-    temp.SetState(invalid);
+    temp.SetValid(false);
   else
     temp.m_value*=right.m_value;
   return temp;
@@ -192,7 +193,7 @@ CTemperature CTemperature::operator /(const CTemperature& right) const
 
   CTemperature temp(*this);
   if (!IsValid() || !right.IsValid())
-    temp.SetState(invalid);
+    temp.SetValid(false);
   else
     temp.m_value/=right.m_value;
   return temp;
@@ -384,25 +385,18 @@ void CTemperature::Archive(CArchive& ar)
   if (ar.IsStoring())
   {
     ar<<m_value;
-    ar<<(int)m_state;
+    ar<<m_valid;
   }
   else
   {
     ar>>m_value;
-    int state;
-    ar>>(int&)state;
-    m_state = CTemperature::STATE(state);
+    ar>>m_valid;
   }
-}
-
-void CTemperature::SetState(CTemperature::STATE state)
-{
-  m_state=state;
 }
 
 bool CTemperature::IsValid() const
 {
-  return (m_state==valid);
+  return m_valid;
 }
 
 double CTemperature::ToFahrenheit() const

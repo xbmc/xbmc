@@ -20,6 +20,7 @@
  */
 
 #include <string>
+
 #include "utils/IArchivable.h"
 
 class CTemperature : public IArchivable
@@ -77,13 +78,6 @@ public:
 
   virtual void Archive(CArchive& ar);
 
-  typedef enum _STATE
-  {
-    invalid=0,
-    valid
-  } STATE;
-
-  void SetState(CTemperature::STATE state);
   bool IsValid() const;
 
   double ToFahrenheit() const;
@@ -101,8 +95,9 @@ public:
 protected:
   CTemperature(double value);
 
-protected:
+  void SetValid(bool valid) { m_valid = valid; }
+
   double m_value; // we store as fahrenheit
-  STATE m_state;
+  bool m_valid;
 };
 
