@@ -13,9 +13,6 @@
         <setting id="videoplayer.usedisplayasclock">
           <requirement negated="true">HAS_GL</requirement>
         </setting>
-        <setting id="videoplayer.synctype">
-          <requirement negated="true">HAS_GL</requirement>
-        </setting>
       </group>
     </category>
   </section>
