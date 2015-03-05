@@ -4533,6 +4533,7 @@ bool CDVDPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 bool CDVDPlayer::CachePVRStream(void) const
 {
   return m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
-      !g_PVRManager.IsPlayingRecording() &&
+      (!g_PVRManager.IsPlayingRecording() ||
+          (m_item.HasPVRRecordingInfoTag() && m_item.GetPVRRecordingInfoTag()->IsBeingRecorded()))&&
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
 }
