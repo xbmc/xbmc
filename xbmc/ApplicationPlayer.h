@@ -103,6 +103,7 @@ public:
   float GetPercentage() const;
   std::string GetPlayerState();
   std::string GetPlayingTitle();
+  int   GetPreferredPlaylist() const;
   void  GetRenderFeatures(std::vector<int> &renderFeatures);
   void  GetScalingMethods(std::vector<int> &scalingMethods);
   bool  GetStreamDetails(CStreamDetails &details);

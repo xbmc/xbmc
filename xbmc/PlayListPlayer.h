@@ -103,6 +103,11 @@ public:
    */
   int GetCurrentPlaylist() const;
 
+  /*! \brief Get currently active playlist or a default for current player
+   \return PLAYLIST_MUSIC or PLAYLIST_VIDEO
+   */
+  int GetCurrentPlaylist(int iPlaylist) const;
+
   /*! \brief Get a particular playlist object
    \param playList Values can be PLAYLIST_MUSIC or PLAYLIST_VIDEO
    \return A reference to the CPlayList object.
