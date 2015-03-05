@@ -2559,7 +2559,7 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
         details.GetSubtitleLanguage(i).c_str()));
     }
 
-    // update the runtime information, if empty
+    // update the runtime information
     if (details.GetVideoDuration())
     {
       vector< pair<string, int> > tables;
@@ -2568,8 +2568,8 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
       tables.push_back(make_pair("musicvideo", VIDEODB_ID_MUSICVIDEO_RUNTIME));
       for (vector< pair<string, int> >::iterator i = tables.begin(); i != tables.end(); ++i)
       {
-        std::string sql = PrepareSQL("update %s set c%02d=%d where idFile=%d and c%02d=''",
-                                    i->first.c_str(), i->second, details.GetVideoDuration(), idFile, i->second);
+        std::string sql = PrepareSQL("update %s set c%02d=%d where idFile=%d",
+                                    i->first.c_str(), i->second, details.GetVideoDuration(), idFile);
         m_pDS->exec(sql);
       }
     }
