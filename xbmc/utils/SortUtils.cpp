@@ -853,6 +853,8 @@ const sort_map table[] = {
   { SortBySeason,                   SORT_METHOD_NONE,                         SortAttributeNone,          20373 },
   { SortByNumberOfEpisodes,         SORT_METHOD_NONE,                         SortAttributeNone,          20360 },
   { SortByNumberOfWatchedEpisodes,  SORT_METHOD_NONE,                         SortAttributeNone,          21441 },
+  { SortByVideoWidth,               SORT_METHOD_NONE,                         SortAttributeNone,          21471 },
+  { SortByVideoHeight,              SORT_METHOD_NONE,                         SortAttributeNone,          21472 },
   { SortByVideoResolution,          SORT_METHOD_NONE,                         SortAttributeNone,          21443 },
   { SortByVideoCodec,               SORT_METHOD_NONE,                         SortAttributeNone,          21445 },
   { SortByVideoAspectRatio,         SORT_METHOD_NONE,                         SortAttributeNone,          21374 },
