@@ -25,6 +25,7 @@
 #include "utils/URIUtils.h"
 #include "input/Key.h"
 #include "guilib/WindowIDs.h"
+#include "input/MouseStat.h"
 #include "input/XBMC_keysym.h"
 #include "input/XBMC_keytable.h"
 #include "filesystem/File.h"
@@ -1620,7 +1621,7 @@ uint32_t CButtonTranslator::TranslateMouseCommand(TiXmlElement *pButton)
       else
       {
         int id = 0;
-        if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=4)
+        if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<MOUSE_MAX_BUTTON)
         {
           buttonId += id;
         }

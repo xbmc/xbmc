@@ -4,7 +4,7 @@
 <!--    0: left                                                                               -->
 <!--    1: right                                                                              -->
 <!--    2: middle                                                                             -->
-<!--    3/4: extra                                                                            -->
+<!--    3/4/5/6: extra                                                                        -->
 
 <keymap>
   <global>
