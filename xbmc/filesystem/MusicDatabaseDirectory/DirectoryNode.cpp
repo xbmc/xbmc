@@ -293,8 +293,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   if (!musicUrl.FromString(BuildPath()))
     return;
 
-  // always hide "all" items
-  if (CSettings::Get().GetBool("musiclibrary.hideallitems"))
+  // always show "all" items by default
+  if (!CSettings::Get().GetBool("musiclibrary.showallitems"))
     return;
 
   // no need for "all" item when only one item

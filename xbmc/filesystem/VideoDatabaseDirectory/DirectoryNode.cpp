@@ -284,8 +284,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
 {
   CFileItemPtr pItem;
 
-  // always hide "all" items
-  if (CSettings::Get().GetBool("videolibrary.hideallitems"))
+  // always show "all" items by default
+  if (!CSettings::Get().GetBool("videolibrary.showallitems"))
     return;
 
   // no need for "all" item when only one item
