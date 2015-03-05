@@ -212,8 +212,15 @@ namespace PVR
 
     /*!
      * @return Get the channel on which this recording is/was running
+     * @note Only works if the recording has an EPG id provided by the add-on
      */
     CPVRChannelPtr Channel(void) const;
+
+    /*!
+     * @return True while the recording is running
+     * @note Only works if the recording has an EPG id provided by the add-on
+     */
+    bool IsBeingRecorded(void) const;
 
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */

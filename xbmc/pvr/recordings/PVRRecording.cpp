@@ -441,3 +441,13 @@ CPVRChannelPtr CPVRRecording::Channel(void) const
   }
   return CPVRChannelPtr();
 }
+
+bool CPVRRecording::IsBeingRecorded(void) const
+{
+  if (m_iEpgEventId)
+  {
+    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(m_iEpgEventId);
+    return epgTag ? epgTag->HasRecording() : false;
+  }
+  return false;
+}
