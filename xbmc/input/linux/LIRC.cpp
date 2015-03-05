@@ -74,8 +74,8 @@ void CRemoteControl::Reset()
 
 void CRemoteControl::Disconnect()
 {
-  if (!m_used)
-    return;
+  if (IsRunning())
+    StopThread();
 
   if (m_fd != -1) 
   {
