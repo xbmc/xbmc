@@ -1917,6 +1917,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
     CStdString baseDir = StringUtils::Format("videodb://movies/sets/%d", videoItem->GetVideoInfoTag()->m_iDbId);
     if (videodb.GetMoviesNav(baseDir, movies))
     {
+      int iFanart = 0;
       for (int i=0; i < movies.Size(); i++)
       {
         // ensure the fanart is unpacked
@@ -1925,7 +1926,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
         // Grab the thumbnails from the web
         for (unsigned int j = 0; j < movies[i]->GetVideoInfoTag()->m_fanart.GetNumFanarts(); j++)
         {
-          CStdString strItemPath = StringUtils::Format("fanart://Remote%i",j);
+          CStdString strItemPath = StringUtils::Format("fanart://Remote%i",iFanart++);
           CFileItemPtr item(new CFileItem(strItemPath, false));
           CStdString thumb = movies[i]->GetVideoInfoTag()->m_fanart.GetPreviewURL(j);
           item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(thumb));
