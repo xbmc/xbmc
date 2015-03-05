@@ -221,7 +221,7 @@ int CWeatherJob::ConvertSpeed(int curSpeed)
 void CWeatherJob::FormatTemperature(std::string &text, int temp)
 {
   CTemperature temperature = CTemperature::CreateFromCelsius(temp);
-  text = StringUtils::Format("%.0f", temperature.ToLocale());
+  text = StringUtils::Format("%.0f", temperature.To(g_langInfo.GetTempUnit()));
 }
 
 void CWeatherJob::LoadLocalizedToken()

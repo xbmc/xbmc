@@ -98,30 +98,30 @@ void CLangInfo::CRegion::SetDefaults()
   m_strDateFormatShort="DD/MM/YYYY";
   m_strDateFormatLong="DDDD, D MMMM YYYY";
   m_strTimeFormat="HH:mm:ss";
-  m_tempUnit=TEMP_UNIT_CELSIUS;
+  m_tempUnit = CTemperature::UnitCelsius;
   m_speedUnit=SPEED_UNIT_KMH;
   m_strTimeZone.clear();
 }
 
-void CLangInfo::CRegion::SetTempUnit(const std::string& strUnit)
+void CLangInfo::CRegion::SetTemperatureUnit(const std::string& strUnit)
 {
   std::string unit(strUnit); StringUtils::ToLower(unit);
   if (unit == "f")
-    m_tempUnit=TEMP_UNIT_FAHRENHEIT;
+    m_tempUnit = CTemperature::UnitFahrenheit;
   else if (unit == "k")
-    m_tempUnit=TEMP_UNIT_KELVIN;
+    m_tempUnit = CTemperature::UnitKelvin;
   else if (unit == "c")
-    m_tempUnit=TEMP_UNIT_CELSIUS;
+    m_tempUnit = CTemperature::UnitCelsius;
   else if (unit == "re")
-    m_tempUnit=TEMP_UNIT_REAUMUR;
+    m_tempUnit = CTemperature::UnitReaumur;
   else if (unit == "ra")
-    m_tempUnit=TEMP_UNIT_RANKINE;
+    m_tempUnit = CTemperature::UnitRankine;
   else if (unit == "ro")
-    m_tempUnit=TEMP_UNIT_ROMER;
+    m_tempUnit = CTemperature::UnitRomer;
   else if (unit == "de")
-    m_tempUnit=TEMP_UNIT_DELISLE;
+    m_tempUnit = CTemperature::UnitDelisle;
   else if (unit == "n")
-    m_tempUnit=TEMP_UNIT_NEWTON;
+    m_tempUnit = CTemperature::UnitNewton;
 }
 
 void CLangInfo::CRegion::SetSpeedUnit(const std::string& strUnit)
@@ -351,7 +351,7 @@ bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= 
 
       const TiXmlNode *pTempUnit=pRegion->FirstChild("tempunit");
       if (pTempUnit && !pTempUnit->NoChildren())
-        region.SetTempUnit(pTempUnit->FirstChild()->ValueStr());
+        region.SetTemperatureUnit(pTempUnit->FirstChild()->ValueStr());
 
       const TiXmlNode *pSpeedUnit=pRegion->FirstChild("speedunit");
       if (pSpeedUnit && !pSpeedUnit->NoChildren())
@@ -741,15 +741,29 @@ const std::string& CLangInfo::GetCurrentRegion() const
   return m_currentRegion->m_strName;
 }
 
-CLangInfo::TEMP_UNIT CLangInfo::GetTempUnit() const
+CTemperature::Unit CLangInfo::GetTemperatureUnit() const
 {
   return m_currentRegion->m_tempUnit;
 }
 
-// Returns the temperature unit string for the current language
-const std::string& CLangInfo::GetTempUnitString() const
+std::string CLangInfo::GetTemperatureAsString(const CTemperature& temperature) const
 {
-  return g_localizeStrings.Get(TEMP_UNIT_STRINGS+m_currentRegion->m_tempUnit);
+  if (!temperature.IsValid())
+    return g_localizeStrings.Get(13205); // "Unknown"
+
+  CTemperature::Unit temperatureUnit = GetTemperatureUnit();
+  return StringUtils::Format("%s%s", temperature.ToString(temperatureUnit).c_str(), GetTemperatureUnitString().c_str());
+}
+
+// Returns the temperature unit string for the current language
+const std::string& CLangInfo::GetTemperatureUnitString() const
+{
+  return GetTemperatureUnitString(m_currentRegion->m_tempUnit);
+}
+
+const std::string& CLangInfo::GetTemperatureUnitString(CTemperature::Unit temperatureUnit)
+{
+  return g_localizeStrings.Get(TEMP_UNIT_STRINGS + temperatureUnit);
 }
 
 CLangInfo::SPEED_UNIT CLangInfo::GetSpeedUnit() const

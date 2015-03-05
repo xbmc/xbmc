@@ -22,6 +22,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/Locale.h"
+#include "utils/Temperature.h"
 
 #include <map>
 #include <memory>
@@ -141,21 +142,10 @@ public:
   const std::string& GetTimeFormat() const;
   const std::string& GetMeridiemSymbol(MERIDIEM_SYMBOL symbol) const;
 
-  typedef enum _TEMP_UNIT
-  {
-    TEMP_UNIT_FAHRENHEIT=0,
-    TEMP_UNIT_KELVIN,
-    TEMP_UNIT_CELSIUS,
-    TEMP_UNIT_REAUMUR,
-    TEMP_UNIT_RANKINE,
-    TEMP_UNIT_ROMER,
-    TEMP_UNIT_DELISLE,
-    TEMP_UNIT_NEWTON
-  } TEMP_UNIT;
-
-  const std::string& GetTempUnitString() const;
-  CLangInfo::TEMP_UNIT GetTempUnit() const;
-
+  CTemperature::Unit GetTemperatureUnit() const;
+  const std::string& GetTemperatureUnitString() const;
+  static const std::string& GetTemperatureUnitString(CTemperature::Unit temperatureUnit);
+  std::string GetTemperatureAsString(const CTemperature& temperature) const;
 
   typedef enum _SPEED_UNIT
   {
@@ -204,7 +194,7 @@ protected:
     CRegion();
     virtual ~CRegion();
     void SetDefaults();
-    void SetTempUnit(const std::string& strUnit);
+    void SetTemperatureUnit(const std::string& strUnit);
     void SetSpeedUnit(const std::string& strUnit);
     void SetTimeZone(const std::string& strTimeZone);
     void SetGlobalLocale();
@@ -218,7 +208,7 @@ protected:
     std::string m_strMeridiemSymbols[MERIDIEM_SYMBOL_MAX];
     std::string m_strTimeZone;
 
-    TEMP_UNIT m_tempUnit;
+    CTemperature::Unit m_tempUnit;
     SPEED_UNIT m_speedUnit;
   };
 

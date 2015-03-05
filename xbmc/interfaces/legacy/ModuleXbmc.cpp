@@ -425,7 +425,7 @@ namespace XBMCAddon
           StringUtils::Replace(result, "YYYY", "%Y");
         }
       else if (strcmpi(id, "tempunit") == 0)
-        result = g_langInfo.GetTempUnitString();
+        result = g_langInfo.GetTemperatureUnitString();
       else if (strcmpi(id, "speedunit") == 0)
         result = g_langInfo.GetSpeedUnitString();
       else if (strcmpi(id, "time") == 0)

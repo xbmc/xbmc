@@ -1465,7 +1465,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case WEATHER_TEMPERATURE:
     strLabel = StringUtils::Format("%s%s",
                                    g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP).c_str(),
-                                   g_langInfo.GetTempUnitString().c_str());
+                                   g_langInfo.GetTemperatureUnitString().c_str());
     break;
   case WEATHER_LOCATION:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
@@ -1928,7 +1928,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = g_langInfo.GetEnglishLanguageName();
     break;
   case SYSTEM_TEMPERATURE_UNITS:
-    strLabel = g_langInfo.GetTempUnitString();
+    strLabel = g_langInfo.GetTemperatureUnitString();
     break;
   case SYSTEM_PROGRESS_BAR:
     {
@@ -4232,10 +4232,10 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   switch(info)
   {
     case SYSTEM_CPU_TEMPERATURE:
-      return m_cpuTemp.IsValid() ? m_cpuTemp.ToString() : "?";
+      return m_cpuTemp.IsValid() ? g_langInfo.GetTemperatureAsString(m_cpuTemp) : "?";
       break;
     case SYSTEM_GPU_TEMPERATURE:
-      return m_gpuTemp.IsValid() ? m_gpuTemp.ToString() : "?";
+      return m_gpuTemp.IsValid() ? g_langInfo.GetTemperatureAsString(m_gpuTemp) : "?";
       break;
     case SYSTEM_FAN_SPEED:
       text = StringUtils::Format("%i%%", m_fanSpeed * 2);

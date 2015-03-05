@@ -29,6 +29,18 @@ public:
   CTemperature();
   CTemperature(const CTemperature& temperature);
 
+  typedef enum Unit
+  {
+    UnitFahrenheit = 0,
+    UnitKelvin,
+    UnitCelsius,
+    UnitReaumur,
+    UnitRankine,
+    UnitRomer,
+    UnitDelisle,
+    UnitNewton
+  } Unit;
+
   static CTemperature CreateFromFahrenheit(double value);
   static CTemperature CreateFromKelvin(double value);
   static CTemperature CreateFromCelsius(double value);
@@ -79,6 +91,7 @@ public:
   virtual void Archive(CArchive& ar);
 
   bool IsValid() const;
+  void SetValid(bool valid) { m_valid = valid; }
 
   double ToFahrenheit() const;
   double ToKelvin() const;
@@ -89,13 +102,11 @@ public:
   double ToDelisle() const;
   double ToNewton() const;
 
-  double ToLocale() const;
-  std::string ToString() const;
+  double To(Unit temperatureUnit) const;
+  std::string ToString(Unit temperatureUnit) const;
 
 protected:
   CTemperature(double value);
-
-  void SetValid(bool valid) { m_valid = valid; }
 
   double m_value; // we store as fahrenheit
   bool m_valid;
