@@ -9378,6 +9378,11 @@ msgctxt "#19686"
 msgid "The PVR backend is busy. Shutdown anyway?"
 msgstr ""
 
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19687"
+msgid "Play recording"
+msgstr ""
+
 #: xbmc/pvr/addons/PVRClients.cpp
 msgctxt "#19688"
 msgid "Scanning for PVR services"

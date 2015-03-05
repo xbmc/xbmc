@@ -67,6 +67,8 @@
 #include "URL.h"
 #include "music/MusicDatabase.h"
 #include "cores/IPlayer.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/recordings/PVRRecording.h"
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -1062,6 +1064,21 @@ int CBuiltins::Execute(const std::string& execString)
       // send messages so now playing window can get updated
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, (int)state);
       g_windowManager.SendThreadMessage(msg);
+    }
+    else if (StringUtils::StartsWithNoCase(parameter, "resumelivetv"))
+    {
+      CFileItem& fileItem(g_application.CurrentFileItem());
+      PVR::CPVRChannelPtr channel = fileItem.HasPVRRecordingInfoTag() ? fileItem.GetPVRRecordingInfoTag()->Channel() : PVR::CPVRChannelPtr();
+
+      if (channel)
+      {
+        CFileItem playItem(channel);
+        if (!g_application.PlayMedia(playItem, channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
+        {
+          CLog::Log(LOGERROR, "ResumeLiveTv could not play channel: %s", channel->ChannelName().c_str());
+          return false;
+        }
+      }
     }
   }
   else if (execute == "playwith")

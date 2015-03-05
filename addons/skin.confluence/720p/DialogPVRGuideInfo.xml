@@ -214,6 +214,11 @@
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>19165</label>
 					</control>
+					<control type="button" id="8">
+						<description>Play recording</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>19687</label>
+					</control>
 					<control type="button" id="6">
 						<description>Record</description>
 						<include>ButtonInfoDialogsCommonValues</include>

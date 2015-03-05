@@ -75,10 +75,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.9.4"
+#define XBMC_PVR_API_VERSION "1.9.5"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.9.4"
+#define XBMC_PVR_MIN_API_VERSION "1.9.5"
 
 #ifdef __cplusplus
 extern "C" {
@@ -299,6 +299,7 @@ extern "C" {
     int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
     int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
+    unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!

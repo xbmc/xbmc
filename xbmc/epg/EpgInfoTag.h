@@ -285,18 +285,6 @@ namespace EPG
     std::string Path(void) const;
 
     /*!
-     * @brief The recording ID to this event.
-     * @return The recording ID.
-     */
-    const std::string& RecordingId(void) const;
-
-    /*!
-     * @brief Check whether this event has a recording ID.
-     * @return True if it has a recording ID, false if not.
-     */
-    bool HasRecordingId(void) const;
-
-    /*!
      * @brief Set a timer for this event or NULL to clear it.
      * @param newTimer The new timer value.
      */
@@ -414,7 +402,6 @@ namespace EPG
     CDateTime                m_startTime;          /*!< event start time */
     CDateTime                m_endTime;            /*!< event end time */
     CDateTime                m_firstAired;         /*!< first airdate */
-    std::string              m_strRecordingId;     /*!< linked recording ID */
 
     PVR::CPVRTimerInfoTagPtr m_timer;
     PVR::CPVRRecordingPtr    m_recording;

@@ -48,8 +48,10 @@ class CVideoDatabase;
 namespace PVR
 {
   class CPVRRecording;
-
   typedef std::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
+
+  class CPVRChannel;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 
   /*!
    * @brief Representation of a CPVRRecording unique ID.
@@ -117,6 +119,11 @@ namespace PVR
      * @return True if it was deleted successfully, false otherwise.
      */
     bool Delete(void);
+
+    /*!
+     * @brief Called when this recording has been deleted
+     */
+    void OnDelete(void);
 
     /*!
      * @brief Undelete this recording on the client (if supported).
@@ -198,10 +205,28 @@ namespace PVR
      */
     bool IsDeleted() const { return m_bIsDeleted; }
 
+    /*!
+     * @return Broadcast id of the EPG event associated with this recording
+     */
+    int EpgEvent(void) const { return m_iEpgEventId; }
+
+    /*!
+     * @return Get the channel on which this recording is/was running
+     * @note Only works if the recording has an EPG id provided by the add-on
+     */
+    CPVRChannelPtr Channel(void) const;
+
+    /*!
+     * @return True while the recording is running
+     * @note Only works if the recording has an EPG id provided by the add-on
+     */
+    bool IsBeingRecorded(void) const;
+
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool      m_bGotMetaData;
     bool      m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
+    int       m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;

@@ -31,6 +31,7 @@
 #include "input/Key.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "GUIWindowPVRRecordings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
@@ -266,14 +267,16 @@ void CGUIWindowPVRBase::SetGroup(CPVRChannelGroupPtr group)
   }
 }
 
-bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false */)
+bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false */, bool bCheckResume /* = true */)
 {
   if (item->m_bIsFolder)
   {
     return false;
   }
 
-  if (item->GetPath() == g_application.CurrentFile())
+  CPVRChannelPtr channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : CPVRChannelPtr();
+  if (item->GetPath() == g_application.CurrentFile() ||
+      (channel && channel->HasRecording() && channel->GetRecording()->GetPath() == g_application.CurrentFile()))
   {
     CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, GetID());
     g_windowManager.SendMessage(msg);
@@ -284,16 +287,35 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
 
   if (item->HasPVRRecordingInfoTag())
   {
-    return PlayRecording(item, bPlayMinimized);
+    return PlayRecording(item, bPlayMinimized, bCheckResume);
   }
   else
   {
     bool bSwitchSuccessful(false);
-
     CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
     if (channel && g_PVRManager.CheckParentalLock(channel))
     {
+      CPVRRecordingPtr recording = channel->GetRecording();
+      if (recording)
+      {
+        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*) g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+        if (pDialog)
+        {
+          pDialog->SetHeading(19687); // Play recording
+          pDialog->SetLine(0, "");
+          pDialog->SetLine(1, 12021); // Start from beginning
+          pDialog->SetLine(2, recording->m_strTitle.c_str());
+          pDialog->DoModal();
+
+          if (pDialog->IsConfirmed())
+          {
+            CFileItem recordingItem(recording);
+            return PlayRecording(&recordingItem, CSettings::Get().GetBool("pvrplayback.playminimized"), bCheckResume);
+          }
+        }
+      }
+
       /* try a fast switch */
       if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
          (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))
@@ -382,7 +404,21 @@ bool CGUIWindowPVRBase::StopRecordFile(const CFileItem &item)
   return g_PVRTimers->DeleteTimer(*timer);
 }
 
-bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = false */)
+void CGUIWindowPVRBase::CheckResumeRecording(CFileItem *item)
+{
+  std::string resumeString = CGUIWindowPVRRecordings::GetResumeString(*item);
+  if (!resumeString.empty())
+  {
+    CContextButtons choices;
+    choices.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
+    choices.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); // Start from beginning
+    int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+    if (choice > 0)
+      item->m_lStartOffset = choice == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0;
+  }
+}
+
+bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = false */, bool bCheckResume /* = true */)
 {
   if (!item->HasPVRRecordingInfoTag())
     return false;
@@ -390,6 +426,8 @@ bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = 
   std::string stream = item->GetPVRRecordingInfoTag()->m_strStreamURL;
   if (stream.empty())
   {
+    if (bCheckResume)
+      CheckResumeRecording(item);
     CApplicationMessenger::Get().PlayFile(*item, false);
     return true;
   }
@@ -440,6 +478,8 @@ bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = 
     return false;
   }
 
+  if (bCheckResume)
+    CheckResumeRecording(item);
   CApplicationMessenger::Get().PlayFile(*item, false);
 
   return true;
@@ -534,7 +574,7 @@ bool CGUIWindowPVRBase::ActionPlayChannel(CFileItem *item)
   return PlayFile(item, CSettings::Get().GetBool("pvrplayback.playminimized"));
 }
 
-bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item)
+bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item, bool bPlayRecording)
 {
   if (!item || !item->HasEPGInfoTag())
     return false;
@@ -548,7 +588,7 @@ bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item)
     return false;
 
   CFileItem fileItem;
-  if (epgTag->HasRecording())
+  if (bPlayRecording && epgTag->HasRecording())
     fileItem = CFileItem(epgTag->Recording());
   else
     fileItem = CFileItem(channel);

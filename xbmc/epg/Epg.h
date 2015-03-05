@@ -191,16 +191,25 @@ namespace EPG
     CEpgInfoTagPtr GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const;
 
     /*!
+     * @brief Get the infotag with the given begin time.
+     *
+     * Get the infotag with the given ID.
+     * If it wasn't found, try finding the event with the given start time
+     *
+     * @param beginTime The start time in UTC of the event to find if it wasn't found by it's unique ID.
+     * @return The found tag or an empty tag if it wasn't found.
+     */
+    CEpgInfoTagPtr GetTag(const CDateTime &beginTime) const;
+    /*!
      * @brief Get the infotag with the given ID.
      *
      * Get the infotag with the given ID.
      * If it wasn't found, try finding the event with the given start time
      *
      * @param uniqueID The unique ID of the event to find.
-     * @param beginTime The start time in UTC of the event to find if it wasn't found by it's unique ID.
-     * @return The found tag or NULL if it wasn't found.
+     * @return The found tag or an empty tag if it wasn't found.
      */
-    CEpgInfoTagPtr GetTag(const CDateTime &beginTime) const;
+    CEpgInfoTagPtr GetTag(int uniqueID) const;
 
     /*!
      * @brief Update an entry in this EPG.
@@ -338,8 +347,6 @@ namespace EPG
     bool UpdateEntries(const CEpg &epg, bool bStoreInDb = true);
 
     bool IsRemovableTag(const EPG::CEpgInfoTag &tag) const;
-
-    void UpdateRecording(CEpgInfoTagPtr &tag);
 
     std::map<CDateTime, CEpgInfoTagPtr> m_tags;
     std::map<int, CEpgInfoTagPtr>       m_changedTags;

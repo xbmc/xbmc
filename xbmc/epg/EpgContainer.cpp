@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 
 #include "EpgContainer.h"
@@ -54,6 +55,12 @@ CEpgContainer::CEpgContainer(void) :
   m_bStarted = false;
   m_bLoaded = false;
   m_pendingUpdates = 0;
+  m_iUpdateTime = 5 * 60;
+  m_iLastEpgCleanup = 0;
+  m_iNextEpgActiveTagCheck = 0;
+  m_iNextEpgUpdate = 0;
+  m_iDisplayTime = 24 * 60 * 60;
+  m_bIgnoreDbForClient = false;
 }
 
 CEpgContainer::~CEpgContainer(void)
@@ -146,6 +153,8 @@ void CEpgContainer::Start(void)
   }
 
   LoadFromDB();
+  if (g_PVRManager.IsStarted())
+    g_PVRManager.Recordings()->UpdateEpgTags();
 
   CSingleLock lock(m_critSection);
   if (!m_bStop)
@@ -337,6 +346,15 @@ CEpg *CEpgContainer::GetById(int iEpgId) const
   CSingleLock lock(m_critSection);
   map<unsigned int, CEpg *>::const_iterator it = m_epgs.find((unsigned int) iEpgId);
   return it != m_epgs.end() ? it->second : NULL;
+}
+
+CEpgInfoTagPtr CEpgContainer::GetTagById(int iBroadcastId) const
+{
+  CEpgInfoTagPtr retval;
+  CSingleLock lock(m_critSection);
+  for (map<unsigned int, CEpg *>::const_iterator it = m_epgs.begin(); !retval && it != m_epgs.end(); ++it)
+    retval = it->second->GetTag(iBroadcastId);
+  return retval;
 }
 
 CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
@@ -550,9 +568,13 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   {
     CLog::Log(LOGERROR, "EpgContainer - %s - could not open the database", __FUNCTION__);
 
-    CSingleLock lock(m_critSection);
-    m_bIsUpdating = false;
-    m_updateEvent.Set();
+    {
+      CSingleLock lock(m_critSection);
+      m_bIsUpdating = false;
+      m_updateEvent.Set();
+    }
+
+    g_PVRManager.Recordings()->UpdateEpgTags();
 
     if (bShowProgress && !bOnlyPending)
       CloseProgressDialog();

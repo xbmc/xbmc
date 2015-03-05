@@ -19,6 +19,7 @@
  */
 
 #include "dialogs/GUIDialogOK.h"
+#include "epg/EpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "PVRRecordings.h"
@@ -105,6 +106,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strThumbnailPath               = recording.strThumbnailPath;
   m_strFanartPath                  = recording.strFanartPath;
   m_bIsDeleted                     = recording.bIsDeleted;
+  m_iEpgEventId                    = recording.iEpgEventId;
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
@@ -127,7 +129,8 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strThumbnailPath   == right.m_strThumbnailPath &&
        m_strFanartPath      == right.m_strFanartPath &&
        m_iRecordingId       == right.m_iRecordingId &&
-       m_bIsDeleted         == right.m_bIsDeleted);
+       m_bIsDeleted         == right.m_bIsDeleted &&
+       m_iEpgEventId        == right.m_iEpgEventId);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -149,6 +152,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["endtime"] = m_recordingTime.IsValid() ? (m_recordingTime + m_duration).GetAsDBDateTime() : "";
   value["recordingid"] = m_iRecordingId;
   value["deleted"] = m_bIsDeleted;
+  value["epgevent"] = m_iEpgEventId;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
@@ -174,6 +178,7 @@ void CPVRRecording::Reset(void)
   m_bGotMetaData       = false;
   m_iRecordingId       = 0;
   m_bIsDeleted         = false;
+  m_iEpgEventId        = -1;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -195,8 +200,15 @@ bool CPVRRecording::Delete(void)
     DisplayError(error);
     return false;
   }
-
+  OnDelete();
   return true;
+}
+
+void CPVRRecording::OnDelete(void)
+{
+  EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(EpgEvent());
+  if (epgTag)
+    epgTag->ClearRecording();
 }
 
 bool CPVRRecording::Undelete(void)
@@ -333,6 +345,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strThumbnailPath  = tag.m_strThumbnailPath;
   m_strFanartPath     = tag.m_strFanartPath;
   m_bIsDeleted        = tag.m_bIsDeleted;
+  m_iEpgEventId       = tag.m_iEpgEventId;
 
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
     m_playCount       = tag.m_playCount;
@@ -357,6 +370,10 @@ void CPVRRecording::Update(const CPVRRecording &tag)
     strEpisode.erase(0, pos + 2);
     m_strPlotOutline = strEpisode;
   }
+
+  if (m_bIsDeleted)
+    OnDelete();
+
   UpdatePath();
 }
 
@@ -377,7 +394,10 @@ void CPVRRecording::UpdatePath(void)
     if (!m_strDirectory.empty())
       strDirectory = StringUtils::Format("%s/", m_strDirectory.c_str());
     if (!m_strChannelName.empty())
+    {
       strChannel = StringUtils::Format(" (%s)", m_strChannelName.c_str());
+      StringUtils::Replace(strChannel, '/',' ');
+    }
     m_strFileNameAndPath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/%s/%s%s, TV%s, %s.pvr", m_bIsDeleted ? PVR_RECORDING_DELETED_PATH : PVR_RECORDING_ACTIVE_PATH,  strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
   }
 }
@@ -409,4 +429,25 @@ void CPVRRecording::CopyClientInfo(CVideoInfoTag *target) const
 
   target->m_playCount   = m_playCount;
   target->m_resumePoint = m_resumePoint;
+}
+
+CPVRChannelPtr CPVRRecording::Channel(void) const
+{
+  if (m_iEpgEventId)
+  {
+    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(m_iEpgEventId);
+    if (epgTag)
+      return epgTag->ChannelTag();
+  }
+  return CPVRChannelPtr();
+}
+
+bool CPVRRecording::IsBeingRecorded(void) const
+{
+  if (m_iEpgEventId)
+  {
+    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(m_iEpgEventId);
+    return epgTag ? epgTag->HasRecording() : false;
+  }
+  return false;
 }

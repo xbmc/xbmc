@@ -72,6 +72,9 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
 
   buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* switch channel */
 
+  if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->HasRecording())
+    buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 19687);      /* play recording */
+
   CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem.get());
   if (timer && timer->HasPVRTimerInfoTag())
   {
@@ -170,7 +173,11 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SWITCH:
-                  ActionPlayEpg(pItem.get());
+                  ActionPlayEpg(pItem.get(), false);
+                  bReturn = true;
+                  break;
+                case EPG_SELECT_ACTION_PLAY_RECORDING:
+                  ActionPlayEpg(pItem.get(), true);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_INFO:
@@ -188,7 +195,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_PLAY:
-              ActionPlayEpg(pItem.get());
+              ActionPlayEpg(pItem.get(), true);
               bReturn = true;
               break;
             case ACTION_RECORD:
@@ -461,9 +468,9 @@ bool CGUIWindowPVRGuide::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON but
 {
   bool bReturn = false;
 
-  if (button == CONTEXT_BUTTON_PLAY_ITEM)
+  if (button == CONTEXT_BUTTON_PLAY_ITEM || button == CONTEXT_BUTTON_PLAY_OTHER)
   {
-    ActionPlayEpg(item);
+    ActionPlayEpg(item, button == CONTEXT_BUTTON_PLAY_OTHER);
     bReturn = true;
   }
 

@@ -251,18 +251,8 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
             case ACTION_MOUSE_LEFT_CLICK:
             case ACTION_PLAY:
             {
-              CFileItemPtr pItem = m_vecItems->Get(iItem);
-              std::string resumeString = GetResumeString(*pItem);
-              if (!resumeString.empty())
-              {
-                CContextButtons choices;
-                choices.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
-                choices.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021);
-                int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-                if (choice > 0)
-                  OnContextButtonPlay(pItem.get(), (CONTEXT_BUTTON)choice);
-                bReturn = true;
-              }
+              PlayFile(m_vecItems->Get(iItem).get());
+              bReturn = true;
               break;
             }
             case ACTION_CONTEXT_MENU:
