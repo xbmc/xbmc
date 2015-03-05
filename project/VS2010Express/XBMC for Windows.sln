@@ -65,7 +65,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhdhomerun_dll", "..\..\l
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_addon", "..\..\lib\addons\library.xbmc.addon\project\VS2010Express\libXBMC_addon.vcxproj", "{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_gui", "..\..\lib\addons\library.xbmc.gui\project\VS2010Express\libXBMC_gui.vcxproj", "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libKODI_guilib", "..\..\lib\addons\library.kodi.guilib\project\VS2010Express\libKODI_guilib.vcxproj", "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_pvr", "..\..\lib\addons\library.xbmc.pvr\project\VS2010Express\libXBMC_pvr.vcxproj", "{6D8C91F8-992F-4C83-9DE3-485D64EF8420}"
 EndProject

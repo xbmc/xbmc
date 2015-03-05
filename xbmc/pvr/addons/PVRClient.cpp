@@ -334,8 +334,8 @@ bool CPVRClient::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, c
 
 bool CPVRClient::IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
 {
-  AddonVersion myMinVersion = AddonVersion(XBMC_GUI_MIN_API_VERSION);
-  AddonVersion myVersion = AddonVersion(XBMC_GUI_API_VERSION);
+  AddonVersion myMinVersion = AddonVersion(KODI_GUILIB_MIN_API_VERSION);
+  AddonVersion myVersion = AddonVersion(KODI_GUILIB_API_VERSION);
   return (version >= myMinVersion && minVersion <= myVersion);
 }
 
@@ -354,7 +354,7 @@ bool CPVRClient::CheckAPIVersion(void)
 
   /* check the GUI API version */
   AddonVersion guiVersion = AddonVersion("0.0.0");
-  minVersion = AddonVersion(XBMC_GUI_MIN_API_VERSION);
+  minVersion = AddonVersion(KODI_GUILIB_MIN_API_VERSION);
   try { guiVersion = AddonVersion(m_pStruct->GetGUIAPIVersion()); }
   catch (std::exception &e) { LogException(e, "GetGUIAPIVersion()"); return false;  }
 

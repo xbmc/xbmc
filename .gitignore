@@ -125,6 +125,7 @@ config.log
 /addons/pvr.*
 /addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
+/addons/kodi.guilib/addon.xml
 
 # /lib/
 /lib/Makefile
@@ -982,8 +983,8 @@ lib/cpluff/stamp-h1
 /addons/library.xbmc.addon/libXBMC_addon.lib
 /addons/library.xbmc.codec/libXBMC_codec.dll
 /addons/library.xbmc.codec/libXBMC_codec.lib
-/addons/library.xbmc.gui/libXBMC_gui.dll
-/addons/library.xbmc.gui/libXBMC_gui.lib
+/addons/library.kodi.guilib/libKODI_guilib.dll
+/addons/library.kodi.guilib/libKODI_guilib.lib
 /addons/library.xbmc.pvr/libXBMC_pvr.dll
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
 

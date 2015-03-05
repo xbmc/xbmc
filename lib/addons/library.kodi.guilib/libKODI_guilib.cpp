@@ -18,10 +18,11 @@
  *
  */
 
+#include "../../../addons/library.kodi.guilib/libKODI_guilib.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include "../../../addons/library.xbmc.gui/libXBMC_gui.h"
 #include "addons/AddonCallbacks.h"
 
 #ifdef _WIN32
