@@ -160,6 +160,17 @@ bool CApplicationPlayer::HasVideo() const
   return (player && player->HasVideo());
 }
 
+int CApplicationPlayer::GetPreferredPlaylist() const
+{
+  if (IsPlayingVideo())
+    return PLAYLIST_VIDEO;
+
+  if (IsPlayingAudio())
+    return PLAYLIST_MUSIC;
+
+  return PLAYLIST_NONE;
+}
+
 bool CApplicationPlayer::IsPaused() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();
