@@ -4712,7 +4712,13 @@ msgctxt "#12022"
 msgid "Resume from %s"
 msgstr ""
 
-#empty strings from id 12023 to 12309
+#empty string with id 12023
+
+msgctxt "#12024"
+msgid "Resume from %s - %s"
+msgstr ""
+
+#empty strings from id 12025 to 12309
 
 #: skin.confluence
 #: skin.retouched
@@ -6803,7 +6809,15 @@ msgctxt "#14071"
 msgid "Allow file renaming and deletion"
 msgstr ""
 
-#empty strings from id 14072 to 14073
+#: system/settings/settings.xml
+msgctxt "#14072"
+msgid "Resume playing folders from last position"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14073"
+msgid "Check folder changes on resume"
+msgstr ""
 
 msgctxt "#14074"
 msgid "Set timezone"
@@ -6959,7 +6973,12 @@ msgctxt "#14104"
 msgid "Show simplified menu"
 msgstr ""
 
-#empty strings from id 14105 to 15011
+#: system/settings/settings.xml
+msgctxt "#14105"
+msgid "Highlight played folders"
+msgstr ""
+
+#empty strings from id 14106 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -15807,7 +15826,25 @@ msgctxt "#36435"
 msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
 msgstr ""
 
-#empty strings from id 36436 to 36499
+#. Description of setting "Appearance -> File lists -> Resume playing folders from last position" with label #14072
+#: system/settings/settings.xml
+msgctxt "#36436"
+msgid "Resume playing music and video folders from last position."
+msgstr ""
+
+#. Description of setting "Appearance -> File lists -> Check folder changes on resume" with label #14073
+#: system/settings/settings.xml
+msgctxt "#36437"
+msgid "Don't resume if folder with saved position was changed since last playing time."
+msgstr ""
+
+#. Description of setting "Appearance -> File lists -> Highlight played folders" with label #14074
+#: system/settings/settings.xml
+msgctxt "#36438"
+msgid "When playing folder with music or video, highlight it in addition to current file."
+msgstr ""
+
+#empty strings from id 36439 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied

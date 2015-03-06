@@ -167,6 +167,11 @@ public:
   void Remove(int iPlaylist, int iPosition);
   void Swap(int iPlaylist, int indexItem1, int indexItem2);
 
+  void SetFolder(int iPlaylist, bool bIsFolder);
+  bool IsFolder(int iPlaylist) const;
+  void SetFolderPath(int iPlaylist, const std::string &path);
+  std::string GetFolderPath(int iPlaylist) const;
+
   bool IsSingleItemNonRepeatPlaylist() const;
 
   bool OnAction(const CAction &action);

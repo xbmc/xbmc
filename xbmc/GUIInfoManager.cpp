@@ -5221,6 +5221,17 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       return (int)item->GetProperty("playlisttype").asInteger() == g_playlistPlayer.GetCurrentPlaylist() && (int)item->GetProperty("playlistposition").asInteger() == g_playlistPlayer.GetCurrentSong();
     else if (item->IsFileItem() && !m_currentFile->GetPath().empty())
     {
+      if (item->m_bIsFolder && CSettings::Get().GetBool("filelists.highlightfolders"))
+      {
+        int playlist = g_playlistPlayer.GetCurrentPlaylist();
+        if (g_playlistPlayer.IsFolder(playlist))
+        {
+          std::string directory = g_playlistPlayer.GetFolderPath(playlist);
+          if (StringUtils::StartsWith(((const CFileItem *)item)->GetPath(), directory) &&
+              StringUtils::StartsWith(m_currentFile->GetPath(), ((const CFileItem *)item)->GetPath()))
+            return true;
+        }
+      }
       if (!g_application.m_strPlayListFile.empty())
       {
         //playlist file that is currently playing or the playlistitem that is currently playing.

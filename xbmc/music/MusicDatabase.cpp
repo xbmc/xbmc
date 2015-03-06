@@ -66,6 +66,7 @@
 #include "utils/XMLUtils.h"
 #include "URL.h"
 #include "playlists/SmartPlayList.h"
+#include "utils/FileUtils.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -180,6 +181,13 @@ void CMusicDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create cue table");
   m_pDS->exec("CREATE TABLE cue (idPath integer, strFileName text, strCuesheet text)");
+
+  CLog::Log(LOGINFO, "create bookmark table");
+  m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idPath integer, idFile integer, timeInSeconds double, totalTimeInSeconds double, artist text, title text, startOffset integer, thumbNailImage text, strHash text, player text, playerState text, type integer )");
+
+  CLog::Log(LOGINFO, "create files table");
+  m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename varchar(512), playCount integer, lastPlayed text )");
+  m_pDS->exec("CREATE UNIQUE INDEX ix_files ON files ( idPath, strFilename )");
 
   // Add 'Karaoke' genre
   AddGenre( "Karaoke" );
@@ -4037,11 +4045,17 @@ void CMusicDatabase::UpdateTables(int version)
   {
     m_pDS->exec("CREATE TABLE cue (idPath integer, strFileName text, strCuesheet text)");
   }
+  if (version < 50)
+  { // add bookmark tables
+    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idPath integer, idFile integer, timeInSeconds double, totalTimeInSeconds double, artist text, title text, startOffset integer, thumbNailImage text, strHash text, player text, playerState text, type integer )");
+    m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename varchar(512), playCount integer, lastPlayed text )");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_files ON files ( idPath, strFilename )");
+  }
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 49;
+  return 50;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
@@ -5810,4 +5824,252 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
   }
 
   return true;
+}
+
+void CMusicDatabase::AddBookmark(const CBookmark &bookmark)
+{
+  try
+  {
+    int idFile = -1;
+    int idPath = -1;
+    std::string hash;
+    if (bookmark.type == CBookmark::FOLDER_RESUME)
+    {
+      if (CSettings::Get().GetBool("filelists.checkfolderhash"))
+        hash = CFileUtils::GetFastHash(bookmark.item);
+      idFile = AddFile(bookmark.filepath);
+      idPath = GetPathId(bookmark.item);
+      if (idPath < 0)
+        idPath = AddPath(bookmark.item);
+    }
+    else
+    {
+      idFile = AddFile(bookmark.item);
+    }
+
+    if (idFile < 0)
+      return;
+
+    if (!m_pDB.get()) return;
+    if (!m_pDS.get()) return;
+
+    std::string strSQL;
+
+    int idBookmark = -1;
+
+    if (bookmark.type == CBookmark::RESUME)
+      strSQL = PrepareSQL("SELECT idBookmark FROM bookmark WHERE idFile=%i and type=%i", idFile, (int)bookmark.type);
+    else if (bookmark.type == CBookmark::FOLDER_RESUME)
+      strSQL = PrepareSQL("SELECT idBookmark FROM bookmark WHERE idPath=%i and type=%i", idPath, (int)bookmark.type);
+    else return;
+
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+      idBookmark = m_pDS->fv("idBookmark").get_asInt();
+    m_pDS->close();
+
+    if (idBookmark >= 0)
+      strSQL = PrepareSQL("UPDATE bookmark SET timeInSeconds=%f, totalTimeInSeconds=%f, startOffset=%i, thumbNailImage='%s', player='%s', playerState='%s', idPath=%i, idFile=%i, artist='%s', title='%s', strHash='%s' where idBookmark=%i", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.startOffset, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idPath, idFile, bookmark.artist.c_str(), bookmark.title.c_str(), hash.c_str(), idBookmark);
+    else
+      strSQL = PrepareSQL("INSERT INTO bookmark (idBookmark, timeInSeconds, totalTimeInSeconds, startOffset, thumbNailImage, player, playerState, idPath, idFile, artist, title, type, strHash) VALUES(NULL, %f, %f, %i, '%s', '%s', '%s', %i, %i, '%s', '%s', %i, '%s')", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.startOffset, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idPath, idFile, bookmark.artist.c_str(), bookmark.title.c_str(), (int)bookmark.type, hash.c_str());
+
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, bookmark.item.c_str());
+  }
+}
+
+bool CMusicDatabase::GetBookmark(const std::string &strUrl, CBookmark::EType type, CBookmark &bookmark)
+{
+  try
+  {
+    int idFile = -1;
+    int idPath = -1;
+
+    if (type == CBookmark::FOLDER_RESUME)
+      idPath = GetPathId(strUrl);
+    else
+      idFile = GetFileId(strUrl);
+
+    if (idFile < 0 && idPath < 0) return false;
+    if (!m_pDB.get()) return false;
+    if (!m_pDS.get()) return false;
+
+    std::string strSQL;
+    if (type == CBookmark::FOLDER_RESUME)
+      strSQL = PrepareSQL("SELECT * FROM bookmark WHERE idPath=%i and type=%i order by timeInSeconds", idPath, (int)type);
+    else
+      strSQL = PrepareSQL("SELECT * FROM bookmark WHERE idFile=%i and type=%i order by timeInSeconds", idFile, (int)type);
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->eof())
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
+    bookmark.totalTimeInSeconds = m_pDS->fv("totalTimeInSeconds").get_asDouble();
+    bookmark.startOffset = m_pDS->fv("startOffset").get_asInt();
+    bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
+    bookmark.playerState = m_pDS->fv("playerState").get_asString();
+    bookmark.player = m_pDS->fv("player").get_asString();
+    bookmark.type = type;
+    bookmark.artist = m_pDS->fv("artist").get_asString();
+    bookmark.title = m_pDS->fv("title").get_asString();
+    bookmark.hash = m_pDS->fv("strHash").get_asString();
+    if (type == CBookmark::FOLDER_RESUME)
+    {
+      bookmark.item = strUrl;
+
+      idFile = m_pDS->fv("idFile").get_asInt();
+      m_pDS2->query(PrepareSQL("SELECT * FROM files WHERE idFile=%d", idFile).c_str());
+      idPath = m_pDS2->fv("idPath").get_asInt();
+      std::string strFilename = m_pDS2->fv("strFilename").get_asString();
+      m_pDS2->close();
+      m_pDS2->query(PrepareSQL("SELECT strPath FROM path WHERE idPath=%i", idPath).c_str());
+      std::string strPath = m_pDS2->fv("strPath").get_asString();
+      m_pDS2->close();
+      bookmark.filepath = strPath + strFilename;
+    }
+
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, bookmark.item.c_str());
+  }
+
+  return true;
+}
+
+void CMusicDatabase::ClearBookmark(const CBookmark &bookmark)
+{
+  try
+  {
+    int idFile = -1;
+    int idPath = -1;
+
+    if (bookmark.type == CBookmark::FOLDER_RESUME)
+      idPath = GetPathId(bookmark.item);
+    else
+      idFile = GetFileId(bookmark.item);
+
+    if (idFile < 0 && idPath < 0) return;
+    if (!m_pDB.get()) return;
+    if (!m_pDS.get()) return;
+
+    std::string strSQL;
+    if (bookmark.type == CBookmark::FOLDER_RESUME)
+      strSQL = PrepareSQL("DELETE FROM bookmark WHERE idPath=%i and type=%i", idPath, (int)bookmark.type);
+    else
+      strSQL = PrepareSQL("DELETE FROM bookmark WHERE idFile=%i and type=%i", idFile, (int)bookmark.type);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, bookmark.item.c_str());
+  }
+}
+
+int CMusicDatabase::GetPathId(const std::string &strPath)
+{
+  try
+  {
+    if (!m_pDB.get()) return -1;
+    if (!m_pDS.get()) return -1;
+
+    std::string strSQL;
+
+    std::string strPath1(strPath);
+    if (URIUtils::IsStack(strPath) || StringUtils::StartsWith(strPath, "rar://") || StringUtils::StartsWith(strPath, "zip://"))
+      URIUtils::GetParentPath(strPath, strPath1);
+
+    URIUtils::AddSlashAtEnd(strPath1);
+
+    int idPath = -1;
+    strSQL = PrepareSQL("SELECT idPath FROM path WHERE strPath LIKE '%s'", strPath1.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+      idPath = m_pDS->fv("path.idPath").get_asInt();
+    m_pDS->close();
+    return idPath;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
+  }
+  return -1;
+}
+
+int CMusicDatabase::GetFileId(const std::string &strUrl)
+{
+  try
+  {
+    if (!m_pDB.get()) return -1;
+    if (!m_pDS.get()) return -1;
+
+    std::string strSQL;
+
+    std::string strPath, strFilename;
+    URIUtils::Split(strUrl, strPath, strFilename);
+
+    int idPath = GetPathId(strPath);
+    if (idPath < 0)
+      return -1;
+
+    int idFile = -1;
+    strSQL = PrepareSQL("SELECT idFile FROM files WHERE strFilename LIKE '%s' AND idPath=%i", strFilename.c_str(), idPath);
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+      idFile = m_pDS->fv("files.idFile").get_asInt();
+    m_pDS->close();
+    return idFile;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strUrl.c_str());
+  }
+  return -1;
+}
+
+int CMusicDatabase::AddFile(const std::string &strUrl)
+{
+  try
+  {
+    if (!m_pDB.get()) return -1;
+    if (!m_pDS.get()) return -1;
+
+    std::string strSQL;
+
+    std::string strPath, strFilename;
+    URIUtils::Split(strUrl, strPath, strFilename);
+
+    int idPath = GetPathId(strPath);
+    if (idPath < 0)
+      idPath = AddPath(strPath);
+    if (idPath < 0)
+      return -1;
+
+    int idFile = -1;
+    strSQL = PrepareSQL("SELECT idFile FROM files WHERE strFilename LIKE '%s' AND idPath=%i", strFilename.c_str(), idPath);
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+      idFile = m_pDS->fv("files.idFile").get_asInt();
+    m_pDS->close();
+
+    if (idFile == -1)
+    {
+      strSQL = PrepareSQL("INSERT INTO files (idFile, idPath, strFilename) VALUES(NULL, %i, '%s')", idPath, strFilename.c_str());
+      m_pDS->exec(strSQL.c_str());
+      idFile = (int)m_pDS->lastinsertid();
+    }
+    return idFile;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strUrl.c_str());
+  }
+  return -1;
 }

@@ -452,7 +452,7 @@ protected:
   bool m_bInitializing;
   bool m_bPlatformDirectories;
 
-  CBookmark& m_progressTrackingVideoResumeBookmark;
+  CBookmark& m_progressTrackingResumeBookmark;
   CFileItemPtr m_progressTrackingItem;
   bool m_progressTrackingPlayCountUpdate;
 

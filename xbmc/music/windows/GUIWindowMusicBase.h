@@ -74,7 +74,7 @@ protected:
   virtual bool CanContainFilter(const std::string &strDirectory) const;
 
   // new methods
-  virtual void PlayItem(int iItem);
+  virtual void PlayItem(int iItem, const CBookmark *bookmark = NULL);
   virtual bool OnPlayMedia(int iItem);
 
   void RetrieveMusicInfo();
@@ -93,6 +93,9 @@ protected:
   void OnRipTrack(int iItem);
   void OnSearch();
   virtual void LoadPlayList(const std::string& strPlayList);
+
+  std::string GetResumeString(const CFileItem &item);
+  bool OnResumeItem(int iItem);
 
   typedef std::vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
   CGUIDialogProgress* m_dlgProgress; ///< Progress dialog

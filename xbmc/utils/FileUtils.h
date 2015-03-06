@@ -18,6 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <list>
 #include <string>
 #include "FileItem.h"
 
@@ -29,4 +30,7 @@ public:
   static bool RenameFile(const std::string &strFile);
   static bool RemoteAccessAllowed(const std::string &strPath);
   static unsigned int LoadFile(const std::string &filename, void* &outputBuffer);
+  static std::string GetFastHash(const std::string &path);
+  static int64_t GetModificationTime(const std::string &path);
+  static std::list<std::string> GetAllChildren(const std::string &directory);
 };

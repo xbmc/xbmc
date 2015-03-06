@@ -151,6 +151,8 @@ void CAdvancedSettings::Initialize()
   m_videoDefaultDVDPlayer = "dvdplayer";
   m_videoIgnoreSecondsAtStart = 3*60;
   m_videoIgnorePercentAtEnd   = 8.0f;
+  m_musicIgnoreSecondsAtStart = 10;
+  m_musicIgnorePercentAtEnd   = 8.0f;
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoVDPAUScaling = -1;
   m_videoVAAPIforced = false;
@@ -481,6 +483,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
     // 101 on purpose - can be used to never automark as watched
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 101.0f);
+
+    XMLUtils::GetInt(pElement, "ignoresecondsatstart", m_musicIgnoreSecondsAtStart, 0, 900);
+    XMLUtils::GetFloat(pElement, "ignorepercentatend", m_musicIgnorePercentAtEnd, 0, 100.0f);
 
     XMLUtils::GetBoolean(pElement, "usetimeseeking", m_musicUseTimeSeeking);
     XMLUtils::GetInt(pElement, "timeseekforward", m_musicTimeSeekForward, 0, 6000);

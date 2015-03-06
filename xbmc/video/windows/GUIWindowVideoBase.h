@@ -121,7 +121,7 @@ protected:
 
   void OnRestartItem(int iItem);
   bool OnResumeItem(int iItem);
-  void PlayItem(int iItem);
+  void PlayItem(int iItem, const CBookmark *bookmark = NULL);
   virtual bool OnPlayMedia(int iItem);
   virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item);
   void LoadPlayList(const std::string& strPlayList, int iPlayList = PLAYLIST_VIDEO);

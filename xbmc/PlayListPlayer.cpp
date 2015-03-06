@@ -707,6 +707,34 @@ void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
   g_windowManager.SendMessage(msg);
 }
 
+void CPlayListPlayer::SetFolder(int iPlaylist, bool bIsFolder)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+  GetPlaylist(iPlaylist).SetFolder(bIsFolder);
+}
+
+bool CPlayListPlayer::IsFolder(int iPlaylist) const
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return false;
+  return GetPlaylist(iPlaylist).IsFolder();
+}
+
+void CPlayListPlayer::SetFolderPath(int iPlaylist, const std::string &path)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+  GetPlaylist(iPlaylist).SetFolderPath(path);
+}
+
+std::string CPlayListPlayer::GetFolderPath(int iPlaylist) const
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return "";
+  return GetPlaylist(iPlaylist).GetFolderPath();
+}
+
 void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &strProperty, const CVariant &value)
 {
   if (strProperty.empty() || value.isNull() ||

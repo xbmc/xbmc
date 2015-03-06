@@ -228,6 +228,21 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+	<setting id="filelists.resumefolders" type="boolean" label="14072" help="36436">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+	</setting>
+	<setting id="filelists.checkfolderhash" type="boolean" label="14073" help="36437">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="filelists.highlightfolders" type="boolean" label="14105" help="36438">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="screensaver" label="360" help="36128">

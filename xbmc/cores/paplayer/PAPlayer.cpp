@@ -348,7 +348,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
   }
 
   StreamInfo *si = new StreamInfo();
-  if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
+  if (!si->m_decoder.Create(file, ((file.m_lStartOffset + file.m_lResumeOffset) * 1000) / 75))
   {
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
 
@@ -395,7 +395,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
   si->m_bytesPerFrame      = si->m_bytesPerSample * si->m_channelInfo.Count();
   si->m_started            = false;
   si->m_finishing          = false;
-  si->m_framesSent         = 0;
+  si->m_framesSent         = (int)(si->m_sampleRate * file.m_lResumeOffset / 75);
   si->m_seekNextAtFrame    = 0;
   si->m_seekFrame          = -1;
   si->m_stream             = NULL;
