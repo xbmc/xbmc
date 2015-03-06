@@ -3827,7 +3827,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
     switch (item)
     {
     /* Now playing infos */
-    case VIDEOPLAYER_ORIGINALTITLE:
+    case VIDEOPLAYER_TITLE:
       epgTag = tag->GetEPGNow();
       return epgTag ?
           epgTag->Title() :
@@ -3851,7 +3851,39 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_IMDBNUMBER:
       epgTag = tag->GetEPGNow();
       return epgTag ? epgTag->IMDBNumber() : "";
-      
+    case VIDEOPLAYER_ORIGINALTITLE:
+      epgTag = tag->GetEPGNow();
+      return epgTag ? epgTag->OriginalTitle() : "";
+    case VIDEOPLAYER_YEAR:
+      epgTag = tag->GetEPGNow();
+      if (epgTag && epgTag->Year() > 0)
+        return StringUtils::Format("%i", epgTag->Year());
+      break;
+    case VIDEOPLAYER_EPISODE:
+      epgTag = tag->GetEPGNow();
+      if (epgTag && epgTag->EpisodeNumber() > 0)
+      {
+        if (epgTag->SeriesNumber() == 0) // prefix episode with 'S'
+          return StringUtils::Format("S%i", epgTag->EpisodeNumber());
+        else
+          return StringUtils::Format("%i", epgTag->EpisodeNumber());
+      }
+      break;
+    case VIDEOPLAYER_SEASON:
+      epgTag = tag->GetEPGNow();
+      if (epgTag && epgTag->SeriesNumber() > 0)
+        return StringUtils::Format("%i", epgTag->SeriesNumber());
+      break;
+    case VIDEOPLAYER_CAST:
+      epgTag = tag->GetEPGNow();
+      return epgTag ? epgTag->Cast() : "";
+    case VIDEOPLAYER_DIRECTOR:
+      epgTag = tag->GetEPGNow();
+      return epgTag ? epgTag->Director() : "";
+    case VIDEOPLAYER_WRITER:
+      epgTag = tag->GetEPGNow();
+      return epgTag ? epgTag->Writer() : "";
+
     /* Next playing infos */
     case VIDEOPLAYER_NEXT_TITLE:
       epgTag = tag->GetEPGNext();
