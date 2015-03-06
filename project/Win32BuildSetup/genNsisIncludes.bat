@@ -29,6 +29,22 @@ IF EXIST BUILD_WIN32\addons\pvr.* (
 )
 
 SET Counter=1
+IF EXIST BUILD_WIN32\addons\audiodecoder.* (
+  ECHO SectionGroup "Audio Decoder Add-ons" SecAudioDecoderAddons >> audiodecoder-addons.nsi
+  FOR /F "tokens=*" %%P IN ('dir /B /AD BUILD_WIN32\addons\audiodecoder.*') DO (
+    SET "output=%%P"
+    SET output=!output:audiodecoder.=!
+    ECHO Section "!output!" SecAudioDecoderAddons!Counter! >> audiodecoder-addons.nsi
+    ECHO SectionIn 1 2 3 #section is in installtype Full >> audiodecoder-addons.nsi
+    ECHO SetOutPath "$INSTDIR\addons\%%P" >> audiodecoder-addons.nsi
+    ECHO File /r "${app_root}\addons\%%P\*.*" >> audiodecoder-addons.nsi
+    ECHO SectionEnd >> audiodecoder-addons.nsi
+    SET /A Counter = !Counter! + 1
+    )
+  ECHO SectionGroupEnd >> audiodecoder-addons.nsi
+)
+
+SET Counter=1
 IF EXIST BUILD_WIN32\addons\audioencoder.* (
   ECHO SectionGroup "Audio Encoder Add-ons" SecAudioEncoderAddons >> audioencoder-addons.nsi
   FOR /F "tokens=*" %%P IN ('dir /B /AD BUILD_WIN32\addons\audioencoder.*') DO (
