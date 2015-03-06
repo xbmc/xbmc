@@ -83,8 +83,6 @@ protected:
   virtual bool OnClick(int iItem);
   virtual std::string GetStartFolder(const std::string &dir);
 
-  virtual std::string GetQuickpathName(const std::string& strPath) const;
-
   VECSOURCES m_shares;
 
 private:
