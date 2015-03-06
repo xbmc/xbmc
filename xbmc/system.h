@@ -66,10 +66,6 @@
   #define HAS_FILESYSTEM_NFS
 #endif
 
-#ifdef HAVE_LIBAFPCLIENT
-  #define HAS_FILESYSTEM_AFP
-#endif
-
 #ifdef HAVE_LIBPLIST
   #define HAS_AIRPLAY
 #endif

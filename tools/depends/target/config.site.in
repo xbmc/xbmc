@@ -41,7 +41,7 @@ PYTHON_SITE_PKG=@prefix@/@deps_dir@/lib/python${PYTHON_VERSION}/site-packages
 PYTHON_NOVERSIONCHECK=no-check
 NATIVE_ROOT=@prefix@/@tool_dir@
 
-#afps-ng and libomxil-bellagio
+#libomxil-bellagio
 ac_cv_func_malloc_0_nonnull=yes
 
 #curl

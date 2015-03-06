@@ -999,22 +999,6 @@ bool URIUtils::IsNfs(const std::string& strFile)
   return IsProtocol(strFile, "nfs");
 }
 
-bool URIUtils::IsAfp(const std::string& strFile)
-{
-  if (IsStack(strFile))
-    return IsAfp(CStackDirectory::GetFirstStackedFile(strFile));
-
-  if (IsSpecial(strFile))
-    return IsAfp(CSpecialProtocol::TranslatePath(strFile));
-
-  CURL url(strFile);
-  if (HasParentInHostname(url))
-    return IsAfp(url.GetHostName());
-
-  return IsProtocol(strFile, "afp");
-}
-
-
 bool URIUtils::IsVideoDb(const std::string& strFile)
 {
   return IsProtocol(strFile, "videodb");

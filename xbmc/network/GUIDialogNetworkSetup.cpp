@@ -137,9 +137,6 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 #ifdef HAS_FILESYSTEM_SFTP
   labels.push_back(make_pair(g_localizeStrings.Get(20260), NET_PROTOCOL_SFTP));
 #endif
-#ifdef HAS_FILESYSTEM_AFP
-  labels.push_back(make_pair(g_localizeStrings.Get(20261), NET_PROTOCOL_AFP));
-#endif
 
   SET_CONTROL_LABELS(CONTROL_PROTOCOL, m_protocol, &labels);
   UpdateButtons();
@@ -306,8 +303,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                                               m_protocol == NET_PROTOCOL_HTSP ||
                                                                               m_protocol == NET_PROTOCOL_VTP ||
                                                                               m_protocol == NET_PROTOCOL_MYTH ||
-                                                                              m_protocol == NET_PROTOCOL_SFTP ||
-                                                                              m_protocol == NET_PROTOCOL_AFP));
+                                                                              m_protocol == NET_PROTOCOL_SFTP));
 }
 
 std::string CGUIDialogNetworkSetup::ConstructPath() const
@@ -341,8 +337,6 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("nfs");
   else if (m_protocol == NET_PROTOCOL_SFTP)
     url.SetProtocol("sftp");
-  else if (m_protocol == NET_PROTOCOL_AFP)
-    url.SetProtocol("afp");
     
   if (!m_username.empty())
   {
@@ -404,8 +398,6 @@ void CGUIDialogNetworkSetup::SetPath(const std::string &path)
     m_protocol = NET_PROTOCOL_NFS;
   else if (url.IsProtocol("sftp") || url.IsProtocol("ssh"))
     m_protocol = NET_PROTOCOL_SFTP;
-  else if (url.IsProtocol("afp"))
-    m_protocol = NET_PROTOCOL_AFP;
   else
     m_protocol = NET_PROTOCOL_SMB;  // default to smb
   m_username = url.GetUserName();

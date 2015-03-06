@@ -34,7 +34,7 @@ LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 
 NATIVE_ROOT=@prefix@/@tool_dir@
 
-#afps-ng and libomxil-bellagio
+#libomxil-bellagio
 ac_cv_func_malloc_0_nonnull=yes
 
 #curl
