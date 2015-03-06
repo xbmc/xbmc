@@ -55,7 +55,8 @@ CPVRClients::CPVRClients(void) :
     m_bIsPlayingLiveTV(false),
     m_bIsPlayingRecording(false),
     m_scanStart(0),
-    m_bNoAddonWarningDisplayed(false)
+    m_bNoAddonWarningDisplayed(false),
+    m_bRestartManagerOnAddonDisabled(false)
 {
 }
 
@@ -185,7 +186,7 @@ int CPVRClients::EnabledClientAmount(void) const
   CSingleLock lock(m_critSection);
 
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-    if (itr->second->Enabled())
+    if (!CAddonMgr::Get().IsAddonDisabled(itr->second->ID()))
       ++iReturn;
 
   return iReturn;
@@ -193,7 +194,10 @@ int CPVRClients::EnabledClientAmount(void) const
 
 bool CPVRClients::HasEnabledClients(void) const
 {
-  return EnabledClientAmount() > 0;
+  for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
+    if (!CAddonMgr::Get().IsAddonDisabled(itr->second->ID()))
+      return true;
+  return false;
 }
 
 bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
@@ -1048,34 +1052,33 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
     map = m_addons;
   }
 
-  if (map.size() == 0)
+  if (map.empty())
     return false;
 
-  for (unsigned iClientPtr = 0; iClientPtr < map.size(); iClientPtr++)
+  for (VECADDONS::iterator it = map.begin(); it != map.end(); ++it)
   {
-    const AddonPtr clientAddon = map.at(iClientPtr);
-    bool bEnabled = clientAddon->Enabled() &&
-        !CAddonMgr::Get().IsAddonDisabled(clientAddon->ID());
+    bool bEnabled = (*it)->Enabled() &&
+        !CAddonMgr::Get().IsAddonDisabled((*it)->ID());
 
-    if (!bEnabled && IsKnownClient(clientAddon))
+    if (!bEnabled && IsKnownClient(*it))
     {
       CSingleLock lock(m_critSection);
       /* stop the client and remove it from the db */
-      StopClient(clientAddon, false);
-      disableAddons.push_back(clientAddon);
+      StopClient(*it, false);
+      disableAddons.push_back(*it);
 
     }
-    else if (bEnabled && (bInitialiseAllClients || !IsKnownClient(clientAddon) || !IsConnectedClient(clientAddon)))
+    else if (bEnabled && (bInitialiseAllClients || !IsKnownClient(*it) || !IsConnectedClient(*it)))
     {
       bool bDisabled(false);
 
       // register the add-on in the pvr db, and create the CPVRClient instance
-      int iClientId = RegisterClient(clientAddon);
-      if (iClientId < 0)
+      int iClientId = RegisterClient(*it);
+      if (iClientId <= 0)
       {
         // failed to register or create the add-on, disable it
-        CLog::Log(LOGWARNING, "%s - failed to register add-on %s, disabling it", __FUNCTION__, clientAddon->Name().c_str());
-        disableAddons.push_back(clientAddon);
+        CLog::Log(LOGWARNING, "%s - failed to register add-on %s, disabling it", __FUNCTION__, (*it)->Name().c_str());
+        disableAddons.push_back(*it);
         bDisabled = true;
       }
       else
@@ -1086,8 +1089,8 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
           CSingleLock lock(m_critSection);
           if (!GetClient(iClientId, addon))
           {
-            CLog::Log(LOGWARNING, "%s - failed to find add-on %s, disabling it", __FUNCTION__, clientAddon->Name().c_str());
-            disableAddons.push_back(clientAddon);
+            CLog::Log(LOGWARNING, "%s - failed to find add-on %s, disabling it", __FUNCTION__, (*it)->Name().c_str());
+            disableAddons.push_back(*it);
             bDisabled = true;
           }
         }
@@ -1106,12 +1109,12 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
         // re-check the enabled status. newly installed clients get disabled when they're added to the db
         if (!bDisabled && addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
         {
-          CLog::Log(LOGWARNING, "%s - failed to create add-on %s, status = %d", __FUNCTION__, clientAddon->Name().c_str(), status);
+          CLog::Log(LOGWARNING, "%s - failed to create add-on %s, status = %d", __FUNCTION__, (*it)->Name().c_str(), status);
           if (!addon.get() || !addon->DllLoaded() || status == ADDON_STATUS_PERMANENT_FAILURE)
           {
             // failed to load the dll of this add-on, disable it
-            CLog::Log(LOGWARNING, "%s - failed to load the dll for add-on %s, disabling it", __FUNCTION__, clientAddon->Name().c_str());
-            disableAddons.push_back(clientAddon);
+            CLog::Log(LOGWARNING, "%s - failed to load the dll for add-on %s, disabling it", __FUNCTION__, (*it)->Name().c_str());
+            disableAddons.push_back(*it);
             bDisabled = true;
           }
         }
@@ -1123,7 +1126,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
   }
 
   // disable add-ons that failed to initialise
-  if (disableAddons.size() > 0)
+  if (!disableAddons.empty())
   {
     CSingleLock lock(m_critSection);
     for (VECADDONS::iterator it = disableAddons.begin(); it != disableAddons.end(); ++it)
@@ -1164,6 +1167,7 @@ void CPVRClients::Process(void)
         else
           ShowDialogNoClientsEnabled();
       }
+      m_bRestartManagerOnAddonDisabled = true;
     }
     else
     {
@@ -1289,6 +1293,7 @@ bool CPVRClients::UpdateAddons(void)
 
     if (bDisable)
     {
+      CLog::Log(LOGDEBUG, "%s - disabling add-on '%s'", __FUNCTION__, (*it)->Name().c_str());
       CAddonMgr::Get().DisableAddon((*it)->ID(), true);
       usableClients--;
     }

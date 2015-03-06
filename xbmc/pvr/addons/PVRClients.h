@@ -611,6 +611,12 @@ namespace PVR
     time_t GetBufferTimeStart() const;
     time_t GetBufferTimeEnd() const;
 
+    /**
+     * Called by OnEnable() and OnDisable() to check if the manager should be restarted
+     * @return True if it should be restarted, false otherwise
+     */
+    bool RestartManagerOnAddonDisabled(void) const { return m_bRestartManagerOnAddonDisabled; }
+
   private:
     /*!
      * @brief Update add-ons from the AddonManager
@@ -694,5 +700,6 @@ namespace PVR
     bool                  m_bNoAddonWarningDisplayed; /*!< true when a warning was displayed that no add-ons were found, false otherwise */
     CCriticalSection      m_critSection;
     std::map<int, time_t> m_connectionAttempts;       /*!< last connection attempt per add-on */
+    bool                  m_bRestartManagerOnAddonDisabled; /*!< true to restart the manager when an add-on is enabled/disabled */
   };
 }

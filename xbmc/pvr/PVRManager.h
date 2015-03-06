@@ -250,6 +250,12 @@ namespace PVR
     {
       return GetState() == ManagerStateStarted;
     }
+
+    /**
+     * Called by OnEnable() and OnDisable() to check if the manager should be restarted
+     * @return True if it should be restarted, false otherwise
+     */
+    bool RestartManagerOnAddonDisabled(void) const;
     
     /*!
      * @brief Check whether the PVRManager is stopping
