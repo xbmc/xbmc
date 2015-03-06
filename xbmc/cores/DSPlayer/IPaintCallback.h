@@ -24,6 +24,8 @@
 #ifndef HAS_DS_PLAYER
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
+/*MADVR*/
+#include "guilib/Geometry.h"
 
 class IPaintCallback
 {
@@ -33,4 +35,16 @@ public:
   virtual void OnPaint(CRect destRect) = 0;
   virtual void OnAfterPresent() = 0;
 };
+
+class IPaintCallbackMadvr
+{
+public:
+  virtual ~IPaintCallbackMadvr() {};
+
+  virtual IDirect3DDevice9* GetDevice() = NULL;
+  virtual void OsdRedrawFrame() = 0;
+};
+
+
+
 

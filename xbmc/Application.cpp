@@ -175,6 +175,9 @@
 #include "dialogs/GUIDialogButtonMenu.h"
 #include "dialogs/GUIDialogSimpleMenu.h"
 #include "addons/GUIDialogAddonSettings.h"
+#ifdef HAS_DS_PLAYER
+#include "cores/DSPlayer/GraphFilters.h"
+#endif
 
 // PVR related include Files
 #include "pvr/PVRManager.h"
@@ -1850,10 +1853,15 @@ bool CApplication::RenderNoPresent()
 //  g_graphicsContext.AcquireCurrentContext();
 
   g_graphicsContext.Lock();
+  bool UsingMadVr = CGraphFilters::Get()->UsingMadVr();
 
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo())
   {
+    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+    if (!UsingMadVr)
+      g_renderManager.Render(true, 0, 255);
+
     // close window overlays
     CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OVERLAY);
     if (overlay) overlay->Close(true);
@@ -4868,7 +4876,12 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
 
 bool CApplication::IsCurrentThread() const
 {
-  return CThread::IsCurrentThread(m_threadID);
+  bool UsingMadVr = CGraphFilters::Get()->UsingMadVr();
+
+  if (!UsingMadVr)
+    return CThread::IsCurrentThread(m_threadID);
+  else
+    return true;
 }
 
 void CApplication::SetRenderGUI(bool renderGUI)

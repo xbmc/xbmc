@@ -44,6 +44,7 @@
 #include "filters/XBMCFileSource.h"
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/EVRAllocatorPresenter.h"
+#include "Filters/madVRAllocatorPresenter.h"
 
 #include "Utils/AudioEnumerator.h"
 #include "DVDFileInfo.h"
@@ -328,7 +329,9 @@ HRESULT CFGLoader::InsertVideoRenderer()
   if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista))
   {
     if (CSettings::Get().GetBool("dsplayer.forcenodefrendalvista"))
-      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
+      //CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
+      /*MADVR*/
+      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_MADVR);
     else
       CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_EVR);
   }
@@ -337,7 +340,9 @@ HRESULT CFGLoader::InsertVideoRenderer()
     if (CSettings::Get().GetBool("dsplayer.forcenodefrendbevista"))
       CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_EVR);
     else
-      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
+      //CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
+      /*MADVR*/
+      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_MADVR);
   }
 
   // Renderers
@@ -347,7 +352,9 @@ HRESULT CFGLoader::InsertVideoRenderer()
   }
   else
   {
-    m_pFGF = new CFGFilterVideoRenderer(CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9");
+    //m_pFGF = new CFGFilterVideoRenderer(CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9");
+    /*MADVR*/    
+    m_pFGF = new CFGFilterVideoRenderer(CLSID_madVR, L"MADVR");
   }
 
 

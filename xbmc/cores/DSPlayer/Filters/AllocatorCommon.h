@@ -56,3 +56,4 @@ extern const char *GetD3DFormatStr(D3DFORMAT Format);
 
 extern HRESULT CreateAP9(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppAP);
 extern HRESULT CreateEVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppAP);
+extern HRESULT CreateMadVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppAP);

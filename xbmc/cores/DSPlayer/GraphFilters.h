@@ -29,6 +29,7 @@
 
 #include "DSUtil/DSUtil.h"
 #include "DSUtil/SmartPtr.h"
+#include "IPaintCallback.h"
 #include "streams.h"
 #include "utils/CharsetConverter.h"
 #include "system.h"
@@ -105,11 +106,13 @@ struct SDVDFilters
   Com::SmartQIPtr<IDvdInfo2> dvdInfo; ///< Pointer to IDvdInfo2 interface. May be NULL
 };
 
+/*MADVR*/
 enum DIRECTSHOW_RENDERER
 {
   DIRECTSHOW_RENDERER_VMR9 = 1,
   DIRECTSHOW_RENDERER_EVR = 2,
-  DIRECTSHOW_RENDERER_UNDEF = 3
+  DIRECTSHOW_RENDERER_MADVR = 3,
+  DIRECTSHOW_RENDERER_UNDEF = 4
 };
 
 /** @brief Centralize graph filters management
@@ -169,6 +172,11 @@ public:
   bool HasSubFilter() { return m_hsubfilter; }
   void SetHasSubFilter(bool b) { m_hsubfilter = b; }
 
+  /*MADVR*/
+  IPaintCallbackMadvr* GetMadvrCallback() { return m_pMadvr; }
+  void SetMadVrCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
+  bool UsingMadVr();
+
 private:
   CGraphFilters();
   ~CGraphFilters();
@@ -179,4 +187,7 @@ private:
   bool m_isDVD;
   bool m_UsingDXVADecoder;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
+
+  /*MADVR*/
+  IPaintCallbackMadvr* m_pMadvr;
 };

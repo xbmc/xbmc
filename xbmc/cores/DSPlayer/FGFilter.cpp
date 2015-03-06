@@ -33,6 +33,7 @@
 
 #include "Filters/VMR9AllocatorPresenter.h"
 #include "Filters/EVRAllocatorPresenter.h"
+#include "Filters/madVRAllocatorPresenter.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/charsetconverter.h"
@@ -455,6 +456,8 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
     CreateAP9(m_clsid, g_hWnd, &pCAP);
   else if (m_clsid == CLSID_EVRAllocatorPresenter)
     CreateEVR(m_clsid, g_hWnd, &pCAP);
+  else if (m_clsid == CLSID_madVR)
+    CreateMadVR(m_clsid, g_hWnd, &pCAP);
 
   if (pCAP == NULL)
   {

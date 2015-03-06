@@ -31,6 +31,8 @@ CGraphFilters *CGraphFilters::m_pSingleton = NULL;
 CGraphFilters::CGraphFilters() :
 m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER_UNDEF), m_hsubfilter(false)
 {
+  /*MADVR*/
+  m_pMadvr = NULL;
 }
 
 CGraphFilters::~CGraphFilters()
@@ -40,6 +42,15 @@ CGraphFilters::~CGraphFilters()
 CGraphFilters* CGraphFilters::Get()
 {
   return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGraphFilters());
+}
+
+/*MADVR*/
+bool CGraphFilters::UsingMadVr()
+{
+  if (m_pMadvr == NULL)
+    return false;
+  return true;
+
 }
 
 #endif

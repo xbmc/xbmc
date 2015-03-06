@@ -1214,7 +1214,7 @@
         </setting>
         <setting id="dsplayer.forcenodefrendalvista" type="boolean" label="55001" help="">
           <level>0</level>
-          <default>false</default>
+          <default>true</default>
           <dependencies>
             <dependency type="visible">
 		<condition on="property" operator="is" name="IsWindowsVersionAtLeast" />

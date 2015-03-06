@@ -31,6 +31,7 @@
 #include "AllocatorCommon.h"
 #include "VMR9AllocatorPresenter.h"
 #include "EVRAllocatorPresenter.h"
+#include "madVRAllocatorPresenter.h"
 #include "utils/log.h"
 
 bool IsVMR9InGraph(IFilterGraph* pFG)
@@ -86,6 +87,32 @@ HRESULT CreateEVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppA
     (*ppAP)->AddRef();
 
     if (FAILED(hr))
+    {
+      Error += "\n";
+      Error += GetWindowsErrorMessage(hr, NULL);
+      CLog::Log(LOGERROR, "%s %s", __FUNCTION__, Error.c_str());
+      (*ppAP)->Release();
+      *ppAP = NULL;
+    }
+    else if (!Error.IsEmpty())
+    {
+      CLog::Log(LOGWARNING, "%s %s", __FUNCTION__, Error.c_str());
+    }
+  }
+
+  return hr;
+}
+
+HRESULT CreateMadVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppAP)
+{
+  HRESULT    hr = E_FAIL;
+  if (clsid == CLSID_madVR)
+  {
+    CStdString Error;
+    *ppAP  = DNew CmadVRAllocatorPresenter(hWnd, hr, Error);
+    (*ppAP)->AddRef();
+
+    if(FAILED(hr))
     {
       Error += "\n";
       Error += GetWindowsErrorMessage(hr, NULL);
