@@ -98,7 +98,6 @@
 					<texture>OSDPlay.png</texture>
 					<visible>Player.Playing</visible>
 				</control>
-
 				<control type="image">
 					<left>28</left>
 					<top>4</top>
@@ -139,7 +138,6 @@
 					<texture>OSD32x.png</texture>
 					<visible>Player.Rewinding32x</visible>
 				</control>
-
 				<control type="image">
 					<left>34</left>
 					<top>4</top>

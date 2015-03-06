@@ -54,7 +54,6 @@
 			<ondown>10</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
-
 		<control type="grouplist" id="5">
 			<description>control area</description>
 			<left>30</left>
@@ -83,7 +82,6 @@
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 		</control>
-
 		<control type="button" id="7">
 			<description>Default Button</description>
 			<left>0</left>
@@ -143,7 +141,6 @@
 			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 			<texturefocus border="5">button-focus2.png</texturefocus>
 		</control>
-
 		<control type="group" id="9001">
 			<left>190</left>
 			<top>435</top>

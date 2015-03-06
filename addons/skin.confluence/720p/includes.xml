@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<include file="defaults.xml"/>
-	<include file="ViewsVideoLibrary.xml"/>
-	<include file="ViewsMusicLibrary.xml"/>
-	<include file="ViewsFileMode.xml"/>
-	<include file="ViewsPictures.xml"/>
-	<include file="ViewsAddonBrowser.xml"/>
-	<include file="ViewsLiveTV.xml"/>
-	<include file="ViewsPVRGuide.xml"/>
-	<include file="ViewsWeather.xml"/>
-	<include file="IncludesCodecFlagging.xml"/>
-	<include file="IncludesHomeRecentlyAdded.xml"/>
-	<include file="IncludesHomeMenuItems.xml"/>
-	<include file="IncludesPVR.xml"/>
-	<include file="IncludesBackgroundBuilding.xml"/>
-
+	<include file="defaults.xml" />
+	<include file="ViewsVideoLibrary.xml" />
+	<include file="ViewsMusicLibrary.xml" />
+	<include file="ViewsFileMode.xml" />
+	<include file="ViewsPictures.xml" />
+	<include file="ViewsAddonBrowser.xml" />
+	<include file="ViewsLiveTV.xml" />
+	<include file="ViewsPVRGuide.xml" />
+	<include file="ViewsWeather.xml" />
+	<include file="IncludesCodecFlagging.xml" />
+	<include file="IncludesHomeRecentlyAdded.xml" />
+	<include file="IncludesHomeMenuItems.xml" />
+	<include file="IncludesPVR.xml" />
+	<include file="IncludesBackgroundBuilding.xml" />
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
 	<variable name="ResolutionOverlayVar">
@@ -69,7 +68,6 @@
 		<value condition="Player.Forwarding">$LOCALIZE[31044]</value>
 		<value condition="Player.Rewinding">$LOCALIZE[31045]</value>
 	</variable>
-
 	<include name="BehindDialogFadeOut">
 		<control type="image">
 			<left>0</left>
@@ -981,14 +979,14 @@
 	<include name="HomeAddonsCommonLayout">
 		<include>Window_OpenClose_Animation</include>
 		<animation type="Visible">
-			<effect type="slide" start="0,30" end="0,0" delay="200" easing="out" tween="quadratic" time="200"/>
-			<effect type="fade" start="0" end="100" delay="200" time="200"/>
+			<effect type="slide" start="0,30" end="0,0" delay="200" easing="out" tween="quadratic" time="200" />
+			<effect type="fade" start="0" end="100" delay="200" time="200" />
 		</animation>
 		<animation type="Hidden">
-			<effect type="zoom" start="100" end="70" center="auto" easing="in" tween="quadratic" time="300"/>
-			<effect type="fade" start="100" end="0" time="300"/>
+			<effect type="zoom" start="100" end="70" center="auto" easing="in" tween="quadratic" time="300" />
+			<effect type="fade" start="100" end="0" time="300" />
 		</animation>
-		<hitrect x="0" y="530" w="1280" h="120"/>
+		<hitrect x="0" y="530" w="1280" h="120" />
 		<left>0</left>
 		<top>190r</top>
 		<width>1280</width>

@@ -15,7 +15,7 @@
 			<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
 		</control>
 		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<left>0</left>
 				<top>100r</top>
@@ -26,7 +26,7 @@
 				<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
 			</control>
 			<control type="group">
-				<include>Window_OpenClose_Animation</include>		
+				<include>Window_OpenClose_Animation</include>
 				<control type="group">
 					<include>VisibleFadeEffect</include>
 					<control type="image">
@@ -48,8 +48,6 @@
 		</control>
 		<include>MainWindowMouseButtons</include>
 		<include>PVRHeader</include>
-
-			
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>
 			<description>TV Search group</description>
@@ -146,7 +144,7 @@
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
 								<info>ListItem.Label</info>
-							</control>	
+							</control>
 						</control>
 						<control type="group">
 							<visible>!IsEmpty(ListItem.Date)</visible>
@@ -283,7 +281,7 @@
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
 								<info>ListItem.Label</info>
-							</control>	
+							</control>
 						</control>
 						<control type="group">
 							<visible>!IsEmpty(ListItem.Date)</visible>
@@ -424,11 +422,9 @@
 				<label>([COLOR=blue]$INFO[Container(50).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages][/COLOR])</label>
 			</control>
 		</control>
-
 		<include>CommonNowPlaying</include>
 		<include>BehindDialogFadeOut</include>
 		<include>ScrollOffsetLabel</include>
-
 		<control type="image">
 			<left>0</left>
 			<top>0</top>
@@ -439,7 +435,6 @@
 			<animation effect="fade" time="200">Hidden</animation>
 			<visible>Window.IsActive(FileBrowser) | Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo) | Window.IsActive(PVRTimerSetting) | Window.IsActive(PVRGroupManager) | Window.IsActive(PVRGuideSearch)</visible>
 		</control>
-
 		<include>PVRSideBlade</include>
 		<include>Clock</include>
 	</controls>

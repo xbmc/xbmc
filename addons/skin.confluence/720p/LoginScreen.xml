@@ -10,7 +10,7 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<left>0</left>
 				<top>100r</top>

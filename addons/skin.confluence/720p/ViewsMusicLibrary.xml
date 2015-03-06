@@ -262,7 +262,7 @@
 			<top>450</top>
 			<control type="fixedlist" id="509">
 				<visible>Container.Content(Albums)</visible>
-				<hitrect x="0" y="-10" w="1280" h="190"/>
+				<hitrect x="0" y="-10" w="1280" h="190" />
 				<left>-80</left>
 				<top>0</top>
 				<width>1360</width>
@@ -333,12 +333,12 @@
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Overlay]</texture>
 						<animation type="focus">
-							<effect type="fade" start="0" end="100" time="200"/>
-							<effect type="slide" start="0,0" end="40,40" time="200"/>
+							<effect type="fade" start="0" end="100" time="200" />
+							<effect type="slide" start="0,0" end="40,40" time="200" />
 						</animation>
 						<animation type="unfocus">
-							<effect type="fade" start="100" end="0" time="200"/>
-							<effect type="slide" end="0,0" start="40,40" time="200"/>
+							<effect type="fade" start="100" end="0" time="200" />
+							<effect type="slide" end="0,0" start="40,40" time="200" />
 						</animation>
 					</control>
 				</focusedlayout>

@@ -16,18 +16,25 @@
 			<aspectratio>keep</aspectratio>
 			<include>VisibleFadeEffect</include>
 			<visible>Control.IsVisible(510)</visible>
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 		</control>
 		<include>ContentPanelBackgrounds</include>
 		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
-			<include>CommonRootView</include> <!-- view id = 50 -->
-			<include>FullWidthList</include> <!-- view id = 51 -->
-			<include>ThumbnailView</include> <!-- view id = 500 -->
-			<include>PictureWrapView</include> <!-- view id = 510 -->
-			<include>PictureThumbView</include> <!-- view id = 514 -->
-			<include>AddonInfoListView1</include> <!-- view id = 550 -->
-			<include>AddonInfoThumbView1</include> <!-- view id = 551 -->
+			<include>Window_OpenClose_Animation</include>
+			<include>CommonRootView</include>
+			<!-- view id = 50 -->
+			<include>FullWidthList</include>
+			<!-- view id = 51 -->
+			<include>ThumbnailView</include>
+			<!-- view id = 500 -->
+			<include>PictureWrapView</include>
+			<!-- view id = 510 -->
+			<include>PictureThumbView</include>
+			<!-- view id = 514 -->
+			<include>AddonInfoListView1</include>
+			<!-- view id = 550 -->
+			<include>AddonInfoThumbView1</include>
+			<!-- view id = 551 -->
 		</control>
 		<include>CommonPageCount</include>
 		<include>CommonNowPlaying</include>

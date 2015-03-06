@@ -217,7 +217,6 @@
 					<ondown>16</ondown>
 				</control>
 			</control>
-
 			<control type="label">
 				<description>Name Label</description>
 				<left>30</left>
@@ -242,7 +241,6 @@
 				<onup>10</onup>
 				<ondown>17</ondown>
 			</control>
-
 			<control type="spincontrolex" id="17">
 				<left>30</left>
 				<top>440</top>
@@ -257,7 +255,6 @@
 				<onup>16</onup>
 				<ondown>18</ondown>
 			</control>
-
 			<control type="spincontrolex" id="18">
 				<left>30</left>
 				<top>485</top>
@@ -272,7 +269,6 @@
 				<onup>17</onup>
 				<ondown>23</ondown>
 			</control>
-
 			<control type="togglebutton" id="19">
 				<left>590</left>
 				<top>485</top>
@@ -292,7 +288,6 @@
 				<onup>17</onup>
 				<ondown>24</ondown>
 			</control>
-
 			<control type="spincontrolex" id="23">
 				<left>30</left>
 				<top>530</top>
@@ -307,7 +302,6 @@
 				<onup>18</onup>
 				<ondown>9001</ondown>
 			</control>
-
 			<control type="radiobutton" id="24">
 				<left>590</left>
 				<top>530</top>
@@ -324,7 +318,6 @@
 				<onup>19</onup>
 				<ondown>9001</ondown>
 			</control>
-
 			<control type="group" id="9001">
 				<control type="button" id="20">
 					<description>Ok Button</description>

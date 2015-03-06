@@ -42,12 +42,12 @@
 			<left>90</left>
 			<top>30</top>
 			<animation type="WindowOpen" reversible="false">
-				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>
-				<effect type="fade" start="0" end="100" time="300"/>
+				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
+				<effect type="fade" start="0" end="100" time="300" />
 			</animation>
 			<animation type="WindowClose" reversible="false">
-				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300"/>
-				<effect type="fade" start="100" end="0" time="300"/>
+				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
+				<effect type="fade" start="100" end="0" time="300" />
 			</animation>
 			<control type="image">
 				<left>5</left>
@@ -721,8 +721,7 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<enable>!IsEmpty(Skin.String(LyricScript_Path))</enable>
 							<onclick>Addon.OpenSettings($INFO[Skin.String(LyricScript_Path)])</onclick>
-						</control> 
-
+						</control>
 						<control type="label" id="410">
 							<width>750</width>
 							<height>45</height>
@@ -793,7 +792,6 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomeVideosButton5,xbmc.addon.video,xbmc.addon.executable)</onclick>
 						</control>
-
 						<control type="label" id="420">
 							<width>750</width>
 							<height>45</height>
@@ -864,7 +862,6 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomeMusicButton5,xbmc.addon.audio,xbmc.addon.executable)</onclick>
 						</control>
-
 						<control type="label" id="430">
 							<width>750</width>
 							<height>45</height>
@@ -935,7 +932,6 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomePictureButton5,xbmc.addon.image,xbmc.addon.executable)</onclick>
 						</control>
-
 						<control type="label" id="440">
 							<width>750</width>
 							<height>45</height>

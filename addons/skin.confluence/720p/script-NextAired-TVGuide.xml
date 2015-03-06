@@ -134,7 +134,7 @@
 			</control>
 		</control>
 		<control type="grouplist" id="2000">
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 			<left>40</left>
 			<top>60</top>
 			<width>1200</width>
@@ -445,7 +445,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<description>left Arrow</description>
 				<left>10</left>

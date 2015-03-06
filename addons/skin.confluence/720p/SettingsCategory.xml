@@ -16,12 +16,12 @@
 			<left>90</left>
 			<top>30</top>
 			<animation type="WindowOpen" reversible="false">
-				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>
-				<effect type="fade" start="0" end="100" time="300"/>
+				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
+				<effect type="fade" start="0" end="100" time="300" />
 			</animation>
 			<animation type="WindowClose" reversible="false">
-				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300"/>
-				<effect type="fade" start="100" end="0" time="300"/>
+				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
+				<effect type="fade" start="100" end="0" time="300" />
 			</animation>
 			<control type="image">
 				<left>5</left>
@@ -103,11 +103,11 @@
 				<left>20</left>
 				<top>566</top>
 				<height>25</height>
-				<width>230</width> 
-				<label>31142</label> 
-				<font>font13_title</font> 
-				<textcolor>white</textcolor> 
-				<align>right</align> 
+				<width>230</width>
+				<label>31142</label>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<align>right</align>
 				<aligny>center</aligny>
 			</control>
 			<control type="image">
@@ -187,7 +187,6 @@
 			</control>
 		</control>
 		<include>BehindDialogFadeOut</include>
-
 		<control type="button" id="10">
 			<description>Default Category Button</description>
 			<height>60</height>
