@@ -59,6 +59,7 @@ CPVRClient::CPVRClient(const cp_extension_t *ext) :
   m_strAvahiType = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_type");
   m_strAvahiIpSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_ip_setting");
   m_strAvahiPortSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_port_setting");
+  m_bNeedsConfiguration = !(CAddonMgr::Get().GetExtValue(ext->configuration, "@needs_configuration") == "false");
 }
 
 CPVRClient::~CPVRClient(void)

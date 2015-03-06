@@ -66,6 +66,7 @@ namespace PVR
     virtual void OnPreUnInstall();
     virtual void OnPostUnInstall();
     virtual bool CanInstall(const std::string &referer);
+    bool NeedsConfiguration(void) const { return m_bNeedsConfiguration; }
 
     /** @name PVR add-on methods */
     //@{
@@ -668,6 +669,7 @@ namespace PVR
     std::string                                    m_strAvahiType;        /*!< avahi service type */
     std::string                                    m_strAvahiIpSetting;   /*!< add-on setting name to change to the found ip address */
     std::string                                    m_strAvahiPortSetting; /*!< add-on setting name to change to the found port number */
+    bool                                           m_bNeedsConfiguration; /*!< add-on needs a user set configuration */
     std::vector<CZeroconfBrowser::ZeroconfService> m_rejectedAvahiHosts;  /*!< hosts that were rejected by the user */
 
     CCriticalSection m_critSection;

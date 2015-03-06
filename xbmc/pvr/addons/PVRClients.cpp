@@ -1273,6 +1273,7 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
 bool CPVRClients::UpdateAddons(void)
 {
   VECADDONS addons;
+  PVR_CLIENT addon;
   bool bReturn(CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true));
   size_t usableClients;
 
@@ -1291,8 +1292,12 @@ bool CPVRClients::UpdateAddons(void)
     bool newRegistration = false;
     if (RegisterClient(clientAddon, &newRegistration) < 0 || newRegistration)
     {
-      CAddonMgr::Get().DisableAddon(clientAddon->ID(), true);
-      usableClients--;
+      addon = std::dynamic_pointer_cast<CPVRClient>(clientAddon);
+      if (addon && addon->NeedsConfiguration() && addon->HasSettings() && !addon->HasUserSettings())
+      {
+        CAddonMgr::Get().DisableAddon(clientAddon->ID(), true);
+        usableClients--;
+      }
     }
   }
 
