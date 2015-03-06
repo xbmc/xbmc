@@ -22,6 +22,7 @@
 #include "GUIUserMessages.h"
 #include "Application.h"
 #include "GUIDialogSubtitles.h"
+#include "LangInfo.h"
 #include "addons/AddonManager.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -349,7 +350,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
     preferredLanguage = strLanguage;
   }
   else if (StringUtils::EqualsNoCase(preferredLanguage, "default"))
-    preferredLanguage = CSettings::Get().GetString("locale.language");
+    preferredLanguage = g_langInfo.GetEnglishLanguageName();
 
   url.SetOption("preferredlanguage", preferredLanguage);
 

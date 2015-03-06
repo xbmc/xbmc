@@ -372,6 +372,7 @@ public:
   bool GetRenderGUI() const { return m_renderGUI; };
 
   bool SetLanguage(const std::string &strLanguage);
+  bool LoadLanguage(bool reload, bool& fallback);
 
   ReplayGainSettings& GetReplayGainSettings() { return m_replayGainSettings; }
 

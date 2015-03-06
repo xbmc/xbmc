@@ -98,6 +98,7 @@
 #include "HDHomeRunFile.h"
 #include "SlingboxFile.h"
 #include "ImageFile.h"
+#include "ResourceFile.h"
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
@@ -213,6 +214,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAVE_LIBBLURAY
     else if (url.IsProtocol("bluray")) return new CBlurayFile();
 #endif
+    else if (url.IsProtocol("resource")) return new CResourceFile();
   }
 
   CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str());

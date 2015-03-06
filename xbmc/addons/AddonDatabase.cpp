@@ -311,7 +311,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
   return false;
 }
 
-bool CAddonDatabase::GetAddons(VECADDONS& addons)
+bool CAddonDatabase::GetAddons(VECADDONS& addons, const ADDON::TYPE &type /* = ADDON::ADDON_UNKNOWN */)
 {
   try
   {
@@ -319,6 +319,18 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons)
     if (NULL == m_pDS2.get()) return false;
 
     std::string sql = PrepareSQL("select distinct addonID from addon");
+    if (type != ADDON_UNKNOWN)
+    {
+      std::string strType;
+      if (type >= ADDON_VIDEO && type <= ADDON_EXECUTABLE)
+        strType = TranslateType(ADDON_PLUGIN);
+      else
+        strType = TranslateType(type);
+
+      if (!strType.empty())
+        sql += PrepareSQL(" where type = '%s'", strType.c_str());
+    }
+
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {

@@ -22,6 +22,7 @@
 #include "AudioEncoder.h"
 #include "AudioDecoder.h"
 #include "DllLibCPluff.h"
+#include "LanguageResource.h"
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
 #include "threads/SingleLock.h"
@@ -172,6 +173,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       }
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(props));
+    case ADDON_RESOURCE_LANGUAGE:
+      return AddonPtr(new CLanguageResource(props));
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(props));
     case ADDON_REPOSITORY:
@@ -531,6 +534,9 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
   case ADDON_WEB_INTERFACE:
     setting = CSettings::Get().GetString("services.webskin");
     break;
+  case ADDON_RESOURCE_LANGUAGE:
+    setting = CSettings::Get().GetString("locale.language");
+    break;
   default:
     return false;
   }
@@ -561,6 +567,9 @@ bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
     break;
   case ADDON_SCRAPER_TVSHOWS:
     CSettings::Get().SetString("scrapers.tvshowsdefault",addonID);
+    break;
+  case ADDON_RESOURCE_LANGUAGE:
+    CSettings::Get().SetString("locale.language", addonID);
     break;
   default:
     return false;
@@ -710,7 +719,7 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
     if (strcmp(tag, child.name) == 0)
     { // see if we have a "lang" attribute
       const char *lang = m_cpluff->lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
-      if (lang && 0 == strcmp(lang,g_langInfo.GetLanguageLocale().c_str()))
+      if (lang != NULL && g_langInfo.GetLocale().Matches(lang))
         return child.value ? child.value : "";
       if (!lang || 0 == strcmp(lang, "en"))
         eng = &child;
@@ -759,6 +768,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CAudioEncoder(addonProps));
     case ADDON_AUDIODECODER:
       return AddonPtr(new CAudioDecoder(addonProps));
+    case ADDON_RESOURCE_LANGUAGE:
+      return AddonPtr(new CLanguageResource(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     case ADDON_CONTEXT_ITEM:
@@ -814,9 +825,9 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   return true; // assume no <platform> is equivalent to <platform>all</platform>
 }
 
-const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
+cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
 {
-  const cp_cfg_element_t *element = NULL;
+  cp_cfg_element_t *element = NULL;
   if (base)
     element = m_cpluff->lookup_cfg_element(base, path);
   return element;

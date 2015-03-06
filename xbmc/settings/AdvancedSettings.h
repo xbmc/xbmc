@@ -19,6 +19,7 @@
  *
  */
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -286,7 +287,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVideoScannerIgnoreErrors;
     int m_iVideoLibraryDateAdded;
 
-    std::vector<std::string> m_vecTokens; // cleaning strings tied to language
+    std::set<std::string> m_vecTokens;
     //TuxBox
     int m_iTuxBoxStreamtsPort;
     bool m_bTuxBoxSubMenuSelection;

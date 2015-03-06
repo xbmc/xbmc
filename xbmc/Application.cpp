@@ -47,6 +47,7 @@
 #include "guilib/GUIColorManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "guilib/GUITextLayout.h"
+#include "addons/LanguageResource.h"
 #include "addons/Skin.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #ifdef HAS_PYTHON
@@ -664,26 +665,6 @@ bool CApplication::Create()
 
   update_emu_environ();//apply the GUI settings
 
-  // Load the langinfo to have user charset <-> utf-8 conversion
-  std::string strLanguage = CSettings::Get().GetString("locale.language");
-  strLanguage[0] = toupper(strLanguage[0]);
-
-  std::string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-
-  CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
-  g_langInfo.Load(strLangInfoPath);
-  g_langInfo.SetAudioLanguage(CSettings::Get().GetString("locale.audiolanguage"));
-  g_langInfo.SetSubtitleLanguage(CSettings::Get().GetString("locale.subtitlelanguage"));
-
-  std::string strLanguagePath = "special://xbmc/language/";
-
-  CLog::Log(LOGINFO, "load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
-  if (!g_localizeStrings.Load(strLanguagePath, strLanguage))
-  {
-    CLog::LogF(LOGFATAL, "Failed to load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
-    return false;
-  }
-
 #ifdef TARGET_WINDOWS
   CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 #endif // TARGET_WINDOWS
@@ -952,11 +933,11 @@ bool CApplication::InitDirectoriesLinux()
     appPath = appBinPath;
     /* Check if binaries and arch independent data files are being kept in
      * separate locations. */
-    if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "language")))
+    if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "system")))
     {
       /* Attempt to locate arch independent data files. */
       CUtil::GetHomePath(appPath);
-      if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "language")))
+      if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "system")))
       {
         fprintf(stderr, "Unable to find path to %s data files!\n", appName.c_str());
         exit(1);
@@ -1162,10 +1143,14 @@ bool CApplication::Initialize()
   if (!m_bPlatformDirectories)
 #endif
   {
-    CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/sounds");
   }
+
+  // load the language and its translated strings
+  bool fallbackLanguage = false;
+  if (!LoadLanguage(false, fallbackLanguage))
+    return false;
 
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
@@ -1266,6 +1251,9 @@ bool CApplication::Initialize()
   CInputManager::Get().SetEnabledJoystick(CSettings::Get().GetBool("input.enablejoystick") &&
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
+
+  if (fallbackLanguage)
+    CGUIDialogOK::ShowAndGetInput(24133, 24134);
 
   // show info dialog about moved configuration files if needed
   ShowAppMigrationMessage();
@@ -4895,23 +4883,22 @@ CPerformanceStats &CApplication::GetPerformanceStats()
 
 bool CApplication::SetLanguage(const std::string &strLanguage)
 {
-  std::string strPreviousLanguage = CSettings::Get().GetString("locale.language");
-  if (strLanguage != strPreviousLanguage)
-  {
-    std::string strLangInfoPath = StringUtils::Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-    if (!g_langInfo.Load(strLangInfoPath))
-      return false;
+  // nothing to be done if the language hasn't changed
+  if (strLanguage == CSettings::Get().GetString("locale.language"))
+    return true;
 
-    CSettings::Get().SetString("locale.language", strLanguage);
+  return CSettings::Get().SetString("locale.language", strLanguage);
+}
 
-    if (!g_localizeStrings.Load("special://xbmc/language/", strLanguage))
-      return false;
+bool CApplication::LoadLanguage(bool reload, bool& fallback)
+{
+  // load the configured langauge
+  if (!g_langInfo.SetLanguage(fallback, "", reload))
+    return false;
 
-    // also tell our weather and skin to reload as these are localized
-    g_weatherManager.Refresh();
-    g_PVRManager.LocalizationChanged();
-    ReloadSkin();
-  }
+  // set the proper audio and subtitle languages
+  g_langInfo.SetAudioLanguage(CSettings::Get().GetString("locale.audiolanguage"));
+  g_langInfo.SetSubtitleLanguage(CSettings::Get().GetString("locale.subtitlelanguage"));
 
   return true;
 }

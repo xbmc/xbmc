@@ -33,7 +33,7 @@ public:
 
   int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
-  bool GetAddons(ADDON::VECADDONS& addons);
+  bool GetAddons(ADDON::VECADDONS& addons, const ADDON::TYPE &type = ADDON::ADDON_UNKNOWN);
 
   /*! \brief grab the (largest) add-on version for an add-on */
   ADDON::AddonVersion GetAddonVersion(const std::string &id);

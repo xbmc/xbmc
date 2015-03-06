@@ -224,8 +224,6 @@ Section "${APP_NAME}" SecAPP
   File "${app_root}\application\*.*"
   SetOutPath "$INSTDIR\addons"
   File /r "${app_root}\application\addons\*.*"
-  SetOutPath "$INSTDIR\language"
-  File /r "${app_root}\application\language\*.*"
   SetOutPath "$INSTDIR\media"
   File /r "${app_root}\application\media\*.*"
   SetOutPath "$INSTDIR\sounds"

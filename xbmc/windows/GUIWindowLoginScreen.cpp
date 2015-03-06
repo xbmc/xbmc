@@ -32,6 +32,7 @@
 #include "interfaces/json-rpc/JSONRPC.h"
 #endif
 #include "interfaces/Builtins.h"
+#include "utils/log.h"
 #include "utils/Weather.h"
 #include "utils/StringUtils.h"
 #include "network/Network.h"
@@ -313,8 +314,18 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
   ADDON::CAddonMgr::Get().ReInit();
 
+  bool fallbackLanguage = false;
+  if (!g_application.LoadLanguage(true, fallbackLanguage))
+  {
+    CLog::Log(LOGFATAL, "CGUIWindowLoginScreen: unable to load language for profile \"%s\"", CProfilesManager::Get().GetCurrentProfile().getName().c_str());
+    return;
+  }
+
   g_weatherManager.Refresh();
   g_application.SetLoggingIn(true);
+
+  if (fallbackLanguage)
+    CGUIDialogOK::ShowAndGetInput("Failed to load language", "We were unable to load your configured language. Please check your language settings.");
 
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();

@@ -1926,7 +1926,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_LANGUAGE:
-    strLabel = CSettings::Get().GetString("locale.language");
+    strLabel = g_langInfo.GetEnglishLanguageName();
     break;
   case SYSTEM_TEMPERATURE_UNITS:
     strLabel = g_langInfo.GetTempUnitString();

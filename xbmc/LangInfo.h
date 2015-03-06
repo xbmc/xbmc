@@ -21,8 +21,11 @@
 
 #include "settings/lib/ISettingCallback.h"
 #include "utils/GlobalsHandling.h"
+#include "utils/Locale.h"
 
 #include <map>
+#include <memory>
+#include <set>
 #include <string>
 #include <vector>
 #include <locale>
@@ -38,6 +41,12 @@
 
 class TiXmlNode;
 
+namespace ADDON
+{
+  class CLanguageResource;
+}
+typedef std::shared_ptr<ADDON::CLanguageResource> LanguageResourcePtr;
+
 class CLangInfo : public ISettingCallback
 {
 public:
@@ -46,7 +55,15 @@ public:
 
   virtual void OnSettingChanged(const CSetting *setting);
 
-  bool Load(const std::string& strFileName, bool onlyCheckLanguage = false);
+  bool Load(const std::string& strLanguage, bool onlyCheckLanguage = false);
+
+  /*!
+   \brief Returns the language addon for the given locale (or the current one).
+
+   \param locale (optional) Locale of the language (current if empty)
+   \return Language addon for the given locale or NULL if the locale is invalid.
+   */
+  LanguageResourcePtr GetLanguageAddon(const std::string& locale = "") const;
 
   std::string GetGuiCharSet() const;
   std::string GetSubtitleCharSet() const;
@@ -54,7 +71,30 @@ public:
   // three char language code (not win32 specific)
   const std::string& GetLanguageCode() const { return m_languageCodeGeneral; }
 
-  bool SetLanguage(const std::string &strLanguage);
+  /*!
+   \brief Returns the given language's name in English
+
+   \param locale (optional) Locale of the language (current if empty)
+   */
+  std::string GetEnglishLanguageName(const std::string& locale = "") const;
+
+  /*!
+  \brief Sets and loads the given (or configured) language, its details and strings.
+
+  \param strLanguage (optional) Language to be loaded.
+  \param reloadServices (optional) Whether to reload services relying on localization.
+  \return True if the language has been successfully loaded, false otherwise.
+  */
+  bool SetLanguage(const std::string &strLanguage = "", bool reloadServices = true);
+  /*!
+   \brief Sets and loads the given (or configured) language, its details and strings.
+
+   \param fallback Whether the fallback language has been loaded instead of the given language.
+   \param strLanguage (optional) Language to be loaded.
+   \param reloadServices (optional) Whether to reload services relying on localization.
+   \return True if the language has been successfully loaded, false otherwise.
+   */
+  bool SetLanguage(bool& fallback, const std::string &strLanguage = "", bool reloadServices = true);
   bool CheckLoadLanguage(const std::string &language);
 
   const std::string& GetAudioLanguage() const;
@@ -78,11 +118,16 @@ public:
   const std::string& GetRegionLocale() const;
 
   /*!
-   \brief Returns the two character ISO 639-1 language code of the current language.
-   */
-  const std::string& GetLanguageLocale() const;
+  \brief Returns the full locale of the current language.
+  */
+  const CLocale& GetLocale() const;
 
-  bool ForceUnicodeFont() const { return m_currentRegion->m_forceUnicodeFont; }
+  /*!
+   \brief Returns the system's current locale.
+   */
+  const std::locale& GetSystemLocale() const { return m_systemLocale; }
+
+  bool ForceUnicodeFont() const { return m_forceUnicodeFont; }
 
   const std::string& GetDateFormat(bool bLongDate=false) const;
 
@@ -135,14 +180,17 @@ public:
   void SetCurrentRegion(const std::string& strName);
   const std::string& GetCurrentRegion() const;
 
-  const std::locale& GetLocale() const
-  { return m_locale; }
+  std::set<std::string> GetSortTokens() const;
+
+  static std::string GetLanguagePath() { return "resource://"; }
+  static std::string GetLanguagePath(const std::string &language);
+  static std::string GetLanguageInfoPath(const std::string &language);
 
   static bool CheckLanguage(const std::string& language);
 
-  static void LoadTokens(const TiXmlNode* pTokens, std::vector<std::string>& vecTokens);
+  static void LoadTokens(const TiXmlNode* pTokens, std::set<std::string>& vecTokens);
 
-  static void SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsLanguageNamesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
@@ -160,15 +208,9 @@ protected:
     void SetSpeedUnit(const std::string& strUnit);
     void SetTimeZone(const std::string& strTimeZone);
     void SetGlobalLocale();
-    std::string m_strGuiCharSet;
-    std::string m_strSubtitleCharSet;
-    std::string m_strDVDMenuLanguage;
-    std::string m_strDVDAudioLanguage;
-    std::string m_strDVDSubtitleLanguage;
     std::string m_strLangLocaleName;
     std::string m_strLangLocaleCodeTwoChar;
     std::string m_strRegionLocaleName;
-    bool m_forceUnicodeFont;
     std::string m_strName;
     std::string m_strDateFormatLong;
     std::string m_strDateFormatShort;
@@ -187,7 +229,17 @@ protected:
   MAPREGIONS m_regions;
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
-  std::locale m_locale;     // current locale, matching GUI settings
+  std::locale m_systemLocale;     // current locale, matching GUI settings
+
+  LanguageResourcePtr m_languageAddon;
+
+  std::string m_strGuiCharSet;
+  bool m_forceUnicodeFont;
+  std::string m_strSubtitleCharSet;
+  std::string m_strDVDMenuLanguage;
+  std::string m_strDVDAudioLanguage;
+  std::string m_strDVDSubtitleLanguage;
+  std::set<std::string> m_sortTokens;
 
   std::string m_audioLanguage;
   std::string m_subtitleLanguage;

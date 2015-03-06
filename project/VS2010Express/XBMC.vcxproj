@@ -184,6 +184,7 @@
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonSettings.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIViewStateAddonBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIWindowAddonBrowser.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\LanguageResource.cpp" />
     <ClCompile Include="..\..\xbmc\addons\PluginSource.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Service.cpp" />
@@ -354,6 +355,8 @@
     <ClCompile Include="..\..\xbmc\filesystem\RarDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\RarFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\RarManager.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\ResourceDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\ResourceFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\RSSDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\RTVDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\RTVFile.cpp" />
@@ -835,6 +838,8 @@
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h" />
     <ClInclude Include="..\..\xbmc\addons\ContextItemAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\Webinterface.h" />
+    <ClInclude Include="..\..\xbmc\addons\LanguageResource.h" />
+    <ClInclude Include="..\..\xbmc\addons\Resource.h" />
     <ClInclude Include="..\..\xbmc\ApplicationPlayer.h" />
     <ClInclude Include="..\..\xbmc\AppParamParser.h" />
     <ClInclude Include="..\..\xbmc\CompileInfo.h" />
@@ -888,6 +893,8 @@
     <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeGrouped.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideFile.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\ResourceDirectory.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\ResourceFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeGrouped.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h" />
@@ -1027,6 +1034,7 @@
     <ClInclude Include="..\..\xbmc\utils\IRssObserver.h" />
     <ClInclude Include="..\..\xbmc\utils\IXmlDeserializable.h" />
     <ClInclude Include="..\..\xbmc\utils\LegacyPathTranslation.h" />
+    <ClInclude Include="..\..\xbmc\utils\Locale.h" />
     <ClInclude Include="..\..\xbmc\utils\params_check_macros.h" />
     <ClInclude Include="..\..\xbmc\utils\ProgressJob.h" />
     <ClInclude Include="..\..\xbmc\utils\RssManager.h" />
@@ -1171,10 +1179,15 @@
     <ClCompile Include="..\..\xbmc\utils\CharsetDetection.cpp" />
     <ClCompile Include="..\..\xbmc\utils\HttpRangeUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\LegacyPathTranslation.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\Locale.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ProgressJob.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RssManager.cpp" />
     <ClCompile Include="..\..\xbmc\utils\StringValidation.cpp" />
     <ClCompile Include="..\..\xbmc\utils\test\TestHttpRangeUtils.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\test\TestLocale.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>

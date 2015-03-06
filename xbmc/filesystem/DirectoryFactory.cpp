@@ -118,6 +118,7 @@
 #if defined(TARGET_ANDROID)
 #include "AndroidAppDirectory.h"
 #endif
+#include "ResourceDirectory.h"
 
 using namespace XFILE;
 
@@ -242,6 +243,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #ifdef HAVE_LIBBLURAY
       if (url.IsProtocol("bluray")) return new CBlurayDirectory();
 #endif
+      if (url.IsProtocol("resource")) return new CResourceDirectory();
   }
 
   CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str() );

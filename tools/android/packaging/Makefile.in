@@ -11,7 +11,7 @@ PLATFORM_OBJS =
 EXCLUDED_ADDONS = screensaver.rsxs.euphoria visualization.dxspectrum visualization.milkdrop visualization.projectm
 
 XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
-COPYDIRS = system addons language media
+COPYDIRS = system addons media
 GCC_VERSION=$(shell $(CC) -dumpversion)
 ZIP=zip
 
