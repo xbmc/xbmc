@@ -4838,20 +4838,53 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return item->GetVideoInfoTag()->m_strPlotOutline;
     break;
   case LISTITEM_EPISODE:
-    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iEpisode > 0)
     {
-      std::string strResult;
-      if (item->GetVideoInfoTag()->m_iSeason == 0) // prefix episode with 'S'
-        strResult = StringUtils::Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
-      else
-        strResult = StringUtils::Format("%d",item->GetVideoInfoTag()->m_iEpisode);
-      return strResult;
+      int iSeason, iEpisode;
+      if (item->HasPVRChannelInfoTag())
+      {
+        CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
+        if (tag)
+        {
+          iSeason = tag->SeriesNumber();
+          iEpisode = tag->EpisodeNumber();
+        }
+      }
+      else if (item->HasEPGInfoTag())
+      {
+        iSeason = item->GetEPGInfoTag()->SeriesNumber();
+        iEpisode = item->GetEPGInfoTag()->EpisodeNumber();
+      }
+      else if (item->HasVideoInfoTag())
+      {
+        iSeason = item->GetVideoInfoTag()->m_iSeason;
+        iEpisode = item->GetVideoInfoTag()->m_iEpisode;
+      }
+
+      if (iEpisode > 0)
+      {
+        if (iSeason == 0) // prefix episode with 'S'
+          return StringUtils::Format("S%d", iEpisode);
+        else
+          return StringUtils::Format("%d", iEpisode);
+      }
     }
     break;
   case LISTITEM_SEASON:
-    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iSeason > 0)
     {
-      return StringUtils::Format("%d",item->GetVideoInfoTag()->m_iSeason);;
+      int iSeason;
+      if (item->HasPVRChannelInfoTag())
+      {
+        CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
+        if (tag)
+          iSeason = tag->SeriesNumber();
+      }
+      else if (item->HasEPGInfoTag())
+        iSeason = item->GetEPGInfoTag()->SeriesNumber();
+      else if (item->HasVideoInfoTag())
+        iSeason = item->GetVideoInfoTag()->m_iSeason;
+
+      if (iSeason > 0)
+        return StringUtils::Format("%d", iSeason);
     }
     break;
   case LISTITEM_TVSHOW:
