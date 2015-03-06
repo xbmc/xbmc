@@ -15,7 +15,6 @@ SRCS += Crc32.cpp
 SRCS += CryptThreading.cpp
 SRCS += DatabaseUtils.cpp
 SRCS += EndianSwap.cpp
-SRCS += EdenVideoArtUpdater.cpp
 SRCS += Environment.cpp
 SRCS += Fanart.cpp
 SRCS += fastmemcpy.c

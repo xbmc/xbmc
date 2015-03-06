@@ -795,7 +795,6 @@ public:
   void SetMovieSet(int idMovie, int idSet);
 
 protected:
-  friend class CEdenVideoArtUpdater;
   int GetMovieId(const std::string& strFilenameAndPath);
   int GetMusicVideoId(const std::string& strFilenameAndPath);
 
