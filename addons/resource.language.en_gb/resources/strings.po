@@ -6959,7 +6959,12 @@ msgctxt "#14104"
 msgid "Show simplified menu"
 msgstr ""
 
-#empty strings from id 14105 to 15011
+#: system/settings/settings.xml
+msgctxt "#14105"
+msgid "Temperature unit"
+msgstr ""
+
+#empty strings from id 14106 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -9516,6 +9521,13 @@ msgstr ""
 
 #empty strings from id 20027 to 20036
 #string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)
+
+#: xbmc/LangInfo.cpp
+msgctxt "#20035"
+msgid "Regional (%s)"
+msgstr ""
+
+#empty string with id 20036
 
 msgctxt "#20037"
 msgid "Summary"
@@ -14152,7 +14164,11 @@ msgctxt "#36139"
 msgid "Category containing the settings for how the video library is handled."
 msgstr ""
 
-#empty string with id 36140
+#.  Description of setting "Appearance -> International -> Temperature unit" with label #14105
+#: system/settings/settings.xml
+msgctxt "#36140"
+msgid "Choose which temperature unit is used for displaying temperatures in the user interface."
+msgstr ""
 
 #. Description of setting "Videos -> Library -> Show plot for unwatched items" with label #20369
 #: system/settings/settings.xml

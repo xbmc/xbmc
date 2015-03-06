@@ -46,9 +46,43 @@
 using namespace std;
 using namespace PVR;
 
-#define TEMP_UNIT_STRINGS 20027
+typedef struct TemperatureInfo {
+  CTemperature::Unit unit;
+  std::string name;
+} TemperatureInfo;
 
-#define SPEED_UNIT_STRINGS 20200
+static TemperatureInfo temperatureInfo[] = {
+  { CTemperature::UnitFahrenheit, "f" },
+  { CTemperature::UnitKelvin,     "k" },
+  { CTemperature::UnitCelsius,    "c" },
+  { CTemperature::UnitReaumur,    "re" },
+  { CTemperature::UnitRankine,    "ra" },
+  { CTemperature::UnitRomer,      "ro" },
+  { CTemperature::UnitDelisle,    "de" },
+  { CTemperature::UnitNewton,     "n" }
+};
+
+#define TEMPERATURE_INFO_SIZE     sizeof(temperatureInfo) / sizeof(TemperatureInfo)
+#define TEMP_UNIT_STRINGS         20027
+
+#define SPEED_UNIT_STRINGS        20200
+
+#define SETTING_REGIONAL_DEFAULT  "regional"
+
+static CTemperature::Unit StringToTemperatureUnit(const std::string& temperatureUnit)
+{
+  std::string unit(temperatureUnit);
+  StringUtils::ToLower(unit);
+
+  for (size_t i = 0; i < TEMPERATURE_INFO_SIZE; i++)
+  {
+    const TemperatureInfo& info = temperatureInfo[i];
+    if (info.name == unit)
+      return info.unit;
+  }
+
+  return CTemperature::UnitCelsius;
+}
 
 struct SortLanguage
 {
@@ -105,23 +139,7 @@ void CLangInfo::CRegion::SetDefaults()
 
 void CLangInfo::CRegion::SetTemperatureUnit(const std::string& strUnit)
 {
-  std::string unit(strUnit); StringUtils::ToLower(unit);
-  if (unit == "f")
-    m_tempUnit = CTemperature::UnitFahrenheit;
-  else if (unit == "k")
-    m_tempUnit = CTemperature::UnitKelvin;
-  else if (unit == "c")
-    m_tempUnit = CTemperature::UnitCelsius;
-  else if (unit == "re")
-    m_tempUnit = CTemperature::UnitReaumur;
-  else if (unit == "ra")
-    m_tempUnit = CTemperature::UnitRankine;
-  else if (unit == "ro")
-    m_tempUnit = CTemperature::UnitRomer;
-  else if (unit == "de")
-    m_tempUnit = CTemperature::UnitDelisle;
-  else if (unit == "n")
-    m_tempUnit = CTemperature::UnitNewton;
+  m_tempUnit = StringToTemperatureUnit(strUnit);
 }
 
 void CLangInfo::CRegion::SetSpeedUnit(const std::string& strUnit)
@@ -213,6 +231,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
 CLangInfo::CLangInfo()
 {
   SetDefaults();
+  m_temperatureUnit = m_defaultRegion.m_tempUnit;
 }
 
 CLangInfo::~CLangInfo()
@@ -235,10 +254,15 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
       ((CSettingString*)CSettings::Get().GetSetting("locale.language"))->Reset();
   }
   else if (settingId == "locale.country")
-  {
-    g_langInfo.SetCurrentRegion(((CSettingString*)setting)->GetValue());
-    g_weatherManager.Refresh(); // need to reset our weather, as temperatures need re-translating.
-  }
+    SetCurrentRegion(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.temperatureunit")
+    SetTemperatureUnit(((CSettingString*)setting)->GetValue());
+}
+
+void CLangInfo::OnSettingsLoaded()
+{
+  // set the temperature unit based on the settings
+  SetTemperatureUnit(CSettings::Get().GetString("locale.temperatureunit"));
 }
 
 bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= false*/)
@@ -733,6 +757,9 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
     m_currentRegion=&m_defaultRegion;
 
   m_currentRegion->SetGlobalLocale();
+
+  if (CSettings::Get().GetString("locale.temperatureunit") == SETTING_REGIONAL_DEFAULT)
+    SetTemperatureUnit(m_currentRegion->m_tempUnit);
 }
 
 // Returns the current region set for this language
@@ -743,7 +770,29 @@ const std::string& CLangInfo::GetCurrentRegion() const
 
 CTemperature::Unit CLangInfo::GetTemperatureUnit() const
 {
-  return m_currentRegion->m_tempUnit;
+  return m_temperatureUnit;
+}
+
+void CLangInfo::SetTemperatureUnit(CTemperature::Unit temperatureUnit)
+{
+  if (m_temperatureUnit == temperatureUnit)
+    return;
+
+  m_temperatureUnit = temperatureUnit;
+
+  // need to reset our weather as temperatures need re-translating
+  g_weatherManager.Refresh();
+}
+
+void CLangInfo::SetTemperatureUnit(const std::string& temperatureUnit)
+{
+  CTemperature::Unit unit = CTemperature::UnitCelsius;
+  if (temperatureUnit == SETTING_REGIONAL_DEFAULT)
+    unit = m_currentRegion->m_tempUnit;
+  else
+    unit = StringToTemperatureUnit(temperatureUnit);
+
+  SetTemperatureUnit(unit);
 }
 
 std::string CLangInfo::GetTemperatureAsString(const CTemperature& temperature) const
@@ -758,7 +807,7 @@ std::string CLangInfo::GetTemperatureAsString(const CTemperature& temperature) c
 // Returns the temperature unit string for the current language
 const std::string& CLangInfo::GetTemperatureUnitString() const
 {
-  return GetTemperatureUnitString(m_currentRegion->m_tempUnit);
+  return GetTemperatureUnitString(m_temperatureUnit);
 }
 
 const std::string& CLangInfo::GetTemperatureUnitString(CTemperature::Unit temperatureUnit)
@@ -831,4 +880,32 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
 
   if (!match && regions.size() > 0)
     current = regions[0];
+}
+
+void CLangInfo::SettingOptionsTemperatureUnitsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  bool match = false;
+  const std::string& temperatureUnitSetting = static_cast<const CSettingString*>(setting)->GetValue();
+
+  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), GetTemperatureUnitString(g_langInfo.m_currentRegion->m_tempUnit).c_str()), SETTING_REGIONAL_DEFAULT));
+  if (temperatureUnitSetting == SETTING_REGIONAL_DEFAULT)
+  {
+    match = true;
+    current = SETTING_REGIONAL_DEFAULT;
+  }
+
+  for (size_t i = 0; i < TEMPERATURE_INFO_SIZE; i++)
+  {
+    const TemperatureInfo& info = temperatureInfo[i];
+    list.push_back(std::make_pair(GetTemperatureUnitString(info.unit), info.name));
+
+    if (!match && temperatureUnitSetting == info.name)
+    {
+      match = true;
+      current = info.name;
+    }
+  }
+
+  if (!match && !list.empty())
+    current = list[0].second;
 }

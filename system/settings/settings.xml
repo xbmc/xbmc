@@ -181,6 +181,19 @@
           <control type="list" format="string" />
         </setting>
       </group>
+      <group id="3">
+        <setting id="locale.temperatureunit" type="string" label="14105" help="36140">
+          <level>1</level>
+          <default>regional</default>
+          <constraints>
+            <options>temperatureunits</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="locale.country" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+      </group>
     </category>
     <category id="filelists" label="14081" help="36121">
       <group id="1">

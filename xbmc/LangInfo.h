@@ -20,6 +20,7 @@
  */
 
 #include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/Locale.h"
 #include "utils/Temperature.h"
@@ -48,13 +49,17 @@ namespace ADDON
 }
 typedef std::shared_ptr<ADDON::CLanguageResource> LanguageResourcePtr;
 
-class CLangInfo : public ISettingCallback
+class CLangInfo : public ISettingCallback, public ISettingsHandler
 {
 public:
   CLangInfo();
   virtual ~CLangInfo();
 
+  // implementation of ISettingCallback
   virtual void OnSettingChanged(const CSetting *setting);
+
+  // implementation of ISettingsHandler
+  virtual void OnSettingsLoaded();
 
   bool Load(const std::string& strLanguage, bool onlyCheckLanguage = false);
 
@@ -143,6 +148,8 @@ public:
   const std::string& GetMeridiemSymbol(MERIDIEM_SYMBOL symbol) const;
 
   CTemperature::Unit GetTemperatureUnit() const;
+  void SetTemperatureUnit(CTemperature::Unit temperatureUnit);
+  void SetTemperatureUnit(const std::string& temperatureUnit);
   const std::string& GetTemperatureUnitString() const;
   static const std::string& GetTemperatureUnitString(CTemperature::Unit temperatureUnit);
   std::string GetTemperatureAsString(const CTemperature& temperature) const;
@@ -183,6 +190,7 @@ public:
   static void SettingOptionsLanguageNamesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsTemperatureUnitsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
 protected:
   void SetDefaults();
@@ -230,6 +238,8 @@ protected:
   std::string m_strDVDAudioLanguage;
   std::string m_strDVDSubtitleLanguage;
   std::set<std::string> m_sortTokens;
+
+  CTemperature::Unit m_temperatureUnit;
 
   std::string m_audioLanguage;
   std::string m_subtitleLanguage;

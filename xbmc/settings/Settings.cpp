@@ -233,6 +233,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("refreshchangedelays");
   m_settingsManager->UnregisterSettingOptionsFiller("refreshrates");
   m_settingsManager->UnregisterSettingOptionsFiller("regions");
+  m_settingsManager->UnregisterSettingOptionsFiller("temperatureunits");
   m_settingsManager->UnregisterSettingOptionsFiller("rendermethods");
   m_settingsManager->UnregisterSettingOptionsFiller("resolutions");
   m_settingsManager->UnregisterSettingOptionsFiller("screens");
@@ -300,6 +301,7 @@ void CSettings::Uninitialize()
 #endif
   m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->UnregisterSettingsHandler(&CRssManager::Get());
+  m_settingsManager->UnregisterSettingsHandler(&g_langInfo);
   m_settingsManager->UnregisterSettingsHandler(&g_application);
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
   m_settingsManager->UnregisterSettingsHandler(&g_timezone);
@@ -576,6 +578,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("refreshchangedelays", CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller);
   m_settingsManager->RegisterSettingOptionsFiller("refreshrates", CDisplaySettings::SettingOptionsRefreshRatesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("regions", CLangInfo::SettingOptionsRegionsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("temperatureunits", CLangInfo::SettingOptionsTemperatureUnitsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("rendermethods", CBaseRenderer::SettingOptionsRenderMethodsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("resolutions", CDisplaySettings::SettingOptionsResolutionsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("screens", CDisplaySettings::SettingOptionsScreensFiller);
@@ -627,6 +630,7 @@ void CSettings::InitializeISettingsHandlers()
 #endif
   m_settingsManager->RegisterSettingsHandler(&CWakeOnAccess::Get());
   m_settingsManager->RegisterSettingsHandler(&CRssManager::Get());
+  m_settingsManager->RegisterSettingsHandler(&g_langInfo);
   m_settingsManager->RegisterSettingsHandler(&g_application);
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
   m_settingsManager->RegisterSettingsHandler(&g_timezone);
@@ -748,6 +752,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("locale.subtitlelanguage");
   settingSet.insert("locale.language");
   settingSet.insert("locale.country");
+  settingSet.insert("locale.temperatureunit");
   m_settingsManager->RegisterCallback(&g_langInfo, settingSet);
 
   settingSet.clear();
