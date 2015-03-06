@@ -394,8 +394,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\TuxBoxDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\TuxBoxFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\udf25.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\UDFDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\UDFFile.cpp" />
@@ -1153,8 +1151,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\SpecialProtocolDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\SpecialProtocolFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\StackDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\TuxBoxDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\TuxBoxFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\udf25.h" />
     <ClInclude Include="..\..\xbmc\filesystem\UDFDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\UDFFile.h" />
@@ -1469,7 +1465,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp" />
-    <ClCompile Include="..\..\xbmc\utils\TuxBoxUtil.cpp" />
     <ClCompile Include="..\..\xbmc\utils\URIUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\UrlOptions.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Variant.cpp" />
@@ -2162,7 +2157,6 @@
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h" />
     <ClInclude Include="..\..\xbmc\utils\TimeSmoother.h" />
     <ClInclude Include="..\..\xbmc\utils\TimeUtils.h" />
-    <ClInclude Include="..\..\xbmc\utils\TuxBoxUtil.h" />
     <ClInclude Include="..\..\xbmc\utils\URIUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\UrlOptions.h" />
     <ClInclude Include="..\..\xbmc\utils\Variant.h" />

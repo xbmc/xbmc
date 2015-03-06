@@ -509,8 +509,7 @@ bool CUtil::IsLiveTV(const std::string& strFile)
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
     return true;
 
-  if(URIUtils::IsTuxBox(strFile)
-  || URIUtils::IsVTP(strFile)
+  if(URIUtils::IsVTP(strFile)
   || URIUtils::IsHDHomeRun(strFile)
   || URIUtils::IsHTSP(strFile)
   || StringUtils::StartsWithNoCase(strFile, "sap:"))
@@ -1192,8 +1191,6 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
 
   if (checkURL.IsProtocol("shout"))
     strPath = checkURL.GetHostName();
-  if (checkURL.IsProtocol("tuxbox"))
-    return 1;
   if (checkURL.IsProtocol("plugin"))
     return 1;
   if (checkURL.IsProtocol("multipath"))

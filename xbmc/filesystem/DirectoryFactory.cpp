@@ -93,7 +93,6 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
 #endif
-#include "TuxBoxDirectory.h"
 #include "HDHomeRunDirectory.h"
 #include "SlingboxDirectory.h"
 #include "MythDirectory.h"
@@ -189,7 +188,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   bool networkAvailable = g_application.getNetwork().IsAvailable(true); // true to wait for the network (if possible)
   if (networkAvailable)
   {
-    if (url.IsProtocol("tuxbox")) return new CTuxBoxDirectory();
     if (url.IsProtocol("ftp") || url.IsProtocol("ftps")) return new CFTPDirectory();
     if (url.IsProtocol("http") || url.IsProtocol("https")) return new CHTTPDirectory();
     if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVDirectory();

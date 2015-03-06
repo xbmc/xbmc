@@ -74,7 +74,6 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "filesystem/HTSPDirectory.h"
 #endif
-#include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "GUILargeTextureManager.h"
@@ -2967,35 +2966,6 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // will recall with restart set to true
   if (item.IsStack())
     return PlayStack(item, bRestart);
-
-  //Is TuxBox, this should probably be moved to CTuxBoxFile
-  if(item.IsTuxBox())
-  {
-    CLog::LogF(LOGDEBUG, "TuxBox URL Detected %s",item.GetPath().c_str());
-
-    if(g_tuxboxService.IsRunning())
-      g_tuxboxService.Stop();
-
-    PlayBackRet ret = PLAYBACK_FAIL;
-    CFileItem item_new;
-    if(g_tuxbox.CreateNewItem(item, item_new))
-    {
-
-      // Make sure it doesn't have a player
-      // so we actually select one normally
-      m_pPlayer->ResetPlayer();
-
-      // keep the tuxbox:// url as playing url
-      // and give the new url to the player
-      ret = PlayFile(item_new, true);
-      if(ret == PLAYBACK_OK)
-      {
-        if(!g_tuxboxService.IsRunning())
-          g_tuxboxService.Start();
-      }
-    }
-    return ret;
-  }
 
   CPlayerOptions options;
 

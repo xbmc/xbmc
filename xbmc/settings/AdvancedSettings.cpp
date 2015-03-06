@@ -288,18 +288,6 @@ void CAdvancedSettings::Initialize()
   m_bVideoScannerIgnoreErrors = false;
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
-  m_iTuxBoxStreamtsPort = 31339;
-  m_bTuxBoxAudioChannelSelection = false;
-  m_bTuxBoxSubMenuSelection = false;
-  m_bTuxBoxPictureIcon= true;
-  m_bTuxBoxSendAllAPids= false;
-  m_iTuxBoxEpgRequestTime = 10; //seconds
-  m_iTuxBoxDefaultSubMenu = 4;
-  m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
-  m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
-  m_bTuxBoxZapstream = true;
-  m_iTuxBoxZapstreamPort = 31344;
-
   m_iMythMovieLength = 0; // 0 == Off
 
   m_iEpgLingerTime = 60 * 24;           /* keep 24 hours by default */
@@ -871,23 +859,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
   XMLUtils::GetUInt(pRootElement, "packagefoldersize", m_addonPackageFolderSize);
-
-  //Tuxbox
-  pElement = pRootElement->FirstChildElement("tuxbox");
-  if (pElement)
-  {
-    XMLUtils::GetInt(pElement, "streamtsport", m_iTuxBoxStreamtsPort, 0, 65535);
-    XMLUtils::GetBoolean(pElement, "audiochannelselection", m_bTuxBoxAudioChannelSelection);
-    XMLUtils::GetBoolean(pElement, "submenuselection", m_bTuxBoxSubMenuSelection);
-    XMLUtils::GetBoolean(pElement, "pictureicon", m_bTuxBoxPictureIcon);
-    XMLUtils::GetBoolean(pElement, "sendallaudiopids", m_bTuxBoxSendAllAPids);
-    XMLUtils::GetInt(pElement, "epgrequesttime", m_iTuxBoxEpgRequestTime, 0, 3600);
-    XMLUtils::GetInt(pElement, "defaultsubmenu", m_iTuxBoxDefaultSubMenu, 1, 4);
-    XMLUtils::GetInt(pElement, "defaultrootmenu", m_iTuxBoxDefaultRootMenu, 0, 4);
-    XMLUtils::GetInt(pElement, "zapwaittime", m_iTuxBoxZapWaitTime, 0, 120);
-    XMLUtils::GetBoolean(pElement, "zapstream", m_bTuxBoxZapstream);
-    XMLUtils::GetInt(pElement, "zapstreamport", m_iTuxBoxZapstreamPort, 0, 65535);
-  }
 
   // Myth TV
   pElement = pRootElement->FirstChildElement("myth");
