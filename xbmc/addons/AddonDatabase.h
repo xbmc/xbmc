@@ -31,6 +31,7 @@ public:
   virtual ~CAddonDatabase();
   virtual bool Open();
 
+  int GetAddonId(const ADDON::AddonPtr& item);
   int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
   bool GetAddons(ADDON::VECADDONS& addons);
