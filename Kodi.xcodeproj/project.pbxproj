@@ -244,6 +244,9 @@
 		395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
+		397877D51AAAF87700F98A45 /* Speed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D11AAAF87700F98A45 /* Speed.cpp */; };
+		397877D61AAAF87700F98A45 /* Speed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D11AAAF87700F98A45 /* Speed.cpp */; };
+		397877D71AAAF87700F98A45 /* Speed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D11AAAF87700F98A45 /* Speed.cpp */; };
 		397877D81AAAF87700F98A45 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D31AAAF87700F98A45 /* Temperature.cpp */; };
 		397877D91AAAF87700F98A45 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D31AAAF87700F98A45 /* Temperature.cpp */; };
 		397877DA1AAAF87700F98A45 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D31AAAF87700F98A45 /* Temperature.cpp */; };
@@ -3708,6 +3711,8 @@
 		395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSimpleMenu.h; sourceTree = "<group>"; };
 		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
 		395F6DE11A81FACF0088CC74 /* HTTPImageTransformationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageTransformationHandler.h; sourceTree = "<group>"; };
+		397877D11AAAF87700F98A45 /* Speed.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Speed.cpp; sourceTree = "<group>"; };
+		397877D21AAAF87700F98A45 /* Speed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Speed.h; sourceTree = "<group>"; };
 		397877D31AAAF87700F98A45 /* Temperature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Temperature.cpp; sourceTree = "<group>"; };
 		397877D41AAAF87700F98A45 /* Temperature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Temperature.h; sourceTree = "<group>"; };
 		399442591A8DD8D0006C39E9 /* ProgressJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProgressJob.cpp; sourceTree = "<group>"; };
@@ -9566,6 +9571,8 @@
 				7C1A492215A962EE004AF4A4 /* SeekHandler.h */,
 				36A9443F15821E7C00727135 /* SortUtils.cpp */,
 				36A9444015821E7C00727135 /* SortUtils.h */,
+				397877D11AAAF87700F98A45 /* Speed.cpp */,
+				397877D21AAAF87700F98A45 /* Speed.h */,
 				E38E1E7F0D25F9FD00618676 /* Splash.cpp */,
 				E38E1E800D25F9FD00618676 /* Splash.h */,
 				E38E1E810D25F9FD00618676 /* Stopwatch.cpp */,
@@ -10779,6 +10786,7 @@
 				F5FAB07A0EFABE4A00BAD4AE /* VTPSession.cpp in Sources */,
 				7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */,
 				F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */,
+				397877D51AAAF87700F98A45 /* Speed.cpp in Sources */,
 				F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */,
 				2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */,
 				F54C51D50F1E784800D46E3C /* karaokelyricscdg.cpp in Sources */,
@@ -11586,6 +11594,7 @@
 				DFF0F16217528350002DA3A4 /* DVDOverlayCodecText.cpp in Sources */,
 				DFF0F16317528350002DA3A4 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				DFF0F16617528350002DA3A4 /* DVDVideoCodecFFmpeg.cpp in Sources */,
+				397877D71AAAF87700F98A45 /* Speed.cpp in Sources */,
 				DFF0F16717528350002DA3A4 /* DVDVideoCodecLibMpeg2.cpp in Sources */,
 				DFF0F16817528350002DA3A4 /* DVDVideoCodecVDA.cpp in Sources */,
 				DFF0F16917528350002DA3A4 /* DVDVideoPPFFmpeg.cpp in Sources */,
@@ -13014,6 +13023,7 @@
 				E4991327174E5DAD00741B6D /* Shader.cpp in Sources */,
 				E4991328174E5DAD00741B6D /* Texture.cpp in Sources */,
 				E4991329174E5DAD00741B6D /* TextureBundle.cpp in Sources */,
+				397877D61AAAF87700F98A45 /* Speed.cpp in Sources */,
 				E499132A174E5DAD00741B6D /* TextureBundleXBT.cpp in Sources */,
 				E499132B174E5DAD00741B6D /* TextureBundleXPR.cpp in Sources */,
 				E499132C174E5DAD00741B6D /* TextureDX.cpp in Sources */,

@@ -3176,6 +3176,9 @@
     <ClCompile Include="..\..\xbmc\utils\Temperature.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Speed.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6169,6 +6172,9 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Temperature.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Speed.h">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>

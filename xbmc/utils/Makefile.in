@@ -59,6 +59,7 @@ SRCS += ScraperUrl.cpp
 SRCS += Screenshot.cpp
 SRCS += SeekHandler.cpp
 SRCS += SortUtils.cpp
+SRCS += Speed.cpp
 SRCS += Splash.cpp
 SRCS += Stopwatch.cpp
 SRCS += StreamDetails.cpp
