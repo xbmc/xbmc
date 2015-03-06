@@ -996,38 +996,25 @@ bool CPVRClients::IsKnownClient(const AddonPtr client) const
   return GetClientId(client) > 0;
 }
 
-int CPVRClients::RegisterClient(AddonPtr client, bool* newRegistration/*=NULL*/)
+int CPVRClients::RegisterClient(AddonPtr client)
 {
   int iClientId(-1);
+  CAddonDatabase database;
+  PVR_CLIENT addon;
 
-  if (newRegistration)
-    *newRegistration = false;
-
-  if (!client->Enabled())
+  if (!client->Enabled() || !database.Open())
     return -1;
 
   CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
-
-  CAddonDatabase database;
-  if (!database.Open())
-    return -1;
 
   // check whether we already know this client
   iClientId = database.GetAddonId(client); //database->GetClientId(client->ID());
 
   // try to register the new client in the db
-  if (iClientId < 0)
-  {
-    if ((iClientId = database.AddAddon(client, 0)) < 0)
-    {
-      CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database", __FUNCTION__, client->Name().c_str());
-      return -1;
-    }
-    else if (newRegistration)
-      *newRegistration = true;
-  }
+  if (iClientId <= 0)
+    iClientId = database.AddAddon(client, 0);
 
-  PVR_CLIENT addon;
+  if (iClientId > 0)
   // load and initialise the client libraries
   {
     CSingleLock lock(m_critSection);
@@ -1045,7 +1032,7 @@ int CPVRClients::RegisterClient(AddonPtr client, bool* newRegistration/*=NULL*/)
     }
   }
 
-  if (iClientId < 0)
+  if (iClientId <= 0)
     CLog::Log(LOGERROR, "PVR - %s - can't register add-on '%s'", __FUNCTION__, client->Name().c_str());
 
   return iClientId;
@@ -1276,6 +1263,7 @@ bool CPVRClients::UpdateAddons(void)
   PVR_CLIENT addon;
   bool bReturn(CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true));
   size_t usableClients;
+  bool bDisable(false);
 
   if (bReturn)
   {
@@ -1286,18 +1274,23 @@ bool CPVRClients::UpdateAddons(void)
   usableClients = m_addons.size();
   
   // handle "new" addons which aren't yet in the db - these have to be added first
-  for (unsigned iClientPtr = 0; iClientPtr < m_addons.size(); iClientPtr++)
+  for (VECADDONS::const_iterator it = addons.begin(); it != addons.end(); ++it)
   {
-    const AddonPtr clientAddon = m_addons.at(iClientPtr);
-    bool newRegistration = false;
-    if (RegisterClient(clientAddon, &newRegistration) < 0 || newRegistration)
+    if (RegisterClient(*it) < 0)
+      bDisable = true;
+    else
     {
-      addon = std::dynamic_pointer_cast<CPVRClient>(clientAddon);
-      if (addon && addon->NeedsConfiguration() && addon->HasSettings() && !addon->HasUserSettings())
-      {
-        CAddonMgr::Get().DisableAddon(clientAddon->ID(), true);
-        usableClients--;
-      }
+      addon = std::dynamic_pointer_cast<CPVRClient>(*it);
+      bDisable = addon &&
+          addon->NeedsConfiguration() &&
+          addon->HasSettings() &&
+          !addon->HasUserSettings();
+    }
+
+    if (bDisable)
+    {
+      CAddonMgr::Get().DisableAddon((*it)->ID(), true);
+      usableClients--;
     }
   }
 

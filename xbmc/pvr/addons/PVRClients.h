@@ -669,10 +669,9 @@ namespace PVR
     /*!
      * @brief Initialise and connect a client.
      * @param client The client to initialise.
-     * @param newRegistration pass in pointer to bool to return whether the client was newly registered.
      * @return The id of the client if it was created or found in the existing client map, -1 otherwise.
      */
-    int RegisterClient(ADDON::AddonPtr client, bool* newRegistration = NULL);
+    int RegisterClient(ADDON::AddonPtr client);
 
     int GetClientId(const ADDON::AddonPtr client) const;
 
