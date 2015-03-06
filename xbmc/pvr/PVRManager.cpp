@@ -818,7 +818,6 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
       pDlgProgress->Progress();
 
       /* delete all client information */
-      m_database->DeleteClients();
       pDlgProgress->SetPercentage(90);
       pDlgProgress->Progress();
     }

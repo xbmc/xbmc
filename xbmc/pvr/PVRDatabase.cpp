@@ -46,15 +46,6 @@ void CPVRDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "PVR - %s - creating tables", __FUNCTION__);
 
-  CLog::Log(LOGDEBUG, "PVR - %s - creating table 'clients'", __FUNCTION__);
-  m_pDS->exec(
-      "CREATE TABLE clients ("
-        "idClient integer primary key, "
-        "sName    varchar(64), "
-        "sUid     varchar(32)"
-      ")"
-  );
-
   CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channels'", __FUNCTION__);
   m_pDS->exec(
       "CREATE TABLE channels ("
@@ -78,21 +69,6 @@ void CPVRDatabase::CreateTables()
         "idEpg                integer"
       ")"
   );
-
-  // TODO use a mapping table so multiple backends per channel can be implemented
-  //    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'map_channels_clients'", __FUNCTION__);
-  //    m_pDS->exec(
-  //        "CREATE TABLE map_channels_clients ("
-  //          "idChannel             integer primary key, "
-  //          "idClient              integer, "
-  //          "iClientChannelNumber  integer,"
-  //          "iClientSubChannelNumber  integer,"
-  //          "sInputFormat          string,"
-  //          "sStreamURL            string,"
-  //          "iEncryptionSystem     integer"
-  //        ");"
-  //    );
-  //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);");
 
   CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channelgroups'", __FUNCTION__);
   m_pDS->exec(
@@ -612,40 +588,6 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
 
 /********** Client methods **********/
 
-bool CPVRDatabase::DeleteClients()
-{
-  CLog::Log(LOGDEBUG, "PVR - %s - deleting all clients from the database", __FUNCTION__);
-
-  return DeleteValues("clients");
-      //TODO && DeleteValues("map_channels_clients");
-}
-
-bool CPVRDatabase::Delete(const CPVRClient &client)
-{
-  /* invalid client uid */
-  if (client.ID().empty())
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid client uid", __FUNCTION__);
-    return false;
-  }
-
-  Filter filter;
-  filter.AppendWhere(PrepareSQL("sUid = '%s'", client.ID().c_str()));
-
-  return DeleteValues("clients", filter);
-}
-
-int CPVRDatabase::GetClientId(const std::string &strClientUid)
-{
-  std::string strWhereClause = PrepareSQL("sUid = '%s'", strClientUid.c_str());
-  std::string strValue = GetSingleValue("clients", "idClient", strWhereClause);
-
-  if (strValue.empty())
-    return -1;
-
-  return atol(strValue.c_str());
-}
-
 bool CPVRDatabase::ResetEPG(void)
 {
   std::string strQuery = PrepareSQL("UPDATE channels SET idEpg = 0");
@@ -690,26 +632,6 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
     bReturn = PersistGroupMembers(group);
 
   return bReturn;
-}
-
-int CPVRDatabase::Persist(const AddonPtr client)
-{
-  int iReturn(-1);
-
-  /* invalid client uid or name */
-  if (client->Name().empty() || client->ID().empty())
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid client uid or name", __FUNCTION__);
-    return iReturn;
-  }
-
-  std::string strQuery = PrepareSQL("REPLACE INTO clients (sName, sUid) VALUES ('%s', '%s');",
-      client->Name().c_str(), client->ID().c_str());
-
-  if (ExecuteQuery(strQuery))
-    iReturn = (int) m_pDS->lastinsertid();
-
-  return iReturn;
 }
 
 bool CPVRDatabase::Persist(CPVRChannel &channel)

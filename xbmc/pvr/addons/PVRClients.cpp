@@ -1008,17 +1008,17 @@ int CPVRClients::RegisterClient(AddonPtr client, bool* newRegistration/*=NULL*/)
 
   CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
 
-  CPVRDatabase *database = GetPVRDatabase();
-  if (!database)
+  CAddonDatabase database;
+  if (!database.Open())
     return -1;
 
   // check whether we already know this client
-  iClientId = database->GetClientId(client->ID());
+  iClientId = database.GetAddonId(client); //database->GetClientId(client->ID());
 
   // try to register the new client in the db
   if (iClientId < 0)
   {
-    if ((iClientId = database->Persist(client)) < 0)
+    if ((iClientId = database.AddAddon(client, 0)) < 0)
     {
       CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database", __FUNCTION__, client->Name().c_str());
       return -1;
