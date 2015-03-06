@@ -112,10 +112,10 @@ bool CLanguageResource::OnPreInstall()
   return IsInUse();
 }
 
-void CLanguageResource::OnPostInstall(bool restart, bool update)
+void CLanguageResource::OnPostInstall(bool restart, bool update, bool modal)
 {
   if (restart ||
-    (!update && CGUIDialogYesNo::ShowAndGetInput(Name(), g_localizeStrings.Get(24132), "", "")))
+     (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), g_localizeStrings.Get(24132), "", "")))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (toast)
