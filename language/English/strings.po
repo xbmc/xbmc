@@ -11657,7 +11657,17 @@ msgctxt "#21477"
 msgid "Just Specials"
 msgstr ""
 
-#empty strings from id 21478 to 21601
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#21478"
+msgid "Video width (px)"
+msgstr ""
+
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#21479"
+msgid "Video height (px)"
+msgstr ""
+
+#empty strings from id 21480 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"

@@ -95,6 +95,8 @@ static const translateField fields[] = {
   { "episode",           FieldEpisodeNumber,           SortByEpisodeNumber,            CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20359 },
   { "numepisodes",       FieldNumberOfEpisodes,        SortByNumberOfEpisodes,         CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20360 },
   { "numwatched",        FieldNumberOfWatchedEpisodes, SortByNumberOfWatchedEpisodes,  CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 21457 },
+  { "videowidth",        FieldVideoWidth,              SortByVideoWidth,               CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 21478 },
+  { "videoheight",       FieldVideoHeight,             SortByVideoHeight,              CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 21479 },
   { "videoresolution",   FieldVideoResolution,         SortByVideoResolution,          CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 21443 },
   { "videocodec",        FieldVideoCodec,              SortByVideoCodec,               CDatabaseQueryRule::TEXTIN_FIELD,   NULL,                                 false, 21445 },
   { "videoaspect",       FieldVideoAspectRatio,        SortByVideoAspectRatio,         CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 21374 },
@@ -424,6 +426,8 @@ vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
   }
   if (isVideo)
   {
+    fields.push_back(FieldVideoWidth);
+    fields.push_back(FieldVideoHeight);
     fields.push_back(FieldVideoResolution);
     fields.push_back(FieldAudioChannels);
     fields.push_back(FieldVideoCodec);
@@ -832,6 +836,10 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
   }
   if (m_field == FieldVideoResolution)
     query = table + ".idFile" + negate + GetVideoResolutionQuery(param);
+  else if (m_field == FieldVideoWidth)
+    query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND iVideoWidth " + parameter + ")";
+  else if (m_field == FieldVideoHeight)
+    query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND iVideoHeight " + parameter + ")";
   else if (m_field == FieldAudioChannels)
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND iAudioChannels " + parameter + ")";
   else if (m_field == FieldVideoCodec)

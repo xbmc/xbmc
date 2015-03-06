@@ -533,7 +533,9 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldTrackNumber:              sortable[FieldTrackNumber] = m_iTrack; break;
   case FieldTag:                      sortable[FieldTag] = m_tags; break;
 
-  case FieldVideoResolution:          sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight(); break;
+  case FieldVideoWidth:               sortable[FieldVideoWidth] = m_streamDetails.GetVideoWidth(); break;
+  case FieldVideoHeight:              sortable[FieldVideoHeight] = m_streamDetails.GetVideoHeight(); break;
+  case FieldVideoResolution:          sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight(); break; // backward compat
   case FieldVideoAspectRatio:         sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect(); break;
   case FieldVideoCodec:               sortable[FieldVideoCodec] = m_streamDetails.GetVideoCodec(); break;
   case FieldStereoMode:               sortable[FieldStereoMode] = m_streamDetails.GetStereoMode(); break;

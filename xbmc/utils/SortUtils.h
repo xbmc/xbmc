@@ -76,6 +76,8 @@ typedef enum {
   SortBySortTitle,
   SortByProductionCode,
   SortByMPAA,
+  SortByVideoWidth,
+  SortByVideoHeight,
   SortByVideoResolution,
   SortByVideoCodec,
   SortByVideoAspectRatio,
