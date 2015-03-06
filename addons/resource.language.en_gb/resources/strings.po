@@ -6964,7 +6964,12 @@ msgctxt "#14105"
 msgid "Temperature unit"
 msgstr ""
 
-#empty strings from id 14106 to 15011
+#: system/settings/settings.xml
+msgctxt "#14106"
+msgid "Speed unit"
+msgstr ""
+
+#empty strings from id 14107 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -14176,7 +14181,11 @@ msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr ""
 
-#empty string with id 36142
+#.  Description of setting "Appearance -> International -> Speed unit" with label #14106
+#: system/settings/settings.xml
+msgctxt "#36142"
+msgid "Choose which speed unit is used for displaying speeds in the user interface."
+msgstr ""
 
 #. Description of setting "Videos -> Library -> Download actor thumbnails when adding to library" with label #20402
 #: system/settings/settings.xml

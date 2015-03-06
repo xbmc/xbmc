@@ -962,3 +962,31 @@ void CLangInfo::SettingOptionsTemperatureUnitsFiller(const CSetting *setting, st
   if (!match && !list.empty())
     current = list[0].second;
 }
+
+void CLangInfo::SettingOptionsSpeedUnitsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  bool match = false;
+  const std::string& speedUnitSetting = static_cast<const CSettingString*>(setting)->GetValue();
+
+  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), GetSpeedUnitString(g_langInfo.m_currentRegion->m_speedUnit).c_str()), SETTING_REGIONAL_DEFAULT));
+  if (speedUnitSetting == SETTING_REGIONAL_DEFAULT)
+  {
+    match = true;
+    current = SETTING_REGIONAL_DEFAULT;
+  }
+
+  for (size_t i = 0; i < SPEED_INFO_SIZE; i++)
+  {
+    const SpeedInfo& info = speedInfo[i];
+    list.push_back(std::make_pair(GetSpeedUnitString(info.unit), info.name));
+
+    if (!match && speedUnitSetting == info.name)
+    {
+      match = true;
+      current = info.name;
+    }
+  }
+
+  if (!match && !list.empty())
+    current = list[0].second;
+}

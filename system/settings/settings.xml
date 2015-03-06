@@ -193,6 +193,17 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
+        <setting id="locale.speedunit" type="string" label="14106" help="36142">
+          <level>1</level>
+          <default>regional</default>
+          <constraints>
+            <options>speedunits</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="locale.country" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
       </group>
     </category>
     <category id="filelists" label="14081" help="36121">
