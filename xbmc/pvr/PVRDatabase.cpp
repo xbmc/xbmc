@@ -91,16 +91,6 @@ void CPVRDatabase::CreateTables()
         "iSubChannelNumber integer"
       ")"
   );
-
-  // disable all PVR add-on when started the first time
-  ADDON::VECADDONS addons;
-  if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
-    CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
-  else
-  {
-    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-      CAddonMgr::Get().DisableAddon(it->get()->ID());
-  }
 }
 
 void CPVRDatabase::CreateAnalytics()
@@ -116,24 +106,6 @@ void CPVRDatabase::UpdateTables(int iVersion)
   if (iVersion < 13)
     m_pDS->exec("ALTER TABLE channels ADD idEpg integer;");
 
-  if (iVersion < 19)
-  {
-    // bit of a hack, but we need to keep the version/contents of the non-pvr databases the same to allow clean upgrades
-    ADDON::VECADDONS addons;
-    if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
-      CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
-    else
-    {
-      CAddonDatabase database;
-      database.Open();
-      for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-      {
-        if (!database.IsSystemPVRAddonEnabled(it->get()->ID()))
-          CAddonMgr::Get().DisableAddon(it->get()->ID());
-      }
-      database.Close();
-    }
-  }
   if (iVersion < 20)
     m_pDS->exec("ALTER TABLE channels ADD bIsUserSetIcon bool");
 
