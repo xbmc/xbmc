@@ -950,20 +950,6 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
   if (type == MediaTypeMovie || type == MediaTypeTvShow)
     buttons.Add(CONTEXT_BUTTON_EDIT_SORTTITLE, 16107);
 
-  if (item->m_bIsFolder)
-  {
-    // Have both options for folders since we don't know whether all childs are watched/unwatched
-    buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-    buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-  }
-  else
-  {
-    if (item->GetOverlayImage() == "OverlayWatched.png")
-      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-    else
-      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-  }
-
   if (type == MediaTypeMovie)
   {
     // only show link/unlink if there are tvshows available
@@ -1059,12 +1045,6 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
 
       case CONTEXT_BUTTON_TAGS_REMOVE_ITEMS:
         result = RemoveItemsFromTag(item);
-        break;
-
-      case CONTEXT_BUTTON_MARK_WATCHED:
-      case CONTEXT_BUTTON_MARK_UNWATCHED:
-        CVideoLibraryQueue::Get().MarkAsWatched(item, (button == (CONTEXT_BUTTON)CONTEXT_BUTTON_MARK_WATCHED));
-        result = true;
         break;
 
       default:
