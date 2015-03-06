@@ -174,7 +174,7 @@ public:
     if(STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_TEXT)
       return false;
 
-    if ((ss.flags & CDemuxStream::FLAG_FORCED) && (original || g_LangCodeExpander.CompareLangCodes(ss.language, audiolang)))
+    if ((ss.flags & CDemuxStream::FLAG_FORCED) && (original || g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang)))
       return false;
 
     if ((ss.flags & CDemuxStream::FLAG_DEFAULT))
@@ -183,7 +183,7 @@ public:
     if(!original)
     {
       std::string subtitle_language = g_langInfo.GetSubtitleLanguage();
-      if (g_LangCodeExpander.CompareLangCodes(subtitle_language, ss.language))
+      if (g_LangCodeExpander.CompareISO639Codes(subtitle_language, ss.language))
         return false;
     }
 
@@ -199,8 +199,8 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
   if(!StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.audiolanguage"), "original"))
   {
     std::string audio_language = g_langInfo.GetAudioLanguage();
-    PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(audio_language, lh.language)
-                   , g_LangCodeExpander.CompareLangCodes(audio_language, rh.language));
+    PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(audio_language, lh.language)
+                   , g_LangCodeExpander.CompareISO639Codes(audio_language, rh.language));
 
     bool hearingimp = CSettings::Get().GetBool("accessibility.audiohearing");
     PREDICATE_RETURN(!hearingimp ? !(lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED
@@ -275,8 +275,8 @@ public:
 
     if(!subson || original)
     {
-      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(lh.language, audiolang)
-                     , rh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(rh.language, audiolang));
+      PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(lh.language, audiolang)
+                     , rh.flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(rh.language, audiolang));
 
       PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED
                      , rh.flags & CDemuxStream::FLAG_FORCED);
@@ -285,14 +285,14 @@ public:
     std::string subtitle_language = g_langInfo.GetSubtitleLanguage();
     if(!original)
     {
-      PREDICATE_RETURN((STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
-                     , (STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+      PREDICATE_RETURN((STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareISO639Codes(subtitle_language, lh.language)
+                     , (STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(rh.source) == STREAM_SOURCE_TEXT) && g_LangCodeExpander.CompareISO639Codes(subtitle_language, rh.language));
     }
 
     if(!original)
     {
-      PREDICATE_RETURN(g_LangCodeExpander.CompareLangCodes(subtitle_language, lh.language)
-                     , g_LangCodeExpander.CompareLangCodes(subtitle_language, rh.language));
+      PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(subtitle_language, lh.language)
+                     , g_LangCodeExpander.CompareISO639Codes(subtitle_language, rh.language));
 
       bool hearingimp = CSettings::Get().GetBool("accessibility.subhearing");
       PREDICATE_RETURN(!hearingimp ? !(lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED) : lh.flags & CDemuxStream::FLAG_HEARING_IMPAIRED
@@ -3404,7 +3404,7 @@ bool CDVDPlayer::AdaptForcedSubtitles()
 
     for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
     {
-      if (it->flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareLangCodes(it->language, as.language))
+      if (it->flags & CDemuxStream::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(it->language, as.language))
       {
         if(OpenStream(m_CurrentSubtitle, it->id, it->source))
         {

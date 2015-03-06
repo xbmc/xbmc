@@ -314,16 +314,16 @@ bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= 
   // Windows need 3 chars isolang code
   if (m_defaultRegion.m_strLangLocaleName.length() == 2)
   {
-    if (! g_LangCodeExpander.ConvertTwoToThreeCharCode(m_defaultRegion.m_strLangLocaleName, m_defaultRegion.m_strLangLocaleName, true))
+    if (!g_LangCodeExpander.ConvertISO6391ToISO6392T(m_defaultRegion.m_strLangLocaleName, m_defaultRegion.m_strLangLocaleName, true))
       m_defaultRegion.m_strLangLocaleName = "";
   }
 
-  if (!g_LangCodeExpander.ConvertWindowsToGeneralCharCode(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
+  if (!g_LangCodeExpander.ConvertWindowsLanguageCodeToISO6392T(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
     m_languageCodeGeneral = "";
 #else
   if (m_defaultRegion.m_strLangLocaleName.length() != 3)
   {
-    if (!g_LangCodeExpander.ConvertToThreeCharCode(m_languageCodeGeneral, m_defaultRegion.m_strLangLocaleName, !onlyCheckLanguage))
+    if (!g_LangCodeExpander.ConvertToISO6392T(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral, !onlyCheckLanguage))
       m_languageCodeGeneral = "";
   }
   else
@@ -331,7 +331,7 @@ bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= 
 #endif
 
   std::string tmp;
-  if (g_LangCodeExpander.ConvertToTwoCharCode(tmp, m_defaultRegion.m_strLangLocaleName))
+  if (g_LangCodeExpander.ConvertToISO6391(m_defaultRegion.m_strLangLocaleName, tmp))
     m_defaultRegion.m_strLangLocaleCodeTwoChar = tmp;
 
   const TiXmlNode *pRegions = pRootElement->FirstChild("regions");
@@ -352,7 +352,7 @@ bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= 
       // Windows need 3 chars regions code
       if (region.m_strRegionLocaleName.length() == 2)
       {
-        if (! g_LangCodeExpander.ConvertLinuxToWindowsRegionCodes(region.m_strRegionLocaleName, region.m_strRegionLocaleName))
+        if (!g_LangCodeExpander.ConvertISO36111Alpha2ToISO36111Alpha3(region.m_strRegionLocaleName, region.m_strRegionLocaleName))
           region.m_strRegionLocaleName = "";
       }
 #endif
@@ -640,7 +640,7 @@ void CLangInfo::SetAudioLanguage(const std::string& language)
   if (language.empty()
     || StringUtils::EqualsNoCase(language, "default")
     || StringUtils::EqualsNoCase(language, "original")
-    || !g_LangCodeExpander.ConvertToThreeCharCode(m_audioLanguage, language))
+    || !g_LangCodeExpander.ConvertToISO6392T(language, m_audioLanguage))
     m_audioLanguage.clear();
 }
 
@@ -658,7 +658,7 @@ void CLangInfo::SetSubtitleLanguage(const std::string& language)
   if (language.empty()
     || StringUtils::EqualsNoCase(language, "default")
     || StringUtils::EqualsNoCase(language, "original")
-    || !g_LangCodeExpander.ConvertToThreeCharCode(m_subtitleLanguage, language))
+    || !g_LangCodeExpander.ConvertToISO6392T(language, m_subtitleLanguage))
     m_subtitleLanguage.clear();
 }
 
@@ -666,7 +666,7 @@ void CLangInfo::SetSubtitleLanguage(const std::string& language)
 const std::string CLangInfo::GetDVDMenuLanguage() const
 {
   std::string code;
-  if (!g_LangCodeExpander.ConvertToTwoCharCode(code, m_currentRegion->m_strLangLocaleName))
+  if (!g_LangCodeExpander.ConvertToISO6391(m_currentRegion->m_strLangLocaleName, code))
     code = m_strDVDMenuLanguage;
   
   return code;
@@ -676,7 +676,7 @@ const std::string CLangInfo::GetDVDMenuLanguage() const
 const std::string CLangInfo::GetDVDAudioLanguage() const
 {
   std::string code;
-  if (!g_LangCodeExpander.ConvertToTwoCharCode(code, m_audioLanguage))
+  if (!g_LangCodeExpander.ConvertToISO6391(m_audioLanguage, code))
     code = m_strDVDAudioLanguage;
   
   return code;
@@ -686,7 +686,7 @@ const std::string CLangInfo::GetDVDAudioLanguage() const
 const std::string CLangInfo::GetDVDSubtitleLanguage() const
 {
   std::string code;
-  if (!g_LangCodeExpander.ConvertToTwoCharCode(code, m_subtitleLanguage))
+  if (!g_LangCodeExpander.ConvertToISO6391(m_subtitleLanguage, code))
     code = m_strDVDSubtitleLanguage;
   
   return code;

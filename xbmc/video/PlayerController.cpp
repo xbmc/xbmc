@@ -69,7 +69,7 @@ bool CPlayerController::OnAction(const CAction &action)
         {
           SPlayerSubtitleStreamInfo info;
           g_application.m_pPlayer->GetSubtitleStreamInfo(g_application.m_pPlayer->GetSubtitle(), info);
-          if (!g_LangCodeExpander.Lookup(lang, info.language))
+          if (!g_LangCodeExpander.Lookup(info.language, lang))
             lang = g_localizeStrings.Get(13205); // Unknown
 
           if (info.name.length() == 0)
@@ -116,7 +116,7 @@ bool CPlayerController::OnAction(const CAction &action)
         {
           SPlayerSubtitleStreamInfo info;
           g_application.m_pPlayer->GetSubtitleStreamInfo(currentSub, info);
-          if (!g_LangCodeExpander.Lookup(lang, info.language))
+          if (!g_LangCodeExpander.Lookup(info.language, lang))
             lang = g_localizeStrings.Get(13205); // Unknown
 
           if (info.name.length() == 0)
@@ -212,7 +212,7 @@ bool CPlayerController::OnAction(const CAction &action)
         std::string lan;
         SPlayerAudioStreamInfo info;
         g_application.m_pPlayer->GetAudioStreamInfo(currentAudio, info);
-        if (!g_LangCodeExpander.Lookup(lan, info.language))
+        if (!g_LangCodeExpander.Lookup(info.language, lan))
           lan = g_localizeStrings.Get(13205); // Unknown
         if (info.name.empty())
           aud = lan;

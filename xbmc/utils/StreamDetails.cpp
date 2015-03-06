@@ -155,13 +155,13 @@ bool CStreamDetailSubtitle::IsWorseThan(CStreamDetail *that)
   if (that->m_eType != CStreamDetail::SUBTITLE)
     return true;
 
-  if (g_LangCodeExpander.CompareLangCodes(m_strLanguage, ((CStreamDetailSubtitle *)that)->m_strLanguage))
+  if (g_LangCodeExpander.CompareISO639Codes(m_strLanguage, ((CStreamDetailSubtitle *)that)->m_strLanguage))
     return false;
 
   // the best subtitle should be the one in the user's preferred language
   // If preferred language is set to "original" this is "eng"
   return m_strLanguage.empty() ||
-    g_LangCodeExpander.CompareLangCodes(((CStreamDetailSubtitle *)that)->m_strLanguage, g_langInfo.GetSubtitleLanguage());
+    g_LangCodeExpander.CompareISO639Codes(((CStreamDetailSubtitle *)that)->m_strLanguage, g_langInfo.GetSubtitleLanguage());
 }
 
 CStreamDetailSubtitle& CStreamDetailSubtitle::operator=(const CStreamDetailSubtitle &that)

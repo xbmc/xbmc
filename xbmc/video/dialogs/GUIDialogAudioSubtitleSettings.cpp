@@ -435,7 +435,7 @@ void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(const CSetting *s
     SPlayerAudioStreamInfo info;
     g_application.m_pPlayer->GetAudioStreamInfo(i, info);
 
-    if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
+    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = g_localizeStrings.Get(13205); // Unknown
 
     if (info.name.length() == 0)
@@ -467,7 +467,7 @@ void CGUIDialogAudioSubtitleSettings::SubtitleStreamsOptionFiller(const CSetting
     std::string strItem;
     std::string strLanguage;
 
-    if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
+    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = g_localizeStrings.Get(13205); // Unknown
 
     if (info.name.length() == 0)

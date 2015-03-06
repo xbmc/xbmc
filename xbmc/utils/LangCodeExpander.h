@@ -28,6 +28,8 @@ class TiXmlElement;
 class CLangCodeExpander
 {
 public:
+  CLangCodeExpander();
+  ~CLangCodeExpander();
 
   enum LANGFORMATS
   {
@@ -36,11 +38,11 @@ public:
     ENGLISH_NAME
   };
 
-  CLangCodeExpander(void);
-  ~CLangCodeExpander(void);
+  void LoadUserCodes(const TiXmlElement* pRootElement);
+  void Clear();
 
-  bool Lookup(std::string& desc, const std::string& code);
-  bool Lookup(std::string& desc, const int code);
+  bool Lookup(const std::string& code, std::string& desc);
+  bool Lookup(const int code, std::string& desc);
 
   /** \brief Determines if two english language names represent the same language.
   *   \param[in] lang1 The first language string to compare given as english language name.
@@ -48,7 +50,7 @@ public:
   *   \return true if the two language strings represent the same language, false otherwise.
   *   For example "Abkhaz" and "Abkhazian" represent the same language.
   */ 
-  bool CompareFullLangNames(const std::string& lang1, const std::string& lang2);
+  bool CompareFullLanguageNames(const std::string& lang1, const std::string& lang2);
 
   /** \brief Determines if two languages given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B codes represent the same language.
   *   \param[in] code1 The first language to compare given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B code.
@@ -56,7 +58,7 @@ public:
   *   \return true if the two language codes represent the same language, false otherwise.
   *   For example "ger", "deu" and "de" represent the same language.
   */ 
-  bool CompareLangCodes(const std::string& code1, const std::string& code2);
+  bool CompareISO639Codes(const std::string& code1, const std::string& code2);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
@@ -66,7 +68,7 @@ public:
   *   \param[in] checkXbmcLocales Try to find in XBMC specific locales
   *   \return true if the conversion succeeded, false otherwise. 
   */ 
-  bool ConvertToTwoCharCode(std::string& code, const std::string& lang, bool checkXbmcLocales = true);
+  bool ConvertToISO6391(const std::string& lang, std::string& code, bool checkXbmcLocales = true);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
@@ -75,16 +77,30 @@ public:
   *   \return The 3-Char ISO 639-2/T code of lang if that code exists, lang otherwise.
   */
   std::string ConvertToISO6392T(const std::string& lang);
-  static bool ConvertTwoToThreeCharCode(std::string& strThreeCharCode, const std::string& strTwoCharCode, bool checkWin32Locales = false);
-  static bool ConvertToThreeCharCode(std::string& strThreeCharCode, const std::string& strCharCode, bool checkXbmcLocales = true, bool checkWin32Locales = false);
+
+  /** \brief Converts a language given as 2-Char (ISO 639-1) to a 3-Char (ISO 639-2/T) code.
+  *   \param[in] strISO6391 The language that should be converted.
+  *   \param[out] strISO6392T The 3-Char (ISO 639-2/T) language code of the given language strISO6391.
+  *   \param[in] checkWin32Locales Whether to also check WIN32 specific language codes.
+  *   \return true if the conversion succeeded, false otherwise.
+  */
+  static bool ConvertISO6391ToISO6392T(const std::string& strISO6391, std::string& strISO6392T, bool checkWin32Locales = false);
+
+  /** \brief Converts a language given as 2-Char (ISO 639-1),
+  *          3-Char (ISO 639-2/T or ISO 639-2/B),
+  *          or full english name string to a 3-Char ISO 639-2/T code.
+  *   \param[in] strCharCode The language that should be converted.
+  *   \param[out] strISO6392T The 3-Char (ISO 639-2/T) language code of the given language strISO6391.
+  *   \param[in] checkXbmcLocales Try to find in XBMC specific locales
+  *   \param[in] checkWin32Locales Whether to also check WIN32 specific language codes.
+  *   \return true if the conversion succeeded, false otherwise.
+  */
+  static bool ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkXbmcLocales = true, bool checkWin32Locales = false);
 
 #ifdef TARGET_WINDOWS
-  static bool ConvertLinuxToWindowsRegionCodes(const std::string& strTwoCharCode, std::string& strThreeCharCode);
-  static bool ConvertWindowsToGeneralCharCode(const std::string& strWindowsCharCode, std::string& strThreeCharCode);
+  static bool ConvertISO36111Alpha2ToISO36111Alpha3(const std::string& strISO36111Alpha2, std::string& strISO36111Alpha3);
+  static bool ConvertWindowsLanguageCodeToISO6392T(const std::string& strWindowsLanguageCode, std::string& strISO6392T);
 #endif
-
-  void LoadUserCodes(const TiXmlElement* pRootElement);
-  void Clear();
 
   static std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1);
 protected:
@@ -96,11 +112,8 @@ protected:
   */ 
   static void CodeToString(long code, std::string& ret);
 
-  typedef std::map<std::string, std::string> STRINGLOOKUPTABLE;
-  STRINGLOOKUPTABLE m_mapUser;
-
-  static bool LookupInDb(std::string& desc, const std::string& code);
-  bool LookupInMap(std::string& desc, const std::string& code);
+  static bool LookupInISO639Tables(const std::string& code, std::string& desc);
+  bool LookupInUserMap(const std::string& code, std::string& desc);
 
   /** \brief Looks up the ISO 639-1, ISO 639-2/T, or ISO 639-2/B, whichever it finds first,
   *          code of the given english language name.
@@ -109,6 +122,9 @@ protected:
   *   \return true if the a code was found, false otherwise.
   */ 
   bool ReverseLookup(const std::string& desc, std::string& code);
+
+  typedef std::map<std::string, std::string> STRINGLOOKUPTABLE;
+  STRINGLOOKUPTABLE m_mapUser;
 };
 
 extern CLangCodeExpander g_LangCodeExpander;
