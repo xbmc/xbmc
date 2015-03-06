@@ -344,16 +344,37 @@ bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
   return GetAddons(type, addons, enabled);
 }
 
-bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool allowRepos /* = false */)
+bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/)
 {
-  for (int i = ADDON_UNKNOWN+1; i < ADDON_MAX; ++i)
+  CSingleLock lock(m_critSection);
+  if (!m_cp_context)
+    return false;
+
+  cp_status_t status;
+  int num;
+  cp_plugin_info_t **cpaddons = m_cpluff->get_plugins_info(m_cp_context, &status, &num);
+
+  for (int i = 0; i < num; ++i)
   {
-    if (!allowRepos && ADDON_REPOSITORY == (TYPE)i)
-      continue;
-    VECADDONS temp;
-    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled))
-      addons.insert(addons.end(), temp.begin(), temp.end());
+    const cp_plugin_info_t *cpaddon = cpaddons[i];
+    if (cpaddon->extensions && IsAddonDisabled(cpaddon->identifier) != enabled)
+    {
+      //Get the first extension only
+      AddonPtr addon = Factory(&cpaddon->extensions[0]);
+      if (addon)
+      {
+        if (enabled)
+        {
+          // if the addon has a running instance, grab that
+          AddonPtr runningAddon = addon->GetRunningInstance();
+          if (runningAddon)
+            addon = runningAddon;
+        }
+        addons.push_back(addon);
+      }
+    }
   }
+  m_cpluff->release_info(m_cp_context, cpaddons);
   return !addons.empty();
 }
 
