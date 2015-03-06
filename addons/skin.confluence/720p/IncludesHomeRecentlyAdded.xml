@@ -7,8 +7,8 @@
 			<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>
 			<visible>!Window.IsVisible(Favourites)</visible>
 			<include>VisibleFadeEffect</include>
-			<animation effect="fade" time="300" delay="1000">WindowOpen</animation>
-			<animation effect="fade" time="200">WindowClose</animation>
+			<animation effect="fade" time="225" delay="750">WindowOpen</animation>
+			<animation effect="fade" time="150">WindowClose</animation>
 			<control type="group">
 				<left>190</left>
 				<top>50</top>

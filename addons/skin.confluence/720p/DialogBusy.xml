@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<animation effect="fade" time="100">WindowOpen</animation>
-	<animation effect="fade" time="200">WindowClose</animation>
+	<animation effect="fade" time="75">WindowOpen</animation>
+	<animation effect="fade" time="150">WindowClose</animation>
 	<coordinates>
 		<system>1</system>
 		<left>0</left>
@@ -27,7 +27,7 @@
 				<height>32</height>
 				<texture>busy.png</texture>
 				<aspectratio>keep</aspectratio>
-				<animation effect="rotate" start="0" end="360" center="36,36" time="1200" loop="true" condition="true">conditional</animation>
+				<animation effect="rotate" start="0" end="360" center="36,36" time="900" loop="true" condition="true">conditional</animation>
 			</control>
 			<control type="label">
 				<description>Busy label</description>

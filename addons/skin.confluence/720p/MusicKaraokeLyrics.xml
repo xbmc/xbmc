@@ -19,7 +19,7 @@
 		</control>
 		<control type="group">
 			<visible>MusicPlayer.Offset(number).Exists + !IntegerGreaterThan(Player.TimeRemaining,20)</visible>
-			<animation effect="slide" start="0,-40" end="0,0" time="100">Visible</animation>
+			<animation effect="slide" start="0,-40" end="0,0" time="75">Visible</animation>
 			<left>420</left>
 			<top>0</top>
 			<control type="image">

@@ -5,7 +5,7 @@
 		<!-- media infos -->
 		<control type="group" id="1">
 			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
-			<animation effect="fade" time="200">VisibleChange</animation>
+			<animation effect="fade" time="150">VisibleChange</animation>
 			<control type="image" id="1">
 				<left>0</left>
 				<top>-150</top>
@@ -274,7 +274,7 @@
 					<textcolor>grey</textcolor>
 					<scroll>true</scroll>
 					<visible>!Window.IsVisible(VideoOSD) + !VideoPlayer.Content(LiveTV)</visible>
-					<animation effect="fade" time="200">VisibleChange</animation>
+					<animation effect="fade" time="150">VisibleChange</animation>
 				</control>
 				<control type="label" id="1">
 					<left>0</left>
@@ -288,7 +288,7 @@
 					<textcolor>grey</textcolor>
 					<scroll>true</scroll>
 					<visible>!Window.IsVisible(VideoOSD) + VideoPlayer.Content(LiveTV)</visible>
-					<animation effect="fade" time="200">VisibleChange</animation>
+					<animation effect="fade" time="150">VisibleChange</animation>
 				</control>
 			</control>
 			<control type="group" id="1">
@@ -362,7 +362,7 @@
 		<control type="group" id="0">
 			<left>0</left>
 			<top>20</top>
-			<animation effect="fade" time="200">VisibleChange</animation>
+			<animation effect="fade" time="150">VisibleChange</animation>
 			<control type="image">
 				<description>media info background image</description>
 				<left>0</left>
