@@ -3776,10 +3776,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     m_screenSaver.reset(new CScreenSaver(""));
 
   CAnnouncementManager::Get().Announce(GUI, "xbmc", "OnScreensaverActivated");
-#ifdef TARGET_ANDROID
-  // Screensaver activated -> release wake lock
-  CXBMCApp::EnableWakeLock(false);
-#endif
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
@@ -3792,11 +3788,18 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
         m_screenSaver.reset(new CScreenSaver(""));
     }
   }
-  if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID().empty())
+  if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim"
+      || m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
+  {
+#ifdef TARGET_ANDROID
+    // Default screensaver activated -> release wake lock
+    CXBMCApp::EnableWakeLock(false);
+#endif
     return;
-  else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
+  }
+  else if (m_screenSaver->ID().empty())
     return;
-  else if (!m_screenSaver->ID().empty())
+  else
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 

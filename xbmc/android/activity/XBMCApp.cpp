@@ -277,9 +277,15 @@ bool CXBMCApp::EnableWakeLock(bool on)
   }
 
   if (on)
-    m_wakeLock->acquire();
-  else if (m_wakeLock->isHeld())
-    m_wakeLock->release();
+  {
+    if (!m_wakeLock->isHeld())
+      m_wakeLock->acquire();
+  }
+  else
+  {
+    if (m_wakeLock->isHeld())
+      m_wakeLock->release();
+  }
 
   return true;
 }
