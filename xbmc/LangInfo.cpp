@@ -65,6 +65,27 @@ static TemperatureInfo temperatureInfo[] = {
 #define TEMPERATURE_INFO_SIZE     sizeof(temperatureInfo) / sizeof(TemperatureInfo)
 #define TEMP_UNIT_STRINGS         20027
 
+typedef struct SpeedInfo {
+  CSpeed::Unit unit;
+  std::string name;
+} SpeedInfo;
+
+static SpeedInfo speedInfo[] = {
+  { CSpeed::UnitKilometresPerHour,    "kmh" },
+  { CSpeed::UnitMetresPerMinute,      "mpmin" },
+  { CSpeed::UnitMetresPerSecond,      "mps" },
+  { CSpeed::UnitFeetPerHour,          "fth" },
+  { CSpeed::UnitFeetPerMinute,        "ftm" },
+  { CSpeed::UnitFeetPerSecond,        "fts" },
+  { CSpeed::UnitMilesPerHour,         "mph" },
+  { CSpeed::UnitKnots,                "kts" },
+  { CSpeed::UnitBeaufort,             "beaufort" },
+  { CSpeed::UnitInchPerSecond,        "inchs" },
+  { CSpeed::UnitYardPerSecond,        "yards" },
+  { CSpeed::UnitFurlongPerFortnight,  "fpf" }
+};
+
+#define SPEED_INFO_SIZE           sizeof(speedInfo) / sizeof(SpeedInfo)
 #define SPEED_UNIT_STRINGS        20200
 
 #define SETTING_REGIONAL_DEFAULT  "regional"
@@ -82,6 +103,21 @@ static CTemperature::Unit StringToTemperatureUnit(const std::string& temperature
   }
 
   return CTemperature::UnitCelsius;
+}
+
+static CSpeed::Unit StringToSpeedUnit(const std::string& speedUnit)
+{
+  std::string unit(speedUnit);
+  StringUtils::ToLower(unit);
+
+  for (size_t i = 0; i < SPEED_INFO_SIZE; i++)
+  {
+    const SpeedInfo& info = speedInfo[i];
+    if (info.name == unit)
+      return info.unit;
+  }
+
+  return CSpeed::UnitKilometresPerHour;
 }
 
 struct SortLanguage
@@ -133,7 +169,7 @@ void CLangInfo::CRegion::SetDefaults()
   m_strDateFormatLong="DDDD, D MMMM YYYY";
   m_strTimeFormat="HH:mm:ss";
   m_tempUnit = CTemperature::UnitCelsius;
-  m_speedUnit=SPEED_UNIT_KMH;
+  m_speedUnit = CSpeed::UnitKilometresPerHour;
   m_strTimeZone.clear();
 }
 
@@ -144,31 +180,7 @@ void CLangInfo::CRegion::SetTemperatureUnit(const std::string& strUnit)
 
 void CLangInfo::CRegion::SetSpeedUnit(const std::string& strUnit)
 {
-  std::string unit(strUnit); StringUtils::ToLower(unit);
-  if (unit == "kmh")
-    m_speedUnit=SPEED_UNIT_KMH;
-  else if (unit == "mpmin")
-    m_speedUnit=SPEED_UNIT_MPMIN;
-  else if (unit == "mps")
-    m_speedUnit=SPEED_UNIT_MPS;
-  else if (unit == "fth")
-    m_speedUnit=SPEED_UNIT_FTH;
-  else if (unit == "ftm")
-    m_speedUnit=SPEED_UNIT_FTMIN;
-  else if (unit == "fts")
-    m_speedUnit=SPEED_UNIT_FTS;
-  else if (unit == "mph")
-    m_speedUnit=SPEED_UNIT_MPH;
-  else if (unit == "kts")
-    m_speedUnit=SPEED_UNIT_KTS;
-  else if (unit == "beaufort")
-    m_speedUnit=SPEED_UNIT_BEAUFORT;
-  else if (unit == "inchs")
-    m_speedUnit=SPEED_UNIT_INCHPS;
-  else if (unit == "yards")
-    m_speedUnit=SPEED_UNIT_YARDPS;
-  else if (unit == "fpf")
-    m_speedUnit=SPEED_UNIT_FPF;
+  m_speedUnit = StringToSpeedUnit(strUnit);
 }
 
 void CLangInfo::CRegion::SetTimeZone(const std::string& strTimeZone)
@@ -232,6 +244,7 @@ CLangInfo::CLangInfo()
 {
   SetDefaults();
   m_temperatureUnit = m_defaultRegion.m_tempUnit;
+  m_speedUnit = m_defaultRegion.m_speedUnit;
 }
 
 CLangInfo::~CLangInfo()
@@ -257,12 +270,15 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
     SetCurrentRegion(((CSettingString*)setting)->GetValue());
   else if (settingId == "locale.temperatureunit")
     SetTemperatureUnit(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.speedunit")
+    SetSpeedUnit(((CSettingString*)setting)->GetValue());
 }
 
 void CLangInfo::OnSettingsLoaded()
 {
-  // set the temperature unit based on the settings
+  // set the temperature and speed units based on the settings
   SetTemperatureUnit(CSettings::Get().GetString("locale.temperatureunit"));
+  SetSpeedUnit(CSettings::Get().GetString("locale.speedunit"));
 }
 
 bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= false*/)
@@ -760,6 +776,8 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
 
   if (CSettings::Get().GetString("locale.temperatureunit") == SETTING_REGIONAL_DEFAULT)
     SetTemperatureUnit(m_currentRegion->m_tempUnit);
+  if (CSettings::Get().GetString("locale.speedunit") == SETTING_REGIONAL_DEFAULT)
+    SetSpeedUnit(m_currentRegion->m_speedUnit);
 }
 
 // Returns the current region set for this language
@@ -815,15 +833,50 @@ const std::string& CLangInfo::GetTemperatureUnitString(CTemperature::Unit temper
   return g_localizeStrings.Get(TEMP_UNIT_STRINGS + temperatureUnit);
 }
 
-CLangInfo::SPEED_UNIT CLangInfo::GetSpeedUnit() const
+void CLangInfo::SetSpeedUnit(CSpeed::Unit speedUnit)
 {
-  return m_currentRegion->m_speedUnit;
+  if (m_speedUnit == speedUnit)
+    return;
+
+  m_speedUnit = speedUnit;
+
+  // need to reset our weather as speeds need re-translating
+  g_weatherManager.Refresh();
+}
+
+void CLangInfo::SetSpeedUnit(const std::string& speedUnit)
+{
+  CSpeed::Unit unit = CSpeed::UnitKilometresPerHour;
+  if (speedUnit == SETTING_REGIONAL_DEFAULT)
+    unit = m_currentRegion->m_speedUnit;
+  else
+    unit = StringToSpeedUnit(speedUnit);
+
+  SetSpeedUnit(unit);
+}
+
+CSpeed::Unit CLangInfo::GetSpeedUnit() const
+{
+  return m_speedUnit;
+}
+
+std::string CLangInfo::GetSpeedAsString(const CSpeed& speed) const
+{
+  if (!speed.IsValid())
+    return g_localizeStrings.Get(13205); // "Unknown"
+
+  return StringUtils::Format("%s%s", speed.ToString(GetSpeedUnit()).c_str(), GetSpeedUnitString().c_str());
 }
 
 // Returns the speed unit string for the current language
 const std::string& CLangInfo::GetSpeedUnitString() const
 {
-  return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_currentRegion->m_speedUnit);
+  return GetSpeedUnitString(m_speedUnit);
+}
+
+const std::string& CLangInfo::GetSpeedUnitString(CSpeed::Unit speedUnit)
+{
+  return g_localizeStrings.Get(SPEED_UNIT_STRINGS + speedUnit);
 }
 
 std::set<std::string> CLangInfo::GetSortTokens() const

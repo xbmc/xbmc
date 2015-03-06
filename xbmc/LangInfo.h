@@ -23,6 +23,7 @@
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/Locale.h"
+#include "utils/Speed.h"
 #include "utils/Temperature.h"
 
 #include <map>
@@ -154,24 +155,12 @@ public:
   static const std::string& GetTemperatureUnitString(CTemperature::Unit temperatureUnit);
   std::string GetTemperatureAsString(const CTemperature& temperature) const;
 
-  typedef enum _SPEED_UNIT
-  {
-    SPEED_UNIT_KMH=0, // kilemetre per hour
-    SPEED_UNIT_MPMIN, // metres per minute
-    SPEED_UNIT_MPS, // metres per second
-    SPEED_UNIT_FTH, // feet per hour
-    SPEED_UNIT_FTMIN, // feet per minute
-    SPEED_UNIT_FTS, // feet per second
-    SPEED_UNIT_MPH, // miles per hour
-    SPEED_UNIT_KTS, // knots
-    SPEED_UNIT_BEAUFORT, // beaufort
-    SPEED_UNIT_INCHPS, // inch per second
-    SPEED_UNIT_YARDPS, // yard per second
-    SPEED_UNIT_FPF // Furlong per Fortnight
-  } SPEED_UNIT;
-
+  CSpeed::Unit GetSpeedUnit() const;
+  void SetSpeedUnit(CSpeed::Unit speedUnit);
+  void SetSpeedUnit(const std::string& speedUnit);
   const std::string& GetSpeedUnitString() const;
-  CLangInfo::SPEED_UNIT GetSpeedUnit() const;
+  static const std::string& GetSpeedUnitString(CSpeed::Unit speedUnit);
+  std::string GetSpeedAsString(const CSpeed& speed) const;
 
   void GetRegionNames(std::vector<std::string>& array);
   void SetCurrentRegion(const std::string& strName);
@@ -217,7 +206,7 @@ protected:
     std::string m_strTimeZone;
 
     CTemperature::Unit m_tempUnit;
-    SPEED_UNIT m_speedUnit;
+    CSpeed::Unit m_speedUnit;
   };
 
 
@@ -240,6 +229,7 @@ protected:
   std::set<std::string> m_sortTokens;
 
   CTemperature::Unit m_temperatureUnit;
+  CSpeed::Unit m_speedUnit;
 
   std::string m_audioLanguage;
   std::string m_subtitleLanguage;
