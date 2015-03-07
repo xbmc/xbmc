@@ -586,9 +586,6 @@ bool URIUtils::IsOnLAN(const std::string& strPath)
   if(IsPlugin(strPath))
     return false;
 
-  if(IsTuxBox(strPath))
-    return true;
-
   if(IsUPnP(strPath))
     return true;
 
@@ -929,11 +926,6 @@ bool URIUtils::IsUPnP(const std::string& strFile)
   return IsProtocol(strFile, "upnp");
 }
 
-bool URIUtils::IsTuxBox(const std::string& strFile)
-{
-  return IsProtocol(strFile, "tuxbox");
-}
-
 bool URIUtils::IsMythTV(const std::string& strFile)
 {
   return IsProtocol(strFile, "myth");
@@ -964,8 +956,7 @@ bool URIUtils::IsLiveTV(const std::string& strFile)
   std::string strFileWithoutSlash(strFile);
   RemoveSlashAtEnd(strFileWithoutSlash);
 
-  if(IsTuxBox(strFile)
-  || IsVTP(strFile)
+  if(IsVTP(strFile)
   || IsHDHomeRun(strFile)
   || IsSlingbox(strFile)
   || IsHTSP(strFile)

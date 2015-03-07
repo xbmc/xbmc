@@ -288,18 +288,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iVideoLibraryDateAdded;
 
     std::set<std::string> m_vecTokens;
-    //TuxBox
-    int m_iTuxBoxStreamtsPort;
-    bool m_bTuxBoxSubMenuSelection;
-    int m_iTuxBoxDefaultSubMenu;
-    int m_iTuxBoxDefaultRootMenu;
-    bool m_bTuxBoxAudioChannelSelection;
-    bool m_bTuxBoxPictureIcon;
-    int m_iTuxBoxEpgRequestTime;
-    int m_iTuxBoxZapWaitTime;
-    bool m_bTuxBoxSendAllAPids;
-    bool m_bTuxBoxZapstream;
-    int m_iTuxBoxZapstreamPort;
 
     int m_iMythMovieLength;         // minutes
 

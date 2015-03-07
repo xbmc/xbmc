@@ -70,7 +70,6 @@ SRCS += SystemInfo.cpp
 SRCS += TextSearch.cpp
 SRCS += TimeSmoother.cpp
 SRCS += TimeUtils.cpp
-SRCS += TuxBoxUtil.cpp
 SRCS += URIUtils.cpp
 SRCS += UrlOptions.cpp
 SRCS += Variant.cpp

@@ -929,8 +929,6 @@
 		DF93D6AC1444A8B1007C6459 /* SlingboxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */; };
 		DF93D6AD1444A8B1007C6459 /* SMBFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SMBFile.cpp */; };
 		DF93D6AE1444A8B1007C6459 /* SpecialProtocolFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68D1444A8B0007C6459 /* SpecialProtocolFile.cpp */; };
-		DF93D6AF1444A8B1007C6459 /* TuxBoxDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68F1444A8B0007C6459 /* TuxBoxDirectory.cpp */; };
-		DF93D6B01444A8B1007C6459 /* TuxBoxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6911444A8B0007C6459 /* TuxBoxFile.cpp */; };
 		DF93D6B11444A8B1007C6459 /* UDFFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6931444A8B0007C6459 /* UDFFile.cpp */; };
 		DF93D6B21444A8B1007C6459 /* UPnPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6951444A8B0007C6459 /* UPnPFile.cpp */; };
 		DF93D6B31444A8B1007C6459 /* ZipFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6971444A8B0007C6459 /* ZipFile.cpp */; };
@@ -1363,8 +1361,6 @@
 		DFF0F24E17528350002DA3A4 /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
 		DFF0F24F17528350002DA3A4 /* SpecialProtocolFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68D1444A8B0007C6459 /* SpecialProtocolFile.cpp */; };
 		DFF0F25017528350002DA3A4 /* StackDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17590D25F9FA00618676 /* StackDirectory.cpp */; };
-		DFF0F25117528350002DA3A4 /* TuxBoxDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68F1444A8B0007C6459 /* TuxBoxDirectory.cpp */; };
-		DFF0F25217528350002DA3A4 /* TuxBoxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6911444A8B0007C6459 /* TuxBoxFile.cpp */; };
 		DFF0F25317528350002DA3A4 /* udf25.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 433219D312E4C6A500CD7486 /* udf25.cpp */; };
 		DFF0F25417528350002DA3A4 /* UDFDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 433219D512E4C6A500CD7486 /* UDFDirectory.cpp */; };
 		DFF0F25517528350002DA3A4 /* UDFFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6931444A8B0007C6459 /* UDFFile.cpp */; };
@@ -1767,7 +1763,6 @@
 		DFF0F3F517528350002DA3A4 /* TextSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848291D156D003E005A996F /* TextSearch.cpp */; };
 		DFF0F3F617528350002DA3A4 /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */; };
 		DFF0F3F717528350002DA3A4 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
-		DFF0F3F817528350002DA3A4 /* TuxBoxUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E890D25F9FD00618676 /* TuxBoxUtil.cpp */; };
 		DFF0F3F917528350002DA3A4 /* URIUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8EC12942613009E7A26 /* URIUtils.cpp */; };
 		DFF0F3FA17528350002DA3A4 /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466815CF1FED00727135 /* UrlOptions.cpp */; };
 		DFF0F3FB17528350002DA3A4 /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF1FB09123B1AF000B2CBCB /* Variant.cpp */; };
@@ -2233,7 +2228,6 @@
 		E38E22F20D25F9FE00618676 /* Stopwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E810D25F9FD00618676 /* Stopwatch.cpp */; };
 		E38E22F30D25F9FE00618676 /* SystemInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E830D25F9FD00618676 /* SystemInfo.cpp */; };
 		E38E22F40D25F9FE00618676 /* Thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E850D25F9FD00618676 /* Thread.cpp */; };
-		E38E22F60D25F9FE00618676 /* TuxBoxUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E890D25F9FD00618676 /* TuxBoxUtil.cpp */; };
 		E38E22F70D25F9FE00618676 /* UdpClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */; };
 		E38E22F80D25F9FE00618676 /* Weather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E8D0D25F9FD00618676 /* Weather.cpp */; };
 		E38E22FB0D25F9FE00618676 /* VideoDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E930D25F9FD00618676 /* VideoDatabase.cpp */; };
@@ -2614,8 +2608,6 @@
 		E49912B7174E5D9900741B6D /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
 		E49912B8174E5D9900741B6D /* SpecialProtocolFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68D1444A8B0007C6459 /* SpecialProtocolFile.cpp */; };
 		E49912B9174E5D9900741B6D /* StackDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17590D25F9FA00618676 /* StackDirectory.cpp */; };
-		E49912BA174E5D9900741B6D /* TuxBoxDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68F1444A8B0007C6459 /* TuxBoxDirectory.cpp */; };
-		E49912BB174E5D9900741B6D /* TuxBoxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6911444A8B0007C6459 /* TuxBoxFile.cpp */; };
 		E49912BC174E5D9900741B6D /* udf25.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 433219D312E4C6A500CD7486 /* udf25.cpp */; };
 		E49912BD174E5D9900741B6D /* UDFDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 433219D512E4C6A500CD7486 /* UDFDirectory.cpp */; };
 		E49912BE174E5D9900741B6D /* UDFFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6931444A8B0007C6459 /* UDFFile.cpp */; };
@@ -3018,7 +3010,6 @@
 		E4991479174E605900741B6D /* TextSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848291D156D003E005A996F /* TextSearch.cpp */; };
 		E499147A174E605900741B6D /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE2E5913D6B71E000ABF2A /* TimeSmoother.cpp */; };
 		E499147B174E605900741B6D /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
-		E499147C174E605900741B6D /* TuxBoxUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E890D25F9FD00618676 /* TuxBoxUtil.cpp */; };
 		E499147D174E605900741B6D /* URIUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8EC12942613009E7A26 /* URIUtils.cpp */; };
 		E499147E174E605900741B6D /* UrlOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9466815CF1FED00727135 /* UrlOptions.cpp */; };
 		E499147F174E605900741B6D /* Variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF1FB09123B1AF000B2CBCB /* Variant.cpp */; };
@@ -4699,10 +4690,6 @@
 		DF93D68C1444A8B0007C6459 /* SMBFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMBFile.h; sourceTree = "<group>"; };
 		DF93D68D1444A8B0007C6459 /* SpecialProtocolFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocolFile.cpp; sourceTree = "<group>"; };
 		DF93D68E1444A8B0007C6459 /* SpecialProtocolFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolFile.h; sourceTree = "<group>"; };
-		DF93D68F1444A8B0007C6459 /* TuxBoxDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TuxBoxDirectory.cpp; sourceTree = "<group>"; };
-		DF93D6901444A8B0007C6459 /* TuxBoxDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TuxBoxDirectory.h; sourceTree = "<group>"; };
-		DF93D6911444A8B0007C6459 /* TuxBoxFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TuxBoxFile.cpp; sourceTree = "<group>"; };
-		DF93D6921444A8B0007C6459 /* TuxBoxFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TuxBoxFile.h; sourceTree = "<group>"; };
 		DF93D6931444A8B0007C6459 /* UDFFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UDFFile.cpp; sourceTree = "<group>"; };
 		DF93D6941444A8B0007C6459 /* UDFFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDFFile.h; sourceTree = "<group>"; };
 		DF93D6951444A8B0007C6459 /* UPnPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPFile.cpp; sourceTree = "<group>"; };
@@ -5580,8 +5567,6 @@
 		E38E1E840D25F9FD00618676 /* SystemInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemInfo.h; sourceTree = "<group>"; };
 		E38E1E850D25F9FD00618676 /* Thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Thread.cpp; sourceTree = "<group>"; };
 		E38E1E860D25F9FD00618676 /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Thread.h; sourceTree = "<group>"; };
-		E38E1E890D25F9FD00618676 /* TuxBoxUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TuxBoxUtil.cpp; sourceTree = "<group>"; };
-		E38E1E8A0D25F9FD00618676 /* TuxBoxUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TuxBoxUtil.h; sourceTree = "<group>"; };
 		E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UdpClient.cpp; sourceTree = "<group>"; };
 		E38E1E8C0D25F9FD00618676 /* UdpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdpClient.h; sourceTree = "<group>"; };
 		E38E1E8D0D25F9FD00618676 /* Weather.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Weather.cpp; sourceTree = "<group>"; };
@@ -9076,10 +9061,6 @@
 				DF93D68E1444A8B0007C6459 /* SpecialProtocolFile.h */,
 				E38E17590D25F9FA00618676 /* StackDirectory.cpp */,
 				E38E175A0D25F9FA00618676 /* StackDirectory.h */,
-				DF93D68F1444A8B0007C6459 /* TuxBoxDirectory.cpp */,
-				DF93D6901444A8B0007C6459 /* TuxBoxDirectory.h */,
-				DF93D6911444A8B0007C6459 /* TuxBoxFile.cpp */,
-				DF93D6921444A8B0007C6459 /* TuxBoxFile.h */,
 				433219D312E4C6A500CD7486 /* udf25.cpp */,
 				433219D412E4C6A500CD7486 /* udf25.h */,
 				433219D512E4C6A500CD7486 /* UDFDirectory.cpp */,
@@ -9628,8 +9609,6 @@
 				7CEE2E5A13D6B71E000ABF2A /* TimeSmoother.h */,
 				7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */,
 				7CCF7FC8106A0DF500992676 /* TimeUtils.h */,
-				E38E1E890D25F9FD00618676 /* TuxBoxUtil.cpp */,
-				E38E1E8A0D25F9FD00618676 /* TuxBoxUtil.h */,
 				18B7C8EC12942613009E7A26 /* URIUtils.cpp */,
 				18B7C8ED12942613009E7A26 /* URIUtils.h */,
 				36A9466815CF1FED00727135 /* UrlOptions.cpp */,
@@ -10765,7 +10744,6 @@
 				E38E22F20D25F9FE00618676 /* Stopwatch.cpp in Sources */,
 				E38E22F30D25F9FE00618676 /* SystemInfo.cpp in Sources */,
 				E38E22F40D25F9FE00618676 /* Thread.cpp in Sources */,
-				E38E22F60D25F9FE00618676 /* TuxBoxUtil.cpp in Sources */,
 				E38E22F70D25F9FE00618676 /* UdpClient.cpp in Sources */,
 				E38E22F80D25F9FE00618676 /* Weather.cpp in Sources */,
 				E38E22FB0D25F9FE00618676 /* VideoDatabase.cpp in Sources */,
@@ -11158,8 +11136,6 @@
 				DF93D6AD1444A8B1007C6459 /* SMBFile.cpp in Sources */,
 				DF93D6AE1444A8B1007C6459 /* SpecialProtocolFile.cpp in Sources */,
 				DF6A0D811A4584E80075BBFC /* OverrideDirectory.cpp in Sources */,
-				DF93D6AF1444A8B1007C6459 /* TuxBoxDirectory.cpp in Sources */,
-				DF93D6B01444A8B1007C6459 /* TuxBoxFile.cpp in Sources */,
 				DF93D6B11444A8B1007C6459 /* UDFFile.cpp in Sources */,
 				DF93D6B21444A8B1007C6459 /* UPnPFile.cpp in Sources */,
 				DF93D6B31444A8B1007C6459 /* ZipFile.cpp in Sources */,
@@ -11866,8 +11842,6 @@
 				DFF0F24E17528350002DA3A4 /* SpecialProtocolDirectory.cpp in Sources */,
 				DFF0F24F17528350002DA3A4 /* SpecialProtocolFile.cpp in Sources */,
 				DFF0F25017528350002DA3A4 /* StackDirectory.cpp in Sources */,
-				DFF0F25117528350002DA3A4 /* TuxBoxDirectory.cpp in Sources */,
-				DFF0F25217528350002DA3A4 /* TuxBoxFile.cpp in Sources */,
 				DFF0F25317528350002DA3A4 /* udf25.cpp in Sources */,
 				DFF0F25417528350002DA3A4 /* UDFDirectory.cpp in Sources */,
 				DFF0F25517528350002DA3A4 /* UDFFile.cpp in Sources */,
@@ -12291,7 +12265,6 @@
 				DFF0F3F517528350002DA3A4 /* TextSearch.cpp in Sources */,
 				DFF0F3F617528350002DA3A4 /* TimeSmoother.cpp in Sources */,
 				DFF0F3F717528350002DA3A4 /* TimeUtils.cpp in Sources */,
-				DFF0F3F817528350002DA3A4 /* TuxBoxUtil.cpp in Sources */,
 				DFF0F3F917528350002DA3A4 /* URIUtils.cpp in Sources */,
 				DFF0F3FA17528350002DA3A4 /* UrlOptions.cpp in Sources */,
 				DFF0F3FB17528350002DA3A4 /* Variant.cpp in Sources */,
@@ -12951,8 +12924,6 @@
 				E49912B7174E5D9900741B6D /* SpecialProtocolDirectory.cpp in Sources */,
 				E49912B8174E5D9900741B6D /* SpecialProtocolFile.cpp in Sources */,
 				E49912B9174E5D9900741B6D /* StackDirectory.cpp in Sources */,
-				E49912BA174E5D9900741B6D /* TuxBoxDirectory.cpp in Sources */,
-				E49912BB174E5D9900741B6D /* TuxBoxFile.cpp in Sources */,
 				E49912BC174E5D9900741B6D /* udf25.cpp in Sources */,
 				E49912BD174E5D9900741B6D /* UDFDirectory.cpp in Sources */,
 				E49912BE174E5D9900741B6D /* UDFFile.cpp in Sources */,
@@ -13375,7 +13346,6 @@
 				E4991479174E605900741B6D /* TextSearch.cpp in Sources */,
 				E499147A174E605900741B6D /* TimeSmoother.cpp in Sources */,
 				E499147B174E605900741B6D /* TimeUtils.cpp in Sources */,
-				E499147C174E605900741B6D /* TuxBoxUtil.cpp in Sources */,
 				E499147D174E605900741B6D /* URIUtils.cpp in Sources */,
 				E499147E174E605900741B6D /* UrlOptions.cpp in Sources */,
 				E499147F174E605900741B6D /* Variant.cpp in Sources */,

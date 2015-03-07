@@ -828,9 +828,6 @@ public:
   std::string GetItemLabel(const CFileItem *item, int info, std::string *fallback = NULL);
   std::string GetItemImage(const CFileItem *item, int info, std::string *fallback = NULL);
 
-  // Called from tuxbox service thread to update current status
-  void UpdateFromTuxBox();
-
   /*! \brief containers call here to specify that the focus is changing
    \param id control id
    \param next true if we're moving to the next item, false if previous

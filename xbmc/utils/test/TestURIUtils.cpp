@@ -332,7 +332,6 @@ TEST_F(TestURIUtils, IsISO9660)
 
 TEST_F(TestURIUtils, IsLiveTV)
 {
-  EXPECT_TRUE(URIUtils::IsLiveTV("tuxbox://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("vtp://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("hdhomerun://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("sling://path/to/file"));
@@ -384,7 +383,6 @@ TEST_F(TestURIUtils, IsOnLAN)
   EXPECT_TRUE(URIUtils::IsOnLAN("stack://daap://path/to/file"));
   EXPECT_TRUE(URIUtils::IsOnLAN("daap://path/to/file"));
   EXPECT_FALSE(URIUtils::IsOnLAN("plugin://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsOnLAN("tuxbox://path/to/file"));
   EXPECT_TRUE(URIUtils::IsOnLAN("upnp://path/to/file"));
 }
 
@@ -427,11 +425,6 @@ TEST_F(TestURIUtils, IsSpecial)
 TEST_F(TestURIUtils, IsStack)
 {
   EXPECT_TRUE(URIUtils::IsStack("stack://path/to/file"));
-}
-
-TEST_F(TestURIUtils, IsTuxBox)
-{
-  EXPECT_TRUE(URIUtils::IsTuxBox("tuxbox://path/to/file"));
 }
 
 TEST_F(TestURIUtils, IsUPnP)
@@ -530,7 +523,6 @@ TEST_F(TestURIUtils, HasEncodedFilename)
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("shout://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("daap://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("dav://")));
-  EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("tuxbox://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("rss://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("davs://")));
 }

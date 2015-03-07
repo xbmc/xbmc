@@ -39,7 +39,6 @@
 #include "CueDocument.h"
 #include "video/VideoDatabase.h"
 #include "music/MusicDatabase.h"
-#include "utils/TuxBoxUtil.h"
 #include "epg/Epg.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -275,8 +274,7 @@ CFileItem::CFileItem(const CURL& path, bool bIsFolder)
   Initialize();
   m_strPath = path.Get();
   m_bIsFolder = bIsFolder;
-  // tuxbox urls cannot have a / at end
-  if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder() && !URIUtils::IsTuxBox(m_strPath))
+  if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder());
     URIUtils::AddSlashAtEnd(m_strPath);
   FillInMimeType(false);
 }
@@ -286,8 +284,7 @@ CFileItem::CFileItem(const std::string& strPath, bool bIsFolder)
   Initialize();
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
-  // tuxbox urls cannot have a / at end
-  if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder() && !URIUtils::IsTuxBox(m_strPath))
+  if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder());
     URIUtils::AddSlashAtEnd(m_strPath);
   FillInMimeType(false);
 }
@@ -684,7 +681,7 @@ bool CFileItem::IsVideo() const
   if (HasPictureInfoTag()) return false;
   if (IsPVRRecording())  return true;
 
-  if (IsHDHomeRun() || IsTuxBox() || URIUtils::IsDVD(m_strPath) || IsSlingbox())
+  if (IsHDHomeRun() || URIUtils::IsDVD(m_strPath) || IsSlingbox())
     return true;
 
   std::string extension;
@@ -1046,11 +1043,6 @@ bool CFileItem::IsURL() const
 bool CFileItem::IsDAAP() const
 {
   return URIUtils::IsDAAP(m_strPath);
-}
-
-bool CFileItem::IsTuxBox() const
-{
-  return URIUtils::IsTuxBox(m_strPath);
 }
 
 bool CFileItem::IsMythTV() const

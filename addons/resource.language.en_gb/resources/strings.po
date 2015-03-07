@@ -11071,38 +11071,14 @@ msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr ""
 
-#: xbmc/network/GUIDialogNetworkSetup.cpp
-msgctxt "#21331"
-msgid "TuxBox client"
-msgstr ""
-
-msgctxt "#21332"
-msgid "WARNING: Target TuxBox device is in recording-mode!"
-msgstr ""
-
-msgctxt "#21333"
-msgid "The stream will be stopped!"
-msgstr ""
-
-msgctxt "#21334"
-msgid "Zap to channel: %s failed!"
-msgstr ""
-
-msgctxt "#21335"
-msgid "Are you sure to start the stream?"
-msgstr ""
+#empty strings from id 21331 to 21335
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#21336"
 msgid "Connecting to: %s"
 msgstr ""
 
-msgctxt "#21337"
-msgid "TuxBox device"
-msgstr ""
-
-#empty strings from id 21338 to 21358
-#up to 21355 is reserved for the TuxBox Client!! !
+#empty strings from id 2133i7 to 21358
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"

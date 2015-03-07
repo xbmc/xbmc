@@ -123,7 +123,6 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 #ifdef HAS_MYSQL
   labels.push_back(make_pair(g_localizeStrings.Get(20258), NET_PROTOCOL_MYTH));
 #endif
-  labels.push_back(make_pair(g_localizeStrings.Get(21331), NET_PROTOCOL_TUXBOX));
   labels.push_back(make_pair(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS));
   labels.push_back(make_pair(g_localizeStrings.Get(20300), NET_PROTOCOL_HTTP));
   labels.push_back(make_pair(g_localizeStrings.Get(20254), NET_PROTOCOL_DAVS));
@@ -201,7 +200,6 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "21";
   else if (m_protocol == NET_PROTOCOL_HTTP || 
 	   m_protocol == NET_PROTOCOL_RSS || 
-	   m_protocol == NET_PROTOCOL_TUXBOX || 
 	   m_protocol == NET_PROTOCOL_DAV)
     m_port = "80";
   else if (m_protocol == NET_PROTOCOL_HTTPS || m_protocol == NET_PROTOCOL_DAVS)
@@ -242,7 +240,6 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   SET_CONTROL_LABEL2(CONTROL_REMOTE_PATH, m_path);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_DAAP &&
                                                    m_protocol != NET_PROTOCOL_UPNP &&
-                                                   m_protocol != NET_PROTOCOL_TUXBOX &&
                                                    m_protocol != NET_PROTOCOL_HTSP &&
                                                    m_protocol != NET_PROTOCOL_VTP &&
                                                    m_protocol != NET_PROTOCOL_MYTH);
@@ -279,7 +276,6 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                    m_protocol == NET_PROTOCOL_HTTPS ||
                                                    m_protocol == NET_PROTOCOL_DAV ||
                                                    m_protocol == NET_PROTOCOL_DAVS ||
-                                                   m_protocol == NET_PROTOCOL_TUXBOX ||
                                                    m_protocol == NET_PROTOCOL_HTSP ||
                                                    m_protocol == NET_PROTOCOL_VTP ||
                                                    m_protocol == NET_PROTOCOL_MYTH ||
@@ -299,7 +295,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PASSWORD, CGUIEditControl::INPUT_TYPE_PASSWORD, 12326);
 
   // TODO: FIX BETTER DAAP SUPPORT
-  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS, HTSP, VTP, TUXBOX, DAV or DAVS
+  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS, HTSP, VTP, DAV or DAVS
   CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.empty() || !(m_protocol == NET_PROTOCOL_FTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTPS ||
@@ -310,7 +306,6 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                                               m_protocol == NET_PROTOCOL_HTSP ||
                                                                               m_protocol == NET_PROTOCOL_VTP ||
                                                                               m_protocol == NET_PROTOCOL_MYTH ||
-                                                                              m_protocol == NET_PROTOCOL_TUXBOX||
                                                                               m_protocol == NET_PROTOCOL_SFTP ||
                                                                               m_protocol == NET_PROTOCOL_AFP));
 }
@@ -334,8 +329,6 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("daap");
   else if (m_protocol == NET_PROTOCOL_UPNP)
     url.SetProtocol("upnp");
-  else if (m_protocol == NET_PROTOCOL_TUXBOX)
-    url.SetProtocol("tuxbox");
   else if (m_protocol == NET_PROTOCOL_RSS)
     url.SetProtocol("rss");
   else if (m_protocol == NET_PROTOCOL_HTSP)
@@ -369,7 +362,6 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_HTSP) ||
        (m_protocol == NET_PROTOCOL_VTP) ||
        (m_protocol == NET_PROTOCOL_MYTH) ||
-       (m_protocol == NET_PROTOCOL_TUXBOX) ||
        (m_protocol == NET_PROTOCOL_SFTP) ||
        (m_protocol == NET_PROTOCOL_NFS))
       && !m_port.empty() && atoi(m_port.c_str()) > 0)
@@ -400,8 +392,6 @@ void CGUIDialogNetworkSetup::SetPath(const std::string &path)
     m_protocol = NET_PROTOCOL_DAAP;
   else if (url.IsProtocol("upnp"))
     m_protocol = NET_PROTOCOL_UPNP;
-  else if (url.IsProtocol("tuxbox"))
-    m_protocol = NET_PROTOCOL_TUXBOX;
   else if (url.IsProtocol("htsp"))
     m_protocol = NET_PROTOCOL_HTSP;
   else if (url.IsProtocol("vtp"))
