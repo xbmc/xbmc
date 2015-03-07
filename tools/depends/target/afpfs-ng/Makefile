@@ -1,7 +1,7 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include 01-gcrypt.patch 02-pointer.patch 04-boxee1.patch \
       05-boxee2.patch 06-boxee3.patch 07-boxee4.patch \
-      08-boxee5.patch 10-fix-errno.patch 11-fix-stat.patch \
+      08-boxee5.patch 10-fix-errno.patch 11-fix-stat.patch 12-fix-snprintf.patch \
       android.patch fix_afpfs-ng_includes.patch Makefile
 
 # lib name, version
@@ -36,6 +36,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 <../08-boxee5.patch
 	cd $(PLATFORM); patch -p1 <../10-fix-errno.patch
 	cd $(PLATFORM); patch -p1 <../11-fix-stat.patch
+	cd $(PLATFORM); patch -p1 <../12-fix-snprintf.patch
 	cd $(PLATFORM); patch -p0 < ../android.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
