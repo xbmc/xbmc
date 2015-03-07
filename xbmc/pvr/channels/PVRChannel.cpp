@@ -217,7 +217,7 @@ bool CPVRChannel::Persist()
 
   if (CPVRDatabase *database = GetPVRDatabase())
   {
-    bool bReturn = database->Persist(*this);
+    bool bReturn = database->Persist(*this) && database->CommitInsertQueries();
     CSingleLock lock(m_critSection);
     m_bChanged = !bReturn;
     return bReturn;
