@@ -50,6 +50,12 @@ namespace ADDON
 }
 typedef std::shared_ptr<ADDON::CLanguageResource> LanguageResourcePtr;
 
+typedef enum MeridiemSymbol
+{
+  MeridiemSymbolPM = 0,
+  MeridiemSymbolAM
+} MeridiemSymbol;
+
 class CLangInfo : public ISettingCallback, public ISettingsHandler
 {
 public:
@@ -138,15 +144,12 @@ public:
 
   const std::string& GetDateFormat(bool bLongDate=false) const;
 
-  typedef enum _MERIDIEM_SYMBOL
-  {
-    MERIDIEM_SYMBOL_PM=0,
-    MERIDIEM_SYMBOL_AM,
-    MERIDIEM_SYMBOL_MAX
-  } MERIDIEM_SYMBOL;
-
   const std::string& GetTimeFormat() const;
-  const std::string& GetMeridiemSymbol(MERIDIEM_SYMBOL symbol) const;
+  void SetTimeFormat(const std::string& timeFormat);
+  bool Use24HourClock() const;
+  void Set24HourClock(bool use24HourClock);
+  void Set24HourClock(const std::string& str24HourClock);
+  const std::string& GetMeridiemSymbol(MeridiemSymbol symbol) const;
 
   CTemperature::Unit GetTemperatureUnit() const;
   void SetTemperatureUnit(CTemperature::Unit temperatureUnit);
@@ -179,11 +182,17 @@ public:
   static void SettingOptionsLanguageNamesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsTimeFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptions24HourClockFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsTemperatureUnitsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSpeedUnitsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
 protected:
   void SetDefaults();
+
+  static bool DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat);
+  static bool DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat);
+  static std::string PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock);
 
   class CRegion
   {
@@ -203,7 +212,7 @@ protected:
     std::string m_strDateFormatLong;
     std::string m_strDateFormatShort;
     std::string m_strTimeFormat;
-    std::string m_strMeridiemSymbols[MERIDIEM_SYMBOL_MAX];
+    std::string m_strMeridiemSymbols[2];
     std::string m_strTimeZone;
 
     CTemperature::Unit m_tempUnit;
@@ -229,6 +238,8 @@ protected:
   std::string m_strDVDSubtitleLanguage;
   std::set<std::string> m_sortTokens;
 
+  std::string m_timeFormat;
+  bool m_use24HourClock;
   CTemperature::Unit m_temperatureUnit;
   CSpeed::Unit m_speedUnit;
 

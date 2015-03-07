@@ -1620,11 +1620,13 @@ msgid "Light"
 msgstr ""
 
 #. Weather token
+#: xbmc/LangInfo.cpp
 msgctxt "#378"
 msgid "AM"
 msgstr ""
 
 #. Weather token
+#: xbmc/LangInfo.cpp
 msgctxt "#379"
 msgid "PM"
 msgstr ""
@@ -5018,16 +5020,22 @@ msgctxt "#12379"
 msgid "Use pan and zoom effects"
 msgstr ""
 
-#empty strings from id 12380 to 12382
+#empty strings from id 12380 to 12381
 
-#: unknown
-msgctxt "#12383"
-msgid "12 hour clock"
+#. time format with meridiem (xx) e.g. "HH:mm:ss xx"
+#: xbmc/LangInfo.cpp
+msgctxt "#12382"
+msgid "%s xx"
 msgstr ""
 
-#: unknown
+#: system/settings/settings.xml
+msgctxt "#12383"
+msgid "12-hour clock"
+msgstr ""
+
+#: system/settings/settings.xml
 msgctxt "#12384"
-msgid "24 hour clock"
+msgid "24-hour clock"
 msgstr ""
 
 #: unknown
@@ -6969,7 +6977,17 @@ msgctxt "#14106"
 msgid "Speed unit"
 msgstr ""
 
-#empty strings from id 14107 to 15011
+#: system/settings/settings.xml
+msgctxt "#14107"
+msgid "Time format"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14108"
+msgid "Use 12/24-hour format"
+msgstr ""
+
+#empty strings from id 14109 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -9532,7 +9550,11 @@ msgctxt "#20035"
 msgid "Regional (%s)"
 msgstr ""
 
-#empty string with id 20036
+#. Used for date/time format settings like "10:00:00 (HH:mm:ss)"
+#: xbmc/LangInfo.cpp
+msgctxt "#20036"
+msgid "%s (%s)"
+msgstr ""
 
 msgctxt "#20037"
 msgid "Summary"
@@ -14325,7 +14347,17 @@ msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
-#empty strings from id 36167 to 36168
+#. Description of setting "Appearance -> International -> Time format" with label #14107
+#: system/settings/settings.xml
+msgctxt "#36167"
+msgid "Choose which time format is used for displaying the time in the user interface."
+msgstr ""
+
+#. Description of setting "Appearance -> International -> Use 12/24-hour format" with label #14108
+#: system/settings/settings.xml
+msgctxt "#36168"
+msgid "Choose whether to use 12-hour or 24-hour format for displaying the time in the user interface."
+msgstr ""
 
 #. Description of setting "System -> Audio output -> Resample quality" with label #13505
 #: system/settings/settings.xml

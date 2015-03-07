@@ -46,6 +46,15 @@
 using namespace std;
 using namespace PVR;
 
+#define TIME_FORMAT_MM_SS         ":mm:ss"
+#define TIME_FORMAT_SINGLE_12     "h" TIME_FORMAT_MM_SS
+#define TIME_FORMAT_DOUBLE_12     "hh" TIME_FORMAT_MM_SS
+#define TIME_FORMAT_SINGLE_24     "H" TIME_FORMAT_MM_SS
+#define TIME_FORMAT_DOUBLE_24     "HH" TIME_FORMAT_MM_SS
+
+#define TIME_FORMAT_12HOURS       "12hours"
+#define TIME_FORMAT_24HOURS       "24hours"
+
 typedef struct TemperatureInfo {
   CTemperature::Unit unit;
   std::string name;
@@ -89,6 +98,27 @@ static SpeedInfo speedInfo[] = {
 #define SPEED_UNIT_STRINGS        20200
 
 #define SETTING_REGIONAL_DEFAULT  "regional"
+
+static std::string ToTimeFormat(bool use24HourClock, bool singleHour, bool meridiem)
+{
+  if (use24HourClock)
+    return singleHour ? TIME_FORMAT_SINGLE_24 : TIME_FORMAT_DOUBLE_24;
+
+  if (!meridiem)
+    return singleHour ? TIME_FORMAT_SINGLE_12 : TIME_FORMAT_DOUBLE_12;
+
+  return StringUtils::Format(g_localizeStrings.Get(12382).c_str(), ToTimeFormat(false, singleHour, false).c_str());
+}
+
+static std::string ToSettingTimeFormat(const CDateTime& time, const std::string& timeFormat)
+{
+  return StringUtils::Format(g_localizeStrings.Get(20036).c_str(), time.GetAsLocalizedTime(timeFormat, true).c_str(), timeFormat.c_str());
+}
+
+static std::string ToSettingTimeFormat(const CDateTime& time, bool use24HourClock, bool singleHour, bool meridiem)
+{
+  return ToSettingTimeFormat(time, ToTimeFormat(use24HourClock, singleHour, meridiem));
+}
 
 static CTemperature::Unit StringToTemperatureUnit(const std::string& temperatureUnit)
 {
@@ -143,8 +173,8 @@ CLangInfo::CRegion::CRegion(const CRegion& region):
   m_strTimeFormat(region.m_strTimeFormat),
   m_strTimeZone(region.m_strTimeZone)
 {
-  m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM]=region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM];
-  m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM]=region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM];
+  m_strMeridiemSymbols[MeridiemSymbolPM] = region.m_strMeridiemSymbols[MeridiemSymbolPM];
+  m_strMeridiemSymbols[MeridiemSymbolAM] = region.m_strMeridiemSymbols[MeridiemSymbolAM];
   m_tempUnit=region.m_tempUnit;
   m_speedUnit=region.m_speedUnit;
 }
@@ -243,6 +273,8 @@ void CLangInfo::CRegion::SetGlobalLocale()
 CLangInfo::CLangInfo()
 {
   SetDefaults();
+  m_timeFormat = m_defaultRegion.m_strTimeFormat;
+  m_use24HourClock = DetermineUse24HourClockFromTimeFormat(m_defaultRegion.m_strTimeFormat);
   m_temperatureUnit = m_defaultRegion.m_tempUnit;
   m_speedUnit = m_defaultRegion.m_speedUnit;
 }
@@ -268,6 +300,15 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == "locale.country")
     SetCurrentRegion(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.timeformat")
+    SetTimeFormat(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.use24hourclock")
+  {
+    Set24HourClock(((CSettingString*)setting)->GetValue());
+
+    // update the time format
+    CSettings::Get().SetString("locale.timeformat", PrepareTimeFormat(GetTimeFormat(), m_use24HourClock));
+  }
   else if (settingId == "locale.temperatureunit")
     SetTemperatureUnit(((CSettingString*)setting)->GetValue());
   else if (settingId == "locale.speedunit")
@@ -277,6 +318,8 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
 void CLangInfo::OnSettingsLoaded()
 {
   // set the temperature and speed units based on the settings
+  Set24HourClock(CSettings::Get().GetString("locale.use24hourclock"));
+  SetTimeFormat(CSettings::Get().GetString("locale.timeformat"));
   SetTemperatureUnit(CSettings::Get().GetString("locale.temperatureunit"));
   SetSpeedUnit(CSettings::Get().GetString("locale.speedunit"));
 }
@@ -385,8 +428,8 @@ bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= 
       if (pTime && !pTime->NoChildren())
       {
         region.m_strTimeFormat=pTime->FirstChild()->Value();
-        region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_AM] = XMLUtils::GetAttribute(pTime, "symbolAM");
-        region.m_strMeridiemSymbols[MERIDIEM_SYMBOL_PM] = XMLUtils::GetAttribute(pTime, "symbolPM");
+        region.m_strMeridiemSymbols[MeridiemSymbolAM] = XMLUtils::GetAttribute(pTime, "symbolAM");
+        region.m_strMeridiemSymbols[MeridiemSymbolPM] = XMLUtils::GetAttribute(pTime, "symbolPM");
       }
 
       const TiXmlNode *pTempUnit=pRegion->FirstChild("tempunit");
@@ -734,7 +777,47 @@ const std::string& CLangInfo::GetDateFormat(bool bLongDate/*=false*/) const
 // Returns the format string for the time of the current language
 const std::string& CLangInfo::GetTimeFormat() const
 {
-  return m_currentRegion->m_strTimeFormat;
+  return m_timeFormat;
+}
+
+void CLangInfo::SetTimeFormat(const std::string& timeFormat)
+{
+  std::string newTimeFormat = timeFormat;
+  if (timeFormat == SETTING_REGIONAL_DEFAULT)
+    newTimeFormat = m_currentRegion->m_strTimeFormat;
+
+  m_timeFormat = PrepareTimeFormat(newTimeFormat, m_use24HourClock);
+}
+
+bool CLangInfo::Use24HourClock() const
+{
+  return m_use24HourClock;
+}
+
+void CLangInfo::Set24HourClock(bool use24HourClock)
+{
+  m_use24HourClock = use24HourClock;
+}
+
+void CLangInfo::Set24HourClock(const std::string& str24HourClock)
+{
+  bool use24HourClock = false;
+  if (str24HourClock == TIME_FORMAT_12HOURS)
+    use24HourClock = false;
+  else if (str24HourClock == TIME_FORMAT_24HOURS)
+    use24HourClock = true;
+  else if (str24HourClock == SETTING_REGIONAL_DEFAULT)
+  {
+    Set24HourClock(m_currentRegion->m_strTimeFormat);
+    return;
+  }
+  else
+    use24HourClock = DetermineUse24HourClockFromTimeFormat(str24HourClock);
+
+  if (m_use24HourClock == use24HourClock)
+    return;
+
+  m_use24HourClock = use24HourClock;
 }
 
 const std::string& CLangInfo::GetTimeZone() const
@@ -743,9 +826,21 @@ const std::string& CLangInfo::GetTimeZone() const
 }
 
 // Returns the AM/PM symbol of the current language
-const std::string& CLangInfo::GetMeridiemSymbol(MERIDIEM_SYMBOL symbol) const
+const std::string& CLangInfo::GetMeridiemSymbol(MeridiemSymbol symbol) const
 {
-  return m_currentRegion->m_strMeridiemSymbols[symbol];
+  switch (symbol)
+  {
+  case MeridiemSymbolAM:
+    return g_localizeStrings.Get(378);
+
+  case MeridiemSymbolPM:
+    return g_localizeStrings.Get(379);
+
+  default:
+    break;
+  }
+
+  return StringUtils::Empty;
 }
 
 // Fills the array with the region names available for this language
@@ -774,6 +869,10 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
 
   m_currentRegion->SetGlobalLocale();
 
+  if (CSettings::Get().GetString("locale.use24hourclock") == SETTING_REGIONAL_DEFAULT)
+    Set24HourClock(m_currentRegion->m_strTimeFormat);
+  if (CSettings::Get().GetString("locale.timeformat") == SETTING_REGIONAL_DEFAULT)
+    SetTimeFormat(m_currentRegion->m_strTimeFormat);
   if (CSettings::Get().GetString("locale.temperatureunit") == SETTING_REGIONAL_DEFAULT)
     SetTemperatureUnit(m_currentRegion->m_tempUnit);
   if (CSettings::Get().GetString("locale.speedunit") == SETTING_REGIONAL_DEFAULT)
@@ -887,6 +986,44 @@ std::set<std::string> CLangInfo::GetSortTokens() const
   return sortTokens;
 }
 
+bool CLangInfo::DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat)
+{
+  // if the time format contains a "h" it's 12-hour and otherwise 24-hour clock format
+  if (timeFormat.find("h") != std::string::npos)
+    return false;
+
+  return true;
+}
+
+bool CLangInfo::DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat)
+{
+  // if the time format contains "xx" it's using meridiem
+  if (timeFormat.find("xx") != std::string::npos)
+    return true;
+
+  return false;
+}
+
+std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock)
+{
+  std::string preparedTimeFormat = timeFormat;
+  if (use24HourClock)
+  {
+    // replace all "h" with "H"
+    StringUtils::Replace(preparedTimeFormat, 'h', 'H');
+
+    // remove any "xx" for meridiem
+    StringUtils::Replace(preparedTimeFormat, "x", "");
+  }
+  else
+    // replace all "H" with "h"
+    StringUtils::Replace(preparedTimeFormat, 'H', 'h');
+
+  StringUtils::Trim(preparedTimeFormat);
+
+  return preparedTimeFormat;
+}
+
 void CLangInfo::SettingOptionsLanguageNamesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   // find languages...
@@ -933,6 +1070,106 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
 
   if (!match && regions.size() > 0)
     current = regions[0];
+}
+
+void CLangInfo::SettingOptionsTimeFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  bool match = false;
+  const std::string& timeFormatSetting = static_cast<const CSettingString*>(setting)->GetValue();
+
+  CDateTime now = CDateTime::GetCurrentDateTime();
+  bool use24hourFormat = g_langInfo.Use24HourClock();
+
+  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), ToSettingTimeFormat(now, g_langInfo.m_currentRegion->m_strTimeFormat).c_str()), SETTING_REGIONAL_DEFAULT));
+  if (timeFormatSetting == SETTING_REGIONAL_DEFAULT)
+  {
+    match = true;
+    current = SETTING_REGIONAL_DEFAULT;
+  }
+
+  if (use24hourFormat)
+  {
+    list.push_back(std::make_pair(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_24), TIME_FORMAT_SINGLE_24));
+    if (timeFormatSetting == TIME_FORMAT_SINGLE_24)
+    {
+      current = TIME_FORMAT_SINGLE_24;
+      match = true;
+    }
+
+    list.push_back(std::make_pair(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_24), TIME_FORMAT_DOUBLE_24));
+    if (timeFormatSetting == TIME_FORMAT_DOUBLE_24)
+    {
+      current = TIME_FORMAT_DOUBLE_24;
+      match = true;
+    }
+  }
+  else
+  {
+    list.push_back(std::make_pair(ToSettingTimeFormat(now, TIME_FORMAT_SINGLE_12), TIME_FORMAT_SINGLE_12));
+    if (timeFormatSetting == TIME_FORMAT_SINGLE_12)
+    {
+      current = TIME_FORMAT_SINGLE_12;
+      match = true;
+    }
+
+    list.push_back(std::make_pair(ToSettingTimeFormat(now, TIME_FORMAT_DOUBLE_12), TIME_FORMAT_DOUBLE_12));
+    if (timeFormatSetting == TIME_FORMAT_DOUBLE_12)
+    {
+      current = TIME_FORMAT_DOUBLE_12;
+      match = true;
+    }
+
+    std::string timeFormatSingle12Meridiem = ToTimeFormat(false, true, true);
+    list.push_back(std::make_pair(ToSettingTimeFormat(now, timeFormatSingle12Meridiem), timeFormatSingle12Meridiem));
+    if (timeFormatSetting == timeFormatSingle12Meridiem)
+    {
+      current = timeFormatSingle12Meridiem;
+      match = true;
+    }
+
+    std::string timeFormatDouble12Meridiem = ToTimeFormat(false, false, true);
+    list.push_back(std::make_pair(ToSettingTimeFormat(now, timeFormatDouble12Meridiem), timeFormatDouble12Meridiem));
+    if (timeFormatSetting == timeFormatDouble12Meridiem)
+    {
+      current = timeFormatDouble12Meridiem;
+      match = true;
+    }
+  }
+
+  if (!match && !list.empty())
+    current = list[0].second;
+}
+
+void CLangInfo::SettingOptions24HourClockFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  bool match = false;
+  const std::string& clock24HourFormatSetting = static_cast<const CSettingString*>(setting)->GetValue();
+
+  // determine the 24-hour clock format of the regional setting
+  int regionalClock24HourFormatLabel = DetermineUse24HourClockFromTimeFormat(g_langInfo.m_currentRegion->m_strTimeFormat) ? 12384 : 12383;
+  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), g_localizeStrings.Get(regionalClock24HourFormatLabel).c_str()), SETTING_REGIONAL_DEFAULT));
+  if (clock24HourFormatSetting == SETTING_REGIONAL_DEFAULT)
+  {
+    match = true;
+    current = SETTING_REGIONAL_DEFAULT;
+  }
+
+  list.push_back(std::make_pair(g_localizeStrings.Get(12383), TIME_FORMAT_12HOURS));
+  if (clock24HourFormatSetting == TIME_FORMAT_12HOURS)
+  {
+    current = TIME_FORMAT_12HOURS;
+    match = true;
+  }
+
+  list.push_back(std::make_pair(g_localizeStrings.Get(12384), TIME_FORMAT_24HOURS));
+  if (clock24HourFormatSetting == TIME_FORMAT_24HOURS)
+  {
+    current = TIME_FORMAT_24HOURS;
+    match = true;
+  }
+
+  if (!match && !list.empty())
+    current = list[0].second;
 }
 
 void CLangInfo::SettingOptionsTemperatureUnitsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)

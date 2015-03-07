@@ -439,8 +439,8 @@ namespace XBMCAddon
         }
       else if (strcmpi(id, "meridiem") == 0)
         result = StringUtils::Format("%s/%s",
-                                     g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM).c_str(),
-                                     g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM).c_str());
+                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
+                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
 
       return result;
     }

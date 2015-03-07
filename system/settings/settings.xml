@@ -182,6 +182,31 @@
         </setting>
       </group>
       <group id="3">
+        <setting id="locale.timeformat" type="string" label="14107" help="36167">
+          <level>1</level>
+          <default>regional</default>
+          <constraints>
+            <options>timeformats</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="locale.country" />
+            <dependency type="update" setting="locale.use24hourclock" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="locale.use24hourclock" type="string" label="14108" help="36168">
+          <level>1</level>
+          <default>regional</default>
+          <constraints>
+            <options>24hourclockformats</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="locale.country" />
+          </dependencies>
+          <control type="spinner" format="string" />
+        </setting>
+      </group>
+      <group id="4">
         <setting id="locale.temperatureunit" type="string" label="14105" help="36140">
           <level>1</level>
           <default>regional</default>
