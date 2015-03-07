@@ -44,9 +44,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\addons\library.xbmc.gui\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\addons\library.kodi.guilib\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\..\addons\library.xbmc.gui\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\..\addons\library.kodi.guilib\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\addons\library.xbmc.addon\;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\..\addons\library.xbmc.addon\;$(IncludePath)</IncludePath>
@@ -60,7 +60,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <Link>
-      <OutputFile>..\..\..\..\..\addons\library.xbmc.gui\$(ProjectName).dll</OutputFile>
+      <OutputFile>..\..\..\..\..\addons\library.kodi.guilib\$(ProjectName).dll</OutputFile>
     </Link>
     <PostBuildEvent>
       <Command>powershell -ExecutionPolicy ByPass  -File $(ProjectDir)\post-build.ps1 $(ProjectDir)</Command>
@@ -75,7 +75,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <Link>
-      <OutputFile>../../../../../addons/library.xbmc.gui/$(ProjectName).dll</OutputFile>
+      <OutputFile>../../../../../addons/library.kodi.guilib/$(ProjectName).dll</OutputFile>
     </Link>
     <PostBuildEvent>
       <Command>powershell -ExecutionPolicy ByPass  -File $(ProjectDir)\post-build.ps1 $(ProjectDir)</Command>
