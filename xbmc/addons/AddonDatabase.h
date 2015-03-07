@@ -148,7 +148,7 @@ protected:
   bool GetAddon(int id, ADDON::AddonPtr& addon);
 
   /* keep in sync with the select in GetAddon */
-  enum _AddonFields
+  enum AddonFields
   {
     addon_id=0,
     addon_type,
@@ -171,6 +171,6 @@ protected:
     dependencies_addon,
     dependencies_version,
     dependencies_optional
-  } AddonFields;
+  };
 };
 

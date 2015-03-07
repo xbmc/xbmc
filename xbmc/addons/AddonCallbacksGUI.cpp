@@ -2222,10 +2222,14 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
 }
 
 CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl *pControl)
-{
-  m_pControl = pControl;
-  m_refCount = 1;
-}
+  : m_pControl{pControl},
+  m_clientHandle{nullptr},
+  m_refCount{1},
+  CBCreate{nullptr},
+  CBDirty{nullptr},
+  CBRender{nullptr},
+  CBStop{nullptr}
+{ }
 
 bool CGUIAddonRenderingControl::Create(int x, int y, int w, int h, void *device)
 {
