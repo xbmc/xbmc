@@ -553,15 +553,26 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
 {
   bool bReturn(true);
 
-  for (unsigned int iChannelPtr = 0; iChannelPtr < group.m_members.size(); iChannelPtr++)
+  for (std::vector<PVRChannelGroupMember>::iterator it = group.m_members.begin(); it != group.m_members.end(); ++it)
   {
-    PVRChannelGroupMember member = group.m_members.at(iChannelPtr);
-    
-    if (member.channel->IsChanged() || member.channel->IsNew())
-      bReturn &= Persist(*member.channel);
+    if ((*it).channel->IsChanged() || (*it).channel->IsNew())
+      bReturn &= Persist(*(*it).channel);
   }
 
   bReturn &= CommitInsertQueries();
+
+  if (bReturn)
+  {
+    std::string strQuery;
+    std::string strValue;
+    for (std::vector<PVRChannelGroupMember>::iterator it = group.m_members.begin(); it != group.m_members.end(); ++it)
+    {
+      strQuery = PrepareSQL("iUniqueId = %u AND iClientId = %u", (*it).channel->UniqueID(), (*it).channel->ClientID());
+      strValue = GetSingleValue("channels", "idChannel", strQuery);
+      if (!strValue.empty() && StringUtils::IsInteger(strValue))
+        (*it).channel->SetChannelID(atoi(strValue.c_str()));
+    }
+  }
 
   return bReturn;
 }
@@ -687,7 +698,7 @@ bool CPVRDatabase::Persist(CPVRChannel &channel)
         channel.EpgID());
   }
 
-  if (ExecuteQuery(strQuery))
+  if (QueueInsertQuery(strQuery))
   {
     /* update the channel ID for new channels */
     if (channel.ChannelID() <= 0)
