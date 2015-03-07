@@ -1839,7 +1839,7 @@ int CFileItemList::Size() const
 bool CFileItemList::IsEmpty() const
 {
   CSingleLock lock(m_lock);
-  return (m_items.size() <= 0);
+  return m_items.empty();
 }
 
 void CFileItemList::Reserve(int iCount)

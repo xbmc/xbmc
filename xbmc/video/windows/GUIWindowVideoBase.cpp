@@ -76,7 +76,6 @@
 #include "GUIInfoManager.h"
 #include "utils/GroupUtils.h"
 #include "filesystem/File.h"
-#include "settings/DiscSettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -779,11 +778,6 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     if (!mediapath.empty())
     {
       CFileItemPtr item(new CFileItem(mediapath, false));
-      if (StringUtils::EndsWithNoCase(mediapath, "index.bdmv"))
-      {
-        if (!ShowPlaySelection(item))
-          return;
-      }
       queuedItems.Add(item);
       return;
     }
@@ -1086,102 +1080,6 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
     }
   }
   return true;
-}
-
-bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
-{
-  /* if asked to resume somewhere, we should not show anything */
-  if (item->m_lStartOffset)
-    return true;
-
-  if (CSettings::Get().GetInt("disc.playback") != BD_PLAYBACK_SIMPLE_MENU)
-    return true;
-
-  CStdString path;
-  if (item->IsVideoDb())
-    path = item->GetVideoInfoTag()->m_strFileNameAndPath;
-  else
-    path = item->GetPath();
-
-  if (item->IsBDFile())
-  {
-    CStdString root = URIUtils::GetParentPath(path);
-    URIUtils::RemoveSlashAtEnd(root);
-    if(URIUtils::GetFileName(root) == "BDMV")
-    {
-      CURL url("bluray://");
-      url.SetHostName(URIUtils::GetParentPath(root));
-      return ShowPlaySelection(item, url.Get());
-    }
-  }
-
-  if (item->IsDiscImage())
-  {
-    CURL url2("udf://");
-    url2.SetHostName(item->GetPath());
-    url2.SetFileName("BDMV/index.bdmv");
-    if (CFile::Exists(url2.Get()))
-    {
-      url2.SetFileName("");
-
-      CURL url("bluray://");
-      url.SetHostName(url2.Get());
-      return ShowPlaySelection(item, url.Get());
-    }
-  }
-  return true;
-}
-
-bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item, const CStdString& directory)
-{
-
-  CFileItemList items;
-
-  if (!XFILE::CDirectory::GetDirectory(directory, items, XFILE::CDirectory::CHints(), true))
-  {
-    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for %s", directory.c_str());
-    return true;
-  }
-
-  if (items.Size() == 0)
-  {
-    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", directory.c_str());
-    return true;
-  }
-
-  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  while(true)
-  {
-    dialog->Reset();
-    dialog->SetHeading(25006 /* Select playback item */);
-    dialog->SetItems(&items);
-    dialog->SetUseDetails(true);
-    dialog->DoModal();
-
-    CFileItemPtr item_new = dialog->GetSelectedItem();
-    if(!item_new || dialog->GetSelectedLabel() < 0)
-    {
-      CLog::Log(LOGDEBUG, "CGUIWindowVideoBase::ShowPlaySelection - User aborted %s", directory.c_str());
-      break;
-    }
-
-    if(item_new->m_bIsFolder == false)
-    {
-      item.reset(new CFileItem(*item));
-      item->SetProperty("original_listitem_url", item->GetPath());
-      item->SetPath(item_new->GetPath());
-      return true;
-    }
-
-    items.Clear();
-    if(!XFILE::CDirectory::GetDirectory(item_new->GetPath(), items, XFILE::CDirectory::CHints(), true) || items.Size() == 0)
-    {
-      CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", item_new->GetPath().c_str());
-      break;
-    }
-  }
-
-  return false;
 }
 
 bool CGUIWindowVideoBase::OnResumeItem(int iItem)
@@ -1584,8 +1482,6 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item)
      g_playlistPlayer.SetShuffle(iPlaylist, false);
 
   CFileItemPtr movieItem(new CFileItem(*item));
-  if(!ShowPlaySelection(movieItem))
-    return false;
 
   // Call the base method to actually queue the items
   // and start playing the given item
@@ -1595,9 +1491,6 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item)
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 {
   CFileItemPtr movieItem(new CFileItem(*item));
-
-  if(!ShowPlaySelection(movieItem))
-    return;
 
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
