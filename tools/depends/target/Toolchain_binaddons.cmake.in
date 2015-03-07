@@ -1,7 +1,7 @@
 set(CMAKE_SYSTEM_VERSION 1)
 set(OS "@platform_os@")
 set(CPU "@use_cpu@")
-set(PLATFORM "@use_platform@")
+set(PLATFORM "@target_platform@")
 if("${OS}" STREQUAL "linux" OR "${OS}" STREQUAL "android")
   set(CMAKE_SYSTEM_NAME Linux)
 endif()
