@@ -274,7 +274,7 @@ CFileItem::CFileItem(const CURL& path, bool bIsFolder)
   Initialize();
   m_strPath = path.Get();
   m_bIsFolder = bIsFolder;
-  if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder());
+  if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder())
     URIUtils::AddSlashAtEnd(m_strPath);
   FillInMimeType(false);
 }
@@ -284,7 +284,7 @@ CFileItem::CFileItem(const std::string& strPath, bool bIsFolder)
   Initialize();
   m_strPath = strPath;
   m_bIsFolder = bIsFolder;
-  if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder());
+  if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder())
     URIUtils::AddSlashAtEnd(m_strPath);
   FillInMimeType(false);
 }
