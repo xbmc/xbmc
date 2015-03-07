@@ -31,7 +31,7 @@ namespace ADDON
   class CAudioEncoder : public AudioEncoderDll, public IEncoder
   {
   public:
-    CAudioEncoder(const AddonProps &props) : AudioEncoderDll(props) {};
+    CAudioEncoder(const AddonProps &props) : AudioEncoderDll(props), m_context{nullptr} {};
     CAudioEncoder(const cp_extension_t *ext);
     virtual ~CAudioEncoder() {}
     virtual AddonPtr Clone() const;

@@ -1915,12 +1915,14 @@ CGUIAddonWindow::CGUIAddonWindow(int id, const std::string& strXML, CAddon* addo
  , m_bIsDialog(false)
  , m_actionEvent(true)
  , m_addon(addon)
+ , m_clientHandle{nullptr}
+ , CBOnAction{nullptr}
+ , CBOnClick{nullptr}
+ , CBOnFocus{nullptr}
+ , CBOnInit{nullptr}
+
 {
   m_loadType = LOAD_ON_GUI_INIT;
-  CBOnInit        = NULL;
-  CBOnFocus       = NULL;
-  CBOnClick       = NULL;
-  CBOnAction      = NULL;
 }
 
 CGUIAddonWindow::~CGUIAddonWindow(void)
@@ -2222,10 +2224,14 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
 }
 
 CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl *pControl)
-{
-  m_pControl = pControl;
-  m_refCount = 1;
-}
+  : m_pControl{pControl},
+  m_clientHandle{nullptr},
+  m_refCount{1},
+  CBCreate{nullptr},
+  CBDirty{nullptr},
+  CBRender{nullptr},
+  CBStop{nullptr}
+{ }
 
 bool CGUIAddonRenderingControl::Create(int x, int y, int w, int h, void *device)
 {

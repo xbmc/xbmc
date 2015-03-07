@@ -55,7 +55,9 @@ using namespace ADDON;
 using namespace XFILE;
 
 CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
-  : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml"), m_jobid(0)
+  : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml"),
+  m_jobid(0),
+  m_changelog(false)
 {
   m_item = CFileItemPtr(new CFileItem);
   m_loadType = KEEP_IN_MEMORY;
