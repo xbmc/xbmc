@@ -1724,12 +1724,12 @@ else
 fi
 
 # FFmpeg
-FFMPEG_LIBNAMES="libavcodec >= 56.1.100
-                 libavfilter >= 5.1.100
-                 libavformat >= 56.4.101
-                 libavutil >= 54.7.100
-                 libpostproc >= 53.0.100
-                 libswscale >= 3.0.100
+FFMPEG_LIBNAMES="libavcodec >= 56.26.100
+                 libavfilter >= 5.11.102
+                 libavformat >= 56.25.101
+                 libavutil >= 54.20.100
+                 libpostproc >= 53.3.100
+                 libswscale >= 3.1.101
                  libswresample >= 1.1.100"
 
 ffmpeg_build="${abs_top_srcdir}/tools/depends/target/ffmpeg"
