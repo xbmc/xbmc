@@ -35,9 +35,9 @@ namespace ADDON
 {
 
 CLanguageResource::CLanguageResource(const cp_extension_t *ext)
-  : CResource(ext)
+  : CResource(ext),
+  m_forceUnicodeFont(false)
 {
-  m_forceUnicodeFont = false;
   if (ext != NULL)
   {
     // parse <extension> attributes
@@ -94,7 +94,8 @@ CLanguageResource::CLanguageResource(const cp_extension_t *ext)
 
 CLanguageResource::CLanguageResource(const CLanguageResource &rhs)
   : CResource(rhs),
-    m_locale(rhs.m_locale)
+    m_locale(rhs.m_locale),
+    m_forceUnicodeFont(rhs.m_forceUnicodeFont)
 { }
 
 AddonPtr CLanguageResource::Clone() const

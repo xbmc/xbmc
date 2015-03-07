@@ -30,7 +30,8 @@ class CLanguageResource : public CResource
 {
 public:
   CLanguageResource(const AddonProps &props)
-    : CResource(props)
+    : CResource(props),
+    m_forceUnicodeFont(false)
   { }
   CLanguageResource(const cp_extension_t *ext);
   virtual ~CLanguageResource() { }
