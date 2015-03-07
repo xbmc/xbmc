@@ -698,8 +698,17 @@ case $use_platform in
   raspberry-pi)
      target_platform=target_raspberry_pi
      use_neon=no
-     use_arch="arm"
      use_cpu=arm1176jzf-s
+     ;;
+  raspberry-pi2)
+     target_platform=target_raspberry_pi
+     use_neon=yes
+     use_cpu=cortex-a7
+     ;;
+esac
+
+if test "$target_platform" = "target_raspberry_pi" ; then
+     use_arch="arm"
      use_hardcoded_tables="yes"
      use_openmax=no
      ARCH="arm"
@@ -708,8 +717,7 @@ case $use_platform in
      USE_MMAL=1; AC_DEFINE([HAS_MMAL],[1],["Define to 1 if MMAL libs is enabled"])
      CFLAGS="$CFLAGS"
      CXXFLAGS="$CXXFLAGS"
-     ;;
-esac
+fi
 
 if test "$host_vendor" = "apple"; then
   use_avahi=no
