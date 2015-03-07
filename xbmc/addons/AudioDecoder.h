@@ -42,7 +42,13 @@ namespace ADDON
                         public XFILE::CMusicFileDirectory
   {
   public:
-    CAudioDecoder(const AddonProps &props) : AudioDecoderDll(props) {};
+    CAudioDecoder(const AddonProps &props) 
+      : AudioDecoderDll(props)
+      , m_context{nullptr}
+      , m_channel{nullptr}
+      , m_tags{false}
+      , m_tracks{false}
+    {};
     CAudioDecoder(const cp_extension_t *ext);
     virtual ~CAudioDecoder() {}
     virtual AddonPtr Clone() const;

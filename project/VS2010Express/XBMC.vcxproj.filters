@@ -3134,7 +3134,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryProgressJob.cpp">
       <Filter>video\jobs</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\Key.cpp">
       <Filter>input</Filter>
     </ClCompile>
@@ -6142,7 +6142,7 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryProgressJob.h">
       <Filter>video\jobs</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\input\Key.h">
       <Filter>input</Filter>
     </ClInclude>
@@ -6187,6 +6187,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Locale.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AudioDecoder.h">
+      <Filter>addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
