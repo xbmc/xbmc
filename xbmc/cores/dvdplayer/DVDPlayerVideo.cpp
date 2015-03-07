@@ -139,6 +139,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iVideoDelay = 0;
   m_iSubtitleDelay = 0;
   m_FlipTimeStamp = 0.0;
+  m_FlipTimePts = 0.0f; //silence coverity uninitialized warning, is set elsewhere
   m_iLateFrames = 0;
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;

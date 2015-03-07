@@ -186,6 +186,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_decoderPts = DVD_NOPTS_VALUE;
   m_codecControlFlags = 0;
   m_requestSkipDeint = false;
+  m_skippedDeint = 0; //silence coverity uninitialized warning, is set elsewhere
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
