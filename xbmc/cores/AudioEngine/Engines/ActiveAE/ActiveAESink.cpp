@@ -908,7 +908,7 @@ void CActiveAESink::GenerateNoise()
                  AV_SAMPLE_FMT_FLT,
                  CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat),
                  CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat),
-                 false, false, NULL, AE_QUALITY_UNKNOWN);
+                 false, false, NULL, AE_QUALITY_UNKNOWN, false);
   resampler->Resample(m_sampleOfSilence.pkt->data, m_sampleOfSilence.pkt->max_nb_samples,
                      (uint8_t**)&noise, m_sampleOfSilence.pkt->max_nb_samples, 1.0);
 

@@ -161,7 +161,8 @@ void CActiveAEStream::InitRemapper()
                      false,
                      false,
                      &remapLayout,
-                     AE_QUALITY_LOW); // not used for remapping
+                     AE_QUALITY_LOW, // not used for remapping
+                     false);
 
     // extra sound packet, we can't resample to the same buffer
     m_remapBuffer = new CSoundPacket(m_inputBuffers->m_allSamples[0]->pkt->config, m_inputBuffers->m_allSamples[0]->pkt->max_nb_samples);

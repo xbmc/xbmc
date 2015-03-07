@@ -150,6 +150,7 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   m_resampleRatio = 1.0;
   m_resampleQuality = quality;
   m_changeResampler = false;
+  m_forceResampler = false;
   m_stereoUpmix = false;
   m_normalize = true;
 }
@@ -171,7 +172,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
   if (m_inputFormat.m_channelLayout != m_format.m_channelLayout ||
       m_inputFormat.m_sampleRate != m_format.m_sampleRate ||
       m_inputFormat.m_dataFormat != m_format.m_dataFormat ||
-      m_changeResampler)
+      m_forceResampler)
   {
     m_resampler = CAEResampleFactory::Create();
     m_resampler->Init(CAEUtil::GetAVChannelLayout(m_format.m_channelLayout),
@@ -189,7 +190,8 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
                                 upmix,
                                 m_normalize,
                                 remap ? &m_format.m_channelLayout : NULL,
-                                m_resampleQuality);
+                                m_resampleQuality,
+                                m_forceResampler);
   }
 
   m_changeResampler = false;
@@ -217,7 +219,8 @@ void CActiveAEBufferPoolResample::ChangeResampler()
                                 m_stereoUpmix,
                                 m_normalize,
                                 NULL,
-                                m_resampleQuality);
+                                m_resampleQuality,
+                                m_forceResampler);
 
   m_changeResampler = false;
 }
