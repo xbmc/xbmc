@@ -390,21 +390,21 @@ namespace PVR
      * @param results The fileitem list to store the results in.
      * @return The amount of entries that were added.
      */
-    int GetEPGAll(CFileItemList &results);
+    int GetEPGAll(CFileItemList &results) const;
 
     /*!
      * @brief Get all entries that are active now.
      * @param results The fileitem list to store the results in.
      * @return The amount of entries that were added.
      */
-    int GetEPGNow(CFileItemList &results);
+    int GetEPGNow(CFileItemList &results) const;
 
     /*!
      * @brief Get all entries that will be active next.
      * @param results The fileitem list to store the results in.
      * @return The amount of entries that were added.
      */
-    int GetEPGNext(CFileItemList &results);
+    int GetEPGNext(CFileItemList &results) const;
     
     /*!
      * @brief Get the start time of the first entry.
