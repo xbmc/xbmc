@@ -59,7 +59,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetSchemaVersion() const { return 27; };
+    virtual int GetSchemaVersion() const { return 28; };
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -153,32 +153,6 @@ namespace PVR
 
     /*! @name Client methods */
     //@{
-    /*!
-     * @brief Remove all client information from the database.
-     * @return True if all clients were removed successfully.
-     */
-    bool DeleteClients();
-
-    /*!
-     * @brief Add a client to the database if it's not already in there.
-     * @param addon The pointer to related addon
-     * @return The database ID of the client.
-     */
-    int Persist(const ADDON::AddonPtr addon);
-
-    /*!
-     * @brief Remove a client from the database
-     * @param client The related PVR client to remove from Database.
-     * @return True if the client was removed successfully, false otherwise.
-     */
-    bool Delete(const CPVRClient &client);
-
-    /*!
-     * @brief Get the database ID of a client.
-     * @param strClientUid The unique ID of the client.
-     * @return The database ID of the client or -1 if it wasn't found.
-     */
-    int GetClientId(const std::string &strClientUid);
 
     /*!
     * @brief Updates the last watched timestamp for the channel

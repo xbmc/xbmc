@@ -105,6 +105,12 @@ void CAddonDatabase::UpdateTables(int version)
   }
 }
 
+int CAddonDatabase::GetAddonId(const ADDON::AddonPtr& item)
+{
+  std::string value = GetSingleValue("addon", "id", StringUtils::Format("name = '%s'", item->Name().c_str()), "id desc");
+  return value.empty() || !StringUtils::IsInteger(value) ? -1 : atoi(value.c_str());
+}
+
 int CAddonDatabase::AddAddon(const AddonPtr& addon,
                              int idRepo)
 {

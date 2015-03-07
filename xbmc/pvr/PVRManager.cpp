@@ -138,6 +138,16 @@ CPVRManager &CPVRManager::Get(void)
   return pvrManagerInstance;
 }
 
+bool CPVRManager::RestartManagerOnAddonDisabled(void) const
+{
+  ManagerState ms(GetState());
+  if (ms == ManagerStateStarting)
+    return false;
+  else if (ms == ManagerStateStarted)
+    return m_addons->RestartManagerOnAddonDisabled();
+  return true;
+}
+
 void CPVRManager::OnSettingChanged(const CSetting *setting)
 {
   if (setting == NULL)
@@ -818,7 +828,6 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
       pDlgProgress->Progress();
 
       /* delete all client information */
-      m_database->DeleteClients();
       pDlgProgress->SetPercentage(90);
       pDlgProgress->Progress();
     }

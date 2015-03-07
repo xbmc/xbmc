@@ -59,6 +59,7 @@ CPVRClient::CPVRClient(const cp_extension_t *ext) :
   m_strAvahiType = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_type");
   m_strAvahiIpSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_ip_setting");
   m_strAvahiPortSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_port_setting");
+  m_bNeedsConfiguration = !(CAddonMgr::Get().GetExtValue(ext->configuration, "@needs_configuration") == "false");
 }
 
 CPVRClient::~CPVRClient(void)
@@ -72,14 +73,15 @@ CPVRClient::~CPVRClient(void)
 void CPVRClient::OnDisabled()
 {
   // restart the PVR manager if we're disabling a client
-  if (CPVRManager::Get().IsStarted())
+  if (CPVRManager::Get().IsStarted() && CPVRManager::Get().RestartManagerOnAddonDisabled())
     CPVRManager::Get().Start(true);
 }
 
 void CPVRClient::OnEnabled()
 {
   // restart the PVR manager if we're enabling a client
-  CPVRManager::Get().Start(true);
+  if (CPVRManager::Get().RestartManagerOnAddonDisabled())
+    CPVRManager::Get().Start(true);
 }
 
 AddonPtr CPVRClient::GetRunningInstance() const

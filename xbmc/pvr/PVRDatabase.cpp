@@ -46,15 +46,6 @@ void CPVRDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "PVR - %s - creating tables", __FUNCTION__);
 
-  CLog::Log(LOGDEBUG, "PVR - %s - creating table 'clients'", __FUNCTION__);
-  m_pDS->exec(
-      "CREATE TABLE clients ("
-        "idClient integer primary key, "
-        "sName    varchar(64), "
-        "sUid     varchar(32)"
-      ")"
-  );
-
   CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channels'", __FUNCTION__);
   m_pDS->exec(
       "CREATE TABLE channels ("
@@ -79,21 +70,6 @@ void CPVRDatabase::CreateTables()
       ")"
   );
 
-  // TODO use a mapping table so multiple backends per channel can be implemented
-  //    CLog::Log(LOGDEBUG, "PVR - %s - creating table 'map_channels_clients'", __FUNCTION__);
-  //    m_pDS->exec(
-  //        "CREATE TABLE map_channels_clients ("
-  //          "idChannel             integer primary key, "
-  //          "idClient              integer, "
-  //          "iClientChannelNumber  integer,"
-  //          "iClientSubChannelNumber  integer,"
-  //          "sInputFormat          string,"
-  //          "sStreamURL            string,"
-  //          "iEncryptionSystem     integer"
-  //        ");"
-  //    );
-  //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);");
-
   CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channelgroups'", __FUNCTION__);
   m_pDS->exec(
       "CREATE TABLE channelgroups ("
@@ -115,16 +91,6 @@ void CPVRDatabase::CreateTables()
         "iSubChannelNumber integer"
       ")"
   );
-
-  // disable all PVR add-on when started the first time
-  ADDON::VECADDONS addons;
-  if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
-    CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
-  else
-  {
-    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-      CAddonMgr::Get().DisableAddon(it->get()->ID());
-  }
 }
 
 void CPVRDatabase::CreateAnalytics()
@@ -140,24 +106,6 @@ void CPVRDatabase::UpdateTables(int iVersion)
   if (iVersion < 13)
     m_pDS->exec("ALTER TABLE channels ADD idEpg integer;");
 
-  if (iVersion < 19)
-  {
-    // bit of a hack, but we need to keep the version/contents of the non-pvr databases the same to allow clean upgrades
-    ADDON::VECADDONS addons;
-    if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
-      CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
-    else
-    {
-      CAddonDatabase database;
-      database.Open();
-      for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-      {
-        if (!database.IsSystemPVRAddonEnabled(it->get()->ID()))
-          CAddonMgr::Get().DisableAddon(it->get()->ID());
-      }
-      database.Close();
-    }
-  }
   if (iVersion < 20)
     m_pDS->exec("ALTER TABLE channels ADD bIsUserSetIcon bool");
 
@@ -186,6 +134,49 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 27)
     m_pDS->exec("ALTER TABLE channelgroups ADD bIsHidden bool");
+
+  if (iVersion < 28)
+  {
+    VECADDONS addons;
+    int iAddonId;
+    CAddonDatabase database;
+    if (!database.Open() || !CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
+      return;
+
+    /** find all old client IDs */
+    std::string strQuery(PrepareSQL("SELECT idClient, sUid FROM clients"));
+    m_pDS->query(strQuery);
+    while (!m_pDS->eof() && !addons.empty())
+    {
+      /** try to find an add-on that matches the sUid */
+      iAddonId = -1;
+      for (VECADDONS::iterator it = addons.begin(); iAddonId <= 0 && it != addons.end(); ++it)
+      {
+        if ((*it)->ID() == m_pDS->fv(1).get_asString())
+        {
+          /** try to get the current ID from the database */
+          iAddonId = database.GetAddonId(*it);
+          /** register a new id if it didn't exist */
+          if (iAddonId <= 0)
+            iAddonId = database.AddAddon(*it, 0);
+          if (iAddonId > 0)
+          {
+            // this fails when an id becomes the id of one that's being replaced next iteration
+            // but since almost everyone only has 1 add-on enabled...
+            /** update the iClientId in the channels table */
+            strQuery = PrepareSQL("UPDATE channels SET iClientId = %u WHERE iClientId = %u", iAddonId, m_pDS->fv(0).get_asInt());
+            m_pDS->exec(strQuery);
+
+            /** no need to check this add-on again */
+            addons.erase(it);
+          }
+        }
+      }
+    }
+
+    strQuery = PrepareSQL("DROP TABLE clients");
+    m_pDS->exec(strQuery);
+  }
 }
 
 /********** Channel methods **********/
@@ -612,40 +603,6 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
 
 /********** Client methods **********/
 
-bool CPVRDatabase::DeleteClients()
-{
-  CLog::Log(LOGDEBUG, "PVR - %s - deleting all clients from the database", __FUNCTION__);
-
-  return DeleteValues("clients");
-      //TODO && DeleteValues("map_channels_clients");
-}
-
-bool CPVRDatabase::Delete(const CPVRClient &client)
-{
-  /* invalid client uid */
-  if (client.ID().empty())
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid client uid", __FUNCTION__);
-    return false;
-  }
-
-  Filter filter;
-  filter.AppendWhere(PrepareSQL("sUid = '%s'", client.ID().c_str()));
-
-  return DeleteValues("clients", filter);
-}
-
-int CPVRDatabase::GetClientId(const std::string &strClientUid)
-{
-  std::string strWhereClause = PrepareSQL("sUid = '%s'", strClientUid.c_str());
-  std::string strValue = GetSingleValue("clients", "idClient", strWhereClause);
-
-  if (strValue.empty())
-    return -1;
-
-  return atol(strValue.c_str());
-}
-
 bool CPVRDatabase::ResetEPG(void)
 {
   std::string strQuery = PrepareSQL("UPDATE channels SET idEpg = 0");
@@ -690,26 +647,6 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
     bReturn = PersistGroupMembers(group);
 
   return bReturn;
-}
-
-int CPVRDatabase::Persist(const AddonPtr client)
-{
-  int iReturn(-1);
-
-  /* invalid client uid or name */
-  if (client->Name().empty() || client->ID().empty())
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid client uid or name", __FUNCTION__);
-    return iReturn;
-  }
-
-  std::string strQuery = PrepareSQL("REPLACE INTO clients (sName, sUid) VALUES ('%s', '%s');",
-      client->Name().c_str(), client->ID().c_str());
-
-  if (ExecuteQuery(strQuery))
-    iReturn = (int) m_pDS->lastinsertid();
-
-  return iReturn;
 }
 
 bool CPVRDatabase::Persist(CPVRChannel &channel)
