@@ -280,7 +280,7 @@ bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int d
 
   LOGTIME(3);
 
-  if (CSettings::Get().GetBool("videoplayer.usedisplayasclock") && CSettings::Get().GetInt("videoplayer.synctype") == SYNC_RESAMPLE)
+  if (CSettings::Get().GetBool("videoplayer.usedisplayasclock"))
   {
     OMX_PARAM_U32TYPE scaleType;
     OMX_INIT_STRUCTURE(scaleType);
