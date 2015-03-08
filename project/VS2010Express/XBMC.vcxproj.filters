@@ -3176,6 +3176,9 @@
     <ClCompile Include="..\..\xbmc\utils\Speed.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\KeyboardLayoutManager.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6170,6 +6173,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Speed.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\KeyboardLayoutManager.h">
+      <Filter>input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

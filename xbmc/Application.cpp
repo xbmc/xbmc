@@ -100,6 +100,7 @@
 #include "utils/SeekHandler.h"
 #include "view/ViewStateSettings.h"
 
+#include "input/KeyboardLayoutManager.h"
 #include "input/KeyboardStat.h"
 #include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
@@ -703,6 +704,13 @@ bool CApplication::Create()
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
   CInputManager::Get().InitializeInputs();
+
+  // load the keyboard layouts
+  if (!CKeyboardLayoutManager::Get().Load())
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to load keyboard layouts");
+    return false;
+  }
 
 #if defined(TARGET_DARWIN_OSX)
   // Configure and possible manually start the helper.
