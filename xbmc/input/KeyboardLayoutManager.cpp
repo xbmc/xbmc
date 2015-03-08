@@ -59,6 +59,7 @@ bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
     return false;
   }
 
+  CLog::Log(LOGINFO, "CKeyboardLayoutManager: loading keyboard layouts from %s...", layoutDirectory.c_str());
   size_t oldLayoutCount = m_layouts.size();
   for (int i = 0; i < layouts.Size(); i++)
   {
@@ -92,10 +93,13 @@ bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
       CKeyboardLayout layout;
       if (!layout.Load(layoutElement))
         CLog::Log(LOGWARNING, "CKeyboardLayoutManager: failed to load %s", layoutPath.c_str());
-      else if (m_layouts.find(layout.GetName()) != m_layouts.end())
-        CLog::Log(LOGWARNING, "CKeyboardLayoutManager: duplicate layout with name \"%s\" in %s", layout.GetName().c_str(), layoutPath.c_str());
+      else if (m_layouts.find(layout.GetIdentifier()) != m_layouts.end())
+        CLog::Log(LOGWARNING, "CKeyboardLayoutManager: duplicate layout with identifier \"%s\" in %s", layout.GetIdentifier().c_str(), layoutPath.c_str());
       else
-        m_layouts.insert(std::make_pair(layout.GetName(), layout));
+      {
+        CLog::Log(LOGDEBUG, "CKeyboardLayoutManager: keyboard layout \"%s\" successfully loaded", layout.GetIdentifier().c_str());
+        m_layouts.insert(std::make_pair(layout.GetIdentifier(), layout));
+      }
 
       layoutElement = layoutElement->NextSiblingElement();
     }

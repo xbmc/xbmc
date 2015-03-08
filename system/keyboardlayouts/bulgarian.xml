@@ -4,7 +4,7 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
-  <layout name="Bulgarian ЯВЕРТЪ">
+  <layout language="Bulgarian" layout="ЯВЕРТЪ">
     <keyboard>
       <row>ч1234567890</row>
       <row>явертъуиопшщ</row>
@@ -24,7 +24,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Bulgarian АБВ">
+  <layout language="Bulgarian" layout="АБВ">
     <keyboard>
       <row>0123456789</row>
       <row>абвгдежзий</row>

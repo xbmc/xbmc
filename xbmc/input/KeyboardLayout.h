@@ -33,7 +33,10 @@ public:
 
   bool Load(const TiXmlElement* element);
 
-  const std::string& GetName() const { return m_name; }
+  std::string GetIdentifier() const;
+  std::string GetName() const;
+  const std::string& GetLanguage() const { return m_language; }
+  const std::string& GetLayout() const { return m_layout; }
 
   enum ModifierKey
   {
@@ -50,6 +53,7 @@ private:
   typedef std::vector< std::vector<std::string> > KeyboardRows;
   typedef std::map<unsigned int, KeyboardRows> Keyboards;
 
-  std::string m_name;
+  std::string m_language;
+  std::string m_layout;
   Keyboards m_keyboards;
 };

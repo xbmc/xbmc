@@ -4,7 +4,7 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
-  <layout name="German QWERTZ">
+  <layout language="German" layout="QWERTZ">
     <keyboard>
       <row>1234567890</row>
       <row>qwertzuiopü</row>

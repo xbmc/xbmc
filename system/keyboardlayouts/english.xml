@@ -4,7 +4,7 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
-  <layout name="English QWERTY">
+  <layout language="English" layout="QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>qwertyuiop</row>
@@ -24,7 +24,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="English AZERTY">
+  <layout language="English" layout="AZERTY">
     <keyboard>
       <row>1234567890</row>
       <row>azertyuiop</row>
@@ -44,7 +44,7 @@ Default font lacks support for all characters
       <row>`~éèçà</row>
     </keyboard>
   </layout>
-  <layout name="English ABC">
+  <layout language="English" layout="ABC">
     <keyboard>
       <row>0123456789</row>
       <row>abcdefghij</row>

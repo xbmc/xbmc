@@ -4,7 +4,7 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
-  <layout name="Spanish QWERTY">
+  <layout language="Spanish" layout="QWERTY">
     <keyboard>
       <row>1234567890'¡</row>
       <row>qwertyuiop`+</row>

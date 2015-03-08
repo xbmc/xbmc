@@ -1319,7 +1319,11 @@ msgctxt "#310"
 msgid "Keyboard layouts"
 msgstr ""
 
-#empty string with id 311
+#. Keyboard layout name e.g. "English QWERTY"
+#: xbmc/input/KeyboardLayout.cpp
+msgctxt "#311"
+msgid "%s %s"
+msgstr ""
 
 msgctxt "#312"
 msgid "(0=auto)"

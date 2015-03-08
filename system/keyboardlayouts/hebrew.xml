@@ -4,7 +4,7 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
-  <layout name="Hebrew QWERTY">
+  <layout language="Hebrew" layout="QWERTY">
     <keyboard>
       <row>1234567890</row>
       <row>קראטוןםפ</row>
@@ -24,7 +24,7 @@ Default font lacks support for all characters
       <row>`~</row>
     </keyboard>
   </layout>
-  <layout name="Hebrew ABC">
+  <layout language="Hebrew" layout="ABC">
     <keyboard>
       <row>0123456789</row>
       <row>יטחזוהדגבא</row>

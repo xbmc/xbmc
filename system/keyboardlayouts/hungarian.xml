@@ -4,7 +4,7 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
-  <layout name="Hungarian QWERTZ">
+  <layout language="Hungarian" layout="QWERTZ">
     <keyboard>
       <row>0123456789öüó</row>
       <row>qwertzuiopőú</row>

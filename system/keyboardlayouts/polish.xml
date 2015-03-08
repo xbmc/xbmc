@@ -4,7 +4,7 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
-  <layout name="Polish QWERTY">
+  <layout language="Polish" layout="QWERTY">
     <keyboard>
       <row>`1234567890-</row>
       <row>qwertyuiopąć</row>

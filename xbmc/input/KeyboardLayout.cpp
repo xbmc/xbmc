@@ -22,23 +22,48 @@
 #include <set>
 
 #include "KeyboardLayout.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/lib/Setting.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 
 CKeyboardLayout::CKeyboardLayout()
 { }
 
+CKeyboardLayout::~CKeyboardLayout()
+{ }
+
 bool CKeyboardLayout::Load(const TiXmlElement* element)
 {
-  const char* name = element->Attribute("name");
-  if (name == NULL)
+  const char* language = element->Attribute("language");
+  if (language == NULL)
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: invalid \"language\" attribute");
     return false;
+  }
 
-  m_name = name;
-  if (m_name.empty())
+  m_language = language;
+  if (m_language.empty())
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: empty \"language\" attribute");
     return false;
+  }
+
+  const char* layout = element->Attribute("layout");
+  if (layout == NULL)
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: invalid \"layout\" attribute");
+    return false;
+  }
+
+  m_layout = layout;
+  if (m_layout.empty())
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: empty \"layout\" attribute");
+    return false;
+  }
 
   const TiXmlElement *keyboard = element->FirstChildElement("keyboard");
   while (keyboard != NULL)
@@ -94,13 +119,23 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
   }
 
   if (m_keyboards.empty())
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: no keyboard layout found");
     return false;
+  }
 
   return true;
 }
 
-CKeyboardLayout::~CKeyboardLayout()
-{ }
+std::string CKeyboardLayout::GetIdentifier() const
+{
+  return StringUtils::Format("%s %s", m_language.c_str(), m_layout.c_str());
+}
+
+std::string CKeyboardLayout::GetName() const
+{
+  return StringUtils::Format(g_localizeStrings.Get(311).c_str(), m_language.c_str(), m_layout.c_str());
+}
 
 std::string CKeyboardLayout::GetCharAt(unsigned int row, unsigned int column, unsigned int modifiers) const
 {
