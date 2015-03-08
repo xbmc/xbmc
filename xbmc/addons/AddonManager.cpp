@@ -666,7 +666,7 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
   CSingleLock lock(m_critSection);
   AddonPtr localAddon;
   // can't disable an addon that isn't installed
-  if (!IsAddonInstalled(ID, localAddon))
+  if (!GetAddon(ID, localAddon, ADDON_UNKNOWN, false))
     return false;
 
   // can't disable an addon that is in use
@@ -688,12 +688,7 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
 bool CAddonMgr::IsAddonInstalled(const std::string& ID)
 {
   AddonPtr tmp;
-  return IsAddonInstalled(ID, tmp);
-}
-
-bool CAddonMgr::IsAddonInstalled(const std::string& ID, AddonPtr& addon)
-{
-  return GetAddon(ID, addon, ADDON_UNKNOWN, false);
+  return GetAddon(ID, tmp, ADDON_UNKNOWN, false);
 }
 
 bool CAddonMgr::CanAddonBeInstalled(const std::string& ID)
