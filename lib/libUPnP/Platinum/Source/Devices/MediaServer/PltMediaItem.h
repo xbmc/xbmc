@@ -170,6 +170,7 @@ typedef struct {
   NPT_String votes;
   PLT_Artworks artwork;
   NPT_String unique_identifier;
+  NPT_List<NPT_String> countries;
 } PLT_XbmcInfo;
 
 typedef struct {
