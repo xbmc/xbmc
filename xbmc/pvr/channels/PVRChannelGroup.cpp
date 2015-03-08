@@ -511,12 +511,11 @@ CFileItemPtr CPVRChannelGroup::GetByChannelUpDown(const CFileItem &channel, bool
       else if (iChannelIndex < 0)
         iChannelIndex = m_members.size() - 1;
 
-      CFileItemPtr current = GetByIndex(iChannelIndex);
-      if (!current || *current->GetPVRChannelInfoTag() == *channel.GetPVRChannelInfoTag())
-        break;
-
-      if (!current->GetPVRChannelInfoTag()->IsHidden())
-        return current;
+      CPVRChannelPtr current = m_members.at(iChannelIndex).channel;
+      if (current &&
+          *current != *channel.GetPVRChannelInfoTag() &&
+          !current->IsHidden())
+        return CFileItemPtr(new CFileItem(current));
     }
   }
 
@@ -524,17 +523,19 @@ CFileItemPtr CPVRChannelGroup::GetByChannelUpDown(const CFileItem &channel, bool
   return retVal;
 }
 
-CFileItemPtr CPVRChannelGroup::GetByIndex(unsigned int iIndex) const
+std::vector<PVRChannelGroupMember> CPVRChannelGroup::GetMembers(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_members;
+}
+
+CPVRChannelPtr CPVRChannelGroup::GetByIndex(unsigned int iIndex) const
 {
   CSingleLock lock(m_critSection);
   if (iIndex < m_members.size())
-  {
-    CFileItemPtr retVal = CFileItemPtr(new CFileItem(m_members.at(iIndex).channel));
-    return retVal;
-  }
+    return m_members.at(iIndex).channel;
 
-  CFileItemPtr retVal = CFileItemPtr(new CFileItem);
-  return retVal;
+  return CPVRChannelPtr();
 }
 
 int CPVRChannelGroup::GetIndex(const CPVRChannelPtr &channel) const

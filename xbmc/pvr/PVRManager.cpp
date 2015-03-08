@@ -1252,9 +1252,9 @@ bool CPVRManager::StartPlayback(PlaybackType type /* = PlaybackTypeAny */)
     if (channelGroup)
     {
       // try to start playback of first channel in this group
-      CFileItemPtr channel = channelGroup->GetByIndex(0);
-      if (channel && channel->HasPVRChannelInfoTag())
-        bReturn = StartPlayback(channel->GetPVRChannelInfoTag(), false);
+      std::vector<PVRChannelGroupMember> groupMembers(channelGroup->GetMembers());
+      if (!groupMembers.empty())
+        bReturn = StartPlayback((*groupMembers.begin()).channel, false);
     }
   }
 

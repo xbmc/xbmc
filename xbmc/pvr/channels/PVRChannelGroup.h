@@ -306,11 +306,10 @@ namespace PVR
     CFileItemPtr GetByChannelDown(const CFileItem &channel) const { return GetByChannelUpDown(channel, false); }
 
     /*!
-     * @brief Get a channel given it's index in this container.
-     * @param index The index in this container.
-     * @return The channel or NULL if it wasn't found.
+     * Get the current members of this group
+     * @return The group members
      */
-    CFileItemPtr GetByIndex(unsigned int index) const;
+    std::vector<PVRChannelGroupMember> GetMembers(void) const;
 
     /*!
      * @brief Get the current index in this group of a channel.
@@ -437,6 +436,13 @@ namespace PVR
     bool IsHidden(void) const;
 
   protected:
+    /*!
+     * @brief Get a channel given it's index in this container.
+     * @param index The index in this container.
+     * @return The channel or an empty channel if it wasn't found.
+     */
+    CPVRChannelPtr GetByIndex(unsigned int index) const;
+
     /*!
      * @brief Load the channels stored in the database.
      * @param bCompress If true, compress the database after storing the channels.

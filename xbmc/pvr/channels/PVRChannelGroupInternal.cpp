@@ -135,7 +135,7 @@ bool CPVRChannelGroupInternal::AddToGroup(CPVRChannelPtr &channel, int iChannelN
   bool bReturn(false);
 
   /* get the actual channel since this is called from a fileitemlist copy */
-  CPVRChannelPtr realChannel = GetByChannelID(channel->ChannelID());
+  CPVRChannelPtr realChannel = GetByUniqueID(channel->UniqueID(), channel->ClientID());
   if (!realChannel)
     return bReturn;
 
@@ -173,7 +173,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
   assert(channel.get());
 
   /* get the actual channel since this is called from a fileitemlist copy */
-  CPVRChannelPtr realChannel(GetByChannelID(channel->ChannelID()));
+  CPVRChannelPtr realChannel(GetByUniqueID(channel->UniqueID(), channel->ClientID()));
   if (!realChannel)
     return false;
 

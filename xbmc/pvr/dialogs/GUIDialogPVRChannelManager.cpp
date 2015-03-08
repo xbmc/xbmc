@@ -664,9 +664,11 @@ void CGUIDialogPVRChannelManager::Update()
   if(!channels)
     return;
 
-  for (int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
+  std::vector<PVRChannelGroupMember> groupMembers(channels->GetMembers());
+  CFileItemPtr channelFile;
+  for (std::vector<PVRChannelGroupMember>::const_iterator it = groupMembers.begin(); it != groupMembers.end(); ++it)
   {
-    CFileItemPtr channelFile = channels->GetByIndex(iChannelPtr);
+    channelFile = CFileItemPtr(new CFileItem((*it).channel));
     if (!channelFile || !channelFile->HasPVRChannelInfoTag())
       continue;
     const CPVRChannelPtr channel(channelFile->GetPVRChannelInfoTag());
