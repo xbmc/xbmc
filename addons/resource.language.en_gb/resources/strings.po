@@ -10303,10 +10303,7 @@ msgctxt "#20260"
 msgid "Secure Shell (SSH/SFTP)"
 msgstr ""
 
-#: xbmc/network/GUIDialogNetworkSetup.cpp
-msgctxt "#20261"
-msgid "Apple Filing Protocol (AFP)"
-msgstr ""
+#empty string with id 20261
 
 #: xbmc/storage/MediaManager.cpp
 msgctxt "#20262"

@@ -140,7 +140,6 @@ public:
   static bool IsMusicDb(const std::string& strFile);
   static bool IsMythTV(const std::string& strFile);
   static bool IsNfs(const std::string& strFile);
-  static bool IsAfp(const std::string& strFile);
   static bool IsOnDVD(const std::string& strFile);
   static bool IsOnLAN(const std::string& strFile);
   static bool IsHostOnLAN(const std::string& hostName, bool offLineCheck = false);

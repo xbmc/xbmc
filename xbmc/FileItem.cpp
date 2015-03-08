@@ -1010,11 +1010,6 @@ bool CFileItem::IsNfs() const
   return URIUtils::IsNfs(m_strPath);
 }
 
-bool CFileItem::IsAfp() const
-{
-  return URIUtils::IsAfp(m_strPath);
-}
-
 bool CFileItem::IsOnLAN() const
 {
   return URIUtils::IsOnLAN(m_strPath);
@@ -2320,7 +2315,6 @@ void CFileItemList::StackFolders()
       if( !item->IsRemote()
         || item->IsSmb()
         || item->IsNfs() 
-        || item->IsAfp()
         || URIUtils::IsInRAR(item->GetPath())
         || URIUtils::IsInZIP(item->GetPath())
         || URIUtils::IsOnLAN(item->GetPath())

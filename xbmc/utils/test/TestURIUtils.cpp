@@ -361,12 +361,6 @@ TEST_F(TestURIUtils, IsNfs)
   EXPECT_TRUE(URIUtils::IsNfs("stack://nfs://path/to/file"));
 }
 
-TEST_F(TestURIUtils, IsAfp)
-{
-  EXPECT_TRUE(URIUtils::IsAfp("afp://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsAfp("stack://afp://path/to/file"));
-}
-
 TEST_F(TestURIUtils, IsOnDVD)
 {
   EXPECT_TRUE(URIUtils::IsOnDVD("dvd://path/to/file"));

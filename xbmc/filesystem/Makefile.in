@@ -116,11 +116,6 @@ SRCS += NFSFile.cpp
 SRCS += NFSDirectory.cpp
 endif
 
-ifeq (@USE_LIBAFPCLIENT@,1)
-SRCS += AFPFile.cpp
-SRCS += AFPDirectory.cpp
-endif
-
 ifeq (@HAVE_LIBBLURAY@,1)
 SRCS += BlurayDirectory.cpp
 SRCS += BlurayFile.cpp
