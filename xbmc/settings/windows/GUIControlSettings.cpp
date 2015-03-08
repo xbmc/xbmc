@@ -617,6 +617,12 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
         if (CUtil::MakeShortenPath(strValue, shortPath, 30))
           strText = shortPath;
       }
+      else if (controlFormat == "infolabel")
+      {
+        strText = strValue;
+        if (strText.empty())
+          strText = g_localizeStrings.Get(231); // None
+      }
     }
   }
   else if (controlType == "slider")

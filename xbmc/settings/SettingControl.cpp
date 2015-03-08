@@ -201,7 +201,8 @@ bool CSettingControlButton::SetFormat(const std::string &format)
 {
   if (!StringUtils::EqualsNoCase(format, "path") &&
       !StringUtils::EqualsNoCase(format, "addon") &&
-      !StringUtils::EqualsNoCase(format, "action"))
+      !StringUtils::EqualsNoCase(format, "action") &&
+      !StringUtils::EqualsNoCase(format, "infolabel"))
     return false;
 
   m_format = format;
