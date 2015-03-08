@@ -182,6 +182,28 @@
         </setting>
       </group>
       <group id="3">
+        <setting id="locale.shortdateformat" type="string" label="14109" help="36173">
+          <level>1</level>
+          <default>regional</default>
+          <constraints>
+            <options>shortdateformats</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="locale.country" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="locale.longdateformat" type="string" label="14110" help="36215">
+          <level>1</level>
+          <default>regional</default>
+          <constraints>
+            <options>longdateformats</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="locale.country" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
         <setting id="locale.timeformat" type="string" label="14107" help="36167">
           <level>1</level>
           <default>regional</default>

@@ -46,6 +46,47 @@
 using namespace std;
 using namespace PVR;
 
+static std::string shortDateFormats[] = {
+  // short date formats using "/"
+  "DD/MM/YYYY",
+  "MM/DD/YYYY",
+  "YYYY/MM/DD",
+  "D/M/YYYY",
+  // short date formats using "-"
+  "DD-MM-YYYY",
+  "MM-DD-YYYY",
+  "YYYY-MM-DD",
+  "YYYY-M-D",
+  // short date formats using "."
+  "DD.MM.YYYY",
+  "DD.M.YYYY",
+  "D.M.YYYY",
+  "D. M. YYYY",
+  "YYYY.MM.DD"
+};
+
+#define SHORT_DATE_FORMATS_SIZE   sizeof(shortDateFormats) / sizeof(std::string)
+
+static std::string longDateFormats[] = {
+  "DDDD, D MMMM YYYY",
+  "DDDD, DD MMMM YYYY",
+  "DDDD, D. MMMM YYYY",
+  "DDDD, DD. MMMM YYYY",
+  "DDDD, MMMM D, YYYY",
+  "DDDD, MMMM DD, YYYY",
+  "DDDD D MMMM YYYY",
+  "DDDD DD MMMM YYYY",
+  "DDDD D. MMMM YYYY",
+  "DDDD DD. MMMM YYYY",
+  "D. MMMM YYYY",
+  "DD. MMMM YYYY",
+  "D. MMMM. YYYY",
+  "DD. MMMM. YYYY",
+  "YYYY. MMMM. D"
+};
+
+#define LONG_DATE_FORMATS_SIZE    sizeof(longDateFormats) / sizeof(std::string)
+
 #define TIME_FORMAT_MM_SS         ":mm:ss"
 #define TIME_FORMAT_SINGLE_12     "h" TIME_FORMAT_MM_SS
 #define TIME_FORMAT_DOUBLE_12     "hh" TIME_FORMAT_MM_SS
@@ -273,6 +314,8 @@ void CLangInfo::CRegion::SetGlobalLocale()
 CLangInfo::CLangInfo()
 {
   SetDefaults();
+  m_shortDateFormat = m_defaultRegion.m_strDateFormatShort;
+  m_longDateFormat = m_defaultRegion.m_strDateFormatLong;
   m_timeFormat = m_defaultRegion.m_strTimeFormat;
   m_use24HourClock = DetermineUse24HourClockFromTimeFormat(m_defaultRegion.m_strTimeFormat);
   m_temperatureUnit = m_defaultRegion.m_tempUnit;
@@ -300,6 +343,10 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == "locale.country")
     SetCurrentRegion(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.shortdateformat")
+    SetShortDateFormat(((CSettingString*)setting)->GetValue());
+  else if (settingId == "locale.longdateformat")
+    SetLongDateFormat(((CSettingString*)setting)->GetValue());
   else if (settingId == "locale.timeformat")
     SetTimeFormat(((CSettingString*)setting)->GetValue());
   else if (settingId == "locale.use24hourclock")
@@ -318,6 +365,8 @@ void CLangInfo::OnSettingChanged(const CSetting *setting)
 void CLangInfo::OnSettingsLoaded()
 {
   // set the temperature and speed units based on the settings
+  SetShortDateFormat(CSettings::Get().GetString("locale.shortdateformat"));
+  SetLongDateFormat(CSettings::Get().GetString("locale.longdateformat"));
   Set24HourClock(CSettings::Get().GetString("locale.use24hourclock"));
   SetTimeFormat(CSettings::Get().GetString("locale.timeformat"));
   SetTemperatureUnit(CSettings::Get().GetString("locale.temperatureunit"));
@@ -766,12 +815,48 @@ const std::string& CLangInfo::GetRegionLocale() const
 }
 
 // Returns the format string for the date of the current language
-const std::string& CLangInfo::GetDateFormat(bool bLongDate/*=false*/) const
+const std::string& CLangInfo::GetDateFormat(bool bLongDate /* = false */) const
 {
   if (bLongDate)
-    return m_currentRegion->m_strDateFormatLong;
+    return GetLongDateFormat();
+
+  return GetShortDateFormat();
+}
+
+void CLangInfo::SetDateFormat(const std::string& dateFormat, bool bLongDate /* = false */)
+{
+  if (bLongDate)
+    SetLongDateFormat(dateFormat);
   else
-    return m_currentRegion->m_strDateFormatShort;
+    SetShortDateFormat(dateFormat);
+}
+
+const std::string& CLangInfo::GetShortDateFormat() const
+{
+  return m_shortDateFormat;
+}
+
+void CLangInfo::SetShortDateFormat(const std::string& shortDateFormat)
+{
+  std::string newShortDateFormat = shortDateFormat;
+  if (shortDateFormat == SETTING_REGIONAL_DEFAULT)
+    newShortDateFormat = m_currentRegion->m_strDateFormatShort;
+
+  m_shortDateFormat = newShortDateFormat;
+}
+
+const std::string& CLangInfo::GetLongDateFormat() const
+{
+  return m_longDateFormat;
+}
+
+void CLangInfo::SetLongDateFormat(const std::string& longDateFormat)
+{
+  std::string newLongDateFormat = longDateFormat;
+  if (longDateFormat == SETTING_REGIONAL_DEFAULT)
+    newLongDateFormat = m_currentRegion->m_strDateFormatShort;
+
+  m_longDateFormat = newLongDateFormat;
 }
 
 // Returns the format string for the time of the current language
@@ -869,6 +954,10 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
 
   m_currentRegion->SetGlobalLocale();
 
+  if (CSettings::Get().GetString("locale.shortdateformat") == SETTING_REGIONAL_DEFAULT)
+    SetShortDateFormat(m_currentRegion->m_strDateFormatShort);
+  if (CSettings::Get().GetString("locale.longdateformat") == SETTING_REGIONAL_DEFAULT)
+    SetLongDateFormat(m_currentRegion->m_strDateFormatLong);
   if (CSettings::Get().GetString("locale.use24hourclock") == SETTING_REGIONAL_DEFAULT)
     Set24HourClock(m_currentRegion->m_strTimeFormat);
   if (CSettings::Get().GetString("locale.timeformat") == SETTING_REGIONAL_DEFAULT)
@@ -1070,6 +1159,66 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
 
   if (!match && regions.size() > 0)
     current = regions[0];
+}
+
+void CLangInfo::SettingOptionsShortDateFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  bool match = false;
+  const std::string& shortDateFormatSetting = static_cast<const CSettingString*>(setting)->GetValue();
+
+  CDateTime now = CDateTime::GetCurrentDateTime();
+
+  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatShort).c_str()), SETTING_REGIONAL_DEFAULT));
+  if (shortDateFormatSetting == SETTING_REGIONAL_DEFAULT)
+  {
+    match = true;
+    current = SETTING_REGIONAL_DEFAULT;
+  }
+
+  for (size_t i = 0; i < SHORT_DATE_FORMATS_SIZE; i++)
+  {
+    const std::string& shortDateFormat = shortDateFormats[i];
+    list.push_back(std::make_pair(now.GetAsLocalizedDate(shortDateFormat), shortDateFormat));
+
+    if (!match && shortDateFormatSetting == shortDateFormat)
+    {
+      match = true;
+      current = shortDateFormat;
+    }
+  }
+
+  if (!match && !list.empty())
+    current = list[0].second;
+}
+
+void CLangInfo::SettingOptionsLongDateFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  bool match = false;
+  const std::string& longDateFormatSetting = static_cast<const CSettingString*>(setting)->GetValue();
+
+  CDateTime now = CDateTime::GetCurrentDateTime();
+
+  list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(20035).c_str(), now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatLong).c_str()), SETTING_REGIONAL_DEFAULT));
+  if (longDateFormatSetting == SETTING_REGIONAL_DEFAULT)
+  {
+    match = true;
+    current = SETTING_REGIONAL_DEFAULT;
+  }
+
+  for (size_t i = 0; i < LONG_DATE_FORMATS_SIZE; i++)
+  {
+    const std::string& longDateFormat = longDateFormats[i];
+    list.push_back(std::make_pair(now.GetAsLocalizedDate(longDateFormat), longDateFormat));
+
+    if (!match && longDateFormatSetting == longDateFormat)
+    {
+      match = true;
+      current = longDateFormat;
+    }
+  }
+
+  if (!match && !list.empty())
+    current = list[0].second;
 }
 
 void CLangInfo::SettingOptionsTimeFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)

@@ -6987,7 +6987,17 @@ msgctxt "#14108"
 msgid "Use 12/24-hour format"
 msgstr ""
 
-#empty strings from id 14109 to 15011
+#: system/settings/settings.xml
+msgctxt "#14109"
+msgid "Short date format"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14110"
+msgid "Long date format"
+msgstr ""
+
+#empty strings from id 14111 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -14383,7 +14393,11 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
 msgstr ""
 
-#empty string with id 36173
+#. Description of setting "Appearance -> International -> Short date format" with label #14109
+#: system/settings/settings.xml
+msgctxt "#36173"
+msgid "Choose which short date format is used for displaying the date in the user interface."
+msgstr ""
 
 #. Description of setting "Videos -> Playback -> Activate Teletext" with label #23050
 #: system/settings/settings.xml
@@ -14612,7 +14626,11 @@ msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr ""
 
-#empty string with id 36215
+#. Description of setting "Appearance -> International -> Long date format" with label #14110
+#: system/settings/settings.xml
+msgctxt "#36215"
+msgid "Choose which long date format is used for displaying the date in the user interface."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36216"

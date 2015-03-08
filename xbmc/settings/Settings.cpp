@@ -233,6 +233,8 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("refreshchangedelays");
   m_settingsManager->UnregisterSettingOptionsFiller("refreshrates");
   m_settingsManager->UnregisterSettingOptionsFiller("regions");
+  m_settingsManager->UnregisterSettingOptionsFiller("shortdateformats");
+  m_settingsManager->UnregisterSettingOptionsFiller("longdateformats");
   m_settingsManager->UnregisterSettingOptionsFiller("timeformats");
   m_settingsManager->UnregisterSettingOptionsFiller("24hourclockformats");
   m_settingsManager->UnregisterSettingOptionsFiller("speedunits");
@@ -581,6 +583,8 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("refreshchangedelays", CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller);
   m_settingsManager->RegisterSettingOptionsFiller("refreshrates", CDisplaySettings::SettingOptionsRefreshRatesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("regions", CLangInfo::SettingOptionsRegionsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("shortdateformats", CLangInfo::SettingOptionsShortDateFormatsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("longdateformats", CLangInfo::SettingOptionsLongDateFormatsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("timeformats", CLangInfo::SettingOptionsTimeFormatsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("24hourclockformats", CLangInfo::SettingOptions24HourClockFormatsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("speedunits", CLangInfo::SettingOptionsSpeedUnitsFiller);
@@ -758,6 +762,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("locale.subtitlelanguage");
   settingSet.insert("locale.language");
   settingSet.insert("locale.country");
+  settingSet.insert("locale.shortdateformat");
+  settingSet.insert("locale.longdateformat");
   settingSet.insert("locale.timeformat");
   settingSet.insert("locale.use24hourclock");
   settingSet.insert("locale.temperatureunit");

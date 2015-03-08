@@ -142,7 +142,12 @@ public:
 
   bool ForceUnicodeFont() const { return m_forceUnicodeFont; }
 
-  const std::string& GetDateFormat(bool bLongDate=false) const;
+  const std::string& GetDateFormat(bool bLongDate = false) const;
+  void SetDateFormat(const std::string& dateFormat, bool bLongDate = false);
+  const std::string& GetShortDateFormat() const;
+  void SetShortDateFormat(const std::string& shortDateFormat);
+  const std::string& GetLongDateFormat() const;
+  void SetLongDateFormat(const std::string& longDateFormat);
 
   const std::string& GetTimeFormat() const;
   void SetTimeFormat(const std::string& timeFormat);
@@ -182,6 +187,8 @@ public:
   static void SettingOptionsLanguageNamesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsShortDateFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsLongDateFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsTimeFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptions24HourClockFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsTemperatureUnitsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
@@ -238,6 +245,8 @@ protected:
   std::string m_strDVDSubtitleLanguage;
   std::set<std::string> m_sortTokens;
 
+  std::string m_shortDateFormat;
+  std::string m_longDateFormat;
   std::string m_timeFormat;
   bool m_use24HourClock;
   CTemperature::Unit m_temperatureUnit;
