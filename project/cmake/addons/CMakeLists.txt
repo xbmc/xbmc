@@ -169,6 +169,7 @@ foreach(addon ${addons})
         list(GET def 1 url)
 
         set(archive_name ${id})
+        set(archive ${id})
         if(ADDON_SRC_PREFIX)
           set(SOURCE_DIR ${ADDON_SRC_PREFIX}/${id})
           set(archive_name "")
@@ -184,6 +185,7 @@ foreach(addon ${addons})
           # if we ever use other repositories, this might need adapting
           set(url ${url}/archive/${revision}.tar.gz)
           set(archive_name ${archive_name}-${revision})
+          set(archive ${archive_name}.tar.gz)
         elseif("${SOURCE_DIR}" STREQUAL "")
           # check if the URL starts with file://
           string(REGEX MATCH "^file://.*$" local_url "${url}")
@@ -204,22 +206,25 @@ foreach(addon ${addons})
                 string(SUBSTRING "${SOURCE_DIR}" 1 -1 SOURCE_DIR)
               endif()
             endif()
+          else()
+            get_filename_component(archive ${url} NAME)
+            set(archive_name ${archive})
           endif()
         endif()
 
         # download the addon if necessary
         if(NOT "${archive_name}" STREQUAL "")
           # download and extract the addon
-          if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
+          if(NOT EXISTS ${BUILD_DIR}/download/${archive})
             # cleanup any of the previously downloaded archives of this addon
-            file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
+            file(GLOB archives "${BUILD_DIR}/download/${id}*.*")
             if(archives)
               message(STATUS "Removing old archives of ${id}: ${archives}")
               file(REMOVE ${archives})
             endif()
 
             # download the addon
-            file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${archive_name}.tar.gz" STATUS dlstatus LOG dllog SHOW_PROGRESS)
+            file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${archive}" STATUS dlstatus LOG dllog SHOW_PROGRESS)
             list(GET dlstatus 0 retcode)
             if(NOT ${retcode} EQUAL 0)
               message(FATAL_ERROR "ERROR downloading ${url} - status: ${dlstatus} log: ${dllog}")
@@ -232,11 +237,11 @@ foreach(addon ${addons})
           endif()
 
           # extract the addon from the archive
-          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${BUILD_DIR}/download/${archive_name}.tar.gz
+          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${BUILD_DIR}/download/${archive}
                           WORKING_DIRECTORY ${BUILD_DIR})
           file(GLOB extract_dir "${BUILD_DIR}/${archive_name}*")
           if(extract_dir STREQUAL "")
-            message(FATAL_ERROR "${id}: error extracting ${BUILD_DIR}/download/${archive_name}.tar.gz")
+            message(FATAL_ERROR "${id}: error extracting ${BUILD_DIR}/download/${archive}")
           else()
             file(RENAME "${extract_dir}" "${BUILD_DIR}/${id}")
           endif()
