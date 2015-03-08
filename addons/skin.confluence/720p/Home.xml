@@ -741,72 +741,72 @@
 					<onleft>9010</onleft>
 					<onright>9010</onright>
 					<visible>Container(9000).HasFocus(2)</visible>
-					<include>HomeSubMenuVideos</include>
 					<!-- Buttons for the grouplist -->
+					<include>HomeSubMenuVideos</include>
 				</control>
 				<control type="grouplist" id="9016">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9016</onleft>
 					<onright>9016</onright>
 					<visible>Container(9000).HasFocus(10)</visible>
-					<include>HomeSubMenuMovies</include>
 					<!-- Buttons for the grouplist -->
+					<include>HomeSubMenuMovies</include>
 				</control>
 				<control type="grouplist" id="9017">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9017</onleft>
 					<onright>9017</onright>
 					<visible>Container(9000).HasFocus(11)</visible>
-					<include>HomeSubMenuTVShows</include>
 					<!-- Buttons for the grouplist -->
+					<include>HomeSubMenuTVShows</include>
 				</control>
 				<control type="grouplist" id="9011">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9011</onleft>
 					<onright>9011</onright>
 					<visible>Container(9000).HasFocus(3)</visible>
-					<include>HomeSubMenuMusic</include>
 					<!-- Buttons for the grouplist -->
+					<include>HomeSubMenuMusic</include>
 				</control>
 				<control type="grouplist" id="9012">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9012</onleft>
 					<onright>9012</onright>
 					<visible>Container(9000).HasFocus(5)</visible>
-					<include>HomeSubMenuSystem</include>
 					<!-- Buttons for the grouplist -->
+					<include>HomeSubMenuSystem</include>
 				</control>
 				<control type="grouplist" id="9013">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9013</onleft>
 					<onright>9013</onright>
 					<visible>Container(9000).HasFocus(6)</visible>
-					<include>HomeSubMenuPlayDisc</include>
 					<!-- Buttons for the grouplist -->
+					<include>HomeSubMenuPlayDisc</include>
 				</control>
 				<control type="grouplist" id="9014">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9014</onleft>
 					<onright>9014</onright>
 					<visible>Container(9000).HasFocus(12)</visible>
-					<include>HomeSubMenuTV</include>
 					<!-- Buttons for the grouplist -->
+					<include>HomeSubMenuTV</include>
 				</control>
 				<control type="grouplist" id="9015">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9013</onleft>
 					<onright>9013</onright>
 					<visible>Container(9000).HasFocus(4)</visible>
-					<include>HomeSubMenuPictures</include>
 					<!-- Buttons for the grouplist -->
+					<include>HomeSubMenuPictures</include>
 				</control>
 				<control type="grouplist" id="9016">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9014</onleft>
 					<onright>9014</onright>
 					<visible>Container(9000).HasFocus(13)</visible>
-					<include>HomeSubMenuRadio</include>
 					<!-- Buttons for the grouplist -->
+					<include>HomeSubMenuRadio</include>
 				</control>
 			</control>
 			<control type="image">

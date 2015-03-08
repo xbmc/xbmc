@@ -9,18 +9,18 @@
 		<include>ContentPanelBackgrounds</include>
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>
-			<include>CommonRootView</include>
 			<!-- view id = 50 -->
-			<include>FullWidthList</include>
+			<include>CommonRootView</include>
 			<!-- view id = 51 -->
-			<include>ThumbnailView</include>
+			<include>FullWidthList</include>
 			<!-- view id = 500 -->
-			<include>MusicInfoListView</include>
+			<include>ThumbnailView</include>
 			<!-- view id = 506 -->
-			<include>AddonInfoListView1</include>
+			<include>MusicInfoListView</include>
 			<!-- view id = 550 -->
-			<include>AddonInfoThumbView1</include>
+			<include>AddonInfoListView1</include>
 			<!-- view id = 551 -->
+			<include>AddonInfoThumbView1</include>
 		</control>
 		<include>CommonPageCount</include>
 		<include>CommonNowPlaying</include>

@@ -263,7 +263,5 @@
 				<visible>false</visible>
 			</control>
 		</control>
-		<!-- ** Required ** Do not change <id> or <type> -->
-		<!-- ** Required ** Do not change <id> or <type> -->
 	</controls>
 </window>

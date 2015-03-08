@@ -378,7 +378,6 @@
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 		</control>
-		<!-- Music Info -->
 		<control type="image">
 			<description>gradient</description>
 			<left>0</left>
@@ -389,6 +388,7 @@
 			<visible>Window.IsVisible(home)</visible>
 			<texture border="20">OverlayDialogBackground.png</texture>
 		</control>
+		<!-- Music Info -->
 		<control type="group">
 			<visible>Player.HasAudio</visible>
 			<include>SmallMusicInfo</include>

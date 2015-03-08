@@ -10,32 +10,32 @@
 		<include>ContentPanelBackgrounds</include>
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>
-			<include>CommonRootView</include>
 			<!-- view id = 50 -->
-			<include>FullWidthList</include>
+			<include>CommonRootView</include>
 			<!-- view id = 51 -->
-			<include>ThumbnailView</include>
+			<include>FullWidthList</include>
 			<!-- view id = 500 -->
-			<include>PosterWrapView</include>
+			<include>ThumbnailView</include>
 			<!-- view id = 501 -->
-			<include>PosterWrapView2_Fanart</include>
+			<include>PosterWrapView</include>
 			<!-- view id = 508 -->
-			<include>MediaListView3</include>
+			<include>PosterWrapView2_Fanart</include>
 			<!-- view id = 503 -->
-			<include>MediaListView2</include>
+			<include>MediaListView3</include>
 			<!-- view id = 504 -->
-			<include>MediaListView4</include>
+			<include>MediaListView2</include>
 			<!-- view id = 515 -->
-			<include>WideIconView</include>
+			<include>MediaListView4</include>
 			<!-- view id = 505 -->
-			<include>MusicVideoInfoListView</include>
+			<include>WideIconView</include>
 			<!-- view id = 511 -->
-			<include>AddonInfoListView1</include>
+			<include>MusicVideoInfoListView</include>
 			<!-- view id = 550 -->
-			<include>AddonInfoThumbView1</include>
+			<include>AddonInfoListView1</include>
 			<!-- view id = 551 -->
-			<include>LiveTVView1</include>
+			<include>AddonInfoThumbView1</include>
 			<!-- view id = 560 -->
+			<include>LiveTVView1</include>
 		</control>
 		<include>CommonPageCount</include>
 		<include>CommonNowPlaying</include>

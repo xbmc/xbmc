@@ -9,10 +9,10 @@
 		<include>ContentPanelBackgrounds</include>
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>
-			<include>CommonRootView</include>
 			<!-- view id = 50 -->
-			<include>FullWidthList</include>
+			<include>CommonRootView</include>
 			<!-- view id = 51 -->
+			<include>FullWidthList</include>
 		</control>
 		<include>CommonPageCount</include>
 		<include>CommonNowPlaying</include>
