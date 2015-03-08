@@ -100,8 +100,12 @@ void CAddonDatabase::UpdateTables(int version)
   }
   if (version < 17)
   {
-    m_pDS->exec("DELETE FROM repo");
-    m_pDS->exec("ALTER TABLE repo ADD version text");
+    m_pDS->exec("ALTER TABLE repo ADD version text DEFAULT '0.0.0'");
+  }
+  if (version == 17)
+  {
+    /** remove all add-ons because the previous upgrade created dupes in it's first version */
+    m_pDS->exec("DELETE FROM addon");
   }
 }
 
