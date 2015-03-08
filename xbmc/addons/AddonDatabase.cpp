@@ -328,7 +328,7 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons, const ADDON::TYPE &type /* = A
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
 
-    std::string sql = PrepareSQL("select distinct addonID from addon");
+    std::string sql = PrepareSQL("SELECT DISTINCT a.addonID FROM addon a, addonlinkrepo b WHERE b.idRepo > 0 AND a.id = b.idAddon");
     if (type != ADDON_UNKNOWN)
     {
       std::string strType;
