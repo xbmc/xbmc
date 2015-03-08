@@ -13908,7 +13908,17 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr ""
 
-#empty strings from id 36043 to 36100
+#: xbmc/peripherals/devices/peripheralcecadapter.cpp
+msgctxt "#36043"
+msgid "No CEC capable TV detected."
+msgstr ""
+
+#: xbmc/peripherals/devices/peripheralcecadapter.cpp
+msgctxt "#36044"
+msgid "Disable polling for CEC capable devices?"
+msgstr ""
+
+#empty strings from id 36045 to 36100
 #strings from 36100 to 36999 are reserved for settings descriptions
 
 #. Description of settings section "Appearance"

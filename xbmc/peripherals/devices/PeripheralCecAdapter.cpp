@@ -27,6 +27,7 @@
 #include "DynamicDll.h"
 #include "threads/SingleLock.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -56,6 +57,8 @@ using namespace std;
 #define LOCALISED_ID_AVR          36038
 #define LOCALISED_ID_TV_AVR       36039
 #define LOCALISED_ID_NONE         231
+
+#define CEC_TV_PRESENT_CHECK_TIMEOUT (30)
 
 /* time in seconds to suppress source activation after receiving OnStop */
 #define CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP 2
@@ -357,6 +360,7 @@ bool CPeripheralCecAdapter::OpenConnection(void)
 
 void CPeripheralCecAdapter::Process(void)
 {
+  CStopWatch timeout;
   if (!OpenConnection())
     return;
 
@@ -372,6 +376,7 @@ void CPeripheralCecAdapter::Process(void)
 
   m_queryThread = new CPeripheralCecAdapterUpdateThread(this, &m_configuration);
   m_queryThread->Create(false);
+  timeout.Start();
 
   while (!m_bStop)
   {
@@ -383,6 +388,34 @@ void CPeripheralCecAdapter::Process(void)
 
     if (!m_bStop)
       ProcessStandbyDevices();
+
+    if (!m_bStop && timeout.IsRunning())
+    {
+      if (m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_TV))
+      {
+        /** TV is present, stop checking */
+        timeout.Stop();
+      }
+      else if (timeout.GetElapsedSeconds() >= CEC_TV_PRESENT_CHECK_TIMEOUT)
+      {
+        /** no TV found for 30 seconds, ask if the user wants to disable CEC */
+        if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(36000), // Pulse-Eight CEC adaptor
+                                              g_localizeStrings.Get(36043), // No CEC capable TV detected.
+                                              "",
+                                              g_localizeStrings.Get(36044) // Disable polling for CEC capable devices?
+                                              ))
+        {
+          SetSetting("enabled", false);
+          m_bStop          = true;
+          m_bDeviceRemoved = true;
+        }
+        else
+        {
+          /** stop checking in here */
+          timeout.Stop();
+        }
+      }
+    }
 
     if (!m_bStop)
       Sleep(5);
@@ -1282,7 +1315,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
              m_configuration.bShutdownOnStandby == 1 ? 13005 : 36028);
 
   if (bChanged)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), g_localizeStrings.Get(36023));
+    CLog::Log(LOGDEBUG, "SetConfigurationFromLibCEC - settings updated by libCEC");
 }
 
 void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
