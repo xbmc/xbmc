@@ -70,6 +70,7 @@ protected:
                                  int heading = -1, bool delayed = false, bool visible = true, int help = -1);
   // button controls
   CSettingAction* AddButton(CSettingGroup *group, const std::string &id, int label, int level, bool delayed = false, bool visible = true, int help = -1);
+  CSettingString* AddInfoLabelButton(CSettingGroup *group, const std::string &id, int label, int level, std::string info, bool visible = true, int help = -1);
   CSettingAddon* AddAddon(CSettingGroup *group, const std::string &id, int label, int level, std::string value, ADDON::TYPE addonType,
                           bool allowEmpty = false, int heading = -1, bool hideValue = false, bool showInstalledAddons = true, bool showInstallableAddons = false,
                           bool showMoreAddons = true, bool delayed = false, bool visible = true, int help = -1);
