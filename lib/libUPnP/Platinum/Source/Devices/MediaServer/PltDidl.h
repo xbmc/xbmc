@@ -100,6 +100,7 @@
 #define PLT_FILTER_MASK_XBMC_VOTES                  NPT_UINT64_C(0x0000400000000000)
 #define PLT_FILTER_MASK_XBMC_ARTWORK                NPT_UINT64_C(0x0000800000000000)
 #define PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER      NPT_UINT64_C(0x0001000000000000)
+#define PLT_FILTER_MASK_XBMC_COUNTRY                NPT_UINT64_C(0x0002000000000000)
 
 #define PLT_FILTER_FIELD_TITLE                      "dc:title"
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
@@ -150,6 +151,7 @@
 #define PLT_FILTER_FIELD_XBMC_VOTES                 "xbmc:votes"
 #define PLT_FILTER_FIELD_XBMC_ARTWORK               "xbmc:artwork"
 #define PLT_FILTER_FIELD_XBMC_UNIQUE_IDENTIFIER     "xbmc:uniqueidentifier"
+#define PLT_FILTER_FIELD_XBMC_COUNTRY               "xbmc:country"
 
 extern const char* didl_header;
 extern const char* didl_footer;
