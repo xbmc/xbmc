@@ -1282,7 +1282,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
              m_configuration.bShutdownOnStandby == 1 ? 13005 : 36028);
 
   if (bChanged)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), g_localizeStrings.Get(36023));
+    CLog::Log(LOGDEBUG, "SetConfigurationFromLibCEC - settings updated by libCEC");
 }
 
 void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
