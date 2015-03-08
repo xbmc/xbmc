@@ -84,6 +84,9 @@ public:
   static int android_printf(const char *format, ...);
   
   static int GetBatteryLevel();
+  static bool EnableWakeLock(bool on);
+  static bool HasFocus();
+
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static std::vector <androidPackage> GetApplications();
   static bool GetIconSize(const std::string &packageName, int *width, int *height);
@@ -111,15 +114,15 @@ protected:
 
 private:
   static bool HasLaunchIntent(const std::string &package);
-  bool getWakeLock();
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
   void run();
   void stop();
   void SetupEnv();
   static ANativeActivity *m_activity;
-  CJNIWakeLock *m_wakeLock;
-  static int m_batteryLevel;  
-  static int m_initialVolume;  
+  static CJNIWakeLock *m_wakeLock;
+  static int m_batteryLevel;
+  static int m_initialVolume;
+  static bool m_hasFocus;
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;

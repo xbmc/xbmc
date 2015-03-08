@@ -3612,6 +3612,10 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
     CVariant data(CVariant::VariantTypeObject);
     data["shuttingdown"] = bPowerOffKeyPressed;
     CAnnouncementManager::Get().Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
+#ifdef TARGET_ANDROID
+    // Screensaver deactivated -> acquire wake lock
+    CXBMCApp::EnableWakeLock(true);
+#endif
   }
 
   return result;
@@ -3754,11 +3758,18 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
         m_screenSaver.reset(new CScreenSaver(""));
     }
   }
-  if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID().empty())
+  if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim"
+      || m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
+  {
+#ifdef TARGET_ANDROID
+    // Default screensaver activated -> release wake lock
+    CXBMCApp::EnableWakeLock(false);
+#endif
     return;
-  else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
+  }
+  else if (m_screenSaver->ID().empty())
     return;
-  else if (!m_screenSaver->ID().empty())
+  else
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 
