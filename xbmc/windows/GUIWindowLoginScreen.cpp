@@ -324,9 +324,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   g_weatherManager.Refresh();
   g_application.SetLoggingIn(true);
 
-  if (fallbackLanguage)
-    CGUIDialogOK::ShowAndGetInput("Failed to load language", "We were unable to load your configured language. Please check your language settings.");
-
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();
 #endif
@@ -341,4 +338,12 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   g_application.UpdateLibraries();
   CStereoscopicsManager::Get().Initialize();
+
+  if (fallbackLanguage)
+  {
+    // make sure the startup window doesn't replace our dialog
+    g_application.WaitForStartWindow();
+
+    CGUIDialogOK::ShowAndGetInput("Failed to load language", "We were unable to load your configured language. Please check your language settings.");
+  }
 }

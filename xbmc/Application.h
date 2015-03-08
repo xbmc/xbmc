@@ -389,6 +389,12 @@ public:
    */
   void UnregisterActionListener(IActionListener *listener);
 
+  /*!
+   \brief Wait for the startup window to complete and move on to the real
+          start window.
+   */
+  void WaitForStartWindow();
+
 protected:
   virtual bool OnSettingsSaving() const;
 

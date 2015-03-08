@@ -1252,7 +1252,12 @@ bool CApplication::Initialize()
 #endif
 
   if (fallbackLanguage)
+  {
+    // make sure the startup window doesn't replace our dialog
+    WaitForStartWindow();
+
     CGUIDialogOK::ShowAndGetInput(24133, 24134);
+  }
 
   // show info dialog about moved configuration files if needed
   ShowAppMigrationMessage();
@@ -1746,6 +1751,22 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 //  The g_SkinInfo shared_ptr ought to be reset here
 // but there are too many places it's used without checking for NULL
 // and as a result a race condition on exit can cause a crash.
+}
+
+void CApplication::WaitForStartWindow()
+{
+  int windowId;
+  while (true)
+  {
+    // get the ID of the currently active window
+    windowId = g_windowManager.GetActiveWindowID();
+
+    // if it's not the startup window we're good
+    if (windowId != WINDOW_STARTUP_ANIM)
+      return;
+
+    Process();
+  }
 }
 
 bool CApplication::LoadUserWindows()
@@ -4114,6 +4135,9 @@ void CApplication::ShowAppMigrationMessage()
   if (CFile::Exists("special://home/.kodi_data_was_migrated") &&
       !CFile::Exists("special://home/.kodi_migration_info_shown"))
   {
+    // make sure the startup window doesn't replace our dialog
+    WaitForStartWindow();
+
     CGUIDialogOK::ShowAndGetInput(24128, 0, 24129, 0);
     CFile tmpFile;
     // create the file which will prevent this dialog from appearing in the future
