@@ -74,6 +74,8 @@ void CRemoteControl::Reset()
 
 void CRemoteControl::Disconnect()
 {
+  m_event.Set();
+
   if (IsRunning())
     StopThread();
 
@@ -126,24 +128,21 @@ void CRemoteControl::Process()
 
   int iAttempt = 0;
   unsigned int iMsRetryDelay = 5000;
-  unsigned int time = XbmcThreads::SystemClockMillis() - iMsRetryDelay;
 
   // try to connect 60 times @ a 5 second interval (5 minutes)
   // multiple tries because LIRC service might be up and running a little later then xbmc on boot.
   while (!m_bStop && iAttempt <= 60)
   {
-    if (XbmcThreads::SystemClockMillis() - time >= iMsRetryDelay)
-    {
-      time = XbmcThreads::SystemClockMillis();
-      if (Connect(addr))
-        break;
+    if (Connect(addr))
+      break;
 
-      if (iAttempt == 0)
-        CLog::Log(LOGINFO, "CRemoteControl::Process - failed to connect to LIRC, will keep retrying every %d seconds", iMsRetryDelay / 1000);
+    if (iAttempt == 0)
+      CLog::Log(LOGINFO, "CRemoteControl::Process - failed to connect to LIRC, will keep retrying every %d seconds", iMsRetryDelay / 1000);
 
-      ++iAttempt;
-    }
-    Sleep(1000);
+    ++iAttempt;
+
+    if (AbortableWait(m_event, iMsRetryDelay) == WAIT_INTERRUPTED)
+      break;
   }
   
   if (!m_bInitialized)

@@ -25,6 +25,7 @@
 
 #include "system.h"
 #include "threads/Thread.h"
+#include "threads/Event.h"
 
 class CRemoteControl :  CThread
 {
@@ -67,6 +68,7 @@ private:
   std::string  m_sendData;
   bool        m_inReply;
   int         m_nrSending;
+  CEvent      m_event;
 };
 
 #endif
