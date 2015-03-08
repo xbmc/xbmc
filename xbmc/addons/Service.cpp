@@ -113,16 +113,6 @@ void CService::BuildServiceType()
   }
 }
 
-void CService::OnDisabled()
-{
-  Stop();
-}
-
-void CService::OnEnabled()
-{
-  Start();
-}
-
 bool CService::OnPreInstall()
 {
   // make sure the addon is stopped

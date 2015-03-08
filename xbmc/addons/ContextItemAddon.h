@@ -59,8 +59,6 @@ namespace ADDON
     virtual bool OnPreInstall();
     virtual void OnPostInstall(bool restart, bool update, bool modal);
     virtual void OnPreUnInstall();
-    virtual void OnDisabled();
-    virtual void OnEnabled();
 
   private:
     std::string m_label;

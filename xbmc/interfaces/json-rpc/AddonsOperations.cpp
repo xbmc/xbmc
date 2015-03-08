@@ -152,10 +152,8 @@ JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITr
   else
     return InvalidParams;
 
-  if (!CAddonMgr::Get().DisableAddon(id, disabled))
-      return InvalidParams;
-
-  return ACK;
+  bool success = disabled ? CAddonMgr::Get().DisableAddon(id) : CAddonMgr::Get().EnableAddon(id);
+  return success ? ACK : InvalidParams;
 }
 
 JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

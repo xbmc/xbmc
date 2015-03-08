@@ -42,6 +42,9 @@ const std::string   TranslateType(const TYPE &type, bool pretty=false);
 const std::string   GetIcon(const TYPE &type);
       TYPE          TranslateType(const std::string &string);
 
+void OnEnabled(const std::string& id);
+void OnDisabled(const std::string& id);
+
 class AddonProps : public ISerializable
 {
 public:

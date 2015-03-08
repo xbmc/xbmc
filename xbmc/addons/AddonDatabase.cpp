@@ -640,33 +640,14 @@ bool CAddonDatabase::DisableAddon(const std::string &addonID, bool disable /* = 
       {
         std::string sql = PrepareSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
         m_pDS->exec(sql);
-
-        // If the addon is a special, call the disabled handler
-        AddonPtr addon;
-        if ((CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false)
-          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false)
-          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_CONTEXT_ITEM, false)) && addon)
-          addon->OnDisabled();
-
         return true;
       }
       return false; // already disabled or failed query
     }
     else
     {
-      bool disabled = IsAddonDisabled(addonID); //we need to know if service addon is running
       std::string sql = PrepareSQL("delete from disabled where addonID='%s'", addonID.c_str());
       m_pDS->exec(sql);
-
-      if (disabled)
-      {
-        // If the addon is a special, call the enabled handler
-        AddonPtr addon;
-        if ((CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false)
-          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false)
-          || CAddonMgr::Get().GetAddon(addonID, addon, ADDON_CONTEXT_ITEM, false)) && addon)
-          addon->OnEnabled();
-      }
     }
     return true;
   }
@@ -710,6 +691,30 @@ bool CAddonDatabase::IsAddonDisabled(const std::string &addonID)
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::GetDisabled(std::vector<std::string>& addons)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    std::string sql = PrepareSQL("SELECT addonID FROM disabled");
+    m_pDS->query(sql.c_str());
+    while (!m_pDS->eof())
+    {
+      addons.push_back(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
 }

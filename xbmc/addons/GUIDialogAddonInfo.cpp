@@ -260,7 +260,10 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
   if (!enable && PromptIfDependency(24075, 24091))
     return;
 
-  CAddonMgr::Get().DisableAddon(m_localAddon->ID(), !enable);
+  if (enable)
+    CAddonMgr::Get().EnableAddon(m_localAddon->ID());
+  else
+    CAddonMgr::Get().DisableAddon(m_localAddon->ID());
   SetItem(m_item);
   UpdateControls();
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);

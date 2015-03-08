@@ -88,15 +88,6 @@ void CContextItemAddon::OnPreUnInstall()
   CContextMenuManager::Get().Unregister(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
 }
 
-void CContextItemAddon::OnDisabled()
-{
-  CContextMenuManager::Get().Unregister(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
-}
-void CContextItemAddon::OnEnabled()
-{
-  CContextMenuManager::Get().Register(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
-}
-
 bool CContextItemAddon::IsVisible(const CFileItemPtr& item) const
 {
   return item && m_visCondition->Get(item.get());
