@@ -100,8 +100,12 @@ void CAddonDatabase::UpdateTables(int version)
   }
   if (version < 17)
   {
-    m_pDS->exec("DELETE FROM repo");
-    m_pDS->exec("ALTER TABLE repo ADD version text");
+    m_pDS->exec("ALTER TABLE repo ADD version text DEFAULT '0.0.0'");
+  }
+  if (version == 17)
+  {
+    /** remove all add-ons because the previous upgrade created dupes in it's first version */
+    m_pDS->exec("DELETE FROM addon");
   }
 }
 
@@ -324,7 +328,7 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons, const ADDON::TYPE &type /* = A
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
 
-    std::string sql = PrepareSQL("select distinct addonID from addon");
+    std::string sql = PrepareSQL("SELECT DISTINCT a.addonID FROM addon a, addonlinkrepo b WHERE b.idRepo > 0 AND a.id = b.idAddon");
     if (type != ADDON_UNKNOWN)
     {
       std::string strType;
