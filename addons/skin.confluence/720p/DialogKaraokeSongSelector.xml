@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog">
-	<animation effect="slide" start="0,-40" end="0,0" time="100">WindowOpen</animation>
-	<animation effect="slide" start="0,0" end="0,-40" delay="400" time="100">WindowClose</animation>
+	<animation effect="slide" start="0,-40" end="0,0" time="75">WindowOpen</animation>
+	<animation effect="slide" start="0,0" end="0,-40" delay="300" time="75">WindowClose</animation>
 	<controls>
 		<control type="group">
 			<left>100</left>

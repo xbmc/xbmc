@@ -179,7 +179,7 @@
 						<include>KeyboardButton</include>
 					</control>
 				</control>
-					<!-- 2nd row -->
+				<!-- 2nd row -->
 				<control type="grouplist">
 					<orientation>horizontal</orientation>
 					<top>50</top>
@@ -274,7 +274,7 @@
 						<include>KeyboardButton</include>
 					</control>
 				</control>
-					<!-- 3rd row -->
+				<!-- 3rd row -->
 				<control type="grouplist">
 					<top>100</top>
 					<orientation>horizontal</orientation>
@@ -369,7 +369,7 @@
 						<include>KeyboardButton</include>
 					</control>
 				</control>
-					<!-- 4th row -->
+				<!-- 4th row -->
 				<control type="grouplist">
 					<top>150</top>
 					<itemgap>0</itemgap>
@@ -478,7 +478,7 @@
 						<include>KeyboardButton</include>
 					</control>
 				</control>
-					<!-- 5th row -->
+				<!-- 5th row -->
 				<control type="grouplist">
 					<top>200</top>
 					<itemgap>0</itemgap>

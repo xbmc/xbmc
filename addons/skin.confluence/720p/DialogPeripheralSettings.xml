@@ -131,7 +131,6 @@
 			<height>2</height>
 			<texture>separator2.png</texture>
 		</control>
-
 		<control type="group" id="9000">
 			<left>40</left>
 			<top>505</top>

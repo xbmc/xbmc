@@ -111,19 +111,19 @@
 				<width>1280</width>
 				<height>720</height>
 				<texture>black-back.png</texture>
-				<animation effect="fade" time="400">WindowOpen</animation>
-				<animation effect="fade" time="200">WindowClose</animation>
+				<animation effect="fade" time="300">WindowOpen</animation>
+				<animation effect="fade" time="150">WindowClose</animation>
 			</control>
 			<control type="group">
 				<left>90</left>
 				<top>30</top>
 				<animation type="WindowOpen" reversible="false">
-					<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>
-					<effect type="fade" start="0" end="100" time="300"/>
+					<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="225" />
+					<effect type="fade" start="0" end="100" time="225" />
 				</animation>
 				<animation type="WindowClose" reversible="false">
-					<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300"/>
-					<effect type="fade" start="100" end="0" time="300"/>
+					<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="225" />
+					<effect type="fade" start="100" end="0" time="225" />
 				</animation>
 				<control type="image">
 					<left>5</left>
@@ -214,7 +214,7 @@
 							<width>260</width>
 							<height>61</height>
 							<texture border="5">MenuItemFO.png</texture>
-							<animation effect="fade" start="100" end="50" time="100" condition="!Control.HasFocus(9000)">Conditional</animation>
+							<animation effect="fade" start="100" end="50" time="75" condition="!Control.HasFocus(9000)">Conditional</animation>
 						</control>
 						<control type="label">
 							<left>10</left>
@@ -378,12 +378,12 @@
 			</control>
 			<control type="group">
 				<animation type="WindowOpen" reversible="false">
-					<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>
-					<effect type="fade" start="0" end="100" time="300"/>
+					<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="225" />
+					<effect type="fade" start="0" end="100" time="225" />
 				</animation>
 				<animation type="WindowClose" reversible="false">
-					<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300"/>
-					<effect type="fade" start="100" end="0" time="300"/>
+					<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="225" />
+					<effect type="fade" start="100" end="0" time="225" />
 				</animation>
 				<left>380</left>
 				<top>90</top>

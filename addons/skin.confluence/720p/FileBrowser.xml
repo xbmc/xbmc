@@ -10,10 +10,10 @@
 	<controls>
 		<control type="group">
 			<left>360</left>
-			<animation effect="slide" start="700,0" end="0,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
-			<animation effect="slide" start="-180,0" end="0,0" time="400" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="700,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="-400,0" time="400" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
+			<animation effect="slide" start="700,0" end="0,0" time="300" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
+			<animation effect="slide" start="-180,0" end="0,0" time="300" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="700,0" time="300" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
+			<animation effect="slide" start="0,0" end="-400,0" time="300" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
@@ -56,8 +56,8 @@
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="group">
-				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<animation effect="fade" delay="300" start="0" end="100" time="150">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 				<control type="label" id="411">
 					<description>header label</description>
 					<left>40</left>
@@ -131,23 +131,23 @@
 					<height>221</height>
 					<texture border="5">button-nofocus.png</texture>
 				</control>
-				<control type="image"> 
-					<left>690</left> 
-					<top>405</top> 
-					<width>211</width> 
-					<height>211</height> 
-					<aspectratio>keep</aspectratio> 
-					<texture background="true">$INFO[ListItem.Icon]</texture> 
-					<visible>!SubString(Control.GetLabel(416),*)</visible> 
-				</control> 
-				<control type="image"> 
-					<left>250</left> 
-					<top>465</top> 
-					<width>410</width> 
-					<height>200</height> 
-					<aspectratio>keep</aspectratio> 
-					<texture background="true" flipx="true">$INFO[ListItem.Icon]</texture> 
-					<visible>SubString(Control.GetLabel(416),*)</visible> 
+				<control type="image">
+					<left>690</left>
+					<top>405</top>
+					<width>211</width>
+					<height>211</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<visible>!SubString(Control.GetLabel(416),*)</visible>
+				</control>
+				<control type="image">
+					<left>250</left>
+					<top>465</top>
+					<width>410</width>
+					<height>200</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true" flipx="true">$INFO[ListItem.Icon]</texture>
+					<visible>SubString(Control.GetLabel(416),*)</visible>
 				</control>
 				<control type="panel" id="450">
 					<left>20</left>
@@ -303,7 +303,6 @@
 						</control>
 					</focusedlayout>
 				</control>
-
 				<control type="scrollbar" id="60">
 					<left>640</left>
 					<top>90</top>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
-	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+	<animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 	<coordinates>
 		<left>860</left>
 		<top>640</top>
 	</coordinates>
 	<controls>
 		<control type="group">
-			<animation effect="slide" start="0,0" end="-190,0" time="200" condition="Window.IsVisible(BusyDialog)">conditional</animation>
+			<animation effect="slide" start="0,0" end="-190,0" time="150" condition="Window.IsVisible(BusyDialog)">conditional</animation>
 			<control type="image">
 				<left>0</left>
 				<top>0</top>

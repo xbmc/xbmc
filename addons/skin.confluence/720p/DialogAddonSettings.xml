@@ -173,7 +173,6 @@
 				<ondown>2</ondown>
 			</control>
 		</control>
-
 		<control type="button" id="13">
 			<description>Default Category Button</description>
 			<height>40</height>

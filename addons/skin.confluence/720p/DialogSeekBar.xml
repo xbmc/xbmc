@@ -2,8 +2,8 @@
 <window>
 	<defaultcontrol>1</defaultcontrol>
 	<visible>Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
-	<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
-	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+	<animation effect="fade" start="0" end="100" time="150">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 	<controls>
 		<control type="group">
 			<visible>player.chaptercount + Window.IsVisible(FullScreenVideo)</visible>
@@ -98,7 +98,6 @@
 					<texture>OSDPlay.png</texture>
 					<visible>Player.Playing</visible>
 				</control>
-
 				<control type="image">
 					<left>28</left>
 					<top>4</top>
@@ -139,7 +138,6 @@
 					<texture>OSD32x.png</texture>
 					<visible>Player.Rewinding32x</visible>
 				</control>
-
 				<control type="image">
 					<left>34</left>
 					<top>4</top>

@@ -9,7 +9,7 @@
 	<include>dialogeffect</include>
 	<controls>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(AddonSettings)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="150" condition="Window.IsActive(AddonSettings)">Conditional</animation>
 			<control type="image">
 				<description>background image</description>
 				<left>0</left>

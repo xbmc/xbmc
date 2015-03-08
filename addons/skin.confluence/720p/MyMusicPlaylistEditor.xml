@@ -119,8 +119,8 @@
 			</control>
 		</control>
 		<control type="group">
-			<animation effect="slide" start="-480,0" end="0,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
-			<animation effect="slide" end="-480,0" start="0,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="-480,0" end="0,0" time="375" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" end="-480,0" start="0,0" time="375" tween="quadratic" easing="out">WindowClose</animation>
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
@@ -257,8 +257,8 @@
 			</control>
 		</control>
 		<control type="group">
-			<animation effect="slide" start="480,0" end="0,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
-			<animation effect="slide" end="480,0" start="0,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="480,0" end="0,0" time="375" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" end="480,0" start="0,0" time="375" tween="quadratic" easing="out">WindowClose</animation>
 			<left>800</left>
 			<control type="image">
 				<left>0</left>

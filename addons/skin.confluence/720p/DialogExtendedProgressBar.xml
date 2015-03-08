@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol/>
-	<animation effect="slide" start="0,-70" end="0,0" time="100">WindowOpen</animation>
-	<animation effect="slide" start="0,0" end="0,-70" delay="400" time="100">WindowClose</animation>
+	<defaultcontrol />
+	<animation effect="slide" start="0,-70" end="0,0" time="75">WindowOpen</animation>
+	<animation effect="slide" start="0,0" end="0,-70" delay="300" time="75">WindowClose</animation>
 	<controls>
 		<control type="group">
 			<left>720</left>
 			<top>0</top>
-			<animation effect="slide" end="0,-80" time="200" condition="Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)">conditional</animation>
+			<animation effect="slide" end="0,-80" time="150" condition="Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)">conditional</animation>
 			<control type="image">
 				<left>0</left>
 				<top>-10</top>
