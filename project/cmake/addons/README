@@ -23,6 +23,9 @@ are:
     also supported to specify negated platforms with a leading exclamation mark
     (i), e.g. "!windows".
     Available platforms are: linux, windows, darwin, ios, android, rbpi
+  * nobuild.txt: there's no configure and build step for an addon resulting in a
+    download and a simple copy of the downloaded directory. In case of a git
+    repository the .git directory is removed before copying the addon directory.
 
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access

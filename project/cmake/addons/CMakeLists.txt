@@ -145,7 +145,8 @@ add_subdirectory(depends)
 # look for all the addons to be built
 file(GLOB_RECURSE addons ${PROJECT_SOURCE_DIR}/addons/*.txt)
 foreach(addon ${addons})
-  if(NOT (addon MATCHES platforms.txt))
+  if(NOT (addon MATCHES nobuild.txt OR
+          addon MATCHES platforms.txt))
     file(STRINGS ${addon} def)
     separate_arguments(def)
     list(GET def 0 id)
@@ -249,12 +250,22 @@ foreach(addon ${addons})
           set(SOURCE_DIR ${BUILD_DIR}/${id})
         endif()
 
+        set(EXTERNELPROJECT_SETUP "")
+
+        # check if the nobuild.txt file exists
+        if(EXISTS ${dir}/nobuild.txt)
+          # setup a custom install step that simply copies the downloaded repository
+          set(EXTERNELPROJECT_SETUP INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR> <INSTALL_DIR>/${id})
+        else()
+          set(EXTERNALPROJECT_SETUP CMAKE_ARGS ${BUILD_ARGS})
+        endif()
+
         if(NOT "${SOURCE_DIR}" STREQUAL "" AND EXISTS ${SOURCE_DIR})
           # setup the buildsystem for the addon
           externalproject_add(${id}
                               SOURCE_DIR ${SOURCE_DIR}
                               INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-                              CMAKE_ARGS ${BUILD_ARGS})
+                              ${EXTERNALPROJECT_SETUP})
 
           # add a custom step to the external project between the configure and the build step which will always
           # be executed and therefore forces a re-build of all changed files
