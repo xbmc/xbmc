@@ -128,7 +128,7 @@ bool CPVRChannelGroupInternal::Update(void)
   return PVRChannels_tmp.LoadFromClients() && UpdateGroupEntries(PVRChannels_tmp);
 }
 
-bool CPVRChannelGroupInternal::AddToGroup(CPVRChannelPtr &channel, int iChannelNumber /* = 0 */)
+bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, int iChannelNumber /* = 0 */)
 {
   CSingleLock lock(m_critSection);
 

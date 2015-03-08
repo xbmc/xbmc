@@ -75,7 +75,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(CPVRChannelPtr &channel, int iChannelNumber = 0);
+    bool AddToGroup(const CPVRChannelPtr &channel, int iChannelNumber = 0);
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
