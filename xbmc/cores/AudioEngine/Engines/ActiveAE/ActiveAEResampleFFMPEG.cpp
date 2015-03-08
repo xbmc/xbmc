@@ -42,7 +42,7 @@ CActiveAEResampleFFMPEG::~CActiveAEResampleFFMPEG()
     swr_free(&m_pContext);
 }
 
-bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality)
+bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample)
 {
   if (!m_loaded)
     return false;
