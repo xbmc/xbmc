@@ -304,6 +304,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec()
 , m_render_sw(false)
 {
   memset(&m_videobuffer, 0x00, sizeof(DVDVideoPicture));
+  memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
 }
 
 CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
