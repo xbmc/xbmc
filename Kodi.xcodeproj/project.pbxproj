@@ -140,7 +140,6 @@
 		18B7C8A0129423A7009E7A26 /* MusicInfoTagLoaderSPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C87E129423A7009E7A26 /* MusicInfoTagLoaderSPC.cpp */; };
 		18B7C8A4129423A7009E7A26 /* MusicInfoTagLoaderYM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C886129423A7009E7A26 /* MusicInfoTagLoaderYM.cpp */; };
 		18B7C8D712942546009E7A26 /* ButtonTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */; };
-		18B7C8D812942546009E7A26 /* KeyboardLayoutConfiguration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CD12942546009E7A26 /* KeyboardLayoutConfiguration.cpp */; };
 		18B7C8D912942546009E7A26 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */; };
 		18B7C8DA12942546009E7A26 /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8D112942546009E7A26 /* MouseStat.cpp */; };
 		18B7C8DB12942546009E7A26 /* SDLJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8D312942546009E7A26 /* SDLJoystick.cpp */; };
@@ -1874,7 +1873,6 @@
 		DFF0F46E17528350002DA3A4 /* WindowXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1EC15FCE77900E10810 /* WindowXML.cpp */; };
 		DFF0F46F17528350002DA3A4 /* ButtonTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */; };
 		DFF0F47017528350002DA3A4 /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
-		DFF0F47117528350002DA3A4 /* KeyboardLayoutConfiguration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CD12942546009E7A26 /* KeyboardLayoutConfiguration.cpp */; };
 		DFF0F47217528350002DA3A4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */; };
 		DFF0F47317528350002DA3A4 /* SDLJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8D312942546009E7A26 /* SDLJoystick.cpp */; };
 		DFF0F47417528350002DA3A4 /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
@@ -3115,7 +3113,6 @@
 		E4991569174E656E00741B6D /* WindowXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1EC15FCE77900E10810 /* WindowXML.cpp */; };
 		E499156A174E65AB00741B6D /* ButtonTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */; };
 		E499156B174E65AB00741B6D /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
-		E499156C174E65AB00741B6D /* KeyboardLayoutConfiguration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CD12942546009E7A26 /* KeyboardLayoutConfiguration.cpp */; };
 		E499156D174E65AB00741B6D /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */; };
 		E499156E174E65AB00741B6D /* SDLJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8D312942546009E7A26 /* SDLJoystick.cpp */; };
 		E499156F174E65AC00741B6D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
@@ -3578,8 +3575,6 @@
 		18B7C887129423A7009E7A26 /* MusicInfoTagLoaderYM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderYM.h; sourceTree = "<group>"; };
 		18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ButtonTranslator.cpp; sourceTree = "<group>"; };
 		18B7C8CC12942546009E7A26 /* ButtonTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonTranslator.h; sourceTree = "<group>"; };
-		18B7C8CD12942546009E7A26 /* KeyboardLayoutConfiguration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardLayoutConfiguration.cpp; sourceTree = "<group>"; };
-		18B7C8CE12942546009E7A26 /* KeyboardLayoutConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardLayoutConfiguration.h; sourceTree = "<group>"; };
 		18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardStat.cpp; sourceTree = "<group>"; };
 		18B7C8D012942546009E7A26 /* KeyboardStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardStat.h; sourceTree = "<group>"; };
 		18B7C8D112942546009E7A26 /* MouseStat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseStat.cpp; sourceTree = "<group>"; };
@@ -6423,8 +6418,6 @@
 				395C29BB1A94733100EBC7AD /* Key.h */,
 				7CF80DC719710DC2003B2B34 /* KeyboardLayout.cpp */,
 				7CF80DC819710DC2003B2B34 /* KeyboardLayout.h */,
-				18B7C8CD12942546009E7A26 /* KeyboardLayoutConfiguration.cpp */,
-				18B7C8CE12942546009E7A26 /* KeyboardLayoutConfiguration.h */,
 				18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */,
 				18B7C8D012942546009E7A26 /* KeyboardStat.h */,
 				18B7C8D112942546009E7A26 /* MouseStat.cpp */,
@@ -10999,7 +10992,6 @@
 				18B7C8A0129423A7009E7A26 /* MusicInfoTagLoaderSPC.cpp in Sources */,
 				18B7C8A4129423A7009E7A26 /* MusicInfoTagLoaderYM.cpp in Sources */,
 				18B7C8D712942546009E7A26 /* ButtonTranslator.cpp in Sources */,
-				18B7C8D812942546009E7A26 /* KeyboardLayoutConfiguration.cpp in Sources */,
 				18B7C8D912942546009E7A26 /* KeyboardStat.cpp in Sources */,
 				18B7C8DA12942546009E7A26 /* MouseStat.cpp in Sources */,
 				18B7C8DB12942546009E7A26 /* SDLJoystick.cpp in Sources */,
@@ -12367,7 +12359,6 @@
 				DFF0F46E17528350002DA3A4 /* WindowXML.cpp in Sources */,
 				DFF0F46F17528350002DA3A4 /* ButtonTranslator.cpp in Sources */,
 				DFF0F47017528350002DA3A4 /* InertialScrollingHandler.cpp in Sources */,
-				DFF0F47117528350002DA3A4 /* KeyboardLayoutConfiguration.cpp in Sources */,
 				395C29DD1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */,
 				DFF0F47217528350002DA3A4 /* KeyboardStat.cpp in Sources */,
 				DFF0F47317528350002DA3A4 /* SDLJoystick.cpp in Sources */,
@@ -13441,7 +13432,6 @@
 				E4991569174E656E00741B6D /* WindowXML.cpp in Sources */,
 				E499156A174E65AB00741B6D /* ButtonTranslator.cpp in Sources */,
 				E499156B174E65AB00741B6D /* InertialScrollingHandler.cpp in Sources */,
-				E499156C174E65AB00741B6D /* KeyboardLayoutConfiguration.cpp in Sources */,
 				E499156D174E65AB00741B6D /* KeyboardStat.cpp in Sources */,
 				E499156E174E65AB00741B6D /* SDLJoystick.cpp in Sources */,
 				E499156F174E65AC00741B6D /* XBMC_keytable.cpp in Sources */,
