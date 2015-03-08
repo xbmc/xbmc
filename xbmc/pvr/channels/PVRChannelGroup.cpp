@@ -374,7 +374,7 @@ void CPVRChannelGroup::SortByChannelNumber(void)
 
 /********** getters **********/
 
-CPVRChannelPtr CPVRChannelGroup::GetByClient(int iUniqueChannelId, int iClientID) const
+CPVRChannelPtr CPVRChannelGroup::GetByUniqueID(int iUniqueChannelId, int iClientID) const
 {
   CPVRChannelPtr retval;
   CSingleLock lock(m_critSection);
@@ -616,7 +616,7 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bo
   for (std::vector<PVRChannelGroupMember>::const_iterator it = channels.m_members.begin(); it != channels.m_members.end(); ++it)
   {
     /* check whether this channel is known in the internal group */
-    CPVRChannelPtr existingChannel = g_PVRChannelGroups->GetGroupAll(m_bRadio)->GetByClient((*it).channel->UniqueID(), (*it).channel->ClientID());
+    CPVRChannelPtr existingChannel = g_PVRChannelGroups->GetGroupAll(m_bRadio)->GetByUniqueID((*it).channel->UniqueID(), (*it).channel->ClientID());
     if (!existingChannel)
       continue;
 
@@ -646,7 +646,7 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
   /* check for deleted channels */
   for (std::vector<PVRChannelGroupMember>::iterator it = m_members.begin(); it != m_members.end();)
   {
-    if (channels.GetByClient((*it).channel->UniqueID(), (*it).channel->ClientID()) == NULL)
+    if (channels.GetByUniqueID((*it).channel->UniqueID(), (*it).channel->ClientID()) == NULL)
     {
       /* channel was not found */
       CLog::Log(LOGINFO,"PVRChannelGroup - %s - deleted %s channel '%s' from group '%s'",
@@ -788,8 +788,8 @@ bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr &channel, int iChannelNum
       iChannelNumber = m_members.size() + 1;
 
     CPVRChannelPtr realChannel = (IsInternalGroup()) ?
-        GetByClient(channel->UniqueID(), channel->ClientID()) :
-        g_PVRChannelGroups->GetGroupAll(m_bRadio)->GetByClient(channel->UniqueID(), channel->ClientID());
+        GetByUniqueID(channel->UniqueID(), channel->ClientID()) :
+        g_PVRChannelGroups->GetGroupAll(m_bRadio)->GetByUniqueID(channel->UniqueID(), channel->ClientID());
 
     if (realChannel)
     {
@@ -1224,7 +1224,7 @@ bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool b
   CSingleLock lock(m_critSection);
 
   /* get the real channel from the group */
-  CPVRChannelPtr channel = GetByClient(item.GetPVRChannelInfoTag()->UniqueID(), item.GetPVRChannelInfoTag()->ClientID());
+  CPVRChannelPtr channel = GetByUniqueID(item.GetPVRChannelInfoTag()->UniqueID(), item.GetPVRChannelInfoTag()->ClientID());
   if (!channel)
     return false;
 
@@ -1271,7 +1271,7 @@ bool CPVRChannelGroup::ToggleChannelLocked(const CFileItem &item)
   CSingleLock lock(m_critSection);
 
   /* get the real channel from the group */
-  CPVRChannelPtr channel = GetByClient(item.GetPVRChannelInfoTag()->UniqueID(), item.GetPVRChannelInfoTag()->ClientID());
+  CPVRChannelPtr channel = GetByUniqueID(item.GetPVRChannelInfoTag()->UniqueID(), item.GetPVRChannelInfoTag()->ClientID());
   if (!channel)
     return false;
 

@@ -98,7 +98,7 @@ CPVRChannelPtr CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannelPtr &
   assert(channel.get());
 
   CSingleLock lock(m_critSection);
-  CPVRChannelPtr realChannel(GetByClient(channel->UniqueID(), channel->ClientID()));
+  CPVRChannelPtr realChannel(GetByUniqueID(channel->UniqueID(), channel->ClientID()));
   if (realChannel)
   {
     realChannel->UpdateFromClient(channel);
@@ -295,7 +295,7 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
       continue;
 
     /* check whether this channel is present in this container */
-    CPVRChannelPtr existingChannel = GetByClient(member.channel->UniqueID(), member.channel->ClientID());
+    CPVRChannelPtr existingChannel = GetByUniqueID(member.channel->UniqueID(), member.channel->ClientID());
     if (existingChannel)
     {
       /* if it's present, update the current tag */

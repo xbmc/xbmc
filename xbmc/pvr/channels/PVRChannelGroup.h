@@ -428,7 +428,7 @@ namespace PVR
      * @param iClientID The ID of the client.
      * @return The channel or NULL if it wasn't found.
      */
-    CPVRChannelPtr GetByClient(int iUniqueChannelId, int iClientID) const;
+    CPVRChannelPtr GetByUniqueID(int iUniqueChannelId, int iClientID) const;
 
     void SetSelectedGroup(bool bSetTo);
     bool IsSelectedGroup(void) const;
