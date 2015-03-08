@@ -417,20 +417,6 @@ CPVRChannelPtr CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
   return retval;
 }
 
-CPVRChannelPtr CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
-{
-  CPVRChannelPtr retval;
-  CSingleLock lock(m_critSection);
-
-  for (std::vector<PVRChannelGroupMember>::const_iterator it = m_members.begin(); !retval && it != m_members.end(); ++it)
-  {
-    if ((*it).channel->UniqueID() == iUniqueID)
-      retval = (*it).channel;
-  }
-
-  return retval;
-}
-
 CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 */) const
 {
   CSingleLock lock(m_critSection);
@@ -1238,7 +1224,7 @@ bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool b
   CSingleLock lock(m_critSection);
 
   /* get the real channel from the group */
-  CPVRChannelPtr channel = GetByUniqueID(item.GetPVRChannelInfoTag()->UniqueID());
+  CPVRChannelPtr channel = GetByClient(item.GetPVRChannelInfoTag()->UniqueID(), item.GetPVRChannelInfoTag()->ClientID());
   if (!channel)
     return false;
 
@@ -1285,7 +1271,7 @@ bool CPVRChannelGroup::ToggleChannelLocked(const CFileItem &item)
   CSingleLock lock(m_critSection);
 
   /* get the real channel from the group */
-  CPVRChannelPtr channel = GetByUniqueID(item.GetPVRChannelInfoTag()->UniqueID());
+  CPVRChannelPtr channel = GetByClient(item.GetPVRChannelInfoTag()->UniqueID(), item.GetPVRChannelInfoTag()->ClientID());
   if (!channel)
     return false;
 
