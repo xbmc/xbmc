@@ -143,6 +143,8 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
         OnMessage(msg);
       }
+      else
+        CreateControls();
       return true;
     }
   }
