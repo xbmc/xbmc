@@ -663,14 +663,19 @@ bool CAddonInstallJob::DoWork()
   }
 
   // run any pre-install functions
-  bool reloadAddon = OnPreInstall();
+  if (!m_addon->OnPreInstall())
+    return false;
 
   // perform install
   if (!Install(installFrom, repoPtr))
     return false;
 
   // run any post-install guff
-  OnPostInstall(reloadAddon);
+  if (!IsModal() && CSettings::Get().GetBool("general.addonnotifications"))
+    CGUIDialogKaiToast::QueueNotification(m_addon->Icon(), m_addon->Name(),
+                                          g_localizeStrings.Get(m_update ? 24065 : 24064),
+                                          TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
+  m_addon->OnPostInstall(m_update, IsModal());
 
   // and we're done!
   MarkFinished();
@@ -725,11 +730,6 @@ bool CAddonInstallJob::DoFileOperation(FileAction action, CFileItemList &items, 
   }
 
   return result;
-}
-
-bool CAddonInstallJob::OnPreInstall()
-{
-  return m_addon->OnPreInstall();
 }
 
 bool CAddonInstallJob::DeleteAddon(const std::string &addonFolder)
@@ -865,16 +865,6 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
   SetProgress(100);
 
   return true;
-}
-
-void CAddonInstallJob::OnPostInstall(bool reloadAddon)
-{
-  if (!IsModal() && CSettings::Get().GetBool("general.addonnotifications"))
-    CGUIDialogKaiToast::QueueNotification(m_addon->Icon(), m_addon->Name(),
-                                          g_localizeStrings.Get(m_update ? 24065 : 24064),
-                                          TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
-
-  m_addon->OnPostInstall(reloadAddon, m_update, IsModal());
 }
 
 void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message /* = "" */)

@@ -278,18 +278,14 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string
 
 bool CSkinInfo::OnPreInstall()
 {
-  // check whether this is an active skin - we need to unload it if so
   if (IsInUse())
-  {
     CApplicationMessenger::Get().ExecBuiltIn("UnloadSkin", true);
-    return true;
-  }
-  return false;
+  return true;
 }
 
-void CSkinInfo::OnPostInstall(bool restart, bool update, bool modal)
+void CSkinInfo::OnPostInstall(bool update, bool modal)
 {
-  if (restart || (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), g_localizeStrings.Get(24099),"","")))
+  if (IsInUse() || (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), g_localizeStrings.Get(24099),"","")))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (toast)

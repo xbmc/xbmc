@@ -133,12 +133,12 @@ bool CService::OnPreInstall()
     if (service)
       service->Stop();
   }
-  return !CAddonMgr::Get().IsAddonDisabled(ID());
+  return true;
 }
 
-void CService::OnPostInstall(bool restart, bool update, bool modal)
+void CService::OnPostInstall(bool update, bool modal)
 {
-  if (restart) // reload/start it if it was running
+  if (!CAddonMgr::Get().IsAddonDisabled(ID())) // reload/start it if it was running
   {
     AddonPtr localAddon; // need to grab the local addon so we have the correct library path to stop
     if (CAddonMgr::Get().GetAddon(ID(), localAddon, ADDON_SERVICE, false))
