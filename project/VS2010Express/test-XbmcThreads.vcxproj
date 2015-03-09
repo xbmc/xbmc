@@ -65,7 +65,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\xbmc\;..\..\lib\UnitTest++\src;..\BuildDependencies\include\UnitTest++\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -114,7 +114,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\..\xbmc\;..\..\lib\UnitTest++\src;..\BuildDependencies\include\UnitTest++\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;HAS_DX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
