@@ -9,9 +9,7 @@
           <constraints>
             <addontype>xbmc.gui.skin</addontype>
           </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
+          <control type="button" format="addon" />
         </setting>
         <setting id="lookandfeel.skinsettings" type="action" parent="lookandfeel.skin" label="21417" help="36104">
           <level>0</level>
@@ -77,7 +75,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="lookandfeel.soundskin" type="string" label="15108" help="36110">
           <level>0</level>
@@ -88,7 +86,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
       </group>
       <group id="2">
@@ -112,126 +110,6 @@
         </setting>
       </group>
     </category>
-    <category id="locale" label="14090" help="36113">
-      <group id="1">
-        <setting id="locale.language" type="addon" label="248" help="36114">
-          <level>0</level>
-          <default>resource.language.en_gb</default>
-          <constraints>
-            <addontype>kodi.resource.language</addontype>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="false" details="false">all</show>
-          </control>
-        </setting>
-        <setting id="locale.country" type="string" label="20026" help="36115">
-          <level>0</level>
-          <default>USA (12h)</default>
-          <constraints>
-            <options>regions</options>
-          </constraints>
-          <dependencies>
-            <dependency type="update" setting="locale.language" />
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="locale.charset" type="string" label="14091" help="36116">
-          <level>1</level>
-          <default>DEFAULT</default>
-          <constraints>
-            <options>charsets</options>
-          </constraints>
-          <dependencies>
-            <dependency type="update" setting="locale.language" />
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="locale.keyboardlayouts" type="list[string]" label="310" help="36432">
-          <level>1</level>
-          <default>English QWERTY</default>
-          <constraints>
-            <options>keyboardlayouts</options>
-            <delimiter>|</delimiter>
-            <minimumItems>1</minimumItems>
-            <maximumItems>3</maximumItems>
-          </constraints>
-          <control type="list" format="string">
-            <multiselect>true</multiselect>
-          </control>
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="locale.timezonecountry" type="string" label="14079" help="36117">
-          <level>1</level>
-          <default>default</default> <!-- will be properly set on startup -->
-          <constraints>
-            <options>timezonecountries</options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="locale.timezone" type="string" label="14080" help="36118">
-          <level>1</level>
-          <default>default</default> <!-- will be properly set on startup -->
-          <constraints>
-            <options>timezones</options>
-          </constraints>
-          <dependencies>
-            <dependency type="update" setting="locale.timezonecountry" />
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-      </group>
-    </category>
-    <category id="filelists" label="14081" help="36121">
-      <group id="1">
-        <setting id="filelists.showparentdiritems" type="boolean" label="13306" help="36122">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="filelists.showextensions" type="boolean" label="497" help="36123">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="filelists.ignorethewhensorting" type="boolean" label="13399" help="36124">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="filelists.allowfiledeletion" type="boolean" label="14071" help="36125">
-          <level>1</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable">
-              <or>
-                <condition on="property" operator="!is" name="ProfileHasFilesLocked" />
-                <condition on="property" name="IsMasterUser" />
-              </or>
-            </dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="filelists.showaddsourcebuttons" type="boolean" label="21382" help="36126">
-          <level>1</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable">
-              <or>
-                <condition on="property" name="ProfileCanWriteSources" />
-                <condition on="property" name="IsMasterUser" />
-              </or>
-            </dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="filelists.showhidden" type="boolean" label="21330" help="36127">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
     <category id="screensaver" label="360" help="36128">
       <group id="1">
         <setting id="screensaver.mode" type="addon" label="356" help="36130">
@@ -244,9 +122,7 @@
           <updates>
             <update type="change" />
           </updates>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
+          <control type="button" format="addon" />
         </setting>
         <setting id="screensaver.settings" parent="screensaver.mode" type="action" label="21417" help="36131">
           <level>0</level>
@@ -321,103 +197,388 @@
       </group>
     </category>
   </section>
-  <section id="videos" label="3" help="36138">
-    <category id="videolibrary" label="14022" help="36139">
+  <section id="playback" label="14086" help="36138">
+    <category id="audiocds" label="620" help="36282">
       <group id="1">
-        <setting id="videolibrary.showunwatchedplots" type="boolean" label="20369" help="36141">
+        <setting id="audiocds.autoaction" type="integer" label="14097" help="36283">
+          <level>1</level>
+          <default>0</default> <!-- AUTOCD_NONE -->
+          <constraints>
+            <options>audiocdactions</options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="audiocds.usecddb" type="boolean" label="227" help="36284">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="audiocds.recordingpath" type="path" label="20000" help="36285">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="path">
+            <heading>657</heading>
+          </control>
+        </setting>
+        <setting id="audiocds.trackpathformat" type="string" label="13307" help="36286">
+          <level>2</level>
+          <default>%A/%A - %B/[%N. ][%A - ]%T</default>
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
+        </setting>
+        <setting id="audiocds.encoder" type="addon" label="621" help="36287">
           <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
+          <default>audioencoder.xbmc.builtin.wav</default>
+          <constraints>
+            <addontype>xbmc.audioencoder</addontype>
+          </constraints>
+          <control type="button" format="addon" />
         </setting>
-        <setting id="videolibrary.actorthumbs" type="boolean" label="20402" help="36143">
+        <setting id="audiocds.settings" parent="audiocds.encoder" type="action" label="21417" help="37025">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable">
+              <condition on="property" name="AddonHasSettings" setting="audiocds.encoder" />
+            </dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="audiocds.ejectonrip" type="boolean" label="14099" help="36291">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="myvideos.flatten" type="boolean" label="20456" help="36183">
-          <level>1</level>
+      </group>
+    </category>
+    <category id="dvds" label="14087" help="36193">
+      <group id="1">
+        <setting id="dvds.autorun" type="boolean" label="14088" help="36194">
+          <level>0</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="videolibrary.flattentvshows" type="integer" label="20412" help="36144">
-          <level>1</level>
-          <default>1</default> <!-- if only one season -->
+        <setting id="dvds.playerregion" type="integer" label="21372" help="36195">
+          <level>2</level>
+          <default>0</default>
           <constraints>
-            <options>
-              <option label="20420">0</option> <!-- never -->
-              <option label="20421">1</option> <!-- if only one season -->
-              <option label="20422">2</option> <!-- always -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="videolibrary.tvshowsselectfirstunwatcheditem" type="integer" label="21416" help="21466">
-          <level>1</level>
-          <default>0</default> <!-- Never -->
-          <constraints>
-            <options>
-              <option label="20420">0</option> <!-- Never -->
-              <option label="21471">1</option> <!-- On first entry -->
-              <option label="20422">2</option> <!-- Always -->
-            </options>
+            <minimum label="351">0</minimum>
+            <step>1</step>
+            <maximum>8</maximum>
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="videolibrary.tvshowsincludeallseasonsandspecials" type="integer" parent="videolibrary.tvshowsselectfirstunwatcheditem" label="21472" help="21473">
-          <level>2</level>
-          <default>0</default> <!-- Neither -->
-          <constraints>
-            <options>
-              <option label="21474">0</option> <!-- Neither -->
-              <option label="21475">1</option> <!-- Both -->
-              <option label="21476">2</option> <!-- Just All Seasons -->
-              <option label="21477">3</option> <!-- Just Specials -->
-            </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="videolibrary.tvshowsselectfirstunwatcheditem" operator="!is">0</dependency> <!-- Never -->
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="videolibrary.showallitems" type="boolean" label="38011" help="38012">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videolibrary.groupmoviesets" type="boolean" label="20458" help="36145">
-          <level>0</level>
+        <setting id="dvds.automenu" type="boolean" label="21882" help="36196">
+          <level>1</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
       </group>
       <group id="2">
-        <setting id="videolibrary.updateonstartup" type="boolean" label="22000" help="36146">
+        <setting id="disc.playback" type="integer" label="14102" help="37031">
           <level>1</level>
-          <default>false</default>
+          <default>0</default> <!-- default -->
+          <constraints>
+            <options>
+              <option label="14104">0</option> <!-- show simplified menu -->
+              <option label="25003">1</option> <!-- show disc menu -->
+              <option label="14103">2</option> <!-- play main movie -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+      </group>
+    </category>
+    <category id="musicplayer" label="2" help="36264">
+      <group id="1">
+        <setting id="musicplayer.autoplaynextitem" type="boolean" label="489" help="36265">
+          <level>0</level>
+          <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videolibrary.backgroundupdate" type="boolean" label="22001" help="36147">
+        <setting id="musicplayer.queuebydefault" type="boolean" label="14084" help="36266">
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
       </group>
+      <group id="2">
+        <setting id="musicplayer.seeksteps" type="list[integer]" label="13556" help="37042">
+          <level>2</level>
+          <default>-60,-30,-15,-7,7,15,30,60</default>
+          <constraints>
+            <options>videoseeksteps</options>
+            <delimiter>,</delimiter>
+            <minimumItems>2</minimumItems>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
+        <setting id="musicplayer.seekdelay" type="integer" label="13557" help="37043">
+          <level>2</level>
+          <default>750</default>
+          <constraints>
+            <minimum label="231">0</minimum> <!-- None -->
+            <step>250</step>
+            <maximum>3000</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14046</formatlabel>
+          </control>
+        </setting>
+      </group>
       <group id="3">
-        <setting id="videolibrary.cleanup" type="action" label="334" help="36148">
+        <setting id="musicplayer.replaygaintype" type="integer" label="638" help="36267">
           <level>2</level>
+          <default>1</default> <!-- REPLAY_GAIN_ALBUM -->
+          <constraints>
+            <options>
+              <option label="351">0</option> <!-- REPLAY_GAIN_NONE -->
+              <option label="639">2</option> <!-- REPLAY_GAIN_TRACK -->
+              <option label="640">1</option> <!-- REPLAY_GAIN_ALBUM -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="musicplayer.replaygainpreamp" type="integer" parent="musicplayer.replaygaintype" label="641" help="36268">
+          <level>2</level>
+          <default>89</default>
+          <constraints>
+            <minimum>77</minimum>
+            <step>1</step>
+            <maximum>101</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14050</formatlabel>
+          </control>
+          <dependencies>
+            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
+          </dependencies>
+        </setting>
+        <setting id="musicplayer.replaygainnogainpreamp" type="integer" parent="musicplayer.replaygaintype" label="642" help="36269">
+          <level>2</level>
+          <default>89</default>
+          <constraints>
+            <minimum>77</minimum>
+            <step>1</step>
+            <maximum>101</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14050</formatlabel>
+          </control>
+          <dependencies>
+            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
+          </dependencies>
+        </setting>
+        <setting id="musicplayer.replaygainavoidclipping" type="boolean" parent="musicplayer.replaygaintype" label="643" help="36270">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group id="4">
+        <setting id="musicplayer.crossfade" type="integer" label="13314" help="36271">
+          <level>1</level>
+          <default>0</default>
+          <constraints>
+            <minimum label="351">0</minimum>
+            <step>1</step>
+            <maximum>15</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
+        </setting>
+        <setting id="musicplayer.crossfadealbumtracks" type="boolean" parent="musicplayer.crossfade" label="13400" help="36272">
+          <level>1</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="musicplayer.crossfade" operator="!is">0</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="5">
+        <setting id="musicplayer.visualisation" type="addon" label="250" help="36273">
+          <level>0</level>
+          <default>visualization.glspectrum</default>
+          <constraints>
+            <addontype>xbmc.player.musicviz</addontype>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="addon" />
+        </setting>
+      </group>
+    </category>
+    <category id="karaoke" label="13327" help="36292">
+      <requirement>HAS_KARAOKE</requirement>
+      <group id="1">
+        <setting id="karaoke.enabled" type="boolean" label="13323" help="36293">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="karaoke.autopopupselector" type="boolean" label="22037" help="36294">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="karaoke.enabled">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="karaoke.font" type="string" label="22030" help="36295">
+          <level>2</level>
+          <default>arial.ttf</default>
+          <constraints>
+            <options>fonts</options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="karaoke.enabled">true</dependency>
+          </dependencies>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="karaoke.fontheight" type="integer" parent="karaoke.font" label="22031" help="36296">
+          <level>2</level>
+          <default>36</default>
+          <constraints>
+            <minimum>16</minimum>
+            <step>2</step>
+            <maximum>74</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="karaoke.enabled">true</dependency>
+            <dependency type="update" setting="karaoke.font" />
+          </dependencies>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="karaoke.fontcolors" type="integer" parent="karaoke.font" label="22032" help="36297">
+          <level>2</level>
+          <default>0</default> <!-- white/green -->
+          <constraints>
+            <options>
+              <option label="22040">0</option> <!-- white/green -->
+              <option label="22041">1</option> <!-- white/red -->
+              <option label="22042">2</option> <!-- white/blue -->
+              <option label="22043">3</option> <!-- black/white -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="karaoke.enabled">true</dependency>
+          </dependencies>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="karaoke.charset" type="string" parent="karaoke.font" label="22033" help="36298">
+          <level>2</level>
+          <default>DEFAULT</default>
+          <constraints>
+            <options>charsets</options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="karaoke.enabled">true</dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="karaoke.export" type="action" label="22038" help="36299">
+          <level>2</level>
+          <dependencies>
+            <dependency type="enable" setting="karaoke.enabled">true</dependency>
+          </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="videolibrary.export" type="action" label="647" help="36149">
+        <setting id="karaoke.importcsv" type="action" label="22036" help="36300">
           <level>2</level>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="videolibrary.import" type="action" label="648" help="36150">
-          <level>2</level>
+          <dependencies>
+            <dependency type="enable" setting="karaoke.enabled">true</dependency>
+          </dependencies>
           <control type="button" format="action" />
         </setting>
       </group>
     </category>
-    <category id="videoplayer" label="14086" help="36151">
+    <category id="pvrplayback" label="19020" help="36226">
+      <group id="1">
+        <setting id="pvrplayback.playminimized" type="boolean" label="19171" help="36227">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pvrplayback.startlast" type="integer" label="19189" help="36228">
+          <level>1</level>
+          <default>0</default> <!-- CONTINUE_LAST_CHANNEL_OFF -->
+          <constraints>
+            <options>
+              <option label="106">0</option>   <!-- CONTINUE_LAST_CHANNEL_OFF -->
+              <option label="19190">1</option> <!-- CONTINUE_LAST_CHANNEL_IN_BACKGROUND -->
+              <option label="19288">2</option> <!-- CONTINUE_LAST_CHANNEL_IN_FOREGROUND -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="pvrplayback.scantime" type="integer" label="19170" help="36230">
+          <level>3</level>
+          <default>10</default>
+          <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>60</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
+        </setting>
+        <setting id="pvrplayback.confirmchannelswitch" type="boolean" label="19281" help="36231">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pvrplayback.channelentrytimeout" type="integer" label="19073" help="36232">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>250</step>
+            <maximum>10000</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14046</formatlabel>
+          </control>
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="pvrplayback.fps" type="integer" label="19108" help="36261">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="351">0</option>   <!-- OFF -->
+              <option label="211">1</option>   <!-- 50Hz -->
+              <option label="212">2</option>   <!-- 59.94Hz -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+      </group>
+    </category>
+    <category id="videoplayer" label="3" help="36151">
       <group id="1">
         <setting id="locale.audiolanguage" type="string" label="285" help="36119">
           <level>1</level>
@@ -475,7 +636,7 @@
               <option label="36036">2</option> <!-- ADJUST_REFRESHRATE_ON_STARTSTOP -->
             </options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="videoplayer.pauseafterrefreshchange" type="integer" parent="videoplayer.adjustrefreshrate" label="13550" help="36165">
           <level>2</level>
@@ -516,7 +677,7 @@
               <option label="631">1</option> <!-- ViewModeZoom -->
             </options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
       </group>
       <group id="4">
@@ -563,7 +724,7 @@
           <constraints>
             <options>rendermethods</options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="videoplayer.hqscalers" type="integer" parent="videoplayer.rendermethod" label="13435" help="36154">
           <level>2</level>
@@ -599,7 +760,7 @@
               <option label="13456">1</option> <!-- Hardware     -->
             </options>
           </constraints>
-          <control type="list" format="integer" />
+          <control type="spinner" format="integer" />
         </setting>
         <setting id="videoplayer.useamcodec" type="boolean" label="13438" help="36422">
           <requirement>HAVE_AMCODEC</requirement>
@@ -794,54 +955,6 @@
         </setting>
       </group>
     </category>
-    <category id="myvideos" label="14081" help="36601">
-      <group id="1">
-        <setting id="myvideos.selectaction" type="integer" label="22079" help="36177">
-          <level>1</level>
-          <default>1</default> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
-          <constraints>
-            <options>
-              <option label="22080">0</option> <!-- SELECT_ACTION_CHOOSE -->
-              <option label="208">1</option> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
-              <option label="13404">2</option> <!-- SELECT_ACTION_RESUME -->
-              <option label="22081">3</option> <!-- SELECT_ACTION_INFO -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="myvideos.extractflags" type="boolean" label="20433" help="36178">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="myvideos.extractchapterthumbs" type="boolean" label="37044" help="37045">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="myvideos.replacelabels" type="boolean" label="20419" help="36179">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="myvideos.extractthumb" type="boolean" label="20433" help="36180">
-          <level>4</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="myvideos.startwindow" type="integer" label="0" help="36181">
-          <level>4</level>
-          <default>100024</default> <!-- WINDOW_VIDEO_FILES -->
-        </setting>
-        <setting id="myvideos.stackvideos" type="boolean" label="20435" help="36182">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
     <category id="subtitles" label="287" help="36184">
       <group id="1">
         <setting id="subtitles.languages" type="list[string]" label="24111" help="24112">
@@ -879,7 +992,7 @@
               <option label="21465">4</option> <!-- SUBTITLE_ALIGN_TOP_OUTSIDE -->
             </options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="subtitles.stereoscopicdepth" type="integer" label="36545" help="36546">
           <level>0</level>
@@ -928,7 +1041,7 @@
           <dependencies>
             <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
           </dependencies>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="subtitles.color" type="integer" parent="subtitles.font" label="737" help="36188">
           <level>1</level>
@@ -948,7 +1061,7 @@
           <dependencies>
             <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
           </dependencies>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="subtitles.charset" type="string" parent="subtitles.font" label="735" help="36189">
           <level>1</level>
@@ -977,7 +1090,7 @@
               <option label="24125">1</option> <!-- SUBTITLE_STORAGEMODE_CUSTOMPATH -->
             </options>
           </constraints>
-          <control type="list" format="integer" />
+          <control type="spinner" format="integer" />
         </setting>
         <setting id="subtitles.custompath" parent="subtitles.storagemode" type="path" label="21366" help="36191">
           <level>1</level>
@@ -1014,9 +1127,7 @@
           <constraints>
             <addontype>xbmc.subtitle.module</addontype>
           </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
+          <control type="button" format="addon" />
         </setting>
         <setting id="subtitles.movie" type="addon" label="24118" help="24119">
           <level>1</level>
@@ -1024,71 +1135,12 @@
           <constraints>
             <addontype>xbmc.subtitle.module</addontype>
           </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
+          <control type="button" format="addon" />
         </setting>
       </group>
     </category>
-    <category id="dvds" label="14087" help="36193">
-      <group id="1">
-        <setting id="dvds.autorun" type="boolean" label="14088" help="36194">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="dvds.playerregion" type="integer" label="21372" help="36195">
-          <level>2</level>
-          <default>0</default>
-          <constraints>
-            <minimum label="351">0</minimum>
-            <step>1</step>
-            <maximum>8</maximum>
-          </constraints>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="dvds.automenu" type="boolean" label="21882" help="36196">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="disc.playback" type="integer" label="14102" help="37031">
-          <level>1</level>
-          <default>0</default> <!-- default -->
-          <constraints>
-            <options>
-              <option label="14104">0</option> <!-- show simplified menu -->
-              <option label="25003">1</option> <!-- show disc menu -->
-              <option label="14103">2</option> <!-- play main movie -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-      </group>
-    </category>
-    <category id="accessibility" label="37032" help="37033">
-      <group id="1">
-        <setting id="accessibility.audiovisual" type="boolean" label="37034" help="37035">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="accessibility.audiohearing" type="boolean" label="37036" help="37037">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="accessibility.subhearing" type="boolean" label="37038" help="37039">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
+  </section>
+  <section id="media" label="37049" help="36253">
     <category id="scrapers" label="0" help="36197">
       <visible>false</visible>
       <group id="1">
@@ -1117,9 +1169,437 @@
           </updates>
         </setting>
       </group>
+    </category>  
+    <category id="filelists" label="16000" help="36121">
+      <group id="1">
+        <setting id="filelists.showparentdiritems" type="boolean" label="13306" help="36122">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="filelists.showextensions" type="boolean" label="497" help="36123">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="filelists.ignorethewhensorting" type="boolean" label="13399" help="36124">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="filelists.allowfiledeletion" type="boolean" label="14071" help="36125">
+          <level>1</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition on="property" operator="!is" name="ProfileHasFilesLocked" />
+                <condition on="property" name="IsMasterUser" />
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="filelists.showaddsourcebuttons" type="boolean" label="21382" help="36126">
+          <level>1</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition on="property" name="ProfileCanWriteSources" />
+                <condition on="property" name="IsMasterUser" />
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="filelists.showhidden" type="boolean" label="21330" help="36127">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+    <category id="musiclibrary" label="37044" help="36600">
+      <group id="1">
+        <setting id="musiclibrary.showcompilationartists" type="boolean" label="13414" help="36255">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="musiclibrary.downloadinfo" type="boolean" label="20192" help="36256">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.albumsscraper" type="addon" label="20193" help="36257">
+          <level>1</level>
+          <default>metadata.album.universal</default>
+          <constraints>
+            <addontype>xbmc.metadata.scraper.albums</addontype>
+          </constraints>
+          <control type="button" format="addon" />
+        </setting>
+        <setting id="musiclibrary.artistsscraper" type="addon" label="20194" help="36258">
+          <level>1</level>
+          <default>metadata.artists.universal</default>
+          <constraints>
+            <addontype>xbmc.metadata.scraper.artists</addontype>
+          </constraints>
+          <control type="button" format="addon" />
+        </setting>
+        <setting id="musiclibrary.overridetags" type="boolean" label="20220" help="20221">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="musiclibrary.updateonstartup" type="boolean" label="22000" help="36259">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.backgroundupdate" type="boolean" label="22001" help="36147">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="4">
+        <setting id="musiclibrary.hideallitems" type="boolean" label="38011" help="38012">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musiclibrary.cleanup" type="action" label="334" help="36148">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="musiclibrary.export" type="action" label="20196" help="36262">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="musiclibrary.import" type="action" label="20197" help="36263">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
+    <category id="mymusic" label="0" help="0">
+      <group id="1">
+        <setting id="mymusic.startwindow" type="integer" label="0" help="36301">
+          <level>4</level>
+          <default>10501</default> <!-- WINDOW_MUSIC_FILES -->
+        </setting>
+        <setting id="mymusic.songthumbinvis" type="boolean" label="0" help="36302">
+          <level>4</level>
+          <default>false</default>
+        </setting>
+        <setting id="mymusic.defaultlibview" type="string" label="0" help="36303">
+          <level>4</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+        </setting>
+      </group>
+    </category>
+    <category id="musicfiles" label="37045" help="36601">
+      <group id="1">
+        <setting id="musicfiles.usetags" type="boolean" label="258" help="36274">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="musicfiles.trackformat" type="string" label="13307" help="36275">
+          <level>2</level>
+          <default>[%N. ]%A - %T</default>
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
+        </setting>
+        <setting id="musicfiles.trackformatright" type="string" label="13387" help="36276">
+          <level>2</level>
+          <default>%D</default>
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
+        </setting>
+        <setting id="musicfiles.nowplayingtrackformat" type="string" label="13307" help="36277">
+          <level>4</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
+        </setting>
+        <setting id="musicfiles.nowplayingtrackformatright" type="string" label="13387" help="36278">
+          <level>4</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
+        </setting>
+        <setting id="musicfiles.librarytrackformat" type="string" label="13307" help="36279">
+          <level>4</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
+        </setting>
+        <setting id="musicfiles.librarytrackformatright" type="string" label="13387" help="36280">
+          <level>4</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>16016</heading>
+          </control>
+        </setting>
+        <setting id="musicfiles.findremotethumbs" type="boolean" label="14059" help="36281">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+    <category id="pictures" label="37048" help="36305">
+      <group id="1">
+        <setting id="pictures.usetags" type="boolean" label="14082" help="36306">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pictures.generatethumbs" type="boolean" label="13360" help="36307">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pictures.useexifrotation" type="boolean" label="20184" help="36308">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pictures.showvideos" type="boolean" label="22022" help="36309">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pictures.displayresolution" type="integer" label="169" help="36310">
+          <visible>false</visible> <!-- not properly respected -->
+          <level>1</level>
+          <default>14</default> <!-- RES_AUTORES -->
+          <constraints>
+            <options>resolutions</options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+      </group>
+    </category>
+    <category id="slideshow" label="108" help="36311">
+      <group id="1">
+        <setting id="slideshow.staytime" type="integer" label="12378" help="36312">
+          <level>0</level>
+          <default>5</default>
+          <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
+        </setting>
+        <setting id="slideshow.displayeffects" type="boolean" label="12379" help="36313">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="slideshow.shuffle" type="boolean" label="13319" help="36314">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+    <category id="videolibrary" label="37046" help="36139">
+      <group id="1">
+        <setting id="videolibrary.showunwatchedplots" type="boolean" label="20369" help="36141">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.actorthumbs" type="boolean" label="20402" help="36143">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="myvideos.flatten" type="boolean" label="20456" help="36183">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.flattentvshows" type="integer" label="20412" help="36144">
+          <level>1</level>
+          <default>1</default> <!-- if only one season -->
+          <constraints>
+            <options>
+              <option label="20420">0</option> <!-- never -->
+              <option label="20421">1</option> <!-- if only one season -->
+              <option label="20422">2</option> <!-- always -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="videolibrary.tvshowsselectfirstunwatcheditem" type="integer" label="21416" help="21466">
+          <level>1</level>
+          <default>0</default> <!-- Never -->
+          <constraints>
+            <options>
+              <option label="20420">0</option> <!-- Never -->
+              <option label="21471">1</option> <!-- On first entry -->
+              <option label="20422">2</option> <!-- Always -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="videolibrary.tvshowsincludeallseasonsandspecials" type="integer" parent="videolibrary.tvshowsselectfirstunwatcheditem" label="21472" help="21473">
+          <level>2</level>
+          <default>0</default> <!-- Neither -->
+          <constraints>
+            <options>
+              <option label="21474">0</option> <!-- Neither -->
+              <option label="21475">1</option> <!-- Both -->
+              <option label="21476">2</option> <!-- Just All Seasons -->
+              <option label="21477">3</option> <!-- Just Specials -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="videolibrary.tvshowsselectfirstunwatcheditem" operator="!is">0</dependency> <!-- Never -->
+          </dependencies>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="videolibrary.hideallitems" type="boolean" label="38011" help="38012">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.groupmoviesets" type="boolean" label="20458" help="36145">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="videolibrary.updateonstartup" type="boolean" label="22000" help="36146">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.backgroundupdate" type="boolean" label="22001" help="36147">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="videolibrary.cleanup" type="action" label="334" help="36148">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="videolibrary.export" type="action" label="647" help="36149">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="videolibrary.import" type="action" label="648" help="36150">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
+    <category id="myvideos" label="37047" help="36601">
+      <group id="1">
+        <setting id="myvideos.selectaction" type="integer" label="22079" help="36177">
+          <level>1</level>
+          <default>1</default> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
+          <constraints>
+            <options>
+              <option label="22080">0</option> <!-- SELECT_ACTION_CHOOSE -->
+              <option label="208">1</option> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
+              <option label="13404">2</option> <!-- SELECT_ACTION_RESUME -->
+              <option label="22081">3</option> <!-- SELECT_ACTION_INFO -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="myvideos.extractflags" type="boolean" label="20433" help="36178">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="myvideos.extractchapterthumbs" type="boolean" label="37044" help="37045">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="myvideos.replacelabels" type="boolean" label="20419" help="36179">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="myvideos.extractthumb" type="boolean" label="20433" help="36180">
+          <level>4</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="myvideos.startwindow" type="integer" label="0" help="36181">
+          <level>4</level>
+          <default>100024</default> <!-- WINDOW_VIDEO_FILES -->
+        </setting>
+        <setting id="myvideos.stackvideos" type="boolean" label="20435" help="36182">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+    <category id="accessibility" label="37032" help="37033">
+      <group id="1">
+        <setting id="accessibility.audiovisual" type="boolean" label="37034" help="37035">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="accessibility.audiohearing" type="boolean" label="37036" help="37037">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="accessibility.subhearing" type="boolean" label="37038" help="37039">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
   </section>
-  <section id="pvr" label="19180" help="36201">
+  <section id="pvr" label="31502" help="36201">
     <category id="pvrmanager" label="128" help="36202">
       <group id="1">
         <setting id="pvrmanager.enabled" type="boolean" label="449" help="36203">
@@ -1265,7 +1745,7 @@
               <option label="36428">3</option> <!-- EPG_SELECT_ACTION_RECORD -->
             </options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="epg.preventupdateswhileplayingtv" type="boolean" label="19230" help="36222">
           <level>2</level>
@@ -1285,77 +1765,6 @@
         <setting id="epg.resetepg" type="action" label="19187" help="36225">
           <level>1</level>
           <control type="button" format="action" />
-        </setting>
-      </group>
-    </category>
-    <category id="pvrplayback" label="19177" help="36226">
-      <group id="1">
-        <setting id="pvrplayback.playminimized" type="boolean" label="19171" help="36227">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pvrplayback.startlast" type="integer" label="19189" help="36228">
-          <level>1</level>
-          <default>0</default> <!-- CONTINUE_LAST_CHANNEL_OFF -->
-          <constraints>
-            <options>
-              <option label="106">0</option>   <!-- CONTINUE_LAST_CHANNEL_OFF -->
-              <option label="19190">1</option> <!-- CONTINUE_LAST_CHANNEL_IN_BACKGROUND -->
-              <option label="19288">2</option> <!-- CONTINUE_LAST_CHANNEL_IN_FOREGROUND -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="pvrplayback.scantime" type="integer" label="19170" help="36230">
-          <level>3</level>
-          <default>10</default>
-          <constraints>
-            <minimum>1</minimum>
-            <step>1</step>
-            <maximum>60</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14045</formatlabel>
-          </control>
-        </setting>
-        <setting id="pvrplayback.confirmchannelswitch" type="boolean" label="19281" help="36231">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pvrplayback.channelentrytimeout" type="integer" label="19073" help="36232">
-          <level>2</level>
-          <default>0</default>
-          <constraints>
-            <minimum>0</minimum>
-            <step>250</step>
-            <maximum>10000</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14046</formatlabel>
-          </control>
-        </setting>
-      </group>
-      <group id="3">
-        <setting id="pvrplayback.fps" type="integer" label="19108" help="36261">
-          <level>0</level>
-          <default>0</default>
-          <constraints>
-            <options>
-              <option label="351">0</option>   <!-- OFF -->
-              <option label="211">1</option>   <!-- 50Hz -->
-              <option label="212">2</option>   <!-- 59.94Hz -->
-            </options>
-          </constraints>
-          <control type="spinner" format="string" />
         </setting>
       </group>
     </category>
@@ -1548,534 +1957,8 @@
       </group>
     </category>
   </section>
-  <section id="music" label="2" help="36253">
-    <category id="musiclibrary" label="14022" help="36600">
-      <group id="1">
-        <setting id="musiclibrary.showcompilationartists" type="boolean" label="13414" help="36255">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="musiclibrary.downloadinfo" type="boolean" label="20192" help="36256">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.albumsscraper" type="addon" label="20193" help="36257">
-          <level>1</level>
-          <default>metadata.album.universal</default>
-          <constraints>
-            <addontype>xbmc.metadata.scraper.albums</addontype>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
-        </setting>
-        <setting id="musiclibrary.artistsscraper" type="addon" label="20194" help="36258">
-          <level>1</level>
-          <default>metadata.artists.universal</default>
-          <constraints>
-            <addontype>xbmc.metadata.scraper.artists</addontype>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
-        </setting>
-        <setting id="musiclibrary.overridetags" type="boolean" label="20220" help="20221">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="3">
-        <setting id="musiclibrary.updateonstartup" type="boolean" label="22000" help="36259">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.backgroundupdate" type="boolean" label="22001" help="36147">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="4">
-        <setting id="musiclibrary.showallitems" type="boolean" label="38011" help="38012">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musiclibrary.cleanup" type="action" label="334" help="36148">
-          <level>2</level>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="musiclibrary.export" type="action" label="20196" help="36262">
-          <level>2</level>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="musiclibrary.import" type="action" label="20197" help="36263">
-          <level>2</level>
-          <control type="button" format="action" />
-        </setting>
-      </group>
-    </category>
-    <category id="musicplayer" label="14086" help="36264">
-      <group id="1">
-        <setting id="musicplayer.autoplaynextitem" type="boolean" label="489" help="36265">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musicplayer.queuebydefault" type="boolean" label="14084" help="36266">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="musicplayer.seeksteps" type="list[integer]" label="13556" help="37042">
-          <level>2</level>
-          <default>-60,-30,-15,-7,7,15,30,60</default>
-          <constraints>
-            <options>videoseeksteps</options>
-            <delimiter>,</delimiter>
-            <minimumItems>2</minimumItems>
-          </constraints>
-          <control type="list" format="string">
-            <multiselect>true</multiselect>
-          </control>
-        </setting>
-        <setting id="musicplayer.seekdelay" type="integer" label="13557" help="37043">
-          <level>2</level>
-          <default>750</default>
-          <constraints>
-            <minimum label="231">0</minimum> <!-- None -->
-            <step>250</step>
-            <maximum>3000</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14046</formatlabel>
-          </control>
-        </setting>
-      </group>
-      <group id="3">
-        <setting id="musicplayer.replaygaintype" type="integer" label="638" help="36267">
-          <level>2</level>
-          <default>1</default> <!-- REPLAY_GAIN_ALBUM -->
-          <constraints>
-            <options>
-              <option label="351">0</option> <!-- REPLAY_GAIN_NONE -->
-              <option label="639">2</option> <!-- REPLAY_GAIN_TRACK -->
-              <option label="640">1</option> <!-- REPLAY_GAIN_ALBUM -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="musicplayer.replaygainpreamp" type="integer" parent="musicplayer.replaygaintype" label="641" help="36268">
-          <level>2</level>
-          <default>89</default>
-          <constraints>
-            <minimum>77</minimum>
-            <step>1</step>
-            <maximum>101</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14050</formatlabel>
-          </control>
-          <dependencies>
-            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
-          </dependencies>
-        </setting>
-        <setting id="musicplayer.replaygainnogainpreamp" type="integer" parent="musicplayer.replaygaintype" label="642" help="36269">
-          <level>2</level>
-          <default>89</default>
-          <constraints>
-            <minimum>77</minimum>
-            <step>1</step>
-            <maximum>101</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14050</formatlabel>
-          </control>
-          <dependencies>
-            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
-          </dependencies>
-        </setting>
-        <setting id="musicplayer.replaygainavoidclipping" type="boolean" parent="musicplayer.replaygaintype" label="643" help="36270">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-          <dependencies>
-            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
-          </dependencies>
-        </setting>
-      </group>
-      <group id="4">
-        <setting id="musicplayer.crossfade" type="integer" label="13314" help="36271">
-          <level>1</level>
-          <default>0</default>
-          <constraints>
-            <minimum label="351">0</minimum>
-            <step>1</step>
-            <maximum>15</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14045</formatlabel>
-          </control>
-        </setting>
-        <setting id="musicplayer.crossfadealbumtracks" type="boolean" parent="musicplayer.crossfade" label="13400" help="36272">
-          <level>1</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable" setting="musicplayer.crossfade" operator="!is">0</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="5">
-        <setting id="musicplayer.visualisation" type="addon" label="250" help="36273">
-          <level>0</level>
-          <default>visualization.glspectrum</default>
-          <constraints>
-            <addontype>xbmc.player.musicviz</addontype>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
-        </setting>
-      </group>
-    </category>
-    <category id="musicfiles" label="14081" help="36601">
-      <group id="1">
-        <setting id="musicfiles.usetags" type="boolean" label="258" help="36274">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="musicfiles.trackformat" type="string" label="13307" help="36275">
-          <level>2</level>
-          <default>[%N. ]%A - %T</default>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
-        <setting id="musicfiles.trackformatright" type="string" label="13387" help="36276">
-          <level>2</level>
-          <default>%D</default>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
-        <setting id="musicfiles.nowplayingtrackformat" type="string" label="13307" help="36277">
-          <level>4</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
-        <setting id="musicfiles.nowplayingtrackformatright" type="string" label="13387" help="36278">
-          <level>4</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
-        <setting id="musicfiles.librarytrackformat" type="string" label="13307" help="36279">
-          <level>4</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
-        <setting id="musicfiles.librarytrackformatright" type="string" label="13387" help="36280">
-          <level>4</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
-        <setting id="musicfiles.findremotethumbs" type="boolean" label="14059" help="36281">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
-    <category id="audiocds" label="620" help="36282">
-      <group id="1">
-        <setting id="audiocds.autoaction" type="integer" label="14097" help="36283">
-          <level>1</level>
-          <default>0</default> <!-- AUTOCD_NONE -->
-          <constraints>
-            <options>audiocdactions</options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="audiocds.usecddb" type="boolean" label="227" help="36284">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="audiocds.recordingpath" type="path" label="20000" help="36285">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="button" format="path">
-            <heading>657</heading>
-          </control>
-        </setting>
-        <setting id="audiocds.trackpathformat" type="string" label="13307" help="36286">
-          <level>2</level>
-          <default>%A/%A - %B/[%N. ][%A - ]%T</default>
-          <control type="edit" format="string">
-            <heading>16016</heading>
-          </control>
-        </setting>
-        <setting id="audiocds.encoder" type="addon" label="621" help="36287">
-          <level>0</level>
-          <default>audioencoder.xbmc.builtin.wav</default>
-          <constraints>
-            <addontype>xbmc.audioencoder</addontype>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
-        </setting>
-        <setting id="audiocds.settings" parent="audiocds.encoder" type="action" label="21417" help="37025">
-          <level>1</level>
-          <dependencies>
-            <dependency type="enable">
-              <condition on="property" name="AddonHasSettings" setting="audiocds.encoder" />
-            </dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="audiocds.ejectonrip" type="boolean" label="14099" help="36291">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
-    <category id="karaoke" label="13327" help="36292">
-      <requirement>HAS_KARAOKE</requirement>
-      <group id="1">
-        <setting id="karaoke.enabled" type="boolean" label="13323" help="36293">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="karaoke.autopopupselector" type="boolean" label="22037" help="36294">
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="karaoke.font" type="string" label="22030" help="36295">
-          <level>2</level>
-          <default>arial.ttf</default>
-          <constraints>
-            <options>fonts</options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="karaoke.fontheight" type="integer" parent="karaoke.font" label="22031" help="36296">
-          <level>2</level>
-          <default>36</default>
-          <constraints>
-            <minimum>16</minimum>
-            <step>2</step>
-            <maximum>74</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-            <dependency type="update" setting="karaoke.font" />
-          </dependencies>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="karaoke.fontcolors" type="integer" parent="karaoke.font" label="22032" help="36297">
-          <level>2</level>
-          <default>0</default> <!-- white/green -->
-          <constraints>
-            <options>
-              <option label="22040">0</option> <!-- white/green -->
-              <option label="22041">1</option> <!-- white/red -->
-              <option label="22042">2</option> <!-- white/blue -->
-              <option label="22043">3</option> <!-- black/white -->
-            </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="karaoke.charset" type="string" parent="karaoke.font" label="22033" help="36298">
-          <level>2</level>
-          <default>DEFAULT</default>
-          <constraints>
-            <options>charsets</options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-      </group>
-      <group id="3">
-        <setting id="karaoke.export" type="action" label="22038" help="36299">
-          <level>2</level>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-        <setting id="karaoke.importcsv" type="action" label="22036" help="36300">
-          <level>2</level>
-          <dependencies>
-            <dependency type="enable" setting="karaoke.enabled">true</dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-      </group>
-    </category>
-    <category id="mymusic" label="0" help="0">
-      <group id="1">
-        <setting id="mymusic.startwindow" type="integer" label="0" help="36301">
-          <level>4</level>
-          <default>10501</default> <!-- WINDOW_MUSIC_FILES -->
-        </setting>
-        <setting id="mymusic.songthumbinvis" type="boolean" label="0" help="36302">
-          <level>4</level>
-          <default>false</default>
-        </setting>
-        <setting id="mymusic.defaultlibview" type="string" label="0" help="36303">
-          <level>4</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-        </setting>
-      </group>
-    </category>
-  </section>
-  <section id="pictures" label="1" help="36304">
-    <category id="pictures" label="14081" help="36305">
-      <group id="1">
-        <setting id="pictures.usetags" type="boolean" label="14082" help="36306">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pictures.generatethumbs" type="boolean" label="13360" help="36307">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pictures.useexifrotation" type="boolean" label="20184" help="36308">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pictures.showvideos" type="boolean" label="22022" help="36309">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pictures.displayresolution" type="integer" label="169" help="36310">
-          <visible>false</visible> <!-- not properly respected -->
-          <level>1</level>
-          <default>14</default> <!-- RES_AUTORES -->
-          <constraints>
-            <options>resolutions</options>
-          </constraints>
-          <control type="spinner" format="string" />
-        </setting>
-      </group>
-    </category>
-    <category id="slideshow" label="108" help="36311">
-      <group id="1">
-        <setting id="slideshow.staytime" type="integer" label="12378" help="36312">
-          <level>0</level>
-          <default>5</default>
-          <constraints>
-            <minimum>1</minimum>
-            <step>1</step>
-            <maximum>100</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14045</formatlabel>
-          </control>
-        </setting>
-        <setting id="slideshow.displayeffects" type="boolean" label="12379" help="36313">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="slideshow.shuffle" type="boolean" label="13319" help="36314">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
-  </section>
-  <section id="weather" label="8" help="36315">
-    <category id="weather" label="16000" help="36316">
-      <group id="1">
-        <setting id="weather.currentlocation" type="integer" label="0" help="36317">
-          <level>4</level>
-          <default>1</default>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="weather.addon" type="addon" label="24029" help="36318">
-          <level>0</level>
-          <default></default>
-          <constraints>
-            <addontype>xbmc.python.weather</addontype>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
-        </setting>
-        <setting id="weather.addonsettings" type="action" parent="weather.addon" label="21417" help="36419">
-          <level>0</level>
-          <dependencies>
-            <dependency type="enable" on="property" name="AddonHasSettings" setting="weather.addon" />
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-      </group>
-    </category>
-  </section>
   <section id="services" label="14036" help="36319">
-    <category id="general" label="16000" help="36320">
+   <category id="general" label="16000" help="36320">
       <group id="1">
         <setting id="services.devicename" type="string" label="1271" help="36321">
           <level>0</level>
@@ -2166,9 +2049,7 @@
           <constraints>
             <addontype>xbmc.webinterface</addontype>
           </constraints>
-          <control type="button" format="addon">
-            <show more="true" details="true">installed</show>
-          </control>
+          <control type="button" format="addon" />
         </setting>
       </group>
     </category>
@@ -2336,8 +2217,170 @@
         </setting>
       </group>
     </category>
+    <category id="weather" label="8" help="36316">
+      <group id="1">
+        <setting id="weather.currentlocation" type="integer" label="0" help="36317">
+          <level>4</level>
+          <default>1</default>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="weather.addon" type="addon" label="24029" help="36318">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <addontype>xbmc.python.weather</addontype>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="addon" />
+        </setting>
+        <setting id="weather.addonsettings" type="action" parent="weather.addon" label="21417" help="36419">
+          <level>0</level>
+          <dependencies>
+            <dependency type="enable" on="property" name="AddonHasSettings" setting="weather.addon" />
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
   </section>
   <section id="system" label="13000" help="36349">
+    <category id="locale" label="14090" help="36113">
+      <group id="1">
+        <setting id="locale.language" type="addon" label="248" help="36114">
+          <level>0</level>
+          <default>resource.language.en_gb</default>
+          <constraints>
+            <addontype>kodi.resource.language</addontype>
+          </constraints>
+          <control type="button" format="addon">
+            <show more="false" details="false">all</show>
+          </control>
+        </setting>
+        <setting id="locale.country" type="string" label="20026" help="36115">
+          <level>0</level>
+          <default>USA (12h)</default>
+          <constraints>
+            <options>regions</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="locale.language" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="locale.charset" type="string" label="14091" help="36116">
+          <level>1</level>
+          <default>DEFAULT</default>
+          <constraints>
+            <options>charsets</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="locale.language" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="locale.keyboardlayouts" type="list[string]" label="310" help="36432">
+          <level>1</level>
+          <default>English QWERTY</default>
+          <constraints>
+            <options>keyboardlayouts</options>
+            <delimiter>|</delimiter>
+            <minimumItems>1</minimumItems>
+            <maximumItems>3</maximumItems>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="locale.timezonecountry" type="string" label="14079" help="36117">
+          <level>1</level>
+          <default>default</default> <!-- will be properly set on startup -->
+          <constraints>
+            <options>timezonecountries</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="locale.timezone" type="string" label="14080" help="36118">
+          <level>1</level>
+          <default>default</default> <!-- will be properly set on startup -->
+          <constraints>
+            <options>timezones</options>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="locale.timezonecountry" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+    </category>
+    <category id="input" label="14094" help="36374">
+      <group id="1">
+        <setting id="input.peripherals" type="action" label="35000" help="36375">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable" on="property" name="HasPeripherals" />
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="input.enablemouse" type="boolean" label="21369" help="36377">
+          <level>0</level>
+          <control type="toggle" />
+          <default>true</default>
+        </setting>
+        <setting id="input.enablejoystick" type="boolean" label="35100" help="36378">
+          <requirement>HAS_SDL_JOYSTICK</requirement>
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+    <category id="powermanagement" label="14095" help="36387">
+      <group id="1">
+        <setting id="powermanagement.displaysoff" type="integer" label="1450" help="36388">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <minimum label="351">0</minimum>
+            <step>5</step>
+            <maximum>120</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
+        </setting>
+        <setting id="powermanagement.shutdowntime" type="integer" label="357" help="36389">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <minimum label="351">0</minimum>
+            <step>5</step>
+            <maximum>120</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
+        </setting>
+        <setting id="powermanagement.shutdownstate" type="integer" label="13008" help="36390">
+          <level>2</level>
+          <default>0</default> <!-- POWERSTATE_QUIT -->
+          <constraints>
+            <options>shutdownstates</options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+      </group>
+      <group id="2">
+        <setting id="powermanagement.wakeonaccess" type="boolean" label="13026" help="36350">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
     <category id="videoscreen" label="21373" help="36603">
       <group id="1">
         <setting id="videoscreen.monitor" type="string" label="246" help="">
@@ -2439,7 +2482,7 @@
           <updates>
             <update type="change" />
           </updates>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="videoscreen.guicalibration" type="action" label="214" help="36357">
           <level>1</level>
@@ -2504,7 +2547,7 @@
               <option label="34110">10</option> <!-- AE_CH_LAYOUT_7_1 -->
             </options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="audiooutput.config" type="integer" label="337" help="36361">
           <level>2</level>
@@ -2516,7 +2559,7 @@
               <option label="420">3</option>
             </options>
           </constraints>
-          <control type="list" format="integer" />
+          <control type="spinner" format="integer" />
         </setting>
         <setting id="audiooutput.samplerate" type="integer" label="458" help="36523">
           <level>2</level>
@@ -2538,7 +2581,7 @@
               <option label="34128">192000</option>
             </options>
           </constraints>
-          <control type="list" format="integer" />
+          <control type="spinner" format="integer" />
         </setting>
         <setting id="audiooutput.stereoupmix" type="boolean" label="252" help="36364">
           <level>2</level>
@@ -2560,7 +2603,7 @@
           <constraints>
             <options>aequalitylevels</options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="audiooutput.streamsilence" type="integer" label="421" help="34111">
           <level>1</level>
@@ -2568,7 +2611,7 @@
           <constraints>
             <options>audiostreamsilence</options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
       </group>
       <group id="2">
@@ -2582,7 +2625,7 @@
               <option label="34123">0</option> <!-- AE_SOUND_OFF -->
             </options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
       </group>
       <group id="3">
@@ -2697,30 +2740,6 @@
         </setting>
       </group>
     </category>
-    <category id="input" label="14094" help="36374">
-      <group id="1">
-        <setting id="input.peripherals" type="action" label="35000" help="36375">
-          <level>1</level>
-          <dependencies>
-            <dependency type="enable" on="property" name="HasPeripherals" />
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="input.enablemouse" type="boolean" label="21369" help="36377">
-          <level>0</level>
-          <control type="toggle" />
-          <default>true</default>
-        </setting>
-        <setting id="input.enablejoystick" type="boolean" label="35100" help="36378">
-          <requirement>HAS_SDL_JOYSTICK</requirement>
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
     <category id="network" label="798" help="36379">
       <group id="1">
         <setting id="network.usehttpproxy" type="boolean" label="708" help="36380">
@@ -2743,7 +2762,7 @@
           <dependencies>
             <dependency type="enable" setting="network.usehttpproxy">true</dependency>
           </dependencies>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="network.httpproxyserver" type="string" parent="network.usehttpproxy" label="706" help="36382">
           <level>2</level>
@@ -2803,52 +2822,38 @@
             <step>512</step>
             <maximum>102400</maximum>
           </constraints>
-          <control type="list" format="string">
+          <control type="spinner" format="string">
             <formatlabel>14048</formatlabel>
           </control>
         </setting>
       </group>
     </category>
-    <category id="powermanagement" label="14095" help="36387">
+    <category id="masterlock" label="12360" help="36395">
+      <access>CheckMasterLock</access>
       <group id="1">
-        <setting id="powermanagement.displaysoff" type="integer" label="1450" help="36388">
-          <level>0</level>
-          <default>0</default>
-          <constraints>
-            <minimum label="351">0</minimum>
-            <step>5</step>
-            <maximum>120</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14044</formatlabel>
+        <setting id="masterlock.lockcode" type="action" label="20100" help="36396">
+          <level>2</level>
+          <control type="button" format="action">
+            <hidevalue>true</hidevalue>
           </control>
         </setting>
-        <setting id="powermanagement.shutdowntime" type="integer" label="357" help="36389">
+        <setting id="masterlock.startuplock" type="boolean" parent="masterlock.lockcode" label="20076" help="36397">
           <level>2</level>
-          <default>0</default>
-          <constraints>
-            <minimum label="351">0</minimum>
-            <step>5</step>
-            <maximum>120</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14044</formatlabel>
-          </control>
-        </setting>
-        <setting id="powermanagement.shutdownstate" type="integer" label="13008" help="36390">
-          <level>2</level>
-          <default>0</default> <!-- POWERSTATE_QUIT -->
-          <constraints>
-            <options>shutdownstates</options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-      </group>
-      <group id="2">
-        <setting id="powermanagement.wakeonaccess" type="boolean" label="13026" help="36350">
-          <level>1</level>
           <default>false</default>
+          <dependencies>
+            <dependency type="enable" on="property" name="ProfileLockMode" operator="!is">0</dependency>
+          </dependencies>
           <control type="toggle" />
+        </setting>
+        <setting id="masterlock.maxretries" type="integer" label="12362" help="36398">
+          <level>4</level>
+          <default>3</default>
+          <constraints>
+            <minimum>3</minimum>
+            <step>1</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="spinner" format="integer" />
         </setting>
       </group>
     </category>
@@ -2891,35 +2896,49 @@
         </setting>
       </group>
     </category>
-    <category id="masterlock" label="12360" help="36395">
-      <access>CheckMasterLock</access>
+    <category id="powermanagement" label="14095" help="36387">
       <group id="1">
-        <setting id="masterlock.lockcode" type="action" label="20100" help="36396">
-          <level>2</level>
-          <control type="button" format="action">
-            <hidevalue>true</hidevalue>
+        <setting id="powermanagement.displaysoff" type="integer" label="1450" help="36388">
+          <level>0</level>
+          <default>0</default>
+          <constraints>
+            <minimum label="351">0</minimum>
+            <step>5</step>
+            <maximum>120</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
           </control>
         </setting>
-        <setting id="masterlock.startuplock" type="boolean" parent="masterlock.lockcode" label="20076" help="36397">
+        <setting id="powermanagement.shutdowntime" type="integer" label="357" help="36389">
           <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable" on="property" name="ProfileLockMode" operator="!is">0</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="masterlock.maxretries" type="integer" label="12362" help="36398">
-          <level>4</level>
-          <default>3</default>
+          <default>0</default>
           <constraints>
-            <minimum>3</minimum>
-            <step>1</step>
-            <maximum>100</maximum>
+            <minimum label="351">0</minimum>
+            <step>5</step>
+            <maximum>120</maximum>
           </constraints>
-          <control type="spinner" format="integer" />
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
+        </setting>
+        <setting id="powermanagement.shutdownstate" type="integer" label="13008" help="36390">
+          <level>2</level>
+          <default>0</default> <!-- POWERSTATE_QUIT -->
+          <constraints>
+            <options>shutdownstates</options>
+          </constraints>
+          <control type="spinner" format="string" />
         </setting>
       </group>
-    </category>
+      <group id="2">
+        <setting id="powermanagement.wakeonaccess" type="boolean" label="13026" help="36350">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>	
     <category id="cache" label="439" help="36399">
       <visible>false</visible>
       <group id="1">
@@ -3076,7 +3095,7 @@
               <option label="12398">2</option> <!-- AUTO_UPDATES_NEVER -->
             </options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
         <setting id="general.addonnotifications" type="boolean" label="0" help="36414">
           <level>4</level>
@@ -3091,6 +3110,6 @@
           <default>true</default>
         </setting>
       </group>
-    </category>
+    </category>	
   </section>
-</settings>
+ </settings>

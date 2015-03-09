@@ -7,7 +7,7 @@
       </group>
     </category>
   </section>
-  <section id="videos">
+  <section id="playback">
     <category id="videoacceleration">
       <group id="3">
         <setting id="videoplayer.usestagefright" type="boolean" parent="videoplayer.decodingmethod" label="13436" help="36260">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
-  <section id="videos">
+  <section id="playback">
     <category id="videoplayer">
       <group id="3">
         <setting id="videoplayer.adjustrefreshrate">
@@ -18,8 +18,6 @@
         </setting>
       </group>
     </category>
-  </section>
-  <section id="music">
     <category id="audiocds">
       <visible>false</visible>
     </category>
