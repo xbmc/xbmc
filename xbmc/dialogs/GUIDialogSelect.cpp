@@ -35,6 +35,8 @@ CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {
   m_bButtonEnabled = false;
+  m_bButtonPressed = false;
+  m_bConfirmed = false;
   m_buttonString = -1;
   m_useDetails = false;
   m_vecList = new CFileItemList;
@@ -87,8 +89,6 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_bButtonPressed = false;
-      m_bConfirmed = false;
       CGUIDialog::OnMessage(message);
       return true;
     }

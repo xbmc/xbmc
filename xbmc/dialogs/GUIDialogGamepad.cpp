@@ -34,6 +34,8 @@ CGUIDialogGamepad::CGUIDialogGamepad(void)
   m_bCanceled = false;
   m_iRetries = 0;
   m_bUserInputCleanup = true;
+  m_bHideInputChars = true;
+  m_cHideInputChar = '*';
 }
 
 CGUIDialogGamepad::~CGUIDialogGamepad(void)

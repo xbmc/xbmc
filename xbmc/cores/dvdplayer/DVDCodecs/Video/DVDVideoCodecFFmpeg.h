@@ -121,7 +121,7 @@ protected:
   double m_dts;
   bool   m_started;
   std::vector<PixelFormat> m_formats;
-  double m_decoderPts, m_decoderInterval;
+  double m_decoderPts;
   int    m_skippedDeint;
   bool   m_requestSkipDeint;
   int    m_codecControlFlags;

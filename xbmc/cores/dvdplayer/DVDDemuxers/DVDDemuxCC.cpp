@@ -80,6 +80,7 @@ public:
   {
     m_data = (uint8_t*)malloc(size);
     m_size = size;
+    m_pts = 0.0; //silence coverity uninitialized warning, is set elsewhere
   }
   virtual ~CCaptionBlock()
   {
@@ -98,7 +99,7 @@ bool reorder_sort (CCaptionBlock *lhs, CCaptionBlock *rhs)
 CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec)
 {
   m_hasData = false;
-  m_curPts = 0;
+  m_curPts = 0.0;
   m_ccDecoder = NULL;
   m_codec = codec;
 }

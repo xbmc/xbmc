@@ -88,6 +88,7 @@ CGUIDialogBusy::CGUIDialogBusy(void)
 {
   m_loadType = LOAD_ON_GUI_INIT;
   m_bModal = true;
+  m_bCanceled = false;
   m_progress = 0;
 }
 

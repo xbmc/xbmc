@@ -47,6 +47,7 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
 
   m_mode = INPUT_PASSWORD;
   m_block = 0;
+  m_lastblock = 0;
   memset(&m_datetime, 0, sizeof(SYSTEMTIME));
   m_dirty = false;
   m_loadType = KEEP_IN_MEMORY;

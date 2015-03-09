@@ -29,6 +29,7 @@ CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
     : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogYesNo.xml")
 {
   m_bConfirmed = false;
+  m_bCanceled = false;
 }
 
 CGUIDialogYesNo::~CGUIDialogYesNo()

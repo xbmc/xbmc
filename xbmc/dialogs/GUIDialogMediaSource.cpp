@@ -59,6 +59,8 @@ using namespace XFILE;
 
 CGUIDialogMediaSource::CGUIDialogMediaSource(void)
     : CGUIDialog(WINDOW_DIALOG_MEDIA_SOURCE, "DialogMediaSource.xml")
+    , m_confirmed(false)
+    , m_bNameChanged(false)
 {
   m_paths =  new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
@@ -107,8 +109,6 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      m_confirmed = false;
-      m_bNameChanged=false;
       UpdateButtons();
     }
     break;
