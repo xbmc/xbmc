@@ -129,9 +129,9 @@
 						<icon>-</icon>
 					</item>
 					<item id="3">
-						<label>37049</label>
+						<label>37051</label>
 						<label2>31402</label2>
-						<onclick>ActivateWindow(MediaBrowser)</onclick>
+						<onclick>ActivateWindow(MediaSettings)</onclick>
 						<icon>-</icon>
 					</item>
 					<item id="4">

@@ -1140,7 +1140,7 @@
       </group>
     </category>
   </section>
-  <section id="media" label="37049" help="36253">
+  <section id="media" label="37051" help="36253">
     <category id="scrapers" label="0" help="36197">
       <visible>false</visible>
       <group id="1">
@@ -1220,7 +1220,7 @@
         </setting>
       </group>
     </category>
-    <category id="musiclibrary" label="37044" help="36600">
+    <category id="musiclibrary" label="37046" help="36600">
       <group id="1">
         <setting id="musiclibrary.showcompilationartists" type="boolean" label="13414" help="36255">
           <level>1</level>
@@ -1307,7 +1307,7 @@
         </setting>
       </group>
     </category>
-    <category id="musicfiles" label="37045" help="36601">
+    <category id="musicfiles" label="37047" help="36601">
       <group id="1">
         <setting id="musicfiles.usetags" type="boolean" label="258" help="36274">
           <level>0</level>
@@ -1375,7 +1375,7 @@
         </setting>
       </group>
     </category>
-    <category id="pictures" label="37048" help="36305">
+    <category id="pictures" label="37050" help="36305">
       <group id="1">
         <setting id="pictures.usetags" type="boolean" label="14082" help="36306">
           <level>0</level>
@@ -1434,7 +1434,7 @@
         </setting>
       </group>
     </category>
-    <category id="videolibrary" label="37046" help="36139">
+    <category id="videolibrary" label="37048" help="36139">
       <group id="1">
         <setting id="videolibrary.showunwatchedplots" type="boolean" label="20369" help="36141">
           <level>0</level>
@@ -1529,7 +1529,7 @@
         </setting>
       </group>
     </category>
-    <category id="myvideos" label="37047" help="36601">
+    <category id="myvideos" label="37049" help="36601">
       <group id="1">
         <setting id="myvideos.selectaction" type="integer" label="22079" help="36177">
           <level>1</level>
