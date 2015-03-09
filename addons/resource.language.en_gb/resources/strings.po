@@ -394,7 +394,7 @@ msgid "Yes"
 msgstr ""
 
 msgctxt "#108"
-msgid "Slideshow"
+msgid "Picture Slideshow"
 msgstr ""
 
 msgctxt "#109"
@@ -634,9 +634,7 @@ msgctxt "#156"
 msgid "Free"
 msgstr ""
 
-msgctxt "#157"
-msgid "Video"
-msgstr ""
+#empty string with id 157
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#158"
@@ -6869,7 +6867,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14087"
-msgid "Discs"
+msgid "DVD / BluRay"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6938,7 +6936,7 @@ msgstr ""
 #. Name of a settings category related to video playback
 #: system/settings/settings.xml
 msgctxt "#14101"
-msgid "Acceleration"
+msgid "Video Acceleration"
 msgstr ""
 
 #. Name of a setting for Blu-ray playback mode
@@ -14143,7 +14141,7 @@ msgstr ""
 #. Description of settings section "Videos" with label #3
 #: system/settings/settings.xml
 msgctxt "#36138"
-msgid "Section that contains settings related to videos and how they are handled."
+msgid "Section that contains settings related to playback in Kodi."
 msgstr ""
 
 #. Description of settings category "Videos -> Library" with label #14022
@@ -14742,7 +14740,7 @@ msgstr ""
 #. Description of settings section "Music" with label #2
 #: system/settings/settings.xml
 msgctxt "#36253"
-msgid "Section that contains settings related to music files and how they are handled."
+msgid "Section that contains settings related to your library and media."
 msgstr ""
 
 #empty string with id 36254
@@ -16394,7 +16392,43 @@ msgctxt "#37045"
 msgid "Extract chapter thumbnails for presentation in the chapters/bookmarks dialog. This might increase CPU load."
 msgstr ""
 
-#empty strings from id 37046 to 38009
+#. Category #37044 Settings -> Media Management
+#: system/settings/settings.xml
+msgctxt "#37046"
+msgid "Music Library"
+msgstr ""
+
+#. Category #37045 Settings -> Media Management
+#: system/settings/settings.xml
+msgctxt "#37047"
+msgid "Music Files"
+msgstr ""
+
+#. Category #37046 Settings -> Media Management
+#: system/settings/settings.xml
+msgctxt "#37048"
+msgid "Video Library"
+msgstr ""
+
+#. Category #37047 Settings -> Media Management
+#: system/settings/settings.xml
+msgctxt "#37049"
+msgid "Video Files"
+msgstr ""
+
+#. Category #37047 Settings -> Media Management
+#: system/settings/settings.xml
+msgctxt "#37050"
+msgid "Picture Files"
+msgstr ""
+
+#. Category #37047 Settings -> Media Management
+#: settings.xml
+msgctxt "#37051"
+msgid "Media Management"
+msgstr ""
+
+#empty strings from id 37052 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

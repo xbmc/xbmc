@@ -311,17 +311,19 @@ static const ActionMapping windows[] =
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
         {"guicalibration"           , WINDOW_SCREEN_CALIBRATION}, // backward compat
-        {"picturessettings"         , WINDOW_SETTINGS_MYPICTURES},
+        {"picturessettings"         , WINDOW_SETTINGS_MYPICTURES}, //left in for backward compat
         {"programssettings"         , WINDOW_SETTINGS_MYPROGRAMS},
-        {"weathersettings"          , WINDOW_SETTINGS_MYWEATHER},
-        {"musicsettings"            , WINDOW_SETTINGS_MYMUSIC},
+        {"weathersettings"          , WINDOW_SETTINGS_MYWEATHER}, //left in for backward compat
+        {"musicsettings"            , WINDOW_SETTINGS_MYMUSIC}, //left in for backward compat
         {"systemsettings"           , WINDOW_SETTINGS_SYSTEM},
-        {"videossettings"           , WINDOW_SETTINGS_MYVIDEOS},
+        {"videossettings"           , WINDOW_SETTINGS_MYVIDEOS}, //left in for backward compat
         {"networksettings"          , WINDOW_SETTINGS_SERVICE}, // backward compat
         {"servicesettings"          , WINDOW_SETTINGS_SERVICE},
         {"appearancesettings"       , WINDOW_SETTINGS_APPEARANCE},
         {"pvrsettings"              , WINDOW_SETTINGS_MYPVR},
         {"tvsettings"               , WINDOW_SETTINGS_MYPVR},  // backward compat
+        {"playbacksettings"         , WINDOW_SETTINGS_PLAYBACK},
+        {"mediasettings"            , WINDOW_SETTINGS_MEDIA},
         {"scripts"                  , WINDOW_PROGRAMS}, // backward compat
         {"videofiles"               , WINDOW_VIDEO_FILES},
         {"videolibrary"             , WINDOW_VIDEO_NAV},

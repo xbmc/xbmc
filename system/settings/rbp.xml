@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings>
-  <section id="videos">
+  <section id="playback">
     <category id="videoacceleration">
       <group id="1">
         <visible>false</visible>
@@ -24,7 +24,6 @@
       </group>
     </category>
   </section>
-
   <section id="system">
     <category id="videoscreen">
       <group id="1">

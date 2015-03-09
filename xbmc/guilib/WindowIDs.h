@@ -34,12 +34,12 @@
 #define WINDOW_SCREEN_CALIBRATION         10011
 
 #define WINDOW_SETTINGS_START             10012
-#define WINDOW_SETTINGS_MYPICTURES        10012
+#define WINDOW_SETTINGS_MYPICTURES        10012 //left in for backward compat
 #define WINDOW_SETTINGS_MYPROGRAMS        10013
-#define WINDOW_SETTINGS_MYWEATHER         10014
-#define WINDOW_SETTINGS_MYMUSIC           10015
+#define WINDOW_SETTINGS_MYWEATHER         10014 //left in for backward compat
+#define WINDOW_SETTINGS_MYMUSIC           10015 //left in for backward compat
 #define WINDOW_SETTINGS_SYSTEM            10016
-#define WINDOW_SETTINGS_MYVIDEOS          10017
+#define WINDOW_SETTINGS_MYVIDEOS          10017 //left in for backward compat
 #define WINDOW_SETTINGS_SERVICE           10018 // former (Eden) WINDOW_SETTINGS_NETWORK
 #define WINDOW_SETTINGS_APPEARANCE        10019
 
@@ -55,6 +55,9 @@
 #define WINDOW_SKIN_SETTINGS              10035
 
 #define WINDOW_ADDON_BROWSER              10040
+
+#define WINDOW_SETTINGS_PLAYBACK          10041
+#define WINDOW_SETTINGS_MEDIA             10042
 
 #define WINDOW_SCREENSAVER_DIM               97
 #define WINDOW_DEBUG_INFO                    98
