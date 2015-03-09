@@ -37,7 +37,8 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
 
-CRemoteControl::CRemoteControl():
+CRemoteControl::CRemoteControl() :
+  CThread("RemoteControl"),
   m_deviceName(LIRC_DEVICE)
 {
   m_fd = -1;
@@ -48,12 +49,8 @@ CRemoteControl::CRemoteControl():
   m_used = true;
   m_inotify_fd = -1;
   m_inotify_wd = -1;
-  m_bLogConnectFailure = true;
-  m_lastInitAttempt = -5000;
-  m_initRetryPeriod = 5000;
   m_inReply = false;
   m_nrSending = 0;
-  Reset();
 }
 
 CRemoteControl::~CRemoteControl()
@@ -62,16 +59,11 @@ CRemoteControl::~CRemoteControl()
     fclose(m_file);
 }
 
-void CRemoteControl::setUsed(bool value)
+void CRemoteControl::SetEnabled(bool value)
 {
   m_used=value;
   if (!value)
     CLog::Log(LOGINFO, "LIRC %s: disabled", __FUNCTION__);
-  else
-  {
-    m_lastInitAttempt = -5000;
-    m_initRetryPeriod = 5000;
-  }
 }
 
 void CRemoteControl::Reset()
@@ -82,8 +74,10 @@ void CRemoteControl::Reset()
 
 void CRemoteControl::Disconnect()
 {
-  if (!m_used)
-    return;
+  m_event.Set();
+
+  if (IsRunning())
+    StopThread();
 
   if (m_fd != -1) 
   {
@@ -109,109 +103,52 @@ void CRemoteControl::Disconnect()
   }
 }
 
-void CRemoteControl::setDeviceName(const std::string& value)
+void CRemoteControl::SetDeviceName(const std::string& value)
 {
   if (value.length()>0)
     m_deviceName=value;
   else
     m_deviceName=LIRC_DEVICE;
-  if (m_bInitialized)
-  {
-    Disconnect();
-    Initialize();
-  }
 }
 
 void CRemoteControl::Initialize()
 {
-  struct sockaddr_un addr;
-  unsigned int now = XbmcThreads::SystemClockMillis();
-
-  if (m_bInitialized || !m_used || (now - m_lastInitAttempt) < (unsigned int)m_initRetryPeriod)
+  if (m_bInitialized || !m_used || IsRunning())
     return;
-  
-  m_lastInitAttempt = now;
+
+  Create();
+}
+void CRemoteControl::Process()
+{
+  struct sockaddr_un addr;
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, m_deviceName.c_str());
 
   CLog::Log(LOGINFO, "LIRC %s: using: %s", __FUNCTION__, addr.sun_path);
 
-  // Open the socket from which we will receive the remote commands
-  if ((m_fd = socket(AF_UNIX, SOCK_STREAM, 0)) != -1)
+  int iAttempt = 0;
+  unsigned int iMsRetryDelay = 5000;
+
+  // try to connect 60 times @ a 5 second interval (5 minutes)
+  // multiple tries because LIRC service might be up and running a little later then xbmc on boot.
+  while (!m_bStop && iAttempt <= 60)
   {
-    // Connect to the socket
-    if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) != -1)
-    {
-      int opts;
-      m_bLogConnectFailure = true;
-      if ((opts = fcntl(m_fd,F_GETFL)) != -1)
-      {
-        // Set the socket to non-blocking
-        opts = (opts | O_NONBLOCK);
-        if (fcntl(m_fd,F_SETFL,opts) != -1)
-        {
-          if ((m_file = fdopen(m_fd, "r+")) != NULL)
-          {
-#ifdef HAVE_INOTIFY
-            // Setup inotify so we can disconnect if lircd is restarted
-            if ((m_inotify_fd = inotify_init()) >= 0)
-            {
-              // Set the fd non-blocking
-              if ((opts = fcntl(m_inotify_fd, F_GETFL)) != -1)
-              {
-                opts |= O_NONBLOCK;
-                if (fcntl(m_inotify_fd, F_SETFL, opts) != -1)
-                {
-                  // Set an inotify watch on the lirc device
-                  if ((m_inotify_wd = inotify_add_watch(m_inotify_fd, m_deviceName.c_str(), IN_DELETE_SELF)) != -1)
-                  {
-                    m_bInitialized = true;
-                    CLog::Log(LOGINFO, "LIRC %s: successfully started", __FUNCTION__);
-                  }
-                  else
-                    CLog::Log(LOGDEBUG, "LIRC: Failed to initialize Inotify. LIRC device will not be monitored.");
-                }
-              }
-            }
-#else
-            m_bInitialized = true;
-            CLog::Log(LOGINFO, "LIRC %s: successfully started", __FUNCTION__);
-#endif
-          }
-          else
-            CLog::Log(LOGERROR, "LIRC %s: fdopen failed: %s", __FUNCTION__, strerror(errno));
-        }
-        else
-          CLog::Log(LOGERROR, "LIRC %s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
-      }
-      else
-        CLog::Log(LOGERROR, "LIRC %s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
-    }
-    else
-    {
-      if (m_bLogConnectFailure)
-      {
-        CLog::Log(LOGINFO, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
-        m_bLogConnectFailure = false;
-      }
-    }
+    if (Connect(addr))
+      break;
+
+    if (iAttempt == 0)
+      CLog::Log(LOGINFO, "CRemoteControl::Process - failed to connect to LIRC, will keep retrying every %d seconds", iMsRetryDelay / 1000);
+
+    ++iAttempt;
+
+    if (AbortableWait(m_event, iMsRetryDelay) == WAIT_INTERRUPTED)
+      break;
   }
-  else
-    CLog::Log(LOGINFO, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
+  
   if (!m_bInitialized)
   {
-    Disconnect();
-    m_initRetryPeriod *= 2;
-    if (m_initRetryPeriod > 60000)
-    {
-      m_used = false;
-      CLog::Log(LOGDEBUG, "Failed to connect to LIRC. Giving up.");
-    }
-    else
-      CLog::Log(LOGDEBUG, "Failed to connect to LIRC. Retry in %ds.", m_initRetryPeriod/1000);
+    CLog::Log(LOGDEBUG, "Failed to connect to LIRC. Giving up.");
   }
-  else
-    m_initRetryPeriod = 5000;
 }
 
 bool CRemoteControl::CheckDevice() {
@@ -351,6 +288,67 @@ void CRemoteControl::AddSendCommand(const std::string& command)
 
   m_sendData += command;
   m_sendData += '\n';
+}
+
+bool CRemoteControl::Connect(struct sockaddr_un addr)
+{
+  // Open the socket from which we will receive the remote commands
+  if ((m_fd = socket(AF_UNIX, SOCK_STREAM, 0)) != -1)
+  {
+    // Connect to the socket
+    if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) != -1)
+    {
+      int opts;
+      if ((opts = fcntl(m_fd, F_GETFL)) != -1)
+      {
+        // Set the socket to non-blocking
+        opts = (opts | O_NONBLOCK);
+        if (fcntl(m_fd, F_SETFL, opts) != -1)
+        {
+          if ((m_file = fdopen(m_fd, "r+")) != NULL)
+          {
+#ifdef HAVE_INOTIFY
+            // Setup inotify so we can disconnect if lircd is restarted
+            if ((m_inotify_fd = inotify_init()) >= 0)
+            {
+              // Set the fd non-blocking
+              if ((opts = fcntl(m_inotify_fd, F_GETFL)) != -1)
+              {
+                opts |= O_NONBLOCK;
+                if (fcntl(m_inotify_fd, F_SETFL, opts) != -1)
+                {
+                  // Set an inotify watch on the lirc device
+                  if ((m_inotify_wd = inotify_add_watch(m_inotify_fd, m_deviceName.c_str(), IN_DELETE_SELF)) != -1)
+                  {
+                    m_bInitialized = true;
+                    CLog::Log(LOGINFO, "LIRC %s: successfully started", __FUNCTION__);
+                  }
+                  else
+                    CLog::Log(LOGDEBUG, "LIRC: Failed to initialize Inotify. LIRC device will not be monitored.");
+                }
+              }
+            }
+#else
+            m_bInitialized = true;
+            CLog::Log(LOGINFO, "LIRC %s: successfully started", __FUNCTION__);
+#endif
+          }
+          else
+            CLog::Log(LOGERROR, "LIRC %s: fdopen failed: %s", __FUNCTION__, strerror(errno));
+        }
+        else
+          CLog::Log(LOGERROR, "LIRC %s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
+      }
+      else
+        CLog::Log(LOGERROR, "LIRC %s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
+    }
+    else
+      CLog::Log(LOGINFO, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
+  }
+  else
+    CLog::Log(LOGINFO, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
+
+  return m_bInitialized;
 }
 
 #endif

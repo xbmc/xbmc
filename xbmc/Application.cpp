@@ -4263,8 +4263,6 @@ void CApplication::ProcessSlow()
 
   g_mediaManager.ProcessEvents();
 
-  CInputManager::Get().EnableRemoteControl();
-
   if (!m_pPlayer->IsPlayingVideo() &&
       CSettings::Get().GetInt("general.addonupdates") != AUTO_UPDATES_NEVER)
     CAddonInstaller::Get().UpdateRepos();

@@ -190,11 +190,22 @@ public:
    */
   void DisableRemoteControl();
 
+  /*! \brief Try to connect to a remote control to listen for commands
+   *
+   */
+  void InitializeRemoteControl();
+
   /*! \brief Check if the remote control is enabled
    *
    * \return true if remote control is enabled, false otherwise 
    */
   bool IsRemoteControlEnabled();
+
+  /*! \brief Check if the remote control is initialized
+   *
+   * \return true if initialized, false otherwise 
+   */
+  bool IsRemoteControlInitialized();
 
   /*! \brief Set the device name to use with LIRC, does nothing 
    *   if IRServerSuite is used
