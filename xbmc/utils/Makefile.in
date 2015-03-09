@@ -26,7 +26,6 @@ SRCS += fstrcmp.c
 SRCS += fft.cpp
 SRCS += GLUtils.cpp
 SRCS += GroupUtils.cpp
-SRCS += HTMLTable.cpp
 SRCS += HTMLUtil.cpp
 SRCS += HttpHeader.cpp
 SRCS += HttpParser.cpp

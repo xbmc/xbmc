@@ -29,10 +29,6 @@ class CHTMLUtil
 public:
   CHTMLUtil(void);
   virtual ~CHTMLUtil(void);
-  static int FindTag(const std::string& strHTML, const std::string& strTag, std::string& strtagFound, int iPos = 0);
-  static int FindClosingTag(const std::string& strHTML, const std::string& strTag, std::string& strtagFound, int iPos);
-  static void getValueOfTag(const std::string& strTagAndValue, std::string& strValue);
-  static void getAttributeOfTag(const std::string& strTagAndValue, const std::string& strTag, std::string& strValue);
   static void RemoveTags(std::string& strHTML);
   static void ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStripped);
 };

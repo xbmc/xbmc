@@ -1453,9 +1453,6 @@
     <ClCompile Include="..\..\xbmc\utils\fstrcmp.c">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\HTMLTable.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\HTMLUtil.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2496,9 +2493,6 @@
       <Filter>utils\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestGlobalsHandling.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\TestHTMLTable.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestHTMLUtil.cpp">
@@ -4475,9 +4469,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\fstrcmp.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\HTMLTable.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\HTMLUtil.h">

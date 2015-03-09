@@ -22,61 +22,6 @@
 
 #include "gtest/gtest.h"
 
-TEST(TestHTMLUtil, FindTag)
-{
-  HTML::CHTMLUtil util;
-  std::string str, found;
-  str = "<!DOCTYPE html>\n"
-        "<html>\n"
-        "  <head class=\"someclass\">\n"
-        "    <body>\n"
-        "      <p>blah blah blah</p>\n"
-        "    </body>\n"
-        "  </head>\n"
-        "</html>\n";
-  EXPECT_EQ(54, util.FindTag(str, "<body", found));
-  EXPECT_STREQ("<body>", found.c_str());
-
-  found.clear();
-  EXPECT_EQ(-1, util.FindTag(str, "<span", found));
-  EXPECT_STREQ("", found.c_str());
-}
-
-TEST(TestHTMLUtil, FindClosingTag)
-{
-  HTML::CHTMLUtil util;
-  std::string str, found;
-  str = "<!DOCTYPE html>\n"
-        "<html>\n"
-        "  <head class=\"someclass\">\n"
-        "    <body>\n"
-        "      <p>blah blah blah</p>\n"
-        "    </body>\n"
-        "  </head>\n"
-        "</html>\n";
-  /* Need to set position past '<body>' tag */
-  EXPECT_EQ(93, util.FindClosingTag(str, "body", found, 61));
-  EXPECT_STREQ("</body>", found.c_str());
-}
-
-TEST(TestHTMLUtil, getValueOfTag)
-{
-  HTML::CHTMLUtil util;
-  std::string str, value;
-  str = "<p>blah blah blah</p>";
-  util.getValueOfTag(str, value);
-  EXPECT_STREQ("blah blah blah", value.c_str());
-}
-
-TEST(TestHTMLUtil, getAttributeOfTag)
-{
-  HTML::CHTMLUtil util;
-  std::string str, tag, value;
-  str = "<head class=\"someclass\"></head>\n";
-  util.getAttributeOfTag(str, "class", value);
-  EXPECT_STREQ("\"someclass", value.c_str());
-}
-
 TEST(TestHTMLUtil, RemoveTags)
 {
   std::string str;
