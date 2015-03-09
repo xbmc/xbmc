@@ -1,0 +1,26 @@
+# Kodi Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/xbmc-main/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#0"
+msgid "Programs"
+msgstr "Programas"
+
+msgctxt "#1"
+msgid "Pictures"
+msgstr "Imágenes"
+
+msgctxt "#2"
+msgid "Music"
+msgstr "Música"
