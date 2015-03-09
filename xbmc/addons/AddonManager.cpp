@@ -629,12 +629,15 @@ void CAddonMgr::FindAddons()
   NotifyObservers(ObservableMessageAddons);
 }
 
-void CAddonMgr::RemoveAddon(const std::string& ID)
+void CAddonMgr::UnregisterAddon(const std::string& ID)
 {
+  CSingleLock lock(m_critSection);
+  m_disabled.erase(ID);
   if (m_cpluff && m_cp_context)
   {
-    m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
+    m_cpluff->uninstall_plugin(m_cp_context, ID.c_str());
     SetChanged();
+    lock.Leave();
     NotifyObservers(ObservableMessageAddons);
   }
 }

@@ -193,14 +193,6 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
   return false;
 }
 
-void CRepository::OnPostInstall(bool restart, bool update, bool modal)
-{
-  VECADDONS addons;
-  AddonPtr repo(new CRepository(*this));
-  addons.push_back(repo);
-  CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
-}
-
 void CRepository::OnPostUnInstall()
 {
   CAddonDatabase database;

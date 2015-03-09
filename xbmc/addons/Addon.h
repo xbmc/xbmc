@@ -44,6 +44,10 @@ const std::string   GetIcon(const TYPE &type);
 
 void OnEnabled(const std::string& id);
 void OnDisabled(const std::string& id);
+void OnPreInstall(const AddonPtr& addon);
+void OnPostInstall(const AddonPtr& addon, bool update, bool modal);
+void OnPreUnInstall(const AddonPtr& addon);
+void OnPostUnInstall(const AddonPtr& addon);
 
 class AddonProps : public ISerializable
 {
@@ -194,9 +198,8 @@ public:
    */
   virtual AddonPtr GetRunningInstance() const { return AddonPtr(); }
 
-  /*! \brief callbacks for special install/uninstall behaviour */
-  virtual bool OnPreInstall() { return false; };
-  virtual void OnPostInstall(bool restart, bool update, bool modal) {};
+  virtual void OnPreInstall() {};
+  virtual void OnPostInstall(bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
   virtual bool CanInstall(const std::string& referer) { return true; }

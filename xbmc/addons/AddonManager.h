@@ -112,7 +112,7 @@ namespace ADDON
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
     void FindAddons();
-    void RemoveAddon(const std::string& ID);
+    void UnregisterAddon(const std::string& ID);
 
     /*! \brief Disable an addon. Returns true on success, false on failure. */
     bool DisableAddon(const std::string& ID);

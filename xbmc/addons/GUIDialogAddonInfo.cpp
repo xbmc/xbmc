@@ -240,12 +240,8 @@ void CGUIDialogAddonInfo::OnUninstall()
   if (!CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
     return;
 
-  // ensure the addon isn't disabled in our database
-  CAddonMgr::Get().DisableAddon(m_localAddon->ID(), false);
-
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),
                                     &CAddonInstaller::Get());
-  CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
   Close();
 }
 
@@ -335,10 +331,12 @@ void CGUIDialogAddonInfo::OnRollback()
       database.BlacklistAddon(m_localAddon->ID(),m_rollbackVersions[j]);
     std::string path = "special://home/addons/packages/";
     path += m_localAddon->ID()+"-"+m_rollbackVersions[choice]+".zip";
+
+    //FIXME: this is probably broken
     // needed as cpluff won't downgrade
     if (!m_localAddon->IsType(ADDON_SERVICE))
       //we will handle this for service addons in CAddonInstallJob::OnPostInstall
-      CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
+      CAddonMgr::Get().UnregisterAddon(m_localAddon->ID());
     CAddonInstaller::Get().InstallFromZip(path);
     database.RemoveAddonFromBlacklist(m_localAddon->ID(),m_rollbackVersions[choice]);
     Close();
