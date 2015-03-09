@@ -29,15 +29,17 @@
 
 using namespace std;
 
-#define SETTINGS_PICTURES               WINDOW_SETTINGS_MYPICTURES - WINDOW_SETTINGS_START
+#define SETTINGS_PICTURES               WINDOW_SETTINGS_MYPICTURES - WINDOW_SETTINGS_START //left in for backward compat
 #define SETTINGS_PROGRAMS               WINDOW_SETTINGS_MYPROGRAMS - WINDOW_SETTINGS_START
-#define SETTINGS_WEATHER                WINDOW_SETTINGS_MYWEATHER - WINDOW_SETTINGS_START
-#define SETTINGS_MUSIC                  WINDOW_SETTINGS_MYMUSIC - WINDOW_SETTINGS_START
+#define SETTINGS_WEATHER                WINDOW_SETTINGS_MYWEATHER - WINDOW_SETTINGS_START //left in for backward compat
+#define SETTINGS_MUSIC                  WINDOW_SETTINGS_MYMUSIC - WINDOW_SETTINGS_START //left in for backward compat
 #define SETTINGS_SYSTEM                 WINDOW_SETTINGS_SYSTEM - WINDOW_SETTINGS_START
-#define SETTINGS_VIDEOS                 WINDOW_SETTINGS_MYVIDEOS - WINDOW_SETTINGS_START
+#define SETTINGS_VIDEOS                 WINDOW_SETTINGS_MYVIDEOS - WINDOW_SETTINGS_START //left in for backward compat
 #define SETTINGS_SERVICE                WINDOW_SETTINGS_SERVICE - WINDOW_SETTINGS_START
 #define SETTINGS_APPEARANCE             WINDOW_SETTINGS_APPEARANCE - WINDOW_SETTINGS_START
 #define SETTINGS_PVR                    WINDOW_SETTINGS_MYPVR - WINDOW_SETTINGS_START
+#define SETTINGS_PLAYBACK               WINDOW_SETTINGS_PLAYBACK - WINDOW_SETTINGS_START
+#define SETTINGS_MEDIA                  WINDOW_SETTINGS_MEDIA - WINDOW_SETTINGS_START
 
 #define CONTRL_BTN_LEVELS               20
 
@@ -46,15 +48,17 @@ typedef struct {
   string name;
 } SettingGroup;
 
-static const SettingGroup s_settingGroupMap[] = { { SETTINGS_PICTURES,    "pictures" },
+static const SettingGroup s_settingGroupMap[] = { { SETTINGS_PICTURES,    "pictures" }, //left in for backward compat
                                                   { SETTINGS_PROGRAMS,    "programs" },
-                                                  { SETTINGS_WEATHER,     "weather" },
-                                                  { SETTINGS_MUSIC,       "music" },
+                                                  { SETTINGS_WEATHER,     "weather" }, //left in for backward compat
+                                                  { SETTINGS_MUSIC,       "music" }, //left in for backward compat
                                                   { SETTINGS_SYSTEM,      "system" },
-                                                  { SETTINGS_VIDEOS,      "videos" },
+                                                  { SETTINGS_VIDEOS,      "videos" }, //left in for backward compat
                                                   { SETTINGS_SERVICE,     "services" },
                                                   { SETTINGS_APPEARANCE,  "appearance" },
-                                                  { SETTINGS_PVR,         "pvr" } };
+                                                  { SETTINGS_PVR,         "pvr" },
+                                                  { SETTINGS_PLAYBACK,    "playback" },
+                                                  { SETTINGS_MEDIA,       "media" } };
                                                   
 #define SettingGroupSize sizeof(s_settingGroupMap) / sizeof(SettingGroup)
 
@@ -68,15 +72,17 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
 
   // set the correct ID range...
   m_idRange.clear();
-  m_idRange.push_back(WINDOW_SETTINGS_MYPICTURES);
+  m_idRange.push_back(WINDOW_SETTINGS_MYPICTURES); //left in for backward compat
   m_idRange.push_back(WINDOW_SETTINGS_MYPROGRAMS);
-  m_idRange.push_back(WINDOW_SETTINGS_MYWEATHER);
-  m_idRange.push_back(WINDOW_SETTINGS_MYMUSIC);
+  m_idRange.push_back(WINDOW_SETTINGS_MYWEATHER); //left in for backward compat
+  m_idRange.push_back(WINDOW_SETTINGS_MYMUSIC); //left in for backward compat
   m_idRange.push_back(WINDOW_SETTINGS_SYSTEM);
-  m_idRange.push_back(WINDOW_SETTINGS_MYVIDEOS);
+  m_idRange.push_back(WINDOW_SETTINGS_MYVIDEOS); //left in for backward compat
   m_idRange.push_back(WINDOW_SETTINGS_SERVICE);
   m_idRange.push_back(WINDOW_SETTINGS_APPEARANCE);
   m_idRange.push_back(WINDOW_SETTINGS_MYPVR);
+  m_idRange.push_back(WINDOW_SETTINGS_PLAYBACK);
+  m_idRange.push_back(WINDOW_SETTINGS_MEDIA);
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory()
