@@ -36,6 +36,7 @@ SET SCRIPTS_PATH=%BASE_PATH%\scripts\windows
 SET ADDONS_PATH=%BASE_PATH%\addons
 SET ADDON_DEPENDS_PATH=%ADDONS_PATH%\output
 SET ADDONS_BUILD_PATH=%ADDONS_PATH%\build
+SET ADDONS_DEFINITION_PATH=%ADDONS_PATH%\addons
 
 SET ERRORFILE=%BASE_PATH%\make-addons.error
 
@@ -73,9 +74,15 @@ ECHO --------------------------------------------------
 ECHO Building addons
 ECHO --------------------------------------------------
 
-SET ADDONS_TO_BUILD="all"
+SET ADDONS_TO_BUILD=
 IF "%addon%" NEQ "" (
   SET ADDONS_TO_BUILD=%addon%
+) ELSE (
+  SETLOCAL EnableDelayedExpansion
+  FOR /D %%a IN (%ADDONS_DEFINITION_PATH%\*) DO (
+    SET ADDONS_TO_BUILD=!ADDONS_TO_BUILD! %%~nxa
+  )
+  SETLOCAL DisableDelayedExpansion
 )
 
 rem execute cmake to generate makefiles processable by nmake
@@ -94,11 +101,15 @@ IF ERRORLEVEL 1 (
   GOTO ERROR
 )
 
-rem execute nmake to build the addons
-nmake %addon%
-IF ERRORLEVEL 1 (
-  ECHO nmake error level: %ERRORLEVEL% > %ERRORFILE%
-  GOTO ERROR
+rem loop over all addons to build
+FOR %%a IN (%ADDONS_TO_BUILD%) DO (
+  ECHO Building %%a...
+  rem execute nmake to build the addons
+  nmake %%a
+  IF ERRORLEVEL 1 (
+    ECHO nmake %%a error level: %ERRORLEVEL% > %ERRORFILE%
+    GOTO ERROR
+  )
 )
 
 rem everything was fine
