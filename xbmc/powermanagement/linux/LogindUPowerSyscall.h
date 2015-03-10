@@ -50,6 +50,7 @@ private:
   bool m_hasUPower;
   bool m_lowBattery;
   bool m_upower99;
+  int m_warnLevel;
   int m_batteryLevel;
   int m_delayLockFd; // file descriptor for the logind sleep delay lock
   void UpdateBatteryLevel();

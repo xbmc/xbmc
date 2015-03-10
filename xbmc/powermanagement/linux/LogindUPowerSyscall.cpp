@@ -193,6 +193,7 @@ void CLogindUPowerSyscall::UpdateBatteryLevel()
   int    length = 0;
   double batteryLevelSum = 0;
   int    batteryCount = 0;
+  std::vector<int> warnLevels;
 
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
   DBusMessage *reply = message.SendSystem();
@@ -210,11 +211,18 @@ void CLogindUPowerSyscall::UpdateBatteryLevel()
   {
     CVariant properties = CDBusUtil::GetAll("org.freedesktop.UPower", source[i], "org.freedesktop.UPower.Device");
     bool isRechargeable = properties["IsRechargeable"].asBoolean();
+    bool isSupply = properties["PowerSupply"].asBoolean();
 
-    if (isRechargeable)
+
+    if (isRechargeable && isSupply)
     {
       batteryCount++;
       batteryLevelSum += properties["Percentage"].asDouble();
+      
+      if (m_upower99)
+      {
+        warnLevels.push_back(properties["WarningLevel"].asInteger());
+      }
     }
   }
 
@@ -223,12 +231,38 @@ void CLogindUPowerSyscall::UpdateBatteryLevel()
   if (batteryCount > 0)
   {
     m_batteryLevel = (int)(batteryLevelSum / (double)batteryCount);
-    m_lowBattery = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "OnLowBattery").asBoolean();
+    if (m_upower99)
+    {
+      int warnLevel = warnLevels[0];
+
+      // use the lowest battery warning level in case of multiple supplies
+      for (int i = 1; i < (int)warnLevels.size(); i++)
+      {
+        if (warnLevel > warnLevels[i])
+          warnLevel = warnLevels[i];
+      }
+      m_warnLevel = warnLevel;
+    }
+    else
+    {
+      m_lowBattery = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "OnLowBattery").asBoolean();
+    }
   }
 }
 
 bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 {
+  enum UpDeviceLevel
+  {
+    UP_DEVICE_LEVEL_UNKNOWN,
+    UP_DEVICE_LEVEL_NONE,
+    UP_DEVICE_LEVEL_DISCHARGING,
+    UP_DEVICE_LEVEL_LOW,
+    UP_DEVICE_LEVEL_CRITICAL,
+    UP_DEVICE_LEVEL_ACTION,
+    UP_DEVICE_LEVEL_LAST
+  };
+
   bool result = false;
   bool releaseLock = false;
 
@@ -260,6 +294,20 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
       }
       else if (dbus_message_is_signal(msg, "org.freedesktop.DBus.Properties", "PropertiesChanged"))
       {
+        int warnLevel = m_warnLevel;
+        UpdateBatteryLevel();
+        if (m_warnLevel && !warnLevel && (m_warnLevel == UP_DEVICE_LEVEL_LOW || m_warnLevel == UP_DEVICE_LEVEL_CRITICAL))
+        {
+          callback->OnLowBattery();
+        }
+        else if(m_warnLevel == UP_DEVICE_LEVEL_ACTION)
+        {
+          Powerdown();
+        }
+
+        CLog::Log(LOGDEBUG, "LogindUPowerSyscall - UPower warning level %i", m_warnLevel);
+
+        result = true;
       }
       else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "DeviceChanged"))
       {
