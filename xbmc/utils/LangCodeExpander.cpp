@@ -406,7 +406,7 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
       }
     }
   }
-  else if (code.length() == 3)
+  else if (sCode.length() == 3)
   {
     longcode = MAKECODE('\0', sCode[0], sCode[1], sCode[2]);
     for (unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
