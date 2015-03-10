@@ -231,7 +231,8 @@ case $host in
             AC_MSG_ERROR(error in configure of --with-arch=$use_cpu)
         esac
         platform_os="osx"
-        platform_min_version=macosx-version-min=10.6
+        platform_min=10.6
+        platform_min_version=macosx-version-min=$platform_min
       ;;
 
       arm-apple-darwin*)
@@ -488,7 +489,8 @@ AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
 AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
-
+AC_SUBST(platform_min)
+AC_SUBST(sdk_name)
 AC_OUTPUT
 echo -e "toolchain:\t $use_toolchain"
 echo -e "cpu:\t\t $use_cpu"

@@ -21,7 +21,11 @@
 	<key>CFBundleShortVersionString</key>
 	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.@APP_VERSION_TAG_LC@</string>
 	<key>CFBundleVersion</key>
-	<string>r####</string>
+	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@</string>
+        <key>SUPublicDSAKeyFile</key>
+        <string>sparkle_public_key_kodi.pem</string>
+        <key>SUFeedURL</key>
+        <string>@APP_SPARKLE_UPDATE_URL@</string>
 	<key>CFBundleSignature</key>
 	<string>@APP_NAME@</string>
 </dict>

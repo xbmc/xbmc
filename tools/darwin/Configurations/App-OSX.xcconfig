@@ -26,8 +26,7 @@ ONLY_ACTIVE_ARCH = YES
 SDKROOT = macosx
 MACOSX_DEPLOYMENT_TARGET = 10.6
 
-
-
-OTHER_LDFLAGS = -Wl,-search_paths_first $(XBMC_OTHER_LDFLAGS_COMMON) -lcdio -lfontconfig -lGLEW -lSDL
+FRAMEWORK_SEARCH_PATHS = $(inherited) $(XBMC_DEPENDS)/Frameworks
+OTHER_LDFLAGS = -Wl,-rpath,@loader_path/../Libraries -Wl,-search_paths_first $(XBMC_OTHER_LDFLAGS_COMMON) -lcdio -lfontconfig -lGLEW -lSDL -framework Sparkle
 
 GCC_PREPROCESSOR_DEFINITIONS = TARGET_DARWIN_OSX $(inherited)
