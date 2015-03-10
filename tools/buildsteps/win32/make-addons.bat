@@ -38,7 +38,14 @@ SET ADDON_DEPENDS_PATH=%ADDONS_PATH%\output
 SET ADDONS_BUILD_PATH=%ADDONS_PATH%\build
 SET ADDONS_DEFINITION_PATH=%ADDONS_PATH%\addons
 
-SET ERRORFILE=%BASE_PATH%\make-addons.error
+SET ADDONS_SUCCESS_FILE=%ADDONS_PATH%\.success
+SET ADDONS_FAILURE_FILE=%ADDONS_PATH%\.failure
+
+SET ERRORFILE=%ADDONS_PATH%\make-addons.error
+
+rem remove the success and failure files from a previous build
+DEL /F %ADDONS_SUCCESS_FILE% > NUL 2>&1
+DEL /F %ADDONS_FAILURE_FILE% > NUL 2>&1
 
 IF %clean% == true (
   rem remove the build directory if it exists
@@ -108,7 +115,9 @@ FOR %%a IN (%ADDONS_TO_BUILD%) DO (
   nmake %%a
   IF ERRORLEVEL 1 (
     ECHO nmake %%a error level: %ERRORLEVEL% > %ERRORFILE%
-    GOTO ERROR
+    ECHO %%a >> %ADDONS_FAILURE_FILE%
+  ) ELSE (
+    ECHO %%a >> %ADDONS_SUCCESS_FILE%
   )
 )
 
@@ -117,6 +126,9 @@ GOTO END
 
 :ERROR
 rem something went wrong
+FOR %%a IN (%ADDONS_TO_BUILD%) DO (
+  ECHO %%a >> %ADDONS_FAILURE_FILE%
+)
 ECHO Failed to build addons
 ECHO See %ERRORFILE% for more details
 SET EXITCODE=1
