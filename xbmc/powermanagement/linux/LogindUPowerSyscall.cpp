@@ -59,7 +59,12 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
 
   m_batteryLevel = 0;
   if (m_hasUPower)
+  {
+    m_upower99 = UPower99();
+    CLog::Log(LOGINFO, "UPower version 0.99 or higher %s", m_upower99 ? "true" : "false");
+
     UpdateBatteryLevel();
+  }
 
   DBusError error;
   dbus_error_init(&error);
@@ -307,4 +312,16 @@ void CLogindUPowerSyscall::ReleaseDelayLock()
   }
 }
 
+bool CLogindUPowerSyscall::UPower99()
+{
+  std::string version = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower","DaemonVersion").asString();
+
+  if(version.size()>=4)
+  {
+    if(version.substr(0,4).compare("0.9.") == 0)
+     return false;
+  }
+
+  return true;
+}
 #endif
