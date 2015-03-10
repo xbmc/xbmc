@@ -1909,17 +1909,17 @@ int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[]
 
 CGUIAddonWindow::CGUIAddonWindow(int id, const std::string& strXML, CAddon* addon)
  : CGUIMediaWindow(id, strXML.c_str())
+ , CBOnInit{nullptr}
+ , CBOnFocus{nullptr}
+ , CBOnClick{nullptr}
+ , CBOnAction{nullptr}
+ , m_clientHandle{nullptr}
  , m_iWindowId(id)
  , m_iOldWindowId(0)
  , m_bModal(false)
  , m_bIsDialog(false)
  , m_actionEvent(true)
  , m_addon(addon)
- , m_clientHandle{nullptr}
- , CBOnAction{nullptr}
- , CBOnClick{nullptr}
- , CBOnFocus{nullptr}
- , CBOnInit{nullptr}
 
 {
   m_loadType = LOAD_ON_GUI_INIT;
@@ -2224,13 +2224,13 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
 }
 
 CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl *pControl)
-  : m_pControl{pControl},
-  m_clientHandle{nullptr},
-  m_refCount{1},
-  CBCreate{nullptr},
-  CBDirty{nullptr},
+  : CBCreate{nullptr},
   CBRender{nullptr},
-  CBStop{nullptr}
+  CBStop{nullptr},
+  CBDirty{nullptr},
+  m_clientHandle{nullptr},
+  m_pControl{pControl},
+  m_refCount{1}
 { }
 
 bool CGUIAddonRenderingControl::Create(int x, int y, int w, int h, void *device)

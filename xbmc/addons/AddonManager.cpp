@@ -218,8 +218,8 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
 }
 
 CAddonMgr::CAddonMgr()
-  : m_cpluff(nullptr),
-  m_cp_context(nullptr)
+  : m_cp_context(nullptr),
+  m_cpluff(nullptr)
 { }
 
 CAddonMgr::~CAddonMgr()
