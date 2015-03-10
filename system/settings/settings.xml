@@ -919,7 +919,7 @@
           <level>1</level>
           <default>English</default>
           <constraints>
-            <options>languagenames</options>
+            <options>iso6391languages</options>
             <delimiter>,</delimiter>
             <minimumitems>1</minimumitems>
             <maximumitems>3</maximumitems>
