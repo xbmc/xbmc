@@ -1632,21 +1632,21 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
 //////////////////////////////////////////////////////////////////////////////////
 
 CFileItemList::CFileItemList()
+: CFileItem("", true),
+  m_fastLookup(false),
+  m_sortIgnoreFolders(false),
+  m_cacheToDisc(CACHE_IF_SLOW),
+  m_replaceListing(false)
 {
-  m_fastLookup = false;
-  m_bIsFolder = true;
-  m_cacheToDisc = CACHE_IF_SLOW;
-  m_sortIgnoreFolders = false;
-  m_replaceListing = false;
 }
 
 CFileItemList::CFileItemList(const std::string& strPath)
-: CFileItem(strPath, true)
+: CFileItem(strPath, true),
+  m_fastLookup(false),
+  m_sortIgnoreFolders(false),
+  m_cacheToDisc(CACHE_IF_SLOW),
+  m_replaceListing(false)
 {
-  m_fastLookup = false;
-  m_cacheToDisc = CACHE_IF_SLOW;
-  m_sortIgnoreFolders = false;
-  m_replaceListing = false;
 }
 
 CFileItemList::~CFileItemList()
