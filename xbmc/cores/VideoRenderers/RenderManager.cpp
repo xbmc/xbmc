@@ -816,7 +816,7 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
 bool CXBMCRenderManager::IsGuiLayer()
 {
-  { CSingleLock lock(m_presentlock);
+  { CSharedLock lock(m_sharedSection);
 
     if (!m_pRenderer)
       return false;
@@ -829,7 +829,7 @@ bool CXBMCRenderManager::IsGuiLayer()
 
 bool CXBMCRenderManager::IsVideoLayer()
 {
-  { CSingleLock lock(m_presentlock);
+  { CSharedLock lock(m_sharedSection);
 
     if (!m_pRenderer)
       return false;
