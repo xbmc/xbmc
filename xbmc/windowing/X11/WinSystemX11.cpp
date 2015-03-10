@@ -1157,6 +1157,10 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     {
       Atom fs = XInternAtom(m_dpy, "_NET_WM_STATE_FULLSCREEN", True);
       XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_NET_WM_STATE", True), XA_ATOM, 32, PropModeReplace, (unsigned char *) &fs, 1);
+      // disable desktop compositing for KDE, when Kodi is in full-screen mode
+      int one = 1;
+      XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_KDE_NET_WM_BLOCK_COMPOSITING", True), XA_CARDINAL, 32,
+                      PropModeReplace, (unsigned char*) &one,  1);
     }
 
     // define invisible cursor
