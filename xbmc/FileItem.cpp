@@ -234,8 +234,7 @@ CFileItem::CFileItem(const CGenre& genre)
 }
 
 CFileItem::CFileItem(const CFileItem& item)
-: CGUIListItem(),
-  m_musicInfoTag(NULL),
+: m_musicInfoTag(NULL),
   m_videoInfoTag(NULL),
   m_pictureInfoTag(NULL)
 {
@@ -258,7 +257,6 @@ CFileItem::CFileItem(void)
 }
 
 CFileItem::CFileItem(const std::string& strLabel)
-    : CGUIListItem()
 {
   Initialize();
   SetLabel(strLabel);
