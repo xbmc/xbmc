@@ -115,22 +115,22 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
 
 CFileItem::CFileItem(const CEpgInfoTagPtr& tag)
 {
+  assert(tag.get());
+
   Initialize();
 
   m_bIsFolder = false;
   m_epgInfoTag = tag;
-  if (tag)
-  {
-    m_strPath = tag->Path();
-    SetLabel(tag->Title());
-    m_strLabel2 = tag->Plot();
-    m_dateTime = tag->StartAsLocalTime();
+  m_strPath = tag->Path();
+  SetLabel(tag->Title());
+  m_strLabel2 = tag->Plot();
+  m_dateTime = tag->StartAsLocalTime();
 
-    if (!tag->Icon().empty())
-      SetIconImage(tag->Icon());
-    else if (tag->HasPVRChannel() && !tag->ChannelTag()->IconPath().empty())
-      SetIconImage(tag->ChannelTag()->IconPath());
-  }
+  if (!tag->Icon().empty())
+    SetIconImage(tag->Icon());
+  else if (tag->HasPVRChannel() && !tag->ChannelTag()->IconPath().empty())
+    SetIconImage(tag->ChannelTag()->IconPath());
+
   FillInMimeType(false);
 }
 
