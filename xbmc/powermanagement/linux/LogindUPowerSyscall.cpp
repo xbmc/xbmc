@@ -84,7 +84,16 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
   dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'", NULL);
 
   if (m_hasUPower)
-    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower',member='DeviceChanged'", NULL);
+  {
+    if(m_upower99)
+    {
+      dbus_bus_add_match(m_connection, "type='signal',sender='org.freedesktop.UPower',interface='org.freedesktop.DBus.Properties',member='PropertiesChanged'", NULL);
+    }
+    else
+    {
+      dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower',member='DeviceChanged'", NULL);
+    }
+  }
 
   dbus_connection_flush(m_connection);
   dbus_error_free(&error);
@@ -248,6 +257,9 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
         }
 
         result = true;
+      }
+      else if (dbus_message_is_signal(msg, "org.freedesktop.DBus.Properties", "PropertiesChanged"))
+      {
       }
       else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "DeviceChanged"))
       {
