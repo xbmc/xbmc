@@ -334,7 +334,6 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
 
   std::string descTmp(desc);
   StringUtils::Trim(descTmp);
-  StringUtils::ToLower(descTmp);
   for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
   {
     if (StringUtils::EqualsNoCase(descTmp, it->second))
@@ -346,7 +345,7 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
 
   for (unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
   {
-    if (descTmp == g_iso639_1[i].name)
+    if (StringUtils::EqualsNoCase(descTmp, g_iso639_1[i].name))
     {
       CodeToString(g_iso639_1[i].code, code);
       return true;
@@ -355,7 +354,7 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
 
   for (unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
   {
-    if (descTmp == g_iso639_2[i].name)
+    if (StringUtils::EqualsNoCase(descTmp, g_iso639_2[i].name))
     {
       CodeToString(g_iso639_2[i].code, code);
       return true;
@@ -407,7 +406,7 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
       }
     }
   }
-  else if (code.length() == 3)
+  else if (sCode.length() == 3)
   {
     longcode = MAKECODE('\0', sCode[0], sCode[1], sCode[2]);
     for (unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
