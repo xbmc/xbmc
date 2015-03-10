@@ -45,9 +45,9 @@ namespace ADDON
     CAudioDecoder(const AddonProps &props) 
       : AudioDecoderDll(props)
       , m_context{nullptr}
-      , m_channel{nullptr}
       , m_tags{false}
       , m_tracks{false}
+      , m_channel{nullptr}
     {};
     CAudioDecoder(const cp_extension_t *ext);
     virtual ~CAudioDecoder() {}
