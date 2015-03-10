@@ -1,10 +1,4 @@
-/*!
-\file KeyboardLayout.h
-\brief
-*/
-
 #pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -25,46 +19,33 @@
  *
  */
 
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
 
-/*!
- \ingroup keyboardlayouts
- \brief
- */
-
 class TiXmlElement;
-class CSetting;
 
 class CKeyboardLayout
 {
 public:
   CKeyboardLayout();
-  CKeyboardLayout(const std::string &name, const TiXmlElement& element);
-  virtual ~CKeyboardLayout(void);
-  const std::string& GetName() const { return m_name; }
-  std::string GetCharAt(unsigned int row, unsigned int column, unsigned int modifiers = 0) const;
+  virtual ~CKeyboardLayout();
 
-  enum MODIFIER_KEYS
+  bool Load(const TiXmlElement* element);
+
+  std::string GetIdentifier() const;
+  std::string GetName() const;
+  const std::string& GetLanguage() const { return m_language; }
+  const std::string& GetLayout() const { return m_layout; }
+
+  enum ModifierKey
   {
-    MODIFIER_KEY_NONE   = 0x00,
-    MODIFIER_KEY_SHIFT  = 0x01,
-    MODIFIER_KEY_SYMBOL = 0x02
+    ModifierKeyNone   = 0x00,
+    ModifierKeyShift  = 0x01,
+    ModifierKeySymbol = 0x02
   };
 
-  /*! \brief helper to load a keyboard layout
-   \param layout the layout to load.
-   \return a CKeyboardLayout.
-   */
-  static CKeyboardLayout Load(const std::string &layout);
-
-  /*! \brief helper to list available keyboard layouts
-   \return a vector of CKeyboardLayouts with the layout names.
-   */
-  static std::vector<CKeyboardLayout> LoadLayouts();
-
-  static void SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void* data);
+  std::string GetCharAt(unsigned int row, unsigned int column, unsigned int modifiers = 0) const;
 
 private:
   static std::vector<std::string> BreakCharacters(const std::string &chars);
@@ -72,6 +53,7 @@ private:
   typedef std::vector< std::vector<std::string> > KeyboardRows;
   typedef std::map<unsigned int, KeyboardRows> Keyboards;
 
-  std::string m_name;
-  Keyboards   m_keyboards;
+  std::string m_language;
+  std::string m_layout;
+  Keyboards m_keyboards;
 };

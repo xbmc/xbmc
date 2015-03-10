@@ -18,53 +18,86 @@
  *
  */
 
+#include <algorithm>
+#include <set>
+
 #include "KeyboardLayout.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/lib/Setting.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include <set>
-#include <algorithm>
 
-#define KEYBOARD_LAYOUTS_XML "special://xbmc/system/keyboardlayouts.xml"
+CKeyboardLayout::CKeyboardLayout()
+{ }
 
-CKeyboardLayout::CKeyboardLayout() : m_name("")
+CKeyboardLayout::~CKeyboardLayout()
+{ }
+
+bool CKeyboardLayout::Load(const TiXmlElement* element)
 {
-}
+  const char* language = element->Attribute("language");
+  if (language == NULL)
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: invalid \"language\" attribute");
+    return false;
+  }
 
-CKeyboardLayout::CKeyboardLayout(const std::string &name, const TiXmlElement &element) : m_name(name)
-{
-  const TiXmlElement *keyboard = element.FirstChildElement("keyboard");
-  while (keyboard)
+  m_language = language;
+  if (m_language.empty())
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: empty \"language\" attribute");
+    return false;
+  }
+
+  const char* layout = element->Attribute("layout");
+  if (layout == NULL)
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: invalid \"layout\" attribute");
+    return false;
+  }
+
+  m_layout = layout;
+  if (m_layout.empty())
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: empty \"layout\" attribute");
+    return false;
+  }
+
+  const TiXmlElement *keyboard = element->FirstChildElement("keyboard");
+  while (keyboard != NULL)
   {
     // parse modifiers keys
     std::set<unsigned int> modifierKeysSet;
 
-    if (keyboard->Attribute("modifiers"))
+    const char* strModifiers = keyboard->Attribute("modifiers");
+    if (strModifiers != NULL)
     {
-      std::string modifiers = keyboard->Attribute("modifiers");
+      std::string modifiers = strModifiers;
       StringUtils::ToLower(modifiers);
 
       std::vector<std::string> variants = StringUtils::Split(modifiers, ",");
       for (std::vector<std::string>::const_iterator itv = variants.begin(); itv != variants.end(); ++itv)
       {
-        unsigned int iKeys = MODIFIER_KEY_NONE;
+        unsigned int iKeys = ModifierKeyNone;
         std::vector<std::string> keys = StringUtils::Split(*itv, "+");
         for (std::vector<std::string>::const_iterator it = keys.begin(); it != keys.end(); ++it)
         {
           std::string strKey = *it;
           if (strKey == "shift")
-            iKeys |= MODIFIER_KEY_SHIFT;
+            iKeys |= ModifierKeyShift;
           else if (strKey == "symbol")
-            iKeys |= MODIFIER_KEY_SYMBOL;
+            iKeys |= ModifierKeySymbol;
         }
+
         modifierKeysSet.insert(iKeys);
       }
     }
 
     // parse keyboard rows
     const TiXmlNode *row = keyboard->FirstChild("row");
-    while (row)
+    while (row != NULL)
     {
       if (!row->NoChildren())
       {
@@ -76,27 +109,41 @@ CKeyboardLayout::CKeyboardLayout(const std::string &name, const TiXmlElement &el
             m_keyboards[*it].push_back(chars);
         }
         else
-          m_keyboards[MODIFIER_KEY_NONE].push_back(chars);
+          m_keyboards[ModifierKeyNone].push_back(chars);
       }
+
       row = row->NextSibling();
     }
 
     keyboard = keyboard->NextSiblingElement();
   }
+
+  if (m_keyboards.empty())
+  {
+    CLog::Log(LOGWARNING, "CKeyboardLayout: no keyboard layout found");
+    return false;
+  }
+
+  return true;
 }
 
-CKeyboardLayout::~CKeyboardLayout(void)
+std::string CKeyboardLayout::GetIdentifier() const
 {
+  return StringUtils::Format("%s %s", m_language.c_str(), m_layout.c_str());
+}
 
+std::string CKeyboardLayout::GetName() const
+{
+  return StringUtils::Format(g_localizeStrings.Get(311).c_str(), m_language.c_str(), m_layout.c_str());
 }
 
 std::string CKeyboardLayout::GetCharAt(unsigned int row, unsigned int column, unsigned int modifiers) const
 {
   Keyboards::const_iterator mod = m_keyboards.find(modifiers);
-  if (modifiers != MODIFIER_KEY_NONE && mod != m_keyboards.end() && mod->second.empty())
+  if (modifiers != ModifierKeyNone && mod != m_keyboards.end() && mod->second.empty())
   {
     // fallback to basic keyboard
-    mod = m_keyboards.find(MODIFIER_KEY_NONE);
+    mod = m_keyboards.find(ModifierKeyNone);
   }
 
   if (mod != m_keyboards.end())
@@ -117,53 +164,11 @@ std::vector<std::string> CKeyboardLayout::BreakCharacters(const std::string &cha
   std::vector<std::string> result;
   // break into utf8 characters
   std::u32string chars32 = g_charsetConverter.utf8ToUtf32(chars);
-  for (size_t i = 0; i < chars32.size(); i++)
+  for (std::u32string::const_iterator it = chars32.begin(); it != chars32.end(); ++it)
   {
-    std::u32string char32(1, chars32[i]);
+    std::u32string char32(1, *it);
     result.push_back(g_charsetConverter.utf32ToUtf8(char32));
   }
+
   return result;
-}
-
-CKeyboardLayout CKeyboardLayout::Load(const std::string& layout)
-{
-  std::vector<CKeyboardLayout> layouts = LoadLayouts();
-  for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); ++it)
-  {
-    if (it->GetName() == layout)
-      return *it;
-  }
-  return CKeyboardLayout();
-}
-
-std::vector<CKeyboardLayout> CKeyboardLayout::LoadLayouts()
-{
-  std::vector<CKeyboardLayout> result;
-  CXBMCTinyXML xmlDoc;
-  if (xmlDoc.LoadFile(KEYBOARD_LAYOUTS_XML))
-  {
-    const TiXmlElement* root = xmlDoc.RootElement();
-    if (root && root->ValueStr() == "keyboardlayouts")
-    {
-      const TiXmlElement* layout = root->FirstChildElement("layout");
-      while (layout)
-      {
-        if (layout->Attribute("name"))
-          result.push_back(CKeyboardLayout(layout->Attribute("name"), *layout));
-        layout = layout->NextSiblingElement("layout");
-      }
-    }
-  }
-  return result;
-}
-
-void CKeyboardLayout::SettingOptionsKeyboardLayoutsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
-{
-  std::vector<CKeyboardLayout> layouts = LoadLayouts();
-  for (std::vector<CKeyboardLayout>::const_iterator it = layouts.begin(); it != layouts.end(); ++it)
-  {
-    std::string name = it->GetName();
-    list.push_back(make_pair(name, name));
-  }
-  std::sort(list.begin(), list.end());
 }

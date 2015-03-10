@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Polish" layout="QWERTY">
+    <keyboard>
+      <row>`1234567890-</row>
+      <row>qwertyuiopąć</row>
+      <row>asdfghjklęłń</row>
+      <row>zxcvbnmóśżź</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>~1234567890_</row>
+      <row>QWERTYUIOPĄĆ</row>
+      <row>ASDFGHJKLĘŁŃ</row>
+      <row>ZXCVBNMÓŚŻŹ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>!@#$%^&amp;*()=+</row>
+      <row>\|€£§[]{};',</row>
+      <row>./:"&lt;&gt;?</row>
+      <row></row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>

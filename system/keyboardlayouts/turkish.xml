@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Turkish" layout="QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuıopğü</row>
+      <row>asdfghjklşi</row>
+      <row>zxcvbnmöç</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOPĞÜ</row>
+      <row>ASDFGHJKLŞİ</row>
+      <row>ZXCVBNMÖÇ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>
