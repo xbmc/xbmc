@@ -7,15 +7,18 @@ SET EXITCODE=0
 SET install=false
 SET clean=false
 SET addon=
-FOR %%b in (%1, %2, %3, %4) DO (
+
+SETLOCAL EnableDelayedExpansion
+FOR %%b IN (%*) DO (
   IF %%b == install (
     SET install=true
   ) ELSE ( IF %%b == clean (
     SET clean=true
   ) ELSE (
-    SET addon=%%b
+    SET addon=!addon! %%b
   ))
 )
+SETLOCAL DisableDelayedExpansion
 
 rem set Visual C++ build environment
 call "%VS120COMNTOOLS%..\..\VC\bin\vcvars32.bat"
@@ -72,7 +75,7 @@ ECHO --------------------------------------------------
 
 SET ADDONS_TO_BUILD="all"
 IF "%addon%" NEQ "" (
-  SET ADDONS_TO_BUILD="%addon%"
+  SET ADDONS_TO_BUILD=%addon%
 )
 
 rem execute cmake to generate makefiles processable by nmake
