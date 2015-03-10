@@ -30,6 +30,7 @@
 
 
 #include "StringUtils.h"
+#include "CharsetConverter.h"
 #include "utils/fstrcmp.h"
 #include "Util.h"
 #include "LangInfo.h"
@@ -372,6 +373,30 @@ void StringUtils::ToLower(string &str)
 void StringUtils::ToLower(wstring &str)
 {
   transform(str.begin(), str.end(), str.begin(), tolowerUnicode);
+}
+
+void StringUtils::ToCapitalize(string &str)
+{
+  std::wstring wstr;
+  g_charsetConverter.utf8ToW(str, wstr);
+  ToCapitalize(wstr);
+  g_charsetConverter.wToUTF8(wstr, str);
+}
+
+void StringUtils::ToCapitalize(std::wstring &str)
+{
+  const std::locale& loc = g_langInfo.GetSystemLocale();
+  bool isFirstLetter = true;
+  for (std::wstring::iterator it = str.begin(); it < str.end(); ++it)
+  {
+    if (std::isspace(*it, loc))
+      isFirstLetter = true;
+    else if (isFirstLetter)
+    {
+      *it = std::toupper(*it, loc);
+      isFirstLetter = false;
+    }
+  }
 }
 
 bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)

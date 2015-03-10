@@ -52,6 +52,29 @@ TEST(TestStringUtils, ToLower)
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
+TEST(TestStringUtils, ToCapitalize)
+{
+  std::string refstr = "Test";
+  std::string varstr = "test";
+  StringUtils::ToCapitalize(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "Just A Test";
+  varstr = "just a test";
+  StringUtils::ToCapitalize(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "Test -1;2:3, String For Case";
+  varstr = "test -1;2:3, string for Case";
+  StringUtils::ToCapitalize(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "  JuST Another\t\tTEst:\nWoRKs ";
+  varstr = "  juST another\t\ttEst:\nwoRKs ";
+  StringUtils::ToCapitalize(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
 TEST(TestStringUtils, EqualsNoCase)
 {
   std::string refstr = "TeSt";

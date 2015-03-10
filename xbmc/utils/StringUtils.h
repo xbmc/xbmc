@@ -59,6 +59,8 @@ public:
   static void ToUpper(std::wstring &str);
   static void ToLower(std::string &str);
   static void ToLower(std::wstring &str);
+  static void ToCapitalize(std::string &str);
+  static void ToCapitalize(std::wstring &str);
   static bool EqualsNoCase(const std::string &str1, const std::string &str2);
   static bool EqualsNoCase(const std::string &str1, const char *s2);
   static bool EqualsNoCase(const char *s1, const char *s2);
