@@ -344,7 +344,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
 
     g_application.m_pPlayer->GetAudioStreamInfo(CURRENT_STREAM, info);
 
-    if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
+    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = "Unknown";
 
     preferredLanguage = strLanguage;
@@ -502,7 +502,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
   // Extract the language and appropriate extension
   std::string strSubLang;
-  g_LangCodeExpander.ConvertToTwoCharCode(strSubLang, language);
+  g_LangCodeExpander.ConvertToISO6391(language, strSubLang);
 
   // Iterate over all items to transfer
   for (unsigned int i = 0; i < vecFiles.size() && i < (unsigned int) items->Size(); i++)

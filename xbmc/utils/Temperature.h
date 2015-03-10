@@ -20,6 +20,7 @@
  */
 
 #include <string>
+
 #include "utils/IArchivable.h"
 
 class CTemperature : public IArchivable
@@ -27,6 +28,18 @@ class CTemperature : public IArchivable
 public:
   CTemperature();
   CTemperature(const CTemperature& temperature);
+
+  typedef enum Unit
+  {
+    UnitFahrenheit = 0,
+    UnitKelvin,
+    UnitCelsius,
+    UnitReaumur,
+    UnitRankine,
+    UnitRomer,
+    UnitDelisle,
+    UnitNewton
+  } Unit;
 
   static CTemperature CreateFromFahrenheit(double value);
   static CTemperature CreateFromKelvin(double value);
@@ -77,14 +90,8 @@ public:
 
   virtual void Archive(CArchive& ar);
 
-  typedef enum _STATE
-  {
-    invalid=0,
-    valid
-  } STATE;
-
-  void SetState(CTemperature::STATE state);
   bool IsValid() const;
+  void SetValid(bool valid) { m_valid = valid; }
 
   double ToFahrenheit() const;
   double ToKelvin() const;
@@ -95,14 +102,13 @@ public:
   double ToDelisle() const;
   double ToNewton() const;
 
-  double ToLocale() const;
-  std::string ToString() const;
+  double To(Unit temperatureUnit) const;
+  std::string ToString(Unit temperatureUnit) const;
 
 protected:
   CTemperature(double value);
 
-protected:
   double m_value; // we store as fahrenheit
-  STATE m_state;
+  bool m_valid;
 };
 

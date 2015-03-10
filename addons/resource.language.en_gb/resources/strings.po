@@ -1620,11 +1620,13 @@ msgid "Light"
 msgstr ""
 
 #. Weather token
+#: xbmc/LangInfo.cpp
 msgctxt "#378"
 msgid "AM"
 msgstr ""
 
 #. Weather token
+#: xbmc/LangInfo.cpp
 msgctxt "#379"
 msgid "PM"
 msgstr ""
@@ -5018,16 +5020,22 @@ msgctxt "#12379"
 msgid "Use pan and zoom effects"
 msgstr ""
 
-#empty strings from id 12380 to 12382
+#empty strings from id 12380 to 12381
 
-#: unknown
-msgctxt "#12383"
-msgid "12 hour clock"
+#. time format with meridiem (xx) e.g. "HH:mm:ss xx"
+#: xbmc/LangInfo.cpp
+msgctxt "#12382"
+msgid "%s xx"
 msgstr ""
 
-#: unknown
+#: system/settings/settings.xml
+msgctxt "#12383"
+msgid "12-hour clock"
+msgstr ""
+
+#: system/settings/settings.xml
 msgctxt "#12384"
-msgid "24 hour clock"
+msgid "24-hour clock"
 msgstr ""
 
 #: unknown
@@ -6959,7 +6967,37 @@ msgctxt "#14104"
 msgid "Show simplified menu"
 msgstr ""
 
-#empty strings from id 14105 to 15011
+#: system/settings/settings.xml
+msgctxt "#14105"
+msgid "Temperature unit"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14106"
+msgid "Speed unit"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14107"
+msgid "Time format"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14108"
+msgid "Use 12/24-hour format"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14109"
+msgid "Short date format"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14110"
+msgid "Long date format"
+msgstr ""
+
+#empty strings from id 14111 to 15011
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -9516,6 +9554,17 @@ msgstr ""
 
 #empty strings from id 20027 to 20036
 #string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)
+
+#: xbmc/LangInfo.cpp
+msgctxt "#20035"
+msgid "Regional (%s)"
+msgstr ""
+
+#. Used for date/time format settings like "10:00:00 (HH:mm:ss)"
+#: xbmc/LangInfo.cpp
+msgctxt "#20036"
+msgid "%s (%s)"
+msgstr ""
 
 msgctxt "#20037"
 msgid "Summary"
@@ -14152,7 +14201,11 @@ msgctxt "#36139"
 msgid "Category containing the settings for how the video library is handled."
 msgstr ""
 
-#empty string with id 36140
+#.  Description of setting "Appearance -> International -> Temperature unit" with label #14105
+#: system/settings/settings.xml
+msgctxt "#36140"
+msgid "Choose which temperature unit is used for displaying temperatures in the user interface."
+msgstr ""
 
 #. Description of setting "Videos -> Library -> Show plot for unwatched items" with label #20369
 #: system/settings/settings.xml
@@ -14160,7 +14213,11 @@ msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr ""
 
-#empty string with id 36142
+#.  Description of setting "Appearance -> International -> Speed unit" with label #14106
+#: system/settings/settings.xml
+msgctxt "#36142"
+msgid "Choose which speed unit is used for displaying speeds in the user interface."
+msgstr ""
 
 #. Description of setting "Videos -> Library -> Download actor thumbnails when adding to library" with label #20402
 #: system/settings/settings.xml
@@ -14300,7 +14357,17 @@ msgctxt "#36166"
 msgid "Synchronise the video to the refresh rate of the monitor."
 msgstr ""
 
-#empty strings from id 36167 to 36168
+#. Description of setting "Appearance -> International -> Time format" with label #14107
+#: system/settings/settings.xml
+msgctxt "#36167"
+msgid "Choose which time format is used for displaying the time in the user interface."
+msgstr ""
+
+#. Description of setting "Appearance -> International -> Use 12/24-hour format" with label #14108
+#: system/settings/settings.xml
+msgctxt "#36168"
+msgid "Choose whether to use 12-hour or 24-hour format for displaying the time in the user interface."
+msgstr ""
 
 #. Description of setting "System -> Audio output -> Resample quality" with label #13505
 #: system/settings/settings.xml
@@ -14326,7 +14393,11 @@ msgctxt "#36172"
 msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
 msgstr ""
 
-#empty string with id 36173
+#. Description of setting "Appearance -> International -> Short date format" with label #14109
+#: system/settings/settings.xml
+msgctxt "#36173"
+msgid "Choose which short date format is used for displaying the date in the user interface."
+msgstr ""
 
 #. Description of setting "Videos -> Playback -> Activate Teletext" with label #23050
 #: system/settings/settings.xml
@@ -14555,7 +14626,11 @@ msgctxt "#36214"
 msgid "Close the on screen display controls after switching channels."
 msgstr ""
 
-#empty string with id 36215
+#. Description of setting "Appearance -> International -> Long date format" with label #14110
+#: system/settings/settings.xml
+msgctxt "#36215"
+msgid "Choose which long date format is used for displaying the date in the user interface."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36216"
