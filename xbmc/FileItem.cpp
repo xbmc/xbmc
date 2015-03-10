@@ -233,11 +233,12 @@ CFileItem::CFileItem(const CGenre& genre)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
+CFileItem::CFileItem(const CFileItem& item)
+: CGUIListItem(),
+  m_musicInfoTag(NULL),
+  m_videoInfoTag(NULL),
+  m_pictureInfoTag(NULL)
 {
-  m_musicInfoTag = NULL;
-  m_videoInfoTag = NULL;
-  m_pictureInfoTag = NULL;
   *this = item;
 }
 
