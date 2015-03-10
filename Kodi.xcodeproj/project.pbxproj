@@ -178,6 +178,9 @@
 		395897151AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
 		395897161AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
 		395897171AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
+		395938701AC163800053A590 /* VideoDimensions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3959386E1AC163800053A590 /* VideoDimensions.cpp */; };
+		395938711AC163800053A590 /* VideoDimensions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3959386E1AC163800053A590 /* VideoDimensions.cpp */; };
+		395938721AC163800053A590 /* VideoDimensions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3959386E1AC163800053A590 /* VideoDimensions.cpp */; };
 		395C29BC1A94733100EBC7AD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BA1A94733100EBC7AD /* Key.cpp */; };
 		395C29BD1A94733100EBC7AD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BA1A94733100EBC7AD /* Key.cpp */; };
 		395C29BE1A94733100EBC7AD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C29BA1A94733100EBC7AD /* Key.cpp */; };
@@ -3537,6 +3540,8 @@
 		395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardLayoutManager.cpp; sourceTree = "<group>"; };
 		395897141AAD94F00033D27C /* KeyboardLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardLayoutManager.h; sourceTree = "<group>"; };
 		395938731AC28F5A0053A590 /* EmbeddedArt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbeddedArt.h; sourceTree = "<group>"; };
+		3959386E1AC163800053A590 /* VideoDimensions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoDimensions.cpp; sourceTree = "<group>"; };
+		3959386F1AC163800053A590 /* VideoDimensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDimensions.h; sourceTree = "<group>"; };
 		395C29BA1A94733100EBC7AD /* Key.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Key.cpp; sourceTree = "<group>"; };
 		395C29BB1A94733100EBC7AD /* Key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Key.h; sourceTree = "<group>"; };
 		395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Webinterface.cpp; sourceTree = "<group>"; };
@@ -6744,6 +6749,8 @@
 				E38E1E940D25F9FD00618676 /* VideoDatabase.h */,
 				36A9466B15CF201F00727135 /* VideoDbUrl.cpp */,
 				36A9466C15CF201F00727135 /* VideoDbUrl.h */,
+				3959386E1AC163800053A590 /* VideoDimensions.cpp */,
+				3959386F1AC163800053A590 /* VideoDimensions.h */,
 				E38E1E4A0D25F9FD00618676 /* VideoInfoDownloader.cpp */,
 				E38E1E4B0D25F9FD00618676 /* VideoInfoDownloader.h */,
 				E38E1E950D25F9FD00618676 /* VideoInfoScanner.cpp */,
@@ -10665,6 +10672,7 @@
 				F5AE40A513415D9E0004BD79 /* PlaylistOperations.cpp in Sources */,
 				F5AE40A613415D9E0004BD79 /* SystemOperations.cpp in Sources */,
 				F5AE40A713415D9E0004BD79 /* VideoLibrary.cpp in Sources */,
+				395938701AC163800053A590 /* VideoDimensions.cpp in Sources */,
 				F5AE40A813415D9E0004BD79 /* XBMCOperations.cpp in Sources */,
 				C84BF7341349BB74006D6FC9 /* JSONServiceDescription.cpp in Sources */,
 				384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */,
@@ -11721,6 +11729,7 @@
 				DFF0F37217528350002DA3A4 /* PVRClients.cpp in Sources */,
 				DFF0F37317528350002DA3A4 /* PVRChannel.cpp in Sources */,
 				DFF0F37417528350002DA3A4 /* PVRChannelGroup.cpp in Sources */,
+				395938721AC163800053A590 /* VideoDimensions.cpp in Sources */,
 				395C29F81A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */,
 				DFF0F37517528350002DA3A4 /* PVRChannelGroupInternal.cpp in Sources */,
 				DFF0F37617528350002DA3A4 /* PVRChannelGroups.cpp in Sources */,
@@ -12155,6 +12164,7 @@
 				E4991154174E5CC300741B6D /* crypt.cpp in Sources */,
 				E4991155174E5CC300741B6D /* encname.cpp in Sources */,
 				E4991156174E5CC300741B6D /* errhnd.cpp in Sources */,
+				395938711AC163800053A590 /* VideoDimensions.cpp in Sources */,
 				E4991157174E5CC300741B6D /* extinfo.cpp in Sources */,
 				E4991158174E5CC300741B6D /* extract.cpp in Sources */,
 				E4991159174E5CC300741B6D /* filcreat.cpp in Sources */,

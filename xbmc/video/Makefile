@@ -5,6 +5,7 @@ SRCS=Bookmark.cpp \
      Teletext.cpp \
      VideoDatabase.cpp \
      VideoDbUrl.cpp \
+     VideoDimensions.cpp \
      VideoInfoDownloader.cpp \
      VideoInfoScanner.cpp \
      VideoInfoTag.cpp \

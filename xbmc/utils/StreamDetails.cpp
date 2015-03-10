@@ -541,32 +541,6 @@ void CStreamDetails::DetermineBestStreams(void)
   }  /* for each */
 }
 
-std::string CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHeight)
-{
-  if (iWidth == 0 || iHeight == 0)
-    return "";
-
-  else if (iWidth <= 720 && iHeight <= 480)
-    return "480";
-  // 720x576 (PAL) (768 when rescaled for square pixels)
-  else if (iWidth <= 768 && iHeight <= 576)
-    return "576";
-  // 960x540 (sometimes 544 which is multiple of 16)
-  else if (iWidth <= 960 && iHeight <= 544)
-    return "540";
-  // 1280x720
-  else if (iWidth <= 1280 && iHeight <= 720)
-    return "720";
-  // 1920x1080
-  else if (iWidth <= 1920 && iHeight <= 1080)
-    return "1080";
-  // 4K
-  else if (iWidth * iHeight >= 6000000)
-    return "4K";
-  else
-    return "";
-}
-
 std::string CStreamDetails::VideoAspectToAspectDescription(float fAspect)
 {
   if (fAspect == 0.0f)
