@@ -922,7 +922,6 @@
             <options>iso6391languages</options>
             <delimiter>,</delimiter>
             <minimumitems>1</minimumitems>
-            <maximumitems>3</maximumitems>
           </constraints>
           <control type="list" format="string">
             <multiselect>true</multiselect>
