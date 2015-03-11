@@ -80,9 +80,11 @@ constellations of Xcode and osx versions (to be updated once we know more):
  $ ./bootstrap
  $ ./configure --host=arm-apple-darwin
  $ make
- $ make -C target/xbmc-pvr-addons
- $ make -C target/xbmc-audioencoder-addons
+ $ make -C target/binary-addons
  
+ NOTE: if you only want to build specific addons you can specify like this:
+  $ make -C target/binary-addons ADDONS="pvr.hts pvr.dvblink"
+
  NOTE: You can speedup compilation on multicore systems by doing 
  "make -j<number of cores>" instead of "make". For a dualcore this would read:
  "make -j2"

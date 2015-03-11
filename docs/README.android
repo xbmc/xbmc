@@ -200,8 +200,10 @@ on with the Android toolchain and creating an Android Application Package
    having to input these with each configure. 
 
    # make -j <jobs>
-   # make -j <jobs> -C target/xbmc-pvr-addons
-   # make -j <jobs> -C target/xbmc-audioencoder-addons
+   # make -j <jobs> -C target/binary-addons
+
+   NOTE: if you only want to build specific addons you can specify like this:
+   # make -C target/binary-addons ADDONS="pvr.hts pvr.dvblink"
 
    This build was designed to be massively parallel. Don't be afraid to
    give it a 'make -j20' or so.

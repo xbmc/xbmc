@@ -9,7 +9,7 @@ FAILED_BUILD_FILENAME=".last_failed_revision"
 TARBALLS=${TARBALLS:-"/opt/xbmc-tarballs"}
 
 BINARY_ADDONS_ROOT=tools/depends/target
-BINARY_ADDONS="xbmc-audioencoder-addons xbmc-pvr-addons"
+BINARY_ADDONS="binary-addons"
 DEPLOYED_BINARY_ADDONS="-e addons"
 
 #set platform defaults

@@ -1,5 +1,5 @@
 BUILDDIR := $(shell pwd)
-ADDONS = "audioencoder.flac audioencoder.lame audioencoder.vorbis audioencoder.wav"
+ADDONS := "$(shell cd $(BUILDDIR)/../../../../project/cmake/addons/addons/; echo *)"
 
 -include ../../Makefile.include
 include ../../xbmc-addons.include

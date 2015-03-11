@@ -1,5 +1,6 @@
 ADDON_DEPS_DIR := $(BUILDDIR)/$(PLATFORM)/build/depends
 TOOLCHAIN_FILE = $(ADDON_DEPS_DIR)/share/Toolchain_binaddons.cmake
+ADDON_PROJECT_DIR = $(BUILDDIR)/../../../../project/cmake/addons
 
 ifeq ($(CROSS_COMPILING),yes)
   DEPS = $(TOOLCHAIN_FILE) $(abs_top_srcdir)/target/config-binaddons.site $(abs_top_srcdir)/target/Toolchain_binaddons.cmake $(CONFIG_SUB) $(CONFIG_GUESS)
@@ -43,7 +44,7 @@ distclean:
 	rm -rf $(PLATFORM) .installed-$(PLATFORM) native
 
 .installed-$(PLATFORM): $(DEPS)
-	cd ../../../../project/cmake/addons/ && (git clean -xfd || rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake build/*)
+	cd $(ADDON_PROJECT_DIR) && (git clean -xfd || rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake build/*)
 	mkdir -p $(PLATFORM)
 ifeq ($(PREFIX),)
 	@echo
@@ -57,9 +58,12 @@ endif
 	cd $(PLATFORM); \
          $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) $(CMAKE_EXTRA) \
          $(TOOLCHAIN) \
-         -DADDONS_TO_BUILD=$(ADDONS) ../../../../../project/cmake/addons/ -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
-         $(MAKE);
+         -DADDONS_TO_BUILD=$(ADDONS) $(ADDON_PROJECT_DIR) -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
+         for addon in "$(ADDONS)"; do \
+           $(MAKE) $$addon && echo $$addon >> $(ADDON_PROJECT_DIR)/.success || echo $$addon >> $(ADDON_PROJECT_DIR)/.failure ;\
+         done
 ifneq ($(CROSS_COMPILING),yes)
+	@[ -f $(ADDON_PROJECT_DIR)/.failure ] && echo "Following Addons failed to build: $(shell cat $(ADDON_PROJECT_DIR)/.failure)"
 	@[ -w $(INSTALL_PREFIX) ] || $(MAKE) -C $(PLATFORM) install
 endif
 	touch $@
