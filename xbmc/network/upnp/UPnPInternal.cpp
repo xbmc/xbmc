@@ -615,8 +615,10 @@ BuildObject(CFileItem&                    item,
         }
     }
 
-    //Add external subtitle
-    if (upnp_server && item.IsVideo()) //only if video file
+    // look for and add external subtitle if we are being called by a UPnP
+    // player or renderer and we are processing a video file
+    if (upnp_server != NULL && item.IsVideo() &&
+       (upnp_service == UPnPPlayer || upnp_service == UPnPRenderer))
     {
         // find any available external subtitles
         std::vector<std::string> filenames;
