@@ -93,7 +93,7 @@
       </group>
       <group id="2">
         <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
-          <level>1</level>
+          <level>0</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
