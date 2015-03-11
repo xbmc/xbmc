@@ -337,7 +337,6 @@ TEST_F(TestURIUtils, IsLiveTV)
   EXPECT_TRUE(URIUtils::IsLiveTV("sling://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("htsp://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("sap://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsLiveTV("myth://path/channels/"));
 }
 
 TEST_F(TestURIUtils, IsMultiPath)
@@ -348,11 +347,6 @@ TEST_F(TestURIUtils, IsMultiPath)
 TEST_F(TestURIUtils, IsMusicDb)
 {
   EXPECT_TRUE(URIUtils::IsMusicDb("musicdb://path/to/file"));
-}
-
-TEST_F(TestURIUtils, IsMythTV)
-{
-  EXPECT_TRUE(URIUtils::IsMythTV("myth://path/to/file"));
 }
 
 TEST_F(TestURIUtils, IsNfs)

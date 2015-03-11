@@ -54,7 +54,6 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif
-#include "filesystem/MythDirectory.h"
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
@@ -207,10 +206,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   else if (url.IsProtocol("vtp"))
     strFilename = g_localizeStrings.Get(20257);
   
-  // MythTV client
-  else if (url.IsProtocol("myth"))
-    strFilename = g_localizeStrings.Get(20258);
-
   // SAP Streams
   else if (url.IsProtocol("sap") && strFilename.empty())
     strFilename = "SAP Streams";
@@ -513,9 +508,6 @@ bool CUtil::IsLiveTV(const std::string& strFile)
   || URIUtils::IsHDHomeRun(strFile)
   || URIUtils::IsHTSP(strFile)
   || StringUtils::StartsWithNoCase(strFile, "sap:"))
-    return true;
-
-  if (URIUtils::IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
     return true;
 
   return false;
@@ -1517,15 +1509,6 @@ bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
     return true;
   if (URIUtils::IsDAV(strPath))
     return true;
-  if (URIUtils::IsMythTV(strPath))
-  {
-    /*
-     * Can't use CFile::Exists() to check whether the myth:// path supports file operations because
-     * it hits the directory cache on the way through, which has the Live Channels and Guide
-     * items cached.
-     */
-    return CMythDirectory::SupportsWriteFileOperations(strPath);
-  }
   if (URIUtils::IsStack(strPath))
     return SupportsWriteFileOperations(CStackDirectory::GetFirstStackedFile(strPath));
   if (URIUtils::IsMultiPath(strPath))

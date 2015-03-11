@@ -220,7 +220,6 @@ public:
   bool IsParentFolder() const;
   bool IsFileFolder(EFileFolderType types = EFILEFOLDER_MASK_ALL) const;
   bool IsRemovable() const;
-  bool IsMythTV() const;
   bool IsHDHomeRun() const;
   bool IsSlingbox() const;
   bool IsVTP() const;

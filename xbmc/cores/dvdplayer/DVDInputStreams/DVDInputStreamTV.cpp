@@ -19,7 +19,6 @@
  */
 
 #include "DVDInputStreamTV.h"
-#include "filesystem/MythFile.h"
 #include "filesystem/VTPFile.h"
 #include "pvr/channels/PVRChannel.h"
 #include "filesystem/VTPFile.h"
@@ -61,12 +60,6 @@ bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
     m_pFile       = new CSlingboxFile();
     m_pLiveTV     = ((CSlingboxFile*)m_pFile)->GetLiveTV();
     m_pRecordable = NULL;
-  }
-  else
-  {
-    m_pFile       = new CMythFile();
-    m_pLiveTV     = ((CMythFile*)m_pFile)->GetLiveTV();
-    m_pRecordable = ((CMythFile*)m_pFile)->GetRecordable();
   }
 
   CURL url(strFile);

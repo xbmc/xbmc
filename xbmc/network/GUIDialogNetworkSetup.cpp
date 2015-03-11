@@ -120,9 +120,6 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 #endif
   labels.push_back(make_pair(g_localizeStrings.Get(20256), NET_PROTOCOL_HTSP));
   labels.push_back(make_pair(g_localizeStrings.Get(20257), NET_PROTOCOL_VTP));
-#ifdef HAS_MYSQL
-  labels.push_back(make_pair(g_localizeStrings.Get(20258), NET_PROTOCOL_MYTH));
-#endif
   labels.push_back(make_pair(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS));
   labels.push_back(make_pair(g_localizeStrings.Get(20300), NET_PROTOCOL_HTTP));
   labels.push_back(make_pair(g_localizeStrings.Get(20254), NET_PROTOCOL_DAVS));
@@ -207,8 +204,6 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "9982";
   else if (m_protocol == NET_PROTOCOL_VTP)
     m_port = "2004";
-  else if (m_protocol == NET_PROTOCOL_MYTH)
-    m_port = "6543";
   else if (m_protocol == NET_PROTOCOL_SFTP)
     m_port = "22";
   else
@@ -238,8 +233,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_DAAP &&
                                                    m_protocol != NET_PROTOCOL_UPNP &&
                                                    m_protocol != NET_PROTOCOL_HTSP &&
-                                                   m_protocol != NET_PROTOCOL_VTP &&
-                                                   m_protocol != NET_PROTOCOL_MYTH);
+                                                   m_protocol != NET_PROTOCOL_VTP);
   if (m_protocol == NET_PROTOCOL_FTP ||
       m_protocol == NET_PROTOCOL_HTTP ||
       m_protocol == NET_PROTOCOL_HTTPS ||
@@ -275,7 +269,6 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                    m_protocol == NET_PROTOCOL_DAVS ||
                                                    m_protocol == NET_PROTOCOL_HTSP ||
                                                    m_protocol == NET_PROTOCOL_VTP ||
-                                                   m_protocol == NET_PROTOCOL_MYTH ||
                                                    m_protocol == NET_PROTOCOL_RSS ||
                                                    m_protocol == NET_PROTOCOL_DAAP ||
                                                    m_protocol == NET_PROTOCOL_SFTP);
@@ -302,7 +295,6 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                                               m_protocol == NET_PROTOCOL_RSS ||
                                                                               m_protocol == NET_PROTOCOL_HTSP ||
                                                                               m_protocol == NET_PROTOCOL_VTP ||
-                                                                              m_protocol == NET_PROTOCOL_MYTH ||
                                                                               m_protocol == NET_PROTOCOL_SFTP));
 }
 
@@ -331,8 +323,6 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("htsp");
   else if (m_protocol == NET_PROTOCOL_VTP)
     url.SetProtocol("vtp");
-  else if (m_protocol == NET_PROTOCOL_MYTH)
-    url.SetProtocol("myth");
   else if (m_protocol == NET_PROTOCOL_NFS)
     url.SetProtocol("nfs");
   else if (m_protocol == NET_PROTOCOL_SFTP)
@@ -355,7 +345,6 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_DAAP && !m_server.empty()) ||
        (m_protocol == NET_PROTOCOL_HTSP) ||
        (m_protocol == NET_PROTOCOL_VTP) ||
-       (m_protocol == NET_PROTOCOL_MYTH) ||
        (m_protocol == NET_PROTOCOL_SFTP) ||
        (m_protocol == NET_PROTOCOL_NFS))
       && !m_port.empty() && atoi(m_port.c_str()) > 0)
@@ -390,8 +379,6 @@ void CGUIDialogNetworkSetup::SetPath(const std::string &path)
     m_protocol = NET_PROTOCOL_HTSP;
   else if (url.IsProtocol("vtp"))
     m_protocol = NET_PROTOCOL_VTP;
-  else if (url.IsProtocol("myth"))
-    m_protocol = NET_PROTOCOL_MYTH;
   else if (url.IsProtocol("rss"))
     m_protocol = NET_PROTOCOL_RSS;
   else if (url.IsProtocol("nfs"))

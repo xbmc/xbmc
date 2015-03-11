@@ -25,7 +25,6 @@
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/cpluff.dll"
 #define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib.dll"
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif.dll"
-#define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth.dll"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun.dll"
 #define DLL_PATH_LIBCURL       "special://xbmcbin/system/libcurl.dll"
 #define DLL_PATH_LIBMICROHTTP  "special://xbmcbin/system/webserver/libmicrohttpd-5.dll"
