@@ -420,10 +420,11 @@ void CPVRChannel::UpdatePath(CPVRChannelGroupInternal* group)
 
   std::string strFileNameAndPath;
   CSingleLock lock(m_critSection);
-  strFileNameAndPath = StringUtils::Format("pvr://channels/%s/%s/%lu.pvr",
+  strFileNameAndPath = StringUtils::Format("pvr://channels/%s/%s/%s_%d.pvr",
                                            (m_bIsRadio ? "radio" : "tv"),
                                            group->GroupName().c_str(),
-                                           ((uint64_t)m_iClientId) << 32 | (uint64_t)m_iUniqueId);
+                                           g_PVRClients->GetClientAddonId(m_iClientId).c_str(),
+                                           m_iUniqueId);
   if (m_strFileNameAndPath != strFileNameAndPath)
   {
     m_strFileNameAndPath = strFileNameAndPath;

@@ -117,9 +117,13 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strPath) const
     if (StringUtils::StartsWith(strFileName, strCheckPath))
     {
       strFileName.erase(0, strCheckPath.length());
-      CPVRChannelPtr channel((*it)->GetByUniqueID(CPVRChannelGroup::PathIdToStorageId(strtoul(strFileName.c_str(), NULL, 10))).channel);
-      if (channel)
-        return CFileItemPtr(new CFileItem(channel));
+      std::vector<std::string> split(StringUtils::Split(strFileName, '_', 2));
+      if (split.size() == 2)
+      {
+        CPVRChannelPtr channel((*it)->GetByUniqueID(atoi(split[1].c_str()), g_PVRClients->GetClientId(split[0])));
+        if (channel)
+          return CFileItemPtr(new CFileItem(channel));
+      }
     }
   }
 

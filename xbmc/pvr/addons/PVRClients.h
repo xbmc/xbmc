@@ -147,6 +147,13 @@ namespace PVR
     bool GetClientName(int iClientId, std::string &strName) const;
 
     /*!
+     * Get the add-on ID of the client
+     * @param iClientId The db id of the client
+     * @return The add-on id
+     */
+    std::string GetClientAddonId(int iClientId) const;
+
+    /*!
      * @bried Get all connected clients.
      * @param clients Store the active clients in this map.
      * @return The amount of added clients.
@@ -617,6 +624,8 @@ namespace PVR
      */
     bool RestartManagerOnAddonDisabled(void) const { return m_bRestartManagerOnAddonDisabled; }
 
+    int GetClientId(const std::string& strId) const;
+
   private:
     /*!
      * @brief Update add-ons from the AddonManager
@@ -701,5 +710,6 @@ namespace PVR
     CCriticalSection      m_critSection;
     std::map<int, time_t> m_connectionAttempts;       /*!< last connection attempt per add-on */
     bool                  m_bRestartManagerOnAddonDisabled; /*!< true to restart the manager when an add-on is enabled/disabled */
+    std::map<std::string, int> m_addonNameIds; /*!< map add-on names to IDs */
   };
 }
