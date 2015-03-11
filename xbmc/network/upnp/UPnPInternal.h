@@ -41,6 +41,14 @@ class CVideoInfoTag;
 
 namespace UPNP
 {
+  enum Service {
+    None = 0,
+    Client,
+    ContentDirectory,
+    Player,
+    Renderer
+  };
+
   class CResourceFinder {
   public:
     CResourceFinder(const char* protocol, const char* content = NULL);
@@ -87,27 +95,29 @@ namespace UPNP
   NPT_Result PopulateTagFromObject(MUSIC_INFO::CMusicInfoTag& tag,
                                    PLT_MediaObject&           object,
                                    PLT_MediaItemResource*     resource = NULL);
+
   NPT_Result PopulateTagFromObject(CVideoInfoTag&             tag,
                                    PLT_MediaObject&           object,
                                    PLT_MediaItemResource*     resource = NULL);
 
-  NPT_Result PopulateObjectFromTag(MUSIC_INFO::CMusicInfoTag&         tag,
-                                          PLT_MediaObject&       object,
-                                          NPT_String*            file_path,
-                                          PLT_MediaItemResource* resource,
-                                          EClientQuirks          quirks);
-  NPT_Result PopulateObjectFromTag(CVideoInfoTag&         tag,
-                                          PLT_MediaObject&       object,
-                                          NPT_String*            file_path,
-                                          PLT_MediaItemResource* resource,
-                                          EClientQuirks          quirks);
+  NPT_Result PopulateObjectFromTag(MUSIC_INFO::CMusicInfoTag& tag,
+                                   PLT_MediaObject&           object,
+                                   NPT_String*                file_path,
+                                   PLT_MediaItemResource*     resource,
+                                   EClientQuirks              quirks);
 
-  PLT_MediaObject* BuildObject(CFileItem&              item,
-                                      NPT_String&                   file_path,
-                                      bool                          with_count,
-                                      NPT_Reference<CThumbLoader>&  thumb_loader,
-                                      const PLT_HttpRequestContext* context = NULL,
-                                      CUPnPServer*                  upnp_server = NULL);
+  NPT_Result PopulateObjectFromTag(CVideoInfoTag&             tag,
+                                   PLT_MediaObject&           object,
+                                   NPT_String*                file_path,
+                                   PLT_MediaItemResource*     resource,
+                                   EClientQuirks              quirks);
+
+  PLT_MediaObject* BuildObject(CFileItem&                     item,
+                               NPT_String&                    file_path,
+                               bool                           with_count,
+                               NPT_Reference<CThumbLoader>&   thumb_loader,
+                               const PLT_HttpRequestContext*  context = NULL,
+                               CUPnPServer*                   upnp_server = NULL);
 
   CFileItemPtr     BuildObject(PLT_MediaObject* entry);
 

@@ -222,8 +222,8 @@ bool CResourceFinder::operator()(const PLT_MediaItemResource& resource) const {
 NPT_Result
 PopulateObjectFromTag(CMusicInfoTag&         tag,
                       PLT_MediaObject&       object,
-                      NPT_String*            file_path, /* = NULL */
-                      PLT_MediaItemResource* resource,  /* = NULL */
+                      NPT_String*            file_path,
+                      PLT_MediaItemResource* resource,
                       EClientQuirks          quirks)
 {
     if (!tag.GetURL().empty() && file_path)
@@ -265,8 +265,8 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
 NPT_Result
 PopulateObjectFromTag(CVideoInfoTag&         tag,
                       PLT_MediaObject&       object,
-                      NPT_String*            file_path, /* = NULL */
-                      PLT_MediaItemResource* resource,  /* = NULL */
+                      NPT_String*            file_path,
+                      PLT_MediaItemResource* resource,
                       EClientQuirks          quirks)
 {
     if (!tag.m_strFileNameAndPath.empty() && file_path)
@@ -729,7 +729,7 @@ CorrectAllItemsSortHack(const std::string &item)
 }
 
 int
-PopulateTagFromObject(CMusicInfoTag&          tag,
+PopulateTagFromObject(CMusicInfoTag&         tag,
                       PLT_MediaObject&       object,
                       PLT_MediaItemResource* resource /* = NULL */)
 {
