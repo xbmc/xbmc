@@ -265,7 +265,7 @@ std::string CPVRClients::GetClientAddonId(int iClientId) const
   PVR_CLIENT client;
   return GetClient(iClientId, client) ?
       client->ID() :
-      "";;
+      "";
 }
 
 int CPVRClients::GetConnectedClients(PVR_CLIENTMAP &clients) const

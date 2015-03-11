@@ -134,15 +134,15 @@ bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, int iCh
 
   bool bReturn(false);
 
-  /* get the actual channel since this is called from a fileitemlist copy */
-  const PVRChannelGroupMember& realChannel(GetByUniqueID(channel->StorageId()));
-  if (!realChannel.channel)
+  /* get the group member, because we need the channel ID in this group, and the channel from this group */
+  const PVRChannelGroupMember& groupMember(GetByUniqueID(channel->StorageId()));
+  if (!groupMember.channel)
     return bReturn;
 
   /* switch the hidden flag */
-  if (realChannel.channel->IsHidden())
+  if (groupMember.channel->IsHidden())
   {
-    realChannel.channel->SetHidden(false);
+    groupMember.channel->SetHidden(false);
     if (m_iHiddenChannels > 0)
       m_iHiddenChannels--;
 
@@ -151,11 +151,11 @@ bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, int iCh
 
   /* move this channel and persist */
   bReturn = (iChannelNumber > 0l) ?
-    MoveChannel(realChannel.iChannelNumber, iChannelNumber, true) :
-    MoveChannel(realChannel.iChannelNumber, m_members.size() - m_iHiddenChannels, true);
+    MoveChannel(groupMember.iChannelNumber, iChannelNumber, true) :
+    MoveChannel(groupMember.iChannelNumber, m_members.size() - m_iHiddenChannels, true);
 
   if (m_bLoaded)
-    realChannel.channel->Persist();
+    groupMember.channel->Persist();
   return bReturn;
 }
 
@@ -163,6 +163,9 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
 {
   CSingleLock lock(m_critSection);
   assert(channel.get());
+
+  if (!IsGroupMember(channel))
+    return false;
 
   /* check if this channel is currently playing if we are hiding it */
   CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
@@ -172,20 +175,15 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
     return false;
   }
 
-  /* get the actual channel since this is called from a fileitemlist copy */
-  const PVRChannelGroupMember& realChannel(GetByUniqueID(channel->StorageId()));
-  if (!realChannel.channel)
-    return false;
-
   /* switch the hidden flag */
-  if (!realChannel.channel->IsHidden())
+  if (!channel->IsHidden())
   {
-    realChannel.channel->SetHidden(true);
+    channel->SetHidden(true);
     ++m_iHiddenChannels;
   }
   else
   {
-    realChannel.channel->SetHidden(false);
+    channel->SetHidden(false);
     if (m_iHiddenChannels > 0)
       --m_iHiddenChannels;
   }
@@ -194,7 +192,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
   SortAndRenumber();
 
   /* and persist */
-  return realChannel.channel->Persist() &&
+  return channel->Persist() &&
       Persist();
 }
 

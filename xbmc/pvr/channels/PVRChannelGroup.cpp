@@ -193,15 +193,16 @@ bool CPVRChannelGroup::SetChannelNumber(const CPVRChannelPtr &channel, unsigned 
 
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
   {
-    if (*((*it).channel) == *channel)
+    PVRChannelGroupMember& member(*it);
+    if (*member.channel == *channel)
     {
-      if ((*it).iChannelNumber    != iChannelNumber ||
-          (*it).iSubChannelNumber != iSubChannelNumber)
+      if (member.iChannelNumber    != iChannelNumber ||
+          member.iSubChannelNumber != iSubChannelNumber)
       {
         m_bChanged = true;
         bReturn = true;
-        (*it).iChannelNumber    = iChannelNumber;
-        (*it).iSubChannelNumber = iSubChannelNumber;
+        member.iChannelNumber    = iChannelNumber;
+        member.iSubChannelNumber = iSubChannelNumber;
       }
       break;
     }
@@ -287,26 +288,29 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   }
 
   int channelIndex = 0;
+  CPVRChannelPtr channel;
   for(PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
+    channel = it->second.channel;
+
     /* update progress dialog */
     if (dlgProgressHandle)
     {
       dlgProgressHandle->SetProgress(channelIndex++, m_members.size());
-      dlgProgressHandle->SetText(it->second.channel->ChannelName());
+      dlgProgressHandle->SetText(channel->ChannelName());
     }
 
     /* skip if an icon is already set and exists */
-    if (it->second.channel->IsIconExists())
+    if (channel->IsIconExists())
       continue;
 
     /* reset icon before searching for a new one */
-    it->second.channel->SetIconPath("");
+    channel->SetIconPath("");
 
-    std::string strChannelUid = StringUtils::Format("%08d", it->second.channel->UniqueID());
-    std::string strLegalClientChannelName = CUtil::MakeLegalFileName(it->second.channel->ClientChannelName());
+    std::string strChannelUid = StringUtils::Format("%08d", channel->UniqueID());
+    std::string strLegalClientChannelName = CUtil::MakeLegalFileName(channel->ClientChannelName());
     StringUtils::ToLower(strLegalClientChannelName);
-    std::string strLegalChannelName = CUtil::MakeLegalFileName(it->second.channel->ChannelName());
+    std::string strLegalChannelName = CUtil::MakeLegalFileName(channel->ChannelName());
     StringUtils::ToLower(strLegalChannelName);
 
     std::map<std::string, std::string>::iterator itItem;
@@ -314,11 +318,11 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
         (itItem = fileItemMap.find(strLegalChannelName)) != fileItemMap.end() ||
         (itItem = fileItemMap.find(strChannelUid)) != fileItemMap.end())
     {
-      it->second.channel->SetIconPath(itItem->second, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
+      channel->SetIconPath(itItem->second, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
     }
 
     if (bUpdateDb)
-      it->second.channel->Persist();
+      channel->Persist();
 
     /* TODO: start channel icon scraper here if nothing was found */
   }
@@ -697,22 +701,24 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
 void CPVRChannelGroup::RemoveInvalidChannels(void)
 {
+  CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end();)
   {
     bool bDelete = false;
+    channel = (*it).channel;
 
-    if ((*it).channel->ClientChannelNumber() <= 0)
+    if (channel->ClientChannelNumber() <= 0)
     {
       CLog::Log(LOGERROR, "PVRChannelGroup - %s - removing invalid channel '%s' from client '%i': no valid client channel number",
-          __FUNCTION__, (*it).channel->ChannelName().c_str(), (*it).channel->ClientID());
+          __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
       bDelete = true;
     }
 
-    if (!bDelete && (*it).channel->UniqueID() <= 0)
+    if (!bDelete && channel->UniqueID() <= 0)
     {
       CLog::Log(LOGERROR, "PVRChannelGroup - %s - removing invalid channel '%s' from client '%i': no valid unique ID",
-          __FUNCTION__, (*it).channel->ChannelName().c_str(), (*it).channel->ClientID());
+          __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
       bDelete = true;
     }
 
@@ -721,12 +727,12 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
     {
       if (IsInternalGroup())
       {
-        g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups((*it).channel);
-        (*it).channel->Delete();
+        g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups(channel);
+        channel->Delete();
       }
       else
       {
-        m_members.erase((*it).channel->StorageId());
+        m_members.erase(channel->StorageId());
         it = m_sortedMembers.erase(it);
       }
       m_bChanged = true;
@@ -912,10 +918,12 @@ void CPVRChannelGroup::ResetChannelNumberCache(void)
     return;
 
   /* set all channel numbers on members of this group */
+  CPVRChannelPtr channel;
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
   {
-    (*it).channel->SetCachedChannelNumber((*it).iChannelNumber);
-    (*it).channel->SetCachedSubChannelNumber((*it).iSubChannelNumber);
+    channel = (*it).channel;
+    channel->SetCachedChannelNumber((*it).iChannelNumber);
+    channel->SetCachedSubChannelNumber((*it).iSubChannelNumber);
   }
 }
 
@@ -1015,20 +1023,22 @@ int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) con
   int iInitialSize = results.Size();
   CEpg* epg;
   CEpgInfoTagPtr epgNext;
+  CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
 
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
   {
-    epg = (*it).channel->GetEPG();
-    if (epg && !(*it).channel->IsHidden())
+    channel = (*it).channel;
+    epg = channel->GetEPG();
+    if (epg && !channel->IsHidden())
     {
       epgNext = bGetNext ? epg->GetTagNext() : epg->GetTagNow();
       if (epgNext)
       {
         CFileItemPtr entry(new CFileItem(epgNext));
         entry->SetLabel2(epgNext->StartAsLocalTime().GetAsLocalizedTime("", false));
-        entry->SetPath((*it).channel->Path());
-        entry->SetArt("thumb", (*it).channel->IconPath());
+        entry->SetPath(channel->Path());
+        entry->SetArt("thumb", channel->IconPath());
         results.Add(entry);
       }
     }
@@ -1041,19 +1051,17 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results) const
 {
   int iInitialSize = results.Size();
   CEpg* epg;
+  CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
 
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
   {
-    if ((*it).channel && !(*it).channel->IsHidden())
+    channel = (*it).channel;
+    if (!channel->IsHidden() && (epg = channel->GetEPG()) != NULL)
     {
-      epg = (*it).channel->GetEPG();
-      if (epg)
-      {
-        // XXX channel pointers aren't set in some occasions. this works around the issue, but is not very nice
-        epg->SetChannel((*it).channel);
-        epg->Get(results);
-      }
+      // XXX channel pointers aren't set in some occasions. this works around the issue, but is not very nice
+      epg->SetChannel(channel);
+      epg->Get(results);
     }
   }
 
@@ -1064,30 +1072,28 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
 {
   CDateTime date;
   CEpg* epg;
+  CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
   
   for (PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
-    if (it->second.channel && !it->second.channel->IsHidden())
+    channel = it->second.channel;
+    if (!channel->IsHidden() && (epg = channel->GetEPG()) != NULL)
     {
-      epg = it->second.channel->GetEPG();
-      if (epg)
+      CDateTime epgDate;
+      switch (epgDateType)
       {
-        CDateTime epgDate;
-        switch (epgDateType)
-        {
-          case EPG_FIRST_DATE:
-            epgDate = epg->GetFirstDate();
-            if (epgDate.IsValid() && (!date.IsValid() || epgDate < date))
-              date = epgDate;
-            break;
+        case EPG_FIRST_DATE:
+          epgDate = epg->GetFirstDate();
+          if (epgDate.IsValid() && (!date.IsValid() || epgDate < date))
+            date = epgDate;
+          break;
             
-          case EPG_LAST_DATE:
-            epgDate = epg->GetLastDate();
-            if (epgDate.IsValid() && (!date.IsValid() || epgDate > date))
-              date = epgDate;
-            break;
-        }
+        case EPG_LAST_DATE:
+          epgDate = epg->GetLastDate();
+          if (epgDate.IsValid() && (!date.IsValid() || epgDate > date))
+            date = epgDate;
+          break;
       }
     }
   }
