@@ -150,7 +150,7 @@ void CPVRDatabase::UpdateTables(int iVersion)
     {
       /** try to find an add-on that matches the sUid */
       iAddonId = -1;
-      for (VECADDONS::iterator it = addons.begin(); iAddonId <= 0 && it != addons.end(); ++it)
+      for (VECADDONS::iterator it = addons.begin(); iAddonId <= 0 && it != addons.end();)
       {
         if ((*it)->ID() == m_pDS->fv(1).get_asString())
         {
@@ -168,8 +168,16 @@ void CPVRDatabase::UpdateTables(int iVersion)
             m_pDS->exec(strQuery);
 
             /** no need to check this add-on again */
-            addons.erase(it);
+            it = addons.erase(it);
           }
+          else
+          {
+            ++it;
+          }
+        }
+        else
+        {
+          ++it;
         }
       }
     }
