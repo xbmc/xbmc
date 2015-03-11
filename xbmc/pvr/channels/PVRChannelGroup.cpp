@@ -1022,9 +1022,6 @@ int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) con
     epg = (*it).channel->GetEPG();
     if (epg && !(*it).channel->IsHidden())
     {
-      // XXX channel pointers aren't set in some occasions. this works around the issue, but is not very nice
-      epg->SetChannel((*it).channel);
-
       epgNext = bGetNext ? epg->GetTagNext() : epg->GetTagNow();
       if (epgNext)
       {
