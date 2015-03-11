@@ -163,7 +163,7 @@ void CEpg::Cleanup(void)
 void CEpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
-  for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
+  for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end();)
   {
     if (it->second->EndAsUTC() < Time)
     {
@@ -171,7 +171,11 @@ void CEpg::Cleanup(const CDateTime &Time)
         m_nowActiveStart.SetValid(false);
 
       it->second->ClearTimer();
-      m_tags.erase(it++);
+      it = m_tags.erase(it);
+    }
+    else
+    {
+      ++it;
     }
   }
 }
