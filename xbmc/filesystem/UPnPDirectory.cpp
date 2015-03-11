@@ -320,7 +320,7 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
             // keep count of classes
             classes[(*entry)->m_ObjectClass.type]++;
-            CFileItemPtr pItem = BuildObject(*entry);
+            CFileItemPtr pItem = BuildObject(*entry, UPnPClient);
             if(!pItem) {
                 ++entry;
                 continue;
