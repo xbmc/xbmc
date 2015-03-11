@@ -322,7 +322,7 @@ std::string CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 
   if (!bOverrideParental && bParentalLocked)
     strTitle = g_localizeStrings.Get(19266); // parental locked
-  else if (strTitle.empty() && !CSettings::Get().GetBool("epg.hidenoinfoavailable"))
+  else if (m_strTitle.empty() && !CSettings::Get().GetBool("epg.hidenoinfoavailable"))
     strTitle = g_localizeStrings.Get(19055); // no information available
   else
     strTitle = m_strTitle;
