@@ -161,6 +161,10 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   if (color_type == PNG_COLOR_TYPE_RGB ||
       color_type == PNG_COLOR_TYPE_RGB_ALPHA)
     png_set_bgr(png_ptr);
+
+  // convert indexed color to rgb
+  if (color_type == PNG_COLOR_TYPE_PALETTE)
+    png_set_palette_to_rgb(png_ptr);
   
   /* swap the RGBA or GA data to ARGB or AG (or BGRA to ABGR) */
   //png_set_swap_alpha(png_ptr);
