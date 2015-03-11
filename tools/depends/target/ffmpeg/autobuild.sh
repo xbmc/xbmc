@@ -164,7 +164,7 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 make -j ${BUILDTHREADS} 
 if [ $? -eq 0 ]
 then
-  [ ${SUDO} ] && echo "Root priviledges are required to install to ${FFMPEG_PREFIX}"
+  [ ${SUDO} ] && echo "Root privileges are required to install to ${FFMPEG_PREFIX}"
   ${SUDO} make install && echo "$VERSION" > ../.ffmpeg-installed
 else
   echo "ERROR: Building ffmpeg failed"
