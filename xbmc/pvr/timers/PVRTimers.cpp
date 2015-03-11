@@ -178,9 +178,9 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
   /* check for deleted timers */
   for (MapTags::iterator it = m_tags.begin(); it != m_tags.end();)
   {
-    for (int iTimerPtr = it->second->size() - 1; iTimerPtr >= 0; iTimerPtr--)
+    for (std::vector<CPVRTimerInfoTagPtr>::iterator it2 = it->second->begin(); it2 != it->second->end();)
     {
-      CPVRTimerInfoTagPtr timer = it->second->at(iTimerPtr);
+      CPVRTimerInfoTagPtr timer(*it2);
       if (!timers.GetByClient(timer->m_iClientId, timer->m_iClientIndex))
       {
         /* timer was not found */
@@ -200,7 +200,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
         /** clear the EPG tag explicitly here, because it no longer happens automatically with shared pointers */
         timer->ClearEpgTag();
-        it->second->erase(it->second->begin() + iTimerPtr);
+        it2 = it->second->erase(it2);
 
         bChanged = true;
         bAddedOrDeleted = true;
@@ -217,14 +217,18 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
         timersToMove.push_back(timer);
         
         /* remove timer for now, reinsert later */
-        it->second->erase(it->second->begin() + iTimerPtr);
+        it2 = it->second->erase(it2);
 
         bChanged = true;
         bAddedOrDeleted = true;
       }
+      else
+      {
+        ++it2;
+      }
     }
-    if (it->second->size() == 0)
-      m_tags.erase(it++);
+    if (it->second->empty())
+      it = m_tags.erase(it);
     else
       ++it;
   }
