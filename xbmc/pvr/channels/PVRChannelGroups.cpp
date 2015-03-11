@@ -503,7 +503,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   // delete the group in this container
   {
     CSingleLock lock(m_critSection);
-    for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); !bFound && it != m_groups.end(); ++it)
+    for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); !bFound && it != m_groups.end();)
     {
       if ((*it)->GroupID() == group.GroupID())
       {
@@ -512,8 +512,12 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
         if (selectedGroup && *selectedGroup == group)
           g_PVRManager.SetPlayingGroup(GetGroupAll());
 
-        m_groups.erase(it);
+        it = m_groups.erase(it);
         bFound = true;
+      }
+      else
+      {
+        ++it;
       }
     }
   }
