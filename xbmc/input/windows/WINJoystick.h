@@ -22,6 +22,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <list>
 #include <memory>
 #include <stdint.h>
 #include "threads/CriticalSection.h"
@@ -66,6 +67,7 @@ public:
 
   bool GetButton(std::string &joyName, int &id, bool consider_repeat = true);
   bool GetAxis(std::string &joyName, int &id);
+  bool GetAxes(std::list<std::pair<std::string, int> >& axes, bool consider_still = false);
   bool GetHat(std::string &joyName, int &id, int &position, bool consider_repeat = true);
   float GetAmount(const std::string &joyName, int axisNum) const;
 

@@ -80,6 +80,7 @@
      <name>Logitech Gamepad F310</name>
      <name>Logitech Gamepad F510</name>
      <name>Logitech Gamepad F710</name>
+     <name>Generic X-Box pad</name>
      <name>Logitech Chillstream Controller</name>
      <name>Mad Catz Wired Xbox 360 Controller</name>
      <name>Mad Catz Street Fighter IV FightStick SE</name>
@@ -454,8 +455,8 @@
       <button id="12">ZoomOut</button>
       <button id="13">PreviousPicture</button>
       <button id="14">NextPicture</button>
-      <axis id="1">AnalogMove</axis>
-      <axis id="2">AnalogMove</axis>
+      <axis id="1">AnalogMoveX</axis>
+      <axis id="2">AnalogMoveY</axis>
       <axis id="3" limit="+1">ZoomOut</axis>
       <axis id="3" limit="-1">ZoomIn</axis>
       <hat id="1" position="up">ZoomIn</hat>
@@ -473,8 +474,8 @@
       <button id="13">NextPicture</button>
       <button id="14">ZoomIn</button>
       <button id="15">ZoomOut</button>
-      <axis id="1">AnalogMove</axis>
-      <axis id="2">AnalogMove</axis>
+      <axis id="1">AnalogMoveX</axis>
+      <axis id="2">AnalogMoveY</axis>
       <axis id="3">ZoomOut</axis>
       <axis id="6">ZoomIn</axis>
       <hat id="1" position="up">ZoomIn</hat>

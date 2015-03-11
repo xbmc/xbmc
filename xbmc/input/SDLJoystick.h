@@ -23,6 +23,8 @@
 
 #include "system.h" // for HAS_SDL_JOYSTICK
 #include <vector>
+#include <list>
+#include <utility>
 #include <string>
 #include <map>
 #include <memory>
@@ -78,6 +80,7 @@ public:
   bool GetAxis(std::string &joyName, int &id) const;
   bool GetButton(std::string &joyName, int &id, bool consider_repeat = true);
   bool GetHat(std::string &joyName, int &id, int &position, bool consider_repeat = true);
+  bool GetAxes(std::list<std::pair<std::string, int> >& axes, bool consider_still = false);
   float GetAmount(std::string &joyName, int axisNum) const;
   bool IsEnabled() const { return m_joystickEnabled; }
   void SetEnabled(bool enabled = true);

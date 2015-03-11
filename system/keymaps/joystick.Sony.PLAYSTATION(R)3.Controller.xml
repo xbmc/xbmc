@@ -268,8 +268,8 @@
       <button id="13">ZoomNormal</button>
       <button id="11">Rotate</button>
       <button id="12">CodecInfo</button>
-      <axis id="1">AnalogMove</axis>
-      <axis id="2">AnalogMove</axis>
+      <axis id="1">AnalogMoveX</axis>
+      <axis id="2">AnalogMoveY</axis>
       <axis id="13">ZoomOut</axis>
       <axis id="14">ZoomIn</axis>
       <button id="5">ZoomIn</button>
