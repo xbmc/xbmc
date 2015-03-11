@@ -34,15 +34,19 @@ endmacro()
 
 # Build, link and optionally package an add-on
 macro (build_addon target prefix libs)
-  ADD_LIBRARY(${target} ${${prefix}_SOURCES})
-  TARGET_LINK_LIBRARIES(${target} ${${libs}})
   addon_version(${target} ${prefix})
-  SET_TARGET_PROPERTIES(${target} PROPERTIES VERSION ${${prefix}_VERSION}
-                                             SOVERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
-                                             PREFIX "")
-  IF(OS STREQUAL "android")
-    SET_TARGET_PROPERTIES(${target} PROPERTIES PREFIX "lib")
-  ENDIF(OS STREQUAL "android")
+  if(${prefix}_SOURCES)
+    ADD_LIBRARY(${target} ${${prefix}_SOURCES})
+    TARGET_LINK_LIBRARIES(${target} ${${libs}})
+    SET_TARGET_PROPERTIES(${target} PROPERTIES VERSION ${${prefix}_VERSION}
+                                               SOVERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
+                                               PREFIX "")
+    IF(OS STREQUAL "android")
+      SET_TARGET_PROPERTIES(${target} PROPERTIES PREFIX "lib")
+    ENDIF(OS STREQUAL "android")
+  else()
+    add_custom_target(${target})
+  endif()
 
   # get the library's location
   SET(LIBRARY_LOCATION $<TARGET_FILE:${target}>)
@@ -103,22 +107,40 @@ macro (build_addon target prefix libs)
       # is changed within Visual Studio)
       string(REPLACE "$(Configuration)" "${CMAKE_BUILD_TYPE}" LIBRARY_LOCATION "${LIBRARY_LOCATION}")
 
-      # install the generated DLL file
-      INSTALL(PROGRAMS ${LIBRARY_LOCATION} DESTINATION ${target}
-              COMPONENT ${target}-${${prefix}_VERSION})
-
-      IF(CMAKE_BUILD_TYPE MATCHES Debug)
-        # for debug builds also install the PDB file
-        get_filename_component(LIBRARY_DIR ${LIBRARY_LOCATION} DIRECTORY)
-        INSTALL(FILES ${LIBRARY_DIR}/${target}.pdb DESTINATION ${target}
+      if(${prefix}_SOURCES)
+        # install the generated DLL file
+        INSTALL(PROGRAMS ${LIBRARY_LOCATION} DESTINATION ${target}
                 COMPONENT ${target}-${${prefix}_VERSION})
-      ENDIF()
+
+        IF(CMAKE_BUILD_TYPE MATCHES Debug)
+          # for debug builds also install the PDB file
+          get_filename_component(LIBRARY_DIR ${LIBRARY_LOCATION} DIRECTORY)
+          INSTALL(FILES ${LIBRARY_DIR}/${target}.pdb DESTINATION ${target}
+                  COMPONENT ${target}-${${prefix}_VERSION})
+        ENDIF()
+      endif()
+      if (${prefix}_CUSTOM_BINARY)
+        list(GET ${prefix}_CUSTOM_BINARY 0 FROM_BINARY)
+        list(GET ${prefix}_CUSTOM_BINARY 1 TO_BINARY)
+        install(FILES ${FROM_BINARY} DESTINATION ${target} RENAME ${TO_BINARY})
+      endif()
     ELSE(WIN32)
       if(NOT CPACK_PACKAGE_DIRECTORY)
         set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR})
       endif()
-      INSTALL(TARGETS ${target} DESTINATION ${target}
-              COMPONENT ${target}-${${prefix}_VERSION})
+      if(${prefix}_SOURCES)
+        INSTALL(TARGETS ${target} DESTINATION ${target}
+                COMPONENT ${target}-${${prefix}_VERSION})
+      endif()
+      if (${prefix}_CUSTOM_BINARY)
+        list(GET ${prefix}_CUSTOM_BINARY 0 FROM_BINARY)
+        list(GET ${prefix}_CUSTOM_BINARY 1 TO_BINARY)
+        if(OS STREQUAL "android")
+          set(TO_BINARY "lib${TO_BINARY}")
+        endif()
+        install(FILES ${FROM_BINARY} DESTINATION ${target} RENAME ${TO_BINARY}
+                COMPONENT ${target}-${${prefix}_VERSION})
+      endif()
     ENDIF(WIN32)
     add_cpack_workaround(${target} ${${prefix}_VERSION} ${ext})
   ELSE(PACKAGE_ZIP OR PACKAGE_TGZ)
@@ -137,7 +159,17 @@ macro (build_addon target prefix libs)
     else()
       set(CMAKE_INSTALL_LIBDIR "lib/${APP_NAME_LC}")
     endif()
-    INSTALL(TARGETS ${target} DESTINATION ${CMAKE_INSTALL_LIBDIR}/addons/${target})
+    if(${prefix}_SOURCES)
+      INSTALL(TARGETS ${target} DESTINATION ${CMAKE_INSTALL_LIBDIR}/addons/${target})
+    endif()
+    if (${prefix}_CUSTOM_BINARY)
+      list(GET ${prefix}_CUSTOM_BINARY 0 FROM_BINARY)
+      list(GET ${prefix}_CUSTOM_BINARY 1 TO_BINARY)
+      if(OS STREQUAL "android")
+        set(TO_BINARY "lib${TO_BINARY}")
+      endif()
+      install(FILES ${FROM_BINARY} DESTINATION ${CMAKE_INSTALL_LIBDIR}/addons/${target} RENAME ${TO_BINARY})
+    endif()
     INSTALL(DIRECTORY ${target} DESTINATION share/${APP_NAME_LC}/addons PATTERN "addon.xml.in" EXCLUDE)
   ENDIF(PACKAGE_ZIP OR PACKAGE_TGZ)
   if(${APP_NAME_UC}_BUILD_DIR)
