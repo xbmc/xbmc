@@ -380,23 +380,6 @@ bool CPVRChannel::IsEmpty() const
 
 /********** Client related channel methods **********/
 
-bool CPVRChannel::SetUniqueID(int iUniqueId)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_iUniqueId != iUniqueId)
-  {
-    /* update the unique ID */
-    m_iUniqueId = iUniqueId;
-    SetChanged();
-    m_bChanged = true;
-
-    return true;
-  }
-
-  return false;
-}
-
 bool CPVRChannel::SetClientID(int iClientId)
 {
   CSingleLock lock(m_critSection);
@@ -431,13 +414,16 @@ bool CPVRChannel::SetStreamURL(const std::string &strStreamURL)
   return false;
 }
 
-void CPVRChannel::UpdatePath(CPVRChannelGroupInternal* group, unsigned int iNewChannelGroupPosition)
+void CPVRChannel::UpdatePath(CPVRChannelGroupInternal* group)
 {
   if (!group) return;
 
   std::string strFileNameAndPath;
   CSingleLock lock(m_critSection);
-  strFileNameAndPath = StringUtils::Format("pvr://channels/%s/%s/%i.pvr", (m_bIsRadio ? "radio" : "tv"), group->GroupName().c_str(), iNewChannelGroupPosition);
+  strFileNameAndPath = StringUtils::Format("pvr://channels/%s/%s/%lu.pvr",
+                                           (m_bIsRadio ? "radio" : "tv"),
+                                           group->GroupName().c_str(),
+                                           ((uint64_t)m_iClientId) << 32 | (uint64_t)m_iUniqueId);
   if (m_strFileNameAndPath != strFileNameAndPath)
   {
     m_strFileNameAndPath = strFileNameAndPath;
@@ -744,7 +730,6 @@ bool CPVRChannel::IsChanged() const
 
 int CPVRChannel::UniqueID(void) const
 {
-  CSingleLock lock(m_critSection);
   return m_iUniqueId;
 }
 

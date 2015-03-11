@@ -266,13 +266,6 @@ namespace PVR
     int UniqueID(void) const;
 
     /*!
-     * @brief Change the unique identifier for this channel.
-     * @param iUniqueId The new unique ID.
-     * @return True if the something changed, false otherwise.
-     */
-    bool SetUniqueID(int iUniqueId);
-
-    /*!
      * @return The identifier of the client that serves this channel.
      */
     int ClientID(void) const;
@@ -341,11 +334,15 @@ namespace PVR
     virtual void ToSortable(SortItem& sortable, Field field) const;
 
     /*!
-     * @brief Update the path after the channel number in the internal group changed.
+     * @brief Update the path this channel got added to the internal group
      * @param group The internal group that contains this channel
-     * @param iNewChannelGroupPosition The new channel number in the group
      */
-    void UpdatePath(CPVRChannelGroupInternal* group, unsigned int iNewChannelGroupPosition);
+    void UpdatePath(CPVRChannelGroupInternal* group);
+
+    /*!
+     * @return Storage id for this channel in CPVRChannelGroup
+     */
+    std::pair<int, int> StorageId(void) const { return std::make_pair(m_iClientId, m_iUniqueId); }
 
     /*!
      * @brief Return true if this channel is encrypted.

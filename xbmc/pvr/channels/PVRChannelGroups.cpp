@@ -117,7 +117,7 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strPath) const
     if (StringUtils::StartsWith(strFileName, strCheckPath))
     {
       strFileName.erase(0, strCheckPath.length());
-      CPVRChannelPtr channel((*it)->GetByIndex(atoi(strFileName.c_str())));
+      CPVRChannelPtr channel((*it)->GetByUniqueID(CPVRChannelGroup::PathIdToStorageId(strtoul(strFileName.c_str(), NULL, 10))).channel);
       if (channel)
         return CFileItemPtr(new CFileItem(channel));
     }
