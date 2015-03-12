@@ -249,6 +249,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("shutdownstates");
   m_settingsManager->UnregisterSettingOptionsFiller("startupwindows");
   m_settingsManager->UnregisterSettingOptionsFiller("streamlanguages");
+  m_settingsManager->UnregisterSettingOptionsFiller("iso6391languages");
   m_settingsManager->UnregisterSettingOptionsFiller("skincolors");
   m_settingsManager->UnregisterSettingOptionsFiller("skinfonts");
   m_settingsManager->UnregisterSettingOptionsFiller("skinsounds");
@@ -599,6 +600,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("shutdownstates", CPowerManager::SettingOptionsShutdownStatesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("startupwindows", ADDON::CSkinInfo::SettingOptionsStartupWindowsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("streamlanguages", CLangInfo::SettingOptionsStreamLanguagesFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("iso6391languages", CLangInfo::SettingOptionsISO6391LanguagesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skincolors", ADDON::CSkinInfo::SettingOptionsSkinColorsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinfonts", ADDON::CSkinInfo::SettingOptionsSkinFontsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinsounds", ADDON::CSkinInfo::SettingOptionsSkinSoundFiller);

@@ -152,8 +152,8 @@
           <constraints>
             <options>keyboardlayouts</options>
             <delimiter>|</delimiter>
-            <minimumItems>1</minimumItems>
-            <maximumItems>3</maximumItems>
+            <minimumitems>1</minimumitems>
+            <maximumitems>3</maximumitems>
           </constraints>
           <control type="list" format="string">
             <multiselect>true</multiselect>
@@ -516,7 +516,7 @@
           <constraints>
             <options>videoseeksteps</options>
             <delimiter>,</delimiter>
-            <minimumItems>2</minimumItems>
+            <minimumitems>2</minimumitems>
           </constraints>
           <control type="list" format="string">
             <multiselect>true</multiselect>
@@ -919,10 +919,9 @@
           <level>1</level>
           <default>English</default>
           <constraints>
-            <options>languagenames</options>
+            <options>iso6391languages</options>
             <delimiter>,</delimiter>
-            <minimumItems>1</minimumItems>
-            <maximumItems>3</maximumItems>
+            <minimumitems>1</minimumitems>
           </constraints>
           <control type="list" format="string">
             <multiselect>true</multiselect>
@@ -1712,7 +1711,7 @@
           <constraints>
             <options>videoseeksteps</options>
             <delimiter>,</delimiter>
-            <minimumItems>2</minimumItems>
+            <minimumitems>2</minimumitems>
           </constraints>
           <control type="list" format="string">
             <multiselect>true</multiselect>
