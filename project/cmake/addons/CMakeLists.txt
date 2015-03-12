@@ -245,10 +245,13 @@ foreach(addon ${addons})
         endif()
 
         if(NOT "${SOURCE_DIR}" STREQUAL "" AND EXISTS ${SOURCE_DIR})
+          # create a list of addons we are building
+          list(APPEND ALL_ADDONS_BUILDING ${id})
+
           # setup the buildsystem for the addon
           externalproject_add(${id}
                               SOURCE_DIR ${SOURCE_DIR}
-                              INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+                              INSTALL_DIR ${ADDON_INSTALL_DIR}
                               CMAKE_ARGS ${BUILD_ARGS})
 
           # add a custom step to the external project between the configure and the build step which will always
@@ -275,6 +278,9 @@ foreach(addon ${addons})
         else()
           message(FATAL_ERROR "${id}: invalid or missing addon source directory at ${SOURCE_DIR}")
         endif()
+      else()
+        # add a dummy target for addons that are unsupported on this platform
+        add_custom_target(${id} COMMAND ${CMAKE_COMMAND} -E echo "IGNORED ${id} - not supported on ${CORE_SYSTEM_NAME}\n")
       endif()
     endif()
   endif()
@@ -288,3 +294,7 @@ if(NEED_SUDO)
                     COMMAND sudo ${CMAKE_COMMAND} -E remove_directory ${ADDON_INSTALL_DIR}/
                     COMMAND sudo -k)
 endif()
+
+# add custom target "supported_addons" that returns all addons that are supported on this platform
+string(REPLACE ";" " " ALL_ADDONS_BUILDING "${ALL_ADDONS_BUILDING}")
+add_custom_target(supported_addons COMMAND ${CMAKE_COMMAND} -E echo "ALL_ADDONS_BUILDING: ${ALL_ADDONS_BUILDING}" VERBATIM)

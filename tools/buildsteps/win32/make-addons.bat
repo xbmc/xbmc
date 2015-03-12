@@ -108,8 +108,20 @@ IF ERRORLEVEL 1 (
   GOTO ERROR
 )
 
+rem get the list of addons that can actually be built
+SET ADDONS_TO_MAKE=
+SETLOCAL EnableDelayedExpansion
+FOR /f "delims=" %%i IN ('nmake supported_addons') DO (
+  SET line="%%i"
+  SET addons=!line:ALL_ADDONS_BUILDING=!
+  IF NOT "!addons!" == "!line!" (
+    SET ADDONS_TO_MAKE=!addons:~3,-1!
+  )
+)
+SETLOCAL DisableDelayedExpansion
+
 rem loop over all addons to build
-FOR %%a IN (%ADDONS_TO_BUILD%) DO (
+FOR %%a IN (%ADDONS_TO_MAKE%) DO (
   ECHO Building %%a...
   rem execute nmake to build the addons
   nmake %%a
