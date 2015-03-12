@@ -48,8 +48,6 @@ namespace
       return "SAMBA";
     else if(fcr_service_type == "_ftp._tcp.")
       return "FTP";
-    else if(fcr_service_type == "_htsp._tcp.")
-      return "HTS";
     else if(fcr_service_type == "_daap._tcp.")
       return "iTunes Music Sharing";
     else if(fcr_service_type == "_webdav._tcp.")
@@ -67,8 +65,6 @@ namespace
       fr_protocol = "smb";
     else if(fcr_service_type == "_ftp._tcp.")
       fr_protocol = "ftp";
-    else if(fcr_service_type == "_htsp._tcp.")
-      fr_protocol = "htsp";
     else if(fcr_service_type == "_daap._tcp.")
       fr_protocol = "daap";
     else if(fcr_service_type == "_webdav._tcp.")

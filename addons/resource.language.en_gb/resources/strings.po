@@ -10328,10 +10328,7 @@ msgctxt "#20255"
 msgid "First logon, edit your profile"
 msgstr ""
 
-#: xbmc/network/GUIDialogNetworkSetup.cpp
-msgctxt "#20256"
-msgid "HTS Tvheadend client"
-msgstr ""
+#empty string with id 20256
 
 #empty strings from id 20257 to 20258
 
@@ -12091,9 +12088,7 @@ msgctxt "#22017"
 msgid "By group"
 msgstr ""
 
-msgctxt "#22018"
-msgid "Live channels"
-msgstr ""
+#empty string with id 22018
 
 msgctxt "#22019"
 msgid "Recordings by title"

@@ -126,7 +126,6 @@ public:
   static bool IsHD(const std::string& strFileName);
   static bool IsHDHomeRun(const std::string& strFile);
   static bool IsSlingbox(const std::string& strFile);
-  static bool IsHTSP(const std::string& strFile);
   static bool IsInArchive(const std::string& strFile);
   static bool IsInRAR(const std::string& strFile);
   static bool IsInternetStream(const std::string& path, bool bStrictCheck = false);
