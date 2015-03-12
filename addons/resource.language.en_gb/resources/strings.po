@@ -10333,12 +10333,7 @@ msgctxt "#20256"
 msgid "HTS Tvheadend client"
 msgstr ""
 
-#: xbmc/network/GUIDialogNetworkSetup.cpp
-msgctxt "#20257"
-msgid "VDR Streamdev client"
-msgstr ""
-
-#empty string with id 20285
+#empty strings from id 20257 to 20258
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20259"

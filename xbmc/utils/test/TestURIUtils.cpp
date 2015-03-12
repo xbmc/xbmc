@@ -332,7 +332,6 @@ TEST_F(TestURIUtils, IsISO9660)
 
 TEST_F(TestURIUtils, IsLiveTV)
 {
-  EXPECT_TRUE(URIUtils::IsLiveTV("vtp://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("hdhomerun://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("sling://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("htsp://path/to/file"));
@@ -429,11 +428,6 @@ TEST_F(TestURIUtils, IsURL)
 TEST_F(TestURIUtils, IsVideoDb)
 {
   EXPECT_TRUE(URIUtils::IsVideoDb("videodb://path/to/file"));
-}
-
-TEST_F(TestURIUtils, IsVTP)
-{
-  EXPECT_TRUE(URIUtils::IsVTP("vtp://path/to/file"));
 }
 
 TEST_F(TestURIUtils, IsZIP)
