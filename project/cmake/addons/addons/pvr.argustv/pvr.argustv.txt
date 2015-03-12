@@ -1,1 +1,1 @@
-pvr.argustv https://github.com/kodi-pvr/pvr.argustv b6a58d3
+pvr.argustv https://github.com/kodi-pvr/pvr.argustv 6d1f1dd

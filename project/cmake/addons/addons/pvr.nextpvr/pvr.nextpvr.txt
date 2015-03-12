@@ -1,1 +1,1 @@
-pvr.nextpvr https://github.com/kodi-pvr/pvr.nextpvr 79557b2
+pvr.nextpvr https://github.com/kodi-pvr/pvr.nextpvr 7c6f1f8
