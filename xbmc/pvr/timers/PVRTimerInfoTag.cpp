@@ -631,7 +631,7 @@ CPVRChannelPtr CPVRTimerInfoTag::ChannelTag(void) const
 void CPVRTimerInfoTag::UpdateChannel(void)
 {
   CSingleLock lock(m_critSection);
-  m_channel = g_PVRChannelGroups->Get(m_bIsRadio)->GetGroupAll()->GetByClient(m_iClientChannelUid, m_iClientId);
+  m_channel = g_PVRChannelGroups->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
 }
 
 const std::string& CPVRTimerInfoTag::Title(void) const

@@ -77,14 +77,11 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
   if (!group)
     group = g_PVRChannelGroups->GetGroupAll(m_searchFilter->m_bIsRadio);
 
-  for (int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)
+  std::vector<PVRChannelGroupMember> groupMembers(group->GetMembers());
+  for (std::vector<PVRChannelGroupMember>::const_iterator it = groupMembers.begin(); it != groupMembers.end(); ++it)
   {
-    CFileItemPtr channel = group->GetByIndex(iChannelPtr);
-    if (!channel || !channel->HasPVRChannelInfoTag())
-      continue;
-
-    int iChannelNumber = group->GetChannelNumber(channel->GetPVRChannelInfoTag());
-    labels.push_back(std::make_pair(channel->GetPVRChannelInfoTag()->ChannelName(), iChannelNumber));
+    if ((*it).channel)
+      labels.push_back(std::make_pair((*it).channel->ChannelName(), (*it).iChannelNumber));
   }
 
   SET_CONTROL_LABELS(CONTROL_SPIN_CHANNELS, m_searchFilter->m_iChannelNumber, &labels);

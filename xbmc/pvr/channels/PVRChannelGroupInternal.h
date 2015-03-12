@@ -52,13 +52,7 @@ namespace PVR
      * @brief The amount of channels in this container.
      * @return The amount of channels in this container.
      */
-    int GetNumHiddenChannels() const { return m_iHiddenChannels; }
-
-    /*!
-     * @brief Add a channel to this internal group.
-     * @param iChannelNumber The channel number to use for this channel or 0 to add it to the back.
-     */
-    bool InsertInGroup(CPVRChannelPtr &channel, int iChannelNumber = 0);
+    size_t GetNumHiddenChannels() const { return m_iHiddenChannels; }
 
     /*!
      * @brief Callback for add-ons to update a channel.
@@ -75,7 +69,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(CPVRChannelPtr &channel, int iChannelNumber = 0);
+    bool AddToGroup(const CPVRChannelPtr &channel, int iChannelNumber = 0);
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
@@ -143,11 +137,6 @@ namespace PVR
     bool Update(void);
 
     /*!
-     * @brief Remove invalid channels and updates the channel numbers.
-     */
-    bool Renumber(void);
-
-    /*!
      * @brief Load the channels from the database.
      *
      * Load the channels from the database.
@@ -164,6 +153,6 @@ namespace PVR
 
     void CreateChannelEpg(CPVRChannelPtr channel, bool bForce = false);
 
-    int m_iHiddenChannels; /*!< the amount of hidden channels in this container */
+    size_t m_iHiddenChannels; /*!< the amount of hidden channels in this container */
   };
 }

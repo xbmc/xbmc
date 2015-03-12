@@ -115,6 +115,15 @@ int CPVRClients::GetClientId(const AddonPtr client) const
   return -1;
 }
 
+int CPVRClients::GetClientId(const std::string& strId) const
+{
+  CSingleLock lock(m_critSection);
+  std::map<std::string, int>::const_iterator it = m_addonNameIds.find(strId);
+  return it != m_addonNameIds.end() ?
+      it->second :
+      -1;
+}
+
 bool CPVRClients::GetClient(int iClientId, PVR_CLIENT &addon) const
 {
   bool bReturn(false);
@@ -249,6 +258,14 @@ bool CPVRClients::GetClientName(int iClientId, std::string &strName) const
     strName = client->GetFriendlyName();
 
   return bReturn;
+}
+
+std::string CPVRClients::GetClientAddonId(int iClientId) const
+{
+  PVR_CLIENT client;
+  return GetClient(iClientId, client) ?
+      client->ID() :
+      "";
 }
 
 int CPVRClients::GetConnectedClients(PVR_CLIENTMAP &clients) const
@@ -1033,6 +1050,7 @@ int CPVRClients::RegisterClient(AddonPtr client)
       // create a new client instance
       addon = std::dynamic_pointer_cast<CPVRClient>(client);
       m_clientMap.insert(std::make_pair(iClientId, addon));
+      m_addonNameIds.insert(make_pair(addon->ID(), iClientId));
     }
   }
 

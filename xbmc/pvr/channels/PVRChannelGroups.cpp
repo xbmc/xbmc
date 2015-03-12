@@ -117,7 +117,13 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strPath) const
     if (StringUtils::StartsWith(strFileName, strCheckPath))
     {
       strFileName.erase(0, strCheckPath.length());
-      return (*it)->GetByIndex(atoi(strFileName.c_str()));
+      std::vector<std::string> split(StringUtils::Split(strFileName, '_', 2));
+      if (split.size() == 2)
+      {
+        CPVRChannelPtr channel((*it)->GetByUniqueID(atoi(split[1].c_str()), g_PVRClients->GetClientId(split[0])));
+        if (channel)
+          return CFileItemPtr(new CFileItem(channel));
+      }
     }
   }
 
@@ -501,7 +507,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   // delete the group in this container
   {
     CSingleLock lock(m_critSection);
-    for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); !bFound && it != m_groups.end(); ++it)
+    for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); !bFound && it != m_groups.end();)
     {
       if ((*it)->GroupID() == group.GroupID())
       {
@@ -510,8 +516,12 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
         if (selectedGroup && *selectedGroup == group)
           g_PVRManager.SetPlayingGroup(GetGroupAll());
 
-        m_groups.erase(it);
+        it = m_groups.erase(it);
         bFound = true;
+      }
+      else
+      {
+        ++it;
       }
     }
   }

@@ -189,7 +189,7 @@ namespace PVR
     void UpdateTables(int version);
     virtual int GetMinSchemaVersion() const { return 11; }
 
-    bool PersistGroupMembers(CPVRChannelGroup &group);
+    bool PersistGroupMembers(const CPVRChannelGroup &group);
 
     bool PersistChannels(CPVRChannelGroup &group);
 
