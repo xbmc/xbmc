@@ -288,8 +288,6 @@ void CAdvancedSettings::Initialize()
   m_bVideoScannerIgnoreErrors = false;
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
-  m_iMythMovieLength = 0; // 0 == Off
-
   m_iEpgLingerTime = 60 * 24;           /* keep 24 hours by default */
   m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
   m_iEpgCleanupInterval = 900;     /* remove old entries from the EPG every 15 minutes */
@@ -860,13 +858,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
   XMLUtils::GetUInt(pRootElement, "packagefoldersize", m_addonPackageFolderSize);
 
-  // Myth TV
-  pElement = pRootElement->FirstChildElement("myth");
-  if (pElement)
-  {
-    XMLUtils::GetInt(pElement, "movielength", m_iMythMovieLength);
-  }
-
   // EPG
   pElement = pRootElement->FirstChildElement("epg");
   if (pElement)
@@ -1345,7 +1336,6 @@ void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(const CSetting *se
 {
   list.push_back(std::make_pair(g_localizeStrings.Get(669), LOGSAMBA));
   list.push_back(std::make_pair(g_localizeStrings.Get(670), LOGCURL));
-  list.push_back(std::make_pair(g_localizeStrings.Get(671), LOGCMYTH));
   list.push_back(std::make_pair(g_localizeStrings.Get(672), LOGFFMPEG));
   list.push_back(std::make_pair(g_localizeStrings.Get(676), LOGAUDIO));
   list.push_back(std::make_pair(g_localizeStrings.Get(680), LOGVIDEO));

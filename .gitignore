@@ -155,9 +155,6 @@ config.log
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Release
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Debug
 
-# /lib/cmyth/
-lib/cmyth/Makefile
-
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
 /lib/cpluff/aclocal.m4
@@ -395,7 +392,6 @@ lib/cpluff/stamp-h1
 # /system
 /system/cpluff.dll
 /system/ImageLib.dll
-/system/libcmyth.dll
 /system/libcurl.dll
 /system/libeay32.dll
 /system/librtmp.dll
@@ -927,14 +923,6 @@ lib/cpluff/stamp-h1
 
 #/lib/win32/ffmpeg
 /lib/win32/ffmpeg/
-
-# /lib/cmyth/
-/lib/cmyth/Makefile.depend
-/lib/cmyth/Win32/libcmyth.lib
-
-# /lib/cmyth/Win32
-/lib/cmyth/Win32/Debug
-/lib/cmyth/Win32/Release
 
 # lib/cximage-6.0/
 /lib/cximage-6.0/Makefile

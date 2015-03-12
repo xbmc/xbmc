@@ -138,7 +138,6 @@ public:
   static bool IsPVRRecording(const std::string& strFile);
   static bool IsMultiPath(const std::string& strPath);
   static bool IsMusicDb(const std::string& strFile);
-  static bool IsMythTV(const std::string& strFile);
   static bool IsNfs(const std::string& strFile);
   static bool IsOnDVD(const std::string& strFile);
   static bool IsOnLAN(const std::string& strFile);

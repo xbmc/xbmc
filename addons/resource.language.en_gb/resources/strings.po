@@ -2859,10 +2859,7 @@ msgctxt "#670"
 msgid "Verbose logging for CURL library (http, dav)"
 msgstr ""
 
-#: xbmc/settings/AdvancedSettings.cpp
-msgctxt "#671"
-msgid "Verbose logging for CMYTH library"
-msgstr ""
+#empty string with id 671
 
 #: xbmc/settings/AdvancedSettings.cpp
 msgctxt "#672"
@@ -10341,10 +10338,7 @@ msgctxt "#20257"
 msgid "VDR Streamdev client"
 msgstr ""
 
-#: xbmc/network/GUIDialogNetworkSetup.cpp
-msgctxt "#20258"
-msgid "MythTV client"
-msgstr ""
+#empty string with id 20285
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20259"
@@ -12110,9 +12104,8 @@ msgctxt "#22019"
 msgid "Recordings by title"
 msgstr ""
 
-#. Electronic program guide, used as label in the menu of the PVR section and the MythDirectory
+#. Electronic program guide, used as label in the menu of the PVR section
 #: addons/skin/confluence
-#: xbmc/filesystem/MythDirectory.cpp
 msgctxt "#22020"
 msgid "Guide"
 msgstr ""

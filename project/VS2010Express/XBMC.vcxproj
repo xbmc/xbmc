@@ -333,9 +333,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicFileDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicSearchDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\MythDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\MythFile.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\MythSession.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\NFSFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\NptXbmcFile.cpp" />
@@ -1089,7 +1086,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryFactory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryHistory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\DllLibCMyth.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DllLibCurl.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DllLibNfs.h" />
     <ClInclude Include="..\..\xbmc\filesystem\File.h" />
@@ -1117,9 +1113,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MusicFileDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MusicSearchDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\MythDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\MythFile.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\MythSession.h" />
     <ClInclude Include="..\..\xbmc\filesystem\NFSDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\NFSFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\NSFFileDirectory.h" />

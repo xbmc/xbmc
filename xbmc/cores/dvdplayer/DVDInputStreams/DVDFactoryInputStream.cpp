@@ -91,9 +91,6 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 7) == "mmsh://")
     return new CDVDInputStreamFFmpeg();
   else if(file.substr(0, 8) == "sling://"
-       || file.substr(0, 7) == "myth://"
-       || file.substr(0, 8) == "cmyth://"
-       || file.substr(0, 8) == "gmyth://"
        || file.substr(0, 6) == "vtp://")
     return new CDVDInputStreamTV();
 #ifdef ENABLE_DVDINPUTSTREAM_STACK

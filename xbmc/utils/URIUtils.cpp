@@ -23,7 +23,6 @@
 #include "Application.h"
 #include "FileItem.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "filesystem/MythDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
@@ -926,11 +925,6 @@ bool URIUtils::IsUPnP(const std::string& strFile)
   return IsProtocol(strFile, "upnp");
 }
 
-bool URIUtils::IsMythTV(const std::string& strFile)
-{
-  return IsProtocol(strFile, "myth");
-}
-
 bool URIUtils::IsHDHomeRun(const std::string& strFile)
 {
   return IsProtocol(strFile, "hdhomerun");
@@ -962,9 +956,6 @@ bool URIUtils::IsLiveTV(const std::string& strFile)
   || IsHTSP(strFile)
   || IsProtocol(strFile, "sap")
   ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings")))
-    return true;
-
-  if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
     return true;
 
   return false;

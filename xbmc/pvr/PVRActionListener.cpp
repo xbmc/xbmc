@@ -131,7 +131,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
         }
         else
         {
-          // filesystem provider like slingbox, cmyth, etc
+          // filesystem provider like slingbox etc
           int iChannelNumber = -1;
           std::string strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
           if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000)))
