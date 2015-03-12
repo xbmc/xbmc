@@ -1990,16 +1990,16 @@ void CApplication::Render()
   else
     flip = true;
 
-  //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
-  if (limitFrames || !(flip || m_bPresentFrame))
+  //Set max fps for static frames
+  if (!limitFrames && !(flip || m_bPresentFrame))
   {
-    if (!limitFrames)
-      singleFrameTime = 40; //if not flipping, loop at 25 fps
-
-    unsigned int frameTime = now - m_lastFrameTime;
-    if (frameTime < singleFrameTime)
-      Sleep(singleFrameTime - frameTime);
+    singleFrameTime = 40; //if not flipping, loop at 25 fps
   }
+
+  //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
+  unsigned int frameTime = now - m_lastFrameTime;
+  if (frameTime < singleFrameTime)
+    Sleep(singleFrameTime - frameTime);
 
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);
