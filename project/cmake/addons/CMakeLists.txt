@@ -248,7 +248,7 @@ foreach(addon ${addons})
           # setup the buildsystem for the addon
           externalproject_add(${id}
                               SOURCE_DIR ${SOURCE_DIR}
-                              INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+                              INSTALL_DIR ${ADDON_INSTALL_DIR}
                               CMAKE_ARGS ${BUILD_ARGS})
 
           # add a custom step to the external project between the configure and the build step which will always
