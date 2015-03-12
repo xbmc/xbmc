@@ -651,7 +651,7 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
   LanguageResourcePtr languageAddon = GetLanguageAddon(language);
   if (languageAddon == NULL)
   {
-    CLog::Log(LOGINFO, "CLangInfo: unable to load language \"%s\". Trying to determine matching language addon...", language.c_str());
+    CLog::Log(LOGWARNING, "CLangInfo: unable to load language \"%s\". Trying to determine matching language addon...", language.c_str());
 
     // we may have to fall back to the default language
     std::string defaultLanguage = static_cast<CSettingString*>(CSettings::Get().GetSetting("locale.language"))->GetDefault();
@@ -660,7 +660,7 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
     // try to determine a language addon matching the given language in name
     if (!ADDON::CLanguageResource::FindLanguageAddonByName(language, newLanguage))
     {
-      CLog::Log(LOGERROR, "CLangInfo: unable to find language addon matching \"%s\". Falling back to default language.", language.c_str());
+      CLog::Log(LOGWARNING, "CLangInfo: unable to find an installed language addon matching \"%s\". Trying to find an installable language...", language.c_str());
 
       CAddonDatabase addondb;
       if (addondb.Open())
