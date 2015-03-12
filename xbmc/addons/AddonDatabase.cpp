@@ -338,7 +338,7 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons, const ADDON::TYPE &type /* = A
         strType = TranslateType(type);
 
       if (!strType.empty())
-        sql += PrepareSQL(" where type = '%s'", strType.c_str());
+        sql += PrepareSQL(" AND a.type = '%s'", strType.c_str());
     }
 
     m_pDS->query(sql.c_str());
