@@ -65,10 +65,9 @@ public:
   *          or full english name string to a 2-Char (ISO 639-1) code.  
   *   \param[out] code The 2-Char language code of the given language lang.
   *   \param[in] lang The language that should be converted.
-  *   \param[in] checkXbmcLocales Try to find in XBMC specific locales
   *   \return true if the conversion succeeded, false otherwise. 
   */ 
-  bool ConvertToISO6391(const std::string& lang, std::string& code, bool checkXbmcLocales = true);
+  bool ConvertToISO6391(const std::string& lang, std::string& code);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
@@ -91,11 +90,10 @@ public:
   *          or full english name string to a 3-Char ISO 639-2/T code.
   *   \param[in] strCharCode The language that should be converted.
   *   \param[out] strISO6392T The 3-Char (ISO 639-2/T) language code of the given language strISO6391.
-  *   \param[in] checkXbmcLocales Try to find in XBMC specific locales
   *   \param[in] checkWin32Locales Whether to also check WIN32 specific language codes.
   *   \return true if the conversion succeeded, false otherwise.
   */
-  static bool ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkXbmcLocales = true, bool checkWin32Locales = false);
+  static bool ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkWin32Locales = false);
 
 #ifdef TARGET_WINDOWS
   static bool ConvertISO36111Alpha2ToISO36111Alpha3(const std::string& strISO36111Alpha2, std::string& strISO36111Alpha3);

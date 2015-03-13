@@ -172,7 +172,7 @@ bool CLangCodeExpander::ConvertISO6391ToISO6392T(const std::string& strISO6391, 
   return false;
 }
 
-bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkXbmcLocales /* = true */, bool checkWin32Locales /* = false */)
+bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkWin32Locales /* = false */)
 {
   if (strCharCode.size() == 2)
     return g_LangCodeExpander.ConvertISO6391ToISO6392T(strCharCode, strISO6392T, checkWin32Locales);
@@ -208,16 +208,6 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::s
         CodeToString(g_iso639_2[i].code, strISO6392T);
         return true;
       }
-    }
-
-    if (checkXbmcLocales)
-    {
-      CLangInfo langInfo;
-      if (!langInfo.CheckLoadLanguage(strCharCode))
-        return false;
-
-      strISO6392T = langInfo.GetLanguageCode();
-      return !strISO6392T.empty();
     }
   }
 
@@ -266,7 +256,7 @@ bool CLangCodeExpander::ConvertWindowsLanguageCodeToISO6392T(const std::string& 
 }
 #endif
 
-bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& code, bool checkXbmcLocales /*= true*/)
+bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& code)
 {
   if (lang.empty())
     return false;
@@ -316,15 +306,7 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
       return ConvertToISO6391(tmp, code);
   }
 
-  if (!checkXbmcLocales)
-    return false;
-
-  // try xbmc specific language names
-  CLangInfo langInfo;
-  if (!langInfo.CheckLoadLanguage(lang))
-    return false;
-
-  return ConvertToISO6391(langInfo.GetLanguageCode(), code, false);
+  return false;
 }
 
 bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code)
