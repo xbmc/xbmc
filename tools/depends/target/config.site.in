@@ -30,6 +30,7 @@ export PKG_CONFIG_LIBDIR=@prefix@/@deps_dir@/lib/pkgconfig
 export YASM=@prefix@/@tool_dir@/bin/yasm
 export NASM=@prefix@/@tool_dir@/bin/yasm
 export MYSQL_CONFIG=@prefix@/@deps_dir@/bin/mysql_config
+LIBGCRYPT_CONFIG=@prefix@/@deps_dir@/bin/libgcrypt-config
 
 PATH=@prefix@/@tool_dir@/bin:@use_toolchain@/usr/bin:@use_toolchain@/bin:$PATH
 LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
