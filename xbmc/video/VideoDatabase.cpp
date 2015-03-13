@@ -5494,7 +5494,7 @@ bool CVideoDatabase::GetDirectorsNav(const std::string& strBaseDir, CFileItemLis
 
 bool CVideoDatabase::GetActorsNav(const std::string& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */, bool countOnly /* = false */)
 {
-  if (GetPeopleNav(strBaseDir, items, (idContent == VIDEODB_CONTENT_MUSICVIDEOS) ? "artist" : "actor", idContent, filter, countOnly))
+  if (GetPeopleNav(strBaseDir, items, "actor", idContent, filter, countOnly))
   { // set thumbs - ideally this should be in the normal thumb setting routines
     for (int i = 0; i < items.Size() && !countOnly; i++)
     {
