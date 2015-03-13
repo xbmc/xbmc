@@ -57,7 +57,8 @@ float CScrollInfo::GetPixelsPerFrame()
     delta = 100; // assume a minimum of 10 fps
   m_lastFrameTime = currentTime;
   // do an exponential moving average of the frame time
-  m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
+  if (delta)
+    m_averageFrameTime = m_averageFrameTime + (delta - m_averageFrameTime) * alphaEMA;
   // and multiply by pixel speed (per ms) to get number of pixels to move this frame
   return pixelSpeed * m_averageFrameTime;
 }
