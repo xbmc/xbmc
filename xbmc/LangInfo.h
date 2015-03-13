@@ -68,7 +68,7 @@ public:
   // implementation of ISettingsHandler
   virtual void OnSettingsLoaded();
 
-  bool Load(const std::string& strLanguage, bool onlyCheckLanguage = false);
+  bool Load(const std::string& strLanguage);
 
   /*!
    \brief Returns the language addon for the given locale (or the current one).
@@ -108,7 +108,6 @@ public:
    \return True if the language has been successfully loaded, false otherwise.
    */
   bool SetLanguage(bool& fallback, const std::string &strLanguage = "", bool reloadServices = true);
-  bool CheckLoadLanguage(const std::string &language);
 
   const std::string& GetAudioLanguage() const;
   // language can either be a two char language code as defined in ISO639
@@ -179,8 +178,6 @@ public:
   static std::string GetLanguagePath() { return "resource://"; }
   static std::string GetLanguagePath(const std::string &language);
   static std::string GetLanguageInfoPath(const std::string &language);
-
-  static bool CheckLanguage(const std::string& language);
 
   static void LoadTokens(const TiXmlNode* pTokens, std::set<std::string>& vecTokens);
 
