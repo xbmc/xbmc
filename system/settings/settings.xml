@@ -1298,7 +1298,7 @@
         </setting>
       </group>
     </category>
-    <category id="epg" label="19069" help="36218">
+    <category id="epg" label="22020" help="36218">
       <group id="1">
         <setting id="epg.daystodisplay" type="integer" label="19182" help="36220">
           <level>2</level>
