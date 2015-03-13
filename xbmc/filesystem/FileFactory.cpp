@@ -56,9 +56,6 @@
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPFile.h"
 #endif
-#ifdef HAS_FILESYSTEM_VTP
-#include "VTPFile.h"
-#endif
 #ifdef HAS_PVRCLIENTS
 #include "PVRFile.h"
 #endif
@@ -186,9 +183,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM_SAP
     else if (url.IsProtocol("sap")) return new CSAPFile();
-#endif
-#ifdef HAS_FILESYSTEM_VTP
-    else if (url.IsProtocol("vtp")) return new CVTPFile();
 #endif
 #ifdef HAS_PVRCLIENTS
     else if (url.IsProtocol("pvr")) return new CPVRFile();

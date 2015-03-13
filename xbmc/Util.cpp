@@ -202,10 +202,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   else if (url.IsProtocol("htsp"))
     strFilename = g_localizeStrings.Get(20256);
 
-  // VDR Streamdev client
-  else if (url.IsProtocol("vtp"))
-    strFilename = g_localizeStrings.Get(20257);
-  
   // SAP Streams
   else if (url.IsProtocol("sap") && strFilename.empty())
     strFilename = "SAP Streams";
@@ -504,8 +500,7 @@ bool CUtil::IsLiveTV(const std::string& strFile)
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
     return true;
 
-  if(URIUtils::IsVTP(strFile)
-  || URIUtils::IsHDHomeRun(strFile)
+  if(URIUtils::IsHDHomeRun(strFile)
   || URIUtils::IsHTSP(strFile)
   || StringUtils::StartsWithNoCase(strFile, "sap:"))
     return true;

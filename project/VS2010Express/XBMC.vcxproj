@@ -401,9 +401,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32File.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\win32\Win32SMBFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\VirtualDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\VTPDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\VTPFile.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\VTPSession.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZeroconfDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZipDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZipFile.cpp" />
@@ -1153,9 +1150,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\UPnPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VirtualDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\VTPDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\VTPFile.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\VTPSession.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ZeroconfDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ZipDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ZipFile.h" />

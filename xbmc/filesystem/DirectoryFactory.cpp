@@ -77,9 +77,6 @@
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPDirectory.h"
 #endif
-#ifdef HAS_FILESYSTEM_VTP
-#include "VTPDirectory.h"
-#endif
 #ifdef HAS_FILESYSTEM_HTSP
 #include "HTSPDirectory.h"
 #endif
@@ -213,9 +210,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     if (url.IsProtocol("rss")) return new CRSSDirectory();
 #ifdef HAS_FILESYSTEM_SAP
     if (url.IsProtocol("sap")) return new CSAPDirectory();
-#endif
-#ifdef HAS_FILESYSTEM_VTP
-    if (url.IsProtocol("vtp")) return new CVTPDirectory();
 #endif
 #ifdef HAS_FILESYSTEM_HTSP
     if (url.IsProtocol("htsp")) return new CHTSPDirectory();
