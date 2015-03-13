@@ -794,7 +794,7 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   return true;
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFormat fmt, unsigned int surfaces)
 {
   if (!CheckCompatibility(avctx))
     return false;
@@ -942,7 +942,10 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   avctx->get_buffer2 = GetBufferS;
   avctx->hwaccel_context = m_context;
 
-  m_avctx = avctx;
+  mainctx->get_buffer2 = GetBufferS;
+  mainctx->hwaccel_context = m_context;
+
+  m_avctx = mainctx;
 
   D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
   if (AIdentifier.VendorId == PCIV_Intel && m_input == DXVADDI_Intel_ModeH264_E)
@@ -1031,7 +1034,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   if(m_format.SampleWidth  == 0
   || m_format.SampleHeight == 0)
   {
-    if(!Open(avctx, avctx->pix_fmt, m_shared))
+    if(!Open(avctx, avctx, avctx->pix_fmt, m_shared))
     {
       CLog::Log(LOGERROR, "CDecoder::Check - decoder was not able to reset");
       Close();

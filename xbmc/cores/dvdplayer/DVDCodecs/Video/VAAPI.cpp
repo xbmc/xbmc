@@ -479,7 +479,7 @@ CDecoder::~CDecoder()
   Close();
 }
 
-bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum PixelFormat fmt, unsigned int surfaces)
 {
   // don't support broken wrappers by default
   // nvidia cards with a vaapi to vdpau wrapper
@@ -599,7 +599,8 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
 
   // add an extra surface for safety, some faulty material
   // make ffmpeg require more buffers
-  m_vaapiConfig.maxReferences += surfaces + 1;
+  // frame threading requires an additional one
+  m_vaapiConfig.maxReferences += surfaces + 2;
 
   if (!ConfigVAAPI())
   {
@@ -610,7 +611,11 @@ bool CDecoder::Open(AVCodecContext* avctx, const enum PixelFormat fmt, unsigned 
   avctx->get_buffer2 = CDecoder::FFGetBuffer;
   avctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
 
-  m_avctx = avctx;
+  mainctx->hwaccel_context = &m_hwContext;
+  mainctx->get_buffer2 = CDecoder::FFGetBuffer;
+  mainctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
+
+  m_avctx = mainctx;
   return true;
 }
 
@@ -827,7 +832,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
       msg->Release();
     }
 
-    if (decoded < 2 && processed < 3 && m_videoSurfaces.HasFree())
+    if (decoded < 2 && processed < 3)
     {
       retval |= VC_BUFFER;
     }
