@@ -89,7 +89,10 @@ linux-system-libs:
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xmu.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xmu.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xmu.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/libdrm.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/gl.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/glew.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/glew.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/glew.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/libGL.so ] || \
           (ln -s /usr/lib/$(HOST)/mesa $(ADDON_DEPS_DIR)/lib/mesa && ln -s $(ADDON_DEPS_DIR)/lib/mesa/libGL.so $(ADDON_DEPS_DIR)/lib/libGL.so)
-	[ -f $(ADDON_DEPS_DIR)/include/GL ] || ln -s /usr/include/GL $(ADDON_DEPS_DIR)/include/GL
+	[ -f $(ADDON_DEPS_DIR)/lib/libGLEW.so ] || ln -s /usr/lib/$(HOST)/libGLEW.so* $(ADDON_DEPS_DIR)/lib/
+	[ -L $(ADDON_DEPS_DIR)/include/GL ] || ln -s /usr/include/GL $(ADDON_DEPS_DIR)/include/GL
+	[ -f $(ADDON_DEPS_DIR)/lib/libm.so ] || ln -s /usr/lib/$(HOST)/libm.so $(ADDON_DEPS_DIR)/lib/
 
