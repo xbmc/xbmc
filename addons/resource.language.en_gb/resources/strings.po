@@ -7936,7 +7936,7 @@ msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
 msgstr ""
 
-#: system/settings/settings.xml
+#. Electronic program guide. used by ?
 msgctxt "#19069"
 msgid "EPG"
 msgstr ""
@@ -12099,8 +12099,10 @@ msgctxt "#22019"
 msgid "Recordings by title"
 msgstr ""
 
-#. Electronic program guide, used as label in the menu of the PVR section
-#: addons/skin/confluence
+#. Electronic program guide, used as label in the menu of the PVR settings section and by confluence and other skins
+#: system/settings/settings.xml
+#: addons/skin.confluence/720p/IncludesPVR.xml
+#: addons/skin.confluence/720p/IncludesHomeMenuItems.xml
 msgctxt "#22020"
 msgid "Guide"
 msgstr ""
