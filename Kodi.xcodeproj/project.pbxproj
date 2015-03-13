@@ -290,6 +290,11 @@
 		5558ED10176396CD00118C35 /* StereoscopicsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5558ED0E176396CD00118C35 /* StereoscopicsManager.cpp */; };
 		55611BA31766672F00754072 /* RenderFlags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55611BA21766672F00754072 /* RenderFlags.cpp */; };
 		55D3604E1826CAB900DA66D2 /* OverlayRendererGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D3604C1826CAB900DA66D2 /* OverlayRendererGUI.cpp */; };
+		5EB3113C1A978B9B00551907 /* CueInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5EB3113A1A978B9B00551907 /* CueInfoLoader.cpp */; };
+		5EE4F9161A9FF0F7002E20F8 /* ReplayGain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5EF800FE1A97892A0035AA4D /* ReplayGain.cpp */; };
+		5EE4F9171A9FF2AE002E20F8 /* CueInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5EB3113A1A978B9B00551907 /* CueInfoLoader.cpp */; };
+		5EE4F9181A9FF36F002E20F8 /* CueInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5EB3113A1A978B9B00551907 /* CueInfoLoader.cpp */; };
+		5EF801001A97892A0035AA4D /* ReplayGain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5EF800FE1A97892A0035AA4D /* ReplayGain.cpp */; };
 		7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
 		7C140989183224B8009F9411 /* ISetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C14096F183224B8009F9411 /* ISetting.cpp */; };
 		7C14098A183224B8009F9411 /* ISetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C14096F183224B8009F9411 /* ISetting.cpp */; };
@@ -1015,6 +1020,7 @@
 		DFECFB0E172D9CAB00A43CF7 /* SettingPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFAFE172D9CAB00A43CF7 /* SettingPath.cpp */; };
 		DFECFB1C172D9D0100A43CF7 /* BooleanLogic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB1A172D9D0100A43CF7 /* BooleanLogic.cpp */; };
 		DFECFB4C172D9D6D00A43CF7 /* NetworkServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFECFB4A172D9D6D00A43CF7 /* NetworkServices.cpp */; };
+		DFED5AC71AB23388001F080D /* ReplayGain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5EF800FE1A97892A0035AA4D /* ReplayGain.cpp */; };
 		DFEF0BAC180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEF0BA9180ADE6400AEAED1 /* FileItemListModification.cpp */; };
 		DFEF0BAD180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEF0BA9180ADE6400AEAED1 /* FileItemListModification.cpp */; };
 		DFEF0BAE180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEF0BA9180ADE6400AEAED1 /* FileItemListModification.cpp */; };
@@ -3757,6 +3763,10 @@
 		55611BA41766679200754072 /* RenderFlags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderFlags.h; sourceTree = "<group>"; };
 		55D3604C1826CAB900DA66D2 /* OverlayRendererGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererGUI.cpp; sourceTree = "<group>"; };
 		55D3604D1826CAB900DA66D2 /* OverlayRendererGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererGUI.h; sourceTree = "<group>"; };
+		5EB3113A1A978B9B00551907 /* CueInfoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueInfoLoader.cpp; sourceTree = "<group>"; };
+		5EB3113B1A978B9B00551907 /* CueInfoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueInfoLoader.h; sourceTree = "<group>"; };
+		5EF800FE1A97892A0035AA4D /* ReplayGain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReplayGain.cpp; sourceTree = "<group>"; };
+		5EF800FF1A97892A0035AA4D /* ReplayGain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplayGain.h; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
@@ -6347,6 +6357,8 @@
 				880DBE490DC223FF00E26B71 /* Album.h */,
 				E36C29DB0DA72429001F0C9D /* Artist.cpp */,
 				880DBE4A0DC223FF00E26B71 /* Artist.h */,
+				5EB3113A1A978B9B00551907 /* CueInfoLoader.cpp */,
+				5EB3113B1A978B9B00551907 /* CueInfoLoader.h */,
 				E38E17FB0D25F9FA00618676 /* GUIViewStateMusic.cpp */,
 				E38E17FC0D25F9FA00618676 /* GUIViewStateMusic.h */,
 				E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */,
@@ -6387,6 +6399,8 @@
 				18B7C87F129423A7009E7A26 /* MusicInfoTagLoaderSPC.h */,
 				18B7C886129423A7009E7A26 /* MusicInfoTagLoaderYM.cpp */,
 				18B7C887129423A7009E7A26 /* MusicInfoTagLoaderYM.h */,
+				5EF800FE1A97892A0035AA4D /* ReplayGain.cpp */,
+				5EF800FF1A97892A0035AA4D /* ReplayGain.h */,
 				AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */,
 				AE84CB5C15A5B8BA00A3810E /* TagLibVFSStream.h */,
 				AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */,
@@ -10747,6 +10761,7 @@
 				8883CEA10DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp in Sources */,
 				8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */,
 				8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */,
+				5EF801001A97892A0035AA4D /* ReplayGain.cpp in Sources */,
 				E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */,
 				8863281D0E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp in Sources */,
 				8863281E0E07B37200BB3DAB /* GUIViewStatePictures.cpp in Sources */,
@@ -10984,6 +10999,7 @@
 				18B7C8E912942603009E7A26 /* Crc32.cpp in Sources */,
 				18B7C8EE12942613009E7A26 /* URIUtils.cpp in Sources */,
 				18B7C8F31294261F009E7A26 /* StringUtils.cpp in Sources */,
+				5EB3113C1A978B9B00551907 /* CueInfoLoader.cpp in Sources */,
 				18B7C8FB12942718009E7A26 /* GUIDialogAddonSettings.cpp in Sources */,
 				18B7C90012942761009E7A26 /* GUIDialogAudioSubtitleSettings.cpp in Sources */,
 				18B7C911129427A6009E7A26 /* GUIDialogVideoSettings.cpp in Sources */,
@@ -11465,6 +11481,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5EE4F9171A9FF2AE002E20F8 /* CueInfoLoader.cpp in Sources */,
+				5EE4F9161A9FF0F7002E20F8 /* ReplayGain.cpp in Sources */,
 				DFF0F0EF17528350002DA3A4 /* archive.cpp in Sources */,
 				DFF0F0F017528350002DA3A4 /* arcread.cpp in Sources */,
 				DFF0F0F117528350002DA3A4 /* cmddata.cpp in Sources */,
@@ -12889,6 +12907,7 @@
 				E49912C4174E5DA000741B6D /* DirectoryNodeMoviesOverview.cpp in Sources */,
 				E49912C5174E5DA000741B6D /* DirectoryNodeMusicVideosOverview.cpp in Sources */,
 				E49912C6174E5DA000741B6D /* DirectoryNodeOverview.cpp in Sources */,
+				DFED5AC71AB23388001F080D /* ReplayGain.cpp in Sources */,
 				E49912C7174E5DA000741B6D /* DirectoryNodeRecentlyAddedEpisodes.cpp in Sources */,
 				E49912C8174E5DA000741B6D /* DirectoryNodeRecentlyAddedMovies.cpp in Sources */,
 				E49912C9174E5DA000741B6D /* DirectoryNodeRecentlyAddedMusicVideos.cpp in Sources */,
@@ -13312,6 +13331,7 @@
 				E4991484174E606500741B6D /* GUIDialogFileStacking.cpp in Sources */,
 				E4991485174E606500741B6D /* GUIDialogFullScreenInfo.cpp in Sources */,
 				E4991486174E606500741B6D /* GUIDialogTeletext.cpp in Sources */,
+				5EE4F9181A9FF36F002E20F8 /* CueInfoLoader.cpp in Sources */,
 				E4991487174E606500741B6D /* GUIDialogVideoBookmarks.cpp in Sources */,
 				E4991488174E606500741B6D /* GUIDialogVideoInfo.cpp in Sources */,
 				E4991489174E606500741B6D /* GUIDialogVideoOSD.cpp in Sources */,

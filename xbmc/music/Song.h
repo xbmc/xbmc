@@ -107,6 +107,7 @@ public:
   long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke
   std::string strKaraokeLyrEncoding; //! Karaoke song lyrics encoding if known. Empty if unknown.
   int        iKaraokeDelay;         //! Karaoke song lyrics-music delay in 1/10 seconds.
+  ReplayGain replayGain;
 };
 
 /*!
