@@ -163,6 +163,8 @@ bool CGUIDialogSelect::OnBack(int actionID)
 void CGUIDialogSelect::Reset()
 {
   m_bButtonEnabled = false;
+  m_buttonString = -1;
+  m_bButtonPressed = false;
   m_useDetails = false;
   m_multiSelection = false;
   m_iSelected = -1;
