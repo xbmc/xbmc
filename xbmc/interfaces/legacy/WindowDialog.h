@@ -35,7 +35,7 @@ namespace XBMCAddon
     {
 
     public:
-      WindowDialog() throw(WindowException);
+      WindowDialog();
       virtual ~WindowDialog();
 
 #ifndef SWIG

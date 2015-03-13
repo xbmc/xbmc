@@ -45,7 +45,7 @@ namespace PythonBindings
   };
 
   void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString,
-                              const char* argumentName, const char* methodname) throw (XBMCAddon::WrongTypeException)
+                              const char* argumentName, const char* methodname)
   {
     // It's okay for a string to be "None". In this case the buf returned
     // will be the emptyString.
@@ -243,7 +243,7 @@ namespace PythonBindings
   }
   
   XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType, 
-                              const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
+                              const char* methodNamespacePrefix, const char* methodNameForErrorString)
   {
     if (pythonObj->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
       throw XBMCAddon::WrongTypeException("Non api type passed to \"%s\" in place of the expected type \"%s.\"",

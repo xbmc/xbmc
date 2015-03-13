@@ -262,7 +262,7 @@ namespace XBMCAddon
       return item->GetPath();
     }
 
-    void ListItem::setInfo(const char* type, const InfoLabelDict& infoLabels) throw (WrongTypeException)
+    void ListItem::setInfo(const char* type, const InfoLabelDict& infoLabels)
     {
       LOCKGUI;
 
@@ -587,7 +587,6 @@ namespace XBMCAddon
     } // end ListItem::addStreamInfo
 
     void ListItem::addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems /* = false */)
-      throw (ListItemException)
     {
       int itemCount = 0;
       for (std::vector<Tuple<String,String> >::const_iterator iter = items.begin(); iter < items.end(); ++iter, ++itemCount)

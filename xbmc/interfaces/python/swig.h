@@ -44,7 +44,7 @@ namespace PythonBindings
    */
   void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString = false,
                               const char* pos = "unknown", 
-                              const char* methodname = "unknown") throw (XBMCAddon::WrongTypeException);
+                              const char* methodname = "unknown");
 
   struct TypeInfo
   {
@@ -75,7 +75,7 @@ namespace PythonBindings
    */
   inline XBMCAddon::AddonClass* retrieveApiInstance(PyObject* pythonObj, const TypeInfo* typeToCheck, 
                                    const char* methodNameForErrorString, 
-                                   const char* typenameForErrorString) throw (XBMCAddon::WrongTypeException)
+                                   const char* typenameForErrorString)
   {
     if (pythonObj == NULL || pythonObj == Py_None)
       return NULL;
@@ -87,7 +87,7 @@ namespace PythonBindings
   bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix, bool tryReverse = true);
 
   XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType, 
-                              const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException);
+                              const char* methodNamespacePrefix, const char* methodNameForErrorString);
 
   /**
    * This method retrieves the pointer from the PyHolder. The return value should
@@ -99,7 +99,7 @@ namespace PythonBindings
    * pythonObj is Py_None.
    */
   inline XBMCAddon::AddonClass* retrieveApiInstance(const PyObject* pythonObj, const char* expectedType, const char* methodNamespacePrefix,
-                                   const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
+                                   const char* methodNameForErrorString)
   {
     return (pythonObj == NULL || pythonObj == Py_None) ? NULL :
       doretrieveApiInstance(((PyHolder*)pythonObj),((PyHolder*)pythonObj)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
@@ -191,7 +191,6 @@ namespace PythonBindings
   template<class T> struct PythonCompare
   {
     static inline int compare(PyObject* obj1, PyObject* obj2, const char* swigType, const char* methodNamespacePrefix, const char* methodNameForErrorString)
-      throw(XBMCAddon::WrongTypeException)
     {
       XBMC_TRACE;
       try

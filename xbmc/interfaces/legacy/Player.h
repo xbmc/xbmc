@@ -225,7 +225,7 @@ namespace XBMCAddon
        * Throws: Exception, if player is not playing a file.\n
        */
       // Player_GetPlayingFile
-      String getPlayingFile() throw (PlayerException);
+      String getPlayingFile();
 
       /**
        * getTime() -- Returns the current time of the current playing media as fractional seconds.
@@ -233,7 +233,7 @@ namespace XBMCAddon
        * Throws: Exception, if player is not playing a file.
        */
       // Player_GetTime
-      double getTime() throw(PlayerException);
+      double getTime();
 
       /**
        * seekTime() -- Seeks the specified amount of time as fractional seconds.
@@ -243,7 +243,7 @@ namespace XBMCAddon
        * Throws: Exception, if player is not playing a file.
        */
       // Player_SeekTime
-      void seekTime(double seekTime) throw(PlayerException);
+      void seekTime(double seekTime);
 
       /**
        * setSubtitles() -- set subtitle file and enable subtitlesn
@@ -296,7 +296,7 @@ namespace XBMCAddon
        * 
        * Throws: Exception, if player is not playing a file or current file is not a movie file.
        */
-      InfoTagVideo* getVideoInfoTag() throw (PlayerException);
+      InfoTagVideo* getVideoInfoTag();
 
       /**
        * getMusicInfoTag() -- returns the MusicInfoTag of the current playing 'Song'.
@@ -304,7 +304,7 @@ namespace XBMCAddon
        * Throws: Exception, if player is not playing a file or current file is not a music file.
        */
       // Player_GetMusicInfoTag
-      InfoTagMusic* getMusicInfoTag() throw (PlayerException);
+      InfoTagMusic* getMusicInfoTag();
 
       /**
        * getTotalTime() -- Returns the total time of the current playing media in
@@ -312,7 +312,7 @@ namespace XBMCAddon
        *
        * Throws: Exception, if player is not playing a file.
        */
-      double getTotalTime() throw (PlayerException);
+      double getTotalTime();
 
       // Player_getAvailableAudioStreams
       /**

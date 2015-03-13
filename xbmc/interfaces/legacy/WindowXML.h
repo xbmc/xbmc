@@ -66,7 +66,7 @@ namespace XBMCAddon
        * This helper retrieves the next available id. It is doesn't
        *  assume that the global lock is already being held.
        */
-      static int lockingGetNextAvailalbeWindowId() throw (WindowException);
+      static int lockingGetNextAvailalbeWindowId();
 
       WindowXMLInterceptor* interceptor;
 #endif
@@ -74,7 +74,7 @@ namespace XBMCAddon
      public:
       WindowXML(const String& xmlFilename, const String& scriptPath,
                 const String& defaultSkin = "Default",
-                const String& defaultRes = "720p") throw(WindowException);
+                const String& defaultRes = "720p");
       virtual ~WindowXML();
 
       /**
@@ -126,7 +126,7 @@ namespace XBMCAddon
        * example:\n
        *   - listitem = self.getListItem(6)
        */
-      SWIGHIDDENVIRTUAL ListItem* getListItem(int position) throw (WindowException);
+      SWIGHIDDENVIRTUAL ListItem* getListItem(int position);
 
       /**
        * getListSize() -- Returns the number of items in this Window List.
@@ -230,7 +230,7 @@ namespace XBMCAddon
     public:
       WindowXMLDialog(const String& xmlFilename, const String& scriptPath,
                       const String& defaultSkin = "Default",
-                      const String& defaultRes = "720p") throw(WindowException);
+                      const String& defaultRes = "720p");
 
       virtual ~WindowXMLDialog();
 

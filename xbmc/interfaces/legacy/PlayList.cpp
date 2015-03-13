@@ -32,7 +32,7 @@ namespace XBMCAddon
   {
     // TODO: need a means to check for a valid construction
     //  either by throwing an exception or by an "isValid" check
-    PlayList::PlayList(int playList) throw (PlayListException) : 
+    PlayList::PlayList(int playList) : 
       refs(1), iPlayList(playList), pPlayList(NULL)
     {
       // we do not create our own playlist, just using the ones from playlistplayer
@@ -69,7 +69,7 @@ namespace XBMCAddon
       pPlayList->Insert(items, index);
     }
 
-    bool PlayList::load(const char* cFileName) throw (PlayListException)
+    bool PlayList::load(const char* cFileName)
     {
       CFileItem item(cFileName);
       item.SetPath(cFileName);
@@ -139,7 +139,7 @@ namespace XBMCAddon
       return g_playlistPlayer.GetCurrentSong();
     }
 
-    XBMCAddon::xbmcgui::ListItem* PlayList::operator [](long i) throw (PlayListException)
+    XBMCAddon::xbmcgui::ListItem* PlayList::operator [](long i)
     {
       int iPlayListSize = size();
 
