@@ -389,7 +389,7 @@ void StringUtils::ToCapitalize(std::wstring &str)
   bool isFirstLetter = true;
   for (std::wstring::iterator it = str.begin(); it < str.end(); ++it)
   {
-    if (std::isspace(*it, loc))
+    if (std::isspace(*it, loc) || std::ispunct(*it, loc))
       isFirstLetter = true;
     else if (isFirstLetter)
     {
