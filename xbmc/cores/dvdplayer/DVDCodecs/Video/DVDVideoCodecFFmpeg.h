@@ -114,6 +114,7 @@ protected:
 
   std::string m_name;
   bool m_bSoftware;
+  bool m_isFrameThreaded;
   IHardwareDecoder *m_pHardware;
   std::vector<IHardwareDecoder*> m_disposeDecoders;
   int m_iLastKeyframe;
