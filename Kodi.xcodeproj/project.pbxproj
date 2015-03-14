@@ -1153,7 +1153,6 @@
 		DFF0F16B17528350002DA3A4 /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
 		DFF0F16C17528350002DA3A4 /* DVDDemuxCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52566B1732C1890094A464 /* DVDDemuxCDDA.cpp */; };
 		DFF0F16D17528350002DA3A4 /* DVDDemuxFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */; };
-		DFF0F16E17528350002DA3A4 /* DVDDemuxHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */; };
 		DFF0F16F17528350002DA3A4 /* DVDDemuxPVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482902156CFED9005A996F /* DVDDemuxPVRClient.cpp */; };
 		DFF0F17017528350002DA3A4 /* DVDDemuxShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */; };
 		DFF0F17117528350002DA3A4 /* DVDDemuxUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154F0D25F9F900618676 /* DVDDemuxUtils.cpp */; };
@@ -1164,7 +1163,6 @@
 		DFF0F17617528350002DA3A4 /* DVDInputStreamBluray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58E293711FFC103006F4D46 /* DVDInputStreamBluray.cpp */; };
 		DFF0F17717528350002DA3A4 /* DVDInputStreamFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155D0D25F9FA00618676 /* DVDInputStreamFFmpeg.cpp */; };
 		DFF0F17817528350002DA3A4 /* DVDInputStreamFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155F0D25F9FA00618676 /* DVDInputStreamFile.cpp */; };
-		DFF0F17917528350002DA3A4 /* DVDInputStreamHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */; };
 		DFF0F17A17528350002DA3A4 /* DVDInputStreamHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15610D25F9FA00618676 /* DVDInputStreamHttp.cpp */; };
 		DFF0F17B17528350002DA3A4 /* DVDInputStreamMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15630D25F9FA00618676 /* DVDInputStreamMemory.cpp */; };
 		DFF0F17C17528350002DA3A4 /* DVDInputStreamNavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */; };
@@ -1293,8 +1291,6 @@
 		DFF0F20017528350002DA3A4 /* FTPParse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16E60D25F9FA00618676 /* FTPParse.cpp */; };
 		DFF0F20317528350002DA3A4 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */; };
 		DFF0F20417528350002DA3A4 /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F01444B54A007C6459 /* HDHomeRunFile.cpp */; };
-		DFF0F20517528350002DA3A4 /* HTSPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196140FB2382E0030E150 /* HTSPDirectory.cpp */; };
-		DFF0F20617528350002DA3A4 /* HTSPSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196160FB2382E0030E150 /* HTSPSession.cpp */; };
 		DFF0F20717528350002DA3A4 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		DFF0F20817528350002DA3A4 /* HTTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */; };
 		DFF0F20917528350002DA3A4 /* IDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16EC0D25F9FA00618676 /* IDirectory.cpp */; };
@@ -1879,13 +1875,6 @@
 		DFF0F47417528350002DA3A4 /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		DFF0F47517528350002DA3A4 /* WinEventsIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991571174E661300741B6D /* WinEventsIOS.mm */; };
 		DFF0F47617528350002DA3A4 /* WinSystemIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991573174E661300741B6D /* WinSystemIOS.mm */; };
-		DFF0F47717528350002DA3A4 /* htsatomic.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106D0F5C424700955236 /* htsatomic.c */; };
-		DFF0F47817528350002DA3A4 /* htsbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106F0F5C424700955236 /* htsbuf.c */; };
-		DFF0F47917528350002DA3A4 /* htsmsg.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110710F5C424700955236 /* htsmsg.c */; };
-		DFF0F47A17528350002DA3A4 /* htsmsg_binary.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110730F5C424700955236 /* htsmsg_binary.c */; };
-		DFF0F47B17528350002DA3A4 /* htsstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110760F5C424700955236 /* htsstr.c */; };
-		DFF0F47C17528350002DA3A4 /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
-		DFF0F47D17528350002DA3A4 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		DFF0F47E17528350002DA3A4 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
 		DFF0F48017528350002DA3A4 /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
 		DFF0F48117528350002DA3A4 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
@@ -2251,8 +2240,6 @@
 		E3E91FFE0D8C61DF002BF43D /* EventServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E91FFB0D8C61DF002BF43D /* EventServer.cpp */; };
 		E3E91FFF0D8C61DF002BF43D /* Socket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E91FFC0D8C61DF002BF43D /* Socket.cpp */; };
 		E3E920020D8C622A002BF43D /* EventClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920010D8C622A002BF43D /* EventClient.cpp */; };
-		E43196170FB2382E0030E150 /* HTSPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196140FB2382E0030E150 /* HTSPDirectory.cpp */; };
-		E43196180FB2382E0030E150 /* HTSPSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196160FB2382E0030E150 /* HTSPSession.cpp */; };
 		E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
 		E46F7C2D0F77219700C25D29 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */; };
 		E499108C174D0D2600741B6D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E499108B174D0D2600741B6D /* UIKit.framework */; };
@@ -2386,7 +2373,6 @@
 		E49911D3174E5D2E00741B6D /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
 		E49911D4174E5D2E00741B6D /* DVDDemuxCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52566B1732C1890094A464 /* DVDDemuxCDDA.cpp */; };
 		E49911D5174E5D2E00741B6D /* DVDDemuxFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */; };
-		E49911D6174E5D2E00741B6D /* DVDDemuxHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */; };
 		E49911D7174E5D2E00741B6D /* DVDDemuxPVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8482902156CFED9005A996F /* DVDDemuxPVRClient.cpp */; };
 		E49911D8174E5D2E00741B6D /* DVDDemuxShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */; };
 		E49911D9174E5D2E00741B6D /* DVDDemuxUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154F0D25F9F900618676 /* DVDDemuxUtils.cpp */; };
@@ -2397,7 +2383,6 @@
 		E49911DE174E5D3700741B6D /* DVDInputStreamBluray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F58E293711FFC103006F4D46 /* DVDInputStreamBluray.cpp */; };
 		E49911DF174E5D3700741B6D /* DVDInputStreamFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155D0D25F9FA00618676 /* DVDInputStreamFFmpeg.cpp */; };
 		E49911E0174E5D3700741B6D /* DVDInputStreamFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155F0D25F9FA00618676 /* DVDInputStreamFile.cpp */; };
-		E49911E1174E5D3700741B6D /* DVDInputStreamHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */; };
 		E49911E2174E5D3700741B6D /* DVDInputStreamHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15610D25F9FA00618676 /* DVDInputStreamHttp.cpp */; };
 		E49911E3174E5D3700741B6D /* DVDInputStreamMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15630D25F9FA00618676 /* DVDInputStreamMemory.cpp */; };
 		E49911E4174E5D3700741B6D /* DVDInputStreamNavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */; };
@@ -2526,8 +2511,6 @@
 		E4991269174E5D8F00741B6D /* FTPParse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16E60D25F9FA00618676 /* FTPParse.cpp */; };
 		E499126C174E5D8F00741B6D /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */; };
 		E499126D174E5D8F00741B6D /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F01444B54A007C6459 /* HDHomeRunFile.cpp */; };
-		E499126E174E5D8F00741B6D /* HTSPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196140FB2382E0030E150 /* HTSPDirectory.cpp */; };
-		E499126F174E5D8F00741B6D /* HTSPSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196160FB2382E0030E150 /* HTSPSession.cpp */; };
 		E4991270174E5D8F00741B6D /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		E4991271174E5D8F00741B6D /* HTTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */; };
 		E4991272174E5D8F00741B6D /* IDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16EC0D25F9FA00618676 /* IDirectory.cpp */; };
@@ -3112,13 +3095,6 @@
 		E499156F174E65AC00741B6D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		E4991574174E661400741B6D /* WinEventsIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991571174E661300741B6D /* WinEventsIOS.mm */; };
 		E4991575174E661400741B6D /* WinSystemIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991573174E661300741B6D /* WinSystemIOS.mm */; };
-		E4991577174E67EE00741B6D /* htsatomic.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106D0F5C424700955236 /* htsatomic.c */; };
-		E4991578174E67EE00741B6D /* htsbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106F0F5C424700955236 /* htsbuf.c */; };
-		E4991579174E67EE00741B6D /* htsmsg.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110710F5C424700955236 /* htsmsg.c */; };
-		E499157A174E67EE00741B6D /* htsmsg_binary.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110730F5C424700955236 /* htsmsg_binary.c */; };
-		E499157B174E67EE00741B6D /* htsstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110760F5C424700955236 /* htsstr.c */; };
-		E499157C174E67EE00741B6D /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
-		E499157D174E67EE00741B6D /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		E499157E174E681200741B6D /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
 		E4991580174E681600741B6D /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
 		E4991581174E681600741B6D /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
@@ -3149,7 +3125,6 @@
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F50FE04E11A3411A00C8B8CD /* EncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */; };
 		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
-		F51CEF880F5C64A5004F4602 /* DVDInputStreamHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */; };
 		F51CF2D00F6055A4004F4602 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F52A733C1560BC34005B1A0B /* CoreFoundation.framework */; };
 		F52B063B11869862004B1D66 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B063A11869862004B1D66 /* Skin.cpp */; };
@@ -3171,13 +3146,6 @@
 		F54C51E70F1E787700D46E3C /* karaokelyricsfactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */; };
 		F54C51E80F1E787700D46E3C /* karaokelyricstextlrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */; };
 		F54C51E90F1E787700D46E3C /* karaokelyricstext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */; };
-		F55110450F5C3C0100955236 /* DVDDemuxHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */; };
-		F551107C0F5C424700955236 /* htsatomic.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106D0F5C424700955236 /* htsatomic.c */; };
-		F551107D0F5C424700955236 /* htsbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106F0F5C424700955236 /* htsbuf.c */; };
-		F551107E0F5C424700955236 /* htsmsg.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110710F5C424700955236 /* htsmsg.c */; };
-		F551107F0F5C424700955236 /* htsmsg_binary.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110730F5C424700955236 /* htsmsg_binary.c */; };
-		F55110800F5C424700955236 /* htsstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110760F5C424700955236 /* htsstr.c */; };
-		F55110820F5C424700955236 /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
 		F558F25613ABCF7800631E12 /* WinEventsOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = F558F25513ABCF7800631E12 /* WinEventsOSX.mm */; };
 		F558F27B13ABD56600631E12 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27913ABD56600631E12 /* DirtyRegionSolvers.cpp */; };
 		F558F27F13ABD57400631E12 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */; };
@@ -5582,10 +5550,6 @@
 		E3E91FFB0D8C61DF002BF43D /* EventServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventServer.cpp; sourceTree = "<group>"; };
 		E3E91FFC0D8C61DF002BF43D /* Socket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Socket.cpp; sourceTree = "<group>"; };
 		E3E920010D8C622A002BF43D /* EventClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventClient.cpp; sourceTree = "<group>"; };
-		E43196130FB2382D0030E150 /* HTSPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTSPDirectory.h; sourceTree = "<group>"; };
-		E43196140FB2382E0030E150 /* HTSPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTSPDirectory.cpp; sourceTree = "<group>"; };
-		E43196150FB2382E0030E150 /* HTSPSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTSPSession.h; sourceTree = "<group>"; };
-		E43196160FB2382E0030E150 /* HTSPSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTSPSession.cpp; sourceTree = "<group>"; };
 		E46F7C280F77217400C25D29 /* Zeroconf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Zeroconf.cpp; sourceTree = "<group>"; };
 		E46F7C290F77217400C25D29 /* Zeroconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zeroconf.h; sourceTree = "<group>"; };
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
@@ -5687,8 +5651,6 @@
 		F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderFFmpeg.cpp; sourceTree = "<group>"; };
 		F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OSXGNUReplacements.c; sourceTree = "<group>"; };
 		F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXGNUReplacements.h; sourceTree = "<group>"; };
-		F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDInputStreamHTSP.cpp; path = xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.cpp; sourceTree = SOURCE_ROOT; };
-		F51CEF870F5C64A5004F4602 /* DVDInputStreamHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDInputStreamHTSP.h; path = xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h; sourceTree = SOURCE_ROOT; };
 		F51CF2CE0F6055A4004F4602 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
 		F51CF2CF0F6055A4004F4602 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		F52A733C1560BC34005B1A0B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -5727,22 +5689,6 @@
 		F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricsfactory.cpp; sourceTree = "<group>"; };
 		F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstextlrc.cpp; sourceTree = "<group>"; };
 		F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokelyricstext.cpp; sourceTree = "<group>"; };
-		F55110430F5C3C0000955236 /* DVDDemuxHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDDemuxHTSP.h; path = xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.h; sourceTree = SOURCE_ROOT; };
-		F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDDemuxHTSP.cpp; path = xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp; sourceTree = SOURCE_ROOT; };
-		F551106C0F5C424700955236 /* hts_strtab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hts_strtab.h; sourceTree = "<group>"; };
-		F551106D0F5C424700955236 /* htsatomic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = htsatomic.c; sourceTree = "<group>"; };
-		F551106E0F5C424700955236 /* htsatomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsatomic.h; sourceTree = "<group>"; };
-		F551106F0F5C424700955236 /* htsbuf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = htsbuf.c; sourceTree = "<group>"; };
-		F55110700F5C424700955236 /* htsbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsbuf.h; sourceTree = "<group>"; };
-		F55110710F5C424700955236 /* htsmsg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = htsmsg.c; sourceTree = "<group>"; };
-		F55110720F5C424700955236 /* htsmsg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsmsg.h; sourceTree = "<group>"; };
-		F55110730F5C424700955236 /* htsmsg_binary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = htsmsg_binary.c; sourceTree = "<group>"; };
-		F55110740F5C424700955236 /* htsmsg_binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsmsg_binary.h; sourceTree = "<group>"; };
-		F55110750F5C424700955236 /* htsq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsq.h; sourceTree = "<group>"; };
-		F55110760F5C424700955236 /* htsstr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = htsstr.c; sourceTree = "<group>"; };
-		F55110770F5C424700955236 /* htsstr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsstr.h; sourceTree = "<group>"; };
-		F551107A0F5C424700955236 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net.h; sourceTree = "<group>"; };
-		F551107B0F5C424700955236 /* net_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = net_posix.c; sourceTree = "<group>"; };
 		F558F25413ABCF7800631E12 /* WinEventsOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEventsOSX.h; sourceTree = "<group>"; };
 		F558F25513ABCF7800631E12 /* WinEventsOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WinEventsOSX.mm; sourceTree = "<group>"; };
 		F558F27813ABD56600631E12 /* DirtyRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegion.h; sourceTree = "<group>"; };
@@ -8669,8 +8615,6 @@
 				DF52566C1732C1890094A464 /* DVDDemuxCDDA.h */,
 				E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */,
 				E38E154C0D25F9F900618676 /* DVDDemuxFFmpeg.h */,
-				F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */,
-				F55110430F5C3C0000955236 /* DVDDemuxHTSP.h */,
 				C8482902156CFED9005A996F /* DVDDemuxPVRClient.cpp */,
 				C8482903156CFED9005A996F /* DVDDemuxPVRClient.h */,
 				E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */,
@@ -8698,8 +8642,6 @@
 				E38E155E0D25F9FA00618676 /* DVDInputStreamFFmpeg.h */,
 				E38E155F0D25F9FA00618676 /* DVDInputStreamFile.cpp */,
 				E38E15600D25F9FA00618676 /* DVDInputStreamFile.h */,
-				F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */,
-				F51CEF870F5C64A5004F4602 /* DVDInputStreamHTSP.h */,
 				E38E15610D25F9FA00618676 /* DVDInputStreamHttp.cpp */,
 				E38E15620D25F9FA00618676 /* DVDInputStreamHttp.h */,
 				E38E15630D25F9FA00618676 /* DVDInputStreamMemory.cpp */,
@@ -8911,10 +8853,6 @@
 				DF93D7F41444B568007C6459 /* HDHomeRunDirectory.h */,
 				DF93D7F01444B54A007C6459 /* HDHomeRunFile.cpp */,
 				DF93D7F11444B54A007C6459 /* HDHomeRunFile.h */,
-				E43196140FB2382E0030E150 /* HTSPDirectory.cpp */,
-				E43196130FB2382D0030E150 /* HTSPDirectory.h */,
-				E43196160FB2382E0030E150 /* HTSPSession.cpp */,
-				E43196150FB2382E0030E150 /* HTSPSession.h */,
 				F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */,
 				F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */,
 				DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */,
@@ -9145,7 +9083,6 @@
 			children = (
 				E38E18820D25F9FA00618676 /* libexif */,
 				E38E196D0D25F9FB00618676 /* libhdhomerun */,
-				F551106A0F5C424700955236 /* libhts */,
 				E38E1A130D25F9FB00618676 /* libRTV */,
 				E38E1A550D25F9FB00618676 /* libUPnP */,
 				E38E1C840D25F9FC00618676 /* libXDAAP */,
@@ -9776,29 +9713,6 @@
 				EC720A8E155091BB00FFD782 /* ilog.h */,
 			);
 			name = commons;
-			sourceTree = "<group>";
-		};
-		F551106A0F5C424700955236 /* libhts */ = {
-			isa = PBXGroup;
-			children = (
-				F551106C0F5C424700955236 /* hts_strtab.h */,
-				F551106D0F5C424700955236 /* htsatomic.c */,
-				F551106E0F5C424700955236 /* htsatomic.h */,
-				F551106F0F5C424700955236 /* htsbuf.c */,
-				F55110700F5C424700955236 /* htsbuf.h */,
-				F55110710F5C424700955236 /* htsmsg.c */,
-				F55110720F5C424700955236 /* htsmsg.h */,
-				F55110730F5C424700955236 /* htsmsg_binary.c */,
-				F55110740F5C424700955236 /* htsmsg_binary.h */,
-				F55110750F5C424700955236 /* htsq.h */,
-				F55110760F5C424700955236 /* htsstr.c */,
-				F55110770F5C424700955236 /* htsstr.h */,
-				F551107A0F5C424700955236 /* net.h */,
-				F551107B0F5C424700955236 /* net_posix.c */,
-				F51CF2CE0F6055A4004F4602 /* sha1.c */,
-				F51CF2CF0F6055A4004F4602 /* sha1.h */,
-			);
-			path = libhts;
 			sourceTree = "<group>";
 		};
 		F563529F16E53FE900D21BAD /* dialogs */ = {
@@ -10770,24 +10684,13 @@
 				7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */,
 				F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */,
 				F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */,
-				F55110450F5C3C0100955236 /* DVDDemuxHTSP.cpp in Sources */,
-				F551107C0F5C424700955236 /* htsatomic.c in Sources */,
-				F551107D0F5C424700955236 /* htsbuf.c in Sources */,
-				F551107E0F5C424700955236 /* htsmsg.c in Sources */,
-				F551107F0F5C424700955236 /* htsmsg_binary.c in Sources */,
-				F55110800F5C424700955236 /* htsstr.c in Sources */,
-				F55110820F5C424700955236 /* net_posix.c in Sources */,
 				F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */,
-				F51CEF880F5C64A5004F4602 /* DVDInputStreamHTSP.cpp in Sources */,
-				F51CF2D00F6055A4004F4602 /* sha1.c in Sources */,
 				F5EA02260F6DA990005C2EC5 /* CocoaPowerSyscall.cpp in Sources */,
 				F5EA02270F6DA9A5005C2EC5 /* PowerManager.cpp in Sources */,
 				F5EA05C20F733812005C2EC5 /* CocoaInterface.mm in Sources */,
 				E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */,
 				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.cpp in Sources */,
 				83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */,
-				E43196170FB2382E0030E150 /* HTSPDirectory.cpp in Sources */,
-				E43196180FB2382E0030E150 /* HTSPSession.cpp in Sources */,
 				F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */,
 				F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
 				F59876C00FBA351D008EF4FB /* VideoReferenceClock.cpp in Sources */,
@@ -11574,7 +11477,6 @@
 				DFF0F16B17528350002DA3A4 /* DVDDemuxBXA.cpp in Sources */,
 				DFF0F16C17528350002DA3A4 /* DVDDemuxCDDA.cpp in Sources */,
 				DFF0F16D17528350002DA3A4 /* DVDDemuxFFmpeg.cpp in Sources */,
-				DFF0F16E17528350002DA3A4 /* DVDDemuxHTSP.cpp in Sources */,
 				DFF0F16F17528350002DA3A4 /* DVDDemuxPVRClient.cpp in Sources */,
 				DFF0F17017528350002DA3A4 /* DVDDemuxShoutcast.cpp in Sources */,
 				DFF0F17117528350002DA3A4 /* DVDDemuxUtils.cpp in Sources */,
@@ -11585,7 +11487,6 @@
 				DFF0F17617528350002DA3A4 /* DVDInputStreamBluray.cpp in Sources */,
 				DFF0F17717528350002DA3A4 /* DVDInputStreamFFmpeg.cpp in Sources */,
 				DFF0F17817528350002DA3A4 /* DVDInputStreamFile.cpp in Sources */,
-				DFF0F17917528350002DA3A4 /* DVDInputStreamHTSP.cpp in Sources */,
 				DFF0F17A17528350002DA3A4 /* DVDInputStreamHttp.cpp in Sources */,
 				DFF0F17B17528350002DA3A4 /* DVDInputStreamMemory.cpp in Sources */,
 				DFF0F17C17528350002DA3A4 /* DVDInputStreamNavigator.cpp in Sources */,
@@ -11720,8 +11621,6 @@
 				DFF0F20317528350002DA3A4 /* HDHomeRunDirectory.cpp in Sources */,
 				DFF0F20417528350002DA3A4 /* HDHomeRunFile.cpp in Sources */,
 				395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
-				DFF0F20517528350002DA3A4 /* HTSPDirectory.cpp in Sources */,
-				DFF0F20617528350002DA3A4 /* HTSPSession.cpp in Sources */,
 				DFF0F20717528350002DA3A4 /* HTTPDirectory.cpp in Sources */,
 				DFF0F20817528350002DA3A4 /* HTTPFile.cpp in Sources */,
 				DFF0F20917528350002DA3A4 /* IDirectory.cpp in Sources */,
@@ -12341,14 +12240,7 @@
 				DFF0F47517528350002DA3A4 /* WinEventsIOS.mm in Sources */,
 				395C29F21A98A16300EBC7AD /* HTTPPythonWsgiInvoker.cpp in Sources */,
 				DFF0F47617528350002DA3A4 /* WinSystemIOS.mm in Sources */,
-				DFF0F47717528350002DA3A4 /* htsatomic.c in Sources */,
-				DFF0F47817528350002DA3A4 /* htsbuf.c in Sources */,
 				DF32466419E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp in Sources */,
-				DFF0F47917528350002DA3A4 /* htsmsg.c in Sources */,
-				DFF0F47A17528350002DA3A4 /* htsmsg_binary.c in Sources */,
-				DFF0F47B17528350002DA3A4 /* htsstr.c in Sources */,
-				DFF0F47C17528350002DA3A4 /* net_posix.c in Sources */,
-				DFF0F47D17528350002DA3A4 /* sha1.c in Sources */,
 				DFF0F47E17528350002DA3A4 /* AutoPool.mm in Sources */,
 				DFF0F48017528350002DA3A4 /* DarwinUtils.mm in Sources */,
 				DFF0F48117528350002DA3A4 /* OSXGNUReplacements.c in Sources */,
@@ -12643,7 +12535,6 @@
 				E49911D3174E5D2E00741B6D /* DVDDemuxBXA.cpp in Sources */,
 				E49911D4174E5D2E00741B6D /* DVDDemuxCDDA.cpp in Sources */,
 				E49911D5174E5D2E00741B6D /* DVDDemuxFFmpeg.cpp in Sources */,
-				E49911D6174E5D2E00741B6D /* DVDDemuxHTSP.cpp in Sources */,
 				E49911D7174E5D2E00741B6D /* DVDDemuxPVRClient.cpp in Sources */,
 				E49911D8174E5D2E00741B6D /* DVDDemuxShoutcast.cpp in Sources */,
 				E49911D9174E5D2E00741B6D /* DVDDemuxUtils.cpp in Sources */,
@@ -12654,7 +12545,6 @@
 				E49911DE174E5D3700741B6D /* DVDInputStreamBluray.cpp in Sources */,
 				E49911DF174E5D3700741B6D /* DVDInputStreamFFmpeg.cpp in Sources */,
 				E49911E0174E5D3700741B6D /* DVDInputStreamFile.cpp in Sources */,
-				E49911E1174E5D3700741B6D /* DVDInputStreamHTSP.cpp in Sources */,
 				E49911E2174E5D3700741B6D /* DVDInputStreamHttp.cpp in Sources */,
 				E49911E3174E5D3700741B6D /* DVDInputStreamMemory.cpp in Sources */,
 				F597B05C18A804E0005AADAE /* DVDVideoCodec.cpp in Sources */,
@@ -12790,8 +12680,6 @@
 				E4991269174E5D8F00741B6D /* FTPParse.cpp in Sources */,
 				E499126C174E5D8F00741B6D /* HDHomeRunDirectory.cpp in Sources */,
 				E499126D174E5D8F00741B6D /* HDHomeRunFile.cpp in Sources */,
-				E499126E174E5D8F00741B6D /* HTSPDirectory.cpp in Sources */,
-				E499126F174E5D8F00741B6D /* HTSPSession.cpp in Sources */,
 				E4991270174E5D8F00741B6D /* HTTPDirectory.cpp in Sources */,
 				E4991271174E5D8F00741B6D /* HTTPFile.cpp in Sources */,
 				E4991272174E5D8F00741B6D /* IDirectory.cpp in Sources */,
@@ -13409,14 +13297,7 @@
 				E499156F174E65AC00741B6D /* XBMC_keytable.cpp in Sources */,
 				E4991574174E661400741B6D /* WinEventsIOS.mm in Sources */,
 				E4991575174E661400741B6D /* WinSystemIOS.mm in Sources */,
-				E4991577174E67EE00741B6D /* htsatomic.c in Sources */,
-				E4991578174E67EE00741B6D /* htsbuf.c in Sources */,
-				E4991579174E67EE00741B6D /* htsmsg.c in Sources */,
-				E499157A174E67EE00741B6D /* htsmsg_binary.c in Sources */,
-				E499157B174E67EE00741B6D /* htsstr.c in Sources */,
 				DF56EF251A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */,
-				E499157C174E67EE00741B6D /* net_posix.c in Sources */,
-				E499157D174E67EE00741B6D /* sha1.c in Sources */,
 				E4991582174E682F00741B6D /* AutoPool.mm in Sources */,
 				E4991583174E684000741B6D /* CocoaInterface.mm in Sources */,
 				E4991584174E684000741B6D /* DarwinUtils.mm in Sources */,

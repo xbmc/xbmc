@@ -296,11 +296,6 @@ TEST_F(TestURIUtils, IsSlingbox)
   EXPECT_TRUE(URIUtils::IsSlingbox("sling://path/to/file"));
 }
 
-TEST_F(TestURIUtils, IsHTSP)
-{
-  EXPECT_TRUE(URIUtils::IsHTSP("htsp://path/to/file"));
-}
-
 TEST_F(TestURIUtils, IsInArchive)
 {
   EXPECT_TRUE(URIUtils::IsInArchive("zip://path/to/file"));
@@ -334,7 +329,6 @@ TEST_F(TestURIUtils, IsLiveTV)
 {
   EXPECT_TRUE(URIUtils::IsLiveTV("hdhomerun://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("sling://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsLiveTV("htsp://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("sap://path/to/file"));
 }
 

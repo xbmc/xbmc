@@ -935,11 +935,6 @@ bool URIUtils::IsSlingbox(const std::string& strFile)
   return IsProtocol(strFile, "sling");
 }
 
-bool URIUtils::IsHTSP(const std::string& strFile)
-{
-  return IsProtocol(strFile, "htsp");
-}
-
 bool URIUtils::IsLiveTV(const std::string& strFile)
 {
   std::string strFileWithoutSlash(strFile);
@@ -947,7 +942,6 @@ bool URIUtils::IsLiveTV(const std::string& strFile)
 
   if (IsHDHomeRun(strFile)
   || IsSlingbox(strFile)
-  || IsHTSP(strFile)
   || IsProtocol(strFile, "sap")
   ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings")))
     return true;

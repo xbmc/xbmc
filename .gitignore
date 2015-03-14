@@ -945,11 +945,6 @@ lib/cpluff/stamp-h1
 
 /lib/libhdhomerun/Makefile
 
-# /lib/libhts/Win32
-/lib/libhts/Win32/Debug
-/lib/libhts/Win32/Release
-
-
 # /lib/libRTV/
 /lib/libRTV/Makefile
 /lib/libRTV/Debug
