@@ -201,10 +201,6 @@ bool CEventLog::Execute(const std::string& eventPtrIdentifier)
 
 void CEventLog::SendMessage(const EventPtr eventPtr, int message)
 {
-  CFileItemPtr item(new CFileItem(eventPtr->GetLabel()));
-  item->SetLabel2(eventPtr->GetDescription());
-  item->SetProperty("Event.ID", eventPtr->GetIdentifier());
-
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, message, 0, item);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, message, 0, XFILE::CEventsDirectory::EventToFileItem(eventPtr));
   g_windowManager.SendThreadMessage(msg);
 }
