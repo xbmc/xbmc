@@ -645,16 +645,16 @@ int OMXPlayerVideo::GetFreeSpace()
 
 void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRect)
 {
-  // we get called twice a frame for left/right. Can ignore the rights.
-  if (g_graphicsContext.GetStereoView() == RENDER_STEREO_VIEW_RIGHT)
-    return;
-
   CRect SrcRect = InSrcRect, DestRect = InDestRect;
   unsigned flags = GetStereoModeFlags(GetStereoMode());
   RENDER_STEREO_MODE video_stereo_mode = (flags & CONF_FLAGS_STEREO_MODE_SBS) ? RENDER_STEREO_MODE_SPLIT_VERTICAL :
                                          (flags & CONF_FLAGS_STEREO_MODE_TAB) ? RENDER_STEREO_MODE_SPLIT_HORIZONTAL : RENDER_STEREO_MODE_OFF;
   bool stereo_invert                   = (flags & CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT) ? true : false;
   RENDER_STEREO_MODE display_stereo_mode = g_graphicsContext.GetStereoMode();
+
+  // ignore video stereo mode when 3D display mode is disabled
+  if (display_stereo_mode == RENDER_STEREO_MODE_OFF)
+    video_stereo_mode = RENDER_STEREO_MODE_OFF;
 
   // fix up transposed video
   if (m_hints.orientation == 90 || m_hints.orientation == 270)
@@ -687,41 +687,17 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
   CRect gui(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iHeight);
   CRect display(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenHeight);
 
-  switch (video_stereo_mode)
+  if (display_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
   {
-  case RENDER_STEREO_MODE_SPLIT_VERTICAL:
-    // optimisation - use simpler display mode in common case of unscaled 3d with same display mode
-    if (video_stereo_mode == display_stereo_mode && DestRect.x1 == 0.0f && DestRect.x2 * 2.0f == gui.Width() && !stereo_invert)
-    {
-      SrcRect.x2 *= 2.0f;
-      DestRect.x2 *= 2.0f;
-      video_stereo_mode = RENDER_STEREO_MODE_OFF;
-      display_stereo_mode = RENDER_STEREO_MODE_OFF;
-    }
-    else if (stereo_invert)
-    {
-      SrcRect.x1 += m_hints.width / 2;
-      SrcRect.x2 += m_hints.width / 2;
-    }
-    break;
-
-  case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
-    // optimisation - use simpler display mode in common case of unscaled 3d with same display mode
-    if (video_stereo_mode == display_stereo_mode && DestRect.y1 == 0.0f && DestRect.y2 * 2.0f == gui.Height() && !stereo_invert)
-    {
-      SrcRect.y2 *= 2.0f;
-      DestRect.y2 *= 2.0f;
-      video_stereo_mode = RENDER_STEREO_MODE_OFF;
-      display_stereo_mode = RENDER_STEREO_MODE_OFF;
-    }
-    else if (stereo_invert)
-    {
-      SrcRect.y1 += m_hints.height / 2;
-      SrcRect.y2 += m_hints.height / 2;
-    }
-    break;
-
-  default: break;
+    float width = DestRect.x2 - DestRect.x1;
+    DestRect.x1 *= 2.0f;
+    DestRect.x2 = DestRect.x1 + 2.0f * width;
+  }
+  else if (display_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+  {
+    float height = DestRect.y2 - DestRect.y1;
+    DestRect.y1 *= 2.0f;
+    DestRect.y2 = DestRect.y1 + 2.0f * height;
   }
 
   if (gui != display)
@@ -733,7 +709,7 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
     DestRect.y1 *= yscale;
     DestRect.y2 *= yscale;
   }
-  m_omxVideo.SetVideoRect(SrcRect, DestRect, video_stereo_mode, display_stereo_mode);
+  m_omxVideo.SetVideoRect(SrcRect, DestRect, m_video_stereo_mode, m_display_stereo_mode, m_StereoInvert);
 }
 
 void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, float framerate, float display_aspect)
@@ -742,39 +718,16 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   uint32_t video_width   = CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenWidth;
   uint32_t video_height  = CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenHeight;
 
-  unsigned flags = 0;
   ERenderFormat format = RENDER_FMT_BYPASS;
+
+  /* figure out steremode expected based on user settings and hints */
+  unsigned flags = GetStereoModeFlags(GetStereoMode());
 
   if(m_bAllowFullscreen)
   {
     flags |= CONF_FLAGS_FULLSCREEN;
     m_bAllowFullscreen = false; // only allow on first configure
   }
-
-  flags |= GetStereoModeFlags(GetStereoMode());
-
-  if(flags & CONF_FLAGS_STEREO_MODE_SBS)
-  {
-    if(g_Windowing.Support3D(video_width, video_height, D3DPRESENTFLAG_MODE3DSBS))
-      CLog::Log(LOGNOTICE, "3DSBS movie found");
-    else
-    {
-      flags &= ~CONF_FLAGS_STEREO_MODE_MASK(~0);
-      CLog::Log(LOGNOTICE, "3DSBS movie found but not supported");
-    }
-  }
-  else if(flags & CONF_FLAGS_STEREO_MODE_TAB)
-  {
-    if(g_Windowing.Support3D(video_width, video_height, D3DPRESENTFLAG_MODE3DTB))
-      CLog::Log(LOGNOTICE, "3DTB movie found");
-    else
-    {
-      flags &= ~CONF_FLAGS_STEREO_MODE_MASK(~0);
-      CLog::Log(LOGNOTICE, "3DTB movie found but not supported");
-    }
-  }
-  else
-    CLog::Log(LOGNOTICE, "not a 3D movie");
 
   unsigned int iDisplayWidth  = width;
   unsigned int iDisplayHeight = height;
