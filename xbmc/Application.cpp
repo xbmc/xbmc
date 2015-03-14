@@ -70,9 +70,6 @@
 #ifdef HAS_FILESYSTEM_SAP
 #include "filesystem/SAPDirectory.h"
 #endif
-#ifdef HAS_FILESYSTEM_HTSP
-#include "filesystem/HTSPDirectory.h"
-#endif
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "GUILargeTextureManager.h"
@@ -4225,11 +4222,6 @@ void CApplication::ProcessSlow()
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
-
-#ifdef HAS_FILESYSTEM_HTSP
-  // check for any idle htsp sessions
-  HTSP::CHTSPDirectorySession::CheckIdle();
-#endif
 
 #ifdef HAS_KARAOKE
   if ( m_pKaraokeMgr )

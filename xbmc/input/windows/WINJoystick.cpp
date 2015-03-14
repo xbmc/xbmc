@@ -440,11 +440,8 @@ bool CJoystick::GetAxes(std::list<std::pair<std::string, int> >& axes, bool cons
   {
     int deadzone = m_Axes[i].trigger ? 0 : m_DeadzoneRange;
     int amount = m_Axes[i].val - m_Axes[i].rest;
-    CLog::LogF(LOGDEBUG, "checking axis %d/%d; amount %d (deadzone %d)", i, m_Axes.size(), amount, deadzone);
-    CLog::LogF(LOGDEBUG, "axis %d: trigger:%s, val:%d, rest:%d", i,m_Axes[i].trigger?"yes":"no", m_Axes[i].val, m_Axes[i].rest);
     if (consider_still || abs(amount) > deadzone)
     {
-      CLog::LogF(LOGDEBUG, "adding axis %d (%d)", i, axisId);
       MapAxis(i, joy, axisId);
       ret.push_back(std::pair<std::string, int>(m_JoystickNames[JoystickIndex(joy)], axisId));
     }

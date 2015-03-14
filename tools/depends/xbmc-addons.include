@@ -58,12 +58,12 @@ endif
 	cd $(PLATFORM); \
          $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) $(CMAKE_EXTRA) \
          $(TOOLCHAIN) \
-         -DADDONS_TO_BUILD=$(ADDONS) $(ADDON_PROJECT_DIR) -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
+         -DADDONS_TO_BUILD="$(ADDONS)" $(ADDON_PROJECT_DIR) -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
          for addon in $$(make supported_addons | awk '/^ALL_ADDONS_BUILDING: .*$$/ { first = $$1; $$1 = ""; print $$0 }'); do \
            $(MAKE) $$addon && echo $$addon >> $(ADDON_PROJECT_DIR)/.success || echo $$addon >> $(ADDON_PROJECT_DIR)/.failure ;\
          done
 ifneq ($(CROSS_COMPILING),yes)
-	@[ -f $(ADDON_PROJECT_DIR)/.failure ] && echo "Following Addons failed to build:" $(shell cat $(ADDON_PROJECT_DIR)/.failure)
+	@[ -f $(ADDON_PROJECT_DIR)/.failure ] && echo "Following Addons failed to build:" $(shell cat $(ADDON_PROJECT_DIR)/.failure) || :
 	@[ -w $(INSTALL_PREFIX) ] || $(MAKE) -C $(PLATFORM) install
 endif
 	touch $@
