@@ -234,7 +234,9 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
       /* inform TV of any 3D settings. Note this property just applies to next hdmi mode change, so no need to call for 2D modes */
       HDMI_PROPERTY_PARAM_T property;
       property.property = HDMI_PROPERTY_3D_STRUCTURE;
-      if (res.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FRAMEPACKING) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC) && res.fRefreshRate <= 30.0f)
+        property.param1 = HDMI_3D_FORMAT_FRAME_PACKING;
+      else if (res.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
         property.param1 = HDMI_3D_FORMAT_SBS_HALF;
       else if (res.dwFlags & D3DPRESENTFLAG_MODE3DTB)
         property.param1 = HDMI_3D_FORMAT_TB_HALF;
@@ -333,6 +335,13 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
 
   DISPMANX_TRANSFORM_T transform = DISPMANX_NO_ROTATE;
   DISPMANX_UPDATE_HANDLE_T dispman_update = m_DllBcmHost->vc_dispmanx_update_start(0);
+
+  if (res.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
+    transform = DISPMANX_STEREOSCOPIC_SBS;
+  else if (res.dwFlags & D3DPRESENTFLAG_MODE3DTB)
+    transform = DISPMANX_STEREOSCOPIC_TB;
+  else
+    transform = DISPMANX_STEREOSCOPIC_MONO;
 
   CLog::Log(LOGDEBUG, "EGL set resolution %dx%d -> %dx%d @ %.2f fps (%d,%d) flags:%x aspect:%.2f\n",
       m_width, m_height, dst_rect.width, dst_rect.height, res.fRefreshRate, GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), (int)res.dwFlags, res.fPixelRatio);
