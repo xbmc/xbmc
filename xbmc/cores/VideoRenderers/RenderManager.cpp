@@ -289,6 +289,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
 
     m_bIsStarted = true;
     m_bRenderGUI = true;
+    m_waitForBufferCount = 0;
     m_bReconfigured = true;
     m_presentstep = PRESENT_IDLE;
     m_presentpts = DVD_NOPTS_VALUE;
@@ -1097,8 +1098,21 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
   if (!m_bRenderGUI || !g_application.GetRenderGUI())
   {
     m_bRenderGUI = false;
-    lock2.Leave();
-    Sleep(20);
+    double presenttime = 0;
+    double clock = GetPresentTime();
+    if (!m_queued.empty())
+    {
+      int idx = m_queued.front();
+      presenttime = m_Queue[idx].timestamp;
+    }
+    else
+      presenttime = clock + 0.02;
+
+    int sleeptime = (presenttime - clock) * 1000;
+    if (sleeptime < 0)
+      sleeptime = 0;
+    sleeptime = std::min(sleeptime, 20);
+    m_presentevent.wait(lock2, sleeptime);
     DiscardBuffer();
     return 0;
   }
@@ -1110,10 +1124,19 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
     if(endtime.IsTimePast() || bStop)
     {
       if (timeout != 0 && !bStop)
+      {
         CLog::Log(LOGWARNING, "CRenderManager::WaitForBuffer - timeout waiting for buffer");
+        m_waitForBufferCount++;
+        if (m_waitForBufferCount > 2)
+        {
+          m_bRenderGUI = false;
+        }
+      }
       return -1;
     }
   }
+
+  m_waitForBufferCount = 0;
 
   // make sure overlay buffer is released, this won't happen on AddOverlay
   m_overlays.Release(m_free.front());
