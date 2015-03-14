@@ -283,42 +283,6 @@ lib/cpluff/stamp-h1
 /lib/liblame/config.h
 /lib/liblame/obj
 
-
-# /lib/libmicrohttpd
-/lib/libmicrohttpd/MHD_config.h
-/lib/libmicrohttpd/Makefile
-/lib/libmicrohttpd/contrib/Makefile
-/lib/libmicrohttpd/doc/Makefile
-/lib/libmicrohttpd/doc/microhttpd.info
-/lib/libmicrohttpd/doc/stamp-vti
-/lib/libmicrohttpd/doc/version.texi
-/lib/libmicrohttpd/libtool
-/lib/libmicrohttpd/m4/Makefile
-/lib/libmicrohttpd/src/Makefile
-/lib/libmicrohttpd/src/daemon/Makefile
-/lib/libmicrohttpd/src/daemon/https/Makefile
-/lib/libmicrohttpd/src/daemon/https/lgl/Makefile
-/lib/libmicrohttpd/src/daemon/https/minitasn1/Makefile
-/lib/libmicrohttpd/src/daemon/https/tls/Makefile
-/lib/libmicrohttpd/src/daemon/https/x509/Makefile
-/lib/libmicrohttpd/src/examples/Makefile
-/lib/libmicrohttpd/src/examples/authorization_example
-/lib/libmicrohttpd/src/examples/fileserver_example
-/lib/libmicrohttpd/src/examples/fileserver_example_dirs
-/lib/libmicrohttpd/src/examples/fileserver_example_external_select
-/lib/libmicrohttpd/src/examples/https_fileserver_example
-/lib/libmicrohttpd/src/examples/minimal_example
-/lib/libmicrohttpd/src/examples/minimal_example_comet
-/lib/libmicrohttpd/src/examples/querystring_example
-/lib/libmicrohttpd/src/examples/refuse_post_example
-/lib/libmicrohttpd/src/testcurl/daemon_options_test
-/lib/libmicrohttpd/src/testcurl/Makefile
-/lib/libmicrohttpd/src/testcurl/https/Makefile
-/lib/libmicrohttpd/src/include/Makefile
-/lib/libmicrohttpd/src/testzzuf/Makefile
-/lib/libmicrohttpd/stamp-h1
-/lib/libmicrohttpd/autom4te.cache/
-
 # /lib/libmodplug/
 /lib/libmodplug/libtool
 /lib/libmodplug/src/stamp-h1
