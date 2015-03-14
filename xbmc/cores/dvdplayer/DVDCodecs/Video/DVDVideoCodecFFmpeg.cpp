@@ -177,6 +177,12 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_iScreenHeight = 0;
   m_iOrientation = 0;
   m_bSoftware = false;
+  #if defined(TARGET_ANDROID) || defined(TARGET_DARWIN_IOS)
+    // If we get here on Android or iOS, it's always software
+    m_isFrameThreaded = true;
+  #else
+    m_isFrameThreaded = false;
+  #endif
   m_pHardware = NULL;
   m_iLastKeyframe = 0;
   m_dts = DVD_NOPTS_VALUE;
@@ -210,6 +216,28 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   pCodec = NULL;
   m_pCodecContext = NULL;
 
+  if (hints.codec == AV_CODEC_ID_H264)
+  {
+    switch (hints.profile)
+    {
+      case FF_PROFILE_H264_HIGH_10:
+      case FF_PROFILE_H264_HIGH_10_INTRA:
+      case FF_PROFILE_H264_HIGH_422:
+      case FF_PROFILE_H264_HIGH_422_INTRA:
+      case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
+      case FF_PROFILE_H264_HIGH_444_INTRA:
+      case FF_PROFILE_H264_CAVLC_444:
+        // this is needed to not open the decoders
+        m_bSoftware = true;
+        // this we need to enable multithreading for hi10p via advancedsettings
+        m_isFrameThreaded = true;
+        break;
+    }
+  }
+  else if (hints.codec == AV_CODEC_ID_HEVC
+          || hints.codec == AV_CODEC_ID_VP9)
+    m_isFrameThreaded = true;
+
   if(pCodec == NULL)
     pCodec = avcodec_find_decoder(hints.codec);
 
@@ -230,6 +258,18 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->get_format = GetFormat;
   m_pCodecContext->codec_tag = hints.codec_tag;
+
+  /* Only allow slice threading, since frame threading is more
+   * sensitive to changes in frame sizes, and it causes crashes
+   * during HW accell - so we unset it in this case.
+   * */
+  if ((EDECODEMETHOD)CSettings::Get().GetInt("videoplayer.decodingmethod") == VS_DECODEMETHOD_SOFTWARE || m_isFrameThreaded)
+  {
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::Open() Keeping default threading %d",
+    m_pCodecContext->thread_type);
+  }
+  else
+    m_pCodecContext->thread_type = FF_THREAD_SLICE;
 
 #if defined(TARGET_DARWIN_IOS)
   // ffmpeg with enabled neon will crash and burn if this is enabled
