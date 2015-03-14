@@ -86,6 +86,7 @@ void CVideoLibraryQueue::StopLibraryScanning()
   // cancel all scanning jobs
   for (VideoLibraryJobs::const_iterator job = tmpScanningJobs.begin(); job != tmpScanningJobs.end(); ++job)
     CancelJob(*job);
+  Refresh();
 }
 
 void CVideoLibraryQueue::CleanLibrary(const std::set<int>& paths /* = std::set<int>() */, bool asynchronous /* = true */, CGUIDialogProgressBarHandle* progressBar /* = NULL */)
@@ -101,6 +102,7 @@ void CVideoLibraryQueue::CleanLibrary(const std::set<int>& paths /* = std::set<i
 
     delete cleaningJob;
     m_cleaning = false;
+    Refresh();
   }
 }
 
@@ -114,6 +116,7 @@ void CVideoLibraryQueue::CleanLibraryModal(const std::set<int>& paths /* = std::
   CVideoLibraryCleaningJob cleaningJob(paths, true);
   cleaningJob.DoWork();
   m_cleaning = false;
+  Refresh();
 }
 
 void CVideoLibraryQueue::MarkAsWatched(const CFileItemPtr &item, bool watched)
@@ -185,16 +188,19 @@ bool CVideoLibraryQueue::IsRunning() const
   return CJobQueue::IsProcessing() || m_cleaning;
 }
 
+void CVideoLibraryQueue::Refresh()
+{
+  CUtil::DeleteVideoDatabaseDirectoryCache();
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+  g_windowManager.SendThreadMessage(msg);
+}
+
 void CVideoLibraryQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   if (success)
   {
     if (QueueEmpty())
-    {
-      CUtil::DeleteVideoDatabaseDirectoryCache();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-      g_windowManager.SendThreadMessage(msg);
-    }
+      Refresh();
   }
 
   {
