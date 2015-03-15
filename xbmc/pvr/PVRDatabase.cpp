@@ -180,6 +180,7 @@ void CPVRDatabase::UpdateTables(int iVersion)
           ++it;
         }
       }
+      m_pDS->next();
     }
 
     strQuery = PrepareSQL("DROP TABLE clients");
