@@ -44,11 +44,13 @@ namespace PVR
 {
   class CPVRClients;
   class CPVRChannel;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+  typedef std::shared_ptr<CPVRChannel> CPVRChannelPtr;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
   class CPVRRecordings;
   class CPVRTimers;
+  class CPVRTimerInfoTag;
+  typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
   class CPVRGUIInfo;
   class CPVRDatabase;
   class CGUIWindowPVRCommon;
@@ -369,7 +371,7 @@ namespace PVR
      * @brief Check whether the system Kodi is running on can be powered down
      *        (shutdown/reboot/suspend/hibernate) without stopping any active
      *        recordings and/or without preventing the start of recordings
-     *        sheduled for now + pvrpowermanagement.backendidletime.
+     *        scheduled for now + pvrpowermanagement.backendidletime.
      * @param bAskUser True to informs user in case of potential
      *        data loss. User can decide to allow powerdown anyway. False to
      *        not to ask user and to not confirm power down.
@@ -637,7 +639,7 @@ namespace PVR
 
     void SetState(ManagerState state);
 
-    bool AllLocalBackendsIdle(void) const;
+    bool AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const;
     bool EventOccursOnLocalBackend(const CFileItemPtr& item) const;
     bool IsNextEventWithinBackendIdleTime(void) const;
 

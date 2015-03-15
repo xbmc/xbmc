@@ -9383,16 +9383,12 @@ msgid "Adult"
 msgstr ""
 
 #. Title for shutdown confirmation dialog
-#: xbmc/ApplicationMessenger.cpp
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19685"
 msgid "Confirm shutdown"
 msgstr ""
 
-#. Text for shutdown confirmation dialog
-#: xbmc/ApplicationMessenger.cpp
-msgctxt "#19686"
-msgid "The PVR backend is busy. Shutdown anyway?"
-msgstr ""
+#empty string with id 19686
 
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19687"
@@ -9414,7 +9410,43 @@ msgctxt "#19690"
 msgid "Do you want to use this service?"
 msgstr ""
 
-#empty strings from id 19691 to 19999
+#. Text for shutdown confirmation dialog.
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19691"
+msgid "PVR is currently recording '%s' on channel '%s'."
+msgstr ""
+
+#. Text for shutdown confirmation dialog
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19692"
+msgid "PVR will start recording '%s' on channel '%s' in %s."
+msgstr ""
+
+#. Text for shutdown confirmation dialog
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19693"
+msgid "Daily wakeup is due in %s."
+msgstr ""
+
+#. Text for shutdown confirmation dialog
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19694"
+msgid "%d minutes"
+msgstr ""
+
+#. Text for shutdown confirmation dialog
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19695"
+msgid "about a minute"
+msgstr ""
+
+#. Yes button label for shutdown confirmation dialog
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19696"
+msgid "Shutdown anyway"
+msgstr ""
+
+#empty strings from id 19697 to 19999
 
 #: system/settings/settings.xml
 msgctxt "#20000"
