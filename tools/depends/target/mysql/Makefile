@@ -13,7 +13,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
 	--enable-thread-safe-client --with-extra-charsets=complex \
 	--with-named-thread-libs=-lc --with-named-curses-libs=-lncurses \
 	--with-libedit \
-	--without-server --without-bench --without-docs --without-man --disable-shared
+	--without-server --without-bench --without-docs --without-man --disable-shared \
+	--with-ssl=$(PREFIX) LIBS="-ldl -lz"
 
 LIBDYLIB=$(PLATFORM)/lib$(LIBNAME)/.libs/lib$(LIBNAME)client.a
 
