@@ -46,8 +46,12 @@
 //#define WEBSERVER_DEBUG
 
 #ifdef TARGET_WINDOWS
-#pragma comment(lib, "libmicrohttpd.dll.lib")
-#endif
+#ifndef _DEBUG
+#pragma comment(lib, "libmicrohttpd.lib")
+#else  // _DEBUG
+#pragma comment(lib, "libmicrohttpd_d.lib")
+#endif // _DEBUG
+#endif // TARGET_WINDOWS
 
 #define MAX_POST_BUFFER_SIZE 2048
 

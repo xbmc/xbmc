@@ -229,6 +229,10 @@ Section "${APP_NAME}" SecAPP
   SetOutPath "$INSTDIR\sounds"
   File /r "${app_root}\application\sounds\*.*"
   SetOutPath "$INSTDIR\system"
+  ; remove leftover from old Kodi installation
+  ${If} ${FileExists} "$INSTDIR\system\webserver"
+    RMDir /r "$INSTDIR\system\webserver"
+  ${EndIf}
   File /r "${app_root}\application\system\*.*"
   SetOutPath "$INSTDIR\userdata"
   File /r "${app_root}\application\userdata\*.*"
