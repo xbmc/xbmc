@@ -438,7 +438,7 @@ bool CLangCodeExpander::CompareFullLanguageNames(const std::string& lang1, const
   return StringUtils::EqualsNoCase(expandedLang1, expandedLang2);
 }
 
-std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */)
+std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */, bool customNames /* = false */)
 {
   std::vector<std::string> languages;
   const LCENTRY *lang = g_iso639_1;
@@ -454,6 +454,12 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format 
   {
     languages.push_back(lang->name);
     ++lang;
+  }
+
+  if (customNames)
+  {
+    for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
+      languages.push_back(it->second);
   }
 
   return languages;

@@ -100,7 +100,7 @@ public:
   static bool ConvertWindowsLanguageCodeToISO6392T(const std::string& strWindowsLanguageCode, std::string& strISO6392T);
 #endif
 
-  static std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1);
+  std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1, bool customNames = false);
 protected:
 
   /** \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
