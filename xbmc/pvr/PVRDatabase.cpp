@@ -138,52 +138,42 @@ void CPVRDatabase::UpdateTables(int iVersion)
   if (iVersion < 28)
   {
     VECADDONS addons;
-    int iAddonId;
     CAddonDatabase database;
-    if (!database.Open() || !CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
-      return;
-
-    /** find all old client IDs */
-    std::string strQuery(PrepareSQL("SELECT idClient, sUid FROM clients"));
-    m_pDS->query(strQuery);
-    while (!m_pDS->eof() && !addons.empty())
+    if (database.Open() && CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
     {
-      /** try to find an add-on that matches the sUid */
-      iAddonId = -1;
-      for (VECADDONS::iterator it = addons.begin(); iAddonId <= 0 && it != addons.end();)
+      /** find all old client IDs */
+      std::string strQuery(PrepareSQL("SELECT idClient, sUid FROM clients"));
+      m_pDS->query(strQuery);
+      while (!m_pDS->eof() && !addons.empty())
       {
-        if ((*it)->ID() == m_pDS->fv(1).get_asString())
+        /** try to find an add-on that matches the sUid */
+        for (VECADDONS::iterator it = addons.begin(); it != addons.end(); ++it)
         {
-          /** try to get the current ID from the database */
-          iAddonId = database.GetAddonId(*it);
-          /** register a new id if it didn't exist */
-          if (iAddonId <= 0)
-            iAddonId = database.AddAddon(*it, 0);
-          if (iAddonId > 0)
+          if ((*it)->ID() == m_pDS->fv(1).get_asString())
           {
-            // this fails when an id becomes the id of one that's being replaced next iteration
-            // but since almost everyone only has 1 add-on enabled...
-            /** update the iClientId in the channels table */
-            strQuery = PrepareSQL("UPDATE channels SET iClientId = %u WHERE iClientId = %u", iAddonId, m_pDS->fv(0).get_asInt());
-            m_pDS->exec(strQuery);
+            /** try to get the current ID from the database */
+            int iAddonId = database.GetAddonId(*it);
+            /** register a new id if it didn't exist */
+            if (iAddonId <= 0)
+              iAddonId = database.AddAddon(*it, 0);
+            if (iAddonId > 0)
+            {
+              // this fails when an id becomes the id of one that's being replaced next iteration
+              // but since almost everyone only has 1 add-on enabled...
+              /** update the iClientId in the channels table */
+              strQuery = PrepareSQL("UPDATE channels SET iClientId = %u WHERE iClientId = %u", iAddonId, m_pDS->fv(0).get_asInt());
+              m_pDS->exec(strQuery);
 
-            /** no need to check this add-on again */
-            it = addons.erase(it);
-          }
-          else
-          {
-            ++it;
+              /** no need to check this add-on again */
+              it = addons.erase(it);
+              break;
+            }
           }
         }
-        else
-        {
-          ++it;
-        }
+        m_pDS->next();
       }
     }
-
-    strQuery = PrepareSQL("DROP TABLE clients");
-    m_pDS->exec(strQuery);
+    m_pDS->exec("DROP TABLE clients");
   }
 }
 
