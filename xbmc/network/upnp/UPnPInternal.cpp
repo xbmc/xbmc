@@ -645,7 +645,7 @@ BuildObject(CFileItem&                    item,
             /* trying to find subtitle with prefered language settings */
             std::string preferredLanguage = (CSettings::Get().GetSetting("locale.subtitlelanguage"))->ToString();
             std::string preferredLanguageCode;
-            CLangCodeExpander::ConvertToISO6392T(preferredLanguage, preferredLanguageCode);
+            g_LangCodeExpander.ConvertToISO6392T(preferredLanguage, preferredLanguageCode);
 
             for (unsigned int i = 0; i < subtitles.size(); i++)
             {
