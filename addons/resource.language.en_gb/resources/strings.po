@@ -7233,7 +7233,10 @@ msgctxt "#14110"
 msgid "Long date format"
 msgstr ""
 
-#empty string with id 14111
+#: Used in Confluence as a title for the event log window/view
+msgctxt "#14111"
+msgid "Events"
+msgstr ""
 
 #. Label of setting to enable/disable event logging
 #: system/settings/settings.xml
