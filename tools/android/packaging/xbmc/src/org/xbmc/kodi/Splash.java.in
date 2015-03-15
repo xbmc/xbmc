@@ -361,34 +361,41 @@ public class Splash extends Activity {
 
     fXbmcHome = new File(sXbmcHome);
 
-    try
-    {
-      sPackagePath = Environment.getExternalStorageDirectory()
-          + "/Android/obb/" + getPackageName() + "/main."
-          + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode
-          + "." + getPackageName() + ".obb";
-    } catch (Exception e)
-    {
-    }
-
+    sPackagePath = getPackageResourcePath();
     fPackagePath = new File(sPackagePath);
-    if (!fPackagePath.exists())
+    if (fPackagePath.length() < 40 * 1024 * 1024)
     {
-      // Check for latest obb
-      String obbdir = Environment.getExternalStorageDirectory()
-          + "/Android/obb/" + getPackageName();
-      File[] obbfiles = new File(obbdir).listFiles();
-      if (obbfiles != null && obbfiles.length > 0)
+      sPackagePath = System.getProperty("@APP_NAME@.obb", "");
+      if (sPackagePath.equals(""))
       {
-        Arrays.sort(obbfiles, new Comparator<File>()
+        try
         {
-          public int compare(File f1, File f2)
+          sPackagePath = Environment.getExternalStorageDirectory()
+              + "/Android/obb/" + getPackageName() + "/main."
+              + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode
+              + "." + getPackageName() + ".obb";
+        } catch (Exception e) {}
+      }
+
+      fPackagePath = new File(sPackagePath);
+      if (!fPackagePath.exists())
+      {
+        // Check for latest obb
+        String obbdir = Environment.getExternalStorageDirectory()
+            + "/Android/obb/" + getPackageName();
+        File[] obbfiles = new File(obbdir).listFiles();
+        if (obbfiles != null && obbfiles.length > 0)
+        {
+          Arrays.sort(obbfiles, new Comparator<File>()
           {
-            // Sort by lastmodified descending
-            return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
-          }
-        });
-        fPackagePath = obbfiles[0];
+            public int compare(File f1, File f2)
+            {
+              // Sort by lastmodified descending
+              return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
+            }
+          });
+          fPackagePath = obbfiles[0];
+        }
       }
     }
 
@@ -396,17 +403,13 @@ public class Splash extends Activity {
     {
       sPackagePath = fPackagePath.getAbsolutePath();
       Log.i(TAG, "Using OBB: " + sPackagePath);
-    } else
+    }
+    else
     {
-      sPackagePath = getPackageResourcePath();
-      fPackagePath = new File(sPackagePath);
-      if (fPackagePath.length() < 50 * 1024 * 1024)
-      {
-        // No OBB and apk < 50Mb? Nah...
-        mErrorMsg = "OBB not yet present. Please retry later...";
-        Log.e(TAG, mErrorMsg);
-        mState = InError;
-      }
+      // No OBB and apk < 40Mb? Nah...
+      mErrorMsg = "OBB not yet present. Please retry later...";
+      Log.e(TAG, mErrorMsg);
+      mState = InError;
     }
   }
 
