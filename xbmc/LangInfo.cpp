@@ -373,18 +373,16 @@ void CLangInfo::OnSettingsLoaded()
   SetSpeedUnit(CSettings::Get().GetString("locale.speedunit"));
 }
 
-bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= false*/)
+bool CLangInfo::Load(const std::string& strLanguage)
 {
   SetDefaults();
 
   string strFileName = GetLanguageInfoPath(strLanguage);
-  if (!onlyCheckLanguage)
-    CLog::Log(LOGINFO, "CLangInfo: load language info file: %s", strFileName.c_str());
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
   {
-    CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;
   }
 
@@ -392,26 +390,24 @@ bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= 
   m_languageAddon = GetLanguageAddon(strLanguage);
   if (m_languageAddon == NULL)
   {
-    CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "Unknown language %s", strLanguage.c_str());
+    CLog::Log(LOGERROR, "Unknown language %s", strLanguage.c_str());
     return false;
   }
 
-  if (!onlyCheckLanguage)
-  {
-    // get some language-specific information from the language addon
-    m_strGuiCharSet = m_languageAddon->GetGuiCharset();
-    m_forceUnicodeFont = m_languageAddon->ForceUnicodeFont();
-    m_strSubtitleCharSet = m_languageAddon->GetSubtitleCharset();
-    m_strDVDMenuLanguage = m_languageAddon->GetDvdMenuLanguage();
-    m_strDVDAudioLanguage = m_languageAddon->GetDvdAudioLanguage();
-    m_strDVDSubtitleLanguage = m_languageAddon->GetDvdSubtitleLanguage();
-    m_sortTokens = m_languageAddon->GetSortTokens();
-  }
+  // get some language-specific information from the language addon
+  m_strGuiCharSet = m_languageAddon->GetGuiCharset();
+  m_forceUnicodeFont = m_languageAddon->ForceUnicodeFont();
+  m_strSubtitleCharSet = m_languageAddon->GetSubtitleCharset();
+  m_strDVDMenuLanguage = m_languageAddon->GetDvdMenuLanguage();
+  m_strDVDAudioLanguage = m_languageAddon->GetDvdAudioLanguage();
+  m_strDVDSubtitleLanguage = m_languageAddon->GetDvdSubtitleLanguage();
+  m_sortTokens = m_languageAddon->GetSortTokens();
+
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (pRootElement->ValueStr() != "language")
   {
-    CLog::Log(onlyCheckLanguage ? LOGDEBUG : LOGERROR, "%s Doesn't contain <language>", strFileName.c_str());
+    CLog::Log(LOGERROR, "%s Doesn't contain <language>", strFileName.c_str());
     return false;
   }
 
@@ -431,7 +427,7 @@ bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= 
 #else
   if (m_defaultRegion.m_strLangLocaleName.length() != 3)
   {
-    if (!g_LangCodeExpander.ConvertToISO6392T(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral, !onlyCheckLanguage))
+    if (!g_LangCodeExpander.ConvertToISO6392T(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
       m_languageCodeGeneral = "";
   }
   else
@@ -498,11 +494,8 @@ bool CLangInfo::Load(const std::string& strLanguage, bool onlyCheckLanguage /*= 
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    if (!onlyCheckLanguage)
-    {
-      const std::string& strName = CSettings::Get().GetString("locale.country");
-      SetCurrentRegion(strName);
-    }
+    const std::string& strName = CSettings::Get().GetString("locale.country");
+    SetCurrentRegion(strName);
   }
   g_charsetConverter.reinitCharsetsFromSettings();
 
@@ -528,12 +521,6 @@ std::string CLangInfo::GetLanguageInfoPath(const std::string &language)
     return "";
 
   return URIUtils::AddFileToFolder(GetLanguagePath(language), "langinfo.xml");
-}
-
-bool CLangInfo::CheckLanguage(const std::string& language)
-{
-  CLangInfo li;
-  return li.Load(language, true);
 }
 
 void CLangInfo::LoadTokens(const TiXmlNode* pTokens, set<std::string>& vecTokens)
@@ -727,11 +714,6 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
   }
 
   return true;
-}
-
-bool CLangInfo::CheckLoadLanguage(const std::string &language)
-{
-  return Load(language, true);
 }
 
 // three char language code (not win32 specific)
