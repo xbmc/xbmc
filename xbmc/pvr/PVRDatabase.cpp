@@ -138,7 +138,6 @@ void CPVRDatabase::UpdateTables(int iVersion)
   if (iVersion < 28)
   {
     VECADDONS addons;
-    int iAddonId;
     CAddonDatabase database;
     if (!database.Open() || !CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
       return;
@@ -149,13 +148,12 @@ void CPVRDatabase::UpdateTables(int iVersion)
     while (!m_pDS->eof() && !addons.empty())
     {
       /** try to find an add-on that matches the sUid */
-      iAddonId = -1;
-      for (VECADDONS::iterator it = addons.begin(); iAddonId <= 0 && it != addons.end();)
+      for (VECADDONS::iterator it = addons.begin(); it != addons.end(); ++it)
       {
         if ((*it)->ID() == m_pDS->fv(1).get_asString())
         {
           /** try to get the current ID from the database */
-          iAddonId = database.GetAddonId(*it);
+          int iAddonId = database.GetAddonId(*it);
           /** register a new id if it didn't exist */
           if (iAddonId <= 0)
             iAddonId = database.AddAddon(*it, 0);
@@ -169,15 +167,8 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
             /** no need to check this add-on again */
             it = addons.erase(it);
+            break;
           }
-          else
-          {
-            ++it;
-          }
-        }
-        else
-        {
-          ++it;
         }
       }
       m_pDS->next();
