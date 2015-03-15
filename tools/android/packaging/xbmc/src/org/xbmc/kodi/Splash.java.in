@@ -400,9 +400,9 @@ public class Splash extends Activity {
     {
       sPackagePath = getPackageResourcePath();
       fPackagePath = new File(sPackagePath);
-      if (fPackagePath.length() < 50 * 1024 * 1024)
+      if (fPackagePath.length() < 45 * 1024 * 1024)
       {
-        // No OBB and apk < 50Mb? Nah...
+        // No OBB and apk < 45Mb? Nah...
         mErrorMsg = "OBB not yet present. Please retry later...";
         Log.e(TAG, mErrorMsg);
         mState = InError;
