@@ -206,6 +206,7 @@ protected:
   bool m_bIsStarted;
   bool m_bReconfigured;
   bool m_bRenderGUI;
+  int m_waitForBufferCount;
 
   int m_rendermethod;
 
@@ -244,32 +245,31 @@ protected:
   std::deque<int> m_queued;
   std::deque<int> m_discard;
 
-  ERenderFormat   m_format;
+  ERenderFormat m_format;
 
-  double     m_sleeptime;
-  double     m_presentpts;
-  double     m_presentcorr;
-  double     m_presenterr;
-  double     m_errorbuff[ERRORBUFFSIZE];
-  int        m_errorindex;
-  EPRESENTSTEP     m_presentstep;
-  int        m_presentsource;
+  double m_sleeptime;
+  double m_presentpts;
+  double m_presentcorr;
+  double m_presenterr;
+  double m_errorbuff[ERRORBUFFSIZE];
+  int m_errorindex;
+  EPRESENTSTEP m_presentstep;
+  int m_presentsource;
   XbmcThreads::ConditionVariable  m_presentevent;
   CCriticalSection m_presentlock;
-  CEvent     m_flushEvent;
-  double     m_clock_framefinish;
-
+  CEvent m_flushEvent;
+  double m_clock_framefinish;
 
   OVERLAY::CRenderer m_overlays;
   bool m_renderedOverlay;
 
   void RenderCapture(CRenderCapture* capture);
   void RemoveCapture(CRenderCapture* capture);
-  CCriticalSection           m_captCritSect;
+  CCriticalSection m_captCritSect;
   std::list<CRenderCapture*> m_captures;
   //set to true when adding something to m_captures, set to false when m_captures is made empty
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
-  bool                       m_hasCaptures; 
+  bool m_hasCaptures;
 };
 
 extern CXBMCRenderManager g_renderManager;
