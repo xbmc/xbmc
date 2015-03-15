@@ -251,8 +251,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
             case ACTION_MOUSE_LEFT_CLICK:
             case ACTION_PLAY:
             {
-              PlayFile(m_vecItems->Get(iItem).get());
-              bReturn = true;
+              bReturn = PlayFile(m_vecItems->Get(iItem).get());
               break;
             }
             case ACTION_CONTEXT_MENU:
