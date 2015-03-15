@@ -87,7 +87,6 @@ public:
 
 protected:
   void OnScan(const std::string& strPath, bool scanAll = false);
-  virtual void OnInitWindow();
   virtual void UpdateButtons();
   virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);

@@ -72,10 +72,9 @@
 #include "storage/MediaManager.h"
 #include "Autorun.h"
 #include "URL.h"
-#include "utils/EdenVideoArtUpdater.h"
-#include "GUIInfoManager.h"
 #include "utils/GroupUtils.h"
 #include "filesystem/File.h"
+#include "TextureDatabase.h"
 
 using namespace std;
 using namespace XFILE;
@@ -2013,21 +2012,5 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
   if (bScan)
   {
     g_application.StartVideoScan(path, true, true);
-  }
-}
-
-void CGUIWindowVideoBase::OnInitWindow()
-{
-  CGUIMediaWindow::OnInitWindow();
-  if (CMediaSettings::Get().GetVideoNeedsUpdate() == 63 && !g_application.IsVideoScanning() &&
-      g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO))
-  {
-    // rescan of video library required
-    if (CGUIDialogYesNo::ShowAndGetInput(799, 12351, 12352, 12354))
-    {
-      CEdenVideoArtUpdater::Start();
-      CMediaSettings::Get().SetVideoNeedsUpdate(0); // once is enough
-      CSettings::Get().Save();
-    }
   }
 }
