@@ -1,5 +1,5 @@
 BUILDDIR := $(shell pwd)
-ADDONS := "$(shell cd $(BUILDDIR)/../../../../project/cmake/addons/addons/; echo *)"
+ADDONS := all
 
 -include ../../Makefile.include
 include ../../xbmc-addons.include
