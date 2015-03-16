@@ -73,6 +73,16 @@ TEST(TestStringUtils, ToCapitalize)
   varstr = "  juST another\t\ttEst:\nwoRKs ";
   StringUtils::ToCapitalize(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "N.Y.P.D";
+  varstr = "n.y.p.d";
+  StringUtils::ToCapitalize(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "N-Y-P-D";
+  varstr = "n-y-p-d";
+  StringUtils::ToCapitalize(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
 TEST(TestStringUtils, EqualsNoCase)
