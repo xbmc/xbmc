@@ -230,6 +230,8 @@
       <right>StepForward</right>
       <up>SkipNext</up>
       <down>SkipPrevious</down>
+      <pageplus>IncreaseRating</pageplus>
+      <pageminus>DecreaseRating</pageminus>
       <back>Back</back>
       <title>CodecInfo</title>
       <select>OSD</select>
