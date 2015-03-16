@@ -78,7 +78,8 @@ void CPVRDatabase::CreateTables()
         "iGroupType      integer, "
         "sName           varchar(64), "
         "iLastWatched    integer, "
-        "bIsHidden       bool"
+        "bIsHidden       bool, "
+        "iPosition       integer"
       ")"
   );
 
@@ -175,6 +176,9 @@ void CPVRDatabase::UpdateTables(int iVersion)
     }
     m_pDS->exec("DROP TABLE clients");
   }
+
+  if (iVersion < 29)
+    m_pDS->exec("ALTER TABLE channelgroups ADD iPosition integer");
 }
 
 /********** Channel methods **********/
@@ -472,6 +476,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
         data.SetGroupType(m_pDS->fv("iGroupType").get_asInt());
         data.SetLastWatched((time_t) m_pDS->fv("iLastWatched").get_asInt());
         data.SetHidden(m_pDS->fv("bIsHidden").get_asBool());
+        data.SetPosition(m_pDS->fv("iPosition").get_asInt());
         results.Update(data);
 
         CLog::Log(LOGDEBUG, "PVR - %s - group '%s' loaded from the database", __FUNCTION__, data.GroupName().c_str());
@@ -634,11 +639,11 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
     /* insert a new entry when this is a new group, or replace the existing one otherwise */
     if (group.GroupID() <= 0)
-      strQuery = PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched, bIsHidden) VALUES (%i, %i, '%s', %u, %i)",
-          (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched(), group.IsHidden());
+      strQuery = PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched, bIsHidden, iPosition) VALUES (%i, %i, '%s', %u, %i, %i)",
+          (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched(), group.IsHidden(), group.GetPosition());
     else
-      strQuery = PrepareSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched, bIsHidden) VALUES (%i, %i, %i, '%s', %u, %i)",
-          group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched(), group.IsHidden());
+      strQuery = PrepareSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched, bIsHidden, iPosition) VALUES (%i, %i, %i, '%s', %u, %i, %i)",
+          group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str(), group.LastWatched(), group.IsHidden(), group.GetPosition());
 
     bReturn = ExecuteQuery(strQuery);
 

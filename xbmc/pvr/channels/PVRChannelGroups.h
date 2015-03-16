@@ -204,6 +204,7 @@ namespace PVR
     bool UpdateGroupsEntries(const CPVRChannelGroups &groups);
     bool LoadUserDefinedChannelGroups(void);
     bool GetGroupsFromClients(void);
+    void SortGroups(void);
 
     bool                             m_bRadio;         /*!< true if this is a container for radio channels, false if it is for tv channels */
     CPVRChannelGroupPtr              m_selectedGroup;  /*!< the group that's currently selected in the UI */

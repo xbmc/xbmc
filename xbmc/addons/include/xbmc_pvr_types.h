@@ -75,10 +75,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "1.9.5"
+#define XBMC_PVR_API_VERSION "1.9.6"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "1.9.5"
+#define XBMC_PVR_MIN_API_VERSION "1.9.6"
 
 #ifdef __cplusplus
 extern "C" {
@@ -244,6 +244,7 @@ extern "C" {
   {
     char         strGroupName[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (required) name of this channel group */
     bool         bIsRadio;                                   /*!< @brief (required) true if this is a radio channel group, false otherwise. */
+    unsigned int iPosition;                                  /*!< @brief (optional) sort position of the group (0 indicates that the backend doesn't support sorting of groups) */
   } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP;
 
   typedef struct PVR_CHANNEL_GROUP_MEMBER
