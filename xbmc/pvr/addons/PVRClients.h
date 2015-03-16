@@ -51,6 +51,12 @@ namespace PVR
   {
     friend class CPVRGUIInfo;
 
+    enum AddonRegistrationStatus {
+      ADDON_REG_NEW_ADDON,
+      ADDON_REG_EXISTING_ADDON,
+      ADDON_REG_FAILED
+    };
+
   public:
     CPVRClients(void);
     virtual ~CPVRClients(void);
@@ -684,9 +690,11 @@ namespace PVR
     /*!
      * @brief Initialise and connect a client.
      * @param client The client to initialise.
-     * @return The id of the client if it was created or found in the existing client map, -1 otherwise.
+     * @param addon  The CPVRClient instance
+     * @return ADDON_REG_FAILED if registration failed, ADDON_REG_NEW_ADDON if it's a new add-on,
+     *         ADDON_REG_EXISTING_ADDON if it's an existing add-on
      */
-    int RegisterClient(ADDON::AddonPtr client);
+    AddonRegistrationStatus RegisterClient(ADDON::AddonPtr client);
 
     int GetClientId(const ADDON::AddonPtr client) const;
 
