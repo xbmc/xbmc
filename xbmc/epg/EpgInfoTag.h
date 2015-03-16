@@ -446,10 +446,11 @@ namespace EPG
     CDateTime                m_firstAired;         /*!< first airdate */
 
     PVR::CPVRTimerInfoTagPtr m_timer;
-    PVR::CPVRRecordingPtr    m_recording;
 
     CEpg *                   m_epg;                /*!< the schedule that this event belongs to */
 
+    CCriticalSection         m_critSection;
     PVR::CPVRChannelPtr      m_pvrChannel;
+    PVR::CPVRRecordingPtr    m_recording;
   };
 }
