@@ -42,7 +42,10 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   , m_ScreenSize(0, 0)
   , m_bIsFullscreen(false)
 {
+  //Init Variable
+  m_pD3DDevice = g_Windowing.Get3DDevice();
   g_renderManager.PreInit(RENDERER_DSHOW);
+  isDeviceSet = false;
 
   if (FAILED(hr)) {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
@@ -58,6 +61,9 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
     // nasty, but we have to let it know about our death somehow
     ((CSubRenderCallback*)(ISubRenderCallback2*)m_pSRCB)->SetDXRAP(nullptr);
   }
+
+  //restore renderstates
+  m_pD3DDevice->SetPixelShader(NULL);
 
   // the order is important here
 
@@ -77,72 +83,10 @@ STDMETHODIMP CmadVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, 
   return __super::NonDelegatingQueryInterface(riid, ppv);
 }
 
-bool CmadVRAllocatorPresenter::TestRender(IDirect3DDevice9* pD3DDevice)
-{
-
-  static unsigned int lastTime = 0;
-  static float delta = 0;
-
-  unsigned int thisTime = XbmcThreads::SystemClockMillis();
-
-  if (thisTime - lastTime > 10)
-  {
-    lastTime = thisTime;
-    delta++;
-  }
-
-  LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
-
-  // A structure for our custom vertex type
-  struct CUSTOMVERTEX
-  {
-    FLOAT x, y, z, rhw; // The transformed position for the vertex
-    DWORD color;        // The vertex color
-  };
-
-  // Our custom FVF, which describes our custom vertex structure
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW|D3DFVF_DIFFUSE)
-
-  // Initialize three vertices for rendering a triangle
-  CUSTOMVERTEX vertices[] =
-  {
-    { delta + 100.0f, 50.0f, 0.5f, 1.0f, 0xffff0000, }, // x, y, z, rhw, color
-    { delta + 200.0f, 250.0f, 0.5f, 1.0f, 0xff00ff00, },
-    { delta, 250.0f, 0.5f, 1.0f, 0xff00ffff, },
-  };
-
-  // Create the vertex buffer. Here we are allocating enough memory
-  // (from the default pool) to hold all our 3 custom vertices. We also
-  // specify the FVF, so the vertex buffer knows what data it contains.
-  if (FAILED(pD3DDevice->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX),
-    0, D3DFVF_CUSTOMVERTEX,
-    D3DPOOL_DEFAULT, &pVB, NULL)))
-  {
-    return false;
-  }
-
-  // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
-  // gain access to the vertices. This mechanism is required becuase vertex
-  // buffers may be in device memory.
-  VOID* pVertices;
-  if (FAILED(pVB->Lock(0, sizeof(vertices), (void**)&pVertices, 0)))
-    return false;
-  memcpy(pVertices, vertices, sizeof(vertices));
-  pVB->Unlock();
-
-  pD3DDevice->SetStreamSource(0, pVB, 0, sizeof(CUSTOMVERTEX));
-  pD3DDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
-  pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
-
-  pVB->Release();
-
-  return true;
-}
-
 HRESULT CmadVRAllocatorPresenter::SetSubDevice(IDirect3DDevice9* pD3DDev)
 {
-
-  if (!pD3DDev) {
+  if (!pD3DDev)
+  {
     // release all resources
     m_pSubPicQueue = nullptr;
     m_pAllocator = nullptr;
@@ -151,46 +95,11 @@ HRESULT CmadVRAllocatorPresenter::SetSubDevice(IDirect3DDevice9* pD3DDev)
 
   Com::SmartSize size;
 
-  //from mpc-hc
-  switch (0)//GetRenderersSettings().nSPCMaxRes) 
-  {
-  case 0:
-  default:
-    size = m_ScreenSize;
-    break;
-  case 1:
-    size.SetSize(1024, 768);
-    break;
-  case 2:
-    size.SetSize(800, 600);
-    break;
-  case 3:
-    size.SetSize(640, 480);
-    break;
-  case 4:
-    size.SetSize(512, 384);
-    break;
-  case 5:
-    size.SetSize(384, 288);
-    break;
-  case 6:
-    size.SetSize(2560, 1600);
-    break;
-  case 7:
-    size.SetSize(1920, 1080);
-    break;
-  case 8:
-    size.SetSize(1320, 900);
-    break;
-  case 9:
-    size.SetSize(1280, 720);
-    break;
-  }
-
   if (m_pAllocator) {
     m_pAllocator->ChangeDevice(pD3DDev);
   }
-  else {
+  else
+  {
     m_pAllocator = DNew CDX9SubPicAllocator(pD3DDev, size, true);
     if (!m_pAllocator) {
       return E_FAIL;
@@ -199,23 +108,24 @@ HRESULT CmadVRAllocatorPresenter::SetSubDevice(IDirect3DDevice9* pD3DDev)
 
   HRESULT hr = S_OK;
 
-  if (g_dsSettings.pRendererSettings->subtitlesSettings.bufferAhead > 0)
-    m_pSubPicQueue = new CSubPicQueue(g_dsSettings.pRendererSettings->subtitlesSettings.bufferAhead, g_dsSettings.pRendererSettings->subtitlesSettings.disableAnimations, m_pAllocator, &hr);
-  else
-    m_pSubPicQueue = new CSubPicQueueNoThread(m_pAllocator, &hr);
-  m_pSubPicQueue = g_dsSettings.pRendererSettings->subtitlesSettings.bufferAhead > 0
-    ? (ISubPicQueue*)DNew CSubPicQueue(g_dsSettings.pRendererSettings->subtitlesSettings.bufferAhead > 0, true, m_pAllocator, &hr)
-    : (ISubPicQueue*)DNew CSubPicQueueNoThread(m_pAllocator, &hr);
-  if (!m_pSubPicQueue || FAILED(hr)) {
-    return E_FAIL;
+  if (!m_pSubPicQueue) {
+    CAutoLock cAutoLock(this);
+    m_pSubPicQueue = g_dsSettings.pRendererSettings->subtitlesSettings.bufferAhead > 0
+      ? (ISubPicQueue*)DNew CSubPicQueue(g_dsSettings.pRendererSettings->subtitlesSettings.bufferAhead, g_dsSettings.pRendererSettings->subtitlesSettings.disableAnimations, m_pAllocator, &hr)
+      : (ISubPicQueue*)DNew CSubPicQueueNoThread(m_pAllocator, &hr);
+  }
+  else {
+    m_pSubPicQueue->Invalidate();
   }
 
-  if (m_SubPicProvider) {
+  if (SUCCEEDED(hr) && (m_SubPicProvider)) {
     m_pSubPicQueue->SetSubPicProvider(m_SubPicProvider);
   }
 
-  return S_OK;
+  return hr;
 }
+
+//IPaintCallbackMadvr
 
 void CmadVRAllocatorPresenter::OsdRedrawFrame()
 {
@@ -231,6 +141,7 @@ void CmadVRAllocatorPresenter::OsdRedrawFrame()
 STDMETHODIMP CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
   m_pD3DDeviceMadVR = pD3DDev;
+  isDeviceSet = true;
   return S_OK;
 }
 
@@ -240,10 +151,24 @@ STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TI
   return S_OK;
 }
 
+void CmadVRAllocatorPresenter::SetDrawIsDone()
+{
+  m_drawIsDone.Set();
+}
+
 STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
 {
-  // CLog::Log(LOGDEBUG, "RenderOsd");
-  g_renderManager.NewFrame();
+  //CLog::Log(LOGDEBUG, "Render Osd %i %i %i %i", activeVideoRect->left,activeVideoRect->top,activeVideoRect->right,activeVideoRect->bottom);
+  //pStateBlock->Apply();
+  //m_drawIsDone.Reset();
+  //g_renderManager.NewFrame();
+  //m_drawIsDone.WaitMSec(500);
+  //m_splash->Show();
+  //TestRender(m_pD3DDeviceMadVR);
+
+  m_pD3DDeviceMadVR->SetPixelShader(NULL);
+  g_application.RenderMadvr();
+
   return S_OK;
 }
 
@@ -251,8 +176,16 @@ HRESULT CmadVRAllocatorPresenter::Render(
   REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, REFERENCE_TIME atpf,
   int left, int top, int right, int bottom, int width, int height)
 {
+  Com::SmartRect wndRect(0, 0, width, height);
+  Com::SmartRect videoRect(left, top, right, bottom);
 
-  __super::SetPosition(Com::SmartRect(0, 0, width, height), Com::SmartRect(left, top, right, bottom));
+  if (Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR) {
+    pVW->SetWindowPosition(0, 0, 1000, 600);
+  }
+
+  //SetPosition(wndRect, videoRect);
+
+  __super::SetPosition(wndRect, videoRect);
   if (!g_bExternalSubtitleTime) {
     SetTime(rtStart);
   }
@@ -263,6 +196,7 @@ HRESULT CmadVRAllocatorPresenter::Render(
 
   if (!g_renderManager.IsConfigured())
   {
+
     int m_rtTimePerFrame;
     if (atpf > 0)
       m_rtTimePerFrame = atpf;
@@ -273,10 +207,8 @@ HRESULT CmadVRAllocatorPresenter::Render(
     m_NativeVideoSize = GetVideoSize(false);
     m_AspectRatio = GetVideoSize(true);
 
-    g_renderManager.Configure(width, height, m_AspectRatio.cx, m_AspectRatio.cy, m_fps,
-      g_dsSettings.pRendererSettings->bAllowFullscreen ? CONF_FLAGS_FULLSCREEN : 0,
-      RENDER_FMT_NONE, 0, 0);
-    CLog::Log(LOGDEBUG, "%s Render manager configured (FPS: %f) %i %i %i %i", __FUNCTION__, m_fps, m_NativeVideoSize.cx, m_NativeVideoSize.cy, 16, 9);
+    g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy, m_fps, g_dsSettings.pRendererSettings->bAllowFullscreen ? CONF_FLAGS_FULLSCREEN : 0, RENDER_FMT_NONE, 0, 0);
+    CLog::Log(LOGDEBUG, "%s Render manager configured (FPS: %f) %i %i %i %i", __FUNCTION__, m_fps, m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy);
   }
 
   AlphaBltSubPic(Com::SmartSize(width, height));
@@ -325,16 +257,18 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     return E_FAIL;
   }
 
-  Com::SmartQIPtr<IMadVRDirect3D9Manager> pMadVrD3d = m_pDXR;
-  m_pD3DDevice = g_Windowing.Get3DDevice();
-  hr = pMadVrD3d->UseTheseDevices(m_pD3DDevice, m_pD3DDevice, m_pD3DDevice);
-  hr = pMadVrD3d->ConfigureDisplayModeChanger(FALSE, FALSE);
-
   Com::SmartQIPtr<IBaseFilter> pBF = this;
   if (FAILED(hr))
     *ppRenderer = NULL;
   else
     *ppRenderer = pBF.Detach();
+  
+
+  //m_splash = new CSplash("special://xbmc/media/Splash.png");
+
+  CGraphFilters::Get()->SetMadVrCallback(this);
+
+  //(*ppRenderer = (IUnknown*)(INonDelegatingUnknown*)(this))->AddRef();
 
   MONITORINFO mi;
   mi.cbSize = sizeof(MONITORINFO);
@@ -342,7 +276,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     m_ScreenSize.SetSize(mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top);
   }
 
-  CGraphFilters::Get()->SetMadVrCallback(this);
+  m_pD3DDevice->CreateStateBlock(D3DSBT_ALL, &pStateBlock);
 
   return S_OK;
 }
@@ -352,10 +286,12 @@ STDMETHODIMP_(void) CmadVRAllocatorPresenter::SetPosition(RECT w, RECT v)
   if (Com::SmartQIPtr<IBasicVideo> pBV = m_pDXR) {
     pBV->SetDefaultSourcePosition();
     pBV->SetDestinationPosition(v.left, v.top, v.right - v.left, v.bottom - v.top);
+    //CLog::Log(LOGDEBUG, "position %i %i %i %i", v.left, v.top, v.right - v.left, v.bottom - v.top);
   }
 
   if (Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR) {
     pVW->SetWindowPosition(w.left, w.top, w.right - w.left, w.bottom - w.top);
+    //CLog::Log(LOGDEBUG, "position %i %i %i %i", w.left, w.top, w.right - w.left, w.bottom - w.top);
   }
 }
 
@@ -388,7 +324,6 @@ STDMETHODIMP CmadVRAllocatorPresenter::GetDIB(BYTE* lpDib, DWORD* size)
 
 STDMETHODIMP_(bool) CmadVRAllocatorPresenter::Paint(bool fAll)
 {
-  //CLog::Log(LOGDEBUG, "Paint");
   return false;
 }
 
@@ -396,3 +331,68 @@ STDMETHODIMP CmadVRAllocatorPresenter::SetPixelShader(LPCSTR pSrcData, LPCSTR pT
 {
   return E_NOTIMPL;
 }
+
+bool CmadVRAllocatorPresenter::TestRender(IDirect3DDevice9* pD3DDevice)
+{
+
+  static unsigned int lastTime = 0;
+  static float delta = 0;
+
+  unsigned int thisTime = XbmcThreads::SystemClockMillis();
+
+  if (thisTime - lastTime > 10)
+  {
+    lastTime = thisTime;
+    delta++;
+  }
+
+  LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
+
+  // A structure for our custom vertex type
+  struct CUSTOMVERTEX
+  {
+    FLOAT x, y, z, rhw; // The transformed position for the vertex
+    DWORD color;        // The vertex color
+  };
+
+  // Our custom FVF, which describes our custom vertex structure
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW|D3DFVF_DIFFUSE)
+
+  // Initialize three vertices for rendering a triangle
+  CUSTOMVERTEX vertices[] =
+  {
+    { delta + 100.0f, 50.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 0, 255), }, // x, y, z, rhw, color
+    { delta + 200.0f, 250.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 255, 0), },
+    { delta, 250.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255, 0, 0), },
+  };
+
+  // Create the vertex buffer. Here we are allocating enough memory
+  // (from the default pool) to hold all our 3 custom vertices. We also
+  // specify the FVF, so the vertex buffer knows what data it contains.
+  if (FAILED(pD3DDevice->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX),
+    0, D3DFVF_CUSTOMVERTEX,
+    D3DPOOL_DEFAULT, &pVB, NULL)))
+  {
+    return false;
+  }
+
+  // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
+  // gain access to the vertices. This mechanism is required becuase vertex
+  // buffers may be in device memory.
+  VOID* pVertices;
+  if (FAILED(pVB->Lock(0, sizeof(vertices), (void**)&pVertices, 0)))
+    return false;
+  memcpy(pVertices, vertices, sizeof(vertices));
+  pVB->Unlock();
+
+  pD3DDevice->SetStreamSource(0, pVB, 0, sizeof(CUSTOMVERTEX));
+  pD3DDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
+  pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
+
+  pVB->Release();
+
+  return true;
+}
+
+
+

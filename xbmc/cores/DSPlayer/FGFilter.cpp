@@ -465,10 +465,29 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
     return E_FAIL;
   }
 
+  
   if (SUCCEEDED(hr = pCAP->CreateRenderer((IUnknown **)ppBF)))
   {
     CLog::Log(LOGDEBUG, "%s Allocator presenter successfully created", __FUNCTION__);
   }
+ 
+
+  /*
+  Com::SmartPtr<IUnknown> pRenderer;
+  if (SUCCEEDED(hr = pCAP->CreateRenderer(&pRenderer))) {
+    *ppBF = Com::SmartQIPtr<IBaseFilter>(pRenderer).Detach();
+    // madVR supports calling IVideoWindow::put_Owner before the pins are connected
+    if (m_clsid == CLSID_madVR) {
+      if (Com::SmartQIPtr<IVideoWindow> pVW = pCAP)
+      {
+        pVW->put_Owner((OAHWND)g_hWnd);
+      }
+      if (Com::SmartQIPtr<IMadVRSubclassReplacement> m_sub = pCAP)
+        m_sub->DisableSubclassing();
+    }
+    CLog::Log(LOGDEBUG, "%s Allocator presenter successfully created", __FUNCTION__);
+  }
+  */
   if (!*ppBF) hr = E_FAIL;
 
   return hr;

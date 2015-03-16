@@ -6213,6 +6213,9 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\mvrInterfaces.h">
       <Filter>cores\DSPlayer\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\IPaintCallback.h">
+      <Filter>cores\DSPlayer</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\crts_caller.h">
       <Filter>win32</Filter>
     </ClInclude>

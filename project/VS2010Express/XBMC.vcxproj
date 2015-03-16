@@ -936,6 +936,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\IPaintCallback.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\moreuuids.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.h" />

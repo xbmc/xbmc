@@ -1853,14 +1853,19 @@ bool CApplication::RenderNoPresent()
 //  g_graphicsContext.AcquireCurrentContext();
 
   g_graphicsContext.Lock();
-  bool UsingMadVr = CGraphFilters::Get()->UsingMadVr();
 
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo())
   {
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
-    if (!UsingMadVr)
+#ifdef HAS_DS_PLAYER
+    if (!CGraphFilters::Get()->UsingMadVr())
       g_renderManager.Render(true, 0, 255);
+    else
+      g_renderManager.Render(false, 0, 255);
+#else
+    g_renderManager.Render(true, 0, 255);
+#endif
 
     // close window overlays
     CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OVERLAY);
@@ -1890,6 +1895,43 @@ float CApplication::GetDimScreenSaverLevel() const
   return 100.0f;
 }
 
+#ifdef HAS_DS_PLAYER
+void CApplication::RenderMadvr()
+{
+  // do not render if we are stopped or in background
+  if (m_bStop)
+    return;
+
+  MEASURE_FUNCTION;
+  
+  //g_Windowing.SetVSync(false);
+
+  g_infoManager.UpdateFPS();
+
+  g_Windowing.BeginRender();
+ 
+  //g_renderManager.FrameMove();
+  
+  RenderNoPresent();
+  
+  //g_renderManager.FrameFinish();
+  
+  g_Windowing.EndRender();
+
+  g_windowManager.AfterRender();
+
+  g_infoManager.ResetCache();
+
+  m_lastFrameTime = XbmcThreads::SystemClockMillis();
+  CTimeUtils::UpdateFrameTime(true);
+
+  g_renderManager.UpdateResolution();
+  g_renderManager.ManageCaptures();
+
+  m_renderMadvrEvent.Set();
+}
+#endif
+
 void CApplication::Render()
 {
   // do not render if we are stopped or in background
@@ -1897,6 +1939,23 @@ void CApplication::Render()
     return;
 
   MEASURE_FUNCTION;
+
+#ifdef HAS_DS_PLAYER
+  if (CGraphFilters::Get()->UsingMadVr())
+  {
+    if (m_pPlayer->IsPausedPlayback())
+    {
+      CGraphFilters::Get()->GetMadvrCallback()->OsdRedrawFrame();
+      Sleep(40);
+    } 
+    else
+    {
+      m_renderMadvrEvent.Reset();
+      m_renderMadvrEvent.WaitMSec(500);
+    }
+    return;
+  }
+#endif  
 
   int vsync_mode = CSettings::Get().GetInt("videoscreen.vsync");
 
@@ -4876,12 +4935,14 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
 
 bool CApplication::IsCurrentThread() const
 {
-  bool UsingMadVr = CGraphFilters::Get()->UsingMadVr();
-
-  if (!UsingMadVr)
+#ifdef HAS_DS_PLAYER
+  if (!CGraphFilters::Get()->UsingMadVr())
     return CThread::IsCurrentThread(m_threadID);
   else
     return true;
+#else
+  return CThread::IsCurrentThread(m_threadID);
+#endif
 }
 
 void CApplication::SetRenderGUI(bool renderGUI)

@@ -41,8 +41,9 @@ class IPaintCallbackMadvr
 public:
   virtual ~IPaintCallbackMadvr() {};
 
-  virtual IDirect3DDevice9* GetDevice() = NULL;
+  virtual LPDIRECT3DDEVICE9 GetDevice() = NULL;
   virtual void OsdRedrawFrame() = 0;
+  virtual void SetDrawIsDone() = 0;
 };
 
 

@@ -25,6 +25,8 @@
 #include "AllocatorCommon.h"
 #include "mvrInterfaces.h"
 #include "IPaintCallback.h"
+#include "utils/log.h"
+#include "utils/Splash.h"
 
 class CmadVRAllocatorPresenter
   : public ISubPicAllocatorPresenterImpl,
@@ -112,18 +114,21 @@ class CmadVRAllocatorPresenter
     }
   };
   Com::SmartPtr<IUnknown> m_pDXR;
-  IDirect3DDevice9* m_pD3DDevice;
-  IDirect3DDevice9* m_pD3DDeviceMadVR;
+  LPDIRECT3DDEVICE9 m_pD3DDevice;
+  LPDIRECT3DDEVICE9 m_pD3DDeviceMadVR;
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartPtr<IOsdRenderCallback> m_pORCB;
   Com::SmartSize m_ScreenSize;
   bool  m_bIsFullscreen;
-  CEvent m_readyToDraw;
-  CEvent m_readyToStartBack;
+  bool isDeviceSet;
   bool TestRender(IDirect3DDevice9* pD3DDevice);
+  CEvent m_drawIsDone;
+  CSplash *m_splash;
+  IDirect3DStateBlock9* pStateBlock;
 
   LPDIRECT3DVERTEXBUFFER9 m_pVB; // Buffer to hold Vertices
 public:
+
   CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdString &_Error);
   virtual ~CmadVRAllocatorPresenter();
 
@@ -146,7 +151,16 @@ public:
   STDMETHODIMP SetPixelShader(LPCSTR pSrcData, LPCSTR pTarget);
 
   //IPaintCallbackMadvr
-  IDirect3DDevice9* GetDevice() { return m_pD3DDeviceMadVR; }
-  void OsdRedrawFrame();
 
+  LPDIRECT3DDEVICE9 GetDevice()
+  {
+    if (isDeviceSet)
+    {
+      return m_pD3DDeviceMadVR;
+    }
+    else
+      return m_pD3DDevice;
+  }
+  virtual void OsdRedrawFrame();
+  virtual void SetDrawIsDone();
 };

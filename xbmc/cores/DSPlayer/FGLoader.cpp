@@ -348,13 +348,13 @@ HRESULT CFGLoader::InsertVideoRenderer()
   // Renderers
   if (CGraphFilters::Get()->GetCurrentRenderer() == DIRECTSHOW_RENDERER_EVR)
   {
-    m_pFGF = new CFGFilterVideoRenderer(CLSID_EVRAllocatorPresenter, L"Xbmc EVR");
+    m_pFGF = new CFGFilterVideoRenderer(CLSID_EVRAllocatorPresenter, L"Kodi EVR");
   }
   else
   {
     //m_pFGF = new CFGFilterVideoRenderer(CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9");
     /*MADVR*/    
-    m_pFGF = new CFGFilterVideoRenderer(CLSID_madVR, L"MADVR");
+    m_pFGF = new CFGFilterVideoRenderer(CLSID_madVR, L"Kodi madVR");
   }
 
 

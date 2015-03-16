@@ -85,9 +85,11 @@ public:
 
   void FlushGPU();
 
-  LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
 #ifdef HAS_DS_PLAYER
+  LPDIRECT3DDEVICE9 Get3DDevice();
   LPDIRECT3D9 Get3DObject() { return m_pD3D; }
+#else
+  LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
 #endif
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
 #ifdef HAS_DS_PLAYER
