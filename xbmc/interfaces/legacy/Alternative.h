@@ -47,7 +47,7 @@ namespace XBMCAddon
 
     inline WhichAlternative which() const { return pos; }
 
-    inline T1& former() throw (WrongTypeException)
+    inline T1& former()
     {
       unsigned char* data = m_data;
       if (pos == second)// first and none is ok
@@ -58,7 +58,7 @@ namespace XBMCAddon
       return *((T1*)data);
     }
 
-    inline const T1& former() const throw (WrongTypeException)
+    inline const T1& former() const
     {
       const unsigned char* data = m_data;
       if (pos != first)
@@ -66,7 +66,7 @@ namespace XBMCAddon
       return *((T1*)data);
     }
 
-    inline T2& later() throw (WrongTypeException)
+    inline T2& later()
     {
       unsigned char* data = m_data;
       if (pos == first)
@@ -77,7 +77,7 @@ namespace XBMCAddon
       return *((T2*)data);
     }
 
-    inline const T2& later() const throw (WrongTypeException)
+    inline const T2& later() const
     {
       const unsigned char* data = m_data;
       if (pos != second)
@@ -85,10 +85,10 @@ namespace XBMCAddon
       return *((T2*)data);
     }
 
-    inline operator T1& () throw (WrongTypeException) { return former(); }
-    inline operator const T1& () const throw (WrongTypeException) { return former(); }
-    inline operator T2& () throw (WrongTypeException) { return later(); }
-    inline operator const T2& () const throw (WrongTypeException) { return later(); }
+    inline operator T1& () { return former(); }
+    inline operator const T1& () const { return former(); }
+    inline operator T2& () { return later(); }
+    inline operator const T2& () const { return later(); }
   };
 }
 

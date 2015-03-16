@@ -97,7 +97,7 @@ namespace XBMCAddon
     WindowXML::WindowXML(const String& xmlFilename,
                          const String& scriptPath,
                          const String& defaultSkin,
-                         const String& defaultRes) throw(WindowException) :
+                         const String& defaultRes) :
       Window(true)
     {
       XBMC_TRACE;
@@ -147,7 +147,7 @@ namespace XBMCAddon
       interceptor->SetCoordsRes(res);
     }
 
-    int WindowXML::lockingGetNextAvailalbeWindowId() throw (WindowException)
+    int WindowXML::lockingGetNextAvailalbeWindowId()
     {
       XBMC_TRACE;
       CSingleLock lock(g_graphicsContext);
@@ -216,7 +216,7 @@ namespace XBMCAddon
       A(m_viewControl).SetSelectedItem(position);
     }
 
-    ListItem* WindowXML::getListItem(int position) throw (WindowException)
+    ListItem* WindowXML::getListItem(int position)
     {
       LOCKGUI;
       //CFileItemPtr fi = pwx->GetListItem(listPos);
@@ -462,7 +462,7 @@ namespace XBMCAddon
 
     WindowXMLDialog::WindowXMLDialog(const String& xmlFilename, const String& scriptPath,
                                      const String& defaultSkin,
-                                     const String& defaultRes) throw(WindowException) :
+                                     const String& defaultRes) :
       WindowXML(xmlFilename, scriptPath, defaultSkin, defaultRes),
       WindowDialogMixin(this)
     { XBMC_TRACE; }

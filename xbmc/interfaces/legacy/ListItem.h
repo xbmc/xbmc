@@ -250,7 +250,7 @@ namespace XBMCAddon
        * example:\n
        *   - self.list.getSelectedItem().setInfo('video', { 'Genre': 'Comedy' })n\n
        */
-      void setInfo(const char* type, const InfoLabelDict& infoLabels) throw (WrongTypeException);
+      void setInfo(const char* type, const InfoLabelDict& infoLabels);
 
       /**
        * addStreamInfo(type, values) -- Add a stream with details.\n
@@ -292,7 +292,7 @@ namespace XBMCAddon
        * example:
        *   - listitem.addContextMenuItems([('Theater Showtimes', 'RunScript(special://home/scripts/showtimes/default.py,Iron Man)',)])n
        */
-      void addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems = false) throw (ListItemException);
+      void addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems = false);
 
       /**
        * setProperty(key, value) -- Sets a listitem property, similar to an infolabel.\n

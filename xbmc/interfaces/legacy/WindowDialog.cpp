@@ -27,7 +27,7 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-    WindowDialog::WindowDialog() throw(WindowException) :
+    WindowDialog::WindowDialog() :
       Window(true), WindowDialogMixin(this)
     {
       CSingleLock lock(g_graphicsContext);
