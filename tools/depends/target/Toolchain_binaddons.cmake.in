@@ -39,10 +39,11 @@ set(CMAKE_LINKER @LD@ CACHE FILEPATH "Linker")
 set(CMAKE_C_FLAGS "@platform_cflags@ @platform_includes@")
 set(CMAKE_CXX_FLAGS "@platform_cxxflags@ @platform_includes@")
 set(CMAKE_CPP_FLAGS "@platform_cflags@ @platform_includes@")
+set(CMAKE_LD_FLAGS "@platform_ldflags@")
 set(ENV{CFLAGS} ${CMAKE_C_FLAGS})
 set(ENV{CXXFLAGS} ${CMAKE_CXX_FLAGS})
 set(ENV{CPPFLAGS} ${CMAKE_CPP_FLAGS})
-SET(ENV{LDFLAGS} "@platform_ldflags@")
+set(ENV{LDFLAGS} ${CMAKE_LD_FLAGS})
 
 # search for programs in the build host directories
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
