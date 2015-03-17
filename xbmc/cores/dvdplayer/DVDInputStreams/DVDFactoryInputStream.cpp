@@ -45,6 +45,8 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 {
   CFileItem item(file.c_str(), false);
 
+  item.SetMimeType(content);
+
   if(item.IsDiscImage())
   {
 #ifdef HAVE_LIBBLURAY
@@ -105,7 +107,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     if (item.IsType(".m3u8"))
       return new CDVDInputStreamFFmpeg();
-    item.FillInMimeType();
+    
+    if (item.GetMimeType().empty())
+      item.FillInMimeType();
+
     if (item.GetMimeType() == "application/vnd.apple.mpegurl")
       return new CDVDInputStreamFFmpeg();
   }
