@@ -1132,7 +1132,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 
 bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
-  items.SetArt("thumb", "");
+  items.ClearArt();
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory, items);
   if (bResult)
   {
