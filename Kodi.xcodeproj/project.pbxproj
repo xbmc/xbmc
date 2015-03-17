@@ -5980,8 +5980,10 @@
 				E499108A174D0D2600741B6D /* Frameworks */,
 				19C28FBDFE9D53C911CA2CBB /* Products */,
 			);
+			indentWidth = 2;
 			name = Kodi;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
