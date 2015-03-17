@@ -255,6 +255,8 @@ KeyMap keyMap[] = {
   { 378               , XBMCK_RIGHT       }, // Green
   { 381               , XBMCK_UP          }, // Yellow
   { 366               , XBMCK_DOWN        }, // Blue
+  // Rii i7 Home button - TranslateKey returned XBMCK_UNKNOWN from code(172)
+  { 172               , XBMCK_HOME        }, // 
 };
 
 typedef enum
