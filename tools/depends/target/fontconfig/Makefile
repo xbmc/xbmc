@@ -1,11 +1,11 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include 01-fontconfig-cross-compile-fix.patch lconv.patch Makefile
+DEPS= ../../Makefile.include lconv.patch Makefile
 
 # lib name, version
 LIBNAME=fontconfig
-VERSION=2.8.0
+VERSION=2.11.1
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -24,7 +24,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../01-fontconfig-cross-compile-fix.patch
 	cd $(PLATFORM); patch -p1 < ../lconv.patch 
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
