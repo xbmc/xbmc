@@ -229,15 +229,14 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 
   CContextButtons choices;
   choices.Add(1, 20067);
-/*  if (m_viewControl.GetSelectedItem() != 0) // no deleting the default profile
-    choices.Add(2, 117); */
+
   if (iItem == 0 && g_passwordManager.iMasterLockRetriesLeft == 0)
-    choices.Add(3, 12334);
+    choices.Add(2, 12334);
 
   CContextMenuManager::Get().AddVisibleItems(pItem, choices);
 
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-  if (choice == 3)
+  if (choice == 2)
   {
     if (g_passwordManager.CheckLock(CProfilesManager::Get().GetMasterProfile().getLockMode(),CProfilesManager::Get().GetMasterProfile().getLockCode(),20075))
       g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries");
@@ -246,21 +245,11 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 
     return true;
   }
-  
-  if (!g_passwordManager.IsMasterLockUnlocked(true))
-    return false;
 
-  if (choice == 1)
+  // Edit the profile after checking if the correct master lock password was given.
+  if (choice == 1 && g_passwordManager.IsMasterLockUnlocked(true))
     CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
-  if (choice == 2)
-  {
-    int iDelete = m_viewControl.GetSelectedItem();
-    m_viewControl.Clear();
-    if (iDelete >= 0)
-      CProfilesManager::Get().DeleteProfile((size_t)iDelete);
-    Update();
-    m_viewControl.SetSelectedItem(0);
-  }
+  
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
   if (iItem < (int)CProfilesManager::Get().GetNumberOfProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
