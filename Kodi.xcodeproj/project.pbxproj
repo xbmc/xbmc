@@ -842,6 +842,30 @@
 		DF28EDA7170E1A11005FA9D2 /* ProfilesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28ED9C170E1A11005FA9D2 /* ProfilesManager.cpp */; };
 		DF28EDA8170E1A11005FA9D2 /* GUIWindowSettingsProfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28ED9F170E1A11005FA9D2 /* GUIWindowSettingsProfile.cpp */; };
 		DF28EE03170E1E51005FA9D2 /* DisplaySettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28EE01170E1E51005FA9D2 /* DisplaySettings.cpp */; };
+		DF29BCE81B5D911700904347 /* AddonEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCD51B5D911700904347 /* AddonEvent.cpp */; };
+		DF29BCE91B5D911800904347 /* AddonEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCD51B5D911700904347 /* AddonEvent.cpp */; };
+		DF29BCEA1B5D911800904347 /* AddonEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCD51B5D911700904347 /* AddonEvent.cpp */; };
+		DF29BCEB1B5D911800904347 /* AddonManagementEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCD71B5D911700904347 /* AddonManagementEvent.cpp */; };
+		DF29BCEC1B5D911800904347 /* AddonManagementEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCD71B5D911700904347 /* AddonManagementEvent.cpp */; };
+		DF29BCED1B5D911800904347 /* AddonManagementEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCD71B5D911700904347 /* AddonManagementEvent.cpp */; };
+		DF29BCEE1B5D911800904347 /* BaseEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCD91B5D911700904347 /* BaseEvent.cpp */; };
+		DF29BCEF1B5D911800904347 /* BaseEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCD91B5D911700904347 /* BaseEvent.cpp */; };
+		DF29BCF01B5D911800904347 /* BaseEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCD91B5D911700904347 /* BaseEvent.cpp */; };
+		DF29BCF11B5D911800904347 /* EventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCDB1B5D911700904347 /* EventLog.cpp */; };
+		DF29BCF21B5D911800904347 /* EventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCDB1B5D911700904347 /* EventLog.cpp */; };
+		DF29BCF31B5D911800904347 /* EventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCDB1B5D911700904347 /* EventLog.cpp */; };
+		DF29BCF71B5D911800904347 /* MediaLibraryEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCDF1B5D911700904347 /* MediaLibraryEvent.cpp */; };
+		DF29BCF81B5D911800904347 /* MediaLibraryEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCDF1B5D911700904347 /* MediaLibraryEvent.cpp */; };
+		DF29BCF91B5D911800904347 /* MediaLibraryEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCDF1B5D911700904347 /* MediaLibraryEvent.cpp */; };
+		DF29BCFA1B5D911800904347 /* GUIViewStateEventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCE41B5D911700904347 /* GUIViewStateEventLog.cpp */; };
+		DF29BCFB1B5D911800904347 /* GUIViewStateEventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCE41B5D911700904347 /* GUIViewStateEventLog.cpp */; };
+		DF29BCFC1B5D911800904347 /* GUIViewStateEventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCE41B5D911700904347 /* GUIViewStateEventLog.cpp */; };
+		DF29BCFD1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCE61B5D911700904347 /* GUIWindowEventLog.cpp */; };
+		DF29BCFE1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCE61B5D911700904347 /* GUIWindowEventLog.cpp */; };
+		DF29BCFF1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BCE61B5D911700904347 /* GUIWindowEventLog.cpp */; };
+		DF29BD021B5D913B00904347 /* EventsDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BD001B5D913B00904347 /* EventsDirectory.cpp */; };
+		DF29BD031B5D913B00904347 /* EventsDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BD001B5D913B00904347 /* EventsDirectory.cpp */; };
+		DF29BD041B5D913B00904347 /* EventsDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF29BD001B5D913B00904347 /* EventsDirectory.cpp */; };
 		DF32466219E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF32466019E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp */; };
 		DF32466319E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF32466019E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp */; };
 		DF32466419E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF32466019E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp */; };
@@ -4472,6 +4496,25 @@
 		DF28EDA0170E1A11005FA9D2 /* GUIWindowSettingsProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSettingsProfile.h; sourceTree = "<group>"; };
 		DF28EE01170E1E51005FA9D2 /* DisplaySettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DisplaySettings.cpp; sourceTree = "<group>"; };
 		DF28EE02170E1E51005FA9D2 /* DisplaySettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplaySettings.h; sourceTree = "<group>"; };
+		DF29BCD51B5D911700904347 /* AddonEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonEvent.cpp; sourceTree = "<group>"; };
+		DF29BCD61B5D911700904347 /* AddonEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonEvent.h; sourceTree = "<group>"; };
+		DF29BCD71B5D911700904347 /* AddonManagementEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonManagementEvent.cpp; sourceTree = "<group>"; };
+		DF29BCD81B5D911700904347 /* AddonManagementEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonManagementEvent.h; sourceTree = "<group>"; };
+		DF29BCD91B5D911700904347 /* BaseEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseEvent.cpp; sourceTree = "<group>"; };
+		DF29BCDA1B5D911700904347 /* BaseEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseEvent.h; sourceTree = "<group>"; };
+		DF29BCDB1B5D911700904347 /* EventLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventLog.cpp; sourceTree = "<group>"; };
+		DF29BCDC1B5D911700904347 /* EventLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventLog.h; sourceTree = "<group>"; };
+		DF29BCDD1B5D911700904347 /* IEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IEvent.h; sourceTree = "<group>"; };
+		DF29BCDF1B5D911700904347 /* MediaLibraryEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MediaLibraryEvent.cpp; sourceTree = "<group>"; };
+		DF29BCE01B5D911700904347 /* MediaLibraryEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaLibraryEvent.h; sourceTree = "<group>"; };
+		DF29BCE11B5D911700904347 /* NotificationEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationEvent.h; sourceTree = "<group>"; };
+		DF29BCE21B5D911700904347 /* UniqueEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniqueEvent.h; sourceTree = "<group>"; };
+		DF29BCE41B5D911700904347 /* GUIViewStateEventLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateEventLog.cpp; sourceTree = "<group>"; };
+		DF29BCE51B5D911700904347 /* GUIViewStateEventLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateEventLog.h; sourceTree = "<group>"; };
+		DF29BCE61B5D911700904347 /* GUIWindowEventLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowEventLog.cpp; sourceTree = "<group>"; };
+		DF29BCE71B5D911700904347 /* GUIWindowEventLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowEventLog.h; sourceTree = "<group>"; };
+		DF29BD001B5D913B00904347 /* EventsDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsDirectory.cpp; sourceTree = "<group>"; };
+		DF29BD011B5D913B00904347 /* EventsDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsDirectory.h; sourceTree = "<group>"; };
 		DF32466019E931A8005E8CFB /* ActiveAEResampleFFMPEG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ActiveAEResampleFFMPEG.cpp; sourceTree = "<group>"; };
 		DF32466119E931A8005E8CFB /* ActiveAEResampleFFMPEG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveAEResampleFFMPEG.h; sourceTree = "<group>"; };
 		DF3488E513FD958F0026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
@@ -7875,6 +7918,38 @@
 			path = windows;
 			sourceTree = "<group>";
 		};
+		DF29BCD41B5D911700904347 /* events */ = {
+			isa = PBXGroup;
+			children = (
+				DF29BCE31B5D911700904347 /* windows */,
+				DF29BCD51B5D911700904347 /* AddonEvent.cpp */,
+				DF29BCD61B5D911700904347 /* AddonEvent.h */,
+				DF29BCD71B5D911700904347 /* AddonManagementEvent.cpp */,
+				DF29BCD81B5D911700904347 /* AddonManagementEvent.h */,
+				DF29BCD91B5D911700904347 /* BaseEvent.cpp */,
+				DF29BCDA1B5D911700904347 /* BaseEvent.h */,
+				DF29BCDB1B5D911700904347 /* EventLog.cpp */,
+				DF29BCDC1B5D911700904347 /* EventLog.h */,
+				DF29BCDD1B5D911700904347 /* IEvent.h */,
+				DF29BCDF1B5D911700904347 /* MediaLibraryEvent.cpp */,
+				DF29BCE01B5D911700904347 /* MediaLibraryEvent.h */,
+				DF29BCE11B5D911700904347 /* NotificationEvent.h */,
+				DF29BCE21B5D911700904347 /* UniqueEvent.h */,
+			);
+			path = events;
+			sourceTree = "<group>";
+		};
+		DF29BCE31B5D911700904347 /* windows */ = {
+			isa = PBXGroup;
+			children = (
+				DF29BCE41B5D911700904347 /* GUIViewStateEventLog.cpp */,
+				DF29BCE51B5D911700904347 /* GUIViewStateEventLog.h */,
+				DF29BCE61B5D911700904347 /* GUIWindowEventLog.cpp */,
+				DF29BCE71B5D911700904347 /* GUIWindowEventLog.h */,
+			);
+			path = windows;
+			sourceTree = "<group>";
+		};
 		DF40BC21178B4C07009DB567 /* generic */ = {
 			isa = PBXGroup;
 			children = (
@@ -8257,6 +8332,7 @@
 				E38E149A0D25F9F900618676 /* cores */,
 				4313773012D647BB00680C15 /* dbwrappers */,
 				C84828E7156CFD5E005A996F /* epg */,
+				DF29BCD41B5D911700904347 /* events */,
 				431376E912D6439900680C15 /* dialogs */,
 				E38E16940D25F9FA00618676 /* filesystem */,
 				18B7C3AA1294219F009E7A26 /* guilib */,
@@ -8791,6 +8867,8 @@
 				E38E16B10D25F9FA00618676 /* DirectoryHistory.h */,
 				E38E16B40D25F9FA00618676 /* DllLibCurl.cpp */,
 				E38E16B50D25F9FA00618676 /* DllLibCurl.h */,
+				DF29BD001B5D913B00904347 /* EventsDirectory.cpp */,
+				DF29BD011B5D913B00904347 /* EventsDirectory.h */,
 				0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */,
 				0E3036EB1760F68A00D93596 /* FavouritesDirectory.h */,
 				E38E16BA0D25F9FA00618676 /* File.cpp */,
@@ -10486,6 +10564,7 @@
 				E38E22C60D25F9FE00618676 /* BitstreamStats.cpp in Sources */,
 				E38E22C70D25F9FE00618676 /* CharsetConverter.cpp in Sources */,
 				E38E22C80D25F9FE00618676 /* CPUInfo.cpp in Sources */,
+				DF29BCF11B5D911800904347 /* EventLog.cpp in Sources */,
 				E38E22CD0D25F9FE00618676 /* Event.cpp in Sources */,
 				E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */,
 				E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */,
@@ -10507,6 +10586,7 @@
 				E38E22F30D25F9FE00618676 /* SystemInfo.cpp in Sources */,
 				E38E22F40D25F9FE00618676 /* Thread.cpp in Sources */,
 				E38E22F70D25F9FE00618676 /* UdpClient.cpp in Sources */,
+				DF29BCFA1B5D911800904347 /* GUIViewStateEventLog.cpp in Sources */,
 				E38E22F80D25F9FE00618676 /* Weather.cpp in Sources */,
 				E38E22FB0D25F9FE00618676 /* VideoDatabase.cpp in Sources */,
 				E38E22FC0D25F9FE00618676 /* VideoInfoScanner.cpp in Sources */,
@@ -10553,11 +10633,14 @@
 				DFEB902819E9337200728978 /* AEResampleFactory.cpp in Sources */,
 				F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */,
 				F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */,
+				DF29BD021B5D913B00904347 /* EventsDirectory.cpp in Sources */,
 				E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */,
+				DF29BCEE1B5D911800904347 /* BaseEvent.cpp in Sources */,
 				7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */,
 				F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */,
 				397877D51AAAF87700F98A45 /* Speed.cpp in Sources */,
 				F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */,
+				DF29BCF71B5D911800904347 /* MediaLibraryEvent.cpp in Sources */,
 				2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */,
 				F54C51D50F1E784800D46E3C /* karaokelyricscdg.cpp in Sources */,
 				F54C51D80F1E785700D46E3C /* karaokelyrics.cpp in Sources */,
@@ -10888,6 +10971,7 @@
 				DFB65FB715373AE7006B8FF1 /* AEEncoderFFmpeg.cpp in Sources */,
 				DFB65FCC15373AE7006B8FF1 /* AEBitstreamPacker.cpp in Sources */,
 				DFB65FCD15373AE7006B8FF1 /* AEBuffer.cpp in Sources */,
+				DF29BCFD1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */,
 				DFB65FCE15373AE7006B8FF1 /* AEChannelInfo.cpp in Sources */,
 				DFB65FD015373AE7006B8FF1 /* AEPackIEC61937.cpp in Sources */,
 				DFB65FD215373AE7006B8FF1 /* AEStreamInfo.cpp in Sources */,
@@ -10955,6 +11039,7 @@
 				36A9466315CF1FA600727135 /* DbUrl.cpp in Sources */,
 				3994427F1A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */,
 				36A9466715CF1FD200727135 /* MusicDbUrl.cpp in Sources */,
+				DF29BCE81B5D911700904347 /* AddonEvent.cpp in Sources */,
 				DFC6F4B61AFF7CB10039A7FA /* kiss_fft.c in Sources */,
 				36A9466A15CF1FED00727135 /* UrlOptions.cpp in Sources */,
 				36A9466D15CF201F00727135 /* VideoDbUrl.cpp in Sources */,
@@ -11167,6 +11252,7 @@
 				7CCDA1D0192753E30074CF51 /* PltMediaRenderer.cpp in Sources */,
 				3961C4391ABC0A46002DBBFB /* UISoundsResource.cpp in Sources */,
 				7CCDA1DB192753E30074CF51 /* RdrConnectionManagerSCPD.cpp in Sources */,
+				DF29BCEB1B5D911800904347 /* AddonManagementEvent.cpp in Sources */,
 				7CCDA1E6192753E30074CF51 /* RenderingControlSCPD.cpp in Sources */,
 				7CCDA1F3192753E30074CF51 /* ConnectionManagerSCPD.cpp in Sources */,
 				7CCDA1FE192753E30074CF51 /* ContentDirectorySCPD.cpp in Sources */,
@@ -11303,6 +11389,7 @@
 				DFF0F11B17528350002DA3A4 /* AddonCallbacksAddon.cpp in Sources */,
 				DFF0F11C17528350002DA3A4 /* AddonCallbacksGUI.cpp in Sources */,
 				DFF0F11D17528350002DA3A4 /* AddonCallbacksPVR.cpp in Sources */,
+				DF29BCF01B5D911800904347 /* BaseEvent.cpp in Sources */,
 				DFF0F11E17528350002DA3A4 /* AddonDatabase.cpp in Sources */,
 				DFF0F11F17528350002DA3A4 /* AddonInstaller.cpp in Sources */,
 				DFF0F12017528350002DA3A4 /* AddonManager.cpp in Sources */,
@@ -11323,6 +11410,7 @@
 				DFF0F12E17528350002DA3A4 /* CDDARipJob.cpp in Sources */,
 				DFF0F12F17528350002DA3A4 /* CDDARipper.cpp in Sources */,
 				DFF0F13017528350002DA3A4 /* Encoder.cpp in Sources */,
+				DF29BCF91B5D911800904347 /* MediaLibraryEvent.cpp in Sources */,
 				DFF0F13117528350002DA3A4 /* EncoderFFmpeg.cpp in Sources */,
 				DFF0F13617528350002DA3A4 /* Exception.cpp in Sources */,
 				DFF0F13717528350002DA3A4 /* ilog.cpp in Sources */,
@@ -11337,6 +11425,7 @@
 				DFF0F14617528350002DA3A4 /* AEStreamInfo.cpp in Sources */,
 				DFF0F14717528350002DA3A4 /* AEUtil.cpp in Sources */,
 				395938791AC310B00053A590 /* MessagePrinter.cpp in Sources */,
+				DF29BCF31B5D911800904347 /* EventLog.cpp in Sources */,
 				42DAC1701A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */,
 				DFF0F14917528350002DA3A4 /* AEFactory.cpp in Sources */,
 				DFF0F14A17528350002DA3A4 /* EmuFileWrapper.cpp in Sources */,
@@ -11370,12 +11459,14 @@
 				DFF0F16B17528350002DA3A4 /* DVDDemuxBXA.cpp in Sources */,
 				DFF0F16C17528350002DA3A4 /* DVDDemuxCDDA.cpp in Sources */,
 				DFF0F16D17528350002DA3A4 /* DVDDemuxFFmpeg.cpp in Sources */,
+				DF29BD041B5D913B00904347 /* EventsDirectory.cpp in Sources */,
 				DFF0F16F17528350002DA3A4 /* DVDDemuxPVRClient.cpp in Sources */,
 				DFF0F17017528350002DA3A4 /* DVDDemuxShoutcast.cpp in Sources */,
 				DFF0F17117528350002DA3A4 /* DVDDemuxUtils.cpp in Sources */,
 				DFF0F17217528350002DA3A4 /* DVDDemuxVobsub.cpp in Sources */,
 				DFF0F17317528350002DA3A4 /* DVDFactoryDemuxer.cpp in Sources */,
 				DFF0F17417528350002DA3A4 /* DVDFactoryInputStream.cpp in Sources */,
+				DF29BCFF1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */,
 				DFF0F17517528350002DA3A4 /* DVDInputStream.cpp in Sources */,
 				DFF0F17617528350002DA3A4 /* DVDInputStreamBluray.cpp in Sources */,
 				DFF0F17717528350002DA3A4 /* DVDInputStreamFFmpeg.cpp in Sources */,
@@ -11640,6 +11731,7 @@
 				DFF0F29617528350002DA3A4 /* GUIListGroup.cpp in Sources */,
 				DFF0F29717528350002DA3A4 /* GUIListItem.cpp in Sources */,
 				DFF0F29817528350002DA3A4 /* GUIListItemLayout.cpp in Sources */,
+				DF29BCEA1B5D911800904347 /* AddonEvent.cpp in Sources */,
 				DFF0F29917528350002DA3A4 /* GUIListLabel.cpp in Sources */,
 				DFF0F29A17528350002DA3A4 /* GUIMessage.cpp in Sources */,
 				DFF0F29B17528350002DA3A4 /* GUIMoverControl.cpp in Sources */,
@@ -11835,6 +11927,7 @@
 				DFF0F35317528350002DA3A4 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				DFF0F35417528350002DA3A4 /* Peripherals.cpp in Sources */,
 				DFF0F35517528350002DA3A4 /* GUIDialogPictureInfo.cpp in Sources */,
+				DF29BCED1B5D911800904347 /* AddonManagementEvent.cpp in Sources */,
 				DFF0F35617528350002DA3A4 /* GUIViewStatePictures.cpp in Sources */,
 				DFF0F35717528350002DA3A4 /* GUIWindowPictures.cpp in Sources */,
 				DFF0F35817528350002DA3A4 /* GUIWindowSlideShow.cpp in Sources */,
@@ -11925,6 +12018,7 @@
 				DFF0F3B317528350002DA3A4 /* Implementation.cpp in Sources */,
 				DFF0F3B417528350002DA3A4 /* Atomics.cpp in Sources */,
 				DFF0F3B517528350002DA3A4 /* Event.cpp in Sources */,
+				DF29BCFC1B5D911800904347 /* GUIViewStateEventLog.cpp in Sources */,
 				DFF0F3B617528350002DA3A4 /* LockFree.cpp in Sources */,
 				DFF0F3B717528350002DA3A4 /* SystemClock.cpp in Sources */,
 				DFF0F3B817528350002DA3A4 /* Thread.cpp in Sources */,
@@ -12301,6 +12395,7 @@
 			files = (
 				E49910B7174D0E2A00741B6D /* IOSKeyboard.mm in Sources */,
 				E49910B8174D0E2A00741B6D /* IOSKeyboardView.mm in Sources */,
+				DF29BCFE1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */,
 				DF4BF0181A4EF31E0053AC56 /* cc_decoder708.cpp in Sources */,
 				E49910BA174D0E2A00741B6D /* XBMCApplication.m in Sources */,
 				E49910BB174D0E2A00741B6D /* XBMCController.mm in Sources */,
@@ -12462,6 +12557,7 @@
 				E49911FC174E5D4500741B6D /* DVDOverlayContainer.cpp in Sources */,
 				DF4A3BB31B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */,
 				E49911FD174E5D4500741B6D /* DVDOverlayRenderer.cpp in Sources */,
+				DF29BCF21B5D911800904347 /* EventLog.cpp in Sources */,
 				E49911FF174E5D4500741B6D /* DVDPlayer.cpp in Sources */,
 				E4991200174E5D4500741B6D /* DVDPlayerAudio.cpp in Sources */,
 				E4991201174E5D4500741B6D /* DVDPlayerSubtitle.cpp in Sources */,
@@ -12550,6 +12646,7 @@
 				E4991264174E5D8F00741B6D /* FileCache.cpp in Sources */,
 				E4991265174E5D8F00741B6D /* FileDirectoryFactory.cpp in Sources */,
 				E4991266174E5D8F00741B6D /* FileFactory.cpp in Sources */,
+				DF29BCEC1B5D911800904347 /* AddonManagementEvent.cpp in Sources */,
 				395C29EE1A98A16300EBC7AD /* HTTPPythonInvoker.cpp in Sources */,
 				E4991267174E5D8F00741B6D /* FileReaderFile.cpp in Sources */,
 				E4991268174E5D8F00741B6D /* FTPDirectory.cpp in Sources */,
@@ -12581,6 +12678,7 @@
 				E4991285174E5D9900741B6D /* DirectoryNodeAlbumTop100Song.cpp in Sources */,
 				395C2A051A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */,
 				E4991286174E5D9900741B6D /* DirectoryNodeArtist.cpp in Sources */,
+				DF29BCEF1B5D911800904347 /* BaseEvent.cpp in Sources */,
 				E4991287174E5D9900741B6D /* DirectoryNodeGrouped.cpp in Sources */,
 				E4991288174E5D9900741B6D /* DirectoryNodeOverview.cpp in Sources */,
 				E4991289174E5D9900741B6D /* DirectoryNodeRoot.cpp in Sources */,
@@ -12794,6 +12892,7 @@
 				E499136F174E5EF700741B6D /* XFileUtils.cpp in Sources */,
 				E4991370174E5EF700741B6D /* XHandle.cpp in Sources */,
 				DF6A0D851A4584E80075BBFC /* OverrideFile.cpp in Sources */,
+				DF29BD031B5D913B00904347 /* EventsDirectory.cpp in Sources */,
 				E4991371174E5EF700741B6D /* XMemUtils.cpp in Sources */,
 				E4991372174E5EF700741B6D /* XTimeUtils.cpp in Sources */,
 				E4991373174E5F0E00741B6D /* GUIDialogMusicInfo.cpp in Sources */,
@@ -13050,6 +13149,7 @@
 				E499147E174E605900741B6D /* UrlOptions.cpp in Sources */,
 				E499147F174E605900741B6D /* Variant.cpp in Sources */,
 				E4991480174E605900741B6D /* Weather.cpp in Sources */,
+				DF29BCF81B5D911800904347 /* MediaLibraryEvent.cpp in Sources */,
 				E4991481174E605900741B6D /* XBMCTinyXML.cpp in Sources */,
 				395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
 				E4991482174E605900741B6D /* XMLUtils.cpp in Sources */,
@@ -13189,6 +13289,7 @@
 				F55BA71017AB2293002A36D1 /* RenderFlags.cpp in Sources */,
 				F59EED7F17AD5174005BB7C6 /* ApplicationPlayer.cpp in Sources */,
 				DF28DF4E17B8379E0077F41A /* ProfilesOperations.cpp in Sources */,
+				DF29BCE91B5D911800904347 /* AddonEvent.cpp in Sources */,
 				DFD882F717DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */,
 				DFD882E817DD189E001516FE /* StringValidation.cpp in Sources */,
 				F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */,
@@ -13329,6 +13430,7 @@
 				7CCDAC9019275CA70074CF51 /* NptBsdResolver.cpp in Sources */,
 				7CCDAC9319275CA70074CF51 /* NptBsdSockets.cpp in Sources */,
 				7CCDACA819275D1F0074CF51 /* NptStdcDebug.cpp in Sources */,
+				DF29BCFB1B5D911800904347 /* GUIViewStateEventLog.cpp in Sources */,
 				7CCDACB119275D1F0074CF51 /* NptStdcEnvironment.cpp in Sources */,
 				7CCDACC219275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
 				7CCDACCB19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
