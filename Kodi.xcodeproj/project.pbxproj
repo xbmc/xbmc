@@ -222,12 +222,6 @@
 		395C2A041A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A021A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp */; };
 		395C2A051A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A021A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp */; };
 		395C2A061A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A021A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp */; };
-		395C2A1F1A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
-		395C2A201A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
-		395C2A211A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
-		395C2A241AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */; };
-		395C2A251AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */; };
-		395C2A261AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */; };
 		395C2A091A9F06EB00EBC7AD /* LanguageResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A071A9F06EB00EBC7AD /* LanguageResource.cpp */; };
 		395C2A0A1A9F06EB00EBC7AD /* LanguageResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A071A9F06EB00EBC7AD /* LanguageResource.cpp */; };
 		395C2A0B1A9F06EB00EBC7AD /* LanguageResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A071A9F06EB00EBC7AD /* LanguageResource.cpp */; };
@@ -240,6 +234,12 @@
 		395C2A191A9F074C00EBC7AD /* Locale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A171A9F074C00EBC7AD /* Locale.cpp */; };
 		395C2A1A1A9F074C00EBC7AD /* Locale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A171A9F074C00EBC7AD /* Locale.cpp */; };
 		395C2A1B1A9F074C00EBC7AD /* Locale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A171A9F074C00EBC7AD /* Locale.cpp */; };
+		395C2A1F1A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
+		395C2A201A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
+		395C2A211A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */; };
+		395C2A241AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */; };
+		395C2A251AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */; };
+		395C2A261AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */; };
 		395F6DDD1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDE1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
 		395F6DDF1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */; };
@@ -3122,7 +3122,6 @@
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F50FE04E11A3411A00C8B8CD /* EncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */; };
 		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
-		F51CF2D00F6055A4004F4602 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F52A733C1560BC34005B1A0B /* CoreFoundation.framework */; };
 		F52B063B11869862004B1D66 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B063A11869862004B1D66 /* Skin.cpp */; };
 		F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
@@ -3647,10 +3646,6 @@
 		395C29FA1A9CD20C00EBC7AD /* ContextMenuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenuManager.h; sourceTree = "<group>"; };
 		395C2A021A9CD25100EBC7AD /* ContextItemAddonInvoker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ContextItemAddonInvoker.cpp; path = python/ContextItemAddonInvoker.cpp; sourceTree = "<group>"; };
 		395C2A031A9CD25100EBC7AD /* ContextItemAddonInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContextItemAddonInvoker.h; path = python/ContextItemAddonInvoker.h; sourceTree = "<group>"; };
-		395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextItemAddon.cpp; sourceTree = "<group>"; };
-		395C2A1E1A9F96A700EBC7AD /* ContextItemAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextItemAddon.h; sourceTree = "<group>"; };
-		395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioDecoder.cpp; sourceTree = "<group>"; };
-		395C2A231AA4C32100EBC7AD /* AudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioDecoder.h; sourceTree = "<group>"; };
 		395C2A071A9F06EB00EBC7AD /* LanguageResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LanguageResource.cpp; sourceTree = "<group>"; };
 		395C2A081A9F06EB00EBC7AD /* LanguageResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LanguageResource.h; sourceTree = "<group>"; };
 		395C2A0C1A9F06F500EBC7AD /* Resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Resource.h; sourceTree = "<group>"; };
@@ -3660,6 +3655,10 @@
 		395C2A101A9F072400EBC7AD /* ResourceFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceFile.h; sourceTree = "<group>"; };
 		395C2A171A9F074C00EBC7AD /* Locale.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Locale.cpp; sourceTree = "<group>"; };
 		395C2A181A9F074C00EBC7AD /* Locale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Locale.h; sourceTree = "<group>"; };
+		395C2A1D1A9F96A700EBC7AD /* ContextItemAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextItemAddon.cpp; sourceTree = "<group>"; };
+		395C2A1E1A9F96A700EBC7AD /* ContextItemAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextItemAddon.h; sourceTree = "<group>"; };
+		395C2A221AA4C32100EBC7AD /* AudioDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioDecoder.cpp; sourceTree = "<group>"; };
+		395C2A231AA4C32100EBC7AD /* AudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioDecoder.h; sourceTree = "<group>"; };
 		395F6DDB1A8133360088CC74 /* GUIDialogSimpleMenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSimpleMenu.cpp; sourceTree = "<group>"; };
 		395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSimpleMenu.h; sourceTree = "<group>"; };
 		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
@@ -5646,8 +5645,6 @@
 		F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderFFmpeg.cpp; sourceTree = "<group>"; };
 		F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OSXGNUReplacements.c; sourceTree = "<group>"; };
 		F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXGNUReplacements.h; sourceTree = "<group>"; };
-		F51CF2CE0F6055A4004F4602 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
-		F51CF2CF0F6055A4004F4602 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
 		F52A733C1560BC34005B1A0B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		F52B063911869862004B1D66 /* Skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Skin.h; sourceTree = "<group>"; };
 		F52B063A11869862004B1D66 /* Skin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Skin.cpp; sourceTree = "<group>"; };
@@ -11585,7 +11582,6 @@
 				DFF0F1E417528350002DA3A4 /* GUIDialogVolumeBar.cpp in Sources */,
 				DFF0F1E517528350002DA3A4 /* GUIDialogYesNo.cpp in Sources */,
 				DFF0F1E617528350002DA3A4 /* AddonsDirectory.cpp in Sources */,
-
 				DFF0F1E917528350002DA3A4 /* ASAPFileDirectory.cpp in Sources */,
 				DFF0F1EA17528350002DA3A4 /* BlurayDirectory.cpp in Sources */,
 				DFF0F1EB17528350002DA3A4 /* CacheStrategy.cpp in Sources */,
