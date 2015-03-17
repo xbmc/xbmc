@@ -107,15 +107,14 @@ void CEpgDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE epgtags ADD sIconPath varchar(255);");
   
   if (iVersion < 10)
-    m_pDS->exec(
-      "ALTER TABLE epgtags ADD "
-      "sOriginalTitle  varchar(128), "
-      "sCast           varchar(255), "
-      "sDirector       varchar(255), "
-      "sWriter         varchar(255), "
-      "iYear           integer, "
-      "sIMDBNumber     varchar(50); "
-    );
+  {
+    m_pDS->exec("ALTER TABLE epgtags ADD sOriginalTitle varchar(128);");
+    m_pDS->exec("ALTER TABLE epgtags ADD sCast varchar(255);");
+    m_pDS->exec("ALTER TABLE epgtags ADD sDirector varchar(255);");
+    m_pDS->exec("ALTER TABLE epgtags ADD sWriter varchar(255);");
+    m_pDS->exec("ALTER TABLE epgtags ADD iYear integer;");
+    m_pDS->exec("ALTER TABLE epgtags ADD sIMDBNumber varchar(50);");
+  }
 }
 
 bool CEpgDatabase::DeleteEpg(void)
