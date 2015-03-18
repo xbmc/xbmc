@@ -333,11 +333,24 @@ foreach(addon ${addons})
             endif()
           endif()
 
+          if(CROSS_AUTOCONF AND AUTOCONF_FILES)
+            if(EXISTS ${SOURCE_DIR}/bootstrap/autoreconf.txt)
+              file(STRINGS ${SOURCE_DIR}/bootstrap/autoreconf.txt conf_dirs)
+              foreach(conf_dir ${conf_dirs})
+                foreach(afile ${AUTOCONF_FILES})
+                  message(STATUS "copying ${afile} to ${SOURCE_DIR}/${conf_dir}")
+                  file(COPY ${afile} DESTINATION ${SOURCE_DIR}/${conf_dir})
+                endforeach()
+              endforeach()
+            endif()
+          endif()
+
           # create a forwarding target to the addon-package target
           add_custom_target(package-${id}
                     COMMAND ${CMAKE_COMMAND} --build ${BUILD_DIR}/${id}-prefix/src/${id}-build --target addon-package
                     DEPENDS ${id})
           add_dependencies(package-addons package-${id})
+
         else()
           message(FATAL_ERROR "${id}: invalid or missing addon source directory at ${SOURCE_DIR}")
         endif()
