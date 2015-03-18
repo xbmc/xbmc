@@ -2949,6 +2949,15 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="eventlog.show" type="action" label="14114" help="36431">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable" setting="eventlog.enabled" operator="is">true</dependency>
+          </dependencies>
+          <control type="button" format="action">
+            <hidevalue>true</hidevalue>
+          </control>
+        </setting>
       </group>
       <group id="2">
         <setting id="debug.showloginfo" type="boolean" label="20191" help="36392">
