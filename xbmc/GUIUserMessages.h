@@ -135,3 +135,7 @@
 
 // Sent to text field to support 'input method'
 #define GUI_MSG_INPUT_TEXT_EDIT       GUI_MSG_USER + 38
+
+// Sent to CGUIWindowEventLog
+#define GUI_MSG_EVENT_ADDED        GUI_MSG_USER + 39
+#define GUI_MSG_EVENT_REMOVED      GUI_MSG_USER + 40

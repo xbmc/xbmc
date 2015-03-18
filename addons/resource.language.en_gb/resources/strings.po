@@ -7129,7 +7129,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14092"
-msgid "Debugging"
+msgid "Logging"
 msgstr ""
 
 msgctxt "#14093"
@@ -7224,7 +7224,21 @@ msgctxt "#14110"
 msgid "Long date format"
 msgstr ""
 
-#empty strings from id 14111 to 15003
+#empty string with id 14111
+
+#. Label of setting to enable/disable event logging
+#: system/settings/settings.xml
+msgctxt "#14112"
+msgid "Enable event logging"
+msgstr ""
+
+#. Label of setting to enable/disable event logging for notifications
+#: system/settings/settings.xml
+msgctxt "#14113"
+msgid "Enable notification event logging"
+msgstr ""
+
+#empty strings from id 14114 to 15003
 
 #. Name of a class/preset for audio DSP
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
@@ -16418,25 +16432,25 @@ msgctxt "#36390"
 msgid "Define what action to perform when the shutdown function timer lapsed."
 msgstr ""
 
-#. Description of settings category "System -> Debugging" with label #14092
+#. Description of settings category "System -> Logging" with label #14092
 #: system/settings/settings.xml
 msgctxt "#36391"
-msgid "This category contains the settings for enabling debug functions. You can also enable component-specific debug logging in order to help troubleshoot related issues in more detail."
+msgid "This category contains the settings for enabling event and debug logging. You can also enable component-specific debug logging in order to help troubleshoot related issues in more detail."
 msgstr ""
 
-#. Description of setting "System -> Debugging -> Enable debug logging" with label #20191
+#. Description of setting "System -> Logging -> Enable debug logging" with label #20191
 #: system/settings/settings.xml
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr ""
 
-#. Description of setting "System -> Debugging -> Screenshot folder" with label #20004
+#. Description of setting "System -> Logging -> Screenshot folder" with label #20004
 #: system/settings/settings.xml
 msgctxt "#36393"
 msgid "Select the folder where screenshots should be saved in."
 msgstr ""
 
-#. Description of setting "System -> Debugging -> Enable component-specific logging" with label #666
+#. Description of setting "System -> Logging -> Enable component-specific logging" with label #666
 #: system/settings/settings.xml
 msgctxt "#36394"
 msgid "Enables verbose messages from additional libraries to be included in the debug log."
@@ -16709,7 +16723,21 @@ msgctxt "#36441"
 msgid "Enable audio DSP processing"
 msgstr ""
 
-#empty strings from id 36442 to 36499
+#empty strings from id 36459 to 36499
+
+#. Description of settings "System -> Logging -> Enable event logging" with label #14112
+#: system/settings/settings.xml
+msgctxt "#36460"
+msgid "Event logging allows to keep track of what has happened."
+msgstr ""
+
+#. Description of settings "System -> Logging -> Enable notification event logging" with label #14113
+#: system/settings/settings.xml
+msgctxt "#36461"
+msgid "Notification event describe regular processes and actions performed by the system or the user."
+msgstr ""
+
+#empty strings from id 36462 to 36499
 
 #end reservation
 
@@ -16863,7 +16891,7 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, e.g. from 5.1 to 2.0.[CR][Enabled] Maintains volume level of the original audio source however the dynamic range is compressed.[CR][Disabled] Maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note: Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
 msgstr ""
 
-#. Description of setting "System -> Debugging -> Component-specific logging..." with label #668
+#. Description of setting "System -> Logging -> Component-specific logging..." with label #668
 #: system/settings/settings.xml
 msgctxt "#36534"
 msgid "Specify additional libraries whose verbose messages are to be included in the debug log."
