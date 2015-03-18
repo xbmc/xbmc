@@ -3948,6 +3948,7 @@ msgstr ""
 
 #empty string with id 1209
 
+#: xbmc/event/windows/GUIWindowEventLog.cpp
 msgctxt "#1210"
 msgid "Remove"
 msgstr ""
@@ -7246,7 +7247,49 @@ msgctxt "#14113"
 msgid "Enable notification event logging"
 msgstr ""
 
-#empty strings from id 14114 to 15003
+#. Label of setting to go into the event log window
+#: system/settings/settings.xml
+msgctxt "#14114"
+msgid "Show event log"
+msgstr ""
+
+#. Label for the "Basic" event level
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14115"
+msgid "Basic"
+msgstr ""
+
+#. Label for the "Information" event level
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14116"
+msgid "Information"
+msgstr ""
+
+#. Label for the "Warning" event level
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14117"
+msgid "Warning"
+msgstr ""
+
+#. Label for the "Error" event level
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14118"
+msgid "Error"
+msgstr ""
+
+#. Label to show the currently active/displayed event level in the event log window
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14119"
+msgid "Level: %s"
+msgstr ""
+
+#. Label for the option to show/hide higher level events in the event log window
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14120"
+msgid "Show higher levels"
+msgstr ""
+
+#empty strings from id 14121 to 15003
 
 #. Name of a class/preset for audio DSP
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
@@ -8429,6 +8472,7 @@ msgctxt "#19032"
 msgid "Timeline"
 msgstr ""
 
+#: xbmc/event/windows/GUIWindowEventLog.cpp
 #: xbmc/pvr/addons/PVRClients.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 #: xbmc/pvr/PVRManager.cpp
@@ -16728,7 +16772,11 @@ msgctxt "#36430"
 msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
 msgstr ""
 
-#empty string with id 36431
+#. Description of setting "System -> Logging -> Show event log" with label #13438
+#: system/settings/settings.xml
+msgctxt "#36431"
+msgid "Shows all events in the event log for the current profile with options to only show specific levels."
+msgstr ""
 
 #. Description for international setting #310: Keyboard layouts
 #: system/settings/settings.xml

@@ -21,8 +21,10 @@
 #include "EventLog.h"
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "filesystem/EventsDirectory.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/WindowIDs.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -197,6 +199,36 @@ bool CEventLog::Execute(const std::string& eventPtrIdentifier)
     return false;
 
   return itEvent->second->Execute();
+}
+
+void CEventLog::ShowFullEventLog(EventLevel level /* = EventLevelBasic */, bool includeHigherLevels /* = true */)
+{
+  // put together the path
+  std::string path = "events://";
+  if (level != EventLevelBasic || !includeHigherLevels)
+  {
+    // add the level to the path
+    path += EventLevelToString(level);
+    // add whether to include higher levels or not to the path
+    if (includeHigherLevels)
+      path += "+";
+  }
+
+  // activate the full eventPtr log window
+  std::vector<std::string> params;
+  params.push_back(path);
+  params.push_back("return");
+  g_windowManager.ActivateWindow(WINDOW_EVENT_LOG, params);
+}
+
+void CEventLog::OnSettingAction(const CSetting *setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string& settingId = setting->GetId();
+  if (settingId == "eventlog.show")
+    ShowFullEventLog();
 }
 
 void CEventLog::SendMessage(const EventPtr eventPtr, int message)

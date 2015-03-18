@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "events/IEvent.h"
+#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
 #define NOTIFICATION_DISPLAY_TIME 5000
@@ -31,7 +32,7 @@
 
 typedef std::vector<EventPtr> Events;
 
-class CEventLog
+class CEventLog : public ISettingCallback
 {
 public:
   virtual ~CEventLog() { }
@@ -56,10 +57,15 @@ public:
 
   bool Execute(const std::string& eventIdentifier);
 
+  void ShowFullEventLog(EventLevel level = EventLevelBasic, bool includeHigherLevels = true);
+
 protected:
   CEventLog() { }
   CEventLog(const CEventLog&);
   CEventLog const& operator=(CEventLog const&);
+
+  // implementation of ISettingCallback
+  virtual void OnSettingAction(const CSetting *setting);
 
 private:
   void SendMessage(const EventPtr event, int message);

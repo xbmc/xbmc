@@ -3,6 +3,8 @@ SRCS=AddonEvent.cpp \
      BaseEvent.cpp \
      EventLog.cpp \
      MediaLibraryEvent.cpp \
+     windows/GUIViewStateEventLog.cpp \
+     windows/GUIWindowEventLog.cpp \
 
 LIB=events.a
 
