@@ -204,6 +204,12 @@ namespace PVR
     bool IsRadio(void) const { return m_bRadio; }
 
     /*!
+     * @brief Set 'radio' property of this group.
+     * @param bIsRadio The new value for the 'radio' property.
+     */
+    void SetRadio(bool bIsRadio) { m_bRadio = bIsRadio; }
+
+    /*!
      * @brief True if sorting should be prevented when adding/updating channels to the group.
      * @return True if sorting should be prevented when adding/updating channels to the group.
      */

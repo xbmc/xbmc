@@ -82,6 +82,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromCl
       m_groups.push_back(updateGroup);
     }
 
+    updateGroup->SetRadio(group.IsRadio());
     updateGroup->SetGroupID(group.GroupID());
     updateGroup->SetGroupName(group.GroupName());
     updateGroup->SetGroupType(group.GroupType());
