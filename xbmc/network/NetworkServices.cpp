@@ -46,6 +46,7 @@
 #ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "network/TCPServer.h"
+#include "network/ZeroMQServer.h"
 #endif
 
 #ifdef HAS_ZEROCONF
@@ -668,6 +669,9 @@ bool CNetworkServices::StartJSONRPCServer()
   if (!CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, CSettings::Get().GetBool("services.esallinterfaces")))
     return false;
 
+  if (!CZeroMQServer::StartServer(5555))
+    return false;
+
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
@@ -693,6 +697,7 @@ bool CNetworkServices::StopJSONRPCServer(bool bWait)
     return true;
 
   CTCPServer::StopServer(bWait);
+  CZeroMQServer::StopServer(bWait);
 
 #ifdef HAS_ZEROCONF
   CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-tcp");

@@ -14,6 +14,7 @@ SRCS  = cddb.cpp \
         WebServer.cpp \
         ZeroconfBrowser.cpp \
         Zeroconf.cpp \
+        ZeroMQServer.cpp
 
 ifeq (@USE_AIRPLAY@, 1)
 SRCS += AirPlayServer.cpp

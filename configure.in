@@ -482,6 +482,12 @@ AC_ARG_ENABLE([webserver],
   [use_webserver=$enableval],
   [use_webserver=yes])
 
+AC_ARG_ENABLE([zeromq],
+  [AS_HELP_STRING([--disable-zeromq],
+  [disable zeromq])],
+  [use_zeromq=$enableval],
+  [use_zeromq=yes])
+
 AC_ARG_ENABLE([optical-drive],
   [AS_HELP_STRING([--disable-optical-drive],
   [disable optical drive])],
@@ -1289,6 +1295,11 @@ XB_FIND_SONAME([MPEG2],       [mpeg2])
 # WebServer
 if test "$use_webserver" = "yes"; then
   AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
+fi
+
+# ZeroMQ
+if test "$use_zeromq" = "yes"; then
+  AC_CHECK_LIB([zmq],  [main],, AC_MSG_ERROR($missing_library))
 fi
 
 # Optical
@@ -2351,6 +2362,14 @@ else
   USE_WEB_SERVER=0
 fi
 
+if test "$use_zeromq" = "yes"; then
+  final_message="$final_message\n  ZeroMQ:\tYes"
+  USE_ZMQ_SERVER=1
+else
+  final_message="$final_message\n  ZeroMQ:\tNo"
+  USE_ZMQ_SERVER=0
+fi
+
 if test "$use_libssh" != "no"; then
   final_message="$final_message\n  libssh support:\tYes"
 else
@@ -2630,6 +2649,7 @@ AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_MYSQL)
 AC_SUBST(USE_WAYLAND)
 AC_SUBST(USE_WEB_SERVER)
+AC_SUBST(USE_ZMQ_SERVER)
 AC_SUBST(USE_UPNP)
 AC_SUBST(USE_XKBCOMMON)
 AC_SUBST(USE_OMXLIB)
