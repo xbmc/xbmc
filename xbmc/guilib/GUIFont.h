@@ -48,13 +48,15 @@ class CGUIFontTTFBase;
 #define XBFONT_TRUNCATED  0x00000008
 #define XBFONT_JUSTIFIED  0x00000010
 
+// flags for font style. lower 16 bits are the unicode code
+// points, 16-24 are color bits and 24-32 are style bits
 #define FONT_STYLE_NORMAL       0
 #define FONT_STYLE_BOLD         1
 #define FONT_STYLE_ITALICS      2
 #define FONT_STYLE_UPPERCASE    4
 #define FONT_STYLE_LOWERCASE    8
 #define FONT_STYLE_CAPITALIZE  16
-#define FONT_STYLE_MASK       0xF
+#define FONT_STYLE_MASK      0xFF
 
 class CScrollInfo
 {

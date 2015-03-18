@@ -459,7 +459,7 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
         StringUtils::ToLower(subText);
       if (currentStyle & FONT_STYLE_CAPITALIZE)
         StringUtils::ToCapitalize(subText);
-      AppendToUTF32(subText, ((currentStyle & 3) << 24) | (currentColor << 16), parsedText);
+      AppendToUTF32(subText, ((currentStyle & FONT_STYLE_MASK) << 24) | (currentColor << 16), parsedText);
       if (newLine)
         parsedText.push_back(L'\n');
 
@@ -481,7 +481,7 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
     StringUtils::ToLower(subText);
   if (currentStyle & FONT_STYLE_CAPITALIZE)
     StringUtils::ToCapitalize(subText);
-  AppendToUTF32(subText, ((currentStyle & 3) << 24) | (currentColor << 16), parsedText);
+  AppendToUTF32(subText, ((currentStyle & FONT_STYLE_MASK) << 24) | (currentColor << 16), parsedText);
 }
 
 void CGUITextLayout::SetMaxHeight(float fHeight)
@@ -635,7 +635,7 @@ float CGUITextLayout::GetTextWidth(const std::wstring &text) const
   // NOTE: Assumes a single line of text
   if (!m_font) return 0;
   vecText utf32;
-  AppendToUTF32(text, (m_font->GetStyle() & 3) << 24, utf32);
+  AppendToUTF32(text, (m_font->GetStyle() & FONT_STYLE_MASK) << 24, utf32);
   return m_font->GetTextWidth(utf32);
 }
 
