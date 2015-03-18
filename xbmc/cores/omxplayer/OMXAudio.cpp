@@ -129,7 +129,7 @@ bool COMXAudio::PortSettingsChanged()
     if(!m_omx_render_analog.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
       return false;
   }
-  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both" || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:HDMI")
+  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both" || CSettings::Get().GetString("audiooutput.audiodevice") != "PI:Analogue")
   {
     if(!m_omx_render_hdmi.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
       return false;
