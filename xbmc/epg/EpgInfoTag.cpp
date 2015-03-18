@@ -138,7 +138,13 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
 {
   if (this == &right) return true;
 
-  return (m_bNotify            == right.m_bNotify &&
+  bool bChannelMatch(false);
+  {
+    CSingleLock lock(m_critSection);
+    bChannelMatch = (m_pvrChannel == right.m_pvrChannel);
+  }
+  return (bChannelMatch &&
+          m_bNotify            == right.m_bNotify &&
           m_iBroadcastId       == right.m_iBroadcastId &&
           m_iGenreType         == right.m_iGenreType &&
           m_iGenreSubType      == right.m_iGenreSubType &&
@@ -163,8 +169,7 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strIconPath        == right.m_strIconPath &&
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
-          m_endTime            == right.m_endTime &&
-          m_pvrChannel         == right.m_pvrChannel);
+          m_endTime            == right.m_endTime);
 }
 
 bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
@@ -340,8 +345,11 @@ std::string CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
   std::string strTitle;
   bool bParentalLocked(false);
 
-  if (m_pvrChannel)
-    bParentalLocked = g_PVRManager.IsParentalLocked(m_pvrChannel);
+  {
+    CSingleLock lock(m_critSection);
+    if (m_pvrChannel)
+      bParentalLocked = g_PVRManager.IsParentalLocked(m_pvrChannel);
+  }
 
   if (!bOverrideParental && bParentalLocked)
     strTitle = g_localizeStrings.Get(19266); // parental locked
@@ -356,8 +364,12 @@ std::string CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 std::string CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
 {
   std::string retVal;
-  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
-    retVal = m_strPlotOutline;
+
+  {
+    CSingleLock lock(m_critSection);
+    if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
+      retVal = m_strPlotOutline;
+  }
 
   return retVal;
 }
@@ -365,8 +377,12 @@ std::string CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
 std::string CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
 {
   std::string retVal;
-  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
-    retVal = m_strPlot;
+
+  {
+    CSingleLock lock(m_critSection);
+    if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
+      retVal = m_strPlot;
+  }
 
   return retVal;
 }
@@ -374,8 +390,13 @@ std::string CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
 std::string CEpgInfoTag::OriginalTitle(bool bOverrideParental /* = false */) const
 {
   std::string retVal;
-  if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
-    retVal = m_strOriginalTitle;
+
+  {
+    CSingleLock lock(m_critSection);
+    if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
+      retVal = m_strOriginalTitle;
+  }
+
   return retVal;
 }
 
@@ -508,29 +529,38 @@ CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const
 
 void CEpgInfoTag::SetPVRChannel(PVR::CPVRChannelPtr channel)
 {
+  CSingleLock lock(m_critSection);
   m_pvrChannel = channel;
 }
 
 bool CEpgInfoTag::HasPVRChannel(void) const
 {
-  return m_pvrChannel != NULL;
+  CSingleLock lock(m_critSection);
+  return m_pvrChannel.get() != NULL;
 }
 
 int CEpgInfoTag::PVRChannelNumber(void) const
 {
+  CSingleLock lock(m_critSection);
   return m_pvrChannel ? m_pvrChannel->ChannelNumber() : -1;
 }
 
 std::string CEpgInfoTag::PVRChannelName(void) const
 {
   std::string strReturn;
-  if (m_pvrChannel)
-    strReturn = m_pvrChannel->ChannelName();
+
+  {
+    CSingleLock lock(m_critSection);
+    if (m_pvrChannel)
+      strReturn = m_pvrChannel->ChannelName();
+  }
+
   return strReturn;
 }
 
 const PVR::CPVRChannelPtr CEpgInfoTag::ChannelTag(void) const
 {
+  CSingleLock lock(m_critSection);
   return m_pvrChannel;
 }
 
@@ -538,7 +568,12 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
 {
   bool bChanged(false);
   {
-    bChanged = (
+    CSingleLock lock(m_critSection);
+    bChanged = (m_pvrChannel != tag.m_pvrChannel);
+  }
+
+  {
+    bChanged |= (
         m_strTitle           != tag.m_strTitle ||
         m_strPlotOutline     != tag.m_strPlotOutline ||
         m_strPlot            != tag.m_strPlot ||
@@ -562,17 +597,16 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_strEpisodeName     != tag.m_strEpisodeName ||
         m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
         EpgID()              != tag.EpgID() ||
-        m_pvrChannel         != tag.m_pvrChannel ||
         m_genre              != tag.m_genre ||
         m_strIconPath        != tag.m_strIconPath
     );
     if (bUpdateBroadcastId)
-      bChanged = bChanged || m_iBroadcastId != tag.m_iBroadcastId;
+      bChanged |= (m_iBroadcastId != tag.m_iBroadcastId);
 
     if (bChanged)
     {
       if (bUpdateBroadcastId)
-        m_iBroadcastId       = tag.m_iBroadcastId;
+        m_iBroadcastId     = tag.m_iBroadcastId;
 
       m_strTitle           = tag.m_strTitle;
       m_strPlotOutline     = tag.m_strPlotOutline;
@@ -588,11 +622,16 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_iGenreType         = tag.m_iGenreType;
       m_iGenreSubType      = tag.m_iGenreSubType;
       m_epg                = tag.m_epg;
-      m_pvrChannel         = tag.m_pvrChannel;
+
+      {
+        CSingleLock lock(m_critSection);
+        m_pvrChannel       = tag.m_pvrChannel;
+      }
+
       if (m_iGenreType == EPG_GENRE_USE_STRING)
       {
         /* No type/subtype. Use the provided description */
-        m_genre = tag.m_genre;
+        m_genre            = tag.m_genre;
       }
       else
       {
@@ -677,22 +716,25 @@ void CEpgInfoTag::ClearTimer(void)
 
 void CEpgInfoTag::SetRecording(CPVRRecordingPtr recording)
 {
+  CSingleLock lock(m_critSection);
   m_recording = recording;
 }
 
 void CEpgInfoTag::ClearRecording(void)
 {
-  CPVRRecordingPtr emptyRecording;
-  m_recording = emptyRecording;
+  CSingleLock lock(m_critSection);
+  m_recording.reset();
 }
 
 bool CEpgInfoTag::HasRecording(void) const
 {
-  return m_recording != NULL;
+  CSingleLock lock(m_critSection);
+  return m_recording.get() != NULL;
 }
 
 CPVRRecordingPtr CEpgInfoTag::Recording(void) const
 {
+  CSingleLock lock(m_critSection);
   return m_recording;
 }
 
