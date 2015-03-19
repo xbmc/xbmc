@@ -161,7 +161,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_YEAR:
     {
-      AddSortMethod(SortByLabel, 551, LABEL_MASKS("%F", "", "%Y", ""));  // Filename, empty | Year, empty
+      AddSortMethod(SortByLabel, 562, LABEL_MASKS("%F", "", "%Y", ""));  // Filename, empty | Year, empty
       SetSortMethod(SortByLabel);
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
@@ -218,7 +218,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
     {
-      AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));  // Filename, empty | Userdefined, Userdefined
+      AddSortMethod(SortByNone, 568, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));  // Filename, empty | Userdefined, Userdefined
       SetSortMethod(SortByNone);
 
       SetViewAsControl(CViewStateSettings::Get().Get("musicnavalbums")->m_viewMode);
@@ -228,7 +228,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     {
-      AddSortMethod(SortByNone, 551, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
+      AddSortMethod(SortByNone, 568, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
       SetSortMethod(SortByNone);
 
       SetViewAsControl(CViewStateSettings::Get().Get("musicnavalbums")->m_viewMode);
