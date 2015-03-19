@@ -237,7 +237,7 @@ int CEpgDatabase::Get(CEpg &epg)
         newTag->m_strCast            = m_pDS->fv("sCast").get_asString().c_str();
         newTag->m_strDirector        = m_pDS->fv("sDirector").get_asString().c_str();
         newTag->m_strWriter          = m_pDS->fv("sWriter").get_asString().c_str();
-        newTag->m_iYear              = m_pDS->fv("sYear").get_asInt();
+        newTag->m_iYear              = m_pDS->fv("iYear").get_asInt();
         newTag->m_strIMDBNumber      = m_pDS->fv("sIMDBNumber").get_asString().c_str();
         newTag->m_iGenreType         = m_pDS->fv("iGenreType").get_asInt();
         newTag->m_iGenreSubType      = m_pDS->fv("iGenreSubType").get_asInt();
@@ -358,7 +358,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
         "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, sIMDBNumber, "
         "sIconPath, iGenreType, iGenreSubType, sGenre, iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
         tag.EpgID(), iStartTime, iEndTime,
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
         tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
@@ -373,7 +373,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
         "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, sIMDBNumber, "
         "sIconPath, iGenreType, iGenreSubType, sGenre, iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
         tag.EpgID(), iStartTime, iEndTime,
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
         tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
