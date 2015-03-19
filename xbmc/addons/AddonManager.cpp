@@ -732,20 +732,37 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
   if (!root)
     return "";
 
-  const cp_cfg_element_t *eng = NULL;
+  std::map<std::string, std::string> translatedValues;
   for (unsigned int i = 0; i < root->num_children; i++)
   {
     const cp_cfg_element_t &child = root->children[i];
     if (strcmp(tag, child.name) == 0)
-    { // see if we have a "lang" attribute
+    {
+      // see if we have a "lang" attribute
       const char *lang = m_cpluff->lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
-      if (lang != NULL && g_langInfo.GetLocale().Matches(lang))
-        return child.value ? child.value : "";
-      if (!lang || 0 == strcmp(lang, "en"))
-        eng = &child;
+      if (lang != NULL &&
+         (g_langInfo.GetLocale().Matches(lang) || strcmp(lang, "en") == 0))
+        translatedValues.insert(std::make_pair(lang, child.value != NULL ? child.value : ""));
+      else if (lang == NULL)
+        translatedValues.insert(std::make_pair("en", child.value != NULL ? child.value : ""));
     }
   }
-  return (eng && eng->value) ? eng->value : "";
+
+  // put together a list of languages
+  std::set<std::string> languages;
+  for (auto const& translatedValue : translatedValues)
+    languages.insert(translatedValue.first);
+
+  // find the language from the list that matches the current locale best
+  std::string matchingLanguage = g_langInfo.GetLocale().FindBestMatch(languages);
+  if (matchingLanguage.empty())
+    matchingLanguage = "en";
+
+  auto const& translatedValue = translatedValues.find(matchingLanguage);
+  if (translatedValue != translatedValues.end())
+    return translatedValue->second;
+
+  return "";
 }
 
 AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
