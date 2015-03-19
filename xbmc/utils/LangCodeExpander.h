@@ -93,14 +93,14 @@ public:
   *   \param[in] checkWin32Locales Whether to also check WIN32 specific language codes.
   *   \return true if the conversion succeeded, false otherwise.
   */
-  static bool ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkWin32Locales = false);
+  bool ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkWin32Locales = false);
 
 #ifdef TARGET_WINDOWS
   static bool ConvertISO36111Alpha2ToISO36111Alpha3(const std::string& strISO36111Alpha2, std::string& strISO36111Alpha3);
   static bool ConvertWindowsLanguageCodeToISO6392T(const std::string& strWindowsLanguageCode, std::string& strISO6392T);
 #endif
 
-  static std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1);
+  std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1, bool customNames = false);
 protected:
 
   /** \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
@@ -120,6 +120,14 @@ protected:
   *   \return true if the a code was found, false otherwise.
   */ 
   bool ReverseLookup(const std::string& desc, std::string& code);
+
+
+  /** \brief Looks up the user defined code of the given code or language name.
+  *   \param[in] desc The language code or name that should be converted.
+  *   \param[out] userCode The user defined language code of the given language desc.
+  *   \return true if desc was found, false otherwise.
+  */
+  bool LookupUserCode(const std::string& desc, std::string &userCode);
 
   typedef std::map<std::string, std::string> STRINGLOOKUPTABLE;
   STRINGLOOKUPTABLE m_mapUser;
