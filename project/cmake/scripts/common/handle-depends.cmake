@@ -86,8 +86,26 @@ function(add_addon_depends addon searchpath)
         file(GLOB patches ${dir}/*.patch)
         list(SORT patches)
         foreach(patch ${patches})
+          if(NOT PATCH_PROGRAM OR "${PATCH_PROGRAM}" STREQUAL "")
+            if(NOT PATCH_EXECUTABLE)
+              # find the path to the patch executable
+              find_program(PATCH_EXECUTABLE NAMES patch)
+
+              if(NOT PATCH_EXECUTABLE)
+                message(FATAL_ERROR "Missing patch command (we looked in ${CMAKE_PREFIX_PATH})")
+              endif()
+            endif()
+
+            # on windows "patch.exe" can only handle CR-LF line-endings so we
+            # need to force it to also handle LF-only line endings
+            set(PATCH_PROGRAM ${PATCH_EXECUTABLE})
+            if(WIN32)
+              set(PATCH_PROGRAM "\"${PATCH_PROGRAM}\" --binary")
+            endif()
+          endif()
+
           file(APPEND ${PATCH_FILE}
-               "execute_process(COMMAND patch -p1 -i ${patch})\n")
+               "execute_process(COMMAND ${PATCH_PROGRAM} -p1 -i \"${patch}\")\n")
         endforeach()
 
 
