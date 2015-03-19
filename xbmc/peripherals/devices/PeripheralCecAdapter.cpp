@@ -636,6 +636,7 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)
 
   if (!strGuiLanguage.empty())
   {
+    strGuiLanguage = "resource.language." + strGuiLanguage;
     CApplicationMessenger::Get().SetGUILanguage(strGuiLanguage);
     CLog::Log(LOGDEBUG, "%s - language set to '%s'", __FUNCTION__, strGuiLanguage.c_str());
   }
