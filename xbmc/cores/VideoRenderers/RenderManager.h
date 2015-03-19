@@ -113,6 +113,10 @@ public:
 
   void AddOverlay(CDVDOverlay* o, double pts)
   {
+    { CSingleLock lock(m_presentlock);
+      if (m_free.empty())
+        return;
+    }
     CSharedLock lock(m_sharedSection);
     m_overlays.AddOverlay(o, pts, m_free.front());
   }
