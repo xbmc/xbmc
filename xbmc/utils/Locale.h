@@ -19,6 +19,7 @@
  *
  */
 
+#include <set>
 #include <string>
 
 /*!
@@ -131,11 +132,22 @@ public:
   */
   bool Matches(const std::string& locale) const;
 
+  /*!
+  \brief Tries to find the locale in the given list that matches this locale
+         best.
+
+  \param locales List of string representations of locales
+  \return Best matching locale from the given list or empty string.
+  */
+  std::string FindBestMatch(const std::set<std::string>& locales) const;
+
 private:
   static bool CheckValidity(const std::string& language, const std::string& territory, const std::string& codeset, const std::string& modifier);
   static bool ParseLocale(const std::string &locale, std::string &language, std::string &territory, std::string &codeset, std::string &modifier);
 
   void Initialize();
+
+  int GetMatchRank(const std::string& locale) const;
 
   bool m_valid;
   std::string m_language;
