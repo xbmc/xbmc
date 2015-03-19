@@ -26,9 +26,9 @@ endif()
 
 if("${OS}" STREQUAL "ios" OR "${OS}" STREQUAL "osx")
   set(CMAKE_OSX_SYSROOT @use_sdk_path@)
-  list(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_OSX_SYSROOT} ${CMAKE_OSX_SYSROOT}/usr)
-  set(CMAKE_LIBRARY_PATH @CMAKE_FIND_ROOT_PATH@/lib:@use_sdk_path@/lib)
-  set(CMAKE_INCLUDE_PATH @CMAKE_FIND_ROOT_PATH@/include:@use_sdk_path@/include)
+  list(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_OSX_SYSROOT} ${CMAKE_OSX_SYSROOT}/usr /usr/X11R6)
+  set(CMAKE_LIBRARY_PATH @CMAKE_FIND_ROOT_PATH@/lib:@use_sdk_path@/lib:/usr/X11R6/lib)
+  set(CMAKE_INCLUDE_PATH @CMAKE_FIND_ROOT_PATH@/include:@use_sdk_path@/include:/usr/X11R6/include)
 endif()
 
 # specify the cross compiler
