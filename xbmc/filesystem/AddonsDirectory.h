@@ -62,7 +62,10 @@ namespace XFILE
      */
     static CFileItemPtr GetMoreItem(const std::string &content);
 
-    static void GenerateListing(CURL &path, ADDON::VECADDONS& addons, CFileItemList &items, bool reposAsFolders = true);
-    static CFileItemPtr FileItemFromAddon(const ADDON::AddonPtr &addon, const std::string &basePath, bool folder = false);
+    static void GenerateAddonListing(const CURL &path, const ADDON::VECADDONS& addons, CFileItemList &items, const std::string label);
+    static CFileItemPtr FileItemFromAddon(const ADDON::AddonPtr &addon, const std::string& path, bool folder = false);
+  
+  private:
+    bool GetSearchResults(const CURL& path, CFileItemList &items);
   };
 }
