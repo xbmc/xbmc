@@ -24,13 +24,8 @@
 #include "utils/URIUtils.h"
 #include "FileDirectoryFactory.h"
 #ifdef HAS_FILESYSTEM
-#include "OGGFileDirectory.h"
-#include "NSFFileDirectory.h"
-#include "SIDFileDirectory.h"
-#include "ASAPFileDirectory.h"
 #include "UDFDirectory.h"
 #include "RSSDirectory.h"
-#include "cores/paplayer/ASAPCodec.h"
 #endif
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
@@ -90,51 +85,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   }
 
 #ifdef HAS_FILESYSTEM
-  if ((url.IsFileType("ogg") || url.IsFileType("oga")) && CFile::Exists(url))
-  {
-    IFileDirectory* pDir=new COGGFileDirectory;
-    //  Has the ogg file more than one bitstream?
-    if (pDir->ContainsFiles(url))
-    {
-      return pDir; // treat as directory
-    }
-
-    delete pDir;
-    return NULL;
-  }
-  if (url.IsFileType("nsf") && CFile::Exists(url))
-  {
-    IFileDirectory* pDir=new CNSFFileDirectory;
-    //  Has the nsf file more than one track?
-    if (pDir->ContainsFiles(url))
-      return pDir; // treat as directory
-
-    delete pDir;
-    return NULL;
-  }
-  if (url.IsFileType("sid") && CFile::Exists(url))
-  {
-    IFileDirectory* pDir=new CSIDFileDirectory;
-    //  Has the sid file more than one track?
-    if (pDir->ContainsFiles(url))
-      return pDir; // treat as directory
-
-    delete pDir;
-    return NULL;
-  }
-#ifdef HAS_ASAP_CODEC
-  if (ASAPCodec::IsSupportedFormat(url.GetFileType()) && CFile::Exists(url))
-  {
-    IFileDirectory* pDir=new CASAPFileDirectory;
-    //  Has the asap file more than one track?
-    if (pDir->ContainsFiles(url))
-      return pDir; // treat as directory
-
-    delete pDir;
-    return NULL;
-  }
-#endif
-
+  
   if (pItem->IsRSS())
     return new CRSSDirectory();
 

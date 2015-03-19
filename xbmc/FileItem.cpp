@@ -58,9 +58,6 @@
 #include "utils/Variant.h"
 #include "music/karaoke/karaokelyricsfactory.h"
 #include "utils/Mime.h"
-#ifdef HAS_ASAP_CODEC
-#include "cores/paplayer/ASAPCodec.h"
-#endif
 
 #include <assert.h>
 #include <algorithm>
@@ -854,9 +851,6 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
     || IsType(".ogg|.oga|.nsf|.sid|.sap|.xsp")
 #if defined(TARGET_ANDROID)
     || IsType(".apk")
-#endif
-#ifdef HAS_ASAP_CODEC
-    || ASAPCodec::IsSupportedFormat(URIUtils::GetExtension(m_strPath))
 #endif
     )
     return true;

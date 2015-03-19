@@ -1,7 +1,6 @@
 CXXFLAGS += -D__STDC_FORMAT_MACROS
 
 SRCS  = AddonsDirectory.cpp
-SRCS += ASAPFileDirectory.cpp
 SRCS += CacheStrategy.cpp
 SRCS += CircularCache.cpp
 SRCS += CDDADirectory.cpp
@@ -43,8 +42,6 @@ SRCS += MusicDatabaseDirectory.cpp
 SRCS += MusicDatabaseFile.cpp
 SRCS += MusicFileDirectory.cpp
 SRCS += MusicSearchDirectory.cpp
-SRCS += NSFFileDirectory.cpp
-SRCS += OGGFileDirectory.cpp
 SRCS += OverrideDirectory.cpp
 SRCS += OverrideFile.cpp
 SRCS += PlaylistDirectory.cpp
@@ -65,7 +62,6 @@ SRCS += SAPDirectory.cpp
 SRCS += SAPFile.cpp
 SRCS += SFTPDirectory.cpp
 SRCS += SFTPFile.cpp
-SRCS += SIDFileDirectory.cpp
 SRCS += ShoutcastFile.cpp
 SRCS += SlingboxDirectory.cpp
 SRCS += SlingboxFile.cpp

@@ -1,1 +1,0 @@
-Emacs interface (invoked from `M-x timidity')

@@ -1,2 +1,0 @@
-Fix and check endian-ness issues.
-Add looping flag to sound file / API function for this.

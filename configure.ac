@@ -1070,7 +1070,6 @@ AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 
 PKG_CHECK_MODULES([LIBCURL], [libcurl],, AC_MSG_ERROR([libcurl not found]))
 XB_FIND_SONAME([CURL], [curl])
@@ -1282,7 +1281,6 @@ fi
 XB_FIND_SONAME([OGG],         [ogg])
 XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
-XB_FIND_SONAME([MODPLUG],     [modplug])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
 
@@ -2474,13 +2472,6 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/AudioEngine/Makefile \
     xbmc/cores/paplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \
-    lib/timidity/Makefile \
-    lib/asap/Makefile \
-    lib/nosefart/Makefile \
-    lib/libsidplay2/Makefile \
-    lib/vgmstream/Makefile \
-    lib/snesapu/SNES/SNESAPU/Makefile \
-    lib/stsound/StSoundLibrary/Makefile \
     xbmc/cores/playercorefactory/Makefile \
     xbmc/music/karaoke/Makefile \
     xbmc/osx/Makefile \
@@ -2603,7 +2594,6 @@ AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)
 AC_SUBST(LIBCURL_BASENAME)
 AC_SUBST(LIBVORBISFILE_BASENAME)
-AC_SUBST(LIBMODPLUG_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
 AC_SUBST(LIBASS_BASENAME)
