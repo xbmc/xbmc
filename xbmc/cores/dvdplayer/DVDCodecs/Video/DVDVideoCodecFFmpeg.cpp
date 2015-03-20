@@ -72,15 +72,23 @@ extern "C" {
 
 using namespace std;
 
+enum DecoderState
+{
+  STATE_NONE,
+  STATE_SW_SINGLE,
+  STATE_HW_SINGLE,
+  STATE_HW_FAILED,
+  STATE_SW_MULTI
+};
+
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
                                                 , const PixelFormat * fmt )
 {
   CDVDVideoCodecFFmpeg* ctx  = (CDVDVideoCodecFFmpeg*)avctx->opaque;
 
   // if frame threading is enabled hw accel is not allowed
-  if((EDECODEMETHOD) CSettings::Get().GetInt("videoplayer.decodingmethod") != VS_DECODEMETHOD_HARDWARE || !ctx->IsHardwareAllowed())
+  if(ctx->m_decoderState != STATE_HW_SINGLE)
   {
-    ctx->m_pCodecContext->thread_safe_callbacks = 1;
     return avcodec_default_get_format(avctx, fmt);
   }
 
@@ -155,7 +163,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     avctx->hwaccel_context = 0;
   }
 
-  ctx->m_pCodecContext->thread_safe_callbacks = 1;
+  ctx->m_decoderState = STATE_HW_FAILED;
   return avcodec_default_get_format(avctx, fmt);
 }
 
@@ -176,13 +184,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
   m_iOrientation = 0;
-  m_bSoftware = false;
-  #if defined(TARGET_ANDROID) || defined(TARGET_DARWIN_IOS)
-    // If we get here on Android or iOS, it's always software
-    m_isFrameThreaded = true;
-  #else
-    m_isFrameThreaded = false;
-  #endif
+  m_decoderState = STATE_NONE;
   m_pHardware = NULL;
   m_iLastKeyframe = 0;
   m_dts = DVD_NOPTS_VALUE;
@@ -200,10 +202,12 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 
 bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+  m_hints = hints;
+  m_options = options;
+
   AVCodec* pCodec;
 
-  m_bSoftware     = hints.software;
-  m_iOrientation  = hints.orientation;
+  m_iOrientation = hints.orientation;
 
   for(std::vector<ERenderFormat>::iterator it = options.m_formats.begin(); it != options.m_formats.end(); ++it)
   {
@@ -213,33 +217,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
   m_formats.push_back(PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
 
-  pCodec = NULL;
-  m_pCodecContext = NULL;
-
-  if (hints.codec == AV_CODEC_ID_H264)
-  {
-    switch (hints.profile)
-    {
-      case FF_PROFILE_H264_HIGH_10:
-      case FF_PROFILE_H264_HIGH_10_INTRA:
-      case FF_PROFILE_H264_HIGH_422:
-      case FF_PROFILE_H264_HIGH_422_INTRA:
-      case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
-      case FF_PROFILE_H264_HIGH_444_INTRA:
-      case FF_PROFILE_H264_CAVLC_444:
-        // this is needed to not open the decoders
-        m_bSoftware = true;
-        // this we need to enable multithreading for hi10p via advancedsettings
-        m_isFrameThreaded = true;
-        break;
-    }
-  }
-  else if (hints.codec == AV_CODEC_ID_HEVC
-          || hints.codec == AV_CODEC_ID_VP9)
-    m_isFrameThreaded = true;
-
-  if(pCodec == NULL)
-    pCodec = avcodec_find_decoder(hints.codec);
+  pCodec = avcodec_find_decoder(hints.codec);
 
   if(pCodec == NULL)
   {
@@ -249,9 +227,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
 
-  if(m_pCodecContext == NULL)
-    m_pCodecContext = avcodec_alloc_context3(pCodec);
-
+  m_pCodecContext = avcodec_alloc_context3(pCodec);
   m_pCodecContext->opaque = (void*)this;
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
@@ -259,17 +235,31 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->get_format = GetFormat;
   m_pCodecContext->codec_tag = hints.codec_tag;
 
-  /* Only allow slice threading, since frame threading is more
-   * sensitive to changes in frame sizes, and it causes crashes
-   * during HW accell - so we unset it in this case.
-   * */
-  if ((EDECODEMETHOD)CSettings::Get().GetInt("videoplayer.decodingmethod") == VS_DECODEMETHOD_SOFTWARE || m_isFrameThreaded)
+  // setup threading model
+  if (!hints.software)
   {
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::Open() Keeping default threading %d",
-    m_pCodecContext->thread_type);
+    if ((EDECODEMETHOD)CSettings::Get().GetInt("videoplayer.decodingmethod") == VS_DECODEMETHOD_HARDWARE &&
+        m_decoderState == STATE_NONE)
+    {
+#if defined(TARGET_ANDROID) || defined(TARGET_DARWIN_IOS)
+      // If we get here on Android or iOS, it's always multi
+      m_decoderState = STATE_SW_MULTI;
+#else
+      m_decoderState = STATE_HW_SINGLE;
+#endif
+    }
+    else
+    {
+      int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
+      if( num_threads > 1)
+        m_pCodecContext->thread_count = num_threads;
+      m_pCodecContext->thread_safe_callbacks = 1;
+      m_decoderState = STATE_SW_MULTI;
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - open frame threaded with %d threads", num_threads);
+    }
   }
   else
-    m_pCodecContext->thread_type = FF_THREAD_SLICE;
+    m_decoderState = STATE_SW_SINGLE;
 
 #if defined(TARGET_DARWIN_IOS)
   // ffmpeg with enabled neon will crash and burn if this is enabled
@@ -309,10 +299,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
   }
 
-  int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
-  if( num_threads > 1 && !hints.software)  // thumbnail extraction fails when run threaded
-    m_pCodecContext->thread_count = num_threads;
-
   if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
@@ -338,7 +324,9 @@ void CDVDVideoCodecFFmpeg::Dispose()
 
   if (m_pCodecContext)
   {
-    if (m_pCodecContext->codec) avcodec_close(m_pCodecContext);
+    if (m_pCodecContext->codec)
+      avcodec_close(m_pCodecContext);
+
     if (m_pCodecContext->extradata)
     {
       av_free(m_pCodecContext->extradata);
@@ -491,6 +479,9 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
   avpkt.flags = AV_PKT_FLAG_KEY;
   len = avcodec_decode_video2(m_pCodecContext, m_pFrame, &iGotPicture, &avpkt);
 
+  if (m_decoderState == STATE_HW_FAILED && !m_pHardware)
+    return VC_REOPEN;
+
   if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 2)
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
 
@@ -583,6 +574,15 @@ void CDVDVideoCodecFFmpeg::Reset()
 
   m_filters = "";
   FilterClose();
+}
+
+void CDVDVideoCodecFFmpeg::Reopen()
+{
+  Dispose();
+  if (!Open(m_hints, m_options))
+  {
+    Dispose();
+  }
 }
 
 bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
@@ -871,10 +871,7 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
 unsigned CDVDVideoCodecFFmpeg::GetConvergeCount()
 {
-  if(m_pHardware)
-    return m_iLastKeyframe;
-  else
-    return 0;
+  return m_iLastKeyframe;
 }
 
 unsigned CDVDVideoCodecFFmpeg::GetAllowedReferences()

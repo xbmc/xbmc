@@ -20,6 +20,8 @@
  *
  */
 
+#include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
+#include "cores/dvdplayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
 #include "DVDResource.h"
 #include <string>
@@ -60,6 +62,7 @@ public:
   virtual void Dispose();
   virtual int Decode(uint8_t* pData, int iSize, double dts, double pts);
   virtual void Reset();
+  virtual void Reopen();
   bool GetPictureCommon(DVDVideoPicture* pDvdVideoPicture);
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
@@ -70,7 +73,6 @@ public:
   virtual bool GetCodecStats(double &pts, int &droppedPics);
   virtual void SetCodecControl(int flags);
 
-  bool               IsHardwareAllowed()                     { return !m_bSoftware; }
   IHardwareDecoder * GetHardware()                           { return m_pHardware; };
   void               SetHardware(IHardwareDecoder* hardware);
 
@@ -113,8 +115,7 @@ protected:
   unsigned int m_uSurfacesCount;
 
   std::string m_name;
-  bool m_bSoftware;
-  bool m_isFrameThreaded;
+  int m_decoderState;
   IHardwareDecoder *m_pHardware;
   std::vector<IHardwareDecoder*> m_disposeDecoders;
   int m_iLastKeyframe;
@@ -125,4 +126,6 @@ protected:
   int    m_skippedDeint;
   bool   m_requestSkipDeint;
   int    m_codecControlFlags;
+  CDVDStreamInfo m_hints;
+  CDVDCodecOptions m_options;
 };

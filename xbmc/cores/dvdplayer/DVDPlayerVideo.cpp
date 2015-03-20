@@ -592,7 +592,6 @@ void CDVDPlayerVideo::Process()
       // loop while no error
       while (!m_bStop)
       {
-
         // if decoder was flushed, we need to seek back again to resume rendering
         if (iDecoderState & VC_FLUSHED)
         {
@@ -609,6 +608,23 @@ void CDVDPlayerVideo::Process()
           }
 
           m_pVideoCodec->Reset();
+          m_packets.clear();
+          picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+          g_renderManager.DiscardBuffer();
+          break;
+        }
+
+        if (iDecoderState & VC_REOPEN)
+        {
+          while(!m_packets.empty())
+          {
+            CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
+            msg->m_drop = false;
+            m_packets.pop_front();
+            m_messageQueue.Put(msg, iPriority + 10);
+          }
+
+          m_pVideoCodec->Reopen();
           m_packets.clear();
           picture.iFlags &= ~DVP_FLAG_ALLOCATED;
           g_renderManager.DiscardBuffer();
