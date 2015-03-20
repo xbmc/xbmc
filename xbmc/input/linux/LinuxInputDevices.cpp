@@ -255,6 +255,8 @@ KeyMap keyMap[] = {
   { 378               , XBMCK_RIGHT       }, // Green
   { 381               , XBMCK_UP          }, // Yellow
   { 366               , XBMCK_DOWN        }, // Blue
+  // Rii i7 Home button / wetek openelec remote (code 172)
+  { KEY_HOMEPAGE      , XBMCK_HOME        },
 };
 
 typedef enum

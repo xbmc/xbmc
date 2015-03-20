@@ -575,6 +575,7 @@
 		<mymusic>KEY_AUDIO</mymusic>
 		<mypictures>KEY_CAMERA</mypictures>
 		<mytv>KEY_TUNER</mytv>
+		<mytv>KEY_TV</mytv>
 		<teletext>KEY_TEXT</teletext>
 		<one>KEY_NUMERIC_1</one>
 		<two>KEY_NUMERIC_2</two>

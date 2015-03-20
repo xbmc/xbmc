@@ -80,7 +80,6 @@
     <joystick name="/Sony PLAYSTATION\(R\)3 Controller.*">
       <altname>PLAYSTATION(R)3 Controller</altname>
       <altname>PS3 Controller</altname>
-      <altname>Sony Computer Entertainment Wireless Controller</altname>      
       <button id="15">Select</button>
       <button id="14">Back</button>
       <button id="16">ContextMenu</button>
