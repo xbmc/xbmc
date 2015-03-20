@@ -73,12 +73,7 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
 
 void CGUIDialogKeyboardGeneric::OnWindowLoaded()
 {
-  // show the cursor always
-  CGUIEditControl *edit = (CGUIEditControl *)GetControl(CTL_EDIT);
-  if (edit)
-    edit->SetShowCursorAlways(true);
   g_Windowing.EnableTextInput(false);
-
   CGUIDialog::OnWindowLoaded();
 }
 
