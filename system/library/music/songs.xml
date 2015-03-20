@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="5" type="filter" visible="Library.HasContent(Music)">
+  <label>134</label>
+  <icon>DefaultMusicSongs.png</icon>
+  <content>songs</content>
+</node>

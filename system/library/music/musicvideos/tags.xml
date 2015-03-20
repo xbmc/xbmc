@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="8" type="filter">
+  <label>20459</label>
+  <icon>DefaultTags.png</icon>
+  <content>musicvideos</content>
+  <group>tags</group>
+</node>
