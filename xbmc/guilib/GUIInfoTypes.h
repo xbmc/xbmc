@@ -31,6 +31,7 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
+#include <functional>
 #include "interfaces/info/InfoBool.h"
 
 class CGUIListItem;
@@ -84,7 +85,7 @@ public:
    \param preferImage caller is specifically wanting an image rather than a label. Defaults to false.
    \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
    \return label (or image).
-   */  
+   */
   const std::string &GetLabel(int contextWindow, bool preferImage = false, std::string *fallback = NULL) const;
 
   /*!
@@ -124,6 +125,27 @@ public:
    \return text with any localized strings filled in.
    */
   static std::string ReplaceAddonStrings(const std::string &label);
+
+  typedef std::function<std::string(const std::string&)> StringReplacerFunc;
+
+  /*!
+   \brief Replaces instances of $strKeyword[value] with the appropriate resolved string
+   \param strInput text to replace
+   \param strKeyword keyword to look for
+   \param func function that does the actual replacement of each bracketed value found
+   \param strOutput the output string
+   \return whether anything has been replaced.
+   */
+  static bool ReplaceSpecialKeywordReferences(const std::string &strInput, const std::string &strKeyword, const StringReplacerFunc &func, std::string &strOutput);
+
+  /*!
+   \brief Replaces instances of $strKeyword[value] with the appropriate resolved string in-place
+   \param work text to replace in-place
+   \param strKeyword keyword to look for
+   \param func function that does the actual replacement of each bracketed value found
+   \return whether anything has been replaced.
+   */
+  static bool ReplaceSpecialKeywordReferences(std::string &work, const std::string &strKeyword, const StringReplacerFunc &func);
 
 private:
   void Parse(const std::string &label, int context);
