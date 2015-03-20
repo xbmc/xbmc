@@ -60,7 +60,6 @@ void CGUIEditControl::DefaultConstructor()
   m_textWidth = GetWidth();
   m_cursorPos = 0;
   m_cursorBlink = 0;
-  m_cursorShowAlways = false;
   m_inputHeading = 0;
   m_inputType = INPUT_TYPE_TEXT;
   m_smsLastKey = 0;
