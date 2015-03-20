@@ -18,61 +18,60 @@
  *
  */
 
-#include "threads/SystemClock.h"
 #include "GUIMediaWindow.h"
-#include "GUIUserMessages.h"
-#include "Util.h"
-#include "PlayListPlayer.h"
-#include "addons/AddonManager.h"
-#include "addons/PluginSource.h"
-#include "filesystem/PluginDirectory.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "GUIPassword.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "network/Network.h"
-#include "utils/RegExp.h"
+#include "ContextMenuManager.h"
+#include "FileItemListModification.h"
+#include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #include "PartyModeManager.h"
+#include "PlayListPlayer.h"
+#include "URL.h"
+#include "Util.h"
+#include "addons/AddonManager.h"
+#include "addons/GUIDialogAddonSettings.h"
+#include "addons/PluginSource.h"
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
+#endif
+#include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogMediaFilter.h"
 #include "dialogs/GUIDialogMediaSource.h"
-#include "GUIWindowFileManager.h"
-#include "filesystem/FavouritesDirectory.h"
-#include "utils/LabelFormatter.h"
+#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSmartPlaylistEditor.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/FavouritesDirectory.h"
+#include "filesystem/File.h"
+#include "filesystem/FileDirectoryFactory.h"
+#include "filesystem/MultiPathDirectory.h"
+#include "filesystem/PluginDirectory.h"
+#include "filesystem/SmartPlaylistDirectory.h"
+#include "guilib/GUIEditControl.h"
+#include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "interfaces/Builtins.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
+#include "input/Key.h"
+#include "network/Network.h"
+#include "playlists/PlayList.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "URL.h"
-
-#include "dialogs/GUIDialogSmartPlaylistEditor.h"
-#include "addons/GUIDialogAddonSettings.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogOK.h"
-#include "playlists/PlayList.h"
 #include "storage/MediaManager.h"
-#include "video/VideoLibraryQueue.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/TimeUtils.h"
-#include "filesystem/File.h"
-#include "filesystem/FileDirectoryFactory.h"
-#include "utils/log.h"
+#include "threads/SystemClock.h"
 #include "utils/FileUtils.h"
-#include "guilib/GUIEditControl.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "interfaces/Builtins.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogMediaFilter.h"
-#include "filesystem/SmartPlaylistDirectory.h"
-#if defined(TARGET_ANDROID)
-#include "xbmc/android/activity/XBMCApp.h"
-#endif
-#include "FileItemListModification.h"
+#include "utils/LabelFormatter.h"
+#include "utils/log.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/TimeUtils.h"
+#include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
-#include "ContextMenuManager.h"
+#include "video/VideoLibraryQueue.h"
+#include "windows/GUIWindowFileManager.h"
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -80,6 +79,9 @@
 #define CONTROL_BTN_FILTER          19
 
 #define CONTROL_LABELFILES          12
+
+#define CONTROL_VIEW_START          50
+#define CONTROL_VIEW_END            59
 
 #define PROPERTY_PATH_DB            "path.db"
 #define PROPERTY_SORT_ORDER         "sort.order"
@@ -107,9 +109,6 @@ CGUIMediaWindow::~CGUIMediaWindow()
   delete m_vecItems;
   delete m_unfilteredItems;
 }
-
-#define CONTROL_VIEW_START        50
-#define CONTROL_VIEW_END          59
 
 void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
 {
