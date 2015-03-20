@@ -44,6 +44,7 @@ public:
   virtual LPDIRECT3DDEVICE9 GetDevice() = NULL;
   virtual void OsdRedrawFrame() = 0;
   virtual void SetDrawIsDone() = 0;
+  virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect) = 0;
 };
 
 

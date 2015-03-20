@@ -86,6 +86,7 @@ public:
   void FlushGPU();
 
 #ifdef HAS_DS_PLAYER
+  void ResetForMadvr();
   LPDIRECT3DDEVICE9 Get3DDevice();
   LPDIRECT3D9 Get3DObject() { return m_pD3D; }
 #else

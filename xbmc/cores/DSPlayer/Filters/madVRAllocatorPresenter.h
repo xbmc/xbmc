@@ -26,7 +26,6 @@
 #include "mvrInterfaces.h"
 #include "IPaintCallback.h"
 #include "utils/log.h"
-#include "utils/Splash.h"
 
 class CmadVRAllocatorPresenter
   : public ISubPicAllocatorPresenterImpl,
@@ -120,11 +119,9 @@ class CmadVRAllocatorPresenter
   Com::SmartPtr<IOsdRenderCallback> m_pORCB;
   Com::SmartSize m_ScreenSize;
   bool  m_bIsFullscreen;
-  bool isDeviceSet;
+  bool m_isDeviceSet;
   bool TestRender(IDirect3DDevice9* pD3DDevice);
   CEvent m_drawIsDone;
-  CSplash *m_splash;
-  IDirect3DStateBlock9* pStateBlock;
 
   LPDIRECT3DVERTEXBUFFER9 m_pVB; // Buffer to hold Vertices
 public:
@@ -152,15 +149,8 @@ public:
 
   //IPaintCallbackMadvr
 
-  LPDIRECT3DDEVICE9 GetDevice()
-  {
-    if (isDeviceSet)
-    {
-      return m_pD3DDeviceMadVR;
-    }
-    else
-      return m_pD3DDevice;
-  }
+  LPDIRECT3DDEVICE9 GetDevice() { return m_isDeviceSet ? m_pD3DDeviceMadVR : m_pD3DDevice; }
   virtual void OsdRedrawFrame();
   virtual void SetDrawIsDone();
+  virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect);
 };

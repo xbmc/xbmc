@@ -36,6 +36,7 @@
 #ifdef HAS_DS_PLAYER
 #include "Filters\RendererSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "guilib\GUIFontManager.h"
 #endif
 #include "Application.h"
 #include "Util.h"
@@ -1260,6 +1261,24 @@ LPDIRECT3DDEVICE9 CRenderSystemDX::Get3DDevice()
   else
     return m_pD3DDevice; 
 }
+
+void CRenderSystemDX::ResetForMadvr()
+{
+  CGraphFilters::Get()->SetInitMadVr(true);
+
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
+
+  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnLostDevice();
+
+  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnResetDevice();
+
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+
+  CGraphFilters::Get()->SetInitMadVr(false);
+}
+
 #endif 
 
 #endif

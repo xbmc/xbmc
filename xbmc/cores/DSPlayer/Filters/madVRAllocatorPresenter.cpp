@@ -24,9 +24,7 @@
 #include "RendererSettings.h"
 #include "Application.h"
 #include "cores/VideoRenderers/RenderManager.h"
-#include "../DSPlayer.h"
-#include "ApplicationMessenger.h"
-#include "guilib\GUIWindowManager.h"
+#include "guilib/GUIWindowManager.h"
 
 #define ShaderStage_PreScale 0
 #define ShaderStage_PostScale 1
@@ -45,7 +43,7 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   //Init Variable
   m_pD3DDevice = g_Windowing.Get3DDevice();
   g_renderManager.PreInit(RENDERER_DSHOW);
-  isDeviceSet = false;
+  m_isDeviceSet = false;
 
   if (FAILED(hr)) {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
@@ -62,11 +60,11 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
     ((CSubRenderCallback*)(ISubRenderCallback2*)m_pSRCB)->SetDXRAP(nullptr);
   }
 
-  //restore renderstates
+  //Restore Kodi Gui
   m_pD3DDevice->SetPixelShader(NULL);
+  g_Windowing.ResetForMadvr();
 
   // the order is important here
-
   m_pSubPicQueue = nullptr;
   m_pAllocator = nullptr;
   m_pDXR = nullptr;
@@ -141,7 +139,8 @@ void CmadVRAllocatorPresenter::OsdRedrawFrame()
 STDMETHODIMP CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
   m_pD3DDeviceMadVR = pD3DDev;
-  isDeviceSet = true;
+  m_isDeviceSet = true;
+  g_Windowing.ResetForMadvr();
   return S_OK;
 }
 
@@ -158,17 +157,8 @@ void CmadVRAllocatorPresenter::SetDrawIsDone()
 
 STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
 {
-  //CLog::Log(LOGDEBUG, "Render Osd %i %i %i %i", activeVideoRect->left,activeVideoRect->top,activeVideoRect->right,activeVideoRect->bottom);
-  //pStateBlock->Apply();
-  //m_drawIsDone.Reset();
-  //g_renderManager.NewFrame();
-  //m_drawIsDone.WaitMSec(500);
-  //m_splash->Show();
-  //TestRender(m_pD3DDeviceMadVR);
-
   m_pD3DDeviceMadVR->SetPixelShader(NULL);
   g_application.RenderMadvr();
-
   return S_OK;
 }
 
@@ -179,11 +169,6 @@ HRESULT CmadVRAllocatorPresenter::Render(
   Com::SmartRect wndRect(0, 0, width, height);
   Com::SmartRect videoRect(left, top, right, bottom);
 
-  if (Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR) {
-    pVW->SetWindowPosition(0, 0, 1000, 600);
-  }
-
-  //SetPosition(wndRect, videoRect);
 
   __super::SetPosition(wndRect, videoRect);
   if (!g_bExternalSubtitleTime) {
@@ -196,6 +181,11 @@ HRESULT CmadVRAllocatorPresenter::Render(
 
   if (!g_renderManager.IsConfigured())
   {
+    Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR;
+    pMadVrEx->DisableExclusiveMode(true);
+
+    Com::SmartQIPtr<IMadVRSeekbarControl> pMadVrSeek = m_pDXR;
+    pMadVrSeek->DisableSeekbar(true);
 
     int m_rtTimePerFrame;
     if (atpf > 0)
@@ -257,18 +247,12 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     return E_FAIL;
   }
 
-  Com::SmartQIPtr<IBaseFilter> pBF = this;
-  if (FAILED(hr))
-    *ppRenderer = NULL;
-  else
-    *ppRenderer = pBF.Detach();
-  
-
-  //m_splash = new CSplash("special://xbmc/media/Splash.png");
+  Com::SmartQIPtr<IMadVRDirect3D9Manager> pMadVrD3d = m_pDXR;
+  m_pD3DDevice = g_Windowing.Get3DDevice();
 
   CGraphFilters::Get()->SetMadVrCallback(this);
 
-  //(*ppRenderer = (IUnknown*)(INonDelegatingUnknown*)(this))->AddRef();
+  (*ppRenderer = (IUnknown*)(INonDelegatingUnknown*)(this))->AddRef();
 
   MONITORINFO mi;
   mi.cbSize = sizeof(MONITORINFO);
@@ -276,9 +260,14 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     m_ScreenSize.SetSize(mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top);
   }
 
-  m_pD3DDevice->CreateStateBlock(D3DSBT_ALL, &pStateBlock);
-
   return S_OK;
+}
+
+void CmadVRAllocatorPresenter::SetMadvrPoisition(CRect wndRect, CRect videoRect)
+{
+  Com::SmartRect wndR(wndRect.x1, wndRect.y1, wndRect.x2, wndRect.y2);
+  Com::SmartRect videoR(videoRect.x1, videoRect.y1, videoRect.x2, videoRect.y2);
+  SetPosition(wndR, videoR);
 }
 
 STDMETHODIMP_(void) CmadVRAllocatorPresenter::SetPosition(RECT w, RECT v)
@@ -286,12 +275,10 @@ STDMETHODIMP_(void) CmadVRAllocatorPresenter::SetPosition(RECT w, RECT v)
   if (Com::SmartQIPtr<IBasicVideo> pBV = m_pDXR) {
     pBV->SetDefaultSourcePosition();
     pBV->SetDestinationPosition(v.left, v.top, v.right - v.left, v.bottom - v.top);
-    //CLog::Log(LOGDEBUG, "position %i %i %i %i", v.left, v.top, v.right - v.left, v.bottom - v.top);
   }
 
   if (Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR) {
     pVW->SetWindowPosition(w.left, w.top, w.right - w.left, w.bottom - w.top);
-    //CLog::Log(LOGDEBUG, "position %i %i %i %i", w.left, w.top, w.right - w.left, w.bottom - w.top);
   }
 }
 
@@ -393,6 +380,7 @@ bool CmadVRAllocatorPresenter::TestRender(IDirect3DDevice9* pD3DDevice)
 
   return true;
 }
+
 
 
 

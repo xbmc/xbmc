@@ -103,7 +103,7 @@ HRESULT CreateEVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppA
   return hr;
 }
 
-/*
+
 HRESULT CreateMadVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppAP)
 {
   HRESULT    hr = E_FAIL;
@@ -129,39 +129,6 @@ HRESULT CreateMadVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** p
 
   return hr;
 }
-*/
-
-HRESULT CreateMadVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppAP)
-{
-  CheckPointer(ppAP, E_POINTER);
-  *ppAP = nullptr;
-
-  HRESULT hr = E_FAIL;
-  CStdString Error;
-  if (IsEqualCLSID(clsid, CLSID_madVR)) {
-    *ppAP = DNew CmadVRAllocatorPresenter(hWnd, hr, Error);
-  }
-  else 
-  {
-    return E_FAIL;
-  }
-  if (*ppAP == nullptr) {
-    return E_OUTOFMEMORY;
-  }
-  (*ppAP)->AddRef();
-  if (FAILED(hr)) {
-    Error += L"\n";
-    Error += GetWindowsErrorMessage(hr, nullptr);
-    CLog::Log(LOGERROR, "%s %s", __FUNCTION__, Error.c_str());
-    (*ppAP)->Release();
-    *ppAP = nullptr;
-  }
-  else if (!Error.IsEmpty()) {
-    CLog::Log(LOGERROR, "%s %s", __FUNCTION__, Error.c_str());
-  }
-  return hr;
-}
-
 
 CStdString GetWindowsErrorMessage(HRESULT _Error, HMODULE _Module)
 {

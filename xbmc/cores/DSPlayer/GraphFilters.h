@@ -176,6 +176,8 @@ public:
   IPaintCallbackMadvr* GetMadvrCallback() { return m_pMadvr; }
   void SetMadVrCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
   bool UsingMadVr();
+  bool IsInitMadVr() { return m_isInitMadVr; };
+  void SetInitMadVr(bool b) { m_isInitMadVr = b; }
 
 private:
   CGraphFilters();
@@ -183,6 +185,7 @@ private:
 
   static CGraphFilters* m_pSingleton;
 
+  bool m_isInitMadVr;
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;

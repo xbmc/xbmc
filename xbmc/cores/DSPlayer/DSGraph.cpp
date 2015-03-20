@@ -122,10 +122,13 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (m_pVideoWindow)
   {
     //HRESULT hr;
-    m_pVideoWindow->put_Owner((OAHWND)g_hWnd);
-    m_pVideoWindow->put_WindowStyle(WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN);
+    //m_pVideoWindow->put_Owner((OAHWND)g_hWnd);
+    m_pVideoWindow->put_WindowStyle(WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
     m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
+    HWND hwnd = GetWindow(g_hWnd, GW_CHILD);  
+    EnableWindow(hwnd, false);
   }
+
   //TODO Ti-Ben
   //with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
 

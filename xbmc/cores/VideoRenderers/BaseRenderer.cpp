@@ -33,6 +33,9 @@
 #include "utils/SystemInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderFlags.h"
+#ifdef HAS_DS_PLAYER
+#include "cores/DSPlayer/GraphFilters.h"
+#endif
 
 
 CBaseRenderer::CBaseRenderer()
@@ -496,6 +499,13 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
     m_oldDestRect = m_destRect;
     m_oldRenderOrientation = m_renderOrientation;
   }
+#ifdef HAS_DS_PLAYER
+  if (CGraphFilters::Get()->UsingMadVr())
+  {
+    const CRect view = g_graphicsContext.GetViewWindow();
+    CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPoisition(view, m_destRect);
+  }
+#endif
 }
 
 //***************************************************************************************

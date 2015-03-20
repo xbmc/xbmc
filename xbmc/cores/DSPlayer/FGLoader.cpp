@@ -354,7 +354,7 @@ HRESULT CFGLoader::InsertVideoRenderer()
   {
     //m_pFGF = new CFGFilterVideoRenderer(CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9");
     /*MADVR*/    
-    m_pFGF = new CFGFilterVideoRenderer(CLSID_madVR, L"Kodi madVR");
+    m_pFGF = new CFGFilterVideoRenderer(CLSID_madVRAllocatorPresenter, L"Kodi madVR");
   }
 
 

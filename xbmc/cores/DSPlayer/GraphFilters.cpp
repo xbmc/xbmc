@@ -33,6 +33,7 @@ m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER
 {
   /*MADVR*/
   m_pMadvr = NULL;
+  m_isInitMadVr = false;
 }
 
 CGraphFilters::~CGraphFilters()
