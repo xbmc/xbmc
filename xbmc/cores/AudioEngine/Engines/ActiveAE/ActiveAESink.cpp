@@ -895,7 +895,7 @@ void CActiveAESink::GenerateNoise()
   }
 
   SampleConfig config = m_sampleOfSilence.pkt->config;
-  IAEResample *resampler = CAEResampleFactory::Create();
+  IAEResample *resampler = CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE);
   resampler->Init(config.channel_layout,
                  config.channels,
                  config.sample_rate,
