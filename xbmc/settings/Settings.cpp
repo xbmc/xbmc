@@ -228,6 +228,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("aequalitylevels");
   m_settingsManager->UnregisterSettingOptionsFiller("audiodevices");
 #ifdef HAS_DS_PLAYER 
+  m_settingsManager->UnregisterSettingOptionsFiller("dsvideorenderer");
   m_settingsManager->UnregisterSettingOptionsFiller("dsaudiorenderer");
 #endif
   m_settingsManager->UnregisterSettingOptionsFiller("audiodevicespassthrough");
@@ -584,6 +585,7 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("aequalitylevels", CAEFactory::SettingOptionsAudioQualityLevelsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiodevices", CAEFactory::SettingOptionsAudioDevicesFiller);
 #ifdef HAS_DS_PLAYER  
+  m_settingsManager->RegisterSettingOptionsFiller("dsvideorenderer", CFGLoader::SettingOptionsDSVideoRendererFiller);
   m_settingsManager->RegisterSettingOptionsFiller("dsaudiorenderer", CFGLoader::SettingOptionsDSAudioRendererFiller);
 #endif
   m_settingsManager->RegisterSettingOptionsFiller("audiodevicespassthrough", CAEFactory::SettingOptionsAudioDevicesPassthroughFiller);

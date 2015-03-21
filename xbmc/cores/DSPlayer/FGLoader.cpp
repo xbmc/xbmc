@@ -47,6 +47,7 @@
 #include "Filters/madVRAllocatorPresenter.h"
 
 #include "Utils/AudioEnumerator.h"
+#include "Utils/DSFilterEnumerator.h"
 #include "DVDFileInfo.h"
 #include "video/VideoInfoTag.h"
 #include "utils/URIUtils.h"
@@ -325,38 +326,24 @@ HRESULT CFGLoader::InsertVideoRenderer()
 {
   HRESULT hr = S_OK;
 
-  // TODO: Use a listbox instead of a checkbox on the GUI. Simpler and easier
-  if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista))
-  {
-    if (CSettings::Get().GetBool("dsplayer.forcenodefrendalvista"))
-      //CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
-      /*MADVR*/
-      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_MADVR);
-    else
-      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_EVR);
-  }
-  else
-  {
-    if (CSettings::Get().GetBool("dsplayer.forcenodefrendbevista"))
-      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_EVR);
-    else
-      //CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
-      /*MADVR*/
-      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_MADVR);
-  }
+  CStdString videoRender;
+  videoRender = CSettings::Get().GetString("dsplayer.videorenderer");
 
-  // Renderers
-  if (CGraphFilters::Get()->GetCurrentRenderer() == DIRECTSHOW_RENDERER_EVR)
-  {
+  if (videoRender == "EVR")
+  { 
+    CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_EVR);
     m_pFGF = new CFGFilterVideoRenderer(CLSID_EVRAllocatorPresenter, L"Kodi EVR");
   }
-  else
+  if (videoRender == "VMR9")
+  { 
+    CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
+    m_pFGF = new CFGFilterVideoRenderer(CLSID_VMR9AllocatorPresenter, L"Kodi VMR9");
+  }
+  if (videoRender == "madVR")
   {
-    //m_pFGF = new CFGFilterVideoRenderer(CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9");
-    /*MADVR*/    
+    CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_MADVR);
     m_pFGF = new CFGFilterVideoRenderer(CLSID_madVRAllocatorPresenter, L"Kodi madVR");
   }
-
 
   hr = m_pFGF->Create(&CGraphFilters::Get()->VideoRenderer.pBF);
   if (FAILED(hr))
@@ -608,12 +595,30 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   return hr;
 }
 
+void CFGLoader::SettingOptionsDSVideoRendererFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  list.push_back(std::make_pair("Enhanced Video Renderer (EVR)", "EVR"));
+  list.push_back(std::make_pair("Video Mixing Renderer 9 (VMR9)", "VMR9"));
+  
+  CDSFilterEnumerator p_dsfilter;
+  std::vector<DSFiltersInfo> dsfilterList;
+  p_dsfilter.GetDSFilters(dsfilterList);
+  std::vector<DSFiltersInfo>::const_iterator iter = dsfilterList.begin();
+
+  for (int i = 1; iter != dsfilterList.end(); i++)
+  {
+    DSFiltersInfo dev = *iter;
+    if (dev.lpstrName == "madVR")
+    {
+      list.push_back(std::make_pair("madshi Video Renderer (madVR)", "madVR"));
+      break;
+    }
+    ++iter;
+  }
+}
+
 void CFGLoader::SettingOptionsDSAudioRendererFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  /*
-  current = ((const CSettingString*)setting)->GetValue();
-  std::string firstDevice;
-  */
 
   list.push_back(std::make_pair("System Default", "System Default"));
 

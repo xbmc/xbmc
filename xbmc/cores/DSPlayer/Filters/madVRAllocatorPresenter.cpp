@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/Settings.h"
 
 #define ShaderStage_PreScale 0
 #define ShaderStage_PostScale 1
@@ -133,6 +134,12 @@ void CmadVRAllocatorPresenter::OsdRedrawFrame()
     return;
   }
   pOR->OsdRedrawFrame();
+}
+
+void CmadVRAllocatorPresenter::CloseMadvr()
+{
+  Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR;
+  pVW->SetWindowPosition(0, 0, 1, 1);
 }
 
 // IOsdRenderCallback

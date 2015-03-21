@@ -60,6 +60,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "cores/DSPlayer/dsgraph.h"
 #include "settings/MediaSettings.h"
+#include "cores/DSPlayer/GraphFilters.h"
 
 using namespace PVR;
 using namespace std;
@@ -393,6 +394,10 @@ bool CDSPlayer::CloseFile(bool reopen)
   // set the abort request so that other threads can finish up
   m_bEof = g_dsGraph->IsEof();
 
+  // it's ugly but work
+  if (CGraphFilters::Get()->UsingMadVr())
+    CGraphFilters::Get()->GetMadvrCallback()->CloseMadvr();
+
   g_dsGraph->CloseFile();
 
   PlayerState = DSPLAYER_CLOSED;
@@ -598,136 +603,142 @@ void CDSPlayer::Process()
 void CDSPlayer::HandleMessages()
 {
   MSG msg;
-  while (GetMessage(&msg, (HWND)-1, 0, 0) != 0 && msg.message == WM_GRAPHMESSAGE)
-  {
-    CDSMsg* pMsg = reinterpret_cast<CDSMsg *>(msg.lParam);
-    CLog::Log(LOGDEBUG, "%s Message received : %d on thread 0x%X", __FUNCTION__, pMsg->GetMessageType(), m_threadID);
+  while (GetMessage(&msg, NULL, 0, 0) != 0)
+  {    
+    if (CGraphFilters::Get()->UsingMadVr())
+      DispatchMessage(&msg); 
 
-    if (CDSPlayer::PlayerState == DSPLAYER_CLOSED || CDSPlayer::PlayerState == DSPLAYER_LOADING)
+    if (msg.message == WM_GRAPHMESSAGE)
     {
+      CDSMsg* pMsg = reinterpret_cast<CDSMsg *>(msg.lParam);
+      CLog::Log(LOGDEBUG, "%s Message received : %d on thread 0x%X", __FUNCTION__, pMsg->GetMessageType(), m_threadID);
+
+      if (CDSPlayer::PlayerState == DSPLAYER_CLOSED || CDSPlayer::PlayerState == DSPLAYER_LOADING)
+      {
+        pMsg->Set();
+        pMsg->Release();
+        break;
+      }
+
+      if (pMsg->IsType(CDSMsg::GENERAL_SET_WINDOW_POS))
+      {
+        g_dsGraph->UpdateWindowPosition();
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_SEEK_TIME))
+      {
+        CDSMsgPlayerSeekTime* speMsg = reinterpret_cast<CDSMsgPlayerSeekTime *>(pMsg);
+        g_dsGraph->Seek(speMsg->GetTime(), speMsg->GetFlags(), speMsg->ShowPopup());
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_SEEK))
+      {
+        CDSMsgPlayerSeek* speMsg = reinterpret_cast<CDSMsgPlayerSeek*>(pMsg);
+        g_dsGraph->Seek(speMsg->Forward(), speMsg->LargeStep());
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_SEEK_PERCENT))
+      {
+        CDSMsgDouble * speMsg = reinterpret_cast<CDSMsgDouble *>(pMsg);
+        g_dsGraph->SeekPercentage((float)speMsg->m_value);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_PAUSE))
+      {
+        g_dsGraph->Pause();
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_STOP))
+      {
+        CDSMsgBool* speMsg = reinterpret_cast<CDSMsgBool *>(pMsg);
+        g_dsGraph->Stop(speMsg->m_value);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_PLAY))
+      {
+        CDSMsgBool* speMsg = reinterpret_cast<CDSMsgBool *>(pMsg);
+        g_dsGraph->Play(speMsg->m_value);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_UPDATE_TIME))
+      {
+        g_dsGraph->UpdateTime();
+      }
+
+      /*DVD COMMANDS*/
+      if (pMsg->IsType(CDSMsg::PLAYER_DVD_MOUSE_MOVE))
+      {
+        CDSMsgInt* speMsg = reinterpret_cast<CDSMsgInt *>(pMsg);
+        //TODO make the xbmc gui stay hidden when moving mouse over menu
+        POINT pt;
+        pt.x = GET_X_LPARAM(speMsg->m_value);
+        pt.y = GET_Y_LPARAM(speMsg->m_value);
+        ULONG pButtonIndex;
+        /**** Didnt found really where dvdplayer are doing it exactly so here it is *****/
+        XBMC_Event newEvent;
+        newEvent.type = XBMC_MOUSEMOTION;
+        newEvent.motion.x = (uint16_t)pt.x;
+        newEvent.motion.y = (uint16_t)pt.y;
+        g_application.OnEvent(newEvent);
+        /*CGUIMessage pMsg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
+        g_windowManager.SendMessage(pMsg);*/
+        /**** End of ugly hack ***/
+        if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
+          CGraphFilters::Get()->DVD.dvdControl->SelectButton(pButtonIndex);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MOUSE_CLICK))
+      {
+        CDSMsgInt* speMsg = reinterpret_cast<CDSMsgInt *>(pMsg);
+        POINT pt;
+        pt.x = GET_X_LPARAM(speMsg->m_value);
+        pt.y = GET_Y_LPARAM(speMsg->m_value);
+        ULONG pButtonIndex;
+        if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
+          CGraphFilters::Get()->DVD.dvdControl->SelectAndActivateButton(pButtonIndex);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_NAV_UP))
+      {
+        CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Upper);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_NAV_DOWN))
+      {
+        CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Lower);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_NAV_LEFT))
+      {
+        CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Left);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_NAV_RIGHT))
+      {
+        CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Right);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_ROOT))
+      {
+        CGUIMessage _msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
+        g_windowManager.SendMessage(_msg);
+        CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Root, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_EXIT))
+      {
+        CGraphFilters::Get()->DVD.dvdControl->Resume(DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_BACK))
+      {
+        CGraphFilters::Get()->DVD.dvdControl->ReturnFromSubmenu(DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_SELECT))
+      {
+        CGraphFilters::Get()->DVD.dvdControl->ActivateButton();
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_TITLE))
+      {
+        CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_SUBTITLE))
+      {
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_AUDIO))
+      {
+      }
+      else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_ANGLE))
+      {
+      }
       pMsg->Set();
       pMsg->Release();
-      break;
     }
-
-    if (pMsg->IsType(CDSMsg::GENERAL_SET_WINDOW_POS))
-    {
-      g_dsGraph->UpdateWindowPosition();
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_SEEK_TIME))
-    {
-      CDSMsgPlayerSeekTime* speMsg = reinterpret_cast<CDSMsgPlayerSeekTime *>(pMsg);
-      g_dsGraph->Seek(speMsg->GetTime(), speMsg->GetFlags(), speMsg->ShowPopup());
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_SEEK))
-    {
-      CDSMsgPlayerSeek* speMsg = reinterpret_cast<CDSMsgPlayerSeek*>(pMsg);
-      g_dsGraph->Seek(speMsg->Forward(), speMsg->LargeStep());
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_SEEK_PERCENT))
-    {
-      CDSMsgDouble * speMsg = reinterpret_cast<CDSMsgDouble *>(pMsg);
-      g_dsGraph->SeekPercentage((float)speMsg->m_value);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_PAUSE))
-    {
-      g_dsGraph->Pause();
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_STOP))
-    {
-      CDSMsgBool* speMsg = reinterpret_cast<CDSMsgBool *>(pMsg);
-      g_dsGraph->Stop(speMsg->m_value);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_PLAY))
-    {
-      CDSMsgBool* speMsg = reinterpret_cast<CDSMsgBool *>(pMsg);
-      g_dsGraph->Play(speMsg->m_value);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_UPDATE_TIME))
-    {
-      g_dsGraph->UpdateTime();
-    }
-
-    /*DVD COMMANDS*/
-    if (pMsg->IsType(CDSMsg::PLAYER_DVD_MOUSE_MOVE))
-    {
-      CDSMsgInt* speMsg = reinterpret_cast<CDSMsgInt *>(pMsg);
-      //TODO make the xbmc gui stay hidden when moving mouse over menu
-      POINT pt;
-      pt.x = GET_X_LPARAM(speMsg->m_value);
-      pt.y = GET_Y_LPARAM(speMsg->m_value);
-      ULONG pButtonIndex;
-      /**** Didnt found really where dvdplayer are doing it exactly so here it is *****/
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_MOUSEMOTION;
-      newEvent.motion.x = (uint16_t)pt.x;
-      newEvent.motion.y = (uint16_t)pt.y;
-      g_application.OnEvent(newEvent);
-      /*CGUIMessage pMsg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-      g_windowManager.SendMessage(pMsg);*/
-      /**** End of ugly hack ***/
-      if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
-        CGraphFilters::Get()->DVD.dvdControl->SelectButton(pButtonIndex);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MOUSE_CLICK))
-    {
-      CDSMsgInt* speMsg = reinterpret_cast<CDSMsgInt *>(pMsg);
-      POINT pt;
-      pt.x = GET_X_LPARAM(speMsg->m_value);
-      pt.y = GET_Y_LPARAM(speMsg->m_value);
-      ULONG pButtonIndex;
-      if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
-        CGraphFilters::Get()->DVD.dvdControl->SelectAndActivateButton(pButtonIndex);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_NAV_UP))
-    {
-      CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Upper);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_NAV_DOWN))
-    {
-      CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Lower);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_NAV_LEFT))
-    {
-      CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Left);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_NAV_RIGHT))
-    {
-      CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Right);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_ROOT))
-    {
-      CGUIMessage _msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-      g_windowManager.SendMessage(_msg);
-      CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Root, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_EXIT))
-    {
-      CGraphFilters::Get()->DVD.dvdControl->Resume(DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_BACK))
-    {
-      CGraphFilters::Get()->DVD.dvdControl->ReturnFromSubmenu(DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_SELECT))
-    {
-      CGraphFilters::Get()->DVD.dvdControl->ActivateButton();
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_TITLE))
-    {
-      CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_SUBTITLE))
-    {
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_AUDIO))
-    {
-    }
-    else if (pMsg->IsType(CDSMsg::PLAYER_DVD_MENU_ANGLE))
-    {
-    }
-    pMsg->Set();
-    pMsg->Release();
   }
 }
 

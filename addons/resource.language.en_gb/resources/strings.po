@@ -16535,7 +16535,7 @@ msgid "DSPlayer"
 msgstr ""
 
 msgctxt "#55001"
-msgid "Use MADVR instead of EVR Renderer"
+msgid "Video Render"
 msgstr ""
 
 msgctxt "#55002"

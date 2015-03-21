@@ -125,8 +125,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     //m_pVideoWindow->put_Owner((OAHWND)g_hWnd);
     m_pVideoWindow->put_WindowStyle(WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
     m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
-    HWND hwnd = GetWindow(g_hWnd, GW_CHILD);  
-    EnableWindow(hwnd, false);
+    m_pVideoWindow->SetWindowPosition(0, 0, 1, 1);
   }
 
   //TODO Ti-Ben
@@ -808,10 +807,12 @@ CStdString CDSGraph::GetVideoInfo()
   if (!m_pStrCurrentFrameRate.empty())
     videoInfo += m_pStrCurrentFrameRate.c_str();
 
-  CStdString strDXVA = GetDXVADecoderDescription();
-  if (!strDXVA.empty())
-    videoInfo += " | " + strDXVA;
-
+  if (!CGraphFilters::Get()->UsingMadVr())
+  {
+    CStdString strDXVA = GetDXVADecoderDescription();
+    if (!strDXVA.empty())
+      videoInfo += " | " + strDXVA;
+  }
   return videoInfo;
 }
 

@@ -153,4 +153,5 @@ public:
   virtual void OsdRedrawFrame();
   virtual void SetDrawIsDone();
   virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect);
+  virtual void CloseMadvr();
 };

@@ -57,7 +57,9 @@ public:
   HRESULT    InsertAutoLoad();
   HRESULT    InsertFilter(const CStdString& filterName, SFilterInfos& f);
 
+  static void SettingOptionsDSVideoRendererFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsDSAudioRendererFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+
 protected:
   CStdString                m_xbmcConfigFilePath;
   CFGFilterVideoRenderer*   m_pFGF;

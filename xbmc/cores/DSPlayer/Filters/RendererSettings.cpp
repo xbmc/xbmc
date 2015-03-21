@@ -53,22 +53,16 @@ CDSSettings::CDSSettings(void)
 
 void CDSSettings::Initialize()
 {
-  // TODO: Use a listbox instead of a checkbox on the GUI. Simpler and easier
-  if (g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista))
+  CStdString videoRender;
+  videoRender = CSettings::Get().GetString("dsplayer.videorenderer");
+
+  if (videoRender == "EVR")
   {
-    if (!CSettings::Get().GetBool("dsplayer.forcenodefrendalvista"))
-      isEVR = true;
-  }
-  else
-  {
-    if (CSettings::Get().GetBool("dsplayer.forcenodefrendbevista"))
-      isEVR = true;
+    isEVR = true;
+    pRendererSettings = new CEVRRendererSettings();
   }
 
-  // Create the settings
-  if (isEVR)
-    pRendererSettings = new CEVRRendererSettings();
-  else
+  if (videoRender == "VMR9")
     pRendererSettings = new CVMR9RendererSettings();
 
   // Create the pixel shader list
