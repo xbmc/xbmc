@@ -9,7 +9,8 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
         gas-preprocessor-native python26-native zlib-native \
         pcre-native swig-native rpl-native libsdl_image-native libsquish-native \
         tiff-native libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
-        libsdl-native distribute-native distutilscross-native JsonSchemaBuilder TexturePacker
+        libsdl-native distribute-native distutilscross-native JsonSchemaBuilder TexturePacker \
+        google-breakpad-native
 
 
 ifeq ($(OS),ios)
