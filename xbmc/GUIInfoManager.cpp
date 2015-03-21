@@ -1603,7 +1603,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case MUSICPLAYER_CHANNEL_GROUP:
   case MUSICPLAYER_PLAYCOUNT:
   case MUSICPLAYER_LASTPLAYED:
-    strLabel = GetMusicLabel(info);
+    strLabel = GetMusicPlayerLabel(info, m_currentFile);
   break;
   case VIDEOPLAYER_TITLE:
   case VIDEOPLAYER_ORIGINALTITLE:
@@ -3615,7 +3615,7 @@ const std::string CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
   }
   else if (info.m_info == MUSICPLAYER_COVER)
     return playlistItem->GetArt("thumb");
-  return GetMusicTagLabel(info.m_info, playlistItem.get());
+  return GetMusicPlayerLabel(info.m_info, playlistItem.get());
 }
 
 std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAYLIST_NONE */) const
@@ -3655,12 +3655,51 @@ std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAY
   return "";
 }
 
-std::string CGUIInfoManager::GetMusicLabel(int item)
+std::string CGUIInfoManager::GetMusicPlayerLabel(int info, const CFileItem *item)
 {
-  if (!g_application.m_pPlayer->IsPlaying() || !m_currentFile->HasMusicInfoTag()) return "";
+  if (!g_application.m_pPlayer->IsPlaying())
+    return "";
 
-  switch (item)
+  switch (info)
   {
+  case MUSICPLAYER_TITLE:
+    return GetItemLabel(item, LISTITEM_TITLE);
+  case MUSICPLAYER_ALBUM:
+    return GetItemLabel(item, LISTITEM_ALBUM);
+  case MUSICPLAYER_ARTIST:
+    return GetItemLabel(item, LISTITEM_ARTIST);
+  case MUSICPLAYER_ALBUM_ARTIST:
+    return GetItemLabel(item, LISTITEM_ALBUM_ARTIST);
+  case MUSICPLAYER_YEAR:
+    return GetItemLabel(item, LISTITEM_YEAR);
+  case MUSICPLAYER_GENRE:
+    return GetItemLabel(item, LISTITEM_GENRE);
+  case MUSICPLAYER_TRACK_NUMBER:
+    return GetItemLabel(item, LISTITEM_TRACKNUMBER);
+  case MUSICPLAYER_DISC_NUMBER:
+    return GetItemLabel(item, LISTITEM_DISC_NUMBER);
+  case MUSICPLAYER_RATING:
+    return GetItemLabel(item, LISTITEM_RATING);
+  case MUSICPLAYER_COMMENT:
+    return GetItemLabel(item, LISTITEM_COMMENT);
+  case MUSICPLAYER_DURATION:
+    return GetItemLabel(item, LISTITEM_DURATION);
+  case MUSICPLAYER_CHANNEL_NAME:
+    return GetItemLabel(item, LISTITEM_CHANNEL_NAME);
+  case MUSICPLAYER_LYRICS:
+    return GetItemLabel(item, LISTITEM_LYRICS);
+  case MUSICPLAYER_CHANNEL_NUMBER:
+    return GetItemLabel(item, LISTITEM_CHANNEL_NUMBER);
+  case MUSICPLAYER_SUB_CHANNEL_NUMBER:
+    return GetItemLabel(item, LISTITEM_SUB_CHANNEL_NUMBER);
+  case MUSICPLAYER_CHANNEL_NUMBER_LBL:
+    return GetItemLabel(item, LISTITEM_CHANNEL_NUMBER_LBL);
+  case MUSICPLAYER_CHANNEL_GROUP:
+    return GetItemLabel(item, LISTITEM_CHANNEL_GROUP);
+  case MUSICPLAYER_PLAYCOUNT:
+    return GetItemLabel(item, LISTITEM_PLAYCOUNT);
+  case MUSICPLAYER_LASTPLAYED:
+    return GetItemLabel(item, LISTITEM_LASTPLAYED);
   case MUSICPLAYER_PLAYLISTLEN:
     {
       if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
@@ -3712,54 +3751,6 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
       return StringUtils::Format("%s", m_audioInfo.audioCodecName.c_str());
     }
     break;
-  case MUSICPLAYER_LYRICS:
-    return GetItemLabel(m_currentFile, AddListItemProp("lyrics"));
-  }
-  return GetMusicTagLabel(item, m_currentFile);
-}
-
-std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
-{
-  switch (info)
-  {
-  case MUSICPLAYER_TITLE:
-    return GetItemLabel(item, LISTITEM_TITLE);
-  case MUSICPLAYER_ALBUM:
-    return GetItemLabel(item, LISTITEM_ALBUM);
-  case MUSICPLAYER_ARTIST:
-    return GetItemLabel(item, LISTITEM_ARTIST);
-  case MUSICPLAYER_ALBUM_ARTIST:
-    return GetItemLabel(item, LISTITEM_ALBUM_ARTIST);
-  case MUSICPLAYER_YEAR:
-    return GetItemLabel(item, LISTITEM_YEAR);
-  case MUSICPLAYER_GENRE:
-    return GetItemLabel(item, LISTITEM_GENRE);
-  case MUSICPLAYER_TRACK_NUMBER:
-    return GetItemLabel(item, LISTITEM_TRACKNUMBER);
-  case MUSICPLAYER_DISC_NUMBER:
-    return GetItemLabel(item, LISTITEM_DISC_NUMBER);
-  case MUSICPLAYER_RATING:
-    return GetItemLabel(item, LISTITEM_RATING);
-  case MUSICPLAYER_COMMENT:
-    return GetItemLabel(item, LISTITEM_COMMENT);
-  case MUSICPLAYER_DURATION:
-    return GetItemLabel(item, LISTITEM_DURATION);
-  case MUSICPLAYER_CHANNEL_NAME:
-    return GetItemLabel(item, LISTITEM_CHANNEL_NAME);
-  case MUSICPLAYER_LYRICS:
-    return GetItemLabel(item, LISTITEM_LYRICS);
-  case MUSICPLAYER_CHANNEL_NUMBER:
-    return GetItemLabel(item, LISTITEM_CHANNEL_NUMBER);
-  case MUSICPLAYER_SUB_CHANNEL_NUMBER:
-    return GetItemLabel(item, LISTITEM_SUB_CHANNEL_NUMBER);
-  case MUSICPLAYER_CHANNEL_NUMBER_LBL:
-    return GetItemLabel(item, LISTITEM_CHANNEL_NUMBER_LBL);
-  case MUSICPLAYER_CHANNEL_GROUP:
-    return GetItemLabel(item, LISTITEM_CHANNEL_GROUP);
-  case MUSICPLAYER_PLAYCOUNT:
-    return GetItemLabel(item, LISTITEM_PLAYCOUNT);
-  case MUSICPLAYER_LASTPLAYED:
-    return GetItemLabel(item, LISTITEM_LASTPLAYED);
   }
   return "";
 }

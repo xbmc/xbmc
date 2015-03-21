@@ -787,8 +787,7 @@ public:
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
-  std::string GetMusicLabel(int item);
-  std::string GetMusicTagLabel(int info, const CFileItem *item);
+  std::string GetMusicPlayerLabel(int info, const CFileItem *item);
   std::string GetVideoPlayerLabel(int info, const CFileItem *item);
   std::string GetPlaylistLabel(int item, int playlistid = -1 /* PLAYLIST_NONE */) const;
   std::string GetMusicPartyModeLabel(int item);
