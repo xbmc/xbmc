@@ -601,7 +601,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "stereoscopicmode", LISTITEM_STEREOSCOPIC_MODE },
                                   { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC },
                                   { "imdbnumber",       LISTITEM_IMDBNUMBER },
-                                  { "episodename",      LISTITEM_EPISODENAME }};
+                                  { "episodename",      LISTITEM_EPISODENAME },
+                                  { "lyrics",           LISTITEM_LYRICS }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -1587,10 +1588,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case MUSICPLAYER_BITRATE:
   case MUSICPLAYER_PLAYLISTLEN:
   case MUSICPLAYER_PLAYLISTPOS:
-  case MUSICPLAYER_CHANNELS:
   case MUSICPLAYER_BITSPERSAMPLE:
   case MUSICPLAYER_SAMPLERATE:
-  case MUSICPLAYER_CODEC:
   case MUSICPLAYER_DISC_NUMBER:
   case MUSICPLAYER_RATING:
   case MUSICPLAYER_COMMENT:
@@ -1602,8 +1601,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case MUSICPLAYER_CHANNEL_GROUP:
   case MUSICPLAYER_PLAYCOUNT:
   case MUSICPLAYER_LASTPLAYED:
-    strLabel = GetMusicLabel(info);
-  break;
   case VIDEOPLAYER_TITLE:
   case VIDEOPLAYER_ORIGINALTITLE:
   case VIDEOPLAYER_GENRE:
@@ -1648,7 +1645,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_PLAYCOUNT:
   case VIDEOPLAYER_LASTPLAYED:
   case VIDEOPLAYER_IMDBNUMBER:
-    strLabel = GetVideoLabel(info);
+    strLabel = GetPlayerLabel(info, m_currentFile);
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
     if(g_application.m_pPlayer->IsPlaying())
@@ -1662,6 +1659,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       return CStreamDetails::VideoDimsToResolutionDescription(m_videoInfo.width, m_videoInfo.height);
     }
     break;
+  case MUSICPLAYER_CODEC:
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.m_pPlayer->IsPlaying())
     {
@@ -1674,6 +1672,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       strLabel = CStreamDetails::VideoAspectToAspectDescription(m_videoInfo.videoAspectRatio);
     }
     break;
+  case MUSICPLAYER_CHANNELS:
   case VIDEOPLAYER_AUDIO_CHANNELS:
     if(g_application.m_pPlayer->IsPlaying())
     {
@@ -3614,7 +3613,7 @@ const std::string CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
   }
   else if (info.m_info == MUSICPLAYER_COVER)
     return playlistItem->GetArt("thumb");
-  return GetMusicTagLabel(info.m_info, playlistItem.get());
+  return GetPlayerLabel(info.m_info, playlistItem.get());
 }
 
 std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAYLIST_NONE */) const
@@ -3654,40 +3653,133 @@ std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAY
   return "";
 }
 
-std::string CGUIInfoManager::GetMusicLabel(int item)
+std::string CGUIInfoManager::GetPlayerLabel(int info, const CFileItem *item)
 {
-  if (!g_application.m_pPlayer->IsPlaying() || !m_currentFile->HasMusicInfoTag()) return "";
+  if (!g_application.m_pPlayer->IsPlaying())
+    return "";
 
-  switch (item)
+  switch (info)
   {
+  case MUSICPLAYER_ALBUM:
+  case VIDEOPLAYER_ALBUM:
+    return GetItemLabel(item, LISTITEM_ALBUM);
+  case MUSICPLAYER_ALBUM_ARTIST:
+    return GetItemLabel(item, LISTITEM_ALBUM_ARTIST);
+  case MUSICPLAYER_ARTIST:
+  case VIDEOPLAYER_ARTIST:
+    return GetItemLabel(item, LISTITEM_ARTIST);
+  case MUSICPLAYER_COMMENT:
+    return GetItemLabel(item, LISTITEM_COMMENT);
+  case MUSICPLAYER_DISC_NUMBER:
+    return GetItemLabel(item, LISTITEM_DISC_NUMBER);
+  case MUSICPLAYER_DURATION:
+    return GetItemLabel(item, LISTITEM_DURATION);
+  case MUSICPLAYER_TRACK_NUMBER:
+    return GetItemLabel(item, LISTITEM_TRACKNUMBER);
+  case MUSICPLAYER_LYRICS:
+    return GetItemLabel(item, LISTITEM_LYRICS);
   case MUSICPLAYER_PLAYLISTLEN:
-    {
-      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
-        return GetPlaylistLabel(PLAYLIST_LENGTH);
-    }
-    break;
+  case VIDEOPLAYER_PLAYLISTLEN:
+    return GetPlaylistLabel(PLAYLIST_LENGTH);
   case MUSICPLAYER_PLAYLISTPOS:
-    {
-      if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
-        return GetPlaylistLabel(PLAYLIST_POSITION);
-    }
-    break;
+  case VIDEOPLAYER_PLAYLISTPOS:
+    return GetPlaylistLabel(PLAYLIST_POSITION);
+  case MUSICPLAYER_TITLE:
+  case VIDEOPLAYER_TITLE:
+    return GetItemLabel(item, LISTITEM_TITLE);
+  case VIDEOPLAYER_ORIGINALTITLE:
+    return GetItemLabel(item, LISTITEM_ORIGINALTITLE);
+  case MUSICPLAYER_GENRE:
+  case VIDEOPLAYER_GENRE:
+    return GetItemLabel(item, LISTITEM_GENRE);
+  case VIDEOPLAYER_DIRECTOR:
+    return GetItemLabel(item, LISTITEM_DIRECTOR);
+  case VIDEOPLAYER_IMDBNUMBER:
+    return GetItemLabel(item, LISTITEM_IMDBNUMBER);
+  case MUSICPLAYER_RATING:
+  case VIDEOPLAYER_RATING:
+    return GetItemLabel(item, LISTITEM_RATING);
+  case VIDEOPLAYER_RATING_AND_VOTES:
+    return GetItemLabel(item, LISTITEM_RATING_AND_VOTES);
+  case VIDEOPLAYER_VOTES:
+    return GetItemLabel(item, LISTITEM_VOTES);
+  case MUSICPLAYER_YEAR:
+  case VIDEOPLAYER_YEAR:
+    return GetItemLabel(item, LISTITEM_YEAR);
+  case VIDEOPLAYER_PLOT:
+    return GetItemLabel(item, LISTITEM_PLOT);
+  case VIDEOPLAYER_PLOT_OUTLINE:
+    return GetItemLabel(item, LISTITEM_PLOT_OUTLINE);
+  case VIDEOPLAYER_STARTTIME:
+    return GetItemLabel(item, LISTITEM_STARTTIME);
+  case VIDEOPLAYER_ENDTIME:
+    return GetItemLabel(item, LISTITEM_ENDTIME);
+  case VIDEOPLAYER_EPISODE:
+    return GetItemLabel(item, LISTITEM_EPISODE);
+  case VIDEOPLAYER_SEASON:
+    return GetItemLabel(item, LISTITEM_SEASON);
+  case VIDEOPLAYER_CAST:
+    return GetItemLabel(item, LISTITEM_CAST);
+  case VIDEOPLAYER_CAST_AND_ROLE:
+    return GetItemLabel(item, LISTITEM_CAST_AND_ROLE);
+  case VIDEOPLAYER_WRITER:
+    return GetItemLabel(item, LISTITEM_WRITER);
+  case VIDEOPLAYER_NEXT_TITLE:
+    return GetItemLabel(item, LISTITEM_NEXT_TITLE);
+  case VIDEOPLAYER_NEXT_GENRE:
+    return GetItemLabel(item, LISTITEM_NEXT_GENRE);
+  case VIDEOPLAYER_NEXT_PLOT:
+    return GetItemLabel(item, LISTITEM_NEXT_PLOT);
+  case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
+    return GetItemLabel(item, LISTITEM_NEXT_PLOT_OUTLINE);
+  case VIDEOPLAYER_NEXT_STARTTIME:
+    return GetItemLabel(item, LISTITEM_NEXT_STARTTIME);
+  case VIDEOPLAYER_NEXT_ENDTIME:
+    return GetItemLabel(item, LISTITEM_NEXT_ENDTIME);
+  case MUSICPLAYER_CHANNEL_NAME:
+  case VIDEOPLAYER_CHANNEL_NAME:
+    return GetItemLabel(item, LISTITEM_CHANNEL_NAME);
+  case MUSICPLAYER_CHANNEL_NUMBER:
+  case VIDEOPLAYER_CHANNEL_NUMBER:
+    return GetItemLabel(item, LISTITEM_CHANNEL_NUMBER);
+  case MUSICPLAYER_SUB_CHANNEL_NUMBER:
+  case VIDEOPLAYER_SUB_CHANNEL_NUMBER:
+    return GetItemLabel(item, LISTITEM_SUB_CHANNEL_NUMBER);
+  case MUSICPLAYER_CHANNEL_NUMBER_LBL:
+  case VIDEOPLAYER_CHANNEL_NUMBER_LBL:
+    return GetItemLabel(item, LISTITEM_CHANNEL_NUMBER_LBL);
+  case MUSICPLAYER_CHANNEL_GROUP:
+  case VIDEOPLAYER_CHANNEL_GROUP:
+    return GetItemLabel(item, LISTITEM_CHANNEL_GROUP);
+  case VIDEOPLAYER_PREMIERED:
+    return GetItemLabel(item, LISTITEM_PREMIERED);
+  case VIDEOPLAYER_TRAILER:
+    return GetItemLabel(item, LISTITEM_TRAILER);
+  case VIDEOPLAYER_TVSHOW:
+    return GetItemLabel(item, LISTITEM_TVSHOW);
+  case VIDEOPLAYER_STUDIO:
+    return GetItemLabel(item, LISTITEM_STUDIO);
+  case VIDEOPLAYER_COUNTRY:
+    return GetItemLabel(item, LISTITEM_COUNTRY);
+  case VIDEOPLAYER_MPAA:
+  case VIDEOPLAYER_PARENTAL_RATING:
+    return GetItemLabel(item, LISTITEM_MPAA);
+  case VIDEOPLAYER_TOP250:
+    return GetItemLabel(item, LISTITEM_TOP250);
+  case VIDEOPLAYER_TAGLINE:
+    return GetItemLabel(item, LISTITEM_TAGLINE);
+  case MUSICPLAYER_LASTPLAYED:
+  case VIDEOPLAYER_LASTPLAYED:
+    return GetItemLabel(item, LISTITEM_LASTPLAYED);
+  case MUSICPLAYER_PLAYCOUNT:
+  case VIDEOPLAYER_PLAYCOUNT:
+    return GetItemLabel(item, LISTITEM_PLAYCOUNT);
   case MUSICPLAYER_BITRATE:
     {
       std::string strBitrate = "";
       if (m_audioInfo.bitrate > 0)
         strBitrate = StringUtils::Format("%i", MathUtils::round_int((double)m_audioInfo.bitrate / 1000.0));
       return strBitrate;
-    }
-    break;
-  case MUSICPLAYER_CHANNELS:
-    {
-      std::string strChannels = "";
-      if (m_audioInfo.channels > 0)
-      {
-        strChannels = StringUtils::Format("%i", m_audioInfo.channels);
-      }
-      return strChannels;
     }
     break;
   case MUSICPLAYER_BITSPERSAMPLE:
@@ -3706,374 +3798,6 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
       return strSampleRate;
     }
     break;
-  case MUSICPLAYER_CODEC:
-    {
-      return StringUtils::Format("%s", m_audioInfo.audioCodecName.c_str());
-    }
-    break;
-  case MUSICPLAYER_LYRICS:
-    return GetItemLabel(m_currentFile, AddListItemProp("lyrics"));
-  }
-  return GetMusicTagLabel(item, m_currentFile);
-}
-
-std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
-{
-  if (!item->HasMusicInfoTag()) return "";
-  const CMusicInfoTag &tag = *item->GetMusicInfoTag();
-  switch (info)
-  {
-  case MUSICPLAYER_TITLE:
-    if (tag.GetTitle().size()) { return tag.GetTitle(); }
-    break;
-  case MUSICPLAYER_ALBUM:
-    if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
-    break;
-  case MUSICPLAYER_ARTIST:
-    if (tag.GetArtist().size()) { return StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator); }
-    break;
-  case MUSICPLAYER_ALBUM_ARTIST:
-    if (tag.GetAlbumArtist().size()) { return StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator); }
-    break;
-  case MUSICPLAYER_YEAR:
-    if (tag.GetYear()) { return tag.GetYearString(); }
-    break;
-  case MUSICPLAYER_GENRE:
-    if (tag.GetGenre().size()) { return StringUtils::Join(tag.GetGenre(), g_advancedSettings.m_musicItemSeparator); }
-    break;
-  case MUSICPLAYER_LYRICS:
-    if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
-  break;
-  case MUSICPLAYER_TRACK_NUMBER:
-    {
-      std::string strTrack;
-      if (tag.Loaded() && tag.GetTrackNumber() > 0)
-      {
-        return StringUtils::Format("%02i", tag.GetTrackNumber());
-      }
-    }
-    break;
-  case MUSICPLAYER_DISC_NUMBER:
-    return GetItemLabel(item, LISTITEM_DISC_NUMBER);
-  case MUSICPLAYER_RATING:
-    return GetItemLabel(item, LISTITEM_RATING);
-  case MUSICPLAYER_COMMENT:
-    return GetItemLabel(item, LISTITEM_COMMENT);
-  case MUSICPLAYER_DURATION:
-    return GetItemLabel(item, LISTITEM_DURATION);
-  case MUSICPLAYER_CHANNEL_NAME:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag())
-        return m_currentFile->GetPVRChannelInfoTag()->ChannelName();
-    }
-    break;
-  case MUSICPLAYER_CHANNEL_NUMBER:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag())
-        return StringUtils::Format("%i", m_currentFile->GetPVRChannelInfoTag()->ChannelNumber());
-    }
-    break;
-  case MUSICPLAYER_SUB_CHANNEL_NUMBER:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag())
-        return StringUtils::Format("%i", m_currentFile->GetPVRChannelInfoTag()->SubChannelNumber());
-    }
-    break;
-  case MUSICPLAYER_CHANNEL_NUMBER_LBL:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag())
-        return m_currentFile->GetPVRChannelInfoTag()->FormattedChannelNumber();
-    }
-    break;
-  case MUSICPLAYER_CHANNEL_GROUP:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag() && m_currentFile->GetPVRChannelInfoTag()->IsRadio())
-        return g_PVRManager.GetPlayingGroup(true)->GroupName();
-    }
-    break;
-  case MUSICPLAYER_PLAYCOUNT:
-    return GetItemLabel(item, LISTITEM_PLAYCOUNT);
-  case MUSICPLAYER_LASTPLAYED:
-    return GetItemLabel(item, LISTITEM_LASTPLAYED);
-  }
-  return "";
-}
-
-std::string CGUIInfoManager::GetVideoLabel(int item)
-{
-  if (!g_application.m_pPlayer->IsPlaying())
-    return "";
-
-  if (item == VIDEOPLAYER_TITLE)
-  {
-    if(g_application.m_pPlayer->IsPlayingVideo())
-       return GetLabel(PLAYER_TITLE);
-  }
-  else if (item == VIDEOPLAYER_PLAYLISTLEN)
-  {
-    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
-      return GetPlaylistLabel(PLAYLIST_LENGTH);
-  }
-  else if (item == VIDEOPLAYER_PLAYLISTPOS)
-  {
-    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
-      return GetPlaylistLabel(PLAYLIST_POSITION);
-  }
-  else if (m_currentFile->HasPVRChannelInfoTag())
-  {
-    CPVRChannelPtr tag(m_currentFile->GetPVRChannelInfoTag());
-    CEpgInfoTagPtr epgTag;
-
-    switch (item)
-    {
-    /* Now playing infos */
-    case VIDEOPLAYER_TITLE:
-      epgTag = tag->GetEPGNow();
-      return epgTag ?
-          epgTag->Title() :
-          CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
-                            "" : g_localizeStrings.Get(19055); // no information available
-    case VIDEOPLAYER_GENRE:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator) : "";
-    case VIDEOPLAYER_PLOT:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->Plot() : "";
-    case VIDEOPLAYER_PLOT_OUTLINE:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->PlotOutline() : "";
-    case VIDEOPLAYER_STARTTIME:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_ENDTIME:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_IMDBNUMBER:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->IMDBNumber() : "";
-    case VIDEOPLAYER_ORIGINALTITLE:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->OriginalTitle() : "";
-    case VIDEOPLAYER_YEAR:
-      epgTag = tag->GetEPGNow();
-      if (epgTag && epgTag->Year() > 0)
-        return StringUtils::Format("%i", epgTag->Year());
-      break;
-    case VIDEOPLAYER_EPISODE:
-      epgTag = tag->GetEPGNow();
-      if (epgTag && epgTag->EpisodeNumber() > 0)
-      {
-        if (epgTag->SeriesNumber() == 0) // prefix episode with 'S'
-          return StringUtils::Format("S%i", epgTag->EpisodeNumber());
-        else
-          return StringUtils::Format("%i", epgTag->EpisodeNumber());
-      }
-      break;
-    case VIDEOPLAYER_SEASON:
-      epgTag = tag->GetEPGNow();
-      if (epgTag && epgTag->SeriesNumber() > 0)
-        return StringUtils::Format("%i", epgTag->SeriesNumber());
-      break;
-    case VIDEOPLAYER_CAST:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->Cast() : "";
-    case VIDEOPLAYER_DIRECTOR:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->Director() : "";
-    case VIDEOPLAYER_WRITER:
-      epgTag = tag->GetEPGNow();
-      return epgTag ? epgTag->Writer() : "";
-
-    /* Next playing infos */
-    case VIDEOPLAYER_NEXT_TITLE:
-      epgTag = tag->GetEPGNext();
-      return epgTag ?
-          epgTag->Title() :
-          CSettings::Get().GetBool("epg.hidenoinfoavailable") ?
-                            "" : g_localizeStrings.Get(19055); // no information available
-    case VIDEOPLAYER_NEXT_GENRE:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? StringUtils::Join(epgTag->Genre(), g_advancedSettings.m_videoItemSeparator) : "";
-    case VIDEOPLAYER_NEXT_PLOT:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->Plot() : "";
-    case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->PlotOutline() : "";
-    case VIDEOPLAYER_NEXT_STARTTIME:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_NEXT_ENDTIME:
-      epgTag = tag->GetEPGNext();
-      return epgTag ? epgTag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
-    case VIDEOPLAYER_NEXT_DURATION:
-      {
-        std::string duration;
-        epgTag = tag->GetEPGNext();
-        if (epgTag && epgTag->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(epgTag->GetDuration());
-        return duration;
-      }
-
-    case VIDEOPLAYER_PARENTAL_RATING:
-      {
-        std::string rating;
-        epgTag = tag->GetEPGNow();
-        if (epgTag && epgTag->ParentalRating() > 0)
-          rating = StringUtils::Format("%i", epgTag->ParentalRating());
-        return rating;
-      }
-      break;
-
-    /* General channel infos */
-    case VIDEOPLAYER_CHANNEL_NAME:
-      return tag->ChannelName();
-
-    case VIDEOPLAYER_CHANNEL_NUMBER:
-      return StringUtils::Format("%i", tag->ChannelNumber());
-
-    case VIDEOPLAYER_SUB_CHANNEL_NUMBER:
-      return StringUtils::Format("%i", tag->SubChannelNumber());
-
-    case VIDEOPLAYER_CHANNEL_NUMBER_LBL:
-      return tag->FormattedChannelNumber();
-
-    case VIDEOPLAYER_CHANNEL_GROUP:
-      {
-        if (tag && !tag->IsRadio())
-          return g_PVRManager.GetPlayingTVGroupName();
-      }
-    }
-  }
-  else if (m_currentFile->HasVideoInfoTag())
-  {
-    switch (item)
-    {
-    case VIDEOPLAYER_ORIGINALTITLE:
-      return m_currentFile->GetVideoInfoTag()->m_strOriginalTitle;
-      break;
-    case VIDEOPLAYER_GENRE:
-      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
-      break;
-    case VIDEOPLAYER_DIRECTOR:
-      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
-      break;
-    case VIDEOPLAYER_IMDBNUMBER:
-      return m_currentFile->GetVideoInfoTag()->m_strIMDBNumber;
-    case VIDEOPLAYER_RATING:
-      {
-        std::string strRating;
-        if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
-          strRating = StringUtils::Format("%.1f", m_currentFile->GetVideoInfoTag()->m_fRating);
-        return strRating;
-      }
-      break;
-    case VIDEOPLAYER_RATING_AND_VOTES:
-      {
-        std::string strRatingAndVotes;
-        if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
-        {
-          if (m_currentFile->GetVideoInfoTag()->m_strVotes.empty())
-            strRatingAndVotes = StringUtils::Format("%.1f",
-                                                    m_currentFile->GetVideoInfoTag()->m_fRating);
-          else
-            strRatingAndVotes = StringUtils::Format("%.1f (%s %s)",
-                                                    m_currentFile->GetVideoInfoTag()->m_fRating,
-                                                    m_currentFile->GetVideoInfoTag()->m_strVotes.c_str(),
-                                                    g_localizeStrings.Get(20350).c_str());
-        }
-        return strRatingAndVotes;
-      }
-      break;
-    case VIDEOPLAYER_VOTES:
-      return m_currentFile->GetVideoInfoTag()->m_strVotes;
-    case VIDEOPLAYER_YEAR:
-      {
-        std::string strYear;
-        if (m_currentFile->GetVideoInfoTag()->m_iYear > 0)
-          strYear = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iYear);
-        return strYear;
-      }
-      break;
-    case VIDEOPLAYER_PREMIERED:
-      {
-        CDateTime dateTime;
-        if (m_currentFile->GetVideoInfoTag()->m_firstAired.IsValid())
-          dateTime = m_currentFile->GetVideoInfoTag()->m_firstAired;
-        else if (m_currentFile->GetVideoInfoTag()->m_premiered.IsValid())
-          dateTime = m_currentFile->GetVideoInfoTag()->m_premiered;
-
-        if (dateTime.IsValid())
-          return dateTime.GetAsLocalizedDate();
-        break;
-      }
-      break;
-    case VIDEOPLAYER_PLOT:
-      return m_currentFile->GetVideoInfoTag()->m_strPlot;
-    case VIDEOPLAYER_TRAILER:
-      return m_currentFile->GetVideoInfoTag()->m_strTrailer;
-    case VIDEOPLAYER_PLOT_OUTLINE:
-      return m_currentFile->GetVideoInfoTag()->m_strPlotOutline;
-    case VIDEOPLAYER_EPISODE:
-      if (m_currentFile->GetVideoInfoTag()->m_iEpisode > 0)
-      {
-        std::string strEpisode;
-        if (m_currentFile->GetVideoInfoTag()->m_iSeason == 0) // prefix episode with 'S'
-          strEpisode = StringUtils::Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        else 
-          strEpisode = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        return strEpisode;
-      }
-      break;
-    case VIDEOPLAYER_SEASON:
-      if (m_currentFile->GetVideoInfoTag()->m_iSeason > 0)
-      {
-        return StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iSeason);
-      }
-      break;
-    case VIDEOPLAYER_TVSHOW:
-      return m_currentFile->GetVideoInfoTag()->m_strShowTitle;
-
-    case VIDEOPLAYER_STUDIO:
-      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator);
-    case VIDEOPLAYER_COUNTRY:
-      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_country, g_advancedSettings.m_videoItemSeparator);
-    case VIDEOPLAYER_MPAA:
-      return m_currentFile->GetVideoInfoTag()->m_strMPAARating;
-    case VIDEOPLAYER_TOP250:
-      {
-        std::string strTop250;
-        if (m_currentFile->GetVideoInfoTag()->m_iTop250 > 0)
-          strTop250 = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iTop250);
-        return strTop250;
-      }
-      break;
-    case VIDEOPLAYER_CAST:
-      return m_currentFile->GetVideoInfoTag()->GetCast();
-    case VIDEOPLAYER_CAST_AND_ROLE:
-      return m_currentFile->GetVideoInfoTag()->GetCast(true);
-    case VIDEOPLAYER_ARTIST:
-      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
-    case VIDEOPLAYER_ALBUM:
-      return m_currentFile->GetVideoInfoTag()->m_strAlbum;
-    case VIDEOPLAYER_WRITER:
-      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
-    case VIDEOPLAYER_TAGLINE:
-      return m_currentFile->GetVideoInfoTag()->m_strTagLine;
-    case VIDEOPLAYER_LASTPLAYED:
-      {
-        if (m_currentFile->GetVideoInfoTag()->m_lastPlayed.IsValid())
-          return m_currentFile->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDateTime();
-        break;
-      }
-    case VIDEOPLAYER_PLAYCOUNT:
-      {
-        std::string strPlayCount;
-        if (m_currentFile->GetVideoInfoTag()->m_playCount > 0)
-          strPlayCount = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_playCount);
-        return strPlayCount;
-      }
-    }
   }
   return "";
 }
@@ -4966,6 +4690,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_MPAA:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strMPAARating;
+    if (item->HasPVRChannelInfoTag())
+    {
+      CEpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
+      if (epgTag && epgTag->ParentalRating() > 0)
+        return StringUtils::Format("%i", epgTag->ParentalRating());
+    }
     break;
   case LISTITEM_CAST:
     if (item->HasVideoInfoTag())
@@ -5288,6 +5018,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         return item->GetEPGInfoTag()->EpisodeName();
       break;
     }
+  case LISTITEM_LYRICS:
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetLyrics().size())
+      return item->GetMusicInfoTag()->GetLyrics();
+    break;
   }
   return "";
 }

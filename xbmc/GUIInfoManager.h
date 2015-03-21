@@ -661,6 +661,7 @@ namespace INFO
 #define LISTITEM_CHANNEL_NUMBER_LBL (LISTITEM_START + 145)
 #define LISTITEM_IMDBNUMBER         (LISTITEM_START + 146)
 #define LISTITEM_EPISODENAME        (LISTITEM_START + 147)
+#define LISTITEM_LYRICS             (LISTITEM_START + 148)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -786,9 +787,7 @@ public:
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
-  std::string GetMusicLabel(int item);
-  std::string GetMusicTagLabel(int info, const CFileItem *item);
-  std::string GetVideoLabel(int item);
+  std::string GetPlayerLabel(int info, const CFileItem *item);
   std::string GetPlaylistLabel(int item, int playlistid = -1 /* PLAYLIST_NONE */) const;
   std::string GetMusicPartyModeLabel(int item);
   const std::string GetMusicPlaylistInfo(const GUIInfo& info);
