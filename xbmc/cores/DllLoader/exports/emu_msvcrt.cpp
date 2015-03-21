@@ -1313,7 +1313,8 @@ extern "C"
     {
       if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
       {
-        not_implement("msvcrt.dll fake function dll_fputs() called\n");
+        size_t len = strlen(szLine);
+        return dll_fwrite(static_cast<const void*>(szLine), sizeof(char), len, stream);
       }
       else if (!IS_STD_STREAM(stream))
       {
