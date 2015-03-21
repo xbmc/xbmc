@@ -601,7 +601,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "stereoscopicmode", LISTITEM_STEREOSCOPIC_MODE },
                                   { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC },
                                   { "imdbnumber",       LISTITEM_IMDBNUMBER },
-                                  { "episodename",      LISTITEM_EPISODENAME }};
+                                  { "episodename",      LISTITEM_EPISODENAME },
+                                  { "lyrics",           LISTITEM_LYRICS }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -3719,40 +3720,22 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
 
 std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
 {
-  if (!item->HasMusicInfoTag()) return "";
-  const CMusicInfoTag &tag = *item->GetMusicInfoTag();
   switch (info)
   {
   case MUSICPLAYER_TITLE:
-    if (tag.GetTitle().size()) { return tag.GetTitle(); }
-    break;
+    return GetItemLabel(item, LISTITEM_TITLE);
   case MUSICPLAYER_ALBUM:
-    if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
-    break;
+    return GetItemLabel(item, LISTITEM_ALBUM);
   case MUSICPLAYER_ARTIST:
-    if (tag.GetArtist().size()) { return StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator); }
-    break;
+    return GetItemLabel(item, LISTITEM_ARTIST);
   case MUSICPLAYER_ALBUM_ARTIST:
-    if (tag.GetAlbumArtist().size()) { return StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator); }
-    break;
+    return GetItemLabel(item, LISTITEM_ALBUM_ARTIST);
   case MUSICPLAYER_YEAR:
-    if (tag.GetYear()) { return tag.GetYearString(); }
-    break;
+    return GetItemLabel(item, LISTITEM_YEAR);
   case MUSICPLAYER_GENRE:
-    if (tag.GetGenre().size()) { return StringUtils::Join(tag.GetGenre(), g_advancedSettings.m_musicItemSeparator); }
-    break;
-  case MUSICPLAYER_LYRICS:
-    if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
-  break;
+    return GetItemLabel(item, LISTITEM_GENRE);
   case MUSICPLAYER_TRACK_NUMBER:
-    {
-      std::string strTrack;
-      if (tag.Loaded() && tag.GetTrackNumber() > 0)
-      {
-        return StringUtils::Format("%02i", tag.GetTrackNumber());
-      }
-    }
-    break;
+    return GetItemLabel(item, LISTITEM_TRACKNUMBER);
   case MUSICPLAYER_DISC_NUMBER:
     return GetItemLabel(item, LISTITEM_DISC_NUMBER);
   case MUSICPLAYER_RATING:
@@ -3762,35 +3745,17 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
   case MUSICPLAYER_DURATION:
     return GetItemLabel(item, LISTITEM_DURATION);
   case MUSICPLAYER_CHANNEL_NAME:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag())
-        return m_currentFile->GetPVRChannelInfoTag()->ChannelName();
-    }
-    break;
+    return GetItemLabel(item, LISTITEM_CHANNEL_NAME);
+  case MUSICPLAYER_LYRICS:
+    return GetItemLabel(item, LISTITEM_LYRICS);
   case MUSICPLAYER_CHANNEL_NUMBER:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag())
-        return StringUtils::Format("%i", m_currentFile->GetPVRChannelInfoTag()->ChannelNumber());
-    }
-    break;
+    return GetItemLabel(item, LISTITEM_CHANNEL_NUMBER);
   case MUSICPLAYER_SUB_CHANNEL_NUMBER:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag())
-        return StringUtils::Format("%i", m_currentFile->GetPVRChannelInfoTag()->SubChannelNumber());
-    }
-    break;
+    return GetItemLabel(item, LISTITEM_SUB_CHANNEL_NUMBER);
   case MUSICPLAYER_CHANNEL_NUMBER_LBL:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag())
-        return m_currentFile->GetPVRChannelInfoTag()->FormattedChannelNumber();
-    }
-    break;
+    return GetItemLabel(item, LISTITEM_CHANNEL_NUMBER_LBL);
   case MUSICPLAYER_CHANNEL_GROUP:
-    {
-      if (m_currentFile->HasPVRChannelInfoTag() && m_currentFile->GetPVRChannelInfoTag()->IsRadio())
-        return g_PVRManager.GetPlayingGroup(true)->GroupName();
-    }
-    break;
+    return GetItemLabel(item, LISTITEM_CHANNEL_GROUP);
   case MUSICPLAYER_PLAYCOUNT:
     return GetItemLabel(item, LISTITEM_PLAYCOUNT);
   case MUSICPLAYER_LASTPLAYED:
@@ -5288,6 +5253,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         return item->GetEPGInfoTag()->EpisodeName();
       break;
     }
+  case LISTITEM_LYRICS:
+    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetLyrics().size())
+      return item->GetMusicInfoTag()->GetLyrics();
+    break;
   }
   return "";
 }
