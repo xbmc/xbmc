@@ -1603,8 +1603,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case MUSICPLAYER_CHANNEL_GROUP:
   case MUSICPLAYER_PLAYCOUNT:
   case MUSICPLAYER_LASTPLAYED:
-    strLabel = GetMusicPlayerLabel(info, m_currentFile);
-  break;
   case VIDEOPLAYER_TITLE:
   case VIDEOPLAYER_ORIGINALTITLE:
   case VIDEOPLAYER_GENRE:
@@ -1649,7 +1647,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_PLAYCOUNT:
   case VIDEOPLAYER_LASTPLAYED:
   case VIDEOPLAYER_IMDBNUMBER:
-    strLabel = GetVideoPlayerLabel(info, m_currentFile);
+    strLabel = GetPlayerLabel(info, m_currentFile);
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
     if(g_application.m_pPlayer->IsPlaying())
@@ -3615,7 +3613,7 @@ const std::string CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
   }
   else if (info.m_info == MUSICPLAYER_COVER)
     return playlistItem->GetArt("thumb");
-  return GetMusicPlayerLabel(info.m_info, playlistItem.get());
+  return GetPlayerLabel(info.m_info, playlistItem.get());
 }
 
 std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAYLIST_NONE */) const
@@ -3655,7 +3653,7 @@ std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAY
   return "";
 }
 
-std::string CGUIInfoManager::GetMusicPlayerLabel(int info, const CFileItem *item)
+std::string CGUIInfoManager::GetPlayerLabel(int info, const CFileItem *item)
 {
   if (!g_application.m_pPlayer->IsPlaying())
     return "";
@@ -3751,14 +3749,6 @@ std::string CGUIInfoManager::GetMusicPlayerLabel(int info, const CFileItem *item
       return StringUtils::Format("%s", m_audioInfo.audioCodecName.c_str());
     }
     break;
-  }
-  return "";
-}
-
-std::string CGUIInfoManager::GetVideoPlayerLabel(int info, const CFileItem *item)
-{
-  switch (info)
-  {
   case VIDEOPLAYER_PLAYLISTLEN:
     return GetPlaylistLabel(PLAYLIST_LENGTH);
   case VIDEOPLAYER_PLAYLISTPOS:
