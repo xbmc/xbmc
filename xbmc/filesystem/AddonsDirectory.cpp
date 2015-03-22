@@ -23,6 +23,7 @@
 #include <functional>
 #include "AddonsDirectory.h"
 #include "addons/AddonDatabase.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "DirectoryFactory.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
@@ -205,9 +206,11 @@ void OutdatedAddons(const CURL& path, CFileItemList &items)
 void RunningAddons(const CURL& path, CFileItemList &items)
 {
   VECADDONS addons;
-  CAddonMgr::Get().GetAddons(ADDON_SERVICE, addons, true);
+  CAddonMgr::Get().GetAddons(ADDON_SERVICE, addons);
+
+  addons.erase(std::remove_if(addons.begin(), addons.end(),
+      [](const AddonPtr& addon){ return !CScriptInvocationManager::Get().IsRunning(addon->LibPath()); }), addons.end());
   CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24994));
-  //TODO: include web interfaces if web server is running
 }
 
 bool Browse(const CURL& path, CFileItemList &items)

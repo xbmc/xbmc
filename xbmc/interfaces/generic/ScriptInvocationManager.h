@@ -103,6 +103,7 @@ public:
   bool Stop(const std::string &scriptPath, bool wait = false);
 
   bool IsRunning(int scriptId) const;
+  bool IsRunning(const std::string& scriptPath) const;
 
 protected:
   friend class CLanguageInvokerThread;
