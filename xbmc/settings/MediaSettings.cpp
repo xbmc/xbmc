@@ -44,6 +44,7 @@ using namespace std;
 
 CMediaSettings::CMediaSettings()
 {
+  m_watchedModes["files"] = WatchedModeAll;
   m_watchedModes["movies"] = WatchedModeAll;
   m_watchedModes["tvshows"] = WatchedModeAll;
   m_watchedModes["musicvideos"] = WatchedModeAll;
