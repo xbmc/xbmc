@@ -333,9 +333,9 @@ void CURL::SetFileName(const std::string& strFileName)
 {
   m_strFileName = strFileName;
 
-  int slash = m_strFileName.find_last_of(GetDirectorySeparator());
-  int period = m_strFileName.find_last_of('.');
-  if(period != -1 && (slash == -1 || period > slash))
+  size_t slash = m_strFileName.find_last_of(GetDirectorySeparator());
+  size_t period = m_strFileName.find_last_of('.');
+  if(period != std::string::npos && (slash == std::string::npos || period > slash))
     m_strFileType = m_strFileName.substr(period+1);
   else
     m_strFileType = "";
