@@ -293,8 +293,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\CDDAFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CircularCache.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CurlFile.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\DAAPDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\DAAPFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\DAVCommon.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\DAVDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\DAVFile.cpp" />
@@ -1069,8 +1067,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\CDDADirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CDDAFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CurlFile.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\DAAPDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\DAAPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DAVDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryFactory.h" />
@@ -2361,10 +2357,6 @@
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-    <ProjectReference Include="..\..\lib\libXDAAP\libXDAAP_win32\libXDAAP_win32.vcxproj">
-      <Project>{19b16cd0-3b47-47b7-ab0e-81ef2bf1b187}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="libPlatinum.vcxproj">
       <Project>{b2975495-fbe4-4f94-aac5-b21a9842bf50}</Project>

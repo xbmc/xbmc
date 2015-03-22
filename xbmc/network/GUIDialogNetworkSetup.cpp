@@ -123,7 +123,6 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   labels.push_back(make_pair(g_localizeStrings.Get(20254), NET_PROTOCOL_DAVS));
   labels.push_back(make_pair(g_localizeStrings.Get(20253), NET_PROTOCOL_DAV));
   labels.push_back(make_pair(g_localizeStrings.Get(20173), NET_PROTOCOL_FTP));
-  labels.push_back(make_pair(g_localizeStrings.Get(20174), NET_PROTOCOL_DAAP));
   labels.push_back(make_pair(g_localizeStrings.Get(20175), NET_PROTOCOL_UPNP));
   labels.push_back(make_pair(g_localizeStrings.Get(20304), NET_PROTOCOL_RSS));
 #ifdef HAS_FILESYSTEM_NFS
@@ -196,8 +195,6 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "80";
   else if (m_protocol == NET_PROTOCOL_HTTPS || m_protocol == NET_PROTOCOL_DAVS)
     m_port = "443";
-  else if (m_protocol == NET_PROTOCOL_DAAP)
-    m_port = "3689";
   else if (m_protocol == NET_PROTOCOL_SFTP)
     m_port = "22";
   else
@@ -218,14 +215,10 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   {
     SET_CONTROL_LABEL(CONTROL_SERVER_ADDRESS, 1009);  // Server Address
   }
-  if (m_protocol == NET_PROTOCOL_DAAP)
-    SendMessage(GUI_MSG_SET_TYPE, CONTROL_SERVER_ADDRESS, CGUIEditControl::INPUT_TYPE_IPADDRESS, 1016);
-  else
-    SendMessage(GUI_MSG_SET_TYPE, CONTROL_SERVER_ADDRESS, CGUIEditControl::INPUT_TYPE_TEXT, 1016);
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_SERVER_ADDRESS, CGUIEditControl::INPUT_TYPE_TEXT, 1016);
   // remote path
   SET_CONTROL_LABEL2(CONTROL_REMOTE_PATH, m_path);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_DAAP &&
-                                                   m_protocol != NET_PROTOCOL_UPNP);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_UPNP);
   if (m_protocol == NET_PROTOCOL_FTP ||
       m_protocol == NET_PROTOCOL_HTTP ||
       m_protocol == NET_PROTOCOL_HTTPS ||
@@ -245,8 +238,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
 
   // username
   SET_CONTROL_LABEL2(CONTROL_USERNAME, m_username);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_USERNAME, m_protocol != NET_PROTOCOL_DAAP &&
-                                                m_protocol != NET_PROTOCOL_UPNP &&
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_USERNAME, m_protocol != NET_PROTOCOL_UPNP &&
                                                 m_protocol != NET_PROTOCOL_NFS);
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_USERNAME, CGUIEditControl::INPUT_TYPE_TEXT, 1019);
@@ -259,27 +251,23 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                    m_protocol == NET_PROTOCOL_DAV ||
                                                    m_protocol == NET_PROTOCOL_DAVS ||
                                                    m_protocol == NET_PROTOCOL_RSS ||
-                                                   m_protocol == NET_PROTOCOL_DAAP ||
                                                    m_protocol == NET_PROTOCOL_SFTP);
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PORT_NUMBER, CGUIEditControl::INPUT_TYPE_NUMBER, 1018);
 
   // password
   SET_CONTROL_LABEL2(CONTROL_PASSWORD, m_password);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_PASSWORD, m_protocol != NET_PROTOCOL_DAAP &&
-                                                m_protocol != NET_PROTOCOL_UPNP &&
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_PASSWORD, m_protocol != NET_PROTOCOL_UPNP &&
                                                 m_protocol != NET_PROTOCOL_NFS);
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PASSWORD, CGUIEditControl::INPUT_TYPE_PASSWORD, 12326);
 
-  // TODO: FIX BETTER DAAP SUPPORT
-  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS, DAV or DAVS
+  // server browse should be disabled if we are in FTP, HTTP, HTTPS, RSS, DAV or DAVS
   CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.empty() || !(m_protocol == NET_PROTOCOL_FTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTPS ||
                                                                               m_protocol == NET_PROTOCOL_DAV ||
                                                                               m_protocol == NET_PROTOCOL_DAVS ||
-                                                                              m_protocol == NET_PROTOCOL_DAAP ||
                                                                               m_protocol == NET_PROTOCOL_RSS ||
                                                                               m_protocol == NET_PROTOCOL_SFTP));
 }
@@ -299,8 +287,6 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("dav");
   else if (m_protocol == NET_PROTOCOL_DAVS)
     url.SetProtocol("davs");
-  else if (m_protocol == NET_PROTOCOL_DAAP)
-    url.SetProtocol("daap");
   else if (m_protocol == NET_PROTOCOL_UPNP)
     url.SetProtocol("upnp");
   else if (m_protocol == NET_PROTOCOL_RSS)
@@ -324,7 +310,6 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_DAV) ||
        (m_protocol == NET_PROTOCOL_DAVS) ||
        (m_protocol == NET_PROTOCOL_RSS) ||
-       (m_protocol == NET_PROTOCOL_DAAP && !m_server.empty()) ||
        (m_protocol == NET_PROTOCOL_SFTP) ||
        (m_protocol == NET_PROTOCOL_NFS))
       && !m_port.empty() && atoi(m_port.c_str()) > 0)
@@ -351,8 +336,6 @@ void CGUIDialogNetworkSetup::SetPath(const std::string &path)
     m_protocol = NET_PROTOCOL_DAV;
   else if (url.IsProtocol("davs"))
     m_protocol = NET_PROTOCOL_DAVS;
-  else if (url.IsProtocol("daap"))
-    m_protocol = NET_PROTOCOL_DAAP;
   else if (url.IsProtocol("upnp"))
     m_protocol = NET_PROTOCOL_UPNP;
   else if (url.IsProtocol("rss"))

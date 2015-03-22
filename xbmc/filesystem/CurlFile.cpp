@@ -1228,6 +1228,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
   SetCommonOptions(m_state);
 
   /* caller might have changed some headers (needed for daap)*/
+  // TODO: daap is gone. is this needed for something else?
   SetRequestHeaders(m_state);
 
   m_state->m_filePos = nextPos;

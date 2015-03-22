@@ -1054,11 +1054,6 @@ bool CFileItem::IsURL() const
   return URIUtils::IsURL(m_strPath);
 }
 
-bool CFileItem::IsDAAP() const
-{
-  return URIUtils::IsDAAP(m_strPath);
-}
-
 bool CFileItem::IsHDHomeRun() const
 {
   return URIUtils::IsHDHomeRun(m_strPath);

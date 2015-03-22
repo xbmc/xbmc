@@ -249,11 +249,6 @@ TEST_F(TestURIUtils, IsCDDA)
   EXPECT_TRUE(URIUtils::IsCDDA("cdda://path/to/cdda"));
 }
 
-TEST_F(TestURIUtils, IsDAAP)
-{
-  EXPECT_TRUE(URIUtils::IsDAAP("daap://path/to/daap"));
-}
-
 TEST_F(TestURIUtils, IsDOSPath)
 {
   EXPECT_TRUE(URIUtils::IsDOSPath("C://path/to/dosfile"));
@@ -359,10 +354,10 @@ TEST_F(TestURIUtils, IsOnDVD)
 TEST_F(TestURIUtils, IsOnLAN)
 {
   std::vector<std::string> multiVec;
-  multiVec.push_back("daap://path/to/file");
+  multiVec.push_back("smb://path/to/file");
   EXPECT_TRUE(URIUtils::IsOnLAN(CMultiPathDirectory::ConstructMultiPath(multiVec)));
-  EXPECT_TRUE(URIUtils::IsOnLAN("stack://daap://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsOnLAN("daap://path/to/file"));
+  EXPECT_TRUE(URIUtils::IsOnLAN("stack://smb://path/to/file"));
+  EXPECT_TRUE(URIUtils::IsOnLAN("smb://path/to/file"));
   EXPECT_FALSE(URIUtils::IsOnLAN("plugin://path/to/file"));
   EXPECT_TRUE(URIUtils::IsOnLAN("upnp://path/to/file"));
 }
@@ -497,7 +492,6 @@ TEST_F(TestURIUtils, HasEncodedHostname)
 TEST_F(TestURIUtils, HasEncodedFilename)
 {
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("shout://")));
-  EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("daap://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("dav://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("rss://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("davs://")));

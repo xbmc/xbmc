@@ -10155,10 +10155,7 @@ msgctxt "#20173"
 msgid "FTP server"
 msgstr ""
 
-#: xbmc/network/GUIDialogNetworkSetup.cpp
-msgctxt "#20174"
-msgid "iTunes music share (DAAP)"
-msgstr ""
+#empty string with id 20174
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20175"

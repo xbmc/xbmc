@@ -13,7 +13,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrarXLib", "UnrarXLib.vcxp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visMilkdrop", "..\..\xbmc\visualizations\Milkdrop\Plugin.vcxproj", "{5E479372-4F34-426D-AA1E-9879E94C105D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXDAAP", "..\..\lib\libXDAAP\libXDAAP_win32\libXDAAP_win32.vcxproj", "{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_dll", "..\..\lib\cximage-6.0\ImageLib.vcxproj", "{3B424C94-2005-44CC-BFB1-4B6C89090732}"
 EndProject
