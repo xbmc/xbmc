@@ -1962,6 +1962,15 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
         if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt2)
           || (!isoFileNameNoExt.empty() && StringUtils::StartsWithNoCase(strItem, isoFileNameNoExt)))
         {
+          //check for delimiters .-" " or end of filename
+          std::string token;
+          if (StringUtils::StartsWithNoCase(strItem, strMovieFileNameNoExt))
+            token = strItem.substr(strMovieFileNameNoExt.length());
+          else
+            token = strItem.substr(isoFileNameNoExt.length());
+
+          if (token.find_first_of(g_advancedSettings.m_subtitlesDelimiter) != 0)
+            continue;
           // is this a rar or zip-file
           if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
           {
@@ -2125,9 +2134,8 @@ void CUtil::GetExternalStreamDetailsFromFilename(const std::string& strVideo, co
   if (result != toParse.end()) // if we have anything to parse
   {
     std::string inputString(result, toParse.end());
-    std::string delimiters(" .-");
     std::vector<std::string> tokens;
-    StringUtils::Tokenize(inputString, tokens, delimiters);
+    StringUtils::Tokenize(inputString, tokens, g_advancedSettings.m_subtitlesDelimiter);
 
     for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
     {

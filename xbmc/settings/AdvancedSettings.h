@@ -383,6 +383,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     void SetDebugMode(bool debug);
 
+    std::string m_fileNameDelimiter;
+    std::string m_subtitlesDelimiter;
+
     // runtime settings which cannot be set from advancedsettings.xml
     std::string m_pictureExtensions;
     std::string m_videoExtensions;
