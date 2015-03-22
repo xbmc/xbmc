@@ -94,18 +94,28 @@ void CVideoReferenceClock::Process()
   bool SetupSuccess = false;
   int64_t Now;
 
+  bool glx_fallback = false;
   while(!m_bStop)
   {
     //set up the vblank clock
 #if defined(HAVE_X11)
   std::string gpuvendor = g_Windowing.GetRenderVendor();
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  if ((gpuvendor.compare(0, 5, "intel") == 0 ||
+  if (!glx_fallback && (gpuvendor.compare(0, 5, "intel") == 0 ||
        gpuvendor.compare(0, 5, "x.org") == 0)) // AMD
+  {
     m_pVideoSync = new CVideoSyncDRM();
 #if defined(HAS_GLX)
+    glx_fallback = true;
+#endif
+  }
+#if defined(HAS_GLX)
   else
+  {
+    // do not fallback twice
+    glx_fallback = false;
     m_pVideoSync = new CVideoSyncGLX();
+  }
 #endif
 #elif defined(TARGET_WINDOWS)
     m_pVideoSync = new CVideoSyncD3D();
@@ -145,7 +155,14 @@ void CVideoReferenceClock::Process()
     else
     {
       SingleLock.Leave();
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to CurrentHostCounter()");
+      if (glx_fallback)
+      {
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to GLX method");
+        // do not exit the loop to get reconfigured for fallback
+        SetupSuccess = true;
+      }
+      else
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to CurrentHostCounter()");
     }
 
     SingleLock.Enter();
