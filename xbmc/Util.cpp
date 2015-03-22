@@ -190,10 +190,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   else if (url.IsProtocol("sling"))
     strFilename = "Slingbox";
 
-  // ReplayTV Devices
-  else if (url.IsProtocol("rtv"))
-    strFilename = "ReplayTV Devices";
-
   // SAP Streams
   else if (url.IsProtocol("sap") && strFilename.empty())
     strFilename = "SAP Streams";

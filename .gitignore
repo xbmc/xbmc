@@ -905,11 +905,6 @@ lib/cpluff/stamp-h1
 
 /lib/libhdhomerun/Makefile
 
-# /lib/libRTV/
-/lib/libRTV/Makefile
-/lib/libRTV/Debug
-/lib/libRTV/Release
-
 /lib/libsquish/Makefile
 /lib/libsquish/lib/squishd.lib
 /lib/libsquish/lib/squish.lib

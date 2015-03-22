@@ -285,10 +285,6 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = g_localizeStrings.Get(20012);
     extraShares.push_back(share1);
 
-    share1.strPath = "rtv://*/";
-    share1.strName = StringUtils::Format(strDevices.c_str(), "ReplayTV"); //"ReplayTV Devices"
-    extraShares.push_back(share1);
-
     share1.strPath = "hdhomerun://";
     share1.strName = StringUtils::Format(strDevices.c_str(), "HDHomerun"); //"HDHomerun Devices"
     extraShares.push_back(share1);

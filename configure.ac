@@ -2514,7 +2514,6 @@ OUTPUT_FILES="Makefile \
     xbmc/network/Makefile \
     xbmc/network/httprequesthandler/python/Makefile \
     xbmc/network/upnp/Makefile \
-    lib/libRTV/Makefile \
     lib/libexif/Makefile \
     lib/libhdhomerun/Makefile \
     lib/cximage-6.0/Makefile \

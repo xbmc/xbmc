@@ -2038,12 +2038,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\RSSDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\RTVDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\RTVFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\SAPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -4948,12 +4942,6 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\RSSDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\RTVDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\RTVFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\SAPDirectory.h">
