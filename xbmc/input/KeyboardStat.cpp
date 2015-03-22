@@ -25,11 +25,11 @@
 
 #include "KeyboardStat.h"
 #include "windowing/XBMC_events.h"
-#include "utils/TimeUtils.h"
 #include "input/XBMC_keytable.h"
 #include "input/XBMC_vkeys.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/PeripheralHID.h"
+#include "threads/SystemClock.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -158,7 +158,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
 
   if (keysym == m_lastKeysym)
   {
-    held = CTimeUtils::GetFrameTime() - m_lastKeyTime;
+    held = XbmcThreads::SystemClockMillis() - m_lastKeyTime;
   }
 
   // For all shift-X keys except shift-A to shift-Z and shift-F1 to shift-F24 the
@@ -183,7 +183,7 @@ void CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   if (!(m_lastKeysym == keysym))
   {
     m_lastKeysym = keysym;
-    m_lastKeyTime = CTimeUtils::GetFrameTime();
+    m_lastKeyTime = XbmcThreads::SystemClockMillis();
   }
 }
 
