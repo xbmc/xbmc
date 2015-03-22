@@ -465,7 +465,10 @@ unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned
   }
   omx_err = m_omx_output->EmptyThisBuffer(omx_buffer);
   if (omx_err != OMX_ErrorNone)
+  {
     CLog::Log(LOGERROR, "%s:%s frames=%d err=%x", CLASSNAME, __func__, frames, omx_err);
+    m_omx_output->DecoderEmptyBufferDone(m_omx_output->GetComponent(), omx_buffer);
+  }
   m_submitted++;
   GetDelay(status);
   delay = status.GetDelay();
