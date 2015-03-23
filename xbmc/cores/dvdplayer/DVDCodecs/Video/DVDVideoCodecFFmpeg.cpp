@@ -320,10 +320,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   m_pFrame = av_frame_alloc();
-  if (!m_pFrame) return false;
+  if (!m_pFrame)
+    return false;
 
   m_pFilterFrame = av_frame_alloc();
-  if (!m_pFilterFrame) return false;
+  if (!m_pFilterFrame)
+    return false;
 
   UpdateName();
   return true;
@@ -331,9 +333,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 void CDVDVideoCodecFFmpeg::Dispose()
 {
-  if (m_pFrame) av_free(m_pFrame);
-  m_pFrame = NULL;
-
+  av_frame_free(&m_pFrame);
   av_frame_free(&m_pFilterFrame);
 
   if (m_pCodecContext)
