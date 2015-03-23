@@ -261,7 +261,7 @@ bool CHttpRanges::Parse(const std::string& header, uint64_t totalLength)
   // split the value of the "Range" header by ","
   std::vector<std::string> rangeValues = StringUtils::Split(rangesValue, ",");
 
-  for (std::vector<std::string>::const_iterator range = rangeValues.begin(); range != rangeValues.end(); range++)
+  for (std::vector<std::string>::const_iterator range = rangeValues.begin(); range != rangeValues.end(); ++range)
   {
     // there must be a "-" in the range definition
     if (range->find("-") == std::string::npos)

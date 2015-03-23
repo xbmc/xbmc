@@ -32,14 +32,13 @@
 bool CVideoSyncIos::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncIos::%s setting up OSX", __FUNCTION__);
-  bool setupOk = false;
   
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
   UpdateClock = func;
   m_abort = false;
   
-  setupOk = InitDisplayLink();
+  bool setupOk = InitDisplayLink();
   if (setupOk)
   {
     g_Windowing.Register(this);
