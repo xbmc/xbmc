@@ -125,8 +125,11 @@ public:
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
 
-  void RouteToWindow(CGUIWindow* dialog);
-  void AddModeless(CGUIWindow* dialog);
+  /*! \brief Register a dialog as active dialog
+   *
+   * \param dialog The dialog to register as active dialog
+   */
+  void RegisterDialog(CGUIWindow* dialog);
   void RemoveDialog(int id);
   int GetTopMostModalDialogID(bool ignoreClosing = false) const;
 

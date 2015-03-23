@@ -571,12 +571,15 @@ void CGUIWindowManager::AddCustomWindow(CGUIWindow* pWindow)
   m_vecCustomWindows.push_back(pWindow);
 }
 
-void CGUIWindowManager::AddModeless(CGUIWindow* dialog)
+void CGUIWindowManager::RegisterDialog(CGUIWindow* dialog)
 {
   CSingleLock lock(g_graphicsContext);
-  // only add the window if it's not already added
-  for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
-    if (*it == dialog) return;
+  // only add the window if it does not exists
+  for (const auto& activeDialog : m_activeDialogs)
+  {
+    if (activeDialog->GetID() == dialog->GetID())
+      return;
+  }
   m_activeDialogs.push_back(dialog);
 }
 
@@ -1093,18 +1096,6 @@ void CGUIWindowManager::DeInitialize()
   m_activeDialogs.clear();
 
   m_initialized = false;
-}
-
-/// \brief Route to a window
-/// \param pWindow Window to route to
-void CGUIWindowManager::RouteToWindow(CGUIWindow* dialog)
-{
-  CSingleLock lock(g_graphicsContext);
-  // Just to be sure: Unroute this window,
-  // #we may have routed to it before
-  RemoveDialog(dialog->GetID());
-
-  m_activeDialogs.push_back(dialog);
 }
 
 /// \brief Unroute window
