@@ -16888,7 +16888,7 @@ msgid "- Mimetypes"
 msgstr ""
 
 msgctxt "#70000"
-msgid "Madvr scaling algorihtms"
+msgid "Scaling algorithms..."
 msgstr ""
 
 msgctxt "#70001"
@@ -17091,6 +17091,43 @@ msgctxt "#70117"
 msgid "(disabled)"
 msgstr ""
 
+msgctxt "#70200"
+msgid "Deinterlace auto-activation"
+msgstr ""
+
+msgctxt "#70201"
+msgid "Deinterlace detection type"
+msgstr ""
+
+msgctxt "#70202"
+msgid "(auto-detection)"
+msgstr ""
+
+msgctxt "#70203"
+msgid "force film mode"
+msgstr ""
+
+msgctxt "#70204"
+msgid "force video mode"
+msgstr ""
+
+msgctxt "#70205"
+msgid "if doubt, active"
+msgstr ""
+
+msgctxt "#70206"
+msgid "if doubt, deactive"
+msgstr ""
+
+msgctxt "#70206"
+msgid "force video mode"
+msgstr ""
+
+msgctxt "#70207"
+msgid "Deinterlace only pixels in the frame center"
+msgstr ""
+
+msgstr ""
 
 msgctxt "#909001"
 msgid "Rus"

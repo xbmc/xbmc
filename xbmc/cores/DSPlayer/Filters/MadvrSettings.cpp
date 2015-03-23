@@ -50,6 +50,9 @@ CMadvrSettings::CMadvrSettings()
   m_ImageQuadrupleLumaFactor = MADVR_QUADRUPLE_FACTOR_3_0;
   m_ImageQuadrupleChromaFactor = MADVR_QUADRUPLE_FACTOR_3_0;
 
+  m_deintactive = MADVR_DEINT_IFDOUBT_DEACTIVE;
+  m_deintforce = MADVR_DEINT_FORCE_AUTO;
+  m_deintlookpixels = true;
 }
 
 bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
@@ -74,6 +77,10 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_ImageDoubleChromaFactor != right.m_ImageDoubleChromaFactor) return true;
   if (m_ImageQuadrupleLumaFactor != right.m_ImageQuadrupleLumaFactor) return true;
   if (m_ImageQuadrupleChromaFactor != m_ImageQuadrupleChromaFactor) return true;
+
+  if (m_deintactive != right.m_deintactive) return true;
+  if (m_deintforce != right.m_deintforce) return true;
+  if (m_deintlookpixels != m_deintlookpixels) return true;
 
   return false;
 }

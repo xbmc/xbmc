@@ -82,6 +82,20 @@ enum MADVR_QUADRUPLE_FACTOR
   MADVR_QUADRUPLE_FACTOR_ALWAYS
 };
 
+enum MADVR_DEINT_ACTIVE
+{
+  MADVR_DEINT_IFDOUBT_ACTIVE,
+  MADVR_DEINT_IFDOUBT_DEACTIVE
+};
+
+enum MADVR_DEINT_FORCE
+{
+  MADVR_DEINT_FORCE_AUTO,
+  MADVR_DEINT_FORCE_FILM,
+  MADVR_DEINT_FORCE_VIDEO
+};
+
+
 class CMadvrSettings
 {
 public:
@@ -110,6 +124,10 @@ public:
   int m_ImageDoubleChromaFactor;
   int m_ImageQuadrupleLumaFactor;
   int m_ImageQuadrupleChromaFactor;
+
+  int m_deintactive;
+  int m_deintforce;
+  bool m_deintlookpixels;
 
 private:
 };

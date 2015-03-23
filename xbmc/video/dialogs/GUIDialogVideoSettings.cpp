@@ -68,7 +68,11 @@
 #ifdef HAS_DS_PLAYER
 #define VIDEO_SETTINGS_DS_STATS           "video.dsstats"
 #define VIDEO_SETTINGS_DS_FILTERS         "video.dsfilters"
+
 #define SETTING_MADVR_SCALING             "madvr.scaling"
+#define SETTING_MADVR_DEINT_ACTIVE        "madvr.deintactive"
+#define SETTING_MADVR_DEINT_FORCE         "madvr.deintforcefilm"
+#define SETTING_MADVR_DEINT_LOOKPIXELS    "madvr.deintlookpixels"
 #endif
 
 #define SETTING_VIDEO_STEREOSCOPICMODE    "video.stereoscopicmode"
@@ -117,6 +121,9 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
   CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+#ifdef HAS_DS_PLAYER
+  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+#endif
 
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_VIDEO_DEINTERLACEMODE)
@@ -124,8 +131,23 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_VIDEO_INTERLACEMETHOD)
     videoSettings.m_InterlaceMethod = static_cast<EINTERLACEMETHOD>(static_cast<const CSettingInt*>(setting)->GetValue());
 #ifdef HAS_DS_PLAYER
-  else if (settingId == VIDEO_SETTINGS_DS_STATS)
+  else if (settingId == SETTING_MADVR_DEINT_ACTIVE)
   { 
+    madvrSettings.m_deintactive = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDeintActive("", madvrSettings.m_deintactive);
+  }
+  else if (settingId == SETTING_MADVR_DEINT_FORCE)
+  {
+    madvrSettings.m_deintforce = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDeintForce("contentType", madvrSettings.m_deintforce);
+  }
+  else if (settingId == SETTING_MADVR_DEINT_LOOKPIXELS)
+  {
+    madvrSettings.m_deintlookpixels = static_cast<const CSettingBool*>(setting)->GetValue();
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
+  }
+  else if (settingId == VIDEO_SETTINGS_DS_STATS)
+  {
     m_dsStats = static_cast<DS_STATS>(static_cast<const CSettingInt*>(setting)->GetValue());
     g_dsSettings.pRendererSettings->displayStats = (DS_STATS)m_dsStats;
   }
@@ -324,7 +346,21 @@ void CGUIDialogVideoSettings::InitializeSettings()
     return;
   }
 
+#ifdef HAS_DS_PLAYER
   // get all necessary setting groups
+  CSettingGroup *groupMadvrDeint = AddGroup(category);
+  if (groupMadvrDeint == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupMadvrScale = AddGroup(category);
+  if (groupMadvrScale == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+#endif
   CSettingGroup *groupVideo = AddGroup(category);
   if (groupVideo == NULL)
   {
@@ -362,7 +398,10 @@ void CGUIDialogVideoSettings::InitializeSettings()
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
   CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
-  
+#ifdef HAS_DS_PLAYER
+  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+#endif
+
   StaticIntegerSettingOptions entries;
 
 #ifdef HAS_DS_PLAYER
@@ -492,7 +531,21 @@ void CGUIDialogVideoSettings::InitializeSettings()
     } 
     else
     { 
-      AddButton(groupVideo, SETTING_MADVR_SCALING, 70000, 0);
+      entries.clear();
+      entries.push_back(make_pair(70117, -1));
+      entries.push_back(make_pair(70205, MADVR_DEINT_IFDOUBT_ACTIVE));
+      entries.push_back(make_pair(70206, MADVR_DEINT_IFDOUBT_DEACTIVE));
+      AddList(groupMadvrDeint, SETTING_MADVR_DEINT_ACTIVE, 70200, 0, static_cast<int>(madvrSettings.m_deintactive), entries, 70200);
+
+      entries.clear();
+      entries.push_back(make_pair(70202, MADVR_DEINT_FORCE_AUTO));
+      entries.push_back(make_pair(70203, MADVR_DEINT_FORCE_FILM));
+      entries.push_back(make_pair(70204, MADVR_DEINT_FORCE_VIDEO));
+      AddList(groupMadvrDeint, SETTING_MADVR_DEINT_FORCE, 70201, 0, static_cast<int>(madvrSettings.m_deintforce), entries, 70201);
+
+      AddToggle(groupMadvrDeint, SETTING_MADVR_DEINT_LOOKPIXELS, 70207, 0, madvrSettings.m_deintlookpixels);
+
+      AddButton(groupMadvrScale, SETTING_MADVR_SCALING, 70000, 0);
     }
 
     AddButton(groupVideo, VIDEO_SETTINGS_DS_FILTERS, 55062, 0);

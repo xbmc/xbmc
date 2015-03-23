@@ -66,22 +66,12 @@ void CDSPlayerDatabase::CreateTables()
   CLog::Log(LOGINFO, "create edition table");
   m_pDS->exec("CREATE TABLE edition (idEdition integer primary key, file text, editionName text, editionNumber integer)\n");
 
-  /*  
-  int m_ImageDoubleLuma;
-  int m_ImageDoubleChroma;
-  int m_ImageQuadrupleLuma;
-  int m_ImageQuadrupleChroma;
-
-  int m_ImageDoubleLumaFactor;
-  int m_ImageDoubleChromaFactor;
-  int m_ImageQuadrupleLumaFactor;
-  int m_ImageQuadrupleChromaFactor;*/
-  
   CLog::Log(LOGINFO, "create madvr setting table");
   m_pDS->exec("CREATE TABLE madvrSettings ( file text,"
     "ChromaUpscaling integer, ChromaAntiRing bool, ImageUpscaling integer, ImageUpAntiRing bool, ImageUpLinear bool, ImageDownscaling integer, ImageDownAntiRing bool, ImageDownLinear bool, "
     "ImageDoubleLuma integer, ImageDoubleChroma integer, ImageQuadrupleLuma integer, ImageQuadrupleChroma integer, " 
-    "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer"
+    "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer, "
+    "DeintActive integer, DeintForce interger, DeintLookPixels bool"
     ")\n");
 }
 
@@ -222,6 +212,10 @@ bool CDSPlayerDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, C
       settings.m_ImageQuadrupleLumaFactor = m_pDS->fv("ImageQuadrupleLumaFactor").get_asInt();
       settings.m_ImageQuadrupleChromaFactor = m_pDS->fv("ImageQuadrupleChromaFactor").get_asInt();
 
+      settings.m_deintactive = m_pDS->fv("DeintActive").get_asInt();
+      settings.m_deintforce = m_pDS->fv("DeintForce").get_asInt();
+      settings.m_deintlookpixels = m_pDS->fv("DeintLookPixels").get_asBool();
+
       m_pDS->close();
       return true;
     }
@@ -253,13 +247,15 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "ImageUpscaling=%i,ImageUpAntiRing=%i,ImageUpLinear=%i, "
         "ImageDownscaling=%i,ImageDownAntiRing=%i,ImageDownLinear=%i, "
         "ImageDoubleLuma=%i, ImageDoubleChroma=%i, ImageQuadrupleLuma=%i, ImageQuadrupleChroma=%i, "
-        "ImageDoubleLumaFactor=%i, ImageDoubleChromaFactor=%i, ImageQuadrupleLumaFactor=%i, ImageQuadrupleChromaFactor=%i "
+        "ImageDoubleLumaFactor=%i, ImageDoubleChromaFactor=%i, ImageQuadrupleLumaFactor=%i, ImageQuadrupleChromaFactor=%i, "
+        "DeintActive=%i, DeintForce=%i, DeintLookPixels=%i "
         "where file='%s'",
         setting.m_ChromaUpscaling,setting.m_ChromaAntiRing,
         setting.m_ImageUpscaling,setting.m_ImageUpAntiRing,setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear, 
         setting.m_ImageDoubleLuma, setting.m_ImageDoubleChroma, setting.m_ImageQuadrupleLuma, setting.m_ImageQuadrupleChroma,
         setting.m_ImageDoubleLumaFactor, setting.m_ImageDoubleChromaFactor, setting.m_ImageQuadrupleLumaFactor, setting.m_ImageQuadrupleChromaFactor,
+        setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels,
         strFilenameAndPath.c_str());
       m_pDS->exec(strSQL.c_str());
       return;
@@ -272,14 +268,16 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
         "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
         "ImageDoubleLuma, ImageDoubleChroma, ImageQuadrupleLuma, ImageQuadrupleChroma, "
-        "ImageDoubleLumaFactor, ImageDoubleChromaFactor, ImageQuadrupleLumaFactor, ImageQuadrupleChromaFactor"
+        "ImageDoubleLumaFactor, ImageDoubleChromaFactor, ImageQuadrupleLumaFactor, ImageQuadrupleChromaFactor, "
+        "DeintActive, DeintForce, DeintLookPixels"
         ") VALUES ";
-      strSQL += PrepareSQL("('%s',%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i)",
+      strSQL += PrepareSQL("('%s',%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i)",
         strFilenameAndPath.c_str(), setting.m_ChromaUpscaling, setting.m_ChromaAntiRing,
         setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
         setting.m_ImageDoubleLuma,setting.m_ImageDoubleChroma,setting.m_ImageQuadrupleLuma,setting.m_ImageQuadrupleChroma,
-        setting.m_ImageDoubleLumaFactor, setting.m_ImageDoubleChromaFactor, setting.m_ImageQuadrupleLumaFactor, setting.m_ImageQuadrupleChromaFactor
+        setting.m_ImageDoubleLumaFactor, setting.m_ImageDoubleChromaFactor, setting.m_ImageQuadrupleLumaFactor, setting.m_ImageQuadrupleChromaFactor,
+        setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels
         );
       m_pDS->exec(strSQL.c_str());
     }

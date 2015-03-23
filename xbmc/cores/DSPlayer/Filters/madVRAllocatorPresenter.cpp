@@ -27,6 +27,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
+#include "cores/DSPlayer/Filters/MadvrSettings.h"
 
 #define ShaderStage_PreScale 0
 #define ShaderStage_PostScale 1
@@ -195,6 +196,25 @@ void CmadVRAllocatorPresenter::SettingSetQuadrupleCondition(CStdStringW path, in
   Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
   pMadvrSettings->SettingsSetString(path, vecMadvrCondition[condition].c_str());
 }
+
+void CmadVRAllocatorPresenter::SettingSetDeintActive(CStdStringW path, int iValue) 
+{
+  CStdStringW strAuto = "autoActivateDeinterlacing";
+  CStdStringW strIfDoubt = "ifInDoubtDeinterlace";
+
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(strAuto, (iValue > -1));
+  pMadvrSettings->SettingsSetBoolean(strIfDoubt, (iValue == MADVR_DEINT_IFDOUBT_ACTIVE));
+}
+
+void CmadVRAllocatorPresenter::SettingSetDeintForce(CStdStringW path, int iValue) 
+{
+  std::vector<std::wstring> vecMadvrCondition = { L"auto", L"film", L"video" };
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+
+  pMadvrSettings->SettingsSetString(path, vecMadvrCondition[iValue].c_str());
+}
+
 
 void CmadVRAllocatorPresenter::SettingGetDoubling(CStdStringW path, int &iValue)
 {

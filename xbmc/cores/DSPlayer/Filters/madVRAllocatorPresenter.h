@@ -158,6 +158,8 @@ public:
   virtual void SettingSetDoubling(CStdStringW path, int iValue);
   virtual void SettingSetDoublingCondition(CStdStringW path, int condition);
   virtual void SettingSetQuadrupleCondition(CStdStringW path, int condition);
+  virtual void SettingSetDeintActive(CStdStringW path, int iValue);
+  virtual void SettingSetDeintForce(CStdStringW path, int iValue);
   virtual void SettingSetBool(CStdStringW path, BOOL bValue);
 
   virtual void SettingGetDoubling(CStdStringW path, int &iValue);

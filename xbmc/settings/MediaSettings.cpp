@@ -175,6 +175,13 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultMadvrSettings.m_ImageQuadrupleLumaFactor = MADVR_QUADRUPLE_FACTOR_3_0;
     if (!XMLUtils::GetInt(pElement, "imagequadruplechromafactor", m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor))
       m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor = MADVR_QUADRUPLE_FACTOR_3_0;
+
+    if (!XMLUtils::GetInt(pElement, "deintactive", m_defaultMadvrSettings.m_deintactive))
+      m_defaultMadvrSettings.m_deintactive = MADVR_DEINT_IFDOUBT_DEACTIVE;
+    if (!XMLUtils::GetInt(pElement, "deintforce", m_defaultMadvrSettings.m_deintforce))
+      m_defaultMadvrSettings.m_deintforce = MADVR_DEINT_FORCE_AUTO;
+    XMLUtils::GetBoolean(pElement, "deintlookpixels", m_defaultMadvrSettings.m_deintlookpixels);
+
   }
 #endif
   // mymusic settings
@@ -282,6 +289,11 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetInt(pNode, "imagedoublechromafactor", m_defaultMadvrSettings.m_ImageDoubleChromaFactor);
   XMLUtils::SetInt(pNode, "imagequadruplelumafactor", m_defaultMadvrSettings.m_ImageQuadrupleLumaFactor);
   XMLUtils::SetInt(pNode, "imagequadruplechromafactor", m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor);
+
+  XMLUtils::SetInt(pNode, "deintactive", m_defaultMadvrSettings.m_deintactive);
+  XMLUtils::SetInt(pNode, "deintforce", m_defaultMadvrSettings.m_deintforce);
+  XMLUtils::SetBoolean(pNode, "deintlookpixels", m_defaultMadvrSettings.m_deintlookpixels);
+
 #endif
 
   // mymusic
