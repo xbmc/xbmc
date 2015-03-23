@@ -813,6 +813,16 @@ void CGUIWindowManager::CloseDialogs(bool forceClose) const
   }
 }
 
+void CGUIWindowManager::CloseModalDialogs(bool forceClose) const
+{
+  CSingleLock lock(g_graphicsContext);
+  for (const auto& dialog : m_activeDialogs)
+  {
+    if (dialog->IsModalDialog())
+      dialog->Close(forceClose);
+  }
+}
+
 bool CGUIWindowManager::OnAction(const CAction &action) const
 {
   CSingleLock lock(g_graphicsContext);
