@@ -7058,7 +7058,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#15108"
-msgid "Navigation sounds"
+msgid "GUI sounds"
 msgstr ""
 
 msgctxt "#15109"
@@ -11179,7 +11179,7 @@ msgid "Enable mouse and touch screen support"
 msgstr ""
 
 msgctxt "#21370"
-msgid "Play navigation sounds during media playback"
+msgid "Play GUI sounds during media playback"
 msgstr ""
 
 msgctxt "#21371"
@@ -14069,10 +14069,10 @@ msgctxt "#36109"
 msgid "Select the media window that Kodi displays on startup."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Navigation sounds" with label #15108
+#. Description of setting "Appearance -> Skin -> GUI sounds" with label #15108
 #: system/settings/settings.xml
 msgctxt "#36110"
-msgid "Select or disable the sound scheme used in the user interface."
+msgid "Select or disable the sounds used in the user interface."
 msgstr ""
 
 #. Description of setting "Appearance -> Skin -> Show RSS news feed" with label #13305
