@@ -170,6 +170,28 @@ bool CLocale::Matches(const std::string& locale) const
   return true;
 }
 
+std::string CLocale::FindBestMatch(const std::set<std::string>& locales) const
+{
+  std::string bestMatch = "";
+  int bestMatchRank = -1;
+
+  for (auto const& locale : locales)
+  {
+    // check if there is an exact match
+    if (Equals(locale))
+      return locale;
+
+    int matchRank = GetMatchRank(locale);
+    if (matchRank > bestMatchRank)
+    {
+      bestMatchRank = matchRank;
+      bestMatch = locale;
+    }
+  }
+
+  return bestMatch;
+}
+
 bool CLocale::CheckValidity(const std::string& language, const std::string& territory, const std::string& codeset, const std::string& modifier)
 {
   static_cast<void>(territory);
@@ -232,4 +254,26 @@ void CLocale::Initialize()
     StringUtils::ToLower(m_language);
     StringUtils::ToUpper(m_territory);
   }
+}
+
+int CLocale::GetMatchRank(const std::string& locale) const
+{
+  CLocale other = FromString(locale);
+
+  // both locales must be valid and match in language
+  if (!m_valid || !other.m_valid ||
+      !StringUtils::EqualsNoCase(m_language, other.m_language))
+    return -1;
+
+  int rank = 0;
+  // matching in territory is considered more important than matching in
+  // codeset and/or modifier
+  if (!m_territory.empty() && !other.m_territory.empty() && StringUtils::EqualsNoCase(m_territory, other.m_territory))
+    rank += 3;
+  if (!m_codeset.empty() && !other.m_codeset.empty() && StringUtils::EqualsNoCase(m_codeset, other.m_codeset))
+    rank += 1;
+  if (!m_modifier.empty() && !other.m_modifier.empty() && StringUtils::EqualsNoCase(m_modifier, other.m_modifier))
+    rank += 1;
+
+  return rank;
 }
