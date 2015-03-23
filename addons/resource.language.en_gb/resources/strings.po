@@ -17176,7 +17176,7 @@ msgid "Reduce bandig artifacts"
 msgstr ""
 
 msgctxt "#70501"
-msgid " - default defanding strength"
+msgid " - default debanding strength"
 msgstr ""
 
 msgctxt "#70502"
@@ -17187,16 +17187,13 @@ msgctxt "#70503"
 msgid "low"
 msgstr ""
 
-
 msgctxt "#70504"
 msgid "medium"
 msgstr ""
 
-
 msgctxt "#70505"
 msgid "high"
 msgstr ""
-
 
 msgctxt "#909001"
 msgid "Rus"
