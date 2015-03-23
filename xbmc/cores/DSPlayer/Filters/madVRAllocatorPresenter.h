@@ -154,4 +154,13 @@ public:
   virtual void SetDrawIsDone();
   virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect);
   virtual void CloseMadvr();
+  virtual void SettingSetScaling(CStdStringW path, int scaling);
+  virtual void SettingSetDoubling(CStdStringW path, int iValue);
+  virtual void SettingSetDoublingCondition(CStdStringW path, int condition);
+  virtual void SettingSetQuadrupleCondition(CStdStringW path, int condition);
+  virtual void SettingSetBool(CStdStringW path, BOOL bValue);
+
+  virtual void SettingGetDoubling(CStdStringW path, int &iValue);
+  virtual void SettingGetDoublingCondition(CStdStringW path, int &condition);
+  virtual void SettingGetQuadrupleCondition(CStdStringW path, int &condition);
 };

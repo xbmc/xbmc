@@ -24,6 +24,9 @@
 #include "FileItem.h"
 #include "video/Bookmark.h"
 #include "settings/VideoSettings.h"
+#ifdef HAS_DS_PLAYER
+#include "cores/DSplayer/Filters/MadvrSettings.h"
+#endif
 
 class CSaveFileStateJob : public CJob
 {
@@ -32,17 +35,32 @@ class CSaveFileStateJob : public CJob
   CBookmark m_bookmark;
   bool      m_updatePlayCount;
   CVideoSettings m_videoSettings;
+#ifdef HAS_DS_PLAYER
+  CMadvrSettings m_madvrSettings;
+#endif
 public:
                 CSaveFileStateJob(const CFileItem& item,
                                   const CFileItem& item_discstack,
                                   const CBookmark& bookmark,
                                   bool updatePlayCount,
-                                  const CVideoSettings &videoSettings)
+                                  const CVideoSettings &videoSettings
+#ifdef HAS_DS_PLAYER
+                                  ,
+                                  const CMadvrSettings &madvrSettings
+#endif
+                                  )
                   : m_item(item),
                     m_item_discstack(item_discstack),
                     m_bookmark(bookmark),
                     m_updatePlayCount(updatePlayCount),
-                    m_videoSettings(videoSettings) {}
+                    m_videoSettings(videoSettings) 
+#ifdef HAS_DS_PLAYER
+                    ,
+                    m_madvrSettings(madvrSettings) {}
+#else
+                {}
+#endif
+
   virtual       ~CSaveFileStateJob() {}
   virtual bool  DoWork();
 };

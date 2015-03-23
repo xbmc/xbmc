@@ -226,6 +226,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSManager.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSPlayercoreFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSRules.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSGraph.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp" />
@@ -244,6 +245,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\madVRAllocatorPresenter.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettings.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.cpp" />
@@ -900,6 +902,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSManager.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSPlayercoreFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSRules.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSGraph.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSInputStreamPVRManager.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSMessage.h" />
@@ -930,6 +933,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowEnc.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVAudioSettings.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettings.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\mvrInterfaces.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h" />

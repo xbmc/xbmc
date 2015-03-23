@@ -145,6 +145,22 @@ public:
   bool mixerMode;
 };
 
+class CMADVRRendererSettings : public CRendererSettings
+{
+public:
+  CMADVRRendererSettings()
+  {
+    SetDefault();
+  }
+  void SetDefault()
+  {
+    CRendererSettings::SetDefault();
+  };
+
+public:
+
+};
+
 class CDSSettings
 {
 public:

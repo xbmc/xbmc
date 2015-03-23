@@ -26,6 +26,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
+#include "utils/CharsetConverter.h"
 
 #define ShaderStage_PreScale 0
 #define ShaderStage_PostScale 1
@@ -140,6 +141,117 @@ void CmadVRAllocatorPresenter::CloseMadvr()
 {
   Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR;
   pVW->SetWindowPosition(0, 0, 1, 1);
+}
+
+void CmadVRAllocatorPresenter::SettingSetScaling(CStdStringW path, int scaling)
+{  
+  std::vector<std::wstring> vecMadvrScaling =
+  {
+    L"Nearest Neighbor",
+    L"Bilinear",
+    L"Dvxa",
+    L"Mitchell-Netravali",
+    L"Catmull-Rom",
+    L"Bicubic50", L"Bicubic60", L"Bicubic75", L"Bicubic100",
+    L"SoftCubic50", L"SoftCubic60", L"SoftCubic70", L"SoftCubic80", L"SoftCubic100",
+    L"Lanczos3", L"Lanczos4", L"Lanczos8",
+    L"Spline36", L"Spline64",
+    L"Jinc3", L"Jinc4", L"Jinc8",
+    L"Nnedi16", L"Nnedi32", L"Nnedi64", L"Nnedi128", L"Nnedi256"
+  };
+
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetString(path, vecMadvrScaling[scaling].c_str());
+}
+
+void CmadVRAllocatorPresenter::SettingSetBool(CStdStringW path, BOOL bValue)
+{
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(path, bValue);
+}
+
+void CmadVRAllocatorPresenter::SettingSetDoubling(CStdStringW path, int iValue)
+{
+  CStdStringW strBool, strInt;
+  strBool = path + "Enable";
+  strInt = path + "Quality";
+
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(strBool, (iValue>-1));
+  if (iValue>-1)
+    pMadvrSettings->SettingsSetInteger(strInt, iValue);
+}
+
+void CmadVRAllocatorPresenter::SettingSetDoublingCondition(CStdStringW path, int condition)
+{
+   std::vector<std::wstring> vecMadvrCondition = { L"2.0x", L"1.5x", L"1.2x", L"always" };
+   Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+   pMadvrSettings->SettingsSetString(path, vecMadvrCondition[condition].c_str());
+}
+
+void CmadVRAllocatorPresenter::SettingSetQuadrupleCondition(CStdStringW path, int condition)
+{
+  std::vector<std::wstring> vecMadvrCondition = { L"4.0x", L"3.0x", L"2.4x", L"always" };
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetString(path, vecMadvrCondition[condition].c_str());
+}
+
+void CmadVRAllocatorPresenter::SettingGetDoubling(CStdStringW path, int &iValue)
+{
+  CStdStringW strBool, strInt, StrV;
+  BOOL bValue;
+  CStdString strVal;
+
+  strBool = path + "Enable";
+  strInt = path + "Quality";
+  iValue = -1;
+
+  g_charsetConverter.wToUTF8(strBool, strVal);
+
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsGetBoolean(strBool, &bValue);
+  CLog::Log(0, "%s %d", strVal.c_str(), bValue);
+  if (bValue)
+    pMadvrSettings->SettingsGetInteger(strInt, &iValue);
+}
+
+void CmadVRAllocatorPresenter::SettingGetDoublingCondition(CStdStringW path, int &condition) 
+{
+  CStdStringW strValueW;
+  int sbLen = 10;
+  int i;
+
+  std::vector<std::wstring> vecMadvrCondition = { L"2.0x", L"1.5x", L"1.2x", L"always"};
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsGetString(path, strValueW, &sbLen);
+
+  for (i = 0; i < vecMadvrCondition.size(); i++)
+  {
+    if (strValueW == vecMadvrCondition[i])
+    {
+      condition = i;
+      break;
+    }
+  }
+}
+void CmadVRAllocatorPresenter::SettingGetQuadrupleCondition(CStdStringW path, int &condition)
+{
+  CStdStringW strValueW;
+  int sbLen = 10;
+  int i;
+
+  std::vector<std::wstring> vecMadvrCondition = { L"4.0x", L"3.0x", L"2.4x", L"always" };
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsGetString(path, strValueW, &sbLen);
+
+  for (i = 0; i < vecMadvrCondition.size(); i++)
+  {
+    if (strValueW == vecMadvrCondition[i])
+    {
+      condition = i;
+      break;
+    }
+  }
 }
 
 // IOsdRenderCallback

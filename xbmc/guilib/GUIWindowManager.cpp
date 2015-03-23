@@ -154,6 +154,7 @@
 #include "cores/DSPlayer/Dialogs/GUIDialogDSRules.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSFilters.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSPlayercoreFactory.h"
+#include "cores/DSPlayer/Dialogs/GUIDIalogMadvrScaling.h"
 #endif
 
 using namespace std;
@@ -232,6 +233,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogDSRules);
   Add(new CGUIDialogDSFilters);
   Add(new CGUIDialogDSPlayercoreFactory);
+  Add(new CGUIDialogMadvrScaling);
 #endif
   Add(new CGUIDialogVideoBookmarks);
   // Don't add the filebrowser dialog - it's created and added when it's needed
@@ -349,6 +351,8 @@ bool CGUIWindowManager::DestroyWindows()
 #ifdef HAS_DS_PLAYER
     Delete(WINDOW_DIALOG_DSRULES);
     Delete(WINDOW_DIALOG_DSFILTERS);
+    Delete(WINDOW_DIALOG_DSPLAYERCORE);
+    Delete(WINDOW_DIALOG_MADVR);
 #endif
     Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
     Delete(WINDOW_DIALOG_CONTENT_SETTINGS);

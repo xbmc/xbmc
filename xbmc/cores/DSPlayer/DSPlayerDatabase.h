@@ -24,6 +24,7 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
+#include "cores/DSplayer/Filters/MadvrSettings.h"
 #include "dbwrappers/Database.h"
 #include "FileItem.h"
 #include "utils/StdString.h"
@@ -53,6 +54,10 @@ public:
   void GetEditionForFile(const CStdString& strFilenameAndPath, VECEDITIONS &ditions);
   void AddEdition(const CStdString& strFilenameAndPath, const CEdition &edition);
   void ClearEditionOfFile(const CStdString& strFilenameAndPath);
+
+  bool GetVideoSettings(const CStdString &strFilenameAndPath, CMadvrSettings &settings);
+  void SetVideoSettings(const CStdString &strFilenameAndPath, const CMadvrSettings &settings);
+  void EraseVideoSettings(const std::string &path = "");
 
 protected:
   virtual void CreateTables();

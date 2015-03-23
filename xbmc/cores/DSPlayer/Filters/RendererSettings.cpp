@@ -65,6 +65,9 @@ void CDSSettings::Initialize()
   if (videoRender == "VMR9")
     pRendererSettings = new CVMR9RendererSettings();
 
+  if (videoRender == "madVR")
+    pRendererSettings = new CMADVRRendererSettings();
+
   // Create the pixel shader list
   pixelShaderList.reset(new CPixelShaderList());
   pixelShaderList->Load();

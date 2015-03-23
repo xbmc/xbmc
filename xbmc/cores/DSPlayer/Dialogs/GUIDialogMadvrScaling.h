@@ -4,6 +4,9 @@
  *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
+ *      Copyright (C) 2014-2015 Aracnoz
+ *      http://github.com/aracnoz/xbmc
+ *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2, or (at your option)
@@ -21,40 +24,29 @@
  */
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
-#ifdef HAS_DS_PLAYER
-#include "DSPropertyPage.h"
-#endif
 
-class CGUIDialogVideoSettings : public CGUIDialogSettingsManualBase
+class CGUIDialogMadvrScaling : public CGUIDialogSettingsManualBase
 {
 public:
-  CGUIDialogVideoSettings();
-  virtual ~CGUIDialogVideoSettings();
+  CGUIDialogMadvrScaling();
+  virtual ~CGUIDialogMadvrScaling();
 
 protected:
+
   // implementations of ISettingCallback
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
-#ifdef HAS_DS_PLAYER
-  virtual void OnDeinitWindow(int nextWindowID);
-#endif
-
-  // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }
-  virtual void Save();
-  virtual void SetupView();
+  virtual void OnInitWindow();
 
   // specialization of CGUIDialogSettingsManualBase
   virtual void InitializeSettings();
+  virtual void SetupView();
+  virtual void Save() {};
 
-private:
-  bool m_viewModeChanged;
-#ifdef HAS_DS_PLAYER
-  CDSPropertyPage* m_pDSPropertyPage;
-  int m_scalingMethod;
-  int m_dsStats;
-  bool m_isMadvr;
-#endif
+  void HideUnused();
+  void SetVisible(CStdString id, bool visible);
 
+  bool m_allowchange;
 
 };

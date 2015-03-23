@@ -41,11 +41,20 @@ class IPaintCallbackMadvr
 public:
   virtual ~IPaintCallbackMadvr() {};
 
-  virtual LPDIRECT3DDEVICE9 GetDevice() = NULL;
-  virtual void OsdRedrawFrame() = 0;
-  virtual void SetDrawIsDone() = 0;
-  virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect) = 0;
-  virtual void CloseMadvr() = 0;
+  virtual LPDIRECT3DDEVICE9 GetDevice() { return NULL; };
+  virtual void OsdRedrawFrame() {};
+  virtual void SetDrawIsDone() {};
+  virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect) {};
+  virtual void CloseMadvr() {};
+  virtual void SettingSetScaling(CStdStringW path, int scaling) {};
+  virtual void SettingSetDoubling(CStdStringW path, int iValue) {};
+  virtual void SettingSetDoublingCondition(CStdStringW path, int condition) {};
+  virtual void SettingSetQuadrupleCondition(CStdStringW path, int condition) {};
+  virtual void SettingSetBool(CStdStringW path, BOOL bValue) {};
+
+  virtual void SettingGetDoubling(CStdStringW path, int &iValue) {};
+  virtual void SettingGetDoublingCondition(CStdStringW path, int &condition) {};
+  virtual void SettingGetQuadrupleCondition(CStdStringW path, int &condition) {};
 };
 
 

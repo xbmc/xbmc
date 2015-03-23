@@ -108,6 +108,7 @@
 #define WINDOW_DIALOG_DSRULES             10700
 #define WINDOW_DIALOG_DSFILTERS           10701
 #define WINDOW_DIALOG_DSPLAYERCORE        10702
+#define WINDOW_DIALOG_MADVR               10703
 #endif
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

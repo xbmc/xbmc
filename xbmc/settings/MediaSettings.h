@@ -26,6 +26,9 @@
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
 #include "settings/VideoSettings.h"
+#ifdef HAS_DS_PLAYER
+#include "cores/DSplayer/Filters/MadvrSettings.h"
+#endif
 #include "threads/CriticalSection.h"
 
 #define VOLUME_DRC_MINIMUM 0    // 0dB
@@ -54,6 +57,13 @@ public:
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }
   const CVideoSettings& GetCurrentVideoSettings() const { return m_currentVideoSettings; }
   CVideoSettings& GetCurrentVideoSettings() { return m_currentVideoSettings; }
+
+#ifdef HAS_DS_PLAYER
+  const CMadvrSettings& GetDefaultMadvrSettings() const { return m_defaultMadvrSettings; }
+  CMadvrSettings& GetDefaultMadvrSettings() { return m_defaultMadvrSettings; }
+  const CMadvrSettings& GetCurrentMadvrSettings() const { return m_currentMadvrSettings; }
+  CMadvrSettings& GetCurrentMadvrSettings() { return m_currentMadvrSettings; }
+#endif
 
   /*! \brief Retreive the watched mode for the given content type
    \param content Current content type
@@ -102,6 +112,11 @@ protected:
 private:
   CVideoSettings m_defaultVideoSettings;
   CVideoSettings m_currentVideoSettings;
+
+#ifdef HAS_DS_PLAYER
+  CMadvrSettings m_defaultMadvrSettings;
+  CMadvrSettings m_currentMadvrSettings;
+#endif
 
   typedef std::map<std::string, WatchedMode> WatchedModes;
   WatchedModes m_watchedModes;

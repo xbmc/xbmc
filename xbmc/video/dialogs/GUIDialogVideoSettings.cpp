@@ -38,11 +38,14 @@
 #ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/Filters/RendererSettings.h"
 #include "cores/DSPlayer/dsgraph.h"
+#include "cores/DSPlayer/Dialogs/GUIDIalogMadvrScaling.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "DSUtil/DSUtil.h"
 #include "utils/CharsetConverter.h"
 #include "guilib/LocalizeStrings.h"
 #include "application.h"
+#include "cores/DSPlayer/GraphFilters.h"
+#include "DSPlayerDatabase.h"
 #endif
 
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
@@ -65,6 +68,7 @@
 #ifdef HAS_DS_PLAYER
 #define VIDEO_SETTINGS_DS_STATS           "video.dsstats"
 #define VIDEO_SETTINGS_DS_FILTERS         "video.dsfilters"
+#define SETTING_MADVR_SCALING             "madvr.scaling"
 #endif
 
 #define SETTING_VIDEO_STEREOSCOPICMODE    "video.stereoscopicmode"
@@ -89,6 +93,21 @@ CGUIDialogVideoSettings::CGUIDialogVideoSettings()
 
 CGUIDialogVideoSettings::~CGUIDialogVideoSettings()
 { }
+
+
+void CGUIDialogVideoSettings::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialogSettingsManualBase::OnDeinitWindow(nextWindowID);
+
+#ifdef HAS_DS_PLAYER
+  if (m_isMadvr)
+  {
+    CGUIDialogMadvrScaling *pDlgMadvr = (CGUIDialogMadvrScaling *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
+    if (pDlgMadvr)
+      pDlgMadvr->Close();
+  }
+#endif
+}
 
 void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
 {
@@ -203,6 +222,14 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
     Save();
 
 #ifdef HAS_DS_PLAYER
+  else if (settingId == SETTING_MADVR_SCALING)
+  {
+    CGUIDialogMadvrScaling *pDlgMadvr = (CGUIDialogMadvrScaling *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
+    if (!pDlgMadvr)
+      return;
+    pDlgMadvr->DoModal();
+  }
+
   if ( (g_application.GetCurrentPlayer() == PCID_DSPLAYER) && (settingId == VIDEO_SETTINGS_DS_FILTERS) )
   {
     CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -263,7 +290,14 @@ void CGUIDialogVideoSettings::Save()
     db.EraseVideoSettings();
     db.Close();
 
+    CDSPlayerDatabase dspdb;
+    if (!dspdb.Open())
+      return;
+    dspdb.EraseVideoSettings();
+    dspdb.Close();
+
     CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
+    CMediaSettings::Get().GetDefaultMadvrSettings() = CMediaSettings::Get().GetCurrentMadvrSettings();
     CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleStream = -1;
     CMediaSettings::Get().GetDefaultVideoSettings().m_AudioStream = -1;
     CSettings::Get().Save();
@@ -280,6 +314,8 @@ void CGUIDialogVideoSettings::SetupView()
 void CGUIDialogVideoSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
+
+  m_isMadvr = CGraphFilters::Get()->UsingMadVr();
 
   CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
   if (category == NULL)
@@ -328,127 +364,140 @@ void CGUIDialogVideoSettings::InitializeSettings()
   CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
   
   StaticIntegerSettingOptions entries;
-  if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
-    entries.push_back(make_pair(16039, VS_DEINTERLACEMODE_OFF));
-  if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
-    entries.push_back(make_pair(16040, VS_DEINTERLACEMODE_AUTO));
-  if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
-    entries.push_back(make_pair(16041, VS_DEINTERLACEMODE_FORCE));
-  if (!entries.empty())
-    AddSpinner(groupVideo, SETTING_VIDEO_DEINTERLACEMODE, 16037, 0, static_cast<int>(videoSettings.m_DeinterlaceMode), entries);
-
-  entries.clear();
-  entries.push_back(make_pair(16019, VS_INTERLACEMETHOD_AUTO));
-  entries.push_back(make_pair(20131, VS_INTERLACEMETHOD_RENDER_BLEND));
-  entries.push_back(make_pair(20130, VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED));
-  entries.push_back(make_pair(20129, VS_INTERLACEMETHOD_RENDER_WEAVE));
-  entries.push_back(make_pair(16022, VS_INTERLACEMETHOD_RENDER_BOB_INVERTED));
-  entries.push_back(make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
-  entries.push_back(make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
-  entries.push_back(make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
-  entries.push_back(make_pair(16324, VS_INTERLACEMETHOD_SW_BLEND));
-  entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_INVERSE_TELECINE));
-  entries.push_back(make_pair(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
-  entries.push_back(make_pair(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
-  entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
-  entries.push_back(make_pair(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
-  entries.push_back(make_pair(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
-  entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE));
-  entries.push_back(make_pair(16320, VS_INTERLACEMETHOD_DXVA_BOB));
-  entries.push_back(make_pair(16321, VS_INTERLACEMETHOD_DXVA_BEST));
-  entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_AUTO_ION));
-  entries.push_back(make_pair(16327, VS_INTERLACEMETHOD_VAAPI_BOB));
-  entries.push_back(make_pair(16328, VS_INTERLACEMETHOD_VAAPI_MADI));
-  entries.push_back(make_pair(16329, VS_INTERLACEMETHOD_VAAPI_MACI));
-  entries.push_back(make_pair(16330, VS_INTERLACEMETHOD_MMAL_ADVANCED));
-  entries.push_back(make_pair(16331, VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF));
-  entries.push_back(make_pair(16332, VS_INTERLACEMETHOD_MMAL_BOB));
-  entries.push_back(make_pair(16333, VS_INTERLACEMETHOD_MMAL_BOB_HALF));
-  entries.push_back(make_pair(16334, VS_INTERLACEMETHOD_IMX_FASTMOTION));
-  entries.push_back(make_pair(16335, VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE));
-
-  /* remove unsupported methods */
-  for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
-  {
-    if (g_renderManager.Supports((EINTERLACEMETHOD)it->second))
-      ++it;
-    else
-      it = entries.erase(it);
-  }
-
-  if (!entries.empty())
-  {
-    CSettingInt *settingInterlaceMethod = AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, 0, static_cast<int>(videoSettings.m_InterlaceMethod), entries);
-
-    CSettingDependency dependencyDeinterlaceModeOff(SettingDependencyTypeEnable, m_settingsManager);
-    dependencyDeinterlaceModeOff.And()
-      ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_DEINTERLACEMODE, "0", SettingDependencyOperatorEquals, true, m_settingsManager)));
-    SettingDependencies depsDeinterlaceModeOff;
-    depsDeinterlaceModeOff.push_back(dependencyDeinterlaceModeOff);
-    settingInterlaceMethod->SetDependencies(depsDeinterlaceModeOff);
-  }
 
 #ifdef HAS_DS_PLAYER
-  if (g_application.GetCurrentPlayer() == PCID_DVDPLAYER)
+  if (!m_isMadvr)
+  {
+#endif 
+
+    if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
+      entries.push_back(make_pair(16039, VS_DEINTERLACEMODE_OFF));
+    if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
+      entries.push_back(make_pair(16040, VS_DEINTERLACEMODE_AUTO));
+    if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
+      entries.push_back(make_pair(16041, VS_DEINTERLACEMODE_FORCE));
+    if (!entries.empty())
+      AddSpinner(groupVideo, SETTING_VIDEO_DEINTERLACEMODE, 16037, 0, static_cast<int>(videoSettings.m_DeinterlaceMode), entries);
+
+    entries.clear();
+    entries.push_back(make_pair(16019, VS_INTERLACEMETHOD_AUTO));
+    entries.push_back(make_pair(20131, VS_INTERLACEMETHOD_RENDER_BLEND));
+    entries.push_back(make_pair(20130, VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED));
+    entries.push_back(make_pair(20129, VS_INTERLACEMETHOD_RENDER_WEAVE));
+    entries.push_back(make_pair(16022, VS_INTERLACEMETHOD_RENDER_BOB_INVERTED));
+    entries.push_back(make_pair(16021, VS_INTERLACEMETHOD_RENDER_BOB));
+    entries.push_back(make_pair(16020, VS_INTERLACEMETHOD_DEINTERLACE));
+    entries.push_back(make_pair(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
+    entries.push_back(make_pair(16324, VS_INTERLACEMETHOD_SW_BLEND));
+    entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_INVERSE_TELECINE));
+    entries.push_back(make_pair(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
+    entries.push_back(make_pair(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
+    entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
+    entries.push_back(make_pair(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
+    entries.push_back(make_pair(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
+    entries.push_back(make_pair(16314, VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE));
+    entries.push_back(make_pair(16320, VS_INTERLACEMETHOD_DXVA_BOB));
+    entries.push_back(make_pair(16321, VS_INTERLACEMETHOD_DXVA_BEST));
+    entries.push_back(make_pair(16325, VS_INTERLACEMETHOD_AUTO_ION));
+    entries.push_back(make_pair(16327, VS_INTERLACEMETHOD_VAAPI_BOB));
+    entries.push_back(make_pair(16328, VS_INTERLACEMETHOD_VAAPI_MADI));
+    entries.push_back(make_pair(16329, VS_INTERLACEMETHOD_VAAPI_MACI));
+    entries.push_back(make_pair(16330, VS_INTERLACEMETHOD_MMAL_ADVANCED));
+    entries.push_back(make_pair(16331, VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF));
+    entries.push_back(make_pair(16332, VS_INTERLACEMETHOD_MMAL_BOB));
+    entries.push_back(make_pair(16333, VS_INTERLACEMETHOD_MMAL_BOB_HALF));
+    entries.push_back(make_pair(16334, VS_INTERLACEMETHOD_IMX_FASTMOTION));
+    entries.push_back(make_pair(16335, VS_INTERLACEMETHOD_IMX_FASTMOTION_DOUBLE));
+
+    /* remove unsupported methods */
+    for (StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+    {
+      if (g_renderManager.Supports((EINTERLACEMETHOD)it->second))
+        ++it;
+      else
+        it = entries.erase(it);
+    }
+
+    if (!entries.empty())
+    {
+      CSettingInt *settingInterlaceMethod = AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, 0, static_cast<int>(videoSettings.m_InterlaceMethod), entries);
+
+      CSettingDependency dependencyDeinterlaceModeOff(SettingDependencyTypeEnable, m_settingsManager);
+      dependencyDeinterlaceModeOff.And()
+        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_DEINTERLACEMODE, "0", SettingDependencyOperatorEquals, true, m_settingsManager)));
+      SettingDependencies depsDeinterlaceModeOff;
+      depsDeinterlaceModeOff.push_back(dependencyDeinterlaceModeOff);
+      settingInterlaceMethod->SetDependencies(depsDeinterlaceModeOff);
+    }
+
+#ifdef HAS_DS_PLAYER
+  }
+  if (g_application.GetCurrentPlayer() == PCID_DVDPLAYER )
   {
 #endif
 
-  entries.clear();
-  entries.push_back(make_pair(16301, VS_SCALINGMETHOD_NEAREST));
-  entries.push_back(make_pair(16302, VS_SCALINGMETHOD_LINEAR));
-  entries.push_back(make_pair(16303, VS_SCALINGMETHOD_CUBIC ));
-  entries.push_back(make_pair(16304, VS_SCALINGMETHOD_LANCZOS2));
-  entries.push_back(make_pair(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
-  entries.push_back(make_pair(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
-  entries.push_back(make_pair(16322, VS_SCALINGMETHOD_SPLINE36));
-  entries.push_back(make_pair(16305, VS_SCALINGMETHOD_LANCZOS3));
-  entries.push_back(make_pair(16306, VS_SCALINGMETHOD_SINC8));
-//  entries.push_back(make_pair(?????, VS_SCALINGMETHOD_NEDI));
-  entries.push_back(make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
-  entries.push_back(make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
-  entries.push_back(make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
-  entries.push_back(make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
-  entries.push_back(make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
-  entries.push_back(make_pair(16316, VS_SCALINGMETHOD_AUTO));
+    entries.clear();
+    entries.push_back(make_pair(16301, VS_SCALINGMETHOD_NEAREST));
+    entries.push_back(make_pair(16302, VS_SCALINGMETHOD_LINEAR));
+    entries.push_back(make_pair(16303, VS_SCALINGMETHOD_CUBIC ));
+    entries.push_back(make_pair(16304, VS_SCALINGMETHOD_LANCZOS2));
+    entries.push_back(make_pair(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
+    entries.push_back(make_pair(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
+    entries.push_back(make_pair(16322, VS_SCALINGMETHOD_SPLINE36));
+    entries.push_back(make_pair(16305, VS_SCALINGMETHOD_LANCZOS3));
+    entries.push_back(make_pair(16306, VS_SCALINGMETHOD_SINC8));
+    // entries.push_back(make_pair(?????, VS_SCALINGMETHOD_NEDI));
+    entries.push_back(make_pair(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
+    entries.push_back(make_pair(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
+    entries.push_back(make_pair(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
+    entries.push_back(make_pair(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
+    entries.push_back(make_pair(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
+    entries.push_back(make_pair(16316, VS_SCALINGMETHOD_AUTO));
 
-  /* remove unsupported methods */
-  for(StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
-  {
-    if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
-      ++it;
-    else
-      it = entries.erase(it);
-  }
+    /* remove unsupported methods */
+    for(StaticIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+    {
+      if (g_renderManager.Supports((ESCALINGMETHOD)it->second))
+        ++it;
+      else
+        it = entries.erase(it);
+    }
 
-  AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
+    AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(videoSettings.m_ScalingMethod), entries);
 
 #ifdef HAS_DS_PLAYER
   }
   else if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
   {
-    entries.clear();
-    entries.push_back(make_pair(55005, DS_SCALINGMETHOD_NEAREST_NEIGHBOR));
-    entries.push_back(make_pair(55006, DS_SCALINGMETHOD_BILINEAR ));
-    entries.push_back(make_pair(55007, DS_SCALINGMETHOD_BILINEAR_2));
-    entries.push_back(make_pair(55008, DS_SCALINGMETHOD_BILINEAR_2_60));
-    entries.push_back(make_pair(55009, DS_SCALINGMETHOD_BILINEAR_2_75));
-    entries.push_back(make_pair(55010, DS_SCALINGMETHOD_BILINEAR_2_100));
+    if (!m_isMadvr)
+    {
+      entries.clear();
+      entries.push_back(make_pair(55005, DS_SCALINGMETHOD_NEAREST_NEIGHBOR));
+      entries.push_back(make_pair(55006, DS_SCALINGMETHOD_BILINEAR));
+      entries.push_back(make_pair(55007, DS_SCALINGMETHOD_BILINEAR_2));
+      entries.push_back(make_pair(55008, DS_SCALINGMETHOD_BILINEAR_2_60));
+      entries.push_back(make_pair(55009, DS_SCALINGMETHOD_BILINEAR_2_75));
+      entries.push_back(make_pair(55010, DS_SCALINGMETHOD_BILINEAR_2_100));
 
-    m_scalingMethod = videoSettings.GetDSPlayerScalingMethod();
-    AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(m_scalingMethod), entries);
+      m_scalingMethod = videoSettings.GetDSPlayerScalingMethod();
+      AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, 0, static_cast<int>(m_scalingMethod), entries);
 
-    entries.clear();
-    entries.push_back(make_pair(55011, DS_STATS_NONE));
-    entries.push_back(make_pair(55012, DS_STATS_1));
-    entries.push_back(make_pair(55013, DS_STATS_2));
-    entries.push_back(make_pair(55014, DS_STATS_3));
-    AddSpinner(groupVideo, VIDEO_SETTINGS_DS_STATS, 55015, 0, static_cast<int>(m_dsStats), entries);
-  }
+      entries.clear();
+      entries.push_back(make_pair(55011, DS_STATS_NONE));
+      entries.push_back(make_pair(55012, DS_STATS_1));
+      entries.push_back(make_pair(55013, DS_STATS_2));
+      entries.push_back(make_pair(55014, DS_STATS_3));
+      AddSpinner(groupVideo, VIDEO_SETTINGS_DS_STATS, 55015, 0, static_cast<int>(m_dsStats), entries);
 
-  if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
-  {
+    } 
+    else
+    { 
+      AddButton(groupVideo, SETTING_MADVR_SCALING, 70000, 0);
+    }
+
     AddButton(groupVideo, VIDEO_SETTINGS_DS_FILTERS, 55062, 0);
   }
+
 #endif
 
 #ifdef HAS_VIDEO_PLAYBACK

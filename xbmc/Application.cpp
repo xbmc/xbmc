@@ -177,6 +177,7 @@
 #include "addons/GUIDialogAddonSettings.h"
 #ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/GraphFilters.h"
+#include "DSPlayerDatabase.h"
 #endif
 
 // PVR related include Files
@@ -2997,6 +2998,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
     // Switch to default options
     CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
+    CMediaSettings::Get().GetCurrentMadvrSettings() = CMediaSettings::Get().GetDefaultMadvrSettings();
     // see if we have saved options in the database
 
     m_pPlayer->SetPlaySpeed(1, g_application.m_muted);
@@ -3505,7 +3507,12 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
       *m_stackFileItemToUpdate,
       m_progressTrackingVideoResumeBookmark,
       m_progressTrackingPlayCountUpdate,
-      CMediaSettings::Get().GetCurrentVideoSettings());
+      CMediaSettings::Get().GetCurrentVideoSettings()
+#ifdef HAS_DS_PLAYER
+      ,
+      CMediaSettings::Get().GetCurrentMadvrSettings()
+#endif
+      );
   
   if (bForeground)
   {
@@ -3609,6 +3616,18 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
       CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
     
     dbs.Close();
+  }
+
+  CDSPlayerDatabase dsdbs;
+  if (dsdbs.Open())
+  {
+    CLog::Log(LOGDEBUG, "Loading madvr settings for %s", path.c_str());
+
+    // Load stored settings if they exist, otherwise use default
+    if (!dsdbs.GetVideoSettings(path, CMediaSettings::Get().GetCurrentMadvrSettings()))
+      CMediaSettings::Get().GetCurrentMadvrSettings() = CMediaSettings::Get().GetDefaultMadvrSettings();
+
+    dsdbs.Close();
   }
 }
 

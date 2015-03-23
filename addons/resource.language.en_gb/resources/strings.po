@@ -16887,6 +16887,211 @@ msgctxt "#66011"
 msgid "- Mimetypes"
 msgstr ""
 
+msgctxt "#70000"
+msgid "Madvr scaling algorihtms"
+msgstr ""
+
+msgctxt "#70001"
+msgid "Nearest Neighbor"
+msgstr ""
+
+msgctxt "#70002"
+msgid "Bilinear"
+msgstr ""
+
+msgctxt "#70003"
+msgid "DXVA2"
+msgstr ""
+
+msgctxt "#70004"
+msgid "Mitchel-Netravali"
+msgstr ""
+
+msgctxt "#70005"
+msgid "Catmul-Rom"
+msgstr ""
+
+msgctxt "#70006"
+msgid "Bicubic (sharpness 50)"
+msgstr ""
+
+msgctxt "#70007"
+msgid "Bicubic (sharpness 60)"
+msgstr ""
+
+msgctxt "#70008"
+msgid "Bicubic (sharpness 75)"
+msgstr ""
+
+msgctxt "#70009"
+msgid "Bicubic (sharpness 100)"
+msgstr ""
+
+msgctxt "#70010"
+msgid "SoftCubic (softness 50)"
+msgstr ""
+
+msgctxt "#70011"
+msgid "SoftCubic (softness 60)"
+msgstr ""
+
+msgctxt "#70012"
+msgid "SoftCubic (softness 70)"
+msgstr ""
+
+msgctxt "#70013"
+msgid "SoftCubic (softness 80)"
+msgstr ""
+
+msgctxt "#70014"
+msgid "SoftCubic (softness 100)"
+msgstr ""
+
+msgctxt "#70015"
+msgid "Lanczos (3 taps)"
+msgstr ""
+
+msgctxt "#70016"
+msgid "Lanczos (4 taps)"
+msgstr ""
+
+msgctxt "#70017"
+msgid "Lanczos (8 taps)"
+msgstr ""
+
+msgctxt "#70018"
+msgid "Spline (3 taps)"
+msgstr ""
+
+msgctxt "#70019"
+msgid "Spline (4 taps)"
+msgstr ""
+
+msgctxt "#70020"
+msgid "Jinc (3 taps)"
+msgstr ""
+
+msgctxt "#70021"
+msgid "Jinc (4 taps)"
+msgstr ""
+
+msgctxt "#70022"
+msgid "Jinc (8 taps)"
+msgstr ""
+
+msgctxt "#70023"
+msgid "NNEDI3 (16 neurons)"
+msgstr ""
+
+msgctxt "#70024"
+msgid "NNEDI3 (32 neurons)"
+msgstr ""
+
+msgctxt "#70025"
+msgid "NNEDI3 (64 neurons)"
+msgstr ""
+
+msgctxt "#70026"
+msgid "NNEDI3 (128 neurons)"
+msgstr ""
+
+msgctxt "#70027"
+msgid "NNEDI3 (256 neurons)"
+msgstr ""
+
+msgctxt "#70028"
+msgid "Chroma upscaling"
+msgstr ""
+
+msgctxt "#70029"
+msgid "Image upscaling"
+msgstr ""
+
+msgctxt "#70030"
+msgid "Image downscaling"
+msgstr ""
+
+msgctxt "#70031"
+msgid " - anti-ringing filter"
+msgstr ""
+
+msgctxt "#70032"
+msgid " - scale in linear light"
+msgstr ""
+
+msgctxt "#70100"
+msgid "NNEDI3 to double Luma resolution"
+msgstr ""
+
+msgctxt "#70101"
+msgid "NNEDI3 to double Chroma resolution"
+msgstr ""
+
+msgctxt "#70102"
+msgid "NNEDI3 to quadruple Luma resolution"
+msgstr ""
+
+msgctxt "#70103"
+msgid "NNEDI3 to quadruple Chroma resolution"
+msgstr ""
+
+msgctxt "#70104"
+msgid "use (16 Neurons)"
+msgstr ""
+
+msgctxt "#70105"
+msgid "use (32 Neurons)"
+msgstr ""
+
+msgctxt "#70106"
+msgid "use (64 Neurons)"
+msgstr ""
+
+msgctxt "#70107"
+msgid "use (128 Neurons)"
+msgstr ""
+
+msgctxt "#70108"
+msgid "use (256 Neurons)"
+msgstr ""
+
+msgctxt "#70109"
+msgid " only if scaling factor is 2.0x (or bigger)"
+msgstr ""
+
+msgctxt "#70110"
+msgid "only if scaling factor is 1.5x (or bigger)"
+msgstr ""
+
+msgctxt "#70111"
+msgid "only if scaling factor is 1.2x (or bigger)"
+msgstr ""
+
+msgctxt "#70112"
+msgid "always if upscaling needed"
+msgstr ""
+
+msgctxt "#70113"
+msgid "only if scaling factor is 4.0x (or bigger)"
+msgstr ""
+
+msgctxt "#70114"
+msgid "only if scaling factor is 3.0x (or bigger)"
+msgstr ""
+
+msgctxt "#70115"
+msgid "only if scaling factor is 2.4x (or bigger)"
+msgstr ""
+
+msgctxt "#70116"
+msgid " - scaling condition"
+msgstr ""
+
+msgctxt "#70117"
+msgid "(disabled)"
+msgstr ""
+
+
 msgctxt "#909001"
 msgid "Rus"
 msgstr ""

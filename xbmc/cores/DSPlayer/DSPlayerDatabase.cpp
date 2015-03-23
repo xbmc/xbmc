@@ -26,6 +26,7 @@
 #include "filesystem/StackDirectory.h"
 #include "video/VideoInfoTag.h "
 #include "settings/AdvancedSettings.h"
+#include "utils/StringUtils.h"
 #include "utils/StdString.h"
 
 using namespace XFILE;
@@ -57,19 +58,38 @@ bool CDSPlayerDatabase::Open()
 
 int CDSPlayerDatabase::GetSchemaVersion() const
 {
-  return 1;
+  return 2;
 }
 
 void CDSPlayerDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "create edition table");
   m_pDS->exec("CREATE TABLE edition (idEdition integer primary key, file text, editionName text, editionNumber integer)\n");
+
+  /*  
+  int m_ImageDoubleLuma;
+  int m_ImageDoubleChroma;
+  int m_ImageQuadrupleLuma;
+  int m_ImageQuadrupleChroma;
+
+  int m_ImageDoubleLumaFactor;
+  int m_ImageDoubleChromaFactor;
+  int m_ImageQuadrupleLumaFactor;
+  int m_ImageQuadrupleChromaFactor;*/
+  
+  CLog::Log(LOGINFO, "create madvr setting table");
+  m_pDS->exec("CREATE TABLE madvrSettings ( file text,"
+    "ChromaUpscaling integer, ChromaAntiRing bool, ImageUpscaling integer, ImageUpAntiRing bool, ImageUpLinear bool, ImageDownscaling integer, ImageDownAntiRing bool, ImageDownLinear bool, "
+    "ImageDoubleLuma integer, ImageDoubleChroma integer, ImageQuadrupleLuma integer, ImageQuadrupleChroma integer, " 
+    "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer"
+    ")\n");
 }
 
 void CDSPlayerDatabase::CreateAnalytics()
 {
 
   m_pDS->exec("CREATE INDEX idxEdition ON edition (file)");
+  m_pDS->exec("CREATE INDEX idxMadvrSettings ON madvrSettings (file)");
 }
 
 bool CDSPlayerDatabase::GetResumeEdition(const CStdString& strFilenameAndPath, CEdition &edition)
@@ -167,4 +187,123 @@ void CDSPlayerDatabase::ClearEditionOfFile(const CStdString& strFilenameAndPath)
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
 }
+
+bool CDSPlayerDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CMadvrSettings &settings)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    // ok, now obtain the settings for this file
+    CStdString strSQL = PrepareSQL("select * from madvrSettings where madvrSettings.file = '%s'", strFilenameAndPath.c_str());
+
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() > 0)
+    { // get the madvr settings info
+
+      settings.m_ChromaUpscaling = m_pDS->fv("ChromaUpscaling").get_asInt();
+      settings.m_ChromaAntiRing = m_pDS->fv("ChromaAntiRing").get_asBool();
+
+      settings.m_ImageUpscaling = m_pDS->fv("ImageUpscaling").get_asInt();
+      settings.m_ImageUpAntiRing = m_pDS->fv("ImageUpAntiRing").get_asBool();
+      settings.m_ImageUpLinear = m_pDS->fv("ImageUpLinear").get_asBool();
+
+      settings.m_ImageDownscaling = m_pDS->fv("ImageDownscaling").get_asInt();
+      settings.m_ImageDownAntiRing = m_pDS->fv("ImageDownAntiRing").get_asBool();
+      settings.m_ImageDownLinear = m_pDS->fv("ImageDownLinear").get_asBool();
+
+      settings.m_ImageDoubleLuma = m_pDS->fv("ImageDoubleLuma").get_asInt();
+      settings.m_ImageDoubleChroma = m_pDS->fv("ImageDoubleChroma").get_asInt();
+      settings.m_ImageQuadrupleLuma = m_pDS->fv("ImageQuadrupleLuma").get_asInt();
+      settings.m_ImageQuadrupleChroma = m_pDS->fv("ImageQuadrupleChroma").get_asInt();
+
+      settings.m_ImageDoubleLumaFactor = m_pDS->fv("ImageDoubleLumaFactor").get_asInt();
+      settings.m_ImageDoubleChromaFactor = m_pDS->fv("ImageDoubleChromaFactor").get_asInt();
+      settings.m_ImageQuadrupleLumaFactor = m_pDS->fv("ImageQuadrupleLumaFactor").get_asInt();
+      settings.m_ImageQuadrupleChromaFactor = m_pDS->fv("ImageQuadrupleChromaFactor").get_asInt();
+
+      m_pDS->close();
+      return true;
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+/// \brief Sets the settings for a particular video file
+void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, const CMadvrSettings &setting)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    CStdString strSQL = StringUtils::Format("select * from madvrSettings where file='%s'", strFilenameAndPath.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      // update the item
+      strSQL = PrepareSQL("update madvrSettings " 
+        "set ChromaUpscaling=%i,ChromaAntiRing=%i, "
+        "ImageUpscaling=%i,ImageUpAntiRing=%i,ImageUpLinear=%i, "
+        "ImageDownscaling=%i,ImageDownAntiRing=%i,ImageDownLinear=%i, "
+        "ImageDoubleLuma=%i, ImageDoubleChroma=%i, ImageQuadrupleLuma=%i, ImageQuadrupleChroma=%i, "
+        "ImageDoubleLumaFactor=%i, ImageDoubleChromaFactor=%i, ImageQuadrupleLumaFactor=%i, ImageQuadrupleChromaFactor=%i "
+        "where file='%s'",
+        setting.m_ChromaUpscaling,setting.m_ChromaAntiRing,
+        setting.m_ImageUpscaling,setting.m_ImageUpAntiRing,setting.m_ImageUpLinear,
+        setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear, 
+        setting.m_ImageDoubleLuma, setting.m_ImageDoubleChroma, setting.m_ImageQuadrupleLuma, setting.m_ImageQuadrupleChroma,
+        setting.m_ImageDoubleLumaFactor, setting.m_ImageDoubleChromaFactor, setting.m_ImageQuadrupleLumaFactor, setting.m_ImageQuadrupleChromaFactor,
+        strFilenameAndPath.c_str());
+      m_pDS->exec(strSQL.c_str());
+      return;
+    }
+    else
+    { // add the items
+      m_pDS->close();
+      strSQL = "INSERT INTO madvrSettings (file, "
+        "ChromaUpscaling, ChromaAntiRing, "
+        "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
+        "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
+        "ImageDoubleLuma, ImageDoubleChroma, ImageQuadrupleLuma, ImageQuadrupleChroma, "
+        "ImageDoubleLumaFactor, ImageDoubleChromaFactor, ImageQuadrupleLumaFactor, ImageQuadrupleChromaFactor"
+        ") VALUES ";
+      strSQL += PrepareSQL("('%s',%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i)",
+        strFilenameAndPath.c_str(), setting.m_ChromaUpscaling, setting.m_ChromaAntiRing,
+        setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
+        setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
+        setting.m_ImageDoubleLuma,setting.m_ImageDoubleChroma,setting.m_ImageQuadrupleLuma,setting.m_ImageQuadrupleChroma,
+        setting.m_ImageDoubleLumaFactor, setting.m_ImageDoubleChromaFactor, setting.m_ImageQuadrupleLumaFactor, setting.m_ImageQuadrupleChromaFactor
+        );
+      m_pDS->exec(strSQL.c_str());
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
+  }
+}
+
+void CDSPlayerDatabase::EraseVideoSettings(const std::string &path /* = ""*/)
+{
+  try
+  {
+    std::string sql = "DELETE FROM madvrSettings";
+
+    CLog::Log(LOGINFO, "Deleting madvr settings information for all files");
+
+    m_pDS->exec(sql);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+
 #endif
