@@ -110,7 +110,7 @@ int CSeekHandler::GetSeekSeconds(bool forward, SeekType type)
   int seconds = 0;
 
   // when exceeding the selected amount of steps repeat/sum up the last step size
-  if ((size_t)abs(m_seekStep) <= seekSteps.size())
+  if (static_cast<size_t>(abs(m_seekStep)) <= seekSteps.size())
     seconds = seekSteps.at(abs(m_seekStep) - 1);
   else
     seconds = seekSteps.back() * (abs(m_seekStep) - seekSteps.size() + 1);
@@ -124,7 +124,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
   if (!m_requireSeek)
   {
     if (g_infoManager.GetTotalPlayTime())
-      m_percent = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;
+      m_percent = static_cast<float>(g_infoManager.GetPlayTime()) / g_infoManager.GetTotalPlayTime() * 0.1f;
     else
       m_percent = 0.0f;
     m_percentPlayTime = m_percent;
@@ -161,7 +161,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
       {
         float percentPerSecond = 0.0f;
         if (g_infoManager.GetTotalPlayTime())
-          percentPerSecond = 100.0f / (float)g_infoManager.GetTotalPlayTime();
+          percentPerSecond = 100.0f / static_cast<float>(g_infoManager.GetTotalPlayTime());
 
         m_percent = m_percentPlayTime + percentPerSecond * seekSeconds;
 
