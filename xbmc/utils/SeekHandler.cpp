@@ -175,8 +175,10 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
       }
     }
 
-    if (m_percent > 100.0f) m_percent = 100.0f;
-    if (m_percent < 0.0f)   m_percent = 0.0f;
+    if (m_percent > 100.0f)
+      m_percent = 100.0f;
+    if (m_percent < 0.0f)
+      m_percent = 0.0f;
   }
 
   m_timer.StartZero();
