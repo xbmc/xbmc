@@ -531,10 +531,7 @@ extern "C"
     if (bWrite)
       bResult = pFile->OpenForWrite(CUtil::ValidatePath(str), bOverwrite);
     else
-      bResult = pFile->Open(CUtil::ValidatePath(str), 0 /* READ_TRUNCATED */); // Disabled READ_TRUNCATED for release
-    /* Looks that libdvdnav / libdvdread / libdvdcss have bugs and do not process correctly partial reads */
-    /* All found bug were eliminated but for safety READ_TRUNCATED is disabled for Helix release */
-    /* TODO: enable READ_TRUNCATED after release of Helix */
+      bResult = pFile->Open(CUtil::ValidatePath(str), READ_TRUNCATED);
 
     if (bResult)
     {
