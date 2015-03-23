@@ -71,7 +71,9 @@ void CDSPlayerDatabase::CreateTables()
     "ChromaUpscaling integer, ChromaAntiRing bool, ImageUpscaling integer, ImageUpAntiRing bool, ImageUpLinear bool, ImageDownscaling integer, ImageDownAntiRing bool, ImageDownLinear bool, "
     "ImageDoubleLuma integer, ImageDoubleChroma integer, ImageQuadrupleLuma integer, ImageQuadrupleChroma integer, " 
     "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer, "
-    "DeintActive integer, DeintForce interger, DeintLookPixels bool"
+    "DeintActive integer, DeintForce interger, DeintLookPixels bool, "
+    "SmoothMotion integer, Dithering integer, DitheringColoredNoise bool, DitheringEveryFrame bool, "
+    "Deband bool, DebandLevel integer, DebandFadeLevel integer"
     ")\n");
 }
 
@@ -216,6 +218,15 @@ bool CDSPlayerDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, C
       settings.m_deintforce = m_pDS->fv("DeintForce").get_asInt();
       settings.m_deintlookpixels = m_pDS->fv("DeintLookPixels").get_asBool();
 
+      settings.m_smoothMotion = m_pDS->fv("SmoothMotion").get_asInt();
+      settings.m_dithering = m_pDS->fv("Dithering").get_asInt();
+      settings.m_ditheringColoredNoise = m_pDS->fv("DitheringColoredNoise").get_asBool();
+      settings.m_ditheringEveryFrame = m_pDS->fv("DitheringEveryFrame").get_asBool();
+
+      settings.m_deband = m_pDS->fv("Deband").get_asBool();
+      settings.m_debandLevel = m_pDS->fv("DebandLevel").get_asInt();
+      settings.m_debandFadeLevel = m_pDS->fv("DebandFadeLevel").get_asInt();
+
       m_pDS->close();
       return true;
     }
@@ -248,7 +259,9 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "ImageDownscaling=%i,ImageDownAntiRing=%i,ImageDownLinear=%i, "
         "ImageDoubleLuma=%i, ImageDoubleChroma=%i, ImageQuadrupleLuma=%i, ImageQuadrupleChroma=%i, "
         "ImageDoubleLumaFactor=%i, ImageDoubleChromaFactor=%i, ImageQuadrupleLumaFactor=%i, ImageQuadrupleChromaFactor=%i, "
-        "DeintActive=%i, DeintForce=%i, DeintLookPixels=%i "
+        "DeintActive=%i, DeintForce=%i, DeintLookPixels=%i, "
+        "SmoothMotion=%i, Dithering=%i, DitheringColoredNoise=%i, DitheringEveryFrame=%i, "
+        "Deband=%i, DebandLevel=%i, DebandFadeLevel=%i "
         "where file='%s'",
         setting.m_ChromaUpscaling,setting.m_ChromaAntiRing,
         setting.m_ImageUpscaling,setting.m_ImageUpAntiRing,setting.m_ImageUpLinear,
@@ -256,9 +269,11 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         setting.m_ImageDoubleLuma, setting.m_ImageDoubleChroma, setting.m_ImageQuadrupleLuma, setting.m_ImageQuadrupleChroma,
         setting.m_ImageDoubleLumaFactor, setting.m_ImageDoubleChromaFactor, setting.m_ImageQuadrupleLumaFactor, setting.m_ImageQuadrupleChromaFactor,
         setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels,
+        setting.m_smoothMotion, setting.m_dithering, setting.m_ditheringColoredNoise, setting.m_ditheringEveryFrame,
+        setting.m_deband, setting.m_debandLevel, setting.m_debandFadeLevel, 
         strFilenameAndPath.c_str());
       m_pDS->exec(strSQL.c_str());
-      return;
+      return;   
     }
     else
     { // add the items
@@ -269,15 +284,19 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
         "ImageDoubleLuma, ImageDoubleChroma, ImageQuadrupleLuma, ImageQuadrupleChroma, "
         "ImageDoubleLumaFactor, ImageDoubleChromaFactor, ImageQuadrupleLumaFactor, ImageQuadrupleChromaFactor, "
-        "DeintActive, DeintForce, DeintLookPixels"
+        "DeintActive, DeintForce, DeintLookPixels, "
+        "SmoothMotion, Dithering, DitheringColoredNoise, DitheringEveryFrame, "
+        "Deband, DebandLevel, DebandFadeLevel"
         ") VALUES ";
-      strSQL += PrepareSQL("('%s',%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i)",
+      strSQL += PrepareSQL("('%s',%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i)",
         strFilenameAndPath.c_str(), setting.m_ChromaUpscaling, setting.m_ChromaAntiRing,
         setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
         setting.m_ImageDoubleLuma,setting.m_ImageDoubleChroma,setting.m_ImageQuadrupleLuma,setting.m_ImageQuadrupleChroma,
         setting.m_ImageDoubleLumaFactor, setting.m_ImageDoubleChromaFactor, setting.m_ImageQuadrupleLumaFactor, setting.m_ImageQuadrupleChromaFactor,
-        setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels
+        setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels,
+        setting.m_smoothMotion, setting.m_dithering, setting.m_ditheringColoredNoise, setting.m_ditheringEveryFrame,
+        setting.m_deband, setting.m_debandLevel, setting.m_debandFadeLevel
         );
       m_pDS->exec(strSQL.c_str());
     }

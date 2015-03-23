@@ -73,6 +73,15 @@
 #define SETTING_MADVR_DEINT_ACTIVE        "madvr.deintactive"
 #define SETTING_MADVR_DEINT_FORCE         "madvr.deintforcefilm"
 #define SETTING_MADVR_DEINT_LOOKPIXELS    "madvr.deintlookpixels"
+
+#define SETTING_MADVR_SMOOTHMOTION        "madvr.smoothmotion"
+#define SETTING_MADVR_DITHERING           "madvr.dithering"
+#define SETTING_MADVR_DITHERINGCOLORED    "madvr.ditheringcolored"
+#define SETTING_MADVR_DITHERINGEVERYFRAME "madvr.ditheringeveryframe"
+
+#define SETTING_MADVR_DEBAND              "madvr.deband"
+#define SETTING_MADVR_DEBANDLEVEL         "madvr.debandlevel"
+#define SETTING_MADVR_DEBANDFADELEVEL     "madvr.debandfadelevel"
 #endif
 
 #define SETTING_VIDEO_STEREOSCOPICMODE    "video.stereoscopicmode"
@@ -89,6 +98,7 @@ CGUIDialogVideoSettings::CGUIDialogVideoSettings()
 {
 
 #ifdef HAS_DS_PLAYER
+  m_allowchange = true;
   m_scalingMethod = 0;
   m_dsStats = 0;	 
 #endif
@@ -145,6 +155,38 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   {
     madvrSettings.m_deintlookpixels = static_cast<const CSettingBool*>(setting)->GetValue();
     CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
+  }
+  else if (settingId == SETTING_MADVR_SMOOTHMOTION)
+  {
+    madvrSettings.m_smoothMotion = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetSmoothmotion("", madvrSettings.m_smoothMotion);
+  }
+  else if (settingId == SETTING_MADVR_DITHERING)
+  {
+    madvrSettings.m_dithering = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+  }
+  else if (settingId == SETTING_MADVR_DITHERINGCOLORED)
+  {
+    madvrSettings.m_ditheringColoredNoise = static_cast<const CSettingBool*>(setting)->GetValue();
+  }
+  else if (settingId == SETTING_MADVR_DITHERINGEVERYFRAME)
+  {
+    madvrSettings.m_ditheringEveryFrame = static_cast<const CSettingBool*>(setting)->GetValue();
+  }
+  else if (settingId == SETTING_MADVR_DEBAND)
+  {
+    madvrSettings.m_deband = static_cast<const CSettingBool*>(setting)->GetValue();
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("debandActive", madvrSettings.m_deband);
+  }
+  else if (settingId == SETTING_MADVR_DEBANDLEVEL)
+  {
+    madvrSettings.m_debandLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetInt("debandLevel", madvrSettings.m_debandLevel);
+  }
+  else if (settingId == SETTING_MADVR_DEBANDFADELEVEL)
+  {
+    madvrSettings.m_debandFadeLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
   }
   else if (settingId == VIDEO_SETTINGS_DS_STATS)
   {
@@ -221,6 +263,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
     videoSettings.m_StereoMode = static_cast<const CSettingInt*>(setting)->GetValue();
   else if (settingId == SETTING_VIDEO_STEREOSCOPICINVERT)
     videoSettings.m_StereoInvert = static_cast<const CSettingBool*>(setting)->GetValue();
+
+#ifdef HAS_DS_PLAYER
+  HideUnused();
+#endif
 }
 
 void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
@@ -312,14 +358,16 @@ void CGUIDialogVideoSettings::Save()
     db.EraseVideoSettings();
     db.Close();
 
+#ifdef HAS_DS_PLAYER
     CDSPlayerDatabase dspdb;
     if (!dspdb.Open())
       return;
     dspdb.EraseVideoSettings();
     dspdb.Close();
+    CMediaSettings::Get().GetDefaultMadvrSettings() = CMediaSettings::Get().GetCurrentMadvrSettings();
+#endif
 
     CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
-    CMediaSettings::Get().GetDefaultMadvrSettings() = CMediaSettings::Get().GetCurrentMadvrSettings();
     CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleStream = -1;
     CMediaSettings::Get().GetDefaultVideoSettings().m_AudioStream = -1;
     CSettings::Get().Save();
@@ -354,8 +402,32 @@ void CGUIDialogVideoSettings::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
   }
+  CSettingGroup *groupMadvr = AddGroup(category);
+  if (groupMadvr == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
   CSettingGroup *groupMadvrScale = AddGroup(category);
   if (groupMadvrScale == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupMadvrSmoothmotion = AddGroup(category);
+  if (groupMadvrSmoothmotion == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupMadvrDithering = AddGroup(category);
+  if (groupMadvrDithering == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupMadvrDeband = AddGroup(category);
+  if (groupMadvrDeband == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
@@ -531,26 +603,58 @@ void CGUIDialogVideoSettings::InitializeSettings()
     } 
     else
     { 
+      // MADVR DEINT
       entries.clear();
       entries.push_back(make_pair(70117, -1));
       entries.push_back(make_pair(70205, MADVR_DEINT_IFDOUBT_ACTIVE));
       entries.push_back(make_pair(70206, MADVR_DEINT_IFDOUBT_DEACTIVE));
-      AddList(groupMadvrDeint, SETTING_MADVR_DEINT_ACTIVE, 70200, 0, static_cast<int>(madvrSettings.m_deintactive), entries, 70200);
+      AddList(groupMadvrDeint, SETTING_MADVR_DEINT_ACTIVE, 70200, 0, static_cast<int>(madvrSettings.m_deintactive), entries,70200);
 
       entries.clear();
       entries.push_back(make_pair(70202, MADVR_DEINT_FORCE_AUTO));
       entries.push_back(make_pair(70203, MADVR_DEINT_FORCE_FILM));
       entries.push_back(make_pair(70204, MADVR_DEINT_FORCE_VIDEO));
-      AddList(groupMadvrDeint, SETTING_MADVR_DEINT_FORCE, 70201, 0, static_cast<int>(madvrSettings.m_deintforce), entries, 70201);
+      AddList(groupMadvrDeint, SETTING_MADVR_DEINT_FORCE, 70201, 0, static_cast<int>(madvrSettings.m_deintforce), entries,70201);
 
       AddToggle(groupMadvrDeint, SETTING_MADVR_DEINT_LOOKPIXELS, 70207, 0, madvrSettings.m_deintlookpixels);
 
-      AddButton(groupMadvrScale, SETTING_MADVR_SCALING, 70000, 0);
+      // MADVR SCALING
+      AddButton(groupMadvr, SETTING_MADVR_SCALING, 70000, 0);
+
+      // MADVR SMOOTHMOTION
+      entries.clear();
+      entries.push_back(make_pair(70117, -1));
+      entries.push_back(make_pair(70301, MADVR_SMOOTHMOTION_AVOIDJUDDER));
+      entries.push_back(make_pair(70302, MADVR_SMOOTHMOTION_ALMOSTALWAYS));
+      entries.push_back(make_pair(70303, MADVR_SMOOTHMOTION_ALWAYS));
+      AddList(groupMadvr, SETTING_MADVR_SMOOTHMOTION, 70300, 0, static_cast<int>(madvrSettings.m_smoothMotion), entries,70300);
+
+      // MADVR DEBAND
+      AddToggle(groupMadvr, SETTING_MADVR_DEBAND, 70500, 0, madvrSettings.m_deband);
+      entries.clear();
+      entries.push_back(make_pair(70503, MADVR_DEBAND_LOW));
+      entries.push_back(make_pair(70504, MADVR_DEBAND_MEDIUM));
+      entries.push_back(make_pair(70505, MADVR_DEBAND_HIGH));
+      AddList(groupMadvr, SETTING_MADVR_DEBANDLEVEL, 70501, 0, static_cast<int>(madvrSettings.m_debandLevel), entries, 70501);
+      AddList(groupMadvr, SETTING_MADVR_DEBANDFADELEVEL, 70502, 0, static_cast<int>(madvrSettings.m_debandFadeLevel), entries, 70502);
+
+
+      /*
+      entries.clear();
+      entries.push_back(make_pair(70117, MADVR_DITHERING_NONE));
+      entries.push_back(make_pair(70401, MADVR_DITHERING_RANDOM));
+      entries.push_back(make_pair(70402, MADVR_DITHERING_ORDERED));
+      entries.push_back(make_pair(70403, MADVR_DITHERING_ERRORD1));
+      entries.push_back(make_pair(70404, MADVR_DITHERING_ERRORD2));
+      AddList(groupMadvrDithering, SETTING_MADVR_DITHERING, 70400, 0, static_cast<int>(madvrSettings.m_dithering), entries, 70400);
+
+      AddToggle(groupMadvrDithering, SETTING_MADVR_DITHERINGCOLORED, 70405, 0, madvrSettings.m_ditheringColoredNoise);
+      AddToggle(groupMadvrDithering, SETTING_MADVR_DITHERINGEVERYFRAME, 70406, 0, madvrSettings.m_ditheringEveryFrame);
+      */
     }
 
     AddButton(groupVideo, VIDEO_SETTINGS_DS_FILTERS, 55062, 0);
   }
-
 #endif
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -595,3 +699,51 @@ void CGUIDialogVideoSettings::InitializeSettings()
   AddButton(groupSaveAsDefault, SETTING_VIDEO_MAKE_DEFAULT, 12376, 0);
   AddButton(groupSaveAsDefault, SETTING_VIDEO_CALIBRATION, 214, 0);
 }
+
+#ifdef HAS_DS_PLAYER
+
+void CGUIDialogVideoSettings::OnInitWindow()
+{
+  CGUIDialogSettingsManualBase::OnInitWindow();
+  HideUnused();
+}
+
+void CGUIDialogVideoSettings::HideUnused()
+{
+  if (!m_allowchange)
+    return;
+
+  m_allowchange = false;
+
+  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+
+  int iValue;
+  bool bValue;
+  CSetting *setting;
+
+  // HIDE / SHOW
+  setting = m_settingsManager->GetSetting(SETTING_MADVR_DEBAND);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(SETTING_MADVR_DEBANDLEVEL, bValue);
+  SetVisible(SETTING_MADVR_DEBANDFADELEVEL, bValue);
+
+  /*
+  //DITHERING
+  setting = m_settingsManager->GetSetting(SETTING_MADVR_DITHERING);
+  iValue = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+  SetVisible(SETTING_MADVR_DITHERINGCOLORED, (iValue>0));
+  SetVisible(SETTING_MADVR_DITHERINGEVERYFRAME, (iValue >0));
+  */
+
+  m_allowchange = true;
+}
+
+void CGUIDialogVideoSettings::SetVisible(CStdString id, bool visible)
+{
+  CSetting *setting = m_settingsManager->GetSetting(id);
+  if (setting->IsVisible() && visible)
+    return;
+  setting->SetVisible(visible);
+  setting->SetEnabled(visible);
+}
+#endif

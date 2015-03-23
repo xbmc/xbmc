@@ -171,6 +171,12 @@ void CmadVRAllocatorPresenter::SettingSetBool(CStdStringW path, BOOL bValue)
   pMadvrSettings->SettingsSetBoolean(path, bValue);
 }
 
+void CmadVRAllocatorPresenter::SettingSetInt(CStdStringW path, BOOL iValue)
+{
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetInteger(path, iValue);
+}
+
 void CmadVRAllocatorPresenter::SettingSetDoubling(CStdStringW path, int iValue)
 {
   CStdStringW strBool, strInt;
@@ -215,6 +221,16 @@ void CmadVRAllocatorPresenter::SettingSetDeintForce(CStdStringW path, int iValue
   pMadvrSettings->SettingsSetString(path, vecMadvrCondition[iValue].c_str());
 }
 
+void CmadVRAllocatorPresenter::SettingSetSmoothmotion(CStdStringW path, int iValue) 
+{
+  CStdStringW stEnabled = "smoothMotionEnabled";
+  CStdStringW strMode = "smoothMotionMode";
+  std::vector<std::wstring> vecMadvrMode = { L"avoidJudder", L"almostAlways", L"always" };
+
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(stEnabled, (iValue > -1));
+  pMadvrSettings->SettingsSetString(strMode, vecMadvrMode[iValue].c_str());
+}
 
 void CmadVRAllocatorPresenter::SettingGetDoubling(CStdStringW path, int &iValue)
 {

@@ -326,6 +326,10 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
         }
       }
 
+      //Set Madvr Variables
+      if (CGraphFilters::Get()->UsingMadVr())
+        RestoreMadvrSettings();
+
       // Seek
       if (m_PlayerOptions.starttime > 0)
         PostMessage(new CDSMsgPlayerSeekTime(SEC_TO_DS_TIME(m_PlayerOptions.starttime), 1U, false), false);
@@ -923,6 +927,35 @@ bool CDSPlayer::OnAction(const CAction &action)
 
   // return false to inform the caller we didn't handle the message
   return false;
+}
+
+void CDSPlayer::RestoreMadvrSettings()
+{
+  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("debandActive", madvrSettings.m_deband);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetInt("debandLevel", madvrSettings.m_debandLevel);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetSmoothmotion("", madvrSettings.m_smoothMotion);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDeintActive("", madvrSettings.m_deintactive);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDeintForce("contentType", madvrSettings.m_deintforce);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("chromaUp", madvrSettings.m_ChromaUpscaling);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("LumaUp", madvrSettings.m_ImageUpscaling);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("LumaDown", madvrSettings.m_ImageDownscaling);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediDL", madvrSettings.m_ImageDoubleLuma);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoublingCondition("nnediDLScalingFactor", madvrSettings.m_ImageDoubleLumaFactor);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediDC", madvrSettings.m_ImageDoubleChroma);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoublingCondition("nnediDCScalingFactor", madvrSettings.m_ImageDoubleChromaFactor);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediQL", madvrSettings.m_ImageQuadrupleLuma);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetQuadrupleCondition("nnediQLScalingFactor", madvrSettings.m_ImageQuadrupleLumaFactor);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediQC", madvrSettings.m_ImageQuadrupleChroma);
+  CGraphFilters::Get()->GetMadvrCallback()->SettingSetQuadrupleCondition("nnediQCScalingFactor", madvrSettings.m_ImageQuadrupleChromaFactor);
 }
 
 // Time is in millisecond

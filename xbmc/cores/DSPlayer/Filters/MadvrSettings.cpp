@@ -53,6 +53,15 @@ CMadvrSettings::CMadvrSettings()
   m_deintactive = MADVR_DEINT_IFDOUBT_DEACTIVE;
   m_deintforce = MADVR_DEINT_FORCE_AUTO;
   m_deintlookpixels = true;
+
+  m_smoothMotion = -1;
+  m_dithering = MADVR_DITHERING_NONE;
+  m_ditheringColoredNoise = true;
+  m_ditheringEveryFrame = true;
+
+  m_deband = false;
+  m_debandLevel = MADVR_DEBAND_LOW;
+  m_debandFadeLevel = MADVR_DEBAND_HIGH;
 }
 
 bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
@@ -76,11 +85,20 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_ImageDoubleLumaFactor != right.m_ImageDoubleLumaFactor) return true;
   if (m_ImageDoubleChromaFactor != right.m_ImageDoubleChromaFactor) return true;
   if (m_ImageQuadrupleLumaFactor != right.m_ImageQuadrupleLumaFactor) return true;
-  if (m_ImageQuadrupleChromaFactor != m_ImageQuadrupleChromaFactor) return true;
+  if (m_ImageQuadrupleChromaFactor != right.m_ImageQuadrupleChromaFactor) return true;
 
   if (m_deintactive != right.m_deintactive) return true;
   if (m_deintforce != right.m_deintforce) return true;
-  if (m_deintlookpixels != m_deintlookpixels) return true;
+  if (m_deintlookpixels != right.m_deintlookpixels) return true;
+
+  if (m_smoothMotion != right.m_smoothMotion) return true;
+  if (m_dithering != right.m_dithering) return true;
+  if (m_ditheringColoredNoise != right.m_ditheringColoredNoise) return true;
+  if (m_ditheringEveryFrame != right.m_ditheringEveryFrame) return true;
+
+  if (m_deband != right.m_deband) return true;
+  if (m_debandLevel != right.m_debandLevel) return true;
+  if (m_debandFadeLevel != right.m_debandFadeLevel) return true;
 
   return false;
 }

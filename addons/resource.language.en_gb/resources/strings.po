@@ -17127,7 +17127,76 @@ msgctxt "#70207"
 msgid "Deinterlace only pixels in the frame center"
 msgstr ""
 
+msgctxt "#70300"
+msgid "Smooth motion"
 msgstr ""
+
+msgctxt "#70301"
+msgid "avoid judder"
+msgstr ""
+
+msgctxt "#70302"
+msgid "almost always"
+msgstr ""
+
+msgctxt "#70303"
+msgid "always"
+msgstr ""
+
+msgctxt "#70400"
+msgid "Dithering"
+msgstr ""
+
+msgctxt "#70401"
+msgid "random dithering"
+msgstr ""
+
+msgctxt "#70402"
+msgid "ordered dithering"
+msgstr ""
+
+msgctxt "#70403"
+msgid "error diffusion (1) (dx11)"
+msgstr ""
+
+msgctxt "#70404"
+msgid "error diffusion (2) (dx11)"
+msgstr ""
+
+msgctxt "#70405"
+msgid " - use colored noise"
+msgstr ""
+
+msgctxt "#70406"
+msgid " - change dither for every frame"
+msgstr ""
+
+msgctxt "#70500"
+msgid "Reduce bandig artifacts"
+msgstr ""
+
+msgctxt "#70501"
+msgid " - default defanding strength"
+msgstr ""
+
+msgctxt "#70502"
+msgid " - strength during fade in/out"
+msgstr ""
+
+msgctxt "#70503"
+msgid "low"
+msgstr ""
+
+
+msgctxt "#70504"
+msgid "medium"
+msgstr ""
+
+
+msgctxt "#70505"
+msgid "high"
+msgstr ""
+
 
 msgctxt "#909001"
 msgid "Rus"

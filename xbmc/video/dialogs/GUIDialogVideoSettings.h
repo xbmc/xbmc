@@ -50,7 +50,11 @@ protected:
 private:
   bool m_viewModeChanged;
 #ifdef HAS_DS_PLAYER
+  void HideUnused();
+  void SetVisible(CStdString id, bool visible);
+  virtual void OnInitWindow();
   CDSPropertyPage* m_pDSPropertyPage;
+  bool m_allowchange;
   int m_scalingMethod;
   int m_dsStats;
   bool m_isMadvr;

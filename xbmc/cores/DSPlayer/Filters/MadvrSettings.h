@@ -95,6 +95,28 @@ enum MADVR_DEINT_FORCE
   MADVR_DEINT_FORCE_VIDEO
 };
 
+enum MADVR_SMOOTHMOTION
+{
+  MADVR_SMOOTHMOTION_AVOIDJUDDER,
+  MADVR_SMOOTHMOTION_ALMOSTALWAYS,
+  MADVR_SMOOTHMOTION_ALWAYS
+};
+
+enum MADVR_DITHERING
+{
+  MADVR_DITHERING_NONE,
+  MADVR_DITHERING_RANDOM,
+  MADVR_DITHERING_ORDERED,
+  MADVR_DITHERING_ERRORD1,
+  MADVR_DITHERING_ERRORD2
+};
+
+enum MADVR_DEBAND
+{
+  MADVR_DEBAND_LOW,
+  MADVR_DEBAND_MEDIUM,
+  MADVR_DEBAND_HIGH
+};
 
 class CMadvrSettings
 {
@@ -128,6 +150,15 @@ public:
   int m_deintactive;
   int m_deintforce;
   bool m_deintlookpixels;
+
+  int m_smoothMotion;
+  int m_dithering;
+  bool m_ditheringColoredNoise;
+  bool m_ditheringEveryFrame;
+
+  bool m_deband;
+  int m_debandLevel;
+  int m_debandFadeLevel;
 
 private:
 };
