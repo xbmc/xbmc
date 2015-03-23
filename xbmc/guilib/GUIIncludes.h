@@ -60,7 +60,7 @@ private:
   };
 
   void ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
-  using Params = std::map<std::string, std::string>;
+  typedef std::map<std::string, std::string> Params;
   static bool GetParameters(const TiXmlElement *include, const char *valueAttribute, Params& params);
   static void ResolveParametersForNode(TiXmlElement *node, const Params& params);
   static ResolveParamsResult ResolveParameters(const std::string& strInput, std::string& strOutput, const Params& params);
