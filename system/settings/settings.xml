@@ -2640,6 +2640,22 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="audiooutput.supportdtshdcpudecoding" type="boolean" label="38118" help="38119">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable">
+            <or>
+              <condition setting="audiooutput.passthrough" operator="is">false</condition>
+              <and>
+                <condition setting="audiooutput.dtshdpassthrough" operator="is">false</condition>
+                <condition setting="audiooutput.dtspassthrough" operator="is">false</condition>
+              </and>
+            </or>
+            </dependency>
+          </dependencies>
+        </setting>
       </group>
       <group id="2">
         <setting id="audiooutput.dspaddonsenabled" type="boolean" label="36441" help="36438">
