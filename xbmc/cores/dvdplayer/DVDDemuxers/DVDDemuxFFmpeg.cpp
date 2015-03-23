@@ -439,6 +439,19 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
 
   if (m_streaminfo)
   {
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_SUPPORTSDTSHDCPUDECODING))
+    {
+      for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+      {
+        AVStream *st = m_pFormatContext->streams[i];
+        if (st->codec->codec_type == AVMEDIA_TYPE_AUDIO && st->codec->codec_id == AV_CODEC_ID_DTS)
+        {
+          AVCodec* pCodec = avcodec_find_decoder_by_name("libdcadec");
+          if (pCodec)
+            st->codec->codec = pCodec;
+        }
+      }
+    }
     /* to speed up dvd switches, only analyse very short */
     if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
       av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
