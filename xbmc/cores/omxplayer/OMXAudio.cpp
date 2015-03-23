@@ -599,13 +599,12 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both" || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
       stdLayout = AE_CH_LAYOUT_2_0;
 
-    // force out layout to stereo if input is not multichannel - it gives the receiver a chance to upmix
-    if (m_InputChannels <= 2)
-      stdLayout = AE_CH_LAYOUT_2_0;
-
-
     CAEChannelInfo resolvedMap = channelMap;
     resolvedMap.ResolveChannels(stdLayout);
+
+    if (CSettings::Get().GetInt("audiooutput.config") == AE_CONFIG_FIXED || (upmix && channelMap.Count() <= 2))
+      resolvedMap = stdLayout;
+
     uint64_t m_dst_chan_layout = GetAVChannelLayout(resolvedMap);
     uint64_t m_src_chan_layout = GetAVChannelLayout(channelMap);
 
