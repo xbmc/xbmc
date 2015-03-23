@@ -508,6 +508,11 @@ void CDVDDemuxFFmpeg::Dispose()
 
   if (m_pFormatContext)
   {
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+    {
+      avcodec_close(m_pFormatContext->streams[i]->codec);
+    }
+
     if (m_ioContext && m_pFormatContext->pb && m_pFormatContext->pb != m_ioContext)
     {
       CLog::Log(LOGWARNING, "CDVDDemuxFFmpeg::Dispose - demuxer changed our byte context behind our back, possible memleak");
@@ -1649,6 +1654,7 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
 
     int got_picture = 0;
     avcodec_decode_video2(st->codec, &picture, &got_picture, pkt);
+    av_frame_unref(&picture);
   }
 }
 
