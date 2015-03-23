@@ -337,6 +337,35 @@ bool Repos(const CURL& path, CFileItemList &items)
   return true;
 }
 
+static void Manage(CFileItemList &items)
+{
+  items.SetLabel(g_localizeStrings.Get(24992));
+
+  {
+    CFileItemPtr item(new CFileItem("addons://dependencies/", true));
+    item->SetLabel(g_localizeStrings.Get(24996));
+    item->SetSpecialSort(SortSpecialOnTop);
+    items.Add(item);
+  }
+  {
+    CFileItemPtr item(new CFileItem("addons://orphaned/", true));
+    item->SetLabel(g_localizeStrings.Get(24995));
+    item->SetSpecialSort(SortSpecialOnTop);
+    items.Add(item);
+  }
+  {
+    CFileItemPtr item(new CFileItem("addons://system/", true));
+    item->SetLabel(g_localizeStrings.Get(24997));
+    item->SetSpecialSort(SortSpecialOnTop);
+    items.Add(item);
+  }
+  {
+    CFileItemPtr item(new CFileItem("addons://running/", true));
+    item->SetLabel(g_localizeStrings.Get(24994));
+    item->SetSpecialSort(SortSpecialOnTop);
+    items.Add(item);
+  }
+}
 
 bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
@@ -400,6 +429,11 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   else if (endpoint == "search")
   {
     return GetSearchResults(path, items);
+  }
+  else if (endpoint == "manage")
+  {
+    Manage(items);
+    return true;
   }
   else
   {
