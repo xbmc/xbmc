@@ -75,6 +75,19 @@ void CGraphicContext::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
+
+#ifdef HAS_DS_PLAYER
+  if (settingId == "dsplayer.videorenderer")
+  {
+    if (CSettings::Get().GetString("dsplayer.videorenderer") == "madVR")
+    { 
+      CSettings::Get().SetBool("videoscreen.fakefullscreen", true);
+      if (IsFullScreenRoot())
+        SetVideoResolution(GetVideoResolution(), true);
+    }
+  }
+#endif
+
   if (settingId == "videoscreen.fakefullscreen")
   {
     if (IsFullScreenRoot())

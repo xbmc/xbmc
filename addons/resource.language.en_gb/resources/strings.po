@@ -16699,6 +16699,14 @@ msgctxt "#55062"
 msgid "DSPlayer filters list..."
 msgstr ""
 
+msgctxt "#55063"
+msgid "- Use madVR in fullscreen (exclusive mode)"
+msgstr ""
+
+msgctxt "#55064"
+msgid "- Manage madVR settings through the gui of kodi"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""
@@ -17012,11 +17020,11 @@ msgid "Image downscaling"
 msgstr ""
 
 msgctxt "#70031"
-msgid " - anti-ringing filter"
+msgid "- anti-ringing filter"
 msgstr ""
 
 msgctxt "#70032"
-msgid " - scale in linear light"
+msgid "- scale in linear light"
 msgstr ""
 
 msgctxt "#70100"
@@ -17056,7 +17064,7 @@ msgid "use (256 Neurons)"
 msgstr ""
 
 msgctxt "#70109"
-msgid " only if scaling factor is 2.0x (or bigger)"
+msgid "only if scaling factor is 2.0x (or bigger)"
 msgstr ""
 
 msgctxt "#70110"
@@ -17084,7 +17092,7 @@ msgid "only if scaling factor is 2.4x (or bigger)"
 msgstr ""
 
 msgctxt "#70116"
-msgid " - scaling condition"
+msgid "- scaling condition"
 msgstr ""
 
 msgctxt "#70117"
@@ -17164,11 +17172,11 @@ msgid "error diffusion 2 (mild patterns) (dx11)"
 msgstr ""
 
 msgctxt "#70405"
-msgid " - use colored noise"
+msgid "- use colored noise"
 msgstr ""
 
 msgctxt "#70406"
-msgid " - change dither for every frame"
+msgid "- change dither for every frame"
 msgstr ""
 
 msgctxt "#70500"
@@ -17176,11 +17184,11 @@ msgid "Reduce banding artifacts"
 msgstr ""
 
 msgctxt "#70501"
-msgid " - default debanding strength"
+msgid "- default debanding strength"
 msgstr ""
 
 msgctxt "#70502"
-msgid " - strength during fade in/out"
+msgid "- strength during fade in/out"
 msgstr ""
 
 msgctxt "#70503"

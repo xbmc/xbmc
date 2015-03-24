@@ -168,8 +168,16 @@ HRESULT CmadVRAllocatorPresenter::Render(
 
   if (!g_renderManager.IsConfigured())
   {
-    Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR;
-    pMadVrEx->DisableExclusiveMode(true);
+    if (!CSettings::Get().GetBool("dsplayer.madvrexclusivemode"))
+    { 
+      Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR;
+      pMadVrEx->DisableExclusiveMode(true);
+    }
+    else
+    {
+      Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+      pMadvrSettings->SettingsSetBoolean(L"enableExclusive", true); 
+    }
 
     Com::SmartQIPtr<IMadVRSeekbarControl> pMadVrSeek = m_pDXR;
     pMadVrSeek->DisableSeekbar(true);
