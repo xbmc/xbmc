@@ -2998,7 +2998,9 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
     // Switch to default options
     CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
+#ifdef HAS_DS_PLAYER
     CMediaSettings::Get().GetCurrentMadvrSettings() = CMediaSettings::Get().GetDefaultMadvrSettings();
+#endif
     // see if we have saved options in the database
 
     m_pPlayer->SetPlaySpeed(1, g_application.m_muted);

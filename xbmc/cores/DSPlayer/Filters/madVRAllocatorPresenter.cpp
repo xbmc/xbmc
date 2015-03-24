@@ -28,6 +28,7 @@
 #include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
 #include "cores/DSPlayer/Filters/MadvrSettings.h"
+#include "settings/MediaSettings.h"
 
 #define ShaderStage_PreScale 0
 #define ShaderStage_PostScale 1
@@ -126,170 +127,6 @@ HRESULT CmadVRAllocatorPresenter::SetSubDevice(IDirect3DDevice9* pD3DDev)
   return hr;
 }
 
-//IPaintCallbackMadvr
-
-void CmadVRAllocatorPresenter::OsdRedrawFrame()
-{
-  Com::SmartQIPtr<IMadVROsdServices> pOR = m_pDXR;
-  if (!pOR) {
-    m_pDXR = nullptr;
-    return;
-  }
-  pOR->OsdRedrawFrame();
-}
-
-void CmadVRAllocatorPresenter::CloseMadvr()
-{
-  Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR;
-  pVW->SetWindowPosition(0, 0, 1, 1);
-}
-
-void CmadVRAllocatorPresenter::SettingSetScaling(CStdStringW path, int scaling)
-{  
-  std::vector<std::wstring> vecMadvrScaling =
-  {
-    L"Nearest Neighbor",
-    L"Bilinear",
-    L"Dvxa",
-    L"Mitchell-Netravali",
-    L"Catmull-Rom",
-    L"Bicubic50", L"Bicubic60", L"Bicubic75", L"Bicubic100",
-    L"SoftCubic50", L"SoftCubic60", L"SoftCubic70", L"SoftCubic80", L"SoftCubic100",
-    L"Lanczos3", L"Lanczos4", L"Lanczos8",
-    L"Spline36", L"Spline64",
-    L"Jinc3", L"Jinc4", L"Jinc8",
-    L"Nnedi16", L"Nnedi32", L"Nnedi64", L"Nnedi128", L"Nnedi256"
-  };
-
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsSetString(path, vecMadvrScaling[scaling].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetBool(CStdStringW path, BOOL bValue)
-{
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsSetBoolean(path, bValue);
-}
-
-void CmadVRAllocatorPresenter::SettingSetInt(CStdStringW path, BOOL iValue)
-{
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsSetInteger(path, iValue);
-}
-
-void CmadVRAllocatorPresenter::SettingSetDoubling(CStdStringW path, int iValue)
-{
-  CStdStringW strBool, strInt;
-  strBool = path + "Enable";
-  strInt = path + "Quality";
-
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsSetBoolean(strBool, (iValue>-1));
-  if (iValue>-1)
-    pMadvrSettings->SettingsSetInteger(strInt, iValue);
-}
-
-void CmadVRAllocatorPresenter::SettingSetDoublingCondition(CStdStringW path, int condition)
-{
-   std::vector<std::wstring> vecMadvrCondition = { L"2.0x", L"1.5x", L"1.2x", L"always" };
-   Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-   pMadvrSettings->SettingsSetString(path, vecMadvrCondition[condition].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetQuadrupleCondition(CStdStringW path, int condition)
-{
-  std::vector<std::wstring> vecMadvrCondition = { L"4.0x", L"3.0x", L"2.4x", L"always" };
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsSetString(path, vecMadvrCondition[condition].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetDeintActive(CStdStringW path, int iValue) 
-{
-  CStdStringW strAuto = "autoActivateDeinterlacing";
-  CStdStringW strIfDoubt = "ifInDoubtDeinterlace";
-
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsSetBoolean(strAuto, (iValue > -1));
-  pMadvrSettings->SettingsSetBoolean(strIfDoubt, (iValue == MADVR_DEINT_IFDOUBT_ACTIVE));
-}
-
-void CmadVRAllocatorPresenter::SettingSetDeintForce(CStdStringW path, int iValue) 
-{
-  std::vector<std::wstring> vecMadvrCondition = { L"auto", L"film", L"video" };
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-
-  pMadvrSettings->SettingsSetString(path, vecMadvrCondition[iValue].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetSmoothmotion(CStdStringW path, int iValue) 
-{
-  CStdStringW stEnabled = "smoothMotionEnabled";
-  CStdStringW strMode = "smoothMotionMode";
-  std::vector<std::wstring> vecMadvrMode = { L"avoidJudder", L"almostAlways", L"always" };
-
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsSetBoolean(stEnabled, (iValue > -1));
-  pMadvrSettings->SettingsSetString(strMode, vecMadvrMode[iValue].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingGetDoubling(CStdStringW path, int &iValue)
-{
-  CStdStringW strBool, strInt, StrV;
-  BOOL bValue;
-  CStdString strVal;
-
-  strBool = path + "Enable";
-  strInt = path + "Quality";
-  iValue = -1;
-
-  g_charsetConverter.wToUTF8(strBool, strVal);
-
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsGetBoolean(strBool, &bValue);
-  CLog::Log(0, "%s %d", strVal.c_str(), bValue);
-  if (bValue)
-    pMadvrSettings->SettingsGetInteger(strInt, &iValue);
-}
-
-void CmadVRAllocatorPresenter::SettingGetDoublingCondition(CStdStringW path, int &condition) 
-{
-  CStdStringW strValueW;
-  int sbLen = 10;
-  int i;
-
-  std::vector<std::wstring> vecMadvrCondition = { L"2.0x", L"1.5x", L"1.2x", L"always"};
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsGetString(path, strValueW, &sbLen);
-
-  for (i = 0; i < vecMadvrCondition.size(); i++)
-  {
-    if (strValueW == vecMadvrCondition[i])
-    {
-      condition = i;
-      break;
-    }
-  }
-}
-void CmadVRAllocatorPresenter::SettingGetQuadrupleCondition(CStdStringW path, int &condition)
-{
-  CStdStringW strValueW;
-  int sbLen = 10;
-  int i;
-
-  std::vector<std::wstring> vecMadvrCondition = { L"4.0x", L"3.0x", L"2.4x", L"always" };
-  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-  pMadvrSettings->SettingsGetString(path, strValueW, &sbLen);
-
-  for (i = 0; i < vecMadvrCondition.size(); i++)
-  {
-    if (strValueW == vecMadvrCondition[i])
-    {
-      condition = i;
-      break;
-    }
-  }
-}
-
 // IOsdRenderCallback
 STDMETHODIMP CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
@@ -303,11 +140,6 @@ STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TI
 {
   //CLog::Log(LOGDEBUG, "ClearBackground");
   return S_OK;
-}
-
-void CmadVRAllocatorPresenter::SetDrawIsDone()
-{
-  m_drawIsDone.Set();
 }
 
 STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
@@ -474,68 +306,142 @@ STDMETHODIMP CmadVRAllocatorPresenter::SetPixelShader(LPCSTR pSrcData, LPCSTR pT
   return E_NOTIMPL;
 }
 
-bool CmadVRAllocatorPresenter::TestRender(IDirect3DDevice9* pD3DDevice)
+//IPaintCallbackMadvr
+
+void CmadVRAllocatorPresenter::OsdRedrawFrame()
 {
-
-  static unsigned int lastTime = 0;
-  static float delta = 0;
-
-  unsigned int thisTime = XbmcThreads::SystemClockMillis();
-
-  if (thisTime - lastTime > 10)
-  {
-    lastTime = thisTime;
-    delta++;
+  Com::SmartQIPtr<IMadVROsdServices> pOR = m_pDXR;
+  if (!pOR) {
+    m_pDXR = nullptr;
+    return;
   }
-
-  LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
-
-  // A structure for our custom vertex type
-  struct CUSTOMVERTEX
-  {
-    FLOAT x, y, z, rhw; // The transformed position for the vertex
-    DWORD color;        // The vertex color
-  };
-
-  // Our custom FVF, which describes our custom vertex structure
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW|D3DFVF_DIFFUSE)
-
-  // Initialize three vertices for rendering a triangle
-  CUSTOMVERTEX vertices[] =
-  {
-    { delta + 100.0f, 50.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 0, 255), }, // x, y, z, rhw, color
-    { delta + 200.0f, 250.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 255, 0), },
-    { delta, 250.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255, 0, 0), },
-  };
-
-  // Create the vertex buffer. Here we are allocating enough memory
-  // (from the default pool) to hold all our 3 custom vertices. We also
-  // specify the FVF, so the vertex buffer knows what data it contains.
-  if (FAILED(pD3DDevice->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX),
-    0, D3DFVF_CUSTOMVERTEX,
-    D3DPOOL_DEFAULT, &pVB, NULL)))
-  {
-    return false;
-  }
-
-  // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
-  // gain access to the vertices. This mechanism is required becuase vertex
-  // buffers may be in device memory.
-  VOID* pVertices;
-  if (FAILED(pVB->Lock(0, sizeof(vertices), (void**)&pVertices, 0)))
-    return false;
-  memcpy(pVertices, vertices, sizeof(vertices));
-  pVB->Unlock();
-
-  pD3DDevice->SetStreamSource(0, pVB, 0, sizeof(CUSTOMVERTEX));
-  pD3DDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
-  pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
-
-  pVB->Release();
-
-  return true;
+  pOR->OsdRedrawFrame();
 }
 
+void CmadVRAllocatorPresenter::CloseMadvr()
+{
+  Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR;
+  pVW->SetWindowPosition(0, 0, 1, 1);
+}
 
+void CmadVRAllocatorPresenter::SettingSetScaling(CStdStringW path, int scaling)
+{
+  std::vector<std::wstring> vecMadvrScaling =
+  {
+    L"Nearest Neighbor",
+    L"Bilinear",
+    L"Dvxa",
+    L"Mitchell-Netravali",
+    L"Catmull-Rom",
+    L"Bicubic50", L"Bicubic60", L"Bicubic75", L"Bicubic100",
+    L"SoftCubic50", L"SoftCubic60", L"SoftCubic70", L"SoftCubic80", L"SoftCubic100",
+    L"Lanczos3", L"Lanczos4", L"Lanczos8",
+    L"Spline36", L"Spline64",
+    L"Jinc3", L"Jinc4", L"Jinc8",
+    L"Nnedi16", L"Nnedi32", L"Nnedi64", L"Nnedi128", L"Nnedi256"
+  };
 
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetString(path, vecMadvrScaling[scaling].c_str());
+}
 
+void CmadVRAllocatorPresenter::SettingSetDoubling(CStdStringW path, int iValue)
+{
+  CStdStringW strBool, strInt;
+  strBool = path + "Enable";
+  strInt = path + "Quality";
+
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(strBool, (iValue>-1));
+  if (iValue>-1)
+    pMadvrSettings->SettingsSetInteger(strInt, iValue);
+}
+
+void CmadVRAllocatorPresenter::SettingSetDoublingCondition(CStdStringW path, int condition)
+{
+  std::vector<std::wstring> vecMadvrCondition = { L"2.0x", L"1.5x", L"1.2x", L"always" };
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetString(path, vecMadvrCondition[condition].c_str());
+}
+
+void CmadVRAllocatorPresenter::SettingSetQuadrupleCondition(CStdStringW path, int condition)
+{
+  std::vector<std::wstring> vecMadvrCondition = { L"4.0x", L"3.0x", L"2.4x", L"always" };
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetString(path, vecMadvrCondition[condition].c_str());
+}
+
+void CmadVRAllocatorPresenter::SettingSetDeintActive(CStdStringW path, int iValue)
+{
+  CStdStringW strAuto = "autoActivateDeinterlacing";
+  CStdStringW strIfDoubt = "ifInDoubtDeinterlace";
+
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(strAuto, (iValue > -1));
+  pMadvrSettings->SettingsSetBoolean(strIfDoubt, (iValue == MADVR_DEINT_IFDOUBT_ACTIVE));
+}
+
+void CmadVRAllocatorPresenter::SettingSetDeintForce(CStdStringW path, int iValue)
+{
+  std::vector<std::wstring> vecMadvrCondition = { L"auto", L"film", L"video" };
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+
+  pMadvrSettings->SettingsSetString(path, vecMadvrCondition[iValue].c_str());
+}
+
+void CmadVRAllocatorPresenter::SettingSetSmoothmotion(CStdStringW path, int iValue)
+{
+  CStdStringW stEnabled = "smoothMotionEnabled";
+  CStdStringW strMode = "smoothMotionMode";
+  std::vector<std::wstring> vecMadvrMode = { L"avoidJudder", L"almostAlways", L"always" };
+
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(stEnabled, (iValue > -1));
+  if (iValue > -1)
+    pMadvrSettings->SettingsSetString(strMode, vecMadvrMode[iValue].c_str());
+}
+
+void CmadVRAllocatorPresenter::SettingSetDithering(CStdStringW path, int iValue)
+{
+  CStdStringW stDisable = "dontDither";
+  CStdStringW strMode = "ditheringAlgo";
+  std::vector<std::wstring> vecMadvrMode = { L"random", L"ordered", L"errorDifMedNoise", L"errorDifLowNoise" };
+
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(stDisable, (iValue == -1));
+  if (iValue > -1)
+    pMadvrSettings->SettingsSetString(strMode, vecMadvrMode[iValue].c_str());
+}
+
+void CmadVRAllocatorPresenter::SettingSetBool(CStdStringW path, BOOL bValue)
+{
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(path, bValue);
+}
+
+void CmadVRAllocatorPresenter::SettingSetInt(CStdStringW path, BOOL iValue)
+{
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetInteger(path, iValue);
+}
+
+CStdString CmadVRAllocatorPresenter::GetDXVADecoderDescription()
+{
+  CStdString strDXVA, strDecoding;
+  bool bDecoding, bDeinterlace, bScaling;
+
+  Com::SmartQIPtr<IMadVRInfo> pMadvrInfo = m_pDXR;
+  pMadvrInfo->GetBool("dxvaDecodingActive", &bDecoding);
+  pMadvrInfo->GetBool("dxvaDeinterlacingActive", &bDeinterlace);
+  pMadvrInfo->GetBool("dxvaScalingActive", &bScaling);
+
+  bDecoding ? strDecoding = "DXVA Decoding" : strDecoding = "Not using DXVA";
+
+  strDXVA = strDecoding;
+  if (bDeinterlace)
+    strDXVA += ", DXVA Deinterlacing";
+  if (bScaling)
+    strDXVA += ", DXVA Scaling";
+
+  return strDXVA;
+};

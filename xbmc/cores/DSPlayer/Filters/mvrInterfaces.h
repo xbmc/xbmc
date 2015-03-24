@@ -92,7 +92,7 @@ interface IMadVROsdServices : public IUnknown
     bool posRelativeToVideoRect = false,   // draw relative to TRUE: the active video rect; FALSE: the full output rect
     int zOrder = 0,                        // high zOrder OSD elements are drawn on top of those with smaller zOrder values
     DWORD duration = 0,                    // how many milliseconds shall the OSD element be shown (0 = infinite)?
-    DWORD flags = 0,                       // undefined - set to 0
+    DWORD flags = 0,                       // 0x00000001 = stretch OSD bitmap to video/output rect
     OSDMOUSECALLBACK callback = NULL,      // optional callback for mouse events
     LPVOID callbackContext = NULL,         // this context is passed to the callback
     LPVOID reserved = NULL                 // undefined - set to NULL
@@ -314,8 +314,8 @@ interface IMadVRInfo : public IUnknown
 // setting value. E.g. the following calls will all return the same value:
 // (1) GetBoolean(L"dontDither", &boolVal);
 // (2) GetBoolean(L"don't use dithering", &boolVal);
-// (3) GetBoolean(L"tradeQuality\dontDither", &boolVal);
-// (4) GetBoolean(L"rendering\trade quality for performance\dontDither", &boolVal);
+// (3) GetBoolean(L"dithering\dontDither", &boolVal);
+// (4) GetBoolean(L"rendering\dithering\dontDither", &boolVal);
 
 // Using the full path can make sense if you want to access a specific profile.
 // If you don't specify a path, you automatically access the currently active
@@ -414,11 +414,15 @@ interface IMadVRSettings2 : public IMadVRSettings
 //       levels,                    levels,                                                             string,  TV Levels|PC Levels|Custom
 //       black,                     black,                                                              integer, 0..48
 //       white,                     white,                                                              integer, 200..255
-//       displayBitdepth,           native display bitdepth,                                            integer, 6..10
+//       displayBitdepth,           native display bitdepth,                                            integer, 3..10
 //     calibration, calibration
 //       calibrate,                 calibrate display,                                                  string,  disable calibration controls for this display|this display is already calibrated|calibrate this display by using yCMS|calibrate this display by using an external 3dlut file
 //       disableGpuGammaRamps,      disable GPU gamma ramps,                                            boolean
-//       external3dlutFile,         external 3dlut file,                                                string
+//       external3dlutFile709,      external 3dlut file (BT.709),                                       string
+//       external3dlutFileNtsc,     external 3dlut file (SMPTE C),                                      string
+//       external3dlutFilePal,      external 3dlut file (EBU/PAL),                                      string
+//       external3dlutFile2020,     external 3dlut file (BT.2020),                                      string
+//       external3dlutFileDci,      external 3dlut file (DCI-P3),                                       string
 //       gamutMeasurements,         gamut measurements,                                                 string
 //       gammaMeasurements,         gamma measurements,                                                 string
 //       displayPrimaries,          display primaries,                                                  string,  BT.709 (HD)|BT.601 (SD)|PAL|something else
@@ -471,6 +475,7 @@ interface IMadVRSettings2 : public IMadVRSettings
 //     nnediDLQuality,              NNEDI3 double Chroma quality,                                       integer, 0..4
 //     nnediDLQuality,              NNEDI3 quadruple Luma quality,                                      integer, 0..4
 //     nnediDLQuality,              NNEDI3 quadruple Chroma quality,                                    integer, 0..4
+//     amdInteropHack,              use alternative interop hack (not recommended, AMD only),           boolean
 //   lumaUp, image upscaling
 //     lumaUp,                      image upscaling,                                                    string,  Nearest Neighbor|Bilinear|Dxva|Mitchell-Netravali|Catmull-Rom|Bicubic50|Bicubic60|Bicubic75|Bicubic100|SoftCubic50|SoftCubic60|SoftCubic70|SoftCubic80|SoftCubic100|Lanczos3|Lanczos4|Lanczos8|Spline36|Spline64|Jinc3|Jinc4|Jinc8
 //     lumaUpAntiRinging,           activate anti-ringing filter for luma upsampling,                   boolean
@@ -501,10 +506,12 @@ interface IMadVRSettings2 : public IMadVRSettings
 //     flushAfterLastStep,          after last step,                                                    string,  don''t flush|flush|flush & wait (sleep)|flush & wait (loop)
 //     flushAfterBackbuffer,        after backbuffer,                                                   string,  don''t flush|flush|flush & wait (sleep)|flush & wait (loop)
 //     flushAfterPresent,           after present,                                                      string,  don''t flush|flush|flush & wait (sleep)|flush & wait (loop)
+//     oldWindowedPath,             use old windowed rendering path,                                    boolean
+//     preRenderFramesWindowed,     no of pre-presented frames,                                         integer, 1..16
 //   exclusiveSettings, exclusive mode settings
 //     enableSeekbar,               show seek bar,                                                      boolean
 //     exclusiveDelay,              delay switch to exclusive mode by 3 seconds,                        boolean
-//     oldExclusivePath,            use old rendering path,                                             boolean
+//     oldExclusivePath,            use old fse rendering path,                                         boolean
 //     presentThread,               run presentation in a separate thread,                              boolean
 //     avoidGlitches,               limit rendering times to avoid glitches,                            boolean
 //     overshootMaxLatency,         overshoot max frame latency (Vista and newer),                      boolean
@@ -517,10 +524,15 @@ interface IMadVRSettings2 : public IMadVRSettings
 //   smoothMotion, smooth motion
 //     smoothMotionEnabled,         enable smooth motion frame rate conversion,                         boolean
 //     smoothMotionMode,            smooth motion mode,                                                 string,  avoidJudder|almostAlways|always
+//   dithering, dithering
+//     ditheringAlgo,               dithering algorithm,                                                string,  random|ordered|errorDifLowNoise|errorDifMedNoise
+//     dontDither,                  don't use dithering,                                                boolean
+//     coloredDither,               use colored noise,                                                  boolean
+//     dynamicDither,               change dither for every frame,                                      boolean
 //   tradeQuality, trade quality for performance
 //     fastSubtitles,               optimize subtitles for performance instead of quality,              boolean
 //     customShaders16f,            store custom pixel shader results in 16bit buffer instead of 32bit, boolean
-//     noErrorDif,                  use random dithering instead of OpenCL error diffusion,             boolean
+//     gammaDithering,              don't use linear light for dithering,                               boolean
 //     noGradientAngles,            don't analyze gradient angles for debanding,                        boolean
 //     dontRerenderFades,           don't rerender frames when fade in/out is detected,                 boolean
 //     noDeintCopyback,             don't use "copyback" for DXVA deinterlacing,                        boolean
@@ -532,7 +544,6 @@ interface IMadVRSettings2 : public IMadVRSettings
 //     3dlutLowerBitdepth,          use lower bitdepth for yCMS 3dlut calibration,                      boolean
 //     3dlutBitdepth,               3dlut bitdepth,                                                     integer, 6..7
 //     halfDxvaDeintFramerate,      use half frame rate for DXVA deinterlacing,                         boolean
-//     dontDither,                  don't use dithering,                                                boolean
 // ui, user interface
 //   keys, keyboard shortcuts
 //     keysOnlyIfFocused,           use only if media player has keyboard focus,                        boolean
@@ -622,7 +633,6 @@ interface IMadVRSettings2 : public IMadVRSettings
 //     keyDisplayModeChanger,       display mode switcher - toggle on/off,                              string
 //     keyDisplayBitdepth,          display bitdepth - toggle,                                          string
 //     keyDithering,                dithering - toggle on/off,                                          string
-//     keyErrorDif,                 error diffusion - toggle on/off,                                    string
 
 // profile settings: id, name, type, valid values
 // ----------------------------------------------

@@ -17156,11 +17156,11 @@ msgid "ordered dithering"
 msgstr ""
 
 msgctxt "#70403"
-msgid "error diffusion (1) (dx11)"
+msgid "error diffusion 1 (no patterns) (dx11)"
 msgstr ""
 
 msgctxt "#70404"
-msgid "error diffusion (2) (dx11)"
+msgid "error diffusion 2 (mild patterns) (dx11)"
 msgstr ""
 
 msgctxt "#70405"

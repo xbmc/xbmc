@@ -104,7 +104,6 @@ enum MADVR_SMOOTHMOTION
 
 enum MADVR_DITHERING
 {
-  MADVR_DITHERING_NONE,
   MADVR_DITHERING_RANDOM,
   MADVR_DITHERING_ORDERED,
   MADVR_DITHERING_ERRORD1,
@@ -152,6 +151,7 @@ public:
   bool m_deintlookpixels;
 
   int m_smoothMotion;
+
   int m_dithering;
   bool m_ditheringColoredNoise;
   bool m_ditheringEveryFrame;

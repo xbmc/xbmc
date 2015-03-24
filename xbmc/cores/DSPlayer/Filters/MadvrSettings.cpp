@@ -55,7 +55,8 @@ CMadvrSettings::CMadvrSettings()
   m_deintlookpixels = true;
 
   m_smoothMotion = -1;
-  m_dithering = MADVR_DITHERING_NONE;
+
+  m_dithering = MADVR_DITHERING_ORDERED;
   m_ditheringColoredNoise = true;
   m_ditheringEveryFrame = true;
 
@@ -92,6 +93,7 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_deintlookpixels != right.m_deintlookpixels) return true;
 
   if (m_smoothMotion != right.m_smoothMotion) return true;
+
   if (m_dithering != right.m_dithering) return true;
   if (m_ditheringColoredNoise != right.m_ditheringColoredNoise) return true;
   if (m_ditheringEveryFrame != right.m_ditheringEveryFrame) return true;

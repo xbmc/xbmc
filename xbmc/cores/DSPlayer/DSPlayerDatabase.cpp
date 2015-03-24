@@ -219,6 +219,7 @@ bool CDSPlayerDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, C
       settings.m_deintlookpixels = m_pDS->fv("DeintLookPixels").get_asBool();
 
       settings.m_smoothMotion = m_pDS->fv("SmoothMotion").get_asInt();
+
       settings.m_dithering = m_pDS->fv("Dithering").get_asInt();
       settings.m_ditheringColoredNoise = m_pDS->fv("DitheringColoredNoise").get_asBool();
       settings.m_ditheringEveryFrame = m_pDS->fv("DitheringEveryFrame").get_asBool();

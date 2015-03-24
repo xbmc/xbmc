@@ -244,7 +244,7 @@ void CDSGraph::UpdateTime()
     //we dont have the duration of the video yet so try to request it
     UpdateTotalTime();
 
-  if ((CGraphFilters::Get()->VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
+  if ((CGraphFilters::Get()->VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0 && !CGraphFilters::Get()->UsingMadVr())
   {
     //this is too slow if we are doing it on every UpdateTime
     int avgRate;
@@ -807,12 +807,17 @@ CStdString CDSGraph::GetVideoInfo()
   if (!m_pStrCurrentFrameRate.empty())
     videoInfo += m_pStrCurrentFrameRate.c_str();
 
+  CStdString strDXVA;
   if (!CGraphFilters::Get()->UsingMadVr())
-  {
-    CStdString strDXVA = GetDXVADecoderDescription();
-    if (!strDXVA.empty())
-      videoInfo += " | " + strDXVA;
-  }
+    strDXVA = GetDXVADecoderDescription();
+  /*
+  // I Don't know if this work properly
+  else
+    strDXVA = CGraphFilters::Get()->GetMadvrCallback()->GetDXVADecoderDescription();
+  */
+  if (!strDXVA.empty())
+    videoInfo += " | " + strDXVA;
+
   return videoInfo;
 }
 

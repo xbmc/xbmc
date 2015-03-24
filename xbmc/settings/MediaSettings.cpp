@@ -185,7 +185,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     if (!XMLUtils::GetInt(pElement, "smoothmotion", m_defaultMadvrSettings.m_smoothMotion))
       m_defaultMadvrSettings.m_smoothMotion = -1;
     if (!XMLUtils::GetInt(pElement, "dithering", m_defaultMadvrSettings.m_dithering))
-      m_defaultMadvrSettings.m_dithering = MADVR_DITHERING_NONE;
+      m_defaultMadvrSettings.m_dithering = MADVR_DITHERING_ORDERED;
     XMLUtils::GetBoolean(pElement, "ditheringcolorednoise", m_defaultMadvrSettings.m_ditheringColoredNoise);
     XMLUtils::GetBoolean(pElement, "ditheringeveryframe", m_defaultMadvrSettings.m_ditheringEveryFrame);
 
@@ -307,11 +307,10 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetBoolean(pNode, "deintlookpixels", m_defaultMadvrSettings.m_deintlookpixels);
 
   XMLUtils::SetInt(pNode, "smoothmotion", m_defaultMadvrSettings.m_smoothMotion);
+
   XMLUtils::SetInt(pNode, "dithering", m_defaultMadvrSettings.m_dithering);
   XMLUtils::SetBoolean(pNode, "ditheringcolorednoise", m_defaultMadvrSettings.m_ditheringColoredNoise);
   XMLUtils::SetBoolean(pNode, "ditheringeveryframe", m_defaultMadvrSettings.m_ditheringEveryFrame);
-
-  XMLUtils::SetInt(pNode, "dithering", m_defaultMadvrSettings.m_dithering);
 
   XMLUtils::SetBoolean(pNode, "deband", m_defaultMadvrSettings.m_deband); 
   XMLUtils::SetInt(pNode, "debandlevel", m_defaultMadvrSettings.m_debandLevel);

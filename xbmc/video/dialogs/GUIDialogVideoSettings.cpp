@@ -164,14 +164,17 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_MADVR_DITHERING)
   {
     madvrSettings.m_dithering = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDithering("", madvrSettings.m_dithering);
   }
   else if (settingId == SETTING_MADVR_DITHERINGCOLORED)
   {
     madvrSettings.m_ditheringColoredNoise = static_cast<const CSettingBool*>(setting)->GetValue();
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
   }
   else if (settingId == SETTING_MADVR_DITHERINGEVERYFRAME)
   {
     madvrSettings.m_ditheringEveryFrame = static_cast<const CSettingBool*>(setting)->GetValue();
+    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
   }
   else if (settingId == SETTING_MADVR_DEBAND)
   {
@@ -396,14 +399,8 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
 #ifdef HAS_DS_PLAYER
   // get all necessary setting groups
-  CSettingGroup *groupMadvrDeint = AddGroup(category);
-  if (groupMadvrDeint == NULL)
-  {
-    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-    return;
-  }
-  CSettingGroup *groupMadvr = AddGroup(category);
-  if (groupMadvr == NULL)
+  CSettingGroup *groupMadvrProcessing = AddGroup(category);
+  if (groupMadvrProcessing == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
@@ -414,20 +411,8 @@ void CGUIDialogVideoSettings::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
   }
-  CSettingGroup *groupMadvrSmoothmotion = AddGroup(category);
-  if (groupMadvrSmoothmotion == NULL)
-  {
-    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-    return;
-  }
-  CSettingGroup *groupMadvrDithering = AddGroup(category);
-  if (groupMadvrDithering == NULL)
-  {
-    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-    return;
-  }
-  CSettingGroup *groupMadvrDeband = AddGroup(category);
-  if (groupMadvrDeband == NULL)
+  CSettingGroup *groupMadvrRendering = AddGroup(category);
+  if (groupMadvrRendering == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
@@ -608,18 +593,25 @@ void CGUIDialogVideoSettings::InitializeSettings()
       entries.push_back(make_pair(70117, -1));
       entries.push_back(make_pair(70205, MADVR_DEINT_IFDOUBT_ACTIVE));
       entries.push_back(make_pair(70206, MADVR_DEINT_IFDOUBT_DEACTIVE));
-      AddList(groupMadvrDeint, SETTING_MADVR_DEINT_ACTIVE, 70200, 0, static_cast<int>(madvrSettings.m_deintactive), entries,70200);
-
+      AddList(groupMadvrProcessing, SETTING_MADVR_DEINT_ACTIVE, 70200, 0, static_cast<int>(madvrSettings.m_deintactive), entries,70200);
       entries.clear();
       entries.push_back(make_pair(70202, MADVR_DEINT_FORCE_AUTO));
       entries.push_back(make_pair(70203, MADVR_DEINT_FORCE_FILM));
       entries.push_back(make_pair(70204, MADVR_DEINT_FORCE_VIDEO));
-      AddList(groupMadvrDeint, SETTING_MADVR_DEINT_FORCE, 70201, 0, static_cast<int>(madvrSettings.m_deintforce), entries,70201);
+      AddList(groupMadvrProcessing, SETTING_MADVR_DEINT_FORCE, 70201, 0, static_cast<int>(madvrSettings.m_deintforce), entries, 70201);
+      AddToggle(groupMadvrProcessing, SETTING_MADVR_DEINT_LOOKPIXELS, 70207, 0, madvrSettings.m_deintlookpixels);
 
-      AddToggle(groupMadvrDeint, SETTING_MADVR_DEINT_LOOKPIXELS, 70207, 0, madvrSettings.m_deintlookpixels);
+      // MADVR DEBAND
+      AddToggle(groupMadvrProcessing, SETTING_MADVR_DEBAND, 70500, 0, madvrSettings.m_deband);
+      entries.clear();
+      entries.push_back(make_pair(70503, MADVR_DEBAND_LOW));
+      entries.push_back(make_pair(70504, MADVR_DEBAND_MEDIUM));
+      entries.push_back(make_pair(70505, MADVR_DEBAND_HIGH));
+      AddList(groupMadvrProcessing, SETTING_MADVR_DEBANDLEVEL, 70501, 0, static_cast<int>(madvrSettings.m_debandLevel), entries, 70501);
+      AddList(groupMadvrProcessing, SETTING_MADVR_DEBANDFADELEVEL, 70502, 0, static_cast<int>(madvrSettings.m_debandFadeLevel), entries, 70502);
 
       // MADVR SCALING
-      AddButton(groupMadvr, SETTING_MADVR_SCALING, 70000, 0);
+      AddButton(groupMadvrScale, SETTING_MADVR_SCALING, 70000, 0);
 
       // MADVR SMOOTHMOTION
       entries.clear();
@@ -627,30 +619,20 @@ void CGUIDialogVideoSettings::InitializeSettings()
       entries.push_back(make_pair(70301, MADVR_SMOOTHMOTION_AVOIDJUDDER));
       entries.push_back(make_pair(70302, MADVR_SMOOTHMOTION_ALMOSTALWAYS));
       entries.push_back(make_pair(70303, MADVR_SMOOTHMOTION_ALWAYS));
-      AddList(groupMadvr, SETTING_MADVR_SMOOTHMOTION, 70300, 0, static_cast<int>(madvrSettings.m_smoothMotion), entries,70300);
+      AddList(groupMadvrRendering, SETTING_MADVR_SMOOTHMOTION, 70300, 0, static_cast<int>(madvrSettings.m_smoothMotion), entries,70300);
 
-      // MADVR DEBAND
-      AddToggle(groupMadvr, SETTING_MADVR_DEBAND, 70500, 0, madvrSettings.m_deband);
+      // MADVR DITHERING
       entries.clear();
-      entries.push_back(make_pair(70503, MADVR_DEBAND_LOW));
-      entries.push_back(make_pair(70504, MADVR_DEBAND_MEDIUM));
-      entries.push_back(make_pair(70505, MADVR_DEBAND_HIGH));
-      AddList(groupMadvr, SETTING_MADVR_DEBANDLEVEL, 70501, 0, static_cast<int>(madvrSettings.m_debandLevel), entries, 70501);
-      AddList(groupMadvr, SETTING_MADVR_DEBANDFADELEVEL, 70502, 0, static_cast<int>(madvrSettings.m_debandFadeLevel), entries, 70502);
-
-
-      /*
-      entries.clear();
-      entries.push_back(make_pair(70117, MADVR_DITHERING_NONE));
+      entries.push_back(make_pair(70117, -1));
       entries.push_back(make_pair(70401, MADVR_DITHERING_RANDOM));
       entries.push_back(make_pair(70402, MADVR_DITHERING_ORDERED));
       entries.push_back(make_pair(70403, MADVR_DITHERING_ERRORD1));
       entries.push_back(make_pair(70404, MADVR_DITHERING_ERRORD2));
-      AddList(groupMadvrDithering, SETTING_MADVR_DITHERING, 70400, 0, static_cast<int>(madvrSettings.m_dithering), entries, 70400);
+      AddList(groupMadvrRendering, SETTING_MADVR_DITHERING, 70400, 0, static_cast<int>(madvrSettings.m_dithering), entries, 70400);
 
-      AddToggle(groupMadvrDithering, SETTING_MADVR_DITHERINGCOLORED, 70405, 0, madvrSettings.m_ditheringColoredNoise);
-      AddToggle(groupMadvrDithering, SETTING_MADVR_DITHERINGEVERYFRAME, 70406, 0, madvrSettings.m_ditheringEveryFrame);
-      */
+      AddToggle(groupMadvrRendering, SETTING_MADVR_DITHERINGCOLORED, 70405, 0, madvrSettings.m_ditheringColoredNoise);
+      AddToggle(groupMadvrRendering, SETTING_MADVR_DITHERINGEVERYFRAME, 70406, 0, madvrSettings.m_ditheringEveryFrame);
+      
     }
 
     AddButton(groupVideo, VIDEO_SETTINGS_DS_FILTERS, 55062, 0);
@@ -728,14 +710,12 @@ void CGUIDialogVideoSettings::HideUnused()
   SetVisible(SETTING_MADVR_DEBANDLEVEL, bValue);
   SetVisible(SETTING_MADVR_DEBANDFADELEVEL, bValue);
 
-  /*
   //DITHERING
   setting = m_settingsManager->GetSetting(SETTING_MADVR_DITHERING);
   iValue = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-  SetVisible(SETTING_MADVR_DITHERINGCOLORED, (iValue>0));
-  SetVisible(SETTING_MADVR_DITHERINGEVERYFRAME, (iValue >0));
-  */
-
+  SetVisible(SETTING_MADVR_DITHERINGCOLORED, (iValue>-1));
+  SetVisible(SETTING_MADVR_DITHERINGEVERYFRAME, (iValue >-1));
+  
   m_allowchange = true;
 }
 

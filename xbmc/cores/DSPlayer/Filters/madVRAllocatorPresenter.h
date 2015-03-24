@@ -120,10 +120,7 @@ class CmadVRAllocatorPresenter
   Com::SmartSize m_ScreenSize;
   bool  m_bIsFullscreen;
   bool m_isDeviceSet;
-  bool TestRender(IDirect3DDevice9* pD3DDevice);
-  CEvent m_drawIsDone;
 
-  LPDIRECT3DVERTEXBUFFER9 m_pVB; // Buffer to hold Vertices
 public:
 
   CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdString &_Error);
@@ -148,10 +145,8 @@ public:
   STDMETHODIMP SetPixelShader(LPCSTR pSrcData, LPCSTR pTarget);
 
   //IPaintCallbackMadvr
-
   LPDIRECT3DDEVICE9 GetDevice() { return m_isDeviceSet ? m_pD3DDeviceMadVR : m_pD3DDevice; }
   virtual void OsdRedrawFrame();
-  virtual void SetDrawIsDone();
   virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect);
   virtual void CloseMadvr();
   virtual void SettingSetScaling(CStdStringW path, int scaling);
@@ -161,10 +156,8 @@ public:
   virtual void SettingSetDeintActive(CStdStringW path, int iValue);
   virtual void SettingSetDeintForce(CStdStringW path, int iValue);
   virtual void SettingSetSmoothmotion(CStdStringW path, int iValue);
+  virtual void SettingSetDithering(CStdStringW path, int iValue);
   virtual void SettingSetBool(CStdStringW path, BOOL bValue);
   virtual void SettingSetInt(CStdStringW path, BOOL iValue);
-
-  virtual void SettingGetDoubling(CStdStringW path, int &iValue);
-  virtual void SettingGetDoublingCondition(CStdStringW path, int &condition);
-  virtual void SettingGetQuadrupleCondition(CStdStringW path, int &condition);
+  virtual CStdString GetDXVADecoderDescription();
 };
