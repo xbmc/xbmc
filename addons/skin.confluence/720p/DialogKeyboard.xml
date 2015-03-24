@@ -11,50 +11,15 @@
 		<control type="group">
 			<include>VisibleFadeEffect</include>
 			<visible>!Window.IsVisible(numericinput)</visible>
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>860</width>
-				<height>430</height>
-				<texture border="40">DialogBack.png</texture>
-			</control>
-			<control type="image">
-				<description>Dialog Header image</description>
-				<left>40</left>
-				<top>16</top>
-				<width>780</width>
-				<height>40</height>
-				<texture>dialogheader.png</texture>
-			</control>
-			<control type="label" id="311">
-				<description>header label</description>
-				<left>40</left>
-				<top>20</top>
-				<width>820</width>
-				<height>30</height>
-				<font>font13_title</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>selected</textcolor>
-				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="button">
-				<description>Close Window button</description>
-				<left>770</left>
-				<top>15</top>
-				<width>64</width>
-				<height>32</height>
-				<label>-</label>
-				<font>-</font>
-				<onclick>PreviousMenu</onclick>
-				<texturefocus>DialogCloseButton-focus.png</texturefocus>
-				<texturenofocus>DialogCloseButton.png</texturenofocus>
-				<onleft>3</onleft>
-				<onright>3</onright>
-				<onup>3</onup>
-				<ondown>3</ondown>
-				<visible>system.getbool(input.enablemouse)</visible>
-			</control>
+			<include name="DialogBackgroundCommons">
+				<param name="DialogBackgroundWidth" value="860" />
+				<param name="DialogBackgroundHeight" value="430" />
+				<param name="DialogHeaderWidth" value="780" />
+				<param name="DialogHeaderLabel" value="" />
+				<param name="DialogHeaderId" value="311" />
+				<param name="CloseButtonLeft" value="770" />
+				<param name="CloseButtonNav" value="3" />
+			</include>
 			<control type="image">
 				<left>50</left>
 				<top>60</top>
