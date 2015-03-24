@@ -408,7 +408,7 @@
                 "rating", "year", "musicbrainzalbumid",
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
                 "playcount", "genreid", "artistid", "displayartist",
-                "releasetype" ]
+                "compilation", "releasetype" ]
     }
   },
   "Audio.Fields.Song": {
@@ -478,6 +478,7 @@
       "type": { "type": "string" },
       "albumlabel": { "type": "string" },
       "playcount": { "type": "integer" },
+      "compilation": { "type": "boolean" },
       "releasetype": { "$ref": "Audio.Album.ReleaseType" }
     }
   },
@@ -1239,6 +1240,7 @@
       "albumlabel": { "type": "string" },
       "specialsortseason": { "type": "integer" },
       "specialsortepisode": { "type": "integer" },
+      "compilation": { "type": "boolean" },
       "releasetype": { "$ref": "Audio.Album.ReleaseType" },
       "albumreleasetype": { "$ref": "Audio.Album.ReleaseType" }
     }
@@ -1259,7 +1261,7 @@
                 "description", "theme", "mood", "style", "albumlabel", "sorttitle",
                 "episodeguide", "uniqueid", "dateadded", "channel", "channeltype", "hidden",
                 "locked", "channelnumber", "starttime", "endtime", "specialsortseason",
-                "specialsortepisode", "releasetype", "albumreleasetype" ]
+                "specialsortepisode", "compilation", "releasetype", "albumreleasetype" ]
     }
   },
   "List.Item.All": {

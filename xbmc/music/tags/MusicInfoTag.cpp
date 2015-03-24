@@ -589,6 +589,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["lyrics"] = m_strLyrics;
   value["albumid"] = m_iAlbumId;
   value["compilationartist"] = m_bCompilation;
+  value["compilation"] = m_bCompilation;
   if (m_type.compare(MediaTypeAlbum) == 0)
     value["releasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
   else if (m_type.compare(MediaTypeSong) == 0)
