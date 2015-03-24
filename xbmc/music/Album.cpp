@@ -30,6 +30,18 @@
 using namespace std;
 using namespace MUSIC_INFO;
 
+typedef struct ReleaseTypeInfo {
+  CAlbum::ReleaseType type;
+  std::string name;
+} ReleaseTypeInfo;
+
+ReleaseTypeInfo releaseTypes[] = {
+  { CAlbum::Album,  "album" },
+  { CAlbum::Single, "single" }
+};
+
+#define RELEASE_TYPES_SIZE sizeof(releaseTypes) / sizeof(ReleaseTypeInfo)
+
 CAlbum::CAlbum(const CFileItem& item)
 {
   Reset();
@@ -145,6 +157,40 @@ std::string CAlbum::GetArtistString() const
 std::string CAlbum::GetGenreString() const
 {
   return StringUtils::Join(genre, g_advancedSettings.m_musicItemSeparator);
+}
+
+std::string CAlbum::GetReleaseType() const
+{
+  return ReleaseTypeToString(releaseType);
+}
+
+void CAlbum::SetReleaseType(const std::string& strReleaseType)
+{
+  releaseType = ReleaseTypeFromString(strReleaseType);
+}
+
+std::string CAlbum::ReleaseTypeToString(CAlbum::ReleaseType releaseType)
+{
+  for (size_t i = 0; i < RELEASE_TYPES_SIZE; i++)
+  {
+    const ReleaseTypeInfo& releaseTypeInfo = releaseTypes[i];
+    if (releaseTypeInfo.type == releaseType)
+      return releaseTypeInfo.name;
+  }
+
+  return "album";
+}
+
+CAlbum::ReleaseType CAlbum::ReleaseTypeFromString(const std::string& strReleaseType)
+{
+  for (size_t i = 0; i < RELEASE_TYPES_SIZE; i++)
+  {
+    const ReleaseTypeInfo& releaseTypeInfo = releaseTypes[i];
+    if (releaseTypeInfo.name == strReleaseType)
+      return releaseTypeInfo.type;
+  }
+
+  return Album;
 }
 
 bool CAlbum::operator<(const CAlbum &a) const
@@ -304,6 +350,12 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     node = node->NextSiblingElement("track");
   }
 
+  std::string strReleaseType;
+  if (XMLUtils::GetString(album, "releasetype", strReleaseType))
+    SetReleaseType(strReleaseType);
+  else
+    releaseType = Album;
+
   return true;
 }
 
@@ -378,6 +430,8 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
     XMLUtils::SetInt(node,      "position",             song->iTrack);
     XMLUtils::SetString(node,   "duration",             StringUtils::SecondsToTimeString(song->iDuration));
   }
+
+  XMLUtils::SetString(album, "releasetype", GetReleaseType());
 
   return true;
 }

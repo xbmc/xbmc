@@ -36,7 +36,7 @@ class CAlbum
 {
 public:
   CAlbum(const CFileItem& item);
-  CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; };
+  CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; iTimesPlayed = 0; releaseType = Album; };
   bool operator<(const CAlbum &a) const;
   void MergeScrapedAlbum(const CAlbum& album, bool override = true);
 
@@ -64,10 +64,22 @@ public:
     iTimesPlayed = 0;
     songs.clear();
     infoSongs.clear();
+    releaseType = Album;
   }
 
   std::string GetArtistString() const;
   std::string GetGenreString() const;
+
+  typedef enum ReleaseType {
+    Album = 0,
+    Single
+  } ReleaseType;
+
+  std::string GetReleaseType() const;
+  void SetReleaseType(const std::string& strReleaseType);
+
+  static std::string ReleaseTypeToString(ReleaseType releaseType);
+  static ReleaseType ReleaseTypeFromString(const std::string& strReleaseType);
 
   /*! \brief Load album information from an XML file.
    See CVideoInfoTag::Load for a description of the types of elements we load.
@@ -101,6 +113,7 @@ public:
   int iTimesPlayed;
   VECSONGS songs;     ///< Local songs
   VECSONGS infoSongs; ///< Scraped songs
+  ReleaseType releaseType;
 };
 
 typedef std::vector<CAlbum> VECALBUMS;
