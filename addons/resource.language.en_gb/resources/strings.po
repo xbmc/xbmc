@@ -16535,7 +16535,7 @@ msgid "DSPlayer"
 msgstr ""
 
 msgctxt "#55001"
-msgid "Video Render"
+msgid "Video Renderer"
 msgstr ""
 
 msgctxt "#55002"
