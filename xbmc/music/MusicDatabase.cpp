@@ -5496,6 +5496,7 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
   item.SetProperty("album_title", album.strAlbum);
   if (album.iRating > 0)
     item.SetProperty("album_rating", album.iRating);
+  item.SetProperty("album_releasetype", CAlbum::ReleaseTypeToString(album.releaseType));
 }
 
 void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)

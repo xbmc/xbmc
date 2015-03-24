@@ -407,7 +407,8 @@
                 "theme", "mood", "style", "type", "albumlabel",
                 "rating", "year", "musicbrainzalbumid",
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
-                "playcount", "genreid", "artistid", "displayartist" ]
+                "playcount", "genreid", "artistid", "displayartist",
+                "releasetype" ]
     }
   },
   "Audio.Fields.Song": {
@@ -420,8 +421,13 @@
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
                 "playcount", "fanart", "thumbnail", "file", "albumid",
                 "lastplayed", "disc", "genreid", "artistid", "displayartist",
-                "albumartistid" ]
+                "albumartistid", "albumreleasetype" ]
     }
+  },
+  "Audio.Album.ReleaseType": {
+    "type": "string",
+    "enum": [ "album", "single" ],
+    "default": "album"
   },
   "Audio.Details.Base": {
     "extends": "Media.Details.Base",
@@ -471,7 +477,8 @@
       "style": { "$ref": "Array.String" },
       "type": { "type": "string" },
       "albumlabel": { "type": "string" },
-      "playcount": { "type": "integer" }
+      "playcount": { "type": "integer" },
+      "releasetype": { "$ref": "Audio.Album.ReleaseType" }
     }
   },
   "Audio.Details.Song": {
@@ -491,7 +498,8 @@
       "albumid": { "$ref": "Library.Id" },
       "lastplayed": { "type": "string" },
       "disc": { "type": "integer" },
-      "albumartistid": { "$ref": "Array.Integer" }
+      "albumartistid": { "$ref": "Array.Integer" },
+      "albumreleasetype": { "$ref": "Audio.Album.ReleaseType" }
     }
   },
   "Video.Fields.Movie": {
@@ -1230,7 +1238,9 @@
       "style": { "$ref": "Array.String" },
       "albumlabel": { "type": "string" },
       "specialsortseason": { "type": "integer" },
-      "specialsortepisode": { "type": "integer" }
+      "specialsortepisode": { "type": "integer" },
+      "releasetype": { "$ref": "Audio.Album.ReleaseType" },
+      "albumreleasetype": { "$ref": "Audio.Album.ReleaseType" }
     }
   },
   "List.Fields.All": {
@@ -1249,7 +1259,7 @@
                 "description", "theme", "mood", "style", "albumlabel", "sorttitle",
                 "episodeguide", "uniqueid", "dateadded", "channel", "channeltype", "hidden",
                 "locked", "channelnumber", "starttime", "endtime", "specialsortseason",
-                "specialsortepisode" ]
+                "specialsortepisode", "releasetype", "albumreleasetype" ]
     }
   },
   "List.Item.All": {

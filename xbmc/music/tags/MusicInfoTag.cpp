@@ -589,7 +589,10 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["lyrics"] = m_strLyrics;
   value["albumid"] = m_iAlbumId;
   value["compilationartist"] = m_bCompilation;
-  value["releasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
+  if (m_type.compare(MediaTypeAlbum) == 0)
+    value["releasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
+  else if (m_type.compare(MediaTypeSong) == 0)
+    value["albumreleasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
 }
 
 void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
