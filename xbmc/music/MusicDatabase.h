@@ -206,7 +206,7 @@ public:
    */
   int  AddAlbum(const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
                 const std::string& strArtist, const std::string& strGenre,
-                int year, bool bCompilation);
+                int year, bool bCompilation, CAlbum::ReleaseType releaseType);
   /*! \brief retrieve an album, optionally with all songs.
    \param idAlbum the database id of the album.
    \param album [out] the album to fill.
@@ -222,7 +222,8 @@ public:
                    const std::string& strThemes, const std::string& strReview,
                    const std::string& strImage, const std::string& strLabel,
                    const std::string& strType,
-                   int iRating, int iYear, bool bCompilation);
+                   int iRating, int iYear, bool bCompilation,
+                   CAlbum::ReleaseType releaseType);
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum);
   int  AddAlbumInfoSong(int idAlbum, const CSong& song);
@@ -557,6 +558,7 @@ private:
     album_iRating,
     album_bCompilation,
     album_iTimesPlayed,
+    album_strReleaseType,
     album_enumCount // end of the enum, do not add past here
   } AlbumFields;
 
