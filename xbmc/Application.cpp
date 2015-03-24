@@ -1888,6 +1888,7 @@ void CApplication::Render()
   bool hasRendered = false;
   bool limitFrames = false;
   unsigned int singleFrameTime = 10; // default limit 100 fps
+  bool vsync = true;
 
   // Whether externalplayer is playing and we're unfocused
   bool extPlayerActive = m_pPlayer->GetCurrentPlayer() == EPC_EXTPLAYER && m_pPlayer->IsPlaying() && !m_AppFocused;
@@ -1900,6 +1901,8 @@ void CApplication::Render()
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
     {
       m_bPresentFrame = g_renderManager.HasFrame();
+      if (vsync_mode == VSYNC_DISABLED)
+        vsync = false;
     }
     else
     {
@@ -1908,9 +1911,15 @@ void CApplication::Render()
       // DXMERGE - we checked for g_videoConfig.GetVSyncMode() before this
       //           perhaps allowing it to be set differently than the UI option??
       if (vsync_mode == VSYNC_DISABLED || vsync_mode == VSYNC_VIDEO)
+      {
         limitFrames = true; // not using vsync.
+        vsync = false;
+      }
       else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000 / singleFrameTime)
+      {
         limitFrames = true; // using vsync, but it isn't working.
+        vsync = false;
+      }
 
       if (limitFrames)
       {
@@ -2006,7 +2015,7 @@ void CApplication::Render()
   }
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
-  CTimeUtils::UpdateFrameTime(flip);
+  CTimeUtils::UpdateFrameTime(flip, vsync);
 
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
