@@ -902,10 +902,6 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="myvideos.startwindow" type="integer" label="0" help="36181">
-          <level>4</level>
-          <default>100024</default> <!-- WINDOW_VIDEO_FILES -->
-        </setting>
         <setting id="myvideos.stackvideos" type="boolean" label="20435" help="36182">
           <level>1</level>
           <default>false</default>
