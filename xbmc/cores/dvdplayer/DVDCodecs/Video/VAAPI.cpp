@@ -599,8 +599,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum P
 
   // add an extra surface for safety, some faulty material
   // make ffmpeg require more buffers
-  // frame threading requires an additional one
-  m_vaapiConfig.maxReferences += surfaces + 2;
+  m_vaapiConfig.maxReferences += surfaces + 1;
 
   if (!ConfigVAAPI())
   {
