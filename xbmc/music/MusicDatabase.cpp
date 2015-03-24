@@ -4412,6 +4412,12 @@ int CMusicDatabase::GetCompilationAlbumsCount()
   return strtol(GetSingleValue("album", "count(idAlbum)", "bCompilation = 1").c_str(), NULL, 10);
 }
 
+int CMusicDatabase::GetSinglesCount()
+{
+  CDatabase::Filter filter(PrepareSQL("songview.idAlbum IN (SELECT idAlbum FROM album WHERE strReleaseType = '%s')", CAlbum::ReleaseTypeToString(CAlbum::Single).c_str()));
+  return GetSongsCount(filter);
+}
+
 bool CMusicDatabase::SetPathHash(const std::string &path, const std::string &hash)
 {
   try
