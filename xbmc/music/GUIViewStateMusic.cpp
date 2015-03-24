@@ -513,13 +513,6 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
     m_sources.push_back(share);
   }
 
-  // Search share
-  share.strName=g_localizeStrings.Get(137); // Search
-  share.strPath = "musicsearch://";
-  share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicSearch.png");
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  m_sources.push_back(share);
-
   AddOnlineShares();
 
   return CGUIViewStateWindowMusic::GetSources();
