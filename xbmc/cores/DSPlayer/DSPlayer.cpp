@@ -931,6 +931,9 @@ bool CDSPlayer::OnAction(const CAction &action)
 
 void CDSPlayer::RestoreMadvrSettings()
 {
+  if (!CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
+    return;
+
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
 
   CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("chromaUp", madvrSettings.m_ChromaUpscaling);
