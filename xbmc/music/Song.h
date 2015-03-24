@@ -25,7 +25,8 @@
 
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
-#include "music/tags/MusicInfoTag.h" // for EmbeddedArt
+#include "music/EmbeddedArt.h"
+#include "music/tags/ReplayGain.h"
 #include "Artist.h"
 #include <map>
 #include <string>

@@ -27,6 +27,7 @@ class CArtist;
 #include <string>
 #include <stdint.h>
 
+#include "music/EmbeddedArt.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
@@ -36,29 +37,6 @@ class CArtist;
 
 namespace MUSIC_INFO
 {
-  class EmbeddedArtInfo : public IArchivable
-  {
-  public:
-    EmbeddedArtInfo() {};
-    EmbeddedArtInfo(size_t size, const std::string &mime);
-    void set(size_t size, const std::string &mime);
-    void clear();
-    bool empty() const;
-    bool matches(const EmbeddedArtInfo &right) const;
-    virtual void Archive(CArchive& ar);
-    size_t      size;
-    std::string mime;
-  };
-
-  class EmbeddedArt : public EmbeddedArtInfo
-  {
-  public:
-    EmbeddedArt() {};
-    EmbeddedArt(const uint8_t *data, size_t size, const std::string &mime);
-    void set(const uint8_t *data, size_t size, const std::string &mime);
-    std::vector<uint8_t> data;
-  };
-
 class CMusicInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:

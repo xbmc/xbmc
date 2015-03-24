@@ -19,6 +19,7 @@
  */
 
 #include "Album.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
