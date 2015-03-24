@@ -94,6 +94,7 @@ CAlbum::CAlbum(const CFileItem& item)
   iYear = stTime.wYear;
   bCompilation = tag.GetCompilation();
   iTimesPlayed = 0;
+  releaseType = tag.GetAlbumReleaseType();
 }
 
 void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)

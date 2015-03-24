@@ -533,6 +533,7 @@ private:
     song_strKarEncoding,
     song_bCompilation,
     song_strAlbumArtists,
+    song_strAlbumReleaseType,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 

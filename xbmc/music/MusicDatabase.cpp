@@ -276,7 +276,8 @@ void CMusicDatabase::CreateViews()
               "        strPath, "
               "        iKaraNumber, iKaraDelay, strKaraEncoding,"
               "        album.bCompilation AS bCompilation,"
-              "        album.strArtists AS strAlbumArtists "
+              "        album.strArtists AS strAlbumArtists, "
+              "        album.strReleaseType AS strAlbumReleaseType "
               "FROM song"
               "  JOIN album ON"
               "    song.idAlbum=album.idAlbum"
@@ -1706,6 +1707,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetURL(strRealPath);
   item->GetMusicInfoTag()->SetCompilation(record->at(song_bCompilation).get_asInt() == 1);
   item->GetMusicInfoTag()->SetAlbumArtist(record->at(song_strAlbumArtists).get_asString());
+  item->GetMusicInfoTag()->SetAlbumReleaseType(CAlbum::ReleaseTypeFromString(record->at(song_strAlbumReleaseType).get_asString()));
   item->GetMusicInfoTag()->SetLoaded(true);
   // Get filename with full path
   if (!baseUrl.IsValid())

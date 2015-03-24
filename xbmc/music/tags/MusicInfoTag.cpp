@@ -125,6 +125,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_type = tag.m_type;
   m_iAlbumId = tag.m_iAlbumId;
   m_replayGain = tag.m_replayGain;
+  m_albumReleaseType = tag.m_albumReleaseType;
 
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
   m_coverArt = tag.m_coverArt;
@@ -142,6 +143,7 @@ bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
   if (m_strAlbum != tag.m_strAlbum) return true;
   if (m_iDuration != tag.m_iDuration) return true;
   if (m_iTrack != tag.m_iTrack) return true;
+  if (m_albumReleaseType != tag.m_albumReleaseType) return true;
   return false;
 }
 
@@ -273,6 +275,11 @@ const EmbeddedArtInfo &CMusicInfoTag::GetCoverArtInfo() const
 const ReplayGain& CMusicInfoTag::GetReplayGain() const
 {
   return m_replayGain;
+}
+
+CAlbum::ReleaseType CMusicInfoTag::GetAlbumReleaseType() const
+{
+  return m_albumReleaseType;
 }
 
 void CMusicInfoTag::SetURL(const std::string& strURL)
@@ -486,6 +493,11 @@ void CMusicInfoTag::SetReplayGain(const ReplayGain& aGain)
   m_replayGain = aGain;
 }
 
+void CMusicInfoTag::SetAlbumReleaseType(CAlbum::ReleaseType releaseType)
+{
+  m_albumReleaseType = releaseType;
+}
+
 void CMusicInfoTag::SetArtist(const CArtist& artist)
 {
   SetArtist(artist.strArtist);
@@ -509,6 +521,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
+  SetAlbumReleaseType(album.releaseType);
   m_iTimesPlayed = album.iTimesPlayed;
   m_iDbId = album.idAlbum;
   m_type = MediaTypeAlbum;
@@ -576,6 +589,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["lyrics"] = m_strLyrics;
   value["albumid"] = m_iAlbumId;
   value["compilationartist"] = m_bCompilation;
+  value["releasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
 }
 
 void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
@@ -638,6 +652,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_listeners;
     ar << m_coverArt;
     ar << m_cuesheet;
+    ar << static_cast<int>(m_albumReleaseType);
   }
   else
   {
@@ -668,6 +683,10 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_listeners;
     ar >> m_coverArt;
     ar >> m_cuesheet;
+
+    int albumReleaseType;
+    ar >> albumReleaseType;
+    m_albumReleaseType = static_cast<CAlbum::ReleaseType>(albumReleaseType);
   }
 }
 
@@ -699,6 +718,7 @@ void CMusicInfoTag::Clear()
   m_iAlbumId = -1;
   m_coverArt.clear();
   m_replayGain = ReplayGain();
+  m_albumReleaseType = CAlbum::Album;
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)
