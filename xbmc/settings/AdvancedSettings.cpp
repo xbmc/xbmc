@@ -109,7 +109,7 @@ void CAdvancedSettings::Initialize()
 
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
-  m_audioApplyDrc = true;
+  m_audioApplyDrc = -1.0f;
   m_dvdplayerIgnoreDTSinWAV = false;
 
   //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
@@ -487,7 +487,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     if (pAudioExcludes)
       GetCustomRegexps(pAudioExcludes, m_audioExcludeFromScanRegExps);
 
-    XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
+    XMLUtils::GetFloat(pElement, "applydrc", m_audioApplyDrc);
     XMLUtils::GetBoolean(pElement, "dvdplayerignoredtsinwav", m_dvdplayerIgnoreDTSinWAV);
 
     XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);

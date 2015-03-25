@@ -92,8 +92,8 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     }
   }
 
-  if (!g_advancedSettings.m_audioApplyDrc)
-    av_opt_set_double(m_pCodecContext, "drc_scale", 0.0, AV_OPT_SEARCH_CHILDREN);
+  if (g_advancedSettings.m_audioApplyDrc >= 0.0)
+    av_opt_set_double(m_pCodecContext, "drc_scale", g_advancedSettings.m_audioApplyDrc, AV_OPT_SEARCH_CHILDREN);
 
   if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {
