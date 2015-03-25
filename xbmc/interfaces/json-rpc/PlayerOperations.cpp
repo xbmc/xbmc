@@ -47,6 +47,7 @@
 #include "cores/playercorefactory/PlayerCoreConfig.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "settings/MediaSettings.h"
+#include "utils/SeekHandler.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -392,16 +393,18 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
   {
     case Video:
     case Audio:
+    {
       if (!g_application.m_pPlayer->CanSeek())
         return FailedToExecute;
-      
-      if (parameterObject["value"].isObject())
-        g_application.SeekTime(ParseTimeInSeconds(parameterObject["value"]));
-      else if (IsType(parameterObject["value"], NumberValue))
-        g_application.SeekPercentage(parameterObject["value"].asFloat());
-      else if (parameterObject["value"].isString())
+
+      const CVariant& value = parameterObject["value"];
+      if (IsType(value, NumberValue) ||
+         (value.isObject() && value.isMember("percentage")))
+        g_application.SeekPercentage(IsType(value, NumberValue) ? value.asFloat() : value["percentage"].asFloat());
+      else if (value.isString() ||
+              (value.isObject() && value.isMember("step")))
       {
-        std::string step = parameterObject["value"].asString();
+        std::string step = value.isString() ? value.asString() : value["step"].asString();
         if (step == "smallforward")
           CBuiltins::Execute("playercontrol(smallskipforward)");
         else if (step == "smallbackward")
@@ -413,6 +416,10 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
         else
           return InvalidParams;
       }
+      else if (value.isObject() && value.isMember("seconds") && value.size() == 1)
+        CSeekHandler::Get().SeekSeconds(static_cast<int>(value["seconds"].asInteger()));
+      else if (value.isObject())
+        g_application.SeekTime(ParseTimeInSeconds(value.isMember("time") ? value["time"] : value));
       else
         return InvalidParams;
 
@@ -420,6 +427,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
       GetPropertyValue(player, "time", result["time"]);
       GetPropertyValue(player, "totaltime", result["totaltime"]);
       return OK;
+    }
 
     case Picture:
     case None:
