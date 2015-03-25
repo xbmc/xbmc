@@ -41,8 +41,10 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
+#include "filesystem/EFileFile.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "GUIInfoManager.h"
@@ -501,7 +503,10 @@ int CVideoDatabase::GetPathId(const std::string& strPath)
     if (NULL == m_pDS.get()) return -1;
 
     std::string strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || StringUtils::StartsWithNoCase(strPath, "rar://") || StringUtils::StartsWithNoCase(strPath, "zip://"))
+    if (URIUtils::IsStack(strPath) || 
+        StringUtils::StartsWithNoCase(strPath, "rar://") || 
+        StringUtils::StartsWithNoCase(strPath, "zip://") || 
+        StringUtils::StartsWithNoCase(strPath, "efile://"))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -701,7 +706,10 @@ int CVideoDatabase::AddPath(const std::string& strPath, const std::string &paren
     if (NULL == m_pDS.get()) return -1;
 
     std::string strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || StringUtils::StartsWithNoCase(strPath, "rar://") || StringUtils::StartsWithNoCase(strPath, "zip://"))
+    if (URIUtils::IsStack(strPath) || 
+        StringUtils::StartsWithNoCase(strPath, "rar://") || 
+        StringUtils::StartsWithNoCase(strPath, "zip://") || 
+        StringUtils::StartsWithNoCase(strPath, "efile://"))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -9241,7 +9249,9 @@ bool CVideoDatabase::ImportArtFromXML(const TiXmlNode *node, std::map<std::strin
 void CVideoDatabase::ConstructPath(std::string& strDest, const std::string& strPath, const std::string& strFileName)
 {
   if (URIUtils::IsStack(strFileName) || 
-      URIUtils::IsInArchive(strFileName) || URIUtils::IsPlugin(strPath))
+      URIUtils::IsInArchive(strFileName) || 
+      URIUtils::IsPlugin(strPath) || 
+      URIUtils::IsEFileStub(strFileName))
     strDest = strFileName;
   else
     strDest = URIUtils::AddFileToFolder(strPath, strFileName);
@@ -9249,7 +9259,10 @@ void CVideoDatabase::ConstructPath(std::string& strDest, const std::string& strP
 
 void CVideoDatabase::SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName)
 {
-  if (URIUtils::IsStack(strFileNameAndPath) || StringUtils::StartsWithNoCase(strFileNameAndPath, "rar://") || StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://"))
+  if (URIUtils::IsStack(strFileNameAndPath) || 
+      StringUtils::StartsWithNoCase(strFileNameAndPath, "rar://") || 
+      StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://") || 
+      StringUtils::StartsWithNoCase(strFileNameAndPath, "efile://"))
   {
     URIUtils::GetParentPath(strFileNameAndPath,strPath);
     strFileName = strFileNameAndPath;

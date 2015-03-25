@@ -67,6 +67,8 @@ public:
                     std::string& strPath, std::string& strFileName);
   static std::vector<std::string> SplitPath(const std::string& strPath);
 
+  static std::string GetOpticalMediaPath();
+  static std::string GetOpticalMediaPath(const std::string& filename);
   static void GetCommonPath(std::string& strPath, const std::string& strPath2);
   static std::string GetParentPath(const std::string& strPath);
   static bool GetParentPath(const std::string& strPath, std::string& strParent);
@@ -157,6 +159,9 @@ public:
   static bool IsVideoDb(const std::string& strFile);
   static bool IsAPK(const std::string& strFile);
   static bool IsZIP(const std::string& strFile);
+  static bool IsDiscImage(const std::string& strFile);
+  static bool IsDiscStub(const std::string& strFile);
+  static bool IsEFileStub(const std::string& strFile);
   static bool IsArchive(const std::string& strFile);
   static bool IsBluray(const std::string& strFile);
   static bool IsAndroidApp(const std::string& strFile);

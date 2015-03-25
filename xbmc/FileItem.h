@@ -159,6 +159,8 @@ public:
    */
   bool IsVideo() const;
 
+  bool IsEFileStub() const;
+
   bool IsDiscStub() const;
 
   /*!
@@ -512,6 +514,7 @@ public:
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+  mutable int m_isDiscImage;
 
   void SetCueDocument(const CCueDocumentPtr& cuePtr);
   void LoadEmbeddedCue();

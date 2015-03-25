@@ -3174,6 +3174,12 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
       CUtil::ClearSubtitles();
   }
 
+  if (item.IsEFileStub())
+  {
+    if (!CGUIDialogPlayEject::ShowAndGetInput(item))
+      return PLAYBACK_CANCELED;
+  }
+
   if (item.IsDiscStub())
   {
 #ifdef HAS_DVD_DRIVE

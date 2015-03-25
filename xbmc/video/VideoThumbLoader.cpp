@@ -26,6 +26,8 @@
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "FileItem.h"
 #include "filesystem/DirectoryCache.h"
+#include "filesystem/EFileFile.h"
+#include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
@@ -93,8 +95,9 @@ bool CThumbExtractor::DoWork()
   ||  m_item.IsDiscImage()
   ||  m_item.IsDVDFile(false, true)
   ||  m_item.IsInternetStream()
-  ||  m_item.IsDiscStub()
-  ||  m_item.IsPlayList())
+  || m_item.IsPlayList()
+  || m_item.IsEFileStub()
+  || m_item.IsDiscStub())
     return false;
 
   // For HTTP/FTP we only allow extraction when on a LAN
