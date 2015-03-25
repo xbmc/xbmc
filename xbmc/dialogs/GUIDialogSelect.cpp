@@ -21,7 +21,7 @@
 #include "GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
@@ -35,6 +35,8 @@ CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {
   m_bButtonEnabled = false;
+  m_bButtonPressed = false;
+  m_bConfirmed = false;
   m_buttonString = -1;
   m_useDetails = false;
   m_vecList = new CFileItemList;
@@ -87,8 +89,6 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_bButtonPressed = false;
-      m_bConfirmed = false;
       CGUIDialog::OnMessage(message);
       return true;
     }
@@ -163,6 +163,8 @@ bool CGUIDialogSelect::OnBack(int actionID)
 void CGUIDialogSelect::Reset()
 {
   m_bButtonEnabled = false;
+  m_buttonString = -1;
+  m_bButtonPressed = false;
   m_useDetails = false;
   m_multiSelection = false;
   m_iSelected = -1;

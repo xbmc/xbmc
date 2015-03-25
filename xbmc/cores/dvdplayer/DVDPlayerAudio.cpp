@@ -647,17 +647,26 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   double absolute;
   double clock = m_pClock->GetClock(absolute);
   double error = m_dvdAudio.GetPlayingPts() - clock;
+  double threshold1 = DVD_MSEC_TO_TIME(100);
+  double threshold2 = DVD_MSEC_TO_TIME(50);
+
+  // adjust threasholds
+  // some codecs like flac have a very large frame length
+  if (threshold1 < 1.5 * duration)
+    threshold1 = 1.5 *  duration;
+  if (threshold2 < duration)
+    threshold2 = duration;
 
   m_errors.Add(error);
 
-  if (fabs(error) > DVD_MSEC_TO_TIME(100))
+  if (fabs(error) > threshold1)
   {
     m_syncclock = true;
     m_errors.Flush();
     m_integral = 0.0;
     return;
   }
-  else if (m_syncclock && fabs(error) < DVD_MSEC_TO_TIME(50))
+  else if (m_syncclock && fabs(error) < threshold2)
   {
     m_syncclock = false;
     m_errors.Flush();

@@ -20,7 +20,6 @@
 
 #include "WINJoystick.h"
 #include "input/ButtonTranslator.h"
-#include "peripherals/devices/PeripheralImon.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
@@ -63,16 +62,6 @@ CJoystick::CJoystick()
 CJoystick::~CJoystick()
 {
   ReleaseJoysticks();
-}
-
-void CJoystick::OnSettingChanged(const CSetting *setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string &settingId = setting->GetId();
-  if (settingId == "input.enablejoystick")
-    SetEnabled(((CSettingBool*)setting)->GetValue() && PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
 }
 
 void CJoystick::Reset()
@@ -434,6 +423,30 @@ bool CJoystick::GetAxis(std::string &joyName, int &id)
   LPDIRECTINPUTDEVICE8 joy;
   MapAxis(m_AxisIdx, joy, id);
   joyName = m_JoystickNames[JoystickIndex(joy)];
+
+  return true;
+}
+
+bool CJoystick::GetAxes(std::list<std::pair<std::string, int> >& axes, bool consider_still)
+{
+  std::list<std::pair<std::string, int> > ret;
+  if (!IsEnabled() || !IsAxisActive())
+    return false;
+
+  LPDIRECTINPUTDEVICE8 joy;
+  int axisId;
+
+  for (size_t i = 0; i < m_Axes.size(); ++i)
+  {
+    int deadzone = m_Axes[i].trigger ? 0 : m_DeadzoneRange;
+    int amount = m_Axes[i].val - m_Axes[i].rest;
+    if (consider_still || abs(amount) > deadzone)
+    {
+      MapAxis(i, joy, axisId);
+      ret.push_back(std::pair<std::string, int>(m_JoystickNames[JoystickIndex(joy)], axisId));
+    }
+  }
+  axes = ret;
 
   return true;
 }

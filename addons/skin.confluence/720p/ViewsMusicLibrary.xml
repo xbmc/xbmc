@@ -252,7 +252,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<label>$INFO[ListItem.Label]</label>
-				<animation effect="slide" start="0,0" end="0,20" time="200" condition="!Control.HasFocus(509)">conditional</animation>
+				<animation effect="slide" start="0,0" end="0,20" time="150" condition="!Control.HasFocus(509)">conditional</animation>
 			</control>
 		</control>
 		<control type="group">
@@ -262,7 +262,7 @@
 			<top>450</top>
 			<control type="fixedlist" id="509">
 				<visible>Container.Content(Albums)</visible>
-				<hitrect x="0" y="-10" w="1280" h="190"/>
+				<hitrect x="0" y="-10" w="1280" h="190" />
 				<left>-80</left>
 				<top>0</top>
 				<width>1360</width>
@@ -322,8 +322,8 @@
 						<bordersize>8</bordersize>
 						<fadetime>200</fadetime>
 						<texture background="true">$INFO[ListItem.Icon]</texture>
-						<animation reversible="false" effect="zoom" start="-2,16,168,168" end="-12,-4,198,198" time="200">focus</animation>
-						<animation reversible="false" effect="zoom" end="-2,16,168,168" start="-12,-4,198,198" time="200">unfocus</animation>
+						<animation reversible="false" effect="zoom" start="-2,16,168,168" end="-12,-4,198,198" time="150">focus</animation>
+						<animation reversible="false" effect="zoom" end="-2,16,168,168" start="-12,-4,198,198" time="150">unfocus</animation>
 					</control>
 					<control type="image">
 						<left>180</left>
@@ -333,12 +333,12 @@
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Overlay]</texture>
 						<animation type="focus">
-							<effect type="fade" start="0" end="100" time="200"/>
-							<effect type="slide" start="0,0" end="40,40" time="200"/>
+							<effect type="fade" start="0" end="100" time="150" />
+							<effect type="slide" start="0,0" end="40,40" time="150" />
 						</animation>
 						<animation type="unfocus">
-							<effect type="fade" start="100" end="0" time="200"/>
-							<effect type="slide" end="0,0" start="40,40" time="200"/>
+							<effect type="fade" start="100" end="0" time="150" />
+							<effect type="slide" end="0,0" start="40,40" time="150" />
 						</animation>
 					</control>
 				</focusedlayout>

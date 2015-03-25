@@ -32,7 +32,7 @@
 #include "playlists/PlayListFactory.h"
 #include "PictureInfoLoader.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "playlists/PlayList.h"
@@ -44,6 +44,7 @@
 #include "Autorun.h"
 #include "interfaces/AnnouncementManager.h"
 #include "utils/StringUtils.h"
+#include "ContextMenuManager.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -502,6 +503,8 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
   if (item && !item->GetProperty("pluginreplacecontextitems").asBoolean())
     buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
+
+  CContextMenuManager::Get().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

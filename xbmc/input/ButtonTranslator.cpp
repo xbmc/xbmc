@@ -23,8 +23,9 @@
 #include "ButtonTranslator.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/URIUtils.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/WindowIDs.h"
+#include "input/MouseStat.h"
 #include "input/XBMC_keysym.h"
 #include "input/XBMC_keytable.h"
 #include "filesystem/File.h"
@@ -113,6 +114,8 @@ static const ActionMapping actions[] =
         {"nextcalibration"   , ACTION_CALIBRATE_SWAP_ARROWS},
         {"resetcalibration"  , ACTION_CALIBRATE_RESET},
         {"analogmove"        , ACTION_ANALOG_MOVE},
+        {"analogmovex"       , ACTION_ANALOG_MOVE_X},
+        {"analogmovey"       , ACTION_ANALOG_MOVE_Y},
         {"rotate"            , ACTION_ROTATE_PICTURE_CW},
         {"rotateccw"         , ACTION_ROTATE_PICTURE_CCW},
         {"close"             , ACTION_NAV_BACK}, // backwards compatibility
@@ -1625,7 +1628,7 @@ uint32_t CButtonTranslator::TranslateMouseCommand(TiXmlElement *pButton)
       else
       {
         int id = 0;
-        if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=4)
+        if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<MOUSE_MAX_BUTTON)
         {
           buttonId += id;
         }

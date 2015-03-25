@@ -69,7 +69,7 @@ void CGUIDialogProgress::StartModal()
   m_active = true;
   m_bModal = true;
   m_closing = false;
-  g_windowManager.RouteToWindow(this);
+  g_windowManager.RegisterDialog(this);
 
   // active this window...
   ShowProgressBar(false);

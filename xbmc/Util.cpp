@@ -54,7 +54,6 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif
-#include "filesystem/MythDirectory.h"
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
@@ -198,18 +197,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   // ReplayTV Devices
   else if (url.IsProtocol("rtv"))
     strFilename = "ReplayTV Devices";
-
-  // HTS Tvheadend client
-  else if (url.IsProtocol("htsp"))
-    strFilename = g_localizeStrings.Get(20256);
-
-  // VDR Streamdev client
-  else if (url.IsProtocol("vtp"))
-    strFilename = g_localizeStrings.Get(20257);
-  
-  // MythTV client
-  else if (url.IsProtocol("myth"))
-    strFilename = g_localizeStrings.Get(20258);
 
   // SAP Streams
   else if (url.IsProtocol("sap") && strFilename.empty())
@@ -499,24 +486,13 @@ bool CUtil::IsPVR(const std::string& strFile)
   return StringUtils::StartsWithNoCase(strFile, "pvr:");
 }
 
-bool CUtil::IsHTSP(const std::string& strFile)
-{
-  return StringUtils::StartsWithNoCase(strFile, "htsp:");
-}
-
 bool CUtil::IsLiveTV(const std::string& strFile)
 {
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
     return true;
 
-  if(URIUtils::IsTuxBox(strFile)
-  || URIUtils::IsVTP(strFile)
-  || URIUtils::IsHDHomeRun(strFile)
-  || URIUtils::IsHTSP(strFile)
+  if(URIUtils::IsHDHomeRun(strFile)
   || StringUtils::StartsWithNoCase(strFile, "sap:"))
-    return true;
-
-  if (URIUtils::IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
     return true;
 
   return false;
@@ -894,8 +870,8 @@ bool CUtil::CreateDirectoryEx(const std::string& strPath)
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
 
-  // we currently only allow HD and smb, nfs and afp paths
-  if (!URIUtils::IsHD(strPath) && !URIUtils::IsSmb(strPath) && !URIUtils::IsNfs(strPath) && !URIUtils::IsAfp(strPath))
+  // we currently only allow HD and smb and nfs paths
+  if (!URIUtils::IsHD(strPath) && !URIUtils::IsSmb(strPath) && !URIUtils::IsNfs(strPath))
   {
     CLog::Log(LOGERROR,"%s called with an unsupported path: %s", __FUNCTION__, strPath.c_str());
     return false;
@@ -947,8 +923,8 @@ std::string CUtil::MakeLegalPath(const std::string &strPathAndFile, int LegalTyp
     return MakeLegalPath(CStackDirectory::GetFirstStackedFile(strPathAndFile));
   if (URIUtils::IsMultiPath(strPathAndFile))
     return MakeLegalPath(CMultiPathDirectory::GetFirstPath(strPathAndFile));
-  if (!URIUtils::IsHD(strPathAndFile) && !URIUtils::IsSmb(strPathAndFile) && !URIUtils::IsNfs(strPathAndFile) && !URIUtils::IsAfp(strPathAndFile))
-    return strPathAndFile; // we don't support writing anywhere except HD, SMB, NFS and AFP - no need to legalize path
+  if (!URIUtils::IsHD(strPathAndFile) && !URIUtils::IsSmb(strPathAndFile) && !URIUtils::IsNfs(strPathAndFile))
+    return strPathAndFile; // we don't support writing anywhere except HD, SMB and NFS - no need to legalize path
 
   bool trailingSlash = URIUtils::HasSlashAtEnd(strPathAndFile);
   vector<string> dirs = URIUtils::SplitPath(strPathAndFile);
@@ -1192,8 +1168,6 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
 
   if (checkURL.IsProtocol("shout"))
     strPath = checkURL.GetHostName();
-  if (checkURL.IsProtocol("tuxbox"))
-    return 1;
   if (checkURL.IsProtocol("plugin"))
     return 1;
   if (checkURL.IsProtocol("multipath"))
@@ -1509,7 +1483,7 @@ bool CUtil::MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t
 
 bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
 {
-  // currently only hd, smb, nfs, afp and dav support delete and rename
+  // currently only hd, smb, nfs and dav support delete and rename
   if (URIUtils::IsHD(strPath))
     return true;
   if (URIUtils::IsSmb(strPath))
@@ -1518,19 +1492,8 @@ bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
     return CPVRDirectory::SupportsWriteFileOperations(strPath);
   if (URIUtils::IsNfs(strPath))
     return true;
-  if (URIUtils::IsAfp(strPath))
-    return true;
   if (URIUtils::IsDAV(strPath))
     return true;
-  if (URIUtils::IsMythTV(strPath))
-  {
-    /*
-     * Can't use CFile::Exists() to check whether the myth:// path supports file operations because
-     * it hits the directory cache on the way through, which has the Live Channels and Guide
-     * items cached.
-     */
-    return CMythDirectory::SupportsWriteFileOperations(strPath);
-  }
   if (URIUtils::IsStack(strPath))
     return SupportsWriteFileOperations(CStackDirectory::GetFirstStackedFile(strPath));
   if (URIUtils::IsMultiPath(strPath))
@@ -2173,7 +2136,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const std::string& strVideo, co
         std::string langTmp(*it);
         std::string langCode;
         // try to recognize language
-        if (g_LangCodeExpander.ConvertToThreeCharCode(langCode, langTmp))
+        if (g_LangCodeExpander.ConvertToISO6392T(langTmp, langCode))
         {
           info.language = langCode;
           continue;

@@ -20,7 +20,7 @@
  */
 
 #include "JSONRPC.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "threads/CriticalSection.h"
 
 namespace JSONRPC

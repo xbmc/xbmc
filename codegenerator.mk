@@ -34,6 +34,7 @@ GENERATED += $(GENDIR)/AddonModuleXbmcgui.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcplugin.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcaddon.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcvfs.cpp
+GENERATED += $(GENDIR)/AddonModuleXbmcwsgi.cpp
 
 GENERATE_DEPS += $(TOPDIR)/xbmc/interfaces/legacy/*.h $(TOPDIR)/xbmc/interfaces/python/typemaps/*.intm $(TOPDIR)/xbmc/interfaces/python/typemaps/*.outtm
 
@@ -73,7 +74,7 @@ $(SWIG):
 
 $(GENERATED_JSON): $(JSON_BUILDER)
 	@echo Jsonbuilder: $(JSON_BUILDER)
-	make -C $(INTERFACES_DIR)/json-rpc $(notdir $@)
+	$(MAKE) -C $(INTERFACES_DIR)/json-rpc $(notdir $@)
 
 $(JSON_BUILDER):
 ifeq ($(BOOTSTRAP_FROM_DEPENDS), yes)
@@ -81,5 +82,5 @@ ifeq ($(BOOTSTRAP_FROM_DEPENDS), yes)
 	@false
 else
 #build json builder - ".." because makefile is in the parent dir of "bin"
-	make -C $(abspath $(dir $@)..)
+	$(MAKE) -C $(abspath $(dir $@)..)
 endif

@@ -21,7 +21,7 @@
 #include <cstdlib>
 
 #include "CPUInfo.h"
-#include "Temperature.h"
+#include "utils/Temperature.h"
 #include <string>
 #include <string.h>
 
@@ -581,7 +581,7 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
   FILE        *p    = NULL;
   std::string  cmd   = g_advancedSettings.m_cpuTempCmd;
 
-  temperature.SetState(CTemperature::invalid);
+  temperature.SetValid(false);
 
   if (cmd.empty() && m_fProcTemperature == NULL)
     return false;

@@ -19,7 +19,7 @@
  */
 
 #include "MouseStat.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "settings/lib/Setting.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
@@ -36,16 +36,6 @@ CMouseStat::CMouseStat()
 
 CMouseStat::~CMouseStat()
 {
-}
-
-void CMouseStat::OnSettingChanged(const CSetting *setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string &settingId = setting->GetId();
-  if (settingId == "input.enablemouse")
-    SetEnabled(((CSettingBool*)setting)->GetValue());
 }
 
 void CMouseStat::Initialize()
@@ -85,6 +75,8 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
     if (newEvent.button.button == XBMC_BUTTON_MIDDLE) m_mouseState.button[MOUSE_MIDDLE_BUTTON] = true;
     if (newEvent.button.button == XBMC_BUTTON_X1) m_mouseState.button[MOUSE_EXTRA_BUTTON1] = true;
     if (newEvent.button.button == XBMC_BUTTON_X2) m_mouseState.button[MOUSE_EXTRA_BUTTON2] = true;
+    if (newEvent.button.button == XBMC_BUTTON_X3) m_mouseState.button[MOUSE_EXTRA_BUTTON3] = true;
+    if (newEvent.button.button == XBMC_BUTTON_X4) m_mouseState.button[MOUSE_EXTRA_BUTTON4] = true;
     if (newEvent.button.button == XBMC_BUTTON_WHEELUP) m_mouseState.dz = 1;
     if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN) m_mouseState.dz = -1;
   }
@@ -95,6 +87,8 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
     if (newEvent.button.button == XBMC_BUTTON_MIDDLE) m_mouseState.button[MOUSE_MIDDLE_BUTTON] = false;
     if (newEvent.button.button == XBMC_BUTTON_X1) m_mouseState.button[MOUSE_EXTRA_BUTTON1] = false;
     if (newEvent.button.button == XBMC_BUTTON_X2) m_mouseState.button[MOUSE_EXTRA_BUTTON2] = false;
+    if (newEvent.button.button == XBMC_BUTTON_X3) m_mouseState.button[MOUSE_EXTRA_BUTTON3] = false;
+    if (newEvent.button.button == XBMC_BUTTON_X4) m_mouseState.button[MOUSE_EXTRA_BUTTON4] = false;
     if (newEvent.button.button == XBMC_BUTTON_WHEELUP) m_mouseState.dz = 0;
     if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN) m_mouseState.dz = 0;
   }

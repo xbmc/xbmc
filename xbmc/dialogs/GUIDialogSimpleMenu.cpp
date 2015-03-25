@@ -63,6 +63,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
     {
       CURL url("bluray://");
       url.SetHostName(URIUtils::GetParentPath(root));
+      url.SetFileName("root");
       return ShowPlaySelection(item, url.Get());
     }
   }
@@ -78,6 +79,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 
       CURL url("bluray://");
       url.SetHostName(url2.Get());
+      url.SetFileName("root");
       return ShowPlaySelection(item, url.Get());
     }
   }

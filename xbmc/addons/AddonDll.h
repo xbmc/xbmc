@@ -101,8 +101,6 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_android");
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
-#elif defined(TARGET_WINDOWS) && defined(HAS_SDL_OPENGL)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_wingl");
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
 #elif defined(TARGET_DARWIN)
@@ -160,17 +158,19 @@ AddonPtr CAddonDll<TheDll, TheStruct, TheProps>::Clone() const
 template<class TheDll, typename TheStruct, typename TheProps>
 bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 {
+  if (m_pDll)
+    return true;
+
   std::string strFileName;
   if (!m_bIsChild)
   {
     strFileName = LibPath();
   }
   else
-  { //FIXME hack to load same Dll twice
+  {
     std::string extension = URIUtils::GetExtension(m_strLibName);
-    strFileName = "special://temp/" + m_strLibName;
-    URIUtils::RemoveExtension(strFileName);
-    strFileName += "-" + ID() + extension;
+    strFileName = "special://temp/" + ID() + "-%03d" + extension;
+    strFileName = CUtil::GetNextFilename(strFileName, 100);
 
     if (!XFILE::CFile::Exists(strFileName))
       XFILE::CFile::Copy(LibPath(), strFileName);
@@ -333,6 +333,8 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   m_pStruct = NULL;
   if (m_pDll)
   {
+    if (m_bIsChild)
+      XFILE::CFile::Delete(m_pDll->GetFile());
     delete m_pDll;
     m_pDll = NULL;
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());

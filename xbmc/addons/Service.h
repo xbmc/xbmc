@@ -50,7 +50,7 @@ namespace ADDON
     virtual void OnDisabled();
     virtual void OnEnabled();
     virtual bool OnPreInstall();
-    virtual void OnPostInstall(bool restart, bool update);
+    virtual void OnPostInstall(bool restart, bool update, bool modal);
     virtual void OnPreUnInstall();
 
   protected:

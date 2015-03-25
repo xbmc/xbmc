@@ -372,6 +372,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldStudio);
     fields.push_back(FieldMPAA);
     fields.push_back(FieldDateAdded);
+    fields.push_back(FieldTag);
     isVideo = true;
   }
   else if (type == "movies")
@@ -817,6 +818,8 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
 
     if (m_field == FieldGenre)
       query = negate + FormatLinkQuery("genre", "genre", MediaTypeTvShow, (table + ".idShow").c_str(), parameter);
+    else if (m_field == FieldTag)
+      query = negate + FormatLinkQuery("tag", "tag", MediaTypeTvShow, (table + ".idShow").c_str(), parameter);
     else if (m_field == FieldDirector)
       query = negate + FormatLinkQuery("director", "actor", MediaTypeEpisode, GetField(FieldId, strType), parameter);
     else if (m_field == FieldActor)

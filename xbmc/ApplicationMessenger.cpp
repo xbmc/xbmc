@@ -37,7 +37,7 @@
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/GUIDialog.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/Resolution.h"
 #include "GUIInfoManager.h"
@@ -575,7 +575,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_EXECUTE_SCRIPT:
-      CScriptInvocationManager::Get().Execute(pMsg->strParam);
+      CScriptInvocationManager::Get().ExecuteAsync(pMsg->strParam);
       break;
 
     case TMSG_EXECUTE_BUILT_IN:
@@ -863,6 +863,13 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
 #endif
       break;
+    }
+    case TMSG_SETPVRMANAGERSTATE:
+    {
+      if (pMsg->param1 != 0)
+        g_application.StartPVRManager();
+      else
+        g_application.StopPVRManager();
     }
   }
 }
@@ -1410,5 +1417,12 @@ void CApplicationMessenger::CECActivateSource()
 void CApplicationMessenger::CECStandby()
 {
   ThreadMessage tMsg = {TMSG_CECSTANDBY};
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::SetPVRManagerState(bool onOff)
+{
+  ThreadMessage tMsg = {TMSG_SETPVRMANAGERSTATE};
+  tMsg.param1 = onOff ? 1 : 0;
   SendMessage(tMsg, false);
 }

@@ -35,7 +35,7 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUITextLayout.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "settings/DisplaySettings.h"
@@ -251,7 +251,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 void CGUIWindowFullScreen::ClearBackground()
 {
   if (g_renderManager.IsVideoLayer())
+#ifdef HAS_IMXVPU
+    g_graphicsContext.Clear((16 << 16)|(8 << 8)|16);
+#else
     g_graphicsContext.Clear(0);
+#endif
 }
 
 void CGUIWindowFullScreen::OnWindowLoaded()

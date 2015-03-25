@@ -7,15 +7,18 @@ SET EXITCODE=0
 SET install=false
 SET clean=false
 SET addon=
-FOR %%b in (%1, %2, %3, %4) DO (
+
+SETLOCAL EnableDelayedExpansion
+FOR %%b IN (%*) DO (
   IF %%b == install (
     SET install=true
   ) ELSE ( IF %%b == clean (
     SET clean=true
   ) ELSE (
-    SET addon=%%b
+    SET addon=!addon! %%b
   ))
 )
+SETLOCAL DisableDelayedExpansion
 
 rem set Visual C++ build environment
 call "%VS120COMNTOOLS%..\..\VC\bin\vcvars32.bat"
@@ -33,8 +36,16 @@ SET SCRIPTS_PATH=%BASE_PATH%\scripts\windows
 SET ADDONS_PATH=%BASE_PATH%\addons
 SET ADDON_DEPENDS_PATH=%ADDONS_PATH%\output
 SET ADDONS_BUILD_PATH=%ADDONS_PATH%\build
+SET ADDONS_DEFINITION_PATH=%ADDONS_PATH%\addons
 
-SET ERRORFILE=%BASE_PATH%\make-addons.error
+SET ADDONS_SUCCESS_FILE=%ADDONS_PATH%\.success
+SET ADDONS_FAILURE_FILE=%ADDONS_PATH%\.failure
+
+SET ERRORFILE=%ADDONS_PATH%\make-addons.error
+
+rem remove the success and failure files from a previous build
+DEL /F %ADDONS_SUCCESS_FILE% > NUL 2>&1
+DEL /F %ADDONS_FAILURE_FILE% > NUL 2>&1
 
 IF %clean% == true (
   rem remove the build directory if it exists
@@ -70,9 +81,15 @@ ECHO --------------------------------------------------
 ECHO Building addons
 ECHO --------------------------------------------------
 
-SET ADDONS_TO_BUILD="all"
+SET ADDONS_TO_BUILD=
 IF "%addon%" NEQ "" (
-  SET ADDONS_TO_BUILD="%addon%"
+  SET ADDONS_TO_BUILD=%addon%
+) ELSE (
+  SETLOCAL EnableDelayedExpansion
+  FOR /D %%a IN (%ADDONS_DEFINITION_PATH%\*) DO (
+    SET ADDONS_TO_BUILD=!ADDONS_TO_BUILD! %%~nxa
+  )
+  SETLOCAL DisableDelayedExpansion
 )
 
 rem execute cmake to generate makefiles processable by nmake
@@ -91,11 +108,29 @@ IF ERRORLEVEL 1 (
   GOTO ERROR
 )
 
-rem execute nmake to build the addons
-nmake %addon%
-IF ERRORLEVEL 1 (
-  ECHO nmake error level: %ERRORLEVEL% > %ERRORFILE%
-  GOTO ERROR
+rem get the list of addons that can actually be built
+SET ADDONS_TO_MAKE=
+SETLOCAL EnableDelayedExpansion
+FOR /f "delims=" %%i IN ('nmake supported_addons') DO (
+  SET line="%%i"
+  SET addons=!line:ALL_ADDONS_BUILDING=!
+  IF NOT "!addons!" == "!line!" (
+    SET ADDONS_TO_MAKE=!addons:~3,-1!
+  )
+)
+SETLOCAL DisableDelayedExpansion
+
+rem loop over all addons to build
+FOR %%a IN (%ADDONS_TO_MAKE%) DO (
+  ECHO Building %%a...
+  rem execute nmake to build the addons
+  nmake %%a
+  IF ERRORLEVEL 1 (
+    ECHO nmake %%a error level: %ERRORLEVEL% > %ERRORFILE%
+    ECHO %%a >> %ADDONS_FAILURE_FILE%
+  ) ELSE (
+    ECHO %%a >> %ADDONS_SUCCESS_FILE%
+  )
 )
 
 rem everything was fine
@@ -103,6 +138,9 @@ GOTO END
 
 :ERROR
 rem something went wrong
+FOR %%a IN (%ADDONS_TO_BUILD%) DO (
+  ECHO %%a >> %ADDONS_FAILURE_FILE%
+)
 ECHO Failed to build addons
 ECHO See %ERRORFILE% for more details
 SET EXITCODE=1

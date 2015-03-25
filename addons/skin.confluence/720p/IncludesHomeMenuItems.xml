@@ -259,7 +259,7 @@
 		</control>
 		<control type="button" id="90144">
 			<include>ButtonHomeSubCommonValues</include>
-			<label>19069</label>
+			<label>22020</label>
 			<onclick>ActivateWindow(TVGuide)</onclick>
 		</control>
 		<control type="button" id="90145">
@@ -296,7 +296,7 @@
 		</control>
 		<control type="button" id="90244">
 			<include>ButtonHomeSubCommonValues</include>
-			<label>19069</label>
+			<label>22020</label>
 			<onclick>ActivateWindow(RadioGuide)</onclick>
 		</control>
 		<control type="button" id="90245">

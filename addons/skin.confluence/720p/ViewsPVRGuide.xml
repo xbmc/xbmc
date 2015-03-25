@@ -31,7 +31,7 @@
 				<onright>101</onright>
 				<onup>10</onup>
 				<ondown>10</ondown>
-				<onback>101</onback> 
+				<onback>101</onback>
 				<rulerlayout height="35" width="40">
 					<control type="label" id="2">
 						<left>0</left>
@@ -280,7 +280,6 @@
 			</control>
 		</control>
 	</include>
-	
 	<!-- ID: 11 -->
 	<include name="PVRGuideViewNow">
 		<control type="group">
@@ -659,7 +658,6 @@
 			</control>
 		</control>
 	</include>
-	
 	<!-- ID: 12 -->
 	<include name="PVRGuideViewNext">
 		<control type="group">
@@ -1038,7 +1036,6 @@
 			</control>
 		</control>
 	</include>
-	
 	<!-- ID: 13 -->
 	<include name="PVRGuideViewChannel">
 		<control type="group">

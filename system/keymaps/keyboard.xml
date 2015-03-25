@@ -303,6 +303,8 @@
       <r>Rewind</r>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
+      <pageup>IncreaseRating</pageup>
+      <pagedown>DecreaseRating</pagedown>
       <backspace>Fullscreen</backspace>
       <return>OSD</return>
       <enter>OSD</enter>

@@ -22,6 +22,7 @@
 #include "GUIUserMessages.h"
 #include "Application.h"
 #include "GUIDialogSubtitles.h"
+#include "LangInfo.h"
 #include "addons/AddonManager.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -31,7 +32,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/VideoSettings.h"
@@ -256,7 +257,7 @@ void CGUIDialogSubtitles::FillServices()
   std::string service = addons.front()->ID();
   for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); ++addonIt)
   {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addonIt, "plugin://", false));
+    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addonIt, "plugin://" + (*addonIt)->ID(), false));
     m_serviceItems->Add(item);
     if ((*addonIt)->ID() == defaultService)
       service = (*addonIt)->ID();
@@ -343,13 +344,13 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
 
     g_application.m_pPlayer->GetAudioStreamInfo(CURRENT_STREAM, info);
 
-    if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
+    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = "Unknown";
 
     preferredLanguage = strLanguage;
   }
   else if (StringUtils::EqualsNoCase(preferredLanguage, "default"))
-    preferredLanguage = CSettings::Get().GetString("locale.language");
+    preferredLanguage = g_langInfo.GetEnglishLanguageName();
 
   url.SetOption("preferredlanguage", preferredLanguage);
 
@@ -501,7 +502,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
   // Extract the language and appropriate extension
   std::string strSubLang;
-  g_LangCodeExpander.ConvertToTwoCharCode(strSubLang, language);
+  g_LangCodeExpander.ConvertToISO6391(language, strSubLang);
 
   // Iterate over all items to transfer
   for (unsigned int i = 0; i < vecFiles.size() && i < (unsigned int) items->Size(); i++)

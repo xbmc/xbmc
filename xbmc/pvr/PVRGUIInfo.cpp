@@ -659,8 +659,8 @@ void CPVRGUIInfo::CharInfoPlayingClientName(std::string &strValue) const
 
 void CPVRGUIInfo::CharInfoEncryption(std::string &strValue) const
 {
-  CPVRChannelPtr channel;
-  if (g_PVRClients->GetPlayingChannel(channel))
+  CPVRChannelPtr channel(g_PVRClients->GetPlayingChannel());
+  if (channel)
     strValue = channel->EncryptionName();
   else
     strValue.clear();
@@ -796,7 +796,7 @@ void CPVRGUIInfo::UpdateNextTimer(void)
   CFileItemPtr tag = g_PVRTimers->GetNextActiveTimer();
   if (tag && tag->HasPVRTimerInfoTag())
   {
-    CPVRTimerInfoTag *timer = tag->GetPVRTimerInfoTag();
+    CPVRTimerInfoTagPtr timer = tag->GetPVRTimerInfoTag();
     strNextRecordingTitle = StringUtils::Format("%s",       timer->Title().c_str());
     strNextRecordingChannelName = StringUtils::Format("%s", timer->ChannelName().c_str());
     strNextRecordingChannelIcon = StringUtils::Format("%s", timer->ChannelIcon().c_str());
@@ -833,7 +833,7 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
     std::vector<CFileItemPtr> activeTags = g_PVRTimers->GetActiveRecordings();
     if (m_iTimerInfoToggleCurrent < activeTags.size() && activeTags.at(m_iTimerInfoToggleCurrent)->HasPVRTimerInfoTag())
     {
-      CPVRTimerInfoTag *tag = activeTags.at(m_iTimerInfoToggleCurrent)->GetPVRTimerInfoTag();
+      CPVRTimerInfoTagPtr tag = activeTags.at(m_iTimerInfoToggleCurrent)->GetPVRTimerInfoTag();
       strActiveTimerTitle = StringUtils::Format("%s",       tag->Title().c_str());
       strActiveTimerChannelName = StringUtils::Format("%s", tag->ChannelName().c_str());
       strActiveTimerChannelIcon = StringUtils::Format("%s", tag->ChannelIcon().c_str());
@@ -891,8 +891,8 @@ CEpgInfoTagPtr CPVRGUIInfo::GetPlayingTag() const
 
 void CPVRGUIInfo::UpdatePlayingTag(void)
 {
-  CPVRChannelPtr currentChannel;
-  if (g_PVRManager.GetCurrentChannel(currentChannel))
+  CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
+  if (currentChannel)
   {
     CEpgInfoTagPtr epgTag(GetPlayingTag());
     CPVRChannelPtr channel;

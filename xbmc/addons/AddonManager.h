@@ -93,7 +93,7 @@ namespace ADDON
     bool GetAddon(const std::string &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
-    bool GetAllAddons(VECADDONS &addons, bool enabled = true, bool allowRepos = false);
+    bool GetAllAddons(VECADDONS &addons, bool enabled = true);
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
@@ -129,8 +129,43 @@ namespace ADDON
      */
     bool IsAddonDisabled(const std::string& ID);
 
+    /* \brief Checks whether an addon can be disabled via DisableAddon.
+     \param ID id of the addon
+     \sa DisableAddon
+     */
+    bool CanAddonBeDisabled(const std::string& ID);
+
+    /* \brief Checks whether an addon is installed.
+     \param ID id of the addon
+    */
+    bool IsAddonInstalled(const std::string& ID);
+
+    /* \brief Checks whether an addon is installed.
+     \param ID id of the addon
+     \param addon Installed addon
+     */
+    bool IsAddonInstalled(const std::string& ID, AddonPtr& addon);
+
+    /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
+     \param ID id of the addon
+     */
+    bool CanAddonBeInstalled(const std::string& ID);
+
+    /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
+    \param addon addon to be checked
+    */
+    bool CanAddonBeInstalled(const AddonPtr& addon);
+
     /* libcpluff */
     std::string GetExtValue(cp_cfg_element_t *base, const char *path);
+
+    /*! \brief Retrieve an element from a given configuration element
+     \param base the base configuration element.
+     \param path the path to the configuration element from the base element.
+     \param element [out] returned element.
+     \return true if the configuration element is present
+     */
+    cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
 
     /*! \brief Retrieve a vector of repeated elements from a given configuration element
      \param base the base configuration element.
@@ -188,7 +223,6 @@ namespace ADDON
                     std::map<std::string, AddonPtr>& unresolved);
 
     /* libcpluff */
-    const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;
     VECADDONS    m_updateableAddons;

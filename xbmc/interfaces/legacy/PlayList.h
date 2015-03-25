@@ -39,7 +39,7 @@ namespace XBMCAddon
       PLAYLIST::CPlayList *pPlayList;
 
     public:
-      PlayList(int playList) throw (PlayListException);
+      PlayList(int playList);
       virtual ~PlayList();
 
       /**
@@ -73,7 +73,7 @@ namespace XBMCAddon
        * filename can be like .pls or .m3u ...\n
        * returns False if unable to load playlist
        */
-      bool load(const char* filename) throw (PlayListException);
+      bool load(const char* filename);
 
       /**
        * remove(filename) -- remove an item with this filename from the playlist.
@@ -109,7 +109,7 @@ namespace XBMCAddon
        * retrieve the item at the given position. A negative index means from the ending 
        * rather than from the start.
        */
-      XBMCAddon::xbmcgui::ListItem* operator[](long i) throw (PlayListException);
+      XBMCAddon::xbmcgui::ListItem* operator[](long i);
     };
   }
 }

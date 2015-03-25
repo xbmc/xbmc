@@ -72,7 +72,7 @@ namespace XBMCAddon
        *  - self.Addon = xbmcaddon.Addon()
        *  - self.Addon = xbmcaddon.Addon('script.foo.bar')
        */
-      Addon(const char* id = NULL) throw (AddonException);
+      Addon(const char* id = NULL);
 
       virtual ~Addon();
 
@@ -128,7 +128,7 @@ namespace XBMCAddon
        * example:
        *   - version = self.Addon.getAddonInfo('version')
        */
-      String getAddonInfo(const char* id) throw (AddonException);
+      String getAddonInfo(const char* id);
     };
   }
 }

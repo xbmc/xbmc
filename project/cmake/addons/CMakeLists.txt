@@ -69,7 +69,14 @@ set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                -DCMAKE_USER_MAKE_RULES_OVERRIDE=${CMAKE_USER_MAKE_RULES_OVERRIDE}
                -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX=${CMAKE_USER_MAKE_RULES_OVERRIDE_CXX}
                -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
-               -DBUILD_SHARED_LIBS=1)
+               -DBUILD_SHARED_LIBS=1
+               -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+               -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS})
+
+if(MSVC)
+  # move cmake specific targets to a CMakePredefinedTargets folder in Visual Studio
+  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+endif()
 
 if(PACKAGE_ZIP)
   # needed for project installing
@@ -90,6 +97,10 @@ else()
   separate_arguments(ADDONS_TO_BUILD)
 endif()
 
+if(ADDON_SRC_PREFIX)
+  message(STATUS "Overriding addon source directory prefix: ${ADDON_SRC_PREFIX}")
+endif()
+
 if(NOT KODI_LIB_DIR)
   set(KODI_LIB_DIR "${DEPENDS_PATH}/lib/kodi")
 else()
@@ -107,6 +118,15 @@ endif()
 
 # include check_target_platform() function
 include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
+
+# check install permissions
+set(ADDON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+check_install_permissions(${CMAKE_INSTALL_PREFIX} can_write)
+if(NOT ${can_write} AND NOT WIN32)
+  set(NEED_SUDO TRUE)
+  set(ADDON_INSTALL_DIR ${CMAKE_BINARY_DIR}/.install)
+  message(STATUS "NEED_SUDO: ${NEED_SUDO}")
+endif()
 
 ### prepare the build environment for the binary addons
 # copy the prepare-env.cmake script to the depends path so that we can include it
@@ -149,70 +169,132 @@ foreach(addon ${addons})
         list(GET def 1 url)
 
         set(archive_name ${id})
+        if(ADDON_SRC_PREFIX)
+          set(SOURCE_DIR ${ADDON_SRC_PREFIX}/${id})
+          set(archive_name "")
+        else()
+          set(SOURCE_DIR "")
+        endif()
 
-          # if there is a 3rd parameter in the file, we consider it a git revision
-        if(deflength GREATER 2)
+        # if there is a 3rd parameter in the file, we consider it a git revision
+        if(deflength GREATER 2 AND "${SOURCE_DIR}" STREQUAL "")
           list(GET def 2 revision)
 
           # Note: downloading specific revisions via http in the format below is probably github specific
           # if we ever use other repositories, this might need adapting
           set(url ${url}/archive/${revision}.tar.gz)
           set(archive_name ${archive_name}-${revision})
+        elseif("${SOURCE_DIR}" STREQUAL "")
+          # check if the URL starts with file://
+          string(REGEX MATCH "^file://.*$" local_url "${url}")
+
+          #if not we assume this to be a local directory
+          if(local_url)
+            # this is not an archive
+            set(archive_name "")
+
+            # remove the file:// protocol from the URL
+            string(REPLACE "file://" "" SOURCE_DIR "${url}")
+
+            # on win32 we may have to remove another leading /
+            if(WIN32)
+              # check if the path is a local path
+              string(REGEX MATCH "^/.*$" local_path "${SOURCE_DIR}")
+              if(local_path)
+                string(SUBSTRING "${SOURCE_DIR}" 1 -1 SOURCE_DIR)
+              endif()
+            endif()
+          endif()
         endif()
 
-        # download and extract the addon
-        if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
-          # cleanup any of the previously downloaded archives of this addon
-          file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
-          if(archives)
-            message(STATUS "Removing old archives of ${id}: ${archives}")
-            file(REMOVE ${archives})
+        # download the addon if necessary
+        if(NOT "${archive_name}" STREQUAL "")
+          # download and extract the addon
+          if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
+            # cleanup any of the previously downloaded archives of this addon
+            file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
+            if(archives)
+              message(STATUS "Removing old archives of ${id}: ${archives}")
+              file(REMOVE ${archives})
+            endif()
+
+            # download the addon
+            file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${archive_name}.tar.gz" STATUS dlstatus LOG dllog SHOW_PROGRESS)
+            list(GET dlstatus 0 retcode)
+            if(NOT ${retcode} EQUAL 0)
+              message(FATAL_ERROR "ERROR downloading ${url} - status: ${dlstatus} log: ${dllog}")
+            endif()
           endif()
 
-          # download the addon
-          file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${archive_name}.tar.gz" STATUS dlstatus LOG dllog SHOW_PROGRESS)
-          list(GET dlstatus 0 retcode)
-          if(NOT ${retcode} EQUAL 0)
-            message(FATAL_ERROR "ERROR downloading ${url} - status: ${dlstatus} log: ${dllog}")
+          # remove any previously extracted version of the addon
+          if(EXISTS "${BUILD_DIR}/${id}")
+            file(REMOVE_RECURSE "${BUILD_DIR}/${id}")
           endif()
+
+          # extract the addon from the archive
+          execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${BUILD_DIR}/download/${archive_name}.tar.gz
+                          WORKING_DIRECTORY ${BUILD_DIR})
+          file(GLOB extract_dir "${BUILD_DIR}/${archive_name}*")
+          if(extract_dir STREQUAL "")
+            message(FATAL_ERROR "${id}: error extracting ${BUILD_DIR}/download/${archive_name}.tar.gz")
+          else()
+            file(RENAME "${extract_dir}" "${BUILD_DIR}/${id}")
+          endif()
+
+          set(SOURCE_DIR ${BUILD_DIR}/${id})
         endif()
 
-        # remove any previously extracted version of the addon
-        if(EXISTS "${BUILD_DIR}/${id}")
-          file(REMOVE_RECURSE "${BUILD_DIR}/${id}")
-        endif()
+        if(NOT "${SOURCE_DIR}" STREQUAL "" AND EXISTS ${SOURCE_DIR})
+          # create a list of addons we are building
+          list(APPEND ALL_ADDONS_BUILDING ${id})
 
-        # extract the addon from the archive
-        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzvf ${BUILD_DIR}/download/${archive_name}.tar.gz
-                        WORKING_DIRECTORY ${BUILD_DIR})
-        file(GLOB extract_dir "${BUILD_DIR}/${archive_name}*")
-        if(extract_dir STREQUAL "")
-          message(FATAL_ERROR "Error extracting ${BUILD_DIR}/download/${archive_name}.tar.gz")
+          # setup the buildsystem for the addon
+          externalproject_add(${id}
+                              SOURCE_DIR ${SOURCE_DIR}
+                              INSTALL_DIR ${ADDON_INSTALL_DIR}
+                              CMAKE_ARGS ${BUILD_ARGS})
+
+          # add a custom step to the external project between the configure and the build step which will always
+          # be executed and therefore forces a re-build of all changed files
+          externalproject_add_step(${id} forcebuild
+                                   COMMAND ${CMAKE_COMMAND} -E echo "Force build of ${id}"
+                                   DEPENDEES configure
+                                   DEPENDERS build
+                                   ALWAYS 1)
+
+          # add "kodi-platform" as a dependency to every addon
+          add_dependencies(${id} kodi-platform)
+
+          set(${id}_DEPENDS_DIR ${SOURCE_DIR}/depends)
+
+          if(EXISTS ${${id}_DEPENDS_DIR})
+            include(${APP_ROOT}/project/cmake/scripts/common/handle-depends.cmake)
+            add_addon_depends(${id} ${${id}_DEPENDS_DIR})
+            if(${id}_DEPS AND NOT "${${id}_DEPS}" STREQUAL "")
+              message(STATUS "${id} DEPENDENCIES: ${${id}_DEPS}")
+              add_dependencies(${id} ${${id}_DEPS})
+            endif()
+          endif()
         else()
-          file(RENAME "${extract_dir}" "${BUILD_DIR}/${id}")
+          message(FATAL_ERROR "${id}: invalid or missing addon source directory at ${SOURCE_DIR}")
         endif()
-
-        list(APPEND downloaded_addons ${id})
-
+      else()
+        # add a dummy target for addons that are unsupported on this platform
+        add_custom_target(${id} COMMAND ${CMAKE_COMMAND} -E echo "IGNORED ${id} - not supported on ${CORE_SYSTEM_NAME}\n")
       endif()
     endif()
   endif()
 endforeach()
 
-foreach(id ${downloaded_addons})
-  externalproject_add(${id}
-                      SOURCE_DIR ${BUILD_DIR}/${id}
-                      INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
-                      CMAKE_ARGS ${BUILD_ARGS})
+if(NEED_SUDO)
+  add_custom_target(install
+                    COMMAND ${CMAKE_COMMAND} -E echo "\n\n"
+                    COMMAND ${CMAKE_COMMAND} -E echo "WARNING: sudo rights needed to install to ${CMAKE_INSTALL_PREFIX}\n"
+                    COMMAND sudo ${CMAKE_COMMAND} -E copy_directory ${ADDON_INSTALL_DIR}/ ${CMAKE_INSTALL_PREFIX}/
+                    COMMAND sudo ${CMAKE_COMMAND} -E remove_directory ${ADDON_INSTALL_DIR}/
+                    COMMAND sudo -k)
+endif()
 
-  set(${id}_DEPENDS_DIR ${BUILD_DIR}/${id}/depends)
-
-  if(EXISTS ${${id}_DEPENDS_DIR})
-    include(${APP_ROOT}/project/cmake/scripts/common/handle-depends.cmake)
-    add_addon_depends(${id} ${${id}_DEPENDS_DIR})
-    if (${id}_DEPS AND NOT "${${id}_DEPS}" STREQUAL "")
-      message(STATUS "${id} DEPENDENCIES: ${${id}_DEPS}")
-      add_dependencies(${id} ${${id}_DEPS})
-    endif()
-  endif()
-endforeach()
+# add custom target "supported_addons" that returns all addons that are supported on this platform
+string(REPLACE ";" " " ALL_ADDONS_BUILDING "${ALL_ADDONS_BUILDING}")
+add_custom_target(supported_addons COMMAND ${CMAKE_COMMAND} -E echo "ALL_ADDONS_BUILDING: ${ALL_ADDONS_BUILDING}" VERBATIM)

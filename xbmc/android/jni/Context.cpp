@@ -51,7 +51,6 @@
 using namespace jni;
 
 jhobject CJNIContext::m_context(0);
-CJNIContext* CJNIContext::m_appInstance(NULL);
 
 CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
 {
@@ -59,12 +58,10 @@ CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
   xbmc_jni_on_load(nativeActivity->vm, nativeActivity->env);
   CJNIBase::SetSDKVersion(nativeActivity->sdkVersion);
   PopulateStaticFields();
-  m_appInstance = this;
 }
 
 CJNIContext::~CJNIContext()
 {
-  m_appInstance = NULL;
   xbmc_jni_on_unload();
 }
 
@@ -199,12 +196,4 @@ CJNIWindow CJNIContext::getWindow()
 {
   return call_method<jhobject>(m_context,
     "getWindow", "()Landroid/view/Window;");
-}
-
-void CJNIContext::_onNewIntent(JNIEnv *env, jobject context, jobject intent)
-{
-  (void)env;
-  (void)context;
-  if(m_appInstance)
-    m_appInstance->onNewIntent(CJNIIntent(jhobject(intent)));
 }

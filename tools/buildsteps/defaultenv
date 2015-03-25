@@ -4,11 +4,12 @@ NDK_VERSION=${NDK_VERSION:-"Default"}
 Configuration=${Configuration:-"Default"}
 XBMC_DEPENDS_ROOT=${XBMC_DEPENDS_ROOT:-"Default"}
 PATH_CHANGE_REV_FILENAME=".last_success_revision"
+FAILED_BUILD_FILENAME=".last_failed_revision"
 #TARBALLS ENV-VAR is only used by android scripts atm
 TARBALLS=${TARBALLS:-"/opt/xbmc-tarballs"}
 
 BINARY_ADDONS_ROOT=tools/depends/target
-BINARY_ADDONS="xbmc-audioencoder-addons xbmc-pvr-addons"
+BINARY_ADDONS="binary-addons"
 DEPLOYED_BINARY_ADDONS="-e addons"
 
 #set platform defaults
@@ -39,7 +40,7 @@ case $XBMC_PLATFORM_DIR in
     ;;
 
   android)
-    DEFAULT_SDK_VERSION="14"
+    DEFAULT_SDK_VERSION="17"
     DEFAULT_NDK_VERSION="10d"
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
@@ -126,6 +127,16 @@ function tagSuccessFulBuild ()
   # tag last successful build with revisions of the given dir
   # needs to match the checks in function getBuildHash
   echo "$(getBuildHash $pathToTag)" > $pathToTag/$PATH_CHANGE_REV_FILENAME
+}
+
+#param1 path to be tagged with hash
+function tagFailedBuild ()
+{
+  local pathToTag
+  pathToTag="$1"
+  # tag last failed build with revisions of the given dir
+  # needs to match the checks in function getBuildHash
+  echo "$(getBuildHash $pathToTag)" > $pathToTag/$FAILED_BUILD_FILENAME
 }
 
 function getBranchName ()

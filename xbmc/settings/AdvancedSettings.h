@@ -19,6 +19,7 @@
  *
  */
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -50,6 +51,7 @@ public:
     ca.clear();
     capath.clear();
     ciphers.clear();
+    compression = false;
   };
   std::string type;
   std::string host;
@@ -62,6 +64,7 @@ public:
   std::string ca;
   std::string capath;
   std::string ciphers;
+  bool compression;
 };
 
 struct TVShowRegexp
@@ -261,7 +264,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_musicThumbs;
     std::string m_fanartImages;
 
-    bool m_bMusicLibraryHideAllItems;
     int m_iMusicLibraryRecentlyAddedItems;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
@@ -273,7 +275,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_videoItemSeparator;
     std::vector<std::string> m_musicTagsFromFileFilters;
 
-    bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
     int m_iVideoLibraryRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
@@ -286,21 +287,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVideoScannerIgnoreErrors;
     int m_iVideoLibraryDateAdded;
 
-    std::vector<std::string> m_vecTokens; // cleaning strings tied to language
-    //TuxBox
-    int m_iTuxBoxStreamtsPort;
-    bool m_bTuxBoxSubMenuSelection;
-    int m_iTuxBoxDefaultSubMenu;
-    int m_iTuxBoxDefaultRootMenu;
-    bool m_bTuxBoxAudioChannelSelection;
-    bool m_bTuxBoxPictureIcon;
-    int m_iTuxBoxEpgRequestTime;
-    int m_iTuxBoxZapWaitTime;
-    bool m_bTuxBoxSendAllAPids;
-    bool m_bTuxBoxZapstream;
-    int m_iTuxBoxZapstreamPort;
-
-    int m_iMythMovieLength;         // minutes
+    std::set<std::string> m_vecTokens;
 
     int m_iEpgLingerTime;           // minutes
     int m_iEpgUpdateCheckInterval;  // seconds
@@ -394,11 +381,13 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float GetDisplayLatency(float refreshrate);
     bool m_initialized;
 
+    //! \brief Returns a list of music extension for filtering in the GUI
+    std::string GetMusicExtensions() const;
+
     void SetDebugMode(bool debug);
 
     // runtime settings which cannot be set from advancedsettings.xml
     std::string m_pictureExtensions;
-    std::string m_musicExtensions;
     std::string m_videoExtensions;
     std::string m_discStubExtensions;
     std::string m_subtitlesExtensions;
@@ -412,6 +401,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_userAgent;
 
   private:
+    std::string m_musicExtensions;
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 

@@ -1,0 +1,1 @@
+audiodecoder.modplug https://github.com/notspiff/audiodecoder.modplug c7e8ca8

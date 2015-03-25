@@ -1042,7 +1042,8 @@ void CWinRenderer::RenderProcessor(DWORD flags)
   IDirect3DSurface9* target;
   if ( m_bUseHQScaler 
     || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
-    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
+    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
   {
     m_IntermediateTarget.GetSurfaceLevel(0, &target);
   }
@@ -1107,7 +1108,8 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     Stage2();
   }
   else if ( g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
-         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
+         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
   {
     IDirect3DDevice9 *pD3DDev = g_Windowing.Get3DDevice();
 

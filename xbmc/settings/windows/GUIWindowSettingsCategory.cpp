@@ -21,7 +21,7 @@
 #include "GUIWindowSettingsCategory.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/SettingSection.h"

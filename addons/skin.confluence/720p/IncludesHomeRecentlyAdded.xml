@@ -7,8 +7,8 @@
 			<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>
 			<visible>!Window.IsVisible(Favourites)</visible>
 			<include>VisibleFadeEffect</include>
-			<animation effect="fade" time="300" delay="1000">WindowOpen</animation>
-			<animation effect="fade" time="200">WindowClose</animation>
+			<animation effect="fade" time="225" delay="750">WindowOpen</animation>
+			<animation effect="fade" time="150">WindowClose</animation>
 			<control type="group">
 				<left>190</left>
 				<top>50</top>
@@ -140,7 +140,7 @@
 					<content>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.1.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.1.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.1.Thumb)]</icon>
 							<thumb>-</thumb>
@@ -148,7 +148,7 @@
 						</item>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.2.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.2.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.2.Thumb)]</icon>
 							<thumb>-</thumb>
@@ -156,7 +156,7 @@
 						</item>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.3.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.3.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.3.Thumb)]</icon>
 							<thumb>-</thumb>
@@ -164,7 +164,7 @@
 						</item>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.4.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.4.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.4.Thumb)]</icon>
 							<thumb>-</thumb>
@@ -172,7 +172,7 @@
 						</item>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.5.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.5.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.5.Thumb)]</icon>
 							<thumb>-</thumb>
@@ -180,7 +180,7 @@
 						</item>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.6.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.6.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.6.Thumb)]</icon>
 							<thumb>-</thumb>
@@ -188,7 +188,7 @@
 						</item>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.7.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.7.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.7.Thumb)]</icon>
 							<thumb>-</thumb>
@@ -196,7 +196,7 @@
 						</item>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.8.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.8.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.8.Thumb)]</icon>
 							<thumb>-</thumb>
@@ -204,7 +204,7 @@
 						</item>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.9.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.9.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.9.Thumb)]</icon>
 							<thumb>-</thumb>
@@ -212,7 +212,7 @@
 						</item>
 						<item>
 							<label>$INFO[Window.Property(LatestMovie.10.Title)]</label>
-							<label2/>
+							<label2 />
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.10.Path)])</onclick>
 							<icon>$INFO[Window.Property(LatestMovie.10.Thumb)]</icon>
 							<thumb>-</thumb>

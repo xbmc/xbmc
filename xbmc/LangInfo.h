@@ -20,9 +20,15 @@
  */
 
 #include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
+#include "utils/Locale.h"
+#include "utils/Speed.h"
+#include "utils/Temperature.h"
 
 #include <map>
+#include <memory>
+#include <set>
 #include <string>
 #include <vector>
 #include <locale>
@@ -38,15 +44,39 @@
 
 class TiXmlNode;
 
-class CLangInfo : public ISettingCallback
+namespace ADDON
+{
+  class CLanguageResource;
+}
+typedef std::shared_ptr<ADDON::CLanguageResource> LanguageResourcePtr;
+
+typedef enum MeridiemSymbol
+{
+  MeridiemSymbolPM = 0,
+  MeridiemSymbolAM
+} MeridiemSymbol;
+
+class CLangInfo : public ISettingCallback, public ISettingsHandler
 {
 public:
   CLangInfo();
   virtual ~CLangInfo();
 
+  // implementation of ISettingCallback
   virtual void OnSettingChanged(const CSetting *setting);
 
-  bool Load(const std::string& strFileName, bool onlyCheckLanguage = false);
+  // implementation of ISettingsHandler
+  virtual void OnSettingsLoaded();
+
+  bool Load(const std::string& strLanguage);
+
+  /*!
+   \brief Returns the language addon for the given locale (or the current one).
+
+   \param locale (optional) Locale of the language (current if empty)
+   \return Language addon for the given locale or NULL if the locale is invalid.
+   */
+  LanguageResourcePtr GetLanguageAddon(const std::string& locale = "") const;
 
   std::string GetGuiCharSet() const;
   std::string GetSubtitleCharSet() const;
@@ -54,8 +84,30 @@ public:
   // three char language code (not win32 specific)
   const std::string& GetLanguageCode() const { return m_languageCodeGeneral; }
 
-  bool SetLanguage(const std::string &strLanguage);
-  bool CheckLoadLanguage(const std::string &language);
+  /*!
+   \brief Returns the given language's name in English
+
+   \param locale (optional) Locale of the language (current if empty)
+   */
+  std::string GetEnglishLanguageName(const std::string& locale = "") const;
+
+  /*!
+  \brief Sets and loads the given (or configured) language, its details and strings.
+
+  \param strLanguage (optional) Language to be loaded.
+  \param reloadServices (optional) Whether to reload services relying on localization.
+  \return True if the language has been successfully loaded, false otherwise.
+  */
+  bool SetLanguage(const std::string &strLanguage = "", bool reloadServices = true);
+  /*!
+   \brief Sets and loads the given (or configured) language, its details and strings.
+
+   \param fallback Whether the fallback language has been loaded instead of the given language.
+   \param strLanguage (optional) Language to be loaded.
+   \param reloadServices (optional) Whether to reload services relying on localization.
+   \return True if the language has been successfully loaded, false otherwise.
+   */
+  bool SetLanguage(bool& fallback, const std::string &strLanguage = "", bool reloadServices = true);
 
   const std::string& GetAudioLanguage() const;
   // language can either be a two char language code as defined in ISO639
@@ -78,76 +130,74 @@ public:
   const std::string& GetRegionLocale() const;
 
   /*!
-   \brief Returns the two character ISO 639-1 language code of the current language.
+  \brief Returns the full locale of the current language.
+  */
+  const CLocale& GetLocale() const;
+
+  /*!
+   \brief Returns the system's current locale.
    */
-  const std::string& GetLanguageLocale() const;
+  const std::locale& GetSystemLocale() const { return m_systemLocale; }
 
-  bool ForceUnicodeFont() const { return m_currentRegion->m_forceUnicodeFont; }
+  bool ForceUnicodeFont() const { return m_forceUnicodeFont; }
 
-  const std::string& GetDateFormat(bool bLongDate=false) const;
-
-  typedef enum _MERIDIEM_SYMBOL
-  {
-    MERIDIEM_SYMBOL_PM=0,
-    MERIDIEM_SYMBOL_AM,
-    MERIDIEM_SYMBOL_MAX
-  } MERIDIEM_SYMBOL;
+  const std::string& GetDateFormat(bool bLongDate = false) const;
+  void SetDateFormat(const std::string& dateFormat, bool bLongDate = false);
+  const std::string& GetShortDateFormat() const;
+  void SetShortDateFormat(const std::string& shortDateFormat);
+  const std::string& GetLongDateFormat() const;
+  void SetLongDateFormat(const std::string& longDateFormat);
 
   const std::string& GetTimeFormat() const;
-  const std::string& GetMeridiemSymbol(MERIDIEM_SYMBOL symbol) const;
+  void SetTimeFormat(const std::string& timeFormat);
+  bool Use24HourClock() const;
+  void Set24HourClock(bool use24HourClock);
+  void Set24HourClock(const std::string& str24HourClock);
+  const std::string& GetMeridiemSymbol(MeridiemSymbol symbol) const;
 
-  typedef enum _TEMP_UNIT
-  {
-    TEMP_UNIT_FAHRENHEIT=0,
-    TEMP_UNIT_KELVIN,
-    TEMP_UNIT_CELSIUS,
-    TEMP_UNIT_REAUMUR,
-    TEMP_UNIT_RANKINE,
-    TEMP_UNIT_ROMER,
-    TEMP_UNIT_DELISLE,
-    TEMP_UNIT_NEWTON
-  } TEMP_UNIT;
+  CTemperature::Unit GetTemperatureUnit() const;
+  void SetTemperatureUnit(CTemperature::Unit temperatureUnit);
+  void SetTemperatureUnit(const std::string& temperatureUnit);
+  const std::string& GetTemperatureUnitString() const;
+  static const std::string& GetTemperatureUnitString(CTemperature::Unit temperatureUnit);
+  std::string GetTemperatureAsString(const CTemperature& temperature) const;
 
-  const std::string& GetTempUnitString() const;
-  CLangInfo::TEMP_UNIT GetTempUnit() const;
-
-
-  typedef enum _SPEED_UNIT
-  {
-    SPEED_UNIT_KMH=0, // kilemetre per hour
-    SPEED_UNIT_MPMIN, // metres per minute
-    SPEED_UNIT_MPS, // metres per second
-    SPEED_UNIT_FTH, // feet per hour
-    SPEED_UNIT_FTMIN, // feet per minute
-    SPEED_UNIT_FTS, // feet per second
-    SPEED_UNIT_MPH, // miles per hour
-    SPEED_UNIT_KTS, // knots
-    SPEED_UNIT_BEAUFORT, // beaufort
-    SPEED_UNIT_INCHPS, // inch per second
-    SPEED_UNIT_YARDPS, // yard per second
-    SPEED_UNIT_FPF // Furlong per Fortnight
-  } SPEED_UNIT;
-
+  CSpeed::Unit GetSpeedUnit() const;
+  void SetSpeedUnit(CSpeed::Unit speedUnit);
+  void SetSpeedUnit(const std::string& speedUnit);
   const std::string& GetSpeedUnitString() const;
-  CLangInfo::SPEED_UNIT GetSpeedUnit() const;
+  static const std::string& GetSpeedUnitString(CSpeed::Unit speedUnit);
+  std::string GetSpeedAsString(const CSpeed& speed) const;
 
   void GetRegionNames(std::vector<std::string>& array);
   void SetCurrentRegion(const std::string& strName);
   const std::string& GetCurrentRegion() const;
 
-  const std::locale& GetLocale() const
-  { return m_locale; }
+  std::set<std::string> GetSortTokens() const;
 
-  static bool CheckLanguage(const std::string& language);
+  static std::string GetLanguagePath() { return "resource://"; }
+  static std::string GetLanguagePath(const std::string &language);
+  static std::string GetLanguageInfoPath(const std::string &language);
 
-  static void LoadTokens(const TiXmlNode* pTokens, std::vector<std::string>& vecTokens);
+  static void LoadTokens(const TiXmlNode* pTokens, std::set<std::string>& vecTokens);
 
-  static void SettingOptionsLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsLanguageNamesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsISO6391LanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsShortDateFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsLongDateFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsTimeFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptions24HourClockFormatsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsTemperatureUnitsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsSpeedUnitsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
 protected:
   void SetDefaults();
+
+  static bool DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat);
+  static bool DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat);
+  static std::string PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock);
 
   class CRegion
   {
@@ -156,28 +206,22 @@ protected:
     CRegion();
     virtual ~CRegion();
     void SetDefaults();
-    void SetTempUnit(const std::string& strUnit);
+    void SetTemperatureUnit(const std::string& strUnit);
     void SetSpeedUnit(const std::string& strUnit);
     void SetTimeZone(const std::string& strTimeZone);
     void SetGlobalLocale();
-    std::string m_strGuiCharSet;
-    std::string m_strSubtitleCharSet;
-    std::string m_strDVDMenuLanguage;
-    std::string m_strDVDAudioLanguage;
-    std::string m_strDVDSubtitleLanguage;
     std::string m_strLangLocaleName;
     std::string m_strLangLocaleCodeTwoChar;
     std::string m_strRegionLocaleName;
-    bool m_forceUnicodeFont;
     std::string m_strName;
     std::string m_strDateFormatLong;
     std::string m_strDateFormatShort;
     std::string m_strTimeFormat;
-    std::string m_strMeridiemSymbols[MERIDIEM_SYMBOL_MAX];
+    std::string m_strMeridiemSymbols[2];
     std::string m_strTimeZone;
 
-    TEMP_UNIT m_tempUnit;
-    SPEED_UNIT m_speedUnit;
+    CTemperature::Unit m_tempUnit;
+    CSpeed::Unit m_speedUnit;
   };
 
 
@@ -187,7 +231,24 @@ protected:
   MAPREGIONS m_regions;
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
-  std::locale m_locale;     // current locale, matching GUI settings
+  std::locale m_systemLocale;     // current locale, matching GUI settings
+
+  LanguageResourcePtr m_languageAddon;
+
+  std::string m_strGuiCharSet;
+  bool m_forceUnicodeFont;
+  std::string m_strSubtitleCharSet;
+  std::string m_strDVDMenuLanguage;
+  std::string m_strDVDAudioLanguage;
+  std::string m_strDVDSubtitleLanguage;
+  std::set<std::string> m_sortTokens;
+
+  std::string m_shortDateFormat;
+  std::string m_longDateFormat;
+  std::string m_timeFormat;
+  bool m_use24HourClock;
+  CTemperature::Unit m_temperatureUnit;
+  CSpeed::Unit m_speedUnit;
 
   std::string m_audioLanguage;
   std::string m_subtitleLanguage;

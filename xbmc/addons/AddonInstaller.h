@@ -43,23 +43,25 @@ public:
   bool GetProgress(const std::string &addonID, unsigned int &percent) const;
   bool Cancel(const std::string &addonID);
 
-  /*! \brief Prompt the user as to whether they wish to install an addon.
+  /*! \brief Installs the addon while showing a modal progress dialog
    \param addonID the addon ID of the item to install.
    \param addon [out] the installed addon for later use.
+   \param promptForInstall Whether or not to prompt the user before installing the addon.
    \return true on successful install, false otherwise.
    \sa Install
    */
-  bool PromptForInstall(const std::string &addonID, ADDON::AddonPtr &addon);
+  bool InstallModal(const std::string &addonID, ADDON::AddonPtr &addon, bool promptForInstall = true);
 
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install
    \param force whether to force the install even if the addon is already installed (eg for updating). Defaults to false.
    \param referer string to use for referer for http fetch. Set to previous version when updating, parent when fetching a dependency
    \param background whether to install in the background or not. Defaults to true.
+   \param modal whether to show a modal dialog when not installing in background
    \return true on successful install, false on failure.
    \sa DoInstall
    */
-  bool Install(const std::string &addonID, bool force = false, const std::string &referer="", bool background = true);
+  bool Install(const std::string &addonID, bool force = false, const std::string &referer="", bool background = true, bool modal = false);
 
   /*! \brief Install an addon from the given zip path
    \param path the zip file to install from
@@ -117,7 +119,7 @@ public:
     unsigned int progress;
   };
 
-  typedef std::map<std::string,CDownloadJob> JobMap;
+  typedef std::map<std::string, CDownloadJob> JobMap;
 
 private:
   // private construction, and no assignements; use the provided singleton methods
@@ -134,7 +136,7 @@ private:
    \param background whether to install in the background or not. Defaults to true.
    \return true on successful install, false on failure.
    */
-  bool DoInstall(const ADDON::AddonPtr &addon, const std::string &hash = "", bool update = false, const std::string &referer = "", bool background = true);
+  bool DoInstall(const ADDON::AddonPtr &addon, const std::string &hash = "", bool update = false, const std::string &referer = "", bool background = true, bool modal = false);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -144,8 +146,7 @@ private:
    \param database database instance to update
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon,
-                         std::vector<std::string>& preDeps, CAddonDatabase &database);
+  bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database);
 
   void PrunePackageCache();
   int64_t EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result);
@@ -169,27 +170,39 @@ public:
    */
   std::string AddonID() const;
 
-  /*! \brief Delete an addon following install failure
-   \param addonFolder - the folder to delete
-   */
-  static bool DeleteAddon(const std::string &addonFolder);
-
   /*! \brief Find which repository hosts an add-on
    *  \param addon The add-on to find the repository for
    *  \return The hosting repository
    */
   static ADDON::AddonPtr GetRepoForAddon(const ADDON::AddonPtr& addon);
+
+  /*! \brief Find the add-on and itshash for the given add-on ID
+   *  \param addonID ID of the add-on to find
+   *  \param addon Add-on with the given add-on ID
+   *  \param hash Hash of the add-on
+   *  \return True if the add-on and its hash were found, false otherwise.
+   */
+  static bool GetAddonWithHash(const std::string& addonID, ADDON::AddonPtr& addon, std::string& hash);
+
 private:
   bool OnPreInstall();
   void OnPostInstall(bool reloadAddon);
-  bool Install(const std::string &installFrom, const ADDON::AddonPtr& repo=ADDON::AddonPtr());
+  bool Install(const std::string &installFrom, const ADDON::AddonPtr& repo = ADDON::AddonPtr());
   bool DownloadPackage(const std::string &path, const std::string &dest);
+
+  /*! \brief Delete an addon following install failure
+   \param addonFolder - the folder to delete
+   */
+  bool DeleteAddon(const std::string &addonFolder);
+
+  bool DoFileOperation(FileAction action, CFileItemList &items, const std::string &file, bool useSameJob = true);
 
   /*! \brief Queue a notification for addon installation/update failure
    \param addonID - addon id
    \param fileName - filename which is shown in case the addon id is unknown
+   \param message - error message to be displayed
    */
-  void ReportInstallError(const std::string& addonID, const std::string& fileName);
+  void ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message = "");
 
   ADDON::AddonPtr m_addon;
   std::string m_hash;
@@ -203,7 +216,13 @@ public:
   CAddonUnInstallJob(const ADDON::AddonPtr &addon);
 
   virtual bool DoWork();
+
 private:
+  /*! \brief Delete an addon following install failure
+   \param addonFolder - the folder to delete
+   */
+  bool DeleteAddon(const std::string &addonFolder);
+
   void OnPostUnInstall();
 
   ADDON::AddonPtr m_addon;

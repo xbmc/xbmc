@@ -32,6 +32,7 @@
 #include "interfaces/json-rpc/JSONRPC.h"
 #endif
 #include "interfaces/Builtins.h"
+#include "utils/log.h"
 #include "utils/Weather.h"
 #include "utils/StringUtils.h"
 #include "network/Network.h"
@@ -43,11 +44,12 @@
 #include "dialogs/GUIDialogOK.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "addons/AddonManager.h"
 #include "view/ViewState.h"
 #include "pvr/PVRManager.h"
+#include "ContextMenuManager.h"
 
 #define CONTROL_BIG_LIST               52
 #define CONTROL_LABEL_HEADER            2
@@ -220,19 +222,21 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
 
-  bool bSelect = m_vecItems->Get(iItem)->IsSelected();
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
+  bool bSelect = pItem->IsSelected();
   // mark the item
-  m_vecItems->Get(iItem)->Select(true);
+  pItem->Select(true);
 
   CContextButtons choices;
   choices.Add(1, 20067);
-/*  if (m_viewControl.GetSelectedItem() != 0) // no deleting the default profile
-    choices.Add(2, 117); */
+
   if (iItem == 0 && g_passwordManager.iMasterLockRetriesLeft == 0)
-    choices.Add(3, 12334);
+    choices.Add(2, 12334);
+
+  CContextMenuManager::Get().AddVisibleItems(pItem, choices);
 
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-  if (choice == 3)
+  if (choice == 2)
   {
     if (g_passwordManager.CheckLock(CProfilesManager::Get().GetMasterProfile().getLockMode(),CProfilesManager::Get().GetMasterProfile().getLockCode(),20075))
       g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries");
@@ -241,26 +245,18 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 
     return true;
   }
-  
-  if (!g_passwordManager.IsMasterLockUnlocked(true))
-    return false;
 
-  if (choice == 1)
+  // Edit the profile after checking if the correct master lock password was given.
+  if (choice == 1 && g_passwordManager.IsMasterLockUnlocked(true))
     CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
-  if (choice == 2)
-  {
-    int iDelete = m_viewControl.GetSelectedItem();
-    m_viewControl.Clear();
-    if (iDelete >= 0)
-      CProfilesManager::Get().DeleteProfile((size_t)iDelete);
-    Update();
-    m_viewControl.SetSelectedItem(0);
-  }
+  
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
   if (iItem < (int)CProfilesManager::Get().GetNumberOfProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
 
-  return (choice > 0);
+  if (choice >= CONTEXT_BUTTON_FIRST_ADDON)
+    return CContextMenuManager::Get().Execute(choice, pItem);
+  return false;
 }
 
 CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
@@ -307,8 +303,18 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
   ADDON::CAddonMgr::Get().ReInit();
 
+  bool fallbackLanguage = false;
+  if (!g_application.LoadLanguage(true, fallbackLanguage))
+  {
+    CLog::Log(LOGFATAL, "CGUIWindowLoginScreen: unable to load language for profile \"%s\"", CProfilesManager::Get().GetCurrentProfile().getName().c_str());
+    return;
+  }
+
   g_weatherManager.Refresh();
   g_application.SetLoggingIn(true);
+
+  if (fallbackLanguage)
+    CGUIDialogOK::ShowAndGetInput("Failed to load language", "We were unable to load your configured language. Please check your language settings.");
 
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();

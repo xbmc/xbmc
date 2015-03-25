@@ -127,7 +127,8 @@ public:
 
   int GetChapter()      { return m_iPart; }      // the current part in the current title
   int GetChapterCount() { return m_iPartCount; } // the number of parts in the current title
-  void GetChapterName(std::string& name) {};
+  void GetChapterName(std::string& name, int idx=-1) {};
+  int64_t GetChapterPos(int ch=-1);
   bool SeekChapter(int iChapter);
 
   int GetTotalTime(); // the total time in milli seconds
@@ -193,5 +194,7 @@ protected:
 
   uint8_t m_lastblock[DVD_VIDEO_BLOCKSIZE];
   int     m_lastevent;
+
+  std::map<int, std::map<int, int64_t>> m_mapTitleChapters;
 };
 

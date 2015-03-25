@@ -245,7 +245,7 @@ std::string CPVRFile::TranslatePVRFilename(const std::string& pathFile)
           // This function was added to retrieve the stream URL for this item
           // Is is used for the MediaPortal (ffmpeg) PVR addon
           // see PVRManager.cpp
-          return g_PVRClients->GetStreamURL(*channel->GetPVRChannelInfoTag());
+          return g_PVRClients->GetStreamURL(channel->GetPVRChannelInfoTag());
         }
         else
         {

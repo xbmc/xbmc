@@ -26,11 +26,9 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "input/InputManager.h"
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
-#endif
-#ifdef HAS_LIRC
-#include "input/linux/LIRC.h"
 #endif
 #ifndef TARGET_WINDOWS
 #include "linux/XTimeUtils.h"
@@ -49,23 +47,22 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
     for (int i = 1; i < nArgs; i++)
     {
       ParseArg(argv[i]);
-#ifdef HAS_LIRC
       if (strnicmp(argv[i], "-l", 2) == 0 || strnicmp(argv[i], "--lircdev", 9) == 0)
       {
         // check the next arg with the proper value.
-        int next=i+1;
+        int next = i + 1;
         if (next < nArgs)
         {
-          if ((argv[next][0] != '-' ) && (argv[next][0] == '/' ))
+          if ((argv[next][0] != '-') && (argv[next][0] == '/'))
           {
-            g_RemoteControl.setDeviceName(argv[next]);
+            CInputManager::Get().SetRemoteControlName(argv[next]);
             i++;
           }
         }
       }
       else if (strnicmp(argv[i], "-n", 2) == 0 || strnicmp(argv[i], "--nolirc", 8) == 0)
-         g_RemoteControl.setUsed(false);
-#endif
+        CInputManager::Get().DisableRemoteControl();
+
       if (stricmp(argv[i], "-d") == 0)
       {
         if (i + 1 < nArgs)

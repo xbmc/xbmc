@@ -35,8 +35,9 @@
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "GUIUserMessages.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "ContextMenuManager.h"
 
 #define CONTROL_LABELFILES        12
 
@@ -318,6 +319,8 @@ void CGUIWindowMusicPlaylistEditor::GetContextButtons(int itemNumber, CContextBu
     buttons.Add(CONTEXT_BUTTON_CLEAR, 192);
   }
   buttons.Add(CONTEXT_BUTTON_LOAD, 21385);
+
+  CContextMenuManager::Get().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

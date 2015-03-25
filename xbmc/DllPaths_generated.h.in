@@ -30,11 +30,9 @@
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif-@ARCH@.so"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun-@ARCH@.so"
 #define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
-#define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth-@ARCH@.so"
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"
-#define DLL_PATH_LIBAFP        "@AFPCLIENT_SONAME@"
 #define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
 #define DLL_PATH_LIBCEC        "@LIBCEC_SONAME@"
@@ -42,27 +40,6 @@
 #ifndef DLL_PATH_LIBCURL
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
 #endif
-
-/* paplayer */
-#define DLL_PATH_AAC_CODEC     "special://xbmcbin/system/players/paplayer/AACCodec-@ARCH@.so"
-#define DLL_PATH_ADPLUG_CODEC  "special://xbmcbin/system/players/paplayer/adplug-@ARCH@.so"
-#define DLL_PATH_APE_CODEC     "special://xbmcbin/system/players/paplayer/MACDll-@ARCH@.so"
-#define DLL_PATH_ASAP_CODEC    "special://xbmcbin/system/players/paplayer/xbmc_asap-@ARCH@.so"
-#define DLL_PATH_DCA_CODEC     "special://xbmcbin/system/players/paplayer/dcacodec-@ARCH@.so"
-#define DLL_PATH_GYM_CODEC     "special://xbmcbin/system/players/paplayer/gensapu-@ARCH@.so"
-#define DLL_PATH_MID_CODEC     "special://xbmcbin/system/players/paplayer/timidity-@ARCH@.so"
-#define DLL_PATH_MODULE_CODEC  "special://xbmcbin/system/players/paplayer/dumb-@ARCH@.so"
-#define DLL_PATH_MPC_CODEC     "special://xbmcbin/system/players/paplayer/libmpcdec-@ARCH@.so"
-#define DLL_PATH_NSF_CODEC     "special://xbmcbin/system/players/paplayer/nosefart-@ARCH@.so"
-#define DLL_PATH_SID_CODEC     "special://xbmcbin/system/players/paplayer/libsidplay2-@ARCH@.so"
-#define DLL_PATH_SPC_CODEC     "special://xbmcbin/system/players/paplayer/SNESAPU-@ARCH@.so"
-#define DLL_PATH_VGM_CODEC     "special://xbmcbin/system/players/paplayer/vgmstream-@ARCH@.so"
-#define DLL_PATH_WAVPACK_CODEC "@WAVPACK_SONAME@"
-#define DLL_PATH_YM_CODEC      "special://xbmcbin/system/players/paplayer/stsoundlibrary-@ARCH@.so"
-
-#define DLL_PATH_FLAC_CODEC    "@FLAC_SONAME@"
-#define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
-#define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"

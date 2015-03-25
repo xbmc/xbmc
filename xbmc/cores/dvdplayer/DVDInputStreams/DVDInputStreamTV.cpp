@@ -19,10 +19,7 @@
  */
 
 #include "DVDInputStreamTV.h"
-#include "filesystem/MythFile.h"
-#include "filesystem/VTPFile.h"
 #include "pvr/channels/PVRChannel.h"
-#include "filesystem/VTPFile.h"
 #include "filesystem/SlingboxFile.h"
 #include "URL.h"
 
@@ -50,23 +47,11 @@ bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
 {
   if (!CDVDInputStream::Open(strFile, content)) return false;
 
-  if(strncmp(strFile, "vtp://", 6) == 0)
-  {
-    m_pFile       = new CVTPFile();
-    m_pLiveTV     = ((CVTPFile*)m_pFile)->GetLiveTV();
-    m_pRecordable = NULL;
-  }
-  else if (strncmp(strFile, "sling://", 8) == 0)
+  if (strncmp(strFile, "sling://", 8) == 0)
   {
     m_pFile       = new CSlingboxFile();
     m_pLiveTV     = ((CSlingboxFile*)m_pFile)->GetLiveTV();
     m_pRecordable = NULL;
-  }
-  else
-  {
-    m_pFile       = new CMythFile();
-    m_pLiveTV     = ((CMythFile*)m_pFile)->GetLiveTV();
-    m_pRecordable = ((CMythFile*)m_pFile)->GetRecordable();
   }
 
   CURL url(strFile);

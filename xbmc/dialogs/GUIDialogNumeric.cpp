@@ -25,7 +25,7 @@
 #include "GUIDialogOK.h"
 #include "input/XBMC_vkeys.h"
 #include "utils/StringUtils.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 
@@ -47,6 +47,7 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
 
   m_mode = INPUT_PASSWORD;
   m_block = 0;
+  m_lastblock = 0;
   memset(&m_datetime, 0, sizeof(SYSTEMTIME));
   m_dirty = false;
   m_loadType = KEEP_IN_MEMORY;

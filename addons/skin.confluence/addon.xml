@@ -5,12 +5,12 @@
   name="Confluence"
   provider-name="Jezz_X, Team Kodi">
   <requires>
-    <import addon="xbmc.gui" version="5.8.0"/>
+    <import addon="xbmc.gui" version="5.9.0"/>
   </requires>
   <extension
     point="xbmc.gui.skin"
     debugging="false"
-    effectslowdown="0.75">
+    effectslowdown="1.0">
     <res width="1280" height="720" aspect="16:9" default="true" folder="720p" />
   </extension>
   <extension point="xbmc.addon.metadata">

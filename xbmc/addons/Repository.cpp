@@ -193,7 +193,7 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
   return false;
 }
 
-void CRepository::OnPostInstall(bool restart, bool update)
+void CRepository::OnPostInstall(bool restart, bool update, bool modal)
 {
   VECADDONS addons;
   AddonPtr repo(new CRepository(*this));
@@ -381,14 +381,14 @@ bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addo
     {
       for (map<string, AddonPtr>::const_iterator i = uniqueAddons.begin(); i != uniqueAddons.end(); ++i)
         addons.push_back(i->second);
-      database.AddRepository(repo->ID(),addons,reposum);
+      database.AddRepository(repo->ID(), addons, reposum, repo->Version());
     }
   }
   else
   {
     CLog::Log(LOGDEBUG, "Checksum for repository %s not changed.", repo->ID().c_str());
     database.GetRepository(repo->ID(), addons);
-    database.SetRepoTimestamp(repo->ID(), CDateTime::GetCurrentDateTime().GetAsDBDateTime());
+    database.SetRepoTimestamp(repo->ID(), CDateTime::GetCurrentDateTime().GetAsDBDateTime(), repo->Version());
   }
   return true;
 }

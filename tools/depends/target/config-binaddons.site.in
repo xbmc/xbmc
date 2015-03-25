@@ -1,0 +1,175 @@
+if test "@cross_compiling@" = "yes"; then
+cross_compiling=yes
+host=@use_host@
+host_alias=@use_host@
+fi
+
+LD="@LD@"
+CC="@CC@"
+CXX="@CXX@"
+CPP="@CPP@"
+AR="@AR@"
+AS="@AS@"
+NM="@NM@"
+STRIP="@STRIP@"
+RANLIB="@RANLIB@"
+OBJDUMP="@OBJDUMP@"
+
+if test "@platform_os@" = "ios" ; then
+  export AS="@prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@ -arch @use_cpu@"
+  export CCAS="--tag CC @prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@ -arch @use_cpu@"
+fi
+
+CFLAGS="@platform_cflags@ @platform_includes@ $CFLAGS"
+LDFLAGS="@platform_ldflags@ $LDFLAGS"
+CXXFLAGS="@platform_cxxflags@ @platform_includes@ $CXXFLAGS"
+CPPFLAGS="@platform_cflags@ @platform_includes@ $CPPFLAGS"
+
+export PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config
+export YASM=@prefix@/@tool_dir@/bin/yasm
+export NASM=@prefix@/@tool_dir@/bin/yasm
+
+PATH=@prefix@/@tool_dir@/bin:@use_toolchain@/usr/bin:@use_toolchain@/bin:$PATH
+LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
+
+NATIVE_ROOT=@prefix@/@tool_dir@
+
+#libomxil-bellagio
+ac_cv_func_malloc_0_nonnull=yes
+
+#curl
+ac_cv_file__dev_urandom=yes
+ac_cv_lib_ssl_SSL_connect=yes
+
+#gettext and libiconv
+gl_cv_header_working_stdint_h=yes
+
+#libcec
+ac_cv_search_dlopen=-ldl
+
+#libgcrypt
+if test "${PACKAGE_NAME}" = "libgcrypt"; then
+  ac_cv_path_GPG_ERROR_CONFIG=@prefix@/@deps_dir@/bin/gpg-error-config
+  ac_cv_sys_symbol_underscore=no
+  CFLAGS="$CFLAGS -std=gnu99"
+fi
+
+#python
+ac_cv_func_gethostbyname_r=no
+ac_cv_header_sys_un_h=yes
+
+#rsxs/projectm
+jm_cv_func_gettimeofday_clobber=no
+mac_cv_pkg_ldflags=-lz
+if test "@platform_os@" = "osx"; then
+  ac_cv_func_strnlen_working=no
+  ac_cv_header_stdbool_h=yes
+fi
+
+#gnutls
+gl_cv_func_gettimeofday_clobber=no
+
+
+#samba
+SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
+samba_cv_CC_NEGATIVE_ENUM_VALUES=yes
+libreplace_cv_HAVE_C99_VSNPRINTF=yes
+samba_cv_HAVE_C99_VSNPRINTF=yes
+ac_cv_header_standards_h=no
+
+ac_cv_file__proc_sys_kernel_core_pattern=no
+samba_cv_SYSCONF_SC_NPROCESSORS_ONLN=no
+libreplace_cv_HAVE_GETADDRINFO=no
+
+if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "ios"; then
+  # disable python support
+  export PYTHON_VER=0.0
+  # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
+  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
+fi
+
+if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
+  # disable python support
+  export PYTHON_VER=0.0
+  # ios/osx-10.6 issue with collision of _MD5 exported from a system lib
+  export LDFLAGS="${LDFLAGS} -Wl,-unexported_symbol,_MD5* -lc"
+  # uses OPT instead of CFLAGS
+  export OPT="${CFLAGS}"
+  # various configure overrides
+  ac_cv_header_libunwind_h=no
+  ac_cv_header_execinfo_h=no
+  # fixes crash on 10.6 if xbmc is built using 10.7 SDK with 10.6 min
+  ac_cv_func_vdprintf=no
+fi
+
+if test "@platform_os@" = "android"; then
+  #samba
+  SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
+  libreplace_cv_READDIR_GETDIRENTRIES=no
+  libreplace_cv_READDIR_GETDENTS=no
+  samba_cv_REPLACE_READDIR=no
+  samba_cv_HAVE_WRFILE_KEYTAB=yes
+  samba_cv_HAVE_GETTIMEOFDAY_TZ=yes
+  samba_cv_USE_SETREUID=yes
+  samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=yes
+  samba_cv_HAVE_IFACE_IFCONF=yes
+  samba_cv_HAVE_MMAP=yes
+  samba_cv_HAVE_FCNTL_LOCK=yes
+  samba_cv_HAVE_SECURE_MKSTEMP=yes
+  samba_cv_CC_NEGATIVE_ENUM_VALUES=yes
+  samba_cv_fpie=no
+  samba_cv_have_longlong=yes
+  samba_cv_HAVE_OFF64_T=yes
+  samba_cv_HAVE_UT_UT_TYPE=no
+  ac_cv_func_srand=yes
+  ac_cv_func_rand=yes
+
+  #python: android doesn't have libutil
+  PYTHON_LDFLAGS="-L@prefix@/@deps_dir@/lib -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lssl -lcrypto"
+
+fi
+
+if test "@platform_os@" = "ios"; then
+  # tweaks for libffi (ios must use llvm-gcc-4.2)
+  if test "${PACKAGE_NAME}" = "libffi" ; then
+      case "@use_xcode@" in
+        3.*.* | 4.* | 4.*.*)
+          export CC="@use_toolchain@/usr/bin/llvm-gcc-4.2"
+          export CPP="@use_toolchain@/usr/bin/llvm-gcc-4.2 -E"
+          ;;
+        *)
+          export CC="@use_toolchain@/usr/bin/clang"
+          export CPP="@use_toolchain@/usr/bin/clang -E"
+          ;;
+        esac
+    unset AS
+    unset CCAS
+  fi
+
+  # tweaks for flac
+  if test "${ac_unique_file}" = "src/flac/main.c" ; then
+    # compiler barfs if we use -O3/O2 for flac
+    export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
+    export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
+  fi
+
+  # tweaks for libmpeg2
+  if test "${PACKAGE_NAME}" = "libmpeg2" ; then
+    export LDFLAGS="${LDFLAGS} -Wl,-read_only_relocs,suppress"
+  fi
+fi
+
+#Fix for older, broken android toolchains
+if test "${PACKAGE_NAME}" = "FreeType" -a "@platform_os@" = "android"; then
+  CFLAGS="$CFLAGS -std=gnu99"
+fi
+
+# These libs do not correctly export their symbols. Force them in case
+# -fvisibility=hidden is set.
+if test "${ac_unique_file}" = "src/flac/main.c" || \
+   test "${ac_unique_file}" = "src/framing.c" || \
+   test "${ac_unique_file}" = "src/libdvdcss.c" || \
+   test "${PACKAGE_NAME}" = "libmpeg2" || \
+   test "${PACKAGE_NAME}" = "libssh2" ; then
+     CFLAGS="$CFLAGS -fvisibility=default"
+fi

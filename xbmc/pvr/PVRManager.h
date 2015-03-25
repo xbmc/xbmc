@@ -44,11 +44,13 @@ namespace PVR
 {
   class CPVRClients;
   class CPVRChannel;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+  typedef std::shared_ptr<CPVRChannel> CPVRChannelPtr;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
   class CPVRRecordings;
   class CPVRTimers;
+  class CPVRTimerInfoTag;
+  typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
   class CPVRGUIInfo;
   class CPVRDatabase;
   class CGUIWindowPVRCommon;
@@ -99,7 +101,7 @@ namespace PVR
      * @brief Updates the last watched timestamps of the channel and group which are currently playing.
      * @param channel The channel which is updated
      */
-    void UpdateLastWatched(CPVRChannel &channel);
+    void UpdateLastWatched(const CPVRChannelPtr &channel);
 
   public:
     /*!
@@ -250,6 +252,12 @@ namespace PVR
     {
       return GetState() == ManagerStateStarted;
     }
+
+    /**
+     * Called by OnEnable() and OnDisable() to check if the manager should be restarted
+     * @return True if it should be restarted, false otherwise
+     */
+    bool RestartManagerOnAddonDisabled(void) const;
     
     /*!
      * @brief Check whether the PVRManager is stopping
@@ -271,10 +279,9 @@ namespace PVR
 
     /*!
      * @brief Return the channel that is currently playing.
-     * @param channel The channel or NULL if none is playing.
-     * @return True if a channel is playing, false otherwise.
+     * @return The channel or NULL if none is playing.
      */
-    bool GetCurrentChannel(CPVRChannelPtr &channel) const;
+    CPVRChannelPtr GetCurrentChannel(void) const;
 
     /*!
      * @brief Return the EPG for the channel that is currently playing.
@@ -300,7 +307,7 @@ namespace PVR
      * @param bPreview True to show a preview, false otherwise.
      * @return Trrue if the switch was successful, false otherwise.
      */
-    bool PerformChannelSwitch(CPVRChannel &channel, bool bPreview);
+    bool PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPreview);
 
     /*!
      * @brief Close an open PVR stream.
@@ -364,7 +371,7 @@ namespace PVR
      * @brief Check whether the system Kodi is running on can be powered down
      *        (shutdown/reboot/suspend/hibernate) without stopping any active
      *        recordings and/or without preventing the start of recordings
-     *        sheduled for now + pvrpowermanagement.backendidletime.
+     *        scheduled for now + pvrpowermanagement.backendidletime.
      * @param bAskUser True to informs user in case of potential
      *        data loss. User can decide to allow powerdown anyway. False to
      *        not to ask user and to not confirm power down.
@@ -465,7 +472,7 @@ namespace PVR
      * @param bMinimised If true, playback starts minimised, otherwise in fullscreen.
      * @return True if playback was started, false otherwise.
      */
-    bool StartPlayback(const CPVRChannel *channel, bool bMinimised = false);
+    bool StartPlayback(const CPVRChannelPtr &channel, bool bMinimised = false);
 
     /*!
      * @brief Start playback of the last used channel, and if it fails use first channel in the current channelgroup.
@@ -522,14 +529,14 @@ namespace PVR
      * @param channel The channel to open.
      * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
      */
-    bool CheckParentalLock(const CPVRChannel &channel);
+    bool CheckParentalLock(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Check if parental lock is overriden at the given moment.
      * @param channel The channel to open.
      * @return True if parental lock is overriden, false otherwise.
      */
-    bool IsParentalLocked(const CPVRChannel &channel);
+    bool IsParentalLocked(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Open Numeric dialog to check for parental PIN.
@@ -632,7 +639,7 @@ namespace PVR
 
     void SetState(ManagerState state);
 
-    bool AllLocalBackendsIdle(void) const;
+    bool AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const;
     bool EventOccursOnLocalBackend(const CFileItemPtr& item) const;
     bool IsNextEventWithinBackendIdleTime(void) const;
 

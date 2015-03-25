@@ -8,6 +8,7 @@
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
 boost-1.46.1-headers-win32.7z
 bzip2-1.0.5-win32.7z
+curl-7.40-win32.7z
 dnssd-541-win32.zip
 doxygen-1.8.2-win32.7z
 fontconfig-2.8.0-win32.7z
@@ -19,14 +20,13 @@ libass-0.10.2-win32.7z
 libbluray-0.4.0-win32.zip
 libcdio-0.83-win32-2.7z
 libcec-2.2.0-win32-1.7z
-libcurl-7.21.6-win32.7z
 libexpat_2.0.1-win32.7z
 libflac-1.2.1-win32.7z
 libfribidi-0.19.2-win32.7z
 libiconv-1.14-win32-vc120.7z
 libjpeg-turbo-1.2.0-win32.7z
 liblzo-2.04-win32.7z
-libmicrohttpd-0.4.5-win32-1.7z
+libmicrohttpd-svn-35383-win32-vc120.7z
 libnfs-1.6.2-win32.7z
 libogg-vc100-1.2.0-win32.7z
 libplist-1.7-win32-3.7z
@@ -48,5 +48,5 @@ python-2.7.8-win32.7z
 sqlite-3.8.6-win32-vc120.7z
 swig-2.0.7-win32-1.7z
 taglib-1.9.1-win32-vc120.7z
-texturepacker-1.0.1-win32.7z
+texturepacker-1.0.2-win32.7z
 tinyxml-2.6.2_3-win32-vc120.7z

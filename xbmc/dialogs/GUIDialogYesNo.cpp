@@ -20,7 +20,7 @@
 
 #include "GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 
 #define CONTROL_NO_BUTTON 10
 #define CONTROL_YES_BUTTON 11
@@ -29,6 +29,7 @@ CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
     : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogYesNo.xml")
 {
   m_bConfirmed = false;
+  m_bCanceled = false;
 }
 
 CGUIDialogYesNo::~CGUIDialogYesNo()
@@ -114,12 +115,14 @@ bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::str
   return ShowAndGetInput(heading,line0,line1,line2,bDummy,noLabel,yesLabel);
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& text, bool& bCanceled, const std::string& noLabel, const std::string& yesLabel)
+bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& text, bool& bCanceled, const std::string& noLabel, const std::string& yesLabel, unsigned int autoCloseTime)
 {
   CGUIDialogYesNo *dialog = (CGUIDialogYesNo *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!dialog) return false;
   dialog->SetHeading(heading);
   dialog->SetText(text);
+  if (autoCloseTime)
+    dialog->SetAutoClose(autoCloseTime);
   dialog->m_bCanceled = false;
   if (!noLabel.empty())
     dialog->SetChoice(0,noLabel);
@@ -134,10 +137,10 @@ bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::str
   return (dialog->IsConfirmed()) ? true : false;
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1, const std::string& line2, bool& bCanceled, const std::string& noLabel, const std::string& yesLabel)
+bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1, const std::string& line2, bool& bCanceled, const std::string& noLabel, const std::string& yesLabel, unsigned int autoCloseTime)
 {
   std::string text = line0 + "\n" + line1 + "\n" + line2;
-  return ShowAndGetInput(heading, text, bCanceled, noLabel, yesLabel);
+  return ShowAndGetInput(heading, text, bCanceled, noLabel, yesLabel, autoCloseTime);
 }
 
 int CGUIDialogYesNo::GetDefaultLabelID(int controlId) const

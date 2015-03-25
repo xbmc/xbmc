@@ -20,11 +20,12 @@
 
 #include "GUIWindowPVRRecordings.h"
 
+#include "ContextMenuManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIInfoManager.h"
 #include "pvr/PVRManager.h"
@@ -169,6 +170,8 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 
   if (!isDeletedRecording)
     CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
+
+  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowPVRRecordings::OnAction(const CAction &action)
@@ -248,18 +251,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
             case ACTION_MOUSE_LEFT_CLICK:
             case ACTION_PLAY:
             {
-              CFileItemPtr pItem = m_vecItems->Get(iItem);
-              std::string resumeString = GetResumeString(*pItem);
-              if (!resumeString.empty())
-              {
-                CContextButtons choices;
-                choices.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
-                choices.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021);
-                int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-                if (choice > 0)
-                  OnContextButtonPlay(pItem.get(), (CONTEXT_BUTTON)choice);
-                bReturn = true;
-              }
+              bReturn = PlayFile(m_vecItems->Get(iItem).get());
               break;
             }
             case ACTION_CONTEXT_MENU:

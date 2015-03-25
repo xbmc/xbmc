@@ -28,7 +28,7 @@
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "FileItem.h"
-#include "Key.h"
+#include "input/Key.h"
 #include "utils/MathUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "listproviders/IListProvider.h"

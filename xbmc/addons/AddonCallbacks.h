@@ -20,10 +20,11 @@
  */
 
 #include <stdint.h>
+
+#include "../../addons/library.kodi.guilib/libKODI_guilib.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "addons/include/xbmc_codec_types.h"
-#include "../../addons/library.xbmc.gui/libXBMC_gui.h"
 
 #ifdef TARGET_WINDOWS
 #ifndef _SSIZE_T_DEFINED

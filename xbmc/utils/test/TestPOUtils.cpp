@@ -24,11 +24,12 @@
 
 #include "gtest/gtest.h"
 
+
 TEST(TestPOUtils, General)
 {
   CPODocument a;
 
-  EXPECT_TRUE(a.LoadFile(XBMC_REF_FILE_PATH("/language/Spanish/strings.po")));
+  EXPECT_TRUE(a.LoadFile(XBMC_REF_FILE_PATH("xbmc/utils/test/data/language/Spanish/strings.po")));
 
   EXPECT_TRUE(a.GetNextEntry());
   EXPECT_EQ(ID_FOUND, a.GetEntryType());

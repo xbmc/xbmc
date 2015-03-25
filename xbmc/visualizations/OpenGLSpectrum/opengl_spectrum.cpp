@@ -88,7 +88,7 @@ static const char *vert = "attribute vec4 m_attrpos;\n"
 
 static CVisGUIShader *vis_shader = NULL;
 
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
 #include <GL/glew.h>
 static GLenum  g_mode = GL_FILL;
 
@@ -102,7 +102,7 @@ static GLfloat z_angle = 0.0, z_speed = 0.0;
 static GLfloat heights[16][16], cHeights[16][16], scale;
 static GLfloat hSpeed = 0.05;
 
-#if defined(HAS_SDL_OPENGL)
+#if defined(HAS_GL)
 static void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
 {
   if(y1 == y2)
@@ -606,7 +606,7 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* val
   }
   else if (strcmp(strSetting, "mode")==0)
   {
-#if defined(HAS_SDL_OPENGL)
+#if defined(HAS_GL)
     switch (*(int*) value)
     {
       case 1:

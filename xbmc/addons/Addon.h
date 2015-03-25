@@ -194,7 +194,7 @@ public:
 
   /*! \brief callbacks for special install/uninstall behaviour */
   virtual bool OnPreInstall() { return false; };
-  virtual void OnPostInstall(bool restart, bool update) {};
+  virtual void OnPostInstall(bool restart, bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
   virtual bool CanInstall(const std::string& referer) { return true; }
@@ -249,6 +249,7 @@ private:
 
   virtual bool LoadStrings();
   virtual void ClearStrings();
+
   bool m_hasStrings;
   bool m_checkedStrings;
   bool m_hasSettings;

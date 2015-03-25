@@ -144,7 +144,7 @@ void CDecoder::Close()
   m_ctx->decoder = NULL;
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFormat fmt, unsigned int surfaces)
 {
   Close();
 
@@ -184,8 +184,12 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   if (!Create(avctx))
     return false;
 
-  avctx->pix_fmt         = fmt;
+  avctx->pix_fmt = fmt;
   avctx->hwaccel_context = m_ctx;
+
+  mainctx->pix_fmt = fmt;
+  mainctx->hwaccel_context = m_ctx;
+
   return true;
 }
 

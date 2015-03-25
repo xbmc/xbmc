@@ -39,7 +39,7 @@
 #include "TransformMatrix.h"
 
 #define FONT_CACHE_TIME_LIMIT (1000)
-#define FONT_CACHE_DIST_LIMIT (0.01)
+#define FONT_CACHE_DIST_LIMIT (0.01f)
 
 template<class Position, class Value> class CGUIFontCache;
 class CGUIFontTTFBase;

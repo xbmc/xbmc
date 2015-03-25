@@ -32,11 +32,9 @@
 #define DLL_PATH_LIBEXIF       "libexif-@ARCH@.so"
 #define DLL_PATH_LIBHDHOMERUN  "libhdhomerun-@ARCH@.so"
 #define DLL_PATH_MEDIAINFO     "libmediainfo-@ARCH@.so"
-#define DLL_PATH_LIBCMYTH      "libcmyth-@ARCH@.so"
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"
-#define DLL_PATH_LIBAFP        "@AFPCLIENT_SONAME@"
 #define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
 #define DLL_PATH_LIBCEC        "@LIBCEC_SONAME@"

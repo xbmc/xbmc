@@ -524,9 +524,32 @@ public:
   void DeleteSet(int idSet);
   void DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType);
 
-  // per-file video settings
-  bool GetVideoSettings(const std::string &strFilenameAndPath, CVideoSettings &settings);
-  void SetVideoSettings(const std::string &strFilenameAndPath, const CVideoSettings &settings);
+  /*! \brief Get video settings for the specified file id
+   \param idFile file id to get the settings for
+   \return true if video settings found, false otherwise
+   \sa SetVideoSettings
+   */
+  bool GetVideoSettings(int idFile, CVideoSettings &settings);
+
+  /*! \brief Get video settings for the specified file item
+   \param item item to get the settings for
+   \return true if video settings found, false otherwise
+   \sa SetVideoSettings
+   */
+  bool GetVideoSettings(const CFileItem &item, CVideoSettings &settings);
+
+  /*! \brief Get video settings for the specified file path
+   \param filePath filepath to get the settings for
+   \return true if video settings found, false otherwise
+   \sa SetVideoSettings
+   */
+  bool GetVideoSettings(const std::string &filePath, CVideoSettings &settings);
+
+  /*! \brief Set video settings for the specified file path
+   \param filePath filepath to set the settings for
+   \sa GetVideoSettings
+   */
+  void SetVideoSettings(const std::string &filePath, const CVideoSettings &settings);
 
   /**
    * Erases settings for all files beginning with the specified path. Defaults 
@@ -766,6 +789,7 @@ public:
   std::string GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
   bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
   bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::set<std::string> &artTypes);
+  bool GetTvShowSeasons(int showId, std::map<int, int> &seasons);
   bool GetTvShowSeasonArt(int mediaId, std::map<int, std::map<std::string, std::string> > &seasonArt);
   bool GetArtTypes(const MediaType &mediaType, std::vector<std::string> &artTypes);
 
@@ -776,12 +800,12 @@ public:
 
   virtual bool GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting);
 
+  int AddSeason(int showID, int season);
   int AddSet(const std::string& strSet);
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);
 
 protected:
-  friend class CEdenVideoArtUpdater;
   int GetMovieId(const std::string& strFilenameAndPath);
   int GetMusicVideoId(const std::string& strFilenameAndPath);
 
@@ -803,7 +827,6 @@ protected:
 
   int AddTvShow();
   int AddMusicVideo(const std::string& strFilenameAndPath);
-  int AddSeason(int showID, int season);
 
   /*! \brief Adds a path to the tvshow link table.
    \param idShow the id of the show.

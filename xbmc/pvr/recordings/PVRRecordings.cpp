@@ -20,6 +20,7 @@
 
 #include "FileItem.h"
 #include "dialogs/GUIDialogOK.h"
+#include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "Util.h"
@@ -41,7 +42,8 @@ using namespace PVR;
 CPVRRecordings::CPVRRecordings(void) :
     m_bIsUpdating(false),
     m_iLastId(0),
-    m_bGroupItems(true)
+    m_bGroupItems(true),
+    m_bHasDeleted(false)
 {
   m_database.Open();
 }
@@ -282,7 +284,7 @@ bool CPVRRecordings::RenameRecording(CFileItem &item, std::string &strNewName)
 
 bool CPVRRecordings::DeleteAllRecordingsFromTrash()
 {
-  return g_PVRClients->DeleteAllRecordingsFromTrash();
+  return g_PVRClients->DeleteAllRecordingsFromTrash() == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
@@ -503,7 +505,29 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   {
     newTag = CPVRRecordingPtr(new CPVRRecording);
     newTag->Update(*tag);
+    if (newTag->EpgEvent() > 0)
+    {
+      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(newTag->EpgEvent());
+      if (epgTag)
+        epgTag->SetRecording(newTag);
+    }
     newTag->m_iRecordingId = ++m_iLastId;
     m_recordings.insert(std::make_pair(CPVRRecordingUid(newTag->m_iClientId, newTag->m_strRecordingId), newTag));
+  }
+}
+
+void CPVRRecordings::UpdateEpgTags(void)
+{
+  CSingleLock lock(m_critSection);
+  int iEpgEvent;
+  for (PVR_RECORDINGMAP_ITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
+  {
+    iEpgEvent = it->second->EpgEvent();
+    if (iEpgEvent > 0 && !it->second->IsDeleted())
+    {
+      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(iEpgEvent);
+      if (epgTag)
+        epgTag->SetRecording(it->second);
+    }
   }
 }

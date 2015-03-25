@@ -41,7 +41,7 @@ TEST(TestTimeUtils, GetFrameTime)
     testing::PrintToString(CTimeUtils::GetFrameTime()) << std::endl;
 
   std::cout << "Calling UpdateFrameTime()" << std::endl;
-  CTimeUtils::UpdateFrameTime(true);
+  CTimeUtils::UpdateFrameTime(true, false);
   std::cout << "GetFrameTime(): " <<
     testing::PrintToString(CTimeUtils::GetFrameTime()) << std::endl;
 }

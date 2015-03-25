@@ -93,7 +93,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
   else if (media == "music")
   {
     regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-    extensions = g_advancedSettings.m_musicExtensions;
+    extensions = g_advancedSettings.GetMusicExtensions();
   }
   else if (media == "pictures")
   {
@@ -310,7 +310,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       else if (media == "music")
       {
         regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-        extensions = g_advancedSettings.m_musicExtensions;
+        extensions = g_advancedSettings.GetMusicExtensions();
       }
       else if (media == "pictures")
       {

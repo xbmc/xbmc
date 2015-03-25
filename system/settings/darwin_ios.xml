@@ -2,7 +2,7 @@
 <settings>
   <section id="videos">
     <category id="videoplayer">
-      <group id="2">
+      <group id="3">
         <setting id="videoplayer.adjustrefreshrate">
           <visible>false</visible>
         </setting>

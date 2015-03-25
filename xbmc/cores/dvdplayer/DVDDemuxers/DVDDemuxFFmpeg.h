@@ -110,7 +110,8 @@ public:
   bool SeekChapter(int chapter, double* startpts = NULL);
   int GetChapterCount();
   int GetChapter();
-  void GetChapterName(std::string& strChapterName);
+  void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
+  int64_t GetChapterPos(int chapterIdx=-1);
   virtual void GetStreamCodecName(int iStreamId, std::string &strName);
 
   bool Aborted();

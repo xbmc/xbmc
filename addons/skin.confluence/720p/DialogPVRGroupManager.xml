@@ -4,8 +4,8 @@
 	<controls>
 		<control type="group">
 			<visible>!Window.IsVisible(FileBrowser)</visible>
-			<animation effect="slide" start="1150,0" end="0,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="1150,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="1150,0" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="1150,0" time="300" tween="quadratic" easing="out">WindowClose</animation>
 			<control type="image">
 				<left>50</left>
 				<top>0</top>
@@ -48,8 +48,8 @@
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="group">
-				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<animation effect="fade" delay="300" start="0" end="100" time="150">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 				<control type="label">
 					<description>header label</description>
 					<left>90</left>
@@ -480,7 +480,6 @@
 			</control>
 		</control>
 		<include>Clock</include>
-
 		<control type="label" id="20">
 			<description>Fake Label used to pass on name label</description>
 			<visible>false</visible>

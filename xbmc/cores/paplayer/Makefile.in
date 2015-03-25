@@ -10,24 +10,7 @@ endif
 SRCS  = AudioDecoder.cpp
 SRCS += CodecFactory.cpp
 SRCS += DVDPlayerCodec.cpp
-SRCS += ModplugCodec.cpp
-SRCS += NSFCodec.cpp
-SRCS += OggCallback.cpp
-SRCS += OGGcodec.cpp
 SRCS += PAPlayer.cpp
-SRCS += SIDCodec.cpp
-SRCS += TimidityCodec.cpp
-SRCS += VGMCodec.cpp
-SRCS += YMCodec.cpp
-
-ifeq (@USE_ASAP_CODEC@,1)
-SRCS += ASAPCodec.cpp
-endif
-
-ifneq ($(ARCH), arm)
-CXXFLAGS += -DHAS_SPC_CODEC
-SRCS += SPCCodec.cpp
-endif
 
 LIB = paplayer.a
 

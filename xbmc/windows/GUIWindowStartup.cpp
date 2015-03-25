@@ -19,7 +19,7 @@
  */
 
 #include "GUIWindowStartup.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/WindowIDs.h"
 
 CGUIWindowStartup::CGUIWindowStartup(void)

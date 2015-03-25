@@ -32,6 +32,18 @@ void CJNIWakeLock::acquire()
 void CJNIWakeLock::release()
 {
   call_method<void>(m_object,
-    "release", "()V");
+                    "release", "()V");
+}
+
+bool CJNIWakeLock::isHeld()
+{
+  return call_method<jboolean>(m_object,
+                        "isHeld", "()Z");
+}
+
+void CJNIWakeLock::setReferenceCounted(bool val)
+{
+  call_method<void>(m_object,
+                        "setReferenceCounted", "(Z)V", val);
 }
 

@@ -57,7 +57,7 @@ bool CService::Start()
   {
 #ifdef HAS_PYTHON
   case PYTHON:
-    ret = (CScriptInvocationManager::Get().Execute(LibPath(), this->shared_from_this()) != -1);
+    ret = (CScriptInvocationManager::Get().ExecuteAsync(LibPath(), this->shared_from_this()) != -1);
     break;
 #endif
 
@@ -136,7 +136,7 @@ bool CService::OnPreInstall()
   return !CAddonMgr::Get().IsAddonDisabled(ID());
 }
 
-void CService::OnPostInstall(bool restart, bool update)
+void CService::OnPostInstall(bool restart, bool update, bool modal)
 {
   if (restart) // reload/start it if it was running
   {

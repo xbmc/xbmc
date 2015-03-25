@@ -113,6 +113,10 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "VC-1 MoComp",          &DXVA2_ModeVC1_B,    0 },
     { "VC-1 post processing", &DXVA2_ModeVC1_A,    0 },
 
+    /* HEVC / H.265 */
+    { "HEVC / H.265 variable-length decoder, main",   &DXVA_ModeHEVC_VLD_Main,   AV_CODEC_ID_HEVC },
+    { "HEVC / H.265 variable-length decoder, main10", &DXVA_ModeHEVC_VLD_Main10, 0 },
+
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     /* Intel specific modes (only useful on older GPUs) */
     { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, AV_CODEC_ID_H264 },
@@ -794,7 +798,7 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   return true;
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFormat fmt, unsigned int surfaces)
 {
   if (!CheckCompatibility(avctx))
     return false;
@@ -820,8 +824,8 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   m_format.SampleWidth  = avctx->coded_width;
   m_format.SampleHeight = avctx->coded_height;
-  m_format.SampleFormat.SampleFormat           = DXVA2_SampleProgressiveFrame;
-  m_format.SampleFormat.VideoLighting          = DXVA2_VideoLighting_dim;
+  m_format.SampleFormat.SampleFormat  = DXVA2_SampleProgressiveFrame;
+  m_format.SampleFormat.VideoLighting = DXVA2_VideoLighting_dim;
 
   if     (avctx->color_range == AVCOL_RANGE_JPEG)
     m_format.SampleFormat.NominalRange = DXVA2_NominalRange_0_255;
@@ -918,10 +922,13 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 
   if(avctx->refs > m_refs)
     m_refs = avctx->refs+2;
+  if (avctx->codec_id == AV_CODEC_ID_HEVC)
+    m_refs = 16;
 
   if(m_refs == 0)
   {
-    if(avctx->codec_id == AV_CODEC_ID_H264)
+    if( avctx->codec_id == AV_CODEC_ID_H264
+     || avctx->codec_id == AV_CODEC_ID_HEVC)
       m_refs = 16;
     else
       m_refs = 2;
@@ -942,7 +949,10 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   avctx->get_buffer2 = GetBufferS;
   avctx->hwaccel_context = m_context;
 
-  m_avctx = avctx;
+  mainctx->get_buffer2 = GetBufferS;
+  mainctx->hwaccel_context = m_context;
+
+  m_avctx = mainctx;
 
   D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
   if (AIdentifier.VendorId == PCIV_Intel && m_input == DXVADDI_Intel_ModeH264_E)
@@ -1031,7 +1041,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   if(m_format.SampleWidth  == 0
   || m_format.SampleHeight == 0)
   {
-    if(!Open(avctx, avctx->pix_fmt, m_shared))
+    if(!Open(avctx, avctx, avctx->pix_fmt, m_shared))
     {
       CLog::Log(LOGERROR, "CDecoder::Check - decoder was not able to reset");
       Close();
@@ -1101,7 +1111,7 @@ bool CDecoder::OpenDecoder()
   CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count);
 
   if (!m_dxva_context->CreateSurfaces(m_format.SampleWidth, m_format.SampleHeight, m_format.Format,
-                                      m_context->surface_count - 1, m_context->surface))
+                                      m_context->surface_count, m_context->surface))
     return false;
 
   for(unsigned i = 0; i < m_context->surface_count; i++)

@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <math.h>
 #ifndef TARGET_POSIX
 #include <io.h>
@@ -530,10 +531,7 @@ extern "C"
     if (bWrite)
       bResult = pFile->OpenForWrite(CUtil::ValidatePath(str), bOverwrite);
     else
-      bResult = pFile->Open(CUtil::ValidatePath(str), 0 /* READ_TRUNCATED */); // Disabled READ_TRUNCATED for release
-    /* Looks that libdvdnav / libdvdread / libdvdcss have bugs and do not process correctly partial reads */
-    /* All found bug were eliminated but for safety READ_TRUNCATED is disabled for Helix release */
-    /* TODO: enable READ_TRUNCATED after release of Helix */
+      bResult = pFile->Open(CUtil::ValidatePath(str), READ_TRUNCATED);
 
     if (bResult)
     {
@@ -1240,6 +1238,18 @@ extern "C"
     }
 
     return file;
+  }
+
+  int dll_fopen_s(FILE** pFile, const char * filename, const char * mode)
+  {
+    if (pFile == NULL || filename == NULL || mode == NULL)
+      return EINVAL;
+
+    *pFile = dll_fopen(filename, mode);
+    if (*pFile == NULL)
+      return errno;
+
+    return 0;
   }
 
   FILE* dll_wfopen(const wchar_t* wfilename, const wchar_t* wmode)

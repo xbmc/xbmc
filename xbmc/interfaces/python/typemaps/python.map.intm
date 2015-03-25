@@ -18,13 +18,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-%>
-<%
     List templateArgs = swigTypeParser.SwigType_templateparmlist(ltype)
     keytype = templateArgs[0]
     valtype = templateArgs[1]
 %>
-
     {
       PyObject *pykey, *pyvalue;
       Py_ssize_t pos = 0;

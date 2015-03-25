@@ -23,11 +23,14 @@
 #include "guilib/GUIDialog.h"
 #include "view/GUIViewControl.h"
 #include "video/VideoDatabase.h"
+#include "utils/JobManager.h"
 
 class CFileItemList;
 
-class CGUIDialogVideoBookmarks : public CGUIDialog
+class CGUIDialogVideoBookmarks : public CGUIDialog, public CJobQueue
 {
+  typedef std::map<CJob*, unsigned int> MAPJOBSCHAPS;
+
 public:
   CGUIDialogVideoBookmarks(void);
   virtual ~CGUIDialogVideoBookmarks(void);
@@ -69,7 +72,18 @@ protected:
   void OnPopupMenu(int item);
   CGUIControl *GetFirstFocusableControl(int id);
 
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
+
   CFileItemList* m_vecItems;
   CGUIViewControl m_viewControl;
   VECBOOKMARKS m_bookmarks;
+
+private:
+  void UpdateItem(unsigned int chapterIdx);
+
+  int m_chapterOffset;
+  int m_jobsStarted;
+  std::string m_filePath;
+  CCriticalSection m_refreshSection;
+  MAPJOBSCHAPS m_mapJobsChapter;
 };

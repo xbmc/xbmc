@@ -20,13 +20,13 @@
  *
  */
 
-#include "guilib/GUIWindow.h"
-#include "filesystem/VirtualDirectory.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "filesystem/DirectoryHistory.h"
+#include "filesystem/VirtualDirectory.h"
+#include "guilib/GUIWindow.h"
+#include "playlists/SmartPlayList.h"
 #include "view/GUIViewControl.h"
 #include "view/GUIViewState.h"
-#include "dialogs/GUIDialogContextMenu.h"
-#include "playlists/SmartPlayList.h"
 
 class CFileItemList;
 
@@ -36,26 +36,37 @@ class CGUIMediaWindow : public CGUIWindow
 public:
   CGUIMediaWindow(int id, const char *xmlFile);
   virtual ~CGUIMediaWindow(void);
-  virtual bool OnMessage(CGUIMessage& message);
+
+  // specializations of CGUIControl
   virtual bool OnAction(const CAction &action);
   virtual bool OnBack(int actionID);
+  virtual bool OnMessage(CGUIMessage& message);
+
+  // specializations of CGUIWindow
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   virtual void OnInitWindow();
-  virtual bool IsMediaWindow() const { return true; };
-  const CFileItemList &CurrentDirectory() const;
-  int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
-  virtual bool HasListItems() const { return true; };
+  virtual bool IsMediaWindow() const { return true; }
+  int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); }
+  virtual bool HasListItems() const { return true; }
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
-  const CGUIViewState *GetViewState() const;
 
+  // custom methods
   virtual bool CanFilterAdvanced() { return m_canFilterAdvanced; }
   virtual bool IsFiltered();
   virtual bool IsSameStartFolder(const std::string &dir);
 
+  const CFileItemList &CurrentDirectory() const;
+  const CGUIViewState *GetViewState() const;
+
 protected:
+  // specializations of CGUIControlGroup
+  virtual CGUIControl *GetFirstFocusableControl(int id);
+
+  // specializations of CGUIWindow
   virtual void LoadAdditionalTags(TiXmlElement *root);
-  CGUIControl *GetFirstFocusableControl(int id);
+
+  // custom methods
   virtual void SetupShares();
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
@@ -66,10 +77,12 @@ protected:
    */
   virtual bool OnSelect(int item);
   virtual bool OnPopupMenu(int iItem);
+
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();
+
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   /*! \brief Retrieves the items from the given path and updates the list
    \param strDirectory The path to the directory to get the items from
@@ -86,6 +99,7 @@ protected:
    \sa GetDirectory
    */
   virtual bool Refresh(bool clearCache = false);
+
   virtual void FormatAndSort(CFileItemList &items);
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnCacheFileItems(CFileItemList &items);

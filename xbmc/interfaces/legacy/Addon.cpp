@@ -37,7 +37,7 @@ namespace XBMCAddon
 
     String Addon::getAddonVersion() { return languageHook == NULL ? emptyString : languageHook->GetAddonVersion(); }
 
-    Addon::Addon(const char* cid) throw (AddonException)
+    Addon::Addon(const char* cid)
     {
       String id(cid ? cid : emptyString);
 
@@ -105,7 +105,7 @@ namespace XBMCAddon
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
     }
 
-    String Addon::getAddonInfo(const char* id) throw (AddonException)
+    String Addon::getAddonInfo(const char* id)
     {
       if (strcmpi(id, "author") == 0)
         return pAddon->Author();

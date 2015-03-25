@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Greek" layout="QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>ςερτυθιοπ</row>
+      <row>ασδφγηξκλ</row>
+      <row>ζχψωβνμ</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>ΕΡΤΥΘΙΟΠ</row>
+      <row>ΑΣΔΦΓΗΞΚΛ</row>
+      <row>ΖΧΨΩΒΝΜ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#€§$%^&amp;*(</row>
+      <row>[]{}-_=+;:~</row>
+      <row>'",.&lt;&gt;/?\|`</row>
+      <row>έύίόάήώϋϊΰΐ</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>

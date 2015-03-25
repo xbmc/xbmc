@@ -53,9 +53,23 @@ macro (build_addon target prefix libs)
     # Pack files together to create an archive
     INSTALL(DIRECTORY ${target} DESTINATION ./ COMPONENT ${target}-${${prefix}_VERSION})
     IF(WIN32)
-      INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/${target}.dll
-              DESTINATION ${target}
+      # get the installation location for the addon's target
+      get_property(dll_location TARGET ${target} PROPERTY LOCATION)
+      # in case of a VC++ project the installation location contains a $(Configuration) VS variable
+      # we replace it with ${CMAKE_BUILD_TYPE} (which doesn't cover the case when the build configuration
+      # is changed within Visual Studio)
+      string(REPLACE "$(Configuration)" "${CMAKE_BUILD_TYPE}" dll_location "${dll_location}")
+
+      # install the generated DLL file
+      INSTALL(PROGRAMS ${dll_location} DESTINATION ${target}
               COMPONENT ${target}-${${prefix}_VERSION})
+
+      IF(CMAKE_BUILD_TYPE MATCHES Debug)
+        # for debug builds also install the PDB file
+        get_filename_component(dll_directory ${dll_location} DIRECTORY)
+        INSTALL(FILES ${dll_directory}/${target}.pdb DESTINATION ${target}
+                COMPONENT ${target}-${${prefix}_VERSION})
+      ENDIF()
     ELSE(WIN32)
       INSTALL(TARGETS ${target} DESTINATION ${target}
               COMPONENT ${target}-${${prefix}_VERSION})

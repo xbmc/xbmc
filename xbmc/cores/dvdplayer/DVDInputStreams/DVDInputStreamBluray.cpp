@@ -935,6 +935,17 @@ bool CDVDInputStreamBluray::SeekChapter(int ch)
     return true;
 }
 
+int64_t CDVDInputStreamBluray::GetChapterPos(int ch)
+{
+  if (ch == -1 || ch > GetChapterCount())
+    ch = GetChapter();
+
+  if (m_title && m_title->chapters)
+    return m_title->chapters[ch - 1].start / 90000;
+  else
+    return 0;
+}
+
 int64_t CDVDInputStreamBluray::Seek(int64_t offset, int whence)
 {
 #if LIBBLURAY_BYTESEEK

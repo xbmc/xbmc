@@ -36,7 +36,7 @@ public:
 
   virtual HttpResponseRanges GetResponseData() const;
 
-  virtual int GetPriority() const { return 1; }
+  virtual int GetPriority() const { return 4; }
 
 protected:
   explicit CHTTPWebinterfaceAddonsHandler(const HTTPRequest &request)

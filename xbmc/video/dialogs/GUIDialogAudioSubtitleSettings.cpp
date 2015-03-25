@@ -480,7 +480,7 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(CSettingGroup *group, cons
   if (m_audioStream < 0)
     m_audioStream = 0;
 
-  AddSpinner(group, settingId, 460, 0, m_audioStream, AudioStreamsOptionFiller);
+  AddList(group, settingId, 460, 0, m_audioStream, AudioStreamsOptionFiller, 460);
 }
 
 void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, const std::string &settingId)
@@ -500,7 +500,7 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, c
   if (m_subtitleStream < 0)
     m_subtitleStream = 0;
 
-  AddSpinner(group, settingId, 462, 0, m_subtitleStream, SubtitleStreamsOptionFiller);
+  AddList(group, settingId, 462, 0, m_subtitleStream, SubtitleStreamsOptionFiller, 462);
 }
 
 bool CGUIDialogAudioSubtitleSettings::IsPlayingPassthrough(const std::string &condition, const std::string &value, const CSetting *setting)
@@ -521,7 +521,7 @@ void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(const CSetting *s
     SPlayerAudioStreamInfo info;
     g_application.m_pPlayer->GetAudioStreamInfo(i, info);
 
-    if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
+    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = g_localizeStrings.Get(13205); // Unknown
 
     if (info.name.length() == 0)
@@ -553,7 +553,7 @@ void CGUIDialogAudioSubtitleSettings::SubtitleStreamsOptionFiller(const CSetting
     std::string strItem;
     std::string strLanguage;
 
-    if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
+    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = g_localizeStrings.Get(13205); // Unknown
 
     if (info.name.length() == 0)

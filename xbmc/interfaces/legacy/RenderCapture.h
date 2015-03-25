@@ -83,7 +83,7 @@ namespace XBMCAddon
        * 
        * The size of the image is getWidth() * getHeight() * 4
        */
-      inline XbmcCommons::Buffer getImage() throw(RenderCaptureException)
+      inline XbmcCommons::Buffer getImage()
       {
         if (GetUserState() != CAPTURESTATE_DONE)
           throw RenderCaptureException("illegal user state");

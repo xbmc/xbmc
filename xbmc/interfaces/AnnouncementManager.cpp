@@ -120,7 +120,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
   
   if(item->HasPVRChannelInfoTag())
   {
-    const PVR::CPVRChannel *channel = item->GetPVRChannelInfoTag();
+    const PVR::CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
     id = channel->ChannelID();
     type = "channel";
 

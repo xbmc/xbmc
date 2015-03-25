@@ -25,7 +25,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "utils/StringUtils.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
@@ -34,6 +34,8 @@ CGUIDialogGamepad::CGUIDialogGamepad(void)
   m_bCanceled = false;
   m_iRetries = 0;
   m_bUserInputCleanup = true;
+  m_bHideInputChars = true;
+  m_cHideInputChar = '*';
 }
 
 CGUIDialogGamepad::~CGUIDialogGamepad(void)

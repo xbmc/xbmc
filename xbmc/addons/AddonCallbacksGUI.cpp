@@ -30,7 +30,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/TextureManager.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIRadioButtonControl.h"
@@ -1723,10 +1723,10 @@ bool CAddonCallbacksGUI::Dialog_Keyboard_ShowAndVerifyNewPassword(char &strNewPa
 int CAddonCallbacksGUI::Dialog_Keyboard_ShowAndVerifyPassword(char &strPassword, unsigned int iMaxStringSize, const char *strHeading, int iRetries, unsigned int autoCloseMs)
 {
   std::string str = &strPassword;
-  int bRet = CGUIKeyboardFactory::ShowAndVerifyNewPassword(str, strHeading, iRetries, autoCloseMs);
-  if (bRet)
+  int iRet = CGUIKeyboardFactory::ShowAndVerifyPassword(str, strHeading, iRetries, autoCloseMs);
+  if (iRet)
     strncpy(&strPassword, str.c_str(), iMaxStringSize);
-  return bRet;
+  return iRet;
 }
 
 bool CAddonCallbacksGUI::Dialog_Keyboard_ShowAndGetFilter(char &aTextString, unsigned int iMaxStringSize, bool searching, unsigned int autoCloseMs)
@@ -1909,18 +1909,20 @@ int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[]
 
 CGUIAddonWindow::CGUIAddonWindow(int id, const std::string& strXML, CAddon* addon)
  : CGUIMediaWindow(id, strXML.c_str())
+ , CBOnInit{nullptr}
+ , CBOnFocus{nullptr}
+ , CBOnClick{nullptr}
+ , CBOnAction{nullptr}
+ , m_clientHandle{nullptr}
  , m_iWindowId(id)
  , m_iOldWindowId(0)
  , m_bModal(false)
  , m_bIsDialog(false)
  , m_actionEvent(true)
  , m_addon(addon)
+
 {
   m_loadType = LOAD_ON_GUI_INIT;
-  CBOnInit        = NULL;
-  CBOnFocus       = NULL;
-  CBOnClick       = NULL;
-  CBOnAction      = NULL;
 }
 
 CGUIAddonWindow::~CGUIAddonWindow(void)
@@ -2196,7 +2198,7 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
   {
     m_bModal = true;
     m_bRunning = true;
-    g_windowManager.RouteToWindow(this);
+    g_windowManager.RegisterDialog(this);
 
     // active this window...
     CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, m_iWindowId);
@@ -2222,10 +2224,14 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
 }
 
 CGUIAddonRenderingControl::CGUIAddonRenderingControl(CGUIRenderingControl *pControl)
-{
-  m_pControl = pControl;
-  m_refCount = 1;
-}
+  : CBCreate{nullptr},
+  CBRender{nullptr},
+  CBStop{nullptr},
+  CBDirty{nullptr},
+  m_clientHandle{nullptr},
+  m_pControl{pControl},
+  m_refCount{1}
+{ }
 
 bool CGUIAddonRenderingControl::Create(int x, int y, int w, int h, void *device)
 {

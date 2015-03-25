@@ -76,6 +76,12 @@ extern "C" {
     time_t        endTime;             /*!< @brief (required) end time in UTC */
     const char *  strPlotOutline;      /*!< @brief (optional) plot outline */
     const char *  strPlot;             /*!< @brief (optional) plot */
+    const char *  strOriginalTitle;    /*!< @brief (optional) originaltitle */
+    const char *  strCast;             /*!< @brief (optional) cast */
+    const char *  strDirector;         /*!< @brief (optional) director */
+    const char *  strWriter;           /*!< @brief (optional) writer */
+    int           iYear;               /*!< @brief (optional) year */
+    const char *  strIMDBNumber;       /*!< @brief (optional) IMDBNumber */
     const char *  strIconPath;         /*!< @brief (optional) icon path */
     int           iGenreType;          /*!< @brief (optional) genre type */
     int           iGenreSubType;       /*!< @brief (optional) genre sub type */
@@ -88,7 +94,6 @@ extern "C" {
     int           iEpisodeNumber;      /*!< @brief (optional) episode number */
     int           iEpisodePartNumber;  /*!< @brief (optional) episode part number */
     const char *  strEpisodeName;      /*!< @brief (optional) episode name */
-    const char *  strRecordingId;      /*!< @brief (optional) unique id of the recording on the client which represents this event */
   } ATTRIBUTE_PACKED EPG_TAG;
 
 #ifdef __cplusplus

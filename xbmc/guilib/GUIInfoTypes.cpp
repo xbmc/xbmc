@@ -217,30 +217,52 @@ bool CGUIInfoLabel::IsConstant() const
   return m_info.size() == 0 || (m_info.size() == 1 && m_info[0].m_info == 0);
 }
 
-typedef std::string (*StringReplacerFunc) (const std::string &str);
-
-void ReplaceString(std::string &work, const std::string &str, StringReplacerFunc func)
+bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(const std::string &strInput, const std::string &strKeyword, const StringReplacerFunc &func, std::string &strOutput)
 {
-  // Replace all $str[number] with the real string
-  size_t pos1 = work.find("$" + str + "[");
-  while (pos1 != std::string::npos)
+  // replace all $strKeyword[value] with resolved strings
+  std::string dollarStrPrefix = "$" + strKeyword + "[";
+
+  size_t index = 0;
+  size_t startPos;
+
+  while ((startPos = strInput.find(dollarStrPrefix, index)) != std::string::npos)
   {
-    size_t pos2 = pos1 + str.length() + 2;
-    size_t pos3 = StringUtils::FindEndBracket(work, '[', ']', pos2);
-    if (pos3 != std::string::npos)
+    size_t valuePos = startPos + dollarStrPrefix.size();
+    size_t endPos = StringUtils::FindEndBracket(strInput, '[', ']', valuePos);
+    if (endPos != std::string::npos)
     {
-      std::string left = work.substr(0, pos1);
-      std::string right = work.substr(pos3 + 1);
-      std::string replace = func(work.substr(pos2, pos3 - pos2));
-      work = left + replace + right;
+      if (index == 0)  // first occurrence?
+        strOutput.clear();
+      strOutput += strInput.substr(index, startPos - index);            // append part from the left side
+      strOutput += func(strInput.substr(valuePos, endPos - valuePos));  // resolve and append value part
+      index = endPos + 1;
     }
     else
     {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", work.c_str());
-      return;
+      // if closing bracket is missing, report error and leave incomplete reference in
+      CLog::Log(LOGERROR, "Error parsing value - missing ']' in \"%s\"", strInput.c_str());
+      break;
     }
-    pos1 = work.find("$" + str + "[", pos1);
   }
+
+  if (index)  // if we replaced anything
+  {
+    strOutput += strInput.substr(index);  // append leftover from the right side
+    return true;
+  }
+
+  return false;
+}
+
+bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(std::string &work, const std::string &strKeyword, const StringReplacerFunc &func)
+{
+  std::string output;
+  if (ReplaceSpecialKeywordReferences(work, strKeyword, func, output))
+  {
+    work = output;
+    return true;
+  }
+  return false;
 }
 
 std::string LocalizeReplacer(const std::string &str)
@@ -268,15 +290,15 @@ std::string NumberReplacer(const std::string &str)
 std::string CGUIInfoLabel::ReplaceLocalize(const std::string &label)
 {
   std::string work(label);
-  ReplaceString(work, "LOCALIZE", LocalizeReplacer);
-  ReplaceString(work, "NUMBER", NumberReplacer);
+  ReplaceSpecialKeywordReferences(work, "LOCALIZE", LocalizeReplacer);
+  ReplaceSpecialKeywordReferences(work, "NUMBER", NumberReplacer);
   return work;
 }
 
 std::string CGUIInfoLabel::ReplaceAddonStrings(const std::string &label)
 {
   std::string work(label);
-  ReplaceString(work, "ADDON", AddonReplacer);
+  ReplaceSpecialKeywordReferences(work, "ADDON", AddonReplacer);
   return work;
 }
 

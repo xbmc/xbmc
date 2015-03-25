@@ -148,7 +148,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       break;
     case NODE_TYPE_YEAR:
       {
-        AddSortMethod(SortByLabel, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Title, Rating | Label, empty
+        AddSortMethod(SortByLabel, 562, LABEL_MASKS("%T", "%R", "%L", ""));  // Title, Rating | Label, empty
         SetSortMethod(SortByLabel);
 
         const CViewState *viewState = CViewStateSettings::Get().Get("videonavyears");
@@ -434,31 +434,6 @@ bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
     return CSettings::Get().GetBool("musicplayer.autoplaynextitem");
 
   return CSettings::Get().GetBool("videoplayer.autoplaynextitem");
-}
-
-bool CGUIViewStateWindowVideoNav::JumpToFirstUnplayedItem()
-{
-  if (m_items.IsVideoDb())
-  {
-    NODE_TYPE NodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_items.GetPath());
-    switch (NodeType)
-    {
-    case NODE_TYPE_EPISODES:
-      if (GetSortMethod().sortBy == SortBy::SortByEpisodeNumber)
-        return CSettings::Get().GetBool("videolibrary.jumptofirstunplayeditem");
-      else
-        return false;
-
-    case NODE_TYPE_SEASONS:
-      return CSettings::Get().GetBool("videolibrary.jumptofirstunplayeditem");
-
-    default:
-      return false;
-      break;
-    }
-  }
-
-  return CGUIViewStateWindowVideo::JumpToFirstUnplayedItem();
 }
 
 CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileItemList& items) : CGUIViewStateWindowVideo(items)

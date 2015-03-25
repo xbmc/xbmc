@@ -24,7 +24,6 @@ mv $TARGET_BUILD_DIR/$TARGET_NAME/$APP_NAME.bin $TARGET_BUILD_DIR/$TARGET_NAME/$
 
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/language"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/media"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/sounds"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/system"
@@ -37,7 +36,6 @@ ${SYNC} "$SRCROOT/xbmc/osx/Credits.html" 	"$TARGET_BUILD_DIR/$TARGET_NAME/AppDat
 ${ADDONSYNC} "$SRCROOT/addons"		"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 ${SYNC} "$SRCROOT/addons/visualization.glspectrum"   	"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
 ${SYNC} "$SRCROOT/addons/visualization.waveform"    	"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome/addons"
-${SYNC} "$SRCROOT/language"		"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 ${SYNC} "$SRCROOT/media" 		"$TARGET_BUILD_DIR/$TARGET_NAME/AppData/AppHome"
 
 SYNCSKIN_A=${SKINSYNC}

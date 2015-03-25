@@ -96,7 +96,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   // try the plugin type first, and if not found, try an unknown type
   if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) &&
       !CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN) &&
-      !CAddonInstaller::Get().PromptForInstall(url.GetHostName(), m_addon))
+      !CAddonInstaller::Get().InstallModal(url.GetHostName(), m_addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -132,7 +132,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
   bool success = false;
   std::string file = m_addon->LibPath();
-  int id = CScriptInvocationManager::Get().Execute(file, m_addon, argv);
+  int id = CScriptInvocationManager::Get().ExecuteAsync(file, m_addon, argv);
   if (id >= 0)
   { // wait for our script to finish
     std::string scriptName = m_addon->Name();
@@ -424,7 +424,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
     return false;
 
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) && !CAddonInstaller::Get().PromptForInstall(url.GetHostName(), addon))
+  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) && !CAddonInstaller::Get().InstallModal(url.GetHostName(), addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -446,7 +446,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
 
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
-  if (CScriptInvocationManager::Get().Execute(addon->LibPath(), addon, argv) >= 0)
+  if (CScriptInvocationManager::Get().ExecuteAsync(addon->LibPath(), addon, argv) >= 0)
     return true;
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", addon->Name().c_str());

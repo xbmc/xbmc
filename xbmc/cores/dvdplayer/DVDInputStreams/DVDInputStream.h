@@ -38,7 +38,6 @@ enum DVDStreamType
   DVDSTREAM_TYPE_FFMPEG = 5,
   DVDSTREAM_TYPE_TV     = 6,
   DVDSTREAM_TYPE_RTMP   = 7,
-  DVDSTREAM_TYPE_HTSP   = 8,
   DVDSTREAM_TYPE_MPLS   = 10,
   DVDSTREAM_TYPE_BLURAY = 11,
   DVDSTREAM_TYPE_PVRMANAGER = 12,
@@ -70,8 +69,8 @@ public:
     virtual bool NextChannel(bool preview = false) = 0;
     virtual bool PrevChannel(bool preview = false) = 0;
     virtual bool SelectChannelByNumber(unsigned int channel) = 0;
-    virtual bool SelectChannel(const PVR::CPVRChannel &channel) { return false; };
-    virtual bool GetSelectedChannel(PVR::CPVRChannelPtr&) { return false; };
+    virtual bool SelectChannel(const PVR::CPVRChannelPtr &channel) { return false; };
+    virtual PVR::CPVRChannelPtr GetSelectedChannel() { return PVR::CPVRChannelPtr(); };
     virtual bool UpdateItem(CFileItem& item) = 0;
     virtual bool CanRecord() = 0;
     virtual bool IsRecording() = 0;
@@ -101,7 +100,8 @@ public:
     virtual ~IChapter() {};
     virtual int  GetChapter() = 0;
     virtual int  GetChapterCount() = 0;
-    virtual void GetChapterName(std::string& name) = 0;
+    virtual void GetChapterName(std::string& name, int ch=-1) = 0;
+    virtual int64_t GetChapterPos(int ch=-1) = 0;
     virtual bool SeekChapter(int ch) = 0;
   };
 

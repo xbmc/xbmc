@@ -36,6 +36,7 @@ typedef enum
 namespace PVR
 {
   class CPVRChannel;
+  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 }
 
 class CAction;
@@ -95,13 +96,15 @@ public:
   float GetCachePercentage() const;
   int   GetChapterCount();
   int   GetChapter();
-  void  GetChapterName(std::string& strChapterName);
+  void  GetChapterName(std::string& strChapterName, int chapterIdx=-1);
+  int64_t GetChapterPos(int chapterIdx=-1);
   void  GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods);
   void  GetDeinterlaceModes(std::vector<int> &deinterlaceModes);
   void  GetGeneralInfo(std::string& strVideoInfo);
   float GetPercentage() const;
   std::string GetPlayerState();
   std::string GetPlayingTitle();
+  int   GetPreferredPlaylist() const;
   void  GetRenderFeatures(std::vector<int> &renderFeatures);
   void  GetScalingMethods(std::vector<int> &scalingMethods);
   bool  GetStreamDetails(CStreamDetails &details);
@@ -147,7 +150,7 @@ public:
   void  SetSubTitleDelay(float fValue = 0.0f);
   void  SetSubtitleVisible(bool bVisible);
   void  SetVolume(float volume);
-  bool  SwitchChannel(PVR::CPVRChannel &channel);
+  bool  SwitchChannel(const PVR::CPVRChannelPtr &channel);
   void  ToFFRW(int iSpeed = 0);
 
 #ifdef HAS_DS_PLAYER

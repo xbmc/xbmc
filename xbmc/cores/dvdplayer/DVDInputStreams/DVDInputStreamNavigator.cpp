@@ -471,6 +471,27 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           m_iPartCount = 0;
         m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
 
+        // get chapters' timestamps if we have not cached them yet
+        if (m_mapTitleChapters.find(m_iTitle) == m_mapTitleChapters.end())
+        {
+          uint64_t* times = NULL;
+          uint64_t duration;
+          unsigned int entries = m_dll.dvdnav_describe_title_chapters(m_dvdnav, m_iTitle, &times, &duration);
+
+          if (entries != m_iPartCount)
+            CLog::Log(LOGDEBUG, "%s - Number of chapters/positions differ: Chapters %d, positions %d\n", __FUNCTION__, m_iPartCount, entries);
+
+          if (times)
+          {
+            // the times array stores the end timestampes of the chapters, e.g., times[0] stores the position/beginning of chapter 2
+            m_mapTitleChapters[m_iTitle][1] = 0;
+            for (int i = 0; i < entries - 1; ++i)
+            {
+              m_mapTitleChapters[m_iTitle][i + 2] = times[i] / 90000;
+            }
+            m_dll.dvdnav_free(times);
+          }
+        }
         CLog::Log(LOGDEBUG, "%s - Cell change: Title %d, Chapter %d\n", __FUNCTION__, m_iTitle, m_iPart);
         CLog::Log(LOGDEBUG, "%s - At position %.0f%% inside the feature\n", __FUNCTION__, 100 * (double)pos / (double)len);
         //Get total segment time
@@ -861,10 +882,7 @@ bool CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId, DVDNavStream
     lang[1] = (subp_attributes.lang_code & 255);
     lang[0] = (subp_attributes.lang_code >> 8) & 255;
 
-    std::string temp;
-    g_LangCodeExpander.ConvertToThreeCharCode(temp, lang);
-    info.language = temp;
-
+    g_LangCodeExpander.ConvertToISO6392T(lang, info.language);
     return true;
   }
   return false;
@@ -1047,9 +1065,7 @@ bool CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId, DVDNavStreamInf
     lang[1] = (audio_attributes.lang_code & 255);
     lang[0] = (audio_attributes.lang_code >> 8) & 255;
 
-    std::string temp;
-    g_LangCodeExpander.ConvertToThreeCharCode(temp, lang);
-    info.language = temp;
+    g_LangCodeExpander.ConvertToISO6392T(lang, info.language);
 
     info.channels = audio_attributes.channels + 1;
 
@@ -1454,4 +1470,19 @@ bool CDVDInputStreamNavigator::GetDVDSerialString(std::string& serialStr)
   m_dll.dvdnav_get_serial_string(m_dvdnav, &str);
   serialStr.assign(str);
   return true;
+}
+
+int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)
+{
+  if (ch == -1 || ch > GetChapterCount()) 
+    ch = GetChapter();
+
+  std::map<int, std::map<int, int64_t>>::iterator title = m_mapTitleChapters.find(m_iTitle);
+  if (title != m_mapTitleChapters.end())
+  {
+    std::map<int, int64_t>::iterator chapter = title->second.find(ch);
+    if (chapter != title->second.end())
+      return chapter->second;
+  }
+  return 0;
 }

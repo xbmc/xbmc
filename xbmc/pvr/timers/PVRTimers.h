@@ -55,7 +55,7 @@ namespace PVR
     /**
      * Add a timer entry to this container, called by the client callback.
      */
-    bool UpdateFromClient(const CPVRTimerInfoTag &timer);
+    bool UpdateFromClient(const CPVRTimerInfoTagPtr &timer);
 
     /*!
      * @return The timer that will be active next (state scheduled), or an empty fileitemptr if none.
@@ -120,14 +120,14 @@ namespace PVR
      * @param bCurrentlyActiveOnly True to delete timers that are currently running only.
      * @return True if timers any were deleted, false otherwise.
      */
-    bool DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteRepeating = true, bool bCurrentlyActiveOnly = false);
+    bool DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDeleteRepeating = true, bool bCurrentlyActiveOnly = false);
 
     /*!
      * @brief Create a new instant timer on a channel.
      * @param channel The channel to create the timer on.
      * @return True if the timer was created, false otherwise.
      */
-    bool InstantTimer(const CPVRChannel &channel);
+    bool InstantTimer(const CPVRChannelPtr &channel);
 
     /*!
      * @return Next event time (timer or daily wake up)
@@ -138,7 +138,7 @@ namespace PVR
      * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will do this.
      * @return True if it was sent correctly, false if not.
      */
-    static bool AddTimer(const CPVRTimerInfoTag &item);
+    static bool AddTimer(const CPVRTimerInfoTagPtr &item);
 
     /*!
      * @brief Delete a timer on the client. Doesn't delete the timer from the container. The backend will do this.

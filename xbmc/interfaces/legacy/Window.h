@@ -114,8 +114,8 @@ namespace XBMCAddon
       friend class WindowDialogMixin;
       bool isDisposed;
 
-      void doAddControl(Control* pControl, CCriticalSection* gcontext, bool wait) throw (WindowException);
-      void doRemoveControl(Control* pControl, CCriticalSection* gcontext, bool wait) throw (WindowException);
+      void doAddControl(Control* pControl, CCriticalSection* gcontext, bool wait);
+      void doRemoveControl(Control* pControl, CCriticalSection* gcontext, bool wait);
 
     protected:
 #ifndef SWIG
@@ -137,7 +137,7 @@ namespace XBMCAddon
       // This only takes a boolean to allow subclasses to explicitly use it. A default
       //  constructor can be used as a concrete class and we need to tell the difference.
       //  subclasses should use this constructor and not the other.
-      Window(bool discrim) throw (WindowException);
+      Window(bool discrim);
 
       virtual void deallocating();
 
@@ -145,7 +145,7 @@ namespace XBMCAddon
        * This helper retrieves the next available id. It is assumed 
        *  that the global lock is already being held.
        */
-      static int getNextAvailalbeWindowId() throw (WindowException);
+      static int getNextAvailalbeWindowId();
 
       /**
        * Child classes MUST call this in their constructors. It should
@@ -165,14 +165,14 @@ namespace XBMCAddon
        * This is a helper method since getting
        *  a control by it's id is a common function
        */
-      Control* GetControlById(int iControlId, CCriticalSection* gc) throw (WindowException);
+      Control* GetControlById(int iControlId, CCriticalSection* gc);
 
       SWIGHIDDENVIRTUAL void PulseActionEvent();
       SWIGHIDDENVIRTUAL bool WaitForActionEvent(unsigned int milliseconds);
 #endif
 
     public:
-      Window(int existingWindowId = -1) throw (WindowException);
+      Window(int existingWindowId = -1);
 
       virtual ~Window();
 
@@ -267,7 +267,7 @@ namespace XBMCAddon
        *         - SystemError, on Internal error
        *         - RuntimeError, if control is not added to a window
        */
-      SWIGHIDDENVIRTUAL void setFocus(Control* pControl) throw (WindowException);
+      SWIGHIDDENVIRTUAL void setFocus(Control* pControl);
 
       /**
        * setFocusId(self, int) -- Gives the control with the supplied focus.
@@ -285,7 +285,7 @@ namespace XBMCAddon
        *         - SystemError, on Internal error
        *         - RuntimeError, if no control has focus
        */
-      SWIGHIDDENVIRTUAL Control* getFocus() throw (WindowException);
+      SWIGHIDDENVIRTUAL Control* getFocus();
 
       /**
        * getFocusId(self, int) -- returns the id of the control which is focused.
@@ -293,7 +293,7 @@ namespace XBMCAddon
        *         - SystemError, on Internal error
        *         - RuntimeError, if no control has focus
        */
-      SWIGHIDDENVIRTUAL long getFocusId() throw (WindowException);
+      SWIGHIDDENVIRTUAL long getFocusId();
 
       /**
        * removeControl(self, Control) -- Removes the control from this window.
@@ -304,7 +304,7 @@ namespace XBMCAddon
        * 
        * This will not delete the control. It is only removed from the window.
        */
-      SWIGHIDDENVIRTUAL void removeControl(Control* pControl) throw (WindowException);
+      SWIGHIDDENVIRTUAL void removeControl(Control* pControl);
 
       /**
        * removeControls(self, List) -- Removes a list of controls from this window.
@@ -315,7 +315,7 @@ namespace XBMCAddon
        *
        * This will not delete the controls. They are only removed from the window.
        */
-      SWIGHIDDENVIRTUAL void removeControls(std::vector<Control*> pControls) throw (WindowException);
+      SWIGHIDDENVIRTUAL void removeControls(std::vector<Control*> pControls);
 
       /**
        * getHeight(self) -- Returns the height of this screen.
@@ -361,7 +361,7 @@ namespace XBMCAddon
        *    - 8 - PAL60 4:3  (720x480)
        *    - 9 - PAL60 16:9 (720x480)n
        */
-      SWIGHIDDENVIRTUAL void setCoordinateResolution(long res) throw (WindowException);
+      SWIGHIDDENVIRTUAL void setCoordinateResolution(long res);
 
       /**
        * setProperty(key, value) -- Sets a window property, similar to an infolabel.
@@ -452,7 +452,7 @@ namespace XBMCAddon
        *   -ControlRadioButton
        *   -ControlProgressn
        */
-      SWIGHIDDENVIRTUAL void addControl(Control* pControl) throw (WindowException);
+      SWIGHIDDENVIRTUAL void addControl(Control* pControl);
 
       /**
        * addControls(self, List) -- Add a list of Controls to this window.
@@ -462,7 +462,7 @@ namespace XBMCAddon
        *        - ReferenceError, if control is already used in another window
        *        - RuntimeError, should not happen :-)
        */
-      SWIGHIDDENVIRTUAL void addControls(std::vector<Control*> pControls) throw (WindowException);
+      SWIGHIDDENVIRTUAL void addControls(std::vector<Control*> pControls);
 
       /**
        * getControl(self, int controlId) -- Get's the control from this window.
@@ -475,7 +475,7 @@ namespace XBMCAddon
        * Note, not python controls are not completely usable yet
        * You can only use the Control functions
        */
-      SWIGHIDDENVIRTUAL Control* getControl(int iControlId) throw (WindowException);
+      SWIGHIDDENVIRTUAL Control* getControl(int iControlId);
     };
   }
 }

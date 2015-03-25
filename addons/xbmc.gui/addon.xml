@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.gui" version="5.8.0" provider-name="Team-Kodi">
+<addon id="xbmc.gui" version="5.9.0" provider-name="Team-Kodi">
   <backwards-compatibility abi="5.3.0"/>
   <requires>
     <import addon="xbmc.core" version="0.1.0"/>
   </requires>
   <extension-point id="skin" schema="skin.xsd"/>
-  <extension-point id="webinterface" schema="webinterface.xsd"/>
 </addon>

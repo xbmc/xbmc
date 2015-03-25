@@ -147,7 +147,7 @@ JSONRPC_STATUS CPVROperations::GetChannelDetails(const std::string &method, ITra
   if (channel == NULL)
     return InvalidParams;
 
-  HandleFileItem("channelid", false, "channeldetails", CFileItemPtr(new CFileItem(*channel)), parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("channelid", false, "channeldetails", CFileItemPtr(new CFileItem(channel)), parameterObject, parameterObject["properties"], result, false);
     
   return OK;
 }
@@ -210,7 +210,8 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
   CVariant channel = parameterObject["channel"];
   if (channel.isString() && channel.asString() == "current")
   {
-    if (!g_PVRManager.GetCurrentChannel(pChannel))
+    pChannel = g_PVRManager.GetCurrentChannel();
+    if (!pChannel)
       return InternalError;
   }
   else if (channel.isInteger())
@@ -333,7 +334,7 @@ JSONRPC_STATUS CPVROperations::GetTimerDetails(const std::string &method, ITrans
   if (!timer)
     return InvalidParams;
 
-  HandleFileItem("timerid", false, "timerdetails", CFileItemPtr(new CFileItem(*timer)), parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("timerid", false, "timerdetails", CFileItemPtr(new CFileItem(timer)), parameterObject, parameterObject["properties"], result, false);
 
   return OK;
 }

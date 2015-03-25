@@ -19,14 +19,14 @@
  */
 
 #include "LangCodeExpander.h"
-#include "utils/XBMCTinyXML.h"
 #include "LangInfo.h"
+#include "Util.h"
 #include "utils/log.h" 
 #include "utils/StringUtils.h"
-#include "Util.h"
+#include "utils/XBMCTinyXML.h"
 
-#define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
-#define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
+#define MAKECODE(a, b, c, d)  ((((long)(a)) << 24) | (((long)(b)) << 16) | (((long)(c)) << 8) | (long)(d))
+#define MAKETWOCHARCODE(a, b) ((((long)(a)) << 8) | (long)(b)) 
 
 typedef struct LCENTRY
 {
@@ -37,29 +37,28 @@ typedef struct LCENTRY
 extern const struct LCENTRY g_iso639_1[186];
 extern const struct LCENTRY g_iso639_2[538];
 
-struct CharCodeConvertionWithHack
+struct ISO639
 {
-  const char* old;
-  const char* id;
+  const char* iso639_1;
+  const char* iso639_2;
   const char* win_id;
 };
 
-struct CharCodeConvertion
+struct ISO3166_1
 {
-  const char* old;
-  const char* id;
+  const char* alpha2;
+  const char* alpha3;
 };
 
 // declared as extern to allow forward declaration
-extern const CharCodeConvertionWithHack CharCode2To3[189];
-extern const CharCodeConvertion RegionCode2To3[246];
+extern const ISO639 LanguageCodes[189];
+extern const ISO3166_1 RegionCodes[246];
 
-CLangCodeExpander::CLangCodeExpander(void)
-{}
+CLangCodeExpander::CLangCodeExpander()
+{ }
 
-CLangCodeExpander::~CLangCodeExpander(void)
-{
-}
+CLangCodeExpander::~CLangCodeExpander()
+{ }
 
 void CLangCodeExpander::Clear()
 {
@@ -68,37 +67,39 @@ void CLangCodeExpander::Clear()
 
 void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
 {
-  if (pRootElement)
+  if (pRootElement != NULL)
   {
     m_mapUser.clear();
 
     std::string sShort, sLong;
 
     const TiXmlNode* pLangCode = pRootElement->FirstChild("code");
-    while (pLangCode)
+    while (pLangCode != NULL)
     {
       const TiXmlNode* pShort = pLangCode->FirstChildElement("short");
       const TiXmlNode* pLong = pLangCode->FirstChildElement("long");
-      if (pShort && pLong)
+      if (pShort != NULL && pLong != NULL)
       {
         sShort = pShort->FirstChild()->Value();
         sLong = pLong->FirstChild()->Value();
         StringUtils::ToLower(sShort);
+
         m_mapUser[sShort] = sLong;
       }
+
       pLangCode = pLangCode->NextSibling();
     }
   }
 }
 
-bool CLangCodeExpander::Lookup(std::string& desc, const std::string& code)
+bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
 {
   int iSplit = code.find("-");
   if (iSplit > 0)
   {
     std::string strLeft, strRight;
-    const bool bLeft = Lookup(strLeft, code.substr(0, iSplit));
-    const bool bRight = Lookup(strRight, code.substr(iSplit + 1));
+    const bool bLeft = Lookup(code.substr(0, iSplit), strLeft);
+    const bool bRight = Lookup(code.substr(iSplit + 1), strRight);
     if (bLeft || bRight)
     {
       desc = "";
@@ -117,160 +118,174 @@ bool CLangCodeExpander::Lookup(std::string& desc, const std::string& code)
         desc += " - ";
         desc += code.substr(iSplit + 1);
       }
+
       return true;
     }
+
     return false;
   }
-  else
-  {
-    if( LookupInMap(desc, code) )
-      return true;
 
-    if( LookupInDb(desc, code) )
-      return true;
-  }
+  if (LookupInUserMap(code, desc))
+    return true;
+
+  if (LookupInISO639Tables(code, desc))
+    return true;
+
   return false;
 }
 
-bool CLangCodeExpander::Lookup(std::string& desc, const int code)
+bool CLangCodeExpander::Lookup(const int code, std::string& desc)
 {
-
   char lang[3];
   lang[2] = 0;
-  lang[1] = (code & 255);
-  lang[0] = (code >> 8) & 255;
+  lang[1] = (code & 0xFF);
+  lang[0] = (code >> 8) & 0xFF;
 
-  return Lookup(desc, lang);
+  return Lookup(lang, desc);
 }
 
-bool CLangCodeExpander::ConvertTwoToThreeCharCode(std::string& strThreeCharCode, const std::string& strTwoCharCode, bool checkWin32Locales /*= false*/)
-{       
-  if ( strTwoCharCode.length() == 2 )
-  {
-    std::string strTwoCharCodeLower( strTwoCharCode );
-    StringUtils::ToLower(strTwoCharCodeLower);
-    StringUtils::Trim(strTwoCharCodeLower);
+bool CLangCodeExpander::ConvertISO6391ToISO6392T(const std::string& strISO6391, std::string& strISO6392T, bool checkWin32Locales /* = false */)
+{
+  // not a 2 char code
+  if (strISO6391.length() != 2)
+    return false;
 
-    for (unsigned int index = 0; index < ARRAY_SIZE(CharCode2To3); ++index)
+  std::string strISO6391Lower(strISO6391);
+  StringUtils::ToLower(strISO6391Lower);
+  StringUtils::Trim(strISO6391Lower);
+
+  for (unsigned int index = 0; index < ARRAY_SIZE(LanguageCodes); ++index)
+  {
+    if (strISO6391Lower == LanguageCodes[index].iso639_1)
     {
-      if (strTwoCharCodeLower == CharCode2To3[index].old)
+      if (checkWin32Locales && LanguageCodes[index].win_id)
       {
-        if (checkWin32Locales && CharCode2To3[index].win_id)
-        {
-          strThreeCharCode = CharCode2To3[index].win_id;
-          return true;
-        }
-        strThreeCharCode = CharCode2To3[index].id;
+        strISO6392T = LanguageCodes[index].win_id;
         return true;
       }
+
+      strISO6392T = LanguageCodes[index].iso639_2;
+      return true;
     }
   }
 
-  // not a 2 char code
   return false;
 }
 
-bool CLangCodeExpander::ConvertToThreeCharCode(std::string& strThreeCharCode, const std::string& strCharCode, bool checkXbmcLocales /*= true*/, bool checkWin32Locales /*= false*/)
+bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkWin32Locales /* = false */)
 {
+
+  //first search in the user defined map
+  if (LookupUserCode(strCharCode, strISO6392T))
+    return true;
+
   if (strCharCode.size() == 2)
-    return g_LangCodeExpander.ConvertTwoToThreeCharCode(strThreeCharCode, strCharCode, checkWin32Locales);
-  else if (strCharCode.size() == 3)
+    return g_LangCodeExpander.ConvertISO6391ToISO6392T(strCharCode, strISO6392T, checkWin32Locales);
+
+  if (strCharCode.size() == 3)
   {
     std::string charCode(strCharCode); StringUtils::ToLower(charCode);
-    for (unsigned int index = 0; index < ARRAY_SIZE(CharCode2To3); ++index)
+    for (unsigned int index = 0; index < ARRAY_SIZE(LanguageCodes); ++index)
     {
-      if (charCode == CharCode2To3[index].id ||
-           (checkWin32Locales && CharCode2To3[index].win_id != NULL && charCode == CharCode2To3[index].win_id) )
+      if (charCode == LanguageCodes[index].iso639_2 ||
+         (checkWin32Locales && LanguageCodes[index].win_id != NULL && charCode == LanguageCodes[index].win_id))
       {
-        strThreeCharCode = charCode;
+        strISO6392T = charCode;
         return true;
       }
     }
-    for (unsigned int index = 0; index < ARRAY_SIZE(RegionCode2To3); ++index)
+
+    for (unsigned int index = 0; index < ARRAY_SIZE(RegionCodes); ++index)
     {
-      if (charCode == RegionCode2To3[index].id)
+      if (charCode == RegionCodes[index].alpha3)
       {
-        strThreeCharCode = charCode;
+        strISO6392T = charCode;
         return true;
       }
     }
   }
   else if (strCharCode.size() > 3)
   {
-    for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+    for (unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
     {
       if (StringUtils::EqualsNoCase(strCharCode, g_iso639_2[i].name))
       {
-        CodeToString(g_iso639_2[i].code, strThreeCharCode);
+        CodeToString(g_iso639_2[i].code, strISO6392T);
         return true;
       }
     }
+  }
+  return false;
+}
 
-    if (checkXbmcLocales)
+bool CLangCodeExpander::LookupUserCode(const std::string& desc, std::string &userCode)
+{
+  for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
+  {
+    if (StringUtils::EqualsNoCase(desc, it->first) || StringUtils::EqualsNoCase(desc, it->second))
     {
-      CLangInfo langInfo;
-      if (!langInfo.CheckLoadLanguage(strCharCode))
-        return false;
+      userCode = it->first;
+      return true;
+    }
+  }
+  return false;
+}
 
-      strThreeCharCode = langInfo.GetLanguageCode();
-      return !strThreeCharCode.empty();
+#ifdef TARGET_WINDOWS
+bool CLangCodeExpander::ConvertISO36111Alpha2ToISO36111Alpha3(const std::string& strISO36111Alpha2, std::string& strISO36111Alpha3)
+{
+  if (strISO36111Alpha2.length() != 2)
+    return false;
+
+  std::string strLower(strISO36111Alpha2);
+  StringUtils::ToLower(strLower);
+  StringUtils::Trim(strLower);
+  for (unsigned int index = 0; index < ARRAY_SIZE(RegionCodes); ++index)
+  {
+    if (strLower == RegionCodes[index].alpha2)
+    {
+      strISO36111Alpha3 = RegionCodes[index].alpha3;
+      return true;
+    }
+  }
+
+  return true;
+}
+
+bool CLangCodeExpander::ConvertWindowsLanguageCodeToISO6392T(const std::string& strWindowsLanguageCode, std::string& strISO6392T)
+{
+  if (strWindowsLanguageCode.length() != 3)
+    return false;
+
+  std::string strLower(strWindowsLanguageCode);
+  StringUtils::ToLower(strLower);
+  for (unsigned int index = 0; index < ARRAY_SIZE(LanguageCodes); ++index)
+  {
+    if ((LanguageCodes[index].win_id && strLower == LanguageCodes[index].win_id) ||
+         strLower == LanguageCodes[index].iso639_2)
+    {
+      strISO6392T = LanguageCodes[index].iso639_2;
+      return true;
     }
   }
 
   return false;
 }
-
-#ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertLinuxToWindowsRegionCodes(const std::string& strTwoCharCode, std::string& strThreeCharCode)
-{
-  if (strTwoCharCode.length() != 2)
-    return false;
-
-  std::string strLower( strTwoCharCode );
-  StringUtils::ToLower(strLower);
-  StringUtils::Trim(strLower);
-  for (unsigned int index = 0; index < ARRAY_SIZE(RegionCode2To3); ++index)
-  {
-    if (strLower == RegionCode2To3[index].old)
-    {
-      strThreeCharCode = RegionCode2To3[index].id;
-      return true;
-    }
-  }
-
-  return true;
-}
-
-bool CLangCodeExpander::ConvertWindowsToGeneralCharCode(const std::string& strWindowsCharCode, std::string& strThreeCharCode)
-{
-  if (strWindowsCharCode.length() != 3)
-    return false;
-
-  std::string strLower(strWindowsCharCode);
-  StringUtils::ToLower(strLower);
-  for (unsigned int index = 0; index < ARRAY_SIZE(CharCode2To3); ++index)
-  {
-    if ((CharCode2To3[index].win_id && strLower == CharCode2To3[index].win_id) ||
-         strLower == CharCode2To3[index].id)
-    {
-      strThreeCharCode = CharCode2To3[index].id;
-      return true;
-    }
-  }
-
-  return true;
-}
 #endif
 
-bool CLangCodeExpander::ConvertToTwoCharCode(std::string& code, const std::string& lang, bool checkXbmcLocales /*= true*/)
+bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& code)
 {
   if (lang.empty())
     return false;
 
+  //first search in the user defined map
+  if (LookupUserCode(lang, code))
+    return true;
+
   if (lang.length() == 2)
   {
     std::string tmp;
-    if (Lookup(tmp, lang))
+    if (Lookup(lang, tmp))
     {
       code = lang;
       return true;
@@ -279,20 +294,20 @@ bool CLangCodeExpander::ConvertToTwoCharCode(std::string& code, const std::strin
   else if (lang.length() == 3)
   {
     std::string lower(lang); StringUtils::ToLower(lower);
-    for (unsigned int index = 0; index < ARRAY_SIZE(CharCode2To3); ++index)
+    for (unsigned int index = 0; index < ARRAY_SIZE(LanguageCodes); ++index)
     {
-      if (lower == CharCode2To3[index].id || (CharCode2To3[index].win_id && lower == CharCode2To3[index].win_id))
+      if (lower == LanguageCodes[index].iso639_2 || (LanguageCodes[index].win_id && lower == LanguageCodes[index].win_id))
       {
-        code = CharCode2To3[index].old;
+        code = LanguageCodes[index].iso639_1;
         return true;
       }
     }
 
-    for (unsigned int index = 0; index < ARRAY_SIZE(RegionCode2To3); ++index)
+    for (unsigned int index = 0; index < ARRAY_SIZE(RegionCodes); ++index)
     {
-      if (lower == RegionCode2To3[index].id)
+      if (lower == RegionCodes[index].alpha3)
       {
-        code = RegionCode2To3[index].old;
+        code = RegionCodes[index].alpha2;
         return true;
       }
     }
@@ -307,19 +322,12 @@ bool CLangCodeExpander::ConvertToTwoCharCode(std::string& code, const std::strin
       code = tmp;
       return true;
     }
-    else if (tmp.length() == 3)
-      return ConvertToTwoCharCode(code, tmp);
+
+    if (tmp.length() == 3)
+      return ConvertToISO6391(tmp, code);
   }
 
-  if (!checkXbmcLocales)
-    return false;
-
-  // try xbmc specific language names
-  CLangInfo langInfo;
-  if (!langInfo.CheckLoadLanguage(lang))
-    return false;
-
-  return ConvertToTwoCharCode(code, langInfo.GetLanguageCode(), false);
+  return false;
 }
 
 bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code)
@@ -329,9 +337,7 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
 
   std::string descTmp(desc);
   StringUtils::Trim(descTmp);
-  StringUtils::ToLower(descTmp);
-  STRINGLOOKUPTABLE::iterator it;
-  for (it = m_mapUser.begin(); it != m_mapUser.end() ; ++it)
+  for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
   {
     if (StringUtils::EqualsNoCase(descTmp, it->second))
     {
@@ -339,46 +345,49 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
       return true;
     }
   }
-  for(unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
+
+  for (unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
   {
-    if (descTmp == g_iso639_1[i].name)
+    if (StringUtils::EqualsNoCase(descTmp, g_iso639_1[i].name))
     {
       CodeToString(g_iso639_1[i].code, code);
       return true;
     }
   }
-  for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+
+  for (unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
   {
-    if (descTmp == g_iso639_2[i].name)
+    if (StringUtils::EqualsNoCase(descTmp, g_iso639_2[i].name))
     {
       CodeToString(g_iso639_2[i].code, code);
       return true;
     }
   }
+
   return false;
 }
 
-bool CLangCodeExpander::LookupInMap(std::string& desc, const std::string& code)
+bool CLangCodeExpander::LookupInUserMap(const std::string& code, std::string& desc)
 {
   if (code.empty())
     return false;
 
-  STRINGLOOKUPTABLE::iterator it;
-  //Make sure we convert to lowercase before trying to find it
+  // make sure we convert to lowercase before trying to find it
   std::string sCode(code);
   StringUtils::ToLower(sCode);
   StringUtils::Trim(sCode);
 
-  it = m_mapUser.find(sCode);
+  STRINGLOOKUPTABLE::iterator it = m_mapUser.find(sCode);
   if (it != m_mapUser.end())
   {
     desc = it->second;
     return true;
   }
+
   return false;
 }
 
-bool CLangCodeExpander::LookupInDb(std::string& desc, const std::string& code)
+bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::string& desc)
 {
   if (code.empty())
     return false;
@@ -388,24 +397,24 @@ bool CLangCodeExpander::LookupInDb(std::string& desc, const std::string& code)
   StringUtils::ToLower(sCode);
   StringUtils::Trim(sCode);
 
-  if(sCode.length() == 2)
+  if (sCode.length() == 2)
   {
     longcode = MAKECODE('\0', '\0', sCode[0], sCode[1]);
-    for(unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
+    for (unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
     {
-      if(g_iso639_1[i].code == longcode)
+      if (g_iso639_1[i].code == longcode)
       {
         desc = g_iso639_1[i].name;
         return true;
       }
     }
   }
-  else if(code.length() == 3)
+  else if (sCode.length() == 3)
   {
     longcode = MAKECODE('\0', sCode[0], sCode[1], sCode[2]);
-    for(unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+    for (unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
     {
-      if(g_iso639_2[i].code == longcode)
+      if (g_iso639_2[i].code == longcode)
       {
         desc = g_iso639_2[i].name;
         return true;
@@ -418,17 +427,18 @@ bool CLangCodeExpander::LookupInDb(std::string& desc, const std::string& code)
 void CLangCodeExpander::CodeToString(long code, std::string& ret)
 {
   ret.clear();
-  for (unsigned int j = 0 ; j < 4 ; j++)
+  for (unsigned int j = 0; j < 4; j++)
   {
-    char c = (char) code & 0xFF;
+    char c = (char)code & 0xFF;
     if (c == '\0')
       return;
+
     ret.insert(0, 1, c);
     code >>= 8;
   }
 }
 
-bool CLangCodeExpander::CompareFullLangNames(const std::string& lang1, const std::string& lang2)
+bool CLangCodeExpander::CompareFullLanguageNames(const std::string& lang1, const std::string& lang2)
 {
   if (StringUtils::EqualsNoCase(lang1, lang2))
     return true;
@@ -437,20 +447,19 @@ bool CLangCodeExpander::CompareFullLangNames(const std::string& lang1, const std
 
   if (!ReverseLookup(lang1, code1))
     return false;
-  else
-    code1 = lang1;
 
+  code1 = lang1;
   if (!ReverseLookup(lang2, code2))
     return false;
-  else
-    code2 = lang2;
 
+  code2 = lang2;
   Lookup(expandedLang1, code1);
   Lookup(expandedLang2, code2);
+
   return StringUtils::EqualsNoCase(expandedLang1, expandedLang2);
 }
 
-std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */)
+std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */, bool customNames /* = false */)
 {
   std::vector<std::string> languages;
   const LCENTRY *lang = g_iso639_1;
@@ -468,20 +477,26 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format 
     ++lang;
   }
 
+  if (customNames)
+  {
+    for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
+      languages.push_back(it->second);
+  }
+
   return languages;
 }
 
-bool CLangCodeExpander::CompareLangCodes(const std::string& code1, const std::string& code2)
+bool CLangCodeExpander::CompareISO639Codes(const std::string& code1, const std::string& code2)
 {
   if (StringUtils::EqualsNoCase(code1, code2))
     return true;
 
-  std::string expandedLang1, expandedLang2;
-
-  if (!Lookup(expandedLang1, code1))
+  std::string expandedLang1;
+  if (!Lookup(code1, expandedLang1))
     return false;
 
-  if (!Lookup(expandedLang2, code2))
+  std::string expandedLang2;
+  if (!Lookup(code2, expandedLang2))
     return false;
 
   return StringUtils::EqualsNoCase(expandedLang1, expandedLang2);
@@ -493,11 +508,12 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
     return lang;
 
   std::string two, three;
-  if (ConvertToTwoCharCode(two, lang))
+  if (ConvertToISO6391(lang, two))
   {
-    if (ConvertToThreeCharCode(three, two))
+    if (ConvertToISO6392T(two, three))
       return three;
   }
+
   return lang;
 }
 
@@ -1234,7 +1250,7 @@ extern const LCENTRY g_iso639_2[538] =
   { MAKECODE('\0','z','u','n'), "Zuni" },
 };
 
-const CharCodeConvertionWithHack CharCode2To3[189] =
+const ISO639 LanguageCodes[189] =
 {
   { "aa", "aar", NULL },
   { "ab", "abk", NULL },
@@ -1428,7 +1444,7 @@ const CharCodeConvertionWithHack CharCode2To3[189] =
 };
 
 // Based on ISO 3166
-const CharCodeConvertion RegionCode2To3[246] =
+const ISO3166_1 RegionCodes[246] =
 {
   { "af", "afg" },
   { "ax", "ala" },

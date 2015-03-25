@@ -22,7 +22,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialog.h"
 #include "GUIInfoManager.h"
-#include "Key.h"
+#include "input/Key.h"
 
 using namespace std;
 

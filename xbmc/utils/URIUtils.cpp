@@ -23,7 +23,6 @@
 #include "Application.h"
 #include "FileItem.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "filesystem/MythDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
@@ -139,7 +138,7 @@ void URIUtils::RemoveExtension(std::string& strFileName)
 
     std::string strFileMask;
     strFileMask = g_advancedSettings.m_pictureExtensions;
-    strFileMask += "|" + g_advancedSettings.m_musicExtensions;
+    strFileMask += "|" + g_advancedSettings.GetMusicExtensions();
     strFileMask += "|" + g_advancedSettings.m_videoExtensions;
     strFileMask += "|" + g_advancedSettings.m_subtitlesExtensions;
 #if defined(TARGET_DARWIN)
@@ -586,9 +585,6 @@ bool URIUtils::IsOnLAN(const std::string& strPath)
   if(IsPlugin(strPath))
     return false;
 
-  if(IsTuxBox(strPath))
-    return true;
-
   if(IsUPnP(strPath))
     return true;
 
@@ -929,16 +925,6 @@ bool URIUtils::IsUPnP(const std::string& strFile)
   return IsProtocol(strFile, "upnp");
 }
 
-bool URIUtils::IsTuxBox(const std::string& strFile)
-{
-  return IsProtocol(strFile, "tuxbox");
-}
-
-bool URIUtils::IsMythTV(const std::string& strFile)
-{
-  return IsProtocol(strFile, "myth");
-}
-
 bool URIUtils::IsHDHomeRun(const std::string& strFile)
 {
   return IsProtocol(strFile, "hdhomerun");
@@ -949,31 +935,15 @@ bool URIUtils::IsSlingbox(const std::string& strFile)
   return IsProtocol(strFile, "sling");
 }
 
-bool URIUtils::IsVTP(const std::string& strFile)
-{
-  return IsProtocol(strFile, "vtp");
-}
-
-bool URIUtils::IsHTSP(const std::string& strFile)
-{
-  return IsProtocol(strFile, "htsp");
-}
-
 bool URIUtils::IsLiveTV(const std::string& strFile)
 {
   std::string strFileWithoutSlash(strFile);
   RemoveSlashAtEnd(strFileWithoutSlash);
 
-  if(IsTuxBox(strFile)
-  || IsVTP(strFile)
-  || IsHDHomeRun(strFile)
+  if (IsHDHomeRun(strFile)
   || IsSlingbox(strFile)
-  || IsHTSP(strFile)
   || IsProtocol(strFile, "sap")
   ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings")))
-    return true;
-
-  if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
     return true;
 
   return false;
@@ -1007,22 +977,6 @@ bool URIUtils::IsNfs(const std::string& strFile)
 
   return IsProtocol(strFile, "nfs");
 }
-
-bool URIUtils::IsAfp(const std::string& strFile)
-{
-  if (IsStack(strFile))
-    return IsAfp(CStackDirectory::GetFirstStackedFile(strFile));
-
-  if (IsSpecial(strFile))
-    return IsAfp(CSpecialProtocol::TranslatePath(strFile));
-
-  CURL url(strFile);
-  if (HasParentInHostname(url))
-    return IsAfp(url.GetHostName());
-
-  return IsProtocol(strFile, "afp");
-}
-
 
 bool URIUtils::IsVideoDb(const std::string& strFile)
 {

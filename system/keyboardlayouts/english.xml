@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="English" layout="QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuiop</row>
+      <row>asdfghjkl</row>
+      <row>zxcvbnm</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOP</row>
+      <row>ASDFGHJKL</row>
+      <row>ZXCVBNM</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout language="English" layout="AZERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>azertyuiop</row>
+      <row>qsdfghjklm</row>
+      <row>wxcvbn</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>AZERTYUIOP</row>
+      <row>QSDFGHJKLM</row>
+      <row>WXCVBN</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~éèçà</row>
+    </keyboard>
+  </layout>
+  <layout language="English" layout="ABC">
+    <keyboard>
+      <row>0123456789</row>
+      <row>abcdefghij</row>
+      <row>klmnopqrst</row>
+      <row>uvwxyz</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>0123456789</row>
+      <row>ABCDEFGHIJ</row>
+      <row>KLMNOPQRST</row>
+      <row>UVWXYZ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+   </keyboard>
+  </layout>
+</keyboardlayouts>

@@ -355,13 +355,13 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     }
 
     if (item->HasPVRChannelInfoTag())
-      FillDetails(item->GetPVRChannelInfoTag(), item, fields, object, thumbLoader);
+      FillDetails(item->GetPVRChannelInfoTag().get(), item, fields, object, thumbLoader);
     if (item->HasEPGInfoTag())
       FillDetails(item->GetEPGInfoTag().get(), item, fields, object, thumbLoader);
     if (item->HasPVRRecordingInfoTag())
       FillDetails(item->GetPVRRecordingInfoTag().get(), item, fields, object, thumbLoader);
     if (item->HasPVRTimerInfoTag())
-      FillDetails(item->GetPVRTimerInfoTag(), item, fields, object, thumbLoader);
+      FillDetails(item->GetPVRTimerInfoTag().get(), item, fields, object, thumbLoader);
     if (item->HasVideoInfoTag())
       FillDetails(item->GetVideoInfoTag(), item, fields, object, thumbLoader);
     if (item->HasMusicInfoTag())

@@ -21,7 +21,7 @@
  */
 
 #include "TeletextDefines.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "guilib/GUITexture.h"
 
 // stuff for freetype

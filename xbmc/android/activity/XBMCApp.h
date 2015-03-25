@@ -30,7 +30,7 @@
 #include "IInputHandler.h"
 
 #include "xbmc.h"
-#include "android/jni/Context.h"
+#include "android/jni/Activity.h"
 #include "android/jni/BroadcastReceiver.h"
 #include "threads/Event.h"
 
@@ -52,8 +52,7 @@ struct androidPackage
   std::string packageLabel;
 };
 
-
-class CXBMCApp : public IActivityHandler, public CJNIContext, public CJNIBroadcastReceiver
+class CXBMCApp : public IActivityHandler, public CJNIApplicationMainActivity, public CJNIBroadcastReceiver
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
@@ -85,6 +84,9 @@ public:
   static int android_printf(const char *format, ...);
   
   static int GetBatteryLevel();
+  static bool EnableWakeLock(bool on);
+  static bool HasFocus();
+
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static std::vector <androidPackage> GetApplications();
   static bool GetIconSize(const std::string &packageName, int *width, int *height);
@@ -112,15 +114,15 @@ protected:
 
 private:
   static bool HasLaunchIntent(const std::string &package);
-  bool getWakeLock();
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
   void run();
   void stop();
   void SetupEnv();
   static ANativeActivity *m_activity;
-  CJNIWakeLock *m_wakeLock;
-  static int m_batteryLevel;  
-  static int m_initialVolume;  
+  static CJNIWakeLock *m_wakeLock;
+  static int m_batteryLevel;
+  static int m_initialVolume;
+  static bool m_hasFocus;
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;

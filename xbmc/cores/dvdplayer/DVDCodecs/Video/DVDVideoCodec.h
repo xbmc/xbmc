@@ -172,6 +172,7 @@ class CDVDCodecOptions;
 #define VC_FLUSHED  0x00000010  // the decoder lost it's state, we need to restart decoding again
 #define VC_DROPPED  0x00000020  // needed to identify if a picture was dropped
 #define VC_NOBUFFER 0x00000040  // last FFmpeg GetBuffer failed
+#define VC_REOPEN   0x00000080  // decoder request to re-open
 
 class CDVDVideoCodec
 {
@@ -339,4 +340,10 @@ public:
    *
    */
   virtual void SetCodecControl(int flags) {}
+
+  /*
+    * Re-open the decoder.
+    * Decoder request to re-open
+    */
+   virtual void Reopen() {};
 };

@@ -22,6 +22,7 @@
 #include "AddonCallbacksPVR.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 
 #include "epg/EpgContainer.h"
@@ -130,7 +131,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const AD
   else if (group->IsRadio() == channel->IsRadio())
   {
     /* transfer this entry to the group */
-    group->AddToGroup(*channel, member->iChannelNumber);
+    group->AddToGroup(channel, member->iChannelNumber);
   }
 }
 
@@ -170,7 +171,7 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HA
   }
 
   /* transfer this entry to the internal channels group */
-  CPVRChannel transferChannel(*channel, client->GetID());
+  CPVRChannelPtr transferChannel(new CPVRChannel(*channel, client->GetID()));
   xbmcChannels->UpdateFromClient(transferChannel);
 }
 
@@ -219,7 +220,7 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
   }
 
   /* transfer this entry to the timers container */
-  CPVRTimerInfoTag transferTimer(*timer, channel, client->GetID());
+  CPVRTimerInfoTagPtr transferTimer(new CPVRTimerInfoTag(*timer, channel, client->GetID()));
   xbmcTimers->UpdateFromClient(transferTimer);
 }
 

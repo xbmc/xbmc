@@ -31,7 +31,7 @@
 #include "dialogs/GUIDialogTextViewer.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
 #include "utils/StringUtils.h"
@@ -55,7 +55,9 @@ using namespace ADDON;
 using namespace XFILE;
 
 CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
-  : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml"), m_jobid(0)
+  : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml"),
+  m_jobid(0),
+  m_changelog(false)
 {
   m_item = CFileItemPtr(new CFileItem);
   m_loadType = KEEP_IN_MEMORY;
@@ -150,18 +152,14 @@ void CGUIDialogAddonInfo::OnInitWindow()
 
 void CGUIDialogAddonInfo::UpdateControls()
 {
-  std::string xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   bool isInstalled = NULL != m_localAddon.get();
-  bool isSystem = isInstalled && StringUtils::StartsWith(m_localAddon->Path(), xbmcPath);
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();
   bool isUpdatable = isInstalled && m_item->GetProperty("Addon.UpdateAvail").asBoolean();
   bool isExecutable = isInstalled && (m_localAddon->Type() == ADDON_PLUGIN || m_localAddon->Type() == ADDON_SCRIPT);
   if (isInstalled)
     GrabRollbackVersions();
 
-  // TODO: System addons should be able to be disabled
-  bool isPVR = isInstalled && m_localAddon->Type() == ADDON_PVRDLL;
-  bool canDisable = isInstalled && (!isSystem || isPVR) && !m_localAddon->IsInUse();
+  bool canDisable = isInstalled && CAddonMgr::Get().CanAddonBeDisabled(m_localAddon->ID());
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 

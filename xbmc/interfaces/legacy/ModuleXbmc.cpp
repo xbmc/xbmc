@@ -178,7 +178,7 @@ namespace XBMCAddon
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       XBMC_TRACE;
-      std::string lang = CSettings::Get().GetString("locale.language");
+      std::string lang = g_langInfo.GetEnglishLanguageName();
 
       switch (format)
       {
@@ -194,12 +194,12 @@ namespace XBMCAddon
       case CLangCodeExpander::ISO_639_1:
         {
           std::string langCode;
-          g_LangCodeExpander.ConvertToTwoCharCode(langCode, lang);
+          g_LangCodeExpander.ConvertToISO6391(lang, langCode);
           if (region)
           {
             std::string region = g_langInfo.GetRegionLocale();
             std::string region2Code;
-            g_LangCodeExpander.ConvertToTwoCharCode(region2Code, region);
+            g_LangCodeExpander.ConvertToISO6391(region, region2Code);
             region2Code = "-" + region2Code;
             return (langCode += region2Code);
           }
@@ -208,12 +208,12 @@ namespace XBMCAddon
       case CLangCodeExpander::ISO_639_2:
         {
           std::string langCode;
-          g_LangCodeExpander.ConvertToThreeCharCode(langCode, lang);
+          g_LangCodeExpander.ConvertToISO6392T(lang, langCode);
           if (region)
           {
             std::string region = g_langInfo.GetRegionLocale();
             std::string region3Code;
-            g_LangCodeExpander.ConvertToThreeCharCode(region3Code, region);
+            g_LangCodeExpander.ConvertToISO6392T(region, region3Code);
             region3Code = "-" + region3Code;
             return (langCode += region3Code);
           }
@@ -425,7 +425,7 @@ namespace XBMCAddon
           StringUtils::Replace(result, "YYYY", "%Y");
         }
       else if (strcmpi(id, "tempunit") == 0)
-        result = g_langInfo.GetTempUnitString();
+        result = g_langInfo.GetTemperatureUnitString();
       else if (strcmpi(id, "speedunit") == 0)
         result = g_langInfo.GetSpeedUnitString();
       else if (strcmpi(id, "time") == 0)
@@ -439,8 +439,8 @@ namespace XBMCAddon
         }
       else if (strcmpi(id, "meridiem") == 0)
         result = StringUtils::Format("%s/%s",
-                                     g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM).c_str(),
-                                     g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM).c_str());
+                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM).c_str(),
+                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM).c_str());
 
       return result;
     }
@@ -453,7 +453,7 @@ namespace XBMCAddon
       if (strcmpi(mediaType, "video") == 0)
         result = g_advancedSettings.m_videoExtensions;
       else if (strcmpi(mediaType, "music") == 0)
-        result = g_advancedSettings.m_musicExtensions;
+        result = g_advancedSettings.GetMusicExtensions();
       else if (strcmpi(mediaType, "picture") == 0)
         result = g_advancedSettings.m_pictureExtensions;
 
@@ -495,20 +495,20 @@ namespace XBMCAddon
       {
       case CLangCodeExpander::ENGLISH_NAME:
         {
-          g_LangCodeExpander.Lookup(convertedLanguage, language);
+          g_LangCodeExpander.Lookup(language, convertedLanguage);
           // maybe it's a check whether the language exists or not
           if (convertedLanguage.empty())
           {
-            g_LangCodeExpander.ConvertToThreeCharCode(convertedLanguage, language);
+            g_LangCodeExpander.ConvertToISO6392T(language, convertedLanguage);
             g_LangCodeExpander.Lookup(convertedLanguage, convertedLanguage);
           }
           break;
         }
       case CLangCodeExpander::ISO_639_1:
-        g_LangCodeExpander.ConvertToTwoCharCode(convertedLanguage, language);
+        g_LangCodeExpander.ConvertToISO6391(language, convertedLanguage);
         break;
       case CLangCodeExpander::ISO_639_2:
-        g_LangCodeExpander.ConvertToThreeCharCode(convertedLanguage, language);
+        g_LangCodeExpander.ConvertToISO6392T(language, convertedLanguage);
         break;
       default:
         return "";

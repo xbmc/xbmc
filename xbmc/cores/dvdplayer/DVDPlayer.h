@@ -266,7 +266,8 @@ public:
 
   virtual int  GetChapterCount();
   virtual int  GetChapter();
-  virtual void GetChapterName(std::string& strChapterName);
+  virtual void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
+  virtual int64_t GetChapterPos(int chapterIdx=-1);
   virtual int  SeekChapter(int iChapter);
 
   virtual void SeekTime(int64_t iTime);
@@ -286,7 +287,7 @@ public:
 
   virtual std::string GetPlayingTitle();
 
-  virtual bool SwitchChannel(PVR::CPVRChannel &channel);
+  virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
   virtual bool CachePVRStream(void) const;
 
   enum ECacheState
@@ -479,8 +480,7 @@ protected:
       dts           = DVD_NOPTS_VALUE;
       player_state  = "";
       chapter       = 0;
-      chapter_name  = "";
-      chapter_count = 0;
+      chapters.clear();
       canrecord     = false;
       recording     = false;
       canpause      = false;
@@ -505,9 +505,8 @@ protected:
 
     std::string player_state;  // full player state
 
-    int         chapter;      // current chapter
-    std::string chapter_name; // name of current chapter
-    int         chapter_count;// number of chapter
+    int         chapter;      		   // current chapter
+    std::vector<std::pair<std::string, int64_t>> chapters; // name and position for chapters
 
     bool canrecord;           // can input stream record
     bool recording;           // are we currently recording

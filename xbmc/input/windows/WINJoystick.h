@@ -22,9 +22,9 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <list>
 #include <memory>
 #include <stdint.h>
-#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
 #define JACTIVE_BUTTON 0x00000001
@@ -55,19 +55,19 @@ typedef std::vector<AxisConfig> AxesConfig; // [<axis, isTrigger, rest state val
 class CRegExp;
 
 // Class to manage all connected joysticks
-class CJoystick : public ISettingCallback
+class CJoystick
 {
 public:
   CJoystick();
   ~CJoystick();
 
-  virtual void OnSettingChanged(const CSetting *setting);
   void Initialize();
   void Reset();
   void Update();
 
   bool GetButton(std::string &joyName, int &id, bool consider_repeat = true);
   bool GetAxis(std::string &joyName, int &id);
+  bool GetAxes(std::list<std::pair<std::string, int> >& axes, bool consider_still = false);
   bool GetHat(std::string &joyName, int &id, int &position, bool consider_repeat = true);
   float GetAmount(const std::string &joyName, int axisNum) const;
 

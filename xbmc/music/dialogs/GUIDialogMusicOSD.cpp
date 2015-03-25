@@ -20,8 +20,8 @@
 
 #include "GUIDialogMusicOSD.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
-#include "input/MouseStat.h"
+#include "input/Key.h"
+#include "input/InputManager.h"
 #include "GUIUserMessages.h"
 #include "settings/Settings.h"
 #include "addons/GUIWindowAddonBrowser.h"
@@ -64,6 +64,21 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       return true;
     }
     break;
+  case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
+    {
+      CGUIDialog *pDialog;
+
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_GUIDE);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
+    }
+    break;
   }
   return CGUIDialog::OnMessage(message);
 }
@@ -88,8 +103,9 @@ void CGUIDialogMusicOSD::FrameMove()
   if (m_autoClosing)
   {
     // check for movement of mouse or a submenu open
-    if (g_Mouse.IsActive() || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS)
-                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST))
+    if (CInputManager::Get().IsMouseActive() ||
+        g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS) ||
+        g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST))
       // extend show time by original value
       SetAutoClose(m_showDuration);
   }

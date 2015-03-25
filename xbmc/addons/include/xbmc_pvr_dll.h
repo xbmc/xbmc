@@ -176,7 +176,7 @@ extern "C"
    * Show the channel scan dialog if this backend supports it.
    * @return PVR_ERROR_NO_ERROR if the dialog was displayed successfully.
    * @remarks Required if bSupportsChannelScan is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
-   * @note see libXBMC_gui.h about related parts
+   * @note see libKODI_guilib.h about related parts
    */
   PVR_ERROR OpenDialogChannelScan(void);
 
@@ -227,7 +227,7 @@ extern "C"
    * @param channel The channel to show the dialog for.
    * @return PVR_ERROR_NO_ERROR if the dialog has been displayed successfully.
    * @remarks Required if bSupportsChannelSettings is set to true.
-   * @note see libXBMC_gui.h about related parts
+   * @note see libKODI_guilib.h about related parts
    */
   PVR_ERROR OpenDialogChannelSettings(const PVR_CHANNEL& channel);
 
@@ -236,7 +236,7 @@ extern "C"
    * @param channel The channel to add.
    * @return PVR_ERROR_NO_ERROR if the channel has been added successfully.
    * @remarks Required if bSupportsChannelSettings is set to true.
-   * @note see libXBMC_gui.h about related parts
+   * @note see libKODI_guilib.h about related parts
    */
   PVR_ERROR OpenDialogChannelAdd(const PVR_CHANNEL& channel);
   //@}

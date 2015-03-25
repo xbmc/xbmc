@@ -28,7 +28,7 @@
 #include "interfaces/legacy/WindowDialog.h"
 #include "interfaces/legacy/Dialog.h"
 #include "interfaces/legacy/WindowXML.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 
 using namespace XBMCAddon;
 using namespace xbmcgui;
@@ -42,6 +42,8 @@ using namespace xbmcgui;
 // This is all about warning suppression. It's OK that these base classes are 
 // not part of what swig parses.
 %feature("knownbasetypes") XBMCAddon::xbmcgui "AddonClass,AddonCallback"
+
+%feature("knownapitypes") XBMCAddon::xbmcgui "XBMCAddon::xbmc::InfoTagVideo,xbmc::InfoTagMusic"
 
 %include "interfaces/legacy/swighelper.h"
 %include "interfaces/legacy/AddonString.h"
@@ -114,4 +116,4 @@ using namespace xbmcgui;
 
 %include "interfaces/legacy/WindowXML.h"
 
-%include "guilib/Key.h"
+%include "input/Key.h"

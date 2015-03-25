@@ -1,12 +1,13 @@
 SRCS=ButtonTranslator.cpp \
      InertialScrollingHandler.cpp \
      KeyboardLayout.cpp \
-     KeyboardLayoutConfiguration.cpp \
+     KeyboardLayoutManager.cpp \
      KeyboardStat.cpp \
      MouseStat.cpp \
      SDLJoystick.cpp \
      XBMC_keytable.cpp \
      InputManager.cpp \
+     Key.cpp
      
 LIB=input.a
 

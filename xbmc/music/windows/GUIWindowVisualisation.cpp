@@ -25,7 +25,7 @@
 #include "GUIInfoManager.h"
 #include "music/dialogs/GUIDialogVisualisationPresetList.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 

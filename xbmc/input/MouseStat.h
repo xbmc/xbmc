@@ -21,7 +21,6 @@
  *
  */
 
-#include "settings/lib/ISettingCallback.h"
 #include "windowing/XBMC_events.h"
 
 #define XBMC_BUTTON(X)		(1 << ((X)-1))
@@ -32,20 +31,40 @@
 #define XBMC_BUTTON_WHEELDOWN	5
 #define XBMC_BUTTON_X1		6
 #define XBMC_BUTTON_X2		7
+#define XBMC_BUTTON_X3		8
+#define XBMC_BUTTON_X4		9
 #define XBMC_BUTTON_LMASK	XBMC_BUTTON(XBMC_BUTTON_LEFT)
 #define XBMC_BUTTON_MMASK	XBMC_BUTTON(XBMC_BUTTON_MIDDLE)
 #define XBMC_BUTTON_RMASK	XBMC_BUTTON(XBMC_BUTTON_RIGHT)
 #define XBMC_BUTTON_X1MASK	XBMC_BUTTON(XBMC_BUTTON_X1)
 #define XBMC_BUTTON_X2MASK	XBMC_BUTTON(XBMC_BUTTON_X2)
+#define XBMC_BUTTON_X3MASK	XBMC_BUTTON(XBMC_BUTTON_X3)
+#define XBMC_BUTTON_X4MASK	XBMC_BUTTON(XBMC_BUTTON_X4)
 
 #define MOUSE_MINIMUM_MOVEMENT 2
 #define MOUSE_DOUBLE_CLICK_LENGTH 500L
 #define MOUSE_ACTIVE_LENGTH   5000L
 
-#define MOUSE_MAX_BUTTON 5
+#define MOUSE_MAX_BUTTON 7
 
-enum MOUSE_STATE { MOUSE_STATE_NORMAL = 1, MOUSE_STATE_FOCUS, MOUSE_STATE_DRAG, MOUSE_STATE_CLICK };
-enum MOUSE_BUTTON { MOUSE_LEFT_BUTTON = 0, MOUSE_RIGHT_BUTTON, MOUSE_MIDDLE_BUTTON, MOUSE_EXTRA_BUTTON1, MOUSE_EXTRA_BUTTON2 };
+enum MOUSE_STATE 
+{ 
+  MOUSE_STATE_NORMAL = 1, /*! < Normal state */
+  MOUSE_STATE_FOCUS,      /*! < Control below the mouse is currently in focus */
+  MOUSE_STATE_DRAG,       /*! < A drag operation is being performed */
+  MOUSE_STATE_CLICK       /*! < A mousebutton is being clicked */
+};
+
+enum MOUSE_BUTTON
+{
+  MOUSE_LEFT_BUTTON = 0,
+  MOUSE_RIGHT_BUTTON,
+  MOUSE_MIDDLE_BUTTON,
+  MOUSE_EXTRA_BUTTON1,
+  MOUSE_EXTRA_BUTTON2,
+  MOUSE_EXTRA_BUTTON3,
+  MOUSE_EXTRA_BUTTON4
+};
 
 // this holds everything we know about the current state of the mouse
 struct MouseState
@@ -59,15 +78,19 @@ struct MouseState
   bool active;        // true if the mouse is active
 };
 
+struct MousePosition
+{
+  int x;
+  int y;
+};
+
 class CAction;
 
-class CMouseStat : public ISettingCallback
+class CMouseStat
 {
 public:
   CMouseStat();
   virtual ~CMouseStat();
-
-  virtual void OnSettingChanged(const CSetting *setting);
 
   void Initialize();
   void HandleEvent(XBMC_Event& newEvent);
@@ -86,6 +109,7 @@ public:
   inline int GetY(void) const { return m_mouseState.y; }
   inline int GetDX(void) const { return m_mouseState.dx; }
   inline int GetDY(void) const { return m_mouseState.dy; }
+  MousePosition GetPosition() { return MousePosition{ m_mouseState.x, m_mouseState.y }; }
 
 private:
   /*! \brief Holds information regarding a particular mouse button state
@@ -174,8 +198,6 @@ private:
 
   uint32_t m_Key;
 };
-
-extern CMouseStat g_Mouse;
 
 #endif
 

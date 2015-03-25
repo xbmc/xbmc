@@ -296,11 +296,6 @@ TEST_F(TestURIUtils, IsSlingbox)
   EXPECT_TRUE(URIUtils::IsSlingbox("sling://path/to/file"));
 }
 
-TEST_F(TestURIUtils, IsHTSP)
-{
-  EXPECT_TRUE(URIUtils::IsHTSP("htsp://path/to/file"));
-}
-
 TEST_F(TestURIUtils, IsInArchive)
 {
   EXPECT_TRUE(URIUtils::IsInArchive("zip://path/to/file"));
@@ -332,13 +327,9 @@ TEST_F(TestURIUtils, IsISO9660)
 
 TEST_F(TestURIUtils, IsLiveTV)
 {
-  EXPECT_TRUE(URIUtils::IsLiveTV("tuxbox://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsLiveTV("vtp://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("hdhomerun://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("sling://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsLiveTV("htsp://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("sap://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsLiveTV("myth://path/channels/"));
 }
 
 TEST_F(TestURIUtils, IsMultiPath)
@@ -351,21 +342,10 @@ TEST_F(TestURIUtils, IsMusicDb)
   EXPECT_TRUE(URIUtils::IsMusicDb("musicdb://path/to/file"));
 }
 
-TEST_F(TestURIUtils, IsMythTV)
-{
-  EXPECT_TRUE(URIUtils::IsMythTV("myth://path/to/file"));
-}
-
 TEST_F(TestURIUtils, IsNfs)
 {
   EXPECT_TRUE(URIUtils::IsNfs("nfs://path/to/file"));
   EXPECT_TRUE(URIUtils::IsNfs("stack://nfs://path/to/file"));
-}
-
-TEST_F(TestURIUtils, IsAfp)
-{
-  EXPECT_TRUE(URIUtils::IsAfp("afp://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsAfp("stack://afp://path/to/file"));
 }
 
 TEST_F(TestURIUtils, IsOnDVD)
@@ -384,7 +364,6 @@ TEST_F(TestURIUtils, IsOnLAN)
   EXPECT_TRUE(URIUtils::IsOnLAN("stack://daap://path/to/file"));
   EXPECT_TRUE(URIUtils::IsOnLAN("daap://path/to/file"));
   EXPECT_FALSE(URIUtils::IsOnLAN("plugin://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsOnLAN("tuxbox://path/to/file"));
   EXPECT_TRUE(URIUtils::IsOnLAN("upnp://path/to/file"));
 }
 
@@ -429,11 +408,6 @@ TEST_F(TestURIUtils, IsStack)
   EXPECT_TRUE(URIUtils::IsStack("stack://path/to/file"));
 }
 
-TEST_F(TestURIUtils, IsTuxBox)
-{
-  EXPECT_TRUE(URIUtils::IsTuxBox("tuxbox://path/to/file"));
-}
-
 TEST_F(TestURIUtils, IsUPnP)
 {
   EXPECT_TRUE(URIUtils::IsUPnP("upnp://path/to/file"));
@@ -448,11 +422,6 @@ TEST_F(TestURIUtils, IsURL)
 TEST_F(TestURIUtils, IsVideoDb)
 {
   EXPECT_TRUE(URIUtils::IsVideoDb("videodb://path/to/file"));
-}
-
-TEST_F(TestURIUtils, IsVTP)
-{
-  EXPECT_TRUE(URIUtils::IsVTP("vtp://path/to/file"));
 }
 
 TEST_F(TestURIUtils, IsZIP)
@@ -530,7 +499,6 @@ TEST_F(TestURIUtils, HasEncodedFilename)
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("shout://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("daap://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("dav://")));
-  EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("tuxbox://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("rss://")));
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("davs://")));
 }

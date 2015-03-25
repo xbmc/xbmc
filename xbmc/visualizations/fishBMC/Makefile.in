@@ -13,8 +13,6 @@ OBJS = analyst.o \
   vectorfield.o \
   wavepainter.o
 
-  DEFINES += -DHAS_SDL
-  DEFINES += -DHAS_SDL_OPENGL
   ifeq ($(findstring osx,$(ARCH)), osx)
     LDFLAGS += -framework OpenGL
   else

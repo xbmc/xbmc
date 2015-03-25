@@ -2,7 +2,6 @@ include ../../depends/Makefile.include
 
 OBJS = libcurl.so \
   librtmp.so \
-  libafpclient.so  \
   libplist.so libshairplay.so \
   libxbogg.so libxbvorbis.so libxbvorbisfile.so libxbmpeg2.so \
   libxbmpeg2convert.so libnfs.so libass.so libbluray.so
@@ -11,7 +10,7 @@ PLATFORM_OBJS =
 EXCLUDED_ADDONS = screensaver.rsxs.euphoria visualization.dxspectrum visualization.milkdrop visualization.projectm
 
 XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
-COPYDIRS = system addons language media
+COPYDIRS = system addons media
 GCC_VERSION=$(shell $(CC) -dumpversion)
 ZIP=zip
 
@@ -106,7 +105,6 @@ res:
 	cp -fp media/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
 	cp -fp media/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
-	cp -fp media/drawable-xhdpi/ouya_icon.png xbmc/res/drawable-xhdpi/ouya_icon.png
 	cp xbmc/strings.xml xbmc/res/values/
 	mkdir -p tmp/res; $(AAPT) c -S xbmc/res -C tmp/res; cp -r -n xbmc/res tmp/ || true
 	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME_LC@app-debug-skeleton.apk -J xbmc/src

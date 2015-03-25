@@ -1,0 +1,53 @@
+set(CMAKE_SYSTEM_VERSION 1)
+set(OS "@platform_os@")
+set(CPU "@use_cpu@")
+set(PLATFORM "@use_platform@")
+if("${OS}" STREQUAL "linux" OR "${OS}" STREQUAL "android")
+  set(CMAKE_SYSTEM_NAME Linux)
+endif()
+
+set(CMAKE_FIND_ROOT_PATH @CMAKE_FIND_ROOT_PATH@)
+
+# set special CORE_SYSTEM_NAME
+if("${OS}" STREQUAL "android")
+  set(CORE_SYSTEM_NAME android)
+  list(APPEND CMAKE_FIND_ROOT_PATH @use_toolchain@/sysroot/usr)
+elseif("${OS}" STREQUAL "ios")
+  set(CORE_SYSTEM_NAME ios)
+elseif("${PLATFORM}" STREQUAL "raspberry-pi")
+  set(CORE_SYSTEM_NAME rbpi)
+  list(APPEND CMAKE_FIND_ROOT_PATH @use_firmware@/opt/vc)
+  set(CMAKE_LIBRARY_PATH @CMAKE_FIND_ROOT_PATH@/lib:@use_firmware@/opt/vc/lib)
+  set(CMAKE_INCLUDE_PATH @CMAKE_FIND_ROOT_PATH@/include:@use_firmware@/opt/vc/include)
+endif()
+
+
+if("${OS}" STREQUAL "ios" OR "${OS}" STREQUAL "osx")
+  set(CMAKE_OSX_SYSROOT @use_sdk_path@)
+  list(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_OSX_SYSROOT} ${CMAKE_OSX_SYSROOT}/usr)
+  set(CMAKE_LIBRARY_PATH @CMAKE_FIND_ROOT_PATH@/lib:@use_sdk_path@/lib)
+  set(CMAKE_INCLUDE_PATH @CMAKE_FIND_ROOT_PATH@/include:@use_sdk_path@/include)
+endif()
+
+# specify the cross compiler
+set(CMAKE_C_COMPILER   @CC@)
+set(CMAKE_CXX_COMPILER @CXX@)
+set(CMAKE_AR @AR@ CACHE FILEPATH "Archiver")
+set(CMAKE_LINKER @LD@ CACHE FILEPATH "Linker")
+set(CMAKE_C_FLAGS "@platform_cflags@ @platform_includes@")
+set(CMAKE_CXX_FLAGS "@platform_cxxflags@ @platform_includes@")
+set(CMAKE_CPP_FLAGS "@platform_cflags@ @platform_includes@")
+set(ENV{CFLAGS} ${CMAKE_C_FLAGS})
+set(ENV{CXXFLAGS} ${CMAKE_CXX_FLAGS})
+set(ENV{CPPFLAGS} ${CMAKE_CPP_FLAGS})
+SET(ENV{LDFLAGS} "@platform_ldflags@")
+
+# search for programs in the build host directories
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# for libraries and headers in the target directories
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
+if(NOT OS STREQUAL "linux")
+  set(ADDONS_PREFER_STATIC_LIBS ON)
+endif()

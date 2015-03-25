@@ -21,6 +21,7 @@
 #include "TimeUtils.h"
 #include "XBDateTime.h"
 #include "threads/SystemClock.h"
+#include "guilib/GraphicContext.h"
 #ifdef HAS_DS_PLAYER
 #include "Streams.h"
 #endif
@@ -75,12 +76,26 @@ int64_t CurrentHostFrequency(void)
 CTimeSmoother CTimeUtils::frameTimer;
 unsigned int CTimeUtils::frameTime = 0;
 
-void CTimeUtils::UpdateFrameTime(bool flip)
+void CTimeUtils::UpdateFrameTime(bool flip, bool vsync)
 {
   unsigned int currentTime = XbmcThreads::SystemClockMillis();
-  if (flip)
-    frameTimer.AddTimeStamp(currentTime);
-  frameTime = frameTimer.GetNextFrameTime(currentTime);
+  if (vsync)
+  {
+    unsigned int last = frameTime;
+    while (frameTime < currentTime)
+    {
+      frameTime += (unsigned int)(1000 / g_graphicsContext.GetFPS());
+      // observe wrap around
+      if (frameTime < last)
+        break;
+    }
+  }
+  else
+  {
+    if (flip)
+      frameTimer.AddTimeStamp(currentTime);
+    frameTime = frameTimer.GetNextFrameTime(currentTime);
+  }
 }
 
 unsigned int CTimeUtils::GetFrameTime()

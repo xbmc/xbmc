@@ -20,6 +20,7 @@
 
 #include "Application.h"
 #include "PVRClient.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "epg/Epg.h"
@@ -30,6 +31,9 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
+
+#include <assert.h>
 
 using namespace ADDON;
 using namespace PVR;
@@ -39,20 +43,29 @@ using namespace EPG;
 
 CPVRClient::CPVRClient(const AddonProps& props) :
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(props),
-    m_apiVersion("0.0.0")
+    m_apiVersion("0.0.0"),
+    m_bAvahiServiceAdded(false)
 {
   ResetProperties();
 }
 
 CPVRClient::CPVRClient(const cp_extension_t *ext) :
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(ext),
-    m_apiVersion("0.0.0")
+    m_apiVersion("0.0.0"),
+    m_bAvahiServiceAdded(false)
 {
   ResetProperties();
+
+  m_strAvahiType = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_type");
+  m_strAvahiIpSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_ip_setting");
+  m_strAvahiPortSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_port_setting");
+  m_bNeedsConfiguration = !(CAddonMgr::Get().GetExtValue(ext->configuration, "@needs_configuration") == "false");
 }
 
 CPVRClient::~CPVRClient(void)
 {
+  if (m_bAvahiServiceAdded)
+    CZeroconfBrowser::GetInstance()->RemoveServiceType(m_strAvahiType);
   Destroy();
   SAFE_DELETE(m_pInfo);
 }
@@ -60,14 +73,15 @@ CPVRClient::~CPVRClient(void)
 void CPVRClient::OnDisabled()
 {
   // restart the PVR manager if we're disabling a client
-  if (CPVRManager::Get().IsStarted())
+  if (CPVRManager::Get().IsStarted() && CPVRManager::Get().RestartManagerOnAddonDisabled())
     CPVRManager::Get().Start(true);
 }
 
 void CPVRClient::OnEnabled()
 {
   // restart the PVR manager if we're enabling a client
-  CPVRManager::Get().Start(true);
+  if (CPVRManager::Get().RestartManagerOnAddonDisabled())
+    CPVRManager::Get().Start(true);
 }
 
 AddonPtr CPVRClient::GetRunningInstance() const
@@ -88,7 +102,7 @@ bool CPVRClient::OnPreInstall()
   return false;
 }
 
-void CPVRClient::OnPostInstall(bool restart, bool update)
+void CPVRClient::OnPostInstall(bool restart, bool update, bool modal)
 {
   // (re)start the pvr manager
   PVR::CPVRManager::Get().Start(true);
@@ -295,20 +309,22 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
  * @param xbmcChannel The channel on XBMC's side.
  * @param addonChannel The channel on the addon's side.
  */
-void CPVRClient::WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNEL &addonChannel)
+void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_CHANNEL &addonChannel)
 {
+  assert(xbmcChannel.get());
+
   memset(&addonChannel, 0, sizeof(addonChannel));
 
-  addonChannel.iUniqueId         = xbmcChannel.UniqueID();
-  addonChannel.iChannelNumber    = xbmcChannel.ClientChannelNumber();
-  addonChannel.iSubChannelNumber = xbmcChannel.ClientSubChannelNumber();
-  strncpy(addonChannel.strChannelName, xbmcChannel.ClientChannelName().c_str(), sizeof(addonChannel.strChannelName) - 1);
-  strncpy(addonChannel.strIconPath, xbmcChannel.IconPath().c_str(), sizeof(addonChannel.strIconPath) - 1);
-  addonChannel.iEncryptionSystem = xbmcChannel.EncryptionSystem();
-  addonChannel.bIsRadio          = xbmcChannel.IsRadio();
-  addonChannel.bIsHidden         = xbmcChannel.IsHidden();
-  strncpy(addonChannel.strInputFormat, xbmcChannel.InputFormat().c_str(), sizeof(addonChannel.strInputFormat) - 1);
-  strncpy(addonChannel.strStreamURL, xbmcChannel.StreamURL().c_str(), sizeof(addonChannel.strStreamURL) - 1);
+  addonChannel.iUniqueId         = xbmcChannel->UniqueID();
+  addonChannel.iChannelNumber    = xbmcChannel->ClientChannelNumber();
+  addonChannel.iSubChannelNumber = xbmcChannel->ClientSubChannelNumber();
+  strncpy(addonChannel.strChannelName, xbmcChannel->ClientChannelName().c_str(), sizeof(addonChannel.strChannelName) - 1);
+  strncpy(addonChannel.strIconPath, xbmcChannel->IconPath().c_str(), sizeof(addonChannel.strIconPath) - 1);
+  addonChannel.iEncryptionSystem = xbmcChannel->EncryptionSystem();
+  addonChannel.bIsRadio          = xbmcChannel->IsRadio();
+  addonChannel.bIsHidden         = xbmcChannel->IsHidden();
+  strncpy(addonChannel.strInputFormat, xbmcChannel->InputFormat().c_str(), sizeof(addonChannel.strInputFormat) - 1);
+  strncpy(addonChannel.strStreamURL, xbmcChannel->StreamURL().c_str(), sizeof(addonChannel.strStreamURL) - 1);
 }
 
 bool CPVRClient::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
@@ -320,8 +336,8 @@ bool CPVRClient::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, c
 
 bool CPVRClient::IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
 {
-  AddonVersion myMinVersion = AddonVersion(XBMC_GUI_MIN_API_VERSION);
-  AddonVersion myVersion = AddonVersion(XBMC_GUI_API_VERSION);
+  AddonVersion myMinVersion = AddonVersion(KODI_GUILIB_MIN_API_VERSION);
+  AddonVersion myVersion = AddonVersion(KODI_GUILIB_API_VERSION);
   return (version >= myMinVersion && minVersion <= myVersion);
 }
 
@@ -340,7 +356,7 @@ bool CPVRClient::CheckAPIVersion(void)
 
   /* check the GUI API version */
   AddonVersion guiVersion = AddonVersion("0.0.0");
-  minVersion = AddonVersion(XBMC_GUI_MIN_API_VERSION);
+  minVersion = AddonVersion(KODI_GUILIB_MIN_API_VERSION);
   try { guiVersion = AddonVersion(m_pStruct->GetGUIAPIVersion()); }
   catch (std::exception &e) { LogException(e, "GetGUIAPIVersion()"); return false;  }
 
@@ -461,7 +477,7 @@ PVR_ERROR CPVRClient::StartChannelScan(void)
   return PVR_ERROR_UNKNOWN;
 }
 
-PVR_ERROR CPVRClient::OpenDialogChannelAdd(const CPVRChannel &channel)
+PVR_ERROR CPVRClient::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_REJECTED;
@@ -486,7 +502,7 @@ PVR_ERROR CPVRClient::OpenDialogChannelAdd(const CPVRChannel &channel)
   return retVal;
 }
 
-PVR_ERROR CPVRClient::OpenDialogChannelSettings(const CPVRChannel &channel)
+PVR_ERROR CPVRClient::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_REJECTED;
@@ -511,7 +527,7 @@ PVR_ERROR CPVRClient::OpenDialogChannelSettings(const CPVRChannel &channel)
   return retVal;
 }
 
-PVR_ERROR CPVRClient::DeleteChannel(const CPVRChannel &channel)
+PVR_ERROR CPVRClient::DeleteChannel(const CPVRChannelPtr &channel)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_REJECTED;
@@ -536,7 +552,7 @@ PVR_ERROR CPVRClient::DeleteChannel(const CPVRChannel &channel)
   return retVal;
 }
 
-PVR_ERROR CPVRClient::RenameChannel(const CPVRChannel &channel)
+PVR_ERROR CPVRClient::RenameChannel(const CPVRChannelPtr &channel)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_REJECTED;
@@ -580,7 +596,7 @@ void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
       else if (item->IsPVRChannel())
       {
         hookData.cat = PVR_MENUHOOK_CHANNEL;
-        WriteClientChannelInfo(*item->GetPVRChannelInfoTag(), hookData.data.channel);
+        WriteClientChannelInfo(item->GetPVRChannelInfoTag(), hookData.data.channel);
       }
       else if (item->IsUsablePVRRecording())
       {
@@ -604,7 +620,7 @@ void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
   catch (std::exception &e) { LogException(e, __FUNCTION__); }
 }
 
-PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CEpg *epg, time_t start /* = 0 */, time_t end /* = 0 */, bool bSaveInDb /* = false*/)
+PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start /* = 0 */, time_t end /* = 0 */, bool bSaveInDb /* = false*/)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_REJECTED;
@@ -1232,7 +1248,7 @@ int CPVRClient::GetCurrentClientChannel(void)
   return -EINVAL;
 }
 
-bool CPVRClient::SwitchChannel(const CPVRChannel &channel)
+bool CPVRClient::SwitchChannel(const CPVRChannelPtr &channel)
 {
   bool bSwitched(false);
 
@@ -1249,7 +1265,7 @@ bool CPVRClient::SwitchChannel(const CPVRChannel &channel)
 
   if (bSwitched)
   {
-    CPVRChannelPtr currentChannel = g_PVRChannelGroups->GetByUniqueID(channel.UniqueID(), channel.ClientID());
+    CPVRChannelPtr currentChannel(g_PVRChannelGroups->GetByUniqueID(channel->UniqueID(), channel->ClientID()));
     CSingleLock lock(m_critSection);
     m_playingChannel = currentChannel;
   }
@@ -1273,7 +1289,7 @@ bool CPVRClient::SignalQuality(PVR_SIGNAL_STATUS &qualityinfo)
   return false;
 }
 
-std::string CPVRClient::GetLiveStreamURL(const CPVRChannel &channel)
+std::string CPVRClient::GetLiveStreamURL(const CPVRChannelPtr &channel)
 {
   std::string strReturn;
 
@@ -1408,11 +1424,13 @@ void CPVRClient::LogException(const std::exception &e, const char *strFunctionNa
   CLog::Log(LOGERROR, "PVR - exception '%s' caught while trying to call '%s' on add-on '%s'. Please contact the developer of this add-on: %s", e.what(), strFunctionName, GetFriendlyName().c_str(), Author().c_str());
 }
 
-bool CPVRClient::CanPlayChannel(const CPVRChannel &channel) const
+bool CPVRClient::CanPlayChannel(const CPVRChannelPtr &channel) const
 {
+  assert(channel.get());
+
   return (m_bReadyToUse &&
-           ((m_addonCapabilities.bSupportsTV && !channel.IsRadio()) ||
-            (m_addonCapabilities.bSupportsRadio && channel.IsRadio())));
+           ((m_addonCapabilities.bSupportsTV && !channel->IsRadio()) ||
+            (m_addonCapabilities.bSupportsRadio && channel->IsRadio())));
 }
 
 bool CPVRClient::SupportsChannelGroups(void) const
@@ -1526,15 +1544,13 @@ bool CPVRClient::IsPlaying(void) const
          IsPlayingRecording();
 }
 
-bool CPVRClient::GetPlayingChannel(CPVRChannelPtr &channel) const
+CPVRChannelPtr CPVRClient::GetPlayingChannel() const
 {
   CSingleLock lock(m_critSection);
   if (m_bReadyToUse && m_bIsPlayingTV)
-  {
-    channel = m_playingChannel;
-    return true;
-  }
-  return false;
+    return m_playingChannel;
+
+  return CPVRChannelPtr();
 }
 
 CPVRRecordingPtr CPVRClient::GetPlayingRecording(void) const
@@ -1546,18 +1562,18 @@ CPVRRecordingPtr CPVRClient::GetPlayingRecording(void) const
   return CPVRRecordingPtr();
 }
 
-bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel)
+bool CPVRClient::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel)
 {
   bool bReturn(false);
   CloseStream();
 
   if(!CanPlayChannel(channel))
   {
-    CLog::Log(LOGDEBUG, "add-on '%s' can not play channel '%s'", GetFriendlyName().c_str(), channel.ChannelName().c_str());
+    CLog::Log(LOGDEBUG, "add-on '%s' can not play channel '%s'", GetFriendlyName().c_str(), channel->ChannelName().c_str());
   }
-  else if (!channel.StreamURL().empty())
+  else if (!channel->StreamURL().empty())
   {
-    CLog::Log(LOGDEBUG, "opening live stream on url '%s'", channel.StreamURL().c_str());
+    CLog::Log(LOGDEBUG, "opening live stream on url '%s'", channel->StreamURL().c_str());
     bReturn = true;
 
     // the Njoy N7 sometimes doesn't switch channels, but opens a stream to the previous channel
@@ -1573,7 +1589,7 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
   }
   else
   {
-    CLog::Log(LOGDEBUG, "opening live stream for channel '%s'", channel.ChannelName().c_str());
+    CLog::Log(LOGDEBUG, "opening live stream for channel '%s'", channel->ChannelName().c_str());
     PVR_CHANNEL tag;
     WriteClientChannelInfo(channel, tag);
 
@@ -1586,7 +1602,7 @@ bool CPVRClient::OpenStream(const CPVRChannel &channel, bool bIsSwitchingChannel
 
   if (bReturn)
   {
-    CPVRChannelPtr currentChannel = g_PVRChannelGroups->GetByUniqueID(channel.UniqueID(), channel.ClientID());
+    CPVRChannelPtr currentChannel(g_PVRChannelGroups->GetByUniqueID(channel->UniqueID(), channel->ClientID()));
     CSingleLock lock(m_critSection);
     m_playingChannel      = currentChannel;
     m_bIsPlayingTV        = true;
@@ -1736,4 +1752,76 @@ time_t CPVRClient::GetBufferTimeEnd(void) const
     catch (std::exception &e) { LogException(e, __FUNCTION__); }
   }
   return time;
+}
+
+bool CPVRClient::CanAutoconfigure(void) const
+{
+  /** can only auto-configure when avahi details are provided in addon.xml */
+  return !m_strAvahiType.empty() &&
+      !m_strAvahiIpSetting.empty() &&
+      !m_strAvahiPortSetting.empty();
+}
+
+bool CPVRClient::AutoconfigureRegisterType(void)
+{
+  if (!m_strAvahiType.empty())
+  {
+    // AddServiceType() returns false when already registered
+    m_bAvahiServiceAdded |= CZeroconfBrowser::GetInstance()->AddServiceType(m_strAvahiType);
+    return true;
+  }
+
+  return false;
+}
+
+bool CPVRClient::Autoconfigure(void)
+{
+  bool bReturn(false);
+
+  if (!CanAutoconfigure())
+    return bReturn;
+
+  std::string strHostPort;
+  std::vector<CZeroconfBrowser::ZeroconfService> found_services = CZeroconfBrowser::GetInstance()->GetFoundServices();
+  for(std::vector<CZeroconfBrowser::ZeroconfService>::iterator it = found_services.begin(); !bReturn && it != found_services.end(); ++it)
+  {
+    /** found the type that we are looking for */
+    if ((*it).GetType() == m_strAvahiType && std::find(m_rejectedAvahiHosts.begin(), m_rejectedAvahiHosts.end(), *it) == m_rejectedAvahiHosts.end())
+    {
+      /** try to resolve */
+      if(!CZeroconfBrowser::GetInstance()->ResolveService((*it)))
+      {
+        CLog::Log(LOGWARNING, "%s - %s service found but the host name couldn't be resolved", __FUNCTION__, (*it).GetName().c_str());
+      }
+      else
+      {
+        // %s service found at %s
+        std::string strLogLine(StringUtils::Format(g_localizeStrings.Get(19689).c_str(), (*it).GetName().c_str(), (*it).GetIP().c_str()));
+        CLog::Log(LOGDEBUG, "%s - %s", __FUNCTION__, strLogLine.c_str());
+
+        if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(19688), // Scanning for PVR services
+                                              strLogLine,
+                                              "",
+                                              g_localizeStrings.Get(19690) // Do you want to use this service?
+                                              ))
+        {
+          CLog::Log(LOGDEBUG, "%s - %s service found but not enabled by the user", __FUNCTION__, (*it).GetName().c_str());
+          m_rejectedAvahiHosts.push_back(*it);
+        }
+        else
+        {
+          /** update the settings and return */
+          std::string strPort(StringUtils::Format("%d", (*it).GetPort()));
+          UpdateSetting(m_strAvahiIpSetting, (*it).GetIP());
+          UpdateSetting(m_strAvahiPortSetting, strPort);
+          SaveSettings();
+          CLog::Log(LOGNOTICE, "%s - auto-configured %s using host '%s' and port '%d'", __FUNCTION__, (*it).GetName().c_str(), (*it).GetIP().c_str(), (*it).GetPort());
+
+          bReturn = true;
+        }
+      }
+    }
+  }
+
+  return bReturn;
 }

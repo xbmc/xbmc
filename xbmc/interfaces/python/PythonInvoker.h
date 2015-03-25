@@ -41,6 +41,7 @@ public:
 protected:
   // implementation of ILanguageInvoker
   virtual bool execute(const std::string &script, const std::vector<std::string> &arguments);
+  virtual void executeScript(void *fp, const std::string &script, void *module, void *moduleDict);
   virtual bool stop(bool abort);
   virtual void onExecutionFailed();
 
@@ -54,7 +55,7 @@ protected:
 
   virtual void onSuccess() { }
   virtual void onAbort() { }
-  virtual void onError();
+  virtual void onError(const std::string &exceptionType = "", const std::string &exceptionValue = "", const std::string &exceptionTraceback = "");
 
   std::string m_sourceFile;
   unsigned int  m_argc;

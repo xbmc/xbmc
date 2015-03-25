@@ -19,6 +19,7 @@
  */
 
 #include "SortUtils.h"
+#include "LangInfo.h"
 #include "URL.h"
 #include "Util.h"
 #include "XBDateTime.h"
@@ -782,11 +783,11 @@ const Fields& SortUtils::GetFieldsForSorting(SortBy sortBy)
 
 string SortUtils::RemoveArticles(const string &label)
 {
-  for (unsigned int i = 0; i < g_advancedSettings.m_vecTokens.size(); ++i)
+  std::set<std::string> sortTokens = g_langInfo.GetSortTokens();
+  for (std::set<std::string>::const_iterator token = sortTokens.begin(); token != sortTokens.end(); ++token)
   {
-    if (g_advancedSettings.m_vecTokens[i].size() < label.size() &&
-        strnicmp(g_advancedSettings.m_vecTokens[i].c_str(), label.c_str(), g_advancedSettings.m_vecTokens[i].size()) == 0)
-      return label.substr(g_advancedSettings.m_vecTokens[i].size());
+    if (token->size() < label.size() && StringUtils::StartsWith(label, *token))
+      return label.substr(token->size());
   }
 
   return label;

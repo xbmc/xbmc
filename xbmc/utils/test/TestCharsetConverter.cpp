@@ -104,7 +104,7 @@ protected:
     CSettings::Get().AddString(sub, "subtitles.charset", 735, "DEFAULT",
                             SPIN_CONTROL_TEXT);
     */
-
+    CSettings::Get().Initialize();
     g_charsetConverter.reset();
     g_charsetConverter.clear();
   }

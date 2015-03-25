@@ -88,6 +88,7 @@ CGUIDialogBusy::CGUIDialogBusy(void)
 {
   m_loadType = LOAD_ON_GUI_INIT;
   m_bModal = true;
+  m_bCanceled = false;
   m_progress = 0;
 }
 
@@ -103,7 +104,7 @@ void CGUIDialogBusy::Show_Internal()
   m_bLastVisible = true;
   m_closing = false;
   m_progress = 0;
-  g_windowManager.RouteToWindow(this);
+  g_windowManager.RegisterDialog(this);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);

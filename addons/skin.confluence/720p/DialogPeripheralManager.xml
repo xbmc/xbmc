@@ -67,7 +67,6 @@
 				<ondown>10</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
-
 			<control type="list" id="20">
 				<left>20</left>
 				<top>65</top>
@@ -182,7 +181,6 @@
 					</control>
 				</focusedlayout>
 			</control>
-
 			<control type="scrollbar" id="61">
 				<left>570</left>
 				<top>65</top>

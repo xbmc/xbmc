@@ -1,6 +1,0 @@
-MIDlet-1: ASAP, , ASAPMIDlet
-MIDlet-Name: ASAP
-MIDlet-Vendor: Piotr Fusik
-MIDlet-Version: 2.0.0
-MicroEdition-Configuration: CLDC-1.1
-MicroEdition-Profile: MIDP-2.0

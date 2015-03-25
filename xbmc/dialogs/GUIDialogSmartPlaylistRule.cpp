@@ -320,7 +320,8 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   else if (m_rule.m_field == FieldTag)
   {
     VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
-    if (m_type == "tvshows")
+    if (m_type == "tvshows" ||
+        m_type == "episodes")
       type = VIDEODB_CONTENT_TVSHOWS;
     else if (m_type == "musicvideos")
       type = VIDEODB_CONTENT_MUSICVIDEOS;

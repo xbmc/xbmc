@@ -132,7 +132,7 @@ bool CMMALRenderer::init_vout(MMAL_ES_FORMAT_T *format)
 void CMMALRenderer::Process()
 {
   MMAL_BUFFER_HEADER_T *buffer;
-  while (buffer = mmal_queue_wait(m_release_queue), buffer)
+  while (buffer = mmal_queue_wait(m_release_queue), buffer && buffer != &m_quit_packet)
   {
     CMMALVideoBuffer *omvb = (CMMALVideoBuffer *)buffer->user_data;
     omvb->Release();
@@ -148,6 +148,7 @@ CMMALRenderer::CMMALRenderer()
   m_vout_input = NULL;
   m_vout_input_pool = NULL;
   memset(m_buffers, 0, sizeof m_buffers);
+  mmal_buffer_header_reset(&m_quit_packet);
   m_release_queue = mmal_queue_create();
   m_iYV12RenderBuffer = 0;
   Create();
@@ -157,7 +158,7 @@ CMMALRenderer::~CMMALRenderer()
 {
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   // shutdown thread
-  mmal_queue_put(m_release_queue, NULL);
+  mmal_queue_put(m_release_queue, &m_quit_packet);
   m_sync.Wait();
   mmal_queue_destroy(m_release_queue);
   UnInit();
@@ -592,7 +593,7 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
       video_stereo_mode = RENDER_STEREO_MODE_OFF;
       display_stereo_mode = RENDER_STEREO_MODE_OFF;
     }
-    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
     {
       SrcRect.x2 *= 2.0f;
     }
@@ -607,7 +608,7 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
       video_stereo_mode = RENDER_STEREO_MODE_OFF;
       display_stereo_mode = RENDER_STEREO_MODE_OFF;
     }
-    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
+    else if (display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA || display_stereo_mode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
     {
       SrcRect.y2 *= 2.0f;
     }

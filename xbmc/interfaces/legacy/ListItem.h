@@ -36,6 +36,8 @@
 #include "AddonString.h"
 #include "Tuple.h"
 #include "commons/Exception.h"
+#include "InfoTagVideo.h"
+#include "InfoTagMusic.h"
 
 
 namespace XBMCAddon
@@ -248,7 +250,7 @@ namespace XBMCAddon
        * example:\n
        *   - self.list.getSelectedItem().setInfo('video', { 'Genre': 'Comedy' })n\n
        */
-      void setInfo(const char* type, const InfoLabelDict& infoLabels) throw (WrongTypeException);
+      void setInfo(const char* type, const InfoLabelDict& infoLabels);
 
       /**
        * addStreamInfo(type, values) -- Add a stream with details.\n
@@ -290,7 +292,7 @@ namespace XBMCAddon
        * example:
        *   - listitem.addContextMenuItems([('Theater Showtimes', 'RunScript(special://home/scripts/showtimes/default.py,Iron Man)',)])n
        */
-      void addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems = false) throw (ListItemException);
+      void addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems = false);
 
       /**
        * setProperty(key, value) -- Sets a listitem property, similar to an infolabel.\n
@@ -369,6 +371,16 @@ namespace XBMCAddon
        * getfilename() -- Returns the filename of this PlayListItem.\n
        */
       String getfilename();
+
+      /**
+       * getVideoInfoTag() -- returns the VideoInfoTag for this item.
+       */
+      xbmc::InfoTagVideo* getVideoInfoTag();
+
+      /**
+       * getMusicInfoTag() -- returns the MusicInfoTag for this item.
+       */
+      xbmc::InfoTagMusic* getMusicInfoTag();
     };
 
     typedef std::vector<ListItem*> ListItemList;

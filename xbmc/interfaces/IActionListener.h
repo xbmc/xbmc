@@ -20,7 +20,7 @@
  *
  */
 
-#include "guilib/Key.h"
+#include "input/Key.h"
 
 class IActionListener
 {

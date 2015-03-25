@@ -106,6 +106,8 @@ public:
   virtual dvdnav_status_t dvdnav_mouse_select(dvdnav_t *self, pci_t *pci, int32_t x, int32_t y)=0;
   virtual dvdnav_status_t dvdnav_get_title_string(dvdnav_t *self, const char **title_str)=0;
   virtual dvdnav_status_t dvdnav_get_serial_string(dvdnav_t *self, const char **serial_str)=0;
+  virtual uint32_t dvdnav_describe_title_chapters(dvdnav_t* self, uint32_t title, uint64_t** times, uint64_t* duration)=0;
+  virtual void dvdnav_free(void* pdata) = 0;
 };
 
 #if (defined USE_STATIC_LIBDVDNAV)
@@ -231,6 +233,10 @@ public:
         { return ::dvdnav_get_title_string(self, title_str); }
     virtual dvdnav_status_t dvdnav_get_serial_string(dvdnav_t *self, const char **serial_str)
         { return ::dvdnav_get_serial_string(self, serial_str); }
+    virtual uint32_t dvdnav_describe_title_chapters(dvdnav_t* self, uint32_t title, uint64_t** times, uint64_t* duration)
+        { return ::dvdnav_describe_title_chapters(self, title, times, duration); }
+    virtual void dvdnav_free(void* data)
+        { return ::dvdnav_free(data); }
 
     // DLL faking.
     virtual bool ResolveExports() { return true; }
@@ -303,6 +309,8 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
   DEFINE_METHOD4(dvdnav_status_t, dvdnav_mouse_select, (dvdnav_t *p1, pci_t *p2, int32_t p3, int32_t p4))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_title_string, (dvdnav_t *p1, const char **p2))
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_get_serial_string, (dvdnav_t *p1, const char **p2))
+  DEFINE_METHOD4(uint32_t, dvdnav_describe_title_chapters, (dvdnav_t* p1, uint32_t p2, uint64_t** p3, uint64_t* p4))
+  DEFINE_METHOD1(void, dvdnav_free, (void *p1))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(dvdnav_open)
     RESOLVE_METHOD(dvdnav_close)
@@ -363,6 +371,8 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
     RESOLVE_METHOD(dvdnav_mouse_select)
     RESOLVE_METHOD(dvdnav_get_title_string)
     RESOLVE_METHOD(dvdnav_get_serial_string)
+    RESOLVE_METHOD(dvdnav_describe_title_chapters)
+    RESOLVE_METHOD(dvdnav_free)
 END_METHOD_RESOLVE()
 };
 

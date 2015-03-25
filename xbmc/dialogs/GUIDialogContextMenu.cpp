@@ -35,7 +35,7 @@
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "storage/MediaManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "GUIDialogYesNo.h"
 #include "addons/AddonManager.h"
 #include "FileItem.h"
@@ -80,6 +80,8 @@ CGUIDialogContextMenu::CGUIDialogContextMenu(void)
   m_clickedButton = -1;
   m_backgroundImageSize = 0;
   m_loadType = KEEP_IN_MEMORY;
+  m_coordX = 0.0f;
+  m_coordY = 0.0f;
 }
 
 CGUIDialogContextMenu::~CGUIDialogContextMenu(void)

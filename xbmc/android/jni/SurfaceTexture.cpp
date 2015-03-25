@@ -20,6 +20,7 @@
 
 #include "JNIBase.h"
 #include "Context.h"
+#include "Activity.h"
 #include "ClassLoader.h"
 #include "SurfaceTexture.h"
 
@@ -36,7 +37,7 @@ CJNISurfaceTextureOnFrameAvailableListener* CJNISurfaceTextureOnFrameAvailableLi
 CJNISurfaceTextureOnFrameAvailableListener::CJNISurfaceTextureOnFrameAvailableListener()
 : CJNIBase("org/xbmc/kodi/XBMCOnFrameAvailableListener")
 {
-  CJNIContext *appInstance = CJNIContext::GetAppInstance();
+  CJNIApplicationMainActivity *appInstance = CJNIApplicationMainActivity::GetAppInstance();
   if (!appInstance)
     return;
 

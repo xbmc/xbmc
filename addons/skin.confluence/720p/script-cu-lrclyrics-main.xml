@@ -8,9 +8,9 @@
 	</coordinates>
 	<controls>
 		<control type="group">
-			<animation effect="slide" start="600,0" end="0,0" time="400" tween="quadratic" easing="out" condition="!Player.ShowCodec">WindowOpen</animation>
-			<animation effect="slide" start="600,0" end="0,0" time="400" delay="400" tween="quadratic" easing="out" condition="Player.ShowCodec">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="600,0" time="200" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="600,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Player.ShowCodec">WindowOpen</animation>
+			<animation effect="slide" start="600,0" end="0,0" time="300" delay="300" tween="quadratic" easing="out" condition="Player.ShowCodec">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="600,0" time="150" tween="quadratic" easing="out">WindowClose</animation>
 			<control type="image">
 				<description>media info background image</description>
 				<left>0</left>
@@ -263,7 +263,5 @@
 				<visible>false</visible>
 			</control>
 		</control>
-		<!-- ** Required ** Do not change <id> or <type> -->
-		<!-- ** Required ** Do not change <id> or <type> -->
 	</controls>
 </window>

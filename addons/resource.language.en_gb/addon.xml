@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="resource.language.en_gb"
+  version="1.0.0"
+  name="English"
+  provider-name="Team Kodi">
+  <requires>
+    <import addon="kodi.resource" version="1.0.0"/>
+  </requires>
+  <extension
+    point="kodi.resource.language"
+    locale="en_GB">
+    <charsets>
+      <gui>CP1252</gui>
+      <subtitle>CP1252</subtitle>
+    </charsets>
+    <sorttokens>
+      <token>The</token>
+    </sorttokens>
+  </extension>
+  <extension point="kodi.addon.metadata">
+    <summary lang="en">English language pack</summary>
+    <description lang="en">English version of all texts used in Kodi.</description>
+    <disclaimer lang="en">English is the default language for Kodi, removing it may cause issues</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>

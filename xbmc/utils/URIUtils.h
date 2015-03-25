@@ -126,7 +126,6 @@ public:
   static bool IsHD(const std::string& strFileName);
   static bool IsHDHomeRun(const std::string& strFile);
   static bool IsSlingbox(const std::string& strFile);
-  static bool IsHTSP(const std::string& strFile);
   static bool IsInArchive(const std::string& strFile);
   static bool IsInRAR(const std::string& strFile);
   static bool IsInternetStream(const std::string& path, bool bStrictCheck = false);
@@ -138,9 +137,7 @@ public:
   static bool IsPVRRecording(const std::string& strFile);
   static bool IsMultiPath(const std::string& strPath);
   static bool IsMusicDb(const std::string& strFile);
-  static bool IsMythTV(const std::string& strFile);
   static bool IsNfs(const std::string& strFile);
-  static bool IsAfp(const std::string& strFile);
   static bool IsOnDVD(const std::string& strFile);
   static bool IsOnLAN(const std::string& strFile);
   static bool IsHostOnLAN(const std::string& hostName, bool offLineCheck = false);
@@ -151,11 +148,9 @@ public:
   static bool IsSmb(const std::string& strFile);
   static bool IsSpecial(const std::string& strFile);
   static bool IsStack(const std::string& strFile);
-  static bool IsTuxBox(const std::string& strFile);
   static bool IsUPnP(const std::string& strFile);
   static bool IsURL(const std::string& strFile);
   static bool IsVideoDb(const std::string& strFile);
-  static bool IsVTP(const std::string& strFile);
   static bool IsAPK(const std::string& strFile);
   static bool IsZIP(const std::string& strFile);
   static bool IsArchive(const std::string& strFile);

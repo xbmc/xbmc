@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Ukrainian" layout="ЙЦУКЕН">
+    <keyboard>
+      <row>'1234567890</row>
+      <row>йцукенгшщзхї</row>
+      <row>фівапролджє</row>
+      <row>ґячсмитьбю</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>'1234567890</row>
+      <row>ЙЦУКЕНГШЩЗХЇ</row>
+      <row>ФІВАПРОЛДЖЄ</row>
+      <row>ҐЯЧСМИТЬБЮ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout language="Ukrainian" layout="АБВ">
+    <keyboard>
+      <row>0123456789</row>
+      <row>абвгґдеєжзиі</row>
+      <row>їйклмнопрст</row>
+      <row>уфхцчшцьюя'</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>0123456789</row>
+      <row>АБВГҐДЕЄЖЗИІ</row>
+      <row>ЇЙКЛМНОПРСТ</row>
+      <row>УФХЦЧШЩЬЮЯ'</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>
