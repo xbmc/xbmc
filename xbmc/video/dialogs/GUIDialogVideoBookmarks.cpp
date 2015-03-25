@@ -219,7 +219,15 @@ void CGUIDialogVideoBookmarks::Delete(int item)
 void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
 {
   CSingleLock lock(m_refreshSection);
-  int itemPos = ((chapterIdx - 1) + m_chapterOffset);
+
+  int itemPos = 0;
+  for (auto& item : m_vecItems->GetList())
+  {
+    if (chapterIdx == item->GetProperty("chapter").asInteger())
+      break;
+    itemPos++;
+  }
+
   if (itemPos < m_vecItems->Size())
   {
     std::string time = StringUtils::Format("chapter://%s/%i", m_filePath.c_str(), chapterIdx);
@@ -235,6 +243,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
 {
   m_bookmarks.clear();
   CBookmark resumemark;
+  std::vector<CFileItemPtr> items;
   
     // open the d/b and retrieve the bookmarks for the current movie
   m_filePath = g_application.CurrentFile();
@@ -252,7 +261,9 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   videoDatabase.Close();
   CSingleLock lock(m_refreshSection);
   m_vecItems->Clear();
-    // cycle through each stored bookmark and add it to our list control
+
+
+  // cycle through each stored bookmark and add it to our list control
   for (unsigned int i = 0; i < m_bookmarks.size(); ++i)
   {
     if (m_bookmarks[i].type == CBookmark::RESUME)
@@ -266,21 +277,23 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     
     CFileItemPtr item(new CFileItem(bookmarkTime));
     item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
-    m_vecItems->Add(item);
+    item->SetProperty("resumepoint", m_bookmarks[i].timeInSeconds);
+    item->SetProperty("playerstate", m_bookmarks[i].playerState);
+    items.push_back(item);
   }
+
   // add chapters if around
-  m_chapterOffset = m_vecItems->Size();
-  for (int i=1;i<=g_application.m_pPlayer->GetChapterCount();++i)
+  for (int i = 1; i <= g_application.m_pPlayer->GetChapterCount(); ++i)
   {
     std::string chapterName;
     g_application.m_pPlayer->GetChapterName(chapterName, i);
     if (chapterName.empty())
       chapterName = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i);
     int64_t pos = g_application.m_pPlayer->GetChapterPos(i);
-    std::string time = 
-      StringUtils::SecondsToTimeString((long) pos, TIME_FORMAT_HH_MM_SS);
-    std::string name = StringUtils::Format("%s (%s)",
-                                           chapterName.c_str(), time.c_str());
+
+    std::string time = StringUtils::SecondsToTimeString((long) pos, TIME_FORMAT_HH_MM_SS);
+    std::string name = StringUtils::Format("%s (%s)", chapterName.c_str(), time.c_str());
+
     CFileItemPtr item(new CFileItem(name));
     time = StringUtils::Format("chapter://%s/%i", m_filePath.c_str(), i);
     std::string cachefile = CTextureCache::Get().GetCachedPath(CTextureCache::Get().GetCacheFile(time)+".jpg");
@@ -294,8 +307,23 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
       m_mapJobsChapter[job] = i;
       m_jobsStarted++;
     }
+
+    item->SetProperty("chapter", i);
+    item->SetProperty("resumepoint", static_cast<double>(pos));
+    items.push_back(item);
+  }
+
+  // sort items by resume point
+  std::sort(items.begin(), items.end(), [](const CFileItemPtr &item1, const CFileItemPtr &item2) {
+    return item1->GetProperty("resumepoint").asDouble() < item2->GetProperty("resumepoint").asDouble();
+  });
+
+  // add items to file list
+  for (auto& item : items)
+  {
     m_vecItems->Add(item);
   }
+
   m_viewControl.SetItems(*m_vecItems);
 }
 
@@ -345,17 +373,18 @@ void CGUIDialogVideoBookmarks::Clear()
 
 void CGUIDialogVideoBookmarks::GotoBookmark(int item)
 {
-  if (item < 0 || item >= (int)m_bookmarks.size()+g_application.m_pPlayer->GetChapterCount()) return;
-  if (g_application.m_pPlayer->HasPlayer())
+  if (item < 0 || item >= m_vecItems->Size() || !g_application.m_pPlayer->HasPlayer())
+    return;
+
+  CFileItemPtr fileItem = m_vecItems->Get(item);
+  int chapter = fileItem->GetProperty("chapter").asInteger();
+  if (!chapter)
   {
-    if (item < (int) m_bookmarks.size())
-    {
-      g_application.m_pPlayer->SetPlayerState(m_bookmarks[item].playerState);
-      g_application.SeekTime((double)m_bookmarks[item].timeInSeconds);
-    }
-    else
-      g_application.m_pPlayer->SeekChapter(item-m_bookmarks.size()+1);
+    g_application.m_pPlayer->SetPlayerState(fileItem->GetProperty("playerstate").asString());
+    g_application.SeekTime(fileItem->GetProperty("resumepoint").asDouble());
   }
+  else
+    g_application.m_pPlayer->SeekChapter(fileItem->GetProperty("chapter").asInteger());
 }
 
 void CGUIDialogVideoBookmarks::ClearBookmarks()
