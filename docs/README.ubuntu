@@ -47,13 +47,21 @@ Two methods exist to install the required Ubuntu packages:
 
 You can get all build dependencies used for building the packages on the PPA
 
-Add the unstable and build-depends PPAs:
-.0  $ sudo apt-get install python-software-properties software-properties-common
-.1  $ sudo add-apt-repository ppa:team-xbmc/xbmc-nightly
-.2  $ sudo add-apt-repository ppa:team-xbmc/xbmc-ppa-build-depends
-.3  $ sudo apt-get update
+Add the unstable PPA:
+
+For <= 12.04 lts:
+    $ sudo apt-get install python-software-properties
+    $ sudo add-apt-repository ppa:team-xbmc/xbmc-nightly
+
+For >= 14.04 lts:
+    $ sudo apt-get install software-properties-common
+    $ sudo add-apt-repository -s ppa:team-xbmc/xbmc-nightly 
+
+Add build-depends PPA:
+    $ sudo add-apt-repository ppa:team-xbmc/xbmc-ppa-build-depends
 
 Here is the magic command to get the build dependencies (used to compile the version on the PPA).
+    $ sudo apt-get update
     $ sudo apt-get build-dep kodi
 
 Optional: If you do not want Kodi to be installed via PPA, you can removed the PPAs again:
