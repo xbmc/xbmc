@@ -318,13 +318,18 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     return item1->GetProperty("resumepoint").asDouble() < item2->GetProperty("resumepoint").asDouble();
   });
 
-  // add items to file list
+  // add items to file list and mark the proper item as selected if the current playtime is above
+  int selectedItemIndex = 0;
+  int playTime = g_application.GetTime();
   for (auto& item : items)
   {
     m_vecItems->Add(item);
+    if (playTime >= item->GetProperty("resumepoint").asDouble())
+      selectedItemIndex = m_vecItems->Size() - 1;
   }
 
   m_viewControl.SetItems(*m_vecItems);
+  m_viewControl.SetSelectedItem(selectedItemIndex);;
 }
 
 void CGUIDialogVideoBookmarks::Update()
