@@ -21,6 +21,8 @@
 
 #include "ImusicInfoTagLoader.h"
 
+class CFileItem;  // forward
+
 namespace MUSIC_INFO
 {
   class CMusicInfoTagLoaderFactory
@@ -29,7 +31,7 @@ namespace MUSIC_INFO
       CMusicInfoTagLoaderFactory(void);
       virtual ~CMusicInfoTagLoaderFactory();
 
-      static IMusicInfoTagLoader* CreateLoader(const std::string& strFileName);
+      static IMusicInfoTagLoader* CreateLoader(const CFileItem& item);
   };
 }
 
