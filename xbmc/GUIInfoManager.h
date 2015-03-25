@@ -663,7 +663,7 @@ namespace INFO
 #define LISTITEM_EPISODENAME        (LISTITEM_START + 147)
 
 #ifdef HAS_DS_PLAYER
-#define LISTITEM_ITEM_TYPE          (LISTITEM_START + 146)
+#define LISTITEM_ITEM_TYPE          (LISTITEM_START + 148)
 #endif
 #define LISTIT
 

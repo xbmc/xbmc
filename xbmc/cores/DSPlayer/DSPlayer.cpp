@@ -55,7 +55,7 @@
 #include "settings/AdvancedSettings.h"
 #include "Application.h"
 #include "GUIUserMessages.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "cores/DSPlayer/dsgraph.h"
@@ -929,7 +929,7 @@ bool CDSPlayer::SwitchChannel(unsigned int iChannelNumber)
   return g_pPVRStream->SelectChannelByNumber(iChannelNumber);
 }
 
-bool CDSPlayer::SwitchChannel(CPVRChannel &channel)
+bool CDSPlayer::SwitchChannel(CPVRChannelPtr &channel)
 {
   if (!g_PVRManager.CheckParentalLock(channel))
     return false;

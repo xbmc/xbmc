@@ -37,7 +37,7 @@
 #include "utils/URIUtils.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "cores/DSPlayer/Utils/DSFilterEnumerator.h"
 #include "utils/XMLUtils.h"
 #include "Filters/RendererSettings.h"

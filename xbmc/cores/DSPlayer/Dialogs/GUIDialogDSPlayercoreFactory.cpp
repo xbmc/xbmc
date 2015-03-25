@@ -38,7 +38,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "utils/XMLUtils.h"
 #include "Filters/RendererSettings.h"
 #include "PixelShaderList.h"

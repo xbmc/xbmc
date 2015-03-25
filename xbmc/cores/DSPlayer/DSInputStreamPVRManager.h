@@ -47,7 +47,7 @@ public:
   bool			Open(const CFileItem& file);
 
   bool            SelectChannelByNumber(unsigned int iChannel);
-  bool            SelectChannel(const PVR::CPVRChannel &channel);
+  bool            SelectChannel(const PVR::CPVRChannelPtr &channel);
   bool            NextChannel(bool preview = false);
   bool            PrevChannel(bool preview = false);
   bool			UpdateItem(CFileItem& item);

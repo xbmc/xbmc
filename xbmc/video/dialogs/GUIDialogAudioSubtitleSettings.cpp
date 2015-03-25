@@ -47,7 +47,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "GUIInfoManager.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "cores/DSPlayer/dsgraph.h"
 #endif
 

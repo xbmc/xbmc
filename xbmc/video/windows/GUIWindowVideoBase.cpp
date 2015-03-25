@@ -2012,7 +2012,6 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
     g_application.StartVideoScan(path, true, true);
   }
 }
-}
 
 #ifdef HAS_DS_PLAYER
 int CGUIWindowVideoBase::GetDefaultPlayer(const CFileItemPtr &item)

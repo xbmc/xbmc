@@ -79,7 +79,7 @@ bool CDSInputStreamPVRManager::Open(const CFileItem& file)
   {
     CFileItemPtr channel = g_PVRChannelGroups->GetByPath(file.GetPath());
     if (channel && channel->HasPVRChannelInfoTag())
-      transFile = g_PVRClients->GetStreamURL(*channel->GetPVRChannelInfoTag());
+      transFile = g_PVRClients->GetStreamURL(channel->GetPVRChannelInfoTag());
   }
   CFileItem fileItem = file;
   fileItem.SetPath(transFile);
@@ -87,7 +87,7 @@ bool CDSInputStreamPVRManager::Open(const CFileItem& file)
   return m_pPlayer->OpenFileInternal(fileItem);
 }
 
-bool CDSInputStreamPVRManager::SelectChannel(const CPVRChannel &channel)
+bool CDSInputStreamPVRManager::SelectChannel(const CPVRChannelPtr &channel)
 {
   if (!SupportsChannelSwitch())
   {
@@ -96,9 +96,8 @@ bool CDSInputStreamPVRManager::SelectChannel(const CPVRChannel &channel)
   }
   else if (m_pLiveTV)
   {
-    return m_pLiveTV->SelectChannel(channel.ChannelNumber());
+    return m_pLiveTV->SelectChannel(channel->ChannelNumber());
   }
-
   return false;
 }
 
@@ -107,9 +106,8 @@ bool CDSInputStreamPVRManager::NextChannel(bool preview /* = false */)
   PVR_CLIENT client;
   if (!preview && !SupportsChannelSwitch())
   {
-    CPVRChannelPtr channel;
-    g_PVRManager.GetCurrentChannel(channel);
-    CFileItemPtr item = g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelUp(*channel);
+    CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
+    CFileItemPtr item = g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelUp(channel);
     if (item.get())
       return Open(*item.get());
   }
@@ -124,9 +122,8 @@ bool CDSInputStreamPVRManager::PrevChannel(bool preview/* = false*/)
   PVR_CLIENT client;
   if (!preview && !SupportsChannelSwitch())
   {
-    CPVRChannelPtr channel;
-    g_PVRManager.GetCurrentChannel(channel);
-    CFileItemPtr item = g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelDown(*channel);
+    CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
+    CFileItemPtr item = g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelDown(channel);
     if (item.get())
       return Open(*item.get());
   }
@@ -140,8 +137,7 @@ bool CDSInputStreamPVRManager::SelectChannelByNumber(unsigned int iChannelNumber
   PVR_CLIENT client;
   if (!SupportsChannelSwitch())
   {
-    CPVRChannelPtr channel;
-    g_PVRManager.GetCurrentChannel(channel);
+    CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
     CFileItemPtr item = g_PVRChannelGroups->Get(channel->IsRadio())->GetSelectedGroup()->GetByChannelNumber(iChannelNumber);
     if (item.get())
       return Open(*item.get());
