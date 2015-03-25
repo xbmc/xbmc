@@ -24,6 +24,7 @@
  */
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
+#include "utils/StdString.h"
 
 class CGUIDialogMadvrScaling : public CGUIDialogSettingsManualBase
 {

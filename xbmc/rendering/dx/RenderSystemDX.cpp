@@ -1228,6 +1228,7 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
     else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
       m_pD3DDevice->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_BLUE);
   }
+#endif
 }
 
 bool CRenderSystemDX::SupportsStereo(RENDER_STEREO_MODE mode) const

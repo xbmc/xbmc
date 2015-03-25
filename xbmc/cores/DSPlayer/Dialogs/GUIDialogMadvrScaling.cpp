@@ -38,7 +38,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "guilib/Key.h"
+#include "input/Key.h"
 #include "cores/DSPlayer/GraphFilters.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"

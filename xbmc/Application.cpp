@@ -1924,7 +1924,7 @@ void CApplication::RenderMadvr()
   g_infoManager.ResetCache();
 
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
-  CTimeUtils::UpdateFrameTime(true);
+  CTimeUtils::UpdateFrameTime(true,false);
 
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
@@ -3623,10 +3623,10 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
   CDSPlayerDatabase dsdbs;
   if (dsdbs.Open())
   {
-    CLog::Log(LOGDEBUG, "Loading madvr settings for %s", path.c_str());
+    CLog::Log(LOGDEBUG, "Loading madvr settings for %s", item.GetPath().c_str());
 
     // Load stored settings if they exist, otherwise use default
-    if (!dsdbs.GetVideoSettings(path, CMediaSettings::Get().GetCurrentMadvrSettings()))
+    if (!dsdbs.GetVideoSettings(item.GetPath().c_str(), CMediaSettings::Get().GetCurrentMadvrSettings()))
       CMediaSettings::Get().GetCurrentMadvrSettings() = CMediaSettings::Get().GetDefaultMadvrSettings();
 
     dsdbs.Close();
