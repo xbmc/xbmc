@@ -68,7 +68,9 @@ ECHO Running testsuite...
   cd %WORKSPACE%\project\vs2010express\
   set KODI_HOME=%WORKSPACE%
   set PATH=%WORKSPACE%\project\Win32BuildSetup\dependencies;%PATH%
-  %EXE% --gtest_output=xml:%WORKSPACE%\gtestresults.xml
+  rem exclude TestWebServer tests for now as those last 120 secs per test
+  rem not for some reason (maybe timeout?!? firewall?!? whatever...)
+  %EXE% --gtest_output=xml:%WORKSPACE%\gtestresults.xml --gtest_filter=-TestWebServer.*
 
   rem Adapt gtest xml output to be conform with junit xml
   rem this basically looks for lines which have "notrun" in the <testcase /> tag
