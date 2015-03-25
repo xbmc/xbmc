@@ -37,20 +37,20 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
 
-CRemoteControl::CRemoteControl() :
-  CThread("RemoteControl"),
-  m_deviceName(LIRC_DEVICE)
+CRemoteControl::CRemoteControl()
+  : CThread("RemoteControl")
+  , m_fd(-1)
+  , m_inotify_fd(-1)
+  , m_inotify_wd(-1)
+  , m_file(nullptr)
+  , m_holdTime(0)
+  , m_button(0)
+  , m_bInitialized(false)
+  , m_used(true)
+  , m_deviceName(LIRC_DEVICE)
+  , m_inReply(false)
+  , m_nrSending(0)
 {
-  m_fd = -1;
-  m_file = NULL;
-  m_bInitialized = false;
-  m_button = 0;
-  m_holdTime = 0;
-  m_used = true;
-  m_inotify_fd = -1;
-  m_inotify_wd = -1;
-  m_inReply = false;
-  m_nrSending = 0;
 }
 
 CRemoteControl::~CRemoteControl()
@@ -133,7 +133,7 @@ void CRemoteControl::Process()
   // multiple tries because LIRC service might be up and running a little later then xbmc on boot.
   while (!m_bStop && iAttempt <= 60)
   {
-    if (Connect(addr))
+    if (Connect(addr, iAttempt == 0))
       break;
 
     if (iAttempt == 0)
@@ -290,7 +290,7 @@ void CRemoteControl::AddSendCommand(const std::string& command)
   m_sendData += '\n';
 }
 
-bool CRemoteControl::Connect(struct sockaddr_un addr)
+bool CRemoteControl::Connect(struct sockaddr_un addr, bool logMessages)
 {
   // Open the socket from which we will receive the remote commands
   if ((m_fd = socket(AF_UNIX, SOCK_STREAM, 0)) != -1)
@@ -342,10 +342,10 @@ bool CRemoteControl::Connect(struct sockaddr_un addr)
       else
         CLog::Log(LOGERROR, "LIRC %s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
     }
-    else
+    else if (logMessages)
       CLog::Log(LOGINFO, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
   }
-  else
+  else if (logMessages)
     CLog::Log(LOGINFO, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
 
   return m_bInitialized;

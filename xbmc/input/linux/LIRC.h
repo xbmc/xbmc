@@ -50,7 +50,7 @@ public:
 protected:
   virtual void Process();
 
-  bool Connect(struct sockaddr_un addr);
+  bool Connect(struct sockaddr_un addr, bool logMessages);
 
 private:
   int     m_fd;
