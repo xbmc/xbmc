@@ -251,6 +251,7 @@
       <rootmenu>Back</rootmenu>
       <title>Info</title>
       <info>CodecInfo</info>
+      <print>Screenshot</print>
     </remote>
   </MusicOSD>
   <VisualisationSettings>
