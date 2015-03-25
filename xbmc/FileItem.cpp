@@ -788,13 +788,7 @@ bool CFileItem::IsPVRRadioRDS() const
 
 bool CFileItem::IsDiscStub() const
 {
-  if (IsVideoDb() && HasVideoInfoTag())
-  {
-    CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
-    return dbItem.IsDiscStub();
-  }
-
-  return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_discStubExtensions);
+  return URIUtils::IsDiscStub(m_strPath);
 }
 
 bool CFileItem::IsAudio() const

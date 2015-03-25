@@ -40,6 +40,7 @@
 #include "settings/DiscSettings.h"
 #include "utils/LangCodeExpander.h"
 #include "filesystem/SpecialProtocol.h"
+#include "storage/MediaManager.h"
 
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
@@ -273,13 +274,16 @@ bool CDVDInputStreamBluray::Open()
   std::string filename;
   std::string root;
 
-  if(URIUtils::IsProtocol(strPath, "bluray"))
+  if(g_mediaManager.TranslateDevicePath("") == strPath)
+    strPath = URIUtils::AddFileToFolder(strFile, "BDMV/index.bdmv");
+
+  if (URIUtils::IsProtocol(strPath, "bluray"))
   {
     CURL url(strPath);
     root     = url.GetHostName();
     filename = URIUtils::GetFileName(url.GetFileName());
   }
-  else if(URIUtils::HasExtension(strPath, ".iso|.img"))
+  else if(URIUtils::IsDiscImage(strPath))
   {
     CURL url("udf://");
     url.SetHostName(strPath);
