@@ -57,6 +57,13 @@ namespace PVR
     virtual void SetWeekdaySettingFromTimer(const CPVRTimerInfoTag &timer);
     virtual void SetTimerFromWeekdaySetting(CPVRTimerInfoTag &timer);
 
+    /*!
+     * @brief Sets dialog's channel according to the currently selected channel list entry.
+     * @param iSelectedEntry the zero-based index of the channel entry in the channel selction list.
+     * @param bRadio specifies whether the entry is for the TV or for the radio channel selection list.
+     */
+    void SetChannelFromSelectedEntry(int iSelectedEntry, bool bRadio);
+
     void getChannelNames(bool bRadio, std::vector< std::pair<std::string, int> > &list, int &current, bool updateChannelEntries = false);
     void setButtonLabels();
 
