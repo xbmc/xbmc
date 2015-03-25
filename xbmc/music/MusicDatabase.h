@@ -328,9 +328,6 @@ public:
   bool GetCompilationAlbums(const std::string& strBaseDir, CFileItemList& items);
   bool GetCompilationSongs(const std::string& strBaseDir, CFileItemList& items);
   int  GetCompilationAlbumsCount();
-  bool GetVariousArtistsAlbums(const std::string& strBaseDir, CFileItemList& items);
-  bool GetVariousArtistsAlbumsSongs(const std::string& strBaseDir, CFileItemList& items);
-  int GetVariousArtistsAlbumsCount();
   
   /*! \brief Increment the playcount of an item
    Increments the playcount and updates the last played date
