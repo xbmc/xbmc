@@ -1270,7 +1270,9 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr ""
 
-#empty string with id 299
+msgctxt "#299"
+msgid "Bookmark %i"
+msgstr ""
 
 msgctxt "#300"
 msgid "MP1 capable receiver"

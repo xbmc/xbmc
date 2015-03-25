@@ -274,8 +274,9 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
       bookmarkTime = StringUtils::Format("%s %li %s %li", g_localizeStrings.Get(20373).c_str(), m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
     else
       bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
-    
-    CFileItemPtr item(new CFileItem(bookmarkTime));
+
+    std::string name = StringUtils::Format("%s (%s)", StringUtils::Format(g_localizeStrings.Get(299).c_str(), i+1).c_str(), bookmarkTime.c_str());
+    CFileItemPtr item(new CFileItem(name));
     item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
     item->SetProperty("resumepoint", m_bookmarks[i].timeInSeconds);
     item->SetProperty("playerstate", m_bookmarks[i].playerState);
@@ -287,11 +288,15 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   {
     std::string chapterName;
     g_application.m_pPlayer->GetChapterName(chapterName, i);
-    if (chapterName.empty())
-      chapterName = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i);
-    int64_t pos = g_application.m_pPlayer->GetChapterPos(i);
 
+    int64_t pos = g_application.m_pPlayer->GetChapterPos(i);
     std::string time = StringUtils::SecondsToTimeString((long) pos, TIME_FORMAT_HH_MM_SS);
+
+    if (chapterName.empty() ||
+        StringUtils::StartsWithNoCase(chapterName, time) ||
+        StringUtils::IsNaturalNumber(chapterName));
+      chapterName = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i);
+
     std::string name = StringUtils::Format("%s (%s)", chapterName.c_str(), time.c_str());
 
     CFileItemPtr item(new CFileItem(name));
