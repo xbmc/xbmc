@@ -418,6 +418,8 @@ void CDSPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
 
 void CDSPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
+  if (index == CURRENT_STREAM)
+    index = GetAudioStream();
 
   CSingleLock lock(m_StateSection);
 
