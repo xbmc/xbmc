@@ -3917,7 +3917,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           {
             if (!m_itemCurrentFile->HasMusicInfoTag() || !m_itemCurrentFile->GetMusicInfoTag()->Loaded())
             {
-              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(m_itemCurrentFile->GetPath());
+              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(*m_itemCurrentFile);
               tagloader->Load(m_itemCurrentFile->GetPath(),*m_itemCurrentFile->GetMusicInfoTag());
               delete tagloader;
             }
