@@ -691,7 +691,7 @@ void CPartyModeManager::AddToHistory(int type, int songID)
 void CPartyModeManager::GetRandomSelection(vector< pair<int,int> >& in, unsigned int number, vector< pair<int,int> >& out)
 {
   number = min(number, (unsigned int)in.size());
-  random_shuffle(in.begin(), in.end());
+  random_shuffle(in.begin(), in.end(), srand(time(0)));
   out.assign(in.begin(), in.begin() + number);
 }
 

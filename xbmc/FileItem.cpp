@@ -1998,7 +1998,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
 void CFileItemList::Randomize()
 {
   CSingleLock lock(m_lock);
-  random_shuffle(m_items.begin(), m_items.end());
+  random_shuffle(m_items.begin(), m_items.end(), srand(time(0)));
 }
 
 void CFileItemList::Archive(CArchive& ar)
