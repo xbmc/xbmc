@@ -165,6 +165,12 @@ namespace PVR
 
     void UpdateChannel(void);
 
+    /*!
+     * @brief Sets a channel for the tag, updates affected members like channel uid accordingly.
+     * @param channel the channel to set.
+     */
+    void SetChannel(const CPVRChannelPtr &channel);
+
     std::string           m_strTitle;           /*!< @brief name of this timer */
     std::string           m_strDirectory;       /*!< @brief directory where the recording must be stored */
     std::string           m_strSummary;         /*!< @brief summary string with the time to show inside a GUI list */
