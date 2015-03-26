@@ -34,6 +34,6 @@ TEST(Testfastmemcpy, General)
 {
   char vardata[sizeof(refdata)];
   memset(vardata, 0, sizeof(vardata));
-  EXPECT_TRUE(fast_memcpy(vardata, refdata, sizeof(refdata)));
-  EXPECT_TRUE(!memcmp(refdata, vardata, sizeof(refdata)));
+  EXPECT_NE(nullptr, fast_memcpy(vardata, refdata, sizeof(refdata)));
+  EXPECT_EQ(0, memcmp(refdata, vardata, sizeof(refdata)));
 }

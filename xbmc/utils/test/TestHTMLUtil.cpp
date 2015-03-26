@@ -42,7 +42,7 @@ TEST(TestHTMLUtil, ConvertHTMLToW)
 {
   std::wstring inw, refstrw, varstrw;
   inw =     L"&aring;&amp;&euro;";
-  refstrw = L"å&€";
+  refstrw = L"\u00e5&\u20ac";
   HTML::CHTMLUtil::ConvertHTMLToW(inw, varstrw);
   EXPECT_STREQ(refstrw.c_str(), varstrw.c_str());
 }

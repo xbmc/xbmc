@@ -53,7 +53,7 @@ TEST(TestXBMCTinyXML, ParseFromFileHandle)
   // scraper results with unescaped &
   CXBMCTinyXML doc;
   FILE *f = fopen(XBMC_REF_FILE_PATH("/xbmc/utils/test/CXBMCTinyXML-test.xml").c_str(), "r");
-  ASSERT_TRUE(f);
+  ASSERT_NE(nullptr, f);
   doc.LoadFile(f);
   fclose(f);
   TiXmlNode *root = doc.RootElement();
