@@ -275,8 +275,8 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     else
       bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
 
-    std::string name = StringUtils::Format("%s (%s)", StringUtils::Format(g_localizeStrings.Get(299).c_str(), i+1).c_str(), bookmarkTime.c_str());
-    CFileItemPtr item(new CFileItem(name));
+    CFileItemPtr item(new CFileItem(StringUtils::Format(g_localizeStrings.Get(299).c_str(), i+1)));
+    item->SetLabel2(bookmarkTime);
     item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
     item->SetProperty("resumepoint", m_bookmarks[i].timeInSeconds);
     item->SetProperty("playerstate", m_bookmarks[i].playerState);
@@ -297,17 +297,17 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
         StringUtils::IsNaturalNumber(chapterName));
       chapterName = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i);
 
-    std::string name = StringUtils::Format("%s (%s)", chapterName.c_str(), time.c_str());
+    CFileItemPtr item(new CFileItem(chapterName));
+    item->SetLabel2(time);
 
-    CFileItemPtr item(new CFileItem(name));
-    time = StringUtils::Format("chapter://%s/%i", m_filePath.c_str(), i);
-    std::string cachefile = CTextureCache::Get().GetCachedPath(CTextureCache::Get().GetCacheFile(time)+".jpg");
+    std::string chapterPath = StringUtils::Format("chapter://%s/%i", m_filePath.c_str(), i);
+    std::string cachefile = CTextureCache::Get().GetCachedPath(CTextureCache::Get().GetCacheFile(chapterPath)+".jpg");
     if (XFILE::CFile::Exists(cachefile))
       item->SetArt("thumb", cachefile);
     else if (i > m_jobsStarted && CSettings::Get().GetBool("myvideos.extractchapterthumbs"))
     {
       CFileItem item(m_filePath, false);
-      CJob* job = new CThumbExtractor(item, m_filePath, true, time, pos * 1000, false);
+      CJob* job = new CThumbExtractor(item, m_filePath, true, chapterPath, pos * 1000, false);
       AddJob(job);
       m_mapJobsChapter[job] = i;
       m_jobsStarted++;
