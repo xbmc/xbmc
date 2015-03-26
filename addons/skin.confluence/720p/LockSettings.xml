@@ -8,52 +8,15 @@
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
-		<control type="image">
-			<description>background image</description>
-			<left>0</left>
-			<top>0</top>
-			<width>700</width>
-			<height>570</height>
-			<texture border="40">DialogBack.png</texture>
-		</control>
-		<control type="image">
-			<description>Dialog Header image</description>
-			<left>40</left>
-			<top>16</top>
-			<width>620</width>
-			<height>40</height>
-			<texture>dialogheader.png</texture>
-		</control>
-		<control type="label" id="2">
-			<description>header label</description>
-			<left>40</left>
-			<top>20</top>
-			<width>620</width>
-			<height>30</height>
-			<font>font13_title</font>
-			<label>$LOCALIZE[20043]</label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<textcolor>selected</textcolor>
-			<shadowcolor>black</shadowcolor>
-		</control>
-		<control type="button">
-			<description>Close Window button</description>
-			<left>610</left>
-			<top>15</top>
-			<width>64</width>
-			<height>32</height>
-			<label>-</label>
-			<font>-</font>
-			<onclick>PreviousMenu</onclick>
-			<texturefocus>DialogCloseButton-focus.png</texturefocus>
-			<texturenofocus>DialogCloseButton.png</texturenofocus>
-			<onleft>5</onleft>
-			<onright>5</onright>
-			<onup>5</onup>
-			<ondown>5</ondown>
-			<visible>system.getbool(input.enablemouse)</visible>
-		</control>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="700" />
+			<param name="DialogBackgroundHeight" value="570" />
+			<param name="DialogHeaderWidth" value="620" />
+			<param name="DialogHeaderLabel" value="$LOCALIZE[20043]" />
+			<param name="DialogHeaderId" value="2" />
+			<param name="CloseButtonLeft" value="610" />
+			<param name="CloseButtonNav" value="5" />
+		</include>
 		<control type="grouplist" id="5">
 			<description>control area</description>
 			<left>30</left>
