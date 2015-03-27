@@ -724,6 +724,9 @@ bool CStreamsManager::SetAudioInterface()
   Com::SmartPtr<IBaseFilter> m_pAudio;
   m_pAudio = CGraphFilters::Get()->Audio.pBF;
 
+  if (!m_pAudio)
+    return false;
+
   CStdString audioName;
   HRESULT hraudio;
   g_charsetConverter.wToUTF8(GetFilterName(m_pAudio), audioName);
