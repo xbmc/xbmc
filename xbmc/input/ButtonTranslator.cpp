@@ -273,7 +273,8 @@ static const ActionMapping actions[] =
         {"swipeup"           , ACTION_GESTURE_SWIPE_UP},
         {"swipedown"         , ACTION_GESTURE_SWIPE_DOWN},
 
-        // Do nothing action
+        // Do nothing / error action
+        { "error"            , ACTION_ERROR},
         { "noop"             , ACTION_NOOP}
 };
 

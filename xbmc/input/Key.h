@@ -381,7 +381,8 @@
 
 // The NOOP action can be specified to disable an input event. This is
 // useful in user keyboard.xml etc to disable actions specified in the
-// system mappings.
+// system mappings. ERROR action is used to play an error sound
+#define ACTION_ERROR                  998
 #define ACTION_NOOP                   999
 
 #define ICON_TYPE_NONE          101

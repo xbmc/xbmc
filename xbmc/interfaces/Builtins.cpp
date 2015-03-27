@@ -34,6 +34,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "input/Key.h"
 #include "guilib/StereoscopicsManager.h"
+#include "guilib/GUIAudioManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -300,6 +301,7 @@ bool CBuiltins::ActivateWindow(int iWindowID, const std::vector<std::string>& pa
   if (g_windowManager.HasModalDialog() && !g_windowManager.GetWindow(iWindowID)->IsDialog())
   {
     CLog::Log(LOG_LEVEL_DEBUG, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
+    g_audioManager.PlayActionSound(CAction(ACTION_ERROR));
     return false;
   }
 
