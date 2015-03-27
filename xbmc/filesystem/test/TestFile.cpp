@@ -21,6 +21,7 @@
 #include "filesystem/File.h"
 #include "test/TestUtils.h"
 
+#include <string>
 #include <errno.h>
 
 #include "gtest/gtest.h"
@@ -52,11 +53,11 @@ TEST(TestFile, Read)
   file.Flush();
   currentPos = firstBuf.length();
   EXPECT_EQ(currentPos, file.GetPosition());
-  EXPECT_TRUE(memcmp(firstBuf.c_str(), buf, firstBuf.length()) == 0);
-  EXPECT_TRUE(file.Read(buf, secondBuf.length()));
+  EXPECT_EQ(0, memcmp(firstBuf.c_str(), buf, firstBuf.length()));
+  EXPECT_EQ(secondBuf.length(), file.Read(buf, secondBuf.length()));
   currentPos += secondBuf.length();
   EXPECT_EQ(currentPos, file.GetPosition());
-  EXPECT_TRUE(memcmp(secondBuf.c_str(), buf, secondBuf.length()) == 0);
+  EXPECT_EQ(0, memcmp(secondBuf.c_str(), buf, secondBuf.length()));
   currentPos = 100 + addPerLine * 3;
   EXPECT_EQ(currentPos, file.Seek(currentPos));
   EXPECT_EQ(currentPos, file.GetPosition());
@@ -64,7 +65,7 @@ TEST(TestFile, Read)
   file.Flush();
   currentPos += thirdBuf.length();
   EXPECT_EQ(currentPos, file.GetPosition());
-  EXPECT_TRUE(memcmp(thirdBuf.c_str(), buf, thirdBuf.length()) == 0);
+  EXPECT_EQ(0, memcmp(thirdBuf.c_str(), buf, thirdBuf.length()));
   currentPos += 100 + addPerLine * 1;
   EXPECT_EQ(currentPos, file.Seek(100 + addPerLine * 1, SEEK_CUR));
   EXPECT_EQ(currentPos, file.GetPosition());
@@ -72,7 +73,7 @@ TEST(TestFile, Read)
   file.Flush();
   currentPos += fourthBuf.length();
   EXPECT_EQ(currentPos, file.GetPosition());
-  EXPECT_TRUE(memcmp(fourthBuf.c_str(), buf, fourthBuf.length()) == 0);
+  EXPECT_EQ(0, memcmp(fourthBuf.c_str(), buf, fourthBuf.length()));
   currentPos = realSize - fifthBuf.length();
   EXPECT_EQ(currentPos, file.Seek(-(int64_t)fifthBuf.length(), SEEK_END));
   EXPECT_EQ(currentPos, file.GetPosition());
@@ -80,7 +81,7 @@ TEST(TestFile, Read)
   file.Flush();
   currentPos += fifthBuf.length();
   EXPECT_EQ(currentPos, file.GetPosition());
-  EXPECT_TRUE(memcmp(fifthBuf.c_str(), buf, fifthBuf.length()) == 0);
+  EXPECT_EQ(0, memcmp(fifthBuf.c_str(), buf, fifthBuf.length()));
   currentPos += 100;
   EXPECT_EQ(currentPos, file.Seek(100, SEEK_CUR));
   EXPECT_EQ(currentPos, file.GetPosition());
@@ -90,7 +91,7 @@ TEST(TestFile, Read)
   file.Flush();
   currentPos += firstBuf.length();
   EXPECT_EQ(currentPos, file.GetPosition());
-  EXPECT_TRUE(memcmp(firstBuf.c_str(), buf, firstBuf.length()) == 0);
+  EXPECT_EQ(0, memcmp(firstBuf.c_str(), buf, firstBuf.length()));
   EXPECT_EQ(0, file.Seek(0, SEEK_SET));
   EXPECT_EQ(-1, file.Seek(-100, SEEK_SET));
   file.Close();
@@ -103,7 +104,7 @@ TEST(TestFile, Write)
   char buf[30];
   memset(&buf, 0, sizeof(buf));
 
-  ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
+  ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();
   ASSERT_TRUE(file->OpenForWrite(XBMC_TEMPFILEPATH(file), true));
   EXPECT_EQ((int)sizeof(str), file->Write(str, sizeof(str)));
@@ -118,7 +119,7 @@ TEST(TestFile, Write)
   EXPECT_EQ(sizeof(str), file->Read(buf, sizeof(buf)));
   file->Flush();
   EXPECT_EQ((int64_t)sizeof(str), file->GetPosition());
-  EXPECT_TRUE(!memcmp(str, buf, sizeof(str)));
+  EXPECT_EQ(0, memcmp(str, buf, sizeof(str)));
   file->Close();
   EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
 }
@@ -127,7 +128,7 @@ TEST(TestFile, Exists)
 {
   XFILE::CFile *file;
 
-  ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
+  ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();
   EXPECT_TRUE(XFILE::CFile::Exists(XBMC_TEMPFILEPATH(file)));
   EXPECT_FALSE(XFILE::CFile::Exists(""));
@@ -139,10 +140,10 @@ TEST(TestFile, Stat)
   XFILE::CFile *file;
   struct __stat64 buffer;
 
-  ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
+  ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   EXPECT_EQ(0, file->Stat(&buffer));
   file->Close();
-  EXPECT_TRUE(buffer.st_mode | _S_IFREG);
+  EXPECT_NE(0, buffer.st_mode | _S_IFREG);
   EXPECT_EQ(-1, XFILE::CFile::Stat("", &buffer));
   EXPECT_EQ(ENOENT, errno);
   EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
@@ -153,7 +154,7 @@ TEST(TestFile, Delete)
   XFILE::CFile *file;
   std::string path;
 
-  ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
+  ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();
   path = XBMC_TEMPFILEPATH(file);
   EXPECT_TRUE(XFILE::CFile::Exists(path));
@@ -166,10 +167,10 @@ TEST(TestFile, Rename)
   XFILE::CFile *file;
   std::string path1, path2;
 
-  ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
+  ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();
   path1 = XBMC_TEMPFILEPATH(file);
-  ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
+  ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();
   path2 = XBMC_TEMPFILEPATH(file);
   EXPECT_TRUE(XFILE::CFile::Delete(path1));
@@ -186,10 +187,10 @@ TEST(TestFile, Copy)
   XFILE::CFile *file;
   std::string path1, path2;
 
-  ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
+  ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();
   path1 = XBMC_TEMPFILEPATH(file);
-  ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
+  ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();
   path2 = XBMC_TEMPFILEPATH(file);
   EXPECT_TRUE(XFILE::CFile::Delete(path1));
@@ -206,7 +207,7 @@ TEST(TestFile, SetHidden)
 {
   XFILE::CFile *file;
 
-  ASSERT_TRUE((file = XBMC_CREATETEMPFILE("")) != NULL);
+  ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();
   EXPECT_TRUE(XFILE::CFile::Exists(XBMC_TEMPFILEPATH(file)));
   bool result = XFILE::CFile::SetHidden(XBMC_TEMPFILEPATH(file), true);

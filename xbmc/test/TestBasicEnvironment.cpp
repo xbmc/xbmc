@@ -35,8 +35,6 @@
 
 void TestBasicEnvironment::SetUp()
 {
-  char *tmp;
-  std::string xbmcTempPath;
   XFILE::CFile *f;
 
   /* NOTE: The below is done to fix memleak warning about unitialized variable
@@ -69,6 +67,7 @@ void TestBasicEnvironment::SetUp()
    * test suite run.
    */
 #ifdef TARGET_WINDOWS
+  std::string xbmcTempPath;
   TCHAR lpTempPathBuffer[MAX_PATH];
   if (!GetTempPath(MAX_PATH, lpTempPathBuffer))
     SetUpError();
@@ -81,7 +80,7 @@ void TestBasicEnvironment::SetUp()
   CSpecialProtocol::SetTempPath(lpTempPathBuffer);
 #else
   char buf[MAX_PATH];
-  (void)xbmcTempPath;
+  char *tmp;
   strcpy(buf, "/tmp/xbmctempdirXXXXXX");
   if ((tmp = mkdtemp(buf)) == NULL)
     SetUpError();

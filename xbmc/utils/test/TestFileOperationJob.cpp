@@ -34,7 +34,7 @@ TEST(TestFileOperationJob, ActionCopy)
   CFileItemList items;
   CFileOperationJob job;
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 
@@ -68,7 +68,7 @@ TEST(TestFileOperationJob, ActionMove)
   CFileItemList items;
   CFileOperationJob job;
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 
@@ -102,7 +102,7 @@ TEST(TestFileOperationJob, ActionDelete)
   CFileItemList items;
   CFileOperationJob job;
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 
@@ -152,7 +152,7 @@ TEST(TestFileOperationJob, ActionReplace)
   CFileItemList items;
   CFileOperationJob job;
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 
@@ -192,7 +192,7 @@ TEST(TestFileOperationJob, ActionCreateFolder)
   CFileItemList items;
   CFileOperationJob job;
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
   std::string tmpfiledirectory =
@@ -228,7 +228,7 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
   CFileItemList items;
   CFileOperationJob job;
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
 
   std::string tmpfiledirectory =
@@ -268,7 +268,7 @@ TEST(TestFileOperationJob, GetFunctions)
   CFileItemList items;
   CFileOperationJob job;
 
-  ASSERT_TRUE((tmpfile = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
   tmpfile->Close();
 

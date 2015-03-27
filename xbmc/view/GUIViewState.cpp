@@ -300,10 +300,6 @@ void CGUIViewState::AddSortMethod(SortDescription sortDescription, int buttonLab
 void CGUIViewState::SetCurrentSortMethod(int method)
 {
   SortBy sortBy = (SortBy)method;
-  SortAttribute sortAttributes = SortAttributeNone;
-  if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
-    sortAttributes = SortAttributeIgnoreArticle;
-
   if (sortBy < SortByNone || sortBy > SortByRandom)
     return; // invalid
 
