@@ -161,7 +161,7 @@ bool CPVRChannelGroup::Load(void)
   if (Size() - iChannelCount > 0)
   {
     CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
-        __FUNCTION__, Size() - iChannelCount, m_strGroupName.c_str());
+        __FUNCTION__, static_cast<int>(Size() - iChannelCount), m_strGroupName.c_str());
   }
 
   SortAndRenumber();

@@ -131,7 +131,6 @@ public:
   {
     // Read the next line.
     line.clear();
-    bool stop = false;
     while (m_pos < m_data.size())
     {
       // Remove the white space at the beginning of the line.
