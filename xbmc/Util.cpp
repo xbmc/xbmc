@@ -537,7 +537,7 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
 
   if ( URIUtils::IsDVD(strPath) )
   {
-    strIcon = "DefaultDVDRom.png";
+    strIcon = "defaultDVDFull.png";
     return ;
   }
 
