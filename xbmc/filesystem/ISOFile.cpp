@@ -85,7 +85,9 @@ ssize_t CISOFile::Read(void *lpBuf, size_t uiBufSize)
       if (m_cache.getMaxReadSize() )
       {
         long lBytes2Read = m_cache.getMaxReadSize();
-        if (lBytes2Read > uiBufSize) lBytes2Read = (long)uiBufSize;
+        if (lBytes2Read > static_cast<long>(uiBufSize))
+          lBytes2Read = static_cast<long>(uiBufSize);
+
         m_cache.ReadData(pData, lBytes2Read );
         uiBufSize -= lBytes2Read ;
         pData += lBytes2Read;

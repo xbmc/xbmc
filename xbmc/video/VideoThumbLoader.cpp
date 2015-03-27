@@ -159,7 +159,7 @@ bool CThumbExtractor::DoWork()
         db.SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
 
       // overwrite the runtime value if the one from streamdetails is available
-      if (info->m_iDbId > 0 && info->m_duration != info->GetDuration())
+      if (info->m_iDbId > 0 && info->m_duration != static_cast<int>(info->GetDuration()))
       {
         info->m_duration = info->GetDuration();
 

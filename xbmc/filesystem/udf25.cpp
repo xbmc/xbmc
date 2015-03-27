@@ -593,7 +593,7 @@ int udf25::ReadAt( int64_t pos, size_t len, unsigned char *data )
     return -1;
 
   ssize_t ret = m_fp->Read(data, len);
-  if ( ret < len)
+  if (static_cast<size_t>(ret) < len)
   {
     CLog::Log(LOGERROR, "udf25::ReadFile - less data than requested available!" );
     return (int)ret;

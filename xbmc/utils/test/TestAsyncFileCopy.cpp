@@ -38,8 +38,8 @@ TEST(TestAsyncFileCopy, General)
   XFILE::CFile *f1, *f2;
   char vardata[sizeof(refdata)];
 
-  ASSERT_TRUE((f1 = XBMC_CREATETEMPFILE("")));
-  ASSERT_TRUE((f2 = XBMC_CREATETEMPFILE(".copy")));
+  ASSERT_NE(nullptr, (f1 = XBMC_CREATETEMPFILE("")));
+  ASSERT_NE(nullptr, (f2 = XBMC_CREATETEMPFILE(".copy")));
 
   EXPECT_EQ((int)sizeof(refdata), f1->Write(refdata, sizeof(refdata)));
   f1->Close();

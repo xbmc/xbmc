@@ -875,7 +875,7 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
   if (pdwSize != NULL)
     *pdwSize = written > 0 ? written : 0;
 
-  return written == strData.size();
+  return written == static_cast<ssize_t>(strData.size());
 }
 
 // Detect whether we are "online" or not! Very simple and dirty!

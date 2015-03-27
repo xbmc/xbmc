@@ -218,7 +218,7 @@ void TagLibVFSStream::removeBlock(TagLib::ulong start, TagLib::ulong length)
       clear();
 
     seek(writePosition);
-    if (m_file.Write(buffer.data(), bytesRead) != bytesRead)
+    if (m_file.Write(buffer.data(), bytesRead) != static_cast<ssize_t>(bytesRead))
       return; // error
     writePosition += bytesRead;
   }
