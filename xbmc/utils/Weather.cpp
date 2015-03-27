@@ -63,12 +63,6 @@ FIXME'S
 >strings are not centered
 */
 
-#define WEATHER_BASE_PATH "special://temp/weather/"
-#define WEATHER_ICON_PATH "special://temp/weather/"
-#define WEATHER_SOURCE_FILE "special://xbmc/media/weather.zip"
-
-bool CWeatherJob::m_imagesOkay = false;
-
 CWeatherJob::CWeatherJob(int location)
 {
   m_location = location;
@@ -102,12 +96,6 @@ bool CWeatherJob::DoWork()
       if (!CScriptInvocationManager::Get().IsRunning(scriptId))
         break;
       Sleep(100);
-    }
-    if (!m_imagesOkay)
-    {
-      CDirectory::Create(WEATHER_BASE_PATH);
-      g_ZipManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
-      m_imagesOkay = true;
     }
 
     SetFromProperties();
@@ -249,7 +237,7 @@ static std::string ConstructPath(std::string in) // copy intended
   if (in.empty() || in == "N/A")
     in = "na.png";
 
-  return URIUtils::AddFileToFolder(WEATHER_ICON_PATH,in);
+  return URIUtils::AddFileToFolder("resource://resource.images.weather.default/",in);
 }
 
 void CWeatherJob::SetFromProperties()
@@ -323,7 +311,7 @@ CWeather::~CWeather(void)
 std::string CWeather::BusyInfo(int info) const
 {
   if (info == WEATHER_IMAGE_CURRENT_ICON)
-    return URIUtils::AddFileToFolder(WEATHER_ICON_PATH,"na.png");
+    return "resource://resource.images.weather.default/na.png";
 
   return CInfoLoader::BusyInfo(info);
 }
