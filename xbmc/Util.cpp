@@ -343,42 +343,6 @@ void CUtil::GetQualifiedFilename(const std::string &strBasePath, std::string &st
   }
 }
 
-#ifdef UNIT_TESTING
-bool CUtil::TestGetQualifiedFilename()
-{
-  std::string file = "../foo"; GetQualifiedFilename("smb://", file);
-  if (file != "foo") return false;
-  file = "C:\\foo\\bar"; GetQualifiedFilename("smb://", file);
-  if (file != "C:\\foo\\bar") return false;
-  file = "../foo/./bar"; GetQualifiedFilename("smb://my/path", file);
-  if (file != "smb://my/foo/bar") return false;
-  file = "smb://foo/bar/"; GetQualifiedFilename("upnp://", file);
-  if (file != "smb://foo/bar/") return false;
-  return true;
-}
-
-bool CUtil::TestMakeLegalPath()
-{
-  std::string path;
-#ifdef TARGET_WINDOWS
-  path = "C:\\foo\\bar"; path = MakeLegalPath(path);
-  if (path != "C:\\foo\\bar") return false;
-  path = "C:\\foo:\\bar\\"; path = MakeLegalPath(path);
-  if (path != "C:\\foo_\\bar\\") return false;
-#elif
-  path = "/foo/bar/"; path = MakeLegalPath(path);
-  if (path != "/foo/bar/") return false;
-  path = "/foo?/bar"; path = MakeLegalPath(path);
-  if (path != "/foo_/bar") return false;
-#endif
-  path = "smb://foo/bar"; path = MakeLegalPath(path);
-  if (path != "smb://foo/bar") return false;
-  path = "smb://foo/bar?/"; path = MakeLegalPath(path);
-  if (path != "smb://foo/bar_/") return false;
-  return true;
-}
-#endif
-
 void CUtil::RunShortcut(const char* szShortcutPath)
 {
 }
@@ -995,34 +959,6 @@ bool CUtil::IsUsingTTFSubtitles()
 {
   return URIUtils::HasExtension(CSettings::Get().GetString("subtitles.font"), ".ttf");
 }
-
-#ifdef UNIT_TESTING
-bool CUtil::TestSplitExec()
-{
-  std::string function;
-  vector<std::string> params;
-  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\test\\foo\")", function, params);
-  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo")
-    return false;
-  params.clear();
-  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\test\\foo\\\")", function, params);
-  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo\"")
-    return false;
-  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\test\\\\foo\\\\\")", function, params);
-  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\test\\foo\\")
-    return false;
-  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\\\\\test\\\\\\foo\\\\\")", function, params);
-  if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\\\test\\\\foo\\")
-    return false;
-  CUtil::SplitExecFunction("SetProperty(Foo,\"\")", function, params);
-  if (function != "SetProperty" || params.size() != 2 || params[0] != "Foo" || params[1] != "")
-   return false;
-  CUtil::SplitExecFunction("SetProperty(foo,ba(\"ba black )\",sheep))", function, params);
-  if (function != "SetProperty" || params.size() != 2 || params[0] != "foo" || params[1] != "ba(\"ba black )\",sheep)")
-    return false;
-  return true;
-}
-#endif
 
 void CUtil::SplitExecFunction(const std::string &execString, std::string &function, vector<string> &parameters)
 {

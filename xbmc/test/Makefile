@@ -3,6 +3,7 @@ SRCS=	\
 	TestFileItem.cpp \
 	TestTextureUtils.cpp \
 	TestURL.cpp \
+	TestUtil.cpp \
 	TestUtils.cpp \
 	xbmc-test.cpp
 

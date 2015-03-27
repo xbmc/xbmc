@@ -161,12 +161,6 @@ public:
   static bool SupportsReadFileOperations(const std::string& strPath);
   static std::string GetDefaultFolderThumb(const std::string &folderThumb);
 
-#ifdef UNIT_TESTING
-  static bool TestSplitExec();
-  static bool TestGetQualifiedFilename();
-  static bool TestMakeLegalPath();
-#endif
-
   static void InitRandomSeed();
 
   // Get decimal integer representation of roman digit, ivxlcdm are valid
