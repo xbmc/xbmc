@@ -22,6 +22,7 @@
 #include "AudioEncoder.h"
 #include "AudioDecoder.h"
 #include "DllLibCPluff.h"
+#include "ImageResource.h"
 #include "LanguageResource.h"
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
@@ -173,6 +174,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       }
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(props));
+    case ADDON_RESOURCE_IMAGES:
+      return AddonPtr(new CImageResource(props));
     case ADDON_RESOURCE_LANGUAGE:
       return AddonPtr(new CLanguageResource(props));
     case ADDON_VIZ_LIBRARY:
@@ -805,6 +808,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CAudioEncoder(addonProps));
     case ADDON_AUDIODECODER:
       return AddonPtr(new CAudioDecoder(addonProps));
+    case ADDON_RESOURCE_IMAGES:
+      return AddonPtr(new CImageResource(addonProps));
     case ADDON_RESOURCE_LANGUAGE:
       return AddonPtr(new CLanguageResource(addonProps));
     case ADDON_REPOSITORY:
