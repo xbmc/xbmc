@@ -69,11 +69,11 @@ public:
     m_count++;
   }
 
-  void    Flush()
+  void    Flush(int interval = 2000)
   {
     m_buffer = 0.0f;
     m_count  = 0;
-    m_timer.Set(2000);
+    m_timer.Set(interval);
   }
 
   double  Get()
@@ -84,12 +84,12 @@ public:
       return 0.0;
   }
 
-  bool    Get(double& error)
+  bool    Get(double& error, int interval = 2000)
   {
     if(m_timer.IsTimePast())
     {
       error = Get();
-      Flush();
+      Flush(interval);
       return true;
     }
     else

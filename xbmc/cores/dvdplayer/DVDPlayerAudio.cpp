@@ -650,7 +650,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   double threshold1 = DVD_MSEC_TO_TIME(100);
   double threshold2 = DVD_MSEC_TO_TIME(50);
 
-  // adjust threasholds
+  // adjust thresholds
   // some codecs like flac have a very large frame length
   if (threshold1 < 1.5 * duration)
     threshold1 = 1.5 *  duration;
@@ -662,19 +662,23 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   if (fabs(error) > threshold1)
   {
     m_syncclock = true;
-    m_errors.Flush();
+    m_errors.Flush(500);
     m_integral = 0.0;
     return;
   }
   else if (m_syncclock && fabs(error) < threshold2)
   {
     m_syncclock = false;
-    m_errors.Flush();
+    // we are about to get stable, increase interval
+    m_errors.Flush(1000);
     m_integral = 0.0;
   }
 
-  //check if measured error for 2 seconds
-  if (m_errors.Get(m_error))
+  // check if measured error for 2 seconds
+  // when moving from big erros and we are still above threshold2, calculate errors every
+  // 500ms in order to get first resample ratio early. If we don't adjust rr early, error
+  // may get above threshold1 again. Too small values for interval result in worse average errors
+  if (m_errors.Get(m_error, m_syncclock ? 500 : 2000))
   {
     if (m_synctype == SYNC_DISCON)
     {
