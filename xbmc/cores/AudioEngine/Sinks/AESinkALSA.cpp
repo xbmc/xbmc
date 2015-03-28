@@ -538,7 +538,6 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   if (aml_present())
   {
     aml_set_audio_passthrough(m_passthrough);
-    device = "default";
   }
 #endif
 
