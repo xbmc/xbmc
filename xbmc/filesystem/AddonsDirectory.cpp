@@ -187,6 +187,15 @@ void OrphanedAddons(const CURL& path, CFileItemList &items)
   CAddonsDirectory::GenerateAddonListing(path, orphaned, items, g_localizeStrings.Get(24995));
 }
 
+static bool HaveOrphaned()
+{
+  VECADDONS addons;
+  CAddonMgr::Get().GetAllAddons(addons, true);
+  CAddonMgr::Get().GetAllAddons(addons, false);
+  return std::any_of(addons.begin(), addons.end(),
+                     [&](const AddonPtr& _){ return IsOrphaned(_, addons); });
+}
+
 void OutdatedAddons(const CURL& path, CFileItemList &items)
 {
   VECADDONS addons;
@@ -348,6 +357,7 @@ static void Manage(CFileItemList &items)
     item->SetSpecialSort(SortSpecialOnTop);
     items.Add(item);
   }
+  if (HaveOrphaned())
   {
     CFileItemPtr item(new CFileItem("addons://orphaned/", true));
     item->SetLabel(g_localizeStrings.Get(24995));
