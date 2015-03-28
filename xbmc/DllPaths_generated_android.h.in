@@ -43,28 +43,6 @@
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
 #endif
 
-/* paplayer */
-#define DLL_PATH_AAC_CODEC     "libAACCodec-@ARCH@.so"
-#define DLL_PATH_ADPCM_CODEC   "libadpcm-@ARCH@.so"
-#define DLL_PATH_ADPLUG_CODEC  "libadplug-@ARCH@.so"
-#define DLL_PATH_APE_CODEC     "libMACDll-@ARCH@.so"
-#define DLL_PATH_ASAP_CODEC    "libxbmc_asap-@ARCH@.so"
-#define DLL_PATH_DCA_CODEC     "libdcacodec-@ARCH@.so"
-#define DLL_PATH_GYM_CODEC     "libgensapu-@ARCH@.so"
-#define DLL_PATH_MID_CODEC     "libtimidity-@ARCH@.so"
-#define DLL_PATH_MODULE_CODEC  "libdumb-@ARCH@.so"
-#define DLL_PATH_MPC_CODEC     "libmpcdec-@ARCH@.so"
-#define DLL_PATH_NSF_CODEC     "libnosefart-@ARCH@.so"
-#define DLL_PATH_SID_CODEC     "libsidplay2-@ARCH@.so"
-#define DLL_PATH_SPC_CODEC     "libSNESAPU-@ARCH@.so"
-#define DLL_PATH_VGM_CODEC     "libvgmstream-@ARCH@.so"
-#define DLL_PATH_WAVPACK_CODEC "@WAVPACK_SONAME@"
-#define DLL_PATH_YM_CODEC      "libstsoundlibrary-@ARCH@.so"
-
-#define DLL_PATH_FLAC_CODEC    "@FLAC_SONAME@"
-#define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
-#define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
-
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"
 #define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"

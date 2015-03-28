@@ -112,9 +112,6 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
     return dvdcodec;
   }
   else
-  {
-    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
-    return dvdcodec;
-  }
+    return CreateCodec(urlFile.GetFileType());
 }
 
