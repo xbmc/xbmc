@@ -84,16 +84,12 @@ bool IsUserInstalled(const AddonPtr& addon)
 }
 
 
-bool IsOrphaned(const AddonPtr& addon)
+bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
 {
   if (IsSystemAddon(addon) || IsUserInstalled(addon))
     return false;
 
-  // Check if it's required by an installed addon
-  VECADDONS allAddons;
-  CAddonMgr::Get().GetAllAddons(allAddons, true);
-  CAddonMgr::Get().GetAllAddons(allAddons, false);
-  for (const AddonPtr& other : allAddons)
+  for (const AddonPtr& other : all)
   {
     const auto& deps = other->GetDeps();
     if (deps.find(addon->ID()) != deps.end())
@@ -166,24 +162,29 @@ void SystemAddons(const CURL& path, CFileItemList &items)
 
 void DependencyAddons(const CURL& path, CFileItemList &items)
 {
-  VECADDONS addons;
-  CAddonMgr::Get().GetAllAddons(addons, true);
-  CAddonMgr::Get().GetAllAddons(addons, false);
-  addons.erase(std::remove_if(addons.begin(), addons.end(), IsSystemAddon), addons.end());
-  addons.erase(std::remove_if(addons.begin(), addons.end(), IsUserInstalled), addons.end());
-  addons.erase(std::remove_if(addons.begin(), addons.end(), IsOrphaned), addons.end());
-  CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24996));
+  VECADDONS all;
+  CAddonMgr::Get().GetAllAddons(all, true);
+  CAddonMgr::Get().GetAllAddons(all, false);
+
+  VECADDONS deps;
+  std::copy_if(all.begin(), all.end(), std::back_inserter(deps),
+      [&](const AddonPtr& _){ return !IsSystemAddon(_) && !IsUserInstalled(_) && !IsOrphaned(_, all); });
+
+  CAddonsDirectory::GenerateAddonListing(path, deps, items, g_localizeStrings.Get(24996));
   SetUpdateAvailProperties(items);
 }
 
 void OrphanedAddons(const CURL& path, CFileItemList &items)
 {
-  VECADDONS addons;
-  CAddonMgr::Get().GetAllAddons(addons, true);
-  CAddonMgr::Get().GetAllAddons(addons, false);
-  addons.erase(std::remove_if(addons.begin(), addons.end(),
-                              std::not1(std::ptr_fun(IsOrphaned))), addons.end());
-  CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24995));
+  VECADDONS all;
+  CAddonMgr::Get().GetAllAddons(all, true);
+  CAddonMgr::Get().GetAllAddons(all, false);
+
+  VECADDONS orphaned;
+  std::copy_if(all.begin(), all.end(), std::back_inserter(orphaned),
+      [&](const AddonPtr& _){ return IsOrphaned(_, all); });
+
+  CAddonsDirectory::GenerateAddonListing(path, orphaned, items, g_localizeStrings.Get(24995));
 }
 
 void OutdatedAddons(const CURL& path, CFileItemList &items)
