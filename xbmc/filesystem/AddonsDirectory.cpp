@@ -67,6 +67,11 @@ const std::array<TYPE, 5> infoProviderTypes = {
 };
 
 
+static bool IsInfoProviderType(const AddonPtr& addon)
+{
+  return std::find(infoProviderTypes.begin(), infoProviderTypes.end(), addon->Type()) != infoProviderTypes.end();
+}
+
 bool IsSystemAddon(const AddonPtr& addon)
 {
   return StringUtils::StartsWith(addon->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
@@ -254,6 +259,7 @@ bool Browse(const CURL& path, CFileItemList &items)
 
   if (category.empty())
   {
+    if (std::any_of(addons.begin(), addons.end(), IsInfoProviderType))
     {
       CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24993)));
       item->SetPath(URIUtils::AddFileToFolder(path.Get(), "group.infoproviders"));
