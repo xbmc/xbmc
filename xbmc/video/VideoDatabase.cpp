@@ -43,6 +43,8 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogOK.h"
 #include "FileItem.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
@@ -8338,6 +8340,7 @@ void CVideoDatabase::DumpToDummyFiles(const std::string &path)
 
 void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = false */, bool images /* = false */, bool actorThumbs /* false */, bool overwrite /*=false*/)
 {
+  int iFailCount = 0;
   CGUIDialogProgress *progress=NULL;
   try
   {
@@ -8465,16 +8468,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
             if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              bSkip = ExportSkipEntry(nfoFile);
-              if (!bSkip)
-              {
-                if (progress)
-                {
-                  progress->Close();
-                  m_pDS->close();
-                  return;
-                }
-              }
+              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+              iFailCount++;
             }
           }
         }
@@ -8563,16 +8558,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
             if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              bSkip = ExportSkipEntry(nfoFile);
-              if (!bSkip)
-              {
-                if (progress)
-                {
-                  progress->Close();
-                  m_pDS->close();
-                  return;
-                }
-              }
+              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+              iFailCount++;
             }
           }
         }
@@ -8669,16 +8656,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
             if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "%s: TVShow nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              bSkip = ExportSkipEntry(nfoFile);
-              if (!bSkip)
-              {
-                if (progress)
-                {
-                  progress->Close();
-                  m_pDS->close();
-                  return;
-                }
-              }
+              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+              iFailCount++;
             }
           }
         }
@@ -8772,16 +8751,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
               if(!xmlDoc.SaveFile(nfoFile))
               {
                 CLog::Log(LOGERROR, "%s: Episode nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
-                {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
-                }
+                CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+                iFailCount++;
               }
             }
           }
@@ -8850,10 +8821,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    iFailCount++;
   }
 
   if (progress)
     progress->Close();
+
+  if (iFailCount > 0)
+    CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(647), StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount), "", "");
 }
 
 void CVideoDatabase::ExportActorThumbs(const std::string &strDir, const CVideoInfoTag &tag, bool singleFiles, bool overwrite /*=false*/)
@@ -8879,22 +8854,6 @@ void CVideoDatabase::ExportActorThumbs(const std::string &strDir, const CVideoIn
       CTextureCache::Get().Export(iter->thumb, thumbFile, overwrite);
     }
   }
-}
-
-bool CVideoDatabase::ExportSkipEntry(const std::string &nfoFile)
-{
-  std::string strParent;
-  URIUtils::GetParentPath(nfoFile,strParent);
-  CLog::Log(LOGERROR, "%s: Unable to write to '%s'!", __FUNCTION__, strParent.c_str());
-
-  bool bSkip = CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(647), g_localizeStrings.Get(20302), strParent.c_str(), g_localizeStrings.Get(20303));
-
-  if (bSkip)
-    CLog::Log(LOGERROR, "%s: Skipping export of '%s' as requested", __FUNCTION__, nfoFile.c_str());
-  else
-    CLog::Log(LOGERROR, "%s: Export failed! Canceling as requested", __FUNCTION__);
-
-  return bSkip;
 }
 
 void CVideoDatabase::ImportFromXML(const std::string &path)

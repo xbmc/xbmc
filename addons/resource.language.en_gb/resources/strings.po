@@ -6975,7 +6975,12 @@ msgctxt "#14110"
 msgid "Long date format"
 msgstr ""
 
-#empty strings from id 14111 to 15011
+#empty strings from id 14111 to 15010
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#15011"
+msgid "%i Items failed to export"
+msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -10375,7 +10380,7 @@ msgid "Unable to write to folder:"
 msgstr ""
 
 msgctxt "#20303"
-msgid "Do you want to skip and proceed?"
+msgid ""
 msgstr ""
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
