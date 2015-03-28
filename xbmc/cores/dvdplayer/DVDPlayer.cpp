@@ -834,7 +834,7 @@ bool CDVDPlayer::OpenDemuxStream()
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
   if(len > 0 && tim > 0)
-    m_pInputStream->SetReadRate((unsigned int) (g_advancedSettings.m_readBufferFactor * len * 1000 / tim));
+    m_pInputStream->SetReadRate((unsigned int) (len * 1000 / tim));
 
   return true;
 }
@@ -1680,7 +1680,10 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   delay = cache_left - play_left;
 
   if (full && (currate < maxrate) )
+  {
+    CLog::Log(LOGDEBUG, "Readrate %u is too low with %u required", currate, maxrate);
     level = -1.0;                          /* buffer is full & our read rate is too low  */
+  }
   else
     level = (cached + queued) / (cache_need + queued);
 
