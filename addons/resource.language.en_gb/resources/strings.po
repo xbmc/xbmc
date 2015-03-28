@@ -12979,11 +12979,7 @@ msgctxt "#24996"
 msgid "Required Dependencies"
 msgstr ""
 
-#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
-#: xbmc/filesystem/AddonsDirectory.cpp
-msgctxt "#24997"
-msgid "System Add-ons"
-msgstr ""
+#empty string id 24997
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp

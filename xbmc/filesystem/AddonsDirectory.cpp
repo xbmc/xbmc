@@ -80,12 +80,8 @@ bool IsSystemAddon(const AddonPtr& addon)
 
 bool IsUserInstalled(const AddonPtr& addon)
 {
-  if (IsSystemAddon(addon))
-    return false;
-
-  auto res = std::find_if(dependencyTypes.begin(), dependencyTypes.end(),
-    [&addon](TYPE type){ return addon->IsType(type); });
-  return res == dependencyTypes.end();
+  return std::find_if(dependencyTypes.begin(), dependencyTypes.end(),
+      [&](TYPE type){ return addon->IsType(type); }) == dependencyTypes.end();
 }
 
 
@@ -155,16 +151,6 @@ void UserInstalledAddons(const CURL& path, CFileItemList &items)
   SetUpdateAvailProperties(items);
 }
 
-void SystemAddons(const CURL& path, CFileItemList &items)
-{
-  VECADDONS addons;
-  CAddonMgr::Get().GetAllAddons(addons, true);
-  CAddonMgr::Get().GetAllAddons(addons, false);
-  addons.erase(std::remove_if(addons.begin(), addons.end(),
-                              std::not1(std::ptr_fun(IsSystemAddon))), addons.end());
-  CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24997));
-}
-
 void DependencyAddons(const CURL& path, CFileItemList &items)
 {
   VECADDONS all;
@@ -173,7 +159,7 @@ void DependencyAddons(const CURL& path, CFileItemList &items)
 
   VECADDONS deps;
   std::copy_if(all.begin(), all.end(), std::back_inserter(deps),
-      [&](const AddonPtr& _){ return !IsSystemAddon(_) && !IsUserInstalled(_) && !IsOrphaned(_, all); });
+      [&](const AddonPtr& _){ return !IsUserInstalled(_) && !IsOrphaned(_, all); });
 
   CAddonsDirectory::GenerateAddonListing(path, deps, items, g_localizeStrings.Get(24996));
   SetUpdateAvailProperties(items);
@@ -371,12 +357,6 @@ static void Manage(CFileItemList &items)
     items.Add(item);
   }
   {
-    CFileItemPtr item(new CFileItem("addons://system/", true));
-    item->SetLabel(g_localizeStrings.Get(24997));
-    item->SetSpecialSort(SortSpecialOnTop);
-    items.Add(item);
-  }
-  {
     CFileItemPtr item(new CFileItem("addons://running/", true));
     item->SetLabel(g_localizeStrings.Get(24994));
     item->SetSpecialSort(SortSpecialOnTop);
@@ -407,11 +387,6 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   else if (endpoint == "orphaned")
   {
     OrphanedAddons(path, items);
-    return true;
-  }
-  else if (endpoint == "system")
-  {
-    SystemAddons(path, items);
     return true;
   }
   //Pvr hardcodes this view so keep for compatibility
