@@ -66,6 +66,10 @@
       <name>screenshot</name>
       <file>shutter.wav</file>
     </action>
+    <action>
+      <name>error</name>
+      <file>notify.wav</file>
+    </action>
   </actions>
 
   <windows>
