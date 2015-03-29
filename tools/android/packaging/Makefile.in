@@ -75,7 +75,7 @@ xbmc/assets:
 symbols: libs
 ifeq (1,@USE_BREAKPAD@)
 	for f in xbmc/obj/local/$(CPU)/*.so; do sh ./make_symbols.sh $$f; done
-	tar -cjf @APP_NAME@.symbols-`$(XBMCROOT)/tools/darwin/packaging/gitrev-posix`.tar.bz2 symbols
+	tar -cjf @APP_NAME@.symbols-$(CPU)-`$(XBMCROOT)/tools/darwin/packaging/gitrev-posix`.tar.bz2 symbols
 endif
 
 shared:
