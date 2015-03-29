@@ -50,9 +50,6 @@ CContextItemAddon::CContextItemAddon(const cp_extension_t *ext)
     cp_cfg_element_t *item = items[0];
 
     m_label = CAddonMgr::Get().GetExtValue(item, "label");
-    if (StringUtils::IsNaturalNumber(m_label))
-      m_label = GetString(boost::lexical_cast<int>(m_label.c_str()));
-
     m_parent = CAddonMgr::Get().GetExtValue(item, "parent");
 
     string visible = CAddonMgr::Get().GetExtValue(item, "visible");
@@ -61,6 +58,13 @@ CContextItemAddon::CContextItemAddon(const cp_extension_t *ext)
 
     m_visCondition = g_infoManager.Register(visible, 0);
   }
+}
+
+std::string CContextItemAddon::GetLabel()
+{
+  if (StringUtils::IsNaturalNumber(m_label))
+    return GetString(boost::lexical_cast<int>(m_label.c_str()));
+  return m_label;
 }
 
 bool CContextItemAddon::IsVisible(const CFileItemPtr& item) const

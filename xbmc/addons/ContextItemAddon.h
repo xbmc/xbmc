@@ -41,7 +41,7 @@ namespace ADDON
     CContextItemAddon(const AddonProps &props);
     virtual ~CContextItemAddon();
 
-    const std::string& GetLabel() const { return m_label; }
+    std::string GetLabel();
 
     /*!
      * \brief Get the parent category of this context item.
