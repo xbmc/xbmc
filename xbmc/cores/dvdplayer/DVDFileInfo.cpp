@@ -467,7 +467,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
       vobsubfile = URIUtils::ReplaceExtension(filename, ".sub");
 
     CDVDDemuxVobsub v;
-    if(!v.Open(filename, vobsubfile))
+    if (!v.Open(filename, STREAM_SOURCE_NONE, vobsubfile))
       return false;
 
     int count = v.GetNrOfStreams();
