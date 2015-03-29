@@ -9,13 +9,13 @@ Default font lacks support for all characters
       <row>1234567890-=</row>
       <row>qwertyuiop[]</row>
       <row>asdfghjkl;'</row>
-      <row>zxcvbnm,./</row>
+      <row>zxcvbnm,./@</row>
     </keyboard>
     <keyboard modifiers="shift">
-      <row>!@#$%^&amp;*()_+</row>
+      <row>1234567890_+</row>
       <row>QWERTYUIOP{}</row>
       <row>ASDFGHJKL:"</row>
-      <row>ZXCVBNM&lt;&gt;?</row>
+      <row>ZXCVBNM&lt;&gt;?@</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
       <row>)!@#$%^&amp;*(</row>
