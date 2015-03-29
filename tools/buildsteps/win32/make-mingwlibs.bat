@@ -1,4 +1,6 @@
 @ECHO OFF
+SETLOCAL
+
 rem batch file to compile mingw libs via BuildSetup
 SET WORKDIR=%WORKSPACE%
 rem set M$ env
@@ -15,8 +17,12 @@ FOR %%b in (%1, %2, %3) DO (
 )
 
 IF "%WORKDIR%"=="" (
-  SET WORKDIR=%CD%\..\..\..
+  SET WORKDIR=%~dp0\..\..\..
 )
+
+REM Prepend the msys and mingw paths onto %PATH%
+SET MSYS_INSTALL_PATH=%WORKDIR%\project\BuildDependencies\msys
+SET PATH=%MSYS_INSTALL_PATH%\mingw\bin;%MSYS_INSTALL_PATH%\bin;%PATH%
 
 SET ERRORFILE=%WORKDIR%\project\Win32BuildSetup\errormingw
 
@@ -54,3 +60,5 @@ GOTO ENDWITHERROR
     EXIT /B 1
   )
   EXIT /B 0
+
+ENDLOCAL
