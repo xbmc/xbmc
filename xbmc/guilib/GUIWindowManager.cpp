@@ -806,10 +806,9 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<stri
 void CGUIWindowManager::CloseDialogs(bool forceClose) const
 {
   CSingleLock lock(g_graphicsContext);
-  while (m_activeDialogs.size() > 0)
+  for (const auto& dialog : m_activeDialogs)
   {
-    CGUIWindow* win = m_activeDialogs[0];
-    win->Close(forceClose);
+    dialog->Close(forceClose);
   }
 }
 
