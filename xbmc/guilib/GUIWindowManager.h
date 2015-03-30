@@ -64,7 +64,7 @@ public:
   void PreviousWindow();
 
   void CloseDialogs(bool forceClose = false) const;
-  void CloseModalDialogs(bool forceClose = false) const;
+  void CloseInternalModalDialogs(bool forceClose = false) const;
 
   // OnAction() runs through our active dialogs and windows and sends the message
   // off to the callbacks (application, python, playlist player) and to the

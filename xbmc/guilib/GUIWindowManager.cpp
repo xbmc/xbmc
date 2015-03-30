@@ -813,7 +813,7 @@ void CGUIWindowManager::CloseDialogs(bool forceClose) const
   }
 }
 
-void CGUIWindowManager::CloseModalDialogs(bool forceClose) const
+void CGUIWindowManager::CloseInternalModalDialogs(bool forceClose) const
 {
   CSingleLock lock(g_graphicsContext);
   for (const auto& dialog : m_activeDialogs)
