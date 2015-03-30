@@ -54,6 +54,7 @@ void CMMALRenderer::vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *
 
   if (m_format == RENDER_FMT_MMAL)
   {
+    buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER2;
     mmal_queue_put(m_release_queue, buffer);
   }
   else if (m_format == RENDER_FMT_YUV420P)
@@ -359,9 +360,6 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   SetVideoRect(m_sourceRect, m_destRect);
 
   YUVBUFFER *buffer = &m_buffers[source];
-  // we only want to upload frames once
-  if (buffer->flipindex++)
-    return;
   if (m_format == RENDER_FMT_MMAL)
   {
     CMMALVideoBuffer *omvb = buffer->MMALBuffer;
@@ -370,7 +368,11 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 #if defined(MMAL_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, "%s::%s %p (%p)", CLASSNAME, __func__, omvb, omvb->mmal_buffer);
 #endif
+      // we only want to upload frames once
+      if (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
+        return;
       omvb->Acquire();
+      omvb->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1 | MMAL_BUFFER_HEADER_FLAG_USER2;
       mmal_port_send_buffer(m_vout_input, omvb->mmal_buffer);
     } else assert(0);
   }
@@ -378,7 +380,14 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     CLog::Log(LOGDEBUG, "%s::%s - %p %d", CLASSNAME, __func__, buffer->mmal_buffer, source);
     if (buffer->mmal_buffer)
+    {
+      // we only want to upload frames once
+      if (buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
+        return;
+      // sanity check it is not on display
+      buffer->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1;
       mmal_port_send_buffer(m_vout_input, buffer->mmal_buffer);
+    }
     else assert(0);
   }
   else assert(0);

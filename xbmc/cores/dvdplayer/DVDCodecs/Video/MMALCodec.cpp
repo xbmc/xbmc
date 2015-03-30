@@ -999,7 +999,8 @@ void CMMALVideo::ReturnBuffer(CMMALVideoBuffer *buffer)
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p (%d)", CLASSNAME, __func__, buffer, m_output_busy);
-
+  // sanity check it is not on display
+  assert(!(buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER2));
   mmal_buffer_header_release(buffer->mmal_buffer);
 }
 
