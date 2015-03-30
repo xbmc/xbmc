@@ -69,6 +69,7 @@ public:
   const std::vector<std::string>& GetMusicBrainzAlbumArtistID() const;
   const std::string& GetMusicBrainzTRMID() const;
   const std::string& GetComment() const;
+  const std::string& GetMood() const;
   const std::string& GetLyrics() const;
   const std::string& GetCueSheet() const;
   const CDateTime& GetLastPlayed() const;
@@ -107,6 +108,7 @@ public:
   void SetMusicBrainzAlbumArtistID(const std::vector<std::string>& musicBrainzAlbumArtistId);
   void SetMusicBrainzTRMID(const std::string& strTRMID);
   void SetComment(const std::string& comment);
+  void SetMood(const std::string& mood);
   void SetLyrics(const std::string& lyrics);
   void SetCueSheet(const std::string& cueSheet);
   void SetRating(char rating);
@@ -161,6 +163,7 @@ protected:
   std::vector<std::string> m_musicBrainzAlbumArtistID;
   std::string m_strMusicBrainzTRMID;
   std::string m_strComment;
+  std::string m_strMood;
   std::string m_strLyrics;
   std::string m_cuesheet;
   CDateTime m_lastPlayed;
