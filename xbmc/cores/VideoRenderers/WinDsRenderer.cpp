@@ -72,7 +72,10 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
-  ChooseBestResolution(fps);
+
+  if (!CGraphFilters::Get()->UsingMadVr())
+    ChooseBestResolution(fps);
+
   SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
@@ -126,6 +129,24 @@ bool CWinDsRenderer::RenderCapture(CRenderCapture* capture)
   restoreRotatedCoords();//restores the previous state of the rotated dest coords
 
   return succeeded;
+}
+
+
+RESOLUTION CWinDsRenderer::ChooseBestMadvrResolution(float fps)
+{
+  if (fps == 0.0) return (RESOLUTION)0;
+
+  float weight;
+  if (!FindResolutionFromOverride(fps, weight, false)) //find a refreshrate from overrides
+  {
+    if (!FindResolutionFromOverride(fps, weight, true))//if that fails find it from a fallback
+      FindResolutionFromFpsMatch(fps, weight);//if that fails use automatic refreshrate selection
+  }
+
+  CLog::Log(LOGNOTICE, "Display resolution for madVR ADJUST : %s (%d) (weight: %.3f)",
+    g_graphicsContext.GetResInfo(m_resolution).strMode.c_str(), m_resolution, weight);
+
+  return m_resolution;
 }
 
 void CWinDsRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)

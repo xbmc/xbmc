@@ -483,11 +483,7 @@ bool CRenderSystemDX::CreateDevice()
       }
     }
     // Not sure the following actually does something
-#ifdef HAS_DS_PLAYER
-    ((IDirect3DDevice9Ex*)Get3DDevice())->SetGPUThreadPriority(7);
-#else
     ((IDirect3DDevice9Ex*)m_pD3DDevice)->SetGPUThreadPriority(7);
-#endif
   }
   else
   {
@@ -527,11 +523,7 @@ bool CRenderSystemDX::CreateDevice()
 
   // get our render capabilities
   // re-read caps, there may be changes depending on the vertex processing type
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->GetDeviceCaps(&caps);
-#else
   m_pD3DDevice->GetDeviceCaps(&caps);
-#endif
 
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
@@ -606,22 +598,13 @@ bool CRenderSystemDX::CreateDevice()
   }
 
   D3DDISPLAYMODE mode;
-#ifdef HAS_DS_PLAYER
-  if (SUCCEEDED(Get3DDevice()->GetDisplayMode(0, &mode)))
-#else 
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
-#endif
     m_screenHeight = mode.Height;
   else
     m_screenHeight = m_nBackBufferHeight;
 
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  Get3DDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-#else
   m_pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
   m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-#endif
 
   m_bRenderCreated = true;
   m_needNewDevice = false;
@@ -1271,6 +1254,11 @@ LPDIRECT3DDEVICE9 CRenderSystemDX::Get3DDevice()
     return CGraphFilters::Get()->GetMadvrCallback()->GetDevice();
   else
     return m_pD3DDevice; 
+}
+
+LPDIRECT3DDEVICE9 CRenderSystemDX::GetKodi3DDevice()
+{
+  return m_pD3DDevice;
 }
 
 void CRenderSystemDX::ResetForMadvr()

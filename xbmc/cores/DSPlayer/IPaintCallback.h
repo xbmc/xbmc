@@ -42,6 +42,7 @@ public:
   virtual ~IPaintCallbackMadvr() {};
 
   virtual LPDIRECT3DDEVICE9 GetDevice() { return NULL; };
+  virtual bool IsDeviceSet(){ return false; }
   virtual void OsdRedrawFrame() {};
   virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect) {};
   virtual void CloseMadvr() {};
@@ -54,7 +55,7 @@ public:
   virtual void SettingSetSmoothmotion(CStdStringW path, int iValue) {};
   virtual void SettingSetDithering(CStdStringW path, int iValue) {};
   virtual void SettingSetBool(CStdStringW path, BOOL bValue) {};
-  virtual void SettingSetInt(CStdStringW path, BOOL iValue) {};
+  virtual void SettingSetInt(CStdStringW path, int iValue) {};
   virtual CStdString GetDXVADecoderDescription() { return ""; };
 };
 

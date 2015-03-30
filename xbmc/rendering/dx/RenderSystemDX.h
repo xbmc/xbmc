@@ -88,6 +88,7 @@ public:
 #ifdef HAS_DS_PLAYER
   void ResetForMadvr();
   LPDIRECT3DDEVICE9 Get3DDevice();
+  LPDIRECT3DDEVICE9 GetKodi3DDevice();
   LPDIRECT3D9 Get3DObject() { return m_pD3D; }
 #else
   LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }

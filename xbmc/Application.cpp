@@ -1942,7 +1942,7 @@ void CApplication::Render()
   MEASURE_FUNCTION;
 
 #ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->UsingMadVr())
+  if (CGraphFilters::Get()->ReadyMadVr())
   {
     if (m_pPlayer->IsPausedPlayback())
     {

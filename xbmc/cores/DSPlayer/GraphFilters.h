@@ -176,6 +176,7 @@ public:
   IPaintCallbackMadvr* GetMadvrCallback() { return m_pMadvr; }
   void SetMadVrCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
   bool UsingMadVr();
+  bool ReadyMadVr();
   bool IsInitMadVr() { return m_isInitMadVr; };
   void SetInitMadVr(bool b) { m_isInitMadVr = b; }
 

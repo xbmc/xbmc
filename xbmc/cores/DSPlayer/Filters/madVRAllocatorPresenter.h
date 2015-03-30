@@ -112,14 +112,16 @@ class CmadVRAllocatorPresenter
       return m_pDXRAP ? m_pDXRAP->Render(rtStart, rtStop, AvgTimePerFrame, left, top, right, bottom, width, height) : E_UNEXPECTED;
     }
   };
+  void SetResolution(float fps);
   Com::SmartPtr<IUnknown> m_pDXR;
-  LPDIRECT3DDEVICE9 m_pD3DDevice;
   LPDIRECT3DDEVICE9 m_pD3DDeviceMadVR;
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartPtr<IOsdRenderCallback> m_pORCB;
   Com::SmartSize m_ScreenSize;
+  int m_lastFrame;
   bool  m_bIsFullscreen;
   bool m_isDeviceSet;
+  bool m_firstBoot;
 
 public:
 
@@ -145,7 +147,8 @@ public:
   STDMETHODIMP SetPixelShader(LPCSTR pSrcData, LPCSTR pTarget);
 
   //IPaintCallbackMadvr
-  LPDIRECT3DDEVICE9 GetDevice() { return m_isDeviceSet ? m_pD3DDeviceMadVR : m_pD3DDevice; }
+  LPDIRECT3DDEVICE9 GetDevice();
+  virtual bool IsDeviceSet(){ return m_isDeviceSet; }
   virtual void OsdRedrawFrame();
   virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect);
   virtual void CloseMadvr();
@@ -158,6 +161,7 @@ public:
   virtual void SettingSetSmoothmotion(CStdStringW path, int iValue);
   virtual void SettingSetDithering(CStdStringW path, int iValue);
   virtual void SettingSetBool(CStdStringW path, BOOL bValue);
-  virtual void SettingSetInt(CStdStringW path, BOOL iValue);
+  virtual void SettingSetInt(CStdStringW path, int iValue);
   virtual CStdString GetDXVADecoderDescription();
 };
+

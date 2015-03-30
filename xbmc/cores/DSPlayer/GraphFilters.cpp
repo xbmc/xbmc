@@ -54,4 +54,8 @@ bool CGraphFilters::UsingMadVr()
 
 }
 
+bool CGraphFilters::ReadyMadVr()
+{
+  return ((m_pMadvr != NULL) && CGraphFilters::Get()->GetMadvrCallback()->IsDeviceSet());
+}
 #endif

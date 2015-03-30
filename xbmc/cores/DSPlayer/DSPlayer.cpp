@@ -614,6 +614,9 @@ void CDSPlayer::HandleMessages()
     if (CGraphFilters::Get()->UsingMadVr())
       DispatchMessage(&msg); 
 
+    if (m_bStop || PlayerState == DSPLAYER_CLOSED || PlayerState == DSPLAYER_LOADING)
+      break;
+
     if (msg.message == WM_GRAPHMESSAGE)
     {
       CDSMsg* pMsg = reinterpret_cast<CDSMsg *>(msg.lParam);

@@ -23,12 +23,14 @@
 #include <moreuuids.h>
 #include "RendererSettings.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
 #include "cores/DSPlayer/Filters/MadvrSettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/DisplaySettings.h"
 
 #define ShaderStage_PreScale 0
 #define ShaderStage_PostScale 1
@@ -45,9 +47,9 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   , m_bIsFullscreen(false)
 {
   //Init Variable
-  m_pD3DDevice = g_Windowing.Get3DDevice();
   g_renderManager.PreInit(RENDERER_DSHOW);
   m_isDeviceSet = false;
+  m_firstBoot = true;
 
   if (FAILED(hr)) {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
@@ -65,7 +67,8 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   }
 
   //Restore Kodi Gui
-  m_pD3DDevice->SetPixelShader(NULL);
+  m_isDeviceSet = false;
+  g_Windowing.GetKodi3DDevice()->SetPixelShader(NULL);
   g_Windowing.ResetForMadvr();
 
   // the order is important here
@@ -127,12 +130,42 @@ HRESULT CmadVRAllocatorPresenter::SetSubDevice(IDirect3DDevice9* pD3DDev)
   return hr;
 }
 
+void CmadVRAllocatorPresenter::SetResolution(float fps)
+{
+  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_graphicsContext.IsFullScreenRoot())
+  {
+    int delay = CSettings::Get().GetInt("videoplayer.pauseafterrefreshchange");
+    if (delay > 0 && CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback())
+    {
+      g_application.m_pPlayer->Pause();
+      ThreadMessage msg = { TMSG_MEDIA_UNPAUSE };
+      CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
+      pauseMessage->Create(true);
+    }
+
+    RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
+    RESOLUTION_INFO info_org = CDisplaySettings::Get().GetResolutionInfo(bestRes);
+    g_Windowing.SetFullScreen(true, info_org, false);
+  }
+}
+
 // IOsdRenderCallback
 STDMETHODIMP CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
+  CLog::Log(LOGDEBUG, "%s madVR device it's ready", __FUNCTION__);
+
+  if (!pD3DDev)
+    return S_OK;
+
   m_pD3DDeviceMadVR = pD3DDev;
+
+  if (!m_firstBoot)
+    return S_OK;
+
+  m_firstBoot = false;
   m_isDeviceSet = true;
   g_Windowing.ResetForMadvr();
+
   return S_OK;
 }
 
@@ -144,6 +177,15 @@ STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TI
 
 STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
 {
+  // PAUSE don't process more than 1 frame in 40ms
+  /*if (g_application.m_pPlayer->IsPausedPlayback())
+  {
+      int now = XbmcThreads::SystemClockMillis();
+      if (now < (m_lastFrame + 20))
+        return S_OK;   
+     m_lastFrame = now;
+  }*/
+  
   m_pD3DDeviceMadVR->SetPixelShader(NULL);
   g_application.RenderMadvr();
   return S_OK;
@@ -168,26 +210,21 @@ HRESULT CmadVRAllocatorPresenter::Render(
 
   if (!g_renderManager.IsConfigured())
   {
-    if (!CSettings::Get().GetBool("dsplayer.madvrexclusivemode"))
-    { 
-      Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR;
-      pMadVrEx->DisableExclusiveMode(true);
-    }
-    else
-    {
-      Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
-      pMadvrSettings->SettingsSetBoolean(L"enableExclusive", true); 
-    }
 
+    SetResolution(m_fps);
+    
     Com::SmartQIPtr<IMadVRSeekbarControl> pMadVrSeek = m_pDXR;
     pMadVrSeek->DisableSeekbar(true);
 
-    int m_rtTimePerFrame;
-    if (atpf > 0)
-      m_rtTimePerFrame = atpf;
-    else
-      m_rtTimePerFrame = 417166;
-    m_fps = (float)(10000000.0 / m_rtTimePerFrame);
+    if (CSettings::Get().GetBool("dsplayer.madvrexclusivemode"))
+    {
+      Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR;
+      pMadVrEx->DisableExclusiveMode(false);
+
+      Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+      pMadvrSettings->SettingsSetBoolean(L"enableExclusive", true);
+      pMadvrSettings->SettingsSetBoolean(L"exclusiveDelay", true);
+    }
 
     m_NativeVideoSize = GetVideoSize(false);
     m_AspectRatio = GetVideoSize(true);
@@ -242,8 +279,8 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     return E_FAIL;
   }
 
-  Com::SmartQIPtr<IMadVRDirect3D9Manager> pMadVrD3d = m_pDXR;
-  m_pD3DDevice = g_Windowing.Get3DDevice();
+  Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR;
+  pMadVrEx->DisableExclusiveMode(true);
 
   CGraphFilters::Get()->SetMadVrCallback(this);
 
@@ -263,6 +300,7 @@ void CmadVRAllocatorPresenter::SetMadvrPoisition(CRect wndRect, CRect videoRect)
   Com::SmartRect wndR(wndRect.x1, wndRect.y1, wndRect.x2, wndRect.y2);
   Com::SmartRect videoR(videoRect.x1, videoRect.y1, videoRect.x2, videoRect.y2);
   SetPosition(wndR, videoR);
+  //CLog::Log(0, "wndR x1: %g   y1: %g   x2: %g   y2: %g - videoR x1: %g   y1: %g   x2: %g   y2: %g", wndRect.x1, wndRect.y1, wndRect.x2, wndRect.y2, videoRect.x1, videoRect.y1, videoRect.x2, videoRect.y2);
 }
 
 STDMETHODIMP_(void) CmadVRAllocatorPresenter::SetPosition(RECT w, RECT v)
@@ -319,17 +357,14 @@ STDMETHODIMP CmadVRAllocatorPresenter::SetPixelShader(LPCSTR pSrcData, LPCSTR pT
 void CmadVRAllocatorPresenter::OsdRedrawFrame()
 {
   Com::SmartQIPtr<IMadVROsdServices> pOR = m_pDXR;
-  if (!pOR) {
-    m_pDXR = nullptr;
-    return;
-  }
   pOR->OsdRedrawFrame();
 }
 
 void CmadVRAllocatorPresenter::CloseMadvr()
 {
-  Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR;
-  pVW->SetWindowPosition(0, 0, 1, 1);
+  CRect wndRect(0, 0, 0, 0);
+  CRect videoRect(0, 0, 0, 0);
+  SetMadvrPoisition(wndRect, videoRect);
 }
 
 void CmadVRAllocatorPresenter::SettingSetScaling(CStdStringW path, int scaling)
@@ -427,7 +462,7 @@ void CmadVRAllocatorPresenter::SettingSetBool(CStdStringW path, BOOL bValue)
   pMadvrSettings->SettingsSetBoolean(path, bValue);
 }
 
-void CmadVRAllocatorPresenter::SettingSetInt(CStdStringW path, BOOL iValue)
+void CmadVRAllocatorPresenter::SettingSetInt(CStdStringW path, int iValue)
 {
   Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
   pMadvrSettings->SettingsSetInteger(path, iValue);
@@ -453,3 +488,18 @@ CStdString CmadVRAllocatorPresenter::GetDXVADecoderDescription()
 
   return strDXVA;
 };
+
+LPDIRECT3DDEVICE9 CmadVRAllocatorPresenter::GetDevice()
+{
+  if (m_isDeviceSet)
+  {
+    //CLog::Log(0, "device madvr");
+    return m_pD3DDeviceMadVR;
+  }
+  else
+  {
+    //CLog::Log(0, "device kodi");
+    return g_Windowing.GetKodi3DDevice();
+  }
+}
+

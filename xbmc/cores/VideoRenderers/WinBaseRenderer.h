@@ -85,6 +85,13 @@ public:
   virtual EINTERLACEMETHOD AutoInterlaceMethod() = 0;
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) = 0;
+  virtual unsigned int GetOptimalBufferSize(){ return 0; };
+  virtual void         SetBufferSize(int numBuffers) {}
+  virtual unsigned int GetMaxBufferSize() { return 0;}
+  virtual void         ReleaseBuffer(int idx){};
+  virtual bool         NeedBufferForRef(int idx){ return false; };
+
+  virtual RESOLUTION   ChooseBestMadvrResolution(float fps) { return (RESOLUTION)0; };
 };
 
 

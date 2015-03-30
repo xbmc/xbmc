@@ -71,6 +71,7 @@ public:
 
   virtual void         AutoCrop(bool bCrop);
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual RESOLUTION   ChooseBestMadvrResolution(float fps);
 
 protected:
   virtual void         Render(DWORD flags);

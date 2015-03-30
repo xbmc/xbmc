@@ -500,7 +500,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
     m_oldRenderOrientation = m_renderOrientation;
   }
 #ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->UsingMadVr())
+  if (CGraphFilters::Get()->ReadyMadVr())
   {
     const CRect view = g_graphicsContext.GetViewWindow();
     CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPoisition(view, m_destRect);
