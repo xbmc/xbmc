@@ -2,7 +2,7 @@
 <addon
   id="webinterface.default"
   version="2.2.21"
-  name="Default"
+  name="Default webinterface"
   provider-name="Team-Kodi">
   <requires>
     <import addon="xbmc.json" version="6.0.0"/>
