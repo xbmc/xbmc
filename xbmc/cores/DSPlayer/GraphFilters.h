@@ -179,6 +179,7 @@ public:
   bool ReadyMadVr();
   bool IsInitMadVr() { return m_isInitMadVr; };
   void SetInitMadVr(bool b) { m_isInitMadVr = b; }
+  void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
 
 private:
   CGraphFilters();
@@ -186,6 +187,7 @@ private:
 
   static CGraphFilters* m_pSingleton;
 
+  bool m_isKodiRealFS;
   bool m_isInitMadVr;
   bool m_hsubfilter;
   bool m_isDVD;

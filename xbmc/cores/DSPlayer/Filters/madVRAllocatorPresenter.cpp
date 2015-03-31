@@ -134,18 +134,8 @@ void CmadVRAllocatorPresenter::SetResolution(float fps)
 {
   if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_graphicsContext.IsFullScreenRoot())
   {
-    int delay = CSettings::Get().GetInt("videoplayer.pauseafterrefreshchange");
-    if (delay > 0 && CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback())
-    {
-      g_application.m_pPlayer->Pause();
-      ThreadMessage msg = { TMSG_MEDIA_UNPAUSE };
-      CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
-      pauseMessage->Create(true);
-    }
-
     RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
-    RESOLUTION_INFO info_org = CDisplaySettings::Get().GetResolutionInfo(bestRes);
-    g_Windowing.SetFullScreen(true, info_org, false);
+    g_graphicsContext.SetVideoResolution(bestRes);
   }
 }
 
@@ -162,6 +152,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
   if (!m_firstBoot)
     return S_OK;
 
+  g_graphicsContext.SetFullScreenVideo(true);
   m_firstBoot = false;
   m_isDeviceSet = true;
   g_Windowing.ResetForMadvr();
@@ -177,15 +168,6 @@ STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TI
 
 STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
 {
-  // PAUSE don't process more than 1 frame in 40ms
-  /*if (g_application.m_pPlayer->IsPausedPlayback())
-  {
-      int now = XbmcThreads::SystemClockMillis();
-      if (now < (m_lastFrame + 20))
-        return S_OK;   
-     m_lastFrame = now;
-  }*/
-  
   m_pD3DDeviceMadVR->SetPixelShader(NULL);
   g_application.RenderMadvr();
   return S_OK;
@@ -197,7 +179,6 @@ HRESULT CmadVRAllocatorPresenter::Render(
 {
   Com::SmartRect wndRect(0, 0, width, height);
   Com::SmartRect videoRect(left, top, right, bottom);
-
 
   __super::SetPosition(wndRect, videoRect);
   if (!g_bExternalSubtitleTime) {
@@ -282,6 +263,9 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR;
   pMadVrEx->DisableExclusiveMode(true);
 
+  Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR;
+  pMadvrSettings->SettingsSetBoolean(L"delayPlaybackStart2", CSettings::Get().GetBool("dsplayer.delaymadvrplayback"));
+  
   CGraphFilters::Get()->SetMadVrCallback(this);
 
   (*ppRenderer = (IUnknown*)(INonDelegatingUnknown*)(this))->AddRef();
@@ -362,9 +346,10 @@ void CmadVRAllocatorPresenter::OsdRedrawFrame()
 
 void CmadVRAllocatorPresenter::CloseMadvr()
 {
-  CRect wndRect(0, 0, 0, 0);
-  CRect videoRect(0, 0, 0, 0);
-  SetMadvrPoisition(wndRect, videoRect);
+  if (Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR) {
+    pVW->put_Visible(OAFALSE);
+    pVW->put_Owner((OAHWND)NULL);
+  }
 }
 
 void CmadVRAllocatorPresenter::SettingSetScaling(CStdStringW path, int scaling)

@@ -25,6 +25,7 @@
 #ifdef HAS_DS_PLAYER
 
 #include "GraphFilters.h"
+#include "settings/Settings.h"
 
 CGraphFilters *CGraphFilters::m_pSingleton = NULL;
 
@@ -34,10 +35,16 @@ m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER
   /*MADVR*/
   m_pMadvr = NULL;
   m_isInitMadVr = false;
+  m_isKodiRealFS = false;
 }
 
 CGraphFilters::~CGraphFilters()
 {
+  if (m_isKodiRealFS)
+  {
+    CSettings::Get().SetBool("videoscreen.fakefullscreen", false);
+    m_isKodiRealFS = false;
+  }
 }
 
 CGraphFilters* CGraphFilters::Get()

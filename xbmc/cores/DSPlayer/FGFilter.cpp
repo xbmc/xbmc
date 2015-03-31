@@ -42,6 +42,7 @@
 #include "profiles/ProfilesManager.h"
 #include "Dmodshow.h"
 #include "Dmoreg.h"
+#include "settings/Settings.h"
 #include "../../filesystem/SpecialProtocol.h "
 #pragma comment(lib, "Dmoguids.lib")
 //
@@ -481,6 +482,17 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
     {
       if (Com::SmartQIPtr<IVideoWindow> pVW = pCAP)
         pVW->put_Owner((OAHWND)g_hWnd);
+
+      // Go out from Kodi exclusive fullscreen mode if needed
+      if (!CSettings::Get().GetBool("videoscreen.fakefullscreen"))
+      {
+        CSettings::Get().SetBool("videoscreen.fakefullscreen", true);
+        CGraphFilters::Get()->SetKodiRealFS(true);
+      }
+      else 
+      {
+        CGraphFilters::Get()->SetKodiRealFS(false);
+      }
     }
     CLog::Log(LOGDEBUG, "%s Allocator presenter successfully created", __FUNCTION__);
   }

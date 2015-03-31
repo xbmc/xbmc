@@ -773,9 +773,6 @@ void CSettings::InitializeISettingCallbacks()
   m_settingsManager->RegisterCallback(&g_charsetConverter, settingSet);
 
   settingSet.clear();
-#ifdef HAS_DS_PLAYER
-  settingSet.insert("dsplayer.videorenderer");
-#endif
   settingSet.insert("videoscreen.fakefullscreen");
   m_settingsManager->RegisterCallback(&g_graphicsContext, settingSet);
 

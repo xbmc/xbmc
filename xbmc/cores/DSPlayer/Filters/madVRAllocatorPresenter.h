@@ -118,7 +118,6 @@ class CmadVRAllocatorPresenter
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartPtr<IOsdRenderCallback> m_pORCB;
   Com::SmartSize m_ScreenSize;
-  int m_lastFrame;
   bool  m_bIsFullscreen;
   bool m_isDeviceSet;
   bool m_firstBoot;

@@ -35,7 +35,6 @@
 #include "utils/JobManager.h"
 #include "video/VideoReferenceClock.h"
 #include "cores/IPlayer.h"
-#include "cores/DSPlayer/GraphFilters.h"
 
 using namespace std;
 
@@ -76,18 +75,6 @@ void CGraphicContext::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-
-#ifdef HAS_DS_PLAYER
-  if (settingId == "dsplayer.videorenderer")
-  {
-    if (CSettings::Get().GetString("dsplayer.videorenderer") == "madVR")
-    { 
-      CSettings::Get().SetBool("videoscreen.fakefullscreen", true);
-      if (IsFullScreenRoot())
-        SetVideoResolution(GetVideoResolution(), true);
-    }
-  }
-#endif
 
   if (settingId == "videoscreen.fakefullscreen")
   {
@@ -406,14 +393,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate)
 {
   RESOLUTION lastRes = m_Resolution;
-
-#ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->UsingMadVr() && ((res != RES_DESKTOP && res != RES_WINDOW) || (lastRes != RES_DESKTOP && lastRes != RES_WINDOW)))
-  {
-    m_Resolution = res;
-    return;
-  }
-#endif
 
   // If the user asked us to guess, go with desktop
   if (res == RES_AUTORES || !IsValidResolution(res))

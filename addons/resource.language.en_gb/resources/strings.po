@@ -16707,6 +16707,10 @@ msgctxt "#55064"
 msgid "- Manage madVR settings through the gui of kodi"
 msgstr ""
 
+msgctxt "#55065"
+msgid "- Delay madVR playback until render queue is full"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""
