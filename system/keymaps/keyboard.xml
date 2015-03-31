@@ -52,8 +52,11 @@
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
       <return>Select</return>
+      <return mod="long">ContextMenu</return>
       <enter>Select</enter>
+      <enter mod="long">ContextMenu</enter>
       <backspace>Back</backspace>
+      <backspace mod="long">ActivateWindow(Home)</backspace>
       <key id='65446'>Back</key>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>

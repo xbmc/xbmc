@@ -513,6 +513,7 @@ public:
   CKey(uint32_t buttonCode, unsigned int held);
   CKey(uint8_t vkey, wchar_t unicode, char ascii, uint32_t modifiers, unsigned int held);
   CKey(const CKey& key);
+  void Reset();
 
   virtual ~CKey(void);
   CKey& operator=(const CKey& key);
@@ -542,12 +543,11 @@ public:
     MODIFIER_ALT   = 0x00040000,
     MODIFIER_RALT  = 0x00080000,
     MODIFIER_SUPER = 0x00100000,
-    MODIFIER_META  = 0X00200000
+    MODIFIER_META  = 0X00200000,
+    MODIFIER_LONG  = 0X01000000
   };
 
 private:
-  void Reset();
-
   uint32_t m_buttonCode;
   uint8_t  m_vkey;
   wchar_t  m_unicode;
