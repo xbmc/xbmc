@@ -6,16 +6,16 @@ Default font lacks support for all characters
 <keyboardlayouts>
   <layout language="English" layout="QWERTY">
     <keyboard>
-      <row>1234567890</row>
-      <row>qwertyuiop</row>
-      <row>asdfghjkl</row>
-      <row>zxcvbnm</row>
+      <row>1234567890-=</row>
+      <row>qwertyuiop[]</row>
+      <row>asdfghjkl;'</row>
+      <row>zxcvbnm,./@</row>
     </keyboard>
     <keyboard modifiers="shift">
-      <row>1234567890</row>
-      <row>QWERTYUIOP</row>
-      <row>ASDFGHJKL</row>
-      <row>ZXCVBNM</row>
+      <row>1234567890_+</row>
+      <row>QWERTYUIOP{}</row>
+      <row>ASDFGHJKL:"</row>
+      <row>ZXCVBNM&lt;&gt;?@</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
       <row>)!@#$%^&amp;*(</row>
