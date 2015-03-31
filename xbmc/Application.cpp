@@ -2404,9 +2404,9 @@ bool CApplication::OnAction(const CAction &action)
         step *= action.GetRepeat() * 50; // 50 fps
 #endif
       if (action.GetID() == ACTION_VOLUME_UP)
-        volume += (float)fabs(action.GetAmount()) * action.GetAmount() * step;
+        volume += action.GetAmount() * action.GetAmount() * step;
       else
-        volume -= (float)fabs(action.GetAmount()) * action.GetAmount() * step;
+        volume -= action.GetAmount() * action.GetAmount() * step;
       SetVolume(volume, false);
     }
     // show visual feedback of volume change...
