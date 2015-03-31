@@ -374,7 +374,9 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       omvb->Acquire();
       omvb->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1 | MMAL_BUFFER_HEADER_FLAG_USER2;
       mmal_port_send_buffer(m_vout_input, omvb->mmal_buffer);
-    } else assert(0);
+    }
+    else
+      CLog::Log(LOGDEBUG, "%s::%s - No buffer to update", CLASSNAME, __func__);
   }
   else if (m_format == RENDER_FMT_YUV420P)
   {
@@ -388,7 +390,8 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       buffer->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1;
       mmal_port_send_buffer(m_vout_input, buffer->mmal_buffer);
     }
-    else assert(0);
+    else
+      CLog::Log(LOGDEBUG, "%s::%s - No buffer to update", CLASSNAME, __func__);
   }
   else assert(0);
 }
@@ -423,6 +426,7 @@ unsigned int CMMALRenderer::PreInit()
   m_formats.push_back(RENDER_FMT_MMAL);
   m_formats.push_back(RENDER_FMT_BYPASS);
 
+  memset(m_buffers, 0, sizeof m_buffers);
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = NUM_BUFFERS;
 
