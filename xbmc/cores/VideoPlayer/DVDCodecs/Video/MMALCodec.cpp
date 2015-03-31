@@ -126,6 +126,7 @@ CMMALVideo::CMMALVideo()
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_fps = 0.0f;
   m_num_decoded = 0;
+  m_codecControlFlags = 0;
 }
 
 CMMALVideo::~CMMALVideo()
@@ -867,7 +868,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
   }
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) inputs(%d) slept(%d) queued(%.2f) (%.2f:%.2f) full(%d)", CLASSNAME, __func__, ret, m_output_ready.size(), mmal_queue_length(m_dec_input_pool->queue), slept, queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full);
+    CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) inputs(%d) slept(%d) queued(%.2f) (%.2f:%.2f) full(%d) flags(%x)", CLASSNAME, __func__, ret, m_output_ready.size(), mmal_queue_length(m_dec_input_pool->queue), slept, queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full, m_codecControlFlags);
 
   return ret;
 }
@@ -931,6 +932,7 @@ void CMMALVideo::Reset(void)
   }
   m_decoderPts = DVD_NOPTS_VALUE;
   m_demuxerPts = DVD_NOPTS_VALUE;
+  m_codecControlFlags = 0;
 }
 
 void CMMALVideo::SetSpeed(int iSpeed)
@@ -1040,4 +1042,10 @@ bool CMMALVideo::GetCodecStats(double &pts, int &droppedPics)
   CSingleLock lock(m_sharedSection);
   droppedPics= -1;
   return false;
+}
+
+void CMMALVideo::SetCodecControl(int flags)
+{
+  CSingleLock lock(m_sharedSection);
+  m_codecControlFlags = flags;
 }
