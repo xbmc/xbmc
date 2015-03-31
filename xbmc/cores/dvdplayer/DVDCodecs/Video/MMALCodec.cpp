@@ -267,6 +267,9 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
 
       if (m_drop_state)
       {
+        pthread_mutex_lock(&m_output_mutex);
+        m_droppedPics++;
+        pthread_mutex_unlock(&m_output_mutex);
         if (g_advancedSettings.CanLogComponent(LOGVIDEO))
           CLog::Log(LOGDEBUG, "%s::%s - dropping %p (drop:%d)", CLASSNAME, __func__, buffer, m_drop_state);
       }
@@ -748,6 +751,7 @@ void CMMALVideo::SetDropState(bool bDrop)
       {
         buffer = m_output_ready.front();
         m_output_ready.pop();
+        m_droppedPics++;
       }
       pthread_mutex_unlock(&m_output_mutex);
       if (buffer)
@@ -861,6 +865,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 
        if (demuxer_bytes == 0)
        {
+         pthread_mutex_lock(&m_output_mutex);
          m_decode_frame_number++;
          m_startframe = true;
          if (m_drop_state)
@@ -870,11 +875,10 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
          else
          {
            // only push if we are successful with feeding mmal
-           pthread_mutex_lock(&m_output_mutex);
            m_dts_queue.push(dts);
            assert(m_dts_queue.size() < 5000);
-           pthread_mutex_unlock(&m_output_mutex);
          }
+         pthread_mutex_unlock(&m_output_mutex);
          if (m_changed_count_dec != m_changed_count)
          {
            if (g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -973,6 +977,7 @@ void CMMALVideo::Reset(void)
   while (!m_demux_queue.empty())
     m_demux_queue.pop();
   m_demux_queue_length = 0;
+  m_droppedPics = 0;
   pthread_mutex_unlock(&m_output_mutex);
   if (!old_drop_state)
     SetDropState(false);
@@ -982,7 +987,6 @@ void CMMALVideo::Reset(void)
 
   m_startframe = false;
   m_decoderPts = DVD_NOPTS_VALUE;
-  m_droppedPics = 0;
   m_decode_frame_number = 1;
   m_preroll = !m_hints.stills && (m_speed == DVD_PLAYSPEED_NORMAL || m_speed == DVD_PLAYSPEED_PAUSE);
 }
@@ -1116,9 +1120,11 @@ bool CMMALVideo::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 
 bool CMMALVideo::GetCodecStats(double &pts, int &droppedPics)
 {
+  pthread_mutex_lock(&m_output_mutex);
   pts = m_decoderPts;
   droppedPics = m_droppedPics;
   m_droppedPics = 0;
+  pthread_mutex_unlock(&m_output_mutex);
   //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
   //  CLog::Log(LOGDEBUG, "%s::%s - pts:%.0f droppedPics:%d", CLASSNAME, __func__, pts, droppedPics);
   return true;
