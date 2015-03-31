@@ -78,6 +78,8 @@ public:
   static void GetActions(std::vector<std::string> &actionList);
   static void GetWindows(std::vector<std::string> &windowList);
 
+  bool IsPossibleLongpress(int window, const CKey &key);
+
   /*! \brief Obtain the action configured for a given window and key
    \param window the window id
    \param key the key to query the action for

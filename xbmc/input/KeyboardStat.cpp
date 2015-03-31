@@ -32,6 +32,8 @@
 #include "threads/SystemClock.h"
 #include "utils/log.h"
 
+#define HOLD_THRESHOLD 250
+
 using namespace std;
 using namespace PERIPHERALS;
 
@@ -159,6 +161,8 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   if (keysym == m_lastKeysym)
   {
     held = XbmcThreads::SystemClockMillis() - m_lastKeyTime;
+    if (held > HOLD_THRESHOLD)
+      modifiers |= CKey::MODIFIER_LONG;
   }
 
   // For all shift-X keys except shift-A to shift-Z and shift-F1 to shift-F24 the
