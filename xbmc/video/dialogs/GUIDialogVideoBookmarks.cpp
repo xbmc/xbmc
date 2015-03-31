@@ -183,20 +183,15 @@ void CGUIDialogVideoBookmarks::OnPopupMenu(int item)
   if (item < 0 || item >= (int) m_bookmarks.size())
     return;
   
-    // highlight the item
+  // highlight the item
   (*m_vecItems)[item]->Select(true);
   
   CContextButtons choices;
-  
-  int langID = 20404; //"Remove bookmark"
-  if (m_bookmarks[item].type == CBookmark::EPISODE)
-    langID = 20405;   //"Remove episode bookmark"
-  choices.Add(1, langID); 
-
+  choices.Add(1, (m_bookmarks[item].type == CBookmark::EPISODE ? 20405 : 20404)); // "Remove episode bookmark" or "Remove bookmark"
   
   int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   
-    // unhighlight the item
+  // unhighlight the item
   (*m_vecItems)[item]->Select(false);
   
   if (button == 1)
@@ -248,20 +243,20 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   m_bookmarks.clear();
   std::vector<CFileItemPtr> items;
   
-    // open the d/b and retrieve the bookmarks for the current movie
+  // open the d/b and retrieve the bookmarks for the current movie
   m_filePath = g_application.CurrentFile();
   if (g_application.CurrentFileItem().HasProperty("original_listitem_url") && 
      !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
      m_filePath = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
   videoDatabase.GetBookMarksForFile(m_filePath, m_bookmarks);
   videoDatabase.GetBookMarksForFile(m_filePath, m_bookmarks, CBookmark::EPISODE, true);
-
   videoDatabase.Close();
+
   CSingleLock lock(m_refreshSection);
   m_vecItems->Clear();
-
 
   // cycle through each stored bookmark and add it to our list control
   for (unsigned int i = 0; i < m_bookmarks.size(); ++i)
@@ -554,8 +549,8 @@ bool CGUIDialogVideoBookmarks::OnAddBookmark()
   {
     g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
-                                          g_localizeStrings.Get(298),   //"Bookmarks"
-                                          g_localizeStrings.Get(21362));//"Bookmark created"
+                                          g_localizeStrings.Get(298),   // "Bookmarks"
+                                          g_localizeStrings.Get(21362));// "Bookmark created"
     return true;
   }
   return false;
@@ -577,8 +572,8 @@ bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
       {
         g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, 
-                                              g_localizeStrings.Get(298),   //"Bookmarks"
-                                              g_localizeStrings.Get(21363));//"Episode Bookmark created"
+                                              g_localizeStrings.Get(298),   // "Bookmarks"
+                                              g_localizeStrings.Get(21363));// "Episode Bookmark created"
  
       }
     }
