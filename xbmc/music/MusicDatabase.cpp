@@ -181,9 +181,6 @@ void CMusicDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create cue table");
   m_pDS->exec("CREATE TABLE cue (idPath integer, strFileName text, strCuesheet text)");
-
-  // Add 'Karaoke' genre
-  AddGenre( "Karaoke" );
 }
 
 void CMusicDatabase::CreateAnalytics()
