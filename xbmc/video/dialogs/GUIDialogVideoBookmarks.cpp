@@ -273,6 +273,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
     item->SetProperty("resumepoint", m_bookmarks[i].timeInSeconds);
     item->SetProperty("playerstate", m_bookmarks[i].playerState);
+    item->SetProperty("isbookmark", "true");
     items.push_back(item);
   }
 
@@ -308,6 +309,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
 
     item->SetProperty("chapter", i);
     item->SetProperty("resumepoint", static_cast<double>(pos));
+    item->SetProperty("ischapter", "true");
     items.push_back(item);
   }
 
