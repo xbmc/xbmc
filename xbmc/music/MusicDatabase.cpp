@@ -4803,6 +4803,7 @@ std::string CMusicDatabase::GetItemById(const std::string &itemType, int id)
 
 void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, bool images, bool overwrite)
 {
+  CGUIDialogProgress *progress=NULL;
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -4825,7 +4826,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     }
     m_pDS->close();
 
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(20196);
@@ -4969,15 +4970,15 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
       current++;
     }
 
-    if (progress)
-      progress->Close();
-
     xmlDoc.SaveFile(xmlFile);
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+
+  if (progress)
+    progress->Close();
 }
 
 void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
