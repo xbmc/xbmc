@@ -43,7 +43,7 @@ public:
   bool IsInUse() {return false;}
   void SetEnabled(bool) { }
   void SetDeviceName(const std::string&) { }
-  void AddSendCommand(const std::string& command) {}
+  void AddSendCommand(const std::string&) {}
 
 protected:
   virtual void Process();
@@ -61,7 +61,7 @@ private:
   bool ReadPacket(CIrssMessage& message);
   int  ReadN(char *buffer, int n);
   bool WriteN(const char *buffer, int n);
-  bool Connect();
+  bool Connect(bool logMessages);
   void Close();
 
   bool HandleRemoteEvent(CIrssMessage& message);

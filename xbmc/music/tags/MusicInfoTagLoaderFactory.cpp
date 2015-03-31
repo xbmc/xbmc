@@ -23,9 +23,6 @@
 #include "TagLoaderTagLib.h"
 #include "MusicInfoTagLoaderCDDA.h"
 #include "MusicInfoTagLoaderShn.h"
-#ifdef HAS_MOD_PLAYER
-#include "cores/ModPlayer.h"
-#endif
 #include "MusicInfoTagLoaderDatabase.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -84,7 +81,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
       strExtension == "ogg" || strExtension == "oga" || strExtension == "oggstream" ||
       strExtension == "aif" || strExtension == "aiff" ||
       strExtension == "wav" ||
-      strExtension == "mod" || strExtension == "nsf" || strExtension == "nsfstream" ||
+      strExtension == "mod" ||
       strExtension == "s3m" || strExtension == "it" || strExtension == "xm" ||
       strExtension == "wv")
   {

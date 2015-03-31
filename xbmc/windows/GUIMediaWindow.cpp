@@ -237,9 +237,6 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       m_iLastControl = GetFocusedControlID();
       CGUIWindow::OnMessage(message);
 
-      // Close all open modal dialogs
-      g_windowManager.CloseModalDialogs(true);
-
       // get rid of any active filtering
       if (m_canFilterAdvanced)
       {

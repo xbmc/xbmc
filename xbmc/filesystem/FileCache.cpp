@@ -277,13 +277,13 @@ void CFileCache::Process()
 
     while (m_writeRate)
     {
-      if (m_writePos - m_readPos < m_writeRate)
+      if (m_writePos - m_readPos < m_writeRate * g_advancedSettings.m_readBufferFactor)
       {
         limiter.Reset(m_writePos);
         break;
       }
 
-      if (limiter.Rate(m_writePos) < m_writeRate)
+      if (limiter.Rate(m_writePos) < m_writeRate * g_advancedSettings.m_readBufferFactor)
         break;
 
       if (m_seekEvent.WaitMSec(100))

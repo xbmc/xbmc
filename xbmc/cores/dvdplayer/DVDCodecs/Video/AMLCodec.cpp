@@ -910,23 +910,19 @@ static int divx3_write_header(am_private_t *para, am_packet_t *pkt)
 
 static int h264_add_header(unsigned char *buf, int size, am_packet_t *pkt)
 {
-    // h264 annex-b
-	  if ((buf[0]==0 && buf[1]==0 && buf[2]==0 && buf[3]==1) && size < HDR_BUF_SIZE) {
-        CLog::Log(LOGDEBUG, "add four byte NAL 264 header in stream before header len=%d",size);
-        memcpy(pkt->hdr->data, buf, size);
-        pkt->hdr->size = size;
-        return PLAYER_SUCCESS;
+    if (size > HDR_BUF_SIZE)
+    {
+        free(pkt->hdr->data);
+        pkt->hdr->data = (char *)malloc(size);
+        if (!pkt->hdr->data)
+            return PLAYER_NOMEM;
     }
 
-    if ((buf[0]==0 && buf[1]==0 && buf[2]==1) && size < HDR_BUF_SIZE) {
-        CLog::Log(LOGDEBUG, "add three byte NAL 264 header in stream before header len=%d",size);
-        memcpy(pkt->hdr->data, buf, size);
-        pkt->hdr->size = size;
-        return PLAYER_SUCCESS;
-    }
-
-    return PLAYER_FAILED;
+    memcpy(pkt->hdr->data, buf, size);
+    pkt->hdr->size = size;
+    return PLAYER_SUCCESS;
 }
+
 static int h264_write_header(am_private_t *para, am_packet_t *pkt)
 {
     // CLog::Log(LOGDEBUG, "h264_write_header");
@@ -948,6 +944,14 @@ static int h264_write_header(am_private_t *para, am_packet_t *pkt)
 
 static int hevc_add_header(unsigned char *buf, int size,  am_packet_t *pkt)
 {
+    if (size > HDR_BUF_SIZE)
+    {
+        free(pkt->hdr->data);
+        pkt->hdr->data = (char *)malloc(size);
+        if (!pkt->hdr->data)
+            return PLAYER_NOMEM;
+    }
+
     memcpy(pkt->hdr->data, buf, size);
     pkt->hdr->size = size;
     return PLAYER_SUCCESS;
@@ -1554,7 +1558,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 
   if (am_private->stream_type == AM_STREAM_ES && am_private->video_codec_tag != 0)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_tag);
-  else
+  if (am_private->video_codec_type == VIDEO_DEC_FORMAT_UNKNOW)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_id);
 
   am_private->flv_flag = 0;
@@ -1734,6 +1738,10 @@ void CAMLCodec::CloseDecoder()
   SysfsUtils::SetInt("/sys/class/tsync/enable", 1);
 
   ShowMainVideo(false);
+
+  // add a little delay after closing in case
+  // we are reopened too fast.
+  usleep(500 * 1000);
 }
 
 void CAMLCodec::Reset()
@@ -2128,6 +2136,7 @@ void CAMLCodec::GetRenderFeatures(Features &renderFeatures)
   renderFeatures.push_back(RENDERFEATURE_BRIGHTNESS);
   renderFeatures.push_back(RENDERFEATURE_STRETCH);
   renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
+  renderFeatures.push_back(RENDERFEATURE_ROTATION);
   return;
 }
 
