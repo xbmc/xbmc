@@ -242,7 +242,6 @@ void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
 void CGUIDialogVideoBookmarks::OnRefreshList()
 {
   m_bookmarks.clear();
-  CBookmark resumemark;
   std::vector<CFileItemPtr> items;
   
     // open the d/b and retrieve the bookmarks for the current movie
@@ -254,10 +253,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   videoDatabase.Open();
   videoDatabase.GetBookMarksForFile(m_filePath, m_bookmarks);
   videoDatabase.GetBookMarksForFile(m_filePath, m_bookmarks, CBookmark::EPISODE, true);
-  /* push in the resume mark first */
-  if (videoDatabase.GetResumeBookMark(m_filePath, resumemark))
-    m_bookmarks.push_back(resumemark);
-  
+
   videoDatabase.Close();
   CSingleLock lock(m_refreshSection);
   m_vecItems->Clear();
@@ -265,10 +261,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
 
   // cycle through each stored bookmark and add it to our list control
   for (unsigned int i = 0; i < m_bookmarks.size(); ++i)
-  {
-    if (m_bookmarks[i].type == CBookmark::RESUME)
-      m_bookmarks[i].thumbNailImage = "bookmark-resume.png";
-    
+  {   
     std::string bookmarkTime;
     if (m_bookmarks[i].type == CBookmark::EPISODE)
       bookmarkTime = StringUtils::Format("%s %li %s %li", g_localizeStrings.Get(20373).c_str(), m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
