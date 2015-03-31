@@ -394,6 +394,8 @@ void CGUIDialogVideoBookmarks::GotoBookmark(int item)
   }
   else
     g_application.m_pPlayer->SeekChapter(fileItem->GetProperty("chapter").asInteger());
+
+  Close();
 }
 
 void CGUIDialogVideoBookmarks::ClearBookmarks()
