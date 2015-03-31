@@ -834,7 +834,7 @@ bool CDVDPlayer::OpenDemuxStream()
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
   if(len > 0 && tim > 0)
-    m_pInputStream->SetReadRate((unsigned int) (g_advancedSettings.m_readBufferFactor * len * 1000 / tim));
+    m_pInputStream->SetReadRate((unsigned int) (len * 1000 / tim));
 
   return true;
 }
@@ -1680,7 +1680,10 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   delay = cache_left - play_left;
 
   if (full && (currate < maxrate) )
+  {
+    CLog::Log(LOGDEBUG, "Readrate %u is too low with %u required", currate, maxrate);
     level = -1.0;                          /* buffer is full & our read rate is too low  */
+  }
   else
     level = (cached + queued) / (cache_need + queued);
 
@@ -3166,7 +3169,7 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
     {
       CLog::Log(LOGNOTICE, "Opening Subtitle file: %s", st.filename.c_str());
       unique_ptr<CDVDDemuxVobsub> demux(new CDVDDemuxVobsub());
-      if(!demux->Open(st.filename, st.filename2))
+      if(!demux->Open(st.filename, source, st.filename2))
         return false;
       m_pSubtitleDemuxer = demux.release();
     }
@@ -4229,7 +4232,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     }
 
     CDVDDemuxVobsub v;
-    if(!v.Open(filename, vobsubfile))
+    if (!v.Open(filename, STREAM_SOURCE_NONE, vobsubfile))
       return -1;
     m_SelectionStreams.Update(NULL, &v, vobsubfile);
     int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);

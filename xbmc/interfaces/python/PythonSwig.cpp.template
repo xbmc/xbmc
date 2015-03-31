@@ -953,3 +953,7 @@ namespace PythonBindings
   }
 
 } // end PythonBindings namespace for python type definitions
+
+<%
+Helper.getInsertNodes(module, 'footer').each { %>${Helper.unescape(it)}<% }
+%>

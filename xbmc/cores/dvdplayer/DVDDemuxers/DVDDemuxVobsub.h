@@ -35,7 +35,6 @@ public:
   CDVDDemuxVobsub();
   virtual ~CDVDDemuxVobsub();
 
-  virtual bool          Open(const std::string& filename, const std::string& subfilename = "");
   virtual void          Reset();
   virtual void          Abort() {};
   virtual void          Flush();
@@ -46,6 +45,8 @@ public:
   virtual int           GetNrOfStreams()     { return m_Streams.size(); }
   virtual int           GetStreamLength()    { return 0; }
   virtual std::string   GetFileName()        { return m_Filename; }
+
+  bool                  Open(const std::string& filename, int source, const std::string& subfilename);
 
 private:
   class CStream
@@ -75,6 +76,7 @@ private:
   std::vector<STimestamp>            m_Timestamps;
   std::vector<STimestamp>::iterator  m_Timestamp;
   std::vector<CStream*> m_Streams;
+  int m_source;
 
   typedef struct SState
   {

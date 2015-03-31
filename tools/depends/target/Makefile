@@ -36,7 +36,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  DEPENDS += mdnsresponder android-sources-ics
+  DEPENDS += mdnsresponder android-sources-ics google-breakpad
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))

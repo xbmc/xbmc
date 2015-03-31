@@ -18,7 +18,7 @@
  *
  */
 
-%{
+%begin %{
 #include "system.h"
 
 #ifdef HAS_WEB_SERVER
@@ -56,7 +56,7 @@ using namespace xbmcwsgi;
 %include "interfaces/legacy/wsgi/WsgiResponse.h"
 %include "interfaces/legacy/wsgi/WsgiResponseBody.h"
 
-%{
+%insert("footer") %{
 #endif
 %}
 

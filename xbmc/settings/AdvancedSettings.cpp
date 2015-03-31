@@ -221,8 +221,8 @@ void CAdvancedSettings::Initialize()
   m_folderStackRegExps.push_back("((cd|dvd|dis[ck])[0-9]+)$");
 
   m_videoStackRegExps.clear();
-  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
   // This one is a bit too greedy to enable by default.  It will stack sequels
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
@@ -356,7 +356,7 @@ void CAdvancedSettings::Initialize()
   m_networkBufferMode = 0; // Default (buffer all internet streams/filesystems)
   // the following setting determines the readRate of a player data
   // as multiply of the default data read rate
-  m_readBufferFactor = 1.0f;
+  m_readBufferFactor = 4.0f;
   m_addonPackageFolderSize = 200;
 
   m_jsonOutputCompact = true;

@@ -26,12 +26,13 @@
 
 #define IRSS_PORT 24000
 
-CRemoteControl::CRemoteControl() : CThread("RemoteControl")
+CRemoteControl::CRemoteControl()
+  : CThread("RemoteControl")
+  , m_button(0)
+  , m_bInitialized(false)
+  , m_socket(INVALID_SOCKET)
+  , m_isConnecting(false)
 {
-  m_socket = INVALID_SOCKET;
-  m_bInitialized = false;
-  m_isConnecting = false;
-  Reset();
 }
 
 CRemoteControl::~CRemoteControl()
@@ -85,7 +86,7 @@ void CRemoteControl::Process()
   // multiple tries because irss service might be up and running a little later then xbmc on boot.
   while (!m_bStop && iAttempt <= 60)
   {
-    if (Connect())
+    if (Connect(iAttempt == 0))
       break;
 
     if(iAttempt == 0)
@@ -98,7 +99,7 @@ void CRemoteControl::Process()
   }
 }
 
-bool CRemoteControl::Connect()
+bool CRemoteControl::Connect(bool logMessages)
 {
   char     namebuf[NI_MAXHOST], portbuf[NI_MAXSERV];
   struct   addrinfo hints = {};
@@ -114,7 +115,8 @@ bool CRemoteControl::Connect()
   res = getaddrinfo("localhost", service, &hints, &result);
   if(res)
   {
-    CLog::Log(LOGDEBUG, "CRemoteControl::Connect - getaddrinfo failed: %s", gai_strerror(res));
+    if (logMessages)
+      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - getaddrinfo failed: %s", gai_strerror(res));
     return false;
   }
 
@@ -126,7 +128,8 @@ bool CRemoteControl::Connect()
       strcpy(portbuf, "[unknown]");
     }
 
-    CLog::Log(LOGDEBUG, "CRemoteControl::Connect - connecting to: %s:%s ...", namebuf, portbuf);
+    if (logMessages)
+      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - connecting to: %s:%s ...", namebuf, portbuf);
 
     m_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
     if(m_socket == INVALID_SOCKET)
@@ -142,7 +145,8 @@ bool CRemoteControl::Connect()
   freeaddrinfo(result);
   if(m_socket == INVALID_SOCKET)
   {
-    CLog::Log(LOGDEBUG, "CRemoteControl::Connect - failed to connect");
+    if (logMessages)
+      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - failed to connect");
     Close();
     return false;
   }
@@ -150,7 +154,8 @@ bool CRemoteControl::Connect()
   u_long iMode = 1; //non-blocking
   if (ioctlsocket(m_socket, FIONBIO, &iMode) == SOCKET_ERROR)
   {
-    CLog::Log(LOGERROR, "IRServerSuite: failed to set socket to non-blocking.");
+    if (logMessages)
+      CLog::Log(LOGERROR, "IRServerSuite: failed to set socket to non-blocking.");
     Close();
     return false;
   }
@@ -159,7 +164,8 @@ bool CRemoteControl::Connect()
   CIrssMessage mess(IRSSMT_RegisterClient, IRSSMF_Request);
   if (!SendPacket(mess))
   {
-    CLog::Log(LOGERROR, "IRServerSuite: failed to send RegisterClient packet.");
+    if (logMessages)
+      CLog::Log(LOGERROR, "IRServerSuite: failed to send RegisterClient packet.");
     return false;
   }
   m_isConnecting = true;
