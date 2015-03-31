@@ -92,6 +92,10 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
+      // don't init this dialog if we don't playback a file
+      if (!g_application.m_pPlayer->IsPlaying())
+        return false;
+
       CGUIWindow::OnMessage(message);
       Update();
       return true;
