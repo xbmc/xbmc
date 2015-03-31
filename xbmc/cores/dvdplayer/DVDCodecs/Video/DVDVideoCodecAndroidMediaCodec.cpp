@@ -497,6 +497,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
 void CDVDVideoCodecAndroidMediaCodec::Dispose()
 {
+  if (!m_opened)
+    return;
+
   m_opened = false;
 
   // release any retained demux packets
