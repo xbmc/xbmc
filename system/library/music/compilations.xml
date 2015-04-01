@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="10" type="folder" visible="Library.HasContent(Compilations)">
+  <label>521</label>
+  <icon>DefaultMusicCompilations.png</icon>
+  <path>musicdb://compilations/</path>
+</node>

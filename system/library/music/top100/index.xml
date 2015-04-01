@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="7" type="folder" visible="Library.HasContent(Music)">
+  <label>271</label>
+  <icon>DefaultMusicTop100.png</icon>
+</node>

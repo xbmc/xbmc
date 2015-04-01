@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="1" type="filter" visible="Library.HasContent(Music)">
+  <label>10504</label>
+  <icon>DefaultMusicTop100Songs.png</icon>
+  <content>songs</content>
+  <match>all</match>
+  <rule field="playcount" operator="greaterthan">
+    <value>0</value>
+  </rule>
+  <limit>100</limit>
+  <order direction="descending">playcount</order>
+</node>

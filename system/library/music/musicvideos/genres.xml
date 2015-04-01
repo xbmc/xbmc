@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="1" type="filter">
+  <label>135</label>
+  <icon>DefaultGenre.png</icon>
+  <content>musicvideos</content>
+  <group>genres</group>
+</node>

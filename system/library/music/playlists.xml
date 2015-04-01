@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="13" type="folder">
+  <label>136</label>
+  <icon>DefaultMusicPlaylists.png</icon>
+  <path>special://musicplaylists/</path>
+</node>
