@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "GUIDialogContextMenu.h"
+#include "DatabaseManager.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
 #include "GUIDialogFileBrowser.h"
@@ -467,9 +468,8 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       }
       else if (!strThumb.empty())
       { // this is some sort of an auto-share, so store in the texture database
-        CTextureDatabase db;
-        if (db.Open())
-          db.SetTextureForPath(item->GetPath(), "thumb", strThumb);
+        CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+        database->SetTextureForPath(item->GetPath(), "thumb", strThumb);
       }
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);

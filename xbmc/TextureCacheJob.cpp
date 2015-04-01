@@ -20,6 +20,7 @@
 
 #include "TextureCacheJob.h"
 #include "TextureCache.h"
+#include "DatabaseManager.h"
 #include "guilib/Texture.h"
 #include "guilib/DDSImage.h"
 #include "settings/AdvancedSettings.h"
@@ -292,13 +293,10 @@ bool CTextureUseCountJob::operator==(const CJob* job) const
 
 bool CTextureUseCountJob::DoWork()
 {
-  CTextureDatabase db;
-  if (db.Open())
-  {
-    db.BeginTransaction();
-    for (std::vector<CTextureDetails>::const_iterator i = m_textures.begin(); i != m_textures.end(); ++i)
-      db.IncrementUseCount(*i);
-    db.CommitTransaction();
-  }
+  CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+  database->BeginTransaction();
+  for (std::vector<CTextureDetails>::const_iterator i = m_textures.begin(); i != m_textures.end(); ++i)
+    database->IncrementUseCount(*i);
+  database->CommitTransaction();
   return true;
 }

@@ -19,6 +19,7 @@
  */
 
 #include "ThumbLoader.h"
+#include "DatabaseManager.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "TextureCache.h"
@@ -29,30 +30,14 @@ using namespace XFILE;
 CThumbLoader::CThumbLoader() :
   CBackgroundInfoLoader()
 {
-  m_textureDatabase = new CTextureDatabase();
-}
-
-CThumbLoader::~CThumbLoader()
-{
-  delete m_textureDatabase;
-}
-
-void CThumbLoader::OnLoaderStart()
-{
-  m_textureDatabase->Open();
-}
-
-void CThumbLoader::OnLoaderFinish()
-{
-  m_textureDatabase->Close();
 }
 
 std::string CThumbLoader::GetCachedImage(const CFileItem &item, const std::string &type)
 {
-  if (!item.GetPath().empty() && m_textureDatabase->Open())
+  if (!item.GetPath().empty())
   {
-    std::string image = m_textureDatabase->GetTextureForPath(item.GetPath(), type);
-    m_textureDatabase->Close();
+    CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+    std::string image = database->GetTextureForPath(item.GetPath(), type);
     return image;
   }
   return "";
@@ -60,10 +45,10 @@ std::string CThumbLoader::GetCachedImage(const CFileItem &item, const std::strin
 
 void CThumbLoader::SetCachedImage(const CFileItem &item, const std::string &type, const std::string &image)
 {
-  if (!item.GetPath().empty() && m_textureDatabase->Open())
+  if (!item.GetPath().empty())
   {
-    m_textureDatabase->SetTextureForPath(item.GetPath(), type, image);
-    m_textureDatabase->Close();
+    CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+    database->SetTextureForPath(item.GetPath(), type, image);
   }
 }
 

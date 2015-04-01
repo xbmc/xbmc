@@ -247,9 +247,8 @@ bool CRepositoryUpdateJob::DoWork()
   CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
   database->BeginMultipleExecute();
 
-  CTextureDatabase textureDB;
-  textureDB.Open();
-  textureDB.BeginMultipleExecute();
+  CTextureDatabase *textureDatabase = CDatabaseManager::Get().GetTextureDatabase();
+  textureDatabase->BeginMultipleExecute();
   VECADDONS notifications;
   for (map<string, AddonPtr>::const_iterator i = addons.begin(); i != addons.end(); ++i)
   {
@@ -264,9 +263,9 @@ bool CRepositoryUpdateJob::DoWork()
 
     // invalidate the art associated with this item
     if (!newAddon->Props().fanart.empty())
-      textureDB.InvalidateCachedTexture(newAddon->Props().fanart);
+      textureDatabase->InvalidateCachedTexture(newAddon->Props().fanart);
     if (!newAddon->Props().icon.empty())
-      textureDB.InvalidateCachedTexture(newAddon->Props().icon);
+      textureDatabase->InvalidateCachedTexture(newAddon->Props().icon);
 
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(newAddon->ID(),addon);
@@ -311,7 +310,7 @@ bool CRepositoryUpdateJob::DoWork()
     }
   }
   database->CommitMultipleExecute();
-  textureDB.CommitMultipleExecute();
+  textureDatabase->CommitMultipleExecute();
   if (!notifications.empty() && CSettings::Get().GetBool("general.addonnotifications"))
   {
     if (notifications.size() == 1)

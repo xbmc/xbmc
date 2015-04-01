@@ -540,13 +540,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       // show dialog that we're downloading the movie info
 
       // clear artwork and invalidate hashes
-      CTextureDatabase db;
-      if (db.Open())
-      {
-        for (CGUIListItem::ArtMap::const_iterator i = item->GetArt().begin(); i != item->GetArt().end(); ++i)
-          db.InvalidateCachedTexture(i->second);
-        db.Close();
-      }
+      CTextureDatabase *textureDatabase = CDatabaseManager::Get().GetTextureDatabase();
+      for (CGUIListItem::ArtMap::const_iterator i = item->GetArt().begin(); i != item->GetArt().end(); ++i)
+        textureDatabase->InvalidateCachedTexture(i->second);
+
       item->ClearArt();
 
       CFileItemList list;
@@ -554,9 +551,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       if (item->IsVideoDb() || fromDB)
       {
         vector<string> paths;
-        CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+        CVideoDatabase *textureDatabase = CDatabaseManager::Get().GetVideoDatabase();
         if (item->GetVideoInfoTag()->m_type == "tvshow" && pDlgInfo->RefreshAll() &&
-            database->GetPathsLinkedToTvShow(item->GetVideoInfoTag()->m_iDbId, paths))
+            textureDatabase->GetPathsLinkedToTvShow(item->GetVideoInfoTag()->m_iDbId, paths))
         {
           for (vector<string>::const_iterator i = paths.begin(); i != paths.end(); ++i)
           {

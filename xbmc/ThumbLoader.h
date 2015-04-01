@@ -28,10 +28,10 @@ class CThumbLoader : public CBackgroundInfoLoader
 {
 public:
   CThumbLoader();
-  virtual ~CThumbLoader();
+  virtual ~CThumbLoader() {};
 
-  virtual void OnLoaderStart();
-  virtual void OnLoaderFinish();
+  virtual void OnLoaderStart() {};
+  virtual void OnLoaderFinish() {};
 
   /*! \brief helper function to fill the art for a library item
    \param item a CFileItem
@@ -52,9 +52,6 @@ public:
    \param image the URL of the image
    */
   virtual void SetCachedImage(const CFileItem &item, const std::string &type, const std::string &image);
-
-protected:
-  CTextureDatabase *m_textureDatabase;
 };
 
 class CProgramThumbLoader : public CThumbLoader
