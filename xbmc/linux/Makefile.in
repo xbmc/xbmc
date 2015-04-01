@@ -4,6 +4,7 @@ SRCS  = ConvUtils.cpp
 SRCS += DBusUtil.cpp
 SRCS += DBusMessage.cpp
 SRCS += DBusReserve.cpp
+SRCS += FDEventMonitor.cpp
 SRCS += LinuxResourceCounter.cpp
 SRCS += LinuxTimezone.cpp
 SRCS += PosixMountProvider.cpp
