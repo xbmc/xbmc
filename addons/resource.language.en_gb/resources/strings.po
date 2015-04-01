@@ -13221,7 +13221,7 @@ msgctxt "#33039"
 msgid "%s Streams"
 msgstr ""
 
-#. Used in the media source dialog. Will result in "ReplayTV Devices" and "HDHomerun Devices"
+#. Used in the media source dialog. Will result in "HDHomerun Devices"
 #: dialogs/GUIDialogMediaSource.cpp
 msgctxt "#33040"
 msgid "%s Devices"
