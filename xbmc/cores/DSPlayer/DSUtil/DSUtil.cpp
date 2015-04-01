@@ -694,15 +694,21 @@ HRESULT RemoveUnconnectedFilters(IFilterGraph2 *pGraph)
 	// Go through the list of filters in the graph.
 	BeginEnumFilters(pGraph, pEF, pBF)
 	{
-		Com::SmartPtr<IPin>pPin;
-		// Find a connected pin on this filter.
-		if (SUCCEEDED(FindMatchingPin(pBF, MatchPinConnection(TRUE), &pPin)))
-		{
-			// If it's connected, don't remove the filter.
-			continue;
-		}
-		RemoveFilter(pGraph, pBF);
-		pEF->Reset(); 
+
+      if (GetCLSID(pBF) == CLSID_XySubFilter) {
+        continue;
+      }
+
+      Com::SmartPtr<IPin>pPin;
+      // Find a connected pin on this filter.
+      if (SUCCEEDED(FindMatchingPin(pBF, MatchPinConnection(TRUE), &pPin)))
+      {
+        // If it's connected, don't remove the filter.
+        continue;
+      }
+      RemoveFilter(pGraph, pBF);
+      pEF->Reset();
+
 	}
 	EndEnumFilters
 

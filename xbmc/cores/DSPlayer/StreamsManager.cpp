@@ -790,6 +790,9 @@ void CStreamsManager::SetSubTitleDelay(float fValue)
 {
   int iValue = fValue * 1000;
 
+  //get delay and invert the sign because kodi interface
+  iValue = -iValue;
+
   if (m_bIsXYVSFilter)
     m_pIDirectVobSub->put_SubtitleTiming(iValue, 1000, 1000);
 }
