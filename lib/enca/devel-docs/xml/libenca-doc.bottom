@@ -1,5 +1,0 @@
-    <xi:include href="xml/enums.xml"/>
-    <xi:include href="xml/analyser.xml"/>
-    <xi:include href="xml/encodings.xml"/>
-    <xi:include href="xml/auxiliary.xml"/>
-    <xi:include href="xml/internal.xml"/>

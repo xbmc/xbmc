@@ -191,10 +191,6 @@ lib/cpluff/stamp-h1
 # /lib/libcec
 /lib/libcec/libcec
 
-# /lib/enca
-/lib/enca/libenca_win32/Debug
-/lib/enca/libenca_win32/Release
-
 # /lib/fribidi
 /lib/fribidi/libfridibidi/Debug
 /lib/fribidi/libfridibidi/Release
