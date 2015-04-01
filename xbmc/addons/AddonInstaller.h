@@ -79,10 +79,9 @@ public:
    Iterates through the addon's dependencies, checking they're installed or installable.
    Each dependency must also satisfies CheckDependencies in turn.
    \param addon the addon to check
-   \param database the database instance to update. Defaults to NULL.
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, CAddonDatabase *database = NULL);
+  bool CheckDependencies(const ADDON::AddonPtr &addon);
 
   /*! \brief Update all repositories (if needed)
    Runs through all available repositories and queues an update of them if they
@@ -146,7 +145,7 @@ private:
    \param database database instance to update
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database);
+  bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps);
 
   void PrunePackageCache();
   int64_t EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result);

@@ -19,6 +19,7 @@
  */
 
 #include "PVRDatabase.h"
+#include "DatabaseManager.h"
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
@@ -139,9 +140,10 @@ void CPVRDatabase::UpdateTables(int iVersion)
   if (iVersion < 28)
   {
     VECADDONS addons;
-    CAddonDatabase database;
-    if (database.Open() && CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
+    if (CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
     {
+      CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+
       /** find all old client IDs */
       std::string strQuery(PrepareSQL("SELECT idClient, sUid FROM clients"));
       m_pDS->query(strQuery);
@@ -153,10 +155,10 @@ void CPVRDatabase::UpdateTables(int iVersion)
           if ((*it)->ID() == m_pDS->fv(1).get_asString())
           {
             /** try to get the current ID from the database */
-            int iAddonId = database.GetAddonId(*it);
+            int iAddonId = database->GetAddonId(*it);
             /** register a new id if it didn't exist */
             if (iAddonId <= 0)
-              iAddonId = database.AddAddon(*it, 0);
+              iAddonId = database->AddAddon(*it, 0);
             if (iAddonId > 0)
             {
               // this fails when an id becomes the id of one that's being replaced next iteration

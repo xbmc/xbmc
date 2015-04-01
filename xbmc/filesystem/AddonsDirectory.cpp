@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <functional>
 #include "AddonsDirectory.h"
+#include "DatabaseManager.h"
 #include "addons/AddonDatabase.h"
 #include "DirectoryFactory.h"
 #include "Directory.h"
@@ -104,8 +105,7 @@ bool IsOrphaned(const AddonPtr& addon)
 
 void SetUpdateAvailProperties(CFileItemList &items)
 {
-  CAddonDatabase database;
-  database.Open();
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
   for (int i = 0; i < items.Size(); ++i)
   {
     const std::string addonId = items[i]->GetProperty("Addon.ID").asString();
@@ -113,9 +113,9 @@ void SetUpdateAvailProperties(CFileItemList &items)
     {
       const AddonVersion installedVersion = AddonVersion(items[i]->GetProperty("Addon.Version").asString());
       AddonPtr repoAddon;
-      database.GetAddon(addonId, repoAddon);
+      database->GetAddon(addonId, repoAddon);
       if (repoAddon && repoAddon->Version() > installedVersion &&
-          !database.IsAddonBlacklisted(addonId, repoAddon->Version().asString()))
+          !database->IsAddonBlacklisted(addonId, repoAddon->Version().asString()))
       {
         items[i]->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
         items[i]->SetProperty("Addon.UpdateAvail", true);
@@ -130,11 +130,9 @@ bool CAddonsDirectory::GetSearchResults(const CURL& path, CFileItemList &items)
   if (search.empty() && !GetKeyboardInput(16017, search))
     return false;
 
-  CAddonDatabase database;
-  database.Open();
-
   VECADDONS addons;
-  database.Search(search, addons);
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+  database->Search(search, addons);
   CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(283));
   CURL searchPath(path);
   searchPath.SetFileName(search);
@@ -215,12 +213,12 @@ bool Browse(const CURL& path, CFileItemList &items)
   const std::string repo = path.GetHostName();
   const std::string category = path.GetFileName();
 
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+
   VECADDONS addons;
   if (repo == "all")
   {
-    CAddonDatabase database;
-    database.Open();
-    database.GetAddons(addons);
+    database->GetAddons(addons);
     items.SetProperty("reponame", g_localizeStrings.Get(24087));
     items.SetLabel(g_localizeStrings.Get(24087));
   }
@@ -231,9 +229,7 @@ bool Browse(const CURL& path, CFileItemList &items)
       return false;
     //Wait for runnig update to complete
     CAddonInstaller::Get().UpdateRepos(false, true);
-    CAddonDatabase database;
-    database.Open();
-    if (!database.GetRepository(addon->ID(), addons))
+    if (!database->GetRepository(addon->ID(), addons))
       return false;
     items.SetProperty("reponame", addon->Name());
     items.SetLabel(addon->Name());

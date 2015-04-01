@@ -22,6 +22,7 @@
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "DatabaseManager.h"
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
@@ -1020,20 +1021,21 @@ bool CPVRClients::IsKnownClient(const AddonPtr client) const
 int CPVRClients::RegisterClient(AddonPtr client)
 {
   int iClientId(-1);
-  CAddonDatabase database;
   PVR_CLIENT addon;
 
-  if (!client->Enabled() || !database.Open())
+  if (!client->Enabled())
     return -1;
+
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
 
   CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
 
   // check whether we already know this client
-  iClientId = database.GetAddonId(client); //database->GetClientId(client->ID());
+  iClientId = database->GetAddonId(client);
 
   // try to register the new client in the db
   if (iClientId <= 0)
-    iClientId = database.AddAddon(client, 0);
+    iClientId = database->AddAddon(client, 0);
 
   if (iClientId > 0)
   // load and initialise the client libraries
