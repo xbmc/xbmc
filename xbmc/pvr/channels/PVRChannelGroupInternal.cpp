@@ -20,6 +20,7 @@
 
 #include "PVRChannelGroupInternal.h"
 
+#include "DatabaseManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
@@ -220,7 +221,7 @@ int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMemb
 
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = GetPVRDatabase();
+  CPVRDatabase *database = CDatabaseManager::Get().GetPVRDatabase();
   if (!database)
     return -1;
 
