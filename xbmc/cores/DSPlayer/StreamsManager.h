@@ -49,6 +49,7 @@
 #include "Filters/IDirectVobSub.h"
 #include "Filters/LAVAudioSettings.h"
 #include "Filters/IffdshowBase.h"
+#include "Filters/IffdshowDecAudio.h"
 
 #include <boost/shared_ptr.hpp>
 #include <cassert>

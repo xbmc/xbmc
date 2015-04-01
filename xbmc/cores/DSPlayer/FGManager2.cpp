@@ -111,6 +111,33 @@ HRESULT CFGManager2::RenderFileXbmc(const CFileItem& pFileItem)
     pBF = pNext;
   } while (hr == S_OK);
 
+  // ASSIGN FILTER
+  IDirectVobSub *pSub;
+  ILAVAudioSettings *pAudioLav;
+  IffdshowBaseW *pAudioFFDS;
+  CGraphFilters::Get()->SetHasSubFilter(false);
+  BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
+  {
+    if ((pBF == CGraphFilters::Get()->AudioRenderer.pBF && CGraphFilters::Get()->AudioRenderer.guid != CLSID_ReClock) || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
+      continue;
+
+    hr = pBF->QueryInterface(__uuidof(pSub), (void **)&pSub);
+    if (SUCCEEDED(hr))
+    { 
+      CGraphFilters::Get()->SetHasSubFilter(true);
+      CGraphFilters::Get()->Subs.pBF = pBF;
+    } 
+
+    hr = pBF->QueryInterface(__uuidof(pAudioLav), (void **)&pAudioLav);
+    if (SUCCEEDED(hr))
+      CGraphFilters::Get()->Audio.pBF = pBF;
+
+    hr = pBF->QueryInterface(IID_IffdshowDecAudioW, (void **)&pAudioFFDS);
+    if (SUCCEEDED(hr))
+      CGraphFilters::Get()->Audio.pBF = pBF;
+  }
+  EndEnumFilters
+
   // Init Streams manager, and load streams
   START_PERFORMANCE_COUNTER
     CStreamsManager::Create();
@@ -148,7 +175,6 @@ HRESULT CFGManager2::RenderFileXbmc(const CFileItem& pFileItem)
     }
 
   CLog::Log(LOGDEBUG, "%s All filters added to the graph", __FUNCTION__);
-
 
   return S_OK;
 }
