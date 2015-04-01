@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogSmartPlaylistRule.h"
+#include "DatabaseManager.h"
 #include "GUIDialogFileBrowser.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
@@ -104,8 +105,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   CFileItemList items;
   CMusicDatabase database;
   database.Open();
-  CVideoDatabase videodatabase;
-  videodatabase.Open();
+  CVideoDatabase *videodatabase = CDatabaseManager::Get().GetVideoDatabase();
 
   std::string basePath;
   if (CSmartPlaylist::IsMusicType(m_type))
@@ -142,7 +142,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     if (m_type == "tvshows" ||
         m_type == "episodes" ||
         m_type == "movies")
-      videodatabase.GetGenresNav(basePath + "genres/", items, type);
+      videodatabase->GetGenresNav(basePath + "genres/", items, type);
     else if (m_type == "songs" ||
              m_type == "albums" ||
              m_type == "artists" ||
@@ -152,14 +152,14 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
         m_type == "mixed")
     {
       CFileItemList items2;
-      videodatabase.GetGenresNav("videodb://musicvideos/genres/",items2,VIDEODB_CONTENT_MUSICVIDEOS);
+      videodatabase->GetGenresNav("videodb://musicvideos/genres/",items2,VIDEODB_CONTENT_MUSICVIDEOS);
       items.Append(items2);
     }
     iLabel = 515;
   }
   else if (m_rule.m_field == FieldCountry)
   {
-    videodatabase.GetCountriesNav(basePath, items, type);
+    videodatabase->GetCountriesNav(basePath, items, type);
     iLabel = 574;
   }
   else if (m_rule.m_field == FieldArtist || m_rule.m_field == FieldAlbumArtist)
@@ -170,7 +170,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
         m_type == "mixed")
     {
       CFileItemList items2;
-      videodatabase.GetMusicVideoArtistsByName("", items2);
+      videodatabase->GetMusicVideoArtistsByName("", items2);
       items.Append(items2);
     }
     iLabel = 557;
@@ -183,14 +183,14 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
         m_type == "mixed")
     {
       CFileItemList items2;
-      videodatabase.GetMusicVideoAlbumsByName("", items2);
+      videodatabase->GetMusicVideoAlbumsByName("", items2);
       items.Append(items2);
     }
     iLabel = 558;
   }
   else if (m_rule.m_field == FieldActor)
   {
-    videodatabase.GetActorsNav(basePath + "actors/",items,type);
+    videodatabase->GetActorsNav(basePath + "actors/",items,type);
     iLabel = 20337;
   }
   else if (m_rule.m_field == FieldYear)
@@ -200,30 +200,30 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     if (CSmartPlaylist::IsVideoType(m_type))
     {
       CFileItemList items2;
-      videodatabase.GetYearsNav(basePath + "years/", items2, type);
+      videodatabase->GetYearsNav(basePath + "years/", items2, type);
       items.Append(items2);
     }
     iLabel = 562;
   }
   else if (m_rule.m_field == FieldDirector)
   {
-    videodatabase.GetDirectorsNav(basePath + "directors/", items, type);
+    videodatabase->GetDirectorsNav(basePath + "directors/", items, type);
     iLabel = 20339;
   }
   else if (m_rule.m_field == FieldStudio)
   {
-    videodatabase.GetStudiosNav(basePath + "studios/", items, type);
+    videodatabase->GetStudiosNav(basePath + "studios/", items, type);
     iLabel = 572;
   }
   else if (m_rule.m_field == FieldWriter)
   {
-    videodatabase.GetWritersNav(basePath, items, type);
+    videodatabase->GetWritersNav(basePath, items, type);
     iLabel = 20417;
   }
   else if (m_rule.m_field == FieldTvShowTitle ||
           (m_type == "tvshows" && m_rule.m_field == FieldTitle))
   {
-    videodatabase.GetTvShowsNav(basePath + "titles/", items);
+    videodatabase->GetTvShowsNav(basePath + "titles/", items);
     iLabel = 20343;
   }
   else if (m_rule.m_field == FieldTitle)
@@ -235,12 +235,12 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     if (m_type == "movies")
     {
-      videodatabase.GetMoviesNav(basePath + "titles/", items);
+      videodatabase->GetMoviesNav(basePath + "titles/", items);
       iLabel = 20342;
     }
     if (m_type == "episodes")
     {
-      videodatabase.GetEpisodesNav(basePath + "titles/-1/-1/", items);
+      videodatabase->GetEpisodesNav(basePath + "titles/-1/-1/", items);
       // we need to replace the db label (<season>x<episode> <title>) with the title only
       CLabelFormatter format("%T", "");
       for (int i = 0; i < items.Size(); i++)
@@ -249,7 +249,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     if (m_type == "musicvideos" || m_type == "mixed")
     {
-      videodatabase.GetMusicVideosNav(basePath + "titles/", items);
+      videodatabase->GetMusicVideosNav(basePath + "titles/", items);
       iLabel = 20389;
     }
   }
@@ -314,7 +314,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldSet)
   {
-    videodatabase.GetSetsNav("videodb://movies/sets/", items, VIDEODB_CONTENT_MOVIES);
+    videodatabase->GetSetsNav("videodb://movies/sets/", items, VIDEODB_CONTENT_MOVIES);
     iLabel = 20434;
   }
   else if (m_rule.m_field == FieldTag)
@@ -328,7 +328,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     else if (m_type != "movies")
       return;
 
-    videodatabase.GetTagsNav(basePath + "tags/", items, type);
+    videodatabase->GetTagsNav(basePath + "tags/", items, type);
     iLabel = 20459;
   }
   else

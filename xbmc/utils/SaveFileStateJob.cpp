@@ -19,6 +19,7 @@
  */
 
 #include "SaveFileStateJob.h"
+#include "DatabaseManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/MediaSettings.h"
@@ -64,100 +65,93 @@ bool CSaveFileStateJob::DoWork()
       std::string redactPath = CURL::GetRedacted(progressTrackingFile);
       CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, redactPath.c_str());
 
-      CVideoDatabase videodatabase;
-      if (!videodatabase.Open())
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+
+      bool updateListing = false;
+      // No resume & watched status for livetv
+      if (!m_item.IsLiveTV())
       {
-        CLog::Log(LOGWARNING, "%s - Unable to open video database. Can not save file state!", __FUNCTION__);
-      }
-      else
-      {
-        bool updateListing = false;
-        // No resume & watched status for livetv
-        if (!m_item.IsLiveTV())
+        if (m_updatePlayCount)
         {
-          if (m_updatePlayCount)
-          {
-            CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, redactPath.c_str());
+          CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, redactPath.c_str());
 
-            // consider this item as played
-            videodatabase.IncrementPlayCount(m_item);
-            m_item.GetVideoInfoTag()->m_playCount++;
+          // consider this item as played
+          database->IncrementPlayCount(m_item);
+          m_item.GetVideoInfoTag()->m_playCount++;
 
-            // PVR: Set recording's play count on the backend (if supported)
-            if (m_item.HasPVRRecordingInfoTag())
-              m_item.GetPVRRecordingInfoTag()->IncrementPlayCount();
+          // PVR: Set recording's play count on the backend (if supported)
+          if (m_item.HasPVRRecordingInfoTag())
+            m_item.GetPVRRecordingInfoTag()->IncrementPlayCount();
 
-            m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
-            updateListing = true;
-          }
+          m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
+          updateListing = true;
+        }
+        else
+          database->UpdateLastPlayed(m_item);
+
+        if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds)
+        {
+          if (m_bookmark.timeInSeconds <= 0.0f)
+            database->ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
           else
-            videodatabase.UpdateLastPlayed(m_item);
+            database->AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
+          if (m_item.HasVideoInfoTag())
+            m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
 
-          if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds)
+          // PVR: Set/clear recording's resume bookmark on the backend (if supported)
+          if (m_item.HasPVRRecordingInfoTag())
           {
-            if (m_bookmark.timeInSeconds <= 0.0f)
-              videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-            else
-              videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
-            if (m_item.HasVideoInfoTag())
-              m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
-
-            // PVR: Set/clear recording's resume bookmark on the backend (if supported)
-            if (m_item.HasPVRRecordingInfoTag())
-            {
-              PVR::CPVRRecordingPtr recording = m_item.GetPVRRecordingInfoTag();
-              recording->SetLastPlayedPosition(m_bookmark.timeInSeconds <= 0.0f ? 0 : (int)m_bookmark.timeInSeconds);
-              recording->m_resumePoint = m_bookmark;
-            }
-
-            // UPnP announce resume point changes to clients
-            // however not if playcount is modified as that already announces
-            if (m_item.IsVideoDb() && !m_updatePlayCount)
-            {
-              CVariant data;
-              data["id"] = m_item.GetVideoInfoTag()->m_iDbId;
-              data["type"] = m_item.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
-            }
-
-            updateListing = true;
+            PVR::CPVRRecordingPtr recording = m_item.GetPVRRecordingInfoTag();
+            recording->SetLastPlayedPosition(m_bookmark.timeInSeconds <= 0.0f ? 0 : (int)m_bookmark.timeInSeconds);
+            recording->m_resumePoint = m_bookmark;
           }
-        }
 
-        if (m_videoSettings != CMediaSettings::Get().GetDefaultVideoSettings())
-        {
-          videodatabase.SetVideoSettings(progressTrackingFile, m_videoSettings);
-        }
-
-        if (m_item.HasVideoInfoTag() && m_item.GetVideoInfoTag()->HasStreamDetails())
-        {
-          CFileItem dbItem(m_item);
-
-          // Check whether the item's db streamdetails need updating
-          if (!videodatabase.GetStreamDetails(dbItem) || dbItem.GetVideoInfoTag()->m_streamDetails != m_item.GetVideoInfoTag()->m_streamDetails)
+          // UPnP announce resume point changes to clients
+          // however not if playcount is modified as that already announces
+          if (m_item.IsVideoDb() && !m_updatePlayCount)
           {
-            videodatabase.SetStreamDetailsForFile(m_item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
-            updateListing = true;
+            CVariant data;
+            data["id"] = m_item.GetVideoInfoTag()->m_iDbId;
+            data["type"] = m_item.GetVideoInfoTag()->m_type;
+            ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
           }
-        }
 
-        // in order to properly update the the list, we need to update the stack item which is held in g_application.m_stackFileItemToUpdate
-        if (m_item.HasProperty("stackFileItemToUpdate"))
-        {
-          m_item = m_item_discstack; // as of now, the item is replaced by the discstack item
-          videodatabase.GetResumePoint(*m_item.GetVideoInfoTag());
+          updateListing = true;
         }
-        videodatabase.Close();
+      }
 
-        if (updateListing)
+      if (m_videoSettings != CMediaSettings::Get().GetDefaultVideoSettings())
+      {
+        database->SetVideoSettings(progressTrackingFile, m_videoSettings);
+      }
+
+      if (m_item.HasVideoInfoTag() && m_item.GetVideoInfoTag()->HasStreamDetails())
+      {
+        CFileItem dbItem(m_item);
+
+        // Check whether the item's db streamdetails need updating
+        if (!database->GetStreamDetails(dbItem) || dbItem.GetVideoInfoTag()->m_streamDetails != m_item.GetVideoInfoTag()->m_streamDetails)
         {
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          CFileItemPtr msgItem(new CFileItem(m_item));
-          if (m_item.HasProperty("original_listitem_url"))
-            msgItem->SetPath(m_item.GetProperty("original_listitem_url").asString());
-          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem); // 1 to update the listing as well
-          g_windowManager.SendThreadMessage(message);
+          database->SetStreamDetailsForFile(m_item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
+          updateListing = true;
         }
+      }
+
+      // in order to properly update the the list, we need to update the stack item which is held in g_application.m_stackFileItemToUpdate
+      if (m_item.HasProperty("stackFileItemToUpdate"))
+      {
+        m_item = m_item_discstack; // as of now, the item is replaced by the discstack item
+        database->GetResumePoint(*m_item.GetVideoInfoTag());
+      }
+
+      if (updateListing)
+      {
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+        CFileItemPtr msgItem(new CFileItem(m_item));
+        if (m_item.HasProperty("original_listitem_url"))
+          msgItem->SetPath(m_item.GetProperty("original_listitem_url").asString());
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem); // 1 to update the listing as well
+        g_windowManager.SendThreadMessage(message);
       }
     }
 

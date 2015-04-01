@@ -20,6 +20,7 @@
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "DatabaseManager.h"
 #include "GUIInfoManager.h"
 #include "Util.h"
 #include "dialogs/GUIDialogOK.h"
@@ -815,14 +816,9 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
       pDlgProgress->Progress();
 
       /* delete all channel and recording settings */
-      CVideoDatabase videoDatabase;
-
-      if (videoDatabase.Open())
-      {
-        videoDatabase.EraseVideoSettings("pvr://channels/");
-        videoDatabase.EraseVideoSettings("pvr://recordings/");
-        videoDatabase.Close();
-      }
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      database->EraseVideoSettings("pvr://channels/");
+      database->EraseVideoSettings("pvr://recordings/");
       
       pDlgProgress->SetPercentage(80);
       pDlgProgress->Progress();

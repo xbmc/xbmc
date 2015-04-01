@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeMoviesOverview.h"
+#include "DatabaseManager.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "video/VideoDatabase.h"
@@ -65,18 +66,15 @@ std::string CDirectoryNodeMoviesOverview::GetLocalizedName() const
 
 bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items) const
 {
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(BuildPath()))
     return false;
   
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
   {
-    if (i == 6)
-    {
-      CVideoDatabase db;
-      if (db.Open() && !db.HasSets())
-        continue;
-    }
+    if (i == 6 && !database->HasSets())
+      continue;
 
     CVideoDbUrl itemUrl = videoUrl;
     std::string strDir = StringUtils::Format("%s/", MovieChildren[i].id.c_str());

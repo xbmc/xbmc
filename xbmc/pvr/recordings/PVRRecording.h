@@ -174,7 +174,7 @@ namespace PVR
      * @brief Get the resume point and play count from the database if the 
      * client doesn't handle it itself.
      */
-    void UpdateMetadata(CVideoDatabase &db);
+    void UpdateMetadata();
 
     /*!
      * @brief Update this tag with the contents of the given tag.

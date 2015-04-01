@@ -17,12 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include "PVRRecordings.h"
 
+#include "DatabaseManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "epg/EpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
-#include "PVRRecordings.h"
 #include "pvr/addons/PVRClients.h"
 #include "utils/StringUtils.h"
 #include "utils/RegExp.h"
@@ -250,21 +251,23 @@ bool CPVRRecording::SetPlayCount(int count)
   return true;
 }
 
-void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
+void CPVRRecording::UpdateMetadata()
 {
   if (m_bGotMetaData)
     return;
-    
+
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+
   bool supportsPlayCount  = g_PVRClients->SupportsRecordingPlayCount(m_iClientId);
   bool supportsLastPlayed = g_PVRClients->SupportsLastPlayedPosition(m_iClientId);
   
   if (!supportsPlayCount || !supportsLastPlayed)
   {
     if (!supportsPlayCount)
-      m_playCount = db.GetPlayCount(m_strFileNameAndPath);
+      m_playCount = database->GetPlayCount(m_strFileNameAndPath);
 
     if (!supportsLastPlayed)
-      db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
+      database->GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
   }
   
   m_bGotMetaData = true;

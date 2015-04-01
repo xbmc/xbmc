@@ -19,6 +19,7 @@
  */
 
 #include "VideoDatabaseDirectory.h"
+#include "DatabaseManager.h"
 #include "utils/URIUtils.h"
 #include "VideoDatabaseDirectory/QueryParams.h"
 #include "video/VideoDatabase.h"
@@ -151,25 +152,23 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
   CQueryParams params;
   CDirectoryNode::GetDatabaseInfo(path, params);
 
-  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return false;
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
 
   // get genre
   if (params.GetGenreId() != -1)
-    strLabel += videodatabase.GetGenreById(params.GetGenreId());
+    strLabel += database->GetGenreById(params.GetGenreId());
 
   // get country
   if (params.GetCountryId() != -1)
-    strLabel += videodatabase.GetCountryById(params.GetCountryId());
+    strLabel += database->GetCountryById(params.GetCountryId());
 
   // get set
   if (params.GetSetId() != -1)
-    strLabel += videodatabase.GetSetById(params.GetSetId());
+    strLabel += database->GetSetById(params.GetSetId());
 
   // get tag
   if (params.GetTagId() != -1)
-    strLabel += videodatabase.GetTagById(params.GetTagId());
+    strLabel += database->GetTagById(params.GetTagId());
 
   // get year
   if (params.GetYear() != -1)

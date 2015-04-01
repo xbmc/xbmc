@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeTitleMovies.h"
+#include "DatabaseManager.h"
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 
@@ -32,16 +33,9 @@ CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const std::string& strName,
 
 bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items) const
 {
-  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return false;
-
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=videodatabase.GetMoviesNav(BuildPath(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetStudioId(), params.GetCountryId(), params.GetSetId(), params.GetTagId());
-
-  videodatabase.Close();
-
-  return bSuccess;
+  return database->GetMoviesNav(BuildPath(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetStudioId(), params.GetCountryId(), params.GetSetId(), params.GetTagId());
 }

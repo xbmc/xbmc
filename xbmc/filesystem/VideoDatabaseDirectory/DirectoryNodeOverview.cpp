@@ -18,8 +18,9 @@
  *
  */
 
-#include "video/VideoDatabase.h"
 #include "DirectoryNodeOverview.h"
+#include "DatabaseManager.h"
+#include "video/VideoDatabase.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
@@ -64,11 +65,10 @@ std::string CDirectoryNodeOverview::GetLocalizedName() const
 
 bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
 {
-  CVideoDatabase database;
-  database.Open();
-  bool hasMovies = database.HasContent(VIDEODB_CONTENT_MOVIES);
-  bool hasTvShows = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
-  bool hasMusicVideos = database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS);
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  bool hasMovies = database->HasContent(VIDEODB_CONTENT_MOVIES);
+  bool hasTvShows = database->HasContent(VIDEODB_CONTENT_TVSHOWS);
+  bool hasMusicVideos = database->HasContent(VIDEODB_CONTENT_MUSICVIDEOS);
   vector<pair<const char*, int> > vec;
   if (hasMovies)
   {

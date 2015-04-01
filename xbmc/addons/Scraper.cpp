@@ -18,6 +18,7 @@
 *
 */
 #include "Scraper.h"
+#include "DatabaseManager.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "filesystem/CurlFile.h"
@@ -403,8 +404,8 @@ bool CScraper::IsInUse() const
   }
   else
   { // video scraper
-    CVideoDatabase db;
-    if (db.Open() && db.ScraperInUse(ID()))
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+    if (database->ScraperInUse(ID()))
       return true;
   }
   return false;

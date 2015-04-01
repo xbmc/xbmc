@@ -41,7 +41,7 @@ public:
   virtual bool operator==(const CJob* job) const;
 
 protected:
-  virtual bool Work(CVideoDatabase &db);
+  virtual bool Work();
 
 private:
   CFileItemPtr m_item;

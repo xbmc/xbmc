@@ -54,7 +54,7 @@ public:
 
 protected:
   // implementation of CVideoLibraryJob
-  virtual bool Work(CVideoDatabase &db);
+  virtual bool Work();
 
 private:
   std::set<int> m_paths;

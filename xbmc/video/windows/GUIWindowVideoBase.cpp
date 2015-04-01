@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "GUIWindowVideoBase.h"
+#include "DatabaseManager.h"
 #include "Util.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
@@ -130,12 +131,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
       m_thumbLoader.StopThread();
-    m_database.Close();
     break;
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_database.Open();
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       return CGUIMediaWindow::OnMessage(message);
     }
@@ -333,22 +332,21 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
   CVideoInfoTag movieDetails;
   if (info)
   {
-    m_database.Open(); // since we can be called from the music library
-
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
     int dbId = item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_iDbId : -1;
     if (info->Content() == CONTENT_MOVIES)
     {
-      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails, dbId);
+      bHasInfo = database->GetMovieInfo(item->GetPath(), movieDetails, dbId);
     }
     if (info->Content() == CONTENT_TVSHOWS)
     {
       if (item->m_bIsFolder)
       {
-        bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails, dbId);
+        bHasInfo = database->GetTvShowInfo(item->GetPath(), movieDetails, dbId);
       }
       else
       {
-        bHasInfo = m_database.GetEpisodeInfo(item->GetPath(), movieDetails, dbId);
+        bHasInfo = database->GetEpisodeInfo(item->GetPath(), movieDetails, dbId);
         if (!bHasInfo)
         {
           // !! WORKAROUND !!
@@ -361,7 +359,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
           //       stacking stuff, or to modify GetTvShowId to do support multipath:// shares
           std::string strParentDirectory;
           URIUtils::GetParentPath(item->GetPath(), strParentDirectory);
-          if (m_database.GetTvShowId(strParentDirectory) < 0)
+          if (database->GetTvShowId(strParentDirectory) < 0)
           {
             CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->GetPath().c_str());
             return false;
@@ -371,9 +369,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
     }
     if (info->Content() == CONTENT_MUSICVIDEOS)
     {
-      bHasInfo = m_database.GetMusicVideoInfo(item->GetPath(), movieDetails);
+      bHasInfo = database->GetMusicVideoInfo(item->GetPath(), movieDetails);
     }
-    m_database.Close();
   }
   else if(item->HasVideoInfoTag())
   {
@@ -415,10 +412,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
     return false;
   }
 
-  m_database.Open();
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
-  info = m_database.GetScraperForPath(item->GetPath(),settings);
+  info = database->GetScraperForPath(item->GetPath(),settings);
 
   if (!info)
     return false;
@@ -505,7 +502,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
           }
           else if (!pDlgSelect->IsButtonPressed())
           {
-            m_database.Close();
             return listNeedsUpdating; // user backed out
           }
         }
@@ -524,7 +520,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       pDlgProgress->Close();
       if (pDlgProgress->IsCanceled())
       {
-        m_database.Close();
         return listNeedsUpdating;
       }
 
@@ -534,7 +529,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
         iString = 20357;
       if (!CGUIKeyboardFactory::ShowAndGetInput(movieName, g_localizeStrings.Get(iString), false))
       {
-        m_database.Close();
         return listNeedsUpdating; // user backed out
       }
 
@@ -560,8 +554,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       if (item->IsVideoDb() || fromDB)
       {
         vector<string> paths;
+        CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
         if (item->GetVideoInfoTag()->m_type == "tvshow" && pDlgInfo->RefreshAll() &&
-            m_database.GetPathsLinkedToTvShow(item->GetVideoInfoTag()->m_iDbId, paths))
+            database->GetPathsLinkedToTvShow(item->GetVideoInfoTag()->m_iDbId, paths))
         {
           for (vector<string>::const_iterator i = paths.begin(); i != paths.end(); ++i)
           {
@@ -604,35 +599,37 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       pDlgProgress->SetLine(2, "");
       pDlgProgress->StartModal();
       pDlgProgress->Progress();
+
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
       if (bHasInfo && movieDetails.m_iDbId != -1)
       {
         if (info->Content() == CONTENT_MOVIES)
-          m_database.DeleteMovie(movieDetails.m_iDbId);
+          database->DeleteMovie(movieDetails.m_iDbId);
         if (info->Content() == CONTENT_TVSHOWS && !item->m_bIsFolder)
-          m_database.DeleteEpisode(movieDetails.m_iDbId);
+          database->DeleteEpisode(movieDetails.m_iDbId);
         if (info->Content() == CONTENT_MUSICVIDEOS)
-          m_database.DeleteMusicVideo(movieDetails.m_iDbId);
+          database->DeleteMusicVideo(movieDetails.m_iDbId);
         if (info->Content() == CONTENT_TVSHOWS && item->m_bIsFolder)
         {
           if (pDlgInfo->RefreshAll())
-            m_database.DeleteTvShow(movieDetails.m_iDbId);
+            database->DeleteTvShow(movieDetails.m_iDbId);
           else
-            m_database.DeleteDetailsForTvShow(movieDetails.m_iDbId);
+            database->DeleteDetailsForTvShow(movieDetails.m_iDbId);
         }
       }
       if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info->Content(),!ignoreNfo,&scrUrl,pDlgInfo->RefreshAll(),pDlgProgress))
       {
         if (info->Content() == CONTENT_MOVIES)
-          m_database.GetMovieInfo(item->GetPath(),movieDetails);
+          database->GetMovieInfo(item->GetPath(),movieDetails);
         if (info->Content() == CONTENT_MUSICVIDEOS)
-          m_database.GetMusicVideoInfo(item->GetPath(),movieDetails);
+          database->GetMusicVideoInfo(item->GetPath(),movieDetails);
         if (info->Content() == CONTENT_TVSHOWS)
         {
           // update tvshow info to get updated episode numbers
           if (item->m_bIsFolder)
-            m_database.GetTvShowInfo(item->GetPath(),movieDetails);
+            database->GetTvShowInfo(item->GetPath(),movieDetails);
           else
-            m_database.GetEpisodeInfo(item->GetPath(),movieDetails);
+            database->GetEpisodeInfo(item->GetPath(),movieDetails);
         }
 
         // got all movie details :-)
@@ -657,17 +654,15 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
         pDlgProgress->Close();
         if (pDlgProgress->IsCanceled())
         {
-          m_database.Close();
           return listNeedsUpdating; // user cancelled
         }
         CGUIDialogOK::ShowAndGetInput(195, movieName, 0, 0);
-        m_database.Close();
         return listNeedsUpdating;
       }
     }
   // 6. Check for a refresh
   } while (needsRefresh);
-  m_database.Close();
+
   return listNeedsUpdating;
 }
 
@@ -829,18 +824,12 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
       if ((item->IsVideoDb() || item->IsDVD()) && item->HasVideoInfoTag())
         strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
-      CVideoDatabase db;
-      if (!db.Open())
-      {
-        CLog::Log(LOGERROR, "%s - Cannot open VideoDatabase", __FUNCTION__);
-        return;
-      }
-      if (db.GetResumeBookMark(strPath, bookmark))
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      if (database->GetResumeBookMark(strPath, bookmark))
       {
         startoffset = (int)(bookmark.timeInSeconds*75);
         partNumber = bookmark.partNumber;
       }
-      db.Close();
     }
   }
 }
@@ -966,12 +955,13 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
 
     SScanSettings settings;
     bool foundDirectly = false;
-    scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+    scraper = database->GetScraperForPath(strDir, settings, foundDirectly);
 
     if (!scraper &&
-        !(m_database.HasMovieInfo(item->GetPath()) ||
-          m_database.HasTvShowInfo(strDir)           ||
-          m_database.HasEpisodeInfo(item->GetPath())))
+        !(database->HasMovieInfo(item->GetPath()) ||
+          database->HasTvShowInfo(strDir)           ||
+          database->HasEpisodeInfo(item->GetPath())))
     {
       return false;
     }
@@ -1076,7 +1066,8 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         if (URIUtils::IsStack(path))
         {
           vector<int> times;
-          if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
+          CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+          if (database->GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
@@ -1185,7 +1176,8 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
       if (selectedFile > 1)
       {
         vector<int> times;
-        if (m_database.GetStackTimes(path,times))
+        CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+        if (database->GetStackTimes(path,times))
           stack->m_lStartOffset = times[selectedFile-2]*75; // wtf?
       }
       else
@@ -1595,7 +1587,8 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
   // we may also be in a tvshow files listing
   // (ideally this should be removed, and our stack regexps tidied up if necessary
   // No "normal" episodes should stack, and multi-parts should be supported)
-  ADDON::ScraperPtr info = m_database.GetScraperForPath(strDirectory);
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  ADDON::ScraperPtr info = database->GetScraperForPath(strDirectory);
   if (info && info->Content() == CONTENT_TVSHOWS)
     m_stackingAvailable = false;
 
@@ -1722,11 +1715,10 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   movie.m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);
 
   // everything is ok, so add to database
-  m_database.Open();
-  int idMovie = m_database.AddMovie(pItem->GetPath());
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  int idMovie = database->AddMovie(pItem->GetPath());
   movie.m_strIMDBNumber = StringUtils::Format("xx%08i", idMovie);
-  m_database.SetDetailsForMovie(pItem->GetPath(), movie, pItem->GetArt());
-  m_database.Close();
+  database->SetDetailsForMovie(pItem->GetPath(), movie, pItem->GetArt());
 
   // done...
   CGUIDialogOK::ShowAndGetInput(20177, movie.m_strTitle, StringUtils::Join(movie.m_genre, g_advancedSettings.m_videoItemSeparator), movie.m_strIMDBNumber);
@@ -1862,7 +1854,8 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   }
 
   bool foundDirectly = false;
-  info = m_database.GetScraperForPath(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.empty() ? std::string(item->GetVideoInfoTag()->m_strPath) : item->GetPath(), settings, foundDirectly);
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  info = database->GetScraperForPath(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.empty() ? std::string(item->GetVideoInfoTag()->m_strPath) : item->GetPath(), settings, foundDirectly);
   return foundDirectly ? 1 : 0;
 }
 
@@ -1897,13 +1890,11 @@ void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, 
 bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int label1, int label2, int label3)
 {
   bool bCanceled;
-  CVideoDatabase db;
-  db.Open();
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
   if (CGUIDialogYesNo::ShowAndGetInput(label1,label2,label3,20022,bCanceled))
   {
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    db.RemoveContentForPath(path, progress);
-    db.Close();
+    database->RemoveContentForPath(path, progress);
     CUtil::DeleteVideoDatabaseDirectoryCache();
     return true;
   }
@@ -1914,10 +1905,9 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int label1,
       ADDON::ScraperPtr info;
       SScanSettings settings;
       settings.exclude = true;
-      db.SetScraperForPath(path,info,settings);
+      database->SetScraperForPath(path,info,settings);
     }
   }
-  db.Close();
   
   return false;
 }
@@ -1925,11 +1915,10 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int label1,
 void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
 {
   bool bScan=false;
-  CVideoDatabase db;
-  db.Open();
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
 
   SScanSettings settings;
-  ADDON::ScraperPtr info = db.GetScraperForPath(path, settings);
+  ADDON::ScraperPtr info = database->GetScraperForPath(path, settings);
 
   ADDON::ScraperPtr info2(info);
   
@@ -1946,7 +1935,7 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
     }
   }
 
-  db.SetScraperForPath(path,info,settings);
+  database->SetScraperForPath(path,info,settings);
 
   if (bScan)
   {

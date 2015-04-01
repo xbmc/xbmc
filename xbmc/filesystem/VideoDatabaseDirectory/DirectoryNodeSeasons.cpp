@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeSeasons.h"
+#include "DatabaseManager.h"
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
@@ -64,16 +65,9 @@ std::string CDirectoryNodeSeasons::GetLocalizedName() const
 
 bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
 {
-  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return false;
-
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=videodatabase.GetSeasonsNav(BuildPath(), items, params.GetActorId(), params.GetDirectorId(), params.GetGenreId(), params.GetYear(), params.GetTvShowId());
-
-  videodatabase.Close();
-
-  return bSuccess;
+  return database->GetSeasonsNav(BuildPath(), items, params.GetActorId(), params.GetDirectorId(), params.GetGenreId(), params.GetYear(), params.GetTvShowId());
 }

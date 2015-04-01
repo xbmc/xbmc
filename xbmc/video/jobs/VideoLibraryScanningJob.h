@@ -53,7 +53,7 @@ public:
 
 protected:
   // implementation of CVideoLibraryJob
-  virtual bool Work(CVideoDatabase &db);
+  virtual bool Work();
 
 private:
   VIDEO::CVideoInfoScanner m_scanner;

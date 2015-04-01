@@ -251,7 +251,6 @@ namespace VIDEO
     bool m_bClean;
     bool m_scanAll;
     std::string m_strStartDir;
-    CVideoDatabase m_database;
     std::set<std::string> m_pathsToScan;
     std::set<std::string> m_pathsToCount;
     std::set<int> m_pathsToClean;

@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "VideoLibraryMarkWatchedJob.h"
+#include "DatabaseManager.h"
 #include "FileItem.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
@@ -51,7 +52,7 @@ bool CVideoLibraryMarkWatchedJob::operator==(const CJob* job) const
   return m_item->IsSamePath(markJob->m_item.get()) && markJob->m_mark == m_mark;
 }
 
-bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
+bool CVideoLibraryMarkWatchedJob::Work()
 {
   if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
     return false;
@@ -80,7 +81,8 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
   if (markItems.empty())
     return true;
 
-  db.BeginTransaction();
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  database->BeginTransaction();
 
   for (std::vector<CFileItemPtr>::const_iterator iter = markItems.begin(); iter != markItems.end(); ++iter)
   {
@@ -91,15 +93,14 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
       if (item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->GetPath();
 
-      db.ClearBookMarksOfFile(path, CBookmark::RESUME);
-      db.IncrementPlayCount(*item);
+      database->ClearBookMarksOfFile(path, CBookmark::RESUME);
+      database->IncrementPlayCount(*item);
     }
     else
-      db.SetPlayCount(*item, 0);
+      database->SetPlayCount(*item, 0);
   }
 
-  db.CommitTransaction();
-  db.Close();
+  database->CommitTransaction();
 
   return true;
 }

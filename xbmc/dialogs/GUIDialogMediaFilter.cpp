@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogMediaFilter.h"
+#include "DatabaseManager.h"
 #include "DbUrl.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
@@ -629,13 +630,10 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
 
   if (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" || m_mediaType == "musicvideos")
   {
-    CVideoDatabase videodb;
-    if (!videodb.Open())
-      return -1;
-
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
     std::set<std::string> playlists;
     CDatabase::Filter dbfilter;
-    dbfilter.where = tmpFilter.GetWhereClause(videodb, playlists);
+    dbfilter.where = tmpFilter.GetWhereClause(*database, playlists);
 
     VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;    
     if (m_mediaType == "tvshows")
@@ -646,17 +644,17 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
       type = VIDEODB_CONTENT_MUSICVIDEOS;
 
     if (filter.field == FieldGenre)
-      videodb.GetGenresNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
+      database->GetGenresNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
     else if (filter.field == FieldActor || filter.field == FieldArtist)
-      videodb.GetActorsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
+      database->GetActorsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
     else if (filter.field == FieldDirector)
-      videodb.GetDirectorsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
+      database->GetDirectorsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
     else if (filter.field == FieldStudio)
-      videodb.GetStudiosNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
+      database->GetStudiosNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
     else if (filter.field == FieldAlbum)
-      videodb.GetMusicVideoAlbumsNav(m_dbUrl->ToString(), selectItems, -1, dbfilter, countOnly);
+      database->GetMusicVideoAlbumsNav(m_dbUrl->ToString(), selectItems, -1, dbfilter, countOnly);
     else if (filter.field == FieldTag)
-      videodb.GetTagsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
+      database->GetTagsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
   }
   else if (m_mediaType == "artists" || m_mediaType == "albums" || m_mediaType == "songs")
   {

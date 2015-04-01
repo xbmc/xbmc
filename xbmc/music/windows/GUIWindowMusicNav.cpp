@@ -19,6 +19,7 @@
  */
 
 #include "GUIWindowMusicNav.h"
+#include "DatabaseManager.h"
 #include "addons/AddonManager.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
@@ -537,18 +538,16 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0)
     {
-      CVideoDatabase database;
-      database.Open();
-      if (database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator)) > -1)
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      if (database->GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator)) > -1)
         buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20400);
     }
     if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0 &&
         item->GetMusicInfoTag()->GetAlbum().size() > 0 &&
         item->GetMusicInfoTag()->GetTitle().size() > 0)
     {
-      CVideoDatabase database;
-      database.Open();
-      if (database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      if (database->GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
         buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20401);
     }
     if (item->HasVideoInfoTag() && !item->m_bIsFolder)
@@ -654,20 +653,18 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_GO_TO_ARTIST:
     {
       std::string strPath;
-      CVideoDatabase database;
-      database.Open();
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
       strPath = StringUtils::Format("videodb://musicvideos/artists/%i/",
-                                    database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator)));
+                                    database->GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator)));
       g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
       return true;
     }
 
   case CONTEXT_BUTTON_PLAY_OTHER:
     {
-      CVideoDatabase database;
-      database.Open();
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
       CVideoInfoTag details;
-      database.GetMusicVideoInfo("",details,database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()));
+      database->GetMusicVideoInfo("",details,database->GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()));
       CApplicationMessenger::Get().PlayFile(CFileItem(details));
       return true;
     }

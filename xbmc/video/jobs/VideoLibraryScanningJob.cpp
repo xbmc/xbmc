@@ -55,7 +55,7 @@ bool CVideoLibraryScanningJob::operator==(const CJob* job) const
          m_scanAll == scanningJob->m_scanAll;
 }
 
-bool CVideoLibraryScanningJob::Work(CVideoDatabase &db)
+bool CVideoLibraryScanningJob::Work()
 {
   m_scanner.ShowDialog(m_showProgress);
   m_scanner.Start(m_directory, m_scanAll);

@@ -20,6 +20,7 @@
 
 #include "GUIDialogAudioSubtitleSettings.h"
 #include "Application.h"
+#include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "URL.h"
@@ -239,12 +240,8 @@ void CGUIDialogAudioSubtitleSettings::Save()
     return;
 
   // reset the settings
-  CVideoDatabase db;
-  if (!db.Open())
-    return;
-
-  db.EraseVideoSettings();
-  db.Close();
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  database->EraseVideoSettings();
 
   CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
   CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleStream = -1;

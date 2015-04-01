@@ -20,6 +20,7 @@
 
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoNav.h"
+#include "DatabaseManager.h"
 #include "music/windows/GUIWindowMusicNav.h"
 #include "utils/FileUtils.h"
 #include "Util.h"
@@ -372,9 +373,10 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         CLog::Log(LOGDEBUG, "WindowVideoNav::GetDirectory");
         // grab the show thumb
         CVideoInfoTag details;
-        m_database.GetTvShowInfo("", details, params.GetTvShowId());
+        CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+        database->GetTvShowInfo("", details, params.GetTvShowId());
         map<string, string> art;
-        if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art))
+        if (database->GetArtForItem(details.m_iDbId, details.m_type, art))
         {
           items.AppendArt(art, details.m_type);
           items.SetArtFallback("fanart", "tvshow.fanart");
@@ -407,13 +409,15 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           if (seasonParam == -2 && iFlatten == 2)
             seasonParam = -1;
 
+          CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+
           if (seasonParam >= -1)
-            seasonID = m_database.GetSeasonId(details.m_iDbId, seasonParam);
+            seasonID = database->GetSeasonId(details.m_iDbId, seasonParam);
           else
             seasonID = items[firstIndex]->GetVideoInfoTag()->m_iIdSeason;
 
           CGUIListItem::ArtMap seasonArt;
-          if (seasonID > -1 && m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt))
+          if (seasonID > -1 && database->GetArtForItem(seasonID, MediaTypeSeason, seasonArt))
           {
             items.AppendArt(seasonArt, MediaTypeSeason);
             // set an art fallback for "thumb"
@@ -483,23 +487,20 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
   return bResult;
 }
 
-void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
-{
-  LoadVideoInfo(items, m_database);
-}
-
-void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &database, bool allowReplaceLabels)
+void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, bool allowReplaceLabels /* = true */)
 {
   // TODO: this could possibly be threaded as per the music info loading,
   //       we could also cache the info
   if (!items.GetContent().empty() && !items.IsPlugin())
     return; // don't load for listings that have content set and weren't created from plugins
 
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+
   std::string content = items.GetContent();
   // determine content only if it isn't set
   if (content.empty())
   {
-    content = database.GetContentForPath(items.GetPath());
+    content = database->GetContentForPath(items.GetPath());
     items.SetContent(content.empty() ? "files" : content);
   }
 
@@ -523,7 +524,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
   bool fetchedPlayCounts = false;
   if (!content.empty())
   {
-    database.GetItemsForPath(content, items.GetPath(), dbItems);
+    database->GetItemsForPath(content, items.GetPath(), dbItems);
     dbItems.SetFastLookup(true);
   }
 
@@ -564,7 +565,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
                 This code can be removed once the content tables are always filled */
       if (!pItem->m_bIsFolder && !fetchedPlayCounts)
       {
-        database.GetPlayCounts(items.GetPath(), items);
+        database->GetPlayCounts(items.GetPath(), items);
         fetchedPlayCounts = true;
       }
       
@@ -658,57 +659,59 @@ void CGUIWindowVideoNav::DoSearch(const std::string& strSearch, CFileItemList& i
   std::string strActor = g_localizeStrings.Get(20337); // Actor
   std::string strDirector = g_localizeStrings.Get(20339); // Director
 
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+
   //get matching names
-  m_database.GetMoviesByName(strSearch, tempItems);
+  database->GetMoviesByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + g_localizeStrings.Get(20338) + "] ", items);
 
-  m_database.GetEpisodesByName(strSearch, tempItems);
+  database->GetEpisodesByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + g_localizeStrings.Get(20359) + "] ", items);
 
-  m_database.GetTvShowsByName(strSearch, tempItems);
+  database->GetTvShowsByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + g_localizeStrings.Get(20364) + "] ", items);
 
-  m_database.GetMusicVideosByName(strSearch, tempItems);
+  database->GetMusicVideosByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + g_localizeStrings.Get(20391) + "] ", items);
 
-  m_database.GetMusicVideosByAlbum(strSearch, tempItems);
+  database->GetMusicVideosByAlbum(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + g_localizeStrings.Get(558) + "] ", items);
   
   // get matching genres
-  m_database.GetMovieGenresByName(strSearch, tempItems);
+  database->GetMovieGenresByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strGenre + " - " + g_localizeStrings.Get(20342) + "] ", items);
 
-  m_database.GetTvShowGenresByName(strSearch, tempItems);
+  database->GetTvShowGenresByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strGenre + " - " + g_localizeStrings.Get(20343) + "] ", items);
 
-  m_database.GetMusicVideoGenresByName(strSearch, tempItems);
+  database->GetMusicVideoGenresByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strGenre + " - " + g_localizeStrings.Get(20389) + "] ", items);
 
   //get actors/artists
-  m_database.GetMovieActorsByName(strSearch, tempItems);
+  database->GetMovieActorsByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strActor + " - " + g_localizeStrings.Get(20342) + "] ", items);
 
-  m_database.GetTvShowsActorsByName(strSearch, tempItems);
+  database->GetTvShowsActorsByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strActor + " - " + g_localizeStrings.Get(20343) + "] ", items);
 
-  m_database.GetMusicVideoArtistsByName(strSearch, tempItems);
+  database->GetMusicVideoArtistsByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strActor + " - " + g_localizeStrings.Get(20389) + "] ", items);
 
   //directors
-  m_database.GetMovieDirectorsByName(strSearch, tempItems);
+  database->GetMovieDirectorsByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strDirector + " - " + g_localizeStrings.Get(20342) + "] ", items);
 
-  m_database.GetTvShowsDirectorsByName(strSearch, tempItems);
+  database->GetTvShowsDirectorsByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strDirector + " - " + g_localizeStrings.Get(20343) + "] ", items);
 
-  m_database.GetMusicVideoDirectorsByName(strSearch, tempItems);
+  database->GetMusicVideoDirectorsByName(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + strDirector + " - " + g_localizeStrings.Get(20389) + "] ", items);
 
   //plot
-  m_database.GetEpisodesByPlot(strSearch, tempItems);
+  database->GetEpisodesByPlot(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + g_localizeStrings.Get(20365) + "] ", items);
 
-  m_database.GetMoviesByPlot(strSearch, tempItems);
+  database->GetMoviesByPlot(strSearch, tempItems);
   AppendAndClearSearchItems(tempItems, "[" + g_localizeStrings.Get(20323) + "] ", items);
 }
 
@@ -729,16 +732,15 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 {
   if (!scraper || scraper->Content() == CONTENT_NONE)
   {
-    m_database.Open(); // since we can be called from the music library without being inited
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
     if (pItem->IsVideoDb())
-      scraper = m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath);
+      scraper = database->GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath);
     else
     {
       std::string strPath,strFile;
       URIUtils::Split(pItem->GetPath(),strPath,strFile);
-      scraper = m_database.GetScraperForPath(strPath);
+      scraper = database->GetScraperForPath(strPath);
     }
-    m_database.Close();
   }
   CGUIWindowVideoBase::OnInfo(pItem,scraper);
 }
@@ -775,7 +777,8 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
       CVideoDatabaseDirectory dir;
       CQueryParams params;
       dir.GetQueryParams(pItem->GetPath(),params);
-      m_database.DeleteSet(params.GetSetId());
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      database->DeleteSet(params.GetSetId());
     }
   }
   else if (m_vecItems->GetContent() == "tags" && pItem->m_bIsFolder)
@@ -791,7 +794,8 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
       CVideoDatabaseDirectory dir;
       CQueryParams params;
       dir.GetQueryParams(pItem->GetPath(), params);
-      m_database.DeleteTag(params.GetTagId(), (VIDEODB_CONTENT_TYPE)params.GetContentType());
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      database->DeleteTag(params.GetTagId(), (VIDEODB_CONTENT_TYPE)params.GetContentType());
     }
   }
   else if (m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
@@ -840,9 +844,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (!item->IsDVD() && item->GetPath() != "add" && !item->IsParentFolder() &&
         (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
-      CVideoDatabase database;
-      database.Open();
-      ADDON::ScraperPtr info = database.GetScraperForPath(item->GetPath());
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      ADDON::ScraperPtr info = database->GetScraperForPath(item->GetPath());
 
       if (!g_application.IsVideoScanning())
       {
@@ -1119,10 +1122,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     if (!CGUIKeyboardFactory::ShowAndGetInput(strTag, g_localizeStrings.Get(20462), false))
       return true;
 
-    CVideoDatabase videodb;
-    if (!videodb.Open())
-      return true;
-
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
     // get the media type and convert from plural to singular (by removing the trailing "s")
     std::string mediaType = item->GetPath().substr(9);
     mediaType = mediaType.substr(0, mediaType.size() - 1);
@@ -1130,14 +1130,14 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     if (localizedType.empty())
       return true;
 
-    if (!videodb.GetSingleValue("tag", "tag.tag_id", videodb.PrepareSQL("tag.name = '%s' AND tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
+    if (!database->GetSingleValue("tag", "tag.tag_id", database->PrepareSQL("tag.name = '%s' AND tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
     {
       std::string strError = StringUtils::Format(g_localizeStrings.Get(20463).c_str(), strTag.c_str());
       CGUIDialogOK::ShowAndGetInput(20462, "", strError, "");
       return true;
     }
 
-    int idTag = videodb.AddTag(strTag);
+    int idTag = database->AddTag(strTag);
     CFileItemList items;
     std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20464).c_str(), localizedType.c_str());
     if (CGUIDialogVideoInfo::GetItemsForTag(strLabel, mediaType, items, idTag))
@@ -1147,7 +1147,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
         if (!items[index]->HasVideoInfoTag() || items[index]->GetVideoInfoTag()->m_iDbId <= 0)
           continue;
 
-        videodb.AddTagToItem(items[index]->GetVideoInfoTag()->m_iDbId, idTag, mediaType);
+        database->AddTagToItem(items[index]->GetVideoInfoTag()->m_iDbId, idTag, mediaType);
       }
     }
 

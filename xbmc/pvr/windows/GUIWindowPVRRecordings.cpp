@@ -20,6 +20,7 @@
 
 #include "GUIWindowPVRRecordings.h"
 
+#include "DatabaseManager.h"
 #include "ContextMenuManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -90,15 +91,11 @@ std::string CGUIWindowPVRRecordings::GetResumeString(const CFileItem& item)
     // If the back-end does report a saved position it will be picked up by FileItem
     if (positionInSeconds < 0)
     {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        CBookmark bookmark;
-        std::string itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
-        if (db.GetResumeBookMark(itemPath, bookmark) )
-          positionInSeconds = lrint(bookmark.timeInSeconds);
-        db.Close();
-      }
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      CBookmark bookmark;
+      std::string itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
+      if (database->GetResumeBookMark(itemPath, bookmark) )
+        positionInSeconds = lrint(bookmark.timeInSeconds);
     }
 
     // Suppress resume from 0
@@ -514,11 +511,7 @@ void CGUIWindowPVRRecordings::OnPrepareFileItems(CFileItemList& items)
 
   if (!files.IsEmpty())
   {
-    if (m_database.Open())
-    {
-      CGUIWindowVideoNav::LoadVideoInfo(files, m_database, false);
-      m_database.Close();
-    }
+    CGUIWindowVideoNav::LoadVideoInfo(files, false);
     m_thumbLoader.Load(files);
   }
 

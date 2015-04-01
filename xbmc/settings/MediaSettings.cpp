@@ -22,6 +22,7 @@
 
 #include "MediaSettings.h"
 #include "Application.h"
+#include "DatabaseManager.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -345,10 +346,8 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651) , path))
     {
-      CVideoDatabase videodatabase;
-      videodatabase.Open();
-      videodatabase.ImportFromXML(path);
-      videodatabase.Close();
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      database->ImportFromXML(path);
     }
   }
 }
