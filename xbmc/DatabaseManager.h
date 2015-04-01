@@ -26,6 +26,7 @@
 #include "threads/Event.h"
 
 class CDatabase;
+class CVideoDatabase;
 class DatabaseSettings;
 
 /*!
@@ -64,6 +65,9 @@ public:
    \return true if the database can be opened, false otherwise.
    */ 
   bool CanOpen(const std::string &name);
+  void CloseDatabases();
+
+  CVideoDatabase* GetVideoDatabase();
 
 private:
   // private construction, and no assignements; use the provided singleton methods
@@ -75,6 +79,7 @@ private:
   enum DB_STATUS { DB_CLOSED, DB_UPDATING, DB_READY, DB_FAILED };
   void UpdateStatus(const std::string &name, DB_STATUS status);
   void UpdateDatabase(CDatabase &db, DatabaseSettings *settings = NULL);
+  void OpenDatabase(CDatabase &database) const;
 
   CCriticalSection            m_section;     ///< Critical section protecting m_dbStatus.
   std::map<std::string, DB_STATUS> m_dbStatus;    ///< Our database status map.

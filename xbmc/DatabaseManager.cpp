@@ -19,7 +19,9 @@
  */
 
 #include "DatabaseManager.h"
+#include <stdexcept>
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "addons/AddonDatabase.h"
 #include "view/ViewDatabase.h"
 #include "TextureDatabase.h"
@@ -28,10 +30,13 @@
 #include "pvr/PVRDatabase.h"
 #include "epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
+#include "threads/ThreadLocal.h"
 
 using namespace std;
 using namespace EPG;
 using namespace PVR;
+
+static XbmcThreads::ThreadLocal<CVideoDatabase> videoDatabase;
 
 CDatabaseManager &CDatabaseManager::Get()
 {
@@ -95,4 +100,34 @@ void CDatabaseManager::UpdateStatus(const std::string &name, DB_STATUS status)
 {
   CSingleLock lock(m_section);
   m_dbStatus[name] = status;
+}
+
+void CDatabaseManager::OpenDatabase(CDatabase &database) const
+{
+  if (!database.Open())
+    throw std::runtime_error(StringUtils::Format("Can't connect to database '%s'", database.GetBaseDBName()));
+}
+
+CVideoDatabase* CDatabaseManager::GetVideoDatabase()
+{
+  CSingleLock lock(m_section);
+  CVideoDatabase *database = videoDatabase.get();
+  if (database == NULL)
+  {
+    database = new CVideoDatabase();
+    OpenDatabase(*database);
+    videoDatabase.set(database);
+  }
+  return database;
+}
+
+void CDatabaseManager::CloseDatabases()
+{
+  CSingleLock lock(m_section);
+  
+  if(videoDatabase.get() != NULL)
+  {
+    delete videoDatabase.get();
+    videoDatabase.set(NULL);
+  }
 }
