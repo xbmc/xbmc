@@ -32,6 +32,11 @@ class CViewDatabase;
 class CVideoDatabase;
 class DatabaseSettings;
 
+namespace EPG
+{
+  class CEpgDatabase;
+}
+
 /*!
  \ingroup database
  \brief Database manager class for handling database updating
@@ -71,6 +76,7 @@ public:
   void CloseDatabases();
 
   CAddonDatabase* GetAddonDatabase();
+  EPG::CEpgDatabase* GetEpgDatabase();
   CTextureDatabase* GetTextureDatabase();
   CViewDatabase* GetViewDatabase();
   CVideoDatabase* GetVideoDatabase();

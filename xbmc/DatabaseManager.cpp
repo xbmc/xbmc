@@ -40,6 +40,7 @@ static XbmcThreads::ThreadLocal<CVideoDatabase> videoDatabase;
 static XbmcThreads::ThreadLocal<CViewDatabase> viewDatabase;
 static XbmcThreads::ThreadLocal<CAddonDatabase> addonDatabase;
 static XbmcThreads::ThreadLocal<CTextureDatabase> textureDatabase;
+static XbmcThreads::ThreadLocal<CEpgDatabase> epgDatabase;
 
 CDatabaseManager &CDatabaseManager::Get()
 {
@@ -163,6 +164,19 @@ CTextureDatabase* CDatabaseManager::GetTextureDatabase()
   return database;
 }
 
+EPG::CEpgDatabase* CDatabaseManager::GetEpgDatabase()
+{
+  CSingleLock lock(m_section);
+  CEpgDatabase *database = epgDatabase.get();
+  if (database == NULL)
+  {
+    database = new CEpgDatabase();
+    OpenDatabase(*database);
+    epgDatabase.set(database);
+  }
+  return database;
+}
+
 void CDatabaseManager::CloseDatabases()
 {
   CSingleLock lock(m_section);
@@ -186,5 +200,10 @@ void CDatabaseManager::CloseDatabases()
   {
     delete textureDatabase.get();
     textureDatabase.set(NULL);
+  }
+  if(epgDatabase.get() != NULL)
+  {
+    delete epgDatabase.get();
+    epgDatabase.set(NULL);
   }
 }
