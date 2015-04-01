@@ -201,7 +201,6 @@ public:
   bool IsRemote() const;
   bool IsSmb() const;
   bool IsURL() const;
-  bool IsDAAP() const;
   bool IsStack() const;
   bool IsMultiPath() const;
   bool IsMusicDb() const;

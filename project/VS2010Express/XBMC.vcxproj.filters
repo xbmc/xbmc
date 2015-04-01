@@ -1927,12 +1927,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\CurlFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\DAAPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\DAAPFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\DAVDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -4837,12 +4831,6 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\CurlFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\DAAPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\DAAPFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\DAVDirectory.h">

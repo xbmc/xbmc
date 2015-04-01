@@ -1,9 +1,0 @@
-ifeq ($(findstring arm,@ARCH@), arm)
-CFLAGS+=-DHAVE___ALIGNOF__
-endif
-SRCS= daap.c debug.c dmap_generics.c global.c httpClient.c ioloop.c libXDAAP.c threadpool.c Authentication/hasher.c Authentication/md5.c
-
-LIB=libxdaap.a
-
-include ../../Makefile.include
-

@@ -918,11 +918,6 @@ lib/cpluff/stamp-h1
 
 /lib/libUPnP/Makefile
 
-# /lib/libXDAAP
-/lib/libXDAAP/Makefile
-/lib/libXDAAP/libXDAAP_win32/Debug
-/lib/libXDAAP/libXDAAP_win32/Release
-
 # /portable_data
 /portable_data
 
