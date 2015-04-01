@@ -18,6 +18,7 @@
  *
  */
 
+#include "DatabaseManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -353,7 +354,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
 bool CEpg::Load(void)
 {
   bool bReturn(false);
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+  CEpgDatabase *database = CDatabaseManager::Get().GetEpgDatabase();
 
   if (!database || !database->IsOpen())
   {
@@ -418,7 +419,7 @@ CDateTime CEpg::GetLastScanTime(void)
     {
       if (!CSettings::Get().GetBool("epg.ignoredbforclient"))
       {
-        CEpgDatabase *database = g_EpgContainer.GetDatabase();
+        CEpgDatabase *database = CDatabaseManager::Get().GetEpgDatabase();
         CDateTime dtReturn; dtReturn.SetValid(false);
 
         if (database && database->IsOpen())
@@ -528,7 +529,7 @@ bool CEpg::Persist(void)
   CLog::Log(LOGDEBUG, "persist table '%s' (#%d) changed=%d deleted=%d", Name().c_str(), m_iEpgID, m_changedTags.size(), m_deletedTags.size());
 #endif
 
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+  CEpgDatabase *database = CDatabaseManager::Get().GetEpgDatabase();
   if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
