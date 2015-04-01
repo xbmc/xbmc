@@ -348,6 +348,7 @@ STDMETHODIMP_(bool) CmadVRAllocatorPresenter::Paint(bool fAll)
 
 void CmadVRAllocatorPresenter::SetPS()
 {
+  g_dsSettings.pixelShaderList->UpdateActivatedList();
   PixelShaderVector& psVec = g_dsSettings.pixelShaderList->GetActivatedPixelShaders();
 
   for (PixelShaderVector::iterator it = psVec.begin();
