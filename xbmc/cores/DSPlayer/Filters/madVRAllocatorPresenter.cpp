@@ -31,6 +31,7 @@
 #include "cores/DSPlayer/Filters/MadvrSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/DisplaySettings.h"
+#include "PixelShaderList.h"
 
 #define ShaderStage_PreScale 0
 #define ShaderStage_PostScale 1
@@ -182,6 +183,8 @@ STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME fra
   m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
   m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 
+  // set false for pixelshader
+  m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
   return S_OK;
 }
 
@@ -343,9 +346,32 @@ STDMETHODIMP_(bool) CmadVRAllocatorPresenter::Paint(bool fAll)
   return false;
 }
 
+void CmadVRAllocatorPresenter::SetPS()
+{
+  PixelShaderVector& psVec = g_dsSettings.pixelShaderList->GetActivatedPixelShaders();
+
+  for (PixelShaderVector::iterator it = psVec.begin();
+    it != psVec.end(); it++)
+  {
+    CExternalPixelShader *Shader = *it;
+    Shader->Load();
+    SetPixelShader(Shader->GetSourceData(), nullptr);
+    Shader->DeleteSourceData();
+  }
+};
+
 STDMETHODIMP CmadVRAllocatorPresenter::SetPixelShader(LPCSTR pSrcData, LPCSTR pTarget)
 {
-  return E_NOTIMPL;
+  HRESULT hr = E_NOTIMPL;
+  if (Com::SmartQIPtr<IMadVRExternalPixelShaders> pEPS = m_pDXR) {
+    if (!pSrcData && !pTarget) {
+      hr = pEPS->ClearPixelShaders(false);
+    }
+    else {
+      hr = pEPS->AddPixelShader(pSrcData, pTarget, ShaderStage_PostScale, nullptr);
+    }
+  }
+  return hr;
 }
 
 //IPaintCallbackMadvr

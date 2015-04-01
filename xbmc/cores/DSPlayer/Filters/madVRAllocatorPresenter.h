@@ -149,6 +149,7 @@ public:
   LPDIRECT3DDEVICE9 GetDevice();
   virtual bool IsDeviceSet(){ return m_isDeviceSet; }
   virtual void OsdRedrawFrame();
+  virtual void SetPS();
   virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect);
   virtual void CloseMadvr();
   virtual void SettingSetScaling(CStdStringW path, int scaling);

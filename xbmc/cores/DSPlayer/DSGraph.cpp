@@ -126,6 +126,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     m_pVideoWindow->put_WindowStyle(WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
     m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
     m_pVideoWindow->SetWindowPosition(0, 0, 1, 1);
+
+    // set pixelshader for madVR
+    if (CGraphFilters::Get()->UsingMadVr())
+      CGraphFilters::Get()->GetMadvrCallback()->SetPS();
   }
 
   //TODO Ti-Ben

@@ -38,6 +38,8 @@ public:
   CExternalPixelShader(CStdString strFile, CStdString strProfile);
   bool IsValid() const { return m_valid; }
   int GetId() const { return m_id; }
+  CStdString GetSourceData() const { return m_SourceData; }
+  void DeleteSourceData() { m_SourceData.SetBuf(0); }
 
   bool IsEnabled() const { return m_enabled; }
   void SetEnabled(const bool enabled) { m_enabled = enabled; }
