@@ -37,6 +37,11 @@ namespace EPG
   class CEpgDatabase;
 }
 
+namespace PVR
+{
+  class CPVRDatabase;
+}
+
 /*!
  \ingroup database
  \brief Database manager class for handling database updating
@@ -77,6 +82,7 @@ public:
 
   CAddonDatabase* GetAddonDatabase();
   EPG::CEpgDatabase* GetEpgDatabase();
+  PVR::CPVRDatabase* GetPVRDatabase();
   CTextureDatabase* GetTextureDatabase();
   CViewDatabase* GetViewDatabase();
   CVideoDatabase* GetVideoDatabase();

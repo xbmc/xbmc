@@ -41,6 +41,7 @@ static XbmcThreads::ThreadLocal<CViewDatabase> viewDatabase;
 static XbmcThreads::ThreadLocal<CAddonDatabase> addonDatabase;
 static XbmcThreads::ThreadLocal<CTextureDatabase> textureDatabase;
 static XbmcThreads::ThreadLocal<CEpgDatabase> epgDatabase;
+static XbmcThreads::ThreadLocal<CPVRDatabase> pvrDatabase;
 
 CDatabaseManager &CDatabaseManager::Get()
 {
@@ -177,6 +178,19 @@ EPG::CEpgDatabase* CDatabaseManager::GetEpgDatabase()
   return database;
 }
 
+PVR::CPVRDatabase* CDatabaseManager::GetPVRDatabase()
+{
+  CSingleLock lock(m_section);
+  CPVRDatabase *database = pvrDatabase.get();
+  if (database == NULL)
+  {
+    database = new CPVRDatabase();
+    OpenDatabase(*database);
+    pvrDatabase.set(database);
+  }
+  return database;
+}
+
 void CDatabaseManager::CloseDatabases()
 {
   CSingleLock lock(m_section);
@@ -205,5 +219,10 @@ void CDatabaseManager::CloseDatabases()
   {
     delete epgDatabase.get();
     epgDatabase.set(NULL);
+  }
+  if(pvrDatabase.get() != NULL)
+  {
+    delete pvrDatabase.get();
+    pvrDatabase.set(NULL);
   }
 }
