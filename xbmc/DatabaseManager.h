@@ -27,6 +27,7 @@
 
 class CDatabase;
 class CAddonDatabase;
+class CTextureDatabase;
 class CViewDatabase;
 class CVideoDatabase;
 class DatabaseSettings;
@@ -70,6 +71,7 @@ public:
   void CloseDatabases();
 
   CAddonDatabase* GetAddonDatabase();
+  CTextureDatabase* GetTextureDatabase();
   CViewDatabase* GetViewDatabase();
   CVideoDatabase* GetVideoDatabase();
 

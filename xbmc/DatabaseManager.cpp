@@ -39,6 +39,7 @@ using namespace PVR;
 static XbmcThreads::ThreadLocal<CVideoDatabase> videoDatabase;
 static XbmcThreads::ThreadLocal<CViewDatabase> viewDatabase;
 static XbmcThreads::ThreadLocal<CAddonDatabase> addonDatabase;
+static XbmcThreads::ThreadLocal<CTextureDatabase> textureDatabase;
 
 CDatabaseManager &CDatabaseManager::Get()
 {
@@ -149,6 +150,19 @@ CAddonDatabase* CDatabaseManager::GetAddonDatabase()
   return database;
 }
 
+CTextureDatabase* CDatabaseManager::GetTextureDatabase()
+{
+  CSingleLock lock(m_section);
+  CTextureDatabase *database = textureDatabase.get();
+  if (database == NULL)
+  {
+    database = new CTextureDatabase();
+    OpenDatabase(*database);
+    textureDatabase.set(database);
+  }
+  return database;
+}
+
 void CDatabaseManager::CloseDatabases()
 {
   CSingleLock lock(m_section);
@@ -167,5 +181,10 @@ void CDatabaseManager::CloseDatabases()
   {
     delete addonDatabase.get();
     addonDatabase.set(NULL);
+  }
+  if(textureDatabase.get() != NULL)
+  {
+    delete textureDatabase.get();
+    textureDatabase.set(NULL);
   }
 }
