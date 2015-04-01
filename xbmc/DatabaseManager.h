@@ -26,6 +26,7 @@
 #include "threads/Event.h"
 
 class CDatabase;
+class CViewDatabase;
 class CVideoDatabase;
 class DatabaseSettings;
 
@@ -67,6 +68,7 @@ public:
   bool CanOpen(const std::string &name);
   void CloseDatabases();
 
+  CViewDatabase* GetViewDatabase();
   CVideoDatabase* GetVideoDatabase();
 
 private:

@@ -37,6 +37,7 @@ using namespace EPG;
 using namespace PVR;
 
 static XbmcThreads::ThreadLocal<CVideoDatabase> videoDatabase;
+static XbmcThreads::ThreadLocal<CViewDatabase> viewDatabase;
 
 CDatabaseManager &CDatabaseManager::Get()
 {
@@ -121,6 +122,19 @@ CVideoDatabase* CDatabaseManager::GetVideoDatabase()
   return database;
 }
 
+CViewDatabase* CDatabaseManager::GetViewDatabase()
+{
+  CSingleLock lock(m_section);
+  CViewDatabase *database = viewDatabase.get();
+  if (database == NULL)
+  {
+    database = new CViewDatabase();
+    OpenDatabase(*database);
+    viewDatabase.set(database);
+  }
+  return database;
+}
+
 void CDatabaseManager::CloseDatabases()
 {
   CSingleLock lock(m_section);
@@ -129,5 +143,10 @@ void CDatabaseManager::CloseDatabases()
   {
     delete videoDatabase.get();
     videoDatabase.set(NULL);
+  }
+  if(viewDatabase.get() != NULL)
+  {
+    delete viewDatabase.get();
+    viewDatabase.set(NULL);
   }
 }
