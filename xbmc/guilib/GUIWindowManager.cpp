@@ -812,12 +812,12 @@ void CGUIWindowManager::CloseDialogs(bool forceClose) const
   }
 }
 
-void CGUIWindowManager::CloseModalDialogs(bool forceClose) const
+void CGUIWindowManager::CloseInternalModalDialogs(bool forceClose) const
 {
   CSingleLock lock(g_graphicsContext);
   for (const auto& dialog : m_activeDialogs)
   {
-    if (dialog->IsModalDialog())
+    if (dialog->IsModalDialog() && !IsAddonWindow(dialog->GetID()) && !IsPythonWindow(dialog->GetID()))
       dialog->Close(forceClose);
   }
 }

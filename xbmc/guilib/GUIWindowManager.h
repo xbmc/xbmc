@@ -64,7 +64,7 @@ public:
   void PreviousWindow();
 
   void CloseDialogs(bool forceClose = false) const;
-  void CloseModalDialogs(bool forceClose = false) const;
+  void CloseInternalModalDialogs(bool forceClose = false) const;
 
   // OnAction() runs through our active dialogs and windows and sends the message
   // off to the callbacks (application, python, playlist player) and to the
@@ -152,6 +152,16 @@ public:
   bool IsWindowVisible(const std::string &xmlFile) const;
   bool IsWindowTopMost(const std::string &xmlFile) const;
   bool IsOverlayAllowed() const;
+  /*! \brief Checks if the given window is an addon window.
+   *
+   * \return true if the given window is an addon window, otherwise false.
+   */
+  bool IsAddonWindow(int id) const { return (id >= WINDOW_ADDON_START && id <= WINDOW_ADDON_END); };
+  /*! \brief Checks if the given window is a python window.
+   *
+   * \return true if the given window is a python window, otherwise false.
+   */
+  bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
   void ShowOverlay(CGUIWindow::OVERLAY_STATE state);
   void GetActiveModelessWindows(std::vector<int> &ids);
 #ifdef _DEBUG
