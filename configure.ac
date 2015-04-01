@@ -502,6 +502,12 @@ AC_ARG_ENABLE([texturepacker],
   [use_texturepacker=$enableval],
   [use_texturepacker=auto])
 
+AC_ARG_ENABLE([lirc],
+  [AS_HELP_STRING([--disable-lirc],
+  [disable lirc support (default is enabled)])],
+  [AC_MSG_RESULT("Lirc disabled")],
+  [AC_DEFINE([HAVE_LIRC], [1], ["Lirc enabled"])])
+
 AC_ARG_WITH([lirc-device],
   [AS_HELP_STRING([--with-lirc-device=file],
   [specify the default LIRC device (default is /dev/lircd)])],
