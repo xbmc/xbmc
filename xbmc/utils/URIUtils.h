@@ -121,6 +121,7 @@ public:
   static bool IsDOSPath(const std::string &path);
   static bool IsDVD(const std::string& strFile);
   static bool IsFTP(const std::string& strFile);
+  static bool IsHTTP(const std::string& strFile);
   static bool IsUDP(const std::string& strFile);
   static bool IsTCP(const std::string& strFile);
   static bool IsHD(const std::string& strFileName);
