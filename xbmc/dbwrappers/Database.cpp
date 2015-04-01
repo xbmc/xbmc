@@ -321,7 +321,13 @@ bool CDatabase::Open(const DatabaseSettings &settings)
 
   std::string dbName = dbSettings.name;
   dbName += StringUtils::Format("%d", GetSchemaVersion());
-  return Connect(dbName, dbSettings, false);
+  bool retValue = Connect(dbName, dbSettings, false);
+
+#if (defined TARGET_POSIX)
+  CLog::Log(LOG_LEVEL_DEBUG, "Open database '%s' (address: %p, thread: %lu, connections: %i)", dbName.c_str(), this, (unsigned long)pthread_self(), m_openCount);
+#endif
+  
+  return retValue;
 }
 
 void CDatabase::InitSettings(DatabaseSettings &dbSettings)
@@ -581,6 +587,10 @@ void CDatabase::Close()
 
   m_openCount = 0;
   m_multipleExecute = false;
+
+#if (defined TARGET_POSIX)
+  CLog::Log(LOG_LEVEL_DEBUG, "Close database '%s' (address: %p, thread: %lu, connections: %i)", m_pDB->getDatabase(), this, (unsigned long)pthread_self(), m_openCount);
+#endif
 
   if (NULL == m_pDB.get() ) return ;
   if (NULL != m_pDS.get()) m_pDS->close();
