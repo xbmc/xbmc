@@ -118,7 +118,7 @@ void CGUIDialogDSRules::SetVisible(CStdString id, bool visible, bool isChild /* 
   if (setting->IsVisible() && visible)
     return;
   setting->SetVisible(visible);
-  m_settingsManager->SetString(id, "aaa");
+  setting->SetEnabled(visible);
   if (!isChild)
     m_settingsManager->SetString(id, "[null]");
   else

@@ -256,6 +256,9 @@ void CGUIDialogDSPlayercoreFactory::OnSettingAction(const CSetting *setting)
     pRules->RemoveChild(oldRule);
 
     m_dsmanager->SaveDsXML(PLAYERCOREFACTORY);
+
+    CPlayerCoreFactory::Get().OnSettingsLoaded();
+
     CGUIDialogDSPlayercoreFactory::Close();
   }
 
