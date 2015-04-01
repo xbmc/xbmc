@@ -124,6 +124,7 @@ private:
   double        m_last_pts;
   bool          m_submitted_eos;
   bool          m_failed_eos;
+  enum { AESINKPI_UNKNOWN, AESINKPI_HDMI, AESINKPI_ANALOGUE, AESINKPI_BOTH } m_output;
 
   typedef struct {
     double pts;
