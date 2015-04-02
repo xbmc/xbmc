@@ -22,6 +22,7 @@
 #include "UPnPServer.h"
 #include "UPnPInternal.h"
 #include "Application.h"
+#include "DatabaseManager.h"
 #include "view/GUIViewState.h"
 #include "video/VideoThumbLoader.h"
 #include "music/Artist.h"
@@ -302,22 +303,21 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     MUSICDATABASEDIRECTORY::CQueryParams params;
                     MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
 
-                    CMusicDatabase db;
-                    if (!db.Open() ) return NULL;
+                   CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
                     if (params.GetSongId() >= 0 ) {
                         CSong song;
-                        if (db.GetSong(params.GetSongId(), song))
+                        if (database->GetSong(params.GetSongId(), song))
                             item->GetMusicInfoTag()->SetSong(song);
                     }
                     else if (params.GetAlbumId() >= 0 ) {
                         CAlbum album;
-                        if (db.GetAlbum(params.GetAlbumId(), album, false))
+                        if (database->GetAlbum(params.GetAlbumId(), album, false))
                             item->GetMusicInfoTag()->SetAlbum(album);
                     }
                     else if (params.GetArtistId() >= 0 ) {
                         CArtist artist;
-                        if (db.GetArtist(params.GetArtistId(), artist, false))
+                        if (database->GetArtist(params.GetArtistId(), artist, false))
                             item->GetMusicInfoTag()->SetArtist(artist);
                     }
                 }
@@ -341,17 +341,16 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     VIDEODATABASEDIRECTORY::CQueryParams params;
                     VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
 
-                    CVideoDatabase db;
-                    if (!db.Open() ) return NULL;
+                    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
 
                     if (params.GetMovieId() >= 0 )
-                        db.GetMovieInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMovieId());
+                        database->GetMovieInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMovieId());
                     else if (params.GetMVideoId() >= 0 )
-                        db.GetMusicVideoInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMVideoId());
+                        database->GetMusicVideoInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMVideoId());
                     else if (params.GetEpisodeId() >= 0 )
-                        db.GetEpisodeInfo((const char*)path, *item->GetVideoInfoTag(), params.GetEpisodeId());
+                        database->GetEpisodeInfo((const char*)path, *item->GetVideoInfoTag(), params.GetEpisodeId());
                     else if (params.GetTvShowId() >= 0 )
-                        db.GetTvShowInfo((const char*)path, *item->GetVideoInfoTag(), params.GetTvShowId());
+                        database->GetTvShowInfo((const char*)path, *item->GetVideoInfoTag(), params.GetTvShowId());
                 }
 
                 if (item->GetVideoInfoTag()->m_type == MediaTypeTvShow || item->GetVideoInfoTag()->m_type == MediaTypeSeason) {
@@ -444,10 +443,9 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
         // as we don't differentiate 'updates' from 'adds' in RPC interface
         if (flag == VideoLibrary) {
             if(item_type == MediaTypeEpisode) {
-                CVideoDatabase db;
-                if (!db.Open()) return;
-                int show_id = db.GetTvShowForEpisode(item_id);
-                int season_id = db.GetSeasonForEpisode(item_id);
+                CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+                int show_id = database->GetTvShowForEpisode(item_id);
+                int season_id = database->GetSeasonForEpisode(item_id);
                 UpdateContainer(StringUtils::Format("videodb://tvshows/titles/%d/", show_id));
                 UpdateContainer(StringUtils::Format("videodb://tvshows/titles/%d/%d/?tvshowid=%d", show_id, season_id, show_id));
                 UpdateContainer("videodb://recentlyaddedepisodes/");
@@ -468,10 +466,9 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
         else if (flag == AudioLibrary && item_type == MediaTypeSong) {
             // we also update the 'songs' container is maybe a performance drop too
             // high? would need to check if slow clients even cache at all anyway
-            CMusicDatabase db;
+            CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
             CAlbum album;
-            if (!db.Open()) return;
-            if (db.GetAlbumFromSong(item_id, album)) {
+            if (database->GetAlbumFromSong(item_id, album)) {
                 UpdateContainer(StringUtils::Format("musicdb://albums/%ld", album.idAlbum));
                 UpdateContainer("musicdb://songs/");
                 UpdateContainer("musicdb://recentlyaddedalbums/");
@@ -696,9 +693,8 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
       playlists->SetLabel(g_localizeStrings.Get(136));
       items.Add(playlists);
 
-      CVideoDatabase database;
-      database.Open();
-      if (database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS)) {
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      if (database->HasContent(VIDEODB_CONTENT_MUSICVIDEOS)) {
           CFileItemPtr mvideos(new CFileItem("library://video/musicvideos/", true));
           mvideos->SetLabel(g_localizeStrings.Get(20389));
           items.Add(mvideos);
@@ -891,28 +887,27 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         artist = artist.GetLength()?artist:FindSubCriteria(search_criteria, "microsoft:artistAlbumArtist");
         artist = artist.GetLength()?artist:FindSubCriteria(search_criteria, "microsoft:authorComposer");
 
-        CMusicDatabase database;
-        database.Open();
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
         if (genre.GetLength() > 0) {
             // all tracks by genre filtered by artist and/or album
             std::string strPath = StringUtils::Format("musicdb://genres/%i/%i/%i/",
-                                          database.GetGenreByName((const char*)genre),
-                                          database.GetArtistByName((const char*)artist), // will return -1 if no artist
-                                          database.GetAlbumByName((const char*)album));  // will return -1 if no album
+                                          database->GetGenreByName((const char*)genre),
+                                          database->GetArtistByName((const char*)artist), // will return -1 if no artist
+                                          database->GetAlbumByName((const char*)album));  // will return -1 if no album
 
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (artist.GetLength() > 0) {
             // all tracks by artist name filtered by album if passed
             std::string strPath = StringUtils::Format("musicdb://artists/%i/%i/",
-                                          database.GetArtistByName((const char*)artist),
-                                          database.GetAlbumByName((const char*)album)); // will return -1 if no album
+                                          database->GetArtistByName((const char*)artist),
+                                          database->GetAlbumByName((const char*)album)); // will return -1 if no album
 
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (album.GetLength() > 0) {
             // all tracks by album name
             std::string strPath = StringUtils::Format("musicdb://albums/%i/",
-                                                     database.GetAlbumByName((const char*)album));
+                                                     database->GetAlbumByName((const char*)album));
 
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
@@ -930,17 +925,16 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         artist = artist.GetLength()?artist:FindSubCriteria(search_criteria, "microsoft:artistAlbumArtist");
         artist = artist.GetLength()?artist:FindSubCriteria(search_criteria, "microsoft:authorComposer");
 
-        CMusicDatabase database;
-        database.Open();
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
         if (genre.GetLength() > 0) {
             std::string strPath = StringUtils::Format("musicdb://genres/%i/%i/",
-                                                     database.GetGenreByName((const char*)genre),
-                                                     database.GetArtistByName((const char*)artist)); // no artist should return -1
+                                                     database->GetGenreByName((const char*)genre),
+                                                     database->GetArtistByName((const char*)artist)); // no artist should return -1
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (artist.GetLength() > 0) {
             std::string strPath = StringUtils::Format("musicdb://artists/%i/",
-                                                     database.GetArtistByName((const char*)artist));
+                                                     database->GetArtistByName((const char*)artist));
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
 
@@ -950,10 +944,9 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         // Sonos filters by genre
         NPT_String genre = FindSubCriteria(search_criteria, "upnp:genre");
         if (genre.GetLength() > 0) {
-            CMusicDatabase database;
-            database.Open();
-            std::string strPath = StringUtils::Format("musicdb://genres/%i/", database.GetGenreByName((const char*)genre));
-            return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
+          CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+          std::string strPath = StringUtils::Format("musicdb://genres/%i/", database->GetGenreByName((const char*)genre));
+          return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
         return OnBrowseDirectChildren(action, "musicdb://artists/", filter, starting_index, requested_count, sort_criteria, context);
     }  else if (NPT_String(search_criteria).Find("object.container.genre.musicGenre") >= 0) {
@@ -963,27 +956,27 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
     } else if (NPT_String(search_criteria).Find("object.item.videoItem") >= 0) {
       CFileItemList items, itemsall;
 
-      CVideoDatabase database;
-      if (!database.Open()) {
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      if (!database->IsOpen()) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
 
-      if (!database.GetMoviesNav("videodb://movies/titles/", items)) {
-        action->SetError(800, "Internal Error");
-        return NPT_SUCCESS;
-      }
-      itemsall.Append(items);
-      items.Clear();
-
-      if (!database.GetEpisodesByWhere("videodb://tvshows/titles/", "", items)) {
+      if (!database->GetMoviesNav("videodb://movies/titles/", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
       itemsall.Append(items);
       items.Clear();
 
-      if (!database.GetMusicVideosByWhere("videodb://musicvideos/titles/", "", items)) {
+      if (!database->GetEpisodesByWhere("videodb://tvshows/titles/", "", items)) {
+        action->SetError(800, "Internal Error");
+        return NPT_SUCCESS;
+      }
+      itemsall.Append(items);
+      items.Clear();
+
+      if (!database->GetMusicVideosByWhere("videodb://musicvideos/titles/", "", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
@@ -1026,8 +1019,8 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
     NPT_CHECK_LABEL(service->PauseEventing(), error);
 
     if (updated.IsVideoDb()) {
-        CVideoDatabase db;
-        NPT_CHECK_LABEL(!db.Open(), error);
+        CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+        NPT_CHECK_LABEL(!database->IsOpen(), error);
 
         // must first determine type of file from object id
         VIDEODATABASEDIRECTORY::CQueryParams params;
@@ -1048,9 +1041,9 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
         }
 
         std::string file_path;
-        db.GetFilePathById(id, file_path, content_type);
+        database->GetFilePathById(id, file_path, content_type);
         CVideoInfoTag tag;
-        db.LoadVideoInfo(file_path, tag);
+        database->LoadVideoInfo(file_path, tag);
         updated.SetFromVideoInfoTag(tag);
         CLog::Log(LOGINFO, "UPNP: Translated to %s", file_path.c_str());
 
@@ -1063,13 +1056,13 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
             NPT_CHECK_LABEL(position.ToInteger32(resume), args);
 
             if (resume <= 0)
-                db.ClearBookMarksOfFile(file_path, CBookmark::RESUME);
+                database->ClearBookMarksOfFile(file_path, CBookmark::RESUME);
             else {
                 CBookmark bookmark;
                 bookmark.timeInSeconds = resume;
                 bookmark.totalTimeInSeconds = resume + 100; // not required to be correct
 
-                db.AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME);
+                database->AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME);
             }
             if (playCount.IsEmpty()) {
               CVariant data;
@@ -1085,13 +1078,13 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
 
             NPT_UInt32 count;
             NPT_CHECK_LABEL(playCount.ToInteger32(count), args);
-            db.SetPlayCount(updated, count);
+            database->SetPlayCount(updated, count);
             updatelisting = true;
         }
 
         // we must load the changed settings before propagating to local UI
         if (updatelisting) {
-            db.LoadVideoInfo(file_path, tag);
+            database->LoadVideoInfo(file_path, tag);
             updated.SetFromVideoInfoTag(tag);
         }
 

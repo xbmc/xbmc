@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeAlbumCompilationsSongs.h"
+#include "DatabaseManager.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
 
@@ -30,19 +31,10 @@ CDirectoryNodeAlbumCompilationsSongs::CDirectoryNodeAlbumCompilationsSongs(const
 
 }
 
-
 bool CDirectoryNodeAlbumCompilationsSongs::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
-
   CQueryParams params;
   CollectQueryParams(params);
-
-  bool bSuccess=musicdatabase.GetCompilationSongs(BuildPath(), items);
-
-  musicdatabase.Close();
-
-  return bSuccess;
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetCompilationSongs(BuildPath(), items);
 }

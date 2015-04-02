@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogAddonInfo.h"
+#include "DatabaseManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "addons/AddonManager.h"
@@ -310,8 +311,7 @@ void CGUIDialogAddonInfo::OnRollback()
     return;
 
   CGUIDialogContextMenu* dlg = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  CAddonDatabase database;
-  database.Open();
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
 
   CContextButtons buttons;
   for (unsigned int i=0;i<m_rollbackVersions.size();++i)
@@ -319,7 +319,7 @@ void CGUIDialogAddonInfo::OnRollback()
     std::string label(m_rollbackVersions[i]);
     if (m_rollbackVersions[i] == m_localAddon->Version().asString())
      label += " "+g_localizeStrings.Get(24094);
-   if (database.IsAddonBlacklisted(m_localAddon->ID(),label))
+   if (database->IsAddonBlacklisted(m_localAddon->ID(),label))
      label += " "+g_localizeStrings.Get(24095);
 
     buttons.Add(i,label);
@@ -329,7 +329,7 @@ void CGUIDialogAddonInfo::OnRollback()
   {
     // blacklist everything newer
     for (unsigned int j=choice+1;j<m_rollbackVersions.size();++j)
-      database.BlacklistAddon(m_localAddon->ID(),m_rollbackVersions[j]);
+      database->BlacklistAddon(m_localAddon->ID(),m_rollbackVersions[j]);
     std::string path = "special://home/addons/packages/";
     path += m_localAddon->ID()+"-"+m_rollbackVersions[choice]+".zip";
     // needed as cpluff won't downgrade
@@ -337,7 +337,7 @@ void CGUIDialogAddonInfo::OnRollback()
       //we will handle this for service addons in CAddonInstallJob::OnPostInstall
       CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
     CAddonInstaller::Get().InstallFromZip(path);
-    database.RemoveAddonFromBlacklist(m_localAddon->ID(),m_rollbackVersions[choice]);
+    database->RemoveAddonFromBlacklist(m_localAddon->ID(),m_rollbackVersions[choice]);
     Close();
   }
 }
@@ -368,19 +368,17 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
     m_item->SetProperty("Addon.Enabled", "false");
   m_item->SetProperty("Addon.Installed", m_localAddon ? "true" : "false");
 
-  CAddonDatabase database;
-  database.Open();
-  database.GetAddon(item->GetProperty("Addon.ID").asString(),m_addon);
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+  database->GetAddon(item->GetProperty("Addon.ID").asString(),m_addon);
 
   if (TranslateType(item->GetProperty("Addon.intType").asString()) == ADDON_REPOSITORY)
   {
-    CAddonDatabase database;
-    database.Open();
+    CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
     VECADDONS addons;
     if (m_addon)
-      database.GetRepository(m_addon->ID(), addons);
+      database->GetRepository(m_addon->ID(), addons);
     else if (m_localAddon) // sanity
-      database.GetRepository(m_localAddon->ID(), addons);
+      database->GetRepository(m_localAddon->ID(), addons);
     int tot=0;
     for (int i = ADDON_UNKNOWN+1;i<ADDON_MAX;++i)
     {
@@ -432,8 +430,8 @@ void CGUIDialogAddonInfo::GrabRollbackVersions()
   CFileItemList items;
   XFILE::CDirectory::GetDirectory("special://home/addons/packages/",items,".zip",DIR_FLAG_NO_FILE_DIRS);
   items.Sort(SortByLabel, SortOrderAscending);
-  CAddonDatabase db;
-  db.Open();
+
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
   for (int i=0;i<items.Size();++i)
   {
     if (items[i]->m_bIsFolder)
@@ -443,7 +441,7 @@ void CGUIDialogAddonInfo::GrabRollbackVersions()
     if (ID == m_localAddon->ID())
     {
       std::string hash, path(items[i]->GetPath());
-      if (db.GetPackageHash(m_localAddon->ID(), path, hash))
+      if (database->GetPackageHash(m_localAddon->ID(), path, hash))
       {
         std::string md5 = CUtil::GetFileMD5(path);
         if (md5 == hash)
@@ -452,7 +450,7 @@ void CGUIDialogAddonInfo::GrabRollbackVersions()
         {
           CLog::Log(LOGWARNING, "%s: Removing corrupt addon package %s.", __FUNCTION__, path.c_str());
           CFile::Delete(path);
-          db.RemovePackage(path);
+          database->RemovePackage(path);
         }
       }
     }

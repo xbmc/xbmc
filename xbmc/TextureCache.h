@@ -222,7 +222,6 @@ private:
   void OnCachingComplete(bool success, CTextureCacheJob *job);
 
   CCriticalSection m_databaseSection;
-  CTextureDatabase m_database;
   std::set<std::string> m_processinglist; ///< currently processing list to avoid 2 jobs being processed at once
   CCriticalSection     m_processingSection;
   CEvent               m_completeEvent; ///< Set whenever a job has finished

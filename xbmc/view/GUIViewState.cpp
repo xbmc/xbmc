@@ -19,6 +19,7 @@
  */
 
 #include "view/GUIViewState.h"
+#include "DatabaseManager.h"
 #include "pvr/windows/GUIViewStatePVR.h"
 #include "addons/GUIViewStateAddonBrowser.h"
 #include "music/GUIViewStateMusic.h"
@@ -476,13 +477,10 @@ void CGUIViewState::SetSortOrder(SortOrder sortOrder)
 
 void CGUIViewState::LoadViewState(const std::string &path, int windowID)
 { // get our view state from the db
-  CViewDatabase db;
-  if (!db.Open())
-    return;
-
+  CViewDatabase *database = CDatabaseManager::Get().GetViewDatabase();
   CViewState state;
-  if (db.GetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin")) ||
-      db.GetViewState(path, windowID, state, ""))
+  if (database->GetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin")) ||
+      database->GetViewState(path, windowID, state, ""))
   {
     SetViewAsControl(state.m_viewMode);
     SetSortMethod(state.m_sortDescription);
@@ -491,17 +489,14 @@ void CGUIViewState::LoadViewState(const std::string &path, int windowID)
 
 void CGUIViewState::SaveViewToDb(const std::string &path, int windowID, CViewState *viewState)
 {
-  CViewDatabase db;
-  if (!db.Open())
-    return;
-
+  CViewDatabase *database = CDatabaseManager::Get().GetViewDatabase();
   SortDescription sorting = GetSortMethod();
   CViewState state(m_currentViewAsControl, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes);
   if (viewState != NULL)
     *viewState = state;
 
-  db.SetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin"));
-  db.Close();
+  database->SetViewState(path, windowID, state, CSettings::Get().GetString("lookandfeel.skin"));
+  database->Close();
 
   if (viewState != NULL)
     CSettings::Get().Save();

@@ -19,6 +19,7 @@
  */
 
 #include "GUIWindowAddonBrowser.h"
+#include "DatabaseManager.h"
 #include "addons/AddonManager.h"
 #include "addons/Repository.h"
 #include "GUIDialogAddonInfo.h"
@@ -495,8 +496,8 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
   if (showInstallable || showMore)
   {
     VECADDONS installableAddons;
-    CAddonDatabase database;
-    if (database.Open() && database.GetAddons(installableAddons))
+    CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+    if (database->GetAddons(installableAddons))
     {
       for (ADDON::IVECADDONS addon = installableAddons.begin(); addon != installableAddons.end();)
       {

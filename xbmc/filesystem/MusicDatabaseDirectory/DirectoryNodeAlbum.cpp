@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeAlbum.h"
+#include "DatabaseManager.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
 
@@ -39,24 +40,14 @@ std::string CDirectoryNodeAlbum::GetLocalizedName() const
 {
   if (GetID() == -1)
     return g_localizeStrings.Get(15102); // All Albums
-  CMusicDatabase db;
-  if (db.Open())
-    return db.GetAlbumById(GetID());
-  return "";
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetAlbumById(GetID());
 }
 
 bool CDirectoryNodeAlbum::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
-
   CQueryParams params;
   CollectQueryParams(params);
-
-  bool bSuccess=musicdatabase.GetAlbumsNav(BuildPath(), items, params.GetGenreId(), params.GetArtistId());
-
-  musicdatabase.Close();
-
-  return bSuccess;
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetAlbumsNav(BuildPath(), items, params.GetGenreId(), params.GetArtistId());
 }

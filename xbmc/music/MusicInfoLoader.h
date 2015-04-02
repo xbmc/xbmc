@@ -48,7 +48,6 @@ protected:
   CFileItemList* m_mapFileItems;
   MAPSONGS m_songsMap;
   std::string m_strPrevPath;
-  CMusicDatabase m_musicDatabase;
   unsigned int m_databaseHits;
   unsigned int m_tagReads;
   CMusicThumbLoader *m_thumbLoader;

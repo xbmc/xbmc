@@ -20,6 +20,7 @@
 
 #include "TextureCache.h"
 #include "TextureCacheJob.h"
+#include "DatabaseManager.h"
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
 #include "threads/SingleLock.h"
@@ -49,16 +50,11 @@ CTextureCache::~CTextureCache()
 
 void CTextureCache::Initialize()
 {
-  CSingleLock lock(m_databaseSection);
-  if (!m_database.IsOpen())
-    m_database.Open();
 }
 
 void CTextureCache::Deinitialize()
 {
   CancelJobs();
-  CSingleLock lock(m_databaseSection);
-  m_database.Close();
 }
 
 bool CTextureCache::IsCachedImage(const std::string &url) const
@@ -209,13 +205,15 @@ bool CTextureCache::ClearCachedImage(int id)
 bool CTextureCache::GetCachedTexture(const std::string &url, CTextureDetails &details)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.GetCachedTexture(url, details);
+  CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+  return database->GetCachedTexture(url, details);
 }
 
 bool CTextureCache::AddCachedTexture(const std::string &url, const CTextureDetails &details)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.AddCachedTexture(url, details);
+  CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+  return database->AddCachedTexture(url, details);
 }
 
 void CTextureCache::IncrementUseCount(const CTextureDetails &details)
@@ -234,19 +232,22 @@ void CTextureCache::IncrementUseCount(const CTextureDetails &details)
 bool CTextureCache::SetCachedTextureValid(const std::string &url, bool updateable)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.SetCachedTextureValid(url, updateable);
+  CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+  return database->SetCachedTextureValid(url, updateable);
 }
 
 bool CTextureCache::ClearCachedTexture(const std::string &url, std::string &cachedURL)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.ClearCachedTexture(url, cachedURL);
+  CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+  return database->ClearCachedTexture(url, cachedURL);
 }
 
 bool CTextureCache::ClearCachedTexture(int id, std::string &cachedURL)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.ClearCachedTexture(id, cachedURL);
+  CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+  return database->ClearCachedTexture(id, cachedURL);
 }
 
 std::string CTextureCache::GetCacheFile(const std::string &url)

@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeTitleTvShows.h"
+#include "DatabaseManager.h"
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 
@@ -37,24 +38,15 @@ NODE_TYPE CDirectoryNodeTitleTvShows::GetChildType() const
 
 std::string CDirectoryNodeTitleTvShows::GetLocalizedName() const
 {
-  CVideoDatabase db;
-  if (db.Open())
-    return db.GetTvShowTitleById(GetID());
-  return "";
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  return database->GetTvShowTitleById(GetID());
 }
 
 bool CDirectoryNodeTitleTvShows::GetContent(CFileItemList& items) const
 {
-  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return false;
-
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=videodatabase.GetTvShowsNav(BuildPath(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetStudioId(), params.GetTagId());
-
-  videodatabase.Close();
-
-  return bSuccess;
+  return database->GetTvShowsNav(BuildPath(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetStudioId(), params.GetTagId());
 }

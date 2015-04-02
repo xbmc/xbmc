@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeSingles.h"
+#include "DatabaseManager.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
 
@@ -32,13 +33,6 @@ CDirectoryNodeSingles::CDirectoryNodeSingles(const std::string& strName, CDirect
 
 bool CDirectoryNodeSingles::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
-
-  bool bSuccess=musicdatabase.GetSongsByWhere(BuildPath(), CDatabase::Filter(), items);
-
-  musicdatabase.Close();
-
-  return bSuccess;
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetSongsByWhere(BuildPath(), CDatabase::Filter(), items);
 }

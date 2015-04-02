@@ -68,12 +68,6 @@ namespace EPG
     static CEpgContainer &Get(void);
 
     /*!
-     * @brief Get a pointer to the database instance.
-     * @return A pointer to the database instance.
-     */
-    CEpgDatabase *GetDatabase(void) { return &m_database; }
-
-    /*!
      * @brief Start the EPG update thread.
      */
     virtual void Start(void);
@@ -285,8 +279,6 @@ namespace EPG
     typedef std::map<unsigned int, CEpg*> EPGMAP;
     typedef EPGMAP::iterator              EPGMAP_ITR;
     typedef EPGMAP::const_iterator        EPGMAP_CITR;
-
-    CEpgDatabase m_database;           /*!< the EPG database */
 
     /** @name Configuration */
     //@{

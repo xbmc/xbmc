@@ -59,7 +59,6 @@ namespace PVR
     bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
     CVideoThumbLoader m_thumbLoader;
-    CVideoDatabase m_database;
     bool m_bShowDeletedRecordings;
   };
 }

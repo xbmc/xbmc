@@ -26,7 +26,22 @@
 #include "threads/Event.h"
 
 class CDatabase;
+class CAddonDatabase;
+class CMusicDatabase;
+class CTextureDatabase;
+class CViewDatabase;
+class CVideoDatabase;
 class DatabaseSettings;
+
+namespace EPG
+{
+  class CEpgDatabase;
+}
+
+namespace PVR
+{
+  class CPVRDatabase;
+}
 
 /*!
  \ingroup database
@@ -64,6 +79,15 @@ public:
    \return true if the database can be opened, false otherwise.
    */ 
   bool CanOpen(const std::string &name);
+  void CloseDatabases();
+
+  CAddonDatabase* GetAddonDatabase();
+  EPG::CEpgDatabase* GetEpgDatabase();
+  CMusicDatabase* GetMusicDatabase();
+  PVR::CPVRDatabase* GetPVRDatabase();
+  CTextureDatabase* GetTextureDatabase();
+  CViewDatabase* GetViewDatabase();
+  CVideoDatabase* GetVideoDatabase();
 
 private:
   // private construction, and no assignements; use the provided singleton methods
@@ -75,6 +99,7 @@ private:
   enum DB_STATUS { DB_CLOSED, DB_UPDATING, DB_READY, DB_FAILED };
   void UpdateStatus(const std::string &name, DB_STATUS status);
   void UpdateDatabase(CDatabase &db, DatabaseSettings *settings = NULL);
+  void OpenDatabase(CDatabase &database) const;
 
   CCriticalSection            m_section;     ///< Critical section protecting m_dbStatus.
   std::map<std::string, DB_STATUS> m_dbStatus;    ///< Our database status map.

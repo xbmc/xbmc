@@ -21,6 +21,7 @@
 #include <cstdlib>
 
 #include "FileItem.h"
+#include "DatabaseManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -3005,17 +3006,13 @@ bool CFileItem::LoadMusicTag()
   if (HasMusicInfoTag() && m_musicInfoTag->Loaded())
     return true;
   // check db
-  CMusicDatabase musicDatabase;
-  if (musicDatabase.Open())
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  CSong song;
+  if (database->GetSongByFileName(m_strPath, song))
   {
-    CSong song;
-    if (musicDatabase.GetSongByFileName(m_strPath, song))
-    {
-      GetMusicInfoTag()->SetSong(song);
-      SetArt("thumb", song.strThumb);
-      return true;
-    }
-    musicDatabase.Close();
+    GetMusicInfoTag()->SetSong(song);
+    SetArt("thumb", song.strThumb);
+    return true;
   }
   // load tag from file
   CLog::Log(LOGDEBUG, "%s: loading tag information for file: %s", __FUNCTION__, m_strPath.c_str());

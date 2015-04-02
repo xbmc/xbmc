@@ -23,6 +23,7 @@
  * - use Observable here, so we can use event driven operations later
  */
 
+#include "DatabaseManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -265,7 +266,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (iconPath.empty())
     return;
 
-  CPVRDatabase *database = GetPVRDatabase();
+  CPVRDatabase *database = CDatabaseManager::Get().GetPVRDatabase();
   if (!database)
     return;
 
@@ -576,7 +577,7 @@ CPVRChannelGroupPtr CPVRChannelGroup::GetPreviousGroup(void) const
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = GetPVRDatabase();
+  CPVRDatabase *database = CDatabaseManager::Get().GetPVRDatabase();
   if (!database)
     return -1;
 
@@ -676,7 +677,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   /* sort by client channel number if this is the first time or if pvrmanager.backendchannelorder is true */
   bool bUseBackendChannelNumbers(m_members.empty() || m_bUsingBackendChannelOrder);
 
-  CPVRDatabase *database = GetPVRDatabase();
+  CPVRDatabase *database = CDatabaseManager::Get().GetPVRDatabase();
   if (!database)
     return bReturn;
 
@@ -853,7 +854,7 @@ bool CPVRChannelGroup::Persist(void)
   if (!HasChanges() || !m_bLoaded)
     return bReturn;
 
-  if (CPVRDatabase *database = GetPVRDatabase())
+  if (CPVRDatabase *database = CDatabaseManager::Get().GetPVRDatabase())
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
         __FUNCTION__, GroupName().c_str(), (int) m_members.size());
@@ -1161,7 +1162,7 @@ bool CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
     lock.Leave();
 
     /* update the database immediately */
-    if (CPVRDatabase *database = GetPVRDatabase())
+    if (CPVRDatabase *database = CDatabaseManager::Get().GetPVRDatabase())
       return database->UpdateLastWatched(*this);
   }
 

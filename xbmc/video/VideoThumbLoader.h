@@ -126,7 +126,6 @@ public:
   static void SetArt(CFileItem &item, const std::map<std::string, std::string> &artwork);
 
 protected:
-  CVideoDatabase *m_videoDatabase;
   typedef std::map<int, std::map<std::string, std::string> > ArtCache;
   ArtCache m_showArt;
 

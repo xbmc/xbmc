@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "GUIDialogVideoSettings.h"
+#include "DatabaseManager.h"
 #include "GUIPassword.h"
 #include "addons/Skin.h"
 #ifdef HAS_VIDEO_PLAYBACK
@@ -172,11 +173,9 @@ void CGUIDialogVideoSettings::Save()
   // prompt user if they are sure
   if (CGUIDialogYesNo::ShowAndGetInput(12376, 750, 0, 12377))
   { // reset the settings
-    CVideoDatabase db;
-    if (!db.Open())
-      return;
-    db.EraseVideoSettings();
-    db.Close();
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+    database->EraseVideoSettings();
+    database->Close();
 
     CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
     CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleStream = -1;

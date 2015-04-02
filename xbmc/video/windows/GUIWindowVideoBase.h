@@ -139,7 +139,6 @@ protected:
   bool OnPlayStackPart(int item);
 
   CGUIDialogProgress* m_dlgProgress;
-  CVideoDatabase m_database;
 
   CVideoThumbLoader m_thumbLoader;
   bool m_stackingAvailable;

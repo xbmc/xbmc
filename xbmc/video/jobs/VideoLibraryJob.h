@@ -30,7 +30,7 @@ class CVideoDatabase;
 class CVideoLibraryJob : public CJob
 {
 public:
-  virtual ~CVideoLibraryJob();
+  virtual ~CVideoLibraryJob() {};
 
   /*!
    \brief Whether the job can be cancelled or not.
@@ -45,18 +45,16 @@ public:
   virtual bool Cancel() { return false; }
 
   // implementation of CJob
-  virtual bool DoWork();
+  virtual bool DoWork() { return false; }
   virtual const char *GetType() const { return "VideoLibraryJob"; }
   virtual bool operator==(const CJob* job) const { return false; }
 
 protected:
-  CVideoLibraryJob();
+  CVideoLibraryJob() {};
 
   /*!
    \brief Worker method to be implemented by an actual implementation.
-
-   \param[in] db Already open video database to be used for interaction
    \return True if the process succeeded, false otherwise
    */
-  virtual bool Work(CVideoDatabase &db) = 0;
+  virtual bool Work() = 0;
 };

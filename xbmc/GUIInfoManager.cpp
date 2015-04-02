@@ -25,6 +25,7 @@
 #include "windows/GUIMediaWindow.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "Application.h"
+#include "DatabaseManager.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "utils/Weather.h"
@@ -4215,16 +4216,12 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   /* also call GetMovieInfo() when a VideoInfoTag is already present or additional info won't be present in the tag */
   if (!m_currentFile->HasPVRChannelInfoTag())
   {
-    CVideoDatabase dbs;
-    if (dbs.Open())
-    {
-      std::string path = item.GetPath();
-      std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-      if (videoInfoTagPath.find("removable://") == 0)
-        path = videoInfoTagPath;
-      dbs.LoadVideoInfo(path, *m_currentFile->GetVideoInfoTag());
-      dbs.Close();
-    }
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+    std::string path = item.GetPath();
+    std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+    if (videoInfoTagPath.find("removable://") == 0)
+      path = videoInfoTagPath;
+    database->LoadVideoInfo(path, *m_currentFile->GetVideoInfoTag());
   }
 
   // Find a thumb for this file.
@@ -5632,12 +5629,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasMusic < 0)
     { // query
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
-        db.Close();
-      }
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      m_libraryHasMusic = (database->GetSongsCount() > 0) ? 1 : 0;
     }
     return m_libraryHasMusic > 0;
   }
@@ -5645,12 +5638,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasMovies < 0)
     {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasMovies = db.HasContent(VIDEODB_CONTENT_MOVIES) ? 1 : 0;
-        db.Close();
-      }
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      m_libraryHasMovies = database->HasContent(VIDEODB_CONTENT_MOVIES) ? 1 : 0;
     }
     return m_libraryHasMovies > 0;
   }
@@ -5658,12 +5647,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasMovieSets < 0)
     {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasMovieSets = db.HasSets() ? 1 : 0;
-        db.Close();
-      }
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      m_libraryHasMovieSets = database->HasSets() ? 1 : 0;
     }
     return m_libraryHasMovieSets > 0;
   }
@@ -5671,12 +5656,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasTVShows < 0)
     {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasTVShows = db.HasContent(VIDEODB_CONTENT_TVSHOWS) ? 1 : 0;
-        db.Close();
-      }
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      m_libraryHasTVShows = database->HasContent(VIDEODB_CONTENT_TVSHOWS) ? 1 : 0;
     }
     return m_libraryHasTVShows > 0;
   }
@@ -5684,12 +5665,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasMusicVideos < 0)
     {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasMusicVideos = db.HasContent(VIDEODB_CONTENT_MUSICVIDEOS) ? 1 : 0;
-        db.Close();
-      }
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      m_libraryHasMusicVideos = database->HasContent(VIDEODB_CONTENT_MUSICVIDEOS) ? 1 : 0;
     }
     return m_libraryHasMusicVideos > 0;
   }
@@ -5697,12 +5674,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasSingles < 0)
     {
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasSingles = (db.GetSinglesCount() > 0) ? 1 : 0;
-        db.Close();
-      }
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      m_libraryHasSingles = (database->GetSinglesCount() > 0) ? 1 : 0;
     }
     return m_libraryHasSingles > 0;
   }
@@ -5710,12 +5683,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasCompilations < 0)
     {
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasCompilations = (db.GetCompilationAlbumsCount() > 0) ? 1 : 0;
-        db.Close();
-      }
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      m_libraryHasCompilations = (database->GetCompilationAlbumsCount() > 0) ? 1 : 0;
     }
     return m_libraryHasCompilations > 0;
   }

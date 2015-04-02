@@ -254,7 +254,6 @@ namespace ADDON
     std::map<std::string, bool> m_disabled;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
-    CAddonDatabase m_database;
   };
 
 }; /* namespace ADDON */

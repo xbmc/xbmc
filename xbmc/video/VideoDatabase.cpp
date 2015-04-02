@@ -23,6 +23,7 @@
 #endif
 
 #include "ApplicationMessenger.h"
+#include "DatabaseManager.h"
 #include "threads/SystemClock.h"
 #include "VideoDatabase.h"
 #include "video/windows/GUIWindowVideoBase.h"
@@ -4357,35 +4358,32 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
   if (iVersion < 72)
   { // Update thumb to poster or banner as applicable
-    CTextureDatabase db;
-    if (db.Open())
+    CTextureDatabase *textureDatabase = CDatabaseManager::Get().GetTextureDatabase();
+    m_pDS->query("select art_id,url,media_id,media_type from art where type='thumb' and media_type in ('movie', 'musicvideo', 'tvshow', 'season', 'set')");
+    vector<CArtItem> art;
+    while (!m_pDS->eof())
     {
-      m_pDS->query("select art_id,url,media_id,media_type from art where type='thumb' and media_type in ('movie', 'musicvideo', 'tvshow', 'season', 'set')");
-      vector<CArtItem> art;
-      while (!m_pDS->eof())
+      CTextureDetails details;
+      if (textureDatabase->GetCachedTexture(m_pDS->fv(1).get_asString(), details))
       {
-        CTextureDetails details;
-        if (db.GetCachedTexture(m_pDS->fv(1).get_asString(), details))
-        {
-          CArtItem item;
-          item.art_id = m_pDS->fv(0).get_asInt();
-          item.art_url = m_pDS->fv(1).get_asString();
-          item.art_type = CVideoInfoScanner::GetArtTypeFromSize(details.width, details.height);
-          item.media_id = m_pDS->fv(2).get_asInt();
-          item.media_type = m_pDS->fv(3).get_asString();
-          if (item.art_type != "thumb")
-            art.push_back(item);
-        }
-        m_pDS->next();
+        CArtItem item;
+        item.art_id = m_pDS->fv(0).get_asInt();
+        item.art_url = m_pDS->fv(1).get_asString();
+        item.art_type = CVideoInfoScanner::GetArtTypeFromSize(details.width, details.height);
+        item.media_id = m_pDS->fv(2).get_asInt();
+        item.media_type = m_pDS->fv(3).get_asString();
+        if (item.art_type != "thumb")
+          art.push_back(item);
       }
-      m_pDS->close();
-      for (vector<CArtItem>::iterator i = art.begin(); i != art.end(); ++i)
-      {
-        if (GetArtForItem(i->media_id, i->media_type, i->art_type).empty())
-          m_pDS->exec(PrepareSQL("update art set type='%s' where art_id=%d", i->art_type.c_str(), i->art_id));
-        else
-          m_pDS->exec(PrepareSQL("delete from art where art_id=%d", i->art_id));
-      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+    for (vector<CArtItem>::iterator i = art.begin(); i != art.end(); ++i)
+    {
+      if (GetArtForItem(i->media_id, i->media_type, i->art_type).empty())
+        m_pDS->exec(PrepareSQL("update art set type='%s' where art_id=%d", i->art_type.c_str(), i->art_id));
+      else
+        m_pDS->exec(PrepareSQL("delete from art where art_id=%d", i->art_id));
     }
   }
   if (iVersion < 74)

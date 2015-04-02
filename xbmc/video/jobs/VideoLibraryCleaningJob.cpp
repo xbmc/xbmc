@@ -19,6 +19,7 @@
  */
 
 #include "VideoLibraryCleaningJob.h"
+#include "DatabaseManager.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "video/VideoDatabase.h"
 
@@ -52,8 +53,9 @@ bool CVideoLibraryCleaningJob::operator==(const CJob* job) const
          m_showDialog == cleaningJob->m_showDialog;
 }
 
-bool CVideoLibraryCleaningJob::Work(CVideoDatabase &db)
+bool CVideoLibraryCleaningJob::Work()
 {
-  db.CleanDatabase(GetProgressBar(), m_paths, m_showDialog);
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  database->CleanDatabase(GetProgressBar(), m_paths, m_showDialog);
   return true;
 }

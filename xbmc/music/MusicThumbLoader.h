@@ -60,7 +60,6 @@ public:
   static bool GetEmbeddedThumb(const std::string &path, MUSIC_INFO::EmbeddedArt &art);
 
 protected:
-  CMusicDatabase *m_musicDatabase;
   typedef std::map<int, std::map<std::string, std::string> > ArtCache;
   ArtCache m_albumArt;
 };

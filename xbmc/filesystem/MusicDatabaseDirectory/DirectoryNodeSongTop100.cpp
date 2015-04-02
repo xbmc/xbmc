@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeSongTop100.h"
+#include "DatabaseManager.h"
 #include "music/MusicDatabase.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
@@ -31,14 +32,6 @@ CDirectoryNodeSongTop100::CDirectoryNodeSongTop100(const std::string& strName, C
 
 bool CDirectoryNodeSongTop100::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
-
-  std::string strBaseDir=BuildPath();
-  bool bSuccess=musicdatabase.GetTop100(strBaseDir, items);
-
-  musicdatabase.Close();
-
-  return bSuccess;
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetTop100(BuildPath(), items);
 }

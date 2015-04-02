@@ -19,6 +19,7 @@
  */
 
 #include "MusicInfoTagLoaderDatabase.h"
+#include "DatabaseManager.h"
 #include "music/MusicDatabase.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
@@ -37,17 +38,14 @@ CMusicInfoTagLoaderDatabase::~CMusicInfoTagLoaderDatabase()
 bool CMusicInfoTagLoaderDatabase::Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
   tag.SetLoaded(false);
-  CMusicDatabase database;
-  database.Open();
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
   XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
   XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strFileName,param);
 
   CSong song;
-  if (database.GetSong(param.GetSongId(),song))
+  if (database->GetSong(param.GetSongId(),song))
     tag.SetSong(song);
-
-  database.Close();
-
+  
   return tag.Loaded();
 }
 

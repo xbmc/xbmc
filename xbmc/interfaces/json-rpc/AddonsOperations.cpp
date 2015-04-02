@@ -118,10 +118,9 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
 
   int start, end;
   HandleLimits(parameterObject, result, addons.size(), start, end);
-  
-  CAddonDatabase addondb;
+
   for (int index = start; index < end; index++)
-    FillDetails(addons.at(index), parameterObject["properties"], result["addons"], addondb, true);
+    FillDetails(addons.at(index), parameterObject["properties"], result["addons"], true);
   
   return OK;
 }
@@ -133,9 +132,8 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
   if (!CAddonMgr::Get().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon.get() == NULL ||
       addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
     return InvalidParams;
-    
-  CAddonDatabase addondb;
-  FillDetails(addon, parameterObject["properties"], result["addon"], addondb);
+
+  FillDetails(addon, parameterObject["properties"], result["addon"]);
 
   return OK;
 }
@@ -202,7 +200,7 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
   return ACK;
 }
 
-void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVariant &result, CAddonDatabase &addondb, bool append /* = false */)
+void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVariant &result, bool append /* = false */)
 {
   if (addon.get() == NULL)
     return;

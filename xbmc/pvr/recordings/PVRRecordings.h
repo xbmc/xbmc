@@ -42,7 +42,6 @@ namespace PVR
     PVR_RECORDINGMAP             m_recordings;
     unsigned int                 m_iLastId;
     bool                         m_bGroupItems;
-    CVideoDatabase               m_database;
     bool                         m_bHasDeleted;
 
     virtual void UpdateFromClients(void);

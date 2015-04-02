@@ -21,6 +21,7 @@
 #include "TextureOperations.h"
 #include "TextureDatabase.h"
 #include "TextureCache.h"
+#include "DatabaseManager.h"
 
 using namespace JSONRPC;
 
@@ -28,8 +29,8 @@ JSONRPC_STATUS CTextureOperations::GetTextures(const std::string &method, ITrans
 {
   CFileItemList listItems;
 
-  CTextureDatabase db;
-  if (!db.Open())
+  CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+  if (!database->IsOpen())
     return InternalError;
 
   CDatabase::Filter dbFilter;
@@ -48,15 +49,15 @@ JSONRPC_STATUS CTextureOperations::GetTextures(const std::string &method, ITrans
 
     // decipher the rules
     CDatabaseQueryRuleCombination rule;
-    if (!rule.Load(xspObj, &db))
+    if (!rule.Load(xspObj, database))
       return InvalidParams;
 
-    dbFilter.AppendWhere(rule.GetWhereClause(db, ""));
+    dbFilter.AppendWhere(rule.GetWhereClause(*database, ""));
   }
 
   // fetch textures from the database
   CVariant items = CVariant(CVariant::VariantTypeArray);
-  if (!db.GetTextures(items, dbFilter))
+  if (!database->GetTextures(items, dbFilter))
     return InternalError;
 
   // return only what was asked for, plus textureid

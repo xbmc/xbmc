@@ -19,6 +19,7 @@
  */
 
 #include "AnnouncementManager.h"
+#include "DatabaseManager.h"
 #include "threads/SingleLock.h"
 #include <stdio.h>
 #include "utils/log.h"
@@ -138,18 +139,13 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
     if (id <= 0 && !item->GetPath().empty() &&
        (!item->HasProperty(LOOKUP_PROPERTY) || item->GetProperty(LOOKUP_PROPERTY).asBoolean()))
     {
-      CVideoDatabase videodatabase;
-      if (videodatabase.Open())
-      {
-        std::string path = item->GetPath();
-        std::string videoInfoTagPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-        if (StringUtils::StartsWith(videoInfoTagPath, "removable://"))
-          path = videoInfoTagPath;
-        if (videodatabase.LoadVideoInfo(path, *item->GetVideoInfoTag()))
-          id = item->GetVideoInfoTag()->m_iDbId;
-
-        videodatabase.Close();
-      }
+      CVideoDatabase *videodatabase = CDatabaseManager::Get().GetVideoDatabase();
+      std::string path = item->GetPath();
+      std::string videoInfoTagPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      if (StringUtils::StartsWith(videoInfoTagPath, "removable://"))
+        path = videoInfoTagPath;
+      if (videodatabase->LoadVideoInfo(path, *item->GetVideoInfoTag()))
+        id = item->GetVideoInfoTag()->m_iDbId;
     }
 
     if (!item->GetVideoInfoTag()->m_type.empty())
@@ -199,17 +195,12 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
     if (id <= 0 && !item->GetPath().empty() &&
        (!item->HasProperty(LOOKUP_PROPERTY) || item->GetProperty(LOOKUP_PROPERTY).asBoolean()))
     {
-      CMusicDatabase musicdatabase;
-      if (musicdatabase.Open())
+      CMusicDatabase *musicDatabase = CDatabaseManager::Get().GetMusicDatabase();
+      CSong song;
+      if (musicDatabase->GetSongByFileName(item->GetPath(), song, item->m_lStartOffset))
       {
-        CSong song;
-        if (musicdatabase.GetSongByFileName(item->GetPath(), song, item->m_lStartOffset))
-        {
-          item->GetMusicInfoTag()->SetSong(song);
-          id = item->GetMusicInfoTag()->GetDatabaseId();
-        }
-
-        musicdatabase.Close();
+        item->GetMusicInfoTag()->SetSong(song);
+        id = item->GetMusicInfoTag()->GetDatabaseId();
       }
     }
 

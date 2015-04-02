@@ -2179,12 +2179,9 @@ bool CApplication::OnAction(const CAction &action)
       }
       if (needsUpdate)
       {
-        CMusicDatabase db;
-        if (db.Open())      // OpenForWrite() ?
-        {
-          db.SetSongRating(m_itemCurrentFile->GetPath(), m_itemCurrentFile->GetMusicInfoTag()->GetRating());
-          db.Close();
-        }
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        database->SetSongRating(m_itemCurrentFile->GetPath(), m_itemCurrentFile->GetMusicInfoTag()->GetRating());
+
         // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
         g_windowManager.SendMessage(msg);
@@ -2746,7 +2743,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
   if (!item.IsStack())
     return PLAYBACK_FAIL;
 
-  CVideoDatabase dbs;
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
 
   // case 1: stacked ISOs
   if (CFileItem(CStackDirectory::GetFirstStackedFile(item.GetPath()),false).IsDiscImage())
@@ -2763,21 +2760,15 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
     // check if we instructed the stack to resume from default
     if (startoffset == STARTOFFSET_RESUME) // selected file is not specified, pick the 'last' resume point
     {
-      if (dbs.Open())
+      CBookmark bookmark;
+      std::string path = item.GetPath();
+      if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+        path = item.GetProperty("original_listitem_url").asString();
+      if( database->GetResumeBookMark(path, bookmark) )
       {
-        CBookmark bookmark;
-        std::string path = item.GetPath();
-        if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-          path = item.GetProperty("original_listitem_url").asString();
-        if( dbs.GetResumeBookMark(path, bookmark) )
-        {
-          startoffset = (int)(bookmark.timeInSeconds*75);
-          selectedFile = bookmark.partNumber;
-        }
-        dbs.Close();
+        startoffset = (int)(bookmark.timeInSeconds*75);
+        selectedFile = bookmark.partNumber;
       }
-      else
-        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
     }
 
     // make sure that the selected part is within the boundaries
@@ -2810,14 +2801,7 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
     //       A much better solution is a fast reader of FPS and fileLength
     //       that we can use on a file to get it's time.
     vector<int> times;
-    bool haveTimes(false);
-    CVideoDatabase dbs;
-    if (dbs.Open())
-    {
-      haveTimes = dbs.GetStackTimes(item.GetPath(), times);
-      dbs.Close();
-    }
-
+    bool haveTimes = database->GetStackTimes(item.GetPath(), times);
 
     // calculate the total time of the stack
     CStackDirectory dir;
@@ -2846,24 +2830,20 @@ PlayBackRet CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
     if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
     {  // have our times now, so update the dB
-      if (dbs.Open())
-      {
-        if (!haveTimes && !times.empty())
-          dbs.SetStackTimes(item.GetPath(), times);
+      if (!haveTimes && !times.empty())
+        database->SetStackTimes(item.GetPath(), times);
 
-        if (item.m_lStartOffset == STARTOFFSET_RESUME)
-        {
-          // can only resume seek here, not dvdstate
-          CBookmark bookmark;
-          std::string path = item.GetPath();
-          if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-            path = item.GetProperty("original_listitem_url").asString();
-          if (dbs.GetResumeBookMark(path, bookmark))
-            seconds = bookmark.timeInSeconds;
-          else
-            seconds = 0.0f;
-        }
-        dbs.Close();
+      if (item.m_lStartOffset == STARTOFFSET_RESUME)
+      {
+        // can only resume seek here, not dvdstate
+        CBookmark bookmark;
+        std::string path = item.GetPath();
+        if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+          path = item.GetProperty("original_listitem_url").asString();
+        if (database->GetResumeBookMark(path, bookmark))
+          seconds = bookmark.timeInSeconds;
+        else
+          seconds = 0.0f;
       }
     }
 
@@ -3004,8 +2984,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (item.IsVideo())
     {
       // open the d/b and retrieve the bookmarks for the current movie
-      CVideoDatabase dbs;
-      dbs.Open();
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
 
       if( item.m_lStartOffset == STARTOFFSET_RESUME )
       {
@@ -3016,7 +2995,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
           path = item.GetVideoInfoTag()->m_strFileNameAndPath;
         else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
           path = item.GetProperty("original_listitem_url").asString();
-        if(dbs.GetResumeBookMark(path, bookmark))
+        if(database->GetResumeBookMark(path, bookmark))
         {
           options.starttime = bookmark.timeInSeconds;
           options.state = bookmark.playerState;
@@ -3037,7 +3016,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
           if (tag->m_iBookmarkId > 0)
           {
             CBookmark bookmark;
-            dbs.GetBookMarkForEpisode(*tag, bookmark);
+            database->GetBookMarkForEpisode(*tag, bookmark);
             options.starttime = bookmark.timeInSeconds;
             options.state = bookmark.playerState;
           }
@@ -3050,13 +3029,11 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
         if (tag->m_iBookmarkId > 0)
         {
           CBookmark bookmark;
-          dbs.GetBookMarkForEpisode(*tag, bookmark);
+          database->GetBookMarkForEpisode(*tag, bookmark);
           options.starttime = bookmark.timeInSeconds;
           options.state = bookmark.playerState;
         }
       }
-
-      dbs.Close();
     }
 
     if (m_eForcedNextPlayer != EPC_NONE)
@@ -3503,17 +3480,12 @@ void CApplication::UpdateFileState()
 
 void CApplication::LoadVideoSettings(const CFileItem& item)
 {
-  CVideoDatabase dbs;
-  if (dbs.Open())
-  {
-    CLog::Log(LOGDEBUG, "Loading settings for %s", item.GetPath().c_str());
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  CLog::Log(LOGDEBUG, "Loading settings for %s", item.GetPath().c_str());
     
-    // Load stored settings if they exist, otherwise use default
-    if (!dbs.GetVideoSettings(item, CMediaSettings::Get().GetCurrentVideoSettings()))
-      CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
-    
-    dbs.Close();
-  }
+  // Load stored settings if they exist, otherwise use default
+  if (!database->GetVideoSettings(item, CMediaSettings::Get().GetCurrentVideoSettings()))
+    CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
 }
 
 void CApplication::StopPlaying()

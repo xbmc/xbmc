@@ -20,6 +20,7 @@
 
 #include "PlayerOperations.h"
 #include "Application.h"
+#include "DatabaseManager.h"
 #include "Util.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
@@ -217,24 +218,23 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
             additionalInfo = true;
         }
 
-        CVideoDatabase videodatabase;
-        if ((additionalInfo) &&
-            videodatabase.Open())
+        if ((additionalInfo))
         {
           if (additionalInfo)
           {
+            CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
             switch (fileItem->GetVideoContentType())
             {
               case VIDEODB_CONTENT_MOVIES:
-                videodatabase.GetMovieInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
+                database->GetMovieInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
                 break;
 
               case VIDEODB_CONTENT_MUSICVIDEOS:
-                videodatabase.GetMusicVideoInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
+                database->GetMusicVideoInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
                 break;
 
               case VIDEODB_CONTENT_EPISODES:
-                videodatabase.GetEpisodeInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
+                database->GetEpisodeInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
                 break;
 
               case VIDEODB_CONTENT_TVSHOWS:
@@ -243,18 +243,15 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
                 break;
             }
           }
-
-          videodatabase.Close();
         }
       }
       else if (player == Audio)
       {
         if (fileItem->IsMusicDb())
         {
-          CMusicDatabase musicdb;
           CFileItemList items;
           items.Add(fileItem);
-          CAudioLibrary::GetAdditionalSongDetails(parameterObject, items, musicdb);
+          CAudioLibrary::GetAdditionalSongDetails(parameterObject, items);
         }
       }
       break;

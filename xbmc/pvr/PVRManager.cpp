@@ -20,6 +20,7 @@
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "DatabaseManager.h"
 #include "GUIInfoManager.h"
 #include "Util.h"
 #include "dialogs/GUIDialogOK.h"
@@ -92,7 +93,6 @@ CPVRManager::CPVRManager(void) :
     m_guiInfo(NULL),
     m_triggerEvent(true),
     m_currentFile(NULL),
-    m_database(NULL),
     m_bFirstStart(true),
     m_bEpgsCreated(false),
     m_progressHandle(NULL),
@@ -353,7 +353,6 @@ void CPVRManager::Cleanup(void)
   SAFE_DELETE(m_recordings);
   SAFE_DELETE(m_channelGroups);
   SAFE_DELETE(m_parentalTimer);
-  SAFE_DELETE(m_database);
   m_triggerEvent.Set();
 
   m_currentFile           = NULL;
@@ -427,11 +426,6 @@ void CPVRManager::Start(bool bAsync /* = false */, int openWindowId /* = 0 */)
   ResetProperties();
   SetState(ManagerStateStarting);
   m_openWindowId = openWindowId;
-
-  /* create and open database */
-  if (!m_database)
-    m_database = new CPVRDatabase;
-  m_database->Open();
   
   /* register application action listener */
   g_application.RegisterActionListener(&CPVRActionListener::Get());
@@ -465,10 +459,6 @@ void CPVRManager::Stop(void)
 
   /* executes the set wakeup command */
   SetWakeupCommand();
-
-  /* close database */
-  if (m_database->IsOpen())
-    m_database->Close();
 
   /* unload all data */
   Cleanup();
@@ -784,19 +774,17 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   pDlgProgress->Progress();
 
   /* reset the EPG pointers */
-  if (m_database)
-    m_database->ResetEPG();
+  CPVRDatabase *database = CDatabaseManager::Get().GetPVRDatabase();
+  database->ResetEPG();
 
   /* stop the thread */
   Stop();
-
+  
   pDlgProgress->SetPercentage(20);
   pDlgProgress->Progress();
 
-  if (!m_database)
-    m_database = new CPVRDatabase;
-
-  if (m_database && m_database->Open())
+  database = CDatabaseManager::Get().GetPVRDatabase();
+  if (database && database->IsOpen())
   {
     /* clean the EPG database */
     g_EpgContainer.Reset();
@@ -805,24 +793,19 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
 
     if (!bResetEPGOnly)
     {
-      m_database->DeleteChannelGroups();
+      database->DeleteChannelGroups();
       pDlgProgress->SetPercentage(50);
       pDlgProgress->Progress();
 
       /* delete all channels */
-      m_database->DeleteChannels();
+      database->DeleteChannels();
       pDlgProgress->SetPercentage(70);
       pDlgProgress->Progress();
 
       /* delete all channel and recording settings */
-      CVideoDatabase videoDatabase;
-
-      if (videoDatabase.Open())
-      {
-        videoDatabase.EraseVideoSettings("pvr://channels/");
-        videoDatabase.EraseVideoSettings("pvr://recordings/");
-        videoDatabase.Close();
-      }
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      database->EraseVideoSettings("pvr://channels/");
+      database->EraseVideoSettings("pvr://recordings/");
       
       pDlgProgress->SetPercentage(80);
       pDlgProgress->Progress();
@@ -831,8 +814,6 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
       pDlgProgress->SetPercentage(90);
       pDlgProgress->Progress();
     }
-
-    m_database->Close();
   }
 
   CLog::Log(LOGNOTICE,"PVRManager - %s - %s database cleared", __FUNCTION__, bResetEPGOnly ? "EPG" : "PVR and EPG");
@@ -840,7 +821,6 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   if (CSettings::Get().GetBool("pvrmanager.enabled"))
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
-    m_database->Open();
     Cleanup();
     Start();
   }

@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeGrouped.h"
+#include "DatabaseManager.h"
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
@@ -49,19 +50,13 @@ NODE_TYPE CDirectoryNodeGrouped::GetChildType() const
 
 std::string CDirectoryNodeGrouped::GetLocalizedName() const
 {
-  CVideoDatabase db;
-  if (db.Open())
-    return db.GetItemById(GetContentType(), GetID());
-
-  return "";
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  return database->GetItemById(GetContentType(), GetID());
 }
 
 bool CDirectoryNodeGrouped::GetContent(CFileItemList& items) const
 {
-  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return false;
-
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
   CQueryParams params;
   CollectQueryParams(params);
 
@@ -74,7 +69,7 @@ bool CDirectoryNodeGrouped::GetContent(CFileItemList& items) const
   if (!videoUrl.FromString(BuildPath()))
     return false;
 
-  return videodatabase.GetItems(videoUrl.ToString(), (VIDEODB_CONTENT_TYPE)params.GetContentType(), itemType, items);
+  return database->GetItems(videoUrl.ToString(), (VIDEODB_CONTENT_TYPE)params.GetContentType(), itemType, items);
 }
 
 std::string CDirectoryNodeGrouped::GetContentType() const

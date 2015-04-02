@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeAlbumRecentlyAdded.h"
+#include "DatabaseManager.h"
 #include "music/MusicDatabase.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"
@@ -43,24 +44,17 @@ std::string CDirectoryNodeAlbumRecentlyAdded::GetLocalizedName() const
 {
   if (GetID() == -1)
     return g_localizeStrings.Get(15102); // All Albums
-  CMusicDatabase db;
-  if (db.Open())
-    return db.GetAlbumById(GetID());
-  return "";
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetAlbumById(GetID());
 }
 
 bool CDirectoryNodeAlbumRecentlyAdded::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
   VECALBUMS albums;
-  if (!musicdatabase.GetRecentlyAddedAlbums(albums))
-  {
-    musicdatabase.Close();
+  if (!database->GetRecentlyAddedAlbums(albums))
     return false;
-  }
 
   for (int i=0; i<(int)albums.size(); ++i)
   {
@@ -70,6 +64,5 @@ bool CDirectoryNodeAlbumRecentlyAdded::GetContent(CFileItemList& items) const
     items.Add(pItem);
   }
 
-  musicdatabase.Close();
   return true;
 }

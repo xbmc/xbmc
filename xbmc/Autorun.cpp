@@ -28,6 +28,7 @@
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
+#include "DatabaseManager.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
@@ -497,10 +498,9 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
   std::string strUniqueId = g_mediaManager.GetDiskUniqueId(path);
   if (!strUniqueId.empty())
   {
-    CVideoDatabase dbs;
-    dbs.Open();
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
     CBookmark bookmark;
-    if (dbs.GetResumeBookMark(strUniqueId, bookmark))
+    if (database->GetResumeBookMark(strUniqueId, bookmark))
       return true;
   }
   return false;

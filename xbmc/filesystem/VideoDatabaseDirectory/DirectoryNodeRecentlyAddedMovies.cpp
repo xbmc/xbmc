@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeRecentlyAddedMovies.h"
+#include "DatabaseManager.h"
 #include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -31,13 +32,6 @@ CDirectoryNodeRecentlyAddedMovies::CDirectoryNodeRecentlyAddedMovies(const std::
 
 bool CDirectoryNodeRecentlyAddedMovies::GetContent(CFileItemList& items) const
 {
-  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return false;
-  
-  bool bSuccess=videodatabase.GetRecentlyAddedMoviesNav(BuildPath(), items);
-
-  videodatabase.Close();
-
-  return bSuccess;
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+  return database->GetRecentlyAddedMoviesNav(BuildPath(), items);
 }

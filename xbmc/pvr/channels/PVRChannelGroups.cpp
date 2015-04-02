@@ -20,6 +20,7 @@
 
 #include "PVRChannelGroups.h"
 
+#include "DatabaseManager.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
@@ -293,7 +294,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
 bool CPVRChannelGroups::Load(void)
 {
-  CPVRDatabase *database = GetPVRDatabase();
+  CPVRDatabase *database = CDatabaseManager::Get().GetPVRDatabase();
   if (!database)
     return false;
 
@@ -551,7 +552,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   if (group.GroupID() > 0)
   {
     // delete the group from the database
-    CPVRDatabase *database = GetPVRDatabase();
+    CPVRDatabase *database = CDatabaseManager::Get().GetPVRDatabase();
     return database ? database->Delete(group) : false;
   }
   return bFound;

@@ -21,6 +21,7 @@
 #include "Addon.h"
 #include "AudioEncoder.h"
 #include "AudioDecoder.h"
+#include "DatabaseManager.h"
 #include "DllLibCPluff.h"
 #include "LanguageResource.h"
 #include "utils/StringUtils.h"
@@ -262,8 +263,6 @@ bool CAddonMgr::Init()
   m_cpluff = new DllLibCPluff;
   m_cpluff->Load();
 
-  m_database.Open();
-
   if (!m_cpluff->IsLoaded())
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, could not load libcpluff");
@@ -332,7 +331,6 @@ void CAddonMgr::DeInit()
     m_cpluff->destroy();
   delete m_cpluff;
   m_cpluff = NULL;
-  m_database.Close();
   m_disabled.clear();
 }
 
@@ -440,11 +438,12 @@ bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion /*=
             found = true;
         }
 
-        if (found || !m_database.GetAddon(temp[j]->ID(), repoAddon))
+        CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+        if (found || !database->GetAddon(temp[j]->ID(), repoAddon))
           continue;
 
         if (temp[j]->Version() < repoAddon->Version() &&
-            !m_database.IsAddonBlacklisted(temp[j]->ID(),
+            !database->IsAddonBlacklisted(temp[j]->ID(),
                                            repoAddon->Version().asString().c_str()))
         {
           if (getLocalVersion)
@@ -633,7 +632,8 @@ void CAddonMgr::RemoveAddon(const std::string& ID)
 bool CAddonMgr::DisableAddon(const std::string& ID, bool disable)
 {
   CSingleLock lock(m_critSection);
-  if (m_database.DisableAddon(ID, disable))
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+  if (database->DisableAddon(ID, disable))
   {
     m_disabled[ID] = disable;
     return true;
@@ -649,7 +649,8 @@ bool CAddonMgr::IsAddonDisabled(const std::string& ID)
   if (it != m_disabled.end())
     return it->second;
 
-  bool ret = m_database.IsAddonDisabled(ID);
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+  bool ret = database->IsAddonDisabled(ID);
   m_disabled.insert(pair<std::string, bool>(ID, ret));
 
   return ret;
@@ -704,7 +705,8 @@ bool CAddonMgr::CanAddonBeInstalled(const std::string& ID)
     return false;
 
   // can't install broken addons
-  if (!m_database.IsAddonBroken(ID).empty())
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+  if (!database->IsAddonBroken(ID).empty())
     return false;
 
   return true;

@@ -19,6 +19,7 @@
  */
 
 #include "PictureThumbLoader.h"
+#include "DatabaseManager.h"
 #include "Picture.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
@@ -69,11 +70,8 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   if (pItem->HasArt("thumb") && m_regenerateThumbs)
   {
     CTextureCache::Get().ClearCachedImage(pItem->GetArt("thumb"));
-    if (m_textureDatabase->Open())
-    {
-      m_textureDatabase->ClearTextureForPath(pItem->GetPath(), "thumb");
-      m_textureDatabase->Close();
-    }
+    CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
+    database->ClearTextureForPath(pItem->GetPath(), "thumb");
     pItem->SetArt("thumb", "");
   }
 
@@ -137,14 +135,13 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
   if (pItem->HasArt("thumb"))
     return;
 
-  CTextureDatabase db;
-  db.Open();
+  CTextureDatabase *database = CDatabaseManager::Get().GetTextureDatabase();
   if (pItem->IsCBR() || pItem->IsCBZ())
   {
     std::string strTBN(URIUtils::ReplaceExtension(pItem->GetPath(),".tbn"));
     if (CFile::Exists(strTBN))
     {
-      db.SetTextureForPath(pItem->GetPath(), "thumb", strTBN);
+      database->SetTextureForPath(pItem->GetPath(), "thumb", strTBN);
       CTextureCache::Get().BackgroundCacheImage(strTBN);
       pItem->SetArt("thumb", strTBN);
       return;
@@ -171,7 +168,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     thumb = URIUtils::AddFileToFolder(pathToUrl.Get(), thumb);
     if (CFile::Exists(thumb))
     {
-      db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+      database->SetTextureForPath(pItem->GetPath(), "thumb", thumb);
       CTextureCache::Get().BackgroundCacheImage(thumb);
       pItem->SetArt("thumb", thumb);
       return;
@@ -225,7 +222,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       { // less than 4 items, so just grab the first thumb
         items.Sort(SortByLabel, SortOrderAscending);
         std::string thumb = CTextureUtils::GetWrappedThumbURL(items[0]->GetPath());
-        db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+        database->SetTextureForPath(pItem->GetPath(), "thumb", thumb);
         CTextureCache::Get().BackgroundCacheImage(thumb);
         pItem->SetArt("thumb", thumb);
       }
@@ -245,7 +242,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
           details.width = g_advancedSettings.GetThumbSize();
           details.height = g_advancedSettings.GetThumbSize();
           CTextureCache::Get().AddCachedTexture(thumb, details);
-          db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+          database->SetTextureForPath(pItem->GetPath(), "thumb", thumb);
           pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));
         }
       }

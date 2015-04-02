@@ -26,6 +26,7 @@
 #include "ApplicationMessenger.h"
 #include "Autorun.h"
 #include "Builtins.h"
+#include "DatabaseManager.h"
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
 #include "FileItem.h"
@@ -1622,19 +1623,15 @@ int CBuiltins::Execute(const std::string& execString)
     {
       if (StringUtils::EqualsNoCase(params[0], "video"))
       {
-        CVideoDatabase videodatabase;
-        videodatabase.Open();
-        videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
-        videodatabase.Close();
+        CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+        database->ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
       }
       else
       {
         if (URIUtils::HasSlashAtEnd(path))
           path = URIUtils::AddFileToFolder(path, "musicdb.xml");
-        CMusicDatabase musicdatabase;
-        musicdatabase.Open();
-        musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
-        musicdatabase.Close();
+        CMusicDatabase *musicDatabase = CDatabaseManager::Get().GetMusicDatabase();
+        musicDatabase->ExportToXML(path, singleFile, thumbs, overwrite);
       }
     }
   }

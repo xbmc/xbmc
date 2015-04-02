@@ -19,6 +19,7 @@
  */
 
 #include "FileItem.h"
+#include "DatabaseManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
@@ -45,14 +46,11 @@ CPVRRecordings::CPVRRecordings(void) :
     m_bGroupItems(true),
     m_bHasDeleted(false)
 {
-  m_database.Open();
 }
 
 CPVRRecordings::~CPVRRecordings()
 {
   Clear();
-  if (m_database.IsOpen())
-    m_database.Close();
 }
 
 void CPVRRecordings::UpdateFromClients(void)
@@ -133,8 +131,7 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
       strFilePath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/" PVR_RECORDING_ACTIVE_PATH "/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
 
     CFileItemPtr pFileItem;
-    if (m_database.IsOpen())
-      current->UpdateMetadata(m_database);
+    current->UpdateMetadata();
 
     if (!results->Contains(strFilePath))
     {
@@ -289,58 +286,53 @@ bool CPVRRecordings::DeleteAllRecordingsFromTrash()
 
 bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
 {
-  bool bResult = false;
+  CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
 
-  if (m_database.IsOpen())
+  CLog::Log(LOGDEBUG, "CPVRRecordings - %s - item path %s", __FUNCTION__, item->GetPath().c_str());
+  CFileItemList items;
+  if (item->m_bIsFolder)
   {
-    bResult = true;
+    XFILE::CDirectory::GetDirectory(item->GetPath(), items);
+  }
+  else
+    items.Add(item);
 
-    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - item path %s", __FUNCTION__, item->GetPath().c_str());
-    CFileItemList items;
-    if (item->m_bIsFolder)
+  CLog::Log(LOGDEBUG, "CPVRRecordings - %s - will set watched for %d items", __FUNCTION__, items.Size());
+  for (int i=0;i<items.Size();++i)
+  {
+    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - setting watched for item %d", __FUNCTION__, i);
+
+    CFileItemPtr pItem=items[i];
+    if (pItem->m_bIsFolder)
     {
-      XFILE::CDirectory::GetDirectory(item->GetPath(), items);
+      CLog::Log(LOGDEBUG, "CPVRRecordings - %s - path %s is a folder, will call recursively", __FUNCTION__, pItem->GetPath().c_str());
+      if (pItem->GetLabel() != "..")
+      {
+        SetRecordingsPlayCount(pItem, count);
+      }
+      continue;
     }
-    else
-      items.Add(item);
 
-    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - will set watched for %d items", __FUNCTION__, items.Size());
-    for (int i=0;i<items.Size();++i)
+    if (!pItem->HasPVRRecordingInfoTag())
+      continue;
+
+    const CPVRRecordingPtr recording = pItem->GetPVRRecordingInfoTag();
+    if (recording)
     {
-      CLog::Log(LOGDEBUG, "CPVRRecordings - %s - setting watched for item %d", __FUNCTION__, i);
+      recording->SetPlayCount(count);
 
-      CFileItemPtr pItem=items[i];
-      if (pItem->m_bIsFolder)
+      // Clear resume bookmark
+      if (count > 0)
       {
-        CLog::Log(LOGDEBUG, "CPVRRecordings - %s - path %s is a folder, will call recursively", __FUNCTION__, pItem->GetPath().c_str());
-        if (pItem->GetLabel() != "..")
-        {
-          SetRecordingsPlayCount(pItem, count);
-        }
-        continue;
+        database->ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+        recording->SetLastPlayedPosition(0);
       }
 
-      if (!pItem->HasPVRRecordingInfoTag())
-        continue;
-
-      const CPVRRecordingPtr recording = pItem->GetPVRRecordingInfoTag();
-      if (recording)
-      {
-        recording->SetPlayCount(count);
-
-        // Clear resume bookmark
-        if (count > 0)
-        {
-          m_database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
-          recording->SetLastPlayedPosition(0);
-        }
-
-        m_database.SetPlayCount(*pItem, count);
-      }
+      database->SetPlayCount(*pItem, count);
     }
   }
 
-  return bResult;
+  return true;
 }
 
 bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &items)
@@ -373,8 +365,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       if (!IsDirectoryMember(strDirectoryPath, current->m_strDirectory) || current->IsDeleted() != bDeleted)
         continue;
 
-      if (m_database.IsOpen())
-        current->UpdateMetadata(m_database);
+      current->UpdateMetadata();
       CFileItemPtr pFileItem(new CFileItem(current));
       pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
       pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
@@ -416,8 +407,7 @@ void CPVRRecordings::GetAll(CFileItemList &items, bool bDeleted)
     if (current->IsDeleted() != bDeleted)
       continue;
 
-    if (m_database.IsOpen())
-      current->UpdateMetadata(m_database);
+    current->UpdateMetadata();
 
     CFileItemPtr pFileItem(new CFileItem(current));
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));

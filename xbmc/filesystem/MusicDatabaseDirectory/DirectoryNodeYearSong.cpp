@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeYearSong.h"
+#include "DatabaseManager.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
 
@@ -32,17 +33,9 @@ CDirectoryNodeYearSong::CDirectoryNodeYearSong(const std::string& strName, CDire
 
 bool CDirectoryNodeYearSong::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
-
   CQueryParams params;
   CollectQueryParams(params);
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
-  std::string strBaseDir=BuildPath();
-  bool bSuccess=musicdatabase.GetSongsByYear(strBaseDir, items, params.GetYear());
-
-  musicdatabase.Close();
-
-  return bSuccess;
+  return database->GetSongsByYear(BuildPath(), items, params.GetYear());
 }

@@ -22,6 +22,7 @@
 #include "system.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowMusicBase.h"
+#include "DatabaseManager.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "filesystem/ZipManager.h"
 #include "playlists/PlayListFactory.h"
@@ -127,18 +128,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      m_musicdatabase.Close();
-    }
-    break;
-
   case GUI_MSG_WINDOW_INIT:
     {
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-
-      m_musicdatabase.Open();
-
       if (!CGUIMediaWindow::OnMessage(message))
         return false;
 
@@ -303,9 +295,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     return;
   }
 
-  // this function called from outside this window - make sure the database is open
-  m_musicdatabase.Open();
-
   // we have a folder
   if (pItem->IsMusicDb())
   {
@@ -321,11 +310,12 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     return;
   }
 
-  int albumID = m_musicdatabase.GetAlbumIdByPath(pItem->GetPath());
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  int albumID = database->GetAlbumIdByPath(pItem->GetPath());
   if (albumID != -1)
   {
     CAlbum album;
-    if (!m_musicdatabase.GetAlbum(albumID, album))
+    if (!database->GetAlbum(albumID, album))
       return;
     CFileItem item(StringUtils::Format("musicdb://albums/%i/", albumID), album);
     if (ShowAlbumInfo(&item))
@@ -340,19 +330,21 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
   CQueryParams params;
   CDirectoryNode::GetDatabaseInfo(pItem->GetPath(), params);
 
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+
   ADDON::ScraperPtr scraper;
-  if (!m_musicdatabase.GetScraperForPath(pItem->GetPath(), scraper, ADDON::ADDON_SCRAPER_ARTISTS))
+  if (!database->GetScraperForPath(pItem->GetPath(), scraper, ADDON::ADDON_SCRAPER_ARTISTS))
     return;
 
   CArtist artist;
-  if (!m_musicdatabase.GetArtist(params.GetArtistId(), artist))
+  if (!database->GetArtist(params.GetArtistId(), artist))
       return;
 
-  m_musicdatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
+  database->GetArtistPath(params.GetArtistId(), artist.strPath);
   while (1)
   {
     // Check if we have the information in the database first
-    if (!m_musicdatabase.HasArtistBeenScraped(params.GetArtistId()))
+    if (!database->HasArtistBeenScraped(params.GetArtistId()))
     {
       if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
         break; // should display a dialog saying no permissions
@@ -392,7 +384,8 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
 
       if (pDlgArtistInfo->NeedRefresh())
       {
-        m_musicdatabase.ClearArtistLastScrapedTime(params.GetArtistId());
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        database->ClearArtistLastScrapedTime(params.GetArtistId());
         continue;
       } 
       else if (pDlgArtistInfo->HasUpdatedThumb()) 
@@ -412,17 +405,18 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
   CDirectoryNode::GetDatabaseInfo(pItem->GetPath(), params);
 
   ADDON::ScraperPtr scraper;
-  if (!m_musicdatabase.GetScraperForPath(pItem->GetPath(), scraper, ADDON::ADDON_SCRAPER_ALBUMS))
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  if (!database->GetScraperForPath(pItem->GetPath(), scraper, ADDON::ADDON_SCRAPER_ALBUMS))
     return false;
 
   CAlbum album;
-  if (!m_musicdatabase.GetAlbum(params.GetAlbumId(), album))
+  if (!database->GetAlbum(params.GetAlbumId(), album))
     return false;
 
-  m_musicdatabase.GetAlbumPath(params.GetAlbumId(), album.strPath);
+  database->GetAlbumPath(params.GetAlbumId(), album.strPath);
   while (1)
   {
-    if (!m_musicdatabase.HasAlbumBeenScraped(params.GetAlbumId()))
+    if (!database->HasAlbumBeenScraped(params.GetAlbumId()))
     {
       if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
       {
@@ -471,7 +465,8 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
 
       if (pDlgAlbumInfo->NeedRefresh())
       {
-        m_musicdatabase.ClearAlbumLastScrapedTime(params.GetAlbumId());
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        database->ClearAlbumLastScrapedTime(params.GetAlbumId());
         continue;
       }
       else if (pDlgAlbumInfo->HasUpdatedThumb())
@@ -689,8 +684,9 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       CFileItemPtr itemCheck = queuedItems.Get(pItem->GetPath());
       if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
       { // add item
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
         CFileItemPtr item(new CFileItem(*pItem));
-        m_musicdatabase.SetPropertiesForFileItem(*item);
+        database->SetPropertiesForFileItem(*item);
         queuedItems.Add(item);
       }
     }
@@ -1012,12 +1008,13 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const std::string &pa
     saveDirThumb = false;
   }
 
-  std::string albumThumb = m_musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  std::string albumThumb = database->GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
 
   // Update the thumb in the music database (songs + albums)
   std::string albumPath(path);
   if (saveDb && CFile::Exists(albumThumb))
-    m_musicdatabase.SaveAlbumThumb(album.idAlbum, albumThumb);
+    database->SaveAlbumThumb(album.idAlbum, albumThumb);
 
   // Update currently playing song if it's from the same album.  This is necessary as when the album
   // first gets it's cover, the info manager's item doesn't have the updated information (so will be
@@ -1128,12 +1125,13 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 
   if (params.GetAlbumId())
   {
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
     map<string, string> artistArt;
-    if (m_musicdatabase.GetArtistArtForItem(params.GetAlbumId(), MediaTypeAlbum, artistArt))
+    if (database->GetArtistArtForItem(params.GetAlbumId(), MediaTypeAlbum, artistArt))
       items.AppendArt(artistArt, MediaTypeArtist);
 
     map<string, string> albumArt;
-    if (m_musicdatabase.GetArtForItem(params.GetAlbumId(), MediaTypeAlbum, albumArt))
+    if (database->GetArtForItem(params.GetAlbumId(), MediaTypeAlbum, albumArt))
       items.AppendArt(albumArt, MediaTypeAlbum);
   }
 

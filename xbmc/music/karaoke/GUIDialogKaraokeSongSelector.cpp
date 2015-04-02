@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogKaraokeSongSelector.h"
+#include "DatabaseManager.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "input/Key.h"
@@ -174,7 +175,8 @@ void CGUIDialogKaraokeSongSelector::UpdateData()
     SET_CONTROL_LABEL(CONTROL_LABEL_SONGNUMBER, message);
 
     // Now try to find this song in the database
-    m_songSelected = m_musicdatabase.GetSongByKaraokeNumber( m_selectedNumber, m_karaokeSong );
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    m_songSelected = database->GetSongByKaraokeNumber( m_selectedNumber, m_karaokeSong );
 
     if ( m_songSelected )
       message = m_karaokeSong.strTitle;
@@ -226,14 +228,8 @@ void CGUIDialogKaraokeSongSelector::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
 
-  // Check if there are any karaoke songs in the database
-  if ( !m_musicdatabase.Open() )
-  {
-    Close();
-    return;
-  }
-
-  if ( m_musicdatabase.GetKaraokeSongsCount() == 0 )
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  if (database->GetKaraokeSongsCount() == 0)
   {
     Close();
     return;
@@ -246,7 +242,6 @@ void CGUIDialogKaraokeSongSelector::OnInitWindow()
 void CGUIDialogKaraokeSongSelector::OnDeinitWindow(int nextWindowID)
 {
   CGUIDialog::OnDeinitWindow(nextWindowID);
-  m_musicdatabase.Close();
 }
 
 

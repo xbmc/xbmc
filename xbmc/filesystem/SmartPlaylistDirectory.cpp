@@ -21,6 +21,7 @@
 #include <math.h>
 
 #include "SmartPlaylistDirectory.h"
+#include "DatabaseManager.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -99,172 +100,161 @@ namespace XFILE
         playlist.GetType() == "tvshows" ||
         playlist.GetType() == "episodes")
     {
-      CVideoDatabase db;
-      if (db.Open())
+      MediaType mediaType = MediaTypes::FromString(playlist.GetType());
+
+      std::string baseDir = strBaseDir;
+      if (strBaseDir.empty())
       {
-        MediaType mediaType = MediaTypes::FromString(playlist.GetType());
-
-        std::string baseDir = strBaseDir;
-        if (strBaseDir.empty())
-        {
-          if (mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode)
-            baseDir = "videodb://tvshows/";
-          else if (mediaType == MediaTypeMovie)
-            baseDir = "videodb://movies/";
-          else
-            return false;
-
-          if (!isGrouped)
-            baseDir += "titles";
-          else
-            baseDir += group;
-          URIUtils::AddSlashAtEnd(baseDir);
-
-          if (mediaType == MediaTypeEpisode)
-            baseDir += "-1/-1/";
-        }
-
-        CVideoDbUrl videoUrl;
-        if (!videoUrl.FromString(baseDir))
+        if (mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode)
+          baseDir = "videodb://tvshows/";
+        else if (mediaType == MediaTypeMovie)
+          baseDir = "videodb://movies/";
+        else
           return false;
 
-        // store the smartplaylist as JSON in the URL as well
-        std::string xsp;
-        if (!playlist.IsEmpty(filter))
-        {
-          if (!playlist.SaveAsJson(xsp, !filter))
-            return false;
-        }
-
-        if (!xsp.empty())
-          videoUrl.AddOption(option, xsp);
+        if (!isGrouped)
+          baseDir += "titles";
         else
-          videoUrl.RemoveOption(option);
-        
-        CDatabase::Filter dbfilter;
-        success = db.GetItems(videoUrl.ToString(), items, dbfilter, sorting);
-        db.Close();
+          baseDir += group;
+        URIUtils::AddSlashAtEnd(baseDir);
 
-        // if we retrieve a list of episodes and we didn't receive
-        // a pre-defined base path, we need to fix it
-        if (strBaseDir.empty() && mediaType == MediaTypeEpisode && !isGrouped)
-          videoUrl.AppendPath("-1/-1/");
-        items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
+        if (mediaType == MediaTypeEpisode)
+          baseDir += "-1/-1/";
       }
+
+      CVideoDbUrl videoUrl;
+      if (!videoUrl.FromString(baseDir))
+        return false;
+
+      // store the smartplaylist as JSON in the URL as well
+      std::string xsp;
+      if (!playlist.IsEmpty(filter))
+      {
+        if (!playlist.SaveAsJson(xsp, !filter))
+          return false;
+      }
+
+      if (!xsp.empty())
+        videoUrl.AddOption(option, xsp);
+      else
+        videoUrl.RemoveOption(option);
+      
+      CDatabase::Filter dbfilter;
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      success = database->GetItems(videoUrl.ToString(), items, dbfilter, sorting);
+
+      // if we retrieve a list of episodes and we didn't receive
+      // a pre-defined base path, we need to fix it
+      if (strBaseDir.empty() && mediaType == MediaTypeEpisode && !isGrouped)
+        videoUrl.AppendPath("-1/-1/");
+      items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
     }
     else if (playlist.IsMusicType() || playlist.GetType().empty())
     {
-      CMusicDatabase db;
-      if (db.Open())
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      CSmartPlaylist plist(playlist);
+      if (playlist.GetType() == "mixed" || playlist.GetType().empty())
+        plist.SetType("songs");
+
+      MediaType mediaType = MediaTypes::FromString(plist.GetType());
+
+      std::string baseDir = strBaseDir;
+      if (strBaseDir.empty())
       {
-        CSmartPlaylist plist(playlist);
-        if (playlist.GetType() == "mixed" || playlist.GetType().empty())
-          plist.SetType("songs");
-
-        MediaType mediaType = MediaTypes::FromString(plist.GetType());
-
-        std::string baseDir = strBaseDir;
-        if (strBaseDir.empty())
+        baseDir = "musicdb://";
+        if (!isGrouped)
         {
-          baseDir = "musicdb://";
-          if (!isGrouped)
-          {
-            if (mediaType == MediaTypeArtist)
-              baseDir += "artists";
-            else if (mediaType == MediaTypeAlbum)
-              baseDir += "albums";
-            else if (mediaType == MediaTypeSong)
-              baseDir += "songs";
-            else
-              return false;
-          }
+          if (mediaType == MediaTypeArtist)
+            baseDir += "artists";
+          else if (mediaType == MediaTypeAlbum)
+            baseDir += "albums";
+          else if (mediaType == MediaTypeSong)
+            baseDir += "songs";
           else
-            baseDir += group;
-
-          URIUtils::AddSlashAtEnd(baseDir);
-        }
-
-        CMusicDbUrl musicUrl;
-        if (!musicUrl.FromString(baseDir))
-          return false;
-
-        // store the smartplaylist as JSON in the URL as well
-        std::string xsp;
-        if (!plist.IsEmpty(filter))
-        {
-          if (!plist.SaveAsJson(xsp, !filter))
             return false;
         }
-
-        if (!xsp.empty())
-          musicUrl.AddOption(option, xsp);
         else
-          musicUrl.RemoveOption(option);
+          baseDir += group;
 
-        CDatabase::Filter dbfilter;
-        success = db.GetItems(musicUrl.ToString(), items, dbfilter, sorting);
-        db.Close();
-
-        items.SetProperty(PROPERTY_PATH_DB, musicUrl.ToString());
+        URIUtils::AddSlashAtEnd(baseDir);
       }
+
+      CMusicDbUrl musicUrl;
+      if (!musicUrl.FromString(baseDir))
+        return false;
+
+      // store the smartplaylist as JSON in the URL as well
+      std::string xsp;
+      if (!plist.IsEmpty(filter))
+      {
+        if (!plist.SaveAsJson(xsp, !filter))
+          return false;
+      }
+
+      if (!xsp.empty())
+        musicUrl.AddOption(option, xsp);
+      else
+        musicUrl.RemoveOption(option);
+
+      CDatabase::Filter dbfilter;
+      success = database->GetItems(musicUrl.ToString(), items, dbfilter, sorting);
+
+      items.SetProperty(PROPERTY_PATH_DB, musicUrl.ToString());
     }
 
     if (playlist.GetType() == "musicvideos" || playlist.GetType() == "mixed")
     {
-      CVideoDatabase db;
-      if (db.Open())
+
+      CSmartPlaylist mvidPlaylist(playlist);
+      if (playlist.GetType() == "mixed")
+        mvidPlaylist.SetType("musicvideos");
+
+      std::string baseDir = strBaseDir;
+      if (baseDir.empty())
       {
-        CSmartPlaylist mvidPlaylist(playlist);
-        if (playlist.GetType() == "mixed")
-          mvidPlaylist.SetType("musicvideos");
+        baseDir = "videodb://musicvideos/";
 
-        std::string baseDir = strBaseDir;
-        if (baseDir.empty())
-        {
-          baseDir = "videodb://musicvideos/";
-
-          if (!isGrouped)
-            baseDir += "titles";
-          else
-            baseDir += group;
-          URIUtils::AddSlashAtEnd(baseDir);
-        }
-
-        CVideoDbUrl videoUrl;
-        if (!videoUrl.FromString(baseDir))
-          return false;
-
-        // store the smartplaylist as JSON in the URL as well
-        std::string xsp;
-        if (!mvidPlaylist.IsEmpty(filter))
-        {
-          if (!mvidPlaylist.SaveAsJson(xsp, !filter))
-            return false;
-        }
-
-        if (!xsp.empty())
-          videoUrl.AddOption(option, xsp);
+        if (!isGrouped)
+          baseDir += "titles";
         else
-          videoUrl.RemoveOption(option);
-        
-        CFileItemList items2;
-        CDatabase::Filter dbfilter;
-        success2 = db.GetItems(videoUrl.ToString(), items2, dbfilter, sorting);
-
-        db.Close();
-        if (items.Size() <= 0)
-          items.SetPath(videoUrl.ToString());
-
-        items.Append(items2);
-        if (items2.Size())
-        {
-          if (items.Size() > items2.Size())
-            items.SetContent("mixed");
-          else
-            items.SetContent("musicvideos");
-        }
-        items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
+          baseDir += group;
+        URIUtils::AddSlashAtEnd(baseDir);
       }
+
+      CVideoDbUrl videoUrl;
+      if (!videoUrl.FromString(baseDir))
+        return false;
+
+      // store the smartplaylist as JSON in the URL as well
+      std::string xsp;
+      if (!mvidPlaylist.IsEmpty(filter))
+      {
+        if (!mvidPlaylist.SaveAsJson(xsp, !filter))
+          return false;
+      }
+
+      if (!xsp.empty())
+        videoUrl.AddOption(option, xsp);
+      else
+        videoUrl.RemoveOption(option);
+      
+      CFileItemList items2;
+      CDatabase::Filter dbfilter;
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      success2 = database->GetItems(videoUrl.ToString(), items2, dbfilter, sorting);
+
+      if (items.Size() <= 0)
+        items.SetPath(videoUrl.ToString());
+
+      items.Append(items2);
+      if (items2.Size())
+      {
+        if (items.Size() > items2.Size())
+          items.SetContent("mixed");
+        else
+          items.SetContent("musicvideos");
+      }
+      items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
     }
 
     items.SetLabel(playlist.GetName());

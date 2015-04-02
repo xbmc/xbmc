@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "GUIWindowMusicSongs.h"
+#include "DatabaseManager.h"
 #include "Util.h"
 #include "GUIInfoManager.h"
 #include "Application.h"
@@ -333,7 +334,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         else if (!item->IsParentFolder() &&
                  !StringUtils::StartsWithNoCase(item->GetPath(), "new") && item->m_bIsFolder)
         {
-          if (m_musicdatabase.GetAlbumIdByPath(item->GetPath()) > -1)
+          CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+          if (database->GetAlbumIdByPath(item->GetPath()) > -1)
             buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
         }
       }
@@ -423,10 +425,12 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 #endif
 
   case CONTEXT_BUTTON_CDDB:
-    if (m_musicdatabase.LookupCDDBInfo(true))
+  {
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    if (database->LookupCDDBInfo(true))
       Refresh();
     return true;
-
+  }
   case CONTEXT_BUTTON_DELETE:
     OnDeleteItem(itemNumber);
     return true;

@@ -19,6 +19,7 @@
  */
 
 #include "MusicInfoLoader.h"
+#include "DatabaseManager.h"
 #include "MusicDatabase.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
@@ -75,8 +76,6 @@ void CMusicInfoLoader::OnLoaderStart()
   if (m_pProgressCallback)
     m_pProgressCallback->SetProgressMax(m_pVecItems->GetFileCount());
 
-  m_musicDatabase.Open();
-
   if (m_thumbLoader)
     m_thumbLoader->OnLoaderStart();
 }
@@ -96,13 +95,12 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
     XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
     XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
     CArtist artist;
-    CMusicDatabase database;
-    database.Open();
-    if (database.GetArtist(param.GetArtistId(), artist, false))
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    if (database->GetArtist(param.GetArtistId(), artist, false))
       CMusicDatabase::SetPropertiesFromArtist(*pItem,artist);
 
     CAlbum album;
-    if (database.GetAlbum(param.GetAlbumId(), album, false))
+    if (database->GetAlbum(param.GetAlbumId(), album, false))
       CMusicDatabase::SetPropertiesFromAlbum(*pItem,album);
 
     path = pItem->GetMusicInfoTag()->GetURL();
@@ -169,15 +167,17 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       {
         // The item is from another directory as the last one,
         // query the database for the new directory...
-        m_musicDatabase.GetSongsByPath(strPath, m_songsMap);
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        database->GetSongsByPath(strPath, m_songsMap);
         m_databaseHits++;
       }
 
       MAPSONGS::iterator it = m_songsMap.find(pItem->GetPath());
       if (it != m_songsMap.end())
       {  // Have we loaded this item from database before
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
         pItem->GetMusicInfoTag()->SetSong(it->second);
-        pItem->GetMusicInfoTag()->SetCueSheet(m_musicDatabase.LoadCuesheet(it->second.strFileName));
+        pItem->GetMusicInfoTag()->SetCueSheet(database->LoadCuesheet(it->second.strFileName));
         if (!it->second.strThumb.empty())
           pItem->SetArt("thumb", it->second.strThumb);
       }
@@ -185,8 +185,9 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       { // a music db item that doesn't have tag loaded - grab details from the database
         XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
         XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
         CSong song;
-        if (m_musicDatabase.GetSong(param.GetSongId(), song))
+        if (database->GetSong(param.GetSongId(), song))
         {
           pItem->GetMusicInfoTag()->SetSong(song);
           if (!song.strThumb.empty())
@@ -224,8 +225,6 @@ void CMusicInfoLoader::OnLoaderFinish()
     SaveCache(m_strCacheFileName, *m_pVecItems);
   else if (!m_bStop && (m_databaseHits > 1 || m_tagReads > 0))
     m_pVecItems->Save();
-
-  m_musicDatabase.Close();
 
   if (m_thumbLoader)
     m_thumbLoader->OnLoaderFinish();

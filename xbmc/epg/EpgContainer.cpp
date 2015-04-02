@@ -19,6 +19,7 @@
  */
 
 #include "Application.h"
+#include "DatabaseManager.h"
 #include "threads/SingleLock.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -120,11 +121,8 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   /* clear the database entries */
   if (bClearDb && !m_bIgnoreDbForClient)
   {
-    if (!m_database.IsOpen())
-      m_database.Open();
-
-    if (m_database.IsOpen())
-      m_database.DeleteEpg();
+    CEpgDatabase *database = CDatabaseManager::Get().GetEpgDatabase();
+    database->DeleteEpg();
   }
 
   SetChanged();
@@ -140,10 +138,6 @@ void CEpgContainer::Start(void)
 
   {
     CSingleLock lock(m_critSection);
-
-    if (!m_database.IsOpen())
-      m_database.Open();
-
     m_bIsInitialising = true;
     m_bStop = false;
     LoadSettings();
@@ -173,10 +167,6 @@ void CEpgContainer::Start(void)
 bool CEpgContainer::Stop(void)
 {
   StopThread();
-
-  if (m_database.IsOpen())
-    m_database.Close();
-
   CSingleLock lock(m_critSection);
   m_bStarted = false;
 
@@ -207,32 +197,31 @@ void CEpgContainer::LoadFromDB(void)
   if (m_bLoaded || m_bIgnoreDbForClient)
     return;
 
-  if (!m_database.IsOpen())
-    m_database.Open();
-
-  m_iNextEpgId = m_database.GetLastEPGId();
+  CEpgDatabase *database = CDatabaseManager::Get().GetEpgDatabase();
+  if (!database->IsOpen())
+    return;
+  
+  m_iNextEpgId = database->GetLastEPGId();
 
   bool bLoaded(true);
   unsigned int iCounter(0);
-  if (m_database.IsOpen())
+  
+  ShowProgressDialog(false);
+
+  database->DeleteOldEpgEntries();
+  database->Get(*this);
+
+  for (EPGMAP_CITR it = m_epgs.begin(); it != m_epgs.end(); it++)
   {
-    ShowProgressDialog(false);
-
-    m_database.DeleteOldEpgEntries();
-    m_database.Get(*this);
-
-    for (EPGMAP_CITR it = m_epgs.begin(); it != m_epgs.end(); it++)
-    {
-      if (m_bStop)
-        break;
-      UpdateProgressDialog(++iCounter, m_epgs.size(), it->second->Name());
-      lock.Leave();
-      it->second->Load();
-      lock.Enter();
-    }
-
-    CloseProgressDialog();
+    if (m_bStop)
+      break;
+    UpdateProgressDialog(++iCounter, m_epgs.size(), it->second->Name());
+    lock.Leave();
+    it->second->Load();
+    lock.Enter();
   }
+
+  CloseProgressDialog();
 
   m_bLoaded = bLoaded;
 }
@@ -242,7 +231,8 @@ bool CEpgContainer::PersistTables(void)
   m_critSection.lock();
   std::map<unsigned int, CEpg*> copy = m_epgs;
   m_critSection.unlock();
-  return m_database.Persist(copy);
+  CEpgDatabase *database = CDatabaseManager::Get().GetEpgDatabase();
+  return database->Persist(copy);
 }
 
 bool CEpgContainer::PersistAll(void)
@@ -448,8 +438,11 @@ bool CEpgContainer::RemoveOldEntries(void)
     it->second->Cleanup(now);
 
   /* remove the old entries from the database */
-  if (!m_bIgnoreDbForClient && m_database.IsOpen())
-    m_database.DeleteOldEpgEntries();
+  if (!m_bIgnoreDbForClient)
+  {
+    CEpgDatabase *database = CDatabaseManager::Get().GetEpgDatabase();
+    database->DeleteOldEpgEntries();
+  }
 
   CSingleLock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
@@ -470,8 +463,11 @@ bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = fal
     return false;
 
   CLog::Log(LOGDEBUG, "deleting EPG table %s (%d)", epg.Name().c_str(), epg.EpgID());
-  if (bDeleteFromDatabase && !m_bIgnoreDbForClient && m_database.IsOpen())
-    m_database.Delete(*it->second);
+  if (bDeleteFromDatabase && !m_bIgnoreDbForClient)
+  {
+    CEpgDatabase *database = CDatabaseManager::Get().GetEpgDatabase();
+    database->Delete(*it->second);
+  }
 
   it->second->UnregisterObserver(this);
   delete it->second;
@@ -563,24 +559,6 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
   if (bShowProgress && !bOnlyPending)
     ShowProgressDialog();
-
-  if (!m_bIgnoreDbForClient && !m_database.IsOpen())
-  {
-    CLog::Log(LOGERROR, "EpgContainer - %s - could not open the database", __FUNCTION__);
-
-    {
-      CSingleLock lock(m_critSection);
-      m_bIsUpdating = false;
-      m_updateEvent.Set();
-    }
-
-    g_PVRManager.Recordings()->UpdateEpgTags();
-
-    if (bShowProgress && !bOnlyPending)
-      CloseProgressDialog();
-
-    return false;
-  }
 
   vector<CEpg*> invalidTables;
 

@@ -19,6 +19,7 @@
  */
 
 #include "Repository.h"
+#include "DatabaseManager.h"
 #include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
@@ -203,9 +204,8 @@ void CRepository::OnPostInstall(bool restart, bool update, bool modal)
 
 void CRepository::OnPostUnInstall()
 {
-  CAddonDatabase database;
-  database.Open();
-  database.DeleteRepository(ID());
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+  database->DeleteRepository(ID());
 }
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
@@ -244,13 +244,11 @@ bool CRepositoryUpdateJob::DoWork()
     return true; //Nothing to do
 
   // check for updates
-  CAddonDatabase database;
-  database.Open();
-  database.BeginMultipleExecute();
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+  database->BeginMultipleExecute();
 
-  CTextureDatabase textureDB;
-  textureDB.Open();
-  textureDB.BeginMultipleExecute();
+  CTextureDatabase *textureDatabase = CDatabaseManager::Get().GetTextureDatabase();
+  textureDatabase->BeginMultipleExecute();
   VECADDONS notifications;
   for (map<string, AddonPtr>::const_iterator i = addons.begin(); i != addons.end(); ++i)
   {
@@ -259,20 +257,20 @@ bool CRepositoryUpdateJob::DoWork()
       break;
 
     AddonPtr newAddon = i->second;
-    bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon, &database);
+    bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon);
     if (!deps_met && newAddon->Props().broken.empty())
       newAddon->Props().broken = "DEPSNOTMET";
 
     // invalidate the art associated with this item
     if (!newAddon->Props().fanart.empty())
-      textureDB.InvalidateCachedTexture(newAddon->Props().fanart);
+      textureDatabase->InvalidateCachedTexture(newAddon->Props().fanart);
     if (!newAddon->Props().icon.empty())
-      textureDB.InvalidateCachedTexture(newAddon->Props().icon);
+      textureDatabase->InvalidateCachedTexture(newAddon->Props().icon);
 
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(newAddon->ID(),addon);
     if (addon && newAddon->Version() > addon->Version() &&
-        !database.IsAddonBlacklisted(newAddon->ID(),newAddon->Version().asString()) &&
+        !database->IsAddonBlacklisted(newAddon->ID(),newAddon->Version().asString()) &&
         deps_met)
     {
       if (CSettings::Get().GetInt("general.addonupdates") == AUTO_UPDATES_ON)
@@ -291,12 +289,12 @@ bool CRepositoryUpdateJob::DoWork()
     // Check if we should mark the add-on as broken.  We may have a newer version
     // of this add-on in the database or installed - if so, we keep it unbroken.
     bool haveNewer = (addon && addon->Version() > newAddon->Version()) ||
-                     database.GetAddonVersion(newAddon->ID()) > newAddon->Version();
+                     database->GetAddonVersion(newAddon->ID()) > newAddon->Version();
     if (!haveNewer)
     {
       if (!newAddon->Props().broken.empty())
       {
-        if (database.IsAddonBroken(newAddon->ID()).empty())
+        if (database->IsAddonBroken(newAddon->ID()).empty())
         {
           std::string line = g_localizeStrings.Get(24096);
           if (newAddon->Props().broken == "DEPSNOTMET")
@@ -308,11 +306,11 @@ bool CRepositoryUpdateJob::DoWork()
             CAddonMgr::Get().DisableAddon(newAddon->ID());
         }
       }
-      database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
+      database->BreakAddon(newAddon->ID(), newAddon->Props().broken);
     }
   }
-  database.CommitMultipleExecute();
-  textureDB.CommitMultipleExecute();
+  database->CommitMultipleExecute();
+  textureDatabase->CommitMultipleExecute();
   if (!notifications.empty() && CSettings::Get().GetBool("general.addonnotifications"))
   {
     if (notifications.size() == 1)
@@ -330,10 +328,9 @@ bool CRepositoryUpdateJob::DoWork()
 
 bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addons)
 {
-  CAddonDatabase database;
-  database.Open();
+  CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
   string oldReposum;
-  if (!database.GetRepoChecksum(repo->ID(), oldReposum))
+  if (!database->GetRepoChecksum(repo->ID(), oldReposum))
     oldReposum = "";
 
   string reposum;
@@ -381,14 +378,14 @@ bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addo
     {
       for (map<string, AddonPtr>::const_iterator i = uniqueAddons.begin(); i != uniqueAddons.end(); ++i)
         addons.push_back(i->second);
-      database.AddRepository(repo->ID(), addons, reposum, repo->Version());
+      database->AddRepository(repo->ID(), addons, reposum, repo->Version());
     }
   }
   else
   {
     CLog::Log(LOGDEBUG, "Checksum for repository %s not changed.", repo->ID().c_str());
-    database.GetRepository(repo->ID(), addons);
-    database.SetRepoTimestamp(repo->ID(), CDateTime::GetCurrentDateTime().GetAsDBDateTime(), repo->Version());
+    database->GetRepository(repo->ID(), addons);
+    database->SetRepoTimestamp(repo->ID(), CDateTime::GetCurrentDateTime().GetAsDBDateTime(), repo->Version());
   }
   return true;
 }

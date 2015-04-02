@@ -25,6 +25,7 @@
 
 #include "CDDARipper.h"
 #include "CDDARipJob.h"
+#include "DatabaseManager.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "filesystem/CDDADirectory.h"
@@ -314,11 +315,9 @@ void CCDDARipper::OnJobComplete(unsigned int jobID, bool success, CJob* job)
       bool unimportant;
       int source = CUtil::GetMatchingSource(dir, *CMediaSourceSettings::Get().CMediaSourceSettings::GetSources("music"), unimportant);
 
-      CMusicDatabase database;
-      database.Open();
-      if (source>=0 && database.InsideScannedPath(dir))
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      if (source>=0 && database->InsideScannedPath(dir))
         g_application.StartMusicScan(dir, false);
-      database.Close();
     }
     return CJobQueue::OnJobComplete(jobID, success, job);
   }

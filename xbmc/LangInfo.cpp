@@ -21,6 +21,7 @@
 #include "LangInfo.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "DatabaseManager.h"
 #include "FileItem.h"
 #include "Util.h"
 #include "addons/AddonInstaller.h"
@@ -649,31 +650,28 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
     {
       CLog::Log(LOGWARNING, "CLangInfo: unable to find an installed language addon matching \"%s\". Trying to find an installable language...", language.c_str());
 
-      CAddonDatabase addondb;
-      if (addondb.Open())
-      {
-        // update the addon repositories to check if there's a matching language addon available for download
-        CAddonInstaller::Get().UpdateRepos(true, true);
+      // update the addon repositories to check if there's a matching language addon available for download
+      CAddonInstaller::Get().UpdateRepos(true, true);
 
-        ADDON::VECADDONS languageAddons;
-        if (addondb.GetAddons(languageAddons, ADDON::ADDON_RESOURCE_LANGUAGE) && !languageAddons.empty())
+      ADDON::VECADDONS languageAddons;
+      CAddonDatabase *database = CDatabaseManager::Get().GetAddonDatabase();
+
+      if (database->GetAddons(languageAddons, ADDON::ADDON_RESOURCE_LANGUAGE) && !languageAddons.empty())
+      {
+        // try to get the proper language addon by its name from all available language addons
+        if (ADDON::CLanguageResource::FindLanguageAddonByName(language, newLanguage, languageAddons))
         {
-          // try to get the proper language addon by its name from all available language addons
-          if (ADDON::CLanguageResource::FindLanguageAddonByName(language, newLanguage, languageAddons))
-          {
-            if (CAddonInstaller::Get().Install(newLanguage, true, "", false, false))
-              CLog::Log(LOGINFO, "CLangInfo: successfully installed language addon \"%s\" matching current language \"%s\"", newLanguage.c_str(), language.c_str());
-            else
-              CLog::Log(LOGERROR, "CLangInfo: failed to installed language addon \"%s\" matching current language \"%s\"", newLanguage.c_str(), language.c_str());
-          }
+          if (CAddonInstaller::Get().Install(newLanguage, true, "", false, false))
+            CLog::Log(LOGINFO, "CLangInfo: successfully installed language addon \"%s\" matching current language \"%s\"", newLanguage.c_str(), language.c_str());
           else
-            CLog::Log(LOGERROR, "CLangInfo: unable to match old language \"%s\" to any available language addon", language.c_str());
+            CLog::Log(LOGERROR, "CLangInfo: failed to installed language addon \"%s\" matching current language \"%s\"", newLanguage.c_str(), language.c_str());
         }
         else
-          CLog::Log(LOGERROR, "CLangInfo: no language addons available to match against \"%s\"", language.c_str());
+          CLog::Log(LOGERROR, "CLangInfo: unable to match old language \"%s\" to any available language addon", language.c_str());
       }
       else
-        CLog::Log(LOGERROR, "CLangInfo: unable to open addon database to look for a language addon matching \"%s\"", language.c_str());
+        CLog::Log(LOGERROR, "CLangInfo: no language addons available to match against \"%s\"", language.c_str());
+
     }
 
     // if the new language matches the default language we are loading the

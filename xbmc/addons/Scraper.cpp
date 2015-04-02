@@ -18,6 +18,7 @@
 *
 */
 #include "Scraper.h"
+#include "DatabaseManager.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "filesystem/CurlFile.h"
@@ -397,14 +398,14 @@ bool CScraper::IsInUse() const
 {
   if (Supports(CONTENT_ALBUMS) || Supports(CONTENT_ARTISTS))
   { // music scraper
-    CMusicDatabase db;
-    if (db.Open() && db.ScraperInUse(ID()))
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    if (database->ScraperInUse(ID()))
       return true;
   }
   else
   { // video scraper
-    CVideoDatabase db;
-    if (db.Open() && db.ScraperInUse(ID()))
+    CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+    if (database->ScraperInUse(ID()))
       return true;
   }
   return false;

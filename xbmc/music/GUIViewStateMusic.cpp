@@ -19,6 +19,7 @@
  */
 
 #include "GUIViewStateMusic.h"
+#include "DatabaseManager.h"
 #include "PlayListPlayer.h"
 #include "video/VideoDatabase.h"
 #include "settings/AdvancedSettings.h"

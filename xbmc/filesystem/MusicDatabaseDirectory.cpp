@@ -19,6 +19,7 @@
  */
 
 #include "MusicDatabaseDirectory.h"
+#include "DatabaseManager.h"
 #include "utils/URIUtils.h"
 #include "MusicDatabaseDirectory/QueryParams.h"
 #include "music/MusicDatabase.h"
@@ -151,20 +152,18 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
   CQueryParams params;
   CDirectoryNode::GetDatabaseInfo(path, params);
 
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
   // get genre
   if (params.GetGenreId() >= 0)
-    strLabel += musicdatabase.GetGenreById(params.GetGenreId());
+    strLabel += database->GetGenreById(params.GetGenreId());
 
   // get artist
   if (params.GetArtistId() >= 0)
   {
     if (!strLabel.empty())
       strLabel += " / ";
-    strLabel += musicdatabase.GetArtistById(params.GetArtistId());
+    strLabel += database->GetArtistById(params.GetArtistId());
   }
 
   // get album
@@ -172,7 +171,7 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
   {
     if (!strLabel.empty())
       strLabel += " / ";
-    strLabel += musicdatabase.GetAlbumById(params.GetAlbumId());
+    strLabel += database->GetAlbumById(params.GetAlbumId());
   }
 
   if (strLabel.empty())

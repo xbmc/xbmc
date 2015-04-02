@@ -22,6 +22,7 @@
 
 #include "MediaSettings.h"
 #include "Application.h"
+#include "DatabaseManager.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -281,20 +282,18 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
       g_mediaManager.GetLocalDrives(shares);
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
       {
-        CMusicDatabase musicdatabase;
-        musicdatabase.Open();
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
         if ( retVal == 1 )
         {
           path = URIUtils::AddFileToFolder(path, "karaoke.html");
-          musicdatabase.ExportKaraokeInfo( path, true );
+          database->ExportKaraokeInfo( path, true );
         }
         else
         {
           path = URIUtils::AddFileToFolder(path, "karaoke.csv");
-          musicdatabase.ExportKaraokeInfo( path, false );
+          database->ExportKaraokeInfo( path, false );
         }
-        musicdatabase.Close();
       }
     }
   }
@@ -305,10 +304,8 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "karaoke.csv", g_localizeStrings.Get(651) , path))
     {
-      CMusicDatabase musicdatabase;
-      musicdatabase.Open();
-      musicdatabase.ImportKaraokeInfo(path);
-      musicdatabase.Close();
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      database->ImportKaraokeInfo(path);
     }
   }
   else if (settingId == "musiclibrary.cleanup")
@@ -325,10 +322,8 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "musicdb.xml", g_localizeStrings.Get(651) , path))
     {
-      CMusicDatabase musicdatabase;
-      musicdatabase.Open();
-      musicdatabase.ImportFromXML(path);
-      musicdatabase.Close();
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      database->ImportFromXML(path);
     }
   }
   else if (settingId == "videolibrary.cleanup")
@@ -345,10 +340,8 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651) , path))
     {
-      CVideoDatabase videodatabase;
-      videodatabase.Open();
-      videodatabase.ImportFromXML(path);
-      videodatabase.Close();
+      CVideoDatabase *database = CDatabaseManager::Get().GetVideoDatabase();
+      database->ImportFromXML(path);
     }
   }
 }
