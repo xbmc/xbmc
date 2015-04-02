@@ -843,7 +843,7 @@ bool CNetworkServices::IsUPnPClientRunning()
 bool CNetworkServices::StopUPnPClient()
 {
 #ifdef HAS_UPNP
-  if (!IsUPnPRendererRunning())
+  if (!IsUPnPClientRunning())
     return true;
 
   CLog::Log(LOGNOTICE, "stopping upnp client");
@@ -911,7 +911,7 @@ bool CNetworkServices::IsUPnPServerRunning()
 bool CNetworkServices::StopUPnPServer()
 {
 #ifdef HAS_UPNP
-  if (!IsUPnPRendererRunning())
+  if (!IsUPnPServerRunning())
     return true;
 
   StopUPnPClient();
