@@ -42,6 +42,7 @@ static XbmcThreads::ThreadLocal<CAddonDatabase> addonDatabase;
 static XbmcThreads::ThreadLocal<CTextureDatabase> textureDatabase;
 static XbmcThreads::ThreadLocal<CEpgDatabase> epgDatabase;
 static XbmcThreads::ThreadLocal<CPVRDatabase> pvrDatabase;
+static XbmcThreads::ThreadLocal<CMusicDatabase> musicDatabase;
 
 CDatabaseManager &CDatabaseManager::Get()
 {
@@ -191,6 +192,19 @@ PVR::CPVRDatabase* CDatabaseManager::GetPVRDatabase()
   return database;
 }
 
+CMusicDatabase* CDatabaseManager::GetMusicDatabase()
+{
+  CSingleLock lock(m_section);
+  CMusicDatabase *database = musicDatabase.get();
+  if (database == NULL)
+  {
+    database = new CMusicDatabase();
+    OpenDatabase(*database);
+    musicDatabase.set(database);
+  }
+  return database;
+}
+
 void CDatabaseManager::CloseDatabases()
 {
   CSingleLock lock(m_section);
@@ -224,5 +238,10 @@ void CDatabaseManager::CloseDatabases()
   {
     delete pvrDatabase.get();
     pvrDatabase.set(NULL);
+  }
+  if(musicDatabase.get() != NULL)
+  {
+    delete musicDatabase.get();
+    musicDatabase.set(NULL);
   }
 }

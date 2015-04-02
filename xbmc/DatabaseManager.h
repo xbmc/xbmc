@@ -27,6 +27,7 @@
 
 class CDatabase;
 class CAddonDatabase;
+class CMusicDatabase;
 class CTextureDatabase;
 class CViewDatabase;
 class CVideoDatabase;
@@ -82,6 +83,7 @@ public:
 
   CAddonDatabase* GetAddonDatabase();
   EPG::CEpgDatabase* GetEpgDatabase();
+  CMusicDatabase* GetMusicDatabase();
   PVR::CPVRDatabase* GetPVRDatabase();
   CTextureDatabase* GetTextureDatabase();
   CViewDatabase* GetViewDatabase();
