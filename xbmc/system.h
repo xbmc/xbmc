@@ -52,8 +52,6 @@
 
 #define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_CDDA
-#define HAS_FILESYSTEM_RTV
-#define HAS_FILESYSTEM_DAAP
 #define HAS_FILESYSTEM_SAP
 
 #ifdef HAVE_LIBSMBCLIENT
@@ -172,7 +170,9 @@
 #endif
 #endif
 #define HAS_LINUX_NETWORK
+#ifdef HAVE_LIRC
 #define HAS_LIRC
+#endif
 #ifdef HAVE_LIBPULSE
 #define HAS_PULSEAUDIO
 #endif

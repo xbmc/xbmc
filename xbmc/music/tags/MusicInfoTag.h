@@ -20,45 +20,23 @@
  */
 
 class CSong;
-class CAlbum;
 class CArtist;
 
-#include <vector>
-#include <string>
 #include <stdint.h>
+#include <string>
+#include <vector>
 
+#include "ReplayGain.h"
+#include "XBDateTime.h"
+#include "music/Album.h"
+#include "music/EmbeddedArt.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
-#include "XBDateTime.h"
-#include "ReplayGain.h"
 
 
 namespace MUSIC_INFO
 {
-  class EmbeddedArtInfo : public IArchivable
-  {
-  public:
-    EmbeddedArtInfo() {};
-    EmbeddedArtInfo(size_t size, const std::string &mime);
-    void set(size_t size, const std::string &mime);
-    void clear();
-    bool empty() const;
-    bool matches(const EmbeddedArtInfo &right) const;
-    virtual void Archive(CArchive& ar);
-    size_t      size;
-    std::string mime;
-  };
-
-  class EmbeddedArt : public EmbeddedArtInfo
-  {
-  public:
-    EmbeddedArt() {};
-    EmbeddedArt(const uint8_t *data, size_t size, const std::string &mime);
-    void set(const uint8_t *data, size_t size, const std::string &mime);
-    std::vector<uint8_t> data;
-  };
-
 class CMusicInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
@@ -100,6 +78,7 @@ public:
   int  GetPlayCount() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
+  CAlbum::ReleaseType GetAlbumReleaseType() const;
 
   void SetURL(const std::string& strURL);
   void SetTitle(const std::string& strTitle);
@@ -138,6 +117,7 @@ public:
   void SetCompilation(bool compilation);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
+  void SetAlbumReleaseType(CAlbum::ReleaseType releaseType);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -195,6 +175,7 @@ protected:
   int m_iTimesPlayed;
   int m_iAlbumId;
   SYSTEMTIME m_dwReleaseDate;
+  CAlbum::ReleaseType m_albumReleaseType;
 
   EmbeddedArtInfo m_coverArt; ///< art information
 

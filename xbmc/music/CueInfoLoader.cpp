@@ -18,6 +18,7 @@
  *
  */
 #include "CueInfoLoader.h"
+#include "music/tags/MusicInfoTag.h"
 
 void CueInfoLoader::Load(const std::string& aStrCuesheet, CFileItemPtr aFileItem)
 {

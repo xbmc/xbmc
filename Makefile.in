@@ -28,8 +28,6 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
 
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/SlingboxLib/SlingboxLib.a \
-                   lib/libRTV/librtv.a \
-                   lib/libXDAAP/libxdaap.a \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
                    xbmc/cores/AudioEngine/audioengine.a \
@@ -419,8 +417,6 @@ externals: codecs libs visualizations screensavers libaddon
 
 xcode_depends: \
 	codecs libs visualizations screensavers eventclients skins libaddon \
-	lib/libRTV/librtv.a \
-	lib/libXDAAP/libxdaap.a \
 	lib/SlingboxLib/SlingboxLib.a
 
 DYNOBJSXBMC= \

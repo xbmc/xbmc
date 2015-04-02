@@ -1270,7 +1270,9 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr ""
 
-#empty string with id 299
+msgctxt "#299"
+msgid "Bookmark %i"
+msgstr ""
 
 msgctxt "#300"
 msgid "MP1 capable receiver"
@@ -6975,7 +6977,12 @@ msgctxt "#14110"
 msgid "Long date format"
 msgstr ""
 
-#empty strings from id 14111 to 15011
+#empty strings from id 14111 to 15010
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#15011"
+msgid "%i Items failed to export"
+msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15012"
@@ -10153,10 +10160,7 @@ msgctxt "#20173"
 msgid "FTP server"
 msgstr ""
 
-#: xbmc/network/GUIDialogNetworkSetup.cpp
-msgctxt "#20174"
-msgid "iTunes music share (DAAP)"
-msgstr ""
+#empty string with id 20174
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20175"
@@ -10375,7 +10379,7 @@ msgid "Unable to write to folder:"
 msgstr ""
 
 msgctxt "#20303"
-msgid "Do you want to skip and proceed?"
+msgid ""
 msgstr ""
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
@@ -13222,7 +13226,7 @@ msgctxt "#33039"
 msgid "%s Streams"
 msgstr ""
 
-#. Used in the media source dialog. Will result in "ReplayTV Devices" and "HDHomerun Devices"
+#. Used in the media source dialog. Will result in "HDHomerun Devices"
 #: dialogs/GUIDialogMediaSource.cpp
 msgctxt "#33040"
 msgid "%s Devices"

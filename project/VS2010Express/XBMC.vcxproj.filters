@@ -1963,12 +1963,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\CurlFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\DAAPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\DAAPFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\DAVDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -2078,12 +2072,6 @@
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\RSSDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\RTVDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\RTVFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\SAPDirectory.cpp">
@@ -3261,6 +3249,7 @@
     <ClCompile Include="..\..\xbmc\music\CueInfoLoader.cpp">
       <Filter>music</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5014,12 +5003,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\CurlFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\DAAPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\DAAPFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\DAVDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -5135,12 +5118,6 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\RSSDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\RTVDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\RTVFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\SAPDirectory.h">
@@ -6344,6 +6321,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\KeyboardLayoutManager.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\EmbeddedArt.h">
+      <Filter>music</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

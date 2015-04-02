@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="5" type="filter">
+  <label>132</label>
+  <icon>DefaultMusicAlbums.png</icon>
+  <content>musicvideos</content>
+  <group>albums</group>
+</node>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="4" type="folder" visible="Library.HasContent(Singles)">
+  <label>1050</label>
+  <icon>DefaultMusicSongs.png</icon>
+  <path>musicdb://singles/</path>
+</node>

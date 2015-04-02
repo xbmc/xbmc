@@ -683,7 +683,8 @@
           { "type": "object", "properties": { "artist": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "$ref": "List.Filter.Albums" }
         ]
-      }
+      },
+      { "name": "includesingles", "type": "boolean", "default": false }
     ],
     "returns": {
       "type": "object",
@@ -729,7 +730,8 @@
           { "type": "object", "properties": { "album": { "type": "string", "minLength": 1, "required": true } }, "additionalProperties": false },
           { "$ref": "List.Filter.Songs" }
         ]
-      }
+      },
+      { "name": "includesingles", "type": "boolean", "default": true }
     ],
     "returns": {
       "type": "object",

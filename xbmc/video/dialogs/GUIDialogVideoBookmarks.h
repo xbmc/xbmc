@@ -81,7 +81,6 @@ protected:
 private:
   void UpdateItem(unsigned int chapterIdx);
 
-  int m_chapterOffset;
   int m_jobsStarted;
   std::string m_filePath;
   CCriticalSection m_refreshSection;

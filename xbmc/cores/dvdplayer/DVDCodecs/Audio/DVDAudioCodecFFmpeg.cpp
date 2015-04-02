@@ -24,6 +24,10 @@
 #endif
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"
+#include "settings/AdvancedSettings.h"
+extern "C" {
+#include "libavutil/opt.h"
+}
 
 #if defined(TARGET_DARWIN)
 #include "settings/Settings.h"
@@ -87,6 +91,9 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
     }
   }
+
+  if (g_advancedSettings.m_audioApplyDrc >= 0.0)
+    av_opt_set_double(m_pCodecContext, "drc_scale", g_advancedSettings.m_audioApplyDrc, AV_OPT_SEARCH_CHILDREN);
 
   if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {

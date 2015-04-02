@@ -191,10 +191,6 @@ lib/cpluff/stamp-h1
 # /lib/libcec
 /lib/libcec/libcec
 
-# /lib/enca
-/lib/enca/libenca_win32/Debug
-/lib/enca/libenca_win32/Release
-
 # /lib/fribidi
 /lib/fribidi/libfridibidi/Debug
 /lib/fribidi/libfridibidi/Release
@@ -909,11 +905,6 @@ lib/cpluff/stamp-h1
 
 /lib/libhdhomerun/Makefile
 
-# /lib/libRTV/
-/lib/libRTV/Makefile
-/lib/libRTV/Debug
-/lib/libRTV/Release
-
 /lib/libsquish/Makefile
 /lib/libsquish/lib/squishd.lib
 /lib/libsquish/lib/squish.lib
@@ -921,11 +912,6 @@ lib/cpluff/stamp-h1
 /lib/libsquish/vs7/squish/Release
 
 /lib/libUPnP/Makefile
-
-# /lib/libXDAAP
-/lib/libXDAAP/Makefile
-/lib/libXDAAP/libXDAAP_win32/Debug
-/lib/libXDAAP/libXDAAP_win32/Release
 
 # /portable_data
 /portable_data

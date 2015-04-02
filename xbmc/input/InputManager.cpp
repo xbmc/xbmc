@@ -84,7 +84,6 @@ CInputManager& CInputManager::Get()
 void CInputManager::InitializeInputs()
 {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  m_RemoteControl.SetEnabled(true);
   m_RemoteControl.Initialize();
 #endif
 
