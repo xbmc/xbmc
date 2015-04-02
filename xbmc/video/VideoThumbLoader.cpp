@@ -88,7 +88,6 @@ bool CThumbExtractor::DoWork()
 {
   if (m_item.IsLiveTV()
   ||  URIUtils::IsUPnP(m_item.GetPath())
-  ||  m_item.IsDAAP()
   ||  m_item.IsDVD()
   ||  m_item.IsDiscImage()
   ||  m_item.IsDVDFile(false, true)

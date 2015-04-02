@@ -915,7 +915,6 @@
 		DF93D69B1444A8B1007C6459 /* FileCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6671444A8B0007C6459 /* FileCache.cpp */; };
 		DF93D69C1444A8B1007C6459 /* CDDAFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6691444A8B0007C6459 /* CDDAFile.cpp */; };
 		DF93D69D1444A8B1007C6459 /* CurlFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D66B1444A8B0007C6459 /* CurlFile.cpp */; };
-		DF93D69E1444A8B1007C6459 /* DAAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D66D1444A8B0007C6459 /* DAAPFile.cpp */; };
 		DF93D69F1444A8B1007C6459 /* DirectoryFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D66F1444A8B0007C6459 /* DirectoryFactory.cpp */; };
 		DF93D6A01444A8B1007C6459 /* FileDirectoryFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6711444A8B0007C6459 /* FileDirectoryFactory.cpp */; };
 		DF93D6A11444A8B1007C6459 /* FileReaderFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6731444A8B0007C6459 /* FileReaderFile.cpp */; };
@@ -924,7 +923,6 @@
 		DF93D6A61444A8B1007C6459 /* NFSFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D67D1444A8B0007C6459 /* NFSFile.cpp */; };
 		DF93D6A71444A8B1007C6459 /* PipeFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D67F1444A8B0007C6459 /* PipeFile.cpp */; };
 		DF93D6A81444A8B1007C6459 /* RarFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6811444A8B0007C6459 /* RarFile.cpp */; };
-		DF93D6A91444A8B1007C6459 /* RTVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6831444A8B0007C6459 /* RTVFile.cpp */; };
 		DF93D6AA1444A8B1007C6459 /* SFTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6851444A8B0007C6459 /* SFTPFile.cpp */; };
 		DF93D6AB1444A8B1007C6459 /* ShoutcastFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6871444A8B0007C6459 /* ShoutcastFile.cpp */; };
 		DF93D6AC1444A8B1007C6459 /* SlingboxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */; };
@@ -1034,8 +1032,6 @@
 		DFF0EC531752821B002DA3A4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EB8D17528174002DA3A4 /* Foundation.framework */; };
 		DFF0EC891752822E002DA3A4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EB9517528174002DA3A4 /* UIKit.framework */; };
 		DFF0EC8C17528283002DA3A4 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EC8B17528283002DA3A4 /* VideoToolbox.framework */; };
-		DFF0ECA4175282AD002DA3A4 /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
-		DFF0ECA6175282AD002DA3A4 /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
 		DFF0ECA7175282AD002DA3A4 /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		DFF0F0EF17528350002DA3A4 /* archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CE60D25F9FC00618676 /* archive.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		DFF0F0F017528350002DA3A4 /* arcread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CE80D25F9FC00618676 /* arcread.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
@@ -1253,8 +1249,6 @@
 		DFF0F1ED17528350002DA3A4 /* CDDAFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6691444A8B0007C6459 /* CDDAFile.cpp */; };
 		DFF0F1EE17528350002DA3A4 /* CircularCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B6A2133D342100FC2B16 /* CircularCache.cpp */; };
 		DFF0F1EF17528350002DA3A4 /* CurlFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D66B1444A8B0007C6459 /* CurlFile.cpp */; };
-		DFF0F1F017528350002DA3A4 /* DAAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16AA0D25F9FA00618676 /* DAAPDirectory.cpp */; };
-		DFF0F1F117528350002DA3A4 /* DAAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D66D1444A8B0007C6459 /* DAAPFile.cpp */; };
 		DFF0F1F217528350002DA3A4 /* DAVCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812116C8284F0008EEA0 /* DAVCommon.cpp */; };
 		DFF0F1F317528350002DA3A4 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		DFF0F1F417528350002DA3A4 /* DAVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812316C828500008EEA0 /* DAVFile.cpp */; };
@@ -1323,8 +1317,6 @@
 		DFF0F23C17528350002DA3A4 /* RarFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6811444A8B0007C6459 /* RarFile.cpp */; };
 		DFF0F23D17528350002DA3A4 /* RarManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17480D25F9FA00618676 /* RarManager.cpp */; };
 		DFF0F23E17528350002DA3A4 /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
-		DFF0F23F17528350002DA3A4 /* RTVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */; };
-		DFF0F24017528350002DA3A4 /* RTVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6831444A8B0007C6459 /* RTVFile.cpp */; };
 		DFF0F24117528350002DA3A4 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
 		DFF0F24217528350002DA3A4 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		DFF0F24317528350002DA3A4 /* SFTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */; };
@@ -1962,7 +1954,6 @@
 		E38E20030D25F9FD00618676 /* CDDADirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E169B0D25F9FA00618676 /* CDDADirectory.cpp */; };
 		E38E20040D25F9FD00618676 /* cddb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E169D0D25F9FA00618676 /* cddb.cpp */; };
 		E38E20050D25F9FD00618676 /* cdioSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E169F0D25F9FA00618676 /* cdioSupport.cpp */; };
-		E38E20060D25F9FD00618676 /* DAAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16AA0D25F9FA00618676 /* DAAPDirectory.cpp */; };
 		E38E20070D25F9FD00618676 /* Directory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16AC0D25F9FA00618676 /* Directory.cpp */; };
 		E38E20090D25F9FD00618676 /* DirectoryHistory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16B00D25F9FA00618676 /* DirectoryHistory.cpp */; };
 		E38E200B0D25F9FD00618676 /* DllLibCurl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16B40D25F9FA00618676 /* DllLibCurl.cpp */; };
@@ -2001,7 +1992,6 @@
 		E38E20510D25F9FD00618676 /* PluginDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17440D25F9FA00618676 /* PluginDirectory.cpp */; };
 		E38E20520D25F9FD00618676 /* RarDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17460D25F9FA00618676 /* RarDirectory.cpp */; };
 		E38E20530D25F9FD00618676 /* RarManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17480D25F9FA00618676 /* RarManager.cpp */; };
-		E38E20540D25F9FD00618676 /* RTVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */; };
 		E38E20580D25F9FD00618676 /* SmartPlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */; };
 		E38E205B0D25F9FD00618676 /* StackDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17590D25F9FA00618676 /* StackDirectory.cpp */; };
 		E38E205C0D25F9FD00618676 /* UPnPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E175B0D25F9FA00618676 /* UPnPDirectory.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP -I$SRCROOT/lib/libUPnP/Neptune/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum  -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"; }; };
@@ -2189,8 +2179,6 @@
 		E38E23940D2626E600618676 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238D0D2626E600618676 /* Cocoa.framework */; };
 		E38E23960D2626E600618676 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238F0D2626E600618676 /* CoreServices.framework */; };
 		E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23910D2626E600618676 /* OpenGL.framework */; };
-		E38E25690D2639F100618676 /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
-		E38E256D0D263A1C00618676 /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
 		E38E25780D263BF600618676 /* unpack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25770D263BF600618676 /* unpack.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E38E257C0D263C4400618676 /* rar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E257B0D263C4400618676 /* rar.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E38E25C00D263DC100618676 /* DVDFactoryDemuxer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */; };
@@ -2444,8 +2432,6 @@
 		E4991256174E5D8F00741B6D /* CDDAFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6691444A8B0007C6459 /* CDDAFile.cpp */; };
 		E4991257174E5D8F00741B6D /* CircularCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B6A2133D342100FC2B16 /* CircularCache.cpp */; };
 		E4991258174E5D8F00741B6D /* CurlFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D66B1444A8B0007C6459 /* CurlFile.cpp */; };
-		E4991259174E5D8F00741B6D /* DAAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16AA0D25F9FA00618676 /* DAAPDirectory.cpp */; };
-		E499125A174E5D8F00741B6D /* DAAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D66D1444A8B0007C6459 /* DAAPFile.cpp */; };
 		E499125B174E5D8F00741B6D /* DAVCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812116C8284F0008EEA0 /* DAVCommon.cpp */; };
 		E499125C174E5D8F00741B6D /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		E499125D174E5D8F00741B6D /* DAVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812316C828500008EEA0 /* DAVFile.cpp */; };
@@ -2514,8 +2500,6 @@
 		E49912A5174E5D9900741B6D /* RarFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6811444A8B0007C6459 /* RarFile.cpp */; };
 		E49912A6174E5D9900741B6D /* RarManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17480D25F9FA00618676 /* RarManager.cpp */; };
 		E49912A7174E5D9900741B6D /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
-		E49912A8174E5D9900741B6D /* RTVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */; };
-		E49912A9174E5D9900741B6D /* RTVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6831444A8B0007C6459 /* RTVFile.cpp */; };
 		E49912AA174E5D9900741B6D /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
 		E49912AB174E5D9900741B6D /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		E49912AC174E5D9900741B6D /* SFTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */; };
@@ -3038,8 +3022,6 @@
 		E499156F174E65AC00741B6D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		E4991574174E661400741B6D /* WinEventsIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991571174E661300741B6D /* WinEventsIOS.mm */; };
 		E4991575174E661400741B6D /* WinSystemIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991573174E661300741B6D /* WinSystemIOS.mm */; };
-		E499157E174E681200741B6D /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
-		E4991580174E681600741B6D /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
 		E4991581174E681600741B6D /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		E4991582174E682F00741B6D /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
 		E4991583174E684000741B6D /* CocoaInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */; };
@@ -3554,6 +3536,7 @@
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardLayoutManager.cpp; sourceTree = "<group>"; };
 		395897141AAD94F00033D27C /* KeyboardLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardLayoutManager.h; sourceTree = "<group>"; };
+		395938731AC28F5A0053A590 /* EmbeddedArt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbeddedArt.h; sourceTree = "<group>"; };
 		395C29BA1A94733100EBC7AD /* Key.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Key.cpp; sourceTree = "<group>"; };
 		395C29BB1A94733100EBC7AD /* Key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Key.h; sourceTree = "<group>"; };
 		395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Webinterface.cpp; sourceTree = "<group>"; };
@@ -4532,8 +4515,6 @@
 		DF93D66A1444A8B0007C6459 /* CDDAFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDAFile.h; sourceTree = "<group>"; };
 		DF93D66B1444A8B0007C6459 /* CurlFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CurlFile.cpp; sourceTree = "<group>"; };
 		DF93D66C1444A8B0007C6459 /* CurlFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurlFile.h; sourceTree = "<group>"; };
-		DF93D66D1444A8B0007C6459 /* DAAPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAAPFile.cpp; sourceTree = "<group>"; };
-		DF93D66E1444A8B0007C6459 /* DAAPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAAPFile.h; sourceTree = "<group>"; };
 		DF93D66F1444A8B0007C6459 /* DirectoryFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryFactory.cpp; sourceTree = "<group>"; };
 		DF93D6701444A8B0007C6459 /* DirectoryFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryFactory.h; sourceTree = "<group>"; };
 		DF93D6711444A8B0007C6459 /* FileDirectoryFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileDirectoryFactory.cpp; sourceTree = "<group>"; };
@@ -4550,8 +4531,6 @@
 		DF93D6801444A8B0007C6459 /* PipeFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipeFile.h; sourceTree = "<group>"; };
 		DF93D6811444A8B0007C6459 /* RarFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RarFile.cpp; sourceTree = "<group>"; };
 		DF93D6821444A8B0007C6459 /* RarFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RarFile.h; sourceTree = "<group>"; };
-		DF93D6831444A8B0007C6459 /* RTVFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTVFile.cpp; sourceTree = "<group>"; };
-		DF93D6841444A8B0007C6459 /* RTVFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTVFile.h; sourceTree = "<group>"; };
 		DF93D6851444A8B0007C6459 /* SFTPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SFTPFile.cpp; sourceTree = "<group>"; };
 		DF93D6861444A8B0007C6459 /* SFTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFTPFile.h; sourceTree = "<group>"; };
 		DF93D6871444A8B0007C6459 /* ShoutcastFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShoutcastFile.cpp; sourceTree = "<group>"; };
@@ -4922,8 +4901,6 @@
 		E38E169E0D25F9FA00618676 /* cddb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cddb.h; sourceTree = "<group>"; };
 		E38E169F0D25F9FA00618676 /* cdioSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cdioSupport.cpp; sourceTree = "<group>"; };
 		E38E16A00D25F9FA00618676 /* cdioSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdioSupport.h; sourceTree = "<group>"; };
-		E38E16AA0D25F9FA00618676 /* DAAPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAAPDirectory.cpp; sourceTree = "<group>"; };
-		E38E16AB0D25F9FA00618676 /* DAAPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAAPDirectory.h; sourceTree = "<group>"; };
 		E38E16AC0D25F9FA00618676 /* Directory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Directory.cpp; sourceTree = "<group>"; };
 		E38E16AD0D25F9FA00618676 /* Directory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Directory.h; sourceTree = "<group>"; };
 		E38E16B00D25F9FA00618676 /* DirectoryHistory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryHistory.cpp; sourceTree = "<group>"; };
@@ -5001,8 +4978,6 @@
 		E38E17470D25F9FA00618676 /* RarDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RarDirectory.h; sourceTree = "<group>"; };
 		E38E17480D25F9FA00618676 /* RarManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RarManager.cpp; sourceTree = "<group>"; };
 		E38E17490D25F9FA00618676 /* RarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RarManager.h; sourceTree = "<group>"; };
-		E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTVDirectory.cpp; sourceTree = "<group>"; };
-		E38E174C0D25F9FA00618676 /* RTVDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTVDirectory.h; sourceTree = "<group>"; };
 		E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmartPlaylistDirectory.cpp; sourceTree = "<group>"; };
 		E38E17540D25F9FA00618676 /* SmartPlaylistDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartPlaylistDirectory.h; sourceTree = "<group>"; };
 		E38E17560D25F9FA00618676 /* SMBDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMBDirectory.h; sourceTree = "<group>"; };
@@ -5185,7 +5160,6 @@
 		E38E1A190D25F9FB00618676 /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interface.h; sourceTree = "<group>"; };
 		E38E1A1D0D25F9FB00618676 /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
 		E38E1A1E0D25F9FB00618676 /* netclient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netclient.h; sourceTree = "<group>"; };
-		E38E1A1F0D25F9FB00618676 /* rtv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtv.h; sourceTree = "<group>"; };
 		E38E1A200D25F9FB00618676 /* sleep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sleep.h; sourceTree = "<group>"; };
 		E38E1AB80D25F9FB00618676 /* SConstruct */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConstruct; sourceTree = "<group>"; };
 		E38E1C850D25F9FC00618676 /* client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = client.h; sourceTree = "<group>"; };
@@ -5434,8 +5408,6 @@
 		E38E238F0D2626E600618676 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E38E23910D2626E600618676 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		E38E25340D26365C00618676 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
-		E38E25680D2639F100618676 /* libxdaap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxdaap.a; path = lib/libXDAAP/libxdaap.a; sourceTree = "<group>"; };
-		E38E256C0D263A1C00618676 /* librtv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librtv.a; path = lib/libRTV/librtv.a; sourceTree = "<group>"; };
 		E38E25770D263BF600618676 /* unpack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unpack.cpp; sourceTree = "<group>"; };
 		E38E257B0D263C4400618676 /* rar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rar.cpp; sourceTree = "<group>"; };
 		E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFactoryDemuxer.cpp; sourceTree = "<group>"; };
@@ -5792,8 +5764,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E38E256D0D263A1C00618676 /* librtv.a in Frameworks */,
-				E38E25690D2639F100618676 /* libxdaap.a in Frameworks */,
 				18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */,
 				F56C8CE7131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F5364D55155B3C7B0016D00B /* libm.dylib in Frameworks */,
@@ -5833,8 +5803,6 @@
 				DFF0EBC41752820F002DA3A4 /* CoreGraphics.framework in Frameworks */,
 				DFF0EC531752821B002DA3A4 /* Foundation.framework in Frameworks */,
 				DFF0EC891752822E002DA3A4 /* UIKit.framework in Frameworks */,
-				DFF0ECA4175282AD002DA3A4 /* librtv.a in Frameworks */,
-				DFF0ECA6175282AD002DA3A4 /* libxdaap.a in Frameworks */,
 				DFF0ECA7175282AD002DA3A4 /* SlingboxLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5857,8 +5825,6 @@
 				E4991090174D0D2600741B6D /* CoreGraphics.framework in Frameworks */,
 				E49910F8174E561500741B6D /* libz.dylib in Frameworks */,
 				E49910F9174E561D00741B6D /* libiconv.dylib in Frameworks */,
-				E499157E174E681200741B6D /* librtv.a in Frameworks */,
-				E4991580174E681600741B6D /* libxdaap.a in Frameworks */,
 				E4991581174E681600741B6D /* SlingboxLib.a in Frameworks */,
 				DFF0EBB7175281E1002DA3A4 /* CoreAudio.framework in Frameworks */,
 				DFF0EC8C17528283002DA3A4 /* VideoToolbox.framework in Frameworks */,
@@ -6183,6 +6149,7 @@
 				880DBE4A0DC223FF00E26B71 /* Artist.h */,
 				5EB3113A1A978B9B00551907 /* CueInfoLoader.cpp */,
 				5EB3113B1A978B9B00551907 /* CueInfoLoader.h */,
+				395938731AC28F5A0053A590 /* EmbeddedArt.h */,
 				E38E17FB0D25F9FA00618676 /* GUIViewStateMusic.cpp */,
 				E38E17FC0D25F9FA00618676 /* GUIViewStateMusic.h */,
 				E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */,
@@ -8674,10 +8641,6 @@
 				7C99B6A3133D342100FC2B16 /* CircularCache.h */,
 				DF93D66B1444A8B0007C6459 /* CurlFile.cpp */,
 				DF93D66C1444A8B0007C6459 /* CurlFile.h */,
-				E38E16AA0D25F9FA00618676 /* DAAPDirectory.cpp */,
-				E38E16AB0D25F9FA00618676 /* DAAPDirectory.h */,
-				DF93D66D1444A8B0007C6459 /* DAAPFile.cpp */,
-				DF93D66E1444A8B0007C6459 /* DAAPFile.h */,
 				DFD5812116C8284F0008EEA0 /* DAVCommon.cpp */,
 				DFD5812216C8284F0008EEA0 /* DAVCommon.h */,
 				7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */,
@@ -8784,10 +8747,6 @@
 				395C2A101A9F072400EBC7AD /* ResourceFile.h */,
 				889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */,
 				889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */,
-				E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */,
-				E38E174C0D25F9FA00618676 /* RTVDirectory.h */,
-				DF93D6831444A8B0007C6459 /* RTVFile.cpp */,
-				DF93D6841444A8B0007C6459 /* RTVFile.h */,
 				E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */,
 				E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */,
 				E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */,
@@ -8938,9 +8897,7 @@
 			children = (
 				E38E18820D25F9FA00618676 /* libexif */,
 				E38E196D0D25F9FB00618676 /* libhdhomerun */,
-				E38E1A130D25F9FB00618676 /* libRTV */,
 				E38E1A550D25F9FB00618676 /* libUPnP */,
-				E38E1C840D25F9FC00618676 /* libXDAAP */,
 				E38E1CE40D25F9FC00618676 /* UnrarXLib */,
 			);
 			path = lib;
@@ -8969,23 +8926,6 @@
 			path = libhdhomerun;
 			sourceTree = "<group>";
 		};
-		E38E1A130D25F9FB00618676 /* libRTV */ = {
-			isa = PBXGroup;
-			children = (
-				E38E1A140D25F9FB00618676 /* crypt.h */,
-				E38E1A150D25F9FB00618676 /* guideclient.h */,
-				E38E1A160D25F9FB00618676 /* GuideParser.h */,
-				E38E1A170D25F9FB00618676 /* httpclient.h */,
-				E38E1A180D25F9FB00618676 /* httpfsclient.h */,
-				E38E1A190D25F9FB00618676 /* interface.h */,
-				E38E1A1D0D25F9FB00618676 /* md5.h */,
-				E38E1A1E0D25F9FB00618676 /* netclient.h */,
-				E38E1A1F0D25F9FB00618676 /* rtv.h */,
-				E38E1A200D25F9FB00618676 /* sleep.h */,
-			);
-			path = libRTV;
-			sourceTree = "<group>";
-		};
 		E38E1A550D25F9FB00618676 /* libUPnP */ = {
 			isa = PBXGroup;
 			children = (
@@ -9005,18 +8945,6 @@
 				E38E1AB80D25F9FB00618676 /* SConstruct */,
 			);
 			path = Platinum;
-			sourceTree = "<group>";
-		};
-		E38E1C840D25F9FC00618676 /* libXDAAP */ = {
-			isa = PBXGroup;
-			children = (
-				E38E1C850D25F9FC00618676 /* client.h */,
-				E38E1C860D25F9FC00618676 /* httpClient.h */,
-				E38E1C8A0D25F9FC00618676 /* portability.h */,
-				E38E1C8B0D25F9FC00618676 /* private.h */,
-				E38E1C8C0D25F9FC00618676 /* thread.h */,
-			);
-			path = libXDAAP;
 			sourceTree = "<group>";
 		};
 		E38E1CE40D25F9FC00618676 /* UnrarXLib */ = {
@@ -9597,8 +9525,6 @@
 		F57E1ED20E36E8FD00700C9D /* internal libs */ = {
 			isa = PBXGroup;
 			children = (
-				E38E256C0D263A1C00618676 /* librtv.a */,
-				E38E25680D2639F100618676 /* libxdaap.a */,
 				18404DA51396C31B00863BBA /* SlingboxLib.a */,
 			);
 			name = "internal libs";
@@ -10226,7 +10152,6 @@
 				E38E20030D25F9FD00618676 /* CDDADirectory.cpp in Sources */,
 				E38E20040D25F9FD00618676 /* cddb.cpp in Sources */,
 				E38E20050D25F9FD00618676 /* cdioSupport.cpp in Sources */,
-				E38E20060D25F9FD00618676 /* DAAPDirectory.cpp in Sources */,
 				E38E20070D25F9FD00618676 /* Directory.cpp in Sources */,
 				E38E20090D25F9FD00618676 /* DirectoryHistory.cpp in Sources */,
 				395C29D81A98A11C00EBC7AD /* WsgiInputStream.cpp in Sources */,
@@ -10267,7 +10192,6 @@
 				E38E20510D25F9FD00618676 /* PluginDirectory.cpp in Sources */,
 				E38E20520D25F9FD00618676 /* RarDirectory.cpp in Sources */,
 				E38E20530D25F9FD00618676 /* RarManager.cpp in Sources */,
-				E38E20540D25F9FD00618676 /* RTVDirectory.cpp in Sources */,
 				395C29C51A98A0E100EBC7AD /* ILanguageInvoker.cpp in Sources */,
 				E38E20580D25F9FD00618676 /* SmartPlaylistDirectory.cpp in Sources */,
 				E38E205B0D25F9FD00618676 /* StackDirectory.cpp in Sources */,
@@ -10805,7 +10729,6 @@
 				3994427A1A8DD920006C39E9 /* VideoLibraryScanningJob.cpp in Sources */,
 				DF93D69C1444A8B1007C6459 /* CDDAFile.cpp in Sources */,
 				DF93D69D1444A8B1007C6459 /* CurlFile.cpp in Sources */,
-				DF93D69E1444A8B1007C6459 /* DAAPFile.cpp in Sources */,
 				DF93D69F1444A8B1007C6459 /* DirectoryFactory.cpp in Sources */,
 				DF93D6A01444A8B1007C6459 /* FileDirectoryFactory.cpp in Sources */,
 				DF93D6A11444A8B1007C6459 /* FileReaderFile.cpp in Sources */,
@@ -10814,7 +10737,6 @@
 				DF93D6A61444A8B1007C6459 /* NFSFile.cpp in Sources */,
 				DF93D6A71444A8B1007C6459 /* PipeFile.cpp in Sources */,
 				DF93D6A81444A8B1007C6459 /* RarFile.cpp in Sources */,
-				DF93D6A91444A8B1007C6459 /* RTVFile.cpp in Sources */,
 				DF93D6AA1444A8B1007C6459 /* SFTPFile.cpp in Sources */,
 				DF93D6AB1444A8B1007C6459 /* ShoutcastFile.cpp in Sources */,
 				DF93D6AC1444A8B1007C6459 /* SlingboxFile.cpp in Sources */,
@@ -11416,8 +11338,6 @@
 				DFF0F1ED17528350002DA3A4 /* CDDAFile.cpp in Sources */,
 				DFF0F1EE17528350002DA3A4 /* CircularCache.cpp in Sources */,
 				DFF0F1EF17528350002DA3A4 /* CurlFile.cpp in Sources */,
-				DFF0F1F017528350002DA3A4 /* DAAPDirectory.cpp in Sources */,
-				DFF0F1F117528350002DA3A4 /* DAAPFile.cpp in Sources */,
 				DFF0F1F217528350002DA3A4 /* DAVCommon.cpp in Sources */,
 				DFF0F1F317528350002DA3A4 /* DAVDirectory.cpp in Sources */,
 				DFF0F1F417528350002DA3A4 /* DAVFile.cpp in Sources */,
@@ -11488,8 +11408,6 @@
 				DFF0F23C17528350002DA3A4 /* RarFile.cpp in Sources */,
 				DFF0F23D17528350002DA3A4 /* RarManager.cpp in Sources */,
 				DFF0F23E17528350002DA3A4 /* RSSDirectory.cpp in Sources */,
-				DFF0F23F17528350002DA3A4 /* RTVDirectory.cpp in Sources */,
-				DFF0F24017528350002DA3A4 /* RTVFile.cpp in Sources */,
 				DFF0F24117528350002DA3A4 /* SAPDirectory.cpp in Sources */,
 				DFF0F24217528350002DA3A4 /* SAPFile.cpp in Sources */,
 				DFF0F24317528350002DA3A4 /* SFTPDirectory.cpp in Sources */,
@@ -12455,8 +12373,6 @@
 				E4991256174E5D8F00741B6D /* CDDAFile.cpp in Sources */,
 				E4991257174E5D8F00741B6D /* CircularCache.cpp in Sources */,
 				E4991258174E5D8F00741B6D /* CurlFile.cpp in Sources */,
-				E4991259174E5D8F00741B6D /* DAAPDirectory.cpp in Sources */,
-				E499125A174E5D8F00741B6D /* DAAPFile.cpp in Sources */,
 				E499125B174E5D8F00741B6D /* DAVCommon.cpp in Sources */,
 				E499125C174E5D8F00741B6D /* DAVDirectory.cpp in Sources */,
 				E499125D174E5D8F00741B6D /* DAVFile.cpp in Sources */,
@@ -12530,8 +12446,6 @@
 				E49912A5174E5D9900741B6D /* RarFile.cpp in Sources */,
 				E49912A6174E5D9900741B6D /* RarManager.cpp in Sources */,
 				E49912A7174E5D9900741B6D /* RSSDirectory.cpp in Sources */,
-				E49912A8174E5D9900741B6D /* RTVDirectory.cpp in Sources */,
-				E49912A9174E5D9900741B6D /* RTVFile.cpp in Sources */,
 				E49912AA174E5D9900741B6D /* SAPDirectory.cpp in Sources */,
 				E49912AB174E5D9900741B6D /* SAPFile.cpp in Sources */,
 				E49912AC174E5D9900741B6D /* SFTPDirectory.cpp in Sources */,
@@ -13325,8 +13239,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"$(SRCROOT)/lib/libRTV",
-					"$(SRCROOT)/lib/libXDAAP",
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
@@ -13388,8 +13300,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"$(SRCROOT)/lib/libRTV",
-					"$(SRCROOT)/lib/libXDAAP",
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
@@ -13497,8 +13407,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/lib/libRTV\"",
-					"\"$(SRCROOT)/lib/libXDAAP\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
@@ -13554,8 +13462,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/lib/libRTV\"",
-					"\"$(SRCROOT)/lib/libXDAAP\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",

@@ -46,12 +46,6 @@
 #endif
 #ifdef HAS_FILESYSTEM
 #include "ISOFile.h"
-#ifdef HAS_FILESYSTEM_RTV
-#include "RTVFile.h"
-#endif
-#ifdef HAS_FILESYSTEM_DAAP
-#include "DAAPFile.h"
-#endif
 #endif
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPFile.h"
@@ -171,14 +165,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (url.IsProtocol("smb")) return new CWin32SMBFile();
 #else
     else if (url.IsProtocol("smb")) return new CSMBFile();
-#endif
-#endif
-#ifdef HAS_FILESYSTEM
-#ifdef HAS_FILESYSTEM_RTV
-    else if (url.IsProtocol("rtv")) return new CRTVFile();
-#endif
-#ifdef HAS_FILESYSTEM_DAAP
-    else if (url.IsProtocol("daap")) return new CDAAPFile();
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_SAP

@@ -182,10 +182,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
       strFilename = url.GetHostName();
     }
   }
-  // iTunes music share (DAAP)
-  else if (url.IsProtocol("daap") && strFilename.empty())
-    strFilename = g_localizeStrings.Get(20174);
-
   // HDHomerun Devices
   else if (url.IsProtocol("hdhomerun") && strFilename.empty())
     strFilename = "HDHomerun Devices";
@@ -193,10 +189,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   // Slingbox Devices
   else if (url.IsProtocol("sling"))
     strFilename = "Slingbox";
-
-  // ReplayTV Devices
-  else if (url.IsProtocol("rtv"))
-    strFilename = "ReplayTV Devices";
 
   // SAP Streams
   else if (url.IsProtocol("sap") && strFilename.empty())

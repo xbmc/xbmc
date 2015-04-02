@@ -1,6 +1,0 @@
-.deps
-Makefile
-encodings.h
-encodings.sed
-make_hash
-*.o

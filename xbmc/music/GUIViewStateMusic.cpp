@@ -499,48 +499,21 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
 {
   //  Setup shares we want to have
   m_sources.clear();
-  //  Musicdb shares
   CFileItemList items;
-  CDirectory::GetDirectory("musicdb://", items, "");
+
+  CDirectory::GetDirectory("library://music/", items, "");
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItemPtr item=items[i];
     CMediaSource share;
-    share.strName=item->GetLabel();
+    share.strName = item->GetLabel();
     share.strPath = item->GetPath();
     share.m_strThumbnailImage = item->GetIconImage();
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
 
-  //  Playlists share
-  CMediaSource share;
-  share.strName=g_localizeStrings.Get(136); // Playlists
-  share.strPath = "special://musicplaylists/";
-  share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicPlaylists.png");
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  m_sources.push_back(share);
-
   AddOnlineShares();
-
-  // Search share
-  share.strName=g_localizeStrings.Get(137); // Search
-  share.strPath = "musicsearch://";
-  share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicSearch.png");
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  m_sources.push_back(share);
-
-  // music video share
-  CVideoDatabase database;
-  database.Open();
-  if (database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS))
-  {
-    share.strName = g_localizeStrings.Get(20389);
-    share.strPath = "videodb://musicvideos/";
-    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicVideos.png");
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    m_sources.push_back(share);
-  }
 
   return CGUIViewStateWindowMusic::GetSources();
 }

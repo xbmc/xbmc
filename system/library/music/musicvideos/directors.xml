@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="6" type="filter">
+ <label>20348</label>
+  <icon>DefaultDirector.png</icon>
+  <content>musicvideos</content>
+  <group>directors</group>
+</node>

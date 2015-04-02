@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="4" type="filter">
+  <label>133</label>
+  <icon>DefaultMusicArtists.png</icon>
+  <content>musicvideos</content>
+  <group>artists</group>
+</node>

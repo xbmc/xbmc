@@ -766,6 +766,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
     if (m_bStop)
       break;
 
+    // mark albums without a title as singles
+    if (album->strAlbum.empty())
+      album->releaseType = CAlbum::Single;
+
     album->strPath = strDirectory;
     m_musicDatabase.AddAlbum(*album);
 
