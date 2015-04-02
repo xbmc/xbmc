@@ -1903,31 +1903,9 @@ void CApplication::RenderMadvr()
   if (m_bStop)
     return;
 
-  MEASURE_FUNCTION;
-  
-  //g_Windowing.SetVSync(false);
-
   g_infoManager.UpdateFPS();
-
-  //g_Windowing.BeginRender();
- 
-  //g_renderManager.FrameMove();
   
   RenderNoPresent();
-  
-  //g_renderManager.FrameFinish();
-  
-  //g_Windowing.EndRender();
-
-  g_windowManager.AfterRender();
-
-  g_infoManager.ResetCache();
-
-  m_lastFrameTime = XbmcThreads::SystemClockMillis();
-  CTimeUtils::UpdateFrameTime(true,false);
-
-  g_renderManager.UpdateResolution();
-  g_renderManager.ManageCaptures();
 
   m_renderMadvrEvent.Set();
 }
@@ -1942,7 +1920,7 @@ void CApplication::Render()
   MEASURE_FUNCTION;
 
 #ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->ReadyMadVr() && g_graphicsContext.IsFullScreenVideo())
+  if (CGraphFilters::Get()->ReadyMadVr())
   {
     if (m_pPlayer->IsPausedPlayback())
     {
@@ -1952,13 +1930,19 @@ void CApplication::Render()
     else
     {
       m_renderMadvrEvent.Reset();
-      m_renderMadvrEvent.WaitMSec(500);
-    }
-    return;
-  } 
-  else if(CGraphFilters::Get()->ReadyMadVr())
-  {
-    m_pPlayer->ClosePlayer();
+      m_renderMadvrEvent.WaitMSec(100);
+    } 
+    
+    g_windowManager.AfterRender();
+
+    g_infoManager.ResetCache();
+
+    m_lastFrameTime = XbmcThreads::SystemClockMillis();
+    CTimeUtils::UpdateFrameTime(true);
+
+    g_renderManager.UpdateResolution();
+    g_renderManager.ManageCaptures();
+
     return;
   }
 #endif  
