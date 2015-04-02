@@ -398,8 +398,8 @@ bool CScraper::IsInUse() const
 {
   if (Supports(CONTENT_ALBUMS) || Supports(CONTENT_ARTISTS))
   { // music scraper
-    CMusicDatabase db;
-    if (db.Open() && db.ScraperInUse(ID()))
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    if (database->ScraperInUse(ID()))
       return true;
   }
   else

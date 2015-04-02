@@ -114,30 +114,20 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   if (StringUtils::EqualsNoCase(m_type, "songs") ||
       StringUtils::EqualsNoCase(m_type, "mixed"))
   {
-    CMusicDatabase db;
-    if (db.Open())
-    {
-      set<std::string> playlists;
-      if ( playlistLoaded )
-        m_strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
 
-      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
-      m_iMatchingSongs = (int)db.GetSongIDs(m_strCurrentFilterMusic, songIDs);
-      if (m_iMatchingSongs < 1 && StringUtils::EqualsNoCase(m_type, "songs"))
-      {
-        pDialog->Close();
-        db.Close();
-        OnError(16031, (std::string)"Party mode found no matching songs. Aborting.");
-        return false;
-      }
-    }
-    else
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    set<std::string> playlists;
+    if ( playlistLoaded )
+      m_strCurrentFilterMusic = playlist.GetWhereClause(*database, playlists);
+
+    CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
+    m_iMatchingSongs = (int)database->GetSongIDs(m_strCurrentFilterMusic, songIDs);
+    if (m_iMatchingSongs < 1 && StringUtils::EqualsNoCase(m_type, "songs"))
     {
       pDialog->Close();
-      OnError(16033, (std::string)"Party mode could not open database. Aborting.");
+      OnError(16031, (std::string)"Party mode found no matching songs. Aborting.");
       return false;
     }
-    db.Close();
   }
 
   if (StringUtils::EqualsNoCase(m_type, "musicvideos") ||
@@ -328,50 +318,41 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
   if (StringUtils::EqualsNoCase(m_type, "songs") ||
       StringUtils::EqualsNoCase(m_type, "mixed"))
   {
-    CMusicDatabase database;
-    if (database.Open())
+
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    // Method:
+    // 1. Grab a random entry from the database using a where clause
+    // 2. Iterate on iSongs.
+
+    // Note: At present, this method is faster than the alternative, which is to grab
+    // all valid songids, then select a random number of them (as done in AddInitialSongs()).
+    // The reason for this is simply the number of songs we are requesting - we generally
+    // only want one here.  Any more than about 3 songs and it is more efficient
+    // to use the technique in AddInitialSongs.  As it's unlikely that we'll require
+    // more than 1 song at a time here, this method is faster.
+    bool error(false);
+    for (int i = 0; i < iSongsToAdd; i++)
     {
-      // Method:
-      // 1. Grab a random entry from the database using a where clause
-      // 2. Iterate on iSongs.
-
-      // Note: At present, this method is faster than the alternative, which is to grab
-      // all valid songids, then select a random number of them (as done in AddInitialSongs()).
-      // The reason for this is simply the number of songs we are requesting - we generally
-      // only want one here.  Any more than about 3 songs and it is more efficient
-      // to use the technique in AddInitialSongs.  As it's unlikely that we'll require
-      // more than 1 song at a time here, this method is faster.
-      bool error(false);
-      for (int i = 0; i < iSongsToAdd; i++)
-      {
-        pair<std::string,std::string> whereClause = GetWhereClauseWithHistory();
-        CFileItemPtr item(new CFileItem);
-        int songID;
-        if (database.GetRandomSong(item.get(), songID, whereClause.first))
-        { // success
-          Add(item);
-          AddToHistory(1,songID);
-        }
-        else
-        {
-          error = true;
-          break;
-        }
+      pair<std::string,std::string> whereClause = GetWhereClauseWithHistory();
+      CFileItemPtr item(new CFileItem);
+      int songID;
+      if (database->GetRandomSong(item.get(), songID, whereClause.first))
+      { // success
+        Add(item);
+        AddToHistory(1,songID);
       }
-
-      if (error)
+      else
       {
-        database.Close();
-        OnError(16034, (std::string)"Cannot get songs from database. Aborting.");
-        return false;
+        error = true;
+        break;
       }
     }
-    else
+
+    if (error)
     {
-      OnError(16033, (std::string)"Party mode could not open database. Aborting.");
+      OnError(16034, (std::string)"Cannot get songs from database. Aborting.");
       return false;
     }
-    database.Close();
   }
   if (StringUtils::EqualsNoCase(m_type, "musicvideos") ||
       StringUtils::EqualsNoCase(m_type, "mixed"))
@@ -419,9 +400,8 @@ void CPartyModeManager::Add(CFileItemPtr &pItem)
   int iPlaylist = m_bIsVideo ? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
   if (pItem->HasMusicInfoTag())
   {
-    CMusicDatabase database;
-    database.Open();
-    database.SetPropertiesForFileItem(*pItem);
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    database->SetPropertiesForFileItem(*pItem);
   }
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
@@ -605,9 +585,8 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
     if (sqlWhereMusic.size() > 26)
     {
       sqlWhereMusic[sqlWhereMusic.size() - 1] = ')'; // replace the last comma with closing bracket
-      CMusicDatabase database;
-      database.Open();
-      database.GetSongsByWhere("musicdb://songs/", sqlWhereMusic, items);
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      database->GetSongsByWhere("musicdb://songs/", sqlWhereMusic, items);
     }
     if (sqlWhereVideo.size() > 19)
     {

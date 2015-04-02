@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogSongInfo.h"
+#include "DatabaseManager.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -70,12 +71,8 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
     {
       if (!m_cancelled && m_startRating != m_song->GetMusicInfoTag()->GetRating())
       {
-        CMusicDatabase db;
-        if (db.Open())      // OpenForWrite() ?
-        {
-          db.SetSongRating(m_song->GetPath(), m_song->GetMusicInfoTag()->GetRating());
-          db.Close();
-        }
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        database->SetSongRating(m_song->GetPath(), m_song->GetMusicInfoTag()->GetRating());
         m_needsUpdate = true;
       }
       else
@@ -160,19 +157,18 @@ bool CGUIDialogSongInfo::OnBack(int actionID)
 
 void CGUIDialogSongInfo::OnInitWindow()
 {
-  CMusicDatabase db;
-  db.Open();
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
   // no known db info - check if parent dir is an album
   if (m_song->GetMusicInfoTag()->GetDatabaseId() == -1)
   {
     std::string path = URIUtils::GetDirectory(m_song->GetPath());
-    m_albumId = db.GetAlbumIdByPath(path);
+    m_albumId = database->GetAlbumIdByPath(path);
   }
   else
   {
     CAlbum album;
-    db.GetAlbumFromSong(m_song->GetMusicInfoTag()->GetDatabaseId(),album);
+    database->GetAlbumFromSong(m_song->GetMusicInfoTag()->GetDatabaseId(),album);
     m_albumId = album.idAlbum;
   }
   CONTROL_ENABLE_ON_CONDITION(CONTROL_ALBUMINFO, m_albumId > -1);
@@ -199,17 +195,16 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_song->LoadMusicTag();
   m_startRating = m_song->GetMusicInfoTag()->GetRating();
   MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song.get());
-   // set artist thumb as well
-  CMusicDatabase db;
-  db.Open();
+  // set artist thumb as well
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
   if (item->IsMusicDb())
   {
     std::vector<int> artists;
     CVariant artistthumbs;
-    db.GetArtistsBySong(item->GetMusicInfoTag()->GetDatabaseId(), true, artists);
+    database->GetArtistsBySong(item->GetMusicInfoTag()->GetDatabaseId(), true, artists);
     for (std::vector<int>::const_iterator artistId = artists.begin(); artistId != artists.end(); ++artistId)
     {
-      std::string thumb = db.GetArtForItem(*artistId, MediaTypeArtist, "thumb");
+      std::string thumb = database->GetArtForItem(*artistId, MediaTypeArtist, "thumb");
       if (!thumb.empty())
         artistthumbs.push_back(thumb);
     }
@@ -221,8 +216,8 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   }
   else if (m_song->HasMusicInfoTag() && !m_song->GetMusicInfoTag()->GetArtist().empty())
   {
-    int idArtist = db.GetArtistByName(m_song->GetMusicInfoTag()->GetArtist()[0]);
-    std::string thumb = db.GetArtForItem(idArtist, MediaTypeArtist, "thumb");
+    int idArtist = database->GetArtistByName(m_song->GetMusicInfoTag()->GetArtist()[0]);
+    std::string thumb = database->GetArtForItem(idArtist, MediaTypeArtist, "thumb");
     if (!thumb.empty())
       m_song->SetProperty("artistthumb", thumb);
   }
@@ -327,12 +322,8 @@ void CGUIDialogSongInfo::OnGetThumb()
     newThumb = result;
 
   // update thumb in the database
-  CMusicDatabase db;
-  if (db.Open())
-  {
-    db.SetArtForItem(m_song->GetMusicInfoTag()->GetDatabaseId(), m_song->GetMusicInfoTag()->GetType(), "thumb", newThumb);
-    db.Close();
-  }
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  database->SetArtForItem(m_song->GetMusicInfoTag()->GetDatabaseId(), m_song->GetMusicInfoTag()->GetType(), "thumb", newThumb);
 
   m_song->SetArt("thumb", newThumb);
 

@@ -198,13 +198,12 @@ bool CRecentlyAddedJob::UpdateMusic()
   
   int            i = 0;
   CFileItemList  musicItems;
-  CMusicDatabase musicdatabase;
   CMusicThumbLoader loader;
   loader.OnLoaderStart();
+
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
   
-  musicdatabase.Open();
-  
-  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", musicItems, NUM_ITEMS))
+  if (database->GetRecentlyAddedAlbumSongs("musicdb://songs/", musicItems, NUM_ITEMS))
   {
     long idAlbum = -1;
     std::string strAlbumThumb;
@@ -259,17 +258,17 @@ bool CRecentlyAddedJob::UpdateMusic()
   i = 0;
   VECALBUMS albums;
   
-  if (musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS))
+  if (database->GetRecentlyAddedAlbums(albums, NUM_ITEMS))
   { 
     for (; i < (int)albums.size(); ++i)
     {
       CAlbum&    album=albums[i];
       std::string value = StringUtils::Format("%i", i + 1);
-      std::string strThumb = musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
-      std::string strFanart = musicdatabase.GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
+      std::string strThumb = database->GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
+      std::string strFanart = database->GetArtistArtForItem(album.idAlbum, MediaTypeAlbum, "fanart");
       std::string strDBpath = StringUtils::Format("musicdb://albums/%li/", album.idAlbum);
       std::string strSQLAlbum = StringUtils::Format("idAlbum=%li", album.idAlbum);
-      std::string strArtist = musicdatabase.GetSingleValue("albumview", "strArtists", strSQLAlbum);
+      std::string strArtist = database->GetSingleValue("albumview", "strArtists", strSQLAlbum);
       
       home->SetProperty("LatestAlbum." + value + ".Title"   , album.strAlbum);
       home->SetProperty("LatestAlbum." + value + ".Year"    , album.iYear);
@@ -291,8 +290,7 @@ bool CRecentlyAddedJob::UpdateMusic()
     home->SetProperty("LatestAlbum." + value + ".Thumb"   , "");
     home->SetProperty("LatestAlbum." + value + ".Fanart"  , "");            
   }
-  
-  musicdatabase.Close();
+
   return true;
 }
 
@@ -306,13 +304,11 @@ bool CRecentlyAddedJob::UpdateTotal()
   CLog::Log(LOGDEBUG, "CRecentlyAddedJob::UpdateTotal() - Running RecentlyAdded home screen update");
   
   CVideoDatabase *videodatabase = CDatabaseManager::Get().GetVideoDatabase();
-  CMusicDatabase musicdatabase;
-  
-  musicdatabase.Open();
-  int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)").c_str());
-  int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
-  int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtists)").c_str());
-  musicdatabase.Close();
+  CMusicDatabase *musicdatabase = CDatabaseManager::Get().GetMusicDatabase();
+
+  int MusSongTotals   = atoi(musicdatabase->GetSingleValue("songview"       , "count(1)").c_str());
+  int MusAlbumTotals  = atoi(musicdatabase->GetSingleValue("songview"       , "count(distinct strAlbum)").c_str());
+  int MusArtistTotals = atoi(musicdatabase->GetSingleValue("songview"       , "count(distinct strArtists)").c_str());
 
   int tvShowCount     = atoi(videodatabase->GetSingleValue("tvshow_view"     , "count(1)").c_str());
   int movieTotals     = atoi(videodatabase->GetSingleValue("movie_view"      , "count(1)").c_str());

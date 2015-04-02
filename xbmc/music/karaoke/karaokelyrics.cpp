@@ -24,6 +24,7 @@
 
 #include "utils/MathUtils.h"
 #include "Application.h"
+#include "DatabaseManager.h"
 #include "music/MusicDatabase.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -48,15 +49,10 @@ void CKaraokeLyrics::Shutdown()
   if ( m_idSong && m_avOrigDelay != m_avDelay && g_advancedSettings.m_karaokeKeepDelay )
   {
     // If the song is in karaoke db, get the delay
-    CMusicDatabase musicdatabase;
-    if ( musicdatabase.Open() )
-    {
-      int delayval = MathUtils::round_int( m_avDelay * 10.0 );
-      musicdatabase.SetKaraokeSongDelay( m_idSong, delayval );
-      CLog::Log( LOGDEBUG, "Karaoke timing correction: set new delay %d for song %ld", delayval, m_idSong );
-    }
-
-    musicdatabase.Close();
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    int delayval = MathUtils::round_int( m_avDelay * 10.0 );
+    database->SetKaraokeSongDelay( m_idSong, delayval );
+    CLog::Log( LOGDEBUG, "Karaoke timing correction: set new delay %d for song %ld", delayval, m_idSong );
   }
 
   m_idSong = 0;
@@ -76,13 +72,13 @@ void CKaraokeLyrics::initData( const std::string & songPath )
 
   // Get song ID if available
   m_idSong = 0;
-  CMusicDatabase musicdatabase;
 
   // Get song-specific delay from the database
-  if ( g_advancedSettings.m_karaokeKeepDelay && musicdatabase.Open() )
+  if ( g_advancedSettings.m_karaokeKeepDelay )
   {
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
     CSong song;
-    if ( musicdatabase.GetSongByFileName( songPath, song) )
+    if ( database->GetSongByFileName( songPath, song) )
     {
       m_idSong = song.idSong;
       if ( song.iKaraokeDelay != 0 )
@@ -91,8 +87,6 @@ void CKaraokeLyrics::initData( const std::string & songPath )
         CLog::Log( LOGDEBUG, "Karaoke timing correction: restored lyrics delay from database to %g", m_avDelay );
       }
     }
-
-    musicdatabase.Close();
   }
 }
 

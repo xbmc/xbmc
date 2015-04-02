@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeAlbumRecentlyAddedSong.h"
+#include "DatabaseManager.h"
 #include "music/MusicDatabase.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
@@ -31,14 +32,6 @@ CDirectoryNodeAlbumRecentlyAddedSong::CDirectoryNodeAlbumRecentlyAddedSong(const
 
 bool CDirectoryNodeAlbumRecentlyAddedSong::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
-
-  std::string strBaseDir=BuildPath();
-  bool bSuccess=musicdatabase.GetRecentlyAddedAlbumSongs(strBaseDir, items);
-
-  musicdatabase.Close();
-
-  return bSuccess;
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetRecentlyAddedAlbumSongs(BuildPath(), items);
 }

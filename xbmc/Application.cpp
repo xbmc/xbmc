@@ -2179,12 +2179,9 @@ bool CApplication::OnAction(const CAction &action)
       }
       if (needsUpdate)
       {
-        CMusicDatabase db;
-        if (db.Open())      // OpenForWrite() ?
-        {
-          db.SetSongRating(m_itemCurrentFile->GetPath(), m_itemCurrentFile->GetMusicInfoTag()->GetRating());
-          db.Close();
-        }
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        database->SetSongRating(m_itemCurrentFile->GetPath(), m_itemCurrentFile->GetMusicInfoTag()->GetRating());
+
         // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
         g_windowManager.SendMessage(msg);

@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeOverview.h"
+#include "DatabaseManager.h"
 #include "FileItem.h"
 #include "music/MusicDatabase.h"
 #include "guilib/LocalizeStrings.h"
@@ -70,11 +71,10 @@ std::string CDirectoryNodeOverview::GetLocalizedName() const
 
 bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicDatabase;
-  musicDatabase.Open();
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
-  bool hasSingles = (musicDatabase.GetSinglesCount() > 0);
-  bool hasCompilations = (musicDatabase.GetCompilationAlbumsCount() > 0);
+  bool hasSingles = (database->GetSinglesCount() > 0);
+  bool hasCompilations = (database->GetCompilationAlbumsCount() > 0);
 
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
   {

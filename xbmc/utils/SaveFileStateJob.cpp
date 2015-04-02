@@ -168,19 +168,10 @@ bool CSaveFileStateJob::DoWork()
         if (dialog && !dialog->IsDialogRunning())
 #endif
         {
-          CMusicDatabase musicdatabase;
-          if (!musicdatabase.Open())
-          {
-            CLog::Log(LOGWARNING, "%s - Unable to open music database. Can not save file state!", __FUNCTION__);
-          }
-          else
-          {
-            // consider this item as played
-            CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, redactPath.c_str());
-
-            musicdatabase.IncrementPlayCount(m_item);
-            musicdatabase.Close();
-          }
+          CMusicDatabase *musicdatabase = CDatabaseManager::Get().GetMusicDatabase();
+          // consider this item as played
+          CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, redactPath.c_str());
+          musicdatabase->IncrementPlayCount(m_item);
         }
       }
     }

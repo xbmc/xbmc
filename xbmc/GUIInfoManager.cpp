@@ -5629,12 +5629,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasMusic < 0)
     { // query
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
-        db.Close();
-      }
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      m_libraryHasMusic = (database->GetSongsCount() > 0) ? 1 : 0;
     }
     return m_libraryHasMusic > 0;
   }
@@ -5678,12 +5674,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasSingles < 0)
     {
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasSingles = (db.GetSinglesCount() > 0) ? 1 : 0;
-        db.Close();
-      }
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      m_libraryHasSingles = (database->GetSinglesCount() > 0) ? 1 : 0;
     }
     return m_libraryHasSingles > 0;
   }
@@ -5691,12 +5683,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   {
     if (m_libraryHasCompilations < 0)
     {
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasCompilations = (db.GetCompilationAlbumsCount() > 0) ? 1 : 0;
-        db.Close();
-      }
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      m_libraryHasCompilations = (database->GetCompilationAlbumsCount() > 0) ? 1 : 0;
     }
     return m_libraryHasCompilations > 0;
   }

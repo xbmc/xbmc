@@ -658,24 +658,21 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
   }
   else if (m_mediaType == "artists" || m_mediaType == "albums" || m_mediaType == "songs")
   {
-    CMusicDatabase musicdb;
-    if (!musicdb.Open())
-      return -1;
-
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
     std::set<std::string> playlists;
     CDatabase::Filter dbfilter;
-    dbfilter.where = tmpFilter.GetWhereClause(musicdb, playlists);
+    dbfilter.where = tmpFilter.GetWhereClause(*database, playlists);
     
     if (filter.field == FieldGenre)
-      musicdb.GetGenresNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
+      database->GetGenresNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
     else if (filter.field == FieldArtist)
-      musicdb.GetArtistsNav(m_dbUrl->ToString(), selectItems, m_mediaType == "albums", -1, -1, -1, dbfilter, SortDescription(), countOnly);
+      database->GetArtistsNav(m_dbUrl->ToString(), selectItems, m_mediaType == "albums", -1, -1, -1, dbfilter, SortDescription(), countOnly);
     else if (filter.field == FieldAlbum)
-      musicdb.GetAlbumsNav(m_dbUrl->ToString(), selectItems, -1, -1, dbfilter, SortDescription(), countOnly);
+      database->GetAlbumsNav(m_dbUrl->ToString(), selectItems, -1, -1, dbfilter, SortDescription(), countOnly);
     else if (filter.field == FieldAlbumType)
-      musicdb.GetAlbumTypesNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
+      database->GetAlbumTypesNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
     else if (filter.field == FieldMusicLabel)
-      musicdb.GetMusicLabelsNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
+      database->GetMusicLabelsNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
   }
 
   int size = selectItems.Size();

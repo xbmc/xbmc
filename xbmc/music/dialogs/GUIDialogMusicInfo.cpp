@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogMusicInfo.h"
+#include "DatabaseManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIImage.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -168,10 +169,9 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const std::string &path)
   // set the artist thumb, fanart
   if (!m_album.artist.empty())
   {
-    CMusicDatabase db;
-    db.Open();
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
     map<string, string> artwork;
-    if (db.GetArtistArtForItem(m_album.idAlbum, MediaTypeAlbum, artwork))
+    if (database->GetArtistArtForItem(m_album.idAlbum, MediaTypeAlbum, artwork))
     {
       if (artwork.find("thumb") != artwork.end())
         m_albumItem->SetProperty("artistthumb", artwork["thumb"]);
@@ -219,11 +219,10 @@ void CGUIDialogMusicInfo::SetSongs(const VECSONGS &songs)
 void CGUIDialogMusicInfo::SetDiscography()
 {
   m_albumSongs->Clear();
-  CMusicDatabase database;
-  database.Open();
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
   vector<int> albumsByArtist;
-  database.GetAlbumsByArtist(m_artist.idArtist, true, albumsByArtist);
+  database->GetAlbumsByArtist(m_artist.idArtist, true, albumsByArtist);
 
   for (unsigned int i=0;i<m_artist.discography.size();++i)
   {
@@ -233,7 +232,7 @@ void CGUIDialogMusicInfo::SetDiscography()
     int idAlbum = -1;
     for (vector<int>::const_iterator album = albumsByArtist.begin(); album != albumsByArtist.end(); ++album)
     {
-      if (StringUtils::EqualsNoCase(database.GetAlbumById(*album), item->GetLabel()))
+      if (StringUtils::EqualsNoCase(database->GetAlbumById(*album), item->GetLabel()))
       {
         idAlbum = *album;
         item->GetMusicInfoTag()->SetDatabaseId(idAlbum, "album");
@@ -242,7 +241,7 @@ void CGUIDialogMusicInfo::SetDiscography()
     }
 
     if (idAlbum != -1) // we need this slight stupidity to get correct case for the album name
-      item->SetArt("thumb", database.GetArtForItem(idAlbum, MediaTypeAlbum, "thumb"));
+      item->SetArt("thumb", database->GetArtForItem(idAlbum, MediaTypeAlbum, "thumb"));
     else
       item->SetArt("thumb", "DefaultAlbumCover.png");
 
@@ -382,10 +381,9 @@ void CGUIDialogMusicInfo::OnGetThumb()
   std::string localThumb;
   if (m_bArtistInfo)
   {
-    CMusicDatabase database;
-    database.Open();
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
     std::string strArtistPath;
-    if (database.GetArtistPath(m_artist.idArtist,strArtistPath))
+    if (database->GetArtistPath(m_artist.idArtist,strArtistPath))
       localThumb = URIUtils::AddFileToFolder(strArtistPath, "folder.jpg");
   }
   else
@@ -433,12 +431,8 @@ void CGUIDialogMusicInfo::OnGetThumb()
     newThumb = "-"; // force local thumbs to be ignored
 
   // update thumb in the database
-  CMusicDatabase db;
-  if (db.Open())
-  {
-    db.SetArtForItem(m_albumItem->GetMusicInfoTag()->GetDatabaseId(), m_albumItem->GetMusicInfoTag()->GetType(), "thumb", newThumb);
-    db.Close();
-  }
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  database->SetArtForItem(m_albumItem->GetMusicInfoTag()->GetDatabaseId(), m_albumItem->GetMusicInfoTag()->GetType(), "thumb", newThumb);
 
   m_albumItem->SetArt("thumb", newThumb);
   m_hasUpdatedThumb = true;
@@ -481,10 +475,9 @@ void CGUIDialogMusicInfo::OnGetFanart()
   }
 
   // Grab a local thumb
-  CMusicDatabase database;
-  database.Open();
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
   std::string strArtistPath;
-  database.GetArtistPath(m_artist.idArtist,strArtistPath);
+  database->GetArtistPath(m_artist.idArtist,strArtistPath);
   CFileItem item(strArtistPath,true);
   std::string strLocal = item.GetLocalFanart();
   if (!strLocal.empty())
@@ -533,12 +526,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
     result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
 
   // update thumb in the database
-  CMusicDatabase db;
-  if (db.Open())
-  {
-    db.SetArtForItem(m_albumItem->GetMusicInfoTag()->GetDatabaseId(), m_albumItem->GetMusicInfoTag()->GetType(), "fanart", result);
-    db.Close();
-  }
+  database->SetArtForItem(m_albumItem->GetMusicInfoTag()->GetDatabaseId(), m_albumItem->GetMusicInfoTag()->GetType(), "fanart", result);
 
   m_albumItem->SetArt("fanart", result);
   m_hasUpdatedThumb = true;
@@ -552,16 +540,16 @@ void CGUIDialogMusicInfo::OnGetFanart()
 
 void CGUIDialogMusicInfo::OnSearch(const CFileItem* pItem)
 {
-  CMusicDatabase database;
-  database.Open();
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+
   if (pItem->HasMusicInfoTag() &&
       pItem->GetMusicInfoTag()->GetDatabaseId() > 0)
   {
     CAlbum album;
-    if (database.GetAlbum(pItem->GetMusicInfoTag()->GetDatabaseId(), album))
+    if (database->GetAlbum(pItem->GetMusicInfoTag()->GetDatabaseId(), album))
     {
       std::string strPath;
-      database.GetAlbumPath(pItem->GetMusicInfoTag()->GetDatabaseId(), strPath);
+      database->GetAlbumPath(pItem->GetMusicInfoTag()->GetDatabaseId(), strPath);
       SetAlbum(album,strPath);
       Update();
     }

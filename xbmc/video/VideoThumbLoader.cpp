@@ -423,18 +423,16 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       SetArt(item, artwork);
     else if (tag.m_type == MediaTypeArtist)
     { // we retrieve music video art from the music database (no backward compat)
-      CMusicDatabase database;
-      database.Open();
-      int idArtist = database.GetArtistByName(item.GetLabel());
-      if (database.GetArtForItem(idArtist, MediaTypeArtist, artwork))
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      int idArtist = database->GetArtistByName(item.GetLabel());
+      if (database->GetArtForItem(idArtist, MediaTypeArtist, artwork))
         item.SetArt(artwork);
     }
     else if (tag.m_type == MediaTypeAlbum)
     { // we retrieve music video art from the music database (no backward compat)
-      CMusicDatabase database;
-      database.Open();
-      int idAlbum = database.GetAlbumByName(item.GetLabel(), tag.m_artist);
-      if (database.GetArtForItem(idAlbum, MediaTypeAlbum, artwork))
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      int idAlbum = database->GetAlbumByName(item.GetLabel(), tag.m_artist);
+      if (database->GetArtForItem(idAlbum, MediaTypeAlbum, artwork))
         item.SetArt(artwork);
     }
     // For episodes and seasons, we want to set fanart for that of the show

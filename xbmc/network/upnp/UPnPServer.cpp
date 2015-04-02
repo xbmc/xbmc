@@ -303,22 +303,21 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     MUSICDATABASEDIRECTORY::CQueryParams params;
                     MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
 
-                    CMusicDatabase db;
-                    if (!db.Open() ) return NULL;
+                   CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
                     if (params.GetSongId() >= 0 ) {
                         CSong song;
-                        if (db.GetSong(params.GetSongId(), song))
+                        if (database->GetSong(params.GetSongId(), song))
                             item->GetMusicInfoTag()->SetSong(song);
                     }
                     else if (params.GetAlbumId() >= 0 ) {
                         CAlbum album;
-                        if (db.GetAlbum(params.GetAlbumId(), album, false))
+                        if (database->GetAlbum(params.GetAlbumId(), album, false))
                             item->GetMusicInfoTag()->SetAlbum(album);
                     }
                     else if (params.GetArtistId() >= 0 ) {
                         CArtist artist;
-                        if (db.GetArtist(params.GetArtistId(), artist, false))
+                        if (database->GetArtist(params.GetArtistId(), artist, false))
                             item->GetMusicInfoTag()->SetArtist(artist);
                     }
                 }
@@ -467,10 +466,9 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
         else if (flag == AudioLibrary && item_type == MediaTypeSong) {
             // we also update the 'songs' container is maybe a performance drop too
             // high? would need to check if slow clients even cache at all anyway
-            CMusicDatabase db;
+            CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
             CAlbum album;
-            if (!db.Open()) return;
-            if (db.GetAlbumFromSong(item_id, album)) {
+            if (database->GetAlbumFromSong(item_id, album)) {
                 UpdateContainer(StringUtils::Format("musicdb://albums/%ld", album.idAlbum));
                 UpdateContainer("musicdb://songs/");
                 UpdateContainer("musicdb://recentlyaddedalbums/");
@@ -889,28 +887,27 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         artist = artist.GetLength()?artist:FindSubCriteria(search_criteria, "microsoft:artistAlbumArtist");
         artist = artist.GetLength()?artist:FindSubCriteria(search_criteria, "microsoft:authorComposer");
 
-        CMusicDatabase database;
-        database.Open();
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
         if (genre.GetLength() > 0) {
             // all tracks by genre filtered by artist and/or album
             std::string strPath = StringUtils::Format("musicdb://genres/%i/%i/%i/",
-                                          database.GetGenreByName((const char*)genre),
-                                          database.GetArtistByName((const char*)artist), // will return -1 if no artist
-                                          database.GetAlbumByName((const char*)album));  // will return -1 if no album
+                                          database->GetGenreByName((const char*)genre),
+                                          database->GetArtistByName((const char*)artist), // will return -1 if no artist
+                                          database->GetAlbumByName((const char*)album));  // will return -1 if no album
 
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (artist.GetLength() > 0) {
             // all tracks by artist name filtered by album if passed
             std::string strPath = StringUtils::Format("musicdb://artists/%i/%i/",
-                                          database.GetArtistByName((const char*)artist),
-                                          database.GetAlbumByName((const char*)album)); // will return -1 if no album
+                                          database->GetArtistByName((const char*)artist),
+                                          database->GetAlbumByName((const char*)album)); // will return -1 if no album
 
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (album.GetLength() > 0) {
             // all tracks by album name
             std::string strPath = StringUtils::Format("musicdb://albums/%i/",
-                                                     database.GetAlbumByName((const char*)album));
+                                                     database->GetAlbumByName((const char*)album));
 
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
@@ -928,17 +925,16 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         artist = artist.GetLength()?artist:FindSubCriteria(search_criteria, "microsoft:artistAlbumArtist");
         artist = artist.GetLength()?artist:FindSubCriteria(search_criteria, "microsoft:authorComposer");
 
-        CMusicDatabase database;
-        database.Open();
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
         if (genre.GetLength() > 0) {
             std::string strPath = StringUtils::Format("musicdb://genres/%i/%i/",
-                                                     database.GetGenreByName((const char*)genre),
-                                                     database.GetArtistByName((const char*)artist)); // no artist should return -1
+                                                     database->GetGenreByName((const char*)genre),
+                                                     database->GetArtistByName((const char*)artist)); // no artist should return -1
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (artist.GetLength() > 0) {
             std::string strPath = StringUtils::Format("musicdb://artists/%i/",
-                                                     database.GetArtistByName((const char*)artist));
+                                                     database->GetArtistByName((const char*)artist));
             return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
 
@@ -948,10 +944,9 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         // Sonos filters by genre
         NPT_String genre = FindSubCriteria(search_criteria, "upnp:genre");
         if (genre.GetLength() > 0) {
-            CMusicDatabase database;
-            database.Open();
-            std::string strPath = StringUtils::Format("musicdb://genres/%i/", database.GetGenreByName((const char*)genre));
-            return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
+          CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+          std::string strPath = StringUtils::Format("musicdb://genres/%i/", database->GetGenreByName((const char*)genre));
+          return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
         return OnBrowseDirectChildren(action, "musicdb://artists/", filter, starting_index, requested_count, sort_criteria, context);
     }  else if (NPT_String(search_criteria).Find("object.container.genre.musicGenre") >= 0) {

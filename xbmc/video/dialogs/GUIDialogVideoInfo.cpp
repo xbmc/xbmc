@@ -242,13 +242,12 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType();
   if (type == VIDEODB_CONTENT_MUSICVIDEOS)
   { // music video
-    CMusicDatabase database;
-    database.Open();
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
     const std::vector<std::string> &artists = m_movieItem->GetVideoInfoTag()->m_artist;
     for (std::vector<std::string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
     {
-      int idArtist = database.GetArtistByName(*it);
-      std::string thumb = database.GetArtForItem(idArtist, MediaTypeArtist, "thumb");
+      int idArtist = database->GetArtistByName(*it);
+      std::string thumb = database->GetArtForItem(idArtist, MediaTypeArtist, "thumb");
       CFileItemPtr item(new CFileItem(*it));
       if (!thumb.empty())
         item->SetArt("thumb", thumb);
@@ -1555,16 +1554,13 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
   string artType = "thumb";
   if (type == MediaTypeArtist)
   {
-    CMusicDatabase musicdb;
-    if (musicdb.Open())
+    CMusicDatabase *musicDatabase = CDatabaseManager::Get().GetMusicDatabase();
+    idArtist = musicDatabase->GetArtistByName(item->GetLabel());
+    if (idArtist >= 0 && musicDatabase->GetArtistPath(idArtist, artistPath))
     {
-      idArtist = musicdb.GetArtistByName(item->GetLabel());
-      if (idArtist >= 0 && musicdb.GetArtistPath(idArtist, artistPath))
-      {
-        currentThumb = musicdb.GetArtForItem(idArtist, MediaTypeArtist, "thumb");
-        if (currentThumb.empty())
-          currentThumb = database->GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artType);
-      }
+      currentThumb = musicDatabase->GetArtForItem(idArtist, MediaTypeArtist, "thumb");
+      if (currentThumb.empty())
+        currentThumb = database->GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artType);
     }
   }
   else if (type == "actor")
@@ -1702,9 +1698,8 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
     database->SetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artType, result);
   else
   {
-    CMusicDatabase musicdb;
-    if (musicdb.Open())
-      musicdb.SetArtForItem(idArtist, MediaTypeArtist, artType, result);
+    CMusicDatabase *musicDatabase = CDatabaseManager::Get().GetMusicDatabase();
+    musicDatabase->SetArtForItem(idArtist, MediaTypeArtist, artType, result);
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();

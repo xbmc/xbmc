@@ -20,6 +20,7 @@
 
 #include "threads/SystemClock.h"
 #include "MusicSearchDirectory.h"
+#include "DatabaseManager.h"
 #include "music/MusicDatabase.h"
 #include "URL.h"
 #include "FileItem.h"
@@ -49,10 +50,9 @@ bool CMusicSearchDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   // and retrieve the search details
   items.SetURL(url);
   unsigned int time = XbmcThreads::SystemClockMillis();
-  CMusicDatabase db;
-  db.Open();
-  db.Search(search, items);
-  db.Close();
+
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  database->Search(search, items);
   CLog::Log(LOGDEBUG, "%s (%s) took %u ms",
             __FUNCTION__, url.GetRedacted().c_str(), XbmcThreads::SystemClockMillis() - time);
   items.SetLabel(g_localizeStrings.Get(137)); // Search

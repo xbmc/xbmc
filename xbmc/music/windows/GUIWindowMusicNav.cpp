@@ -117,7 +117,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         return false;
 
       //  base class has opened the database, do our check
-      DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      DisplayEmptyDatabaseMessage(database->GetSongsCount() <= 0);
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
@@ -274,8 +275,11 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
     return true;
   }
   if (item->IsMusicDb() && !item->m_bIsFolder)
-    m_musicdatabase.SetPropertiesForFileItem(*item);
-    
+  {
+    CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+    database->SetPropertiesForFileItem(*item);
+  }
+
   return CGUIWindowMusicBase::OnClick(iItem);
 }
 
@@ -474,7 +478,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
        buttons.Add(CONTEXT_BUTTON_INFO, 20393);
       if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/artists/") && item->m_bIsFolder)
       {
-        long idArtist = m_musicdatabase.GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel());
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        long idArtist = database->GetArtistByName(m_vecItems->Get(itemNumber)->GetLabel());
         if (idArtist > - 1)
           buttons.Add(CONTEXT_BUTTON_INFO,21891);
       }
@@ -504,7 +509,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       item->m_bIsFolder && !item->IsVideoDb())
     {
       ADDON::ScraperPtr info;
-      m_musicdatabase.GetScraperForPath(item->GetPath(), info, ADDON::ADDON_SCRAPER_ARTISTS);
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      database->GetScraperForPath(item->GetPath(), info, ADDON::ADDON_SCRAPER_ARTISTS);
       if (info && info->Supports(CONTENT_ARTISTS))
         buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
     }
@@ -589,15 +595,18 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (!item->IsVideoDb())
         return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
 
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+
       // music videos - artists
       if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/artists/"))
       {
-        long idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        long idArtist = database->GetArtistByName(item->GetLabel());
         if (idArtist == -1)
           return false;
         std::string path = StringUtils::Format("musicdb://artists/%ld/", idArtist);
         CArtist artist;
-        m_musicdatabase.GetArtist(idArtist, artist, false);
+        database->GetArtist(idArtist, artist, false);
         *item = CFileItem(artist);
         item->SetPath(path);
         CGUIWindowMusicBase::OnContextButton(itemNumber,button);
@@ -609,12 +618,13 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       // music videos - albums
       if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/albums/"))
       {
-        long idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        long idAlbum = database->GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
           return false;
         std::string path = StringUtils::Format("musicdb://albums/%ld/", idAlbum);
         CAlbum album;
-        m_musicdatabase.GetAlbum(idAlbum, album, false);
+        database->GetAlbum(idAlbum, album, false);
         *item = CFileItem(path,album);
         item->SetPath(path);
         CGUIWindowMusicBase::OnContextButton(itemNumber,button);
@@ -709,7 +719,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         content = CONTENT_ARTISTS;
       }
 
-      if (!m_musicdatabase.GetScraperForPath(path, scraper, ADDON::ScraperTypeFromContent(content)))
+      CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+      if (!database->GetScraperForPath(path, scraper, ADDON::ScraperTypeFromContent(content)))
       {
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(content), defaultScraper))
@@ -720,7 +731,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (CGUIDialogContentSettings::Show(scraper, content))
       {
-        m_musicdatabase.SetScraperForPath(path,scraper);
+        CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+        database->SetScraperForPath(path,scraper);
         if (CGUIDialogYesNo::ShowAndGetInput(20442,20443,20444,20022))
         {
           OnInfoAll(itemNumber,true,true);

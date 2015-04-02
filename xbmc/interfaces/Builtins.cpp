@@ -1630,10 +1630,8 @@ int CBuiltins::Execute(const std::string& execString)
       {
         if (URIUtils::HasSlashAtEnd(path))
           path = URIUtils::AddFileToFolder(path, "musicdb.xml");
-        CMusicDatabase musicdatabase;
-        musicdatabase.Open();
-        musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
-        musicdatabase.Close();
+        CMusicDatabase *musicDatabase = CDatabaseManager::Get().GetMusicDatabase();
+        musicDatabase->ExportToXML(path, singleFile, thumbs, overwrite);
       }
     }
   }

@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeGrouped.h"
+#include "DatabaseManager.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
 
@@ -38,19 +39,14 @@ NODE_TYPE CDirectoryNodeGrouped::GetChildType() const
 
 std::string CDirectoryNodeGrouped::GetLocalizedName() const
 {
-  CMusicDatabase db;
-  if (db.Open())
-    return db.GetItemById(GetContentType(), GetID());
-  return "";
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetItemById(GetContentType(), GetID());
 }
 
 bool CDirectoryNodeGrouped::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
-
-  return musicdatabase.GetItems(BuildPath(), GetContentType(), items);
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetItems(BuildPath(), GetContentType(), items);
 }
 
 std::string CDirectoryNodeGrouped::GetContentType() const

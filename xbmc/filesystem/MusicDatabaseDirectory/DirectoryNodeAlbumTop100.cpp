@@ -19,6 +19,7 @@
  */
 
 #include "DirectoryNodeAlbumTop100.h"
+#include "DatabaseManager.h"
 #include "music/MusicDatabase.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"
@@ -41,24 +42,17 @@ NODE_TYPE CDirectoryNodeAlbumTop100::GetChildType() const
 
 std::string CDirectoryNodeAlbumTop100::GetLocalizedName() const
 {
-  CMusicDatabase db;
-  if (db.Open())
-    return db.GetAlbumById(GetID());
-  return "";
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  return database->GetAlbumById(GetID());
 }
 
 bool CDirectoryNodeAlbumTop100::GetContent(CFileItemList& items) const
 {
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return false;
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
 
   VECALBUMS albums;
-  if (!musicdatabase.GetTop100Albums(albums))
-  {
-    musicdatabase.Close();
+  if (!database->GetTop100Albums(albums))
     return false;
-  }
 
   for (int i=0; i<(int)albums.size(); ++i)
   {
@@ -67,8 +61,6 @@ bool CDirectoryNodeAlbumTop100::GetContent(CFileItemList& items) const
     CFileItemPtr pItem(new CFileItem(strDir, album));
     items.Add(pItem);
   }
-
-  musicdatabase.Close();
 
   return true;
 }

@@ -63,8 +63,6 @@ protected:
   //! True if we need to update fields before rendering
   bool      m_updateData;
 
-  //! Database stuff
-  CMusicDatabase m_musicdatabase;
   CSong          m_karaokeSong;
 };
 

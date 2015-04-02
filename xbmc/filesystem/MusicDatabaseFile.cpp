@@ -19,6 +19,7 @@
  */
 
 #include "MusicDatabaseFile.h"
+#include "DatabaseManager.h"
 #include "music/MusicDatabase.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
@@ -39,10 +40,6 @@ CMusicDatabaseFile::~CMusicDatabaseFile(void)
 
 std::string CMusicDatabaseFile::TranslateUrl(const CURL& url)
 {
-  CMusicDatabase musicDatabase;
-  if (!musicDatabase.Open())
-    return "";
-
   std::string strFileName=URIUtils::GetFileName(url.Get());
   std::string strExtension = URIUtils::GetExtension(strFileName);
   URIUtils::RemoveExtension(strFileName);
@@ -52,8 +49,9 @@ std::string CMusicDatabaseFile::TranslateUrl(const CURL& url)
 
   long idSong=atol(strFileName.c_str());
 
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
   CSong song;
-  if (!musicDatabase.GetSong(idSong, song))
+  if (!database->GetSong(idSong, song))
     return "";
 
   StringUtils::ToLower(strExtension);

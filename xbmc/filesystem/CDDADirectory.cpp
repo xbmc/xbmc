@@ -23,6 +23,7 @@
 #ifdef HAS_DVD_DRIVE
 
 #include "CDDADirectory.h"
+#include "DatabaseManager.h"
 #include "music/MusicDatabase.h"
 #include "FileItem.h"
 #include "File.h"
@@ -55,8 +56,8 @@ bool CCDDADirectory::GetDirectory(const CURL& url, CFileItemList &items)
     return false;
 
   //  Preload CDDB info
-  CMusicDatabase musicdatabase;
-  musicdatabase.LookupCDDBInfo();
+  CMusicDatabase *database = CDatabaseManager::Get().GetMusicDatabase();
+  database->LookupCDDBInfo();
 
   // If the disc has no tracks, we are finished here.
   int nTracks = pCdInfo->GetTrackCount();

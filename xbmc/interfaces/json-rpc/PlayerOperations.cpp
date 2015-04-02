@@ -249,10 +249,9 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
       {
         if (fileItem->IsMusicDb())
         {
-          CMusicDatabase musicdb;
           CFileItemList items;
           items.Add(fileItem);
-          CAudioLibrary::GetAdditionalSongDetails(parameterObject, items, musicdb);
+          CAudioLibrary::GetAdditionalSongDetails(parameterObject, items);
         }
       }
       break;

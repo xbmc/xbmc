@@ -195,17 +195,12 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
     if (id <= 0 && !item->GetPath().empty() &&
        (!item->HasProperty(LOOKUP_PROPERTY) || item->GetProperty(LOOKUP_PROPERTY).asBoolean()))
     {
-      CMusicDatabase musicdatabase;
-      if (musicdatabase.Open())
+      CMusicDatabase *musicDatabase = CDatabaseManager::Get().GetMusicDatabase();
+      CSong song;
+      if (musicDatabase->GetSongByFileName(item->GetPath(), song, item->m_lStartOffset))
       {
-        CSong song;
-        if (musicdatabase.GetSongByFileName(item->GetPath(), song, item->m_lStartOffset))
-        {
-          item->GetMusicInfoTag()->SetSong(song);
-          id = item->GetMusicInfoTag()->GetDatabaseId();
-        }
-
-        musicdatabase.Close();
+        item->GetMusicInfoTag()->SetSong(song);
+        id = item->GetMusicInfoTag()->GetDatabaseId();
       }
     }
 
