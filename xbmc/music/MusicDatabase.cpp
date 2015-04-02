@@ -41,6 +41,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
@@ -4828,6 +4829,8 @@ std::string CMusicDatabase::GetItemById(const std::string &itemType, int id)
 
 void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, bool images, bool overwrite)
 {
+  int iFailCount = 0;
+  CGUIDialogProgress *progress=NULL;
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -4850,7 +4853,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     }
     m_pDS->close();
 
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(20196);
@@ -4891,7 +4894,11 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
           if (overwrite || !CFile::Exists(nfoFile))
           {
             if (!xmlDoc.SaveFile(nfoFile))
+            {
               CLog::Log(LOGERROR, "%s: Album nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+              iFailCount++;
+            }
           }
 
           if (images)
@@ -4961,7 +4968,11 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
           if (overwrite || !CFile::Exists(nfoFile))
           {
             if (!xmlDoc.SaveFile(nfoFile))
+            {
               CLog::Log(LOGERROR, "%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+              iFailCount++;
+            }
           }
 
           if (images && !artwork.empty())
@@ -4994,15 +5005,19 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
       current++;
     }
 
-    if (progress)
-      progress->Close();
-
     xmlDoc.SaveFile(xmlFile);
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    iFailCount++;
   }
+
+  if (progress)
+    progress->Close();
+
+  if (iFailCount > 0)
+    CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(20196), StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount), "", "");
 }
 
 void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
