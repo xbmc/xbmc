@@ -25,6 +25,7 @@
 #include "threads/ThreadLocal.h"
 #include "threads/SingleLock.h"
 #include "commons/Exception.h"
+#include "DatabaseManager.h"
 #include <stdlib.h>
 
 #define __STDC_FORMAT_MACROS
@@ -158,6 +159,9 @@ bool CThread::IsAutoDelete() const
 
 void CThread::StopThread(bool bWait /*= true*/)
 {
+  // close/free thread local databases
+  CDatabaseManager::Get().CloseDatabases();
+
   m_bStop = true;
   m_StopEvent.Set();
   CSingleLock lock(m_CriticalSection);
