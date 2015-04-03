@@ -321,7 +321,11 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
         pProp->GetPages(&pPages);
         if (pPages.cElems > 0)
         {
-          g_charsetConverter.wToUTF8(GetFilterName(pBF), filterName);
+          // force osdname for XySubFilter
+          if ((pBF == CGraphFilters::Get()->Subs.pBF) && CGraphFilters::Get()->Subs.osdname != "")
+            filterName = CGraphFilters::Get()->Subs.osdname;
+          else
+            g_charsetConverter.wToUTF8(GetFilterName(pBF), filterName);
           pDlg->Add(filterName);
         }
         CoTaskMemFree(pPages.pElems);

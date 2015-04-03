@@ -768,7 +768,11 @@ CStdString CDSGraph::GetGeneralInfo()
     if (pBF == CGraphFilters::Get()->AudioRenderer.pBF || pBF == CGraphFilters::Get()->VideoRenderer.pBF)
       continue;
 
-    g_charsetConverter.wToUTF8(GetFilterName(pBF), info);
+    // force osdname for XySubFilter
+    if ((pBF == CGraphFilters::Get()->Subs.pBF) && CGraphFilters::Get()->Subs.osdname != "")
+      info = CGraphFilters::Get()->Subs.osdname;
+    else
+      g_charsetConverter.wToUTF8(GetFilterName(pBF), info);
     if (!info.empty())
       generalInfo.empty() ? generalInfo += "Filters: " + info : generalInfo += " | " + info;
   }
