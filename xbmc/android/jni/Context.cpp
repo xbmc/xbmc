@@ -62,7 +62,6 @@ CJNIContext::CJNIContext(const ANativeActivity *nativeActivity)
 
 CJNIContext::~CJNIContext()
 {
-  xbmc_jni_on_unload();
 }
 
 void CJNIContext::PopulateStaticFields()
