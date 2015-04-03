@@ -889,7 +889,16 @@ void CGUIControl::UnfocusFromPoint(const CPoint &point)
     CPoint controlPoint(point);
     m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
     if (!HitTest(controlPoint))
+    {
       SetFocus(false);
+
+      // and tell our parent so it can unfocus
+      if (m_parentControl)
+      {
+        CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), GetID());
+        m_parentControl->OnMessage(msgLostFocus);
+      }
+    }
   }
 }
 
