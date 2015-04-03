@@ -511,13 +511,13 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
     // Shaders
     {
       std::vector<uint32_t> shaders;
+      std::vector<uint32_t> shadersStages;
       START_PERFORMANCE_COUNTER
-        if (SUCCEEDED(CFilterCoreFactory::GetShaders(pFileItem, shaders, CGraphFilters::Get()->IsUsingDXVADecoder())))
+        if (SUCCEEDED(CFilterCoreFactory::GetShaders(pFileItem, shaders, shadersStages, CGraphFilters::Get()->IsUsingDXVADecoder())))
         {
-        for (std::vector<uint32_t>::const_iterator it = shaders.begin();
-          it != shaders.end(); ++it)
+        for (int i = 0; i < shaders.size(); i++)
         {
-          g_dsSettings.pixelShaderList->EnableShader(*it);
+          g_dsSettings.pixelShaderList->EnableShader(shaders[i], shadersStages[i]);
         }
         }
       END_PERFORMANCE_COUNTER("Loading shaders");

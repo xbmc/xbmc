@@ -43,6 +43,8 @@ public:
 
   bool IsEnabled() const { return m_enabled; }
   void SetEnabled(const bool enabled) { m_enabled = enabled; }
+  int GetStage() const { return m_shaderStage; }
+  void SetStage(const int stage) { m_shaderStage = stage; }
 
   CStdString GetName() const { return m_name; }
   void SetName(const CStdString& name) { m_name = name; }
@@ -55,6 +57,7 @@ private:
   CStdString m_SourceTarget;
   CStdString m_SourceData;
   CStdString m_name;
+  int m_shaderStage;
   int m_id;
   bool m_valid;
   bool m_enabled;

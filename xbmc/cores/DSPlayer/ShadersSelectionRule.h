@@ -37,7 +37,7 @@ public:
   CShadersSelectionRule(TiXmlElement* rule);
   virtual ~CShadersSelectionRule();
 
-  void GetShaders(const CFileItem& item, std::vector<uint32_t> &shaders, bool dxva = false);
+  void GetShaders(const CFileItem& item, std::vector<uint32_t> &shaders, std::vector<uint32_t> &shadersStage,  bool dxva = false);
 
 private:
   int GetTristate(const char* szValue) const;
@@ -56,8 +56,10 @@ private:
   CStdString m_videoResolution;
   CStdString m_videoAspect;
   CStdString m_videoFourcc;
+  CStdString m_shaderStageStr;
 
   int32_t m_shaderId;
+  int32_t m_shaderStage;
   bool m_bStreamDetails;
 
   std::vector<CShadersSelectionRule *> vecSubRules;

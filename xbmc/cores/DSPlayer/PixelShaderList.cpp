@@ -142,7 +142,7 @@ void CPixelShaderList::UpdateActivatedList()
   }
 }
 
-void CPixelShaderList::EnableShader(const uint32_t id, bool enabled /*= true*/)
+void CPixelShaderList::EnableShader(const uint32_t id, const uint32_t stage, bool enabled /*= true*/)
 {
   CSingleLock lock(m_accessLock);
 
@@ -154,6 +154,7 @@ void CPixelShaderList::EnableShader(const uint32_t id, bool enabled /*= true*/)
   std::string status = enabled ? "enabled" : "disabled";
   CLog::Log(LOGDEBUG, __FUNCTION__" Shader \"%s\" %s", (*it)->GetName().c_str(), status.c_str());
   (*it)->SetEnabled(enabled);
+  (*it)->SetStage(stage);
   UpdateActivatedList();
 }
 

@@ -108,9 +108,9 @@ public:
     m_pExtras->GetFilters(item, vecCores, dxva);
   }
 
-  void GetShaders(const CFileItem& item, std::vector<uint32_t>& shaders, bool dxva = false)
+  void GetShaders(const CFileItem& item, std::vector<uint32_t>& shaders, std::vector<uint32_t>& shadersStages, bool dxva = false)
   {
-    m_pShaders->GetShaders(item, shaders, dxva);
+    m_pShaders->GetShaders(item, shaders, shadersStages, dxva);
   }
 
 private:

@@ -313,6 +313,8 @@ STDMETHODIMP_(bool) CmadVRAllocatorPresenter::Paint(bool fAll)
 void CmadVRAllocatorPresenter::SetPS()
 {
   g_dsSettings.pixelShaderList->UpdateActivatedList();
+  m_shaderStage = 0;
+  CStdString strStage;
   PixelShaderVector& psVec = g_dsSettings.pixelShaderList->GetActivatedPixelShaders();
 
   for (PixelShaderVector::iterator it = psVec.begin();
@@ -320,8 +322,12 @@ void CmadVRAllocatorPresenter::SetPS()
   {
     CExternalPixelShader *Shader = *it;
     Shader->Load();
+    m_shaderStage = Shader->GetStage();
+    m_shaderStage == 0 ? strStage = "Pre-Resize" : strStage = "Post-Resize";
     SetPixelShader(Shader->GetSourceData(), nullptr);
     Shader->DeleteSourceData();
+
+    CLog::Log(LOGDEBUG, "%s Set PixelShader: %s applied: %s", __FUNCTION__, Shader->GetName().c_str(), strStage.c_str());
   }
 };
 
@@ -333,7 +339,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::SetPixelShader(LPCSTR pSrcData, LPCSTR pT
       hr = pEPS->ClearPixelShaders(false);
     }
     else {
-      hr = pEPS->AddPixelShader(pSrcData, pTarget, ShaderStage_PostScale, nullptr);
+      hr = pEPS->AddPixelShader(pSrcData, pTarget, m_shaderStage, nullptr);
     }
   }
   return hr;

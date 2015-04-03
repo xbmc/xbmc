@@ -58,7 +58,7 @@ public:
   static HRESULT GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
   static HRESULT GetSubsFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
   static HRESULT GetExtraFilters(const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva = false);
-  static HRESULT GetShaders(const CFileItem& pFileItem, std::vector<uint32_t>& shaders, bool dxva = false);
+  static HRESULT GetShaders(const CFileItem& pFileItem, std::vector<uint32_t>& shaders, std::vector<uint32_t>& shadersStage, bool dxva = false);
 
   static CFGFilter* GetFilterFromName(const CStdString& filter, bool showError = true);
 

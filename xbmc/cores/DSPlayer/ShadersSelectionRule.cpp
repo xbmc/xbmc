@@ -58,6 +58,7 @@ void CShadersSelectionRule::Initialize(TiXmlElement* pRule)
   m_videoResolution = pRule->Attribute("videoresolution");
   m_videoAspect = pRule->Attribute("videoaspect");
   m_videoFourcc = pRule->Attribute("fourcc");
+  m_shaderStageStr = pRule->Attribute("stage");
 
   m_bStreamDetails = m_audioCodec.length() > 0 || m_audioChannels.length() > 0 || m_videoFourcc.length() > 0 ||
     m_videoCodec.length() > 0 || m_videoResolution.length() > 0 || m_videoAspect.length() > 0;
@@ -98,7 +99,7 @@ bool CShadersSelectionRule::MatchesRegExp(const CStdString& str, CRegExp& regExp
   return regExp.RegFind(str, 0) != -1; // Need more testing
 }
 
-void CShadersSelectionRule::GetShaders(const CFileItem& item, std::vector<uint32_t> &shaders, bool dxva)
+void CShadersSelectionRule::GetShaders(const CFileItem& item, std::vector<uint32_t> &shaders, std::vector<uint32_t> &shadersStage, bool dxva)
 {
   //CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: considering rule: %s", m_name.c_str());
 
@@ -156,10 +157,13 @@ void CShadersSelectionRule::GetShaders(const CFileItem& item, std::vector<uint32
   {
     CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: adding shader: %d for rule: %s", m_shaderId, m_name.c_str());
     shaders.push_back(m_shaderId);
+
+    m_shaderStageStr == "postresize" ? m_shaderStage = 1 : m_shaderStage = 0;
+    shadersStage.push_back(m_shaderStage);
   }
 
   for (unsigned int i = 0; i < vecSubRules.size(); i++)
-    vecSubRules[i]->GetShaders(item, shaders, dxva);
+    vecSubRules[i]->GetShaders(item, shaders, shadersStage, dxva);
 }
 
 #endif

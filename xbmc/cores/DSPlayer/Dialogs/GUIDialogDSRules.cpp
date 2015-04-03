@@ -112,7 +112,7 @@ void CGUIDialogDSRules::SetupView()
 
 
 
-void CGUIDialogDSRules::SetVisible(CStdString id, bool visible, bool isChild /* = false */)
+void CGUIDialogDSRules::SetVisible(CStdString id, bool visible, ConfigType subType, bool isChild /* = false */)
 {
   CSetting *setting = m_settingsManager->GetSetting(id);
   if (setting->IsVisible() && visible)
@@ -122,7 +122,12 @@ void CGUIDialogDSRules::SetVisible(CStdString id, bool visible, bool isChild /* 
   if (!isChild)
     m_settingsManager->SetString(id, "[null]");
   else
-    m_settingsManager->SetString(id, "");
+  { 
+    if (subType == SPINNERATTRSHADER)
+      m_settingsManager->SetString(id, "prescale");
+    else
+      m_settingsManager->SetString(id, "");
+  }
 }
 
 void CGUIDialogDSRules::HideUnused()
@@ -134,6 +139,7 @@ void CGUIDialogDSRules::HideUnused()
 
   HideUnused(EXTRAFILTER, EDITATTREXTRA);
   HideUnused(SHADER, EDITATTRSHADER);
+  HideUnused(SHADER, SPINNERATTRSHADER);
 
   m_allowchange = true;
 }
@@ -142,6 +148,7 @@ void CGUIDialogDSRules::HideUnused(ConfigType type, ConfigType subType)
 {
   int count = 0;
   bool show;
+  bool isMadvr = (CSettings::Get().GetString("dsplayer.videorenderer") == "madVR");
 
   std::vector<DSConfigList *>::iterator it;
   for (it = m_ruleList.begin(); it != m_ruleList.end(); ++it)
@@ -152,7 +159,7 @@ void CGUIDialogDSRules::HideUnused(ConfigType type, ConfigType subType)
         count++;
 
       show = (count > 1 && (*it)->m_value == "[null]");
-      SetVisible((*it)->m_setting.c_str(), !show);
+      SetVisible((*it)->m_setting.c_str(), !show, subType);
 
       show = (count > 0 && (*it)->m_value == "[null]");
       std::vector<DSConfigList *>::iterator itchild;
@@ -160,7 +167,10 @@ void CGUIDialogDSRules::HideUnused(ConfigType type, ConfigType subType)
       {
         if ((*itchild)->m_configType == subType && (*it)->m_subNode == (*itchild)->m_subNode)
         {
-          SetVisible((*itchild)->m_setting.c_str(), !show, true);
+          if (!isMadvr && subType == SPINNERATTRSHADER)
+            SetVisible((*itchild)->m_setting.c_str(), false, subType, true);
+          else
+            SetVisible((*itchild)->m_setting.c_str(), !show, subType, true);
         }
       }
     }
@@ -266,14 +276,17 @@ void CGUIDialogDSRules::InitializeSettings()
 
     // SHADER
     m_dsmanager->InitConfig(m_ruleList, SHADER, "rules.shader0", 60013, "id", "shader", m_dsmanager->ShadersOptionFiller, 0, "shaders");
+    m_dsmanager->InitConfig(m_ruleList, SPINNERATTRSHADER, "rules.shprepost0", 60023, "stage", "shader", m_dsmanager->ShadersScaleOptionFiller, 0, "shaders");
     m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideores0", 60019, "videoresolution", "shader", 0, 0, "shaders");
     m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideocodec0", 60020, "videocodec", "shader", 0, 0, "shaders");
 
     m_dsmanager->InitConfig(m_ruleList, SHADER, "rules.shader1", 60013, "id", "shader", m_dsmanager->ShadersOptionFiller, 1, "shaders");
+    m_dsmanager->InitConfig(m_ruleList, SPINNERATTRSHADER, "rules.shprepost1", 60023, "stage", "shader", m_dsmanager->ShadersScaleOptionFiller, 1, "shaders");
     m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideores1", 60019, "videoresolution", "shader", 0, 1, "shaders");
     m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideocodec1", 60020, "videocodec", "shader", 0, 1, "shaders");
 
     m_dsmanager->InitConfig(m_ruleList, SHADER, "rules.shader2", 60013, "id", "shader", m_dsmanager->ShadersOptionFiller, 2, "shaders");
+    m_dsmanager->InitConfig(m_ruleList, SPINNERATTRSHADER, "rules.shprepost2", 60023, "stage", "shader", m_dsmanager->ShadersScaleOptionFiller, 2, "shaders");
     m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideores2", 60019, "videoresolution", "shader", 0, 2, "shaders");
     m_dsmanager->InitConfig(m_ruleList, EDITATTRSHADER, "rules.shvideocodec2", 60020, "videocodec", "shader", 0, 2, "shaders");
   }
@@ -314,6 +327,7 @@ void CGUIDialogDSRules::InitializeSettings()
         if ((*it)->m_configType == EXTRAFILTER
           || (*it)->m_configType == SHADER
           || (*it)->m_configType == EDITATTREXTRA
+          || (*it)->m_configType == SPINNERATTRSHADER
           || (*it)->m_configType == EDITATTRSHADER)
         {
           TiXmlElement *pFilter;
@@ -367,6 +381,9 @@ void CGUIDialogDSRules::InitializeSettings()
 
       AddEdit(groupTmp, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value.c_str(), true);
     }
+    if ((*it)->m_configType == SPINNERATTRSHADER)
+      AddSpinner(groupExtra, (*it)->m_setting, (*it)->m_label, 0, (*it)->m_value, (*it)->m_filler);
+
     if ((*it)->m_configType == BOOLATTR)
       AddToggle(groupRule, (*it)->m_setting, (*it)->m_label, 0, (*it)->GetBoolValue());
 
@@ -444,6 +461,8 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
   // Add & Save Rule
   if (settingId == SETTING_RULE_SAVE || settingId == SETTING_RULE_ADD)
   {
+
+    bool isMadvr = (CSettings::Get().GetString("dsplayer.videorenderer") == "madVR");
     TiXmlElement pRule("rule");
 
     std::vector<DSConfigList *>::iterator it;
@@ -466,18 +485,25 @@ void CGUIDialogDSRules::OnSettingAction(const CSetting *setting)
       if (((*it)->m_configType == EXTRAFILTER
         || (*it)->m_configType == SHADER
         || (*it)->m_configType == EDITATTREXTRA
-        || (*it)->m_configType == EDITATTRSHADER)
+        || (*it)->m_configType == EDITATTRSHADER
+        || (*it)->m_configType == SPINNERATTRSHADER)
         && (*it)->m_value != "[null]" && (*it)->m_value != "")
       {
 
+        if (!isMadvr && (*it)->m_configType == SPINNERATTRSHADER)
+          continue;
+
         TiXmlElement *pExtra = pRule.FirstChildElement((*it)->m_nodeList.c_str());
-        if (!pExtra && (*it)->m_configType != EDITATTREXTRA && (*it)->m_configType != EDITATTRSHADER)
+        if (!pExtra && (*it)->m_configType != EDITATTREXTRA && (*it)->m_configType != EDITATTRSHADER && (*it)->m_configType != SPINNERATTRSHADER)
         {
           pRule.InsertEndChild(TiXmlElement((*it)->m_nodeList.c_str()));
           pExtra = pRule.FirstChildElement((*it)->m_nodeList.c_str());
         }
-        if ((*it)->m_configType != EDITATTREXTRA && (*it)->m_configType != EDITATTRSHADER)
+        if ((*it)->m_configType != EDITATTREXTRA && (*it)->m_configType != EDITATTRSHADER && (*it)->m_configType != SPINNERATTRSHADER)
           pExtra->InsertEndChild(TiXmlElement((*it)->m_nodeName.c_str()));
+
+        if (!pExtra)
+          continue;
 
         TiXmlElement *pSubExtra = pExtra->FirstChildElement((*it)->m_nodeName.c_str());
 

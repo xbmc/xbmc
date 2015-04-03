@@ -43,7 +43,7 @@ public:
   void UpdateActivatedList();
 
   void SaveXML();
-  void EnableShader(const uint32_t id, bool enabled = true);
+  void EnableShader(const uint32_t id, const uint32_t stage, bool enabled = true);
   void DisableAll();
 
   bool Exists(const uint32_t id) {

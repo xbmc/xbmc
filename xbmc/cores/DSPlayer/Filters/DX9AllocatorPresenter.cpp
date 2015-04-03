@@ -1989,6 +1989,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
           {
             CSingleLock lock(g_dsSettings.pixelShaderList->m_accessLock);
+            g_dsSettings.pixelShaderList->UpdateActivatedList();
             PixelShaderVector& psVec = g_dsSettings.pixelShaderList->GetActivatedPixelShaders();
 
             for (PixelShaderVector::iterator it = psVec.begin();

@@ -83,6 +83,7 @@ class CmadVRAllocatorPresenter
   bool  m_bIsFullscreen;
   bool m_isDeviceSet;
   bool m_firstBoot;
+  int m_shaderStage;
 
 public:
 

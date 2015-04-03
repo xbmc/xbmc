@@ -33,6 +33,7 @@ enum ConfigType {
   EDITATTREXTRA,
   EDITATTRSHADER,
   SPINNERATTR,
+  SPINNERATTRSHADER,
   BOOLATTR,
   FILTER,
   EXTRAFILTER,
@@ -91,7 +92,8 @@ public:
   void GetPath(xmlType type, CStdString &xmlFile, CStdString &xmlNode, CStdString &xmlRoot);
   static void AllFiltersConfigOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void ShadersOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void  DSFilterOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void ShadersScaleOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void DSFilterOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void BoolOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static bool compare_by_word(const DynamicStringSettingOption& lhs, const DynamicStringSettingOption& rhs);
   std::vector<DynamicStringSettingOption> GetFilterList(xmlType type);

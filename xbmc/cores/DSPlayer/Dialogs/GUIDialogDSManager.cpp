@@ -87,6 +87,9 @@ void CGUIDialogDSManager::ResetValue(std::vector<DSConfigList *> &configList)
       || (*it)->m_configType == FILTERSYSTEM)
       (*it)->m_value = "[null]";
 
+    if ((*it)->m_configType == SPINNERATTRSHADER)
+      (*it)->m_value = "preresize";
+
     if ((*it)->m_configType == BOOLATTR)
       (*it)->m_value = "false";
   }
@@ -281,6 +284,14 @@ void CGUIDialogDSManager::ShadersOptionFiller(const CSetting *setting, std::vect
 
     pShader = pShader->NextSiblingElement("shader");
   }
+}
+
+void CGUIDialogDSManager::ShadersScaleOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+
+  list.push_back(std::make_pair("Pre-resize", "preresize"));
+  list.push_back(std::make_pair("Post-resize", "postresize"));
+
 }
 
 void CGUIDialogDSManager::DSFilterOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
