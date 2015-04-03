@@ -47,6 +47,8 @@ ISettingControl* CSettingControlCreator::CreateControl(const std::string &contro
     return new CSettingControlSlider();
   else if (StringUtils::EqualsNoCase(controlType, "range"))
     return new CSettingControlRange();
+  else if (StringUtils::EqualsNoCase(controlType, "title"))
+    return new CSettingControlTitle();
 
   return NULL;
 }
@@ -316,6 +318,24 @@ bool CSettingControlRange::SetFormat(const std::string &format)
 
   m_format = format;
   StringUtils::ToLower(m_format);
+
+  return true;
+}
+
+bool CSettingControlTitle::Deserialize(const TiXmlNode *node, bool update /* = false */)
+{
+  if (!ISettingControl::Deserialize(node, update))
+    return false;
+
+  std::string strTmp;
+  if (XMLUtils::GetString(node, SETTING_XML_ATTR_SEPARATOR_POSITION, strTmp))
+  {
+    if (!StringUtils::EqualsNoCase(strTmp, "top") && !StringUtils::EqualsNoCase(strTmp, "bottom"))
+      CLog::Log(LOGWARNING, "CSettingControlTitle: error reading \"value\" attribute of <%s>", SETTING_XML_ATTR_SEPARATOR_POSITION);
+    else
+      m_separatorBelowLabel = StringUtils::EqualsNoCase(strTmp, "bottom");
+  }
+  XMLUtils::GetBoolean(node, SETTING_XML_ATTR_HIDE_SEPARATOR, m_separatorHidden);
 
   return true;
 }
