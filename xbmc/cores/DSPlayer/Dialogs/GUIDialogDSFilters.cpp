@@ -347,16 +347,18 @@ int CGUIDialogDSFilters::ShowDSFiltersList()
   TiXmlElement *pFilter = pFilters->FirstChildElement("filter");
   while (pFilter)
   {
+    strFilterLabel = "";
+    strFilter = "";
+
     TiXmlElement *pOsdname = pFilter->FirstChildElement("osdname");
     if (pOsdname)
-    {
       XMLUtils::GetString(pFilter, "osdname", strFilterLabel);
-      strFilter = pFilter->Attribute("name");
-      strFilterLabel.Format("%s (%s)", strFilterLabel, strFilter);
 
-      pDlg->Add(strFilterLabel.c_str());
-      count++;
-    }
+    strFilter = pFilter->Attribute("name");
+    strFilterLabel.Format("%s (%s)", strFilterLabel, strFilter);
+    pDlg->Add(strFilterLabel.c_str()); 
+    count++;
+
     pFilter = pFilter->NextSiblingElement("filter");
   }
 
