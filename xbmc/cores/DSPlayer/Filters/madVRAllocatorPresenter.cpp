@@ -89,7 +89,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, 
   return __super::NonDelegatingQueryInterface(riid, ppv);
 }
 
-HRESULT CmadVRAllocatorPresenter::SetSubDevice(IDirect3DDevice9* pD3DDev)
+HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
   if (!pD3DDev)
   {
@@ -97,6 +97,16 @@ HRESULT CmadVRAllocatorPresenter::SetSubDevice(IDirect3DDevice9* pD3DDev)
     m_pSubPicQueue = nullptr;
     m_pAllocator = nullptr;
     return S_OK;
+  }
+
+  m_pD3DDeviceMadVR = pD3DDev;
+
+  if (m_firstBoot)
+  { 
+    g_graphicsContext.SetFullScreenVideo(true);
+    m_firstBoot = false;
+    m_isDeviceSet = true;
+    g_Windowing.ResetForMadvr();
   }
 
   Com::SmartSize size;
@@ -138,54 +148,6 @@ void CmadVRAllocatorPresenter::SetResolution(float fps)
     RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
     g_graphicsContext.SetVideoResolution(bestRes);
   }
-}
-
-// IOsdRenderCallback
-STDMETHODIMP CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
-{
-  CLog::Log(LOGDEBUG, "%s madVR device it's ready", __FUNCTION__);
-
-  if (!pD3DDev)
-    return S_OK;
-
-  m_pD3DDeviceMadVR = pD3DDev;
-
-  if (!m_firstBoot)
-    return S_OK;
-
-  g_graphicsContext.SetFullScreenVideo(true);
-  m_firstBoot = false;
-  m_isDeviceSet = true;
-  g_Windowing.ResetForMadvr();
-
-  return S_OK;
-}
-
-STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
-{
-  //CLog::Log(LOGDEBUG, "ClearBackground");
-  return S_OK;
-}
-
-STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
-{
-  // restore pixelshader for render kodi gui
-  m_pD3DDeviceMadVR->SetPixelShader(NULL);
-
-  // render kodi gui
-  g_application.RenderMadvr();
-
-  //restore stagestate for xysubfilter
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-  // set false for pixelshader
-  m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-  return S_OK;
 }
 
 HRESULT CmadVRAllocatorPresenter::Render(
@@ -231,25 +193,40 @@ HRESULT CmadVRAllocatorPresenter::Render(
 
   AlphaBltSubPic(Com::SmartSize(width, height));
 
+  // restore pixelshader for render kodi gui
+  m_pD3DDeviceMadVR->SetPixelShader(NULL);
+
+  // render kodi gui
+  g_application.RenderMadvr();
+
+  //restore stagestate for xysubfilter
+  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+  // set false for pixelshader
+  m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
   return S_OK;
 }
 
 // ISubPicAllocatorPresenter
 STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 {
-
   CheckPointer(ppRenderer, E_POINTER);
 
   if (m_pDXR) {
     return E_UNEXPECTED;
   }
 
-  HRESULT hr = m_pDXR.CoCreateInstance(CLSID_madVR, GetOwner());
+  m_pDXR.CoCreateInstance(CLSID_madVR, GetOwner());
   if (!m_pDXR) {
     return E_FAIL;
   }
 
-  // ISubRenderCallback
   Com::SmartQIPtr<ISubRender> pSR = m_pDXR;
   if (!pSR) {
     m_pDXR = nullptr;
@@ -258,19 +235,6 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
   m_pSRCB = DNew CSubRenderCallback(this);
   if (FAILED(pSR->SetCallback(m_pSRCB))) {
-    m_pDXR = nullptr;
-    return E_FAIL;
-  }
-
-  // IOsdRenderCallback
-  Com::SmartQIPtr<IMadVROsdServices> pOR = m_pDXR;
-  if (!pOR) {
-    m_pDXR = nullptr;
-    return E_FAIL;
-  }
-
-  m_pORCB = DNew COsdRenderCallback(this);
-  if (FAILED(pOR->OsdSetRenderCallback("Kodi.Gui", m_pORCB))) {
     m_pDXR = nullptr;
     return E_FAIL;
   }

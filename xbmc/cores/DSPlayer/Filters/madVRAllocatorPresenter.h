@@ -32,44 +32,6 @@ class CmadVRAllocatorPresenter
   public IPaintCallbackMadvr
 {
 
-  class COsdRenderCallback : public CUnknown, public IOsdRenderCallback, public CCritSec
-  {
-    CmadVRAllocatorPresenter* m_pDXRAP;
-
-  public:
-    COsdRenderCallback(CmadVRAllocatorPresenter* pDXRAP)
-      : CUnknown(_T("COsdRender"), NULL)
-      , m_pDXRAP(pDXRAP) {
-    }
-
-    DECLARE_IUNKNOWN
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv) {
-      return
-        QI(IOsdRenderCallback)
-        __super::NonDelegatingQueryInterface(riid, ppv);
-    }
-
-    void SetDXRAP(CmadVRAllocatorPresenter* pDXRAP) {
-      CAutoLock cAutoLock(this);
-      m_pDXRAP = pDXRAP;
-    }
-
-    // IOsdRenderCallback
-
-    STDMETHODIMP ClearBackground(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect){
-      CAutoLock cAutoLock(this);
-      return m_pDXRAP ? m_pDXRAP->ClearBackground(name, frameStart, fullOutputRect, activeVideoRect) : E_UNEXPECTED;
-    }
-    STDMETHODIMP RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect){
-      CAutoLock cAutoLock(this);
-      return m_pDXRAP ? m_pDXRAP->RenderOsd(name, frameStart, fullOutputRect, activeVideoRect) : E_UNEXPECTED;
-    }
-    STDMETHODIMP SetDevice(IDirect3DDevice9* pD3DDev) {
-      CAutoLock cAutoLock(this);
-      return m_pDXRAP ? m_pDXRAP->SetDevice(pD3DDev) : E_UNEXPECTED;
-    }
-  };
-
   class CSubRenderCallback : public CUnknown, public ISubRenderCallback2, public CCritSec
   {
     CmadVRAllocatorPresenter* m_pDXRAP;
@@ -97,7 +59,7 @@ class CmadVRAllocatorPresenter
 
     STDMETHODIMP SetDevice(IDirect3DDevice9* pD3DDev) {
       CAutoLock cAutoLock(this);
-      return m_pDXRAP ? m_pDXRAP->SetSubDevice(pD3DDev) : E_UNEXPECTED;
+      return m_pDXRAP ? m_pDXRAP->SetDevice(pD3DDev) : E_UNEXPECTED;
     }
 
     STDMETHODIMP Render(REFERENCE_TIME rtStart, int left, int top, int right, int bottom, int width, int height) {
@@ -130,13 +92,8 @@ public:
   DECLARE_IUNKNOWN
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
-  // IOsdRenderCallback
-  STDMETHODIMP ClearBackground(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect);
-  STDMETHODIMP RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect);
-  STDMETHODIMP SetDevice(IDirect3DDevice9* pD3DDev);
-
   // ISubPicAllocatorPresenter
-  HRESULT SetSubDevice(IDirect3DDevice9* pD3DDev);
+  HRESULT SetDevice(IDirect3DDevice9* pD3DDev);
   HRESULT Render(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, REFERENCE_TIME atpf, int left, int top, int bottom, int right, int width, int height);
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
   STDMETHODIMP_(void) SetPosition(RECT w, RECT v);
