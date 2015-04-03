@@ -1391,16 +1391,18 @@ void CDVDPlayer::Process()
 
         m_OmxPlayerState.bOmxSentEOFs = true;
       }
+
       if(m_CurrentAudio.inited)
-        m_dvdPlayerAudio->SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+        m_dvdPlayerAudio->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
       if(m_CurrentVideo.inited)
-        m_dvdPlayerVideo->SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+        m_dvdPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
       if(m_CurrentSubtitle.inited)
         m_dvdPlayerSubtitle->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
       if(m_CurrentTeletext.inited)
         m_dvdPlayerTeletext->SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
-      m_CurrentAudio.inited    = false;
-      m_CurrentVideo.inited    = false;
+
+      m_CurrentAudio.inited = false;
+      m_CurrentVideo.inited = false;
       m_CurrentSubtitle.inited = false;
       m_CurrentTeletext.inited = false;
 
@@ -1510,21 +1512,22 @@ bool CDVDPlayer::CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, D
 
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-    /* process packet if it belongs to selected stream. for dvd's don't allow automatic opening of streams*/
+  // process packet if it belongs to selected stream.
+  // for dvd's don't allow automatic opening of streams*/
 
-      if (CheckIsCurrent(m_CurrentAudio, pStream, pPacket))
-        ProcessAudioData(pStream, pPacket);
-      else if (CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
-        ProcessVideoData(pStream, pPacket);
-      else if (CheckIsCurrent(m_CurrentSubtitle, pStream, pPacket))
-        ProcessSubData(pStream, pPacket);
-      else if (CheckIsCurrent(m_CurrentTeletext, pStream, pPacket))
-        ProcessTeletextData(pStream, pPacket);
-      else
-      {
-        pStream->SetDiscard(AVDISCARD_ALL);
-        CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
-      }
+  if (CheckIsCurrent(m_CurrentAudio, pStream, pPacket))
+    ProcessAudioData(pStream, pPacket);
+  else if (CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
+    ProcessVideoData(pStream, pPacket);
+  else if (CheckIsCurrent(m_CurrentSubtitle, pStream, pPacket))
+    ProcessSubData(pStream, pPacket);
+  else if (CheckIsCurrent(m_CurrentTeletext, pStream, pPacket))
+    ProcessTeletextData(pStream, pPacket);
+  else
+  {
+    pStream->SetDiscard(AVDISCARD_ALL);
+    CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
+  }
 }
 
 void CDVDPlayer::CheckStreamChanges(CCurrentStream& current, CDemuxStream* stream)
