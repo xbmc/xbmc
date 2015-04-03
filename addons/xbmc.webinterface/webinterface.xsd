@@ -15,7 +15,7 @@
       <xs:pattern value="[^.]+"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:simpleType name="simpleIdentifier">
+  <xs:simpleType name="webinterfaceType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="static"/>
       <xs:enumeration value="html"/>
