@@ -1778,6 +1778,7 @@ void CDVDPlayer::HandlePlaySpeed()
   if(m_caching != caching)
     SetCaching(caching);
 
+  // check buffering levels and adjust clock
   if (m_playSpeed == DVD_PLAYSPEED_NORMAL && m_caching == CACHESTATE_DONE)
   {
     // due to i.e. discontinuities of pts the stream may have drifted away
@@ -1787,6 +1788,31 @@ void CDVDPlayer::HandlePlaySpeed()
     {
       CLog::Log(LOGDEBUG,"CDVDPlayer::HandlePlaySpeed - audio stream stalled, tiggering re-sync");
       TriggerResync();
+    }
+
+    if (CachePVRStream())
+    {
+      if (m_CurrentAudio.id >= 0)
+      {
+        double adjust = -1.0; // a unique value
+        if (m_clock.GetSpeedAdjust() == 0.0 && m_dvdPlayerAudio->GetLevel() < 5)
+          adjust = -0.01;
+        else if (m_clock.GetSpeedAdjust() == 0.0 && m_dvdPlayerAudio->GetLevel() > 95)
+          adjust = 0.01;
+
+        if (m_clock.GetSpeedAdjust() < 0 && m_dvdPlayerAudio->GetLevel() > 20)
+          adjust = 0.0;
+        else if (m_clock.GetSpeedAdjust() > 0 && m_dvdPlayerAudio->GetLevel() < 80)
+          adjust = 0.0;
+
+        if (adjust != -1.0)
+        {
+          m_clock.SetSpeedAdjust(adjust);
+          if (m_omxplayer_mode)
+            m_OmxPlayerState.av_clock.OMXSetSpeedAdjust(adjust);
+          CLog::Log(LOGDEBUG, "CDVDPlayer::HandlePlaySpeed set clock adjust: %f", adjust);
+        }
+      }
     }
   }
 
@@ -2699,6 +2725,10 @@ void CDVDPlayer::SetCaching(ECacheState state)
     m_pInputStream->ResetScanTimeout(0);
   }
   m_caching = state;
+
+  m_clock.SetSpeedAdjust(0);
+  if (m_omxplayer_mode)
+    m_OmxPlayerState.av_clock.OMXSetSpeedAdjust(0);
 }
 
 void CDVDPlayer::SetPlaySpeed(int speed)

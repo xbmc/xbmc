@@ -59,6 +59,7 @@ private:
   COMXCoreComponent m_omx_clock;
   double            m_last_media_time;
   double            m_last_media_time_read;
+  double            m_speedAdjust;
 public:
   OMXClock();
   ~OMXClock();
@@ -82,6 +83,7 @@ public:
   bool OMXPause(bool lock = true);
   bool OMXResume(bool lock = true);
   bool OMXSetSpeed(int speed, bool lock = true, bool pause_resume = false);
+  void OMXSetSpeedAdjust(double adjust, bool lock = true);
   int  OMXPlaySpeed() { return m_omx_speed; };
   bool OMXFlush(bool lock = true);
   COMXCoreComponent *GetOMXClock();

@@ -28,6 +28,7 @@
 #include "guilib/GraphicContext.h"
 #include "video/videosync/VideoSync.h"
 #include "windowing/WindowingFactory.h"
+#include "settings/Settings.h"
 
 #if defined(HAS_GLX)
 #include "video/videosync/VideoSyncGLX.h"
@@ -70,6 +71,13 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
 
 CVideoReferenceClock::~CVideoReferenceClock()
 {
+}
+
+void CVideoReferenceClock::Start()
+{
+  CSingleExit lock(g_graphicsContext);
+  if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") && !IsRunning())
+    Create();
 }
 
 void CVideoReferenceClock::Stop()
