@@ -472,6 +472,17 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
 }
 
+bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
+{
+  if (url.GetHostName().empty() || !url.IsProtocol("addons"))
+    return false;
+
+  AddonPtr tmp;
+  return url.GetHostName() == "repos"
+      || url.GetHostName() == "all"
+      || url.GetHostName() == "search"
+      || CAddonMgr::Get().GetAddon(url.GetHostName(), tmp, ADDON_REPOSITORY);
+}
 
 void CAddonsDirectory::GenerateAddonListing(const CURL &path,
                                             const VECADDONS& addons,
