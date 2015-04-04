@@ -63,20 +63,20 @@ public:
   {
     Flush();
   }
-  void    Add(double error)
+  void Add(double error)
   {
     m_buffer += error;
     m_count++;
   }
 
-  void    Flush(int interval = 2000)
+  void Flush(int interval = 500)
   {
     m_buffer = 0.0f;
     m_count  = 0;
     m_timer.Set(interval);
   }
 
-  double  Get()
+  double Get()
   {
     if(m_count)
       return m_buffer / m_count;
@@ -84,7 +84,7 @@ public:
       return 0.0;
   }
 
-  bool    Get(double& error, int interval = 2000)
+  bool Get(double& error, int interval = 500)
   {
     if(m_timer.IsTimePast())
     {
@@ -96,8 +96,8 @@ public:
       return false;
   }
 
-  double               m_buffer; //place to store average errors
-  int                  m_count;  //number of errors stored
+  double m_buffer; //place to store average errors
+  int m_count;  //number of errors stored
   XbmcThreads::EndTime m_timer;
 };
 
