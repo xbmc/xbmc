@@ -58,12 +58,15 @@ public:
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CMadvrSettings &settings);
   void SetVideoSettings(const CStdString &strFilenameAndPath, const CMadvrSettings &settings);
   void EraseVideoSettings(const std::string &path = "");
+  void EraseVideoSettings(const int resolution);
+  bool GetDefResMadvrSettings(int resolution, CMadvrSettings &settings);
+  void CreateVideoSettings(int resolution, const CMadvrSettings &setting);
 
 protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();
 
-  virtual int GetMinSchemaVersion() const { return 2; };
+  virtual int GetMinSchemaVersion() const { return 3; };
   virtual int GetExportVersion() const { return 1; };
   virtual int GetSchemaVersion() const;
   const char *GetBaseDBName() const { return "DSPlayer"; };

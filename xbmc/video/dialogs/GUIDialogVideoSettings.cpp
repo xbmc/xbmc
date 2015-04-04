@@ -82,6 +82,7 @@
 #define SETTING_MADVR_DEBAND              "madvr.deband"
 #define SETTING_MADVR_DEBANDLEVEL         "madvr.debandlevel"
 #define SETTING_MADVR_DEBANDFADELEVEL     "madvr.debandfadelevel"
+
 #endif
 
 #define SETTING_VIDEO_STEREOSCOPICMODE    "video.stereoscopicmode"
@@ -268,6 +269,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
     videoSettings.m_StereoInvert = static_cast<const CSettingBool*>(setting)->GetValue();
 
 #ifdef HAS_DS_PLAYER
+  if (m_isMadvr)
+    madvrSettings.m_isEdited = true;
+
+  videoSettings.m_isEdited = true;
   HideUnused();
 #endif
 }
@@ -290,7 +295,14 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
   }
   // TODO
   else if (settingId == SETTING_VIDEO_MAKE_DEFAULT)
+#ifdef HAS_DS_PLAYER
+    if (m_isMadvr)
+      SaveChoice();
+    else
+      Save();
+#else
     Save();
+#endif
 
 #ifdef HAS_DS_PLAYER
   else if (settingId == SETTING_MADVR_SCALING)
@@ -350,6 +362,51 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
 
 }
 
+void CGUIDialogVideoSettings::SaveChoice()
+{
+  CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (!pDlg)
+    return;
+
+  pDlg->Add(g_localizeStrings.Get(70601).c_str());
+  pDlg->Add(g_localizeStrings.Get(70602).c_str());
+  pDlg->Add(g_localizeStrings.Get(70603).c_str());
+  pDlg->Add(g_localizeStrings.Get(70604).c_str());
+  pDlg->Add(g_localizeStrings.Get(12376).c_str());
+
+  pDlg->SetHeading(70600);
+  pDlg->DoModal();
+
+  int selected = pDlg->GetSelectedLabel();
+
+  if (selected == MADVR_RES_ALL)
+    Save();
+  else if (selected > -1 )
+  {
+    int res;
+    int label;
+    if (selected == MADVR_RES_SD)
+      label = 70601;
+    if (selected == MADVR_RES_720)
+      label = 70602;
+    if (selected == MADVR_RES_1080)
+      label = 70603;
+    if (selected == MADVR_RES_2160)
+      label = 70604;
+    
+    if (CGUIDialogYesNo::ShowAndGetInput(label, 750, 0, 12377))
+    { // reset the settings
+
+      CDSPlayerDatabase dspdb;
+      if (!dspdb.Open())
+        return;
+
+      dspdb.EraseVideoSettings(selected);
+      dspdb.CreateVideoSettings(selected, CMediaSettings::Get().GetCurrentMadvrSettings());
+      dspdb.Close();
+    }
+  }
+}
 void CGUIDialogVideoSettings::Save()
 {
   if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
@@ -366,12 +423,15 @@ void CGUIDialogVideoSettings::Save()
     db.Close();
 
 #ifdef HAS_DS_PLAYER
-    CDSPlayerDatabase dspdb;
-    if (!dspdb.Open())
-      return;
-    dspdb.EraseVideoSettings();
-    dspdb.Close();
-    CMediaSettings::Get().GetDefaultMadvrSettings() = CMediaSettings::Get().GetCurrentMadvrSettings();
+    if (m_isMadvr)
+    {
+      CDSPlayerDatabase dspdb;
+      if (!dspdb.Open())
+        return;
+      dspdb.EraseVideoSettings();
+      dspdb.Close();
+      CMediaSettings::Get().GetDefaultMadvrSettings() = CMediaSettings::Get().GetCurrentMadvrSettings();
+    }
 #endif
 
     CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
@@ -416,6 +476,12 @@ void CGUIDialogVideoSettings::InitializeSettings()
     return;
   }
   CSettingGroup *groupMadvrRendering = AddGroup(category);
+  if (groupMadvrRendering == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+  CSettingGroup *groupMadvrSave = AddGroup(category);
   if (groupMadvrRendering == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
@@ -682,7 +748,14 @@ void CGUIDialogVideoSettings::InitializeSettings()
   AddToggle(groupStereoscopic, SETTING_VIDEO_STEREOSCOPICINVERT, 36536, 0, videoSettings.m_StereoInvert);
 
   // general settings
+#ifdef HAS_DS_PLAYER
+  if (m_isMadvr)
+    AddButton(groupMadvrSave, SETTING_VIDEO_MAKE_DEFAULT, 70600, 0);
+  else
+    AddButton(groupSaveAsDefault, SETTING_VIDEO_MAKE_DEFAULT, 12376, 0);
+#else
   AddButton(groupSaveAsDefault, SETTING_VIDEO_MAKE_DEFAULT, 12376, 0);
+#endif
   AddButton(groupSaveAsDefault, SETTING_VIDEO_CALIBRATION, 214, 0);
 }
 

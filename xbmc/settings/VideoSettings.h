@@ -143,6 +143,7 @@ public:
 #ifdef HAS_DS_PLAYER
   void SetDSPlayerScalingMethod(EDSSCALINGMETHOD method);
   EDSSCALINGMETHOD GetDSPlayerScalingMethod();
+  bool m_isEdited;
 #endif
 
   EDEINTERLACEMODE m_DeinterlaceMode;

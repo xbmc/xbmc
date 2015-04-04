@@ -3603,17 +3603,24 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
     dbs.Close();
   }
 
+#ifdef HAS_DS_PLAYER
   CDSPlayerDatabase dsdbs;
   if (dsdbs.Open())
   {
-    CLog::Log(LOGDEBUG, "Loading madvr settings for %s", item.GetPath().c_str());
+    CFileItem item = CurrentFileItem();
+    CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
+    int res = streamDetails.VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
+   
+    CLog::Log(LOGDEBUG, "Loading madvr settings for %s", path.c_str());
 
     // Load stored settings if they exist, otherwise use default
     if (!dsdbs.GetVideoSettings(item.GetPath().c_str(), CMediaSettings::Get().GetCurrentMadvrSettings()))
-      CMediaSettings::Get().GetCurrentMadvrSettings() = CMediaSettings::Get().GetDefaultMadvrSettings();
+      if (!dsdbs.GetDefResMadvrSettings(res, CMediaSettings::Get().GetCurrentMadvrSettings())) 
+        CMediaSettings::Get().GetCurrentMadvrSettings() = CMediaSettings::Get().GetDefaultMadvrSettings();
 
     dsdbs.Close();
   }
+#endif
 }
 
 void CApplication::StopPlaying()

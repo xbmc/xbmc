@@ -310,7 +310,7 @@ STDMETHODIMP_(bool) CmadVRAllocatorPresenter::Paint(bool fAll)
   return false;
 }
 
-void CmadVRAllocatorPresenter::SetPS()
+void CmadVRAllocatorPresenter::SetMadvrPixelShader()
 {
   g_dsSettings.pixelShaderList->UpdateActivatedList();
   m_shaderStage = 0;
@@ -482,6 +482,41 @@ CStdString CmadVRAllocatorPresenter::GetDXVADecoderDescription()
 
   return strDXVA;
 };
+
+void CmadVRAllocatorPresenter::RestoreMadvrSettings()
+{
+  if (!CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
+    return;
+
+  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+
+  SettingSetScaling("chromaUp", madvrSettings.m_ChromaUpscaling);
+  SettingSetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
+  SettingSetScaling("LumaUp", madvrSettings.m_ImageUpscaling);
+  SettingSetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
+  SettingSetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
+  SettingSetScaling("LumaDown", madvrSettings.m_ImageDownscaling);
+  SettingSetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
+  SettingSetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
+  SettingSetDoubling("nnediDL", madvrSettings.m_ImageDoubleLuma);
+  SettingSetDoublingCondition("nnediDLScalingFactor", madvrSettings.m_ImageDoubleLumaFactor);
+  SettingSetDoubling("nnediDC", madvrSettings.m_ImageDoubleChroma);
+  SettingSetDoublingCondition("nnediDCScalingFactor", madvrSettings.m_ImageDoubleChromaFactor);
+  SettingSetDoubling("nnediQL", madvrSettings.m_ImageQuadrupleLuma);
+  SettingSetQuadrupleCondition("nnediQLScalingFactor", madvrSettings.m_ImageQuadrupleLumaFactor);
+  SettingSetDoubling("nnediQC", madvrSettings.m_ImageQuadrupleChroma);
+  SettingSetQuadrupleCondition("nnediQCScalingFactor", madvrSettings.m_ImageQuadrupleChromaFactor);
+  SettingSetDeintActive("", madvrSettings.m_deintactive);
+  SettingSetDeintForce("contentType", madvrSettings.m_deintforce);
+  SettingSetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
+  SettingSetBool("debandActive", madvrSettings.m_deband);
+  SettingSetInt("debandLevel", madvrSettings.m_debandLevel);
+  SettingSetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
+  SettingSetDithering("", madvrSettings.m_dithering);
+  SettingSetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
+  SettingSetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
+  SettingSetSmoothmotion("", madvrSettings.m_smoothMotion);
+}
 
 LPDIRECT3DDEVICE9 CmadVRAllocatorPresenter::GetDevice()
 {

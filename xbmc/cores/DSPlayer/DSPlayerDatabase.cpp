@@ -58,7 +58,7 @@ bool CDSPlayerDatabase::Open()
 
 int CDSPlayerDatabase::GetSchemaVersion() const
 {
-  return 2;
+  return 3;
 }
 
 void CDSPlayerDatabase::CreateTables()
@@ -67,9 +67,19 @@ void CDSPlayerDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE edition (idEdition integer primary key, file text, editionName text, editionNumber integer)\n");
 
   CLog::Log(LOGINFO, "create madvr setting table");
-  m_pDS->exec("CREATE TABLE madvrSettings ( file text,"
+  m_pDS->exec("CREATE TABLE madvrSettings ( file text, Resolution integer,"
     "ChromaUpscaling integer, ChromaAntiRing bool, ImageUpscaling integer, ImageUpAntiRing bool, ImageUpLinear bool, ImageDownscaling integer, ImageDownAntiRing bool, ImageDownLinear bool, "
     "ImageDoubleLuma integer, ImageDoubleChroma integer, ImageQuadrupleLuma integer, ImageQuadrupleChroma integer, " 
+    "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer, "
+    "DeintActive integer, DeintForce interger, DeintLookPixels bool, "
+    "SmoothMotion integer, Dithering integer, DitheringColoredNoise bool, DitheringEveryFrame bool, "
+    "Deband bool, DebandLevel integer, DebandFadeLevel integer"
+    ")\n");
+
+  CLog::Log(LOGINFO, "create madvr resolution for resolution table");
+  m_pDS->exec("CREATE TABLE madvrDefResSettings ( Resolution integer,"
+    "ChromaUpscaling integer, ChromaAntiRing bool, ImageUpscaling integer, ImageUpAntiRing bool, ImageUpLinear bool, ImageDownscaling integer, ImageDownAntiRing bool, ImageDownLinear bool, "
+    "ImageDoubleLuma integer, ImageDoubleChroma integer, ImageQuadrupleLuma integer, ImageQuadrupleChroma integer, "
     "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer, "
     "DeintActive integer, DeintForce interger, DeintLookPixels bool, "
     "SmoothMotion integer, Dithering integer, DitheringColoredNoise bool, DitheringEveryFrame bool, "
@@ -79,9 +89,9 @@ void CDSPlayerDatabase::CreateTables()
 
 void CDSPlayerDatabase::CreateAnalytics()
 {
-
   m_pDS->exec("CREATE INDEX idxEdition ON edition (file)");
   m_pDS->exec("CREATE INDEX idxMadvrSettings ON madvrSettings (file)");
+  m_pDS->exec("CREATE INDEX idxMadvrDefResSettings ON madvrDefResSettings (Resolution)");
 }
 
 bool CDSPlayerDatabase::GetResumeEdition(const CStdString& strFilenameAndPath, CEdition &edition)
@@ -180,6 +190,67 @@ void CDSPlayerDatabase::ClearEditionOfFile(const CStdString& strFilenameAndPath)
   }
 }
 
+bool CDSPlayerDatabase::GetDefResMadvrSettings(int resolution, CMadvrSettings &settings)
+{
+  try
+  {
+    if (resolution <= 0) return false;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    // ok, now obtain the settings for this file
+    CStdString strSQL = PrepareSQL("select * from madvrDefResSettings where madvrDefResSettings.Resolution=%i", resolution);
+
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() > 0)
+    { // get the madvr settings info
+
+      settings.m_ChromaUpscaling = m_pDS->fv("ChromaUpscaling").get_asInt();
+      settings.m_ChromaAntiRing = m_pDS->fv("ChromaAntiRing").get_asBool();
+
+      settings.m_ImageUpscaling = m_pDS->fv("ImageUpscaling").get_asInt();
+      settings.m_ImageUpAntiRing = m_pDS->fv("ImageUpAntiRing").get_asBool();
+      settings.m_ImageUpLinear = m_pDS->fv("ImageUpLinear").get_asBool();
+
+      settings.m_ImageDownscaling = m_pDS->fv("ImageDownscaling").get_asInt();
+      settings.m_ImageDownAntiRing = m_pDS->fv("ImageDownAntiRing").get_asBool();
+      settings.m_ImageDownLinear = m_pDS->fv("ImageDownLinear").get_asBool();
+
+      settings.m_ImageDoubleLuma = m_pDS->fv("ImageDoubleLuma").get_asInt();
+      settings.m_ImageDoubleChroma = m_pDS->fv("ImageDoubleChroma").get_asInt();
+      settings.m_ImageQuadrupleLuma = m_pDS->fv("ImageQuadrupleLuma").get_asInt();
+      settings.m_ImageQuadrupleChroma = m_pDS->fv("ImageQuadrupleChroma").get_asInt();
+
+      settings.m_ImageDoubleLumaFactor = m_pDS->fv("ImageDoubleLumaFactor").get_asInt();
+      settings.m_ImageDoubleChromaFactor = m_pDS->fv("ImageDoubleChromaFactor").get_asInt();
+      settings.m_ImageQuadrupleLumaFactor = m_pDS->fv("ImageQuadrupleLumaFactor").get_asInt();
+      settings.m_ImageQuadrupleChromaFactor = m_pDS->fv("ImageQuadrupleChromaFactor").get_asInt();
+
+      settings.m_deintactive = m_pDS->fv("DeintActive").get_asInt();
+      settings.m_deintforce = m_pDS->fv("DeintForce").get_asInt();
+      settings.m_deintlookpixels = m_pDS->fv("DeintLookPixels").get_asBool();
+
+      settings.m_smoothMotion = m_pDS->fv("SmoothMotion").get_asInt();
+
+      settings.m_dithering = m_pDS->fv("Dithering").get_asInt();
+      settings.m_ditheringColoredNoise = m_pDS->fv("DitheringColoredNoise").get_asBool();
+      settings.m_ditheringEveryFrame = m_pDS->fv("DitheringEveryFrame").get_asBool();
+
+      settings.m_deband = m_pDS->fv("Deband").get_asBool();
+      settings.m_debandLevel = m_pDS->fv("DebandLevel").get_asInt();
+      settings.m_debandFadeLevel = m_pDS->fv("DebandFadeLevel").get_asInt();
+
+      m_pDS->close();
+      return true;
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CDSPlayerDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CMadvrSettings &settings)
 {
   try
@@ -254,8 +325,9 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
     {
       m_pDS->close();
       // update the item
-      strSQL = PrepareSQL("update madvrSettings " 
-        "set ChromaUpscaling=%i,ChromaAntiRing=%i, "
+      strSQL = PrepareSQL("update madvrSettings "
+        "set Resolution=%i, "
+        "ChromaUpscaling=%i,ChromaAntiRing=%i, "
         "ImageUpscaling=%i,ImageUpAntiRing=%i,ImageUpLinear=%i, "
         "ImageDownscaling=%i,ImageDownAntiRing=%i,ImageDownLinear=%i, "
         "ImageDoubleLuma=%i, ImageDoubleChroma=%i, ImageQuadrupleLuma=%i, ImageQuadrupleChroma=%i, "
@@ -264,6 +336,7 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "SmoothMotion=%i, Dithering=%i, DitheringColoredNoise=%i, DitheringEveryFrame=%i, "
         "Deband=%i, DebandLevel=%i, DebandFadeLevel=%i "
         "where file='%s'",
+        setting.m_Resolution,
         setting.m_ChromaUpscaling,setting.m_ChromaAntiRing,
         setting.m_ImageUpscaling,setting.m_ImageUpAntiRing,setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear, 
@@ -279,7 +352,7 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
     else
     { // add the items
       m_pDS->close();
-      strSQL = "INSERT INTO madvrSettings (file, "
+      strSQL = "INSERT INTO madvrSettings (file, Resolution, "
         "ChromaUpscaling, ChromaAntiRing, "
         "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
         "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
@@ -289,8 +362,8 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "SmoothMotion, Dithering, DitheringColoredNoise, DitheringEveryFrame, "
         "Deband, DebandLevel, DebandFadeLevel"
         ") VALUES ";
-      strSQL += PrepareSQL("('%s',%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i)",
-        strFilenameAndPath.c_str(), setting.m_ChromaUpscaling, setting.m_ChromaAntiRing,
+      strSQL += PrepareSQL("('%s',%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i)",
+        strFilenameAndPath.c_str(), setting.m_Resolution, setting.m_ChromaUpscaling, setting.m_ChromaAntiRing,
         setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
         setting.m_ImageDoubleLuma,setting.m_ImageDoubleChroma,setting.m_ImageQuadrupleLuma,setting.m_ImageQuadrupleChroma,
@@ -313,14 +386,100 @@ void CDSPlayerDatabase::EraseVideoSettings(const std::string &path /* = ""*/)
   try
   {
     std::string sql = "DELETE FROM madvrSettings";
+    m_pDS->exec(sql);
 
+    sql = "DELETE FROM madvrDefResSettings";
+    m_pDS->exec(sql);
     CLog::Log(LOGINFO, "Deleting madvr settings information for all files");
 
-    m_pDS->exec(sql);
+    
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+
+void CDSPlayerDatabase::EraseVideoSettings(int resolution)
+{
+  try
+  {
+    CStdString strSQL = StringUtils::Format("DELETE FROM madvrSettings where Resolution=%i", resolution);
+
+    CLog::Log(LOGINFO, "Deleting madvr settings information for %ip files",resolution);
+
+    m_pDS->exec(strSQL);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+
+void CDSPlayerDatabase::CreateVideoSettings(int resolution, const CMadvrSettings &setting)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    CStdString strSQL = StringUtils::Format("select * from madvrDefResSettings where Resolution='%i'", resolution);
+    m_pDS->query(strSQL.c_str());
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      // update the item
+      strSQL = PrepareSQL("update madvrDefResSettings "
+        "set ChromaUpscaling=%i,ChromaAntiRing=%i, "
+        "ImageUpscaling=%i,ImageUpAntiRing=%i,ImageUpLinear=%i, "
+        "ImageDownscaling=%i,ImageDownAntiRing=%i,ImageDownLinear=%i, "
+        "ImageDoubleLuma=%i, ImageDoubleChroma=%i, ImageQuadrupleLuma=%i, ImageQuadrupleChroma=%i, "
+        "ImageDoubleLumaFactor=%i, ImageDoubleChromaFactor=%i, ImageQuadrupleLumaFactor=%i, ImageQuadrupleChromaFactor=%i, "
+        "DeintActive=%i, DeintForce=%i, DeintLookPixels=%i, "
+        "SmoothMotion=%i, Dithering=%i, DitheringColoredNoise=%i, DitheringEveryFrame=%i, "
+        "Deband=%i, DebandLevel=%i, DebandFadeLevel=%i "
+        "where Resolution=%i",
+        setting.m_ChromaUpscaling, setting.m_ChromaAntiRing,
+        setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
+        setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
+        setting.m_ImageDoubleLuma, setting.m_ImageDoubleChroma, setting.m_ImageQuadrupleLuma, setting.m_ImageQuadrupleChroma,
+        setting.m_ImageDoubleLumaFactor, setting.m_ImageDoubleChromaFactor, setting.m_ImageQuadrupleLumaFactor, setting.m_ImageQuadrupleChromaFactor,
+        setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels,
+        setting.m_smoothMotion, setting.m_dithering, setting.m_ditheringColoredNoise, setting.m_ditheringEveryFrame,
+        setting.m_deband, setting.m_debandLevel, setting.m_debandFadeLevel,
+        resolution);
+      m_pDS->exec(strSQL.c_str());
+      return;
+    }
+    else
+    { // add the items
+      m_pDS->close();
+      strSQL = "INSERT INTO madvrDefResSettings (Resolution, "
+        "ChromaUpscaling, ChromaAntiRing, "
+        "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
+        "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
+        "ImageDoubleLuma, ImageDoubleChroma, ImageQuadrupleLuma, ImageQuadrupleChroma, "
+        "ImageDoubleLumaFactor, ImageDoubleChromaFactor, ImageQuadrupleLumaFactor, ImageQuadrupleChromaFactor, "
+        "DeintActive, DeintForce, DeintLookPixels, "
+        "SmoothMotion, Dithering, DitheringColoredNoise, DitheringEveryFrame, "
+        "Deband, DebandLevel, DebandFadeLevel"
+        ") VALUES ";
+      strSQL += PrepareSQL("(%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i)",
+        resolution, setting.m_ChromaUpscaling, setting.m_ChromaAntiRing,
+        setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
+        setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
+        setting.m_ImageDoubleLuma, setting.m_ImageDoubleChroma, setting.m_ImageQuadrupleLuma, setting.m_ImageQuadrupleChroma,
+        setting.m_ImageDoubleLumaFactor, setting.m_ImageDoubleChromaFactor, setting.m_ImageQuadrupleLumaFactor, setting.m_ImageQuadrupleChromaFactor,
+        setting.m_deintactive, setting.m_deintforce, setting.m_deintlookpixels,
+        setting.m_smoothMotion, setting.m_dithering, setting.m_ditheringColoredNoise, setting.m_ditheringEveryFrame,
+        setting.m_deband, setting.m_debandLevel, setting.m_debandFadeLevel
+        );
+      m_pDS->exec(strSQL.c_str());
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%ip) failed", __FUNCTION__, resolution);
   }
 }
 

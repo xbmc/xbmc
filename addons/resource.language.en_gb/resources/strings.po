@@ -17215,6 +17215,26 @@ msgctxt "#70505"
 msgid "high"
 msgstr ""
 
+msgctxt "#70600"
+msgid "Set default settings..."
+msgstr ""
+
+msgctxt "#70601"
+msgid "Set as default for SD videos"
+msgstr ""
+
+msgctxt "#70602"
+msgid "Set as default for 720p videos"
+msgstr ""
+
+msgctxt "#70603"
+msgid "Set as default for 1080p videos"
+msgstr ""
+
+msgctxt "#70604"
+msgid "Set as default for 2160p videos"
+msgstr ""
+
 msgctxt "#909001"
 msgid "Rus"
 msgstr ""

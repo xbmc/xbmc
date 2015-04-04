@@ -263,7 +263,7 @@ protected:
 
   bool SelectChannel(bool bNext);
   bool SwitchChannel(unsigned int iChannelNumber);
-  void RestoreMadvrSettings();
+  void SetMadvrResolution();
 
   // CThread
   virtual void OnStartup();

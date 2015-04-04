@@ -117,6 +117,15 @@ enum MADVR_DEBAND
   MADVR_DEBAND_HIGH
 };
 
+enum MADVR_RES_SETTINGS
+{
+  MADVR_RES_SD,
+  MADVR_RES_720,
+  MADVR_RES_1080,
+  MADVR_RES_2160,
+  MADVR_RES_ALL
+};
+
 class CMadvrSettings
 {
 public:
@@ -124,6 +133,9 @@ public:
   ~CMadvrSettings() {};
 
   bool operator!=(const CMadvrSettings &right) const;
+
+  bool m_isEdited;
+  int m_Resolution;
 
   int m_ChromaUpscaling;
   bool m_ChromaAntiRing;

@@ -328,7 +328,7 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
 
       // Madvr Settings
       if (CGraphFilters::Get()->UsingMadVr())
-        RestoreMadvrSettings();
+        SetMadvrResolution();
 
       // Seek
       if (m_PlayerOptions.starttime > 0)
@@ -934,40 +934,15 @@ bool CDSPlayer::OnAction(const CAction &action)
   return false;
 }
 
-void CDSPlayer::RestoreMadvrSettings()
+void CDSPlayer::SetMadvrResolution()
 {
   if (!CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
     return;
 
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CStreamDetails streamDetails;
+  int res = streamDetails.VideoDimsToResolution(GetPictureWidth(), GetPictureHeight());
 
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("chromaUp", madvrSettings.m_ChromaUpscaling);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("LumaUp", madvrSettings.m_ImageUpscaling);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("LumaDown", madvrSettings.m_ImageDownscaling);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediDL", madvrSettings.m_ImageDoubleLuma);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoublingCondition("nnediDLScalingFactor", madvrSettings.m_ImageDoubleLumaFactor);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediDC", madvrSettings.m_ImageDoubleChroma);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoublingCondition("nnediDCScalingFactor", madvrSettings.m_ImageDoubleChromaFactor);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediQL", madvrSettings.m_ImageQuadrupleLuma);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetQuadrupleCondition("nnediQLScalingFactor", madvrSettings.m_ImageQuadrupleLumaFactor);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediQC", madvrSettings.m_ImageQuadrupleChroma);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetQuadrupleCondition("nnediQCScalingFactor", madvrSettings.m_ImageQuadrupleChromaFactor);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDeintActive("", madvrSettings.m_deintactive);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDeintForce("contentType", madvrSettings.m_deintforce);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("debandActive", madvrSettings.m_deband);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetInt("debandLevel", madvrSettings.m_debandLevel);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetDithering("", madvrSettings.m_dithering);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
-
-  CGraphFilters::Get()->GetMadvrCallback()->SettingSetSmoothmotion("", madvrSettings.m_smoothMotion); 
+  CMediaSettings::Get().GetCurrentMadvrSettings().m_Resolution = res;
 }
 
 // Time is in millisecond

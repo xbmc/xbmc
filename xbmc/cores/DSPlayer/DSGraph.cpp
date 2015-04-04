@@ -127,9 +127,12 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
     m_pVideoWindow->SetWindowPosition(0, 0, 1, 1);
 
-    // set pixelshader for madVR
+    // set pixelshader & settings for madVR
     if (CGraphFilters::Get()->UsingMadVr())
-      CGraphFilters::Get()->GetMadvrCallback()->SetPS();
+    { 
+      CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPixelShader();
+      CGraphFilters::Get()->GetMadvrCallback()->RestoreMadvrSettings();
+    }
   }
 
   //TODO Ti-Ben
