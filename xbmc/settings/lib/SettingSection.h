@@ -50,6 +50,18 @@ public:
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
 
   /*!
+   \brief Gets the type of the group; 0 = primary, 1 = secondary and 2 = information
+
+   \return The group type
+   */
+  unsigned int GetGroupType() { return m_groupType; }
+  /*!
+   \brief Sets the type of the group; 0 = primary, 1 = secondary and 2 = information
+
+   \param Group type
+   */
+  void SetGroupType(unsigned int groupType) { m_groupType = groupType; }
+  /*!
    \brief Gets the full list of settings belonging to the setting group.
 
    \return Full list of settings belonging to the setting group
@@ -69,6 +81,7 @@ public:
   void AddSettings(const SettingList &settings);
 
 private:
+  unsigned int m_groupType;
   SettingList m_settings;
 };
 

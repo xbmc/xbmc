@@ -86,52 +86,6 @@
 				<orientation>vertical</orientation>
 			</control>
 		</control>
-		<control type="sliderex" id="13">
-			<description>Default Slider</description>
-			<height>40</height>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-		</control>
-		<control type="button" id="7">
-			<description>Default Button</description>
-			<left>0</left>
-			<top>0</top>
-			<height>40</height>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-		</control>
-		<control type="radiobutton" id="8">
-			<description>Default RadioButton</description>
-			<left>0</left>
-			<top>0</top>
-			<height>40</height>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-		</control>
-		<control type="spincontrolex" id="9">
-			<description>Default SpinControlex</description>
-			<left>0</left>
-			<top>0</top>
-			<height>40</height>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<aligny>center</aligny>
-			<reverse>yes</reverse>
-		</control>
-		<control type="image" id="11">
-			<description>separator image</description>
-			<height>2</height>
-			<texture>separator2.png</texture>
-		</control>
+		<include>SettingsList_Controls</include>
 	</controls>
 </window>

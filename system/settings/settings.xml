@@ -2,7 +2,7 @@
 <settings>
   <section id="appearance" label="480" help="36101">
     <category id="lookandfeel" label="166" help="36102">
-      <group id="1">
+      <group id="1" label="370" help="-1">
         <setting id="lookandfeel.skin" type="addon" label="166" help="36103">
           <level>0</level>
           <default>skin.confluence</default>
@@ -91,7 +91,7 @@
           <control type="list" format="string" />
         </setting>
       </group>
-      <group id="2">
+      <group id="2" label="371" help="-1">
         <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
           <level>0</level>
           <default>true</default>

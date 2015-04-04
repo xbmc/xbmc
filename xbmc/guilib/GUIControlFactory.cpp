@@ -28,6 +28,7 @@
 #include "GUIImage.h"
 #include "GUIBorderedImage.h"
 #include "GUILabelControl.h"
+#include "GUISettingsGroupLabelControl.h"
 #include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
 #include "GUICheckMarkControl.h"
@@ -109,6 +110,7 @@ static const ControlMapping controls[] =
     {"grouplist",         CGUIControl::GUICONTROL_GROUPLIST},
     {"scrollbar",         CGUIControl::GUICONTROL_SCROLLBAR},
     {"multiselect",       CGUIControl::GUICONTROL_MULTISELECT},
+    {"settingsgrouplabel",CGUIControl::GUICONTROL_SETTINGS_GROUP_LABEL},
     {"list",              CGUIControl::GUICONTAINER_LIST},
     {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
     {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
@@ -493,6 +495,36 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, in
     node = node->NextSiblingElement("animation");
   }
   return ret;
+}
+
+bool CGUIControlFactory::GetSettingLabelVisibility(const TiXmlNode* pRootNode, const char* tag, unsigned int &allowedWhere, bool &allowFirstGroupIfEmpty, bool &hideIfEmpty)
+{
+  const TiXmlElement* pNode = pRootNode->FirstChildElement(tag);
+  if (!pNode)
+    return false;
+
+  const char *allow = pNode->Attribute("visible");
+  if (allow)
+  {
+    //! format is allowance = "primary[,secondary,info,everywhere,allowempty]"
+    std::vector<std::string> strRect = StringUtils::Split(allow, ',');
+    for (unsigned int i = 0; i < strRect.size(); i++)
+    {
+      if (strRect[i] == "usefirstifempty") //! If present texture become showed on first group without label
+        allowFirstGroupIfEmpty = true;
+      else if (strRect[i] == "hideifEmpty") //! If present texture become hidden if now label is present
+        hideIfEmpty = true;
+      else if (strRect[i] == "primary")
+        allowedWhere |= CGUISettingsGroupLabelControl::allowPrimary;
+      else if (strRect[i] == "secondary")
+        allowedWhere |= CGUISettingsGroupLabelControl::allowSecondary;
+       else if (strRect[i] == "info")
+        allowedWhere |= CGUISettingsGroupLabelControl::allowInfo;
+      else /* if (strRect[i] == "everywhere") not needed */
+        allowedWhere |= CGUISettingsGroupLabelControl::allowEverywhere;
+    }
+  }
+  return true;
 }
 
 bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& action)
@@ -1226,6 +1258,32 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         checkWidth, checkHeight, labelInfo);
 
       ((CGUICheckMarkControl *)control)->SetLabel(strLabel);
+    }
+    break;
+  case CGUIControl::GUICONTROL_SETTINGS_GROUP_LABEL:
+    {
+      control = new CGUISettingsGroupLabelControl(
+        parentID, id, posX, posY, width, height,
+        textureBackground, labelInfo);
+
+      float selPosY = 0;
+      float selHeight = 0;
+      unsigned int labelAllowed   = CGUISettingsGroupLabelControl::allowUndefined;
+      unsigned int textureAllowed = CGUISettingsGroupLabelControl::allowUndefined;
+      bool allowTextureFirstIfEmpty = false;
+      bool hideTextureIfEmpty = false;
+
+      GetSettingLabelVisibility(pControlNode, "label", labelAllowed, allowTextureFirstIfEmpty, hideTextureIfEmpty);
+      GetSettingLabelVisibility(pControlNode, "texturebg", textureAllowed, allowTextureFirstIfEmpty, hideTextureIfEmpty);
+      XMLUtils::GetFloat(pControlNode, "imageposy", selPosY);
+      XMLUtils::GetFloat(pControlNode, "imageheight", selHeight);
+      if (!selHeight)
+        selHeight = minHeight;
+
+      ((CGUISettingsGroupLabelControl *)control)->SetAllowedToBeVisible(labelAllowed, textureAllowed, allowTextureFirstIfEmpty, hideTextureIfEmpty);
+      ((CGUISettingsGroupLabelControl *)control)->SetTexture(selPosY, selHeight);
+      ((CGUISettingsGroupLabelControl *)control)->SetLabel(strLabel);
+      ((CGUISettingsGroupLabelControl *)control)->SetAspectRatio(aspect);
     }
     break;
   case CGUIControl::GUICONTROL_RADIO:

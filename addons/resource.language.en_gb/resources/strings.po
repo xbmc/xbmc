@@ -1583,6 +1583,14 @@ msgctxt "#369"
 msgid "Title"
 msgstr ""
 
+msgctxt "#370"
+msgid "Skin based settings"
+msgstr ""
+
+msgctxt "#371"
+msgid "RSS news"
+msgstr ""
+
 #strings from 370 to 395 are reserved for weather translation
 
 #. Weather token
