@@ -170,7 +170,7 @@ void CGUIDialogMadvrScaling::InitializeSettings()
   entries.push_back(make_pair(70027, MADVR_SCALING_NNEDI3_256));
 
   AddList(groupMadvrChromaScaling, SET_CHROMA_UPSCALING, 70028, 0, static_cast<int>(madvrSettings.m_ChromaUpscaling), entries, 70028);
-  AddToggle(groupMadvrChromaScaling, SET_CHROMA_ANTIRING, 70031, 0, madvrSettings.m_ImageDownAntiRing);
+  AddToggle(groupMadvrChromaScaling, SET_CHROMA_ANTIRING, 70031, 0, madvrSettings.m_ChromaAntiRing);
 
   //MADVR IMAGE UPSCALING
   entries.clear();
