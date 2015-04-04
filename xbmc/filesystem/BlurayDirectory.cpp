@@ -178,7 +178,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   if(file == "root")
     GetRoot(items);
-  else if(file == "titles")
+  else if(file == "root/titles")
     GetTitles(false, items);
   else
   {
