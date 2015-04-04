@@ -360,6 +360,7 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
     CGraphFilters::Get()->GetMadvrCallback()->SettingSetQuadrupleCondition("nnediQCScalingFactor", madvrSettings.m_ImageQuadrupleChromaFactor);
   }
 
+  madvrSettings.m_isEdited = true;
   HideUnused();
 }
 

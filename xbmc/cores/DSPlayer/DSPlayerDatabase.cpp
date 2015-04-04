@@ -194,7 +194,7 @@ bool CDSPlayerDatabase::GetDefResMadvrSettings(int resolution, CMadvrSettings &s
 {
   try
   {
-    if (resolution <= 0) return false;
+    if (resolution < 0) return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
     // ok, now obtain the settings for this file

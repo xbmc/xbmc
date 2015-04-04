@@ -3611,7 +3611,7 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
     CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
     int res = streamDetails.VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
    
-    CLog::Log(LOGDEBUG, "Loading madvr settings for %s", path.c_str());
+    CLog::Log(LOGDEBUG, "Loading madvr settings for %s with resolution id: %i", path.c_str(), res);
 
     // Load stored settings if they exist, otherwise use default
     if (!dsdbs.GetVideoSettings(item.GetPath().c_str(), CMediaSettings::Get().GetCurrentMadvrSettings()))
