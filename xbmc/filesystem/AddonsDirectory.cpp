@@ -122,6 +122,78 @@ static void SetUpdateAvailProperties(CFileItemList &items)
   }
 }
 
+static void GenerateCategoryListing(const CURL& path, const VECADDONS& addons, CFileItemList& items)
+{
+  if (std::any_of(addons.begin(), addons.end(), IsInfoProviderType))
+  {
+    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24993)));
+    item->SetPath(URIUtils::AddFileToFolder(path.Get(), "group.infoproviders"));
+    item->m_bIsFolder = true;
+    items.Add(item);
+  }
+  for (unsigned int i = ADDON_UNKNOWN + 1; i < ADDON_MAX - 1; ++i)
+  {
+    const TYPE type = (TYPE)i;
+    if (std::find(dependencyTypes.begin(), dependencyTypes.end(), type) != dependencyTypes.end())
+      continue;
+    if (std::find(infoProviderTypes.begin(), infoProviderTypes.end(), type) != infoProviderTypes.end())
+      continue;
+
+    for (unsigned int j = 0; j < addons.size(); ++j)
+    {
+      if (addons[j]->IsType(type))
+      {
+        CFileItemPtr item(new CFileItem(TranslateType(type, true)));
+        item->SetPath(URIUtils::AddFileToFolder(path.Get(), TranslateType(type, false)));
+        item->m_bIsFolder = true;
+        std::string thumb = GetIcon(type);
+        if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
+          item->SetArt("thumb", thumb);
+        items.Add(item);
+        break;
+      }
+    }
+  }
+}
+
+static void GenerateAddonListingForCategory(const CURL& path, VECADDONS& addons, CFileItemList& items)
+{
+  const std::string category = path.GetFileName();
+  if (category == "group.infoproviders")
+  {
+    items.SetProperty("addoncategory", g_localizeStrings.Get(24993));
+    items.SetLabel(g_localizeStrings.Get(24993));
+
+    for (const auto& type : infoProviderTypes)
+    {
+      for (const auto& addon : addons)
+      {
+        if (addon->IsType(type))
+        {
+          CFileItemPtr item(new CFileItem(TranslateType(type, true)));
+          CURL itemPath = path;
+          itemPath.SetFileName(TranslateType(type, false));
+          item->SetPath(itemPath.Get());
+          item->m_bIsFolder = true;
+          std::string thumb = GetIcon(type);
+          if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
+            item->SetArt("thumb", thumb);
+          items.Add(item);
+          break;
+        }
+      }
+    }
+  }
+  else
+  { // fallback to addon type
+    TYPE type = TranslateType(category);
+    items.SetProperty("addoncategory", TranslateType(type, true));
+    addons.erase(std::remove_if(addons.begin(), addons.end(),
+        [type](const AddonPtr& addon){ return !addon->IsType(type); }), addons.end());
+    CAddonsDirectory::GenerateAddonListing(path, addons, items, TranslateType(type, true));
+  }
+}
+
 bool CAddonsDirectory::GetSearchResults(const CURL& path, CFileItemList &items)
 {
   std::string search(path.GetFileName());
@@ -142,13 +214,42 @@ bool CAddonsDirectory::GetSearchResults(const CURL& path, CFileItemList &items)
 
 static void UserInstalledAddons(const CURL& path, CFileItemList &items)
 {
+  items.ClearItems();
+  items.SetLabel(g_localizeStrings.Get(24998));
+
   VECADDONS addons;
   CAddonMgr::Get().GetAllAddons(addons, true);
   CAddonMgr::Get().GetAllAddons(addons, false);
   addons.erase(std::remove_if(addons.begin(), addons.end(),
                               std::not1(std::ptr_fun(IsUserInstalled))), addons.end());
-  CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24998));
-  SetUpdateAvailProperties(items);
+  if (addons.empty())
+    return;
+
+  const std::string category = path.GetFileName();
+  if (category.empty())
+  {
+    GenerateCategoryListing(path, addons, items);
+
+    //"All" node
+    CFileItemPtr item(new CFileItem());
+    item->m_bIsFolder = true;
+    CURL itemPath = path;
+    itemPath.SetFileName("all");
+    item->SetPath(itemPath.Get());
+    item->SetLabel(g_localizeStrings.Get(593));
+    item->SetSpecialSort(SortSpecialOnTop);
+    items.Add(item);
+  }
+  else if (category == "all")
+  {
+    CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24998));
+    SetUpdateAvailProperties(items);
+  }
+  else
+  {
+    GenerateAddonListingForCategory(path, addons, items);
+    SetUpdateAvailProperties(items);
+  }
 }
 
 static void DependencyAddons(const CURL& path, CFileItemList &items)
@@ -217,7 +318,6 @@ static void RunningAddons(const CURL& path, CFileItemList &items)
 static bool Browse(const CURL& path, CFileItemList &items)
 {
   const std::string repo = path.GetHostName();
-  const std::string category = path.GetFileName();
 
   VECADDONS addons;
   if (repo == "all")
@@ -243,72 +343,11 @@ static bool Browse(const CURL& path, CFileItemList &items)
     items.SetLabel(addon->Name());
   }
 
+  const std::string category = path.GetFileName();
   if (category.empty())
-  {
-    if (std::any_of(addons.begin(), addons.end(), IsInfoProviderType))
-    {
-      CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24993)));
-      item->SetPath(URIUtils::AddFileToFolder(path.Get(), "group.infoproviders"));
-      item->m_bIsFolder = true;
-      items.Add(item);
-    }
-    for (unsigned int i = ADDON_UNKNOWN + 1; i < ADDON_MAX - 1; ++i)
-    {
-      const TYPE type = (TYPE)i;
-      if (std::find(dependencyTypes.begin(), dependencyTypes.end(), type) != dependencyTypes.end())
-        continue;
-      if (std::find(infoProviderTypes.begin(), infoProviderTypes.end(), type) != infoProviderTypes.end())
-        continue;
-
-      for (unsigned int j = 0; j < addons.size(); ++j)
-      {
-        if (addons[j]->IsType(type))
-        {
-          CFileItemPtr item(new CFileItem(TranslateType(type, true)));
-          item->SetPath(URIUtils::AddFileToFolder(path.Get(), TranslateType(type, false)));
-          item->m_bIsFolder = true;
-          std::string thumb = GetIcon(type);
-          if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
-            item->SetArt("thumb", thumb);
-          items.Add(item);
-          break;
-        }
-      }
-    }
-  }
-  else if (category == "group.infoproviders")
-  {
-    items.SetProperty("addoncategory", g_localizeStrings.Get(24993));
-    items.SetLabel(g_localizeStrings.Get(24993));
-
-    for (const auto& type : infoProviderTypes)
-    {
-      for (const auto& addon : addons)
-      {
-        if (addon->IsType(type))
-        {
-          CFileItemPtr item(new CFileItem(TranslateType(type, true)));
-          CURL itemPath = path;
-          itemPath.SetFileName(TranslateType(type, false));
-          item->SetPath(itemPath.Get());
-          item->m_bIsFolder = true;
-          std::string thumb = GetIcon(type);
-          if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
-            item->SetArt("thumb", thumb);
-          items.Add(item);
-          break;
-        }
-      }
-    }
-  }
+    GenerateCategoryListing(path, addons, items);
   else
-  { // fallback to addon type
-    TYPE type = TranslateType(category);
-    items.SetProperty("addoncategory",TranslateType(type, true));
-    addons.erase(std::remove_if(addons.begin(), addons.end(),
-        [=](const AddonPtr& addon){ return !addon->IsType(type); })  , addons.end());
-    CAddonsDirectory::GenerateAddonListing(path, addons, items, TranslateType(type, true));
-  }
+    GenerateAddonListingForCategory(path, addons, items);
   return true;
 }
 

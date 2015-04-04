@@ -2547,6 +2547,11 @@ msgctxt "#592"
 msgid "One"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+#: xbmc/PlayListPlayer.cpp
+#: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
 msgctxt "#593"
 msgid "All"
 msgstr ""
