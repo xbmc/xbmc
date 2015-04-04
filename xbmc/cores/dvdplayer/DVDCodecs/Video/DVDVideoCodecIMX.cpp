@@ -420,6 +420,7 @@ CDVDVideoCodecIMX::CDVDVideoCodecIMX()
   m_convert_bitstream = false;
   m_bytesToBeConsumed = 0;
   m_previousPts = DVD_NOPTS_VALUE;
+  m_warnOnce = true;
 #ifdef DUMP_STREAM
   m_dump = NULL;
 #endif
@@ -1079,8 +1080,21 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
     pDvdVideoPicture->iFlags &= ~DVP_FLAG_INTERLACED;
 
-  if (m_currentBuffer->GetFieldType() != VPU_FIELD_BOTTOM && m_currentBuffer->GetFieldType() != VPU_FIELD_BT)
-    pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+  // do a sanity check to not deinterlace progressive content
+  if ((pDvdVideoPicture->iFlags & DVP_FLAG_INTERLACED) && (m_currentBuffer->GetFieldType() == VPU_FIELD_NONE))
+  {
+    if (m_warnOnce)
+    {
+      m_warnOnce = false;
+      CLog::Log(LOGWARNING, "Interlaced content reported by VPU, but full frames detected - Please turn off deinterlacing manually.");
+    }
+  }
+
+  if (pDvdVideoPicture->iFlags & DVP_FLAG_INTERLACED)
+  {
+    if (m_currentBuffer->GetFieldType() != VPU_FIELD_BOTTOM && m_currentBuffer->GetFieldType() != VPU_FIELD_BT)
+      pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+  }
   else
     pDvdVideoPicture->iFlags &= ~DVP_FLAG_TOP_FIELD_FIRST;
 
@@ -1278,6 +1292,7 @@ CIMXContext::CIMXContext()
   , m_fbVirtAddr(NULL)
   , m_ipuHandle(0)
   , m_vsync(true)
+  , m_deInterlacing(false)
   , m_pageCrops(NULL)
   , m_g2dHandle(NULL)
   , m_bufferCapture(NULL)
