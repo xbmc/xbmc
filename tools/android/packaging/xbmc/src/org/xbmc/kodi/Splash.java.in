@@ -547,8 +547,14 @@ public class Splash extends Activity {
   }
 
   protected void startXBMC() {
-    // NB: We only preload lib@APP_NAME_LC@ to be able to get info on missing symbols.
-    //     This is not normally needed
+    // The dynamic linker on droid is a mess.
+    // Depending on version, it might not be able to properly resolve
+    try
+    {
+      // Surround with try-catch to allow static version (3.0)
+      System.loadLibrary("smbclient");
+    }
+    catch (UnsatisfiedLinkError e) {}
     System.loadLibrary("@APP_NAME_LC@");
     
     // Run @APP_NAME@

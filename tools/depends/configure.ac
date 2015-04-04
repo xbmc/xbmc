@@ -51,8 +51,9 @@ AC_ARG_WITH([sdk],
 
 AC_ARG_ENABLE([gplv3],
   [AS_HELP_STRING([--enable-gplv3],
-  [enable gplv3 components. default off for android, on everywhere else])],
-  [use_gplv3=1], [use_gplv3=auto])
+  [enable gplv3 components. default is yes])],
+  [use_gplv3=$enableval],
+  [use_gplv3=yes])
 
 
 AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
@@ -128,12 +129,9 @@ case $host in
     platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
     platform_os="android"
-    if test "x$use_gplv3" = "xauto"; then
-      use_gplv3=0
-    fi
     #android builds are always cross
     cross_compiling="yes"
-  ;;     
+  ;;
   i*86*-linux-android*)
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
@@ -145,9 +143,6 @@ case $host in
     platform_cxxflags="$platform_cflags -frtti"
     platform_includes="-I$prefix/$deps_dir/include/$use_sdk"
     platform_os="android"
-    if test "x$use_gplv3" = "xauto"; then
-      use_gplv3=0
-    fi
     #android builds are always cross
     cross_compiling="yes"
   ;;
@@ -380,10 +375,6 @@ AC_CHECK_LIB([z],   [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchai
 AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
 AC_TRY_LINK([#include <locale.h>],[struct lconv* test=localeconv();], has_localeconv=yes, AC_MSG_WARN("No localeconv support in toolchain. Using replacement."); has_localeconv=no)
 AC_CHECK_LIB([crystax],   [main], has_libcrystax=1, has_libcrystax=0)
-
-if test "x$use_gplv3" = "xauto"; then
-  use_gplv3=1
-fi
 
 if test "$link_iconv" = "none required"; then
   link_iconv=

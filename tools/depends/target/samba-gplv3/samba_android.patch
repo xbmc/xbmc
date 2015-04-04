@@ -1,0 +1,372 @@
+diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
+--- lib/util/charset/iconv.c	2013-01-29 09:49:31.000000000 +0100
++++ lib/util/charset/iconv.c	2015-03-28 08:30:53.191217266 +0100
+@@ -23,6 +23,11 @@
+ #include "system/iconv.h"
+ #include "system/filesys.h"
+ 
++#if defined(ANDROID)
++#include <stdint.h>
++#include <asm/byteorder.h>
++#endif
++
+ #ifdef strcasecmp
+ #undef strcasecmp
+ #endif
+@@ -502,6 +507,19 @@
+ 	return 0;
+ }
+ 
++#if defined(ANDROID)
++void swab(const void *from, void*to, ssize_t n)
++{
++  ssize_t i;
++
++  if (n < 0)
++    return;
++
++  for (i = 0; i < (n/2)*2; i += 2)
++    *((uint16_t*)to+i) = __arch__swab16(*((uint16_t*)from+i));
++}
++#endif
++
+ static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
+ 			 char **outbuf, size_t *outbytesleft)
+ {
+diff -ru lib/util/system.c lib/util/system.c
+--- lib/util/system.c	2013-01-29 09:49:31.000000000 +0100
++++ lib/util/system.c	2015-03-28 08:30:53.843217274 +0100
+@@ -83,7 +83,9 @@
+ {
+ 	struct in_addr in;
+ 	struct in_addr in2;
++#if !defined(ANDROID)
+ 	in = inet_makeaddr(net, host);
++#endif
+ 	in2.s_addr = in.s_addr;
+ 	return in2;
+ }
+diff -ru lib/util/util_pw.c lib/util/util_pw.c
+--- lib/util/util_pw.c	2013-01-29 09:49:31.000000000 +0100
++++ lib/util/util_pw.c	2015-03-28 08:30:53.843217274 +0100
+@@ -34,17 +34,25 @@
+ 
+ void sys_setpwent(void)
+ {
++#if !defined(ANDROID)
+ 	setpwent();
++#endif
+ }
+ 
+ struct passwd *sys_getpwent(void)
+ {
++#if !defined(ANDROID)
+ 	return getpwent();
++#else
++	return NULL;
++#endif
+ }
+ 
+ void sys_endpwent(void)
+ {
++#if !defined(ANDROID)
+ 	endpwent();
++#endif
+ }
+ 
+ /**************************************************************************
+@@ -83,7 +91,9 @@
+ 	ret->pw_passwd = talloc_strdup(ret, from->pw_passwd);
+ 	ret->pw_uid = from->pw_uid;
+ 	ret->pw_gid = from->pw_gid;
++#if !defined(ANDROID)
+ 	ret->pw_gecos = talloc_strdup(ret, from->pw_gecos);
++#endif
+ 	ret->pw_dir = talloc_strdup(ret, from->pw_dir);
+ 	ret->pw_shell = talloc_strdup(ret, from->pw_shell);
+ 
+diff -ru nsswitch/libwbclient/wbc_pwd.c nsswitch/libwbclient/wbc_pwd.c
+--- nsswitch/libwbclient/wbc_pwd.c	2013-01-29 09:49:31.000000000 +0100
++++ nsswitch/libwbclient/wbc_pwd.c	2015-03-28 08:30:53.847217275 +0100
+@@ -45,7 +45,9 @@
+ 	struct passwd *pw = (struct passwd *)ptr;
+ 	free(pw->pw_name);
+ 	free(pw->pw_passwd);
++#if !defined(ANDROID)
+ 	free(pw->pw_gecos);
++#endif
+ 	free(pw->pw_shell);
+ 	free(pw->pw_dir);
+ }
+@@ -67,10 +69,12 @@
+ 	if (pw->pw_passwd == NULL) {
+ 		goto fail;
+ 	}
++#if !defined(ANDROID)
+ 	pw->pw_gecos = strdup(p->pw_gecos);
+ 	if (pw->pw_gecos == NULL) {
+ 		goto fail;
+ 	}
++#endif
+ 	pw->pw_shell = strdup(p->pw_shell);
+ 	if (pw->pw_shell == NULL) {
+ 		goto fail;
+diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
+--- nsswitch/libwbclient/wbc_sid.c	2013-01-29 09:49:31.000000000 +0100
++++ nsswitch/libwbclient/wbc_sid.c	2015-03-28 08:30:53.847217275 +0100
+@@ -950,9 +950,11 @@
+ 
+ 		wbcFreeMemory(name);
+ 
++#if !defined(ANDROID)
+ 		name = wbcStrDup(pwd->pw_gecos);
+ 		wbcFreeMemory(pwd);
+ 		BAIL_ON_PTR_ERROR(name, wbc_status);
++#endif
+ 	}
+ 
+ 	wbc_status = WBC_ERR_SUCCESS;
+diff -ru source3/configure source3/configure
+--- source3/configure	2013-01-29 10:21:59.000000000 +0100
++++ source3/configure	2015-03-28 08:43:34.903227582 +0100
+@@ -36540,19 +36540,19 @@
+ if test "x$ac_cv_lib_pthread_pthread_attr_init" = xyes; then :
+ 
+ 	     PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
+-	     PTHREAD_LDFLAGS="-lpthread"
++	     PTHREAD_LDFLAGS=""
+ fi
+ 
+ fi
+ 
+ if test "x$PTHREAD_LDFLAGS" = xerror; then
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_attr_init in -lpthreads" >&5
+-$as_echo_n "checking for pthread_attr_init in -lpthreads... " >&6; }
++  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_attr_init in " >&5
++$as_echo_n "checking for pthread_attr_init in ... " >&6; }
+ if ${ac_cv_lib_pthreads_pthread_attr_init+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lpthreads  $LIBS"
++LIBS="  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -36585,7 +36585,7 @@
+ if test "x$ac_cv_lib_pthreads_pthread_attr_init" = xyes; then :
+ 
+ 	     PTHREAD_CFLAGS="-D_THREAD_SAFE"
+-	     PTHREAD_LDFLAGS="-lpthreads"
++	     PTHREAD_LDFLAGS=""
+ fi
+ 
+ fi
+diff -ru source3/include/libsmbclient.h source3/include/libsmbclient.h
+--- source3/include/libsmbclient.h	2013-01-29 09:49:31.000000000 +0100
++++ source3/include/libsmbclient.h	2015-03-28 08:30:53.847217275 +0100
+@@ -75,7 +75,13 @@
+ /* Make sure we have the following includes for now ... */
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#if !defined(ANDROID)
+ #include <sys/statvfs.h>
++#else
++#include <sys/vfs.h>
++#define statvfs statfs
++#define fstatvfs fstatfs
++#endif
+ #include <fcntl.h>
+ #include <utime.h>
+ 
+@@ -862,9 +868,9 @@
+ smbc_rename_fn smbc_getFunctionRename(SMBCCTX *c);
+ void smbc_setFunctionRename(SMBCCTX *c, smbc_rename_fn fn);
+ 
+-typedef off_t (*smbc_lseek_fn)(SMBCCTX *c,
++typedef off64_t (*smbc_lseek_fn)(SMBCCTX *c,
+                                SMBCFILE * file,
+-                               off_t offset,
++                               off64_t offset,
+                                int whence);
+ smbc_lseek_fn smbc_getFunctionLseek(SMBCCTX *c);
+ void smbc_setFunctionLseek(SMBCCTX *c, smbc_lseek_fn fn);
+@@ -895,7 +901,7 @@
+ 
+ typedef int (*smbc_ftruncate_fn)(SMBCCTX *c,
+                                  SMBCFILE *f,
+-                                 off_t size);
++                                 off64_t size);
+ smbc_ftruncate_fn smbc_getFunctionFtruncate(SMBCCTX *c);
+ void smbc_setFunctionFtruncate(SMBCCTX *c, smbc_ftruncate_fn fn);
+ 
+@@ -945,14 +951,14 @@
+ smbc_rmdir_fn smbc_getFunctionRmdir(SMBCCTX *c);
+ void smbc_setFunctionRmdir(SMBCCTX *c, smbc_rmdir_fn fn);
+ 
+-typedef off_t (*smbc_telldir_fn)(SMBCCTX *c,
++typedef off64_t (*smbc_telldir_fn)(SMBCCTX *c,
+                                  SMBCFILE *dir);
+ smbc_telldir_fn smbc_getFunctionTelldir(SMBCCTX *c);
+ void smbc_setFunctionTelldir(SMBCCTX *c, smbc_telldir_fn fn);
+ 
+ typedef int (*smbc_lseekdir_fn)(SMBCCTX *c,
+                                 SMBCFILE *dir,
+-                                off_t offset);
++                                off64_t offset);
+ smbc_lseekdir_fn smbc_getFunctionLseekdir(SMBCCTX *c);
+ void smbc_setFunctionLseekdir(SMBCCTX *c, smbc_lseekdir_fn fn);
+ 
+@@ -1324,7 +1330,7 @@
+  * @return          Upon successful completion, lseek returns the 
+  *                  resulting offset location as measured in bytes 
+  *                  from the beginning  of the file. Otherwise, a value
+- *                  of (off_t)-1 is returned and errno is set to 
++ *                  of (off64_t)-1 is returned and errno is set to 
+  *                  indicate the error:
+  *                  - EBADF  Fildes is not an open file descriptor.
+  *                  - EINVAL Whence is not a proper value or smbc_init
+@@ -1334,7 +1340,7 @@
+  * 
+  * @todo Are errno values complete and correct?
+  */
+-off_t smbc_lseek(int fd, off_t offset, int whence);
++off64_t smbc_lseek(int fd, off64_t offset, int whence);
+ 
+ 
+ /**@ingroup file
+@@ -1518,7 +1524,7 @@
+  * @see             smbc_readdir()
+  *
+  */
+-off_t smbc_telldir(int dh);
++off64_t smbc_telldir(int dh);
+ 
+ 
+ /**@ingroup directory
+@@ -1543,7 +1549,7 @@
+  *
+  * @todo In what does the reture and errno values mean?
+  */
+-int smbc_lseekdir(int fd, off_t offset);
++int smbc_lseekdir(int fd, off64_t offset);
+ 
+ /**@ingroup directory
+  * Create a directory.
+@@ -1700,7 +1706,7 @@
+  * @see             , Unix ftruncate()
+  *
+  */
+-int smbc_ftruncate(int fd, off_t size);
++int smbc_ftruncate(int fd, off64_t size);
+ 
+ 
+ /**@ingroup attribute
+diff -ru source3/lib/fault.c source3/lib/fault.c
+--- source3/lib/fault.c	2013-01-29 09:49:31.000000000 +0100
++++ source3/lib/fault.c	2015-03-28 08:30:54.539217284 +0100
+@@ -375,7 +375,7 @@
+ 	umask(~(0700));
+ 	dbgflush();
+ 
+-#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
++#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE) && !defined(ANDROID)
+ 	/* On Linux we lose the ability to dump core when we change our user
+ 	 * ID. We know how to dump core safely, so let's make sure we have our
+ 	 * dumpable flag set.
+diff -ru source3/lib/system.c source3/lib/system.c
+--- source3/lib/system.c	2013-01-29 09:49:31.000000000 +0100
++++ source3/lib/system.c	2015-03-28 08:30:54.543217284 +0100
+@@ -921,8 +921,11 @@
+ #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_SEEKDIR64)
+ 	seekdir64(dirp, offset);
+ #else
++#if !defined(ANDROID)
+ 	seekdir(dirp, offset);
+ #endif
++	return;
++#endif
+ }
+ 
+ /*******************************************************************
+@@ -934,7 +937,11 @@
+ #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_TELLDIR64)
+ 	return (long)telldir64(dirp);
+ #else
++#if !defined(ANDROID)
+ 	return (long)telldir(dirp);
++#else
++	return(0);
++#endif
+ #endif
+ }
+ 
+diff -ru source3/libads/dns.c source3/libads/dns.c
+--- source3/libads/dns.c	2013-01-29 09:49:31.000000000 +0100
++++ source3/libads/dns.c	2015-03-28 08:30:54.543217284 +0100
+@@ -40,6 +40,16 @@
+ 
+ #define MAX_DNS_PACKET_SIZE 0xffff
+ 
++#if defined(ANDROID)
++#  define NS_HFIXEDSZ   12
++#  define C_IN          1
++#  define T_A           1
++#  define ns_t_srv      33
++#  define ns_t_aaaa     28
++#  define NS_PACKETSZ	512
++#  define T_NS          2
++#endif
++
+ #ifdef NS_HFIXEDSZ	/* Bind 8/9 interface */
+ #if !defined(C_IN)	/* AIX 5.3 already defines C_IN */
+ #  define C_IN		ns_c_in
+diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
+--- source3/passdb/passdb.c	2013-01-29 09:49:31.000000000 +0100
++++ source3/passdb/passdb.c	2015-03-28 08:30:54.543217284 +0100
+@@ -163,6 +163,7 @@
+ 
+ 	fullname = NULL;
+ 
++#if !defined(ANDROID)
+ 	if (count_commas(pwd->pw_gecos) == 3) {
+ 		/*
+ 		 * Heuristic: This seems to be a gecos field that has been
+@@ -173,11 +174,14 @@
+ 			talloc_tos(), pwd->pw_gecos,
+ 			strchr(pwd->pw_gecos, ',') - pwd->pw_gecos);
+ 	}
++#endif
+ 
+ 	if (fullname != NULL) {
+ 		pdb_set_fullname(user, fullname, PDB_SET);
++#if !defined(ANDROID)
+ 	} else {
+ 		pdb_set_fullname(user, pwd->pw_gecos, PDB_SET);
++#endif
+ 	}
+ 	TALLOC_FREE(fullname);
+ 
+diff -ru source3/passdb/pdb_interface.c source3/passdb/pdb_interface.c
+--- source3/passdb/pdb_interface.c	2013-01-29 09:49:31.000000000 +0100
++++ source3/passdb/pdb_interface.c	2015-03-28 08:30:54.547217284 +0100
+@@ -1464,8 +1464,8 @@
+ 	}
+ 
+ 	/* Primary group members */
+-	setpwent();
+-	while ((pwd = getpwent()) != NULL) {
++	sys_setpwent();
++	while ((pwd = sys_getpwent()) != NULL) {
+ 		if (pwd->pw_gid == gid) {
+ 			if (!add_uid_to_array_unique(mem_ctx, pwd->pw_uid,
+ 						pp_uids, p_num)) {
+@@ -1473,7 +1473,7 @@
+ 			}
+ 		}
+ 	}
+-	endpwent();
++	sys_endpwent();
+ 
+ 	/* Secondary group members */
+ 	for (gr = grp->gr_mem; (*gr != NULL) && ((*gr)[0] != '\0'); gr += 1) {
