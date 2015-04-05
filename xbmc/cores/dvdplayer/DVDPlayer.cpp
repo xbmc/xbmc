@@ -504,8 +504,6 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
         }
         s.channels = ((CDemuxStreamAudio*)stream)->iChannels;
       }
-      if (!s.filename2.empty())
-        s.name += " " + g_localizeStrings.Get(21602);
       Update(s);
     }
   }
@@ -4226,7 +4224,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
 {
   std::string ext = URIUtils::GetExtension(filename);
   std::string vobsubfile = subfilename;
-  if(ext == ".idx")
+  if (ext == ".idx")
   {
     if (vobsubfile.empty()) {
       // find corresponding .sub (e.g. in case of manually selected .idx sub)
@@ -4239,17 +4237,26 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     if (!v.Open(filename, STREAM_SOURCE_NONE, vobsubfile))
       return -1;
     m_SelectionStreams.Update(NULL, &v, vobsubfile);
-    int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
+
     ExternalStreamInfo info;
     CUtil::GetExternalStreamDetailsFromFilename(m_filename, vobsubfile, info);
-    m_SelectionStreams.Get(STREAM_SUBTITLE, index).name = info.name;
-    if (m_SelectionStreams.Get(STREAM_SUBTITLE, index).language.empty())
-      m_SelectionStreams.Get(STREAM_SUBTITLE, index).language = info.language;
 
-    if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
-      m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = static_cast<CDemuxStream::EFlags>(info.flag);
+    for (int i = 0; i < v.GetNrOfSubtitleStreams(); ++i)
+    {
+      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), i);
+      SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
 
-    return index;
+      if (stream.name.empty())
+        stream.name = info.name;
+
+      if (stream.language.empty())
+        stream.language = info.language;
+
+      if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
+        stream.flags = static_cast<CDemuxStream::EFlags>(info.flag);
+    }
+
+    return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);;
   }
   if(ext == ".sub")
   {
