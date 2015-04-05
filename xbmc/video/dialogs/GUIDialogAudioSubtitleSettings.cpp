@@ -205,6 +205,9 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
     m_subtitleStream = videoSettings.m_SubtitleStream = static_cast<const CSettingInt*>(setting)->GetValue();
     g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
   }
+#ifdef HAS_DS_PLAYER
+  videoSettings.m_isEdited = true;
+#endif
 }
 
 void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
@@ -628,6 +631,8 @@ void CGUIDialogAudioSubtitleSettings::ShowAudioSelector()
     return;
   }
 
+  CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+
   CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (!pDlg)
     return;
@@ -657,6 +662,7 @@ void CGUIDialogAudioSubtitleSettings::ShowAudioSelector()
     CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = selected;
     g_application.m_pPlayer->SetAudioStream(selected);    // Set the audio stream to the one selected
   }
+  videoSettings.m_isEdited = true;
 }
 
 void CGUIDialogAudioSubtitleSettings::ShowSubsSelector()
@@ -668,6 +674,8 @@ void CGUIDialogAudioSubtitleSettings::ShowSubsSelector()
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(462), g_localizeStrings.Get(55059), 2000, false, 300);
     return;
   }
+
+  CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
 
   CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (!pDlg)
@@ -702,6 +710,7 @@ void CGUIDialogAudioSubtitleSettings::ShowSubsSelector()
   else
     if (pDlg->IsButtonPressed()) // Disable or enable subtitle stream.
       g_application.OnAction(CAction(ACTION_SHOW_SUBTITLES));
+  videoSettings.m_isEdited = true;
 }
 
 #endif
