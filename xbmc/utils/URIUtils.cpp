@@ -831,6 +831,22 @@ bool URIUtils::IsFTP(const std::string& strFile)
          IsProtocol(strFile, "ftps");
 }
 
+bool URIUtils::IsHTTP(const std::string& strFile)
+{
+  if (IsStack(strFile))
+    return IsHTTP(CStackDirectory::GetFirstStackedFile(strFile));
+
+  if (IsSpecial(strFile))
+    return IsHTTP(CSpecialProtocol::TranslatePath(strFile));
+
+  CURL url(strFile);
+  if (HasParentInHostname(url))
+    return IsHTTP(url.GetHostName());
+
+  return IsProtocol(strFile, "http") ||
+         IsProtocol(strFile, "https");
+}
+
 bool URIUtils::IsUDP(const std::string& strFile)
 {
   std::string strFile2(strFile);
