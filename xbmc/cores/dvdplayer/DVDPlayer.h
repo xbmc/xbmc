@@ -255,7 +255,7 @@ public:
   virtual void SetSubtitle(int iStream);
   virtual bool GetSubtitleVisible();
   virtual void SetSubtitleVisible(bool bVisible);
-  virtual int  AddSubtitle(const std::string& strSubPath);
+  virtual int AddSubtitle(const std::string& strSubPath);
 
   virtual int GetAudioStreamCount();
   virtual int GetAudioStream();
@@ -339,7 +339,7 @@ protected:
 
   bool ShowPVRChannelInfo();
 
-  int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "", CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE);
+  int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "");
   void SetSubtitleVisibleInternal(bool bVisible);
 
   /**

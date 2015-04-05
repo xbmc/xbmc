@@ -4222,7 +4222,7 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   }
 }
 
-int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename, CDemuxStream::EFlags flags)
+int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename)
 {
   std::string ext = URIUtils::GetExtension(filename);
   std::string vobsubfile = subfilename;
@@ -4240,17 +4240,14 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
       return -1;
     m_SelectionStreams.Update(NULL, &v, vobsubfile);
     int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
-    m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
     ExternalStreamInfo info;
     CUtil::GetExternalStreamDetailsFromFilename(m_filename, vobsubfile, info);
     m_SelectionStreams.Get(STREAM_SUBTITLE, index).name = info.name;
     if (m_SelectionStreams.Get(STREAM_SUBTITLE, index).language.empty())
       m_SelectionStreams.Get(STREAM_SUBTITLE, index).language = info.language;
 
-    if (static_cast<CDemuxStream::EFlags>(info.flag) == CDemuxStream::FLAG_NONE)
-      m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
-    else
-      m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = static_cast<CDemuxStream::EFlags>(info.flag);      
+    if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
+      m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = static_cast<CDemuxStream::EFlags>(info.flag);
 
     return index;
   }
@@ -4259,7 +4256,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     // if this looks like vobsub file (i.e. .idx found), add it as such
     std::string vobsubidx = CUtil::GetVobSubIdxFromSub(filename);
     if (!vobsubidx.empty())
-      return AddSubtitleFile(vobsubidx, filename, flags);
+      return AddSubtitleFile(vobsubidx, filename);
   }
   SelectionStream s;
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
@@ -4270,10 +4267,8 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   CUtil::GetExternalStreamDetailsFromFilename(m_filename, filename, info);
   s.name = info.name;
   s.language = info.language;
-  if (static_cast<CDemuxStream::EFlags>(info.flag) == CDemuxStream::FLAG_NONE)
-    s .flags = flags;
-  else
-    s.flags = static_cast<CDemuxStream::EFlags>(info.flag);     
+  if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
+    s.flags = static_cast<CDemuxStream::EFlags>(info.flag);
 
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
