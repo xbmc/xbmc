@@ -61,6 +61,8 @@ public:
 #ifdef HAS_DS_PLAYER
   const CMadvrSettings& GetDefaultMadvrSettings() const { return m_defaultMadvrSettings; }
   CMadvrSettings& GetDefaultMadvrSettings() { return m_defaultMadvrSettings; }
+  const CMadvrSettings& GetAtStartMadvrSettings() const { return m_atstartMadvrSettings; }
+  CMadvrSettings& GetAtStartMadvrSettings() { return m_atstartMadvrSettings; }
   const CMadvrSettings& GetCurrentMadvrSettings() const { return m_currentMadvrSettings; }
   CMadvrSettings& GetCurrentMadvrSettings() { return m_currentMadvrSettings; }
 #endif
@@ -115,6 +117,7 @@ private:
 
 #ifdef HAS_DS_PLAYER
   CMadvrSettings m_defaultMadvrSettings;
+  CMadvrSettings m_atstartMadvrSettings;
   CMadvrSettings m_currentMadvrSettings;
 #endif
 

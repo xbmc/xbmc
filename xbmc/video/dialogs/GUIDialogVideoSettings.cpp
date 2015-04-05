@@ -270,9 +270,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
 
 #ifdef HAS_DS_PLAYER
   if (m_isMadvr)
-    madvrSettings.m_isEdited = true;
-
-  videoSettings.m_isEdited = true;
   HideUnused();
 #endif
 }

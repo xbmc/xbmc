@@ -29,7 +29,6 @@
 
 CVideoSettings::CVideoSettings()
 {
-  m_isEdited = false;
   m_DeinterlaceMode = VS_DEINTERLACEMODE_AUTO;
   m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
   m_ScalingMethod = VS_SCALINGMETHOD_LINEAR;

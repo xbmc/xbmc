@@ -134,7 +134,6 @@ public:
 
   bool operator!=(const CMadvrSettings &right) const;
 
-  bool m_isEdited;
   int m_Resolution;
 
   int m_ChromaUpscaling;

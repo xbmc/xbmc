@@ -80,7 +80,7 @@ bool CSaveFileStateJob::DoWork()
 	  {
 		  dspdb.AddEdition(progressTrackingFile, m_bookmark.edition);
 	  }
-      if (m_madvrSettings.m_isEdited)
+      if (m_madvrSettings != CMediaSettings::Get().GetAtStartMadvrSettings())
       {
         dspdb.SetVideoSettings(progressTrackingFile, m_madvrSettings);
       }
@@ -144,11 +144,7 @@ bool CSaveFileStateJob::DoWork()
             updateListing = true;
           }
         }
-#ifdef HAS_DS_PLAYER
-        if (m_videoSettings.m_isEdited)
-#else
         if (m_videoSettings != CMediaSettings::Get().GetDefaultVideoSettings())
-#endif
         {
           videodatabase.SetVideoSettings(progressTrackingFile, m_videoSettings);
         }

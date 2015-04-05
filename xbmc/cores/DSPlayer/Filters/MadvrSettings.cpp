@@ -29,7 +29,6 @@
 
 CMadvrSettings::CMadvrSettings()
 {
-  m_isEdited = false;
   m_Resolution = -1;
 
   m_ChromaUpscaling = MADVR_SCALING_BICUBIC_75;  
