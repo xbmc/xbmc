@@ -7351,7 +7351,10 @@ unsigned int CVideoDatabase::GetMusicVideoIDs(const std::string& strWhere, vecto
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    std::string strSQL = "select distinct idMVideo from musicvideo_view " + strWhere;
+    std::string strSQL = "select distinct idMVideo from musicvideo_view";
+    if (!strWhere.empty())
+      strSQL += " where " + strWhere;
+
     if (!m_pDS->query(strSQL.c_str())) return 0;
     songIDs.clear();
     if (m_pDS->num_rows() == 0)
