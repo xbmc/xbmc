@@ -68,8 +68,13 @@ public:
   void AddSetting(CSetting *setting);
   void AddSettings(const SettingList &settings);
 
+  const ISettingControl *GetControl() const { return m_control; }
+  ISettingControl *GetControl() { return m_control; }
+  void SetControl(ISettingControl *control) { m_control = control; }
+
 private:
   SettingList m_settings;
+  ISettingControl *m_control;
 };
 
 typedef std::vector<CSettingGroup *> SettingGroupList;
