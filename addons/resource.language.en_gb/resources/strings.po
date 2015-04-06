@@ -10243,16 +10243,16 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20193"
-msgid "Default service for album information"
+msgid "Default provider for album information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20194"
-msgid "Default service for artist information"
+msgid "Default provider for artist information"
 msgstr ""
 
 msgctxt "#20195"
-msgid "Change scraper"
+msgid "Change information provider"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -10827,7 +10827,7 @@ msgid "Set episode bookmark"
 msgstr ""
 
 msgctxt "#20407"
-msgid "Scraper settings"
+msgid "Information provider settings"
 msgstr ""
 
 msgctxt "#20408"
@@ -11366,22 +11366,22 @@ msgid "not in the last"
 msgstr ""
 
 msgctxt "#21412"
-msgid "Scrapers"
+msgid "Information providers"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21413"
-msgid "Default movie scraper"
+msgid "Default provider for movie information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21414"
-msgid "Default tvshow scraper"
+msgid "Default provider for tvshow information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21415"
-msgid "Default music video scraper"
+msgid "Default provider for music video information"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11399,7 +11399,7 @@ msgid "Multilingual"
 msgstr ""
 
 msgctxt "#21419"
-msgid "No scrapers present"
+msgid "No information providers present"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
@@ -14598,7 +14598,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36200"
-msgid "Default scraper used for adding music videos to your library."
+msgid "Default provider for fetching information about music videos."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14876,19 +14876,19 @@ msgstr ""
 #. Description of setting "Music -> Library -> Include artists who appear only on compilations" with label #13414
 #: system/settings/settings.xml
 msgctxt "#36256"
-msgid "Automatically fetch album and artist information via scrapers during scan."
+msgid "Automatically fetch album and artist information from information providers when adding songs to the library."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Default service for album information" with label #20193
+#. Description of setting "Music -> Library -> Default provider for album information" with label #20193
 #: system/settings/settings.xml
 msgctxt "#36257"
-msgid "Select the default album information source."
+msgid "Select the default album information provider."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Default service for artist information" with label #20194
+#. Description of setting "Music -> Library -> Default provider for artist information" with label #20194
 #: system/settings/settings.xml
 msgctxt "#36258"
-msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgid "Select the default artist information provider."
 msgstr ""
 
 #. Description of setting "Music -> Library -> Update library on startup" with label #22000
