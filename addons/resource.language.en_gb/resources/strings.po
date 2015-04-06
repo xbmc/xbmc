@@ -7647,7 +7647,7 @@ msgstr ""
 
 #: xbmc/epg/EpgContainer.cpp
 msgctxt "#19004"
-msgid "Importing EPG from clients"
+msgid "Importing guide from clients"
 msgstr ""
 
 msgctxt "#19005"
@@ -7750,7 +7750,7 @@ msgid "No search results"
 msgstr ""
 
 msgctxt "#19028"
-msgid "No EPG entries"
+msgid "No guide entries"
 msgstr ""
 
 msgctxt "#19029"
@@ -7922,7 +7922,7 @@ msgstr ""
 
 #. Electronic program guide. used by ?
 msgctxt "#19069"
-msgid "EPG"
+msgid "Guide"
 msgstr ""
 
 msgctxt "#19070"
@@ -7930,12 +7930,12 @@ msgid "Go to now"
 msgstr ""
 
 msgctxt "#19071"
-msgid "EPG update interval"
+msgid "Update interval"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19072"
-msgid "Do not store the EPG in the database"
+msgid "Do not cache in the local database"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8405,7 +8405,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19182"
-msgid "Days to display in the EPG"
+msgid "Days to display"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8430,11 +8430,11 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19187"
-msgid "Reset the EPG database"
+msgid "Reset the guide database"
 msgstr ""
 
 msgctxt "#19188"
-msgid "EPG is being reset"
+msgid "Guide is being reset"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8487,7 +8487,7 @@ msgid "Channel manager"
 msgstr ""
 
 msgctxt "#19200"
-msgid "EPG source:"
+msgid "Guide source:"
 msgstr ""
 
 msgctxt "#19201"
@@ -8511,7 +8511,7 @@ msgid "Group management"
 msgstr ""
 
 msgctxt "#19206"
-msgid "Activate EPG:"
+msgid "Activate guide:"
 msgstr ""
 
 msgctxt "#19207"
@@ -8576,7 +8576,7 @@ msgid "Synchronise channel groups with backend(s)"
 msgstr ""
 
 msgctxt "#19222"
-msgid "EPG"
+msgid "Guide"
 msgstr ""
 
 msgctxt "#19223"
@@ -8609,7 +8609,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19230"
-msgid "Prevent EPG updates during playback"
+msgid "Prevent updates during playback"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8698,23 +8698,23 @@ msgstr ""
 
 #: xbmc/epg/EpgContainer.cpp
 msgctxt "#19250"
-msgid "Loading EPG from database"
+msgid "Loading guide from database"
 msgstr ""
 
 msgctxt "#19251"
-msgid "Update EPG information"
+msgid "Update guide information"
 msgstr ""
 
 msgctxt "#19252"
-msgid "Schedule EPG update for this channel?"
+msgid "Schedule guide update for this channel?"
 msgstr ""
 
 msgctxt "#19253"
-msgid "EPG update scheduled for channel"
+msgid "Guide update scheduled for channel"
 msgstr ""
 
 msgctxt "#19254"
-msgid "EPG update failed for channel"
+msgid "Guide update failed for channel"
 msgstr ""
 
 msgctxt "#19255"
@@ -14643,7 +14643,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36209"
-msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgid "Delete the databases for channels and guide and reimport the data from the backend afterwards."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14696,32 +14696,32 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends."
+msgid "Number of days to show in the guide and import data for from backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36221"
-msgid "Time between EPG data imports from backends."
+msgid "Time between imports of guide data from backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36222"
-msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgid "Do not import the guide data while playing TV to minimise CPU usage."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgid "By default, the guide data is cached in a local database to speed up importing on startup."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36224"
-msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgid "Hide \"no information available\" labels when no guide data is available for a channel."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36225"
-msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgid "Delete the cached guide data and reimport it from the backend."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14836,7 +14836,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36248"
-msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the guide information is hidden for those channels."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -15863,7 +15863,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36424"
-msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgid "Select what will happen when an item is selected in the guide: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr ""
 
 #: system/settings/settings.xml
