@@ -366,6 +366,7 @@ static bool Repos(const CURL& path, CFileItemList &items)
   {
     CFileItemPtr item(new CFileItem("addons://all/", true));
     item->SetLabel(g_localizeStrings.Get(24087));
+    item->SetSpecialSort(SortSpecialOnTop);
     items.Add(item);
   }
 
