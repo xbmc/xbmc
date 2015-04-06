@@ -55,13 +55,10 @@ CProgressJob::~CProgressJob()
 
 bool CProgressJob::ShouldCancel(unsigned int progress, unsigned int total) const
 {
-  if (m_progressDialog != NULL)
-  {
-    if (IsCancelled())
-      return true;
+  if (IsCancelled())
+    return true;
 
-    SetProgress(progress, total);
-  }
+  SetProgress(progress, total);
 
   return CJob::ShouldCancel(progress, total);
 }
