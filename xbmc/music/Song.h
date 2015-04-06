@@ -93,6 +93,7 @@ public:
   MUSIC_INFO::EmbeddedArtInfo embeddedArt;
   std::string strMusicBrainzTrackID;
   std::string strComment;
+  std::string strMood;
   std::string strCueSheet;
   char rating;
   int iTrack;

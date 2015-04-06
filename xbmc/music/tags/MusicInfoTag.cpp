@@ -111,6 +111,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_musicBrainzAlbumArtistID = tag.m_musicBrainzAlbumArtistID;
   m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
   m_strComment = tag.m_strComment;
+  m_strMood = tag.m_strMood;
   m_strLyrics = tag.m_strLyrics;
   m_cuesheet = tag.m_cuesheet;
   m_lastPlayed = tag.m_lastPlayed;
@@ -230,6 +231,11 @@ std::string CMusicInfoTag::GetYearString() const
 const std::string &CMusicInfoTag::GetComment() const
 {
   return m_strComment;
+}
+
+const std::string &CMusicInfoTag::GetMood() const
+{
+  return m_strMood;
 }
 
 const std::string &CMusicInfoTag::GetLyrics() const
@@ -381,6 +387,11 @@ void CMusicInfoTag::SetDuration(int iSec)
 void CMusicInfoTag::SetComment(const std::string& comment)
 {
   m_strComment = comment;
+}
+
+void CMusicInfoTag::SetMood(const std::string& mood)
+{
+  m_strMood = mood;
 }
 
 void CMusicInfoTag::SetCueSheet(const std::string& cueSheet)
@@ -583,6 +594,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["musicbrainzalbumartistid"] = StringUtils::Join(m_musicBrainzAlbumArtistID, " / ");
   value["musicbrainztrmid"] = m_strMusicBrainzTRMID;
   value["comment"] = m_strComment;
+  value["mood"] = m_strMood;
   value["rating"] = (int)(m_rating - '0');
   value["playcount"] = m_iTimesPlayed;
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
@@ -616,6 +628,7 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldTrackNumber: sortable[FieldTrackNumber] = m_iTrack; break;
   case FieldYear:        sortable[FieldYear] = m_dwReleaseDate.wYear; break;
   case FieldComment:     sortable[FieldComment] = m_strComment; break;
+  case FieldMoods:       sortable[FieldMoods] = m_strMood; break;
   case FieldRating:      sortable[FieldRating] = (float)(m_rating - '0'); break;
   case FieldPlaycount:   sortable[FieldPlaycount] = m_iTimesPlayed; break;
   case FieldLastPlayed:  sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty; break;
@@ -646,6 +659,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_strMusicBrainzTRMID;
     ar << m_lastPlayed;
     ar << m_strComment;
+    ar << m_strMood;
     ar << m_rating;
     ar << m_iTimesPlayed;
     ar << m_iAlbumId;
@@ -677,6 +691,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_strMusicBrainzTRMID;
     ar >> m_lastPlayed;
     ar >> m_strComment;
+    ar >> m_strMood;
     ar >> m_rating;
     ar >> m_iTimesPlayed;
     ar >> m_iAlbumId;
@@ -713,6 +728,7 @@ void CMusicInfoTag::Clear()
   m_lastPlayed.Reset();
   m_bCompilation = false;
   m_strComment.clear();
+  m_strMood.clear();
   m_cuesheet.clear();
   m_rating = '0';
   m_iDbId = -1;

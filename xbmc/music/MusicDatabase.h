@@ -111,6 +111,7 @@ public:
    \param strMusicBrainzTrackID [in] the MusicBrainz track ID of the song
    \param strPathAndFileName [in] the path and filename to the song
    \param strComment [in] the ids of the added songs
+   \param strMood [in] the mood of the added song
    \param strThumb [in] the ids of the added songs
    \param artistString [in] the assembled artist string, denormalized from CONCAT(strArtist||strJoinPhrase)
    \param genres [in] a vector of genres to which this song belongs
@@ -130,6 +131,7 @@ public:
               const std::string& strMusicBrainzTrackID,
               const std::string& strPathAndFileName,
               const std::string& strComment,
+              const std::string& strMood,
               const std::string& strThumb,
               const std::string &artistString, const std::vector<std::string>& genres,
               int iTrack, int iDuration, int iYear,
@@ -157,6 +159,7 @@ public:
    \param strMusicBrainzTrackID [in] the MusicBrainz track ID of the song
    \param strPathAndFileName [in] the path and filename to the song
    \param strComment [in] the ids of the added songs
+   \param strMood [in] the mood of the added song
    \param strThumb [in] the ids of the added songs
    \param artistString [in] the full artist string, denormalized from CONCAT(song_artist.strArtist || song_artist.strJoinPhrase)
    \param genres [in] a vector of genres to which this song belongs
@@ -174,7 +177,7 @@ public:
   int UpdateSong(int idSong,
                  const std::string& strTitle, const std::string& strMusicBrainzTrackID,
                  const std::string& strPathAndFileName, const std::string& strComment,
-                 const std::string& strThumb,
+                 const std::string& strMood, const std::string& strThumb,
                  const std::string& artistString, const std::vector<std::string>& genres,
                  int iTrack, int iDuration, int iYear,
                  int iTimesPlayed, int iStartOffset, int iEndOffset,
@@ -537,6 +540,7 @@ private:
     song_bCompilation,
     song_strAlbumArtists,
     song_strAlbumReleaseType,
+    song_mood,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 
