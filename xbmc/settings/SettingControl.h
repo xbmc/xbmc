@@ -32,6 +32,8 @@
 #define SETTING_XML_ELM_CONTROL_FORMATVALUE  "value"
 #define SETTING_XML_ATTR_SHOW_MORE           "more"
 #define SETTING_XML_ATTR_SHOW_DETAILS        "details"
+#define SETTING_XML_ATTR_SEPARATOR_POSITION  "separatorposition"
+#define SETTING_XML_ATTR_HIDE_SEPARATOR      "hideseparator"
 
 class CVariant;
 
@@ -253,4 +255,28 @@ protected:
   int m_formatLabel;
   int m_valueFormatLabel;
   std::string m_valueFormat;
+};
+
+class CSettingControlTitle : public ISettingControl
+{
+public:
+  CSettingControlTitle()
+    : m_separatorHidden(false),
+      m_separatorBelowLabel(true)
+  { }
+  virtual ~CSettingControlTitle() { }
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const { return "title"; }
+  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+  virtual bool SetFormat(const std::string &format) { return true; }
+
+  bool IsSeparatorHidden() const { return m_separatorHidden; }
+  void SetSeparatorHidden(bool hidden) { m_separatorHidden = hidden; }
+  bool IsSeparatorBelowLabel() const { return m_separatorBelowLabel; }
+  void SetSeparatorBelowLabel(bool below) { m_separatorBelowLabel = below; }
+
+protected:
+  bool m_separatorHidden;
+  bool m_separatorBelowLabel;
 };

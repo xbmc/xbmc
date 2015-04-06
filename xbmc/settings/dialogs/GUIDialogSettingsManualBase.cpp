@@ -89,7 +89,7 @@ CSettingCategory* CGUIDialogSettingsManualBase::AddCategory(const std::string &i
   return category;
 }
 
-CSettingGroup* CGUIDialogSettingsManualBase::AddGroup(CSettingCategory *category)
+CSettingGroup* CGUIDialogSettingsManualBase::AddGroup(CSettingCategory *category, int label /* = -1 */, int help /* = -1 */, bool separatorBelowLabel /* = true */, bool hideSeparator /* = false */)
 {
   if (category == NULL)
     return NULL;
@@ -99,6 +99,12 @@ CSettingGroup* CGUIDialogSettingsManualBase::AddGroup(CSettingCategory *category
   CSettingGroup *group = new CSettingGroup(StringUtils::Format("%zu", groups + 1), m_settingsManager);
   if (group == NULL)
     return NULL;
+
+  if (label >= 0)
+    group->SetLabel(label);
+  if (help >= 0)
+    group->SetHelp(help);
+  group->SetControl(GetTitleControl(separatorBelowLabel, hideSeparator));
 
   category->AddGroup(group);
   return group;
@@ -948,6 +954,15 @@ ISettingControl* CGUIDialogSettingsManualBase::GetCheckmarkControl(bool delayed 
 {
   CSettingControlCheckmark *control = new CSettingControlCheckmark();
   control->SetDelayed(delayed);
+
+  return control;
+}
+
+ISettingControl* CGUIDialogSettingsManualBase::GetTitleControl(bool separatorBelowLabel /* = true */, bool hideSeparator /* = false */)
+{
+  CSettingControlTitle *control = new CSettingControlTitle();
+  control->SetSeparatorBelowLabel(separatorBelowLabel);
+  control->SetSeparatorHidden(hideSeparator);
 
   return control;
 }

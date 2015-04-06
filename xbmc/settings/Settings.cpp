@@ -505,6 +505,7 @@ void CSettings::InitializeControls()
   m_settingsManager->RegisterSettingControl("list", this);
   m_settingsManager->RegisterSettingControl("slider", this);
   m_settingsManager->RegisterSettingControl("range", this);
+  m_settingsManager->RegisterSettingControl("title", this);
 }
 
 void CSettings::InitializeVisibility()
