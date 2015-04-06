@@ -235,12 +235,6 @@ namespace VIDEO
 
     std::string GetnfoFile(CFileItem *item, bool bGrabAny=false) const;
 
-    /*! \brief Retrieve the parent folder of an item, accounting for stacks and files in rars.
-     \param item a media item.
-     \return the folder that contains the item.
-     */
-    std::string GetParentDir(const CFileItem &item) const;
-
     bool m_showDialog;
     CGUIDialogProgressBarHandle* m_handle;
     int m_currentItem;
