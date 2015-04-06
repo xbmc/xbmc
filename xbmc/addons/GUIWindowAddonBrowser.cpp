@@ -125,7 +125,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_CHECK_FOR_UPDATES)
       {
-        CAddonInstaller::Get().UpdateRepos(true);
+        CAddonInstaller::Get().UpdateRepos(true, false, true);
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control

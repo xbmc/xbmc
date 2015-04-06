@@ -12430,6 +12430,7 @@ msgctxt "#24033"
 msgid "Install from repository"
 msgstr ""
 
+#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24034"
 msgid "Check for updates"
 msgstr ""
@@ -12717,7 +12718,17 @@ msgctxt "#24091"
 msgid "This Add-on cannot be disabled"
 msgstr ""
 
-#empty strings from id 24092 to 24093
+#. Used as title of the progress dialog when checking for add-on updates in add-on browser
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24092"
+msgid "Checking for add-on updates"
+msgstr ""
+
+#. Used as a text in the progress dialog when checking for add-on updates. %s contains repository name
+#: xbmc/addons/Repository.cpp
+msgctxt "#24093"
+msgid "Checking %s..."
+msgstr ""
 
 #: xbmc/addons/guidialogaddoninfo.cpp
 msgctxt "#24094"

@@ -21,6 +21,7 @@
 
 #include "utils/FileOperationJob.h"
 #include "addons/Addon.h"
+#include "addons/Repository.h"
 #include "utils/Stopwatch.h"
 #include "threads/Event.h"
 
@@ -97,7 +98,7 @@ public:
    \return the last time a repository was updated.
    */
   CDateTime LastRepoUpdate() const;
-  void UpdateRepos(bool force = false, bool wait = false);
+  void UpdateRepos(bool force = false, bool wait = false, bool showProgress = false);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
@@ -149,7 +150,7 @@ private:
   CCriticalSection m_critSection;
   JobMap m_downloadJobs;
   CStopWatch m_repoUpdateWatch;   ///< repository updates are done based on this counter
-  unsigned int m_repoUpdateJob;   ///< the job ID of the repository updates
+  ADDON::CRepositoryUpdateJob* m_repoUpdateJob;
   CEvent m_repoUpdateDone;        ///< event set when the repository updates are complete
 };
 
