@@ -105,7 +105,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_nextOverlay = DVD_NOPTS_VALUE;
   m_flush = false;
-  m_history_valid_pts = 0;
 }
 
 OMXPlayerVideo::~OMXPlayerVideo()
@@ -313,14 +312,6 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   g_renderManager.FlipPage(CThread::m_bStop, time/DVD_TIME_BASE);
 }
 
-static unsigned count_bits(int32_t value)
-{
-  unsigned bits = 0;
-  for(;value;++bits)
-    value &= value - 1;
-  return bits;
-}
-
 void OMXPlayerVideo::Process()
 {
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
@@ -495,18 +486,20 @@ void OMXPlayerVideo::Process()
           m_stalled = false;
         }
 
-        // some packed bitstream AVI files set almost all pts values to DVD_NOPTS_VALUE, but have a scattering of real pts values.
-        // the valid pts values match the dts values.
-        // if a stream has had more than 4 valid pts values in the last 16, the use UNKNOWN, otherwise use dts
-        m_history_valid_pts = (m_history_valid_pts << 1) | (pPacket->pts != DVD_NOPTS_VALUE);
+        double dts = pPacket->dts;
         double pts = pPacket->pts;
-        if(count_bits(m_history_valid_pts & 0xffff) < 4)
-          pts = pPacket->dts;
+
+        if (dts != DVD_NOPTS_VALUE)
+          dts += m_iVideoDelay;
 
         if (pts != DVD_NOPTS_VALUE)
           pts += m_iVideoDelay;
 
-        m_omxVideo.Decode(pPacket->pData, pPacket->iSize, pts);
+        m_omxVideo.Decode(pPacket->pData, pPacket->iSize, dts, dts == DVD_NOPTS_VALUE ? pts : DVD_NOPTS_VALUE);
+
+        if (pts == DVD_NOPTS_VALUE)
+          pts = dts;
+
         Output(pts, bRequestDrop);
         if(pts != DVD_NOPTS_VALUE)
           m_iCurrentPts = pts;
@@ -581,9 +574,6 @@ bool OMXPlayerVideo::OpenDecoder()
 
     m_codecname = m_omxVideo.GetDecoderName();
   }
-
-  // start from assuming all recent frames had valid pts
-  m_history_valid_pts = ~0;
 
   return bVideoDecoderOpen;
 }
