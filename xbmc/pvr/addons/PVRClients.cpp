@@ -993,16 +993,12 @@ void CPVRClients::StartChannelScan(void)
       __FUNCTION__, scanClient->GetFriendlyName().c_str());
   long perfCnt = XbmcThreads::SystemClockMillis();
 
-  /* stop the supervisor thread */
-  g_PVRManager.StopUpdateThreads();
-
   /* do the scan */
-  if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
-    /* an error occured */
-    CGUIDialogOK::ShowAndGetInput(CVariant{19111}, CVariant{19193});
-
-  /* restart the supervisor thread */
-  g_PVRManager.StartUpdateThreads();
+  PVR_ERROR err = scanClient->StartChannelScan();
+  if (err == PVR_ERROR_NO_ERROR)
+    CApplicationMessenger::Get().SetPVRManagerState(true);           /*!< Restart complete PVR Manager to handle channel changes */
+  else
+    CGUIDialogOK::ShowAndGetInput(CVariant{19111}, CVariant{19193}); /*!< an error occured */
 
   CLog::Log(LOGNOTICE, "PVRManager - %s - channel scan finished after %li.%li seconds",
       __FUNCTION__, (XbmcThreads::SystemClockMillis()-perfCnt)/1000, (XbmcThreads::SystemClockMillis()-perfCnt)%1000);
