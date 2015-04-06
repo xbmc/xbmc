@@ -1515,9 +1515,10 @@ msgctxt "#354"
 msgid "Matrix trails"
 msgstr ""
 
+#. Label of a setting to configure the idle time until the screensaver kicks in
 #: system/settings/settings.xml
 msgctxt "#355"
-msgid "Screensaver time"
+msgid "Wait time"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6036,7 +6037,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13399"
-msgid "Ignore articles when sorting (e.g. \"the\")"
+msgid "Ignore articles when sorting"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11236,7 +11237,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21382"
-msgid "Show \"Add source\" buttons in file lists"
+msgid "Show \"Add source\" buttons"
 msgstr ""
 
 msgctxt "#21383"
@@ -14155,10 +14156,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr ""
 
-#. #.  Description of setting "Appearance -> File lists -> Ignore articles when sorting (e.g. "the")" with label #13399
+#. #.  Description of setting "Appearance -> File lists -> Ignore articles when sorting with label #13399
 #: system/settings/settings.xml
 msgctxt "#36124"
-msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgid "Ignore certain tokens (e.g. "the") during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
 msgstr ""
 
 #.  Description of setting "Appearance -> File lists -> Allow file renaming and deletion" with label #14071
@@ -14185,10 +14186,10 @@ msgctxt "#36128"
 msgid "Category containing all screensaver settings."
 msgstr ""
 
-#. Description of setting "Appearance -> Screensaver -> Screensaver time" with label #355
+#. Description of setting "Appearance -> Screensaver -> Wait time" with label #355
 #: system/settings/settings.xml
 msgctxt "#36129"
-msgid "Set the amount of idle time required before displaying the screensaver."
+msgid "Set the time to wait for any activity to occur before displaying the screensaver."
 msgstr ""
 
 #. Description of setting "Appearance -> Screensaver -> Screensaver mode" with label #356
