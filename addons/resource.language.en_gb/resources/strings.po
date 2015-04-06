@@ -1121,7 +1121,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#263"
-msgid "Allow control of Kodi via HTTP"
+msgid "Allow remote control via HTTP"
 msgstr ""
 
 msgctxt "#264"
@@ -2939,7 +2939,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#708"
-msgid "Use an HTTP proxy server to access the internet"
+msgid "Use proxy server"
 msgstr ""
 
 #empty strings from id 709 to 710
@@ -3782,7 +3782,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1260"
-msgid "Announce these services to other systems via Zeroconf"
+msgid "Announce services to other systems"
 msgstr ""
 
 #empty strings from id 1261 to 1267
@@ -10216,13 +10216,13 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20187"
-msgid "UPnP"
+msgid "UPnP/DLNA"
 msgstr ""
 
 #: xbmc/network/upnp/UPnPServer.cpp
 #: system/settings/settings.xml
 msgctxt "#20188"
-msgid "Announce library updates via UPnP"
+msgid "Announce library updates"
 msgstr ""
 
 msgctxt "#20189"
@@ -11139,7 +11139,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21360"
-msgid "Share video and music libraries through UPnP"
+msgid "Share my libraries"
 msgstr ""
 
 msgctxt "#21361"
@@ -15268,19 +15268,19 @@ msgctxt "#36321"
 msgid "The name to display for this device when using various network services."
 msgstr ""
 
-#. Description of settings category "Services -> UPnP" with label #20187
+#. Description of settings category "Services -> UPnP/DLNA" with label #20187
 #: system/settings/settings.xml
 msgctxt "#36322"
-msgid "Category containing settings for how the UPnP service is handled."
+msgid "Category containing settings for how the UPnP service is handled. UPnP is also called \"DLNA\" on most consumer products."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Share video and music libraries through UPnP" with label #21360
+#. Description of setting "Services -> UPnP -> Share my libraries" with label #21360
 #: system/settings/settings.xml
 msgctxt "#36323"
-msgid "Enable the UPnP server. This allows you to stream media to a UPnP client."
+msgid "Enables the UPnP server. This allows you to stream media in your libraries to a UPnP client."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Announce library updates via UPnP" with label #20188
+#. Description of setting "Services -> UPnP -> Announce library updates" with label #20188
 #: system/settings/settings.xml
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
@@ -15388,7 +15388,7 @@ msgctxt "#36341"
 msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
 msgstr ""
 
-#. Description of setting "Services -> Zeroconf -> Announce these services to other systems via Zeroconf"  with label #1260
+#. Description of setting "Services -> Zeroconf -> Announce services to other systems"  with label #1260
 #: system/settings/settings.xml
 msgctxt "#36342"
 msgid "Allows applications on the network to discover enabled services via Zeroconf."
@@ -15397,7 +15397,7 @@ msgstr ""
 #. Description of setting "Services -> AirPlay -> Enable AirPlay support" with label #1270
 #: system/settings/settings.xml
 msgctxt "#36343"
-msgid "If enabled, content from other AirPlay devices or applications can be received."
+msgid "If enabled, the content from other AirPlay devices or applications can be received."
 msgstr ""
 
 #. Description of setting "Services -> AirPlay -> Use password protection" with label #1272
@@ -15614,10 +15614,10 @@ msgctxt "#36379"
 msgid "Category containing settings for internet access."
 msgstr ""
 
-#. Description of setting "System -> Internet access -> Use an HTTP proxy server to access the internet" with label #708
+#. Description of setting "System -> Internet access -> Use proxy server" with label #708
 #: system/settings/settings.xml
 msgctxt "#36380"
-msgid "If your internet connection uses a proxy, configure it here."
+msgid "If your internet connection uses a proxy server, configure it here."
 msgstr ""
 
 #. Description of setting "System -> Internet access -> Proxy type" with label #1180
