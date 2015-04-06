@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <algorithm>
 
 #define IMX_VDI_MAX_WIDTH 968
 #define FRAME_ALIGN 16
@@ -1652,8 +1653,16 @@ void CIMXContext::CaptureDisplay(unsigned char *buffer, int iWidth, int iHeight)
   }
   unsigned char *display = m_fbVirtAddr + m_fbCurrentPage*m_fbPageSize;
 
-  if (m_fbVar.nonstd != _4CC('R', 'G', 'B', '4'))
+  if (m_fbVar.nonstd == _4CC('R', 'G', 'B', '4'))
+  {
     memcpy(buffer, display, iWidth * iHeight * 4);
+    // BGRA is needed RGBA we get
+    unsigned int size = iWidth * iHeight * 4;
+    for (unsigned int i = 0; i < size; i += 4)
+    {
+       std::swap(buffer[i], buffer[i + 2]);
+    }
+  }
   else //_4CC('U', 'Y', 'V', 'Y')))
   {
     int r,g,b,a;
