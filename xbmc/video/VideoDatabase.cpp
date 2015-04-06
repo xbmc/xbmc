@@ -7889,6 +7889,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
 
     std::string filesToTestForDelete;
+    VECSOURCES *videoSources = CMediaSourceSettings::Get().GetSources("video");
 
     int total = m_pDS->num_rows();
     int current = 0;
@@ -7908,8 +7909,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       if (URIUtils::IsInArchive(fullPath))
         fullPath = CURL(fullPath).GetHostName();
 
-      // remove optical, non-existing files
-      if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false))
+      // remove optical, non-existing files, files with no matching source
+      bool bIsSource;
+      if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false) ||
+          CUtil::GetMatchingSource(fullPath, *videoSources, bIsSource) < 0)
         filesToTestForDelete += m_pDS->fv("files.idFile").get_asString() + ",";
 
       if (handle == NULL && progress != NULL)
@@ -8225,6 +8228,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
                     parentPathIdField.c_str(),
                     table.c_str(), cleanableFileIDs.c_str());
 
+  VECSOURCES *videoSources = CMediaSourceSettings::Get().GetSources("video");
   // map of parent path ID to boolean pair (if not exists and user choice)
   std::map<int, std::pair<bool, bool> > sourcePathsDeleteDecisions;
   m_pDS2->query(sql.c_str());
@@ -8239,13 +8243,21 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
       SScanSettings scanSettings;
       std::string sourcePath;
       GetSourcePath(parentPath, sourcePath, scanSettings);
+
+      bool bIsSourceName;
+      bool sourceNotFound = (CUtil::GetMatchingSource(parentPath, *videoSources, bIsSourceName) < 0);
+
+      if (sourceNotFound && sourcePath.empty())
+        sourcePath = parentPath;
+
       int sourcePathID = GetPathId(sourcePath);
       std::map<int, std::pair<bool, bool> >::const_iterator sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
       if (sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
       {
-        bool sourcePathNotExists = !CDirectory::Exists(sourcePath, false);
+        bool sourcePathNotExists = (sourceNotFound || !CDirectory::Exists(sourcePath, false));
         // if the parent path exists, the file will be deleted without asking
-        // if the parent path doesn't exist, ask the user whether to remove all items it contained
+        // if the parent path doesn't exist or does not belong to a valid media source,
+        // ask the user whether to remove all items it contained
         if (sourcePathNotExists)
         {
           // in silent mode assume that the files are just temporarily missing
