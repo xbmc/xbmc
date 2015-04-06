@@ -296,6 +296,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldLastPlayed);
     fields.push_back(FieldRating);
     fields.push_back(FieldComment);
+    fields.push_back(FieldMoods);
   }
   else if (type == "albums")
   {
