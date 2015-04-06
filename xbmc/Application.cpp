@@ -2982,6 +2982,8 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // Switch to default options
     CMediaSettings::Get().GetCurrentVideoSettings() = CMediaSettings::Get().GetDefaultVideoSettings();
 #ifdef HAS_DS_PLAYER
+    CMediaSettings::Get().GetAtStartVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
+
     CMediaSettings::Get().GetCurrentMadvrSettings() = CMediaSettings::Get().GetDefaultMadvrSettings();
     CMediaSettings::Get().GetAtStartMadvrSettings() = CMediaSettings::Get().GetCurrentMadvrSettings();
 #endif
@@ -3605,6 +3607,8 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
   }
 
 #ifdef HAS_DS_PLAYER
+  CMediaSettings::Get().GetAtStartVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
+
   CDSPlayerDatabase dsdbs;
   if (dsdbs.Open())
   {

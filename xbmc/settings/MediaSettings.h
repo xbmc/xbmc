@@ -59,6 +59,9 @@ public:
   CVideoSettings& GetCurrentVideoSettings() { return m_currentVideoSettings; }
 
 #ifdef HAS_DS_PLAYER
+  const CVideoSettings& GetAtStartVideoSettings() const { return m_atstartVideoSettings; }
+  CVideoSettings& GetAtStartVideoSettings() { return m_atstartVideoSettings; }
+
   const CMadvrSettings& GetDefaultMadvrSettings() const { return m_defaultMadvrSettings; }
   CMadvrSettings& GetDefaultMadvrSettings() { return m_defaultMadvrSettings; }
   const CMadvrSettings& GetAtStartMadvrSettings() const { return m_atstartMadvrSettings; }
@@ -116,6 +119,7 @@ private:
   CVideoSettings m_currentVideoSettings;
 
 #ifdef HAS_DS_PLAYER
+  CVideoSettings m_atstartVideoSettings;
   CMadvrSettings m_defaultMadvrSettings;
   CMadvrSettings m_atstartMadvrSettings;
   CMadvrSettings m_currentMadvrSettings;
