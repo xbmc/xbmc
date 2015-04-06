@@ -56,8 +56,15 @@ set(APP_LIBDIR "${prefix}/lib")
 
 # generate the proper kodi-config.cmake file
 configure_file(${APP_ROOT}/project/cmake/kodi-config.cmake.in ${KODI_LIB_DIR}/kodi-config.cmake @ONLY)
+
 # copy cmake helpers to lib/kodi
-file(COPY ${APP_ROOT}/project/cmake/scripts/common/addon-helpers.cmake ${APP_ROOT}/project/cmake/scripts/common/addoptions.cmake DESTINATION ${KODI_LIB_DIR})
+file(COPY ${APP_ROOT}/project/cmake/scripts/common/addon-helpers.cmake
+          ${APP_ROOT}/project/cmake/scripts/common/addoptions.cmake
+     DESTINATION ${KODI_LIB_DIR})
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  file(COPY ${APP_ROOT}/project/cmake/scripts/linux/UseMultiArch.cmake DESTINATION ${KODI_LIB_DIR})
+endif()
 
 # generate xbmc-config.cmake for backwards compatibility to xbmc
 configure_file(${APP_ROOT}/project/cmake/xbmc-config.cmake.in ${XBMC_LIB_DIR}/xbmc-config.cmake @ONLY)
