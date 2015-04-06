@@ -70,11 +70,6 @@ public:
    */
   bool InstallFromZip(const std::string &path);
 
-  /*! \brief Install a set of addons from the official repository (if needed)
-   \param addonIDs a set of addon IDs to install
-   */
-  void InstallFromXBMCRepo(const std::set<std::string> &addonIDs);
-
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
    Each dependency must also satisfies CheckDependencies in turn.

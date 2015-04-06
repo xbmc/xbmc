@@ -280,16 +280,6 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   return false;
 }
 
-void CAddonInstaller::InstallFromXBMCRepo(const set<std::string> &addonIDs)
-{
-  // first check we have the our repositories up to date (and wait until we do)
-  UpdateRepos(false, true);
-
-  // now install the addons
-  for (set<std::string>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
-    Install(*i);
-}
-
 bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, CAddonDatabase *database /* = NULL */)
 {
   std::vector<std::string> preDeps;
