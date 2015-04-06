@@ -960,7 +960,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#227"
-msgid "Lookup audio CD track names from freedb.org"
+msgid "Load audio CD information from online service"
 msgstr ""
 
 msgctxt "#228"
@@ -2093,7 +2093,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#489"
-msgid "Play the next song automatically"
+msgid "Play next song automatically"
 msgstr ""
 
 #empty string with id 490
@@ -2715,7 +2715,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#638"
-msgid "ReplayGain volume adjustments"
+msgid "Volume adjustments"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -2730,12 +2730,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#641"
-msgid "PreAmp Level - ReplayGained files"
+msgid "Files with ReplayGain information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#642"
-msgid "PreAmp Level - Non ReplayGained files"
+msgid "Files without ReplayGain information"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -10239,7 +10239,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20192"
-msgid "Download additional information during updates"
+msgid "Fetch additional information during updates"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -10279,10 +10279,10 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20220"
-msgid "Override song tags with online information"
+msgid "Prefer online information"
 msgstr ""
 
-#. Description of setting "Music -> Library -> Override song tags with online information" with label #20220
+#. Description of setting "Music -> Library -> Prefer online information" with label #20220
 #: system/settings/settings.xml
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
@@ -14875,7 +14875,7 @@ msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Include artists who appear only on compilations" with label #13414
+#. Description of setting "Music -> Library -> Fetch additional information during updates" with label #20192
 #: system/settings/settings.xml
 msgctxt "#36256"
 msgid "Automatically fetch album and artist information from information providers when adding songs to the library."
@@ -14928,7 +14928,7 @@ msgctxt "#36264"
 msgid "Category containing settings for how music playback is handled."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> Play the next song automatically" with label #489
+#. Description of setting "Music -> Playback -> Play next song automatically" with label #489
 #: system/settings/settings.xml
 msgctxt "#36265"
 msgid "Automatically plays the next item in the current folder. For example, in Files View: After a track has been played, the next track in the same folder would automatically play."
@@ -14940,22 +14940,22 @@ msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> ReplayGain volume adjustments" with label #638
+#. Description of setting "Music -> Playback -> Volume adjustments" with label #638
 #: system/settings/settings.xml
 msgctxt "#36267"
 msgid "Read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> PreAmp Level - ReplayGained files" with label #641
+#. Description of setting "Music -> Playback -> Files with ReplayGain information" with label #641
 #: system/settings/settings.xml
 msgctxt "#36268"
-msgid "Default is 89dB per standard. Change with caution."
+msgid "Reference volume (PreAmp level) to use for files with encoded ReplayGain information. Default is 89dB as per standard. Change with caution."
 msgstr ""
 
 #. Description of setting "Music -> Playback -> PreAmp Level - Non ReplayGained files" with label #642
 #: system/settings/settings.xml
 msgctxt "#36269"
-msgid "Default is 89dB per standard. Change with caution."
+msgid "Reference volume (PreAmp level) to use for files without encoded ReplayGain information. Default is 89dB as per standard. Change with caution."
 msgstr ""
 
 #. Description of setting "Music -> Playback -> Avoid clipping on ReplayGained files" with label #643
@@ -15042,10 +15042,10 @@ msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> Lookup audio CD track names from freedb.org" with label #227
+#. Description of setting "Music -> Audio CDs -> Load audio CD information from online service" with label #227
 #: system/settings/settings.xml
 msgctxt "#36284"
-msgid "Read the information belonging to an audio CD from an internet database."
+msgid "Read the information belonging to an audio CD, like song title and artist, from the internet database freedb.org."
 msgstr ""
 
 #. Description of setting "Music -> Audio CDs -> Saved music folder" label #20000
