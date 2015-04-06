@@ -69,6 +69,8 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
   m_keyType = LOWER;
   m_currentLayout = 0;
   m_loadType = KEEP_IN_MEMORY;
+  m_isKeyboardNavigationMode = false;
+  m_previouslyFocusedButton = 0;
 }
 
 void CGUIDialogKeyboardGeneric::OnWindowLoaded()
@@ -82,6 +84,7 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   CGUIDialog::OnInitWindow();
 
   m_bIsConfirmed = false;
+  m_isKeyboardNavigationMode = false;
 
   // fill in the keyboard layouts
   m_currentLayout = 0;
@@ -126,16 +129,17 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
 bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
 {
   bool handled = true;
-  if (action.GetID() == ACTION_ENTER)
+  if (action.GetID() == ACTION_ENTER || (m_isKeyboardNavigationMode && action.GetID() == ACTION_SELECT_ITEM))
     OnOK();
   else if (action.GetID() == ACTION_SHIFT)
     OnShift();
   else if (action.GetID() == ACTION_SYMBOLS)
     OnSymbols();
   // don't handle move left/right and select in the edit control
-  else if (action.GetID() == ACTION_MOVE_LEFT ||
+  else if (!m_isKeyboardNavigationMode &&
+           (action.GetID() == ACTION_MOVE_LEFT ||
            action.GetID() == ACTION_MOVE_RIGHT ||
-           action.GetID() == ACTION_SELECT_ITEM)
+           action.GetID() == ACTION_SELECT_ITEM))
     handled = false;
   else
   {
@@ -144,6 +148,23 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
     CGUIControl *edit = GetControl(CTL_EDIT);
     if (edit)
       handled = edit->OnAction(action);
+    if (!handled && action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
+    {
+      BYTE b = action.GetID() & 0xFF;
+      if (b == XBMCVK_TAB)
+      {
+        // Toggle left/right key mode
+        m_isKeyboardNavigationMode = !m_isKeyboardNavigationMode;
+        if (m_isKeyboardNavigationMode)
+        {
+          m_previouslyFocusedButton = GetFocusedControlID();
+          SET_CONTROL_FOCUS(edit->GetID(), 0);
+        }
+        else
+          SET_CONTROL_FOCUS(m_previouslyFocusedButton, 0);
+        handled = true;
+      }
+    }
   }
 
   if (!handled) // unhandled by us - let's see if the baseclass wants it
