@@ -26,6 +26,10 @@
 pthread_mutex_t cmpxchg_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
+#if defined(TARGET_WINDOWS)
+#include <intrin.h>
+#endif
+
 ///////////////////////////////////////////////////////////////////////////
 // 32-bit atomic compare-and-swap
 // Returns previous value of *pAddr
@@ -72,21 +76,7 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
   return cmpxchg32(pAddr, expectedVal, swapVal);
 
 #elif defined(TARGET_WINDOWS)
-  long prev;
-  __asm
-  {
-    // Load parameters
-    mov eax, expectedVal ;
-    mov ebx, pAddr ;
-    mov ecx, swapVal ;
-
-    // Do Swap
-    lock cmpxchg dword ptr [ebx], ecx ;
-
-    // Store the return value
-    mov prev, eax;
-  }
-  return prev;
+  return _InterlockedCompareExchange(pAddr, swapVal, expectedVal);
 
 #else // Linux / OSX86 (GCC)
   long prev;
@@ -115,19 +105,7 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
   return cmpxchg64(pAddr, expectedVal, swapVal);
 
 #elif defined(TARGET_WINDOWS)
-  long long prev;
-  __asm
-  {
-    mov esi, pAddr ;
-    mov eax, dword ptr [expectedVal] ;
-    mov edx, dword ptr expectedVal[4] ;
-    mov ebx, dword ptr [swapVal] ;
-    mov ecx, dword ptr swapVal[4] ;
-    lock cmpxchg8b qword ptr [esi] ;
-    mov dword ptr [prev], eax ;
-    mov dword ptr prev[4], edx ;
-  }
-  return prev;
+  return _InterlockedCompareExchange64(pAddr, swapVal, expectedVal);
 
 #else // Linux / OSX86 (GCC)
   #if !defined (__x86_64)
@@ -192,15 +170,7 @@ long AtomicIncrement(volatile long* pAddr)
   return atomic_add(1, pAddr);
 
 #elif defined(TARGET_WINDOWS)
-  long val;
-  __asm
-  {
-    mov eax, pAddr ;
-    lock inc dword ptr [eax] ;
-    mov eax, [eax] ;
-    mov val, eax ;
-  }
-  return val;
+  return _InterlockedIncrement(pAddr);
 
 #elif defined(__x86_64__)
   long result;
@@ -267,15 +237,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return atomic_add(amount, pAddr);
 
 #elif defined(TARGET_WINDOWS)
-  __asm
-  {
-    mov eax, amount;
-    mov ebx, pAddr;
-    lock xadd dword ptr [ebx], eax;
-    mov ebx, [ebx];
-    mov amount, ebx;
-  }
-  return amount;
+  return _InterlockedExchangeAdd(pAddr, amount);
 
 #elif defined(__x86_64__)
   long result;
@@ -342,15 +304,7 @@ long AtomicDecrement(volatile long* pAddr)
   return atomic_sub(1, pAddr);
 
 #elif defined(TARGET_WINDOWS)
-  long val;
-  __asm
-  {
-    mov eax, pAddr ;
-    lock dec dword ptr [eax] ;
-    mov eax, [eax] ;
-    mov val, eax ;
-  }
-  return val;
+  return _InterlockedDecrement(pAddr);
 
 #elif defined(__x86_64__)
   long result;
@@ -419,15 +373,7 @@ long AtomicSubtract(volatile long* pAddr, long amount)
 
 #elif defined(TARGET_WINDOWS)
   amount *= -1;
-  __asm
-  {
-    mov eax, amount;
-    mov ebx, pAddr;
-    lock xadd dword ptr [ebx], eax;
-    mov ebx, [ebx];
-    mov amount, ebx;
-  }
-  return amount;
+  return _InterlockedExchangeAdd(pAddr, amount);
 
 #elif defined(__x86_64__)
   long result;
