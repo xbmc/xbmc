@@ -695,7 +695,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#170"
-msgid "Adjust display refresh rate to match video"
+msgid "Adjust display refresh rate"
 msgstr ""
 
 #: xbmc/playlists/SmartPlayList.cpp
@@ -1497,6 +1497,7 @@ msgctxt "#350"
 msgid "Programs"
 msgstr ""
 
+#: system/settings/settings.xml
 #: system/settings/darwin.xml
 msgctxt "#351"
 msgid "Off"
@@ -6195,7 +6196,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13433"
-msgid "Play the next video automatically"
+msgid "Play next video automatically"
 msgstr ""
 
 #. If autoplay next video is set true
@@ -10806,7 +10807,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20402"
-msgid "Download actor thumbnails when adding to library"
+msgid "Download actor thumbnails"
 msgstr ""
 
 msgctxt "#20403"
@@ -11047,9 +11048,10 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr ""
 
+#. Label of a setting to use a simplified (flattened) hierarchy
 #: system/settings/settings.xml
 msgctxt "#20456"
-msgid "Flatten library hierarchy"
+msgid "Flatten hierarchy"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
@@ -11386,7 +11388,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21416"
-msgid "Select the first unwatched TV show season/episode"
+msgid "Select first unwatched TV show season/episode"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12117,7 +12119,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimise black bars"
+msgid "Minimise black bars"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14126,13 +14128,13 @@ msgstr ""
 #.  Description of setting "Appearance -> International -> Preferred audio language" with label #285
 #: system/settings/settings.xml
 msgctxt "#36119"
-msgid "Select the default audio track when different language tracks are available."
+msgid "Defaults to the selected audio language if more than one language is available."
 msgstr ""
 
 #.  Description of setting "Video -> Subtitles -> Preferred subtitle language" with label #286
 #: system/settings/settings.xml
 msgctxt "#36120"
-msgid "Select the default subtitles when different languages are available."
+msgid "Defaults to the selected subtitle language if more than one language is available."
 msgstr ""
 
 #. Description of settings category "Appearance -> File lists" with label #14081
@@ -14264,10 +14266,10 @@ msgctxt "#36142"
 msgid "Choose which speed unit is used for displaying speeds in the user interface."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Download actor thumbnails when adding to library" with label #20402
+#. Description of setting "Videos -> Library -> Download actor thumbnails" with label #20402
 #: system/settings/settings.xml
 msgctxt "#36143"
-msgid "Get thumbnails for actors when scanning media."
+msgid "Get thumbnails for actors when adding media to the library."
 msgstr ""
 
 #. Description of setting "Videos -> Library -> Flatten TV show seasons" with label #20412
@@ -14320,7 +14322,7 @@ msgctxt "#36151"
 msgid "Category containing settings for how video playback is handled."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Play the next video automatically" with label #13433
+#. Description of setting "Videos -> Playback -> Play next video automatically" with label #13433
 #: system/settings/settings.xml
 msgctxt "#36152"
 msgid "Enable automatic playback of the next file in the list."
@@ -14384,7 +14386,7 @@ msgstr ""
 
 #empty string with id 36163
 
-#. Description of setting "Videos -> Playback -> Adjust display refresh rate to match video" with label #170
+#. Description of setting "Videos -> Playback -> Adjust display refresh rate" with label #170
 #: system/settings/settings.xml
 msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
@@ -14420,10 +14422,10 @@ msgctxt "#36169"
 msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allowed error in aspect ratio to minimise black bars" with label #22021
+#. Description of setting "Videos -> Playback -> Minimise black bars" with label #22021
 #: system/settings/settings.xml
 msgctxt "#36170"
-msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgid "Stretch the video up to the set percentage in order to minimise black bars."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Display 4:3 videos as" with label #173
@@ -14497,7 +14499,7 @@ msgctxt "#36182"
 msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
 msgstr ""
 
-#. Description of setting "Videos -> File lists -> Flatten library hierarchy" with label #20456
+#. Description of setting "Videos -> File lists -> Flatten hierarchy" with label #20456
 #: system/settings/settings.xml
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
@@ -14512,7 +14514,7 @@ msgstr ""
 #. Description of setting "Videos -> Subtitles -> Font to use for text subtitles" with label #14089
 #: system/settings/settings.xml
 msgctxt "#36185"
-msgid "Set the font type to be used for subtitles."
+msgid "Set the font type to be used for text based (usually downloaded) subtitles."
 msgstr ""
 
 #. Description of setting "Videos -> Subtitles -> - Size" with label #289
@@ -16487,7 +16489,7 @@ msgstr ""
 #. Description of setting #37040 Settings -> Video -> Playback
 #: system/settings/settings.xml
 msgctxt "#37041"
-msgid "Use audio streams that are flagged as "default" (and match the preferred language) regardless of the number of channels or the used codec."
+msgid "If enabled, audio streams that are flagged as "default" (and match the preferred language) are preferred over audio streams with higher quality (number of channels, codec, ...)."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Skip steps"
