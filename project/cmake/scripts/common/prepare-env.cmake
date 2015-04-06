@@ -12,6 +12,7 @@ if(EXISTS "${APP_ROOT}/version.txt")
       set(${name} "${value}")
     endif()
   endforeach()
+  string(TOLOWER ${APP_NAME} APP_NAME_LC)
 endif()
 
 # bail if we can't parse versions
@@ -49,8 +50,9 @@ if(NOT WIN32)
   endif()
 endif()
 
-# kodi-config.cmake.in (further down) expects a "prefix" variable
+# kodi-config.cmake.in (further down) expects "prefix" and "APP_LIBDIR" variables
 get_filename_component(prefix "${DEPENDS_PATH}" ABSOLUTE)
+set(APP_LIBDIR "${prefix}/lib")
 
 # generate the proper kodi-config.cmake file
 configure_file(${APP_ROOT}/project/cmake/kodi-config.cmake.in ${KODI_LIB_DIR}/kodi-config.cmake @ONLY)

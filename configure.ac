@@ -2589,6 +2589,18 @@ OUTPUT_FILES="$OUTPUT_FILES \
   xbmc/interfaces/python/Makefile \
   xbmc/interfaces/python/test/Makefile"
 
+# needed for kodi-config.cmake
+if echo "$libdir" | grep -q '${exec_prefix}'; then
+  if test "${prefix}" = "NONE" || test "${prefix}" = ""; then
+    prefix="/usr/local"
+  fi
+  if test "${exec_prefix}" = "NONE" || test "${exec_prefix}" = ""; then
+    exec_prefix=${prefix}
+  fi
+fi
+eval "APP_LIBDIR=${libdir}"
+AC_SUBST(APP_LIBDIR)
+
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
 AC_CONFIG_FILES([.dummy])
