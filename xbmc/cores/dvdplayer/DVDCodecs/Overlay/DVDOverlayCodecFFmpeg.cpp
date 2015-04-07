@@ -27,7 +27,6 @@
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
 #include "guilib/GraphicContext.h"
-#include "xbmc/rendering/RenderSystem.h"
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {
