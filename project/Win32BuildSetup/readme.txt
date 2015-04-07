@@ -1,4 +1,4 @@
-Prerequisites for building an Kodi for Windows installer:
+Prerequisites for building a Kodi for Windows installer:
 
 1) A working Visual C++ 2013 Express Kodi environment (See also http://kodi.wiki/view/HOW-TO:Compile_for_Windows)
 2) Nullsoft sciptable install system (http://nsis.sourceforge.net/Download)
