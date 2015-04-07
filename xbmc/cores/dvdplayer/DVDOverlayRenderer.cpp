@@ -71,7 +71,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
   height = pPicture->height;
   width = pPicture->width;
 
-  ASS_Image* img = pOverlay->m_libass->RenderImage(width, height, pts);
+  ASS_Image* img = pOverlay->m_libass->RenderImage(width, height, width, height, pts);
 
   int depth = OVERLAY::GetStereoscopicDepth();
 

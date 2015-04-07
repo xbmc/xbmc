@@ -154,7 +154,7 @@ bool CDVDSubtitlesLibass::CreateTrack(char* buf, size_t size)
   return true;
 }
 
-ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, double pts, int *changes)
+ASS_Image* CDVDSubtitlesLibass::RenderImage(int frameWidth, int frameHeight, int videoWidth, int videoHeight, double pts, int useMargin, double position, int *changes)
 {
   CSingleLock lock(m_section);
   if(!m_renderer || !m_track)
@@ -163,8 +163,13 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, dou
     return NULL;
   }
 
-  double storage_aspact = (double)imageWidth / imageHeight;
-  m_dll.ass_set_frame_size(m_renderer, imageWidth, imageHeight);
+  double storage_aspact = (double)frameWidth / frameHeight;
+  m_dll.ass_set_frame_size(m_renderer, frameWidth, frameHeight);
+  int topmargin = (frameHeight - videoHeight) / 2;
+  int leftmargin = (frameWidth - videoWidth) / 2;
+  m_dll.ass_set_margins(m_renderer, topmargin, topmargin, leftmargin, leftmargin);
+  m_dll.ass_set_use_margins(m_renderer, useMargin);
+  m_dll.ass_set_line_position(m_renderer, position);
   m_dll.ass_set_aspect_ratio(m_renderer, storage_aspact / g_graphicsContext.GetResInfo().fPixelRatio, storage_aspact);
   return m_dll.ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), changes);
 }
