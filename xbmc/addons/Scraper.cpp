@@ -1029,5 +1029,34 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl, const CScraperUrl &scurl,
   return fRet;
 }
 
+bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
+{
+  if (details.m_strIMDBNumber.empty())
+    return false;
+
+  CLog::Log(LOGDEBUG, "%s: Reading artwork for '%s' using %s scraper "
+    "(file: '%s', content: '%s', version: '%s')", __FUNCTION__, details.m_strIMDBNumber.c_str(),
+    Name().c_str(), Path().c_str(), ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
+
+  std::vector<std::string> vcsIn;
+  CScraperUrl scurl;
+  vcsIn.push_back(details.m_strIMDBNumber);
+  std::vector<std::string> vcsOut = RunNoThrow("GetArt", scurl, fcurl, &vcsIn);
+
+  bool fRet(false);
+  for (std::vector<std::string>::const_iterator it = vcsOut.begin(); it != vcsOut.end(); ++it)
+  {
+    CXBMCTinyXML doc;
+    doc.Parse(*it, TIXML_ENCODING_UTF8);
+    if (!doc.RootElement())
+    {
+      CLog::Log(LOGERROR, "%s: Unable to parse XML", __FUNCTION__);
+      return false;
+    }
+    fRet = details.Load(doc.RootElement(), it != vcsOut.begin());
+  }
+  return fRet;
+}
+
 }
 
