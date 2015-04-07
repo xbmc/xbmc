@@ -22,6 +22,7 @@
 #define LIRC_H
 
 #include <string>
+#include <atomic>
 
 #include "system.h"
 #include "threads/Thread.h"
@@ -59,16 +60,19 @@ private:
   FILE*   m_file;
   unsigned int m_holdTime;
   int32_t m_button;
-  char    m_buf[128];
-  bool    m_bInitialized;
+
+  std::atomic<bool> m_bInitialized;
+  std::atomic<bool> m_inReply;
+  std::atomic<int>  m_nrSending;
+
   bool    m_used;
   uint32_t    m_firstClickTime;
   std::string  m_deviceName;
   bool        CheckDevice();
   std::string  m_sendData;
-  bool        m_inReply;
-  int         m_nrSending;
   CEvent      m_event;
+  CCriticalSection m_CS;
+
 };
 
 #endif
