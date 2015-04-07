@@ -567,6 +567,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isresumable",      LISTITEM_IS_RESUMABLE},
                                   { "percentplayed",    LISTITEM_PERCENT_PLAYED},
                                   { "isfolder",         LISTITEM_IS_FOLDER },
+                                  { "iscollection",     LISTITEM_IS_COLLECTION },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
                                   { "playcount",        LISTITEM_PLAYCOUNT },
@@ -5439,6 +5440,11 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
           stereoMode = CStereoscopicsManager::Get().NormalizeStereoMode(pItem->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
       if (!stereoMode.empty() && stereoMode != "mono")
         return true;
+    }
+    else if (condition == LISTITEM_IS_COLLECTION)
+    {
+      if (pItem->HasVideoInfoTag())
+        return (pItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection);
     }
   }
 
