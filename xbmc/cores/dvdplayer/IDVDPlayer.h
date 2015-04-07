@@ -42,6 +42,7 @@ public:
   virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void SendMessage(CDVDMsg* pMsg, int priority = 0) = 0;
+  virtual void FlushMessages() = 0;
   virtual bool IsInited() const = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool IsStalled() const = 0;
