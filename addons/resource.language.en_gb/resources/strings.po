@@ -15830,7 +15830,7 @@ msgstr ""
 #. Description of setting "System -> Input Devices -> Allow start of Kodi with remote" with label #13602
 #: system/settings/settings.xml
 msgctxt "#36417"
-msgid "Always run an Kodi helper so that the remote can be used to start Kodi."
+msgid "Always run a Kodi helper so that the remote can be used to start Kodi."
 msgstr ""
 
 #. Description of setting "System -> Input Devices -> Sequence delay time" with label #13603
