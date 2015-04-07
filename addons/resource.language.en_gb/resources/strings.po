@@ -16532,3 +16532,27 @@ msgstr ""
 msgctxt "#38012"
 msgid "Show "All Items" entry in directory (for example All Albums or All Seasons)"
 msgstr ""
+
+#. Label of a setting to limit the number of fps used for updating the GUI while playing videos. This is useful for slow systems that have problems rendering GUI and video at the same time in full speed.
+#: system/settings/settings.xml
+msgctxt "#38013"
+msgid "Limit GUI updates during playback"
+msgstr ""
+
+#. Description for the setting Video -> Acceleration -> Limit GUI updates when playing video with label #38013
+#: system/settings/settings.xml
+msgctxt "#38014"
+msgid "Limits the speed (fps) used to update the GUI while playing videos. This can reduce CPU load and fix playback issues while the GUI is shown."
+msgstr ""
+
+#. Label of a settings value to indicate the "disabled" state of an otherwise limiting setting (like fps limit, bandwidth limit, ...)
+#: system/settings/settings.xml
+msgctxt "#38015"
+msgid "Unlimited"
+msgstr ""
+
+#. Used to format framerate values. %d will be replaced with the according number/integer, like "24 fps", "50 fps"
+#: system/settings/settings.xml
+msgctxt "#38016"
+msgid "%d fps"
+msgstr ""
