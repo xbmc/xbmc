@@ -5379,12 +5379,7 @@ msgctxt "#13120"
 msgid "VDPAU"
 msgstr ""
 
-#empty string with id 13121
-
-#: system/settings/settings.xml
-msgctxt "#13122"
-msgid "VDPAU Studio level colour conversion"
-msgstr ""
+#empty string with ids 13121, 13122
 
 msgctxt "#13123"
 msgid "Keep skin?"
@@ -14435,11 +14430,7 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> VDPAU Studio level colour conversion" with label #13122
-#: system/settings/settings.xml
-msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
-msgstr ""
+#empty string with id 36172
 
 #. Description of setting "Appearance -> International -> Short date format" with label #14109
 #: system/settings/settings.xml
