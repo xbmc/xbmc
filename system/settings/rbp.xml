@@ -15,6 +15,21 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="3">
+        <setting id="videoplayer.limitguiupdate" type="integer" label="38013" help="38014">
+          <level>2</level>
+          <default>10</default>
+          <constraints>
+            <minimum label="38015">0</minimum> <!-- Unlimited -->
+            <step>5</step>
+            <maximum>25</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>38016</formatlabel>
+          </control>
+          <control type="edit" format="integer" />
+        </setting>
+      </group>
     </category>
     <category id="myvideos">
       <group id="1">
