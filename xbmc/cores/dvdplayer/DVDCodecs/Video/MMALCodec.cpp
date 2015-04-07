@@ -832,7 +832,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 
        mmal_buffer_header_reset(buffer);
        buffer->cmd = 0;
-       if (m_startframe && pts == DVD_NOPTS_VALUE)
+       if (!m_startframe && pts == DVD_NOPTS_VALUE)
          pts = 0;
        buffer->pts = pts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : pts;
        buffer->dts = dts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : dts;
