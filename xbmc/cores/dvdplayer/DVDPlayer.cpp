@@ -2515,6 +2515,7 @@ void CDVDPlayer::HandleMessages()
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
+          m_playSpeed = DVD_PLAYSPEED_NORMAL;
 #ifdef HAS_VIDEO_PLAYBACK
           // when using fast channel switching some shortcuts are taken which 
           // means we'll have to update the view mode manually
@@ -2533,6 +2534,7 @@ void CDVDPlayer::HandleMessages()
         if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannelPtr> *>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
+          m_playSpeed = DVD_PLAYSPEED_NORMAL;
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
@@ -2569,6 +2571,7 @@ void CDVDPlayer::HandleMessages()
             {
               m_ChannelEntryTimeOut.SetInfinite();
               SAFE_DELETE(m_pDemuxer);
+              m_playSpeed = DVD_PLAYSPEED_NORMAL;
 
               g_infoManager.SetDisplayAfterSeek();
 #ifdef HAS_VIDEO_PLAYBACK
