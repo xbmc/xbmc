@@ -6842,7 +6842,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14083"
-msgid "Use a fullscreen window rather than true fullscreen"
+msgid "Use fullscreen window"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13914,7 +13914,7 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36026"
-msgid "Put devices in standby mode when putting the PC in standby"
+msgid "Devices to also put in standby mode"
 msgstr ""
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
@@ -15445,7 +15445,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Display Mode" with label #21373
 #: system/settings/settings.xml
 msgctxt "#36351"
-msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgid "Changes the way this application is displayed on the selected screen. Either in a window or fullscreen."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Resolution" with label #169
@@ -15460,10 +15460,10 @@ msgctxt "#36353"
 msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Use a fullscreen window rather than true fullscreen" with label #14083
+#. Description of setting "System -> Video output -> Use fullscreen window" with label #14083
 #: system/settings/settings.xml
 msgctxt "#36354"
-msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgid "If enabled, fullscreen mode will be applied by using a window instead of a real fullscreen mode. The main benefit is for multi-screen configurations, so that other applications can be used in parallel more easily. This uses more resources so playback may be less smooth."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Blank other displays" with label #13130
