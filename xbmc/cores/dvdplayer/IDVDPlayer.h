@@ -69,7 +69,7 @@ public:
   virtual bool IsSubtitleEnabled() = 0;
   virtual void EnableFullscreen(bool bEnable) = 0;
 #ifdef HAS_VIDEO_PLAYBACK
-  virtual void GetVideoRect(CRect& SrcRect, CRect& DestRect) const = 0;
+  virtual void GetVideoRect(CRect& SrcRect, CRect& DestRect, CRect& ViewRect) const = 0;
   virtual float GetAspectRatio() = 0;
 #endif
   virtual double GetDelay() = 0;

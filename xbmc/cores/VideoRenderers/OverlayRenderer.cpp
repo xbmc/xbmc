@@ -220,8 +220,7 @@ void CRenderer::Render(COverlay* o, float adjust_height)
 {
   CRect rs, rd, rv;
   RESOLUTION_INFO res;
-  g_renderManager.GetVideoRect(rs, rd);
-  rv  = g_graphicsContext.GetViewWindow();
+  g_renderManager.GetVideoRect(rs, rd, rv);
   res = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
 
   SRenderState state;
@@ -326,8 +325,8 @@ bool CRenderer::HasOverlay(int idx)
 
 COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
 {
-  CRect src, dst;
-  g_renderManager.GetVideoRect(src, dst);
+  CRect src, dst, target;
+  g_renderManager.GetVideoRect(src, dst, target);
 
   int width  = MathUtils::round_int(dst.Width());
   int height = MathUtils::round_int(dst.Height());
