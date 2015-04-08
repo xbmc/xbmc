@@ -2,16 +2,22 @@ INCLUDES=-I.
 
 SRCS = WinSystemEGL.cpp
 SRCS+= EGLNativeTypeAmlogic.cpp
+ifeq (@USE_ANDROID@,1)
 SRCS+= EGLNativeTypeAndroid.cpp
 SRCS+= EGLNativeTypeAmlAndroid.cpp
 SRCS+= EGLNativeTypeRKAndroid.cpp
+endif
+ifeq (@USE_MMAL@,1)
 SRCS+= EGLNativeTypeRaspberryPI.cpp
-SRCS+= EGLNativeTypeWayland.cpp
+endif
+ifeq (@USE_IMXVPU@,1)
 SRCS+= EGLNativeTypeIMX.cpp
+endif
 SRCS+= EGLWrapper.cpp
 
 # Wayland specific detail
 ifeq (@USE_WAYLAND@,1)
+SRCS+= EGLNativeTypeWayland.cpp
 SRCS+= wayland/Callback.cpp \
        wayland/Compositor.cpp \
        wayland/Display.cpp \

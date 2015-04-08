@@ -25,17 +25,14 @@
 #include "EGLNativeTypeRKAndroid.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
-#if defined(TARGET_ANDROID)
-  #include "android/activity/XBMCApp.h"
-  #include "android/jni/Build.h"
-#endif
+#include "android/activity/XBMCApp.h"
+#include "android/jni/Build.h"
 #include "utils/StringUtils.h"
 #include "utils/SysfsUtils.h"
 #include "utils/RegExp.h"
 
 bool CEGLNativeTypeRKAndroid::CheckCompatibility()
 {
-#if defined(TARGET_ANDROID)
   if (StringUtils::StartsWithNoCase(CJNIBuild::HARDWARE, "rk3"))  // Rockchip
   {
     if (SysfsUtils::HasRW("/sys/class/display/display0.HDMI/mode"))
@@ -43,7 +40,6 @@ bool CEGLNativeTypeRKAndroid::CheckCompatibility()
     else
       CLog::Log(LOGERROR, "RKEGL: no rw on /sys/class/display/display0.HDMI/mode");
   }
-#endif
   return false;
 }
 

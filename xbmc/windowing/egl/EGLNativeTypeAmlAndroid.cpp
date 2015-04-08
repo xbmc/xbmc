@@ -23,16 +23,13 @@
 #include "EGLNativeTypeAmlAndroid.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
-#if defined(TARGET_ANDROID)
-  #include "android/activity/XBMCApp.h"
-#endif
+#include "android/activity/XBMCApp.h"
 #include "utils/StringUtils.h"
 #include "utils/SysfsUtils.h"
 #include "utils/AMLUtils.h"
 
 bool CEGLNativeTypeAmlAndroid::CheckCompatibility()
 {
-#if defined(TARGET_ANDROID)
   if (aml_present())
   {
     if (SysfsUtils::HasRW("/sys/class/display/mode"))
@@ -40,7 +37,6 @@ bool CEGLNativeTypeAmlAndroid::CheckCompatibility()
     else
       CLog::Log(LOGERROR, "AMLEGL: no rw on /sys/class/display/mode");
   }
-#endif
   return false;
 }
 
