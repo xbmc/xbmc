@@ -3924,8 +3924,8 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_MOUSE_MOVE:
       case ACTION_MOUSE_LEFT_CLICK:
         {
-          CRect rs, rd;
-          m_dvdPlayerVideo->GetVideoRect(rs, rd);
+          CRect rs, rd, rv;
+          m_dvdPlayerVideo->GetVideoRect(rs, rd, rv);
           CPoint pt(action.GetAmount(), action.GetAmount(1));
           if (!rd.PtInRect(pt))
             return false; // out of bounds
@@ -4162,7 +4162,8 @@ void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
   }
   info.videoCodecName = retVal;
   info.videoAspectRatio = m_dvdPlayerVideo->GetAspectRatio();
-  m_dvdPlayerVideo->GetVideoRect(info.SrcRect, info.DestRect);
+  CRect viewRect;
+  m_dvdPlayerVideo->GetVideoRect(info.SrcRect, info.DestRect, viewRect);
   info.stereoMode = m_dvdPlayerVideo->GetStereoMode();
   if (info.stereoMode == "mono")
     info.stereoMode = "";

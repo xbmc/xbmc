@@ -80,7 +80,13 @@ public:
 
   void SetViewMode(int viewMode);
   RESOLUTION GetResolution() const;
-  void GetVideoRect(CRect &source, CRect &dest);
+
+  /*! \brief Get video rectangle and view window
+  \param source is original size of the video
+  \param dest is the target rendering area honoring aspect ratio of source
+  \param view is the entire target rendering area for the video (including black bars)
+  */
+  void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio() const;
 
   virtual bool AddVideoPicture(DVDVideoPicture* picture, int index) { return false; }
@@ -139,6 +145,7 @@ protected:
   CRect m_destRect;
   CRect m_oldDestRect; // destrect of the previous frame
   CRect m_sourceRect;
+  CRect m_viewRect;
 
   // rendering flags
   unsigned m_iFlags;

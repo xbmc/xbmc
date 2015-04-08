@@ -306,10 +306,11 @@ float CBaseRenderer::GetAspectRatio() const
   return m_sourceFrameRatio * width / height * m_sourceHeight / m_sourceWidth;
 }
 
-void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest)
+void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest, CRect &view)
 {
   source = m_sourceRect;
   dest = m_destRect;
+  view = m_viewRect;
 }
 
 inline void CBaseRenderer::ReorderDrawPoints()
@@ -567,7 +568,7 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
 
 void CBaseRenderer::ManageDisplay()
 {
-  const CRect view = g_graphicsContext.GetViewWindow();
+  m_viewRect = g_graphicsContext.GetViewWindow();
 
   m_sourceRect.x1 = 0.0f;
   m_sourceRect.y1 = 0.0f;
@@ -614,7 +615,7 @@ void CBaseRenderer::ManageDisplay()
       break;
   }
 
-  CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetZoomAmount(), CDisplaySettings::Get().GetVerticalShift());
+  CalcNormalDisplayRect(m_viewRect.x1, m_viewRect.y1, m_viewRect.Width(), m_viewRect.Height(), GetAspectRatio() * CDisplaySettings::Get().GetPixelRatio(), CDisplaySettings::Get().GetZoomAmount(), CDisplaySettings::Get().GetVerticalShift());
 }
 
 void CBaseRenderer::SetViewMode(int viewMode)

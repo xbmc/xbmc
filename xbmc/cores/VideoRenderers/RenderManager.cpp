@@ -129,11 +129,11 @@ CXBMCRenderManager::~CXBMCRenderManager()
   m_pRenderer = NULL;
 }
 
-void CXBMCRenderManager::GetVideoRect(CRect &source, CRect &dest)
+void CXBMCRenderManager::GetVideoRect(CRect &source, CRect &dest, CRect &view)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
-    m_pRenderer->GetVideoRect(source, dest);
+    m_pRenderer->GetVideoRect(source, dest, view);
 }
 
 float CXBMCRenderManager::GetAspectRatio()
