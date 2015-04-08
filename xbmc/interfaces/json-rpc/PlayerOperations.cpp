@@ -1033,10 +1033,10 @@ int CPlayerOperations::GetActivePlayers()
 
 PlayerType CPlayerOperations::GetPlayer(const CVariant &player)
 {
-  int activePlayers = GetActivePlayers();
-  int playerID;
+  int iPlayer = (int)player.asInteger();
+  PlayerType playerID;
 
-  switch ((int)player.asInteger())
+  switch (iPlayer)
   {
     case PLAYLIST_VIDEO:
       playerID = Video;
@@ -1051,38 +1051,35 @@ PlayerType CPlayerOperations::GetPlayer(const CVariant &player)
       break;
 
     default:
-      playerID = PlayerImplicit;
+      playerID = None;
       break;
   }
 
-  int choosenPlayer = playerID & activePlayers;
-
-  // Implicit order
-  if (choosenPlayer & Video)
-    return Video;
-  else if (choosenPlayer & Audio)
-    return Audio;
-  else if (choosenPlayer & Picture)
-    return Picture;
+  if (GetPlaylist(playerID) == iPlayer)
+    return playerID;
   else
     return None;
 }
 
 int CPlayerOperations::GetPlaylist(PlayerType player)
 {
+  int playlist = g_playlistPlayer.GetCurrentPlaylist();
+  if (playlist == PLAYLIST_NONE) // No active playlist, try guessing
+    playlist = g_application.m_pPlayer->GetPreferredPlaylist();
+
   switch (player)
   {
     case Video:
-      return PLAYLIST_VIDEO;
+      return playlist == PLAYLIST_NONE ? PLAYLIST_VIDEO : playlist;
 
     case Audio:
-      return PLAYLIST_MUSIC;
+      return playlist == PLAYLIST_NONE ? PLAYLIST_MUSIC : playlist;
 
     case Picture:
       return PLAYLIST_PICTURE;
 
     default:
-      return PLAYLIST_NONE;
+      return playlist;
   }
 }
 
@@ -1292,7 +1289,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
     switch (player)
     {
       case Video:
-      case Audio:
+      case Audio: /* Return the position of current item if there is an active playlist */
         if (!IsPVRChannel() && g_playlistPlayer.GetCurrentPlaylist() == playlist)
           result = g_playlistPlayer.GetCurrentSong();
         else
