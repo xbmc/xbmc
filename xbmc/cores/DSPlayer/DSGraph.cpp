@@ -595,6 +595,10 @@ void CDSGraph::Play(bool force/* = false*/)
     m_pMediaControl->Run();
 
   UpdateState();
+
+  //with madVR force the state of DSPLAYER_PLAYNG after playstart
+  if (CGraphFilters::Get()->UsingMadVr() && force)
+    CDSPlayer::PlayerState = DSPLAYER_PLAYING;
 }
 
 void CDSGraph::Pause()
