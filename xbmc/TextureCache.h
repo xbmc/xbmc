@@ -92,7 +92,7 @@ public:
    \return cached url of this image
    \sa CTextureCacheJob::CacheTexture
    */
-  std::string CacheImage(const std::string &url, CBaseTexture **texture = NULL, CTextureDetails *details = NULL);
+  std::string CacheImage(const std::string &image, CBaseTexture **texture = NULL, CTextureDetails *details = NULL);
 
   /*! \brief Cache an image to image cache if not already cached, returning the image details.
    \param image url of the image to cache.

@@ -57,27 +57,33 @@ bool CImageLoader::DoWork()
   else
     loadPath = texturePath;
 
-  if (m_use_cache && loadPath.empty())
-  {
-    // not in our texture cache, so try and load directly and then cache the result
-    loadPath = CTextureCache::Get().CacheImage(texturePath, &m_texture);
-    if (m_texture)
-      return true; // we're done
-  }
-  if (!m_use_cache || !loadPath.empty())
+  if (!loadPath.empty())
   {
     // direct route - load the image
     unsigned int start = XbmcThreads::SystemClockMillis();
     m_texture = CBaseTexture::LoadFromFile(loadPath, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), CSettings::Get().GetBool("pictures.useexifrotation"));
-    if (!m_texture)
-      return false;
+
     if (XbmcThreads::SystemClockMillis() - start > 100)
       CLog::Log(LOGDEBUG, "%s - took %u ms to load %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - start, loadPath.c_str());
 
-    if (needsChecking)
-      CTextureCache::Get().BackgroundCacheImage(texturePath);
+    if (m_texture)
+    {
+      if (needsChecking)
+        CTextureCache::Get().BackgroundCacheImage(texturePath);
+
+      return true;
+    }
+
+    // Fallthrough on failure:
+    CLog::Log(LOGERROR, "%s - Direct texture file loading failed for %s", __FUNCTION__, loadPath.c_str());
   }
-  return true;
+
+  if (!m_use_cache)
+    return false; // We're done
+
+  // not in our texture cache or it failed to load from it, so try and load directly and then cache the result
+  CTextureCache::Get().CacheImage(texturePath, &m_texture);
+  return (m_texture != NULL);
 }
 
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string &path):
@@ -241,6 +247,3 @@ void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJ
     }
   }
 }
-
-
-
