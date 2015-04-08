@@ -910,6 +910,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32File.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBFile.h" />
+    <ClInclude Include="..\..\xbmc\guiinfo\GUIInfoLabels.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />

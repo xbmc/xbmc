@@ -43,6 +43,7 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "windowing/WindowingFactory.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 
 struct StereoModeMap

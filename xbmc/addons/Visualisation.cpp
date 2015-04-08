@@ -20,6 +20,7 @@
 #include "system.h"
 #include "Visualisation.h"
 #include "GUIInfoManager.h"
+#include "guiinfo/GUIInfoLabels.h"
 #include "Application.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/WindowIDs.h"

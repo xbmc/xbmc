@@ -29,6 +29,7 @@
 #endif
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 #define CONTROL_BT_STORAGE  94
 #define CONTROL_BT_DEFAULT  95
@@ -56,8 +57,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION).c_str() +
-                            " (Compiled: " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE).c_str() +")");
+      SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + CSysInfo::GetVersion() +
+                            " (Compiled: " + CSysInfo::GetBuildDate() +")");
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR,
                                   PVR::CPVRManager::Get().IsStarted());
       return true;

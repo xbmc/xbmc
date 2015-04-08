@@ -63,6 +63,7 @@
 #include "playlists/SmartPlayList.h"
 #include "utils/GroupUtils.h"
 #include "Application.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 using namespace std;
 using namespace dbiplus;

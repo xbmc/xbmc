@@ -108,6 +108,11 @@ public:
   static std::string GetOsVersion(void);
   static std::string GetOsPrettyNameWithVersion(void);
   static std::string GetUserAgent();
+  static std::string GetDeviceName();
+  static std::string GetVersion();
+  static std::string GetVersionShort();
+  static std::string GetBuildDate();
+
   bool HasInternet();
   bool IsAppleTV2();
   bool HasVideoToolBoxDecoder();

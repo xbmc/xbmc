@@ -492,7 +492,7 @@ bool CApplication::Create()
   CProfilesManager::Get().Load();
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-  CLog::Log(LOGNOTICE, "Starting %s (%s). Platform: %s %s %d-bit", g_infoManager.GetAppName().c_str(), g_infoManager.GetVersion().c_str(),
+  CLog::Log(LOGNOTICE, "Starting %s (%s). Platform: %s %s %d-bit", CSysInfo::GetAppName().c_str(), CSysInfo::GetVersion().c_str(),
             g_sysinfo.GetBuildTargetPlatformName().c_str(), g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness());
 
   std::string buildType;
@@ -511,8 +511,8 @@ bool CApplication::Create()
 //#elif defined(some_ID) // uncomment for special version/fork
 //  specialVersion = " (version for XXXX)";
 #endif
-  CLog::Log(LOGNOTICE, "Using %s %s x%d build%s", buildType.c_str(), g_infoManager.GetAppName().c_str(), g_sysinfo.GetXbmcBitness(), specialVersion.c_str());
-  CLog::Log(LOGNOTICE, "%s compiled " __DATE__ " by %s for %s %s %d-bit %s (%s)", g_infoManager.GetAppName().c_str(), g_sysinfo.GetUsedCompilerNameAndVer().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(),
+  CLog::Log(LOGNOTICE, "Using %s %s x%d build%s", buildType.c_str(), CSysInfo::GetAppName().c_str(), g_sysinfo.GetXbmcBitness(), specialVersion.c_str());
+  CLog::Log(LOGNOTICE, "%s compiled " __DATE__ " by %s for %s %s %d-bit %s (%s)", CSysInfo::GetAppName().c_str(), g_sysinfo.GetUsedCompilerNameAndVer().c_str(), g_sysinfo.GetBuildTargetPlatformName().c_str(),
             g_sysinfo.GetBuildTargetCpuFamily().c_str(), g_sysinfo.GetXbmcBitness(), g_sysinfo.GetBuildTargetPlatformVersionDecoded().c_str(),
             g_sysinfo.GetBuildTargetPlatformVersion().c_str());
 

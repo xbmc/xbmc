@@ -21,7 +21,6 @@
 #include "NetworkServices.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "GUIInfoManager.h"
 #ifdef TARGET_LINUX
 #include "Util.h"
 #endif
@@ -82,6 +81,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/RssManager.h"
+#include "utils/SystemInfo.h"
 
 using namespace std;
 #ifdef HAS_JSONRPC
@@ -499,10 +499,10 @@ bool CNetworkServices::StartWebserver()
   std::vector<std::pair<std::string, std::string> > txt;
   // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
-  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", CSysInfo::GetDeviceName(), webPort, txt);
 #endif // HAS_WEB_INTERFACE
 #ifdef HAS_JSONRPC
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-h._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-h._tcp", CSysInfo::GetDeviceName(), webPort, txt);
 #endif // HAS_JSONRPC
 #endif // HAS_ZEROCONF
 
@@ -583,7 +583,7 @@ bool CNetworkServices::StartAirPlayServer()
     txt.push_back(make_pair("features", "0x77"));
   }
 
-  CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_airPlayPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_airPlayPort, txt);
 #endif // HAS_ZEROCONF
 
   return true;
@@ -672,7 +672,7 @@ bool CNetworkServices::StartJSONRPCServer()
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_jsonTcpPort, txt);
 #endif // HAS_ZEROCONF
 
   return true;
