@@ -171,7 +171,12 @@ public:
   virtual void SetSubtitle(int iStream){};
   virtual bool GetSubtitleVisible(){ return false;};
   virtual void SetSubtitleVisible(bool bVisible){};
-  virtual int  AddSubtitle(const std::string& strSubPath) {return -1;};
+
+  /** \brief Adds the subtitle(s) provided by the given file to the available player streams
+  *          and actives the first of the added stream(s). E.g., vob subs can contain multiple streams.
+  *   \param[in] strSubPath The full path of the subtitle file.
+  */
+  virtual void  AddSubtitle(const std::string& strSubPath) {};
 
   virtual int  GetAudioStreamCount()  { return 0; }
   virtual int  GetAudioStream()       { return -1; }

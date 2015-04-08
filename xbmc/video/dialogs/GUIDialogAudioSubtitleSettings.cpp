@@ -213,14 +213,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
           strPath = URIUtils::ReplaceExtension(strPath, ".idx");
       }
       
-      int id = g_application.m_pPlayer->AddSubtitle(strPath);
-      if (id >= 0)
-      {
-        m_subtitleStream = id;
-        g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
-        g_application.m_pPlayer->SetSubtitleVisible(true);
-      }
-      CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleCached = true;
+      g_application.m_pPlayer->AddSubtitle(strPath);
       Close();
     }
   }

@@ -255,7 +255,7 @@ public:
   virtual void SetSubtitle(int iStream);
   virtual bool GetSubtitleVisible();
   virtual void SetSubtitleVisible(bool bVisible);
-  virtual int AddSubtitle(const std::string& strSubPath);
+  virtual void AddSubtitle(const std::string& strSubPath);
 
   virtual int GetAudioStreamCount();
   virtual int GetAudioStream();
