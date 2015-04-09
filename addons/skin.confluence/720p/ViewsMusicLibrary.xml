@@ -71,9 +71,9 @@
 					</control>
 					<control type="image">
 						<left>580</left>
-						<top>5</top>
+						<top>0</top>
 						<width>200</width>
-						<height>31</height>
+						<height>41</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
 						<visible>Control.HasFocus(506) + !IsEmpty(ListItem.Label2)</visible>
 					</control>
@@ -559,9 +559,9 @@
 					</control>
 					<control type="image">
 						<left>560</left>
-						<top>5</top>
+						<top>0</top>
 						<width>200</width>
-						<height>31</height>
+						<height>41</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
 						<visible>Control.HasFocus(511) + !IsEmpty(ListItem.Label2)</visible>
 					</control>
@@ -983,9 +983,9 @@
 					</control>
 					<control type="image">
 						<left>580</left>
-						<top>5</top>
+						<top>0</top>
 						<width>200</width>
-						<height>31</height>
+						<height>41</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
 						<visible>Control.HasFocus(513) + !IsEmpty(ListItem.Label2)</visible>
 					</control>
