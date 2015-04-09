@@ -176,7 +176,7 @@
 					</control>
 					<control type="image">
 						<left>340</left>
-						<top>2</top>
+						<top>5</top>
 						<width>200</width>
 						<height>31</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
@@ -350,7 +350,7 @@
 					</control>
 					<control type="image">
 						<left>340</left>
-						<top>2</top>
+						<top>5</top>
 						<width>200</width>
 						<height>31</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
