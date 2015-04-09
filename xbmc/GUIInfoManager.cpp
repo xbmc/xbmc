@@ -5385,6 +5385,13 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag())
       {
+        CEpgInfoTagPtr epgTag = pItem->GetEPGInfoTag();
+
+        // Check if the tag has a currently active recording associated
+        if (epgTag->HasRecording() && epgTag->IsActive())
+          return true;
+
+        // Search all timers for something that matches the tag
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
         if (timer && timer->HasPVRTimerInfoTag())
           return timer->GetPVRTimerInfoTag()->IsRecording();
