@@ -124,19 +124,19 @@
 				<ondown>20</ondown>
 				<pagecontrol>30</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="35" width="540">
+				<itemlayout height="40" width="540">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>540</width>
-						<height>36</height>
+						<height>41</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
 						<left>0</left>
 						<top>0</top>
 						<width>500</width>
-						<height>36</height>
+						<height>40</height>
 						<font>font13</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
@@ -146,9 +146,9 @@
 					</control>
 					<control type="label">
 						<left>330</left>
-						<top>5</top>
+						<top>0</top>
 						<width>200</width>
-						<height>24</height>
+						<height>40</height>
 						<font>font12</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
@@ -157,12 +157,12 @@
 						<info>ListItem.Label2</info>
 					</control>
 				</itemlayout>
-				<focusedlayout height="35" width="540">
+				<focusedlayout height="40" width="540">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>540</width>
-						<height>36</height>
+						<height>41</height>
 						<visible>!Control.HasFocus(20)</visible>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
 					</control>
@@ -170,7 +170,7 @@
 						<left>0</left>
 						<top>0</top>
 						<width>540</width>
-						<height>36</height>
+						<height>41</height>
 						<visible>Control.HasFocus(20)</visible>
 						<texture border="0,2,0,2">MenuItemFO.png</texture>
 					</control>
@@ -186,7 +186,7 @@
 						<left>0</left>
 						<top>0</top>
 						<width>500</width>
-						<height>36</height>
+						<height>40</height>
 						<font>font13</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
@@ -196,9 +196,9 @@
 					</control>
 					<control type="label">
 						<left>330</left>
-						<top>5</top>
+						<top>0</top>
 						<width>200</width>
-						<height>24</height>
+						<height>40</height>
 						<font>font12</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
@@ -298,19 +298,19 @@
 				<ondown>21</ondown>
 				<pagecontrol>31</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="35">
+				<itemlayout height="40">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>540</width>
-						<height>36</height>
+						<height>41</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
 						<left>0</left>
 						<top>0</top>
 						<width>500</width>
-						<height>36</height>
+						<height>40</height>
 						<font>font13</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
@@ -320,9 +320,9 @@
 					</control>
 					<control type="label">
 						<left>330</left>
-						<top>5</top>
+						<top>0</top>
 						<width>200</width>
-						<height>24</height>
+						<height>40</height>
 						<font>font12</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
@@ -331,12 +331,12 @@
 						<info>ListItem.Label2</info>
 					</control>
 				</itemlayout>
-				<focusedlayout height="35">
+				<focusedlayout height="40">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
 						<width>540</width>
-						<height>36</height>
+						<height>41</height>
 						<visible>!Control.HasFocus(21)</visible>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
 					</control>
@@ -344,7 +344,7 @@
 						<left>0</left>
 						<top>0</top>
 						<width>540</width>
-						<height>36</height>
+						<height>41</height>
 						<visible>Control.HasFocus(21)</visible>
 						<texture border="0,2,0,2">MenuItemFO.png</texture>
 					</control>
@@ -360,7 +360,7 @@
 						<left>0</left>
 						<top>0</top>
 						<width>500</width>
-						<height>36</height>
+						<height>40</height>
 						<font>font13</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
@@ -370,9 +370,9 @@
 					</control>
 					<control type="label">
 						<left>330</left>
-						<top>5</top>
+						<top>0</top>
 						<width>200</width>
-						<height>24</height>
+						<height>40</height>
 						<font>font12</font>
 						<aligny>center</aligny>
 						<selectedcolor>selected</selectedcolor>
