@@ -2168,7 +2168,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="services.upnpcontroller" type="boolean" label="21361" help="36326">
+        <setting id="services.upnpcontroller" type="boolean" parent="services.upnpserver" label="21361" help="36326">
           <level>1</level>
           <default>false</default>
           <dependencies>

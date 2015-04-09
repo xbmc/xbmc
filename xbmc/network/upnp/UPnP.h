@@ -58,6 +58,11 @@ public:
     void StopClient();
     bool IsClientStarted() { return (m_MediaBrowser != NULL); }
 
+    // controller
+    void StartController();
+    void StopController();
+    bool IsControllerStarted() { return (m_MediaController != NULL); }
+
     // renderer
     bool StartRenderer();
     void StopRenderer();
@@ -79,6 +84,9 @@ public:
     static void RegisterUserdata(void* ptr);
     static void UnregisterUserdata(void* ptr);
 private:
+    void CreateControlPoint();
+    void DestroyControlPoint();
+
     // methods
     CUPnPRenderer* CreateRenderer(int port = 0);
     CUPnPServer*   CreateServer(int port = 0);

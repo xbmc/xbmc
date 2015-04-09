@@ -76,6 +76,9 @@ public:
   bool StartUPnPClient();
   bool IsUPnPClientRunning();
   bool StopUPnPClient();
+  bool StartUPnPController();
+  bool IsUPnPControllerRunning();
+  bool StopUPnPController();
   bool StartUPnPRenderer();
   bool IsUPnPRendererRunning();
   bool StopUPnPRenderer();

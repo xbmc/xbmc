@@ -448,6 +448,7 @@ CUPnP::~CUPnP()
 {
     m_UPnP->Stop();
     StopClient();
+    StopController();
     StopServer();
 
     delete m_UPnP;
@@ -492,7 +493,7 @@ CUPnP::ReleaseInstance(bool bWait)
 }
 
 /*----------------------------------------------------------------------
-|   CUPnP::StartServer
+|   CUPnP::GetServer
 +---------------------------------------------------------------------*/
 CUPnPServer* CUPnP::GetServer()
 {
@@ -530,27 +531,47 @@ CUPnP::SaveFileState(const CFileItem& item, const CBookmark& bookmark, const boo
 }
 
 /*----------------------------------------------------------------------
-|   CUPnP::StartClient
+|   CUPnP::CreateControlPoint
 +---------------------------------------------------------------------*/
 void
-CUPnP::StartClient()
+CUPnP::CreateControlPoint()
 {
-    if (!m_CtrlPointHolder->m_CtrlPoint.IsNull()) return;
+    if (!m_CtrlPointHolder->m_CtrlPoint.IsNull())
+        return;
 
     // create controlpoint
     m_CtrlPointHolder->m_CtrlPoint = new PLT_CtrlPoint();
 
     // start it
     m_UPnP->AddCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
+}
+
+/*----------------------------------------------------------------------
+|   CUPnP::DestroyControlPoint
++---------------------------------------------------------------------*/
+void
+CUPnP::DestroyControlPoint()
+{
+    if (m_CtrlPointHolder->m_CtrlPoint.IsNull())
+        return;
+
+    m_UPnP->RemoveCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
+    m_CtrlPointHolder->m_CtrlPoint = NULL;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnP::StartClient
++---------------------------------------------------------------------*/
+void
+CUPnP::StartClient()
+{
+    if (m_MediaBrowser != NULL)
+        return;
+
+    CreateControlPoint();
 
     // start browser
     m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
-
-    // start controller
-    if (CSettings::Get().GetBool("services.upnpcontroller") &&
-        CSettings::Get().GetBool("services.upnpserver")) {
-        m_MediaController = new CMediaController(m_CtrlPointHolder->m_CtrlPoint);
-    }
 }
 
 /*----------------------------------------------------------------------
@@ -559,15 +580,44 @@ CUPnP::StartClient()
 void
 CUPnP::StopClient()
 {
-    if (m_CtrlPointHolder->m_CtrlPoint.IsNull()) return;
-
-    m_UPnP->RemoveCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
-    m_CtrlPointHolder->m_CtrlPoint = NULL;
+    if (m_MediaBrowser == NULL)
+        return;
 
     delete m_MediaBrowser;
     m_MediaBrowser = NULL;
-    delete m_MediaController;
-    m_MediaController = NULL;
+
+    if (!IsControllerStarted())
+        DestroyControlPoint();
+}
+
+/*----------------------------------------------------------------------
+|   CUPnP::StartController
++---------------------------------------------------------------------*/
+void
+CUPnP::StartController()
+{
+    if (m_MediaController != NULL)
+        return;
+
+    CreateControlPoint();
+
+    m_MediaController = new CMediaController(m_CtrlPointHolder->m_CtrlPoint);
+}
+
+/*----------------------------------------------------------------------
+|   CUPnP::StopController
++---------------------------------------------------------------------*/
+void
+CUPnP::StopController()
+{
+  if (m_MediaController == NULL)
+      return;
+
+  delete m_MediaController;
+  m_MediaController = NULL;
+
+  if (!IsClientStarted())
+      DestroyControlPoint();
 }
 
 /*----------------------------------------------------------------------
