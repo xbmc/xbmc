@@ -90,6 +90,7 @@ public:
   ~OMXPlayerVideo();
   bool OpenStream(CDVDStreamInfo &hints);
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
+  void FlushMessages()                              { m_messageQueue.Flush(); }
   bool AcceptsData() const                          { return !m_messageQueue.IsFull(); }
   bool HasData() const                              { return m_messageQueue.GetDataSize() > 0; }
   bool IsInited() const                             { return m_messageQueue.IsInited(); }

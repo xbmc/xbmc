@@ -657,73 +657,95 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   if (threshold2 < duration)
     threshold2 = duration;
 
-  m_errors.Add(error);
-
-  if (fabs(error) > threshold1)
+  // as long as we are in sync mode, don't calculate the average
+  // error because drop/dupe changes the value
+  if (m_syncclock && error > threshold1)
   {
-    m_syncclock = true;
     m_errors.Flush(500);
     m_integral = 0.0;
+    m_resampleratio = 0.0;
     return;
   }
-  else if (m_syncclock && fabs(error) < threshold2)
-  {
-    m_syncclock = false;
-    // we are about to get stable, increase interval
-    m_errors.Flush(1000);
-    m_integral = 0.0;
-  }
+
+  // inertia of resampling
+  if (m_synctype == SYNC_RESAMPLE)
+    threshold1 *= 2;
+
+  m_errors.Add(error);
 
   // check if measured error for 2 seconds
   // when moving from big erros and we are still above threshold2, calculate errors every
   // 500ms in order to get first resample ratio early. If we don't adjust rr early, error
   // may get above threshold1 again. Too small values for interval result in worse average errors
-  if (m_errors.Get(m_error, m_syncclock ? 500 : 2000))
+
+  if (!m_errors.Get(m_error, m_syncclock ? 500 : 2000))
+    return;
+
+  if (fabs(m_error) > threshold1)
   {
-    if (m_synctype == SYNC_DISCON)
-    {
-      double limit, error;
-      if (g_VideoReferenceClock.GetRefreshRate(&limit) > 0)
-      {
-        //when the videoreferenceclock is running, the discontinuity limit is one vblank period
-        limit *= DVD_TIME_BASE;
+    m_syncclock = true;
+    m_errors.Flush(500);
+    m_integral = 0.0;
+    m_resampleratio = 0.0;
+    CLog::Log(LOGDEBUG,"CDVDPlayerAudio::HandleSyncError - average error %f above threshold of %f",
+              m_error, threshold1);
+    return;
+  }
+  else if (m_syncclock && fabs(m_error) < threshold2)
+  {
+    m_syncclock = false;
+    // we are about to get stable, increase interval
+    m_errors.Flush(1000);
+    m_integral = 0.0;
+    CLog::Log(LOGDEBUG,"CDVDPlayerAudio::HandleSyncError - average error %f below threshold of %f",
+              m_error, threshold2);
+  }
 
-        //make error a multiple of limit, rounded towards zero,
-        //so it won't interfere with the sync methods in CXBMCRenderManager::WaitPresentTime
-        if (m_error > 0.0)
-          error = limit * floor(m_error / limit);
-        else
-          error = limit * ceil(m_error / limit);
-      }
+  if (m_synctype == SYNC_DISCON)
+  {
+    double limit, error;
+    if (g_VideoReferenceClock.GetRefreshRate(&limit) > 0)
+    {
+      //when the videoreferenceclock is running, the discontinuity limit is one vblank period
+      limit *= DVD_TIME_BASE;
+
+      //make error a multiple of limit, rounded towards zero,
+      //so it won't interfere with the sync methods in CXBMCRenderManager::WaitPresentTime
+      if (m_error > 0.0)
+        error = limit * floor(m_error / limit);
       else
-      {
-        limit = DVD_MSEC_TO_TIME(10);
-        error = m_error;
-      }
-
-      m_pClock->Update(clock+error, absolute, limit - 0.001, "CDVDPlayerAudio::HandleSyncError2");
+        error = limit * ceil(m_error / limit);
     }
-    else if (m_synctype == SYNC_RESAMPLE)
+    else
     {
-      //reset the integral on big errors, failsafe
-      if (fabs(m_error) > DVD_TIME_BASE)
-        m_integral = 0;
-      else if (fabs(m_error) > DVD_MSEC_TO_TIME(5))
-        m_integral += m_error / DVD_TIME_BASE / INTEGRAL;
-
-      double proportional = 0.0;
-
-      //on big errors use more proportional
-      if (fabs(m_error / DVD_TIME_BASE) > 0.0)
-      {
-        double proportionaldiv = PROPORTIONAL * (PROPREF / fabs(m_error / DVD_TIME_BASE));
-        if (proportionaldiv < PROPDIVMIN) proportionaldiv = PROPDIVMIN;
-        else if (proportionaldiv > PROPDIVMAX) proportionaldiv = PROPDIVMAX;
-
-        proportional = m_error / DVD_TIME_BASE / proportionaldiv;
-      }
-      m_resampleratio = 1.0 / m_pClock->GetClockSpeed() + proportional + m_integral;
+      limit = DVD_MSEC_TO_TIME(10);
+      error = m_error;
     }
+
+    m_pClock->Update(clock+error, absolute, limit - 0.001, "CDVDPlayerAudio::HandleSyncError2");
+  }
+  else if (m_synctype == SYNC_RESAMPLE)
+  {
+    //reset the integral on big errors, failsafe
+    if (fabs(m_error) > DVD_TIME_BASE)
+      m_integral = 0;
+    else if (fabs(m_error) > DVD_MSEC_TO_TIME(5))
+      m_integral += m_error / DVD_TIME_BASE / INTEGRAL;
+
+    double proportional = 0.0;
+
+    //on big errors use more proportional
+    if (fabs(m_error / DVD_TIME_BASE) > 0.0)
+    {
+      double proportionaldiv = PROPORTIONAL * (PROPREF / fabs(m_error / DVD_TIME_BASE));
+      if (proportionaldiv < PROPDIVMIN)
+        proportionaldiv = PROPDIVMIN;
+      else if (proportionaldiv > PROPDIVMAX)
+        proportionaldiv = PROPDIVMAX;
+
+      proportional = m_error / DVD_TIME_BASE / proportionaldiv;
+    }
+    m_resampleratio = 1.0 / m_pClock->GetClockSpeed() + proportional + m_integral;
   }
 }
 
@@ -738,6 +760,9 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
     if (error > 0)
     {
       int dups = std::min(DVD_MSEC_TO_TIME(100), error) / audioframe.duration;
+      if (dups > 0)
+        CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket duplicate %d packets of duration %d",
+                  dups, DVD_TIME_TO_MSEC(audioframe.duration));
       for (int i = 0; i < dups; i++)
       {
         m_dvdAudio.AddPackets(audioframe);
@@ -746,7 +771,9 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
     }
     else
     {
-      m_dvdAudio.SetPlayingPts(m_audioClock);
+      m_dvdAudio.SetPlayingPts(audioframe.pts);
+      CLog::Log(LOGNOTICE,"CDVDPlayerAudio::OutputPacket skipping a packets of duration %d",
+                DVD_TIME_TO_MSEC(audioframe.duration));
     }
   }
   else if (m_synctype == SYNC_DISCON)

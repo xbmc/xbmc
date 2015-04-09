@@ -356,6 +356,7 @@ protected:
 
 
   void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true, bool sync = true);
+  void TriggerResync();
 
   void HandleMessages();
   void HandlePlaySpeed();
