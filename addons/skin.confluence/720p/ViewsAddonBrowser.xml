@@ -71,9 +71,9 @@
 					</control>
 					<control type="image">
 						<left>370</left>
-						<top>5</top>
+						<top>0</top>
 						<width>200</width>
-						<height>31</height>
+						<height>41</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
 						<visible>Control.HasFocus(550) + !IsEmpty(ListItem.Property(Addon.Status))</visible>
 					</control>
