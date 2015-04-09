@@ -516,9 +516,9 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   {
     // Test for VPU unsupported profiles to revert to sw decoding
     if ((m_hints.profile == 110) || //hi10p
-        (m_hints.profile == 578))   //quite uncommon h264 profile
+        (m_hints.profile == 578 && m_hints.level == 30))   //quite uncommon h264 profile with Main 3.0
     {
-      CLog::Log(LOGNOTICE, "i.MX6 VPU is not able to decode AVC profile %d", m_hints.profile);
+      CLog::Log(LOGNOTICE, "i.MX6 VPU is not able to decode AVC profile %d level %d", m_hints.profile, m_hints.level);
       return false;
     }
     m_decOpenParam.CodecFormat = VPU_V_AVC;
