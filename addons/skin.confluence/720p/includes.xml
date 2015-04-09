@@ -16,7 +16,8 @@
 	<include file="IncludesBackgroundBuilding.xml" />
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
-	<variable name="ResolutionOverlayVar">
+	<variable name="MediaInfoOverlayVar">
+		<value condition="ListItem.IsCollection">flagging/video/Set.png</value>
 		<value condition="!ListItem.IsStereoscopic">$INFO[ListItem.VideoResolution,flagging/lists/,.png]</value>
 		<value>flagging/lists/3D.png</value>
 	</variable>
@@ -80,7 +81,7 @@
 		<value condition="!IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
 	</variable>
-	<include name="DialogBackgroundCommons">			
+	<include name="DialogBackgroundCommons">
 		<control type="image">
 			<description>background image</description>
 			<left>0</left>
