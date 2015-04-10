@@ -46,9 +46,8 @@ static void vout_control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer
 
 void CMMALRenderer::vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
-  CMMALVideoBuffer *omvb = (CMMALVideoBuffer *)buffer->user_data;
-
   #if defined(MMAL_DEBUG_VERBOSE)
+  CMMALVideoBuffer *omvb = (CMMALVideoBuffer *)buffer->user_data;
   CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p (%p), len %d cmd:%x", CLASSNAME, __func__, port, buffer, omvb, buffer->length, buffer->cmd);
   #endif
 
@@ -305,7 +304,7 @@ void CMMALRenderer::ReleaseBuffer(int idx)
     return;
 
 #if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s - %d", CLASSNAME, __func__, idx);
+  CLog::Log(LOGDEBUG, "%s::%s - %d (%p)", CLASSNAME, __func__, idx, m_buffers[idx].MMALBuffer);
 #endif
   YUVBUFFER &buf = m_buffers[idx];
   SAFE_RELEASE(buf.MMALBuffer);
@@ -314,7 +313,7 @@ void CMMALRenderer::ReleaseBuffer(int idx)
 void CMMALRenderer::ReleaseImage(int source, bool preserve)
 {
 #if defined(MMAL_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::%s - %d %d", CLASSNAME, __func__, source, preserve);
+  CLog::Log(LOGDEBUG, "%s::%s - %d %d (%p)", CLASSNAME, __func__, source, preserve, m_buffers[source].MMALBuffer);
 #endif
 }
 
