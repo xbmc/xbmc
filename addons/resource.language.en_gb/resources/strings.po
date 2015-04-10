@@ -12443,6 +12443,8 @@ msgctxt "#24034"
 msgid "Check for updates"
 msgstr ""
 
+#: Name of an Add-on category
+#: xbmc/addons/Addon.cpp
 msgctxt "#24035"
 msgid "Image collections"
 msgstr ""
