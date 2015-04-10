@@ -58,6 +58,8 @@ using namespace XFILE;
 #define LOCALIZED_TOKEN_FIRSTID4    71
 #define LOCALIZED_TOKEN_LASTID4     97
 
+static const std::string icon_addon_path = "resource://resource.images.weather.default";
+
 /*
 FIXME'S
 >strings are not centered
@@ -237,7 +239,7 @@ static std::string ConstructPath(std::string in) // copy intended
   if (in.empty() || in == "N/A")
     in = "na.png";
 
-  return URIUtils::AddFileToFolder("resource://resource.images.weather.default/",in);
+  return URIUtils::AddFileToFolder(icon_addon_path,in);
 }
 
 void CWeatherJob::SetFromProperties()
@@ -311,7 +313,7 @@ CWeather::~CWeather(void)
 std::string CWeather::BusyInfo(int info) const
 {
   if (info == WEATHER_IMAGE_CURRENT_ICON)
-    return "resource://resource.images.weather.default/na.png";
+    return URIUtils::AddFileToFolder(icon_addon_path, "na.png");
 
   return CInfoLoader::BusyInfo(info);
 }
