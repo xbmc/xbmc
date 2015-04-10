@@ -178,6 +178,7 @@ void CMMALRenderer::AddProcessor(CMMALVideoBuffer *buffer, int index)
 
 bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
+  bool formatChanged = m_format != format;
   ReleaseBuffers();
 
   m_sourceWidth  = width;
@@ -230,9 +231,10 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
       else if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_240M)
         es_format->es->video.color_space = MMAL_COLOR_SPACE_SMPTE240M;
     }
-    if (m_bConfigured)
+    if (m_bConfigured && formatChanged)
       UnInitMMAL();
-    m_bConfigured = init_vout(es_format);
+    if (!m_bConfigured)
+      m_bConfigured = init_vout(es_format);
     mmal_format_free(es_format);
   }
   else
