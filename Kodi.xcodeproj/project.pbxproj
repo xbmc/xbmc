@@ -175,6 +175,15 @@
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
+		393A99841AD81DC70052F25D /* AudioBookFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 393A99821AD81DC70052F25D /* AudioBookFileDirectory.cpp */; };
+		393A99851AD81DC70052F25D /* AudioBookFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 393A99821AD81DC70052F25D /* AudioBookFileDirectory.cpp */; };
+		393A99861AD81DC70052F25D /* AudioBookFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 393A99821AD81DC70052F25D /* AudioBookFileDirectory.cpp */; };
+		393A99891AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 393A99871AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp */; };
+		393A998A1AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 393A99871AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp */; };
+		393A998B1AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 393A99871AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp */; };
+		393A998E1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 393A998C1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp */; };
+		393A998F1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 393A998C1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp */; };
+		393A99901AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 393A998C1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp */; };
 		395897151AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
 		395897161AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
 		395897171AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
@@ -3534,6 +3543,12 @@
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
 		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		393A99821AD81DC70052F25D /* AudioBookFileDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioBookFileDirectory.cpp; sourceTree = "<group>"; };
+		393A99831AD81DC70052F25D /* AudioBookFileDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioBookFileDirectory.h; sourceTree = "<group>"; };
+		393A99871AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeAudiobooks.cpp; sourceTree = "<group>"; };
+		393A99881AD81DF30052F25D /* DirectoryNodeAudiobooks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeAudiobooks.h; sourceTree = "<group>"; };
+		393A998C1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderFFmpeg.cpp; sourceTree = "<group>"; };
+		393A998D1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderFFmpeg.h; sourceTree = "<group>"; };
 		395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardLayoutManager.cpp; sourceTree = "<group>"; };
 		395897141AAD94F00033D27C /* KeyboardLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardLayoutManager.h; sourceTree = "<group>"; };
 		395938731AC28F5A0053A590 /* EmbeddedArt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbeddedArt.h; sourceTree = "<group>"; };
@@ -6164,6 +6179,8 @@
 				18B7C869129423A7009E7A26 /* MusicInfoTagLoaderDatabase.h */,
 				18B7C86A129423A7009E7A26 /* MusicInfoTagLoaderFactory.cpp */,
 				18B7C86B129423A7009E7A26 /* MusicInfoTagLoaderFactory.h */,
+				393A998C1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp */,
+				393A998D1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.h */,
 				18B7C87C129423A7009E7A26 /* MusicInfoTagLoaderShn.cpp */,
 				18B7C87D129423A7009E7A26 /* MusicInfoTagLoaderShn.h */,
 				5EF800FE1A97892A0035AA4D /* ReplayGain.cpp */,
@@ -8613,6 +8630,8 @@
 			children = (
 				F5A7B42B113CBB950059D6AA /* AddonsDirectory.cpp */,
 				F5A7B42A113CBB950059D6AA /* AddonsDirectory.h */,
+				393A99821AD81DC70052F25D /* AudioBookFileDirectory.cpp */,
+				393A99831AD81DC70052F25D /* AudioBookFileDirectory.h */,
 				F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */,
 				F5ED8D6B1551F91400842059 /* BlurayDirectory.h */,
 				B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */,
@@ -8815,6 +8834,8 @@
 				E38E171E0D25F9FA00618676 /* DirectoryNodeAlbumTop100Song.h */,
 				E38E171F0D25F9FA00618676 /* DirectoryNodeArtist.cpp */,
 				E38E17200D25F9FA00618676 /* DirectoryNodeArtist.h */,
+				393A99871AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp */,
+				393A99881AD81DF30052F25D /* DirectoryNodeAudiobooks.h */,
 				F52CC5EE1713AAA200113454 /* DirectoryNodeGrouped.cpp */,
 				F52CC5EF1713AAA200113454 /* DirectoryNodeGrouped.h */,
 				E38E17230D25F9FA00618676 /* DirectoryNodeOverview.cpp */,
@@ -10569,6 +10590,7 @@
 				18B7C7D61294222E009E7A26 /* GUIRenderingControl.cpp in Sources */,
 				18B7C7D71294222E009E7A26 /* GUIResizeControl.cpp in Sources */,
 				18B7C7D81294222E009E7A26 /* GUIRSSControl.cpp in Sources */,
+				393A998E1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp in Sources */,
 				18B7C7D91294222E009E7A26 /* GUIScrollBarControl.cpp in Sources */,
 				18B7C7DA1294222E009E7A26 /* GUISelectButtonControl.cpp in Sources */,
 				18B7C7DB1294222E009E7A26 /* GUISettingsSliderControl.cpp in Sources */,
@@ -10596,6 +10618,7 @@
 				18B7C7F31294222E009E7A26 /* Shader.cpp in Sources */,
 				18B7C7F41294222E009E7A26 /* Texture.cpp in Sources */,
 				18B7C7F51294222E009E7A26 /* TextureBundle.cpp in Sources */,
+				393A99841AD81DC70052F25D /* AudioBookFileDirectory.cpp in Sources */,
 				18B7C7F61294222E009E7A26 /* TextureBundleXBT.cpp in Sources */,
 				18B7C7F71294222E009E7A26 /* TextureBundleXPR.cpp in Sources */,
 				18B7C7F81294222E009E7A26 /* TextureDX.cpp in Sources */,
@@ -11052,6 +11075,7 @@
 				7CCDA7FA192756250074CF51 /* NptQueue.cpp in Sources */,
 				7CCDA803192756250074CF51 /* NptResults.cpp in Sources */,
 				7CCDA806192756250074CF51 /* NptRingBuffer.cpp in Sources */,
+				393A99891AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp in Sources */,
 				395C29FB1A9CD20C00EBC7AD /* ContextMenuManager.cpp in Sources */,
 				7CCDA80F192756250074CF51 /* NptSimpleMessageQueue.cpp in Sources */,
 				7CCDA818192756250074CF51 /* NptSockets.cpp in Sources */,
@@ -11333,6 +11357,7 @@
 				DFF0F1F817528350002DA3A4 /* DirectoryHistory.cpp in Sources */,
 				DFF0F1F917528350002DA3A4 /* DllLibCurl.cpp in Sources */,
 				DFF0F1FA17528350002DA3A4 /* File.cpp in Sources */,
+				393A998B1AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp in Sources */,
 				DFF0F1FB17528350002DA3A4 /* FileCache.cpp in Sources */,
 				DFF0F1FC17528350002DA3A4 /* FileDirectoryFactory.cpp in Sources */,
 				DFF0F1FD17528350002DA3A4 /* FileFactory.cpp in Sources */,
@@ -11668,6 +11693,7 @@
 				DFF0F34E17528350002DA3A4 /* PeripheralImon.cpp in Sources */,
 				DFF0F34F17528350002DA3A4 /* PeripheralNIC.cpp in Sources */,
 				397877DA1AAAF87700F98A45 /* Temperature.cpp in Sources */,
+				393A99861AD81DC70052F25D /* AudioBookFileDirectory.cpp in Sources */,
 				DFF0F35017528350002DA3A4 /* PeripheralNyxboard.cpp in Sources */,
 				DFF0F35117528350002DA3A4 /* PeripheralTuner.cpp in Sources */,
 				DFF0F35217528350002DA3A4 /* GUIDialogPeripheralManager.cpp in Sources */,
@@ -12031,6 +12057,7 @@
 				7CCDA11C192753E30074CF51 /* PltDeviceHost.cpp in Sources */,
 				7CCDA125192753E30074CF51 /* PltEvent.cpp in Sources */,
 				7CCDA12E192753E30074CF51 /* PltHttp.cpp in Sources */,
+				393A99901AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp in Sources */,
 				7CCDA137192753E30074CF51 /* PltHttpClientTask.cpp in Sources */,
 				7CCDA140192753E30074CF51 /* PltHttpServer.cpp in Sources */,
 				7CCDA149192753E30074CF51 /* PltHttpServerTask.cpp in Sources */,
@@ -12362,6 +12389,7 @@
 				E499125B174E5D8F00741B6D /* DAVCommon.cpp in Sources */,
 				E499125C174E5D8F00741B6D /* DAVDirectory.cpp in Sources */,
 				E499125D174E5D8F00741B6D /* DAVFile.cpp in Sources */,
+				393A99851AD81DC70052F25D /* AudioBookFileDirectory.cpp in Sources */,
 				E499125E174E5D8F00741B6D /* Directory.cpp in Sources */,
 				E499125F174E5D8F00741B6D /* DirectoryCache.cpp in Sources */,
 				E4991260174E5D8F00741B6D /* DirectoryFactory.cpp in Sources */,
@@ -12698,6 +12726,7 @@
 				E49913C6174E5F3C00741B6D /* Zeroconf.cpp in Sources */,
 				E49913C7174E5F3C00741B6D /* ZeroconfBrowser.cpp in Sources */,
 				E49913C8174E5F7500741B6D /* PeripheralBusUSB.cpp in Sources */,
+				393A998F1AD81E220052F25D /* MusicInfoTagLoaderFFmpeg.cpp in Sources */,
 				E49913C9174E5F7500741B6D /* PeripheralBus.cpp in Sources */,
 				E49913CA174E5F8100741B6D /* Peripheral.cpp in Sources */,
 				E49913CB174E5F8100741B6D /* PeripheralBluetooth.cpp in Sources */,
@@ -13103,6 +13132,7 @@
 				7CCDA7A4192756250074CF51 /* NptCrypto.cpp in Sources */,
 				7CCDA7A7192756250074CF51 /* NptDataBuffer.cpp in Sources */,
 				7CCDA7B0192756250074CF51 /* NptDebug.cpp in Sources */,
+				393A998A1AD81DF30052F25D /* DirectoryNodeAudiobooks.cpp in Sources */,
 				7CCDA7B9192756250074CF51 /* NptDigest.cpp in Sources */,
 				7CCDA7BC192756250074CF51 /* NptDynamicLibraries.cpp in Sources */,
 				7CCDA7BF192756250074CF51 /* NptFile.cpp in Sources */,
