@@ -22,6 +22,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDimensions.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogSelect.h"
 #include "filesystem/Directory.h"
@@ -330,6 +331,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
 
     videodatabase.GetTagsNav(basePath + "tags/", items, type);
     iLabel = 20459;
+  }
+  else if (m_rule.m_field == FieldVideoResolution)
+  {
+    for (const auto &quality : CVideoDimensions::GetQualities())
+      items.Add(CFileItemPtr(new CFileItem(quality.c_str())));
   }
   else
   { // TODO: Add browseability in here.

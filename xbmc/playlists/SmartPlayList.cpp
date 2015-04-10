@@ -95,7 +95,7 @@ static const translateField fields[] = {
   { "episode",           FieldEpisodeNumber,           SortByEpisodeNumber,            CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20359 },
   { "numepisodes",       FieldNumberOfEpisodes,        SortByNumberOfEpisodes,         CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 20360 },
   { "numwatched",        FieldNumberOfWatchedEpisodes, SortByNumberOfWatchedEpisodes,  CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 21457 },
-  { "videoresolution",   FieldVideoResolution,         SortByVideoResolution,          CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 21443 },
+  { "videoresolution",   FieldVideoResolution,         SortByVideoResolution,          CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 true, 21443 },
   { "videocodec",        FieldVideoCodec,              SortByVideoCodec,               CDatabaseQueryRule::TEXTIN_FIELD,   NULL,                                 false, 21445 },
   { "videoaspect",       FieldVideoAspectRatio,        SortByVideoAspectRatio,         CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 21374 },
   { "audiochannels",     FieldAudioChannels,           SortByAudioChannels,            CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 21444 },
@@ -624,35 +624,20 @@ std::string CSmartPlaylistRule::GetLocalizedRule() const
 
 std::string CSmartPlaylistRule::GetVideoResolutionQuery(const std::string &parameter) const
 {
-  std::string retVal(" IN (SELECT DISTINCT idFile FROM streamdetails WHERE iVideoWidth ");
-  int iRes = (int)strtol(parameter.c_str(), NULL, 10);
+  return GetVideoDimensionsQuery(CVideoDimensions::GetQualityBoundaries(parameter));
+}
 
-  int min, max;
-  if (iRes >= 1080)     { min = 1281; max = INT_MAX; }
-  else if (iRes >= 720) { min =  961; max = 1280; }
-  else if (iRes >= 540) { min =  721; max =  960; }
-  else                  { min =    0; max =  720; }
+std::string CSmartPlaylistRule::GetVideoDimensionsQuery(SResolutionBoundaries &boundaries) const
+{
+  std::string condition = StringUtils::Format("iVideoWidth > %d AND iVideoWidth <= %d AND iVideoHeight > %d AND iVideoHeight <= %d",
+    boundaries.width.min,
+    boundaries.width.max,
+    boundaries.height.min,
+    boundaries.height.max);
 
-  switch (m_operator)
-  {
-    case OPERATOR_EQUALS:
-      retVal += StringUtils::Format(">= %i AND iVideoWidth <= %i", min, max);
-      break;
-    case OPERATOR_DOES_NOT_EQUAL:
-      retVal += StringUtils::Format("< %i OR iVideoWidth > %i", min, max);
-      break;
-    case OPERATOR_LESS_THAN:
-      retVal += StringUtils::Format("< %i", min);
-      break;
-    case OPERATOR_GREATER_THAN:
-      retVal += StringUtils::Format("> %i", max);
-      break;
-    default:
-      break;
-  }
+  std::string query = " IN (SELECT DISTINCT idFile FROM streamdetails WHERE %s)";
 
-  retVal += ")";
-  return retVal;
+  return StringUtils::Format(query.c_str(), condition);
 }
 
 std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const std::string &strType) const
