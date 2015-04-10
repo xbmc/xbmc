@@ -23,6 +23,13 @@
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
 
+#if defined(TARGET_DARWIN )
+// apple clang with c++11 doesn't like
+// the forwards declarations of boost
+// disable them ...
+#define BOOST_DETAIL_NO_CONTAINER_FWD 1
+#endif
+
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/sequenced_index.hpp"
 #include "boost/multi_index/hashed_index.hpp"
