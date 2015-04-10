@@ -439,6 +439,11 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CLog::Log(LOGNOTICE, "iMX VPU : software decoding requested.\n");
     return false;
   }
+  else if (hints.width > 1920)
+  {
+    CLog::Log(LOGNOTICE, "iMX VPU : software decoding forced - video dimensions out of spec: %d %d.", hints.width, hints.height);
+    return false;
+  }
 
   g_IMXContext.RequireConfiguration();
 
