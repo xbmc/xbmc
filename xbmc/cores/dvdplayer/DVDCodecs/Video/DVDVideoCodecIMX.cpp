@@ -1784,15 +1784,15 @@ void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *so
     dstRect.y2 = m_fbHeight;
   }
 
-  iSrcRect.x1 = Align((int)srcRect.x1,8);
-  iSrcRect.y1 = Align((int)srcRect.y1,8);
-  iSrcRect.x2 = Align((int)srcRect.x2,8);
-  iSrcRect.y2 = Align((int)srcRect.y2,8);
+  iSrcRect.x1 = Align((int)srcRect.x1,2);
+  iSrcRect.y1 = Align((int)srcRect.y1,2);
+  iSrcRect.x2 = Align((int)srcRect.x2,2);
+  iSrcRect.y2 = Align((int)srcRect.y2,2);
 
-  iDstRect.x1 = Align((int)dstRect.x1,8);
-  iDstRect.y1 = Align((int)dstRect.y1,8);
-  iDstRect.x2 = Align((int)dstRect.x2,8);
-  iDstRect.y2 = Align((int)dstRect.y2,8);
+  iDstRect.x1 = Align((int)dstRect.x1,2);
+  iDstRect.y1 = Align((int)dstRect.y1,2);
+  iDstRect.x2 = Align((int)dstRect.x2,2);
+  iDstRect.y2 = Align((int)dstRect.y2,2);
 
   ipu.task.input.crop.pos.x  = iSrcRect.x1;
   ipu.task.input.crop.pos.y  = iSrcRect.y1;
