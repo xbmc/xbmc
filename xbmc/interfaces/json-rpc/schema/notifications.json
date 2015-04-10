@@ -192,6 +192,21 @@
     ],
     "returns": null
   },
+  "VideoLibrary.OnExport": {
+    "type": "notification",
+    "description": "A video library export has finished.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": false,
+        "properties": {
+          "file": { "type": "string", "required": false, "default": "" },
+          "root": { "type": "string", "required": false, "default": "" },
+          "failcount": { "type": "integer", "minimum": 0, "required": false, "default": 0 }
+        }
+      }
+    ],
+    "returns": null
+  },
   "VideoLibrary.OnRemove": {
     "type": "notification",
     "description": "A video item has been removed.",
