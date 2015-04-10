@@ -384,14 +384,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       if (g_application.m_pPlayer->HasPlayer())
       {
-        int nStream = g_application.m_pPlayer->AddSubtitle(cLine);
-        if(nStream >= 0)
-        {
-          g_application.m_pPlayer->SetSubtitle(nStream);
-          g_application.m_pPlayer->SetSubtitleVisible(true);
-          CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay = 0.0f;
-          g_application.m_pPlayer->SetSubTitleDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
-        }
+        g_application.m_pPlayer->AddSubtitle(cLine);
       }
     }
 

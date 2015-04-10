@@ -90,7 +90,8 @@ public:
     AUDIO_SILENCE,
 
     // subtitle related messages
-    SUBTITLE_CLUTCHANGE
+    SUBTITLE_CLUTCHANGE,
+    SUBTITLE_ADDFILE
   };
 
   CDVDMsg(Message msg)
