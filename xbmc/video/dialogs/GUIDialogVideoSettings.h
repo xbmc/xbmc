@@ -35,9 +35,6 @@ protected:
   // implementations of ISettingCallback
   virtual void OnSettingChanged(const CSetting *setting);
   virtual void OnSettingAction(const CSetting *setting);
-#ifdef HAS_DS_PLAYER
-  virtual void OnDeinitWindow(int nextWindowID);
-#endif
 
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }

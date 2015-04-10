@@ -78,7 +78,6 @@ class CmadVRAllocatorPresenter
   Com::SmartPtr<IUnknown> m_pDXR;
   LPDIRECT3DDEVICE9 m_pD3DDeviceMadVR;
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
-  Com::SmartPtr<IOsdRenderCallback> m_pORCB;
   Com::SmartSize m_ScreenSize;
   bool  m_bIsFullscreen;
   bool m_isDeviceSet;
@@ -106,11 +105,11 @@ public:
   //IPaintCallbackMadvr
   LPDIRECT3DDEVICE9 GetDevice();
   virtual bool IsDeviceSet(){ return m_isDeviceSet; }
+  virtual void SetIsDevice(bool b){ m_isDeviceSet = b; };
   virtual void OsdRedrawFrame();
   virtual void SetMadvrPixelShader();
   virtual void RestoreMadvrSettings();
   virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect);
-  virtual void CloseMadvr();
   virtual void SettingSetScaling(CStdStringW path, int scaling);
   virtual void SettingSetDoubling(CStdStringW path, int iValue);
   virtual void SettingSetDoublingCondition(CStdStringW path, int condition);

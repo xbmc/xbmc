@@ -1859,7 +1859,7 @@ bool CApplication::RenderNoPresent()
   {
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
 #ifdef HAS_DS_PLAYER
-    if (!CGraphFilters::Get()->UsingMadVr())
+    if (!CGraphFilters::Get()->ReadyMadVr())
       g_renderManager.Render(true, 0, 255);
     else
       g_renderManager.Render(false, 0, 255);
@@ -4985,10 +4985,10 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
 bool CApplication::IsCurrentThread() const
 {
 #ifdef HAS_DS_PLAYER
-  if (!CGraphFilters::Get()->UsingMadVr())
-    return CThread::IsCurrentThread(m_threadID);
-  else
+  if (CGraphFilters::Get()->ReadyMadVr())
     return true;
+  else
+    return CThread::IsCurrentThread(m_threadID);
 #else
   return CThread::IsCurrentThread(m_threadID);
 #endif

@@ -76,6 +76,7 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   m_pSubPicQueue = nullptr;
   m_pAllocator = nullptr;
   m_pDXR = nullptr;
+  m_pSRCB = nullptr;
 }
 
 STDMETHODIMP CmadVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, void** ppv)
@@ -91,6 +92,9 @@ STDMETHODIMP CmadVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, 
 
 HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
+
+  CLog::Log(LOGDEBUG, "%s madVR's device it's ready", __FUNCTION__);
+
   if (!pD3DDev)
   {
     // release all resources
@@ -195,23 +199,25 @@ HRESULT CmadVRAllocatorPresenter::Render(
 
   AlphaBltSubPic(Com::SmartSize(width, height));
 
-  // restore pixelshader for render kodi gui
-  m_pD3DDeviceMadVR->SetPixelShader(NULL);
+  if (m_isDeviceSet)
+  {
+    // restore pixelshader for render kodi gui
+    m_pD3DDeviceMadVR->SetPixelShader(NULL);
 
-  // render kodi gui
-  g_application.RenderMadvr();
+    // render kodi gui
+    g_application.RenderMadvr();
 
-  //restore stagestate for xysubfilter
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-  m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    //restore stagestate for xysubfilter
+    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 
-  // set false for pixelshader
-  m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-
+    // set false for pixelshader
+    m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+  }
   return S_OK;
 }
 
@@ -353,15 +359,6 @@ void CmadVRAllocatorPresenter::OsdRedrawFrame()
 {
   if (Com::SmartQIPtr<IMadVROsdServices> pOR = m_pDXR)
     pOR->OsdRedrawFrame();
-}
-
-void CmadVRAllocatorPresenter::CloseMadvr()
-{
-  if (Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR) 
-  {
-    pVW->put_Visible(OAFALSE);
-    pVW->put_Owner((OAHWND)NULL);
-  }
 }
 
 void CmadVRAllocatorPresenter::SettingSetScaling(CStdStringW path, int scaling)

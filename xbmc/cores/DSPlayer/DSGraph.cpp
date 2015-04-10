@@ -124,15 +124,20 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     //HRESULT hr;
     //m_pVideoWindow->put_Owner((OAHWND)g_hWnd);
     m_pVideoWindow->put_WindowStyle(WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
-    m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
     m_pVideoWindow->SetWindowPosition(0, 0, 1, 1);
+    m_pVideoWindow->put_Visible(OATRUE);
+    m_pVideoWindow->put_AutoShow(OATRUE);
+    m_pVideoWindow->put_WindowState(SW_SHOW);
+    m_pVideoWindow->SetWindowForeground(OATRUE);
+    m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
+  }
 
-    // set pixelshader & settings for madVR
-    if (CGraphFilters::Get()->UsingMadVr())
-    { 
-      CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPixelShader();
+  // set pixelshader & settings for madVR
+  if (CGraphFilters::Get()->UsingMadVr())
+  {
+    CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPixelShader();
+    if (CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
       CGraphFilters::Get()->GetMadvrCallback()->RestoreMadvrSettings();
-    }
   }
 
   //TODO Ti-Ben
@@ -174,6 +179,9 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
+    if (CGraphFilters::Get()->UsingMadVr())
+      CGraphFilters::Get()->GetMadvrCallback()->SetIsDevice(false);
+    
     if (m_pAMOpenProgress)
       m_pAMOpenProgress->AbortOperation();
 
@@ -207,6 +215,8 @@ void CDSGraph::CloseFile()
     m_pMediaControl.Release();
     m_pMediaEvent.Release();
     m_pMediaSeeking.Release();
+    m_pVideoWindow->put_Visible(OAFALSE);
+    m_pVideoWindow->put_Owner((OAHWND)NULL);
     m_pVideoWindow.Release();
     m_pBasicAudio.Release();
     m_pBasicVideo.Release();

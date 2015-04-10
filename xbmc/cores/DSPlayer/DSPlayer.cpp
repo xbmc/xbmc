@@ -398,10 +398,6 @@ bool CDSPlayer::CloseFile(bool reopen)
   // set the abort request so that other threads can finish up
   m_bEof = g_dsGraph->IsEof();
 
-  // it's ugly but work
-  if (CGraphFilters::Get()->UsingMadVr())
-    CGraphFilters::Get()->GetMadvrCallback()->CloseMadvr();
-
   g_dsGraph->CloseFile();
 
   PlayerState = DSPLAYER_CLOSED;

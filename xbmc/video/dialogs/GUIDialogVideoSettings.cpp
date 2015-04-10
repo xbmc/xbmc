@@ -109,21 +109,6 @@ CGUIDialogVideoSettings::CGUIDialogVideoSettings()
 CGUIDialogVideoSettings::~CGUIDialogVideoSettings()
 { }
 
-
-void CGUIDialogVideoSettings::OnDeinitWindow(int nextWindowID)
-{
-  CGUIDialogSettingsManualBase::OnDeinitWindow(nextWindowID);
-
-#ifdef HAS_DS_PLAYER
-  if (m_isMadvr)
-  {
-    CGUIDialogMadvrScaling *pDlgMadvr = (CGUIDialogMadvrScaling *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
-    if (pDlgMadvr)
-      pDlgMadvr->Close();
-  }
-#endif
-}
-
 void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
 {
   if (setting == NULL)
@@ -303,12 +288,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
 
 #ifdef HAS_DS_PLAYER
   else if (settingId == SETTING_MADVR_SCALING)
-  {
-    CGUIDialogMadvrScaling *pDlgMadvr = (CGUIDialogMadvrScaling *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
-    if (!pDlgMadvr)
-      return;
-    pDlgMadvr->DoModal();
-  }
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_MADVR);
 
   if ( (g_application.GetCurrentPlayer() == PCID_DSPLAYER) && (settingId == VIDEO_SETTINGS_DS_FILTERS) )
   {
