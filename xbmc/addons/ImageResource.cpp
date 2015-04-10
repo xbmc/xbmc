@@ -53,8 +53,9 @@ void CImageResource::OnPostInstall(bool restart, bool update, bool modal)
 
 bool CImageResource::IsAllowed(const std::string &file) const
 {
+  std::string ext = URIUtils::GetExtension(file);
   return file.empty() ||
-         StringUtils::EqualsNoCase(URIUtils::GetExtension(file), ".png") ||
-         StringUtils::EqualsNoCase(URIUtils::GetExtension(file), ".jpg");
+         StringUtils::EqualsNoCase(ext, ".png") ||
+         StringUtils::EqualsNoCase(ext, ".jpg");
 }
 }
