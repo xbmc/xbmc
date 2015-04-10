@@ -116,7 +116,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         return false;
 
       //  base class has opened the database, do our check
-      DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
+      DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0 &&
+                                  m_musicdatabase.GetAudiobookCount() <= 0);
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
@@ -255,6 +256,28 @@ std::string CGUIWindowMusicNav::GetQuickpathName(const std::string& strPath) con
   }
 }
 
+bool CGUIWindowMusicNav::OnResumeItem(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
+  CFileItemPtr item = m_vecItems->Get(iItem);
+
+  int startOffset = item->GetMusicInfoTag()->GetBookmark();
+  std::string resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(),
+                                                 StringUtils::SecondsToTimeString(startOffset/75).c_str());
+
+  CContextButtons choices;
+  choices.Add(SELECT_ACTION_RESUME, resumeString);
+  choices.Add(SELECT_ACTION_BROWSE, 20153);   // Browse...
+  int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+  if (value < 0)
+    return true;
+
+  if (value == SELECT_ACTION_RESUME)
+    return OnContextButton(iItem, CONTEXT_BUTTON_RESUME_ITEM);
+
+  return CGUIWindowMusicBase::OnClick(iItem);
+}
+
 bool CGUIWindowMusicNav::OnClick(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return false;
@@ -272,6 +295,9 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
     }
     return true;
   }
+  if (item->HasProperty("audiobook") && item->GetMusicInfoTag()->GetBookmark() > 0)
+    return OnResumeItem(iItem);
+
   if (item->IsMusicDb() && !item->m_bIsFolder)
     m_musicdatabase.SetPropertiesForFileItem(*item);
     
@@ -358,6 +384,8 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
       items.SetContent("genres");
     else if (node == NODE_TYPE_YEAR)
       items.SetContent("years");
+    else if (node == NODE_TYPE_AUDIOBOOKS)
+      items.SetContent("audiobooks");
   }
   else if (URIUtils::PathEquals(strDirectory, "special://musicplaylists/"))
     items.SetContent("playlists");
@@ -466,6 +494,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         !item->m_bIsFolder)
     {
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
+      if (!item->IsAudioBook())
+        buttons.Add(CONTEXT_BUTTON_MARK_AUDIOBOOK, 599); // This is an audiobook
     }
     else if (item->IsVideoDb())
     {
@@ -732,7 +762,16 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       return true;
     }
+  case CONTEXT_BUTTON_MARK_AUDIOBOOK:
+    {
+      CQueryParams params;
+      CDirectoryNode::GetDatabaseInfo(item->GetPath(), params);
+      bool result = m_musicdatabase.MakeAudioBook(params.GetSongId());
+      if (result)
+        Update(m_vecItems->GetPath());
 
+      return result;
+    }
   default:
     break;
   }

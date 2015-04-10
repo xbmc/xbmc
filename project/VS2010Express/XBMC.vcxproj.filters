@@ -3081,6 +3081,15 @@
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\AudioBookFileDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeAudiobooks.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.cpp">
+      <Filter>music\tags</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5961,6 +5970,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\EmbeddedArt.h">
       <Filter>music</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\AudioBookFileDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeAudiobooks.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.h">
+      <Filter>music\tags</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

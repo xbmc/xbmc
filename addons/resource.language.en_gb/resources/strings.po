@@ -2565,7 +2565,13 @@ msgctxt "#597"
 msgid "Repeat: All"
 msgstr ""
 
-#empty strings from id 598 to 599
+msgctxt "#598"
+msgid "Audiobooks"
+msgstr ""
+
+msgctxt "#599"
+msgid "This is an audiobook"
+msgstr ""
 
 msgctxt "#600"
 msgid "Rip audio CD"
@@ -16514,7 +16520,12 @@ msgctxt "#37045"
 msgid "Extract chapter thumbnails for presentation in the chapters/bookmarks dialog. This might increase CPU load."
 msgstr ""
 
-#empty strings from id 37046 to 38009
+#empty strings from id 37046 to 380098
+
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#38009"
+msgid "Resume audiobook"
+msgstr ""
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

@@ -222,6 +222,7 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
       strLabel = g_localizeStrings.Get(521);
       break;
     case NODE_TYPE_OVERVIEW:
+    case NODE_TYPE_AUDIOBOOKS:
       strLabel = "";
       break;
     default:
@@ -243,6 +244,7 @@ bool CMusicDatabaseDirectory::ContainsSongs(const std::string &path)
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_TOP100_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG_TOP100) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_YEAR_SONG) return true;
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_AUDIOBOOKS) return true;
   return false;
 }
 
@@ -302,6 +304,8 @@ std::string CMusicDatabaseDirectory::GetIcon(const std::string &strDirectory)
     return "DefaultMusicYears.png";
   case NODE_TYPE_ALBUM_COMPILATIONS:
     return "DefaultMusicCompilations.png";
+  case NODE_TYPE_AUDIOBOOKS:
+    return "DefaultAudioBooks.png";
   default:
     break;
   }

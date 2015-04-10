@@ -1,6 +1,7 @@
 CXXFLAGS += -D__STDC_FORMAT_MACROS
 
 SRCS  = AddonsDirectory.cpp
+SRCS  = AudioBookFileDirectory.cpp
 SRCS += CacheStrategy.cpp
 SRCS += CircularCache.cpp
 SRCS += CDDADirectory.cpp

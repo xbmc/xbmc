@@ -39,6 +39,7 @@ namespace XFILE
                                 { NODE_TYPE_ALBUM_RECENTLY_ADDED,  "recentlyaddedalbums",  359 },
                                 { NODE_TYPE_ALBUM_RECENTLY_PLAYED, "recentlyplayedalbums", 517 },
                                 { NODE_TYPE_ALBUM_COMPILATIONS,    "compilations",         521 },
+                                { NODE_TYPE_AUDIOBOOKS,            "audiobooks",           598 },
                               };
   };
 };
@@ -78,9 +79,11 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
 
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
   {
-    if (i == 3 && !hasSingles)
+    if (i == 3 && !hasSingles) // singles
       continue;
-    if (i == 9 && !hasCompilations)
+    else if (i == 9 && !hasCompilations) // compilations
+      continue;
+    else if (i == 10 && musicDatabase.GetAudiobookCount() == 0) // audiobooks
       continue;
 
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(OverviewChildren[i].label)));

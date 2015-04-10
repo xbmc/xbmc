@@ -286,6 +286,7 @@
     <ClCompile Include="..\..\xbmc\FileItem.cpp" />
     <ClCompile Include="..\..\xbmc\FileItemListModification.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\AddonsDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\AudioBookFileDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\BlurayDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\BlurayFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CacheStrategy.cpp" />
@@ -324,6 +325,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\MultiPathDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MultiPathFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeAudiobooks.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeGrouped.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\MusicFileDirectory.cpp" />
@@ -610,6 +612,7 @@
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderCDDA.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFactory.cpp" />
+    <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\MusicInfoTagLoaderShn.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\ReplayGain.cpp" />
     <ClCompile Include="..\..\xbmc\music\tags\TagLibVFSStream.cpp" />
@@ -862,11 +865,13 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogSimpleMenu.h" />
     <ClInclude Include="..\..\xbmc\FileItemListModification.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\AudioBookFileDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\BlurayFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HTTPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DAVCommon.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DAVFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeAudiobooks.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeGrouped.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\OverrideFile.h" />
@@ -955,6 +960,7 @@
     <ClInclude Include="..\..\xbmc\music\CueInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\music\EmbeddedArt.h" />
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
+    <ClInclude Include="..\..\xbmc\music\tags\MusicInfoTagLoaderFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\music\tags\ReplayGain.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPFileHandler.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageTransformationHandler.h" />

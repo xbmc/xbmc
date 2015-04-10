@@ -24,6 +24,7 @@
 #include "MusicInfoTagLoaderCDDA.h"
 #include "MusicInfoTagLoaderShn.h"
 #include "MusicInfoTagLoaderDatabase.h"
+#include "MusicInfoTagLoaderFFmpeg.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
@@ -76,7 +77,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
       strExtension == "mp3" || 
       strExtension == "wma" || 
       strExtension == "flac" || 
-      strExtension == "m4a" || strExtension == "mp4" ||
+      strExtension == "m4a" || strExtension == "mp4" || strExtension == "m4b" ||
       strExtension == "mpc" || strExtension == "mpp" || strExtension == "mp+" ||
       strExtension == "ogg" || strExtension == "oga" || strExtension == "oggstream" ||
       strExtension == "aif" || strExtension == "aiff" ||
@@ -100,6 +101,8 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
+  else if (strExtension == "mka")
+    return new CMusicInfoTagLoaderFFmpeg();
 
   return NULL;
 }

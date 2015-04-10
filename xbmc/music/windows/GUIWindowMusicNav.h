@@ -48,6 +48,7 @@ protected:
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual bool OnClick(int iItem);
   virtual std::string GetStartFolder(const std::string &url);
+  bool OnResumeItem(int iItem);
 
   bool GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items);
   void DisplayEmptyDatabaseMessage(bool bDisplay);

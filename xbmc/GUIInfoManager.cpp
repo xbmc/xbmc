@@ -5363,6 +5363,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
         return ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0;
       else if (((const CFileItem *)item)->HasPVRRecordingInfoTag())
         return ((const CFileItem *)item)->GetPVRRecordingInfoTag()->m_resumePoint.timeInSeconds > 0;
+      else if (((const CFileItem *)item)->HasMusicInfoTag())
+        return ((const CFileItem *)item)->GetMusicInfoTag()->GetBookmark() > 0;
     }
   }
   else if (item->IsFileItem())
@@ -5649,6 +5651,8 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       if (db.Open())
       {
         m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
+        if (!m_libraryHasMusic)
+          m_libraryHasMusic = (db.GetAudiobookCount() > 0) ? 1 : 0;
         db.Close();
       }
     }
