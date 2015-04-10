@@ -27,10 +27,10 @@ std::vector<SResolution> CVideoDimensions::resolutions =
   { "480", "SD", { { 0, 720 }, { 0, 480 } } },
   // With invalid settings it's possible to end up with e.g. a 720x592 DVD rip
   { "576", "SD", { { 0, 768 }, { 480, 600 } } },
-  // 720p can be anything from 960x720 (1.33:1) to 1280x474 (2.70:1, e.g. Ben Hur)
-  { "720", "HD", { { 768, 1280 }, { 474, 720 } } },
-  // Full-SBS 3D can be 3840x1080
-  { "1080", "HD", { { 1280, 3840 }, { 540, 1080 } } },
+  // 720p can be anything from 960x720 (1.33:1) to 1280x464 (2.70:1, e.g. Ben Hur)
+  { "720", "HD", { { 768, 1280 }, { 460, 720 } } },
+  // Full-SBS 3D can be 3840x1080, some weird shit can be 1080x1040
+  { "1080", "HD", { { 1079, 3840 }, { 540, 1080 } } },
   // Full-SBS 4K 3D could be 8192x2160
   { "4K", "HD", { { 2048, 8192 }, { 1080, 2160 } } }
 };

@@ -18,7 +18,10 @@
  *
  */
 
+#include <tuple>
+#include <vector>
 #include "utils/StreamDetails.h"
+#include "video/VideoDimensions.h"
 
 #include "gtest/gtest.h"
 
@@ -75,10 +78,153 @@ TEST(TestStreamDetails, General)
   EXPECT_STREQ("left_right", a.GetStereoMode().c_str());
 }
 
-TEST(TestStreamDetails, VideoDimsToResolutionDescription)
+TEST(TestStreamDetails, VideoDimensionsToFidelityAndQuality)
 {
-  EXPECT_STREQ("1080",
-               CStreamDetails::VideoDimsToResolutionDescription(1920, 1080).c_str());
+  // Test data assembled from several different libraries using mediainfo
+  std::vector<std::tuple<std::string, std::string, int, int>> dataProvider =
+  {
+    { std::make_tuple("480", "SD", 528, 224) },
+    { std::make_tuple("480", "SD", 448, 256) },
+    { std::make_tuple("480", "SD", 608, 256) },
+    { std::make_tuple("480", "SD", 640, 256) },
+    { std::make_tuple("480", "SD", 640, 272) },
+    { std::make_tuple("480", "SD", 656, 272) },
+    { std::make_tuple("480", "SD", 512, 288) },
+    { std::make_tuple("480", "SD", 560, 304) },
+    { std::make_tuple("480", "SD", 576, 304) },
+    { std::make_tuple("480", "SD", 704, 304) },
+    { std::make_tuple("480", "SD", 720, 304) },
+    { std::make_tuple("480", "SD", 576, 320) },
+    { std::make_tuple("480", "SD", 592, 320) },
+    { std::make_tuple("480", "SD", 608, 320) },
+    { std::make_tuple("480", "SD", 708, 328) },
+    { std::make_tuple("480", "SD", 576, 336) },
+    { std::make_tuple("480", "SD", 608, 336) },
+    { std::make_tuple("480", "SD", 624, 336) },
+    { std::make_tuple("480", "SD", 640, 336) },
+    { std::make_tuple("480", "SD", 672, 336) },
+    { std::make_tuple("480", "SD", 706, 344) },
+    { std::make_tuple("480", "SD", 464, 352) },
+    { std::make_tuple("480", "SD", 624, 352) },
+    { std::make_tuple("480", "SD", 640, 352) },
+    { std::make_tuple("480", "SD", 704, 352) },
+    { std::make_tuple("480", "SD", 704, 358) },
+    { std::make_tuple("480", "SD", 718, 360) },
+    { std::make_tuple("480", "SD", 640, 368) },
+    { std::make_tuple("480", "SD", 720, 368) },
+    { std::make_tuple("480", "SD", 512, 384) },
+    { std::make_tuple("480", "SD", 688, 384) },
+    { std::make_tuple("480", "SD", 720, 384) },
+    { std::make_tuple("480", "SD", 716, 396) },
+    { std::make_tuple("480", "SD", 608, 400) },
+    { std::make_tuple("480", "SD", 720, 400) },
+    { std::make_tuple("480", "SD", 720, 416) },
+    { std::make_tuple("480", "SD", 648, 428) },
+    { std::make_tuple("480", "SD", 576, 432) },
+    { std::make_tuple("480", "SD", 708, 444) },
+    { std::make_tuple("480", "SD", 712, 460) },
+    { std::make_tuple("480", "SD", 720, 462) },
+    { std::make_tuple("480", "SD", 720, 464) },
+    { std::make_tuple("480", "SD", 708, 468) },
+    { std::make_tuple("480", "SD", 714, 470) },
+    { std::make_tuple("480", "SD", 696, 472) },
+    { std::make_tuple("480", "SD", 640, 480) },
+    { std::make_tuple("480", "SD", 672, 480) },
+    { std::make_tuple("480", "SD", 704, 480) },
+    { std::make_tuple("480", "SD", 716, 480) },
+    { std::make_tuple("480", "SD", 720, 480) },
+    { std::make_tuple("576", "SD", 704, 528) },
+    { std::make_tuple("576", "SD", 716, 548) },
+    { std::make_tuple("576", "SD", 720, 552) },
+    { std::make_tuple("576", "SD", 716, 560) },
+    { std::make_tuple("576", "SD", 720, 566) },
+    { std::make_tuple("576", "SD", 697, 576) },
+    { std::make_tuple("576", "SD", 698, 576) },
+    { std::make_tuple("576", "SD", 716, 576) },
+    { std::make_tuple("576", "SD", 720, 576) },
+    { std::make_tuple("576", "SD", 720, 592) },
+    { std::make_tuple("720", "HD", 1280, 464) },
+    { std::make_tuple("720", "HD", 1280, 528) },
+    { std::make_tuple("720", "HD", 1280, 532) },
+    { std::make_tuple("720", "HD", 1280, 534) },
+    { std::make_tuple("720", "HD", 1280, 536) },
+    { std::make_tuple("720", "HD", 1280, 538) },
+    { std::make_tuple("720", "HD", 1280, 542) },
+    { std::make_tuple("720", "HD", 1272, 544) },
+    { std::make_tuple("720", "HD", 1280, 544) },
+    { std::make_tuple("720", "HD", 1280, 546) },
+    { std::make_tuple("720", "HD", 1280, 568) },
+    { std::make_tuple("720", "HD", 1280, 572) },
+    { std::make_tuple("720", "HD", 1280, 688) },
+    { std::make_tuple("720", "HD", 1280, 690) },
+    { std::make_tuple("720", "HD", 1280, 692) },
+    { std::make_tuple("720", "HD", 1280, 694) },
+    { std::make_tuple("720", "HD", 1280, 696) },
+    { std::make_tuple("720", "HD", 1280, 714) },
+    { std::make_tuple("720", "HD", 1280, 716) },
+    { std::make_tuple("720", "HD", 1280, 718) },
+    { std::make_tuple("720", "HD", 960, 720) },
+    { std::make_tuple("720", "HD", 964, 720) },
+    { std::make_tuple("720", "HD", 992, 720) },
+    { std::make_tuple("720", "HD", 1194, 720) },
+    { std::make_tuple("720", "HD", 1200, 720) },
+    { std::make_tuple("720", "HD", 1264, 720) },
+    { std::make_tuple("720", "HD", 1274, 720) },
+    { std::make_tuple("720", "HD", 1280, 720) },
+    { std::make_tuple("1080", "HD", 1920, 752) },
+    { std::make_tuple("1080", "HD", 1920, 784) },
+    { std::make_tuple("1080", "HD", 1916, 796) },
+    { std::make_tuple("1080", "HD", 1920, 798) },
+    { std::make_tuple("1080", "HD", 1918, 800) },
+    { std::make_tuple("1080", "HD", 1920, 800) },
+    { std::make_tuple("1080", "HD", 1920, 802) },
+    { std::make_tuple("1080", "HD", 1920, 804) },
+    { std::make_tuple("1080", "HD", 1920, 808) },
+    { std::make_tuple("1080", "HD", 1920, 814) },
+    { std::make_tuple("1080", "HD", 1920, 816) },
+    { std::make_tuple("1080", "HD", 1920, 818) },
+    { std::make_tuple("1080", "HD", 1916, 820) },
+    { std::make_tuple("1080", "HD", 1920, 824) },
+    { std::make_tuple("1080", "HD", 1920, 856) },
+    { std::make_tuple("1080", "HD", 1844, 992) },
+    { std::make_tuple("1080", "HD", 1920, 1032) },
+    { std::make_tuple("1080", "HD", 1920, 1036) },
+    { std::make_tuple("1080", "HD", 1920, 1038) },
+    { std::make_tuple("1080", "HD", 1920, 1040) },
+    { std::make_tuple("1080", "HD", 1080, 1040) },
+    { std::make_tuple("1080", "HD", 1920, 1056) },
+    { std::make_tuple("1080", "HD", 1920, 1072) },
+    { std::make_tuple("1080", "HD", 1392, 1080) },
+    { std::make_tuple("1080", "HD", 1424, 1080) },
+    { std::make_tuple("1080", "HD", 1440, 1080) },
+    { std::make_tuple("1080", "HD", 1488, 1080) },
+    { std::make_tuple("1080", "HD", 1712, 1080) },
+    { std::make_tuple("1080", "HD", 1792, 1080) },
+    { std::make_tuple("1080", "HD", 1808, 1080) },
+    { std::make_tuple("1080", "HD", 1824, 1080) },
+    { std::make_tuple("1080", "HD", 1884, 1080) },
+    { std::make_tuple("1080", "HD", 1920, 1080) },
+    { std::make_tuple("1080", "HD", 3840, 1080) },
+    { std::make_tuple("4K", "HD", 4096, 1714) },
+    { std::make_tuple("4K", "HD", 4096, 1744) },
+    { std::make_tuple("4K", "HD", 3840, 2076) },
+    { std::make_tuple("4K", "HD", 3840, 2076) }
+  };
+
+  // Unpack each data set and check that the quality/fidelity matches
+  for (const auto &tuple : dataProvider)
+  {
+    std::string quality;
+    std::string fidelity;
+    int width;
+    int height;
+
+    std::tie(quality, fidelity, width, height) = tuple;
+
+    CVideoDimensions dimensions(width, height);
+    EXPECT_STREQ(quality.c_str(), dimensions.GetQuality().c_str());
+    EXPECT_STREQ(fidelity.c_str(), dimensions.GetFidelity().c_str());
+  }
 }
 
 TEST(TestStreamDetails, VideoAspectToAspectDescription)
