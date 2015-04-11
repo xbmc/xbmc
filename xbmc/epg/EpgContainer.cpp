@@ -642,7 +642,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
     // we currently only support update via pvr add-ons. skip update when the pvr manager isn't started
     if (!g_PVRManager.IsStarted())
-      continue;
+      break;
 
     // check the pvr manager when the channel pointer isn't set
     if (!epg->Channel())
