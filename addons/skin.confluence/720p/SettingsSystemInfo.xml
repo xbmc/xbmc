@@ -273,25 +273,14 @@
 					<label>-</label>
 					<font>font13</font>
 				</control>
-				<control type="label" id="52">
-					<description>Kodi Build Version</description>
-					<left>20</left>
-					<top>400</top>
-					<width>730</width>
-					<label>144</label>
-					<align>right</align>
-					<textcolor>blue</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<font>font13_title</font>
-				</control>
 				<control type="label">
 					<description>CPU Text</description>
-					<left>70</left>
-					<top>450</top>
-					<width>350</width>
+					<left>0</left>
+					<top>350</top>
+					<width>750</width>
 					<height>25</height>
 					<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -299,20 +288,20 @@
 				</control>
 				<control type="progress">
 					<description>CPU BAR</description>
-					<left>430</left>
-					<top>455</top>
-					<width>320</width>
+					<left>0</left>
+					<top>375</top>
+					<width>750</width>
 					<height>16</height>
 					<info>System.CPUUsage</info>
 				</control>
 				<control type="label">
 					<description>Memory Text</description>
-					<left>70</left>
-					<top>480</top>
-					<width>350</width>
+					<left>0</left>
+					<top>395</top>
+					<width>auto</width>
 					<height>25</height>
-					<label>$LOCALIZE[31309] $INFO[system.memory(used.percent)]</label>
-					<align>right</align>
+					<label>$LOCALIZE[31309] $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
+					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -320,11 +309,61 @@
 				</control>
 				<control type="progress">
 					<description>Memory BAR</description>
-					<left>430</left>
-					<top>485</top>
-					<width>320</width>
+					<left>0</left>
+					<top>420</top>
+					<width>750</width>
 					<height>16</height>
 					<info>system.memory(used)</info>
+				</control>
+				<control type="grouplist">
+					<description>Kodi build version</description>
+					<itemgap>50</itemgap>
+					<top>450</top>
+					<left>0</left>
+					<align>left</align>
+					<orientation>horizontal</orientation>
+					<control type="label">
+						<description>Build label</description>
+						<width>auto</width>
+						<height>25</height>
+						<label>$LOCALIZE[144]</label>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<font>font13_title</font>
+					</control>
+					<control type="label" id="52">
+						<description>Kodi Build Version</description>
+						<left>90</left>
+						<top>450</top>
+						<width>auto</width>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<font>font13_title</font>
+					</control>
+				</control>
+				<control type="grouplist">
+					<description>Build date</description>
+					<itemgap>10</itemgap>
+					<top>480</top>
+					<align>left</align>
+					<left>0</left>
+					<orientation>horizontal</orientation>
+					<control type="label">
+						<description>kodi Compiled Text</description>
+						<width>auto</width>
+						<height>25</height>
+						<label>$LOCALIZE[174]</label>
+						<textcolor>white</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<font>font13_title</font>
+					</control>
+					<control type="label" id="53">
+						<description>Kodi Build Date</description>
+						<width>auto</width>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<font>font13_title</font>
+					</control>
 				</control>
 			</control>
 		</control>
