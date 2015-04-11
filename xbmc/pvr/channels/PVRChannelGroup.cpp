@@ -1095,7 +1095,7 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
   CEpg* epg;
   CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
-  
+
   for (PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
     channel = it->second.channel;
@@ -1109,7 +1109,7 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
           if (epgDate.IsValid() && (!date.IsValid() || epgDate < date))
             date = epgDate;
           break;
-            
+
         case EPG_LAST_DATE:
           epgDate = epg->GetLastDate();
           if (epgDate.IsValid() && (!date.IsValid() || epgDate > date))
@@ -1118,7 +1118,7 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
       }
     }
   }
-  
+
   return date;
 }
 

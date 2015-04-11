@@ -69,13 +69,13 @@ namespace EPG
 
     // Prevent copy construction, even for CEpgInfoTag instances and friends.
     // Note: Only declared, but intentionally not implemented
-    //       to prevent compiler generated copy ctor and to force 
+    //       to prevent compiler generated copy ctor and to force
     //       a linker error in case somebody tries to call it.
     CEpgInfoTag(const CEpgInfoTag &tag);
 
     // Prevent copy by assignment, even for CEpgInfoTag instances and friends.
     // Note: Only declared, but intentionally not implemented
-    //       to prevent compiler generated assignment operator and to force 
+    //       to prevent compiler generated assignment operator and to force
     //       a linker error in case somebody tries to call it.
     CEpgInfoTag &operator =(const CEpgInfoTag &other);
 

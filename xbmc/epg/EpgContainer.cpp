@@ -248,7 +248,7 @@ bool CEpgContainer::PersistAll(void)
   m_critSection.lock();
   std::map<unsigned int, CEpg*> copy = m_epgs;
   m_critSection.unlock();
-  
+
   for (EPGMAP_CITR it = copy.begin(); it != copy.end() && !m_bStop; it++)
   {
     CEpg *epg = it->second;

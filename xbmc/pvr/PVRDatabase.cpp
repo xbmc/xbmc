@@ -120,7 +120,7 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 24)
     m_pDS->exec("ALTER TABLE channels ADD bIsUserSetName bool");
-  
+
   if (iVersion < 25)
     m_pDS->exec("DROP TABLE IF EXISTS channelsettings");
 

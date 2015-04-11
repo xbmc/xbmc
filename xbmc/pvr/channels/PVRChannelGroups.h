@@ -107,7 +107,7 @@ namespace PVR
      * @return The last group in this container.
      */
     CPVRChannelGroupPtr GetLastGroup(void) const;
-    
+
     /*!
      * @brief The group that was played last and optionally contains the given channel.
      * @param iChannelID The channel ID
