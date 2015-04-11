@@ -110,7 +110,7 @@ int CSeekHandler::GetSeekSeconds(bool forward, SeekType type)
   int seconds = 0;
 
   // when exceeding the selected amount of steps repeat/sum up the last step size
-  if ((size_t)abs(m_seekStep) <= seekSteps.size())
+  if (static_cast<size_t>(abs(m_seekStep)) <= seekSteps.size())
     seconds = seekSteps.at(abs(m_seekStep) - 1);
   else
     seconds = seekSteps.back() * (abs(m_seekStep) - seekSteps.size() + 1);
@@ -120,13 +120,17 @@ int CSeekHandler::GetSeekSeconds(bool forward, SeekType type)
 
 void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bool analogSeek /* = false */, SeekType type /* = SEEK_TYPE_VIDEO */)
 {
+  // abort if we do not have a play time or already perform a seek
+  if (g_infoManager.GetTotalPlayTime() == 0 ||
+      g_infoManager.m_performingSeek)
+    return;
+
+  CSingleLock lock(m_critSection);
+
   // not yet seeking
   if (!m_requireSeek)
   {
-    if (g_infoManager.GetTotalPlayTime())
-      m_percent = (float)g_infoManager.GetPlayTime() / g_infoManager.GetTotalPlayTime() * 0.1f;
-    else
-      m_percent = 0.0f;
+    m_percent = static_cast<float>(g_infoManager.GetPlayTime()) / g_infoManager.GetTotalPlayTime() * 0.1f;
     m_percentPlayTime = m_percent;
 
     // tell info manager that we have started a seek operation
@@ -159,10 +163,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
       int seekSeconds = GetSeekSeconds(forward, type);
       if (seekSeconds != 0)
       {
-        float percentPerSecond = 0.0f;
-        if (g_infoManager.GetTotalPlayTime())
-          percentPerSecond = 100.0f / (float)g_infoManager.GetTotalPlayTime();
-
+        float percentPerSecond = 100.0f / static_cast<float>(g_infoManager.GetTotalPlayTime());
         m_percent = m_percentPlayTime + percentPerSecond * seekSeconds;
 
         g_infoManager.SetSeekStepSize(seekSeconds);
@@ -175,9 +176,40 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
       }
     }
 
-    if (m_percent > 100.0f) m_percent = 100.0f;
-    if (m_percent < 0.0f)   m_percent = 0.0f;
+    if (m_percent > 100.0f)
+      m_percent = 100.0f;
+    if (m_percent < 0.0f)
+      m_percent = 0.0f;
   }
+
+  m_timer.StartZero();
+}
+
+void CSeekHandler::SeekSeconds(int seconds)
+{
+  // abort if we do not have a play time or already perform a seek
+  if (seconds == 0 ||
+      g_infoManager.GetTotalPlayTime() == 0 ||
+      g_infoManager.m_performingSeek)
+    return;
+
+  CSingleLock lock(m_critSection);
+
+  m_requireSeek = true;
+  m_seekDelay = 0;
+
+  g_infoManager.SetSeeking(true);
+  g_infoManager.SetSeekStepSize(seconds);
+
+  float percentPlayTime = static_cast<float>(g_infoManager.GetPlayTime()) / g_infoManager.GetTotalPlayTime() * 0.1f;
+  float percentPerSecond = 100.0f / static_cast<float>(g_infoManager.GetTotalPlayTime());
+
+  m_percent = percentPlayTime + percentPerSecond * seconds;
+
+  if (m_percent > 100.0f)
+    m_percent = 100.0f;
+  if (m_percent < 0.0f)
+    m_percent = 0.0f;
 
   m_timer.StartZero();
 }
@@ -194,7 +226,7 @@ bool CSeekHandler::InProgress() const
 
 void CSeekHandler::Process()
 {
-  if (m_timer.GetElapsedMilliseconds() > m_seekDelay && m_requireSeek)
+  if (m_timer.GetElapsedMilliseconds() >= m_seekDelay && m_requireSeek)
   {
     g_infoManager.m_performingSeek = true;
 

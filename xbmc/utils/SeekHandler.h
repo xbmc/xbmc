@@ -24,6 +24,7 @@
 #include "interfaces/IActionListener.h"
 #include "settings/Settings.h"
 #include "settings/lib/ISettingCallback.h"
+#include "threads/CriticalSection.h"
 #include "utils/Stopwatch.h"
 
 enum SeekType
@@ -43,6 +44,7 @@ public:
   virtual bool OnAction(const CAction &action);
 
   void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);
+  void SeekSeconds(int seconds);
   void Process();
   void Reset();
 
@@ -69,4 +71,6 @@ private:
   std::map<SeekType, std::vector<int> > m_forwardSeekSteps;
   std::map<SeekType, std::vector<int> > m_backwardSeekSteps;
   CStopWatch m_timer;
+
+  CCriticalSection m_critSection;
 };
