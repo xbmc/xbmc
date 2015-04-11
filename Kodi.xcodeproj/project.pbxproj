@@ -743,6 +743,15 @@
 		AE84CB5A15A5B8A600A3810E /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */; };
 		AE89ACA61621DAB800E17DBC /* DVDDemuxBXA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE89ACA41621DAB800E17DBC /* DVDDemuxBXA.cpp */; };
 		AEC0083115ACAC6E0099888C /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */; };
+		B179BD6B1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179BD651AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp */; };
+		B179BD6C1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179BD651AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp */; };
+		B179BD6D1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179BD651AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp */; };
+		B179BD6E1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179BD671AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp */; };
+		B179BD6F1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179BD671AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp */; };
+		B179BD701AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179BD671AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp */; };
+		B179BD711AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179BD691AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp */; };
+		B179BD721AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179BD691AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp */; };
+		B179BD731AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B179BD691AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp */; };
 		B5011E4119AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
 		B5011E4219AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
 		B5011E4319AF3B56005ADF89 /* PosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */; };
@@ -4238,6 +4247,13 @@
 		AE89ACA51621DAB800E17DBC /* DVDDemuxBXA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxBXA.h; sourceTree = "<group>"; };
 		AEC0083015ACAC6E0099888C /* TagLoaderTagLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLoaderTagLib.cpp; sourceTree = "<group>"; };
 		AEC0083315ACAC7C0099888C /* TagLoaderTagLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLoaderTagLib.h; sourceTree = "<group>"; };
+		B179BD641AD8EA7B00EA8D49 /* InputCodingTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputCodingTable.h; path = xbmc/input/InputCodingTable.h; sourceTree = SOURCE_ROOT; };
+		B179BD651AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InputCodingTableBaiduPY.cpp; path = xbmc/input/InputCodingTableBaiduPY.cpp; sourceTree = SOURCE_ROOT; };
+		B179BD661AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputCodingTableBaiduPY.h; path = xbmc/input/InputCodingTableBaiduPY.h; sourceTree = SOURCE_ROOT; };
+		B179BD671AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InputCodingTableBasePY.cpp; path = xbmc/input/InputCodingTableBasePY.cpp; sourceTree = SOURCE_ROOT; };
+		B179BD681AD8EA7B00EA8D49 /* InputCodingTableBasePY.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputCodingTableBasePY.h; path = xbmc/input/InputCodingTableBasePY.h; sourceTree = SOURCE_ROOT; };
+		B179BD691AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InputCodingTableFactory.cpp; path = xbmc/input/InputCodingTableFactory.cpp; sourceTree = SOURCE_ROOT; };
+		B179BD6A1AD8EA7B00EA8D49 /* InputCodingTableFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputCodingTableFactory.h; path = xbmc/input/InputCodingTableFactory.h; sourceTree = SOURCE_ROOT; };
 		B5011E3F19AF3B56005ADF89 /* PosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixFile.cpp; sourceTree = "<group>"; };
 		B5011E4019AF3B56005ADF89 /* PosixFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixFile.h; sourceTree = "<group>"; };
 		B5101B5719DFF8DD00294D1E /* BlurayFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurayFile.cpp; sourceTree = "<group>"; };
@@ -6231,6 +6247,13 @@
 				18B7C8CC12942546009E7A26 /* ButtonTranslator.h */,
 				DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */,
 				DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */,
+				B179BD641AD8EA7B00EA8D49 /* InputCodingTable.h */,
+				B179BD651AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp */,
+				B179BD661AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.h */,
+				B179BD671AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp */,
+				B179BD681AD8EA7B00EA8D49 /* InputCodingTableBasePY.h */,
+				B179BD691AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp */,
+				B179BD6A1AD8EA7B00EA8D49 /* InputCodingTableFactory.h */,
 				DF14CF7C1A77782E00396CC9 /* InputManager.cpp */,
 				DF14CF7D1A77782E00396CC9 /* InputManager.h */,
 				395C29BA1A94733100EBC7AD /* Key.cpp */,
@@ -11219,6 +11242,9 @@
 				7CF34D9F1930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				7C973CFA1B5038580002A874 /* GUIDialogAudioDSPManager.cpp in Sources */,
 				7CF80DC919710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
+				B179BD6B1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
+				B179BD6E1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
+				B179BD711AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12263,6 +12289,9 @@
 				7CF34DA11930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				DF6F52B01AF6D03F001BC57D /* dacp.cpp in Sources */,
 				7CF80DCB19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
+				B179BD6D1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
+				B179BD701AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
+				B179BD731AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13309,6 +13338,9 @@
 				7CF34DA01930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				395C29F71A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */,
 				7CF80DCA19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
+				B179BD6C1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
+				B179BD6F1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
+				B179BD721AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

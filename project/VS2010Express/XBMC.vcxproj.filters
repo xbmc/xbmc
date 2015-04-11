@@ -3150,6 +3150,15 @@
     <ClCompile Include="..\..\xbmc\windows\GUIWindowSplash.cpp">
       <Filter>windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\InputCodingTableBaiduPY.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\InputCodingTableBasePY.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\InputCodingTableFactory.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6087,6 +6096,18 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowSplash.h">
       <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputCodingTable.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputCodingTableBaiduPY.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputCodingTableBasePY.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputCodingTableFactory.h">
+      <Filter>input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
