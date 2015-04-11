@@ -341,6 +341,7 @@ protected:
   int                          m_bytesToBeConsumed; // Remaining bytes in VPU
   double                       m_previousPts;       // Enable to keep pts when needed
   bool                         m_frameReported;     // State whether the frame consumed event will be reported by libfslvpu
+  bool                         m_warnOnce;          // Track warning messages to only warn once
 #ifdef DUMP_STREAM
   FILE                        *m_dump;
 #endif
