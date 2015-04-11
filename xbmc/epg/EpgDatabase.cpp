@@ -30,7 +30,6 @@
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
 
-using namespace std;
 using namespace dbiplus;
 using namespace EPG;
 
@@ -293,9 +292,9 @@ bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
-bool CEpgDatabase::Persist(const map<unsigned int, CEpg *> &epgs)
+bool CEpgDatabase::Persist(const std::map<unsigned int, CEpg *> &epgs)
 {
-  for (map<unsigned int, CEpg *>::const_iterator it = epgs.begin(); it != epgs.end(); ++it)
+  for (std::map<unsigned int, CEpg *>::const_iterator it = epgs.begin(); it != epgs.end(); ++it)
   {
     CEpg *epg = it->second;
     if (epg)
