@@ -540,13 +540,16 @@ void CPVRManager::Process(void)
       bRestart = true;
     }
 
-    if (!UpgradeOutdatedAddons())
+    if (GetState() == ManagerStateStarted)
     {
-      // failed to load after upgrading
-      CLog::Log(LOGERROR, "PVRManager - %s - could not load pvr data after upgrading. stopping the pvrmanager", __FUNCTION__);
+      if (!UpgradeOutdatedAddons())
+      {
+        // failed to load after upgrading
+        CLog::Log(LOGERROR, "PVRManager - %s - could not load pvr data after upgrading. stopping the pvrmanager", __FUNCTION__);
+      }
+      else if (IsStarted() && !bRestart)
+        m_triggerEvent.WaitMSec(1000);
     }
-    else if (IsStarted() && !bRestart)
-      m_triggerEvent.WaitMSec(1000);
   }
 
   if (IsStarted())
@@ -600,11 +603,11 @@ void CPVRManager::StopUpdateThreads(void)
 {
   SetState(ManagerStateInterrupted);
 
-  StopThread();
   if (m_guiInfo)
     m_guiInfo->Stop();
   if (m_addons)
     m_addons->Stop();
+  StopThread();
 }
 
 bool CPVRManager::Load(void)
