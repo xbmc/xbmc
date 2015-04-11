@@ -521,13 +521,21 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
     const CSettingControlTitle *title = dynamic_cast<CSettingControlTitle *>((*groupIt)->GetControl());
     bool hideSeparator = title ? title->IsSeparatorHidden() : false;
     bool separatorBelowGroupLabel = title ? title->IsSeparatorBelowLabel() : false;
+    int groupLabel = (*groupIt)->GetLabel();
+
+    // hide the separator for the first settings grouplist if it
+    // is the very first item in the list (also above the label)
     if (first)
+    {
       first = false;
+      if (groupLabel <= 0)
+        hideSeparator = true;
+    }
     else if (!separatorBelowGroupLabel && !hideSeparator)
       AddSeparator(group->GetWidth(), iControlID);
 
-    if ((*groupIt)->GetLabel() > 0)
-      AddLabel(group->GetWidth(), iControlID, (*groupIt)->GetLabel());
+    if (groupLabel > 0)
+      AddLabel(group->GetWidth(), iControlID, groupLabel);
 
     if (separatorBelowGroupLabel && !hideSeparator)
       AddSeparator(group->GetWidth(), iControlID);
