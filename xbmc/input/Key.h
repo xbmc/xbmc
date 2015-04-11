@@ -203,6 +203,7 @@
 
 #define ACTION_VOLUME_UP            88
 #define ACTION_VOLUME_DOWN          89
+#define ACTION_VOLAMP               90
 #define ACTION_MUTE                 91
 #define ACTION_NAV_BACK             92
 #define ACTION_VOLAMP_UP            93
