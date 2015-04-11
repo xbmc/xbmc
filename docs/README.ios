@@ -67,6 +67,7 @@ constellations of Xcode and osx versions (to be updated once we know more):
 
 1. Xcode 6.0.1 against iOS SDK 8.0 on 10.9.x (Mavericks)
 2. Xcode 6.1.0 against iOS SDK 8.1 on 10.10.x (Yosemite)
+3. Xcode 6.3.0 against iOS SDK 8.3 on 10.10.x (Yosemite)
 
 -----------------------------------------------------------------------------
 3.2 Install Cross libs and runtime environment

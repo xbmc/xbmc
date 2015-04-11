@@ -64,6 +64,8 @@ constellations of Xcode and osx versions (to be updated once we know more):
  
 1. XCode 6.0.1 against OSX SDK 10.9 (M)
 2. XCode 6.1.0 against OSX SDK 10.10 (Y)
+3. XCode 6.2.0 against OSX SDK 10.10 (Y)
+4. XCode 6.3.0 against OSX SDK 10.10 (Y)
 
 -----------------------------------------------------------------------------
 3.2 Install Kodi build depends
