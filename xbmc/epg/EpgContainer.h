@@ -74,8 +74,9 @@ namespace EPG
 
     /*!
      * @brief Start the EPG update thread.
+     * @param bAsync Should the EPG container starts asynchronously
      */
-    virtual void Start(void);
+    virtual void Start(bool bAsync);
 
     /*!
      * @brief Stop the EPG update thread.
