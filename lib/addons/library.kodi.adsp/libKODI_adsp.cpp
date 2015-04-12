@@ -89,4 +89,86 @@ DLLEXPORT void ADSP_unregister_mode(void *hdl, void* cb, AE_DSP_MODES::AE_DSP_MO
   ((CB_ADSPLib*)cb)->UnregisterMode(((AddonCB*)hdl)->addonData, mode);
 }
 
+///-------------------------------------
+/// CAddonSoundPlay
+
+DLLEXPORT CAddonSoundPlay* ADSP_get_sound_play(void *hdl, void *cb, const char *filename)
+{
+  return new CAddonSoundPlay(hdl, cb, filename);
+}
+
+DLLEXPORT void ADSP_release_sound_play(CAddonSoundPlay* p)
+{
+  delete p;
+}
+
+CAddonSoundPlay::CAddonSoundPlay(void *hdl, void *cb, const char *filename)
+ : m_Filename(filename)
+{
+  m_PlayHandle = NULL;
+  if (!hdl || !cb)
+    fprintf(stderr, "libKODI_adsp-ERROR: ADSP_get_sound_play is called with NULL handle !!!\n");
+  else
+  {
+    m_Handle     = hdl;
+    m_cb         = cb;
+    m_PlayHandle = ((CB_ADSPLib*)m_cb)->SoundPlay_GetHandle(((AddonCB*)m_Handle)->addonData, m_Filename.c_str());
+    if (!m_PlayHandle)
+      fprintf(stderr, "libKODI_adsp-ERROR: ADSP_get_sound_play can't get callback table from KODI !!!\n");
+  }
+}
+
+CAddonSoundPlay::~CAddonSoundPlay()
+{
+  if (m_PlayHandle)
+    ((CB_ADSPLib*)m_cb)->SoundPlay_ReleaseHandle(((AddonCB*)m_Handle)->addonData, m_PlayHandle);
+}
+
+void CAddonSoundPlay::Play()
+{
+  if (m_PlayHandle)
+    ((CB_ADSPLib*)m_cb)->SoundPlay_Play(((AddonCB*)m_Handle)->addonData, m_PlayHandle);
+}
+
+void CAddonSoundPlay::Stop()
+{
+  if (m_PlayHandle)
+    ((CB_ADSPLib*)m_cb)->SoundPlay_Stop(((AddonCB*)m_Handle)->addonData, m_PlayHandle);
+}
+
+bool CAddonSoundPlay::IsPlaying()
+{
+  if (!m_PlayHandle)
+    return false;
+
+  return ((CB_ADSPLib*)m_cb)->SoundPlay_IsPlaying(((AddonCB*)m_Handle)->addonData, m_PlayHandle);
+}
+
+void CAddonSoundPlay::SetChannel(AE_DSP_CHANNEL channel)
+{
+  if (m_PlayHandle)
+    ((CB_ADSPLib*)m_cb)->SoundPlay_SetChannel(((AddonCB*)m_Handle)->addonData, m_PlayHandle, channel);
+}
+
+AE_DSP_CHANNEL CAddonSoundPlay::GetChannel()
+{
+  if (!m_PlayHandle)
+    return AE_DSP_CH_INVALID;
+  return ((CB_ADSPLib*)m_cb)->SoundPlay_GetChannel(((AddonCB*)m_Handle)->addonData, m_PlayHandle);
+}
+
+void CAddonSoundPlay::SetVolume(float volume)
+{
+  if (m_PlayHandle)
+    ((CB_ADSPLib*)m_cb)->SoundPlay_SetVolume(((AddonCB*)m_Handle)->addonData, m_PlayHandle, volume);
+}
+
+float CAddonSoundPlay::GetVolume()
+{
+  if (!m_PlayHandle)
+    return 0.0f;
+
+  return ((CB_ADSPLib*)m_cb)->SoundPlay_GetVolume(((AddonCB*)m_Handle)->addonData, m_PlayHandle);
+}
+
 };

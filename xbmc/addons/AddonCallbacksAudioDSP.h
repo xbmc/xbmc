@@ -73,6 +73,78 @@ public:
    */
   static void ADSPUnregisterMode(void* addonData, AE_DSP_MODES::AE_DSP_MODE* mode);
 
+  /*! @name KODI background sound play handling */
+  //@{
+  /*!
+   * @brief Get a handle to open a gui sound wave playback
+   * @param addonData A pointer to the add-on.
+   * @param filename the related wave file to open
+   * @return pointer to sound play handle
+   */
+  static ADSPHANDLE ADSPSoundPlay_GetHandle(void *addonData, const char *filename);
+
+  /*!
+   * @brief Release the selected handle on KODI
+   * @param addonData A pointer to the add-on.
+   * @param handle pointer to sound play handle
+   */
+  static void ADSPSoundPlay_ReleaseHandle(void *addonData, ADSPHANDLE handle);
+
+  /*!
+   * @brief Start the wave file playback
+   * @param addonData A pointer to the add-on.
+   * @param handle pointer to sound play handle
+   */
+  static void ADSPSoundPlay_Play(void *addonData, ADSPHANDLE handle);
+
+  /*!
+   * @brief Stop the wave file playback
+   * @param addonData A pointer to the add-on.
+   * @param handle pointer to sound play handle
+   */
+  static void ADSPSoundPlay_Stop(void *addonData, ADSPHANDLE handle);
+
+  /*!
+   * @brief Ask that the playback of wave is in progress
+   * @param addonData A pointer to the add-on.
+   * @param handle pointer to sound play handle
+   * @return true if playing
+   */
+  static bool ADSPSoundPlay_IsPlaying(void *addonData, ADSPHANDLE handle);
+
+  /*!
+   * @brief Set the optional playback channel position, if not used it is on all channels
+   * @param addonData A pointer to the add-on.
+   * @param handle pointer to sound play handle
+   * @param used channel pointer for the playback, AE_DSP_CH_INVALID for on all
+   */
+  static void ADSPSoundPlay_SetChannel(void *addonData, ADSPHANDLE handle, AE_DSP_CHANNEL channel);
+
+  /*!
+   * @brief Get the selected playback channel position
+   * @param addonData A pointer to the add-on.
+   * @param handle pointer to sound play handle
+   * @return the used channel pointer for the playback, AE_DSP_CH_INVALID for on all
+   */
+  static AE_DSP_CHANNEL ADSPSoundPlay_GetChannel(void *addonData, ADSPHANDLE handle);
+
+  /*!
+   * @brief Set the volume for the wave file playback
+   * @param addonData A pointer to the add-on.
+   * @param handle pointer to sound play handle
+   * @param volume for the file playback
+   */
+  static void ADSPSoundPlay_SetVolume(void *addonData, ADSPHANDLE handle, float volume);
+
+  /*!
+   * @brief Get the volume which is set for the playback
+   * @param addonData A pointer to the add-on.
+   * @param handle pointer to sound play handle
+   * @return current volume for the file playback
+   */
+  static float ADSPSoundPlay_GetVolume(void *addonData, ADSPHANDLE handle);
+  //@}
+
 private:
   static ActiveAE::CActiveAEDSPAddon* GetAudioDSPAddon(void* addonData);
 

@@ -43,6 +43,16 @@ CAddonCallbacksADSP::CAddonCallbacksADSP(CAddon* addon)
   m_callbacks->RemoveMenuHook             = ADSPRemoveMenuHook;
   m_callbacks->RegisterMode               = ADSPRegisterMode;
   m_callbacks->UnregisterMode             = ADSPUnregisterMode;
+
+  m_callbacks->SoundPlay_GetHandle        = ADSPSoundPlay_GetHandle;
+  m_callbacks->SoundPlay_ReleaseHandle    = ADSPSoundPlay_ReleaseHandle;
+  m_callbacks->SoundPlay_Play             = ADSPSoundPlay_Play;
+  m_callbacks->SoundPlay_Stop             = ADSPSoundPlay_Stop;
+  m_callbacks->SoundPlay_IsPlaying        = ADSPSoundPlay_IsPlaying;
+  m_callbacks->SoundPlay_SetChannel       = ADSPSoundPlay_SetChannel;
+  m_callbacks->SoundPlay_GetChannel       = ADSPSoundPlay_GetChannel;
+  m_callbacks->SoundPlay_SetVolume        = ADSPSoundPlay_SetVolume;
+  m_callbacks->SoundPlay_GetVolume        = ADSPSoundPlay_GetVolume;
 }
 
 CAddonCallbacksADSP::~CAddonCallbacksADSP()
@@ -145,6 +155,118 @@ void CAddonCallbacksADSP::ADSPUnregisterMode(void* addonData, AE_DSP_MODES::AE_D
 
   CActiveAEDSPMode transferMode(*mode, addon->GetID());
   transferMode.Delete();
+}
+
+ADSPHANDLE CAddonCallbacksADSP::ADSPSoundPlay_GetHandle(void *addonData, const char *filename)
+{
+  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+  if (!filename || !addon)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+    return NULL;
+  }
+
+  IAESound *sound = CAEFactory::MakeSound(filename);
+  if (!sound)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - failed to make sound play data", __FUNCTION__);
+    return NULL;
+  }
+
+  return sound;
+}
+
+void CAddonCallbacksADSP::ADSPSoundPlay_ReleaseHandle(void *addonData, ADSPHANDLE handle)
+{
+  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+  if (!handle || !addon)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+    return;
+  }
+
+  CAEFactory::FreeSound((IAESound*)handle);
+}
+
+void CAddonCallbacksADSP::ADSPSoundPlay_Play(void *addonData, ADSPHANDLE handle)
+{
+  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+  if (!handle || !addon)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+    return;
+  }
+  ((IAESound*)handle)->Play();
+}
+
+void CAddonCallbacksADSP::ADSPSoundPlay_Stop(void *addonData, ADSPHANDLE handle)
+{
+  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+  if (!handle || !addon)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+    return;
+  }
+  ((IAESound*)handle)->Stop();
+}
+
+bool CAddonCallbacksADSP::ADSPSoundPlay_IsPlaying(void *addonData, ADSPHANDLE handle)
+{
+  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+  if (!handle || !addon)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+    return false;
+  }
+  return ((IAESound*)handle)->IsPlaying();
+}
+
+void CAddonCallbacksADSP::ADSPSoundPlay_SetChannel(void *addonData, ADSPHANDLE handle, AE_DSP_CHANNEL channel)
+{
+  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+  if (!handle || !addon)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+    return;
+  }
+
+  ((IAESound*)handle)->SetChannel(CActiveAEDSP::GetKODIChannel(channel));
+}
+
+AE_DSP_CHANNEL CAddonCallbacksADSP::ADSPSoundPlay_GetChannel(void *addonData, ADSPHANDLE handle)
+{
+  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+  if (!handle || !addon)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+    return AE_DSP_CH_INVALID;
+  }
+
+  return CActiveAEDSP::GetDSPChannel(((IAESound*)handle)->GetChannel());
+}
+
+void CAddonCallbacksADSP::ADSPSoundPlay_SetVolume(void *addonData, ADSPHANDLE handle, float volume)
+{
+  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+  if (!handle || !addon)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+    return;
+  }
+
+  ((IAESound*)handle)->SetVolume(volume);
+}
+
+float CAddonCallbacksADSP::ADSPSoundPlay_GetVolume(void *addonData, ADSPHANDLE handle)
+{
+  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+  if (!handle || !addon)
+  {
+    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+    return 0.0f;
+  }
+
+  return ((IAESound*)handle)->GetVolume();
 }
 
 }; /* namespace ADDON */

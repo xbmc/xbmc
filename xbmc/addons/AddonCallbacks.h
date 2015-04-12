@@ -22,6 +22,7 @@
 #include <stdint.h>
 
 #include "../../addons/library.kodi.guilib/libKODI_guilib.h"
+#include "../../addons/library.kodi.adsp/libKODI_adsp.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "addons/include/kodi_adsp_types.h"
 #include "addons/include/xbmc_pvr_types.h"
@@ -368,6 +369,16 @@ typedef void (*ADSPRemoveMenuHook)(void *addonData, AE_DSP_MENUHOOK *hook);
 typedef void (*ADSPRegisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
 typedef void (*ADSPUnregisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
 
+typedef ADSPHANDLE (*ADSPSoundPlay_GetHandle)(void *addonData, const char *filename);
+typedef void (*ADSPSoundPlay_ReleaseHandle)(void *addonData, ADSPHANDLE handle);
+typedef void (*ADSPSoundPlay_Play)(void *addonData, ADSPHANDLE handle);
+typedef void (*ADSPSoundPlay_Stop)(void *addonData, ADSPHANDLE handle);
+typedef bool (*ADSPSoundPlay_IsPlaying)(void *addonData, ADSPHANDLE handle);
+typedef void (*ADSPSoundPlay_SetChannel)(void *addonData, ADSPHANDLE handle, AE_DSP_CHANNEL channel);
+typedef AE_DSP_CHANNEL (*ADSPSoundPlay_GetChannel)(void *addonData, ADSPHANDLE handle);
+typedef void (*ADSPSoundPlay_SetVolume)(void *addonData, ADSPHANDLE handle, float volume);
+typedef float (*ADSPSoundPlay_GetVolume)(void *addonData, ADSPHANDLE handle);
+
 typedef struct CB_ADSPLib
 {
   ADSPAddMenuHook               AddMenuHook;
@@ -375,6 +386,15 @@ typedef struct CB_ADSPLib
   ADSPRegisterMode              RegisterMode;
   ADSPUnregisterMode            UnregisterMode;
 
+  ADSPSoundPlay_GetHandle       SoundPlay_GetHandle;
+  ADSPSoundPlay_ReleaseHandle   SoundPlay_ReleaseHandle;
+  ADSPSoundPlay_Play            SoundPlay_Play;
+  ADSPSoundPlay_Stop            SoundPlay_Stop;
+  ADSPSoundPlay_IsPlaying       SoundPlay_IsPlaying;
+  ADSPSoundPlay_SetChannel      SoundPlay_SetChannel;
+  ADSPSoundPlay_GetChannel      SoundPlay_GetChannel;
+  ADSPSoundPlay_SetVolume       SoundPlay_SetVolume;
+  ADSPSoundPlay_GetVolume       SoundPlay_GetVolume;
 } CB_ADSPLib;
 
 typedef void (*PVRTransferEpgEntry)(void *userData, const ADDON_HANDLE handle, const EPG_TAG *epgentry);

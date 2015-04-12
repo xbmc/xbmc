@@ -37,6 +37,8 @@ public:
   virtual void Stop();
   virtual bool IsPlaying();
 
+  virtual void SetChannel(AEChannel channel) { m_channel = channel; }
+  virtual AEChannel GetChannel() { return m_channel; }
   virtual void SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
   virtual float GetVolume() { return m_volume; }
 
@@ -62,6 +64,7 @@ protected:
   bool m_isSeekPossible;
   int m_fileSize;
   float m_volume;
+  AEChannel m_channel;
 
   CSoundPacket *m_orig_sound;
   CSoundPacket *m_dst_sound;

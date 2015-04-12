@@ -361,5 +361,6 @@ protected:
   // polled via the interface
   float m_aeVolume;
   bool m_aeMuted;
+  bool m_aeGUISoundForce;
 };
 };
