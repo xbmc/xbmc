@@ -435,8 +435,11 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
 
       if (speed == DVD_PLAYSPEED_NORMAL)
       {
-        m_dvdAudio.Resume();
-        m_syncclock = true;
+        if (speed != m_speed)
+        {
+          m_dvdAudio.Resume();
+          m_syncclock = true;
+        }
       }
       else
       {
