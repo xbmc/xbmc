@@ -332,7 +332,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   if (IsInitialising())
   {
     SetState(ManagerStateStarted);
-    g_EpgContainer.Start();
+    g_EpgContainer.Start(true);
 
     CLog::Log(LOGDEBUG, "PVRManager - %s - restarted", __FUNCTION__);
     return true;
@@ -508,9 +508,11 @@ void CPVRManager::Process(void)
 
   SetState(ManagerStateStarted);
 
+  /* start epg container */
+  g_EpgContainer.Start(true);
+
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
-  g_EpgContainer.Start();
 
   /* activate startup window */
   if (m_openWindowId > 0)
