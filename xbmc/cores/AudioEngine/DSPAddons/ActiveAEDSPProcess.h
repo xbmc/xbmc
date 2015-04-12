@@ -24,6 +24,7 @@
 #include "ActiveAEDSP.h"
 
 extern "C" {
+#include "libavcodec/avcodec.h"
 #include "libswresample/swresample.h"
 }
 
@@ -53,7 +54,8 @@ namespace ActiveAE
        * @param streamType The input stream type to find allowed master process dsp addons for it, e.g. AE_DSP_ASTREAM_MUSIC
        * @return True if the dsp processing becomes available
        */
-      bool Create(AEAudioFormat inputFormat, AEAudioFormat outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE streamType);
+      bool Create(AEAudioFormat inputFormat, AEAudioFormat outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE streamType,
+                  enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type, int profile);
 
       /*!>
        * Destroy all allocated dsp addons for this stream id and stops the processing.
@@ -280,6 +282,9 @@ namespace ActiveAE
       AE_DSP_STREAM_PROPERTIES          m_addonStreamProperties;    /*!< the current stream's properties (eg. stream type) passed to dsp add-ons */
       int                               m_NewMasterMode;            /*!< if master mode is changed it set here and handled by process function */
       AE_DSP_STREAMTYPE                 m_NewStreamType;            /*!< if stream type is changed it set here and handled by process function */
+      enum AVMatrixEncoding             m_ffMpegMatrixEncoding;
+      enum AVAudioServiceType           m_ffMpegAudioServiceType;
+      int                               m_ffMpegProfile;
       SwrContext                       *m_convertInput;
       SwrContext                       *m_convertOutput;
 

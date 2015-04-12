@@ -170,6 +170,16 @@ CActiveAEBufferPoolResample::~CActiveAEBufferPoolResample()
     delete m_dspBuffer;
 }
 
+void CActiveAEBufferPoolResample::SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type)
+{
+  m_Profile = profile;
+  m_MatrixEncoding = matrix_encoding;
+  m_AudioServiceType = audio_service_type;
+
+  if (m_useDSP)
+    ChangeAudioDSP();
+}
+
 bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize, bool useDSP)
 {
   CActiveAEBufferPool::Create(totaltime);
@@ -194,7 +204,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
   if (useDSP || m_changeDSP)
   {
     m_dspFormat = m_inputFormat;
-    m_useDSP = CActiveAEDSP::Get().CreateDSPs(m_streamId, m_processor, m_dspFormat, m_format, upmix, m_resampleQuality);
+    m_useDSP = CActiveAEDSP::Get().CreateDSPs(m_streamId, m_processor, m_dspFormat, m_format, upmix, m_resampleQuality, m_MatrixEncoding, m_AudioServiceType, m_Profile);
     if (m_useDSP)
     {
 
@@ -303,7 +313,7 @@ void CActiveAEBufferPoolResample::ChangeAudioDSP()
     wasActive = true;
   }
 
-  m_useDSP = CActiveAEDSP::Get().CreateDSPs(m_streamId, m_processor, m_dspFormat, m_format, m_stereoUpmix, m_resampleQuality, wasActive);
+  m_useDSP = CActiveAEDSP::Get().CreateDSPs(m_streamId, m_processor, m_dspFormat, m_format, m_stereoUpmix, m_resampleQuality, m_MatrixEncoding, m_AudioServiceType, m_Profile, wasActive);
   if (m_useDSP)
   {
     m_inputFormat.m_channelLayout = m_processor->GetChannelLayout();    /* Overide input format with DSP's supported format */

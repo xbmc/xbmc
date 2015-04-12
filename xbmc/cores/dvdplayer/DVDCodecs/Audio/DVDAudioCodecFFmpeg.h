@@ -45,11 +45,15 @@ public:
   virtual enum AEDataFormat GetDataFormat();
   virtual const char* GetName() { return "FFmpeg"; }
   virtual int GetBitRate();
+  virtual enum AVMatrixEncoding GetMatrixEncoding();
+  virtual enum AVAudioServiceType GetAudioServiceType();
+  virtual int GetProfile();
 
 protected:
-  AVCodecContext*     m_pCodecContext;
-  enum AVSampleFormat m_iSampleFormat;  
-  CAEChannelInfo      m_channelLayout;
+  AVCodecContext*       m_pCodecContext;
+  enum AVSampleFormat   m_iSampleFormat;
+  CAEChannelInfo        m_channelLayout;
+  enum AVMatrixEncoding m_matrixEncoding;
 
   AVFrame* m_pFrame1;
   int m_gotFrame;

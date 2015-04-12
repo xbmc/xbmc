@@ -23,6 +23,10 @@
 #include "cores/IAudioCallback.h"
 #include <stdint.h>
 
+extern "C" {
+#include "libavcodec/avcodec.h"
+}
+
 /**
  * Bit options to pass to IAE::GetStream
  */
@@ -160,6 +164,14 @@ public:
   virtual void SetAmplification(float amplify) = 0;
 
   /**
+   * Sets the stream ffmpeg informations if present.
+   + @param profile
+   * @param matrix_encoding
+   * @param audio_service_type
+   */
+  virtual void SetFFmpegInfo(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type) = 0;
+
+  /**
    * Returns the size of one audio frame in bytes (channelCount * resolution)
    * @return The size in bytes of one frame
   */
@@ -239,5 +251,10 @@ public:
    * Sginal a clock change
    */
   virtual void Discontinuity() = 0;
+
+  /**
+   * Indicates if dsp addon system is active.
+   */
+  virtual bool HasDSP() = 0;
 };
 

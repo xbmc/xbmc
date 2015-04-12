@@ -58,6 +58,9 @@ typedef struct stDVDAudioFrame
   int               sample_rate;
   int               encoded_sample_rate;
   bool              passthrough;
+  enum AVAudioServiceType audio_service_type;
+  enum AVMatrixEncoding matrix_encoding;
+  int               profile;
 } DVDAudioFrame;
 
 class CDVDAudioCodec
@@ -110,6 +113,9 @@ public:
     frame.encoded_sample_rate   = GetEncodedSampleRate();
     frame.passthrough           = NeedPassthrough();
     frame.pts                   = DVD_NOPTS_VALUE;
+    frame.matrix_encoding       = GetMatrixEncoding();
+    frame.audio_service_type    = GetAudioServiceType();
+    frame.profile               = GetProfile();
     // compute duration.
     if (frame.sample_rate)
       frame.duration = ((double)frame.nb_frames * DVD_TIME_BASE) / frame.sample_rate;
@@ -171,4 +177,19 @@ public:
    * should return amount of data decoded has buffered in preparation for next audio frame
    */
   virtual int GetBufferSize() { return 0; }
+
+  /*
+   * should return the ffmpeg matrix encoding type
+   */
+  virtual enum AVMatrixEncoding GetMatrixEncoding() { return AV_MATRIX_ENCODING_NONE; }
+
+  /*
+   * should return the ffmpeg audio service type
+   */
+  virtual enum AVAudioServiceType GetAudioServiceType() { return AV_AUDIO_SERVICE_TYPE_MAIN; }
+
+  /*
+   * should return the ffmpeg profile value
+   */
+  virtual int GetProfile() { return 0; }
 };

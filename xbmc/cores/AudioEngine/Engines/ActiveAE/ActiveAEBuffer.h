@@ -97,6 +97,7 @@ public:
   CActiveAEBufferPoolResample(AEAudioFormat inputFormat, AEAudioFormat outputFormat, AEQuality quality);
   virtual ~CActiveAEBufferPoolResample();
   virtual bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true, bool useDSP = false);
+  void SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type);
   void ChangeResampler();
   void ChangeAudioDSP();
   bool ResampleBuffers(int64_t timestamp = 0);
@@ -127,6 +128,9 @@ public:
   bool m_remap;
   int64_t m_lastSamplePts;
   unsigned int m_streamId;
+  enum AVMatrixEncoding m_MatrixEncoding;
+  enum AVAudioServiceType m_AudioServiceType;
+  int m_Profile;
 };
 
 }
