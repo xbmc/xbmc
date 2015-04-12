@@ -7,15 +7,6 @@
       </group>
     </category>
   </section>
-  <section id="videos">
-    <category id="videoplayer">
-      <group id="3">
-        <setting id="videoplayer.usedisplayasclock">
-          <requirement negated="true">HAS_GL</requirement>
-        </setting>
-      </group>
-    </category>
-  </section>
   <section id="services">
     <category id="zeroconf">
       <group id="1">
@@ -29,13 +20,6 @@
     </category>
   </section>
   <section id="system">
-    <category id="videoscreen">
-      <group id="1">
-        <setting id="videoscreen.fakefullscreen">
-          <requirement negated="true">HAS_GL</requirement>
-        </setting>
-      </group>
-    </category>
     <category id="audiooutput" label="772" help="36360">
       <group id="1">
         <setting id="audiooutput.audiodevice" type="string" label="545" help="36371">
