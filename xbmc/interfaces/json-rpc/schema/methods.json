@@ -291,7 +291,11 @@
       { "name": "value", "required": true, "type": [
           { "$ref": "Player.Position.Percentage", "required": true, "description": "Percentage value to seek to" },
           { "$ref": "Player.Position.Time", "required": true, "description": "Time to seek to" },
-          { "type": "string", "enum": [ "smallforward", "smallbackward", "bigforward", "bigbackward" ], "required": true, "description": "Seek by predefined jumps" }
+          { "type": "string", "enum": [ "smallforward", "smallbackward", "bigforward", "bigbackward" ], "required": true, "description": "Seek by predefined jumps" },
+          { "type": "object", "properties": { "percentage": { "$ref": "Player.Position.Percentage", "required": true, "description": "Percentage value to seek to" } }, "additionalProperties": false, "required": true },
+          { "type": "object", "properties": { "time": { "$ref": "Player.Position.Time", "required": true, "description": "Time to seek to" } }, "additionalProperties": false, "required": true },
+          { "type": "object", "properties": { "step": { "type": "string", "enum": [ "smallforward", "smallbackward", "bigforward", "bigbackward" ], "required": true, "description": "Seek by predefined jumps" } }, "additionalProperties": false, "required": true },
+          { "type": "object", "properties": { "seconds": { "type": "integer", "required": true, "description": "Seek by the given number of seconds" } }, "additionalProperties": false, "required": true }
         ]
       }
     ],

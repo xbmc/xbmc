@@ -287,7 +287,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
 
     if (chapterName.empty() ||
         StringUtils::StartsWithNoCase(chapterName, time) ||
-        StringUtils::IsNaturalNumber(chapterName));
+        StringUtils::IsNaturalNumber(chapterName))
       chapterName = StringUtils::Format(g_localizeStrings.Get(25010).c_str(), i);
 
     CFileItemPtr item(new CFileItem(chapterName));

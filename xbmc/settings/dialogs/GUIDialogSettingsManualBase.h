@@ -54,7 +54,7 @@ protected:
   virtual void InitializeSettings();
 
   CSettingCategory* AddCategory(const std::string &id, int label, int help = -1);
-  CSettingGroup* AddGroup(CSettingCategory *category);
+  CSettingGroup* AddGroup(CSettingCategory *category, int label = -1, int help = -1, bool separatorBelowLabel = true, bool hideSeparator = false);
   // checkmark control
   CSettingBool* AddToggle(CSettingGroup *group, const std::string &id, int label, int level, bool value, bool delayed = false, bool visible = true, int help = -1);
   // edit controls
@@ -145,6 +145,7 @@ protected:
   CSettingList* AddTimeRange(CSettingGroup *group, const std::string &id, int label, int level, int valueLower, int valueUpper, int minimum, int step, int maximum,
                              const std::string &valueFormatString = "mm:ss", int formatLabel = 21469, bool delayed = false, bool visible = true, int help = -1);
 
+  ISettingControl* GetTitleControl(bool separatorBelowLabel = true, bool hideSeparator = false);
   ISettingControl* GetCheckmarkControl(bool delayed = false);
   ISettingControl* GetEditControl(const std::string &format, bool delayed = false, bool hidden = false, bool verifyNewValue = false, int heading = -1);
   ISettingControl* GetButtonControl(const std::string &format, bool delayed = false, int heading = -1, bool hideValue = false, bool showInstalledAddons = true,

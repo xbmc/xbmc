@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <section id="system">
+    <category id="videoscreen">
+      <group id="1">
+        <setting id="videoscreen.fakefullscreen">
+          <visible>false</visible>
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="videoscreen.vsync">
+          <default>3</default> <!-- VSYNC_DRIVER -->
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="videos">
+    <category id="videoacceleration">
+      <group id="3">
+        <setting id="videoplayer.limitguiupdate" type="integer" label="38013" help="38014">
+          <level>2</level>
+          <default>10</default>
+          <constraints>
+            <minimum label="38015">0</minimum> <!-- Unlimited -->
+            <step>5</step>
+            <maximum>25</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>38016</formatlabel>
+          </control>
+          <control type="edit" format="integer" />
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

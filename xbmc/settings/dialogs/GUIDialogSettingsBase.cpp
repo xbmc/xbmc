@@ -26,6 +26,7 @@
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
+#include "guilib/GUILabelControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISettingsSliderControl.h"
 #include "guilib/GUISpinControlEx.h"
@@ -56,6 +57,7 @@ using namespace std;
 #define CONTROL_DEFAULT_SEPARATOR       11
 #define CONTROL_DEFAULT_EDIT            12
 #define CONTROL_DEFAULT_SLIDER          13
+#define CONTROL_DEFAULT_SETTING_LABEL   14
 
 CGUIDialogSettingsBase::CGUIDialogSettingsBase(int windowId, const std::string &xmlFile)
     : CGUIDialog(windowId, xmlFile),
@@ -69,6 +71,7 @@ CGUIDialogSettingsBase::CGUIDialogSettingsBase(int windowId, const std::string &
       m_pOriginalButton(NULL),
       m_pOriginalEdit(NULL),
       m_pOriginalImage(NULL),
+      m_pOriginalGroupTitle(NULL),
       m_newOriginalEdit(false),
       m_delayedTimer(this),
       m_confirmed(false)
@@ -351,6 +354,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
   m_pOriginalButton = dynamic_cast<CGUIButtonControl *>(GetControl(CONTROL_DEFAULT_BUTTON));
   m_pOriginalImage = dynamic_cast<CGUIImage *>(GetControl(CONTROL_DEFAULT_SEPARATOR));
   m_pOriginalEdit = dynamic_cast<CGUIEditControl *>(GetControl(CONTROL_DEFAULT_EDIT));
+  m_pOriginalGroupTitle = dynamic_cast<CGUILabelControl *>(GetControl(CONTROL_DEFAULT_SETTING_LABEL));
 
   if (!m_pOriginalEdit && m_pOriginalButton)
   {
@@ -365,6 +369,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
   if (m_pOriginalCategoryButton) m_pOriginalCategoryButton->SetVisible(false);
   if (m_pOriginalEdit) m_pOriginalEdit->SetVisible(false);
   if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
+  if (m_pOriginalGroupTitle) m_pOriginalGroupTitle->SetVisible(false);
 
   if (m_pOriginalCategoryButton != NULL)
   {
@@ -513,9 +518,18 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
     if (settings.size() <= 0)
       continue;
 
+    const CSettingControlTitle *title = dynamic_cast<CSettingControlTitle *>((*groupIt)->GetControl());
+    bool hideSeparator = title ? title->IsSeparatorHidden() : false;
+    bool separatorBelowGroupLabel = title ? title->IsSeparatorBelowLabel() : false;
     if (first)
       first = false;
-    else
+    else if (!separatorBelowGroupLabel && !hideSeparator)
+      AddSeparator(group->GetWidth(), iControlID);
+
+    if ((*groupIt)->GetLabel() > 0)
+      AddLabel(group->GetWidth(), iControlID, (*groupIt)->GetLabel());
+
+    if (separatorBelowGroupLabel && !hideSeparator)
       AddSeparator(group->GetWidth(), iControlID);
 
     for (SettingList::const_iterator settingIt = settings.begin(); settingIt != settings.end(); ++settingIt)
@@ -683,6 +697,20 @@ CGUIControl* CGUIDialogSettingsBase::AddSeparator(float width, int &iControlID)
     return NULL;
 
   return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlSeparatorSetting((CGUIImage *)pControl, iControlID)), width, iControlID);
+}
+
+CGUIControl* CGUIDialogSettingsBase::AddLabel(float width, int &iControlID, int label)
+{
+  if (m_pOriginalGroupTitle == NULL)
+    return NULL;
+
+  CGUIControl *pControl = new CGUILabelControl(*m_pOriginalGroupTitle);
+  if (pControl == NULL)
+    return NULL;
+
+  ((CGUILabelControl *)pControl)->SetLabel(GetLocalizedString(label));
+
+  return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlGroupTitleSetting((CGUILabelControl *)pControl, iControlID)), width, iControlID);
 }
 
 CGUIControl* CGUIDialogSettingsBase::AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID)

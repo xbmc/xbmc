@@ -597,13 +597,6 @@ void CGUIDialogSubtitles::SetSubtitles(const std::string &subtitle)
 {
   if (g_application.m_pPlayer)
   {
-    int nStream = g_application.m_pPlayer->AddSubtitle(subtitle);
-    if(nStream >= 0)
-    {
-      g_application.m_pPlayer->SetSubtitle(nStream);
-      g_application.m_pPlayer->SetSubtitleVisible(true);
-      CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay = CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleDelay;
-      g_application.m_pPlayer->SetSubTitleDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
-    }
+    g_application.m_pPlayer->AddSubtitle(subtitle);
   }
 }

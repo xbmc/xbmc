@@ -61,7 +61,7 @@ public:
   ~CXBMCRenderManager();
 
   // Functions called from the GUI
-  void GetVideoRect(CRect &source, CRect &dest);
+  void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio();
   void Update();
   void FrameMove();

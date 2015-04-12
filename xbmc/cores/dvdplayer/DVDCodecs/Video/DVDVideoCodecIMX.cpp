@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <algorithm>
 
 #define IMX_VDI_MAX_WIDTH 968
 #define FRAME_ALIGN 16
@@ -420,6 +421,7 @@ CDVDVideoCodecIMX::CDVDVideoCodecIMX()
   m_convert_bitstream = false;
   m_bytesToBeConsumed = 0;
   m_previousPts = DVD_NOPTS_VALUE;
+  m_warnOnce = true;
 #ifdef DUMP_STREAM
   m_dump = NULL;
 #endif
@@ -435,6 +437,11 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if (hints.software)
   {
     CLog::Log(LOGNOTICE, "iMX VPU : software decoding requested.\n");
+    return false;
+  }
+  else if (hints.width > 1920)
+  {
+    CLog::Log(LOGNOTICE, "iMX VPU : software decoding forced - video dimensions out of spec: %d %d.", hints.width, hints.height);
     return false;
   }
 
@@ -514,9 +521,9 @@ bool CDVDVideoCodecIMX::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   {
     // Test for VPU unsupported profiles to revert to sw decoding
     if ((m_hints.profile == 110) || //hi10p
-        (m_hints.profile == 578))   //quite uncommon h264 profile
+        (m_hints.profile == 578 && m_hints.level == 30))   //quite uncommon h264 profile with Main 3.0
     {
-      CLog::Log(LOGNOTICE, "i.MX6 VPU is not able to decode AVC profile %d", m_hints.profile);
+      CLog::Log(LOGNOTICE, "i.MX6 VPU is not able to decode AVC profile %d level %d", m_hints.profile, m_hints.level);
       return false;
     }
     m_decOpenParam.CodecFormat = VPU_V_AVC;
@@ -1079,8 +1086,21 @@ bool CDVDVideoCodecIMX::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
     pDvdVideoPicture->iFlags &= ~DVP_FLAG_INTERLACED;
 
-  if (m_currentBuffer->GetFieldType() != VPU_FIELD_BOTTOM && m_currentBuffer->GetFieldType() != VPU_FIELD_BT)
-    pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+  // do a sanity check to not deinterlace progressive content
+  if ((pDvdVideoPicture->iFlags & DVP_FLAG_INTERLACED) && (m_currentBuffer->GetFieldType() == VPU_FIELD_NONE))
+  {
+    if (m_warnOnce)
+    {
+      m_warnOnce = false;
+      CLog::Log(LOGWARNING, "Interlaced content reported by VPU, but full frames detected - Please turn off deinterlacing manually.");
+    }
+  }
+
+  if (pDvdVideoPicture->iFlags & DVP_FLAG_INTERLACED)
+  {
+    if (m_currentBuffer->GetFieldType() != VPU_FIELD_BOTTOM && m_currentBuffer->GetFieldType() != VPU_FIELD_BT)
+      pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+  }
   else
     pDvdVideoPicture->iFlags &= ~DVP_FLAG_TOP_FIELD_FIRST;
 
@@ -1278,6 +1298,7 @@ CIMXContext::CIMXContext()
   , m_fbVirtAddr(NULL)
   , m_ipuHandle(0)
   , m_vsync(true)
+  , m_deInterlacing(false)
   , m_pageCrops(NULL)
   , m_g2dHandle(NULL)
   , m_bufferCapture(NULL)
@@ -1637,8 +1658,16 @@ void CIMXContext::CaptureDisplay(unsigned char *buffer, int iWidth, int iHeight)
   }
   unsigned char *display = m_fbVirtAddr + m_fbCurrentPage*m_fbPageSize;
 
-  if (m_fbVar.nonstd != _4CC('R', 'G', 'B', '4'))
+  if (m_fbVar.nonstd == _4CC('R', 'G', 'B', '4'))
+  {
     memcpy(buffer, display, iWidth * iHeight * 4);
+    // BGRA is needed RGBA we get
+    unsigned int size = iWidth * iHeight * 4;
+    for (unsigned int i = 0; i < size; i += 4)
+    {
+       std::swap(buffer[i], buffer[i + 2]);
+    }
+  }
   else //_4CC('U', 'Y', 'V', 'Y')))
   {
     int r,g,b,a;
@@ -1784,15 +1813,15 @@ void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *so
     dstRect.y2 = m_fbHeight;
   }
 
-  iSrcRect.x1 = Align((int)srcRect.x1,8);
-  iSrcRect.y1 = Align((int)srcRect.y1,8);
-  iSrcRect.x2 = Align((int)srcRect.x2,8);
-  iSrcRect.y2 = Align((int)srcRect.y2,8);
+  iSrcRect.x1 = Align((int)srcRect.x1,2);
+  iSrcRect.y1 = Align((int)srcRect.y1,2);
+  iSrcRect.x2 = Align((int)srcRect.x2,2);
+  iSrcRect.y2 = Align((int)srcRect.y2,2);
 
-  iDstRect.x1 = Align((int)dstRect.x1,8);
-  iDstRect.y1 = Align((int)dstRect.y1,8);
-  iDstRect.x2 = Align((int)dstRect.x2,8);
-  iDstRect.y2 = Align((int)dstRect.y2,8);
+  iDstRect.x1 = Align((int)dstRect.x1,2);
+  iDstRect.y1 = Align((int)dstRect.y1,2);
+  iDstRect.x2 = Align((int)dstRect.x2,2);
+  iDstRect.y2 = Align((int)dstRect.y2,2);
 
   ipu.task.input.crop.pos.x  = iSrcRect.x1;
   ipu.task.input.crop.pos.y  = iSrcRect.y1;

@@ -567,6 +567,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isresumable",      LISTITEM_IS_RESUMABLE},
                                   { "percentplayed",    LISTITEM_PERCENT_PLAYED},
                                   { "isfolder",         LISTITEM_IS_FOLDER },
+                                  { "iscollection",     LISTITEM_IS_COLLECTION },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
                                   { "playcount",        LISTITEM_PLAYCOUNT },
@@ -5411,6 +5412,13 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag())
       {
+        CEpgInfoTagPtr epgTag = pItem->GetEPGInfoTag();
+
+        // Check if the tag has a currently active recording associated
+        if (epgTag->HasRecording() && epgTag->IsActive())
+          return true;
+
+        // Search all timers for something that matches the tag
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
         if (timer && timer->HasPVRTimerInfoTag())
           return timer->GetPVRTimerInfoTag()->IsRecording();
@@ -5466,6 +5474,11 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
           stereoMode = CStereoscopicsManager::Get().NormalizeStereoMode(pItem->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
       if (!stereoMode.empty() && stereoMode != "mono")
         return true;
+    }
+    else if (condition == LISTITEM_IS_COLLECTION)
+    {
+      if (pItem->HasVideoInfoTag())
+        return (pItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection);
     }
   }
 

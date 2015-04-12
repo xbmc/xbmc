@@ -20,6 +20,7 @@
 
 #include "SysfsUtils.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #include <unistd.h>
 #include <stdio.h>
@@ -52,6 +53,9 @@ int SysfsUtils::GetString(const std::string& path, std::string& valstr)
     while ((len = read(fd, buf, 256)) > 0)
       valstr.append(buf, len);
     close(fd);
+ 
+    StringUtils::Trim(valstr);
+    
     return 0;
   }
 

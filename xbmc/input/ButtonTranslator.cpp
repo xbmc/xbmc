@@ -229,6 +229,7 @@ static const ActionMapping actions[] =
         {"decreasepar"       , ACTION_DECREASE_PAR},
         {"volampup"          , ACTION_VOLAMP_UP},
         {"volampdown"        , ACTION_VOLAMP_DOWN},
+        {"volumeamplification", ACTION_VOLAMP},
         {"createbookmark"        , ACTION_CREATE_BOOKMARK},
         {"createepisodebookmark" , ACTION_CREATE_EPISODE_BOOKMARK},
         {"settingsreset"      , ACTION_SETTINGS_RESET},

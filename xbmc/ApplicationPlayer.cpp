@@ -535,13 +535,11 @@ void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
   }
 }
 
-int  CApplicationPlayer::AddSubtitle(const std::string& strSubPath)
+void CApplicationPlayer::AddSubtitle(const std::string& strSubPath)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->AddSubtitle(strSubPath);
-  else
-    return 0;
+    player->AddSubtitle(strSubPath);
 }
 
 void CApplicationPlayer::SetSubTitleDelay(float fValue)

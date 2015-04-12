@@ -16,7 +16,8 @@
 	<include file="IncludesBackgroundBuilding.xml" />
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
-	<variable name="ResolutionOverlayVar">
+	<variable name="MediaInfoOverlayVar">
+		<value condition="ListItem.IsCollection">flagging/video/Set.png</value>
 		<value condition="!ListItem.IsStereoscopic">$INFO[ListItem.VideoResolution,flagging/lists/,.png]</value>
 		<value>flagging/lists/3D.png</value>
 	</variable>
@@ -68,11 +69,19 @@
 		<value condition="Player.Forwarding">$LOCALIZE[31044]</value>
 		<value condition="Player.Rewinding">$LOCALIZE[31045]</value>
 	</variable>
+	<variable name="PlayerControlsRepeatImageVar">
+		<value condition="Playlist.IsRepeatOne + Control.HasFocus(604)">OSDRepeatOneFO.png</value>
+		<value condition="Playlist.IsRepeat + Control.HasFocus(604)">OSDRepeatAllFO.png</value>
+		<value condition="Control.HasFocus(604)">OSDRepeatFO.png</value>
+		<value condition="Playlist.IsRepeatOne">OSDRepeatOneNF.png</value>
+		<value condition="Playlist.IsRepeat">OSDRepeatAllNF.png</value>
+		<value>OSDRepeatNF.png</value>
+	</variable>
 	<variable name="PVRChannelMgrHeader">
 		<value condition="!IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
 	</variable>
-	<include name="DialogBackgroundCommons">			
+	<include name="DialogBackgroundCommons">
 		<control type="image">
 			<description>background image</description>
 			<left>0</left>
@@ -897,54 +906,7 @@
 					<top>2</top>
 					<width>39</width>
 					<height>39</height>
-					<texture>OSDRepeatNF.png</texture>
-					<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
-					<visible>!Control.HasFocus(604)</visible>
-				</control>
-				<control type="image">
-					<left>165</left>
-					<top>2</top>
-					<width>39</width>
-					<height>39</height>
-					<texture>OSDRepeatFO.png</texture>
-					<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
-					<visible>Control.HasFocus(604)</visible>
-				</control>
-				<control type="image">
-					<left>165</left>
-					<top>2</top>
-					<width>39</width>
-					<height>39</height>
-					<texture>OSDRepeatOneNF.png</texture>
-					<visible>Playlist.IsRepeatOne</visible>
-					<visible>!Control.HasFocus(604)</visible>
-				</control>
-				<control type="image">
-					<left>165</left>
-					<top>2</top>
-					<width>39</width>
-					<height>39</height>
-					<texture>OSDRepeatOneFO.png</texture>
-					<visible>Playlist.IsRepeatOne</visible>
-					<visible>Control.HasFocus(604)</visible>
-				</control>
-				<control type="image">
-					<left>165</left>
-					<top>2</top>
-					<width>39</width>
-					<height>39</height>
-					<texture>OSDRepeatAllNF.png</texture>
-					<visible>Playlist.IsRepeat</visible>
-					<visible>!Control.HasFocus(604)</visible>
-				</control>
-				<control type="image">
-					<left>165</left>
-					<top>2</top>
-					<width>39</width>
-					<height>39</height>
-					<texture>OSDRepeatAllFO.png</texture>
-					<visible>Playlist.IsRepeat</visible>
-					<visible>Control.HasFocus(604)</visible>
+					<texture>$VAR[PlayerControlsRepeatImageVar]</texture>
 				</control>
 				<control type="togglebutton" id="605">
 					<left>205</left>

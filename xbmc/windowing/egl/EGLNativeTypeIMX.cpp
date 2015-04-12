@@ -53,7 +53,7 @@ CEGLNativeTypeIMX::~CEGLNativeTypeIMX()
 bool CEGLNativeTypeIMX::CheckCompatibility()
 {
   std::ifstream file("/sys/class/graphics/fb0/fsl_disp_dev_property");
-  return file;
+  return file.is_open();
 }
 
 void CEGLNativeTypeIMX::Initialize()

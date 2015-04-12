@@ -63,6 +63,7 @@ template<class T> void addISetting(const TiXmlNode *node, const T &item, std::ve
 
 CSettingGroup::CSettingGroup(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : ISetting(id, settingsManager)
+  , m_control(NULL)
 { }
 
 CSettingGroup::~CSettingGroup()
@@ -70,6 +71,8 @@ CSettingGroup::~CSettingGroup()
   for (SettingList::const_iterator setting = m_settings.begin(); setting != m_settings.end(); ++setting)
     delete *setting;
   m_settings.clear();
+  if (m_control)
+    delete m_control;
 }
 
 bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */)
@@ -77,6 +80,34 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
   // handle <visible> conditions
   if (!ISetting::Deserialize(node, update))
     return false;
+
+  const TiXmlElement *controlElement = node->FirstChildElement(SETTING_XML_ELM_CONTROL);
+  if (controlElement != NULL)
+  {
+    const char* controlType = controlElement->Attribute(SETTING_XML_ATTR_TYPE);
+    if (controlType == NULL || strlen(controlType) <= 0)
+    {
+      CLog::Log(LOGERROR, "CSettingGroup: unable to read control type");
+      return false;
+    }
+
+    if (m_control != NULL)
+      delete m_control;
+
+    m_control = m_settingsManager->CreateControl(controlType);
+    if (m_control == NULL)
+    {
+      CLog::Log(LOGERROR, "CSettingGroup: unable to create new control \"%s\"", controlType);
+      return false;
+    }
+
+    if (!m_control->Deserialize(controlElement))
+    {
+      CLog::Log(LOGWARNING, "CSettingGroup: unable to read control \"%s\"", controlType);
+      delete m_control;
+      m_control = NULL;
+    }
+  }
 
   const TiXmlElement *settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
   while (settingElement != NULL)

@@ -504,8 +504,6 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
         }
         s.channels = ((CDemuxStreamAudio*)stream)->iChannels;
       }
-      if (!s.filename2.empty())
-        s.name += " " + g_localizeStrings.Get(21602);
       Update(s);
     }
   }
@@ -1777,6 +1775,17 @@ void CDVDPlayer::HandlePlaySpeed()
   if(m_caching != caching)
     SetCaching(caching);
 
+  if (m_playSpeed == DVD_PLAYSPEED_NORMAL && m_caching == CACHESTATE_DONE)
+  {
+    // due to i.e. discontinuities of pts the stream may have drifted away
+    // from clock too far for audio to sync back.
+    if (m_CurrentAudio.id >= 0 && m_CurrentAudio.inited &&
+        m_dvdPlayerAudio->IsStalled() && m_dvdPlayerAudio->GetLevel() == 0)
+    {
+      CLog::Log(LOGDEBUG,"CDVDPlayer::HandlePlaySpeed - audio stream stalled, tiggering re-sync");
+      TriggerResync();
+    }
+  }
 
   if(GetPlaySpeed() != DVD_PLAYSPEED_NORMAL && GetPlaySpeed() != DVD_PLAYSPEED_PAUSE)
   {
@@ -1852,6 +1861,7 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
       {
         CLog::Log(LOGDEBUG, "%s stream stalled. start buffering", current.type == STREAM_AUDIO ? "audio" : "video");
         SetCaching(CACHESTATE_PVR);
+        TriggerResync();
       }
       return true;
     }
@@ -2515,6 +2525,7 @@ void CDVDPlayer::HandleMessages()
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
+          m_playSpeed = DVD_PLAYSPEED_NORMAL;
 #ifdef HAS_VIDEO_PLAYBACK
           // when using fast channel switching some shortcuts are taken which 
           // means we'll have to update the view mode manually
@@ -2533,6 +2544,7 @@ void CDVDPlayer::HandleMessages()
         if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannelPtr> *>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
+          m_playSpeed = DVD_PLAYSPEED_NORMAL;
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
@@ -2569,6 +2581,7 @@ void CDVDPlayer::HandleMessages()
             {
               m_ChannelEntryTimeOut.SetInfinite();
               SAFE_DELETE(m_pDemuxer);
+              m_playSpeed = DVD_PLAYSPEED_NORMAL;
 
               g_infoManager.SetDisplayAfterSeek();
 #ifdef HAS_VIDEO_PLAYBACK
@@ -2624,6 +2637,15 @@ void CDVDPlayer::HandleMessages()
         {
           if(state.player == DVDPLAYER_AUDIO)
             m_State = state;
+        }
+      }
+      else if (pMsg->IsType(CDVDMsg::SUBTITLE_ADDFILE))
+      {
+        int id = AddSubtitleFile(((CDVDMsgType<std::string>*) pMsg)->m_value);
+        if (id >= 0)
+        {
+          SetSubtitle(id);
+          SetSubtitleVisibleInternal(true);
         }
       }
 
@@ -3572,6 +3594,24 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool sync)
   }
 }
 
+void CDVDPlayer::TriggerResync()
+{
+  m_CurrentAudio.inited      = false;
+  m_CurrentVideo.inited      = false;
+  m_CurrentSubtitle.inited   = false;
+  m_CurrentTeletext.inited   = false;
+
+  m_CurrentAudio.startpts    = DVD_NOPTS_VALUE;
+  m_CurrentVideo.startpts    = DVD_NOPTS_VALUE;
+  m_CurrentSubtitle.startpts = DVD_NOPTS_VALUE;
+  m_CurrentTeletext.startpts = DVD_NOPTS_VALUE;
+
+  m_dvdPlayerAudio->FlushMessages();
+  m_dvdPlayerVideo->FlushMessages();
+  m_dvdPlayerSubtitle->FlushMessages();
+  m_dvdPlayerTeletext->FlushMessages();
+}
+
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
 int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 {
@@ -3921,8 +3961,8 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_MOUSE_MOVE:
       case ACTION_MOUSE_LEFT_CLICK:
         {
-          CRect rs, rd;
-          m_dvdPlayerVideo->GetVideoRect(rs, rd);
+          CRect rs, rd, rv;
+          m_dvdPlayerVideo->GetVideoRect(rs, rd, rv);
           CPoint pt(action.GetAmount(), action.GetAmount(1));
           if (!rd.PtInRect(pt))
             return false; // out of bounds
@@ -4124,9 +4164,9 @@ int64_t CDVDPlayer::GetChapterPos(int chapterIdx)
   return -1;
 }
 
-int CDVDPlayer::AddSubtitle(const std::string& strSubPath)
+void CDVDPlayer::AddSubtitle(const std::string& strSubPath)
 {
-  return AddSubtitleFile(strSubPath);
+  m_messenger.Put(new CDVDMsgType<std::string>(CDVDMsg::SUBTITLE_ADDFILE, strSubPath));
 }
 
 int CDVDPlayer::GetCacheLevel() const
@@ -4159,7 +4199,8 @@ void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
   }
   info.videoCodecName = retVal;
   info.videoAspectRatio = m_dvdPlayerVideo->GetAspectRatio();
-  m_dvdPlayerVideo->GetVideoRect(info.SrcRect, info.DestRect);
+  CRect viewRect;
+  m_dvdPlayerVideo->GetVideoRect(info.SrcRect, info.DestRect, viewRect);
   info.stereoMode = m_dvdPlayerVideo->GetStereoMode();
   if (info.stereoMode == "mono")
     info.stereoMode = "";
@@ -4218,11 +4259,11 @@ void CDVDPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   }
 }
 
-int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename, CDemuxStream::EFlags flags)
+int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename)
 {
   std::string ext = URIUtils::GetExtension(filename);
   std::string vobsubfile = subfilename;
-  if(ext == ".idx")
+  if (ext == ".idx")
   {
     if (vobsubfile.empty()) {
       // find corresponding .sub (e.g. in case of manually selected .idx sub)
@@ -4235,27 +4276,33 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     if (!v.Open(filename, STREAM_SOURCE_NONE, vobsubfile))
       return -1;
     m_SelectionStreams.Update(NULL, &v, vobsubfile);
-    int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
-    m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
+
     ExternalStreamInfo info;
     CUtil::GetExternalStreamDetailsFromFilename(m_filename, vobsubfile, info);
-    m_SelectionStreams.Get(STREAM_SUBTITLE, index).name = info.name;
-    if (m_SelectionStreams.Get(STREAM_SUBTITLE, index).language.empty())
-      m_SelectionStreams.Get(STREAM_SUBTITLE, index).language = info.language;
 
-    if (static_cast<CDemuxStream::EFlags>(info.flag) == CDemuxStream::FLAG_NONE)
-      m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
-    else
-      m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = static_cast<CDemuxStream::EFlags>(info.flag);      
+    for (int i = 0; i < v.GetNrOfSubtitleStreams(); ++i)
+    {
+      int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), i);
+      SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, index);
 
-    return index;
+      if (stream.name.empty())
+        stream.name = info.name;
+
+      if (stream.language.empty())
+        stream.language = info.language;
+
+      if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
+        stream.flags = static_cast<CDemuxStream::EFlags>(info.flag);
+    }
+
+    return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);;
   }
   if(ext == ".sub")
   {
     // if this looks like vobsub file (i.e. .idx found), add it as such
     std::string vobsubidx = CUtil::GetVobSubIdxFromSub(filename);
     if (!vobsubidx.empty())
-      return AddSubtitleFile(vobsubidx, filename, flags);
+      return AddSubtitleFile(vobsubidx, filename);
   }
   SelectionStream s;
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
@@ -4266,10 +4313,8 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   CUtil::GetExternalStreamDetailsFromFilename(m_filename, filename, info);
   s.name = info.name;
   s.language = info.language;
-  if (static_cast<CDemuxStream::EFlags>(info.flag) == CDemuxStream::FLAG_NONE)
-    s .flags = flags;
-  else
-    s.flags = static_cast<CDemuxStream::EFlags>(info.flag);     
+  if (static_cast<CDemuxStream::EFlags>(info.flag) != CDemuxStream::FLAG_NONE)
+    s.flags = static_cast<CDemuxStream::EFlags>(info.flag);
 
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);

@@ -140,8 +140,6 @@ bool CGUIFontTTFGL::FirstBegin()
     VerifyGLState();
   }
 
-#else
-  g_Windowing.EnableGUIShader(SM_FONTS);
 #endif
   return true;
 }
@@ -168,6 +166,8 @@ void CGUIFontTTFGL::LastEnd()
   glDisable(GL_TEXTURE_2D);
 #else
   // GLES 2.0 version.
+  g_Windowing.EnableGUIShader(SM_FONTS);
+
   CreateStaticVertexBuffers();
 
   GLint posLoc  = g_Windowing.GUIShaderGetPos();

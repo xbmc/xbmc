@@ -769,12 +769,14 @@ void CGUIDialogPVRChannelManager::SaveList(void)
   CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
   if (!group)
     return;
+
   for (int iListPtr = 0; iListPtr < m_channelItems->Size(); iListPtr++)
   {
-    if (!m_channelItems->HasPVRChannelInfoTag())
+    CFileItemPtr pItem = m_channelItems->Get(iListPtr);
+
+    if (!pItem->HasPVRChannelInfoTag())
       continue;
 
-    CFileItemPtr pItem = m_channelItems->Get(iListPtr);
     if (pItem->GetProperty("SupportsSettings").asBoolean())
       RenameChannel(pItem);
 

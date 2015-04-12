@@ -49,6 +49,7 @@ public:
   virtual void ass_set_aspect_ratio(ASS_Renderer* priv, double dar, double sar)=0;
   virtual void ass_set_margins(ASS_Renderer* priv, int t, int b, int l, int r)=0;
   virtual void ass_set_use_margins(ASS_Renderer* priv, int use)=0;
+  virtual void ass_set_line_position(ASS_Renderer* priv, double line_position)=0;
   virtual void ass_set_font_scale(ASS_Renderer* priv, double font_scale)=0;
   virtual ASS_Image* ass_render_frame(ASS_Renderer *priv, ASS_Track* track, long long now, int* detect_change)=0;
   virtual ASS_Track* ass_new_track(ASS_Library*)=0;
@@ -77,6 +78,7 @@ class DllLibass : public DllDynamic, DllLibassInterface
   DEFINE_METHOD3(void, ass_set_aspect_ratio, (ASS_Renderer * p1, double p2, double p3))
   DEFINE_METHOD5(void, ass_set_margins, (ASS_Renderer * p1, int p2, int p3, int p4, int p5))
   DEFINE_METHOD2(void, ass_set_use_margins, (ASS_Renderer * p1, int p2))
+  DEFINE_METHOD2(void, ass_set_line_position, (ASS_Renderer * p1, double p2))
   DEFINE_METHOD2(void, ass_set_font_scale, (ASS_Renderer * p1, double p2))
   DEFINE_METHOD4(ASS_Image *, ass_render_frame, (ASS_Renderer * p1, ASS_Track * p2, long long p3, int * p4))
   DEFINE_METHOD1(ASS_Track *, ass_new_track, (ASS_Library * p1))
@@ -99,6 +101,7 @@ class DllLibass : public DllDynamic, DllLibassInterface
     RESOLVE_METHOD(ass_set_aspect_ratio)
     RESOLVE_METHOD(ass_set_margins)
     RESOLVE_METHOD(ass_set_use_margins)
+    RESOLVE_METHOD(ass_set_line_position)
     RESOLVE_METHOD(ass_set_font_scale)
     RESOLVE_METHOD(ass_render_frame)
     RESOLVE_METHOD(ass_new_track)

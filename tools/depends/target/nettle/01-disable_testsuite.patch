@@ -1,0 +1,11 @@
+--- Makefile.in.orig	2015-04-11 15:11:40.000000000 +0200
++++ Makefile.in	2015-04-11 15:11:47.000000000 +0200
+@@ -16,7 +16,7 @@
+ 
+ OPT_ASM_SOURCES = @OPT_ASM_SOURCES@
+ 
+-SUBDIRS = tools testsuite examples
++SUBDIRS = tools examples
+ 
+ include config.make
+ 

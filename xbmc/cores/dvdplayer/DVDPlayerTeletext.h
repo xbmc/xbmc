@@ -42,6 +42,7 @@ public:
   void WaitForBuffers() { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData() const { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { if(m_messageQueue.IsInited()) m_messageQueue.Put(pMsg, priority); }
+  void FlushMessages() { m_messageQueue.Flush(); }
   bool IsInited() const { return true; }
   bool IsStalled() const { return true; }
 

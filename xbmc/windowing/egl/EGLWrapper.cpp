@@ -21,11 +21,22 @@
 
 #ifdef HAS_EGL
 #include "utils/log.h"
-#include "EGLNativeTypeAndroid.h"
+#include <assert.h>
+#if defined(HAVE_WAYLAND)
+  #include "EGLNativeTypeWayland.h"
+#endif
+#if defined(TARGET_ANDROID)
+  #include "EGLNativeTypeAndroid.h"
+  #include "EGLNativeTypeAmlAndroid.h"
+  #include "EGLNativeTypeRKAndroid.h"
+#endif
+#if defined(TARGET_RASPBERRY_PI)
+  #include "EGLNativeTypeRaspberryPI.h"
+#endif
+#if defined(HAS_IMXVPU)
+  #include "EGLNativeTypeIMX.h"
+#endif
 #include "EGLNativeTypeAmlogic.h"
-#include "EGLNativeTypeRaspberryPI.h"
-#include "EGLNativeTypeWayland.h"
-#include "EGLNativeTypeIMX.h"
 #include "EGLWrapper.h"
 
 #define CheckError() m_result = eglGetError(); if(m_result != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, m_result);
@@ -79,11 +90,22 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
 
   // Try to create each backend in sequence and go with the first one
   // that we know will work
-  if ((nativeGuess = CreateEGLNativeType<CEGLNativeTypeWayland>(implementation)) ||
+  if (
+#if defined(HAVE_WAYLAND)
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeWayland>(implementation)) ||
+#endif
+#if defined(TARGET_ANDROID)
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlAndroid>(implementation)) ||
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRKAndroid>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation)) ||
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation)) ||
+#endif
+#if defined(TARGET_RASPBERRY_PI)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation)) ||
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation))
+#endif
+#if defined(HAS_IMXVPU)
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation)) ||
+#endif
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation))
       )
   {
     m_nativeTypes = nativeGuess;

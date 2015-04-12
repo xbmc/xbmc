@@ -220,8 +220,7 @@ void CRenderer::Render(COverlay* o, float adjust_height)
 {
   CRect rs, rd, rv;
   RESOLUTION_INFO res;
-  g_renderManager.GetVideoRect(rs, rd);
-  rv  = g_graphicsContext.GetViewWindow();
+  g_renderManager.GetVideoRect(rs, rd, rv);
   res = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
 
   SRenderState state;
@@ -326,14 +325,40 @@ bool CRenderer::HasOverlay(int idx)
 
 COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
 {
-  CRect src, dst;
-  g_renderManager.GetVideoRect(src, dst);
+  // libass render in a target area which named as frame. the frame size may bigger than video size,
+  // and including margins between video to frame edge. libass allow to render subtitles into the margins.
+  // this has been used to show subtitles in the top or bottom "black bar" between video to frame border.
+  CRect src, dst, target;
+  g_renderManager.GetVideoRect(src, dst, target);
+  int videoWidth = MathUtils::round_int(dst.Width());
+  int videoHeight = MathUtils::round_int(dst.Height());
+  int targetWidth = MathUtils::round_int(target.Width());
+  int targetHeight = MathUtils::round_int(target.Height());
+  int useMargin;
 
-  int width  = MathUtils::round_int(dst.Width());
-  int height = MathUtils::round_int(dst.Height());
-
+  int subalign = CSettings::Get().GetInt("subtitles.align");
+  if(subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE
+  || subalign == SUBTITLE_ALIGN_TOP_OUTSIDE
+  || subalign == SUBTITLE_ALIGN_MANUAL)
+    useMargin = 1;
+  else
+    useMargin = 0;
+  double position;
+  // position used to call ass_set_line_position, it's vertical line position of subtitles in percent.
+  // value is 0-100: 0 = on the bottom (default), 100 = on top.
+  if(subalign == SUBTITLE_ALIGN_TOP_INSIDE
+  || subalign == SUBTITLE_ALIGN_TOP_OUTSIDE)
+    position = 100.0;
+  else if (subalign == SUBTITLE_ALIGN_MANUAL)
+  {
+    RESOLUTION_INFO res;
+    res = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
+    position = 100.0 - (res.iSubtitles - res.Overscan.top) * 100 / res.iHeight;
+  }
+  else
+    position = 0.0;
   int changes = 0;
-  ASS_Image* images = o->m_libass->RenderImage(width, height, pts, &changes);
+  ASS_Image* images = o->m_libass->RenderImage(targetWidth, targetHeight, videoWidth, videoHeight, pts, useMargin, position, &changes);
 
   if(o->m_overlay)
   {
@@ -341,12 +366,21 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
       return o->m_overlay->Acquire();
   }
 
+  COverlay *overlay = NULL;
 #if defined(HAS_GL) || defined(HAS_GLES)
-  return new COverlayGlyphGL(images, width, height);
+  overlay = new COverlayGlyphGL(images, targetWidth, targetHeight);
 #elif defined(HAS_DX)
-  return new COverlayQuadsDX(images, width, height);
+  overlay = new COverlayQuadsDX(images, targetWidth, targetHeight);
 #endif
-  return NULL;
+  // scale to video dimensions
+  if (overlay)
+  {
+    overlay->m_width = (float)targetWidth / videoWidth;
+    overlay->m_height = (float)targetHeight / videoHeight;
+    overlay->m_x = ((float)videoWidth - targetWidth) / 2 / videoWidth;
+    overlay->m_y = ((float)videoHeight - targetHeight) / 2 / videoHeight;
+  }
+  return overlay;
 }
 
 
