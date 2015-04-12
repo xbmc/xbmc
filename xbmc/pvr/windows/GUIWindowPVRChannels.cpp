@@ -39,6 +39,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "threads/SingleLock.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -74,6 +75,9 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   CPVRChannelPtr channel(pItem->GetPVRChannelInfoTag());
 
+  if (ActiveAE::CActiveAEDSP::Get().IsProcessing())
+    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);                        /* if something is played and dsp is active, allow settings selection */
+
   buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
   buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
   buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
@@ -108,6 +112,7 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
       OnContextButtonUpdateEpg(pItem.get(), button) ||
       OnContextButtonRecord(pItem.get(), button) ||
       OnContextButtonManage(pItem.get(), button) ||
+      OnContextButtonActiveAEDSPSettings(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }
 

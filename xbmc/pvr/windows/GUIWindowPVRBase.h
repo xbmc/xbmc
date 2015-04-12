@@ -64,6 +64,7 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     virtual bool OnContextButton(const CFileItem &item, CONTEXT_BUTTON button) { return false; };
+    virtual bool OnContextButtonActiveAEDSPSettings(CFileItem *item, CONTEXT_BUTTON button);
     virtual void UpdateButtons(void);
     virtual bool OnAction(const CAction &action);
     virtual bool OnBack(int actionID);
