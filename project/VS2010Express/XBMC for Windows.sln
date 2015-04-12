@@ -65,6 +65,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visVortex", "..\..\xbmc\vis
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Effects11", "..\..\lib\win32\Effects11\Effects11_2013.vcxproj", "{DF460EAB-570D-4B50-9089-2E2FC801BF38}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libKODI_adsp", "..\..\lib\addons\library.kodi.adsp\project\VS2010Express\libKODI_adsp.vcxproj", "{44F93C4D-85DD-4452-99BB-F1D196174024}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

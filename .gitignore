@@ -123,6 +123,7 @@ config.log
 /addons/script.module.pil/
 /addons/audioencoder.*
 /addons/pvr.*
+/addons/adsp.*
 /addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
 /addons/kodi.guilib/addon.xml
@@ -147,10 +148,13 @@ config.log
 /lib/addons/library.kodi.guilib/project/VS2010Express/Release
 /lib/addons/library.kodi.guilib/project/VS2010Express/Debug
 /lib/addons/library.xbmc.addon/Makefile
+/lib/addons/library.kodi.adsp/Makefile
 /lib/addons/library.xbmc.pvr/Makefile
 /lib/addons/library.xbmc.codec/Makefile
 /lib/addons/library.xbmc.addon/project/VS2010Express/Release
 /lib/addons/library.xbmc.addon/project/VS2010Express/Debug
+/lib/addons/library.kodi.adsp/project/VS2010Express/Release
+/lib/addons/library.kodi.adsp/project/VS2010Express/Debug
 /lib/addons/library.xbmc.codec/project/VS2010Express/Release
 /lib/addons/library.xbmc.codec/project/VS2010Express/Debug
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Release
@@ -922,6 +926,8 @@ lib/cpluff/stamp-h1
 
 /addons/library.xbmc.addon/libXBMC_addon.dll
 /addons/library.xbmc.addon/libXBMC_addon.lib
+/addons/library.kodi.adsp/libKODI_adsp.dll
+/addons/library.kodi.adsp/libKODI_adsp.lib
 /addons/library.xbmc.codec/libXBMC_codec.dll
 /addons/library.xbmc.codec/libXBMC_codec.lib
 /addons/library.kodi.guilib/libKODI_guilib.dll
@@ -930,3 +936,4 @@ lib/cpluff/stamp-h1
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
 
 /pvr-addons
+/adsp-addons
