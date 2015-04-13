@@ -78,6 +78,9 @@ public:
    */
   static std::string GetBasePath(const std::string& strPath);
 
+  static std::string URLEncodePath(const std::string& strPath);
+  static std::string URLDecodePath(const std::string& strPath);
+
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
     \param fromPath the base path of the original URL
