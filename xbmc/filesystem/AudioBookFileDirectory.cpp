@@ -72,9 +72,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   {
     if (strcasecmp(tag->key,"title") == 0)
       title = tag->value;
-    if (strcasecmp(tag->key,"album") == 0)
+    else if (strcasecmp(tag->key,"album") == 0)
       album = tag->value;
-    if (strcasecmp(tag->key,"artist") == 0)
+    else if (strcasecmp(tag->key,"artist") == 0)
       author = tag->value;
   }
 
