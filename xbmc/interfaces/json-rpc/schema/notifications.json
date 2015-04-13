@@ -176,6 +176,20 @@
     ],
     "returns": null
   },
+  "AudioLibrary.OnExport": {
+    "type": "notification",
+    "description": "An audio library export has finished.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": false,
+        "properties": {
+          "file": { "type": "string", "required": false, "default": "" },
+          "failcount": { "type": "integer", "minimum": 0, "required": false, "default": 0 }
+        }
+      }
+    ],
+    "returns": null
+  },
   "VideoLibrary.OnUpdate": {
     "type": "notification",
     "description": "A video item has been updated.",
