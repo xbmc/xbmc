@@ -794,6 +794,12 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
 
     album->strPath = strDirectory;
     m_musicDatabase.AddAlbum(*album);
+    if (StringUtils::EqualsNoCase(album->genre.front(), "audiobook"))
+    {
+      std::string path = StringUtils::Format("musicdb://albums/%li", album->idAlbum);
+      CFileItem item(path, *album);
+      m_musicDatabase.AddAudioBook(item);
+    }
 
     // Yuk - this is a kludgy way to do what we want to do, but it will work to sort
     // out artist fanart until we can restructure the artist fanart to work more
