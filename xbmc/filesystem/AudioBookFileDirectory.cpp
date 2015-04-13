@@ -88,9 +88,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     {
       if (strcasecmp(tag->key,"title") == 0)
         chaptitle = tag->value;
-      if (strcasecmp(tag->key,"artist") == 0)
+      else if (strcasecmp(tag->key,"artist") == 0)
         chapauthor = tag->value;
-      if (strcasecmp(tag->key,"album") == 0)
+      else if (strcasecmp(tag->key,"album") == 0)
         chapalbum = tag->value;
     }
     CFileItemPtr item(new CFileItem(url.Get(),false));
