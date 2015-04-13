@@ -5017,6 +5017,15 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     }
 
     xmlDoc.SaveFile(xmlFile);
+
+    CVariant data;
+    if (!singleFiles)
+    {
+      data["file"] = xmlFile;
+      if (iFailCount > 0)
+        data["failcount"] = iFailCount;
+    }
+    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnExport", data);
   }
   catch (...)
   {
