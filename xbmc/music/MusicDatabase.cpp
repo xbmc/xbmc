@@ -5962,8 +5962,10 @@ int CMusicDatabase::GetAudiobookCount(const Filter &filter)
 {
   try
   {
-    if (NULL == m_pDB.get()) return 0;
-    if (NULL == m_pDS.get()) return 0;
+    if (NULL == m_pDB.get())
+      return 0;
+    if (NULL == m_pDS.get())
+      return 0;
 
     std::string strSQL = "select count(idBook) as NumSongs from audiobook";
     if (!CDatabase::BuildSQL(strSQL, filter, strSQL))
