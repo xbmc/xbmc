@@ -36,7 +36,7 @@ static int cfile_file_read(void *h, uint8_t* buf, int size)
 static off_t cfile_file_seek(void *h, off_t pos, int whence)
 {
   CFile* pFile = static_cast<CFile*>(h);
-  if(whence == AVSEEK_SIZE)
+  if (whence == AVSEEK_SIZE)
     return pFile->GetLength();
   else
     return pFile->Seek(pos, whence & ~AVSEEK_FORCE);
@@ -157,7 +157,6 @@ bool CAudioBookFileDirectory::ContainsFiles(const CURL& url)
   AVInputFormat* iformat=NULL;
   av_probe_input_buffer(m_ioctx, &iformat, url.Get().c_str(), NULL, 0, 0);
 
-  bool contains = false;
   if (avformat_open_input(&m_fctx, url.Get().c_str(), iformat, NULL) < 0)
   {
     if (m_fctx)
@@ -167,7 +166,5 @@ bool CAudioBookFileDirectory::ContainsFiles(const CURL& url)
     return false;
   }
 
-  contains = m_fctx->nb_chapters > 1;
-
-  return contains;
+  return m_fctx->nb_chapters > 1;
 }
