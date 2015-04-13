@@ -142,7 +142,7 @@ void CMusicDatabase::CreateTables()
               " dateAdded varchar (20) default NULL, "
               " strReleaseType text)");
   CLog::Log(LOGINFO, "create audiobook table");
-  m_pDS->exec("CREATE TABLE audiobook (idBook integer primary key, "
+  m_pDS->exec("CREATE TABLE audiobook (idBook integer primary key,"
               " strBook varchar(256), strAuthor text,"
               " bookmark integer, file text, duration integer,"
               " dateAdded varchar (20) default NULL)");
@@ -4083,7 +4083,7 @@ void CMusicDatabase::UpdateTables(int version)
   if (version < 52)
   {
     CLog::Log(LOGINFO, "create audiobook table");
-    m_pDS->exec("CREATE TABLE audiobook (idBook integer primary key, "
+    m_pDS->exec("CREATE TABLE audiobook (idBook integer primary key,"
                 " strBook varchar(256), strAuthor text,"
                 " bookmark integer, file text, duration integer"
                 " dateAdded varchar (20) default NULL)");
