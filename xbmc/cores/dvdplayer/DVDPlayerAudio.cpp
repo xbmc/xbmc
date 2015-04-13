@@ -548,7 +548,7 @@ void CDVDPlayerAudio::Process()
     if( audioframe.nb_frames == 0 )
       continue;
 
-    packetadded = true;
+    packetadded = false;
 
     // we have succesfully decoded an audio frame, setup renderer to match
     if (!m_dvdAudio.IsValidFormat(audioframe))
@@ -598,7 +598,7 @@ void CDVDPlayerAudio::Process()
     }
 
     // signal to our parent that we have initialized
-    if(m_started == false && packetadded)
+    if(m_started == false)
     {
       m_started = true;
       m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
