@@ -75,6 +75,7 @@ static Translator s_musicDbTranslator[] = {
   { "musicdb://6",    "musicdb://recentlyaddedalbums" },
   { "musicdb://7",    "musicdb://recentlyplayedalbums" },
   { "musicdb://8",    "musicdb://compilations" },
+  { "musicdb://14",   "musicdb://audiobooks"},
   { "musicdb://9",    "musicdb://years" }
 };
 
