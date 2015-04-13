@@ -102,6 +102,14 @@ bool CDecoder::Create(AVCodecContext *avctx)
       CFRelease(avcCData);
       return false;
     }
+
+    if (((uint8_t*)avctx->extradata)[4] == 0xFE)
+    {
+      // video content is from so silly encoder that think 3 byte NAL sizes are valid
+      CLog::Log(LOGNOTICE, "%s - 3 byte nal length not supported", __FUNCTION__);
+      CFRelease(avcCData);
+      return false;
+    }
   }
 
 
