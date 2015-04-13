@@ -4136,7 +4136,7 @@ int CMusicDatabase::GetSongsCount(const Filter &filter)
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    std::string strSQL = "select count(idSong) as NumSongs from songview ";
+    std::string strSQL = "select count(idSong) from songview ";
     if (!CDatabase::BuildSQL(strSQL, filter, strSQL))
       return false;
 
@@ -4147,7 +4147,7 @@ int CMusicDatabase::GetSongsCount(const Filter &filter)
       return 0;
     }
 
-    int iNumSongs = m_pDS->fv("NumSongs").get_asInt();
+    int iNumSongs = m_pDS->fv(0).get_asInt();
     // cleanup
     m_pDS->close();
     return iNumSongs;
