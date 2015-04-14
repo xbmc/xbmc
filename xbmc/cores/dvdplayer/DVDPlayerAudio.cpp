@@ -665,7 +665,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 
   // as long as we are in sync mode, don't calculate the average
   // error because drop/dupe changes the value
-  if (m_syncclock && error > threshold1)
+  if (m_syncclock && fabs(error) > threshold1)
   {
     m_errors.Flush(500);
     m_integral = 0.0;
