@@ -895,7 +895,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 
          bool deinterlace = m_interlace_mode != MMAL_InterlaceProgressive;
 
-         if (m_hints.stills || deinterlace_request == VS_DEINTERLACEMODE_OFF)
+         if (m_hints.stills || deinterlace_request == VS_DEINTERLACEMODE_OFF || interlace_method == VS_INTERLACEMETHOD_NONE)
            deinterlace = false;
          else if (deinterlace_request == VS_DEINTERLACEMODE_FORCE)
            deinterlace = true;
