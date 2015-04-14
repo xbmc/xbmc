@@ -84,25 +84,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   if (settingId == SETTING_TMR_ACTIVE)
     m_bTimerActive = static_cast<const CSettingBool*>(setting)->GetValue();
   if (settingId == SETTING_TMR_CHNAME)
-  {
     m_selectedChannelEntry = static_cast<const CSettingInt*>(setting)->GetValue();
-
-    std::map<std::pair<bool, int>, int>::iterator itc = m_channelEntries.find(std::make_pair(tag->m_bIsRadio, m_selectedChannelEntry));
-    if (itc != m_channelEntries.end())
-    {
-      CPVRChannelPtr channel =  g_PVRChannelGroups->GetChannelById(itc->second);
-      if (channel)
-      {
-        tag->m_iClientChannelUid = channel->UniqueID();
-        tag->m_iClientId         = channel->ClientID();
-        tag->m_bIsRadio          = channel->IsRadio();
-        tag->m_iChannelNumber    = channel->ChannelNumber();
-       
-        // Update channel pointer from above values
-        tag->UpdateChannel();
-      }
-    }
-  }
   else if (settingId == SETTING_TMR_DAY)
   {
     m_tmp_day = static_cast<const CSettingInt*>(setting)->GetValue();
@@ -221,6 +203,23 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const CSetting *setting)
 void CGUIDialogPVRTimerSettings::Save()
 {
   CPVRTimerInfoTagPtr tag = m_timerItem->GetPVRTimerInfoTag();
+
+  // Set the timer's channel
+  std::map<std::pair<bool, int>, int>::iterator itc = m_channelEntries.find(std::make_pair(tag->m_bIsRadio, m_selectedChannelEntry));
+  if (itc != m_channelEntries.end())
+  {
+    CPVRChannelPtr channel =  g_PVRChannelGroups->GetChannelById(itc->second);
+    if (channel)
+    {
+      tag->m_iClientChannelUid = channel->UniqueID();
+      tag->m_iClientId         = channel->ClientID();
+      tag->m_bIsRadio          = channel->IsRadio();
+      tag->m_iChannelNumber    = channel->ChannelNumber();
+
+      // Update channel pointer from above values
+      tag->UpdateChannel();
+    }
+  }
 
   // Set the timer's title to the channel name if it's 'New Timer' or empty
   if (tag->m_strTitle == g_localizeStrings.Get(19056) || tag->m_strTitle.empty())
