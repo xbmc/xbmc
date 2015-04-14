@@ -372,6 +372,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       if (pMsgGeneralResync->m_clock)
         m_pClock->Discontinuity(m_dvdAudio.GetPlayingPts());
       m_syncclock = true;
+      m_errors.Flush();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -439,6 +440,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
         {
           m_dvdAudio.Resume();
           m_syncclock = true;
+          m_errors.Flush();
         }
       }
       else
@@ -548,7 +550,7 @@ void CDVDPlayerAudio::Process()
     if( audioframe.nb_frames == 0 )
       continue;
 
-    packetadded = true;
+    packetadded = false;
 
     // we have succesfully decoded an audio frame, setup renderer to match
     if (!m_dvdAudio.IsValidFormat(audioframe))
@@ -598,10 +600,11 @@ void CDVDPlayerAudio::Process()
     }
 
     // signal to our parent that we have initialized
-    if(m_started == false && packetadded)
+    if(m_started == false)
     {
       m_started = true;
       m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
+      m_errors.Flush();
     }
 
     if( m_dvdAudio.GetPlayingPts() == DVD_NOPTS_VALUE )
@@ -662,7 +665,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 
   // as long as we are in sync mode, don't calculate the average
   // error because drop/dupe changes the value
-  if (m_syncclock && error > threshold1)
+  if (m_syncclock && fabs(error) > threshold1)
   {
     m_errors.Flush(500);
     m_integral = 0.0;
