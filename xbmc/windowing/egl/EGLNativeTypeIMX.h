@@ -20,6 +20,8 @@
  *
  */
 #include <linux/fb.h>
+
+#include <EGL/egl.h>
 #include "EGLNativeType.h"
 
 class CEGLNativeTypeIMX : public CEGLNativeType
