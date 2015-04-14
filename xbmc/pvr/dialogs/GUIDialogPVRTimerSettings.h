@@ -31,6 +31,10 @@ class CSettingGroup;
 namespace PVR
 {
   class CPVRTimerInfoTag;
+  typedef std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
+
+  class CPVRChannel;
+  typedef std::shared_ptr<CPVRChannel> CPVRChannelPtr;
 
   class CGUIDialogPVRTimerSettings : public CGUIDialogSettingsManualBase
   {
@@ -54,8 +58,15 @@ namespace PVR
     virtual void InitializeSettings();
     
     virtual CSetting* AddChannelNames(CSettingGroup *group, bool bRadio);
-    virtual void SetWeekdaySettingFromTimer(const CPVRTimerInfoTag &timer);
-    virtual void SetTimerFromWeekdaySetting(CPVRTimerInfoTag &timer);
+    virtual void SetWeekdaySettingFromTimer();
+    virtual void SetTimerFromWeekdaySetting();
+
+    /*!
+     * @brief Sets dialog's channel according to the currently selected channel list entry.
+     * @param iSelectedEntry the zero-based index of the channel entry in the channel selction list.
+     * @param bRadio specifies whether the entry is for the TV or for the radio channel selection list.
+     */
+    void SetChannelFromSelectedEntry(int iSelectedEntry, bool bRadio);
 
     void getChannelNames(bool bRadio, std::vector< std::pair<std::string, int> > &list, int &current, bool updateChannelEntries = false);
     void setButtonLabels();
@@ -64,6 +75,20 @@ namespace PVR
 
     static void ChannelNamesOptionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void DaysOptionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+
+    CPVRTimerInfoTagPtr                 m_InfoTag;
+    CPVRChannelPtr                      m_Channel;
+    bool                                m_bIsRadio;
+    bool                                m_bIsRepeating;
+    bool                                m_bSupportsFolders;
+    int                                 m_iWeekdays;
+    int                                 m_iPriority;
+    int                                 m_iLifetime;
+    std::string                         m_strTitle;
+    std::string                         m_strDirectory;
+    CDateTime                           m_FirstDay;
+    CDateTime                           m_StartTime;
+    CDateTime                           m_EndTime;
 
     SYSTEMTIME                          m_timerStartTime;
     SYSTEMTIME                          m_timerEndTime;
@@ -74,7 +99,5 @@ namespace PVR
     bool                                m_bTimerActive;
     int                                 m_selectedChannelEntry;
     std::map<std::pair<bool, int>, int> m_channelEntries;
-
-    CFileItem                          *m_timerItem;
   };
 }
