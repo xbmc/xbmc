@@ -372,6 +372,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
       if (pMsgGeneralResync->m_clock)
         m_pClock->Discontinuity(m_dvdAudio.GetPlayingPts());
       m_syncclock = true;
+      m_errors.Flush();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -439,6 +440,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe)
         {
           m_dvdAudio.Resume();
           m_syncclock = true;
+          m_errors.Flush();
         }
       }
       else
@@ -602,6 +604,7 @@ void CDVDPlayerAudio::Process()
     {
       m_started = true;
       m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
+      m_errors.Flush();
     }
 
     if( m_dvdAudio.GetPlayingPts() == DVD_NOPTS_VALUE )
