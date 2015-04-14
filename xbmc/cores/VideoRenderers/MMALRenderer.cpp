@@ -510,6 +510,8 @@ bool CMMALRenderer::Supports(EDEINTERLACEMODE mode)
 
 bool CMMALRenderer::Supports(EINTERLACEMETHOD method)
 {
+  if (method == VS_INTERLACEMETHOD_AUTO)
+    return true;
   if (method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
     return true;
   if (method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF)
