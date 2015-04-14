@@ -178,14 +178,16 @@ void CDSPlayer::SetSubtitleVisible(bool bVisible)
   }
 }
 
-int CDSPlayer::AddSubtitle(const std::string& strSubPath) {
+void CDSPlayer::AddSubtitle(const std::string& strSubPath) {
 
   if (CGraphFilters::Get()->HasSubFilter())
   {
-    return (CStreamsManager::Get()) ? CStreamsManager::Get()->AddSubtitle(strSubPath) : -1;
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->AddSubtitle(strSubPath);
   }
   else {
-    return (CStreamsManager::Get()) ? CStreamsManager::Get()->SubtitleManager->AddSubtitle(strSubPath) : -1;
+    if (CStreamsManager::Get())
+      CStreamsManager::Get()->SubtitleManager->AddSubtitle(strSubPath);
   }
 }
 
@@ -417,7 +419,9 @@ void CDSPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
   info.height = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetPictureHeight() : 0;
   info.videoCodecName = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetVideoCodecName() : "";
   info.videoAspectRatio = (float)info.width / (float)info.height;
-  info.stereoMode == "mono";
+  CRect viewRect;
+  GetVideoRect(info.SrcRect, info.DestRect, viewRect);
+  info.stereoMode == "";
 }
 
 

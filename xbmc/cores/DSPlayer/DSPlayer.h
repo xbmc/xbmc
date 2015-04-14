@@ -165,7 +165,7 @@ public:
   virtual bool GetSubtitleVisible();
   virtual void SetSubtitleVisible(bool bVisible);
 
-  virtual int AddSubtitle(const std::string& strSubPath);
+  virtual void AddSubtitle(const std::string& strSubPath);
 
   // Chapters
 
@@ -175,7 +175,7 @@ public:
   virtual int  SeekChapter(int iChapter) { return CChaptersManager::Get()->SeekChapter(iChapter); }
 
   void Update(bool bPauseDrawing) { g_renderManager.Update(); }
-  void GetVideoRect(CRect& SrcRect, CRect& DestRect) { g_renderManager.GetVideoRect(SrcRect, DestRect); }
+  void GetVideoRect(CRect& SrcRect, CRect& DestRect, CRect& ViewRect) { g_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect); }
   virtual void GetVideoAspectRatio(float& fAR) { fAR = g_renderManager.GetAspectRatio(); }
 
   virtual int GetChannels() { return (CStreamsManager::Get()) ? CStreamsManager::Get()->GetChannels() : 0; };
