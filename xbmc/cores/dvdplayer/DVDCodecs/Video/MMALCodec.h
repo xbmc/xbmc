@@ -105,6 +105,7 @@ protected:
   void QueryCodec(void);
   bool CreateDeinterlace(EINTERLACEMETHOD interlace_method);
   bool DestroyDeinterlace();
+  void Prime();
 
   // Video format
   int               m_decoded_width;
