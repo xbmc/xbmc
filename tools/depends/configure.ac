@@ -46,7 +46,7 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [spcify sdk platform version (optional for android). default is android-14])],
+  [spcify sdk platform version (optional for android). default is android-17])],
   [use_sdk=$withval])
 
 AC_ARG_ENABLE([gplv3],
