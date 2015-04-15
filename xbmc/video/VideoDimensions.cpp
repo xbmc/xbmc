@@ -20,7 +20,7 @@
 
 #include "VideoDimensions.h"
 #include <algorithm>
-#include <limits>
+#include <climits>
 
 std::vector<SResolution> CVideoDimensions::resolutions =
 {
