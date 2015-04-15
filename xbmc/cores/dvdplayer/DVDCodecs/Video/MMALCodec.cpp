@@ -57,7 +57,6 @@ CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv)
   width = 0;
   height = 0;
   m_aspect_ratio = 0.0f;
-  m_changed_count = 0;
 }
 
 CMMALVideoBuffer::~CMMALVideoBuffer()
@@ -120,8 +119,6 @@ CMMALVideo::CMMALVideo()
 
   m_codingType = 0;
 
-  m_changed_count = 0;
-  m_changed_count_dec = 0;
   m_output_busy = 0;
   m_demux_queue_length = 0;
   m_es_format = mmal_format_alloc();
@@ -184,7 +181,6 @@ void CMMALVideo::PortSettingsChanged(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *bu
 {
   MMAL_EVENT_FORMAT_CHANGED_T *fmt = mmal_event_format_changed_get(buffer);
   mmal_format_copy(m_es_format, fmt->format);
-  m_changed_count++;
 
   if (m_es_format->es->video.crop.width && m_es_format->es->video.crop.height)
   {
@@ -193,10 +189,13 @@ void CMMALVideo::PortSettingsChanged(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *bu
     m_decoded_width = m_es_format->es->video.crop.width;
     m_decoded_height = m_es_format->es->video.crop.height;
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s format changed: %dx%d %.2f frame:%d", CLASSNAME, __func__, m_decoded_width, m_decoded_height, m_aspect_ratio, m_changed_count);
+      CLog::Log(LOGDEBUG, "%s::%s format changed: %dx%d %.2f", CLASSNAME, __func__, m_decoded_width, m_decoded_height, m_aspect_ratio);
   }
   else
     CLog::Log(LOGERROR, "%s::%s format changed: Unexpected %dx%d", CLASSNAME, __func__, m_es_format->es->video.crop.width, m_es_format->es->video.crop.height);
+
+  if (!change_dec_output_format())
+    CLog::Log(LOGERROR, "%s::%s - change_dec_output_format() failed", CLASSNAME, __func__);
 }
 
 void CMMALVideo::dec_control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
@@ -257,11 +256,10 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
       {
         CMMALVideoBuffer *omvb = new CMMALVideoBuffer(this);
         if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-          CLog::Log(LOGDEBUG, "%s::%s - %p (%p) buffer_size(%u) dts:%.3f pts:%.3f flags:%x:%x frame:%d",
-            CLASSNAME, __func__, buffer, omvb, buffer->length, buffer->dts*1e-6, buffer->pts*1e-6, buffer->flags, buffer->type->video.flags, omvb->m_changed_count);
+          CLog::Log(LOGDEBUG, "%s::%s - %p (%p) buffer_size(%u) dts:%.3f pts:%.3f flags:%x:%x",
+            CLASSNAME, __func__, buffer, omvb, buffer->length, buffer->dts*1e-6, buffer->pts*1e-6, buffer->flags, buffer->type->video.flags);
         omvb->mmal_buffer = buffer;
         buffer->user_data = (void *)omvb;
-        omvb->m_changed_count = m_changed_count;
         omvb->width = m_decoded_width;
         omvb->height = m_decoded_height;
         omvb->m_aspect_ratio = m_aspect_ratio;
@@ -308,7 +306,6 @@ bool CMMALVideo::change_dec_output_format()
   else
     CLog::Log(LOGERROR, "%s::%s Failed to query interlace type on %s (status=%x %s)", CLASSNAME, __func__, m_dec_output->name, status, mmal_status_to_string(status));
 
-  // todo: if we don't disable/enable we can do this from callback
   mmal_format_copy(m_dec_output->format, m_es_format);
   status = mmal_port_format_commit(m_dec_output);
   if (status != MMAL_SUCCESS)
@@ -821,17 +818,6 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
          pthread_mutex_lock(&m_output_mutex);
          m_startframe = true;
          pthread_mutex_unlock(&m_output_mutex);
-         if (m_changed_count_dec != m_changed_count)
-         {
-           if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-             CLog::Log(LOGDEBUG, "%s::%s format changed frame:%d(%d)", CLASSNAME, __func__, m_changed_count_dec, m_changed_count);
-           m_changed_count_dec = m_changed_count;
-           if (!change_dec_output_format())
-           {
-             CLog::Log(LOGERROR, "%s::%s - change_dec_output_format() failed", CLASSNAME, __func__);
-             return VC_ERROR;
-           }
-         }
          EDEINTERLACEMODE deinterlace_request = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
          EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
 
