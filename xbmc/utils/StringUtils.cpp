@@ -389,7 +389,8 @@ void StringUtils::ToCapitalize(std::wstring &str)
   bool isFirstLetter = true;
   for (std::wstring::iterator it = str.begin(); it < str.end(); ++it)
   {
-    if (std::isspace(*it, loc) || std::ispunct(*it, loc))
+    // capitalize after spaces and punctuation characters (except apostrophes)
+    if (std::isspace(*it, loc) || (std::ispunct(*it, loc) && *it != '\''))
       isFirstLetter = true;
     else if (isFirstLetter)
     {
