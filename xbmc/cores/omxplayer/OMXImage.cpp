@@ -1398,7 +1398,7 @@ bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsig
   if(omx_err != OMX_ErrorNone)
     return false;
 
-  omx_err = m_omx_encoder.WaitForOutputDone(1000);
+  omx_err = m_omx_encoder.WaitForOutputDone(2000);
   if(omx_err != OMX_ErrorNone)
   {
     CLog::Log(LOGERROR, "%s::%s m_omx_resize.WaitForOutputDone result(0x%x)\n", CLASSNAME, __func__, omx_err);
@@ -1884,7 +1884,7 @@ bool COMXImageReEnc::ReEncode(COMXImageFile &srcFile, unsigned int maxWidth, uns
     }
     if (m_encoded_buffer)
     {
-      omx_err = m_omx_encoder.WaitForOutputDone(1000);
+      omx_err = m_omx_encoder.WaitForOutputDone(2000);
       if (omx_err != OMX_ErrorNone)
       {
         CLog::Log(LOGERROR, "%s::%s %s m_omx_encoder.WaitForOutputDone result(0x%x)\n", CLASSNAME, __func__, srcFile.GetFilename(), omx_err);
