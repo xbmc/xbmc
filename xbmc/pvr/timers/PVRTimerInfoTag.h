@@ -95,6 +95,10 @@ namespace PVR
 
     static CPVRTimerInfoTagPtr CreateFromEpg(const EPG::CEpgInfoTagPtr &tag);
     EPG::CEpgInfoTagPtr GetEpgInfoTag(void) const;
+    /*!
+     * @return True if this timer has a corresponding epg info tag, false otherwise
+     */
+    bool HasEpgInfoTag() const;
 
     int ChannelNumber(void) const;
     std::string ChannelName(void) const;
