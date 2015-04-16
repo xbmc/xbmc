@@ -63,12 +63,13 @@ void CMMALRenderer::vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *
 {
   #if defined(MMAL_DEBUG_VERBOSE)
   CMMALVideoBuffer *omvb = (CMMALVideoBuffer *)buffer->user_data;
-  CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p (%p), len %d cmd:%x", CLASSNAME, __func__, port, buffer, omvb, buffer->length, buffer->cmd);
+  CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p (%p), len %d cmd:%x f:%x", CLASSNAME, __func__, port, buffer, omvb, buffer->length, buffer->cmd, buffer->flags);
   #endif
 
+  assert(!(buffer->flags & MMAL_BUFFER_HEADER_FLAG_TRANSMISSION_FAILED));
+  buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER2;
   if (m_format == RENDER_FMT_MMAL)
   {
-    buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER2;
     mmal_queue_put(m_release_queue, buffer);
   }
   else if (m_format == RENDER_FMT_YUV420P)
@@ -391,7 +392,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     if (omvb)
     {
 #if defined(MMAL_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "%s::%s %p (%p)", CLASSNAME, __func__, omvb, omvb->mmal_buffer);
+      CLog::Log(LOGDEBUG, "%s::%s %p (%p) f:%x", CLASSNAME, __func__, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
 #endif
       // we only want to upload frames once
       if (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
@@ -405,14 +406,14 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   }
   else if (m_format == RENDER_FMT_YUV420P)
   {
-    CLog::Log(LOGDEBUG, "%s::%s - %p %d", CLASSNAME, __func__, buffer->mmal_buffer, source);
     if (buffer->mmal_buffer)
     {
+      CLog::Log(LOGDEBUG, "%s::%s - %p %d f:%x", CLASSNAME, __func__, buffer->mmal_buffer, source, buffer->mmal_buffer->flags);
       // we only want to upload frames once
       if (buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
         return;
       // sanity check it is not on display
-      buffer->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1;
+      buffer->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1 | MMAL_BUFFER_HEADER_FLAG_USER2;
       mmal_port_send_buffer(m_vout_input, buffer->mmal_buffer);
     }
     else
