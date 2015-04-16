@@ -37,6 +37,7 @@
 #if defined(TARGET_RASPBERRY_PI)
 #include "DllBCM.h"
 #include "OMXCore.h"
+#include "xbmc/utils/CPUInfo.h"
 #include "threads/CriticalSection.h"
 
 class CRBP
@@ -51,6 +52,7 @@ public:
   int GetArmMem() { return m_arm_mem; }
   int GetGpuMem() { return m_gpu_mem; }
   bool GetCodecMpg2() { return m_codec_mpg2_enabled; }
+  int RasberryPiVersion() { return g_cpuInfo.getCPUCount() == 1 ? 1 : 2; };
   bool GetCodecWvc1() { return m_codec_wvc1_enabled; }
   void GetDisplaySize(int &width, int &height);
   int GetGUIResolutionLimit() { return m_gui_resolution_limit; }
