@@ -88,7 +88,8 @@ COMXAudio::COMXAudio() :
   m_extrasize       (0      ),
   m_last_pts        (DVD_NOPTS_VALUE),
   m_submitted_eos   (false  ),
-  m_failed_eos      (false  )
+  m_failed_eos      (false  ),
+  m_output          (AESINKPI_UNKNOWN)
 {
   CAEFactory::Suspend();
   while (!CAEFactory::IsSuspended())
@@ -119,17 +120,17 @@ bool COMXAudio::PortSettingsChanged()
     if(!m_omx_mixer.Initialize("OMX.broadcom.audio_mixer", OMX_IndexParamAudioInit))
       return false;
   }
-  if(CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
+  if(m_output == AESINKPI_BOTH)
   {
     if(!m_omx_splitter.Initialize("OMX.broadcom.audio_splitter", OMX_IndexParamAudioInit))
       return false;
   }
-  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both" || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+  if (m_output == AESINKPI_BOTH || m_output == AESINKPI_ANALOGUE)
   {
     if(!m_omx_render_analog.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
       return false;
   }
-  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both" || CSettings::Get().GetString("audiooutput.audiodevice") != "PI:Analogue")
+  if (m_output == AESINKPI_BOTH || m_output != AESINKPI_ANALOGUE)
   {
     if(!m_omx_render_hdmi.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
       return false;
@@ -247,7 +248,7 @@ bool COMXAudio::PortSettingsChanged()
   {
     // By default audio_render is the clock master, and if output samples don't fit the timestamps, it will speed up/slow down the clock.
     // This tends to be better for maintaining audio sync and avoiding audio glitches, but can affect video/display sync
-    if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
+    if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") || m_output == AESINKPI_BOTH)
     {
       OMX_CONFIG_BOOLEANTYPE configBool;
       OMX_INIT_STRUCTURE(configBool);
@@ -569,6 +570,14 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
   }
   SetCodingType(format.m_dataFormat);
 
+  if (m_Passthrough || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:HDMI")
+    m_output = AESINKPI_HDMI;
+  else if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+    m_output = AESINKPI_ANALOGUE;
+  else if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
+    m_output = AESINKPI_BOTH;
+  else assert(0);
+
   if(hints.extrasize > 0 && hints.extradata != NULL)
   {
     m_extrasize = hints.extrasize;
@@ -596,7 +605,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     CAEChannelInfo stdLayout = (enum AEStdChLayout)CSettings::Get().GetInt("audiooutput.channels");
 
     // ignore layout setting for analogue
-    if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both" || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+    if (m_output == AESINKPI_ANALOGUE || m_output == AESINKPI_BOTH)
       stdLayout = AE_CH_LAYOUT_2_0;
 
     CAEChannelInfo resolvedMap = channelMap;

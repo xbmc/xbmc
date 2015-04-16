@@ -64,6 +64,7 @@ private:
   bool                 m_passthrough;
   COMXCoreTunel        m_omx_tunnel_splitter;
   COMXCoreTunel        m_omx_tunnel_splitter_slave;
+  enum { AESINKPI_UNKNOWN, AESINKPI_HDMI, AESINKPI_ANALOGUE, AESINKPI_BOTH } m_output;
 };
 
 #endif
