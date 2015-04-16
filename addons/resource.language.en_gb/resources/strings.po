@@ -6569,6 +6569,9 @@ msgid "Change area code 3"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
+#: xbmc/vide/windows/GUIWindowVideoBase.cpp
 msgctxt "#14022"
 msgid "Library"
 msgstr ""
