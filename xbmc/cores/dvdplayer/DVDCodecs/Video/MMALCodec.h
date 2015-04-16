@@ -103,7 +103,6 @@ public:
 
 protected:
   void QueryCodec(void);
-  void ReturnBuffer(CMMALVideoBuffer *buffer);
   bool CreateDeinterlace(EINTERLACEMETHOD interlace_method);
   bool DestroyDeinterlace();
 

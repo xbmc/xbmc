@@ -994,15 +994,6 @@ void CMMALVideo::SetSpeed(int iSpeed)
   m_speed = iSpeed;
 }
 
-void CMMALVideo::ReturnBuffer(CMMALVideoBuffer *buffer)
-{
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s %p (%d)", CLASSNAME, __func__, buffer, m_output_busy);
-  // sanity check it is not on display
-  assert(!(buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER2));
-  mmal_buffer_header_release(buffer->mmal_buffer);
-}
-
 void CMMALVideo::Recycle(MMAL_BUFFER_HEADER_T *buffer)
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -1029,7 +1020,9 @@ void CMMALVideo::ReleaseBuffer(CMMALVideoBuffer *buffer)
   assert(m_output_busy > 0);
   m_output_busy--;
   pthread_mutex_unlock(&m_output_mutex);
-  ReturnBuffer(buffer);
+  // sanity check it is not on display
+  assert(!(buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER2));
+  Recycle(buffer->mmal_buffer);
   bool done = false;
   pthread_mutex_lock(&m_output_mutex);
   if (m_finished && !m_output_busy)
