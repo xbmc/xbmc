@@ -307,6 +307,11 @@ bool CMMALVideo::change_dec_output_format()
     CLog::Log(LOGERROR, "%s::%s Failed to query interlace type on %s (status=%x %s)", CLASSNAME, __func__, m_dec_output->name, status, mmal_status_to_string(status));
 
   mmal_format_copy(m_dec_output->format, m_es_format);
+
+  status = mmal_port_parameter_set_boolean(m_dec_output, MMAL_PARAMETER_ZERO_COPY,  MMAL_TRUE);
+  if (status != MMAL_SUCCESS)
+    CLog::Log(LOGERROR, "%s::%s Failed to enable zero copy mode on %s (status=%x %s)", CLASSNAME, __func__, m_dec_output->name, status, mmal_status_to_string(status));
+
   status = mmal_port_format_commit(m_dec_output);
   if (status != MMAL_SUCCESS)
   {
@@ -378,6 +383,11 @@ bool CMMALVideo::CreateDeinterlace(EINTERLACEMETHOD interlace_method)
   }
 
   mmal_format_copy(m_deint->output[0]->format, m_es_format);
+
+  status = mmal_port_parameter_set_boolean(m_deint->output[0], MMAL_PARAMETER_ZERO_COPY,  MMAL_TRUE);
+  if (status != MMAL_SUCCESS)
+    CLog::Log(LOGERROR, "%s::%s Failed to enable zero copy mode on %s (status=%x %s)", CLASSNAME, __func__, m_deint->output[0]->name, status, mmal_status_to_string(status));
+
   status = mmal_port_format_commit(m_deint->output[0]);
   if (status != MMAL_SUCCESS)
   {
@@ -648,6 +658,10 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, MMALVide
   m_dec_output->format->encoding = MMAL_ENCODING_OPAQUE;
   mmal_format_copy(m_es_format, m_dec_output->format);
 
+  status = mmal_port_parameter_set_boolean(m_dec_output, MMAL_PARAMETER_ZERO_COPY,  MMAL_TRUE);
+  if (status != MMAL_SUCCESS)
+    CLog::Log(LOGERROR, "%s::%s Failed to enable zero copy mode on %s (status=%x %s)", CLASSNAME, __func__, m_dec_output->name, status, mmal_status_to_string(status));
+
   status = mmal_port_format_commit(m_dec_output);
   if (status != MMAL_SUCCESS)
   {
@@ -672,14 +686,14 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, MMALVide
     return false;
   }
 
-  m_dec_input_pool = mmal_pool_create(m_dec_input->buffer_num, m_dec_input->buffer_size);
+  m_dec_input_pool = mmal_port_pool_create(m_dec_input, m_dec_input->buffer_num, m_dec_input->buffer_size);
   if (!m_dec_input_pool)
   {
     CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder input port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
     return false;
   }
 
-  m_dec_output_pool = mmal_pool_create(m_dec_output->buffer_num, m_dec_output->buffer_size);
+  m_dec_output_pool = mmal_port_pool_create(m_dec_output, m_dec_output->buffer_num, m_dec_output->buffer_size);
   if(!m_dec_output_pool)
   {
     CLog::Log(LOGERROR, "%s::%s Failed to create pool for decode output port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));

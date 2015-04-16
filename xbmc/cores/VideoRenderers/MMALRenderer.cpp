@@ -147,6 +147,12 @@ bool CMMALRenderer::init_vout(ERenderFormat format)
       es_format->es->video.color_space = MMAL_COLOR_SPACE_SMPTE240M;
   }
 
+  if (m_format == RENDER_FMT_MMAL)
+  {
+    status = mmal_port_parameter_set_boolean(m_vout_input, MMAL_PARAMETER_ZERO_COPY,  MMAL_TRUE);
+    if (status != MMAL_SUCCESS)
+       CLog::Log(LOGERROR, "%s::%s Failed to enable zero copy mode on %s (status=%x %s)", CLASSNAME, __func__, m_vout_input->name, status, mmal_status_to_string(status));
+  }
   status = mmal_port_format_commit(m_vout_input);
   if (status != MMAL_SUCCESS)
   {
