@@ -117,7 +117,7 @@ protected:
   CEvent            m_sync;
   MMAL_BUFFER_HEADER_T m_quit_packet;
 
-  bool init_vout(MMAL_ES_FORMAT_T *m_format);
+  bool init_vout(ERenderFormat format);
   void ReleaseBuffers();
   void UnInitMMAL();
 };
