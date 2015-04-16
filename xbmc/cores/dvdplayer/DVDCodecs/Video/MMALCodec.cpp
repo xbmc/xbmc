@@ -130,7 +130,8 @@ CMMALVideo::~CMMALVideo()
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
-  assert(m_finished);
+  if (!m_finished)
+    Dispose();
 
   pthread_mutex_destroy(&m_output_mutex);
 

@@ -40,7 +40,7 @@
 #if defined(HAS_IMXVPU)
 #include "Video/DVDVideoCodecIMX.h"
 #endif
-#include "Video/DVDVideoCodecMMAL.h"
+#include "Video/MMALCodec.h"
 #include "Video/DVDVideoCodecStageFright.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
@@ -299,7 +299,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
           hint.codec == AV_CODEC_ID_VP6 || hint.codec == AV_CODEC_ID_VP6F || hint.codec == AV_CODEC_ID_VP6A || hint.codec == AV_CODEC_ID_VP8 ||
           hint.codec == AV_CODEC_ID_THEORA || hint.codec == AV_CODEC_ID_MJPEG || hint.codec == AV_CODEC_ID_MJPEGB || hint.codec == AV_CODEC_ID_VC1 || hint.codec == AV_CODEC_ID_WMV3)
       {
-        if ( (pCodec = OpenCodec(new CDVDVideoCodecMMAL(), hint, options)) ) return pCodec;
+        if ( (pCodec = OpenCodec(new CMMALVideo(), hint, options)) ) return pCodec;
       }
     }
 #endif

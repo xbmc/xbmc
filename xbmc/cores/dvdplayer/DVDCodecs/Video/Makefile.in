@@ -39,7 +39,6 @@ endif
 
 ifeq (@USE_MMAL@,1)
 SRCS += MMALCodec.cpp
-SRCS += DVDVideoCodecMMAL.cpp
 endif
 
 LIB=Video.a

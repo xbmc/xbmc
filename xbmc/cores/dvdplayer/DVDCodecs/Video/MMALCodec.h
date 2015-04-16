@@ -62,7 +62,7 @@ public:
 private:
 };
 
-class CMMALVideo
+class CMMALVideo : public CDVDVideoCodec
 {
   typedef struct mmal_demux_packet {
     uint8_t *buff;
@@ -84,7 +84,7 @@ public:
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual unsigned GetAllowedReferences() { return 3; }
   virtual void SetDropState(bool bDrop);
-  virtual const char* GetName(void) { return (const char*)m_pFormatName; }
+  virtual const char* GetName(void) { return m_pFormatName ? m_pFormatName:"mmal-xxx"; }
   virtual bool GetCodecStats(double &pts, int &droppedPics);
   virtual void SetSpeed(int iSpeed);
 
