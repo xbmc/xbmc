@@ -111,6 +111,11 @@ namespace XBMCAddon
       return pGUIControl;
     }
 
+    void ControlFadeLabel::setScrolling(bool scroll)
+    {
+      static_cast<CGUIFadeLabelControl*>(pGUIControl)->SetScrolling(scroll);
+    }
+
     // ============================================================
 
     // ============================================================

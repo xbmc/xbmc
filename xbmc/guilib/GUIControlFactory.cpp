@@ -1142,7 +1142,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
           parentID, id, posX, posY, width, height,
           labelInfo, wrapMultiLine, bHasPath);
         ((CGUILabelControl *)control)->SetInfo(content);
-        ((CGUILabelControl *)control)->SetWidthControl(minWidth, (scrollValue == CGUIControl::ALWAYS) ? true : false);
+        ((CGUILabelControl *)control)->SetWidthControl(minWidth, (scrollValue == CGUIControl::ALWAYS));
       }
     }
     break;
@@ -1174,6 +1174,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         labelInfo, scrollOut, timeToPauseAtEnd, resetOnLabelChange);
 
       ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
+
+      // check whether or not a scroll tag was specified.
+      if (scrollValue != CGUIControl::FOCUS)
+        ((CGUIFadeLabelControl *)control)->SetScrolling(scrollValue == CGUIControl::ALWAYS);
     }
     break;
   case CGUIControl::GUICONTROL_RSS:
