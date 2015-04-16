@@ -42,7 +42,6 @@
 #include "cores/VideoRenderers/BaseRenderer.h"
 
 class CMMALVideo;
-typedef std::shared_ptr<CMMALVideo> MMALVideoPtr;
 
 // a mmal video frame
 class CMMALVideoBuffer
@@ -77,7 +76,7 @@ public:
   virtual ~CMMALVideo();
 
   // Required overrides
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, MMALVideoPtr myself);
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose(void);
   virtual int  Decode(uint8_t *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
@@ -90,7 +89,6 @@ public:
   virtual void SetSpeed(int iSpeed);
 
   // MMAL decoder callback routines.
-  void ReleaseBuffer(CMMALVideoBuffer *buffer);
   void Recycle(MMAL_BUFFER_HEADER_T *buffer);
 
   // MMAL decoder callback routines.
@@ -111,14 +109,12 @@ protected:
   bool              m_finished;
   float             m_aspect_ratio;
   const char        *m_pFormatName;
-  MMALVideoPtr      m_myself;
 
   std::queue<mmal_demux_packet> m_demux_queue;
   unsigned           m_demux_queue_length;
 
   // mmal output buffers (video frames)
   pthread_mutex_t   m_output_mutex;
-  int m_output_busy;
   std::queue<CMMALVideoBuffer*> m_output_ready;
 
   // initialize mmal and get decoder component

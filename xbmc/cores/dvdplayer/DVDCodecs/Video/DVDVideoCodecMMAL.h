@@ -45,7 +45,7 @@ public:
   virtual void SetSpeed(int iSpeed);
 
 protected:
-  MMALVideoPtr m_decoder;
+  CMMALVideo *m_decoder;
 };
 
 #endif

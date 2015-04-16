@@ -44,11 +44,13 @@ CDVDVideoCodecMMAL::~CDVDVideoCodecMMAL()
 {
   CLog::Log(LOGDEBUG, "%s::%s %p\n", CLASSNAME, __func__, this);
   Dispose();
+  delete m_decoder;
+  m_decoder = NULL;
 }
 
 bool CDVDVideoCodecMMAL::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  return m_decoder->Open(hints, options, m_decoder);
+  return m_decoder->Open(hints, options);
 }
 
 const char* CDVDVideoCodecMMAL::GetName(void)
