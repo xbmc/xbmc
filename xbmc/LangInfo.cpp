@@ -895,6 +895,15 @@ const std::string& CLangInfo::GetTimeZone() const
 // Returns the AM/PM symbol of the current language
 const std::string& CLangInfo::GetMeridiemSymbol(MeridiemSymbol symbol) const
 {
+  // nothing to return if we use 24-hour clock
+  if (m_use24HourClock)
+    return StringUtils::Empty;
+
+  return MeridiemSymbolToString(symbol);
+}
+
+const std::string& CLangInfo::MeridiemSymbolToString(MeridiemSymbol symbol)
+{
   switch (symbol)
   {
   case MeridiemSymbolAM:

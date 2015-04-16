@@ -1115,7 +1115,7 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
   GetAsSystemTime(dateTime);
 
   // Prefetch meridiem symbol
-  const std::string& strMeridiem = g_langInfo.GetMeridiemSymbol(dateTime.wHour > 11 ? MeridiemSymbolPM : MeridiemSymbolAM);
+  const std::string& strMeridiem = CLangInfo::MeridiemSymbolToString(dateTime.wHour > 11 ? MeridiemSymbolPM : MeridiemSymbolAM);
 
   size_t length = strFormat.size();
   for (size_t i=0; i < length; ++i)

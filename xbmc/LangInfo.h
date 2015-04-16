@@ -154,6 +154,7 @@ public:
   void Set24HourClock(bool use24HourClock);
   void Set24HourClock(const std::string& str24HourClock);
   const std::string& GetMeridiemSymbol(MeridiemSymbol symbol) const;
+  static const std::string& MeridiemSymbolToString(MeridiemSymbol symbol);
 
   CTemperature::Unit GetTemperatureUnit() const;
   void SetTemperatureUnit(CTemperature::Unit temperatureUnit);
