@@ -55,7 +55,6 @@ CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv)
   mmal_buffer = NULL;
   width = 0;
   height = 0;
-  index = 0;
   m_aspect_ratio = 0.0f;
   m_changed_count = 0;
   dts = DVD_NOPTS_VALUE;
@@ -110,7 +109,6 @@ CMMALVideo::CMMALVideo()
   m_startframe = false;
   m_decoderPts = DVD_NOPTS_VALUE;
   m_droppedPics = 0;
-  m_decode_frame_number = 1;
 
   m_dec = NULL;
   m_dec_input = NULL;
@@ -837,7 +835,6 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
        buffer->pts = pts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : pts;
        buffer->dts = dts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : dts;
        buffer->length = demuxer_bytes > buffer->alloc_size ? buffer->alloc_size : demuxer_bytes;
-       buffer->user_data = (void *)m_decode_frame_number;
        // set a flag so we can identify primary frames from generated frames (deinterlace)
        buffer->flags = MMAL_BUFFER_HEADER_FLAG_USER0;
 
@@ -866,7 +863,6 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
        if (demuxer_bytes == 0)
        {
          pthread_mutex_lock(&m_output_mutex);
-         m_decode_frame_number++;
          m_startframe = true;
          if (m_drop_state)
          {
@@ -987,7 +983,6 @@ void CMMALVideo::Reset(void)
 
   m_startframe = false;
   m_decoderPts = DVD_NOPTS_VALUE;
-  m_decode_frame_number = 1;
   m_preroll = !m_hints.stills && (m_speed == DVD_PLAYSPEED_NORMAL || m_speed == DVD_PLAYSPEED_PAUSE);
 }
 

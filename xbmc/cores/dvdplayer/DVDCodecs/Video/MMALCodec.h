@@ -55,7 +55,6 @@ public:
   int width;
   int height;
   float m_aspect_ratio;
-  int index;
   double dts;
   uint32_t m_changed_count;
   // reference counting
@@ -126,7 +125,6 @@ protected:
   pthread_mutex_t   m_output_mutex;
   int m_output_busy;
   std::queue<CMMALVideoBuffer*> m_output_ready;
-  std::vector<CMMALVideoBuffer*> m_output_buffers;
 
   // initialize mmal and get decoder component
   bool Initialize( const std::string &decoder_name);
@@ -138,7 +136,6 @@ protected:
   MMAL_INTERLACETYPE_T m_interlace_mode;
   EINTERLACEMETHOD  m_interlace_method;
   bool              m_startframe;
-  unsigned int      m_decode_frame_number;
   double            m_decoderPts;
   unsigned int      m_droppedPics;
   int               m_speed;
