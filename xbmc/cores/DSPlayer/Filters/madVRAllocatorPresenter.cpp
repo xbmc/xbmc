@@ -49,9 +49,11 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
 {
   //Init Variable
   g_renderManager.PreInit(RENDERER_DSHOW);
+  m_exclusiveCallback = ExclusiveCallback;
   m_isDeviceSet = false;
   m_firstBoot = true;
-
+  m_isEnteringExclusive = false;
+  
   if (FAILED(hr)) {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
     return;
@@ -66,6 +68,9 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
     // nasty, but we have to let it know about our death somehow
     ((CSubRenderCallback*)(ISubRenderCallback2*)m_pSRCB)->SetDXRAP(nullptr);
   }
+
+  if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
+    pEXL->Unregister(m_exclusiveCallback, this);
 
   //Restore Kodi Gui
   m_isDeviceSet = false;
@@ -90,6 +95,72 @@ STDMETHODIMP CmadVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, 
   return __super::NonDelegatingQueryInterface(riid, ppv);
 }
 
+void CmadVRAllocatorPresenter::SetResolution()
+{
+  ULONGLONG frameRate;
+  float fps;
+  if (Com::SmartQIPtr<IMadVRInfo> pInfo = m_pDXR)
+  {
+    pInfo->GetUlonglong("frameRate", &frameRate);
+    fps = 10000000.0 / frameRate;
+  }
+
+  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_graphicsContext.IsFullScreenRoot())
+  {
+    RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
+    g_graphicsContext.SetVideoResolution(bestRes);
+  }
+}
+
+void CmadVRAllocatorPresenter::ExclusiveCallback(LPVOID context, int event)
+{
+  CmadVRAllocatorPresenter *pThis = (CmadVRAllocatorPresenter*)context;
+
+  if (event == ExclusiveModeIsAboutToBeEntered || event == ExclusiveModeIsAboutToBeLeft)
+  { 
+    pThis->m_isEnteringExclusive = true;
+    CLog::Log(LOGDEBUG, "%s madVR IsAboutToBeEntered/IsAboutToBeLeft in Fullscreen Exclusive-Mode", __FUNCTION__);
+  }
+
+  if (event == ExclusiveModeWasJustEntered || event == ExclusiveModeWasJustLeft)
+  {
+    pThis->m_isEnteringExclusive = false;
+    CLog::Log(LOGDEBUG, "%s madVR WasJustEntered in Fullscreen Exclusive-Mode", __FUNCTION__);
+  }
+}
+
+void CmadVRAllocatorPresenter::ConfigureMadvr()
+{
+
+  if (Com::SmartQIPtr<IMadVRSeekbarControl> pMadVrSeek = m_pDXR)
+    pMadVrSeek->DisableSeekbar(true);
+
+  if (Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR)
+    pMadvrSettings->SettingsSetBoolean(L"delayPlaybackStart2", CSettings::Get().GetBool("dsplayer.delaymadvrplayback"));
+
+  if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
+    pEXL->Register(m_exclusiveCallback, this);
+
+  if (CSettings::Get().GetBool("dsplayer.madvrexclusivemode"))
+  {
+    if (Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR)
+    {
+      pMadvrSettings->SettingsSetBoolean(L"exclusiveDelay", true);
+      pMadvrSettings->SettingsSetBoolean(L"enableExclusive", true);
+    }
+  }
+  else
+  {
+    if (Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR)
+      pMadVrEx->DisableExclusiveMode(true);
+  }
+}
+
+void CmadVRAllocatorPresenter::SetStartMadvr()
+{
+  m_startMadvrEvent.Set();
+};
+
 HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
 
@@ -107,10 +178,23 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 
   if (m_firstBoot)
   { 
-    g_graphicsContext.SetFullScreenVideo(true);
     m_firstBoot = false;
+
+    // Wait for application render loop before start to swap device
+    CGraphFilters::Get()->SetSwappingDevice(true);
+    m_startMadvrEvent.Reset();
+    m_startMadvrEvent.Wait();
+    
+    // Restore texture on madVR's device
+    g_graphicsContext.SetFullScreenVideo(true);
     m_isDeviceSet = true;
     g_Windowing.ResetForMadvr();
+
+    // Change Resolution to match fps
+    SetResolution();
+
+    CGraphFilters::Get()->SetSwappingDevice(false);
+    g_application.SetStartMadvr();
   }
 
   Com::SmartSize size;
@@ -145,18 +229,7 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
   return hr;
 }
 
-void CmadVRAllocatorPresenter::SetResolution(float fps)
-{
-  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_graphicsContext.IsFullScreenRoot())
-  {
-    RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
-    g_graphicsContext.SetVideoResolution(bestRes);
-  }
-}
-
-HRESULT CmadVRAllocatorPresenter::Render(
-  REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, REFERENCE_TIME atpf,
-  int left, int top, int right, int bottom, int width, int height)
+HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, REFERENCE_TIME atpf, int left, int top, int right, int bottom, int width, int height)
 {
   Com::SmartRect wndRect(0, 0, width, height);
   Com::SmartRect videoRect(left, top, right, bottom);
@@ -172,24 +245,6 @@ HRESULT CmadVRAllocatorPresenter::Render(
 
   if (!g_renderManager.IsConfigured())
   {
-
-    SetResolution(m_fps);
-    
-    if (Com::SmartQIPtr<IMadVRSeekbarControl> pMadVrSeek = m_pDXR)
-      pMadVrSeek->DisableSeekbar(true);
-
-    if (CSettings::Get().GetBool("dsplayer.madvrexclusivemode"))
-    {
-      if (Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR)
-        pMadVrEx->DisableExclusiveMode(false);
-
-      if (Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR)
-      {
-        pMadvrSettings->SettingsSetBoolean(L"enableExclusive", true);
-        pMadvrSettings->SettingsSetBoolean(L"exclusiveDelay", true);
-      }
-    }
-
     m_NativeVideoSize = GetVideoSize(false);
     m_AspectRatio = GetVideoSize(true);
 
@@ -199,13 +254,14 @@ HRESULT CmadVRAllocatorPresenter::Render(
 
   AlphaBltSubPic(Com::SmartSize(width, height));
 
-  if (m_isDeviceSet)
+  if (m_isDeviceSet && !CGraphFilters::Get()->GetSwappingDevice())
   {
     // restore pixelshader for render kodi gui
     m_pD3DDeviceMadVR->SetPixelShader(NULL);
 
     // render kodi gui
-    g_application.RenderMadvr();
+    if (!m_isEnteringExclusive)
+      g_application.RenderMadvr();
 
     //restore stagestate for xysubfilter
     m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -218,6 +274,7 @@ HRESULT CmadVRAllocatorPresenter::Render(
     // set false for pixelshader
     m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
   }
+
   return S_OK;
 }
 
@@ -247,12 +304,9 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     return E_FAIL;
   }
 
-  if (Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR)
-    pMadVrEx->DisableExclusiveMode(true);
+  // Configure initial Madvr Settings
+  ConfigureMadvr();
 
-  if (Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR)
-    pMadvrSettings->SettingsSetBoolean(L"delayPlaybackStart2", CSettings::Get().GetBool("dsplayer.delaymadvrplayback"));
-  
   CGraphFilters::Get()->SetMadVrCallback(this);
 
   (*ppRenderer = (IUnknown*)(INonDelegatingUnknown*)(this))->AddRef();
@@ -266,8 +320,9 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   return S_OK;
 }
 
-void CmadVRAllocatorPresenter::SetMadvrPoisition(CRect wndRect, CRect videoRect)
+void CmadVRAllocatorPresenter::SetMadvrPosition(CRect wndRect, CRect videoRect)
 {
+
   Com::SmartRect wndR(wndRect.x1, wndRect.y1, wndRect.x2, wndRect.y2);
   Com::SmartRect videoR(videoRect.x1, videoRect.y1, videoRect.x2, videoRect.y2);
   SetPosition(wndR, videoR);
@@ -493,6 +548,7 @@ CStdString CmadVRAllocatorPresenter::GetDXVADecoderDescription()
 
 void CmadVRAllocatorPresenter::RestoreMadvrSettings()
 {
+
   if (!CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
     return;
 

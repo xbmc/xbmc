@@ -147,6 +147,8 @@ public:
 #ifdef HAS_DS_PLAYER
   void RenderMadvr();
   CEvent m_renderMadvrEvent;
+  CEvent m_startMadvrEvent;
+  void SetStartMadvr();
 #endif
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 

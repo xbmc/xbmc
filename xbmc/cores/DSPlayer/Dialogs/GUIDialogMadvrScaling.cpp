@@ -383,21 +383,6 @@ void CGUIDialogMadvrScaling::HideUnused()
   int value;
   CSetting *setting;
 
-  // SYNCHRONIZE WITH MADVR OPTIONS
-  /*
-  CGraphFilters::Get()->GetMadvrCallback()->SettingGetDoubling("nnediDL", madvrSettings.m_ImageDoubleLuma);
-  m_settingsManager->SetInt(SET_IMAGE_DOUBLE_LUMA, madvrSettings.m_ImageDoubleLuma);
-
-  CGraphFilters::Get()->GetMadvrCallback()->SettingGetDoubling("nnediDC", madvrSettings.m_ImageDoubleChroma);
-  m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA, madvrSettings.m_ImageDoubleChroma);
-
-  CGraphFilters::Get()->GetMadvrCallback()->SettingGetDoubling("nnediQL", madvrSettings.m_ImageQuadrupleLuma);
-  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_LUMA, madvrSettings.m_ImageQuadrupleLuma);
-
-  CGraphFilters::Get()->GetMadvrCallback()->SettingGetDoubling("nnediQC", madvrSettings.m_ImageQuadrupleChroma);
-  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA, madvrSettings.m_ImageQuadrupleChroma);
-  */
-
   // HIDE / SHOW
   setting = m_settingsManager->GetSetting(SET_IMAGE_DOUBLE_LUMA);
   value = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());

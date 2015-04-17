@@ -177,9 +177,12 @@ public:
   void SetMadVrCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
   bool UsingMadVr();
   bool ReadyMadVr();
+  bool IsEnteringExclusiveMadVr();
   bool IsInitMadVr() { return m_isInitMadVr; };
   void SetInitMadVr(bool b) { m_isInitMadVr = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
+  bool GetSwappingDevice() { return m_swappingDevice; }
+  void SetSwappingDevice(bool b) { m_swappingDevice = b; }
 
 private:
   CGraphFilters();
@@ -192,6 +195,9 @@ private:
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;
+
+  //madvr
+  bool m_swappingDevice;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
 
   /*MADVR*/

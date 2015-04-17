@@ -43,11 +43,13 @@ public:
 
   virtual LPDIRECT3DDEVICE9 GetDevice() { return NULL; };
   virtual bool IsDeviceSet(){ return false; }
+  virtual bool IsEnteringExclusive(){ return false; }
   virtual void SetIsDevice(bool b){};
   virtual void OsdRedrawFrame() {};
   virtual void SetMadvrPixelShader(){};
   virtual void RestoreMadvrSettings(){};
-  virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect) {};
+  virtual void SetStartMadvr(){};
+  virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
   virtual void SettingSetScaling(CStdStringW path, int scaling) {};
   virtual void SettingSetDoubling(CStdStringW path, int iValue) {};
   virtual void SettingSetDoublingCondition(CStdStringW path, int condition) {};

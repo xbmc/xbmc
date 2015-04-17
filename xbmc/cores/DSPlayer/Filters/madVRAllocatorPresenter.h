@@ -74,20 +74,27 @@ class CmadVRAllocatorPresenter
       return m_pDXRAP ? m_pDXRAP->Render(rtStart, rtStop, AvgTimePerFrame, left, top, right, bottom, width, height) : E_UNEXPECTED;
     }
   };
-  void SetResolution(float fps);
+
+  void SetResolution();
+  void ConfigureMadvr();
   Com::SmartPtr<IUnknown> m_pDXR;
   LPDIRECT3DDEVICE9 m_pD3DDeviceMadVR;
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartSize m_ScreenSize;
+  EXCLUSIVEMODECALLBACK m_exclusiveCallback;
+  CEvent m_startMadvrEvent;
   bool  m_bIsFullscreen;
   bool m_isDeviceSet;
   bool m_firstBoot;
+  bool m_isEnteringExclusive;
   int m_shaderStage;
 
 public:
 
   CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdString &_Error);
   virtual ~CmadVRAllocatorPresenter();
+
+  static void __stdcall ExclusiveCallback(LPVOID context, int event);
 
   DECLARE_IUNKNOWN
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
@@ -103,13 +110,15 @@ public:
   STDMETHODIMP SetPixelShader(LPCSTR pSrcData, LPCSTR pTarget);
 
   //IPaintCallbackMadvr
-  LPDIRECT3DDEVICE9 GetDevice();
+  virtual LPDIRECT3DDEVICE9 GetDevice();
   virtual bool IsDeviceSet(){ return m_isDeviceSet; }
+  virtual bool IsEnteringExclusive(){ return m_isEnteringExclusive; }
   virtual void SetIsDevice(bool b){ m_isDeviceSet = b; };
   virtual void OsdRedrawFrame();
   virtual void SetMadvrPixelShader();
   virtual void RestoreMadvrSettings();
-  virtual void SetMadvrPoisition(CRect wndRect, CRect videoRect);
+  virtual void SetStartMadvr();
+  virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
   virtual void SettingSetScaling(CStdStringW path, int scaling);
   virtual void SettingSetDoubling(CStdStringW path, int iValue);
   virtual void SettingSetDoublingCondition(CStdStringW path, int condition);

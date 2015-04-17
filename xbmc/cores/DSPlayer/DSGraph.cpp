@@ -136,8 +136,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (CGraphFilters::Get()->UsingMadVr())
   {
     CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPixelShader();
-    if (CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
-      CGraphFilters::Get()->GetMadvrCallback()->RestoreMadvrSettings();
+    CGraphFilters::Get()->GetMadvrCallback()->RestoreMadvrSettings();
   }
 
   //TODO Ti-Ben

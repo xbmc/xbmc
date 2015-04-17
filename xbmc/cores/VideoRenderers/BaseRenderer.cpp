@@ -501,10 +501,10 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
     m_oldRenderOrientation = m_renderOrientation;
   }
 #ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->ReadyMadVr())
+  if (CGraphFilters::Get()->UsingMadVr())
   {
     const CRect view = g_graphicsContext.GetViewWindow();
-    CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPoisition(view, m_destRect);
+    CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPosition(view, m_destRect);
   }
 #endif
 }
@@ -705,6 +705,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     { // now we need to set CDisplaySettings::Get().GetPixelRatio() so that
       // outputFrameRatio = 16:9.
       CDisplaySettings::Get().SetPixelRatio((16.0f / 9.0f) / sourceFrameRatio);
+
     }
     else
     { // stretch to the limits of the 16:9 screen.
