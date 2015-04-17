@@ -150,6 +150,8 @@ CMMALRenderer::CMMALRenderer()
   memset(m_buffers, 0, sizeof m_buffers);
   mmal_buffer_header_reset(&m_quit_packet);
   m_release_queue = mmal_queue_create();
+  m_iFlags = 0;
+  m_format = RENDER_FMT_NONE;
   m_iYV12RenderBuffer = 0;
   Create();
 }
