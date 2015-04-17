@@ -592,6 +592,8 @@ msgctxt "#143"
 msgid "Current:"
 msgstr ""
 
+#. Used in Confluence system info to show build info
+#: addons/skin.confluence/720p/SettingsSystemInfo.xml
 msgctxt "#144"
 msgid "Build:"
 msgstr ""
@@ -725,7 +727,11 @@ msgctxt "#173"
 msgid "Display 4:3 videos as"
 msgstr ""
 
-#empty string with id 174
+#. Used in Confluence system info to show build date
+#: addons/skin.confluence/720p/SettingsSystemInfo.xml
+msgctxt "#174"
+msgid "Compiled:"
+msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#175"
