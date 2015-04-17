@@ -229,11 +229,17 @@ static void dec_control_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *
 }
 
 
-static void dec_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
+void CMMALVideo::dec_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p, len %d cmd:%x", CLASSNAME, __func__, port, buffer, buffer->length, buffer->cmd);
   mmal_buffer_header_release(buffer);
+}
+
+static void dec_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
+{
+  CMMALVideo *mmal = reinterpret_cast<CMMALVideo*>(port->userdata);
+  mmal->dec_input_port_cb(port, buffer);
 }
 
 
@@ -651,7 +657,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, MMALVide
   m_dec_input->buffer_num = m_dec_input->buffer_num_recommended;
 
   m_dec_input->userdata = (struct MMAL_PORT_USERDATA_T *)this;
-  status = mmal_port_enable(m_dec_input, dec_input_port_cb);
+  status = mmal_port_enable(m_dec_input, dec_input_port_cb_static);
   if (status != MMAL_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s::%s Failed to enable decoder input port %s (status=%x %s)", CLASSNAME, __func__, m_dec_input->name, status, mmal_status_to_string(status));
@@ -958,7 +964,7 @@ void CMMALVideo::Reset(void)
   if (!m_finished)
   {
     if (m_dec_input)
-      mmal_port_enable(m_dec_input, dec_input_port_cb);
+      mmal_port_enable(m_dec_input, dec_input_port_cb_static);
     if (m_deint_connection)
       mmal_connection_enable(m_deint_connection);
     if (m_dec_output)
