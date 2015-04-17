@@ -49,7 +49,6 @@ class CMMALRenderer : public CBaseRenderer, public CThread
   {
     CMMALVideoBuffer *MMALBuffer; // used for hw decoded buffers
     MMAL_BUFFER_HEADER_T *mmal_buffer;  // used for sw decoded buffers
-    unsigned flipindex; /* used to decide if this has been uploaded */
   };
 public:
   CMMALRenderer();
@@ -118,7 +117,7 @@ protected:
   CEvent            m_sync;
   MMAL_BUFFER_HEADER_T m_quit_packet;
 
-  bool init_vout(MMAL_ES_FORMAT_T *m_format);
+  bool init_vout(ERenderFormat format);
   void ReleaseBuffers();
   void UnInitMMAL();
 };
