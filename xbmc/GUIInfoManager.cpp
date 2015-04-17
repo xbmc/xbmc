@@ -415,7 +415,8 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "isstereoscopic",   VIDEOPLAYER_IS_STEREOSCOPIC },
                                   { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE },
                                   { "canresumelivetv",  VIDEOPLAYER_CAN_RESUME_LIVE_TV },
-                                  { "imdbnumber",       VIDEOPLAYER_IMDBNUMBER }
+                                  { "imdbnumber",       VIDEOPLAYER_IMDBNUMBER },
+                                  { "episodename",      VIDEOPLAYER_EPISODENAME }
 };
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
@@ -1651,6 +1652,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_PLAYCOUNT:
   case VIDEOPLAYER_LASTPLAYED:
   case VIDEOPLAYER_IMDBNUMBER:
+  case VIDEOPLAYER_EPISODENAME:
     strLabel = GetVideoLabel(info);
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
@@ -3877,6 +3879,9 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       if (epgTag && epgTag->SeriesNumber() > 0)
         return StringUtils::Format("%i", epgTag->SeriesNumber());
       break;
+    case VIDEOPLAYER_EPISODENAME:
+      epgTag = tag->GetEPGNow();
+      return epgTag ? epgTag->EpisodeName() : "";
     case VIDEOPLAYER_CAST:
       epgTag = tag->GetEPGNow();
       return epgTag ? epgTag->Cast() : "";
