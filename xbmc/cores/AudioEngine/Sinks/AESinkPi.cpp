@@ -45,7 +45,8 @@ CAESinkPi::CAESinkPi() :
     m_sinkbuffer_sec_per_byte(0),
     m_Initialized(false),
     m_submitted(0),
-    m_omx_output(NULL)
+    m_omx_output(NULL),
+    m_output(AESINKPI_UNKNOWN)
 {
 }
 
@@ -60,7 +61,7 @@ void CAESinkPi::SetAudioDest()
   OMX_INIT_STRUCTURE(audioDest);
   if ( m_omx_render.IsInitialized() )
   {
-    if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+    if (m_output == AESINKPI_ANALOGUE)
       strncpy((char *)audioDest.sName, "local", strlen("local"));
     else
       strncpy((char *)audioDest.sName, "hdmi", strlen("hdmi"));
@@ -70,7 +71,7 @@ void CAESinkPi::SetAudioDest()
   }
   if ( m_omx_render_slave.IsInitialized() )
   {
-    if (CSettings::Get().GetString("audiooutput.audiodevice") != "PI:Analogue")
+    if (m_output != AESINKPI_ANALOGUE)
       strncpy((char *)audioDest.sName, "local", strlen("local"));
     else
       strncpy((char *)audioDest.sName, "hdmi", strlen("hdmi"));
@@ -190,12 +191,17 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   m_initDevice = device;
   m_initFormat = format;
 
+  if (m_passthrough || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:HDMI")
+    m_output = AESINKPI_HDMI;
+  else if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+    m_output = AESINKPI_ANALOGUE;
+  else if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
+    m_output = AESINKPI_BOTH;
+  else assert(0);
+
   // analogue only supports stereo
-  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue" || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
-  {
+  if (m_output == AESINKPI_ANALOGUE || m_output == AESINKPI_BOTH)
     format.m_channelLayout = AE_CH_LAYOUT_2_0;
-    m_passthrough = false;
-  }
 
   // setup for a 50ms sink feed from SoftAE
   if (format.m_dataFormat != AE_FMT_FLOATP && format.m_dataFormat != AE_FMT_FLOAT &&
@@ -223,7 +229,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   if (!m_omx_render.Initialize("OMX.broadcom.audio_render", OMX_IndexParamAudioInit))
     CLog::Log(LOGERROR, "%s::%s - m_omx_render.Initialize omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
 
-  if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
+  if (m_output == AESINKPI_BOTH)
   {
     if (!m_omx_splitter.Initialize("OMX.broadcom.audio_splitter", OMX_IndexParamAudioInit))
       CLog::Log(LOGERROR, "%s::%s - m_omx_splitter.Initialize omx_err(0x%08x)", CLASSNAME, __func__, omx_err);
@@ -465,7 +471,10 @@ unsigned int CAESinkPi::AddPackets(uint8_t **data, unsigned int frames, unsigned
   }
   omx_err = m_omx_output->EmptyThisBuffer(omx_buffer);
   if (omx_err != OMX_ErrorNone)
+  {
     CLog::Log(LOGERROR, "%s:%s frames=%d err=%x", CLASSNAME, __func__, frames, omx_err);
+    m_omx_output->DecoderEmptyBufferDone(m_omx_output->GetComponent(), omx_buffer);
+  }
   m_submitted++;
   GetDelay(status);
   delay = status.GetDelay();

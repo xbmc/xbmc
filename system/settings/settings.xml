@@ -568,7 +568,7 @@
           <level>2</level>
           <default>0</default>
           <constraints>
-            <minimum label="231">0</minimum>
+            <minimum label="351">0</minimum>
             <step>1</step>
             <maximum>20</maximum>
           </constraints>
@@ -911,18 +911,6 @@
     </category>
     <category id="subtitles" label="287" help="36184">
       <group id="1">
-        <setting id="subtitles.languages" type="list[string]" label="24111" help="24112">
-          <level>1</level>
-          <default>English</default>
-          <constraints>
-            <options>iso6391languages</options>
-            <delimiter>,</delimiter>
-            <minimumitems>1</minimumitems>
-          </constraints>
-          <control type="list" format="string">
-            <multiselect>true</multiselect>
-          </control>
-        </setting>
         <setting id="locale.subtitlelanguage" type="string" label="286" help="36120">
           <level>1</level>
           <default>original</default>
@@ -930,6 +918,11 @@
             <options>streamlanguages</options>
           </constraints>
           <control type="list" format="string" />
+        </setting>
+        <setting id="subtitles.parsecaptions" type="boolean" label="24130" help="24131">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
       </group>
       <group id="2">
@@ -1075,6 +1068,18 @@
         </setting>
       </group>
       <group id="4">
+        <setting id="subtitles.languages" type="list[string]" label="24111" help="24112">
+          <level>1</level>
+          <default>English</default>
+          <constraints>
+            <options>iso6391languages</options>
+            <delimiter>,</delimiter>
+            <minimumitems>1</minimumitems>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
         <setting id="subtitles.storagemode" type="integer" label="24115" help="24106">
           <level>1</level>
           <default>0</default>
@@ -1099,11 +1104,6 @@
           <control type="button" format="path">
             <heading>657</heading>
           </control>
-        </setting>
-        <setting id="subtitles.parsecaptions" type="boolean" label="24130" help="24131">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
         </setting>
         <setting id="subtitles.pauseonsearch" type="boolean" label="24105" help="24123">
           <level>1</level>
@@ -1460,6 +1460,24 @@
             <formatlabel>17999</formatlabel>
           </control>
         </setting>
+        <setting id="epg.selectaction" type="integer" label="22079" help="36424">
+          <level>1</level>
+          <default>2</default> <!-- EPG_SELECT_ACTION_INFO -->
+          <constraints>
+            <options>
+              <option label="36425">0</option> <!-- EPG_SELECT_ACTION_CONTEXT_MENU -->
+              <option label="36426">1</option> <!-- EPG_SELECT_ACTION_SWITCH -->
+              <option label="36427">2</option> <!-- EPG_SELECT_ACTION_INFO -->
+              <option label="36428">3</option> <!-- EPG_SELECT_ACTION_RECORD -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="epg.hidenoinfoavailable" type="boolean" label="19268" help="36224">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2">
         <setting id="epg.epgupdate" type="integer" label="19071" help="36221">
@@ -1474,19 +1492,6 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
-        <setting id="epg.selectaction" type="integer" label="22079" help="36424">
-          <level>1</level>
-          <default>2</default> <!-- EPG_SELECT_ACTION_INFO -->
-          <constraints>
-            <options>
-              <option label="36425">0</option> <!-- EPG_SELECT_ACTION_CONTEXT_MENU -->
-              <option label="36426">1</option> <!-- EPG_SELECT_ACTION_SWITCH -->
-              <option label="36427">2</option> <!-- EPG_SELECT_ACTION_INFO -->
-              <option label="36428">3</option> <!-- EPG_SELECT_ACTION_RECORD -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
         <setting id="epg.preventupdateswhileplayingtv" type="boolean" label="19230" help="36222">
           <level>2</level>
           <default>false</default>
@@ -1495,11 +1500,6 @@
         <setting id="epg.ignoredbforclient" type="boolean" label="19072" help="36223">
           <level>2</level>
           <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="epg.hidenoinfoavailable" type="boolean" label="19268" help="36224">
-          <level>2</level>
-          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="epg.resetepg" type="action" label="19187" help="36225">

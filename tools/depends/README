@@ -14,9 +14,9 @@ IOS:
 
 Android (the pathes are examples and have to match those of docs/READM.android):
   arm:
-    ./configure --with-tarballs=/opt/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=/opt/android-sdk-linux --with-ndk=/opt/android-ndk-r10d --with-toolchain=/opt/arm-linux-androideabi-4.8-vanilla/android-14 --prefix=/opt/xbmc-depends
+    ./configure --with-tarballs=/opt/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=/opt/android-sdk-linux --with-ndk=/opt/android-ndk-r10d --with-toolchain=/opt/arm-linux-androideabi-4.8-vanilla/android-17 --prefix=/opt/xbmc-depends
   x86:
-    ./configure --with-tarballs=/opt/xbmc-tarballs --host=i686-linux-android --with-sdk-path=/opt/android-sdk-linux --with-ndk=/opt/android-ndk-r10d --with-toolchain=/opt/x86-linux-4.8-vanilla/android-14 --prefix=/opt/xbmc-depends
+    ./configure --with-tarballs=/opt/xbmc-tarballs --host=i686-linux-android --with-sdk-path=/opt/android-sdk-linux --with-ndk=/opt/android-ndk-r10d --with-toolchain=/opt/x86-linux-4.8-vanilla/android-17 --prefix=/opt/xbmc-depends
 
   
 

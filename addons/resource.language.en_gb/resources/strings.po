@@ -695,7 +695,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#170"
-msgid "Adjust display refresh rate to match video"
+msgid "Adjust display refresh rate"
 msgstr ""
 
 #: xbmc/playlists/SmartPlayList.cpp
@@ -960,7 +960,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#227"
-msgid "Lookup audio CD track names from freedb.org"
+msgid "Load audio CD information from online service"
 msgstr ""
 
 msgctxt "#228"
@@ -1121,7 +1121,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#263"
-msgid "Allow control of Kodi via HTTP"
+msgid "Allow remote control via HTTP"
 msgstr ""
 
 msgctxt "#264"
@@ -1497,6 +1497,7 @@ msgctxt "#350"
 msgid "Programs"
 msgstr ""
 
+#: system/settings/settings.xml
 #: system/settings/darwin.xml
 msgctxt "#351"
 msgid "Off"
@@ -1514,9 +1515,10 @@ msgctxt "#354"
 msgid "Matrix trails"
 msgstr ""
 
+#. Label of a setting to configure the idle time until the screensaver kicks in
 #: system/settings/settings.xml
 msgctxt "#355"
-msgid "Screensaver time"
+msgid "Wait time"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -2092,7 +2094,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#489"
-msgid "Play the next song automatically"
+msgid "Play next song automatically"
 msgstr ""
 
 #empty string with id 490
@@ -2714,7 +2716,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#638"
-msgid "ReplayGain volume adjustments"
+msgid "Volume adjustments"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -2729,12 +2731,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#641"
-msgid "PreAmp Level - ReplayGained files"
+msgid "Files with ReplayGain information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#642"
-msgid "PreAmp Level - Non ReplayGained files"
+msgid "Files without ReplayGain information"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -2937,7 +2939,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#708"
-msgid "Use an HTTP proxy server to access the internet"
+msgid "Use proxy server"
 msgstr ""
 
 #empty strings from id 709 to 710
@@ -3274,7 +3276,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#791"
-msgid "Allow programs on this system to control Kodi"
+msgid "Allow remote control by programs on this system"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -3289,7 +3291,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#794"
-msgid "Allow programs on other systems to control Kodi"
+msgid "Allow remote control by programs on other systems"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -3373,7 +3375,7 @@ msgid "Unable to connect"
 msgstr ""
 
 msgctxt "#1002"
-msgid "Kodi was unable to connect to the network location."
+msgid "The connection to the network location could not be established."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
@@ -3780,7 +3782,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1260"
-msgid "Announce these services to other systems via Zeroconf"
+msgid "Announce services to other systems"
 msgstr ""
 
 #empty strings from id 1261 to 1267
@@ -3795,7 +3797,7 @@ msgid "Allow volume control"
 msgstr ""
 
 msgctxt "#1270"
-msgid "Allow Kodi to receive AirPlay content"
+msgid "Enable AirPlay support"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -5377,12 +5379,7 @@ msgctxt "#13120"
 msgid "VDPAU"
 msgstr ""
 
-#empty string with id 13121
-
-#: system/settings/settings.xml
-msgctxt "#13122"
-msgid "VDPAU Studio level colour conversion"
-msgstr ""
+#empty string with ids 13121, 13122
 
 msgctxt "#13123"
 msgid "Keep skin?"
@@ -5414,7 +5411,7 @@ msgstr ""
 
 #: xbmc\network\NetworkServices.cpp
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control Kodi"
+msgid "If you proceed, you might not be able to control this application"
 msgstr ""
 
 #: xbmc\network\NetworkServices.cpp
@@ -5436,7 +5433,7 @@ msgstr ""
 
 #: xbmc\osx\XBMCHelper.cpp
 msgctxt "#13146"
-msgid "Kodi, changing this setting might affect your ability"
+msgid "this application, changing this setting might affect your ability"
 msgstr ""
 
 #: xbmc\osx\XBMCHelper.cpp
@@ -5718,7 +5715,7 @@ msgid "Do you wish to reboot your system"
 msgstr ""
 
 msgctxt "#13309"
-msgid "instead of just Kodi?"
+msgid "instead of just this application?"
 msgstr ""
 
 msgctxt "#13310"
@@ -6035,7 +6032,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13399"
-msgid "Ignore articles when sorting (e.g. \"the\")"
+msgid "Ignore articles when sorting"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6195,7 +6192,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13433"
-msgid "Play the next video automatically"
+msgid "Play next video automatically"
 msgstr ""
 
 #. If autoplay next video is set true
@@ -6572,6 +6569,9 @@ msgid "Change area code 3"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
+#: xbmc/vide/windows/GUIWindowVideoBase.cpp
 msgctxt "#14022"
 msgid "Library"
 msgstr ""
@@ -6648,7 +6648,7 @@ msgid "Network settings changed"
 msgstr ""
 
 msgctxt "#14039"
-msgid "Kodi requires to restart to change your"
+msgid "A restart is required to change your"
 msgstr ""
 
 msgctxt "#14040"
@@ -6840,7 +6840,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14083"
-msgid "Use a fullscreen window rather than true fullscreen"
+msgid "Use fullscreen window"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -7647,7 +7647,7 @@ msgstr ""
 
 #: xbmc/epg/EpgContainer.cpp
 msgctxt "#19004"
-msgid "Importing EPG from clients"
+msgid "Importing guide from clients"
 msgstr ""
 
 msgctxt "#19005"
@@ -7750,7 +7750,7 @@ msgid "No search results"
 msgstr ""
 
 msgctxt "#19028"
-msgid "No EPG entries"
+msgid "No guide entries"
 msgstr ""
 
 msgctxt "#19029"
@@ -7922,7 +7922,7 @@ msgstr ""
 
 #. Electronic program guide. used by ?
 msgctxt "#19069"
-msgid "EPG"
+msgid "Guide"
 msgstr ""
 
 msgctxt "#19070"
@@ -7930,12 +7930,12 @@ msgid "Go to now"
 msgstr ""
 
 msgctxt "#19071"
-msgid "EPG update interval"
+msgid "Update interval"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19072"
-msgid "Do not store the EPG in the database"
+msgid "Do not cache in local database"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8369,12 +8369,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19175"
-msgid "Margin at the start of a recording"
+msgid "Start padding time"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19176"
-msgid "Margin at the end of a recording"
+msgid "End padding time"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8405,7 +8405,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19182"
-msgid "Days to display in the EPG"
+msgid "Days to display"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8421,7 +8421,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19185"
-msgid "Reset the PVR database"
+msgid "Reset PVR database"
 msgstr ""
 
 msgctxt "#19186"
@@ -8430,11 +8430,11 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19187"
-msgid "Reset the EPG database"
+msgid "Reset guide database"
 msgstr ""
 
 msgctxt "#19188"
-msgid "EPG is being reset"
+msgid "Guide is being reset"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8487,7 +8487,7 @@ msgid "Channel manager"
 msgstr ""
 
 msgctxt "#19200"
-msgid "EPG source:"
+msgid "Guide source:"
 msgstr ""
 
 msgctxt "#19201"
@@ -8511,7 +8511,7 @@ msgid "Group management"
 msgstr ""
 
 msgctxt "#19206"
-msgid "Activate EPG:"
+msgid "Activate guide:"
 msgstr ""
 
 msgctxt "#19207"
@@ -8576,7 +8576,7 @@ msgid "Synchronise channel groups with backend(s)"
 msgstr ""
 
 msgctxt "#19222"
-msgid "EPG"
+msgid "Guide"
 msgstr ""
 
 msgctxt "#19223"
@@ -8609,12 +8609,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19230"
-msgid "Prevent EPG updates during playback"
+msgid "Prevent updates during playback"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19231"
-msgid "Always use the channel order from the backend(s)"
+msgid "Use channel order from backend(s)"
 msgstr ""
 
 msgctxt "#19232"
@@ -8628,7 +8628,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR Add-on)"
+msgid "Use channel numbers from backend"
 msgstr ""
 
 msgctxt "#19235"
@@ -8674,7 +8674,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19245"
-msgid "Set wakeup command (cmd [timestamp])"
+msgid "Wakeup command"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8698,23 +8698,23 @@ msgstr ""
 
 #: xbmc/epg/EpgContainer.cpp
 msgctxt "#19250"
-msgid "Loading EPG from database"
+msgid "Loading guide from database"
 msgstr ""
 
 msgctxt "#19251"
-msgid "Update EPG information"
+msgid "Update guide information"
 msgstr ""
 
 msgctxt "#19252"
-msgid "Schedule EPG update for this channel?"
+msgid "Schedule guide update for this channel?"
 msgstr ""
 
 msgctxt "#19253"
-msgid "EPG update scheduled for channel"
+msgid "Guide update scheduled for channel"
 msgstr ""
 
 msgctxt "#19254"
-msgid "EPG update failed for channel"
+msgid "Guide update failed for channel"
 msgstr ""
 
 msgctxt "#19255"
@@ -8775,12 +8775,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19268"
-msgid "Do not show 'no information available' labels"
+msgid "Hide 'no information available' labels"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19269"
-msgid "Do not show 'connection lost' warnings"
+msgid "Disable 'connection lost' warnings"
 msgstr ""
 
 #. Label of the option to switch between a grouped recordings list and a non-grouped recordings list.
@@ -10214,13 +10214,13 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20187"
-msgid "UPnP"
+msgid "UPnP/DLNA"
 msgstr ""
 
 #: xbmc/network/upnp/UPnPServer.cpp
 #: system/settings/settings.xml
 msgctxt "#20188"
-msgid "Announce library updates via UPnP"
+msgid "Announce library updates"
 msgstr ""
 
 msgctxt "#20189"
@@ -10238,21 +10238,21 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20192"
-msgid "Download additional information during updates"
+msgid "Fetch additional information during updates"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20193"
-msgid "Default service for album information"
+msgid "Default provider for album information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20194"
-msgid "Default service for artist information"
+msgid "Default provider for artist information"
 msgstr ""
 
 msgctxt "#20195"
-msgid "Change scraper"
+msgid "Change information provider"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -10278,10 +10278,10 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20220"
-msgid "Override song tags with online information"
+msgid "Prefer online information"
 msgstr ""
 
-#. Description of setting "Music -> Library -> Override song tags with online information" with label #20220
+#. Description of setting "Music -> Library -> Prefer online information" with label #20220
 #: system/settings/settings.xml
 msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
@@ -10524,7 +10524,7 @@ msgid "Do you want to remove all items within"
 msgstr ""
 
 msgctxt "#20341"
-msgid "this path from the Kodi library?"
+msgid "this path from your library?"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
@@ -10806,7 +10806,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20402"
-msgid "Download actor thumbnails when adding to library"
+msgid "Download actor thumbnails"
 msgstr ""
 
 msgctxt "#20403"
@@ -10827,7 +10827,7 @@ msgid "Set episode bookmark"
 msgstr ""
 
 msgctxt "#20407"
-msgid "Scraper settings"
+msgid "Information provider settings"
 msgstr ""
 
 msgctxt "#20408"
@@ -11047,9 +11047,10 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr ""
 
+#. Label of a setting to use a simplified (flattened) hierarchy
 #: system/settings/settings.xml
 msgctxt "#20456"
-msgid "Flatten library hierarchy"
+msgid "Flatten hierarchy"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
@@ -11136,7 +11137,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21360"
-msgid "Share video and music libraries through UPnP"
+msgid "Share my libraries"
 msgstr ""
 
 msgctxt "#21361"
@@ -11234,7 +11235,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21382"
-msgid "Show \"Add source\" buttons in file lists"
+msgid "Show \"Add source\" buttons"
 msgstr ""
 
 msgctxt "#21383"
@@ -11366,27 +11367,27 @@ msgid "not in the last"
 msgstr ""
 
 msgctxt "#21412"
-msgid "Scrapers"
+msgid "Information providers"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21413"
-msgid "Default movie scraper"
+msgid "Default provider for movie information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21414"
-msgid "Default tvshow scraper"
+msgid "Default provider for tvshow information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21415"
-msgid "Default music video scraper"
+msgid "Default provider for music video information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21416"
-msgid "Select the first unwatched TV show season/episode"
+msgid "Select first unwatched TV show season/episode"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11399,7 +11400,7 @@ msgid "Multilingual"
 msgstr ""
 
 msgctxt "#21419"
-msgid "No scrapers present"
+msgid "No information providers present"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
@@ -11925,7 +11926,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21881"
-msgid "Allow control of Kodi via UPnP"
+msgid "Allow remote control via UPnP"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12117,7 +12118,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22021"
-msgid "Allowed error in aspect ratio to minimise black bars"
+msgid "Minimise black bars"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13824,12 +13825,12 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36007"
-msgid "Devices to power on when starting Kodi"
+msgid "Devices to power on on startup"
 msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36008"
-msgid "Devices to power off when stopping Kodi"
+msgid "Devices to power off on shutdown"
 msgstr ""
 
 #: system/peripherals.xml
@@ -13881,7 +13882,7 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36020"
-msgid "Make Kodi the active source when starting"
+msgid "Switch source to this device on startup"
 msgstr ""
 
 #: system/peripherals.xml
@@ -13906,12 +13907,12 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping Kodi"
+msgid "Send 'inactive source' command on shutdown"
 msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36026"
-msgid "Put devices in standby mode when putting the PC in standby"
+msgid "Devices to also put in standby mode"
 msgstr ""
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
@@ -13988,7 +13989,7 @@ msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36040"
-msgid "Unsupported libCEC interface version. %x is lower than the version Kodi supports (%x)"
+msgid "Detected version of libCEC interface (%x) is lower than the supported version %x."
 msgstr ""
 
 #: xbmc/video/dialogs/guidialogvideoinfo.cpp
@@ -14030,7 +14031,7 @@ msgstr ""
 #. Description of setting "Appearance -> Skin -> Skin" with label #166
 #: system/settings/settings.xml
 msgctxt "#36103"
-msgid "Select the skin for the user interface. This will define the look and feel of Kodi."
+msgid "Select the skin for the user interface. This will define the look and feel of this application."
 msgstr ""
 
 #. Description of setting "Appearance -> Skin -> Settings" with label #21417
@@ -14066,7 +14067,7 @@ msgstr ""
 #. Description of setting "Appearance -> Skin -> Startup window" with label #512
 #: system/settings/settings.xml
 msgctxt "#36109"
-msgid "Select the media window that Kodi displays on startup."
+msgid "Select the media window to display on startup."
 msgstr ""
 
 #. Description of setting "Appearance -> Skin -> Navigation sounds" with label #15108
@@ -14126,13 +14127,13 @@ msgstr ""
 #.  Description of setting "Appearance -> International -> Preferred audio language" with label #285
 #: system/settings/settings.xml
 msgctxt "#36119"
-msgid "Select the default audio track when different language tracks are available."
+msgid "Defaults to the selected audio language if more than one language is available."
 msgstr ""
 
 #.  Description of setting "Video -> Subtitles -> Preferred subtitle language" with label #286
 #: system/settings/settings.xml
 msgctxt "#36120"
-msgid "Select the default subtitles when different languages are available."
+msgid "Defaults to the selected subtitle language if more than one language is available."
 msgstr ""
 
 #. Description of settings category "Appearance -> File lists" with label #14081
@@ -14153,10 +14154,10 @@ msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr ""
 
-#. #.  Description of setting "Appearance -> File lists -> Ignore articles when sorting (e.g. "the")" with label #13399
+#. #.  Description of setting "Appearance -> File lists -> Ignore articles when sorting with label #13399
 #: system/settings/settings.xml
 msgctxt "#36124"
-msgid "Ignore certain tokens during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgid "Ignore certain tokens (e.g. "the") during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
 msgstr ""
 
 #.  Description of setting "Appearance -> File lists -> Allow file renaming and deletion" with label #14071
@@ -14183,16 +14184,16 @@ msgctxt "#36128"
 msgid "Category containing all screensaver settings."
 msgstr ""
 
-#. Description of setting "Appearance -> Screensaver -> Screensaver time" with label #355
+#. Description of setting "Appearance -> Screensaver -> Wait time" with label #355
 #: system/settings/settings.xml
 msgctxt "#36129"
-msgid "Set the amount of idle time required before displaying the screensaver."
+msgid "Set the time to wait for any activity to occur before displaying the screensaver."
 msgstr ""
 
 #. Description of setting "Appearance -> Screensaver -> Screensaver mode" with label #356
 #: system/settings/settings.xml
 msgctxt "#36130"
-msgid "Select the screensaver. Kodi will force the 'Dim' screensaver when fullscreen video playback is paused or a dialogue box is active."
+msgid "Select the screensaver. The 'Dim' screensaver will be forced when fullscreen video playback is paused or a dialogue box is active."
 msgstr ""
 
 #. #. Description of setting "Appearance -> Screensaver -> Settings" with label #21417
@@ -14210,7 +14211,7 @@ msgstr ""
 #. Description of setting "Appearance -> Screensaver -> Use visualisation if playing audio" with label #13392
 #: system/settings/settings.xml
 msgctxt "#36133"
-msgid "If music is being played, Kodi will start the selected visualisation instead of displaying the screensaver."
+msgid "If music is being played, the selected visualisation will be started instead of displaying the screensaver."
 msgstr ""
 
 #. Description of setting "Appearance -> Screensaver -> Use dim if paused during video playback" with label #22014
@@ -14264,10 +14265,10 @@ msgctxt "#36142"
 msgid "Choose which speed unit is used for displaying speeds in the user interface."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Download actor thumbnails when adding to library" with label #20402
+#. Description of setting "Videos -> Library -> Download actor thumbnails" with label #20402
 #: system/settings/settings.xml
 msgctxt "#36143"
-msgid "Get thumbnails for actors when scanning media."
+msgid "Get thumbnails for actors when adding media to the library."
 msgstr ""
 
 #. Description of setting "Videos -> Library -> Flatten TV show seasons" with label #20412
@@ -14285,7 +14286,7 @@ msgstr ""
 #. Description of setting "Videos -> Library -> Update library on startup" with label #22000
 #: system/settings/settings.xml
 msgctxt "#36146"
-msgid "Check for new media files on Kodi startup."
+msgid "Check for new media files on startup."
 msgstr ""
 
 #. Description of setting "Videos -> Library -> Hide progress of library updates" with label #22001
@@ -14320,7 +14321,7 @@ msgctxt "#36151"
 msgid "Category containing settings for how video playback is handled."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Play the next video automatically" with label #13433
+#. Description of setting "Videos -> Playback -> Play next video automatically" with label #13433
 #: system/settings/settings.xml
 msgctxt "#36152"
 msgid "Enable automatic playback of the next file in the list."
@@ -14384,7 +14385,7 @@ msgstr ""
 
 #empty string with id 36163
 
-#. Description of setting "Videos -> Playback -> Adjust display refresh rate to match video" with label #170
+#. Description of setting "Videos -> Playback -> Adjust display refresh rate" with label #170
 #: system/settings/settings.xml
 msgctxt "#36164"
 msgid "Allow the refresh rate of the display to be changed so that it best matches the video frame rate. This may yield smoother video playback."
@@ -14420,10 +14421,10 @@ msgctxt "#36169"
 msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] is fast and will have minimal impact on system resources such as the use of the CPU, [Medium] & [High] will use progressively more system resources."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Allowed error in aspect ratio to minimise black bars" with label #22021
+#. Description of setting "Videos -> Playback -> Minimise black bars" with label #22021
 #: system/settings/settings.xml
 msgctxt "#36170"
-msgid "Allow video player to ignoring aspect ratio by a certain amount to fill a larger amount of the screen with video."
+msgid "Stretch the video up to the set percentage in order to minimise black bars."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Display 4:3 videos as" with label #173
@@ -14432,11 +14433,7 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> VDPAU Studio level colour conversion" with label #13122
-#: system/settings/settings.xml
-msgctxt "#36172"
-msgid "VDPAU studio level conversion provides a way for advanced applications like Kodi to influence the colour space conversion."
-msgstr ""
+#empty string with id 36172
 
 #. Description of setting "Appearance -> International -> Short date format" with label #14109
 #: system/settings/settings.xml
@@ -14497,7 +14494,7 @@ msgctxt "#36182"
 msgid "Combines multi-part video files, DVD folders, and movie folders down to a single item in non-library views."
 msgstr ""
 
-#. Description of setting "Videos -> File lists -> Flatten library hierarchy" with label #20456
+#. Description of setting "Videos -> File lists -> Flatten hierarchy" with label #20456
 #: system/settings/settings.xml
 msgctxt "#36183"
 msgid "Removes the title, genre etc nodes from the library view. Selecting a category takes you straight to the title view."
@@ -14512,7 +14509,7 @@ msgstr ""
 #. Description of setting "Videos -> Subtitles -> Font to use for text subtitles" with label #14089
 #: system/settings/settings.xml
 msgctxt "#36185"
-msgid "Set the font type to be used for subtitles."
+msgid "Set the font type to be used for text based (usually downloaded) subtitles."
 msgstr ""
 
 #. Description of setting "Videos -> Subtitles -> - Size" with label #289
@@ -14598,7 +14595,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36200"
-msgid "Default scraper used for adding music videos to your library."
+msgid "Default provider for fetching information about music videos."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14613,7 +14610,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36203"
-msgid "Enable the Personal Video Recorder (PVR) features in Kodi. This requires that at least one PVR Add-on is installed."
+msgid "Enables the Personal Video Recorder (PVR) features. This requires that at least one PVR Add-on is installed."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14623,12 +14620,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36205"
-msgid "Sort the channels by channel number on the backend, but use Kodi's own numbering for channels."
+msgid "Sort the channels by channel number from the backend, but use own numbering for channels."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36206"
-msgid "Use numbering from the backend, instead of configuring them manually over Kodi."
+msgid "Use the channel numbering from the backend, instead of configuring them manually in the Channel manager. Only works with 1 enabled PVR Add-on!"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14643,12 +14640,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36209"
-msgid "Delete channel/EPG database and reimport the data from the backend afterwards."
+msgid "Delete the databases for channels and guide and reimport the data from the backend afterwards."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36210"
-msgid "Prevent the 'connection lost' notification window from displaying when Kodi is unable to talk to the PVR backend server."
+msgid "Prevent the 'connection lost' notification window from displaying when the PVR backend server is not available."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14696,32 +14693,32 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36220"
-msgid "Number of days of EPG data to import from backends."
+msgid "Number of days to show in the guide and import data for from backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36221"
-msgid "Time between EPG data imports from backends."
+msgid "Time between imports of guide data from backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36222"
-msgid "Do not import EPG data while playing TV to minimise CPU usage."
+msgid "Do not import the guide data while playing TV to minimise CPU usage."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36223"
-msgid "By default, EPG data is stored in a local database to speed up importing when Kodi is restarted."
+msgid "By default, the guide data is cached in a local database to speed up importing on startup."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36224"
-msgid "Hide \"no information available\" labels when no EPG data can be retrieved for a channel."
+msgid "Hide \"no information available\" labels when no guide data is available for a channel."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36225"
-msgid "Delete the EPG database in Kodi and reimport the data afterwards from the backend."
+msgid "Delete the cached guide data and reimport it from the backend."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14746,7 +14743,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36230"
-msgid "How long Kodi will wait to change the channel if the channel isn't being received. Useful for over-the-air channels that occasionally lose signal strength."
+msgid "Time to wait for a channel to be received after a channel change. Useful for over-the-air channels that occasionally lose signal strength."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14781,12 +14778,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36237"
-msgid "Start recordings before the actual time. Not supported by all Add-ons and backends."
+msgid "Additional time to record before the scheduled start time to allow for minor broadcasting changes. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36238"
-msgid "End recordings after the actual time. Not supported by all Add-ons and backends."
+msgid "Additional time to record after the scheduled end time to allow for minor broadcasting changes. Not supported by all Add-ons and backends."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14801,7 +14798,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36241"
-msgid "Execute the \"wakeup command\" below when Kodi exits or is going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
+msgid "Execute the \"wakeup command\" below when exiting this application or going into hibernation mode. The timestamp of the next scheduled recording is passed as parameter."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14811,7 +14808,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36243"
-msgid "The command to execute."
+msgid "The command to execute (cmd [timestamp])."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14836,7 +14833,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36248"
-msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the EPG information is hidden for those channels."
+msgid "Asks for a pin code to access parental locked channels. Channels can be marked as locked in the channels editor on the general tab. Parental locked channels can not be played or recorded without entering a pin code, and the guide information is hidden for those channels."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14851,12 +14848,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36251"
-msgid "Category for any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgid "Category for any specific settings for your PVR backend, if supported by the PVR Add-on and backend."
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if the PVR backend supports changing those settings in Kodi."
+msgid "This option will bring you to any specific settings for your PVR backend, if supported by the PVR Add-on and backend."
 msgstr ""
 
 #. Description of settings section "Music" with label #2
@@ -14873,28 +14870,28 @@ msgctxt "#36255"
 msgid "Determine if artists that appear only on compilations are shown in the library artist view."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Include artists who appear only on compilations" with label #13414
+#. Description of setting "Music -> Library -> Fetch additional information during updates" with label #20192
 #: system/settings/settings.xml
 msgctxt "#36256"
-msgid "Automatically fetch album and artist information via scrapers during scan."
+msgid "Automatically fetch album and artist information from information providers when adding songs to the library."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Default service for album information" with label #20193
+#. Description of setting "Music -> Library -> Default provider for album information" with label #20193
 #: system/settings/settings.xml
 msgctxt "#36257"
-msgid "Select the default album information source."
+msgid "Select the default album information provider."
 msgstr ""
 
-#. Description of setting "Music -> Library -> Default service for artist information" with label #20194
+#. Description of setting "Music -> Library -> Default provider for artist information" with label #20194
 #: system/settings/settings.xml
 msgctxt "#36258"
-msgid "Select the default artist information source. See the Add-ons Manager for options."
+msgid "Select the default artist information provider."
 msgstr ""
 
 #. Description of setting "Music -> Library -> Update library on startup" with label #22000
 #: system/settings/settings.xml
 msgctxt "#36259"
-msgid "Check for new and removed media files on Kodi startup."
+msgid "Check for new and removed media files on startup."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14926,10 +14923,10 @@ msgctxt "#36264"
 msgid "Category containing settings for how music playback is handled."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> Play the next song automatically" with label #489
+#. Description of setting "Music -> Playback -> Play next song automatically" with label #489
 #: system/settings/settings.xml
 msgctxt "#36265"
-msgid "Kodi automatically plays the next item in the current folder. For example, in Files View: After a track has been played, Kodi would automatically play the next track in the same folder."
+msgid "Automatically plays the next item in the current folder. For example, in Files View: After a track has been played, the next track in the same folder would automatically play."
 msgstr ""
 
 #. Description of setting "Music -> Playback -> Queue songs on selection" with label #14084
@@ -14938,22 +14935,22 @@ msgctxt "#36266"
 msgid "When songs are selected they are queued instead of playback starting immediately."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> ReplayGain volume adjustments" with label #638
+#. Description of setting "Music -> Playback -> Volume adjustments" with label #638
 #: system/settings/settings.xml
 msgctxt "#36267"
-msgid "Kodi will read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
+msgid "Read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr ""
 
-#. Description of setting "Music -> Playback -> PreAmp Level - ReplayGained files" with label #641
+#. Description of setting "Music -> Playback -> Files with ReplayGain information" with label #641
 #: system/settings/settings.xml
 msgctxt "#36268"
-msgid "Default is 89dB per standard. Change with caution."
+msgid "Reference volume (PreAmp level) to use for files with encoded ReplayGain information. Default is 89dB as per standard. Change with caution."
 msgstr ""
 
 #. Description of setting "Music -> Playback -> PreAmp Level - Non ReplayGained files" with label #642
 #: system/settings/settings.xml
 msgctxt "#36269"
-msgid "Default is 89dB per standard. Change with caution."
+msgid "Reference volume (PreAmp level) to use for files without encoded ReplayGain information. Default is 89dB as per standard. Change with caution."
 msgstr ""
 
 #. Description of setting "Music -> Playback -> Avoid clipping on ReplayGained files" with label #643
@@ -15025,7 +15022,7 @@ msgstr ""
 #. Description of setting "Music -> File lists -> Search for thumbnails on remote shares" with label #14059
 #: system/settings/settings.xml
 msgctxt "#36281"
-msgid "Kodi will search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
+msgid "Search for thumbs on remote shares and optical media. This can often slow down the listing of network folders."
 msgstr ""
 
 #. Description of settings category "Music -> Audio CDs" with label #620
@@ -15040,10 +15037,10 @@ msgctxt "#36283"
 msgid "Autorun CDs when inserted in drive."
 msgstr ""
 
-#. Description of setting "Music -> Audio CDs -> Lookup audio CD track names from freedb.org" with label #227
+#. Description of setting "Music -> Audio CDs -> Load audio CD information from online service" with label #227
 #: system/settings/settings.xml
 msgctxt "#36284"
-msgid "Read the information belonging to an audio CD from an internet database."
+msgid "Read the information belonging to an audio CD, like song title and artist, from the internet database freedb.org."
 msgstr ""
 
 #. Description of setting "Music -> Audio CDs -> Saved music folder" label #20000
@@ -15097,7 +15094,7 @@ msgstr ""
 #. Description of setting "Music -> Karaoke -> Enable karaoke support" with label #13323
 #: system/settings/settings.xml
 msgctxt "#36293"
-msgid "When playing any music file, Kodi will look for a matching .cdg file and display its graphics."
+msgid "When playing any music file, look for a matching .cdg file and display its graphics."
 msgstr ""
 
 #. Description of setting "Music -> Karaoke -> Show song selector automatically" with label #22037
@@ -15262,28 +15259,28 @@ msgstr ""
 #. Description of settings category "Services -> General -> Device name" with label #1271
 #: system/settings/settings.xml
 msgctxt "#36321"
-msgid "Display name of the Kodi installation when using various network services."
+msgid "The name to display for this device when using various network services."
 msgstr ""
 
-#. Description of settings category "Services -> UPnP" with label #20187
+#. Description of settings category "Services -> UPnP/DLNA" with label #20187
 #: system/settings/settings.xml
 msgctxt "#36322"
-msgid "Category containing settings for how the UPnP service is handled."
+msgid "Category containing settings for how the UPnP service is handled. UPnP is also called \"DLNA\" on most consumer products."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Share video and music libraries through UPnP" with label #21360
+#. Description of setting "Services -> UPnP -> Share my libraries" with label #21360
 #: system/settings/settings.xml
 msgctxt "#36323"
-msgid "Enable the UPnP server. This allows you to stream media to a UPnP client."
+msgid "Enables the UPnP server. This allows you to stream media in your libraries to a UPnP client."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Announce library updates via UPnP" with label #20188
+#. Description of setting "Services -> UPnP -> Announce library updates" with label #20188
 #: system/settings/settings.xml
 msgctxt "#36324"
 msgid "When a manual or automatical library update occurs, notify UPnP clients."
 msgstr ""
 
-#. Description of setting "Services -> UPnP -> Allow control of Kodi via UPnP" with label #21881
+#. Description of setting "Services -> UPnP -> Allow playback control via UPnP" with label #21881
 #: system/settings/settings.xml
 msgctxt "#36325"
 msgid "Enable the UPnP client. This allows you to stream media from any UPnP server with a control point and control playback from that server."
@@ -15292,7 +15289,7 @@ msgstr ""
 #. Description of setting "Services -> UPnP -> Look for remote UPnP players" with label #21361
 #: system/settings/settings.xml
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control playback from Kodi."
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control it's playback."
 msgstr ""
 
 #. Description of settings category "Services -> Webserver" with label #20187
@@ -15301,10 +15298,10 @@ msgctxt "#36327"
 msgid "Category containing settings for how the webserver service is handled."
 msgstr ""
 
-#. Description of setting "Services -> Webserver -> Allow control of Kodi via HTTP" with label #263
+#. Description of setting "Services -> Webserver -> Allow remote control via HTTP" with label #263
 #: system/settings/settings.xml
 msgctxt "#36328"
-msgid "Enable remote users to control Kodi through the built-in webserver."
+msgid "Enable remote users to control this application through the built-in webserver."
 msgstr ""
 
 #. Description of setting "Services -> Webserver -> Port" with label #730
@@ -15337,10 +15334,10 @@ msgctxt "#36333"
 msgid "Category containing settings for how the remote control service is handled."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Allow programs on this system to control Kodi" with label #791
+#. Description of setting "Services -> Remote Control -> Allow remote control from programs on this system" with label #791
 #: system/settings/settings.xml
 msgctxt "#36334"
-msgid "Allow programs on this computer to control Kodi via the Web Interface or the JSON-RPC interface protocol."
+msgid "Allow programs on this computer to control this application via the Web Interface or the JSON-RPC interface protocol."
 msgstr ""
 
 #. Description of setting "Services -> Remote Control -> Port" with label #792
@@ -15361,10 +15358,10 @@ msgctxt "#36337"
 msgid "Define the maximum number of clients that can connect."
 msgstr ""
 
-#. Description of setting "Services -> Remote Control -> Allow programs on other systems to control Kodi" with label #794
+#. Description of setting "Services -> Remote Control -> Allow remote control from programs on other systems" with label #794
 #: system/settings/settings.xml
 msgctxt "#36338"
-msgid "Allow programs on the network to control Kodi."
+msgid "Allow programs on the network to control this application."
 msgstr ""
 
 #. Description of setting "Services -> Remote Control -> Initial repeat delay (ms)" with label #795
@@ -15385,16 +15382,16 @@ msgctxt "#36341"
 msgid "Category containing settings for how the zeroconf network discovery service is handled, required for AirPlay."
 msgstr ""
 
-#. Description of setting "Services -> Zeroconf -> Announce these services to other systems via Zeroconf"  with label #1260
+#. Description of setting "Services -> Zeroconf -> Announce services to other systems"  with label #1260
 #: system/settings/settings.xml
 msgctxt "#36342"
-msgid "Allows applications on the network to discover Kodi's running services."
+msgid "Allows applications on the network to discover enabled services via Zeroconf."
 msgstr ""
 
-#. Description of setting "Services -> AirPlay -> Allow Kodi to receive AirPlay content" with label #1270
+#. Description of setting "Services -> AirPlay -> Enable AirPlay support" with label #1270
 #: system/settings/settings.xml
 msgctxt "#36343"
-msgid "Allows Kodi to receive content from other AirPlay devices or applications."
+msgid "If enabled, the content from other AirPlay devices or applications can be received."
 msgstr ""
 
 #. Description of setting "Services -> AirPlay -> Use password protection" with label #1272
@@ -15430,7 +15427,7 @@ msgstr ""
 #. Description of settings section "System" with label #13000
 #: system/settings/settings.xml
 msgctxt "#36349"
-msgid "Section that contains the System related settings for the device Kodi is installed on."
+msgid "Section that contains the System related settings for the device this application is installed on."
 msgstr ""
 
 #. Description of setting "System -> Power saving -> Try to wake remote servers on access" with label #13026
@@ -15442,7 +15439,7 @@ msgstr ""
 #. Description of setting "System -> Video output -> Display Mode" with label #21373
 #: system/settings/settings.xml
 msgctxt "#36351"
-msgid "Display Kodi in a window, or fullscreen on the selected screen."
+msgid "Changes the way this application is displayed on the selected screen. Either in a window or fullscreen."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Resolution" with label #169
@@ -15457,16 +15454,16 @@ msgctxt "#36353"
 msgid "Changes the refresh rate that the user interface is displayed in."
 msgstr ""
 
-#. Description of setting "System -> Video output -> Use a fullscreen window rather than true fullscreen" with label #14083
+#. Description of setting "System -> Video output -> Use fullscreen window" with label #14083
 #: system/settings/settings.xml
 msgctxt "#36354"
-msgid "Display Kodi in a fullscreen window. The main benefit is for multi-screen configurations, so that Kodi can be used without minimising other applications. This uses more resources so playback may be less smooth."
+msgid "If enabled, fullscreen mode will be applied by using a window instead of a real fullscreen mode. The main benefit is for multi-screen configurations, so that other applications can be used in parallel more easily. This uses more resources so playback may be less smooth."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Blank other displays" with label #13130
 #: system/settings/settings.xml
 msgctxt "#36355"
-msgid "In a multi-screen configuration, the screens where Kodi is not displayed are blacked out."
+msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
 msgstr ""
 
 #. Description of setting "System -> Video output -> Vertical blank sync" with label #13105
@@ -15596,13 +15593,13 @@ msgstr ""
 #. Description of setting "System -> Input devices -> Enable mouse and Touch Screen support" with label #21369
 #: system/settings/settings.xml
 msgctxt "#36377"
-msgid "Use a mouse or touch screen device to control Kodi. Note: disabling will cause you to lose control over Kodi when no keyboard or remote is present."
+msgid "Use a mouse or touch screen device to control the interface. Note: disabling will cause you to lose control over this application when no keyboard or remote is present."
 msgstr ""
 
 #. Description of setting "System -> Input devices -> Enable joystick and gamepad support" with label #35100
 #: system/settings/settings.xml
 msgctxt "#36378"
-msgid "Use a joystick to control Kodi."
+msgid "Use a joystick to control the interface."
 msgstr ""
 
 #. Description of settings category "System -> Internet access" with label #798
@@ -15611,10 +15608,10 @@ msgctxt "#36379"
 msgid "Category containing settings for internet access."
 msgstr ""
 
-#. Description of setting "System -> Internet access -> Use an HTTP proxy server to access the internet" with label #708
+#. Description of setting "System -> Internet access -> Use proxy server" with label #708
 #: system/settings/settings.xml
 msgctxt "#36380"
-msgid "If your internet connection uses a proxy, configure it here."
+msgid "If your internet connection uses a proxy server, configure it here."
 msgstr ""
 
 #. Description of setting "System -> Internet access -> Proxy type" with label #1180
@@ -15650,7 +15647,7 @@ msgstr ""
 #. Description of setting "System -> Internet access -> Internet connection bandwidth limitation" with label #14041
 #: system/settings/settings.xml
 msgctxt "#36386"
-msgid "If you have limited bandwidth available, Kodi will try to keep within these limits."
+msgid "If your internet connection has limited bandwidth available, use this setting to keep bandwidth usage by this application within defined limits."
 msgstr ""
 
 #. Description of settings category "System -> Power saving" with label #14095
@@ -15668,13 +15665,13 @@ msgstr ""
 #. Description of setting "System -> Power saving -> Shutdown function timer" with label #357
 #: system/settings/settings.xml
 msgctxt "#36389"
-msgid "Define how long Kodi should idle before shutting down."
+msgid "Set the time to wait for any activity to occur before shutting down."
 msgstr ""
 
 #. Description of setting "System -> Power saving -> Shutdown function" with label #13008
 #: system/settings/settings.xml
 msgctxt "#36390"
-msgid "Define what action Kodi should do when it has been idle for a long period of time."
+msgid "Define what action to perform when the shutdown function timer lapsed."
 msgstr ""
 
 #. Description of settings category "System -> Debugging" with label #14092
@@ -15692,7 +15689,7 @@ msgstr ""
 #. Description of setting "System -> Debugging -> Screenshot folder" with label #20004
 #: system/settings/settings.xml
 msgctxt "#36393"
-msgid "Folder used to save screenshots taken within Kodi."
+msgid "Select the folder where screenshots should be saved in."
 msgstr ""
 
 #. Description of setting "System -> Debugging -> Enable component-specific logging" with label #666
@@ -15716,13 +15713,13 @@ msgstr ""
 #. Description of setting "System -> Master lock -> Ask for master lock code on startup" with label #20076
 #: system/settings/settings.xml
 msgctxt "#36397"
-msgid "If enabled, the master lock code is required to unlock Kodi on startup."
+msgid "If enabled, the master lock code is required to unlock this application on startup."
 msgstr ""
 
 #. Description of setting "System -> Master lock -> Max Retries" with label #20076
 #: system/settings/settings.xml
 msgctxt "#36398"
-msgid "Define the maximum number of retries before Kodi is closed down."
+msgid "Define the maximum number of retries before this application is closed down."
 msgstr ""
 
 #. Description of settings category "System -> Cache" with label #439
@@ -15863,7 +15860,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36424"
-msgid "Select what will happen when an EPG item is selected: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
+msgid "Select what will happen when an item is selected in the guide: [Show context menu] will trigger the contextual menu from where you can choose further actions; [Switch to channel] will instantly tune to the related channel; [Show information] will display a detailed information with plot and further options; [Record] will create a recording timer for the selected item."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -16165,7 +16162,7 @@ msgstr ""
 #. Description of setting "Services -> AirPlay -> iOS 8 compatibility mode" with label #1268
 #: system/settings/settings.xml
 msgctxt "#36549"
-msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting Kodi as a valid target try switching this off. This option takes effect on the next restart of Kodi only!"
+msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting this application as a valid target try switching this off. This option requires a restart to take effect!"
 msgstr ""
 
 #empty strings from id 36550 to 36599
@@ -16487,7 +16484,7 @@ msgstr ""
 #. Description of setting #37040 Settings -> Video -> Playback
 #: system/settings/settings.xml
 msgctxt "#37041"
-msgid "Use audio streams that are flagged as "default" (and match the preferred language) regardless of the number of channels or the used codec."
+msgid "If enabled, audio streams that are flagged as "default" (and match the preferred language) are preferred over audio streams with higher quality (number of channels, codec, ...)."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Skip steps"

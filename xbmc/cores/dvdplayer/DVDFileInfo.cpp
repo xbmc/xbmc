@@ -55,6 +55,7 @@
 #include "TextureCache.h"
 #include "Util.h"
 #include "utils/LangCodeExpander.h"
+#include "pvr/PVRManager.h"
 
 
 bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
@@ -112,6 +113,12 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
    || pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
   {
     CLog::Log(LOGDEBUG, "%s: disc streams not supported for thumb extraction, file: %s", __FUNCTION__, redactPath.c_str());
+    delete pInputStream;
+    return false;
+  }
+
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  {
     delete pInputStream;
     return false;
   }

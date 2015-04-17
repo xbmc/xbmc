@@ -710,7 +710,10 @@ void CGUIWindowMusicBase::UpdateButtons()
   msg2.SetLabel(g_localizeStrings.Get(744)); // Files
   g_windowManager.SendMessage(msg2);
 
-  msg2.SetLabel(g_localizeStrings.Get(15100)); // Library
+  msg2.SetLabel(g_localizeStrings.Get(14022)); // Library
+  g_windowManager.SendMessage(msg2);
+
+  msg2.SetLabel(g_localizeStrings.Get(20389)); // Music Videos
   g_windowManager.SendMessage(msg2);
 
   // Select the current window as default item

@@ -415,4 +415,6 @@ void CActiveAEBufferPoolResample::Flush()
     m_outputSamples.front()->Return();
     m_outputSamples.pop_front();
   }
+  if (m_resampler)
+    ChangeResampler();
 }

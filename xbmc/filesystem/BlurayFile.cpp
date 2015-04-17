@@ -24,6 +24,7 @@
 
 #include "BlurayFile.h"
 #include "URL.h"
+#include <assert.h>
 
 namespace XFILE
 {

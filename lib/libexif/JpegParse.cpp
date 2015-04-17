@@ -108,7 +108,7 @@ bool CJpegParse::GetSection (FILE *infile, const unsigned short sectionLength)
   }
   // Store first two pre-read bytes.
   m_SectionBuffer[0] = (unsigned char)(sectionLength >> 8);
-  m_SectionBuffer[1] = (unsigned char)(sectionLength && 0x00FF);
+  m_SectionBuffer[1] = (unsigned char)(sectionLength & 0x00FF);
 
   unsigned int len = (unsigned int)sectionLength;
 

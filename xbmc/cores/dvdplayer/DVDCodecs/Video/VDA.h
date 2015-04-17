@@ -24,8 +24,10 @@
 #include "DVDVideoCodecFFmpeg.h"
 
 struct AVVDAContext;
+class CBitstreamConverter;
 
-namespace VDA {
+namespace VDA
+{
 
 class CDecoder
   : public CDVDVideoCodecFFmpeg::IHardwareDecoder
@@ -33,20 +35,19 @@ class CDecoder
 public:
   CDecoder();
  ~CDecoder();
-  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum PixelFormat, unsigned int surfaces = 0);
-  virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
+  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum PixelFormat, unsigned int surfaces = 0);
+  virtual int Decode(AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
-  virtual int  Check     (AVCodecContext* avctx);
+  virtual int Check(AVCodecContext* avctx);
   virtual void Close();
   virtual const std::string Name() { return "vda"; }
   virtual unsigned GetAllowedReferences();
 
-  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
-  void  RelBuffer(uint8_t *data);
 protected:
-  bool                   Create(AVCodecContext* avctx);
-  unsigned               m_renderbuffers_count;
-  struct AVVDAContext*   m_ctx;
+  bool Create(AVCodecContext* avctx);
+  unsigned m_renderbuffers_count;
+  struct AVVDAContext* m_ctx;
+  CBitstreamConverter *m_bitstream;
 };
 
 }

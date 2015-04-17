@@ -130,6 +130,21 @@ bool CDAVFile::Delete(const CURL& url)
   return true;
 }
 
+bool CDAVFile::Exists(const CURL& url)
+{
+  return Stat(url,NULL) == 0;
+}
+
+int CDAVFile::Stat(const CURL& url, struct __stat64* buffer)
+{
+  CCurlFile dav;
+  std::string strRequest = "PROPFIND";
+  dav.SetCustomRequest(strRequest);
+  dav.SetRequestHeader("depth", 0);
+
+  return dav.Stat(url, buffer);
+}
+
 bool CDAVFile::Rename(const CURL& url, const CURL& urlnew)
 {
   if (m_opened)

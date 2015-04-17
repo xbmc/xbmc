@@ -37,7 +37,9 @@
 #if defined(TARGET_RASPBERRY_PI)
 #include "DllBCM.h"
 #include "OMXCore.h"
+#include "xbmc/utils/CPUInfo.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
 
 class CRBP
 {
@@ -51,8 +53,11 @@ public:
   int GetArmMem() { return m_arm_mem; }
   int GetGpuMem() { return m_gpu_mem; }
   bool GetCodecMpg2() { return m_codec_mpg2_enabled; }
+  int RasberryPiVersion() { return g_cpuInfo.getCPUCount() == 1 ? 1 : 2; };
   bool GetCodecWvc1() { return m_codec_wvc1_enabled; }
   void GetDisplaySize(int &width, int &height);
+  DISPMANX_DISPLAY_HANDLE_T OpenDisplay(uint32_t device);
+  void CloseDisplay(DISPMANX_DISPLAY_HANDLE_T display);
   int GetGUIResolutionLimit() { return m_gui_resolution_limit; }
   // stride can be null for packed output
   unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue, bool video_only = true);
@@ -70,8 +75,8 @@ private:
   bool       m_codec_mpg2_enabled;
   bool       m_codec_wvc1_enabled;
   COMXCore   *m_OMX;
-  DISPMANX_RESOURCE_HANDLE_T m_resource;
-  DISPMANX_ELEMENT_HANDLE_T m_element;
+  DISPMANX_DISPLAY_HANDLE_T m_display;
+  CEvent     m_vsync;
   class DllLibOMXCore;
   CCriticalSection m_critSection;
 };

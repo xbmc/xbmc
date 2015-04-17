@@ -22,12 +22,12 @@
 #include <vector>
 #include <stdint.h>
 
-enum
+typedef enum
 {
   ID_FOUND = 0, // We have an entry with a numeric (previously XML) identification number.
   MSGID_FOUND = 1, // We have a classic gettext entry with textual msgid. No numeric ID.
   MSGID_PLURAL_FOUND = 2 // We have a classic gettext entry with textual msgid in plural form.
-};
+} POIdType;
 
 enum
 {

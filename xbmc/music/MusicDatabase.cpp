@@ -306,12 +306,10 @@ void CMusicDatabase::CreateViews()
               "        album.strImage as strImage, "
               "        iRating, "
               "        bCompilation, "
-              "        MIN(song.iTimesPlayed) AS iTimesPlayed, "
+              "        (SELECT MIN(song.iTimesPlayed) FROM song WHERE song.idAlbum = album.idAlbum) AS iTimesPlayed, "
               "        strReleaseType "
               "FROM album"
-              " LEFT OUTER JOIN song ON"
-              "   album.idAlbum=song.idAlbum "
-              "GROUP BY album.idAlbum");
+              );
 
   CLog::Log(LOGINFO, "create artist view");
   m_pDS->exec("CREATE VIEW artistview AS SELECT"
@@ -4079,7 +4077,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 51;
+  return 52;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
@@ -5759,13 +5757,24 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
     option = options.find("artistid");
     if (option != options.end())
     {
-      filter.AppendJoin("JOIN song ON song.idAlbum = albumview.idAlbum "
-                        "JOIN song_artist ON song.idSong = song_artist.idSong "
-                        "JOIN album_artist ON albumview.idAlbum = album_artist.idAlbum");
-      filter.AppendWhere(PrepareSQL("      song_artist.idArtist = %i" // All albums linked to this artist via songs
-                                    " OR  album_artist.idArtist = %i", // All albums where album artists fit
-                                    (int)option->second.asInteger(), (int)option->second.asInteger()));
-      filter.AppendGroup("albumview.idAlbum");
+      int idArtist = static_cast<int>(option->second.asInteger());
+      filter.AppendWhere(PrepareSQL(
+        "(EXISTS ( "
+        "  SELECT 1 "
+        "  FROM song "
+        "  JOIN song_artist ON song.idSong = song_artist.idSong "
+        "  WHERE song.idAlbum = albumview.idAlbum"
+        "  AND song_artist.idArtist = %i "
+        ") OR "
+        "EXISTS ( "
+        "  SELECT 1 "
+        "  FROM album_artist "
+        "  WHERE album_artist.idAlbum = albumview.idAlbum "
+        "  AND album_artist.idArtist = %i "
+        "))",
+        idArtist,
+        idArtist
+      ));
     }
     else
     {

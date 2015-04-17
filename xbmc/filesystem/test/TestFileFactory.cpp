@@ -21,6 +21,7 @@
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "utils/StringUtils.h"
 #include "test/TestUtils.h"
 #include "utils/StringUtils.h"
 

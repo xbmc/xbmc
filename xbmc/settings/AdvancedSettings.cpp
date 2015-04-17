@@ -161,7 +161,7 @@ void CAdvancedSettings::Initialize()
   m_videoCaptureUseOcclusionQuery = -1; //-1 is auto detect
   m_videoVDPAUtelecine = false;
   m_videoVDPAUdeintSkipChromaHD = false;
-  m_useFfmpegVda = false;
+  m_useFfmpegVda = true;
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_DXVAForceProcessorRenderer = true;

@@ -602,6 +602,11 @@ CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(void) const
   return m_epgTag;
 }
 
+bool CPVRTimerInfoTag::HasEpgInfoTag(void) const
+{
+  return m_epgTag != NULL;
+}
+
 bool CPVRTimerInfoTag::SupportsFolders() const
 {
   return g_PVRClients->SupportsRecordingFolders(m_iClientId);

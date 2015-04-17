@@ -104,21 +104,8 @@ using namespace std;
 using namespace MEDIA_DETECT;
 #endif
 
-#define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
-
 using namespace XFILE;
 using namespace PLAYLIST;
-
-#ifdef HAS_DX
-static D3DGAMMARAMP oldramp, flashramp;
-#elif defined(HAS_SDL_2D)
-static uint16_t oldrampRed[256];
-static uint16_t oldrampGreen[256];
-static uint16_t oldrampBlue[256];
-static uint16_t flashrampRed[256];
-static uint16_t flashrampGreen[256];
-static uint16_t flashrampBlue[256];
-#endif
 
 #if !defined(TARGET_WINDOWS)
 unsigned int CUtil::s_randomSeed = time(NULL);
