@@ -59,6 +59,7 @@ public:
   virtual ~CXBMCApp();
   virtual void onReceive(CJNIIntent intent);
   virtual void onNewIntent(CJNIIntent intent);
+  virtual void onVolumeChanged(int volume);
 
   bool isValid() { return m_activity != NULL; }
 
@@ -101,8 +102,8 @@ public:
   static bool GetExternalStorage(std::string &path, const std::string &type = "");
   static bool GetStorageUsage(const std::string &path, std::string &usage);
   static int GetMaxSystemVolume();
-  static int GetSystemVolume();
-  static void SetSystemVolume(int val);
+  static float GetSystemVolume();
+  static void SetSystemVolume(float percent);
 
   static int GetDPI();
 protected:
@@ -110,7 +111,6 @@ protected:
   friend class CAESinkAUDIOTRACK;
 
   static int GetMaxSystemVolume(JNIEnv *env);
-  static void SetSystemVolume(JNIEnv *env, float percent);
 
 private:
   static bool HasLaunchIntent(const std::string &package);
@@ -121,7 +121,6 @@ private:
   static ANativeActivity *m_activity;
   static CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;
-  static int m_initialVolume;
   static bool m_hasFocus;
   bool m_firstrun;
   bool m_exiting;

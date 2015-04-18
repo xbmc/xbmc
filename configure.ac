@@ -2566,6 +2566,7 @@ OUTPUT_FILES="Makefile \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/Main.java \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCBroadcastReceiver.java \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java \
+    tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCSettingsContentObserver.java \
     tools/android/packaging/xbmc/strings.xml \
     addons/xbmc.addon/addon.xml"
 
