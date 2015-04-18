@@ -86,6 +86,8 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
         m_vecItems->SetPath("");
+
+      SetProperties();
     }
     break;
   case GUI_MSG_CLICKED:
@@ -156,12 +158,21 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
           }
         }
       }
+      else if (message.GetParam1() == GUI_MSG_UPDATE && IsActive())
+        SetProperties();
     }
     break;
    default:
      break;
   }
   return CGUIMediaWindow::OnMessage(message);
+}
+
+void CGUIWindowAddonBrowser::SetProperties()
+{
+  auto lastChecked = CAddonInstaller::Get().LastRepoUpdate();
+  if (lastChecked.IsValid())
+    SetProperty("Updated", lastChecked.GetAsLocalizedDateTime());
 }
 
 void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& buttons)
