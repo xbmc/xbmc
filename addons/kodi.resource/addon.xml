@@ -5,4 +5,5 @@
     <import addon="xbmc.core" version="0.1.0"/>
   </requires>
   <extension-point id="resource.language" schema="language.xsd"/>
+  <extension-point id="resource.uisounds" schema="uisounds.xsd"/>
 </addon>

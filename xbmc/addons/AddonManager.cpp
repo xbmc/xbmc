@@ -23,6 +23,7 @@
 #include "AudioDecoder.h"
 #include "DllLibCPluff.h"
 #include "LanguageResource.h"
+#include "UISoundsResource.h"
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
 #include "threads/SingleLock.h"
@@ -175,6 +176,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CSkinInfo(props));
     case ADDON_RESOURCE_LANGUAGE:
       return AddonPtr(new CLanguageResource(props));
+    case ADDON_RESOURCE_UISOUNDS:
+      return AddonPtr(new CUISoundsResource(props));
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(props));
     case ADDON_REPOSITORY:
@@ -807,6 +810,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CAudioDecoder(addonProps));
     case ADDON_RESOURCE_LANGUAGE:
       return AddonPtr(new CLanguageResource(addonProps));
+    case ADDON_RESOURCE_UISOUNDS:
+      return AddonPtr(new CUISoundsResource(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     case ADDON_CONTEXT_ITEM:

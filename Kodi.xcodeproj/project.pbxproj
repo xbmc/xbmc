@@ -241,6 +241,9 @@
 		395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
 		395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */; };
+		3961C4391ABC0A46002DBBFB /* UISoundsResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3961C4371ABC0A46002DBBFB /* UISoundsResource.cpp */; };
+		3961C43A1ABC0A46002DBBFB /* UISoundsResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3961C4371ABC0A46002DBBFB /* UISoundsResource.cpp */; };
+		3961C43B1ABC0A46002DBBFB /* UISoundsResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3961C4371ABC0A46002DBBFB /* UISoundsResource.cpp */; };
 		397877D51AAAF87700F98A45 /* Speed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D11AAAF87700F98A45 /* Speed.cpp */; };
 		397877D61AAAF87700F98A45 /* Speed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D11AAAF87700F98A45 /* Speed.cpp */; };
 		397877D71AAAF87700F98A45 /* Speed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 397877D11AAAF87700F98A45 /* Speed.cpp */; };
@@ -3579,6 +3582,8 @@
 		395F6DDC1A8133360088CC74 /* GUIDialogSimpleMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSimpleMenu.h; sourceTree = "<group>"; };
 		395F6DE01A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageTransformationHandler.cpp; sourceTree = "<group>"; };
 		395F6DE11A81FACF0088CC74 /* HTTPImageTransformationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageTransformationHandler.h; sourceTree = "<group>"; };
+		3961C4371ABC0A46002DBBFB /* UISoundsResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UISoundsResource.cpp; sourceTree = "<group>"; };
+		3961C4381ABC0A46002DBBFB /* UISoundsResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UISoundsResource.h; sourceTree = "<group>"; };
 		397877D11AAAF87700F98A45 /* Speed.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Speed.cpp; sourceTree = "<group>"; };
 		397877D21AAAF87700F98A45 /* Speed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Speed.h; sourceTree = "<group>"; };
 		397877D31AAAF87700F98A45 /* Temperature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Temperature.cpp; sourceTree = "<group>"; };
@@ -5917,6 +5922,8 @@
 				184C472E1296BC6E0006DB3E /* Service.h */,
 				F52B063A11869862004B1D66 /* Skin.cpp */,
 				F52B063911869862004B1D66 /* Skin.h */,
+				3961C4371ABC0A46002DBBFB /* UISoundsResource.cpp */,
+				3961C4381ABC0A46002DBBFB /* UISoundsResource.h */,
 				18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */,
 				18B4A0011152BFA5001AF8A6 /* Visualisation.h */,
 				395C29BF1A98A0A000EBC7AD /* Webinterface.cpp */,
@@ -11016,6 +11023,7 @@
 				7CCDA1BA192753E30074CF51 /* AVTransportSCPD.cpp in Sources */,
 				7CCDA1C7192753E30074CF51 /* PltMediaController.cpp in Sources */,
 				7CCDA1D0192753E30074CF51 /* PltMediaRenderer.cpp in Sources */,
+				3961C4391ABC0A46002DBBFB /* UISoundsResource.cpp in Sources */,
 				7CCDA1DB192753E30074CF51 /* RdrConnectionManagerSCPD.cpp in Sources */,
 				7CCDA1E6192753E30074CF51 /* RenderingControlSCPD.cpp in Sources */,
 				7CCDA1F3192753E30074CF51 /* ConnectionManagerSCPD.cpp in Sources */,
@@ -11570,6 +11578,7 @@
 				DFF0F2EB17528350002DA3A4 /* LinuxResourceCounter.cpp in Sources */,
 				DFF0F2EC17528350002DA3A4 /* LinuxTimezone.cpp in Sources */,
 				DFF0F2ED17528350002DA3A4 /* PosixMountProvider.cpp in Sources */,
+				3961C43B1ABC0A46002DBBFB /* UISoundsResource.cpp in Sources */,
 				DFF0F2EE17528350002DA3A4 /* XFileUtils.cpp in Sources */,
 				DFF0F2EF17528350002DA3A4 /* XHandle.cpp in Sources */,
 				DFF0F2F017528350002DA3A4 /* XMemUtils.cpp in Sources */,
@@ -13114,6 +13123,7 @@
 				7CCDA7E9192756250074CF51 /* NptMessaging.cpp in Sources */,
 				7CCDA7F2192756250074CF51 /* NptNetwork.cpp in Sources */,
 				7CCDA7FB192756250074CF51 /* NptQueue.cpp in Sources */,
+				3961C43A1ABC0A46002DBBFB /* UISoundsResource.cpp in Sources */,
 				7CCDA804192756250074CF51 /* NptResults.cpp in Sources */,
 				7CCDA807192756250074CF51 /* NptRingBuffer.cpp in Sources */,
 				7CCDA810192756250074CF51 /* NptSimpleMessageQueue.cpp in Sources */,

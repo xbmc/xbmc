@@ -22,7 +22,6 @@ ADDONSYNC="rsync -aq --exclude .git* --exclude .DS_Store* --exclude addons/skin.
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/media"
-mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/sounds"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/system"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/userdata"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/media"
@@ -37,7 +36,6 @@ ${SYNC} "$SRCROOT/media" 		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$A
 ${SYNCSKIN} "$SRCROOT/addons/skin.confluence" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons"
 ${SYNC} "$SRCROOT/addons/skin.confluence/backgrounds" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons/skin.confluence"
 ${SYNC} "$SRCROOT/addons/skin.confluence/icon.png" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME/addons/skin.confluence"
-${SYNC} "$SRCROOT/sounds" 		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME"
 ${SYNC} "$SRCROOT/system" 		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME"
 ${SYNC} "$SRCROOT/userdata" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/$APP_NAME"
 

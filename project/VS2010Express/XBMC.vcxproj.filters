@@ -3056,6 +3056,9 @@
     <ClCompile Include="..\..\xbmc\addons\LanguageResource.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\UISoundsResource.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\ResourceFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -5939,6 +5942,9 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\LanguageResource.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+     <ClInclude Include="..\..\xbmc\addons\UISoundsResource.h">
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ResourceFile.h">

@@ -571,7 +571,7 @@ install-datas: install-scripts
 	@install -d $(DESTDIR)$(datarootdir)/@APP_NAME_LC@
 	@# Arch independent files
 ifeq ($(findstring bsd,@ARCH@), bsd)
-	@find -E addons media sounds userdata system -type f \
+	@find -E addons media userdata system -type f \
 		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.so\.[0-9].*|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" \
 		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/@APP_NAME_LC@/\`dirname '{}'\`\"" \; \
 		-and \
@@ -579,14 +579,14 @@ ifeq ($(findstring bsd,@ARCH@), bsd)
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
 ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
-	@find -E addons media sounds userdata system -type f \
+	@find -E addons media userdata system -type f \
 		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.so\.[0-9].*|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" \
 		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/xbmc/\`dirname '{}'\`\"" \; \
 		-and \
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find addons media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.so\.[0-9].*|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/@APP_NAME_LC@/"{}" \; -printf " -- %-75.75f\r"
+	@find addons media userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*\.git.*|.*\.so|.*\.so\.[0-9].*|.*\.dll|$(subst ${space},|,$(INSTALL_FILTER))" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/@APP_NAME_LC@/"{}" \; -printf " -- %-75.75f\r"
 endif
 endif
 	@# Icons and links
