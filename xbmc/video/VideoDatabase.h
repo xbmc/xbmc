@@ -758,9 +758,10 @@ public:
   /*! \brief Add a file to the database, if necessary
    If the file is already in the database, we simply return its id.
    \param url - full path of the file to add.
+   \param parentPath the parent path of the path to add. If empty, URIUtils::GetParentPath() will determine the path.
    \return id of the file, -1 if it could not be added.
    */
-  int AddFile(const std::string& url);
+  int AddFile(const std::string& url, const std::string& parentPath = "");
 
   /*! \brief Add a file to the database, if necessary
    Works for both videodb:// items and normal fileitems
