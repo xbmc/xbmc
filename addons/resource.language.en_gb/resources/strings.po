@@ -2547,6 +2547,11 @@ msgctxt "#592"
 msgid "One"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+#: xbmc/PlayListPlayer.cpp
+#: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
 msgctxt "#593"
 msgid "All"
 msgstr ""
@@ -12947,7 +12952,13 @@ msgctxt "#24134"
 msgid "We were unable to load your configured language. Please check your language settings."
 msgstr ""
 
-#empty strings from id 24135 to 24992
+#empty strings from id 24135 to 24991
+
+#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24992"
+msgid "System"
+msgstr ""
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -12970,14 +12981,10 @@ msgstr ""
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24996"
-msgid "Required Dependencies"
+msgid "Dependencies"
 msgstr ""
 
-#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
-#: xbmc/filesystem/AddonsDirectory.cpp
-msgctxt "#24997"
-msgid "System Add-ons"
-msgstr ""
+#empty string id 24997
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
