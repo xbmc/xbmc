@@ -803,6 +803,7 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
     }
     else
     {
+      m_syncclock = false;
       m_dvdAudio.AddPackets(audioframe);
     }
   }
