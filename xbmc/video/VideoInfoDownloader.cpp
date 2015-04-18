@@ -156,6 +156,11 @@ int CVideoInfoDownloader::FindMovie(const std::string &strMovie,
   return success;
 }
 
+bool CVideoInfoDownloader::GetArtwork(CVideoInfoTag &details)
+{
+  return m_info->GetArtwork(*m_http, details);
+}
+
 bool CVideoInfoDownloader::GetDetails(const CScraperUrl &url,
                                       CVideoInfoTag &movieDetails,
                                       CGUIDialogProgress *pProgress /* = NULL */)
