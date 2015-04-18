@@ -1782,7 +1782,7 @@ void CDVDPlayer::HandlePlaySpeed()
     if (m_CurrentAudio.id >= 0 && m_CurrentAudio.inited &&
         m_dvdPlayerAudio->IsStalled() && m_dvdPlayerAudio->GetLevel() == 0)
     {
-      CLog::Log(LOGDEBUG,"CDVDPlayer::HandlePlaySpeed - audio stream stalled, tiggering re-sync");
+      CLog::Log(LOGDEBUG,"CDVDPlayer::HandlePlaySpeed - audio stream stalled, triggering re-sync");
       TriggerResync();
     }
   }
@@ -3610,6 +3610,13 @@ void CDVDPlayer::TriggerResync()
   m_dvdPlayerVideo->FlushMessages();
   m_dvdPlayerSubtitle->FlushMessages();
   m_dvdPlayerTeletext->FlushMessages();
+
+  // make sure players are properly flushed, should put them in stalled state
+  CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
+  m_dvdPlayerAudio->SendMessage(msg->Acquire(), 1);
+  m_dvdPlayerVideo->SendMessage(msg->Acquire(), 1);
+  msg->Wait(&m_bStop, 0);
+  msg->Release();
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
