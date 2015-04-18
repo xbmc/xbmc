@@ -12444,7 +12444,11 @@ msgctxt "#24034"
 msgid "Check for updates"
 msgstr ""
 
-#empty string id 24035
+#: Name of an Add-on category
+#: xbmc/addons/Addon.cpp
+msgctxt "#24035"
+msgid "Image collections"
+msgstr ""
 
 msgctxt "#24036"
 msgid "Change log"
