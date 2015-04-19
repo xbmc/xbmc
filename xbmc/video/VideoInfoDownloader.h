@@ -54,6 +54,13 @@ public:
    \return 1 on success, -1 on a scraper-specific error, 0 on some other error
    */
   int FindMovie(const std::string& strMovie, MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
+
+  /*! \brief Fetch art URLs for an item with our scraper
+   \param details the video info tag structure to fill with art.
+   \return true on success, false on failure.
+   */
+  bool GetArtwork(CVideoInfoTag &details);
+
   bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeList(const CScraperUrl& url, VIDEO::EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);

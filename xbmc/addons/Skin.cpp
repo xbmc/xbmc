@@ -399,12 +399,20 @@ void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vect
   std::string settingValue = ((const CSettingString*)setting)->GetValue();
   current = "SKINDEFAULT";
 
-  //find skins...
+  list.push_back(make_pair(g_localizeStrings.Get(474), "OFF"));
+  list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT"));
+
+  ADDON::VECADDONS addons;
+  if (ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_RESOURCE_UISOUNDS, addons))
+  {
+    for (const auto& addon : addons)
+      list.push_back(make_pair(addon->Name(), addon->ID()));
+  }
+
+  //Add sounds from special directories
   CFileItemList items;
   CDirectory::GetDirectory("special://xbmc/sounds/", items);
   CDirectory::GetDirectory("special://home/sounds/", items);
-
-  vector<string> vecSoundSkins;
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
@@ -414,17 +422,11 @@ void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vect
           StringUtils::EqualsNoCase(pItem->GetLabel(), "fonts") ||
           StringUtils::EqualsNoCase(pItem->GetLabel(), "media"))
         continue;
-
-      vecSoundSkins.push_back(pItem->GetLabel());
+      list.push_back(make_pair(pItem->GetLabel(), pItem->GetLabel()));
     }
   }
 
-  list.push_back(make_pair(g_localizeStrings.Get(474), "OFF"));
-  list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT"));
-
-  sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
-  for (unsigned int i = 0; i < vecSoundSkins.size(); i++)
-    list.push_back(make_pair(vecSoundSkins[i], vecSoundSkins[i]));
+  sort(list.begin() + 2, list.end());
 
   // try to find the best matching value
   for (vector< pair<string, string> >::const_iterator it = list.begin(); it != list.end(); ++it)

@@ -2547,6 +2547,11 @@ msgctxt "#592"
 msgid "One"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+#: xbmc/PlayListPlayer.cpp
+#: xbmc/profiles/dialogs/GUIDialogLockSettings.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
 msgctxt "#593"
 msgid "All"
 msgstr ""
@@ -7065,7 +7070,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#15108"
-msgid "Navigation sounds"
+msgid "GUI sounds"
 msgstr ""
 
 msgctxt "#15109"
@@ -11184,7 +11189,7 @@ msgid "Enable mouse and touch screen support"
 msgstr ""
 
 msgctxt "#21370"
-msgid "Play navigation sounds during media playback"
+msgid "Play GUI sounds during media playback"
 msgstr ""
 
 msgctxt "#21371"
@@ -12305,7 +12310,11 @@ msgctxt "#24005"
 msgid "Media sources"
 msgstr ""
 
-#empty string with id 24006
+#. Name of an add-on type
+#: xbmc/addons/Addon.cpp
+msgctxt "#24006"
+msgid "GUI Sounds"
+msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#24007"
@@ -12943,7 +12952,13 @@ msgctxt "#24134"
 msgid "We were unable to load your configured language. Please check your language settings."
 msgstr ""
 
-#empty strings from id 24135 to 24992
+#empty strings from id 24135 to 24991
+
+#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24992"
+msgid "System"
+msgstr ""
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -12966,14 +12981,10 @@ msgstr ""
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24996"
-msgid "Required Dependencies"
+msgid "Dependencies"
 msgstr ""
 
-#: xbmc/addons/CGUIViewStateAddonBrowser.cpp
-#: xbmc/filesystem/AddonsDirectory.cpp
-msgctxt "#24997"
-msgid "System Add-ons"
-msgstr ""
+#empty string id 24997
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -14070,10 +14081,10 @@ msgctxt "#36109"
 msgid "Select the media window to display on startup."
 msgstr ""
 
-#. Description of setting "Appearance -> Skin -> Navigation sounds" with label #15108
+#. Description of setting "Appearance -> Skin -> GUI sounds" with label #15108
 #: system/settings/settings.xml
 msgctxt "#36110"
-msgid "Select or disable the sound scheme used in the user interface."
+msgid "Select or disable the sounds used in the user interface."
 msgstr ""
 
 #. Description of setting "Appearance -> Skin -> Show RSS news feed" with label #13305

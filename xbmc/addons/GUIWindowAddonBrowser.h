@@ -73,7 +73,9 @@ protected:
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
   virtual std::string GetStartFolder(const std::string &dir);
+
 private:
+  void SetProperties();
   CProgramThumbLoader m_thumbLoader;
 };
 

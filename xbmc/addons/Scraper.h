@@ -149,6 +149,7 @@ public:
     CAlbum &album);
   bool GetArtistDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     const std::string &sSearch, CArtist &artist);
+  bool GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details);
 
 private:
   CScraper(const CScraper &rhs);

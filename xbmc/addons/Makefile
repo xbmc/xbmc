@@ -23,6 +23,7 @@ SRCS=Addon.cpp \
      ScreenSaver.cpp \
      Service.cpp \
      Skin.cpp \
+     UISoundsResource.cpp \
      Visualisation.cpp \
      Webinterface.cpp \
 

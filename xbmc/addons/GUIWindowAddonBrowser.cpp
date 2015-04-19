@@ -86,6 +86,8 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
         m_vecItems->SetPath("");
+
+      SetProperties();
     }
     break;
   case GUI_MSG_CLICKED:
@@ -156,12 +158,21 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
           }
         }
       }
+      else if (message.GetParam1() == GUI_MSG_UPDATE && IsActive())
+        SetProperties();
     }
     break;
    default:
      break;
   }
   return CGUIMediaWindow::OnMessage(message);
+}
+
+void CGUIWindowAddonBrowser::SetProperties()
+{
+  auto lastChecked = CAddonInstaller::Get().LastRepoUpdate();
+  if (lastChecked.IsValid())
+    SetProperty("Updated", lastChecked.GetAsLocalizedDateTime());
 }
 
 void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& buttons)
@@ -303,6 +314,11 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER, CSettings::Get().GetBool("general.addonforeignfilter"));
   SET_CONTROL_SELECTED(GetID(),CONTROL_BROKENFILTER, CSettings::Get().GetBool("general.addonbrokenfilter"));
   CONTROL_ENABLE(CONTROL_CHECK_FOR_UPDATES);
+
+  bool allowFilter = CAddonsDirectory::IsRepoDirectory(CURL(m_vecItems->GetPath()));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_FOREIGNFILTER, allowFilter);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BROKENFILTER, allowFilter);
+
   CGUIMediaWindow::UpdateButtons();
 }
 
@@ -345,31 +361,35 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory,
   }
   else
   {
-    result = CGUIMediaWindow::GetDirectory(strDirectory,items);
-    if (CSettings::Get().GetBool("general.addonforeignfilter"))
+    result = CGUIMediaWindow::GetDirectory(strDirectory, items);
+
+    if (CAddonsDirectory::IsRepoDirectory(CURL(strDirectory)))
     {
-      int i=0;
-      while (i < items.Size())
+      if (CSettings::Get().GetBool("general.addonforeignfilter"))
       {
-        if (!FilterVar(true, items[i]->GetProperty("Addon.Language"), "en") ||
-            !FilterVar(true, items[i]->GetProperty("Addon.Language"), g_langInfo.GetLocale().GetLanguageCode()) ||
-            !FilterVar(true, items[i]->GetProperty("Addon.Language"), g_langInfo.GetLocale().ToShortString()))
+        int i=0;
+        while (i < items.Size())
         {
-          i++;
-        }
-        else
-          items.Remove(i);
-      }
-    }
-    if (CSettings::Get().GetBool("general.addonbrokenfilter"))
-    {
-      for (int i = items.Size() - 1; i >= 0; i--)
-      {
-        if (!items[i]->GetProperty("Addon.Broken").empty())
-        { //check if it's installed
-          AddonPtr addon;
-          if (!CAddonMgr::Get().GetAddon(items[i]->GetProperty("Addon.ID").asString(), addon))
+          if (!FilterVar(true, items[i]->GetProperty("Addon.Language"), "en") ||
+              !FilterVar(true, items[i]->GetProperty("Addon.Language"), g_langInfo.GetLocale().GetLanguageCode()) ||
+              !FilterVar(true, items[i]->GetProperty("Addon.Language"), g_langInfo.GetLocale().ToShortString()))
+          {
+            i++;
+          }
+          else
             items.Remove(i);
+        }
+      }
+      if (CSettings::Get().GetBool("general.addonbrokenfilter"))
+      {
+        for (int i = items.Size() - 1; i >= 0; i--)
+        {
+          if (!items[i]->GetProperty("Addon.Broken").empty())
+          { //check if it's installed
+            AddonPtr addon;
+            if (!CAddonMgr::Get().GetAddon(items[i]->GetProperty("Addon.ID").asString(), addon))
+              items.Remove(i);
+          }
         }
       }
     }

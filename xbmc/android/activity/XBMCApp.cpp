@@ -89,7 +89,6 @@ ANativeActivity *CXBMCApp::m_activity = NULL;
 CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
-int CXBMCApp::m_initialVolume = 0;
 bool CXBMCApp::m_hasFocus = false;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
@@ -160,9 +159,6 @@ void CXBMCApp::onResume()
 void CXBMCApp::onPause()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-
-  // Restore volume
-  SetSystemVolume(m_initialVolume);
 
   unregisterReceiver(*this);
 
@@ -301,8 +297,6 @@ void CXBMCApp::run()
 
   SetupEnv();
   XBMC::Context context;
-
-  m_initialVolume = GetSystemVolume();
 
   CJNIIntent startIntent = getIntent();
 
@@ -595,11 +589,11 @@ int CXBMCApp::GetMaxSystemVolume(JNIEnv *env)
   return 0;
 }
 
-int CXBMCApp::GetSystemVolume()
+float CXBMCApp::GetSystemVolume()
 {
   CJNIAudioManager audioManager(getSystemService("audio"));
   if (audioManager)
-    return audioManager.getStreamVolume();
+    return (float)audioManager.getStreamVolume() / GetMaxSystemVolume();
   else 
   {
     android_printf("CXBMCApp::GetSystemVolume: Could not get Audio Manager");
@@ -607,16 +601,7 @@ int CXBMCApp::GetSystemVolume()
   }
 }
 
-void CXBMCApp::SetSystemVolume(int val)
-{
-  CJNIAudioManager audioManager(getSystemService("audio"));
-  if (audioManager)
-    audioManager.setStreamVolume(val);
-  else
-    android_printf("CXBMCApp::SetSystemVolume: Could not get Audio Manager");
-}
-
-void CXBMCApp::SetSystemVolume(JNIEnv *env, float percent)
+void CXBMCApp::SetSystemVolume(float percent)
 {
   CJNIAudioManager audioManager(getSystemService("audio"));
   int maxVolume = (int)(GetMaxSystemVolume() * percent);
@@ -645,6 +630,11 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
     std::string playFile = GetFilenameFromIntent(intent);
     CApplicationMessenger::Get().MediaPlay(playFile);
   }
+}
+
+void CXBMCApp::onVolumeChanged(int volume)
+{
+  CApplicationMessenger::Get().SendAction(CAction(ACTION_VOLUME_SET, (float)volume), WINDOW_INVALID, false);
 }
 
 void CXBMCApp::SetupEnv()

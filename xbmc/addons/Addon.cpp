@@ -92,7 +92,9 @@ static const TypeMapping types[] =
    {"xbmc.audioencoder",                 ADDON_AUDIOENCODER,         200,  "DefaultAddonAudioEncoder.png" },
    {"kodi.audiodecoder",                 ADDON_AUDIODECODER,         201,  "DefaultAddonAudioDecoder.png" },
    {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" },
-   {"kodi.resource.language",            ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" }};
+   {"kodi.resource.language",            ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" },
+   {"kodi.resource.uisounds",            ADDON_RESOURCE_UISOUNDS,   24006, "DefaultAddonUISounds.png" },
+  };
 
 const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {

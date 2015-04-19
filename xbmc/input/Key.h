@@ -351,6 +351,7 @@
 
 #define ACTION_TRIGGER_OSD            243 // show autoclosing OSD. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_INPUT_TEXT             244
+#define ACTION_VOLUME_SET             245
 
 // touch actions
 #define ACTION_TOUCH_TAP              401

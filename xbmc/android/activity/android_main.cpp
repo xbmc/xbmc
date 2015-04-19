@@ -89,6 +89,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   std::string mainClass = "org/xbmc/" + appName + "/Main";
   std::string bcReceiver = "org/xbmc/" + appName + "/XBMCBroadcastReceiver";
   std::string frameListener = "org/xbmc/" + appName + "/XBMCOnFrameAvailableListener";
+  std::string settingsObserver = "org/xbmc/" + appName + "/XBMCSettingsContentObserver";
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
@@ -121,6 +122,17 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       (void*)&CJNISurfaceTextureOnFrameAvailableListener::_onFrameAvailable
     };
     env->RegisterNatives(cFrameAvailableListener, &mOnFrameAvailable, 1);
+  }
+
+  jclass cSettingsObserver = env->FindClass(settingsObserver.c_str());
+  if(cSettingsObserver)
+  {
+    JNINativeMethod mOnVolumeChanged = {
+      "_onVolumeChanged",
+      "(I)V",
+      (void*)&CJNIApplicationMainActivity::_onVolumeChanged
+    };
+    env->RegisterNatives(cSettingsObserver, &mOnVolumeChanged, 1);
   }
 
   return version;

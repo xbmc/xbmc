@@ -191,9 +191,9 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_min_frames = 0;
   m_sink_frameSize = 0;
   m_audiotrackbuffer_sec = 0.0;
-  m_volume = 1.0;
   m_at_jni = NULL;
   m_frames_written = 0;
+  m_volume = CXBMCApp::GetSystemVolume();
 }
 
 CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
@@ -264,12 +264,13 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_format.m_frameSamples   = m_format.m_frames * m_format.m_channelLayout.Count();
   format                    = m_format;
 
-  JNIEnv* jenv = xbmc_jnienv();
-  // Set the initial volume
-  float volume = 1.0;
-  if (!m_passthrough)
-    volume = m_volume;
-  CXBMCApp::SetSystemVolume(jenv, volume);
+#if defined(HAS_LIBAMCODEC)
+  // Force volume to 100% for passthrough
+  float volume = m_volume;
+  if (m_passthrough)
+    volume = 1.0;
+  CXBMCApp::SetSystemVolume(volume);
+#endif
 
   return true;
 }
@@ -370,10 +371,15 @@ void  CAESinkAUDIOTRACK::SetVolume(float scale)
     return;
 
   m_volume = scale;
-  if (!m_passthrough)
-  {
-    CXBMCApp::SetSystemVolume(xbmc_jnienv(), m_volume);
-  }
+  float volume = m_volume;
+
+#if defined(HAS_LIBAMCODEC)
+  // Force volume to 100% for passthrough
+  if (m_passthrough)
+    volume = 1.0;
+#endif
+
+  CXBMCApp::SetSystemVolume(volume);
 }
 
 void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)

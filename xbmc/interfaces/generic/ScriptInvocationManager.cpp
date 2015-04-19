@@ -304,6 +304,16 @@ bool CScriptInvocationManager::IsRunning(int scriptId) const
   return !invokerThread.done;
 }
 
+bool CScriptInvocationManager::IsRunning(const std::string& scriptPath) const
+{
+  CSingleLock lock(m_critSection);
+  auto it = m_scriptPaths.find(scriptPath);
+  if (it == m_scriptPaths.end())
+    return false;
+
+  return IsRunning(it->second);
+}
+
 void CScriptInvocationManager::OnScriptEnded(int scriptId)
 {
   if (scriptId < 0)

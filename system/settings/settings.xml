@@ -81,13 +81,16 @@
         </setting>
         <setting id="lookandfeel.soundskin" type="string" label="15108" help="36110">
           <level>0</level>
-          <default>SKINDEFAULT</default>
+          <default>resource.uisounds.confluence</default>
           <constraints>
             <options>skinsounds</options>
           </constraints>
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
+          <updates>
+            <update type="change" />
+          </updates>
           <control type="list" format="string" />
         </setting>
       </group>
@@ -1810,6 +1813,13 @@
         </setting>
       </group>
       <group id="3">
+        <setting id="musiclibrary.showallitems" type="boolean" label="38011" help="38012">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="4">
         <setting id="musiclibrary.updateonstartup" type="boolean" label="22000" help="36259">
           <level>1</level>
           <default>false</default>
@@ -1821,12 +1831,7 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="4">
-        <setting id="musiclibrary.showallitems" type="boolean" label="38011" help="38012">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
+      <group id="5">
         <setting id="musiclibrary.cleanup" type="action" label="334" help="36148">
           <level>2</level>
           <control type="button" format="action" />
