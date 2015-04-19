@@ -82,7 +82,7 @@ bool CMMALRenderer::init_vout(ERenderFormat format)
   if (m_bConfigured)
     return true;
 
-  m_format = RENDER_FMT_MMAL;
+  m_format = format;
   if (m_format != RENDER_FMT_MMAL && m_format != RENDER_FMT_YUV420P)
     return true;
 
@@ -480,6 +480,7 @@ void CMMALRenderer::UnInitMMAL()
   m_video_stereo_mode = RENDER_STEREO_MODE_OFF;
   m_display_stereo_mode = RENDER_STEREO_MODE_OFF;
   m_StereoInvert = false;
+  m_format = RENDER_FMT_NONE;
 
   m_bConfigured = false;
 }
