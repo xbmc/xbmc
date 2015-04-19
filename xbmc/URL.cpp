@@ -501,7 +501,10 @@ const std::string CURL::GetFileNameWithoutPath() const
 char CURL::GetDirectorySeparator() const
 {
 #ifndef TARGET_POSIX
-  if ( IsLocal() )
+  //We don't want to use IsLocal here, it can return true
+  //for network protocols that matches localhost or hostname
+  //we only ever want to use \ for win32 local filesystem
+  if ( m_strProtocol.empty() )
     return '\\';
   else
 #endif
