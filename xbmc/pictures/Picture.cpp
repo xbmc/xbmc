@@ -129,16 +129,21 @@ bool CThumbnailWriter::DoWork()
   return success;
 }
 
-bool CPicture::ResizeTexture(const std::string &image, CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size)
+bool CPicture::ResizeTexture(const std::string &image, CBaseTexture *texture,
+  uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size,
+  CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
   if (image.empty() || texture == NULL)
     return false;
 
   return ResizeTexture(image, texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
-                       dest_width, dest_height, result, result_size);
+                       dest_width, dest_height, result, result_size,
+                       scalingAlgorithm);
 }
 
-bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size)
+bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch,
+  uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size,
+  CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
   if (image.empty() || pixels == NULL)
     return false;
@@ -178,7 +183,7 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
     return false;
   }
 
-  if (!ScaleImage(pixels, width, height, pitch, buffer, dest_width, dest_height, dest_width * sizeof(uint32_t)))
+  if (!ScaleImage(pixels, width, height, pitch, buffer, dest_width, dest_height, dest_width * sizeof(uint32_t), scalingAlgorithm))
   {
     delete[] buffer;
     result = NULL;
@@ -198,13 +203,16 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   return success;
 }
 
-bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest)
+bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest,
+  CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
   return CacheTexture(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
-                      texture->GetOrientation(), dest_width, dest_height, dest);
+                      texture->GetOrientation(), dest_width, dest_height, dest, scalingAlgorithm);
 }
 
-bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest)
+bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation,
+  uint32_t &dest_width, uint32_t &dest_height, const std::string &dest,
+  CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
   // if no max width or height is specified, don't resize
   if (dest_width == 0)
@@ -238,7 +246,8 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
     if (buffer)
     {
       if (ScaleImage(pixels, width, height, pitch,
-                     (uint8_t *)buffer, dest_width, dest_height, dest_width * 4))
+                     (uint8_t *)buffer, dest_width, dest_height, dest_width * 4,
+                     scalingAlgorithm))
       {
         if (!orientation || OrientateImage(buffer, dest_width, dest_height, orientation))
         {
@@ -328,11 +337,12 @@ void CPicture::GetScale(unsigned int width, unsigned int height, unsigned int &o
 }
 
 bool CPicture::ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned int in_height, unsigned int in_pitch,
-                          uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch)
+                          uint8_t *out_pixels, unsigned int out_width, unsigned int out_height, unsigned int out_pitch,
+                          CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
   struct SwsContext *context = sws_getContext(in_width, in_height, PIX_FMT_BGRA,
                                                          out_width, out_height, PIX_FMT_BGRA,
-                                                         SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+                                                         CPictureScalingAlgorithm::ToSwscale(scalingAlgorithm) | SwScaleCPUFlags(), NULL, NULL, NULL);
 
   uint8_t *src[] = { in_pixels, 0, 0, 0 };
   int     srcStride[] = { (int)in_pitch, 0, 0, 0 };
