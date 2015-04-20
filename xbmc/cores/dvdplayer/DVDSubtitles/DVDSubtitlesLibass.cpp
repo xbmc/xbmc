@@ -27,7 +27,6 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
-#include "threads/Atomics.h"
 #include "guilib/GraphicContext.h"
 
 using namespace std;

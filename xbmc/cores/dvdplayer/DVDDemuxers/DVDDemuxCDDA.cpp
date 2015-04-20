@@ -21,7 +21,6 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxCDDA.h"
 #include "DVDDemuxUtils.h"
-#include "utils/log.h"
 #include "../DVDClock.h"
 
 // CDDA audio demuxer based on AirTunes audio Demuxer.

@@ -24,7 +24,6 @@
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "settings/Settings.h"
 
 int64_t CDVDClock::m_systemOffset;
 int64_t CDVDClock::m_systemFrequency;

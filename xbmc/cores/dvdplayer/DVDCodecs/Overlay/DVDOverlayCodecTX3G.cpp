@@ -19,7 +19,6 @@
  */
 
 #include "system.h"
-#include "DVDClock.h"
 #include "DVDOverlayCodecTX3G.h"
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"

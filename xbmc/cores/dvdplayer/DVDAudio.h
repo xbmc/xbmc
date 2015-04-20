@@ -25,7 +25,6 @@
 #endif
 #include "threads/CriticalSection.h"
 #include "PlatformDefs.h"
-#include <queue>
 
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 class IAEStream;

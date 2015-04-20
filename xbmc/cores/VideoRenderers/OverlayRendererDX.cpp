@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 #include "utils/MathUtils.h"
 #include "RenderManager.h"
+#include "utils/log.h"
 
 #ifndef ASSERT
 #include <crtdbg.h>

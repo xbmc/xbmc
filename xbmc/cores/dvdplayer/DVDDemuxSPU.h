@@ -20,7 +20,6 @@
  *
  */
 
-#include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 struct AVPicture;
 

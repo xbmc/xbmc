@@ -28,8 +28,6 @@
 #include <deque>
 #include <vector>
 #include <list>
-#include "settings/VideoSettings.h"
-#include "guilib/Geometry.h"
 
 namespace DXVA {
 

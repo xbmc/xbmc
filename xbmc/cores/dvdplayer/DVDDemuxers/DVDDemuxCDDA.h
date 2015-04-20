@@ -20,7 +20,6 @@
  */
 
 #include "DVDDemux.h"
-#include "utils/log.h"
 
 #ifdef TARGET_WINDOWS
 #define __attribute__(dummy_val)

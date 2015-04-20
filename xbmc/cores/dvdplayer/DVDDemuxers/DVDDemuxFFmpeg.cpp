@@ -30,11 +30,9 @@
 #endif
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#include "DVDInputStreams/DVDInputStreamNavigator.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
-#include "DVDInputStreams/DVDInputStreamPVRManager.h"
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
@@ -45,9 +43,7 @@
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "utils/log.h"
-#include "threads/Thread.h"
 #include "threads/SystemClock.h"
-#include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "cores/FFmpeg.h"

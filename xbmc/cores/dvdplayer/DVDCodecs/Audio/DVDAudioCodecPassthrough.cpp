@@ -21,9 +21,6 @@
 #include "DVDAudioCodecPassthrough.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
 
 #include <algorithm>
 

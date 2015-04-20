@@ -21,7 +21,6 @@
  */
 
 #include "DVDSubtitleParser.h"
-#include "DVDSubtitleLineCollection.h"
 
 class CDVDSubtitleParserVplayer : public CDVDSubtitleParserText
 {

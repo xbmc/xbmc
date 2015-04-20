@@ -21,7 +21,6 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxBXA.h"
 #include "DVDDemuxUtils.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "../DVDClock.h"
 

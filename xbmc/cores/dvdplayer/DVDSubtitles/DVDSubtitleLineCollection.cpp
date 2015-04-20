@@ -19,7 +19,6 @@
  */
 
 #include "DVDSubtitleLineCollection.h"
-#include "DVDClock.h"
 
 
 CDVDSubtitleLineCollection::CDVDSubtitleLineCollection()

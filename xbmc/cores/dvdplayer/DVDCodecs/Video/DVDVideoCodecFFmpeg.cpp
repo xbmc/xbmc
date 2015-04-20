@@ -28,7 +28,6 @@
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDCodecUtils.h"
-#include "DVDVideoPPFFmpeg.h"
 #if defined(TARGET_POSIX) || defined(TARGET_WINDOWS)
 #include "utils/CPUInfo.h"
 #endif
@@ -37,7 +36,6 @@
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
 #include <memory>
-#include "threads/Atomics.h"
 
 #ifndef TARGET_POSIX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
