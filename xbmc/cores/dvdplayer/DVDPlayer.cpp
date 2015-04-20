@@ -1694,8 +1694,9 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 void CDVDPlayer::HandlePlaySpeed()
 {
   ECacheState caching = m_caching;
+  bool isInMenu = IsInMenu();
 
-  if(IsInMenu() && caching != CACHESTATE_DONE)
+  if(isInMenu && caching != CACHESTATE_DONE)
     caching = CACHESTATE_DONE;
 
   if(caching == CACHESTATE_FULL)
@@ -1779,7 +1780,7 @@ void CDVDPlayer::HandlePlaySpeed()
     SetCaching(caching);
 
   // check buffering levels and adjust clock
-  if (m_playSpeed == DVD_PLAYSPEED_NORMAL && m_caching == CACHESTATE_DONE)
+  if (m_playSpeed == DVD_PLAYSPEED_NORMAL && m_caching == CACHESTATE_DONE && !isInMenu)
   {
     // due to i.e. discontinuities of pts the stream may have drifted away
     // from clock too far for audio to sync back.
@@ -1818,7 +1819,7 @@ void CDVDPlayer::HandlePlaySpeed()
 
   if(GetPlaySpeed() != DVD_PLAYSPEED_NORMAL && GetPlaySpeed() != DVD_PLAYSPEED_PAUSE)
   {
-    if (IsInMenu())
+    if (isInMenu)
     {
       // this can't be done in menu
       SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
