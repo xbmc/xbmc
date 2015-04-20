@@ -254,6 +254,7 @@ void CAdvancedSettings::Initialize()
   m_fanartRes = 1080;
   m_imageRes = 720;
   m_useDDSFanart = false;
+  m_imageScalingAlgorithm = CPictureScalingAlgorithm::Default;
 
   m_sambaclienttimeout = 10;
   m_sambadoscodepage = "";
@@ -995,6 +996,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 #if !defined(TARGET_RASPBERRY_PI)
   XMLUtils::GetBoolean(pRootElement, "useddsfanart", m_useDDSFanart);
 #endif
+  if (XMLUtils::GetString(pRootElement, "imagescalingalgorithm", tmp))
+    m_imageScalingAlgorithm = CPictureScalingAlgorithm::FromString(tmp);
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", m_detectAsUdf);
 
