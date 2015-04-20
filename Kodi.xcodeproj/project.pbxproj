@@ -999,6 +999,9 @@
 		DFD882F817DD1A5B001516FE /* AddonPythonInvoker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD882F417DD1A5B001516FE /* AddonPythonInvoker.cpp */; };
 		DFD928F316384B6800709DAE /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD928F116384B6800709DAE /* Timer.cpp */; };
 		DFDA3153160E34230047A626 /* DVDOverlayCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDA3152160E34230047A626 /* DVDOverlayCodec.cpp */; };
+		DFDE5D511AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDE5D4F1AE5658200EE53AD /* PictureScalingAlgorithm.cpp */; };
+		DFDE5D521AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDE5D4F1AE5658200EE53AD /* PictureScalingAlgorithm.cpp */; };
+		DFDE5D531AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDE5D4F1AE5658200EE53AD /* PictureScalingAlgorithm.cpp */; };
 		DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFE4095917417FDF00473BD9 /* LegacyPathTranslation.cpp */; };
 		DFEB902819E9337200728978 /* AEResampleFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEB902619E9337200728978 /* AEResampleFactory.cpp */; };
 		DFEB902919E9337200728978 /* AEResampleFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFEB902619E9337200728978 /* AEResampleFactory.cpp */; };
@@ -4612,6 +4615,8 @@
 		DFD928F116384B6800709DAE /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
 		DFD928F216384B6800709DAE /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		DFDA3152160E34230047A626 /* DVDOverlayCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodec.cpp; sourceTree = "<group>"; };
+		DFDE5D4F1AE5658200EE53AD /* PictureScalingAlgorithm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureScalingAlgorithm.cpp; sourceTree = "<group>"; };
+		DFDE5D501AE5658200EE53AD /* PictureScalingAlgorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureScalingAlgorithm.h; sourceTree = "<group>"; };
 		DFE4095917417FDF00473BD9 /* LegacyPathTranslation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LegacyPathTranslation.cpp; sourceTree = "<group>"; };
 		DFE4095A17417FDF00473BD9 /* LegacyPathTranslation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LegacyPathTranslation.h; sourceTree = "<group>"; };
 		DFEB902519E9335E00728978 /* AEResample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEResample.h; sourceTree = "<group>"; };
@@ -6342,6 +6347,8 @@
 				E38E1DDA0D25F9FD00618676 /* PictureInfoLoader.h */,
 				E38E1DDB0D25F9FD00618676 /* PictureInfoTag.cpp */,
 				E38E1DDC0D25F9FD00618676 /* PictureInfoTag.h */,
+				DFDE5D4F1AE5658200EE53AD /* PictureScalingAlgorithm.cpp */,
+				DFDE5D501AE5658200EE53AD /* PictureScalingAlgorithm.h */,
 				E38E1DDD0D25F9FD00618676 /* PictureThumbLoader.cpp */,
 				E38E1DDE0D25F9FD00618676 /* PictureThumbLoader.h */,
 				E38E1E090D25F9FD00618676 /* SlideShowPicture.cpp */,
@@ -10691,6 +10698,7 @@
 				F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */,
 				F54BCC5F1439345300F86B0F /* HotKeyController.m in Sources */,
 				DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */,
+				DFDE5D511AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */,
 				F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
 				DF5276E1151BAEDA00B5B63B /* Base64.cpp in Sources */,
 				DF5276E2151BAEDA00B5B63B /* HttpResponse.cpp in Sources */,
@@ -11447,6 +11455,7 @@
 				DFF0F27D17528350002DA3A4 /* GUIBorderedImage.cpp in Sources */,
 				DFF0F27E17528350002DA3A4 /* GUIButtonControl.cpp in Sources */,
 				DFF0F27F17528350002DA3A4 /* GUICheckMarkControl.cpp in Sources */,
+				DFDE5D531AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */,
 				DFF0F28017528350002DA3A4 /* GUIColorManager.cpp in Sources */,
 				DFF0F28117528350002DA3A4 /* GUIControl.cpp in Sources */,
 				DFF0F28217528350002DA3A4 /* GUIControlFactory.cpp in Sources */,
@@ -12465,6 +12474,7 @@
 				395C2A201A9F96A700EBC7AD /* ContextItemAddon.cpp in Sources */,
 				E49912CC174E5DA000741B6D /* DirectoryNodeTitleMovies.cpp in Sources */,
 				E49912CD174E5DA000741B6D /* DirectoryNodeTitleMusicVideos.cpp in Sources */,
+				DFDE5D521AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */,
 				E49912CE174E5DA000741B6D /* DirectoryNodeTitleTvShows.cpp in Sources */,
 				E49912CF174E5DA000741B6D /* DirectoryNodeTvShowsOverview.cpp in Sources */,
 				E49912D0174E5DA000741B6D /* QueryParams.cpp in Sources */,
