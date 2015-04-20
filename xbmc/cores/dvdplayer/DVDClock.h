@@ -66,9 +66,9 @@ public:
   }
 
   void Reset() { m_bReset = true; }
-  void Pause();
-  void Resume();
   void SetSpeed(int iSpeed);
+  void SetSpeedAdjust(double adjust);
+  double GetSpeedAdjust();
 
   double GetClockSpeed(); /**< get the current speed of the clock relative normal system time */
 
@@ -101,7 +101,11 @@ protected:
   static int64_t m_systemOffset;
   static CCriticalSection m_systemsection;
 
-  double           m_maxspeedadjust;
+  int64_t m_systemAdjust;
+  int64_t m_lastSystemTime;
+  double m_speedAdjust;
+
+  double m_maxspeedadjust;
   CCriticalSection m_speedsection;
   static CDVDClock *m_playerclock;
 };

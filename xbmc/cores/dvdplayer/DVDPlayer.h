@@ -68,6 +68,7 @@ public:
   bool OMXStateExecute(bool lock = true) { return false; }
   void OMXStateIdle(bool lock = true) {}
   bool HDMIClockSync(bool lock = true) { return false; }
+  void OMXSetSpeedAdjust(double adjust, bool lock = true) {}
 };
 #endif
 

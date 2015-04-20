@@ -201,10 +201,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     return false;
   }
 
-  if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") && !g_VideoReferenceClock.IsRunning())
-  {
-    g_VideoReferenceClock.Create();
-  }
+  g_VideoReferenceClock.Start();
 
   if(m_messageQueue.IsInited())
     m_messageQueue.Put(new CDVDMsgVideoCodecChange(hint, codec), 0);

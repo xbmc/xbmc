@@ -175,6 +175,15 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
     return;
   }
 
+  CDVDClock *dvdclock = CDVDClock::GetMasterClock();
+  if(dvdclock != NULL && dvdclock->GetSpeedAdjust() != 0.0)
+  {
+    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+    m_presenterr = 0;
+    m_presentcorr = 0;
+    return;
+  }
+
   double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
