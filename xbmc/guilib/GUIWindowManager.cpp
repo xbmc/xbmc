@@ -775,6 +775,14 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<stri
     return;
   }
 
+  // don't activate a window if there are active modal dialogs
+  if (HasModalDialog())
+  {
+    CLog::Log(LOG_LEVEL_DEBUG, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
+    g_audioManager.PlayActionSound(CAction(ACTION_ERROR));
+    return;
+  }
+
   g_infoManager.SetNextWindow(iWindowID);
 
   // set our overlay state
