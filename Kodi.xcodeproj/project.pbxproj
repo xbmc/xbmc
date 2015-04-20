@@ -808,6 +808,9 @@
 		C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
 		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		DF00492D162DAEA200A971AD /* PVROperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF00492B162DAEA200A971AD /* PVROperations.cpp */; };
+		DF0244941AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0244921AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp */; };
+		DF0244951AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0244921AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp */; };
+		DF0244961AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0244921AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp */; };
 		DF02BA621A910623006DCA16 /* VideoSyncIos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF02BA601A910623006DCA16 /* VideoSyncIos.cpp */; };
 		DF02BA631A910624006DCA16 /* VideoSyncIos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF02BA601A910623006DCA16 /* VideoSyncIos.cpp */; };
 		DF02BA661A91065F006DCA16 /* VideoSyncOsx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF02BA641A91065F006DCA16 /* VideoSyncOsx.cpp */; };
@@ -4312,6 +4315,8 @@
 		C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		DF00492B162DAEA200A971AD /* PVROperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVROperations.cpp; sourceTree = "<group>"; };
 		DF00492C162DAEA200A971AD /* PVROperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVROperations.h; sourceTree = "<group>"; };
+		DF0244921AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderFFmpeg.cpp; sourceTree = "<group>"; };
+		DF0244931AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderFFmpeg.h; sourceTree = "<group>"; };
 		DF02BA601A910623006DCA16 /* VideoSyncIos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VideoSyncIos.cpp; path = videosync/VideoSyncIos.cpp; sourceTree = "<group>"; };
 		DF02BA611A910623006DCA16 /* VideoSyncIos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoSyncIos.h; path = videosync/VideoSyncIos.h; sourceTree = "<group>"; };
 		DF02BA641A91065F006DCA16 /* VideoSyncOsx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VideoSyncOsx.cpp; path = videosync/VideoSyncOsx.cpp; sourceTree = "<group>"; };
@@ -6171,6 +6176,8 @@
 				18B7C869129423A7009E7A26 /* MusicInfoTagLoaderDatabase.h */,
 				18B7C86A129423A7009E7A26 /* MusicInfoTagLoaderFactory.cpp */,
 				18B7C86B129423A7009E7A26 /* MusicInfoTagLoaderFactory.h */,
+				DF0244921AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp */,
+				DF0244931AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.h */,
 				18B7C87C129423A7009E7A26 /* MusicInfoTagLoaderShn.cpp */,
 				18B7C87D129423A7009E7A26 /* MusicInfoTagLoaderShn.h */,
 				5EF800FE1A97892A0035AA4D /* ReplayGain.cpp */,
@@ -11009,6 +11016,7 @@
 				7CCDA13E192753E30074CF51 /* PltHttpServer.cpp in Sources */,
 				7CCDA147192753E30074CF51 /* PltHttpServerTask.cpp in Sources */,
 				7CCDA150192753E30074CF51 /* PltIconsData.cpp in Sources */,
+				DF0244941AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp in Sources */,
 				7CCDA159192753E30074CF51 /* PltMimeType.cpp in Sources */,
 				7CCDA162192753E30074CF51 /* PltProtocolInfo.cpp in Sources */,
 				7CCDA16B192753E30074CF51 /* PltService.cpp in Sources */,
@@ -11840,6 +11848,7 @@
 				DFF0F3FC17528350002DA3A4 /* Weather.cpp in Sources */,
 				DFF0F3FD17528350002DA3A4 /* XBMCTinyXML.cpp in Sources */,
 				DFF0F3FE17528350002DA3A4 /* XMLUtils.cpp in Sources */,
+				DF0244961AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp in Sources */,
 				DFF0F3FF17528350002DA3A4 /* GUIDialogAudioSubtitleSettings.cpp in Sources */,
 				DFF0F40017528350002DA3A4 /* GUIDialogFileStacking.cpp in Sources */,
 				DFF0F40117528350002DA3A4 /* GUIDialogFullScreenInfo.cpp in Sources */,
@@ -12530,6 +12539,7 @@
 				E4991301174E5DAD00741B6D /* GUIListItemLayout.cpp in Sources */,
 				E4991302174E5DAD00741B6D /* GUIListLabel.cpp in Sources */,
 				E4991303174E5DAD00741B6D /* GUIMessage.cpp in Sources */,
+				DF0244951AE564900042C6F9 /* MusicInfoTagLoaderFFmpeg.cpp in Sources */,
 				E4991304174E5DAD00741B6D /* GUIMoverControl.cpp in Sources */,
 				399442751A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */,
 				E4991305174E5DAD00741B6D /* GUIMultiImage.cpp in Sources */,
