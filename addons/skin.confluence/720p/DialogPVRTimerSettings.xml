@@ -4,13 +4,13 @@
 	<coordinates>
 		<system>1</system>
 		<left>275</left>
-		<top>30</top>
+		<top>50</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<include name="DialogBackgroundCommons">
 			<param name="DialogBackgroundWidth" value="730" />
-			<param name="DialogBackgroundHeight" value="660" />
+			<param name="DialogBackgroundHeight" value="620" />
 			<param name="DialogHeaderWidth" value="650" />
 			<param name="DialogHeaderLabel" value="$LOCALIZE[19065]" />
 			<param name="DialogHeaderId" value="0" />
@@ -31,7 +31,7 @@
 		</control>
 		<control type="group" id="9001">
 			<left>160</left>
-			<top>590</top>
+			<top>550</top>
 			<control type="button" id="28">
 				<description>OK Button</description>
 				<left>0</left>

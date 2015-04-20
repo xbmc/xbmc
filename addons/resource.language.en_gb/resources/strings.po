@@ -7960,9 +7960,7 @@ msgctxt "#19076"
 msgid "Folder:"
 msgstr ""
 
-msgctxt "#19077"
-msgid "Radio:"
-msgstr ""
+#empty string with id 19077
 
 msgctxt "#19078"
 msgid "Channel:"
