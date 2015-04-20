@@ -5104,10 +5104,15 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
       return tag ? tag->EndAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     }
-    if (item->HasEPGInfoTag())
+    else if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->EndAsLocalTime().GetAsLocalizedTime("", false);
-    if (item->HasPVRTimerInfoTag())
+    else if (item->HasPVRTimerInfoTag())
       return item->GetPVRTimerInfoTag()->EndAsLocalTime().GetAsLocalizedTime("", false);
+    else if (item->HasVideoInfoTag())
+    {
+      CDateTimeSpan duration(0, 0, 0, item->GetVideoInfoTag()->GetDuration());
+      return (CDateTime::GetCurrentDateTime() + duration).GetAsLocalizedTime("", false);
+    }
     break;
   case LISTITEM_STARTDATE:
     if (item->HasPVRChannelInfoTag())
