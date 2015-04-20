@@ -1271,8 +1271,10 @@ void CActiveAE::DiscardStream(CActiveAEStream *stream)
         (*it)->m_processingSamples.front()->Return();
         (*it)->m_processingSamples.pop_front();
       }
-      m_discardBufferPools.push_back((*it)->m_inputBuffers);
-      m_discardBufferPools.push_back((*it)->m_resampleBuffers);
+      if ((*it)->m_inputBuffers)
+        m_discardBufferPools.push_back((*it)->m_inputBuffers);
+      if ((*it)->m_resampleBuffers)
+        m_discardBufferPools.push_back((*it)->m_resampleBuffers);
       CLog::Log(LOGDEBUG, "CActiveAE::DiscardStream - audio stream deleted");
       delete (*it)->m_streamPort;
       delete (*it);
