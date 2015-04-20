@@ -219,6 +219,8 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
     dest_width = width;
   if (dest_height == 0)
     dest_height = height;
+  if (scalingAlgorithm == CPictureScalingAlgorithm::NoAlgorithm)
+    scalingAlgorithm = g_advancedSettings.m_imageScalingAlgorithm;
 
   uint32_t max_height = g_advancedSettings.m_imageRes;
   if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
