@@ -69,7 +69,7 @@ public:
     m_count++;
   }
 
-  void Flush(int interval = 500)
+  void Flush(int interval = 100)
   {
     m_buffer = 0.0f;
     m_count  = 0;
@@ -84,7 +84,7 @@ public:
       return 0.0;
   }
 
-  bool Get(double& error, int interval = 500)
+  bool Get(double& error, int interval = 100)
   {
     if(m_timer.IsTimePast())
     {
