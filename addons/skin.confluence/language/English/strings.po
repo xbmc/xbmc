@@ -431,7 +431,7 @@ msgid "Resolution"
 msgstr ""
 
 msgctxt "#31328"
-msgid "Recently Added"
+msgid "Recently added"
 msgstr ""
 
 msgctxt "#31329"
