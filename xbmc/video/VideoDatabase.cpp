@@ -2343,7 +2343,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, const CVideoInfoTag &d
 int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string,
     std::string> &artwork, int idShow, int idSeason /* = -1 */)
 {
-  if (idShow < 0 || details.m_iSeason < 0)
+  if (idShow < 0 || details.m_iSeason < -1)
     return -1;
 
    try
