@@ -21,7 +21,6 @@
 #include "cores/AudioEngine/Interfaces/AESound.h"
 
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "ActiveAE.h"
 #include "ActiveAESound.h"
 #include "utils/log.h"

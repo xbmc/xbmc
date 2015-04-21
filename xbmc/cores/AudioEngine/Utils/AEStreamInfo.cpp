@@ -21,6 +21,7 @@
 #include "AEStreamInfo.h"
 #include "utils/log.h"
 #include <algorithm>
+#include <string.h>
 
 #define IEC61937_PREAMBLE1 0xF872
 #define IEC61937_PREAMBLE2 0x4E1F

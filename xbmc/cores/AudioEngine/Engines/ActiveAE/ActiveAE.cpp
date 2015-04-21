@@ -28,10 +28,7 @@ using namespace ActiveAE;
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
 
 #include "settings/Settings.h"
-#include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
-
-#include "utils/TimeUtils.h"
 
 #define MAX_CACHE_LEVEL 0.5   // total cache time of stream in seconds
 #define MAX_WATER_LEVEL 0.25  // buffered time after stream stages in seconds
