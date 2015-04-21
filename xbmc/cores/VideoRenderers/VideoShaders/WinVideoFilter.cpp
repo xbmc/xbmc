@@ -28,7 +28,6 @@
 #include "ConvolutionKernels.h"
 #include "YUV2RGBShader.h"
 #include "win32/WIN32Util.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "Util.h"
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()

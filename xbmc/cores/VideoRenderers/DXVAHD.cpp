@@ -27,20 +27,17 @@
 #include <windows.h>
 #include <d3d9.h>
 #include <Initguid.h>
-#include <dxva.h>
 #include <dxva2api.h>
-#include "libavcodec/dxva2.h"
 
 #include "DXVAHD.h"
 #include "windowing/WindowingFactory.h"
-#include "WinRenderer.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
 #include "utils/AutoPtrHandle.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "RenderFlags.h"
 #include "win32/WIN32Util.h"
 #include "utils/Log.h"
 

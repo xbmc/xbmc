@@ -23,13 +23,12 @@
   #include "system_gl.h"
 #endif
 #include "RenderManager.h"
+#include "RenderFlags.h"
 #include "threads/CriticalSection.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
-#include "threads/Atomics.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 
 #include "Application.h"

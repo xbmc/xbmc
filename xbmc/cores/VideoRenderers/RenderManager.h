@@ -26,11 +26,11 @@
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "threads/SharedSection.h"
-#include "threads/Thread.h"
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 #include <deque>
 #include "PlatformDefs.h"
+#include "threads/Event.h"
 
 class CRenderCapture;
 
