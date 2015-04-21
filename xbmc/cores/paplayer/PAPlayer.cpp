@@ -24,12 +24,9 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "music/tags/MusicInfoTag.h"
-#include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include "utils/MathUtils.h"
 #include "utils/JobManager.h"
 
-#include "threads/SingleLock.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
