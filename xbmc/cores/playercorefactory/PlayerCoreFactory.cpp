@@ -18,26 +18,19 @@
  *
  */
 
-#include "utils/BitstreamStats.h"
 #include "PlayerCoreFactory.h"
 #include "threads/SingleLock.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/dvdplayer/DVDPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
-#include "cores/paplayer/DVDPlayerCodec.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "utils/HttpHeader.h"
-#include "settings/Settings.h"
 #include "URL.h"
 #include "FileItem.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/AutoPtrHandle.h"
-#include "cores/ExternalPlayer/ExternalPlayer.h"
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 #include "guilib/LocalizeStrings.h"
-#include "cores/AudioEngine/AEFactory.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 
