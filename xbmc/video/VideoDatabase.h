@@ -261,7 +261,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_AIRED = 5,
   VIDEODB_ID_EPISODE_THUMBURL = 6,
   VIDEODB_ID_EPISODE_THUMBURL_SPOOF = 7,
-  VIDEODB_ID_EPISODE_PLAYCOUNT = 8, // unused - feel free to repurpose
+  VIDEODB_ID_EPISODE_FLAG = 8,
   VIDEODB_ID_EPISODE_RUNTIME = 9,
   VIDEODB_ID_EPISODE_DIRECTOR = 10,
   VIDEODB_ID_EPISODE_IDENT = 11,
@@ -287,7 +287,7 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_DATE, my_offsetof(CVideoInfoTag,m_firstAired) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
-  { VIDEODB_TYPE_COUNT, my_offsetof(CVideoInfoTag,m_playCount) }, // unused
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSpecialFlag) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_duration) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strProductionCode) },
