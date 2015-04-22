@@ -3102,6 +3102,9 @@
     <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimerType.cpp">
       <Filter>pvr\timers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\dxerr.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5997,6 +6000,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimerType.h">
       <Filter>pvr\timers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\dxerr.h">
+      <Filter>win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
