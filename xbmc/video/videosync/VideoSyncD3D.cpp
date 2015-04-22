@@ -22,15 +22,14 @@
 
 #if defined(TARGET_WINDOWS)
 
-#pragma comment (lib,"d3d9.lib")
-#pragma comment (lib,"DxErr.lib")
-#include <Dxerr.h>
 #include "utils/log.h"
 #include "Utils/TimeUtils.h"
 #include "Utils/MathUtils.h"
 #include "windowing\WindowingFactory.h"
 #include "video/videosync/VideoSyncD3D.h"
 #include "guilib/GraphicContext.h"
+#include "win32/dxerr.h"
+#include "utils/StringUtils.h"
 
 void CVideoSyncD3D::OnDestroyDevice()
 {
@@ -53,7 +52,6 @@ void CVideoSyncD3D::RefreshChanged()
 
 bool CVideoSyncD3D::Setup(PUPDATECLOCK func)
 {
-  int ReturnV;
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Setting up Direct3d");
   CSingleLock lock(g_graphicsContext);
   g_Windowing.Register(this);
@@ -62,119 +60,54 @@ bool CVideoSyncD3D::Setup(PUPDATECLOCK func)
   m_lostEvent.Reset();
   UpdateClock = func;
 
-  //get d3d device
-  m_D3dDev = g_Windowing.Get3DDevice();
-  //we need a high priority thread to get accurate timing
+  // we need a high priority thread to get accurate timing
   if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
     CLog::Log(LOGDEBUG, "CVideoSyncD3D: SetThreadPriority failed");
-
-  D3DCAPS9 DevCaps;
-  ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
-
-  if (ReturnV != D3D_OK)
-  {
-    CLog::Log(LOGDEBUG, "CVideoSyncD3D: GetDeviceCaps returned %s: %s",
-      DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
-    return false;
-  }
-
-  if ((DevCaps.Caps & D3DCAPS_READ_SCANLINE) != D3DCAPS_READ_SCANLINE)
-  {
-    CLog::Log(LOGDEBUG, "CVideoSyncD3D: Hardware does not support GetRasterStatus");
-    return false;
-  }
-
-  D3DRASTER_STATUS RasterStatus;
-  ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
-  if (ReturnV != D3D_OK)
-  {
-    CLog::Log(LOGDEBUG, "CVideoSyncD3D: GetRasterStatus returned returned %s: %s",
-      DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
-    return false;
-  }
-
-  D3DDISPLAYMODE DisplayMode;
-  ReturnV = m_D3dDev->GetDisplayMode(0, &DisplayMode);
-  if (ReturnV != D3D_OK)
-  {
-    CLog::Log(LOGDEBUG, "CVideoSyncD3D: GetDisplayMode returned returned %s: %s",
-      DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
-    return false;
-  }
-  m_height = DisplayMode.Height;
 
   return true;
 }
 
 void CVideoSyncD3D::Run(volatile bool& stop)
 {
-  D3DRASTER_STATUS RasterStatus;
   int64_t Now;
   int64_t LastVBlankTime;
-  unsigned int LastLine;
   int NrVBlanks;
   double VBlankTime;
-  int ReturnV;
   int64_t systemFrequency = CurrentHostFrequency();
 
-  //get the scanline we're currently at
-  m_D3dDev->GetRasterStatus(0, &RasterStatus);
-  if (RasterStatus.InVBlank)
-    LastLine = 0;
-  else
-    LastLine = RasterStatus.ScanLine;
-
-  //init the vblanktime
+  // init the vblanktime
   Now = CurrentHostCounter();
   LastVBlankTime = Now;
   m_lastUpdateTime = Now - systemFrequency;
   while (!stop && !m_displayLost && !m_displayReset)
   {
-    //get the scanline we're currently at
-    ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
-    if (ReturnV != D3D_OK)
+    // sleep until vblank
+    HRESULT hr = g_Windowing.GetCurrentOutput()->WaitForVBlank();
+
+    // calculate how many vblanks happened
+    Now = CurrentHostCounter();
+    VBlankTime = (double)(Now - LastVBlankTime) / (double)systemFrequency;
+    NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
+
+    // update the vblank timestamp, update the clock and send a signal that we got a vblank
+    UpdateClock(NrVBlanks, Now);
+
+    // save the timestamp of this vblank so we can calculate how many vblanks happened next time
+    LastVBlankTime = Now;
+
+    if ((Now - m_lastUpdateTime) >= systemFrequency)
     {
-      CLog::Log(LOGDEBUG, "CVideoSyncD3D: GetRasterStatus returned returned %s: %s",
-        DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
-      return;
+      if (m_fps != GetFps())
+        break;
     }
 
-    //if InVBlank is set, or the current scanline is lower than the previous scanline, a vblank happened
-    if ((RasterStatus.InVBlank && LastLine > 0) || (RasterStatus.ScanLine < LastLine))
-    {
-      //calculate how many vblanks happened
-      Now = CurrentHostCounter() - systemFrequency * RasterStatus.ScanLine / (m_height * MathUtils::round_int(m_fps));
-      VBlankTime = (double)(Now - LastVBlankTime) / (double)systemFrequency;
-      NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
-      //update the vblank timestamp, update the clock and send a signal that we got a vblank
-      UpdateClock(NrVBlanks, Now);
-
-      //save the timestamp of this vblank so we can calculate how many vblanks happened next time
-      LastVBlankTime = Now;
-      //because we had a vblank, sleep until half the refreshrate period
-      Now = CurrentHostCounter();
-
-      if ((Now - m_lastUpdateTime) >= systemFrequency)
-      {
-        if (m_fps != GetFps())
-          break;
-      }
-
-      int SleepTime = (int)((LastVBlankTime + (systemFrequency / MathUtils::round_int(m_fps) / 2) - Now) * 1000 / systemFrequency);
-      if (SleepTime > 100) 
-        SleepTime = 100; //failsafe
-      if (SleepTime > 0)
-        ::Sleep(SleepTime);
-    }
-    else
-    {
-      ::Sleep(1);
-    }
-
-    if (RasterStatus.InVBlank)
-      LastLine = 0;
-    else
-      LastLine = RasterStatus.ScanLine;
+    // because we had a vblank, sleep until half the refreshrate period because i think WaitForVBlank block any rendering stuf
+    // without sleeping we have freeze rendering
+    int SleepTime = (int)((LastVBlankTime + (systemFrequency / MathUtils::round_int(m_fps) / 2) - Now) * 1000 / systemFrequency);
+    if (SleepTime > 100)
+      SleepTime = 100; //failsafe
+    if (SleepTime > 0)
+      ::Sleep(SleepTime);
   }
 
   m_lostEvent.Set();
@@ -195,11 +128,13 @@ void CVideoSyncD3D::Cleanup()
 
 float CVideoSyncD3D::GetFps()
 {
-  D3DDISPLAYMODE DisplayMode;
-  m_D3dDev->GetDisplayMode(0, &DisplayMode);
-  m_fps = DisplayMode.RefreshRate;
-  if (m_fps == 0)
-    m_fps = 60;
+  DXGI_MODE_DESC DisplayMode;
+  g_Windowing.GetDisplayMode(&DisplayMode, true);
+
+  m_fps = (DisplayMode.RefreshRate.Denominator != 0) ? (float)DisplayMode.RefreshRate.Numerator / (float)DisplayMode.RefreshRate.Denominator : 0.0f;
+
+  if (m_fps == 0.0)
+    m_fps = 60.0f;
   
   if (m_fps == 23 || m_fps == 29 || m_fps == 59)
     m_fps++;
@@ -210,4 +145,14 @@ float CVideoSyncD3D::GetFps()
   }
   return m_fps;
 }
+
+std::string CVideoSyncD3D::GetErrorDescription(HRESULT hr)
+{
+  WCHAR buff[1024];
+  DXGetErrorDescription(hr, buff, 1024);
+  std::wstring error(DXGetErrorString(hr));
+  std::wstring descr(buff);
+  return StringUtils::Format("%ls: %ls", error.c_str(), descr.c_str());
+}
+
 #endif
