@@ -27,10 +27,8 @@
 CPlugin* g_plugin=NULL;
 char g_visName[512];
 
-#define PRESETS_DIR "zip://special%3A%2F%2Fxbmc%2Faddons%2Fvisualization.milkdrop%2Fpresets%2F"
-
 bool g_UserPackFolder;
-std::string g_configFile;
+std::string g_presetsDir;
 
 int lastPresetIndx =0;
 char lastPresetDir[1024] = "";
@@ -43,14 +41,14 @@ void SetPresetDir(const char *pack)
   if (len >= 4 && strcmp(pack + len - 4, ".zip") == 0)
   {
     // Zip file
-    strcpy(g_plugin->m_szPresetDir, PRESETS_DIR);
+    strcpy(g_plugin->m_szPresetDir, g_presetsDir.c_str());
     strcat(g_plugin->m_szPresetDir,  pack);
     strcat(g_plugin->m_szPresetDir, "/");
   }
   else if (len >= 4 && strcmp(pack + len - 4, ".rar") == 0)
   {
     // Rar file
-    strcpy(g_plugin->m_szPresetDir, PRESETS_DIR);
+    strcpy(g_plugin->m_szPresetDir, g_presetsDir.c_str());
     strcat(g_plugin->m_szPresetDir,  pack);
     strcat(g_plugin->m_szPresetDir, "/");
   }
@@ -63,11 +61,14 @@ void SetPresetDir(const char *pack)
   {
     // If we have a valid last preset state AND the preset file(dir) is the same as last time
     g_plugin->UpdatePresetList();
-    g_plugin->m_bHoldPreset = lastLockedStatus;
-    g_plugin->m_nCurrentPreset = lastPresetIndx;
-    strcpy(g_plugin->m_szCurrentPresetFile, g_plugin->m_szPresetDir);
-    strcat(g_plugin->m_szCurrentPresetFile, g_plugin->m_pPresetAddr[g_plugin->m_nCurrentPreset]);
-    g_plugin->LoadPreset(g_plugin->m_szCurrentPresetFile, g_plugin->m_fBlendTimeUser);
+    if (g_plugin->m_pPresetAddr)
+    {
+      g_plugin->m_bHoldPreset = lastLockedStatus;
+      g_plugin->m_nCurrentPreset = lastPresetIndx;
+      strcpy(g_plugin->m_szCurrentPresetFile, g_plugin->m_szPresetDir);
+      strcat(g_plugin->m_szCurrentPresetFile, g_plugin->m_pPresetAddr[g_plugin->m_nCurrentPreset]);
+      g_plugin->LoadPreset(g_plugin->m_szCurrentPresetFile, g_plugin->m_fBlendTimeUser);
+    }
   }
   else
     // If it is the first run or a newly chosen preset pack we choose a random preset as first
@@ -83,6 +84,38 @@ void Preinit()
   }
 }
 
+void replaceAll(std::string& str, const std::string& from, const std::string& to) 
+{
+  if (from.empty())
+    return;
+  size_t start_pos = 0;
+  while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+    str.replace(start_pos, from.length(), to);
+    start_pos += to.length(); 
+  }
+}
+
+void urlEscape(std::string& str)
+{
+  if (str.empty())
+    return;
+
+  // 'url encode';
+  replaceAll(str, "%",  "%25");
+  replaceAll(str, "\\", "%2F");
+  replaceAll(str, "\"", "%22");
+  replaceAll(str, ":",  "%3A");
+  replaceAll(str, "`",  "%60");
+  replaceAll(str, "&",  "%26");
+  replaceAll(str, "{",  "%7B");
+  replaceAll(str, "}",  "%7D");
+  replaceAll(str, "]",  "%5D");
+  replaceAll(str, "[",  "%5B");
+  replaceAll(str, "<",  "%3C");
+  replaceAll(str, ">",  "%3E");
+  replaceAll(str, "#",  "%23");
+}
+
 extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!props)
@@ -91,8 +124,12 @@ extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
   VIS_PROPS* visprops = (VIS_PROPS*)props;
   _mkdir(visprops->profile);
 
+  std::string presets = std::string(visprops->presets).append("\\presets\\");
+  urlEscape(presets);
+  g_presetsDir = "zip://" + presets;
+
   Preinit();
-  if(!g_plugin || !g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio))
+  if(!g_plugin || !g_plugin->PluginInitialize((ID3D11DeviceContext*)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio))
     return ADDON_STATUS_UNKNOWN;
 
   return ADDON_STATUS_NEED_SAVEDSETTINGS; // We need some settings to be saved later before we quit this plugin
