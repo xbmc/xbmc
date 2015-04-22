@@ -330,6 +330,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     unsigned int m_RestrictCapsMask;
     float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool m_bVirtualShares;
+    bool m_bAllowDeferredRendering;
 
     float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
     float m_karaokeSyncDelayLRC;

@@ -323,6 +323,7 @@ void CAdvancedSettings::Initialize()
   m_RestrictCapsMask = 0;
   m_sleepBeforeFlip = 0;
   m_bVirtualShares = true;
+  m_bAllowDeferredRendering = true;
 
 //caused lots of jerks
 //#ifdef TARGET_WINDOWS
@@ -858,6 +859,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
   XMLUtils::GetUInt(pRootElement, "packagefoldersize", m_addonPackageFolderSize);
+  XMLUtils::GetBoolean(pRootElement, "allowdeferredrendering", m_bAllowDeferredRendering);
 
   // EPG
   pElement = pRootElement->FirstChildElement("epg");
