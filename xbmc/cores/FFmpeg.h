@@ -74,3 +74,4 @@ int ffmpeg_lockmgr_cb(void **mutex, enum AVLockOp operation);
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va);
 void ff_flush_avutil_log_buffers(void);
 
+#define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg
