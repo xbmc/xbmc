@@ -515,7 +515,7 @@
       <group id="2">
         <setting id="videoplayer.seeksteps" type="list[integer]" label="13556" help="37042">
           <level>2</level>
-          <default>-1800,-900,-600,-300,-180,-60,-30,-15,-7,15,30,60,180,300,600,900,1800</default>
+          <default>-600,-300,-180,-60,-30,-10,10,30,60,180,300,600</default>
           <constraints>
             <options>videoseeksteps</options>
             <delimiter>,</delimiter>
@@ -1710,7 +1710,7 @@
       <group id="2">
         <setting id="musicplayer.seeksteps" type="list[integer]" label="13556" help="37042">
           <level>2</level>
-          <default>-60,-30,-15,-7,7,15,30,60</default>
+          <default>-60,-30,-10,10,30,60</default>
           <constraints>
             <options>videoseeksteps</options>
             <delimiter>,</delimiter>
