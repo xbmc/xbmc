@@ -60,7 +60,7 @@ bool CScreenSaver::CreateScreenSaver()
 
   m_pInfo = new SCR_PROPS;
 #ifdef HAS_DX
-  m_pInfo->device     = g_Windowing.Get3DDevice();
+  m_pInfo->device     = g_Windowing.Get3D11Context();
 #else
   m_pInfo->device     = NULL;
 #endif
