@@ -1313,16 +1313,6 @@
       }
     }
   },
-  "Addon.Types": {
-    "type": "string",
-    "enum": [ "unknown", "xbmc.metadata.scraper.albums", "xbmc.metadata.scraper.artists", "xbmc.metadata.scraper.movies",
-              "xbmc.metadata.scraper.musicvideos", "xbmc.metadata.scraper.tvshows", "xbmc.ui.screensaver",
-              "xbmc.player.musicviz", "xbmc.python.pluginsource", "xbmc.python.script", "xbmc.python.weather",
-              "xbmc.python.subtitles", "xbmc.python.lyrics", "xbmc.gui.skin", "xbmc.webinterface",
-              "xbmc.pvrclient", "xbmc.addon.video", "xbmc.addon.audio", "xbmc.addon.image", "xbmc.addon.executable",
-              "xbmc.service", "xbmc.subtitle.module" ],
-    "default": "unknown"
-  },
   "Addon.Content": {
     "type": "string",
     "enum": [ "unknown", "video", "audio", "image", "executable" ],
