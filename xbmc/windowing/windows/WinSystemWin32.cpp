@@ -268,11 +268,18 @@ bool CWinSystemWin32::ResizeWindow(int newWidth, int newHeight, int newLeft, int
 
 void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 {
-  if (m_bFullScreen && bGaining) //bump ourselves to top
+  if (m_bFullScreen && bGaining)
+  {
     SetWindowPos(m_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOREDRAW);
+  }
 }
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+{
+  return SetFullScreenEx(fullScreen, res, blankOtherDisplays, false);
+}
+
+bool CWinSystemWin32::SetFullScreenEx(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool forceResChange)
 {
   m_IsAlteringWindow = true;
 
@@ -308,7 +315,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   m_bBlankOtherDisplay = blankOtherDisplays;
 
   if (fullScreen && CSettings::Get().GetBool("videoscreen.fakefullscreen"))
-    ChangeResolution(res);
+    ChangeResolution(res, forceResChange);
 
   ResizeInternal(forceResize);
 
@@ -440,7 +447,7 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   return true;
 }
 
-bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
+bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res, bool forceChange /*= false*/)
 {
   const MONITOR_DETAILS &details = GetMonitor(res.iScreen);
 
@@ -453,7 +460,8 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
       sDevMode.dmPelsWidth != res.iWidth || sDevMode.dmPelsHeight != res.iHeight ||
       sDevMode.dmDisplayFrequency != (int)res.fRefreshRate ||
       ((sDevMode.dmDisplayFlags & DM_INTERLACED) && !(res.dwFlags & D3DPRESENTFLAG_INTERLACED)) ||
-      (!(sDevMode.dmDisplayFlags & DM_INTERLACED) && (res.dwFlags & D3DPRESENTFLAG_INTERLACED)) )
+      (!(sDevMode.dmDisplayFlags & DM_INTERLACED) && (res.dwFlags & D3DPRESENTFLAG_INTERLACED)) 
+      || forceChange)
   {
     ZeroMemory(&sDevMode, sizeof(sDevMode));
     sDevMode.dmSize = sizeof(sDevMode);
