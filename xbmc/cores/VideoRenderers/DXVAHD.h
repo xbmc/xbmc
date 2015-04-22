@@ -19,29 +19,28 @@
  */
 #pragma once
 
-#include "threads/Event.h"
-#include "DXVA.h"
 #include <dxva2api.h>
+#include <vector>
+#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#include "DVDCodecs/Video/DXVA.h"
+#include "guilib/D3DResource.h"
 #include "guilib/Geometry.h"
-#include <dxvahd.h>
 
 namespace DXVA {
 
-// ProcAmp filters
-const DXVAHD_FILTER PROCAMP_FILTERS[] =
+// ProcAmp filters d3d11 filters
+const D3D11_VIDEO_PROCESSOR_FILTER PROCAMP_FILTERS[] =
 {
-    DXVAHD_FILTER_BRIGHTNESS,
-    DXVAHD_FILTER_CONTRAST,
-    DXVAHD_FILTER_HUE,
-    DXVAHD_FILTER_SATURATION
+  D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS,
+  D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST,
+  D3D11_VIDEO_PROCESSOR_FILTER_HUE,
+  D3D11_VIDEO_PROCESSOR_FILTER_SATURATION
 };
 
 const DWORD NUM_FILTERS = ARRAYSIZE(PROCAMP_FILTERS);
 
-typedef HRESULT (__stdcall *DXVAHDCreateVideoServicePtr)(IDirect3DDevice9Ex *pD3DDevice, const DXVAHD_CONTENT_DESC *pContentDesc, DXVAHD_DEVICE_USAGE Usage, PDXVAHDSW_Plugin pPlugin, IDXVAHD_Device **ppDevice);
-
-class CProcessorHD
-  : public CProcessor
+class CProcessorHD : ID3DResource
+  //: public CProcessor
 {
 public:
   CProcessorHD();
@@ -51,9 +50,11 @@ public:
   virtual void           UnInit();
   virtual bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
   virtual void           Close();
-  virtual bool           Render(CRect src, CRect dst, IDirect3DSurface9* target, IDirect3DSurface9 **source, DWORD flags, UINT frameIdx);
-  virtual unsigned       Size() { if (m_pDXVAHD) return m_size; return 0; }
+  virtual CRenderPicture *Convert(DVDVideoPicture* picture);
+  virtual bool           Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx);
+  virtual unsigned       Size() { if (m_pVideoProcessor) return m_size; return 0; }
   virtual unsigned       PastRefs() { return m_max_back_refs; }
+  virtual void           ApplySupportedFormats(std::vector<ERenderFormat> * formats);
 
   virtual void OnCreateDevice()  {}
   virtual void OnDestroyDevice() { CSingleLock lock(m_section); UnInit(); }
@@ -61,31 +62,43 @@ public:
   virtual void OnResetDevice()   { CSingleLock lock(m_section); Close(); }
 
 protected:
-  virtual bool LoadSymbols();
   virtual bool UpdateSize(const DXVA2_VideoDesc& dsc);
   virtual bool ReInit();
+  virtual bool InitProcessor();
   virtual bool CreateSurfaces();
   virtual bool OpenProcessor();
-  virtual bool ApplyFilter(DXVAHD_FILTER filter, int value, int min, int max, int def);
+  virtual bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def);
+  ID3D11VideoProcessorInputView* GetInputView(ID3D11View* view);
 
-  IDXVAHD_Device          *m_pDXVAHD;      // DXVA-HD device.
-  IDXVAHD_VideoProcessor  *m_pDXVAVP;      // DXVA-HD video processor.
-  DXVAHD_VPDEVCAPS         m_VPDevCaps;
-  DXVAHD_VPCAPS            m_VPCaps;
   unsigned int             m_width;
   unsigned int             m_height;
-  D3DFORMAT                m_format;
   unsigned int             m_flags;
   unsigned int             m_renderFormat;
+  unsigned                 m_size;
+  unsigned                 m_max_back_refs;
+  unsigned                 m_max_fwd_refs;
 
   struct ProcAmpInfo
   {
-    bool                      bSupported;
-    DXVAHD_FILTER_RANGE_DATA  Range;
+    bool                                bSupported;
+    D3D11_VIDEO_PROCESSOR_FILTER_RANGE  Range;
   };
   ProcAmpInfo              m_Filters[NUM_FILTERS];
 
-  static DXVAHDCreateVideoServicePtr m_DXVAHDCreateVideoService;
+  // dx 11
+  DXGI_FORMAT                     m_textureFormat;
+  ID3D11VideoDevice*              m_pVideoDevice;
+  ID3D11VideoContext*             m_pVideoContext;
+  ID3D11VideoProcessorEnumerator* m_pEnumerator;
+  D3D11_VIDEO_PROCESSOR_CAPS      m_vcaps;
+  ID3D11VideoProcessor*           m_pVideoProcessor;
+  bool                            m_bStereoEnabled = false;
+  CSurfaceContext*                m_context;
+  CCriticalSection                m_section;
+
+  unsigned int                    m_procIndex;
+  D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps;
+  std::map<ID3D11VideoProcessorInputView*, ID3D11Texture2D*> m_mappedResource;
 };
 
 };
