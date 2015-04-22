@@ -2370,6 +2370,9 @@
     <ProjectReference Include="..\..\lib\gtest\msvc\gtest.vcxproj" Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">
       <Project>{c8f6c172-56f2-4e76-b5fa-c3b423b31be7}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\lib\win32\Effects11\Effects11_2013.vcxproj">
+      <Project>{df460eab-570d-4b50-9089-2e2fc801bf38}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\tools\depends\native\libsquish-native\src\vs7\squish\squish_2010.vcxproj">
       <Project>{6a8518c3-d81a-4428-bd7f-c37933088ac1}</Project>
       <Private>true</Private>
