@@ -881,10 +881,14 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
 
   for(int i = 0; i < 4; i++)
   {
+#ifdef HAS_DX
+    CD3DHelper::XMStoreColor(&v[i].col, a, r, g, b);
+#else
     v[i].r = r;
     v[i].g = g;
     v[i].b = b;
     v[i].a = a;
+#endif
   }
 
 #if defined(HAS_GL) || defined(HAS_DX)

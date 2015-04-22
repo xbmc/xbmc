@@ -1051,6 +1051,9 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIShader.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUIShaderDX.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUISliderControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -3908,6 +3911,9 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIShader.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUIShaderDX.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUISliderControl.h">
