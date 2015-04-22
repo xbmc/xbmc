@@ -51,9 +51,4 @@ private:
   CGUITextLayout* m_messageLayout;
   CGUIImage* m_image;
   bool m_layoutWasLoading;
-#ifdef HAS_DX
-  D3DGAMMARAMP newRamp;
-  D3DGAMMARAMP oldRamp;
-
-#endif
 };
