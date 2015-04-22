@@ -342,6 +342,7 @@ lib/cpluff/stamp-h1
 /project/VS2010Express/libs
 /project/VS2010Express/objs
 /project/VS2010Express/ipch
+/project/VS2010Express/shaders
 /project/VS2010Express/*.vsp
 /project/VS2010Express/*.metaproj
 /project/VS2010Express/*.metaproj.tmp

@@ -340,6 +340,9 @@
     <Filter Include="contrib\kissfft">
       <UniqueIdentifier>{d811b1d1-5e81-4d89-9173-f02818c897ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{9fe3f6e1-16d1-4437-b859-1b183adcef22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -6039,5 +6042,46 @@
     <CustomBuild Include="..\..\xbmc\interfaces\swig\AddonModuleXbmcwsgi.i">
       <Filter>interfaces\swig</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\system\shaders\guishader_vert.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_video_control.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_video.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_texture_noblend.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_texture.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_multi_texture_blend.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_interlaced_right.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_interlaced_left.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_fonts.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_default.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_checkerboard_right.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_checkerboard_left.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\system\shaders\guishader_common.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
