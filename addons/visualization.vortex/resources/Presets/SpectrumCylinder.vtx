@@ -25,13 +25,6 @@ void Init()
 	envTexture.LoadTexture("env3.png");
 	currBuffer = 0;
 
-	for (y=0;y<24;y=y+1)
-	{
-		for (x=0;x<32;x=x+1)
-		{
-			map.SetValues(x, y, Sin((x-15.5)*3)*0.01, Sin((y-11.5)*3)*0.01, 1, 1, 1);
-		}
-	}
 	rxamt = 1;
 	ryamt = -1;
 }
@@ -40,6 +33,13 @@ void Render()
 {
 	time += TIMEPASS;
 
+	for (y=0;y<24;y=y+1)
+	{
+		for (x=0;x<32;x=x+1)
+		{
+			map.SetValues(x, y, Sin((x-15.5)*3)*0.01, Sin((y-11.5)*3)*0.01, 1, 1, 1);
+		}
+	}
 	map.Render();
 
 	gfxSetRenderTarget(map);

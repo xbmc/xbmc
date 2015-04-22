@@ -20,7 +20,7 @@
 #ifndef _EFFECT_H_
 #define _EFFECT_H_
 
-struct IDirect3DTexture9;
+#include "TextureDX.h"
 
 class EffectBase
 {
@@ -44,8 +44,7 @@ public:
 			delete this;
 	}
 
-	virtual  IDirect3DTexture9* GetTexture() { return 0; }
-	virtual  IDirect3DTexture9* GetRenderTarget() { return 0; }
+  virtual  TextureDX* GetTexture() { return 0; }
 
 protected:
 	int m_iRefCount;

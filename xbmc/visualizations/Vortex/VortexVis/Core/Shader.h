@@ -21,8 +21,17 @@
 #define _SHADER_H_
 
 #include <vector>
-#include <d3dx9.h>
 #include "Renderer.h"
+
+namespace
+{
+  #include "../Shaders/DiffuseUVVertexShader.inc"
+  #include "../Shaders/DiffuseUVEnvVertexShader.inc"
+  #include "../Shaders/DiffuseUVCubeVertexShader.inc"
+  #include "../Shaders/DiffuseUVEnvCubeVertexShader.inc"
+  #include "../Shaders/DiffuseNormalEnvCubeVertexShader.inc"
+  #include "../Shaders/UVNormalEnvVertexShader.inc"
+}
 
 enum EShaderType
 {
@@ -34,15 +43,16 @@ enum EShaderType
 	public: \
 	static	InShaderName StaticType;
 
-#define IMPLEMENT_SHADER(ShaderName, ShaderSrc, ShaderType)\
-	ShaderName ShaderName::StaticType = ShaderName( ShaderType, ShaderSrc );
+#define IMPLEMENT_SHADER(ShaderName, ShaderCode, iLenght, ShaderType) \
+	ShaderName ShaderName::StaticType = ShaderName( ShaderType, ShaderCode, iLenght );
 
 class Shader
 {
 public:
-	Shader( EShaderType ShaderType, char* pShaderSrc ) :
+	Shader( EShaderType ShaderType, const void* pShaderCode, unsigned int iCodeLen ) :
 		m_ShaderType( ShaderType ),
-		m_pShaderSrc( pShaderSrc )
+    m_pShaderSrc( pShaderCode ),
+    m_iCodeLen( iCodeLen )
 		{
 			std::vector<Shader*>&  ShaderList = GetShaderList();
 			ShaderList.push_back( this );
@@ -57,80 +67,89 @@ public:
 		static bool CompileAllShaders();
 		static void ReleaseAllShaders();
 
-		LPDIRECT3DVERTEXSHADER9	GetVertexShader() { return m_pVShader; }
-		LPDIRECT3DPIXELSHADER9	GetPixelShader() { return m_pPShader; }
+		ID3D11VertexShader*	GetVertexShader() { return m_pVShader; }
+		ID3D11PixelShader*	GetPixelShader() { return m_pPShader; }
+    void CommitConstants(ID3D11DeviceContext* pContext);
 
+    void SetWVP(DirectX::XMMATRIX* pWVPMat)
+    {
+      XMStoreFloat4x4(&m_ShaderContants.WVPMat, *pWVPMat);
+    }
+    void SetWV(DirectX::XMMATRIX* pWVMat)
+    {
+      XMStoreFloat4x4(&m_ShaderContants.WVMat, *pWVMat);
+    }
+    void SetScale(DirectX::XMVECTOR* pvScale)
+    {
+      XMStoreFloat4(&m_ShaderContants.vScale, *pvScale);
+    }
+    void SetColour(DirectX::XMFLOAT4* pvCol)
+    {
+      m_ShaderContants.Col = *pvCol;
+    }
+
+    EShaderType	   m_ShaderType;
 protected:
-	EShaderType	m_ShaderType;
-	char* m_pShaderSrc;
+  struct ShaderContants
+  {
+    DirectX::XMFLOAT4   Col;
+    DirectX::XMFLOAT4   vScale;
+    DirectX::XMFLOAT4X4 WVPMat;
+    DirectX::XMFLOAT4X4 WVMat;
+  };
+
+	const void*    m_pShaderSrc;
+  unsigned int   m_iCodeLen;
+  ShaderContants m_ShaderContants;
 
 	bool CompileShader();
+  void CreateConstantBuffer();
 
- 	LPDIRECT3DVERTEXSHADER9	m_pVShader;
-	LPDIRECT3DPIXELSHADER9	m_pPShader;
-	LPD3DXCONSTANTTABLE m_pConstantTable;
-//	LPDIRECT3DVERTEXDECLARATION9* m_ppVertexDecl;
+  ID3D11VertexShader*	m_pVShader;
+  ID3D11PixelShader*	m_pPShader;
+	ID3D11Buffer*       m_pConstantBuffer;
 };
 
 class DiffuseUVVertexShader : public Shader
 {
 	DECLARE_SHADER(DiffuseUVVertexShader);
 public:
-	DiffuseUVVertexShader( EShaderType ShaderType, char* pShaderSrc ) : Shader( ShaderType, pShaderSrc ){};
-
-	void SetWVP( D3DXMATRIX* pWVPMat )
-	{
-		Renderer::SetConstantTableMatrix( m_pConstantTable, "WVPMat", pWVPMat );
-	}
-	void SetWV( D3DXMATRIX* pWVMat )
-	{
-		Renderer::SetConstantTableMatrix( m_pConstantTable, "WVMat", pWVMat );
-	}
+	DiffuseUVVertexShader( EShaderType ShaderType, const void* pShaderCode, unsigned int iLengh ) : Shader( ShaderType, pShaderCode, iLengh ){};
 };
 
 class DiffuseUVEnvVertexShader : public DiffuseUVVertexShader
 {
 	DECLARE_SHADER(DiffuseUVEnvVertexShader);
 public:
-	DiffuseUVEnvVertexShader( EShaderType ShaderType, char* pShaderSrc ) : DiffuseUVVertexShader( ShaderType, pShaderSrc ){};
+	DiffuseUVEnvVertexShader( EShaderType ShaderType, const void* pShaderCode, unsigned int iLenght ) : DiffuseUVVertexShader( ShaderType, pShaderCode, iLenght ){};
 };
 
 class DiffuseUVCubeVertexShader : public DiffuseUVVertexShader
 {
 	DECLARE_SHADER(DiffuseUVCubeVertexShader);
 public:
-	DiffuseUVCubeVertexShader( EShaderType ShaderType, char* pShaderSrc ) : DiffuseUVVertexShader( ShaderType, pShaderSrc ){};
-
-	void SetScale( D3DXVECTOR4* pvScale )
-	{
-		Renderer::SetConstantTableVector( m_pConstantTable, "vScale", pvScale);
-	}
-	void SetColour( D3DXVECTOR4* pvCol )
-	{
-		Renderer::SetConstantTableVector( m_pConstantTable, "Col", pvCol);
-	}
-
+	DiffuseUVCubeVertexShader( EShaderType ShaderType, const void* pShaderCode, unsigned int iLenght ) : DiffuseUVVertexShader( ShaderType, pShaderCode, iLenght ){};
 };
 
 class DiffuseUVEnvCubeVertexShader : public DiffuseUVCubeVertexShader
 {
 	DECLARE_SHADER(DiffuseUVEnvCubeVertexShader);
 public:
-	DiffuseUVEnvCubeVertexShader( EShaderType ShaderType, char* pShaderSrc ) : DiffuseUVCubeVertexShader( ShaderType, pShaderSrc ){};
+	DiffuseUVEnvCubeVertexShader( EShaderType ShaderType, const void* pShaderCode, unsigned int iLenght ) : DiffuseUVCubeVertexShader( ShaderType, pShaderCode, iLenght ){};
 };
 
 class DiffuseNormalEnvCubeVertexShader : public DiffuseUVCubeVertexShader
 {
 	DECLARE_SHADER(DiffuseNormalEnvCubeVertexShader);
 public:
-	DiffuseNormalEnvCubeVertexShader( EShaderType ShaderType, char* pShaderSrc ) : DiffuseUVCubeVertexShader( ShaderType, pShaderSrc ){};
+	DiffuseNormalEnvCubeVertexShader( EShaderType ShaderType, const void* pShaderCode, unsigned int iLenght ) : DiffuseUVCubeVertexShader( ShaderType, pShaderCode, iLenght ){};
 };
 
 class UVNormalEnvVertexShader : public DiffuseUVVertexShader
 {
 	DECLARE_SHADER(UVNormalEnvVertexShader);
 public:
-	UVNormalEnvVertexShader( EShaderType ShaderType, char* pShaderSrc ) : DiffuseUVVertexShader( ShaderType, pShaderSrc ){};
+	UVNormalEnvVertexShader( EShaderType ShaderType, const void* pShaderCode, unsigned int iLenght ) : DiffuseUVVertexShader( ShaderType, pShaderCode, iLenght ){};
 };
 
 #endif _SHADER_H_
