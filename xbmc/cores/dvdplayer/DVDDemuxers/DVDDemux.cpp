@@ -19,7 +19,6 @@
  */
 
 #include "DVDDemux.h"
-#include "DVDCodecs/DVDCodecs.h"
 
 void CDemuxStreamTeletext::GetStreamInfo(std::string& strInfo)
 {

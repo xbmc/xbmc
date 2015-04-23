@@ -22,7 +22,6 @@
 #include <vector>
 
 #include "Interfaces/AE.h"
-#include "threads/Thread.h"
 
 class CSetting;
 

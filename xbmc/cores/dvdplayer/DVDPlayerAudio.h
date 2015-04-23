@@ -24,15 +24,11 @@
 #include "DVDAudio.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "utils/BitstreamStats.h"
 #include "IDVDPlayer.h"
 
-#include "cores/AudioEngine/Utils/AEAudioFormat.h"
-
 #include <list>
-#include <queue>
 
 class CDVDPlayer;
 class CDVDAudioCodec;

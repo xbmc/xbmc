@@ -21,7 +21,6 @@
 #include "system.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/MathUtils.h"
 
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"

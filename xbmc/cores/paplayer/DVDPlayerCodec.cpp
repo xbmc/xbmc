@@ -29,11 +29,8 @@
 #include "cores/dvdplayer/DVDCodecs/DVDFactoryCodec.h"
 #include "music/tags/TagLoaderTagLib.h"
 #include "utils/log.h"
-#include "settings/Settings.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
-
-#include "AudioDecoder.h"
 
 DVDPlayerCodec::DVDPlayerCodec()
 {

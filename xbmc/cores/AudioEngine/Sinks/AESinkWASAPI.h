@@ -25,7 +25,6 @@
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
-#include "threads/CriticalSection.h"
 
 class CAESinkWASAPI : public IAESink
 {

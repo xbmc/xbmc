@@ -21,7 +21,6 @@
 #include "DVDPlayerTeletext.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
-#include "DVDCodecs/DVDCodecs.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 

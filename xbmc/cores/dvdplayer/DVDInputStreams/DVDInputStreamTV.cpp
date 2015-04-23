@@ -19,7 +19,6 @@
  */
 
 #include "DVDInputStreamTV.h"
-#include "pvr/channels/PVRChannel.h"
 #include "filesystem/SlingboxFile.h"
 #include "URL.h"
 

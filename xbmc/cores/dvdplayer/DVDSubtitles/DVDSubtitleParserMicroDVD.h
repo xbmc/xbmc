@@ -21,7 +21,6 @@
  */
 
 #include "DVDSubtitleParser.h"
-#include "DVDSubtitleLineCollection.h"
 
 class CDVDSubtitleParserMicroDVD : public CDVDSubtitleParserText
 {

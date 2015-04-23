@@ -27,7 +27,6 @@ extern "C" {
   #include <ass/ass.h>
 }
 #include "DynamicDll.h"
-#include "utils/log.h"
 
 #ifndef LIBASS_VERSION /* Legacy version. */
 typedef struct ass_library_s ASS_Library;

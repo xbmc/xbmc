@@ -45,8 +45,6 @@
 #endif
 #include "Sinks/AESinkNULL.h"
 
-#include "settings/AdvancedSettings.h"
-#include "utils/SystemInfo.h"
 #include "utils/log.h"
 
 #include <algorithm>

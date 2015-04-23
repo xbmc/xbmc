@@ -19,8 +19,6 @@
  */
 
 #include "DVDOverlayCodecFFmpeg.h"
-#include "DVDOverlayText.h"
-#include "DVDOverlaySpu.h"
 #include "DVDOverlayImage.h"
 #include "DVDStreamInfo.h"
 #include "DVDClock.h"

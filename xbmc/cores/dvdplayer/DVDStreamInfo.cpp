@@ -20,7 +20,6 @@
 
 #include "DVDStreamInfo.h"
 
-#include "DVDCodecs/DVDCodecs.h"
 #include "DVDDemuxers/DVDDemux.h"
 
 CDVDStreamInfo::CDVDStreamInfo()                                                     { extradata = NULL; Clear(); }

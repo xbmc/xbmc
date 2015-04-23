@@ -20,8 +20,6 @@
 
 #include "threads/SystemClock.h"
 #include "system.h"
-#include "signal.h"
-#include "limits.h"
 #include "CompileInfo.h"
 #include "threads/SingleLock.h"
 #include "ExternalPlayer.h"
@@ -36,7 +34,6 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "utils/XMLUtils.h"
-#include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "input/InputManager.h"

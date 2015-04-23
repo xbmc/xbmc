@@ -19,17 +19,9 @@
  */
 #pragma once
 
-#include "libavcodec/avcodec.h"
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-#include "DVDCodecs/Video/DXVA.h"
-#include "guilib/D3DResource.h"
 #include "threads/Event.h"
-#include "DVDResource.h"
 #include "DXVA.h"
 #include <dxva2api.h>
-#include <deque>
-#include <vector>
-#include "settings/VideoSettings.h"
 #include "guilib/Geometry.h"
 #include <dxvahd.h>
 

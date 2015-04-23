@@ -20,7 +20,6 @@
  */
 
 #include <stdint.h>
-#include <dsound.h>
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 

@@ -22,8 +22,6 @@
 
 #if !defined(TARGET_POSIX) && !defined(HAS_GL)
 
-#include "guilib/GraphicContext.h"
-#include "RenderFlags.h"
 #include "RenderFormats.h"
 #include "BaseRenderer.h"
 #include "guilib/D3DResource.h"
@@ -31,8 +29,6 @@
 #include "settings/VideoSettings.h"
 #include "DXVA.h"
 #include "DXVAHD.h"
-#include "cores/VideoRenderers/RenderFlags.h"
-#include "cores/VideoRenderers/RenderFormats.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))

@@ -19,7 +19,6 @@
  */
 
 #include "system.h"
-#include "OverlayRenderer.h"
 #include "OverlayRendererUtil.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
