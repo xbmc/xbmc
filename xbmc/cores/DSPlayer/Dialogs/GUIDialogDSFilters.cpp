@@ -109,7 +109,7 @@ void CGUIDialogDSFilters::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
 
-  SET_CONTROL_LABEL(0, 65001);
+  SetHeading(65001);
 }
 
 void CGUIDialogDSFilters::InitializeSettings()

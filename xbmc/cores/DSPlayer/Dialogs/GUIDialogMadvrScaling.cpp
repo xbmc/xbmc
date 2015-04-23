@@ -91,7 +91,7 @@ void CGUIDialogMadvrScaling::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
 
-  SET_CONTROL_LABEL(0, 70000);
+  SetHeading(70000);
 }
 
 void CGUIDialogMadvrScaling::InitializeSettings()

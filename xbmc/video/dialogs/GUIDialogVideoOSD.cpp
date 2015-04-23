@@ -98,6 +98,19 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
       Close();
     }
     break;
+#ifdef HAS_DS_PLAYER
+  case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
+    {
+    // Remove our subdialogs if visible
+    CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+    if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+    pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
+    if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+    pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
+    if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+    break;
+    }
+#endif
   }
   return CGUIDialog::OnMessage(message);
 }

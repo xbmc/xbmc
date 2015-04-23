@@ -254,18 +254,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
     Save();
 
 #ifdef HAS_DS_PLAYER
-  else if (settingId == SETTING_AUDIO_STREAM)
-  {
-    ShowAudioSelector();
-  }
-  else if (settingId == SETTING_SUBTITLE_STREAM)
-  {
-    ShowSubsSelector();
-  }
   else if (settingId == EDITONS_SETTINGS)
-  {
     g_application.m_pPlayer->ShowEditionDlg(false);
-  }
 #endif
 }
 
@@ -461,14 +451,6 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(CSettingGroup *group, cons
   if (group == NULL || settingId.empty())
     return;
 
-#ifdef HAS_DS_PLAYER
-  if (CSettings::Get().GetBool("dsplayer.videoaudioexpandedselector") && m_bIsDSPlayer)
-  {
-    AddButton(group, settingId, 460, 0, false, g_application.m_pPlayer->GetAudioStreamCount() > 0 ? true : false);
-    return;
-  }
-#endif
-
   m_audioStream = g_application.m_pPlayer->GetAudioStream();
   if (m_audioStream < 0)
     m_audioStream = 0;
@@ -480,14 +462,6 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, c
 {
   if (group == NULL || settingId.empty())
     return;
-
-#ifdef HAS_DS_PLAYER
-  if (CSettings::Get().GetBool("dsplayer.videosubsexpandedselector") && m_bIsDSPlayer)
-  {
-    AddButton(group, settingId, 462, 0, false, g_application.m_pPlayer->GetSubtitleCount() > 0 ? true : false);
-    return;
-  }
-#endif
 
   m_subtitleStream = g_application.m_pPlayer->GetSubtitle();
   if (m_subtitleStream < 0)
@@ -522,6 +496,11 @@ void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(const CSetting *s
     else
       strItem = StringUtils::Format("%s - %s", strLanguage.c_str(), info.name.c_str());
 
+#ifdef HAS_DS_PLAYER
+    if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+      strItem = info.name;
+#endif
+
     strItem += StringUtils::Format(" (%i/%i)", i + 1, audioStreamCount);
     list.push_back(make_pair(strItem, i));
   }
@@ -553,6 +532,11 @@ void CGUIDialogAudioSubtitleSettings::SubtitleStreamsOptionFiller(const CSetting
       strItem = strLanguage;
     else
       strItem = StringUtils::Format("%s - %s", strLanguage.c_str(), info.name.c_str());
+
+#ifdef HAS_DS_PLAYER
+    if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+      strItem = info.name;
+#endif
 
     strItem += StringUtils::Format(" (%i/%i)", i + 1, subtitleStreamCount);
 

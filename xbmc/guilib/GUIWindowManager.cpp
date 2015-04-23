@@ -1346,19 +1346,6 @@ bool CGUIWindowManager::IsWindowActive(const std::string &xmlFile, bool ignoreCl
 
 bool CGUIWindowManager::IsWindowVisible(int id) const
 {
-#ifdef HAS_DS_PLAYER
-  if (id == WINDOW_DIALOG_VIDEO_OSD_SETTINGS) 
-  {
-    if 
-    (
-      IsWindowActive(WINDOW_DIALOG_DSRULES, false) 
-      || IsWindowActive(WINDOW_DIALOG_DSFILTERS, false) 
-      || IsWindowActive(WINDOW_DIALOG_DSPLAYERCORE, false)
-      || IsWindowActive(WINDOW_DIALOG_MADVR, false)
-    )
-    return true;
-  }
-#endif
   return IsWindowActive(id, false);
 }
 

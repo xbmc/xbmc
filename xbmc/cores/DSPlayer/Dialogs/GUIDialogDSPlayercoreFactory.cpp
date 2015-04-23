@@ -107,7 +107,7 @@ void CGUIDialogDSPlayercoreFactory::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
 
-  SET_CONTROL_LABEL(0, 66001);
+  SetHeading(66001);
 }
 
 void CGUIDialogDSPlayercoreFactory::InitializeSettings()
