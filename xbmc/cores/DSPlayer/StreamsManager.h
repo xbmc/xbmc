@@ -198,6 +198,8 @@ public:
   void SetAudioStream(int iStream);
   /// @return Audio streams count
 
+  void GetVideoStreamName(CStdString &strStreamName);
+
   int  GetSubfilterCount();
   int  GetSubfilter();
   void GetSubfilterName(int iStream, CStdString &strStreamName);
@@ -261,6 +263,7 @@ public:
    */
   static void MediaTypeToStreamDetail(AM_MEDIA_TYPE *mt, CStreamDetail& s);
   static void FormatStreamName(CStreamDetail& s);
+  static void FormatStreamNameBySplitter(CStreamDetail& s);
   static void ExtractCodecDetail(CStreamDetail& s, CStdString& codecInfos);
   static CStdString ISOToLanguage(CStdString code);
 

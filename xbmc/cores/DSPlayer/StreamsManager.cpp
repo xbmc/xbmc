@@ -160,6 +160,11 @@ void CStreamsManager::GetAudioStreamName(int iStream, CStdString &strStreamName)
   }
 }
 
+void CStreamsManager::GetVideoStreamName(CStdString &strStreamName)
+{
+    strStreamName = m_videoStream.displayname;
+}
+
 void CStreamsManager::SetAudioStream(int iStream)
 {
   if (!m_init || m_audioStreams.size() == 0)
@@ -1212,7 +1217,10 @@ void CStreamsManager::MediaTypeToStreamDetail(AM_MEDIA_TYPE *pMediaType, CStream
     infos.subtype = pMediaType->subtype;
   }
 
-  FormatStreamName(s);
+  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail"))
+    FormatStreamName(s);
+  else
+    FormatStreamNameBySplitter(s);
 }
 
 int CStreamsManager::GetPictureWidth()
@@ -1251,6 +1259,28 @@ CDSStreamDetailAudio * CStreamsManager::GetAudioStreamDetail(unsigned int iIndex
     return NULL;
 
   return m_audioStreams[iIndex];
+}
+
+void CStreamsManager::FormatStreamNameBySplitter(CStreamDetail& s)
+{
+  CDSStreamDetail& pS = dynamic_cast<CDSStreamDetail&> (s);
+
+  pS.displayname.Replace("A:","");
+  pS.displayname.Replace("V:", "");
+  pS.displayname.Replace("S:", "");
+  pS.displayname.Replace("E:", "");
+
+  pS.displayname.Replace("Audio -", "");
+  pS.displayname.Replace("Video -", "");
+  pS.displayname.Replace("Subtitle -", "");
+  pS.displayname.Replace("Edition -", "");
+  
+  CRegExp regExp;
+  regExp.RegComp(".*(\\[.*\\])");
+  if (regExp.RegFind(pS.displayname, 0) != -1)
+    pS.displayname.TrimRight(regExp.GetMatch(1).c_str());
+  
+  pS.displayname.Trim();
 }
 
 void CStreamsManager::FormatStreamName(CStreamDetail& s)

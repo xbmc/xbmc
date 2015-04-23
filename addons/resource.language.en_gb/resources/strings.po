@@ -16747,6 +16747,10 @@ msgctxt "#55065"
 msgid "- Delay madVR playback until render queue is full"
 msgstr ""
 
+msgctxt "#55066"
+msgid "Show stream details from selected splitter"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""

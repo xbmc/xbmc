@@ -445,8 +445,13 @@ void CDSPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   codecname = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioCodecDisplayName(index) : "";
   StringUtils::ToUpper(codecname);
 
-  label.Format("%s - (%s, %d Hz, %i Channels)", strStreamName, codecname, info.samplerate, info.channels);
-  info.name = label;
+  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail"))
+  { 
+    label.Format("%s - (%s, %d Hz, %i Channels)", strStreamName, codecname, info.samplerate, info.channels);
+    info.name = label;
+  }
+  else
+    info.name = strStreamName;
 }
 
 

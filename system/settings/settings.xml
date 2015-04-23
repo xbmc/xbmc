@@ -1310,6 +1310,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="dsplayer.showsplitterdetail" type="boolean" label="55066" help="">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="scrapers" label="0" help="36197">

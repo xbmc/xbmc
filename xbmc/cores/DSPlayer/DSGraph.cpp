@@ -214,8 +214,11 @@ void CDSGraph::CloseFile()
     m_pMediaControl.Release();
     m_pMediaEvent.Release();
     m_pMediaSeeking.Release();
-    m_pVideoWindow->put_Visible(OAFALSE);
-    m_pVideoWindow->put_Owner((OAHWND)NULL);
+    if (m_pVideoWindow)
+    {
+      m_pVideoWindow->put_Visible(OAFALSE);
+      m_pVideoWindow->put_Owner((OAHWND)NULL);
+    }
     m_pVideoWindow.Release();
     m_pBasicAudio.Release();
     m_pBasicVideo.Release();
@@ -801,12 +804,22 @@ CStdString CDSGraph::GetAudioInfo()
   if (!c)
     return "File closed";
 
-  audioInfo.Format("Audio: (%s, %d Hz, %d Channels) | Renderer: %s",
-    c->GetAudioCodecDisplayName(),
-    c->GetSampleRate(),
-    c->GetChannels(),
-    CGraphFilters::Get()->AudioRenderer.osdname);
-
+  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail"))
+  {
+    audioInfo.Format("Audio: (%s, %d Hz, %d Channels) | Renderer: %s",
+      c->GetAudioCodecDisplayName(g_application.m_pPlayer->GetAudioStream()),
+      c->GetSampleRate(g_application.m_pPlayer->GetAudioStream()),
+      c->GetChannels(g_application.m_pPlayer->GetAudioStream()),
+      CGraphFilters::Get()->AudioRenderer.osdname);
+  }
+  else
+  {
+    CStdString strStreamName;
+    c->GetAudioStreamName(g_application.m_pPlayer->GetAudioStream(),strStreamName);
+    audioInfo.Format("Audio: (%s ) | Renderer: %s",
+      strStreamName,
+      CGraphFilters::Get()->AudioRenderer.osdname);
+  }
   return audioInfo;
 }
 
@@ -817,12 +830,23 @@ CStdString CDSGraph::GetVideoInfo()
 
   if (!c)
     return "File closed";
-
-  videoInfo.Format("Video: (%s, %dx%d) | Renderer: %s",
-    c->GetVideoCodecDisplayName(),
-    c->GetPictureWidth(),
-    c->GetPictureHeight(),
-    CGraphFilters::Get()->VideoRenderer.osdname);
+  
+  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail"))
+  {
+    videoInfo.Format("Video: (%s, %dx%d) | Renderer: %s",
+      c->GetVideoCodecDisplayName(),
+      c->GetPictureWidth(),
+      c->GetPictureHeight(),
+      CGraphFilters::Get()->VideoRenderer.osdname);
+  } 
+  else
+  {
+    CStdString strStreamName;
+    c->GetVideoStreamName(strStreamName);
+    videoInfo.Format("Video: (%s) | Renderer: %s", 
+      strStreamName, 
+      CGraphFilters::Get()->VideoRenderer.osdname);
+  }
 
   if (!m_pStrCurrentFrameRate.empty())
     videoInfo += m_pStrCurrentFrameRate.c_str();
