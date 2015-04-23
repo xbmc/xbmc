@@ -80,7 +80,7 @@
       <button id="4">Stop</button>
       <button id="5">AspectRatio</button>
       <button id="6">ShowSubtitles</button>
-      <button id="7">SmallStepBack</button>
+      <button id="7">Seek(-7)</button><!-- Replaces smallstepback -->
       <button id="8">Info</button>
       <button id="9">BigStepForward</button>
       <button id="10">BigStepBack</button>

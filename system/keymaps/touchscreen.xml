@@ -19,7 +19,7 @@
       <swipe direction="right">StepForward</swipe>
       <swipe direction="up">ChapterOrBigStepForward</swipe>
       <swipe direction="down">ChapterOrBigStepBack</swipe>
-      <swipe direction="left" pointers="2">SmallStepBack</swipe>
+      <swipe direction="left" pointers="2">Seek(-7)</swipe>
     </touch>
   </FullScreenVideo>
   <Visualisation>

@@ -84,7 +84,7 @@
       <button id="3">Stop</button>
       <button id="5">AspectRatio</button>
       <button id="6">ShowSubtitles</button>
-      <button id="11">SmallStepBack</button>
+      <button id="11">Seek(-7)</button><!-- Replaces smallstepback -->
       <button id="12">Info</button>
       <hat    id="1" position="left">StepBack</hat>
       <hat    id="1" position="right">StepForward</hat>
