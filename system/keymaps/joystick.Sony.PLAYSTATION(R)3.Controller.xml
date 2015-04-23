@@ -156,7 +156,7 @@
       <button id="16">OSD</button>
       <button id="11">AspectRatio</button>
       <button id="12">ShowSubtitles</button>
-      <button id="1">SmallStepBack</button>
+      <button id="1">Seek(-7)</button><!-- Replaces smallstepback -->
       <button id="4">Info</button>
       <button id="17">ActivateWindow(Home)</button>
       <button id="2">ActivateWindow(ShutdownMenu)</button>

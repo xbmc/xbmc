@@ -24,15 +24,11 @@
 #include "DVDAudio.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "utils/BitstreamStats.h"
 #include "IDVDPlayer.h"
 
-#include "cores/AudioEngine/Utils/AEAudioFormat.h"
-
 #include <list>
-#include <queue>
 
 class CDVDPlayer;
 class CDVDAudioCodec;
@@ -69,7 +65,7 @@ public:
     m_count++;
   }
 
-  void Flush(int interval = 500)
+  void Flush(int interval = 100)
   {
     m_buffer = 0.0f;
     m_count  = 0;
@@ -84,7 +80,7 @@ public:
       return 0.0;
   }
 
-  bool Get(double& error, int interval = 500)
+  bool Get(double& error, int interval = 100)
   {
     if(m_timer.IsTimePast())
     {

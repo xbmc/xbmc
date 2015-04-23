@@ -26,7 +26,6 @@
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "PlatformDefs.h"
-#include "URL.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/PVRManager.h"
 

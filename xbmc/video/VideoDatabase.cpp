@@ -2193,6 +2193,26 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, const CVideoInfoTag& deta
       }
     }
 
+    if (updatedDetails.find("showlink") != updatedDetails.end())
+    {
+      // remove existing links
+      vector<int> tvShowIds;
+      GetLinksToTvShow(idMovie, tvShowIds);
+      for (const auto& idTVShow : tvShowIds)
+        LinkMovieToTvshow(idMovie, idTVShow, true);
+
+      // setup links to shows if the linked shows are in the db
+      for (const auto& showLink : details.m_showLink)
+      {
+        CFileItemList items;
+        GetTvShowsByName(showLink, items);
+        if (!items.IsEmpty())
+          LinkMovieToTvshow(idMovie, items[0]->GetVideoInfoTag()->m_iDbId, false);
+        else
+          CLog::Log(LOGWARNING, "%s: Failed to link movie %s to show %s", __FUNCTION__, details.m_strTitle.c_str(), showLink.c_str());
+      }
+    }
+
     // and update the movie table
     std::string sql = "update movie set " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
     if (idSet > 0)

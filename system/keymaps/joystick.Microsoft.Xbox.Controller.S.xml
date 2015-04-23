@@ -124,7 +124,7 @@
       <button id="14">ChapterOrStepForward</button>
       <button id="15">BigStepBack</button>
       <button id="16">StepBack</button>
-      <button id="17">SmallStepBack</button>
+      <button id="17">Seek(-7)</button><!-- Replaces smallstepback -->
       <axis limit="0" id="3">AnalogRewind</axis>
       <axis limit="0" id="6">AnalogFastForward</axis>
     </joystick>

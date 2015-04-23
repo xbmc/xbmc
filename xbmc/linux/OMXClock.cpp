@@ -45,6 +45,7 @@ OMXClock::OMXClock()
   m_clock        = NULL;
   m_last_media_time = 0.0f;
   m_last_media_time_read = 0.0f;
+  m_speedAdjust = 0;
 
   pthread_mutex_init(&m_lock, NULL);
 }
@@ -477,7 +478,7 @@ bool OMXClock::OMXSetSpeed(int speed, bool lock /* = true */, bool pause_resume 
   if(lock)
     Lock();
 
-  CLog::Log(LOGDEBUG, "OMXClock::OMXSetSpeed(%.2f) pause_resume:%d", (float)speed / (float)DVD_PLAYSPEED_NORMAL, pause_resume);
+  CLog::Log(LOGDEBUG, "OMXClock::OMXSetSpeed(%.3f) pause_resume:%d", (float)speed / (float)DVD_PLAYSPEED_NORMAL * (1.0 + m_speedAdjust), pause_resume);
 
   if (pause_resume)
   {
@@ -485,6 +486,8 @@ bool OMXClock::OMXSetSpeed(int speed, bool lock /* = true */, bool pause_resume 
     OMX_INIT_STRUCTURE(scaleType);
 
     scaleType.xScale = (speed << 16) / DVD_PLAYSPEED_NORMAL;
+    scaleType.xScale += scaleType.xScale * m_speedAdjust;
+
     OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeScale, &scaleType);
     if(omx_err != OMX_ErrorNone)
     {
@@ -502,6 +505,21 @@ bool OMXClock::OMXSetSpeed(int speed, bool lock /* = true */, bool pause_resume 
     UnLock();
 
   return true;
+}
+
+void OMXClock::OMXSetSpeedAdjust(double adjust, bool lock /* = true */)
+{
+  if(lock)
+    Lock();
+  // we only support resampling (and hence clock adjustment) in this mode
+  if (CSettings::Get().GetBool("videoplayer.usedisplayasclock"))
+  {
+    m_speedAdjust = adjust;
+    OMXSetSpeed(m_omx_speed, false, true);
+    m_last_media_time = 0.0f;
+  }
+  if(lock)
+    UnLock();
 }
 
 bool OMXClock::OMXFlush(bool lock)

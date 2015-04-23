@@ -7960,9 +7960,7 @@ msgctxt "#19076"
 msgid "Folder:"
 msgstr ""
 
-msgctxt "#19077"
-msgid "Radio:"
-msgstr ""
+#empty string with id 19077
 
 msgctxt "#19078"
 msgid "Channel:"
@@ -14168,7 +14166,7 @@ msgstr ""
 #. #.  Description of setting "Appearance -> File lists -> Ignore articles when sorting with label #13399
 #: system/settings/settings.xml
 msgctxt "#36124"
-msgid "Ignore certain tokens (e.g. "the") during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
+msgid "Ignore certain tokens (e.g. \"the\") during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
 msgstr ""
 
 #.  Description of setting "Appearance -> File lists -> Allow file renaming and deletion" with label #14071
@@ -16447,7 +16445,7 @@ msgstr ""
 #. Description of category #37032 Settings -> Video -> Accessibility
 #: system/settings/settings.xml
 msgctxt "#37033"
-msgid "Video playback related accessibility settings, e.g., "Prefer subtitles for the hearing impaired""
+msgid "Video playback related accessibility settings, e.g., \"Prefer subtitles for the hearing impaired\""
 msgstr ""
 
 #. Setting #37034 Settings -> Video -> Accessibility 
@@ -16495,7 +16493,7 @@ msgstr ""
 #. Description of setting #37040 Settings -> Video -> Playback
 #: system/settings/settings.xml
 msgctxt "#37041"
-msgid "If enabled, audio streams that are flagged as "default" (and match the preferred language) are preferred over audio streams with higher quality (number of channels, codec, ...)."
+msgid "If enabled, audio streams that are flagged as \"default\" (and match the preferred language) are preferred over audio streams with higher quality (number of channels, codec, ...)."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Skip steps"
@@ -16532,13 +16530,13 @@ msgstr ""
 #. Setting #38011 "Videos -> Library -> Show All Items entry"
 #: system/settings/settings.xml
 msgctxt "#38011"
-msgid "Show "All Items" entry"
+msgid "Show \"All Items\" entry"
 msgstr ""
 
 #. Description of setting "Videos -> Library -> Show All Items entry"
 #: system/settings/settings.xml
 msgctxt "#38012"
-msgid "Show "All Items" entry in directory (for example All Albums or All Seasons)"
+msgid "Show \"All Items\" entry in directory (for example All Albums or All Seasons)"
 msgstr ""
 
 #. Label of a setting to limit the number of fps used for updating the GUI while playing videos. This is useful for slow systems that have problems rendering GUI and video at the same time in full speed.

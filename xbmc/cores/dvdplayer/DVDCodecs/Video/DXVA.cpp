@@ -34,16 +34,12 @@
 
 #include "DXVA.h"
 #include "windowing/WindowingFactory.h"
-#include "../../../VideoRenderers/WinRenderer.h"
 #include "settings/Settings.h"
-#include "settings/MediaSettings.h"
 #include <memory>
 #include "utils/AutoPtrHandle.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
-#include "win32/WIN32Util.h"
 #include "utils/Log.h"
 
 #define ALLOW_ADDING_SURFACES 0

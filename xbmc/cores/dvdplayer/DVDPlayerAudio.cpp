@@ -22,12 +22,10 @@
 #include "DVDPlayerAudio.h"
 #include "DVDPlayer.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
-#include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "settings/Settings.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "utils/MathUtils.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -667,7 +665,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   // error because drop/dupe changes the value
   if (m_syncclock && fabs(error) > threshold1)
   {
-    m_errors.Flush(500);
+    m_errors.Flush();
     m_integral = 0.0;
     m_resampleratio = 0.0;
     return;
@@ -684,13 +682,13 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   // 500ms in order to get first resample ratio early. If we don't adjust rr early, error
   // may get above threshold1 again. Too small values for interval result in worse average errors
 
-  if (!m_errors.Get(m_error, m_syncclock ? 500 : 2000))
+  if (!m_errors.Get(m_error, m_syncclock ? 100 : 2000))
     return;
 
   if (fabs(m_error) > threshold1)
   {
     m_syncclock = true;
-    m_errors.Flush(500);
+    m_errors.Flush(100);
     m_integral = 0.0;
     m_resampleratio = 0.0;
     CLog::Log(LOGDEBUG,"CDVDPlayerAudio::HandleSyncError - average error %f above threshold of %f",

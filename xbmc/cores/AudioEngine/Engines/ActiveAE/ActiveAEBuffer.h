@@ -115,6 +115,7 @@ public:
   AEQuality m_resampleQuality;
   bool m_stereoUpmix;
   bool m_normalize;
+  bool m_remap;
   int64_t m_lastSamplePts;
 };
 

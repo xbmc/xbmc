@@ -23,13 +23,12 @@
   #include "system_gl.h"
 #endif
 #include "RenderManager.h"
+#include "RenderFlags.h"
 #include "threads/CriticalSection.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
-#include "threads/Atomics.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 
 #include "Application.h"
@@ -176,6 +175,15 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   {
     /* smooth video not enabled */
     CDVDClock::WaitAbsoluteClock(presenttime * CDVDClock::GetTimeBase());
+    return;
+  }
+
+  CDVDClock *dvdclock = CDVDClock::GetMasterClock();
+  if(dvdclock != NULL && dvdclock->GetSpeedAdjust() != 0.0)
+  {
+    CDVDClock::WaitAbsoluteClock(presenttime * CDVDClock::GetTimeBase());
+    m_presenterr = 0;
+    m_presentcorr = 0;
     return;
   }
 

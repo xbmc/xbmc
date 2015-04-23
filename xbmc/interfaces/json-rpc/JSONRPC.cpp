@@ -22,6 +22,8 @@
 
 #include "JSONRPC.h"
 #include "ServiceDescription.h"
+#include "addons/Addon.h"
+#include "addons/IAddon.h"
 #include "dbwrappers/DatabaseQuery.h"
 #include "input/ButtonTranslator.h"
 #include "interfaces/AnnouncementManager.h"
@@ -45,6 +47,11 @@ void CJSONRPC::Initialize()
 
   // Add some types/enums at runtime
   vector<string> enumList;
+  for (int addonType = ADDON::ADDON_UNKNOWN; addonType < ADDON::ADDON_MAX; addonType++)
+    enumList.push_back(ADDON::TranslateType(static_cast<ADDON::TYPE>(addonType), false));
+  CJSONServiceDescription::AddEnum("Addon.Types", enumList);
+
+  enumList.clear();
   CButtonTranslator::GetActions(enumList);
   CJSONServiceDescription::AddEnum("Input.Action", enumList);
 

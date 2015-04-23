@@ -299,14 +299,6 @@ void CBuiltins::GetHelp(std::string &help)
 
 bool CBuiltins::ActivateWindow(int iWindowID, const std::vector<std::string>& params /* = {} */, bool swappingWindows /* = false */)
 {
-  // don't activate a window if there are active modal dialogs
-  if (g_windowManager.HasModalDialog() && !g_windowManager.GetWindow(iWindowID)->IsDialog())
-  {
-    CLog::Log(LOG_LEVEL_DEBUG, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
-    g_audioManager.PlayActionSound(CAction(ACTION_ERROR));
-    return false;
-  }
-
   // disable the screensaver
   g_application.WakeUpScreenSaverAndDPMS();
   g_windowManager.ActivateWindow(iWindowID, params, swappingWindows);

@@ -25,7 +25,6 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/AESinkFactory.h"
-#include "cores/AudioEngine/Interfaces/AEResample.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 
 namespace ActiveAE

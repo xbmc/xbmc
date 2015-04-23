@@ -22,12 +22,8 @@
 #include "threads/SystemClock.h"
 #include "DVDMessage.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
-#include "DVDStreamInfo.h"
-#include "utils/TimeUtils.h"
-#include "utils/log.h"
 #include "threads/CriticalSection.h"
 #include "threads/Condition.h"
-#include "threads/SystemClock.h"
 #include "utils/MathUtils.h"
 
 class CDVDMsgGeneralSynchronizePriv

@@ -23,7 +23,6 @@
 #include "threads/Thread.h"
 #include "IDVDPlayer.h"
 #include "DVDMessageQueue.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
@@ -31,6 +30,7 @@
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
+#include "utils/BitstreamStats.h"
 
 class CDemuxStreamVideo;
 

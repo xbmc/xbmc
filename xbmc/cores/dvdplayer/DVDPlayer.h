@@ -27,18 +27,12 @@
 
 #include "DVDMessageQueue.h"
 #include "DVDClock.h"
-#include "DVDPlayerAudio.h"
 #include "DVDPlayerVideo.h"
 #include "DVDPlayerSubtitle.h"
 #include "DVDPlayerTeletext.h"
 
-//#include "DVDChapterReader.h"
-#include "DVDSubtitles/DVDFactorySubtitle.h"
-#include "utils/BitstreamStats.h"
-
 #include "Edl.h"
 #include "FileItem.h"
-#include "threads/SingleLock.h"
 #include "utils/StreamDetails.h"
 #include "threads/SystemClock.h"
 
@@ -68,6 +62,7 @@ public:
   bool OMXStateExecute(bool lock = true) { return false; }
   void OMXStateIdle(bool lock = true) {}
   bool HDMIClockSync(bool lock = true) { return false; }
+  void OMXSetSpeedAdjust(double adjust, bool lock = true) {}
 };
 #endif
 
@@ -93,6 +88,7 @@ class CDemuxStreamVideo;
 class CDemuxStreamAudio;
 class CStreamInfo;
 class CDVDDemuxCC;
+class CDVDPlayer;
 
 namespace PVR
 {

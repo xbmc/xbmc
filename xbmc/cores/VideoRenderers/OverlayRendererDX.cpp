@@ -26,9 +26,7 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
-#include "settings/Settings.h"
-#include "utils/MathUtils.h"
-#include "RenderManager.h"
+#include "utils/log.h"
 
 #ifndef ASSERT
 #include <crtdbg.h>

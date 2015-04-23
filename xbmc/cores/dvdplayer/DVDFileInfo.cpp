@@ -18,8 +18,8 @@
  *
  */
 
+#include <string>
 #include <cstdlib>
-
 #include "threads/SystemClock.h"
 #include "DVDFileInfo.h"
 #include "FileItem.h"
@@ -28,10 +28,8 @@
 #include "video/VideoInfoTag.h"
 #include "filesystem/StackDirectory.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 
-#include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #ifdef HAVE_LIBBLURAY
@@ -55,7 +53,6 @@
 #include "TextureCache.h"
 #include "Util.h"
 #include "utils/LangCodeExpander.h"
-#include "pvr/PVRManager.h"
 
 
 bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)

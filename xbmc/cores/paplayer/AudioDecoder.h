@@ -20,7 +20,6 @@
  *
  */
 
-#include "threads/Thread.h"
 #include "ICodec.h"
 #include "threads/CriticalSection.h"
 #include "utils/RingBuffer.h"

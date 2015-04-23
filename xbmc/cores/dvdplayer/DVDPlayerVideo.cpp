@@ -33,16 +33,12 @@
 #include "DVDCodecs/Video/DVDVideoPPFFmpeg.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDOverlayRenderer.h"
-#include "DVDCodecs/DVDCodecs.h"
-#include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "guilib/GraphicContext.h"
 #include <sstream>
 #include <iomanip>
 #include <numeric>
 #include <iterator>
-#include "guilib/GraphicContext.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -201,10 +197,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     return false;
   }
 
-  if(CSettings::Get().GetBool("videoplayer.usedisplayasclock") && !g_VideoReferenceClock.IsRunning())
-  {
-    g_VideoReferenceClock.Create();
-  }
+  g_VideoReferenceClock.Start();
 
   if(m_messageQueue.IsInited())
     m_messageQueue.Put(new CDVDMsgVideoCodecChange(hint, codec), 0);

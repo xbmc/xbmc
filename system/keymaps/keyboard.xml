@@ -154,6 +154,8 @@
       <!-- MCE keypresses without an obvious use in XBMC -->
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
+      <k mod="ctrl,shift">ReloadKeymaps</k>
+      <d mod="ctrl,shift">ToggleDebug</d>
     </keyboard>
   </global>
   <LoginScreen>
@@ -249,7 +251,7 @@
       <period>StepForward</period>
       <comma>StepBack</comma>
       <backspace>Fullscreen</backspace>
-      <quote>SmallStepBack</quote>
+      <quote>Seek(-7)</quote><!-- Replaces smallstepback -->
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <return>OSD</return>

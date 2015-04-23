@@ -22,14 +22,11 @@
 #include "AEPackIEC61937.h"
 #include "AEChannelInfo.h"
 #include <stdint.h>
-#include <list>
 
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
 #include "libavutil/crc.h"
 }
 

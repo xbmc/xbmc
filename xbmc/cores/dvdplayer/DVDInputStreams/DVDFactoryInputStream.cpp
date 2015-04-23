@@ -23,7 +23,6 @@
 #include "DVDInputStream.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
-#include "DVDInputStreamHttp.h"
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamPVRManager.h"
 #include "DVDInputStreamTV.h"

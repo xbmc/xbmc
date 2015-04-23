@@ -23,7 +23,6 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/fastmemcpy.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 
 CRenderCaptureBase::CRenderCaptureBase()
 {

@@ -24,7 +24,6 @@
 #include <vector>
 
 #include "system.h"
-#include "threads/CriticalSection.h"
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 

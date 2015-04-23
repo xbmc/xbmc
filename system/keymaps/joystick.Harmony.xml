@@ -167,7 +167,7 @@
       <!-- left       	-->      <button id="3">StepBack</button>
       <!-- right      	-->      <button id="4">StepForward</button>
       <!-- menu       	-->      <button id="6">OSD</button>
-      <!-- Prev		-->      <button id="32">SmallStepBack</button>
+      <!-- Prev		-->      <button id="32">Seek(-7)</button>
       <!-- Info  	-->      <button id="31">Info</button>
       <!-- F7		-->      <button id="95">NextSubtitle</button>
       <!-- F6		-->      <button id="94">ShowSubtitles</button>
