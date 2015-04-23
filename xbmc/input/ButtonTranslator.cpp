@@ -1043,7 +1043,7 @@ bool CButtonTranslator::TranslateJoystickString(int window, const std::string& j
   return (action > 0);
 }
 
-bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int touchPointers, int &action)
+bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString)
 {
   action = 0;
   if (touchPointers <= 0)
@@ -1052,14 +1052,14 @@ bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int to
   touchAction += touchPointers - 1;
   touchAction |= KEY_TOUCH;
 
-  action = GetTouchActionCode(window, touchAction);
+  action = GetTouchActionCode(window, touchAction, actionString);
   if (action <= 0)
   {
     int fallbackWindow = GetFallbackWindow(window);
     if (fallbackWindow > -1)
-      action = GetTouchActionCode(fallbackWindow, touchAction);
+      action = GetTouchActionCode(fallbackWindow, touchAction, actionString);
     if (action <= 0)
-      action = GetTouchActionCode(-1, touchAction);
+      action = GetTouchActionCode(-1, touchAction, actionString);
   }
 
   return action > 0;
@@ -1746,7 +1746,7 @@ void CButtonTranslator::MapTouchActions(int windowID, TiXmlNode *pTouch)
     m_touchMap.insert(std::pair<int, buttonMap>(windowID, map));
 }
 
-int CButtonTranslator::GetTouchActionCode(int window, int action)
+int CButtonTranslator::GetTouchActionCode(int window, int action, std::string &actionString)
 {
   std::map<int, buttonMap>::const_iterator windowIt = m_touchMap.find(window);
   if (windowIt == m_touchMap.end())
@@ -1756,5 +1756,6 @@ int CButtonTranslator::GetTouchActionCode(int window, int action)
   if (touchIt == windowIt->second.end())
     return ACTION_NONE;
 
+  actionString = touchIt->second.strID;
   return touchIt->second.id;
 }

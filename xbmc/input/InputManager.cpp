@@ -476,12 +476,13 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
       g_application.OnAction(CAction(ACTION_MOUSE_MOVE, 0, newEvent.touch.x, newEvent.touch.y, 0, 0));
     }
     int actionId = 0;
+    std::string actionString;
     if (newEvent.touch.action == ACTION_GESTURE_BEGIN || newEvent.touch.action == ACTION_GESTURE_END)
       actionId = newEvent.touch.action;
     else
     {
       int iWin = g_windowManager.GetActiveWindowID();
-      CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId);
+      CButtonTranslator::GetInstance().TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId, actionString);
     }
 
     if (actionId <= 0)
@@ -491,7 +492,12 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
         || (actionId >= ACTION_MOUSE_START && actionId <= ACTION_MOUSE_END))
         CApplicationMessenger::Get().SendAction(CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2), WINDOW_INVALID, false);
     else
-      CApplicationMessenger::Get().SendAction(CAction(actionId), WINDOW_INVALID, false);
+    {
+      if (actionId == ACTION_BUILT_IN_FUNCTION && !actionString.empty())
+        CApplicationMessenger::Get().SendAction(CAction(actionId, actionString), WINDOW_INVALID, false);
+      else
+        CApplicationMessenger::Get().SendAction(CAction(actionId), WINDOW_INVALID, false);
+    }
 
     // Post an unfocus message for touch device after the action.
     if (newEvent.touch.action == ACTION_GESTURE_END || newEvent.touch.action == ACTION_TOUCH_TAP)

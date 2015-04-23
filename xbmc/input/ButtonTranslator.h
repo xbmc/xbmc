@@ -103,7 +103,7 @@ public:
   const AxesConfig* GetAxesConfigFor(const std::string& joyName) const;
 #endif
 
-  bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action);
+  bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
 
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
@@ -165,7 +165,7 @@ private:
 
   void MapTouchActions(int windowID, TiXmlNode *pTouch);
   static uint32_t TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action);
-  int GetTouchActionCode(int window, int action);
+  int GetTouchActionCode(int window, int action, std::string &actionString);
 
   std::map<int, buttonMap> m_touchMap;
 
