@@ -25,7 +25,6 @@
 #include "AddonDatabase.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
-#include "filesystem/SpecialProtocol.h"
 #include "GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogTextViewer.h"
@@ -38,7 +37,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "addons/AddonInstaller.h"
-#include "pvr/PVRManager.h"
 #include "Util.h"
 #include "interfaces/Builtins.h"
 

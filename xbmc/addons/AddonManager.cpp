@@ -29,7 +29,6 @@
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
 #include "threads/SingleLock.h"
-#include "FileItem.h"
 #include "LangInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -42,7 +41,6 @@
 #include "ScreenSaver.h"
 #endif
 #ifdef HAS_PVRCLIENTS
-#include "DllPVRClient.h"
 #include "pvr/addons/PVRClient.h"
 #endif
 //#ifdef HAS_SCRAPERS

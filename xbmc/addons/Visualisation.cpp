@@ -25,13 +25,10 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/WindowIDs.h"
 #include "music/tags/MusicInfoTag.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "cores/IPlayer.h"
 #include "cores/AudioEngine/AEFactory.h"
 #ifdef TARGET_POSIX
 #include <dlfcn.h>
