@@ -27,7 +27,6 @@
 #include "stdint.h"
 
 #include "EncoderFFmpeg.h"
-#include "filesystem/File.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include "utils/SystemInfo.h"
