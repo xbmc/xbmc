@@ -628,17 +628,12 @@ CUPnPRenderer::PlayMedia(const NPT_String& uri, const NPT_String& meta, PLT_Acti
         CApplicationMessenger::Get().MediaPlay(*item, false);
     }
 
-    if (g_application.m_pPlayer->IsPlaying() || g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
-        NPT_AutoLock lock(m_state);
-        service->SetStateVariable("TransportState", "PLAYING");
-        service->SetStateVariable("TransportStatus", "OK");
-        service->SetStateVariable("AVTransportURI", uri);
-        service->SetStateVariable("AVTransportURIMetaData", meta);
-    } else {
-        NPT_AutoLock lock(m_state);
-        service->SetStateVariable("TransportState", "STOPPED");
-        service->SetStateVariable("TransportStatus", "ERROR_OCCURRED");
-    }
+    // just return success because the play actions are asynchronous
+    NPT_AutoLock lock(m_state);
+    service->SetStateVariable("TransportState", "PLAYING");
+    service->SetStateVariable("TransportStatus", "OK");
+    service->SetStateVariable("AVTransportURI", uri);
+    service->SetStateVariable("AVTransportURIMetaData", meta);
 
     service->SetStateVariable("NextAVTransportURI", "");
     service->SetStateVariable("NextAVTransportURIMetaData", "");
