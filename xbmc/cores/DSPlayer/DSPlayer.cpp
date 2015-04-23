@@ -302,8 +302,6 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
 
       if ((iLibrary < GetAudioStreamCount()) && !(iLibrary < 0))
         g_application.m_pPlayer->SetAudioStream(iLibrary);
-      else
-        g_application.m_pPlayer->SetAudioStream(0);
 
       // Select Subtitle Stream and set Delay
       fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay;

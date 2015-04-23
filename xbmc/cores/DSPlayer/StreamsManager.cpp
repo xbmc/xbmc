@@ -920,7 +920,7 @@ void CStreamsManager::SubInterface(SelectSubType action)
 
 void CStreamsManager::SelectBestSubtitle()
 {
-  int select = 0;
+  int select = -1;
   int iLibrary;
 
   // set previuos selected stream
@@ -942,19 +942,9 @@ void CStreamsManager::SelectBestSubtitle()
       }
     }
   }
-  // set first internal subtitle
-  else
-  {
-    int iIndex = -1;
-    if ((iIndex = GetSubfilter()) == -1)
-      select = 0;
-    else
-    {
-      if (!m_subfilterStreams[iIndex]->connected)
-        select = iIndex;
-    }
-  }
-  SetSubfilter(select);
+
+  if (select != -1)
+    SetSubfilter(select);
 }
 
 void CStreamsManager::DisconnectCurrentSubtitlePins()
@@ -1970,7 +1960,7 @@ void CSubtitleManager::DeleteSubtitleManager(ISubManager* pManager, DllLibSubs d
 
 void CSubtitleManager::SelectBestSubtitle()
 {
-  int select = 0;
+  int select = -1;
   int iLibrary;
 
   // set previuos selected stream
@@ -1992,19 +1982,10 @@ void CSubtitleManager::SelectBestSubtitle()
       }
     }
   }
-  // set first internal subtitle
-  else
-  {
-    int iIndex = -1;
-    if ((iIndex = GetSubtitle()) == -1)
-      select = 0;
-    else
-    {
-      if (!m_subtitleStreams[iIndex]->connected)
-        select = iIndex;
-    }
-  }
-  SetSubtitle(select);
+
+  if (select != -1)
+    SetSubtitle(select);
+
   SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
 }
 
