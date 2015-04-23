@@ -100,7 +100,7 @@
       <Y>AspectRatio</Y>
       <black>CodecInfo</black>
       <white>Info</white>
-      <back>SmallStepBack</back>
+      <back>Seek(-7)</back><!-- Replaces smallstepback -->
       <start>OSD</start>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
