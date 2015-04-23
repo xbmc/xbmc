@@ -25,6 +25,7 @@
 #include "URL.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/DatabaseUtils.h"
 
 enum TextureField
 {

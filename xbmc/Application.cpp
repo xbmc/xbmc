@@ -38,7 +38,6 @@
 #include "Autorun.h"
 #include "video/Bookmark.h"
 #include "video/VideoLibraryQueue.h"
-#include "network/NetworkServices.h"
 #include "guilib/GUIControlProfiler.h"
 #include "utils/LangCodeExpander.h"
 #include "GUIInfoManager.h"
@@ -46,7 +45,6 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUIColorManager.h"
 #include "guilib/StereoscopicsManager.h"
-#include "guilib/GUITextLayout.h"
 #include "addons/LanguageResource.h"
 #include "addons/Skin.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -83,23 +81,15 @@
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "powermanagement/DPMSSupport.h"
-#include "settings/SettingAddon.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
-#include "settings/MediaSourceSettings.h"
-#include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
-#include "utils/RssManager.h"
 #include "utils/SeekHandler.h"
-#include "view/ViewStateSettings.h"
 
 #include "input/KeyboardLayoutManager.h"
-#include "input/KeyboardStat.h"
-#include "input/XBMC_vkeys.h"
-#include "input/MouseStat.h"
 
 #if SDL_VERSION == 1
 #include <SDL/SDL.h>
@@ -109,7 +99,6 @@
 
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
-#include "network/upnp/UPnPSettings.h"
 #include "filesystem/UPnPDirectory.h"
 #endif
 #if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
@@ -128,7 +117,6 @@
 #ifdef HAS_KARAOKE
 #include "music/karaoke/karaokelyricsmanager.h"
 #endif
-#include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
 #ifndef TARGET_POSIX
 #include "threads/platform/win/Win32Exception.h"
@@ -141,18 +129,10 @@
 #endif
 #ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
-#include "network/TCPServer.h"
-#endif
-#ifdef HAS_AIRPLAY
-#include "network/AirPlayServer.h"
-#endif
-#ifdef HAS_AIRTUNES
-#include "network/AirTunesServer.h"
 #endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
-#include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 #include "peripherals/devices/PeripheralImon.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 
@@ -175,7 +155,6 @@
 
 // PVR related include Files
 #include "pvr/PVRManager.h"
-#include "pvr/timers/PVRTimers.h"
 
 #include "epg/EpgContainer.h"
 
@@ -198,7 +177,6 @@
 #endif
 
 #ifdef TARGET_WINDOWS
-#include <shlobj.h>
 #include "win32util.h"
 #endif
 
@@ -210,7 +188,6 @@
 #include "osx/DarwinUtils.h"
 #endif
 
-
 #ifdef HAS_DVD_DRIVE
 #include <cdio/logging.h>
 #endif
@@ -219,9 +196,7 @@
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/AlarmClock.h"
-#include "utils/RssReader.h"
 #include "utils/StringUtils.h"
-#include "utils/Weather.h"
 #include "DatabaseManager.h"
 #include "input/InputManager.h"
 
@@ -244,6 +219,7 @@
 #endif
 
 #include "cores/FFmpeg.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 using namespace ADDON;
@@ -1131,7 +1107,7 @@ void CApplication::CreateUserDirs()
 
 bool CApplication::Initialize()
 {
-#if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
+#if defined(HAS_DVD_DRIVE)
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif

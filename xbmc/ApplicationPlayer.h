@@ -21,7 +21,6 @@
  */
 
 #include <memory>
-#include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 

@@ -28,7 +28,6 @@
 #include <string>
 
 #include "addons/Scraper.h"
-#include "utils/CharsetConverter.h"
 
 class CNfoFile
 {
