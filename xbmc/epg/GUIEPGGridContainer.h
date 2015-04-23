@@ -25,7 +25,6 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
 #include "guilib/IGUIContainer.h"
-#include "pvr/channels/PVRChannel.h"
 
 namespace EPG
 {

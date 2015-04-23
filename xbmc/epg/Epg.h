@@ -27,7 +27,6 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 #include "utils/Observer.h"
-#include "pvr/channels/PVRChannel.h"
 
 namespace PVR
 {

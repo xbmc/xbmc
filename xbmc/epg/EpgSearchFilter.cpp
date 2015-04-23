@@ -18,7 +18,6 @@
  *
  */
 
-#include "guilib/LocalizeStrings.h"
 #include "utils/TextSearch.h"
 #include "utils/log.h"
 #include "FileItem.h"
