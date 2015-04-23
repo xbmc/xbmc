@@ -74,6 +74,16 @@ int CChaptersManager::GetChapter()
     return m_currentChapter;
 }
 
+int CChaptersManager::GetChapterPos(int iChapter)
+{
+  CSingleLock lock(m_lock);
+
+  if (GetChapterCount() > 0)
+    return m_chapters[iChapter]->starttime / 1000;
+  else
+    return 0;
+}
+
 void CChaptersManager::GetChapterName(CStdString& strChapterName)
 {
   CSingleLock lock(m_lock);

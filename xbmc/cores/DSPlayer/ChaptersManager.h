@@ -65,6 +65,9 @@ public:
    * @return ID of the current chapter
    */
   int GetChapter(void);
+
+  int GetChapterPos(int iChapter);
+
   /** Retrive current chapter's name
    * @param[out] strChapterName The chapter's name
    */
