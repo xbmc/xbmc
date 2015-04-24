@@ -37,8 +37,6 @@
 #include <sys/wait.h>
 #endif
 
-using namespace std;
-
 CXRandR::CXRandR(bool query)
 {
   m_bInit = false;
