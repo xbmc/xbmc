@@ -82,6 +82,7 @@ namespace XBMCAddon
 
     Tuple<std::vector<String>, std::vector<String> > listdir(const String& path)
     {
+      DelayedCallGuard dg;
       CFileItemList items;
       std::string strSource;
       strSource = path;
