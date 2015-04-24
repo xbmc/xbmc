@@ -192,3 +192,8 @@ bool CProgressJob::IsCancelled() const
 
   return false;
 }
+
+bool CProgressJob::HasProgressIndicator() const
+{
+  return m_progress != nullptr || m_progressDialog != nullptr;
+}
