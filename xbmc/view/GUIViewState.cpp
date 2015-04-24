@@ -51,7 +51,6 @@
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
 
-using namespace std;
 using namespace ADDON;
 using namespace PVR;
 
@@ -544,7 +543,7 @@ CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIVie
 
 CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGUIViewState(items)
 {
-  const vector<GUIViewSortDetails> &details = items.GetSortDetails();
+  const std::vector<GUIViewSortDetails> &details = items.GetSortDetails();
   for (unsigned int i = 0; i < details.size(); i++)
   {
     const GUIViewSortDetails sort = details[i];
