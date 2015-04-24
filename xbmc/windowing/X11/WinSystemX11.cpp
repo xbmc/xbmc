@@ -32,6 +32,7 @@
 #include "utils/log.h"
 #include "XRandR.h"
 #include <vector>
+#include <string>
 #include "threads/SingleLock.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "utils/TimeUtils.h"
@@ -44,8 +45,6 @@
 
 #include "../WinEventsX11.h"
 #include "input/InputManager.h"
-
-using namespace std;
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
@@ -390,7 +389,7 @@ void CWinSystemX11::UpdateResolutions()
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   if (out != NULL)
   {
-    vector<XMode>::iterator modeiter;
+    std::vector<XMode>::iterator modeiter;
     CLog::Log(LOGINFO, "Output '%s' has %" PRIdS" modes", out->name.c_str(), out->modes.size());
 
     for (modeiter = out->modes.begin() ; modeiter!=out->modes.end() ; modeiter++)
@@ -476,7 +475,7 @@ bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
 
 void CWinSystemX11::GetConnectedOutputs(std::vector<std::string> *outputs)
 {
-  vector<XOutput> outs;
+  std::vector<XOutput> outs;
   g_xrandr.Query(true);
   outs = g_xrandr.GetModes();
   outputs->push_back("Default");
@@ -936,7 +935,7 @@ void CWinSystemX11::OnLostDevice()
   g_renderManager.Flush();
 
   { CSingleLock lock(m_resourceSection);
-    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnLostDevice();
   }
 
@@ -952,7 +951,7 @@ void CWinSystemX11::Register(IDispResource *resource)
 void CWinSystemX11::Unregister(IDispResource* resource)
 {
   CSingleLock lock(m_resourceSection);
-  vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
 }
@@ -1254,7 +1253,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 #if defined(HAS_GLX)
     CSingleLock lock(m_resourceSection);
     // tell any shared resources
-    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDevice();
 #endif
   }
