@@ -19,7 +19,6 @@
  */
 
 #include "ImageFile.h"
-#include "utils/URIUtils.h"
 #include "URL.h"
 #include "TextureCache.h"
 

@@ -19,7 +19,6 @@
  *
  */
 
-#include "IFile.h"
 #include "CurlFile.h"
 
 namespace XFILE

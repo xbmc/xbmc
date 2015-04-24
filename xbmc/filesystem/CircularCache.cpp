@@ -21,9 +21,7 @@
 #include <algorithm>
 #include "threads/SystemClock.h"
 #include "system.h"
-#include "utils/log.h"
 #include "threads/SingleLock.h"
-#include "utils/TimeUtils.h"
 #include "CircularCache.h"
 
 using namespace XFILE;

@@ -27,11 +27,11 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
 
 #include <cassert>
 #ifdef TARGET_POSIX
 #include <dirent.h>
+#include "utils/StringUtils.h"
 #endif
 
 using namespace std;

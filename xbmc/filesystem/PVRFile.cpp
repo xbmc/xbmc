@@ -19,7 +19,6 @@
  */
 
 #include "PVRFile.h"
-#include "Util.h"
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStream.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"

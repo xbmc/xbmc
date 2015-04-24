@@ -20,20 +20,14 @@
 
 #include "system.h"
 #include "VirtualDirectory.h"
-#include "DirectoryFactory.h"
 #include "URL.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "Directory.h"
-#include "DirectoryCache.h"
 #include "SourcesDirectory.h"
 #include "storage/MediaManager.h"
-#include "File.h"
 #include "FileItem.h"
-#ifdef TARGET_WINDOWS
-#include "WIN32Util.h"
-#endif
 
 using namespace XFILE;
 

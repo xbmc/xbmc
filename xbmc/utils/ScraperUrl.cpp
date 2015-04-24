@@ -32,6 +32,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/Mime.h"
+#include "utils/log.h"
 
 #include <cstring>
 #include <sstream>

@@ -29,7 +29,6 @@
 #include "utils/Crc32.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/LegacyPathTranslation.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 
 using namespace std;
