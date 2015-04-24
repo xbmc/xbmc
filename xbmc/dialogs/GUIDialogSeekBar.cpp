@@ -76,7 +76,7 @@ void CGUIDialogSeekBar::FrameMove()
   }
   else
   {
-    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, (unsigned int)CSeekHandler::Get().GetPercent());
+    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, (unsigned int)g_infoManager.GetSeekPercent());
     SET_CONTROL_LABEL(POPUP_SEEK_LABEL, g_infoManager.GetCurrentSeekTime());
   }
 

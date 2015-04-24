@@ -48,7 +48,7 @@ public:
   void Process();
   void Reset();
 
-  float GetPercent() const;
+  int GetSeekSize() const;
   bool InProgress() const;
 
 protected:
@@ -64,9 +64,8 @@ private:
   int        m_seekDelay;
   std::map<SeekType, int > m_seekDelays;
   bool       m_requireSeek;
-  float      m_percent;
-  float      m_percentPlayTime;
   bool       m_analogSeek;
+  int        m_seekSize;
   int        m_seekStep;
   std::map<SeekType, std::vector<int> > m_forwardSeekSteps;
   std::map<SeekType, std::vector<int> > m_backwardSeekSteps;
