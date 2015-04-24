@@ -616,6 +616,7 @@ void CGUIDialogAudioSubtitleSettings::ShowAudioSelector()
     if (strName.length() == 0)
       strName = "Unnamed";
 
+    strName += StringUtils::Format(" (%i/%i)", i + 1, count);
     pDlg->Add(strName);
   }
 
@@ -658,6 +659,7 @@ void CGUIDialogAudioSubtitleSettings::ShowSubsSelector()
     if (strName.length() == 0)
       strName = "Unnamed";
 
+    strName += StringUtils::Format(" (%i/%i)", i + 1, count);
     pDlg->Add(strName);
   }
 
