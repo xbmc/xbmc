@@ -59,7 +59,6 @@
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
 
-using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
 
@@ -593,7 +592,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
   }
 }
 
-string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string, string> &currentArt)
+std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, std::map<std::string, std::string> &currentArt)
 {
   // prompt for choice
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -609,7 +608,7 @@ string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string
   CVideoDatabase db;
   db.Open();
 
-  vector<string> artTypes = CVideoThumbLoader::GetArtTypes(videoItem.GetVideoInfoTag()->m_type);
+  std::vector<std::string> artTypes = CVideoThumbLoader::GetArtTypes(videoItem.GetVideoInfoTag()->m_type);
 
   // add in any stored art for this item that is non-empty.
   db.GetArtForItem(videoItem.GetVideoInfoTag()->m_iDbId, videoItem.GetVideoInfoTag()->m_type, currentArt);
@@ -620,17 +619,17 @@ string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string
   }
 
   // add any art types that exist for other media items of the same type
-  vector<string> dbArtTypes;
+  std::vector<std::string> dbArtTypes;
   db.GetArtTypes(videoItem.GetVideoInfoTag()->m_type, dbArtTypes);
-  for (vector<string>::const_iterator it = dbArtTypes.begin(); it != dbArtTypes.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = dbArtTypes.begin(); it != dbArtTypes.end(); ++it)
   {
     if (find(artTypes.begin(), artTypes.end(), *it) == artTypes.end())
       artTypes.push_back(*it);
   }
 
-  for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+  for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
   {
-    string type = *i;
+    std::string type = *i;
     CFileItemPtr item(new CFileItem(type, "false"));
     item->SetLabel(type);
     if (videoItem.HasArt(type))
@@ -656,8 +655,8 @@ string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string
 
 void CGUIDialogVideoInfo::OnGetArt()
 {
-  map<string, string> currentArt;
-  string type = ChooseArtType(*m_movieItem, currentArt);
+  std::map<std::string, std::string> currentArt;
+  std::string type = ChooseArtType(*m_movieItem, currentArt);
   if (type.empty())
     return; // cancelled
 
@@ -685,7 +684,7 @@ void CGUIDialogVideoInfo::OnGetArt()
     }
 
     // Grab the thumbnails from the web
-    vector<std::string> thumbs;
+    std::vector<std::string> thumbs;
     int season = (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeSeason) ? m_movieItem->GetVideoInfoTag()->m_iSeason : -1;
     m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetThumbURLs(thumbs, type, season);
 
@@ -1337,7 +1336,7 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
   dialog->SetMultiSelection(true);
   dialog->SetHeading(CVariant{g_localizeStrings.Get(20457)});
   dialog->SetItems(&listItems);
-  vector<int> selectedIndices;
+  std::vector<int> selectedIndices;
   for (int i = 0; i < originalMovies.Size(); i++)
   {
     for (int listIndex = 0; listIndex < listItems.Size(); listIndex++)
@@ -1427,7 +1426,7 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
     if (!CGUIKeyboardFactory::ShowAndGetInput(newSetTitle, CVariant{g_localizeStrings.Get(20468)}, false))
       return false;
     int idSet = videodb.AddSet(newSetTitle);
-    map<string, string> movieArt, setArt;
+    std::map<std::string, std::string> movieArt, setArt;
     if (!videodb.GetArtForItem(idSet, MediaTypeVideoCollection, setArt))
     {
       videodb.GetArtForItem(movieItem->GetVideoInfoTag()->m_iDbId, MediaTypeMovie, movieArt);
@@ -1605,7 +1604,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
   std::string currentThumb;
   int idArtist = -1;
   std::string artistPath;
-  string artType = "thumb";
+  std::string artType = "thumb";
   if (type == MediaTypeArtist)
   {
     CMusicDatabase musicdb;
@@ -1624,7 +1623,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
     currentThumb = videodb.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artType);
   else
   { // SEASON, SET
-    map<string, string> currentArt;
+    std::map<std::string, std::string> currentArt;
     artType = ChooseArtType(*item, currentArt);
     if (artType.empty())
       return false;
@@ -1649,7 +1648,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
   noneitem->SetLabel(g_localizeStrings.Get(13515));
 
   bool local = false;
-  vector<std::string> thumbs;
+  std::vector<std::string> thumbs;
   if (type != MediaTypeArtist)
   {
     CVideoInfoTag tag;
@@ -1822,7 +1821,7 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemo
   CFileItemList list;
   if (bRemove)
   {
-    vector<int> ids;
+    std::vector<int> ids;
     if (!database.GetLinksToTvShow(dbId, ids))
       return false;
 
@@ -1839,7 +1838,7 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemo
     database.GetTvShowsNav("videodb://tvshows/titles", list);
 
     // remove already linked shows
-    vector<int> ids;
+    std::vector<int> ids;
     if (!database.GetLinksToTvShow(dbId, ids))
       return false;
 
@@ -1899,7 +1898,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
     items.Add(itemCurrent);
   }
 
-  vector<std::string> thumbs;
+  std::vector<std::string> thumbs;
   if (videoItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)
   {
     CFileItemList movies;

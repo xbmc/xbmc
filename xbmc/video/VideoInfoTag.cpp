@@ -28,10 +28,10 @@
 #include "utils/Archive.h"
 #include "TextureDatabase.h"
 
-#include <sstream>
 #include <algorithm>
-
-using namespace std;
+#include <string>
+#include <sstream>
+#include <vector>
 
 void CVideoInfoTag::Reset()
 {
@@ -765,7 +765,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       const char* clear=node->Attribute("clear");
       if (clear && stricmp(clear,"true")==0)
         artist.clear();
-      vector<string> newArtists = StringUtils::Split(pValue, g_advancedSettings.m_videoItemSeparator);
+      std::vector<std::string> newArtists = StringUtils::Split(pValue, g_advancedSettings.m_videoItemSeparator);
       artist.insert(artist.end(), newArtists.begin(), newArtists.end());
     }
     node = node->NextSiblingElement("artist");
@@ -833,7 +833,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       m_strEpisodeGuide = epguide->FirstChild()->Value();
     else
     {
-      stringstream stream;
+      std::stringstream stream;
       stream << *epguide;
       m_strEpisodeGuide = stream.str();
     }

@@ -56,7 +56,6 @@
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
-using namespace std;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -366,7 +365,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         // grab the show thumb
         CVideoInfoTag details;
         m_database.GetTvShowInfo("", details, params.GetTvShowId());
-        map<string, string> art;
+        std::map<std::string, std::string> art;
         if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art))
         {
           items.AppendArt(art, details.m_type);

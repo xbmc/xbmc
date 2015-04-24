@@ -21,8 +21,6 @@
 #include "VideoLibraryJob.h"
 #include "video/VideoDatabase.h"
 
-using namespace std;
-
 CVideoLibraryJob::CVideoLibraryJob()
 { }
 
