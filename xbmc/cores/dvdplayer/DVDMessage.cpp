@@ -25,6 +25,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Condition.h"
 #include "utils/MathUtils.h"
+#include "utils/log.h"
 
 class CDVDMsgGeneralSynchronizePriv
 {
@@ -56,7 +57,7 @@ CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
 
 bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int source)
 {
-  if(source == 0)
+  if (source == 0)
     source = SYNCSOURCE_OWNER;
 
   /* if we are not requested to wait on this object just return, reference count will be decremented */
@@ -69,15 +70,21 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
 
   m_p->reached |= source & m_p->sources;
 
-  while( (long)MathUtils::bitcount(m_p->reached) < GetNrOfReferences() )
+  while ((long)MathUtils::bitcount(m_p->reached) < GetNrOfReferences())
   {
     milliseconds = std::min(m_p->timeout.MillisLeft(), timeout.MillisLeft());
     if(m_p->condition.wait(lock, milliseconds))
       continue;
-    if(m_p->timeout.IsTimePast())
+    if (m_p->timeout.IsTimePast())
+    {
+      CLog::Log(LOGDEBUG, "CDVDMsgGeneralSynchronize - global timeout");
       return true;  /* global timeout, we are done */
-    if(timeout.IsTimePast())
+    }
+    if (timeout.IsTimePast())
+    {
+      CLog::Log(LOGERROR, "CDVDMsgGeneralSynchronize - timeout");
       return false; /* request timeout, should be retried */
+    }
   }
   return true;
 }
