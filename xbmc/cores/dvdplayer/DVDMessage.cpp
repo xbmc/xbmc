@@ -94,7 +94,7 @@ void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, unsigned int source)
 long CDVDMsgGeneralSynchronize::Release()
 {
   CSingleLock lock(m_p->section);
-  long count = --m_refs;
+  long count = AtomicDecrement(&m_refs);
   m_p->condition.notifyAll();
   lock.Leave();
   if (count == 0)
