@@ -22,7 +22,7 @@
 
 #include <stdlib.h>
 #include "guilib/LocalizeStrings.h"
-#include "GUIInfoManager.h"
+#include "guilib/GraphicContext.h"
 #include "Application.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
@@ -120,7 +120,7 @@ int CSeekHandler::GetSeekSeconds(bool forward, SeekType type)
 void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bool analogSeek /* = false */, SeekType type /* = SEEK_TYPE_VIDEO */)
 {
   // abort if we do not have a play time or already perform a seek
-  if (g_infoManager.m_performingSeek)
+  if (m_performingSeek)
     return;
 
   CSingleLock lock(m_critSection);
@@ -130,7 +130,6 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
   {
     // tell info manager that we have started a seek operation
     m_requireSeek = true;
-    g_infoManager.SetSeeking(true);
     m_seekStep = 0;
     m_seekSize = 0;
     m_analogSeek = analogSeek;
@@ -145,9 +144,13 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     if( duration )
       speed *= duration;
     else
-      speed /= g_infoManager.GetFPS();
+      speed /= g_graphicsContext.GetFPS();
 
-    int seekSize = (amount * amount * speed) * g_infoManager.GetTotalPlayTime() / 100;
+    double totalTime = g_application.GetTotalTime();
+    if (totalTime < 0)
+      totalTime = 0;
+
+    int seekSize = (amount * amount * speed) * totalTime / 100;
     if (forward)
       m_seekSize += seekSize;
     else
@@ -164,7 +167,6 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     {
       // nothing to do, abort seeking
       m_requireSeek = false;
-      g_infoManager.SetSeeking(false);
     }
   }
 
@@ -174,7 +176,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
 void CSeekHandler::SeekSeconds(int seconds)
 {
   // abort if we do not have a play time or already perform a seek
-  if (seconds == 0 || g_infoManager.m_performingSeek)
+  if (seconds == 0 || m_performingSeek)
     return;
 
   CSingleLock lock(m_critSection);
@@ -182,7 +184,6 @@ void CSeekHandler::SeekSeconds(int seconds)
   m_requireSeek = true;
   m_seekDelay = 0;
   m_seekSize = seconds;
-  g_infoManager.SetSeeking(true);
 
   m_timer.StartZero();
 }
@@ -201,13 +202,14 @@ void CSeekHandler::Process()
 {
   if (m_timer.GetElapsedMilliseconds() >= m_seekDelay && m_requireSeek)
   {
-    g_infoManager.m_performingSeek = true;
+    CSingleLock lock(m_critSection);
+    m_performingSeek = true;
 
     // perform relative seek
     g_application.m_pPlayer->SeekTimeRelative(static_cast<int64_t>(m_seekSize * 1000));
 
     m_requireSeek = false;
-    g_infoManager.SetSeeking(false);
+    m_performingSeek = false;
   }
 }
 
@@ -272,14 +274,12 @@ bool CSeekHandler::OnAction(const CAction &action)
     }
     case ACTION_NEXT_SCENE:
     {
-      if (g_application.m_pPlayer->SeekScene(true))
-        g_infoManager.SetDisplayAfterSeek();
+      g_application.m_pPlayer->SeekScene(true);
       return true;
     }
     case ACTION_PREV_SCENE:
     {
-      if (g_application.m_pPlayer->SeekScene(false))
-        g_infoManager.SetDisplayAfterSeek();
+      g_application.m_pPlayer->SeekScene(false);
       return true;
     }
     case ACTION_ANALOG_SEEK_FORWARD:
