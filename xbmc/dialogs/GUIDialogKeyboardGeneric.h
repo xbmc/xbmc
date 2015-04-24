@@ -23,7 +23,6 @@
 #include "guilib/GUIKeyboard.h"
 #include "guilib/GUIDialog.h"
 #include "input/KeyboardLayout.h"
-#include "utils/Variant.h"
 
 enum KEYBOARD {CAPS, LOWER, SYMBOLS};
 

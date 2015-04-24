@@ -21,8 +21,6 @@
 #include "GUIDialogSeekBar.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
-#include "utils/TimeUtils.h"
-#include "FileItem.h"
 #include "utils/SeekHandler.h"
 
 #define POPUP_SEEK_PROGRESS     401

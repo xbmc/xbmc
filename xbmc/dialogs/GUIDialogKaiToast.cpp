@@ -19,8 +19,6 @@
  */
 
 #include "GUIDialogKaiToast.h"
-#include "guilib/GUIAudioManager.h"
-#include "guilib/GUIWindowManager.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 

@@ -19,7 +19,6 @@
  */
 
 #include "GUIDialogSelect.h"
-#include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"

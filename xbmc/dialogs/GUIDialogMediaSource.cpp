@@ -28,7 +28,6 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "filesystem/Directory.h"
-#include "filesystem/PluginDirectory.h"
 #include "filesystem/PVRDirectory.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
@@ -37,7 +36,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "PasswordManager.h"
 #include "URL.h"
-#include "utils/StringUtils.h"
 
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"

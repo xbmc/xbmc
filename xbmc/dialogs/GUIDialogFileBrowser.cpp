@@ -40,14 +40,11 @@
 #include "FileItem.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/Settings.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "URL.h"
-#include "view/ViewState.h"
 
 using namespace XFILE;
 
