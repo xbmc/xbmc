@@ -27,8 +27,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "settings/Settings.h"
 
-using namespace std;
-
 static int teletextFadeAmount = 0;
 
 CGUIDialogTeletext::CGUIDialogTeletext()

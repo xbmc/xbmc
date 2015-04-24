@@ -31,8 +31,6 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace std;
-
 void CVideoInfoTag::Reset()
 {
   m_director.clear();
@@ -694,7 +692,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       const char* clear=node->Attribute("clear");
       if (clear && stricmp(clear,"true")==0)
         m_artist.clear();
-      vector<string> artists = StringUtils::Split(pValue, g_advancedSettings.m_videoItemSeparator);
+      std::vector<std::string> artists = StringUtils::Split(pValue, g_advancedSettings.m_videoItemSeparator);
       m_artist.insert(m_artist.end(), artists.begin(), artists.end());
     }
     node = node->NextSiblingElement("artist");
@@ -752,7 +750,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       m_strEpisodeGuide = epguide->FirstChild()->Value();
     else
     {
-      stringstream stream;
+      std::stringstream stream;
       stream << *epguide;
       m_strEpisodeGuide = stream.str();
     }

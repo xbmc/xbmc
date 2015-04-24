@@ -51,8 +51,8 @@
 #include "TextureCache.h"
 #include "ApplicationMessenger.h"
 #include "settings/Settings.h"
-
-using namespace std;
+#include <string>
+#include <vector>
 
 #define BOOKMARK_THUMB_WIDTH g_advancedSettings.GetThumbSize()
 
@@ -336,7 +336,7 @@ void CGUIDialogVideoBookmarks::Update()
 
   if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
   {
-    vector<CVideoInfoTag> episodes;
+    std::vector<CVideoInfoTag> episodes;
     videoDatabase.GetEpisodesByFile(g_application.CurrentFile(),episodes);
     if (episodes.size() > 1)
     {
@@ -510,7 +510,7 @@ CGUIControl *CGUIDialogVideoBookmarks::GetFirstFocusableControl(int id)
 
 bool CGUIDialogVideoBookmarks::AddEpisodeBookmark()
 {
-  vector<CVideoInfoTag> episodes;
+  std::vector<CVideoInfoTag> episodes;
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
   videoDatabase.GetEpisodesByFile(g_application.CurrentFile(), episodes);
@@ -561,7 +561,7 @@ bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
   {
     CVideoDatabase videoDatabase;
     videoDatabase.Open();
-    vector<CVideoInfoTag> episodes;
+    std::vector<CVideoInfoTag> episodes;
     videoDatabase.GetEpisodesByFile(g_application.CurrentFile(),episodes);
     if (episodes.size() > 1)
     {
