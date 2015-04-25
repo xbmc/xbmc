@@ -58,7 +58,7 @@ static KeyMap keyMap[] = {
   { AKEYCODE_DPAD_CENTER     , XBMCK_RETURN },
   { AKEYCODE_VOLUME_UP       , XBMCK_LAST },
   { AKEYCODE_VOLUME_DOWN     , XBMCK_LAST },
-  { AKEYCODE_POWER           , XBMCK_POWER },
+  { AKEYCODE_POWER           , XBMCK_LAST },
   { AKEYCODE_CAMERA          , XBMCK_LAST },
   { AKEYCODE_CLEAR           , XBMCK_LAST },
   { AKEYCODE_A               , XBMCK_a },
