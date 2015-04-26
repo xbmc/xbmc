@@ -40,8 +40,7 @@ public:
 
   virtual bool IsInUse() const;
 
-  virtual bool OnPreInstall();
-  virtual void OnPostInstall(bool restart, bool update, bool modal);
+  virtual void OnPostInstall(bool update, bool modal);
 
   virtual bool IsAllowed(const std::string &file) const;
 

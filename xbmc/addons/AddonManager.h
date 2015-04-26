@@ -112,15 +112,13 @@ namespace ADDON
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
     void FindAddons();
-    void RemoveAddon(const std::string& ID);
+    void UnregisterAddon(const std::string& ID);
 
-    /* \brief Disable an addon
-     Triggers the database routine and saves the current addon state to cache.
-     \param ID id of the addon
-     \param disable whether to enable or disable. Defaults to true (disable)
-     \sa IsAddonDisabled,
-     */
-    bool DisableAddon(const std::string& ID, bool disable = true);
+    /*! \brief Disable an addon. Returns true on success, false on failure. */
+    bool DisableAddon(const std::string& ID);
+
+    /*! \brief Enable an addon. Returns true on success, false on failure. */
+    bool EnableAddon(const std::string& ID);
 
     /* \brief Check whether an addon has been disabled via DisableAddon.
      In case the disabled cache does not know about the current state the database routine will be used.
@@ -139,12 +137,6 @@ namespace ADDON
      \param ID id of the addon
     */
     bool IsAddonInstalled(const std::string& ID);
-
-    /* \brief Checks whether an addon is installed.
-     \param ID id of the addon
-     \param addon Installed addon
-     */
-    bool IsAddonInstalled(const std::string& ID, AddonPtr& addon);
 
     /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
      \param ID id of the addon
@@ -251,7 +243,7 @@ namespace ADDON
     CAddonMgr const& operator=(CAddonMgr const&);
     virtual ~CAddonMgr();
 
-    std::map<std::string, bool> m_disabled;
+    std::set<std::string> m_disabled;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;

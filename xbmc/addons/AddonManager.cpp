@@ -17,10 +17,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <memory>
 #include "AddonManager.h"
 #include "Addon.h"
 #include "AudioEncoder.h"
 #include "AudioDecoder.h"
+#include "ContextMenuManager.h"
 #include "DllLibCPluff.h"
 #include "LanguageResource.h"
 #include "UISoundsResource.h"
@@ -317,6 +319,10 @@ bool CAddonMgr::Init()
   }
 
   FindAddons();
+
+  std::vector<std::string> disabled;
+  m_database.GetDisabled(disabled);
+  m_disabled.insert(disabled.begin(), disabled.end());
 
   VECADDONS repos;
   if (GetAddons(ADDON_REPOSITORY, repos))
@@ -623,39 +629,57 @@ void CAddonMgr::FindAddons()
   NotifyObservers(ObservableMessageAddons);
 }
 
-void CAddonMgr::RemoveAddon(const std::string& ID)
+void CAddonMgr::UnregisterAddon(const std::string& ID)
 {
+  CSingleLock lock(m_critSection);
+  m_disabled.erase(ID);
   if (m_cpluff && m_cp_context)
   {
-    m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
+    m_cpluff->uninstall_plugin(m_cp_context, ID.c_str());
     SetChanged();
+    lock.Leave();
     NotifyObservers(ObservableMessageAddons);
   }
 }
 
-bool CAddonMgr::DisableAddon(const std::string& ID, bool disable)
+bool CAddonMgr::DisableAddon(const std::string& id)
 {
   CSingleLock lock(m_critSection);
-  if (m_database.DisableAddon(ID, disable))
-  {
-    m_disabled[ID] = disable;
-    return true;
-  }
+  if (m_disabled.find(id) != m_disabled.end())
+    return true; //already disabled
 
-  return false;
+  if (!CanAddonBeDisabled(id))
+    return false;
+  if (!m_database.DisableAddon(id))
+    return false;
+  if (!m_disabled.insert(id).second)
+    return false;
+
+  //success
+  ADDON::OnDisabled(id);
+  return true;
+}
+
+bool CAddonMgr::EnableAddon(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  if (m_disabled.find(id) == m_disabled.end())
+    return true; //already enabled
+
+  if (!m_database.DisableAddon(id, false))
+    return false;
+  if (m_disabled.erase(id) == 0)
+    return false;
+
+  //success
+  ADDON::OnEnabled(id);
+  return true;
 }
 
 bool CAddonMgr::IsAddonDisabled(const std::string& ID)
 {
   CSingleLock lock(m_critSection);
-  std::map<std::string, bool>::const_iterator it = m_disabled.find(ID);
-  if (it != m_disabled.end())
-    return it->second;
-
-  bool ret = m_database.IsAddonDisabled(ID);
-  m_disabled.insert(pair<std::string, bool>(ID, ret));
-
-  return ret;
+  return m_disabled.find(ID) != m_disabled.end();
 }
 
 bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
@@ -666,7 +690,7 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
   CSingleLock lock(m_critSection);
   AddonPtr localAddon;
   // can't disable an addon that isn't installed
-  if (!IsAddonInstalled(ID, localAddon))
+  if (!GetAddon(ID, localAddon, ADDON_UNKNOWN, false))
     return false;
 
   // can't disable an addon that is in use
@@ -688,12 +712,7 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
 bool CAddonMgr::IsAddonInstalled(const std::string& ID)
 {
   AddonPtr tmp;
-  return IsAddonInstalled(ID, tmp);
-}
-
-bool CAddonMgr::IsAddonInstalled(const std::string& ID, AddonPtr& addon)
-{
-  return GetAddon(ID, addon, ADDON_UNKNOWN, false);
+  return GetAddon(ID, tmp, ADDON_UNKNOWN, false);
 }
 
 bool CAddonMgr::CanAddonBeInstalled(const std::string& ID)

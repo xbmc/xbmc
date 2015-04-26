@@ -63,40 +63,6 @@ CContextItemAddon::CContextItemAddon(const cp_extension_t *ext)
   }
 }
 
-bool CContextItemAddon::OnPreInstall()
-{
-  return CContextMenuManager::Get().Unregister(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
-}
-
-void CContextItemAddon::OnPostInstall(bool restart, bool update, bool modal)
-{
-  if (restart)
-  {
-    // need to grab the local addon so we have the correct library path to run
-    AddonPtr localAddon;
-    if (CAddonMgr::Get().GetAddon(ID(), localAddon, ADDON_CONTEXT_ITEM))
-    {
-      ContextItemAddonPtr contextItem = std::dynamic_pointer_cast<CContextItemAddon>(localAddon);
-      if (contextItem)
-        CContextMenuManager::Get().Register(contextItem);
-    }
-  }
-}
-
-void CContextItemAddon::OnPreUnInstall()
-{
-  CContextMenuManager::Get().Unregister(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
-}
-
-void CContextItemAddon::OnDisabled()
-{
-  CContextMenuManager::Get().Unregister(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
-}
-void CContextItemAddon::OnEnabled()
-{
-  CContextMenuManager::Get().Register(std::dynamic_pointer_cast<CContextItemAddon>(shared_from_this()));
-}
-
 bool CContextItemAddon::IsVisible(const CFileItemPtr& item) const
 {
   return item && m_visCondition->Get(item.get());

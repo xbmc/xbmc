@@ -663,14 +663,24 @@ bool CAddonInstallJob::DoWork()
   }
 
   // run any pre-install functions
-  bool reloadAddon = OnPreInstall();
+  ADDON::OnPreInstall(m_addon);
 
   // perform install
   if (!Install(installFrom, repoPtr))
     return false;
 
   // run any post-install guff
-  OnPostInstall(reloadAddon);
+  if (!IsModal() && CSettings::Get().GetBool("general.addonnotifications"))
+    CGUIDialogKaiToast::QueueNotification(m_addon->Icon(), m_addon->Name(),
+                                          g_localizeStrings.Get(m_update ? 24065 : 24064),
+                                          TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
+
+  ADDON::OnPostInstall(m_addon, m_update, IsModal());
+
+  //Clear addon from the disabled table
+  CAddonDatabase database;
+  database.Open();
+  database.DisableAddon(m_addon->ID(), false);
 
   // and we're done!
   MarkFinished();
@@ -725,11 +735,6 @@ bool CAddonInstallJob::DoFileOperation(FileAction action, CFileItemList &items, 
   }
 
   return result;
-}
-
-bool CAddonInstallJob::OnPreInstall()
-{
-  return m_addon->OnPreInstall();
 }
 
 bool CAddonInstallJob::DeleteAddon(const std::string &addonFolder)
@@ -867,15 +872,6 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
   return true;
 }
 
-void CAddonInstallJob::OnPostInstall(bool reloadAddon)
-{
-  if (!IsModal() && CSettings::Get().GetBool("general.addonnotifications"))
-    CGUIDialogKaiToast::QueueNotification(m_addon->Icon(), m_addon->Name(),
-                                          g_localizeStrings.Get(m_update ? 24065 : 24064),
-                                          TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
-
-  m_addon->OnPostInstall(reloadAddon, m_update, IsModal());
-}
 
 void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message /* = "" */)
 {
@@ -924,7 +920,7 @@ CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon)
 
 bool CAddonUnInstallJob::DoWork()
 {
-  m_addon->OnPreUnInstall();
+  ADDON::OnPreUnInstall(m_addon);
 
   AddonPtr repoPtr = CAddonInstallJob::GetRepoForAddon(m_addon);
   RepositoryPtr therepo = std::dynamic_pointer_cast<CRepository>(repoPtr);
@@ -935,11 +931,21 @@ bool CAddonUnInstallJob::DoWork()
     if (!CDirectory::GetDirectory(s, dummy))
       return false;
   }
-  else if (!DeleteAddon(m_addon->Path()))
-    return false;
+  else
+  {
+    //Unregister addon with the manager to ensure nothing tries
+    //to interact with it while we are uninstalling.
+    CAddonMgr::Get().UnregisterAddon(m_addon->ID());
 
-  OnPostUnInstall();
+    if (!DeleteAddon(m_addon->Path()))
+    {
+      CLog::Log(LOGERROR, "CAddonUnInstallJob[%s]: could not delete addon data.", m_addon->ID().c_str());
+      return false;
+    }
+  }
 
+  ClearFavourites();
+  ADDON::OnPostUnInstall(m_addon);
   return true;
 }
 
@@ -953,7 +959,7 @@ bool CAddonUnInstallJob::DeleteAddon(const std::string &addonFolder)
   return CFileOperationJob::DoWork();
 }
 
-void CAddonUnInstallJob::OnPostUnInstall()
+void CAddonUnInstallJob::ClearFavourites()
 {
   bool bSave = false;
   CFileItemList items;
@@ -969,6 +975,4 @@ void CAddonUnInstallJob::OnPostUnInstall()
 
   if (bSave)
     CFavouritesDirectory::Save(items);
-
-  m_addon->OnPostUnInstall();
 }

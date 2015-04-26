@@ -43,7 +43,7 @@ bool CUISoundsResource::IsInUse() const
   return CSettings::Get().GetString("lookandfeel.soundskin") == ID();
 }
 
-void CUISoundsResource::OnPostInstall(bool restart, bool update, bool modal)
+void CUISoundsResource::OnPostInstall(bool update, bool modal)
 {
   if (IsInUse())
     g_audioManager.Load();
