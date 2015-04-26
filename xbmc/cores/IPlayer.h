@@ -194,6 +194,12 @@ public:
 
   virtual float GetActualFPS() { return 0.0f; };
   virtual void SeekTime(int64_t iTime = 0){};
+  /*
+   \brief seek relative to current time, returns false if not implemented by player
+   \param iTime The time in milliseconds to seek. A positive value will seek forward, a negative backward.
+   \return True if the player supports relative seeking, otherwise false
+   */
+  virtual bool SeekTimeRelative(int64_t iTime) { return false; }
   /*!
    \brief current time in milliseconds
    */
