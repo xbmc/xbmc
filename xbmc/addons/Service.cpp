@@ -113,46 +113,4 @@ void CService::BuildServiceType()
   }
 }
 
-void CService::OnDisabled()
-{
-  Stop();
-}
-
-void CService::OnEnabled()
-{
-  Start();
-}
-
-bool CService::OnPreInstall()
-{
-  // make sure the addon is stopped
-  AddonPtr localAddon; // need to grab the local addon so we have the correct library path to stop
-  if (CAddonMgr::Get().GetAddon(ID(), localAddon, ADDON_SERVICE, false))
-  {
-    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(localAddon);
-    if (service)
-      service->Stop();
-  }
-  return !CAddonMgr::Get().IsAddonDisabled(ID());
-}
-
-void CService::OnPostInstall(bool restart, bool update, bool modal)
-{
-  if (restart) // reload/start it if it was running
-  {
-    AddonPtr localAddon; // need to grab the local addon so we have the correct library path to stop
-    if (CAddonMgr::Get().GetAddon(ID(), localAddon, ADDON_SERVICE, false))
-    {
-      std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(localAddon);
-      if (service)
-        service->Start();
-    }
-  }
-}
-
-void CService::OnPreUnInstall()
-{
-  Stop();
-}
-
 }

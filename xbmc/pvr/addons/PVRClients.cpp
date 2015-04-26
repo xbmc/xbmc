@@ -1150,7 +1150,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
     for (VECADDONS::iterator it = disableAddons.begin(); it != disableAddons.end(); ++it)
     {
       // disable in the add-on db
-      CAddonMgr::Get().DisableAddon((*it)->ID(), true);
+      CAddonMgr::Get().DisableAddon((*it)->ID());
 
       // remove from the pvr add-on list
       VECADDONS::iterator addonPtr = std::find(m_addons.begin(), m_addons.end(), *it);
@@ -1245,7 +1245,7 @@ bool CPVRClients::AutoconfigureClients(void)
         progressHandle->MarkFinished();
 
         /** enable the add-on */
-        CAddonMgr::Get().DisableAddon((*it)->ID(), false);
+        CAddonMgr::Get().EnableAddon((*it)->ID());
         CSingleLock lock(m_critSection);
         m_addons.push_back(*it);
         bReturn = true;
@@ -1312,7 +1312,7 @@ bool CPVRClients::UpdateAddons(void)
     if (bDisable)
     {
       CLog::Log(LOGDEBUG, "%s - disabling add-on '%s'", __FUNCTION__, (*it)->Name().c_str());
-      CAddonMgr::Get().DisableAddon((*it)->ID(), true);
+      CAddonMgr::Get().DisableAddon((*it)->ID());
       usableClients--;
     }
   }

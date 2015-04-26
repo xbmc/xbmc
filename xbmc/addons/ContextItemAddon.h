@@ -41,7 +41,7 @@ namespace ADDON
     CContextItemAddon(const AddonProps &props);
     virtual ~CContextItemAddon();
 
-    const std::string& GetLabel() const { return m_label; }
+    std::string GetLabel();
 
     /*!
      * \brief Get the parent category of this context item.
@@ -55,12 +55,6 @@ namespace ADDON
      * \brief Returns true if this contex menu should be visible for given item.
      */
     bool IsVisible(const CFileItemPtr& item) const;
-
-    virtual bool OnPreInstall();
-    virtual void OnPostInstall(bool restart, bool update, bool modal);
-    virtual void OnPreUnInstall();
-    virtual void OnDisabled();
-    virtual void OnEnabled();
 
   private:
     std::string m_label;

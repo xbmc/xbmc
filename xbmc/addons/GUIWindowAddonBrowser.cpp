@@ -653,7 +653,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
 
         // if the addon is disabled we need to enable it
         if (CAddonMgr::Get().IsAddonDisabled(addon->ID()))
-          CAddonMgr::Get().DisableAddon(addon->ID(), false);
+          CAddonMgr::Get().EnableAddon(addon->ID());
       }
     }
 

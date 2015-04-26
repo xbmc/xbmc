@@ -185,8 +185,8 @@ public:
   static bool GetAddonWithHash(const std::string& addonID, ADDON::AddonPtr& addon, std::string& hash);
 
 private:
-  bool OnPreInstall();
-  void OnPostInstall(bool reloadAddon);
+  void OnPreInstall();
+  void OnPostInstall();
   bool Install(const std::string &installFrom, const ADDON::AddonPtr& repo = ADDON::AddonPtr());
   bool DownloadPackage(const std::string &path, const std::string &dest);
 
@@ -223,7 +223,7 @@ private:
    */
   bool DeleteAddon(const std::string &addonFolder);
 
-  void OnPostUnInstall();
+  void ClearFavourites();
 
   ADDON::AddonPtr m_addon;
 };

@@ -42,6 +42,13 @@ const std::string   TranslateType(const TYPE &type, bool pretty=false);
 const std::string   GetIcon(const TYPE &type);
       TYPE          TranslateType(const std::string &string);
 
+void OnEnabled(const std::string& id);
+void OnDisabled(const std::string& id);
+void OnPreInstall(const AddonPtr& addon);
+void OnPostInstall(const AddonPtr& addon, bool update, bool modal);
+void OnPreUnInstall(const AddonPtr& addon);
+void OnPostUnInstall(const AddonPtr& addon);
+
 class AddonProps : public ISerializable
 {
 public:
@@ -145,7 +152,8 @@ public:
   AddonProps& Props() { return m_props; }
   const std::string ID() const { return m_props.id; }
   const std::string Name() const { return m_props.name; }
-  bool Enabled() const { return m_enabled; }
+  /*! This lies. Ask CAddonMgr */
+  bool Enabled() const { return true; }
   virtual bool IsInUse() const { return false; };
   const AddonVersion Version() const { return m_props.version; }
   const AddonVersion MinVersion() const { return m_props.minversion; }
@@ -176,8 +184,6 @@ public:
   bool MeetsVersion(const AddonVersion &version) const;
   virtual bool ReloadSettings();
 
-  void MarkAsDisabled() { m_enabled = false; }
-
   /*! \brief callback for when this add-on is disabled.
    Use to perform any needed actions (e.g. stop a service)
    */
@@ -192,9 +198,8 @@ public:
    */
   virtual AddonPtr GetRunningInstance() const { return AddonPtr(); }
 
-  /*! \brief callbacks for special install/uninstall behaviour */
-  virtual bool OnPreInstall() { return false; };
-  virtual void OnPostInstall(bool restart, bool update, bool modal) {};
+  virtual void OnPreInstall() {};
+  virtual void OnPostInstall(bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
   virtual bool CanInstall(const std::string& referer) { return true; }
@@ -242,11 +247,6 @@ private:
   std::string        m_userSettingsPath;
   void BuildProfilePath();
 
-  virtual bool IsAddonLibrary() { return false; }
-
-  void Enable() { LoadStrings(); m_enabled = true; }
-  void Disable() { m_enabled = false; ClearStrings();}
-
   virtual bool LoadStrings();
   virtual void ClearStrings();
 
@@ -255,7 +255,6 @@ private:
   bool m_hasSettings;
 
   std::string m_profile;
-  bool        m_enabled;
   CLocalizeStrings  m_strings;
   std::map<std::string, std::string> m_settings;
 };
@@ -269,7 +268,6 @@ public:
   virtual AddonPtr Clone() const;
 
 private:
-  virtual bool IsAddonLibrary() { return true; }
   TYPE SetAddonType();
   const TYPE m_addonType; // addon type this library enhances
 };

@@ -47,11 +47,6 @@ namespace ADDON
     bool Stop();
     TYPE GetServiceType() { return m_type; }
     START_OPTION GetStartOption() { return m_startOption; }
-    virtual void OnDisabled();
-    virtual void OnEnabled();
-    virtual bool OnPreInstall();
-    virtual void OnPostInstall(bool restart, bool update, bool modal);
-    virtual void OnPreUnInstall();
 
   protected:
     void BuildServiceType();

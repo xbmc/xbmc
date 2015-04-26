@@ -118,8 +118,8 @@ public:
   static void SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
-  virtual bool OnPreInstall();
-  virtual void OnPostInstall(bool restart, bool update, bool modal);
+  virtual void OnPreInstall();
+  virtual void OnPostInstall(bool update, bool modal);
 protected:
   /*! \brief Given a resolution, retrieve the corresponding directory name
    \param res RESOLUTION to translate
