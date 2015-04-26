@@ -255,23 +255,26 @@ void CVideoSyncGLX::Run(volatile bool& stop)
 void CVideoSyncGLX::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
-  CSingleLock lock(g_graphicsContext);
 
-  if (m_vInfo)
   {
-    XFree(m_vInfo);
-    m_vInfo = NULL;
-  }
-  if (m_Context)
-  {
-    glXMakeCurrent(m_Dpy, None, NULL);
-    glXDestroyContext(m_Dpy, m_Context);
-    m_Context = NULL;
-  }
-  if (m_Window)
-  {
-    XDestroyWindow(m_Dpy, m_Window);
-    m_Window = 0;
+    CSingleLock lock(g_graphicsContext);
+
+    if (m_vInfo)
+    {
+      XFree(m_vInfo);
+      m_vInfo = NULL;
+    }
+    if (m_Context)
+    {
+      glXMakeCurrent(m_Dpy, None, NULL);
+      glXDestroyContext(m_Dpy, m_Context);
+      m_Context = NULL;
+    }
+    if (m_Window)
+    {
+      XDestroyWindow(m_Dpy, m_Window);
+      m_Window = 0;
+    }
   }
 
   m_lostEvent.Set();
