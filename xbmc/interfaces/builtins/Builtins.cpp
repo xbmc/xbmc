@@ -105,6 +105,7 @@
 #include "powermanagement/PowerManager.h"
 
 #include "AddonBuiltins.h"
+#include "ApplicationBuiltins.h"
 #include "CECBuiltins.h"
 #include "GUIBuiltins.h"
 #include "GUIControlBuiltins.h"
@@ -138,18 +139,11 @@ typedef struct
 
 const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
-  { "NotifyAll",                  true,   "Notify all connected clients" },
-  { "Extract",                    true,   "Extracts the specified archive" },
-  { "Mute",                       false,  "Mute the player" },
-  { "SetVolume",                  true,   "Set the current volume" },
-  { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
-  { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes Kodi as LIRC client" },
   { "LIRC.Start",                 false,  "Adds Kodi as LIRC client" },
   { "LIRC.Send",                  true,   "Sends a command to LIRC" },
 #endif
-  { "ToggleDebug",                false,  "Enables/disables debug mode" },
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
@@ -158,6 +152,7 @@ const BUILT_IN commands[] = {
 CBuiltins::CBuiltins()
 {
   RegisterCommands<CAddonBuiltins>();
+  RegisterCommands<CApplicationBuiltins>();
   RegisterCommands<CGUIBuiltins>();
   RegisterCommands<CGUIContainerBuiltins>();
   RegisterCommands<CGUIControlBuiltins>();
@@ -293,72 +288,7 @@ int CBuiltins::Execute(const std::string& execString)
     }
   }
 
-  if (execute == "extract" && params.size())
-  {
-    // Detects if file is zip or rar then extracts
-    std::string strDestDirect;
-    if (params.size() < 2)
-      strDestDirect = URIUtils::GetDirectory(params[0]);
-    else
-      strDestDirect = params[1];
-
-    URIUtils::AddSlashAtEnd(strDestDirect);
-
-    if (URIUtils::IsZIP(params[0]))
-      g_ZipManager.ExtractArchive(params[0],strDestDirect);
-#ifdef HAS_FILESYSTEM_RAR
-    else if (URIUtils::IsRAR(params[0]))
-      g_RarManager.ExtractArchive(params[0],strDestDirect);
-#endif
-    else
-      CLog::Log(LOGERROR, "Extract, No archive given");
-  }
-  else if (execute == "notifyall")
-  {
-    if (params.size() > 1)
-    {
-      CVariant data;
-      if (params.size() > 2)
-        data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
-
-      ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
-    }
-    else
-      CLog::Log(LOGERROR, "NotifyAll needs two parameters");
-  }
-  else if (execute == "mute")
-  {
-    g_application.ToggleMute();
-  }
-  else if (execute == "setvolume")
-  {
-    float oldVolume = g_application.GetVolume();
-    float volume = (float)strtod(parameter.c_str(), NULL);
-
-    g_application.SetVolume(volume);
-    if(oldVolume != volume)
-    {
-      if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
-      {
-        CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);  
-      }
-    }
-  }
-  else if (execute == "wakeonlan")
-  {
-    g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
-  }
-  else if (execute == "toggledpms")
-  {
-    g_application.ToggleDPMS(true);
-  }
-  else if (execute == "toggledebug")
-  {
-    bool debug = CSettings::Get().GetBool("debug.showloginfo");
-    CSettings::Get().SetBool("debug.showloginfo", !debug);
-    g_advancedSettings.SetDebugMode(!debug);
-  }
-  else if (execute == "startandroidactivity" && !params.empty())
+  if (execute == "startandroidactivity" && !params.empty())
   {
     CApplicationMessenger::Get().StartAndroidActivity(params);
   }
