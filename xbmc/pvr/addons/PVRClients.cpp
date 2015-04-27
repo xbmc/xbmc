@@ -1164,7 +1164,7 @@ int CPVRClients::RegisterClient(AddonPtr client)
   return iClientId;
 }
 
-bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = false */)
+bool CPVRClients::UpdateAndInitialiseClients()
 {
   bool bReturn(true);
   VECADDONS map;
@@ -1189,7 +1189,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       disableAddons.push_back(*it);
 
     }
-    else if (bEnabled && (bInitialiseAllClients || !IsKnownClient(*it) || !IsConnectedClient(*it)))
+    else if (bEnabled && (!IsKnownClient(*it) || !IsConnectedClient(*it)))
     {
       bool bDisabled(false);
 

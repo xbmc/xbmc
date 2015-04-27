@@ -731,10 +731,9 @@ namespace PVR
 
     /*!
      * @brief Check whether there are any new pvr add-ons enabled or whether any of the known clients has been disabled.
-     * @param bInitialiseAllClients True to initialise all clients, false to only initialise new clients.
      * @return True if all clients were updated successfully, false otherwise.
      */
-    bool UpdateAndInitialiseClients(bool bInitialiseAllClients = false);
+    bool UpdateAndInitialiseClients();
 
     /*!
      * @brief Initialise and connect a client.
