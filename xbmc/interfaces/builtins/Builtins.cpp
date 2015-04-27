@@ -120,6 +120,10 @@
 #include "SystemBuiltins.h"
 #include "WeatherBuiltins.h"
 
+#if defined(TARGET_ANDROID)
+#include "AndroidBuiltins.h"
+#endif
+
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
@@ -144,9 +148,6 @@ const BUILT_IN commands[] = {
   { "LIRC.Start",                 false,  "Adds Kodi as LIRC client" },
   { "LIRC.Send",                  true,   "Sends a command to LIRC" },
 #endif
-#if defined(TARGET_ANDROID)
-  { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
-#endif
 };
 
 CBuiltins::CBuiltins()
@@ -165,6 +166,10 @@ CBuiltins::CBuiltins()
   RegisterCommands<CSkinBuiltins>();
   RegisterCommands<CSystemBuiltins>();
   RegisterCommands<CWeatherBuiltins>();
+
+#if defined(TARGET_ANDROID)
+  RegisterCommands<CAndroidBuiltins>();
+#endif
 }
 
 CBuiltins::~CBuiltins()
@@ -288,11 +293,5 @@ int CBuiltins::Execute(const std::string& execString)
     }
   }
 
-  if (execute == "startandroidactivity" && !params.empty())
-  {
-    CApplicationMessenger::Get().StartAndroidActivity(params);
-  }
-  else
-    return CInputManager::Get().ExecuteBuiltin(execute, params);
-  return 0;
+  return CInputManager::Get().ExecuteBuiltin(execute, params);
 }
