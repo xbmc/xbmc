@@ -1365,7 +1365,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
   action = ACTION_NONE;
   std::string strAction = szAction;
   StringUtils::ToLower(strAction);
-  if (CBuiltins::HasCommand(strAction)) 
+  if (CBuiltins::GetInstance().HasCommand(strAction))
     action = ACTION_BUILT_IN_FUNCTION;
 
   for (unsigned int index=0;index < ARRAY_SIZE(actions);++index)

@@ -56,7 +56,7 @@ bool CAutorunMediaJob::DoWork()
   if (selection >= 0)
   {
     std::string strAction = StringUtils::Format("ActivateWindow(%s, %s)", GetWindowString(selection), m_path.c_str());
-    CBuiltins::Execute(strAction);
+    CBuiltins::GetInstance().Execute(strAction);
   }
 
   return true;

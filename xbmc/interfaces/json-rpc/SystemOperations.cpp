@@ -48,7 +48,7 @@ JSONRPC_STATUS CSystemOperations::GetProperties(const std::string &method, ITran
 
 JSONRPC_STATUS CSystemOperations::EjectOpticalDrive(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return CBuiltins::Execute("EjectTray") == 0 ? ACK : FailedToExecute;
+  return CBuiltins::GetInstance().Execute("EjectTray") == 0 ? ACK : FailedToExecute;
 }
 
 JSONRPC_STATUS CSystemOperations::Shutdown(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
