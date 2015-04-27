@@ -19,7 +19,7 @@
  */
 #include "AutorunMediaJob.h"
 #include "Application.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "input/Key.h"

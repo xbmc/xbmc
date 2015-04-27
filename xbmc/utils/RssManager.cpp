@@ -23,7 +23,7 @@
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"

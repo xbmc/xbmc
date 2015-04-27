@@ -28,7 +28,7 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/WindowIDs.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "music/MusicDatabase.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"

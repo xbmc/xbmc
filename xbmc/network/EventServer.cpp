@@ -29,7 +29,7 @@
 #include "threads/CriticalSection.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "input/ButtonTranslator.h"
 #include "threads/SingleLock.h"
 #include "Zeroconf.h"

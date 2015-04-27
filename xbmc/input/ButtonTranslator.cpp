@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "ButtonTranslator.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/URIUtils.h"

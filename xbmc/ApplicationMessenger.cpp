@@ -26,7 +26,7 @@
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "network/Network.h"
 #include "utils/log.h"

@@ -24,7 +24,7 @@
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "addons/AddonManager.h"
 #include "settings/Settings.h"
