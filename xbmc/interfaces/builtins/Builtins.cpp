@@ -111,6 +111,7 @@
 #include "GUIContainerBuiltins.h"
 #include "LibraryBuiltins.h"
 #include "ProfileBuiltins.h"
+#include "PVRBuiltins.h"
 #include "SkinBuiltins.h"
 #include "SystemBuiltins.h"
 #include "WeatherBuiltins.h"
@@ -158,8 +159,6 @@ const BUILT_IN commands[] = {
   { "LIRC.Send",                  true,   "Sends a command to LIRC" },
 #endif
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
-  { "StartPVRManager",            false,  "(Re)Starts the PVR manager" },
-  { "StopPVRManager",             false,  "Stops the PVR manager" },
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
@@ -173,6 +172,7 @@ CBuiltins::CBuiltins()
   RegisterCommands<CGUIControlBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
   RegisterCommands<CProfileBuiltins>();
+  RegisterCommands<CPVRBuiltins>();
   RegisterCommands<CSkinBuiltins>();
   RegisterCommands<CSystemBuiltins>();
   RegisterCommands<CWeatherBuiltins>();
@@ -820,14 +820,6 @@ int CBuiltins::Execute(const std::string& execString)
     bool debug = CSettings::Get().GetBool("debug.showloginfo");
     CSettings::Get().SetBool("debug.showloginfo", !debug);
     g_advancedSettings.SetDebugMode(!debug);
-  }
-  else if (execute == "startpvrmanager")
-  {
-    g_application.StartPVRManager();
-  }
-  else if (execute == "stoppvrmanager")
-  {
-    g_application.StopPVRManager();
   }
   else if (execute == "startandroidactivity" && !params.empty())
   {
