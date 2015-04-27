@@ -107,6 +107,7 @@
 #include "AddonBuiltins.h"
 #include "LibraryBuiltins.h"
 #include "SkinBuiltins.h"
+#include "SystemBuiltins.h"
 
 using namespace std;
 using namespace XFILE;
@@ -127,19 +128,6 @@ typedef struct
 
 const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
-  { "Reboot",                     false,  "Reboot the system" },
-  { "Restart",                    false,  "Restart the system (same as reboot)" },
-  { "ShutDown",                   false,  "Shutdown the system" },
-  { "Powerdown",                  false,  "Powerdown system" },
-  { "Quit",                       false,  "Quit Kodi" },
-  { "Hibernate",                  false,  "Hibernates the system" },
-  { "Suspend",                    false,  "Suspends the system" },
-  { "InhibitIdleShutdown",        false,  "Inhibit idle shutdown" },
-  { "AllowIdleShutdown",          false,  "Allow idle shutdown" },
-  { "ActivateScreensaver",        false,  "Activate Screensaver" },
-  { "RestartApp",                 false,  "Restart Kodi" },
-  { "Minimize",                   false,  "Minimize Kodi" },
-  { "Reset",                      false,  "Reset the system (same as reboot)" },
   { "Mastermode",                 false,  "Control master mode" },
   { "SetGUILanguage",             true,   "Set GUI Language" },
   { "ActivateWindow",             true,   "Activate the specified window" },
@@ -169,8 +157,6 @@ const BUILT_IN commands[] = {
   { "SetVolume",                  true,   "Set the current volume" },
   { "Dialog.Close",               true,   "Close a dialog" },
   { "System.LogOff",              false,  "Log off current user" },
-  { "System.Exec",                true,   "Execute shell commands" },
-  { "System.ExecWait",            true,   "Execute shell commands and freezes Kodi until shell is closed" },
   { "Resolution",                 true,   "Change Kodi's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
@@ -220,6 +206,7 @@ CBuiltins::CBuiltins()
   RegisterCommands<CAddonBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
   RegisterCommands<CSkinBuiltins>();
+  RegisterCommands<CSystemBuiltins>();
 }
 
 CBuiltins::~CBuiltins()
@@ -351,48 +338,7 @@ int CBuiltins::Execute(const std::string& execString)
     }
   }
 
-  if (execute == "reboot" || execute == "restart" || execute == "reset")  //Will reboot the system
-  {
-    CApplicationMessenger::Get().Restart();
-  }
-  else if (execute == "shutdown")
-  {
-    CApplicationMessenger::Get().Shutdown();
-  }
-  else if (execute == "powerdown")
-  {
-    CApplicationMessenger::Get().Powerdown();
-  }
-  else if (execute == "restartapp")
-  {
-    CApplicationMessenger::Get().RestartApp();
-  }
-  else if (execute == "hibernate")
-  {
-    CApplicationMessenger::Get().Hibernate();
-  }
-  else if (execute == "suspend")
-  {
-    CApplicationMessenger::Get().Suspend();
-  }
-  else if (execute == "quit")
-  {
-    CApplicationMessenger::Get().Quit();
-  }
-  else if (execute == "inhibitidleshutdown")
-  {
-    bool inhibit = (params.size() == 1 && StringUtils::EqualsNoCase(params[0], "true"));
-    CApplicationMessenger::Get().InhibitIdleShutdown(inhibit);
-  }
-  else if (execute == "activatescreensaver")
-  {
-    CApplicationMessenger::Get().ActivateScreensaver();
-  }
-  else if (execute == "minimize")
-  {
-    CApplicationMessenger::Get().Minimize();
-  }
-  else if (execute == "loadprofile")
+  if (execute == "loadprofile")
   {
     int index = CProfilesManager::Get().GetProfileIndex(parameter);
     bool prompt = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "prompt"));
@@ -533,16 +479,6 @@ int CBuiltins::Execute(const std::string& execString)
       CLog::Log(LOGERROR, "Replace/ActivateWindowAndFocus called with invalid destination window: %s", strWindow.c_str());
       return false;
     }
-  }
-  else if (execute == "system.exec")
-  {
-    CApplicationMessenger::Get().Minimize();
-    CApplicationMessenger::Get().ExecOS(parameter, false);
-  }
-  else if (execute == "system.execwait")
-  {
-    CApplicationMessenger::Get().Minimize();
-    CApplicationMessenger::Get().ExecOS(parameter, true);
   }
   else if (execute == "resolution")
   {
