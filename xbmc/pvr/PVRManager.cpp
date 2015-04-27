@@ -634,12 +634,14 @@ bool CPVRManager::Load(void)
   /* start the add-on update thread */
   if (m_addons)
     m_addons->Start();
+  else
+    return false;
 
   /* load at least one client */
-  while (IsInitialising() && m_addons && !m_addons->HasConnectedClients())
+  while (IsInitialising() && !m_addons->HasConnectedClients())
     Sleep(50);
 
-  if (!IsInitialising() || !m_addons || !m_addons->HasConnectedClients())
+  if (!IsInitialising() || !m_addons->HasConnectedClients())
     return false;
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
