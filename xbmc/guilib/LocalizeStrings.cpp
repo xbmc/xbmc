@@ -24,7 +24,6 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
-#include "utils/XMLUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/POUtils.h"
 #include "filesystem/Directory.h"

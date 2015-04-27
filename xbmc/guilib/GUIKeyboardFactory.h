@@ -20,7 +20,6 @@
  *
  */
 
-#include "GUIDialog.h"
 #include "utils/Variant.h"
 #include "GUIKeyboard.h"
 #include <string>

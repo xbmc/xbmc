@@ -25,7 +25,6 @@
 #include "addons/AddonManager.h"
 #include "addons/Visualisation.h"
 #include "utils/log.h"
-#include "guilib/IRenderingCallback.h"
 #include "input/Key.h"
 
 using namespace std;

@@ -19,7 +19,6 @@
  */
 
 #include "GUIFixedListContainer.h"
-#include "GUIListItem.h"
 #include "input/Key.h"
 
 CGUIFixedListContainer::CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition, int cursorRange)

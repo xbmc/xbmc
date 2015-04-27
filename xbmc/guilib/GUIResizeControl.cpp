@@ -19,7 +19,6 @@
  */
 
 #include "GUIResizeControl.h"
-#include "GUIWindowManager.h"
 #include "input/Key.h"
 #include "utils/TimeUtils.h"
 

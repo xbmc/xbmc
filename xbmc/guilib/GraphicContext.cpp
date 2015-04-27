@@ -20,7 +20,6 @@
 
 #include "system.h"
 #include "GraphicContext.h"
-#include "threads/SingleLock.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
@@ -32,9 +31,7 @@
 #include "TextureManager.h"
 #include "input/InputManager.h"
 #include "GUIWindowManager.h"
-#include "utils/JobManager.h"
 #include "video/VideoReferenceClock.h"
-#include "cores/IPlayer.h"
 
 using namespace std;
 
