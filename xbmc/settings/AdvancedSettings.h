@@ -206,6 +206,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_extraLogEnabled;
     int m_extraLogLevels;
     std::string m_cddbAddress;
+    int m_partyMixLength;
 
     //airtunes + airplay
     int m_airTunesPort;
