@@ -148,7 +148,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
     StringUtils::ToLower(actionName);
     if ((actionName.find("shutdown") != std::string::npos) &&
         PVR::g_PVRManager.CanSystemPowerdown())
-      CBuiltins::Execute(action.GetName());
+      CBuiltins::GetInstance().Execute(action.GetName());
     return true;
   }
   return CGUIWindow::OnAction(action);
