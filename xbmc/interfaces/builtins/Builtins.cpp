@@ -110,6 +110,7 @@
 #include "GUIControlBuiltins.h"
 #include "GUIContainerBuiltins.h"
 #include "LibraryBuiltins.h"
+#include "OpticalBuiltins.h"
 #include "PictureBuiltins.h"
 #include "PlayerBuiltins.h"
 #include "ProfileBuiltins.h"
@@ -139,8 +140,6 @@ const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
   { "NotifyAll",                  true,   "Notify all connected clients" },
   { "Extract",                    true,   "Extracts the specified archive" },
-  { "EjectTray",                  false,  "Close or open the DVD tray" },
-  { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Mute",                       false,  "Mute the player" },
   { "SetVolume",                  true,   "Set the current volume" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
@@ -163,6 +162,7 @@ CBuiltins::CBuiltins()
   RegisterCommands<CGUIContainerBuiltins>();
   RegisterCommands<CGUIControlBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
+  RegisterCommands<COpticalBuiltins>();
   RegisterCommands<CPictureBuiltins>();
   RegisterCommands<CPlayerBuiltins>();
   RegisterCommands<CProfileBuiltins>();
@@ -343,18 +343,6 @@ int CBuiltins::Execute(const std::string& execString)
         CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);  
       }
     }
-  }
-#ifdef HAS_DVD_DRIVE
-  else if (execute == "ejecttray")
-  {
-    g_mediaManager.ToggleTray();
-  }
-#endif
-  else if (execute == "ripcd")
-  {
-#ifdef HAS_CDDA_RIPPER
-    CCDDARipper::GetInstance().RipCD();
-#endif
   }
   else if (execute == "wakeonlan")
   {
