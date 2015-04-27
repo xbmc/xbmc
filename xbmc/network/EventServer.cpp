@@ -36,7 +36,7 @@
 #include "input/Key.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
-
+#include "Util.h"
 #include <map>
 #include <queue>
 #include <cassert>
@@ -349,7 +349,10 @@ bool CEventServer::ExecuteNextAction()
       case AT_BUTTON:
         {
           int actionID;
-          CButtonTranslator::TranslateActionString(actionEvent.actionName.c_str(), actionID);
+          std::vector<std::string> parameters;
+          std::string function;
+          CUtil::SplitExecFunction(actionEvent.actionName, function, parameters);
+          CButtonTranslator::TranslateActionString(function.c_str(), actionID);
           CAction action(actionID, 1.0f, 0.0f, actionEvent.actionName);
           g_audioManager.PlayActionSound(action);
           g_application.OnAction(action);

@@ -20,6 +20,7 @@
  *
  */
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -52,5 +53,17 @@ protected:
 
 private:
   bool ActivateWindow(int iWindowID, const std::vector<std::string>& params = std::vector<std::string>(), bool swappingWindows = false);
+
+  CommandMap m_command; //!< Map of registered commands
+
+
+  //! \brief Convenience template used to register commands from providers
+    template<class T>
+  void RegisterCommands()
+  {
+    T t;
+    CommandMap map = t.GetOperations();
+    m_command.insert(map.begin(), map.end());
+  }
 };
 
