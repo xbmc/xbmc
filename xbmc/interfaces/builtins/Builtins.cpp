@@ -134,17 +134,6 @@ using namespace MEDIA_DETECT;
 
 #include <algorithm>
 
-typedef struct
-{
-  const char* command;
-  bool needsParameters;
-  const char* description;
-} BUILT_IN;
-
-const BUILT_IN commands[] = {
-  { "Help",                       false,  "This help message" },
-};
-
 CBuiltins::CBuiltins()
 {
   RegisterCommands<CAddonBuiltins>();
@@ -194,14 +183,6 @@ bool CBuiltins::HasCommand(const std::string& execString)
     if (it->second.parameters == parameters.size())
       return true;
   }
-  else
-  {
-    for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
-    {
-      if (StringUtils::EqualsNoCase(function, commands[i].command) && (!commands[i].needsParameters || parameters.size()))
-        return true;
-    }
-  }
 
   return false;
 }
@@ -250,14 +231,6 @@ void CBuiltins::GetHelp(std::string &help)
     help += it.second.description;
     help += "\n";
   }
-
-  for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
-  {
-    help += commands[i].command;
-    help += "\t";
-    help += commands[i].description;
-    help += "\n";
-  }
 }
 
 int CBuiltins::Execute(const std::string& execString)
@@ -266,11 +239,6 @@ int CBuiltins::Execute(const std::string& execString)
   std::string execute;
   vector<string> params;
   CUtil::SplitExecFunction(execString, execute, params);
-  StringUtils::ToLower(execute);
-  std::string parameter = params.size() ? params[0] : "";
-  std::string paramlow(parameter);
-  StringUtils::ToLower(paramlow);
-
   const auto& it = std::find_if(m_command.begin(), m_command.end(),
                                 [&execute](const std::pair<std::string,BUILT_IN>& it)
                                 {
