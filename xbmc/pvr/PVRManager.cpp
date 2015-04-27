@@ -637,9 +637,8 @@ bool CPVRManager::Load(void)
   else
     return false;
 
-  /* load at least one client */
-  while (IsInitialising() && !m_addons->HasConnectedClients())
-    Sleep(50);
+  /* wait until the addons have loaded */
+  m_addons->WaitForInitialisation();
 
   if (!IsInitialising() || !m_addons->HasConnectedClients())
     return false;

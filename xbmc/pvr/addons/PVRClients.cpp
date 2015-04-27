@@ -48,6 +48,8 @@ using namespace KODI::MESSAGING;
 #define PVR_CLIENT_AVAHI_SCAN_ITERATIONS   (20)
 /** sleep time in milliseconds when no auto-configured add-ons were found */
 #define PVR_CLIENT_AVAHI_SLEEP_TIME_MS     (250)
+/** number of milliseconds to wait until we give up waiting for an addon to load */
+#define PVR_CLIENT_LOAD_TIMEOUT_MS         (5000);
 
 CPVRClients::CPVRClients(void) :
     CThread("PVRClient"),
@@ -177,6 +179,9 @@ void CPVRClients::Unload(void)
   m_strPlayingClientName = "";
 
   m_clientMap.clear();
+
+  /* signal the loaded event so any waiters stop waiting */
+  m_loadedEvent.Set();
 }
 
 int CPVRClients::GetFirstConnectedClientID(void)
@@ -1262,7 +1267,15 @@ bool CPVRClients::UpdateAndInitialiseClients()
     }
   }
 
+  // indicate that addons have now been initialised
+  m_loadedEvent.Set();
+
   return bReturn;
+}
+
+void CPVRClients::WaitForInitialisation()
+{
+  m_loadedEvent.WaitMSec(PVR_CLIENT_LOAD_TIMEOUT_MS);
 }
 
 void CPVRClients::Process(void)
@@ -1272,6 +1285,7 @@ void CPVRClients::Process(void)
   CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
   CAddonMgr::GetInstance().RegisterObserver(this);
 
+  m_loadedEvent.Reset();
   UpdateAddons();
 
   while (!g_application.m_bStop && !m_bStop)
