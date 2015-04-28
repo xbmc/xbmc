@@ -16749,6 +16749,18 @@ msgctxt "#55066"
 msgid "Show stream details from selected splitter"
 msgstr ""
 
+msgctxt "#55067"
+msgid "Select last TV show on first entry"
+msgstr ""
+
+msgctxt "#55068"
+msgid "Last played TV show"
+msgstr ""
+
+msgctxt "#55069"
+msgid "Last watched TV show"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""
