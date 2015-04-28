@@ -1,3 +1,4 @@
+SRCS += AddonBuiltins.cpp
 SRCS += Builtins.cpp
 SRCS += LibraryBuiltins.cpp
      
