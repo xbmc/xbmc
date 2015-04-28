@@ -35,6 +35,7 @@
 #include "cores/VideoRenderers/RenderFlags.h"
 #ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/GraphFilters.h"
+#include "Application.h"
 #endif
 
 
@@ -84,9 +85,26 @@ void CBaseRenderer::ChooseBestResolution(float fps)
 {
   if (fps == 0.0) return;
 
+#ifdef HAS_DS_PLAYER
+  int iValue = CSettings::Get().GetInt("videoplayer.changerefreshwith");
+  bool canChange = true;
+  if (iValue != ADJUST_REFRESHRATE_WITH_BOTH)
+  { 
+    if (g_application.GetCurrentPlayer() == EPC_DSPLAYER && iValue == ADJUST_REFRESHRATE_WITH_DVDPLAYER)
+      canChange = false;
+
+    if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER && iValue == ADJUST_REFRESHRATE_WITH_DSPLAYER)
+      canChange = false;
+  }
+#endif
+
   // Adjust refreshrate to match source fps
 #if !defined(TARGET_DARWIN_IOS)
+#ifdef HAS_DS_PLAYER
+  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && canChange)
+#else
   if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
+#endif
   {
     float weight;
     if (!FindResolutionFromOverride(fps, weight, false)) //find a refreshrate from overrides

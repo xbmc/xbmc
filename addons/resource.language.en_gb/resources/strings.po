@@ -16761,6 +16761,18 @@ msgctxt "#55069"
 msgid "Last watched TV show"
 msgstr ""
 
+msgctxt "#55070"
+msgid "Enable with player"
+msgstr ""
+
+msgctxt "#55071"
+msgid "DSPlayer"
+msgstr ""
+
+msgctxt "#55072"
+msgid "DVDPlayer"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""

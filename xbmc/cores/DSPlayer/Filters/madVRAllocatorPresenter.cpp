@@ -105,7 +105,9 @@ void CmadVRAllocatorPresenter::SetResolution()
     fps = 10000000.0 / frameRate;
   }
 
-  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_graphicsContext.IsFullScreenRoot())
+  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF 
+    && (CSettings::Get().GetInt("videoplayer.changerefreshwith") == ADJUST_REFRESHRATE_WITH_BOTH || CSettings::Get().GetInt("videoplayer.changerefreshwith") == ADJUST_REFRESHRATE_WITH_DSPLAYER)
+    && g_graphicsContext.IsFullScreenRoot())
   {
     RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
     g_graphicsContext.SetVideoResolution(bestRes);

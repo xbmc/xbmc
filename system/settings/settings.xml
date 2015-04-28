@@ -563,6 +563,21 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoplayer.changerefreshwith" type="integer" parent="videoplayer.adjustrefreshrate" label="55070" help="">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="21475">0</option> <!-- ADJUST_REFRESHRATE_WITH_BOTH -->
+              <option label="55071">1</option> <!-- ADJUST_REFRESHRATE_WITH_DSPLAYER -->
+              <option label="55072">2</option> <!-- ADJUST_REFRESHRATE_WITH_DVDPLAYER -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="videoplayer.adjustrefreshrate" operator="!is">0</dependency> <!-- ADJUST_REFRESHRATE_OFF -->
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
         <setting id="videoplayer.pauseafterrefreshchange" type="integer" parent="videoplayer.adjustrefreshrate" label="13550" help="36165">
           <level>2</level>
           <default>0</default>

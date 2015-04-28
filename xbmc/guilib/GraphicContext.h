@@ -71,6 +71,15 @@ enum AdjustRefreshRate
   ADJUST_REFRESHRATE_ON_STARTSTOP
 };
 
+#ifdef HAS_DS_PLAYER
+enum AdjustRefreshRateWithPlayer
+{
+  ADJUST_REFRESHRATE_WITH_BOTH = 0,
+  ADJUST_REFRESHRATE_WITH_DSPLAYER,
+  ADJUST_REFRESHRATE_WITH_DVDPLAYER
+};
+#endif
+
 class CGraphicContext : public CCriticalSection,
                         public ISettingCallback
 {
