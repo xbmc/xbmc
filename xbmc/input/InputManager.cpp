@@ -707,36 +707,6 @@ bool CInputManager::ExecuteInputAction(const CAction &action)
   return bResult;
 }
 
-int CInputManager::ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params)
-{
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  if (execute == "lirc.stop")
-  {
-    m_RemoteControl.Disconnect();
-    m_RemoteControl.SetEnabled(false);
-  }
-  else if (execute == "lirc.start")
-  {
-    m_RemoteControl.SetEnabled(true);
-    m_RemoteControl.Initialize();
-  }
-  else if (execute == "lirc.send")
-  {
-    std::string command;
-    for (int i = 0; i < (int)params.size(); i++)
-    {
-      command += params[i];
-      if (i < (int)params.size() - 1)
-        command += ' ';
-    }
-    m_RemoteControl.AddSendCommand(command);
-  }
-  else
-    return -1;
-#endif
-  return 0;
-}
-
 void CInputManager::SetMouseActive(bool active /* = true */)
 {
   m_Mouse.SetActive(active);
@@ -838,4 +808,47 @@ void CInputManager::OnSettingChanged(const CSetting *setting)
     m_Joystick.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue() &&
     PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
 #endif
+}
+
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+int CInputManager::StopLIRC(const std::vector<std::string>& params)
+{
+  Get().m_RemoteControl.Disconnect();
+  Get().m_RemoteControl.SetEnabled(false);
+
+  return 0;
+}
+
+int CInputManager::StartLIRC(const std::vector<std::string>& params)
+{
+  Get().m_RemoteControl.SetEnabled(true);
+  Get().m_RemoteControl.Initialize();
+
+  return 0;
+}
+
+int CInputManager::SendLIRC(const std::vector<std::string>& params)
+{
+  std::string command;
+  for (size_t i = 0; i < params.size(); i++)
+  {
+    command += params[i];
+    if (i < params.size() - 1)
+      command += ' ';
+  }
+  Get().m_RemoteControl.AddSendCommand(command);
+
+  return 0;
+}
+#endif
+
+CBuiltins::CommandMap CInputManagerBuiltins::GetOperations()
+{
+  return {
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+           {"lirc.stop",  {"Removes Kodi as LIRC client", 0, CInputManager::StopLIRC}},
+           {"lirc.start", {"Adds Kodi as LIRC client", 0, CInputManager::StartLIRC}},
+           {"lirc.send",  {"Sends a command to LIRC", 1, CInputManager::SendLIRC}}
+#endif
+         };
 }

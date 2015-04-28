@@ -143,11 +143,6 @@ typedef struct
 
 const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  { "LIRC.Stop",                  false,  "Removes Kodi as LIRC client" },
-  { "LIRC.Start",                 false,  "Adds Kodi as LIRC client" },
-  { "LIRC.Send",                  true,   "Sends a command to LIRC" },
-#endif
 };
 
 CBuiltins::CBuiltins()
@@ -157,6 +152,7 @@ CBuiltins::CBuiltins()
   RegisterCommands<CGUIBuiltins>();
   RegisterCommands<CGUIContainerBuiltins>();
   RegisterCommands<CGUIControlBuiltins>();
+  RegisterCommands<CInputManagerBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
   RegisterCommands<COpticalBuiltins>();
   RegisterCommands<CPictureBuiltins>();
@@ -293,5 +289,5 @@ int CBuiltins::Execute(const std::string& execString)
     }
   }
 
-  return CInputManager::Get().ExecuteBuiltin(execute, params);
+  return -2;
 }

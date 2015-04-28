@@ -35,6 +35,7 @@
 #include "input/windows/IRServerSuite.h"
 #endif
 
+#include "interfaces/builtins/Builtins.h"
 #include "windowing/XBMC_events.h"
 #include "input/KeyboardStat.h"
 #include "input/MouseStat.h"
@@ -214,14 +215,23 @@ public:
    */
   void SetRemoteControlName(const std::string& name);
 
-  /*! \brief Parse a builtin command and execute any input action
-   *  currently only LIRC commands implemented
-   *
-   * \param[in] execute Command to execute
-   * \param[in] params  parameters that was passed to the command
-   * \return 0 on success, -1 on failure
-   */
-  int ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params);
+  //! \brief Returns the map of built-in operations.
+  CBuiltins::CommandMap GetOperations() const;
+
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  //! \brief Stop LIRC connection.
+  //! \param params (ignored)
+  static int StopLIRC(const std::vector<std::string>& params);
+
+  //! \brief Start LIRC connection.
+  //! \param params (ignored)
+  static int StartLIRC(const std::vector<std::string>& params);
+
+  //! \brief Send a LIRC command
+  //! \param params The parameters.
+  //! \details params[0,..] = parameters to send to LIRC.
+  static int SendLIRC(const std::vector<std::string>& params);
+#endif
 
   virtual void OnSettingChanged(const CSetting *setting);
 
@@ -267,4 +277,12 @@ private:
 #if defined(HAS_SDL_JOYSTICK) 
   CJoystick m_Joystick;
 #endif
+};
+
+//! \brief Class providing input manager related built-in commands.
+class CInputManagerBuiltins
+{
+public:
+  //! \brief Returns the map of operations.
+  static CBuiltins::CommandMap GetOperations();
 };
