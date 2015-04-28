@@ -135,3 +135,6 @@
 
 // Sent to text field to support 'input method'
 #define GUI_MSG_INPUT_TEXT_EDIT       GUI_MSG_USER + 38
+
+// Sent to stereoscopic manager to ask user 'stereoscopic mode'
+#define GUI_MSG_STEREOSCOPIC_MODE_ASK GUI_MSG_USER + 39

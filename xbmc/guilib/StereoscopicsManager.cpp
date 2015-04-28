@@ -399,6 +399,9 @@ bool CStereoscopicsManager::OnMessage(CGUIMessage &message)
   case GUI_MSG_PLAYBACK_STARTED:
     OnPlaybackStarted();
     break;
+  case GUI_MSG_STEREOSCOPIC_MODE_ASK:
+    OnStereoscopicModeAsk();
+    break;
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     OnPlaybackStopped();
@@ -546,44 +549,11 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
   {
   case STEREOSCOPIC_PLAYBACK_MODE_ASK: // Ask
     {
-      CApplicationMessenger::Get().MediaPause();
-
-      CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-      pDlgSelect->Reset();
-      pDlgSelect->SetHeading(g_localizeStrings.Get(36527).c_str());
-
-      int idx_playing   = -1;
-
-      // add choices
-      int idx_preferred = pDlgSelect->Add(g_localizeStrings.Get(36524) // preferred
-                                     + " ("
-                                     + GetLabelForStereoMode(preferred)
-                                     + ")");
-
-      int idx_mono = pDlgSelect->Add(GetLabelForStereoMode(RENDER_STEREO_MODE_MONO)); // mono / 2d
-
-      if (playing != RENDER_STEREO_MODE_OFF && playing != preferred && preferred != RENDER_STEREO_MODE_AUTO && g_Windowing.SupportsStereo(playing)) // same as movie
-        idx_playing = pDlgSelect->Add(g_localizeStrings.Get(36532)
-                                    + " ("
-                                    + GetLabelForStereoMode(playing)
-                                    + ")");
-
-      int idx_select = pDlgSelect->Add( g_localizeStrings.Get(36531) ); // other / select
-
-      pDlgSelect->DoModal();
-
-      if(pDlgSelect->IsConfirmed())
-      {
-        int iItem = pDlgSelect->GetSelectedLabel();
-        if      (iItem == idx_preferred) mode = preferred;
-        else if (iItem == idx_mono)      mode = RENDER_STEREO_MODE_MONO;
-        else if (iItem == idx_playing)   mode = RENDER_STEREO_MODE_AUTO;
-        else if (iItem == idx_select)    mode = GetStereoModeByUserChoice();
-
-        SetStereoModeByUser( mode );
-      }
-
-      CApplicationMessenger::Get().MediaUnPause();
+      // Delay asking stereoscopic playback mode
+      // This needs because GUI_MSG_PLAYBACK_STARTED msg is received before actual switching to fullscreen 
+      // and active modal dialog causes impossibility switching to fullscreen
+      CGUIMessage msg(GUI_MSG_STEREOSCOPIC_MODE_ASK, 0, 0);
+      g_windowManager.SendThreadMessage(msg);
     }
     break;
   case STEREOSCOPIC_PLAYBACK_MODE_PREFERRED: // Stereoscopic
@@ -606,4 +576,50 @@ void CStereoscopicsManager::OnPlaybackStopped(void)
   if (m_stereoModeSetByUser != RENDER_STEREO_MODE_OFF)
     m_lastStereoModeSetByUser = m_stereoModeSetByUser;
   m_stereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
+}
+
+void CStereoscopicsManager::OnStereoscopicModeAsk(void)
+{
+  RENDER_STEREO_MODE mode = GetStereoMode();
+  RENDER_STEREO_MODE preferred = GetPreferredPlaybackMode();
+  RENDER_STEREO_MODE playing = GetStereoModeOfPlayingVideo();
+
+  CApplicationMessenger::Get().MediaPause();
+
+  CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  pDlgSelect->Reset();
+  pDlgSelect->SetHeading(g_localizeStrings.Get(36527).c_str());
+
+  int idx_playing = -1;
+
+  // add choices
+  int idx_preferred = pDlgSelect->Add(g_localizeStrings.Get(36524) // preferred
+                                      + " ("
+                                      + GetLabelForStereoMode(preferred)
+                                      + ")");
+
+  int idx_mono = pDlgSelect->Add(GetLabelForStereoMode(RENDER_STEREO_MODE_MONO)); // mono / 2d
+
+  if (playing != RENDER_STEREO_MODE_OFF && playing != preferred && preferred != RENDER_STEREO_MODE_AUTO && g_Windowing.SupportsStereo(playing)) // same as movie
+    idx_playing = pDlgSelect->Add(g_localizeStrings.Get(36532)
+                                  + " ("
+                                  + GetLabelForStereoMode(playing)
+                                  + ")");
+
+  int idx_select = pDlgSelect->Add(g_localizeStrings.Get(36531)); // other / select
+
+  pDlgSelect->DoModal();
+
+  if (pDlgSelect->IsConfirmed())
+  {
+    int iItem = pDlgSelect->GetSelectedLabel();
+    if      (iItem == idx_preferred) mode = preferred;
+    else if (iItem == idx_mono)      mode = RENDER_STEREO_MODE_MONO;
+    else if (iItem == idx_playing)   mode = RENDER_STEREO_MODE_AUTO;
+    else if (iItem == idx_select)    mode = GetStereoModeByUserChoice();
+
+    SetStereoModeByUser(mode);
+  }
+
+  CApplicationMessenger::Get().MediaUnPause();
 }

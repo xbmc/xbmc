@@ -92,6 +92,7 @@ private:
   void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true);
   void OnPlaybackStarted(void);
   void OnPlaybackStopped(void);
+  void OnStereoscopicModeAsk(void);
 
   RENDER_STEREO_MODE m_stereoModeSetByUser;
   RENDER_STEREO_MODE m_lastStereoModeSetByUser;
