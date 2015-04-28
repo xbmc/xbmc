@@ -17,98 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#include "network/Network.h"
-#include "system.h"
-#include "utils/AlarmClock.h"
-#include "utils/Screenshot.h"
-#include "utils/SeekHandler.h"
-#include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogHelper.h"
-#include "Autorun.h"
-#include "Builtins.h"
-#include "input/ButtonTranslator.h"
-#include "input/InputManager.h"
-#include "FileItem.h"
-#include "addons/GUIDialogAddonSettings.h"
-#include "dialogs/GUIDialogFileBrowser.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "input/Key.h"
-#include "guilib/StereoscopicsManager.h"
-#include "guilib/GUIAudioManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "GUIUserMessages.h"
-#include "windows/GUIWindowLoginScreen.h"
-#include "video/windows/GUIWindowVideoBase.h"
-#include "addons/GUIWindowAddonBrowser.h"
-#include "addons/Addon.h" // for TranslateType, TranslateContent
-#include "addons/AddonInstaller.h"
-#include "addons/AddonManager.h"
-#include "addons/PluginSource.h"
-#include "addons/RepositoryUpdater.h"
-#include "addons/Skin.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
-#include "interfaces/AnnouncementManager.h"
-#include "network/NetworkServices.h"
-#include "utils/log.h"
-#include "storage/MediaManager.h"
-#include "utils/RssManager.h"
-#include "utils/JSONVariantParser.h"
-#include "PartyModeManager.h"
-#include "profiles/ProfilesManager.h"
-#include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
-#include "settings/MediaSettings.h"
-#include "settings/MediaSourceSettings.h"
-#include "settings/SkinSettings.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#include "video/VideoLibraryQueue.h"
-#include "Util.h"
-#include "URL.h"
-#include "music/MusicDatabase.h"
-#include "cores/IPlayer.h"
-#include "pvr/channels/PVRChannel.h"
-#include "pvr/recordings/PVRRecording.h"
-#include "pvr/PVRManager.h"
-
-#include "filesystem/PluginDirectory.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
-#include "filesystem/ZipManager.h"
-
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-
-#ifdef HAS_LIRC
-#include "input/linux/LIRC.h"
-#endif
-#ifdef HAS_IRSERVERSUITE
-
-  #include "input/windows/IRServerSuite.h"
-
-#endif
-
-#if defined(TARGET_DARWIN)
-#include "filesystem/SpecialProtocol.h"
-#include "osx/CocoaInterface.h"
-#endif
-
-#ifdef HAS_CDDA_RIPPER
-#include "cdrip/CDDARipper.h"
-#endif
-
-#include <vector>
-#include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
-#include "powermanagement/PowerManager.h"
-#include "filesystem/Directory.h"
-
 #include "AddonBuiltins.h"
 #include "ApplicationBuiltins.h"
 #include "CECBuiltins.h"
@@ -125,16 +33,19 @@
 #include "SystemBuiltins.h"
 #include "WeatherBuiltins.h"
 
+#include "input/InputManager.h"
+#include "powermanagement/PowerManager.h"
+#include "settings/Settings.h"
+#include "Util.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+
 #if defined(TARGET_ANDROID)
 #include "AndroidBuiltins.h"
 #endif
 
-using namespace XFILE;
-using namespace ADDON;
-using namespace KODI::MESSAGING;
-
-#ifdef HAS_DVD_DRIVE
-using namespace MEDIA_DETECT;
+#if defined(TARGET_POSIX)
+#include "linux/PlatformDefs.h"
 #endif
 
 CBuiltins::CBuiltins()
@@ -238,9 +149,6 @@ int CBuiltins::Execute(const std::string& execString)
   std::vector<std::string> params;
   CUtil::SplitExecFunction(execString, execute, params);
   StringUtils::ToLower(execute);
-  std::string parameter = params.size() ? params[0] : "";
-  std::string paramlow(parameter);
-  StringUtils::ToLower(paramlow);
 
   const auto& it = m_command.find(execute);
   if (it != m_command.end())
