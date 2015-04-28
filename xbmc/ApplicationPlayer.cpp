@@ -264,6 +264,20 @@ void CApplicationPlayer::SeekTime(int64_t iTime)
     player->SeekTime(iTime);
 }
 
+void CApplicationPlayer::SeekTimeRelative(int64_t iTime)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    // use relative seeking if implemented by player
+    if (!player->SeekTimeRelative(iTime))
+    {
+      int64_t abstime = player->GetTime() + iTime;
+      player->SeekTime(abstime);
+    }
+  }
+}
+
 std::string CApplicationPlayer::GetPlayingTitle()
 {
   std::shared_ptr<IPlayer> player = GetInternal();

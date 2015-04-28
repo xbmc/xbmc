@@ -3163,6 +3163,15 @@ void CDVDPlayer::SeekTime(int64_t iTime)
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);
 }
 
+bool CDVDPlayer::SeekTimeRelative(int64_t iTime)
+{
+  int64_t abstime = GetTime() + iTime;
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)abstime, (iTime < 0) ? true : false, true, false));
+  SynchronizeDemuxer(100);
+  m_callback.OnPlayBackSeek((int)abstime, iTime);
+  return true;
+}
+
 // return the time in milliseconds
 int64_t CDVDPlayer::GetTime()
 {
