@@ -239,6 +239,20 @@ const BUILT_IN commands[] = {
   { "SetStereoMode",              true,   "Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, anaglyph_yellow_blue, monoscopic)" }
 };
 
+CBuiltins::CBuiltins()
+{
+}
+
+CBuiltins::~CBuiltins()
+{
+}
+
+CBuiltins& CBuiltins::Get()
+{
+  static CBuiltins sBuiltins;
+  return sBuiltins;
+}
+
 bool CBuiltins::HasCommand(const std::string& execString)
 {
   std::string function;

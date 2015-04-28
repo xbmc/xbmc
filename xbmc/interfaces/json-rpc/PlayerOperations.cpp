@@ -293,7 +293,7 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const std::string &method, ITranspor
         return FailedToExecute;
       
       if (parameterObject["play"].isString())
-        CBuiltins::Execute("playercontrol(play)");
+        CBuiltins::Get().Execute("playercontrol(play)");
       else
       {
         if (parameterObject["play"].asBoolean())
@@ -369,9 +369,9 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const std::string &method, ITransport
       else if (parameterObject["speed"].isString())
       {
         if (parameterObject["speed"].asString().compare("increment") == 0)
-          CBuiltins::Execute("playercontrol(forward)");
+          CBuiltins::Get().Execute("playercontrol(forward)");
         else
-          CBuiltins::Execute("playercontrol(rewind)");
+          CBuiltins::Get().Execute("playercontrol(rewind)");
       }
       else
         return InvalidParams;
@@ -406,13 +406,13 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
       {
         std::string step = value.isString() ? value.asString() : value["step"].asString();
         if (step == "smallforward")
-          CBuiltins::Execute("playercontrol(smallskipforward)");
+          CBuiltins::Get().Execute("playercontrol(smallskipforward)");
         else if (step == "smallbackward")
-          CBuiltins::Execute("playercontrol(smallskipbackward)");
+          CBuiltins::Get().Execute("playercontrol(smallskipbackward)");
         else if (step == "bigforward")
-          CBuiltins::Execute("playercontrol(bigskipforward)");
+          CBuiltins::Get().Execute("playercontrol(bigskipforward)");
         else if (step == "bigbackward")
-          CBuiltins::Execute("playercontrol(bigskipbackward)");
+          CBuiltins::Get().Execute("playercontrol(bigskipbackward)");
         else
           return InvalidParams;
       }

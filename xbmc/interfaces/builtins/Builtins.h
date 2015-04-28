@@ -26,12 +26,20 @@
 class CBuiltins
 {
 public:
-  static bool HasCommand(const std::string& execString);
-  static bool IsSystemPowerdownCommand(const std::string& execString);
-  static void GetHelp(std::string &help);
-  static int Execute(const std::string& execString);
+  static CBuiltins& Get();
+
+  bool HasCommand(const std::string& execString);
+  bool IsSystemPowerdownCommand(const std::string& execString);
+  void GetHelp(std::string &help);
+  int Execute(const std::string& execString);
+
+protected:
+  CBuiltins();
+  CBuiltins(const CBuiltins&);
+  const CBuiltins& operator=(const CBuiltins&);
+  virtual ~CBuiltins();
 
 private:
-  static bool ActivateWindow(int iWindowID, const std::vector<std::string>& params = std::vector<std::string>(), bool swappingWindows = false);
+  bool ActivateWindow(int iWindowID, const std::vector<std::string>& params = std::vector<std::string>(), bool swappingWindows = false);
 };
 

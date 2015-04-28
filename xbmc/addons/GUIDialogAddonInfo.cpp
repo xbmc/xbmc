@@ -194,7 +194,7 @@ void CGUIDialogAddonInfo::OnLaunch()
   if (!m_localAddon)
     return;
 
-  CBuiltins::Execute("RunAddon(" + m_localAddon->ID() + ")");
+  CBuiltins::Get().Execute("RunAddon(" + m_localAddon->ID() + ")");
   Close();
 }
 

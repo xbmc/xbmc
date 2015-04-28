@@ -233,7 +233,7 @@ void CPowerManager::OnSleep()
   // stop lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Stopping lirc", __FUNCTION__);
-  CBuiltins::Execute("LIRC.Stop");
+  CBuiltins::Get().Execute("LIRC.Stop");
 #endif
 
   g_application.SaveFileState(true);
@@ -269,7 +269,7 @@ void CPowerManager::OnWake()
   // restart lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
-  CBuiltins::Execute("LIRC.Start");
+  CBuiltins::Get().Execute("LIRC.Start");
 #endif
 
   CAEFactory::Resume();

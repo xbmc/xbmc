@@ -342,7 +342,7 @@ bool CEventServer::ExecuteNextAction()
       switch(actionEvent.actionType)
       {
       case AT_EXEC_BUILTIN:
-        CBuiltins::Execute(actionEvent.actionName);
+        CBuiltins::Get().Execute(actionEvent.actionName);
         break;
 
       case AT_BUTTON:

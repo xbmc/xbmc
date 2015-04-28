@@ -76,7 +76,7 @@ void CRssManager::OnSettingAction(const CSetting *setting)
         return;
       CAddonInstaller::Get().Install("script.rss.editor", true, "", false);
     }
-    CBuiltins::Execute("RunScript(script.rss.editor)");
+    CBuiltins::Get().Execute("RunScript(script.rss.editor)");
   }
 }
 
