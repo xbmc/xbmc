@@ -119,10 +119,6 @@ int CSeekHandler::GetSeekSeconds(bool forward, SeekType type)
 
 void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bool analogSeek /* = false */, SeekType type /* = SEEK_TYPE_VIDEO */)
 {
-  // abort if we do not have a play time or already perform a seek
-  if (m_performingSeek)
-    return;
-
   CSingleLock lock(m_critSection);
 
   // not yet seeking
@@ -176,7 +172,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
 void CSeekHandler::SeekSeconds(int seconds)
 {
   // abort if we do not have a play time or already perform a seek
-  if (seconds == 0 || m_performingSeek)
+  if (seconds == 0)
     return;
 
   CSingleLock lock(m_critSection);
@@ -203,13 +199,11 @@ void CSeekHandler::Process()
   if (m_timer.GetElapsedMilliseconds() >= m_seekDelay && m_requireSeek)
   {
     CSingleLock lock(m_critSection);
-    m_performingSeek = true;
 
     // perform relative seek
     g_application.m_pPlayer->SeekTimeRelative(static_cast<int64_t>(m_seekSize * 1000));
 
     m_requireSeek = false;
-    m_performingSeek = false;
   }
 }
 
