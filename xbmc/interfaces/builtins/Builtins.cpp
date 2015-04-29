@@ -112,6 +112,8 @@ using namespace ADDON;
 using namespace MEDIA_DETECT;
 #endif
 
+#include <algorithm>
+
 typedef struct
 {
   const char* command;
@@ -258,11 +260,26 @@ bool CBuiltins::HasCommand(const std::string& execString)
   std::string function;
   vector<string> parameters;
   CUtil::SplitExecFunction(execString, function, parameters);
-  for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+  const auto& it = std::find_if(m_command.begin(), m_command.end(),
+                                [&function](const std::pair<std::string,BUILT_IN>& it)
+                                {
+                                  return StringUtils::EqualsNoCase(it.first,
+                                                                   function);
+                                });
+  if (it != m_command.end())
   {
-    if (StringUtils::EqualsNoCase(function, commands[i].command) && (!commands[i].needsParameters || parameters.size()))
+    if (it->second.parameters == parameters.size())
       return true;
   }
+  else
+  {
+    for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
+    {
+      if (StringUtils::EqualsNoCase(function, commands[i].command) && (!commands[i].needsParameters || parameters.size()))
+        return true;
+    }
+  }
+
   return false;
 }
 
@@ -302,6 +319,15 @@ bool CBuiltins::IsSystemPowerdownCommand(const std::string& execString)
 void CBuiltins::GetHelp(std::string &help)
 {
   help.clear();
+
+  for (const auto& it : m_command)
+  {
+    help += it.first;
+    help += "\t";
+    help += it.second.description;
+    help += "\n";
+  }
+
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
     help += commands[i].command;
@@ -329,6 +355,24 @@ int CBuiltins::Execute(const std::string& execString)
   std::string parameter = params.size() ? params[0] : "";
   std::string paramlow(parameter);
   StringUtils::ToLower(paramlow);
+
+  const auto& it = std::find_if(m_command.begin(), m_command.end(),
+                                [&execute](const std::pair<std::string,BUILT_IN>& it)
+                                {
+                                  return StringUtils::EqualsNoCase(it.first,
+                                                                   execute);
+                                });
+  if (it != m_command.end())
+  {
+    if (params.size() >= it->second.parameters)
+      return it->second.Execute(params);
+    else
+    {
+      CLog::Log(LOGERROR, "%s called with invalid number of parameters (should be: %" PRIdS ", is %" PRIdS")",
+                          execute.c_str(), it->second.parameters, params.size());
+      return -1;
+    }
+  }
 
   if (execute == "reboot" || execute == "restart" || execute == "reset")  //Will reboot the system
   {

@@ -20,12 +20,24 @@
  *
  */
 
+#include <map>
 #include <string>
 #include <vector>
 
 class CBuiltins
 {
 public:
+  //! \brief Struct representing a command from handler classes.
+  struct BUILT_IN
+  {
+    std::string description; //!< Description of command (help string)
+    size_t parameters;       //!< Number of required parameters (can be 0)
+    int (*Execute)(const std::vector<std::string>& params); //!< Function to handle command
+  };
+
+  //! \brief A map of commands
+  typedef std::map<std::string,CBuiltins::BUILT_IN> CommandMap;
+
   static CBuiltins& Get();
 
   bool HasCommand(const std::string& execString);
@@ -41,5 +53,15 @@ protected:
 
 private:
   bool ActivateWindow(int iWindowID, const std::vector<std::string>& params = std::vector<std::string>(), bool swappingWindows = false);
+
+  CommandMap m_command; //!< Map of registered commands
+
+  //! \brief Convenience template used to register commands from providers
+    template<class T>
+  void RegisterCommands()
+  {
+    CommandMap map = T::GetOperations();
+    m_command.insert(map.begin(), map.end());
+  }
 };
 
