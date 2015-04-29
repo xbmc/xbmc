@@ -26,7 +26,6 @@
 #include "input/Key.h"
 #include "guilib/WindowIDs.h"
 #include "input/MouseStat.h"
-#include "input/XBMC_keysym.h"
 #include "input/XBMC_keytable.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"

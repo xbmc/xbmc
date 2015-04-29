@@ -21,15 +21,10 @@
 #include "WINJoystick.h"
 #include "input/ButtonTranslator.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
 #include "utils/log.h"
-#include "utils/RegExp.h"
 
-#include <math.h>
 #include <memory>
-
 #include <dinput.h>
-#include <dinputd.h>
 
 using namespace std;
 
