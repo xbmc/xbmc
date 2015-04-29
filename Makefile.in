@@ -623,6 +623,9 @@ endif
 	@for f in project/cmake/scripts/common/*.cmake; do \
 	  install -m 0644 $$f $(DESTDIR)$(libdir)/@APP_NAME_LC@; \
 	done
+ifeq ($(findstring linux,@host@),linux)
+	install -m 0644 project/cmake/scripts/linux/UseMultiArch.cmake $(DESTDIR)$(libdir)/@APP_NAME_LC@
+endif
 	@cd $(DESTDIR)$(includedir); [ -L xbmc ] || [ -d xbmc ] || ln -s @APP_NAME_LC@ xbmc
 
 uninstall:
