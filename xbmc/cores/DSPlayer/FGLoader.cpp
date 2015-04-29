@@ -272,7 +272,7 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
 {
   HRESULT hr = S_FALSE;
   CFGFilterRegistry* pFGF;
-
+  CStdString sAudioRenderName, sAudioRenderDisplayName;
   if (!filterName.empty())
   {
     if (SUCCEEDED(InsertFilter(filterName, CGraphFilters::Get()->AudioRenderer)))
@@ -294,8 +294,11 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
     DSFilterInfo dev = *iter;
     if (renderer.Equals(dev.lpstrName))
     {
+      sAudioRenderName = dev.lpstrName;
+      sAudioRenderDisplayName = dev.lpstrDisplayName;
       START_PERFORMANCE_COUNTER
-        pFGF = new CFGFilterRegistry(GUIDFromString(dev.lpstrGuid));
+        //pFGF = new CFGFilterRegistry(GUIDFromString(dev.lpstrGuid));
+        pFGF = new CFGFilterRegistry(dev.lpstrDisplayName);
       hr = pFGF->Create(&CGraphFilters::Get()->AudioRenderer.pBF);
       delete pFGF;
       END_PERFORMANCE_COUNTER("Loaded audio renderer from registry");
@@ -315,9 +318,9 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
   }
 
   if (SUCCEEDED(hr))
-    CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, CGraphFilters::Get()->AudioRenderer.osdname.c_str());
+    CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" - DiplayName: %s to the graph", __FUNCTION__, sAudioRenderName.c_str(), sAudioRenderDisplayName.c_str());
   else
-    CLog::Log(LOGNOTICE, "%s Failed to add \"%s\" to the graph (result: %X)", __FUNCTION__, CGraphFilters::Get()->AudioRenderer.osdname.c_str(), hr);
+    CLog::Log(LOGNOTICE, "%s Failed to add \"%s\" to the graph (result: %X)", __FUNCTION__, sAudioRenderName.c_str(), hr);
 
   return hr;
 }

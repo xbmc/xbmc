@@ -28,6 +28,7 @@ struct DSFilterInfo
 {
   CStdString lpstrGuid;
   CStdString lpstrName;
+  CStdString lpstrDisplayName;
 };
 
 class CAudioEnumerator
@@ -38,7 +39,7 @@ public:
 
 private:
   CCriticalSection m_critSection;
-  void AddFilter(std::vector<DSFilterInfo>& pRenderers, CStdStringW lpGuid, CStdStringW lpName);
+  void AddFilter(std::vector<DSFilterInfo>& pRenderers, CStdStringW lpGuid, CStdStringW lpName, CStdString lpDisplayName);
 
 };
 

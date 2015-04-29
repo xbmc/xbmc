@@ -118,9 +118,7 @@ CFGFilterRegistry::CFGFilterRegistry(CStdString DisplayName)
   CreateBindCtx(0, &pBC);
 
   ULONG chEaten;
-  CStdString m_DisplayNameW;
-  g_charsetConverter.subtitleCharsetToUtf8(m_DisplayName, m_DisplayNameW);
-  if (S_OK != MkParseDisplayName(pBC, LPCOLESTR(m_DisplayNameW.c_str()), &chEaten, &m_pMoniker))
+  if (S_OK != MkParseDisplayName(pBC, AToW(DisplayName), &chEaten, &m_pMoniker))
     return;
 
   IPropertyBag* pPB;
