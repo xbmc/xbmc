@@ -362,7 +362,7 @@ namespace PythonBindings
     return (PyObject*)self;
   }
 
-  std::map<XbmcCommons::type_index, const TypeInfo*> typeInfoLookup;
+  std::map<std::type_index, const TypeInfo*> typeInfoLookup;
 
   void registerAddonClassTypeInformation(const TypeInfo* classInfo)
   {
@@ -371,7 +371,7 @@ namespace PythonBindings
 
   const TypeInfo* getTypeInfoForInstance(XBMCAddon::AddonClass* obj)
   {
-    XbmcCommons::type_index ti(typeid(*obj));
+    std::type_index ti(typeid(*obj));
     return typeInfoLookup[ti];
   }
 

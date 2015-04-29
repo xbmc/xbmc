@@ -27,8 +27,7 @@
 #include "interfaces/legacy/Exception.h"
 #include "interfaces/legacy/AddonClass.h"
 #include "interfaces/legacy/Window.h"
-
-#include "commons/typeindex.h"
+#include <typeindex>
 
 namespace PythonBindings
 {
@@ -51,7 +50,7 @@ namespace PythonBindings
     const char* swigType;
     TypeInfo* parentType;
     PyTypeObject pythonType;
-    const XbmcCommons::type_index typeIndex;
+    const std::type_index typeIndex;
 
     TypeInfo(const std::type_info& ti);
   };
