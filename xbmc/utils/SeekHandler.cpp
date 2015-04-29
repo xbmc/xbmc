@@ -119,7 +119,13 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
   // not yet seeking
   if (!m_requireSeek)
   {
-    // tell info manager that we have started a seek operation
+    // use only the first step forward/backward for a seek without a delay
+    if (!analogSeek && m_seekDelays.at(type) == 0)
+    {
+      SeekSeconds(GetSeekStepSize(type, forward ? 1 : -1));
+      return;
+    }
+
     m_requireSeek = true;
     m_seekStep = 0;
     m_seekSize = 0;
