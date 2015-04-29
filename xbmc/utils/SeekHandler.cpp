@@ -90,29 +90,24 @@ void CSeekHandler::Reset()
   }
 }
 
-int CSeekHandler::GetSeekSeconds(bool forward, SeekType type)
+int CSeekHandler::GetSeekStepSize(SeekType type, int step)
 {
-  m_seekStep = m_seekStep + (forward ? 1 : -1);
-
-  if (m_seekStep == 0)
-    return 0;
-
-  std::vector<int> seekSteps(m_seekStep > 0 ? m_forwardSeekSteps.at(type) : m_backwardSeekSteps.at(type));
+  std::vector<int> seekSteps(step > 0 ? m_forwardSeekSteps.at(type) : m_backwardSeekSteps.at(type));
 
   if (seekSteps.empty())
   {
     CLog::Log(LOGERROR, "SeekHandler - %s - No %s %s seek steps configured.", __FUNCTION__,
-              (type == SeekType::SEEK_TYPE_VIDEO ? "video" : "music"), (m_seekStep > 0 ? "forward" : "backward"));
+              (type == SeekType::SEEK_TYPE_VIDEO ? "video" : "music"), (step > 0 ? "forward" : "backward"));
     return 0;
   }
 
   int seconds = 0;
 
   // when exceeding the selected amount of steps repeat/sum up the last step size
-  if (static_cast<size_t>(abs(m_seekStep)) <= seekSteps.size())
-    seconds = seekSteps.at(abs(m_seekStep) - 1);
+  if (static_cast<size_t>(abs(step)) <= seekSteps.size())
+    seconds = seekSteps.at(abs(step) - 1);
   else
-    seconds = seekSteps.back() * (abs(m_seekStep) - seekSteps.size() + 1);
+    seconds = seekSteps.back() * (abs(step) - seekSteps.size() + 1);
 
   return seconds;
 }
@@ -154,7 +149,8 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
   }
   else
   {
-    int seekSeconds = GetSeekSeconds(forward, type);
+    m_seekStep += forward ? 1 : -1;
+    int seekSeconds = GetSeekStepSize(type, m_seekStep);
     if (seekSeconds != 0)
     {
       m_seekSize = seekSeconds;
