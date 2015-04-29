@@ -176,12 +176,10 @@ void CSeekHandler::SeekSeconds(int seconds)
     return;
 
   CSingleLock lock(m_critSection);
-
-  m_requireSeek = true;
-  m_seekDelay = 0;
   m_seekSize = seconds;
 
-  m_timer.StartZero();
+  // perform relative seek
+  g_application.m_pPlayer->SeekTimeRelative(static_cast<int64_t>(seconds * 1000));
 }
 
 int CSeekHandler::GetSeekSize() const
