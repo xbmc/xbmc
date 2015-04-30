@@ -596,7 +596,7 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
     return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19227).c_str(), m_strTitle.c_str()); // Recording completed
   case PVR_TIMER_STATE_SCHEDULED:
   default:
-    return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19228).c_str(), m_strTitle.c_str()); // Recording deleted
+    return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19228).c_str(), m_strTitle.c_str()); // Timer deleted
   }
 }
 
