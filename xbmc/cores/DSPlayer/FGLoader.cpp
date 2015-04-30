@@ -98,6 +98,13 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   /* DVD NAVIGATOR */
   if (pFileItem.IsDVDFile())
   {
+    CStdString path = pFileItem.GetPath();
+    if ((path.Left(6)).Equals("smb://", false))
+    {
+      path.Replace("smb://", "//");
+      pFileItem.SetPath(path);
+    }
+
     hr = InsertFilter(filterName, CGraphFilters::Get()->Splitter);
     if (SUCCEEDED(hr))
     {
