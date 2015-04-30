@@ -177,12 +177,12 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "rewinding4x",      PLAYER_REWINDING_4x },
                                   { "rewinding8x",      PLAYER_REWINDING_8x },
                                   { "rewinding16x",     PLAYER_REWINDING_16x },
-                                  { "rewinding32x",     PLAYER_REWINDING_32x },
+                                  { "rewindingrrx",     PLAYER_REWINDING_RRx },
                                   { "forwarding2x",     PLAYER_FORWARDING_2x },
                                   { "forwarding4x",     PLAYER_FORWARDING_4x },
                                   { "forwarding8x",     PLAYER_FORWARDING_8x },
                                   { "forwarding16x",    PLAYER_FORWARDING_16x },
-                                  { "forwarding32x",    PLAYER_FORWARDING_32x },
+                                  { "forwardingffx",    PLAYER_FORWARDING_FFx },
                                   { "canrecord",        PLAYER_CAN_RECORD },
                                   { "recording",        PLAYER_RECORDING },
                                   { "displayafterseek", PLAYER_DISPLAY_AFTER_SEEK },
@@ -2547,7 +2547,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_REWINDING_16x:
       bReturn = !g_application.m_pPlayer->IsPausedPlayback() && g_application.m_pPlayer->GetPlaySpeed() == -16;
       break;
-    case PLAYER_REWINDING_32x:
+    case PLAYER_REWINDING_RRx:
       bReturn = !g_application.m_pPlayer->IsPausedPlayback() && g_application.m_pPlayer->GetPlaySpeed() == -32;
       break;
     case PLAYER_FORWARDING_2x:
@@ -2562,7 +2562,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_FORWARDING_16x:
       bReturn = !g_application.m_pPlayer->IsPausedPlayback() && g_application.m_pPlayer->GetPlaySpeed() == 16;
       break;
-    case PLAYER_FORWARDING_32x:
+    case PLAYER_FORWARDING_FFx:
       bReturn = !g_application.m_pPlayer->IsPausedPlayback() && g_application.m_pPlayer->GetPlaySpeed() == 32;
       break;
     case PLAYER_CAN_RECORD:

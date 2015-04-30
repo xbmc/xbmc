@@ -1843,7 +1843,7 @@ void CDVDPlayer::HandlePlaySpeed()
         error /= m_playSpeed / DVD_PLAYSPEED_NORMAL;
       }
 
-      if(error > DVD_MSEC_TO_TIME(1000))
+      if(error > DVD_MSEC_TO_TIME(1000) && m_playSpeed < (32 * DVD_PLAYSPEED_NORMAL))
       {
         error  = (int)DVD_TIME_TO_MSEC(m_clock.GetClock()) - m_SpeedState.lastseekpts;
 
