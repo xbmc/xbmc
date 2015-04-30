@@ -19,7 +19,6 @@
  */
 
 #include "PeripheralTuner.h"
-#include "utils/log.h"
 
 using namespace PERIPHERALS;
 

@@ -31,11 +31,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
-#include "peripherals/Peripherals.h"
-#include "peripherals/bus/PeripheralBus.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 
