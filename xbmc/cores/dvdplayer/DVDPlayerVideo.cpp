@@ -1172,7 +1172,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       mDisplayField = FS_BOT;
   }
 
-  int buffer = g_renderManager.WaitForBuffer(m_bStop, std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50));
+  int bufferwait = (abs(m_speed) > DVD_PLAYSPEED_NORMAL * 16) ? 0 : std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50);
+  int buffer = g_renderManager.WaitForBuffer(m_bStop, bufferwait);
   if (buffer < 0)
   {
     m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);

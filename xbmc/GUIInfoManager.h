@@ -66,13 +66,13 @@ namespace INFO
 #define PLAYER_REWINDING_4x           8
 #define PLAYER_REWINDING_8x           9
 #define PLAYER_REWINDING_16x         10
-#define PLAYER_REWINDING_32x         11
+#define PLAYER_REWINDING_RRx         11
 #define PLAYER_FORWARDING            12
 #define PLAYER_FORWARDING_2x         13
 #define PLAYER_FORWARDING_4x         14
 #define PLAYER_FORWARDING_8x         15
 #define PLAYER_FORWARDING_16x        16
-#define PLAYER_FORWARDING_32x        17
+#define PLAYER_FORWARDING_FFx        17
 #define PLAYER_CAN_RECORD            18
 #define PLAYER_RECORDING             19
 #define PLAYER_CACHING               20
