@@ -29,7 +29,6 @@
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "utils/URIUtils.h"
 #include "aojsonrpc.h"
 #ifndef TARGET_WINDOWS
 #include "XTimeUtils.h"
@@ -47,13 +46,10 @@
 #include "settings/Settings.h"
 #include "guilib/TextureManager.h"
 #include "Util.h"
-#include "URL.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "storage/MediaManager.h"
-#include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
-#include "CallbackHandler.h"
 #include "AddonUtils.h"
 
 #include "LanguageHook.h"
@@ -61,8 +57,8 @@
 #include "cores/VideoRenderers/RenderCapture.h"
 
 #include "threads/SystemClock.h"
-#include "Exception.h"
 #include <vector>
+#include "utils/log.h"
 
 namespace XBMCAddon
 {

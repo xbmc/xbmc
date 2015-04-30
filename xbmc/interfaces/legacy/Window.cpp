@@ -28,8 +28,10 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "utils/Variant.h"
+#include "WindowException.h"
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
+
 
 namespace XBMCAddon
 {

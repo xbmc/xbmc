@@ -23,11 +23,7 @@
 #include "ApplicationMessenger.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindow.h"
-#include "guilib/GUIWindowManager.h"
 #include "input/ButtonTranslator.h"
-#include "input/XBMC_keyboard.h"
-#include "input/XBMC_vkeys.h"
-#include "threads/SingleLock.h"
 
 using namespace JSONRPC;
 

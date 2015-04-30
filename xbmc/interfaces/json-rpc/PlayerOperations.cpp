@@ -20,9 +20,7 @@
 
 #include "PlayerOperations.h"
 #include "Application.h"
-#include "Util.h"
 #include "PlayListPlayer.h"
-#include "playlists/PlayList.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "GUIUserMessages.h"
@@ -35,8 +33,6 @@
 #include "video/VideoDatabase.h"
 #include "AudioLibrary.h"
 #include "GUIInfoManager.h"
-#include "filesystem/File.h"
-#include "PartyModeManager.h"
 #include "epg/EpgInfoTag.h"
 #include "music/MusicDatabase.h"
 #include "pvr/PVRManager.h"
@@ -46,7 +42,6 @@
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreConfig.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "settings/MediaSettings.h"
 #include "utils/SeekHandler.h"
 
 using namespace JSONRPC;

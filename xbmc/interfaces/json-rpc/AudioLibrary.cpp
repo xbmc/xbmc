@@ -28,10 +28,8 @@
 #include "music/Artist.h"
 #include "music/Album.h"
 #include "music/Song.h"
-#include "music/Artist.h"
 #include "ApplicationMessenger.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "settings/Settings.h"
 
 using namespace MUSIC_INFO;

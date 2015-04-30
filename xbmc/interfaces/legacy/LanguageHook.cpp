@@ -19,7 +19,6 @@
  */
 
 #include "LanguageHook.h"
-#include "threads/Thread.h"
 #include "threads/ThreadLocal.h"
 #include "utils/GlobalsHandling.h"
 

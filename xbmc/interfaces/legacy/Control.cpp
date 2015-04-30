@@ -34,7 +34,6 @@
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIRadioButtonControl.h"
-#include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIControlFactory.h"
@@ -42,6 +41,7 @@
 
 #include "utils/XBMCTinyXML.h"
 #include "utils/StringUtils.h"
+#include "WindowException.h"
 
 namespace XBMCAddon
 {

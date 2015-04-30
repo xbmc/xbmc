@@ -30,6 +30,9 @@
 #include "ModuleXbmcgui.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "utils/StringUtils.h"
+#include "WindowException.h"
+#include "ApplicationMessenger.h"
+#include "Dialog.h"
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 

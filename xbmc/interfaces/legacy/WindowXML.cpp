@@ -23,12 +23,12 @@
 #include "WindowInterceptor.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"
-#include "settings/Settings.h"
 #include "addons/Skin.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "addons/Addon.h"
+#include "WindowException.h"
 
 // These #defs are for WindowXML
 #define CONTROL_BTNVIEWASICONS  2

@@ -19,13 +19,8 @@
  */
 
 #include "Tuple.h"
-
 #include "AddonString.h"
 #include "ListItem.h"
-
-#include "utils/log.h"
-
-#include "SortFileItem.h"
 #include "swighelper.h"
 
 namespace XBMCAddon

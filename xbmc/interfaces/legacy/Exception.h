@@ -19,10 +19,6 @@
  */
 #pragma once
 
-#include "AddonString.h"
-#include "AddonUtils.h"
-#include "swighelper.h"
-
 #include "utils/log.h"
 #include "commons/Exception.h"
 

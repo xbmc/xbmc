@@ -28,7 +28,6 @@
 
 #include "system.h"
 #include "ContextItemAddonInvoker.h"
-#include "addons/AddonVersion.h"
 #include "utils/log.h"
 #include "interfaces/python/swig.h"
 

@@ -19,9 +19,9 @@
  */
 
 #include "AddonClass.h"
-
+#ifdef XBMC_ADDON_DEBUG_MEMORY
 #include "utils/log.h"
-
+#endif
 #include "LanguageHook.h"
 #include "AddonUtils.h"
 
