@@ -21,7 +21,6 @@
  */
 
 #include "windows/GUIMediaWindow.h"
-#include "GUIWindowSlideShow.h"
 #include "PictureThumbLoader.h"
 #include "DllImageLib.h"
 
