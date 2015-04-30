@@ -22,16 +22,16 @@
 
 #include "FileItem.h"
 #include "settings/Settings.h"
-#include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
-#include "filesystem/File.h"
 
 #include "PVRChannelGroupInternal.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+
+#include <algorithm>
 
 using namespace PVR;
 

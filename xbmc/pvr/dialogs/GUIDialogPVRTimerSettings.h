@@ -21,7 +21,6 @@
 
 #include <map>
 
-#include "XBDateTime.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
 class CFileItem;

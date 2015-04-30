@@ -22,8 +22,6 @@
 
 #include "GUIWindowPVRBase.h"
 #include "epg/GUIEPGGridContainer.h"
-#include "threads/CriticalSection.h"
-#include "../channels/PVRChannelGroup.h"
 
 class CSetting;
 

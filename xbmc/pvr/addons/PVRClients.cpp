@@ -27,14 +27,12 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "pvr/PVRManager.h"
-#include "pvr/PVRDatabase.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-#include "cores/IPlayer.h"
 
 #include <assert.h>
 

@@ -21,7 +21,6 @@
  */
 
 #include "PVRChannelGroups.h"
-#include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 
 namespace PVR

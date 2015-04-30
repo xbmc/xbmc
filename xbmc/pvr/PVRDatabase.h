@@ -19,12 +19,8 @@
  *
  */
 
-#include "addons/Addon.h"
-#include "addons/AddonDll.h"
-#include "addons/DllPVRClient.h"
 #include "PVRManager.h"
 #include "dbwrappers/Database.h"
-#include "XBDateTime.h"
 #include "utils/log.h"
 
 class CVideoSettings;

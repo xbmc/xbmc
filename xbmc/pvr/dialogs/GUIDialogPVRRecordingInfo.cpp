@@ -19,7 +19,6 @@
  */
 
 #include "GUIDialogPVRRecordingInfo.h"
-#include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 
 using namespace PVR;
