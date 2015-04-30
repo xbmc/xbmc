@@ -154,6 +154,11 @@ namespace PVR
      */
     void GetNotificationText(std::string &strText) const;
 
+    /*!
+    * @brief Get the text for the notification when a timer has been deleted
+    */
+    std::string GetDeletedNotificationText() const;
+
     const std::string& Title(void) const;
     const std::string& Summary(void) const;
     const std::string& Path(void) const;
