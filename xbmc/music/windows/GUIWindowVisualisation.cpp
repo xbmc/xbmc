@@ -23,7 +23,6 @@
 #include "music/dialogs/GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"
 #include "GUIInfoManager.h"
-#include "music/dialogs/GUIDialogVisualisationPresetList.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "settings/AdvancedSettings.h"

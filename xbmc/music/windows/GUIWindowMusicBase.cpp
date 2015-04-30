@@ -23,18 +23,15 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowMusicBase.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
-#include "filesystem/ZipManager.h"
 #include "playlists/PlayListFactory.h"
 #include "Util.h"
 #include "playlists/PlayListM3U.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
-#include "filesystem/DirectoryCache.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif
 #include "GUIPassword.h"
-#include "dialogs/GUIDialogMediaSource.h"
 #include "PartyModeManager.h"
 #include "GUIInfoManager.h"
 #include "filesystem/MusicDatabaseDirectory.h"
@@ -46,7 +43,6 @@
 #include "input/Key.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
@@ -56,15 +52,11 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "video/VideoInfoTag.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
-#include "cores/IPlayer.h"
-#include "CueDocument.h"
 
 
 using namespace std;

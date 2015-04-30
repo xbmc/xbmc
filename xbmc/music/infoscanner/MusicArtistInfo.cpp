@@ -20,7 +20,6 @@
 
 #include "MusicArtistInfo.h"
 #include "addons/Scraper.h"
-#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;
