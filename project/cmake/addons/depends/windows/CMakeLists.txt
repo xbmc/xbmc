@@ -76,7 +76,8 @@ find_package(7Zip REQUIRED)
 
 file(GLOB_RECURSE download_input_files prebuilt/*.txt)
 foreach(file ${download_input_files})
-  if(NOT file MATCHES install.txt)
+  if(NOT (file MATCHES install.txt OR
+          file MATCHES deps.txt))
     message(STATUS "Processing ${file}")
 
     file(STRINGS ${file} def)
@@ -89,12 +90,24 @@ foreach(file ${download_input_files})
       list(GET def 1 url)
       message(STATUS "${id} url: ${url}")
 
+      # check if there's a deps.txt containing dependencies on other libraries
+      if(EXISTS ${dir}/deps.txt)
+        file(STRINGS ${dir}/deps.txt deps)
+        message(STATUS "${id} depends: ${deps}")
+      else()
+        set(deps)
+      endif()
+
       if(url MATCHES .7z OR url MATCHES .lzma)
         add_7zip(${id} ${url} ${dir}/install.txt)
       elseif(url MATCHES .exe)
         add_direct(${id} ${url} ${dir}/install.txt)
       else()
         add_internal(${id} ${url} ${dir}/install.txt)
+      endif()
+
+      if(deps)
+        add_dependencies(${id} ${deps})
       endif()
     endif()
   endif()
