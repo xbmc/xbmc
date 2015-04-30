@@ -1,0 +1,1 @@
+xasm http://mirrors.xbmc.org/build-deps/win32/mingw-msys/xasm-3.0.2-windows.zip

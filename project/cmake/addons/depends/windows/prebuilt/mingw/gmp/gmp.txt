@@ -1,0 +1,1 @@
+gmp http://mirrors.xbmc.org/build-deps/win32/mingw-msys/libgmp-5.0.1-1-mingw32-dll-10.tar.lzma

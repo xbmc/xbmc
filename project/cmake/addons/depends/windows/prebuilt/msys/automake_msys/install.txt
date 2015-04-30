@@ -1,0 +1,2 @@
+bin/* msys/bin
+share/* msys/share

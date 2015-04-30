@@ -1,0 +1,1 @@
+gnutls http://mirrors.xbmc.org/build-deps/win32/mingw-msys/gnutls-dev_2.4.2-1_win32.zip

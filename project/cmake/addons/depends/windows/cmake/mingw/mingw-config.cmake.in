@@ -1,0 +1,3 @@
+set(MINGW_INCLUDE_DIRS @MINGW_PATH@/include)
+set(MINGW_MAKE @MINGW_PATH@/bin/mingw32-make.bat)
+set(MINGW_FOUND 1)

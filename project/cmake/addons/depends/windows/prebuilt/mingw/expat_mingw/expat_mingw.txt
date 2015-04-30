@@ -1,0 +1,1 @@
+expat_mingw http://mirrors.xbmc.org/build-deps/win32/mingw-msys/libexpat-2.0.1-1-mingw32-dev.tar.gz

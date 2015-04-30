@@ -1,0 +1,1 @@
+libintl http://mirrors.xbmc.org/build-deps/win32/mingw-msys/libintl-0.17-1-mingw32-dll-8.tar.lzma

@@ -1,0 +1,3 @@
+bin/find.exe msys/bin
+bin/oldfind.exe msys/bin
+bin/xargs.exe msys/bin

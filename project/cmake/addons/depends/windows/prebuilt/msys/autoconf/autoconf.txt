@@ -1,0 +1,1 @@
+autoconf http://mirrors.xbmc.org/build-deps/win32/mingw-msys/autoconf-2.68-1-msys-1.0.17-bin.tar.lzma

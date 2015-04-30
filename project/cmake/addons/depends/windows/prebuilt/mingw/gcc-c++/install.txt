@@ -1,0 +1,4 @@
+lib/gcc/mingw32/4.6.2/* mingw/lib/gcc/mingw32/4.6.2
+libexec/gcc/mingw32/4.6.2/* mingw/libexec/gcc/mingw32/4.6.2
+share/gcc-4.6.2./python/* mingw/share/gcc-4.6.2/python
+bin/* mingw/bin

@@ -1,0 +1,1 @@
+w32api-dev http://mirrors.xbmc.org/build-deps/win32/mingw-msys/w32api-3.17-2-mingw32-dev.tar.lzma
