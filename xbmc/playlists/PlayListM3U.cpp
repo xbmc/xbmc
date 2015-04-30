@@ -24,10 +24,8 @@
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
-#include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "settings/AdvancedSettings.h"
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 

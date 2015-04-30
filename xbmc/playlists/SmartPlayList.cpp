@@ -20,11 +20,9 @@
 
 #include "SmartPlayList.h"
 #include "Util.h"
-#include "XBDateTime.h"
 #include "filesystem/File.h"
 #include "filesystem/SmartPlaylistDirectory.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/CharsetConverter.h"
 #include "utils/DatabaseUtils.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"

@@ -21,7 +21,6 @@
 #include "PlayListXML.h"
 #include "filesystem/File.h"
 #include "Util.h"
-#include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
