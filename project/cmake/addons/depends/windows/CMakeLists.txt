@@ -87,8 +87,13 @@ foreach(file ${download_input_files})
 
     list(FIND DEPENDS_TO_BUILD ${id} idx)
     if(idx GREATER -1 OR DEPENDS_TO_BUILD STREQUAL "all")
-      list(GET def 1 url)
-      message(STATUS "${id} url: ${url}")
+      list(LENGTH def deflength)
+
+      set(url "")
+      if(deflength GREATER 1)
+        list(GET def 1 url)
+        message(STATUS "${id} url: ${url}")
+      endif()
 
       # check if there's a deps.txt containing dependencies on other libraries
       if(EXISTS ${dir}/deps.txt)
@@ -98,12 +103,25 @@ foreach(file ${download_input_files})
         set(deps)
       endif()
 
-      if(url MATCHES .7z OR url MATCHES .lzma)
-        add_7zip(${id} ${url} ${dir}/install.txt)
-      elseif(url MATCHES .exe)
-        add_direct(${id} ${url} ${dir}/install.txt)
+      if(NOT "${url}" STREQUAL "" AND EXISTS ${dir}/install.txt)
+        if(url MATCHES .7z OR url MATCHES .lzma)
+          add_7zip(${id} ${url} ${dir}/install.txt)
+        elseif(url MATCHES .exe)
+          add_direct(${id} ${url} ${dir}/install.txt)
+        else()
+          add_internal(${id} ${url} ${dir}/install.txt)
+        endif()
+      elseif(NOT "${deps}" STREQUAL "")
+        externalproject_add(${id}
+                            DOWNLOAD_COMMAND ""
+                            UPDATE_COMMAND ""
+                            PATCH_COMMAND ""
+                            CONFIGURE_COMMAND ""
+                            BUILD_COMMAND ""
+                            INSTALL_COMMAND ""
+                            TEST_COMMAND "")
       else()
-        add_internal(${id} ${url} ${dir}/install.txt)
+        message(FATAL_ERROR "Invalid dependency definition for ${id}")
       endif()
 
       if(deps)
