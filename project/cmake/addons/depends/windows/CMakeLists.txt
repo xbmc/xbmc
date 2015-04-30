@@ -36,11 +36,49 @@ function(add_internal id url inputfile)
                      )
 endfunction()
 
-#find_package(7Zip REQUIRED)
+function(add_7zip id url inputfile)
+  externalproject_add(${id}
+                      PREFIX build/${id}
+                      DOWNLOAD_COMMAND ${CMAKE_COMMAND}
+                                       -D7ZIP_EXECUTABLE=${7ZIP_EXECUTABLE}
+                                       -DURL=${url}
+                                       -DDEST=${PROJECT_BINARY_DIR}/build/${id}/src/${id}
+                                       -DDESTDIR=${PROJECT_BINARY_DIR}/build/${id}/src/${id}
+                                       -P ${PROJECT_SOURCE_DIR}/extract-7z.cmake
+                      CONFIGURE_COMMAND ""
+                      BUILD_COMMAND ""
+                      INSTALL_COMMAND ${CMAKE_COMMAND}
+                                      -DINPUTDIR=${PROJECT_BINARY_DIR}/build/${id}/src/${id}
+                                      -DINPUTFILE=${inputfile}
+                                      -DDESTDIR=${DEPENDS_PATH}
+                                      -P ${PROJECT_SOURCE_DIR}/install.cmake
+                     )
+endfunction()
+
+function(add_direct id url inputfile)
+  externalproject_add(${id}
+                      PREFIX build/${id}
+                      DOWNLOAD_COMMAND ${CMAKE_COMMAND}
+                                       -DURL=${url}
+                                       -DDEST=${PROJECT_BINARY_DIR}/build/${id}/src/${id}
+                                       -P ${PROJECT_SOURCE_DIR}/extract-direct.cmake
+                      CONFIGURE_COMMAND ""
+                      BUILD_COMMAND ""
+                      INSTALL_COMMAND ${CMAKE_COMMAND}
+                                      -DINPUTDIR=${PROJECT_BINARY_DIR}/build/${id}/src/${id}
+                                      -DINPUTFILE=${inputfile}
+                                      -DDESTDIR=${DEPENDS_PATH}
+                                      -P ${PROJECT_SOURCE_DIR}/install.cmake
+                     )
+endfunction()
+
+find_package(7Zip REQUIRED)
 
 file(GLOB_RECURSE download_input_files prebuilt/*.txt)
 foreach(file ${download_input_files})
   if(NOT file MATCHES install.txt)
+    message(STATUS "Processing ${file}")
+
     file(STRINGS ${file} def)
     get_filename_component(dir ${file} PATH)
     separate_arguments(def)
@@ -49,7 +87,15 @@ foreach(file ${download_input_files})
     list(FIND DEPENDS_TO_BUILD ${id} idx)
     if(idx GREATER -1 OR DEPENDS_TO_BUILD STREQUAL "all")
       list(GET def 1 url)
-      add_internal(${id} ${url} ${dir}/install.txt)
+      message(STATUS "${id} url: ${url}")
+
+      if(url MATCHES .7z OR url MATCHES .lzma)
+        add_7zip(${id} ${url} ${dir}/install.txt)
+      elseif(url MATCHES .exe)
+        add_direct(${id} ${url} ${dir}/install.txt)
+      else()
+        add_internal(${id} ${url} ${dir}/install.txt)
+      endif()
     endif()
   endif()
 endforeach()
