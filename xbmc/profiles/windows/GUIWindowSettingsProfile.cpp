@@ -28,7 +28,6 @@
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "network/Network.h"
 #include "utils/URIUtils.h"
-#include "utils/Weather.h"
 #include "GUIPassword.h"
 #include "windows/GUIWindowLoginScreen.h"
 #include "guilib/GUIWindowManager.h"
