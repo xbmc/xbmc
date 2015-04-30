@@ -5,7 +5,6 @@
     android:versionCode="@APP_VERSION_CODE@"
     android:versionName="@APP_VERSION@" >
 
-    <!-- This is the platform API where NativeActivity was introduced. -->
     <uses-sdk android:minSdkVersion="17" android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
