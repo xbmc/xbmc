@@ -27,8 +27,6 @@
 #include "FileItem.h"
 #include "settings/MediaSourceSettings.h"
 #include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "ContextMenuManager.h"
 
