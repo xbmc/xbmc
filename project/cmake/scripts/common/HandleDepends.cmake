@@ -103,11 +103,18 @@ function(add_addon_depends addon searchpath)
               endif()
             endif()
 
-            # on windows "patch.exe" can only handle CR-LF line-endings so we
-            # need to force it to also handle LF-only line endings
             set(PATCH_PROGRAM ${PATCH_EXECUTABLE})
+
+            # On Windows "patch.exe" can only handle CR-LF line-endings.
+            # Our patches have LF-only line endings - except when they
+            # have been checked out as part of a dependency hosted on Git
+            # and core.autocrlf=true.
             if(WIN32)
-              set(PATCH_PROGRAM "\"${PATCH_PROGRAM}\" --binary")
+              file(READ ${patch} patch_content_hex HEX)
+              # Force handle LF-only line endings
+              if(NOT patch_content_hex MATCHES "0d0a")
+                set(PATCH_PROGRAM "\"${PATCH_PROGRAM}\" --binary")
+              endif()
             endif()
           endif()
 
