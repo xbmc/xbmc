@@ -30,11 +30,7 @@
 #include "threads/SingleLock.h"
 #include "guilib/D3DResource.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "utils/SystemInfo.h"
 #include "Application.h"
-#include "Util.h"
-#include "win32/WIN32Util.h"
 #include "video/VideoReferenceClock.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up use dxerr
