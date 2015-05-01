@@ -664,22 +664,8 @@
         </requirement>
       </group>
       <group id="3">
-        <setting id="videoplayer.decodingmethod" type="integer" label="13454" help="36431">
-          <level>2</level>
-          <default>1</default>
-          <constraints>
-            <options>
-              <option label="13455">0</option> <!-- Software     -->
-              <option label="13456">1</option> <!-- Hardware     -->
-            </options>
-          </constraints>
-          <control type="list" format="integer" />
-        </setting>
         <setting id="videoplayer.useamcodec" type="boolean" label="13438" help="36422">
           <requirement>HAVE_AMCODEC</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
-          </dependencies>
           <level>2</level>
           <default>true</default>
           <updates>
@@ -689,9 +675,6 @@
         </setting>
         <setting id="videoplayer.usevdpau" type="boolean" label="13425" help="36155">
           <requirement>HAVE_LIBVDPAU</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
-          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
@@ -702,10 +685,7 @@
           <default>true</default>
           <dependencies>
             <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
-                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
-              </and>
+              <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
             </dependency>
           </dependencies>
           <control type="toggle" />
@@ -716,10 +696,7 @@
           <default>true</default>
           <dependencies>
             <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
-                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
-              </and>
+              <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
             </dependency>
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevdpaumpeg2" operator="is">true</dependency>
           </dependencies>
@@ -731,10 +708,7 @@
           <default>false</default>
           <dependencies>
             <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
-                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
-              </and>
+              <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
             </dependency>
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevdpaumpeg4" operator="is">true</dependency>
           </dependencies>
@@ -746,10 +720,7 @@
           <default>true</default>
           <dependencies>
             <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
-                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
-              </and>
+              <condition setting="videoplayer.usevdpau" operator="is">true</condition> <!-- USE VDPAU -->
             </dependency>
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevdpauvc1" operator="is">true</dependency>
           </dependencies>
@@ -757,9 +728,6 @@
         </setting>
         <setting id="videoplayer.usevaapi" type="boolean" label="13426" help="36156">
           <requirement>HAVE_LIBVA</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
-          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
@@ -768,10 +736,7 @@
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usevaapi" operator="is">true</condition>
-                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
-              </and>
+              <condition setting="videoplayer.usevaapi" operator="is">true</condition>
             </dependency>
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapimpeg2" operator="is">true</dependency>
           </dependencies>
@@ -783,10 +748,7 @@
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usevaapi" operator="is">true</condition>
-                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
-              </and>
+              <condition setting="videoplayer.usevaapi" operator="is">true</condition>
             </dependency>
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapimpeg4" operator="is">true</dependency>
           </dependencies>
@@ -798,10 +760,7 @@
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usevaapi" operator="is">true</condition>
-                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
-              </and>
+              <condition setting="videoplayer.usevaapi" operator="is">true</condition>
             </dependency>
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
           </dependencies>
@@ -813,10 +772,7 @@
           <requirement>HAVE_LIBVA</requirement>
           <dependencies>
             <dependency type="enable">
-              <and>
-                <condition setting="videoplayer.usevaapi" operator="is">true</condition>
-                <condition setting="videoplayer.decodingmethod" operator="is">1</condition>
-              </and>
+              <condition setting="videoplayer.usevaapi" operator="is">true</condition>
             </dependency>
             <dependency type="visible" on="property" name="codecoptionvisible" setting="videoplayer.usevaapivc1" operator="is">true</dependency>
           </dependencies>
@@ -826,27 +782,18 @@
         </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
           <requirement>HasDXVA2</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
-          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.useomxplayer" type="boolean" label="13458" help="13459">
           <requirement>HAS_OMXPLAYER</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
-          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.useomx" type="boolean" label="13430" help="36161">
           <requirement>HAVE_LIBOPENMAX</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
-          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
@@ -859,9 +806,6 @@
         </setting>
         <setting id="videoplayer.usevda" type="boolean" label="13429" help="36160">
           <requirement>HasVDA</requirement>
-          <dependencies>
-            <dependency type="enable" setting="videoplayer.decodingmethod" operator="is">1</dependency>
-          </dependencies>
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
