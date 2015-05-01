@@ -465,7 +465,13 @@ void CDVDPlayerVideo::Process()
       CDVDPlayer::SPlayerState& state = ((CDVDMsgType<CDVDPlayer::SPlayerState>*)pMsg)->m_value;
 
       if(state.time_src == CDVDPlayer::ETIMESOURCE_CLOCK)
-        state.time      = DVD_TIME_TO_MSEC(m_pClock->GetClock(state.timestamp) + state.time_offset);
+      {
+        double pts = GetCurrentPts();
+        if (pts == DVD_NOPTS_VALUE)
+          pts = m_pClock->GetClock();
+        state.time = DVD_TIME_TO_MSEC(pts + state.time_offset);
+        state.timestamp = CDVDClock::GetAbsoluteClock();
+      }
       else
         state.timestamp = CDVDClock::GetAbsoluteClock();
       state.player    = DVDPLAYER_VIDEO;
@@ -1086,7 +1092,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   CalcFrameRate();
 
   // remember original pts, we need it later for overlaying subtitles
-  double ptsovl = pts;
+  double pts_org = pts;
 
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
@@ -1107,7 +1113,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   {
     double inputPts = m_droppingStats.m_lastPts;
     double renderPts = m_droppingStats.m_lastRenderPts;
-    if (pts > renderPts)
+    if (pts_org > renderPts)
     {
       if (inputPts >= renderPts)
       {
@@ -1179,7 +1185,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     return EOS_DROPPED;
   }
 
-  ProcessOverlays(pPicture, ptsovl);
+  ProcessOverlays(pPicture, pts_org);
 
   int index = g_renderManager.AddVideoPicture(*pPicture);
 
@@ -1197,7 +1203,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     return EOS_DROPPED;
   }
 
-  g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, pts, -1, mDisplayField);
+  g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, pts_org, -1, mDisplayField);
 
   return result;
 #else
