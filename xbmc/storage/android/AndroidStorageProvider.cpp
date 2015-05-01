@@ -86,7 +86,11 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   std::string path;
   if (CXBMCApp::GetExternalStorage(path) && !path.empty()  && XFILE::CDirectory::Exists(path))
   {
-    share.strPath = path;
+    // share.strPath = path;
+    // Although Environment.getExternalStorage() reports the path to the external storage,
+    //  it normally is to the internal sdcard. All storage devices are mounted via fuse,
+    //  and symlinked to /storage
+    share.strPath = "/storage/";
     share.strName = g_localizeStrings.Get(21456);
     share.m_ignore = true;
     localDrives.push_back(share);
@@ -100,10 +104,10 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
 void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
-  // mounted usb disks
+  // mounted external devices
   char*                               buf     = NULL;
   FILE*                               pipe;
-  std::map<std::string, std::string>  result;
+  std::vector<std::string>            result;
   CRegExp                             reMount;
   reMount.RegComp("^(.+?)\\s+(.+?)\\s+(.+?)\\s");
 
@@ -169,27 +173,38 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
             || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0
             || strcmp(fs, "ntfs-3g") == 0 || strcmp(fs, "iso9660") == 0
             || strcmp(fs, "exfat") == 0
-            || strcmp(fs, "fusefs") == 0 || strcmp(fs, "hfs") == 0)
+            || strcmp(fs, "fusefs") == 0 || strcmp(fs, "hfs") == 0
+            || strcmp(fs, "fuse") == 0)
           accepted = true;
 
-        // Ignore sdcards
-        if (!StringUtils::StartsWith(device, "/dev/block/vold/") ||
-            mountStr.find("sdcard") != std::string::npos ||
-            mountStr.find("secure/asec") != std::string::npos)
+        // Ignore non-removable drives
+        if ((!StringUtils::StartsWith(device, "/dev/block/vold/") &&
+            !StringUtils::StartsWith(device, "/dev/fuse")) ||
+            mountStr.find("secure/asec") != std::string::npos ||
+            mountStr.find("emulated/0") != std::string::npos ||
+            mountStr.find("shell/emulated") != std::string::npos ||
+            mountStr.find("legacy") != std::string::npos)
           accepted = false;
 
+        // API 19+ all media is now mounted via the fuse daemon,
+        // and is mounted to /mnt/media_rw/<device> but the content is not
+        // available via this path
+        if (StringUtils::StartsWith(device, "/dev/block/vold/") &&
+             mountStr.find("media_rw") != std::string::npos)
+           accepted = false;
+
         if(accepted)
-          result[device] = mountStr;
+          result.push_back(mountStr.c_str());
       }
       line = strtok_r(NULL, "\n", &saveptr);
     }
     free(buf);
   }
 
-  for (std::map<std::string, std::string>::const_iterator i = result.begin(); i != result.end(); ++i)
+  for (unsigned int i = 0; i < result.size(); i++)
   {
     CMediaSource share;
-    share.strPath = unescape(i->second);
+    share.strPath = unescape(result[i]);
     share.strName = URIUtils::GetFileName(share.strPath);
     share.m_ignore = true;
     removableDrives.push_back(share);
