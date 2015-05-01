@@ -20,6 +20,11 @@
 
 #include "rfft.h"
 
+#if defined(TARGET_WINDOWS) && !defined(_USE_MATH_DEFINES)
+#define _USE_MATH_DEFINES
+#endif
+#include <math.h>
+
 RFFT::RFFT(int size, bool windowed) :
   m_size(size), m_windowed(windowed)
 {
