@@ -28,7 +28,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDependency.h"
 #include "settings/lib/SettingsManager.h"
@@ -110,7 +110,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
           std::string content = m_vecItems->Get(iSelected)->GetPath().substr(14);
           OnCancel();
           Close();
-          CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
+          CBuiltins::Get().Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
           return true;
         }
 

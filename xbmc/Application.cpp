@@ -22,7 +22,7 @@
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "Application.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "utils/Variant.h"
 #include "utils/Splash.h"
 #include "LangInfo.h"
@@ -2148,10 +2148,10 @@ bool CApplication::OnAction(const CAction &action)
   // built in functions : execute the built-in
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
-    if (!CBuiltins::IsSystemPowerdownCommand(action.GetName()) ||
+    if (!CBuiltins::Get().IsSystemPowerdownCommand(action.GetName()) ||
         g_PVRManager.CanSystemPowerdown())
     {
-      CBuiltins::Execute(action.GetName());
+      CBuiltins::Get().Execute(action.GetName());
       m_navigationTimer.StartZero();
     }
     return true;
@@ -4108,11 +4108,11 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
   actionStr = CGUIInfoLabel::GetLabel(actionStr);
 
   // user has asked for something to be executed
-  if (CBuiltins::HasCommand(actionStr))
+  if (CBuiltins::Get().HasCommand(actionStr))
   {
-    if (!CBuiltins::IsSystemPowerdownCommand(actionStr) ||
+    if (!CBuiltins::Get().IsSystemPowerdownCommand(actionStr) ||
         g_PVRManager.CanSystemPowerdown())
-      CBuiltins::Execute(actionStr);
+      CBuiltins::Get().Execute(actionStr);
   }
   else
   {

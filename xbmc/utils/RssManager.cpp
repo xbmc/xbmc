@@ -23,7 +23,7 @@
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
@@ -76,7 +76,7 @@ void CRssManager::OnSettingAction(const CSetting *setting)
         return;
       CAddonInstaller::Get().Install("script.rss.editor", true, "", false);
     }
-    CBuiltins::Execute("RunScript(script.rss.editor)");
+    CBuiltins::Get().Execute("RunScript(script.rss.editor)");
   }
 }
 

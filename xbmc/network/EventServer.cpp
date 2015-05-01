@@ -29,7 +29,7 @@
 #include "threads/CriticalSection.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "input/ButtonTranslator.h"
 #include "threads/SingleLock.h"
 #include "Zeroconf.h"
@@ -342,7 +342,7 @@ bool CEventServer::ExecuteNextAction()
       switch(actionEvent.actionType)
       {
       case AT_EXEC_BUILTIN:
-        CBuiltins::Execute(actionEvent.actionName);
+        CBuiltins::Get().Execute(actionEvent.actionName);
         break;
 
       case AT_BUTTON:

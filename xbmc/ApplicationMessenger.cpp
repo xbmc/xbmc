@@ -26,7 +26,7 @@
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "network/Network.h"
 #include "utils/log.h"
@@ -579,7 +579,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_EXECUTE_BUILT_IN:
-      CBuiltins::Execute(pMsg->strParam.c_str());
+      CBuiltins::Get().Execute(pMsg->strParam.c_str());
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY:
