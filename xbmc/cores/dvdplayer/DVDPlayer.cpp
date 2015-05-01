@@ -1840,7 +1840,10 @@ void CDVDPlayer::HandlePlaySpeed()
       // the the bigger is the error we allow
       if (m_playSpeed > DVD_PLAYSPEED_NORMAL)
       {
-        error /= m_playSpeed / DVD_PLAYSPEED_NORMAL;
+        int errorwin = m_playSpeed / DVD_PLAYSPEED_NORMAL;
+        if (errorwin > 8)
+          errorwin = 8;
+        error /= errorwin;
       }
 
       if(error > DVD_MSEC_TO_TIME(1000))

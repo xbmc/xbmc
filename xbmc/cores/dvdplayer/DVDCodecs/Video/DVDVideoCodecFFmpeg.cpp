@@ -893,7 +893,11 @@ unsigned CDVDVideoCodecFFmpeg::GetAllowedReferences()
 
 bool CDVDVideoCodecFFmpeg::GetCodecStats(double &pts, int &droppedPics)
 {
-  pts = m_decoderPts;
+  if (m_decoderPts != DVD_NOPTS_VALUE)
+    pts = m_decoderPts;
+  else
+    pts = m_dts;
+
   if (m_skippedDeint)
     droppedPics = m_skippedDeint;
   else
