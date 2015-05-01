@@ -6538,6 +6538,10 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, movie.m_playCount > 0);
         pItem->m_dateTime = movie.m_firstAired;
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        if (movie.m_iSpecialFlag == EPISODE_FLAG_SERIES_FINALE)
+          pItem->SetProperty("series_finale", "1");
+        else if (movie.m_iSpecialFlag == EPISODE_FLAG_SEASON_FINALE)
+          pItem->SetProperty("season_finale", "1");
         items.Add(pItem);
       }
     }
