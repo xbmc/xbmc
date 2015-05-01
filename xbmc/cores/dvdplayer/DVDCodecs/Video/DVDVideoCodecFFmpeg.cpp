@@ -236,15 +236,26 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // setup threading model
   if (!hints.software)
   {
-    if ((EDECODEMETHOD)CSettings::Get().GetInt("videoplayer.decodingmethod") == VS_DECODEMETHOD_HARDWARE &&
-        m_decoderState == STATE_NONE)
-    {
-#if defined(TARGET_ANDROID) || defined(TARGET_DARWIN_IOS)
-      // If we get here on Android or iOS, it's always multi
-      m_decoderState = STATE_SW_MULTI;
-#else
-      m_decoderState = STATE_HW_SINGLE;
+    bool tryhw = false;
+#ifdef HAVE_LIBVDPAU
+    if(CSettings::Get().GetBool("videoplayer.usevdpau"))
+      tryhw = true;
 #endif
+#ifdef HAVE_LIBVA
+    if(CSettings::Get().GetBool("videoplayer.usevaapi"))
+      tryhw = true;
+#endif
+#ifdef HAS_DX
+    if(CSettings::Get().GetBool("videoplayer.usedxva2"))
+      tryhw = true;
+#endif
+#ifdef TARGET_DARWIN_OSX
+    if(CSettings::Get().GetBool("videoplayer.usevda"))
+      tryhw = true;
+#endif
+    if (tryhw && m_decoderState == STATE_NONE)
+    {
+      m_decoderState = STATE_HW_SINGLE;
     }
     else
     {
@@ -882,7 +893,11 @@ unsigned CDVDVideoCodecFFmpeg::GetAllowedReferences()
 
 bool CDVDVideoCodecFFmpeg::GetCodecStats(double &pts, int &droppedPics)
 {
-  pts = m_decoderPts;
+  if (m_decoderPts != DVD_NOPTS_VALUE)
+    pts = m_decoderPts;
+  else
+    pts = m_dts;
+
   if (m_skippedDeint)
     droppedPics = m_skippedDeint;
   else

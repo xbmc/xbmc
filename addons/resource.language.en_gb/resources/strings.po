@@ -6299,25 +6299,7 @@ msgctxt "#13452"
 msgid "Enable this option to use hardware acceleration for VC-1 based codecs. If disabled the CPU will be used instead. Especially VC-1 Interlaced fails hard on Intel hardware."
 msgstr ""
 
-#empty string with id 13453
-
-#. Label for a setting to configure the video decoding method
-#: system/settings/settings.xml
-msgctxt "#13454"
-msgid "Decoding method"
-msgstr ""
-
-#. Option for video related setting #13454: Decoding method
-#: system/settings/settings.xml
-msgctxt "#13455"
-msgid "Software"
-msgstr ""
-
-#. Option for video related setting #13454: Decoding method
-#: system/settings/settings.xml
-msgctxt "#13456"
-msgid "Hardware accelerated"
-msgstr ""
+#empty strings from id 13453 to 13456
 
 #. Option for video related setting #13454: sw filter
 #: system/settings/settings.xml
@@ -15904,11 +15886,7 @@ msgctxt "#36430"
 msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
 msgstr ""
 
-#. Description for video related setting #13454: Decoding mode
-#: system/settings/settings.xml
-msgctxt "#36431"
-msgid "Defines whether video decoding should be performed in software (requires more CPU) or with hardware acceleration where possible."
-msgstr ""
+#empty string with id 36431
 
 #. Description for international setting #310: Keyboard layouts
 #: system/settings/settings.xml
