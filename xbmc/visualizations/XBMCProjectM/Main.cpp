@@ -383,35 +383,6 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
   if (!id || !value)
     return ADDON_STATUS_UNKNOWN;
 
-  if (strcmp(id, "###GetSavedSettings") == 0) // We have some settings to be saved in the settings.xml file
-  {
-    if (!globalPM)
-    {
-      return ADDON_STATUS_UNKNOWN;
-    }
-    if (strcmp((char*)value, "0") == 0)
-    {
-      strcpy((char*)id, "lastpresetfolder");
-      strcpy((char*)value, globalPM->settings().presetURL.c_str());
-    }
-    if (strcmp((char*)value, "1") == 0)
-    {
-      strcpy((char*)id, "lastlockedstatus");
-      strcpy((char*)value, (globalPM->isPresetLocked() ? "true" : "false"));
-    }
-    if (strcmp((char*)value, "2") == 0)
-    {
-      strcpy((char*)id, "lastpresetidx");
-      unsigned int lastindex;
-      globalPM->selectedPresetIndex(lastindex);
-      sprintf ((char*)value, "%i", (int)lastindex);
-    }
-    if (strcmp((char*)value, "3") == 0)
-    {
-      strcpy((char*)id, "###End");
-    }
-    return ADDON_STATUS_OK;
-  }
   // It is now time to set the settings got from xbmc
   if (strcmp(id, "quality")==0)
     ChooseQuality (*(int*)value);
