@@ -682,8 +682,6 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
   int iTime = DS_TIME_TO_MSEC(position);
   int seekOffset = (int)(iTime - DS_TIME_TO_MSEC(GetTime()));
   m_callback.OnPlayBackSeek(iTime, seekOffset);
-  // set flag to indicate we have finished a seeking request
-  g_infoManager.m_performingSeek = false;
   if (showPopup)
     g_infoManager.SetDisplayAfterSeek();
 }

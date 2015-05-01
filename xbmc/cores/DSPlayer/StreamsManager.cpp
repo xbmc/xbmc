@@ -780,6 +780,9 @@ float CStreamsManager::GetAVDelay()
   int iValue;
   BOOL bValue;
 
+  if (!m_bIsLavAudio && !m_bIsFFDSAudio)
+    return 0;
+
   if (m_bIsLavAudio)
     m_pILAVAudioSettings->GetAudioDelay(&bValue, &iValue);
 
@@ -806,6 +809,9 @@ float CStreamsManager::GetSubTitleDelay()
 {
   float fValue = 0.0f;
   int iValue, a, b;
+
+  if (!m_bIsXYVSFilter)
+    return 0;
 
   if (m_bIsXYVSFilter)
     m_pIDirectVobSub->get_SubtitleTiming(&iValue, &a, &b);
