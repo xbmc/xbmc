@@ -1122,6 +1122,20 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       return result | EOS_DROPPED;
     }
   }
+  else if (m_speed > DVD_PLAYSPEED_NORMAL)
+  {
+    double iSleepTime, iRenderPts;
+    int iBufferLevel;
+    g_renderManager.GetStats(iSleepTime, iRenderPts, iBufferLevel);
+
+    double diff = pts_org - iRenderPts;
+    double mindiff = DVD_SEC_TO_TIME(1/m_fFrameRate * m_speed / DVD_PLAYSPEED_NORMAL) * (iBufferLevel +1);
+    if (diff < mindiff)
+    {
+      m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
+      return result | EOS_DROPPED;
+    }
+  }
 
   // calculate the time we need to delay this picture before displaying
   double iSleepTime, iClockSleep, iFrameSleep, iPlayingClock, iCurrentClock;
