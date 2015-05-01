@@ -19,7 +19,6 @@
  */
 
 #include "GUIDialogSettingsManualBase.h"
-#include "guilib/LocalizeStrings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingPath.h"
 #include "settings/SettingUtils.h"

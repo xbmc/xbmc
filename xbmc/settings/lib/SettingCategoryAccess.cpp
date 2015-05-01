@@ -21,7 +21,6 @@
 #include "SettingCategoryAccess.h"
 #include "SettingConditions.h"
 #include "SettingsManager.h"
-#include "utils/log.h"
 
 bool CSettingCategoryAccessCondition::Check() const
 {

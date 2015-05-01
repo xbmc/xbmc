@@ -23,7 +23,6 @@
 #include <set>
 #include <vector>
 
-#include "ISetting.h"
 #include "ISettingCallback.h"
 #include "ISettingControlCreator.h"
 #include "ISettingCreator.h"

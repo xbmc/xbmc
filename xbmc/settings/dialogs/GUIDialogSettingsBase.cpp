@@ -20,8 +20,6 @@
 
 #include "GUIDialogSettingsBase.h"
 #include "GUIUserMessages.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogTextViewer.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIEditControl.h"
@@ -36,7 +34,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/SettingControl.h"
 #include "settings/lib/SettingSection.h"
-#include "settings/lib/SettingsManager.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/StringUtils.h"
 
