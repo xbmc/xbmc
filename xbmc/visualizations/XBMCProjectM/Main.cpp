@@ -102,7 +102,7 @@ extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
   g_configPM.windowBottom = visprops->y;
   lastLoggedPresetIdx = lastPresetIdx;
 
-  return ADDON_STATUS_NEED_SAVEDSETTINGS;
+  return ADDON_STATUS_NEED_SETTINGS;
 }
 
 //-- Start --------------------------------------------------------------------

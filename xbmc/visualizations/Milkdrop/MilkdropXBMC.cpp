@@ -95,7 +95,7 @@ extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
   if(!g_plugin || !g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio))
     return ADDON_STATUS_UNKNOWN;
 
-  return ADDON_STATUS_NEED_SAVEDSETTINGS; // We need some settings to be saved later before we quit this plugin
+  return ADDON_STATUS_NEED_SETTINGS;
 }
 
 extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
