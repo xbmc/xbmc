@@ -527,10 +527,12 @@ bool CXBMCApp::GetExternalStorage(std::string &path, const std::string &type /* 
 
 bool CXBMCApp::GetStorageUsage(const std::string &path, std::string &usage)
 {
+#define PATH_MAXLEN 50
+
   if (path.empty())
   {
     std::ostringstream fmt;
-    fmt.width(24);  fmt << std::left  << "Filesystem";
+    fmt.width(PATH_MAXLEN);  fmt << std::left  << "Filesystem";
     fmt.width(12);  fmt << std::right << "Size";
     fmt.width(12);  fmt << "Used";
     fmt.width(12);  fmt << "Avail";
@@ -556,7 +558,7 @@ bool CXBMCApp::GetStorageUsage(const std::string &path, std::string &usage)
   std::ostringstream fmt;
   fmt << std::fixed;
   fmt.precision(1);
-  fmt.width(24);  fmt << std::left  << path;
+  fmt.width(PATH_MAXLEN);  fmt << std::left  << (path.size() < PATH_MAXLEN-1 ? path : StringUtils::Left(path, PATH_MAXLEN-4) + "...");
   fmt.width(12);  fmt << std::right << totalSize << "G"; // size in GB
   fmt.width(12);  fmt << usedSize << "G"; // used in GB
   fmt.width(12);  fmt << freeSize << "G"; // free
