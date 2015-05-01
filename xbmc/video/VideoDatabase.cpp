@@ -8847,6 +8847,15 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
       }
       xmlDoc.SaveFile(xmlFile);
     }
+    CVariant data;
+    if (!singleFiles)
+    {
+      data["root"] = exportRoot;
+      data["file"] = xmlFile;
+      if (iFailCount > 0)
+        data["failcount"] = iFailCount;
+    }
+    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnExport", data);
   }
   catch (...)
   {
