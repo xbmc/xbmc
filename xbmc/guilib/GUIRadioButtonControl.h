@@ -40,7 +40,8 @@ public:
                          const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                          const CLabelInfo& labelInfo,
                          const CTextureInfo& radioOnFocus, const CTextureInfo& radioOnNoFocus,
-                         const CTextureInfo& radioOffFocus, const CTextureInfo& radioOffNoFocus);
+                         const CTextureInfo& radioOffFocus, const CTextureInfo& radioOffNoFocus,
+                         const CTextureInfo& radioOnDisabled, const CTextureInfo& radioOffDisabled);
 
   virtual ~CGUIRadioButtonControl(void);
   virtual CGUIRadioButtonControl *Clone() const { return new CGUIRadioButtonControl(*this); };
@@ -67,6 +68,8 @@ protected:
   CGUITexture m_imgRadioOnNoFocus;
   CGUITexture m_imgRadioOffFocus;
   CGUITexture m_imgRadioOffNoFocus;
+  CGUITexture m_imgRadioOnDisabled;
+  CGUITexture m_imgRadioOffDisabled;
   float m_radioPosX;
   float m_radioPosY;
   INFO::InfoPtr m_toggleSelect;
