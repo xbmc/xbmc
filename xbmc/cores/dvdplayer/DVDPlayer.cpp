@@ -3191,6 +3191,22 @@ int64_t CDVDPlayer::GetTime()
   return llrint(m_State.time + DVD_TIME_TO_MSEC(offset));
 }
 
+// return the time in milliseconds
+int64_t CDVDPlayer::GetDisplayTime()
+{
+  CSingleLock lock(m_StateSection);
+  double offset = 0;
+  const double limit  = DVD_MSEC_TO_TIME(200);
+  if(m_State.timestamp > 0)
+  {
+    offset  = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
+    offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
+    if(offset >  limit) offset =  limit;
+    if(offset < -limit) offset = -limit;
+  }
+  return llrint(m_State.disptime + DVD_TIME_TO_MSEC(offset));
+}
+
 // return length in msec
 int64_t CDVDPlayer::GetTotalTimeInMsec()
 {
@@ -4455,6 +4471,16 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   {
     state.time        = (double) m_Edl.RemoveCutTime(llrint(state.time));
     state.time_total  = (double) m_Edl.RemoveCutTime(llrint(state.time_total));
+  }
+
+  state.disptime = state.time;
+  if (m_CurrentVideo.id >= 0 && state.time_src == ETIMESOURCE_CLOCK)
+  {
+    double pts = m_dvdPlayerVideo->GetCurrentPts();
+    if (pts != DVD_NOPTS_VALUE)
+    {
+      state.disptime = DVD_TIME_TO_MSEC(pts + m_offset_pts);
+    }
   }
 
   if(state.time_total <= 0)
