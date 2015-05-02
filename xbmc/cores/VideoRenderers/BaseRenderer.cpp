@@ -90,10 +90,10 @@ void CBaseRenderer::ChooseBestResolution(float fps)
   bool canChange = true;
   if (iValue != ADJUST_REFRESHRATE_WITH_BOTH)
   { 
-    if (g_application.GetCurrentPlayer() == EPC_DSPLAYER && iValue == ADJUST_REFRESHRATE_WITH_DVDPLAYER)
+    if (g_application.GetCurrentPlayer() == PCID_DSPLAYER && iValue == ADJUST_REFRESHRATE_WITH_DVDPLAYER)
       canChange = false;
 
-    if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER && iValue == ADJUST_REFRESHRATE_WITH_DSPLAYER)
+    if (g_application.GetCurrentPlayer() == PCID_DVDPLAYER && iValue == ADJUST_REFRESHRATE_WITH_DSPLAYER)
       canChange = false;
   }
 #endif

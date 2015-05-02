@@ -335,7 +335,7 @@ void CXBMCRenderManager::NewFrame()
 {
   {
     CSingleLock lock2(m_presentlock);
-    m_presentstep = PRESENT_FLIP;
+    m_presentstep = PRESENT_READY;
   }
   m_presentevent.notifyAll();
 }
@@ -1202,6 +1202,9 @@ void CXBMCRenderManager::PrepareNextRender()
 
   if (m_queued.empty())
   {
+#ifdef HAS_DS_PLAYER
+    if (!g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+#endif
     CLog::Log(LOGERROR, "CRenderManager::PrepareNextRender - asked to prepare with nothing available");
 
     m_presentstep = PRESENT_IDLE;
