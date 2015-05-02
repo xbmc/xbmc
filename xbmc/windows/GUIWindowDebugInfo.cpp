@@ -19,7 +19,6 @@
  */
 
 #include "GUIWindowDebugInfo.h"
-#include "input/MouseStat.h"
 #include "settings/AdvancedSettings.h"
 #include "addons/Skin.h"
 #include "utils/CPUInfo.h"

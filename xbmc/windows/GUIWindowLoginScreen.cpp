@@ -25,7 +25,6 @@
 #include "profiles/Profile.h"
 #include "profiles/ProfilesManager.h"
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
-#include "profiles/windows/GUIWindowSettingsProfile.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "GUIPassword.h"
 #ifdef HAS_JSONRPC
@@ -38,7 +37,6 @@
 #include "network/Network.h"
 #include "addons/Skin.h"
 #include "guilib/GUIMessage.h"
-#include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "dialogs/GUIDialogOK.h"
