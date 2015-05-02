@@ -125,7 +125,7 @@ public:
   int GetFreeSpace();
   void  SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
   void GetVideoRect(CRect& SrcRect, CRect& DestRect, CRect& ViewRect) const { g_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect); }
-  static void RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
+  static void RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect, DWORD flags, const void* render_ctx);
   void ResolutionUpdateCallBack(uint32_t width, uint32_t height, float framerate, float pixel_aspect);
   static void ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height, float framerate, float pixel_aspect);
 };

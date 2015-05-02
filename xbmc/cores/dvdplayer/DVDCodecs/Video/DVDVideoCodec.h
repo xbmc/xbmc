@@ -73,6 +73,9 @@ struct DVDVideoPicture
       int iLineSize[4];   // [4] = alpha channel, currently not used
     };
     struct {
+      void* render_ctx;
+    };
+    struct {
       DXVA::CRenderPicture* dxva;
     };
     struct {

@@ -740,7 +740,7 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
   m_omxVideo.SetVideoRect(SrcRect, DestRect, video_stereo_mode, display_stereo_mode);
 }
 
-void OMXPlayerVideo::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
+void OMXPlayerVideo::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect, DWORD flags, const void* render_ctx)
 {
   OMXPlayerVideo *player = (OMXPlayerVideo*)ctx;
   player->SetVideoRect(SrcRect, DestRect);
