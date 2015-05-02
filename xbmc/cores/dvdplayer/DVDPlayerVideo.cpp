@@ -1111,9 +1111,11 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   if (m_speed < 0)
   {
+    double sleepTime, renderPts;
+    int bufferLevel;
     double inputPts = m_droppingStats.m_lastPts;
-    double renderPts = m_droppingStats.m_lastRenderPts;
-    if (pts_org > renderPts)
+    g_renderManager.GetStats(sleepTime, renderPts, bufferLevel);
+    if (pts_org > renderPts || bufferLevel > 0)
     {
       if (inputPts >= renderPts)
       {
