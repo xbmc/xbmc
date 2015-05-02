@@ -192,7 +192,10 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
 
   // check if this is a key we don't want to handle
   if (sym == XBMCK_LAST || sym == XBMCK_UNKNOWN)
+  {
+    CXBMCApp::android_printf("CAndroidKey: key ignored (code: %d)", keycode);
     return false;
+  }
 
   uint16_t modifiers = 0;
   if (state & AMETA_ALT_LEFT_ON)
