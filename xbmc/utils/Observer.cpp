@@ -21,7 +21,6 @@
 #include "Application.h"
 #include "Observer.h"
 #include "threads/SingleLock.h"
-#include "utils/JobManager.h"
 
 #include <algorithm>
 

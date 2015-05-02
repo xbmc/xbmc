@@ -20,7 +20,6 @@
  *
  */
 
-#include "md5.h"
 #include "InfoLoader.h"
 #include "settings/lib/ISubSettings.h"
 #include <string>

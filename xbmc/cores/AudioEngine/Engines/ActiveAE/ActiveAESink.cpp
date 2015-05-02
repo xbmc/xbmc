@@ -27,6 +27,7 @@
 #include "cores/AudioEngine/AEResampleFactory.h"
 
 #include "settings/Settings.h"
+#include "utils/log.h"
 
 #include <new> // for std::bad_alloc
 #include <algorithm>

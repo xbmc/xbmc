@@ -19,7 +19,6 @@
  */
 
 #include "CharsetConverter.h"
-#include "Util.h"
 #include "utils/StringUtils.h"
 #include <fribidi/fribidi.h>
 #include "LangInfo.h"

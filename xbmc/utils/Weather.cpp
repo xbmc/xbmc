@@ -42,7 +42,6 @@
 #include "log.h"
 #include "addons/AddonManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "CharsetConverter.h"
 #include "addons/GUIDialogAddonSettings.h"
 
 using namespace std;

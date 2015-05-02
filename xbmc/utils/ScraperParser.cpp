@@ -25,11 +25,9 @@
 #include "HTMLUtil.h"
 #include "addons/Scraper.h"
 #include "URL.h"
-#include "Util.h"
 #include "utils/StringUtils.h"
 #include "log.h"
 #include "CharsetConverter.h"
-#include "utils/StringUtils.h"
 #include "utils/XSLTUtils.h"
 #include "utils/XMLUtils.h"
 #include <sstream>

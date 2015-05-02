@@ -25,7 +25,6 @@
 #include "guilib/GUIFontManager.h"
 #include "filesystem/File.h"
 #include "windowing/WindowingFactory.h"
-#include "rendering/RenderSystem.h"
 #include "log.h"
 
 using namespace XFILE;

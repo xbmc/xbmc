@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #ifdef TARGET_WINDOWS
 #include <Windows.h>
-#include "utils\SystemInfo.h"
 #endif
 
 // --------------------- Helper Functions ---------------------
