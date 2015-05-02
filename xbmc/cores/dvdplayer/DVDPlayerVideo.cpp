@@ -1109,36 +1109,6 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     pts += m_iVideoDelay - DVD_SEC_TO_TIME(g_renderManager.GetDisplayLatency());
   }
 
-  if (m_speed < 0)
-  {
-    double sleepTime, renderPts;
-    int bufferLevel;
-    double inputPts = m_droppingStats.m_lastPts;
-    g_renderManager.GetStats(sleepTime, renderPts, bufferLevel);
-    if (pts_org > renderPts || bufferLevel > 0)
-    {
-      if (inputPts >= renderPts)
-      {
-        Sleep(50);
-      }
-      return result | EOS_DROPPED;
-    }
-  }
-  else if (m_speed > DVD_PLAYSPEED_NORMAL)
-  {
-    double iSleepTime, iRenderPts;
-    int iBufferLevel;
-    g_renderManager.GetStats(iSleepTime, iRenderPts, iBufferLevel);
-
-    double diff = pts_org - iRenderPts;
-    double mindiff = DVD_SEC_TO_TIME(1/m_fFrameRate * m_speed / DVD_PLAYSPEED_NORMAL) * (iBufferLevel +1);
-    if (diff < mindiff)
-    {
-      m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
-      return result | EOS_DROPPED;
-    }
-  }
-
   // calculate the time we need to delay this picture before displaying
   double iSleepTime, iClockSleep, iFrameSleep, iPlayingClock, iCurrentClock;
 
@@ -1162,6 +1132,42 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     iSleepTime = iFrameSleep;
   else
     iSleepTime = iClockSleep;
+
+  if (m_speed < 0)
+  {
+    double sleepTime, renderPts;
+    int bufferLevel;
+    double inputPts = m_droppingStats.m_lastPts;
+    g_renderManager.GetStats(sleepTime, renderPts, bufferLevel);
+    if (pts_org > renderPts || bufferLevel > 0)
+    {
+      if (inputPts >= renderPts)
+      {
+        Sleep(50);
+      }
+      return result | EOS_DROPPED;
+    }
+
+    if (iSleepTime > 0.05)
+      iSleepTime = 0.05;
+  }
+  else if (m_speed > DVD_PLAYSPEED_NORMAL)
+  {
+    double sleepTime, renderPts;
+    int bufferLevel;
+    g_renderManager.GetStats(sleepTime, renderPts, bufferLevel);
+
+    double diff = pts_org - renderPts;
+    double mindiff = DVD_SEC_TO_TIME(1/m_fFrameRate * m_speed / DVD_PLAYSPEED_NORMAL) * (bufferLevel +1);
+    if (diff < mindiff)
+    {
+      m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
+      return result | EOS_DROPPED;
+    }
+
+    if (iSleepTime > 0.05)
+      iSleepTime = 0.05;
+  }
 
   // sync clock if we are master
   if(m_pClock->GetMaster() == MASTER_CLOCK_VIDEO)
