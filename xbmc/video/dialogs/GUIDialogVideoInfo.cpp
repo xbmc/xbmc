@@ -39,7 +39,6 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "storage/MediaManager.h"
-#include "utils/AsyncFileCopy.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -57,7 +56,6 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #ifdef HAS_UPNP
-#include "network/upnp/UPnP.h"
 #endif
 #include "utils/FileUtils.h"
 

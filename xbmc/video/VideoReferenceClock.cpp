@@ -23,11 +23,9 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "guilib/GraphicContext.h"
 #include "video/videosync/VideoSync.h"
-#include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
 
 #if defined(HAS_GLX)
@@ -35,6 +33,7 @@
 #endif
 #if defined(HAVE_X11)
 #include "video/videosync/VideoSyncDRM.h"
+#include "windowing/WindowingFactory.h"
 #elif defined(TARGET_RASPBERRY_PI)
 #include "video/videosync/VideoSyncPi.h"
 #endif

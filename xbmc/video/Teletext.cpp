@@ -29,10 +29,8 @@
 #include "Teletext.h"
 #include "Application.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
-#include "cores/IPlayer.h"
 
 #if SDL_VERSION == 1
 #include <SDL/SDL_stdinc.h>

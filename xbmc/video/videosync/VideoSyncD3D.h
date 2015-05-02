@@ -24,7 +24,6 @@
 #include "video/videosync/VideoSync.h"
 #include <d3d9.h>
 #include "guilib/D3DResource.h"
-#include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
 class CVideoSyncD3D : public CVideoSync, ID3DResource
