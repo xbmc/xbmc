@@ -25,13 +25,9 @@
 #include "utils/SystemInfo.h"
 #include "threads/platform/win/Win32Exception.h"
 #include "shellapi.h"
-#include "dbghelp.h"
-#include "XBDateTime.h"
-#include "threads/Thread.h"
 #include "Application.h"
 #include "XbmcContext.h"
 #include "GUIInfoManager.h"
-#include "utils/StringUtils.h"
 #include "utils/CPUInfo.h"
 #include <mmdeviceapi.h>
 #include "win32/IMMNotificationClient.h"
