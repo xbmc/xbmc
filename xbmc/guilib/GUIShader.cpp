@@ -160,6 +160,12 @@ bool CGUIShader::OnEnabled()
       projMatrix[3+0*4] == 0 &&
       projMatrix[3+1*4] == 0 &&
       projMatrix[3+3*4] == 0;
+
+  m_clipXFactor = 0.0;
+  m_clipXOffset = 0.0;
+  m_clipYFactor = 0.0;
+  m_clipYOffset = 0.0;
+
   if (m_clipPossible)
   {
     m_clipXFactor = guiMatrix.m[0][0] * modelMatrix[0+0*4] * projMatrix[0+0*4];
