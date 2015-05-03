@@ -123,7 +123,7 @@ void CSimpleFileCache::Close()
   m_cacheFileWrite->Close();
   m_cacheFileRead->Close();
 
-  if (!m_cacheFileRead->Delete(CURL(m_filename)))
+  if (!m_filename.empty() && !m_cacheFileRead->Delete(CURL(m_filename)))
     CLog::LogF(LOGWARNING, "failed to delete temporary file \"%s\"", m_filename.c_str());
 
   m_filename.clear();
