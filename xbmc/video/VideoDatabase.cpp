@@ -1446,7 +1446,7 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     std::string trimmedName = name.c_str();
     StringUtils::Trim(trimmedName);
 
-    std::string strSQL=PrepareSQL("select actor_id from actor where name = '%s'", trimmedName.c_str());
+    std::string strSQL=PrepareSQL("select actor_id from actor where SUBSTR(name, 1, 255) = '%s'", trimmedName.substr(0, 255).c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
@@ -4558,6 +4558,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     // handle corrupted databases with multiple actors with the same name
     std::map<std::string, std::vector<int> > duplicateActors;
+    m_pDS->exec("UPDATE actors SET strActor = TRIM(SUBSTR(strActor, 1, 255)) WHERE LENGTH(strActor) > 255");
     m_pDS->query("SELECT TRIM(strActor) as strActor FROM actors GROUP BY TRIM(strActor) HAVING COUNT(1) > 1");
     while (!m_pDS->eof())
     {
