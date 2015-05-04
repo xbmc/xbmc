@@ -205,6 +205,10 @@ public:
    */
   virtual int64_t GetTime() { return 0; }
   /*!
+   \brief time of frame on screen in milliseconds
+   */
+  virtual int64_t GetDisplayTime() { return GetTime(); }
+  /*!
    \brief total time in milliseconds
    */
   virtual int64_t GetTotalTime() { return 0; }

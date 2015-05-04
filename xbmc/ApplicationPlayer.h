@@ -114,6 +114,7 @@ public:
   bool  GetSubtitleVisible();
   TextCacheStruct_t* GetTeletextCache();
   int64_t GetTime() const;
+  int64_t GetDisplayTime() const;
   int64_t GetTotalTime() const;
   void  GetVideoInfo(std::string& strVideoInfo);
   void  GetVideoStreamInfo(SPlayerVideoStreamInfo &info);
