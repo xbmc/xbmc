@@ -637,13 +637,13 @@ void CSettingsManager::AddCondition(const std::string &condition)
   m_conditions.AddCondition(condition);
 }
 
-void CSettingsManager::AddCondition(const std::string &identifier, SettingConditionCheck condition)
+void CSettingsManager::AddCondition(const std::string &identifier, SettingConditionCheck condition, void *data /*= NULL*/)
 {
   CExclusiveLock lock(m_critical);
   if (identifier.empty() || condition == NULL)
     return;
 
-  m_conditions.AddCondition(identifier, condition);
+  m_conditions.AddCondition(identifier, condition, data);
 }
   
 bool CSettingsManager::Serialize(TiXmlNode *parent) const

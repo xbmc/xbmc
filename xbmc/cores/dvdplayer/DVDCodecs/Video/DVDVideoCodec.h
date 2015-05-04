@@ -301,7 +301,7 @@ public:
    * Hide or Show Settings depending on the currently running hardware 
    *
    */
-   static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting);
+   static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data);
 
   /**
   * Interact with user settings so that user disabled codecs are disabled
