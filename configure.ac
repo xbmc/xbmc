@@ -64,10 +64,10 @@ AC_DEFUN([XB_FIND_SONAME],
     fi
   elif [[ "$host_vendor" != "apple" ]]; then
     AC_MSG_CHECKING([for lib$2 soname])
-    $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS $4 -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
+    $1_FILENAME=$($CC -nostdlib -o /dev/null $CFLAGS $LDFLAGS $4 -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
     if [[ -z $$1_FILENAME ]]; then
       #try gold linker syntax
-      $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS $4 -l$2 -Wl,-t 3>&1 1>&2 2>&3 | grep "lib$2")
+      $1_FILENAME=$($CC -nostdlib -o /dev/null $CFLAGS $LDFLAGS $4 -l$2 -Wl,-t 3>&1 1>&2 2>&3 | grep "lib$2")
     fi
     if [[ ! -z $$1_FILENAME ]]; then
       $1_SONAME=$($OBJDUMP -p $$1_FILENAME | grep "SONAME.*$2" | awk '{V=2; print $V}')
