@@ -1,0 +1,22 @@
+From 71bae68d91aca9f0399acc163b97ca73702dbb7b Mon Sep 17 00:00:00 2001
+From: Memphiz <memphis@machzwo.de>
+Date: Mon, 4 May 2015 23:28:31 +0200
+Subject: [PATCH] [raop] - also forward png data to the coverart callback
+
+
+diff --git a/src/lib/raop.c b/src/lib/raop.c
+index e5c6539..889b44f 100644
+--- a/src/lib/raop.c
++++ b/src/lib/raop.c
+@@ -312,7 +312,7 @@ conn_request(void *ptr, http_request_t *request, http_response_t **response)
+ 				logger_log(conn->raop->logger, LOGGER_WARNING, "RAOP not initialized at SET_PARAMETER volume");
+ 			}
+ 			free(datastr);
+-		} else if (!strcmp(content_type, "image/jpeg")) {
++		} else if (!strcmp(content_type, "image/jpeg") || !strcmp(content_type, "image/png")) {
+ 			logger_log(conn->raop->logger, LOGGER_INFO, "Got image data of %d bytes", datalen);
+ 			if (conn->raop_rtp) {
+ 				raop_rtp_set_coverart(conn->raop_rtp, data, datalen);
+-- 
+1.9.5 (Apple Git-50.3)
+
