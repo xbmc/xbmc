@@ -24,7 +24,9 @@
 
 #include "video/videosync/VideoSyncGLX.h"
 #include <sstream>
+#ifdef HAS_XRANDR
 #include <X11/extensions/Xrandr.h>
+#endif
 #include "windowing/WindowingFactory.h"
 #include "guilib/GraphicContext.h"
 #include "threads/SingleLock.h"
