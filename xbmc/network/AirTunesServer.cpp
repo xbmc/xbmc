@@ -56,7 +56,8 @@
 #include <map>
 #include <string>
 
-#define TMP_COVERART_PATH "special://temp/airtunes_album_thumb.jpg"
+#define TMP_COVERART_PATH_JPG "special://temp/airtunes_album_thumb.jpg"
+#define TMP_COVERART_PATH_PNG "special://temp/airtunes_album_thumb.png"
 
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
@@ -92,7 +93,8 @@ void CAirTunesServer::ResetMetadata()
 {
   CSingleLock lock(m_metadataLock);
 
-  XFILE::CFile::Delete(TMP_COVERART_PATH);
+  XFILE::CFile::Delete(TMP_COVERART_PATH_JPG);
+  XFILE::CFile::Delete(TMP_COVERART_PATH_PNG);
   RefreshCoverArt();
 
   m_metadata[0] = "";
@@ -115,14 +117,19 @@ void CAirTunesServer::RefreshMetadata()
   CApplicationMessenger::Get().SetCurrentSongTag(tag);
 }
 
-void CAirTunesServer::RefreshCoverArt()
+void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
 {
+  static std::string coverArtFile = TMP_COVERART_PATH_JPG;
+
+  if (outputFilename != NULL)
+    coverArtFile = std::string(outputFilename);
+
   CSingleLock lock(m_metadataLock);
   //reset to empty before setting the new one
   //else it won't get refreshed because the name didn't change
   g_infoManager.SetCurrentAlbumThumb("");
   //update the ui
-  g_infoManager.SetCurrentAlbumThumb(TMP_COVERART_PATH);
+  g_infoManager.SetCurrentAlbumThumb(coverArtFile);
   //update the ui
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REFRESH_THUMBS);
   g_windowManager.SendThreadMessage(msg);
@@ -156,23 +163,51 @@ void CAirTunesServer::Announce(AnnouncementFlag flag, const char *sender, const 
   }
 }
 
+bool IsJPEG(const char *buffer, unsigned int size)
+{
+  bool ret = false;
+  if (size < 2)
+    return false;
+
+  //JPEG image files begin with FF D8 and end with FF D9.
+  // check for FF D8 big + little endian on start
+  if ((buffer[0] == (char)0xd8 && buffer[1] == (char)0xff) ||
+      (buffer[1] == (char)0xd8 && buffer[0] == (char)0xff))
+    ret = true;
+
+  if (ret)
+  {
+    ret = false;
+    //check on FF D9 big + little endian on end
+    if ((buffer[size - 2] == (char)0xd9 && buffer[size - 1] == (char)0xff) ||
+       (buffer[size - 1] == (char)0xd9 && buffer[size - 2] == (char)0xff))
+        ret = true;
+  }
+
+  return ret;
+}
+
 void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int size)
 {
   XFILE::CFile tmpFile;
+  std::string tmpFilename = TMP_COVERART_PATH_PNG;
 
   if(!size)
     return;
 
   CSingleLock lock(m_metadataLock);
   
-  if (tmpFile.OpenForWrite(TMP_COVERART_PATH, true))
+  if (IsJPEG(buffer, size))
+    tmpFilename = TMP_COVERART_PATH_JPG;
+
+  if (tmpFile.OpenForWrite(tmpFilename, true))
   {
     int writtenBytes=0;
     writtenBytes = tmpFile.Write(buffer, size);
     tmpFile.Close();
 
     if (writtenBytes > 0)
-      RefreshCoverArt();
+      RefreshCoverArt(tmpFilename.c_str());
   }
 }
 
