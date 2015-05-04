@@ -194,6 +194,7 @@ bool CWinSystemX11::DestroyWindow()
 
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
+#ifdef HAS_XRANDR
   m_userOutput = CSettings::Get().GetString("videoscreen.monitor");
   XOutput *out = NULL;
   if (m_userOutput.compare("Default") != 0)
@@ -234,6 +235,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   m_nHeight = newHeight;
   m_bFullScreen = false;
   m_currentOutput = m_userOutput;
+#endif
 
   return false;
 }
@@ -454,6 +456,7 @@ void CWinSystemX11::UpdateResolutions()
 
 bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
 {
+#ifdef HAS_XRANDR
   XOutput *out = g_xrandr.GetOutput(m_currentOutput);
 
   // keep calibrations done on a not connected output
@@ -482,12 +485,14 @@ bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
     return true;
   if (resInfo.iSubtitles != (int)(0.965*resInfo.iHeight))
     return true;
+#endif
 
   return false;
 }
 
 void CWinSystemX11::GetConnectedOutputs(std::vector<std::string> *outputs)
 {
+#ifdef HAS_XRANDR
   vector<XOutput> outs;
   g_xrandr.Query(true);
   outs = g_xrandr.GetModes();
@@ -496,6 +501,7 @@ void CWinSystemX11::GetConnectedOutputs(std::vector<std::string> *outputs)
   {
     outputs->push_back(outs[i].name);
   }
+#endif
 }
 
 bool CWinSystemX11::IsCurrentOutput(std::string output)
@@ -879,6 +885,8 @@ bool CWinSystemX11::Show(bool raise)
   return true;
 }
 
+#ifdef HAS_XRANDR
+
 void CWinSystemX11::NotifyXRREvent()
 {
   CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
@@ -900,12 +908,15 @@ void CWinSystemX11::NotifyXRREvent()
   RecreateWindow();
 }
 
+#endif
+
 void CWinSystemX11::RecreateWindow()
 {
   m_windowDirty = true;
 
   CSingleLock lock(g_graphicsContext);
 
+#ifdef HAS_XRANDR
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   XMode   mode = g_xrandr.GetCurrentMode(m_userOutput);
 
@@ -916,8 +927,10 @@ void CWinSystemX11::RecreateWindow()
     CLog::Log(LOGWARNING, "%s - output name not set", __FUNCTION__);
 
   RESOLUTION_INFO res;
+#endif
   unsigned int i;
   bool found(false);
+#ifdef HAS_XRANDR
   for (i = RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); ++i)
   {
     res = CDisplaySettings::Get().GetResolutionInfo(i);
@@ -927,6 +940,7 @@ void CWinSystemX11::RecreateWindow()
       break;
     }
   }
+#endif
 
   if (!found)
   {
@@ -1067,6 +1081,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     int x0 = 0;
     int y0 = 0;
 
+#ifdef HAS_XRANDR
     XOutput *out = g_xrandr.GetOutput(output);
     if (!out)
       out = g_xrandr.GetOutput(m_currentOutput);
@@ -1076,6 +1091,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       x0 = out->x;
       y0 = out->y;
     }
+#endif
 
 #if defined(HAS_GLX)
     vi = glXChooseVisual(m_dpy, m_nScreen, att);
@@ -1466,6 +1482,7 @@ bool CWinSystemX11::HasWindowManager()
 
 void CWinSystemX11::UpdateCrtc()
 {
+#ifdef HAS_XRANDR
   XWindowAttributes winattr;
   int posx, posy;
   Window child;
@@ -1474,6 +1491,7 @@ void CWinSystemX11::UpdateCrtc()
                         &posx, &posy, &child);
 
   m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2);
+#endif
 }
 
 #endif
