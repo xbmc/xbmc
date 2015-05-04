@@ -109,7 +109,7 @@ bool SysfsUtils::Has(const std::string &path)
 
 bool SysfsUtils::HasRW(const std::string &path)
 {
-  int fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC, 0644);
+  int fd = open(path.c_str(), O_RDWR);
   if (fd >= 0)
   {
     close(fd);
