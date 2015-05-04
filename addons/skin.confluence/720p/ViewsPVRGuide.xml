@@ -43,6 +43,19 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<label>$INFO[ListItem.Label]</label>
+						<visible>!ListItem.Property(DateLabel)</visible>
+					</control>
+					<control type="label" id="2">
+						<left>0</left>
+						<top>0</top>
+						<width>34</width>
+						<height>29</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>ListItem.Property(DateLabel)</visible>
 					</control>
 				</rulerlayout>
 				<channellayout height="48" width="280">
