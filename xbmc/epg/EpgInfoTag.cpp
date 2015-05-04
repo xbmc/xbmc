@@ -204,6 +204,7 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
   value["hastimer"] = HasTimer();
+  value["hastimerschedule"] = HasTimerSchedule();
   value["hasrecording"] = HasRecording();
   value["recording"] = recording ? recording->m_strFileNameAndPath : "";
   value["isactive"] = IsActive();
@@ -518,6 +519,12 @@ std::string CEpgInfoTag::Path(void) const
 bool CEpgInfoTag::HasTimer(void) const
 {
   return m_timer != NULL;
+}
+
+bool CEpgInfoTag::HasTimerSchedule(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_timer && (m_timer->m_iParentClientIndex > 0);
 }
 
 CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const

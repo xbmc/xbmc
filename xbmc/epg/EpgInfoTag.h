@@ -332,6 +332,12 @@ namespace EPG
     bool HasTimer(void) const;
 
     /*!
+     * @brief Check whether this event has an active timer schedule.
+     * @return True if it has an active timer schedule, false if not.
+     */
+    bool HasTimerSchedule(void) const;
+
+    /*!
      * @brief Get a pointer to the timer for event or NULL if there is none.
      * @return A pointer to the timer for event or NULL if there is none.
      */

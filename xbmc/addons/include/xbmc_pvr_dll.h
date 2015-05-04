@@ -330,6 +330,15 @@ extern "C"
   */
   PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY edl[], int *size);
 
+  /*!
+  * Retrieve the timer types supported by the backend.
+  * @param types out: The function has to write the definition of the supported timer types into this array.
+  * @param typesCount in: The maximum size of the list, out: the actual size of the list. default: PVR_ADDON_TIMERTYPE_ARRAY_SIZE
+  * @return PVR_ERROR_NO_ERROR if the types were successfully written to the array.
+  * @remarks Required if bSupportsTimers is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+  */
+  PVR_ERROR GetTimerTypes(PVR_TIMER_TYPE types[], int *typesCount);
+
   //@}
   /** @name PVR timer methods
    *  @remarks Only used by XBMC is bSupportsTimers is set to true.
@@ -364,10 +373,12 @@ extern "C"
    * Delete a timer on the backend.
    * @param timer The timer to delete.
    * @param bForceDelete Set to true to delete a timer that is currently recording a program.
+   * @param bDeleteScheduled For repeating timers, set to true to not only delete the repeating timer itself, but also all
+            timers scheduled by the repeating timer. For non-repeating timers, this parameter will be ignored.
    * @return PVR_ERROR_NO_ERROR if the timer has been deleted successfully.
    * @remarks Required if bSupportsTimers is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR DeleteTimer(const PVR_TIMER& timer, bool bForceDelete);
+  PVR_ERROR DeleteTimer(const PVR_TIMER& timer, bool bForceDelete, bool bDeleteScheduled);
 
   /*!
    * Update the timer information on the backend.
@@ -664,6 +675,7 @@ extern "C"
     pClient->GetRecordingLastPlayedPosition = GetRecordingLastPlayedPosition;
     pClient->GetRecordingEdl                = GetRecordingEdl;
 
+    pClient->GetTimerTypes                  = GetTimerTypes;
     pClient->GetTimersAmount                = GetTimersAmount;
     pClient->GetTimers                      = GetTimers;
     pClient->AddTimer                       = AddTimer;

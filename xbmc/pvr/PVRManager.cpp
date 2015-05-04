@@ -899,7 +899,7 @@ bool CPVRManager::ToggleRecordingOnChannel(unsigned int iChannelId)
     else
     {
       /* delete active timers */
-      bReturn = m_timers->DeleteTimersOnChannel(channel, false, true);
+      bReturn = m_timers->DeleteTimersOnChannel(channel, true, true);
     }
   }
 

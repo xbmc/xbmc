@@ -29,6 +29,7 @@
 #define CONTROL_BTNGROUPITEMS             5
 #define CONTROL_BTNSHOWHIDDEN             6
 #define CONTROL_BTNSHOWDELETED            7
+#define CONTROL_BTNTIMERTYPEFILTER        8
 #define CONTROL_BTNCHANNELGROUPS          28
 #define CONTROL_BTNFILTERCHANNELS         31
 
@@ -89,13 +90,25 @@ namespace PVR
 
     virtual bool PlayRecording(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
     virtual bool PlayFile(CFileItem *item, bool bPlayMinimized = false, bool bCheckResume = true);
-    virtual bool StartRecordFile(const CFileItem &item);
-    virtual bool StopRecordFile(const CFileItem &item);
+    virtual bool ShowTimerSettings(CFileItem *item);
+    virtual bool StartRecordFile(CFileItem *item, bool bAdvanced = false);
+    virtual bool StopRecordFile(CFileItem *item);
     virtual void ShowEPGInfo(CFileItem *item);
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
     virtual void UpdateSelectedItemPath();
     void CheckResumeRecording(CFileItem *item);
+
+    /*!
+     * @brief Open a dialog to confirm timer delete.
+     * @param item the timer to delete.
+     * @param bDeleteSchedule in: ignored
+     *                        out, for timer schedules: true to delete the timers currently
+     *                             scheduled by the timer schedule, false otherwise.
+     *                        out, for one shot timers: ignored
+     * @return true, if the timer shall be deleted, false otherwise.
+     */
+    static bool ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule);
 
     static std::map<bool, std::string> m_selectedItemPaths;
 
