@@ -53,16 +53,18 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
       if (!pItem->GetEPGInfoTag()->HasTimer())
       {
         if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-          buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* RECORD programme */
-        else
-          buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061); /* Create a Timer */
+          buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record */
+
+        buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061);   /* add timer */
+        buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 841);  /* add custom timer */
       }
       else
       {
         if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
-        else
-          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* Delete Timer */
+          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* stop recording */
+        else if (pItem->GetPVRTimerInfoTag()->HasTimerType() &&
+                 !pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
+          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* delete timer */
       }
     }
 
@@ -244,11 +246,11 @@ bool CGUIWindowPVRSearch::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BU
 {
   bool bReturn = false;
 
-  if (button == CONTEXT_BUTTON_START_RECORD)
+  if ((button == CONTEXT_BUTTON_START_RECORD) ||
+      (button == CONTEXT_BUTTON_ADVANCED_RECORD))
   {
+    StartRecordFile(item, button == CONTEXT_BUTTON_ADVANCED_RECORD);
     bReturn = true;
-
-    StartRecordFile(*item);
   }
 
   return bReturn;
@@ -260,9 +262,8 @@ bool CGUIWindowPVRSearch::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUT
 
   if (button == CONTEXT_BUTTON_STOP_RECORD)
   {
+    StopRecordFile(item);
     bReturn = true;
-
-    StopRecordFile(*item);
   }
 
   return bReturn;
