@@ -188,15 +188,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
         if (g_PVRManager.IsStarted())
-        {
-          std::string strMessage;
-          strMessage = StringUtils::Format("%s: '%s'",
-                                           (timer->EndAsUTC() <= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()) ?
-                                           g_localizeStrings.Get(19227).c_str() :
-                                           g_localizeStrings.Get(19228).c_str(),
-                                           timer->m_strTitle.c_str());
-          timerNotifications.push_back(strMessage);
-        }
+          timerNotifications.push_back(timer->GetDeletedNotificationText());
 
         /** clear the EPG tag explicitly here, because it no longer happens automatically with shared pointers */
         timer->ClearEpgTag();
