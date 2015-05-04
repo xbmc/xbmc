@@ -443,13 +443,13 @@ PVR_ERROR CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer)
   return error;
 }
 
-PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce)
+PVR_ERROR CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule)
 {
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
   PVR_CLIENT client;
 
   if (GetConnectedClient(timer.m_iClientId, client))
-    error = client->DeleteTimer(timer, bForce);
+    error = client->DeleteTimer(timer, bForce, bDeleteSchedule);
 
   return error;
 }
@@ -466,6 +466,15 @@ PVR_ERROR CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const std::str
     CLog::Log(LOGERROR, "PVR - %s - cannot rename timer on client '%d': %s",__FUNCTION__, timer.m_iClientId, CPVRClient::ToString(error));
 
   return error;
+}
+
+const PVR_TIMER_TYPES *CPVRClients::GetTimerTypes(int iClientID) const
+{
+  PVR_CLIENT client;
+  if (GetConnectedClient(iClientID, client))
+    return client->GetTimerTypes();
+
+  return NULL;
 }
 
 PVR_ERROR CPVRClients::GetRecordings(CPVRRecordings *recordings, bool deleted)
@@ -1398,12 +1407,6 @@ bool CPVRClients::SupportsRecordingsUndelete(int iClientId) const
 {
   PVR_CLIENT client;
   return GetConnectedClient(iClientId, client) && client->SupportsRecordingsUndelete();
-}
-
-bool CPVRClients::SupportsRecordingFolders(int iClientId) const
-{
-  PVR_CLIENT client;
-  return GetConnectedClient(iClientId, client) && client->SupportsRecordingFolders();
 }
 
 bool CPVRClients::SupportsRecordingPlayCount(int iClientId) const
