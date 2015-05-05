@@ -707,22 +707,22 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const std::string& strPath
   ActivateWindow(iWindowID, params, false);
 }
 
-void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<string>& params, bool swappingWindows)
+void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<string>& params, bool swappingWindows /* = false */, bool checkModals /* = false */)
 {
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    CApplicationMessenger::Get().ActivateWindow(iWindowID, params, swappingWindows);
+    CApplicationMessenger::Get().ActivateWindow(iWindowID, params, swappingWindows, checkModals);
   }
   else
   {
     CSingleLock lock(g_graphicsContext);
-    ActivateWindow_Internal(iWindowID, params, swappingWindows);
+    ActivateWindow_Internal(iWindowID, params, swappingWindows, checkModals);
   }
 }
 
-void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<string>& params, bool swappingWindows)
+void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<string>& params, bool swappingWindows, bool checkModals /* = false */)
 {
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)
@@ -776,7 +776,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<stri
   }
 
   // don't activate a window if there are active modal dialogs
-  if (HasModalDialog())
+  if (checkModals && HasModalDialog())
   {
     CLog::Log(LOG_LEVEL_DEBUG, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
     g_audioManager.PlayActionSound(CAction(ACTION_ERROR));

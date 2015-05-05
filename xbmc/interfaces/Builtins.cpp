@@ -301,7 +301,7 @@ bool CBuiltins::ActivateWindow(int iWindowID, const std::vector<std::string>& pa
 {
   // disable the screensaver
   g_application.WakeUpScreenSaverAndDPMS();
-  g_windowManager.ActivateWindow(iWindowID, params, swappingWindows);
+  g_windowManager.ActivateWindow(iWindowID, params, swappingWindows, true);
   return true;
 }
 
