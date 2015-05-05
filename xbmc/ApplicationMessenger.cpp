@@ -705,7 +705,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
-        g_windowManager.ActivateWindow(pMsg->param1, pMsg->params, pMsg->param2 > 0);
+        g_windowManager.ActivateWindow(pMsg->param1, pMsg->params, pMsg->param2 & 0x1 ? true : false, pMsg->param2 & 0x2 ? true : false);
       }
       break;
 
@@ -1256,9 +1256,10 @@ void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool wait
   SendMessage(tMsg, waitResult);
 }
 
-void CApplicationMessenger::ActivateWindow(int windowID, const vector<string> &params, bool swappingWindows)
+void CApplicationMessenger::ActivateWindow(int windowID, const vector<string> &params, bool swappingWindows, bool force  /* = false */)
 {
-  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
+  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID};
+  tMsg.param2 = (swappingWindows ? 0x01 : 0) | (force ? 0x02 : 0);
   tMsg.params = params;
   SendMessage(tMsg, true);
 }
