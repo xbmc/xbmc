@@ -60,7 +60,7 @@ namespace Shaders {
   class ConvolutionFilterShader : public BaseVideoFilterShader
   {
   public:
-    ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch);
+    ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, bool output=true);
     void OnCompiledAndLinked();
     bool OnEnabled();
     void Free();
