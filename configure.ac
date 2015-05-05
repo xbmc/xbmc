@@ -1405,7 +1405,8 @@ if test "$use_x11" = "yes"; then
   PKG_CHECK_MODULES([XEXT],  [xext],
     [INCLUDES="$INCLUDES $XEXT_CFLAGS"; LIBS="$LIBS $XEXT_LIBS"],
     AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([Xrandr], [main],,
+  PKG_CHECK_MODULES([XRANDR], [xrandr],
+    [INCLUDES="$INCLUDES $XRANDR_CFLAGS"; LIBS="$LIBS $XRANDR_LIBS"],
     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([DRM],  [libdrm],
     [INCLUDES="$INCLUDES $DRM_CFLAGS"; LIBS="$LIBS $DRM_LIBS"],
