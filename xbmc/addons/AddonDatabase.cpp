@@ -76,6 +76,9 @@ void CAddonDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create package table");
   m_pDS->exec("CREATE TABLE package (id integer primary key, addonID text, filename text, hash text)\n");
+
+  CLog::Log(LOGINFO, "create system table");
+  m_pDS->exec("CREATE TABLE system (id integer primary key, addonID text)\n");
 }
 
 void CAddonDatabase::CreateAnalytics()
@@ -106,6 +109,10 @@ void CAddonDatabase::UpdateTables(int version)
   {
     /** remove all add-ons because the previous upgrade created dupes in it's first version */
     m_pDS->exec("DELETE FROM addon");
+  }
+  if (version < 19)
+  {
+    m_pDS->exec("CREATE TABLE system (id integer primary key, addonID text)\n");
   }
 }
 
@@ -823,3 +830,48 @@ bool CAddonDatabase::RemovePackage(const std::string& packageFileName)
   return ExecuteQuery(sql);
 }
 
+bool CAddonDatabase::AddSystemAddon(const std::string &addonID)
+{
+  try
+  {
+    if (NULL == m_pDB.get())
+      return false;
+    if (NULL == m_pDS.get())
+      return false;
+
+    if (!IsSystemAddonRegistered(addonID)) // Enabled
+    {
+      std::string sql = PrepareSQL("insert into system(id, addonID) values(NULL, '%s')", addonID.c_str());
+      m_pDS->exec(sql);
+      return true;
+    }
+    return false; // already registered or failed query
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::IsSystemAddonRegistered(const std::string &addonID)
+{
+  try
+  {
+    if (NULL == m_pDB.get())
+      return false;
+    if (NULL == m_pDS.get())
+      return false;
+
+    std::string sql = PrepareSQL("select id from system where addonID='%s'", addonID.c_str());
+    m_pDS->query(sql.c_str());
+    bool ret = !m_pDS->eof();
+    m_pDS->close();
+    return ret;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
+  }
+  return false;
+}
