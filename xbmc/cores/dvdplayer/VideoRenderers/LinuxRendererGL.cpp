@@ -825,6 +825,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
         break;
       }
 
+      // TODO: switch to GL_RGBA16 or GL_RGBA16F
       if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
       {
         CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
@@ -898,7 +899,8 @@ void CLinuxRendererGL::LoadShaders(int field)
       {
         // create regular progressive scan shader
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format,
-                                                    m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS);
+                                                    m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
+                                                    m_renderQuality == RQ_SINGLEPASS);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 

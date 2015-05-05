@@ -56,6 +56,24 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
   return true;
 }
 
+bool CShader::AppendSource(const std::string& filename)
+{
+  if(filename.empty())
+    return true;
+
+  CFileStream file;
+  std::string temp;
+
+  if(!file.Open("special://xbmc/system/shaders/" + filename))
+  {
+    CLog::Log(LOGERROR, "CShader::AppendSource - failed to open file %s", filename.c_str());
+    return false;
+  }
+  getline(file, temp, '\0');
+  m_source.append(temp);
+  return true;
+}
+
 //////////////////////////////////////////////////////////////////////
 // CGLSLVertexShader
 //////////////////////////////////////////////////////////////////////
