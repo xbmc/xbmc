@@ -43,6 +43,11 @@ CRenderInfo CMMALRenderer::GetRenderInfo()
 {
   CRenderInfo info;
 
+  // we'll assume that video is accelerated (RENDER_FMT_MMAL) for now
+  // we will reconfigure renderer later if necessary
+  if (!m_bConfigured)
+    m_bConfigured = init_vout(RENDER_FMT_MMAL);
+
   #if defined(MMAL_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::%s cookie:%p", CLASSNAME, __func__, (void *)m_vout_input_pool);
   #endif
@@ -178,14 +183,11 @@ bool CMMALRenderer::init_vout(ERenderFormat format)
     return false;
   }
 
-  if (m_format == RENDER_FMT_YUV420P)
+  m_vout_input_pool = mmal_port_pool_create(m_vout_input , m_vout_input->buffer_num, m_vout_input->buffer_size);
+  if (!m_vout_input_pool)
   {
-    m_vout_input_pool = mmal_pool_create(m_vout_input->buffer_num, m_vout_input->buffer_size);
-    if (!m_vout_input_pool)
-    {
-      CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder input port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-      return false;
-    }
+    CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder input port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
+    return false;
   }
   return true;
 }
@@ -467,7 +469,7 @@ void CMMALRenderer::ReleaseBuffers()
 
 void CMMALRenderer::UnInitMMAL()
 {
-  CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+  CLog::Log(LOGDEBUG, "%s::%s pool(%p)", CLASSNAME, __func__, m_vout_input_pool);
   if (m_vout)
   {
     mmal_component_disable(m_vout);
@@ -481,6 +483,8 @@ void CMMALRenderer::UnInitMMAL()
     m_vout_input = NULL;
   }
 
+  ReleaseBuffers();
+
   if (m_vout_input_pool)
   {
     mmal_pool_destroy(m_vout_input_pool);
@@ -492,7 +496,6 @@ void CMMALRenderer::UnInitMMAL()
     mmal_component_release(m_vout);
     m_vout = NULL;
   }
-  ReleaseBuffers();
 
   m_RenderUpdateCallBackFn = NULL;
   m_RenderUpdateCallBackCtx = NULL;

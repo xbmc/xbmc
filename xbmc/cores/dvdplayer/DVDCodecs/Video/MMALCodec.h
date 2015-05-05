@@ -139,7 +139,6 @@ protected:
   MMAL_PORT_T *m_dec_input;
   MMAL_PORT_T *m_dec_output;
   MMAL_POOL_T *m_dec_input_pool;
-  MMAL_POOL_T *m_dec_output_pool;
   MMAL_POOL_T *m_vout_input_pool;
 
   MMAL_ES_FORMAT_T *m_es_format;

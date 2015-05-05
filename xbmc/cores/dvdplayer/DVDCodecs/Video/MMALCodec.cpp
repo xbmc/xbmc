@@ -112,7 +112,6 @@ CMMALVideo::CMMALVideo()
   m_dec_input = NULL;
   m_dec_output = NULL;
   m_dec_input_pool = NULL;
-  m_dec_output_pool = NULL;
   m_vout_input_pool = NULL;
 
   m_deint = NULL;
@@ -162,10 +161,6 @@ CMMALVideo::~CMMALVideo()
   if (m_dec_input_pool)
     mmal_pool_destroy(m_dec_input_pool);
   m_dec_input_pool = NULL;
-
-  if (m_dec_output_pool)
-    mmal_pool_destroy(m_dec_output_pool);
-  m_dec_output_pool = NULL;
 
   if (m_deint)
     mmal_component_destroy(m_deint);
@@ -695,13 +690,6 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, MMALVide
     return false;
   }
 
-  m_dec_output_pool = mmal_port_pool_create(m_dec_output, m_dec_output->buffer_num, m_dec_output->buffer_size);
-  if(!m_dec_output_pool)
-  {
-    CLog::Log(LOGERROR, "%s::%s Failed to create pool for decode output port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-    return false;
-  }
-
   if (!SendCodecConfigData())
     return false;
 
@@ -748,6 +736,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
   MMAL_BUFFER_HEADER_T *buffer;
   MMAL_STATUS_T status;
 
+  Prime();
   // we need to queue then de-queue the demux packet, seems silly but
   // mmal might not have an input buffer available when we are called
   // and we must store the demuxer packet and try again later.
@@ -893,7 +882,10 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 void CMMALVideo::Prime()
 {
   MMAL_BUFFER_HEADER_T *buffer;
-  while (buffer = mmal_queue_get(m_dec_output_pool->queue), buffer)
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s - queue(%p)", CLASSNAME, __func__, m_vout_input_pool);
+  assert(m_vout_input_pool);
+  while (buffer = mmal_queue_get(m_vout_input_pool->queue), buffer)
     Recycle(buffer);
 }
 
