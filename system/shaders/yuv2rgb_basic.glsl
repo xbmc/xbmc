@@ -55,11 +55,12 @@ vec2 stretch(vec2 pos)
 #endif
 }
 
-void main()
+vec4 process()
 {
+  vec4 rgb;
 #if defined(XBMC_YV12) || defined(XBMC_NV12)
 
-  vec4 yuv, rgb;
+  vec4 yuv;
   yuv.rgba = vec4( texture2D(m_sampY, stretch(m_cordY)).r
                  , texture2D(m_sampU, stretch(m_cordU)).g
                  , texture2D(m_sampV, stretch(m_cordV)).a
@@ -67,11 +68,10 @@ void main()
 
   rgb   = m_yuvmat * yuv;
   rgb.a = gl_Color.a;
-  gl_FragColor = rgb;
 
 #elif defined(XBMC_NV12_RRG)
 
-  vec4 yuv, rgb;
+  vec4 yuv;
   yuv.rgba = vec4( texture2D(m_sampY, stretch(m_cordY)).r
                  , texture2D(m_sampU, stretch(m_cordU)).r
                  , texture2D(m_sampV, stretch(m_cordV)).g
@@ -79,7 +79,6 @@ void main()
 
   rgb   = m_yuvmat * yuv;
   rgb.a = gl_Color.a;
-  gl_FragColor = rgb;
 
 #elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
 
@@ -116,10 +115,11 @@ void main()
   float outY    = mix(leftY, rightY, step(0.5, f.x));
 
   vec4  yuv     = vec4(outY, outUV, 1.0);
-  vec4  rgb     = m_yuvmat * yuv;
+  rgb           = m_yuvmat * yuv;
 
-  gl_FragColor   = rgb;
-  gl_FragColor.a = gl_Color.a;
-
+  rgb.a = gl_Color.a;
 #endif
+
+  return rgb;
 }
+

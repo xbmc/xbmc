@@ -166,7 +166,8 @@ static void CalculateYUVMatrixGL(GLfloat      res[4][4]
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderFormat format, bool stretch)
+BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderFormat format, bool stretch,
+                                             bool output)
 {
   m_width      = 1;
   m_height     = 1;
@@ -202,6 +203,11 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
     m_defines += "#define XBMC_STRETCH 1\n";
   else
     m_defines += "#define XBMC_STRETCH 0\n";
+
+  if (output)
+    m_defines += "#define XBMC_OUTPUT 1\n";
+  else
+    m_defines += "#define XBMC_OUTPUT 0\n";
 
   if (m_format == RENDER_FMT_YUV420P ||
       m_format == RENDER_FMT_YUV420P10 ||
@@ -309,11 +315,13 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags, ERenderFormat format)
 // Use for weave deinterlacing / progressive
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ERenderFormat format, bool stretch)
-  : BaseYUV2RGBGLSLShader(rect, flags, format, stretch)
+YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ERenderFormat format, bool stretch,
+                                                   bool output)
+  : BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
 {
 #ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_basic.glsl", m_defines);
+  PixelShader()->AppendSource("output.glsl");
 #elif HAS_GLES == 2
   PixelShader()->LoadSource("yuv2rgb_basic_gles.glsl", m_defines);
 #endif
