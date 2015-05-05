@@ -699,7 +699,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       {
         CGUIWindow *window = (CGUIWindow *)pMsg->lpVoid;
         if (window)
-          window->Close(pMsg->param1 & 0x1 ? true : false, pMsg->param1, pMsg->param1 & 0x2 ? true : false);
+          window->Close(pMsg->param2 & 0x1 ? true : false, pMsg->param1, pMsg->param2 & 0x2 ? true : false);
       }
       break;
 
