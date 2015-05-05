@@ -1217,7 +1217,7 @@ namespace XBMCAddon
 
       for (std::vector<Alternative<String, const XBMCAddon::xbmcgui::ListItem* > >::const_iterator iter = items.begin(); iter != items.end(); ++iter)
         addItem(*iter,false);
-      sendLabelBind(items.size());
+      sendLabelBind(vecItems.size());
     }
 
     void ControlList::internAddListItem(AddonClass::Ref<ListItem> pListItem, bool sendMessage)
