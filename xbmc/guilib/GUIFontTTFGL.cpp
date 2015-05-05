@@ -217,7 +217,8 @@ void CGUIFontTTFGL::LastEnd()
     {
       // Apply the clip rectangle
       CRect clip = g_Windowing.ClipRectToScissorRect(m_vertexTrans[i].clip);
-      g_Windowing.SetScissors(clip);
+      if (!clip.IsEmpty())
+        g_Windowing.SetScissors(clip);
 
       // Apply the translation to the currently active (top-of-stack) model view matrix
       glMatrixModview.Push();
