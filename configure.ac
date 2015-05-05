@@ -168,8 +168,6 @@ configure_debug="ERROR: this is a configure debug statement"
 missing_library="Could not find a required library. Please see the README for your platform."
 missing_headers="Could not find some required headers. Please see the README for your platform."
 missing_program="Could not find a required program. Please see the README for your platform."
-xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
-xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 waveform_enabled="== WAVEFORM enabled =="
 waveform_disabled="== WAVEFORM disabled =="
 spectrum_enabled="== SPECTRUM enabled =="
@@ -315,12 +313,6 @@ AC_ARG_ENABLE([joystick],
   [enable SDL joystick support (default is auto)])],
   [use_joystick=$enableval],
   [use_joystick=auto])
-
-AC_ARG_ENABLE([xrandr],
-  [AS_HELP_STRING([--enable-xrandr],
-  [enable XRandR support (default is yes)])],
-  [use_xrandr=$enableval],
-  [use_xrandr=yes])
 
 AC_ARG_ENABLE([waveform],
   [AS_HELP_STRING([--enable-waveform],
@@ -1413,25 +1405,14 @@ if test "$use_x11" = "yes"; then
   PKG_CHECK_MODULES([XEXT],  [xext],
     [INCLUDES="$INCLUDES $XEXT_CFLAGS"; LIBS="$LIBS $XEXT_LIBS"],
     AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([Xrandr], [main],,
+    AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([DRM],  [libdrm],
     [INCLUDES="$INCLUDES $DRM_CFLAGS"; LIBS="$LIBS $DRM_LIBS"],
     AC_MSG_ERROR($missing_library))
   AC_DEFINE([HAVE_X11], [1], [Define to 1 if you have X11 libs installed.])
 else
   AC_MSG_RESULT($x11_disabled)
-fi
-
-# XRandR
-if test "$use_x11" = "no"; then
-  use_xrandr="no"
-  AC_MSG_RESULT($xrandr_disabled)
-else
-  if test "$use_xrandr" = "yes" ; then
-    AC_CHECK_LIB([Xrandr], [main],,
-      use_xrandr="no";AC_MSG_RESULT($xrandr_not_found))
-  else
-    AC_MSG_RESULT($xrandr_disabled)
-  fi
 fi
 
 # WAVEFORM
@@ -2122,14 +2103,6 @@ else
   final_message="$final_message\n  Joystick:\tNo"
 fi
 
-if test "$use_xrandr" = "yes"; then
-  final_message="$final_message\n  XRandR:\tYes"
-  USE_XRANDR=1
-else
-  final_message="$final_message\n  XRandR:\tNo"
-  USE_XRANDR=0
-fi
-
 if test "$use_waveform" = "yes"; then
   final_message="$final_message\n  Waveform:\tYes"
 else
@@ -2640,7 +2613,6 @@ AC_SUBST(USE_AIRPLAY)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
 AC_SUBST(HAVE_LIBPULSE)
-AC_SUBST(USE_XRANDR)
 AC_SUBST(USE_ALSA)
 AC_SUBST(USE_TEXTUREPACKER)
 AC_SUBST(TEXTUREPACKER)

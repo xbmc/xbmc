@@ -488,7 +488,7 @@ else
 endif
 
 @APP_NAME_LC@-xrandr: xbmc-xrandr.c
-ifneq (1,@USE_XRANDR@)
+ifneq (1,@USE_X11@)
 	# xbmc-xrandr.c gets picked up by the default make rules
 	@echo "excluding @APP_NAME_LC@-xrandr"
 else
@@ -515,7 +515,7 @@ install-binaries: install-scripts
 	@echo "Copying @APP_NAME_LC@ binary to $(DESTDIR)$(libdir)/@APP_NAME_LC@/"
 	@install -d $(DESTDIR)$(libdir)/@APP_NAME_LC@
 	@cd $(DESTDIR)$(libdir); [ -L xbmc ] || [ -d xbmc ] || ln -s @APP_NAME_LC@ xbmc
-ifeq (1,@USE_XRANDR@)
+ifeq (1,@USE_X11@)
 	@install @APP_NAME_LC@-xrandr $(DESTDIR)$(libdir)/@APP_NAME_LC@/@APP_NAME_LC@-xrandr
 endif
 ifeq (@USE_LIBXBMC@,1)

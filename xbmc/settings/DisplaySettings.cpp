@@ -115,7 +115,7 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
     XMLUtils::GetString(pResolution, "description", cal.strMode);
     XMLUtils::GetInt(pResolution, "subtitles", cal.iSubtitles);
     XMLUtils::GetFloat(pResolution, "pixelratio", cal.fPixelRatio);
-#ifdef HAS_XRANDR
+#ifdef HAVE_X11
     XMLUtils::GetFloat(pResolution, "refreshrate", cal.fRefreshRate);
     XMLUtils::GetString(pResolution, "output", cal.strOutput);
     XMLUtils::GetString(pResolution, "xrandrid", cal.strId);
@@ -179,7 +179,7 @@ bool CDisplaySettings::Save(TiXmlNode *settings) const
     XMLUtils::SetString(pNode, "description", it->strMode);
     XMLUtils::SetInt(pNode, "subtitles", it->iSubtitles);
     XMLUtils::SetFloat(pNode, "pixelratio", it->fPixelRatio);
-#ifdef HAS_XRANDR
+#ifdef HAVE_X11
     XMLUtils::SetFloat(pNode, "refreshrate", it->fRefreshRate);
     XMLUtils::SetString(pNode, "output", it->strOutput);
     XMLUtils::SetString(pNode, "xrandrid", it->strId);
