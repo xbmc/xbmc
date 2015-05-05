@@ -194,8 +194,8 @@ void CGUIDialogAddonInfo::OnLaunch()
   if (!m_localAddon)
     return;
 
-  CBuiltins::Execute("RunAddon(" + m_localAddon->ID() + ")");
   Close();
+  CBuiltins::Execute("RunAddon(" + m_localAddon->ID() + ")");
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
