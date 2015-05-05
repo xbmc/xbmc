@@ -585,6 +585,21 @@ void CPVRTimerInfoTag::GetNotificationText(std::string &strText) const
   }
 }
 
+std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
+{
+  CSingleLock lock(m_critSection);
+
+  // The state in this case is the state the timer had when it was last seen
+  switch (m_state)
+  {
+  case PVR_TIMER_STATE_RECORDING:
+    return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19227).c_str(), m_strTitle.c_str()); // Recording completed
+  case PVR_TIMER_STATE_SCHEDULED:
+  default:
+    return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19228).c_str(), m_strTitle.c_str()); // Timer deleted
+  }
+}
+
 void CPVRTimerInfoTag::QueueNotification(void) const
 {
   if (CSettings::Get().GetBool("pvrrecord.timernotifications"))

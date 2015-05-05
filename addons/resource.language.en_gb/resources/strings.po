@@ -8584,8 +8584,9 @@ msgctxt "#19227"
 msgid "Recording completed"
 msgstr ""
 
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp, displayed when a timer is deleted
 msgctxt "#19228"
-msgid "Recording deleted"
+msgid "Timer deleted"
 msgstr ""
 
 msgctxt "#19229"

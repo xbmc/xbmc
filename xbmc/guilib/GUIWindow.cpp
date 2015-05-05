@@ -751,7 +751,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   else
   {
     CLog::Log(LOGDEBUG,"Window %s was already loaded", GetProperty("xmlfile").c_str());
-    CLog::Log(LOGDEBUG,"Alloc resources: %.2fm", 1000.f * (end - start) / freq);
+    CLog::Log(LOGDEBUG,"Alloc resources: %.2fms", 1000.f * (end - start) / freq);
   }
 #endif
   m_bAllocated = true;

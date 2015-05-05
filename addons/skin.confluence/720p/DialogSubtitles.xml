@@ -426,6 +426,7 @@
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<align>center</align>
+					<hitrect x="925" y="605" w="200" h="100" />
 				</control>
 			</control>
 		</control>
