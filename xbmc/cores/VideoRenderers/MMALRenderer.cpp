@@ -39,6 +39,21 @@
 #define MMAL_DEBUG_VERBOSE
 #endif
 
+CRenderInfo CMMALRenderer::GetRenderInfo()
+{
+  CRenderInfo info;
+
+  #if defined(MMAL_DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "%s::%s cookie:%p", CLASSNAME, __func__, (void *)m_vout_input_pool);
+  #endif
+
+  info.max_buffer_size = NUM_BUFFERS;
+  info.optimal_buffer_size = NUM_BUFFERS;
+  info.opaque_pointer = (void *)m_vout_input_pool;
+  info.formats = m_formats;
+  return info;
+}
+
 static void vout_control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
   mmal_buffer_header_release(buffer);
