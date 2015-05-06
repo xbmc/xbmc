@@ -21,7 +21,7 @@
 #include "GUIWindowPVRBase.h"
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
@@ -51,6 +51,7 @@
 
 using namespace PVR;
 using namespace EPG;
+using namespace KODI::MESSAGING;
 
 std::map<bool, std::string> CGUIWindowPVRBase::m_selectedItemPaths;
 
@@ -330,7 +331,7 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
 
       if (!bSwitchSuccessful)
       {
-        CApplicationMessenger::Get().PlayFile(*item, false);
+        CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
         return true;
       }
     }
@@ -460,7 +461,7 @@ bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = 
   {
     if (bCheckResume)
       CheckResumeRecording(item);
-    CApplicationMessenger::Get().PlayFile(*item, false);
+    CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
     return true;
   }
 
@@ -512,7 +513,7 @@ bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = 
 
   if (bCheckResume)
     CheckResumeRecording(item);
-  CApplicationMessenger::Get().PlayFile(*item, false);
+  CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
 
   return true;
 }

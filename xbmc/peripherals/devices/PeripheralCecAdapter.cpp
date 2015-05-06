@@ -23,7 +23,7 @@
 #include "PeripheralCecAdapter.h"
 #include "input/XBIRRemote.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "DynamicDll.h"
 #include "threads/SingleLock.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -37,6 +37,7 @@
 
 #include <libcec/cec.h>
 
+using namespace KODI::MESSAGING;
 using namespace PERIPHERALS;
 using namespace ANNOUNCEMENT;
 using namespace CEC;
@@ -601,7 +602,7 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)
   if (!strGuiLanguage.empty())
   {
     strGuiLanguage = "resource.language." + strGuiLanguage;
-    CApplicationMessenger::Get().SetGUILanguage(strGuiLanguage);
+    CApplicationMessenger::Get().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, strGuiLanguage);
     CLog::Log(LOGDEBUG, "%s - language set to '%s'", __FUNCTION__, strGuiLanguage.c_str());
   }
   else
@@ -1171,7 +1172,7 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
         pSlideShow->OnAction(CAction(ACTION_PAUSE));
       else
         // pause/resume player
-        CApplicationMessenger::Get().MediaPause();
+        CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
     }
   }
 }

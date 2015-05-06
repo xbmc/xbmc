@@ -21,7 +21,7 @@
 #include "AppParamParser.h"
 #include "PlayListPlayer.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
@@ -34,6 +34,8 @@
 #include "linux/XTimeUtils.h"
 #endif
 #include <stdlib.h>
+
+using namespace KODI::MESSAGING;
 
 CAppParamParser::CAppParamParser()
 {
@@ -155,6 +157,5 @@ void CAppParamParser::PlayPlaylist()
     g_playlistPlayer.SetCurrentPlaylist(0);
   }
 
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, -1};
-  CApplicationMessenger::Get().SendMessage(tMsg, false);
+  CApplicationMessenger::Get().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
 }

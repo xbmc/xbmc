@@ -23,7 +23,7 @@
 #include <arpa/inet.h>
 
 #include "Network.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/NetworkServices.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
@@ -32,6 +32,8 @@
 #include "utils/CharsetConverter.h"
 #endif
 #include "utils/StringUtils.h"
+
+using namespace KODI::MESSAGING;
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
 bool in_ether (const char *bufp, unsigned char *addr)
@@ -132,12 +134,12 @@ int NetworkAccessPoint::FreqToChannel(float frequency)
 
 CNetwork::CNetwork()
 {
-  CApplicationMessenger::Get().NetworkMessage(SERVICES_UP, 0);
+  CApplicationMessenger::Get().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_UP, 0);
 }
 
 CNetwork::~CNetwork()
 {
-  CApplicationMessenger::Get().NetworkMessage(SERVICES_DOWN, 0);
+  CApplicationMessenger::Get().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_DOWN, 0);
 }
 
 int CNetwork::ParseHex(char *str, unsigned char *addr)

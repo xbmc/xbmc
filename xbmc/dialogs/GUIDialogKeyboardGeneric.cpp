@@ -32,8 +32,11 @@
 #include "settings/Settings.h"
 #include "utils/RegExp.h"
 #include "utils/Variant.h"
-#include "ApplicationMessenger.h"
+#include "utils/StringUtils.h"
+#include "messaging/ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
+
+using namespace KODI::MESSAGING;
 
 #define BUTTON_ID_OFFSET      100
 #define BUTTONS_PER_ROW        20

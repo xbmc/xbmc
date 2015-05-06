@@ -49,10 +49,12 @@
 #include "video/VideoThumbLoader.h"
 #include "filesystem/File.h"
 #include "TextureCache.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include <string>
 #include <vector>
+
+using namespace KODI::MESSAGING;
 
 #define BOOKMARK_THUMB_WIDTH g_advancedSettings.GetThumbSize()
 

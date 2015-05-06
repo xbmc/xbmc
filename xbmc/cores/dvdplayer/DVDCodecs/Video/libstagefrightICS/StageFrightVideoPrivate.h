@@ -65,7 +65,14 @@ class CJNISurfaceTexture;
 class CWinSystemEGL;
 class CAdvancedSettings;
 class CApplication;
-class CApplicationMessenger;
+
+namespace KODI
+{
+  namespace MESSAGING
+  {
+    class CApplicationMessenger;
+  }
+}
 
 struct stSlot
 {
@@ -122,7 +129,7 @@ public:
   GLint mTexMatrixHandle;
 
   CApplication* m_g_application;
-  CApplicationMessenger* m_g_applicationMessenger;
+  KODI::MESSAGING::CApplicationMessenger* m_g_applicationMessenger;
   CWinSystemEGL* m_g_Windowing;
   CAdvancedSettings* m_g_advancedSettings;
 

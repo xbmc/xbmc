@@ -24,7 +24,7 @@
 #include "utils/Screenshot.h"
 #include "utils/SeekHandler.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Autorun.h"
 #include "Builtins.h"
 #include "input/ButtonTranslator.h"
@@ -110,6 +110,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
+using namespace KODI::MESSAGING;
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -322,44 +323,44 @@ int CBuiltins::Execute(const std::string& execString)
 
   if (execute == "reboot" || execute == "restart" || execute == "reset")  //Will reboot the system
   {
-    CApplicationMessenger::Get().Restart();
+    CApplicationMessenger::Get().PostMsg(TMSG_RESTART);
   }
   else if (execute == "shutdown")
   {
-    CApplicationMessenger::Get().Shutdown();
+    CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
   }
   else if (execute == "powerdown")
   {
-    CApplicationMessenger::Get().Powerdown();
+    CApplicationMessenger::Get().PostMsg(TMSG_POWERDOWN);
   }
   else if (execute == "restartapp")
   {
-    CApplicationMessenger::Get().RestartApp();
+    CApplicationMessenger::Get().PostMsg(TMSG_RESTARTAPP);
   }
   else if (execute == "hibernate")
   {
-    CApplicationMessenger::Get().Hibernate();
+    CApplicationMessenger::Get().PostMsg(TMSG_HIBERNATE);
   }
   else if (execute == "suspend")
   {
-    CApplicationMessenger::Get().Suspend();
+    CApplicationMessenger::Get().PostMsg(TMSG_SUSPEND);
   }
   else if (execute == "quit")
   {
-    CApplicationMessenger::Get().Quit();
+    CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
   }
   else if (execute == "inhibitidleshutdown")
   {
     bool inhibit = (params.size() == 1 && StringUtils::EqualsNoCase(params[0], "true"));
-    CApplicationMessenger::Get().InhibitIdleShutdown(inhibit);
+    CApplicationMessenger::Get().PostMsg(TMSG_INHIBITIDLESHUTDOWN, inhibit);
   }
   else if (execute == "activatescreensaver")
   {
-    CApplicationMessenger::Get().ActivateScreensaver();
+    CApplicationMessenger::Get().PostMsg(TMSG_ACTIVATESCREENSAVER);
   }
   else if (execute == "minimize")
   {
-    CApplicationMessenger::Get().Minimize();
+    CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
   }
   else if (execute == "loadprofile")
   {
@@ -370,7 +371,7 @@ int CBuiltins::Execute(const std::string& execString)
         && (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
             || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
     {
-      CApplicationMessenger::Get().LoadProfile(index);
+      CApplicationMessenger::Get().PostMsg(TMSG_LOADPROFILE, index);
     }
   }
   else if (execute == "mastermode")
@@ -396,7 +397,7 @@ int CBuiltins::Execute(const std::string& execString)
   {
     if (params.size())
     {
-      CApplicationMessenger::Get().SetGUILanguage(params[0]);
+      CApplicationMessenger::Get().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, params[0]);
     }
   }
   else if (execute == "takescreenshot")
@@ -569,13 +570,13 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "system.exec")
   {
-    CApplicationMessenger::Get().Minimize();
-    CApplicationMessenger::Get().ExecOS(parameter, false);
+    CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
+    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_OS, 0, -1, nullptr, parameter);
   }
   else if (execute == "system.execwait")
   {
-    CApplicationMessenger::Get().Minimize();
-    CApplicationMessenger::Get().ExecOS(parameter, true);
+    CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
+    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_OS, 1, -1, nullptr, parameter);
   }
   else if (execute == "resolution")
   {
@@ -1121,7 +1122,7 @@ int CBuiltins::Execute(const std::string& execString)
     {
       if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
       {
-        CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);  
+        CApplicationMessenger::Get().PostMsg(TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
       }
     }
   }
@@ -1742,7 +1743,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
       int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
-      CApplicationMessenger::Get().SendAction(CAction(actionID), windowID);
+      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, windowID, -1, static_cast<void*>(new CAction(actionID)));
     }
   }
   else if (execute == "setproperty" && params.size() >= 2)
@@ -1808,15 +1809,16 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "cectogglestate")
   {
-    CApplicationMessenger::Get().CECToggleState();
+    bool result;
+    CApplicationMessenger::Get().SendMsg(TMSG_CECTOGGLESTATE, 0, 0, static_cast<void*>(&result));
   }
   else if (execute == "cecactivatesource")
   {
-    CApplicationMessenger::Get().CECActivateSource();
+    CApplicationMessenger::Get().PostMsg(TMSG_CECACTIVATESOURCE);
   }
   else if (execute == "cecstandby")
   {
-    CApplicationMessenger::Get().CECStandby();
+    CApplicationMessenger::Get().PostMsg(TMSG_CECSTANDBY);
   }
   else if (execute == "weather.locationset" && !params.empty())
   {
@@ -1860,13 +1862,13 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "startandroidactivity" && !params.empty())
   {
-    CApplicationMessenger::Get().StartAndroidActivity(params);
+    CApplicationMessenger::Get().PostMsg(TMSG_START_ANDROID_ACTIVITY, -1, -1, static_cast<void*>(&params));
   }
   else if (execute == "setstereomode" && !parameter.empty())
   {
     CAction action = CStereoscopicsManager::Get().ConvertActionCommandToAction(execute, parameter);
     if (action.GetID() != ACTION_NONE)
-      CApplicationMessenger::Get().SendAction(action);
+      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
     else
     {
       CLog::Log(LOGERROR,"Builtin 'SetStereoMode' called with unknown parameter: %s", parameter.c_str());

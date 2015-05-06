@@ -20,7 +20,7 @@
 
 #include "NetworkServices.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #ifdef TARGET_LINUX
 #include "Util.h"
 #endif
@@ -84,6 +84,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
 
+using namespace KODI::MESSAGING;
 using namespace std;
 #ifdef HAS_JSONRPC
 using namespace JSONRPC;
@@ -416,7 +417,7 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
     if (CGUIDialogYesNo::ShowAndGetInput(CVariant{14038}, CVariant{14039}))
     {
       CSettings::Get().Save();
-      CApplicationMessenger::Get().RestartApp();
+      CApplicationMessenger::Get().PostMsg(TMSG_RESTARTAPP);
     }
   }
 }

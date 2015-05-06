@@ -20,7 +20,7 @@
 #include "AddonStatusHandler.h"
 #include "AddonManager.h"
 #include "threads/SingleLock.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -30,6 +30,8 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+using namespace KODI::MESSAGING;
 
 namespace ADDON
 {

@@ -19,7 +19,7 @@
  */
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "LocalizeStrings.h"
 #include "GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"
@@ -35,6 +35,8 @@
 #include "osx/ios/IOSKeyboard.h"
 #include "windowing/WindowingFactory.h"
 #endif
+
+using namespace KODI::MESSAGING;
 
 CGUIKeyboard *CGUIKeyboardFactory::g_activedKeyboard = NULL;
 FILTERING CGUIKeyboardFactory::m_filtering = FILTERING_NONE;

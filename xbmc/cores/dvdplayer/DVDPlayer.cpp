@@ -44,7 +44,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 
 #include "DVDDemuxers/DVDDemuxCC.h"
 #ifdef HAS_VIDEO_PLAYBACK
@@ -83,6 +83,7 @@
 
 using namespace std;
 using namespace PVR;
+using namespace KODI::MESSAGING;
 
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
@@ -2573,7 +2574,7 @@ void CDVDPlayer::HandleMessages()
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-          CApplicationMessenger::Get().MediaStop(false);
+          CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_STOP);
         }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
@@ -2587,7 +2588,7 @@ void CDVDPlayer::HandleMessages()
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-          CApplicationMessenger::Get().MediaStop(false);
+          CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_STOP);
         }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
@@ -2633,7 +2634,7 @@ void CDVDPlayer::HandleMessages()
           else
           {
             CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-            CApplicationMessenger::Get().MediaStop(false);
+            CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_STOP);
           }
         }
       }
@@ -4047,7 +4048,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
               return true;
             else
             {
-              CApplicationMessenger::Get().SendAction(CAction(ACTION_TRIGGER_OSD), WINDOW_INVALID, false); // Trigger the osd
+              CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_TRIGGER_OSD)));
               return false;
             }
           }
@@ -4561,7 +4562,7 @@ void CDVDPlayer::UpdateApplication(double timeout)
     if(pStream->UpdateItem(item))
     {
       g_application.CurrentFileItem() = item;
-      CApplicationMessenger::Get().SetCurrentItem(item);
+      CApplicationMessenger::Get().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(item)));
     }
   }
   m_UpdateApplication = CDVDClock::GetAbsoluteClock();

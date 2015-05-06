@@ -22,7 +22,7 @@
 #include "system.h"
 #include "GUIWindowSlideShow.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "guilib/TextureManager.h"
@@ -47,6 +47,7 @@
 #include "pictures/PictureThumbLoader.h"
 
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 #define MAX_ZOOM_FACTOR                     10
 #define MAX_PICTURE_SIZE             2048*2048

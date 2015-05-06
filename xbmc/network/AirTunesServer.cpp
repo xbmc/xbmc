@@ -36,7 +36,7 @@
 
 #include "utils/log.h"
 #include "network/Zeroconf.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "filesystem/PipeFile.h"
 #include "Application.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxBXA.h"
@@ -65,6 +65,7 @@
 
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
+using namespace KODI::MESSAGING;
 
 DllLibShairplay *CAirTunesServer::m_pLibShairplay = NULL;
 CAirTunesServer *CAirTunesServer::ServerInstance = NULL;
@@ -129,7 +130,7 @@ void CAirTunesServer::RefreshMetadata()
   if (m_metadata[2].length())
     tag.SetArtist(m_metadata[2]);//artist
   
-  CApplicationMessenger::Get().SetCurrentSongTag(tag);
+  CApplicationMessenger::Get().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1, static_cast<void*>(new CFileItem(tag)));
 }
 
 void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
@@ -373,16 +374,15 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   if (pipe->Write(&header, sizeof(header)) == 0)
     return 0;
 
-  ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-  CApplicationMessenger::Get().SendMessage(tMsg, true);
+  CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
 
-  CFileItem item;
-  item.SetPath(pipe->GetName());
-  item.SetMimeType("audio/x-xbmc-pcm");
+  CFileItem *item = new CFileItem();;
+  item->SetPath(pipe->GetName());
+  item->SetMimeType("audio/x-xbmc-pcm");
   m_streamStarted = true;
   m_sampleRate = samplerate;
 
-  CApplicationMessenger::Get().PlayFile(item);
+  CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
 
   // Not all airplay streams will provide metadata (e.g. if using mirroring,
   // no metadata will be sent).  If there *is* metadata, it will be received
@@ -495,8 +495,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
   if (!CAirPlayServer::IsPlaying())
 #endif
   {
-    ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-    CApplicationMessenger::Get().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
     CLog::Log(LOGDEBUG, "AIRTUNES: AirPlay not running - stopping player");
   }
   

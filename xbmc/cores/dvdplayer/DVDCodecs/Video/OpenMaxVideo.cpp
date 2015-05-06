@@ -33,13 +33,15 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "guilib/GUIWindowManager.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Application.h"
 
 #include <OMX_Core.h>
 #include <OMX_Component.h>
 #include <OMX_Index.h>
 #include <OMX_Image.h>
+
+using namespace KODI::MESSAGING;
 
 #if 1
 //#define OMX_DEBUG_EMPTYBUFFERDONE
@@ -749,11 +751,10 @@ OMX_ERRORTYPE COpenMaxVideo::AllocOMXOutputBuffers(void)
     callbackData.callback = &CallbackAllocOMXEGLTextures;
     callbackData.userptr = (void *)this;
 
-    ThreadMessage tMsg;
     tMsg.dwMessage = TMSG_CALLBACK;
     tMsg.lpVoid = (void*)&callbackData;
 
-    CApplicationMessenger::Get().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMsg(TMSG_CALLBACK, -1, -1 static_cast<void*>(&callbackData));
 
     omx_err = OMX_ErrorNone;
   }
@@ -1225,12 +1226,8 @@ void OpenMaxVideoBuffer::ReleaseTexture()
     deleteInfo->callback.callback = &OpenMaxDeleteTextures;
     deleteInfo->callback.userptr = (void *)deleteInfo;
 
-    ThreadMessage tMsg;
-    tMsg.dwMessage = TMSG_CALLBACK;
-    tMsg.lpVoid = (void*)&deleteInfo->callback;
-
     // HACK, this should be synchronous, but it's not possible since Stop blocks the GUI thread.
-    CApplicationMessenger::Get().SendMessage(tMsg, false);
+    CApplicationMessenger::Get().PostMsg(TMSG_CALLBACK, -1, -1 static_cast<void*>(deleteInfo));
   }
 
 }

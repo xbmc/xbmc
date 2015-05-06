@@ -26,9 +26,11 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/Variant.h"
 #include "WindowException.h"
+
+using namespace KODI::MESSAGING;
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 
@@ -517,8 +519,7 @@ namespace XBMCAddon
       DelayedCallGuard dcguard(languageHook);
       popActiveWindowId();
 
-      std::vector<std::string> params;
-      CApplicationMessenger::Get().ActivateWindow(iWindowId, params, false);
+      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, iWindowId, 0);
     }
 
     void Window::setFocus(Control* pControl)
@@ -684,10 +685,9 @@ namespace XBMCAddon
       if (!existingWindow)
         PulseActionEvent();
 
-      std::vector<std::string> params;
       {
         DelayedCallGuard dcguard(languageHook);
-        CApplicationMessenger::Get().ActivateWindow(iOldWindowId, params, false);
+        CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, iOldWindowId, 0);
       }
 
       iOldWindowId = 0;

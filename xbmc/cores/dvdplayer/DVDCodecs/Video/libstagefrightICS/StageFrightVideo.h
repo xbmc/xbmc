@@ -24,8 +24,15 @@
 #include "cores/dvdplayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
 
+namespace KODI
+{
+  namespace MESSAGING
+  {
+    class CApplicationMessenger;
+  }
+}
+
 class CApplication;
-class CApplicationMessenger;
 class CWinSystemEGL;
 class CAdvancedSettings;
 class CStageFrightVideoPrivate;
@@ -35,7 +42,7 @@ namespace android { class MediaBuffer; }
 class CStageFrightVideo
 {
 public:
-  CStageFrightVideo(CApplication* application, CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings);
+  CStageFrightVideo(CApplication* application, KODI::MESSAGING::CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings);
   virtual ~CStageFrightVideo();
 
   bool Open(CDVDStreamInfo &hints);

@@ -37,7 +37,7 @@
 #include "input/Key.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
@@ -53,6 +53,7 @@
 
 using namespace std;
 using namespace ADDON;
+using namespace KODI::MESSAGING;
 using XFILE::CDirectory;
 
 #define CONTROL_SETTINGS_AREA           2
@@ -251,7 +252,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           StringUtils::Replace(action, "$ID", m_addon->ID());
           if (option)
             bCloseDialog = (strcmpi(option, "close") == 0);
-          CApplicationMessenger::Get().ExecBuiltIn(action);
+          CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, action);
         }
         break;
       }

@@ -55,7 +55,8 @@
 #include "guilib/GUIAudioManager.h"
 #include "GUIPassword.h"
 #include "input/InertialScrollingHandler.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ThreadMessage.h"
+#include "messaging/ApplicationMessenger.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIUserMessages.h"
@@ -221,6 +222,8 @@
 
 #include "cores/FFmpeg.h"
 #include "utils/CharsetConverter.h"
+#include "pictures/GUIWindowSlideShow.h"
+#include "windows/GUIWindowLoginScreen.h"
 
 using namespace ADDON;
 using namespace XFILE;
@@ -240,6 +243,7 @@ using namespace ANNOUNCEMENT;
 using namespace PVR;
 using namespace EPG;
 using namespace PERIPHERALS;
+using namespace KODI::MESSAGING;
 
 using namespace XbmcThreads;
 
@@ -339,7 +343,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
   {
     case XBMC_QUIT:
       if (!g_application.m_bStop)
-        CApplicationMessenger::Get().Quit();
+        CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
       break;
     case XBMC_VIDEORESIZE:
       if (!g_application.m_bInitializing &&
@@ -368,7 +372,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
     case XBMC_USEREVENT:
-      CApplicationMessenger::Get().UserEvent(newEvent.user.code);
+      CApplicationMessenger::Get().PostMsg(static_cast<uint32_t>(newEvent.user.code));
       break;
     case XBMC_APPCOMMAND:
       return g_application.OnAppCommand(newEvent.appcommand.action);
@@ -1126,6 +1130,10 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/sounds");
   }
 
+  CApplicationMessenger::Get().RegisterReceveiver(this);
+  CApplicationMessenger::Get().RegisterReceveiver(&g_playlistPlayer);
+  CApplicationMessenger::Get().RegisterReceveiver(&g_infoManager);
+
   // load the language and its translated strings
   if (!LoadLanguage(false))
     return false;
@@ -1386,11 +1394,11 @@ void CApplication::OnSettingChanged(const CSetting *setting)
       }
     }
 
-    std::string builtin("ReloadSkin");
-    if (settingId == "lookandfeel.skin" && !m_skinReverting)
-      builtin += "(confirm)";
-    CApplicationMessenger::Get().ExecBuiltIn(builtin);
-  }
+      std::string builtin("ReloadSkin");
+      if (settingId == "lookandfeel.skin" && !m_skinReverting)
+        builtin += "(confirm)";
+      CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+    }
   else if (settingId == "lookandfeel.skintheme")
   {
     // also set the default color theme
@@ -1406,7 +1414,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     if (!StringUtils::EqualsNoCase(colorTheme, CSettings::Get().GetString("lookandfeel.skincolors")))
       CSettings::Get().SetString("lookandfeel.skincolors", colorTheme);
     else
-      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin");
+      CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
   }
   else if (settingId == "lookandfeel.skinzoom")
   {
@@ -1426,7 +1434,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     // if this is changed, audio stream has to be reopened
     else if (settingId == "audiooutput.passthrough")
     {
-      CApplicationMessenger::Get().MediaRestart(false);
+      CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_RESTART);
     }
   }
   else if (StringUtils::EqualsNoCase(settingId, "musicplayer.replaygaintype"))
@@ -2255,7 +2263,9 @@ bool CApplication::OnAction(const CAction &action)
     // Player ignored action; popup the OSD
     if ((action.GetID() == ACTION_MOUSE_MOVE && (action.GetAmount(2) || action.GetAmount(3)))  // filter "false" mouse move from touch
         || action.GetID() == ACTION_MOUSE_LEFT_CLICK)
-      CApplicationMessenger::Get().SendAction(CAction(ACTION_TRIGGER_OSD), WINDOW_INVALID, false);
+    {
+      CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_TRIGGER_OSD)));
+    }
   }
 
   // stop : stops playing current audio song
@@ -2471,6 +2481,293 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
   return false;
+}
+
+int CApplication::GetMessageMask()
+{
+  return TMSG_MASK_APPLICATION;
+}
+
+void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
+{
+  switch (pMsg->dwMessage)
+  {
+  case TMSG_POWERDOWN:
+    Stop(EXITCODE_POWERDOWN);
+    g_powerManager.Powerdown();
+    break;
+
+  case TMSG_QUIT:
+    Stop(EXITCODE_QUIT);
+    break;
+  
+  case TMSG_SHUTDOWN:
+  {
+    switch (CSettings::Get().GetInt("powermanagement.shutdownstate"))
+    {
+    case POWERSTATE_SHUTDOWN:
+      CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
+      break;
+
+    case POWERSTATE_SUSPEND:
+      CApplicationMessenger::Get().PostMsg(TMSG_SUSPEND);
+      break;
+
+    case POWERSTATE_HIBERNATE:
+      CApplicationMessenger::Get().PostMsg(TMSG_HIBERNATE);
+      break;
+
+    case POWERSTATE_QUIT:
+      CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
+      break;
+
+    case POWERSTATE_MINIMIZE:
+      CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
+      break;
+
+    case TMSG_RENDERER_FLUSH:
+      g_renderManager.Flush();
+      break;
+    }
+  }
+  break;
+
+  case TMSG_HIBERNATE:
+    g_PVRManager.SetWakeupCommand();
+    g_powerManager.Hibernate();
+    break;
+
+  case TMSG_SUSPEND:
+    g_PVRManager.SetWakeupCommand();
+    g_powerManager.Suspend();
+    break;
+
+  case TMSG_RESTART:
+  case TMSG_RESET:
+    Stop(EXITCODE_REBOOT);
+    g_powerManager.Reboot();
+    break;
+
+  case TMSG_RESTARTAPP:
+#if defined(TARGET_WINDOWS) || defined(TARGET_LINUX)
+    Stop(EXITCODE_RESTARTAPP);
+#endif
+    break;
+
+  case TMSG_INHIBITIDLESHUTDOWN:
+    InhibitIdleShutdown(pMsg->param1 != 0);
+    break;
+  
+  case TMSG_ACTIVATESCREENSAVER:
+    ActivateScreenSaver();
+    break;
+
+  case TMSG_VOLUME_SHOW:
+  {
+    CAction action(pMsg->param1);
+    ShowVolumeBar(&action);
+  }
+  break;
+
+  case TMSG_SPLASH_MESSAGE:
+    if (GetSplash())
+      GetSplash()->Show(pMsg->strParam);
+    break;
+
+  case TMSG_DISPLAY_SETUP:
+    *static_cast<bool*>(pMsg->lpVoid) = InitWindow();
+    SetRenderGUI(true);
+    break;
+
+  case TMSG_DISPLAY_DESTROY:
+    *static_cast<bool*>(pMsg->lpVoid) = DestroyWindow();
+    SetRenderGUI(false);
+    break;
+
+  case TMSG_SETPVRMANAGERSTATE:
+    if (pMsg->param1 != 0)
+      StartPVRManager();
+    else
+      StopPVRManager();
+    break;
+
+  case TMSG_START_ANDROID_ACTIVITY:
+  {
+#if defined(TARGET_ANDROID)
+    if (pMsg->params.size())
+    {
+      CXBMCApp::StartActivity(pMsg->params[0],
+        pMsg->params.size() > 1 ? pMsg->params[1] : "",
+        pMsg->params.size() > 2 ? pMsg->params[2] : "",
+        pMsg->params.size() > 3 ? pMsg->params[3] : "");
+    }
+#endif
+  }
+  break;
+
+  case TMSG_NETWORKMESSAGE:
+    getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->param1, pMsg->param2);
+    break;
+
+  case TMSG_SETLANGUAGE:
+    SetLanguage(pMsg->strParam);
+    break;
+
+
+  case TMSG_SWITCHTOFULLSCREEN:
+    if (g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+      SwitchToFullScreen(true);
+    break;
+
+  case TMSG_VIDEORESIZE:
+  {
+    XBMC_Event newEvent;
+    memset(&newEvent, 0, sizeof(newEvent));
+    newEvent.type = XBMC_VIDEORESIZE;
+    newEvent.resize.w = pMsg->param1;
+    newEvent.resize.h = pMsg->param2;
+    OnEvent(newEvent);
+    g_windowManager.MarkDirty();
+  }
+    break;
+
+  case TMSG_SETVIDEORESOLUTION:
+    g_graphicsContext.SetVideoResolution(static_cast<RESOLUTION>(pMsg->param1), pMsg->param2 == 1);
+    break;
+
+  case TMSG_TOGGLEFULLSCREEN:
+    g_graphicsContext.Lock();
+    g_graphicsContext.ToggleFullScreenRoot();
+    g_graphicsContext.Unlock();
+    break;
+
+  case TMSG_MINIMIZE:
+    Minimize();
+    break;
+
+  case TMSG_EXECUTE_OS:
+    /* Suspend AE temporarily so exclusive or hog-mode sinks */
+    /* don't block external player's access to audio device  */
+    if (!CAEFactory::Suspend())
+    {
+      CLog::Log(LOGNOTICE, "%s: Failed to suspend AudioEngine before launching external program", __FUNCTION__);
+    }
+#if defined( TARGET_POSIX) && !defined(TARGET_DARWIN)
+    CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->param1 == 1));
+#elif defined(TARGET_WINDOWS)
+    CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->param1 == 1));
+#endif
+    /* Resume AE processing of XBMC native audio */
+    if (!CAEFactory::Resume())
+    {
+      CLog::Log(LOGFATAL, "%s: Failed to restart AudioEngine after return from external player", __FUNCTION__);
+    }
+    break;
+
+  case TMSG_EXECUTE_SCRIPT:
+    CScriptInvocationManager::Get().ExecuteAsync(pMsg->strParam);
+    break;
+
+  case TMSG_EXECUTE_BUILT_IN:
+    CBuiltins::Execute(pMsg->strParam.c_str());
+    break;
+
+  case TMSG_PICTURE_SHOW:
+  {
+    CGUIWindowSlideShow *pSlideShow = static_cast<CGUIWindowSlideShow *>(g_windowManager.GetWindow(WINDOW_SLIDESHOW));
+    if (!pSlideShow) return;
+
+    // stop playing file
+    if (g_application.m_pPlayer->IsPlayingVideo()) g_application.StopPlaying();
+
+    if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+      g_windowManager.PreviousWindow();
+
+    g_application.ResetScreenSaver();
+    g_application.WakeUpScreenSaverAndDPMS();
+
+    g_graphicsContext.Lock();
+
+    if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+      g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+    if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
+    {
+      CFileItemList items;
+      CURL pathToUrl;
+      if (URIUtils::IsZIP(pMsg->strParam))
+        pathToUrl = URIUtils::CreateArchivePath("zip", CURL(pMsg->strParam), "");
+      else
+        pathToUrl = URIUtils::CreateArchivePath("rar", CURL(pMsg->strParam), "");
+
+      CUtil::GetRecursiveListing(pathToUrl.Get(), items, g_advancedSettings.m_pictureExtensions, XFILE::DIR_FLAG_NO_FILE_DIRS);
+      if (items.Size() > 0)
+      {
+        pSlideShow->Reset();
+        for (int i = 0; i<items.Size(); ++i)
+        {
+          pSlideShow->Add(items[i].get());
+        }
+        pSlideShow->Select(items[0]->GetPath());
+      }
+    }
+    else
+    {
+      CFileItem item(pMsg->strParam, false);
+      pSlideShow->Reset();
+      pSlideShow->Add(&item);
+      pSlideShow->Select(pMsg->strParam);
+    }
+    g_graphicsContext.Unlock();
+  }
+  break;
+
+  case TMSG_PICTURE_SLIDESHOW:
+  {
+    CGUIWindowSlideShow *pSlideShow = static_cast<CGUIWindowSlideShow *>(g_windowManager.GetWindow(WINDOW_SLIDESHOW));
+    if (!pSlideShow) return;
+
+    if (g_application.m_pPlayer->IsPlayingVideo())
+      g_application.StopPlaying();
+
+    g_graphicsContext.Lock();
+    pSlideShow->Reset();
+
+    CFileItemList items;
+    std::string strPath = pMsg->strParam;
+    std::string extensions = g_advancedSettings.m_pictureExtensions;
+    if (pMsg->param1)
+      extensions += "|.tbn";
+    CUtil::GetRecursiveListing(strPath, items, extensions);
+
+    if (items.Size() > 0)
+    {
+      for (int i = 0; i<items.Size(); ++i)
+        pSlideShow->Add(items[i].get());
+      pSlideShow->StartSlideShow(); //Start the slideshow!
+    }
+
+    if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+    {
+      if (items.Size() == 0)
+      {
+        CSettings::Get().SetString("screensaver.mode", "screensaver.xbmc.builtin.dim");
+        g_application.ActivateScreenSaver();
+      }
+      else
+        g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+    }
+
+    g_graphicsContext.Unlock();
+  }
+  break;
+
+  case TMSG_LOADPROFILE:
+  {
+    CGUIWindowLoginScreen::LoadProfile(pMsg->param1);
+    break;
+  }
+
+  }
 }
 
 void CApplication::FrameMove(bool processEvents, bool processGUI)
@@ -3745,7 +4042,7 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
       if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
-        CApplicationMessenger::Get().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
+        CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_STOP)));
     }
     return true;
   }
@@ -3874,7 +4171,7 @@ void CApplication::CheckShutdown()
     m_shutdownTimer.Stop();
 
     // Sleep the box
-    CApplicationMessenger::Get().Shutdown();
+    CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
   }
 }
 
@@ -4115,7 +4412,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       if (IsEnableTestMode())
-        CApplicationMessenger::Get().Quit();
+        CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
       return true;
     }
     break;
@@ -4636,11 +4933,11 @@ void CApplication::SeekTime( double dTime )
           else
           { // seeking to a new file
             m_currentStackPosition = i;
-            CFileItem item(*(*m_currentStack)[i]);
-            item.m_lStartOffset = (long)((dTime - startOfNewFile) * 75.0);
+            CFileItem *item = new CFileItem(*(*m_currentStack)[i]);
+            item->m_lStartOffset = static_cast<long>((dTime - startOfNewFile) * 75.0);
             // don't just call "PlayFile" here, as we are quite likely called from the
             // player thread, so we won't be able to delete ourselves.
-            CApplicationMessenger::Get().PlayFile(item, true);
+            CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));
           }
           return;
         }

@@ -24,13 +24,20 @@
 
 class CStageFrightVideo;
 class CApplication;
-class CApplicationMessenger;
 class CWinSystemEGL;
 class CAdvancedSettings;
 
+namespace KODI
+{
+  namespace MESSAGING
+  {
+    class CApplicationMessenger;
+  }
+}
+
 extern "C"
 {
-  void* create_stf(CApplication* application, CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings);
+  void* create_stf(CApplication* application, KODI::MESSAGING::CApplicationMessenger* applicationMessenger, CWinSystemEGL* windowing, CAdvancedSettings* advsettings);
   void destroy_stf(void*);
 
   bool stf_Open(void*, CDVDStreamInfo &hints);

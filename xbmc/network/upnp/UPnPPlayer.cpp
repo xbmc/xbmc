@@ -34,13 +34,14 @@
 #include "ThumbLoader.h"
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Application.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "dialogs/GUIDialogYesNo.h"
 
+using namespace KODI::MESSAGING;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")
 
@@ -528,7 +529,7 @@ void CUPnPPlayer::DoAudioWork()
       m_current_meta = (const char*)meta;
       CFileItemPtr item = GetFileItem(uri, meta);
       g_application.CurrentFileItem() = *item;
-      CApplicationMessenger::Get().SetCurrentItem(*item.get());
+      CApplicationMessenger::Get().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(*item)));
     }
 
     NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("TransportState", data), failed);

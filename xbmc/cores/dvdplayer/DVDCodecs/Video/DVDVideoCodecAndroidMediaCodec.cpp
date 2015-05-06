@@ -29,7 +29,7 @@
 #include "DVDVideoCodecAndroidMediaCodec.h"
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "DVDClock.h"
 #include "threads/Atomics.h"
 #include "utils/BitstreamConverter.h"
@@ -51,6 +51,8 @@
 #include <GLES2/gl2ext.h>
 
 #include <cassert>
+
+using namespace KODI::MESSAGING;
 
 static bool CanSurfaceRenderBlackList(const std::string &name)
 {
@@ -1258,12 +1260,8 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
     callbackData.callback = &CallbackInitSurfaceTexture;
     callbackData.userptr  = (void*)this;
 
-    ThreadMessage msg;
-    msg.dwMessage = TMSG_CALLBACK;
-    msg.lpVoid = (void*)&callbackData;
-
     // wait for it.
-    CApplicationMessenger::Get().SendMessage(msg, true);
+    CApplicationMessenger::Get().SendMsg(TMSG_CALLBACK, -1, -1, static_cast<void*>(&callbackData));
   }
 
   return;

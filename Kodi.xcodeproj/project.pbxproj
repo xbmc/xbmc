@@ -857,6 +857,9 @@
 		DF40BC31178B4C07009DB567 /* ScriptInvocationManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF40BC27178B4C07009DB567 /* ScriptInvocationManager.cpp */; };
 		DF448457140048A60069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF448455140048A60069344B /* AirTunesServer.cpp */; };
 		DF44845E140048C80069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44845B140048C80069344B /* PipesManager.cpp */; };
+		DF4A3BB21B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4A3BAD1B4B0FC100F9CDC0 /* ApplicationMessenger.cpp */; };
+		DF4A3BB31B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4A3BAD1B4B0FC100F9CDC0 /* ApplicationMessenger.cpp */; };
+		DF4A3BB41B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4A3BAD1B4B0FC100F9CDC0 /* ApplicationMessenger.cpp */; };
 		DF4BF0151A4EF30F0053AC56 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0111A4EF30F0053AC56 /* cc_decoder.c */; };
 		DF4BF0161A4EF30F0053AC56 /* cc_decoder708.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0131A4EF30F0053AC56 /* cc_decoder708.cpp */; };
 		DF4BF0171A4EF31E0053AC56 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = DF4BF0111A4EF30F0053AC56 /* cc_decoder.c */; };
@@ -1771,7 +1774,6 @@
 		DFF0F42717528350002DA3A4 /* GUIWindowSystemInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18390D25F9FA00618676 /* GUIWindowSystemInfo.cpp */; };
 		DFF0F42817528350002DA3A4 /* GUIWindowWeather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18490D25F9FA00618676 /* GUIWindowWeather.cpp */; };
 		DFF0F43117528350002DA3A4 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14640D25F9F900618676 /* Application.cpp */; };
-		DFF0F43217528350002DA3A4 /* ApplicationMessenger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */; };
 		DFF0F43317528350002DA3A4 /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352C616E5436900D21BAD /* AppParamParser.cpp */; };
 		DFF0F43417528350002DA3A4 /* Autorun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146E0D25F9F900618676 /* Autorun.cpp */; };
 		DFF0F43517528350002DA3A4 /* AutoSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14700D25F9F900618676 /* AutoSwitch.cpp */; };
@@ -1875,7 +1877,6 @@
 		E36C29EC0DA72486001F0C9D /* Fanart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E90DA72486001F0C9D /* Fanart.cpp */; };
 		E38A06CE0D95AA5500FF8227 /* GUIDialogKaiToast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38A06CC0D95AA5500FF8227 /* GUIDialogKaiToast.cpp */; };
 		E38E1F370D25F9FD00618676 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14640D25F9F900618676 /* Application.cpp */; };
-		E38E1F380D25F9FD00618676 /* ApplicationMessenger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */; };
 		E38E1F3C0D25F9FD00618676 /* Autorun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146E0D25F9F900618676 /* Autorun.cpp */; };
 		E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14700D25F9F900618676 /* AutoSwitch.cpp */; };
 		E38E1F3E0D25F9FD00618676 /* BackgroundInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */; };
@@ -2947,7 +2948,6 @@
 		E49914AB174E607200741B6D /* GUIWindowSystemInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18390D25F9FA00618676 /* GUIWindowSystemInfo.cpp */; };
 		E49914AC174E607200741B6D /* GUIWindowWeather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18490D25F9FA00618676 /* GUIWindowWeather.cpp */; };
 		E499152C174E640800741B6D /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14640D25F9F900618676 /* Application.cpp */; };
-		E499152D174E642900741B6D /* ApplicationMessenger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */; };
 		E499152E174E642900741B6D /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56352C616E5436900D21BAD /* AppParamParser.cpp */; };
 		E499152F174E642900741B6D /* Autorun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146E0D25F9F900618676 /* Autorun.cpp */; };
 		E4991530174E642900741B6D /* AutoSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14700D25F9F900618676 /* AutoSwitch.cpp */; };
@@ -4445,6 +4445,10 @@
 		DF448456140048A60069344B /* AirTunesServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirTunesServer.h; sourceTree = "<group>"; };
 		DF44845B140048C80069344B /* PipesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PipesManager.cpp; sourceTree = "<group>"; };
 		DF44845C140048C80069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
+		DF4A3BAD1B4B0FC100F9CDC0 /* ApplicationMessenger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationMessenger.cpp; sourceTree = "<group>"; };
+		DF4A3BAE1B4B0FC100F9CDC0 /* ApplicationMessenger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationMessenger.h; sourceTree = "<group>"; };
+		DF4A3BAF1B4B0FC100F9CDC0 /* IMessageTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMessageTarget.h; sourceTree = "<group>"; };
+		DF4A3BB11B4B0FC100F9CDC0 /* ThreadMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadMessage.h; sourceTree = "<group>"; };
 		DF4BF0111A4EF30F0053AC56 /* cc_decoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cc_decoder.c; sourceTree = "<group>"; };
 		DF4BF0121A4EF30F0053AC56 /* cc_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cc_decoder.h; sourceTree = "<group>"; };
 		DF4BF0131A4EF30F0053AC56 /* cc_decoder708.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cc_decoder708.cpp; sourceTree = "<group>"; };
@@ -4712,8 +4716,6 @@
 		E38A06CD0D95AA5500FF8227 /* GUIDialogKaiToast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKaiToast.h; sourceTree = "<group>"; };
 		E38E14640D25F9F900618676 /* Application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
 		E38E14650D25F9F900618676 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
-		E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationMessenger.cpp; sourceTree = "<group>"; };
-		E38E14670D25F9F900618676 /* ApplicationMessenger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationMessenger.h; sourceTree = "<group>"; };
 		E38E146E0D25F9F900618676 /* Autorun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Autorun.cpp; sourceTree = "<group>"; };
 		E38E146F0D25F9F900618676 /* Autorun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Autorun.h; sourceTree = "<group>"; };
 		E38E14700D25F9F900618676 /* AutoSwitch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AutoSwitch.cpp; sourceTree = "<group>"; };
@@ -7787,6 +7789,17 @@
 			path = generic;
 			sourceTree = "<group>";
 		};
+		DF4A3BAC1B4B0FC100F9CDC0 /* messaging */ = {
+			isa = PBXGroup;
+			children = (
+				DF4A3BAD1B4B0FC100F9CDC0 /* ApplicationMessenger.cpp */,
+				DF4A3BAE1B4B0FC100F9CDC0 /* ApplicationMessenger.h */,
+				DF4A3BAF1B4B0FC100F9CDC0 /* IMessageTarget.h */,
+				DF4A3BB11B4B0FC100F9CDC0 /* ThreadMessage.h */,
+			);
+			path = messaging;
+			sourceTree = "<group>";
+		};
 		DF4BF0101A4EF30F0053AC56 /* contrib */ = {
 			isa = PBXGroup;
 			children = (
@@ -8152,6 +8165,7 @@
 				7C430161175C41FE009B82E5 /* listproviders */,
 				552A226615F7E11B0015C0D0 /* main */,
 				7CF0504F191195DA00222135 /* media */,
+				DF4A3BAC1B4B0FC100F9CDC0 /* messaging */,
 				18B7C853129423A7009E7A26 /* music */,
 				431376F212D6449100680C15 /* network */,
 				E37D5CB40D3023BB0081D327 /* osx */,
@@ -8174,8 +8188,6 @@
 				43D82FF512D64C8600B38489 /* windows */,
 				E38E14640D25F9F900618676 /* Application.cpp */,
 				E38E14650D25F9F900618676 /* Application.h */,
-				E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */,
-				E38E14670D25F9F900618676 /* ApplicationMessenger.h */,
 				F59EED7C17AD5174005BB7C6 /* ApplicationPlayer.cpp */,
 				F59EED7D17AD5174005BB7C6 /* ApplicationPlayer.h */,
 				F56352C616E5436900D21BAD /* AppParamParser.cpp */,
@@ -10077,7 +10089,6 @@
 			files = (
 				E38E1F370D25F9FD00618676 /* Application.cpp in Sources */,
 				399442771A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */,
-				E38E1F380D25F9FD00618676 /* ApplicationMessenger.cpp in Sources */,
 				E38E1F3C0D25F9FD00618676 /* Autorun.cpp in Sources */,
 				E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */,
 				E38E1F3E0D25F9FD00618676 /* BackgroundInfoLoader.cpp in Sources */,
@@ -11101,6 +11112,7 @@
 				7CCDAC9219275CA70074CF51 /* NptBsdSockets.cpp in Sources */,
 				7CCDACA719275D1F0074CF51 /* NptStdcDebug.cpp in Sources */,
 				7CCDACB019275D1F0074CF51 /* NptStdcEnvironment.cpp in Sources */,
+				DF4A3BB21B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */,
 				7CCDACC119275D790074CF51 /* NptAppleAutoreleasePool.mm in Sources */,
 				7CCDACCA19275D790074CF51 /* NptAppleLogConfig.mm in Sources */,
 				7CAA469019427AED00008885 /* PosixDirectory.cpp in Sources */,
@@ -11898,7 +11910,6 @@
 				DFF0F42717528350002DA3A4 /* GUIWindowSystemInfo.cpp in Sources */,
 				DFF0F42817528350002DA3A4 /* GUIWindowWeather.cpp in Sources */,
 				DFF0F43117528350002DA3A4 /* Application.cpp in Sources */,
-				DFF0F43217528350002DA3A4 /* ApplicationMessenger.cpp in Sources */,
 				DFF0F43317528350002DA3A4 /* AppParamParser.cpp in Sources */,
 				DFF0F43417528350002DA3A4 /* Autorun.cpp in Sources */,
 				DFF0F43517528350002DA3A4 /* AutoSwitch.cpp in Sources */,
@@ -12028,6 +12039,7 @@
 				F5CC22E51814FF3B006B5E91 /* ActiveAE.cpp in Sources */,
 				F5CC22E61814FF3B006B5E91 /* ActiveAEBuffer.cpp in Sources */,
 				F5CC22E81814FF3B006B5E91 /* ActiveAESink.cpp in Sources */,
+				DF4A3BB41B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */,
 				F5CC22E91814FF3B006B5E91 /* ActiveAESound.cpp in Sources */,
 				F5CC22EA1814FF3B006B5E91 /* ActiveAEStream.cpp in Sources */,
 				F5CC22FE18150065006B5E91 /* ActorProtocol.cpp in Sources */,
@@ -12308,6 +12320,7 @@
 				E49911F9174E5D4500741B6D /* DVDMessage.cpp in Sources */,
 				E49911FA174E5D4500741B6D /* DVDMessageQueue.cpp in Sources */,
 				E49911FC174E5D4500741B6D /* DVDOverlayContainer.cpp in Sources */,
+				DF4A3BB31B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */,
 				E49911FD174E5D4500741B6D /* DVDOverlayRenderer.cpp in Sources */,
 				E49911FF174E5D4500741B6D /* DVDPlayer.cpp in Sources */,
 				E4991200174E5D4500741B6D /* DVDPlayerAudio.cpp in Sources */,
@@ -12942,7 +12955,6 @@
 				E49914AB174E607200741B6D /* GUIWindowSystemInfo.cpp in Sources */,
 				E49914AC174E607200741B6D /* GUIWindowWeather.cpp in Sources */,
 				E499152C174E640800741B6D /* Application.cpp in Sources */,
-				E499152D174E642900741B6D /* ApplicationMessenger.cpp in Sources */,
 				E499152E174E642900741B6D /* AppParamParser.cpp in Sources */,
 				E499152F174E642900741B6D /* Autorun.cpp in Sources */,
 				E4991530174E642900741B6D /* AutoSwitch.cpp in Sources */,

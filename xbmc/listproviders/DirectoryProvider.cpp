@@ -27,6 +27,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "threads/SingleLock.h"
+#include "messaging/ApplicationMessenger.h"
 #include "FileItem.h"
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
@@ -38,6 +39,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
+using namespace KODI::MESSAGING;
 
 class CDirectoryJob : public CJob
 {

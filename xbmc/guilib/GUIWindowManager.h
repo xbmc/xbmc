@@ -34,10 +34,19 @@
 #include "DirtyRegionTracker.h"
 #include "utils/GlobalsHandling.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/IMessageTarget.h"
 #include <list>
 
 class CGUIDialog;
 enum class DialogModalityType;
+
+namespace KODI
+{
+  namespace MESSAGING
+  {
+    class CApplicationMessenger;
+  }
+}
 
 #define WINDOW_ID_MASK 0xffff
 
@@ -45,7 +54,7 @@ enum class DialogModalityType;
  \ingroup winman
  \brief
  */
-class CGUIWindowManager
+class CGUIWindowManager : public KODI::MESSAGING::IMessageTarget
 {
 public:
   CGUIWindowManager(void);
@@ -67,6 +76,9 @@ public:
 
   void CloseDialogs(bool forceClose = false) const;
   void CloseInternalModalDialogs(bool forceClose = false) const;
+
+  virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
+  virtual int GetMessageMask() override;
 
   // OnAction() runs through our active dialogs and windows and sends the message
   // off to the callbacks (application, python, playlist player) and to the
@@ -182,8 +194,8 @@ private:
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
   CGUIWindow *GetTopMostDialog() const;
 
-  friend class CApplicationMessenger;
-
+  friend class KODI::MESSAGING::CApplicationMessenger;
+  
   /*! \brief Activate the given window.
    *
    * \param windowID The window ID to activate.

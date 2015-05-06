@@ -1,5 +1,4 @@
 SRCS=Application.cpp \
-     ApplicationMessenger.cpp \
      ApplicationPlayer.cpp \
      AppParamParser.cpp \
      Autorun.cpp \

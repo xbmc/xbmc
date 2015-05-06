@@ -21,7 +21,7 @@
 #include "PVRClients.h"
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
@@ -40,6 +40,7 @@
 using namespace ADDON;
 using namespace PVR;
 using namespace EPG;
+using namespace KODI::MESSAGING;
 
 /** number of iterations when scanning for add-ons. don't use a timer because the user may block in the dialog */
 #define PVR_CLIENT_AVAHI_SCAN_ITERATIONS   (20)
@@ -377,8 +378,7 @@ bool CPVRClients::SwitchChannel(const CPVRChannelPtr &channel)
     }
     else
     {
-      CFileItem m_currentFile(channel);
-      CApplicationMessenger::Get().PlayFile(m_currentFile, false);
+      CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(channel)));
       bSwitchSuccessful = true;
     }
   }

@@ -33,8 +33,10 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "WindowException.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Dialog.h"
+
+using namespace KODI::MESSAGING;
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 
