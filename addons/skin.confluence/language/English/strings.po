@@ -239,7 +239,7 @@ msgid "Show recently added albums"
 msgstr ""
 
 msgctxt "#31117"
-msgid "Show Recently added videos"
+msgid "Show recently added videos"
 msgstr ""
 
 msgctxt "#31118"
