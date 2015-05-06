@@ -183,11 +183,11 @@ void CDSPlayer::AddSubtitle(const std::string& strSubPath) {
   if (CGraphFilters::Get()->HasSubFilter())
   {
     if (CStreamsManager::Get())
-      CStreamsManager::Get()->AddSubtitle(strSubPath);
+      CStreamsManager::Get()->SetSubfilter(CStreamsManager::Get()->AddSubtitle(strSubPath));
   }
   else {
     if (CStreamsManager::Get())
-      CStreamsManager::Get()->SubtitleManager->AddSubtitle(strSubPath);
+      CStreamsManager::Get()->SubtitleManager->SetSubtitle(CStreamsManager::Get()->SubtitleManager->AddSubtitle(strSubPath));
   }
 }
 

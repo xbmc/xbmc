@@ -193,6 +193,7 @@ public:
 
   virtual void SeekTime(__int64 iTime = 0);
   virtual __int64 GetTime() { CSingleLock lock(m_StateSection); return llrint(DS_TIME_TO_MSEC(g_dsGraph->GetTime())); }
+  virtual __int64 GetDisplayTime() { CSingleLock lock(m_StateSection); return llrint(DS_TIME_TO_MSEC(g_dsGraph->GetTime())); }
   virtual __int64 GetTotalTime() { CSingleLock lock(m_StateSection); return llrint(DS_TIME_TO_MSEC(g_dsGraph->GetTotalTime())); }
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
