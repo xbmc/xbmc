@@ -67,6 +67,10 @@ function(add_addon_depends addon searchpath)
         # check if there are any library specific flags that need to be passed on
         if(EXISTS ${dir}/flags.txt)
           file(STRINGS ${dir}/flags.txt extraflags)
+
+          # replace some custom placeholders
+          string(REPLACE "@MINGW_TOOLCHAIN_FILE@" "${OUTPUT_DIR}/Toolchain_mingw32.cmake" extraflags "${extraflags}")
+          
           separate_arguments(extraflags)
           message(STATUS "${id} extraflags: ${extraflags}")
         endif()
