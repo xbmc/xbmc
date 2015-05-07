@@ -4793,7 +4793,7 @@ msgstr ""
 
 #: skin.confluence
 msgctxt "#12321"
-msgid "Ok"
+msgid "OK"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogGamepad.cpp
@@ -5117,7 +5117,7 @@ msgstr ""
 
 #: unknown
 msgctxt "#13001"
-msgid "Immediate HD spindown"
+msgid "Immediate HDD spindown"
 msgstr ""
 
 #: unknown
@@ -6156,32 +6156,32 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13425"
-msgid "Allow hardware acceleration (VDPAU)"
+msgid "Allow hardware acceleration - VDPAU"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13426"
-msgid "Allow hardware acceleration (VAAPI)"
+msgid "Allow hardware acceleration - VAAPI"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13427"
-msgid "Allow hardware acceleration (DXVA2)"
+msgid "Allow hardware acceleration - DXVA2"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13428"
-msgid "Allow hardware acceleration (CrystalHD)"
+msgid "Allow hardware acceleration - CrystalHD"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13429"
-msgid "Allow hardware acceleration (VDADecoder)"
+msgid "Allow hardware acceleration - VDADecoder"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13430"
-msgid "Allow hardware acceleration (OpenMax)"
+msgid "Allow hardware acceleration - OpenMax"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6192,7 +6192,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13432"
-msgid "Allow hardware acceleration (VideoToolbox)"
+msgid "Allow hardware acceleration - VideoToolbox"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6213,7 +6213,7 @@ msgstr ""
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#13436"
-msgid "Allow hardware acceleration (libstagefright)"
+msgid "Allow hardware acceleration - libstagefright"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -6223,12 +6223,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13438"
-msgid "Allow hardware acceleration (amcodec)"
+msgid "Allow hardware acceleration - amcodec"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13439"
-msgid "Allow hardware acceleration (MediaCodec)"
+msgid "Allow hardware acceleration - MediaCodec"
 msgstr ""
 
 #empty string with id 13440
@@ -6309,7 +6309,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13458"
-msgid "Allow hardware acceleration (OMXPlayer)"
+msgid "Allow hardware acceleration - OMXPlayer"
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (OMXPlayer)" with label #13457
@@ -7225,7 +7225,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16020"
-msgid "De-interlace"
+msgid "Deinterlace"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
@@ -7292,7 +7292,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16036"
-msgid "De-interlace (Half)"
+msgid "Deinterlace (Half)"
 msgstr ""
 
 msgctxt "#16037"
@@ -7454,12 +7454,12 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16312"
-msgid "(VDPAU)Noise Reduction"
+msgid "VDPAU - Noise Reduction"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16313"
-msgid "(VDPAU)Sharpness"
+msgid "VDPAU - Sharpness"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
@@ -7881,7 +7881,7 @@ msgid "Sort by: Channel"
 msgstr ""
 
 msgctxt "#19063"
-msgid "Go to begin"
+msgid "Go to beginning"
 msgstr ""
 
 msgctxt "#19064"
@@ -11546,7 +11546,7 @@ msgid "Cache full"
 msgstr ""
 
 msgctxt "#21455"
-msgid "Cache filled before reaching required amount for continous playback"
+msgid "Cache filled before reaching required amount for continuous playback"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
@@ -13693,18 +13693,18 @@ msgctxt "#35000"
 msgid "Peripherals"
 msgstr ""
 
-#: xbmc/pheripherals/devices/PeripheralHID.cpp
-#: xbmc/pheripherals/devices/Peripheralmon.cpp
+#: xbmc/peripherals/devices/PeripheralHID.cpp
+#: xbmc/peripherals/devices/Peripheralmon.cpp
 msgctxt "#35001"
 msgid "Generic HID device"
 msgstr ""
 
-#: xbmc/pheripherals/devices/PeripheralNIC.cpp
+#: xbmc/peripherals/devices/PeripheralNIC.cpp
 msgctxt "#35002"
 msgid "Generic network adaptor"
 msgstr ""
 
-#: xbmc/pheripherals/devices/PeripheralDisk.cpp
+#: xbmc/peripherals/devices/PeripheralDisk.cpp
 msgctxt "#35003"
 msgid "Generic disk"
 msgstr ""
@@ -13714,12 +13714,12 @@ msgctxt "#35004"
 msgid "There are no settings available\nfor this peripheral."
 msgstr ""
 
-#: xbmc/pheripherals/Peripherals.cpp
+#: xbmc/peripherals/Peripherals.cpp
 msgctxt "#35005"
 msgid "New device configured"
 msgstr ""
 
-#: xbmc/pheripherals/Peripherals.cpp
+#: xbmc/peripherals/Peripherals.cpp
 msgctxt "#35006"
 msgid "Device removed"
 msgstr ""
@@ -14092,19 +14092,19 @@ msgctxt "#36114"
 msgid "Chooses the language of the user interface."
 msgstr ""
 
-#.  Description of setting "Appearance -> International -> Region" with label #20026
+#. Description of setting "Appearance -> International -> Region" with label #20026
 #: system/settings/settings.xml
 msgctxt "#36115"
 msgid "Select the formats for temperature, time and date. The available options depend on the selected language."
 msgstr ""
 
-#.  Description of setting "Appearance -> International -> Character set" with label #14091
+#. Description of setting "Appearance -> International -> Character set" with label #14091
 #: system/settings/settings.xml
 msgctxt "#36116"
 msgid "Choose which character set is used for displaying text in the user interface."
 msgstr ""
 
-#.  Description of setting "Appearance -> International -> Timezone country" with label #14079
+#. Description of setting "Appearance -> International -> Timezone country" with label #14079
 #: system/settings/settings.xml
 msgctxt "#36117"
 msgid "Select country location."
@@ -14116,13 +14116,13 @@ msgctxt "#36118"
 msgid "Select your current timezone."
 msgstr ""
 
-#.  Description of setting "Appearance -> International -> Preferred audio language" with label #285
+#. Description of setting "Appearance -> International -> Preferred audio language" with label #285
 #: system/settings/settings.xml
 msgctxt "#36119"
 msgid "Defaults to the selected audio language if more than one language is available."
 msgstr ""
 
-#.  Description of setting "Video -> Subtitles -> Preferred subtitle language" with label #286
+#. Description of setting "Video -> Subtitles -> Preferred subtitle language" with label #286
 #: system/settings/settings.xml
 msgctxt "#36120"
 msgid "Defaults to the selected subtitle language if more than one language is available."
@@ -14134,37 +14134,37 @@ msgctxt "#36121"
 msgid "Category containing settings related to how file lists are displayed."
 msgstr ""
 
-#.  Description of setting "Appearance -> File lists -> Show parent folder items" with label #13306
+#. Description of setting "Appearance -> File lists -> Show parent folder items" with label #13306
 #: system/settings/settings.xml
 msgctxt "#36122"
 msgid "Display the (..) item in lists for visiting the parent folder."
 msgstr ""
 
-#.  Description of setting "Appearance -> File lists -> Show file extensions" with label #497
+#. Description of setting "Appearance -> File lists -> Show file extensions" with label #497
 #: system/settings/settings.xml
 msgctxt "#36123"
 msgid "Show file extensions on media files. For example, 'You Enjoy Myself.mp3' would be simply be shown as 'You Enjoy Myself'."
 msgstr ""
 
-#. #.  Description of setting "Appearance -> File lists -> Ignore articles when sorting with label #13399
+#. Description of setting "Appearance -> File lists -> Ignore articles when sorting with label #13399
 #: system/settings/settings.xml
 msgctxt "#36124"
 msgid "Ignore certain tokens (e.g. \"the\") during sort operations. For example, 'The Simpsons' would be sorted as 'Simpsons'."
 msgstr ""
 
-#.  Description of setting "Appearance -> File lists -> Allow file renaming and deletion" with label #14071
+#. Description of setting "Appearance -> File lists -> Allow file renaming and deletion" with label #14071
 #: system/settings/settings.xml
 msgctxt "#36125"
 msgid "Allow files to be deleted and renamed through the user interface, via the contextual menu (press C on a keyboard, for example, to bring up this menu)."
 msgstr ""
 
-#.  Description of setting "Appearance -> File lists -> Show "Add source" buttons in files lists" with label #21382
+#. Description of setting "Appearance -> File lists -> Show "Add source" buttons in files lists" with label #21382
 #: system/settings/settings.xml
 msgctxt "#36126"
 msgid "Show the add source button in root sections of the user interface."
 msgstr ""
 
-#.  Description of setting "Appearance -> File lists -> Show hidden files and directories" with label #21330
+#. Description of setting "Appearance -> File lists -> Show hidden files and directories" with label #21330
 #: system/settings/settings.xml
 msgctxt "#36127"
 msgid "Show hidden files and directories when listing files."
@@ -14239,7 +14239,7 @@ msgctxt "#36139"
 msgid "Category containing the settings for how the video library is handled."
 msgstr ""
 
-#.  Description of setting "Appearance -> International -> Temperature unit" with label #14105
+#. Description of setting "Appearance -> International -> Temperature unit" with label #14105
 #: system/settings/settings.xml
 msgctxt "#36140"
 msgid "Choose which temperature unit is used for displaying temperatures in the user interface."
@@ -14251,7 +14251,7 @@ msgctxt "#36141"
 msgid "Show plot information for unwatched media in the Video Library."
 msgstr ""
 
-#.  Description of setting "Appearance -> International -> Speed unit" with label #14106
+#. Description of setting "Appearance -> International -> Speed unit" with label #14106
 #: system/settings/settings.xml
 msgctxt "#36142"
 msgid "Choose which speed unit is used for displaying speeds in the user interface."
@@ -14325,7 +14325,7 @@ msgctxt "#36153"
 msgid "Adjust the method used to process and display video."
 msgstr ""
 
-#. Description of setting "Videos -> Playback -> Enable HQ Scalers for scalings above" with label #13435
+#. Description of setting "Videos -> Playback -> Enable HQ Scalers for scaling above" with label #13435
 #: system/settings/settings.xml
 msgctxt "#36154"
 msgid "Use high quality scalers when upscaling a video by at least this percentage."
@@ -15269,7 +15269,7 @@ msgstr ""
 #. Description of setting "Services -> UPnP -> Announce library updates" with label #20188
 #: system/settings/settings.xml
 msgctxt "#36324"
-msgid "When a manual or automatical library update occurs, notify UPnP clients."
+msgid "When a manual or automatic library update occurs, notify UPnP clients."
 msgstr ""
 
 #. Description of setting "Services -> UPnP -> Allow playback control via UPnP" with label #21881
@@ -15898,13 +15898,13 @@ msgstr ""
 #. Description for video related setting #13457: vaapi sw filter
 #: system/settings/settings.xml
 msgctxt "#36433"
-msgid "If enabled VAAPI render method is prefered. This puts less load on the CPU but driver may hang!"
+msgid "When enabled, VAAPI render method is preferred and the CPU has less load. If you experience hangs, disable this option."
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Enable MMAL hardware decoding of video files"
 #: system/settings/settings.xml
 msgctxt "#36434"
-msgid "Allow hardware acceleration (MMAL)"
+msgid "Allow hardware acceleration - MMAL"
 msgstr ""
 
 #. Description of setting "Videos -> Playback -> Enable MMAL hardware decoding of video files"
@@ -15977,7 +15977,7 @@ msgstr ""
 #. name of a stereoscopic mode
 #: system/settings/settings.xml
 msgctxt "#36509"
-msgid "Monoscopic (2D)"
+msgid "Monoscopic - 2D"
 msgstr ""
 
 #. name of a stereoscopic mode
@@ -16034,7 +16034,7 @@ msgctxt "#36527"
 msgid "Select playback mode"
 msgstr ""
 
-#. label of a dialog box promting the user to selected the desired playback mode of the detected stereoscopic video
+#. label of a dialog box prompting the user to selected the desired playback mode of the detected stereoscopic video
 #: guilib/StereoscopicsManager.cpp
 msgctxt "#36528"
 msgid "Select stereoscopic 3D mode"
@@ -16224,12 +16224,12 @@ msgstr ""
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36908"
-msgid "musicvideo"
+msgid "music video"
 msgstr ""
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36909"
-msgid "musicvideos"
+msgid "music videos"
 msgstr ""
 
 #: xbmc/media/MediaType.cpp
@@ -16427,37 +16427,37 @@ msgctxt "#37033"
 msgid "Video playback related accessibility settings, e.g., \"Prefer subtitles for the hearing impaired\""
 msgstr ""
 
-#. Setting #37034 Settings -> Video -> Accessibility 
+#. Setting #37034 Settings -> Video -> Accessibility
 #: system/settings/settings.xml
 msgctxt "#37034"
 msgid "Prefer audio stream for the visually impaired"
 msgstr ""
 
-#. Description of setting #37034 Settings -> Video -> Accessibility 
+#. Description of setting #37034 Settings -> Video -> Accessibility
 #: system/settings/settings.xml
 msgctxt "#37035"
 msgid "Prefer the audio stream for the visually impaired to other audio streams of the same language"
 msgstr ""
 
-#. Setting #37036 Settings -> Video -> Accessibility 
+#. Setting #37036 Settings -> Video -> Accessibility
 #: system/settings/settings.xml
 msgctxt "#37036"
 msgid "Prefer audio stream for the hearing impaired"
 msgstr ""
 
-#. Description of setting #37036 Settings -> Video -> Accessibility 
+#. Description of setting #37036 Settings -> Video -> Accessibility
 #: system/settings/settings.xml
 msgctxt "#37037"
 msgid "Prefer the audio stream for the hearing impaired to other audio streams of the same language"
 msgstr ""
 
-#. Setting #37038 Settings -> Video -> Accessibility 
+#. Setting #37038 Settings -> Video -> Accessibility
 #: system/settings/settings.xml
 msgctxt "#37038"
 msgid "Prefer subtitles for the hearing impaired"
 msgstr ""
 
-#. Description of setting #37038 Settings -> Video -> Accessibility 
+#. Description of setting #37038 Settings -> Video -> Accessibility
 #: system/settings/settings.xml
 msgctxt "#37039"
 msgid "Prefer the subtitle stream for the hearing impaired to other subtitle streams of the same language"
