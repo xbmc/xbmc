@@ -1,9 +1,10 @@
-include ../../Makefile.include
+-include ../../Makefile.include
+include ../../xbmc-addons.include
 DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=platform
-VERSION=1.0.4
+VERSION=1.0.9
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
