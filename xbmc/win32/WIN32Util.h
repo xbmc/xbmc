@@ -24,7 +24,6 @@
 #include "Cfgmgr32.h"
 #include "MediaSource.h"
 #include "guilib/Geometry.h"
-#include "powermanagement/PowerManager.h"
 #include "utils/Stopwatch.h"
 
 enum Drive_Types
@@ -48,8 +47,6 @@ public:
 
   static char FirstDriveFromMask (ULONG unitmask);
   static int GetDriveStatus(const std::string &strPath, bool bStatusEx=false);
-  static bool PowerManagement(PowerState State);
-  static int BatteryLevel();
   static bool XBMCShellExecute(const std::string &strPath, bool bWaitForScriptExit=false);
   static std::vector<std::string> GetDiskUsage();
   static std::string GetResInfoString();

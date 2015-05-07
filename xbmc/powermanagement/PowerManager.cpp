@@ -57,9 +57,8 @@ using namespace ANNOUNCEMENT;
 
 CPowerManager g_powerManager;
 
-CPowerManager::CPowerManager()
+CPowerManager::CPowerManager() : m_instance(NULL), m_appIsSleeping(false)
 {
-  m_instance = NULL;
 }
 
 CPowerManager::~CPowerManager()
@@ -140,93 +139,134 @@ void CPowerManager::SetDefaults()
 
 bool CPowerManager::Powerdown()
 {
-  if (CanPowerdown() && m_instance->Powerdown())
+  if (CanPowerdown())
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Show();
+    CLog::LogF(LOGINFO, "Requesting system powerdown");
+    if (m_instance && m_instance->Powerdown())
+    {
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (dialog)
+        dialog->Show();
 
-    return true;
+      return true;
+    }
+    else
+      CLog::LogF(LOGERROR, "System powerdown failed");
   }
+  else
+    CLog::LogF(LOGERROR, "System doesn't support powerdown");
 
   return false;
 }
 
 bool CPowerManager::Suspend()
 {
-  if (CanSuspend() && m_instance->Suspend())
+  if (CanSuspend())
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Show();
+    CLog::LogF(LOGINFO, "Requesting system suspend");
+    if (m_instance && m_instance->Suspend())
+    {
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (dialog)
+        dialog->Show();
 
-    return true;
+      return true;
+    }
+    else
+      CLog::LogF(LOGERROR, "System suspend failed");
   }
+  else
+    CLog::LogF(LOGERROR, "System doesn't support suspend");
 
   return false;
 }
 
 bool CPowerManager::Hibernate()
 {
-  if (CanHibernate() && m_instance->Hibernate())
+  if (CanHibernate())
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Show();
+    CLog::LogF(LOGINFO, "Requesting system hibernate");
+    if (m_instance && m_instance->Hibernate())
+    {
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (dialog)
+        dialog->Show();
 
-    return true;
+      return true;
+    }
+    else
+      CLog::LogF(LOGERROR, "System hibernate failed");
   }
+  else
+    CLog::LogF(LOGERROR, "System doesn't support hibernate");
 
   return false;
 }
 bool CPowerManager::Reboot()
 {
-  bool success = CanReboot() ? m_instance->Reboot() : false;
-
-  if (success)
+  if (CanReboot())
   {
-    CAnnouncementManager::Get().Announce(System, "xbmc", "OnRestart");
+    CLog::LogF(LOGINFO, "Requesting system reboot");
+    if (m_instance && m_instance->Reboot())
+    {
+      CAnnouncementManager::Get().Announce(System, "xbmc", "OnRestart");
 
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Show();
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      if (dialog)
+        dialog->Show();
+
+      return true;
+    }
+    else
+      CLog::LogF(LOGERROR, "System reboot failed");
   }
+  else
+    CLog::LogF(LOGERROR, "System doesn't support reboot");
 
-  return success;
+  return false;
 }
 
 bool CPowerManager::CanPowerdown()
 {
-  return m_instance->CanPowerdown();
+  return m_instance && m_instance->CanPowerdown();
 }
 bool CPowerManager::CanSuspend()
 {
-  return m_instance->CanSuspend();
+  return m_instance && m_instance->CanSuspend();
 }
 bool CPowerManager::CanHibernate()
 {
-  return m_instance->CanHibernate();
+  return m_instance && m_instance->CanHibernate();
 }
 bool CPowerManager::CanReboot()
 {
-  return m_instance->CanReboot();
+  return m_instance && m_instance->CanReboot();
 }
 int CPowerManager::BatteryLevel()
 {
-  return m_instance->BatteryLevel();
+  return m_instance && m_instance->BatteryLevel();
 }
 void CPowerManager::ProcessEvents()
 {
   static int nesting = 0;
 
-  if (++nesting == 1)
-    m_instance->PumpPowerEvents(this);
+  if (m_instance)
+  {
+    if (++nesting == 1)
+      m_instance->PumpPowerEvents(this);
 
-  nesting--;
+    nesting--;
+  }
 }
 
 void CPowerManager::OnSleep()
 {
+  if (m_appIsSleeping)
+  {
+    CLog::LogF(LOGDEBUG, "Application is in sleeping state, ignoring \"OnSleep()\"");
+    return;
+  }
+  m_appIsSleeping = true;
   CAnnouncementManager::Get().Announce(System, "xbmc", "OnSleep");
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
@@ -246,6 +286,12 @@ void CPowerManager::OnSleep()
 
 void CPowerManager::OnWake()
 {
+  if (!m_appIsSleeping)
+  {
+    CLog::LogF(LOGDEBUG, "Application isn't in sleeping state, ignoring \"OnWake()\"");
+    return;
+  }
+  m_appIsSleeping = false;
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
   // reset out timers
