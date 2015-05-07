@@ -30,8 +30,8 @@ The command-line build is still under development.
 Kodi for Mac is composed of a main binary with numerous dynamic libraries and
 codecs that support a multitude of music and video formats.
 
-On Mavericks (OSX 10.9.x) we recommend using Xcode 6.3.1.
-On Yosemite (OSX 10.10.x) we recommend using Xcode 6.3.1.
+On Mavericks (OSX 10.9.x) we recommend using Xcode 6.1.
+On Yosemite (OSX 10.10.x) we recommend using Xcode 6.1.
 
 NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
 commands that need to be typed into a Terminal window. Note that the '$'
@@ -63,8 +63,9 @@ As far as we know the compilation for mac osx should work with the following
 constellations of Xcode and osx versions (to be updated once we know more):
  
 1. XCode 6.0.1 against OSX SDK 10.9 (M)
-2. XCode 6.2.0 against OSX SDK 10.10 (Y)
-3. XCode 6.3.0 against OSX SDK 10.10 (Y)
+2. XCode 6.1.0 against OSX SDK 10.10 (Y)
+3. XCode 6.2.0 against OSX SDK 10.10 (Y)
+4. XCode 6.3.0 against OSX SDK 10.10 (Y)
 
 -----------------------------------------------------------------------------
 3.2 Install Kodi build depends
