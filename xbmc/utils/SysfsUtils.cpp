@@ -30,15 +30,18 @@
 
 int SysfsUtils::SetString(const std::string& path, const std::string& valstr)
 {
-  int fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC, 0644);
+  int fd = open(path.c_str(), O_RDWR, 0644);
+  int ret = 0;
   if (fd >= 0)
   {
-    write(fd, valstr.c_str(), valstr.size());
+    if (write(fd, valstr.c_str(), valstr.size()) < 0)
+      ret = -1;
     close(fd);
-    return 0;
   }
-  CLog::Log(LOGERROR, "%s: error writing %s",__FUNCTION__, path.c_str());
-  return -1;
+  if (ret)
+    CLog::Log(LOGERROR, "%s: error writing %s",__FUNCTION__, path.c_str());
+
+  return ret;
 }
 
 int SysfsUtils::GetString(const std::string& path, std::string& valstr)
@@ -66,34 +69,40 @@ int SysfsUtils::GetString(const std::string& path, std::string& valstr)
 
 int SysfsUtils::SetInt(const std::string& path, const int val)
 {
-  int fd = open(path.c_str(), O_CREAT | O_RDWR | O_TRUNC, 0644);
+  int fd = open(path.c_str(), O_RDWR, 0644);
+  int ret = 0;
   if (fd >= 0)
   {
     char bcmd[16];
     sprintf(bcmd, "%d", val);
-    write(fd, bcmd, strlen(bcmd));
+    if (write(fd, bcmd, strlen(bcmd)) < 0)
+      ret = -1;
     close(fd);
-    return 0;
   }
+  if (ret)
+    CLog::Log(LOGERROR, "%s: error writing %s",__FUNCTION__, path.c_str());
 
-  CLog::Log(LOGERROR, "%s: error writing %s",__FUNCTION__, path.c_str());
-  return -1;
+  return ret;
 }
 
 int SysfsUtils::GetInt(const std::string& path, int& val)
 {
   int fd = open(path.c_str(), O_RDONLY);
+  int ret = 0;
   if (fd >= 0)
   {
     char bcmd[16];
-    read(fd, bcmd, sizeof(bcmd));
-    val = strtol(bcmd, NULL, 16);
-    close(fd);
-    return 0;
-  }
+    if (read(fd, bcmd, sizeof(bcmd)) < 0)
+      ret = -1;
+    else
+      val = strtol(bcmd, NULL, 16);
 
-  CLog::Log(LOGERROR, "%s: error reading %s",__FUNCTION__, path.c_str());
-  return -1;
+    close(fd);
+  }
+  if (ret)
+    CLog::Log(LOGERROR, "%s: error reading %s",__FUNCTION__, path.c_str());
+
+  return ret;
 }
 
 bool SysfsUtils::Has(const std::string &path)
