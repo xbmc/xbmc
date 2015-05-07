@@ -88,6 +88,7 @@ private:
   static CCriticalSection m_actionQueueLock;
   static std::list<CAction> m_actionQueue;
   static CEvent m_processActions;
+  static int m_sampleRate;
 
   class AudioOutputFunctions
   {
@@ -99,6 +100,7 @@ private:
       static void  audio_process(void *cls, void *session, const void *buffer, int buflen);
       static void  audio_destroy(void *cls, void *session);
       static void  audio_remote_control_id(void *cls, const char *identifier, const char *active_remote_header);
+      static void  audio_set_progress(void *cls, void *session, unsigned int start, unsigned int curr, unsigned int end);
     };
 };
 

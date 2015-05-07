@@ -79,6 +79,7 @@ std::string CAirTunesServer::m_active_remote_header;
 CCriticalSection CAirTunesServer::m_actionQueueLock;
 std::list<CAction> CAirTunesServer::m_actionQueue;
 CEvent CAirTunesServer::m_processActions;
+int CAirTunesServer::m_sampleRate = 44100;
 
 
 //parse daap metadata - thx to project MythTV
@@ -119,6 +120,8 @@ void CAirTunesServer::RefreshMetadata()
 {
   CSingleLock lock(m_metadataLock);
   MUSIC_INFO::CMusicInfoTag tag;
+  if (g_infoManager.GetCurrentSongTag())
+    tag = *g_infoManager.GetCurrentSongTag();
   if (m_metadata[0].length())
     tag.SetAlbum(m_metadata[0]);//album
   if (m_metadata[1].length())
@@ -377,6 +380,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   item.SetPath(pipe->GetName());
   item.SetMimeType("audio/x-xbmc-pcm");
   m_streamStarted = true;
+  m_sampleRate = samplerate;
 
   CApplicationMessenger::Get().PlayFile(item);
 
@@ -399,6 +403,20 @@ void CAirTunesServer::AudioOutputFunctions::audio_remote_control_id(void *cls, c
   {
     m_dacp_id = dacp_id;
     m_active_remote_header = active_remote_header;
+  }
+}
+
+void CAirTunesServer::AudioOutputFunctions::audio_set_progress(void *cls, void *session, unsigned int start, unsigned int curr, unsigned int end)
+{
+  unsigned int duration = end - start;
+  unsigned int position = curr - start;
+  duration /= m_sampleRate;
+  position /= m_sampleRate;
+
+  if (g_application.m_pPlayer->GetInternal())
+  {
+    g_application.m_pPlayer->GetInternal()->SetTime(position * 1000);
+    g_application.m_pPlayer->GetInternal()->SetTotalTime(duration * 1000);
   }
 }
 
@@ -660,6 +678,7 @@ bool CAirTunesServer::Initialize(const std::string &password)
     ao.audio_process        = AudioOutputFunctions::audio_process;
     ao.audio_destroy        = AudioOutputFunctions::audio_destroy;
     ao.audio_remote_control_id = AudioOutputFunctions::audio_remote_control_id;
+    ao.audio_set_progress   = AudioOutputFunctions::audio_set_progress;
     m_pLibShairplay->EnableDelayedUnload(false);
     m_pRaop = m_pLibShairplay->raop_init(1, &ao, RSA_KEY);//1 - we handle one client at a time max
     ret = m_pRaop != NULL;    
