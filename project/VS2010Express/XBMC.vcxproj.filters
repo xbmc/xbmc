@@ -345,6 +345,8 @@
     </Filter>
     <Filter Include="guiinfo">
       <UniqueIdentifier>{bc76faa4-e05e-4f08-b332-a91d7bc3207f}</UniqueIdentifier>
+    <Filter Include="network\dacp">
+      <UniqueIdentifier>{33ec4ead-1923-47c2-8a7f-44561adaebf3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3107,6 +3109,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\dxerr.cpp">
       <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\dacp\dacp.cpp">
+      <Filter>network\dacp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6009,6 +6014,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guiinfo\GUIInfoLabels.h">
       <Filter>guiinfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\dacp\dacp.h">
+      <Filter>network\dacp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
