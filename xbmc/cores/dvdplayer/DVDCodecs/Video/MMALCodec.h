@@ -131,6 +131,7 @@ protected:
   int               m_speed;
   bool              m_preroll;
 
+  CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_dec;
   MMAL_PORT_T *m_dec_input;
   MMAL_PORT_T *m_dec_output;
