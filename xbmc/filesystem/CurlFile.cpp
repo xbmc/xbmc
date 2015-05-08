@@ -794,6 +794,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           SetStreamProxy(value, PROXY_HTTP);
         else if (name == "sslcipherlist")
           m_cipherlist = value;
+        else if (name == "connection-timeout")
+          m_connecttimeout = strtol(value.c_str(), NULL, 10);
         else
           SetRequestHeader(it->first, value);
       }
