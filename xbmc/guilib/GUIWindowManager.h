@@ -52,7 +52,7 @@ public:
   bool SendMessage(CGUIMessage& message);
   bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
   bool SendMessage(CGUIMessage& message, int window);
-  void Initialize();
+  void Reset();
   void Add(CGUIWindow* pWindow);
   void AddUniqueInstance(CGUIWindow *window);
   void AddCustomWindow(CGUIWindow* pWindow);
@@ -106,13 +106,6 @@ public:
    */
   void FrameMove();
 
-  /*! \brief Return whether the window manager is initialized.
-   The window manager is initialized on skin load - if the skin isn't yet loaded,
-   no windows should be able to be initialized.
-   \return true if the window manager is initialized, false otherwise.
-   */
-  bool Initialized() const { return m_initialized; };
-
   /*! \brief Create and initialize all windows and dialogs
    */
   void CreateWindows();
@@ -126,7 +119,8 @@ public:
   CGUIWindow* GetWindow(int id) const;
   void ProcessRenderLoop(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
-  void DeInitialize();
+
+  void UnloadWindows();
 
   /*! \brief Register a dialog as active dialog
    *
@@ -202,7 +196,6 @@ private:
 
   bool m_bShowOverlay;
   int  m_iNested;
-  bool m_initialized;
 
   CDirtyRegionTracker m_tracker;
 

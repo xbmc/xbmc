@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+  <section id="services">
+    <category id="upnp">
+      <group id="1">
+        <setting id="services.upnpserver">
+          <default>true</default>
+        </setting>
+      </group>
+    </category>
+    <category id="webserver">
+      <group id="1">
+        <setting id="services.webserver">
+          <default>true</default>
+        </setting>      
+      </group>
+    </category>
+  </section>
+</settings>

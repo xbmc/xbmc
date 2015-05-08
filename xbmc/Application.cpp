@@ -315,6 +315,7 @@ CApplication::CApplication(void)
   m_bPlatformDirectories = true;
 
   m_bStandalone = false;
+  m_headless = false;
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
   m_pInertialScrollingHandler = new CInertialScrollingHandler();
@@ -724,6 +725,7 @@ bool CApplication::Create()
 bool CApplication::CreateGUI()
 {
   m_renderGUI = true;
+
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
 
@@ -843,7 +845,7 @@ bool CApplication::CreateGUI()
             info.iWidth,
             info.iHeight,
             info.strMode.c_str());
-  g_windowManager.Initialize();
+  g_windowManager.Reset();
 
   return true;
 }
@@ -1170,8 +1172,17 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
-  if (g_windowManager.Initialized())
+
+  g_windowManager.AddMsgTarget(this);
+  g_windowManager.AddMsgTarget(&g_playlistPlayer);
+
+  if (!IsHeadless())
   {
+    g_windowManager.AddMsgTarget(&g_infoManager);
+    g_windowManager.AddMsgTarget(&g_fontManager);
+    g_windowManager.AddMsgTarget(&CStereoscopicsManager::Get());
+    g_windowManager.SetCallback(*this);
+
     CSettings::Get().GetSetting("powermanagement.displaysoff")->SetRequirementsMet(m_dpms->IsSupported());
 
     g_windowManager.CreateWindows();
@@ -1672,13 +1683,7 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end - start) / freq);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
-  g_windowManager.AddMsgTarget(this);
-  g_windowManager.AddMsgTarget(&g_playlistPlayer);
-  g_windowManager.AddMsgTarget(&g_infoManager);
-  g_windowManager.AddMsgTarget(&g_fontManager);
-  g_windowManager.AddMsgTarget(&CStereoscopicsManager::Get());
-  g_windowManager.SetCallback(*this);
-  g_windowManager.Initialize();
+  g_windowManager.Reset();
   CTextureCache::Get().Initialize();
   g_audioManager.Enable(true);
   g_audioManager.Load();
@@ -1734,7 +1739,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 
   g_audioManager.Enable(false);
 
-  g_windowManager.DeInitialize();
+  g_windowManager.UnloadWindows();
   CTextureCache::Get().Deinitialize();
 
   // remove the skin-dependent window
@@ -4048,7 +4053,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         {
           g_windowManager.PreviousWindow();
         }
-        else
+        else if (!IsHeadless())
         {
           CSingleLock lock(g_graphicsContext);
           //  resets to res_desktop or look&feel resolution (including refreshrate)

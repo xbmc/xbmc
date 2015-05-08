@@ -31,6 +31,13 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 #include "utils/FileUtils.h"
+#include "Application.h"
+#include "addons/AddonManager.h"
+#include "addons/Scraper.h"
+#include "video/VideoDatabase.h"
+#include "video/VideoInfoScanner.h"
+#include "music/MusicDatabase.h"
+#include "PasswordManager.h"
 
 using namespace XFILE;
 using namespace JSONRPC;
@@ -233,6 +240,101 @@ JSONRPC_STATUS CFileOperations::PrepareDownload(const std::string &method, ITran
 JSONRPC_STATUS CFileOperations::Download(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return transport->Download(parameterObject["path"].asString().c_str(), result) ? OK : InvalidParams;
+}
+
+CONTENT_TYPE contentTypeFromString(const std::string &content) {
+  if (content == "movies")
+    return CONTENT_MOVIES;
+  else if (content == "tvshows")
+    return CONTENT_TVSHOWS;
+  else if (content == "musicvideos")
+    return CONTENT_MUSICVIDEOS;
+  else
+    return CONTENT_NONE;
+}
+
+JSONRPC_STATUS CFileOperations::AddSource(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  std::string name = parameterObject["name"].asString();
+  std::string content = parameterObject["content"].asString("none");
+  std::vector<std::string> contents = StringUtils::Split(content, ".");
+
+  CVariant directory = parameterObject["directory"];
+  std::vector<std::string> paths;
+
+  if (directory.isArray())
+  {
+    for (CVariant::iterator_array itr = directory.begin_array(); itr != directory.end_array(); itr++)
+      paths.push_back(itr->asString());
+  }
+  else
+    paths.push_back(directory.asString());
+
+  std::string media = contents[0] == "audio" ? "music" : contents[0];
+
+  for (std::vector<std::string>::iterator itr = paths.begin(); itr != paths.end(); itr++)
+  {
+    if (!itr->empty())
+    { // strip off the user and password for smb paths (anything that the password manager can auth)
+      // and add the user/pass to the password manager - note, we haven't confirmed that it works
+      // at this point, but if it doesn't, the user will get prompted anyway in SMBDirectory.
+      CURL url(*itr);
+      if (url.IsProtocol("smb"))
+      {
+        CPasswordManager::GetInstance().SaveAuthenticatedURL(url);
+        url.SetPassword("");
+        url.SetUserName("");
+      }
+      itr->assign(url.Get());
+    }
+  }
+
+  CMediaSource share;
+  VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(media);
+  for (VECSOURCES::iterator itr = pShares->begin(); itr != pShares->end(); itr++)
+  {
+    if (StringUtils::EqualsNoCase(itr->strName, name))
+      return InvalidParams;
+  }
+
+  share.FromNameAndPaths(media, name, paths);
+
+  CMediaSourceSettings::Get().AddShare(media, share);
+
+  if (media == "video" && contents.size() > 1)
+  {
+    ADDON::AddonPtr scraperAddon;
+    if (ADDON::CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(ADDON::TranslateContent(contents[1])), scraperAddon))
+    {
+      ADDON::ScraperPtr scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(scraperAddon);
+
+      CVideoDatabase db;
+      db.Open();
+
+      VIDEO::SScanSettings settings;
+
+      settings.parent_name      = parameterObject["parent_name"].asBoolean();
+      settings.parent_name_root = parameterObject["parent_name_root"].asBoolean();
+      settings.recurse          = parameterObject["recurse"].asBoolean();
+      settings.noupdate         = parameterObject["noupdate"].asBoolean();
+      settings.exclude          = parameterObject["exclude"].asBoolean();
+
+      for (std::vector<std::string>::const_iterator itr = paths.begin(); itr != paths.end(); itr++)
+        db.SetScraperForPath(*itr, scraper, settings);
+    }
+  }
+  else if (content == "audio.music")
+  {
+    CMusicDatabase db;
+    db.Open();
+
+    for (std::vector<std::string>::const_iterator itr = paths.begin(); itr != paths.end(); itr++)
+      db.AddPath(*itr);
+
+    db.Close();
+  }
+
+  return ACK;
 }
 
 bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItemPtr &item, std::string media /* = "" */, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)

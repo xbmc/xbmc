@@ -166,7 +166,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const std
   //maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);
 
-  if (!g_windowManager.Initialized())
+  if (g_application.IsHeadless())
     return; // don't do anything
 
   m_closing = false;
@@ -202,7 +202,7 @@ void CGUIDialog::Show_Internal()
 
   if (m_active && !m_closing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
 
-  if (!g_windowManager.Initialized())
+  if (g_application.IsHeadless())
     return; // don't do anything
 
   m_bModal = false;
