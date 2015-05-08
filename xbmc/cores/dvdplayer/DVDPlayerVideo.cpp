@@ -470,6 +470,7 @@ void CDVDPlayerVideo::Process()
         if (pts == DVD_NOPTS_VALUE)
           pts = m_pClock->GetClock();
         state.time = DVD_TIME_TO_MSEC(pts + state.time_offset);
+        state.disptime = state.time;
         state.timestamp = CDVDClock::GetAbsoluteClock();
       }
       else
