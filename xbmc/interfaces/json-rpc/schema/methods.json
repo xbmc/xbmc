@@ -587,6 +587,29 @@
     ],
     "returns": { "type": "any", "required": true }
   },
+  "Files.AddSource": {
+    "type": "method",
+    "description": "Add a source for the media windows",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "name", "type": "string", "required": true },
+      { "name": "directory", "type": [ "string", { "$ref": "Array.String", "required": true } ], "required": true },
+      { "name": "content", "$ref": "Files.Content", "required": false },
+      {
+        "name": "settings",
+        "properties": {
+          "parent_name": { "type": "boolean", "required": false },
+          "parent_name_root": { "type": "boolean", "required": false },
+          "recurse": { "type": "boolean", "required": false, "default": true },
+          "noupdate": { "type": "boolean", "required": false },
+          "exclude": { "type": "boolean", "required": false }
+        },
+        "required": false
+      }
+    ],
+    "returns": "string"
+  },
   "Files.GetDirectory": {
     "type": "method",
     "description": "Get the directories and files in the given directory",
