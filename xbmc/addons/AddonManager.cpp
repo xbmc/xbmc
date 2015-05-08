@@ -320,6 +320,23 @@ bool CAddonMgr::Init()
 
   FindAddons();
 
+  // disable some system addons by default because they are optional
+  VECADDONS addons;
+  GetAddons(ADDON_PVRDLL, addons);
+  GetAddons(ADDON_AUDIODECODER, addons);
+  std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
+  for (auto &addon : addons)
+  {
+    if (StringUtils::StartsWith(addon->Path(), systemAddonsPath))
+    {
+      if (!m_database.IsSystemAddonRegistered(addon->ID()))
+      {
+        m_database.DisableAddon(addon->ID());
+        m_database.AddSystemAddon(addon->ID());
+      }
+    }
+  }
+
   std::vector<std::string> disabled;
   m_database.GetDisabled(disabled);
   m_disabled.insert(disabled.begin(), disabled.end());
@@ -699,6 +716,14 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
 
   // installed PVR addons can always be disabled
   if (localAddon->Type() == ADDON_PVRDLL)
+    return true;
+
+  // installed audio decoder addons can always be disabled
+  if (localAddon->Type() == ADDON_AUDIODECODER)
+    return true;
+
+  // installed audio encoder addons can always be disabled
+  if (localAddon->Type() == ADDON_AUDIOENCODER)
     return true;
 
   std::string systemAddonsPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");

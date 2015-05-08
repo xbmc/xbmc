@@ -140,12 +140,23 @@ public:
       \sa AddPackage, GetPackageHash
   */
   bool RemovePackage(const std::string& packageFileName);
+
+  /*! \brief allow adding a system addon like PVR or AUDIODECODER
+      \param addonID id of the addon
+  */
+  bool AddSystemAddon(const std::string &addonID);
+
+  /*! \brief check if system addon is registered
+      \param addonID id of the addon
+  */
+  bool IsSystemAddonRegistered(const std::string &addonID);
+
 protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();
   virtual void UpdateTables(int version);
   virtual int GetMinSchemaVersion() const { return 15; }
-  virtual int GetSchemaVersion() const { return 18; }
+  virtual int GetSchemaVersion() const { return 19; }
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
