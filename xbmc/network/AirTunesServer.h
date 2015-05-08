@@ -55,7 +55,7 @@ private:
   ~CAirTunesServer();
   bool Initialize(const std::string &password);
   void Deinitialize();
-  static void RefreshCoverArt();
+  static void RefreshCoverArt(const char *outputFilename = NULL);
   static void RefreshMetadata();
   static void ResetMetadata();
 

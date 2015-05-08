@@ -26,6 +26,7 @@ ifeq ($(OS),ios)
 endif
 	cd $(PLATFORM); patch -p1 < ../02-fixipv4ipv6race.patch
 	cd $(PLATFORM); patch -p1 < ../03-fixpasswordauthitunes.patch
+	cd $(PLATFORM); patch -p1 < ../04-raop-also-forward-png-data-to-the-coverart-callback.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
