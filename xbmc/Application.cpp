@@ -315,6 +315,7 @@ CApplication::CApplication(void)
   m_bPlatformDirectories = true;
 
   m_bStandalone = false;
+  m_headless = false;
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
   m_pInertialScrollingHandler = new CInertialScrollingHandler();
@@ -724,6 +725,7 @@ bool CApplication::Create()
 bool CApplication::CreateGUI()
 {
   m_renderGUI = true;
+
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
 
@@ -4044,15 +4046,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (!m_pPlayer->IsPlayingVideo())
       {
-        if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+        if (!IsHeadless())
         {
-          g_windowManager.PreviousWindow();
-        }
-        else
-        {
-          CSingleLock lock(g_graphicsContext);
-          //  resets to res_desktop or look&feel resolution (including refreshrate)
-          g_graphicsContext.SetFullScreenVideo(false);
+          if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+          {
+            g_windowManager.PreviousWindow();
+          }
+          else
+          {
+            CSingleLock lock(g_graphicsContext);
+            //  resets to res_desktop or look&feel resolution (including refreshrate)
+            g_graphicsContext.SetFullScreenVideo(false);
+          }
         }
       }
 

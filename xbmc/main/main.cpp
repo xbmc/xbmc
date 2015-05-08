@@ -74,5 +74,6 @@ int main(int argc, char* argv[])
   CAppParamParser appParamParser;
   appParamParser.Parse((const char **)argv, argc);
 #endif
+
   return XBMC_Run(renderGUI);
 }
