@@ -45,7 +45,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   if(!http.Open(url))
   {
-    CLog::Log(LOGERROR, "%s - Unable to get http directory", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Unable to get http directory (%s)", __FUNCTION__, url.GetRedacted().c_str());
     return false;
   }
 
