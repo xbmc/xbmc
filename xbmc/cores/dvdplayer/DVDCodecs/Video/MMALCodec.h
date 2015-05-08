@@ -55,7 +55,6 @@ public:
   int width;
   int height;
   float m_aspect_ratio;
-  double dts;
   uint32_t m_changed_count;
   // reference counting
   CMMALVideoBuffer* Acquire();
@@ -117,7 +116,6 @@ protected:
   const char        *m_pFormatName;
   MMALVideoPtr      m_myself;
 
-  std::queue<double> m_dts_queue;
   std::queue<mmal_demux_packet> m_demux_queue;
   unsigned           m_demux_queue_length;
 

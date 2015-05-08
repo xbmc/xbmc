@@ -606,23 +606,6 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, EDEINTERLACEMODE de
     return false;
   }
 
-  // broadcom omx entension:
-  // When enabled, the timestamp fifo mode will change the way incoming timestamps are associated with output images.
-  // In this mode the incoming timestamps get used without re-ordering on output images.
-  // recent firmware will actually automatically choose the timestamp stream with the least variance, so always enable
-  {
-    OMX_CONFIG_BOOLEANTYPE timeStampMode;
-    OMX_INIT_STRUCTURE(timeStampMode);
-    timeStampMode.bEnabled = OMX_TRUE;
-
-    omx_err = m_omx_decoder.SetParameter((OMX_INDEXTYPE)OMX_IndexParamBrcmVideoTimestampFifo, &timeStampMode);
-    if (omx_err != OMX_ErrorNone)
-    {
-      CLog::Log(LOGERROR, "COMXVideo::Open OMX_IndexParamBrcmVideoTimestampFifo error (0%08x)\n", omx_err);
-      return false;
-    }
-  }
-
   if(NaluFormatStartCodes(hints.codec, m_extradata, m_extrasize))
   {
     OMX_NALSTREAMFORMATTYPE nalStreamFormat;
@@ -762,7 +745,7 @@ bool COMXVideo::GetPlayerInfo(double &match, double &phase, double &pll)
 }
 
 
-int COMXVideo::Decode(uint8_t *pData, int iSize, double pts)
+int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
 {
   CSingleLock lock (m_critSection);
   OMX_ERRORTYPE omx_err;
@@ -787,6 +770,7 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double pts)
 
       omx_buffer->nFlags = 0;
       omx_buffer->nOffset = 0;
+      omx_buffer->nTimeStamp = ToOMXTime((uint64_t)(pts != DVD_NOPTS_VALUE ? pts : dts != DVD_NOPTS_VALUE ? dts : 0));
 
       if(m_setStartTime)
       {
@@ -794,10 +778,11 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double pts)
         CLog::Log(LOGDEBUG, "OMXVideo::Decode VDec : setStartTime %f\n", (pts == DVD_NOPTS_VALUE ? 0.0 : pts) / DVD_TIME_BASE);
         m_setStartTime = false;
       }
-      if(pts == DVD_NOPTS_VALUE)
+      else if (pts == DVD_NOPTS_VALUE && dts == DVD_NOPTS_VALUE)
         omx_buffer->nFlags |= OMX_BUFFERFLAG_TIME_UNKNOWN;
+      else if (pts == DVD_NOPTS_VALUE)
+        omx_buffer->nFlags |= OMX_BUFFERFLAG_TIME_IS_DTS;
 
-      omx_buffer->nTimeStamp = ToOMXTime((uint64_t)(pts == DVD_NOPTS_VALUE) ? 0 : pts);
       omx_buffer->nFilledLen = std::min((OMX_U32)demuxer_bytes, omx_buffer->nAllocLen);
       memcpy(omx_buffer->pBuffer, demuxer_content, omx_buffer->nFilledLen);
 
