@@ -12,7 +12,7 @@ function check_dyloaded_depends
       cp -f "$b" "$TARGET_FRAMEWORKS/"
       chmod u+w "$TARGET_FRAMEWORKS/$(basename $b)"
     fi
-    for a in $(otool -L "$b"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
+    for a in $(otool -LX "$b"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
       if [ -f "$a" ]; then
         if [ ! -f  "$TARGET_FRAMEWORKS/$(basename $a)" ]; then
           echo "    Packaging $a"
@@ -34,7 +34,7 @@ function check_xbmc_dylib_depends
     for b in $(find "$1" -type f -name "$2" -print) ; do
       #echo "Processing $b"
       install_name_tool -id "$(basename $b)" "$b"
-      for a in $(otool -L "$b"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
+      for a in $(otool -LX "$b"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
         #echo "    Packaging $a"
         if [ ! -f  "$TARGET_FRAMEWORKS/$(basename $a)" ]; then
           echo "    Packaging $a"
@@ -50,7 +50,7 @@ function check_xbmc_dylib_depends
 
 EXTERNAL_LIBS=$XBMC_DEPENDS
 
-TARGET_NAME=$PRODUCT_NAME
+TARGET_NAME=$FULL_PRODUCT_NAME
 TARGET_CONTENTS=$TARGET_BUILD_DIR/$TARGET_NAME/Contents
 
 TARGET_BINARY=$TARGET_CONTENTS/MacOS/$APP_NAME
@@ -74,7 +74,7 @@ cp -f "$SRCROOT/xbmc/osx/Info.plist" "$TARGET_CONTENTS/"
 
 # Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework
 echo "Checking $TARGET_BINARY dylib dependencies"
-for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do 
+for a in $(otool -LX "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
 	echo "    Packaging $a"
 	cp -f "$a" "$TARGET_FRAMEWORKS/"
 	chmod u+w "$TARGET_FRAMEWORKS/$(basename $a)"
@@ -114,7 +114,7 @@ do
 	let REWIND="0"
 	for b in "$TARGET_FRAMEWORKS/"*dylib* ; do
 		#echo "  Processing $b"
-		for a in $(otool -L "$b"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
+		for a in $(otool -LX "$b"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
 			#echo "Processing $a"
 			if [ ! -f  "$TARGET_FRAMEWORKS/$(basename $a)" ]; then
 				echo "    Packaging $a"

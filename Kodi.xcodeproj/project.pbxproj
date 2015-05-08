@@ -6,10 +6,10 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
+/* Begin PBXNativeTarget section */
 		6E2FACBA0E26DF7A00DF79EA /* Kodi.app */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "Kodi.app" */;
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXNativeTarget "Kodi.app" */;
 			buildPhases = (
 				F5DEC3580E6DEBB2005A4E24 /* copy root files */,
 				6E2FACC70E26E22400DF79EA /* copy frameworks */,
@@ -21,6 +21,8 @@
 			);
 			name = Kodi.app;
 			productName = Kodi.app;
+			productReference = D6299ABB1AFC2A9F00E3059D /* Kodi.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXAggregateTarget section */
 
@@ -4194,6 +4196,7 @@
 		889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSDirectory.h; sourceTree = "<group>"; };
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* Kodi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Kodi; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6299ABB1AFC2A9F00E3059D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
 		AE4E87A617354C4A00D15206 /* XSLTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSLTUtils.h; sourceTree = "<group>"; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
@@ -5417,7 +5420,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* Codesign.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Codesign.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Kodi.app; path = .app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -6247,6 +6250,7 @@
 			isa = PBXGroup;
 			children = (
 				8DD76F7E0486A8DE00D96B5E /* Kodi */,
+				D6299ABB1AFC2A9F00E3059D /* Kodi.app */,
 				E4991089174D0D2600741B6D /* Kodi.app */,
 				DFFC52CB17527B3100C937AB /* Kodi.frappliance */,
 			);
@@ -13248,7 +13252,6 @@
 				PRODUCT_NAME = Kodi;
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
-				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -13309,7 +13312,6 @@
 				PRODUCT_NAME = Kodi;
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
-				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -13346,9 +13348,8 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = Kodi.app;
+				PRODUCT_NAME = Kodi;
 				SDKROOT = macosx;
-				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 			};
 			name = Debug;
 		};
@@ -13361,9 +13362,8 @@
 					x86_64,
 				);
 				COPY_PHASE_STRIP = YES;
-				PRODUCT_NAME = Kodi.app;
+				PRODUCT_NAME = Kodi;
 				SDKROOT = macosx;
-				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 				ZERO_LINK = NO;
 			};
 			name = Release;
