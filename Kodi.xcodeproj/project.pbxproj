@@ -13337,6 +13337,7 @@
 		};
 		6E2FACBB0E26DF7A00DF79EA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					i386,
@@ -13353,6 +13354,7 @@
 		};
 		6E2FACBD0E26DF7A00DF79EA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
 				ARCHS = (
 					i386,
