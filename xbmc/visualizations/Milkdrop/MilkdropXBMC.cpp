@@ -95,7 +95,7 @@ extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
   if(!g_plugin || !g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio))
     return ADDON_STATUS_UNKNOWN;
 
-  return ADDON_STATUS_NEED_SAVEDSETTINGS; // We need some settings to be saved later before we quit this plugin
+  return ADDON_STATUS_NEED_SETTINGS;
 }
 
 extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
@@ -267,29 +267,6 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
   if (!id || !value || !g_plugin)
     return ADDON_STATUS_UNKNOWN;
 
-  if (strcmp(id, "###GetSavedSettings") == 0) // We have some settings to be saved in the settings.xml file
-  {
-    if (strcmp((char*)value, "0") == 0)
-    {
-      strcpy((char*)id, "lastpresetfolder");
-      strcpy((char*)value, g_plugin->m_szPresetDir);
-    }
-    if (strcmp((char*)value, "1") == 0)
-    {
-      strcpy((char*)id, "lastlockedstatus");
-      strcpy((char*)value, (g_plugin->m_bHoldPreset ? "true" : "false"));
-    }
-    if (strcmp((char*)value, "2") == 0)
-    {
-      strcpy((char*)id, "lastpresetidx");
-      sprintf ((char*)value, "%i", g_plugin->m_nCurrentPreset);
-    }
-    if (strcmp((char*)value, "3") == 0)
-    {
-      strcpy((char*)id, "###End");
-    }
-    return ADDON_STATUS_OK;
-  }
   // It is now time to set the settings got from xbmc
   if (strcmp(id, "Use Preset") == 0)
     OnAction(34, &value);
