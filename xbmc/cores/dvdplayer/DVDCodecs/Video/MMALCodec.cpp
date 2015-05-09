@@ -29,6 +29,7 @@
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "windowing/WindowingFactory.h"
+#include "cores/dvdplayer/DVDCodecs/DVDCodecs.h"
 #include "DVDVideoCodec.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -114,6 +115,7 @@ CMMALVideo::CMMALVideo()
   m_dec_output = NULL;
   m_dec_input_pool = NULL;
   m_dec_output_pool = NULL;
+  m_vout_input_pool = NULL;
 
   m_deint = NULL;
   m_deint_connection = NULL;
@@ -508,13 +510,14 @@ bool CMMALVideo::SendCodecConfigData()
 bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, MMALVideoPtr myself)
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s usemmal:%d software:%d %dx%d", CLASSNAME, __func__, CSettings::Get().GetBool("videoplayer.usemmal"), hints.software, hints.width, hints.height);
+    CLog::Log(LOGDEBUG, "%s::%s usemmal:%d software:%d %dx%d pool:%p", CLASSNAME, __func__, CSettings::Get().GetBool("videoplayer.usemmal"), hints.software, hints.width, hints.height, options.m_opaque_pointer);
 
   // we always qualify even if DVDFactoryCodec does this too.
   if (!CSettings::Get().GetBool("videoplayer.usemmal") || hints.software)
     return false;
 
   m_hints = hints;
+  m_vout_input_pool = (MMAL_POOL_T *)options.m_opaque_pointer;
   MMAL_STATUS_T status;
   MMAL_PARAMETER_BOOLEAN_T error_concealment;
 

@@ -134,8 +134,6 @@ public:
   virtual void         Flush();
   virtual void         ReleaseBuffer(int idx);
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
-  virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
-  virtual unsigned int GetOptimalBufferSize();
 
 #ifdef HAVE_LIBVDPAU
   virtual void         AddProcessor(VDPAU::CVdpauRenderPicture* vdpau, int index);
@@ -158,7 +156,7 @@ public:
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
-  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
+  virtual CRenderInfo GetRenderInfo();
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);

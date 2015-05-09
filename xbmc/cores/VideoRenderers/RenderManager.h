@@ -162,10 +162,8 @@ public:
   CLinuxRenderer      *m_pRenderer;
 #endif
 
-  unsigned int GetOptimalBufferSize();
-
-  // Supported pixel formats, can be called before configure
-  std::vector<ERenderFormat> SupportedFormats();
+  // Get renderer info, can be called before configure
+  CRenderInfo GetRenderInfo();
 
   void Recover(); // called after resolution switch if something special is needed
 
