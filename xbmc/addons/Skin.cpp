@@ -397,7 +397,7 @@ void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vect
   list.push_back(make_pair(g_localizeStrings.Get(474), "OFF"));
 
   if (CDirectory::Exists(URIUtils::AddFileToFolder(g_SkinInfo->Path(), "sounds")))
-    list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT"));
+    list.push_back(make_pair(g_localizeStrings.Get(15106), "SKINDEFAULT"));
 
   ADDON::VECADDONS addons;
   if (ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_RESOURCE_UISOUNDS, addons))
