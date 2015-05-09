@@ -41,7 +41,13 @@
 
 CRenderInfo CMMALRenderer::GetRenderInfo()
 {
+  CSingleLock lock(m_sharedSection);
   CRenderInfo info;
+
+  // we'll assume that video is accelerated (RENDER_FMT_MMAL) for now
+  // we will reconfigure renderer later if necessary
+  if (!m_bMMALConfigured)
+    m_bMMALConfigured = init_vout(RENDER_FMT_MMAL);
 
   #if defined(MMAL_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::%s cookie:%p", CLASSNAME, __func__, (void *)m_vout_input_pool);
@@ -63,13 +69,15 @@ void CMMALRenderer::vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *
 {
   #if defined(MMAL_DEBUG_VERBOSE)
   CMMALVideoBuffer *omvb = (CMMALVideoBuffer *)buffer->user_data;
-  CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p (%p), len %d cmd:%x", CLASSNAME, __func__, port, buffer, omvb, buffer->length, buffer->cmd);
+  CLog::Log(LOGDEBUG, "%s::%s port:%p buffer %p (%p), len %d cmd:%x f:%x", CLASSNAME, __func__, port, buffer, omvb, buffer->length, buffer->cmd, buffer->flags);
   #endif
 
+  assert(!(buffer->flags & MMAL_BUFFER_HEADER_FLAG_TRANSMISSION_FAILED));
+  buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER2;
   if (m_format == RENDER_FMT_MMAL)
   {
-    buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER2;
-    mmal_queue_put(m_release_queue, buffer);
+    CMMALVideoBuffer *omvb = (CMMALVideoBuffer *)buffer->user_data;
+    omvb->Release();
   }
   else if (m_format == RENDER_FMT_YUV420P)
   {
@@ -86,15 +94,16 @@ static void vout_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *b
 
 bool CMMALRenderer::init_vout(ERenderFormat format)
 {
+  CSingleLock lock(m_sharedSection);
   bool formatChanged = m_format != format;
   MMAL_STATUS_T status;
 
   CLog::Log(LOGDEBUG, "%s::%s configured:%d format:%d->%d", CLASSNAME, __func__, m_bConfigured, m_format, format);
 
-  if (m_bConfigured && formatChanged)
+  if (m_bMMALConfigured && formatChanged)
     UnInitMMAL();
 
-  if (m_bConfigured)
+  if (m_bMMALConfigured)
     return true;
 
   m_format = format;
@@ -147,6 +156,12 @@ bool CMMALRenderer::init_vout(ERenderFormat format)
       es_format->es->video.color_space = MMAL_COLOR_SPACE_SMPTE240M;
   }
 
+  if (m_format == RENDER_FMT_MMAL)
+  {
+    status = mmal_port_parameter_set_boolean(m_vout_input, MMAL_PARAMETER_ZERO_COPY,  MMAL_TRUE);
+    if (status != MMAL_SUCCESS)
+       CLog::Log(LOGERROR, "%s::%s Failed to enable zero copy mode on %s (status=%x %s)", CLASSNAME, __func__, m_vout_input->name, status, mmal_status_to_string(status));
+  }
   status = mmal_port_format_commit(m_vout_input);
   if (status != MMAL_SUCCESS)
   {
@@ -171,52 +186,33 @@ bool CMMALRenderer::init_vout(ERenderFormat format)
     return false;
   }
 
-  if (m_format == RENDER_FMT_YUV420P)
+  m_vout_input_pool = mmal_port_pool_create(m_vout_input , m_vout_input->buffer_num, m_vout_input->buffer_size);
+  if (!m_vout_input_pool)
   {
-    m_vout_input_pool = mmal_pool_create(m_vout_input->buffer_num, m_vout_input->buffer_size);
-    if (!m_vout_input_pool)
-    {
-      CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder input port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-      return false;
-    }
+    CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder input port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
+    return false;
   }
   return true;
 }
 
-void CMMALRenderer::Process()
-{
-  MMAL_BUFFER_HEADER_T *buffer;
-  while (buffer = mmal_queue_wait(m_release_queue), buffer && buffer != &m_quit_packet)
-  {
-    CMMALVideoBuffer *omvb = (CMMALVideoBuffer *)buffer->user_data;
-    omvb->Release();
-  }
-  m_sync.Set();
-}
-
 CMMALRenderer::CMMALRenderer()
-: CThread("CMMALRenderer")
 {
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   m_vout = NULL;
   m_vout_input = NULL;
   m_vout_input_pool = NULL;
   memset(m_buffers, 0, sizeof m_buffers);
-  mmal_buffer_header_reset(&m_quit_packet);
-  m_release_queue = mmal_queue_create();
   m_iFlags = 0;
   m_format = RENDER_FMT_NONE;
+  m_bConfigured = false;
+  m_bMMALConfigured = false;
   m_iYV12RenderBuffer = 0;
-  Create();
 }
 
 CMMALRenderer::~CMMALRenderer()
 {
+  CSingleLock lock(m_sharedSection);
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
-  // shutdown thread
-  mmal_queue_put(m_release_queue, &m_quit_packet);
-  m_sync.Wait();
-  mmal_queue_destroy(m_release_queue);
   UnInit();
 }
 
@@ -234,6 +230,7 @@ void CMMALRenderer::AddProcessor(CMMALVideoBuffer *buffer, int index)
 
 bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
+  CSingleLock lock(m_sharedSection);
   ReleaseBuffers();
 
   m_sourceWidth  = width;
@@ -256,8 +253,9 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
-  m_bConfigured = init_vout(format);
-
+  m_bMMALConfigured = init_vout(format);
+  m_bConfigured = m_bMMALConfigured;
+  assert(m_bConfigured);
   return m_bConfigured;
 }
 
@@ -320,7 +318,8 @@ int CMMALRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
 void CMMALRenderer::ReleaseBuffer(int idx)
 {
-  if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
+  CSingleLock lock(m_sharedSection);
+  if (!m_bMMALConfigured || m_format == RENDER_FMT_BYPASS)
     return;
 
 #if defined(MMAL_DEBUG_VERBOSE)
@@ -359,6 +358,7 @@ void CMMALRenderer::Update()
 
 void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  CSingleLock lock(m_sharedSection);
   int source = m_iYV12RenderBuffer;
 #if defined(MMAL_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::%s - %d %x %d %d", CLASSNAME, __func__, clear, flags, alpha, source);
@@ -385,7 +385,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     if (omvb)
     {
 #if defined(MMAL_DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, "%s::%s %p (%p)", CLASSNAME, __func__, omvb, omvb->mmal_buffer);
+      CLog::Log(LOGDEBUG, "%s::%s %p (%p) f:%x", CLASSNAME, __func__, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
 #endif
       // we only want to upload frames once
       if (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
@@ -399,14 +399,14 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   }
   else if (m_format == RENDER_FMT_YUV420P)
   {
-    CLog::Log(LOGDEBUG, "%s::%s - %p %d", CLASSNAME, __func__, buffer->mmal_buffer, source);
     if (buffer->mmal_buffer)
     {
+      CLog::Log(LOGDEBUG, "%s::%s - %p %d f:%x", CLASSNAME, __func__, buffer->mmal_buffer, source, buffer->mmal_buffer->flags);
       // we only want to upload frames once
       if (buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER1)
         return;
       // sanity check it is not on display
-      buffer->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1;
+      buffer->mmal_buffer->flags |= MMAL_BUFFER_HEADER_FLAG_USER1 | MMAL_BUFFER_HEADER_FLAG_USER2;
       mmal_port_send_buffer(m_vout_input, buffer->mmal_buffer);
     }
     else
@@ -417,6 +417,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CMMALRenderer::FlipPage(int source)
 {
+  CSingleLock lock(m_sharedSection);
   if (!m_bConfigured || m_format == RENDER_FMT_BYPASS)
     return;
 
@@ -429,6 +430,7 @@ void CMMALRenderer::FlipPage(int source)
 
 unsigned int CMMALRenderer::PreInit()
 {
+  CSingleLock lock(m_sharedSection);
   m_bConfigured = false;
   UnInit();
 
@@ -460,7 +462,8 @@ void CMMALRenderer::ReleaseBuffers()
 
 void CMMALRenderer::UnInitMMAL()
 {
-  CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+  CSingleLock lock(m_sharedSection);
+  CLog::Log(LOGDEBUG, "%s::%s pool(%p)", CLASSNAME, __func__, m_vout_input_pool);
   if (m_vout)
   {
     mmal_component_disable(m_vout);
@@ -474,6 +477,8 @@ void CMMALRenderer::UnInitMMAL()
     m_vout_input = NULL;
   }
 
+  ReleaseBuffers();
+
   if (m_vout_input_pool)
   {
     mmal_pool_destroy(m_vout_input_pool);
@@ -485,7 +490,6 @@ void CMMALRenderer::UnInitMMAL()
     mmal_component_release(m_vout);
     m_vout = NULL;
   }
-  ReleaseBuffers();
 
   m_RenderUpdateCallBackFn = NULL;
   m_RenderUpdateCallBackCtx = NULL;
@@ -498,6 +502,7 @@ void CMMALRenderer::UnInitMMAL()
   m_format = RENDER_FMT_NONE;
 
   m_bConfigured = false;
+  m_bMMALConfigured = false;
 }
 
 void CMMALRenderer::UnInit()
@@ -575,6 +580,7 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
   // we get called twice a frame for left/right. Can ignore the rights.
   if (g_graphicsContext.GetStereoView() == RENDER_STEREO_VIEW_RIGHT)
     return;
+  CSingleLock lock(m_sharedSection);
 
   if (!m_vout_input)
     return;
