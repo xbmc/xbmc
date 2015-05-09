@@ -43,4 +43,13 @@
       <swipe direction="right">Highlight</swipe>
     </touch>
   </MyFiles>
+  <ScreenCalibration>
+    <touch>
+      <swipe direction="up">Up</swipe>
+      <swipe direction="down">Down</swipe>
+      <swipe direction="right">Right</swipe>
+      <swipe direction="left">Left</swipe>
+      <tap pointers="1">NextCalibration</tap>
+    </touch>
+  </ScreenCalibration>
 </keymap>
