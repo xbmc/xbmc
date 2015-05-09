@@ -6,24 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		6E2FACBA0E26DF7A00DF79EA /* Kodi.app */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "Kodi.app" */;
-			buildPhases = (
-				F5DEC3580E6DEBB2005A4E24 /* copy root files */,
-				6E2FACC70E26E22400DF79EA /* copy frameworks */,
-				81B8FC150E7D927A00354E2E /* update version info */,
-				1D64E5FC157BD76F001ACEBE /* genoutputdirlink */,
-			);
-			dependencies = (
-				6E2FACC40E26E08100DF79EA /* PBXTargetDependency */,
-			);
-			name = Kodi.app;
-			productName = Kodi.app;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		0E3036EC1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
 		0E3036ED1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
@@ -3204,7 +3186,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		6E2FACC30E26E08100DF79EA /* PBXContainerItemProxy */ = {
+		D6299ADB1AFC2AF600E3059D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
@@ -4310,6 +4292,7 @@
 		C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemGlobals.cpp; sourceTree = "<group>"; };
 		C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
+		D6299ABB1AFC2A9F00E3059D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF00492B162DAEA200A971AD /* PVROperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVROperations.cpp; sourceTree = "<group>"; };
 		DF00492C162DAEA200A971AD /* PVROperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVROperations.h; sourceTree = "<group>"; };
 		DF02BA601A910623006DCA16 /* VideoSyncIos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VideoSyncIos.cpp; path = videosync/VideoSyncIos.cpp; sourceTree = "<group>"; };
@@ -6249,6 +6232,7 @@
 				8DD76F7E0486A8DE00D96B5E /* Kodi */,
 				E4991089174D0D2600741B6D /* Kodi.app */,
 				DFFC52CB17527B3100C937AB /* Kodi.frappliance */,
+				D6299ABB1AFC2A9F00E3059D /* Kodi.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -9709,6 +9693,25 @@
 			productReference = 8DD76F7E0486A8DE00D96B5E /* Kodi */;
 			productType = "com.apple.product-type.tool";
 		};
+		D6299ABA1AFC2A9F00E3059D /* Kodi.app */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6299AD51AFC2AA100E3059D /* Build configuration list for PBXNativeTarget "Kodi.app" */;
+			buildPhases = (
+				D6299ADD1AFC2B0700E3059D /* copy root files */,
+				D6299ADE1AFC2B0800E3059D /* copy frameworks */,
+				D6299ADF1AFC2B0A00E3059D /* update version info */,
+				D6299AE01AFC2B0B00E3059D /* genoutputdirlink */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D6299ADC1AFC2AF600E3059D /* PBXTargetDependency */,
+			);
+			name = Kodi.app;
+			productName = Kodi.app;
+			productReference = D6299ABB1AFC2A9F00E3059D /* Kodi.app */;
+			productType = "com.apple.product-type.application";
+		};
 		DFFC52CA17527B3100C937AB /* Kodi-ATV2 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DFFC52CE17527B4F00C937AB /* Build configuration list for PBXNativeTarget "Kodi-ATV2" */;
@@ -9759,6 +9762,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0430;
+				TargetAttributes = {
+					D6299ABA1AFC2A9F00E3059D = {
+						CreatedOnToolsVersion = 6.3.1;
+					};
+				};
 			};
 			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "Kodi" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -9770,13 +9778,14 @@
 				French,
 				German,
 				en,
+				Base,
 			);
 			mainGroup = 08FB7794FE84155DC02AAC07 /* Kodi */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				8DD76F740486A8DE00D96B5E /* Kodi */,
-				6E2FACBA0E26DF7A00DF79EA /* Kodi.app */,
+				D6299ABA1AFC2A9F00E3059D /* Kodi.app */,
 				E4991088174D0D2600741B6D /* Kodi-iOS */,
 				DFFC52CA17527B3100C937AB /* Kodi-ATV2 */,
 			);
@@ -9857,27 +9866,27 @@
 			shellPath = /bin/sh;
 			shellScript = tools/darwin/Support/genoutputdirlink.command;
 		};
-		1D64E5FC157BD76F001ACEBE /* genoutputdirlink */ = {
+		D6299ADD1AFC2B0700E3059D /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = genoutputdirlink;
+			name = "copy root files";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ${XCODE_VERSION_MINOR} -gt 400 ]\nthen\n  TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n  mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n  if [ \"${BUILT_PRODUCTS_DIR}\" != \"${TARGET_OUTPUT_DIR}\" ]\n  then\n    rm -rf \"${TARGET_OUTPUT_DIR}/${PRODUCT_NAME}\"\n    rm -rf \"${TARGET_OUTPUT_DIR}/${PROJECT_NAME}${DWARF_DSYM_FILE_NAME}\"\n    ln -s \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"  || true\n    ln -s \"${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\" || true\n  fi\nfi";
+			shellScript = "tools/darwin/Support/CopyRootFiles-osx.command";
 		};
-		6E2FACC70E26E22400DF79EA /* copy frameworks */ = {
+		D6299ADE1AFC2B0800E3059D /* copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/build/Release/$PRODUCT_NAME",
+				"$(SRCROOT)/build/$CONFIGURATION/$PRODUCT_NAME",
 			);
 			name = "copy frameworks";
 			outputPaths = (
@@ -9886,9 +9895,9 @@
 			shellPath = /bin/sh;
 			shellScript = "tools/darwin/Support/copyframeworks-osx.command";
 		};
-		81B8FC150E7D927A00354E2E /* update version info */ = {
+		D6299ADF1AFC2B0A00E3059D /* update version info */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -9899,6 +9908,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "tools/darwin/Support/updateversioninfo-osx.command";
+		};
+		D6299AE01AFC2B0B00E3059D /* genoutputdirlink */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = genoutputdirlink;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ${XCODE_VERSION_MINOR} -gt 400 ]\nthen\n    TARGET_OUTPUT_DIR=\"${PROJECT_DIR}/build/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}\"\n    mkdir -p \"${TARGET_OUTPUT_DIR}\"\n\n    if [ \"${BUILT_PRODUCTS_DIR}\" != \"${TARGET_OUTPUT_DIR}\" ]\n    then\n        rm -rf \"${TARGET_OUTPUT_DIR}/${PRODUCT_NAME}\"\n        rm -rf \"${TARGET_OUTPUT_DIR}/${PROJECT_NAME}${DWARF_DSYM_FILE_NAME}\"\n        ln -s \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}\" \"${TARGET_OUTPUT_DIR}/\"  || true\n        ln -s \"${BUILT_PRODUCTS_DIR}/${PROJECT_NAME}${DWARF_DSYM_FILE_NAME}\" \"${TARGET_OUTPUT_DIR}/\" || true\n    fi\nfi";
 		};
 		DFF0EB3017527FDE002DA3A4 /* Make interface-python */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10039,21 +10062,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = tools/darwin/Support/makepythoninterface.command;
-		};
-		F5DEC3580E6DEBB2005A4E24 /* copy root files */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "copy root files";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "tools/darwin/Support/CopyRootFiles-osx.command";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -13166,10 +13174,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		6E2FACC40E26E08100DF79EA /* PBXTargetDependency */ = {
+		D6299ADC1AFC2AF600E3059D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8DD76F740486A8DE00D96B5E /* Kodi */;
-			targetProxy = 6E2FACC30E26E08100DF79EA /* PBXContainerItemProxy */;
+			targetProxy = D6299ADB1AFC2AF600E3059D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -13198,21 +13206,14 @@
 			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_AUTO_VECTORIZATION = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SSE41_EXTENSIONS = NO;
 				GCC_ENABLE_SSE42_EXTENSIONS = NO;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = "";
-				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					$SRCROOT,
@@ -13240,7 +13241,6 @@
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
-				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wreorder",
@@ -13248,7 +13248,6 @@
 				PRODUCT_NAME = Kodi;
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
-				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -13258,22 +13257,18 @@
 			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = NO;
 				GCC_AUTO_VECTORIZATION = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SSE41_EXTENSIONS = NO;
 				GCC_ENABLE_SSE42_EXTENSIONS = NO;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_FAST_OBJC_DISPATCH = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					$SRCROOT,
@@ -13301,7 +13296,6 @@
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 				);
-				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wreorder",
@@ -13309,7 +13303,6 @@
 				PRODUCT_NAME = Kodi;
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = "";
-				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -13318,7 +13311,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E49910D4174E2E0000741B6D /* Debug.xcconfig */;
 			buildSettings = {
-				GCC_VERSION = "";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -13335,36 +13328,45 @@
 			};
 			name = Release;
 		};
-		6E2FACBB0E26DF7A00DF79EA /* Debug */ = {
+		D6299AD61AFC2AA100E3059D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = Kodi.app;
-				SDKROOT = macosx;
-				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = Kodi;
 			};
 			name = Debug;
 		};
-		6E2FACBD0E26DF7A00DF79EA /* Release */ = {
+		D6299AD71AFC2AA100E3059D /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E49910D1174E2E0000741B6D /* App-OSX.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
-				COPY_PHASE_STRIP = YES;
-				PRODUCT_NAME = Kodi.app;
-				SDKROOT = macosx;
-				XBMC_DEPENDS = "$(XBMC_DEPENDS_ROOT)/$(SDK_NAME)_$(CURRENT_ARCH)-target";
-				ZERO_LINK = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = Kodi;
 			};
 			name = Release;
 		};
@@ -13579,11 +13581,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "Kodi.app" */ = {
+		D6299AD51AFC2AA100E3059D /* Build configuration list for PBXNativeTarget "Kodi.app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6E2FACBB0E26DF7A00DF79EA /* Debug */,
-				6E2FACBD0E26DF7A00DF79EA /* Release */,
+				D6299AD61AFC2AA100E3059D /* Debug */,
+				D6299AD71AFC2AA100E3059D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
