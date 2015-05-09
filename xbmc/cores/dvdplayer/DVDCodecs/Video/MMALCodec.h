@@ -107,7 +107,6 @@ protected:
   bool DestroyDeinterlace();
 
   // Video format
-  bool              m_drop_state;
   int               m_decoded_width;
   int               m_decoded_height;
   unsigned int      m_egl_buffer_count;
@@ -135,7 +134,6 @@ protected:
   EINTERLACEMETHOD  m_interlace_method;
   bool              m_startframe;
   double            m_decoderPts;
-  unsigned int      m_droppedPics;
   int               m_speed;
   bool              m_preroll;
 
