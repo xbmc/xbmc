@@ -37,6 +37,7 @@
 #define ShaderStage_PostScale 1
 
 extern bool g_bExternalSubtitleTime;
+ThreadIdentifier CmadVRAllocatorPresenter::m_threadID = 0;
 
 //
 // CmadVRAllocatorPresenter
@@ -53,6 +54,7 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   m_isDeviceSet = false;
   m_firstBoot = true;
   m_isEnteringExclusive = false;
+  m_threadID = 0;
   
   if (FAILED(hr)) {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
@@ -72,16 +74,14 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Unregister(m_exclusiveCallback, this);
 
-  //Restore Kodi Gui
-  m_isDeviceSet = false;
-  g_Windowing.GetKodi3DDevice()->SetPixelShader(NULL);
-  g_Windowing.ResetForMadvr();
-
   // the order is important here
+  m_threadID = 0;
   m_pSubPicQueue = nullptr;
   m_pAllocator = nullptr;
   m_pDXR = nullptr;
   m_pSRCB = nullptr;
+
+  CLog::Log(LOGDEBUG, "%s Resources released", __FUNCTION__);
 }
 
 STDMETHODIMP CmadVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, void** ppv)
@@ -163,6 +163,26 @@ void CmadVRAllocatorPresenter::SetStartMadvr()
   m_startMadvrEvent.Set();
 };
 
+bool CmadVRAllocatorPresenter::IsCurrentThreadId()
+{
+  return CThread::IsCurrentThread(m_threadID);
+}
+
+void CmadVRAllocatorPresenter::RestoreKodiDevice()
+{
+  // block application render loop before start to swap device
+  CGraphFilters::Get()->SetSwappingDevice(true);
+
+  //Restore Kodi Gui
+  CLog::Log(LOGDEBUG, "%s Restoring Kodi Device...", __FUNCTION__);
+  CGraphFilters::Get()->GetMadvrCallback()->SetIsDevice(false);
+  g_Windowing.GetKodi3DDevice()->SetPixelShader(NULL);
+  g_Windowing.ResetForMadvr();
+
+  CGraphFilters::Get()->SetSwappingDevice(false);
+  g_application.SetStartMadvr();
+}
+
 HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
 
@@ -181,6 +201,8 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
   if (m_firstBoot)
   { 
     m_firstBoot = false;
+
+    m_threadID = CThread::GetCurrentThreadId();
 
     // Wait for application render loop before start to swap device
     CGraphFilters::Get()->SetSwappingDevice(true);

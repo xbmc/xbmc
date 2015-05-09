@@ -5023,7 +5023,11 @@ bool CApplication::IsCurrentThread() const
 {
 #ifdef HAS_DS_PLAYER
   if (CGraphFilters::Get()->UsingMadVr())
-    return true;
+  {
+    bool isMadvrThread = CGraphFilters::Get()->GetMadvrCallback()->IsCurrentThreadId();
+    bool isApplicationThread = CThread::IsCurrentThread(m_threadID);
+    return (isMadvrThread || isApplicationThread);
+  }
   else
     return CThread::IsCurrentThread(m_threadID);
 #else

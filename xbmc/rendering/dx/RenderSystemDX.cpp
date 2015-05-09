@@ -1251,7 +1251,14 @@ void CRenderSystemDX::FlushGPU()
 LPDIRECT3DDEVICE9 CRenderSystemDX::Get3DDevice()
 { 
   if (CGraphFilters::Get()->UsingMadVr())
-    return CGraphFilters::Get()->GetMadvrCallback()->GetDevice();
+    try
+    {
+      return CGraphFilters::Get()->GetMadvrCallback()->GetDevice();
+    }
+    catch (...)
+    {
+      return m_pD3DDevice;
+    }
   else
     return m_pD3DDevice; 
 }

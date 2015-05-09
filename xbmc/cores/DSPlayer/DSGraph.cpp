@@ -179,8 +179,8 @@ void CDSGraph::CloseFile()
   if (m_pGraphBuilder)
   {
     if (CGraphFilters::Get()->UsingMadVr())
-      CGraphFilters::Get()->GetMadvrCallback()->SetIsDevice(false);
-    
+      CGraphFilters::Get()->GetMadvrCallback()->RestoreKodiDevice();
+
     if (m_pAMOpenProgress)
       m_pAMOpenProgress->AbortOperation();
 

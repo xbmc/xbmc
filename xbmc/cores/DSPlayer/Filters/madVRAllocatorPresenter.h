@@ -25,6 +25,7 @@
 #include "AllocatorCommon.h"
 #include "mvrInterfaces.h"
 #include "IPaintCallback.h"
+#include "threads/Thread.h"
 #include "utils/log.h"
 
 class CmadVRAllocatorPresenter
@@ -82,6 +83,7 @@ class CmadVRAllocatorPresenter
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartSize m_ScreenSize;
   EXCLUSIVEMODECALLBACK m_exclusiveCallback;
+  static ThreadIdentifier m_threadID;
   CEvent m_startMadvrEvent;
   bool  m_bIsFullscreen;
   bool m_isDeviceSet;
@@ -118,6 +120,8 @@ public:
   virtual void SetMadvrPixelShader();
   virtual void RestoreMadvrSettings();
   virtual void SetStartMadvr();
+  virtual void RestoreKodiDevice();
+  virtual bool IsCurrentThreadId();
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
   virtual void SettingSetScaling(CStdStringW path, int scaling);
   virtual void SettingSetDoubling(CStdStringW path, int iValue);

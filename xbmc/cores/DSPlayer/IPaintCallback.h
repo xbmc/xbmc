@@ -49,6 +49,8 @@ public:
   virtual void SetMadvrPixelShader(){};
   virtual void RestoreMadvrSettings(){};
   virtual void SetStartMadvr(){};
+  virtual void RestoreKodiDevice(){};
+  virtual bool IsCurrentThreadId() { return false; }
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
   virtual void SettingSetScaling(CStdStringW path, int scaling) {};
   virtual void SettingSetDoubling(CStdStringW path, int iValue) {};
