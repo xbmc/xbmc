@@ -169,6 +169,7 @@ public:
   const std::string& GetCurrentAspect() const { return m_currentAspect; }
 
   void LoadIncludes();
+  void ToggleDebug();
   const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
 
   static void SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);

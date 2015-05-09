@@ -48,6 +48,7 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "addons/Skin.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "network/NetworkServices.h"
@@ -171,6 +172,7 @@ const BUILT_IN commands[] = {
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Skin.ToggleSetting",         true,   "Toggles a skin setting on or off" },
+  { "Skin.ToggleDebug",           false,  "Toggles skin debug info on or off" },
   { "Skin.SetString",             true,   "Prompts and sets skin string" },
   { "Skin.SetNumeric",            true,   "Prompts and sets numeric input" },
   { "Skin.SetPath",               true,   "Prompts and sets a skin path" },
@@ -1466,6 +1468,10 @@ int CBuiltins::Execute(const std::string& execString)
       CSkinSettings::Get().SetString(string, result);
       CSettings::Get().Save();
     }
+  }
+  else if (execute == "skin.toggledebug")
+  {
+    g_SkinInfo->ToggleDebug();
   }
   else if (execute == "dialog.close" && params.size())
   {

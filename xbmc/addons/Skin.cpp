@@ -575,6 +575,11 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std:
     current = list[0].second;
 }
 
+void CSkinInfo::ToggleDebug()
+{
+  m_debugging = !m_debugging;
+}
+
 int CSkinInfo::TranslateString(const string &setting)
 {
   // run through and see if we have this setting
