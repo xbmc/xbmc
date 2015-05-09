@@ -20,6 +20,8 @@
  *
  */
 
+#include <vector>
+
 enum ERenderFormat {
   RENDER_FMT_NONE = 0,
   RENDER_FMT_YUV420P,
@@ -40,6 +42,22 @@ enum ERenderFormat {
   RENDER_FMT_MEDIACODEC,
   RENDER_FMT_IMXMAP,
   RENDER_FMT_MMAL,
+};
+
+struct CRenderInfo
+{
+  CRenderInfo()
+  {
+    optimal_buffer_size = 0;
+    max_buffer_size = 0;
+    opaque_pointer = NULL;
+  }
+  unsigned int optimal_buffer_size;
+  unsigned int max_buffer_size;
+  // Supported pixel formats, can be called before configure
+  std::vector<ERenderFormat> formats;
+  // Can be used for initialising video codec with information from renderer (e.g. a shared image pool)
+  void *opaque_pointer;
 };
 
 #endif

@@ -55,7 +55,6 @@ public:
   int width;
   int height;
   float m_aspect_ratio;
-  double dts;
   uint32_t m_changed_count;
   // reference counting
   CMMALVideoBuffer* Acquire();
@@ -108,7 +107,6 @@ protected:
   bool DestroyDeinterlace();
 
   // Video format
-  bool              m_drop_state;
   int               m_decoded_width;
   int               m_decoded_height;
   unsigned int      m_egl_buffer_count;
@@ -117,7 +115,6 @@ protected:
   const char        *m_pFormatName;
   MMALVideoPtr      m_myself;
 
-  std::queue<double> m_dts_queue;
   std::queue<mmal_demux_packet> m_demux_queue;
   unsigned           m_demux_queue_length;
 
@@ -137,7 +134,6 @@ protected:
   EINTERLACEMETHOD  m_interlace_method;
   bool              m_startframe;
   double            m_decoderPts;
-  unsigned int      m_droppedPics;
   int               m_speed;
   bool              m_preroll;
 
@@ -146,6 +142,7 @@ protected:
   MMAL_PORT_T *m_dec_output;
   MMAL_POOL_T *m_dec_input_pool;
   MMAL_POOL_T *m_dec_output_pool;
+  MMAL_POOL_T *m_vout_input_pool;
 
   MMAL_ES_FORMAT_T *m_es_format;
   MMAL_COMPONENT_T *m_deint;

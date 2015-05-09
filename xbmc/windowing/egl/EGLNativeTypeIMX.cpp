@@ -337,11 +337,11 @@ float CEGLNativeTypeIMX::GetMonitorSAR()
   size_t n;
   int done = 0;
 
-  // kernels <= 3.18 use ./soc0/soc.0
+  // kernels <= 3.18 use ./soc0/soc.1 in official imx kernel
   // kernels  > 3.18 use ./soc0/soc
   f_edid = fopen("/sys/devices/soc0/soc/20e0000.hdmi_video/edid", "r");
   if(!f_edid)
-    f_edid = fopen("/sys/devices/soc0/soc.0/20e0000.hdmi_video/edid", "r");
+    f_edid = fopen("/sys/devices/soc0/soc.1/20e0000.hdmi_video/edid", "r");
 
   if(!f_edid)
     return 0;

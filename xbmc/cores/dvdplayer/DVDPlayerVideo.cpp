@@ -178,19 +178,17 @@ double CDVDPlayerVideo::GetOutputDelay()
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
-  unsigned int surfaces = 0;
-  std::vector<ERenderFormat> formats;
-#ifdef HAS_VIDEO_PLAYBACK
-  surfaces = g_renderManager.GetOptimalBufferSize();
-  formats  = g_renderManager.SupportedFormats();
-#endif
+  CRenderInfo info;
+  #ifdef HAS_VIDEO_PLAYBACK
+  info = g_renderManager.GetRenderInfo();
+  #endif
 
   m_pullupCorrection.ResetVFRDetection();
   if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, surfaces, formats);
+  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, info);
   if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported video codec");
@@ -470,6 +468,7 @@ void CDVDPlayerVideo::Process()
         if (pts == DVD_NOPTS_VALUE)
           pts = m_pClock->GetClock();
         state.time = DVD_TIME_TO_MSEC(pts + state.time_offset);
+        state.disptime = state.time;
         state.timestamp = CDVDClock::GetAbsoluteClock();
       }
       else

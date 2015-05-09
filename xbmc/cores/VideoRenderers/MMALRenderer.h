@@ -72,7 +72,7 @@ public:
   virtual void         Flush();
   virtual bool         IsConfigured() { return m_bConfigured; }
   virtual void         AddProcessor(CMMALVideoBuffer *buffer, int index);
-  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
+  virtual CRenderInfo GetRenderInfo();
 
   virtual bool         Supports(ERENDERFEATURE feature);
   virtual bool         Supports(EDEINTERLACEMODE mode);
@@ -84,8 +84,6 @@ public:
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
-  virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
-  virtual unsigned int GetOptimalBufferSize() { return NUM_BUFFERS; }
   virtual void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);
   virtual bool         IsGuiLayer() { return false; }
 

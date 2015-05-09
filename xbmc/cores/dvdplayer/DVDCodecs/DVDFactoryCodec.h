@@ -22,6 +22,7 @@
 
 #include <vector>
 #include "cores/VideoRenderers/RenderFormats.h"
+#include "cores/VideoRenderers/BaseRenderer.h"
 
 class CDVDVideoCodec;
 class CDVDAudioCodec;
@@ -35,7 +36,7 @@ class CDVDCodecOptions;
 class CDVDFactoryCodec
 {
 public:
-  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint, unsigned int surfaces = 0, const std::vector<ERenderFormat>& formats = std::vector<ERenderFormat>());
+  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint, const CRenderInfo &info = CRenderInfo());
   static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint );
   static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint );
 

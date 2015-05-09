@@ -37,7 +37,8 @@ ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
   for (size_t i=0;i<codecs.size();++i)
   {
     std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
-    if (dec->GetExtensions().find("."+fileType) != std::string::npos)
+    std::vector<std::string> exts = StringUtils::Split(dec->GetExtensions(), "|");
+    if (std::find(exts.begin(), exts.end(), "."+fileType) != exts.end())
     {
       CAudioDecoder* result = new CAudioDecoder(*dec);
       static_cast<AudioDecoderDll&>(*result).Create();
@@ -61,7 +62,8 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
     for (size_t i=0;i<codecs.size();++i)
     {
       std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
-      if (dec->GetMimetypes().find(content) != std::string::npos)
+      std::vector<std::string> mime = StringUtils::Split(dec->GetMimetypes(), "|");
+      if (std::find(mime.begin(), mime.end(), content) != mime.end())
       {
         CAudioDecoder* result = new CAudioDecoder(*dec);
         static_cast<AudioDecoderDll&>(*result).Create();

@@ -2980,18 +2980,24 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
 #endif
 }
 
-unsigned int CLinuxRendererGLES::GetOptimalBufferSize()
+CRenderInfo CLinuxRendererGLES::GetRenderInfo()
 {
+  CRenderInfo info;
+  info.formats = m_formats;
+  info.max_buffer_size = NUM_BUFFERS;
   if(m_format == RENDER_FMT_OMXEGL ||
      m_format == RENDER_FMT_CVBREF ||
      m_format == RENDER_FMT_EGLIMG ||
      m_format == RENDER_FMT_MEDIACODEC)
-    return 2;
+    info.optimal_buffer_size = 2;
   else if(m_format == RENDER_FMT_IMXMAP)
+  {
     // Let the codec control the buffer size
-    return GetMaxBufferSize();
+    info.optimal_buffer_size = info.max_buffer_size;
+  }
   else
-    return 3;
+    info.optimal_buffer_size = 3;
+  return info;
 }
 
 #ifdef HAVE_LIBOPENMAX
