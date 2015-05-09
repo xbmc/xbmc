@@ -855,6 +855,13 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
     if (!pButton->NoChildren())
       action = pButton->FirstChild()->ValueStr();
 
+    // skip altname tags here because those contain no mappings ...
+    if (type == "altname")
+    {
+      pButton = pButton->NextSiblingElement();
+      continue;
+    }
+
     if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<=256)
     {
       if (type == "button")
