@@ -1156,8 +1156,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     int bufferLevel;
     g_renderManager.GetStats(sleepTime, renderPts, bufferLevel);
 
+    // estimate the time it will take for the next frame to get rendered
+    // drop the frame if it's late in regard to this estimation
     double diff = pts_org - renderPts;
-    double mindiff = DVD_SEC_TO_TIME(1/m_fFrameRate * m_speed / DVD_PLAYSPEED_NORMAL) * (bufferLevel +1);
+    double mindiff = DVD_SEC_TO_TIME(1/m_fFrameRate) * (bufferLevel + 1);
     if (diff < mindiff)
     {
       m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
