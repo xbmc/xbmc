@@ -334,6 +334,12 @@
     <Filter Include="interfaces\legacy\wsgi">
       <UniqueIdentifier>{4750236a-887e-40c1-af3e-1e095f5960e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="contrib">
+      <UniqueIdentifier>{9c3139a5-4a8a-4533-af30-cd79ee250997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="contrib\kissfft">
+      <UniqueIdentifier>{d811b1d1-5e81-4d89-9173-f02818c897ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -1387,9 +1393,6 @@
     <ClCompile Include="..\..\xbmc\utils\Fanart.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\fft.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\FileOperationJob.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2371,9 +2374,6 @@
     <ClCompile Include="..\..\xbmc\utils\test\Testfastmemcpy.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\Testfft.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestFileOperationJob.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
@@ -3086,6 +3086,18 @@
     <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\test\TestUtil.cpp">
       <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\rfft.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\test\Testrfft.cpp">
+      <Filter>utils\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\contrib\kissfft\kiss_fft.c">
+      <Filter>contrib\kissfft</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\contrib\kissfft\kiss_fftr.c">
+      <Filter>contrib\kissfft</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4295,9 +4307,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Fanart.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\fft.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\FileOperationJob.h">
@@ -5970,6 +5979,18 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\EmbeddedArt.h">
       <Filter>music</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\rfft.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\contrib\kissfft\_kiss_fft_guts.h">
+      <Filter>contrib\kissfft</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\contrib\kissfft\kiss_fft.h">
+      <Filter>contrib\kissfft</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\contrib\kissfft\kiss_fftr.h">
+      <Filter>contrib\kissfft</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

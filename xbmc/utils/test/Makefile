@@ -12,7 +12,6 @@ SRCS=	\
 	TestDatabaseUtils.cpp \
 	TestEndianSwap.cpp \
 	Testfastmemcpy.cpp \
-	Testfft.cpp \
 	TestFileOperationJob.cpp \
 	TestFileUtils.cpp \
 	Testfstrcmp.cpp \
@@ -35,6 +34,7 @@ SRCS=	\
 	TestPerformanceSample.cpp \
 	TestPOUtils.cpp \
 	TestRegExp.cpp \
+        Testrfft.cpp \
 	TestRingBuffer.cpp \
 	TestScraperParser.cpp \
 	TestScraperUrl.cpp \
