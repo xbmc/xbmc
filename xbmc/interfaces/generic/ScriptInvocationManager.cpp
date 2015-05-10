@@ -29,6 +29,7 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;
@@ -200,8 +201,14 @@ LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::strin
 
 int CScriptInvocationManager::ExecuteAsync(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
 {
-  if (script.empty() || !CFile::Exists(script, false))
+  if (script.empty())
     return -1;
+
+  if (!CFile::Exists(script, false))
+  {
+    CLog::Log(LOGERROR, "%s - Not executing non-existing script %s", __FUNCTION__, script.c_str());
+    return -1;
+  }
 
   LanguageInvokerPtr invoker = GetLanguageInvoker(script);
   return ExecuteAsync(script, invoker, addon, arguments);
@@ -209,8 +216,14 @@ int CScriptInvocationManager::ExecuteAsync(const std::string &script, const ADDO
 
 int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */)
 {
-  if (script.empty() || languageInvoker == NULL || !CFile::Exists(script, false))
+  if (script.empty() || languageInvoker == NULL)
     return -1;
+
+  if (!CFile::Exists(script, false))
+  {
+    CLog::Log(LOGERROR, "%s - Not executing non-existing script %s", __FUNCTION__, script.c_str());
+    return -1;
+  }
 
   CLanguageInvokerThreadPtr invokerThread = CLanguageInvokerThreadPtr(new CLanguageInvokerThread(languageInvoker, this));
   if (invokerThread == NULL)
@@ -233,8 +246,14 @@ int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageIn
 
 int CScriptInvocationManager::ExecuteSync(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */, uint32_t timeoutMs /* = 0 */, bool waitShutdown /* = false */)
 {
-  if (script.empty() || !CFile::Exists(script, false))
+  if (script.empty())
     return -1;
+
+  if (!CFile::Exists(script, false))
+  {
+    CLog::Log(LOGERROR, "%s - Not executing non-existing script %s", __FUNCTION__, script.c_str());
+    return -1;
+  }
 
   LanguageInvokerPtr invoker = GetLanguageInvoker(script);
   return ExecuteSync(script, invoker, addon, arguments, timeoutMs, waitShutdown);
