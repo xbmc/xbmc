@@ -145,7 +145,7 @@
 							<top>0</top>
 							<width>90</width>
 							<height>38</height>
-							<font>font18</font>
+							<font>font13</font>
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -173,7 +173,7 @@
 							<top>0</top>
 							<width>495</width>
 							<height>38</height>
-							<font>font18</font>
+							<font>font13</font>
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -218,7 +218,7 @@
 							<top>0</top>
 							<width>90</width>
 							<height>38</height>
-							<font>font18</font>
+							<font>font13</font>
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -246,7 +246,7 @@
 							<top>0</top>
 							<width>495</width>
 							<height>38</height>
-							<font>font18</font>
+							<font>font13</font>
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -373,7 +373,7 @@
 							<top>0</top>
 							<width>230</width>
 							<height>38</height>
-							<font>font18</font>
+							<font>font13</font>
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -402,7 +402,7 @@
 							<top>0</top>
 							<width>230</width>
 							<height>38</height>
-							<font>font18</font>
+							<font>font13</font>
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>

@@ -324,7 +324,7 @@
 							<top>145</top>
 							<width>178</width>
 							<height>25</height>
-							<font>font11</font>
+							<font>font13</font>
 							<textcolor>grey2</textcolor>
 							<selectedcolor>selected</selectedcolor>
 							<align>center</align>
@@ -348,7 +348,7 @@
 							<top>145</top>
 							<width>178</width>
 							<height>25</height>
-							<font>font11</font>
+							<font>font13</font>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
 							<align>center</align>

@@ -23,7 +23,7 @@
 			<top>60</top>
 			<width>320</width>
 			<height>40</height>
-			<font>font12caps</font>
+			<font>font13</font>
 			<label>$LOCALIZE[19133]</label>
 			<align>left</align>
 			<aligny>center</aligny>

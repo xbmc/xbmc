@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol allways="true">6</defaultcontrol>
+	<defaultcontrol always="true">6</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
@@ -85,7 +85,7 @@
 					<top>302</top>
 					<width>320</width>
 					<height>218</height>
-					<font>font11</font>
+					<font>font13</font>
 					<align>center</align>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -109,7 +109,7 @@
 					<top>302</top>
 					<width>350</width>
 					<height>218</height>
-					<font>font11</font>
+					<font>font13</font>
 					<align>center</align>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>

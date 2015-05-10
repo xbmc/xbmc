@@ -87,7 +87,7 @@
 				<textoffsety>28</textoffsety>
 				<align>right</align>
 				<aligny>top</aligny>
-				<font>font13caps</font>
+				<font>font13</font>
 				<textcolor>selected</textcolor>
 				<focusedcolor>selected</focusedcolor>
 				<texturefocus border="5">MenuItemFO.png</texturefocus>
