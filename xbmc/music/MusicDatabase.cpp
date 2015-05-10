@@ -2873,7 +2873,7 @@ void CMusicDatabase::DeleteCDDBInfo()
   CFileItemList items;
   if (!CDirectory::GetDirectory(CProfilesManager::Get().GetCDDBFolder(), items, ".cddb", DIR_FLAG_NO_FILE_DIRS))
   {
-    CGUIDialogOK::ShowAndGetInput(313, 426, 0, 0);
+    CGUIDialogOK::ShowAndGetInput(313, 426);
     return ;
   }
   // Show a selectdialog that the user can select the album to delete
@@ -2945,7 +2945,7 @@ void CMusicDatabase::Clean()
   // other writing access to the database is prohibited.
   if (g_application.IsMusicScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
+    CGUIDialogOK::ShowAndGetInput(189, 14057);
     return;
   }
 
@@ -2959,7 +2959,7 @@ void CMusicDatabase::Clean()
 
       if (iReturnString != ERROR_OK)
       {
-        CGUIDialogOK::ShowAndGetInput(313, iReturnString, 0, 0);
+        CGUIDialogOK::ShowAndGetInput(313, iReturnString);
       }
     }
   }
@@ -5026,7 +5026,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     progress->Close();
 
   if (iFailCount > 0)
-    CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(20196), StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount), "", "");
+    CGUIDialogOK::ShowAndGetInput(20196, StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount));
 }
 
 void CMusicDatabase::ImportFromXML(const std::string &xmlFile)

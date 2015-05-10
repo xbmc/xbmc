@@ -265,7 +265,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
       // no video file in this folder
       if (!bFoundFile)
       {
-        CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
+        CGUIDialogOK::ShowAndGetInput(13346, 20349);
         return;
       }
     }
@@ -412,7 +412,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
 
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(13346,14057,-1,-1);
+    CGUIDialogOK::ShowAndGetInput(13346, 14057);
     return false;
   }
 
@@ -661,7 +661,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
           m_database.Close();
           return listNeedsUpdating; // user cancelled
         }
-        CGUIDialogOK::ShowAndGetInput(195, movieName, 0, 0);
+        CGUIDialogOK::ShowAndGetInput(195, movieName);
         m_database.Close();
         return listNeedsUpdating;
       }
@@ -774,7 +774,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
         // load it
         if (!pPlayList->Load(pItem->GetPath()))
         {
-          CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+          CGUIDialogOK::ShowAndGetInput(6, 477);
           return; //hmmm unable to load playlist?
         }
 
@@ -1409,7 +1409,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
       else
       {
         CLog::Log(LOGERROR, "CGUIWindowTV: Can't open recording, no valid filename!");
-        CGUIDialogOK::ShowAndGetInput(19033,0,19036,0);
+        CGUIDialogOK::ShowAndGetInput(19033, 19036);
         return false;
       }
     }
@@ -1497,7 +1497,7 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+      CGUIDialogOK::ShowAndGetInput(6, 477);
       return; //hmmm unable to load playlist?
     }
   }
@@ -1783,7 +1783,7 @@ void CGUIWindowVideoBase::OnSearch()
   }
   else
   {
-    CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
+    CGUIDialogOK::ShowAndGetInput(194, 284);
   }
 }
 

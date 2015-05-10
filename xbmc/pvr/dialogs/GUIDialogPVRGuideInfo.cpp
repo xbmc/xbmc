@@ -146,7 +146,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
     if (!tag || !tag->HasPVRChannel())
     {
       /* invalid channel */
-      CGUIDialogOK::ShowAndGetInput(19033,19067,0,0);
+      CGUIDialogOK::ShowAndGetInput(19033, 19067);
       Close();
       return bReturn;
     }
@@ -186,7 +186,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
     if (ret == PLAYBACK_FAIL)
     {
       std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), g_localizeStrings.Get(19029).c_str()); // Channel could not be played. Check the log for details.
-      CGUIDialogOK::ShowAndGetInput(19033, 0, msg, 0);
+      CGUIDialogOK::ShowAndGetInput(19033, msg);
     }
     else if (ret == PLAYBACK_OK)
     {

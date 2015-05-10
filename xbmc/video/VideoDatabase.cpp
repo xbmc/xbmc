@@ -8862,7 +8862,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
     progress->Close();
 
   if (iFailCount > 0)
-    CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(647), StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount), "", "");
+    CGUIDialogOK::ShowAndGetInput(647, StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount));
 }
 
 void CVideoDatabase::ExportActorThumbs(const std::string &strDir, const CVideoInfoTag &tag, bool singleFiles, bool overwrite /*=false*/)

@@ -164,7 +164,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 
     if (items.IsEmpty())
     {
-      CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(194, 284);
       m_bSearchConfirmed = false;
     }
   }

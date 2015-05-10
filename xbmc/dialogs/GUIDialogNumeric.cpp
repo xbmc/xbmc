@@ -733,7 +733,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12340), false))
   {
     // Show error to user saying the password entry was blank
-    CGUIDialogOK::ShowAndGetInput(12357, 12358, 0, 0); // Password is empty/blank
+    CGUIDialogOK::ShowAndGetInput(12357, 12358); // Password is empty/blank
     return false;
   }
 
@@ -745,7 +745,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12341), true))
   {
     // Show error to user saying the password re-entry failed
-    CGUIDialogOK::ShowAndGetInput(12357, 12344, 0, 0); // Password do not match
+    CGUIDialogOK::ShowAndGetInput(12357, 12344); // Password do not match
     return false;
   }
 

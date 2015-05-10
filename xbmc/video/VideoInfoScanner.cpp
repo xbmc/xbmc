@@ -2026,7 +2026,7 @@ namespace VIDEO
 
     if (pDialog)
     {
-      CGUIDialogOK::ShowAndGetInput(20448,20449,20022,20022);
+      CGUIDialogOK::ShowAndGetInput(20448, 20449);
       return false;
     }
     return CGUIDialogYesNo::ShowAndGetInput(20448,20449,20450,20022);

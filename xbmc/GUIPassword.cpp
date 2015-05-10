@@ -69,7 +69,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
     {
       if (0 != CSettings::Get().GetInt("masterlock.maxretries") && pItem->m_iBadPwdCount >= CSettings::Get().GetInt("masterlock.maxretries"))
       { // user previously exhausted all retries, show access denied error
-        CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
+        CGUIDialogOK::ShowAndGetInput(12345, 12346);
         return false;
       }
       // show the appropriate lock dialog
@@ -282,7 +282,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
         // user has run out of retry attempts
         g_passwordManager.iMasterLockRetriesLeft = 0;
         // Tell the user they ran out of retry attempts
-        CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
+        CGUIDialogOK::ShowAndGetInput(12345, 12346);
         return ;
       }
     }

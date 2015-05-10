@@ -1069,7 +1069,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
   {
     if (!g_mediaManager.IsDiscInDrive(strPath))
     {
-      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(218, 219);
       return false;
     }
   }
@@ -1078,7 +1078,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
     // TODO: Handle not connected to a remote share
     if ( !g_application.getNetwork().IsConnected() )
     {
-      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(220, 221);
       return false;
     }
   }
@@ -1102,7 +1102,7 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
   else
     idMessageText = 15300; // Path not found or invalid
 
-  CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
+  CGUIDialogOK::ShowAndGetInput(220, idMessageText);
 }
 
 // \brief The functon goes up one level in the directory tree
