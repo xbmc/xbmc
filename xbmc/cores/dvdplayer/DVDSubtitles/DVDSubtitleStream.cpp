@@ -45,7 +45,7 @@ bool CDVDSubtitleStream::Open(const string& strFile)
 {
   CDVDInputStream* pInputStream;
   pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
-  if (pInputStream && pInputStream->Open(strFile.c_str(), ""))
+  if (pInputStream && pInputStream->Open(strFile.c_str(), "", false))
   {
     if (URIUtils::HasExtension(strFile, ".sub") && IsIncompatible(pInputStream))
     {

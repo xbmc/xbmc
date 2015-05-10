@@ -39,9 +39,11 @@
 #include "utils/URIUtils.h"
 
 
-CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
+CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content, bool contentlookup)
 {
   CFileItem item(file.c_str(), false);
+
+  item.SetMimeType(content);
 
   if(item.IsDiscImage())
   {
@@ -101,7 +103,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     if (item.IsType(".m3u8"))
       return new CDVDInputStreamFFmpeg();
-    item.FillInMimeType();
+
+    if (contentlookup)
+      item.FillInMimeType();
+
     if (item.GetMimeType() == "application/vnd.apple.mpegurl")
       return new CDVDInputStreamFFmpeg();
   }

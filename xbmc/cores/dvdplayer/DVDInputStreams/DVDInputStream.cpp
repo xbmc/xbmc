@@ -24,13 +24,14 @@
 CDVDInputStream::CDVDInputStream(DVDStreamType streamType)
 {
   m_streamType = streamType;
+  m_contentLookup = true;
 }
 
 CDVDInputStream::~CDVDInputStream()
 {
 }
 
-bool CDVDInputStream::Open(const char* strFile, const std::string &content)
+bool CDVDInputStream::Open(const char* strFile, const std::string &content, bool contentLookup)
 {
   CURL url(strFile);
 
@@ -41,6 +42,7 @@ bool CDVDInputStream::Open(const char* strFile, const std::string &content)
   m_strFileName = url.Get();
 
   m_content = content;
+  m_contentLookup = contentLookup;
   return true;
 }
 
