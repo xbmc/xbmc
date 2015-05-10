@@ -1,4 +1,18 @@
-PVR add-ons are not included in Kodi's tree.
+TOC
+1. Getting the source code
+2. How to compile
 
-They can be found here:
-https://github.com/kodi-pvr/
+-----------------------------------------------------------------------------
+1. The source for PVR addons
+-----------------------------------------------------------------------------
+
+PVR add-ons source is not included in Kodi's tree directly.
+
+The source code can be found at: https://github.com/kodi-pvr/
+
+-----------------------------------------------------------------------------
+2. How to compile
+-----------------------------------------------------------------------------
+
+Consult README.linux for compile instructions.
+See the PVR portion under - 4.4 Binary addons

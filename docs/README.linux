@@ -3,6 +3,8 @@ TOC
 2. Getting the source code
 3. Installing the required libraries and headers
 4. How to compile
+   4.4 Binary addons
+   4.5 Test suite
 5. How to run
 6. Uninstalling
 
@@ -13,7 +15,7 @@ TOC
 A graphics-adapter with OpenGL acceleration is highly recommended.
 24/32 bitdepth is required along with OpenGL.
 
-Note to new Linux users.
+Note to new Linux users:
 All lines that are prefixed with the '$' character are commands,
 that need to be typed into a terminal window / console. The '$' equals the prompt.
 Note: The '$' character itself should NOT be typed as part of the command.
@@ -87,7 +89,7 @@ To create the Kodi executable manually perform these steps:
 
 .0  $ ./bootstrap
 
-.1  $ ./configure <option1> <option2> ... (See --help for available options)
+.1  $ ./configure <option1> <option2> PREFIX=<system prefix>... (See --help for available options)
        A full listing of supported options can be viewed by typing './configure --help'.
 
 .2  $ make
@@ -96,15 +98,8 @@ Tip: By adding -j<number> to the make command, you describe how many
      concurrent jobs will be used. So for dualcore the command is:
 
     $ make -j2
-
-Note: From v14 with commit 4090a5f a new API for binary audio encoder and pvr addons is available, if you need to compile them do:
-    
-    $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix you added on step 4.1>
-
+ 	
 .3  $ make install
-
-Note: if you only want to build specific addons you can specify like this:
-  $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix you added on step 4.1> ADDONS="pvr.hts pvr.dvblink"
 
 This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
 
@@ -115,9 +110,33 @@ Tip: To override the location that Kodi is installed, use PREFIX=<path>.
 For example.
 
     $ make install DESTDIR=$HOME/kodi
+	
+-----------------------------------------------------------------------------
+4.4. Binary addons - compile
+-----------------------------------------------------------------------------
+
+From v14 with commit 4090a5f a new API for binary addons is available.
+You can compile all addons or only specific addons by specifying e.g. ADDONS="audioencoder.foo pvr.bar audiodecoder.baz"
+
+.0  All addons
+    $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1>
+
+.1  Specific addons
+    $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1> ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
+
+Audio encoders:
+    audioencoder.flac, audioencoder.lame, audioencoder.vorbis, audioencoder.wav
+
+PVR addons:
+    pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hts, pvr.iptvsimple, pvr.mediaportal.tvserver,
+    pvr.mythtv, pvr.nextpvr, pvr.njoy, pvr.pctv, pvr.stalker, pvr.vbox, pvr.vdr.vnsi, pvr.vuplus
+
+Audio decoders: 
+    audiodecoder.modplug, audiodecoder.nosefart, audiodecoder.sidplay, audiodecoder.snesapu,
+    audiodecoder.stsound, audiodecoder.timidity, audiodecoder.vgmstream
 
 -----------------------------------------------------------------------------
-4.1. Test Suite
+4.5. Test suite
 -----------------------------------------------------------------------------
 
 Kodi has a test suite which uses the Google C++ Testing Framework.
@@ -136,10 +155,10 @@ To compile the test suite without running it, type the following.
     $ make testsuite
 
 The test suite program can be run manually as well.
-The name of the test suite program is 'xbmc-test' and will build in the Kodi source tree.
+The name of the test suite program is 'kodi-test' and will build in the Kodi source tree.
 To bring up the 'help' notes for the program, type the following:
 
-    $ ./xbmc-test --gtest_help
+    $ ./kodi-test --gtest_help
 
 The most useful options are,
 
@@ -190,8 +209,7 @@ in Settings->Videos->Player from "Auto Detect" to "VDPAU".
 6. Uninstalling
 -----------------------------------------------------------------------------
 
-Issue the commands prepending "sudo", if your user doesn't have write permission,
-to the install directory.
+Prepend "sudo" to commands, if your user doesn't have write permission to the install directory.
 
 Note: If you have rerun configure with a different prefix,
 you will either need to rerun configure with the correct prefix for this step to work correctly.
