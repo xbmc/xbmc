@@ -614,13 +614,12 @@ void CDSPlayer::HandleMessages()
   MSG msg;
   while (GetMessage(&msg, NULL, 0, 0) != 0)
   {    
-    if (CGraphFilters::Get()->UsingMadVr())
-      DispatchMessage(&msg); 
-
     if (m_bStop || PlayerState == DSPLAYER_CLOSED || PlayerState == DSPLAYER_LOADING)
       break;
 
-    if (msg.message == WM_GRAPHMESSAGE)
+    if (msg.message != WM_GRAPHMESSAGE)
+      DispatchMessage(&msg);
+    else
     {
       CDSMsg* pMsg = reinterpret_cast<CDSMsg *>(msg.lParam);
       CLog::Log(LOGDEBUG, "%s Message received : %d on thread 0x%X", __FUNCTION__, pMsg->GetMessageType(), m_threadID);

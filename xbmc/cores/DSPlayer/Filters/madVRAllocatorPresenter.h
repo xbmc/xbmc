@@ -122,6 +122,7 @@ public:
   virtual void SetStartMadvr();
   virtual void RestoreKodiDevice();
   virtual bool IsCurrentThreadId();
+  virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
   virtual void SettingSetScaling(CStdStringW path, int scaling);
   virtual void SettingSetDoubling(CStdStringW path, int iValue);

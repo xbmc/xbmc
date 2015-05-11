@@ -168,6 +168,14 @@ bool CmadVRAllocatorPresenter::IsCurrentThreadId()
   return CThread::IsCurrentThread(m_threadID);
 }
 
+bool CmadVRAllocatorPresenter::ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret)
+{
+  if (Com::SmartQIPtr<IMadVRSubclassReplacement> pMVRSR = m_pDXR)
+    return pMVRSR->ParentWindowProc(hWnd, uMsg, wParam, lParam, ret);
+  else
+    return false;
+}
+
 void CmadVRAllocatorPresenter::RestoreKodiDevice()
 {
   // block application render loop before start to swap device

@@ -56,6 +56,7 @@
 
 #ifdef HAS_DS_PLAYER
 #include "DSPlayer.h"
+#include "GraphFilters.h"
 #endif
 
 #ifdef TARGET_WINDOWS
@@ -826,7 +827,20 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       CZeroconfBrowser::GetInstance()->ProcessResults();
       break;
   }
+#ifdef HAS_DS_PLAYER
+  LRESULT ret = 0;
+  bool bCallOurProc = true;
+  
+  if (CGraphFilters::Get()->UsingMadVr())
+    bCallOurProc = !CGraphFilters::Get()->GetMadvrCallback()->ParentWindowProc(hWnd, uMsg, &wParam, &lParam, &ret);
+
+  if (bCallOurProc)
+    return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+  else
+    return ret;
+#else
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+#endif
 }
 
 void CWinEventsWin32::RegisterDeviceInterfaceToHwnd(GUID InterfaceClassGuid, HWND hWnd, HDEVNOTIFY *hDeviceNotify)
