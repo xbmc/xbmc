@@ -134,9 +134,9 @@ bool aml_permissions()
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
     }
-    if (!SysfsUtils::HasRW("/sys/devices/cpu/cpu/cpu0/cpufreq/scaling_governor"))
+    if (!SysfsUtils::HasRW("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"))
     {
-      CLog::Log(LOGERROR, "AML: no rw on /sys/devices/cpu/cpu/cpu0/cpufreq/scaling_governor");
+      CLog::Log(LOGERROR, "AML: no rw on /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
     }
 #endif
   }

@@ -901,7 +901,14 @@ int CDecoder::Check(AVCodecContext* avctx)
   }
 
   if (m_getBufferError)
+  {
+    // if there is no other error, sleep for a short while
+    // in order not to drain player's message queue
+    if (!ret)
+      Sleep(20);
+
     ret |= VC_NOBUFFER;
+  }
 
   m_getBufferError = false;
   return ret;

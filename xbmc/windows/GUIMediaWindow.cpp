@@ -1242,6 +1242,7 @@ void CGUIMediaWindow::SetHistoryForPath(const std::string& strDirectory)
 
     m_history.ClearPathHistory();
 
+    bool originalPath = true;
     while (URIUtils::GetParentPath(strPath, strParentPath))
     {
       for (int i = 0; i < (int)items.Size(); ++i)
@@ -1276,8 +1277,9 @@ void CGUIMediaWindow::SetHistoryForPath(const std::string& strDirectory)
       else
         URIUtils::AddSlashAtEnd(strPath);
 
-      m_history.AddPathFront(strPath);
+      m_history.AddPathFront(strPath, originalPath ? m_strFilterPath : "");
       m_history.SetSelectedItem(strPath, strParentPath);
+      originalPath = false;
       strPath = strParentPath;
       URIUtils::RemoveSlashAtEnd(strPath);
     }

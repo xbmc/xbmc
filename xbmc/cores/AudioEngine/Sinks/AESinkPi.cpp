@@ -94,9 +94,9 @@ static void SetAudioProps(bool stream_channels, uint32_t channel_map)
   CLog::Log(LOGDEBUG, "%s:%s hdmi_stream_channels %d hdmi_channel_map %08x", CLASSNAME, __func__, stream_channels, channel_map);
 }
 
-static uint32_t GetChannelMap(AEAudioFormat &format, bool passthrough)
+static uint32_t GetChannelMap(const CAEChannelInfo &channelLayout, bool passthrough)
 {
-  unsigned int channels = format.m_channelLayout.Count();
+  unsigned int channels = channelLayout.Count();
   uint32_t channel_map = 0;
   if (passthrough)
     return 0;
@@ -135,12 +135,12 @@ static uint32_t GetChannelMap(AEAudioFormat &format, bool passthrough)
   // According to CEA-861-D only RL and RR are known. In case of a format having SL and SR channels
   // but no BR BL channels, we use the wide map in order to open only the num of channels really
   // needed.
-  if (format.m_channelLayout.HasChannel(AE_CH_BL) && !format.m_channelLayout.HasChannel(AE_CH_SL))
+  if (channelLayout.HasChannel(AE_CH_BL) && !channelLayout.HasChannel(AE_CH_SL))
     map = map_back;
 
   for (unsigned int i = 0; i < channels; ++i)
   {
-    AEChannel c = format.m_channelLayout[i];
+    AEChannel c = channelLayout[i];
     unsigned int chan = 0;
     if ((unsigned int)c < sizeof map_normal / sizeof *map_normal)
       chan = map[(unsigned int)c];
@@ -171,9 +171,9 @@ static uint32_t GetChannelMap(AEAudioFormat &format, bool passthrough)
     0xff, // 7
     0x13, // 7.1
   };
-  uint8_t cea = format.m_channelLayout.HasChannel(AE_CH_LFE) ? cea_map_lfe[channels] : cea_map[channels];
+  uint8_t cea = channelLayout.HasChannel(AE_CH_LFE) ? cea_map_lfe[channels] : cea_map[channels];
   if (cea == 0xff)
-    CLog::Log(LOGERROR, "%s::%s - Unexpected CEA mapping %d,%d", CLASSNAME, __func__, format.m_channelLayout.HasChannel(AE_CH_LFE), channels);
+    CLog::Log(LOGERROR, "%s::%s - Unexpected CEA mapping %d,%d", CLASSNAME, __func__, channelLayout.HasChannel(AE_CH_LFE), channels);
 
   channel_map |= cea << 24;
 
@@ -215,7 +215,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   format.m_frames        = format.m_sampleRate * AUDIO_PLAYBUFFER / NUM_OMX_BUFFERS;
   format.m_frameSamples  = format.m_frames * channels;
 
-  SetAudioProps(m_passthrough, GetChannelMap(format, m_passthrough));
+  SetAudioProps(m_passthrough, GetChannelMap(format.m_channelLayout, m_passthrough));
 
   m_format = format;
   m_sinkbuffer_sec_per_byte = 1.0 / (double)(m_format.m_frameSize * m_format.m_sampleRate);
