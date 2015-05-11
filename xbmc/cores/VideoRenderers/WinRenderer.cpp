@@ -1208,6 +1208,7 @@ bool CWinRenderer::CreateYV12Texture(int index)
     if (!buf->Create(m_format, m_sourceWidth, m_sourceHeight))
     {
       CLog::Log(LOGERROR, __FUNCTION__" - Unable to create YV12 video texture %i", index);
+      delete buf;
       return false;
     }
     m_VideoBuffers[index] = buf;
