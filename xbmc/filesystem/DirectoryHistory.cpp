@@ -81,7 +81,11 @@ const std::string& CDirectoryHistory::GetSelectedItem(const std::string& strDire
 void CDirectoryHistory::AddPath(const std::string& strPath, const std::string &strFilterPath /* = "" */)
 {
   if (!m_vecPathHistory.empty() && m_vecPathHistory.back().m_strPath == strPath)
+  {
+    if (!strFilterPath.empty())
+      m_vecPathHistory.back().m_strFilterPath = strFilterPath;
     return;
+  }
 
   CPathHistoryItem item;
   item.m_strPath = strPath;
