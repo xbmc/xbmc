@@ -77,7 +77,7 @@ BaseVideoFilterShader::BaseVideoFilterShader()
   PixelShader()->SetSource(shaderp);
 }
 
-ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, bool output)
+ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, GLSLOutput *output)
 {
   m_method = method;
   m_kernelTex1 = 0;
@@ -127,10 +127,11 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   else
     defines += "#define XBMC_STRETCH 0\n";
 
-  if (output)
-    defines += "#define XBMC_OUTPUT 1\n";
-  else
-    defines += "#define XBMC_OUTPUT 0\n";
+  // get defines from the output stage if used
+  m_glslOutput = output;
+  if (m_glslOutput) {
+    defines += m_glslOutput->GetDefines();
+  }
 
   //tell shader if we're using a 1D texture
 #ifdef USE1DTEXTURE
@@ -142,6 +143,11 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines:\n%s", shadername.c_str(), defines.c_str());
   PixelShader()->LoadSource(shadername, defines);
   PixelShader()->AppendSource("output.glsl");
+}
+
+ConvolutionFilterShader::~ConvolutionFilterShader()
+{
+  delete m_glslOutput;
 }
 
 void ConvolutionFilterShader::OnCompiledAndLinked()
@@ -202,6 +208,8 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   glActiveTexture(GL_TEXTURE0);
 
   VerifyGLState();
+
+  if (m_glslOutput) m_glslOutput->OnCompiledAndLinked(ProgramHandle());
 }
 
 bool ConvolutionFilterShader::OnEnabled()
@@ -216,7 +224,13 @@ bool ConvolutionFilterShader::OnEnabled()
   glUniform2f(m_hStepXY, m_stepX, m_stepY);
   glUniform1f(m_hStretch, m_stretch);
   VerifyGLState();
+  if (m_glslOutput) m_glslOutput->OnEnabled();
   return true;
+}
+
+void ConvolutionFilterShader::OnDisabled()
+{
+  if (m_glslOutput) m_glslOutput->OnDisabled();
 }
 
 void ConvolutionFilterShader::Free()
@@ -224,6 +238,7 @@ void ConvolutionFilterShader::Free()
   if (m_kernelTex1)
     glDeleteTextures(1, &m_kernelTex1);
   m_kernelTex1 = 0;
+  if (m_glslOutput) m_glslOutput->Free();
   BaseVideoFilterShader::Free();
 }
 

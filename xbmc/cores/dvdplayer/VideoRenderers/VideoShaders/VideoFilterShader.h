@@ -29,6 +29,7 @@
 
 #include "guilib/Shader.h"
 #include "settings/VideoSettings.h"
+#include "GLSLOutput.h"
 
 namespace Shaders {
 
@@ -60,9 +61,11 @@ namespace Shaders {
   class ConvolutionFilterShader : public BaseVideoFilterShader
   {
   public:
-    ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, bool output=true);
+    ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, GLSLOutput *output=NULL);
+    ~ConvolutionFilterShader();
     void OnCompiledAndLinked();
     bool OnEnabled();
+    void OnDisabled();
     void Free();
 
     virtual bool GetTextureFilter(GLint& filter) { filter = GL_NEAREST; return true; }
@@ -77,6 +80,8 @@ namespace Shaders {
     ESCALINGMETHOD m_method;
     bool           m_floattex; //if float textures are supported
     GLint          m_internalformat;
+
+    Shaders::GLSLOutput *m_glslOutput;
   };
 
   class StretchFilterShader : public BaseVideoFilterShader

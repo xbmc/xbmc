@@ -748,6 +748,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod && !nonLinStretchChanged)
     return;
+  else
+    m_reloadShaders = 1;
 
   //recompile YUV shader when non-linear stretch is turned on/off
   //or when it's on and the scaling method changed
@@ -825,7 +827,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
         break;
       }
 
-      // TODO: switch to GL_RGBA16 or GL_RGBA16F
       if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
       {
         CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
@@ -833,7 +834,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
       }
     }
 
-    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_nonLinStretch);
+    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_nonLinStretch, new GLSLOutput(3));
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
@@ -898,9 +899,10 @@ void CLinuxRendererGL::LoadShaders(int field)
       if (glCreateProgram && tryGlsl)
       {
         // create regular progressive scan shader
+        // if single pass, create GLSLOutput helper and pass it to YUV2RGB shader
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format,
                                                     m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
-                                                    m_renderQuality == RQ_SINGLEPASS);
+                                                    (m_renderQuality == RQ_SINGLEPASS) ? new GLSLOutput(3) : NULL);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
