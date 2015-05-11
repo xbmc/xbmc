@@ -61,7 +61,7 @@
 				<top>60</top>
 				<width>430</width>
 				<height>30</height>
-				<font>font11</font>
+				<font>font13</font>
 				<textcolor>grey2</textcolor>
 				<label>$INFO[Container(11).ListItem.StartDate]</label>
 				<align>center</align>

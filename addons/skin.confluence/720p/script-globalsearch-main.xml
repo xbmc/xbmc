@@ -376,7 +376,7 @@
 					<width>1200</width>
 					<height>20</height>
 					<label>[B]$LOCALIZE[284][/B]</label>
-					<font>font16caps</font>
+					<font>font13</font>
 					<textcolor>white</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>

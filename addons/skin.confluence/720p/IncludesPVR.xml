@@ -87,7 +87,7 @@
 				<control type="label" id="200">
 					<width>250</width>
 					<height>35</height>
-					<font>font12caps</font>
+					<font>font13</font>
 					<label>33063</label>
 					<textcolor>blue</textcolor>
 					<align>center</align>

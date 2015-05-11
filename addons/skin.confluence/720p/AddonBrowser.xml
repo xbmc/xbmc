@@ -139,7 +139,7 @@
 				<label>31301</label>
 				<align>right</align>
 				<aligny>top</aligny>
-				<font>font13caps</font>
+				<font>font13</font>
 				<textcolor>selected</textcolor>
 			</control>
 			<control type="label">

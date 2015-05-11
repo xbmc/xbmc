@@ -93,7 +93,7 @@
 				<top>200r</top>
 				<width>300</width>
 				<height>150</height>
-				<texture fallback="DefaultVideoCover.png" aligny="center">$INFO[Player.Art(thumb)]</texture>
+				<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
 				<aspectratio aligny="center">keep</aspectratio>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>

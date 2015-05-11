@@ -139,7 +139,6 @@
 		<textureleftfocus>scroll-left-focus.png</textureleftfocus>
 		<textureright>scroll-right.png</textureright>
 		<texturerightfocus>scroll-right-focus.png</texturerightfocus>
-		<font>font13</font>
 		<textcolor>white</textcolor>
 		<disabledcolor>grey3</disabledcolor>
 		<aligny>center</aligny>
