@@ -1864,14 +1864,7 @@ bool CApplication::RenderNoPresent()
   if (g_graphicsContext.IsFullScreenVideo())
   {
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
-#ifdef HAS_DS_PLAYER
-    if (!CGraphFilters::Get()->ReadyMadVr())
-      g_renderManager.Render(true, 0, 255);
-    else
-      g_renderManager.Render(false, 0, 255);
-#else
     g_renderManager.Render(true, 0, 255);
-#endif
 
     // close window overlays
     CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OVERLAY);
@@ -1914,11 +1907,6 @@ void CApplication::RenderMadvr()
 
   m_renderMadvrEvent.Set();
 }
-
-void CApplication::SetStartMadvr()
-{
-  m_startMadvrEvent.Set();
-}
 #endif
 
 void CApplication::Render()
@@ -1930,17 +1918,6 @@ void CApplication::Render()
   MEASURE_FUNCTION;
 
 #ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->UsingMadVr())
-  {
-    // Wait that madVR do all his stuff before return to render
-    if (CGraphFilters::Get()->GetSwappingDevice())
-    {
-      CGraphFilters::Get()->GetMadvrCallback()->SetStartMadvr();
-      m_startMadvrEvent.Reset();
-      m_startMadvrEvent.Wait();
-    }
-  }
-
   if (CGraphFilters::Get()->ReadyMadVr())
   {
     if (m_pPlayer->IsPausedPlayback())
@@ -5018,11 +4995,14 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
   }
   return false;
 }
-
+#ifdef HAS_DS_PLAYER
+bool CApplication::IsCurrentThread(bool checkForMadvr) const
+#else
 bool CApplication::IsCurrentThread() const
+#endif
 {
 #ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->UsingMadVr())
+  if (CGraphFilters::Get()->UsingMadVr() && checkForMadvr)
   {
     bool isMadvrThread = CGraphFilters::Get()->GetMadvrCallback()->IsCurrentThreadId();
     bool isApplicationThread = CThread::IsCurrentThread(m_threadID);

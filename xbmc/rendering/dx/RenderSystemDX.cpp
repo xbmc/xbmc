@@ -846,7 +846,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
   }
 
 #ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->UsingMadVr())
+  if (CGraphFilters::Get()->ReadyMadVr())
     return true;
 
   return SUCCEEDED(Get3DDevice()->Clear(

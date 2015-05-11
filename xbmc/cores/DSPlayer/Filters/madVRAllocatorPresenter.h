@@ -78,14 +78,14 @@ class CmadVRAllocatorPresenter
 
   void SetResolution();
   void ConfigureMadvr();
+  void RestoreKodiDevice();
   Com::SmartPtr<IUnknown> m_pDXR;
   LPDIRECT3DDEVICE9 m_pD3DDeviceMadVR;
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartSize m_ScreenSize;
   EXCLUSIVEMODECALLBACK m_exclusiveCallback;
   static ThreadIdentifier m_threadID;
-  CEvent m_startMadvrEvent;
-  bool  m_bIsFullscreen;
+  bool m_bIsFullscreen;
   bool m_isDeviceSet;
   bool m_firstBoot;
   bool m_isEnteringExclusive;
@@ -115,14 +115,12 @@ public:
   virtual LPDIRECT3DDEVICE9 GetDevice();
   virtual bool IsDeviceSet(){ return m_isDeviceSet; }
   virtual bool IsEnteringExclusive(){ return m_isEnteringExclusive; }
-  virtual void SetIsDevice(bool b){ m_isDeviceSet = b; };
   virtual void OsdRedrawFrame();
   virtual void SetMadvrPixelShader();
   virtual void RestoreMadvrSettings();
-  virtual void SetStartMadvr();
-  virtual void RestoreKodiDevice();
   virtual bool IsCurrentThreadId();
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
+  virtual void SwapDevice();
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
   virtual void SettingSetScaling(CStdStringW path, int scaling);
   virtual void SettingSetDoubling(CStdStringW path, int iValue);

@@ -147,8 +147,6 @@ public:
 #ifdef HAS_DS_PLAYER
   void RenderMadvr();
   CEvent m_renderMadvrEvent;
-  CEvent m_startMadvrEvent;
-  void SetStartMadvr();
 #endif
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
@@ -158,7 +156,11 @@ public:
    */
   bool StartPVRManager();
   void StopPVRManager();
+#ifdef HAS_DS_PLAYER
+  bool IsCurrentThread(bool checkForMadvr = true) const;
+#else
   bool IsCurrentThread() const;
+#endif
   void Stop(int exitCode);
   void RestartApp();
   void UnloadSkin(bool forReload = false);

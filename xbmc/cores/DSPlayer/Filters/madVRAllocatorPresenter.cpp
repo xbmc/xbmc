@@ -48,6 +48,7 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   , m_ScreenSize(0, 0)
   , m_bIsFullscreen(false)
 {
+
   //Init Variable
   g_renderManager.PreInit(RENDERER_DSHOW);
   m_exclusiveCallback = ExclusiveCallback;
@@ -73,6 +74,9 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
 
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Unregister(m_exclusiveCallback, this);
+
+  //Restore Kodi Device
+  RestoreKodiDevice();
 
   // the order is important here
   m_threadID = 0;
@@ -158,11 +162,6 @@ void CmadVRAllocatorPresenter::ConfigureMadvr()
   }
 }
 
-void CmadVRAllocatorPresenter::SetStartMadvr()
-{
-  m_startMadvrEvent.Set();
-};
-
 bool CmadVRAllocatorPresenter::IsCurrentThreadId()
 {
   return CThread::IsCurrentThread(m_threadID);
@@ -178,22 +177,22 @@ bool CmadVRAllocatorPresenter::ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wP
 
 void CmadVRAllocatorPresenter::RestoreKodiDevice()
 {
-  // block application render loop before start to swap device
-  CGraphFilters::Get()->SetSwappingDevice(true);
-
-  //Restore Kodi Gui
-  CLog::Log(LOGDEBUG, "%s Restoring Kodi Device...", __FUNCTION__);
-  CGraphFilters::Get()->GetMadvrCallback()->SetIsDevice(false);
+  m_isDeviceSet = false;
   g_Windowing.GetKodi3DDevice()->SetPixelShader(NULL);
   g_Windowing.ResetForMadvr();
+  CLog::Log(LOGDEBUG, "%s Restored Kodi device", __FUNCTION__);
+}
 
-  CGraphFilters::Get()->SetSwappingDevice(false);
-  g_application.SetStartMadvr();
+void CmadVRAllocatorPresenter::SwapDevice()
+{
+  m_isDeviceSet = true;
+  g_Windowing.ResetForMadvr();
+  CGraphFilters::Get()->SetRenderOnMadvr(true);
+  CLog::Log(LOGDEBUG, "%s Swapped device from Kodi to madVR", __FUNCTION__);
 }
 
 HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
-
   CLog::Log(LOGDEBUG, "%s madVR's device it's ready", __FUNCTION__);
 
   if (!pD3DDev)
@@ -209,24 +208,16 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
   if (m_firstBoot)
   { 
     m_firstBoot = false;
+    m_threadID = CThread::GetCurrentThreadId();    
 
-    m_threadID = CThread::GetCurrentThreadId();
-
-    // Wait for application render loop before start to swap device
-    CGraphFilters::Get()->SetSwappingDevice(true);
-    m_startMadvrEvent.Reset();
-    m_startMadvrEvent.Wait();
+    // SendMessage to Kodi MainThread to SwapDevice From Kodi To madVR
+    CApplicationMessenger::Get().SwapDeviceForMadvr();
     
-    // Restore texture on madVR's device
+    // Set the context in FullScreenVideo
     g_graphicsContext.SetFullScreenVideo(true);
-    m_isDeviceSet = true;
-    g_Windowing.ResetForMadvr();
 
     // Change Resolution to match fps
     SetResolution();
-
-    CGraphFilters::Get()->SetSwappingDevice(false);
-    g_application.SetStartMadvr();
   }
 
   Com::SmartSize size;
@@ -286,14 +277,13 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
 
   AlphaBltSubPic(Com::SmartSize(width, height));
 
-  if (m_isDeviceSet && !CGraphFilters::Get()->GetSwappingDevice())
+  if (m_isDeviceSet && !m_isEnteringExclusive && CGraphFilters::Get()->GetRenderOnMadvr())
   {
     // restore pixelshader for render kodi gui
     m_pD3DDeviceMadVR->SetPixelShader(NULL);
 
     // render kodi gui
-    if (!m_isEnteringExclusive)
-      g_application.RenderMadvr();
+    g_application.RenderMadvr();
 
     //restore stagestate for xysubfilter
     m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);

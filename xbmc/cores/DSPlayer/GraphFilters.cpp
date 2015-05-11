@@ -36,7 +36,7 @@ m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER
   m_pMadvr = NULL;
   m_isInitMadVr = false;
   m_isKodiRealFS = false;
-  m_swappingDevice = false;
+  m_renderOnMadvr = false;
 }
 
 CGraphFilters::~CGraphFilters()

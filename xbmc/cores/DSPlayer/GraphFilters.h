@@ -181,8 +181,8 @@ public:
   bool IsInitMadVr() { return m_isInitMadVr; };
   void SetInitMadVr(bool b) { m_isInitMadVr = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
-  bool GetSwappingDevice() { return m_swappingDevice; }
-  void SetSwappingDevice(bool b) { m_swappingDevice = b; }
+  bool GetRenderOnMadvr() { return m_renderOnMadvr; }
+  void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
 
 private:
   CGraphFilters();
@@ -197,7 +197,7 @@ private:
   bool m_UsingDXVADecoder;
 
   //madvr
-  bool m_swappingDevice;
+  bool m_renderOnMadvr;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
 
   /*MADVR*/

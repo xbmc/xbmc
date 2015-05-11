@@ -115,6 +115,10 @@ namespace MUSIC_INFO
 #define TMSG_DISPLAY_SETUP      1000
 #define TMSG_DISPLAY_DESTROY    1001
 
+#ifdef HAS_DS_PLAYER
+#define TMSG_SWAP_DEVICE_FOR_MADVR     2000
+#endif
+
 typedef struct
 {
   unsigned int dwMessage;
@@ -175,6 +179,9 @@ public:
   void MediaUnPause();
   void MediaPauseIfPlaying();
   void MediaRestart(bool bWait);
+#ifdef HAS_DS_PLAYER
+  void SwapDeviceForMadvr();
+#endif
 
   void PlayListPlayerPlay();
   void PlayListPlayerPlay(int iSong);
