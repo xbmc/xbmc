@@ -55,6 +55,7 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   m_isDeviceSet = false;
   m_firstBoot = true;
   m_isEnteringExclusive = false;
+  m_isRendering = false;
   m_threadID = 0;
   
   if (FAILED(hr)) {
@@ -177,6 +178,10 @@ bool CmadVRAllocatorPresenter::ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wP
 
 void CmadVRAllocatorPresenter::RestoreKodiDevice()
 {
+  //be sure that madVR thread is not calling the rendering
+  while (m_isRendering)
+    Sleep(10);
+
   m_isDeviceSet = false;
   g_Windowing.GetKodi3DDevice()->SetPixelShader(NULL);
   g_Windowing.ResetForMadvr();
@@ -279,6 +284,8 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
 
   if (m_isDeviceSet && !m_isEnteringExclusive && CGraphFilters::Get()->GetRenderOnMadvr())
   {
+    m_isRendering = true;
+
     // restore pixelshader for render kodi gui
     m_pD3DDeviceMadVR->SetPixelShader(NULL);
 
@@ -295,6 +302,8 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
 
     // set false for pixelshader
     m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    
+    m_isRendering = false;
   }
 
   return S_OK;
