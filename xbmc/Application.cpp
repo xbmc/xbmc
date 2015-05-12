@@ -3207,18 +3207,18 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // if player has volume control, set it.
     if (m_pPlayer->ControlsVolume())
     {
-       m_pPlayer->SetVolume(m_volumeLevel);
-       m_pPlayer->SetMute(m_muted);
+      m_pPlayer->SetVolume(m_volumeLevel);
+      m_pPlayer->SetMute(m_muted);
     }
 
-    if( m_pPlayer->IsPlayingAudio() )
+    if(m_pPlayer->IsPlayingAudio())
     {
       if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
         g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
     }
 
 #ifdef HAS_VIDEO_PLAYBACK
-    else if( m_pPlayer->IsPlayingVideo() )
+    else if(m_pPlayer->IsPlayingVideo())
     {
       // if player didn't manange to switch to fullscreen by itself do it here
       if (options.fullscreen && g_renderManager.IsStarted() &&
@@ -3228,10 +3228,9 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
     else
     {
-      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION
-      ||  g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION ||
+          g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
         g_windowManager.PreviousWindow();
-
     }
 
 #if !defined(TARGET_POSIX)
