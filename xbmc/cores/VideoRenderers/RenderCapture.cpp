@@ -65,7 +65,7 @@ CRenderCaptureIMX::~CRenderCaptureIMX()
 
 int CRenderCaptureIMX::GetCaptureFormat()
 {
-    return CAPTUREFORMAT_RGBA;
+    return CAPTUREFORMAT_BGRA;
 }
 
 void CRenderCaptureIMX::BeginRender()
