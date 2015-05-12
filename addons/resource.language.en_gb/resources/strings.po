@@ -11636,7 +11636,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21472"
-msgid "Include \"All seasons\" and "\Specials\""
+msgid "Include \"All seasons\" and \"Specials\""
 msgstr ""
 
 #. Description of setting "Videos -> Library -> Include All Seasons and Specials" with label #21472
