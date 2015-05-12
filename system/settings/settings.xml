@@ -129,7 +129,7 @@
         </setting>
         <setting id="locale.country" type="string" label="20026" help="36115">
           <level>0</level>
-          <default>USA (12h)</default>
+          <default>UK (12h)</default>
           <constraints>
             <options>regions</options>
           </constraints>
