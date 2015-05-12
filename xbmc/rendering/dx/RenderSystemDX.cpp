@@ -845,6 +845,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
       return true;
   }
 
+/*
 #ifdef HAS_DS_PLAYER
   if (CGraphFilters::Get()->ReadyMadVr())
     return true;
@@ -857,6 +858,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     1.0,
     0 ) );
 #else
+*/
   return SUCCEEDED(m_pD3DDevice->Clear(
     0,
     NULL,
@@ -864,7 +866,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     color,
     1.0,
     0 ) );
-#endif
+//#endif
   return true;
 }
 

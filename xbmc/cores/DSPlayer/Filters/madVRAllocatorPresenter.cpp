@@ -196,6 +196,19 @@ void CmadVRAllocatorPresenter::SwapDevice()
   CLog::Log(LOGDEBUG, "%s Swapped device from Kodi to madVR", __FUNCTION__);
 }
 
+const DWORD D3DFVF_TLVERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;
+
+//Custom vertex
+struct TLVERTEX
+{
+  float x;
+  float y;
+  float z;
+  float rhw;
+  float u;
+  float v;
+};
+
 HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
   CLog::Log(LOGDEBUG, "%s madVR's device it's ready", __FUNCTION__);
@@ -209,6 +222,7 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
   }
 
   m_pD3DDeviceMadVR = pD3DDev;
+  m_pD3DDeviceKodi = g_Windowing.GetKodi3DDevice();
 
   if (m_firstBoot)
   { 
@@ -223,6 +237,19 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 
     // Change Resolution to match fps
     SetResolution();
+
+    HRESULT hr;
+    m_pKodiTexture = nullptr;
+
+    hr = m_pD3DDeviceMadVR->CreateVertexBuffer(sizeof(TLVERTEX) * 4, D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &m_pMadvrVertexBuffer, NULL);
+    if (SUCCEEDED(hr))
+      CLog::Log(LOGDEBUG, "Created Vertex Buffer %i", m_pSharedHandle);
+    hr = m_pD3DDeviceKodi->CreateTexture(1920, 1080, 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &m_pKodiTexture, &m_pSharedHandle);
+    if (SUCCEEDED(hr))
+      CLog::Log(LOGDEBUG, "Created Kodi texture %i", m_pSharedHandle);
+    hr = m_pD3DDeviceMadVR->CreateTexture(1920, 1080, 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &m_pMadvrTexture, &m_pSharedHandle);
+    if (SUCCEEDED(hr))
+      CLog::Log(LOGDEBUG, "Created madVR shared texture %i", m_pSharedHandle);
   }
 
   Com::SmartSize size;
@@ -306,7 +333,126 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
     m_isRendering = false;
   }
 
+  HRESULT hr = m_pKodiTexture->GetSurfaceLevel(0, &m_pKodiSurface);
+
+  m_pD3DDeviceKodi->SetRenderTarget(0, m_pKodiSurface);
+
+  //hr = m_pCallback->RenderGui();
+  //hr = m_pCallback->RenderOverlay();
+
+  m_pD3DDeviceKodi->Present(NULL, NULL, NULL, NULL);
+  //m_pCallback->PresentImage(width, height, width, height, (DWORD)(IDirect3DTexture9*)NULL, (DWORD)(IDirect3DSurface9*)NULL);
+
+  //D3DXSaveSurfaceToFile(L"d:\\test.jpg", D3DXIFF_JPG, m_pMPSurface, NULL, NULL);
+
+  IDirect3DVertexShader9* pOldVS = nullptr;
+  DWORD oldFVF = 0;
+
+  IDirect3DVertexBuffer9* ppStreamData = nullptr;
+  UINT pOffsetInBytes = 0;
+  UINT pStride = 0;
+
+  RECT oldScissor;
+  RECT newRect;
+  newRect.bottom = 1080;
+  newRect.top = 0;
+  newRect.left = 0;
+  newRect.right = 1920;
+
+  DWORD oldALPHABLENDENABLE = 0;
+  DWORD oldSRCALPHA = 0;
+  DWORD oldINVSRCALPHA = 0;
+
+  hr = m_pD3DDeviceMadVR->GetScissorRect(&oldScissor);
+  hr = m_pD3DDeviceMadVR->SetScissorRect(&newRect);
+
+  hr = m_pD3DDeviceMadVR->GetVertexShader(&pOldVS);
+  hr = m_pD3DDeviceMadVR->SetVertexShader(NULL);
+
+  hr = m_pD3DDeviceMadVR->GetFVF(&oldFVF);
+  hr = m_pD3DDeviceMadVR->SetFVF(D3DFVF_TLVERTEX);
+
+  m_pD3DDeviceMadVR->GetStreamSource(0, &ppStreamData, &pOffsetInBytes, &pStride);
+  hr = m_pD3DDeviceMadVR->SetStreamSource(0, m_pMadvrVertexBuffer, 0, sizeof(TLVERTEX));
+
+  TLVERTEX* vertices;
+
+  //Lock the vertex buffer
+  hr = m_pMadvrVertexBuffer->Lock(0, 0, (void**)&vertices, NULL);
+
+  RECT* rDest = new RECT();
+  rDest->bottom = 1080;
+  rDest->left = 0;
+  rDest->right = 1920;
+  rDest->top = 0;
+
+  vertices[0].x = (float)rDest->left - 0.5f;
+  vertices[0].y = (float)rDest->top - 0.5f;
+  vertices[0].z = 0.0f;
+  vertices[0].rhw = 1.0f;
+  vertices[0].u = 0.0f;
+  vertices[0].v = 0.0f;
+
+  vertices[1].x = (float)rDest->right - 0.5f;
+  vertices[1].y = (float)rDest->top - 0.5f;
+  vertices[1].z = 0.0f;
+  vertices[1].rhw = 1.0f;
+  vertices[1].u = 1.0f;
+  vertices[1].v = 0.0f;
+
+  vertices[2].x = (float)rDest->right - 0.5f;
+  vertices[2].y = (float)rDest->bottom - 0.5f;
+  vertices[2].z = 0.0f;
+  vertices[2].rhw = 1.0f;
+  vertices[2].u = 1.0f;
+  vertices[2].v = 1.0f;
+
+  vertices[3].x = (float)rDest->left - 0.5f;
+  vertices[3].y = (float)rDest->bottom - 0.5f;
+  vertices[3].z = 0.0f;
+  vertices[3].rhw = 1.0f;
+  vertices[3].u = 0.0f;
+  vertices[3].v = 1.0f;
+
+  hr = m_pMadvrVertexBuffer->Unlock();
+
+  m_pMadvrTexture->GetSurfaceLevel(0, &m_pMadvrSurface);
+
+
+  m_pD3DDeviceMadVR->GetRenderState(D3DRS_ALPHABLENDENABLE, &oldALPHABLENDENABLE);
+  m_pD3DDeviceMadVR->GetRenderState(D3DRS_SRCBLEND, &oldSRCALPHA);
+  m_pD3DDeviceMadVR->GetRenderState(D3DRS_DESTBLEND, &oldINVSRCALPHA);
+
+  m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+  m_pD3DDeviceMadVR->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+  m_pD3DDeviceMadVR->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+  m_pD3DDeviceMadVR->StretchRect(m_pKodiSurface, NULL, m_pMadvrSurface, NULL, D3DTEXF_NONE);
+
+  //D3DXSaveSurfaceToFile(L"d:\\test.jpg", D3DXIFF_JPG, m_pRenderSurface, NULL, NULL);
+
+  IDirect3DBaseTexture9* oldTexture = nullptr;
+
+  hr = m_pD3DDeviceMadVR->GetTexture(0, &oldTexture);
+  //hr = m_pMadD3DDev->SetTexture(0, m_pMPTexture);
+  hr = m_pD3DDeviceMadVR->SetTexture(0, m_pMadvrTexture);
+
+
+  hr = m_pD3DDeviceMadVR->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
+
+  hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHABLENDENABLE, oldALPHABLENDENABLE);
+  hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_SRCBLEND, oldSRCALPHA);
+  hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_DESTBLEND, oldINVSRCALPHA);
+
+  // restore
+  hr = m_pD3DDeviceMadVR->SetScissorRect(&oldScissor);
+  hr = m_pD3DDeviceMadVR->SetTexture(0, oldTexture);
+  hr = m_pD3DDeviceMadVR->SetVertexShader(pOldVS);
+  hr = m_pD3DDeviceMadVR->SetFVF(oldFVF);
+  hr = m_pD3DDeviceMadVR->SetStreamSource(0, ppStreamData, pOffsetInBytes, pStride);
+
   return S_OK;
+
 }
 
 // ISubPicAllocatorPresenter
@@ -615,6 +761,7 @@ void CmadVRAllocatorPresenter::RestoreMadvrSettings()
 
 LPDIRECT3DDEVICE9 CmadVRAllocatorPresenter::GetDevice()
 {
+  return g_Windowing.GetKodi3DDevice();
   if (m_isDeviceSet)
   {
     //CLog::Log(0, "device madvr");

@@ -92,6 +92,14 @@ class CmadVRAllocatorPresenter
   bool m_isRendering;
   int m_shaderStage;
 
+  IDirect3DSurface9 *m_pKodiSurface;
+  IDirect3DTexture9 *m_pKodiTexture;
+  IDirect3DSurface9 *m_pMadvrSurface;
+  IDirect3DTexture9 *m_pMadvrTexture;
+  LPDIRECT3DVERTEXBUFFER9 m_pMadvrVertexBuffer;
+  HANDLE m_pSharedHandle = nullptr;
+  IDirect3DDevice9* m_pD3DDeviceKodi;
+
 public:
 
   CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdString &_Error);
