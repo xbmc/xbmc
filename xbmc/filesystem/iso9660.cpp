@@ -388,7 +388,10 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
           pFile_Pointer->path = (char *)malloc(strlen(path) + 1);
 
           if (!pFile_Pointer->path)
+          {
+            free(pCurr_dir_cache);
             return NULL;
+          }
 
           strcpy( pFile_Pointer->path, path );
           pFile_Pointer->name = (char *)malloc( temp_text.length() + 1);
