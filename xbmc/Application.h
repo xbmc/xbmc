@@ -365,7 +365,7 @@ public:
 
   float GetDimScreenSaverLevel() const;
 
-  bool SwitchToFullScreen();
+  bool SwitchToFullScreen(bool force = false);
 
   CSplash* GetSplash() { return m_splash; }
   void SetRenderGUI(bool renderGUI);

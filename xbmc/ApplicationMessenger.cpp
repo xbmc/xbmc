@@ -533,8 +533,8 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     case TMSG_SWITCHTOFULLSCREEN:
-      if( g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
-        g_application.SwitchToFullScreen();
+      if(g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+        g_application.SwitchToFullScreen(true);
       break;
 
     case TMSG_SETVIDEORESOLUTION:
