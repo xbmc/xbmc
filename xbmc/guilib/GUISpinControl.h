@@ -44,7 +44,7 @@
 class CGUISpinControl : public CGUIControl
 {
 public:
-  CGUISpinControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo& labelInfo, int iType);
+  CGUISpinControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CTextureInfo& textureUpDisabled, const CTextureInfo& textureDownDisabled, const CLabelInfo& labelInfo, int iType);
   virtual ~CGUISpinControl(void);
   virtual CGUISpinControl *Clone() const { return new CGUISpinControl(*this); };
 
@@ -125,6 +125,8 @@ protected:
   CGUITexture m_imgspinDown;
   CGUITexture m_imgspinUpFocus;
   CGUITexture m_imgspinDownFocus;
+  CGUITexture m_imgspinUpDisabled;
+  CGUITexture m_imgspinDownDisabled;
   CGUILabel   m_label;
   bool m_bShowRange;
   char m_szTyped[10];
