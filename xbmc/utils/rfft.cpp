@@ -31,6 +31,15 @@ RFFT::RFFT(int size, bool windowed) :
   m_cfg = kiss_fftr_alloc(m_size,0,nullptr,nullptr);
 }
 
+RFFT::~RFFT()
+{
+  // we don' use kiss_fftr_free here because
+  // its hardcoded to free and doesn't pay attention
+  // to SIMD (which might be used during kiss_fftr_alloc
+  //in the C'tor).
+  KISS_FFT_FREE(m_cfg);
+}
+
 void RFFT::calc(const float* input, float* output)
 {
   // temporary buffers

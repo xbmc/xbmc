@@ -31,6 +31,9 @@ public:
   //! \brief windowed Whether or not to apply a Hann window to data.
   RFFT(int size, bool windowed=false);
 
+  //! \brief Free the RFFT plan
+  ~RFFT();
+
   //! \brief Calculate FFTs
   //! \param input Input data of size 2*m_size
   //! \param output Output data of size m_size.
