@@ -1,3 +1,11 @@
+#[Consistency] Make terms, settings names, brands and other minutiae, consistent throughout file.
+#[Capitalization] Avoid capitalizing every second word. See http://grammarist.com/capitalization/
+#For example, prefer wording as "This new string" instead of "This New String".
+#[Referencing] If a suitable string already exists, reuse it, making a note of where it's used!
+#[Description / location] For example, "#. Description of some setting" used on "#: xbmc/addons/guidialogaddoninfo.cpp"
+#When writing a description or setting, refer to a setting name in quotes. See existing entries for guidance.
+#For example, "Press \"OK\" for \"All seasons\"" instead of "Press OK for All seasons" after first word.
+
 # Kodi Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
@@ -195,7 +203,7 @@ msgid "Background"
 msgstr ""
 
 msgctxt "#31103"
-msgid "Show \"Paused\" in picture slide show"
+msgid "Show \"Paused\" in pictures slideshow"
 msgstr ""
 
 msgctxt "#31104"
@@ -209,7 +217,7 @@ msgid "Miscellaneous options"
 msgstr ""
 
 msgctxt "#31107"
-msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
 msgstr ""
 
 msgctxt "#31108"
@@ -242,8 +250,9 @@ msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr ""
 
+#. In main language strings its used as submenu
 msgctxt "#31118"
-msgid "Home page programs sub-menu"
+msgid "Home page programs submenu"
 msgstr ""
 
 msgctxt "#31119"
@@ -284,16 +293,17 @@ msgstr ""
 
 #empty string with id 31133
 
+#. In main language strings its used as submenu
 msgctxt "#31134"
-msgid "Home page Videos sub-menu"
+msgid "Home page videos submenu"
 msgstr ""
 
 msgctxt "#31135"
-msgid "Home page Music sub-menu"
+msgid "Home page music submenu"
 msgstr ""
 
 msgctxt "#31136"
-msgid "Home page Pictures sub-menu"
+msgid "Home page pictures submenu"
 msgstr ""
 
 #empty strings from id 31137 to 31139
@@ -345,7 +355,7 @@ msgstr ""
 #Extra labels
 
 msgctxt "#31300"
-msgid "Current temp"
+msgid "Current temperature"
 msgstr ""
 
 msgctxt "#31301"
@@ -518,11 +528,11 @@ msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set m
 msgstr ""
 
 msgctxt "#31403"
-msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
 msgstr ""
 
 msgctxt "#31404"
-msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
 msgstr ""
 
 #empty string with id 31405
@@ -550,7 +560,7 @@ msgid "First run help..."
 msgstr ""
 
 msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialogue. It will not appear again."
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
 msgstr ""
 
 msgctxt "#31413"
@@ -619,7 +629,7 @@ msgstr ""
 #Weather plugin
 
 msgctxt "#31901"
-msgid "36 Hour forecast"
+msgid "36 hour forecast"
 msgstr ""
 
 msgctxt "#31902"
