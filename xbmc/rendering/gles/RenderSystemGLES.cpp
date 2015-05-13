@@ -573,7 +573,7 @@ void CRenderSystemGLES::InitialiseGUIShader()
     m_pGUIshader = new CGUIShader*[SM_ESHADERCOUNT];
     for (int i = 0; i < SM_ESHADERCOUNT; i++)
     {
-      if (i == SM_TEXTURE_RGBA_OES)
+      if (i == SM_TEXTURE_RGBA_OES || i == SM_TEXTURE_RGBA_BOB_OES)
       {
         if (!g_Windowing.IsExtSupported("GL_OES_EGL_image_external"))
         {
