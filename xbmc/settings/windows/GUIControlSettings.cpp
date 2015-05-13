@@ -625,6 +625,14 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
           strText = g_localizeStrings.Get(231); // None
       }
     }
+    else if (m_pSetting->GetType() == SettingTypeAction &&
+             !static_cast<const CSettingControlButton*>(control)->HideValue())
+    {
+      // CSettingAction. 
+      // Note: This can be removed once all settings use a proper control & format combination.
+      // CSettingAction is strictly speaking not designed to have a label2, it does not even have a value.
+      strText = m_pButton->GetLabel2();
+    }
   }
   else if (controlType == "slider")
   {
