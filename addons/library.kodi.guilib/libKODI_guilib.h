@@ -488,7 +488,7 @@ public:
 
   bool Dialog_Numeric_ShowAndGetNumber(char &strInput, unsigned int iMaxStringSize, const char *strHeading, unsigned int iAutoCloseTimeoutMs = 0)
   {
-    return GUI_dialog_numeric_show_and_get_number(m_Handle, m_Callbacks, strInput, iMaxStringSize, strHeading, iAutoCloseTimeoutMs = 0);
+    return GUI_dialog_numeric_show_and_get_number(m_Handle, m_Callbacks, strInput, iMaxStringSize, strHeading, iAutoCloseTimeoutMs);
   }
 
   bool Dialog_Numeric_ShowAndGetSeconds(char &strTime, unsigned int iMaxStringSize, const char *strHeading)
