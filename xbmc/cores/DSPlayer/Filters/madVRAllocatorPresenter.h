@@ -80,7 +80,6 @@ class CmadVRAllocatorPresenter
   void ConfigureMadvr();
   void RestoreKodiDevice();
   Com::SmartPtr<IUnknown> m_pDXR;
-  LPDIRECT3DDEVICE9 m_pD3DDeviceMadVR;
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartSize m_ScreenSize;
   EXCLUSIVEMODECALLBACK m_exclusiveCallback;
@@ -92,13 +91,48 @@ class CmadVRAllocatorPresenter
   bool m_isRendering;
   int m_shaderStage;
 
-  IDirect3DSurface9 *m_pKodiSurface;
-  IDirect3DTexture9 *m_pKodiTexture;
-  IDirect3DSurface9 *m_pMadvrSurface;
-  IDirect3DTexture9 *m_pMadvrTexture;
-  LPDIRECT3DVERTEXBUFFER9 m_pMadvrVertexBuffer;
+  HRESULT RenderToTexture(IDirect3DTexture9* pTexture, IDirect3DSurface9* pSurface);
+  HRESULT RenderTexture(IDirect3DVertexBuffer9* pVertexBuf, IDirect3DTexture9* pTexture);
+
+  HRESULT SetupOSDVertex(IDirect3DVertexBuffer9* pVertextBuf);
+  HRESULT StoreMadDeviceState();
+  HRESULT SetupMadDeviceState();
+  HRESULT RestoreMadDeviceState();
+
+  IDirect3DSurface9 *m_pKodiSurface = nullptr;
+  IDirect3DTexture9 *m_pKodiTexture = nullptr;
+  IDirect3DSurface9 *m_pMadvrSurface = nullptr;
+  IDirect3DTexture9 *m_pMadvrTexture = nullptr;
+  IDirect3DVertexBuffer9* m_pMadvrVertexBuffer = nullptr;
   HANDLE m_pSharedHandle = nullptr;
-  IDirect3DDevice9* m_pD3DDeviceKodi;
+
+  IDirect3DDevice9Ex* m_pD3DDeviceKodi = nullptr;
+  IDirect3DDevice9Ex* m_pD3DDeviceMadVR = nullptr;
+
+  DWORD m_dwWidth = 0;
+  DWORD m_dwHeight = 0;
+
+  // stored mad device state
+  IDirect3DVertexShader9* m_pOldVS = nullptr;
+  IDirect3DVertexBuffer9* m_pOldStreamData = nullptr;
+  IDirect3DBaseTexture9* m_pOldTexture = nullptr;
+
+  DWORD m_dwOldFVF = 0;
+  DWORD m_dwOldALPHABLENDENABLE = 0;
+  DWORD m_dwOldSRCALPHA = 0;
+  DWORD m_dwOldINVSRCALPHA = 0;
+  UINT  m_nOldOffsetInBytes = 0;
+  UINT  m_nOldStride = 0;
+  RECT  m_oldScissorRect;
+
+  DWORD mD3DRS_CULLMODE = 0;
+  DWORD mD3DRS_LIGHTING = 0;
+  DWORD mD3DRS_ZENABLE = 0;
+  DWORD mD3DRS_ALPHABLENDENABLE = 0;
+  DWORD mD3DRS_SRCBLEND = 0;
+  DWORD mD3DRS_DESTBLEND = 0;
+
+  IDirect3DPixelShader9* mPix = nullptr;
 
 public:
 
