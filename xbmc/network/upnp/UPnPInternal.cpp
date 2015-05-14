@@ -222,9 +222,10 @@ bool CResourceFinder::operator()(const PLT_MediaItemResource& resource) const {
 NPT_Result
 PopulateObjectFromTag(CMusicInfoTag&         tag,
                       PLT_MediaObject&       object,
-                      NPT_String*            file_path, /* = NULL */
-                      PLT_MediaItemResource* resource,  /* = NULL */
-                      EClientQuirks          quirks)
+                      NPT_String*            file_path,
+                      PLT_MediaItemResource* resource,
+                      EClientQuirks          quirks,
+                      UPnPService            service /* = UPnPServiceNone */)
 {
     if (!tag.GetURL().empty() && file_path)
       *file_path = tag.GetURL().c_str();
@@ -265,9 +266,10 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
 NPT_Result
 PopulateObjectFromTag(CVideoInfoTag&         tag,
                       PLT_MediaObject&       object,
-                      NPT_String*            file_path, /* = NULL */
-                      PLT_MediaItemResource* resource,  /* = NULL */
-                      EClientQuirks          quirks)
+                      NPT_String*            file_path,
+                      PLT_MediaItemResource* resource,
+                      EClientQuirks          quirks,
+                      UPnPService            service /* = UPnPServiceNone */)
 {
     if (!tag.m_strFileNameAndPath.empty() && file_path)
       *file_path = tag.m_strFileNameAndPath.c_str();
@@ -356,7 +358,8 @@ BuildObject(CFileItem&                    item,
             bool                          with_count,
             NPT_Reference<CThumbLoader>&  thumb_loader,
             const PLT_HttpRequestContext* context /* = NULL */,
-            CUPnPServer*                  upnp_server /* = NULL */)
+            CUPnPServer*                  upnp_server /* = NULL */,
+            UPnPService                   upnp_service /* = UPnPServiceNone */)
 {
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
@@ -391,7 +394,7 @@ BuildObject(CFileItem&                    item,
 
             if (item.HasMusicInfoTag()) {
                 CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
-                PopulateObjectFromTag(*tag, *object, &file_path, &resource, quirks);
+                PopulateObjectFromTag(*tag, *object, &file_path, &resource, quirks, upnp_service);
             }
         } else if (item.IsVideoDb() || item.IsVideo()) {
             object->m_ObjectClass.type = "object.item.videoItem";
@@ -401,7 +404,7 @@ BuildObject(CFileItem&                    item,
 
             if (item.HasVideoInfoTag()) {
                 CVideoInfoTag *tag = (CVideoInfoTag*)item.GetVideoInfoTag();
-                PopulateObjectFromTag(*tag, *object, &file_path, &resource, quirks);
+                PopulateObjectFromTag(*tag, *object, &file_path, &resource, quirks, upnp_service);
             }
         } else if (item.IsPicture()) {
             object->m_ObjectClass.type = "object.item.imageItem.photo";
@@ -612,8 +615,12 @@ BuildObject(CFileItem&                    item,
         }
     }
 
-    //Add external subtitle
-    if (upnp_server && item.IsVideo()) //only if video file
+    // look for and add external subtitle if we are processing a video file and
+    // we are being called by a UPnP player or renderer or the user has chosen
+    // to look for external subtitles
+    if (upnp_server != NULL && item.IsVideo() &&
+       (upnp_service == UPnPPlayer || upnp_service == UPnPRenderer ||
+        CSettings::Get().GetBool("services.upnplookforexternalsubtitles")))
     {
         // find any available external subtitles
         std::vector<std::string> filenames;
@@ -729,9 +736,10 @@ CorrectAllItemsSortHack(const std::string &item)
 }
 
 int
-PopulateTagFromObject(CMusicInfoTag&          tag,
+PopulateTagFromObject(CMusicInfoTag&         tag,
                       PLT_MediaObject&       object,
-                      PLT_MediaItemResource* resource /* = NULL */)
+                      PLT_MediaItemResource* resource /* = NULL */,
+                      UPnPService            service /* = UPnPServiceNone */)
 {
     tag.SetTitle((const char*)object.m_Title);
     tag.SetArtist((const char*)object.m_Creator);
@@ -765,7 +773,8 @@ PopulateTagFromObject(CMusicInfoTag&          tag,
 int
 PopulateTagFromObject(CVideoInfoTag&         tag,
                       PLT_MediaObject&       object,
-                      PLT_MediaItemResource* resource /* = NULL */)
+                      PLT_MediaItemResource* resource /* = NULL */,
+                      UPnPService            service /* = UPnPServiceNone */)
 {
     CDateTime date;
     date.SetFromW3CDate((const char*)object.m_Date);
@@ -876,7 +885,8 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     return NPT_SUCCESS;
 }
 
-CFileItemPtr BuildObject(PLT_MediaObject* entry)
+CFileItemPtr BuildObject(PLT_MediaObject* entry,
+                         UPnPService      upnp_service /* = UPnPServiceNone */)
 {
   NPT_String ObjectClass = entry->m_ObjectClass.type.ToLowercase();
 
@@ -891,14 +901,14 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry)
     // look for metadata
     if( ObjectClass.StartsWith("object.container.album.videoalbum") ) {
       pItem->SetLabelPreformated(false);
-      UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *entry, NULL);
+      UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *entry, NULL, upnp_service);
 
     } else if( ObjectClass.StartsWith("object.container.album.photoalbum")) {
       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
 
     } else if( ObjectClass.StartsWith("object.container.album") ) {
       pItem->SetLabelPreformated(false);
-      UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, NULL);
+      UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, NULL, upnp_service);
     }
 
   } else {
@@ -937,11 +947,11 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry)
     // look for metadata
     if(video) {
         pItem->SetLabelPreformated(false);
-        UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *entry, res);
+        UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *entry, res, upnp_service);
 
     } else if(audio) {
         pItem->SetLabelPreformated(false);
-        UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, res);
+        UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, res, upnp_service);
 
     } else if(image) {
         //CPictureInfoTag* tag = pItem->GetPictureInfoTag();

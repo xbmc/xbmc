@@ -379,7 +379,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
         }
 
         // not a virtual path directory, new system
-        object = BuildObject(*item.get(), file_path, with_count, thumb_loader, &context, this);
+        object = BuildObject(*item.get(), file_path, with_count, thumb_loader, &context, this, UPnPContentDirectory);
 
         // set parent id if passed, otherwise it should have been determined
         if (object && parent_id) {

@@ -366,7 +366,11 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   if (!m_bConfigured) return;
 
+  if (g_graphicsContext.GetStereoMode())
+    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
   ManageDisplay();
+  if (g_graphicsContext.GetStereoMode())
+    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
 
   // if running bypass, then the player might need the src/dst rects
   // for sizing video playback on a layer other than the gles layer.

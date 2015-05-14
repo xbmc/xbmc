@@ -10273,7 +10273,12 @@ msgctxt "#20221"
 msgid "With this enabled, any information that is downloaded for albums and artists will override anything you have set in your song tags, such as genres, year, song artists etc. Useful if you have MusicBrainz identifiers in your song tags."
 msgstr ""
 
-#empty strings from id 20222 to 20239
+#: system/settings/settings.xml
+msgctxt "#20222"
+msgid "Look for external subtitles"
+msgstr ""
+
+#empty strings from id 20223 to 20239
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#20240"
@@ -11636,7 +11641,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21472"
-msgid "Include \"All seasons\" and "\Specials\""
+msgid "Include \"All seasons\" and \"Specials\""
 msgstr ""
 
 #. Description of setting "Videos -> Library -> Include All Seasons and Specials" with label #21472
@@ -13817,12 +13822,12 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36007"
-msgid "Devices to power on on startup"
+msgid "Devices to power on during startup"
 msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36008"
-msgid "Devices to power off on shutdown"
+msgid "Devices to power off during shutdown"
 msgstr ""
 
 #: system/peripherals.xml
@@ -15834,7 +15839,11 @@ msgctxt "#36419"
 msgid "Define locations used for retrieving weather information."
 msgstr ""
 
-#empty string with id 36420
+#. Description of setting "Services -> UPnP -> Look for external subtitles" with label #20222
+#: system/settings/settings.xml
+msgctxt "#36420"
+msgid "Look for external subtitles for videos provided by the UPnP server. This can cause extensive CPU, filesystem and network load."
+msgstr ""
 
 #. Description of setting "Videos -> Playback -> Prefer VDPAU Video Mixer" with label #13437
 #: system/settings/settings.xml

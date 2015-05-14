@@ -41,6 +41,14 @@ class CVideoInfoTag;
 
 namespace UPNP
 {
+  enum UPnPService {
+    UPnPServiceNone = 0,
+    UPnPClient,
+    UPnPContentDirectory,
+    UPnPPlayer,
+    UPnPRenderer
+  };
+
   class CResourceFinder {
   public:
     CResourceFinder(const char* protocol, const char* content = NULL);
@@ -86,30 +94,38 @@ namespace UPNP
 
   NPT_Result PopulateTagFromObject(MUSIC_INFO::CMusicInfoTag& tag,
                                    PLT_MediaObject&           object,
-                                   PLT_MediaItemResource*     resource = NULL);
+                                   PLT_MediaItemResource*     resource = NULL,
+                                   UPnPService                service = UPnPServiceNone);
+
   NPT_Result PopulateTagFromObject(CVideoInfoTag&             tag,
                                    PLT_MediaObject&           object,
-                                   PLT_MediaItemResource*     resource = NULL);
+                                   PLT_MediaItemResource*     resource = NULL,
+                                   UPnPService                service = UPnPServiceNone);
 
-  NPT_Result PopulateObjectFromTag(MUSIC_INFO::CMusicInfoTag&         tag,
-                                          PLT_MediaObject&       object,
-                                          NPT_String*            file_path,
-                                          PLT_MediaItemResource* resource,
-                                          EClientQuirks          quirks);
-  NPT_Result PopulateObjectFromTag(CVideoInfoTag&         tag,
-                                          PLT_MediaObject&       object,
-                                          NPT_String*            file_path,
-                                          PLT_MediaItemResource* resource,
-                                          EClientQuirks          quirks);
+  NPT_Result PopulateObjectFromTag(MUSIC_INFO::CMusicInfoTag& tag,
+                                   PLT_MediaObject&           object,
+                                   NPT_String*                file_path,
+                                   PLT_MediaItemResource*     resource,
+                                   EClientQuirks              quirks,
+                                   UPnPService                service = UPnPServiceNone);
 
-  PLT_MediaObject* BuildObject(CFileItem&              item,
-                                      NPT_String&                   file_path,
-                                      bool                          with_count,
-                                      NPT_Reference<CThumbLoader>&  thumb_loader,
-                                      const PLT_HttpRequestContext* context = NULL,
-                                      CUPnPServer*                  upnp_server = NULL);
+  NPT_Result PopulateObjectFromTag(CVideoInfoTag&             tag,
+                                   PLT_MediaObject&           object,
+                                   NPT_String*                file_path,
+                                   PLT_MediaItemResource*     resource,
+                                   EClientQuirks              quirks,
+                                   UPnPService                service = UPnPServiceNone);
 
-  CFileItemPtr     BuildObject(PLT_MediaObject* entry);
+  PLT_MediaObject* BuildObject(CFileItem&                     item,
+                               NPT_String&                    file_path,
+                               bool                           with_count,
+                               NPT_Reference<CThumbLoader>&   thumb_loader,
+                               const PLT_HttpRequestContext*  context = NULL,
+                               CUPnPServer*                   upnp_server = NULL,
+                               UPnPService                    upnp_service = UPnPServiceNone);
+
+  CFileItemPtr     BuildObject(PLT_MediaObject* entry,
+                               UPnPService      upnp_service = UPnPServiceNone);
 
   bool             GetResource(const PLT_MediaObject* entry, CFileItem& item);
   CFileItemPtr     GetFileItem(const NPT_String& uri, const NPT_String& meta);

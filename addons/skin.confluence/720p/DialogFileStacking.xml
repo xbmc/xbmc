@@ -81,7 +81,6 @@
 			<onup>450</onup>
 			<ondown>450</ondown>
 			<orientation>horizontal</orientation>
-			<focusposition>2</focusposition>
 			<viewtype label="535">list</viewtype>
 			<scrolltime>200</scrolltime>
 			<itemlayout width="40">

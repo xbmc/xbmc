@@ -847,10 +847,11 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
       break;
   }
   int ret = 0;
-  if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !m_demux_queue_length)
+  double queued = m_decoderPts != DVD_NOPTS_VALUE && pts != DVD_NOPTS_VALUE ? pts - m_decoderPts : 0.0;
+  if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !m_demux_queue_length && queued <= DVD_MSEC_TO_TIME(500))
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - got space for output: demux_queue(%d) space(%d)", CLASSNAME, __func__, m_demux_queue_length, mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size);
+      CLog::Log(LOGDEBUG, "%s::%s - got space for output: demux_queue(%d) space(%d) queued(%.2f)", CLASSNAME, __func__, m_demux_queue_length, mmal_queue_length(m_dec_input_pool->queue) * m_dec_input->buffer_size, queued*1e-6);
     ret |= VC_BUFFER;
   }
   else

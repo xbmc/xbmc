@@ -1813,15 +1813,15 @@ void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *so
     dstRect.y2 = m_fbHeight;
   }
 
-  iSrcRect.x1 = Align((int)srcRect.x1,2);
-  iSrcRect.y1 = Align((int)srcRect.y1,2);
-  iSrcRect.x2 = Align((int)srcRect.x2,2);
-  iSrcRect.y2 = Align((int)srcRect.y2,2);
+  iSrcRect.x1 = (int)srcRect.x1;
+  iSrcRect.y1 = (int)srcRect.y1;
+  iSrcRect.x2 = (int)srcRect.x2;
+  iSrcRect.y2 = (int)srcRect.y2;
 
-  iDstRect.x1 = Align((int)dstRect.x1,2);
-  iDstRect.y1 = Align((int)dstRect.y1,2);
-  iDstRect.x2 = Align((int)dstRect.x2,2);
-  iDstRect.y2 = Align((int)dstRect.y2,2);
+  iDstRect.x1 = Align((int)dstRect.x1,8);
+  iDstRect.y1 = Align((int)dstRect.y1,8);
+  iDstRect.x2 = Align2((int)dstRect.x2,8);
+  iDstRect.y2 = Align2((int)dstRect.y2,8);
 
   ipu.task.input.crop.pos.x  = iSrcRect.x1;
   ipu.task.input.crop.pos.y  = iSrcRect.y1;
@@ -1873,6 +1873,8 @@ void CIMXContext::PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *so
 
 bool CIMXContext::DoTask(IPUTask &ipu, int targetPage)
 {
+  bool swapColors = false;
+
   // Clear page if cropping changes
   CRectInt dstRect(ipu.task.output.crop.pos.x, ipu.task.output.crop.pos.y,
                    ipu.task.output.crop.pos.x + ipu.task.output.crop.w,
@@ -1918,6 +1920,7 @@ bool CIMXContext::DoTask(IPUTask &ipu, int targetPage)
         CLog::Log(LOGERROR, "iMX : Error allocating capture buffer\n");
     }
     ipu.task.output.paddr = m_bufferCapture->buf_paddr;
+    swapColors = true;
   }
 
   if ((ipu.task.input.crop.w <= 0) || (ipu.task.input.crop.h <= 0)
@@ -2027,7 +2030,7 @@ bool CIMXContext::DoTask(IPUTask &ipu, int targetPage)
       dst.width = ipu.task.output.width;
       dst.height = ipu.task.output.height;
       dst.rot = G2D_ROTATION_0;
-      dst.format = G2D_RGBA8888;
+      dst.format = swapColors ? G2D_BGRA8888 : G2D_RGBA8888;
       /*printf("dst planes :%x -%x -%x \n",dst.planes[0], dst.planes[1], dst.planes[2] );
       printf("dst left %d right %d top %d bottom %d stride %d w : %d h %d rot : %d format %d\n",
            dst.left, dst.right, dst.top, dst.bottom, dst.stride, dst.width, dst.height, dst.rot, dst.format);*/

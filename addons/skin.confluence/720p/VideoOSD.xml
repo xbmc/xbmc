@@ -328,7 +328,6 @@
 				<width>256</width>
 				<font>font13</font>
 				<label>33003</label>
-				<font>-</font>
 				<textoffsetx>30</textoffsetx>
 				<aligny>center</aligny>
 				<texturefocus border="25,5,25,5">SubMenuBack-MiddleFO.png</texturefocus>

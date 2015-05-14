@@ -51,6 +51,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
+#include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/TimeUtils.h"
@@ -7945,7 +7946,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     }
 
     std::string filesToTestForDelete;
-    VECSOURCES *videoSources = CMediaSourceSettings::Get().GetSources("video");
+    VECSOURCES videoSources(*CMediaSourceSettings::Get().GetSources("video"));
+    g_mediaManager.GetRemovableDrives(videoSources);
 
     int total = m_pDS->num_rows();
     int current = 0;
@@ -7968,7 +7970,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       // remove optical, non-existing files, files with no matching source
       bool bIsSource;
       if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false) ||
-          CUtil::GetMatchingSource(fullPath, *videoSources, bIsSource) < 0)
+          CUtil::GetMatchingSource(fullPath, videoSources, bIsSource) < 0)
         filesToTestForDelete += m_pDS->fv("files.idFile").get_asString() + ",";
 
       if (handle == NULL && progress != NULL)
@@ -8268,7 +8270,9 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
                     parentPathIdField.c_str(),
                     table.c_str(), cleanableFileIDs.c_str());
 
-  VECSOURCES *videoSources = CMediaSourceSettings::Get().GetSources("video");
+  VECSOURCES videoSources(*CMediaSourceSettings::Get().GetSources("video"));
+  g_mediaManager.GetRemovableDrives(videoSources);
+
   // map of parent path ID to boolean pair (if not exists and user choice)
   std::map<int, std::pair<bool, bool> > sourcePathsDeleteDecisions;
   m_pDS2->query(sql.c_str());
@@ -8285,7 +8289,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
       GetSourcePath(parentPath, sourcePath, scanSettings);
 
       bool bIsSourceName;
-      bool sourceNotFound = (CUtil::GetMatchingSource(parentPath, *videoSources, bIsSourceName) < 0);
+      bool sourceNotFound = (CUtil::GetMatchingSource(parentPath, videoSources, bIsSourceName) < 0);
 
       if (sourceNotFound && sourcePath.empty())
         sourcePath = parentPath;
