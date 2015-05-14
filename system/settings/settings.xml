@@ -2117,6 +2117,14 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="services.upnplookforexternalsubtitles" type="boolean" parent="services.upnpserver" label="20222" help="36420">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="services.upnpserver">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="services.upnpcontroller" type="boolean" parent="services.upnpserver" label="21361" help="36326">
           <level>1</level>
           <default>false</default>
