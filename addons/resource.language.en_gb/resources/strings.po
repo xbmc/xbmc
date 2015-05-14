@@ -13817,12 +13817,12 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36007"
-msgid "Devices to power on on startup"
+msgid "Devices to power on during startup"
 msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36008"
-msgid "Devices to power off on shutdown"
+msgid "Devices to power off during shutdown"
 msgstr ""
 
 #: system/peripherals.xml
