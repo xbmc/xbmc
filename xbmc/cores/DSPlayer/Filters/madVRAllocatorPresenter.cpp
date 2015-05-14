@@ -236,10 +236,6 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
     // Change Resolution to match fps
     SetResolution();
 
-
-    m_dwWidth = g_graphicsContext.GetWidth();
-    m_dwHeight = g_graphicsContext.GetHeight();
-
     HRESULT hr;
 
     if (FAILED(hr = m_pD3DDeviceMadVR->CreateVertexBuffer(sizeof(VID_FRAME_VERTEX) * 4, D3DUSAGE_WRITEONLY, D3DFVF_VID_FRAME_VERTEX, D3DPOOL_DEFAULT, &m_pMadvrVertexBuffer, NULL)))
@@ -295,6 +291,9 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
   Com::SmartRect wndRect(0, 0, width, height);
   Com::SmartRect videoRect(left, top, right, bottom);
 
+  m_dwWidth = width;
+  m_dwHeight = height;
+
   __super::SetPosition(wndRect, videoRect);
   if (!g_bExternalSubtitleTime) {
     SetTime(rtStart);
@@ -323,7 +322,9 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
     m_pD3DDeviceMadVR->SetPixelShader(NULL);
 
     // render kodi gui
+    m_pD3DDeviceKodi->BeginScene();
     g_application.RenderMadvr();
+    m_pD3DDeviceKodi->EndScene();
 
     //restore stagestate for xysubfilter
     m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -342,9 +343,6 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
   }
 
   HRESULT hr = E_UNEXPECTED;
-
-  //WORD height = (WORD)bottom - (WORD)top;
-  //WORD width = (WORD)right - (WORD)left;
 
   if (FAILED(hr = RenderToTexture(m_pKodiTexture, m_pKodiSurface)))
     return hr;
@@ -407,6 +405,9 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   mi.cbSize = sizeof(MONITORINFO);
   if (GetMonitorInfo(MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST), &mi)) {
     m_ScreenSize.SetSize(mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top);
+
+    m_dwWidth = m_ScreenSize.cx;
+    m_dwHeight = m_ScreenSize.cy;
   }
 
   return S_OK;
