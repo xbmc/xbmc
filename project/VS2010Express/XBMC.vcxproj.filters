@@ -3098,6 +3098,9 @@
       <Filter>music</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogAudioDSPManager.cpp">
+      <Filter>settings\dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\test\TestUtil.cpp">
       <Filter>test</Filter>
     </ClCompile>
@@ -6049,6 +6052,8 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\dacp\dacp.h">
       <Filter>network\dacp</Filter>
+    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogAudioDSPManager.h">
+      <Filter>settings\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\ImageResource.h">
       <Filter>addons</Filter>

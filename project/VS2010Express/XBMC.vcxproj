@@ -787,6 +787,7 @@
     <ClCompile Include="..\..\xbmc\SectionLoader.cpp" />
     <ClCompile Include="..\..\xbmc\settings\AdvancedSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\AudioDSPSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogAudioDSPManager.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsBase.cpp" />
     <ClCompile Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManagerBase.cpp" />
@@ -1034,6 +1035,7 @@
     <ClInclude Include="..\..\xbmc\profiles\windows\GUIWindowSettingsProfile.h" />
     <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimerType.h" />
     <ClInclude Include="..\..\xbmc\settings\AudioDSPSettings.h" />
+    <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogAudioDSPManager.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogContentSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsBase.h" />
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogSettingsManagerBase.h" />
