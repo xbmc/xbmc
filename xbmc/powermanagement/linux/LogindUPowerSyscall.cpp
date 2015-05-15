@@ -302,7 +302,18 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
         }
         else if(m_warnLevel == UP_DEVICE_LEVEL_ACTION)
         {
-          Powerdown();
+          if (CanPowerdown())
+          {
+            Powerdown();
+          }
+          else if (CanHibernate())
+          {
+            Hibernate();
+          }
+          else if (CanSuspend())
+          {
+            Suspend();
+          }
         }
 
         CLog::Log(LOGDEBUG, "LogindUPowerSyscall - UPower warning level %i", m_warnLevel);
