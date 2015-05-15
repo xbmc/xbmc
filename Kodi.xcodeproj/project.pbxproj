@@ -923,8 +923,6 @@
 		DF93D6B11444A8B1007C6459 /* UDFFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6931444A8B0007C6459 /* UDFFile.cpp */; };
 		DF93D6B21444A8B1007C6459 /* UPnPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6951444A8B0007C6459 /* UPnPFile.cpp */; };
 		DF93D6B31444A8B1007C6459 /* ZipFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6971444A8B0007C6459 /* ZipFile.cpp */; };
-		DF93D7F21444B54A007C6459 /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F01444B54A007C6459 /* HDHomeRunFile.cpp */; };
-		DF93D7F61444B568007C6459 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */; };
 		DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DF9A71EE1639C8F6005ECB2E /* HTTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */; };
 		DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA8157C16713B1200E4E597 /* WakeOnAccess.cpp */; };
@@ -1265,8 +1263,6 @@
 		DFF0F1FE17528350002DA3A4 /* FileReaderFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6731444A8B0007C6459 /* FileReaderFile.cpp */; };
 		DFF0F1FF17528350002DA3A4 /* FTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16E40D25F9FA00618676 /* FTPDirectory.cpp */; };
 		DFF0F20017528350002DA3A4 /* FTPParse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16E60D25F9FA00618676 /* FTPParse.cpp */; };
-		DFF0F20317528350002DA3A4 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */; };
-		DFF0F20417528350002DA3A4 /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F01444B54A007C6459 /* HDHomeRunFile.cpp */; };
 		DFF0F20717528350002DA3A4 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		DFF0F20817528350002DA3A4 /* HTTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */; };
 		DFF0F20917528350002DA3A4 /* IDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16EC0D25F9FA00618676 /* IDirectory.cpp */; };
@@ -2447,8 +2443,6 @@
 		E4991267174E5D8F00741B6D /* FileReaderFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6731444A8B0007C6459 /* FileReaderFile.cpp */; };
 		E4991268174E5D8F00741B6D /* FTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16E40D25F9FA00618676 /* FTPDirectory.cpp */; };
 		E4991269174E5D8F00741B6D /* FTPParse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16E60D25F9FA00618676 /* FTPParse.cpp */; };
-		E499126C174E5D8F00741B6D /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */; };
-		E499126D174E5D8F00741B6D /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F01444B54A007C6459 /* HDHomeRunFile.cpp */; };
 		E4991270174E5D8F00741B6D /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		E4991271174E5D8F00741B6D /* HTTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */; };
 		E4991272174E5D8F00741B6D /* IDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16EC0D25F9FA00618676 /* IDirectory.cpp */; };
@@ -4550,10 +4544,6 @@
 		DF93D6961444A8B0007C6459 /* UPnPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPFile.h; sourceTree = "<group>"; };
 		DF93D6971444A8B0007C6459 /* ZipFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZipFile.cpp; sourceTree = "<group>"; };
 		DF93D6981444A8B0007C6459 /* ZipFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipFile.h; sourceTree = "<group>"; };
-		DF93D7F01444B54A007C6459 /* HDHomeRunFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HDHomeRunFile.cpp; sourceTree = "<group>"; };
-		DF93D7F11444B54A007C6459 /* HDHomeRunFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDHomeRunFile.h; sourceTree = "<group>"; };
-		DF93D7F41444B568007C6459 /* HDHomeRunDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDHomeRunDirectory.h; sourceTree = "<group>"; };
-		DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HDHomeRunDirectory.cpp; sourceTree = "<group>"; };
 		DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
 		DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
 		DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPFile.cpp; sourceTree = "<group>"; };
@@ -5154,14 +5144,6 @@
 		E38E18580D25F9FA00618676 /* LangInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LangInfo.cpp; sourceTree = "<group>"; };
 		E38E18590D25F9FA00618676 /* LangInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LangInfo.h; sourceTree = "<group>"; };
 		E38E18830D25F9FA00618676 /* libexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libexif.h; sourceTree = "<group>"; };
-		E38E196E0D25F9FB00618676 /* hdhomerun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun.h; sourceTree = "<group>"; };
-		E38E196F0D25F9FB00618676 /* hdhomerun_channelscan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_channelscan.h; sourceTree = "<group>"; };
-		E38E19700D25F9FB00618676 /* hdhomerun_control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_control.h; sourceTree = "<group>"; };
-		E38E19710D25F9FB00618676 /* hdhomerun_device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_device.h; sourceTree = "<group>"; };
-		E38E19720D25F9FB00618676 /* hdhomerun_discover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_discover.h; sourceTree = "<group>"; };
-		E38E19730D25F9FB00618676 /* hdhomerun_os.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_os.h; sourceTree = "<group>"; };
-		E38E19740D25F9FB00618676 /* hdhomerun_pkt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_pkt.h; sourceTree = "<group>"; };
-		E38E19750D25F9FB00618676 /* hdhomerun_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_video.h; sourceTree = "<group>"; };
 		E38E1AB80D25F9FB00618676 /* SConstruct */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConstruct; sourceTree = "<group>"; };
 		E38E1CD70D25F9FC00618676 /* dataset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dataset.cpp; sourceTree = "<group>"; };
 		E38E1CD80D25F9FC00618676 /* dataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dataset.h; sourceTree = "<group>"; };
@@ -8705,10 +8687,6 @@
 				E38E16E50D25F9FA00618676 /* FTPDirectory.h */,
 				E38E16E60D25F9FA00618676 /* FTPParse.cpp */,
 				E38E16E70D25F9FA00618676 /* FTPParse.h */,
-				DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */,
-				DF93D7F41444B568007C6459 /* HDHomeRunDirectory.h */,
-				DF93D7F01444B54A007C6459 /* HDHomeRunFile.cpp */,
-				DF93D7F11444B54A007C6459 /* HDHomeRunFile.h */,
 				F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */,
 				F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */,
 				DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */,
@@ -8928,7 +8906,6 @@
 			isa = PBXGroup;
 			children = (
 				E38E18820D25F9FA00618676 /* libexif */,
-				E38E196D0D25F9FB00618676 /* libhdhomerun */,
 				E38E1A550D25F9FB00618676 /* libUPnP */,
 				E38E1CE40D25F9FC00618676 /* UnrarXLib */,
 			);
@@ -8941,21 +8918,6 @@
 				E38E18830D25F9FA00618676 /* libexif.h */,
 			);
 			path = libexif;
-			sourceTree = "<group>";
-		};
-		E38E196D0D25F9FB00618676 /* libhdhomerun */ = {
-			isa = PBXGroup;
-			children = (
-				E38E196E0D25F9FB00618676 /* hdhomerun.h */,
-				E38E196F0D25F9FB00618676 /* hdhomerun_channelscan.h */,
-				E38E19700D25F9FB00618676 /* hdhomerun_control.h */,
-				E38E19710D25F9FB00618676 /* hdhomerun_device.h */,
-				E38E19720D25F9FB00618676 /* hdhomerun_discover.h */,
-				E38E19730D25F9FB00618676 /* hdhomerun_os.h */,
-				E38E19740D25F9FB00618676 /* hdhomerun_pkt.h */,
-				E38E19750D25F9FB00618676 /* hdhomerun_video.h */,
-			);
-			path = libhdhomerun;
 			sourceTree = "<group>";
 		};
 		E38E1A550D25F9FB00618676 /* libUPnP */ = {
@@ -10797,8 +10759,6 @@
 				DF93D6B11444A8B1007C6459 /* UDFFile.cpp in Sources */,
 				DF93D6B21444A8B1007C6459 /* UPnPFile.cpp in Sources */,
 				DF93D6B31444A8B1007C6459 /* ZipFile.cpp in Sources */,
-				DF93D7F21444B54A007C6459 /* HDHomeRunFile.cpp in Sources */,
-				DF93D7F61444B568007C6459 /* HDHomeRunDirectory.cpp in Sources */,
 				7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */,
 				7C1F6EBB13ECCFA7001726AB /* LibraryDirectory.cpp in Sources */,
 				EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */,
@@ -11408,8 +11368,6 @@
 				DFF0F1FE17528350002DA3A4 /* FileReaderFile.cpp in Sources */,
 				DFF0F1FF17528350002DA3A4 /* FTPDirectory.cpp in Sources */,
 				DFF0F20017528350002DA3A4 /* FTPParse.cpp in Sources */,
-				DFF0F20317528350002DA3A4 /* HDHomeRunDirectory.cpp in Sources */,
-				DFF0F20417528350002DA3A4 /* HDHomeRunFile.cpp in Sources */,
 				395F6DE41A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
 				DFF0F20717528350002DA3A4 /* HTTPDirectory.cpp in Sources */,
 				DFF0F20817528350002DA3A4 /* HTTPFile.cpp in Sources */,
@@ -12450,8 +12408,6 @@
 				E4991267174E5D8F00741B6D /* FileReaderFile.cpp in Sources */,
 				E4991268174E5D8F00741B6D /* FTPDirectory.cpp in Sources */,
 				E4991269174E5D8F00741B6D /* FTPParse.cpp in Sources */,
-				E499126C174E5D8F00741B6D /* HDHomeRunDirectory.cpp in Sources */,
-				E499126D174E5D8F00741B6D /* HDHomeRunFile.cpp in Sources */,
 				E4991270174E5D8F00741B6D /* HTTPDirectory.cpp in Sources */,
 				E4991271174E5D8F00741B6D /* HTTPFile.cpp in Sources */,
 				DFC6F4C21AFF7E300039A7FA /* rfft.cpp in Sources */,

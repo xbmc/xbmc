@@ -80,7 +80,6 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
 #endif
-#include "HDHomeRunDirectory.h"
 #include "SlingboxDirectory.h"
 #include "FileItem.h"
 #include "URL.h"
@@ -189,7 +188,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #ifdef HAS_UPNP
     if (url.IsProtocol("upnp")) return new CUPnPDirectory();
 #endif
-    if (url.IsProtocol("hdhomerun")) return new CHomeRunDirectory();
     if (url.IsProtocol("sling")) return new CSlingboxDirectory();
     if (url.IsProtocol("rss")) return new CRSSDirectory();
 #ifdef HAS_FILESYSTEM_SAP
