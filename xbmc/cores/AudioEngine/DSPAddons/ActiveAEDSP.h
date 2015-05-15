@@ -255,6 +255,23 @@ namespace ActiveAE
     bool GetAudioDSPAddonName(int iAddonId, std::string &strName) const;
   //@}
 
+  /*! @name GUIInfoManager calls */
+  //@{
+    /*!
+     * @brief Get a GUIInfoManager boolean.
+     * @param dwInfo The boolean to get.
+     * @return The requested boolean or false if it wasn't found.
+     */
+    bool TranslateBoolInfo(DWORD dwInfo) const;
+
+    /*!
+     * @brief Get a GUIInfoManager character string.
+     * @param dwInfo The string to get.
+     * @return The requested string or an empty one if it wasn't found.
+     */
+    bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
+  //@}
+
   /*! @name Current processing streams control function methods */
   //@{
     /*!>
@@ -358,6 +375,11 @@ namespace ActiveAE
      * @brief Translate KODI channel flag to audio dsp channel flag
      */
     static AE_DSP_CHANNEL GetDSPChannel(enum AEChannel channel);
+
+    /*!
+     * @brief Get name label id to given stream type id
+     */
+    static int GetStreamTypeName(unsigned int streamType);
   //@}
 
   protected:
@@ -415,6 +437,7 @@ namespace ActiveAE
      */
     int GetAudioDSPAddonId(const ADDON::AddonPtr addon) const;
 
+    static const int        m_StreamTypeNameTable[];                    /*!< Table for stream type strings related to type id */
     bool                    m_isActive;                                 /*!< set to true if all available dsp addons are loaded */
     ADDON::VECADDONS        m_addons;                                   /*!< List of all currently usable addons */
     AE_DSP_ADDONMAP         m_addonMap;                                 /*!< a map of all known audio dsp addons */

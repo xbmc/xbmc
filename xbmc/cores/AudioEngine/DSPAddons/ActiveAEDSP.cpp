@@ -333,6 +333,97 @@ int CActiveAEDSP::GetAudioDSPAddonId(const AddonPtr addon) const
 }
 //@}
 
+/*! @name GUIInfoManager calls */
+//@{
+bool CActiveAEDSP::TranslateBoolInfo(DWORD dwInfo) const
+{
+  bool bReturn(false);
+
+  CSingleLock lock(m_critSection);
+
+  if (!IsProcessing() || !m_usedProcesses[m_activeProcessId])
+    return bReturn;
+
+  switch (dwInfo)
+  {
+  case ADSP_IS_ACTIVE:
+    bReturn = true;
+    break;
+  case ADSP_HAS_INPUT_RESAMPLE:
+    bReturn = m_usedProcesses[m_activeProcessId]->HasActiveModes(AE_DSP_MODE_TYPE_INPUT_RESAMPLE);
+    break;
+  case ADSP_HAS_PRE_PROCESS:
+    bReturn = m_usedProcesses[m_activeProcessId]->HasActiveModes(AE_DSP_MODE_TYPE_PRE_PROCESS);
+    break;
+  case ADSP_HAS_MASTER_PROCESS:
+    bReturn = m_usedProcesses[m_activeProcessId]->HasActiveModes(AE_DSP_MODE_TYPE_MASTER_PROCESS);
+    break;
+  case ADSP_HAS_POST_PROCESS:
+    bReturn = m_usedProcesses[m_activeProcessId]->HasActiveModes(AE_DSP_MODE_TYPE_POST_PROCESS);
+    break;
+  case ADSP_HAS_OUTPUT_RESAMPLE:
+    bReturn = m_usedProcesses[m_activeProcessId]->HasActiveModes(AE_DSP_MODE_TYPE_OUTPUT_RESAMPLE);
+    break;
+  case ADSP_MASTER_ACTIVE:
+    bReturn = m_usedProcesses[m_activeProcessId]->GetActiveMasterMode() != NULL;
+    break;
+  default:
+    break;
+  };
+
+  return bReturn;
+}
+
+bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
+{
+  bool bReturn(true);
+
+  CSingleLock lock(m_critSection);
+
+  if (!IsProcessing() || !m_usedProcesses[m_activeProcessId])
+    return false;
+
+  CActiveAEDSPModePtr activeMaster = m_usedProcesses[m_activeProcessId]->GetActiveMasterMode();
+  if (activeMaster == NULL)
+    return false;
+
+  switch (dwInfo)
+  {
+  case ADSP_ACTIVE_STREAM_TYPE:
+    strValue = g_localizeStrings.Get(GetStreamTypeName(m_usedProcesses[m_activeProcessId]->GetUsedStreamType()));
+    break;
+  case ADSP_DETECTED_STREAM_TYPE:
+    strValue = g_localizeStrings.Get(GetStreamTypeName(m_usedProcesses[m_activeProcessId]->GetDetectedStreamType()));
+    break;
+  case ADSP_MASTER_NAME:
+    {
+      AE_DSP_ADDON addon;
+      int modeId = activeMaster->ModeID();
+      if (modeId == AE_DSP_MASTER_MODE_ID_PASSOVER || modeId >= AE_DSP_MASTER_MODE_ID_INTERNAL_TYPES)
+        strValue = g_localizeStrings.Get(activeMaster->ModeName());
+      else if (CActiveAEDSP::Get().GetAudioDSPAddon(activeMaster->AddonID(), addon))
+        strValue = addon->GetString(activeMaster->ModeName());
+    }
+    break;
+  case ADSP_MASTER_INFO:
+    bReturn = m_usedProcesses[m_activeProcessId]->GetMasterModeStreamInfoString(strValue);
+    break;
+  case ADSP_MASTER_OWN_ICON:
+    strValue = activeMaster->IconOwnModePath();
+    break;
+  case ADSP_MASTER_OVERRIDE_ICON:
+    strValue = activeMaster->IconOverrideModePath();
+    break;
+  default:
+    strValue.clear();
+    bReturn = false;
+    break;
+  };
+
+  return bReturn;
+}
+//@}
+
 /*! @name Current processing streams control function methods */
 //@{
 CAEChannelInfo CActiveAEDSP::GetInternalChannelLayout(AEStdChLayout stdLayout)
@@ -1019,5 +1110,27 @@ AE_DSP_CHANNEL CActiveAEDSP::GetDSPChannel(enum AEChannel channel)
   default:
     return AE_DSP_CH_INVALID;
   }
+}
+
+/*!
+ * Contains string name id's related to the AE_DSP_ASTREAM_ values
+ */
+const int CActiveAEDSP::m_StreamTypeNameTable[] =
+{
+  15004,  //!< "Basic"
+  249,    //!< "Music"
+  157,    //!< "Video"
+  15016,  //!< "Games"
+  15005,  //!< "Application"
+  15006,  //!< "Phone"
+  15007,  //!< "Message"
+  14061   //!< "Auto"
+};
+
+int CActiveAEDSP::GetStreamTypeName(unsigned int streamType)
+{
+  if (streamType > AE_DSP_ASTREAM_AUTO)
+    return -1;
+  return m_StreamTypeNameTable[streamType];
 }
 //@}
