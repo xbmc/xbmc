@@ -35,6 +35,9 @@
 #include "utils/JobManager.h"
 #include "video/VideoReferenceClock.h"
 #include "cores/IPlayer.h"
+#ifdef HAS_DS_PLAYER
+#include "MadvrCallback.h"
+#endif
 
 using namespace std;
 
@@ -377,7 +380,11 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
 // call SetVideoResolutionInternal and ensure its done from mainthread
 void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 {
+#ifdef HAS_DS_PLAYER
+  if (g_application.IsCurrentThread() || CMadvrCallback::Get()->IsInitMadvr())
+#else
   if (g_application.IsCurrentThread())
+#endif
   {
     SetVideoResolutionInternal(res, forceUpdate);
   }

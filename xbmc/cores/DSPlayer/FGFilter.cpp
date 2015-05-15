@@ -487,8 +487,10 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
       // Go out from Kodi exclusive fullscreen mode if needed
       if (!CSettings::Get().GetBool("videoscreen.fakefullscreen"))
       {
+        CMadvrCallback::Get()->SetInitMadvr(true);
         CSettings::Get().SetBool("videoscreen.fakefullscreen", true);
         CGraphFilters::Get()->SetKodiRealFS(true);
+        CMadvrCallback::Get()->SetInitMadvr(false);
       }
       else 
       {
