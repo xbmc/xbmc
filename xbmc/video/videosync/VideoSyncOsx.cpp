@@ -82,6 +82,11 @@ float CVideoSyncOsx::GetFps()
   return m_fps;
 }
 
+void CVideoSyncOsx::RefreshChanged()
+{
+  m_displayReset = true;
+}
+
 void CVideoSyncOsx::OnLostDevice()
 {
   if (!m_displayLost)
