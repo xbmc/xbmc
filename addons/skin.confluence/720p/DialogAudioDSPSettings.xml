@@ -2,14 +2,13 @@
 <window>
 	<defaultcontrol>5</defaultcontrol>
 	<coordinates>
-		<system>1</system>
 		<left>240</left>
 		<top>60</top>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="300" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDAudioDSPSettings) |  Window.IsVisible(FileBrowser)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="400" condition="Window.IsVisible(SliderDialog)">Conditional</animation>
 			<control type="image">
 				<description>background image</description>
 				<left>0</left>
@@ -33,6 +32,7 @@
 				<width>720</width>
 				<height>30</height>
 				<font>font13_title</font>
+				<label>-</label>
 				<align>center</align>
 				<aligny>center</aligny>
 				<textcolor>selected</textcolor>
@@ -49,18 +49,14 @@
 				<onclick>PreviousMenu</onclick>
 				<texturefocus>DialogCloseButton-focus.png</texturefocus>
 				<texturenofocus>DialogCloseButton.png</texturenofocus>
-				<onleft>2</onleft>
-				<onright>2</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="grouplist" id="5">
 				<description>control area</description>
 				<left>40</left>
 				<top>65</top>
-				<width>720</width>
-				<height>505</height>
+				<width>520</width>
+				<height>470</height>
 				<itemgap>5</itemgap>
 				<pagecontrol>60</pagecontrol>
 				<onleft>60</onleft>
@@ -69,10 +65,10 @@
 				<ondown>5</ondown>
 			</control>
 			<control type="scrollbar" id="60">
-				<left>760</left>
+				<left>560</left>
 				<top>65</top>
 				<width>25</width>
-				<height>490</height>
+				<height>470</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -85,15 +81,94 @@
 				<showonepage>false</showonepage>
 				<orientation>vertical</orientation>
 			</control>
-		</control>
-		<control type="sliderex" id="13">
-			<description>Default Slider</description>
-			<height>40</height>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
+			<control type="label">
+				<description>info label</description>
+				<left>40</left>
+				<top>540</top>
+				<width>720</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$INFO[ADSP.MasterInfo]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="image">
+				<description>Audio DSP Image</description>
+				<left>555</left>
+				<top>540</top>
+				<width>85</width>
+				<height>35</height>
+				<aspectratio align="center">keep</aspectratio>
+				<visible>!IsEmpty(ADSP.MasterOwnIcon)</visible>
+				<texture>$INFO[ADSP.MasterOwnIcon]</texture>
+			</control>
+			<control type="image">
+				<description>Audio Codec Image</description>
+				<left>640</left>
+				<top>540</top>
+				<width>85</width>
+				<height>35</height>
+				<aspectratio align="center">keep</aspectratio>
+				<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
+				<visible>IsEmpty(ADSP.MasterOverrideIcon) + Player.HasVideo</visible>
+			</control>
+			<control type="image">
+				<description>Audio Codec Image</description>
+				<left>640</left>
+				<top>540</top>
+				<width>85</width>
+				<height>35</height>
+				<aspectratio align="center">keep</aspectratio>
+				<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
+				<visible>IsEmpty(ADSP.MasterOverrideIcon) + Player.HasAudio</visible>
+			</control>
+			<control type="image">
+				<description>Audio Codec Override Image</description>
+				<left>640</left>
+				<top>540</top>
+				<width>85</width>
+				<height>35</height>
+				<aspectratio align="center">keep</aspectratio>
+				<visible>!IsEmpty(ADSP.MasterOverrideIcon)</visible>
+				<texture>$INFO[ADSP.MasterOverrideIcon]</texture>
+			</control>
+			<control type="image">
+				<description>Audio Channels Image</description>
+				<left>730</left>
+				<top>540</top>
+				<width>50</width>
+				<height>35</height>
+				<aspectratio align="center">keep</aspectratio>
+				<texture>$INFO[VideoPlayer.AudioChannels,flagging/audio/,.png]</texture>
+			</control>
+			<control type="label">
+				<description>type label</description>
+				<left>590</left>
+				<top>65</top>
+				<width>720</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>15042</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>grey2</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>type label</description>
+				<left>590</left>
+				<top>100</top>
+				<width>230</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$INFO[ADSP.DetectedStreamType]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
 		</control>
 		<control type="button" id="7">
 			<description>Default Button</description>
@@ -123,8 +198,8 @@
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 			<texturefocus border="5">button-focus2.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
 		</control>
@@ -132,6 +207,26 @@
 			<description>separator image</description>
 			<height>2</height>
 			<texture>separator2.png</texture>
+		</control>
+		<control type="edit" id="12">
+			<description>Default Edit</description>
+			<left>0</left>
+			<top>0</top>
+			<height>40</height>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
+		</control>
+		<control type="sliderex" id="13">
+			<description>Default Slider</description>
+			<height>40</height>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
 		</control>
 		<control type="label" id="14">
 			<description>Default Label</description>

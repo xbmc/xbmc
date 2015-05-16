@@ -137,6 +137,7 @@
 #include "dialogs/GUIDialogMediaFilter.h"
 #include "video/dialogs/GUIDialogSubtitles.h"
 #include "settings/dialogs/GUIDialogAudioDSPManager.h"
+#include "settings/dialogs/GUIDialogAudioDSPSettings.h"
 
 #ifdef HAS_KARAOKE
 #include "music/karaoke/GUIDialogKaraokeSongSelector.h"
@@ -278,6 +279,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogPVRGuideOSD);
 
   Add(new ActiveAE::CGUIDialogAudioDSPManager);
+  Add(new ActiveAE::CGUIDialogAudioDSPSettings);
 
   Add(new CGUIDialogSelect);
   Add(new CGUIDialogMusicInfo);
@@ -376,6 +378,7 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_OSD_TELETEXT);
 
     Delete(WINDOW_DIALOG_AUDIO_DSP_MANAGER);
+    Delete(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
 
     Delete(WINDOW_DIALOG_TEXT_VIEWER);
     Delete(WINDOW_DIALOG_PLAY_EJECT);

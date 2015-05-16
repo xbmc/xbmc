@@ -567,7 +567,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
       CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
       pDlgInfo->SetHeading(g_localizeStrings.Get(15062) + " - " + pItem->GetProperty("Name").asString());
       pDlgInfo->SetText(addon->GetString((uint32_t)pItem->GetProperty("Help").asInteger()));
-      pDlgInfo->DoModal();
+      pDlgInfo->Open();
     }
   }
   else if (button == CONTEXT_BUTTON_ACTIVATE)
@@ -694,7 +694,7 @@ void CGUIDialogAudioDSPManager::Update()
     helper_LogError(__FUNCTION__);
     return;
   }
-  pDlgBusy->Show();
+  pDlgBusy->Open();
 
   Clear();
 
@@ -790,7 +790,7 @@ void CGUIDialogAudioDSPManager::SaveList(void)
     helper_LogError(__FUNCTION__);
     return;
   }
-  pDlgBusy->Show();
+  pDlgBusy->Open();
 
   /* persist all modes */
   if (UpdateDatabase(pDlgBusy))
