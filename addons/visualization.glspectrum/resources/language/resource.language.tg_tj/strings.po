@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Tajik (Tajikistan) (http://www.transifex.com/projects/p/kodi-main/language/tg_TJ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tg_TJ\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Ҳолат"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Пуршуда"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Чорчӯбаи хаттӣ"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Нуқтаҳо"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Баландии навор"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Хурд"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Пешфарз"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Калон"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Хеле калон"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Суръат"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Хеле суст"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Суст"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Пешфарз"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Тез"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Хеле тез"

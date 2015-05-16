@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Icelandic (Iceland) (http://www.transifex.com/projects/p/kodi-main/language/is_IS/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is_IS\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Smáatriði [notar mikið af örgjörva]"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Lágt"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "Venjulegt"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Hátt"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "Öfgakennt"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Taugaveiklað [skiptir oftar um ham]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Hraði [sleppir fleiri römmum]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Mjög lágt"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "Lágt"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "Venjulegt"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "Hátt"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Nota Þrautseigju skrá [hraðari ræsing]"

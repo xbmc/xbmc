@@ -1,0 +1,33 @@
+# Kodi Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Uzbek (Uzbekistan) (http://www.transifex.com/projects/p/kodi-main/language/uz_UZ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uz_UZ\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Usul"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Andoza"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Tezligi"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Andoza"

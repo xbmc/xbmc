@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Latvian (Latvia) (http://www.transifex.com/projects/p/kodi-main/language/lv_LV/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lv_LV\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Detalizēts [noslogo CPU]"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Mazs"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "Normāls"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Liels"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "Ekstrēms"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Nervozs režīms [vairāk režīmu maiņas]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Ātrs [izlaiž dažus kadrus]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Ļoti mazs"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "Mazs"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "Normāls"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "Liels"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Izmantot nemainīgu failu [uzsāk ātrāk]"

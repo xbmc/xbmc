@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/kodi-main/language/nb_NO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nb_NO\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Modus"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Fylt"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Trådramme"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Punkter"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Søylehøyde"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Lav"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Standard"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Høy"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Veldig høy"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Hastighet"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Veldig sakte"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Sakte"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Standard"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Raskt"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Veldig raskt"

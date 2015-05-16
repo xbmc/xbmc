@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/kodi-main/language/el_GR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: el_GR\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Λεπτομέρεια [έντονη χρήση επεξεργαστή]"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Ελαχ."
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "Κανονική"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Υψηλή"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "Ακραία"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Νευρική Λειτουργία [περισσότερες λειτουργικές αλλαγές]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Ταχύτητα [παράλειψη κάποιων καρέ]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Πολύ Χαμηλή"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "Ελαχ."
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "Κανονική"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "Υψηλή"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Χρήση Σταθερού Αρχείου [ταχύτερη έναρξη]"

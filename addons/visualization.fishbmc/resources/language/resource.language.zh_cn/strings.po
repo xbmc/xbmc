@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/kodi-main/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "详细 [CPU 加强型]"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "低"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "正常"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "高"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "极好"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "紧张模式 [更多模式的变化]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "快速 [跳过某些帧]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "极低"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "低"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "正常"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "高"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "使用持久性文件 [快速启动]"

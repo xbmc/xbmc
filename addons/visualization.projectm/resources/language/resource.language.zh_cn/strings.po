@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/kodi-main/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "渲染质量"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "低"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "中"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "高"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "最大"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "乱序播放模式"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "平滑预置时间"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "预置时间"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "节拍灵敏度"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "预置包"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "默认包"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "用户定义的预置文件夹"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "用户预置文件夹"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f 秒"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

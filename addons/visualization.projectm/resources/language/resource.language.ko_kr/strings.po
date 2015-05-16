@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/kodi-main/language/ko_KR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "렌더링 화질"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "낮음"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "중간"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "높음"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "최대"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "셔플 모드"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "부드러운 프리셋 시간"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "프리셋 시간"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "비트 감지도"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "프리셋 팩"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "기본 팩"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "사용자 정의 프리셋 폴더"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "사용자 프리셋 폴더"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f 초"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

@@ -1,0 +1,41 @@
+# Kodi Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Bosnian (Bosnia and Herzegovina) (http://www.transifex.com/projects/p/kodi-main/language/bs_BA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bs_BA\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Režim"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Malo"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Podrazumjevano"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Brzina"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Podrazumjevano"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Brzo"

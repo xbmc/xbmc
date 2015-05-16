@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Welsh (United Kingdom) (http://www.transifex.com/projects/p/kodi-main/language/cy_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cy_GB\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Modd"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Llanwyd"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Ffrâm weiar"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Pwyntiau"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Uchder Bar"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Bach"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Rhagosodiad"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Mawr"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Mawr Iawn"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Cyflymder"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Araf Iawn"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Araf"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Rhagosodiad"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Cyflym"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Cyflym Iawn"

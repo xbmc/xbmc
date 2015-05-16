@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Burmese (Myanmar) (http://www.transifex.com/projects/p/kodi-main/language/my_MM/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: my_MM\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Render အရည်အသွေး"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "အနိမ့်စား"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "အလယ်အလတ်"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "အမြင့်စား"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "အမြင့်ဆုံး"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Preset ကြာချိန်"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "Default Pack"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "အသုံးပြုသူသတ်မှတ်ထားသော  Preset ဖိုလ်ဒါလ်"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "User Preset Folder"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f secs"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

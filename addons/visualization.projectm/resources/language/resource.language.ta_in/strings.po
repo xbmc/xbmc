@@ -1,0 +1,73 @@
+# Kodi Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Tamil (India) (http://www.transifex.com/projects/p/kodi-main/language/ta_IN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ta_IN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "குறைவு"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "மிதம்"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "அதிகம்"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "உச்ச அளவு"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "கலக்கும் முறை"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "சீரான தரவு காலம்"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "தரவு காலம்"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "அதிர்வு உணர்திறன்"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "தரவுப்பொதி"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "நிலையான பொதி"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "பயனர் வரையறுத்த தரவு அடைவு"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "பயனர் தரவு அடைவு"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f வினாடிகள்"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

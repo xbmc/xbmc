@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Bulgarian (Bulgaria) (http://www.transifex.com/projects/p/kodi-main/language/bg_BG/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bg_BG\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Режим"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Запълнен"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Wireframe"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Точков"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Височина на стълбовете"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Малка"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Стандартна"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Голяма"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Много голяма"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Скорост"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Много бавна"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Бавна"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Стандартна"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Бърза"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Много бърза"

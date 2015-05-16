@@ -1,0 +1,89 @@
+# Kodi Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/kodi-main/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Automatic Blend Time"
+msgstr "自動混音時間"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "預置切換時間"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "附屬隨機時間"
+
+msgctxt "#30003"
+msgid "Enable Anisotropic Filtering"
+msgstr "啟用各向異性過濾器"
+
+msgctxt "#30004"
+msgid "Enable Hard Cuts"
+msgstr "啟用 Hard Cuts"
+
+msgctxt "#30005"
+msgid "Loudness Threshold For Hard Cuts"
+msgstr "Hard Cuts 響度限位"
+
+msgctxt "#30006"
+msgid "Average Time Between Hard Cuts"
+msgstr "Hard Cuts平均間隔時間"
+
+msgctxt "#30007"
+msgid "Maximum Refresh Rate"
+msgstr "最高更新率"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "啟用Stereo 3D"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "預置封包"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "使用者預置資料夾"
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "預置隨機撥放模式"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "WA51 預置"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Winamp 預置"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "使用者定義的預置資料夾"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f 秒"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

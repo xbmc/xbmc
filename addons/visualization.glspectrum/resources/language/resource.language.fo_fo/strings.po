@@ -1,0 +1,37 @@
+# Kodi Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Faroese (Faroe Islands) (http://www.transifex.com/projects/p/kodi-main/language/fo_FO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fo_FO\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Líti"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Vanligt"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Fer"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Vanligt"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Skjótt"

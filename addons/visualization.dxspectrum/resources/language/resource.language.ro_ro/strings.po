@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/kodi-main/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Mod"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Umplere"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Contur"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Puncte"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Înălțime bară"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Mică"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Standard"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Mare"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Foarte mare"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Viteză"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Foarte încet"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Lent"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Standard"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Rapid"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Foarte rapid"
