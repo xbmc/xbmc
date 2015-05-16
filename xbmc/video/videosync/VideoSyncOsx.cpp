@@ -34,35 +34,44 @@
 bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s setting up OSX", __FUNCTION__);
-  bool setupOk = false;
   
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
   UpdateClock = func;
-  m_abort = false;
+  m_displayLost = false;
+  m_displayReset = false;
+  m_lostEvent.Reset();
+
+  g_Windowing.Register(this);
   
-  setupOk = InitDisplayLink();
-  if (setupOk)
-  {
-    g_Windowing.Register(this);
-  }
-  
-  return setupOk;
+  return true;
 }
 
 void CVideoSyncOsx::Run(volatile bool& stop)
 {
+  InitDisplayLink();
+
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
-  while(!stop && !m_abort)
+  while(!stop && !m_displayLost && !m_displayReset)
   {
     Sleep(100);
   }
+
+  m_lostEvent.Set();
+
+  while(!stop && m_displayLost && !m_displayReset)
+  {
+    Sleep(10);
+  }
+
+  DeinitDisplayLink();
 }
 
 void CVideoSyncOsx::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s cleaning up OSX", __FUNCTION__);
-  DeinitDisplayLink();
+  m_lostEvent.Set();
+  m_LastVBlankTime = 0;
   g_Windowing.Unregister(this);
 }
 
@@ -73,9 +82,18 @@ float CVideoSyncOsx::GetFps()
   return m_fps;
 }
 
+void CVideoSyncOsx::OnLostDevice()
+{
+  if (!m_displayLost)
+  {
+    m_displayLost = true;
+    m_lostEvent.WaitMSec(1000);
+  }
+}
+
 void CVideoSyncOsx::OnResetDevice()
 {
-  m_abort = true;
+  m_displayReset = true;
 }
 
 void CVideoSyncOsx::VblankHandler(int64_t nowtime)

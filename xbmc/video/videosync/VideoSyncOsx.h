@@ -22,12 +22,13 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "VideoSync.h"
 #include "guilib/DispResource.h"
+#include "threads/Event.h"
 
 class CVideoSyncOsx : public CVideoSync, IDispResource
 {
 public:
 
-  CVideoSyncOsx() : m_LastVBlankTime(0), m_abort(false){}
+  CVideoSyncOsx() : m_LastVBlankTime(0), m_displayLost(false), m_displayReset(false){}
   
   // CVideoSync interface
   virtual bool Setup(PUPDATECLOCK func);
@@ -36,6 +37,7 @@ public:
   virtual float GetFps();
   
   // IDispResource interface
+  virtual void OnLostDevice();
   virtual void OnResetDevice();
 
   // used in the displaylink callback
@@ -46,7 +48,9 @@ private:
   virtual void DeinitDisplayLink();
 
   int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
-  volatile bool m_abort;
+  volatile bool m_displayLost;
+  volatile bool m_displayReset;
+  CEvent m_lostEvent;
 };
 
 #endif// TARGET_DARWIN_OSX
