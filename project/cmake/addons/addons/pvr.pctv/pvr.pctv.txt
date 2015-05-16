@@ -1,1 +1,1 @@
-pvr.pctv https://github.com/kodi-pvr/pvr.pctv c240226
+pvr.pctv https://github.com/kodi-pvr/pvr.pctv 804dc37
