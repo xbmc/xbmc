@@ -42,7 +42,7 @@ public:
   virtual void OnResetDevice();
 
   // used in the displaylink callback
-  void VblankHandler(int64_t nowtime);
+  void VblankHandler(int64_t nowtime, uint32_t timebase);
   
 private:
   virtual bool InitDisplayLink();
