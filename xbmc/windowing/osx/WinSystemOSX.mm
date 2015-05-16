@@ -26,6 +26,7 @@
 #include "WinSystemOSX.h"
 #include "WinEventsOSX.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "CompileInfo.h"
 #include "guilib/DispResource.h"
 #include "guilib/GUIWindowManager.h"
@@ -592,6 +593,7 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_can_display_switch = (floor(NSAppKitVersionNumber) >= 949);
   m_lastDisplayNr = -1;
   m_movedToOtherScreen = false;
+  m_refreshRate = 0.0;
 }
 
 CWinSystemOSX::~CWinSystemOSX()
@@ -800,6 +802,7 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   m_nWidth = newWidth;
   m_nHeight = newHeight;
   m_glContext = context;
+  g_graphicsContext.SetFPS(m_refreshRate);
 
   return true;
 }
@@ -1007,7 +1010,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       // Unblank.
       // Force the unblank when returning from fullscreen, we get called with blankOtherDisplays set false.
       //if (blankOtherDisplays)
-        UnblankDisplays();
+      UnblankDisplays();
     }
     else
     {
@@ -1047,6 +1050,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   ShowHideNSWindow([last_view window], needtoshowme);
   // need to make sure SDL tracks any window size changes
   ResizeWindowInternal(m_nWidth, m_nHeight, -1, -1, last_view);
+  HandlePossibleRefreshrateChange();
 
   return true;
 }
@@ -1258,6 +1262,8 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
   CGConfigureDisplayMode(cfg, display_id, dispMode);
   CGError err = CGCompleteDisplayConfiguration(cfg, kCGConfigureForAppOnly);
   CGDisplayRelease(display_id);
+  
+  m_refreshRate = GetDictionaryDouble(dispMode, kCGDisplayRefreshRate);
 
   Cocoa_CVDisplayLinkUpdate();
 
@@ -1561,9 +1567,29 @@ bool CWinSystemOSX::Hide()
   return true;
 }
 
+void CWinSystemOSX::HandlePossibleRefreshrateChange()
+{
+  static double oldRefreshRate = m_refreshRate;
+  Cocoa_CVDisplayLinkUpdate();
+  int dummy = 0;
+  
+  GetScreenResolution(&dummy, &dummy, &m_refreshRate, GetCurrentScreen());
+
+  if (oldRefreshRate != m_refreshRate)
+  {
+    oldRefreshRate = m_refreshRate;
+    // send a message so that videoresolution (and refreshrate)
+    // is changed
+    ThreadMessage msg = {TMSG_VIDEORESIZE};
+    msg.param1 = m_SDLSurface->w;
+    msg.param2 = m_SDLSurface->h;
+    CApplicationMessenger::Get().SendMessage(msg, false);
+  }
+}
+
 void CWinSystemOSX::OnMove(int x, int y)
 {
-  Cocoa_CVDisplayLinkUpdate();
+  HandlePossibleRefreshrateChange();
 }
 
 void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
