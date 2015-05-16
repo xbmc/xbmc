@@ -319,6 +319,9 @@
     <Filter Include="cores\dvdplayer\DVDCodecs\Overlay\contrib">
       <UniqueIdentifier>{43526341-7b96-462d-9f71-685e426251ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\AudioEngine\DSPAddons">
+      <UniqueIdentifier>{2afb92ce-e9ac-4458-80e7-3384ccfffa3c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="network\test">
       <UniqueIdentifier>{1bdb0045-3341-49b7-8d6f-30a53f812350}</UniqueIdentifier>
     </Filter>
@@ -2958,6 +2961,27 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCC.cpp">
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\AudioDSPSettings.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSP.cpp">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPAddon.cpp">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPDatabase.cpp">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPMode.cpp">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPProcess.cpp">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\HttpRangeUtils.cpp">
       <Filter>utils</Filter>
@@ -5872,6 +5896,30 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxCC.h">
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\AudioDSPSettings.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSP.h">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPAddon.h">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPDatabase.h">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPMode.h">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\DSPAddons\ActiveAEDSPProcess.h">
+      <Filter>cores\AudioEngine\DSPAddons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\DllAudioDSP.h">
+      <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\HttpRangeUtils.h">
       <Filter>utils</Filter>

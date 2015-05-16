@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="kodi.adsp" version="0.1.8" provider-name="Team KODI">
+  <backwards-compatibility abi="0.1.8"/>
+  <requires>
+    <import addon="xbmc.core" version="0.1.0"/>
+  </requires>
+</addon>

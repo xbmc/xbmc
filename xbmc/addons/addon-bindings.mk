@@ -1,6 +1,8 @@
 BINDINGS =xbmc/addons/include/xbmc_addon_cpp_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_addon_types.h
+BINDINGS+=xbmc/addons/include/kodi_adsp_dll.h
+BINDINGS+=xbmc/addons/include/kodi_adsp_types.h
 BINDINGS+=xbmc/addons/include/xbmc_audioenc_dll.h
 BINDINGS+=xbmc/addons/include/xbmc_audioenc_types.h
 BINDINGS+=xbmc/addons/include/kodi_audiodec_dll.h

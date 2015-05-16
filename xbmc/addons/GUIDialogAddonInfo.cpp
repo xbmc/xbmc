@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "GUIDialogAddonSettings.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "GUIUserMessages.h"
@@ -89,6 +90,15 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       if (iControl == CONTROL_BTN_INSTALL)
       {
+        if (m_localAddon)
+        {
+          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
+          {
+            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
+            return true;
+          }
+        }
+
         if (!m_localAddon)
         {
           OnInstall();
@@ -107,6 +117,15 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_ENABLE)
       {
+        if (m_localAddon)
+        {
+          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
+          {
+            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
+            return true;
+          }
+        }
+
         OnEnable(!m_item->GetProperty("Addon.Enabled").asBoolean());
         return true;
       }

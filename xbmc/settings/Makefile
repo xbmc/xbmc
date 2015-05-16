@@ -1,4 +1,5 @@
 SRCS=AdvancedSettings.cpp \
+     AudioDSPSettings.cpp \
      DisplaySettings.cpp \
      MediaSettings.cpp \
      MediaSourceSettings.cpp \

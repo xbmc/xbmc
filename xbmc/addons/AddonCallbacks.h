@@ -23,6 +23,7 @@
 
 #include "../../addons/library.kodi.guilib/libKODI_guilib.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "addons/include/kodi_adsp_types.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "addons/include/xbmc_codec_types.h"
 
@@ -362,6 +363,20 @@ typedef struct CB_GUILib
   GUIDialog_Select                                    Dialog_Select;
 } CB_GUILib;
 
+typedef void (*ADSPAddMenuHook)(void *addonData, AE_DSP_MENUHOOK *hook);
+typedef void (*ADSPRemoveMenuHook)(void *addonData, AE_DSP_MENUHOOK *hook);
+typedef void (*ADSPRegisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
+typedef void (*ADSPUnregisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
+
+typedef struct CB_ADSPLib
+{
+  ADSPAddMenuHook               AddMenuHook;
+  ADSPRemoveMenuHook            RemoveMenuHook;
+  ADSPRegisterMode              RegisterMode;
+  ADSPUnregisterMode            UnregisterMode;
+
+} CB_ADSPLib;
+
 typedef void (*PVRTransferEpgEntry)(void *userData, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
 typedef void (*PVRTransferChannelEntry)(void *userData, const ADDON_HANDLE handle, const PVR_CHANNEL *chan);
 typedef void (*PVRTransferTimerEntry)(void *userData, const ADDON_HANDLE handle, const PVR_TIMER *timer);
@@ -403,6 +418,8 @@ typedef struct CB_PVRLib
 
 typedef CB_AddOnLib* (*XBMCAddOnLib_RegisterMe)(void *addonData);
 typedef void (*XBMCAddOnLib_UnRegisterMe)(void *addonData, CB_AddOnLib *cbTable);
+typedef CB_ADSPLib* (*KODIADSPLib_RegisterMe)(void *addonData);
+typedef void (*KODIADSPLib_UnRegisterMe)(void *addonData, CB_ADSPLib *cbTable);
 typedef CB_CODECLib* (*XBMCCODECLib_RegisterMe)(void *addonData);
 typedef void (*XBMCCODECLib_UnRegisterMe)(void *addonData, CB_CODECLib *cbTable);
 typedef CB_GUILib* (*XBMCGUILib_RegisterMe)(void *addonData);
@@ -422,6 +439,8 @@ typedef struct AddonCB
   XBMCGUILib_UnRegisterMe    GUILib_UnRegisterMe;
   XBMCPVRLib_RegisterMe      PVRLib_RegisterMe;
   XBMCPVRLib_UnRegisterMe    PVRLib_UnRegisterMe;
+  KODIADSPLib_RegisterMe     ADSPLib_RegisterMe;
+  KODIADSPLib_UnRegisterMe   ADSPLib_UnRegisterMe;
 } AddonCB;
 
 
@@ -430,6 +449,7 @@ namespace ADDON
 
 class CAddon;
 class CAddonCallbacksAddon;
+class CAddonCallbacksADSP;
 class CAddonCallbacksCodec;
 class CAddonCallbacksGUI;
 class CAddonCallbacksPVR;
@@ -443,6 +463,8 @@ public:
 
   static CB_AddOnLib* AddOnLib_RegisterMe(void *addonData);
   static void AddOnLib_UnRegisterMe(void *addonData, CB_AddOnLib *cbTable);
+  static CB_ADSPLib* ADSPLib_RegisterMe(void *addonData);
+  static void ADSPLib_UnRegisterMe(void *addonData, CB_ADSPLib *cbTable);
   static CB_CODECLib* CODECLib_RegisterMe(void *addonData);
   static void CODECLib_UnRegisterMe(void *addonData, CB_CODECLib *cbTable);
   static CB_GUILib* GUILib_RegisterMe(void *addonData);
@@ -451,6 +473,7 @@ public:
   static void PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable);
 
   CAddonCallbacksAddon *GetHelperAddon() { return m_helperAddon; }
+  CAddonCallbacksADSP *GetHelperADSP() { return m_helperADSP; }
   CAddonCallbacksCodec *GetHelperCodec() { return m_helperCODEC; }
   CAddonCallbacksGUI *GetHelperGUI() { return m_helperGUI; }
   CAddonCallbacksPVR *GetHelperPVR() { return m_helperPVR; }
@@ -459,6 +482,7 @@ private:
   AddonCB             *m_callbacks;
   CAddon              *m_addon;
   CAddonCallbacksAddon *m_helperAddon;
+  CAddonCallbacksADSP  *m_helperADSP;
   CAddonCallbacksCodec *m_helperCODEC;
   CAddonCallbacksGUI   *m_helperGUI;
   CAddonCallbacksPVR   *m_helperPVR;

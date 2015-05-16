@@ -1115,6 +1115,22 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseTV.compression);
   }
 
+  pDatabase = pRootElement->FirstChildElement("adspdatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseADSP.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseADSP.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseADSP.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseADSP.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseADSP.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseADSP.name);
+    XMLUtils::GetString(pDatabase, "key", m_databaseADSP.key);
+    XMLUtils::GetString(pDatabase, "cert", m_databaseADSP.cert);
+    XMLUtils::GetString(pDatabase, "ca", m_databaseADSP.ca);
+    XMLUtils::GetString(pDatabase, "capath", m_databaseADSP.capath);
+    XMLUtils::GetString(pDatabase, "ciphers", m_databaseADSP.ciphers);
+  }
+
   pDatabase = pRootElement->FirstChildElement("epgdatabase");
   if (pDatabase)
   {

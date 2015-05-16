@@ -98,6 +98,7 @@ static const TypeMapping types[] =
    {"kodi.resource.images",              ADDON_RESOURCE_IMAGES,     24035, "DefaultAddonImages.png" },
    {"kodi.resource.language",            ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" },
    {"kodi.resource.uisounds",            ADDON_RESOURCE_UISOUNDS,   24006, "DefaultAddonUISounds.png" },
+   {"kodi.adsp",                         ADDON_ADSPDLL,             24135, "DefaultAddonAudioDSP.png" },
   };
 
 const std::string TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
@@ -358,6 +359,9 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_PVRDLL:
       ext = ADDON_PVRDLL_EXT;
       break;
+    case ADDON_ADSPDLL:
+      ext = ADDON_DSP_AUDIO_EXT;
+      break;
     case ADDON_SCRIPT:
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
@@ -395,6 +399,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRAPER_TVSHOWS:
       case ADDON_SCRAPER_LIBRARY:
       case ADDON_PVRDLL:
+      case ADDON_ADSPDLL:
       case ADDON_PLUGIN:
       case ADDON_WEB_INTERFACE:
       case ADDON_SERVICE:
@@ -633,7 +638,8 @@ void OnEnabled(const std::string& id)
 {
   // If the addon is a special, call enabled handler
   AddonPtr addon;
-  if (CAddonMgr::Get().GetAddon(id, addon, ADDON_PVRDLL))
+  if (CAddonMgr::Get().GetAddon(id, addon, ADDON_PVRDLL) ||
+      CAddonMgr::Get().GetAddon(id, addon, ADDON_ADSPDLL))
     return addon->OnEnabled();
 
   if (CAddonMgr::Get().GetAddon(id, addon, ADDON_SERVICE))
@@ -646,7 +652,8 @@ void OnEnabled(const std::string& id)
 void OnDisabled(const std::string& id)
 {
   AddonPtr addon;
-  if (CAddonMgr::Get().GetAddon(id, addon, ADDON_PVRDLL, false))
+  if (CAddonMgr::Get().GetAddon(id, addon, ADDON_PVRDLL, false) ||
+      CAddonMgr::Get().GetAddon(id, addon, ADDON_ADSPDLL, false))
     return addon->OnDisabled();
 
   if (CAddonMgr::Get().GetAddon(id, addon, ADDON_SERVICE, false))
