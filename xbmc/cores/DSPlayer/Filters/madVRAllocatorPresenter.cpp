@@ -37,7 +37,6 @@
 #define ShaderStage_PostScale 1
 
 extern bool g_bExternalSubtitleTime;
-ThreadIdentifier CmadVRAllocatorPresenter::m_threadID = 0;
 
 //
 // CmadVRAllocatorPresenter
@@ -52,11 +51,8 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   //Init Variable
   g_renderManager.PreInit(RENDERER_DSHOW);
   m_exclusiveCallback = ExclusiveCallback;
-  m_isDeviceSet = false;
   m_firstBoot = true;
   m_isEnteringExclusive = false;
-  m_isRendering = false;
-  m_threadID = 0;
   
   if (FAILED(hr)) {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
@@ -76,11 +72,7 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Unregister(m_exclusiveCallback, this);
 
-  //Restore Kodi Device
-  RestoreKodiDevice();
-
   // the order is important here
-  m_threadID = 0;
   m_pSubPicQueue = nullptr;
   m_pAllocator = nullptr;
   m_pDXR = nullptr;
@@ -104,6 +96,8 @@ void CmadVRAllocatorPresenter::SetResolution()
 {
   ULONGLONG frameRate;
   float fps;
+  g_graphicsContext.SetFullScreenVideo(true);
+
   if (Com::SmartQIPtr<IMadVRInfo> pInfo = m_pDXR)
   {
     pInfo->GetUlonglong("frameRate", &frameRate);
@@ -132,7 +126,7 @@ void CmadVRAllocatorPresenter::ExclusiveCallback(LPVOID context, int event)
   if (event == ExclusiveModeWasJustEntered || event == ExclusiveModeWasJustLeft)
   {
     pThis->m_isEnteringExclusive = false;
-    CLog::Log(LOGDEBUG, "%s madVR WasJustEntered in Fullscreen Exclusive-Mode", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s madVR WasJustEntered/WasJustLeft in Fullscreen Exclusive-Mode", __FUNCTION__);
   }
 }
 
@@ -163,37 +157,12 @@ void CmadVRAllocatorPresenter::ConfigureMadvr()
   }
 }
 
-bool CmadVRAllocatorPresenter::IsCurrentThreadId()
-{
-  return CThread::IsCurrentThread(m_threadID);
-}
-
 bool CmadVRAllocatorPresenter::ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret)
 {
   if (Com::SmartQIPtr<IMadVRSubclassReplacement> pMVRSR = m_pDXR)
     return pMVRSR->ParentWindowProc(hWnd, uMsg, wParam, lParam, ret);
   else
     return false;
-}
-
-void CmadVRAllocatorPresenter::RestoreKodiDevice()
-{
-  //be sure that madVR thread is not calling the rendering
-  while (m_isRendering)
-    Sleep(10);
-
-  m_isDeviceSet = false;
-  g_Windowing.GetKodi3DDevice()->SetPixelShader(NULL);
-  g_Windowing.ResetForMadvr();
-  CLog::Log(LOGDEBUG, "%s Restored Kodi device", __FUNCTION__);
-}
-
-void CmadVRAllocatorPresenter::SwapDevice()
-{
-  m_isDeviceSet = true;
-  g_Windowing.ResetForMadvr();
-  CGraphFilters::Get()->SetRenderOnMadvr(true);
-  CLog::Log(LOGDEBUG, "%s Swapped device from Kodi to madVR", __FUNCTION__);
 }
 
 const DWORD D3DFVF_VID_FRAME_VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;
@@ -220,38 +189,22 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
   }
 
   m_pD3DDeviceMadVR = (IDirect3DDevice9Ex*)pD3DDev;
-  m_pD3DDeviceKodi = (IDirect3DDevice9Ex*)g_Windowing.GetKodi3DDevice();
+  m_pD3DDeviceKodi = (IDirect3DDevice9Ex*)g_Windowing.Get3DDevice();
 
   if (m_firstBoot)
   { 
     m_firstBoot = false;
-    m_threadID = CThread::GetCurrentThreadId();    
 
-    // SendMessage to Kodi MainThread to SwapDevice From Kodi To madVR
-    CApplicationMessenger::Get().SwapDeviceForMadvr();
-    
-    // Set the context in FullScreenVideo
-    g_graphicsContext.SetFullScreenVideo(true);
-
-    // Change Resolution to match fps
-    SetResolution();
-
+    // Create Shared Texture
     HRESULT hr;
-
     if (FAILED(hr = m_pD3DDeviceMadVR->CreateVertexBuffer(sizeof(VID_FRAME_VERTEX) * 4, D3DUSAGE_WRITEONLY, D3DFVF_VID_FRAME_VERTEX, D3DPOOL_DEFAULT, &m_pMadvrVertexBuffer, NULL)))
       return hr;
-    else
-      CLog::Log(LOGDEBUG, "Created Vertex Buffer %i", m_pSharedHandle);
 
     if (FAILED(hr = m_pD3DDeviceKodi->CreateTexture(m_dwWidth, m_dwHeight, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pKodiTexture, &m_pSharedHandle)))
       return hr;
-    else
-      CLog::Log(LOGDEBUG, "Created Kodi texture %i", m_pSharedHandle);
 
     if (FAILED(hr = m_pD3DDeviceMadVR->CreateTexture(m_dwWidth, m_dwHeight, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pMadvrTexture, &m_pSharedHandle)))
       return hr;
-    else
-      CLog::Log(LOGDEBUG, "Created madVR texture %i", m_pSharedHandle);
   }
 
   Com::SmartSize size;
@@ -314,34 +267,6 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
 
   AlphaBltSubPic(Com::SmartSize(width, height));
 
-  if (m_isDeviceSet && !m_isEnteringExclusive && CGraphFilters::Get()->GetRenderOnMadvr())
-  {
-    m_isRendering = true;
-
-    // restore pixelshader for render kodi gui
-    m_pD3DDeviceMadVR->SetPixelShader(NULL);
-
-    // render kodi gui
-    m_pD3DDeviceKodi->BeginScene();
-    g_application.RenderMadvr();
-    m_pD3DDeviceKodi->EndScene();
-
-    //restore stagestate for xysubfilter
-    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_pD3DDeviceMadVR->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-    // set false for pixelshader
-    m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    
-    m_pD3DDeviceKodi->Present(NULL, NULL, NULL, NULL);
-
-    m_isRendering = false;
-  }
-
   HRESULT hr = E_UNEXPECTED;
 
   if (FAILED(hr = RenderToTexture(m_pKodiTexture, m_pKodiSurface)))
@@ -350,8 +275,7 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
   if (FAILED(hr = StoreMadDeviceState()))
     return hr;
 
-  //if (FAILED(hr = m_pCallback->RenderOverlay(width, height, width, height)))
-    //return hr;
+  g_renderManager.NewFrame();
 
   if (FAILED(hr = SetupMadDeviceState()))
     return hr;
@@ -359,13 +283,12 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
   if (FAILED(hr = SetupOSDVertex(m_pMadvrVertexBuffer)))
     return hr;
 
-  // Draw MP texture on madVR device's side
+  // Draw Kodi texture on madVR
   if (FAILED(hr = RenderTexture(m_pMadvrVertexBuffer, m_pMadvrTexture)))
     return hr;
 
   if (FAILED(hr = RestoreMadDeviceState()))
     return hr;
-
 }
 
 // ISubPicAllocatorPresenter
@@ -673,21 +596,6 @@ void CmadVRAllocatorPresenter::RestoreMadvrSettings()
   SettingSetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
   SettingSetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
   SettingSetSmoothmotion("", madvrSettings.m_smoothMotion);
-}
-
-LPDIRECT3DDEVICE9 CmadVRAllocatorPresenter::GetDevice()
-{
-  return g_Windowing.GetKodi3DDevice();
-  if (m_isDeviceSet)
-  {
-    //CLog::Log(0, "device madvr");
-    return m_pD3DDeviceMadVR;
-  }
-  else
-  {
-    //CLog::Log(0, "device kodi");
-    return g_Windowing.GetKodi3DDevice();
-  }
 }
 
 HRESULT CmadVRAllocatorPresenter::RenderToTexture(IDirect3DTexture9* pTexture, IDirect3DSurface9* pSurface)

@@ -25,7 +25,6 @@
 #include "AllocatorCommon.h"
 #include "mvrInterfaces.h"
 #include "IPaintCallback.h"
-#include "threads/Thread.h"
 #include "utils/log.h"
 
 class CmadVRAllocatorPresenter
@@ -76,19 +75,14 @@ class CmadVRAllocatorPresenter
     }
   };
 
-  void SetResolution();
   void ConfigureMadvr();
-  void RestoreKodiDevice();
   Com::SmartPtr<IUnknown> m_pDXR;
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartSize m_ScreenSize;
   EXCLUSIVEMODECALLBACK m_exclusiveCallback;
-  static ThreadIdentifier m_threadID;
   bool m_bIsFullscreen;
-  bool m_isDeviceSet;
   bool m_firstBoot;
   bool m_isEnteringExclusive;
-  bool m_isRendering;
   int m_shaderStage;
 
   HRESULT RenderToTexture(IDirect3DTexture9* pTexture, IDirect3DSurface9* pSurface);
@@ -155,15 +149,12 @@ public:
   STDMETHODIMP SetPixelShader(LPCSTR pSrcData, LPCSTR pTarget);
 
   //IPaintCallbackMadvr
-  virtual LPDIRECT3DDEVICE9 GetDevice();
-  virtual bool IsDeviceSet(){ return m_isDeviceSet; }
   virtual bool IsEnteringExclusive(){ return m_isEnteringExclusive; }
   virtual void OsdRedrawFrame();
   virtual void SetMadvrPixelShader();
   virtual void RestoreMadvrSettings();
-  virtual bool IsCurrentThreadId();
+  virtual void SetResolution();
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
-  virtual void SwapDevice();
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
   virtual void SettingSetScaling(CStdStringW path, int scaling);
   virtual void SettingSetDoubling(CStdStringW path, int iValue);

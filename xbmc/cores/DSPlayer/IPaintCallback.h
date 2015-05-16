@@ -40,17 +40,13 @@ class IPaintCallbackMadvr
 {
 public:
   virtual ~IPaintCallbackMadvr() {};
-
-  virtual LPDIRECT3DDEVICE9 GetDevice() { return NULL; };
-  virtual bool IsDeviceSet(){ return false; }
   virtual bool IsEnteringExclusive(){ return false; }
   virtual void OsdRedrawFrame() {};
   virtual void SetMadvrPixelShader(){};
   virtual void RestoreMadvrSettings(){};
-  virtual void SetStartMadvr(){};
+  virtual void SetResolution(){};
   virtual bool IsCurrentThreadId() { return false; }
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; }
-  virtual void SwapDevice(){};
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
   virtual void SettingSetScaling(CStdStringW path, int scaling) {};
   virtual void SettingSetDoubling(CStdStringW path, int iValue) {};

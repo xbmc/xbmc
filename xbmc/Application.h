@@ -144,10 +144,6 @@ public:
   bool DestroyWindow();
   void StartServices();
   void StopServices();
-#ifdef HAS_DS_PLAYER
-  void RenderMadvr();
-  CEvent m_renderMadvrEvent;
-#endif
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
   /*!
@@ -157,7 +153,7 @@ public:
   bool StartPVRManager();
   void StopPVRManager();
 #ifdef HAS_DS_PLAYER
-  bool IsCurrentThread(bool checkForMadvr = true) const;
+  bool IsCurrentThread() const;
 #else
   bool IsCurrentThread() const;
 #endif

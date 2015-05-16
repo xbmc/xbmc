@@ -36,7 +36,6 @@ m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER
   m_pMadvr = NULL;
   m_isInitMadVr = false;
   m_isKodiRealFS = false;
-  m_renderOnMadvr = false;
 }
 
 CGraphFilters::~CGraphFilters()
@@ -60,11 +59,6 @@ bool CGraphFilters::UsingMadVr()
     return false;
   return true;
 
-}
-
-bool CGraphFilters::ReadyMadVr()
-{
-  return ((m_pMadvr != NULL) && CGraphFilters::Get()->GetMadvrCallback()->IsDeviceSet());
 }
 
 bool CGraphFilters::IsEnteringExclusiveMadVr()

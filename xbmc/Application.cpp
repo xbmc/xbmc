@@ -1894,21 +1894,6 @@ float CApplication::GetDimScreenSaverLevel() const
   return 100.0f;
 }
 
-#ifdef HAS_DS_PLAYER
-void CApplication::RenderMadvr()
-{
-  // do not render if we are stopped or in background
-  if (m_bStop)
-    return;
-
-  g_infoManager.UpdateFPS();
-  
-  RenderNoPresent();
-
-  m_renderMadvrEvent.Set();
-}
-#endif
-
 void CApplication::Render()
 {
   // do not render if we are stopped or in background
@@ -1918,33 +1903,15 @@ void CApplication::Render()
   MEASURE_FUNCTION;
 
 #ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->ReadyMadVr())
+  if (CGraphFilters::Get()->UsingMadVr())
   {
     if (m_pPlayer->IsPausedPlayback())
     {
       CGraphFilters::Get()->GetMadvrCallback()->OsdRedrawFrame();
-      Sleep(40);
     } 
-    else
-    {
-      m_renderMadvrEvent.Reset();
-      m_renderMadvrEvent.WaitMSec(100);
-    } 
-    
-    g_windowManager.AfterRender();
-
-    g_infoManager.ResetCache();
-
-    m_lastFrameTime = XbmcThreads::SystemClockMillis();
-    CTimeUtils::UpdateFrameTime(true,false);
-
-    g_renderManager.UpdateResolution();
-    g_renderManager.ManageCaptures();
-
-    return;
   }
 #endif  
-
+  
   int vsync_mode = CSettings::Get().GetInt("videoscreen.vsync");
 
   bool hasRendered = false;
@@ -2558,11 +2525,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
   }
 
-  if (processGUI && m_renderGUI
-#ifdef HAS_DS_PLAYER
-      && !CGraphFilters::Get()->IsEnteringExclusiveMadVr()
-#endif
-   )
+  if (processGUI && m_renderGUI)
   {
     m_skipGuiRender = false;
     int fps = 0;
@@ -4391,17 +4354,10 @@ void CApplication::ProcessSlow()
     m_pKaraokeMgr->ProcessSlow();
 #endif
 
-#ifdef HAS_DS_PLAYER
-  if (!CGraphFilters::Get()->IsEnteringExclusiveMadVr())
-   { 
-#endif
   if (!m_pPlayer->IsPlayingVideo())
     g_largeTextureManager.CleanupUnusedImages();
 
   g_TextureManager.FreeUnusedTextures(5000);
-#ifdef HAS_DS_PLAYER
-  }
-#endif
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
@@ -4995,24 +4951,9 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
   }
   return false;
 }
-#ifdef HAS_DS_PLAYER
-bool CApplication::IsCurrentThread(bool checkForMadvr) const
-#else
 bool CApplication::IsCurrentThread() const
-#endif
 {
-#ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->UsingMadVr() && checkForMadvr)
-  {
-    bool isMadvrThread = CGraphFilters::Get()->GetMadvrCallback()->IsCurrentThreadId();
-    bool isApplicationThread = CThread::IsCurrentThread(m_threadID);
-    return (isMadvrThread || isApplicationThread);
-  }
-  else
-    return CThread::IsCurrentThread(m_threadID);
-#else
   return CThread::IsCurrentThread(m_threadID);
-#endif
 }
 
 void CApplication::SetRenderGUI(bool renderGUI)

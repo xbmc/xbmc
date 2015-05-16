@@ -49,9 +49,6 @@
 
 #include "peripherals/Peripherals.h"
 #include "powermanagement/PowerManager.h"
-#ifdef HAS_DS_PLAYER
-#include "cores/DSPlayer/GraphFilters.h"
-#endif
 
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
@@ -151,11 +148,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   if (wait)
   { // check that we're not being called from our application thread, else we'll be waiting
     // forever!
-#ifdef HAS_DS_PLAYER
-    if (!g_application.IsCurrentThread(false))
-#else
     if (!g_application.IsCurrentThread())
-#endif
     {
       message.waitEvent.reset(new CEvent(true));
       waitEvent = message.waitEvent;
@@ -538,14 +531,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         g_application.m_pPlayer->Pause();
       }
       break;
-
-#ifdef HAS_DS_PLAYER
-    case TMSG_SWAP_DEVICE_FOR_MADVR:
-      {
-        CGraphFilters::Get()->GetMadvrCallback()->SwapDevice();
-      }
-      break;
-#endif
 
     case TMSG_SWITCHTOFULLSCREEN:
       if( g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
@@ -1011,14 +996,6 @@ void CApplicationMessenger::MediaRestart(bool bWait)
   ThreadMessage tMsg = {TMSG_MEDIA_RESTART};
   SendMessage(tMsg, bWait);
 }
-
-#ifdef HAS_DS_PLAYER
-void CApplicationMessenger::SwapDeviceForMadvr()
-{
-  ThreadMessage tMsg = { TMSG_SWAP_DEVICE_FOR_MADVR };
-  SendMessage(tMsg, true);
-}
-#endif
 
 void CApplicationMessenger::PlayListPlayerPlay()
 {

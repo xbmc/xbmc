@@ -204,11 +204,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   BuildPresentParameters();
 
   if (m_useD3D9Ex && !m_needNewDevice)
-#ifdef HAS_DS_PLAYER
-    m_nDeviceStatus = ((IDirect3DDevice9Ex*)Get3DDevice())->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
-#else
     m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
-#endif
   else
   {
     OnDeviceLost();
@@ -398,17 +394,9 @@ void CRenderSystemDX::OnDeviceReset()
   {
     // just need a reset
     if (m_useD3D9Ex)
-#ifdef HAS_DS_PLAYER
-      m_nDeviceStatus = ((IDirect3DDevice9Ex*)Get3DDevice())->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
-#else
       m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
-#endif  
     else
-#ifdef HAS_DS_PLAYER
-      m_nDeviceStatus = Get3DDevice()->Reset(&m_D3DPP);
-#else
       m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
-#endif
   }
 
   if (m_nDeviceStatus == S_OK)
@@ -507,7 +495,7 @@ bool CRenderSystemDX::CreateDevice()
 #ifdef HAS_DS_PLAYER
   // SetDialogBoxMode is not supported for D3DSWAPEFFECT_FLIPEX swap effect
   if (!m_useD3D9Ex && g_dsSettings.pRendererSettings->fullscreenGUISupport && m_bFullScreenDevice)
-    hr = Get3DDevice()->SetDialogBoxMode(TRUE); //To be able to show a com dialog over a fullscreen video playing we need this
+    hr = m_pD3DDevice->SetDialogBoxMode(TRUE); //To be able to show a com dialog over a fullscreen video playing we need this
 #endif
 
   if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &m_AIdentifier) == D3D_OK)
@@ -638,11 +626,7 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
     D3DRASTER_STATUS rasterStatus;
     int64_t          prev = CurrentHostCounter();
 
-#ifdef HAS_DS_PLAYER
-    while (SUCCEEDED(Get3DDevice()->GetRasterStatus(0, &rasterStatus)))
-#else
     while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)))
-#endif
     {
       //wait for the scanline to go over the given proportion of m_screenHeight mark
       if (!rasterStatus.InVBlank && rasterStatus.ScanLine >= g_advancedSettings.m_sleepBeforeFlip * m_screenHeight)
@@ -660,11 +644,7 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
     if (priority != THREAD_PRIORITY_ERROR_RETURN)
       SetThreadPriority(GetCurrentThread(), priority);
   }
-#ifdef HAS_DS_PLAYER
-  hr = Get3DDevice()->Present(NULL, NULL, 0, NULL);
-#else
   hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
-#endif
 
 #ifdef HAS_DS_PLAYER
   if ( g_application.GetCurrentPlayer() == PCID_DSPLAYER )
@@ -696,22 +676,14 @@ bool CRenderSystemDX::BeginRender()
   HRESULT oldStatus = m_nDeviceStatus;
   if (m_useD3D9Ex)
   {
-#ifdef HAS_DS_PLAYER
-    m_nDeviceStatus = ((IDirect3DDevice9Ex*)Get3DDevice())->CheckDeviceState(m_hDeviceWnd);
-#else
     m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->CheckDeviceState(m_hDeviceWnd);
-#endif
     // handling of new D3D9 extensions return values. Others fallback to regular D3D9 handling.
     switch(m_nDeviceStatus)
     {
     case S_PRESENT_MODE_CHANGED:
       // Timing leads us here on occasion.
       BuildPresentParameters();
-#ifdef HAS_DS_PLAYER
-      m_nDeviceStatus = ((IDirect3DDevice9Ex*)Get3DDevice())->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
-#else
       m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
-#endif
       break;
     case S_PRESENT_OCCLUDED:
       m_nDeviceStatus = D3D_OK;
@@ -736,11 +708,7 @@ bool CRenderSystemDX::BeginRender()
   }
   else
   {
-#ifdef HAS_DS_PLAYER
-    m_nDeviceStatus = Get3DDevice()->TestCooperativeLevel();
-#else
     m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel();
-#endif
   }
 
   if( FAILED( m_nDeviceStatus ) )
@@ -770,36 +738,30 @@ bool CRenderSystemDX::BeginRender()
 
   HRESULT hr;
 
-#ifdef HAS_DS_PLAYER
-  if(FAILED(hr = Get3DDevice()->BeginScene()))
-#else
   if(FAILED(hr = m_pD3DDevice->BeginScene()))
-#endif
   {
     CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     // When XBMC caught an exception after BeginScene(), EndScene() may never been called
     // and thus all following BeginScene() will fail too.
-#ifdef HAS_DS_PLAYER
-    if(FAILED(hr = Get3DDevice()->EndScene()))
-#else
     if(FAILED(hr = m_pD3DDevice->EndScene()))
-#endif
       CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
     return false;
   }
 
   IDirect3DSurface9 *pBackBuffer;
 #ifdef HAS_DS_PLAYER
-  if(Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer) != D3D_OK)
-#else  
-  if(m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer) != D3D_OK)
+  if (!CGraphFilters::Get()->UsingMadVr())
 #endif
+  if(m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer) != D3D_OK)
     return false;
 
 #ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetRenderTarget(0, pBackBuffer);
-#else
+  if (!CGraphFilters::Get()->UsingMadVr())
+#endif
   m_pD3DDevice->SetRenderTarget(0, pBackBuffer);
+
+#ifdef HAS_DS_PLAYER
+  if (!CGraphFilters::Get()->UsingMadVr())
 #endif
   pBackBuffer->Release();
 
@@ -817,11 +779,8 @@ bool CRenderSystemDX::EndRender()
   if(m_nDeviceStatus != S_OK)
     return false;
 
-#ifdef HAS_DS_PLAYER
-  HRESULT hr = Get3DDevice()->EndScene();
-#else
   HRESULT hr = m_pD3DDevice->EndScene();
-#endif
+
   if(FAILED(hr))
   {
     CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
@@ -845,20 +804,6 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
       return true;
   }
 
-/*
-#ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->ReadyMadVr())
-    return true;
-
-  return SUCCEEDED(Get3DDevice()->Clear(
-    0,
-    NULL,
-    D3DCLEAR_TARGET,
-    color,
-    1.0,
-    0 ) );
-#else
-*/
   return SUCCEEDED(m_pD3DDevice->Clear(
     0,
     NULL,
@@ -866,7 +811,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     color,
     1.0,
     0 ) );
-//#endif
+
   return true;
 }
 
@@ -905,11 +850,7 @@ void CRenderSystemDX::CaptureStateBlock()
     return;
 
   SAFE_RELEASE(m_stateBlock);
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->CreateStateBlock(D3DSBT_ALL, &m_stateBlock);
-#else
   m_pD3DDevice->CreateStateBlock(D3DSBT_ALL, &m_stateBlock);
-#endif
 }
 
 void CRenderSystemDX::ApplyStateBlock()
@@ -936,31 +877,18 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   // here.
   D3DXMATRIX mtxWorld;
   D3DXMatrixIdentity(&mtxWorld);
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetTransform(D3DTS_WORLD, &mtxWorld);
-#else
   m_pD3DDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
-#endif
   // camera view.  Multiply the Y coord by -1 then translate so that everything is relative to the camera
   // position.
   D3DXMATRIX flipY, translate, mtxView;
   D3DXMatrixScaling(&flipY, 1.0f, -1.0f, 1.0f);
   D3DXMatrixTranslation(&translate, -(w + offset.x), -(h + offset.y), 2*h);
   D3DXMatrixMultiply(&mtxView, &translate, &flipY);
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetTransform(D3DTS_VIEW, &mtxView);
-#else
   m_pD3DDevice->SetTransform(D3DTS_VIEW, &mtxView);
-#endif
   // projection onto screen space
   D3DXMATRIX mtxProjection;
   D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetTransform(D3DTS_PROJECTION, &mtxProjection);
-#else
   m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
-#endif
-
   m_world = mtxWorld;
   m_view = mtxView;
   m_projection = mtxProjection;
@@ -1018,15 +946,9 @@ bool CRenderSystemDX::TestRender()
   // Create the vertex buffer. Here we are allocating enough memory
   // (from the default pool) to hold all our 3 custom vertices. We also
   // specify the FVF, so the vertex buffer knows what data it contains.
-#ifdef HAS_DS_PLAYER
-  if( FAILED( Get3DDevice()->CreateVertexBuffer( 3 * sizeof( CUSTOMVERTEX ),
-    0, D3DFVF_CUSTOMVERTEX,
-    D3DPOOL_DEFAULT, &pVB, NULL ) ) )
-#else
   if( FAILED( m_pD3DDevice->CreateVertexBuffer( 3 * sizeof( CUSTOMVERTEX ),
     0, D3DFVF_CUSTOMVERTEX,
     D3DPOOL_DEFAULT, &pVB, NULL ) ) )
-#endif
   {
     return false;;
   }
@@ -1040,15 +962,9 @@ bool CRenderSystemDX::TestRender()
   memcpy( pVertices, vertices, sizeof( vertices ) );
   pVB->Unlock();
 
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetStreamSource( 0, pVB, 0, sizeof( CUSTOMVERTEX ) );
-  Get3DDevice()->SetFVF( D3DFVF_CUSTOMVERTEX );
-  Get3DDevice()->DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-#else
   m_pD3DDevice->SetStreamSource( 0, pVB, 0, sizeof( CUSTOMVERTEX ) );
   m_pD3DDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
   m_pD3DDevice->DrawPrimitive( D3DPT_TRIANGLELIST, 0, 1 );
-#endif
 
   pVB->Release();
 
@@ -1090,11 +1006,7 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
   m_viewPort.Width  = (DWORD)(viewPort.x2 - viewPort.x1);
   m_viewPort.Height = (DWORD)(viewPort.y2 - viewPort.y1);
 
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetViewport(&m_viewPort);
-#else
   m_pD3DDevice->SetViewport(&m_viewPort);
-#endif
 }
 
 void CRenderSystemDX::RestoreViewPort()
@@ -1102,11 +1014,7 @@ void CRenderSystemDX::RestoreViewPort()
   if (!m_bRenderCreated)
     return;
 
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetViewport(&m_viewPort);
-#else
   m_pD3DDevice->SetViewport(&m_viewPort);
-#endif
 }
 
 void CRenderSystemDX::SetScissors(const CRect& rect)
@@ -1119,13 +1027,8 @@ void CRenderSystemDX::SetScissors(const CRect& rect)
   scissor.top    = MathUtils::round_int(rect.y1);
   scissor.right  = MathUtils::round_int(rect.x2);
   scissor.bottom = MathUtils::round_int(rect.y2);
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
-  Get3DDevice()->SetScissorRect(&scissor);
-#else
   m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
   m_pD3DDevice->SetScissorRect(&scissor);
-#endif
 }
 
 void CRenderSystemDX::ResetScissors()
@@ -1138,13 +1041,8 @@ void CRenderSystemDX::ResetScissors()
   scissor.top = 0;
   scissor.right = m_nBackBufferWidth;
   scissor.bottom = m_nBackBufferHeight;
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetScissorRect(&scissor);
-  Get3DDevice()->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-#else
   m_pD3DDevice->SetScissorRect(&scissor);
   m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-#endif
 }
 
 void CRenderSystemDX::Register(ID3DResource *resource)
@@ -1170,30 +1068,6 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
 {
   CRenderSystemBase::SetStereoMode(mode, view);
 
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA | D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_GREEN);
-  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN)
-  {
-    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
-      Get3DDevice()->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED);
-    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      Get3DDevice()->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_GREEN);
-  }
-  if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
-  {
-    if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
-      Get3DDevice()->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_GREEN );
-    else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      Get3DDevice()->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_RED );
-  }
-  if (m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
-  {
-    if (m_stereoView == RENDER_STEREO_VIEW_LEFT)
-      Get3DDevice()->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN);
-    else if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      Get3DDevice()->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_BLUE);
-  }
-#else
   m_pD3DDevice->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA | D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_GREEN);
   if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN)
   {
@@ -1216,7 +1090,6 @@ void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
     else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
       m_pD3DDevice->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_BLUE);
   }
-#endif
 }
 
 bool CRenderSystemDX::SupportsStereo(RENDER_STEREO_MODE mode) const
@@ -1236,11 +1109,7 @@ void CRenderSystemDX::FlushGPU()
 {
   IDirect3DQuery9* pEvent = NULL;
 
-#ifdef HAS_DS_PLAYER
-  Get3DDevice()->CreateQuery(D3DQUERYTYPE_EVENT, &pEvent);
-#else
   m_pD3DDevice->CreateQuery(D3DQUERYTYPE_EVENT, &pEvent);
-#endif
   if (pEvent != NULL)
   {
     pEvent->Issue(D3DISSUE_END);
@@ -1248,46 +1117,5 @@ void CRenderSystemDX::FlushGPU()
       Sleep(1);
   }
 }
-
-#ifdef HAS_DS_PLAYER
-LPDIRECT3DDEVICE9 CRenderSystemDX::Get3DDevice()
-{ 
-  if (CGraphFilters::Get()->UsingMadVr())
-    try
-    {
-      return CGraphFilters::Get()->GetMadvrCallback()->GetDevice();
-    }
-    catch (...)
-    {
-      return m_pD3DDevice;
-    }
-  else
-    return m_pD3DDevice; 
-}
-
-LPDIRECT3DDEVICE9 CRenderSystemDX::GetKodi3DDevice()
-{
-  return m_pD3DDevice;
-}
-
-void CRenderSystemDX::ResetForMadvr()
-{
-  CGraphFilters::Get()->SetInitMadVr(true);
-
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
-
-  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
-    (*i)->OnLostDevice();
-
-  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
-    (*i)->OnResetDevice();
-
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
-
-  CGraphFilters::Get()->SetInitMadVr(false);
-}
-
-#endif 
-
 #endif
 

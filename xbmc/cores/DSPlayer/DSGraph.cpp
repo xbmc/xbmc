@@ -135,6 +135,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   // set pixelshader & settings for madVR
   if (CGraphFilters::Get()->UsingMadVr())
   {
+    CGraphFilters::Get()->GetMadvrCallback()->SetResolution();
     CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPixelShader();
     CGraphFilters::Get()->GetMadvrCallback()->RestoreMadvrSettings();
   }
@@ -178,8 +179,6 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
-    CGraphFilters::Get()->SetRenderOnMadvr(false);
-
     if (m_pAMOpenProgress)
       m_pAMOpenProgress->AbortOperation();
 
@@ -202,23 +201,23 @@ void CDSGraph::CloseFile()
     {
       m_pMediaEvent->SetNotifyWindow((OAHWND)NULL, NULL, NULL);
     }
+    if (m_pVideoWindow)
+    {
+      m_pVideoWindow->SetWindowPosition(0, 0, 1, 1);
+      m_pVideoWindow->put_Visible(OAFALSE);
+      m_pVideoWindow->put_Owner(NULL);
+      m_pVideoWindow.Release();
+    }
 
     /* delete filters */
     CLog::Log(LOGDEBUG, "%s Deleting filters ...", __FUNCTION__);
     CGraphFilters::Destroy();
     CLog::Log(LOGDEBUG, "%s ... done!", __FUNCTION__);
-
     CGraphFilters::Get()->DVD.Clear();
     pFilterGraph.Release();
     m_pMediaControl.Release();
     m_pMediaEvent.Release();
     m_pMediaSeeking.Release();
-    if (m_pVideoWindow)
-    {
-      m_pVideoWindow->put_Visible(OAFALSE);
-      m_pVideoWindow->put_Owner((OAHWND)NULL);
-    }
-    m_pVideoWindow.Release();
     m_pBasicAudio.Release();
     m_pBasicVideo.Release();
     m_pDvdState.Release();
@@ -534,7 +533,7 @@ void CDSGraph::Stop(bool rewind)
     CDSPlayer::PostMessage(new CDSMsgBool(CDSMsg::PLAYER_STOP, rewind));
     return;
   }
-
+  
   CSingleLock lock(m_ObjectLock);
 
   LONGLONG pos = 0;

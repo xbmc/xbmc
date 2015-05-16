@@ -176,13 +176,10 @@ public:
   IPaintCallbackMadvr* GetMadvrCallback() { return m_pMadvr; }
   void SetMadVrCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
   bool UsingMadVr();
-  bool ReadyMadVr();
   bool IsEnteringExclusiveMadVr();
   bool IsInitMadVr() { return m_isInitMadVr; };
   void SetInitMadVr(bool b) { m_isInitMadVr = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
-  bool GetRenderOnMadvr() { return m_renderOnMadvr; }
-  void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
 
 private:
   CGraphFilters();
@@ -195,9 +192,6 @@ private:
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;
-
-  //madvr
-  bool m_renderOnMadvr;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
 
   /*MADVR*/
