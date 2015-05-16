@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/kodi-main/language/pl_PL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Jakość renderowania"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Niska"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "Średnia"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Wysoka"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "Maksymalna"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Tryb losowania"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "Płynny czas trwania ustawienia"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Czas trwania ustawienia"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Czułość uderzeń"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Pakiet zdefiniowanych ustawień"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "Domyślny zestaw"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "Zdefiniowany folder ustawień"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "Folder ustawień użytkownika"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f sek."
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

@@ -1,0 +1,89 @@
+# Kodi Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/kodi-main/language/sk_SK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sk_SK\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "#30000"
+msgid "Automatic Blend Time"
+msgstr "Automatický čas prelínania"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "Čas medzi Predvoľbami"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "Pridaný náhodná čas"
+
+msgctxt "#30003"
+msgid "Enable Anisotropic Filtering"
+msgstr "Povoliť anizotropné filtrovanie"
+
+msgctxt "#30004"
+msgid "Enable Hard Cuts"
+msgstr "Povoliť tvrdé useknutia"
+
+msgctxt "#30005"
+msgid "Loudness Threshold For Hard Cuts"
+msgstr "Úroveň hlasitosti pre tvrdé useknutia"
+
+msgctxt "#30006"
+msgid "Average Time Between Hard Cuts"
+msgstr "Priemerný čas medzi tvrdými useknutiami"
+
+msgctxt "#30007"
+msgid "Maximum Refresh Rate"
+msgstr "Maximálna obnovovacia frekvencia"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "Povoliť Stereo 3D"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Balík Predvilieb"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "Užívateľský adresár Predvolieb"
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "Náhodný výber Predvolieb"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "WA51 Predvoľby"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Winamp Predvoľby"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "Užívateľom nastavený adresár Predvolieb"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f secs"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

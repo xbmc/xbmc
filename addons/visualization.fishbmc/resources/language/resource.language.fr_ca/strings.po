@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: French (Canada) (http://www.transifex.com/projects/p/kodi-main/language/fr_CA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_CA\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Détails [gourmand en ressources]"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Bas"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "Normaux"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Élevés"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "Extrême"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Mode énervé [plus de changements de modes}"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Vitesse [saute des images]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Très basse"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "Basse"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "Normale"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "Haute"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Utiliser un fichier de persistance [démarrage accéléré]"

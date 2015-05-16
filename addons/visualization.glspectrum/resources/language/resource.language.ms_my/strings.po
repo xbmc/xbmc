@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Malay (Malaysia) (http://www.transifex.com/projects/p/kodi-main/language/ms_MY/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ms_MY\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Mod"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Diisi"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Bingkai Wayar"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Mata"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Tinggi Palang"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Kecil"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Lalai"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Besar"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Sangat Besar"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Kelajuan"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Sangat Perlahan"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Perlahan"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Lalai"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Pantas"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Sangat Pantas"

@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Bulgarian (Bulgaria) (http://www.transifex.com/projects/p/kodi-main/language/bg_BG/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bg_BG\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Подробно [натоварва централния процесор]"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Минимално"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "Нормално"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Високо"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "Изключително"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "Нервен режим [още режимни промени]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Скорост [пропуска някои кадри]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Много минимално"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "Минимално"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "Нормално"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "Високо"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Ползвай постоянен файл [по-бързо стартиране]"

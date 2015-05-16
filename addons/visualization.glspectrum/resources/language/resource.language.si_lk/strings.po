@@ -1,0 +1,37 @@
+# Kodi Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Sinhala (Sri Lanka) (http://www.transifex.com/projects/p/kodi-main/language/si_LK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: si_LK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "ක්‍රමය"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "කුඩා "
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "නියත "
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "වේගය "
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "නියත "

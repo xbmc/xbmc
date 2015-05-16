@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Persian (Iran) (http://www.transifex.com/projects/p/kodi-main/language/fa_IR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa_IR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "حالت"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "پر شده"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "مدل سیمی"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "نقطه ها"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "ارتفاع ستون"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "کوچک"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "پیش فرض"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "بزرگ"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "خیلی بزرگ"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "سرعت"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "خیلی آهسته"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "آهسته"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "پیش فرض"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "تند"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "خیلی تند"

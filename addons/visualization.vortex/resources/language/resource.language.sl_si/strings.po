@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: Vortex
+# Addon id: visualization.vortex
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Slovenian (Slovenia) (http://www.transifex.com/projects/p/kodi-main/language/sl_SI/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl_SI\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Naključne prednastavitve"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "Čas med prednastavitvami"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "Dodaten naključen čas"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Zakleni prednastavitev"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Omogoči prehode"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Ustavi prvo prednastavitev"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Prikaži FPS"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Prikaži razhroščevalno konzolo"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Prikaži analizo zvoka"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f sekund"
+
+msgctxt "#30051"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

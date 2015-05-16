@@ -1,0 +1,45 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/kodi-main/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "低溫"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "一般"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "高溫"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "最高"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "低溫"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "一般"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "高溫"

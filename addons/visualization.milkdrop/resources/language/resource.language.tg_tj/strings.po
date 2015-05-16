@@ -1,0 +1,89 @@
+# Kodi Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Tajik (Tajikistan) (http://www.transifex.com/projects/p/kodi-main/language/tg_TJ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tg_TJ\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Automatic Blend Time"
+msgstr "Вақти омезиши худкор"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "Вақт байни интихобҳо"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "Вақти тасодуфии иловагӣ"
+
+msgctxt "#30003"
+msgid "Enable Anisotropic Filtering"
+msgstr "Фаъол кардани филтри антизотропӣ"
+
+msgctxt "#30004"
+msgid "Enable Hard Cuts"
+msgstr "Фаъол кардани буришҳои ноҳамвор"
+
+msgctxt "#30005"
+msgid "Loudness Threshold For Hard Cuts"
+msgstr "Ҳудуди баландии садо барои буришҳои ноҳамвор"
+
+msgctxt "#30006"
+msgid "Average Time Between Hard Cuts"
+msgstr "Вақти миёна байни буришҳои ноҳамвор"
+
+msgctxt "#30007"
+msgid "Maximum Refresh Rate"
+msgstr "Суръати зиёдтарини навсозӣ"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "Фаъол кардани стереои 3D"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Бастаи интихобшуда"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "Ҷузвдони интихобшудаи корбарӣ"
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "Ҳолати тасодуфии интихобшуда"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "WA51-и танзимшуда"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Winamp-и танзимшуда"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "Ҷузвдони интихобшудаи корбари муайяншуда"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f сония"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f кадр/с"

@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Persian (Iran) (http://www.transifex.com/projects/p/kodi-main/language/fa_IR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa_IR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "جزئیات [مصرف زیاد زمان پردازنده]"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "کم"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "نرمال"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "زیاد"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "بی نهایت"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "حالت عصبی [تغییرات بیشتر حالت ها]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "سرعت [برخی از فریم ها حذف می شوند]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "خیلی کم"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "کم"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "نرمال"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "زیاد"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "از یک فایل دائمی استفاده شود [راه اندازی سریع تر]"

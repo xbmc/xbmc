@@ -1,0 +1,53 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Arabic (Saudi Arabia) (http://www.transifex.com/projects/p/kodi-main/language/ar_SA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_SA\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "منخفض"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "متوسط"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "مرتفع"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "اﻷقصي"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "منخفض جداً"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "الصغرى"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "عادي"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "مرتفع"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "إستخدِم ملفاً إستمرارياً [لضمان بدء التشغيل بشكل أسرع]"

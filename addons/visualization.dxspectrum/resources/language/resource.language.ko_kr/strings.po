@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/kodi-main/language/ko_KR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "모드"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "채워짐"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "와이어 프레임"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "점"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "바 높이"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "낮음"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "보통"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "높음"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "매우 높음"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "속도"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "매우 느림"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "느림"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "보통"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "빠름"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "매우 빠름"

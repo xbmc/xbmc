@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Slovenian (Slovenia) (http://www.transifex.com/projects/p/kodi-main/language/sl_SI/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl_SI\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Način"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Polno"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Shema"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Točke"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Višina stolpcev"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Majhna"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Privzeta"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Velika"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Zelo velika"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Hitrost"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Zelo počasno"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Počasno"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Privzeto"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Hitro"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Zelo hitro"

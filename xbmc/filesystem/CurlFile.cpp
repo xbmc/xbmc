@@ -334,10 +334,16 @@ long CCurlFile::CReadState::Connect(unsigned int size)
   // read some data in to try and obtain the length
   // maybe there's a better way to get this info??
   m_stillRunning = 1;
+
+  // (Try to) fill buffer
   if (!FillBuffer(1))
   {
-    CLog::Log(LOGERROR, "CCurlFile::CReadState::Connect, didn't get any data from stream.");
-    return -1;
+    // Check response code
+    long response;
+    if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_RESPONSE_CODE, &response))
+      return response;
+    else 
+      return -1;
   }
 
   double length;
@@ -939,8 +945,11 @@ bool CCurlFile::Open(const CURL& url)
   m_state->m_sendRange = m_seekable;
 
   m_httpresponse = m_state->Connect(m_bufferSize);
-  if( m_httpresponse < 0 || m_httpresponse >= 400)
+  if (m_httpresponse < 0 || m_httpresponse >= 400)
+  {
+    CLog::Log(LOGERROR, "CCurlFile::Open failed with code %li for %s", m_httpresponse, url.GetRedacted().c_str());
     return false;
+  }
 
   SetCorrectHeaders(m_state);
 
@@ -1480,11 +1489,14 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
             if (msg->data.result == CURLE_OK)
               return true;
 
+            long httpCode = 0;
             if (msg->data.result == CURLE_HTTP_RETURNED_ERROR)
             {
-              long httpCode;
               g_curlInterface.easy_getinfo(msg->easy_handle, CURLINFO_RESPONSE_CODE, &httpCode);
-              CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed: HTTP returned error %ld", httpCode);
+
+              // Don't log 404 not-found errors to prevent log-spam
+              if (httpCode != 404)
+                CLog::Log(LOGERROR, "CCurlFile::FillBuffer - Failed: HTTP returned error %ld", httpCode);
             }
             else
             {
@@ -1499,7 +1511,7 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
                   !m_bFirstLoop)
               CURLresult = msg->data.result;
             else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR     ||
-                       msg->data.result == CURLE_HTTP_RETURNED_ERROR) &&
+                       httpCode == 416 /* = Requested Range Not Satisfiable */) &&
                        m_bFirstLoop                                   &&
                        m_filePos == 0                                 &&
                        m_sendRange)

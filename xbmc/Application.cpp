@@ -3254,34 +3254,30 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // if player has volume control, set it.
     if (m_pPlayer->ControlsVolume())
     {
-       m_pPlayer->SetVolume(m_volumeLevel);
-       m_pPlayer->SetMute(m_muted);
+      m_pPlayer->SetVolume(m_volumeLevel);
+      m_pPlayer->SetMute(m_muted);
     }
 
-    if( m_pPlayer->IsPlayingAudio() )
+    if(m_pPlayer->IsPlayingAudio())
     {
       if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
         g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
     }
 
 #ifdef HAS_VIDEO_PLAYBACK
-    else if( m_pPlayer->IsPlayingVideo() )
+    else if(m_pPlayer->IsPlayingVideo())
     {
-      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-
       // if player didn't manange to switch to fullscreen by itself do it here
-      if( options.fullscreen && g_renderManager.IsStarted()
-       && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
-       SwitchToFullScreen();
+      if (options.fullscreen && g_renderManager.IsStarted() &&
+          g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
+       SwitchToFullScreen(true);
     }
 #endif
     else
     {
-      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION
-      ||  g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+      if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION ||
+          g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
         g_windowManager.PreviousWindow();
-
     }
 
 #if !defined(TARGET_POSIX)
@@ -4746,7 +4742,7 @@ void CApplication::SeekPercentage(float percent)
 }
 
 // SwitchToFullScreen() returns true if a switch is made, else returns false
-bool CApplication::SwitchToFullScreen()
+bool CApplication::SwitchToFullScreen(bool force /* = false */)
 {
   // if playing from the video info window, close it first!
   if (g_windowManager.HasModalDialog() && g_windowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_VIDEO_INFO)
@@ -4755,23 +4751,29 @@ bool CApplication::SwitchToFullScreen()
     if (pDialog) pDialog->Close(true);
   }
 
-  // don't switch if there is a dialog on screen or the slideshow is active
-  if (/*g_windowManager.HasModalDialog() ||*/ g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+  // don't switch if the slideshow is active
+  if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
     return false;
 
+  int windowID = WINDOW_INVALID;
   // See if we're playing a video, and are in GUI mode
-  if ( m_pPlayer->IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-  {
-    // then switch to fullscreen mode
-    g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-    return true;
-  }
+  if (m_pPlayer->IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+    windowID = WINDOW_FULLSCREEN_VIDEO;
+
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
   if (m_pPlayer->IsPlayingAudio() && g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
-  { // then switch to visualisation
-    g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
+    windowID = WINDOW_VISUALISATION;
+
+
+  if (windowID != WINDOW_INVALID)
+  {
+    if (force)
+      g_windowManager.ForceActivateWindow(windowID);
+    else
+      g_windowManager.ActivateWindow(windowID);
     return true;
   }
+
   return false;
 }
 

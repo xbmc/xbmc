@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Basque (Spain) (http://www.transifex.com/projects/p/kodi-main/language/eu_ES/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: eu_ES\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Modua"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Betea"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Burdin-haria"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Puntuak"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Barra garaiera"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Txikia"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Lehenetsia"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Handia"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Oso handia"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Abiadura"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Oso poliki"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Poliki"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Lehenetsia"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Azkarra"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Oso azkarra"

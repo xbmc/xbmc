@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: Vortex
+# Addon id: visualization.vortex
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Arabic (Saudi Arabia) (http://www.transifex.com/projects/p/kodi-main/language/ar_SA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_SA\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "إعدادات مسبقة عشوائية"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "الزمن بين الإعدادات المسبقة"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "وقت إضافي عشوائي"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "قفل الإعدادات المسبقة"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "تمكين التحويلات"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "ايقاف الإعدادات المسبقة الأولى"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "إظهار عدد اللقطات في الثانية"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "اظهار وحدة التحكم التصحيح"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "اظهار تحليل الصوت"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f الثانية"
+
+msgctxt "#30051"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

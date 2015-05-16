@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: Vortex
+# Addon id: visualization.vortex
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/kodi-main/language/et_EE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: et_EE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Random Presets"
+msgstr "Juhuslikud eelseaded"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "Eelseadistuste vaheline aeg"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "Juhuslik lisaaeg"
+
+msgctxt "#30003"
+msgid "Lock Preset"
+msgstr "Lukusta eelseaded"
+
+msgctxt "#30004"
+msgid "Enable Transitions"
+msgstr "Luba üleminekud"
+
+msgctxt "#30005"
+msgid "Stop first preset"
+msgstr "Peate esimene eelseade"
+
+msgctxt "#30006"
+msgid "Show FPS"
+msgstr "Näita värskenduskiirust"
+
+msgctxt "#30007"
+msgid "Show debug console"
+msgstr "Näita silumise konsooli"
+
+msgctxt "#30008"
+msgid "Show audio analysis"
+msgstr "Näita audio analüüsi"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f s"
+
+msgctxt "#30051"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

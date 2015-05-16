@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Spanish (Argentina) (http://www.transifex.com/projects/p/kodi-main/language/es_AR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_AR\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Modo"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Sólido"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Malla"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Puntos"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Altura de la barra"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Pequeña"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Por defecto"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Grande"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Muy grande"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Velocidad"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Muy lenta"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Lenta"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Por defecto"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Rápida"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Muy rápida"

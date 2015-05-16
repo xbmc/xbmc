@@ -1,0 +1,89 @@
+# Kodi Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/kodi-main/language/es_MX/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_MX\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Automatic Blend Time"
+msgstr "Tiempo de Mezcla Automático"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "Tiempo Entre Preajustes"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "Tiempo Aleatorio Adicional"
+
+msgctxt "#30003"
+msgid "Enable Anisotropic Filtering"
+msgstr "Habilitar Filtrado Anisotrópico"
+
+msgctxt "#30004"
+msgid "Enable Hard Cuts"
+msgstr "Habilitar Cortes en Seco"
+
+msgctxt "#30005"
+msgid "Loudness Threshold For Hard Cuts"
+msgstr "Umbral de Intensidad  para Cortes en Seco"
+
+msgctxt "#30006"
+msgid "Average Time Between Hard Cuts"
+msgstr "Tiempo Promedio Entre Cortes en Seco"
+
+msgctxt "#30007"
+msgid "Maximum Refresh Rate"
+msgstr "Máxima Frecuencia de Actualización"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "Habilitar Estéreo 3D"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Paquete de Preajustes"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "Carpeta de Usuario de Preajustes"
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "Modo Aleatorio de Preajustes"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "Preajustes WA51"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Preajustes de Winamp"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "Carpeta de Preajustes Definidos por Usuario"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f segs"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

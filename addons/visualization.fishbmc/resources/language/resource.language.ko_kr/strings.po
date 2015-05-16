@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/kodi-main/language/ko_KR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko_KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "자세히 [CPU 부하]"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "최저"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "보통"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "높음"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "최대"
+
+msgctxt "#30005"
+msgid "Nervous Mode [more mode changes]"
+msgstr "과민성 모드 [잦은 모드 변경]"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "속도 [프레임 건너 뜀]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "매우 낮음"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "낮음"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "보통"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "높음"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "저장된 파일 사용[빠른 시작]"

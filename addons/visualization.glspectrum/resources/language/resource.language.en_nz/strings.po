@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (New Zealand) (http://www.transifex.com/projects/p/kodi-main/language/en_NZ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_NZ\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Mode"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Filled"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Wireframe"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Points"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Bar Height"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Small"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Default"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Big"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Very Big"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Speed"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Very Slow"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Slow"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Default"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Fast"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Very Fast"

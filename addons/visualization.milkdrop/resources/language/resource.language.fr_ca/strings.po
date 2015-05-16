@@ -1,0 +1,89 @@
+# Kodi Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: French (Canada) (http://www.transifex.com/projects/p/kodi-main/language/fr_CA/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_CA\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#30000"
+msgid "Automatic Blend Time"
+msgstr "Durée de mélange automatique"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "Intervalle entre les préréglages"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "Ajout aléatoire de temps"
+
+msgctxt "#30003"
+msgid "Enable Anisotropic Filtering"
+msgstr "Activer le filtrage anisotropique"
+
+msgctxt "#30004"
+msgid "Enable Hard Cuts"
+msgstr "Activer les coupures brusques"
+
+msgctxt "#30005"
+msgid "Loudness Threshold For Hard Cuts"
+msgstr "Seuil de volume pour les coupures brusques"
+
+msgctxt "#30006"
+msgid "Average Time Between Hard Cuts"
+msgstr "Temps moyen entre les coupures brusques"
+
+msgctxt "#30007"
+msgid "Maximum Refresh Rate"
+msgstr "Fréquence de rafraîchissement maximale"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "Activer la stéréo 3D"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Jeu de préréglages"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "Dossier de préréglages de l'utilisateur        "
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "Mode de préréglages aléatoire"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "Préréglages WA51"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Préréglages Winamp"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "Dossier de préréglages de l'utilisateur"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f s"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f images-par-seconde"

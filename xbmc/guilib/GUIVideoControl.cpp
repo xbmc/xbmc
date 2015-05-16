@@ -67,6 +67,8 @@ void CGUIVideoControl::Render()
       g_application.ResetScreenSaver();
 
     g_graphicsContext.SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
+    TransformMatrix mat;
+    g_graphicsContext.SetTransform(mat, 1.0, 1.0);
 
 #ifdef HAS_VIDEO_PLAYBACK
     color_t alpha = g_graphicsContext.MergeAlpha(0xFF000000) >> 24;
@@ -90,6 +92,8 @@ void CGUIVideoControl::Render()
 #else
     ((CDummyVideoPlayer *)g_application.m_pPlayer->GetInternal())->Render();
 #endif
+
+    g_graphicsContext.RemoveTransform();
   }
   // TODO: remove this crap: HAS_VIDEO_PLAYBACK
   // instantiateing a vidio control having no playback is complete nonsense

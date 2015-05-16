@@ -1,0 +1,57 @@
+# Kodi Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Burmese (Myanmar) (http://www.transifex.com/projects/p/kodi-main/language/my_MM/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: my_MM\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "Preset များအတွင်းကြာချိန်"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "Stereo 3D ဖွင့်ထားမည်"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "အသုံးပြုသူ၏ Preset ဖိုလ်ဒါလ်"
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "Preset Shuffle Mode"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "WA51 Presets"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Winamp Presets"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "အသုံးပြုသူသတ်မှတ်ထားသော Preset ဖိုလ်ဒါလ်"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f secs"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

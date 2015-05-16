@@ -1,0 +1,89 @@
+# Kodi Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/kodi-main/language/ja_JP/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja_JP\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Automatic Blend Time"
+msgstr "自動ブレンド時間"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "各プリセットの間隔"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "追加ランダム時間"
+
+msgctxt "#30003"
+msgid "Enable Anisotropic Filtering"
+msgstr "異方性フィルタリングを有効"
+
+msgctxt "#30004"
+msgid "Enable Hard Cuts"
+msgstr "ハードカットを有効"
+
+msgctxt "#30005"
+msgid "Loudness Threshold For Hard Cuts"
+msgstr "ハードカットのラウドネス閾値"
+
+msgctxt "#30006"
+msgid "Average Time Between Hard Cuts"
+msgstr "ハードカット間の平均時間"
+
+msgctxt "#30007"
+msgid "Maximum Refresh Rate"
+msgstr "最大リフレッシュレート"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "ステレオ3Dを有効にする"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "プリセットパック"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "ユーザープリセットフォルダ"
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "プリセットシャッフルモード"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "WA51 プリセット"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Winamp プリセット"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "ユーザー設定プリセットフォルダ"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f 秒"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

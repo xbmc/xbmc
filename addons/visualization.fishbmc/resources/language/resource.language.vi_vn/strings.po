@@ -1,0 +1,61 @@
+# Kodi Media Center language file
+# Addon Name: FishBMC
+# Addon id: visualization.fishbmc
+# Addon Provider: 26elf
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Vietnamese (Viet Nam) (http://www.transifex.com/projects/p/kodi-main/language/vi_VN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: vi_VN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Detail [CPU intensive]"
+msgstr "Chi tiết [thông số CPU]"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Thấp"
+
+msgctxt "#30002"
+msgid "Normal"
+msgstr "Bình thường"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Cao"
+
+msgctxt "#30004"
+msgid "Extreme"
+msgstr "Tối đa"
+
+msgctxt "#30006"
+msgid "Speed [skip some frames]"
+msgstr "Tăng tốc [Bỏ qua một số khung hình]"
+
+msgctxt "#30007"
+msgid "Very Low"
+msgstr "Rất thấp"
+
+msgctxt "#30008"
+msgid "Low"
+msgstr "Thấp"
+
+msgctxt "#30009"
+msgid "Normal"
+msgstr "Bình thường"
+
+msgctxt "#30010"
+msgid "High"
+msgstr "Cao"
+
+msgctxt "#30011"
+msgid "Use a Persistence File [faster startup]"
+msgstr "Dùng tệp tin cố định [tăng tốc khởi động]"
