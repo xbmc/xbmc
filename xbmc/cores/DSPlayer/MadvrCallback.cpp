@@ -2,8 +2,6 @@
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
- *		Copyright (C) 2010-2013 Eduard Kytmanov
- *		http://www.avmedia.su
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,28 +22,39 @@
 
 #ifdef HAS_DS_PLAYER
 
-#include "GraphFilters.h"
-#include "settings/Settings.h"
+#include "MadvrCallback.h"
 
-CGraphFilters *CGraphFilters::m_pSingleton = NULL;
+CMadvrCallback *CMadvrCallback::m_pSingleton = NULL;
 
-CGraphFilters::CGraphFilters() :
-m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER_UNDEF), m_hsubfilter(false)
+CMadvrCallback::CMadvrCallback()
 {
-  m_isKodiRealFS = false;
+  m_pMadvr = NULL;
+  m_isInitMadvr = false;
 }
 
-CGraphFilters::~CGraphFilters()
+CMadvrCallback::~CMadvrCallback()
 {
-  if (m_isKodiRealFS)
-  {
-    CSettings::Get().SetBool("videoscreen.fakefullscreen", false);
-    m_isKodiRealFS = false;
-  }
 }
 
-CGraphFilters* CGraphFilters::Get()
+CMadvrCallback* CMadvrCallback::Get()
 {
-  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGraphFilters());
+  //return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CMadvrCallback());
+  if (m_pSingleton)
+    return m_pSingleton;
+  else
+    return m_pSingleton = new CMadvrCallback();
+}
+
+
+bool CMadvrCallback::UsingMadvr()
+{
+  if (m_pMadvr == NULL)
+    return false;
+  return true;
+}
+
+bool CMadvrCallback::IsEnteringExclusiveMadvr()
+{
+  return ((m_pMadvr != NULL) && CMadvrCallback::Get()->GetCallback()->IsEnteringExclusive());
 }
 #endif

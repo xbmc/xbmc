@@ -173,7 +173,7 @@
 #include "dialogs/GUIDialogSimpleMenu.h"
 #include "addons/GUIDialogAddonSettings.h"
 #ifdef HAS_DS_PLAYER
-#include "cores/DSPlayer/GraphFilters.h"
+#include "MadvrCallback.h"
 #include "DSPlayerDatabase.h"
 #endif
 
@@ -1903,11 +1903,11 @@ void CApplication::Render()
   MEASURE_FUNCTION;
 
 #ifdef HAS_DS_PLAYER
-  if (CGraphFilters::Get()->UsingMadVr())
+  if (CMadvrCallback::Get()->UsingMadvr())
   {
     if (m_pPlayer->IsPausedPlayback())
     {
-      CGraphFilters::Get()->GetMadvrCallback()->OsdRedrawFrame();
+      CMadvrCallback::Get()->GetCallback()->OsdRedrawFrame();
     } 
   }
 #endif  

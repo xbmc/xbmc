@@ -3256,6 +3256,9 @@
     <ClCompile Include="..\..\xbmc\test\TestUtil.cpp">
       <Filter>test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\MadvrCallback.cpp">
+      <Filter>cores\DSPlayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6307,7 +6310,7 @@
     <ClInclude Include="..\..\xbmc\addons\LanguageResource.h">
       <Filter>addons</Filter>
     </ClInclude>
-     <ClInclude Include="..\..\xbmc\addons\UISoundsResource.h">
+    <ClInclude Include="..\..\xbmc\addons\UISoundsResource.h">
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ResourceFile.h">
@@ -6333,6 +6336,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\EmbeddedArt.h">
       <Filter>music</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\MadvrCallback.h">
+      <Filter>cores\DSPlayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

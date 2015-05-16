@@ -21,7 +21,6 @@
 
 #ifdef HAS_DX
 
-#include "cores/DSPlayer/GraphFilters.h"
 #include "threads/SystemClock.h"
 #include "RenderSystemDX.h"
 #include "utils/log.h"
@@ -34,9 +33,10 @@
 #include "settings/Settings.h"
 #include "utils/SystemInfo.h"
 #ifdef HAS_DS_PLAYER
-#include "Filters\RendererSettings.h"
+#include "Filters/RendererSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
-#include "guilib\GUIFontManager.h"
+#include "guilib/GUIFontManager.h"
+#include "MadvrCallback.h"
 #endif
 #include "Application.h"
 #include "Util.h"
@@ -750,18 +750,18 @@ bool CRenderSystemDX::BeginRender()
 
   IDirect3DSurface9 *pBackBuffer;
 #ifdef HAS_DS_PLAYER
-  if (!CGraphFilters::Get()->UsingMadVr())
+  if (!CMadvrCallback::Get()->UsingMadvr())
 #endif
   if(m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer) != D3D_OK)
     return false;
 
 #ifdef HAS_DS_PLAYER
-  if (!CGraphFilters::Get()->UsingMadVr())
+  if (!CMadvrCallback::Get()->UsingMadvr())
 #endif
   m_pD3DDevice->SetRenderTarget(0, pBackBuffer);
 
 #ifdef HAS_DS_PLAYER
-  if (!CGraphFilters::Get()->UsingMadVr())
+  if (!CMadvrCallback::Get()->UsingMadvr())
 #endif
   pBackBuffer->Release();
 

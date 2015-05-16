@@ -44,7 +44,7 @@
 #include "utils/CharsetConverter.h"
 #include "guilib/LocalizeStrings.h"
 #include "application.h"
-#include "cores/DSPlayer/GraphFilters.h"
+#include "MadvrCallback.h"
 #include "DSPlayerDatabase.h"
 #endif
 
@@ -130,52 +130,52 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_MADVR_DEINT_ACTIVE)
   { 
     madvrSettings.m_deintactive = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDeintActive("", madvrSettings.m_deintactive);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDeintActive("", madvrSettings.m_deintactive);
   }
   else if (settingId == SETTING_MADVR_DEINT_FORCE)
   {
     madvrSettings.m_deintforce = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDeintForce("contentType", madvrSettings.m_deintforce);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDeintForce("contentType", madvrSettings.m_deintforce);
   }
   else if (settingId == SETTING_MADVR_DEINT_LOOKPIXELS)
   {
     madvrSettings.m_deintlookpixels = static_cast<const CSettingBool*>(setting)->GetValue();
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
   }
   else if (settingId == SETTING_MADVR_SMOOTHMOTION)
   {
     madvrSettings.m_smoothMotion = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetSmoothmotion("", madvrSettings.m_smoothMotion);
+    CMadvrCallback::Get()->GetCallback()->SettingSetSmoothmotion("", madvrSettings.m_smoothMotion);
   }
   else if (settingId == SETTING_MADVR_DITHERING)
   {
     madvrSettings.m_dithering = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDithering("", madvrSettings.m_dithering);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDithering("", madvrSettings.m_dithering);
   }
   else if (settingId == SETTING_MADVR_DITHERINGCOLORED)
   {
     madvrSettings.m_ditheringColoredNoise = static_cast<const CSettingBool*>(setting)->GetValue();
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
   }
   else if (settingId == SETTING_MADVR_DITHERINGEVERYFRAME)
   {
     madvrSettings.m_ditheringEveryFrame = static_cast<const CSettingBool*>(setting)->GetValue();
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
   }
   else if (settingId == SETTING_MADVR_DEBAND)
   {
     madvrSettings.m_deband = static_cast<const CSettingBool*>(setting)->GetValue();
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("debandActive", madvrSettings.m_deband);
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("debandActive", madvrSettings.m_deband);
   }
   else if (settingId == SETTING_MADVR_DEBANDLEVEL)
   {
     madvrSettings.m_debandLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetInt("debandLevel", madvrSettings.m_debandLevel);
+    CMadvrCallback::Get()->GetCallback()->SettingSetInt("debandLevel", madvrSettings.m_debandLevel);
   }
   else if (settingId == SETTING_MADVR_DEBANDFADELEVEL)
   {
     madvrSettings.m_debandFadeLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
+    CMadvrCallback::Get()->GetCallback()->SettingSetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
   }
   else if (settingId == VIDEO_SETTINGS_DS_STATS)
   {
@@ -429,7 +429,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  m_isMadvr = CGraphFilters::Get()->UsingMadVr() && CSettings::Get().GetBool("dsplayer.managemadvrsettings");
+  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && CSettings::Get().GetBool("dsplayer.managemadvrsettings");
 
   CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
   if (category == NULL)
@@ -741,7 +741,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 void CGUIDialogVideoSettings::OnInitWindow()
 {
   CGUIDialogSettingsManualBase::OnInitWindow();
-  m_isMadvr = CGraphFilters::Get()->UsingMadVr() && CSettings::Get().GetBool("dsplayer.managemadvrsettings");
+  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && CSettings::Get().GetBool("dsplayer.managemadvrsettings");
 
   HideUnused();
 }

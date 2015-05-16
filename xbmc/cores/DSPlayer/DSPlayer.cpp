@@ -60,7 +60,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "cores/DSPlayer/dsgraph.h"
 #include "settings/MediaSettings.h"
-#include "cores/DSPlayer/GraphFilters.h"
+#include "MadvrCallback.h"
 
 using namespace PVR;
 using namespace std;
@@ -327,7 +327,7 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
       }
 
       // Madvr Settings
-      if (CGraphFilters::Get()->UsingMadVr())
+      if (CMadvrCallback::Get()->UsingMadvr())
         SetMadvrResolution();
 
       // Seek

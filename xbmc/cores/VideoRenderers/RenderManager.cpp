@@ -38,7 +38,6 @@
 #include "settings/Settings.h"
 #include "guilib/GUIFontManager.h"
 #include "cores/DataCacheCore.h"
-#include "cores/DSPlayer/GraphFilters.h"
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"

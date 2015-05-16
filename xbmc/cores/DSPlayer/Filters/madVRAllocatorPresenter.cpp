@@ -73,6 +73,7 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
     pEXL->Unregister(m_exclusiveCallback, this);
 
   // the order is important here
+  CMadvrCallback::Destroy();
   m_pSubPicQueue = nullptr;
   m_pAllocator = nullptr;
   m_pDXR = nullptr;
@@ -320,7 +321,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   // Configure initial Madvr Settings
   ConfigureMadvr();
 
-  CGraphFilters::Get()->SetMadVrCallback(this);
+  CMadvrCallback::Get()->SetCallback(this);
 
   (*ppRenderer = (IUnknown*)(INonDelegatingUnknown*)(this))->AddRef();
 

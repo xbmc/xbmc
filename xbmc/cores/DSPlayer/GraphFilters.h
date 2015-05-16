@@ -171,14 +171,6 @@ public:
 
   bool HasSubFilter() { return m_hsubfilter; }
   void SetHasSubFilter(bool b) { m_hsubfilter = b; }
-
-  /*MADVR*/
-  IPaintCallbackMadvr* GetMadvrCallback() { return m_pMadvr; }
-  void SetMadVrCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
-  bool UsingMadVr();
-  bool IsEnteringExclusiveMadVr();
-  bool IsInitMadVr() { return m_isInitMadVr; };
-  void SetInitMadVr(bool b) { m_isInitMadVr = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
 
 private:
@@ -188,12 +180,8 @@ private:
   static CGraphFilters* m_pSingleton;
 
   bool m_isKodiRealFS;
-  bool m_isInitMadVr;
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
-
-  /*MADVR*/
-  IPaintCallbackMadvr* m_pMadvr;
 };

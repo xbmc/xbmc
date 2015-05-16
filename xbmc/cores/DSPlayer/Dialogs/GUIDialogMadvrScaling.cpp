@@ -39,7 +39,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "input/Key.h"
-#include "cores/DSPlayer/GraphFilters.h"
+#include "MadvrCallback.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
@@ -278,86 +278,86 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
   if (settingId == SET_CHROMA_UPSCALING)
   {
     madvrSettings.m_ChromaUpscaling = static_cast<MADVR_SCALING>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("chromaUp", madvrSettings.m_ChromaUpscaling);
+    CMadvrCallback::Get()->GetCallback()->SettingSetScaling("chromaUp", madvrSettings.m_ChromaUpscaling);
   }
   else if (settingId == SET_CHROMA_ANTIRING)
   {
     madvrSettings.m_ChromaAntiRing = static_cast<const CSettingBool*>(setting)->GetValue();
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
   }
   else if (settingId == SET_IMAGE_UPSCALING)
   {
     madvrSettings.m_ImageUpscaling = static_cast<MADVR_SCALING>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("LumaUp", madvrSettings.m_ImageUpscaling);
+    CMadvrCallback::Get()->GetCallback()->SettingSetScaling("LumaUp", madvrSettings.m_ImageUpscaling);
   }
   else if (settingId == SET_IMAGE_UP_ANTIRING)
   {
     madvrSettings.m_ImageUpAntiRing = static_cast<const CSettingBool*>(setting)->GetValue();
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
   }
   else if (settingId == SET_IMAGE_UP_LINEAR)
   {
     madvrSettings.m_ImageUpLinear = static_cast<const CSettingBool*>(setting)->GetValue();
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
   }
   else if (settingId == SET_IMAGE_DOWNSCALING)
   {
     madvrSettings.m_ImageDownscaling = static_cast<MADVR_SCALING>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetScaling("LumaDown", madvrSettings.m_ImageDownscaling);
+    CMadvrCallback::Get()->GetCallback()->SettingSetScaling("LumaDown", madvrSettings.m_ImageDownscaling);
   }
   else if (settingId == SET_IMAGE_DOWN_ANTIRING)
   {
     madvrSettings.m_ImageDownAntiRing = static_cast<const CSettingBool*>(setting)->GetValue();
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
   }
   else if (settingId == SET_IMAGE_DOWN_LINEAR)
   {
     madvrSettings.m_ImageDownLinear = static_cast<const CSettingBool*>(setting)->GetValue();
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
   }
   else if (settingId == SET_IMAGE_DOUBLE_LUMA)
   {
     madvrSettings.m_ImageDoubleLuma = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediDL", madvrSettings.m_ImageDoubleLuma);
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoublingCondition("nnediDLScalingFactor", madvrSettings.m_ImageDoubleLumaFactor);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDoubling("nnediDL", madvrSettings.m_ImageDoubleLuma);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDoublingCondition("nnediDLScalingFactor", madvrSettings.m_ImageDoubleLumaFactor);
   }
   else if (settingId == SET_IMAGE_DOUBLE_CHROMA)
   {
     madvrSettings.m_ImageDoubleChroma = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediDC", madvrSettings.m_ImageDoubleChroma);
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoublingCondition("nnediDCScalingFactor", madvrSettings.m_ImageDoubleChromaFactor);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDoubling("nnediDC", madvrSettings.m_ImageDoubleChroma);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDoublingCondition("nnediDCScalingFactor", madvrSettings.m_ImageDoubleChromaFactor);
   }
   else if (settingId == SET_IMAGE_QUADRUPLE_LUMA)
   {
     madvrSettings.m_ImageQuadrupleLuma = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediQL", madvrSettings.m_ImageQuadrupleLuma);
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetQuadrupleCondition("nnediQLScalingFactor", madvrSettings.m_ImageQuadrupleLumaFactor);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDoubling("nnediQL", madvrSettings.m_ImageQuadrupleLuma);
+    CMadvrCallback::Get()->GetCallback()->SettingSetQuadrupleCondition("nnediQLScalingFactor", madvrSettings.m_ImageQuadrupleLumaFactor);
   }
   else if (settingId == SET_IMAGE_QUADRUPLE_CHROMA)
   {
     madvrSettings.m_ImageQuadrupleChroma = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoubling("nnediQC", madvrSettings.m_ImageQuadrupleChroma);
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetQuadrupleCondition("nnediQCScalingFactor", madvrSettings.m_ImageQuadrupleChromaFactor);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDoubling("nnediQC", madvrSettings.m_ImageQuadrupleChroma);
+    CMadvrCallback::Get()->GetCallback()->SettingSetQuadrupleCondition("nnediQCScalingFactor", madvrSettings.m_ImageQuadrupleChromaFactor);
   }
   else if (settingId == SET_IMAGE_DOUBLE_LUMA_FACTOR)
   {
     madvrSettings.m_ImageDoubleLumaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoublingCondition("nnediDLScalingFactor", madvrSettings.m_ImageDoubleLumaFactor);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDoublingCondition("nnediDLScalingFactor", madvrSettings.m_ImageDoubleLumaFactor);
   }
   else if (settingId == SET_IMAGE_DOUBLE_CHROMA_FACTOR)
   {
     madvrSettings.m_ImageDoubleChromaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetDoublingCondition("nnediDCScalingFactor", madvrSettings.m_ImageDoubleChromaFactor);
+    CMadvrCallback::Get()->GetCallback()->SettingSetDoublingCondition("nnediDCScalingFactor", madvrSettings.m_ImageDoubleChromaFactor);
   }
   else if (settingId == SET_IMAGE_QUADRUPLE_LUMA_FACTOR)
   {
     madvrSettings.m_ImageQuadrupleLumaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetQuadrupleCondition("nnediQLScalingFactor", madvrSettings.m_ImageQuadrupleLumaFactor);
+    CMadvrCallback::Get()->GetCallback()->SettingSetQuadrupleCondition("nnediQLScalingFactor", madvrSettings.m_ImageQuadrupleLumaFactor);
   }
   else if (settingId == SET_IMAGE_QUADRUPLE_CHROMA_FACTOR)
   {
     madvrSettings.m_ImageQuadrupleChromaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CGraphFilters::Get()->GetMadvrCallback()->SettingSetQuadrupleCondition("nnediQCScalingFactor", madvrSettings.m_ImageQuadrupleChromaFactor);
+    CMadvrCallback::Get()->GetCallback()->SettingSetQuadrupleCondition("nnediQCScalingFactor", madvrSettings.m_ImageQuadrupleChromaFactor);
   }
 
   HideUnused();

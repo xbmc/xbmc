@@ -24,7 +24,7 @@
 
 #include "AllocatorCommon.h"
 #include "mvrInterfaces.h"
-#include "IPaintCallback.h"
+#include "MadvrCallback.h"
 #include "utils/log.h"
 
 class CmadVRAllocatorPresenter

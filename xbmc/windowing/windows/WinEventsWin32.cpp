@@ -56,7 +56,7 @@
 
 #ifdef HAS_DS_PLAYER
 #include "DSPlayer.h"
-#include "GraphFilters.h"
+#include "MadvrCallback.h"
 #endif
 
 #ifdef TARGET_WINDOWS
@@ -831,8 +831,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   LRESULT ret = 0;
   bool bCallOurProc = true;
   
-  if (CGraphFilters::Get()->UsingMadVr())
-    bCallOurProc = !CGraphFilters::Get()->GetMadvrCallback()->ParentWindowProc(hWnd, uMsg, &wParam, &lParam, &ret);
+  if (CMadvrCallback::Get()->UsingMadvr())
+    bCallOurProc = !CMadvrCallback::Get()->GetCallback()->ParentWindowProc(hWnd, uMsg, &wParam, &lParam, &ret);
 
   if (bCallOurProc)
     return(DefWindowProc(hWnd, uMsg, wParam, lParam));

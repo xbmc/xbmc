@@ -32,6 +32,7 @@
 #include "windowing/WindowingFactory.h" //important needed to get d3d object and device
 #include "Util.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include <iomanip>
@@ -53,6 +54,7 @@
 #include "utils/timeutils.h"
 #include "utils/ipinhook.h"
 #include "DSInputStreamPVRManager.h"
+#include "MadvrCallback.h"
 
 enum
 {
@@ -133,11 +135,11 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   }
 
   // set pixelshader & settings for madVR
-  if (CGraphFilters::Get()->UsingMadVr())
+  if (CMadvrCallback::Get()->UsingMadvr())
   {
-    CGraphFilters::Get()->GetMadvrCallback()->SetResolution();
-    CGraphFilters::Get()->GetMadvrCallback()->SetMadvrPixelShader();
-    CGraphFilters::Get()->GetMadvrCallback()->RestoreMadvrSettings();
+    CMadvrCallback::Get()->GetCallback()->SetResolution();
+    CMadvrCallback::Get()->GetCallback()->SetMadvrPixelShader();
+    CMadvrCallback::Get()->GetCallback()->RestoreMadvrSettings();
   }
 
   //TODO Ti-Ben
@@ -261,7 +263,7 @@ void CDSGraph::UpdateTime()
     //we dont have the duration of the video yet so try to request it
     UpdateTotalTime();
 
-  if ((CGraphFilters::Get()->VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0 && !CGraphFilters::Get()->UsingMadVr())
+  if ((CGraphFilters::Get()->VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0 && !CMadvrCallback::Get()->UsingMadvr())
   {
     //this is too slow if we are doing it on every UpdateTime
     int avgRate;
@@ -387,19 +389,19 @@ HRESULT CDSGraph::HandleGraphEvent()
     {
     case EC_STEP_COMPLETE:
       CLog::Log(LOGDEBUG, "%s EC_STEP_COMPLETE", __FUNCTION__);
-      g_application.m_pPlayer->CloseFile();
+      CApplicationMessenger::Get().MediaStop();
       break;
     case EC_COMPLETE:
       CLog::Log(LOGDEBUG, "%s EC_COMPLETE", __FUNCTION__);
       m_State.eof = true;
-      g_application.m_pPlayer->CloseFile();
+      CApplicationMessenger::Get().MediaStop();
       break;
     case EC_BUFFERING_DATA:
       CLog::Log(LOGDEBUG, "%s EC_BUFFERING_DATA", __FUNCTION__);
       break;
     case EC_USERABORT:
       CLog::Log(LOGDEBUG, "%s EC_USERABORT", __FUNCTION__);
-      g_application.m_pPlayer->CloseFile();
+      CApplicationMessenger::Get().MediaStop();
       break;
     case EC_ERRORABORT:
     case EC_ERRORABORTEX:
@@ -410,7 +412,7 @@ HRESULT CDSGraph::HandleGraphEvent()
       }
       else
         CLog::Log(LOGDEBUG, "%s EC_ERRORABORT. Error code: 0x%X", __FUNCTION__, evParam1);
-      g_application.m_pPlayer->CloseFile();
+      CApplicationMessenger::Get().MediaStop();
       break;
     case EC_STATE_CHANGE:
       CLog::Log(LOGDEBUG, "%s EC_STATE_CHANGE", __FUNCTION__);
@@ -848,12 +850,12 @@ CStdString CDSGraph::GetVideoInfo()
     videoInfo += m_pStrCurrentFrameRate.c_str();
 
   CStdString strDXVA;
-  if (!CGraphFilters::Get()->UsingMadVr())
+  if (!CMadvrCallback::Get()->UsingMadvr())
     strDXVA = GetDXVADecoderDescription();
   /*
   // I Don't know if this work properly
   else
-    strDXVA = CGraphFilters::Get()->GetMadvrCallback()->GetDXVADecoderDescription();
+    strDXVA = CMadvrCallback::Get()->GetCallback()->GetDXVADecoderDescription();
   */
   if (!strDXVA.empty())
     videoInfo += " | " + strDXVA;
