@@ -1066,6 +1066,8 @@ void CWinSystemOSX::UpdateResolutions()
   // first screen goes into the current desktop mode
   GetScreenResolution(&w, &h, &fps, 0);
   UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, w, h, fps);
+  NSString *dispName = screenNameForDisplay(GetDisplayID(0));
+  CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput = [dispName UTF8String];
   CDisplaySettings::Get().ClearCustomResolutions();
 
   // see resolution.h enum RESOLUTION for how the resolutions
@@ -1077,6 +1079,8 @@ void CWinSystemOSX::UpdateResolutions()
     // get current resolution of screen i
     GetScreenResolution(&w, &h, &fps, i);
     UpdateDesktopResolution(res, i, w, h, fps);
+    dispName = screenNameForDisplay(GetDisplayID(i));
+    res.strOutput = [dispName UTF8String];
     CDisplaySettings::Get().AddResolutionInfo(res);
   }
 
@@ -1330,6 +1334,7 @@ void CWinSystemOSX::FillInVideoModes()
         // this is what linux does - though it feels that there shouldn't be
         // the same resolution twice... - thats why i add a FIXME here.
         res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
+        res.strOutput = [dispName UTF8String];
         g_graphicsContext.ResetOverscan(res);
         CDisplaySettings::Get().AddResolutionInfo(res);
       }
