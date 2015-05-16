@@ -744,6 +744,12 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   m_lastOwnedContext = new_context;
   m_bWindowCreated = true;
 
+  // get screen refreshrate - this is needed
+  // when we startup in windowed mode and don't run through SetFullScreen
+  int dummy;
+  m_lastDisplayNr = res.iScreen;
+  GetScreenResolution(&dummy, &dummy, &m_refreshRate, GetCurrentScreen());
+
   return true;
 }
 
@@ -789,6 +795,12 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
       [window update];
       [view setFrameSize:NSMakeSize(newWidth, newHeight)];
       [context update];
+      // this is needed in case we traverse from fullscreen screen 2
+      // to windowed on screen 1 directly where in ScreenChangedNotitication
+      // we don't have a window to get the current screen on
+      // in that case ResizeWindow is called at a later stage from SetFullScreen(false)
+      // and we can grab the correct display number here then
+      m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen( [window screen] ));;
     }
   }
 
@@ -1724,12 +1736,15 @@ int CWinSystemOSX::GetNumScreens()
 
 int CWinSystemOSX::GetCurrentScreen()
 {
+  return m_lastDisplayNr;
+}
+
+void CWinSystemOSX::WindowChangedScreen()
+{
+  // user has moved the window to a
+  // different screen
   NSOpenGLContext* context = [NSOpenGLContext currentContext];
-  
-  // if user hasn't moved us in windowed mode - return the
-  // last display we were fullscreened at
-  if (!m_movedToOtherScreen)
-    return m_lastDisplayNr;
+  m_lastDisplayNr = -1;
   
   // if we are here the user dragged the window to a different
   // screen and we return the screen of the window
@@ -1744,20 +1759,12 @@ int CWinSystemOSX::GetCurrentScreen()
       window = [view window];
       if (window)
       {
-        m_movedToOtherScreen = false;
-        return GetDisplayIndex(GetDisplayIDFromScreen( [window screen] ));
+        m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen( [window screen] ));
       }
-        
     }
   }
-  return 0;
-}
-
-void CWinSystemOSX::WindowChangedScreen()
-{
-  // user has moved the window to a
-  // different screen
-  m_movedToOtherScreen = true;
+  if (m_lastDisplayNr == -1)
+    m_lastDisplayNr = 0;// default to main screen
 }
 
 void CWinSystemOSX::AnnounceOnLostDevice()
