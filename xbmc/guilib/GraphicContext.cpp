@@ -52,6 +52,7 @@ CGraphicContext::CGraphicContext(void) :
   m_bFullScreenVideo(false),
   m_bCalibrating(false),
   m_Resolution(RES_INVALID),
+  m_fFPSOverride(0.0),
   /*m_windowResolution,*/
   /*,m_cameras, */
   /*m_origins, */
@@ -466,6 +467,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   m_iScreenId     = info_mod.iScreen;
   m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
   m_Resolution    = res;
+  m_fFPSOverride = 0 ;
 
   if (g_advancedSettings.m_fullScreen)
   {
@@ -739,6 +741,12 @@ const RESOLUTION_INFO CGraphicContext::GetResInfo(RESOLUTION res) const
     info.Overscan.left   /= 2;
     info.Overscan.right   = (info.Overscan.right - info.iBlanking) / 2;
   }
+
+  if (res == m_Resolution && m_fFPSOverride != 0)
+  {
+    info.fRefreshRate = m_fFPSOverride;
+  }
+
   return info;
 }
 
@@ -1064,3 +1072,7 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
   }
 }
 
+void CGraphicContext::SetFPS(float fps)
+{
+  m_fFPSOverride = fps;
+}
