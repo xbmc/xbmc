@@ -1197,21 +1197,6 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, int screenI
   if (screenIdx >= GetNumScreens())
     return;
   CGDirectDisplayID display_id = (CGDirectDisplayID)GetDisplayID(screenIdx);
-
-  NSOpenGLContext* context = [NSOpenGLContext currentContext];
-  if (context)
-  {
-    NSView* view;
-
-    view = [context view];
-    if (view)
-    {
-      NSWindow* window;
-      window = [view window];
-      if (window)
-        display_id = GetDisplayIDFromScreen( [window screen] );
-    }
-  }
   CGDisplayModeRef mode  = CGDisplayCopyDisplayMode(display_id);
   *w = CGDisplayModeGetWidth(mode);
   *h = CGDisplayModeGetHeight(mode);
