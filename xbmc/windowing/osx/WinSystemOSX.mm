@@ -572,6 +572,9 @@ static void DisplayReconfigured(CGDirectDisplayID display,
       winsys->AnnounceOnResetDevice();
     }
   }
+  
+  if ((flags & kCGDisplayAddFlag) || (flags & kCGDisplayRemoveFlag))
+    winsys->UpdateResolutions();
 }
 
 //---------------------------------------------------------------------------------
@@ -1059,6 +1062,7 @@ void CWinSystemOSX::UpdateResolutions()
   // first screen goes into the current desktop mode
   GetScreenResolution(&w, &h, &fps, 0);
   UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, w, h, fps);
+  CDisplaySettings::Get().ClearCustomResolutions();
 
   // see resolution.h enum RESOLUTION for how the resolutions
   // have to appear in the resolution info vector in CDisplaySettings
@@ -1078,6 +1082,7 @@ void CWinSystemOSX::UpdateResolutions()
     // and push to the resolution info vector
     FillInVideoModes();
   }
+  CDisplaySettings::Get().ApplyCalibrations();
 }
 
 /*
