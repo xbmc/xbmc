@@ -1,5 +1,4 @@
--include ../../Makefile.include
-include ../../xbmc-addons.include
+include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile
 
 # lib name, version
