@@ -1,3 +1,18 @@
+# Kodi Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/kodi-main/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #[Consistency] Make terms, settings names, brands and other minutiae, consistent throughout file.
 #[Capitalization] Avoid capitalizing every second word. See http://grammarist.com/capitalization/
 #For example, prefer wording as "This new string" instead of "This New String".
@@ -5,21 +20,6 @@
 #[Description / location] For example, "#. Description of some setting" used on "#: xbmc/addons/guidialogaddoninfo.cpp"
 #When writing a description or setting, refer to a setting name in quotes. See existing entries for guidance.
 #For example, "Press \"OK\" for \"All seasons\"" instead of "Press OK for All seasons" after first word.
-
-# Kodi Media Center language file
-msgid ""
-msgstr ""
-"Project-Id-Version: XBMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: English (http://www.transifex.com/projects/p/xbmc-main/language/en/)\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: xbmc/addons/Addon.cpp
 #: system/settings/settings.xml
@@ -4932,14 +4932,14 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr ""
 
-#empty strings with id 12349 to 12352
+#empty strings from id 12349 to 12352
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr ""
 
-#empty strings with id 12354 to 12355
+#empty strings from id 12354 to 12355
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
 msgctxt "#12356"
@@ -5393,7 +5393,7 @@ msgctxt "#13120"
 msgid "VDPAU"
 msgstr ""
 
-#empty string with ids 13121, 13122
+#empty strings from id 13121 to 13122
 
 msgctxt "#13123"
 msgid "Keep skin?"
@@ -6427,7 +6427,7 @@ msgctxt "#13557"
 msgid "Skip delay"
 msgstr ""
 
-#empty strings from id 13557 to 13599
+#empty strings from id 13558 to 13599
 
 #: system/settings/darwin.xml
 msgctxt "#13600"
@@ -9564,7 +9564,7 @@ msgctxt "#20026"
 msgid "Region"
 msgstr ""
 
-#empty strings from id 20027 to 20036
+#empty strings from id 20027 to 20034
 #string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)
 
 #: xbmc/LangInfo.cpp
@@ -10342,9 +10342,7 @@ msgctxt "#20255"
 msgid "First logon, edit your profile"
 msgstr ""
 
-#empty string with id 20256
-
-#empty strings from id 20257 to 20258
+#empty strings from id 20256 to 20258
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20259"
@@ -10379,9 +10377,7 @@ msgctxt "#20302"
 msgid "Unable to write to folder:"
 msgstr ""
 
-msgctxt "#20303"
-msgid ""
-msgstr ""
+#empty string with id 20303
 
 #: xbmc/network/GUIDialogNetworkSetup.cpp
 msgctxt "#20304"
@@ -11129,7 +11125,7 @@ msgctxt "#21336"
 msgid "Connecting to: %s"
 msgstr ""
 
-#empty strings from id 2133i7 to 21358
+#empty strings from id 21337 to 21358
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"
@@ -12449,7 +12445,7 @@ msgctxt "#24034"
 msgid "Check for updates"
 msgstr ""
 
-#empty string id 24035
+#empty string with id 24035
 
 msgctxt "#24036"
 msgid "Changelog"
@@ -12717,7 +12713,7 @@ msgctxt "#24087"
 msgid "All repositories"
 msgstr ""
 
-#empty strings id 24088
+#empty string with id 24088
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -12980,7 +12976,7 @@ msgctxt "#24996"
 msgid "Dependencies"
 msgstr ""
 
-#empty string id 24997
+#empty string with id 24997
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -15714,8 +15710,7 @@ msgstr ""
 #. Description of setting "System -> Master lock -> Master lock code and settings" with label #20100
 #: system/settings/settings.xml
 msgctxt "#36396"
-msgid "Here you can enable or disable master lock and define the PIN code used to unlock it. You can also specify which areas of the application which would need a PIN to access them.
-"
+msgid "Here you can enable or disable master lock and define the PIN code used to unlock it. You can also specify which areas of the application which would need a PIN to access them."
 msgstr ""
 
 #. Description of setting "System -> Master lock -> Ask for master lock code on startup" with label #20076
