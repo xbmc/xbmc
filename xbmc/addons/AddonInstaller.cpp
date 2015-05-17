@@ -39,6 +39,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "URL.h"
 
 #include <functional>
@@ -57,7 +58,7 @@ struct find_map : public binary_function<CAddonInstaller::JobMap::value_type, un
 };
 
 CAddonInstaller::CAddonInstaller()
-  : m_repoUpdateJob(0)
+  : m_repoUpdateJob(nullptr)
 { }
 
 CAddonInstaller::~CAddonInstaller()
@@ -79,7 +80,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
   {
     // repo job finished
     m_repoUpdateDone.Set();
-    m_repoUpdateJob = 0;
+    m_repoUpdateJob = nullptr;
     lock.Leave();
   }
   else
@@ -280,16 +281,6 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   return false;
 }
 
-void CAddonInstaller::InstallFromXBMCRepo(const set<std::string> &addonIDs)
-{
-  // first check we have the our repositories up to date (and wait until we do)
-  UpdateRepos(false, true);
-
-  // now install the addons
-  for (set<std::string>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
-    Install(*i);
-}
-
 bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, CAddonDatabase *database /* = NULL */)
 {
   std::vector<std::string> preDeps;
@@ -366,11 +357,19 @@ CDateTime CAddonInstaller::LastRepoUpdate() const
   return update;
 }
 
-void CAddonInstaller::UpdateRepos(bool force, bool wait)
+void CAddonInstaller::UpdateRepos(bool force /*= false*/, bool wait /*= false*/, bool showProgress /*= false*/)
 {
   CSingleLock lock(m_critSection);
-  if (m_repoUpdateJob)
+  if (m_repoUpdateJob != nullptr)
   {
+    //Hook up dialog to running job
+    if (showProgress && !m_repoUpdateJob->HasProgressIndicator())
+    {
+      auto* dialog = static_cast<CGUIDialogExtendedProgressBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+      if (dialog)
+        m_repoUpdateJob->SetProgressIndicators(dialog->GetHandle(g_localizeStrings.Get(24092)), nullptr);
+    }
+
     if (wait)
     {
       // wait for our job to complete
@@ -404,7 +403,15 @@ void CAddonInstaller::UpdateRepos(bool force, bool wait)
         || repo->Version() != database.GetRepoVersion(repo->ID()))
       {
         CLog::Log(LOGDEBUG, "Checking repositories for updates (triggered by %s)", repo->Name().c_str());
-        m_repoUpdateJob = CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), this);
+
+        m_repoUpdateJob = new CRepositoryUpdateJob(addons);
+        if (showProgress)
+        {
+          auto* dialog = static_cast<CGUIDialogExtendedProgressBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+          if (dialog)
+            m_repoUpdateJob->SetProgressIndicators(dialog->GetHandle(g_localizeStrings.Get(24092)), nullptr);
+        }
+        CJobManager::GetInstance().AddJob(m_repoUpdateJob, this);
         if (wait)
         {
           // wait for our job to complete

@@ -18,6 +18,7 @@
  *
  */
 
+#include <cmath>
 #include "GUIDialogExtendedProgressBar.h"
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUISliderControl.h"
@@ -53,11 +54,9 @@ void CGUIDialogProgressBarHandle::SetTitle(const string &strTitle)
 
 void CGUIDialogProgressBarHandle::SetProgress(int currentItem, int itemCount)
 {
-  float fPercentage = (float)((currentItem*100)/itemCount);
-  if (fPercentage > 100.0F)
-    fPercentage = 100.0F;
-
-  m_fPercentage = fPercentage;
+  float fPercentage = (currentItem*100.0f)/itemCount;
+  if (!std::isnan(fPercentage))
+    m_fPercentage = std::min(100.0f, fPercentage);
 }
 
 CGUIDialogExtendedProgressBar::CGUIDialogExtendedProgressBar(void)

@@ -21,6 +21,7 @@
 
 #include "Addon.h"
 #include "utils/Job.h"
+#include "utils/ProgressJob.h"
 
 namespace ADDON
 {
@@ -64,7 +65,7 @@ namespace ADDON
     CRepository(const CRepository &rhs);
   };
 
-  class CRepositoryUpdateJob : public CJob
+  class CRepositoryUpdateJob : public CProgressJob
   {
   public:
     CRepositoryUpdateJob(const VECADDONS& repos);
