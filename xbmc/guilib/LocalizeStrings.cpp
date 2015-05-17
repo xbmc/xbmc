@@ -64,13 +64,13 @@ bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::strin
   std::string encoding;
   if (!LoadStr2Mem(path, language, encoding))
   {
-    if (StringUtils::EqualsNoCase(language, ADDON_LANGUAGE_DEFAULT)) // no fallback, nothing to do
+    if (StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT)) // no fallback, nothing to do
       return false;
   }
 
   // load the fallback
-  if (!StringUtils::EqualsNoCase(language, ADDON_LANGUAGE_DEFAULT))
-    LoadStr2Mem(path, ADDON_LANGUAGE_DEFAULT, encoding);
+  if (!StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT))
+    LoadStr2Mem(path, LANGUAGE_DEFAULT, encoding);
 
   return true;
 }
@@ -100,7 +100,7 @@ bool CLocalizeStrings::LoadStr2Mem(const std::string &pathname_in, const std::st
   }
 
   if (LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), encoding, offset,
-             StringUtils::EqualsNoCase(language, CORE_LANGUAGE_DEFAULT) || StringUtils::EqualsNoCase(language, ADDON_LANGUAGE_DEFAULT)))
+             StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) || StringUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT)))
     return true;
 
   CLog::Log(LOGDEBUG, "LocalizeStrings: no strings.po file exist at %s, fallback to strings.xml",
@@ -198,7 +198,7 @@ bool CLocalizeStrings::LoadXML(const std::string &filename, std::string &encodin
 
 bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& strLanguage)
 {
-  bool bLoadFallback = !StringUtils::EqualsNoCase(strLanguage, CORE_LANGUAGE_DEFAULT);
+  bool bLoadFallback = !StringUtils::EqualsNoCase(strLanguage, LANGUAGE_DEFAULT);
 
   std::string encoding;
   CSingleLock lock(m_critSection);
@@ -207,14 +207,14 @@ bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& s
   if (!LoadStr2Mem(strPathName, strLanguage, encoding))
   {
     // try loading the fallback
-    if (!bLoadFallback || !LoadStr2Mem(strPathName, CORE_LANGUAGE_DEFAULT, encoding))
+    if (!bLoadFallback || !LoadStr2Mem(strPathName, LANGUAGE_DEFAULT, encoding))
       return false;
 
     bLoadFallback = false;
   }
 
   if (bLoadFallback)
-    LoadStr2Mem(strPathName, CORE_LANGUAGE_DEFAULT, encoding);
+    LoadStr2Mem(strPathName, LANGUAGE_DEFAULT, encoding);
 
   // fill in the constant strings
   m_strings[20022].strTranslated = "";
