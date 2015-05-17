@@ -56,6 +56,9 @@ msgid "Settings"
 msgstr ""
 
 #: Unknown
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#6"
 msgid "Kodi SVN"
@@ -786,6 +789,8 @@ msgctxt "#188"
 msgid "Select all"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#189"
 msgid "Scanning media information"
 msgstr ""
@@ -806,11 +811,15 @@ msgctxt "#193"
 msgid "Scan"
 msgstr ""
 
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#194"
 msgid "Searching..."
 msgstr ""
 
 #: xbmc/addons/guidialogaddoninfo.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#195"
 msgid "No information found!"
 msgstr ""
@@ -1102,6 +1111,8 @@ msgid "Fetching CD information"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#257"
 msgid "Error"
@@ -1215,6 +1226,9 @@ msgctxt "#283"
 msgid "Search results"
 msgstr ""
 
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#284"
 msgid "No results found"
 msgstr ""
@@ -1340,6 +1354,7 @@ msgctxt "#312"
 msgid "(0=auto)"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#313"
 msgid "Cleaning database"
 msgstr ""
@@ -1420,6 +1435,7 @@ msgctxt "#332"
 msgid "Error compressing database"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#333"
 msgid "Do you want to clean the library?"
 msgstr ""
@@ -1854,6 +1870,7 @@ msgctxt "#425"
 msgid "No album information found"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#426"
 msgid "No CD information found"
 msgstr ""
@@ -1892,10 +1909,12 @@ msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr ""
 
+#: xbmc/Application.cpp
 msgctxt "#435"
 msgid "No optical disc drive detected"
 msgstr ""
 
+#: xbmc/Application.cpp
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
 msgstr ""
@@ -2057,6 +2076,9 @@ msgctxt "#476"
 msgid "Music & video"
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#477"
 msgid "Unable to load playlist"
@@ -2145,6 +2167,7 @@ msgctxt "#499"
 msgid "Unable to connect to online lookup service"
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#500"
 msgid "Downloading album information failed"
 msgstr ""
@@ -2769,6 +2792,7 @@ msgid "Remove from library"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/VideoDatabase.cpp
 msgctxt "#647"
 msgid "Export video library"
 msgstr ""
@@ -3825,10 +3849,12 @@ msgid "Use password protection"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr ""
 
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#1274"
 msgid "AirTunes"
 msgstr ""
@@ -4267,6 +4293,7 @@ msgstr ""
 
 #. Fallback message indicating an add-on error.
 #: xbmc/interfaces/python/PythonInvoker.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#2103"
 msgid "Add-on error"
 msgstr ""
@@ -4890,6 +4917,7 @@ msgid "Enter new password"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogNumeric.cpp
+#: xbmc/guilib/GUIKeyboardFactory.cpp
 msgctxt "#12341"
 msgid "Re-enter new password"
 msgstr ""
@@ -4908,6 +4936,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogGamepad.cpp
 #: xbmc/dialogs/GUIDialogNumeric.cpp
+#: xbmc/guilib/GUIKeyboardFactory.cpp
 msgctxt "#12344"
 msgid "Passwords entered did not match."
 msgstr ""
@@ -5873,6 +5902,7 @@ msgctxt "#13345"
 msgid "Switch LED off on playback"
 msgstr ""
 
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13346"
 msgid "Movie information"
 msgstr ""
@@ -6470,10 +6500,12 @@ msgstr ""
 
 #empty strings from id 13614 to 13619
 
+#: xbmc/osx/XBMCHelper.cpp
 msgctxt "#13620"
 msgid "Apple Remote error"
 msgstr ""
 
+#: xbmc/osx/XBMCHelper.cpp
 msgctxt "#13621"
 msgid "Apple Remote support couldn't be enabled."
 msgstr ""
@@ -6724,6 +6756,10 @@ msgctxt "#14056"
 msgid "Stop scan"
 msgstr ""
 
+#: xbmc/music/MusicDatabase.cpp
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#14057"
 msgid "Not possible while scanning for media information"
 msgstr ""
@@ -6975,6 +7011,7 @@ msgstr ""
 
 #empty strings from id 14111 to 15010
 
+#: xbmc/music/MusicDatabase.cpp
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15011"
 msgid "%i Items failed to export"
@@ -7270,6 +7307,7 @@ msgctxt "#16028"
 msgid "Enter value"
 msgstr ""
 
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#16029"
 msgid "Check the log for more information about this message."
 msgstr ""
@@ -7766,10 +7804,18 @@ msgctxt "#19032"
 msgid "Timeline"
 msgstr ""
 
+#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
+#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#19033"
 msgid "Information"
 msgstr ""
 
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
 msgctxt "#19034"
 msgid "Already started recording on this channel"
 msgstr ""
@@ -7778,6 +7824,8 @@ msgctxt "#19035"
 msgid "%s couldn't be played.[CR]Check the log for more information about this message."
 msgstr ""
 
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#19036"
 msgid "This recording can't be played.[CR]Check the log for more information about this message."
 msgstr ""
@@ -7787,6 +7835,8 @@ msgctxt "#19037"
 msgid "Show signal quality"
 msgstr ""
 
+#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
 msgstr ""
@@ -7857,6 +7907,7 @@ msgid "Hide channel"
 msgstr ""
 
 #: xbmc/epg/EpgInfoTag.cpp
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
 msgctxt "#19055"
 msgid "No information available"
 msgstr ""
@@ -7908,6 +7959,7 @@ msgctxt "#19066"
 msgid "Channel icons"
 msgstr ""
 
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr ""
@@ -8083,6 +8135,7 @@ msgctxt "#19108"
 msgid "Framerate {fallback}"
 msgstr ""
 
+#: xbmc/pvr/timers/PVRTimers.cpp
 msgctxt "#19109"
 msgid "Couldn't save timer.[CR]Check the log for more information about this message."
 msgstr ""
@@ -8091,6 +8144,7 @@ msgctxt "#19110"
 msgid "An unexpected error occurred.[CR]Try again later or check the log for more information."
 msgstr ""
 
+#: xbmc/pvr/addons/PVRClients.cpp
 msgctxt "#19111"
 msgid "PVR backend error.[CR]Check the log for more information about this message."
 msgstr ""
@@ -8308,6 +8362,7 @@ msgctxt "#19163"
 msgid "Recordings"
 msgstr ""
 
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19164"
 msgid "Can't start recording.[CR]Check the log for more information about this message."
 msgstr ""
@@ -8445,10 +8500,12 @@ msgctxt "#19191"
 msgid "PVR service"
 msgstr ""
 
+#: xbmc/pvr/addons/PVRClients.cpp
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
 msgstr ""
 
+#: xbmc/pvr/addons/PVRClients.cpp
 msgctxt "#19193"
 msgid "The channel scan can't be started.[CR]Check the log for more information about this message."
 msgstr ""
@@ -8540,6 +8597,7 @@ msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
 msgstr ""
 
+#: xbmc/pvr/timers/PVRTimers.cpp
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
 msgstr ""
@@ -8751,10 +8809,12 @@ msgctxt "#19263"
 msgid "Locked channel. Enter PIN:"
 msgstr ""
 
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19264"
 msgid "Incorrect PIN"
 msgstr ""
 
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr ""
@@ -9834,6 +9894,7 @@ msgctxt "#20098"
 msgid "Fetching information for album"
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#20099"
 msgid "A CD or track can't be ripped while being played"
 msgstr ""
@@ -10252,6 +10313,7 @@ msgid "Change information provider"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/music/MusicDatabase.cpp
 msgctxt "#20196"
 msgid "Export music library"
 msgstr ""
@@ -10265,6 +10327,7 @@ msgctxt "#20198"
 msgid "No artist found!"
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#20199"
 msgid "Downloading artist information failed"
 msgstr ""
@@ -10562,6 +10625,7 @@ msgctxt "#20348"
 msgid "Directors"
 msgstr ""
 
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#20349"
 msgid "No video files found in this path!"
 msgstr ""
@@ -11010,10 +11074,12 @@ msgctxt "#20447"
 msgid "Ignore and refresh from Internet?"
 msgstr ""
 
+#: xbmc/video/VideoInfoScanner.cpp
 msgctxt "#20448"
 msgid "Couldn't download information"
 msgstr ""
 
+#: xbmc/video/VideoInfoScanner.cpp
 msgctxt "#20449"
 msgid "Unable to connect to remote server"
 msgstr ""
@@ -11960,6 +12026,7 @@ msgid "Discography"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#21889"
 msgid "Searching artist"
 msgstr ""
@@ -12277,6 +12344,7 @@ msgstr ""
 #empty strings from id 23105 to 23999
 #strings 24000 thru 24299 reserved for the Add-ons framework
 
+#: xbmc/addons/GUIDialogAddonSettings.cpp
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24000"
 msgid "Add-on"
@@ -12422,6 +12490,7 @@ msgctxt "#24029"
 msgid "Service for weather information"
 msgstr ""
 
+#: xbmc/addons/GUIDialogAddonSettings.cpp
 msgctxt "#24030"
 msgid "This add-on can't be configured"
 msgstr ""
@@ -13432,22 +13501,26 @@ msgstr ""
 #empty strings from id 33085 to 33099
 
 #: xbmc/network/network.cpp
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#33100"
 msgid "Failed to start"
 msgstr ""
 
 #: xbmc/network/network.cpp
+#: xbmc/network/NetworkServices.cpp
 #: system/settings/settings.xml
 msgctxt "#33101"
 msgid "Web server"
 msgstr ""
 
 #: xbmc/network/network.cpp
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#33102"
 msgid "Event server"
 msgstr ""
 
 #: xbmc/network/network.cpp
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#33103"
 msgid "Remote communication server"
 msgstr ""
