@@ -326,8 +326,19 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // start PVR related services
   g_application.StartPVRManager();
 
-  g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
+  int firstWindow = g_SkinInfo->GetFirstWindow();
+  // the startup window is considered part of the initialization as it most likely switches to the final window
+  bool uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
+
+  g_windowManager.ChangeActiveWindow(firstWindow);
 
   g_application.UpdateLibraries();
   CStereoscopicsManager::Get().Initialize();
+
+  // if the user interfaces has been fully initialized let everyone know
+  if (uiInitializationFinished)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+    g_windowManager.SendThreadMessage(msg);
+  }
 }

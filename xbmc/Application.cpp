@@ -1170,6 +1170,7 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
+  bool uiInitializationFinished = true;
   if (g_windowManager.Initialized())
   {
     CSettings::Get().GetSetting("powermanagement.displaysoff")->SetRequirementsMet(m_dpms->IsSupported());
@@ -1197,7 +1198,12 @@ bool CApplication::Initialize()
 
     // check if we should use the login screen
     if (CProfilesManager::Get().UsingLoginScreen())
+    {
+      // the login screen still needs to perform additional initialization
+      uiInitializationFinished = false;
+
       g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
+    }
     else
     {
 #ifdef HAS_JSONRPC
@@ -1206,8 +1212,16 @@ bool CApplication::Initialize()
       ADDON::CAddonMgr::Get().StartServices(false);
 
       // let's start the PVR manager and decide if the PVR manager handle the startup window activation
-      if (!StartPVRManager())
-        g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
+      if (StartPVRManager())
+        uiInitializationFinished = false;
+      else
+      {
+        int firstWindow = g_SkinInfo->GetFirstWindow();
+        // the startup window is considered part of the initialization as it most likely switches to the final window
+        uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
+
+        g_windowManager.ActivateWindow(firstWindow);
+      }
 
       CStereoscopicsManager::Get().Initialize();
     }
@@ -1250,6 +1264,13 @@ bool CApplication::Initialize()
   CInputManager::Get().SetEnabledJoystick(CSettings::Get().GetBool("input.enablejoystick") &&
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
+
+  // if the user interfaces has been fully initialized let everyone know
+  if (uiInitializationFinished)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+    g_windowManager.SendThreadMessage(msg);
+  }
 
   if (fallbackLanguage)
     CGUIDialogOK::ShowAndGetInput(24133, 24134);
