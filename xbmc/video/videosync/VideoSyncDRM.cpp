@@ -176,4 +176,10 @@ float CVideoSyncDRM::GetFps()
   return m_fps;
 }
 
+void CVideoSyncDRM::RefreshChanged()
+{
+  if (m_fps != g_graphicsContext.GetFPS())
+    m_abort = true;
+}
+
 #endif
