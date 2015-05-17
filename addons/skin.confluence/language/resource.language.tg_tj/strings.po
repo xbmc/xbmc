@@ -1,0 +1,341 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Tajik (Tajikistan) (http://www.transifex.com/projects/p/kodi-main/language/tg_TJ/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tg_TJ\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Дар ҳоли иҷро..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Имконоти намоиш"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Экрани пурра"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Файлҳои мусиқӣ"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Дар ҳоли пахш"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Саҳифа"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Объект"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Ҷойгиршавӣ"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Маҳорати хӯшӣ"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Маълумот"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Амалҳо"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ДАР ҲОЛИ ПАХШ"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ТАВАҚҚУФШУДА"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "БАСУРЪАТ БА ПЕШ ГАРДОНИДАНИ РОҲЧА"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "БА АҚИБ БУРДАН"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "ҶУСТУҶӮ"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Вақти анҷом"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Мураттаб: Бароянда"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Мураттаб: Камшаванда"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Кушодани рӯйхати пахш"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Захира кардани рӯйхати пахш"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Пӯшидани рӯйхати пахш"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Файлҳои мусиқии системавӣ"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Рӯйхати пахши ҷорӣ"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Ин файли таркибӣ мебошад, қисмеро, ки мехоҳед пахш кунед, интихоб намоед."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Имконоти экрани асосӣ"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Пасзамина"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Имконоти гуногун"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Истифодаи пасзаминаи шахсӣ"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Масири пасзамина:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Пинҳон кардан"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Имконот"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Пахш кардани суруди мавзӯи телевизионӣ дар китобхонаи видеоӣ (Барномаи иловагии TvTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Лирика"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Мусиқии OSD"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "Видеои OSD"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Сатҳи танзимот"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Миёнбурҳо"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Ёфтшуда"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Провайдери иттилоотӣ"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Маҳорати хӯшӣ[CR][CR]Дастнорас аст[CR][CR] Барои интихоб тугмаро зер кунед"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Премера"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Санаи эҷод"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Возеҳӣ"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Вақтсанҷ танзим шудааст![/B] [COLOR=grey2] Хомушкунии худкори система баъд аз[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Таваққуф"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Истодан"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Ба ақиб бурдан"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Менюи филм"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Тамошо кардан дар 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Тағйир додани ҳолат"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Фаъол"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Пӯсти пешфарз"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Дар асоси шрифти Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]ТАНЗИМОТИ НАМУДИ ЗОҲИРӢ[/B][CR][CR]Тағйир додани пӯст • Интихоби забон ва минтақа • Тағйир додани имконоти рӯйхати файлҳо[CR]Танзимоти пардаи экран"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]ТАНЗИМОТИ ПАРАМЕТРҲОИ ВИДЕО[/B][CR][CR]Идоракунии китобхонаи видеоӣ • Имконоти пахши видео[CR]Тағйир додани имконоти рӯйхати видеоҳо • Танзимоти шрифтҳои зерунвон"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]ТАНЗИМОТИ ПАРАМЕТРҲОИ МУСИҚӢ[/B][CR][CR]Идоракунии китобхонаи мусиқӣ · Имконоти пахши мусиқӣ · Тағйир додани имконоти рӯйхати мусиқӣ[CR]Танзими иловакунии мусиқӣ · Танзими имконоти караоке"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]ТАНЗИМОТИ ПАРАМЕТРҲОИ СИСТЕМА[/B][CR][CR]Танзимот ва санҷиши дисплейҳо · Танзимоти барориши аудио · Танзимоти идоракунии дурдаст[CR]Танзимоти масрафи барқ ·  Танзимоти ислоҳи хатоҳо · Танзимоти қулфкунӣ"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]ТАНЗИМОТИ ПАРАМЕТРҲОИ ТВ[/B][CR][CR]Танзимоти иттилооти экрани пурра · Идоракунии танзимоти иттилооти EPG"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]ТАНЗИМОТИ ПАРАМЕТРҲОИ ХИДМАТҲО[/B][CR][CR]танзимоти идоракунии Kodi тавассути UPnP ва HTTP · Танзимоти мубодилакунии файлҳо[CR]Фаъол кардани Zeroconf · Танзимоти AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Зерунвонҳои маҳаллӣ дастрасанд"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Вуруд"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Намоиш додан ё пинҳон кардани экрани вуруд дар оғози кори система."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Профилеро, ки дар оғози кори система, ҳангоми ғайрифаъол будани экрани вуруд, истифода мешавад."
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Гурӯҳҳои[CR]дастрас"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Пешгӯии обу ҳаво"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Бозёбии иттилооти пешгӯӣ..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Харитаҳо"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "ОБУ ҲАВО"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "СУРАТҲО"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "ВИДЕОҲО"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "ФИЛМҲО"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "БАРНОМАҲОИ TV"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "МУСИҚӢ"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "БАРНОМАҲО"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "ПАХШИ ДИСК"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "СИСТЕМА"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "РАДИО"

@@ -1,0 +1,289 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Amharic (Ethiopia) (http://www.transifex.com/projects/p/kodi-main/language/am_ET/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: am_ET\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "በመስራት ላይ... "
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "ምርጫዎችን መመልከቻ"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "በሙል መመልከቻ ዘዴ "
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "የሙዚቃ ፋይሎች"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "በማጫወት ላይ"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "ገጽ"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "እቃዎች"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "አካባቢ "
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "መረጃ"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "ተግባሮች"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "የሚጫወተው"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ማቆሚያ"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ወደ ፊት ማሳለፊያ"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ወደ ኋላ ማሳለፊያ"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "በ መፈለግ ላይ"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "መጨረሻ ሰአት"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "መለያ እየጨመረ በሚሄድ"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "መለያ እየቀነሰ በሚሄድ"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "ዝርዝሮችን መክፈቻ"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "ዝርዝሮችን ማስቀመጫ"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "ዝርዝሮችን መዝጊያ"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "የስርአቱ ሙዚቃ ፋይሎች"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "አሁን የሚጫወተው ዝርዝር"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "ይህ ፋይል በጣም ትልቅ ነው ማጫወት የሚፈልጉትን ክፍል ይምረጡ"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "የቤት መመልከቻ ምርጫዎች"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "መደብ"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "የተለያዩ ምርጫዎች"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "የ መደብ መንገድ:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "መደበቂያ"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "ምርጫዎች"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "ግጥም"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "ሙዚቃ OSD"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "ቪዲዮ OSD"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "የማሰናጃ ደረጃዎች"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "አቋራጮች"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "ተገኝቷል"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "ዳታ አቅራቢ "
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "የተላለፈ"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "የተፈጠረው"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Resolution"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "ማቆሚያ"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "ማቆሚያ"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "ወደ ኋላ ማሳለፊያ"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "የሙቪ ዝርዝር"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "እንደ 2ዲ መመልከቻ"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "መቀየሪያ ዘዴ"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "ተችሏል"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "መደበኛ "
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Arial based"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "የ አካባቢ ንዑስ አርእስት ዝግጁ ነው"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "መግቢያ"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "የመግቢያ መመልከቻውን በሚጀምር ጊዜ ማሳያ ወይንም መደበቂያ"
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "ቲቪ "
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "ዝግጁ[CR]ቡድኖች"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "ግምት "
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "ግምት በመፈለግ ላይ..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "ካርታ "
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "የ አየር ንብረት"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "ስእሎች"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "ቲቪ "
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "ቪዲዮዎች"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "ሙቪዎች"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "የ ቲቪ ትእይንቶች"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "ሙዚቃ"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "ፕሮግራሞች"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "ዲስክ ማጫወቻ"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "ስርአቱ"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "ራዲዮ"

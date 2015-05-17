@@ -1,0 +1,341 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Malay (Malaysia) (http://www.transifex.com/projects/p/kodi-main/language/ms_MY/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ms_MY\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Bekerja..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Pilihan paparan"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Skrin Penuh"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Muzik - Fail"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Bermain"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Muka surat"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Item"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Kedudukan"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Hasil Seni Peminat"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Maklumat"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Tindakan"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "BERMAIN"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "TERHENTI SEJENAK"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "MARA LAJU"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "PUTAR SEMULA"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "MENCARI"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Masa tamat"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Susun: Menaik"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Susun: Menurun"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Buka senarai audio video"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Simpan senarai audio video"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Tutup senarai audio video"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Fail muzik sistem"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Senarai audio video semasa"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Fail ini disusun tindan. Pilih bahagian yang anda ingin mainkan."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Opsyen skrin utama"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Latar Belakang"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Pelbagai opsyen"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Laluan Latar Belakang:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Sembunyi"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Opsyen"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Mainkan lagu-lagu tema TV dalam perpustakaan video (perisian tambahan TVTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Lirik"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD Muzik"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD Video"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Aras tetapan"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Pintasan"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Dijumpai"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Penyedia data"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Imej seni peminat[CR][CR]Tidak Tersedia[CR][CR] Klik butang untuk tetapkan"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Disiarkan"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Dicipta"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Resolusi"
+
+msgctxt "#31328"
+msgid "Recently added"
+msgstr "Ditambah baru-baru ini"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Pemasa ditetapkan![/B] [COLOR=grey2] - Sistem dimatikan sendiri dalam tempoh[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Jeda"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Henti"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Undur"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menu cereka"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Tonton menggunakan 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Ubah mod"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Dibenarkan"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Lalai Kulit"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Berasaskan Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]KONFIGUR TETAPAN PENAMPILAN[/B][CR][CR]Ubah kulit · Tetapkan bahasa dan wilayah · Ubah pilihan penyenaraian fail[CR]Tetapkan penyelamat skrin"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]KONFIGUR TETAPAN VIDEO[/B][CR][CR]Ubah pustaka video anda · Tetapkan pilihan main balik video · Ubah pilihan penyenaraian video[CR]Tetapkan fon sarikata"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]KONFIGUR TETAPAN MUZIK[/B][CR][CR]Urus pustaka muzik anda · Tetapkan pilihan main balik muzik · Ubah pilihan penyenaraian muzik[CR] Pasang penyerahan lagu · Tetapkan pilihan karaoke"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]KONFIGUR TETAPAN SISTEM[/B][CR][CR]Sedia dan tentukur paparan · Konfigur output audio · Persediaan kawalan jauh[CR]Tetapkan pilihan penjimatan kuasa · Benarkan penyahpepijatan · Persediaan kunci master"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]KONFIGUR TETAPAN TV[/B][CR][CR]Ubah maklumat skrin penuh · Urus tetapan data EPG"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGUR TETAPAN PERKHIDMATAN[/B][CR][CR]Persediaan kawalan Kodi melalui UPnP dan HTTP · Konfigur perkongsian fail[CR]Benarkan Zeroconf · Konfigur AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Sarikata tempatan tersedia"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Daftar Masuk"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Tunjuk atau sembunyi skrin daftar masuk ketika permulaan."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Pilih profil yang akan digunakan ketika permulaan bila skrin daftar masuk dilumpuhkan."
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Kumpulan[CR]Tersedia"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Ramalan"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Mendapatkan maklumat ramalan..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Peta"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "CUACA"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "GAMBAR"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEO"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "CEREKA"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "RANCANGAN TV"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUZIK"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAM"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "MAIN CAKERA"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "Sistem"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

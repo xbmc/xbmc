@@ -1,0 +1,309 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Belarusian (Belarus) (http://www.transifex.com/projects/p/kodi-main/language/be_BY/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: be_BY\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Ідзе праца..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Налады выгляду"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Увесь экран"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Музыка - Файлы"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Playing"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Старонка"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "складнікаў"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Месца"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Зьвесткі"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ПРАЙГРАЕЦЦА"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ПРЫПЫНЕНА"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "FAST FORWARD"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "REWIND"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "SEEKING"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "End time"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Наўпростае сартаваньне"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Адваротнае сартаваньне"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Open playlist"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Save playlist"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Close playlist"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "System music files"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Current playlist"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "This file is stacked, select the part you want to play from."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Home screen options"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Background"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Miscellaneous options"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Enable custom background"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Background path:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Hide"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Options"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Play TV theme songs in video library (TvTunes add-on)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Lyrics"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Music OSD"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "Video OSD"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Shortcuts"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Found"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Зьвесткі ад"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Aired"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Created"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Resolution"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pause"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Stop"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Rewind"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Movie menu"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Уключаны"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Перадвызначана"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Падобны на Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ ВОНКАВАГА ВЫГЛЯДУ[/B][CR][CR]Зьмяніць аздабленьне · Наставіць мову й рэгіён · Зьмяніць налады сьпісу файлаў[CR]Наставіць ахоўнік экрану"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ ВІДЭА[/B][CR][CR]Кіраваць бібліятэкай відэа · Наставіць налады прайграваньня відэа · Зьмяніць налады сьпісу відэа[CR]Наставіць шрыфт субтытраў"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ МУЗЫКІ[/B][CR][CR]Кіраваць бібліятэкай музыкі · Наставіць налады прайграваньня музыкі · Зьмяніць налады сьпісу музыкі[CR]Наладзіць перадачу музыкі · Наставіць налады караоке"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ СЫСТЭМЫ[/B][CR][CR]Наладзіць і калібраваць адлюстраваньне · Наставіць аўдыё вывад · Наладзіць адлеглае кіраваньне[CR]Наставіць захоўваньне энэргіі · Дазволіць дэбаг · Наставіць агульны замок"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]ЗЬМЯНІЦЬ НАЛАДЫ СЭРВІСАЎ[/B][CR][CR]Наставіць кіраваньне Kodi праз UPnP ды HTTP · Наладзіць даступнасьць файлаў[CR]Дазволіць Zeroconf · Наставіць AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Даступныя лакальныя субтытры"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Login"
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Available[CR]Groups"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Прагноз"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Атрымоўваем прагноз..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Maps"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "WEATHER"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "PICTURES"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEOS"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "MOVIES"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV SHOWS"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUSIC"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMS"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "PLAY DISC"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SYSTEM"

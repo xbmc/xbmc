@@ -1,0 +1,77 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Esperanto (http://www.transifex.com/projects/p/kodi-main/language/eo/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: eo\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Vido Options"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Tutekrane"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Bookmarks"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Distingivo"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Enabled"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Skin Default"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "VETERO"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "BILDOJ"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEOJ"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMOJ"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TELEVIDAĴOJ"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUZIKO"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMOJ"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "LUDI DISKON"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTEMO"

@@ -1,0 +1,337 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/kodi-main/language/et_EE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: et_EE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Toimetamine..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Vaate seaded"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Täisekraan"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Muusika - Failid"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Mängib"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Leht"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Nimetused"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Asukoht"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fännipildid"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Tegevused"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "MÄNGIB"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSIS"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "KIIRELT EDASI"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "TAGASI"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "OTSIMINE"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Lõpu aeg"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Järjesta: Kasvavalt"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Järjesta: Kahanevalt"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Ava esitusloend"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Salvesta esitusloend"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Sulge esitusloend"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Süsteemsed muusikafailid"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Valitud esitusloend"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "See fail on järjehoidjaga. Vali koht, millest soovid taasesitust jätkata."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Avalehe valikud"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Taust"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Muud valikud"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Luba kohandatud taust"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Taustapildi asukoht:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Peida"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Valikud"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Esita videoteegis sarjade tunnusmuusikat (TvTunes lisamoodul)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Laulutekst"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Muusika OSD"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "Video OSD"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Seadete tase"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Otseteed"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Leitud"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Teenusepakkuja"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Fännipilt[CR][CR]ei ole saadaval[CR][CR]Määramiseks vajuta nuppu"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Eetris"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Loodud"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Resolutsioon"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Taimer seatud![/B] [COLOR=grey2] - Süsteemi automaatne seiskamine[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Paus"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Stopp"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Tagasi"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Filmi menüü"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Vaata 2Dna"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Muuda režiimi"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Lubatud"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Rüü vaikeväärtus"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Arial-il põhinev"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]KONFIGUREERI VÄLIMUSE SEADEID[/B][CR][CR]Muuda rüüd · Määra keel ja regioon · Muuda faililoendi valikuid[CR]Seadista ekraanisäästja"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]KONFIGUREERI VIDEO SEADEID[/B][CR][CR]Halda enda videoteeki · Määra video esitamise seaded · Muuda videoloendi valikuid[CR]Määra subtiitrite font"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]KONFIGUREERI MUUSIKA SEADEID[/B][CR][CR]Halda enda muusikateeki · Määra muusika esitamise seaded · Muuda muusikaloendi valikuid[CR]Seadista loo esitamine · Seadista karaoke valikud"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]KONFIGUREERI SÜSTEEMI SEADEID[/B][CR][CR]Seadista ja kalibreeri ekraane · Konfigureeri heliväljundit · Seadista kaugjuhtimine[CR]Määra energiasäästu valikud· Luba silumine · Seadista pealukk"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]SEADISTA TV SEADEID[/B][CR][CR]Muuda täisekraani infot · Halda elektroonilise saatekava seadeid"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGUREERI TEENUSE SEADEID[/B][CR][CR]Seadista Kodi juhtimine UPnP ja HTTP kaudu · Seadista failide jagamine[CR]Luba Zeroconf · Konfigureeri AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Lokaalsed subtiitrid on saadaval"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Logi sisse"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Käivitumisel näita või peida sisselogimiseekraan."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Vali profiil, mida kasutada käivitumisel, kui sisselogimise ekraan on keelatud."
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Olemasolevad[CR]grupid"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Ilmateade"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Ilmateate andmete hankimine..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Kaardid"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "ILM"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "PILDID "
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEOD"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMID"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "SERIAALID"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUUSIKA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMMID"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "ESITA PLAAT"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SÜSTEEM"

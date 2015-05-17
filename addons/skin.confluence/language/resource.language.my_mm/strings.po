@@ -1,0 +1,169 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Burmese (Myanmar) (http://www.transifex.com/projects/p/kodi-main/language/my_MM/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: my_MM\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "အလုပ်လုပ်နေသည်"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "မျက်နှာပြင်အပြည့် "
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "ဂီတ-ဖိုင်များ"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "ဖွင့်နေပါသည်။"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "စာမျက်နှာ"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "အမျိုးအစားများ"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "တည်နေရာ"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "အချက်အလက်များ"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ဖွင့်ထားပါသည်။"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ခဏရပ်မည်"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "အရှေ့သို့အနည်းငယ်ရစ်မည်"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "ဆုံးမည့်အချိန်"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "သီချင်းစာရင်းကိုဖွင့်မည်"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "သီချင်းစာရင်းကိုသိမ်းမည်"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "သီချင်းစာရင်းကိုပိတ်မည်"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "ယခုသီချင်းစာရင်း"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "နောက်ခံ"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "ဖျောက်ထားမည်"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "စာသား"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Music OSD"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "အမြန်ခလုတ်များ"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "တွေ့ရှိသည်"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "အချက်အလက်များထောက်ပံ့သူ"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "ဖန်တီးခဲ့သည်"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Resolution"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "ခဏရပ်မည်"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "လုံး၀ရပ်မည်"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "နောက်သို့အနည်းငယ်ရစ်မည်"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "ရုပ်ရှင်မီနူး"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "ဖွင့်ထားမည်"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Local စာတန်းထိုး များရနိုင်ပါသည်။"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "ဝင်ရန်"
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "ရရှိနိုင်သော [CR]Groups"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "ခန့်မှန်းခြင်း"
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "မြေပုံများ"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "TV"

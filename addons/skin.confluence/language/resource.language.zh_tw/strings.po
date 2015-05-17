@@ -1,0 +1,341 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/kodi-main/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "處理中..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "瀏覽設定"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "全螢幕"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "音樂 - 檔案"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "正在播放"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "頁"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "個項目"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "位置"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "資訊"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "動作"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "正在播放"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "已暫停"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "快轉"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "倒轉"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "查找"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "結束時間"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "排序：遞增"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "排序：遞減"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "開啟播放清單"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "儲存播放清單"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "關閉播放清單"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "系統中的音樂檔案"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "目前的播放清單"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "這個檔案已堆疊，請選擇您要從哪個部分開始播放。"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "首頁介面選項"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "背景"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "其他選項"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "啟用 自訂背景"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "背景圖片路徑："
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "隱藏"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "選項"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "在影片資料庫中播放電視主題曲（TvTunes 附加元件）"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "歌詞"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "音樂播放工具列"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "影片播放工具列"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "設定值"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "捷徑"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "已找到"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "資料提供者"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "無法取得[CR][CR]Fanart 圖片[CR][CR] 請點擊按鈕來設定"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "首播"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "已建立"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "解析度"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]計時器啟動！[/B] [COLOR=grey2] - 系統將自動關機於：[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "暫停"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "停止"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "倒轉"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "電影選單"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "以 2D 模式觀賞"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "更改設定"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "啟用"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "主題預設"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "基於 Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]配置介面外觀[/B][CR][CR]修改佈景主題 · 選擇語言和地區 · 修改檔案清單選項[CR]設定螢幕保護程式"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]配置視訊設定[/B][CR][CR]管理你的音樂資料庫 · 設定影片播放選項 · 修改影片清單選項[CR]設定字幕字型"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]配置音樂設定[/B][CR][CR]管理你的音樂資料庫 · 設定音樂播放選項 · 修改音樂清單選項[CR]設定歌曲提交 · 設定卡拉OK選項"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]配置系統設定[/B][CR][CR]設定和校正顯示輸出 · 設定音效輸出 · 設定遙控器[CR]設定節能選項 · 啟用除錯 · 設定鎖定密碼"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]電視設定[/B][CR][CR]修改全螢幕資訊 · 管理電子節目表資料設定"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]配置服務設定[/B][CR][CR]設定透過 UPnP 和 HTTP 控製 Kodi · 配置檔案分享[CR]啟用 Zeroconf · 配置 AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "有本地語言的字幕可選用"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "登入"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "啟動時顯示或隱藏登入畫面"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "選擇登入畫面停用是要使用的設定檔。"
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "電視"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "可用的[CR]群組"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "預報"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "正在擷取預報資訊..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "地圖"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "天氣"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "圖片"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "電視"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "影片"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "電影"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "電視劇"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "音樂"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "程式"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "播放光碟"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "系統"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "收音機"

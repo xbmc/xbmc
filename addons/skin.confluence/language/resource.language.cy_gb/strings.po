@@ -1,0 +1,341 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Welsh (United Kingdom) (http://www.transifex.com/projects/p/kodi-main/language/cy_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cy_GB\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Gweithio..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Gweld y dewisiadau"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Sgrin Lawn"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Cerddoriaeth - Ffeiliau"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Chwarae"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Tudalen"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Eitem"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Lleoliad"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Celf Selogion"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Gwybodaeth"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Gweithredoedd"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "CHWARAE"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "OEDWYD"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "YMLAEN CYFLYM"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "NÔL"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "CHWILIO"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Amser gorffen"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Trefnu: Esgyn"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Trefnu: Disgyn"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Agor rhestr chwarae"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Cadw rhestr chwarae"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Cau rhestr chwarae"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Ffeiliau cerddoriaeth system"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Rhestr chwarae gyfredol"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Mae'r ffeil wedi ei stacio, dewiswch y darn i'w chwarae"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Dewisiadau sgrin Cartref"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Cefndir"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Dewisiadau amrywiol"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Galluogi cefndir cyfaddas"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Llwybr cefndir:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Cuddio"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Dewisiadau"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Chwarae caneuon thema teledu yn y llyfrgell fideo (ychwanegyn TvTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Geiriau Caneuon"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD Cerddoriaeth"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD Fideo"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Lefel y gosodiadau"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Llwybrau Byr"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Canfod"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Darparwr data"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Delwedd Celf Selogion[CR][CR]Ddim ar gael[CR][CR] Clicio botwm i'w osod"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Darlledwyd"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Crëwyd"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Cydraniad"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Gosodwyd yr amserydd![/B] [COLOR=grey2] - Cau'r system yn awtomatig ymhen[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Oedi"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Atal"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Nôl"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Dewislen Ffilm"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Gwylio mewn 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Newid modd"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Galluogwyd"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Croen rhagosodedig"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Seileidig ar Ariel"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]GOSODIADAU FFURFWEDDU GWEDD[/B][CR][CR]Newid y croen · Gosod iaith ac ardal · Newid dewisiadau rhestru ffeiliau[CR]Gosod yr arbedwr sgrin"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]FFURFWEDDU GOSODIADAU FIDEO[/B][CR][CR]Rheoli eich llyfrgell fideo · Gosod dewisiadau chwarae fideo · Newid dewisiadau rhestru fideo[CR]Gosod ffontiau isdeitlau"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]FFURFWEDDU GOSODIADAU CERDDORIAETH[/B][CR][CR]Rheoli eich llyfrgell cerddoriaeth · Gosod dewisiadau chwarae cerddoriaeth · Newid dewisiadau rhestru cerddoriaeth [CR]Gosod cyflwyno caneuon · Gosod dewisiadau karaoke"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]FFURFWEDDU GOSODIADAU'R SYSTEM[/B][CR][CR]Gosod a chalibro dangosyddion · Ffurfweddu allbwn sain · Gosod rheolyddion pell[CR]Gosod dewisiadau pŵer · Galluogi dadfygio · Gosod prif glo"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]FFURFWEDDU GOSODIADAU TELEDU[/B][CR][CR]Newid gwybodaeth sgrin lawn · Rheoli gosodiadau data'r Amserlenydd Rhaglenni Electronig"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]FFURFWEDDU GOSODIADAU GWASANAETHAU[/B][CR][CR]Gosod rheoli Kodi drwy UPnP a HTTP · Ffurfweddu rhannu ffeiliau[CR]Galluogi Zeroconf · Ffurfweddu AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Is deitlau lleol ar gael"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Mewngofnodi"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Dangos neu guddio'r sgrin mewngofnodi wrth gychwyn."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Dewiswch y proffil fydd yn cael ei ddefnyddio wrth gychwyn pan fydd y sgrin mewngofnodi wedi ei anablu."
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "Teledu"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Grwpiau[CR]ar Gael"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Rhagolygon"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Estyn gwybodaeth rhagolygon..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Mapio"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "TYWYDD"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "LLUNIAU"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "Teledu"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "FIDEO"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FFILMIAU"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "SIOEAU TELEDU"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "CERDDORIAETH"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "RHAGLENNI"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "CHWARAE DISG"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SYSTEM"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

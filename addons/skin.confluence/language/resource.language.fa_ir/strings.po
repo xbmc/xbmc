@@ -1,0 +1,337 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Persian (Iran) (http://www.transifex.com/projects/p/kodi-main/language/fa_IR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fa_IR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "در حال کار..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "مشاهده تنظیمات"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "تمام صفحه"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "موسیقی - فایل ها"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "در حال پخش"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "صفحه"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "موضوعات"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "مکان"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "فن آرت"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "اطلاعات"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "عملیات"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "در حال پخش"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "مکث شده"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "حرکت سریع به جلو"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "حرکت سریع به عقب"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "جستجو"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "زمان پایان"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "مرتب سازی صعودی"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "مرتب سازی نزولی"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "باز کردن لیست پخش"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "ذخیره لیست پخش"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "بستن لیست پخش"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "سیستم فایل های موسیقی"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "لیست پخش فعلی"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "این فایل چند بخشی است, قسمت مورد نظر را برای پخش انتخاب کنید."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "تنظیمات صفحه ی اصلی"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "پس زمینه"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "تنظیمات متفرقه"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "مسیر پس زمینه"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "مخفی کردن"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "گزینه ها"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "پخش موسیقی تیتر تلویزیون در کتابخانه ویدئویی (افزونه TvTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "اشعار"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "موسیقی"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "ویدیو"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "سطح تنظیمات"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "میانبرها"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "پیدا شده"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "ارائه دهنده اطلاعات"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "تصویر فن آرت [CR][CR] در دسترس نیست. [CR][CR] برای تعیین آن دکمه را فشار دهید."
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "پخش شده"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "ایجاد شده"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "رزولیشن"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B] تایمر تنظیم شد! [/B] [COLOR=grey2] زمان مانده تا خاموشی سیستم: [/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "مکث"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "توقف"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "بازکشت"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "منو فیلم"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "تماشا بصورت دو بعدی"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "تغییر حالت"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "فعال شده"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "پیش فرض پوسته"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "بر اساس قلم Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B] تنظیمات ظاهر برنامه [/B]  [CR][CR] تعویض پوسته - انتخاب زبان و منطقه - تنظیمات لیست های پخش [CR] راه اندازی محافظ صفحه نمایش."
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B] تنظیمات ویدئو[/B] [CR][CR] مرتب سازی کتابخانه ویدئویی. تنظیمات پخش ویدئو. انتخاب گزینه های مرتب سازی ویدئو. [CR] انتخاب قلم زیرنویس ها."
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B] تنظیمات موسیقی[/B] [CR][CR] مرتب سازی کتابخانه موسیقی. تنظیمات پخش موسیقی. انتخاب گزینه های مرتب سازی موسیقی . [CR] انتخاب گزینه های همخوانی."
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B] تنظیمات سیستم [/B] [CR][CR] راه اندازی و کالیبره کردن نمایشگر ها. تنظیم پخش صدا. تنظیم کنترل از راه دور. [CR] انتخاب گزینه های صرفه جویی در انرژی - فعال کردن خطا یابی. تنظیم قفل اصلی."
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B] تنظیمات تلویزیون[/B] [CR][CR] تغییر اطلاعات نمایش تمام صفحه - مدیریت تنظیمات اطلاعات راهنمای الکترونیکی برنامه ها."
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B] تنظیمات خدمات [/B] [CR][CR] تنظیم امکان دسترسی به Kodi از طریق UPnP و HTTP. تنظیم اشتراک گذاری فایل ها. [CR] تنظیمات Zeroconf و AirPlay ."
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "زیر نویس محلی موجود"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "ورود"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "نمایش/عدم نمایش صفحه ورود در ابتدا"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "انتخاب کابری که در زمان غیر فعال بودن صفحه ورود مورد استفاده قرار گیرد."
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "تلویزیون"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "گروه های [CR]موجود"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "پیش بینی"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "دریافت اطلاعات پیش بینی..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "نقشه ها"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "آب و هوا"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "تصاویر"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "تلویزیون"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "ویدیوها"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "فیلم ها"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "برنامه های تلویزیونی"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "موسیقی"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "برنامه ها"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "اجرای CD/DVD"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "سیستم"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "رادیو"

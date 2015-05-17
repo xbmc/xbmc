@@ -1,0 +1,45 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Maltese (Malta) (http://www.transifex.com/projects/p/kodi-main/language/mt_MT/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: mt_MT\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);\n"
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "View Options"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Daħħal u Ara Filmati"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Attiva Bakgrawnd Preferut"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Shortcuts"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Resolution:"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Jintuża"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Qoxra Default"

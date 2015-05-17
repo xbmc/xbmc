@@ -1,0 +1,341 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/kodi-main/language/ja_JP/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja_JP\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "処理中..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "表示オプション"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "フルスクリーン"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "ミュージック - ファイル"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "再生中"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "ページ"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "アイテム"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "地域"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "ファンアート"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "情報"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "アクション"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "再生中"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "静止中"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "早送り"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "巻戻し"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "スキャン中"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "終了時刻"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "ソート: 昇順"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "ソート: 降順"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "プレイリストを開く"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "プレイリストを保存"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "プレイリストを閉じる"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "システム音楽ファイル"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "現在のプレイリスト"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "このファイル内から再生したいパートを選択してください。"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "ホーム画面オプション"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "背景"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "その他の設定"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Enable Custom Background"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "背景のパス："
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "隠す"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "オプション"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "ビデオライブラリで TV テーマ曲を再生 (TvTunes アドオン)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "歌詞"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "ミュージック OSD"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "ビデオ OSD"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "設定レベル"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "ショートカット"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "見つかりました"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "気象データ提供元"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "ファンアート画像[CR][CR]使用不可[CR][CR] ボタンを押して設定"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "放映日"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "制作日"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "解像度"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]タイマーセット完了![/B] [COLOR=grey2] - システムがシャットダウンします[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "一時停止"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "停止"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "巻き戻し"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "ムービーメニュー"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "2D で観る"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "モードを変更"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "LCD有効"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "スキンのデフォルト"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Arial ベース"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]外観設定[/B][CR][CR]スキン選択 - 言語と地域の設定 - ファイル一覧設定変更[CR]スクリーンセーバー設定"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]ビデオ設定[/B][CR][CR]ビデオライブラリ管理 - ビデオ再生設定 - ビデオ一覧設定変更[CR]字幕用フォント変更"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]ミュージック設定[/B][CR][CR]ミュージックライブラリ管理 - ミュージック再生設定 - ミュージック一覧設定変更[CR]楽曲送信設定 - カラオケ設定"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]システム設定[/B][CR][CR]画面の設定・調整 - オーディオ出力設定 - リモートコントローラー設定[CR]省電力設定 - デバッグの有効化 - マスターロック設定"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]TV設定[/B][CR][CR]フルスクリーン情報の変更 · EPGデータ設定"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]サービス設定[/B][CR][CR]UPnP や HTTP 経由による Kodi 操作設定 · ファイル共有設定[CR]Zeroconf を有効に · AirPlay 設定"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "ローカルの字幕を利用できます"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "ログイン"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "起動時にログイン画面を表示または非表示する"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "ログイン画面が無効になっている状態の時、起動時に使用されるプロファイルを選択してください。"
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "利用可能な[CR]グループ"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "予報"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "天気予報データ取得中..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "マップ"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "天気"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "画像"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "動画"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "映画"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "テレビ番組"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "音楽"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "プログラム"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "ディスク再生"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "システム"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "ラジオ"

@@ -1,0 +1,345 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Catalan (Spain) (http://www.transifex.com/projects/p/kodi-main/language/ca_ES/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca_ES\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31003"
+msgid "Power options"
+msgstr "Opcions d'energia"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Carregant..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Mostra les opcions"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Pantalla completa"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Música - Fitxers"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Reproduint"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Pàgina"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Elements"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Ubicació"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Accions"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "REPRODUINT"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "EN PAUSA"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "AVANÇ RÀPID"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "REBOBINA"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "S'ESTÀ CERCANT"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Hora de fi"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Ordena: Ascendent"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Ordena: Descendent"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Obre una llista de reproducció"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Desa la llista de reproducció"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Tanca la llista de reproducció"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Fitxers de música del sistema"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Llista de reproducció actual"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Aquest fitxer està agrupat, seleccioneu la part que desitgeu reproduir."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Opcions de la pantalla principal"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Fons"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Opcions vàries"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Habilita el fons personalitzat"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Camí del fons:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Amaga"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Opcions"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Reprodueix les cançons de la temàtica TV a la llibreria de vídeo (complement TvTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Lletres"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD de música"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD de vídeo"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Nivell d'opcions"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Dreceres de teclat"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Trobat"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Proveïdor de dades"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Imatge de fanart[CR][CR]No disponible[CR][CR] Feu clic per definir-la"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Emès"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Creat"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Resolució"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Temporitzador activat[/B] [COLOR=grey2] - El sistema s'apagarà automàticament en[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pausa"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Atura"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Rebobina"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menú de la pel·lícula"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Veure en 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Canvia el mode"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Habilitat"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Aparença per defecte"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Basat en Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]CONFIGUREU ELS PARÀMETRES D'APARENÇA[/B][CR][CR]Canvieu el tema · Establiu l'idioma i la regió · Canvieu les opcions del llistat de fitxers[CR]Establiu un estalvi de pantalla"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]CONFIGUREU ELS PARÀMETRES DE VÍDEO[/B][CR][CR]Gestioneu la biblioteca de vídeos · Establiu les opcions de reproducció de vídeo[CR]Canvieu les opcions del llistat de vídeo · Establiu els tipus de lletra dels subtítols"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]CONFIGUREU ELS PARÀMETRES DE LA MÚSICA[/B][CR][CR]Gestioneu la biblioteca de música · Establiu les opcions de reproducció de la música[CR]Canvieu les opcions del llistat de música · Configureu l'enviament de cançons[CR]Establiu les opcions del karaoke"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]CONFIGUREU ELS PARÀMETRES DEL SISTEMA[/B][CR][CR]Configureu i calibreu les pantalles · Configureu la sortida d'àudio[CR]Configureu els comandaments a distància · Establiu les opcions d'estalvi d'energia[CR]Habiliteu la depuració · Configureu el bloqueig mestre"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]CONFIGUREU ELS PARÀMETRES DE TV[/B][CR][CR]Canvia la informació de pantalla completa · Gestiona els paràmetres de les dades EPG"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGUREU ELS PARÀMETRES DE SERVEI[/B][CR][CR]Configureu el control del Kodi a través de UPnP i HTTP[CR]Configureu l'ús compartit de fitxers · Habiliteu el Zeroconf · Configureu l'AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Subtítol local disponible"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Inicia sessió"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Mostra o amaga la pantalla d'inici de sessió a l'inici."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Seleccioneu el perfil que serà utilitzat a l'inici quan la pantalla d'entrada d'usuari està deshabilitada."
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Grups[CR]disponibles"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Predicció"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "S'està obtenint la informació de la predicció..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Mapes"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "EL TEMPS"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "IMATGES"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VÍDEOS"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "PEL·LÍCULES"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "SÈRIES"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MÚSICA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMES"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "REPRODUEIX DISC"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTEMA"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RÀDIO"
