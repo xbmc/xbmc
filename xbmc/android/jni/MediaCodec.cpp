@@ -162,16 +162,28 @@ const CJNIMediaFormat CJNIMediaCodec::getOutputFormat()
     "getOutputFormat", "()Landroid/media/MediaFormat;");
 }
 
-std::vector<CJNIByteBuffer> CJNIMediaCodec::getInputBuffers()
+std::vector<CJNIByteBuffer> CJNIMediaCodec::getInputBuffers()  // Deprecated as of API 21
 {
   return jcast<CJNIByteBuffers>(call_method<jhobjectArray>(m_object,
     "getInputBuffers", "()[Ljava/nio/ByteBuffer;"));
 }
 
-std::vector<CJNIByteBuffer> CJNIMediaCodec::getOutputBuffers()
+std::vector<CJNIByteBuffer> CJNIMediaCodec::getOutputBuffers()  // Deprecated as of API 21
 {
   return jcast<CJNIByteBuffers>(call_method<jhobjectArray>(m_object,
     "getOutputBuffers", "()[Ljava/nio/ByteBuffer;"));
+}
+
+const CJNIByteBuffer CJNIMediaCodec::getInputBuffer(int index) // API 21+
+{
+  return call_method<jhobject>(m_object,
+    "getInputBuffer", "(I)Ljava/nio/ByteBuffer;", index);
+}
+
+const CJNIByteBuffer CJNIMediaCodec::getOutputBuffer(int index)  // API 21+
+{
+  return call_method<jhobject>(m_object,
+    "getOutputBuffer", "(I)Ljava/nio/ByteBuffer;", index);
 }
 
 void CJNIMediaCodec::setVideoScalingMode(int mode)

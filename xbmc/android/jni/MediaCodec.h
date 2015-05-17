@@ -46,8 +46,10 @@ public:
   int   dequeueOutputBuffer(const CJNIMediaCodecBufferInfo &info, int64_t timeoutUs);
   void  releaseOutputBuffer(int index, bool render);
   const CJNIMediaFormat getOutputFormat();
-  std::vector<CJNIByteBuffer> getInputBuffers();
-  std::vector<CJNIByteBuffer> getOutputBuffers();
+  std::vector<CJNIByteBuffer> getInputBuffers(); // Deprecated as of API 21
+  std::vector<CJNIByteBuffer> getOutputBuffers(); // Deprecated as of API 21
+  const CJNIByteBuffer getInputBuffer(int index); // API 21+
+  const CJNIByteBuffer getOutputBuffer(int index); // API 21+
   void  setVideoScalingMode(int mode);
 
   static void  PopulateStaticFields();
