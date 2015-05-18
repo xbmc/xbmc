@@ -1776,7 +1776,8 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
     // loop until we write all into codec, am_pkt.isvalid
     // will get set to zero once everything is consumed.
     // PLAYER_SUCCESS means all is ok, not all bytes were written.
-    while (am_private->am_pkt.isvalid)
+    int loop = 0;
+    while (am_private->am_pkt.isvalid && loop < 100)
     {
       // abort on any errors.
       if (write_av_packet(am_private, &am_private->am_pkt) != PLAYER_SUCCESS)
@@ -1784,6 +1785,12 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
 
       if (am_private->am_pkt.isvalid)
         CLog::Log(LOGDEBUG, "CAMLCodec::Decode: write_av_packet looping");
+      loop++;
+    }
+    if (loop == 100)
+    {
+      // Decoder got stuck; Reset
+      Reset();
     }
 
     // if we seek, then GetTimeSize is wrong as
