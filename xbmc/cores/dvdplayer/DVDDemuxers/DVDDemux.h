@@ -356,4 +356,11 @@ public:
    * return a user-presentable codec name of the given stream
    */
   virtual void GetStreamCodecName(int iStreamId, std::string &strName) {};
+
+  /*
+  * Renumbers the stream ids beginning with the given offset.
+  * Additionally the offset is stored for new streams. 
+  * Returns true if the operation was successful.
+  */
+  virtual bool RenumberStreamIds(unsigned int offset) { return false; };
 };
