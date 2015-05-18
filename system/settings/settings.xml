@@ -2452,6 +2452,26 @@
           </updates>
           <control type="toggle" />
         </setting>
+        <setting id="videoscreen.dither" type="boolean" label="36099" help="36598">
+          <requirement>HAS_GL</requirement>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoscreen.ditherdepth" type="integer" label="36100" help="36599">
+          <requirement>HAS_GL</requirement>
+          <level>3</level>
+          <default>8</default>
+          <constraints>
+            <minimum>2</minimum>
+            <step>1</step>
+            <maximum>8</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="videoscreen.dither" operator="is">true</dependency>
+          </dependencies>
+          <control type="spinner" format="integer" />
+        </setting>
       </group>
     </category>
     <category id="audiooutput" label="772" help="36360">
