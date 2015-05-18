@@ -42,6 +42,7 @@ namespace Shaders {
     void FreeTextures();
 
     bool m_dither;
+    unsigned m_ditherDepth;
     bool m_fullRange;
     // first texture unit available to us
     int m_1stTexUnit;

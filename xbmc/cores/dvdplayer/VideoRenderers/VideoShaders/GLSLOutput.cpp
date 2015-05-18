@@ -43,7 +43,8 @@ GLSLOutput::GLSLOutput(int texunit)
   m_hDitherQuant = -1;
   m_hDitherSize  = -1;
 
-  m_dither = true; // hardcode dithering for now
+  m_dither = g_Windowing.UseDithering();
+  m_ditherDepth = g_Windowing.DitherDepth();
   m_fullRange = !g_Windowing.UseLimitedColor();
 }
 
@@ -111,7 +112,7 @@ bool GLSLOutput::OnEnabled()
     VerifyGLState();
 
     // dither settings
-    glUniform1f(m_hDitherQuant, 255.0); // (1<<depth)-1
+    glUniform1f(m_hDitherQuant, (1<<m_ditherDepth)-1.0);
     VerifyGLState();
     glUniform2f(m_hDitherSize, dither_size, dither_size);
     VerifyGLState();

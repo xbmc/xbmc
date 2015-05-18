@@ -15523,7 +15523,19 @@ msgctxt "#36045"
 msgid "Pause Playback"
 msgstr ""
 
+
 #empty strings from id 36046 to 36100
+
+#: system/settings/settings.xml
+msgctxt "#36099"
+msgid "Dithering"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#36100"
+msgid "Dither depth"
+msgstr ""
+
 #strings from 36100 to 36999 are reserved for settings descriptions
 
 #. Description of settings section "Appearance"
@@ -17688,6 +17700,7 @@ msgid "Enables support for receiving \"Videos\" and \"Pictures\" via AirPlay. Th
 msgstr ""
 
 #. Name of a setting
+
 #: system/settings/settings.xml
 msgctxt "#36550"
 msgid "Stereoscopic 3D effect strength"
@@ -17700,6 +17713,19 @@ msgid "Defines the strength of the stereoscopic 3D effect in the GUI. This is do
 msgstr ""
 
 #empty strings from id 36552 to 36599
+
+#. Description of setting "System -> Video output -> Dither" with label #36099
+#: system/settings/settings.xml
+msgctxt "#36598"
+msgid "Eliminate banding caused by RGB level conversion or other processing by adding a small amount of noise to the picture. This can be disabled for slower systems, or when Kodi is set to limited range RGB output and no video processing is needed."
+msgstr ""
+
+#. Description of setting "System -> Video output -> Dither depth" with label #36100
+#: system/settings/settings.xml
+msgctxt "#36599"
+msgid "Video dithering output precision in bits. Use the highest setting that doesn't show banding. The default of 8 is recommended for most systems. If your GPU is set to scale the output RGB levels or you use a laptop screen, a 7 or 6 bit setting may eliminate more banding. Lower settings are available for testing purposes only to make it easy to see whether dithering is applied and that the dither noise pixel size matches the display resolution."
+msgstr ""
+
 #reserved strings 365XX
 
 #. Description of settings category "Music -> Library" with label #14022
