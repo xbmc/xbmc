@@ -238,6 +238,11 @@ public:
 
   CRect generateAABB(const CRect &rect) const;
 
+  /*! \brief sets refresh rate, overrides the one stored with modes
+   *  \param fps refresh rate
+   */
+  void SetFPS(float fps);
+
 protected:
   std::stack<CRect> m_viewStack;
 
@@ -250,6 +255,7 @@ protected:
   bool m_bFullScreenVideo;
   bool m_bCalibrating;
   RESOLUTION m_Resolution;
+  float m_fFPSOverride;
 
 private:
   class UITransform

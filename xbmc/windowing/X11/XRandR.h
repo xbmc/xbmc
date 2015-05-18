@@ -108,7 +108,7 @@ public:
   bool IsOutputConnected(const std::string& name);
   bool TurnOffOutput(const std::string& name);
   bool TurnOnOutput(const std::string& name);
-  int GetCrtc(int x, int y);
+  int GetCrtc(int x, int y, float &hz);
   //bool Has1080i();
   //bool Has1080p();
   //bool Has720p();
