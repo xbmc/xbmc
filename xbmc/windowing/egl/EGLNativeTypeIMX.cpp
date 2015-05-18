@@ -291,25 +291,45 @@ bool CEGLNativeTypeIMX::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutio
   std::string valstr;
   SysfsUtils::GetString("/sys/class/graphics/fb0/modes", valstr);
   std::vector<std::string> probe_str = StringUtils::Split(valstr, "\n");
+  std::vector<std::string> s_modes;
+  std::vector<std::string> u_modes;
+  std::vector<std::string> v_modes;
+  std::vector<std::string> d_modes;
+  std::vector<std::string> complete;
 
-  // lexical order puts the modes list into our preferred
-  // order and by later filtering through FindMatchingResolution()
+  // we put the modes list into our preferred and by later
+  // filtering through FindMatchingResolution()
   // we make sure we read _all_ S modes, following U and V modes
   // while list will hold unique resolutions only
-  std::sort(probe_str.begin(), probe_str.end());
+  // d_modes as DVI monitors (without audio) provide are handled
+  // after those and added if they are unique
 
   resolutions.clear();
   RESOLUTION_INFO res;
   for (size_t i = 0; i < probe_str.size(); i++)
   {
-    if(!StringUtils::StartsWith(probe_str[i], "S:") && !StringUtils::StartsWith(probe_str[i], "U:") &&
-       !StringUtils::StartsWith(probe_str[i], "V:"))
-      continue;
+    if(StringUtils::StartsWith(probe_str[i], "S:"))
+      s_modes.push_back(probe_str[i]);
+    else if(StringUtils::StartsWith(probe_str[i], "U:"))
+      u_modes.push_back(probe_str[i]);
+    else if(StringUtils::StartsWith(probe_str[i], "V:"))
+      v_modes.push_back(probe_str[i]);
+    else if (StringUtils::StartsWith(probe_str[i], "D:"))
+      d_modes.push_back(probe_str[i]);
+  }
 
-    if(ModeToResolution(probe_str[i], &res))
+  complete.insert(complete.end(), s_modes.begin(), s_modes.end());
+  complete.insert(complete.end(), u_modes.begin(), u_modes.end());
+  complete.insert(complete.end(), v_modes.begin(), v_modes.end());
+  complete.insert(complete.end(), d_modes.begin(), d_modes.end());
+
+  for (size_t i = 0; i < complete.size(); i++)
+  {
+    if(ModeToResolution(complete[i], &res))
       if(!FindMatchingResolution(res, resolutions))
         resolutions.push_back(res);
   }
+
   return resolutions.size() > 0;
 }
 
