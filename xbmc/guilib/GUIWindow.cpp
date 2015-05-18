@@ -178,13 +178,9 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
   // now load in the skin file
   SetDefaults();
 
-  // list of actions *not* supported
-  std::vector<string> actionsUnsuported; 
-  actionsUnsuported.push_back("ActivateWindow");
-
   CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", m_clearBackground, GetID());
   CGUIControlFactory::GetActions(pRootElement, "onload", m_loadActions);
-  CGUIControlFactory::GetActions(pRootElement, "onunload", m_unloadActions, actionsUnsuported);
+  CGUIControlFactory::GetActions(pRootElement, "onunload", m_unloadActions, ONUNLOAD_DISALLOWED_ACTIONS);
   CGUIControlFactory::GetHitRect(pRootElement, m_hitRect);
 
   TiXmlElement *pChild = pRootElement->FirstChildElement();
