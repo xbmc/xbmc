@@ -30,6 +30,11 @@
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
+#define SETTINGS_VIDEODB_TVSHOW_HOME_EPISODES                  0
+#define SETTINGS_VIDEODB_TVSHOW_HOME_RECENTLY_ADDED            1
+#define SETTINGS_VIDEODB_TVSHOW_HOME_INPROGRESS                2
+#define SETTINGS_VIDEODB_TVSHOW_HOME_INPROGRESS_RECENTLY_ADDED 4
+
 class CSetting;
 class CSettingList;
 class CSettingSection;

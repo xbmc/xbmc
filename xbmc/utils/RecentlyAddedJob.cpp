@@ -30,6 +30,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "music/MusicThumbLoader.h"
 #include "video/VideoThumbLoader.h"
 
@@ -49,22 +50,29 @@ bool CRecentlyAddedJob::UpdateVideo()
 
   CLog::Log(LOGDEBUG, "CRecentlyAddedJob::UpdateVideos() - Running RecentlyAdded home screen update");
   
-  int            i = 0;
-  CFileItemList  items;
+  int i;
   CVideoDatabase videodatabase;
   CVideoThumbLoader loader;
   loader.OnLoaderStart();
   
   videodatabase.Open();
 
-  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://recentlyaddedmovies/", items, NUM_ITEMS))
-  {  
-    for (; i < items.Size(); ++i)
+  i = 0;
+  CFileItemList          MovieItems;
+  CVideoDatabase::Filter MovieFilter;
+  MovieFilter.limit = videodatabase.PrepareSQL("%u", NUM_ITEMS);
+  MovieFilter.order = "dateAdded desc, idMovie desc";
+  if (!CSettings::Get().GetBool("videolibrary.showseeninhome"))
+    MovieFilter.where = "playCount is NULL";
+
+  if (videodatabase.GetMoviesByWhere("videodb://recentlyaddedmovies/", MovieFilter, MovieItems))
+  {
+    for (; i < MovieItems.Size(); ++i)
     {
-      CFileItemPtr item = items.Get(i);
-      std::string   value = StringUtils::Format("%i", i + 1);
+      CFileItemPtr item      = MovieItems.Get(i);
+      std::string   value     = StringUtils::Format("%i", i + 1);
       std::string   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);;
-      
+
       home->SetProperty("LatestMovie." + value + ".Title"       , item->GetLabel());
       home->SetProperty("LatestMovie." + value + ".Rating"      , strRating);
       home->SetProperty("LatestMovie." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
@@ -79,7 +87,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetArt("thumb"));
       home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetArt("fanart"));
     }
-  } 
+  }
   for (; i < NUM_ITEMS; ++i)
   {
     std::string value = StringUtils::Format("%i", i + 1);
@@ -93,49 +101,138 @@ bool CRecentlyAddedJob::UpdateVideo()
     home->SetProperty("LatestMovie." + value + ".Trailer"     , "");
     home->SetProperty("LatestMovie." + value + ".Fanart"      , "");
   }
- 
+
   i = 0;
-  CFileItemList  TVShowItems; 
- 
-  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://recentlyaddedepisodes/", TVShowItems, NUM_ITEMS))
+  if (CSettings::Get().GetInt("videolibrary.tvshowsinhome") == SETTINGS_VIDEODB_TVSHOW_HOME_EPISODES)
   {
-    for (; i < TVShowItems.Size(); ++i)
-    {    
-      CFileItemPtr item          = TVShowItems.Get(i);
-      int          EpisodeSeason = item->GetVideoInfoTag()->m_iSeason;
-      int          EpisodeNumber = item->GetVideoInfoTag()->m_iEpisode;
-      std::string   EpisodeNo = StringUtils::Format("s%02de%02d", EpisodeSeason, EpisodeNumber);
-      std::string   value = StringUtils::Format("%i", i + 1);
-      std::string   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
+    home->SetProperty("LatestEpisode.Title", g_localizeStrings.Get(20387));
+    CFileItemList          EpisodesItems;
+    CVideoDatabase::Filter EpisodesFilter;
+    EpisodesFilter.limit = videodatabase.PrepareSQL("%u", NUM_ITEMS);
+    EpisodesFilter.order = "dateAdded desc, idEpisode desc";
+    if (!CSettings::Get().GetBool("videolibrary.showseeninhome"))
+      EpisodesFilter.where = "playCount is NULL";
 
-      home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , item->GetVideoInfoTag()->m_strShowTitle);
-      home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , item->GetVideoInfoTag()->m_strTitle);
-      home->SetProperty("LatestEpisode." + value + ".Rating"        , strRating);      
-      home->SetProperty("LatestEpisode." + value + ".Plot"          , item->GetVideoInfoTag()->m_strPlot);
-      home->SetProperty("LatestEpisode." + value + ".EpisodeNo"     , EpisodeNo);
-      home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , EpisodeSeason);
-      home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
-      home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
+    if (videodatabase.GetEpisodesByWhere("videodb://recentlyaddedepisodes/", EpisodesFilter, EpisodesItems, NUM_ITEMS))
+    {
+      for (; i < EpisodesItems.Size(); ++i)
+      {
+        CFileItemPtr item          = EpisodesItems.Get(i);
+        int          EpisodeSeason = item->GetVideoInfoTag()->m_iSeason;
+        int          EpisodeNumber = item->GetVideoInfoTag()->m_iEpisode;
+        std::string  EpisodeNo     = StringUtils::Format("s%02de%02d", EpisodeSeason, EpisodeNumber);
+        std::string  value         = StringUtils::Format("%i", i + 1);
+        std::string  strRating     = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
 
-      if (!item->HasArt("thumb"))
-        loader.LoadItem(item.get());
+        home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , item->GetVideoInfoTag()->m_strShowTitle);
+        home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , item->GetVideoInfoTag()->m_strTitle);
+        home->SetProperty("LatestEpisode." + value + ".Rating"        , strRating);
+        home->SetProperty("LatestEpisode." + value + ".Plot"          , item->GetVideoInfoTag()->m_strPlot);
+        home->SetProperty("LatestEpisode." + value + ".EpisodeNo"     , EpisodeNo);
+        home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , EpisodeSeason);
+        home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
+        home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
 
-      std::string seasonThumb;
-      if (item->GetVideoInfoTag()->m_iIdSeason > 0)
-        seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, MediaTypeSeason, "thumb");
+        if (!item->HasArt("thumb"))
+          loader.LoadItem(item.get());
 
-      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
-      home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshow.thumb"));
-      home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
-      home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetArt("fanart"));
+        std::string seasonThumb;
+        if (item->GetVideoInfoTag()->m_iIdSeason > 0)
+          seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, MediaTypeSeason, "thumb");
+
+        home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
+        home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshow.thumb"));
+        home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
+        home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetArt("fanart"));
+      }
     }
-  } 
+  }
+  else
+  {
+    CFileItemList          TVShowItems;
+    CVideoDatabase::Filter TVShowFilter;
+    TVShowFilter.limit = videodatabase.PrepareSQL("%u", NUM_ITEMS);
+    switch (CSettings::Get().GetInt("videolibrary.tvshowsinhome"))
+    {
+      case SETTINGS_VIDEODB_TVSHOW_HOME_RECENTLY_ADDED:
+      {
+        home->SetProperty("LatestEpisode.Title", g_localizeStrings.Get(38017));
+        TVShowFilter.order = "dateAdded desc, idShow desc";
+        if (CSettings::Get().GetBool("videolibrary.showseeninhome"))
+          TVShowFilter.where = "totalcount != 0";
+        else
+          TVShowFilter.where = "totalcount != 0 AND watchedcount != totalcount";
+        break;
+      }
+      case SETTINGS_VIDEODB_TVSHOW_HOME_INPROGRESS:
+      {
+        home->SetProperty("LatestEpisode.Title", g_localizeStrings.Get(626));
+        TVShowFilter.order = "dateAdded desc, idShow desc";
+        TVShowFilter.where = "watchedcount != 0 AND watchedcount != totalcount";
+        break;
+      }
+      case SETTINGS_VIDEODB_TVSHOW_HOME_INPROGRESS_RECENTLY_ADDED:
+      {
+        home->SetProperty("LatestEpisode.Title", g_localizeStrings.Get(38018));
+        TVShowFilter.order = "(watchedCount != 0 AND watchedCount != totalCount) desc, dateAdded desc, idShow desc";
+        if (CSettings::Get().GetBool("videolibrary.showseeninhome"))
+          TVShowFilter.where = "totalcount != 0";
+        else
+          TVShowFilter.where = "totalcount != 0 AND watchedcount != totalcount";
+        break;
+      }
+    }
+    if (videodatabase.GetTvShowsByWhere("videodb://tvshows/", TVShowFilter, TVShowItems))
+    {
+      int failed = 0;
+      for (; i < TVShowItems.Size(); ++i)
+      {
+        CFileItemPtr item  = TVShowItems.Get(i);
+        int          dbID  = item->GetVideoInfoTag()->m_iDbId;
+        CFileItemPtr nextEpisode;
+        if (!videodatabase.GetNextEpisodeFromTvShow(dbID, nextEpisode))
+        {
+          CLog::Log(LOGWARNING, "CRecentlyAddedJob::UpdateVideos() - Failed to load episode for tvshow %u", dbID);
+          failed++;
+          continue;
+        }
+        std::string  value = StringUtils::Format("%i", i + 1 - failed);
+
+        // tvshow values
+        std::string  strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
+        home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , item->GetVideoInfoTag()->m_strShowTitle);
+        home->SetProperty("LatestEpisode." + value + ".Rating"        , strRating);
+        home->SetProperty("LatestEpisode." + value + ".Plot"          , item->GetVideoInfoTag()->m_strPlot);
+
+        if (!item->HasArt("thumb"))
+          loader.LoadItem(item.get());
+        home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
+        home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("thumb"));
+        home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetArt("fanart"));
+
+        // episode value
+        int          EpisodeSeason = nextEpisode->GetVideoInfoTag()->m_iSeason;
+        int          EpisodeNumber = nextEpisode->GetVideoInfoTag()->m_iEpisode;
+        std::string  EpisodeNo     = StringUtils::Format("s%02de%02d", EpisodeSeason, EpisodeNumber);
+        std::string  seasonThumb;
+        if (nextEpisode->GetVideoInfoTag()->m_iIdSeason > 0)
+          seasonThumb = videodatabase.GetArtForItem(nextEpisode->GetVideoInfoTag()->m_iIdSeason, MediaTypeSeason, "thumb");
+        home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , nextEpisode->GetVideoInfoTag()->m_strTitle);
+        home->SetProperty("LatestEpisode." + value + ".EpisodeNo"     , EpisodeNo);
+        home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , EpisodeSeason);
+        home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
+        home->SetProperty("LatestEpisode." + value + ".Path"          , nextEpisode->GetVideoInfoTag()->m_strFileNameAndPath);
+        home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
+      }
+      i = i - failed;
+    }
+  }
   for (; i < NUM_ITEMS; ++i)
   {
     std::string value = StringUtils::Format("%i", i + 1);
     home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , "");
     home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , "");
-    home->SetProperty("LatestEpisode." + value + ".Rating"        , "");      
+    home->SetProperty("LatestEpisode." + value + ".Rating"        , "");
     home->SetProperty("LatestEpisode." + value + ".Plot"          , "");
     home->SetProperty("LatestEpisode." + value + ".EpisodeNo"     , "");
     home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , "");
@@ -145,12 +242,17 @@ bool CRecentlyAddedJob::UpdateVideo()
     home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , "");
     home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , "");
     home->SetProperty("LatestEpisode." + value + ".Fanart"        , "");
-  }  
+  }
 
   i = 0;
-  CFileItemList MusicVideoItems;
+  CFileItemList          MusicVideoItems;
+  CVideoDatabase::Filter MusicVideoFilter;
+  MusicVideoFilter.limit = videodatabase.PrepareSQL("%u", NUM_ITEMS);
+  MusicVideoFilter.order = "dateAdded desc, idMVideo desc";
+  if (!CSettings::Get().GetBool("videolibrary.showseeninhome"))
+	  MusicVideoFilter.where = "playCount is NULL";
 
-  if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://recentlyaddedmusicvideos/", MusicVideoItems, NUM_ITEMS))
+  if (videodatabase.GetMusicVideosByWhere("videodb://recentlyaddedmusicvideos/", MusicVideoFilter, MusicVideoItems))
   {
     for (; i < MusicVideoItems.Size(); ++i)
     {

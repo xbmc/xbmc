@@ -37,6 +37,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "guilib/GUIWindowManager.h"
+#include "utils/RecentlyAddedJob.h"
 
 using namespace std;
 
@@ -255,6 +257,10 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetBoolean(playlistNode, "shuffle", m_videoPlaylistShuffle);
 
   XMLUtils::SetInt(pNode, "needsupdate", m_videoNeedsUpdate);
+
+  // send refesh for recently added videos
+  CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, Video);
+  g_windowManager.SendThreadMessage(reload, 0);
 
   return true;
 }
