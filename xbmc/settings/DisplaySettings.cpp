@@ -700,6 +700,11 @@ void CDisplaySettings::SettingOptionsScreensFiller(const CSetting *setting, std:
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {
     int screen = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
+#if defined(TARGET_DARWIN_OSX)
+    if (!CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).strOutput.empty())
+      list.push_back(make_pair(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP + idx).strOutput, screen));
+    else
+#endif
     list.push_back(make_pair(StringUtils::Format(g_localizeStrings.Get(241).c_str(), screen + 1), screen));
   }
 

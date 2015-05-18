@@ -29,40 +29,50 @@
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
 #include <QuartzCore/CVDisplayLink.h>
+#include <CoreVideo/CVHostTime.h>
 #include "osx/CocoaInterface.h"
 
 bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s setting up OSX", __FUNCTION__);
-  bool setupOk = false;
   
   //init the vblank timestamp
-  m_LastVBlankTime = CurrentHostCounter();
+  m_LastVBlankTime = 0;
   UpdateClock = func;
-  m_abort = false;
+  m_displayLost = false;
+  m_displayReset = false;
+  m_lostEvent.Reset();
+
+  g_Windowing.Register(this);
   
-  setupOk = InitDisplayLink();
-  if (setupOk)
-  {
-    g_Windowing.Register(this);
-  }
-  
-  return setupOk;
+  return true;
 }
 
 void CVideoSyncOsx::Run(volatile bool& stop)
 {
+  InitDisplayLink();
+
   //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
-  while(!stop && !m_abort)
+  while(!stop && !m_displayLost && !m_displayReset)
   {
     Sleep(100);
   }
+
+  m_lostEvent.Set();
+
+  while(!stop && m_displayLost && !m_displayReset)
+  {
+    Sleep(10);
+  }
+
+  DeinitDisplayLink();
 }
 
 void CVideoSyncOsx::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s cleaning up OSX", __FUNCTION__);
-  DeinitDisplayLink();
+  m_lostEvent.Set();
+  m_LastVBlankTime = 0;
   g_Windowing.Unregister(this);
 }
 
@@ -73,25 +83,42 @@ float CVideoSyncOsx::GetFps()
   return m_fps;
 }
 
-void CVideoSyncOsx::OnResetDevice()
+void CVideoSyncOsx::RefreshChanged()
 {
-  m_abort = true;
+  m_displayReset = true;
 }
 
-void CVideoSyncOsx::VblankHandler(int64_t nowtime)
+void CVideoSyncOsx::OnLostDevice()
+{
+  if (!m_displayLost)
+  {
+    m_displayLost = true;
+    m_lostEvent.WaitMSec(1000);
+  }
+}
+
+void CVideoSyncOsx::OnResetDevice()
+{
+  m_displayReset = true;
+}
+
+void CVideoSyncOsx::VblankHandler(int64_t nowtime, uint32_t timebase)
 {
   int           NrVBlanks;
   double        VBlankTime;
+  int64_t       Now = CurrentHostCounter();
   
-  //calculate how many vblanks happened
-  VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)g_VideoReferenceClock.GetFrequency();
-  NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
-  
+  if (m_LastVBlankTime != 0)
+  {
+    VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)timebase;
+    NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
+
+    //update the vblank timestamp, update the clock and send a signal that we got a vblank
+    UpdateClock(NrVBlanks, Now);
+  }
+
   //save the timestamp of this vblank so we can calculate how many happened next time
   m_LastVBlankTime = nowtime;
-  
-  //update the vblank timestamp, update the clock and send a signal that we got a vblank
-  UpdateClock(NrVBlanks, nowtime);
 }
 
 // Called by the Core Video Display Link whenever it's appropriate to render a frame.
@@ -102,7 +129,10 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
   
   CVideoSyncOsx *VideoSyncOsx = reinterpret_cast<CVideoSyncOsx*>(displayLinkContext);
 
-  VideoSyncOsx->VblankHandler(inOutputTime->hostTime);
+  if (inOutputTime->flags & kCVTimeStampHostTimeValid)
+    VideoSyncOsx->VblankHandler(inOutputTime->hostTime, CVGetHostClockFrequency());
+  else
+    VideoSyncOsx->VblankHandler(CVGetCurrentHostTime(), CVGetHostClockFrequency());
   
   // Destroy the autorelease pool
   Cocoa_Destroy_AutoReleasePool(pool);
