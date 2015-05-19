@@ -44,7 +44,8 @@ struct SFilterInfos
 
   ~SFilterInfos()
   {
-    SAFE_DELETE(pData);
+    if (isinternal != true)
+      SAFE_DELETE(pData);
   }
 
   void Clear()
