@@ -4622,9 +4622,9 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // create actor link table
     m_pDS->exec("CREATE TABLE actor_link(actor_id INT, media_id INT, media_type TEXT, role TEXT, cast_order INT)");
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT idActor,idMovie,'movie',strRole,iOrder from actorlinkmovie");
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT idActor,idShow,'tvshow',strRole,iOrder from actorlinktvshow");
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT idActor,idEpisode,'episode',strRole,iOrder from actorlinkepisode");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT DISTINCT idActor, idMovie, 'movie', strRole, iOrder from actorlinkmovie");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT DISTINCT idActor, idShow, 'tvshow', strRole, iOrder from actorlinktvshow");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT DISTINCT idActor, idEpisode, 'episode', strRole, iOrder from actorlinkepisode");
     m_pDS->exec("DROP TABLE IF EXISTS actorlinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS actorlinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS actorlinkepisode");
@@ -4634,10 +4634,10 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // directors
     m_pDS->exec("CREATE TABLE director_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idMovie,'movie' FROM directorlinkmovie");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idShow,'tvshow' FROM directorlinktvshow");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idEpisode,'episode' FROM directorlinkepisode");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idMVideo,'musicvideo' FROM directorlinkmusicvideo");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idMovie, 'movie' FROM directorlinkmovie");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idShow, 'tvshow' FROM directorlinktvshow");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idEpisode, 'episode' FROM directorlinkepisode");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idMVideo, 'musicvideo' FROM directorlinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS directorlinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS directorlinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS directorlinkepisode");
@@ -4645,20 +4645,20 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // writers
     m_pDS->exec("CREATE TABLE writer_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT idWriter,idMovie,'movie' FROM writerlinkmovie");
-    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT idWriter,idEpisode,'episode' FROM writerlinkepisode");
+    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT DISTINCT idWriter, idMovie, 'movie' FROM writerlinkmovie");
+    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT DISTINCT idWriter, idEpisode, 'episode' FROM writerlinkepisode");
     m_pDS->exec("DROP TABLE IF EXISTS writerlinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS writerlinkepisode");
 
     // music artist
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type) SELECT idArtist,idMVideo,'musicvideo' FROM artistlinkmusicvideo");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type) SELECT DISTINCT idArtist, idMVideo, 'musicvideo' FROM artistlinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS artistlinkmusicvideo");
 
     // studios
     m_pDS->exec("CREATE TABLE studio_link(studio_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT idStudio,idMovie,'movie' FROM studiolinkmovie");
-    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT idStudio,idShow,'tvshow' FROM studiolinktvshow");
-    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT idStudio,idMVideo,'musicvideo' FROM studiolinkmusicvideo");
+    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT idStudio, idMovie, 'movie' FROM studiolinkmovie");
+    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT idStudio, idShow, 'tvshow' FROM studiolinktvshow");
+    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT idStudio, idMVideo, 'musicvideo' FROM studiolinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS studiolinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS studiolinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS studiolinkmusicvideo");
@@ -4669,9 +4669,9 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // genres
     m_pDS->exec("CREATE TABLE genre_link(genre_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT idGenre,idMovie,'movie' FROM genrelinkmovie");
-    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT idGenre,idShow,'tvshow' FROM genrelinktvshow");
-    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT idGenre,idMVideo,'musicvideo' FROM genrelinkmusicvideo");
+    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, idMovie, 'movie' FROM genrelinkmovie");
+    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, idShow, 'tvshow' FROM genrelinktvshow");
+    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, idMVideo, 'musicvideo' FROM genrelinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS genrelinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS genrelinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS genrelinkmusicvideo");
@@ -4682,7 +4682,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // country
     m_pDS->exec("CREATE TABLE country_link(country_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO country_link(country_id, media_id, media_type) SELECT idCountry,idMovie,'movie' FROM countrylinkmovie");
+    m_pDS->exec("INSERT INTO country_link(country_id, media_id, media_type) SELECT DISTINCT idCountry, idMovie, 'movie' FROM countrylinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS countrylinkmovie");
     m_pDS->exec("CREATE TABLE countrynew(country_id INTEGER PRIMARY KEY, name TEXT)");
     m_pDS->exec("INSERT INTO countrynew(country_id, name) SELECT idCountry,strCountry FROM country");
@@ -4691,7 +4691,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // tags
     m_pDS->exec("CREATE TABLE tag_link(tag_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO tag_link(tag_id, media_id, media_type) SELECT idTag,idMedia,media_type FROM taglinks");
+    m_pDS->exec("INSERT INTO tag_link(tag_id, media_id, media_type) SELECT DISTINCT idTag, idMedia, media_type FROM taglinks");
     m_pDS->exec("DROP TABLE IF EXISTS taglinks");
     m_pDS->exec("CREATE TABLE tagnew(tag_id INTEGER PRIMARY KEY, name TEXT)");
     m_pDS->exec("INSERT INTO tagnew(tag_id, name) SELECT idTag,strTag FROM tag");
