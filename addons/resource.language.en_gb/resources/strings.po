@@ -1008,12 +1008,14 @@ msgctxt "#230"
 msgid "Video filters"
 msgstr ""
 
+#. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
 #: system/peripherals.xml
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: system/settings/settings.xml
 #: xbmc/LangInfo.cpp
+#: ###this documented usage does not cover all usecases yet###
 msgctxt "#231"
 msgid "None"
 msgstr ""
@@ -14863,7 +14865,7 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36033"
-msgid "Pause playback when switching to another source"
+msgid "Action when switching to another source"
 msgstr ""
 
 #empty string with id 36034
@@ -14914,7 +14916,23 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr ""
 
-#empty strings from id 36043 to 36100
+#empty strings from id 36043
+
+#. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
+#: system/peripherals.xml
+msgctxt "#36044"
+msgid "Stop Playback"
+msgstr ""
+
+#. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
+#: system/peripherals.xml
+msgctxt "#36045"
+msgid "Pause Playback"
+msgstr ""
+
+#empty strings from id 36046 to 36100
 #strings from 36100 to 36999 are reserved for settings descriptions
 
 #. Description of settings section "Appearance"
