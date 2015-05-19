@@ -405,6 +405,14 @@ namespace XBMCAddon
      */  
     void audioResume();
 
+   /**
+    * saveSettings() -- saves settings to guisettings.xml
+    *
+    * example:
+    *   xbmc.saveSettings()
+    */
+    void saveSettings();
+
     /**
     * convertLanguage(language, format) -- Returns the given language converted to the given format as a string.
     *
