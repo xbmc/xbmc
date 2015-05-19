@@ -97,6 +97,10 @@ void CmadVRAllocatorPresenter::SetResolution()
 {
   ULONGLONG frameRate;
   float fps;
+
+  CMadvrCallback::Get()->SetInitMadvr(true);
+
+  // Set the context in FullScreenVideo
   g_graphicsContext.SetFullScreenVideo(true);
 
   if (Com::SmartQIPtr<IMadVRInfo> pInfo = m_pDXR)
@@ -112,6 +116,7 @@ void CmadVRAllocatorPresenter::SetResolution()
     RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
     g_graphicsContext.SetVideoResolution(bestRes);
   }
+  CMadvrCallback::Get()->SetInitMadvr(false);
 }
 
 void CmadVRAllocatorPresenter::ExclusiveCallback(LPVOID context, int event)
@@ -262,7 +267,8 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
     m_NativeVideoSize = GetVideoSize(false);
     m_AspectRatio = GetVideoSize(true);
 
-    g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy, m_fps, g_dsSettings.pRendererSettings->bAllowFullscreen ? CONF_FLAGS_FULLSCREEN : 0, RENDER_FMT_NONE, 0, 0);
+    //g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy, m_fps, g_dsSettings.pRendererSettings->bAllowFullscreen ? CONF_FLAGS_FULLSCREEN : 0, RENDER_FMT_NONE, 0, 0);
+    g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy, m_fps, CONF_FLAGS_FULLSCREEN , RENDER_FMT_NONE, 0, 0);
     CLog::Log(LOGDEBUG, "%s Render manager configured (FPS: %f) %i %i %i %i", __FUNCTION__, m_fps, m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy);
   }
 

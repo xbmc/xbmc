@@ -1661,7 +1661,7 @@ void CEVRAllocatorPresenter::GetMixerThread()
         {
 
           g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy, m_fps,
-            g_dsSettings.pRendererSettings->bAllowFullscreen ? CONF_FLAGS_FULLSCREEN : 0,
+            CONF_FLAGS_FULLSCREEN,
             RENDER_FMT_NONE, 0, 0);
           CLog::Log(LOGDEBUG, "%s Render manager configured (FPS: %f)", __FUNCTION__, m_fps);
         }
