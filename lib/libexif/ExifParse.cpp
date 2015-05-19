@@ -823,9 +823,18 @@ void CExifParse::GetLatLong(
     {
       Values[a] = ConvertAnyFormat(ValuePtr+a*ComponentSize, Format);
     }
-    char latLong[30];
-    sprintf(latLong, "%3.0fd %2.0f' %5.2f\"", Values[0], Values[1], Values[2]);
-    strcat(latLongString, latLong);
+    if (Values[0] < 0 || Values[0] > 180 || Values[1] < 0 || Values[1] >= 60 || Values[2] < 0 || Values[2] >= 60)
+    {
+      // Ignore invalid values (DMS format expected)
+      ErrNonfatal("Invalid Lat/Long value", 0, 0);
+      latLongString[0] = 0;
+    }
+    else
+    {
+      char latLong[30];
+      sprintf(latLong, "%3.0fd %2.0f' %5.2f\"", Values[0], Values[1], Values[2]);
+      strcat(latLongString, latLong);
+    }
   }
 }
 
