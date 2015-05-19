@@ -218,6 +218,9 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   }
 
   bool isSplitterToo = IsSplitter(infos.pBF);
+  if (pFileItem.GetVideoInfoTag()->m_streamDetails.GetVideoStreamCount() == 1 && pFileItem.GetVideoInfoTag()->m_streamDetails.GetAudioStreamCount() == 0)
+    isSplitterToo = true;
+
   if (isSplitterToo)
   {
     CLog::Log(LOGDEBUG, "%s The source filter is also a splitter.", __FUNCTION__);
