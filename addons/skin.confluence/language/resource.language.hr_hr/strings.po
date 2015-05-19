@@ -1,0 +1,345 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Croatian (Croatia) (http://www.transifex.com/projects/p/kodi-main/language/hr_HR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hr_HR\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Reprodukcija..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Mogućnosti prikaza"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Cijeli zaslon"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Glazba - Datoteke"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Reprodukcija"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Stranica"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Stavaka"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Lokacija"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Slika omota"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Informacije"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Radnje"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "REPRODUKCIJA"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUZIRANO"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "PREMOTAVANJE UNAPRIJED"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "PREMOTAVANJE UNAZAD"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "PREMOTAVANJE"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Vrijeme završetka"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Složi: Padajući"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Složi: Rastući"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Otvori popis izvođenja"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Spremite popis izvođenja"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Zatvori popis izvođenja"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Glazbene datoteke sustava"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Trenutni popis izvođenja"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Ova datoteka je složena, odaberite dio od kojeg želite pokrenuti reprodukciju."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Mogućnosti početnog zaslona"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Pozadina"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Ostale mogućnosti"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Omogući prilagođenu pozadinu"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Putanja pozadine:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Sakrij"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Mogućnosti"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Reproduciraj pjesme TV tema iz videoteke (TvTunes dodatak)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "Tv melodije"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Tekstovi pjesama"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD glazbe"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD videa"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Razina postavki"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Prečaci"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Pronađeno"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Pružatelj podataka"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Slika za omot[CR][CR]je nedostupna[CR][CR] Kliknite tipku za postavljanje"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Emitirano"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Napravljeno"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Razlučivost"
+
+msgctxt "#31328"
+msgid "Recently added"
+msgstr "Nedavno dodano"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Vrijeme isključivanja![/B][COLOR=grey2] - Sustav se automatski isključuje za[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pauza"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Zaustavi"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Premotavanje unazad"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Filmski izbornik"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Gledaj kao 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Promijeni način"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Omogućeno"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Uobičajena presvlaka"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Temeljen na Arialu "
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]PRILAGODITE POSTAVKE IZGLEDA[/B][CR][CR]Promijenite presvlaku · Postavite jezik i regiju · Promijenite mogućnosti popisivanja datoteka[CR]Postavite čuvara zaslona"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]PRILAGODITE VIDEO POSTAVKE[/B][CR][CR]Upravljajte svojom videotekom · Postavite mogućnosti reprodukcije videa[CR]Promijenite mogućnosti popisivanja video sadržaja · Postavite slova podnaslova"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]PRILAGODITE POSTAVKE GLAZBE[/B][CR][CR]Upravljajte svojm fonotekom · Postavite mogućnosti reprodukcije glazbe[CR]Promjenite mogućnosti popisivanja glazbenoga sadržaja · Postavite slanje pjesama · Postavite mogućnosti karaoka"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]PRILAGODITE POSTAVKE SUSTAVA[/B][CR][CR]Prilagodite i kalibrirajte zaslon · Prilagodite izlaz zvuka · Postavite daljinsko upravljanje[CR]Postavite mogućnosti uštede energije  · Omogućite zapise otklanjanja grešaka · Postavite glavno zaključavanje"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]PRILAGODITE TV POSTAVKE[/B][CR][CR]Promjenite informacije cijelog zaslona · Upravljajte postavkama podataka elektronskog programskog vodiča (EPG)"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]PRILAGODITE POSTAVKE USLUGA[/B][CR][CR]Postavite upravljanje Kodijem putem UPnP-a i HTTP-a · Prilagodite dijeljenje datoteka[CR]Omogućite Zeroconf · Prilagodite AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Lokalni podnaslovi dostupni"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Prijava"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Prikaži ili sakrij zaslon prijave pri pokretanju."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Odaberite profil koji će se koristiti pri pokretanju kada je zaslon prijave onemogućen."
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "TELEVIZIJA"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Dostupne[CR]grupe"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Prognoza"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Nabavljanje informacija prognoze..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Karte"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "VRIJEME"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "SLIKE"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "TELEVIZIJA"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEO"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "FILMOVI"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV SERIJE"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "GLAZBA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMI"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "OPTIČKI DISK"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SUSTAV"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

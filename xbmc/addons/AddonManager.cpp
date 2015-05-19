@@ -787,11 +787,10 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
     {
       // see if we have a "lang" attribute
       const char *lang = m_cpluff->lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
-      if (lang != NULL &&
-         (g_langInfo.GetLocale().Matches(lang) || strcmp(lang, "en") == 0))
+      if (lang != NULL && g_langInfo.GetLocale().Matches(lang))
         translatedValues.insert(std::make_pair(lang, child.value != NULL ? child.value : ""));
-      else if (lang == NULL)
-        translatedValues.insert(std::make_pair("en", child.value != NULL ? child.value : ""));
+      else if (lang == NULL || strcmp(lang, "en") == 0 || strcmp(lang, "en_GB") == 0)
+        translatedValues.insert(std::make_pair("en_GB", child.value != NULL ? child.value : ""));
     }
   }
 
@@ -803,7 +802,7 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
   // find the language from the list that matches the current locale best
   std::string matchingLanguage = g_langInfo.GetLocale().FindBestMatch(languages);
   if (matchingLanguage.empty())
-    matchingLanguage = "en";
+    matchingLanguage = "en_GB";
 
   auto const& translatedValue = translatedValues.find(matchingLanguage);
   if (translatedValue != translatedValues.end())

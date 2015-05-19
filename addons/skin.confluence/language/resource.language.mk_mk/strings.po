@@ -1,0 +1,341 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Macedonian (Macedonia) (http://www.transifex.com/projects/p/kodi-main/language/mk_MK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: mk_MK\n"
+"Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Обработка..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Прикажи опции"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Цел екран"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Музика - Датотеки"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Репродукција"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Страна"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Предмети"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Локација"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fan-арт"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Информации"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Дела"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ИЗВЕДБА"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ПАУЗИРАНО"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ПРЕМОТУВАЊЕ НАПРЕД"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ПРЕМОТУВАЊЕ НАЗАД"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "ПРЕБАРУВАЊЕ"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Време на крај"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Подреди: Опаѓачки"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Подреди: Растечки"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Отвори плејлиста"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Сочувај плејлиста"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Затвори плејлиста"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Системски музички датотеки"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Сегашна плејлиста"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Оваа датотека е сложена, изберете дел кој сакате да го пуштите."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Опции на почетен екран"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Позадина"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Разни опции"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Овозможи сопствени позадини"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Патека на позадината:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Сокриј"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Опции"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Пуштај TV-theme-songs во видео библиотеката (TvTunes add-on)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Стихови на песни"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Музички OSD"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "Видео OSD"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Ниво на поставки"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Кратенки"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Најдено"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Провајдер на податоци"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Посебна слика[CR]не  е доделена.[CR][CR]Кликнете на копчето за да[CR]ја доделите."
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Емитирано"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Креирано"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Резолуција"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Одбројувањето е поставено![/B] [COLOR=grey2] - Системот ќе се искучи за[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Паузирај"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Сопри"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Премотај наназад"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Филмско мени"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Гледај во 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Измени начин"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Овозможено"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Основен изглед"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Базирано на Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]КОНФИГУРИРАЊЕ ПОСТАВКИ ЗА ПРИКАЗ[/B][CR][CR]Променете го изгледот · Изберете јазик и област на живеење[CR]Променете опции за прикажување на датотеки · Изберете чувар на екран"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]КОНФИГУРИРАЊЕ ПОСТАВКИ ЗА ФИЛМОВИ[/B][CR][CR]Управувајте со вашата библиотека на видеа · Поставете опции за изведба на филмови[CR]Изменете опции за прикажување на филмови · Поставете фонт за преводот"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]КОНФИГУРИРАЊЕ ПОСТАВКИ ЗА МУЗИКА[/B][CR][CR]Управувајте со вашата музичка библиотека · Поставете опции за изведба на музика[CR]Променете опции за прикажување на музика · Поставете праќање на песни · Поставете караоке опции"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]КОНФИГУРИРАЊЕ СИСТЕМСКИ ПОСТАВКИ[/B][CR][CR]Подесете и калибрирајте екрани · Конфигурирајте звучен излез · Подесете далечинско управување · Поставете опции за заштеда на енергија[CR]Овозможете евиденција на грешки · Подесете главна лозинка"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]КОНФИГУРИРАЈ ТВ ПОСТАВКИ[/B][CR][CR]Промени инфо на цел екран · Подесување на EPG податоци"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]КОНФИГУРИРАЈ СЕРВИСНИ ПОДЕСУВАЊА[/B][CR][CR]Подеси контрола врз Kodi преку UPnP и HTTP · Конфигурирај споделување папки[CR]Овозможи Zeroconf ·Конфигурирај AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Локален превод е достапен"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Најави се"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Прикажи го или сокриј го екранот за најава при стартување"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Избери го профилот кој ќе биде користен при стартување кога екранот за најава е исклучен"
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Достапни[CR]Групи"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Прогноза"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Превземање на прогноза..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Мапи"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "Време"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "Слики"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "Видеа"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "Филмови"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "ТВ Серијали"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "Музика"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "Програми"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "Пушти диск"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "Систем"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "Радио"

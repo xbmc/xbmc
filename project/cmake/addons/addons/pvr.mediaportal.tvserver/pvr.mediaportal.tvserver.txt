@@ -1,1 +1,1 @@
-pvr.mediaportal.tvserver https://github.com/kodi-pvr/pvr.mediaportal.tvserver d9bfdee
+pvr.mediaportal.tvserver https://github.com/kodi-pvr/pvr.mediaportal.tvserver bcfb46f

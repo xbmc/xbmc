@@ -1,0 +1,341 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/kodi-main/language/el_GR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: el_GR\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Απασχολημένο..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Επιλογές προβολής"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Πλήρης οθόνη"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Μουσική - Αρχεία"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Αναπαραγωγή"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Σελίδα"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Αντικείμενα"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Τοποθεσία"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Πληροφορίες"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Ενέργειες"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ΑΝΑΠΑΡΑΓΩΓΗ"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ΠΑΥΣΗ"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ΜΠΡΟΣΤΑ"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ΠΙΣΩ"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "ΑΝΑΖΗΤΗΣΗ"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Έως ώρα"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Ταξ.: Αύξουσα"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Ταξ.: Φθίνουσα"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Άνοιγμα λίστας αναπ/γής"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Αποθήκευση λίστας αναπ/γής"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Κλείσιμο λίστας αναπ/γής"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Μουσικά αρχεία συστήματος"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Τρέχουσα λίστα αναπ/γής"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Αυτό το αρχείο είναι στοιβαγμένο, επιλέξτε από που να γίνει αναπαραγωγή."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Επιλογές Αρχικής Οθόνης"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Υπόβαθρο"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Διάφορες επιλογές"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Ενεργοποίηση προσαρμοσμένου υποβάθρου"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Διαδρομή υποβάθρου:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Απόκρυψη"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Επιλογές"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Αναπαραγωγή μουσικής σειρών στη συλλογή (πρόσθετο TvTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Στίχοι"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Aπεικονίσεις οθόνης (OSD) Μουσικής"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "Aπεικονίσεις οθόνης (OSD) Βίντεο"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Επίπεδο ρυθμίσεων"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Συντομεύσεις"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Βρέθηκαν"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Πηγή δεδομένων"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Εικόνα Fanart[CR][CR]Μη διαθέσιμη[CR][CR] Πιέστε το πλήκτρο για να ορίσετε"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Πρώτη Προβολή"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Δημιουργήθηκε"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Ανάλυση"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Ορίστηκε χρονοδιακόπτης![/B] [COLOR=grey2] - Τερματισμός συστήματος σε[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Παύση"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Διακοπή"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Πίσω"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Μενού Ταινιών"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Προβολή ως 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Αλλαγή λειτουργίας"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Ενεργό/ή"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Προεπιλογή"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Βασισμένη σε Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΕΞΑΤΟΜΙΚΕΥΣΗΣ[/B][CR][CR]Αλλαγή κελύφους · Αλλαγή χώρας και γλώσσας συστήματος · Επιλογές καταλόγου αρχείων[CR]Προσαρμογή της προφύλαξης οθόνης"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΒΙΝΤΕΟ[/B][CR][CR]Διαχείριση της συλλογής βίντεο · Ρύθμιση αναπαραγωγής βίντεο · Επιλογές καταλόγου ταινιών[CR]Ρύθμιση γραμματοσειράς υποτίτλων"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΜΟΥΣΙΚΗΣ[/B][CR][CR]Διαχείριση της μουσικής συλλογής · Ρύθμιση αναπαραγωγής μουσικής · Επιλογές καταλόγου μουσικής[CR]Ρύθμιση υποβολής τραγουδιού · Επιλογές karaoke"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΣΥΣΤΗΜΑΤΟΣ[/B][CR][CR]Διαμόρφωση και βαθμονόμηση οθονών · Ρύθμιση εξόδου ήχου · Τηλεχειριστήρια · Εξοικονόμηση ενέργειας · Εντοπισμός σφαλμάτων (debug) · Κεντρικό κλείδωμα"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]ΡΥΘΜΙΣΗ ΤΗΛΕΟΡΑΣΗΣ[/B][CR][CR]Αλλαγή πληροφοριών πλήρους οθόνης · Διαχείριση των ρυθμίσεων δεδομένων EPG"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΥΠΗΡΕΣΙΩΝ[/B][CR][CR]Χειρισμός του Kodi μέσω UPnP και HTTP · Ρύθμιση κοινής χρήσης αρχείων[CR]Ενεργοποίηση Zeroconf · Ρύθμιση AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Διαθέσιμος υπότιτλος τοπικά"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Σύνδεση"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Εμφάνιση ή απόκρυψη της οθόνης σύνδεσης κατά την εκκίνηση."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Επιλογή του προφίλ που θα χρησιμοποιηθεί κατά την εκκίνηση αν έχει απενεργοποιηθεί η οθόνη σύνδεσης."
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "Τηλεόραση"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Διαθέσιμα[CR]Γκρουπ"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Πρόγνωση"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Ανάκτηση πρόγνωσης καιρού..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Χάρτες"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "ΚΑΙΡΟΣ"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "ΕΙΚΟΝΕΣ"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "Τηλεόραση"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "ΒΙΝΤΕΟ"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "ΤΑΙΝΙΕΣ"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "ΤΗΛ. ΣΕΙΡΕΣ"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "ΜΟΥΣΙΚΗ"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "ΕΦΑΡΜΟΓΕΣ"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "ΑΝΑΠΑΡΑΓΩΓΗ ΔΙΣΚΟΥ"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "ΣΥΣΤΗΜΑ"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "ΡΑΔΙΟ"

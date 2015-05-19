@@ -1147,8 +1147,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       return result | EOS_DROPPED;
     }
 
-    if (iSleepTime > 0.05)
-      iSleepTime = 0.05;
+    if (iSleepTime > DVD_MSEC_TO_TIME(20))
+      iSleepTime = DVD_MSEC_TO_TIME(20);
   }
   else if (m_speed > DVD_PLAYSPEED_NORMAL)
   {
@@ -1166,8 +1166,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       return result | EOS_DROPPED;
     }
 
-    if (iSleepTime > 0.05)
-      iSleepTime = 0.05;
+    if (iSleepTime > DVD_MSEC_TO_TIME(20))
+      iSleepTime = DVD_MSEC_TO_TIME(20);
   }
 
   // sync clock if we are master
@@ -1201,7 +1201,12 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       mDisplayField = FS_BOT;
   }
 
-  int buffer = g_renderManager.WaitForBuffer(m_bStop, std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50));
+  // make sure waiting time is not negative
+  int maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50);
+  // don't wait when going ff
+  if (m_speed > DVD_PLAYSPEED_NORMAL)
+    maxWaitTime = 0;
+  int buffer = g_renderManager.WaitForBuffer(m_bStop, maxWaitTime);
   if (buffer < 0)
   {
     m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);

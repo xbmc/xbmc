@@ -1,0 +1,341 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/kodi-main/language/es_MX/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_MX\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Trabajando..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Vista"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Pant. Completa"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Música - Archivos"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Reproduciendo"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Página"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Elementos"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Ubicación"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Acciones"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "REPRODUCIENDO"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUSA"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ADELANTAR"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "REBOBINAR"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "BUSQUEDA"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Tiempo de término"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Ordenar: Ascendente"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Ordenar: Descendente"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Lista de reproducción abierta"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Guardar lista de reproducción"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Cerrar lista de reproducción"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Archivos de música del Sistema"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Lista de reproducción actual"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Este archivo esta apilado, seleccion la parte desde la que desea reproducir."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Opciones de pantalla principal"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Background"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Opciones variadas"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Habilitar Fondo Personalizado"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Ruta del Fondo:"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Esconder"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Opciones"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Reproducir canciones temáticas de TV en la biblioteca de Video (TvTunes add-on)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Letras"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD de Música"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD de Video"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Nivel de Ajustes"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Atajos"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Encontrado"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Proveedor de datos"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Imágen fanart[CR][CR]No disponible[CR][CR] Hacer Click en el botón para establecer"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Transmitido"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Creado"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Resolución"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Temporizador ajustado![/B] [COLOR=grey2] - Apagado automático de sistema en[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pausa"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Detener"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Rebobinar"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Menú de Película"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Ver en 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Cambiar modo"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Activado"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Según skin"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Basado en Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]CONFIGURAR AJUSTES DE APARIENCIA[/B][CR][CR]Cambiar el skin · Establecer lenguaje y región · Cambiar las opciones de listado de archivos[CR]Establecer un protector de pantalla"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]CONFIGURAR AJUSTES DE VIDEO[/B][CR][CR]Administrar tu biblioteca de video · Configurar las opciones de reproducción de vídeo · Cambiar las opciones de listado de videos[CR]Establecer fuentes de subtítulos"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]CONFIGURAR AJUSTES DE MÚSICA[/B][CR][CR]Administrar tu biblioteca de música · Configurar las opciones de reproducción de música · Cambiar las opciones de listado de música [CR]Configurar el envío de canciones · Ajustar opciones de karaoke"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]CONFIGURAR AJUSTES DE SISTEMA[/B][CR][CR]Configurar y calibrar las pantallas · Configurar salida de audio · Configurar controles remotos[CR]Configurar opciones de ahorro de energía · Habilitar depuración · Configurar Bloqueo Maestro"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]CONFIGURAR AJUSTES DE TV[/B][CR][CR]Cambiar información de pantalla completa · Administrar ajustes de datos EPG"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGURAR AJUSTES DE SERVICIO[/B][CR][CR]Configuración de control de Kodi a través de UPnP y HTTP · Configurar el uso compartido de archivos[CR]HabilitarZeroconf · Configurar AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Subtítulo local disponible"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Iniciar sesión"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Mostrar u ocultar pantalla de inicio al inciar."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Seleccionar el perfil que será usado al iniciar cuando la pantalla de inicio esta deshabilitada"
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Grupos[CR]Disponibles"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Pronóstico"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Obteniendo información de pronóstico"
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Mapas"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "CLIMA"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "IMAGENES"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VIDEOS"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "PELICULAS"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "PROGRAMAS DE TV"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "MUSICA"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "PROGRAMAS"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "REPRODUCIR DISCO"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "SISTEMA"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "RADIO"

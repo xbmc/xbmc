@@ -99,7 +99,24 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
       return true;
     }
     break;
+  // ignore all gesture meta actions
+  case ACTION_GESTURE_BEGIN:
+  case ACTION_GESTURE_END:
+  case ACTION_GESTURE_NOTIFY:
+  case ACTION_GESTURE_PAN:
+  case ACTION_GESTURE_ROTATE:
+  case ACTION_GESTURE_ZOOM:
+    return true;
   }
+
+  // if we see a mouse move event without dx and dy (amount2 and amount3) these
+  // are the focus actions which are generated on touch events and those should
+  // be eaten/ignored here. Else we will switch to the screencalibration controls
+  // which are at that x/y value on each touch/tap/swipe which makes the whole window
+  // unusable for touch screens
+  if (action.GetID() == ACTION_MOUSE_MOVE && action.GetAmount(2) == 0 && action.GetAmount(3) == 0)
+    return true;
+
   return CGUIWindow::OnAction(action); // base class to handle basic movement etc.
 }
 
@@ -190,6 +207,13 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
         m_iCurRes = FindCurrentResolution();
       }
     }
+    break;
+  // send before touch for requesting gesture features - we don't want this
+  // it would result in unfocus in the onmessage below ...
+  case GUI_MSG_GESTURE_NOTIFY:
+  // send after touch for unfocussing - we don't want this in this window!
+  case GUI_MSG_UNFOCUS_ALL:
+    return true;
     break;
   }
   return CGUIWindow::OnMessage(message);

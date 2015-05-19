@@ -71,6 +71,7 @@ public:
   
   virtual int GetNumScreens();
   virtual int GetCurrentScreen();
+  virtual double GetCurrentRefreshrate() { return m_refreshRate; }
   
   void        WindowChangedScreen();
 
@@ -84,6 +85,7 @@ public:
   std::string GetClipboardText(void);
 
 protected:
+  void  HandlePossibleRefreshrateChange();
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
   void  GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
@@ -109,6 +111,7 @@ protected:
   void                        *m_windowDidMove;
   void                        *m_windowDidReSize;
   void                        *m_windowChangedScreen;
+  double                       m_refreshRate;
 
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;

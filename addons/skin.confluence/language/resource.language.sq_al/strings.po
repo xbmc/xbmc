@@ -1,0 +1,305 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Albanian (Albania) (http://www.transifex.com/projects/p/kodi-main/language/sq_AL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sq_AL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Në Funksionim..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Opcionet e pamjes"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Ekrani i plotë"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Skeda - Muzikë"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Duke riprodhuar"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Faqe"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Artikuj"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Lokalizimi"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Fanart"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "DUKE LUAJTUR"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUZUAR"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "PËRSHPEJTO"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "RIKTHE"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "Duke kërkuar"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Koha e përfundimit"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Rendit: Me Ngjitje"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Rendit: Me Zbritje"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Hap playlist’ën"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Ruaj playlist’ën "
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Mbyll playlist’ën "
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Skeda muzikore të sistemit"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Playlist’a aktuale"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Kjo skedë është grupuar, zgjidh pjesën, nga e cila doni të luani."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Opcionet e ekranit kryesor"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Sfondi"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Opcione të ndryshme"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Aktivoni sfond të perzonalizuar"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Rregjistri i Sfondit"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Fsheh"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Opcionet"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Luaj melodinë kryesore përcjellse së një seriali televiziv ne bibleotekën video (Shtesa TVTunes)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TVTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Tekste Këngësh"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "OSD Muizikë"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "OSD Video"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Shkurtor"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Gjetur"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Pajisës i të Dhënave"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Imazhi Fanart [CR][CR]i padisponueshëm[CR][CR] Kliko butonin për aktualizimin"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Në Transmetim"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Krijuar"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Zbërthimi"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]\"Timer\" ështe vendosur![/B] [COLOR=grey2] - Auto mbyllja në [/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pauzo"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Ndalo"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Rikthe"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Meny Filmi"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Aktivuar"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Standarte e Maskës"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Në Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]KONFIGURO OPCIONET TË PAMJES[/B][CR][CR]Ndrysho maskën · Cakto gjuhën dhe rajonin · Ndrysho opcionet e skedarit[CR]Cakto një Ekran-ruajtes"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]KONFIGURO OPCIONET E VIDEOVE[/B][CR][CR]Menaxho video-bibliotekën tënde · Cakto opcionet e video-riprodhimit · Ndrysho pamjen e video-listës[CR]Cakto shkrimin e subtitrave"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]KONFIGURO OPCIONET E MUZIKËS[/B][CR][CR]Menaxho bibliotekën e muzikës tënde · Cakto opcione të riprodhimit të muzikës · Ndrysho pamjen e listës së muzikës[CR]Cakto opcionet karaoke"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]KONFIGURO OPCIONET E SISTEMIT[/B][CR][CR]Konfiguro dhe Kalibro Ekranet ·  Konfiguro daljen e zërit · Konfiguro telekomandat [CR]Cakto opcionet për kursimin e rrymës · Aktivizo debugging · Konfiguro dryrin përdorues"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGURO OPCIONET E SERVISEVE[/B][CR][CR]Konfiguro kontrollimin e Kodi'së nëpërmjet UPnP dhe HTTP · Konfiguro shpërndarjen e skedeve[CR]Aktivizo Zeroconf · Konfiguro AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Subtitra lokal në dispozicion"
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Grupë në dispzicion[CR]"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Parashikimi"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Duke tërhequr parashikimin..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Hartat"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "Moti"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "Fotografit"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "Videot"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "Filmat"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "Emisionet televizive"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "Muzik"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "Programet"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "Luaj diskun"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "Sistemi"

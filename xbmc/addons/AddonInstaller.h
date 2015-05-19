@@ -21,6 +21,7 @@
 
 #include "utils/FileOperationJob.h"
 #include "addons/Addon.h"
+#include "addons/Repository.h"
 #include "utils/Stopwatch.h"
 #include "threads/Event.h"
 
@@ -70,11 +71,6 @@ public:
    */
   bool InstallFromZip(const std::string &path);
 
-  /*! \brief Install a set of addons from the official repository (if needed)
-   \param addonIDs a set of addon IDs to install
-   */
-  void InstallFromXBMCRepo(const std::set<std::string> &addonIDs);
-
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
    Each dependency must also satisfies CheckDependencies in turn.
@@ -102,7 +98,7 @@ public:
    \return the last time a repository was updated.
    */
   CDateTime LastRepoUpdate() const;
-  void UpdateRepos(bool force = false, bool wait = false);
+  void UpdateRepos(bool force = false, bool wait = false, bool showProgress = false);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
@@ -154,7 +150,7 @@ private:
   CCriticalSection m_critSection;
   JobMap m_downloadJobs;
   CStopWatch m_repoUpdateWatch;   ///< repository updates are done based on this counter
-  unsigned int m_repoUpdateJob;   ///< the job ID of the repository updates
+  ADDON::CRepositoryUpdateJob* m_repoUpdateJob;
   CEvent m_repoUpdateDone;        ///< event set when the repository updates are complete
 };
 

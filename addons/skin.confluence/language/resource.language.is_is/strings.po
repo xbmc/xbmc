@@ -1,0 +1,341 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Icelandic (Iceland) (http://www.transifex.com/projects/p/kodi-main/language/is_IS/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is_IS\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Vinnsla..."
+
+msgctxt "#31006"
+msgid "View options"
+msgstr "Stillingar sjónarhorns"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Fylla skjá"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Tónlist - Skrár"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Spila"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Síða"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Hlutir"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Staðsetning"
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr "Aðdáendamyndir"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Upplýsingar"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Aðgerðir"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "SPILA"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "Í BIÐ"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "HRATT ÁFRAM"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "TIL BAKA"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "LEITA"
+
+msgctxt "#31049"
+msgid "End time"
+msgstr "Lokatími"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Raða: Hækkandi"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Raða: Lækkandi"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Opna lagalista"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Vista lagalista"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Loka lagalista"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Tónlistarskrár kerfis"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Núgildandi lagalisti"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Þessi skrá er stöfluð, veldu þann part sem þú vilt byrja að spila frá."
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Stillingar heimaskjás"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Bakgrunnur"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Ýmsir valkostir"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "Virkja sérsniðinn bakgrunn"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Bakgrunnsslóð"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Fela"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Valkostir"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Spila þema lög í myndbandasafni (TvTunes viðbót)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TvTunes"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Lagatextar"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Tónlistarskjár"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "Myndbandaskjár"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Ítarleiki stillinga"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Flýtileiðir"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Fann"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Gagnaveita"
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Aðdáendamynd[CR][CR]Ekki fáanleg[CR][CR] Smelltu til að breyta"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Sýnt"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Búið til"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Upplausn"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Tímamælir virkur![/B] [COLOR=grey2] - Sjálfvirkt Slökkt eftir[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Bið"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Stöðva"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Til baka"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Kvikmyndavalmynd"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Horfa á í 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Breyta ham"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Virkt"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Sjálfgildi útlits"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Byggt á Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]BREYTA VIÐMÓTSSTILLINGUM[/B][CR][CR]Breyta útlitinu · Breyta tungumáli og svæði · Breyta stillingum skráarlista[CR]Breyta skjáhvílu"
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]BREYTA SKJÁSTILLINGUM[/B][CR][CR]Sýsla með myndabandasafn · Breyta myndbandaspilun · Breyta stillingum myndbandalista[CR]Breyta leturgerðum þýðingartexta"
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]BREYTA TÓNLISTARSTILLINGUM[/B][CR][CR]Sýsla með tónlistarsafn · Breyta stillingum tónlistarspilara · Breyta stillingum tónlistarlista[CR]Skilgreina laga upphal · Breyta karaoke stillingum"
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]BREYTA KERFISSTILLINGUM[/B][CR][CR]Breyta og stilla skjái · Breyta hljóðúttaki · Skilgreina fjarstýringar[CR]Breyta orkukostum · Virkja aflúsun · Skilgreina aðallykilorð"
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
+msgstr "[B]SJÓNVARPSSTILLINGAR[/B][CR][CR]Breyta upplýsingum á fullum skjá · Halda utan um EPG gagnastillingar"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Uppsetning á stjórnun  Kodi með UPnP og HTTP · Setja upp skráardeilingu[CR]Virkja  Zeroconf · Stilla AirPlay"
+
+msgctxt "#31413"
+msgid "Local subtitle available"
+msgstr "Staðvær þýðingartexti tiltækur"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Innskrá"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Sýna eða fela innskráningarskjá við ræsingu."
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Veldu uppsetninguna sem verður notuð í ræsingu þegar innskráningarglugginn hefur verið gerður óvirkur."
+
+msgctxt "#31502"
+msgid "TV"
+msgstr "Sjónvarp"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Tiltækir[CR]Hópar"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Veðurspá"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Næ í veðurspá..."
+
+msgctxt "#31910"
+msgid "Maps"
+msgstr "Kort"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "VEÐUR"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "MYNDIR"
+
+msgctxt "#31952"
+msgid "TV"
+msgstr "Sjónvarp"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "VÍDEÓ"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "KVIKMYNDIR"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "SJÓNVARPSÞÆTTIR"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "TÓNLIST"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "FORRIT"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "SPILA DISK"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "KERFI"
+
+msgctxt "#31960"
+msgid "RADIO"
+msgstr "ÚTVARP"

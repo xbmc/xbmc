@@ -1,0 +1,65 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Hindi (India) (http://www.transifex.com/projects/p/kodi-main/language/hi_IN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hi_IN\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "पूर्ण स्क्रीन "
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "संगीत - फाइलें"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "वादन"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "पेज"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "वस्तुए"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "स्थान"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "पृष्ठभूमि"
+
+msgctxt "#31109"
+msgid "Enable custom background"
+msgstr "कस्टम पृष्ठभूमि सक्षम"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "गीत"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "लघु पाथें "
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "संकल्प"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "सक्रिय"

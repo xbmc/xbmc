@@ -162,7 +162,7 @@ void CWeatherJob::FormatTemperature(std::string &text, int temp)
 void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
-  std::string language = CORE_LANGUAGE_DEFAULT;
+  std::string language = LANGUAGE_DEFAULT;
   CSettingString* languageSetting = static_cast<CSettingString*>(CSettings::Get().GetSetting("locale.language"));
   if (languageSetting != NULL)
     language = languageSetting->GetDefault();

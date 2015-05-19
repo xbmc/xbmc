@@ -1,0 +1,281 @@
+# Kodi Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon Provider: Jezz_X, Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Armenian (Armenia) (http://www.transifex.com/projects/p/kodi-main/language/hy_AM/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hy_AM\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Ընթացքում է ..."
+
+msgctxt "#31008"
+msgid "Full screen"
+msgstr "Ամբողջ էկրանով"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Երաժշտական ֆայլեր"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Նվագարկում է"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Էջ"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Պիտույք"
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Տեղը"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Ինֆո"
+
+msgctxt "#31039"
+msgid "Actions"
+msgstr "Գործողություններ"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ՆՎԱԳԱՐԿԵԼ"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ԴԱԴԱՐ"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ԱՌԱՋ"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ՀԵՏԴԱՐՁ"
+
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr "ՓՆՏՐԵԼ"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Աճողական"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Նվազող"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Բացել նվագացանկը"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Հիշել նվագացանկը"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Փակել նվագացանկը"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Համակարգի երաժշտական ֆայլեր"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Ընթացիկ նվագացանկ"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Այս ֆայլը կտրատված է: Ընտրեք հատված՝ նվագարկելու համար:"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Հիմնական էկրանի տարբերակներ"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Ֆոն"
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr "Այլ տարբերակներ"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Ֆոնի տեղակայում."
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Թաքցնել"
+
+msgctxt "#31112"
+msgid "Options"
+msgstr "Տարբերակներ"
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Նվագարկել TV թեմայի երգերը տեսադարանում (TvTunes add-on)"
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr "TV-Որոնում"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Երգի բառեր"
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr "Երգերի OSD"
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr "Տեսանյութի OSD"
+
+msgctxt "#31142"
+msgid "Settings level"
+msgstr "Կարգավորումների խորություն"
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr "Հղումներ"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Գտնվեց"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Տվյալների մատակարար"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Եթերում է"
+
+msgctxt "#31326"
+msgid "Created"
+msgstr "Ստեղծված"
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr "Թույլատվություն"
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Ժամանակացույցը մեկնարկվեց![/B] [COLOR=grey2] - Համակարգը ավտոմատ կանջատվի[/COLOR]"
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Դադար"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Կանգ"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Հետդարձ"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr "Ֆիլմերի ցանկ"
+
+msgctxt "#31360"
+msgid "Watch as 2D"
+msgstr "Դիտել որպես 2D"
+
+msgctxt "#31361"
+msgid "Change mode"
+msgstr "Փոխել ռեժիմը"
+
+msgctxt "#31362"
+msgid "Enabled"
+msgstr "Միացված"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Հիմնական տեսք"
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Arial-հիմքով"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]ՁԵՎԱՎՈՐՄԱՆ ԿԱՐԳԱՎՈՐՈՒՄՆԵՐ[/B][CR][CR]Փոխել տեսքը · Ընտրել լեզուն և տեղայնքը · Փոխել ֆայլերի թերթման հատկությունները[CR]Ընտրել դադարի էկրան"
+
+msgctxt "#31420"
+msgid "Login"
+msgstr "Մուտք"
+
+msgctxt "#31422"
+msgid "Show or hide the login screen at startup."
+msgstr "Միանալու ժամանակ ցուցադրել կամ թաքցնել մուտքի պատուհանը"
+
+msgctxt "#31423"
+msgid "Select the profile that will be used at startup when the login screen is disabled."
+msgstr "Եթե թաքցված է մուտքի պատուհանը, նշել այն պրոֆիլը, որը կկիրառվի միանալիս"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Հասանելի[CR]խումբ"
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr "Տեսություն"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Եղանակի տեսություն"
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr "ԵՂԱՆԱԿ"
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr "ՆԿԱՐՆԵՐ"
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr "ՏԵՍԱՆՅՈՒԹ"
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr "ՖԻԼՄԵՐ"
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr "TV ԾՐԱԳՐԵՐ"
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr "ԵՐԳ-ԵՐԱԺՇՏՈՒԹՅՈՒՆ"
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr "ԾՐԱԳՐԵՐ"
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr "ՆՎԱԳԱՐԿԵԼ"
+
+msgctxt "#31959"
+msgid "SYSTEM"
+msgstr "ՀԱՄԱԿԱՐԳ"

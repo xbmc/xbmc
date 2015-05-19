@@ -59,6 +59,8 @@ public:
    */
   void SetProgressIndicators(CGUIDialogProgressBarHandle* progressBar, CGUIDialogProgress* progressDialog, bool updateProgress = true, bool updateInformation = true);
 
+  bool HasProgressIndicator() const;
+
 protected:
   CProgressJob();
   CProgressJob(CGUIDialogProgressBarHandle* progressBar);

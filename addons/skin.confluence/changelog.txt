@@ -1,3 +1,7 @@
+[B]2.7.1[/B]
+
+- Updated language files from Transifex
+
 [B]2.7.0[/B]
 
 - Removed new/edit/delete buttons from the channel manager dialog

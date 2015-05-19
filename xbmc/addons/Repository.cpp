@@ -18,6 +18,7 @@
  *
  */
 
+#include <iterator>
 #include "Repository.h"
 #include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
@@ -225,8 +226,6 @@ bool CRepositoryUpdateJob::DoWork()
   map<string, AddonPtr> addons;
   for (VECADDONS::const_iterator i = m_repos.begin(); i != m_repos.end(); ++i)
   {
-    if (ShouldCancel(0, 0))
-      return false;
     const RepositoryPtr repo = std::dynamic_pointer_cast<CRepository>(*i);
     VECADDONS newAddons;
     if (GrabAddons(repo, newAddons))
@@ -305,6 +304,7 @@ bool CRepositoryUpdateJob::DoWork()
   }
   database.CommitMultipleExecute();
   textureDB.CommitMultipleExecute();
+  MarkFinished();
   if (!notifications.empty() && CSettings::Get().GetBool("general.addonnotifications"))
   {
     if (notifications.size() == 1)
@@ -322,6 +322,12 @@ bool CRepositoryUpdateJob::DoWork()
 
 bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addons)
 {
+  SetText(StringUtils::Format(g_localizeStrings.Get(24093).c_str(), repo->Name().c_str()));
+  const unsigned int total = repo->m_dirs.size() * 2;
+
+  if (ShouldCancel(0, total))
+    return false;
+
   CAddonDatabase database;
   database.Open();
   string oldReposum;
@@ -331,7 +337,7 @@ bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addo
   string reposum;
   for (CRepository::DirList::const_iterator it  = repo->m_dirs.begin(); it != repo->m_dirs.end(); ++it)
   {
-    if (ShouldCancel(0, 0))
+    if (ShouldCancel(std::distance(repo->m_dirs.cbegin(), it), total))
       return false;
     if (!it->checksum.empty())
     {
@@ -350,7 +356,7 @@ bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addo
     map<string, AddonPtr> uniqueAddons;
     for (CRepository::DirList::const_iterator it = repo->m_dirs.begin(); it != repo->m_dirs.end(); ++it)
     {
-      if (ShouldCancel(0, 0))
+      if (ShouldCancel(repo->m_dirs.size() + std::distance(repo->m_dirs.cbegin(), it), total))
         return false;
       VECADDONS addons;
       if (!CRepository::Parse(*it, addons))
@@ -382,6 +388,7 @@ bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addo
     database.GetRepository(repo->ID(), addons);
     database.SetRepoTimestamp(repo->ID(), CDateTime::GetCurrentDateTime().GetAsDBDateTime(), repo->Version());
   }
+  SetProgress(total, total);
   return true;
 }
 
