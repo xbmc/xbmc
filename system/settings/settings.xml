@@ -463,6 +463,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.hiderecentlywatchedvideos" type="boolean" label="20470" help="36436">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2">
         <setting id="videolibrary.updateonstartup" type="boolean" label="22000" help="36146">
