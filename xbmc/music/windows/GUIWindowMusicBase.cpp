@@ -227,6 +227,12 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_NOTIFY_ALL:
+    {
+      if (message.GetParam1()==GUI_MSG_REMOVED_MEDIA)
+        CUtil::DeleteDirectoryCache("r-");
+    }
+    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }

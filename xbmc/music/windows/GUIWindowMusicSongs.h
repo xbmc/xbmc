@@ -47,7 +47,5 @@ protected:
   // new method
   virtual void PlayItem(int iItem);
 
-  void DeleteRemoveableMediaDirectoryCache();
-
   CMusicThumbLoader m_thumbLoader;
 };
