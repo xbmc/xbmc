@@ -72,6 +72,7 @@ using namespace MUSIC_INFO;
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4
 #define CONTROL_BTNTYPE         5
+#define CONTROL_BTNRIP          11
 
 CGUIWindowMusicBase::CGUIWindowMusicBase(int id, const std::string &xmlFile)
     : CGUIMediaWindow(id, xmlFile.c_str())
@@ -175,6 +176,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         g_windowManager.SendMessage(msg2);
 
         return true;
+      }
+      else if (iControl == CONTROL_BTNRIP)
+      {
+        OnRipCD();
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
@@ -718,6 +723,8 @@ void CGUIWindowMusicBase::UpdateButtons()
 
   // Select the current window as default item
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, CSettings::GetInstance().GetInt(CSettings::SETTING_MYMUSIC_STARTWINDOW) - WINDOW_MUSIC_FILES);
+
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNRIP, g_mediaManager.IsAudio());
 
   CGUIMediaWindow::UpdateButtons();
 }
