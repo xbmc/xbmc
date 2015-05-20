@@ -872,6 +872,16 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
+#ifdef HAS_DVD_DRIVE
+      // enable Rip CD Audio or Track button if we have an audio disc
+      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA())
+      {
+        // those cds can also include Audio Tracks: CDExtra and MixedMode!
+        MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
+        if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
+          buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
+      }
+#endif
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -979,6 +989,10 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CCDDARipper::GetInstance().CancelJobs();
     return true;
 #endif
+
+  case CONTEXT_BUTTON_RIP_TRACK:
+    OnRipTrack(itemNumber);
+    return true;
 
   case CONTEXT_BUTTON_SCAN:
     OnScan(itemNumber);
