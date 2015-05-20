@@ -46,8 +46,6 @@
 #define CONTROL_BTNTYPE            5
 #define CONTROL_LABELFILES        12
 
-#define CONTROL_BTNREC            10
-
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
 #endif
@@ -87,18 +85,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
 
-      if (iControl == CONTROL_BTNREC)
-      {
-        if (g_application.m_pPlayer->IsPlayingAudio() )
-        {
-          if (g_application.m_pPlayer->CanRecord() )
-          {
-            bool bIsRecording = g_application.m_pPlayer->IsRecording();
-            g_application.m_pPlayer->Record(!bIsRecording);
-            UpdateButtons();
-          }
-        }
-      }
     }
     break;
   }
@@ -145,35 +131,6 @@ void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
 void CGUIWindowMusicSongs::UpdateButtons()
 {
   CGUIWindowMusicBase::UpdateButtons();
-
-  bool bIsPlaying = g_application.m_pPlayer->IsPlayingAudio();
-  bool bCanRecord = false;
-  bool bIsRecording = false;
-
-  if (bIsPlaying)
-  {
-    bCanRecord = g_application.m_pPlayer->CanRecord();
-    bIsRecording = g_application.m_pPlayer->IsRecording();
-  }
-
-  // Update Record button
-  if (bIsPlaying && bCanRecord)
-  {
-    CONTROL_ENABLE(CONTROL_BTNREC);
-    if (bIsRecording)
-    {
-      SET_CONTROL_LABEL(CONTROL_BTNREC, 265); //Stop Recording
-    }
-    else
-    {
-      SET_CONTROL_LABEL(CONTROL_BTNREC, 264); //Record
-    }
-  }
-  else
-  {
-    SET_CONTROL_LABEL(CONTROL_BTNREC, 264); //Record
-    CONTROL_DISABLE(CONTROL_BTNREC);
-  }
 
   // Update object count label
   std::string items = StringUtils::Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
