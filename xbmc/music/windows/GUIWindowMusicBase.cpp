@@ -78,6 +78,7 @@ CGUIWindowMusicBase::CGUIWindowMusicBase(int id, const std::string &xmlFile)
     : CGUIMediaWindow(id, xmlFile.c_str())
 {
   m_dlgProgress = NULL;
+  m_thumbLoader.SetObserver(this);
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
@@ -124,6 +125,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
       m_musicdatabase.Close();
     }
     break;

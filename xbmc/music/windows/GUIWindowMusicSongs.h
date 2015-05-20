@@ -22,7 +22,7 @@
 #include "GUIWindowMusicBase.h"
 #include "music/MusicThumbLoader.h"
 
-class CGUIWindowMusicSongs : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
+class CGUIWindowMusicSongs : public CGUIWindowMusicBase
 {
 public:
   CGUIWindowMusicSongs(void);
@@ -32,7 +32,6 @@ public:
   virtual bool OnAction(const CAction& action);
 
 protected:
-  virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
   virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
@@ -44,6 +43,4 @@ protected:
 
   // new method
   virtual void PlayItem(int iItem);
-
-  CMusicThumbLoader m_thumbLoader;
 };

@@ -37,7 +37,7 @@
  CGUIWindowMusicBase is the base class for
  all music windows.
  */
-class CGUIWindowMusicBase : public CGUIMediaWindow
+class CGUIWindowMusicBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
 public:
   CGUIWindowMusicBase(int id, const std::string &xmlFile);
@@ -68,6 +68,7 @@ protected:
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
   void OnRipCD();
   virtual std::string GetStartFolder(const std::string &dir);
+  virtual void OnItemLoaded(CFileItem* pItem) {}
 
   virtual void OnScan(int iItem);
 
@@ -102,4 +103,6 @@ protected:
   bool m_hideExtensions;
   CMusicDatabase m_musicdatabase;
   MUSIC_INFO::CMusicInfoLoader m_musicInfoLoader;
+
+  CMusicThumbLoader m_thumbLoader;
 };

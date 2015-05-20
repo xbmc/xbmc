@@ -24,7 +24,7 @@
 
 class CFileItemList;
 
-class CGUIWindowMusicPlaylistEditor : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
+class CGUIWindowMusicPlaylistEditor : public CGUIWindowMusicBase
 {
 public:
   CGUIWindowMusicPlaylistEditor(void);
@@ -34,7 +34,6 @@ public:
   virtual bool OnBack(int actionID);
 
 protected:
-  virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
   virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true);
@@ -61,7 +60,6 @@ protected:
 
   void DeleteRemoveableMediaDirectoryCache();
 
-  CMusicThumbLoader m_thumbLoader;
   CMusicThumbLoader m_playlistThumbLoader;
 
   CFileItemList* m_playlist;
