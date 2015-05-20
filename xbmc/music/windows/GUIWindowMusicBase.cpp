@@ -298,6 +298,15 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
     }
   }
 
+  if (action.GetID() == ACTION_SCAN_ITEM)
+  {
+    int item = m_viewControl.GetSelectedItem();
+    if (item > -1 && m_vecItems->Get(item)->m_bIsFolder)
+      OnScan(item);
+
+    return true;
+  }
+
   return CGUIMediaWindow::OnAction(action);
 }
 

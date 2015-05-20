@@ -204,9 +204,10 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
     if (item > -1 && m_vecItems->Get(item)->m_bIsFolder
                   && (dir.HasAlbumInfo(m_vecItems->Get(item)->GetPath())||
                       dir.IsArtistDir(m_vecItems->Get(item)->GetPath())))
+    {
       OnContextButton(item,CONTEXT_BUTTON_INFO);
-
-    return true;
+      return true;
+    }
   }
 
   return CGUIWindowMusicBase::OnAction(action);
