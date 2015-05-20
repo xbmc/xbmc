@@ -75,6 +75,7 @@ using namespace MUSIC_INFO;
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4
 #define CONTROL_BTNTYPE         5
+#define CONTROL_BTNPLAYLISTS    7
 #define CONTROL_BTNRIP          11
 
 CGUIWindowMusicBase::CGUIWindowMusicBase(int id, const std::string &xmlFile)
@@ -200,6 +201,11 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNRIP)
       {
         OnRipCD();
+      }
+      else if (iControl == CONTROL_BTNPLAYLISTS)
+      {
+        if (!m_vecItems->IsPath("special://musicplaylists/"))
+          Update("special://musicplaylists/");
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
