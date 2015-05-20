@@ -72,10 +72,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_WINDOW_DEINIT:
-    if (m_thumbLoader.IsLoading())
-      m_thumbLoader.StopThread();
-    break;
   case GUI_MSG_WINDOW_INIT:
     {
       // removed the start window check from files view
