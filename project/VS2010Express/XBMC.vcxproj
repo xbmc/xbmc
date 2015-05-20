@@ -667,7 +667,6 @@
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicNav.cpp" />
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicPlaylist.cpp" />
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicPlaylistEditor.cpp" />
-    <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicSongs.cpp" />
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowVisualisation.cpp" />
     <ClCompile Include="..\..\xbmc\network\AirPlayServer.cpp" />
     <ClCompile Include="..\..\xbmc\network\AirTunesServer.cpp" />
@@ -1986,7 +1985,6 @@
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowMusicNav.h" />
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowMusicPlaylist.h" />
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowMusicPlaylistEditor.h" />
-    <ClInclude Include="..\..\xbmc\music\windows\GUIWindowMusicSongs.h" />
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowVisualisation.h" />
     <ClInclude Include="..\..\xbmc\network\AirPlayServer.h" />
     <ClInclude Include="..\..\xbmc\network\cddb.h" />
