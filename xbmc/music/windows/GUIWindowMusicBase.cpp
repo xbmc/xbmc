@@ -50,6 +50,7 @@
 #include "storage/MediaManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -1279,6 +1280,13 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
   }
+
+  // check for .CUE files here.
+  items.FilterCueItems();
+
+  std::string label;
+  if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("music"), &label))
+    items.SetLabel(label);
 
   return bResult;
 }
