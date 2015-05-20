@@ -38,7 +38,6 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnRemoveSource(int iItem);
   virtual std::string GetStartFolder(const std::string &dir);
 
   // new method

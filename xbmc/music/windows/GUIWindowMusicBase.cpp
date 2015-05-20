@@ -1273,3 +1273,17 @@ void CGUIWindowMusicBase::DoScan(const std::string &strPath)
   SET_CONTROL_FOCUS(iControl, 0);
   UpdateButtons();
 }
+
+void CGUIWindowMusicBase::OnRemoveSource(int iItem)
+{
+  bool bCanceled;
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{522}, CVariant{20340}, bCanceled, CVariant{""}, CVariant{""}, CGUIDialogYesNo::NO_TIMEOUT))
+  {
+    MAPSONGS songs;
+    CMusicDatabase database;
+    database.Open();
+    database.RemoveSongsFromPath(m_vecItems->Get(iItem)->GetPath(), songs, false);
+    database.CleanupOrphanedItems();
+    g_infoManager.ResetLibraryBools();
+  }
+}
