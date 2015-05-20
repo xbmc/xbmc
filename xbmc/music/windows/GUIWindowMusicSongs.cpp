@@ -164,13 +164,6 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         }
       }
 
-      // enable CDDB lookup if the current dir is CDDA
-      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
-         (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-        buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
-      }
-
       if (!item->IsParentFolder() && !item->IsReadOnly())
       {
         // either we're at the playlist location or its been explicitly allowed
@@ -211,11 +204,6 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   switch (button)
   {
-  case CONTEXT_BUTTON_CDDB:
-    if (m_musicdatabase.LookupCDDBInfo(true))
-      Refresh();
-    return true;
-
   case CONTEXT_BUTTON_DELETE:
     OnDeleteItem(itemNumber);
     return true;

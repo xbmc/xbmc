@@ -883,6 +883,13 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
 #endif
     }
+
+    // enable CDDB lookup if the current dir is CDDA
+    if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
+       (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+    {
+      buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
+    }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 }
@@ -996,6 +1003,11 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_SCAN:
     OnScan(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_CDDB:
+    if (m_musicdatabase.LookupCDDBInfo(true))
+      Refresh();
     return true;
 
   default:
