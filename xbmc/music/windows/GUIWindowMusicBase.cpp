@@ -154,6 +154,20 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+  case GUI_MSG_DIRECTORY_SCANNED:
+    {
+      CFileItem directory(message.GetStringParam(), true);
+
+      // Only update thumb on a local drive
+      if (directory.IsHD())
+      {
+        std::string strParent;
+        URIUtils::GetParentPath(directory.GetPath(), strParent);
+        if (directory.GetPath() == m_vecItems->GetPath() || strParent == m_vecItems->GetPath())
+          Refresh();
+      }
+    }
+    break;
 
   // update the display
   case GUI_MSG_SCAN_FINISHED:
