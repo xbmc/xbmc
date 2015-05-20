@@ -1468,14 +1468,15 @@ void CWinSystemX11::UpdateCrtc()
 {
   XWindowAttributes winattr;
   int posx, posy;
-  float fps;
+  float fps = 0.0f;
   Window child;
   XGetWindowAttributes(m_dpy, m_mainWindow, &winattr);
   XTranslateCoordinates(m_dpy, m_mainWindow, RootWindow(m_dpy, m_nScreen), winattr.x, winattr.y,
                         &posx, &posy, &child);
 
   m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2, fps);
-  g_graphicsContext.SetFPS(fps);
+  if (fps)
+    g_graphicsContext.SetFPS(fps);
 }
 
 #endif
