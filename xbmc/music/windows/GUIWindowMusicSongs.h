@@ -39,7 +39,4 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual std::string GetStartFolder(const std::string &dir);
-
-  // new method
-  virtual void PlayItem(int iItem);
 };

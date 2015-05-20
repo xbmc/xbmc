@@ -421,7 +421,7 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
   // and cleared!
 
   // root is not allowed
-  if (m_vecItems->IsVirtualDirectoryRoot())
+  if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
     return;
 
   CGUIWindowMusicBase::PlayItem(iItem);
