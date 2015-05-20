@@ -164,17 +164,6 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         }
       }
 
-#ifdef HAS_DVD_DRIVE
-      // enable Rip CD Audio or Track button if we have an audio disc
-      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA())
-      {
-        // those cds can also include Audio Tracks: CDExtra and MixedMode!
-        CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
-        if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
-          buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
-      }
-#endif
-
       // enable CDDB lookup if the current dir is CDDA
       if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
          (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
@@ -222,10 +211,6 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   switch (button)
   {
-  case CONTEXT_BUTTON_RIP_TRACK:
-    OnRipTrack(itemNumber);
-    return true;
-
   case CONTEXT_BUTTON_CDDB:
     if (m_musicdatabase.LookupCDDBInfo(true))
       Refresh();
