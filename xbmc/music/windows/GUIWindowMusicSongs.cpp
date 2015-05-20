@@ -46,7 +46,6 @@
 #define CONTROL_BTNTYPE            5
 #define CONTROL_LABELFILES        12
 
-#define CONTROL_BTNPLAYLISTS       7
 #define CONTROL_BTNSCAN            9
 #define CONTROL_BTNREC            10
 
@@ -89,12 +88,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
 
-      if (iControl == CONTROL_BTNPLAYLISTS)
-      {
-        if (!m_vecItems->IsPath("special://musicplaylists/"))
-          Update("special://musicplaylists/");
-      }
-      else if (iControl == CONTROL_BTNSCAN)
+      if (iControl == CONTROL_BTNSCAN)
       {
         OnScan(-1);
       }
