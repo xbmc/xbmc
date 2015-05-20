@@ -150,38 +150,6 @@ bool CGUIWindowMusicSongs::OnAction(const CAction& action)
   return CGUIWindowMusicBase::OnAction(action);
 }
 
-void CGUIWindowMusicSongs::OnScan(int iItem)
-{
-  std::string strPath;
-  if (iItem < 0 || iItem >= m_vecItems->Size())
-    strPath = m_vecItems->GetPath();
-  else if (m_vecItems->Get(iItem)->m_bIsFolder)
-    strPath = m_vecItems->Get(iItem)->GetPath();
-  else
-  { // TODO: MUSICDB - should we allow scanning a single item into the database?
-    //       This will require changes to the info scanner, which assumes we're running on a folder
-    strPath = m_vecItems->GetPath();
-  }
-  DoScan(strPath);
-}
-
-void CGUIWindowMusicSongs::DoScan(const std::string &strPath)
-{
-  if (g_application.IsMusicScanning())
-  {
-    g_application.StopMusicScan();
-    return;
-  }
-
-  // Start background loader
-  int iControl=GetFocusedControlID();
-  g_application.StartMusicScan(strPath);
-  SET_CONTROL_FOCUS(iControl, 0);
-  UpdateButtons();
-
-  return;
-}
-
 bool CGUIWindowMusicSongs::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   if (!CGUIWindowMusicBase::GetDirectory(strDirectory, items))
