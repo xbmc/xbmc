@@ -77,6 +77,7 @@ using namespace MUSIC_INFO;
 #define CONTROL_BTNTYPE         5
 #define CONTROL_BTNPLAYLISTS    7
 #define CONTROL_BTNSCAN         9
+#define CONTROL_BTNREC          10
 #define CONTROL_BTNRIP          11
 
 CGUIWindowMusicBase::CGUIWindowMusicBase(int id, const std::string &xmlFile)
@@ -211,6 +212,18 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNSCAN)
       {
         OnScan(-1);
+      }
+      else if (iControl == CONTROL_BTNREC)
+      {
+        if (g_application.m_pPlayer->IsPlayingAudio() )
+        {
+          if (g_application.m_pPlayer->CanRecord() )
+          {
+            bool bIsRecording = g_application.m_pPlayer->IsRecording();
+            g_application.m_pPlayer->Record(!bIsRecording);
+            UpdateButtons();
+          }
+        }
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
@@ -765,6 +778,35 @@ void CGUIWindowMusicBase::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
   else
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 102); // Scan
+
+  bool bIsPlaying = g_application.m_pPlayer->IsPlayingAudio();
+  bool bCanRecord = false;
+  bool bIsRecording = false;
+
+  if (bIsPlaying)
+  {
+    bCanRecord = g_application.m_pPlayer->CanRecord();
+    bIsRecording = g_application.m_pPlayer->IsRecording();
+  }
+
+  // Update Record button
+  if (bIsPlaying && bCanRecord)
+  {
+    CONTROL_ENABLE(CONTROL_BTNREC);
+    if (bIsRecording)
+    {
+      SET_CONTROL_LABEL(CONTROL_BTNREC, 265); //Stop Recording
+    }
+    else
+    {
+      SET_CONTROL_LABEL(CONTROL_BTNREC, 264); //Record
+    }
+  }
+  else
+  {
+    SET_CONTROL_LABEL(CONTROL_BTNREC, 264); //Record
+    CONTROL_DISABLE(CONTROL_BTNREC);
+  }
 
   CGUIMediaWindow::UpdateButtons();
 }
