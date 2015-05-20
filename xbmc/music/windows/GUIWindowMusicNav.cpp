@@ -281,6 +281,9 @@ bool CGUIWindowMusicNav::Update(const std::string &strDirectory, bool updateFilt
 
   if (CGUIWindowMusicBase::Update(strDirectory, updateFilterPath))
   {
+    if (m_vecItems->GetContent().empty())
+      m_vecItems->SetContent("files");
+
     m_thumbLoader.Load(*m_unfilteredItems);
     return true;
   }
