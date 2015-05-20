@@ -95,6 +95,7 @@ protected:
   void OnRipTrack(int iItem);
   void OnSearch();
   virtual void LoadPlayList(const std::string& strPlayList);
+  virtual void OnRemoveSource(int iItem);
 
   typedef std::vector <CFileItem*>::iterator ivecItems; ///< CFileItem* vector Iterator
   CGUIDialogProgress* m_dlgProgress; ///< Progress dialog
