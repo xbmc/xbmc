@@ -105,13 +105,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_NOTIFY_ALL:
-    {
-      if (message.GetParam1()==GUI_MSG_REMOVED_MEDIA)
-        DeleteRemoveableMediaDirectoryCache();
-    }
-    break;
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -438,11 +431,6 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     break;
   }
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
-}
-
-void CGUIWindowMusicSongs::DeleteRemoveableMediaDirectoryCache()
-{
-  CUtil::DeleteDirectoryCache("r-");
 }
 
 void CGUIWindowMusicSongs::PlayItem(int iItem)
