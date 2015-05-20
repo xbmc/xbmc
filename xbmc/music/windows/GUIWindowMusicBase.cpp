@@ -860,6 +860,18 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         else if (item->IsPlayList() || m_vecItems->IsPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
+      // Add the scan button(s)
+      if (g_application.IsMusicScanning())
+        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
+      else if (!m_vecItems->IsMusicDb() && !m_vecItems->IsInternetStream()           &&
+          !item->IsPath("add") && !item->IsParentFolder() &&
+          !item->IsPlugin() && !item->IsMusicDb()         &&
+          !item->IsLibraryFolder() &&
+          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
+          (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+      {
+        buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
+      }
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -967,6 +979,10 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CCDDARipper::GetInstance().CancelJobs();
     return true;
 #endif
+
+  case CONTEXT_BUTTON_SCAN:
+    OnScan(itemNumber);
+    return true;
 
   default:
     break;
