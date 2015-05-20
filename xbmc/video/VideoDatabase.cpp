@@ -638,7 +638,7 @@ bool CVideoDatabase::GetPathsForTvShow(int idShow, set<int>& paths)
     if (NULL == m_pDS.get()) return false;
 
     // add base path
-    strSQL = PrepareSQL("SELECT strPath FROM tvshow_view WHERE idShow=%i", idShow);
+    strSQL = PrepareSQL("SELECT strPath FROM tvshowview WHERE idShow=%i", idShow);
     if (m_pDS->query(strSQL.c_str()))
       paths.insert(GetPathId(m_pDS->fv(0).get_asString()));
 
