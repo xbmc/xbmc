@@ -65,6 +65,7 @@ protected:
 
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
+  virtual void OnPrepareFileItems(CFileItemList &items);
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
   void OnRipCD();
   virtual std::string GetStartFolder(const std::string &dir);
