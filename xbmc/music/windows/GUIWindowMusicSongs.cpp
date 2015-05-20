@@ -105,13 +105,6 @@ bool CGUIWindowMusicSongs::GetDirectory(const std::string &strDirectory, CFileIt
   return true;
 }
 
-void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
-{
-  CGUIWindowMusicBase::OnPrepareFileItems(items);
-
-  RetrieveMusicInfo();
-}
-
 void CGUIWindowMusicSongs::UpdateButtons()
 {
   CGUIWindowMusicBase::UpdateButtons();
