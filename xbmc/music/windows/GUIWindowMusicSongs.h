@@ -31,7 +31,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
 
-  void DoScan(const std::string &strPath);
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
@@ -40,7 +39,6 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnScan(int iItem);
   virtual void OnRemoveSource(int iItem);
   virtual std::string GetStartFolder(const std::string &dir);
 
