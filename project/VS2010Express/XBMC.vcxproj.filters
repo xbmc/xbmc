@@ -1225,9 +1225,6 @@
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicPlaylistEditor.cpp">
       <Filter>music\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\windows\GUIWindowMusicSongs.cpp">
-      <Filter>music\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\windows\GUIWindowVisualisation.cpp">
       <Filter>music\windows</Filter>
     </ClCompile>
@@ -4256,9 +4253,6 @@
       <Filter>music\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowMusicPlaylistEditor.h">
-      <Filter>music\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\windows\GUIWindowMusicSongs.h">
       <Filter>music\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\windows\GUIWindowVisualisation.h">
