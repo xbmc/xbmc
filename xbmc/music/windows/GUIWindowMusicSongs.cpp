@@ -222,10 +222,6 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   switch (button)
   {
-  case CONTEXT_BUTTON_SCAN:
-    OnScan(itemNumber);
-    return true;
-
   case CONTEXT_BUTTON_RIP_TRACK:
     OnRipTrack(itemNumber);
     return true;

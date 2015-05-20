@@ -473,6 +473,14 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 #endif
+      // Add the scan button(s)
+      if (g_application.IsMusicScanning())
+        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
+      else if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() ||
+               g_passwordManager.bMasterUser)
+      {
+        buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
+      }
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
     }
     else
