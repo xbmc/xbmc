@@ -382,24 +382,6 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }
 
-void CGUIWindowMusicSongs::PlayItem(int iItem)
-{
-  // unlike additemtoplaylist, we need to check the items here
-  // before calling it since the current playlist will be stopped
-  // and cleared!
-
-  // we're at the root source listing
-  if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
-    return;
-
-#ifdef HAS_DVD_DRIVE
-  if (m_vecItems->Get(iItem)->IsDVD())
-    MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
-  else
-#endif
-    CGUIWindowMusicBase::PlayItem(iItem);
-}
-
 bool CGUIWindowMusicSongs::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
