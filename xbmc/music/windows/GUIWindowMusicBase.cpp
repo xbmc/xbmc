@@ -76,6 +76,7 @@ using namespace MUSIC_INFO;
 #define CONTROL_BTNSORTASC      4
 #define CONTROL_BTNTYPE         5
 #define CONTROL_BTNPLAYLISTS    7
+#define CONTROL_BTNSCAN         9
 #define CONTROL_BTNRIP          11
 
 CGUIWindowMusicBase::CGUIWindowMusicBase(int id, const std::string &xmlFile)
@@ -206,6 +207,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       {
         if (!m_vecItems->IsPath("special://musicplaylists/"))
           Update("special://musicplaylists/");
+      }
+      else if (iControl == CONTROL_BTNSCAN)
+      {
+        OnScan(-1);
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
@@ -751,6 +756,15 @@ void CGUIWindowMusicBase::UpdateButtons()
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, CSettings::GetInstance().GetInt(CSettings::SETTING_MYMUSIC_STARTWINDOW) - WINDOW_MUSIC_FILES);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNRIP, g_mediaManager.IsAudio());
+
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNSCAN,
+                              !(m_vecItems->IsVirtualDirectoryRoot() ||
+                                m_vecItems->IsMusicDb()));
+
+  if (g_application.IsMusicScanning())
+    SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
+  else
+    SET_CONTROL_LABEL(CONTROL_BTNSCAN, 102); // Scan
 
   CGUIMediaWindow::UpdateButtons();
 }
