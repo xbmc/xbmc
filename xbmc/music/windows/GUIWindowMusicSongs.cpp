@@ -102,13 +102,6 @@ bool CGUIWindowMusicSongs::GetDirectory(const std::string &strDirectory, CFileIt
   if (!CGUIWindowMusicBase::GetDirectory(strDirectory, items))
     return false;
 
-  // check for .CUE files here.
-  items.FilterCueItems();
-
-  std::string label;
-  if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("music"), &label)) 
-    items.SetLabel(label);
-
   return true;
 }
 
