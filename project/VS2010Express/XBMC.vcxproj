@@ -1269,6 +1269,7 @@
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryJob.cpp" />
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryMarkWatchedJob.cpp" />
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryProgressJob.cpp" />
+    <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp" />
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryScanningJob.cpp" />
     <ClCompile Include="..\..\xbmc\video\PlayerController.cpp" />
     <ClCompile Include="..\..\xbmc\video\videosync\VideoSyncD3D.cpp" />
@@ -2109,6 +2110,7 @@
     <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryJob.h" />
     <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryMarkWatchedJob.h" />
     <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryProgressJob.h" />
+    <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.h" />
     <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryScanningJob.h" />
     <ClInclude Include="..\..\xbmc\video\PlayerController.h" />
     <ClInclude Include="..\..\xbmc\video\videosync\VideoSync.h" />
