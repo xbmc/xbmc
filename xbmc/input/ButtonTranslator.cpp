@@ -440,7 +440,6 @@ static const ActionMapping touchcommands[] =
 static const WindowMapping fallbackWindows[] =
 {
   { WINDOW_FULLSCREEN_LIVETV,          WINDOW_FULLSCREEN_VIDEO },
-  { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO },
   { WINDOW_FULLSCREEN_RADIO,           WINDOW_VISUALISATION    }
 };
 
