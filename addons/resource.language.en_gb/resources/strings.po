@@ -8080,7 +8080,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19108"
-msgid "Framerate {fallback}"
+msgid "Fallback framerate"
 msgstr ""
 
 msgctxt "#19109"
