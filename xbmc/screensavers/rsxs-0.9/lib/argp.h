@@ -559,7 +559,7 @@ extern void *__argp_input (const struct argp *__restrict __argp,
 # endif
 
 # ifndef ARGP_EI
-#  define ARGP_EI extern __inline__
+#  define ARGP_EI extern __inline__ __attribute__ ((gnu_inline)) 
 # endif
 
 ARGP_EI void
