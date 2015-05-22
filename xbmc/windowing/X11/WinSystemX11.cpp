@@ -1468,7 +1468,7 @@ void CWinSystemX11::UpdateCrtc()
 {
   XWindowAttributes winattr;
   int posx, posy;
-  float fps;
+  float fps = 0.0f;
   Window child;
   XGetWindowAttributes(m_dpy, m_mainWindow, &winattr);
   XTranslateCoordinates(m_dpy, m_mainWindow, RootWindow(m_dpy, m_nScreen), winattr.x, winattr.y,
