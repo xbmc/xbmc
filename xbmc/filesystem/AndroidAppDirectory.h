@@ -34,6 +34,7 @@ public:
   virtual bool GetDirectory(const CURL& url, CFileItemList &items);
   virtual bool Exists(const CURL& url) { return true; };
   virtual bool AllowAll() const { return true; };
+  virtual DIR_CACHE_TYPE GetCacheType(const std::string& strPath) const { return DIR_CACHE_NEVER; }
 };
 }
 #endif
