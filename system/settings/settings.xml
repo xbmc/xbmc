@@ -911,7 +911,7 @@
           <level>1</level>
           <default>28</default>
           <constraints>
-            <minimum>16</minimum>
+            <minimum>12</minimum>
             <step>2</step>
             <maximum>74</maximum>
           </constraints>
