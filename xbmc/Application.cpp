@@ -1368,16 +1368,31 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     // which in turn will reload the skin.  Similarly, if the current skin font is not
     // the default, reset it as well.
     if (settingId == "lookandfeel.skin" && CSettings::Get().GetString("lookandfeel.skintheme") != "SKINDEFAULT")
-      CSettings::Get().SetString("lookandfeel.skintheme", "SKINDEFAULT");
-    else if (settingId == "lookandfeel.skin" && CSettings::Get().GetString("lookandfeel.font") != "Default")
-      CSettings::Get().SetString("lookandfeel.font", "Default");
-    else
     {
-      std::string builtin("ReloadSkin");
-      if (settingId == "lookandfeel.skin" && !m_skinReverting)
-        builtin += "(confirm)";
-      CApplicationMessenger::Get().ExecBuiltIn(builtin);
+      CSettings::Get().SetString("lookandfeel.skintheme", "SKINDEFAULT");
+      return;
     }
+    if (settingId == "lookandfeel.skin" && CSettings::Get().GetString("lookandfeel.font") != "Default")
+    {
+      CSettings::Get().SetString("lookandfeel.font", "Default");
+      return;
+    }
+
+    // Reset sounds setting if new skin doen't provide sounds
+    if (settingId == "lookandfeel.skin" && CSettings::Get().GetString("lookandfeel.soundskin") == "SKINDEFAULT")
+    {
+      ADDON::AddonPtr addon;
+      if (CAddonMgr::Get().GetAddon(((CSettingString*)setting)->GetValue(), addon, ADDON_SKIN))
+      {
+        if (!CDirectory::Exists(URIUtils::AddFileToFolder(addon->Path(), "sounds")))
+          CSettings::Get().GetSetting("lookandfeel.soundskin")->Reset();
+      }
+    }
+
+    std::string builtin("ReloadSkin");
+    if (settingId == "lookandfeel.skin" && !m_skinReverting)
+      builtin += "(confirm)";
+    CApplicationMessenger::Get().ExecBuiltIn(builtin);
   }
   else if (settingId == "lookandfeel.skintheme")
   {

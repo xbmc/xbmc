@@ -7090,7 +7090,10 @@ msgctxt "#15105"
 msgid "* All genres"
 msgstr ""
 
-#empty string with id 15106
+#: xbmc/addons/Skin.cpp
+msgctxt "#15106"
+msgid "Skin built-in"
+msgstr ""
 
 msgctxt "#15107"
 msgid "Buffering..."
