@@ -193,6 +193,7 @@ const BUILT_IN commands[] = {
   { "ExportLibrary",              true,   "Export the video/music library" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
   { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
+  { "RefreshContainer",           true,   "Refresh list content of a container with given id"},
   { "Container.Refresh",          false,  "Refresh current listing" },
   { "Container.Update",           false,  "Update current listing. Send Container.Update(path,replace) to reset the path history" },
   { "Container.NextViewMode",     false,  "Move to the next view type (and refresh the listing)" },
@@ -1645,6 +1646,11 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "control.move" && params.size() > 1)
   {
     CGUIMessage message(GUI_MSG_MOVE_OFFSET, g_windowManager.GetFocusedWindow(), atoi(params[0].c_str()), atoi(params[1].c_str()));
+    g_windowManager.SendMessage(message);
+  }
+  else if (execute == "refreshcontainer")
+  {
+    CGUIMessage message(GUI_MSG_REFRESH_CONTAINER, g_windowManager.GetActiveWindow(), strtol(parameter.c_str(), NULL, 10));
     g_windowManager.SendMessage(message);
   }
   else if (execute == "container.refresh")
