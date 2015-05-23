@@ -5754,7 +5754,7 @@ msgid "Track naming template"
 msgstr ""
 
 msgctxt "#13308"
-msgid "Do you wish to reboot your system"
+msgid "Do you wish to reboot your system?"
 msgstr ""
 
 msgctxt "#13309"
@@ -15586,7 +15586,7 @@ msgstr ""
 #. Description of setting "System -> Audio output -> Output configuration" with label #337
 #: system/settings/settings.xml
 msgctxt "#36361"
-msgid "Select how the properties of the audio output are set: [Fixed] Output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] Output properties are set to always be as close a match to the source properties as possible; [Optimized] Output properties are set at the start of playback and will not change if the properties of the source changes."
+msgid "Select how the properties of the audio output are set: [Fixed] Output properties are set to the specified sampling rate & speaker configuration at all times; [Best Match] Output properties are set to always be as close a match to the source properties as possible; [Optimized] Output properties are set at the start of playback and will not change if the properties of the source change."
 msgstr ""
 
 #. Description of setting "System -> Audio output -> Number of channels" with label #34100
@@ -15794,7 +15794,7 @@ msgstr ""
 #. Description of setting "System -> Master lock -> Master lock code and settings" with label #20100
 #: system/settings/settings.xml
 msgctxt "#36396"
-msgid "Here you can enable or disable master lock and define the PIN code used to unlock it. You can also specify which areas of the application which would need a PIN to access them."
+msgid "Here you can enable or disable master lock and define the PIN code used to unlock it. You can also specify which areas of the application would need a PIN to access them."
 msgstr ""
 
 #. Description of setting "System -> Master lock -> Ask for master lock code on startup" with label #20076
