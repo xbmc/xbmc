@@ -30,6 +30,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/SlingboxLib/SlingboxLib.a \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
+                   xbmc/contrib/kissfft/kissfft.a \
                    xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
                    xbmc/cores/DllLoader/exports/exports.a \

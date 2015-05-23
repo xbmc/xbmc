@@ -200,6 +200,14 @@
     <ClCompile Include="..\..\xbmc\BackgroundInfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\CompileInfo.cpp" />
     <ClCompile Include="..\..\xbmc\ContextMenuManager.cpp" />
+    <ClCompile Include="..\..\xbmc\contrib\kissfft\kiss_fft.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\contrib\kissfft\kiss_fftr.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.cpp" />
@@ -826,6 +834,9 @@
     <ClInclude Include="..\..\xbmc\ApplicationPlayer.h" />
     <ClInclude Include="..\..\xbmc\AppParamParser.h" />
     <ClInclude Include="..\..\xbmc\CompileInfo.h" />
+    <ClInclude Include="..\..\xbmc\contrib\kissfft\kiss_fft.h" />
+    <ClInclude Include="..\..\xbmc\contrib\kissfft\kiss_fftr.h" />
+    <ClInclude Include="..\..\xbmc\contrib\kissfft\_kiss_fft_guts.h" />
     <ClInclude Include="..\..\xbmc\cores\DataCacheCore.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEResampleFactory.h" />
@@ -1024,6 +1035,7 @@
     <ClInclude Include="..\..\xbmc\utils\Locale.h" />
     <ClInclude Include="..\..\xbmc\utils\params_check_macros.h" />
     <ClInclude Include="..\..\xbmc\utils\ProgressJob.h" />
+    <ClInclude Include="..\..\xbmc\utils\rfft.h" />
     <ClInclude Include="..\..\xbmc\utils\RssManager.h" />
     <ClInclude Include="..\..\xbmc\utils\Speed.h" />
     <ClInclude Include="..\..\xbmc\utils\StringValidation.h" />
@@ -1147,6 +1159,7 @@
     <ClCompile Include="..\..\xbmc\utils\LegacyPathTranslation.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Locale.cpp" />
     <ClCompile Include="..\..\xbmc\utils\ProgressJob.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\rfft.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RssManager.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Speed.cpp" />
     <ClCompile Include="..\..\xbmc\utils\StringValidation.cpp" />
@@ -1158,6 +1171,10 @@
     <ClCompile Include="..\..\xbmc\utils\test\TestLocale.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\test\Testrfft.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestUrlOptions.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -1195,7 +1212,6 @@
     <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\EndianSwap.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Fanart.cpp" />
-    <ClCompile Include="..\..\xbmc\utils\fft.cpp" />
     <ClCompile Include="..\..\xbmc\utils\FileOperationJob.cpp" />
     <ClCompile Include="..\..\xbmc\utils\FileUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\fstrcmp.c">
@@ -1422,10 +1438,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\Testfastmemcpy.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\Testfft.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -2053,7 +2065,6 @@
     <ClInclude Include="..\..\xbmc\utils\DatabaseUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\EndianSwap.h" />
     <ClInclude Include="..\..\xbmc\utils\Fanart.h" />
-    <ClInclude Include="..\..\xbmc\utils\fft.h" />
     <ClInclude Include="..\..\xbmc\utils\FileOperationJob.h" />
     <ClInclude Include="..\..\xbmc\utils\FileUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\fstrcmp.h" />
