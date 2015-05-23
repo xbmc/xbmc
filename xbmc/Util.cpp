@@ -1754,7 +1754,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   CFileItemList items;
   vector<std::string> strLookInPaths;
 
-  int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO;
+  int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
 
   if (!strBasePath.empty())
     CDirectory::GetDirectory(strBasePath, items, g_advancedSettings.m_subtitlesExtensions, flags);
