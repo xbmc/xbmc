@@ -27,6 +27,10 @@
 #include "android/activity/XBMCApp.h"
 #include "utils/StringUtils.h"
 #include "android/jni/SystemProperties.h"
+#include "android/jni/Display.h"
+#include "android/jni/View.h"
+#include "android/jni/Window.h"
+#include "android/jni/WindowManager.h"
 
 CEGLNativeTypeAndroid::CEGLNativeTypeAndroid()
   : m_width(0), m_height(0)
@@ -105,6 +109,30 @@ bool CEGLNativeTypeAndroid::DestroyNativeWindow()
   return true;
 }
 
+static float currentRefreshRate()
+{
+  CJNIWindow window = CXBMCApp::getWindow();
+  if (window)
+  {
+    float preferredRate = window.getAttributes().getpreferredRefreshRate();
+    if (preferredRate > 1.0)
+    {
+      return preferredRate;
+    }
+    CJNIView view(window.getDecorView());
+    if (view) {
+      CJNIDisplay display(view.getDisplay());
+      if (display)
+      {
+        float reportedRate = display.getRefreshRate();
+        return reportedRate;
+      }
+    }
+  }
+  CLog::Log(LOGDEBUG, "found no refresh rate");
+  return 60.0;
+}
+
 bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
 {
   EGLNativeWindowType *nativeWindow = (EGLNativeWindowType*)CXBMCApp::GetNativeWindow(30000);
@@ -124,7 +152,7 @@ bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
     res->iHeight = m_height;
   }
 
-  res->fRefreshRate = 60;
+  res->fRefreshRate = currentRefreshRate();
   res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
   res->iScreen       = 0;
   res->bFullScreen   = true;
@@ -142,10 +170,10 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 {
   CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: SetNativeResolution: %dx%d", m_width, m_height);
   if (m_width && m_height)
-  {
-    if (!CXBMCApp::SetBuffersGeometry(m_width, m_height, 0))
-      return false;
-  }
+    CXBMCApp::SetBuffersGeometry(m_width, m_height, 0);
+
+  if (abs(currentRefreshRate() - res.fRefreshRate) > 0.0001)
+    CXBMCApp::SetRefreshRate(res.fRefreshRate);
 
   return true;
 }
@@ -156,7 +184,34 @@ bool CEGLNativeTypeAndroid::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
   bool ret = GetNativeResolution(&res);
   if (ret && res.iWidth > 1 && res.iHeight > 1)
   {
-    resolutions.push_back(res);
+    std::vector<float> refreshRates;
+    CJNIWindow window = CXBMCApp::getWindow();
+    if (window)
+    {
+      CJNIView view = window.getDecorView();
+      if (view)
+      {
+        CJNIDisplay display = view.getDisplay();
+        if (display)
+        {
+          refreshRates = display.getSupportedRefreshRates();
+        }
+      }
+    }
+
+    if (refreshRates.size())
+    {
+      for (unsigned int i = 0; i < refreshRates.size(); i++)
+      {
+        res.fRefreshRate = refreshRates[i];
+        resolutions.push_back(res);
+      }
+    }
+    else
+    {
+      /* No refresh rate list available, just provide the current one */
+      resolutions.push_back(res);
+    }
     return true;
   }
   return false;

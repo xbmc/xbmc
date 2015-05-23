@@ -37,6 +37,7 @@
 // forward delares
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
+class CVariant;
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -105,6 +106,7 @@ public:
   static float GetSystemVolume();
   static void SetSystemVolume(float percent);
 
+  static void SetRefreshRate(float rate);
   static int GetDPI();
 protected:
   // limit who can access Volume
@@ -118,6 +120,7 @@ private:
   void run();
   void stop();
   void SetupEnv();
+  static void SetRefreshRateCallback(CVariant *rate);
   static ANativeActivity *m_activity;
   static CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;

@@ -109,4 +109,18 @@ public class Main extends NativeActivity
     getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     super.onDestroy();
   }
+
+  private native void _callNative(long funcAddr, long variantAddr);
+
+  private void runNativeOnUiThread(final long funcAddr, final long variantAddr)
+  {
+    runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        _callNative(funcAddr, variantAddr);
+      }
+    });
+  }
 }

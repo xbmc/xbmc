@@ -22,6 +22,7 @@
 #include "JNIBase.h"
 #include "Context.h"
 
+class CVariant;
 struct ANativeActivity;
 
 class CJNIActivity : public CJNIContext
@@ -48,6 +49,9 @@ public:
 
   static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
   static void _onVolumeChanged(JNIEnv *env, jobject context, jint volume);
+
+  static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
+  static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
 
 private:
   static CJNIApplicationMainActivity *m_appInstance;
