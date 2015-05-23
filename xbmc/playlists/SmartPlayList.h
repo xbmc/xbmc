@@ -27,6 +27,7 @@
 #include "dbwrappers/DatabaseQuery.h"
 #include "utils/SortUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "video/VideoDimensions.h"
 
 class CURL;
 class CVariant;
@@ -76,6 +77,7 @@ protected:
 
 private:
   std::string GetVideoResolutionQuery(const std::string &parameter) const;
+  std::string GetVideoDimensionsQuery(SResolutionBoundaries &boundaries) const;
   static std::string FormatLinkQuery(const char *field, const char *table, const MediaType& mediaType, const std::string& mediaField, const std::string& parameter);
 };
 

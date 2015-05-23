@@ -84,6 +84,7 @@
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDimensions.h"
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
@@ -1662,7 +1663,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_VIDEO_RESOLUTION:
     if(g_application.m_pPlayer->IsPlaying())
     {
-      return CStreamDetails::VideoDimsToResolutionDescription(m_videoInfo.width, m_videoInfo.height);
+      CVideoDimensions dimensions(m_videoInfo.width, m_videoInfo.height);
+      return dimensions.GetQuality();
     }
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
@@ -5067,7 +5069,13 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_VIDEO_RESOLUTION:
     if (item->HasVideoInfoTag())
-      return CStreamDetails::VideoDimsToResolutionDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth(), item->GetVideoInfoTag()->m_streamDetails.GetVideoHeight());
+    {
+      CVideoDimensions dimensions(
+        item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth(),
+        item->GetVideoInfoTag()->m_streamDetails.GetVideoHeight());
+
+      return dimensions.GetQuality();
+    }
     break;
   case LISTITEM_VIDEO_ASPECT:
     if (item->HasVideoInfoTag())

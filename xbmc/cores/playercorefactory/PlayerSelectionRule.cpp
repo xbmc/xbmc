@@ -21,6 +21,7 @@
 #include "URL.h"
 #include "PlayerSelectionRule.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoDimensions.h"
 #include "utils/StreamDetails.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -147,8 +148,12 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
 
     if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(streamDetails.GetVideoCodec(), regExp)) return;
 
+    CVideoDimensions dimensions(
+      streamDetails.GetVideoWidth(),
+      streamDetails.GetVideoHeight());
+
     if (CompileRegExp(m_videoResolution, regExp) &&
-        !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight()), regExp)) return;
+        !MatchesRegExp(dimensions.GetQuality(), regExp)) return;
 
     if (CompileRegExp(m_videoAspect, regExp) &&
         !MatchesRegExp(CStreamDetails::VideoAspectToAspectDescription(streamDetails.GetVideoAspect()),  regExp)) return;
