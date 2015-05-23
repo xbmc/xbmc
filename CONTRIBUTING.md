@@ -1,55 +1,60 @@
-## Questions about Kodi?
+### Introduction
 
-To get your questions answered, please ask in the [Kodi community forums] (http://forum.kodi.tv/) or on IRC: #kodi on freenode.net
+**Kodi** uses Github for development only, i.e. for *pull requests* and the review of such code.  
+**Do not open** an issue on Github for your questions or bug reports.  
+**Do not comment** on a *pull request* unless you are involved in the testing of such or have something meaningful to contribute.  
+Not familiar with git? Start by looking at Github's [collaborating pages](https://help.github.com/categories/collaborating/).
 
-Do not open an issue.
+#### Questions about Kodi?
 
-## Issue Reports
+To get your questions answered, please ask in the [Kodi community forum's](http://forum.kodi.tv/) or on **IRC:** [#kodi](http://webchat.freenode.net?nick=kodi-contrib&channels=%23kodi&prompt=1&uio=OT10cnVlde) on freenode.net
 
-Kodi uses github for development only, i.e. for pull requests and the discussion of code.
+#### Issue or bug reports and discussions
 
-So we use a hook script to automatically close new issue created by you.
+Issue or bug reports are created and reviewed at [Kodi's bug tracker](http://trac.kodi.tv) using the Kodi forum's *username* and *password*.
 
-If you can, we encourage you to investigate the issue yourself and create a Pull Request for us to review.
+If you can, we encourage you to investigate the issue yourself and create a [pull request](https://help.github.com/articles/creating-a-pull-request/) for us to review.
 
-For bug reports, feature requests and all other support, please go to [Kodi community forums] (http://forum.kodi.tv/).
+For bug reports and related discussions, feature requests and all other support, please go to [Kodi community forum's](http://forum.kodi.tv/).
 
-## Pull Requests
+#### Pull Requests
 
-- Before creating a pull request please read our general code guidelines that can be found at
-  [Kodi development] (http://kodi.wiki/view/Development).
+Before [creating a pull request](https://help.github.com/articles/creating-a-pull-request/), please read our general code guidelines that can be found at:
 
-- **Create topic branches**. Don't ask us to pull from your master branch.
+- [Code guidelines](http://kodi.wiki/view/Official:Code_guidelines_and_formatting_conventions)
+- [Submitting a patch](http://kodi.wiki/view/HOW-TO_submit_a_patch)
+- [Kodi development](http://kodi.wiki/view/Development)
 
-- **One pull request per feature**. If you want to do more than one thing, send
-  multiple pull requests.
+###### General guidelines for creating pull requests:
+- **Create topic branches**. Don't ask us to pull from your master branch. 
+- **One pull request per feature**. If you want to do more than one thing, send multiple *pull requests*. 
+- **Send coherent history**. Make sure each individual commit in your *pull
+  request* is meaningful.  
+  If you had to make multiple intermediate commits while developing, please squash them before sending them to us.  
+  In the end before merging you may be asked to squash your commit even some more.
 
-- **Send coherent history**. Make sure each individual commit in your pull
-  request is meaningful. If you had to make multiple intermediate commits while
-  developing, please squash them before sending them to us. In the end before merging you may be asked to squash your commit even some more.
+###### Please follow these guidelines; it's the best way to get your work included in the project!
 
-Please follow this process; it's the best way to get your work included in the project:
+- [Click here](https://github.com/xbmc/xbmc/fork/) to **fork Kodi** project,
+   and [configure the remote](https://help.github.com/articles/configuring-a-remote-for-a-fork/):
 
-- [Fork](http://help.github.com/fork-a-repo/) the project, clone your fork,
-   and configure the remotes:
-
-```bash
-   # clone your fork of the repo into the current directory in terminal
-   git clone git@github.com:<your username>/xbmc.git
-   # navigate to the newly cloned directory
-   cd xbmc
-   # assign the original repo to a remote called "upstream"
+   ```bash
+   # Clone your fork of kodi's repo into the current directory in terminal
+   git clone git@github.com:<your github username>/xbmc.git kodi
+   # Navigate to the newly cloned directory
+   cd kodi
+   # Assign the original repo to a remote called "upstream"
    git remote add upstream https://github.com/xbmc/xbmc.git
    ```
 
 - If you cloned a while ago, get the latest changes from upstream:
 
    ```bash
-   # fetch upstream changes
+   # Fetch upstream changes
    git fetch upstream
-   # make sure you are on your 'master' branch
+   # Make sure you are on your 'master' branch
    git checkout master
-   # merge upstream changes
+   # Merge upstream changes
    git merge upstream/master
    ```
 
@@ -59,9 +64,8 @@ Please follow this process; it's the best way to get your work included in the p
    git checkout -b <topic-branch-name>
    ```
 
-- Commit your changes in logical chunks. or your pull request is unlikely
-   be merged into the main project. Use git's
-   [interactive rebase](https://help.github.com/articles/interactive-rebase)
+- Commit your changes in logical chunks, or your *pull request* is unlikely to be merged into the main project.  
+   Use git's [interactive rebase](https://help.github.com/articles/interactive-rebase)
    feature to tidy up your commits before making them public.
 
 - Push your topic branch up to your fork:
@@ -70,5 +74,5 @@ Please follow this process; it's the best way to get your work included in the p
    git push origin <topic-branch-name>
    ```
 
-- [Open a Pull Request](https://help.github.com/articles/using-pull-requests) with a
-    clear title and description.
+-  Open a [pull request](https://help.github.com/articles/using-pull-requests) with a 
+   clear title and description.
