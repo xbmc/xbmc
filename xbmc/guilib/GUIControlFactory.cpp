@@ -58,14 +58,12 @@
 #include "input/Key.h"
 #include "addons/Skin.h"
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
 #include "utils/XMLUtils.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
-#include "utils/RssReader.h"
 #include "Util.h"
 
 using namespace std;

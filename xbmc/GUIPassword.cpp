@@ -34,7 +34,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "view/ViewStateSettings.h"
 

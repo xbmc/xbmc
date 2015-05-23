@@ -25,8 +25,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "pvr/PVRManager.h"
-#include "utils/StringUtils.h"
 
 using namespace PVR;
 

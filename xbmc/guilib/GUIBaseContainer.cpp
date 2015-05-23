@@ -19,8 +19,6 @@
  */
 
 #include "GUIBaseContainer.h"
-#include "GUIControlFactory.h"
-#include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"

@@ -24,7 +24,6 @@
 #include "utils/HTMLUtil.h"
 #include "Application.h"
 #include "CharsetConverter.h"
-#include "StringUtils.h"
 #include "URL.h"
 #include "filesystem/File.h"
 #include "filesystem/CurlFile.h"
@@ -34,10 +33,8 @@
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIRSSControl.h"
-#include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
 #include "log.h"
-#include "utils/FileUtils.h"
 
 #define RSS_COLOR_BODY      0
 #define RSS_COLOR_HEADLINE  1

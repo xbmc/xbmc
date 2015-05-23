@@ -19,7 +19,6 @@
  */
 
 #include "GUIControlGroup.h"
-#include "GUIControlProfiler.h"
 
 #include <cassert>
 

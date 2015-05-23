@@ -21,7 +21,6 @@
 #include <sstream>
 
 #include "DbUrl.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace std;

@@ -20,7 +20,6 @@
 
 #include "PVRDirectory.h"
 #include "FileItem.h"
-#include "Util.h"
 #include "URL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -29,7 +28,6 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 

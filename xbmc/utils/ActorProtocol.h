@@ -21,7 +21,6 @@
 #pragma once
 
 #include "threads/Thread.h"
-#include "utils/log.h"
 #include <queue>
 #include "memory.h"
 

@@ -20,7 +20,6 @@
 
 
 #include "system.h"
-#include "Util.h"
 #include "utils/URIUtils.h"
 #include "FileDirectoryFactory.h"
 #ifdef HAS_FILESYSTEM
@@ -40,8 +39,6 @@
 #include "playlists/PlayListFactory.h"
 #include "Directory.h"
 #include "File.h"
-#include "ZipManager.h"
-#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "URL.h"

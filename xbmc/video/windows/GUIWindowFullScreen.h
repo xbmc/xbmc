@@ -21,7 +21,6 @@
  */
 
 #include "guilib/GUIWindow.h"
-#include "threads/CriticalSection.h"
 
 class CGUIWindowFullScreen : public CGUIWindow
 {

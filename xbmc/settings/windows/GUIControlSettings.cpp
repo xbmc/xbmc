@@ -40,7 +40,6 @@
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingPath.h"
-#include "settings/Settings.h"
 #include "settings/SettingUtils.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/lib/Setting.h"

@@ -25,7 +25,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
-#include "utils/log.h"
 #include "threads/SingleLock.h"
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES

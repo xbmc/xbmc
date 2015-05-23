@@ -20,11 +20,9 @@
  */
 
 #include "PVRRecording.h"
-#include "XBDateTime.h"
-#include "threads/Thread.h"
 #include "utils/Observer.h"
-#include "video/VideoThumbLoader.h"
 #include "video/VideoDatabase.h"
+#include "FileItem.h"
 
 #define PVR_ALL_RECORDINGS_PATH_EXTENSION "-1"
 

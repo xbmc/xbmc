@@ -33,20 +33,15 @@
 #include "XBPython.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "profiles/ProfilesManager.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
-#include "pythreadstate.h"
-#include "utils/TimeUtils.h"
 #include "Util.h"
-#include "guilib/GraphicContext.h"
 #ifdef TARGET_WINDOWS
 #include "utils/Environment.h"
 #endif
 #include "settings/AdvancedSettings.h"
 
 #include "threads/SystemClock.h"
-#include "addons/Addon.h"
 #include "interfaces/AnnouncementManager.h"
 
 #include "interfaces/legacy/Monitor.h"

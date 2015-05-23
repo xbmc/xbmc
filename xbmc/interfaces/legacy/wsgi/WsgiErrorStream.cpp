@@ -19,7 +19,6 @@
  */
 
 #include "WsgiErrorStream.h"
-#include "interfaces/legacy/AddonUtils.h"
 #include "network/httprequesthandler/python/HTTPPythonRequest.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

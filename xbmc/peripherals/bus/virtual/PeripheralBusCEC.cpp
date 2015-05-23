@@ -22,7 +22,6 @@
 #if defined(HAVE_LIBCEC)
 #include "PeripheralBusCEC.h"
 #include "peripherals/Peripherals.h"
-#include "utils/log.h"
 #include "DynamicDll.h"
 
 #include <libcec/cec.h>

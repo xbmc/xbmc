@@ -26,9 +26,6 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/ContextItemAddonInvoker.h"
 #include "interfaces/python/XBPython.h"
-#include "Util.h"
-#include "utils/log.h"
-#include "video/dialogs/GUIDialogVideoInfo.h"
 
 using namespace ADDON;
 

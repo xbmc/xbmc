@@ -18,14 +18,12 @@
  *
  */
 
-#include "Application.h"
 #include "Addon.h"
 #include "AddonCallbacksCodec.h"
 #include "utils/StringUtils.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
 }
 
 namespace ADDON

@@ -36,6 +36,7 @@
 #include "utils/TimeUtils.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoRenderers/RenderFlags.h"
+#include "utils/log.h"
 
 using namespace Actor;
 using namespace VDPAU;

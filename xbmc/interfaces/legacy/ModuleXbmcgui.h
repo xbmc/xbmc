@@ -19,7 +19,6 @@
  */
 
 #include "swighelper.h"
-#include "Dialog.h"
 
 namespace XBMCAddon
 {

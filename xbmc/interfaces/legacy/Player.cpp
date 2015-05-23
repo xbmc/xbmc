@@ -29,7 +29,6 @@
 #include "AddonUtils.h"
 #include "utils/log.h"
 #include "cores/IPlayer.h"
-#include "settings/MediaSettings.h"
 
 namespace XBMCAddon
 {

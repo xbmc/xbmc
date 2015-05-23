@@ -24,7 +24,6 @@
 #include "peripherals/Peripherals.h"
 #include "FileItem.h"
 #include "input/Key.h"
-#include "utils/log.h"
 
 #define BUTTON_CLOSE     10
 #define BUTTON_SETTINGS  11

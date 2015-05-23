@@ -23,6 +23,7 @@
 #include "threads/SingleLock.h"
 #include <vector>
 #include "commons/Exception.h"
+#include "utils/log.h"
 
 namespace XBMCAddon
 {

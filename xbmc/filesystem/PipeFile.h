@@ -30,9 +30,7 @@
 #pragma once
 
 #include "IFile.h"
-#include "threads/Event.h"
 #include "threads/CriticalSection.h"
-#include "utils/RingBuffer.h"
 #include "PipesManager.h"
 
 namespace XFILE

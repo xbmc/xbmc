@@ -20,7 +20,6 @@
  *
  */
 
-#include "music/Song.h"
 #include "music/Artist.h"
 #include "addons/Scraper.h"
 

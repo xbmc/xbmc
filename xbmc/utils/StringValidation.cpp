@@ -20,7 +20,6 @@
 
 #include "StringValidation.h"
 #include "utils/StringUtils.h"
-#include "utils/Variant.h"
 
 bool StringValidation::IsInteger(const std::string &input, void *data)
 {

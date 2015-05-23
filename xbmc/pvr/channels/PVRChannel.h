@@ -20,7 +20,6 @@
  *
  */
 
-#include "XBDateTime.h"
 #include "FileItem.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "utils/Observer.h"

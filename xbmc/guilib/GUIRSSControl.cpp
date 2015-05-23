@@ -19,9 +19,7 @@
  */
 
 #include "GUIRSSControl.h"
-#include "GUIWindowManager.h"
 #include "settings/Settings.h"
-#include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "utils/RssManager.h"
 #include "utils/RssReader.h"

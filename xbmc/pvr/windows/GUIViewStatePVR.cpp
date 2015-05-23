@@ -21,7 +21,6 @@
 #include "GUIViewStatePVR.h"
 
 #include "FileItem.h"
-#include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
 

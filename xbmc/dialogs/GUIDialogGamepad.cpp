@@ -24,7 +24,6 @@
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
-#include "utils/StringUtils.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 

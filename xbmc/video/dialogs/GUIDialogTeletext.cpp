@@ -25,7 +25,6 @@
 #include "guilib/Texture.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "cores/IPlayer.h"
 #include "settings/Settings.h"
 
 using namespace std;

@@ -27,14 +27,12 @@
 #include "Util.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIFontManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/KeyboardLayoutManager.h"
 #if defined(TARGET_POSIX)
@@ -48,6 +46,9 @@
 #endif // defined(TARGET_DARWIN_OSX)
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinUtils.h"
+#endif
+#if defined(TARGET_DARWIN_IOS)
+#include "SettingAddon.h"
 #endif
 #if defined(TARGET_RASPBERRY_PI)
 #include "linux/RBP.h"
@@ -64,10 +65,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/SettingAddon.h"
 #include "settings/SettingConditions.h"
-#include "settings/SettingControl.h"
-#include "settings/SettingPath.h"
 #include "settings/SettingUtils.h"
 #include "settings/SkinSettings.h"
 #include "settings/lib/SettingsManager.h"
@@ -81,7 +79,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/SeekHandler.h"
 #include "view/ViewStateSettings.h"
-#include "windowing/WindowingFactory.h"
 #include "input/InputManager.h"
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"

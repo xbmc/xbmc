@@ -20,7 +20,6 @@
 
 #include "ISetting.h"
 #include "SettingDefinitions.h"
-#include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 

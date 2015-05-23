@@ -20,7 +20,6 @@
  *
 */
 
-#include "lib/libexif/libexif.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 #include "filesystem/File.h"

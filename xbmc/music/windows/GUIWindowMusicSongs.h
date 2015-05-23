@@ -20,6 +20,7 @@
  */
 
 #include "GUIWindowMusicBase.h"
+#include "music/MusicThumbLoader.h"
 
 class CGUIWindowMusicSongs : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
 {

@@ -23,7 +23,6 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "log.h"
-#include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
 

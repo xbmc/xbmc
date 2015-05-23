@@ -20,7 +20,6 @@
 
 #include "Skin.h"
 #include "AddonManager.h"
-#include "LangInfo.h"
 #include "Util.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"

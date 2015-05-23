@@ -20,7 +20,6 @@
  */
 
 #include <memory>
-#include "interfaces/python/PythonInvoker.h"
 #include "interfaces/python/AddonPythonInvoker.h"
 
 class CFileItem;

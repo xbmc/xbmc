@@ -20,7 +20,6 @@
  */
 
 #include "IDirectory.h"
-#include "Directory.h"
 #include "SortFileItem.h"
 
 #include <string>

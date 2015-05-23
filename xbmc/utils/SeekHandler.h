@@ -22,10 +22,12 @@
 #include <vector>
 #include "input/Key.h"
 #include "interfaces/IActionListener.h"
-#include "settings/Settings.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/Stopwatch.h"
+
+#include <map>
+#include <vector>
 
 enum SeekType
 {

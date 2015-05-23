@@ -19,9 +19,7 @@
  */
 
 #include "PlaylistOperations.h"
-#include "playlists/PlayList.h"
 #include "PlayListPlayer.h"
-#include "Util.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "GUIUserMessages.h"

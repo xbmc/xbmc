@@ -29,6 +29,7 @@
 #include "utils/Observer.h"
 #include "interfaces/IAnnouncer.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "FileItem.h"
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;

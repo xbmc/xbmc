@@ -22,7 +22,6 @@
 #include "UPnPDirectory.h"
 #include "FileFactory.h"
 #include "FileItem.h"
-#include "utils/log.h"
 #include "URL.h"
 
 using namespace XFILE;

@@ -23,10 +23,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/Resource.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-
-#include <sys/stat.h>
 
 using namespace ADDON;
 using namespace XFILE;

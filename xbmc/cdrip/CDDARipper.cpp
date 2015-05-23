@@ -18,7 +18,6 @@
  *
  */
 
-#include "threads/SystemClock.h"
 #include "system.h"
 
 #ifdef HAS_CDDA_RIPPER
@@ -38,11 +37,8 @@
 #include "settings/Settings.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "FileItem.h"
-#include "filesystem/SpecialProtocol.h"
 #include "storage/MediaManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "settings/MediaSourceSettings.h"
 #include "Application.h"

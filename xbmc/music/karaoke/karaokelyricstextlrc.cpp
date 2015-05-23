@@ -26,7 +26,6 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
-#include "utils/URIUtils.h"
 
 #include "karaokelyricstextlrc.h"
 

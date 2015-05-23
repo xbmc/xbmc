@@ -36,8 +36,6 @@
 #include "guilib/GUIImage.h"
 #include "input/Key.h"
 #include "filesystem/Directory.h"
-#include "video/VideoInfoScanner.h"
-#include "addons/Scraper.h"
 #include "guilib/GUIWindowManager.h"
 #include "ApplicationMessenger.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -49,7 +47,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIWindowAddonBrowser.h"
 #include "utils/log.h"
-#include "Util.h"
 #include "URL.h"
 #include "utils/XMLUtils.h"
 

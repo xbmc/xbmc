@@ -27,7 +27,6 @@
 #include "utils/Variant.h"
 #include "utils/Archive.h"
 #include "TextureDatabase.h"
-#include "filesystem/File.h"
 
 #include <sstream>
 #include <algorithm>

@@ -19,7 +19,6 @@
  */
 
 #include "PeripheralNIC.h"
-#include "utils/log.h"
 #include "guilib/LocalizeStrings.h"
 
 using namespace PERIPHERALS;

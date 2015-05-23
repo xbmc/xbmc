@@ -20,7 +20,6 @@
 
 #include "system.h"
 #include "GUIListContainer.h"
-#include "GUIListItem.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"
 

@@ -20,7 +20,6 @@
  */
 
 #include "peripherals/bus/PeripheralBus.h"
-#include "peripherals/devices/Peripheral.h"
 #include <setupapi.h> //needed for GUID
 
 namespace PERIPHERALS

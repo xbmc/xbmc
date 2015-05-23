@@ -20,7 +20,6 @@
 
 #include "XBMCOperations.h"
 #include "ApplicationMessenger.h"
-#include "Util.h"
 #include "utils/Variant.h"
 #include "powermanagement/PowerManager.h"
 

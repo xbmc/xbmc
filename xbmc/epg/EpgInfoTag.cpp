@@ -23,8 +23,6 @@
 #include "EpgInfoTag.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "settings/AdvancedSettings.h"

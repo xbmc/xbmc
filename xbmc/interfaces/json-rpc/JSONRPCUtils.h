@@ -24,7 +24,6 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
-#include "interfaces/IAnnouncer.h"
 #include "utils/Variant.h"
 
 namespace JSONRPC

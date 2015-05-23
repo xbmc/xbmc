@@ -19,7 +19,6 @@
  */
 
 #include "WsgiInputStream.h"
-#include "interfaces/legacy/AddonUtils.h"
 #include "network/httprequesthandler/python/HTTPPythonRequest.h"
 #include "utils/StringUtils.h"
 

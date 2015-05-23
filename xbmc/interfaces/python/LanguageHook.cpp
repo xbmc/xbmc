@@ -24,7 +24,6 @@
 #include "XBPython.h"
 
 #include "interfaces/legacy/AddonUtils.h"
-#include "utils/GlobalsHandling.h"
 #include "PyContext.h"
 
 namespace XBMCAddon

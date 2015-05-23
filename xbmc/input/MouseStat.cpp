@@ -20,7 +20,6 @@
 
 #include "MouseStat.h"
 #include "input/Key.h"
-#include "settings/lib/Setting.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
 

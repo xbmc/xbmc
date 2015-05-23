@@ -28,7 +28,6 @@
 #include "music/MusicDatabase.h"
 #include "playlists/SmartPlayList.h"
 #include "settings/Settings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"

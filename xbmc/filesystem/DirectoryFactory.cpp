@@ -42,7 +42,6 @@
 #include "DAVDirectory.h"
 #include "UDFDirectory.h"
 #include "Application.h"
-#include "addons/Addon.h"
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
 

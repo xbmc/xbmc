@@ -39,7 +39,6 @@
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
-#include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/Variant.h"

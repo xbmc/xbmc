@@ -20,6 +20,7 @@
 
 #include "SFTPDirectory.h"
 #ifdef HAS_FILESYSTEM_SFTP
+#include "SFTPFile.h"
 #include "utils/log.h"
 #include "URL.h"
 

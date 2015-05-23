@@ -37,11 +37,9 @@
 #endif
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogMediaFilter.h"
-#include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
@@ -65,13 +63,9 @@
 #include "utils/FileUtils.h"
 #include "utils/LabelFormatter.h"
 #include "utils/log.h"
-#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
-#include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
-#include "video/VideoInfoTag.h"
 #include "video/VideoLibraryQueue.h"
-#include "windows/GUIWindowFileManager.h"
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3

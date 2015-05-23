@@ -28,7 +28,6 @@
 #include "Tuple.h"
 #include "ListItem.h"
 #include "swighelper.h"
-#include "WindowException.h"
 
 
 // hardcoded offsets for button controls (and controls that use button controls)

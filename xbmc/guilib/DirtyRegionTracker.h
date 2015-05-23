@@ -20,7 +20,6 @@
  */
 
 #include "IDirtyRegionSolver.h"
-#include "DirtyRegionSolvers.h"
 
 #if defined(TARGET_DARWIN_IOS)
 #define DEFAULT_BUFFERING 4

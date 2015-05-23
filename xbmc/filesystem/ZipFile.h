@@ -22,7 +22,6 @@
 
 #include "IFile.h"
 #include <zlib.h>
-#include "utils/log.h"
 #include "File.h"
 #include "ZipManager.h"
 

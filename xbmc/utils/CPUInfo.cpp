@@ -93,8 +93,10 @@
 
 #endif
 
-#include "log.h"
+#ifdef TARGET_POSIX
 #include "settings/AdvancedSettings.h"
+#endif
+
 #include "utils/StringUtils.h"
 
 using namespace std;

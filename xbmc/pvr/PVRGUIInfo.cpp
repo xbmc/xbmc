@@ -23,7 +23,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "GUIInfoManager.h"
-#include "Util.h"
 #include "threads/SingleLock.h"
 #include "PVRManager.h"
 #include "pvr/addons/PVRClients.h"

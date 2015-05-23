@@ -19,10 +19,7 @@
  *
  */
 
-#include <string>
-
 #include "interfaces/legacy/AddonClass.h"
-#include "interfaces/legacy/swighelper.h"
 
 namespace XBMCAddon
 {

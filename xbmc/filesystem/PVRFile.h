@@ -21,7 +21,6 @@
 
 #include "IFile.h"
 #include "ILiveTV.h"
-#include "video/VideoInfoTag.h"
 
 
 class CPVRSession;

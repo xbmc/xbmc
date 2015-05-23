@@ -20,7 +20,6 @@
 
 #include "SaveFileStateJob.h"
 #include "pvr/PVRManager.h"
-#include "pvr/recordings/PVRRecordings.h"
 #include "settings/MediaSettings.h"
 #include "network/upnp/UPnP.h"
 #include "StringUtils.h"

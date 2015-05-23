@@ -20,13 +20,10 @@
 
 #include "PVRChannelGroupInternal.h"
 
-#include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
-#include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "epg/EpgContainer.h"

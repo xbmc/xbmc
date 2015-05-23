@@ -37,20 +37,15 @@
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include <dbt.h>
-#include "guilib/LocalizeStrings.h"
-#include "input/KeyboardStat.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIControl.h"       // for EVENT_RESULT
 #include "powermanagement/windows/Win32PowerSyscall.h"
 #include "Shlobj.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "peripherals/Peripherals.h"
 #include "utils/JobManager.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
-#include "GUIUserMessages.h"
-#include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 

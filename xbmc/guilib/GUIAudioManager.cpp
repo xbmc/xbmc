@@ -30,6 +30,7 @@
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "utils/log.h"
 
 using namespace std;
 

@@ -24,7 +24,6 @@
 
 #include <stdint.h>
 #include <string>
-#include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
 namespace XFILE {

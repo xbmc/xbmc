@@ -27,7 +27,6 @@
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSettings.h"
 #include "URL.h"
 #include "StringUtils.h"
 

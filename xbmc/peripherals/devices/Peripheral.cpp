@@ -25,7 +25,6 @@
 #include "settings/lib/Setting.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "utils/URIUtils.h"
 #include "guilib/LocalizeStrings.h"
 
 using namespace PERIPHERALS;

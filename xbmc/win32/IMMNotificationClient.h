@@ -19,7 +19,6 @@
  *
  */
 
-#include <Audioclient.h>
 #include <mmdeviceapi.h>
 #include "system.h" // for SAFE_RELEASE
 #include "utils/log.h"

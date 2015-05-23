@@ -21,7 +21,6 @@
 #pragma once
 
 #include "system.h"
-#include "gui3d.h"
 #include "XBTF.h"
 #include "guilib/imagefactory.h"
 

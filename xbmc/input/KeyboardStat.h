@@ -39,7 +39,6 @@
 
 #include <string>
 
-#include "windowing/XBMC_events.h"
 #include "input/Key.h"
 #include "input/XBMC_keyboard.h"
 

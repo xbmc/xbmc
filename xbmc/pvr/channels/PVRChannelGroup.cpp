@@ -27,8 +27,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/log.h"

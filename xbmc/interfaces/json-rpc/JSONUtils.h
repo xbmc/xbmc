@@ -25,7 +25,6 @@
 #include "JSONRPCUtils.h"
 #include "XBDateTime.h"
 #include "utils/SortUtils.h"
-#include "interfaces/IAnnouncer.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/JSONVariantParser.h"

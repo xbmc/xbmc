@@ -23,8 +23,6 @@
 #include "IFile.h"
 #include "Util.h"
 #include "utils/log.h"
-#include "threads/SingleLock.h"
-#include "utils/TimeUtils.h"
 #include "SpecialProtocol.h"
 #include "PlatformDefs.h" //for PRIdS, PRId64
 #include "URL.h"

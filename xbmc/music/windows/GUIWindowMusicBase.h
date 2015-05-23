@@ -25,7 +25,6 @@
 
 #include "windows/GUIMediaWindow.h"
 #include "music/MusicDatabase.h"
-#include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "music/infoscanner/MusicInfoScraper.h"
 #include "PlayListPlayer.h"
 #include "music/MusicInfoLoader.h"

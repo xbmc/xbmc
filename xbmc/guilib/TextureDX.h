@@ -20,10 +20,8 @@
 
 #pragma once
 
-#include "Texture.h"
-
 #ifdef HAS_DX
-
+#include "Texture.h"
 #include "D3DResource.h"
 
 /************************************************************************/

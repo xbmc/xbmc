@@ -23,8 +23,6 @@
 //#include "Monitor.h"
 
 #include "utils/LangCodeExpander.h"
-#include "utils/log.h"
-
 #include "swighelper.h"
 #include <vector>
 

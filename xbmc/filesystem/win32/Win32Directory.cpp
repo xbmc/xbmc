@@ -32,8 +32,6 @@
 #endif // WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-#include <cassert>
-
 using namespace XFILE;
 
 // check for empty string, remove trailing slash if any, convert to win32 form

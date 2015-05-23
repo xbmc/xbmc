@@ -20,7 +20,6 @@
  */
 
 #include "IFileDirectory.h"
-#include "utils/SortUtils.h"
 #include <string>
 
 class CSmartPlaylist;

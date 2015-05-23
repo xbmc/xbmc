@@ -22,6 +22,7 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 #include "utils/auto_buffer.h"
+#include "utils/log.h"
 
 #include <sys/stat.h>
 

@@ -20,13 +20,11 @@
 
 #include "GUIViewStateMusic.h"
 #include "PlayListPlayer.h"
-#include "video/VideoDatabase.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/WindowIDs.h"
-#include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"

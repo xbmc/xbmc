@@ -28,8 +28,6 @@
 #include "FileItem.h"
 #include "music/Album.h"
 #include "music/Artist.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
 
 #include <vector>
 

@@ -25,10 +25,9 @@
 #include <string>
 #include "threads/CriticalSection.h"
 #include <map>
+#include <vector>
 #include "UnrarXLib/UnrarX.hpp"
 #include "utils/Stopwatch.h"
-
-#include "threads/Thread.h"
 
 class CFileItemList;
 

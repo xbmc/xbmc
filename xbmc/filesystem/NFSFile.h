@@ -26,7 +26,6 @@
 #include "URL.h"
 #include "threads/CriticalSection.h"
 #include <list>
-#include "SectionLoader.h"
 #include <map>
 #include "DllLibNfs.h" // for define NFSSTAT
 

@@ -23,14 +23,11 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 
 #include "EpgDatabase.h"
 #include "EpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "utils/StringUtils.h"
 
 #include "../addons/include/xbmc_epg_types.h"
 

@@ -22,7 +22,6 @@
  */
 
 #include "settings/lib/ISettingCallback.h"
-#include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/uXstrings.h"
 
