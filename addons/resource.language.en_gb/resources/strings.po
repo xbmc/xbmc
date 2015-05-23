@@ -14238,7 +14238,7 @@ msgstr ""
 #. Description of setting "Appearance -> File lists -> Show file extensions" with label #497
 #: system/settings/settings.xml
 msgctxt "#36123"
-msgid "Show file extensions on media files, for example \"You Enjoy Myself.mp3\" would simply be shown as \"You Enjoy Myself\"."
+msgid "Show file extensions on media files, for example \"You Enjoy Myself\" would be shown as \"You Enjoy Myself.mp3\"."
 msgstr ""
 
 #. Description of setting "Appearance -> File lists -> Ignore articles when sorting with label #13399
