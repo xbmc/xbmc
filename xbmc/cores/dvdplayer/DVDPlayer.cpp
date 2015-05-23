@@ -724,7 +724,7 @@ bool CDVDPlayer::OpenInputStream()
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
 
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_mimetype);
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_mimetype, true);
   if(m_pInputStream == NULL)
   {
     CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - unable to create input stream for [%s]", m_filename.c_str());

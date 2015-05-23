@@ -4,6 +4,7 @@ SRCS  = DVDDemux.cpp
 SRCS += DVDDemuxBXA.cpp
 SRCS += DVDDemuxCDDA.cpp
 SRCS += DVDDemuxFFmpeg.cpp
+SRCS += DVDDemuxMultiSource.cpp
 SRCS += DVDDemuxPVRClient.cpp
 SRCS += DVDDemuxShoutcast.cpp
 SRCS += DVDDemuxUtils.cpp
