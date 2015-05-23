@@ -600,12 +600,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     CEnvironment::putenv(buf);
 
 #elif defined(TARGET_ANDROID)
-    std::string apkPath = getenv("XBMC_ANDROID_APK");
-    apkPath += "/assets/python2.6";
-    setenv("PYTHONHOME", apkPath.c_str(), 1);
-    setenv("PYTHONPATH", "", 1);
-    setenv("PYTHONOPTIMIZE", "", 1);
-    setenv("PYTHONNOUSERSITE", "1", 1);
+    // Set earlier to avoid random crashes
 #endif
 
     if (PyEval_ThreadsInitialized())
