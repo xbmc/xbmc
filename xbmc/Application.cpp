@@ -1948,35 +1948,46 @@ void CApplication::Render()
 
   CDirtyRegionList dirtyRegions;
 
-  // render gui layer
-  if (!m_skipGuiRender)
+  dirtyRegions = g_windowManager.GetDirty();
+  if (g_graphicsContext.GetStereoMode())
   {
-    dirtyRegions = g_windowManager.GetDirty();
-    if (g_graphicsContext.GetStereoMode())
+    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
+    if (!m_skipGuiRender)
     {
-      g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
+      // render gui layer
       if (RenderNoPresent())
         hasRendered = true;
+    }
+    // render video layer
+    g_windowManager.RenderEx();
 
-      if (g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_MONO)
+    if (g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_MONO)
+    {
+      g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_RIGHT);
+      if (!m_skipGuiRender)
       {
-        g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_RIGHT);
+        // render gui layer
         if (RenderNoPresent())
           hasRendered = true;
       }
-      g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
+      // render video layer
+      g_windowManager.RenderEx();
     }
-    else
+    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
+  }
+  else
+  {
+    if (!m_skipGuiRender)
     {
+      // render gui layer
       if (RenderNoPresent())
         hasRendered = true;
     }
-    // execute post rendering actions (finalize window closing)
-    g_windowManager.AfterRender();
+    // render video layer
+    g_windowManager.RenderEx();
   }
-
-  // render video layer
-  g_windowManager.RenderEx();
+  // execute post rendering actions (finalize window closing)
+  g_windowManager.AfterRender();
 
   g_Windowing.EndRender();
 
