@@ -209,7 +209,7 @@ void CDSGraph::CloseFile()
     CLog::Log(LOGDEBUG, "%s ... done!", __FUNCTION__);
     CGraphFilters::Get()->DVD.Clear();
     pFilterGraph.Release();
-    m_pVideoWindow->SetWindowPosition(0, 0, 1, 1);
+
     m_pVideoWindow.Release();
     m_pMediaControl.Release();
     m_pMediaEvent.Release();

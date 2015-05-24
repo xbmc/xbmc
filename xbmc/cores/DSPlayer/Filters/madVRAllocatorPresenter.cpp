@@ -72,12 +72,22 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Unregister(m_exclusiveCallback, this);
 
+  // Release Shared Texture
+  if (m_pMadvrVertexBuffer)
+    m_pMadvrVertexBuffer->Release();
+  if (m_pMadvrTexture)
+    m_pMadvrTexture->Release();
+  if (m_pKodiTexture)
+    m_pKodiTexture->Release();
+
   // the order is important here
   CMadvrCallback::Destroy();
   m_pSubPicQueue = nullptr;
   m_pAllocator = nullptr;
   m_pDXR = nullptr;
   m_pSRCB = nullptr;
+
+
 
   CLog::Log(LOGDEBUG, "%s Resources released", __FUNCTION__);
 }
@@ -299,6 +309,8 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
 
   if (FAILED(hr = RestoreMadDeviceState()))
     return hr;
+
+  return S_OK;
 }
 
 // ISubPicAllocatorPresenter
@@ -643,7 +655,7 @@ HRESULT CmadVRAllocatorPresenter::SetupOSDVertex(IDirect3DVertexBuffer9* pVertex
   VID_FRAME_VERTEX* vertices = nullptr;
 
   // Lock the vertex buffer
-  HRESULT hr = pVertextBuf->Lock(0, 0, (void**)&vertices, NULL);
+  HRESULT hr = pVertextBuf->Lock(0, 0, (void**)&vertices, D3DLOCK_DISCARD);
 
   if (SUCCEEDED(hr))
   {
@@ -693,15 +705,6 @@ HRESULT CmadVRAllocatorPresenter::StoreMadDeviceState()
 {
   HRESULT hr = E_UNEXPECTED;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_ALPHABLENDENABLE, &m_dwOldALPHABLENDENABLE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_SRCBLEND, &m_dwOldSRCALPHA)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_DESTBLEND, &m_dwOldINVSRCALPHA)))
-    return hr;
-
   if (FAILED(hr = m_pD3DDeviceMadVR->GetScissorRect(&m_oldScissorRect)))
     return hr;
 
@@ -717,25 +720,25 @@ HRESULT CmadVRAllocatorPresenter::StoreMadDeviceState()
   if (FAILED(hr = m_pD3DDeviceMadVR->GetStreamSource(0, &m_pOldStreamData, &m_nOldOffsetInBytes, &m_nOldStride)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_CULLMODE, &mD3DRS_CULLMODE)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_CULLMODE, &m_D3DRS_CULLMODE)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_LIGHTING, &mD3DRS_LIGHTING)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_LIGHTING, &m_D3DRS_LIGHTING)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_ZENABLE, &mD3DRS_ZENABLE)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_ZENABLE, &m_D3DRS_ZENABLE)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_ALPHABLENDENABLE, &mD3DRS_ALPHABLENDENABLE)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_ALPHABLENDENABLE, &m_D3DRS_ALPHABLENDENABLE)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_SRCBLEND, &mD3DRS_SRCBLEND)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_SRCBLEND, &m_D3DRS_SRCBLEND)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_DESTBLEND, &mD3DRS_DESTBLEND)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_DESTBLEND, &m_D3DRS_DESTBLEND)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetPixelShader(&mPix)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->GetPixelShader(&m_pPix)))
     return hr;
 
   return hr;
@@ -818,28 +821,29 @@ HRESULT CmadVRAllocatorPresenter::RestoreMadDeviceState()
   if (FAILED(hr))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHABLENDENABLE, m_dwOldALPHABLENDENABLE)))
+  hr = m_pD3DDeviceMadVR->SetPixelShader(m_pPix);
+  if (m_pPix)
+    m_pPix->Release();
+
+  if (FAILED(hr))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_SRCBLEND, m_dwOldSRCALPHA)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_CULLMODE, m_D3DRS_CULLMODE)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_CULLMODE, mD3DRS_CULLMODE)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_LIGHTING, m_D3DRS_LIGHTING)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_LIGHTING, mD3DRS_LIGHTING)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ZENABLE, m_D3DRS_ZENABLE)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ZENABLE, mD3DRS_ZENABLE)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHABLENDENABLE, m_D3DRS_ALPHABLENDENABLE)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHABLENDENABLE, mD3DRS_ALPHABLENDENABLE)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_SRCBLEND, m_D3DRS_SRCBLEND)))
     return hr;
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_SRCBLEND, mD3DRS_SRCBLEND)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_DESTBLEND, mD3DRS_DESTBLEND)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_DESTBLEND, m_D3DRS_DESTBLEND)))
     return hr;
 
   return hr;

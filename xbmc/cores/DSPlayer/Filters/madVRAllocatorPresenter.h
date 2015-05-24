@@ -112,21 +112,18 @@ class CmadVRAllocatorPresenter
   IDirect3DBaseTexture9* m_pOldTexture = nullptr;
 
   DWORD m_dwOldFVF = 0;
-  DWORD m_dwOldALPHABLENDENABLE = 0;
-  DWORD m_dwOldSRCALPHA = 0;
-  DWORD m_dwOldINVSRCALPHA = 0;
   UINT  m_nOldOffsetInBytes = 0;
   UINT  m_nOldStride = 0;
   RECT  m_oldScissorRect;
 
-  DWORD mD3DRS_CULLMODE = 0;
-  DWORD mD3DRS_LIGHTING = 0;
-  DWORD mD3DRS_ZENABLE = 0;
-  DWORD mD3DRS_ALPHABLENDENABLE = 0;
-  DWORD mD3DRS_SRCBLEND = 0;
-  DWORD mD3DRS_DESTBLEND = 0;
+  DWORD m_D3DRS_CULLMODE = 0;
+  DWORD m_D3DRS_LIGHTING = 0;
+  DWORD m_D3DRS_ZENABLE = 0;
+  DWORD m_D3DRS_ALPHABLENDENABLE = 0;
+  DWORD m_D3DRS_SRCBLEND = 0;
+  DWORD m_D3DRS_DESTBLEND = 0;
 
-  IDirect3DPixelShader9* mPix = nullptr;
+  IDirect3DPixelShader9* m_pPix = nullptr;
 
 public:
 
