@@ -351,7 +351,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
 
       if (g_application.IsMusicScanning())
       {
-        CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
+        CGUIDialogOK::ShowAndGetInput(189, 14057);
         break;
       }
 
@@ -368,7 +368,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
       CMusicInfoScanner scanner;
       if (scanner.UpdateDatabaseArtistInfo(artist, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
       {
-        CGUIDialogOK::ShowAndGetInput(21889, 0, 20199, 0);
+        CGUIDialogOK::ShowAndGetInput(21889, 20199);
         break;
       }
     }
@@ -426,7 +426,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
 
       if (g_application.IsMusicScanning())
       {
-        CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
+        CGUIDialogOK::ShowAndGetInput(189, 14057);
         if (m_dlgProgress)
           m_dlgProgress->Close();
         return false;
@@ -445,7 +445,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
       CMusicInfoScanner scanner;
       if (scanner.UpdateDatabaseAlbumInfo(album, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
       {
-        CGUIDialogOK::ShowAndGetInput(185, 0, 500, 0);
+        CGUIDialogOK::ShowAndGetInput(185, 500);
         if (m_dlgProgress)
           m_dlgProgress->Close();
         return false;
@@ -655,7 +655,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
         // load it
         if (!pPlayList->Load(pItem->GetPath()))
         {
-          CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+          CGUIDialogOK::ShowAndGetInput(6, 477);
           return; //hmmm unable to load playlist?
         }
 
@@ -853,7 +853,7 @@ void CGUIWindowMusicBase::OnRipCD()
 #endif
     }
     else
-      CGUIDialogOK::ShowAndGetInput(257, 20099, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(257, 20099);
   }
 }
 
@@ -869,7 +869,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 #endif
     }
     else
-      CGUIDialogOK::ShowAndGetInput(257, 20099, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(257, 20099);
   }
 }
 
@@ -944,7 +944,7 @@ void CGUIWindowMusicBase::LoadPlayList(const std::string& strPlayList)
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+      CGUIDialogOK::ShowAndGetInput(6, 477);
       return; //hmmm unable to load playlist?
     }
   }

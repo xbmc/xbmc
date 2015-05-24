@@ -218,7 +218,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
   }
   else
   { // addon does not support settings, inform user
-    CGUIDialogOK::ShowAndGetInput(24000,0,24030,0);
+    CGUIDialogOK::ShowAndGetInput(24000, 24030);
   }
 
   return ret;

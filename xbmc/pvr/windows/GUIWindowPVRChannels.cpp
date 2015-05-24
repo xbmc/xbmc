@@ -248,7 +248,7 @@ bool CGUIWindowPVRChannels::OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON b
 
   if (button == CONTEXT_BUTTON_ADD)
   {
-    CGUIDialogOK::ShowAndGetInput(19033,0,19038,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19038);
     bReturn = true;
   }
 

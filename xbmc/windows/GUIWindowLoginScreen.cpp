@@ -112,7 +112,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           else
           {
             if (!bCanceled && iItem != 0)
-              CGUIDialogOK::ShowAndGetInput(20068,20117,20022,20022);
+              CGUIDialogOK::ShowAndGetInput(20068, 20117);
           }
         }
       }

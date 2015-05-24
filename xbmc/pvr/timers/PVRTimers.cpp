@@ -516,13 +516,13 @@ bool CPVRTimers::AddTimer(const CPVRTimerInfoTagPtr &item)
   if (!item->m_channel)
   {
     CLog::Log(LOGERROR, "PVRTimers - %s - no channel given", __FUNCTION__);
-    CGUIDialogOK::ShowAndGetInput(19033,0,19109,0); // Couldn't save timer
+    CGUIDialogOK::ShowAndGetInput(19033, 19109); // Couldn't save timer
     return false;
   }
 
   if (!g_PVRClients->SupportsTimers(item->m_iClientId))
   {
-    CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19215);
     return false;
   }
 

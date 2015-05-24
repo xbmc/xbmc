@@ -897,7 +897,7 @@ void CPVRClients::StartChannelScan(void)
   /* no clients found */
   else if (!scanClient)
   {
-    CGUIDialogOK::ShowAndGetInput(19033,0,19192,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19192);
     return;
   }
 
@@ -912,7 +912,7 @@ void CPVRClients::StartChannelScan(void)
   /* do the scan */
   if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
     /* an error occured */
-    CGUIDialogOK::ShowAndGetInput(19111,0,19193,0);
+    CGUIDialogOK::ShowAndGetInput(19111, 19193);
 
   /* restart the supervisor thread */
   g_PVRManager.StartUpdateThreads();
@@ -951,7 +951,7 @@ bool CPVRClients::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
 
   if (error == PVR_ERROR_NOT_IMPLEMENTED)
   {
-    CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19038);
     return true;
   }
 
@@ -970,7 +970,7 @@ bool CPVRClients::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
 
   if (error == PVR_ERROR_NOT_IMPLEMENTED)
   {
-    CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19038);
     return true;
   }
 
@@ -989,7 +989,7 @@ bool CPVRClients::DeleteChannel(const CPVRChannelPtr &channel)
 
   if (error == PVR_ERROR_NOT_IMPLEMENTED)
   {
-    CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19038);
     return true;
   }
 

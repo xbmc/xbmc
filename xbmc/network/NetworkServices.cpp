@@ -181,7 +181,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
     {
       if (!StartWebserver())
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33101), "", g_localizeStrings.Get(33100), "");
+        CGUIDialogOK::ShowAndGetInput(33101, 33100);
         return false;
       }
     }
@@ -232,14 +232,14 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 #ifdef HAS_AIRTUNES
       if (!StartAirTunesServer())
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1274), "", g_localizeStrings.Get(33100), "");
+        CGUIDialogOK::ShowAndGetInput(1274, 33100);
         return false;
       }
 #endif //HAS_AIRTUNES
       
       if (!StartAirPlayServer())
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1273), "", g_localizeStrings.Get(33100), "");
+        CGUIDialogOK::ShowAndGetInput(1273, 33100);
         return false;
       }      
     }
@@ -312,7 +312,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
     {
       if (!StartEventServer())
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
+        CGUIDialogOK::ShowAndGetInput(33102, 33100);
         return false;
       }
     }
@@ -325,7 +325,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
     {
       if (!StartJSONRPCServer())
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33103), "", g_localizeStrings.Get(33100), "");
+        CGUIDialogOK::ShowAndGetInput(33103, 33100);
         return false;
       }
     }
@@ -342,7 +342,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 
     if (!StartEventServer())
     {
-      CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
+      CGUIDialogOK::ShowAndGetInput(33102, 33100);
       return false;
     }
 
@@ -362,7 +362,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 
       if (!StartEventServer())
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
+        CGUIDialogOK::ShowAndGetInput(33102, 33100);
         return false;
       }
     }
@@ -373,7 +373,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
     {
       if (!StartJSONRPCServer())
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33103), "", g_localizeStrings.Get(33100), "");
+        CGUIDialogOK::ShowAndGetInput(33103, 33100);
         return false;
       }
     }

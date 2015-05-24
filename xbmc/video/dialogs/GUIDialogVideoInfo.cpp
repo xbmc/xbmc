@@ -473,7 +473,7 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
   }
   else
   {
-    CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
+    CGUIDialogOK::ShowAndGetInput(194, 284);
   }
 }
 
@@ -1088,7 +1088,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    CGUIDialogOK::ShowAndGetInput(257, 14057);
     return false;
   }
 
@@ -1143,7 +1143,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    CGUIDialogOK::ShowAndGetInput(257, 14057);
     return false;
   }
 
@@ -1788,7 +1788,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    CGUIDialogOK::ShowAndGetInput(257, 14057);
     return false;
   }
 

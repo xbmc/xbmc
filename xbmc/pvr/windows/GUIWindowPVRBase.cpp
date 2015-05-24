@@ -362,7 +362,7 @@ bool CGUIWindowPVRBase::StartRecordFile(const CFileItem &item)
   CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(&item);
   if (timer && timer->HasPVRTimerInfoTag())
   {
-    CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19034);
     return false;
   }
 
@@ -474,7 +474,7 @@ bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = 
   else
   {
     CLog::Log(LOGERROR, "CGUIWindowPVRCommon - %s - can't open recording: no valid filename", __FUNCTION__);
-    CGUIDialogOK::ShowAndGetInput(19033,0,19036,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19036);
     return false;
   }
 
@@ -516,7 +516,7 @@ void CGUIWindowPVRBase::ShowEPGInfo(CFileItem *item)
     bHasChannel = true;
     if (!epgnow)
     {
-      CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
+      CGUIDialogOK::ShowAndGetInput(19033, 19055);
       return;
     }
     tag = new CFileItem(epgnow);
@@ -598,7 +598,7 @@ bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item, bool bPlayRecording)
   {
     // CHANNELNAME could not be played. Check the log for details.
     std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channel->ChannelName().c_str());
-    CGUIDialogOK::ShowAndGetInput(19033, 0, msg, 0);
+    CGUIDialogOK::ShowAndGetInput(19033, msg);
     return false;
   }
 
@@ -674,7 +674,7 @@ bool CGUIWindowPVRBase::ActionRecord(CFileItem *item)
   }
   else
   {
-    CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19034);
     bReturn = true;
   }
 

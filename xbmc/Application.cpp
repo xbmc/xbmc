@@ -2962,7 +2962,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
     else
 #endif
-      CGUIDialogOK::ShowAndGetInput(435, 0, 436, 0);
+      CGUIDialogOK::ShowAndGetInput(435, 436);
 
     return PLAYBACK_OK;
   }
@@ -4145,7 +4145,7 @@ void CApplication::ShowAppMigrationMessage()
   if (CFile::Exists("special://home/.kodi_data_was_migrated") &&
       !CFile::Exists("special://home/.kodi_migration_info_shown"))
   {
-    CGUIDialogOK::ShowAndGetInput(24128, 0, 24129, 0);
+    CGUIDialogOK::ShowAndGetInput(24128, 24129);
     CFile tmpFile;
     // create the file which will prevent this dialog from appearing in the future
     tmpFile.OpenForWrite("special://home/.kodi_migration_info_shown");

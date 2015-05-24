@@ -222,7 +222,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
             Close();
           }
           else
-            CGUIDialogOK::ShowAndGetInput(257,20072,0,0);
+            CGUIDialogOK::ShowAndGetInput(257, 20072);
         }
         else
         {
@@ -567,7 +567,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
   {
     if ( !g_mediaManager.IsDiscInDrive() )
     {
-      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(218, 219);
       return false;
     }
   }
@@ -576,7 +576,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
     // TODO: Handle not connected to a remote share
     if ( !g_application.getNetwork().IsConnected() )
     {
-      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(220, 221);
       return false;
     }
   }

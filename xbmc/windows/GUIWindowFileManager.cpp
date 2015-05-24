@@ -596,7 +596,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
     {
       if (!pPlayList->Load(strPlayList))
       {
-        CGUIDialogOK::ShowAndGetInput(6, 0, 477, 0);
+        CGUIDialogOK::ShowAndGetInput(6, 477);
         return;
       }
     }
@@ -637,7 +637,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( std::string& strPath, int iDri
   {
     if ( !g_mediaManager.IsDiscInDrive(strPath) )
     {
-      CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(218, 219);
       int iList = GetFocusedList();
       int iItem = GetSelectedItem(iList);
       Update(iList, "");
@@ -650,7 +650,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( std::string& strPath, int iDri
     // TODO: Handle not connected to a remote share
     if ( !g_application.getNetwork().IsConnected() )
     {
-      CGUIDialogOK::ShowAndGetInput(220, 221, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(220, 221);
       return false;
     }
   }
@@ -1169,7 +1169,7 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
   else
     idMessageText = 15300; // Path not found or invalid
 
-  CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
+  CGUIDialogOK::ShowAndGetInput(220, idMessageText);
 }
 
 void CGUIWindowFileManager::OnInitWindow()
