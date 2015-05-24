@@ -73,14 +73,18 @@ public:
   void SetCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
   bool UsingMadvr();
   bool IsEnteringExclusiveMadvr();
+  void SetDsWndVisible(bool bVisible);
   bool IsInitMadvr() { return m_isInitMadvr; };
   void SetInitMadvr(bool b) { m_isInitMadvr = b; }
+  HWND GetHwnd(){ return m_hWnd; }
+  void SetHwnd(HWND hWnd){ m_hWnd = hWnd; }
 
 private:
   CMadvrCallback();
   ~CMadvrCallback();
 
   static CMadvrCallback* m_pSingleton;
-  bool m_isInitMadvr;
   IPaintCallbackMadvr* m_pMadvr;
+  HWND m_hWnd;
+  bool m_isInitMadvr;
 };

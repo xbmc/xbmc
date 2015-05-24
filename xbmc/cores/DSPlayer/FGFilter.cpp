@@ -482,7 +482,7 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
         VERIFY(SUCCEEDED(pMVRSR->DisableSubclassing()));
 
       if (Com::SmartQIPtr<IVideoWindow> pVW = pCAP)
-        pVW->put_Owner((OAHWND)g_hWnd);
+        pVW->put_Owner((OAHWND)CMadvrCallback::Get()->GetHwnd());
 
       // Go out from Kodi exclusive fullscreen mode if needed
       if (!CSettings::Get().GetBool("videoscreen.fakefullscreen"))

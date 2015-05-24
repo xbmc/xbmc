@@ -50,6 +50,10 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 
+#if !defined(NPT_POINTER_TO_LONG)
+#define NPT_POINTER_TO_LONG(_p) ((long)(_p))
+#endif
+
 #define START_PERFORMANCE_COUNTER { int64_t start = CurrentHostCounter();
 #define END_PERFORMANCE_COUNTER(fn) int64_t end = CurrentHostCounter(); \
   CLog::Log(LOGINFO, "%s %s. Elapsed time: %.2fms", __FUNCTION__, fn, 1000.f * (end - start) / CurrentHostFrequency()); }
@@ -216,6 +220,15 @@ public:
   void ShowEditionDlg(bool playStart);
   bool OpenFileInternal(const CFileItem& file);
 
+  //madVR Window
+  static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+  bool InitMadvrWindow(HWND &hWnd);
+  void DeInitMadvrWindow();
+  CStdString m_className;
+  HINSTANCE m_hInstance;
+  HWND m_hWnd;
+  bool m_isMadvr;
+  
   static void PostMessage(CDSMsg *msg, bool wait = true)
   {
     if (!m_threadID)

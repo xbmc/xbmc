@@ -60,6 +60,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "cores/DSPlayer/dsgraph.h"
 #include "settings/MediaSettings.h"
+#include "settings/DisplaySettings.h"
 #include "MadvrCallback.h"
 
 using namespace PVR;
@@ -77,6 +78,13 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
   m_pGraphThread(this),
   m_bEof(false)
 {
+  m_isMadvr = (CSettings::Get().GetString("dsplayer.videorenderer") == "madVR");
+  if (m_isMadvr)
+  { 
+    if (InitMadvrWindow(m_hWnd))
+      CLog::Log(LOGDEBUG, "%s : Create DSPlayer window for madVR - hWnd: %i", __FUNCTION__, m_hWnd);
+  }
+
   /* Suspend AE temporarily so exclusive or hog-mode sinks */
   /* don't block DSPlayer access to audio device  */
   if (!CAEFactory::Suspend())
@@ -114,6 +122,9 @@ CDSPlayer::~CDSPlayer()
   g_dsSettings.pixelShaderList->SaveXML();
 
   CoUninitialize();
+
+  if (m_isMadvr)
+   DeInitMadvrWindow();
 
   SAFE_DELETE(g_dsGraph);
   SAFE_DELETE(g_pPVRStream);
@@ -609,16 +620,99 @@ void CDSPlayer::Process()
     HandleMessages();
 }
 
+void CDSPlayer::DeInitMadvrWindow()
+{
+  // remove ourself as user data to ensure we're not called anymore
+  SetWindowLongPtr(m_hWnd, GWL_USERDATA, 0);
+
+  // destroy the hidden window
+  DestroyWindow(m_hWnd);
+
+  // unregister the window class
+  UnregisterClass(m_className.c_str(), m_hInstance);
+
+  // reset the hWnd
+  m_hWnd = NULL;
+}
+
+bool CDSPlayer::InitMadvrWindow(HWND &hWnd)
+{
+  m_hInstance = (HINSTANCE)GetModuleHandle(NULL);
+  if (m_hInstance == NULL)
+    CLog::Log(LOGDEBUG, "%s : GetModuleHandle failed with %d", __FUNCTION__, GetLastError());
+
+  RESOLUTION_INFO res = CDisplaySettings::Get().GetCurrentResolutionInfo();
+  int nWidth = res.iWidth;
+  int nHeight = res.iHeight;
+  m_className = "Kodi:DSPlayer";
+
+  // Register the windows class
+  WNDCLASS wndClass;
+
+  wndClass.style = CS_HREDRAW | CS_VREDRAW | CS_NOCLOSE;
+  wndClass.lpfnWndProc = CDSPlayer::WndProc;
+  wndClass.cbClsExtra = 0;
+  wndClass.cbWndExtra = 0;
+  wndClass.hInstance = m_hInstance;
+  wndClass.hIcon = NULL;
+  wndClass.hCursor = NULL;
+  wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+  wndClass.lpszMenuName = NULL;
+  wndClass.lpszClassName = m_className.c_str();
+
+  if (!RegisterClass(&wndClass))
+  {
+    CLog::Log(LOGERROR, "%s : RegisterClass failed with %d", __FUNCTION__, GetLastError());
+    return false;
+  }
+
+  hWnd = CreateWindow(m_className.c_str(), m_className.c_str(),
+    WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+    0, 0, nWidth, nHeight, 
+    g_hWnd, NULL, m_hInstance, NULL);
+  if (hWnd == NULL)
+  {
+    CLog::Log(LOGERROR, "%s : CreateWindow failed with %d", __FUNCTION__, GetLastError());
+    return false;
+  }
+
+  if (hWnd)
+  {
+    SetWindowLongPtr(hWnd, GWL_USERDATA, NPT_POINTER_TO_LONG(this));
+    CMadvrCallback::Get()->SetHwnd(hWnd);
+  }
+  return true;
+}
+
+LRESULT CALLBACK CDSPlayer::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (uMsg)
+  {
+  case WM_MOUSEMOVE:
+  case WM_LBUTTONDOWN:
+  case WM_MBUTTONDOWN:
+  case WM_RBUTTONDOWN:
+  case WM_LBUTTONUP:
+  case WM_MBUTTONUP:
+  case WM_RBUTTONUP:
+  case WM_MOUSEWHEEL:
+    ::PostMessage(g_hWnd, uMsg, wParam, lParam);
+    return(0);
+  case WM_SIZE:
+    SetWindowPos(hWnd, 0, 0, 0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+    return(0);
+  }
+  return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
 void CDSPlayer::HandleMessages()
 {
   MSG msg;
-  while (GetMessage(&msg, NULL, 0, 0) != 0)
+  while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
   {    
     if (msg.message != WM_GRAPHMESSAGE)
     { 
-      if (m_bStop || PlayerState == DSPLAYER_CLOSED || PlayerState == DSPLAYER_LOADING)
-        break;
-
+      TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
     else

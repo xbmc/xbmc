@@ -267,9 +267,12 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
     m_NativeVideoSize = GetVideoSize(false);
     m_AspectRatio = GetVideoSize(true);
 
-    //g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy, m_fps, g_dsSettings.pRendererSettings->bAllowFullscreen ? CONF_FLAGS_FULLSCREEN : 0, RENDER_FMT_NONE, 0, 0);
+    // Configure Render Manager
     g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy, m_fps, CONF_FLAGS_FULLSCREEN , RENDER_FMT_NONE, 0, 0);
     CLog::Log(LOGDEBUG, "%s Render manager configured (FPS: %f) %i %i %i %i", __FUNCTION__, m_fps, m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy);
+
+    // Set DSPlayer Window Visible
+    CMadvrCallback::Get()->SetDsWndVisible(true);
   }
 
   AlphaBltSubPic(Com::SmartSize(width, height));
@@ -613,9 +616,6 @@ HRESULT CmadVRAllocatorPresenter::RenderToTexture(IDirect3DTexture9* pTexture, I
     return hr;
 
   if (FAILED(m_pD3DDeviceKodi->SetRenderTarget(0, pSurface)))
-    return hr;
-
-  if (FAILED(m_pD3DDeviceKodi->Clear(0, NULL, D3DCLEAR_TARGET, D3DXCOLOR(0, 0, 0, 0), 1.0f, 0)))
     return hr;
 
   return hr;

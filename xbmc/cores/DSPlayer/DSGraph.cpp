@@ -126,12 +126,11 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     //HRESULT hr;
     //m_pVideoWindow->put_Owner((OAHWND)g_hWnd);
     m_pVideoWindow->put_WindowStyle(WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
-    m_pVideoWindow->SetWindowPosition(0, 0, 1, 1);
     m_pVideoWindow->put_Visible(OATRUE);
     m_pVideoWindow->put_AutoShow(OATRUE);
     m_pVideoWindow->put_WindowState(SW_SHOW);
     m_pVideoWindow->SetWindowForeground(OATRUE);
-    m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
+    m_pVideoWindow->put_MessageDrain((OAHWND)CMadvrCallback::Get()->GetHwnd());
   }
 
   // set pixelshader & settings for madVR
@@ -203,13 +202,6 @@ void CDSGraph::CloseFile()
     {
       m_pMediaEvent->SetNotifyWindow((OAHWND)NULL, NULL, NULL);
     }
-    if (m_pVideoWindow)
-    {
-      m_pVideoWindow->SetWindowPosition(0, 0, 1, 1);
-      m_pVideoWindow->put_Visible(OAFALSE);
-      m_pVideoWindow->put_Owner(NULL);
-      m_pVideoWindow.Release();
-    }
 
     /* delete filters */
     CLog::Log(LOGDEBUG, "%s Deleting filters ...", __FUNCTION__);
@@ -217,6 +209,8 @@ void CDSGraph::CloseFile()
     CLog::Log(LOGDEBUG, "%s ... done!", __FUNCTION__);
     CGraphFilters::Get()->DVD.Clear();
     pFilterGraph.Release();
+    m_pVideoWindow->SetWindowPosition(0, 0, 1, 1);
+    m_pVideoWindow.Release();
     m_pMediaControl.Release();
     m_pMediaEvent.Release();
     m_pMediaSeeking.Release();
