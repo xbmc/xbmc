@@ -22,6 +22,13 @@
 
 #include "gtest/gtest.h"
 
+#if defined(TARGET_WINDOWS) && !defined(_USE_MATH_DEFINES)  
+#define _USE_MATH_DEFINES
+#endif
+
+#include <math.h>
+
+
 TEST(TestRFFT, SimpleSignal)
 {
   const int size = 32;
