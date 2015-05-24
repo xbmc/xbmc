@@ -24,7 +24,6 @@
 				<width>50</width>
 				<height>50</height>
 				<aspectratio>keep</aspectratio>
-				<texture>DefaultFile.png</texture>
 			</control>
 			<control type="fadelabel" id="401">
 				<description>Line 1 Label</description>
@@ -51,36 +50,6 @@
 				<aligny>center</aligny>
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>
-			</control>
-			<control type="image" id="403">
-				<description>avatar</description>
-				<left>20</left>
-				<top>10</top>
-				<width>50</width>
-				<height>50</height>
-				<aspectratio>keep</aspectratio>
-				<visible>false</visible>
-				<texture>DefaultIconInfo.png</texture>
-			</control>
-			<control type="image" id="404">
-				<description>avatar</description>
-				<left>20</left>
-				<top>10</top>
-				<width>50</width>
-				<height>50</height>
-				<aspectratio>keep</aspectratio>
-				<visible>false</visible>
-				<texture>DefaultIconWarning.png</texture>
-			</control>
-			<control type="image" id="405">
-				<description>avatar</description>
-				<left>20</left>
-				<top>10</top>
-				<width>50</width>
-				<height>50</height>
-				<aspectratio>keep</aspectratio>
-				<visible>false</visible>
-				<texture>DefaultIconError.png</texture>
 			</control>
 		</control>
 	</controls>
