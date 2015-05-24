@@ -25,16 +25,14 @@
 #include "IFile.h"
 #include "URL.h"
 #include "string.h"
-#include "android/activity/XBMCApp.h"
-
 namespace XFILE
 {
-class CFileAndroidApp : public IFile
+class CFileAndroidSetting : public IFile
 {
 public:
   /*! \brief Currently only used for retrieving App Icons. */
-  CFileAndroidApp(void);
-  virtual ~CFileAndroidApp(void);
+  CFileAndroidSetting(void);
+  virtual ~CFileAndroidSetting(void);
   virtual bool Open(const CURL& url);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
@@ -42,13 +40,16 @@ public:
   /*! \brief Return 32bit rgba raw bitmap. */
   virtual ssize_t Read(void* lpBuf, size_t uiBufSize) {return 0;}
   virtual void Close();
-  virtual int64_t GetLength()  {return 0;}
+  virtual int64_t GetLength();
   virtual int64_t Seek(int64_t, int) {return -1;}
   virtual int64_t GetPosition() {return 0;}
   virtual int GetChunkSize();
   virtual int IoControl(EIoControl request, void* param);
 
-  virtual unsigned int ReadIcon(unsigned char **lpBuf, unsigned int* width, unsigned int* height);
+  /*! \brief Only valid after GetLength() has been called, usually by Open(). */
+  unsigned int GetIconWidth();
+  /*! \brief Only valid after GetLength() has been called, usually by Open(). */
+  unsigned int GetIconHeight();
 
 protected:
   bool IsValidFile(const CURL& url);
@@ -56,7 +57,6 @@ protected:
 private:
   CURL              m_url;
   std::string       m_appname;
-  androidPackage    m_droidPackage;
   int               m_iconWidth;
   int               m_iconHeight;
 };

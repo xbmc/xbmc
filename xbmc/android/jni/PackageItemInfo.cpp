@@ -18,19 +18,13 @@
  *
  */
 
-#include "ApplicationInfo.h"
+#include "PackageItemInfo.h"
 #include "jutils/jutils-details.hpp"
 
 using namespace jni;
+const char *CJNIPackageItemInfo::m_classname = "android/content/pm/PackageItemInfo";
 
-CJNIApplicationInfo::CJNIApplicationInfo(const jhobject &object) : CJNIPackageItemInfo(object)
-  ,sourceDir(       jcast<std::string>(get_field<jhstring>(m_object, "sourceDir")))
-  ,publicSourceDir( jcast<std::string>(get_field<jhstring>(m_object, "publicSourceDir")))
-  ,dataDir(         jcast<std::string>(get_field<jhstring>(m_object, "dataDir")))
-  ,nativeLibraryDir(jcast<std::string>(get_field<jhstring>(m_object, "nativeLibraryDir")))
-  ,packageName(     jcast<std::string>(get_field<jhstring>(m_object, "packageName")))
-  ,uid(             get_field<int>(m_object, "uid"))
-  ,targetSdkVersion(get_field<int>(m_object, "targetSdkVersion"))
-  ,enabled(         get_field<jboolean>(m_object, "enabled"))
+CJNIPackageItemInfo::CJNIPackageItemInfo(const jhobject &object) : CJNIBase(object)
+  ,icon(       get_field<int>(m_object, "icon"))
 {
 }

@@ -62,7 +62,8 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
   AddAddonsSource("executable", g_localizeStrings.Get(1043), "DefaultAddonProgram.png");
 #if defined(TARGET_ANDROID)
-  AddAndroidSource("apps", g_localizeStrings.Get(20244), "DefaultProgram.png");
+  AddAndroidAppSource("apps", g_localizeStrings.Get(20244), "DefaultProgram.png");
+  AddAndroidSettingSource("settings", g_localizeStrings.Get(20245), "DefaultProgram.png");
 #endif
 
   VECSOURCES *programSources = CMediaSourceSettings::Get().GetSources("programs");

@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2013 Team XBMC
+ *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,26 +18,34 @@
  *
  */
 
-#include "JNIBase.h"
-#include "PackageItemInfo.h"
+#pragma once
+#if defined(TARGET_ANDROID)
+#include "IDirectory.h"
+#include "FileItem.h"
+namespace XFILE
+{
 
-class CJNIApplicationInfo : public CJNIPackageItemInfo
+typedef struct
+{
+  const char* name;
+  std::string intent;
+  int sdk;
+} IntentMapping;
+
+class CAndroidSettingDirectory :
+      public IDirectory
 {
 public:
-  CJNIApplicationInfo(const jni::jhobject &object);
-  ~CJNIApplicationInfo(){};
+  CAndroidSettingDirectory(void);
+  virtual ~CAndroidSettingDirectory(void);
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items);
+  virtual bool Exists(const char* strPath) { return true; }
+  virtual bool AllowAll() const { return true; }
+  virtual DIR_CACHE_TYPE GetCacheType(const std::string& strPath) const { return DIR_CACHE_NEVER; }
 
-  std::string sourceDir;
-  std::string publicSourceDir;
-  std::string dataDir;
-  std::string nativeLibraryDir;
-  std::string packageName;
-  int         uid; 
-  int         targetSdkVersion;
-  bool        enabled;
-
-private:
-  CJNIApplicationInfo();
+protected:
+  std::vector<IntentMapping> m_intents;
 };
+}
+#endif
 
-typedef std::vector<CJNIApplicationInfo> CJNIApplicationInfos;

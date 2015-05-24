@@ -99,6 +99,7 @@
 #endif
 #if defined(TARGET_ANDROID)
 #include "AndroidAppDirectory.h"
+#include "AndroidSettingDirectory.h"
 #endif
 #include "ResourceDirectory.h"
 
@@ -166,6 +167,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   }
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("androidapp")) return new CAndroidAppDirectory();
+  if (url.IsProtocol("androidsetting")) return new CAndroidSettingDirectory();
 #endif
 
   bool networkAvailable = g_application.getNetwork().IsAvailable(true); // true to wait for the network (if possible)
