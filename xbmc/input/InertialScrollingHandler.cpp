@@ -19,7 +19,6 @@
  */
 
 
-#include "threads/SystemClock.h"
 #include "InertialScrollingHandler.h"
 #include "Application.h"
 #include "utils/TimeUtils.h"

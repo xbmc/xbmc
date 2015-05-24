@@ -20,7 +20,6 @@
 
 #include "Skin.h"
 #include "AddonManager.h"
-#include "LangInfo.h"
 #include "Util.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -395,7 +394,9 @@ void CSkinInfo::SettingOptionsSkinSoundFiller(const CSetting *setting, std::vect
   current = "SKINDEFAULT";
 
   list.push_back(make_pair(g_localizeStrings.Get(474), "OFF"));
-  list.push_back(make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT"));
+
+  if (CDirectory::Exists(URIUtils::AddFileToFolder(g_SkinInfo->Path(), "sounds")))
+    list.push_back(make_pair(g_localizeStrings.Get(15106), "SKINDEFAULT"));
 
   ADDON::VECADDONS addons;
   if (ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_RESOURCE_UISOUNDS, addons))

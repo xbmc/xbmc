@@ -103,6 +103,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "powermanagement/PowerManager.h"
+#include "filesystem/Directory.h"
 
 using namespace std;
 using namespace XFILE;

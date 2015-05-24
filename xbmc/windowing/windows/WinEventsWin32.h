@@ -24,7 +24,6 @@
 #pragma once
 
 #include "windowing/WinEvents.h"
-#include "input/MouseStat.h"
 #include "input/touch/TouchTypes.h"
 
 class CGenericTouchSwipeDetector;

@@ -24,7 +24,6 @@
 #include "addons/Skin.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
-#include "cores/VideoRenderers/RenderFlags.h"
 #endif
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"

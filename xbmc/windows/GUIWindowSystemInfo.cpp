@@ -21,7 +21,6 @@
 #include "system.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIInfoManager.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"

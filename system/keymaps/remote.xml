@@ -167,6 +167,11 @@
       <star>Queue</star>
     </remote>
   </MyMusicLibrary>
+  <MyPictures>
+    <remote>
+      <clear>Delete</clear>
+    </remote>
+  </MyPictures>
   <FullscreenVideo>
     <remote>
       <zero>Number0</zero>

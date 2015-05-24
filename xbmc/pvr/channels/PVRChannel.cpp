@@ -21,7 +21,6 @@
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "Util.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"

@@ -26,9 +26,6 @@
 #include "view/ViewState.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
-#include "addons/AddonInstaller.h"
-#include "AddonDatabase.h"
-#include "utils/StringUtils.h"
 
 using namespace XFILE;
 using namespace ADDON;

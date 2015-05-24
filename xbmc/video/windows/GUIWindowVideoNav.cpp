@@ -20,25 +20,18 @@
 
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoNav.h"
-#include "music/windows/GUIWindowMusicNav.h"
 #include "utils/FileUtils.h"
 #include "Util.h"
-#include "utils/RegExp.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
-#include "dialogs/GUIDialogFileBrowser.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
-#include "playlists/PlayListFactory.h"
 #include "dialogs/GUIDialogOK.h"
-#include "addons/AddonManager.h"
 #include "PartyModeManager.h"
 #include "music/MusicDatabase.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogSelect.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
@@ -49,12 +42,9 @@
 #include "settings/Settings.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
-#include "storage/MediaManager.h"
-#include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "TextureCache.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "video/VideoInfoScanner.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
@@ -1141,7 +1131,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     }
     else
     {
-      CGUIDialogOK::ShowAndGetInput(257, 0, 662, 0);
+      CGUIDialogOK::ShowAndGetInput(257, 662);
       return true;
     }	  
   }
@@ -1150,7 +1140,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     // dont allow update while scanning
     if (g_application.IsVideoScanning())
     {
-      CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+      CGUIDialogOK::ShowAndGetInput(257, 14057);
       return true;
     }
 
@@ -1173,7 +1163,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     if (!videodb.GetSingleValue("tag", "tag.tag_id", videodb.PrepareSQL("tag.name = '%s' AND tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
     {
       std::string strError = StringUtils::Format(g_localizeStrings.Get(20463).c_str(), strTag.c_str());
-      CGUIDialogOK::ShowAndGetInput(20462, "", strError, "");
+      CGUIDialogOK::ShowAndGetInput(20462, strError);
       return true;
     }
 

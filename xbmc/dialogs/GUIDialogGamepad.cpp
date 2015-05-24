@@ -24,7 +24,6 @@
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
-#include "utils/StringUtils.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 
@@ -197,7 +196,7 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (ShowAndVerifyInput(strUserInput, "12340", "12330", "12331", "", true, true))
   {
     // TODO: Show error to user saying the password entry was blank
-    CGUIDialogOK::ShowAndGetInput(12357, 12358, 0, 0); // Password is empty/blank
+    CGUIDialogOK::ShowAndGetInput(12357, 12358); // Password is empty/blank
     return false;
   }
 
@@ -209,7 +208,7 @@ bool CGUIDialogGamepad::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, "12341", "12330", "12331", "", false, true))
   {
     // TODO: Show error to user saying the password re-entry failed
-    CGUIDialogOK::ShowAndGetInput(12357, 12344, 0, 0); // Password do not match
+    CGUIDialogOK::ShowAndGetInput(12357, 12344); // Password do not match
     return false;
   }
 

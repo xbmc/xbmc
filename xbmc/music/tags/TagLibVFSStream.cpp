@@ -20,7 +20,6 @@
 #include "limits.h"
 #include "TagLibVFSStream.h"
 #include "filesystem/File.h"
-#include "utils/log.h"
 #include <taglib/tiostream.h>
 
 using namespace XFILE;

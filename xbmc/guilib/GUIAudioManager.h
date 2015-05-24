@@ -26,7 +26,6 @@
 #include "cores/AudioEngine/Interfaces/AESound.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
-#include "utils/log.h"
 
 // forward definitions
 class CAction;

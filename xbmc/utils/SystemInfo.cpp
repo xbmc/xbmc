@@ -35,8 +35,6 @@
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
-#include "utils/TimeUtils.h"
-#include "utils/log.h"
 #include "CompileInfo.h"
 
 #ifdef TARGET_WINDOWS

@@ -19,7 +19,6 @@
  */
 
 #include "PlaylistFileDirectory.h"
-#include "utils/log.h"
 #include "playlists/PlayListFactory.h"
 #include "File.h"
 #include "URL.h"

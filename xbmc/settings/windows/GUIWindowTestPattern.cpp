@@ -19,8 +19,6 @@
  */
 
 #include "GUIWindowTestPattern.h"
-#include "settings/DisplaySettings.h"
-#include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "guilib/WindowIDs.h"
 #include "windowing/WindowingFactory.h"

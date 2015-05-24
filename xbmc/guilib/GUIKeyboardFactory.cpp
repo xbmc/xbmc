@@ -177,7 +177,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, con
     StringUtils::ToLower(newPassword);
     return true;
   }
-  CGUIDialogOK::ShowAndGetInput(12341, 12344, 0, 0);
+  CGUIDialogOK::ShowAndGetInput(12341, 12344);
   return false;
 }
 

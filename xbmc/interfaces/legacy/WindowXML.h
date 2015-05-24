@@ -24,12 +24,7 @@
 
 #include "Window.h"
 #include "windows/GUIMediaWindow.h"
-
-#include "threads/Thread.h"
-
 #include "swighelper.h"
-#include "FileItem.h"
-
 #include "WindowDialogMixin.h"
 
 namespace XBMCAddon

@@ -28,8 +28,8 @@
 #pragma once
 
 
-#include "GUIFontTTF.h"
 #include "D3DResource.h"
+#include "GUIFontTTF.h"
 
 /*!
  \ingroup textures

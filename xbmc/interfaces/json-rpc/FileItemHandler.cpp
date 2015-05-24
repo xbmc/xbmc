@@ -22,7 +22,6 @@
 #include <string.h>
 
 #include "FileItemHandler.h"
-#include "PlaylistOperations.h"
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
 #include "FileOperations.h"
@@ -43,7 +42,6 @@
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "epg/Epg.h"
-#include "epg/EpgContainer.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;

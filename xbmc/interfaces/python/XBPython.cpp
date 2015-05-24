@@ -33,20 +33,15 @@
 #include "XBPython.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "profiles/ProfilesManager.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
-#include "pythreadstate.h"
-#include "utils/TimeUtils.h"
 #include "Util.h"
-#include "guilib/GraphicContext.h"
 #ifdef TARGET_WINDOWS
 #include "utils/Environment.h"
 #endif
 #include "settings/AdvancedSettings.h"
 
 #include "threads/SystemClock.h"
-#include "addons/Addon.h"
 #include "interfaces/AnnouncementManager.h"
 
 #include "interfaces/legacy/Monitor.h"
@@ -600,12 +595,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     CEnvironment::putenv(buf);
 
 #elif defined(TARGET_ANDROID)
-    std::string apkPath = getenv("XBMC_ANDROID_APK");
-    apkPath += "/assets/python2.6";
-    setenv("PYTHONHOME", apkPath.c_str(), 1);
-    setenv("PYTHONPATH", "", 1);
-    setenv("PYTHONOPTIMIZE", "", 1);
-    setenv("PYTHONNOUSERSITE", "1", 1);
+    // Set earlier to avoid random crashes
 #endif
 
     if (PyEval_ThreadsInitialized())

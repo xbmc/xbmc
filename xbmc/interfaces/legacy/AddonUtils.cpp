@@ -18,13 +18,14 @@
  *
  */
 
-
 #include "AddonUtils.h"
 #include "guilib/GraphicContext.h"
 #include "utils/XBMCTinyXML.h"
 #include "addons/Skin.h"
+#ifdef ENABLE_XBMC_TRACE_API
 #include "utils/log.h"
 #include "threads/ThreadLocal.h"
+#endif
 
 namespace XBMCAddonUtils
 {

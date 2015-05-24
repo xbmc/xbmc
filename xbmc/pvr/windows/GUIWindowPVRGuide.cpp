@@ -20,11 +20,8 @@
 
 #include "GUIWindowPVRGuide.h"
 
-#include "Application.h"
 #include "ContextMenuManager.h"
 #include "GUIUserMessages.h"
-#include "dialogs/GUIDialogOK.h"
-#include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -32,8 +29,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimers.h"
 

@@ -21,12 +21,9 @@
 #include "ContextItemAddon.h"
 #include "AddonManager.h"
 #include "ContextMenuManager.h"
-#include "dialogs/GUIDialogContextMenu.h"
 #include "GUIInfoManager.h"
 #include "interfaces/info/InfoBool.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "video/dialogs/GUIDialogVideoInfo.h"
 #include <boost/lexical_cast.hpp>
 
 using namespace std;

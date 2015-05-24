@@ -19,7 +19,6 @@
  */
 
 #include "GUIRenderingControl.h"
-#include "GUIUserMessages.h"
 #include "threads/SingleLock.h"
 #include "guilib/IRenderingCallback.h"
 #include "windowing/WindowingFactory.h"

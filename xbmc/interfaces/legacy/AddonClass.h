@@ -44,9 +44,12 @@
 #include "AddonString.h"
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
+#ifdef XBMC_ADDON_DEBUG_MEMORY
 #include "utils/log.h"
-
+#endif
 #include "AddonUtils.h"
+
+#include <typeindex>
 
 namespace XBMCAddon
 {

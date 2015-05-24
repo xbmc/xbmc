@@ -31,7 +31,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -40,7 +39,6 @@
 #include "utils/log.h"
 #include "utils/Stopwatch.h"
 #include "utils/StringUtils.h"
-#include "threads/Atomics.h"
 #include "utils/JobManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "video/VideoDatabase.h"
@@ -57,9 +55,7 @@
 #include "epg/EpgContainer.h"
 #include "recordings/PVRRecordings.h"
 #include "timers/PVRTimers.h"
-#include "interfaces/AnnouncementManager.h"
 #include "addons/AddonInstaller.h"
-#include "input/Key.h"
 #include "dialogs/GUIDialogPVRChannelManager.h"
 #include "dialogs/GUIDialogPVRGroupManager.h"
 
@@ -894,7 +890,7 @@ bool CPVRManager::ToggleRecordingOnChannel(unsigned int iChannelId)
     {
       bReturn = m_timers->InstantTimer(channel);
       if (!bReturn)
-        CGUIDialogOK::ShowAndGetInput(19033,0,19164,0);
+        CGUIDialogOK::ShowAndGetInput(19033, 19164);
     }
     else
     {
@@ -921,7 +917,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     {
       bReturn = m_timers->InstantTimer(channel);
       if (!bReturn)
-        CGUIDialogOK::ShowAndGetInput(19033,0,19164,0);
+        CGUIDialogOK::ShowAndGetInput(19033, 19164);
     }
     else if (!bOnOff && channel->IsRecording())
     {
@@ -978,7 +974,7 @@ bool CPVRManager::CheckParentalPIN(const std::string& strTitle /* = "" */)
   bool bValidPIN = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, !strTitle.empty() ? strTitle : g_localizeStrings.Get(19263), true);
   if (!bValidPIN)
     // display message: The entered PIN number was incorrect
-    CGUIDialogOK::ShowAndGetInput(19264,0,19265,0);
+    CGUIDialogOK::ShowAndGetInput(19264, 19265);
   else if (m_parentalTimer)
   {
     // reset the timer

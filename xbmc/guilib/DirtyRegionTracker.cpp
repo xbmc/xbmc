@@ -22,6 +22,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include <stdio.h>
+#include "DirtyRegionSolvers.h"
 
 CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
 {

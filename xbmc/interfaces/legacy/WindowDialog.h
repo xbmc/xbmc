@@ -21,7 +21,6 @@
 #pragma once
 
 #include "Window.h"
-#include "WindowInterceptor.h"
 #include "WindowDialogMixin.h"
 
 namespace XBMCAddon

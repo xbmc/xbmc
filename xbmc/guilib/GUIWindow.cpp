@@ -22,7 +22,6 @@
 #include "GUIWindow.h"
 #include "GUIWindowManager.h"
 #include "input/Key.h"
-#include "LocalizeStrings.h"
 #include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
 #include "GUIControlProfiler.h"

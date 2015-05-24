@@ -19,8 +19,6 @@
  */
 
 #include "GUIDialogKaiToast.h"
-#include "guilib/GUIAudioManager.h"
-#include "guilib/GUIWindowManager.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 
@@ -71,7 +69,8 @@ void CGUIDialogKaiToast::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
   CGUIMessage msg(GUI_MSG_GET_FILENAME, GetID(), POPUP_ICON);
-  m_defaultIcon = msg.GetLabel();
+  if (OnMessage(msg))
+    m_defaultIcon = msg.GetLabel();
 }
 
 void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
@@ -134,20 +133,22 @@ bool CGUIDialogKaiToast::DoWork()
 
       if (strTypeImage.empty())
       {
-        int imageControl = POPUP_ICON;
-
-        if (toast.eType == Info)
-          imageControl = POPUP_ICON_INFO;
-        else if (toast.eType == Warning)
-          imageControl = POPUP_ICON_WARNING;
-        else if (toast.eType == Error)
-          imageControl = POPUP_ICON_ERROR;
-
-        CGUIMessage msg(GUI_MSG_GET_FILENAME, GetID(), imageControl);
-        if (OnMessage(msg))
-          strTypeImage = msg.GetLabel();
-        else
+        if (toast.eType == Default)
           strTypeImage = m_defaultIcon;
+        else
+        {
+          int imageControl = -1;
+          if (toast.eType == Info)
+            imageControl = POPUP_ICON_INFO;
+          else if (toast.eType == Warning)
+            imageControl = POPUP_ICON_WARNING;
+          else if (toast.eType == Error)
+            imageControl = POPUP_ICON_ERROR;
+
+          CGUIMessage msg(GUI_MSG_GET_FILENAME, GetID(), imageControl);
+          if (OnMessage(msg))
+            strTypeImage = msg.GetLabel();
+        }
       }
 
       SET_CONTROL_FILENAME(POPUP_ICON, strTypeImage);

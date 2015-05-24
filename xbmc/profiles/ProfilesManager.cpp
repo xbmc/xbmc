@@ -24,7 +24,6 @@
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
-#include "LangInfo.h"
 #include "PasswordManager.h"
 #include "Util.h"
 #include "dialogs/GUIDialogOK.h"
@@ -42,7 +41,6 @@
 #include "storage/DetectDVDType.h"
 #endif
 #include "threads/SingleLock.h"
-#include "utils/CharsetConverter.h"
 #include "utils/FileUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

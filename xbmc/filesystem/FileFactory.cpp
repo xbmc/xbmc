@@ -75,7 +75,6 @@
 #ifdef HAVE_LIBBLURAY
 #include "BlurayFile.h"
 #endif
-#include "PipesManager.h"
 #include "PipeFile.h"
 #include "MusicDatabaseFile.h"
 #include "SpecialProtocolFile.h"
@@ -88,7 +87,6 @@
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
-#include "utils/StringUtils.h"
 #include "network/WakeOnAccess.h"
 
 using namespace XFILE;

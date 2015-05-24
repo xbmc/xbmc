@@ -962,7 +962,8 @@ AC_LANG_POP([C++])
 
 # Python
 if test -z "$PYTHON_NOVERSIONCHECK"; then
-  AX_PYTHON_DEVEL([>= 2.4])
+  AX_PYTHON_DEVEL([>= '2.6'])
+  AX_PYTHON_DEVEL([< '3.0'])
   PYTHON_VERSION=$ac_python_version
 fi
 

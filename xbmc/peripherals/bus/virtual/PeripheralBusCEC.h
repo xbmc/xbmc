@@ -20,7 +20,6 @@
  */
 
 #include "peripherals/bus/PeripheralBus.h"
-#include "peripherals/devices/Peripheral.h"
 
 // undefine macro isset, it collides with function in cectypes.h
 #ifdef isset

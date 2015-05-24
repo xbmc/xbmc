@@ -29,7 +29,6 @@
 #include "URL.h"
 #include "network/upnp/UPnP.h"
 #include "network/upnp/UPnPInternal.h"
-#include "video/VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"

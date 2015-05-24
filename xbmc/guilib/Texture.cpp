@@ -23,7 +23,6 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "DDSImage.h"
-#include "filesystem/SpecialProtocol.h"
 #include "filesystem/File.h"
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>

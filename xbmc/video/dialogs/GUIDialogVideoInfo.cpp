@@ -39,7 +39,6 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "storage/MediaManager.h"
-#include "utils/AsyncFileCopy.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -58,7 +57,6 @@
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 
 #ifdef HAS_UPNP
-#include "network/upnp/UPnP.h"
 #endif
 #include "utils/FileUtils.h"
 
@@ -476,7 +474,7 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
   }
   else
   {
-    CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
+    CGUIDialogOK::ShowAndGetInput(194, 284);
   }
 }
 
@@ -1091,7 +1089,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    CGUIDialogOK::ShowAndGetInput(257, 14057);
     return false;
   }
 
@@ -1146,7 +1144,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    CGUIDialogOK::ShowAndGetInput(257, 14057);
     return false;
   }
 
@@ -1791,7 +1789,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    CGUIDialogOK::ShowAndGetInput(257, 14057);
     return false;
   }
 

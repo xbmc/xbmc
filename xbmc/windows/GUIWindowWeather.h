@@ -21,7 +21,6 @@
  */
 
 #include "guilib/GUIWindow.h"
-#include "utils/Stopwatch.h"
 
 class CGUIWindowWeather : public CGUIWindow
 {

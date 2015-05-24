@@ -46,10 +46,6 @@
 #include "URL.h"
 #include "utils/StringUtils.h"
 
-#ifdef TARGET_WINDOWS
-#include "WIN32Util.h"
-#endif
-
 using namespace std;
 
 #define BACKGROUND_IMAGE       999

@@ -21,7 +21,6 @@
 #include "XMLUtils.h"
 #include "ScraperUrl.h"
 #include "settings/AdvancedSettings.h"
-#include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "utils/CharsetDetection.h"
 #include "utils/StringUtils.h"
@@ -30,8 +29,8 @@
 #include "filesystem/ZipFile.h"
 #include "URIUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "utils/XMLUtils.h"
 #include "utils/Mime.h"
+#include "utils/log.h"
 
 #include <cstring>
 #include <sstream>

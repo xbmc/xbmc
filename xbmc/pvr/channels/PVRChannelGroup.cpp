@@ -27,8 +27,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/log.h"
@@ -644,16 +642,33 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
 
       m_members.erase((*it).channel->StorageId());
 
+      //we need a copy of our iterators data so that we can find it later on
+      //if the vector has changed.
+      auto group = *it;
       /* remove this channel from all non-system groups if this is the internal group */
       if (IsInternalGroup())
       {
         g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups((*it).channel);
 
         /* since it was not found in the internal group, it was deleted from the backend */
-        (*it).channel->Delete();
+        group.channel->Delete();
       }
 
-      it = m_sortedMembers.erase(it);
+      //our vector can have been modified during the call to RemoveFromAllGroups
+      //make no assumption and search for the value to be removed
+      auto possiblyRemovedGroup = std::find_if(m_sortedMembers.begin(), m_sortedMembers.end(), [&group](const PVRChannelGroupMember& it)
+      {
+        return  group.channel == it.channel &&
+                group.iChannelNumber == it.iChannelNumber &&
+                group.iSubChannelNumber == it.iSubChannelNumber;
+      });
+
+      if (possiblyRemovedGroup != m_sortedMembers.end())
+        m_sortedMembers.erase(possiblyRemovedGroup);
+      
+      //We have to start over from the beginning, list can have been modified and
+      //resorted, there's no safe way to continue where we left of
+      it = m_sortedMembers.begin();
       m_bChanged = true;
       bReturn = true;
     }

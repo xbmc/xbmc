@@ -21,7 +21,6 @@
 #include "PVRDatabase.h"
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/VideoSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

@@ -20,7 +20,6 @@
 #include "ScreenSaver.h"
 #include "guilib/GraphicContext.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "settings/DisplaySettings.h"
 #include "utils/AlarmClock.h"
 #include "windowing/WindowingFactory.h"
 

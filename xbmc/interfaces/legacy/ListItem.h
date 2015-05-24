@@ -23,18 +23,13 @@
 #include <map>
 #include <vector>
 
-#include "cores/playercorefactory/PlayerCoreFactory.h"
-
 #include "AddonClass.h"
 #include "Tuple.h"
 #include "Dictionary.h"
 #include "Alternative.h"
-#include "CallbackHandler.h"
 #include "ListItem.h"
-#include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
 #include "AddonString.h"
-#include "Tuple.h"
 #include "commons/Exception.h"
 #include "InfoTagVideo.h"
 #include "InfoTagMusic.h"

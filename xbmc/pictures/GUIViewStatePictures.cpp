@@ -25,7 +25,6 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "filesystem/Directory.h"
-#include "filesystem/PluginDirectory.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "view/ViewStateSettings.h"

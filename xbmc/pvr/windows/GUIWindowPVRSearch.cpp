@@ -29,8 +29,6 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "epg/EpgContainer.h"
-#include "pvr/recordings/PVRRecordings.h"
-#include "utils/log.h"
 #include "pvr/addons/PVRClients.h"
 
 using namespace PVR;
@@ -164,7 +162,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 
     if (items.IsEmpty())
     {
-      CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
+      CGUIDialogOK::ShowAndGetInput(194, 284);
       m_bSearchConfirmed = false;
     }
   }

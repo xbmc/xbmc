@@ -19,7 +19,6 @@
  */
 
 #include "ZipDirectory.h"
-#include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
 #include "Util.h"

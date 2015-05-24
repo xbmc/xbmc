@@ -28,7 +28,6 @@
 #include "Tuple.h"
 #include "ListItem.h"
 #include "swighelper.h"
-#include "WindowException.h"
 
 
 // hardcoded offsets for button controls (and controls that use button controls)
@@ -832,6 +831,16 @@ namespace XBMCAddon
        *   - self.fadelabel.addLabel('This is a line of text that can scroll.')
        */
        virtual void addLabel(const String& label);
+
+      /**
+       * setScrolling(scroll) -- Set scrolling.
+       *
+       * scroll          : boolean - True = enabled / False = disabled
+       *
+       * example:
+       *   - self.fadelabel.setScrolling(False)
+       */
+      virtual void setScrolling(bool scroll);
 
       /**
        * reset() -- Clear this fade label.

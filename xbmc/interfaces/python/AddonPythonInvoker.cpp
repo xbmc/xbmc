@@ -28,7 +28,6 @@
 
 #include "system.h"
 #include "AddonPythonInvoker.h"
-#include "addons/AddonVersion.h"
 
 #define MODULE "xbmc"
 

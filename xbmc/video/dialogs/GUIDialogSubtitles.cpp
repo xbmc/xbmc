@@ -28,14 +28,11 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/AddonsDirectory.h"
 #include "filesystem/File.h"
-#include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "input/Key.h"
-#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "settings/VideoSettings.h"
 #include "settings/lib/Setting.h"
 #include "utils/JobManager.h"
 #include "utils/LangCodeExpander.h"
@@ -45,6 +42,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "video/VideoDatabase.h"
+#include "filesystem/Directory.h"
 
 using namespace ADDON;
 using namespace XFILE;

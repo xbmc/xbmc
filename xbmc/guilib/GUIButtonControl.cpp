@@ -19,8 +19,6 @@
  */
 
 #include "GUIButtonControl.h"
-#include "GUIWindowManager.h"
-#include "GUIDialog.h"
 #include "GUIFontManager.h"
 #include "input/Key.h"
 

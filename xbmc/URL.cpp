@@ -20,7 +20,6 @@
 
 #include "URL.h"
 #include "Application.h"
-#include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -28,11 +27,8 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "filesystem/StackDirectory.h"
-#include "addons/Addon.h"
-#include "utils/StringUtils.h"
 #include "network/Network.h"
 #ifndef TARGET_POSIX
-#include <sys\types.h>
 #include <sys\stat.h>
 #endif
 

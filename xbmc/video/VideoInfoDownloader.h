@@ -24,7 +24,6 @@
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
 #include "Episode.h"
-#include "XBDateTime.h"
 #include "filesystem/CurlFile.h"
 #include <string>
 

@@ -17,10 +17,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
-#include "CompileInfo.h"
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
@@ -44,7 +44,6 @@
 
 #include "Application.h"
 #include "Util.h"
-#include "addons/Addon.h"
 #include "filesystem/PVRDirectory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
@@ -65,20 +64,18 @@
 #include "storage/MediaManager.h"
 #ifdef TARGET_WINDOWS
 #include "utils/CharsetConverter.h"
-#include <shlobj.h>
 #include "WIN32Util.h"
 #endif
 #if defined(TARGET_DARWIN)
+#include "CompileInfo.h"
 #include "osx/DarwinUtils.h"
 #endif
-#include "GUIUserMessages.h"
 #include "filesystem/File.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 #ifdef HAS_IRSERVERSUITE
-  #include "input/windows/IRServerSuite.h"
 #endif
 #include "guilib/LocalizeStrings.h"
 #include "utils/md5.h"
@@ -1754,7 +1751,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   CFileItemList items;
   vector<std::string> strLookInPaths;
 
-  int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO;
+  int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
 
   if (!strBasePath.empty())
     CDirectory::GetDirectory(strBasePath, items, g_advancedSettings.m_subtitlesExtensions, flags);

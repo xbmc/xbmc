@@ -21,10 +21,7 @@
 #include "Keyboard.h"
 #include "LanguageHook.h"
 
-#include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "dialogs/GUIDialogKeyboardGeneric.h"
-#include "ApplicationMessenger.h"
 
 namespace XBMCAddon
 {

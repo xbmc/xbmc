@@ -42,7 +42,6 @@
 #include <taglib/id3v2tag.h>
 #include <taglib/xiphcomment.h>
 #include <taglib/mp4tag.h>
-#include "TagLibVFSStream.h"
 #include "ImusicInfoTagLoader.h"
 
 namespace MUSIC_INFO

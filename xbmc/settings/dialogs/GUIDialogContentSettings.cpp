@@ -32,7 +32,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDependency.h"
 #include "settings/lib/SettingsManager.h"
-#include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "video/VideoInfoScanner.h"
 

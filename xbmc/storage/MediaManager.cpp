@@ -47,10 +47,7 @@
 #include "utils/StringUtils.h"
 #include "AutorunMediaJob.h"
 
-#include "FileItem.h"
 #include "filesystem/File.h"
-#include "filesystem/DirectoryFactory.h"
-#include "filesystem/Directory.h"
 
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.h"
 

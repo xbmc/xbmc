@@ -26,7 +26,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
-#include "filesystem/PluginDirectory.h"
+#include "filesystem/Directory.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/JobManager.h"

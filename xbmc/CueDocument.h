@@ -21,7 +21,6 @@
  */
 
 #include "music/Song.h"
-#include "filesystem/File.h"
 
 #define MAX_PATH_SIZE 1024
 

@@ -20,7 +20,6 @@
 
 #include "threads/SystemClock.h"
 #include "PlayListPlayer.h"
-#include "playlists/PlayListFactory.h"
 #include "Application.h"
 #include "PartyModeManager.h"
 #include "settings/AdvancedSettings.h"
@@ -29,7 +28,6 @@
 #include "dialogs/GUIDialogOK.h"
 #include "playlists/PlayList.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "dialogs/GUIDialogKaiToast.h"

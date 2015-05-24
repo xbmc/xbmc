@@ -24,18 +24,15 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
-#include "pvr/timers/PVRTimers.h"
 
 #include "EpgContainer.h"
 #include "Epg.h"
-#include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
 using namespace std;

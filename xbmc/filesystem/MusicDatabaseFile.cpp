@@ -24,8 +24,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-#include <sys/stat.h>
-
 using namespace XFILE;
 
 CMusicDatabaseFile::CMusicDatabaseFile(void)

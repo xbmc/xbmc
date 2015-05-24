@@ -37,9 +37,6 @@
 #include "qry_dat.h"
 #include <stdarg.h>
 
-
-
-
 namespace dbiplus {
 class Dataset;		// forward declaration of class Dataset
 

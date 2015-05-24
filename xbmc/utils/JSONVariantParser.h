@@ -22,7 +22,6 @@
 #include "Variant.h"
 
 #include <yajl/yajl_parse.h>
-#include <yajl/yajl_gen.h>
 
 class IParseCallback
 {

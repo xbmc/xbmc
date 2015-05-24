@@ -19,16 +19,11 @@
  */
 
 #include "VideoInfoDownloader.h"
-#include "utils/XMLUtils.h"
-#include "utils/RegExp.h"
-#include "NfoFile.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogOK.h"
 #include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "utils/URIUtils.h"
 
 using namespace std;
 using namespace VIDEO;

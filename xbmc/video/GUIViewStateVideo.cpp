@@ -20,8 +20,6 @@
 
 #include "GUIViewStateVideo.h"
 #include "PlayListPlayer.h"
-#include "filesystem/PluginDirectory.h"
-#include "filesystem/PVRDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/Directory.h"
 #include "VideoDatabase.h"
@@ -31,7 +29,6 @@
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/WindowIDs.h"
-#include "guilib/LocalizeStrings.h"
 #include "view/ViewStateSettings.h"
 
 using namespace XFILE;

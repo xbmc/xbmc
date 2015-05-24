@@ -18,10 +18,12 @@
  *
  */
 
-#include "threads/SystemClock.h"
 #include "Stopwatch.h"
-#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
+#if defined(TARGET_POSIX)
+#include "threads/SystemClock.h" 
+#if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
 #include <sys/sysinfo.h>
+#endif
 #endif
 #include "utils/TimeUtils.h"
 

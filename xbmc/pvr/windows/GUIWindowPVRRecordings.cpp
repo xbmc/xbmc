@@ -31,7 +31,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "pvr/addons/PVRClients.h"

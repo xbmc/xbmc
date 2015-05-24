@@ -22,6 +22,7 @@
 
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
+#include "WindowInterceptor.h"
 
 namespace XBMCAddon
 {

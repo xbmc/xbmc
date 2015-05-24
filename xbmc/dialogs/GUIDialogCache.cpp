@@ -26,7 +26,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
-#include "utils/TimeUtils.h"
 
 CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, const std::string& strMsg) : CThread("GUIDialogCache"),
   m_strHeader(strHeader),

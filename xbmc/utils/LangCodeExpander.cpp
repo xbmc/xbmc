@@ -19,9 +19,7 @@
  */
 
 #include "LangCodeExpander.h"
-#include "LangInfo.h"
 #include "Util.h"
-#include "utils/log.h" 
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 

@@ -19,10 +19,8 @@
  */
 
 #include "GUIDialogPVRGuideSearch.h"
-#include "Application.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIEditControl.h"
-#include "guilib/GUIWindowManager.h"
 #include "utils/StringUtils.h"
 
 #include "addons/include/xbmc_pvr_types.h"

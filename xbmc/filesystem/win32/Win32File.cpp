@@ -24,19 +24,16 @@
 #include "utils/win32/Win32Log.h"
 #include "utils/SystemInfo.h"
 #include "utils/auto_buffer.h"
-#include "utils/StringUtils.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
 #endif // WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-#include <sys/types.h>
 #include <sys/stat.h>
 
 #include <intsafe.h>
 #include <wchar.h>
-#include <limits.h>
 #include <cassert>
 
 

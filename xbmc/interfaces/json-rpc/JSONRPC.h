@@ -26,7 +26,6 @@
 
 #include "JSONRPCUtils.h"
 #include "JSONServiceDescription.h"
-#include "interfaces/IAnnouncer.h"
 
 namespace JSONRPC
 {

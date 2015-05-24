@@ -19,7 +19,6 @@
  */
 
 #include "IDirectory.h"
-#include "Util.h"
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "URL.h"

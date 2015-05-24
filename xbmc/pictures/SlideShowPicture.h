@@ -20,7 +20,6 @@
  */
 
 #include "threads/CriticalSection.h"
-#include "guilib/gui3d.h"
 #include "guilib/DirtyRegion.h"
 #include <string>
 

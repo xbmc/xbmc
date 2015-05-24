@@ -127,7 +127,7 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
     if (ErrorStarting() == true)
     {
       // inform user about error
-      CGUIDialogOK::ShowAndGetInput(13620, 13621, 20022, 20022);
+      CGUIDialogOK::ShowAndGetInput(13620, 13621);
       return false;
     }
   }

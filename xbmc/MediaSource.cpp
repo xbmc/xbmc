@@ -19,7 +19,6 @@
  */
 
 #include "MediaSource.h"
-#include "settings/AdvancedSettings.h"
 #include "Util.h"
 #include "URL.h"
 #include "filesystem/MultiPathDirectory.h"

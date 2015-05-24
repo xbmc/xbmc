@@ -19,16 +19,12 @@
  */
 
 #include "PVROperations.h"
-#include "ApplicationMessenger.h"
-#include "utils/log.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
-#include "pvr/timers/PVRTimers.h"
 #include "epg/Epg.h"
 #include "epg/EpgContainer.h"
 

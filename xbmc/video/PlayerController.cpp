@@ -21,7 +21,6 @@
 #include "PlayerController.h"
 #include "dialogs/GUIDialogSlider.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "cores/IPlayer.h"
@@ -30,7 +29,6 @@
 #include "guilib/GUISliderControl.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
-#include "video/windows/GUIWindowFullScreen.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/OverlayRendererGUI.h"

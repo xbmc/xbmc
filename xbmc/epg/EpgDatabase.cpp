@@ -21,7 +21,6 @@
 
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/VideoSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "addons/include/xbmc_pvr_types.h"

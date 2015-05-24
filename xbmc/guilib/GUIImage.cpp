@@ -19,9 +19,7 @@
  */
 
 #include "GUIImage.h"
-#include "TextureManager.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 
 #include <cassert>
 

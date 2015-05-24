@@ -25,7 +25,6 @@
 #include "utils/ISerializable.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/recordings/PVRRecording.h"
 
 #include <memory>
 #include <string>

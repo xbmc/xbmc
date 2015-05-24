@@ -19,7 +19,6 @@
  */
 
 #include "GUIWindowVideoPlaylist.h"
-#include "playlists/PlayListFactory.h"
 #include "Util.h"
 #include "playlists/PlayListM3U.h"
 #include "Application.h"

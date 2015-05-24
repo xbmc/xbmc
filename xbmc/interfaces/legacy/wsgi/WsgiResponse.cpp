@@ -19,7 +19,6 @@
  */
 
 #include "WsgiResponse.h"
-#include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 

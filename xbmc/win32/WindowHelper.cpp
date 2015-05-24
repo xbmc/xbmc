@@ -19,7 +19,6 @@
  */
 
 #include "WindowHelper.h"
-#include "../Util.h"
 
 extern HWND g_hWnd;
 

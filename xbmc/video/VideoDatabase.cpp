@@ -26,7 +26,6 @@
 #include "threads/SystemClock.h"
 #include "VideoDatabase.h"
 #include "video/windows/GUIWindowVideoBase.h"
-#include "utils/RegExp.h"
 #include "addons/AddonManager.h"
 #include "GUIInfoManager.h"
 #include "Util.h"
@@ -39,7 +38,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "filesystem/SpecialProtocol.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -54,10 +52,8 @@
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "TextureCache.h"
-#include "addons/AddonInstaller.h"
 #include "interfaces/AnnouncementManager.h"
 #include "dbwrappers/dataset.h"
 #include "utils/LabelFormatter.h"
@@ -8887,7 +8883,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
     progress->Close();
 
   if (iFailCount > 0)
-    CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(647), StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount), "", "");
+    CGUIDialogOK::ShowAndGetInput(647, StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount));
 }
 
 void CVideoDatabase::ExportActorThumbs(const std::string &strDir, const CVideoInfoTag &tag, bool singleFiles, bool overwrite /*=false*/)

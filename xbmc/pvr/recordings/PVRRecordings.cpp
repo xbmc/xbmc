@@ -19,16 +19,11 @@
  */
 
 #include "FileItem.h"
-#include "dialogs/GUIDialogOK.h"
 #include "epg/EpgContainer.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "Util.h"
 #include "URL.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "video/VideoDatabase.h"
-#include "settings/Settings.h"
 
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"

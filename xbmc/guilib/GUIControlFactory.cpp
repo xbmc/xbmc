@@ -58,14 +58,12 @@
 #include "input/Key.h"
 #include "addons/Skin.h"
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
 #include "utils/XMLUtils.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
-#include "utils/RssReader.h"
 #include "Util.h"
 
 using namespace std;
@@ -1176,6 +1174,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         labelInfo, scrollOut, timeToPauseAtEnd, resetOnLabelChange);
 
       ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
+      ((CGUIFadeLabelControl *)control)->SetScrolling(scrollValue == CGUIControl::ALWAYS ? true : false);
     }
     break;
   case CGUIControl::GUICONTROL_RSS:

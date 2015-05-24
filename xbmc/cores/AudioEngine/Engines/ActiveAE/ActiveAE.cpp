@@ -29,6 +29,7 @@ using namespace ActiveAE;
 
 #include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
+#include "utils/log.h"
 
 #define MAX_CACHE_LEVEL 0.4   // total cache time of stream in seconds
 #define MAX_WATER_LEVEL 0.2   // buffered time after stream stages in seconds

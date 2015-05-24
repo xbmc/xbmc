@@ -24,7 +24,7 @@
 #include <vector>
 #include <string.h>
 #include <stdint.h>
-#include "MediaSource.h"
+#include "MediaSource.h" // Definition of VECSOURCES
 
 #define ARRAY_SIZE(X)         (sizeof(X)/sizeof((X)[0]))
 

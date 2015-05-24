@@ -22,7 +22,6 @@
 #include "ApplicationMessenger.h"
 #include "Application.h"
 
-#include "LangInfo.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "pictures/GUIWindowSlideShow.h"
@@ -42,7 +41,6 @@
 #include "guilib/Resolution.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
-#include "cores/IPlayer.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "music/tags/MusicInfoTag.h"
@@ -56,9 +54,7 @@
 #elif defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
-#include "addons/AddonCallbacks.h"
 #include "addons/AddonCallbacksGUI.h"
-#include "storage/MediaManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "URL.h"

@@ -21,11 +21,7 @@
 #include "DirectoryNodeSeasons.h"
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
-#include "video/VideoDbUrl.h"
-#include "settings/MediaSettings.h"
-#include "settings/Settings.h"
 #include "FileItem.h"
-#include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;

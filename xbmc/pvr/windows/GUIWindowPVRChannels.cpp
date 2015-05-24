@@ -21,8 +21,6 @@
 #include "GUIWindowPVRChannels.h"
 
 #include "ContextMenuManager.h"
-#include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -38,8 +36,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimers.h"
 #include "epg/EpgContainer.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 
@@ -252,7 +248,7 @@ bool CGUIWindowPVRChannels::OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON b
 
   if (button == CONTEXT_BUTTON_ADD)
   {
-    CGUIDialogOK::ShowAndGetInput(19033,0,19038,0);
+    CGUIDialogOK::ShowAndGetInput(19033, 19038);
     bReturn = true;
   }
 

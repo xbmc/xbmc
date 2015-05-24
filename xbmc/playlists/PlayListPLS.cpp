@@ -23,7 +23,6 @@
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "filesystem/File.h"
-#include "settings/AdvancedSettings.h"
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/CharsetConverter.h"
