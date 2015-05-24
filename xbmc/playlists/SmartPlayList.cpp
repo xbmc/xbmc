@@ -59,7 +59,7 @@ static const translateField fields[] = {
   { "comment",           FieldComment,                 SortByNone,                     CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 569 },
   { "review",            FieldReview,                  SortByNone,                     CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 183 },
   { "themes",            FieldThemes,                  SortByNone,                     CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 21895 },
-  { "moods",             FieldMoods,                   SortByNone,                     CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 175 },
+  { "moods",             FieldMoods,                   SortByNone,                     CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  175 },
   { "styles",            FieldStyles,                  SortByNone,                     CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 176 },
   { "type",              FieldAlbumType,               SortByAlbumType,                CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 564 },
   { "label",             FieldMusicLabel,              SortByNone,                     CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 21899 },
