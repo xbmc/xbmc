@@ -49,6 +49,9 @@ public:
   virtual void         SetVolume       (float scale);
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
+protected:
+  static bool IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
+
 private:
   jni::CJNIAudioTrack  *m_at_jni;
   // m_frames_written must wrap at UINT32_MAX

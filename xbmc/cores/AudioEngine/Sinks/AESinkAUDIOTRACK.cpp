@@ -201,6 +201,12 @@ CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
   Deinitialize();
 }
 
+bool CAESinkAUDIOTRACK::IsSupported(int sampleRateInHz, int channelConfig, int encoding)
+{
+  int ret = CJNIAudioTrack::getMinBufferSize( sampleRateInHz, channelConfig, encoding);
+  return (ret > 0);
+}
+
 bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 {
   m_lastFormat  = format;
@@ -397,7 +403,16 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 #else
   m_info.m_channels = KnownChannels;
 #endif
-  m_info.m_sampleRates.push_back(CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC));
+  int test_sample[] = { 44100, 48000, 96000, 192000 };
+  int test_sample_sz = sizeof(test_sample) / sizeof(int);
+  for (int i=0; i<test_sample_sz; ++i)
+  {
+    if (IsSupported(test_sample[i], CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_PCM_16BIT))
+    {
+      m_info.m_sampleRates.push_back(test_sample[i]);
+      CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - %d supported", test_sample[i]);
+    }
+  }
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
   m_info.m_dataFormats.push_back(AE_FMT_AC3);
   m_info.m_dataFormats.push_back(AE_FMT_DTS);
