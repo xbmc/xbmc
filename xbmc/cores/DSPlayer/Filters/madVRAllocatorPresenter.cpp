@@ -209,8 +209,6 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 
   if (m_firstBoot)
   { 
-    m_firstBoot = false;
-
     // Create Shared Texture
     HRESULT hr;
     if (FAILED(hr = m_pD3DDeviceMadVR->CreateVertexBuffer(sizeof(VID_FRAME_VERTEX) * 4, D3DUSAGE_WRITEONLY, D3DFVF_VID_FRAME_VERTEX, D3DPOOL_DEFAULT, &m_pMadvrVertexBuffer, NULL)))
@@ -221,6 +219,8 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 
     if (FAILED(hr = m_pD3DDeviceMadVR->CreateTexture(m_dwWidth, m_dwHeight, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pMadvrTexture, &m_pSharedHandle)))
       return hr;
+
+    m_firstBoot = false;
   }
 
   Com::SmartSize size;
@@ -253,6 +253,13 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
   }
 
   return hr;
+}
+
+void CmadVRAllocatorPresenter::RenderToMadvrTexture()
+{
+  // Draw Kodi texture on Shared Texture
+  if (!m_firstBoot)
+    RenderToTexture(m_pKodiTexture, m_pKodiSurface);
 }
 
 HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, REFERENCE_TIME atpf, int left, int top, int right, int bottom, int width, int height)
@@ -289,24 +296,25 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
 
   HRESULT hr = E_UNEXPECTED;
 
-  if (FAILED(hr = RenderToTexture(m_pKodiTexture, m_pKodiSurface)))
-    return hr;
-
+  // Store madVR States
   if (FAILED(hr = StoreMadDeviceState()))
     return hr;
 
+  // Call new frame from Kodi mainthread
   g_renderManager.NewFrame();
 
+  //Setup madVR Device
   if (FAILED(hr = SetupMadDeviceState()))
     return hr;
 
   if (FAILED(hr = SetupOSDVertex(m_pMadvrVertexBuffer)))
     return hr;
 
-  // Draw Kodi texture on madVR
+  // Draw Kodi shared texture on madVR
   if (FAILED(hr = RenderTexture(m_pMadvrVertexBuffer, m_pMadvrTexture)))
     return hr;
 
+  // Restore madVR states
   if (FAILED(hr = RestoreMadDeviceState()))
     return hr;
 

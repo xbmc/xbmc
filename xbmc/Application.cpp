@@ -2005,6 +2005,10 @@ void CApplication::Render()
     }
     else
     {
+#ifdef HAS_DS_PLAYER
+      if (CMadvrCallback::Get()->UsingMadvr())
+        CMadvrCallback::Get()->GetCallback()->RenderToMadvrTexture();
+#endif
       if (RenderNoPresent())
         hasRendered = true;
     }

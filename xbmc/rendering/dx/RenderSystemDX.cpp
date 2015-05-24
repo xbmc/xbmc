@@ -745,20 +745,11 @@ bool CRenderSystemDX::BeginRender()
   }
 
   IDirect3DSurface9 *pBackBuffer;
-#ifdef HAS_DS_PLAYER
-  if (!CMadvrCallback::Get()->UsingMadvr())
-#endif
   if(m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer) != D3D_OK)
     return false;
 
-#ifdef HAS_DS_PLAYER
-  if (!CMadvrCallback::Get()->UsingMadvr())
-#endif
   m_pD3DDevice->SetRenderTarget(0, pBackBuffer);
 
-#ifdef HAS_DS_PLAYER
-  if (!CMadvrCallback::Get()->UsingMadvr())
-#endif
   pBackBuffer->Release();
 
   m_inScene = true;
