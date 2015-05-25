@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,6 +18,8 @@
  *
  */
 
+#include <memory>
+#include <list>
 #include "system.h"
 #include "PowerManager.h"
 #include "Application.h"
@@ -73,14 +75,40 @@ void CPowerManager::Initialize()
   m_instance = new CAndroidPowerSyscall();
 #elif defined(TARGET_POSIX)
 #if defined(HAS_DBUS)
-  if (CConsoleUPowerSyscall::HasConsoleKitAndUPower())
-    m_instance = new CConsoleUPowerSyscall();
-  else if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
-    m_instance = new CConsoleDeviceKitPowerSyscall();
-  else if (CLogindUPowerSyscall::HasLogind())
-    m_instance = new CLogindUPowerSyscall();
-  else if (CUPowerSyscall::HasUPower())
-    m_instance = new CUPowerSyscall();
+  std::unique_ptr<IPowerSyscall> bestPowerManager;
+  std::unique_ptr<IPowerSyscall> currPowerManager;
+  int bestCount = -1;
+  int currCount = -1;
+  
+  std::list< std::pair< std::function<bool()>,
+                        std::function<IPowerSyscall*()> > > powerManagers =
+  {
+    std::make_pair(CConsoleUPowerSyscall::HasConsoleKitAndUPower,
+                   [] { return new CConsoleUPowerSyscall(); }),
+    std::make_pair(CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit,
+                   [] { return new CConsoleDeviceKitPowerSyscall(); }),
+    std::make_pair(CLogindUPowerSyscall::HasLogind,
+                   [] { return new CLogindUPowerSyscall(); }),
+    std::make_pair(CUPowerSyscall::HasUPower,
+                   [] { return new CUPowerSyscall(); })
+  };
+  for(const auto& powerManager : powerManagers)
+  {
+    if (powerManager.first())
+    {
+      currPowerManager.reset(powerManager.second());
+      currCount = currPowerManager->CountPowerFeatures();
+      if (currCount > bestCount)
+      {
+        bestCount = currCount;
+        bestPowerManager = std::move(currPowerManager);
+      }
+      if (bestCount == IPowerSyscall::MAX_COUNT_POWER_FEATURES)
+        break;
+    }
+  }
+  if (bestPowerManager)
+    m_instance = bestPowerManager.release();
   else
 #endif // HAS_DBUS
     m_instance = new CFallbackPowerSyscall();
