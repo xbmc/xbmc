@@ -258,6 +258,7 @@ CApplication::CApplication(void)
   , m_progressTrackingItem(new CFileItem)
   , m_musicInfoScanner(new CMusicInfoScanner)
   , m_playerController(new CPlayerController)
+  , m_fallbackLanguageLoaded(false)
 {
   m_network = NULL;
   TiXmlBase::SetCondenseWhiteSpace(false);
@@ -1123,8 +1124,7 @@ bool CApplication::Initialize()
   }
 
   // load the language and its translated strings
-  bool fallbackLanguage = false;
-  if (!LoadLanguage(false, fallbackLanguage))
+  if (!LoadLanguage(false))
     return false;
 
   // Load curl so curl_global_init gets called before any service threads
@@ -1146,6 +1146,7 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
+  bool uiInitializationFinished = true;
   if (g_windowManager.Initialized())
   {
     CSettings::Get().GetSetting("powermanagement.displaysoff")->SetRequirementsMet(m_dpms->IsSupported());
@@ -1173,7 +1174,12 @@ bool CApplication::Initialize()
 
     // check if we should use the login screen
     if (CProfilesManager::Get().UsingLoginScreen())
+    {
+      // the login screen still needs to perform additional initialization
+      uiInitializationFinished = false;
+
       g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
+    }
     else
     {
 #ifdef HAS_JSONRPC
@@ -1182,8 +1188,16 @@ bool CApplication::Initialize()
       ADDON::CAddonMgr::Get().StartServices(false);
 
       // let's start the PVR manager and decide if the PVR manager handle the startup window activation
-      if (!StartPVRManager())
-        g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
+      if (StartPVRManager())
+        uiInitializationFinished = false;
+      else
+      {
+        int firstWindow = g_SkinInfo->GetFirstWindow();
+        // the startup window is considered part of the initialization as it most likely switches to the final window
+        uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
+
+        g_windowManager.ActivateWindow(firstWindow);
+      }
 
       CStereoscopicsManager::Get().Initialize();
     }
@@ -1227,11 +1241,12 @@ bool CApplication::Initialize()
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
 
-  if (fallbackLanguage)
-    CGUIDialogOK::ShowAndGetInput(24133, 24134);
-
-  // show info dialog about moved configuration files if needed
-  ShowAppMigrationMessage();
+  // if the user interfaces has been fully initialized let everyone know
+  if (uiInitializationFinished)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+    g_windowManager.SendThreadMessage(msg);
+  }
 
   return true;
 }
@@ -3858,6 +3873,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (m_itemCurrentFile->IsOnDVD())
           StopPlaying();
       }
+      else if (message.GetParam1() == GUI_MSG_UI_READY)
+      {
+        if (m_fallbackLanguageLoaded)
+          CGUIDialogOK::ShowAndGetInput(24133, 24134);
+
+        // show info dialog about moved configuration files if needed
+        ShowAppMigrationMessage();
+      }
     }
     break;
 
@@ -4894,10 +4917,10 @@ bool CApplication::SetLanguage(const std::string &strLanguage)
   return CSettings::Get().SetString("locale.language", strLanguage);
 }
 
-bool CApplication::LoadLanguage(bool reload, bool& fallback)
+bool CApplication::LoadLanguage(bool reload)
 {
   // load the configured langauge
-  if (!g_langInfo.SetLanguage(fallback, "", reload))
+  if (!g_langInfo.SetLanguage(m_fallbackLanguageLoaded, "", reload))
     return false;
 
   // set the proper audio and subtitle languages
