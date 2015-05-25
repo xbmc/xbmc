@@ -1800,9 +1800,8 @@ bool CPVRClient::Autoconfigure(void)
 
         if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(19688), // Scanning for PVR services
                                               strLogLine,
-                                              "",
-                                              g_localizeStrings.Get(19690) // Do you want to use this service?
-                                              ))
+                                              g_localizeStrings.Get(19690), // Do you want to use this service?
+                                              ""))
         {
           CLog::Log(LOGDEBUG, "%s - %s service found but not enabled by the user", __FUNCTION__, (*it).GetName().c_str());
           m_rejectedAvahiHosts.push_back(*it);

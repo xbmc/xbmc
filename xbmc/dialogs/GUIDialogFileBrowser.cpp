@@ -254,7 +254,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           if (CDirectory::Create(strPath))
             Update(m_vecItems->GetPath());
           else
-            CGUIDialogOK::ShowAndGetInput(20069,20072,20073,0);
+            CGUIDialogOK::ShowAndGetInput(20069, 20072);
         }
       }
       else if (message.GetSenderId() == CONTROL_FLIP)
