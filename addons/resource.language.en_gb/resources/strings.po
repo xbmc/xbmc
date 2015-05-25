@@ -11059,7 +11059,7 @@ msgid "Change content"
 msgstr ""
 
 msgctxt "#20443"
-msgid "Do you want to refresh info for all items within this path?"
+msgid "Do you want to refresh information for all items within this path?"
 msgstr ""
 
 #empty string id 20444
