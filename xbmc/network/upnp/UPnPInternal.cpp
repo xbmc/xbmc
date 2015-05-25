@@ -990,7 +990,7 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
       pItem->SetProperty("numepisodes", episodes);
       pItem->SetProperty("watchedepisodes", played);
       pItem->SetProperty("unwatchedepisodes", episodes - played);
-      watched = (episodes && played == episodes);
+      watched = (episodes && played >= episodes);
     }
     else if (type == MediaTypeEpisode || type == MediaTypeMovie)
       watched = (played > 0);
