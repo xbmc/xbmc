@@ -331,7 +331,7 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
       // Get Audio Interface LAV AUDIO/FFDSHOW to setting Delay
       if (CStreamsManager::Get())
       {
-        if (CStreamsManager::Get()->SetAudioInterface());
+        if (CStreamsManager::Get()->SetAudioInterface())
         {
           fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay;
           CStreamsManager::Get()->SetAVDelay(fValue);
@@ -455,7 +455,8 @@ void CDSPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   codecname = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioCodecDisplayName(index) : "";
   StringUtils::ToUpper(codecname);
 
-  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail"))
+  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail") ||
+      CGraphFilters::Get()->UsingMediaPortalTsReader())
   { 
     label.Format("%s - (%s, %d Hz, %i Channels)", strStreamName, codecname, info.samplerate, info.channels);
     info.name = label;
@@ -1099,10 +1100,9 @@ bool CDSPlayer::ShowPVRChannelInfo()
 {
   bool bReturn(false);
 
-  if (CSettings::Get().GetBool("pvrmenu.infoswitch"))
+  if (CSettings::Get().GetInt("pvrmenu.displaychannelinfo") > 0)
   {
-    int iTimeout = CSettings::Get().GetBool("pvrmenu.infotimeout") ? CSettings::Get().GetInt("pvrmenu.infotime") : 0;
-    g_PVRManager.ShowPlayerInfo(iTimeout);
+    g_PVRManager.ShowPlayerInfo(CSettings::Get().GetInt("pvrmenu.displaychannelinfo"));
 
     bReturn = true;
   }
