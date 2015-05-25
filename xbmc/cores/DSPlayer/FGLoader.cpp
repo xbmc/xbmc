@@ -183,7 +183,7 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
     pWinFilePath.Replace("/", "\\");
 
   CStdStringW strFileW;
-  g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
+  g_charsetConverter.utf8ToW(pWinFilePath, strFileW, false);
   SFilterInfos infos;
   try // Load() may crash on bad designed codec. Prevent XBMC to hang
   {
