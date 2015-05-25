@@ -59,10 +59,6 @@ file(COPY ${APP_ROOT}/project/cmake/scripts/common/addon-helpers.cmake
           ${APP_ROOT}/project/cmake/scripts/common/addoptions.cmake
      DESTINATION ${APP_LIB_DIR})
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  file(COPY ${APP_ROOT}/project/cmake/scripts/linux/UseMultiArch.cmake DESTINATION ${APP_LIB_DIR})
-endif()
-
 # generate xbmc-config.cmake for backwards compatibility to xbmc
 configure_file(${APP_ROOT}/project/cmake/xbmc-config.cmake.in ${XBMC_LIB_DIR}/xbmc-config.cmake @ONLY)
 
