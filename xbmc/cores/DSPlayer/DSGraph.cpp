@@ -241,16 +241,20 @@ void CDSGraph::UpdateTime()
 
   CSingleLock lock(m_ObjectLock);
 
-  if (g_pPVRStream)
-  {
-    m_State.time = g_pPVRStream->GetTime();
-    m_State.time_total = g_pPVRStream->GetTotalTime();
-    return;
-  }
-
   if (!m_pMediaSeeking)
     return;
+  
   LONGLONG Position;
+
+  if (g_pPVRStream)
+  {
+	  if (SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
+		  m_State.time = Position;
+
+	  if (SUCCEEDED(m_pMediaSeeking->GetDuration(&Position)))
+		  m_State.time_total = Position;
+	  return;
+  }
 
   if (SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
     m_State.time = Position;
@@ -657,6 +661,14 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
   }
   CSingleLock lock(m_ObjectLock);
 
+  if (g_pPVRStream)    
+  {  
+    // If seek time is close to the end of the timeshift file.
+    uint64_t endOfTimeShiftFile = (GetTotalTime() >= (uint64_t)MSEC_TO_DS_TIME(2000)) ? (GetTotalTime() - (uint64_t)MSEC_TO_DS_TIME(2000)) : 0;
+    if (position > endOfTimeShiftFile)
+      position = endOfTimeShiftFile;
+  }
+
   if (showPopup)
     g_infoManager.SetDisplayAfterSeek(100000);
 
@@ -725,6 +737,10 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
     seek = GetTotalTime() * (float)((GetPercentage() + percent) / 100);
   }
 
+  // If seek < 0 - seek to the start
+  if (seek < 0)
+    seek = 0;
+
   UpdateTime();
   Seek(seek);
   UpdateTime();
@@ -743,13 +759,33 @@ void CDSGraph::SeekPercentage(float iPercent)
 // return time in DS_TIME_BASE unit
 uint64_t CDSGraph::GetTime()
 {
-  return m_State.time;
+  CSingleLock lock(m_ObjectLock);
+
+  if (!g_pPVRStream || CDSPlayer::IsCurrentThread())	// Used by Current Thread (seek) or none PVR video
+    return m_State.time;
+  else 												    // Used by GUI on PVR video
+  {
+    if (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
+      return MSEC_TO_DS_TIME(g_pPVRStream->GetTime());
+    else
+      return m_State.time;
+  }
 }
 
 // return length in DS_TIME_BASE unit
 uint64_t CDSGraph::GetTotalTime()
 {
-  return m_State.time_total;
+  CSingleLock lock(m_ObjectLock);
+
+  if (!g_pPVRStream || CDSPlayer::IsCurrentThread())	// Used by Current Thread (seek) or none PVR video
+    return m_State.time_total;
+  else 												    // Used by GUI on PVR video
+  {
+    if (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
+      return MSEC_TO_DS_TIME(g_pPVRStream->GetTotalTime());
+    else
+      return m_State.time_total;
+  }
 }
 
 float CDSGraph::GetPercentage()
@@ -798,7 +834,8 @@ CStdString CDSGraph::GetAudioInfo()
   if (!c)
     return "File closed";
 
-  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail"))
+  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail") ||
+      CGraphFilters::Get()->UsingMediaPortalTsReader())
   {
     audioInfo.Format("Audio: (%s, %d Hz, %d Channels) | Renderer: %s",
       c->GetAudioCodecDisplayName(g_application.m_pPlayer->GetAudioStream()),
@@ -825,7 +862,8 @@ CStdString CDSGraph::GetVideoInfo()
   if (!c)
     return "File closed";
   
-  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail"))
+  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail") ||
+      CGraphFilters::Get()->UsingMediaPortalTsReader())
   {
     videoInfo.Format("Video: (%s, %dx%d) | Renderer: %s",
       c->GetVideoCodecDisplayName(),
