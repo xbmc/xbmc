@@ -1987,7 +1987,7 @@ namespace VIDEO
     if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS
         || (info->Content() == CONTENT_TVSHOWS && !pItem->m_bIsFolder))
       strNfoFile = GetnfoFile(pItem, bGrabAny);
-    if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
+    else if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
       strNfoFile = URIUtils::AddFileToFolder(pItem->GetPath(), "tvshow.nfo");
 
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
