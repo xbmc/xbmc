@@ -302,6 +302,7 @@ CDX9AllocatorPresenter::~CDX9AllocatorPresenter()
 {
   g_Windowing.Unregister(this);
   g_renderManager.UnregisterCallback();
+  g_renderManager.UnInit();
   if (m_bDesktopCompositionDisabled)
   {
     m_bDesktopCompositionDisabled = false;
