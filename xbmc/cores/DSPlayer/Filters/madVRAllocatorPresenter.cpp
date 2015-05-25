@@ -76,6 +76,8 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Unregister(m_exclusiveCallback, this);
 
+  g_renderManager.UnInit();
+  
   // the order is important here
   CMadvrCallback::Destroy();
   SAFE_DELETE(m_pMadvrShared);
