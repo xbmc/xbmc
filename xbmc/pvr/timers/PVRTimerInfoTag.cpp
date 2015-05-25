@@ -314,7 +314,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
   if (error == PVR_ERROR_RECORDING_RUNNING)
   {
     // recording running. ask the user if it should be deleted anyway
-    if (!CGUIDialogYesNo::ShowAndGetInput(122,0,19122,0))
+    if (!CGUIDialogYesNo::ShowAndGetInput(122, 19122, -1, -1))
       return false;
 
     error = g_PVRClients->DeleteTimer(*this, true);

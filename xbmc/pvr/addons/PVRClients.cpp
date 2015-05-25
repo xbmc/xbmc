@@ -1269,7 +1269,7 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
   if (!g_PVRManager.IsStarted() && !g_PVRManager.IsInitialising())
     return;
 
-  CGUIDialogOK::ShowAndGetInput(19240, 19241, 19242, 19243);
+  CGUIDialogOK::ShowAndGetInput(19240, 19241);
 
   std::vector<std::string> params;
   params.push_back("addons://disabled/xbmc.pvrclient");
@@ -1323,7 +1323,7 @@ bool CPVRClients::UpdateAddons(void)
     // You need a tuner, backend software, and an add-on for the backend to be able to use PVR.
     // Please visit http://kodi.wiki/view/PVR to learn more.
     m_bNoAddonWarningDisplayed = true;
-    CGUIDialogOK::ShowAndGetInput(19271, 19272, 19273, 19274);
+    CGUIDialogOK::ShowAndGetInput(19271, 19272);
     CSettings::Get().SetBool("pvrmanager.enabled", false);
     CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_MYPVR, 0);
     g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_MYPVR);
