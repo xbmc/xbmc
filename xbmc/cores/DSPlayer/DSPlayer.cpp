@@ -708,7 +708,7 @@ LRESULT CALLBACK CDSPlayer::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 void CDSPlayer::HandleMessages()
 {
   MSG msg;
-  while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+  while (GetMessage(&msg, NULL, 0, 0) != 0)
   {    
     if (msg.message != WM_GRAPHMESSAGE)
     { 
