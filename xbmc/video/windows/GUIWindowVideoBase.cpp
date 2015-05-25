@@ -23,6 +23,7 @@
 #include "Util.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
+#include "video/VideoLibraryQueue.h"
 #include "addons/GUIDialogAddonInfo.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
@@ -262,7 +263,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
   if (pItem->m_bIsFolder)
     item.SetProperty("set_folder_thumb", pItem->GetPath());
 
-  bool modified = ShowIMDB(&item, scraper, fromDB);
+  bool modified = ShowIMDB(CFileItemPtr(new CFileItem(item)), scraper, fromDB);
   if (modified &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
@@ -294,7 +295,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, bool fromDB)
+bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, bool fromDB)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -375,7 +376,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
     if (!info || info->Content() == CONTENT_NONE) // disable refresh button
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
     *item->GetVideoInfoTag() = movieDetails;
-    pDlgInfo->SetMovie(item);
+    pDlgInfo->SetMovie(item.get());
     pDlgInfo->Open();
     needsRefresh = pDlgInfo->NeedRefresh();
     if (!needsRefresh)
@@ -383,7 +384,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
     // check if the item in the video info dialog has changed and if so, get the new item
     else if (pDlgInfo->GetCurrentListItem() != NULL)
     {
-      item = pDlgInfo->GetCurrentListItem().get();
+      item = pDlgInfo->GetCurrentListItem();
 
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         item->SetPath(item->GetVideoInfoTag()->GetPath());
@@ -394,7 +395,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
   if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
     return false;
 
-  if(!info)
+  if (!info)
     return false;
 
   if (g_application.IsVideoScanning())
@@ -403,259 +404,25 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
     return false;
   }
 
-  m_database.Open();
-  // 2. Look for a nfo File to get the search URL
-  SScanSettings settings;
-  info = m_database.GetScraperForPath(item->GetPath(),settings);
-
-  if (!info)
-    return false;
-
-  // Get the correct movie title
-  std::string movieName = item->GetMovieName(settings.parent_name);
-
-  CScraperUrl scrUrl;
-  CVideoInfoScanner scanner;
-  bool hasDetails = false;
   bool listNeedsUpdating = false;
-  bool ignoreNfo = false;
   // 3. Run a loop so that if we Refresh we re-run this block
   do
   {
-    if (!ignoreNfo)
-    {
-      CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
-      if (nfoResult == CNfoFile::ERROR_NFO)
-        ignoreNfo = true;
-      else
-      if (nfoResult != CNfoFile::NO_NFO)
-        hasDetails = true;
+    if (!CVideoLibraryQueue::Get().RefreshItemModal(item, needsRefresh, pDlgInfo->RefreshAll()))
+      return listNeedsUpdating;
 
-      if (needsRefresh)
-      {
-        bHasInfo = true;
-        if (!info->IsNoop() && (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO))
-        {
-          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{13346}, CVariant{20446}))
-          {
-            hasDetails = false;
-            ignoreNfo = true;
-            scrUrl.Clear();
-            info = info2;
-          }
-        }
-      }
-    }
+    // remove directory caches and reload images
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    OnMessage(reload);
 
-    // 4. if we don't have an url, or need to refresh the search
-    //    then do the web search
-    MOVIELIST movielist;
-    if (info->Content() == CONTENT_TVSHOWS && !item->m_bIsFolder)
-      hasDetails = true;
-
-    if (!hasDetails && (scrUrl.m_url.size() == 0 || needsRefresh))
-    {
-      // 4a. show dialog that we're busy querying www.imdb.com
-      std::string strHeading = StringUtils::Format(g_localizeStrings.Get(197).c_str(),info->Name().c_str());
-      pDlgProgress->SetHeading(CVariant{std::move(strHeading)});
-      pDlgProgress->SetLine(0, CVariant{movieName}); //don't use std::move as it's used further down
-      pDlgProgress->SetLine(1, CVariant{""});
-      pDlgProgress->SetLine(2, CVariant{""});
-      pDlgProgress->Open();
-      pDlgProgress->Progress();
-
-      // 4b. do the websearch
-      info->ClearCache();
-      CVideoInfoDownloader imdb(info);
-      int returncode = imdb.FindMovie(movieName, movielist, pDlgProgress);
-      if (returncode > 0)
-      {
-        pDlgProgress->Close();
-        if (movielist.size() > 0)
-        {
-          int iString = 196;
-          if (info->Content() == CONTENT_TVSHOWS)
-            iString = 20356;
-          pDlgSelect->SetHeading(CVariant{iString});
-          pDlgSelect->Reset();
-          for (unsigned int i = 0; i < movielist.size(); ++i)
-            pDlgSelect->Add(movielist[i].strTitle);
-          pDlgSelect->EnableButton(true, 413); // manual
-          pDlgSelect->Open();
-
-          // and wait till user selects one
-          int iSelectedMovie = pDlgSelect->GetSelectedLabel();
-          if (iSelectedMovie >= 0)
-          {
-            scrUrl = movielist[iSelectedMovie];
-            CLog::Log(LOGDEBUG, "%s: user selected movie '%s' with URL '%s'",
-              __FUNCTION__, scrUrl.strTitle.c_str(), scrUrl.m_url[0].m_url.c_str());
-          }
-          else if (!pDlgSelect->IsButtonPressed())
-          {
-            m_database.Close();
-            return listNeedsUpdating; // user backed out
-          }
-        }
-      }
-      else if (returncode == -1 || !CVideoInfoScanner::DownloadFailed(pDlgProgress))
-      {
-        pDlgProgress->Close();
-        return false;
-      }
-    }
-    // 4c. Check if url is still empty - occurs if user has selected to do a manual
-    //     lookup, or if the IMDb lookup failed or was cancelled.
-    if (!hasDetails && scrUrl.m_url.size() == 0)
-    {
-      // Check for cancel of the progress dialog
-      pDlgProgress->Close();
-      if (pDlgProgress->IsCanceled())
-      {
-        m_database.Close();
-        return listNeedsUpdating;
-      }
-
-      // Prompt the user to input the movieName
-      int iString = 16009;
-      if (info->Content() == CONTENT_TVSHOWS)
-        iString = 20357;
-      if (!CGUIKeyboardFactory::ShowAndGetInput(movieName, CVariant{g_localizeStrings.Get(iString)}, false))
-      {
-        m_database.Close();
-        return listNeedsUpdating; // user backed out
-      }
-
-      needsRefresh = true;
-    }
-    else
-    {
-      // 5. Download the movie information
-      // show dialog that we're downloading the movie info
-
-      // clear artwork and invalidate hashes
-      CTextureDatabase db;
-      if (db.Open())
-      {
-        for (CGUIListItem::ArtMap::const_iterator i = item->GetArt().begin(); i != item->GetArt().end(); ++i)
-          db.InvalidateCachedTexture(i->second);
-        db.Close();
-      }
-      item->ClearArt();
-
-      CFileItemList list;
-      std::string strPath=item->GetPath();
-      if (item->IsVideoDb() || fromDB)
-      {
-        std::vector<std::string> paths;
-        if (item->GetVideoInfoTag()->m_type == "tvshow" && pDlgInfo->RefreshAll() &&
-            m_database.GetPathsLinkedToTvShow(item->GetVideoInfoTag()->m_iDbId, paths))
-        {
-          for (std::vector<std::string>::const_iterator i = paths.begin(); i != paths.end(); ++i)
-          {
-            CFileItemPtr newItem(new CFileItem(*item->GetVideoInfoTag()));
-            newItem->SetPath(*i);
-            list.Add(newItem);
-          }
-        }
-        else
-        {
-          CFileItemPtr newItem(new CFileItem(*item->GetVideoInfoTag()));
-          list.Add(newItem);
-        }
-        strPath = item->GetVideoInfoTag()->m_strPath;
-      }
-      else
-      {
-        CFileItemPtr newItem(new CFileItem(*item));
-        list.Add(newItem);
-      }
-
-      if (item->m_bIsFolder)
-        list.SetPath(URIUtils::GetParentPath(strPath));
-      else
-        list.SetPath(URIUtils::GetDirectory(strPath));
-
-      int iString=198;
-      if (info->Content() == CONTENT_TVSHOWS)
-      {
-        if (item->m_bIsFolder)
-          iString = 20353;
-        else
-          iString = 20361;
-      }
-      if (info->Content() == CONTENT_MUSICVIDEOS)
-        iString = 20394;
-      pDlgProgress->SetHeading(CVariant{iString});
-      pDlgProgress->SetLine(0, CVariant{movieName});
-      pDlgProgress->SetLine(1, CVariant{scrUrl.strTitle});
-      pDlgProgress->SetLine(2, CVariant{""});
-      pDlgProgress->Open();
-      pDlgProgress->Progress();
-      if (bHasInfo && movieDetails.m_iDbId != -1)
-      {
-        if (info->Content() == CONTENT_MOVIES)
-          m_database.DeleteMovie(movieDetails.m_iDbId);
-        if (info->Content() == CONTENT_TVSHOWS && !item->m_bIsFolder)
-          m_database.DeleteEpisode(movieDetails.m_iDbId);
-        if (info->Content() == CONTENT_MUSICVIDEOS)
-          m_database.DeleteMusicVideo(movieDetails.m_iDbId);
-        if (info->Content() == CONTENT_TVSHOWS && item->m_bIsFolder)
-        {
-          if (pDlgInfo->RefreshAll())
-            m_database.DeleteTvShow(movieDetails.m_iDbId);
-          else
-            m_database.DeleteDetailsForTvShow(movieDetails.m_iDbId);
-        }
-      }
-      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info->Content(),!ignoreNfo,&scrUrl,pDlgInfo->RefreshAll(),pDlgProgress))
-      {
-        if (info->Content() == CONTENT_MOVIES)
-          m_database.GetMovieInfo(item->GetPath(),movieDetails);
-        if (info->Content() == CONTENT_MUSICVIDEOS)
-          m_database.GetMusicVideoInfo(item->GetPath(),movieDetails);
-        if (info->Content() == CONTENT_TVSHOWS)
-        {
-          // update tvshow info to get updated episode numbers
-          if (item->m_bIsFolder)
-            m_database.GetTvShowInfo(item->GetPath(),movieDetails);
-          else
-            m_database.GetEpisodeInfo(item->GetPath(),movieDetails);
-        }
-
-        // got all movie details :-)
-        pDlgProgress->Close();
-
-        // now show the imdb info
-
-        // remove directory caches and reload images
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-        CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-        OnMessage(reload);
-
-        *item->GetVideoInfoTag() = movieDetails;
-        pDlgInfo->SetMovie(item);
-        pDlgInfo->Open();
-        item->SetArt("thumb", pDlgInfo->GetThumbnail());
-        needsRefresh = pDlgInfo->NeedRefresh();
-        listNeedsUpdating = true;
-      }
-      else
-      {
-        pDlgProgress->Close();
-        if (pDlgProgress->IsCanceled())
-        {
-          m_database.Close();
-          return listNeedsUpdating; // user cancelled
-        }
-        CGUIDialogOK::ShowAndGetInput(CVariant{195}, CVariant{movieName});
-        m_database.Close();
-        return listNeedsUpdating;
-      }
-    }
-  // 6. Check for a refresh
+    pDlgInfo->SetMovie(item.get());
+    pDlgInfo->Open();
+    item->SetArt("thumb", pDlgInfo->GetThumbnail());
+    needsRefresh = pDlgInfo->NeedRefresh();
+    listNeedsUpdating = true;
   } while (needsRefresh);
-  m_database.Close();
+
   return listNeedsUpdating;
 }
 

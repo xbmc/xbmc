@@ -124,7 +124,7 @@ protected:
   virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item);
   void LoadPlayList(const std::string& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 
-  bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content, bool fromDB);
+  bool ShowIMDB(CFileItemPtr item, const ADDON::ScraperPtr& content, bool fromDB);
 
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
 
