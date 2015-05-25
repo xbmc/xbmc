@@ -603,7 +603,7 @@ void CStreamsManager::LoadStreams()
   // Does the splitter support IAMStreamSelect?
   m_pIAMStreamSelect = NULL;
   HRESULT hr = m_pSplitter->QueryInterface(__uuidof(m_pIAMStreamSelect), (void **)&m_pIAMStreamSelect);
-  if (SUCCEEDED(hr))
+  if (SUCCEEDED(hr) && !(CGraphFilters::Get()->UsingMediaPortalTsReader()))
   {
     CLog::Log(LOGDEBUG, "%s Get IAMStreamSelect interface from %s", __FUNCTION__, splitterName.c_str());
     LoadIAMStreamSelectStreamsInternal();
@@ -1213,7 +1213,8 @@ void CStreamsManager::MediaTypeToStreamDetail(AM_MEDIA_TYPE *pMediaType, CStream
     infos.subtype = pMediaType->subtype;
   }
 
-  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail"))
+  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail") ||
+      CGraphFilters::Get()->UsingMediaPortalTsReader())
     FormatStreamName(s);
   else
     FormatStreamNameBySplitter(s);
