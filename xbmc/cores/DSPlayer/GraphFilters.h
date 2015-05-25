@@ -173,7 +173,11 @@ public:
   bool HasSubFilter() { return m_hsubfilter; }
   void SetHasSubFilter(bool b) { m_hsubfilter = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
-
+  bool UsingMediaPortalTsReader() 
+  { 
+    return ((Splitter.guid != GUID_NULL) && !(StringFromGUID(Splitter.guid).compare(L"{B9559486-E1BB-45D3-A2A2-9A7AFE49B23F}"))); 
+  }
+  
 private:
   CGraphFilters();
   ~CGraphFilters();
