@@ -118,6 +118,7 @@ public:
   bool m_empty;
   bool m_useResampler;
   bool m_useDSP;
+  bool m_bypassDSP;
   bool m_changeResampler;
   bool m_forceResampler;
   bool m_changeDSP;

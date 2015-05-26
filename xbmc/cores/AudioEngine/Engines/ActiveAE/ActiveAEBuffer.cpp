@@ -157,6 +157,7 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(AEAudioFormat inputForm
   m_normalize = true;
   m_useResampler = false;
   m_useDSP = false;
+  m_bypassDSP = false;
   m_changeResampler = false;
   m_changeDSP = false;
 }
@@ -201,7 +202,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
    * The value m_streamId and address pointer m_processor are passed a pointers
    * to CActiveAEDSP::Get().CreateDSPs and set from it.
    */
-  if (useDSP || m_changeDSP)
+  if ((useDSP || m_changeDSP) && !m_bypassDSP)
   {
     m_dspFormat = m_inputFormat;
     m_useDSP = CActiveAEDSP::Get().CreateDSPs(m_streamId, m_processor, m_dspFormat, m_format, upmix, m_resampleQuality, m_MatrixEncoding, m_AudioServiceType, m_Profile);
