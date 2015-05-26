@@ -37,9 +37,8 @@
 #include "utils/Variant.h"
 #include "windowing/WindowingFactory.h"
 
+#include <string>
 #include <utility>
-
-using namespace std;
 
 #define CONTROL_LABEL_ROW1  2
 #define CONTROL_LABEL_ROW2  3

@@ -18,6 +18,9 @@
  *
  */
 
+#include <cstdlib>
+#include <string>
+
 #include "MediaSourceSettings.h"
 #include "URL.h"
 #include "Util.h"
@@ -34,7 +37,6 @@
 #define XML_SOURCES   "sources"
 #define XML_SOURCE    "source"
 
-using namespace std;
 using namespace XFILE;
 
 CMediaSourceSettings::CMediaSourceSettings()
@@ -200,11 +202,11 @@ bool CMediaSourceSettings::UpdateSource(const std::string &strType, const std::s
       if (strUpdateChild == "name")
         it->strName = strUpdateValue;
       else if (strUpdateChild == "lockmode")
-        it->m_iLockMode = (LockType)strtol(strUpdateValue.c_str(), NULL, 10);
+        it->m_iLockMode = (LockType)std::strtol(strUpdateValue.c_str(), NULL, 10);
       else if (strUpdateChild == "lockcode")
         it->m_strLockCode = strUpdateValue;
       else if (strUpdateChild == "badpwdcount")
-        it->m_iBadPwdCount = (int)strtol(strUpdateValue.c_str(), NULL, 10);
+        it->m_iBadPwdCount = (int)std::strtol(strUpdateValue.c_str(), NULL, 10);
       else if (strUpdateChild == "thumbnail")
         it->m_strThumbnailImage = strUpdateValue;
       else if (strUpdateChild == "path")
@@ -255,7 +257,7 @@ bool CMediaSourceSettings::AddShare(const std::string &type, const CMediaSource 
     return false;
 
   // translate dir and add to our current shares
-  string strPath1 = share.strPath;
+  std::string strPath1 = share.strPath;
   if (strPath1.empty())
   {
     CLog::Log(LOGERROR, "CMediaSourceSettings: unable to add empty path");
@@ -313,12 +315,12 @@ bool CMediaSourceSettings::UpdateShare(const std::string &type, const std::strin
 bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNode *source, CMediaSource &share)
 {
   const TiXmlNode *pNodeName = source->FirstChild("name");
-  string strName;
+  std::string strName;
   if (pNodeName && pNodeName->FirstChild())
     strName = pNodeName->FirstChild()->ValueStr();
 
   // get multiple paths
-  vector<string> vecPaths;
+  std::vector<std::string> vecPaths;
   const TiXmlElement *pPathName = source->FirstChildElement("path");
   while (pPathName != NULL)
   {
@@ -355,7 +357,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   if (strName.empty() || vecPaths.empty())
     return false;
 
-  vector<string> verifiedPaths;
+  std::vector<std::string> verifiedPaths;
   // disallowed for files, or theres only a single path in the vector
   if (StringUtils::EqualsNoCase(category, "files") || vecPaths.size() == 1)
     verifiedPaths.push_back(vecPaths[0]);
@@ -363,7 +365,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   else
   {
     // validate the paths
-    for (vector<string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); ++path)
+    for (std::vector<std::string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); ++path)
     {
       CURL url(*path);
       bool bIsInvalid = false;
@@ -399,7 +401,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   share.m_iBadPwdCount = 0;
   if (pLockMode)
   {
-    share.m_iLockMode = (LockType)strtol(pLockMode->FirstChild()->Value(), NULL, 10);
+    share.m_iLockMode = (LockType)std::strtol(pLockMode->FirstChild()->Value(), NULL, 10);
     share.m_iHasLock = 2;
   }
 
@@ -407,7 +409,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
     share.m_strLockCode = pLockCode->FirstChild()->Value();
 
   if (pBadPwdCount && pBadPwdCount->FirstChild())
-    share.m_iBadPwdCount = (int)strtol(pBadPwdCount->FirstChild()->Value(), NULL, 10);
+    share.m_iBadPwdCount = (int)std::strtol(pBadPwdCount->FirstChild()->Value(), NULL, 10);
 
   if (pThumbnailNode && pThumbnailNode->FirstChild())
     share.m_strThumbnailImage = pThumbnailNode->FirstChild()->Value();

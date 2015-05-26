@@ -18,6 +18,12 @@
  *
  */
 
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include <limits.h>
 
 #include "GUIDialogContentSettings.h"
@@ -46,7 +52,6 @@
 #define SETTING_EXCLUDE               "exclude"
 #define SETTING_NO_UPDATING           "noupdating"
 
-using namespace std;
 using namespace ADDON;
 
 CGUIDialogContentSettings::CGUIDialogContentSettings()
@@ -433,7 +438,7 @@ void CGUIDialogContentSettings::FillContentTypes()
   if (m_content == CONTENT_ALBUMS || m_content == CONTENT_ARTISTS)
   {
     FillContentTypes(m_content);
-    labels.push_back(make_pair(ADDON::TranslateContent(m_content, true), m_content));
+    labels.push_back(std::make_pair(ADDON::TranslateContent(m_content, true), m_content));
   }
   else
   {
@@ -441,10 +446,10 @@ void CGUIDialogContentSettings::FillContentTypes()
     FillContentTypes(CONTENT_TVSHOWS);
     FillContentTypes(CONTENT_MUSICVIDEOS);
 
-    labels.push_back(make_pair(ADDON::TranslateContent(CONTENT_MOVIES, true), CONTENT_MOVIES));
-    labels.push_back(make_pair(ADDON::TranslateContent(CONTENT_TVSHOWS, true), CONTENT_TVSHOWS));
-    labels.push_back(make_pair(ADDON::TranslateContent(CONTENT_MUSICVIDEOS, true), CONTENT_MUSICVIDEOS));
-    labels.push_back(make_pair(ADDON::TranslateContent(CONTENT_NONE, true), CONTENT_NONE));
+    labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_MOVIES, true), CONTENT_MOVIES));
+    labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_TVSHOWS, true), CONTENT_TVSHOWS));
+    labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_MUSICVIDEOS, true), CONTENT_MUSICVIDEOS));
+    labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_NONE, true), CONTENT_NONE));
   }
 
   SET_CONTROL_LABELS(CONTROL_CONTENT_TYPE, m_content, &labels);
@@ -466,7 +471,7 @@ void CGUIDialogContentSettings::FillContentTypes(CONTENT_TYPE content)
   for (IVECADDONS it = addons.begin(); it != addons.end(); ++it)
   {
     bool isDefault = ((*it)->ID() == defaultID);
-    map<CONTENT_TYPE, VECADDONS>::iterator iter = m_scrapers.find(content);
+    std::map<CONTENT_TYPE, VECADDONS>::iterator iter = m_scrapers.find(content);
 
     AddonPtr scraper = (*it)->Clone();
 
@@ -486,7 +491,7 @@ void CGUIDialogContentSettings::FillContentTypes(CONTENT_TYPE content)
     {
       VECADDONS vec;
       vec.push_back(scraper);
-      m_scrapers.insert(make_pair(content,vec));
+      m_scrapers.insert(std::make_pair(content,vec));
     }
   }
 }
