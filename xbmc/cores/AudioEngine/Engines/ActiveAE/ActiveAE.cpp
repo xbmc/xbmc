@@ -1167,7 +1167,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
         (*it)->m_resampleBuffers = new CActiveAEBufferPoolResample((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
         (*it)->m_resampleBuffers->m_forceResampler = (*it)->m_forceResampler;
-        if (useDSP)
+        (*it)->m_resampleBuffers->m_bypassDSP = (*it)->m_bypassDSP;
+        if (useDSP && !(*it)->m_resampleBuffers->m_bypassDSP)
           (*it)->m_resampleBuffers->SetExtraData((*it)->m_profile, (*it)->m_matrixEncoding, (*it)->m_audioServiceType);
         (*it)->m_resampleBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix, m_settings.normalizelevels, useDSP);
 
@@ -1288,6 +1289,11 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
 
   if (streamMsg->options & AESTREAM_FORCE_RESAMPLE)
     stream->m_forceResampler = true;
+
+  if(streamMsg->options & AESTREAM_BYPASS_ADSP)
+  {
+    stream->m_bypassDSP = true;
+  }
 
   m_streams.push_back(stream);
 
