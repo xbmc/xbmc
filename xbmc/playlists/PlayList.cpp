@@ -30,10 +30,15 @@
 #include "utils/StringUtils.h"
 #include "interfaces/AnnouncementManager.h"
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <utility>
+#include <vector>
 
-//using namespace std;
+
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -275,7 +280,7 @@ void CPlayList::Shuffle(int iPosition)
     CLog::Log(LOGDEBUG,"%s shuffling at pos:%i", __FUNCTION__, iPosition);
 
     ivecItems it = m_vecItems.begin() + iPosition;
-    random_shuffle(it, m_vecItems.end());
+    std::random_shuffle(it, m_vecItems.end());
 
     // the list is now shuffled!
     m_bShuffled = true;
@@ -292,7 +297,7 @@ struct SSortPlayListItem
 
 void CPlayList::UnShuffle()
 {
-  sort(m_vecItems.begin(), m_vecItems.end(), SSortPlayListItem::PlaylistSort);
+  std::sort(m_vecItems.begin(), m_vecItems.end(), SSortPlayListItem::PlaylistSort);
   // the list is now unshuffled!
   m_bShuffled = false;
 }

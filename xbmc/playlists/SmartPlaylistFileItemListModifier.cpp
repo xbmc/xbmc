@@ -18,7 +18,7 @@
  *
  */
 
-#include <map>
+#include <string>
 
 #include "SmartPlaylistFileItemListModifier.h"
 #include "FileItem.h"
@@ -29,7 +29,6 @@
 #define URL_OPTION_XSP              "xsp"
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
-using namespace std;
 
 bool CSmartPlaylistFileItemListModifier::CanModify(const CFileItemList &items) const
 {
