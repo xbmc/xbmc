@@ -820,6 +820,8 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
   if (gui)
   {
+    if (!m_pRenderer->IsGuiLayer())
+      m_pRenderer->Update();
     m_renderedOverlay = m_overlays.HasOverlay(m_presentsource);
     m_overlays.Render(m_presentsource);
   }
