@@ -45,7 +45,10 @@ CPVRDirectory::~CPVRDirectory()
 
 bool CPVRDirectory::Exists(const CURL& url)
 {
-  return (url.IsProtocol("pvr") && url.GetHostName() == "recordings");
+  if (!g_PVRManager.IsStarted())
+    return false;
+
+  return (url.IsProtocol("pvr") && StringUtils::StartsWith(url.GetFileName(), "recordings"));
 }
 
 bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
