@@ -23,7 +23,7 @@
 
 #include "system.h"
 
-#ifdef HAS_XRANDR
+#ifdef HAVE_X11
 
 #include <string>
 #include <vector>
