@@ -598,7 +598,7 @@ void CDVDPlayerAudio::Process()
     }
 
     // signal to our parent that we have initialized
-    if(m_started == false)
+    if(m_started == false && !(result & DECODE_FLAG_DROP))
     {
       m_started = true;
       m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
