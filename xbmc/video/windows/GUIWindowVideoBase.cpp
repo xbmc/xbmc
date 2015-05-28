@@ -443,7 +443,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
         bHasInfo = true;
         if (!info->IsNoop() && (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO))
         {
-          if (CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+          if (CGUIDialogYesNo::ShowAndGetInput(13346, 20446, -1, -1))
           {
             hasDetails = false;
             ignoreNfo = true;
@@ -1948,7 +1948,7 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int label1,
   bool bCanceled;
   CVideoDatabase db;
   db.Open();
-  if (CGUIDialogYesNo::ShowAndGetInput(label1,label2,label3,20022,bCanceled))
+  if (CGUIDialogYesNo::ShowAndGetInput(label1, label2, label3, -1, bCanceled))
   {
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     db.RemoveContentForPath(path, progress);

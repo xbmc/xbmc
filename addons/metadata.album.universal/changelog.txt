@@ -1,3 +1,9 @@
+[B]2.4.0[/B]
+Changed: Language is now a selection list
+
+[B]2.3.1[/B]
+Fixed: scraping multiartis releases, and releases that may feature an artist named differently in musicbrainz.
+
 [B]2.3.0[/B]
 Added: Scraping Styles and Moods from TheAudioDb.com
 

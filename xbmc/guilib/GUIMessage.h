@@ -156,6 +156,11 @@
 
 #define GUI_MSG_GET_FILENAME   48
 
+/*!
+ \brief The user interface is ready for usage
+ */
+#define GUI_MSG_UI_READY       49
+
 #define GUI_MSG_USER         1000
 
 /*!

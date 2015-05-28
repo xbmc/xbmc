@@ -1,3 +1,6 @@
+[B]1.2.7[/B]
+- Fixed: Allow for apostrophes in artist/title
+
 [B]1.2.1[/B]
 - Fixed: Allow for dashes in artist/title (v12.2+ required)
 

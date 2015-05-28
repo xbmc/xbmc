@@ -2,7 +2,7 @@
 <settings>
   <category label="128">
       <setting label="30006" type="labelenum" values="TheAudioDb.com|None" id="biogsource" default="TheAudioDb.com"/>
-      <setting label="30015" type="labelenum" values="en|de|es|fr|il|it|cn|jp|ru|pt|se|nl|no|hu|pl" id="tadbartistlanguage" default="en" visible="eq(-1,0)"/>
+      <setting label="30015" type="select" values="cn|de|en|es|fr|hu|il|it|jp|nl|no|pl|pt|ru|se" id="tadbartistlanguage" default="en" visible="eq(-1,0)"/>
       <setting type="sep"/>
       <setting label="30008" type="labelenum" values="MusicBrainz|allmusic.com|TheAudioDb.com|None" id="discogsource" default="MusicBrainz"/>
       <setting type="sep"/>
@@ -16,7 +16,7 @@
 
   <category label="30021">
       <setting label="30016" type="labelenum" values="TheAudioDb.com|None" id="biogfbsource" default="None"/>
-      <setting label="30015" type="labelenum" values="en|de|es|fr|il|it|cn|jp|ru|pt|se|nl|no|hu|pl" id="tadbartistlanguage" default="en" visible="eq(-1,0)"/>
+      <setting label="30015" type="select" values="cn|de|en|es|fr|hu|il|it|jp|nl|no|pl|pt|ru|se" id="tadbartistlanguage" default="en" visible="eq(-1,0)"/>
       <setting type="sep"/>
       <setting label="30020" type="labelenum" values="TheAudioDb.com|MusicBrainz|allmusic.com|None" id="lifespanfbsource" default="None"/>
       <setting type="sep"/>

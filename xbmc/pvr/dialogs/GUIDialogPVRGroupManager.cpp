@@ -192,7 +192,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage &messa
     {
       if (m_channelGroups->GetFolderCount() == 0)
       {
-        CGUIDialogOK::ShowAndGetInput(19033,19137,0,19138);
+        CGUIDialogOK::ShowAndGetInput(19033, 19137);
       }
       else if (m_ungroupedChannels->GetFileCount() > 0)
       {

@@ -4,8 +4,8 @@
     <setting label="30000" type="bool" id="fanart" default="true"/>
     <setting label="30004" type="bool" id="trailer" default="true"/>
     <setting label="30001" type="labelenum" values="No|480p|720p|1080p" id="TrailerQ" default="No"/>
-    <setting label="30002" type="labelenum" values="bg|cs|da|de|el|en|es|fi|fr|he|hr|hu|it|ja|ko|nl|no|pl|pt|ru|sl|sv|th|tr|zh" id="language" default="en"/>
-    <setting label="30006" type="labelenum" values="au|bg|cs|da|de|el|es|fi|fr|gb|he|hr|hu|it|ja|ko|nl|no|pl|pt|ru|sl|sv|th|tr|us|zh" id="tmdbcertcountry" default="us"/>
+    <setting label="30002" type="select" values="bg|cs|da|de|el|en|es|fi|fr|he|hr|hu|it|ja|ko|nb|nl|no|pl|pt|ro|ru|sk|sl|sr|sv|th|tr|uk|zh" id="language" default="en"/>
+    <setting label="30006" type="select" values="au|bg|cs|da|de|el|es|fi|fr|gb|he|hr|hu|it|ja|ko|nl|no|pl|pt|ru|sl|sv|th|tr|us|zh" id="tmdbcertcountry" default="us"/>
     <setting label="30003" type="labelenum" values="TMDb|IMDb" id="RatingS" default="TMDb"/>
     <setting label="certprefix" type="text" id="certprefix" default="Rated " visible="false"/>
 </settings>

@@ -1,3 +1,13 @@
+[B]3.8.0[/B]
+- added extra languages for selection
+- changed language to a selection list
+
+[B]3.7.13[/B]
+- fixed: movie certification won't scrape
+
+[B]3.7.12[/B]
+- cache api response when using imdb based lookups
+
 [B]3.7.11[/B]
 - updated language files from Transifex
 

@@ -39,11 +39,12 @@
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
   /* if asked to resume somewhere, we should not show anything */
-  if (item.m_lStartOffset
 #ifdef HAS_DS_PLAYER
-	  || (GetDefaultPlayer(item) != EPC_DVDPLAYER && g_application.m_eForcedNextPlayer != EPC_DVDPLAYER)
+  if ((item.m_lStartOffset || (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iBookmarkId > 0))
+  || (GetDefaultPlayer(item) != EPC_DVDPLAYER && g_application.m_eForcedNextPlayer != EPC_DVDPLAYER))
+#else
+  if (item.m_lStartOffset || (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iBookmarkId > 0))
 #endif
-	  )
     return true;
 
   if (CSettings::Get().GetInt("disc.playback") != BD_PLAYBACK_SIMPLE_MENU)

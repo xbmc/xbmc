@@ -40,10 +40,7 @@
 #include "windowing/WindowingFactory.h"
 #include "CompileInfo.h"
 #include <X11/Xatom.h>
-
-#if defined(HAS_XRANDR)
 #include <X11/extensions/Xrandr.h>
-#endif
 
 #include "../WinEventsX11.h"
 #include "input/InputManager.h"
@@ -93,7 +90,6 @@ bool CWinSystemX11::InitWindowSystem()
 
 bool CWinSystemX11::DestroyWindowSystem()
 {
-#if defined(HAS_XRANDR)
   //restore desktop resolution on exit
   if (m_bFullScreen)
   {
@@ -106,7 +102,6 @@ bool CWinSystemX11::DestroyWindowSystem()
     mode.id  = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strId;
     g_xrandr.SetMode(out, mode);
   }
-#endif
 
 #if defined(HAS_GLX)
   if (m_dpy)
@@ -240,7 +235,6 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-#if defined(HAS_XRANDR)
   XOutput out;
   XMode mode;
 
@@ -308,7 +302,6 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       }
     }
   }
-#endif
 
   if (!SetWindow(res.iWidth, res.iHeight, fullScreen, m_userOutput))
     return false;
@@ -325,7 +318,6 @@ void CWinSystemX11::UpdateResolutions()
 {
   CWinSystemBase::UpdateResolutions();
 
-#if defined(HAS_XRANDR)
   int numScreens = XScreenCount(m_dpy);
   g_xrandr.SetNumScreens(numScreens);
 
@@ -382,7 +374,6 @@ void CWinSystemX11::UpdateResolutions()
     CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput = m_userOutput;
   }
   else
-#endif
   {
     m_userOutput = "No Output";
     m_nScreen = DefaultScreen(m_dpy);
@@ -390,8 +381,6 @@ void CWinSystemX11::UpdateResolutions()
     int h = DisplayHeight(m_dpy, m_nScreen);
     UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, w, h, 0.0);
   }
-
-#if defined(HAS_XRANDR)
 
   // erase previous stored modes
   CDisplaySettings::Get().ClearCustomResolutions();
@@ -449,7 +438,6 @@ void CWinSystemX11::UpdateResolutions()
     }
   }
   CDisplaySettings::Get().ApplyCalibrations();
-#endif
 }
 
 bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)

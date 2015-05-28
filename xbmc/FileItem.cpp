@@ -2333,6 +2333,12 @@ void CFileItemList::StackFolders()
     strExpression++;
   }
 
+  if (!folderRegExp.IsCompiled())
+  {
+    CLog::Log(LOGDEBUG, "%s: No stack expressions available. Skipping folder stacking", __FUNCTION__);
+    return;
+  }
+
   // stack folders
   for (int i = 0; i < Size(); i++)
   {

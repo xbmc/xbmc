@@ -2640,12 +2640,10 @@ msgid "To:"
 msgstr ""
 
 msgctxt "#608"
-msgid "Couldn't rip CD or track"
+msgid "Couldn't rip CD or track because CDDARipPath is not set."
 msgstr ""
 
-msgctxt "#609"
-msgid "CDDARipPath is not set."
-msgstr ""
+#empty string id 609
 
 msgctxt "#610"
 msgid "Rip audio track"
@@ -3357,13 +3355,10 @@ msgstr ""
 
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#800"
-msgid "Music library needs to rescan tags from files."
+msgid "Music library needs to rescan tags from files. Would you like to scan now?"
 msgstr ""
 
-#: xbmc/music/windows/GUIWindowMusicBase.cpp
-msgctxt "#801"
-msgid "Would you like to scan now?"
-msgstr ""
+#empty string id 801
 
 #. Label of progess bar which shows the available/total space of pvr backend
 #: xbmc/pvr/PVRGUIInfo.cpp
@@ -5454,15 +5449,10 @@ msgstr ""
 
 #: xbmc\network\NetworkServices.cpp
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control this application"
+msgid "If you proceed, you might not be able to control this application any longer. Are you sure you want to stop the event server?"
 msgstr ""
 
-#: xbmc\network\NetworkServices.cpp
-msgctxt "#13142"
-msgid "any longer. Are you sure you want to stop the event server?"
-msgstr ""
-
-#empty string with id 13143
+#empty string id 13142 to 13143
 
 #: xbmc\osx\XBMCHelper.cpp
 msgctxt "#13144"
@@ -5471,20 +5461,10 @@ msgstr ""
 
 #: xbmc\osx\XBMCHelper.cpp
 msgctxt "#13145"
-msgid "If you are currently using the Apple Remote to control"
+msgid "If you are currently using the Apple Remote to control this application, changing this setting might affect your ability to continue controlling it. Do you want to proceed?"
 msgstr ""
 
-#: xbmc\osx\XBMCHelper.cpp
-msgctxt "#13146"
-msgid "this application, changing this setting might affect your ability"
-msgstr ""
-
-#: xbmc\osx\XBMCHelper.cpp
-msgctxt "#13147"
-msgid "to continue controlling it. Do you want to proceed?"
-msgstr ""
-
-#empty strings from id 13148 to 13158
+#empty strings from id 13146 to 13158
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#13159"
@@ -5753,13 +5733,13 @@ msgctxt "#13307"
 msgid "Track naming template"
 msgstr ""
 
+
+#: unused
 msgctxt "#13308"
-msgid "Do you wish to reboot your system?"
+msgid "Do you wish to reboot your system instead of just this application?"
 msgstr ""
 
-msgctxt "#13309"
-msgid "instead of just this application?"
-msgstr ""
+#empty string id 13309
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -6671,17 +6651,17 @@ msgctxt "#14037"
 msgid "DVD cache - Local network"
 msgstr ""
 
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#14038"
 msgid "Network settings changed"
 msgstr ""
 
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#14039"
-msgid "A restart is required to change your"
+msgid "A restart is required to change your network setup. Would you like to restart now?"
 msgstr ""
 
-msgctxt "#14040"
-msgid "network setup.  Would you like to restart now?"
-msgstr ""
+#empty string with id 14040
 
 #: system/settings/settings.xml
 msgctxt "#14041"
@@ -7371,6 +7351,7 @@ msgstr ""
 
 #empty strings from id 16042 to 16099
 
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#16100"
 msgid "All videos"
 msgstr ""
@@ -7383,22 +7364,35 @@ msgctxt "#16102"
 msgid "Watched"
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#16103"
 msgid "Mark as watched"
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+#: xbmc/pvr/windows/GUIWindowPVRRecordings.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#16104"
 msgid "Mark as unwatched"
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicNav.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#16105"
 msgid "Edit title"
 msgstr ""
 
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#16106"
 msgid "Manage..."
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#16107"
 msgid "Edit sort title"
 msgstr ""
@@ -7664,10 +7658,12 @@ msgctxt "#19000"
 msgid "Switch to channel"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and / or NOT."
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr ""
@@ -7687,30 +7683,37 @@ msgctxt "#19004"
 msgid "Importing guide from clients"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19005"
 msgid "PVR stream information"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19006"
 msgid "Receiving device"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19007"
 msgid "Device status"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19008"
 msgid "Signal quality"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19009"
 msgid "SNR"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19010"
 msgid "BER"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19011"
 msgid "UNC"
 msgstr ""
@@ -7720,18 +7723,22 @@ msgctxt "#19012"
 msgid "PVR backend"
 msgstr ""
 
+#: xbmc/pvr/channels/PVRChannel.cpp
 msgctxt "#19013"
 msgid "Free to air"
 msgstr ""
 
+#: xbmc/pvr/channels/PVRChannel.cpp
 msgctxt "#19014"
 msgid "Fixed"
 msgstr ""
 
+#: skin.confluence
 msgctxt "#19015"
 msgid "Encryption"
 msgstr ""
 
+#: unused
 msgctxt "#19016"
 msgid "PVR backend %i - %s"
 msgstr ""
@@ -7753,22 +7760,34 @@ msgctxt "#19019"
 msgid "Channels"
 msgstr ""
 
+#: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
+#: xbmc/pvr/PVRManager.cpp
+#: skin.confluence
 msgctxt "#19020"
 msgid "TV"
 msgstr ""
 
+#: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
+#: xbmc/pvr/PVRManager.cpp
+#: skin.confluence
 msgctxt "#19021"
 msgid "Radio"
 msgstr ""
 
+#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
+#: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
 msgctxt "#19022"
 msgid "Hidden"
 msgstr ""
 
+#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
+#: skin.confluence
 msgctxt "#19023"
 msgid "TV channels"
 msgstr ""
 
+#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
+#: skin.confluence
 msgctxt "#19024"
 msgid "Radio channels"
 msgstr ""
@@ -8257,13 +8276,12 @@ msgctxt "#19136"
 msgid "Channel unavailable"
 msgstr ""
 
+#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 msgctxt "#19137"
-msgid "No groups defined"
+msgid "No groups defined. Please create a group first"
 msgstr ""
 
-msgctxt "#19138"
-msgid "Please create a group first"
-msgstr ""
+#empty string id 19138
 
 msgctxt "#19139"
 msgid "Name of the new group"
@@ -8707,21 +8725,19 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr ""
 
+#: xbmc/pvr/windows/PVRClients.cpp
 msgctxt "#19240"
 msgid "No PVR add-on enabled"
 msgstr ""
 
+#: xbmc/pvr/windows/PVRClients.cpp
 msgctxt "#19241"
-msgid "The PVR manager has been enabled without any"
+msgid "The PVR manager has been enabled without any enabled PVR add-on. Enable at least one add-on in order to use the PVR functionality."
 msgstr ""
 
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr ""
+#empty strings id 19242
 
-msgctxt "#19243"
-msgid "in order to use the PVR functionality."
-msgstr ""
+#empty strings id 19243
 
 #: system/settings/settings.xml
 msgctxt "#19244"
@@ -8852,16 +8868,12 @@ msgid "No PVR add-ons could be found"
 msgstr ""
 
 msgctxt "#19272"
-msgid "You need a tuner, backend software, and an"
+msgid "You need a tuner, backend software, and an add-on for the backend to be able to use PVR. Please visit http://kodi.wiki/view/PVR to learn more."
 msgstr ""
 
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr ""
+#empty string id 19273
 
-msgctxt "#19274"
-msgid "Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr ""
+#empty string id 19274
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19275"
@@ -9685,8 +9697,9 @@ msgctxt "#20047"
 msgid "Create profile '%s'?"
 msgstr ""
 
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
 msgctxt "#20048"
-msgid "Start with fresh settings"
+msgid "Start with fresh settings or copy from default?"
 msgstr ""
 
 msgctxt "#20049"
@@ -9780,19 +9793,17 @@ msgctxt "#20070"
 msgid "Profile directory"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#20071"
-msgid "Start with fresh media sources"
+msgid "Start with fresh media sources or copy from default?"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#20072"
-msgid "Make sure the selected folder is writeable"
+msgid "Make sure the selected folder is writable and that the new folder name is valid"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFileBrowser.cpp
-msgctxt "#20073"
-msgid "and that the new folder name is valid"
-msgstr ""
+#empty string id 20073
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20074"
@@ -9911,24 +9922,20 @@ msgctxt "#20101"
 msgid "Entering master lock code always enables master mode"
 msgstr ""
 
-msgctxt "#20102"
-msgid "or copy from default?"
-msgstr ""
+#empty string id 20102
 
 msgctxt "#20103"
 msgid "Save changes to profile?"
 msgstr ""
 
 msgctxt "#20104"
-msgid "Old settings found."
+msgid "Old settings found. Do you want to use them?"
 msgstr ""
 
-msgctxt "#20105"
-msgid "Do you want to use them?"
-msgstr ""
+#empty string id 20105
 
 msgctxt "#20106"
-msgid "Old media sources found."
+msgid "Old media sources found. Do you want to use them?"
 msgstr ""
 
 msgctxt "#20107"
@@ -9983,12 +9990,10 @@ msgid "Invalid lock code."
 msgstr ""
 
 msgctxt "#20118"
-msgid "This requires the master lock to be set."
+msgid "This requires the master lock to be set. Would you like to set it now?"
 msgstr ""
 
-msgctxt "#20119"
-msgid "Would you like to set it now?"
-msgstr ""
+#empty string id 20119
 
 msgctxt "#20120"
 msgid "Loading program information"
@@ -10582,13 +10587,12 @@ msgctxt "#20339"
 msgid "Director"
 msgstr ""
 
+#: xbmc/music/windows/GUIWindowMusicSongs.cpp
 msgctxt "#20340"
-msgid "Do you want to remove all items within"
+msgid "Do you want to remove all items within this path from your library?"
 msgstr ""
 
-msgctxt "#20341"
-msgid "this path from your library?"
-msgstr ""
+#empty string id 20341
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
@@ -10979,12 +10983,10 @@ msgid "Fanart slideshow"
 msgstr ""
 
 msgctxt "#20426"
-msgid "Export to a single file or separate"
+msgid "Export to a single file or separate files per entry?"
 msgstr ""
 
-msgctxt "#20427"
-msgid "files per entry?"
-msgstr ""
+#empty string id 20427
 
 msgctxt "#20428"
 msgid "Single file"
@@ -11057,12 +11059,10 @@ msgid "Change content"
 msgstr ""
 
 msgctxt "#20443"
-msgid "Do you want to refresh information for all"
+msgid "Do you want to refresh information for all items within this path?"
 msgstr ""
 
-msgctxt "#20444"
-msgid "items within this path?"
-msgstr ""
+#empty string id 20444
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#20445"
@@ -11070,12 +11070,10 @@ msgid "Fanart"
 msgstr ""
 
 msgctxt "#20446"
-msgid "Locally stored information found."
+msgid "Locally stored information found. Ignore and refresh from Internet?"
 msgstr ""
 
-msgctxt "#20447"
-msgid "Ignore and refresh from Internet?"
-msgstr ""
+#empty string id 20447
 
 #: xbmc/video/VideoInfoScanner.cpp
 msgctxt "#20448"
@@ -11087,8 +11085,9 @@ msgctxt "#20449"
 msgid "Unable to connect to remote server"
 msgstr ""
 
+#: xbmc/video/VideoInfoScanner.cpp
 msgctxt "#20450"
-msgid "Would you like to continue scanning?"
+msgid "Unable to connect to remote server. Would you like to continue scanning?"
 msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
@@ -13446,20 +13445,7 @@ msgctxt "#33073"
 msgid "View changelog"
 msgstr ""
 
-#: Unknown
-msgctxt "#33074"
-msgid "This version of %s requires an"
-msgstr ""
-
-#: Unknown
-msgctxt "#33075"
-msgid "Kodi revision of %s or greater to run."
-msgstr ""
-
-#: Unknown
-msgctxt "#33076"
-msgid "Please update Kodi."
-msgstr ""
+#empty string id from 33074 to 33076
 
 #: Unknown
 msgctxt "#33077"
@@ -13530,7 +13516,7 @@ msgstr ""
 
 #empty strings from id 33104 to 33199
 
-#: xbmc\network\eventclient.cpp
+#: xbmc/network/eventclient.cpp
 msgctxt "#33200"
 msgid "Detected new connection"
 msgstr ""
@@ -13585,51 +13571,61 @@ msgctxt "#34100"
 msgid "Number of channels"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34101"
 msgid "2.0"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34102"
 msgid "2.1"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34103"
 msgid "3.0"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34104"
 msgid "3.1"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34105"
 msgid "4.0"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34106"
 msgid "4.1"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34107"
 msgid "5.0"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34108"
 msgid "5.1"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34109"
 msgid "7.0"
 msgstr ""
 
+#. Indicates the number of audio channels in settings
 #: system/settings/settings.xml
 msgctxt "#34110"
 msgid "7.1"
@@ -13722,19 +13718,17 @@ msgctxt "#34301"
 msgid "Is Apple's Bonjour service installed?[CR]Check the log for more information about this message."
 msgstr ""
 
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#34302"
 msgid "AirPlay requires Zeroconf to be enabled."
 msgstr ""
 
+#: xbmc/network/NetworkServices.cpp
 msgctxt "#34303"
-msgid "Unable to stop Zeroconf"
+msgid "Unable to stop Zeroconf. AirPlay and AirTunes depend on Zeroconf running."
 msgstr ""
 
-msgctxt "#34304"
-msgid "AirPlay and AirTunes depend on Zeroconf running."
-msgstr ""
-
-#empty strings from id 34305 to 34399
+#empty strings from id 34304 to 34399
 
 #: xbmc\cores\VideoRenderers\LinuxRendererGL.cpp
 msgctxt "#34400"
@@ -14095,15 +14089,10 @@ msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36043"
-msgid "No CEC capable TV detected."
+msgid "No CEC capable TV detected. Disable polling for CEC capable devices?"
 msgstr ""
 
-#: xbmc/peripherals/devices/peripheralcecadapter.cpp
-msgctxt "#36044"
-msgid "Disable polling for CEC capable devices?"
-msgstr ""
-
-#empty strings from id 36045 to 36100
+#empty strings from id 36044 to 36100
 #strings from 36100 to 36999 are reserved for settings descriptions
 
 #. Description of settings section "Appearance"

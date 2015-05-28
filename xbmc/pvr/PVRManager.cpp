@@ -515,6 +515,10 @@ void CPVRManager::Process(void)
   {
     g_windowManager.ActivateWindow(m_openWindowId);
     m_openWindowId = 0;
+
+    // let everyone know that the user interface is now ready for usage
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+    g_windowManager.SendThreadMessage(msg);
   }
 
   bool bRestart(false);

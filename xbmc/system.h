@@ -176,9 +176,6 @@
 #ifdef HAVE_LIBPULSE
 #define HAS_PULSEAUDIO
 #endif
-#ifdef HAVE_LIBXRANDR
-#define HAS_XRANDR
-#endif
 #ifdef HAVE_ALSA
 #define HAS_ALSA
 #endif
