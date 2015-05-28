@@ -3212,15 +3212,20 @@ int64_t CDVDPlayer::GetDisplayTime()
 {
   CSingleLock lock(m_StateSection);
   double offset = 0;
-  const double limit  = DVD_MSEC_TO_TIME(200);
-  if(m_State.timestamp > 0)
+  const double limit = DVD_MSEC_TO_TIME(200);
+  if (m_State.timestamp > 0)
   {
-    offset  = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
+    offset = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
     offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
-    if(offset >  limit) offset =  limit;
-    if(offset < -limit) offset = -limit;
+    if (offset > limit)
+      offset = limit;
+    if (offset < 0)
+      offset = 0;
   }
-  return llrint(m_State.disptime + DVD_TIME_TO_MSEC(offset));
+  int64_t ret = llrint(m_State.disptime + DVD_TIME_TO_MSEC(offset));
+  if (ret < 0)
+    ret = 0;
+  return ret;
 }
 
 // return length in msec
