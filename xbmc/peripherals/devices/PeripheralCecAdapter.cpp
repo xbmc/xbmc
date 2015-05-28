@@ -396,10 +396,10 @@ void CPeripheralCecAdapter::Process(void)
       else if (timeout.GetElapsedSeconds() >= CEC_TV_PRESENT_CHECK_TIMEOUT)
       {
         /** no TV found for 30 seconds, ask if the user wants to disable CEC */
-        if (!CGUIDialogYesNo::ShowAndGetInput(36000, // Pulse-Eight CEC adaptor
-                                              36043, // No CEC capable TV detected. Disable polling for CEC capable devices?
-                                              -1,
-                                              -1))
+        if (CGUIDialogYesNo::ShowAndGetInput(36000, // Pulse-Eight CEC adaptor
+                                             36043, // No CEC capable TV detected. Disable polling for CEC capable devices?
+                                             -1,
+                                             -1))
         {
           SetSetting("enabled", false);
           m_bStop          = true;
