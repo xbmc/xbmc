@@ -33,6 +33,7 @@
 
 #include <math.h>
 #include <memory>
+#include <queue>
 
 // stuff for freetype
 #include <ft2build.h>
@@ -441,6 +442,31 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
     }
 
     float cursorX = 0; // current position along the line
+
+    // Collect all the Character info in a first pass, in case any of them
+    // are not currently cached and cause the texture to be enlarged, which
+    // would invalidate the texture coordinates.
+    std::queue<Character> characters;
+    if (alignment & XBFONT_TRUNCATED)
+      GetCharacter(L'.');
+    for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
+    {
+      Character *ch = GetCharacter(*pos);
+      if (!ch)
+      {
+        Character null = { 0 };
+        characters.push(null);
+        continue;
+      }
+      characters.push(*ch);
+
+      if (maxPixelWidth > 0 &&
+          cursorX + (alignment & XBFONT_TRUNCATED ? ch->advance + 3 * m_ellipsesWidth : 0) > maxPixelWidth)
+        break;
+      cursorX += ch->advance;
+    }
+    cursorX = 0;
+
     for (vecText::const_iterator pos = text.begin(); pos != text.end(); ++pos)
     {
       // If starting text on a new line, determine justification effects
@@ -451,8 +477,12 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
       color = colors[color];
 
       // grab the next character
-      Character *ch = GetCharacter(*pos);
-      if (!ch) continue;
+      Character *ch = &characters.front();
+      if (ch->letterAndStyle == 0)
+      {
+        characters.pop();
+        continue;
+      }
 
       if ( alignment & XBFONT_TRUNCATED )
       {
@@ -486,6 +516,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
       }
       else
         cursorX += ch->advance;
+      characters.pop();
     }
     if (hardwareClipping)
     {
