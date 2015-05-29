@@ -2526,7 +2526,9 @@ void CDVDPlayer::HandleMessages()
           m_OmxPlayerState.av_clock.OMXSetSpeed(speed);
           CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CDVDPlayer", __FUNCTION__, speed, m_playSpeed);
         }
-        else if ((speed == DVD_PLAYSPEED_NORMAL) && m_playSpeed != DVD_PLAYSPEED_NORMAL)
+        else if ((speed == DVD_PLAYSPEED_NORMAL) &&
+                 (m_playSpeed != DVD_PLAYSPEED_NORMAL) &&
+                 (m_playSpeed != DVD_PLAYSPEED_PAUSE))
         {
           int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
           if (m_State.disptime != DVD_NOPTS_VALUE)
