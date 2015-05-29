@@ -7982,6 +7982,7 @@ msgid "Channel icons"
 msgstr ""
 
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr ""
@@ -8162,11 +8163,13 @@ msgctxt "#19109"
 msgid "Couldn't save timer.[CR]Check the log for more information about this message."
 msgstr ""
 
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19110"
 msgid "An unexpected error occurred.[CR]Try again later or check the log for more information."
 msgstr ""
 
 #: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19111"
 msgid "PVR backend error.[CR]Check the log for more information about this message."
 msgstr ""

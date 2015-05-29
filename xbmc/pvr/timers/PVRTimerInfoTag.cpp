@@ -398,13 +398,13 @@ bool CPVRTimerInfoTag::UpdateOnClient()
 void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
-    CGUIDialogOK::ShowAndGetInput(19033,19111,19110,0); /* print info dialog "Server error!" */
+    CGUIDialogOK::ShowAndGetInput(19033, 19111, -1, -1); /* print info dialog "Server error!" */
   else if (err == PVR_ERROR_REJECTED)
-    CGUIDialogOK::ShowAndGetInput(19033,19109,19110,0); /* print info dialog "Couldn't delete timer!" */
+    CGUIDialogOK::ShowAndGetInput(19033, 19109, -1, -1); /* print info dialog "Couldn't save timer!" */
   else if (err == PVR_ERROR_ALREADY_PRESENT)
-    CGUIDialogOK::ShowAndGetInput(19033,19109,0,19067); /* print info dialog */
+    CGUIDialogOK::ShowAndGetInput(19033, 19067, -1, -1); /* print info dialog */
   else
-    CGUIDialogOK::ShowAndGetInput(19033,19147,19110,0); /* print info dialog "Unknown error!" */
+    CGUIDialogOK::ShowAndGetInput(19033, 19110, -1, -1); /* print info dialog "Unknown error!" */
 }
 
 void CPVRTimerInfoTag::SetEpgInfoTag(CEpgInfoTagPtr &tag)
