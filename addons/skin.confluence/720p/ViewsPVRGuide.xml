@@ -265,7 +265,7 @@
 					<top>0</top>
 					<width>840</width>
 					<height>20</height>
-					<label>[B]$INFO[ListItem.Label][/B]</label>
+					<label>[B]$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)][/B]</label>
 					<font>font13</font>
 					<textcolor>white</textcolor>
 				</control>
@@ -274,7 +274,7 @@
 					<top>25</top>
 					<width>840</width>
 					<height>20</height>
-					<label>$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, - ]$INFO[ListItem.Genre, • ]</label>
+					<label>$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, - ]$INFO[ListItem.Season, • $LOCALIZE[20373] ]$INFO[ListItem.Episode, • $LOCALIZE[20359] ]$INFO[ListItem.Genre, • ]</label>
 					<font>font12</font>
 					<textcolor>grey</textcolor>
 				</control>
@@ -441,7 +441,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey2</textcolor>
 							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 						</control>
 						<control type="image">
 							<left>970</left>
@@ -580,7 +580,7 @@
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 						</control>
 						<control type="textbox">
 							<description>Plot Value for TVShow</description>
@@ -819,7 +819,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey2</textcolor>
 							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 						</control>
 						<control type="image">
 							<left>970</left>
@@ -958,7 +958,7 @@
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 						</control>
 						<control type="textbox">
 							<description>Plot Value for TVShow</description>
@@ -1164,7 +1164,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey2</textcolor>
 							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 						</control>
 						<control type="image">
 							<left>970</left>
@@ -1283,7 +1283,7 @@
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label</info>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 						</control>
 						<control type="textbox">
 							<description>Plot Value for TVShow</description>
