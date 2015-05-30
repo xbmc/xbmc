@@ -770,7 +770,7 @@ int CBuiltins::Execute(const std::string& execString)
         bool isVideo = items[i]->IsVideo();
         containsMusic |= !isVideo;
         containsVideo |= isVideo;
-        
+
         if (containsMusic && containsVideo)
           break;
       }
@@ -790,7 +790,7 @@ int CBuiltins::Execute(const std::string& execString)
             items.Remove(i);
         }
       }
-      
+
       g_playlistPlayer.ClearPlaylist(playlist);
       g_playlistPlayer.Add(playlist, items);
       g_playlistPlayer.SetCurrentPlaylist(playlist);
@@ -1120,7 +1120,7 @@ int CBuiltins::Execute(const std::string& execString)
     {
       if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
       {
-        CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);  
+        CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);
       }
     }
   }
@@ -1423,7 +1423,7 @@ int CBuiltins::Execute(const std::string& execString)
             CSkinSettings::Get().SetString(string, replace);
         }
       }
-      else 
+      else
       {
         if (params.size() > 2)
         {
@@ -1787,7 +1787,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (type == ADDON_VIZ)
       allowNone = true;
 
-    if (type != ADDON_UNKNOWN && 
+    if (type != ADDON_UNKNOWN &&
         CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
     {
       CAddonMgr::Get().SetDefault(type,addonID);
