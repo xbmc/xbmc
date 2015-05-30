@@ -135,43 +135,36 @@
 		<control type="button" id="90112">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>133</label>
-			<onclick>ActivateWindow(MusicLibrary,Artists,return)</onclick>
+			<onclick>ActivateWindow(Music,Artists,return)</onclick>
 			<visible>Library.HasContent(Music)</visible>
 		</control>
 		<control type="button" id="90113">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>132</label>
-			<onclick>ActivateWindow(MusicLibrary,Albums,return)</onclick>
+			<onclick>ActivateWindow(Music,Albums,return)</onclick>
 			<visible>Library.HasContent(Music)</visible>
 		</control>
 		<control type="button" id="90114">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>134</label>
-			<onclick>ActivateWindow(MusicLibrary,Songs,return)</onclick>
+			<onclick>ActivateWindow(Music,Songs,return)</onclick>
 			<visible>Library.HasContent(Music)</visible>
 		</control>
 		<control type="button" id="90115">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>744</label>
-			<onclick>ActivateWindow(MusicFiles)</onclick>
+			<onclick>ActivateWindow(Music,Files,return)</onclick>
 		</control>
 		<control type="button" id="90116">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>14022</label>
-			<onclick>ActivateWindow(MusicLibrary,root)</onclick>
+			<onclick>ActivateWindow(Music,Root)</onclick>
 			<visible>Library.HasContent(Music)</visible>
 		</control>
 		<control type="button" id="90117">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>24001</label>
-			<onclick>ActivateWindow(MusicLibrary,Addons,return)</onclick>
-			<visible>Library.HasContent(Music)</visible>
-		</control>
-		<control type="button" id="90118">
-			<include>ButtonHomeSubCommonValues</include>
-			<label>24001</label>
-			<onclick>ActivateWindow(MusicFiles,Addons,return)</onclick>
-			<visible>!Library.HasContent(Music)</visible>
+			<onclick>ActivateWindow(Music,Addons,return)</onclick>
 		</control>
 		<control type="image" id="90119">
 			<width>35</width>
