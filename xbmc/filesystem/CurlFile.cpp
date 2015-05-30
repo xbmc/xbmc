@@ -1560,6 +1560,9 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
 
         CLog::Log(LOGNOTICE, "CCurlFile::FillBuffer - Reconnect, (re)try %i", retry);
 
+        // Progressive sleep. TODO: Find a better optimum for this?
+        Sleep( (retry - 1) * 1000);
+
         // Connect + seek to current position (again)
         SetResume();
         g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
