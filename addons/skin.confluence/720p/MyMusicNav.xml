@@ -106,13 +106,6 @@
 					<altlabel>31050</altlabel>
 					<usealttexture>Container.SortDirection(Ascending)</usealttexture>
 				</control>
-				<control type="radiobutton" id="99">
-					<description>Library button</description>
-					<label>$LOCALIZE[29800]</label>
-					<onclick>ReplaceWindow(MusicFiles)</onclick>
-					<selected>Window.IsVisible(MusicLibrary)</selected>
-					<include>ButtonCommonValues</include>
-				</control>
 				<control type="edit" id="19">
 					<visible>Container.CanFilter + !Container.CanFilterAdvanced</visible>
 					<description>Filter</description>
