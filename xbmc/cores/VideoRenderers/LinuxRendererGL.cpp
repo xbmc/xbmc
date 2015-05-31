@@ -3472,36 +3472,42 @@ CRenderInfo CLinuxRendererGL::GetRenderInfo()
   return info;
 }
 
+void CLinuxRendererGL::AddVideoPictureHW(DVDVideoPicture &picture, int index)
+{
+  if (picture.format == RENDER_FMT_VDPAU ||
+      picture.format == RENDER_FMT_VDPAU_420)
+  {
 #ifdef HAVE_LIBVDPAU
-void CLinuxRendererGL::AddProcessor(VDPAU::CVdpauRenderPicture *vdpau, int index)
-{
-  YUVBUFFER &buf = m_buffers[index];
-  VDPAU::CVdpauRenderPicture *pic = vdpau->Acquire();
-  SAFE_RELEASE(buf.vdpau);
-  buf.vdpau = pic;
-}
+    VDPAU::CVdpauRenderPicture *vdpau = picture.vdpau;
+    YUVBUFFER &buf = m_buffers[index];
+    VDPAU::CVdpauRenderPicture *pic = vdpau->Acquire();
+    SAFE_RELEASE(buf.vdpau);
+    buf.vdpau = pic;
 #endif
-
+  }
+  else if (picture.format == RENDER_FMT_VAAPI ||
+           picture.format == RENDER_FMT_VAAPINV12)
+  {
 #ifdef HAVE_LIBVA
-void CLinuxRendererGL::AddProcessor(VAAPI::CVaapiRenderPicture *vaapi, int index)
-{
-  YUVBUFFER &buf = m_buffers[index];
-  VAAPI::CVaapiRenderPicture *pic = vaapi->Acquire();
-  SAFE_RELEASE(buf.vaapi);
-  buf.vaapi = pic;
-}
+    VAAPI::CVaapiRenderPicture *vaapi = picture.vaapi;
+    YUVBUFFER &buf = m_buffers[index];
+    VAAPI::CVaapiRenderPicture *pic = vaapi->Acquire();
+    SAFE_RELEASE(buf.vaapi);
+    buf.vaapi = pic;
 #endif
-
+  }
+  else if (picture.format == RENDER_FMT_CVBREF)
+  {
 #ifdef TARGET_DARWIN
-void CLinuxRendererGL::AddProcessor(struct __CVBuffer *cvBufferRef, int index)
-{
-  YUVBUFFER &buf = m_buffers[index];
-  if (buf.cvBufferRef)
-    CVBufferRelease(buf.cvBufferRef);
-  buf.cvBufferRef = cvBufferRef;
-  // retain another reference, this way dvdplayer and renderer can issue releases.
-  CVBufferRetain(buf.cvBufferRef);
-}
+    struct __CVBuffer *cvBufferRef = picture.cvBufferRef;
+    YUVBUFFER &buf = m_buffers[index];
+    if (buf.cvBufferRef)
+       CVBufferRelease(buf.cvBufferRef);
+    buf.cvBufferRef = cvBufferRef;
+    // retain another reference, this way dvdplayer and renderer can issue releases.
+    CVBufferRetain(buf.cvBufferRef);
 #endif
+  }
+}
 
 #endif

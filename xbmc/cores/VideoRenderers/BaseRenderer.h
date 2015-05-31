@@ -71,12 +71,44 @@ typedef void (*RenderUpdateCallBackFn)(const void *ctx, const CRect &SrcRect, co
 typedef void (*RenderFeaturesCallBackFn)(const void *ctx, Features &renderFeatures);
 
 struct DVDVideoPicture;
+class CRenderCapture;
 
 class CBaseRenderer
 {
 public:
   CBaseRenderer();
   virtual ~CBaseRenderer();
+
+  // Player functions
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation) = 0;
+  virtual bool IsConfigured() = 0;
+  virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false) = 0;
+  virtual void ReleaseImage(int source, bool preserve = false) = 0;
+  virtual bool AddVideoPicture(DVDVideoPicture* picture, int index) { return false; }
+  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) = 0;
+  virtual void FlipPage(int source) = 0;
+  virtual unsigned int PreInit() = 0;
+  virtual void UnInit() = 0;
+  virtual void Reset() = 0;
+  virtual void Flush() {};
+  virtual void SetBufferSize(int numBuffers) { }
+  virtual void ReleaseBuffer(int idx) { }
+  virtual bool NeedBufferForRef(int idx) { return false; }
+  virtual bool IsGuiLayer() { return true; }
+  // Render info, can be called before configure
+  virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
+  virtual void Update() = 0;
+  virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) = 0;
+  virtual void SetupScreenshot() = 0;
+  virtual bool RenderCapture(CRenderCapture* capture) = 0;
+  virtual EINTERLACEMETHOD AutoInterlaceMethod() = 0;
+
+  // Feature support
+  virtual bool SupportsMultiPassRendering() = 0;
+  virtual bool Supports(ERENDERFEATURE feature) { return false; };
+  virtual bool Supports(EDEINTERLACEMODE mode) = 0;
+  virtual bool Supports(EINTERLACEMETHOD method) = 0;
+  virtual bool Supports(ESCALINGMETHOD method) = 0;
 
   void SetViewMode(int viewMode);
   RESOLUTION GetResolution() const;
@@ -88,22 +120,6 @@ public:
   */
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio() const;
-
-  virtual bool AddVideoPicture(DVDVideoPicture* picture, int index) { return false; }
-  virtual void Flush() {};
-
-  /**
-   * Returns number of references a single buffer can retain when rendering a single frame
-   */
-  virtual void         SetBufferSize(int numBuffers) { }
-  virtual void         ReleaseBuffer(int idx) { }
-  virtual bool         NeedBufferForRef(int idx) { return false; }
-  virtual bool         IsGuiLayer() { return true; }
-
-  virtual bool Supports(ERENDERFEATURE feature) { return false; }
-
-  // Render info, can be called before configure
-  virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
 
   virtual void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
   virtual void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);

@@ -150,17 +150,7 @@ public:
 
   void UpdateResolution();
 
-#ifdef HAS_GL
-  CLinuxRendererGL    *m_pRenderer;
-#elif defined(HAS_MMAL)
-  CMMALRenderer       *m_pRenderer;
-#elif HAS_GLES == 2
-  CLinuxRendererGLES  *m_pRenderer;
-#elif defined(HAS_DX)
-  CWinRenderer        *m_pRenderer;
-#elif defined(HAS_SDL)
-  CLinuxRenderer      *m_pRenderer;
-#endif
+  CBaseRenderer *m_pRenderer;
 
   // Get renderer info, can be called before configure
   CRenderInfo GetRenderInfo();
