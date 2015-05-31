@@ -793,7 +793,10 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
       return true;
   }
-
+#ifdef HAS_DS_PLAYER
+  if (CMadvrCallback::Get()->ReadyMadvr())
+    return true;
+#endif
   return SUCCEEDED(m_pD3DDevice->Clear(
     0,
     NULL,

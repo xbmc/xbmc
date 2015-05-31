@@ -82,6 +82,7 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   m_pSubPicQueue = nullptr;
   m_pAllocator = nullptr;
   m_pDXR = nullptr;
+  m_pORCB = nullptr;
   m_pSRCB = nullptr;
 
   CLog::Log(LOGDEBUG, "%s Resources released", __FUNCTION__);
@@ -180,6 +181,30 @@ bool CmadVRAllocatorPresenter::IsCurrentThreadId()
   return CThread::IsCurrentThread(m_threadID);
 }
 
+STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
+{
+  if (!g_graphicsContext.IsFullScreenVideo() && CMadvrCallback::Get()->GetRenderOnMadvr())
+    m_pMadvrShared->RenderMadvr(RENDER_LAYER_UNDER, fullOutputRect->right - fullOutputRect->left, fullOutputRect->bottom - fullOutputRect->top);
+
+  return S_OK;
+}
+
+STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
+{
+  return S_OK;
+}
+
+STDMETHODIMP CmadVRAllocatorPresenter::SetDeviceOsd(IDirect3DDevice9* pD3DDev)
+{
+  if (!pD3DDev)
+  {
+    // release all resources
+    m_pSubPicQueue = nullptr;
+    m_pAllocator = nullptr;
+  }
+  return S_OK;
+}
+
 HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
   CLog::Log(LOGDEBUG, "%s madVR's device it's ready", __FUNCTION__);
@@ -263,7 +288,7 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
   AlphaBltSubPic(Com::SmartSize(width, height));
 
   if (CMadvrCallback::Get()->GetRenderOnMadvr())
-    m_pMadvrShared->RenderMadvr(width, height);
+    m_pMadvrShared->RenderMadvr(RENDER_LAYER_OVER, width, height);
 
   return S_OK;
 }
@@ -290,6 +315,19 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
   m_pSRCB = DNew CSubRenderCallback(this);
   if (FAILED(pSR->SetCallback(m_pSRCB))) {
+    m_pDXR = nullptr;
+    return E_FAIL;
+  }
+
+  // IOsdRenderCallback
+  Com::SmartQIPtr<IMadVROsdServices> pOR = m_pDXR;
+  if (!pOR) {
+    m_pDXR = nullptr;
+    return E_FAIL;
+  }
+
+  m_pORCB = DNew COsdRenderCallback(this);
+  if (FAILED(pOR->OsdSetRenderCallback("Kodi.Gui", m_pORCB))) {
     m_pDXR = nullptr;
     return E_FAIL;
   }
@@ -327,6 +365,13 @@ STDMETHODIMP_(void) CmadVRAllocatorPresenter::SetPosition(RECT w, RECT v)
   }
 
   if (Com::SmartQIPtr<IVideoWindow> pVW = m_pDXR) {
+    if (!g_graphicsContext.IsFullScreenVideo())
+    {
+      w.left = 0;
+      w.top = 0;
+      w.right = g_graphicsContext.GetWidth();
+      w.bottom = g_graphicsContext.GetHeight();
+    }
     pVW->SetWindowPosition(w.left, w.top, w.right - w.left, w.bottom - w.top);
   }
 }

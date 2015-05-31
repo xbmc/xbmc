@@ -23,6 +23,7 @@
 #include "MadvrSharedRender.h"
 #include "Application.h"
 #include "Utils/Log.h"
+#include "guilib/GUIWindowManager.h"
 
 const DWORD D3DFVF_VID_FRAME_VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;
 
@@ -45,10 +46,14 @@ CMadvrSharedRender::~CMadvrSharedRender()
   // Release Shared Resources
   if (m_pMadvrVertexBuffer)
     m_pMadvrVertexBuffer->Release();
-  if (m_pMadvrTexture)
-    m_pMadvrTexture->Release();
-  if (m_pKodiTexture)
-    m_pKodiTexture->Release();
+  if (m_pMadvrUnderTexture)
+    m_pMadvrUnderTexture->Release();
+  if (m_pKodiUnderTexture)
+    m_pKodiUnderTexture->Release();
+  if (m_pMadvrOverTexture)
+    m_pMadvrOverTexture->Release();
+  if (m_pKodiOverTexture)
+    m_pKodiOverTexture->Release();
 }
 
 HRESULT CMadvrSharedRender::CreateTextures(IDirect3DDevice9Ex* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height)
@@ -58,34 +63,61 @@ HRESULT CMadvrSharedRender::CreateTextures(IDirect3DDevice9Ex* pD3DDeviceKodi, I
   m_pD3DDeviceMadVR = pD3DDeviceMadVR;
 
   HRESULT hr;
+
   if (FAILED(hr = m_pD3DDeviceMadVR->CreateVertexBuffer(sizeof(VID_FRAME_VERTEX) * 4, D3DUSAGE_WRITEONLY, D3DFVF_VID_FRAME_VERTEX, D3DPOOL_DEFAULT, &m_pMadvrVertexBuffer, NULL)))
     CLog::Log(LOGDEBUG, "%s Failed to create madVR vertex buffer", __FUNCTION__);
 
-  if (FAILED(hr = m_pD3DDeviceKodi->CreateTexture(width, height, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pKodiTexture, &m_pSharedHandle)))
+  //Under Textures
+  if (FAILED(hr = m_pD3DDeviceKodi->CreateTexture(width, height, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pKodiUnderTexture, &m_pSharedUnderHandle)))
     CLog::Log(LOGDEBUG, "%s Failed to create kodi shared texture", __FUNCTION__);
 
-  if (FAILED(hr = m_pD3DDeviceMadVR->CreateTexture(width, height, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pMadvrTexture, &m_pSharedHandle)))
+  if (FAILED(hr = m_pD3DDeviceMadVR->CreateTexture(width, height, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pMadvrUnderTexture, &m_pSharedUnderHandle)))
+    CLog::Log(LOGDEBUG, "%s Failed to create madVR shared texture", __FUNCTION__);
+
+  //Over Textures
+  if (FAILED(hr = m_pD3DDeviceKodi->CreateTexture(width, height, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pKodiOverTexture, &m_pSharedOverHandle)))
+    CLog::Log(LOGDEBUG, "%s Failed to create kodi shared texture", __FUNCTION__);
+
+  if (FAILED(hr = m_pD3DDeviceMadVR->CreateTexture(width, height, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pMadvrOverTexture, &m_pSharedOverHandle)))
     CLog::Log(LOGDEBUG, "%s Failed to create madVR shared texture", __FUNCTION__);
 
   return hr;
 }
 
-HRESULT CMadvrSharedRender::RenderMadvr(int width, int height)
+HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer, int width, int height)
 {
   HRESULT hr = E_UNEXPECTED;
 
-
   m_dwWidth = width;
   m_dwHeight = height;
+
+  // if the context it's kodi menu manage the layer
+  if (!g_graphicsContext.IsFullScreenVideo())
+  {
+    if (layer == RENDER_LAYER_OVER && !CMadvrCallback::Get()->IsVideoLayer())
+    {
+      // re-check if there is a videolayer before render over
+      CMadvrCallback::Get()->SetRenderLayer(RENDER_LAYER_CHECK);
+      g_windowManager.Render();
+
+      // if there is not a video layer render all over the video
+      if (!CMadvrCallback::Get()->IsVideoLayer())
+        layer = RENDER_LAYER_ALL;
+    }
+
+    //set initial render variables
+    CMadvrCallback::Get()->SetVideoLayer(false);
+    CMadvrCallback::Get()->SetRenderLayer(layer);
+  }
 
   // Store madVR States
   if (FAILED(hr = StoreMadDeviceState()))
     return hr;
 
   // Render Kodi Gui
-  RenderToTexture(m_pKodiTexture, m_pKodiSurface);
+  RenderToTexture(layer);
   m_pD3DDeviceKodi->BeginScene();
-  g_application.RenderMadvr();
+  layer == RENDER_LAYER_UNDER ? g_windowManager.Render() : g_application.RenderMadvr();
   m_pD3DDeviceKodi->EndScene();
   m_pD3DDeviceKodi->Present(NULL, NULL, NULL, NULL);
 
@@ -93,23 +125,32 @@ HRESULT CMadvrSharedRender::RenderMadvr(int width, int height)
   if (FAILED(hr = SetupMadDeviceState()))
     return hr;
 
-  if (FAILED(hr = SetupOSDVertex(m_pMadvrVertexBuffer)))
+  // Setup Vertex Buffer
+  if (FAILED(hr = SetupVertex()))
     return hr;
 
   // Draw Kodi shared texture on madVR
-  if (FAILED(hr = RenderTexture(m_pMadvrVertexBuffer, m_pMadvrTexture)))
+  if (FAILED(hr = RenderTexture(layer)))
     return hr;
 
   // Restore madVR states
   if (FAILED(hr = RestoreMadDeviceState()))
     return hr;
 
+  // quickfix for high gpu load while paused
+  if (g_application.m_pPlayer->IsPausedPlayback() && (layer == RENDER_LAYER_OVER))
+    Sleep(25);
+
   return S_OK;
 }
 
-HRESULT CMadvrSharedRender::RenderToTexture(IDirect3DTexture9* pTexture, IDirect3DSurface9* pSurface)
+HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
 {
   HRESULT hr = E_UNEXPECTED;
+
+  IDirect3DTexture9* pTexture;
+  IDirect3DSurface9* pSurface;
+  layer == RENDER_LAYER_UNDER ? pTexture = m_pKodiUnderTexture : pTexture = m_pKodiOverTexture;
 
   if (FAILED(hr = pTexture->GetSurfaceLevel(0, &pSurface)))
     return hr;
@@ -117,12 +158,18 @@ HRESULT CMadvrSharedRender::RenderToTexture(IDirect3DTexture9* pTexture, IDirect
   if (FAILED(m_pD3DDeviceKodi->SetRenderTarget(0, pSurface)))
     return hr;
 
+  if (FAILED(m_pD3DDeviceKodi->Clear(0, NULL, D3DCLEAR_TARGET, D3DXCOLOR(0, 0, 0, 0), 1.0f, 0)))
+    return hr;
+
   return hr;
 }
 
-HRESULT CMadvrSharedRender::RenderTexture(IDirect3DVertexBuffer9* pVertexBuf, IDirect3DTexture9* pTexture)
+HRESULT CMadvrSharedRender::RenderTexture(MADVR_RENDER_LAYER layer)
 {
-  HRESULT hr = m_pD3DDeviceMadVR->SetStreamSource(0, pVertexBuf, 0, sizeof(VID_FRAME_VERTEX));
+  IDirect3DTexture9* pTexture;
+  layer == RENDER_LAYER_UNDER ? pTexture = m_pMadvrUnderTexture : pTexture = m_pMadvrOverTexture;
+
+  HRESULT hr = m_pD3DDeviceMadVR->SetStreamSource(0, m_pMadvrVertexBuffer, 0, sizeof(VID_FRAME_VERTEX));
   if (FAILED(hr))
     return hr;
 
@@ -137,12 +184,12 @@ HRESULT CMadvrSharedRender::RenderTexture(IDirect3DVertexBuffer9* pVertexBuf, ID
   return S_OK;
 }
 
-HRESULT CMadvrSharedRender::SetupOSDVertex(IDirect3DVertexBuffer9* pVertextBuf)
+HRESULT CMadvrSharedRender::SetupVertex()
 {
   VID_FRAME_VERTEX* vertices = nullptr;
 
   // Lock the vertex buffer
-  HRESULT hr = pVertextBuf->Lock(0, 0, (void**)&vertices, D3DLOCK_DISCARD);
+  HRESULT hr = m_pMadvrVertexBuffer->Lock(0, 0, (void**)&vertices, D3DLOCK_DISCARD);
 
   if (SUCCEEDED(hr))
   {
@@ -180,7 +227,7 @@ HRESULT CMadvrSharedRender::SetupOSDVertex(IDirect3DVertexBuffer9* pVertextBuf)
     vertices[3].u = 0.0f;
     vertices[3].v = 1.0f;
 
-    hr = pVertextBuf->Unlock();
+    hr = m_pMadvrVertexBuffer->Unlock();
     if (FAILED(hr))
       return hr;
   }

@@ -33,6 +33,43 @@ class CmadVRAllocatorPresenter
   : public ISubPicAllocatorPresenterImpl,
   public IPaintCallbackMadvr
 {
+  class COsdRenderCallback : public CUnknown, public IOsdRenderCallback, public CCritSec
+  {
+    CmadVRAllocatorPresenter* m_pDXRAP;
+
+  public:
+    COsdRenderCallback(CmadVRAllocatorPresenter* pDXRAP)
+      : CUnknown(_T("COsdRender"), NULL)
+      , m_pDXRAP(pDXRAP) {
+    }
+
+    DECLARE_IUNKNOWN
+    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv) {
+      return
+        QI(IOsdRenderCallback)
+        __super::NonDelegatingQueryInterface(riid, ppv);
+    }
+
+    void SetDXRAP(CmadVRAllocatorPresenter* pDXRAP) {
+      CAutoLock cAutoLock(this);
+      m_pDXRAP = pDXRAP;
+    }
+
+    // IOsdRenderCallback
+
+    STDMETHODIMP ClearBackground(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect){
+      CAutoLock cAutoLock(this);
+      return m_pDXRAP ? m_pDXRAP->ClearBackground(name, frameStart, fullOutputRect, activeVideoRect) : E_UNEXPECTED;
+    }
+    STDMETHODIMP RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect){
+      CAutoLock cAutoLock(this);
+      return m_pDXRAP ? m_pDXRAP->RenderOsd(name, frameStart, fullOutputRect, activeVideoRect) : E_UNEXPECTED;
+    }
+    STDMETHODIMP SetDevice(IDirect3DDevice9* pD3DDev) {
+      CAutoLock cAutoLock(this);
+      return m_pDXRAP ? m_pDXRAP->SetDeviceOsd(pD3DDev) : E_UNEXPECTED;
+    }
+  };
 
   class CSubRenderCallback : public CUnknown, public ISubRenderCallback2, public CCritSec
   {
@@ -87,6 +124,11 @@ public:
   DECLARE_IUNKNOWN
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
+  // IOsdRenderCallback
+  STDMETHODIMP ClearBackground(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect);
+  STDMETHODIMP RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect);
+  STDMETHODIMP SetDeviceOsd(IDirect3DDevice9* pD3DDev);
+
   // ISubPicAllocatorPresenter
   HRESULT SetDevice(IDirect3DDevice9* pD3DDev);
   HRESULT Render(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, REFERENCE_TIME atpf, int left, int top, int bottom, int right, int width, int height);
@@ -121,6 +163,7 @@ public:
 private:
   void ConfigureMadvr();
   Com::SmartPtr<IUnknown> m_pDXR;
+  Com::SmartPtr<IOsdRenderCallback> m_pORCB;
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartSize m_ScreenSize;
   EXCLUSIVEMODECALLBACK m_exclusiveCallback;

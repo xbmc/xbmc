@@ -21,6 +21,8 @@
  *
  */
 
+#include "MadvrCallback.h"
+
 class CMadvrSharedRender
 {
 public:
@@ -28,23 +30,24 @@ public:
   virtual ~CMadvrSharedRender();
 
   HRESULT CreateTextures(IDirect3DDevice9Ex* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height);
-  HRESULT RenderMadvr(int width, int height);
+  HRESULT RenderMadvr(MADVR_RENDER_LAYER layer, int width, int height);
   
 private:
-  HRESULT RenderToTexture(IDirect3DTexture9* pTexture, IDirect3DSurface9* pSurface);
-  HRESULT RenderTexture(IDirect3DVertexBuffer9* pVertexBuf, IDirect3DTexture9* pTexture);
-  HRESULT SetupOSDVertex(IDirect3DVertexBuffer9* pVertextBuf);
+  HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
+  HRESULT RenderTexture(MADVR_RENDER_LAYER layer);
+  HRESULT SetupVertex();
 
   HRESULT StoreMadDeviceState();
   HRESULT SetupMadDeviceState();
   HRESULT RestoreMadDeviceState();
 
-  IDirect3DSurface9 *m_pKodiSurface = nullptr;
-  IDirect3DTexture9 *m_pKodiTexture = nullptr;
-  IDirect3DSurface9 *m_pMadvrSurface = nullptr;
-  IDirect3DTexture9 *m_pMadvrTexture = nullptr;
+  IDirect3DTexture9 *m_pKodiUnderTexture = nullptr;
+  IDirect3DTexture9 *m_pKodiOverTexture = nullptr;
+  IDirect3DTexture9 *m_pMadvrUnderTexture = nullptr;
+  IDirect3DTexture9 *m_pMadvrOverTexture = nullptr;
   IDirect3DVertexBuffer9* m_pMadvrVertexBuffer = nullptr;
-  HANDLE m_pSharedHandle = nullptr;
+  HANDLE m_pSharedUnderHandle = nullptr;
+  HANDLE m_pSharedOverHandle = nullptr;
 
   IDirect3DDevice9Ex* m_pD3DDeviceKodi = nullptr;
   IDirect3DDevice9Ex* m_pD3DDeviceMadVR = nullptr;
@@ -70,5 +73,4 @@ private:
   DWORD m_D3DRS_DESTBLEND = 0;
 
   IDirect3DPixelShader9* m_pPix = nullptr;
-
 };

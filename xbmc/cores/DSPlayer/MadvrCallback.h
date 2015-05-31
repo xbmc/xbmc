@@ -32,6 +32,14 @@
 #include "utils/CharsetConverter.h"
 #include "system.h"
 
+enum MADVR_RENDER_LAYER
+{
+  RENDER_LAYER_ALL,
+  RENDER_LAYER_CHECK,
+  RENDER_LAYER_UNDER,
+  RENDER_LAYER_OVER
+};
+
 class IPaintCallbackMadvr
 {
 public:
@@ -58,7 +66,7 @@ public:
   virtual CStdString GetDXVADecoderDescription() { return ""; };
 };
 
-class CMadvrCallback
+class CMadvrCallback : public IPaintCallbackMadvr
 {
 public:
   /// Retrieve singleton instance
@@ -70,8 +78,12 @@ public:
     m_pSingleton = NULL;
   }
 
-  IPaintCallbackMadvr* GetCallback() { return m_pMadvr; }
+  IPaintCallbackMadvr* GetCallback() { return m_pMadvr != NULL ? m_pMadvr : this; }
   void SetCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
+  MADVR_RENDER_LAYER GetRenderLayer(){ return m_renderLayer; }
+  void SetRenderLayer(MADVR_RENDER_LAYER value){ m_renderLayer = value; }
+  bool IsVideoLayer(){ return m_isVideoLayer; }
+  void SetVideoLayer(bool b){ m_isVideoLayer = b; }
   bool UsingMadvr();
   bool ReadyMadvr();
   bool IsEnteringExclusiveMadvr();
@@ -88,4 +100,6 @@ private:
   IPaintCallbackMadvr* m_pMadvr;
   bool m_isInitMadvr;
   bool m_renderOnMadvr;
+  bool m_isVideoLayer;
+  MADVR_RENDER_LAYER m_renderLayer;
 };
