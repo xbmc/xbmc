@@ -21,6 +21,23 @@
 
 #include "JNIBase.h"
 
+class CJNIAudioManagerAudioFocusChangeListener : public CJNIBase
+{
+public:
+  CJNIAudioManagerAudioFocusChangeListener(const jni::jhobject &object) : CJNIBase(object) {};
+  virtual ~CJNIAudioManagerAudioFocusChangeListener() {};
+
+  static void _onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange);
+
+protected:
+  CJNIAudioManagerAudioFocusChangeListener();
+
+  virtual void onAudioFocusChange(int focusChange)=0;
+
+private:
+  static CJNIAudioManagerAudioFocusChangeListener *m_listenerInstance;
+};
+
 class CJNIAudioManager : public CJNIBase
 {
 public:
@@ -32,8 +49,16 @@ public:
   int  getStreamVolume();
   void setStreamVolume(int index = 0, int flags = 0);
 
+  int requestAudioFocus(const CJNIAudioManagerAudioFocusChangeListener &listener, int streamType, int durationHint);
+  int abandonAudioFocus (const CJNIAudioManagerAudioFocusChangeListener &listener);
+
   static void PopulateStaticFields();
   static int STREAM_MUSIC;
+
+  static int AUDIOFOCUS_GAIN;
+  static int AUDIOFOCUS_LOSS;
+  static int AUDIOFOCUS_REQUEST_GRANTED;
+  static int AUDIOFOCUS_REQUEST_FAILED;
 
 private:
   CJNIAudioManager();

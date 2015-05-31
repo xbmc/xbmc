@@ -48,6 +48,7 @@ public:
 
   static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
   static void _onVolumeChanged(JNIEnv *env, jobject context, jint volume);
+  static void _onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange);
 
 private:
   static CJNIApplicationMainActivity *m_appInstance;
@@ -55,5 +56,6 @@ private:
 protected:
   virtual void onNewIntent(CJNIIntent intent)=0;
   virtual void onVolumeChanged(int volume)=0;
+  virtual void onAudioFocusChange(int focusChange)=0;
 };
 
