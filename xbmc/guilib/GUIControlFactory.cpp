@@ -1174,7 +1174,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         labelInfo, scrollOut, timeToPauseAtEnd, resetOnLabelChange);
 
       ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
-      ((CGUIFadeLabelControl *)control)->SetScrolling(scrollValue == CGUIControl::ALWAYS ? true : false);
     }
     break;
   case CGUIControl::GUICONTROL_RSS:

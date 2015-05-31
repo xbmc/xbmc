@@ -35,7 +35,6 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float po
   m_scrollSpeed = labelInfo.scrollSpeed;  // save it for later
   m_resetOnLabelChange = resetOnLabelChange;
   m_shortText = true;
-  m_scroll = true;
 }
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
@@ -51,7 +50,6 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
   m_lastLabel = -1;
   ControlType = GUICONTROL_FADELABEL;
   m_shortText = from.m_shortText;
-  m_scroll = from.m_scroll;
 }
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
@@ -143,8 +141,7 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
       }
     }
 
-    if (m_scroll)
-      m_textLayout.UpdateScrollinfo(m_scrollInfo);
+    m_textLayout.UpdateScrollinfo(m_scrollInfo);
 
     g_graphicsContext.RemoveTransform();
   }
@@ -185,7 +182,7 @@ void CGUIFadeLabelControl::Render()
 
   // render the scrolling text
   g_graphicsContext.SetTransform(m_fadeMatrix);
-  if (!m_scroll || (!m_scrollOut && m_shortText))
+  if (!m_scrollOut && m_shortText)
   {
     float posX = m_posX + m_label.offsetX;
     if (m_label.align & XBFONT_CENTER_X)
