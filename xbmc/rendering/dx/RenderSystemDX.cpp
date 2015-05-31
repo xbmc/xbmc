@@ -295,7 +295,10 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO;
 #ifdef HAS_DS_PLAYER
   m_D3DPP.SwapEffect = (m_useWindowedDX) ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.PresentationInterval = (m_bVSync || g_dsSettings.pRendererSettings->vSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+  if (CMadvrCallback::Get()->UsingMadvr())
+    m_D3DPP.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+  else
+    m_D3DPP.PresentationInterval = (m_bVSync || g_dsSettings.pRendererSettings->vSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 #else
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 #endif

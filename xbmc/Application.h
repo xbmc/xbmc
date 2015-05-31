@@ -153,7 +153,9 @@ public:
   bool StartPVRManager();
   void StopPVRManager();
 #ifdef HAS_DS_PLAYER
-  bool IsCurrentThread() const;
+  void RenderMadvr();
+  CEvent m_renderMadvrEvent;
+  bool IsCurrentThread(bool checkForMadvr = true) const;
 #else
   bool IsCurrentThread() const;
 #endif

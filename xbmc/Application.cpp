@@ -1900,6 +1900,21 @@ float CApplication::GetDimScreenSaverLevel() const
   return 100.0f;
 }
 
+#ifdef HAS_DS_PLAYER
+void CApplication::RenderMadvr()
+{
+  // do not render if we are stopped or in background
+  if (m_bStop)
+    return;
+
+  g_infoManager.UpdateFPS();
+
+  RenderNoPresent();
+
+  m_renderMadvrEvent.Set();
+}
+#endif
+
 void CApplication::Render()
 {
   // do not render if we are stopped or in background
@@ -1909,12 +1924,30 @@ void CApplication::Render()
   MEASURE_FUNCTION;
 
 #ifdef HAS_DS_PLAYER
-  if (CMadvrCallback::Get()->UsingMadvr())
+  if (CMadvrCallback::Get()->ReadyMadvr())
   {
     if (m_pPlayer->IsPausedPlayback())
     {
       CMadvrCallback::Get()->GetCallback()->OsdRedrawFrame();
-    } 
+      Sleep(25);
+    }
+    else
+    {
+      m_renderMadvrEvent.Reset();
+      m_renderMadvrEvent.WaitMSec(100);
+    }
+
+    g_windowManager.AfterRender();
+
+    g_infoManager.ResetCache();
+
+    m_lastFrameTime = XbmcThreads::SystemClockMillis();
+    CTimeUtils::UpdateFrameTime(true, false);
+
+    g_renderManager.UpdateResolution();
+    g_renderManager.ManageCaptures();
+
+    return;
   }
 #endif  
   
@@ -2020,10 +2053,6 @@ void CApplication::Render()
     }
     else
     {
-#ifdef HAS_DS_PLAYER
-      if (CMadvrCallback::Get()->UsingMadvr())
-        CMadvrCallback::Get()->GetCallback()->RenderToMadvrTexture();
-#endif
       if (RenderNoPresent())
         hasRendered = true;
     }
@@ -2073,11 +2102,7 @@ void CApplication::Render()
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);
 
-#ifdef HAS_DS_PLAYER
-  if ((!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback()) || CMadvrCallback::Get()->UsingMadvr())
-#else
   if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
-#endif
   {
     g_renderManager.FrameWait(100);
   }
@@ -4975,9 +5000,24 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
   }
   return false;
 }
+#ifdef HAS_DS_PLAYER
+bool CApplication::IsCurrentThread(bool checkForMadvr) const
+#else
 bool CApplication::IsCurrentThread() const
+#endif
 {
+#ifdef HAS_DS_PLAYER
+  if (CMadvrCallback::Get()->UsingMadvr() && checkForMadvr)
+  {
+    bool isMadvrThread = CMadvrCallback::Get()->GetCallback()->IsCurrentThreadId();
+    bool isApplicationThread = CThread::IsCurrentThread(m_threadID);
+    return (isMadvrThread || isApplicationThread);
+  }
+  else
+    return CThread::IsCurrentThread(m_threadID);
+#else
   return CThread::IsCurrentThread(m_threadID);
+#endif
 }
 
 void CApplication::SetRenderGUI(bool renderGUI)

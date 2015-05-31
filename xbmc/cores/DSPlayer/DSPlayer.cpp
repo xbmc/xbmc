@@ -70,6 +70,7 @@ DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
 CFileItem CDSPlayer::currentFileItem;
 CGUIDialogBoxBase *CDSPlayer::errorWindow = NULL;
 ThreadIdentifier CDSPlayer::m_threadID = 0;
+HWND CDSPlayer::m_hWnd = 0;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
   : IPlayer(callback),
@@ -677,11 +678,17 @@ bool CDSPlayer::InitMadvrWindow(HWND &hWnd)
   }
 
   if (hWnd)
-  {
     SetWindowLongPtr(hWnd, GWL_USERDATA, NPT_POINTER_TO_LONG(this));
-    CMadvrCallback::Get()->SetHwnd(hWnd);
-  }
+
   return true;
+}
+
+void CDSPlayer::SetDsWndVisible(bool bVisible)
+{
+  int cmd;
+  bVisible ? cmd = SW_SHOW : cmd = SW_HIDE;
+  ShowWindow(m_hWnd, cmd);
+  UpdateWindow(m_hWnd);
 }
 
 LRESULT CALLBACK CDSPlayer::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

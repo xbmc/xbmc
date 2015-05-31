@@ -44,6 +44,7 @@
 #include "Dmoreg.h"
 #include "settings/Settings.h"
 #include "../../filesystem/SpecialProtocol.h "
+#include "cores/DSPlayer/DSPlayer.h"
 #pragma comment(lib, "Dmoguids.lib")
 //
 // CFGFilter
@@ -482,7 +483,7 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
         VERIFY(SUCCEEDED(pMVRSR->DisableSubclassing()));
 
       if (Com::SmartQIPtr<IVideoWindow> pVW = pCAP)
-        pVW->put_Owner((OAHWND)CMadvrCallback::Get()->GetHwnd());
+        pVW->put_Owner((OAHWND)CDSPlayer::GetDShWnd());
 
       // Go out from Kodi exclusive fullscreen mode if needed
       if (!CSettings::Get().GetBool("videoscreen.fakefullscreen"))

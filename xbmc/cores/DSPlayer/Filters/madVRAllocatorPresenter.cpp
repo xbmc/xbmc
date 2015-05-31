@@ -32,11 +32,26 @@
 #include "settings/MediaSettings.h"
 #include "settings/DisplaySettings.h"
 #include "PixelShaderList.h"
+#include "DSPlayer.h"
 
 #define ShaderStage_PreScale 0
 #define ShaderStage_PostScale 1
 
 extern bool g_bExternalSubtitleTime;
+ThreadIdentifier CmadVRAllocatorPresenter::m_threadID = 0;
+
+const DWORD D3DFVF_VID_FRAME_VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;
+
+struct VID_FRAME_VERTEX
+{
+  float x;
+  float y;
+  float z;
+  float rhw;
+  float u;
+  float v;
+};
+
 
 //
 // CmadVRAllocatorPresenter
@@ -53,6 +68,7 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   m_exclusiveCallback = ExclusiveCallback;
   m_firstBoot = true;
   m_isEnteringExclusive = false;
+  m_threadID = 0;
   
   if (FAILED(hr)) {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
@@ -86,8 +102,6 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   m_pAllocator = nullptr;
   m_pDXR = nullptr;
   m_pSRCB = nullptr;
-
-
 
   CLog::Log(LOGDEBUG, "%s Resources released", __FUNCTION__);
 }
@@ -124,6 +138,7 @@ void CmadVRAllocatorPresenter::SetResolution()
     && g_graphicsContext.IsFullScreenRoot())
   {
     RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
+    CDSPlayer::SetDsWndVisible(true);
     g_graphicsContext.SetVideoResolution(bestRes);
   }
   CMadvrCallback::Get()->SetInitMadvr(false);
@@ -133,17 +148,15 @@ void CmadVRAllocatorPresenter::ExclusiveCallback(LPVOID context, int event)
 {
   CmadVRAllocatorPresenter *pThis = (CmadVRAllocatorPresenter*)context;
 
+  std::vector<std::string> strEvent = { "IsAboutToBeEntered", "WasJustEntered", "IsAboutToBeLeft", "WasJustLeft" };
+
   if (event == ExclusiveModeIsAboutToBeEntered || event == ExclusiveModeIsAboutToBeLeft)
-  { 
     pThis->m_isEnteringExclusive = true;
-    CLog::Log(LOGDEBUG, "%s madVR IsAboutToBeEntered/IsAboutToBeLeft in Fullscreen Exclusive-Mode", __FUNCTION__);
-  }
 
   if (event == ExclusiveModeWasJustEntered || event == ExclusiveModeWasJustLeft)
-  {
     pThis->m_isEnteringExclusive = false;
-    CLog::Log(LOGDEBUG, "%s madVR WasJustEntered/WasJustLeft in Fullscreen Exclusive-Mode", __FUNCTION__);
-  }
+
+  CLog::Log(LOGDEBUG, "%s madVR %s in Fullscreen Exclusive-Mode", __FUNCTION__, strEvent[event - 1].c_str());
 }
 
 void CmadVRAllocatorPresenter::ConfigureMadvr()
@@ -181,17 +194,11 @@ bool CmadVRAllocatorPresenter::ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wP
     return false;
 }
 
-const DWORD D3DFVF_VID_FRAME_VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;
-
-struct VID_FRAME_VERTEX
+bool CmadVRAllocatorPresenter::IsCurrentThreadId()
 {
-  float x;
-  float y;
-  float z;
-  float rhw;
-  float u;
-  float v;
-};
+  return CThread::IsCurrentThread(m_threadID);
+}
+
 HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 {
   CLog::Log(LOGDEBUG, "%s madVR's device it's ready", __FUNCTION__);
@@ -221,6 +228,7 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
       return hr;
 
     m_firstBoot = false;
+    m_threadID = CThread::GetCurrentThreadId();
   }
 
   Com::SmartSize size;
@@ -255,13 +263,6 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
   return hr;
 }
 
-void CmadVRAllocatorPresenter::RenderToMadvrTexture()
-{
-  // Draw Kodi texture on Shared Texture
-  if (!m_firstBoot)
-    RenderToTexture(m_pKodiTexture, m_pKodiSurface);
-}
-
 HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, REFERENCE_TIME atpf, int left, int top, int right, int bottom, int width, int height)
 {
   Com::SmartRect wndRect(0, 0, width, height);
@@ -288,36 +289,44 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
     g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy, m_fps, CONF_FLAGS_FULLSCREEN , RENDER_FMT_NONE, 0, 0);
     CLog::Log(LOGDEBUG, "%s Render manager configured (FPS: %f) %i %i %i %i", __FUNCTION__, m_fps, m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy);
 
-    // Set DSPlayer Window Visible
-    CMadvrCallback::Get()->SetDsWndVisible(true);
+    // Begin Render Kodi 
+    CDSPlayer::SetDsWndVisible(true);
+    CMadvrCallback::Get()->SetRenderOnMadvr(true);
   }
 
   AlphaBltSubPic(Com::SmartSize(width, height));
 
-  HRESULT hr = E_UNEXPECTED;
+  
+  if (CMadvrCallback::Get()->GetRenderOnMadvr())
+  {
+    HRESULT hr = E_UNEXPECTED;
 
-  // Store madVR States
-  if (FAILED(hr = StoreMadDeviceState()))
-    return hr;
+    // Store madVR States
+    if (FAILED(hr = StoreMadDeviceState()))
+      return hr;
 
-  // Call new frame from Kodi mainthread
-  g_renderManager.NewFrame();
+    // Render Kodi Gui
+    RenderToTexture(m_pKodiTexture, m_pKodiSurface);
+    m_pD3DDeviceKodi->BeginScene();
+    g_application.RenderMadvr();
+    m_pD3DDeviceKodi->EndScene();
+    m_pD3DDeviceKodi->Present(NULL, NULL, NULL, NULL);
 
-  //Setup madVR Device
-  if (FAILED(hr = SetupMadDeviceState()))
-    return hr;
+    //Setup madVR Device
+    if (FAILED(hr = SetupMadDeviceState()))
+      return hr;
 
-  if (FAILED(hr = SetupOSDVertex(m_pMadvrVertexBuffer)))
-    return hr;
+    if (FAILED(hr = SetupOSDVertex(m_pMadvrVertexBuffer)))
+      return hr;
 
-  // Draw Kodi shared texture on madVR
-  if (FAILED(hr = RenderTexture(m_pMadvrVertexBuffer, m_pMadvrTexture)))
-    return hr;
+    // Draw Kodi shared texture on madVR
+    if (FAILED(hr = RenderTexture(m_pMadvrVertexBuffer, m_pMadvrTexture)))
+      return hr;
 
-  // Restore madVR states
-  if (FAILED(hr = RestoreMadDeviceState()))
-    return hr;
-
+    // Restore madVR states
+    if (FAILED(hr = RestoreMadDeviceState()))
+      return hr;
+  }
   return S_OK;
 }
 

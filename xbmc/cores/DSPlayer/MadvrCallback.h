@@ -37,12 +37,12 @@ class IPaintCallbackMadvr
 public:
   virtual ~IPaintCallbackMadvr() {};
 
+  virtual bool IsCurrentThreadId() { return false; }
   virtual bool IsEnteringExclusive(){ return false; }
   virtual void OsdRedrawFrame() {};
   virtual void SetMadvrPixelShader(){};
   virtual void RestoreMadvrSettings(){};
   virtual void SetResolution(){};
-  virtual void RenderToMadvrTexture(){};
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; }
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
   virtual void SettingSetScaling(CStdStringW path, int scaling) {};
@@ -73,12 +73,12 @@ public:
   IPaintCallbackMadvr* GetCallback() { return m_pMadvr; }
   void SetCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
   bool UsingMadvr();
+  bool ReadyMadvr();
   bool IsEnteringExclusiveMadvr();
-  void SetDsWndVisible(bool bVisible);
   bool IsInitMadvr() { return m_isInitMadvr; };
   void SetInitMadvr(bool b) { m_isInitMadvr = b; }
-  HWND GetHwnd(){ return m_hWnd; }
-  void SetHwnd(HWND hWnd){ m_hWnd = hWnd; }
+  bool GetRenderOnMadvr() { return m_renderOnMadvr; }
+  void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
 
 private:
   CMadvrCallback();
@@ -86,6 +86,6 @@ private:
 
   static CMadvrCallback* m_pSingleton;
   IPaintCallbackMadvr* m_pMadvr;
-  HWND m_hWnd;
   bool m_isInitMadvr;
+  bool m_renderOnMadvr;
 };

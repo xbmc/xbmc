@@ -222,11 +222,11 @@ public:
 
   //madVR Window
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+  static HWND m_hWnd;
   bool InitMadvrWindow(HWND &hWnd);
   void DeInitMadvrWindow();
   CStdString m_className;
-  HINSTANCE m_hInstance;
-  HWND m_hWnd;
+  HINSTANCE m_hInstance; 
   bool m_isMadvr;
   
   static void PostMessage(CDSMsg *msg, bool wait = true)
@@ -251,6 +251,8 @@ public:
   }
 
   static bool IsCurrentThread() { return CThread::IsCurrentThread(m_threadID); }
+  static HWND GetDShWnd(){ return m_hWnd; }
+  static void SetDsWndVisible(bool bVisible);
 
 protected:
 
