@@ -40,19 +40,6 @@
 extern bool g_bExternalSubtitleTime;
 ThreadIdentifier CmadVRAllocatorPresenter::m_threadID = 0;
 
-const DWORD D3DFVF_VID_FRAME_VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;
-
-struct VID_FRAME_VERTEX
-{
-  float x;
-  float y;
-  float z;
-  float rhw;
-  float u;
-  float v;
-};
-
-
 //
 // CmadVRAllocatorPresenter
 //
@@ -69,6 +56,7 @@ CmadVRAllocatorPresenter::CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdS
   m_firstBoot = true;
   m_isEnteringExclusive = false;
   m_threadID = 0;
+  m_pMadvrShared = DNew CMadvrSharedRender();
   
   if (FAILED(hr)) {
     _Error += L"ISubPicAllocatorPresenterImpl failed\n";
@@ -88,16 +76,9 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Unregister(m_exclusiveCallback, this);
 
-  // Release Shared Texture
-  if (m_pMadvrVertexBuffer)
-    m_pMadvrVertexBuffer->Release();
-  if (m_pMadvrTexture)
-    m_pMadvrTexture->Release();
-  if (m_pKodiTexture)
-    m_pKodiTexture->Release();
-
   // the order is important here
   CMadvrCallback::Destroy();
+  SAFE_DELETE(m_pMadvrShared);
   m_pSubPicQueue = nullptr;
   m_pAllocator = nullptr;
   m_pDXR = nullptr;
@@ -211,21 +192,9 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
     return S_OK;
   }
 
-  m_pD3DDeviceMadVR = (IDirect3DDevice9Ex*)pD3DDev;
-  m_pD3DDeviceKodi = (IDirect3DDevice9Ex*)g_Windowing.Get3DDevice();
-
   if (m_firstBoot)
   { 
-    // Create Shared Texture
-    HRESULT hr;
-    if (FAILED(hr = m_pD3DDeviceMadVR->CreateVertexBuffer(sizeof(VID_FRAME_VERTEX) * 4, D3DUSAGE_WRITEONLY, D3DFVF_VID_FRAME_VERTEX, D3DPOOL_DEFAULT, &m_pMadvrVertexBuffer, NULL)))
-      return hr;
-
-    if (FAILED(hr = m_pD3DDeviceKodi->CreateTexture(m_dwWidth, m_dwHeight, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pKodiTexture, &m_pSharedHandle)))
-      return hr;
-
-    if (FAILED(hr = m_pD3DDeviceMadVR->CreateTexture(m_dwWidth, m_dwHeight, 0, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_pMadvrTexture, &m_pSharedHandle)))
-      return hr;
+    m_pMadvrShared->CreateTextures((IDirect3DDevice9Ex*)g_Windowing.Get3DDevice(), (IDirect3DDevice9Ex*)pD3DDev, (int)m_ScreenSize.cx, (int)m_ScreenSize.cy);
 
     m_firstBoot = false;
     m_threadID = CThread::GetCurrentThreadId();
@@ -268,9 +237,6 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
   Com::SmartRect wndRect(0, 0, width, height);
   Com::SmartRect videoRect(left, top, right, bottom);
 
-  m_dwWidth = width;
-  m_dwHeight = height;
-
   __super::SetPosition(wndRect, videoRect);
   if (!g_bExternalSubtitleTime) {
     SetTime(rtStart);
@@ -296,37 +262,9 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
 
   AlphaBltSubPic(Com::SmartSize(width, height));
 
-  
   if (CMadvrCallback::Get()->GetRenderOnMadvr())
-  {
-    HRESULT hr = E_UNEXPECTED;
+    m_pMadvrShared->RenderMadvr(width, height);
 
-    // Store madVR States
-    if (FAILED(hr = StoreMadDeviceState()))
-      return hr;
-
-    // Render Kodi Gui
-    RenderToTexture(m_pKodiTexture, m_pKodiSurface);
-    m_pD3DDeviceKodi->BeginScene();
-    g_application.RenderMadvr();
-    m_pD3DDeviceKodi->EndScene();
-    m_pD3DDeviceKodi->Present(NULL, NULL, NULL, NULL);
-
-    //Setup madVR Device
-    if (FAILED(hr = SetupMadDeviceState()))
-      return hr;
-
-    if (FAILED(hr = SetupOSDVertex(m_pMadvrVertexBuffer)))
-      return hr;
-
-    // Draw Kodi shared texture on madVR
-    if (FAILED(hr = RenderTexture(m_pMadvrVertexBuffer, m_pMadvrTexture)))
-      return hr;
-
-    // Restore madVR states
-    if (FAILED(hr = RestoreMadDeviceState()))
-      return hr;
-  }
   return S_OK;
 }
 
@@ -367,9 +305,6 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   mi.cbSize = sizeof(MONITORINFO);
   if (GetMonitorInfo(MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST), &mi)) {
     m_ScreenSize.SetSize(mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top);
-
-    m_dwWidth = m_ScreenSize.cx;
-    m_dwHeight = m_ScreenSize.cy;
   }
 
   return S_OK;
@@ -635,234 +570,5 @@ void CmadVRAllocatorPresenter::RestoreMadvrSettings()
   SettingSetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
   SettingSetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
   SettingSetSmoothmotion("", madvrSettings.m_smoothMotion);
-}
-
-HRESULT CmadVRAllocatorPresenter::RenderToTexture(IDirect3DTexture9* pTexture, IDirect3DSurface9* pSurface)
-{
-  HRESULT hr = E_UNEXPECTED;
-
-  if (FAILED(hr = pTexture->GetSurfaceLevel(0, &pSurface)))
-    return hr;
-
-  if (FAILED(m_pD3DDeviceKodi->SetRenderTarget(0, pSurface)))
-    return hr;
-
-  return hr;
-}
-
-HRESULT CmadVRAllocatorPresenter::RenderTexture(IDirect3DVertexBuffer9* pVertexBuf, IDirect3DTexture9* pTexture)
-{
-  HRESULT hr = m_pD3DDeviceMadVR->SetStreamSource(0, pVertexBuf, 0, sizeof(VID_FRAME_VERTEX));
-  if (FAILED(hr))
-    return hr;
-
-  hr = m_pD3DDeviceMadVR->SetTexture(0, pTexture);
-  if (FAILED(hr))
-    return hr;
-
-  hr = m_pD3DDeviceMadVR->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
-  if (FAILED(hr))
-    return hr;
-
-  return S_OK;
-}
-
-HRESULT CmadVRAllocatorPresenter::SetupOSDVertex(IDirect3DVertexBuffer9* pVertextBuf)
-{
-  VID_FRAME_VERTEX* vertices = nullptr;
-
-  // Lock the vertex buffer
-  HRESULT hr = pVertextBuf->Lock(0, 0, (void**)&vertices, D3DLOCK_DISCARD);
-
-  if (SUCCEEDED(hr))
-  {
-    RECT rDest;
-    rDest.bottom = m_dwHeight;
-    rDest.left = 0;
-    rDest.right = m_dwWidth;
-    rDest.top = 0;
-
-    vertices[0].x = (float)rDest.left - 0.5f;
-    vertices[0].y = (float)rDest.top - 0.5f;
-    vertices[0].z = 0.0f;
-    vertices[0].rhw = 1.0f;
-    vertices[0].u = 0.0f;
-    vertices[0].v = 0.0f;
-
-    vertices[1].x = (float)rDest.right - 0.5f;
-    vertices[1].y = (float)rDest.top - 0.5f;
-    vertices[1].z = 0.0f;
-    vertices[1].rhw = 1.0f;
-    vertices[1].u = 1.0f;
-    vertices[1].v = 0.0f;
-
-    vertices[2].x = (float)rDest.right - 0.5f;
-    vertices[2].y = (float)rDest.bottom - 0.5f;
-    vertices[2].z = 0.0f;
-    vertices[2].rhw = 1.0f;
-    vertices[2].u = 1.0f;
-    vertices[2].v = 1.0f;
-
-    vertices[3].x = (float)rDest.left - 0.5f;
-    vertices[3].y = (float)rDest.bottom - 0.5f;
-    vertices[3].z = 0.0f;
-    vertices[3].rhw = 1.0f;
-    vertices[3].u = 0.0f;
-    vertices[3].v = 1.0f;
-
-    hr = pVertextBuf->Unlock();
-    if (FAILED(hr))
-      return hr;
-  }
-
-  return hr;
-}
-
-HRESULT CmadVRAllocatorPresenter::StoreMadDeviceState()
-{
-  HRESULT hr = E_UNEXPECTED;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetScissorRect(&m_oldScissorRect)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetVertexShader(&m_pOldVS)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetFVF(&m_dwOldFVF)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetTexture(0, &m_pOldTexture)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetStreamSource(0, &m_pOldStreamData, &m_nOldOffsetInBytes, &m_nOldStride)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_CULLMODE, &m_D3DRS_CULLMODE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_LIGHTING, &m_D3DRS_LIGHTING)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_ZENABLE, &m_D3DRS_ZENABLE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_ALPHABLENDENABLE, &m_D3DRS_ALPHABLENDENABLE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_SRCBLEND, &m_D3DRS_SRCBLEND)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetRenderState(D3DRS_DESTBLEND, &m_D3DRS_DESTBLEND)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->GetPixelShader(&m_pPix)))
-    return hr;
-
-  return hr;
-}
-
-HRESULT CmadVRAllocatorPresenter::SetupMadDeviceState()
-{
-  HRESULT hr = E_UNEXPECTED;
-
-  RECT newScissorRect;
-  newScissorRect.bottom = m_dwHeight;
-  newScissorRect.top = 0;
-  newScissorRect.left = 0;
-  newScissorRect.right = m_dwWidth;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetScissorRect(&newScissorRect)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetVertexShader(NULL)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetFVF(D3DFVF_VID_FRAME_VERTEX)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetPixelShader(NULL)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_LIGHTING, FALSE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ZENABLE, FALSE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA)))
-    return hr;
-
-  return hr;
-}
-
-HRESULT CmadVRAllocatorPresenter::RestoreMadDeviceState()
-{
-  HRESULT hr = S_FALSE;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetScissorRect(&m_oldScissorRect)))
-    return hr;
-
-  hr = m_pD3DDeviceMadVR->SetTexture(0, m_pOldTexture);
-
-  if (m_pOldTexture)
-    m_pOldTexture->Release();
-
-  if (FAILED(hr))
-    return hr;
-
-  hr = m_pD3DDeviceMadVR->SetVertexShader(m_pOldVS);
-
-  if (m_pOldVS)
-    m_pOldVS->Release();
-
-  if (FAILED(hr))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetFVF(m_dwOldFVF)))
-    return hr;
-
-  hr = m_pD3DDeviceMadVR->SetStreamSource(0, m_pOldStreamData, m_nOldOffsetInBytes, m_nOldStride);
-
-  if (m_pOldStreamData)
-    m_pOldStreamData->Release();
-
-  if (FAILED(hr))
-    return hr;
-
-  hr = m_pD3DDeviceMadVR->SetPixelShader(m_pPix);
-  if (m_pPix)
-    m_pPix->Release();
-
-  if (FAILED(hr))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_CULLMODE, m_D3DRS_CULLMODE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_LIGHTING, m_D3DRS_LIGHTING)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ZENABLE, m_D3DRS_ZENABLE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_ALPHABLENDENABLE, m_D3DRS_ALPHABLENDENABLE)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_SRCBLEND, m_D3DRS_SRCBLEND)))
-    return hr;
-
-  if (FAILED(hr = m_pD3DDeviceMadVR->SetRenderState(D3DRS_DESTBLEND, m_D3DRS_DESTBLEND)))
-    return hr;
-
-  return hr;
 }
 

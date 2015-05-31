@@ -26,6 +26,7 @@
 #include "mvrInterfaces.h"
 #include "MadvrCallback.h"
 #include "threads/Thread.h"
+#include "MadvrSharedRender.h"
 #include "utils/log.h"
 
 class CmadVRAllocatorPresenter
@@ -76,57 +77,6 @@ class CmadVRAllocatorPresenter
     }
   };
 
-  void ConfigureMadvr();
-  Com::SmartPtr<IUnknown> m_pDXR;
-  Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
-  Com::SmartSize m_ScreenSize;
-  EXCLUSIVEMODECALLBACK m_exclusiveCallback;
-  static ThreadIdentifier m_threadID;
-  bool m_bIsFullscreen;
-  bool m_firstBoot;
-  bool m_isEnteringExclusive;
-  int m_shaderStage;
-
-  HRESULT RenderToTexture(IDirect3DTexture9* pTexture, IDirect3DSurface9* pSurface);
-  HRESULT RenderTexture(IDirect3DVertexBuffer9* pVertexBuf, IDirect3DTexture9* pTexture);
-
-  HRESULT SetupOSDVertex(IDirect3DVertexBuffer9* pVertextBuf);
-  HRESULT StoreMadDeviceState();
-  HRESULT SetupMadDeviceState();
-  HRESULT RestoreMadDeviceState();
-
-  IDirect3DSurface9 *m_pKodiSurface = nullptr;
-  IDirect3DTexture9 *m_pKodiTexture = nullptr;
-  IDirect3DSurface9 *m_pMadvrSurface = nullptr;
-  IDirect3DTexture9 *m_pMadvrTexture = nullptr;
-  IDirect3DVertexBuffer9* m_pMadvrVertexBuffer = nullptr;
-  HANDLE m_pSharedHandle = nullptr;
-
-  IDirect3DDevice9Ex* m_pD3DDeviceKodi = nullptr;
-  IDirect3DDevice9Ex* m_pD3DDeviceMadVR = nullptr;
-
-  DWORD m_dwWidth = 0;
-  DWORD m_dwHeight = 0;
-
-  // stored mad device state
-  IDirect3DVertexShader9* m_pOldVS = nullptr;
-  IDirect3DVertexBuffer9* m_pOldStreamData = nullptr;
-  IDirect3DBaseTexture9* m_pOldTexture = nullptr;
-
-  DWORD m_dwOldFVF = 0;
-  UINT  m_nOldOffsetInBytes = 0;
-  UINT  m_nOldStride = 0;
-  RECT  m_oldScissorRect;
-
-  DWORD m_D3DRS_CULLMODE = 0;
-  DWORD m_D3DRS_LIGHTING = 0;
-  DWORD m_D3DRS_ZENABLE = 0;
-  DWORD m_D3DRS_ALPHABLENDENABLE = 0;
-  DWORD m_D3DRS_SRCBLEND = 0;
-  DWORD m_D3DRS_DESTBLEND = 0;
-
-  IDirect3DPixelShader9* m_pPix = nullptr;
-
 public:
 
   CmadVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdString &_Error);
@@ -167,5 +117,18 @@ public:
   virtual void SettingSetBool(CStdStringW path, BOOL bValue);
   virtual void SettingSetInt(CStdStringW path, int iValue);
   virtual CStdString GetDXVADecoderDescription();
+
+private:
+  void ConfigureMadvr();
+  Com::SmartPtr<IUnknown> m_pDXR;
+  Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
+  Com::SmartSize m_ScreenSize;
+  EXCLUSIVEMODECALLBACK m_exclusiveCallback;
+  static ThreadIdentifier m_threadID;
+  bool m_bIsFullscreen;
+  bool m_firstBoot;
+  bool m_isEnteringExclusive;
+  int m_shaderStage;
+  CMadvrSharedRender *m_pMadvrShared;
 };
 

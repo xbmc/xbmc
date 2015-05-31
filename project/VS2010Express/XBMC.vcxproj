@@ -257,6 +257,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\madVRAllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettings.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSharedRender.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.cpp" />
@@ -950,6 +951,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVAudioSettings.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettings.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSharedRender.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\mvrInterfaces.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h" />
