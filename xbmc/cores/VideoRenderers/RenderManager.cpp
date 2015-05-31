@@ -969,6 +969,7 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
     index = m_free.front();
   }
 
+  // TODO: this is a Windows onl thing and should go away
   if(m_pRenderer->AddVideoPicture(&pic, index))
     return 1;
 
@@ -991,44 +992,21 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   {
     CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
   }
-#ifdef HAVE_LIBVDPAU
   else if(pic.format == RENDER_FMT_VDPAU
-       || pic.format == RENDER_FMT_VDPAU_420)
-    m_pRenderer->AddProcessor(pic.vdpau, index);
-#endif
-#ifdef HAVE_LIBOPENMAX
-  else if(pic.format == RENDER_FMT_OMXEGL)
-    m_pRenderer->AddProcessor(pic.openMax, &pic, index);
-#endif
-#ifdef TARGET_DARWIN
-  else if(pic.format == RENDER_FMT_CVBREF)
-    m_pRenderer->AddProcessor(pic.cvBufferRef, index);
-#endif
-#ifdef HAVE_LIBVA
-  else if(pic.format == RENDER_FMT_VAAPI)
-    m_pRenderer->AddProcessor(pic.vaapi, index);
+       || pic.format == RENDER_FMT_VDPAU_420
+       || pic.format == RENDER_FMT_OMXEGL
+       || pic.format == RENDER_FMT_CVBREF
+       || pic.format == RENDER_FMT_VAAPI
+       || pic.format == RENDER_FMT_EGLIMG
+       || pic.format == RENDER_FMT_MEDIACODEC
+       || pic.format == RENDER_FMT_IMXMAP
+       || pic.format == RENDER_FMT_MMAL)
+    m_pRenderer->AddVideoPictureHW(pic, index);
   else if(pic.format == RENDER_FMT_VAAPINV12)
   {
-    m_pRenderer->AddProcessor(pic.vaapi, index);
+    m_pRenderer->AddVideoPictureHW(pic, index);
     CDVDCodecUtils::CopyNV12Picture(&image, &pic.vaapi->DVDPic);
   }
-#endif
-#ifdef HAS_LIBSTAGEFRIGHT
-  else if(pic.format == RENDER_FMT_EGLIMG)
-    m_pRenderer->AddProcessor(pic.stf, pic.eglimg, index);
-#endif
-#if defined(TARGET_ANDROID)
-  else if(pic.format == RENDER_FMT_MEDIACODEC || pic.format == RENDER_FMT_MEDIACODECSURFACE)
-    m_pRenderer->AddProcessor(pic.mediacodec, index);
-#endif
-#ifdef HAS_IMXVPU
-  else if(pic.format == RENDER_FMT_IMXMAP)
-    m_pRenderer->AddProcessor(pic.IMXBuffer, index);
-#endif
-#ifdef HAS_MMAL
-  else if(pic.format == RENDER_FMT_MMAL)
-    m_pRenderer->AddProcessor(pic.MMALBuffer, index);
-#endif
 
   m_pRenderer->ReleaseImage(index, false);
 

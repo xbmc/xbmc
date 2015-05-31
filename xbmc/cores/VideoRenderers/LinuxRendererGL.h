@@ -117,35 +117,25 @@ public:
   CLinuxRendererGL();
   virtual ~CLinuxRendererGL();
 
-  virtual void Update();
-  virtual void SetupScreenshot() {};
-
-  bool RenderCapture(CRenderCapture* capture);
-
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation);
   virtual bool IsConfigured() { return m_bConfigured; }
-  virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual void         FlipPage(int source);
+  virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+  virtual void ReleaseImage(int source, bool preserve = false);
+  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
+  virtual void FlipPage(int source);
   virtual unsigned int PreInit();
-  virtual void         UnInit();
-  virtual void         Reset(); /* resets renderer after seek for example */
-  virtual void         Flush();
-  virtual void         ReleaseBuffer(int idx);
-  virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
-
-#ifdef HAVE_LIBVDPAU
-  virtual void         AddProcessor(VDPAU::CVdpauRenderPicture* vdpau, int index);
-#endif
-#ifdef HAVE_LIBVA
-  virtual void         AddProcessor(VAAPI::CVaapiRenderPicture* vaapi, int index);
-#endif
-#ifdef TARGET_DARWIN
-  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef, int index);
-#endif
-
+  virtual void UnInit();
+  virtual void Reset(); /* resets renderer after seek for example */
+  virtual void Flush();
+  virtual void ReleaseBuffer(int idx);
+  virtual void SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual void Update();
+  virtual void SetupScreenshot() {};
+  virtual bool RenderCapture(CRenderCapture* capture);
+  virtual EINTERLACEMETHOD AutoInterlaceMethod();
+  virtual CRenderInfo GetRenderInfo();
 
   // Feature support
   virtual bool SupportsMultiPassRendering();
@@ -153,10 +143,6 @@ public:
   virtual bool Supports(EDEINTERLACEMODE mode);
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
-
-  virtual EINTERLACEMETHOD AutoInterlaceMethod();
-
-  virtual CRenderInfo GetRenderInfo();
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
