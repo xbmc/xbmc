@@ -4388,8 +4388,6 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     std::string vobsubidx = CUtil::GetVobSubIdxFromSub(filename);
     if (!vobsubidx.empty())
       return AddSubtitleFile(vobsubidx, filename);
-    else
-      return -1;
   }
   SelectionStream s;
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
