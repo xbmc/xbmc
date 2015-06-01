@@ -142,7 +142,7 @@
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<pagecontrol>-</pagecontrol>
-					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">!System.ScreenSaverActive</autoscroll>
 					<label fallback="161">$INFO[ListItem.Plot]</label>
 				</control>
 				<control type="grouplist" id="9000">

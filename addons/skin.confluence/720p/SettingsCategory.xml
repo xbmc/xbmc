@@ -183,7 +183,7 @@
 				<font>font12</font>
 				<align>justify</align>
 				<textcolor>white</textcolor>
-				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+				<autoscroll time="3000" delay="4000" repeat="5000">!System.ScreenSaverActive</autoscroll>
 			</control>
 		</control>
 		<include>BehindDialogFadeOut</include>

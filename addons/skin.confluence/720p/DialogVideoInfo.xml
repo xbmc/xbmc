@@ -857,7 +857,7 @@
 					<textcolor>white</textcolor>
 					<pagecontrol>61</pagecontrol>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="3000" delay="4000" repeat="5000">!Control.HasFocus(61) + Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="3000" delay="4000" repeat="5000">!Control.HasFocus(61) + Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive</autoscroll>
 					<visible>!Control.IsVisible(50)</visible>
 				</control>
 				<control type="image">

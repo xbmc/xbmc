@@ -273,7 +273,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[Container(50).ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive</autoscroll>
 				</control>
 				<control type="label">
 					<description>Disk usage text</description>

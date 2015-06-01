@@ -1548,7 +1548,7 @@
 					<selectedcolor>selected</selectedcolor>
 					<align>center</align>
 					<label>$INFO[Window.Property(Alerts)]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive</autoscroll>
 				</control>
 			</control>
 			<control type="label">

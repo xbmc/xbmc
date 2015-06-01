@@ -287,7 +287,7 @@
 					<font>font12</font>
 					<align>justify</align>
 					<textcolor>grey</textcolor>
-					<autoscroll delay="10000" time="3000" repeat="6000">true</autoscroll>
+					<autoscroll delay="10000" time="3000" repeat="6000">!System.ScreenSaverActive</autoscroll>
 					<label>$INFO[ListItem.Plot]</label>
 				</control>
 			</control>
