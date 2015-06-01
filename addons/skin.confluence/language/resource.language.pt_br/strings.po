@@ -168,6 +168,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Fundo"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Mostrar \"Pausado\" na apresentação de imagens"
+
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
 msgstr "Reproduzir trailers na janela [COLOR=grey3](Somente caixa de diálogo de Informação de vídeo)[/COLOR]"
@@ -175,6 +179,10 @@ msgstr "Reproduzir trailers na janela [COLOR=grey3](Somente caixa de diálogo de
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Opções diversas"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Esconder marcação de fontes dos arquivos de vídeo [COLOR=grey3](ex. Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -203,6 +211,10 @@ msgstr "Mostrar álbuns adicionados recentemente"
 msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "Mostrar vídeos adicionados recentemente"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Submenu de programas na página principal"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -235,6 +247,18 @@ msgstr "Ocultar fanart em visualização tela cheia"
 msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "Add-on de letras"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Submenu de \"Vídeos\" na página principal"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Submenu de \"Músicas\" na página principal"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Submenu de \"Imagens\" na página principal"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -271,6 +295,10 @@ msgstr "Procurar mais itens"
 msgctxt "#31208"
 msgid "Upcoming episodes"
 msgstr "Próximos episódios"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Temperatura atual"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -420,6 +448,14 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]AJUSTES DE MÚSICAS[/B][CR][CR]Gerencie sua coleção de músicas · Defina opções de execução de música[CR]Altere opções de listagem de música · Configure submissão de música · Defina opções de karaokê"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]AJUSTES DE IMAGENS[/B][CR][CR]Defina opções de listagem de imagens · Configure apresentação de slides"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]AJUSTES DE CLIMA[/B][CR][CR]Defina três cidades para coletar informações sobre o tempo"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]AJUSTES DE SISTEMA[/B][CR][CR]Configure e calibre telas · Configure saída de áudio · Configure controles remotos[CR]Defina opções para economia de energia · Habilite a depuração · Configure o bloqueio mestre"
@@ -439,6 +475,10 @@ msgstr "[B]AJUSTES DE SERVIÇOS[/B][CR][CR]Configure o controle do Kodi via UPnP
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "Executar ajudar primeiramente..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "Esta guia significa que existe um menu lateral que contém opções adicionais para esta seção. Para acessar o menu, navegue para a esquerda com o controle remoto ou teclado ou coloque o ponteiro do mouse sobre a aba. [CR][CR]Clique em \"Ok\" para fechar este diálogo. Ele não vai aparecer novamente."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -495,6 +535,10 @@ msgstr "Configurar agendamento"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "Opções do Canal"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "Previsão de 36 horas"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

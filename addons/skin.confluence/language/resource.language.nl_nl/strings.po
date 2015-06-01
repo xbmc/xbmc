@@ -168,6 +168,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Achtergrond"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Toon \"Gepauzeerd\" in afbeelding diavoorstelling"
+
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
 msgstr "Speel trailers in een venster [COLOR=grey3](Alleen video informatie dialoog)[/COLOR]"
@@ -175,6 +179,10 @@ msgstr "Speel trailers in een venster [COLOR=grey3](Alleen video informatie dial
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Diverse opties"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Verberg markeringen gelezen uit bestandsnamen[COLOR=grey3](Bijv. Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -203,6 +211,10 @@ msgstr "Toon recent toegevoegde albums"
 msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "Toon recent toegevoegde video`s"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Beginscherm Programma's submenu"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -236,6 +248,18 @@ msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "Songtekst add-on"
 
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Beginscherm Video's submenu"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Beginscherm Muziek submenu"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Beginscherm Afbeeldingen submenu"
+
 msgctxt "#31140"
 msgid "Music OSD"
 msgstr "Muziek-OSD"
@@ -258,7 +282,7 @@ msgstr "Kies je lied"
 
 msgctxt "#31205"
 msgid "Lyrics source"
-msgstr "Liedtekst bron"
+msgstr "Songtekst bron"
 
 msgctxt "#31206"
 msgid "Found"
@@ -271,6 +295,10 @@ msgstr "Vind meer items"
 msgctxt "#31208"
 msgid "Upcoming episodes"
 msgstr "Aankomende afleveringen"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Huidige temperatuur"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -310,7 +338,7 @@ msgstr "Scanner kiezen"
 
 msgctxt "#31314"
 msgid "Content scanning options"
-msgstr "Bevat scan opties"
+msgstr "Opties inhoudsscanner"
 
 msgctxt "#31317"
 msgid "Set fanart path"
@@ -326,7 +354,7 @@ msgstr "Laatst ingelogd op"
 
 msgctxt "#31321"
 msgid "Karaoke song selector"
-msgstr "Karaoke lied keuzeschakelaar"
+msgstr "Karaoke lied kiezer"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -370,7 +398,7 @@ msgstr "Stop"
 
 msgctxt "#31353"
 msgid "Fast forward"
-msgstr "snel vooruitspoelen"
+msgstr "Vooruitspoelen"
 
 msgctxt "#31354"
 msgid "Rewind"
@@ -420,6 +448,14 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]MUZIEKINSTELLINGEN CONFIGUREREN[/B][CR][CR]Beheer uw muziekbibliotheek · Configureer muziekafspeelopties en -bestandslijstopties · Configureer nummer indienen · Configureer karaokeopties"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]AFBEELDING INSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer Afbeelding bestandslijstopties en diavoorstelling."
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]WEER INSTELLINGEN CONFIGUREREN[/B][CR][CR]Geef drie locaties op voor weersverwachtingen."
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]SYSTEEMINSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer en kalibreer schermen · Configureer geluidsuitgang · Configureer invoerapparaten en energiebeheeropties · Schakel debugging in · Configureer vergrendelingsopties"
@@ -439,6 +475,10 @@ msgstr "[B]CONFIGUREER SERVICE-INSTELLINGEN[/B][CR][CR]Stel Kodi-beheer in via U
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "Eerste sessie hulp..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "Deze tab betekent dat er een menu met extra opties voor deze sectie aan de zijkant van het scherm beschikbaar is. Voor toegang tot het menu, navigeer naar links met de afstandsbediening of toetsenbord of ga met de muisaanwijzer naar de tab. [CR][CR]Klik \"Ok\" om het dialoogscherm te sluiten. Deze zal niet meer worden getoond. "
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -462,7 +502,7 @@ msgstr "Selecteer het profiel dat moet worden gebruikt bij opstarten wanneer het
 
 msgctxt "#31501"
 msgid "Scheduled time"
-msgstr "Geschematiseerde tijd"
+msgstr "Geplande tijd"
 
 msgctxt "#31502"
 msgid "TV"
@@ -495,6 +535,10 @@ msgstr "Timer instellen"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "Kanaal opties"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36-Uur Vooruitzicht"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

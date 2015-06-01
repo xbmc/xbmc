@@ -168,6 +168,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Background"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Show \"Paused\" in picture slideshow"
+
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
 msgstr "Play trailers in a window [COLOR=grey3](Video information dialog only)[/COLOR]"
@@ -175,6 +179,10 @@ msgstr "Play trailers in a window [COLOR=grey3](Video information dialog only)[/
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Miscellaneous options"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -203,6 +211,10 @@ msgstr "Show recently added albums"
 msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "Show recently added videos"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Home page programs submenu"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -235,6 +247,18 @@ msgstr "Hide fanart in full screen visualization"
 msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "Lyrics add-on"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Home page \"Videos\" submenu"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Home page \"Music\" submenu"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Home page \"Pictures\" submenu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -271,6 +295,10 @@ msgstr "Find more items"
 msgctxt "#31208"
 msgid "Upcoming episodes"
 msgstr "Upcoming episodes"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Current temperature"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -420,6 +448,14 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
@@ -439,6 +475,10 @@ msgstr "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP 
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "First run help..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialog. It will not appear again."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -495,6 +535,10 @@ msgstr "Timer set"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "Channel options"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36-hour forecast"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

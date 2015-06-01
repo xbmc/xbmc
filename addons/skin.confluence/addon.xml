@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.7.1"
+  version="2.7.2"
   name="Confluence"
   provider-name="Jezz_X, Team Kodi">
   <requires>
@@ -64,6 +64,7 @@
     <summary lang="sr_RS">Confluence маска аутора Jezz_X. (подразумевана Kodi маска)</summary>
     <summary lang="sr_RS@latin">Confluence maska autora Jezz_X. (podrazumevana Kodi maska)</summary>
     <summary lang="sv_SE">Confluence, ett skal av Jezz_X. (Kodi:s standardskal)</summary>
+    <summary lang="szl">Skōra Confluence zrychtowanŏ ôd Jeez_X. (wychodnŏ skōra we Kodi)</summary>
     <summary lang="tg_TJ">Пӯсти ҳамҷараёнӣ аз ҷониби Jezz_X. (Пӯсти пешфарзи Kodi)</summary>
     <summary lang="th_TH">ชุดตกแต่ง Confluence โดย  Jezz_X (สกินเริ่มต้นของ Kodi)</summary>
     <summary lang="tr_TR">Jezz_X tarafından Confluence dış görünümü. (Kodi'nin varsayılan dış görünümü)</summary>
@@ -93,7 +94,7 @@
     <description lang="fi_FI">Confluence on oletusulkoasu Kodi:n versiosta 9.11 lähtien. Se on yhdistelmä useiden suosittujen ulkoasujen konsepteista, ja yritys omaksua ja integroida heidän hyvät ideat ulkoasuun, jonka pitäisi olla helppokäyttöinen ja -tajuinen kaikille Kodi:n käyttäjille.</description>
     <description lang="fo_FO">Confluence er vanliga útsjóndin, sum er brúkt í Kodi síðan útg. 9.11. Hetta er ein samansjóðan av fleiri hugtøkum. Ætlanin er at útsjóndin skal lætta um móttøku og nýtslu av Kodi fyri nýggjar brúkarar.</description>
     <description lang="fr_CA">Confluence est l'habillage par défaut pour Kodi 9.11 et ultérieur. C'est une combinaison des concepts issus de plusieurs habillages populaires et une tentative d'inclure et d'intégrer leurs bonnes idées en un habillage qui devrait être facile à comprendre et à utiliser pour les utilisateurs débutants de Kodi.</description>
-    <description lang="fr_FR">Confluence est l'habillage prédéfini depuis Kodi 14.0. Reprenant les concepts issus de plusieurs thèmes populaires, il est une tentative d'inclusion et d'intégration des meilleures idées afin de créer un habillage qui soit facile à comprendre et à utiliser pour les personnes découvrant Kodi.</description>
+    <description lang="fr_FR">Confluence est le thème par défaut depuis Kodi 14.0. Il reprend les concepts de nombreux thèmes populaires et tente d'intégrer leurs bonnes idées en un seul et même thème et qui devrait être facile d'utilisation pour les utilisateurs découvrant Kodi.</description>
     <description lang="gl_ES">Confluence é a pel predeterminada para Kodi 9.11 e posteriores. É unha combinación de conceptos de algunhas peles populares, e tenta abranguer e integrar  as súas mellores ideas nunha pel que sexa fácil de entender e utilizar para as usuarias que utilizan por primeira vez Kodi.</description>
     <description lang="he_IL">המעטפת Confluence היא מעטפת ברירת המחדל של Kodi. המעטפת הינה תוצר של אימוץ מאפיינים ממעטפות פופולריות רבות תוך רצון לשלב מאפיינים אלה למעטפת פשוטה לשימוש ולהכרה ראשונית ע"י משתמשי Kodi חדשים.</description>
     <description lang="hr_HR">Confluence je uobičajena presvlaka za Kodi 14.0 naviše. To je mješavina koncepta iz mnogih drugih popularnih presvlaka, pokušaj da se objedine njihove dobre osobine u presvlaku i da budu lagane za upotrebu i razumljive novim Kodi korisnicima.</description>
@@ -120,6 +121,7 @@
     <description lang="sr_RS">Confluence је подразумевана маска за Kodi 14.0 и навише. То је мешавина концепата многих популарних маски, и покушај да се обједине њихове добре идеје у маску која би требала да буде лака за разумевање и употребу новим корисницима Kodi-а.</description>
     <description lang="sr_RS@latin">Confluence je podrazumevana maska za Kodi 14.0 i naviše. To je mešavina koncepata iz mnogih drugih popularnih maski, i pokušaj da se objedine njihove dobre ideje u masku koja bi trabala da bude laka za razumevanje i upotrebu novim korisnicima Kodi-a.</description>
     <description lang="sv_SE">Confluence är standardskal för Kodi 14.0 och senare. Det kombinerar koncept från många populära skal och försöker återanvända och integrera goda idéer för att skapa ett skal som är enkelt att förstå och använda för nya Kode-användare.</description>
+    <description lang="szl">Confluence to je wychodnŏ skōra dlŏ Kodi 14.0 i nowszych. To je miszōng kōnceptōw ze mocki popularnych skōr i prōbuje te nŏjlepsze wkludzić do skōry, kerŏ winnŏ być prostŏ we użyciu i spokopiyniu dlŏ nowych używŏczōw Kodi.</description>
     <description lang="tg_TJ">Пӯсти ҳамҷараёнӣ ҳамчун пӯсти пешфарз барои Kodi 9.11 ё версияи навтар истифода мешавад. Ин пӯст аз унсурҳои пӯстҳои машҳури дигар сохта шудааст ва ва ҳамаи фикрҳои беҳтарин дар як пӯст ҷамъ мекунад, то ки корбарони навомад тавонанд Kodi-ро ба осонӣ фаҳманд ва истифода баранд.</description>
     <description lang="th_TH">Confluenceเป็นสกินเริ่มต้นสำหรับ Kodi 9.11 หรือสูงกว่า มันเป็นส่วนผสมของแนวคิดจากสกินที่ได้รับความนิยมและพยายามที่จะยอมรับและบูรณาการส่วนที่ดีของมันเข้าไปในสกิน ซึ่งน่าจะง่ายสำหรับผู้ใช้ Kodiใหม่ ที่จะเข้าใจและใช้งานได้ดี</description>
     <description lang="tr_TR">Confluence Kodi 9.11 ve yukarısı için varsayılan dış görünümdür. Birçok popüler dış görünümün kavramlarını bir araya getirip ilk kez Kodi kullananlar için anlaşılması ve kullanımı kolaydır.</description>
@@ -149,7 +151,7 @@
     <disclaimer lang="fi_FI">Confluence on Kodi:n oletusulkoasu, sen poistaminen saattaa aiheuttaa ongelmia</disclaimer>
     <disclaimer lang="fo_FO">Confluence er vanliga útsjónding brúkt av Kodi. Strikan kann viðføra brek.</disclaimer>
     <disclaimer lang="fr_CA">Confluence est l'habillage par défaut de Kodi, le supprimer peut créer des problèmes</disclaimer>
-    <disclaimer lang="fr_FR">Confluence est l'habillage prédéfini de Kodi, le supprimer peut créer des problèmes</disclaimer>
+    <disclaimer lang="fr_FR">Confluence est le thème par défaut de Kodi, le supprimer peut créer des problèmes</disclaimer>
     <disclaimer lang="gl_ES">Confluence é a pel predefinida para Kodi e eliminala pode causas problemas.</disclaimer>
     <disclaimer lang="he_IL">המעטפת Confluence היא מעטפת ברירת המחדל של Kodi, הסרתה עלולה לגרום לתקלות</disclaimer>
     <disclaimer lang="hr_HR">Confluence je uobičajena presvlaka za Kodi, njegovim uklanjanjem može uzrokovati poteškoće.</disclaimer>
@@ -176,6 +178,7 @@
     <disclaimer lang="sr_RS">Confluence је подразумевана маска за Kodi, њено уклањање може направити проблеме</disclaimer>
     <disclaimer lang="sr_RS@latin">Confluence je podrazumevana maska za Kodi, njeno uklanjanje može izazvati probleme</disclaimer>
     <disclaimer lang="sv_SE">Confluence är standardskal för Kodi. Att ta bort detta skal kan skapa problem.</disclaimer>
+    <disclaimer lang="szl">Confluence to je wychodnŏ skōra we Kodi, a wyciepniyńciy jij może sprŏwić niyprzileżytości.</disclaimer>
     <disclaimer lang="tg_TJ">Пӯсти ҳамҷараёнӣ ҳамчун пӯсти пешфарз барои Kodi истифода шуда истодааст ва агар онро тоза кунед, мӯшкилӣ метавонад ба вуҷуд ояд</disclaimer>
     <disclaimer lang="th_TH">Confluence เป็นสกินเริ่มต้นสำหรับ Kodi การลบมัน อาจทำให้เกิดปัญหา</disclaimer>
     <disclaimer lang="tr_TR">Confluence Kodi için varsayılan dış görünümdür, kaldırmak sorunlara yol açabilir</disclaimer>

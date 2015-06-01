@@ -168,6 +168,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "배경"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "사진 슬라이드쇼에 \"일시 중지됨\" 보기"
+
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
 msgstr "창에 예고편 재생 [COLOR=grey3](비디오 정보 대화창만)[/COLOR]"
@@ -175,6 +179,10 @@ msgstr "창에 예고편 재생 [COLOR=grey3](비디오 정보 대화창만)[/CO
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "기타 옵션"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "비디오 파일 이름에서 읽은 플래그 숨김 [COLOR=grey3](예. 블루레이, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -203,6 +211,10 @@ msgstr "최근 추가한 앨범 보기"
 msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "최근 추가한 비디오 보기"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "홈 페이지 프로그램 하위 메뉴"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -235,6 +247,18 @@ msgstr "전체 화면 시각화에서 팬아트 숨김"
 msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "가사 애드온"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "홈 페이지 \"비디오\" 하위 메뉴"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "홈 페이지 \"음악\" 하위 메뉴"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "홈 페이지 \"사진\" 하위 메뉴"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -271,6 +295,10 @@ msgstr "더 찾아보기"
 msgctxt "#31208"
 msgid "Upcoming episodes"
 msgstr "방송 예정 에피소드"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "현재 온도"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -420,6 +448,14 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]음악 설정[/B][CR][CR]음악 라이브러리 관리 · 음악 재생 옵션 변경 · 음악 목록 옵션 변경[CR]노래 전송 설정 · 노래방 옵션 설정"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]사진 설정[/B][CR][CR]사진 목록 옵션 변경 · 슬라이드쇼 설정"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]날씨 설정[/B][CR][CR]날씨 정보를 수집할 도시 설정"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]시스템 설정[/B][CR][CR]화면 설정 및 조정 · 오디오 출력 설정 · 원격 제어 설정[CR]전원 절약 옵션 설정 · 디버깅 사용 · 마스터 잠금 설정"
@@ -439,6 +475,10 @@ msgstr "[B]서비스 설정[/B][CR][CR]UPnP 및 HTTP를 통한 Kodi 제어 설�
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "처음 실행 도움말..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "이 탭은 현재 섹션의 추가 옵션메뉴가 화면 가장자리에 숨어 있다는 것을 의미합니다.  메뉴에 접근하려면 리모컨 또는 키보드로 왼쪽으로 이동하거나 탭 위로 마우스를 가져가세요. [CR] [CR]\"확인\"을 누르면 대화상자가 닫히고 다시 표시되지 않습니다."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -495,6 +535,10 @@ msgstr "예약 설정"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "채널 옵션"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36시간 예보"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

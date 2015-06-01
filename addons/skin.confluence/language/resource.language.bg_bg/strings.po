@@ -16,6 +16,10 @@ msgstr ""
 "Language: bg_BG\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Променете вашите"
+
 msgctxt "#31004"
 msgid "Working..."
 msgstr "Работи..."
@@ -164,6 +168,10 @@ msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Разни настройки"
 
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Скривай флаговете от имената на файлове [COLOR=grey3](напр. Blu-ray, HD-DVD)[/COLOR]"
+
 msgctxt "#31108"
 msgid "Hide main menu buttons"
 msgstr "Скриване на бутони от главното меню"
@@ -192,6 +200,14 @@ msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "Показвай последно добавените видео файлове"
 
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Подменю на елемента \"Програми\", от началния екран"
+
+msgctxt "#31119"
+msgid "Hide background fanart"
+msgstr "Скривай фоновия фен-арт"
+
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
 msgstr "Ползвай за фон възпроизвеждания видео файл"
@@ -219,6 +235,18 @@ msgstr "Без фен-арт при визуализация на цял екр�
 msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "Добавка за лирики"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Подменю на елемента \"Видео\", от началния екран"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Подменю на елемента \"Музика\", от началния екран"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Подменю на елемента \"Снимки\", от началния екран"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -255,6 +283,10 @@ msgstr "Търси още елементи"
 msgctxt "#31208"
 msgid "Upcoming episodes"
 msgstr "Предстоящи епизоди"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Текуща температура"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -404,6 +436,14 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]КОНФИГУРИРАЙТЕ МУЗИКАТА[/B][CR][CR]Управлявайте музикалната си библиотеката · Настройте възпроизвеждането на музика[CR]Променете настройките на списъците с аудио файлове · Настройте караоке плеъра"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]КОНФИГУРИРАЙТЕ СНИМКИТЕ[/B][CR][CR]Променете настройките на списъците със снимки · Конфигурирайте презентациите"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]КОНФИГУРИРАЙТЕ ПРОГНОЗАТА ЗА ВРЕМЕТО[/B][CR][CR]Изберете до три града, за които желаете да следите прогнозата"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]КОНФИГУРИРАЙТЕ СИСТЕМАТА[/B][CR][CR]Настройте и калибрирайте екраните · Настройте компютъра да пести енергия[CR]Настройте дистанционните · Конфигурирайте аудио изхода · Включете режима \"дебъг\" · Задайте код за заключване"
@@ -423,6 +463,10 @@ msgstr "[B]КОНФИГУРИРАЙТЕ УСЛУГИТЕ[/B][CR][CR]Настро
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "Помощ при първо стартиране"
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "Табът отляво обозначава наличието на меню, което е извън видимия екран, съдържащо опции за текущата секция. За достъп до него е необходим да се придвижите наляво, с помощта на дистанционното, клавиатурата или да поставите курсора на мишката над таба. [CR][CR]Кликнете върху \"Добре\" за да затворите този прозорец, който няма да се появи повече."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -446,11 +490,31 @@ msgstr "Изберете кой профил да се ползва за вли�
 
 msgctxt "#31502"
 msgid "TV"
-msgstr "ТЕЛЕВИЗИЯ"
+msgstr "Телевизия"
+
+msgctxt "#31503"
+msgid "Add group"
+msgstr "Добави група"
+
+msgctxt "#31504"
+msgid "Rename group"
+msgstr "Преименувай групата"
+
+msgctxt "#31505"
+msgid "Delete group"
+msgstr "Изтрий групата"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
 msgstr "Налични[CR]групи"
+
+msgctxt "#31509"
+msgid "Channel group"
+msgstr "Група канали"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36 часова прогноза"
 
 msgctxt "#31902"
 msgid "Hourly forecast"
@@ -490,7 +554,7 @@ msgstr "СНИМКИ"
 
 msgctxt "#31952"
 msgid "TV"
-msgstr "ТЕЛЕВИЗИЯ"
+msgstr "Телевизия"
 
 msgctxt "#31953"
 msgid "VIDEOS"
