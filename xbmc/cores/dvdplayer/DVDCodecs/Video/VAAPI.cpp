@@ -1098,7 +1098,6 @@ bool CDecoder::ConfigVAAPI()
     return false;
   }
 
-
   m_hwContext.config_id = m_vaapiConfig.configId;
   m_hwContext.context_id = m_vaapiConfig.contextId;
   m_hwContext.display = m_vaapiConfig.dpy;

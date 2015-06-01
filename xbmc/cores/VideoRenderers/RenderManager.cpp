@@ -19,9 +19,6 @@
  */
 
 #include "system.h"
-#if defined(HAS_GL)
-  #include "system_gl.h"
-#endif
 #include "RenderManager.h"
 #include "RenderFlags.h"
 #include "threads/CriticalSection.h"
@@ -40,7 +37,12 @@
 #include "cores/DataCacheCore.h"
 
 #if defined(HAS_GL)
-  #include "LinuxRendererGL.h"
+#include "LinuxRendererGL.h"
+#include "HwDecRender/RendererVAAPI.h"
+#include "HwDecRender/RendererVDPAU.h"
+#if defined(TARGET_DARWIN_OSX)
+#include "HwDecRender/RendererVDA.h"
+#endif
 #elif defined(HAS_MMAL)
   #include "MMALRenderer.h"
 #elif HAS_GLES == 2
@@ -57,10 +59,6 @@
 #include "../dvdplayer/DVDClock.h"
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
-
-#ifdef HAVE_LIBVA
-  #include "../dvdplayer/DVDCodecs/Video/VAAPI.h"
-#endif
 
 using namespace KODI::MESSAGING;
 
@@ -104,10 +102,37 @@ static void requeue(std::deque<int> &trg, std::deque<int> &src)
   src.pop_front();
 }
 
+static std::string GetRenderFormatName(ERenderFormat format)
+{
+  switch(format)
+  {
+    case RENDER_FMT_YUV420P:   return "YV12";
+    case RENDER_FMT_YUV420P16: return "YV12P16";
+    case RENDER_FMT_YUV420P10: return "YV12P10";
+    case RENDER_FMT_NV12:      return "NV12";
+    case RENDER_FMT_UYVY422:   return "UYVY";
+    case RENDER_FMT_YUYV422:   return "YUY2";
+    case RENDER_FMT_VDPAU:     return "VDPAU";
+    case RENDER_FMT_VDPAU_420: return "VDPAU_420";
+    case RENDER_FMT_DXVA:      return "DXVA";
+    case RENDER_FMT_VAAPI:     return "VAAPI";
+    case RENDER_FMT_VAAPINV12: return "VAAPI_NV12";
+    case RENDER_FMT_OMXEGL:    return "OMXEGL";
+    case RENDER_FMT_CVBREF:    return "BGRA";
+    case RENDER_FMT_EGLIMG:    return "EGLIMG";
+    case RENDER_FMT_BYPASS:    return "BYPASS";
+    case RENDER_FMT_MEDIACODEC:return "MEDIACODEC";
+    case RENDER_FMT_IMXMAP:    return "IMXMAP";
+    case RENDER_FMT_MMAL:      return "MMAL";
+    case RENDER_FMT_NONE:      return "NONE";
+  }
+  return "UNKNOWN";
+}
+
 CXBMCRenderManager::CXBMCRenderManager()
 {
   m_pRenderer = NULL;
-  m_bIsStarted = false;
+  m_renderState = STATE_UNCONFIGURED;
 
   m_presentstep = PRESENT_IDLE;
   m_rendermethod = 0;
@@ -128,7 +153,6 @@ CXBMCRenderManager::CXBMCRenderManager()
 CXBMCRenderManager::~CXBMCRenderManager()
 {
   delete m_pRenderer;
-  m_pRenderer = NULL;
 }
 
 void CXBMCRenderManager::GetVideoRect(CRect &source, CRect &dest, CRect &view)
@@ -214,14 +238,11 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
 
   avgerror /= ERRORBUFFSIZE;
 
-
   //we change the clock speed slightly
   //to make every frame's presenttime end up in the middle of two vblanks
   //integral correction, clamp to -0.5:0.5 range
   m_presentcorr = std::max(std::min(m_presentcorr + avgerror * 0.01, 0.1), -0.1);
   g_VideoReferenceClock.SetFineAdjust(1.0 - avgerror * 0.01 - m_presentcorr * 0.01);
-
-  //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
 }
 
 std::string CXBMCRenderManager::GetVSyncState()
@@ -238,56 +259,118 @@ std::string CXBMCRenderManager::GetVSyncState()
   return state;
 }
 
-bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation, int buffers)
+bool CXBMCRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
 {
 
-  CSingleLock    lock2(m_presentlock);
-
-  /* make sure any queued frame was fully presented */
-  XbmcThreads::EndTime endtime(5000);
-  while(m_presentstep != PRESENT_IDLE && m_presentstep != PRESENT_READY)
+  // check if something has changed
   {
-    if(endtime.IsTimePast())
+    float config_framerate = fps;
+    float render_framerate = g_graphicsContext.GetFPS();
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_OFF)
+      render_framerate = config_framerate;
+    bool changerefresh = (fps != 0) &&
+                         (m_fps == 0.0 || fmod(m_fps, fps) != 0.0) &&
+                         (render_framerate != config_framerate);
+
+    CSharedLock lock(m_sharedSection);
+    if (m_width == picture.iWidth &&
+        m_height == picture.iHeight &&
+        m_dwidth == picture.iDisplayWidth &&
+        m_dheight == picture.iDisplayHeight &&
+        !changerefresh &&
+        (m_flags & ~CONF_FLAGS_FULLSCREEN) == (flags & ~CONF_FLAGS_FULLSCREEN) &&
+        m_format == picture.format &&
+        m_extended_format == picture.extended_format &&
+        m_orientation == orientation &&
+        m_NumberBuffers == buffers &&
+        m_pRenderer != NULL)
+      return true;
+  }
+
+  std::string formatstr = GetRenderFormatName(picture.format);
+  CLog::Log(LOGDEBUG, "CXBMCRenderManager::Configure - change configuration. %dx%d. display: %dx%d. framerate: %4.2f. format: %s", picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, formatstr.c_str());
+
+  // make sure any queued frame was fully presented
+  {
+    CSingleLock lock(m_presentlock);
+    XbmcThreads::EndTime endtime(5000);
+    while(m_presentstep != PRESENT_IDLE && m_presentstep != PRESENT_READY)
     {
-      CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for state");
-      return false;
+      if(endtime.IsTimePast())
+      {
+        CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for state");
+        return false;
+      }
+      m_presentevent.wait(lock, endtime.MillisLeft());
     }
-    m_presentevent.wait(lock2, endtime.MillisLeft());
-  };
-  lock2.Leave();
+  }
 
-  CExclusiveLock lock(m_sharedSection);
-  if(!m_pRenderer)
   {
-    CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
+    CExclusiveLock lock(m_sharedSection);
+    m_width = picture.iWidth;
+    m_height = picture.iHeight,
+    m_dwidth = picture.iDisplayWidth;
+    m_dheight = picture.iDisplayHeight;
+    m_fps = fps;
+    m_flags = flags;
+    m_format = picture.format;
+    m_extended_format = picture.extended_format;
+    m_orientation = orientation;
+    m_NumberBuffers  = buffers;
+    m_renderState = STATE_CONFIGURING;
+    m_stateEvent.Reset();
+  }
+
+  if (!m_stateEvent.WaitMSec(1000))
+  {
+    CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for configure");
     return false;
   }
 
-
-  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags, format, extended_format, orientation);
-  if(result)
+  CSharedLock lock(m_sharedSection);
+  if (m_renderState != STATE_CONFIGURED)
   {
-    if( flags & CONF_FLAGS_FULLSCREEN )
-    {
-      lock.Leave();
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
-      lock.Enter();
-    }
-    lock2.Enter();
-    m_format = format;
+    CLog::Log(LOGWARNING, "CRenderManager::Configure - failed to configure");
+    return false;
+  }
 
+  return true;
+}
+
+bool CXBMCRenderManager::Configure()
+{
+  CExclusiveLock lock(m_sharedSection);
+  CSingleLock lock2(m_presentlock);
+
+  if (m_pRenderer && m_pRenderer->GetRenderFormat() != m_format)
+  {
+    DeleteRenderer();
+  }
+
+  if(!m_pRenderer)
+  {
+    CreateRenderer();
+    if (!m_pRenderer)
+      return false;
+    else
+      m_pRenderer->PreInit();
+  }
+
+  bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_extended_format, m_orientation);
+  if (result)
+  {
     CRenderInfo info = m_pRenderer->GetRenderInfo();
     int renderbuffers = info.optimal_buffer_size;
     m_QueueSize = renderbuffers;
-    if (buffers > 0)
-      m_QueueSize = std::min(buffers, renderbuffers);
+    if (m_NumberBuffers > 0)
+      m_QueueSize = std::min(m_NumberBuffers, renderbuffers);
 
     m_QueueSize = std::min(m_QueueSize, (int)info.max_buffer_size);
     m_QueueSize = std::min(m_QueueSize, NUM_BUFFERS);
     if(m_QueueSize < 2)
     {
       m_QueueSize = 2;
-      CLog::Log(LOGWARNING, "CXBMCRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, renderbuffers, buffers);
+      CLog::Log(LOGWARNING, "CXBMCRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, renderbuffers, m_NumberBuffers);
     }
 
     m_pRenderer->SetBufferSize(m_QueueSize);
@@ -300,7 +383,6 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     for (int i=1; i < m_QueueSize; i++)
       m_free.push_back(i);
 
-    m_bIsStarted = true;
     m_bRenderGUI = true;
     m_waitForBufferCount = 0;
     m_bReconfigured = true;
@@ -310,17 +392,24 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_presentevent.notifyAll();
     m_renderedOverlay = false;
 
+    m_renderState = STATE_CONFIGURED;
+
     CLog::Log(LOGDEBUG, "CXBMCRenderManager::Configure - %d", m_QueueSize);
   }
+  else
+    m_renderState = STATE_UNCONFIGURED;
 
+  m_stateEvent.Set();
   return result;
 }
 
 bool CXBMCRenderManager::IsConfigured() const
 {
-  if (!m_pRenderer)
+  CSharedLock lock(m_sharedSection);
+  if (m_renderState == STATE_CONFIGURED)
+    return true;
+  else
     return false;
-  return m_pRenderer->IsConfigured();
 }
 
 void CXBMCRenderManager::Update()
@@ -350,54 +439,66 @@ bool CXBMCRenderManager::HasFrame()
 
 void CXBMCRenderManager::FrameMove()
 {
-  { CSharedLock lock(m_sharedSection);
-    CSingleLock lock2(m_presentlock);
+  CSharedLock lock(m_sharedSection);
 
-    if (!m_pRenderer)
+  if (m_renderState == STATE_UNCONFIGURED)
+    return;
+  else if (m_renderState == STATE_CONFIGURING)
+  {
+    lock.Leave();
+    if (!Configure())
       return;
 
-    if (m_presentstep == PRESENT_FRAME2)
+    if (m_flags & CONF_FLAGS_FULLSCREEN)
     {
-      if(!m_queued.empty())
-      {
-        double timestamp = GetPresentTime();
-        SPresent& m = m_Queue[m_presentsource];
-        SPresent& q = m_Queue[m_queued.front()];
-        if(timestamp > m.timestamp + (q.timestamp - m.timestamp) * 0.5)
-        {
-          m_presentstep = PRESENT_READY;
-          m_presentevent.notifyAll();
-        }
-      }
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
     }
-
-    if (m_presentstep == PRESENT_READY)
-      PrepareNextRender();
-
-    if(m_presentstep == PRESENT_FLIP)
-    {
-      m_pRenderer->FlipPage(m_presentsource);
-      m_presentstep = PRESENT_FRAME;
-      m_presentevent.notifyAll();
-    }
-
-    /* release all previous */
-    for(std::deque<int>::iterator it = m_discard.begin(); it != m_discard.end(); )
-    {
-      // renderer may want to keep the frame for postprocessing
-      if (!m_pRenderer->NeedBufferForRef(*it) || !m_bRenderGUI)
-      {
-        m_pRenderer->ReleaseBuffer(*it);
-        m_overlays.Release(*it);
-        m_free.push_back(*it);
-        it = m_discard.erase(it);
-      }
-      else
-        ++it;
-    }
-
-    m_bRenderGUI = true;
+    lock.Enter();
   }
+
+  CSingleLock lock2(m_presentlock);
+
+  if (m_presentstep == PRESENT_FRAME2)
+  {
+    if (!m_queued.empty())
+    {
+      double timestamp = GetPresentTime();
+      SPresent& m = m_Queue[m_presentsource];
+      SPresent& q = m_Queue[m_queued.front()];
+      if(timestamp > m.timestamp + (q.timestamp - m.timestamp) * 0.5)
+      {
+        m_presentstep = PRESENT_READY;
+        m_presentevent.notifyAll();
+      }
+    }
+  }
+
+  if (m_presentstep == PRESENT_READY)
+    PrepareNextRender();
+
+  if(m_presentstep == PRESENT_FLIP)
+  {
+    m_pRenderer->FlipPage(m_presentsource);
+    m_presentstep = PRESENT_FRAME;
+    m_presentevent.notifyAll();
+  }
+
+  /* release all previous */
+  for (std::deque<int>::iterator it = m_discard.begin(); it != m_discard.end(); )
+  {
+    // renderer may want to keep the frame for postprocessing
+    if (!m_pRenderer->NeedBufferForRef(*it) || !m_bRenderGUI)
+    {
+      m_pRenderer->ReleaseBuffer(*it);
+      m_overlays.Release(*it);
+      m_free.push_back(*it);
+      it = m_discard.erase(it);
+    }
+    else
+      ++it;
+  }
+
+  m_bRenderGUI = true;
 }
 
 void CXBMCRenderManager::FrameFinish()
@@ -437,8 +538,14 @@ void CXBMCRenderManager::FrameFinish()
   }
 }
 
-unsigned int CXBMCRenderManager::PreInit()
+void CXBMCRenderManager::PreInit()
 {
+  if (!g_application.IsCurrentThread())
+  {
+    CLog::Log(LOGERROR, "CXBMCRenderManager::UnInit - not called from render thread");
+    return;
+  }
+
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
   m_presentcorr = 0.0;
@@ -446,44 +553,35 @@ unsigned int CXBMCRenderManager::PreInit()
   m_errorindex  = 0;
   memset(m_errorbuff, 0, sizeof(m_errorbuff));
 
-  m_bIsStarted = false;
   if (!m_pRenderer)
   {
-#if defined(HAS_GL)
-    m_pRenderer = new CLinuxRendererGL();
-#elif defined(HAS_MMAL)
-    m_pRenderer = new CMMALRenderer();
-#elif HAS_GLES == 2
-    m_pRenderer = new CLinuxRendererGLES();
-#elif defined(HAS_DX)
-    m_pRenderer = new CWinRenderer();
-#elif defined(HAS_SDL)
-    m_pRenderer = new CLinuxRenderer();
-#endif
+    m_format = RENDER_FMT_NONE;
+    CreateRenderer();
   }
 
   UpdateDisplayLatency();
 
   m_QueueSize   = 2;
   m_QueueSkip   = 0;
-
-  return m_pRenderer->PreInit();
 }
 
 void CXBMCRenderManager::UnInit()
 {
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  if (!g_application.IsCurrentThread())
+  {
+    CLog::Log(LOGERROR, "CXBMCRenderManager::UnInit - not called from render thread");
+    return;
+  }
 
-  m_bIsStarted = false;
+  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
   m_overlays.Flush();
   g_fontManager.Unload("__subtitle__");
   g_fontManager.Unload("__subtitleborder__");
 
-  // free renderer resources.
-  // TODO: we may also want to release the renderer here.
-  if (m_pRenderer)
-    m_pRenderer->UnInit();
+  DeleteRenderer();
+
+  m_renderState = STATE_UNCONFIGURED;
 }
 
 bool CXBMCRenderManager::Flush()
@@ -496,9 +594,13 @@ bool CXBMCRenderManager::Flush()
     CLog::Log(LOGDEBUG, "%s - flushing renderer", __FUNCTION__);
 
     CRetakeLock<CExclusiveLock> lock(m_sharedSection);
-    m_pRenderer->Flush();
-    m_overlays.Flush();
-    m_flushEvent.Set();
+
+    if (m_pRenderer)
+    {
+      m_pRenderer->Flush();
+      m_overlays.Flush();
+      m_flushEvent.Set();
+    }
   }
   else
   {
@@ -513,6 +615,7 @@ bool CXBMCRenderManager::Flush()
       return true;
   }
 
+  CSingleLock lock(m_presentlock);
   m_queued.clear();
   m_discard.clear();
   m_free.clear();
@@ -521,6 +624,56 @@ bool CXBMCRenderManager::Flush()
     m_free.push_back(i);
 
   return true;
+}
+void CXBMCRenderManager::CreateRenderer()
+{
+  if (!m_pRenderer)
+  {
+#if defined(HAS_MMAL)
+    m_pRenderer = new CMMALRenderer();
+#elif HAS_GLES == 2
+    m_pRenderer = new CLinuxRendererGLES();
+#elif defined(HAS_DX)
+    m_pRenderer = new CWinRenderer();
+#endif
+#if defined(HAS_GL)
+    if (m_format == RENDER_FMT_VAAPI || m_format == RENDER_FMT_VAAPINV12)
+    {
+#if defined(HAVE_LIBVA)
+      m_pRenderer = new CRendererVAAPI;
+#endif
+    }
+    else if (m_format == RENDER_FMT_VDPAU || m_format == RENDER_FMT_VDPAU_420)
+    {
+#if defined(HAVE_LIBVDPAU)
+      m_pRenderer = new CRendererVDPAU;
+#endif
+    }
+    else if (m_format == RENDER_FMT_CVBREF)
+    {
+#if defined(TARGET_DARWIN_OSX)
+      m_pRenderer = new CRendererVDA;
+#endif
+    }
+    else if (m_format != RENDER_FMT_NONE)
+    {
+      m_pRenderer = new CLinuxRendererGL;
+    }
+#endif
+    if (m_pRenderer)
+      m_pRenderer->PreInit();
+  }
+}
+
+void CXBMCRenderManager::DeleteRenderer()
+{
+  CLog::Log(LOGDEBUG, "%s - deleting renderer", __FUNCTION__);
+
+  if (m_pRenderer)
+  {
+    delete m_pRenderer;
+    m_pRenderer = NULL;
+  }
 }
 
 void CXBMCRenderManager::SetupScreenshot()
@@ -756,13 +909,6 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   }
 }
 
-void CXBMCRenderManager::Reset()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    m_pRenderer->Reset();
-}
-
 RESOLUTION CXBMCRenderManager::GetResolution()
 {
   CSharedLock lock(m_sharedSection);
@@ -802,6 +948,9 @@ void CXBMCRenderManager::RegisterRenderFeaturesCallBack(const void *ctx, RenderF
 void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 {
   CSharedLock lock(m_sharedSection);
+
+  if (m_renderState != STATE_CONFIGURED)
+    return;
 
   if (!gui && m_pRenderer->IsGuiLayer())
     return;
@@ -911,10 +1060,6 @@ void CXBMCRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 
 void CXBMCRenderManager::Recover()
 {
-#if defined(HAS_GL) && !defined(TARGET_DARWIN)
-  glFlush(); // attempt to have gpu done with pixmap and vdpau
-#endif
-
   UpdateDisplayLatency();
 }
 
@@ -949,8 +1094,8 @@ CRenderInfo CXBMCRenderManager::GetRenderInfo()
   CRenderInfo info;
   if (!m_pRenderer)
   {
-    CLog::Log(LOGERROR, "%s - renderer is NULL", __FUNCTION__);
-    return CRenderInfo();
+    info.max_buffer_size = NUM_BUFFERS;
+    return info;;
   }
   return m_pRenderer->GetRenderInfo();
 }
@@ -997,16 +1142,12 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
        || pic.format == RENDER_FMT_OMXEGL
        || pic.format == RENDER_FMT_CVBREF
        || pic.format == RENDER_FMT_VAAPI
+       || pic.format == RENDER_FMT_VAAPINV12
        || pic.format == RENDER_FMT_EGLIMG
        || pic.format == RENDER_FMT_MEDIACODEC
        || pic.format == RENDER_FMT_IMXMAP
        || pic.format == RENDER_FMT_MMAL)
     m_pRenderer->AddVideoPictureHW(pic, index);
-  else if(pic.format == RENDER_FMT_VAAPINV12)
-  {
-    m_pRenderer->AddVideoPictureHW(pic, index);
-    CDVDCodecUtils::CopyNV12Picture(&image, &pic.vaapi->DVDPic);
-  }
 
   m_pRenderer->ReleaseImage(index, false);
 
@@ -1071,7 +1212,7 @@ EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHO
 
 int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
 {
-  CSingleLock lock2(m_presentlock);
+  CSingleLock lock(m_presentlock);
 
   // check if gui is active and discard buffer if not
   // this keeps videoplayer going
@@ -1092,7 +1233,7 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
     if (sleeptime < 0)
       sleeptime = 0;
     sleeptime = std::min(sleeptime, 20);
-    m_presentevent.wait(lock2, sleeptime);
+    m_presentevent.wait(lock, sleeptime);
     DiscardBuffer();
     return 0;
   }
@@ -1100,7 +1241,7 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
   XbmcThreads::EndTime endtime(timeout);
   while(m_free.empty())
   {
-    m_presentevent.wait(lock2, std::min(50, timeout));
+    m_presentevent.wait(lock, std::min(50, timeout));
     if(endtime.IsTimePast() || bStop)
     {
       if (timeout != 0 && !bStop)

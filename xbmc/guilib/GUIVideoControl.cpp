@@ -55,7 +55,7 @@ void CGUIVideoControl::Render()
   // don't render if we aren't playing video, or if the renderer isn't started
   // (otherwise the lock we have from CApplication::Render() may clash with the startup
   // locks in the RenderManager.)
-  if (g_application.m_pPlayer->IsPlayingVideo() && g_renderManager.IsStarted())
+  if (g_application.m_pPlayer->IsPlayingVideo() && g_renderManager.IsConfigured())
   {
 #else
   if (g_application.m_pPlayer->IsPlayingVideo())
@@ -101,7 +101,7 @@ void CGUIVideoControl::Render()
 void CGUIVideoControl::RenderEx()
 {
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_application.m_pPlayer->IsPlayingVideo() && g_renderManager.IsStarted())
+  if (g_application.m_pPlayer->IsPlayingVideo() && g_renderManager.IsConfigured())
     g_renderManager.Render(false, 0, 255, false);
   g_renderManager.FrameFinish();
 #endif
