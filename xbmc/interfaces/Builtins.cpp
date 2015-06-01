@@ -39,6 +39,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "GUIUserMessages.h"
 #include "windows/GUIWindowLoginScreen.h"
@@ -166,6 +167,7 @@ const BUILT_IN commands[] = {
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
   { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
+  { "DialogOK",                   true,   "Shows an OK dialog on screen, specify header, then message." },
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
@@ -1214,6 +1216,18 @@ int CBuiltins::Execute(const std::string& execString)
     if (seconds < 0 || (seconds == 0 && loop))
       return false;
     g_alarmClock.Start(params[0], seconds, params[1], silent, loop);
+  }
+  else if (execute == "dialogok")
+  {
+    if (params.size() < 2)
+      return -1;
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (pDialog)
+    {
+      pDialog->SetHeading(params[0]);
+      pDialog->SetLine(0, params[1]);
+      pDialog->DoModal();
+    }
   }
   else if (execute == "notification")
   {
