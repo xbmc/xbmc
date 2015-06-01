@@ -2356,6 +2356,7 @@ OUTPUT_FILES="Makefile \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
     xbmc/cores/VideoRenderers/Makefile \
+    xbmc/cores/VideoRenderers/HwDecRender/Makefile \
     xbmc/cores/dvdplayer/Makefile \
     lib/libdvd/Makefile \
     xbmc/cores/DllLoader/Makefile \

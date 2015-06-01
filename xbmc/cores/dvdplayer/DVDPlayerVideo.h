@@ -161,23 +161,6 @@ protected:
 
   bool   m_bFpsInvalid;      // needed to ignore fps (e.g. dvd stills)
 
-  struct SOutputConfiguration
-  {
-    unsigned int width;
-    unsigned int height;
-    unsigned int dwidth;
-    unsigned int dheight;
-    unsigned int color_format;
-    unsigned int extended_format;
-    unsigned int color_matrix : 4;
-    unsigned int color_range  : 1;
-    unsigned int chroma_position;
-    unsigned int color_primaries;
-    unsigned int color_transfer;
-    unsigned int stereo_flags;
-    double       framerate;
-  } m_output; //holds currently configured output
-
   bool m_bAllowFullscreen;
   bool m_bRenderSubs;
 
