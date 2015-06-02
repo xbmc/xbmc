@@ -195,12 +195,20 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
     if (maxWriteable)
     {
       if (!m_buffer.WriteData(m_overflowBuffer, maxWriteable))
+      {
         CLog::Log(LOGERROR, "CCurlFile::WriteCallback - Unable to write to buffer - what's up?");
-      if (m_overflowSize > maxWriteable)
-      { // still have some more - copy it down
+        return 0;
+      }
+
+      if (maxWriteable < m_overflowSize)
+      {
+        // still have some more - copy it down
         memmove(m_overflowBuffer, m_overflowBuffer + maxWriteable, m_overflowSize - maxWriteable);
       }
       m_overflowSize -= maxWriteable;
+
+      // Shrink memory:
+      m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, m_overflowSize);
     }
   }
   // ok, now copy the data into our ring buffer
@@ -210,6 +218,7 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
     if (!m_buffer.WriteData(buffer, maxWriteable))
     {
       CLog::Log(LOGERROR, "CCurlFile::WriteCallback - Unable to write to buffer with %i bytes - what's up?", maxWriteable);
+      return 0;
     }
     else
     {
@@ -221,6 +230,7 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
   {
 //    CLog::Log(LOGDEBUG, "CCurlFile::WriteCallback(%p) not enough free space for %i bytes", (void*)this,  amount);
 
+    // TODO: Limit max. amount of the overflowbuffer
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
     if(m_overflowBuffer == NULL)
     {
@@ -1469,9 +1479,10 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
       m_buffer.WriteData(m_overflowBuffer, amount);
 
       if (amount < m_overflowSize)
-        memcpy(m_overflowBuffer, m_overflowBuffer+amount,m_overflowSize-amount);
+        memmove(m_overflowBuffer, m_overflowBuffer + amount, m_overflowSize - amount);
 
       m_overflowSize -= amount;
+      // Shrink memory:
       m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, m_overflowSize);
       continue;
     }
