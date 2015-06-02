@@ -1151,6 +1151,9 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       int one = 1;
       XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_KDE_NET_WM_BLOCK_COMPOSITING", True), XA_CARDINAL, 32,
                       PropModeReplace, (unsigned char*) &one,  1);
+      // standard way for Gnome 3
+      XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_NET_WM_BYPASS_COMPOSITOR", True), XA_CARDINAL, 32,
+                      PropModeReplace, (unsigned char*) &one,  1);
     }
 
     // define invisible cursor
