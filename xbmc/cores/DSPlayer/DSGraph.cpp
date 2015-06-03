@@ -737,12 +737,8 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
     seek = GetTotalTime() * (float)((GetPercentage() + percent) / 100);
   }
 
-  // If seek < 0 - seek to the start
-  if (seek < 0)
-    seek = 0;
-
   UpdateTime();
-  Seek(seek);
+  Seek((seek < 0) ? 0 : seek);
   UpdateTime();
 }
 
@@ -757,34 +753,34 @@ void CDSGraph::SeekPercentage(float iPercent)
 }
 
 // return time in DS_TIME_BASE unit
-uint64_t CDSGraph::GetTime()
+uint64_t CDSGraph::GetTime(bool forcePlaybackTime)
 {
   CSingleLock lock(m_ObjectLock);
 
-  if (!g_pPVRStream || CDSPlayer::IsCurrentThread())	// Used by Current Thread (seek) or none PVR video
+  if (!g_pPVRStream || CDSPlayer::IsCurrentThread() || forcePlaybackTime) // Used by seek or none PVR video
     return m_State.time;
-  else 												    // Used by GUI on PVR video
+  else                                                                    // Used by GUI on PVR video
   {
     if (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
-      return MSEC_TO_DS_TIME(g_pPVRStream->GetTime());
+      return MSEC_TO_DS_TIME(g_pPVRStream->GetTime());  // LiveTV EPG time
     else
-      return m_State.time;
+      return m_State.time;                              // Playback Time
   }
 }
 
 // return length in DS_TIME_BASE unit
-uint64_t CDSGraph::GetTotalTime()
+uint64_t CDSGraph::GetTotalTime(bool forcePlaybackTime)
 {
   CSingleLock lock(m_ObjectLock);
 
-  if (!g_pPVRStream || CDSPlayer::IsCurrentThread())	// Used by Current Thread (seek) or none PVR video
+  if (!g_pPVRStream || CDSPlayer::IsCurrentThread() || forcePlaybackTime) // Used by seek or none PVR video
     return m_State.time_total;
-  else 												    // Used by GUI on PVR video
+  else 												                      // Used by GUI on PVR video
   {
     if (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
-      return MSEC_TO_DS_TIME(g_pPVRStream->GetTotalTime());
+      return MSEC_TO_DS_TIME(g_pPVRStream->GetTotalTime()); // LiveTV EPG time
     else
-      return m_State.time_total;
+      return m_State.time_total;                            // Playback Time
   }
 }
 
