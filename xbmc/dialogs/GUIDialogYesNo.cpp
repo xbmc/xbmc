@@ -72,20 +72,18 @@ bool CGUIDialogYesNo::OnBack(int actionID)
   return CGUIDialogBoxBase::OnBack(actionID);
 }
 
-// \brief Show CGUIDialogYesNo dialog, then wait for user to dismiss it.
-// \return true if user selects Yes, false if user selects No.
-bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2, bool& bCanceled)
+bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2, bool &bCanceled)
 {
-  return ShowAndGetInput(heading,line0,line1,line2,-1,-1,bCanceled);
+  return ShowAndGetInput(heading, line0, line1, line2, -1, -1, bCanceled);
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel, int iYesLabel)
+bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel /* = -1 */, int iYesLabel /* = -1 */)
 {
   bool bDummy;
-  return ShowAndGetInput(heading,line0,line1,line2,iNoLabel,iYesLabel,bDummy);
+  return ShowAndGetInput(heading, line0, line1, line2, iNoLabel, iYesLabel, bDummy);
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel, int iYesLabel, bool& bCanceled, unsigned int autoCloseTime)
+bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel, int iYesLabel, bool &bCanceled, unsigned int autoCloseTime /* = 0 */)
 {
   CGUIDialogYesNo *dialog = (CGUIDialogYesNo *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!dialog) return false;
@@ -109,13 +107,19 @@ bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int lin
   return (dialog->IsConfirmed()) ? true : false;
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1, const std::string& line2, const std::string& noLabel, const std::string& yesLabel)
+bool CGUIDialogYesNo::ShowAndGetInput(const std::string &heading, const std::string &line0, const std::string &line1, const std::string &line2, const std::string &noLabel /* = "" */, const std::string &yesLabel /* = "" */)
 {
   bool bDummy;
-  return ShowAndGetInput(heading,line0,line1,line2,bDummy,noLabel,yesLabel);
+  return ShowAndGetInput(heading, line0, line1, line2, bDummy, noLabel, yesLabel);
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& text, bool& bCanceled, const std::string& noLabel, const std::string& yesLabel, unsigned int autoCloseTime)
+bool CGUIDialogYesNo::ShowAndGetInput(const std::string &heading, const std::string &line0, const std::string &line1, const std::string &line2, bool &bCanceled, const std::string &noLabel /* = "" */, const std::string &yesLabel /* = "" */, unsigned int autoCloseTime /* = 0 */)
+{
+  std::string text = line0 + "\n" + line1 + "\n" + line2;
+  return ShowAndGetInput(heading, text, bCanceled, noLabel, yesLabel, autoCloseTime);
+}
+
+bool CGUIDialogYesNo::ShowAndGetInput(const std::string &heading, const std::string &text, bool &bCanceled, const std::string &noLabel, const std::string &yesLabel, unsigned int autoCloseTime /* = 0 */)
 {
   CGUIDialogYesNo *dialog = (CGUIDialogYesNo *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!dialog) return false;
@@ -135,12 +139,6 @@ bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::str
   dialog->DoModal();
   bCanceled = dialog->m_bCanceled;
   return (dialog->IsConfirmed()) ? true : false;
-}
-
-bool CGUIDialogYesNo::ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1, const std::string& line2, bool& bCanceled, const std::string& noLabel, const std::string& yesLabel, unsigned int autoCloseTime)
-{
-  std::string text = line0 + "\n" + line1 + "\n" + line2;
-  return ShowAndGetInput(heading, text, bCanceled, noLabel, yesLabel, autoCloseTime);
 }
 
 int CGUIDialogYesNo::GetDefaultLabelID(int controlId) const
