@@ -597,7 +597,6 @@ bool CRenderSystemDX::CreateDevice()
     {
       D3D11_MESSAGE_ID hide[] =
       {
-        D3D11_MESSAGE_ID_DEVICE_DRAW_RESOURCE_FORMAT_SAMPLE_UNSUPPORTED,  // avoid DXGI_FORMAT_A8_UNORM error
         D3D11_MESSAGE_ID_GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED,        // avoid GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED (dx bug)
         D3D11_MESSAGE_ID_DEVICE_RSSETSCISSORRECTS_NEGATIVESCISSOR         // avoid warning for some labels out of screen
         // Add more message IDs here as needed

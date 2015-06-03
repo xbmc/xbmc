@@ -133,12 +133,12 @@ bool CGUIShaderDX::CreateBuffers()
   }
 
   // create index buffer
-  bufferDesc.ByteWidth = sizeof(DWORD) * __RENDER_GUI_INDICES_COUNT;
+  bufferDesc.ByteWidth = sizeof(uint16_t) * __RENDER_GUI_INDICES_COUNT;
   bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
   bufferDesc.Usage = D3D11_USAGE_IMMUTABLE; // index buffer never change, so create it as static
   bufferDesc.CPUAccessFlags = 0;
 
-  DWORD quadIndices[] = { 2, 3, 0, 1, 2, 0, };
+  uint16_t quadIndices[] = { 2, 3, 0, 1, 2, 0, };
   D3D11_SUBRESOURCE_DATA initData = { 0 };
   initData.pSysMem = quadIndices;
   if (FAILED(pDevice->CreateBuffer(&bufferDesc, &initData, &m_pIndexBuffer)))
@@ -393,7 +393,7 @@ void CGUIShaderDX::RestoreBuffers(void)
   // Set the vertex buffer to active in the input assembler so it can be rendered.
   pContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
   // Set the index buffer to active in the input assembler so it can be rendered.
-  pContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+  pContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
   // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }

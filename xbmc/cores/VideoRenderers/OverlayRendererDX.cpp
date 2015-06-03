@@ -61,7 +61,7 @@ static bool LoadTexture(int width, int height, int stride
     texture->Release();
     return false;
   }
-  ASSERT(format == desc.Format || (format == DXGI_FORMAT_A8_UNORM && desc.Format == DXGI_FORMAT_B8G8R8A8_UNORM));
+  ASSERT(format == desc.Format || (format == DXGI_FORMAT_R8_UNORM && desc.Format == DXGI_FORMAT_B8G8R8A8_UNORM));
 
   *u = float(width) / desc.Width;
   *v = float(height) / desc.Height;
@@ -87,7 +87,7 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   if(!LoadTexture(quads.size_x
                 , quads.size_y
                 , quads.size_x
-                , DXGI_FORMAT_A8_UNORM
+                , DXGI_FORMAT_R8_UNORM
                 , quads.data
                 , &u, &v
                 , &m_texture))

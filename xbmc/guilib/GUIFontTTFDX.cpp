@@ -213,7 +213,7 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 
   CDXTexture* pNewTexture = new CDXTexture(m_textureWidth, newHeight, XB_FMT_A8);
   CD3DTexture* newSpeedupTexture = new CD3DTexture();
-  if (!newSpeedupTexture->Create(m_textureWidth, newHeight, 1, D3D11_USAGE_DEFAULT, DXGI_FORMAT_A8_UNORM))
+  if (!newSpeedupTexture->Create(m_textureWidth, newHeight, 1, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8_UNORM))
   {
     SAFE_DELETE(newSpeedupTexture);
     SAFE_DELETE(pNewTexture);
