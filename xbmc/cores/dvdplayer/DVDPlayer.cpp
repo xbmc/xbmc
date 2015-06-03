@@ -2526,7 +2526,9 @@ void CDVDPlayer::HandleMessages()
           m_OmxPlayerState.av_clock.OMXSetSpeed(speed);
           CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CDVDPlayer", __FUNCTION__, speed, m_playSpeed);
         }
-        else if ((speed == DVD_PLAYSPEED_NORMAL) && m_playSpeed != DVD_PLAYSPEED_NORMAL)
+        else if ((speed == DVD_PLAYSPEED_NORMAL) &&
+                 (m_playSpeed != DVD_PLAYSPEED_NORMAL) &&
+                 (m_playSpeed != DVD_PLAYSPEED_PAUSE))
         {
           int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
           if (m_State.disptime != DVD_NOPTS_VALUE)
@@ -3212,15 +3214,20 @@ int64_t CDVDPlayer::GetDisplayTime()
 {
   CSingleLock lock(m_StateSection);
   double offset = 0;
-  const double limit  = DVD_MSEC_TO_TIME(200);
-  if(m_State.timestamp > 0)
+  const double limit = DVD_MSEC_TO_TIME(200);
+  if (m_State.timestamp > 0)
   {
-    offset  = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
+    offset = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
     offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
-    if(offset >  limit) offset =  limit;
-    if(offset < -limit) offset = -limit;
+    if (offset > limit)
+      offset = limit;
+    if (offset < 0)
+      offset = 0;
   }
-  return llrint(m_State.disptime + DVD_TIME_TO_MSEC(offset));
+  int64_t ret = llrint(m_State.disptime + DVD_TIME_TO_MSEC(offset));
+  if (ret < 0)
+    ret = 0;
+  return ret;
 }
 
 // return length in msec
@@ -4381,8 +4388,6 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     std::string vobsubidx = CUtil::GetVobSubIdxFromSub(filename);
     if (!vobsubidx.empty())
       return AddSubtitleFile(vobsubidx, filename);
-    else
-      return -1;
   }
   SelectionStream s;
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);

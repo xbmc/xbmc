@@ -646,6 +646,7 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
     {
       CLog::Log(LOGWARNING, "CLangInfo: unable to find an installed language addon matching \"%s\". Trying to find an installable language...", language.c_str());
 
+      bool foundMatchingAddon = false;
       CAddonDatabase addondb;
       if (addondb.Open())
       {
@@ -659,7 +660,10 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
           if (ADDON::CLanguageResource::FindLanguageAddonByName(language, newLanguage, languageAddons))
           {
             if (CAddonInstaller::Get().Install(newLanguage, true, "", false, false))
+            {
               CLog::Log(LOGINFO, "CLangInfo: successfully installed language addon \"%s\" matching current language \"%s\"", newLanguage.c_str(), language.c_str());
+              foundMatchingAddon = true;
+            }
             else
               CLog::Log(LOGERROR, "CLangInfo: failed to installed language addon \"%s\" matching current language \"%s\"", newLanguage.c_str(), language.c_str());
           }
@@ -671,14 +675,14 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
       }
       else
         CLog::Log(LOGERROR, "CLangInfo: unable to open addon database to look for a language addon matching \"%s\"", language.c_str());
-    }
 
-    // if the new language matches the default language we are loading the
-    // default language as a fallback
-    if (newLanguage == defaultLanguage)
-    {
-      CLog::Log(LOGINFO, "CLangInfo: fall back to the default language \"%s\"", defaultLanguage.c_str());
-      fallback = true;
+      // if the new language matches the default language we are loading the
+      // default language as a fallback
+      if (!foundMatchingAddon && newLanguage == defaultLanguage)
+      {
+        CLog::Log(LOGINFO, "CLangInfo: fall back to the default language \"%s\"", defaultLanguage.c_str());
+        fallback = true;
+      }
     }
 
     if (!CSettings::Get().SetString("locale.language", newLanguage))

@@ -1,0 +1,73 @@
+# Kodi Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon Provider: Team-Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Silesian (http://www.transifex.com/projects/p/kodi-main/language/szl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: szl\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Tryb"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Wypołniōne"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Pōnkty"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Wyżka lajsty"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Małe"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Wychodne"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Sroge"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Fest sroge"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Wartkość"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Fest poleku"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Poleku"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Wychodne"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Wartko"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Fest wartko"

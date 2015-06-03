@@ -16,9 +16,21 @@ msgstr ""
 "Language: pt_PT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Altere as suas"
+
+msgctxt "#31003"
+msgid "Power options"
+msgstr "Opções de energia"
+
 msgctxt "#31004"
 msgid "Working..."
 msgstr "A processar..."
+
+msgctxt "#31005"
+msgid "Hide information"
+msgstr "Ocultar informação"
 
 msgctxt "#31006"
 msgid "View options"
@@ -27,6 +39,10 @@ msgstr "Opções da vista"
 msgctxt "#31008"
 msgid "Full screen"
 msgstr "Ecrã cheio"
+
+msgctxt "#31009"
+msgid "Total duration"
+msgstr "Duração total"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -44,13 +60,25 @@ msgctxt "#31025"
 msgid "Items"
 msgstr "Itens"
 
+msgctxt "#31026"
+msgid "Misc options"
+msgstr "Opções diversas"
+
 msgctxt "#31027"
 msgid "Location"
 msgstr "Localização"
 
+msgctxt "#31028"
+msgid "Poster wrap"
+msgstr "Cartaz"
+
 msgctxt "#31029"
 msgid "Fanart"
 msgstr "Fanart"
+
+msgctxt "#31031"
+msgid "Pic thumbs"
+msgstr "Miniaturas de imagens"
 
 msgctxt "#31033"
 msgid "Info"
@@ -59,6 +87,10 @@ msgstr "Informações"
 msgctxt "#31039"
 msgid "Actions"
 msgstr "Ações"
+
+msgctxt "#31040"
+msgid "Now playing"
+msgstr "Em reprodução"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -124,9 +156,21 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Fundo de ecrã"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Mostrar \"Pausa\" em apresentação de imagens"
+
+msgctxt "#31104"
+msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
+msgstr "Reproduzir trailers numa janela [COLOR=grey3](Apenas na janela de diálogo do vídeo)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Opções variadas"
+
+msgctxt "#31108"
+msgid "Hide main menu buttons"
+msgstr "Ocultar botões do menu principal"
 
 msgctxt "#31109"
 msgid "Enable custom background"

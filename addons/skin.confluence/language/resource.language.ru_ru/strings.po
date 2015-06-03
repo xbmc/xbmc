@@ -168,6 +168,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Фон"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Показывать \"Пауза\" в режиме слайд-шоу"
+
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
 msgstr "Воспроизводить трейлеры в окне [COLOR=grey3](только для окна сведений)[/COLOR]"
@@ -175,6 +179,10 @@ msgstr "Воспроизводить трейлеры в окне [COLOR=grey3](
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Различные параметры"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Скрыть флаги, полученные из имени видео файла [COLOR=grey3](например BluRray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -203,6 +211,10 @@ msgstr "Показывать последние добавленные альб�
 msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "Показывать последнее добавленное видео"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Подменю программ главного экрана"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -235,6 +247,18 @@ msgstr "Скрывать фанарт в полноэкранной визуал
 msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "Дополнение текстов песен"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Подменю \"Видео\" главного экрана"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Подменю \"Музыка\" главного экрана"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Подменю \"Изображения\" главного экрана"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -271,6 +295,10 @@ msgstr "Найти ещё"
 msgctxt "#31208"
 msgid "Upcoming episodes"
 msgstr "Следующие серии"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Текущая температура"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -420,6 +448,14 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ МУЗЫКИ[/B][CR][CR]Управление медиатекой аудио • Параметры воспроизведения аудио[CR]Настройка списка аудио • Настройка добавления песен • Настройка караоке"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ ИЗОБРАЖЕНИЙ[/B][CR][CR]Параметры списка изображений · Настройка слайд-шоу"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ ПОГОДЫ[/B][CR][CR]Выбор разных городов для получения информации о погоде"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ СИСТЕМЫ[/B][CR][CR]Настройка и калибровка дисплеев • Настройка вывода аудио • Настройка[CR]дистанционного управления • Настройка параметров энергосбережения • Включение отладки • Настройка блокировки"
@@ -439,6 +475,10 @@ msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ СЛУЖБ[/B][CR][CR]Нас�
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "Сведения при первом запуске..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "Эта вкладка означает, что сбоку окна есть меню с дополнительными настройками.  Чтобы получить доступ к меню, перейдите влево при помощи пульта ДУ или клавиатуры либо поместите курсор мыши над вкладкой. [CR][CR]Нажмите \"ОК\", чтобы закрыть этот диалог. Он больше не будет отображаться."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -495,6 +535,10 @@ msgstr "Таймер настроен"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "Настройки канала"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36 часовой прогноз"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

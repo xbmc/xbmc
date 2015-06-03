@@ -41,9 +41,9 @@
 #include <fstream>
 
 CEGLNativeTypeIMX::CEGLNativeTypeIMX()
-  : m_display(NULL)
+  : m_sar(0.0f)
+  , m_display(NULL)
   , m_window(NULL)
-  , m_sar(0)
 {
 }
 

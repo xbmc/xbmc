@@ -16,6 +16,10 @@ msgstr ""
 "Language: pl_PL\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Zmień"
+
 msgctxt "#31003"
 msgid "Power options"
 msgstr "Opcje zasilania"
@@ -66,7 +70,7 @@ msgstr "Lokalizacja"
 
 msgctxt "#31029"
 msgid "Fanart"
-msgstr "Tapeta"
+msgstr "Fototapeta"
 
 msgctxt "#31031"
 msgid "Pic thumbs"
@@ -107,6 +111,10 @@ msgstr "DO TYŁU"
 msgctxt "#31046"
 msgid "SEEKING"
 msgstr "PRZEWIJANIE"
+
+msgctxt "#31048"
+msgid "Visualisation presets"
+msgstr "Szablony wizualizacji"
 
 msgctxt "#31049"
 msgid "End time"
@@ -150,15 +158,27 @@ msgstr "Aktualnie wybrany"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Opcje ekranu"
+msgstr "Opcje ekranu startowego"
 
 msgctxt "#31102"
 msgid "Background"
 msgstr "Tło"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Pokazuj \"Pauza\" poczas pokazu slajdów"
+
+msgctxt "#31104"
+msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
+msgstr "Odtwarzaj zwiastuny w oknie [COLOR=grey3](tylko w oknie informacji)[/COLOR]"
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Opcje dodatkowe"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Ukrywaj etykiety mediów wczytane z nazw pliku [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -182,11 +202,27 @@ msgstr "Opcje"
 
 msgctxt "#31116"
 msgid "Show recently added albums"
-msgstr "Pokazuj ostatnio dodane albumy"
+msgstr "Pokazuj albumy ostatnio dodane"
 
 msgctxt "#31117"
 msgid "Show recently added videos"
-msgstr "Pokazuj ostatnio dodane wideo"
+msgstr "Pokazuj wideo ostatnio dodane"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Podmenu Programy ekranu startowego"
+
+msgctxt "#31119"
+msgid "Hide background fanart"
+msgstr "Nie używaj fototapet w roli tła"
+
+msgctxt "#31124"
+msgid "Show background \"Now playing\" video"
+msgstr "Wyświetlaj panel Teraz odtwarzane w tle interfejsu"
+
+msgctxt "#31125"
+msgid "Show background \"Now playing\" visualisation"
+msgstr "Wyświetlaj wizualizację Teraz odtwarzane w tle interfejsu"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -199,6 +235,26 @@ msgstr "Dodatek TvTunes"
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Tekst utworu"
+
+msgctxt "#31129"
+msgid "Hide fanart in full screen visualisation"
+msgstr "Ukrywaj fototapety podczas pełnoekranowej wizualizacji"
+
+msgctxt "#31132"
+msgid "Lyrics add-on"
+msgstr "Dodatek Tekst utworu"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Podmenu \"Wideo\" ekranu startowego"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Podmenu \"Muzyka\" ekranu startowego"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Podmenu \"Obrazy\" ekranu startowego"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -216,21 +272,93 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Skróty"
 
+msgctxt "#31203"
+msgid "Choose your song"
+msgstr "Wybierz swój utwór"
+
+msgctxt "#31205"
+msgid "Lyrics source"
+msgstr "Źródło tekstów utworów"
+
 msgctxt "#31206"
 msgid "Found"
 msgstr "Odnaleziono"
+
+msgctxt "#31207"
+msgid "Find more items"
+msgstr "Znajdź więcej pozycji"
+
+msgctxt "#31208"
+msgid "Upcoming episodes"
+msgstr "Odcinki wkrótce na antenie"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Temperatura"
+
+msgctxt "#31301"
+msgid "Last updated"
+msgstr "Ostatnia aktualizacja"
 
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Dostawca danych"
 
+msgctxt "#31307"
+msgid "Hide fanart"
+msgstr "Ukrywaj tapety"
+
+msgctxt "#31308"
+msgid "Movie details"
+msgstr "O filmie"
+
+msgctxt "#31309"
+msgid "Memory used:"
+msgstr "Użycie pamięci:"
+
+msgctxt "#31310"
+msgid "Track number"
+msgstr "Numer utworu"
+
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Tapeta[CR][CR]niedostępna[CR][CR] Naciśnij przycisk, aby dodać"
+msgstr "Fototapeta[CR][CR]niedostępna[CR][CR] Naciśnij przycisk, aby dodać"
+
+msgctxt "#31312"
+msgid "Current scraper"
+msgstr "Aktualny ekstraktor"
+
+msgctxt "#31313"
+msgid "Choose a scraper"
+msgstr "Wybierz ekstraktor"
+
+msgctxt "#31314"
+msgid "Content scanning options"
+msgstr "Opcje skanowania zawartości"
+
+msgctxt "#31317"
+msgid "Set fanart path"
+msgstr "Ustaw ścieżkę do folderu tapet"
+
+msgctxt "#31319"
+msgid "Selected profile"
+msgstr "Wybrany profil"
+
+msgctxt "#31320"
+msgid "Last logged in"
+msgstr "Ostatnio zalogowany"
+
+msgctxt "#31321"
+msgid "Karaoke song selector"
+msgstr "Selektor utworów Karaoke"
 
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Premiera"
+
+msgctxt "#31325"
+msgid "Playlist options"
+msgstr "Opcje listy odtwarzania"
 
 msgctxt "#31326"
 msgid "Created"
@@ -248,6 +376,14 @@ msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
 msgstr "[B]Zamknięcie wg harmonogramu![/B] [COLOR=grey2] - Zamknięcie systemu za[/COLOR]"
 
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]movie trailer"
+msgstr "Naciśnij przycisk, aby[CR][CR]odtworzyć zwiastun"
+
+msgctxt "#31331"
+msgid "Album details"
+msgstr "O albumie"
+
 msgctxt "#31351"
 msgid "Pause"
 msgstr "Pauza"
@@ -256,6 +392,10 @@ msgctxt "#31352"
 msgid "Stop"
 msgstr "Stop"
 
+msgctxt "#31353"
+msgid "Fast forward"
+msgstr "Przewiń"
+
 msgctxt "#31354"
 msgid "Rewind"
 msgstr "Cofnij"
@@ -263,6 +403,10 @@ msgstr "Cofnij"
 msgctxt "#31355"
 msgid "Movie menu"
 msgstr "Menu filmu"
+
+msgctxt "#31356"
+msgid "Download subtitles"
+msgstr "Pobierz napisy"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
@@ -280,6 +424,10 @@ msgctxt "#31390"
 msgid "Skin default"
 msgstr "Domyślne dla skóry"
 
+msgctxt "#31391"
+msgid "Skin default with no caps"
+msgstr "Domyślne dla skóry bez wielkich liter"
+
 msgctxt "#31392"
 msgid "Arial based"
 msgstr "Bazujące na Arialu"
@@ -296,9 +444,21 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]KONFIGURACJA MUZYKI[/B][CR][CR]Biblioteka muzyki · Odtwarzanie · Listy utworów · CD-Audio · Karaoke"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]KONFIGURACJA OBRAZÓW[/B][CR][CR]Listy obrazów · Pokaz slajdów"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]KONFIGURACJA POGODY[/B][CR][CR]Wybór lokalizacji pobierania informacji pogodowych"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]KONFIGURACJA SYSTEMU[/B][CR][CR]Wyświetlanie obrazu · Odtwarzanie dźwięku · Urządzenia wejściowe · Internet[CR]Oszczędzanie energii · Diagnostyka · Kontrola dostępu"
+
+msgctxt "#31408"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
+msgstr "[B]KONFIGURACJA DODATKÓW[/B][CR][CR]Zarządzanie zainstalowanymi dodatkami · Przeglądanie i instalacja dodatków[CR]Modyfikacja ustawień dodatków"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
@@ -307,6 +467,10 @@ msgstr "[B]KONFIGURACJA TELEWIZJI[/B][CR][CR]Menu ekranowe · Przewodnik · Nagr
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGURACJA USŁUG[/B][CR][CR]Zdalne sterowanie przez uPnP i HTTP · Współdzielenie plików[CR]Aktywacja Zeroconf · Ustawienia AirPlay"
+
+msgctxt "#31411"
+msgid "First run help..."
+msgstr "Wskazówki na początek..."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -324,9 +488,25 @@ msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
 msgstr "Wybierz profil, który będzie używany w przypadku wyłączenia ekranu logowania."
 
+msgctxt "#31501"
+msgid "Scheduled time"
+msgstr "Zaplanowany czas"
+
 msgctxt "#31502"
 msgid "TV"
 msgstr "TELEWIZJA"
+
+msgctxt "#31503"
+msgid "Add group"
+msgstr "Dodaj grupę"
+
+msgctxt "#31504"
+msgid "Rename group"
+msgstr "Przemianuj grupę"
+
+msgctxt "#31505"
+msgid "Delete group"
+msgstr "Usuń grupę"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
@@ -339,6 +519,10 @@ msgstr "Grupa kanałów"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "Opcje kanału"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "Prognoza 36 godzinna"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

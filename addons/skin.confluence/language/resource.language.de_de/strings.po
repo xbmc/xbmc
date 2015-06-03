@@ -16,6 +16,10 @@ msgstr ""
 "Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Ändern von"
+
 msgctxt "#31003"
 msgid "Power options"
 msgstr "Energieeinstellungen"
@@ -30,7 +34,7 @@ msgstr "Informationen verstecken"
 
 msgctxt "#31006"
 msgid "View options"
-msgstr "Ansichts-Optionen"
+msgstr "Ansichteneinstellungen"
 
 msgctxt "#31008"
 msgid "Full screen"
@@ -64,9 +68,21 @@ msgctxt "#31027"
 msgid "Location"
 msgstr "Standort"
 
+msgctxt "#31028"
+msgid "Poster wrap"
+msgstr "Poster"
+
 msgctxt "#31029"
 msgid "Fanart"
 msgstr "Fanart"
+
+msgctxt "#31031"
+msgid "Pic thumbs"
+msgstr "Vorschaubilder"
+
+msgctxt "#31032"
+msgid "Image wrap"
+msgstr "Bild"
 
 msgctxt "#31033"
 msgid "Info"
@@ -146,11 +162,15 @@ msgstr "Aktuell ausgewählt"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Hauptmenü-Optionen"
+msgstr "Hauptmenü-Einstellungen"
 
 msgctxt "#31102"
 msgid "Background"
 msgstr "Hintergrund"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "\"Pause\" in Bilder-Diaschau anzeigen"
 
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
@@ -159,6 +179,10 @@ msgstr "Film-Trailer im Fenster abspielen [COLOR=grey3](gilt nur für Video-Info
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Sonstige Optionen"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Flags von Dateinamen ausblenden [COLOR=grey3](z.B. Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -187,6 +211,10 @@ msgstr "Zeige zuletzt hinzugefügte Alben"
 msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "Zeige zuletzt hinzugefügte Videos"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Hauptmenü Programme-Untermenü"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -220,6 +248,18 @@ msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "Liedtexte-Addon"
 
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Hauptmenü Videos-Untermenü"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Hauptmenü Musik-Untermenü"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Hauptmenü Bilder-Untermenü"
+
 msgctxt "#31140"
 msgid "Music OSD"
 msgstr "Musik-OSD"
@@ -248,13 +288,21 @@ msgctxt "#31206"
 msgid "Found"
 msgstr "Gefunden"
 
+msgctxt "#31207"
+msgid "Find more items"
+msgstr "Mehr Titel suchen"
+
 msgctxt "#31208"
 msgid "Upcoming episodes"
-msgstr "Zukünftige Folgen"
+msgstr "Zukünftige Episoden"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Aktuelle Temperatur"
 
 msgctxt "#31301"
 msgid "Last updated"
-msgstr "Zuletzt aktualisieret"
+msgstr "Zuletzt aktualisiert"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -286,7 +334,11 @@ msgstr "Aktueller Scraper"
 
 msgctxt "#31313"
 msgid "Choose a scraper"
-msgstr "Wähle einen Scraper"
+msgstr "Scraper auswählen"
+
+msgctxt "#31314"
+msgid "Content scanning options"
+msgstr "Inhalt-Scanning-Optionen"
 
 msgctxt "#31317"
 msgid "Set fanart path"
@@ -299,6 +351,10 @@ msgstr "Profil auswählen"
 msgctxt "#31320"
 msgid "Last logged in"
 msgstr "Zuletzt angemeldet"
+
+msgctxt "#31321"
+msgid "Karaoke song selector"
+msgstr "Karaoke-Titelauswahl"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -372,6 +428,10 @@ msgctxt "#31390"
 msgid "Skin default"
 msgstr "Skin-Standard"
 
+msgctxt "#31391"
+msgid "Skin default with no caps"
+msgstr "Skin-Standard ohne Großbuchstaben"
+
 msgctxt "#31392"
 msgid "Arial based"
 msgstr "Arial-basiert"
@@ -387,6 +447,14 @@ msgstr "[B]VIDEO-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Video-Bibliothek ver
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]MUSIK-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Musik-Bibliothek verwalten· Musikabspieloptionen einstellen · Musikauflistungsoptionen ändern[CR]Musikübertragung einrichten · Karaoke-Optionen"
+
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]BILDER-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Bildauflistungsoptionen einstellen · Diashow konfigurieren"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]WETTER-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Städte zum Sammeln von Wetter-Informationen auswählen"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
@@ -407,6 +475,10 @@ msgstr "[B]DIENSTE KONFIGURIEREN[/B][CR][CR]Zugriff auf Kodi via UPnP und HTTP e
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "Hilfe für ersten Start..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "Dieses Symbol zeigt an, dass ein Menü an der Seite des Fensters versteckt ist, das weitere Optionen beinhaltet. Um es aufzurufen, nach links navigieren oder  mit der Maus darauf zeigen.[CR][CR]Auf \"OK\" klicken, um diesen Dialog zu schließen. Er wird nicht wieder angezeigt werden."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -430,7 +502,7 @@ msgstr "Profil, das beim Start verwendet werden soll, wenn der Anmeldebildschirm
 
 msgctxt "#31501"
 msgid "Scheduled time"
-msgstr "Eingestellte Zeit"
+msgstr "Geplante Zeit"
 
 msgctxt "#31502"
 msgid "TV"
@@ -463,6 +535,10 @@ msgstr "Timer aktiviert"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "Kanal-Einstellungen"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36-Stunden-Vorhersage"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

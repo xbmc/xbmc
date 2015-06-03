@@ -2643,7 +2643,7 @@ msgctxt "#608"
 msgid "Couldn't rip CD or track because CDDARipPath is not set."
 msgstr ""
 
-#empty string id 609
+#empty string with id 609
 
 msgctxt "#610"
 msgid "Rip audio track"
@@ -3358,7 +3358,7 @@ msgctxt "#800"
 msgid "Music library needs to rescan tags from files. Would you like to scan now?"
 msgstr ""
 
-#empty string id 801
+#empty string with id 801
 
 #. Label of progess bar which shows the available/total space of pvr backend
 #: xbmc/pvr/PVRGUIInfo.cpp
@@ -5452,7 +5452,7 @@ msgctxt "#13141"
 msgid "If you proceed, you might not be able to control this application any longer. Are you sure you want to stop the event server?"
 msgstr ""
 
-#empty string id 13142 to 13143
+#empty strings from id 13142 to 13143
 
 #: xbmc\osx\XBMCHelper.cpp
 msgctxt "#13144"
@@ -5733,13 +5733,12 @@ msgctxt "#13307"
 msgid "Track naming template"
 msgstr ""
 
-
 #: unused
 msgctxt "#13308"
 msgid "Do you wish to reboot your system instead of just this application?"
 msgstr ""
 
-#empty string id 13309
+#empty string with id 13309
 
 msgctxt "#13310"
 msgid "Zoom effect"
@@ -8281,7 +8280,7 @@ msgctxt "#19137"
 msgid "No groups defined. Please create a group first"
 msgstr ""
 
-#empty string id 19138
+#empty string with id 19138
 
 msgctxt "#19139"
 msgid "Name of the new group"
@@ -8735,9 +8734,7 @@ msgctxt "#19241"
 msgid "The PVR manager has been enabled without any enabled PVR add-on. Enable at least one add-on in order to use the PVR functionality."
 msgstr ""
 
-#empty strings id 19242
-
-#empty strings id 19243
+#empty strings from id 19242 to 19243
 
 #: system/settings/settings.xml
 msgctxt "#19244"
@@ -8871,9 +8868,7 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an add-on for the backend to be able to use PVR. Please visit http://kodi.wiki/view/PVR to learn more."
 msgstr ""
 
-#empty string id 19273
-
-#empty string id 19274
+#empty strings from id 19273 to 19274
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19275"
@@ -9803,7 +9798,7 @@ msgctxt "#20072"
 msgid "Make sure the selected folder is writable and that the new folder name is valid"
 msgstr ""
 
-#empty string id 20073
+#empty string with id 20073
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20074"
@@ -9922,7 +9917,7 @@ msgctxt "#20101"
 msgid "Entering master lock code always enables master mode"
 msgstr ""
 
-#empty string id 20102
+#empty string with id 20102
 
 msgctxt "#20103"
 msgid "Save changes to profile?"
@@ -9932,7 +9927,7 @@ msgctxt "#20104"
 msgid "Old settings found. Do you want to use them?"
 msgstr ""
 
-#empty string id 20105
+#empty string with id 20105
 
 msgctxt "#20106"
 msgid "Old media sources found. Do you want to use them?"
@@ -9993,7 +9988,7 @@ msgctxt "#20118"
 msgid "This requires the master lock to be set. Would you like to set it now?"
 msgstr ""
 
-#empty string id 20119
+#empty string with id 20119
 
 msgctxt "#20120"
 msgid "Loading program information"
@@ -10592,7 +10587,7 @@ msgctxt "#20340"
 msgid "Do you want to remove all items within this path from your library?"
 msgstr ""
 
-#empty string id 20341
+#empty string with id 20341
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
@@ -10986,7 +10981,7 @@ msgctxt "#20426"
 msgid "Export to a single file or separate files per entry?"
 msgstr ""
 
-#empty string id 20427
+#empty string with id 20427
 
 msgctxt "#20428"
 msgid "Single file"
@@ -11062,7 +11057,7 @@ msgctxt "#20443"
 msgid "Do you want to refresh information for all items within this path?"
 msgstr ""
 
-#empty string id 20444
+#empty string with id 20444
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#20445"
@@ -11073,7 +11068,7 @@ msgctxt "#20446"
 msgid "Locally stored information found. Ignore and refresh from Internet?"
 msgstr ""
 
-#empty string id 20447
+#empty string with id 20447
 
 #: xbmc/video/VideoInfoScanner.cpp
 msgctxt "#20448"
@@ -13445,7 +13440,7 @@ msgctxt "#33073"
 msgid "View changelog"
 msgstr ""
 
-#empty string id from 33074 to 33076
+#empty strings from id 33074 to 33076
 
 #: Unknown
 msgctxt "#33077"

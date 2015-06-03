@@ -13,6 +13,7 @@ if(EXISTS "${APP_ROOT}/version.txt")
     endif()
   endforeach()
   string(TOLOWER ${APP_NAME} APP_NAME_LC)
+  string(TOUPPER ${APP_NAME} APP_NAME_UC)
 endif()
 
 # bail if we can't parse versions
@@ -22,14 +23,14 @@ endif()
 
 ### copy all the addon binding header files to include/kodi
 # make sure include/kodi exists and is empty
-set(KODI_LIB_DIR ${DEPENDS_PATH}/lib/kodi)
-if(NOT EXISTS "${KODI_LIB_DIR}/")
-  file(MAKE_DIRECTORY ${KODI_LIB_DIR})
+set(APP_LIB_DIR ${DEPENDS_PATH}/lib/${APP_NAME_LC})
+if(NOT EXISTS "${APP_LIB_DIR}/")
+  file(MAKE_DIRECTORY ${APP_LIB_DIR})
 endif()
 
-set(KODI_INCLUDE_DIR ${DEPENDS_PATH}/include/kodi)
-if(NOT EXISTS "${KODI_INCLUDE_DIR}/")
-  file(MAKE_DIRECTORY ${KODI_INCLUDE_DIR})
+set(APP_INCLUDE_DIR ${DEPENDS_PATH}/include/${APP_NAME_LC})
+if(NOT EXISTS "${APP_INCLUDE_DIR}/")
+  file(MAKE_DIRECTORY ${APP_INCLUDE_DIR})
 endif()
 
 # we still need XBMC_INCLUDE_DIR and XBMC_LIB_DIR for backwards compatibility to xbmc
@@ -50,21 +51,13 @@ if(NOT WIN32)
   endif()
 endif()
 
-# kodi-config.cmake.in (further down) expects "prefix" and "APP_LIBDIR" variables
-get_filename_component(prefix "${DEPENDS_PATH}" ABSOLUTE)
-set(APP_LIBDIR "${prefix}/lib")
-
 # generate the proper kodi-config.cmake file
-configure_file(${APP_ROOT}/project/cmake/kodi-config.cmake.in ${KODI_LIB_DIR}/kodi-config.cmake @ONLY)
+configure_file(${APP_ROOT}/project/cmake/kodi-config.cmake.in ${APP_LIB_DIR}/kodi-config.cmake @ONLY)
 
 # copy cmake helpers to lib/kodi
 file(COPY ${APP_ROOT}/project/cmake/scripts/common/addon-helpers.cmake
           ${APP_ROOT}/project/cmake/scripts/common/addoptions.cmake
-     DESTINATION ${KODI_LIB_DIR})
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  file(COPY ${APP_ROOT}/project/cmake/scripts/linux/UseMultiArch.cmake DESTINATION ${KODI_LIB_DIR})
-endif()
+     DESTINATION ${APP_LIB_DIR})
 
 # generate xbmc-config.cmake for backwards compatibility to xbmc
 configure_file(${APP_ROOT}/project/cmake/xbmc-config.cmake.in ${XBMC_LIB_DIR}/xbmc-config.cmake @ONLY)
@@ -78,7 +71,7 @@ foreach(binding ${bindings})
   string(REPLACE "+=" ";" binding "${binding}")
   list(GET binding 1 header)
   # copy the header file to include/kodi
-  file(COPY ${APP_ROOT}/${header} DESTINATION ${KODI_INCLUDE_DIR})
+  file(COPY ${APP_ROOT}/${header} DESTINATION ${APP_INCLUDE_DIR})
 
   # auto-generate header files for backwards compatibility to xbmc with deprecation warning
   # but only do it if the file doesn't already exist

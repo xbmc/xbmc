@@ -706,6 +706,16 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   PVR_CLIENTMAP activeClients;
   iActiveClients = clients->GetConnectedClients(activeClients);
 
+  {
+    CSingleLock lock(m_critSection);
+    if (m_iAddonInfoToggleCurrent >= iActiveClients)
+    {
+      // Number of connected clients decreased since last call.
+      // Current toggle position now points after end of iActiveClients!
+      m_iAddonInfoToggleCurrent = 0;
+    }
+  }
+
   if (iActiveClients > 1 && !AddonInfoToggle())
     return;
 

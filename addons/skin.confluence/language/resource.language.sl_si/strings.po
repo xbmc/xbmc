@@ -168,6 +168,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Ozadje"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Prikaži »Prekinitev« v projekciji slik"
+
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
 msgstr "Predvajaj napovednik v oknu [COLOR=grey3](Samo informacije video dialoga)[/COLOR]"
@@ -175,6 +179,10 @@ msgstr "Predvajaj napovednik v oknu [COLOR=grey3](Samo informacije video dialoga
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Razne možnosti"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Skrij oznake videa, prebrane iz datotek [COLOR=grey3](npr. Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -203,6 +211,10 @@ msgstr "Prikaži nedavno dodane albume"
 msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "Prikaži nedavno dodane videe"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Podmeni »Programi« v domačem oknu"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -235,6 +247,18 @@ msgstr "Skrij grafike v vizualizaciji v celozaslonskem načinu"
 msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "Dodatek besedil pesmi"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Podmeni »Video« v domačem oknu"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Podmeni »Glasba« v domačem oknu"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Podmeni »Slike« v domačem oknu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -271,6 +295,10 @@ msgstr "Najdi več predmetov"
 msgctxt "#31208"
 msgid "Upcoming episodes"
 msgstr "Prihajajoče epizode"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Trenutna temperatura"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -420,6 +448,14 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]PRILAGODITE NASTAVITVE GLASBE[/B][CR][CR]Upravljajte s knjižnico glasbe · Nastavite možnosti predvajanja glasbe[CR]Spremenite možnosti seznamov · Nastavite objavo pesmi · Nastavite karaoke"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]PRILAGODITE NASTAVITVE SLIK[/B][CR][CR]Spremenite možnosti seznamov · Nastavite projekcijo slik"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]PRILAGODITE NASTAVITVE VREMENA[/B][CR][CR]Izberite različne kraje, za katere bo na voljo vremenska napoved"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]PRILAGODITE NASTAVITVE SISTEMA[/B][CR][CR]Nastavite in prilagodite zaslon · Nastavite zvočni izhod · Nastavite oddaljeno upravljanje[CR]Nastavite varčevanje z energijo · Vključite razhroščevanje · Določite glavno geslo"
@@ -439,6 +475,10 @@ msgstr "[B]PRILAGODITE NASTAVITVE STORITEV[/B][CR][CR]Nastavite upravljanje Kodi
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "Pomoč ob prvem zagonu ..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "Ta zavihek nakazuje, da se tu skriva meni z dodatnimi možnostmi trenutnega pogleda. Za dostop do menija pritisnite levo na vašem daljinskem upravljalniku ali tipkovnici, ali pa postavite miško na zavihek. [CR][CR]Kliknite »V redu«, da zaprete to okno. Ne bo se več prikazalo."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -495,6 +535,10 @@ msgstr "Časovnik nastavljen"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "Možnosti programa"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36-urna napoved"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

@@ -168,6 +168,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Pozadí"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Zobrazovat \"Pozastaveno\" při promítání obrázků"
+
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
 msgstr "Přehrát trailery v okně [COLOR=grey3](Pouze dialog informací o videu)[/COLOR]"
@@ -175,6 +179,10 @@ msgstr "Přehrát trailery v okně [COLOR=grey3](Pouze dialog informací o videu
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Různá nastavení"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Nezobrazovat ikony přečtené z názvu videa [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -203,6 +211,10 @@ msgstr "Zobrazit nedávno přidaná alba"
 msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "Zobrazit nedávno přidaná videa"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Úvodní obrazovka, podnabídka programů"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -235,6 +247,18 @@ msgstr "Skrýt fanart v celoobrazovkové vizualizaci"
 msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "Doplněk textů písní"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Úvodní obrazovka, podnabídka videí"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Úvodní obrazovka, podnabídka hudby"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Úvodní obrazovka, podnabídka obrázků"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -271,6 +295,10 @@ msgstr "Hledat další položky"
 msgctxt "#31208"
 msgid "Upcoming episodes"
 msgstr "Nadcházející epizody"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Aktuální teplota"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -420,6 +448,14 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ HUDBY[/B][CR][CR]Správa knihovny hudby · Možnosti přehrávání hudby · Možnosti zobrazení hudebních souborů[CR] Nastavení služby odesílání informací o přehrávaných skladbách · Nastavení karaoke"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ OBRÁZKŮ[/B][CR][CR]Možnosti zobrazení obrázků · Nastavení prezentace"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]NASTAVENÍ MOŽNOSTÍ POČASÍ[/B][CR][CR]Nastavení měst pro sběr předpovědi počasí"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]NASTAVENÍ MOŽNOSTÍ SYSTÉMU[/B][CR][CR]Nastavení a kalibrace obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Nastavení úsporného režimu · Povolení informací o ladění · Rodičovský zámek"
@@ -439,6 +475,10 @@ msgstr "[B]NASTAVENÍ MOŽNOSTÍ SLUŽEB[/B][CR][CR]Nastavení ovládání Kodi 
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "Nejprve spusťte nápovědu..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "Tato záložka zdůrazňuje, že se na boční straně okna nachází skryté menu s dalšími vlastnostmi.\nPro přístup k tomuto menu se přesuňte doleva dálkovým ovladačem, či klávesnicí, nebo přesuňte myš nad tuto kartu.[CR][CR]Kliknutím na tlačítko OK zavřete tento dialog, který se již znovu nezobrazí."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -495,6 +535,10 @@ msgstr "Časovač nastaven"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "Možnosti kanálů"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "Předpověď na 36 hodin"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

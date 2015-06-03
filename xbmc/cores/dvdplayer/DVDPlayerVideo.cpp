@@ -1283,12 +1283,20 @@ double CDVDPlayerVideo::GetCurrentPts()
   // get render stats
   g_renderManager.GetStats(iSleepTime, iRenderPts, iBufferLevel);
 
-  if( m_stalled )
-    iRenderPts = DVD_NOPTS_VALUE;
-  else if ( m_speed == DVD_PLAYSPEED_NORMAL)
-    iRenderPts = iRenderPts - max(0.0, iSleepTime);
+  if (iRenderPts == DVD_NOPTS_VALUE)
+    return DVD_NOPTS_VALUE;
+  else if (m_stalled)
+    return DVD_NOPTS_VALUE;
+  else if (m_speed == DVD_PLAYSPEED_NORMAL)
+  {
+    iRenderPts -= max(0.0, DVD_SEC_TO_TIME(iSleepTime));
 
-  return iRenderPts;
+    if (iRenderPts < 0)
+      iRenderPts = 0;
+
+    return iRenderPts;
+  }
+  return DVD_NOPTS_VALUE;
 }
 
 #define MAXFRAMERATEDIFF   0.01

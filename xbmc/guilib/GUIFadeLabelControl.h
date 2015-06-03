@@ -49,7 +49,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   void SetInfo(const std::vector<CGUIInfoLabel> &vecInfo);
-  void SetScrolling(bool scroll) { m_scroll = scroll; }
 
 protected:
   virtual bool UpdateColors();
@@ -72,7 +71,6 @@ protected:
 
   CLabelInfo m_label;
 
-  bool m_scroll;      // true if we scroll the text
   bool m_scrollOut;   // true if we scroll the text all the way to the left before fading in the next label
   bool m_shortText;   // true if the text we have is shorter than the width of the control
 

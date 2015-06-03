@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.waveform"
-  version="1.0.26"
+  version="1.0.27"
   name="Waveform"
   provider-name="MrC">
   <extension
@@ -58,6 +58,7 @@
     <summary lang="sq_AL">Vizualizim që shfaq 2 Grafikë Valëzues në ekran</summary>
     <summary lang="sr_RS@latin">Визуелизација која приказује два таласна облика на екрану</summary>
     <summary lang="sv_SE">Visualisering som visar 2 vågformgrafer på skärmen</summary>
+    <summary lang="szl">Wizualizacyjŏ, kerŏ pokŏzuje dwa welowe grafy na ekranie</summary>
     <summary lang="tg_TJ">Визуализатсия бо намоиши 2 нақши мавҷшакл дар экран</summary>
     <summary lang="th_TH">กำลังแสดงผลภาพเวอร์ชวลไลเซชั่น 'Waveform' เป็น 2  กราฟสัญญาณบนหน้าจอ</summary>
     <summary lang="tr_TR">2 Dalga Grafiğini ekranda gösteren görsel öğe</summary>
@@ -111,6 +112,7 @@
     <description lang="sl_SI">Waveform je preprosta vizualizacija, ki prikazuje valovni obliki zvoka iz levega in desnega kanala, ki sledita ritmu glasbe</description>
     <description lang="sq_AL">Valëzuesi është një Vizualizim i thjeshtë që shfaq 2 Grafikë Valëzues në ekran, nga Një për secilin kanal, të Majtë dhe të Djathtë, që lëvizin sipas ritmit të muzikës</description>
     <description lang="sv_SE">Waveform är en enkel visualisering som visar 2 vågformgrafer på skärmen, en vardera för vänster och höger kanal som rör sig i takt med musiken.</description>
+    <description lang="szl">Waveform to je ajnafowŏ wizualizacyjŏ, kerŏ pokŏzuje dwa welowe grafy na ekranie, po jednym dlŏ lewego i prawego kanału, a ôbie wele ruszajōm sie podle muzyki.</description>
     <description lang="tg_TJ">Waveform - визуализатсияи осонест, ки дар экран 2 нақши мавҷшаклро намоиш медиҳад, ду нақши алоҳида барои шабакаи чап ва рости ритми мусиқӣ</description>
     <description lang="th_TH">Waveform เป็นการแสดงผลภาพเวอร์ชวลไลเซชั่นพื้นฐานที่จะแสดงกราฟสัญญาณเสียง 2 กราฟบนหน้าจอ โดยเป็นกราฟสัญญาณเสียงซ้ายและขวาตามจังหวะของเพลง</description>
     <description lang="tr_TR">Dalgaformu, müzik vuruşlarına göre biri sol biri sağ kanal olmak üzere 2 dalga grafiğini ekranda gösteren görsel öğedir.</description>

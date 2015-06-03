@@ -180,6 +180,10 @@ msgctxt "#31206"
 msgid "Found"
 msgstr "נמצא"
 
+msgctxt "#31301"
+msgid "Last updated"
+msgstr "עודכן לאחרונה"
+
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "ספק מידע"

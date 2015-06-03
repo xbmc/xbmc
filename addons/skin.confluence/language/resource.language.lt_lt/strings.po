@@ -168,6 +168,10 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Fonas"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Rodyti \"Pauzė\" nuotraukų skaidrių peržiūroje"
+
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
 msgstr "Atkurti anonsus lange [COLOR=grey3](Tik vaizdo informacijos lange)[/COLOR]"
@@ -175,6 +179,10 @@ msgstr "Atkurti anonsus lange [COLOR=grey3](Tik vaizdo informacijos lange)[/COLO
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Įvairios parinktys"
+
+msgctxt "#31107"
+msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Slėpti žymes vaizdo failų varduose [COLOR=grey3](pvz., Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -203,6 +211,10 @@ msgstr "Rodyti neseniai pridėtus albumus"
 msgctxt "#31117"
 msgid "Show recently added videos"
 msgstr "Rodyti neseniai pridėtus vaizdo įrašus"
+
+msgctxt "#31118"
+msgid "Home page programs submenu"
+msgstr "Pradinio puslapio programų submeniu"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -235,6 +247,18 @@ msgstr "Slėpti Fanart viso ekrano vizualizacijoje"
 msgctxt "#31132"
 msgid "Lyrics add-on"
 msgstr "Dainos žodžių priedas"
+
+msgctxt "#31134"
+msgid "Home page \"Videos\" submenu"
+msgstr "Pradinio puslapio \"Vaizdo įrašų\" submeniu"
+
+msgctxt "#31135"
+msgid "Home page \"Music\" submenu"
+msgstr "Pradinio puslapio \"Muzikos\" submeniu"
+
+msgctxt "#31136"
+msgid "Home page \"Pictures\" submenu"
+msgstr "Pradinio puslapio \"Nuotraukų\" submeniu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -271,6 +295,10 @@ msgstr "Rasti daugiau elementų"
 msgctxt "#31208"
 msgid "Upcoming episodes"
 msgstr "Artimiausi epizodai"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Dabartinė temperatūra"
 
 msgctxt "#31301"
 msgid "Last updated"
@@ -420,6 +448,14 @@ msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]KONFIGŪRUOTI MUZIKOS NUSTATYMUS[/B][CR][CR]Tvarkyti muzikos biblioteką · Nustatyti dainų įkėlimą · Nustatyti karaoke parinktis[CR]Keisti muzikos sąrašo atvaizdavimo parinktis · Nustatyti muzikos atkūrimo parinktis"
 
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
+msgstr "[B]KONFIGŪRUOTI NUOTRAUKŲ NUSTATYMUS[/B][CR][CR]Nustatyti nuotraukų sąrašo atvaizdavimo parinktis · Konfigūruoti skaidrių peržiūrą"
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
+msgstr "[B]KONFIGŪRUOTI ORŲ NUSTATYMUS[/B][CR][CR]Nustatykite įvarius miestus, kuriems rinkti orų informaciją"
+
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]KONFIGŪRUOTI SISTEMOS NUSTATYMUS[/B][CR][CR]Nustatyti ir kalibruoti ekranus · Nustatyti garso išvestį · Nustatyti nuotolinį valdymą[CR]Nustatyti energijos taupymo parinktis · Įjungti derinimą · Nustatyti valdytojo užraktą"
@@ -439,6 +475,10 @@ msgstr "[B]KONFIGŪRUOTI PASLAUGŲ NUSTATYMUS[/B][CR][CR]Nustatyti Kodi valdymą
 msgctxt "#31411"
 msgid "First run help..."
 msgstr "Pirmo paleidimo pagalba..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
+msgstr "Šis skirtukas reiškia, kad šio lango krašte yra meniu, kuriame yra papildomų parinkčių šiam skyriui. Norėdami atidaryti meniu, pereikite į kairę, naudojant nuotolinio valdymo pultą ar klaviatūrą arba užeikite pelės žymekliu virš skirtuko.[CR][CR]Norėdami uždaryti šį langą spauskite \"OK\",  ir jis daugiau nebus rodomas."
 
 msgctxt "#31413"
 msgid "Local subtitle available"
@@ -495,6 +535,10 @@ msgstr "Laikmatis nustatytas"
 msgctxt "#31511"
 msgid "Channel options"
 msgstr "Kanalo parinktys"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36 valandų prognozė"
 
 msgctxt "#31902"
 msgid "Hourly forecast"

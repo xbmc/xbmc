@@ -168,39 +168,39 @@
 	</remote>
 
 	<remote device="PinnacleSysPCTVRemote">
-		<play>Play</play>
-		<pause>pause</pause>
-		<stop>Stop</stop>
-		<forward>FForward</forward>
-		<reverse>Rewind</reverse>
+		<play>KEY_PLAY</play>
+		<pause>KEY_PAUSE</pause>
+		<stop>KEY_STOP</stop>
+		<forward>KEY_FASTFORWARD</forward>
+		<reverse>KEY_REWIND</reverse>
 		<left>Vol-Rew</left>
 		<right>Vol+FF</right>
 		<up>Chan+Play</up>
 		<down>Chan-Stop</down>
-		<pageplus>channel+</pageplus>
-		<pageminus>channel-</pageminus>
+		<pageplus>KEY_CHANNELUP</pageplus>
+		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<select>middle</select>
-		<back>undo</back>
-		<menu>Menu</menu>
-		<title>L</title>
-		<info>Info</info>
-		<skipplus>next</skipplus>
+		<back>KEY_UNDO</back>
+		<menu>KEY_MENU</menu>
+		<title>KEY_L</title>
+		<info>KEY_INFO</info>
+		<skipplus>KEY_NEXT</skipplus>
 		<display>Fullscreen</display>
-		<record>Record</record>
-		<volumeplus>vol+</volumeplus>
-		<volumeminus>vol-</volumeminus>
-		<mute>Mute</mute>
-		<power>Power</power>
-		<one>1</one>
-		<two>2</two>
-		<three>3</three>
-		<four>4</four>
-		<five>5</five>
-		<six>6</six>
-		<seven>7</seven>
-		<eight>8</eight>
-		<nine>9</nine>
-		<zero>0</zero>
+		<record>KEY_RECORD</record>
+		<volumeplus>KEY_VOLUMEUP</volumeplus>
+		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
+		<mute>KEY_MUTE</mute>
+		<power>KEY_POWER</power>
+		<one>KEY_1</one>
+		<two>KEY_2</two>
+		<three>KEY_3</three>
+		<four>KEY_4</four>
+		<five>KEY_5</five>
+		<six>KEY_6</six>
+		<seven>KEY_7</seven>
+		<eight>KEY_8</eight>
+		<nine>KEY_9</nine>
+		<zero>KEY_0</zero>
 	</remote>
 
 	<remote device="anysee">
