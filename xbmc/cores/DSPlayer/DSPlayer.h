@@ -196,6 +196,7 @@ public:
   virtual void GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
 
   virtual void SeekTime(__int64 iTime = 0);
+  virtual bool SeekTimeRelative(__int64 iTime);
   virtual __int64 GetTime() { CSingleLock lock(m_StateSection); return llrint(DS_TIME_TO_MSEC(g_dsGraph->GetTime())); }
   virtual __int64 GetDisplayTime() { CSingleLock lock(m_StateSection); return llrint(DS_TIME_TO_MSEC(g_dsGraph->GetTime())); }
   virtual __int64 GetTotalTime() { CSingleLock lock(m_StateSection); return llrint(DS_TIME_TO_MSEC(g_dsGraph->GetTotalTime())); }
