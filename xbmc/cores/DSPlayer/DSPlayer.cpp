@@ -1056,9 +1056,18 @@ void CDSPlayer::SetMadvrResolution()
 // Time is in millisecond
 void CDSPlayer::SeekTime(__int64 iTime)
 {
-  int seekOffset = (int)(iTime - DS_TIME_TO_MSEC(g_dsGraph->GetTime()));
-  PostMessage(new CDSMsgPlayerSeekTime(MSEC_TO_DS_TIME(iTime)));
+  int seekOffset = (int)(iTime - DS_TIME_TO_MSEC(g_dsGraph->GetTime(true)));
+  PostMessage(new CDSMsgPlayerSeekTime(MSEC_TO_DS_TIME((iTime < 0) ? 0 : iTime)));
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);
+}
+
+// Time is in millisecond
+bool CDSPlayer::SeekTimeRelative(__int64 iTime)
+{
+  __int64 abstime = (__int64)(DS_TIME_TO_MSEC(g_dsGraph->GetTime(true)) + iTime);
+  PostMessage(new CDSMsgPlayerSeekTime(MSEC_TO_DS_TIME((abstime < 0) ? 0 : abstime)));
+  m_callback.OnPlayBackSeek((int)abstime, (int)iTime);
+  return true;
 }
 
 bool CDSPlayer::SwitchChannel(unsigned int iChannelNumber)
