@@ -16,6 +16,14 @@ if ($_ -match 'KODI_GUILIB_MIN_API_VERSION\s*"(.*)"'){
     }
 }
 
-$ADDON_GUILIB = $GENERATED_ADDON_GUILIB + ".in"
-cat $ADDON_GUILIB | % { $_ -replace "@guilib_version@", $LIB_VERSION `
-                           -replace "@guilib_version_min@", $LIB_VERSION_MIN} > $GENERATED_ADDON_GUILIB
+$ADDON_GUILIB = get-content "$GENERATED_ADDON_GUILIB.in"
+foreach ($i in 0 .. ($ADDON_GUILIB.Length -1)) {
+    $ADDON_GUILIB[$i] = $ADDON_GUILIB[$i].Replace("@guilib_version@", $LIB_VERSION).Replace("@guilib_version_min@", $LIB_VERSION_MIN)
+}
+
+#WriteAllLines does not overwrite so remove the existing file here.
+del $GENERATED_ADDON_GUILIB -Force
+
+#create utf8 encoding without bom
+$U8 = New-Object System.Text.UTF8Encoding($False)
+[System.IO.File]::WriteAllLines($GENERATED_ADDON_GUILIB, $ADDON_GUILIB, $U8)
