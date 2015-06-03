@@ -603,7 +603,7 @@ bool CUPnPPlayer::OnAction(const CAction &action)
     case ACTION_STOP:
       if(IsPlaying())
       {
-        if(CGUIDialogYesNo::ShowAndGetInput(37022, 37023, 0, 0)) /* stop on remote system */
+        if(CGUIDialogYesNo::ShowAndGetInput(37022, 37023)) /* stop on remote system */
           m_stopremote = true;
         else
           m_stopremote = false;

@@ -2945,7 +2945,7 @@ void CMusicDatabase::Clean()
     return;
   }
 
-  if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
+  if (CGUIDialogYesNo::ShowAndGetInput(313, 333))
   {
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
