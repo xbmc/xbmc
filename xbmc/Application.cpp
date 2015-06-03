@@ -1929,7 +1929,7 @@ void CApplication::Render()
     if (m_pPlayer->IsPausedPlayback())
     {
       CMadvrCallback::Get()->GetCallback()->OsdRedrawFrame();
-      Sleep(25);
+      Sleep(40);
     }
     else
     {
