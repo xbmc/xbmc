@@ -124,9 +124,9 @@ public:
   /// Update current player state
   virtual void UpdateState();
   /// @return Current playing time in DS_TIME_BASE unit
-  virtual uint64_t GetTime();
+  virtual uint64_t GetTime(bool forcePlaybackTime = false);
   /// @return Total playing time in DS_TIME_BASE unit (media length)
-  virtual uint64_t GetTotalTime();
+  virtual uint64_t GetTotalTime(bool forcePlaybackTime = false);
   /// @return Current position in percent
   virtual float GetPercentage();
 
