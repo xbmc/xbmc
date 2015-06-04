@@ -223,7 +223,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
       // AirPlay needs zeroconf
       if (!CSettings::Get().GetBool("services.zeroconf"))
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1273), g_localizeStrings.Get(33100), g_localizeStrings.Get(34302), "");
+        CGUIDialogOK::ShowAndGetInput(1273, 34302);
         return false;
       }
 #endif //HAS_ZEROCONF

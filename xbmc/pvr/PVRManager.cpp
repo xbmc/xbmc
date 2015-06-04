@@ -183,7 +183,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   else if (settingId == "pvrmanager.resetdb")
   {
     if (CheckParentalPIN(g_localizeStrings.Get(19262)) &&
-        CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
+        CGUIDialogYesNo::ShowAndGetInput(19098, 19186))
     {
       CDateTime::ResetTimezoneBias();
       ResetDatabase(false);
@@ -191,7 +191,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "epg.resetepg")
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
+    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188))
     {
       CDateTime::ResetTimezoneBias();
       ResetDatabase(true);
