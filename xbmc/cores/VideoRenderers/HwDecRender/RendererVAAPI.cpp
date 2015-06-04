@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 
 CRendererVAAPI::CRendererVAAPI()
 {
@@ -79,19 +80,7 @@ CRenderInfo CRendererVAAPI::GetRenderInfo()
 
 bool CRendererVAAPI::Supports(ERENDERFEATURE feature)
 {
-  if (m_format == RENDER_FMT_VAAPINV12)
-    return CLinuxRendererGL::Supports(feature);
-
-  if (feature == RENDERFEATURE_STRETCH         ||
-      feature == RENDERFEATURE_ZOOM            ||
-      feature == RENDERFEATURE_VERTICAL_SHIFT  ||
-      feature == RENDERFEATURE_PIXEL_RATIO     ||
-      feature == RENDERFEATURE_POSTPROCESS     ||
-      feature == RENDERFEATURE_ROTATION        ||
-      feature == RENDERFEATURE_NONLINSTRETCH)
-    return true;
-
-  return false;
+  return CLinuxRendererGL::Supports(feature);
 }
 
 bool CRendererVAAPI::Supports(EINTERLACEMETHOD method)
@@ -104,67 +93,17 @@ bool CRendererVAAPI::Supports(EINTERLACEMETHOD method)
 
 bool CRendererVAAPI::Supports(ESCALINGMETHOD method)
 {
-  if (m_format == RENDER_FMT_VAAPINV12)
-    return CLinuxRendererGL::Supports(method);
-
-  //nearest neighbor doesn't work on YUY2 and UYVY
-  if (method == VS_SCALINGMETHOD_NEAREST &&
-      m_format != RENDER_FMT_YUYV422 &&
-      m_format != RENDER_FMT_UYVY422)
-    return true;
-
-  if(method == VS_SCALINGMETHOD_LINEAR
-  || method == VS_SCALINGMETHOD_AUTO)
-    return true;
-
-  if(method == VS_SCALINGMETHOD_CUBIC
-  || method == VS_SCALINGMETHOD_LANCZOS2
-  || method == VS_SCALINGMETHOD_SPLINE36_FAST
-  || method == VS_SCALINGMETHOD_LANCZOS3_FAST
-  || method == VS_SCALINGMETHOD_SPLINE36
-  || method == VS_SCALINGMETHOD_LANCZOS3)
-  {
-    // if scaling is below level, avoid hq scaling
-    float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
-    float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-    int minScale = CSettings::Get().GetInt("videoplayer.hqscalers");
-    if (scaleX < minScale && scaleY < minScale)
-      return false;
-
-    // spline36 and lanczos3 are only allowed through advancedsettings.xml
-    if(method != VS_SCALINGMETHOD_SPLINE36
-        && method != VS_SCALINGMETHOD_LANCZOS3)
-      return true;
-    else
-      return g_advancedSettings.m_videoEnableHighQualityHwScalers;
-  }
-
-  return false;
+  return CLinuxRendererGL::Supports(method);
 }
 
 bool CRendererVAAPI::LoadShadersHook()
 {
-  if (m_format == RENDER_FMT_VAAPINV12)
-    return false;
-
-  CLog::Log(LOGNOTICE, "GL: Using VAAPI render method");
-  m_renderMethod = RENDER_VAAPI;
-  return true;
+  return false;
 }
 
 bool CRendererVAAPI::RenderHook(int idx)
 {
-  if (m_format == RENDER_FMT_VAAPINV12)
-    return false;
-
-  UpdateVideoFilter();
-  RenderRGB(idx, m_currentField);
-  YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
-  {
-    ((VAAPI::CVaapiRenderPicture*)buf.hwDec)->Sync();
-  }
-  return true;
+  return false;
 }
 
 bool CRendererVAAPI::CreateTexture(int index)
@@ -184,9 +123,8 @@ bool CRendererVAAPI::CreateTexture(int index)
   memset(&fields, 0, sizeof(fields));
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
-
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
+  im.cshift_x = 1;
+  im.cshift_y = 1;
 
   plane.pixpertex_x = 1;
   plane.pixpertex_y = 1;
@@ -204,11 +142,14 @@ void CRendererVAAPI::DeleteTexture(int index)
     return;
   }
 
-  YUVPLANE &plane = m_buffers[index].fields[FIELD_FULL][0];
   if (m_buffers[index].hwDec)
     ((VAAPI::CVaapiRenderPicture*)m_buffers[index].hwDec)->Release();
   m_buffers[index].hwDec = NULL;
-  plane.id = 0;
+
+  YUVFIELDS &fields = m_buffers[index].fields;
+  fields[FIELD_FULL][0].id = None;
+  fields[FIELD_FULL][1].id = None;
+  fields[FIELD_FULL][2].id = None;
 }
 
 bool CRendererVAAPI::UploadTexture(int index)
@@ -220,43 +161,52 @@ bool CRendererVAAPI::UploadTexture(int index)
 
   VAAPI::CVaapiRenderPicture *vaapi = (VAAPI::CVaapiRenderPicture*)m_buffers[index].hwDec;
 
+  YV12Image &im = m_buffers[index].image;
+
   YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE &plane = fields[FIELD_FULL][0];
 
   if (!vaapi || !vaapi->valid)
   {
     return false;
   }
 
-  if (!vaapi->CopyGlx())
-    return false;
+  YUVPLANES &planes = fields[0];
 
-  plane.id = vaapi->texture;
+  planes[0].texwidth  = vaapi->texWidth;
+  planes[0].texheight = vaapi->texHeight;
 
-  // in stereoscopic mode sourceRect may only
-  // be a part of the source video surface
-  plane.rect = m_sourceRect;
+  planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
+  planes[1].texheight = planes[0].texheight >> im.cshift_y;
+  planes[2].texwidth  = planes[1].texwidth;
+  planes[2].texheight = planes[1].texheight;
 
-  // clip rect
-  if (vaapi->crop.x1 > plane.rect.x1)
-    plane.rect.x1 = vaapi->crop.x1;
-  if (vaapi->crop.x2 < plane.rect.x2)
-    plane.rect.x2 = vaapi->crop.x2;
-  if (vaapi->crop.y1 > plane.rect.y1)
-    plane.rect.y1 = vaapi->crop.y1;
-  if (vaapi->crop.y2 < plane.rect.y2)
-    plane.rect.y2 = vaapi->crop.y2;
-
-  plane.texheight = vaapi->texHeight;
-  plane.texwidth  = vaapi->texWidth;
-
-  if (m_textureTarget == GL_TEXTURE_2D)
+  for (int p = 0; p < 3; p++)
   {
-    plane.rect.y1 /= plane.texheight;
-    plane.rect.y2 /= plane.texheight;
-    plane.rect.x1 /= plane.texwidth;
-    plane.rect.x2 /= plane.texwidth;
+    planes[p].pixpertex_x = 1;
+    planes[p].pixpertex_y = 1;
   }
+
+  // set textures
+  fields[0][0].id = vaapi->textureY;
+  fields[0][1].id = vaapi->textureVU;
+  fields[0][2].id = vaapi->textureVU;
+
+  glEnable(m_textureTarget);
+
+  for (int p=0; p<2; p++)
+  {
+    glBindTexture(m_textureTarget,fields[0][p].id);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glBindTexture(m_textureTarget, 0);
+    VerifyGLState();
+  }
+
+  CalculateTextureSourceRects(index, 3);
+  glDisable(m_textureTarget);
   return true;
 }
 

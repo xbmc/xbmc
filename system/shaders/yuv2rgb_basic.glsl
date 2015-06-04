@@ -69,7 +69,7 @@ void main()
   rgb.a = gl_Color.a;
   gl_FragColor = rgb;
 
-#elif defined(XBMC_VDPAU_NV12)
+#elif defined(XBMC_NV12_RRG)
 
   vec4 yuv, rgb;
   yuv.rgba = vec4( texture2D(m_sampY, stretch(m_cordY)).r

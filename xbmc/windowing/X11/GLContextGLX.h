@@ -1,11 +1,5 @@
-#ifndef WINDOW_SYSTEM_X11_GL_H
-#define WINDOW_SYSTEM_X11_GL_H
-
-#pragma once
-
-#if defined(HAVE_LIBGL)
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,38 +17,33 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "WinSystemX11.h"
-#include "rendering/gl/RenderSystemGL.h"
-#include "utils/GlobalsHandling.h"
 
-class CWinSystemX11GL : public CWinSystemX11, public CRenderSystemGL
+#pragma once
+
+#if defined(HAVE_X11)
+#include "GLContext.h"
+#include "GL/glx.h"
+
+class CGLContextGLX : public CGLContext
 {
 public:
-  CWinSystemX11GL();
-  virtual ~CWinSystemX11GL();
-  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
-
+  CGLContextGLX(Display *dpy);
+  virtual bool Refresh(bool force, int screen, Window glWindow, bool &newContext);
+  virtual void Destroy();
+  virtual void Detach();
+  virtual void SetVSync(bool enable, int &mode);
+  virtual bool SwapBuffers(const CDirtyRegionList& dirty, int &mode);
+  virtual void QueryExtensions();
   virtual bool IsExtSupported(const char* extension);
-
 protected:
-  virtual bool PresentRenderImpl(const CDirtyRegionList& dirty);
-  virtual void SetVSyncImpl(bool enable);
-
-  std::string m_glxext;
+  bool IsSuitableVisual(XVisualInfo *vInfo);
 
   int (*m_glXGetVideoSyncSGI)(unsigned int*);
   int (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
   int (*m_glXSwapIntervalMESA)(int);
   PFNGLXSWAPINTERVALEXTPROC m_glXSwapIntervalEXT;
-
+  int m_nScreen;
   int m_iVSyncErrors;
 };
 
-XBMC_GLOBAL_REF(CWinSystemX11GL,g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemX11GL)
-
-#endif // HAVE_LIBGL
-
-#endif // WINDOW_SYSTEM_H
+#endif

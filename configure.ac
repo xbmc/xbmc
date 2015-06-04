@@ -1384,6 +1384,9 @@ if test "$use_x11" = "yes"; then
   PKG_CHECK_MODULES([DRM],  [libdrm],
     [INCLUDES="$INCLUDES $DRM_CFLAGS"; LIBS="$LIBS $DRM_LIBS"],
     AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([EGL], [egl],
+    [INCLUDES="$INCLUDES $EGL_CFLAGS"; LIBS="$LIBS $EGL_LIBS"],
+    AC_MSG_ERROR($missing_library))
   AC_DEFINE([HAVE_X11], [1], [Define to 1 if you have X11 libs installed.])
 else
   AC_MSG_RESULT($x11_disabled)

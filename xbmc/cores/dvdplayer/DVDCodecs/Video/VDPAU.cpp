@@ -20,9 +20,9 @@
 
 #include "system.h"
 #ifdef HAVE_LIBVDPAU
+#include "VDPAU.h"
 #include <dlfcn.h>
 #include "windowing/WindowingFactory.h"
-#include "VDPAU.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/TextureManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
@@ -3428,7 +3428,7 @@ bool COutput::GLInit()
 #endif
 
 #ifdef GL_ARB_sync
-  bool hasfence = glewIsSupported("GL_ARB_sync");
+  bool hasfence = g_Windowing.IsExtSupported("GL_ARB_sync");
   for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
   {
     m_bufferPool.allRenderPics[i]->usefence = hasfence;
