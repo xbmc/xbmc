@@ -310,7 +310,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "musiclibrary.cleanup")
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
+    if (CGUIDialogYesNo::ShowAndGetInput(313, 333))
       g_application.StartMusicCleanup(true);
   }
   else if (settingId == "musiclibrary.export")
@@ -330,7 +330,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "videolibrary.cleanup")
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
+    if (CGUIDialogYesNo::ShowAndGetInput(313, 333))
       g_application.StartVideoCleanup(true);
   }
   else if (settingId == "videolibrary.export")

@@ -2037,7 +2037,7 @@ namespace VIDEO
       CGUIDialogOK::ShowAndGetInput(20448, 20449);
       return false;
     }
-    return CGUIDialogYesNo::ShowAndGetInput(20448, 20450, -1, -1);
+    return CGUIDialogYesNo::ShowAndGetInput(20448, 20450);
   }
 
   bool CVideoInfoScanner::ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1)

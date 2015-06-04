@@ -1532,7 +1532,7 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
     if (confirm && !m_skinReverting)
     {
       bool cancelled;
-      if (!CGUIDialogYesNo::ShowAndGetInput(13123, 13111, -1, -1, -1, -1, cancelled, 10000))
+      if (!CGUIDialogYesNo::ShowAndGetInput(13123, 13111, cancelled, "", "", 10000))
       {
         m_skinReverting = true;
         if (oldSkin.empty())

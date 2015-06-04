@@ -235,7 +235,7 @@ void CGUIDialogAddonInfo::OnUninstall()
     return;
 
   // prompt user to be sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
+  if (!CGUIDialogYesNo::ShowAndGetInput(24037, 750))
     return;
 
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),
