@@ -93,6 +93,38 @@ public:
    */
   static unsigned int GetDurationFromMinuteString(const std::string &runtime);
 
+  void SetBasePath(std::string basePath);
+  void SetDirector(std::vector<std::string> director);
+  void SetWritingCredits(std::vector<std::string> writingCredits);
+  void SetGenre(std::vector<std::string> genre);
+  void SetCountry(std::vector<std::string> country);
+  void SetTagLine(std::string tagLine);
+  void SetPlotOutline(std::string plotOutline);
+  void SetTrailer(std::string trailer);
+  void SetPlot(std::string plot);
+  void SetTitle(std::string title);
+  void SetSortTitle(std::string sortTitle);
+  void SetPictureURL(CScraperUrl &pictureURL);
+  void SetVotes(std::string votes);
+  void SetArtist(std::vector<std::string> artist);
+  void SetSet(std::string set);
+  void SetTags(std::vector<std::string> tags);
+  void SetFile(std::string file);
+  void SetPath(std::string path);
+  void SetIMDBNumber(std::string imdbNumber);
+  void SetMPAARating(std::string mpaaRating);
+  void SetFileNameAndPath(std::string fileNameAndPath);
+  void SetOriginalTitle(std::string originalTitle);
+  void SetEpisodeGuide(std::string episodeGuide);
+  void SetStatus(std::string status);
+  void SetProductionCode(std::string productionCode);
+  void SetShowTitle(std::string showTitle);
+  void SetStudio(std::vector<std::string> studio);
+  void SetAlbum(std::string album);
+  void SetShowLink(std::vector<std::string> showLink);
+  void SetUniqueId(std::string uniqueId);
+
+
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
   std::vector<std::string> m_director;
@@ -161,6 +193,9 @@ private:
    \sa Load
    */
   void ParseNative(const TiXmlElement* element, bool prioritise);
+
+  std::string Trim(std::string &&value);
+  std::vector<std::string> Trim(std::vector<std::string> &&items);
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;
