@@ -72,7 +72,7 @@ void CRssManager::OnSettingAction(const CSetting *setting)
     ADDON::CAddonMgr::Get().GetAddon("script.rss.editor",addon);
     if (!addon)
     {
-      if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100), "RSS Editor", g_localizeStrings.Get(24101)))
+      if (!CGUIDialogYesNo::ShowAndGetInput(24076, 24100, "RSS Editor", 24101))
         return;
       CAddonInstaller::Get().Install("script.rss.editor", true, "", false);
     }

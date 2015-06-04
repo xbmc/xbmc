@@ -3408,7 +3408,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#1002"
-msgid "The connection to the network location couldn't be established. This could be due to the network not being connected. Would you like to add it anyway"
+msgid "The connection to the network location couldn't be established. This could be due to the network not being connected. Would you like to add it anyway?"
 msgstr ""
 
 #empty string from id 1003 to 1005

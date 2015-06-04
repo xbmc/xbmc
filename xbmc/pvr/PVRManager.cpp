@@ -1488,11 +1488,11 @@ bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
 
         // Inform user about PVR being busy. Ask if user wants to powerdown anyway.
         bool bCanceled = false;
-        bReturn = CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(19685), // "Confirm shutdown"
+        bReturn = CGUIDialogYesNo::ShowAndGetInput(19685, // "Confirm shutdown"
                                                    text,
                                                    bCanceled,
-                                                   g_localizeStrings.Get(222),   // "Cancel"
-                                                   g_localizeStrings.Get(19696), // "Shutdown anyway"
+                                                   222,   // "Cancel"
+                                                   19696, // "Shutdown anyway"
                                                    10000);
       }
       else

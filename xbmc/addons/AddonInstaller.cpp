@@ -182,8 +182,7 @@ bool CAddonInstaller::InstallModal(const std::string &addonID, ADDON::AddonPtr &
 
   // if specified ask the user if he wants it installed
   if (promptForInstall &&
-      !CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100),
-                                        addon->Name().c_str(), g_localizeStrings.Get(24101)))
+      !CGUIDialogYesNo::ShowAndGetInput(24076, 24100, addon->Name().c_str(), 24101))
     return false;
 
   if (!Install(addonID, true, "", false, true))
