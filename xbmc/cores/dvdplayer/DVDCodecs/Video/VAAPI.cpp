@@ -19,8 +19,8 @@
  */
 #include "system.h"
 #ifdef HAVE_LIBVA
-#include "windowing/WindowingFactory.h"
 #include "VAAPI.h"
+#include "windowing/WindowingFactory.h"
 #include "DVDVideoCodec.h"
 #include "cores/dvdplayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/dvdplayer/DVDClock.h"
@@ -32,6 +32,8 @@
 #include "settings/MediaSettings.h"
 #include "settings/AdvancedSettings.h"
 #include <va/va_x11.h>
+#include <va/va_drmcommon.h>
+#include <drm_fourcc.h>
 
 extern "C" {
 #include "libavutil/avutil.h"
@@ -39,11 +41,6 @@ extern "C" {
 #include "libavfilter/buffersink.h"
 #include "libavfilter/buffersrc.h"
 }
-
-#ifndef VA_SURFACE_ATTRIB_SETTABLE
-#define vaCreateSurfaces(d, f, w, h, s, ns, a, na) \
-vaCreateSurfaces(d, w, h, f, ns, s)
-#endif
 
 #if VA_CHECK_VERSION(0,34,0)
 #include <va/va_vpp.h>
@@ -1191,69 +1188,6 @@ void CVaapiRenderPicture::ReturnUnused()
     vaapi->ReturnRenderPicture(this);
 }
 
-bool CVaapiRenderPicture::CopyGlx()
-{
-  CSingleLock lock(renderPicSection);
-
-  if (glx.bound == true)
-    return true;
-
-  if (glx.procPic.source == CVaapiProcessedPicture::SKIP_SRC ||
-      glx.procPic.source == CVaapiProcessedPicture::VPP_SRC)
-  {
-    unsigned int colorStandard;
-    switch(glx.procPic.DVDPic.color_matrix)
-    {
-      case AVCOL_SPC_BT709:
-        colorStandard = VA_SRC_BT709;
-        break;
-      case AVCOL_SPC_BT470BG:
-      case AVCOL_SPC_SMPTE170M:
-        colorStandard = VA_SRC_BT601;
-        break;
-      case AVCOL_SPC_SMPTE240M:
-      case AVCOL_SPC_FCC:
-      case AVCOL_SPC_UNSPECIFIED:
-      case AVCOL_SPC_RGB:
-      default:
-        if(texWidth > 1000)
-          colorStandard = VA_SRC_BT709;
-        else
-          colorStandard = VA_SRC_BT601;
-    }
-
-    if (vaSyncSurface(glx.vadsp, glx.procPic.videoSurface) != VA_STATUS_SUCCESS)
-      return false;
-
-    if (vaPutSurface(glx.vadsp,
-                     glx.procPic.videoSurface,
-                     glx.pixmap,
-                     0,0,
-                     texWidth, texHeight,
-                     0,0,
-                     texWidth, texHeight,
-                     NULL,0,
-                     VA_FRAME_PICTURE | colorStandard) != VA_STATUS_SUCCESS)
-    {
-      return false;
-    }
-
-    XSync(glx.x11dsp, false);
-    glEnable(glx.textureTarget);
-    glBindTexture(glx.textureTarget, texture);
-    glx.glXBindTexImageEXT(glx.x11dsp, glx.glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-    glBindTexture(glx.textureTarget, 0);
-    glDisable(glx.textureTarget);
-
-    glx.bound = true;
-
-    vaapi->ReturnProcPicture(glx.procPic.id);
-    glx.procPic.id = -1;
-  }
-
-  return true;
-}
-
 void CVaapiRenderPicture::Sync()
 {
 #ifdef GL_ARB_sync
@@ -1268,15 +1202,186 @@ void CVaapiRenderPicture::Sync()
     fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
   }
 #endif
+}
 
-  if (DVDPic.format == RENDER_FMT_VAAPI && glx.bound)
+bool CVaapiRenderPicture::GLMapSurface()
+{
+  VAStatus status;
+  glInterop.vaImage.image_id = VA_INVALID_ID;
+
+  vaSyncSurface(glInterop.vadsp, glInterop.procPic.videoSurface);
+
+  status = vaDeriveImage(glInterop.vadsp, glInterop.procPic.videoSurface,
+                                                  &glInterop.vaImage);
+  if (status != VA_STATUS_SUCCESS)
   {
-    glEnable(glx.textureTarget);
-    glBindTexture(glx.textureTarget, texture);
-    glx.glXReleaseTexImageEXT(glx.x11dsp, glx.glPixmap, GLX_FRONT_LEFT_EXT);
-    glBindTexture(glx.textureTarget, 0);
-    glDisable(glx.textureTarget);
+    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+    return false;
   }
+  memset(&glInterop.vBufInfo, 0, sizeof(glInterop.vBufInfo));
+  glInterop.vBufInfo.mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME;
+  status = vaAcquireBufferHandle(glInterop.vadsp, glInterop.vaImage.buf,
+                                 &glInterop.vBufInfo);
+  if (status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+    return false;
+  }
+
+  texWidth = glInterop.vaImage.width;
+  texHeight = glInterop.vaImage.height;
+
+  GLint attribs[23], *attrib;
+
+  switch (glInterop.vaImage.format.fourcc)
+  {
+    case VA_FOURCC('N','V','1','2'):
+    {
+      attrib = attribs;
+      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
+      *attrib++ = fourcc_code('R', '8', ' ', ' ');
+      *attrib++ = EGL_WIDTH;
+      *attrib++ = glInterop.vaImage.width;
+      *attrib++ = EGL_HEIGHT;
+      *attrib++ = glInterop.vaImage.height;
+      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
+      *attrib++ = (intptr_t)glInterop.vBufInfo.handle;
+      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
+      *attrib++ = glInterop.vaImage.offsets[0];
+      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
+      *attrib++ = glInterop.vaImage.pitches[0];
+      *attrib++ = EGL_NONE;
+      glInterop.eglImageY = glInterop.eglCreateImageKHR(glInterop.eglDisplay,
+                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                          attribs);
+      if (!glInterop.eglImageY)
+      {
+        EGLint err = eglGetError();
+        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
+        return false;
+      }
+
+      attrib = attribs;
+      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
+      *attrib++ = fourcc_code('G', 'R', '8', '8');
+      *attrib++ = EGL_WIDTH;
+      *attrib++ = (glInterop.vaImage.width + 1) >> 1;
+      *attrib++ = EGL_HEIGHT;
+      *attrib++ = (glInterop.vaImage.height + 1) >> 1;
+      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
+      *attrib++ = (intptr_t)glInterop.vBufInfo.handle;
+      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
+      *attrib++ = glInterop.vaImage.offsets[1];
+      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
+      *attrib++ = glInterop.vaImage.pitches[1];
+      *attrib++ = EGL_NONE;
+      glInterop.eglImageVU = glInterop.eglCreateImageKHR(glInterop.eglDisplay,
+                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                          attribs);
+      if (!glInterop.eglImageVU)
+      {
+        EGLint err = eglGetError();
+        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
+        return false;
+      }
+
+      GLint format;
+
+      glGenTextures(1, &textureY);
+      glEnable(glInterop.textureTarget);
+      glBindTexture(glInterop.textureTarget, textureY);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImageY);
+      glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
+
+      glGenTextures(1, &textureVU);
+      glEnable(glInterop.textureTarget);
+      glBindTexture(glInterop.textureTarget, textureVU);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImageVU);
+      glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
+
+      glBindTexture(glInterop.textureTarget, 0);
+      glDisable(glInterop.textureTarget);
+
+      break;
+    }
+    case VA_FOURCC('B','G','R','A'):
+    {
+      attrib = attribs;
+      *attrib++ = EGL_DRM_BUFFER_FORMAT_MESA;
+      *attrib++ = EGL_DRM_BUFFER_FORMAT_ARGB32_MESA;
+      *attrib++ = EGL_WIDTH;
+      *attrib++ = glInterop.vaImage.width;
+      *attrib++ = EGL_HEIGHT;
+      *attrib++ = glInterop.vaImage.height;
+      *attrib++ = EGL_DRM_BUFFER_STRIDE_MESA;
+      *attrib++ = glInterop.vaImage.pitches[0] / 4;
+      *attrib++ = EGL_NONE;
+      glInterop.eglImage = glInterop.eglCreateImageKHR(glInterop.eglDisplay, EGL_NO_CONTEXT,
+                                         EGL_DRM_BUFFER_MESA,
+                                         (EGLClientBuffer)glInterop.vBufInfo.handle,
+                                         attribs);
+      if (!glInterop.eglImage)
+      {
+        EGLint err = eglGetError();
+        CLog::Log(LOGERROR, "failed to import VA buffer BGRA into EGL image: %d", err);
+        return false;
+      }
+
+      glGenTextures(1, &texture);
+      glEnable(glInterop.textureTarget);
+      glBindTexture(glInterop.textureTarget, texture);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImage);
+
+      glBindTexture(glInterop.textureTarget, 0);
+      glDisable(glInterop.textureTarget);
+
+      break;
+    }
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+void CVaapiRenderPicture::GLUnMapSurface()
+{
+  if (glInterop.vaImage.image_id == VA_INVALID_ID)
+    return;
+
+  glInterop.eglDestroyImageKHR(glInterop.eglDisplay, glInterop.eglImageY);
+  glInterop.eglDestroyImageKHR(glInterop.eglDisplay, glInterop.eglImageVU);
+
+  VAStatus status;
+  status = vaReleaseBufferHandle(glInterop.vadsp, glInterop.vaImage.buf);
+  if (status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+  }
+
+  status = vaDestroyImage(glInterop.vadsp, glInterop.vaImage.image_id);
+  if (status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
+  }
+  glInterop.mapped = false;
+  glInterop.vaImage.image_id = VA_INVALID_ID;
+
+  glDeleteTextures(1, &textureY);
+  glDeleteTextures(1, &textureVU);
 }
 
 //-----------------------------------------------------------------------------
@@ -1634,7 +1739,6 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
             m_config.stats->DecProcessed();
             m_bufferPool.processedPics.pop_front();
             outPic = ProcessPicture(procPic);
-            //ReleaseProcessedPicture(procPic);
             if (outPic)
             {
               m_config.stats->IncRender();
@@ -1737,7 +1841,7 @@ void COutput::Process()
 
 bool COutput::Init()
 {
-  if (!CreateGlxContext())
+  if (!CreateEGLContext())
     return false;
 
   if (!GLInit())
@@ -1770,7 +1874,7 @@ bool COutput::Uninit()
   ReleaseBufferPool();
   delete m_pp;
   m_pp = NULL;
-  DestroyGlxContext();
+  DestroyEGLContext();
   return true;
 }
 
@@ -1935,10 +2039,14 @@ void COutput::InitCycle()
       if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
         m_pp = new CFFmpegPostproc();
       else
+      {
         m_pp = new CSkipPostproc();
+        m_config.stats->SetVpp(true);
+      }
       if (m_pp->PreInit(m_config))
       {
         m_pp->Init(method);
+        m_currentDiMethod = method;
       }
       else
       {
@@ -1968,8 +2076,9 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
     pic.id = m_bufferPool.procPicId++;
     m_bufferPool.processedPicsAway.push_back(pic);
     retPic->DVDPic.format = RENDER_FMT_VAAPI;
-    retPic->glx.procPic = pic;
-    retPic->glx.bound = false;
+    retPic->glInterop.procPic = pic;
+    retPic->glInterop.mapped = false;
+    retPic->GLMapSurface();
   }
   else if (pic.source == CVaapiProcessedPicture::FFMPEG_SRC)
   {
@@ -1988,8 +2097,6 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
   retPic->DVDPic.iHeight = m_config.vidHeight;
 
   retPic->valid = true;
-  retPic->texWidth = m_config.outWidth;
-  retPic->texHeight = m_config.outHeight;
   retPic->crop.x1 = 0;
   retPic->crop.y1 = 0;
   retPic->crop.x2 = m_config.outWidth;
@@ -2142,7 +2249,8 @@ void COutput::ProcessReturnPicture(CVaapiRenderPicture *pic)
   if (pic->avFrame)
     av_frame_unref(pic->avFrame);
 
-  ProcessReturnProcPicture(pic->glx.procPic.id);
+  pic->GLUnMapSurface();
+  ProcessReturnProcPicture(pic->glInterop.procPic.id);
   pic->valid = false;
 }
 
@@ -2162,73 +2270,20 @@ void COutput::ProcessReturnProcPicture(int id)
 
 bool COutput::EnsureBufferPool()
 {
-  int fbConfigIndex = 0;
-  int num;
-
-  XWindowAttributes wndattribs;
-  XGetWindowAttributes(m_Display, g_Windowing.GetWindow(), &wndattribs);
-
-  int doubleVisAttributes[] = {
-      GLX_RENDER_TYPE, GLX_RGBA_BIT,
-      GLX_RED_SIZE, 8,
-      GLX_GREEN_SIZE, 8,
-      GLX_BLUE_SIZE, 8,
-      GLX_ALPHA_SIZE, 8,
-      GLX_DEPTH_SIZE, 8,
-      GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
-      GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
-      GLX_DOUBLEBUFFER, False,
-      GLX_Y_INVERTED_EXT, True,
-      GLX_X_RENDERABLE, True,
-      None};
-
-  int pixmapAttribs[] = {
-      GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
-      GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
-      None};
-
-  GLXFBConfig *fbConfigs;
-  fbConfigs = glXChooseFBConfig(m_Display, g_Windowing.GetCurrentScreen(), doubleVisAttributes, &num);
-  if (fbConfigs==NULL)
-  {
-    CLog::Log(LOGERROR, "VAAPI::EnsureBufferPool - No compatible framebuffers found");
-    return false;
-  }
-
-  fbConfigIndex = 0;
-
-  // create glx surfaces and avFrames
+  // create avFrames and init interop
   CVaapiRenderPicture *pic;
   for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
   {
     pic = m_bufferPool.allRenderPics[i];
+    pic->glInterop.vadsp = m_config.dpy;
 
-    pic->glx.pixmap = XCreatePixmap(m_Display,
-                                m_Window,
-                                m_config.outWidth,
-                                m_config.outHeight,
-                                wndattribs.depth);
-    if (!pic->glx.pixmap)
-    {
-      CLog::Log(LOGERROR, "VAAPI::COutput::EnsureBufferPool - Unable to create XPixmap");
-      return false;
-    }
-
-    // create gl pixmap
-    pic->glx.glPixmap = glXCreatePixmap(m_Display, fbConfigs[fbConfigIndex], pic->glx.pixmap, pixmapAttribs);
-
-    if (!pic->glx.glPixmap)
-    {
-      CLog::Log(LOGERROR, "VAAPI::COutput::EnsureBufferPool - Could not create glPixmap");
-      return false;
-    }
-
-    glGenTextures(1, &pic->texture);
-    pic->glx.vadsp = m_config.dpy;
-    pic->glx.x11dsp = m_Display;
-    pic->glx.glXBindTexImageEXT = glXBindTexImageEXT;
-    pic->glx.glXReleaseTexImageEXT = glXReleaseTexImageEXT;
-    pic->glx.textureTarget = m_textureTarget;
+    pic->glInterop.eglDisplay = m_eglDisplay;
+    pic->glInterop.textureTarget = m_textureTarget;
+    pic->glInterop.eglCreateImageKHR = eglCreateImageKHR;
+    pic->glInterop.eglDestroyImageKHR = eglDestroyImageKHR;
+    pic->glInterop.glEGLImageTargetTexture2DOES = glEGLImageTargetTexture2DOES;
+    pic->glInterop.vaImage.image_id = VA_INVALID_ID;
+    pic->glInterop.mapped = false;
 
     pic->avFrame = av_frame_alloc();
     pic->valid = false;
@@ -2294,8 +2349,6 @@ void COutput::ReleaseBufferPool(bool precleanup)
     if (pic->texture)
     {
       glDeleteTextures(1, &pic->texture);
-      glXDestroyPixmap(m_Display, pic->glx.glPixmap);
-      XFreePixmap(m_Display, pic->glx.pixmap);
       pic->texture = None;
     }
     av_frame_free(&pic->avFrame);
@@ -2318,22 +2371,24 @@ void COutput::ReleaseBufferPool(bool precleanup)
 bool COutput::GLInit()
 {
 #ifdef GL_ARB_sync
-  bool hasfence = glewIsSupported("GL_ARB_sync");
+  bool hasfence = g_Windowing.IsExtSupported("GL_ARB_sync");
   for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
   {
     m_bufferPool.allRenderPics[i]->usefence = hasfence;
   }
 #endif
 
-  if (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle"))
+  if (!g_Windowing.IsExtSupported("GL_ARB_texture_non_power_of_two") &&
+       g_Windowing.IsExtSupported("GL_ARB_texture_rectangle"))
   {
     m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
   }
   else
     m_textureTarget = GL_TEXTURE_2D;
 
-  glXBindTexImageEXT = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
-  glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
+  eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
+  eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
+  glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
   return true;
 }
 
@@ -2348,80 +2403,58 @@ bool COutput::CheckSuccess(VAStatus status)
   return true;
 }
 
-bool COutput::CreateGlxContext()
+bool COutput::CreateEGLContext()
 {
-  GLXContext   glContext;
-
   m_Display = g_Windowing.GetDisplay();
-  glContext = g_Windowing.GetGlxContext();
-  m_Window = g_Windowing.GetWindow();
+  EGLDisplay eglDisplay = g_Windowing.GetEGLDisplay();
+  EGLContext eglMainContext = g_Windowing.GetEGLContext();
+  EGLConfig eglMainConfig = g_Windowing.GetEGLConfig();
 
-  // Get our window attribs.
-  XWindowAttributes wndattribs;
-  XGetWindowAttributes(m_Display, m_Window, &wndattribs);
-
-  // Get visual Info
-  XVisualInfo visInfo;
-  visInfo.visualid = wndattribs.visual->visualid;
-  int nvisuals = 0;
-  XVisualInfo* visuals = XGetVisualInfo(m_Display, VisualIDMask, &visInfo, &nvisuals);
-  if (nvisuals != 1)
+  EGLint pbufferAttribs[] =
   {
-    CLog::Log(LOGERROR, "VAAPI::COutput::CreateGlxContext - could not find visual");
+    EGL_WIDTH, 8,
+    EGL_HEIGHT, 8,
+    EGL_TEXTURE_TARGET, EGL_NO_TEXTURE,
+    EGL_TEXTURE_FORMAT, EGL_NO_TEXTURE,
+    EGL_NONE
+  };
+  EGLint contextAttributes[] =
+  {
+    EGL_CONTEXT_CLIENT_VERSION, 2,
+    EGL_NONE
+  };
+  if (!eglBindAPI(EGL_OPENGL_API))
+  {
+    CLog::Log(LOGERROR, "VAAPI::COutput::CreateEGLContext -failed to bind egl API");
     return false;
   }
-  visInfo = visuals[0];
-  XFree(visuals);
+  m_eglSurface = eglCreatePbufferSurface(eglDisplay, eglMainConfig, pbufferAttribs);
+  m_eglContext = eglCreateContext(eglDisplay, eglMainConfig, eglMainContext, contextAttributes);
+  m_eglDisplay = eglDisplay;
 
-  m_pixmap = XCreatePixmap(m_Display,
-                           m_Window,
-                           192,
-                           108,
-                           visInfo.depth);
-  if (!m_pixmap)
+  if (!eglMakeCurrent(eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
   {
-    CLog::Log(LOGERROR, "VAAPI::COutput::CreateGlxContext - Unable to create XPixmap");
-    return false;
-  }
-
-  // create gl pixmap
-  m_glPixmap = glXCreateGLXPixmap(m_Display, &visInfo, m_pixmap);
-
-  if (!m_glPixmap)
-  {
-    CLog::Log(LOGERROR, "VAAPI::COutput::CreateGlxContext - Could not create glPixmap");
-    return false;
-  }
-
-  m_glContext = glXCreateContext(m_Display, &visInfo, glContext, True);
-
-  if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
-  {
-    CLog::Log(LOGERROR, "VAAPI::COutput::CreateGlxContext - Could not make Pixmap current");
+    CLog::Log(LOGERROR, "VAAPI::COutput::CreateEGLContext - Could not make surface current");
     return false;
   }
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "VAAPI::COutput::CreateGlxContext - created context");
+    CLog::Log(LOGDEBUG, "VAAPI::COutput::CreateEGLContext - created context");
   return true;
 }
 
-bool COutput::DestroyGlxContext()
+bool COutput::DestroyEGLContext()
 {
-  if (m_glContext)
+  if (m_eglContext)
   {
     glFinish();
-    glXMakeCurrent(m_Display, None, NULL);
-    glXDestroyContext(m_Display, m_glContext);
+    eglMakeCurrent(m_eglContext, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroyContext(m_eglDisplay, m_eglContext);
   }
-  m_glContext = 0;
+  m_eglContext = EGL_NO_CONTEXT;
 
-  if (m_glPixmap)
-    glXDestroyPixmap(m_Display, m_glPixmap);
-  m_glPixmap = 0;
-
-  if (m_pixmap)
-    XFreePixmap(m_Display, m_pixmap);
-  m_pixmap = 0;
+  if (m_eglSurface)
+    eglDestroySurface(m_eglDisplay, m_eglSurface);
+  m_eglSurface = EGL_NO_SURFACE;
 
   return true;
 }
@@ -2518,6 +2551,13 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
     return false;
   }
 
+  VASurfaceAttrib attribs[1], *attrib;
+  attrib = attribs;
+  attrib->flags = VA_SURFACE_ATTRIB_SETTABLE;
+  attrib->type = VASurfaceAttribPixelFormat;
+  attrib->value.type = VAGenericValueTypeInteger;
+  attrib->value.value.i = VA_FOURCC_NV12;
+
   // create surfaces
   VASurfaceID surfaces[32];
   int nb_surfaces = NUM_RENDER_PICS;
@@ -2527,7 +2567,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                      m_config.surfaceHeight,
                                      surfaces,
                                      nb_surfaces,
-                                     NULL, 0)))
+                                     attribs, 1)))
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "CVppPostproc::PreInit  - VPP init failed");
@@ -2629,9 +2669,20 @@ bool CVppPostproc::Init(EINTERLACEMETHOD method)
   case VS_INTERLACEMETHOD_VAAPI_MACI:
     vppMethod = VAProcDeinterlacingMotionCompensated;
     break;
+  case VS_INTERLACEMETHOD_NONE:
+    // vppMethod = VAProcDeinterlacingNone;
+    break;
   default:
     return false;
   }
+
+  m_forwardRefs = 0;
+  m_backwardRefs = 0;
+  m_currentIdx = 0;
+  m_frameCount = 0;
+
+//  if (method == VS_INTERLACEMETHOD_NONE)
+//    return true;
 
   VAProcFilterParameterBufferDeinterlacing filterparams;
   filterparams.type = VAProcFilterDeinterlacing;
@@ -2655,8 +2706,6 @@ bool CVppPostproc::Init(EINTERLACEMETHOD method)
 
   m_forwardRefs = pplCaps.num_forward_references;
   m_backwardRefs = pplCaps.num_backward_references;
-  m_currentIdx = 0;
-  m_frameCount = 0;
 
 #endif
   return true;
@@ -2749,7 +2798,8 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   outPic.DVDPic = it->DVDPic;
 
   // skip deinterlacing cycle if requested
-  if (m_step == 1 && (outPic.DVDPic.iFlags & DVD_CODEC_CTRL_SKIPDEINT))
+  if ((m_step == 1) &&
+      ((outPic.DVDPic.iFlags & DVD_CODEC_CTRL_SKIPDEINT) || (m_vppMethod == VS_INTERLACEMETHOD_NONE)))
   {
     Advance();
     return false;
@@ -2800,35 +2850,43 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   int curPic = m_currentIdx;
 
   // deinterlace flag
-  unsigned int flags = 0;
-  if (it->DVDPic.iFlags & DVP_FLAG_TOP_FIELD_FIRST)
-    flags = 0;
-  else
-    flags = VA_DEINTERLACING_BOTTOM_FIELD_FIRST | VA_DEINTERLACING_BOTTOM_FIELD;
-
-  if (m_step)
+  if (m_vppMethod != VS_INTERLACEMETHOD_NONE)
   {
-    if (flags & VA_DEINTERLACING_BOTTOM_FIELD)
-      flags &= ~VA_DEINTERLACING_BOTTOM_FIELD;
+    unsigned int flags = 0;
+    if (it->DVDPic.iFlags & DVP_FLAG_TOP_FIELD_FIRST)
+      flags = 0;
     else
-      flags |= VA_DEINTERLACING_BOTTOM_FIELD;
-  }
-  if (!CheckSuccess(vaMapBuffer(m_config.dpy, m_filter, (void**)&filterParams)))
-  {
-    return false;
-  }
-  filterParams->flags = flags;
-  if (!CheckSuccess(vaUnmapBuffer(m_config.dpy, m_filter)))
-  {
-    return false;
-  }
+      flags = VA_DEINTERLACING_BOTTOM_FIELD_FIRST | VA_DEINTERLACING_BOTTOM_FIELD;
 
-  if (m_vppMethod == VS_INTERLACEMETHOD_VAAPI_BOB)
-    pipelineParams->filter_flags = (flags & VA_DEINTERLACING_BOTTOM_FIELD) ? VA_BOTTOM_FIELD : VA_TOP_FIELD;
+    if (m_step)
+    {
+      if (flags & VA_DEINTERLACING_BOTTOM_FIELD)
+        flags &= ~VA_DEINTERLACING_BOTTOM_FIELD;
+      else
+        flags |= VA_DEINTERLACING_BOTTOM_FIELD;
+    }
+    if (!CheckSuccess(vaMapBuffer(m_config.dpy, m_filter, (void**)&filterParams)))
+    {
+      return false;
+    }
+    filterParams->flags = flags;
+    if (!CheckSuccess(vaUnmapBuffer(m_config.dpy, m_filter)))
+    {
+      return false;
+    }
+
+    if (m_vppMethod == VS_INTERLACEMETHOD_VAAPI_BOB)
+      pipelineParams->filter_flags = (flags & VA_DEINTERLACING_BOTTOM_FIELD) ? VA_BOTTOM_FIELD : VA_TOP_FIELD;
+    else
+      pipelineParams->filter_flags = 0;
+
+    pipelineParams->filters = &m_filter;
+    pipelineParams->num_filters = 1;
+  }
   else
-    pipelineParams->filter_flags = 0;
-  pipelineParams->filters = &m_filter;
-  pipelineParams->num_filters = 1;
+  {
+    pipelineParams->num_filters = 0;
+  }
 
   // references
   double ptsLast = DVD_NOPTS_VALUE;
@@ -2938,7 +2996,8 @@ bool CVppPostproc::Compatible(EINTERLACEMETHOD method)
 {
   if (method == VS_INTERLACEMETHOD_VAAPI_BOB ||
       method == VS_INTERLACEMETHOD_VAAPI_MADI ||
-      method == VS_INTERLACEMETHOD_VAAPI_MACI)
+      method == VS_INTERLACEMETHOD_VAAPI_MACI ||
+      method == VS_INTERLACEMETHOD_NONE)
     return true;
 
   return false;

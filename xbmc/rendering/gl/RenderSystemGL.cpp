@@ -112,6 +112,7 @@ bool CRenderSystemGL::InitRenderSystem()
   m_maxTextureSize = 2048;
   m_renderCaps = 0;
 
+#if defined(TARGET_DARWIN)
   // init glew library
   GLenum err = glewInit();
   if (GLEW_OK != err)
@@ -120,6 +121,13 @@ bool CRenderSystemGL::InitRenderSystem()
     CLog::Log(LOGERROR, "InitRenderSystem() glewInit returned %i: %s", err, glewGetErrorString(err));
     return false;
   }
+#endif
+
+  m_RenderExtensions  = " ";
+  m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
+  m_RenderExtensions += " ";
+
+  LogGraphicsInfo();
 
   // Get the GL version number
   m_RenderVersionMajor = 0;
@@ -132,7 +140,7 @@ bool CRenderSystemGL::InitRenderSystem()
     m_RenderVersion = ver;
   }
 
-  if (glewIsSupported("GL_ARB_shading_language_100"))
+  if (IsExtSupported("GL_ARB_shading_language_100"))
   {
     ver = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
     if (ver)
@@ -158,10 +166,10 @@ bool CRenderSystemGL::InitRenderSystem()
     m_RenderRenderer = tmpRenderer;
 
   // grab our capabilities
-  if (glewIsSupported("GL_EXT_texture_compression_s3tc"))
+  if (IsExtSupported("GL_EXT_texture_compression_s3tc"))
     m_renderCaps |= RENDER_CAPS_DXT;
 
-  if (glewIsSupported("GL_ARB_texture_non_power_of_two"))
+  if (IsExtSupported("GL_ARB_texture_non_power_of_two"))
   {
     m_renderCaps |= RENDER_CAPS_NPOT;
     if (m_renderCaps & RENDER_CAPS_DXT) 
@@ -170,16 +178,6 @@ bool CRenderSystemGL::InitRenderSystem()
   //Check OpenGL quirks and revert m_renderCaps as needed
   CheckOpenGLQuirks();
 	
-  m_RenderExtensions  = " ";
-
-  const char *tmpExtensions = (const char*) glGetString(GL_EXTENSIONS);
-  if (tmpExtensions != NULL)
-    m_RenderExtensions += tmpExtensions;
-
-  m_RenderExtensions += " ";
-
-  LogGraphicsInfo();
-
   m_bRenderCreated = true;
 
   return true;
@@ -213,7 +211,7 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
   glMatrixTexture->LoadIdentity();
   glMatrixTexture.Load();
 
-  if (glewIsSupported("GL_ARB_multitexture"))
+  if (IsExtSupported("GL_ARB_multitexture"))
   {
     //clear error flags
     ResetGLErrors();

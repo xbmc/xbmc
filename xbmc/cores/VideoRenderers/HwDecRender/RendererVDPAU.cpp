@@ -27,6 +27,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "windowing/WindowingFactory.h"
 
 CRendererVDPAU::CRendererVDPAU()
 {
@@ -78,7 +79,7 @@ bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
 
     return (m_renderMethod & RENDER_GLSL)
         || (m_renderMethod & RENDER_ARB)
-        || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
+        || ((m_renderMethod & RENDER_SW) && g_Windowing.IsExtSupported("GL_ARB_imaging") == GL_TRUE);
   }
   else if (feature == RENDERFEATURE_NOISE ||
            feature == RENDERFEATURE_SHARPNESS)

@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "ConvolutionKernels.h"
+#include "windowing/WindowingFactory.h"
 
 #if defined(HAS_GL)
   #define USE1DTEXTURE
@@ -85,7 +86,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   std::string defines;
 
 #if defined(HAS_GL)
-  m_floattex = glewIsSupported("GL_ARB_texture_float");
+  m_floattex = g_Windowing.IsExtSupported("GL_ARB_texture_float");
 #elif HAS_GLES == 2
   m_floattex = false;
 #endif
