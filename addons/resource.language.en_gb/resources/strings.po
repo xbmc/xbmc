@@ -12647,11 +12647,9 @@ msgctxt "#24061"
 msgid "Add-on update available!"
 msgstr ""
 
-#: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
-#: xbmc/filesystem/AndroidAppDirectory.cpp
 msgctxt "#24062"
-msgid "Enabled add-ons"
+msgid "All enabled"
 msgstr ""
 
 msgctxt "#24063"

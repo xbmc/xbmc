@@ -229,13 +229,13 @@ static void UserInstalledAddons(const CURL& path, CFileItemList &items)
   {
     GenerateCategoryListing(path, addons, items);
 
-    //"All" node
+    //"All" enabled node
     CFileItemPtr item(new CFileItem());
     item->m_bIsFolder = true;
     CURL itemPath = path;
     itemPath.SetFileName("all");
     item->SetPath(itemPath.Get());
-    item->SetLabel(g_localizeStrings.Get(593));
+    item->SetLabel(g_localizeStrings.Get(24062));
     item->SetSpecialSort(SortSpecialOnTop);
     items.Add(item);
   }
