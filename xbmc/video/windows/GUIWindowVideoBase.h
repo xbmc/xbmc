@@ -132,7 +132,7 @@ protected:
   void OnSearchItemFound(const CFileItem* pSelItem);
   int GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &info, VIDEO::SScanSettings& settings);
 
-  static bool OnUnAssignContent(const std::string &path, int label1, int label2, int label3);
+  static bool OnUnAssignContent(const std::string &path, int header, int text);
 
   static bool StackingAvailable(const CFileItemList &items);
 

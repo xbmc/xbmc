@@ -1137,7 +1137,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       }
 
       if (bDisabled && (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
-        CGUIDialogOK::ShowAndGetInput(24070, 24071, 16029, 0);
+        CGUIDialogOK::ShowAndGetInput(24070, 16029);
     }
   }
 

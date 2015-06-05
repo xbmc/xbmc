@@ -228,7 +228,7 @@ void CGUIDialogAudioSubtitleSettings::Save()
     return;
 
   // prompt user if they are sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(12376, 750, 0, 12377))
+  if (!CGUIDialogYesNo::ShowAndGetInput(12376, 12377))
     return;
 
   // reset the settings

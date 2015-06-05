@@ -1883,12 +1883,12 @@ void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, 
   searchItems.Clear();
 }
 
-bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int label1, int label2, int label3)
+bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int header, int text)
 {
   bool bCanceled;
   CVideoDatabase db;
   db.Open();
-  if (CGUIDialogYesNo::ShowAndGetInput(label1, label2, label3, "", bCanceled))
+  if (CGUIDialogYesNo::ShowAndGetInput(header, text, bCanceled, "", ""))
   {
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     db.RemoveContentForPath(path, progress);
@@ -1926,11 +1926,11 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
   {
     if(settings.exclude || (!info && info2))
     {
-      OnUnAssignContent(path,20375,20340,20341);
+      OnUnAssignContent(path,20375,20340);
     }
     else if (info != info2)
     {
-      if (OnUnAssignContent(path,20442,20443,20444))
+      if (OnUnAssignContent(path, 20442, 20443))
         bScan = true;
     }
   }
