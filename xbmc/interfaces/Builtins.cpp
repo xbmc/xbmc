@@ -1734,7 +1734,7 @@ int CBuiltins::Execute(const std::string& execString)
     int actionID;
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
-      int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
+      int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindow(params[1]) : g_windowManager.GetActiveWindow();
       CApplicationMessenger::Get().SendAction(CAction(actionID), windowID);
     }
   }
