@@ -36,6 +36,8 @@
 #include "windowing/WindowingFactory.h"
 #elif defined(TARGET_RASPBERRY_PI)
 #include "video/videosync/VideoSyncPi.h"
+#elif defined(HAS_IMXVPU)
+#include "video/videosync/VideoSyncIMX.h"
 #endif
 #if defined(TARGET_WINDOWS)
 #include "video/videosync/VideoSyncD3D.h"
@@ -120,6 +122,8 @@ void CVideoReferenceClock::Process()
     m_pVideoSync = new CVideoSyncIos();
 #elif defined(TARGET_RASPBERRY_PI)
     m_pVideoSync = new CVideoSyncPi();
+#elif defined(HAS_IMXVPU)
+    m_pVideoSync = new CVideoSyncIMX();
 #endif
 
     if (m_pVideoSync)
