@@ -4891,20 +4891,26 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
         if (tag)
         {
-          iSeason = tag->SeriesNumber();
-          iEpisode = tag->EpisodeNumber();
+          if (tag->SeriesNumber() > 0)
+            iSeason = tag->SeriesNumber();
+          if (tag->EpisodeNumber() > 0)
+            iEpisode = tag->EpisodeNumber();
         }
       }
       else if (item->HasEPGInfoTag())
       {
-        iSeason = item->GetEPGInfoTag()->SeriesNumber();
-        iEpisode = item->GetEPGInfoTag()->EpisodeNumber();
+        if (item->GetEPGInfoTag()->SeriesNumber() > 0)
+          iSeason = item->GetEPGInfoTag()->SeriesNumber();
+        if (item->GetEPGInfoTag()->EpisodeNumber() > 0)
+          iEpisode = item->GetEPGInfoTag()->EpisodeNumber();
       }
       else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->HasEpgInfoTag())
       {
         CEpgInfoTagPtr tag(item->GetPVRTimerInfoTag()->GetEpgInfoTag());
-        iSeason = tag->SeriesNumber();
-        iEpisode = tag->EpisodeNumber();
+        if (tag->SeriesNumber() > 0)
+          iSeason = tag->SeriesNumber();
+        if (tag->EpisodeNumber() > 0)
+          iEpisode = tag->EpisodeNumber();
       }
       else if (item->HasVideoInfoTag())
       {
@@ -4927,12 +4933,15 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       if (item->HasPVRChannelInfoTag())
       {
         CEpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
-        if (tag)
+        if (tag && tag->SeriesNumber() > 0)
           iSeason = tag->SeriesNumber();
       }
-      else if (item->HasEPGInfoTag())
+      else if (item->HasEPGInfoTag() &&
+               item->GetEPGInfoTag()->SeriesNumber() > 0)
         iSeason = item->GetEPGInfoTag()->SeriesNumber();
-      else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->HasEpgInfoTag())
+      else if (item->HasPVRTimerInfoTag() &&
+               item->GetPVRTimerInfoTag()->HasEpgInfoTag() &&
+               item->GetPVRTimerInfoTag()->GetEpgInfoTag()->SeriesNumber() > 0)
         iSeason = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->SeriesNumber();
       else if (item->HasVideoInfoTag())
         iSeason = item->GetVideoInfoTag()->m_iSeason;
