@@ -1888,7 +1888,7 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int header,
   bool bCanceled;
   CVideoDatabase db;
   db.Open();
-  if (CGUIDialogYesNo::ShowAndGetInput(header, text, bCanceled, "", ""))
+  if (CGUIDialogYesNo::ShowAndGetInput(header, text, bCanceled))
   {
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     db.RemoveContentForPath(path, progress);
@@ -1926,7 +1926,7 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
   {
     if(settings.exclude || (!info && info2))
     {
-      OnUnAssignContent(path,20375,20340);
+      OnUnAssignContent(path, 20375, 20340);
     }
     else if (info != info2)
     {
