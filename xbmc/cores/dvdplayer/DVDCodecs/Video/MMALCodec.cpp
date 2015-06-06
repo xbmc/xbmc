@@ -793,7 +793,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
          pts = 0;
        buffer->pts = pts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : pts;
        buffer->dts = dts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : dts;
-       if (buffer->dts != MMAL_TIME_UNKNOWN) buffer->pts = MMAL_TIME_UNKNOWN;
+       if (m_hints.ptsinvalid) buffer->pts = MMAL_TIME_UNKNOWN;
        buffer->length = demuxer_bytes > buffer->alloc_size ? buffer->alloc_size : demuxer_bytes;
        // set a flag so we can identify primary frames from generated frames (deinterlace)
        buffer->flags = MMAL_BUFFER_HEADER_FLAG_USER0;
