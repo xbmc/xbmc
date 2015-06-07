@@ -184,7 +184,7 @@
 					<height>25</height>
 					<align>left</align>
 					<font>font12</font>
-					<label>$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.ChannelNumberLabel, - ([COLOR=blue],[/COLOR])]</label>
+					<label>$INFO[VideoPlayer.ChannelNumberLabel,([COLOR=blue],[/COLOR]) ]$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.EpisodeName, (,)]</label>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<visible>VideoPlayer.Content(LiveTV)</visible>
