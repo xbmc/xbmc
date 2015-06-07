@@ -706,6 +706,9 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   PVR_CLIENTMAP activeClients;
   iActiveClients = clients->GetConnectedClients(activeClients);
 
+  if (iActiveClients > 1 && !AddonInfoToggle())
+    return;
+
   {
     CSingleLock lock(m_critSection);
     if (m_iAddonInfoToggleCurrent >= iActiveClients)
@@ -715,9 +718,6 @@ void CPVRGUIInfo::UpdateBackendCache(void)
       m_iAddonInfoToggleCurrent = 0;
     }
   }
-
-  if (iActiveClients > 1 && !AddonInfoToggle())
-    return;
 
   if (iActiveClients > 0)
   {
