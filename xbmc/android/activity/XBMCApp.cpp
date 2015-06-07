@@ -72,6 +72,9 @@
 #include "android/jni/ContentResolver.h"
 #include "android/jni/MediaStore.h"
 #include "android/jni/Build.h"
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#endif
 #include "CompileInfo.h"
 
 #define GIGABYTES       1073741824
@@ -118,10 +121,15 @@ void CXBMCApp::onStart()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  // non-aml boxes will ignore this intent broadcast.
-  // setup aml scalers to play video as is, unscaled.
-  CJNIIntent intent_aml_video_on = CJNIIntent("android.intent.action.REALVIDEO_ON");
-  sendBroadcast(intent_aml_video_on);
+#if defined(HAS_LIBAMCODEC)
+  if (aml_permissions())
+  {
+    // non-aml boxes will ignore this intent broadcast.
+    // setup aml scalers to play video as is, unscaled.
+    CJNIIntent intent_aml_video_on = CJNIIntent("android.intent.action.REALVIDEO_ON");
+    sendBroadcast(intent_aml_video_on);
+  }
+#endif
 
   if (!m_firstrun)
   {
@@ -162,9 +170,14 @@ void CXBMCApp::onPause()
 
   unregisterReceiver(*this);
 
-  // non-aml boxes will ignore this intent broadcast.
-  CJNIIntent intent_aml_video_off = CJNIIntent("android.intent.action.REALVIDEO_OFF");
-  sendBroadcast(intent_aml_video_off);
+#if defined(HAS_LIBAMCODEC)
+  if (aml_permissions())
+  {
+    // non-aml boxes will ignore this intent broadcast.
+    CJNIIntent intent_aml_video_off = CJNIIntent("android.intent.action.REALVIDEO_OFF");
+    sendBroadcast(intent_aml_video_off);
+  }
+#endif
 
   EnableWakeLock(false);
 }
