@@ -27,7 +27,6 @@
 #include "DynamicDll.h"
 #include "threads/SingleLock.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -395,9 +394,8 @@ void CPeripheralCecAdapter::Process(void)
       }
       else if (timeout.GetElapsedSeconds() >= CEC_TV_PRESENT_CHECK_TIMEOUT)
       {
-        /** no TV found for 30 seconds, ask if the user wants to disable CEC */
-        if (!CGUIDialogYesNo::ShowAndGetInput(36000,  // Pulse-Eight CEC adaptor
-                                              36043)) // No CEC capable TV detected. Disable polling for CEC capable devices?
+        /** no TV found for 30 seconds, disable CEC (if configured to do so) */
+        if (GetSettingBool("disable_adapter_if_no_cec_tv_present"))
         {
           SetSetting("enabled", false);
           m_bStop          = true;

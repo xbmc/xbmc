@@ -14082,9 +14082,10 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr ""
 
-#: xbmc/peripherals/devices/peripheralcecadapter.cpp
+#. CEC Adapter preference "Deactive adapter if no CEC capable TV is present"
+#: system/peripherals.xml
 msgctxt "#36043"
-msgid "No CEC capable TV detected. Disable polling for CEC capable devices?"
+msgid "Disable adapter if no CEC capable TV is present"
 msgstr ""
 
 #empty strings from id 36044 to 36100
