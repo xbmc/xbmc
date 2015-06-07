@@ -226,7 +226,7 @@
 						<align>left</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Disclaimer)]</label>
-						<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
+						<autoscroll time="2000" delay="3000" repeat="5000">!System.ScreenSaverActive</autoscroll>
 					</control>
 				</control>
 				<control type="group">

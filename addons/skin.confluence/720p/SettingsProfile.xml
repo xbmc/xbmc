@@ -278,7 +278,7 @@
 						<label>$LOCALIZE[31422]</label>
 						<align>justify</align>
 						<textcolor>white</textcolor>
-						<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+						<autoscroll time="3000" delay="4000" repeat="5000">!System.ScreenSaverActive</autoscroll>
 						<visible>Control.Hasfocus(4)</visible>
 					</control>
 					<control type="textbox">
@@ -291,7 +291,7 @@
 						<label>$LOCALIZE[31423]</label>
 						<align>justify</align>
 						<textcolor>white</textcolor>
-						<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+						<autoscroll time="3000" delay="4000" repeat="5000">!System.ScreenSaverActive</autoscroll>
 						<visible>Control.Hasfocus(5)</visible>
 					</control>
 				</control>

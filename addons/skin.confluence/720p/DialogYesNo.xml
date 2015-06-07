@@ -26,7 +26,7 @@
 			<align>left</align>
 			<label>-</label>
 			<font>font13</font>
-			<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+			<autoscroll time="3000" delay="4000" repeat="5000">!System.ScreenSaverActive</autoscroll>
 		</control>
 		<control type="button" id="11">
 			<description>Yes button</description>

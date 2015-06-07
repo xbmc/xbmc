@@ -725,7 +725,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 			</control>
 			<control type="grouplist">
@@ -1017,7 +1017,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 			</control>
 			<control type="group">
@@ -1081,7 +1081,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 			</control>
 			<control type="group">
@@ -1109,7 +1109,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[Container.ShowPlot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 					<visible>Container.Content(Seasons)</visible>
 				</control>
 				<control type="label">
@@ -1166,7 +1166,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 			</control>
 		</control>
@@ -1444,7 +1444,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 			</control>
 			<control type="group">
@@ -1550,7 +1550,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 			</control>
 		</control>
@@ -1711,7 +1711,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 				<control type="grouplist">
 					<description>Media Codec Flagging Images</description>
@@ -1775,7 +1775,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 				<control type="image">
 					<left>560</left>
@@ -1824,7 +1824,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[Container.ShowPlot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 				<control type="image">
 					<left>560</left>
@@ -1873,7 +1873,7 @@
 					<align>justify</align>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)+!System.ScreenSaverActive+!System.ScreenSaverActive</autoscroll>
 				</control>
 				<control type="grouplist">
 					<description>Media Codec Flagging Images</description>
