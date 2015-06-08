@@ -629,10 +629,12 @@ CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
       for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
       {
         CPVRTimerInfoTagPtr timer = *timerIt;
-        if (timer->m_iClientChannelUid == channel->UniqueID() &&
+
+        if (timer->GetEpgInfoTag() == epgTag || 
+            (timer->m_iClientChannelUid == channel->UniqueID() &&
             timer->m_bIsRadio == channel->IsRadio() &&
             timer->StartAsUTC() <= epgTag->StartAsUTC() &&
-            timer->EndAsUTC() >= epgTag->EndAsUTC())
+            timer->EndAsUTC() >= epgTag->EndAsUTC()))
         {
           CFileItemPtr fileItem(new CFileItem(timer));
           return fileItem;
