@@ -41,7 +41,7 @@ enum PowerState
 };
 
 // For systems without PowerSyscalls we have a NullObject
-class CNullPowerSyscall : public IPowerSyscall
+class CNullPowerSyscall : public CAbstractPowerSyscall
 {
 public:
   virtual bool Powerdown()    { return false; }
