@@ -48,6 +48,7 @@ namespace PERIPHERALS
 #include "PeripheralHID.h"
 #include "interfaces/AnnouncementManager.h"
 #include "threads/Thread.h"
+#include "threads/Timer.h"
 #include "threads/CriticalSection.h"
 #include <queue>
 
@@ -140,6 +141,7 @@ namespace PERIPHERALS
     void GetNextKey(void);
 
     void SetAudioSystemConnected(bool bSetTo);
+    bool GetAudioSystemConnected();
     void SetMenuLanguage(const char *strLanguage);
 
     // callbacks from libCEC
@@ -181,7 +183,7 @@ namespace PERIPHERALS
     std::string                        m_strComPort;
   };
 
-  class CPeripheralCecAdapterUpdateThread : public CThread
+  class CPeripheralCecAdapterUpdateThread : public CThread, ITimerCallback
   {
   public:
     CPeripheralCecAdapterUpdateThread(CPeripheralCecAdapter *adapter, CEC::libcec_configuration *configuration);
@@ -196,6 +198,7 @@ namespace PERIPHERALS
     bool WaitReady(void);
     bool SetInitialConfiguration(void);
     void Process(void);
+    void OnTimeout() { m_event.Set(); };
 
     CPeripheralCecAdapter *    m_adapter;
     CEvent                     m_event;
