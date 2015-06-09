@@ -294,7 +294,7 @@ bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannelPtr &channel)
   return false;
 }
 
-CPVRChannelPtr CDVDInputStreamPVRManager::GetSelectedChannel() const
+CPVRChannelPtr CDVDInputStreamPVRManager::GetSelectedChannel()
 {
   return g_PVRManager.GetCurrentChannel();
 }
