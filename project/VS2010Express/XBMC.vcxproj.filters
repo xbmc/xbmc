@@ -3099,6 +3099,9 @@
     <ClCompile Include="..\..\xbmc\contrib\kissfft\kiss_fftr.c">
       <Filter>contrib\kissfft</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimerType.cpp">
+      <Filter>pvr\timers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5991,6 +5994,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\contrib\kissfft\kiss_fftr.h">
       <Filter>contrib\kissfft</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimerType.h">
+      <Filter>pvr\timers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
