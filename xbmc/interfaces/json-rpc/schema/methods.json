@@ -1836,6 +1836,22 @@
       }
     }
   },
+  "PVR.AddTimer": {
+    "type": "method",
+    "description": "Adds a timer",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [
+      { "name": "broadcastid", "$ref": "Library.Id", "required": true },
+      { "name": "repeating", "type": "boolean" },
+      { "name": "properties", "$ref": "PVR.Fields.Broadcast" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "timerdetails": { "$ref": "PVR.Details.Timer" }
+      }
+    }
+  },
   "PVR.GetRecordings": {
     "type": "method",
     "description": "Retrieves the recordings",
