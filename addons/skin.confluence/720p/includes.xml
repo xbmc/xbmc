@@ -69,6 +69,10 @@
 		<value condition="Player.Forwarding">$LOCALIZE[31044]</value>
 		<value condition="Player.Rewinding">$LOCALIZE[31045]</value>
 	</variable>
+	<variable name="SelectLabel">
+		<value condition="Control.IsVisible(3)">([COLOR=blue]$INFO[Container(3).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages][/COLOR])</value>
+		<value condition="Control.IsVisible(6)">([COLOR=blue]$INFO[Container(6).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages][/COLOR])</value>
+	</variable>
 	<variable name="PlayerControlsRepeatImageVar">
 		<value condition="Playlist.IsRepeatOne + Control.HasFocus(604)">OSDRepeatOneFO.png</value>
 		<value condition="Playlist.IsRepeat + Control.HasFocus(604)">OSDRepeatAllFO.png</value>
