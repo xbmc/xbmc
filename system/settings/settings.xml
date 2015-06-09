@@ -1297,7 +1297,7 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="epg.resetepg" type="action" label="19187" help="36225">
+        <setting id="epg.resetepg" type="action" label="19185" help="36225">
           <level>1</level>
           <control type="button" format="action" />
         </setting>
