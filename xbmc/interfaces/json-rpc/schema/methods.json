@@ -1843,6 +1843,7 @@
     "permission": "ControlPVR",
     "params": [
       { "name": "broadcastid", "$ref": "Library.Id", "required": true },
+      { "name": "repeating", "type": "boolean" },
       { "name": "properties", "$ref": "PVR.Fields.Broadcast" }
     ],
     "returns": { "type": "object",

@@ -358,9 +358,11 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
     if (!epgTag)
         return InternalError;
     
+    bool repeating =(bool)parameterObject["repeating"].asBoolean(false);
+
     if (epgTag->Timer() == NULL)
     {
-        CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag);
+        CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag,repeating);
         if (newTimer)
         {
             CPVRTimers* timers = g_PVRTimers;
