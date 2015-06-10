@@ -893,6 +893,9 @@
 		DF56EF241A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */; };
 		DF56EF251A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */; };
 		DF56EF261A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */; };
+		DF5E699A1B28121E009A88C3 /* PVRTimerType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF5E69981B28121E009A88C3 /* PVRTimerType.cpp */; };
+		DF5E699B1B28121E009A88C3 /* PVRTimerType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF5E69981B28121E009A88C3 /* PVRTimerType.cpp */; };
+		DF5E699C1B28121E009A88C3 /* PVRTimerType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF5E69981B28121E009A88C3 /* PVRTimerType.cpp */; };
 		DF64FE3D16C07AAA00D028FB /* GUIViewControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3516C07AAA00D028FB /* GUIViewControl.cpp */; };
 		DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3716C07AAA00D028FB /* GUIViewState.cpp */; };
 		DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF64FE3A16C07AAA00D028FB /* ViewDatabase.cpp */; };
@@ -4490,6 +4493,8 @@
 		DF56EF1E1A798A3F00CAAEFB /* HTTPFileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPFileHandler.h; sourceTree = "<group>"; };
 		DF56EF221A798A5E00CAAEFB /* HttpRangeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpRangeUtils.cpp; sourceTree = "<group>"; };
 		DF56EF231A798A5E00CAAEFB /* HttpRangeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpRangeUtils.h; sourceTree = "<group>"; };
+		DF5E69981B28121E009A88C3 /* PVRTimerType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRTimerType.cpp; sourceTree = "<group>"; };
+		DF5E69991B28121E009A88C3 /* PVRTimerType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRTimerType.h; sourceTree = "<group>"; };
 		DF5EEEFB17CE977A003DEC49 /* AERingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AERingBuffer.h; sourceTree = "<group>"; };
 		DF64FE3516C07AAA00D028FB /* GUIViewControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewControl.cpp; sourceTree = "<group>"; };
 		DF64FE3616C07AAA00D028FB /* GUIViewControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewControl.h; sourceTree = "<group>"; };
@@ -7586,6 +7591,8 @@
 				C84828AA156CFCD8005A996F /* PVRTimerInfoTag.h */,
 				C84828AB156CFCD8005A996F /* PVRTimers.cpp */,
 				C84828AC156CFCD8005A996F /* PVRTimers.h */,
+				DF5E69981B28121E009A88C3 /* PVRTimerType.cpp */,
+				DF5E69991B28121E009A88C3 /* PVRTimerType.h */,
 			);
 			path = timers;
 			sourceTree = "<group>";
@@ -11021,6 +11028,7 @@
 				7C8AE84E189DE3CD00C33786 /* CoreAudioChannelLayout.cpp in Sources */,
 				7C8AE84F189DE3CD00C33786 /* CoreAudioDevice.cpp in Sources */,
 				7C8AE850189DE3CD00C33786 /* CoreAudioHardware.cpp in Sources */,
+				DF5E699A1B28121E009A88C3 /* PVRTimerType.cpp in Sources */,
 				7C8AE851189DE3CD00C33786 /* CoreAudioStream.cpp in Sources */,
 				7C8AE854189DE47F00C33786 /* CoreAudioHelpers.cpp in Sources */,
 				7CF0504B190A1D7200222135 /* FFmpeg.cpp in Sources */,
@@ -11795,6 +11803,7 @@
 				DFF0F39E17528350002DA3A4 /* MediaSourceSettings.cpp in Sources */,
 				DFF0F3A017528350002DA3A4 /* SettingAddon.cpp in Sources */,
 				DFF0F3A317528350002DA3A4 /* SettingControl.cpp in Sources */,
+				DF5E699C1B28121E009A88C3 /* PVRTimerType.cpp in Sources */,
 				DFF0F3A517528350002DA3A4 /* SettingPath.cpp in Sources */,
 				DFF0F3A617528350002DA3A4 /* Settings.cpp in Sources */,
 				DFF0F3AB17528350002DA3A4 /* SkinSettings.cpp in Sources */,
@@ -13103,6 +13112,7 @@
 				7CC7B6C1191869EA00DDB120 /* SettingCreator.cpp in Sources */,
 				7CC7B6C4191869EA00DDB120 /* SettingUtils.cpp in Sources */,
 				7CC7B6C919186A8800DDB120 /* SettingConditions.cpp in Sources */,
+				DF5E699B1B28121E009A88C3 /* PVRTimerType.cpp in Sources */,
 				7CCDA0DC192753E30074CF51 /* PltAction.cpp in Sources */,
 				7CCDA0E5192753E30074CF51 /* PltArgument.cpp in Sources */,
 				7CCDA0EE192753E30074CF51 /* PltConstants.cpp in Sources */,
