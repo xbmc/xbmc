@@ -1079,7 +1079,12 @@ void CWinSystemOSX::UpdateResolutions()
   GetScreenResolution(&w, &h, &fps, 0);
   UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, w, h, fps);
   NSString *dispName = screenNameForDisplay(GetDisplayID(0));
-  CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput = [dispName UTF8String];
+
+  if (dispName != nil)
+  {
+    CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP).strOutput = [dispName UTF8String];
+  }
+
   CDisplaySettings::Get().ClearCustomResolutions();
 
   // see resolution.h enum RESOLUTION for how the resolutions
@@ -1092,7 +1097,12 @@ void CWinSystemOSX::UpdateResolutions()
     GetScreenResolution(&w, &h, &fps, i);
     UpdateDesktopResolution(res, i, w, h, fps);
     dispName = screenNameForDisplay(GetDisplayID(i));
-    res.strOutput = [dispName UTF8String];
+
+    if (dispName != nil)
+    {
+      res.strOutput = [dispName UTF8String];
+    }
+
     CDisplaySettings::Get().AddResolutionInfo(res);
   }
 
@@ -1303,7 +1313,11 @@ void CWinSystemOSX::FillInVideoModes()
 
     CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(disp));
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
-    CLog::Log(LOGNOTICE, "Display %i has name %s", disp, [dispName UTF8String]);
+
+    if (dispName != nil)
+    {
+      CLog::Log(LOGNOTICE, "Display %i has name %s", disp, [dispName UTF8String]);
+    }
 
     if (NULL == displayModes)
       continue;
@@ -1346,7 +1360,12 @@ void CWinSystemOSX::FillInVideoModes()
         // this is what linux does - though it feels that there shouldn't be
         // the same resolution twice... - thats why i add a FIXME here.
         res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
-        res.strOutput = [dispName UTF8String];
+
+        if (dispName != nil)
+        {
+          res.strOutput = [dispName UTF8String];
+        }
+
         g_graphicsContext.ResetOverscan(res);
         CDisplaySettings::Get().AddResolutionInfo(res);
       }
