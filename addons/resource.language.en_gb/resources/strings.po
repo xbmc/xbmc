@@ -825,7 +825,7 @@ msgid "No information found!"
 msgstr ""
 
 msgctxt "#196"
-msgid "Select movie:"
+msgid "Select film:"
 msgstr ""
 
 msgctxt "#197"
@@ -833,7 +833,7 @@ msgid "Querying %s information"
 msgstr ""
 
 msgctxt "#198"
-msgid "Loading movie details"
+msgid "Loading film details"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
@@ -1479,7 +1479,7 @@ msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
 msgctxt "#342"
-msgid "Movies"
+msgid "Films"
 msgstr ""
 
 msgctxt "#343"
@@ -1897,7 +1897,7 @@ msgid "No cache"
 msgstr ""
 
 msgctxt "#432"
-msgid "Remove movie from library"
+msgid "Remove film from library"
 msgstr ""
 
 msgctxt "#433"
@@ -3844,7 +3844,7 @@ msgctxt "#1274"
 msgid "AirTunes"
 msgstr ""
 
-#. Filter movies/tvshows/music/episodes/artists/musicvideos/albums/songs
+#. Filter films/tvshows/music/episodes/artists/musicvideos/albums/songs
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#1275"
 msgid "Filter %s"
@@ -4668,7 +4668,7 @@ msgid "Album information"
 msgstr ""
 
 msgctxt "#10524"
-msgid "Movie information"
+msgid "Film information"
 msgstr ""
 
 #empty strings from id 10525 to 11999
@@ -5868,7 +5868,7 @@ msgstr ""
 
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13346"
-msgid "Movie information"
+msgid "Film information"
 msgstr ""
 
 msgctxt "#13347"
@@ -6934,7 +6934,7 @@ msgstr ""
 #. Playback mode option for Blu-ray
 #: system/settings/settings.xml
 msgctxt "#14103"
-msgid "Play main movie"
+msgid "Play main film"
 msgstr ""
 
 #. Playback mode option for Blu-ray
@@ -7186,7 +7186,7 @@ msgid "Enter new title"
 msgstr ""
 
 msgctxt "#16009"
-msgid "Enter the movie name"
+msgid "Enter the film name"
 msgstr ""
 
 msgctxt "#16010"
@@ -8986,7 +8986,7 @@ msgstr ""
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19500"
-msgid "Movie / Drama"
+msgid "Film / Drama"
 msgstr ""
 
 #: xbmc/epg/Epg.cpp
@@ -9021,12 +9021,12 @@ msgstr ""
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19507"
-msgid "Serious / Classical / Religious / Historical movie / drama"
+msgid "Serious / Classical / Religious / Historical film / drama"
 msgstr ""
 
 #: xbmc/epg/Epg.cpp
 msgctxt "#19508"
-msgid "Adult movie / drama"
+msgid "Adult film / drama"
 msgstr ""
 
 #empty strings from id 19509 to 19515
@@ -10476,7 +10476,7 @@ msgid "Sort by: ID"
 msgstr ""
 
 msgctxt "#20317"
-msgid "Scanning movies using %s"
+msgid "Scanning films using %s"
 msgstr ""
 
 msgctxt "#20318"
@@ -10499,7 +10499,7 @@ msgstr ""
 
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#20323"
-msgid "Movie plot"
+msgid "Film plot"
 msgstr ""
 
 msgctxt "#20324"
@@ -10523,7 +10523,7 @@ msgid "Browse for destination"
 msgstr ""
 
 msgctxt "#20329"
-msgid "Movies are in separate folders that match the movie title"
+msgid "Films are in separate folders that match the film title"
 msgstr ""
 
 msgctxt "#20330"
@@ -10563,7 +10563,7 @@ msgstr ""
 
 #: xbmc/media/MediaTypes.cpp
 msgctxt "#20338"
-msgid "Movie"
+msgid "Film"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
@@ -10587,7 +10587,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/media/MediaTypes.cpp
 msgctxt "#20342"
-msgid "Movies"
+msgid "Films"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
@@ -10736,7 +10736,7 @@ msgid "Season"
 msgstr ""
 
 msgctxt "#20374"
-msgid "Downloading movie information"
+msgid "Downloading film information"
 msgstr ""
 
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
@@ -10786,7 +10786,7 @@ msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
 msgctxt "#20386"
-msgid "Recently added movies"
+msgid "Recently added films"
 msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
@@ -11112,12 +11112,12 @@ msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20457"
-msgid "Movie set"
+msgid "Film set"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20458"
-msgid "Group movies in sets"
+msgid "Group films in sets"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
@@ -11151,11 +11151,11 @@ msgid "Select %s"
 msgstr ""
 
 msgctxt "#20465"
-msgid "Manage movie set"
+msgid "Manage film set"
 msgstr ""
 
 msgctxt "#20466"
-msgid "Select movie set"
+msgid "Select film set"
 msgstr ""
 
 msgctxt "#20467"
@@ -11163,7 +11163,7 @@ msgid "No set (remove from %s)"
 msgstr ""
 
 msgctxt "#20468"
-msgid "Add movie to a new set"
+msgid "Add film to a new set"
 msgstr ""
 
 msgctxt "#20469"
@@ -11227,7 +11227,7 @@ msgid "Custom subtitle folder"
 msgstr ""
 
 msgctxt "#21367"
-msgid "Movie & alternate subtitle directory"
+msgid "Film & alternate subtitle directory"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -11429,7 +11429,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21413"
-msgid "Default provider for movie information"
+msgid "Default provider for film information"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -12372,7 +12372,7 @@ msgstr ""
 
 #: xbmc/addons/Addon.cpp
 msgctxt "#24007"
-msgid "Movie information"
+msgid "Film information"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
@@ -12864,7 +12864,7 @@ msgctxt "#24105"
 msgid "Pause when searching for subtitles"
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Save subtitles to movie folder" with label #24115
+#. Description of setting "Videos -> Subtitles -> Save subtitles to film folder" with label #24115
 #: system/settings/settings.xml
 msgctxt "#24106"
 msgid "Specify where downloaded subtitles should be saved, the same location as the video or a custom location."
@@ -12929,13 +12929,13 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#24118"
-msgid "Default movie service"
+msgid "Default film service"
 msgstr ""
 
-#. Description of setting "Videos -> Subtitles -> Default Movie Service" with label #24118
+#. Description of setting "Videos -> Subtitles -> Default Film Service" with label #24118
 #: system/settings/settings.xml
 msgctxt "#24119"
-msgid "Select the service that will be used as default to search for movie subtitles."
+msgid "Select the service that will be used as default to search for film subtitles."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
@@ -14343,10 +14343,10 @@ msgctxt "#36144"
 msgid "Select in which cases you want to hide the season nodes of TV shows. If hidden, selecting a TV show will directly jump into the episodes view."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Group movies in sets" with label #20458
+#. Description of setting "Videos -> Library -> Group films in sets" with label #20458
 #: system/settings/settings.xml
 msgctxt "#36145"
-msgid "Group movies into \"Movie sets\" when browsing the movie library."
+msgid "Group films into \"Film sets\" when browsing the film library."
 msgstr ""
 
 #. Description of setting "Videos -> Library -> Update library on startup" with label #22000
@@ -14557,7 +14557,7 @@ msgstr ""
 #. Description of setting "Videos -> File lists -> Combine split video items" with label #20435
 #: system/settings/settings.xml
 msgctxt "#36182"
-msgid "Combines multi-part video files, DVD folders or movie folders, down to a single item in non-library views."
+msgid "Combines multi-part video files, DVD folders or film folders, down to a single item in non-library views."
 msgstr ""
 
 #. Description of setting "Videos -> File lists -> Flatten hierarchy" with label #20456
@@ -14651,7 +14651,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36198"
-msgid "Select the default movie information source. See the add-ons manager for options."
+msgid "Select the default film information source. See the add-ons manager for options."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -16097,7 +16097,7 @@ msgstr ""
 #. label for a preferred stereoscopic 3D playback mode
 #: settings/DisplaySettings.cpp
 msgctxt "#36525"
-msgid "Same as movie (autodetect)"
+msgid "Same as film (autodetect)"
 msgstr ""
 
 #. label of a setting to turn of stereoscopic 3D mode if video playback ended
@@ -16129,13 +16129,13 @@ msgstr ""
 #. option label of a setting/dialog asking for the desired stereoscopic playback mode
 #: settings/DisplaySettings.cpp
 msgctxt "#36532"
-msgid "Same as movie"
+msgid "Same as film"
 msgstr ""
 
 #. Description of setting "System -> Audio output -> Normalize levels on downmix" with label #346
 #: settings/DisplaySettings.cpp
 msgctxt "#36533"
-msgid "Select how audio is downmixed, e.g. from 5.1 to 2.0.[CR][Enabled] Maintains volume level of the original audio source however the dynamic range is compressed.[CR][Disabled] Maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note: Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgid "Select how audio is downmixed, e.g. from 5.1 to 2.0.[CR][Enabled] Maintains volume level of the original audio source however the dynamic range is compressed.[CR][Disabled] Maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note: Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if film dialogues are barely audible."
 msgstr ""
 
 #. Description of setting "System -> Debugging -> Component-specific logging..." with label #668
@@ -16262,12 +16262,12 @@ msgstr ""
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"
-msgid "movie"
+msgid "film"
 msgstr ""
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36901"
-msgid "movies"
+msgid "films"
 msgstr ""
 
 #: xbmc/media/MediaType.cpp
