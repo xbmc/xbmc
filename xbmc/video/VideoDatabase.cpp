@@ -1388,13 +1388,13 @@ int CVideoDatabase::AddToTable(const std::string& table, const std::string& firs
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    std::string strSQL = PrepareSQL("select %s from %s where %s like '%s'", firstField.c_str(), table.c_str(), secondField.c_str(), value.c_str());
+    std::string strSQL = PrepareSQL("select %s from %s where %s like '%s'", firstField.c_str(), table.c_str(), secondField.c_str(), value.substr(0, 255).c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL = PrepareSQL("insert into %s (%s, %s) values(NULL, '%s')", table.c_str(), firstField.c_str(), secondField.c_str(), value.c_str());      
+      strSQL = PrepareSQL("insert into %s (%s, %s) values(NULL, '%s')", table.c_str(), firstField.c_str(), secondField.c_str(), value.substr(0, 255).c_str());
       m_pDS->exec(strSQL.c_str());
       int id = (int)m_pDS->lastinsertid();
       return id;
@@ -1442,13 +1442,13 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     std::string trimmedName = name.c_str();
     StringUtils::Trim(trimmedName);
 
-    std::string strSQL=PrepareSQL("select actor_id from actor where name = '%s'", trimmedName.c_str());
+    std::string strSQL=PrepareSQL("select actor_id from actor where name like '%s'", trimmedName.substr(0, 255).c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values(NULL, '%s', '%s')", trimmedName.c_str(), thumbURLs.c_str());
+      strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values(NULL, '%s', '%s')", trimmedName.substr(0,255).c_str(), thumbURLs.c_str());
       m_pDS->exec(strSQL.c_str());
       idActor = (int)m_pDS->lastinsertid();
     }
@@ -1459,7 +1459,7 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
       // update the thumb url's
       if (!thumbURLs.empty())
       {
-        strSQL=PrepareSQL("update actor set art_urls='%s' where actor_id=%i",thumbURLs.c_str(),idActor);
+        strSQL=PrepareSQL("update actor set art_urls = '%s' where actor_id = %i", thumbURLs.c_str(), idActor);
         m_pDS->exec(strSQL.c_str());
       }
     }
@@ -4552,74 +4552,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
   if (iVersion < 91)
   {
-    // handle corrupted databases with multiple actors with the same name
-    std::map<std::string, std::vector<int> > duplicateActors;
-    m_pDS->query("SELECT TRIM(strActor) as strActor FROM actors GROUP BY TRIM(strActor) HAVING COUNT(1) > 1");
-    while (!m_pDS->eof())
-    {
-      std::string strActor = m_pDS->fv(0).get_asString();
-      std::vector<int> ids;
-
-      m_pDS2->query(PrepareSQL("SELECT idActor FROM actors WHERE TRIM(strActor) = '%s' ORDER BY strThumb DESC", strActor.c_str()));
-      while (!m_pDS2->eof())
-      {
-        ids.push_back(m_pDS2->fv(0).get_asInt());
-        m_pDS2->next();
-      }
-      m_pDS2->close();
-
-      duplicateActors.insert(std::make_pair(strActor, ids));
-
-      m_pDS->next();
-    }
-    m_pDS->close();
-
-    // now go through all duplicate actors and adjust all link tables to use the first actor entry
-    for (std::map<std::string, std::vector<int> >::const_iterator actor = duplicateActors.begin(); actor != duplicateActors.end(); ++actor)
-    {
-      // we are only interested in duplicate actors
-      if (actor->second.size() < 2)
-        continue;
-
-      int newActorId = *actor->second.begin();
-
-      // cleanup all duplicate actor references in the link tables
-      CleanupActorLinkTablePre91("actorlinkmovie", "idActor", "idMovie", newActorId, actor->first);
-      CleanupActorLinkTablePre91("actorlinktvshow", "idActor", "idShow", newActorId, actor->first);
-      CleanupActorLinkTablePre91("actorlinkepisode", "idActor", "idEpisode", newActorId, actor->first);
-      CleanupActorLinkTablePre91("directorlinkmovie", "idDirector", "idMovie", newActorId, actor->first);
-      CleanupActorLinkTablePre91("directorlinktvshow", "idDirector", "idShow", newActorId, actor->first);
-      CleanupActorLinkTablePre91("directorlinkepisode", "idDirector", "idEpisode", newActorId, actor->first);
-      CleanupActorLinkTablePre91("directorlinkmusicvideo", "idDirector", "idMVideo", newActorId, actor->first);
-      CleanupActorLinkTablePre91("writerlinkmovie", "idWriter", "idMovie", newActorId, actor->first);
-      CleanupActorLinkTablePre91("writerlinkepisode", "idWriter", "idEpisode", newActorId, actor->first);
-      CleanupActorLinkTablePre91("artistlinkmusicvideo", "idArtist", "idMVideo", newActorId, actor->first);
-
-      for (std::vector<int>::const_iterator actorId = actor->second.begin() + 1; actorId != actor->second.end(); ++actorId)
-      {
-        // update all the link tables refering to the actors table
-        m_pDS->exec(PrepareSQL("UPDATE actorlinkmovie SET idActor = %d WHERE idActor = %d", newActorId, *actorId));
-        m_pDS->exec(PrepareSQL("UPDATE actorlinktvshow SET idActor = %d WHERE idActor = %d", newActorId, *actorId));
-        m_pDS->exec(PrepareSQL("UPDATE actorlinkepisode SET idActor = %d WHERE idActor = %d", newActorId, *actorId));
-        m_pDS->exec(PrepareSQL("UPDATE directorlinkmovie SET idDirector = %d WHERE idDirector = %d", newActorId, *actorId));
-        m_pDS->exec(PrepareSQL("UPDATE directorlinktvshow SET idDirector = %d WHERE idDirector = %d", newActorId, *actorId));
-        m_pDS->exec(PrepareSQL("UPDATE directorlinkepisode SET idDirector = %d WHERE idDirector = %d", newActorId, *actorId));
-        m_pDS->exec(PrepareSQL("UPDATE directorlinkmusicvideo SET idDirector = %d WHERE idDirector = %d", newActorId, *actorId));
-        m_pDS->exec(PrepareSQL("UPDATE writerlinkmovie SET idWriter = %d WHERE idWriter = %d", newActorId, *actorId));
-        m_pDS->exec(PrepareSQL("UPDATE writerlinkepisode SET idWriter = %d WHERE idWriter = %d", newActorId, *actorId));
-        m_pDS->exec(PrepareSQL("UPDATE artistlinkmusicvideo SET idArtist = %d WHERE idArtist = %d", newActorId, *actorId));
-
-        // remove the duplicate entry from the actors table
-        m_pDS->exec(PrepareSQL("DELETE FROM actors WHERE idActor = %d", *actorId));
-      }
-    }
-    m_pDS->exec("UPDATE actors set strActor = TRIM(strActor)");
-
     // create actor link table
     m_pDS->exec("CREATE TABLE actor_link(actor_id INT, media_id INT, media_type TEXT, role TEXT, cast_order INT)");
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT idActor,idMovie,'movie',strRole,iOrder from actorlinkmovie");
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT idActor,idShow,'tvshow',strRole,iOrder from actorlinktvshow");
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT idActor,idEpisode,'episode',strRole,iOrder from actorlinkepisode");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT DISTINCT idActor, idMovie, 'movie', strRole, iOrder from actorlinkmovie");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT DISTINCT idActor, idShow, 'tvshow', strRole, iOrder from actorlinktvshow");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT DISTINCT idActor, idEpisode, 'episode', strRole, iOrder from actorlinkepisode");
     m_pDS->exec("DROP TABLE IF EXISTS actorlinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS actorlinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS actorlinkepisode");
@@ -4629,10 +4566,10 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // directors
     m_pDS->exec("CREATE TABLE director_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idMovie,'movie' FROM directorlinkmovie");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idShow,'tvshow' FROM directorlinktvshow");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idEpisode,'episode' FROM directorlinkepisode");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT idDirector,idMVideo,'musicvideo' FROM directorlinkmusicvideo");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idMovie, 'movie' FROM directorlinkmovie");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idShow, 'tvshow' FROM directorlinktvshow");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idEpisode, 'episode' FROM directorlinkepisode");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idMVideo, 'musicvideo' FROM directorlinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS directorlinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS directorlinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS directorlinkepisode");
@@ -4640,20 +4577,20 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // writers
     m_pDS->exec("CREATE TABLE writer_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT idWriter,idMovie,'movie' FROM writerlinkmovie");
-    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT idWriter,idEpisode,'episode' FROM writerlinkepisode");
+    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT DISTINCT idWriter, idMovie, 'movie' FROM writerlinkmovie");
+    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT DISTINCT idWriter, idEpisode, 'episode' FROM writerlinkepisode");
     m_pDS->exec("DROP TABLE IF EXISTS writerlinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS writerlinkepisode");
 
     // music artist
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type) SELECT idArtist,idMVideo,'musicvideo' FROM artistlinkmusicvideo");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type) SELECT DISTINCT idArtist, idMVideo, 'musicvideo' FROM artistlinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS artistlinkmusicvideo");
 
     // studios
     m_pDS->exec("CREATE TABLE studio_link(studio_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT idStudio,idMovie,'movie' FROM studiolinkmovie");
-    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT idStudio,idShow,'tvshow' FROM studiolinktvshow");
-    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT idStudio,idMVideo,'musicvideo' FROM studiolinkmusicvideo");
+    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT idStudio, idMovie, 'movie' FROM studiolinkmovie");
+    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT idStudio, idShow, 'tvshow' FROM studiolinktvshow");
+    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT idStudio, idMVideo, 'musicvideo' FROM studiolinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS studiolinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS studiolinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS studiolinkmusicvideo");
@@ -4664,9 +4601,9 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // genres
     m_pDS->exec("CREATE TABLE genre_link(genre_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT idGenre,idMovie,'movie' FROM genrelinkmovie");
-    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT idGenre,idShow,'tvshow' FROM genrelinktvshow");
-    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT idGenre,idMVideo,'musicvideo' FROM genrelinkmusicvideo");
+    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, idMovie, 'movie' FROM genrelinkmovie");
+    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, idShow, 'tvshow' FROM genrelinktvshow");
+    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, idMVideo, 'musicvideo' FROM genrelinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS genrelinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS genrelinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS genrelinkmusicvideo");
@@ -4677,7 +4614,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // country
     m_pDS->exec("CREATE TABLE country_link(country_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO country_link(country_id, media_id, media_type) SELECT idCountry,idMovie,'movie' FROM countrylinkmovie");
+    m_pDS->exec("INSERT INTO country_link(country_id, media_id, media_type) SELECT DISTINCT idCountry, idMovie, 'movie' FROM countrylinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS countrylinkmovie");
     m_pDS->exec("CREATE TABLE countrynew(country_id INTEGER PRIMARY KEY, name TEXT)");
     m_pDS->exec("INSERT INTO countrynew(country_id, name) SELECT idCountry,strCountry FROM country");
@@ -4686,49 +4623,136 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // tags
     m_pDS->exec("CREATE TABLE tag_link(tag_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO tag_link(tag_id, media_id, media_type) SELECT idTag,idMedia,media_type FROM taglinks");
+    m_pDS->exec("INSERT INTO tag_link(tag_id, media_id, media_type) SELECT DISTINCT idTag, idMedia, media_type FROM taglinks");
     m_pDS->exec("DROP TABLE IF EXISTS taglinks");
     m_pDS->exec("CREATE TABLE tagnew(tag_id INTEGER PRIMARY KEY, name TEXT)");
     m_pDS->exec("INSERT INTO tagnew(tag_id, name) SELECT idTag,strTag FROM tag");
     m_pDS->exec("DROP TABLE IF EXISTS tag");
     m_pDS->exec("ALTER TABLE tagnew RENAME TO tag");
   }
+
+  if (iVersion < 93)
+  {
+    // cleanup main tables
+    std::string valuesSql;
+    for(int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
+    {
+      valuesSql += StringUtils::Format("c%02d = TRIM(c%02d)", i, i);
+      if (i < VIDEODB_MAX_COLUMNS - 1)
+        valuesSql += ",";
+    }
+    m_pDS->exec("UPDATE episode SET " + valuesSql);
+    m_pDS->exec("UPDATE movie SET " + valuesSql);
+    m_pDS->exec("UPDATE musicvideo SET " + valuesSql);
+    m_pDS->exec("UPDATE tvshow SET " + valuesSql);
+
+    // cleanup additional tables
+    std::map<std::string, std::vector<std::string>> additionalTablesMap = {
+      {"actor", {"actor_link", "director_link", "writer_link"}},
+      {"studio", {"studio_link"}},
+      {"genre", {"genre_link"}},
+      {"country", {"country_link"}},
+      {"tag", {"tag_link"}}
+    };
+    for (const auto& addtionalTableEntry : additionalTablesMap)
+    {
+      std::string table = addtionalTableEntry.first;
+      std::string tablePk = addtionalTableEntry.first + "_id";
+      std::map<int, std::string> duplicatesMinMap;
+      std::map<int, std::string> duplicatesMap;
+
+      // cleanup name
+      m_pDS->exec(PrepareSQL("UPDATE %s SET name = TRIM(name)",
+                             table.c_str()));
+
+      // shrink name to length 255
+      m_pDS->exec(PrepareSQL("UPDATE %s SET name = SUBSTR(name, 1, 255) WHERE LENGTH(name) > 255",
+                             table.c_str()));
+
+      // fetch main entries
+      m_pDS->query(PrepareSQL("SELECT MIN(%s), name FROM %s GROUP BY name HAVING COUNT(1) > 1",
+                              tablePk.c_str(), table.c_str()));
+
+      while (!m_pDS->eof())
+      {
+        duplicatesMinMap.insert(std::make_pair(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString()));
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      // fetch duplicate entries
+      for (const auto& entry : duplicatesMinMap)
+      {
+        m_pDS->query(PrepareSQL("SELECT %s FROM %s WHERE name = '%s' AND %s <> %i",
+                                tablePk.c_str(), table.c_str(),
+                                entry.second.c_str(), tablePk.c_str(), entry.first));
+
+        std::stringstream ids;
+        while (!m_pDS->eof())
+        {
+          int id = m_pDS->fv(0).get_asInt();
+          m_pDS->next();
+
+          ids << id;
+          if (!m_pDS->eof())
+            ids << ",";
+        }
+        m_pDS->close();
+
+        duplicatesMap.insert(std::make_pair(entry.first, ids.str()));
+      }
+
+      // cleanup duplicates in link tables
+      for (const auto& subTable : addtionalTableEntry.second)
+      {
+        // create indexes to speed up things
+        m_pDS->exec(PrepareSQL("CREATE INDEX ix_%s ON %s (%s)",
+                               subTable.c_str(), subTable.c_str(), tablePk.c_str()));
+
+        // migrate every duplicate entry to the main entry
+        for (const auto& entry : duplicatesMap)
+        {
+          m_pDS->exec(PrepareSQL("UPDATE %s SET %s = %i WHERE %s IN (%s) ",
+                                 subTable.c_str(), tablePk.c_str(), entry.first,
+                                 tablePk.c_str(), entry.second.c_str()));
+        }
+
+        // clear all duplicates in the link tables
+        if (subTable == "actor_link")
+        {
+          // as a distinct won't work because of role and cast_order and a group by kills a
+          // low powered mysql, we de-dupe it with REPLACE INTO while using the real unique index
+          m_pDS->exec("CREATE TABLE temp_actor_link(actor_id INT, media_id INT, media_type TEXT, role TEXT, cast_order INT)");
+          m_pDS->exec("CREATE UNIQUE INDEX ix_temp_actor_link ON temp_actor_link (actor_id, media_type(20), media_id)");
+          m_pDS->exec("REPLACE INTO temp_actor_link SELECT * FROM actor_link");
+          m_pDS->exec("DROP INDEX ix_temp_actor_link ON temp_actor_link");
+        }
+        else
+        {
+          m_pDS->exec(PrepareSQL("CREATE TABLE temp_%s AS SELECT DISTINCT * FROM %s",
+                                 subTable.c_str(), subTable.c_str()));
+        }
+
+        m_pDS->exec(PrepareSQL("DROP TABLE IF EXISTS %s",
+                               subTable.c_str()));
+
+        m_pDS->exec(PrepareSQL("ALTER TABLE temp_%s RENAME TO %s",
+                               subTable.c_str(), subTable.c_str()));
+      }
+
+      // delete duplicates in main table
+      for (const auto& entry : duplicatesMap)
+      {
+        m_pDS->exec(PrepareSQL("DELETE FROM %s WHERE %s IN (%s)",
+                               table.c_str(), tablePk.c_str(), entry.second.c_str()));
+      }
+    }
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 92;
-}
-
-void CVideoDatabase::CleanupActorLinkTablePre91(const std::string &linkTable, const std::string &linkTableIdActor, const std::string &linkTableIdMedia, int idActor, const std::string &strActor)
-{
-  if (linkTable.empty() || linkTableIdActor.empty() || linkTableIdMedia.empty() ||
-    idActor <= 0 || strActor.empty())
-    return;
-
-  // get all duplicate actors linked to the same media item
-  m_pDS->query(PrepareSQL("SELECT actors.idActor, l1.%s FROM actors "
-    "JOIN %s AS l1 ON "
-    "  l1.%s = actors.idActor "
-    "JOIN %s AS l2 ON "
-    "  l2.%s = l1.%s "
-    "WHERE TRIM(actors.strActor) = '%s' AND l1.%s != %d AND l2.%s = %d",
-    linkTableIdMedia.c_str(),
-    linkTable.c_str(), linkTableIdActor.c_str(),
-    linkTable.c_str(), linkTableIdMedia.c_str(), linkTableIdMedia.c_str(),
-    strActor.c_str(), linkTableIdActor.c_str(), idActor, linkTableIdActor.c_str(), idActor));
-
-  // and delete the duplicates
-  while (!m_pDS->eof())
-  {
-    int idActor = m_pDS->fv(0).get_asInt();
-    int idLink = m_pDS->fv(1).get_asInt();
-    m_pDS2->exec(PrepareSQL("DELETE FROM %s WHERE %s = %d AND %s = %d",
-      linkTable.c_str(), linkTableIdMedia.c_str(), idLink, linkTableIdActor.c_str(), idActor));
-
-    m_pDS->next();
-  }
-  m_pDS->close();
+  return 93;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

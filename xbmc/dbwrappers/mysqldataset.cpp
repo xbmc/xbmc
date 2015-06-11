@@ -1456,7 +1456,15 @@ int MysqlDataset::exec(const string &sql) {
   if ( ci_find(qry, "CREATE TABLE") != string::npos 
     || ci_find(qry, "CREATE TEMPORARY TABLE") != string::npos )
   {
-    qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
+    // If CREATE TABLE ... SELECT Syntax is used we need to add the encoding after the table before the select
+    // e.g. CREATE TABLE x CHARACTER SET utf8 COLLATE utf8_general_ci [AS] SELECT * FROM y
+    if ((loc = qry.find(" AS SELECT ")) != string::npos ||
+        (loc = qry.find(" SELECT ")) != string::npos)
+    {
+      qry = qry.insert(loc, " CHARACTER SET utf8 COLLATE utf8_general_ci");
+    }
+    else
+      qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
 
   CLog::Log(LOGDEBUG,"Mysql execute: %s", qry.c_str());
