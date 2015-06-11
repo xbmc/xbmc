@@ -288,8 +288,8 @@ std::string CPVRTimerInfoTag::GetStatus() const
     strReturn = g_localizeStrings.Get(19162);
   else if (m_state == PVR_TIMER_STATE_CONFLICT_OK)
     strReturn = g_localizeStrings.Get(19275);
-  else if (m_state == PVR_TIMER_STATE_CONFLICT_NOK)	
-    strReturn = g_localizeStrings.Get(19276);	
+  else if (m_state == PVR_TIMER_STATE_CONFLICT_NOK)
+    strReturn = g_localizeStrings.Get(19276);
   else if (m_state == PVR_TIMER_STATE_ERROR)
     strReturn = g_localizeStrings.Get(257);
 
@@ -572,8 +572,8 @@ void CPVRTimerInfoTag::GetNotificationText(std::string &strText) const
   case PVR_TIMER_STATE_COMPLETED:
     strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19227).c_str(), m_strTitle.c_str());
     break;
-  case PVR_TIMER_STATE_CONFLICT_OK:	
-  case PVR_TIMER_STATE_CONFLICT_NOK:	
+  case PVR_TIMER_STATE_CONFLICT_OK:
+  case PVR_TIMER_STATE_CONFLICT_NOK:
     strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19277).c_str(), m_strTitle.c_str());
     break;
   case PVR_TIMER_STATE_ERROR:

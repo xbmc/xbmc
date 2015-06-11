@@ -234,7 +234,7 @@ bool CPVRRecordings::DeleteDirectory(const CFileItem& directory)
 
   VECFILEITEMS itemList = items.GetList();
   CFileItem item;
-  
+
   for (VECFILEITEMS::const_iterator it = itemList.begin(); it != itemList.end(); ++it)
     allDeleted &= Delete(*(it->get()));
 

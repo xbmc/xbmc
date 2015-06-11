@@ -75,7 +75,7 @@ namespace PVR
     int GetNumRecordings();
     bool HasDeletedRecordings();
     int GetRecordings(CFileItemList* results, bool bDeleted = false);
-    
+
     /**
      * Deletes the item in question, be it a directory or a file
      * @param item the item to delete

@@ -82,7 +82,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
 
   // Add parent buttons before the Manage button
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-    
+
   buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
 
   CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
@@ -325,7 +325,7 @@ bool CGUIWindowPVRChannels::OnContextButtonManage(CFileItem *item, CONTEXT_BUTTO
 bool CGUIWindowPVRChannels::OnContextButtonRecord(CFileItem *item, CONTEXT_BUTTON button)
 {
   bool bReturn(false);
-  
+
   if (button == CONTEXT_BUTTON_RECORD_ITEM)
   {
     CPVRChannelPtr channel(item->GetPVRChannelInfoTag());

@@ -517,7 +517,7 @@ void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CD
   {
     m_guiProgressIndicatorTexture.SetVisible(false);
   }
-  
+
   m_guiProgressIndicatorTexture.Process(currentTime);
 }
 
@@ -887,7 +887,7 @@ void CGUIEPGGridContainer::UpdateItems()
           m_gridIndex[row][block].item = item;
           break;
         }
-        
+
         progIdx++;
       }
 
@@ -1289,7 +1289,7 @@ CPVRChannelPtr CGUIEPGGridContainer::GetChannel(int iIndex)
     if (fileItem->HasPVRChannelInfoTag())
       return fileItem->GetPVRChannelInfoTag();
   }
-  
+
   return CPVRChannelPtr();
 }
 
@@ -1297,7 +1297,7 @@ void CGUIEPGGridContainer::SetSelectedChannel(int channelIndex)
 {
   if (channelIndex < 0)
     return;
-  
+
   if (channelIndex - m_channelOffset <= 0)
   {
     ScrollToChannelOffset(0);
@@ -1680,7 +1680,7 @@ void CGUIEPGGridContainer::GoToEnd()
   {
     if (!blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blockIndex].item != NULL)
       blocksEnd = blockIndex;
-    if (blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blocksEnd].item != 
+    if (blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blocksEnd].item !=
                      m_gridIndex[m_channelCursor + m_channelOffset][blockIndex].item)
       blocksStart = blockIndex + 1;
   }

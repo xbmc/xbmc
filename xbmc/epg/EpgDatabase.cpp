@@ -104,7 +104,7 @@ void CEpgDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 9)
     m_pDS->exec("ALTER TABLE epgtags ADD sIconPath varchar(255);");
-  
+
   if (iVersion < 10)
   {
     m_pDS->exec("ALTER TABLE epgtags ADD sOriginalTitle varchar(128);");
@@ -347,7 +347,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
 
   int iBroadcastId = tag.BroadcastId();
   std::string strQuery;
-  
+
   /* Only store the genre string when needed */
   std::string strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING) ? StringUtils::Join(tag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
 
