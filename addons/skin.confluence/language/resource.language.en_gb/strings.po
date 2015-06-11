@@ -373,7 +373,7 @@ msgid "Hide fanart"
 msgstr ""
 
 msgctxt "#31308"
-msgid "Movie details"
+msgid "Film details"
 msgstr ""
 
 msgctxt "#31309"
@@ -447,7 +447,7 @@ msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
 msgstr ""
 
 msgctxt "#31330"
-msgid "Click button to play[CR][CR]movie trailer"
+msgid "Click button to play[CR][CR]film trailer"
 msgstr ""
 
 msgctxt "#31331"
@@ -474,7 +474,7 @@ msgid "Rewind"
 msgstr ""
 
 msgctxt "#31355"
-msgid "Movie menu"
+msgid "Film menu"
 msgstr ""
 
 msgctxt "#31356"
@@ -679,7 +679,7 @@ msgid "VIDEOS"
 msgstr ""
 
 msgctxt "#31954"
-msgid "MOVIES"
+msgid "FILMS"
 msgstr ""
 
 msgctxt "#31955"
