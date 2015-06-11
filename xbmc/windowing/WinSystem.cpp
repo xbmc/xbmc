@@ -28,8 +28,6 @@
 #include "guilib/GUIFontTTFGL.h"
 #endif
 
-using namespace std;
-
 CWinSystemBase::CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_WIN32; // this is the 0 value enum
@@ -132,7 +130,7 @@ int CWinSystemBase::DesktopResolution(int screen)
   return RES_DESKTOP;
 }
 
-static void AddResolution(vector<RESOLUTION_WHR> &resolutions, unsigned int addindex, float bestRefreshrate)
+static void AddResolution(std::vector<RESOLUTION_WHR> &resolutions, unsigned int addindex, float bestRefreshrate)
 {
   RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetResolutionInfo(addindex);
   int width  = resInfo.iScreenWidth;
@@ -169,9 +167,9 @@ static bool resSortPredicate(RESOLUTION_WHR i, RESOLUTION_WHR j)
           || (i.width == j.width && i.height == j.height && i.flags < j.flags) );
 }
 
-vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen, float refreshrate)
+std::vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen, float refreshrate)
 {
-  vector<RESOLUTION_WHR> resolutions;
+  std::vector<RESOLUTION_WHR> resolutions;
 
   for (unsigned int idx = RES_DESKTOP; idx < CDisplaySettings::Get().ResolutionInfoSize(); idx++)
   {
@@ -187,7 +185,7 @@ vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen, float refre
   return resolutions;
 }
 
-static void AddRefreshRate(vector<REFRESHRATE> &refreshrates, unsigned int addindex)
+static void AddRefreshRate(std::vector<REFRESHRATE> &refreshrates, unsigned int addindex)
 {
   float RefreshRate = CDisplaySettings::Get().GetResolutionInfo(addindex).fRefreshRate;
 
@@ -204,9 +202,9 @@ static bool rrSortPredicate(REFRESHRATE i, REFRESHRATE j)
   return (i.RefreshRate < j.RefreshRate);
 }
 
-vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int height, uint32_t dwFlags)
+std::vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int height, uint32_t dwFlags)
 {
-  vector<REFRESHRATE> refreshrates;
+  std::vector<REFRESHRATE> refreshrates;
 
   for (unsigned int idx = RES_DESKTOP; idx < CDisplaySettings::Get().ResolutionInfoSize(); idx++)
     if (   CDisplaySettings::Get().GetResolutionInfo(idx).iScreen == screen
@@ -221,7 +219,7 @@ vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int heig
   return refreshrates;
 }
 
-REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, vector<REFRESHRATE> rates)
+REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, std::vector<REFRESHRATE> rates)
 {
   REFRESHRATE bestmatch = rates[0];
   float bestfitness = -1.0f;

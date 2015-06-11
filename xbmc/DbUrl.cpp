@@ -23,8 +23,6 @@
 #include "DbUrl.h"
 #include "utils/URIUtils.h"
 
-using namespace std;
-
 CDbUrl::CDbUrl()
 {
   Reset();
@@ -147,7 +145,7 @@ bool CDbUrl::validateOption(const std::string &key, const CVariant &value)
 void CDbUrl::updateOptions()
 {
   // Update the options string in the CURL object
-  string options = GetOptionsString();
+  std::string options = GetOptionsString();
   if (!options.empty())
     options = "?" + options;
 

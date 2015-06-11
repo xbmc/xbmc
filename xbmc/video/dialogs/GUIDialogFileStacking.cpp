@@ -23,8 +23,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"
-
-using namespace std;
+#include <string>
 
 #define STACK_LIST 450
 

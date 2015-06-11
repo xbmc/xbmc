@@ -22,8 +22,6 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "video/VideoDatabase.h"
 
-using namespace std;
-
 CVideoLibraryCleaningJob::CVideoLibraryCleaningJob(const std::set<int>& paths /* = std::set<int>() */, bool showDialog /* = false */)
   : CVideoLibraryProgressJob(NULL),
     m_paths(paths),

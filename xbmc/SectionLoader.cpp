@@ -26,8 +26,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
-
 #define g_sectionLoader XBMC_GLOBAL_USE(CSectionLoader)
 
 //  delay for unloading dll's
@@ -130,7 +128,7 @@ void CSectionLoader::UnloadAll()
 {
   // delete the dll's
   CSingleLock lock(g_sectionLoader.m_critSection);
-  vector<CDll>::iterator it = g_sectionLoader.m_vecLoadedDLLs.begin();
+  std::vector<CDll>::iterator it = g_sectionLoader.m_vecLoadedDLLs.begin();
   while (it != g_sectionLoader.m_vecLoadedDLLs.end())
   {
     CDll& dll = *it;

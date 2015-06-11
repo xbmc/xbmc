@@ -27,8 +27,6 @@
 #include "utils/log.h"
 #include "filesystem/File.h"
 
-using namespace std;
-
 CPasswordManager &CPasswordManager::GetInstance()
 {
   static CPasswordManager sPasswordManager;
@@ -47,7 +45,7 @@ bool CPasswordManager::AuthenticateURL(CURL &url)
   if (!m_loaded)
     Load();
   std::string lookup(GetLookupPath(url));
-  map<std::string, std::string>::const_iterator it = m_temporaryCache.find(lookup);
+  std::map<std::string, std::string>::const_iterator it = m_temporaryCache.find(lookup);
   if (it == m_temporaryCache.end())
   { // second step, try something that doesn't quite match
     it = m_temporaryCache.find(GetServerLookup(lookup));
@@ -157,7 +155,7 @@ void CPasswordManager::Save() const
   if (!root)
     return;
 
-  for (map<std::string, std::string>::const_iterator i = m_permanentCache.begin(); i != m_permanentCache.end(); ++i)
+  for (std::map<std::string, std::string>::const_iterator i = m_permanentCache.begin(); i != m_permanentCache.end(); ++i)
   {
     TiXmlElement pathElement("path");
     TiXmlNode *path = root->InsertEndChild(pathElement);

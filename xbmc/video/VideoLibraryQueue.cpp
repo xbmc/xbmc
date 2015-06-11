@@ -29,8 +29,6 @@
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
 
-using namespace std;
-
 CVideoLibraryQueue::CVideoLibraryQueue()
   : CJobQueue(false, 1, CJob::PRIORITY_LOW),
     m_jobs(),

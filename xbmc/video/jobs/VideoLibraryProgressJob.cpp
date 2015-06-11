@@ -20,8 +20,6 @@
 
 #include "VideoLibraryProgressJob.h"
 
-using namespace std;
-
 CVideoLibraryProgressJob::CVideoLibraryProgressJob(CGUIDialogProgressBarHandle* progressBar)
   : CProgressJob(progressBar)
 { }

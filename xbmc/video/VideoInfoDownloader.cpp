@@ -25,7 +25,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
-using namespace std;
 using namespace VIDEO;
 
 #ifndef __GNUC__
