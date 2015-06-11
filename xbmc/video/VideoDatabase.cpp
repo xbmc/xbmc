@@ -1388,13 +1388,13 @@ int CVideoDatabase::AddToTable(const std::string& table, const std::string& firs
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    std::string strSQL = PrepareSQL("select %s from %s where %s like '%s'", firstField.c_str(), table.c_str(), secondField.c_str(), value.c_str());
+    std::string strSQL = PrepareSQL("select %s from %s where %s like '%s'", firstField.c_str(), table.c_str(), secondField.c_str(), value.substr(0, 255).c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL = PrepareSQL("insert into %s (%s, %s) values(NULL, '%s')", table.c_str(), firstField.c_str(), secondField.c_str(), value.c_str());      
+      strSQL = PrepareSQL("insert into %s (%s, %s) values(NULL, '%s')", table.c_str(), firstField.c_str(), secondField.c_str(), value.substr(0, 255).c_str());      
       m_pDS->exec(strSQL.c_str());
       int id = (int)m_pDS->lastinsertid();
       return id;
@@ -1442,13 +1442,13 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     std::string trimmedName = name.c_str();
     StringUtils::Trim(trimmedName);
 
-    std::string strSQL=PrepareSQL("select actor_id from actor where name = '%s'", trimmedName.c_str());
+    std::string strSQL=PrepareSQL("select actor_id from actor where name like '%s'", trimmedName.substr(0, 255).c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values(NULL, '%s', '%s')", trimmedName.c_str(), thumbURLs.c_str());
+      strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values(NULL, '%s', '%s')", trimmedName.substr(0,255).c_str(), thumbURLs.c_str());
       m_pDS->exec(strSQL.c_str());
       idActor = (int)m_pDS->lastinsertid();
     }
@@ -1459,7 +1459,7 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
       // update the thumb url's
       if (!thumbURLs.empty())
       {
-        strSQL=PrepareSQL("update actor set art_urls='%s' where actor_id=%i",thumbURLs.c_str(),idActor);
+        strSQL=PrepareSQL("update actor set art_urls = '%s' where actor_id = %i", thumbURLs.c_str(), idActor);
         m_pDS->exec(strSQL.c_str());
       }
     }
