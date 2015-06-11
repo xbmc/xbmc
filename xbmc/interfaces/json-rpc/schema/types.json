@@ -780,6 +780,31 @@
       "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed", "broadcastnow", "broadcastnext" ]
     }
   },
+  "PVR.Details.Broadcast": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "broadcastid": { "$ref": "Library.Id", "required": true },
+      "title": { "type": "string" },
+      "plot": { "type": "string" },
+      "plotoutline": { "type": "string" },
+      "starttime": { "type": "string" },
+      "endtime": { "type": "string" },
+      "runtime": { "type": "integer" },
+      "progress": { "type": "integer" },
+      "progresspercentage": { "type": "number" },
+      "genre": { "type": "string" },
+      "episodename": { "type": "string" },
+      "episodenum": { "type": "integer" },
+      "episodepart": { "type": "integer" },
+      "firstaired": { "type": "string" },
+      "hastimer": { "type": "boolean" },
+      "isactive": { "type": "boolean" },
+      "parentalrating": { "type": "integer" },
+      "wasactive": { "type": "boolean" },
+      "thumbnail": { "type": "string" },
+      "rating": { "type": "integer" }
+    }
+  },
   "PVR.Details.Channel": {
     "extends": "Item.Details.Base",
     "properties": {
@@ -818,31 +843,6 @@
                 "genre", "episodename", "episodenum", "episodepart",
                 "firstaired", "hastimer", "isactive", "parentalrating",
                 "wasactive", "thumbnail", "rating" ]
-    }
-  },
-  "PVR.Details.Broadcast": {
-    "extends": "Item.Details.Base",
-    "properties": {
-      "broadcastid": { "$ref": "Library.Id", "required": true },
-      "title": { "type": "string" },
-      "plot": { "type": "string" },
-      "plotoutline": { "type": "string" },
-      "starttime": { "type": "string" },
-      "endtime": { "type": "string" },
-      "runtime": { "type": "integer" },
-      "progress": { "type": "integer" },
-      "progresspercentage": { "type": "number" },
-      "genre": { "type": "string" },
-      "episodename": { "type": "string" },
-      "episodenum": { "type": "integer" },
-      "episodepart": { "type": "integer" },
-      "firstaired": { "type": "string" },
-      "hastimer": { "type": "boolean" },
-      "isactive": { "type": "boolean" },
-      "parentalrating": { "type": "integer" },
-      "wasactive": { "type": "boolean" },
-      "thumbnail": { "type": "string" },
-      "rating": { "type": "integer" }
     }
   },
   "PVR.TimerState": {
