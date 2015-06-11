@@ -19,20 +19,20 @@
  */
 
 #include "Application.h"
-#include "threads/SingleLock.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
 
-#include "EpgContainer.h"
 #include "Epg.h"
+#include "EpgContainer.h"
 #include "EpgSearchFilter.h"
 
 using namespace std;
