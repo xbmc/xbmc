@@ -716,7 +716,7 @@ void CDVDPlayerVideo::Process()
 
             frametime = (double)DVD_TIME_BASE/m_fFrameRate;
 
-            if(m_started == false)
+            if(m_started == false && !(picture.iFlags & DVP_FLAG_DROPPED))
             {
               m_codecname = m_pVideoCodec->GetName();
               m_started = true;
