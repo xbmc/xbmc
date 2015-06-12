@@ -33,7 +33,6 @@
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
 
-using namespace std;
 using namespace EPG;
 using namespace PVR;
 
@@ -454,7 +453,7 @@ int CEpgInfoTag::GenreSubType(void) const
   return m_iGenreSubType;
 }
 
-const vector<string> CEpgInfoTag::Genre(void) const
+const std::vector<std::string> CEpgInfoTag::Genre(void) const
 {
   return m_genre;
 }

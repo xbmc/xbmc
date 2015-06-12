@@ -30,7 +30,6 @@
 #include "EpgContainer.h"
 #include "EpgSearchFilter.h"
 
-using namespace std;
 using namespace EPG;
 using namespace PVR;
 
@@ -235,7 +234,7 @@ int EpgSearchFilter::FilterTimers(CFileItemList &results)
   if (!g_PVRManager.IsStarted())
     return iRemoved;
 
-  vector<CFileItemPtr> timers = g_PVRTimers->GetActiveTimers();
+  std::vector<CFileItemPtr> timers = g_PVRTimers->GetActiveTimers();
   // TODO inefficient!
   for (unsigned int iTimerPtr = 0; iTimerPtr < timers.size(); iTimerPtr++)
   {
