@@ -112,6 +112,19 @@ namespace XBMCAddon
               const String& line3 = emptyString);
 
       /**
+      * textviewer(heading, text) -- Show a dialog 'TextViewer'.\n
+      * \n
+      * heading        : string or unicode - dialog heading.\n
+      * text          : string or unicode - text.\n
+      * \n
+      * example:\n
+      *   - dialog = xbmcgui.Dialog()\n
+      *   - dialog.textviewer('Plot', 'Some movie plot.')n\n
+      */
+      void textviewer(const String& heading, const String& text);
+
+
+      /**
        * browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default, enableMultiple]) -- Show a 'Browse' dialog.\n
        * \n
        * type           : integer - the type of browse dialog.\n
