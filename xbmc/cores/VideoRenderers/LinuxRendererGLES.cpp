@@ -31,7 +31,6 @@
 #include <locale.h>
 #include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
-#include "utils/fastmemcpy.h"
 #include "utils/MathUtils.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
