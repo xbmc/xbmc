@@ -1,1 +1,1 @@
-pvr.vdr.vnsi https://github.com/kodi-pvr/pvr.vdr.vnsi 244b893
+pvr.vdr.vnsi https://github.com/kodi-pvr/pvr.vdr.vnsi 033cc50
