@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -21,12 +20,12 @@
  */
 
 #include "FileItem.h"
-
+#include "pvr/channels/PVRChannel.h"
 #include "threads/CriticalSection.h"
+#include "utils/Observer.h"
 
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
-#include "utils/Observer.h"
 
 namespace PVR
 {

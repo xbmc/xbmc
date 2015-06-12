@@ -19,9 +19,10 @@
  *
  */
 
-#include "dbwrappers/Database.h"
-#include "XBDateTime.h"
 #include <map>
+
+#include "XBDateTime.h"
+#include "dbwrappers/Database.h"
 
 namespace EPG
 {

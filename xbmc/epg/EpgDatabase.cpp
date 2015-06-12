@@ -17,17 +17,18 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include <cstdlib>
 
+#include "system.h"
+#include "addons/include/xbmc_pvr_types.h"
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "addons/include/xbmc_pvr_types.h"
 
-#include "EpgDatabase.h"
 #include "EpgContainer.h"
-#include "system.h"
+#include "EpgDatabase.h"
 
 using namespace std;
 using namespace dbiplus;

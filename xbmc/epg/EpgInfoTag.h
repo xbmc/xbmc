@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,14 +19,14 @@
  *
  */
 
-#include "addons/include/xbmc_pvr_types.h"
-#include "XBDateTime.h"
-#include "utils/ISerializable.h"
-#include "pvr/channels/PVRChannel.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-
 #include <memory>
 #include <string>
+
+#include "XBDateTime.h"
+#include "addons/include/xbmc_pvr_types.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
+#include "utils/ISerializable.h"
 
 #define EPG_DEBUGGING 0
 

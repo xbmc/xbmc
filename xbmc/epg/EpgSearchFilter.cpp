@@ -18,18 +18,17 @@
  *
  */
 
-#include "utils/TextSearch.h"
-#include "utils/log.h"
 #include "FileItem.h"
-#include "../addons/include/xbmc_pvr_types.h"
-
-#include "EpgSearchFilter.h"
-#include "EpgContainer.h"
-
+#include "addons/include/xbmc_pvr_types.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/TextSearch.h"
+#include "utils/log.h"
+
+#include "EpgContainer.h"
+#include "EpgSearchFilter.h"
 
 using namespace std;
 using namespace EPG;

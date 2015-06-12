@@ -18,7 +18,10 @@
  *
  */
 
+#include "addons/include/xbmc_epg_types.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -26,10 +29,6 @@
 
 #include "EpgDatabase.h"
 #include "EpgContainer.h"
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
-
-#include "../addons/include/xbmc_epg_types.h"
 
 using namespace PVR;
 using namespace EPG;
