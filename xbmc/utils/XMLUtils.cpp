@@ -125,8 +125,9 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
 
 bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, std::string& strStringValue)
 {
-  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag );
+  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
   if (!pElement) return false;
+
   const char* encoded = pElement->Attribute("urlencoded");
   const TiXmlNode* pNode = pElement->FirstChild();
   if (pNode != NULL)
@@ -138,6 +139,13 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, std::st
   }
   strStringValue.clear();
   return true;
+}
+
+std::string XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag)
+{
+  std::string temp;
+  GetString(pRootNode, strTag, temp);
+  return temp;
 }
 
 bool XMLUtils::HasChild(const TiXmlNode* pRootNode, const char* strTag)
