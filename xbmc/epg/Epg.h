@@ -35,6 +35,8 @@ namespace PVR
 /** EPG container for CEpgInfoTag instances */
 namespace EPG
 {
+  typedef std::map<unsigned int, CEpg*> EPGMAP;
+
   class CEpg : public Observable
   {
     friend class CEpgDatabase;
