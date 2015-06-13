@@ -188,12 +188,13 @@ void CRenderer::Render(int idx)
   }
 
   float total_height = 0.0f;
+  float cur_height = 0.0f;
+  int subalign = CSettings::Get().GetInt("subtitles.align");
   for (std::vector<COverlay*>::iterator it = render.begin(); it != render.end(); ++it)
   {
     COverlay* o = *it;
     o->PrepareRender();
-    if (o->m_align == COverlay::ALIGN_SUBTITLE)
-      total_height += o->m_height;
+    total_height += o->m_height;
   }
 
   for (std::vector<COverlay*>::iterator it = render.begin(); it != render.end(); ++it)
@@ -201,7 +202,14 @@ void CRenderer::Render(int idx)
     COverlay* o = *it;
 
     float adjust_height = 0.0f;
-    if (o->m_align == COverlay::ALIGN_SUBTITLE)
+
+    if(subalign == SUBTITLE_ALIGN_TOP_INSIDE ||
+       subalign == SUBTITLE_ALIGN_TOP_OUTSIDE)
+    {
+      adjust_height = cur_height;
+      cur_height += o->m_height;
+    }
+    else
     {
       total_height -= o->m_height;
       adjust_height = -total_height;
