@@ -39,7 +39,26 @@ public:
   static bool GetDouble(const TiXmlNode* pRootNode, const char* strTag, double &value);
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue);
   static bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
+  
+  /*! \brief Get a string value from the xml tag
+   If the specified tag isn't found strStringvalue is not modified and will contain whatever
+   value it had before the method call.
+
+   \param[in]     pRootNode the xml node that contains the tag
+   \param[in]     strTag  the xml tag to read from
+   \param[in,out] strStringValue  where to store the read string
+   \return true on success, false if the tag isn't found
+   */
   static bool GetString(const TiXmlNode* pRootNode, const char* strTag, std::string& strStringValue);
+
+  /*! \brief Get a string value from the xml tag
+      
+   \param[in]  pRootNode the xml node that contains the tag
+   \param[in]  strTag the tag to read from
+   
+   \return the value in the specified tag or an empty string if the tag isn't found
+   */
+  static std::string GetString(const TiXmlNode* pRootNode, const char* strTag);
   /*! \brief Get multiple tags, concatenating the values together.
    Transforms
      <tag>value1</tag>
