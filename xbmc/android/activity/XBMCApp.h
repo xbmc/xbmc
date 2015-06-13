@@ -90,6 +90,7 @@ public:
   static int GetBatteryLevel();
   static bool EnableWakeLock(bool on);
   static bool HasFocus();
+  static bool IsHeadsetPlugged();
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static std::vector <androidPackage> GetApplications();
@@ -138,6 +139,7 @@ private:
   static CJNIWakeLock *m_wakeLock;
   static int m_batteryLevel;
   static bool m_hasFocus;
+  static bool m_headsetPlugged;
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;

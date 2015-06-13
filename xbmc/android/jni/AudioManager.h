@@ -51,6 +51,8 @@ public:
 
   int requestAudioFocus(const CJNIAudioManagerAudioFocusChangeListener &listener, int streamType, int durationHint);
   int abandonAudioFocus (const CJNIAudioManagerAudioFocusChangeListener &listener);
+  bool isBluetoothA2dpOn();
+  bool isWiredHeadsetOn();
 
   static void PopulateStaticFields();
   static int STREAM_MUSIC;

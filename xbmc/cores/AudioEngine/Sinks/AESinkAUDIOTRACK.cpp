@@ -208,7 +208,6 @@ bool CAESinkAUDIOTRACK::IsSupported(int sampleRateInHz, int channelConfig, int e
 
 bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 {
-  m_lastFormat  = format;
   m_format      = format;
   m_volume      = -1;
 
@@ -388,7 +387,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_dataFormats.clear();
   m_info.m_sampleRates.clear();
 
-  m_info.m_deviceType = AE_DEVTYPE_HDMI;
+  m_info.m_deviceType = AE_DEVTYPE_PCM;
   m_info.m_deviceName = "AudioTrack";
   m_info.m_displayName = "android";
   m_info.m_displayNameExtra = "audiotrack";
@@ -400,19 +399,25 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 #else
   m_info.m_channels = KnownChannels;
 #endif
-  int test_sample[] = { 44100, 48000, 96000, 192000 };
-  int test_sample_sz = sizeof(test_sample) / sizeof(int);
-  for (int i=0; i<test_sample_sz; ++i)
-  {
-    if (IsSupported(test_sample[i], CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_PCM_16BIT))
-    {
-      m_info.m_sampleRates.push_back(test_sample[i]);
-      CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - %d supported", test_sample[i]);
-    }
-  }
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
-  m_info.m_dataFormats.push_back(AE_FMT_AC3);
-  m_info.m_dataFormats.push_back(AE_FMT_DTS);
+  m_info.m_sampleRates.push_back(CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC));
+
+  if (!CXBMCApp::IsHeadsetPlugged())
+  {
+    m_info.m_deviceType = AE_DEVTYPE_HDMI;
+    int test_sample[] = { 44100, 48000, 96000, 192000 };
+    int test_sample_sz = sizeof(test_sample) / sizeof(int);
+    for (int i=0; i<test_sample_sz; ++i)
+    {
+      if (IsSupported(test_sample[i], CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_PCM_16BIT))
+      {
+        m_info.m_sampleRates.push_back(test_sample[i]);
+        CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - %d supported", test_sample[i]);
+      }
+    }
+    m_info.m_dataFormats.push_back(AE_FMT_AC3);
+    m_info.m_dataFormats.push_back(AE_FMT_DTS);
+  }
 #if 0 //defined(__ARM_NEON__)
   if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
     m_info.m_dataFormats.push_back(AE_FMT_FLOAT);

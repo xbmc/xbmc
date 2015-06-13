@@ -59,7 +59,6 @@ private:
 
   static CAEDeviceInfo m_info;
   AEAudioFormat      m_format;
-  AEAudioFormat      m_lastFormat;
   double             m_volume;
   volatile int       m_min_frames;
   int16_t           *m_alignedS16;

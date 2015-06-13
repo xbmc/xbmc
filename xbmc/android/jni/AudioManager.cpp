@@ -80,6 +80,20 @@ int CJNIAudioManager::abandonAudioFocus(const CJNIAudioManagerAudioFocusChangeLi
                           "(Landroid/media/AudioManager$OnAudioFocusChangeListener;)I", listener.get_raw());
 }
 
+bool CJNIAudioManager::isBluetoothA2dpOn()
+{
+  return call_method<jboolean>(m_object,
+                               "isBluetoothA2dpOn",
+                               "()Z");
+}
+
+bool CJNIAudioManager::isWiredHeadsetOn()
+{
+  return call_method<jboolean>(m_object,
+                               "isWiredHeadsetOn",
+                               "()Z");
+}
+
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 CJNIAudioManagerAudioFocusChangeListener* CJNIAudioManagerAudioFocusChangeListener::m_listenerInstance(NULL);

@@ -49,6 +49,7 @@
 #include "AppParamParser.h"
 #include "XbmcContext.h"
 #include <android/bitmap.h>
+#include "cores/AudioEngine/AEFactory.h"
 #include "android/jni/JNIThreading.h"
 #include "android/jni/BroadcastReceiver.h"
 #include "android/jni/Intent.h"
@@ -99,6 +100,7 @@ CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
 bool CXBMCApp::m_hasFocus = false;
+bool CXBMCApp::m_headsetPlugged = false;
 CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 
@@ -158,12 +160,17 @@ void CXBMCApp::onResume()
   intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
   intentFilter.addAction("android.intent.action.DREAMING_STOPPED");
   intentFilter.addAction("android.intent.action.SCREEN_ON");
+  intentFilter.addAction("android.intent.action.HEADSET_PLUG");
+  intentFilter.addAction("android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED");
   registerReceiver(*this, intentFilter);
 
   if (!g_application.IsInScreenSaver())
     EnableWakeLock(true);
   else
     g_application.WakeUpScreenSaverAndDPMS();
+
+  CJNIAudioManager audioManager(getSystemService("audio"));
+  m_headsetPlugged = audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
 
   // Clear the applications cache. We could have installed/deinstalled apps
   {
@@ -349,6 +356,11 @@ bool CXBMCApp::ReleaseAudioFocus()
 bool CXBMCApp::HasFocus()
 {
   return m_hasFocus;
+}
+
+bool CXBMCApp::IsHeadsetPlugged()
+{
+  return m_headsetPlugged;
 }
 
 void CXBMCApp::run()
@@ -739,8 +751,24 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   if (action == "android.intent.action.BATTERY_CHANGED")
     m_batteryLevel = intent.getIntExtra("level",-1);
   else if (action == "android.intent.action.DREAMING_STOPPED" || action == "android.intent.action.SCREEN_ON")
+  {
     if (HasFocus())
       g_application.WakeUpScreenSaverAndDPMS();
+  }
+  else if (action == "android.intent.action.HEADSET_PLUG" || action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")
+  {
+    bool newstate;
+    if (action == "android.intent.action.HEADSET_PLUG")
+      newstate = (intent.getIntExtra("state", 0) != 0);
+    else
+      newstate = (intent.getIntExtra("android.bluetooth.profile.extra.STATE", 0) == 2 /* STATE_CONNECTED */);
+
+    if (newstate != m_headsetPlugged)
+    {
+      m_headsetPlugged = newstate;
+      CAEFactory::DeviceChange();
+    }
+  }
 }
 
 void CXBMCApp::onNewIntent(CJNIIntent intent)
