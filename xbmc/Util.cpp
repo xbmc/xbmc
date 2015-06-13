@@ -614,7 +614,7 @@ void CUtil::ClearTempFonts()
   }
 }
 
-static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", NULL};
+static const char * sub_exts[] = { ".srt", ".idx", ".sub", ".ass", ".utf", ".utf8", ".utf-8", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", NULL};
 
 int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
 {
@@ -1879,7 +1879,7 @@ int CUtil::ScanArchiveForSubtitles( const std::string& strArchivePath, const std
    return false;
  #endif
   }
-  for (int it= 0 ; it <ItemList.Size();++it)
+  for (int it = 0; it < ItemList.Size(); ++it)
   {
    std::string strPathInRar = ItemList[it]->GetPath();
    std::string strExt = URIUtils::GetExtension(strPathInRar);
@@ -1895,6 +1895,7 @@ int CUtil::ScanArchiveForSubtitles( const std::string& strArchivePath, const std
      }
 
      ScanArchiveForSubtitles(archInArch, strMovieFileNameNoExt, vecSubtitles);
+     continue;
    }
    // check that the found filename matches the movie filename
    int fnl = strMovieFileNameNoExt.size();
@@ -1916,6 +1917,7 @@ int CUtil::ScanArchiveForSubtitles( const std::string& strArchivePath, const std
        CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, strSourceUrl.c_str() );
        vecSubtitles.push_back( strSourceUrl );
        nSubtitlesAdded++;
+       break;
      }
      
      iPos++;
