@@ -235,8 +235,8 @@ void CRenderer::Render(COverlay* o, float adjust_height)
     if(align == COverlay::ALIGN_SCREEN
     || align == COverlay::ALIGN_SUBTITLE)
     {
-      scale_x = (float)rd.Width();
-      scale_y = (float)rd.Height();
+      scale_x = (float)rv.Width();
+      scale_y = (float)rv.Height();
     }
 
     if(align == COverlay::ALIGN_VIDEO)
@@ -258,19 +258,11 @@ void CRenderer::Render(COverlay* o, float adjust_height)
     if(align == COverlay::ALIGN_SCREEN
     || align == COverlay::ALIGN_SUBTITLE)
     {
-      float scale_x = rv.Width() / rd.Width();
-      float scale_y = rv.Height()  / rd.Height();
-
-      state.x      *= scale_x;
-      state.y      *= scale_y;
-      state.width  *= scale_x;
-      state.height *= scale_y;
-
       if(align == COverlay::ALIGN_SUBTITLE)
       {
         RESOLUTION_INFO res = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
         state.x += rv.x1 + rv.Width() * 0.5f;
-        state.y += rv.y1  + (res.iSubtitles - res.Overscan.top) * scale_y;
+        state.y += rv.y1  + (res.iSubtitles - res.Overscan.top);
       }
       else
       {
