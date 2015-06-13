@@ -52,6 +52,8 @@ SRCS      += Build.cpp
 SRCS      += KeyCharacterMap.cpp
 SRCS      += Activity.cpp
 SRCS      += SystemProperties.cpp
+SRCS      += Display.cpp
+SRCS      += WindowManager.cpp
 
 LIB        = jni.a
 

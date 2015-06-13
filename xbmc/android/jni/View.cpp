@@ -20,6 +20,7 @@
 
 #include "Window.h"
 #include "View.h"
+#include "Display.h"
 
 #include "jutils/jutils-details.hpp"
 
@@ -147,4 +148,13 @@ int CJNIView::getSystemUiVisibility()
 {
   return call_method<int>(m_object,
     "getSystemUiVisibility", "()I");
+}
+
+CJNIDisplay CJNIView::getDisplay()
+{
+  if (GetSDKVersion() >= 17)
+    return call_method<jhobject>(m_object,
+      "getDisplay", "()Landroid/view/Display;");
+  else
+    return jhobject();
 }

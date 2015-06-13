@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2013 Team XBMC
+ *      Copyright (C) 2014 Team Kodi
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,24 +13,28 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "JNIBase.h"
+#include "Display.h"
 
-class CJNIView;
-class CJNIWindowManagerLayoutParams;
+#include "jutils/jutils-details.hpp"
 
-class CJNIWindow : public CJNIBase
+using namespace jni;
+
+float CJNIDisplay::getRefreshRate()
 {
-public:
-  CJNIWindow(const jni::jhobject &object) : CJNIBase(object) {};
-  ~CJNIWindow() {};
+  return call_method<jfloat>(m_object,
+    "getRefreshRate", "()F");
+}
 
-  CJNIWindowManagerLayoutParams getAttributes();
-  void setAttributes(const CJNIWindowManagerLayoutParams& attributes);
-
-  CJNIView getDecorView();
-};
+std::vector<float> CJNIDisplay::getSupportedRefreshRates()
+{
+  if (GetSDKVersion() >= 21)
+    return jcast<std::vector<float>>(
+      call_method<jhfloatArray>(m_object, "getSupportedRefreshRates", "()[F"));
+  else
+    return std::vector<float>();
+}

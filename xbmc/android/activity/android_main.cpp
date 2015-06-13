@@ -100,6 +100,13 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       (void*)&CJNIApplicationMainActivity::_onNewIntent
     };
     env->RegisterNatives(cMain, &mOnNewIntent, 1);
+
+    JNINativeMethod mCallNative = {
+      "_callNative",
+      "(JJ)V",
+      (void*)&CJNIApplicationMainActivity::_callNative
+    };
+    env->RegisterNatives(cMain, &mCallNative, 1);
   }
 
   jclass cBroadcastReceiver = env->FindClass(bcReceiver.c_str());

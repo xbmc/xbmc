@@ -22,6 +22,8 @@
 #include "JNIBase.h"
 #include "List.h"
 
+class CJNIDisplay;
+
 class CJNIViewInputDeviceMotionRange : public CJNIBase
 {
 public:
@@ -68,6 +70,7 @@ public:
 
   void setSystemUiVisibility(int visibility);
   int	 getSystemUiVisibility();
+  CJNIDisplay getDisplay();
 
   static void PopulateStaticFields();
   static int SYSTEM_UI_FLAG_FULLSCREEN;
