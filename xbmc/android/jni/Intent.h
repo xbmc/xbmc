@@ -35,6 +35,7 @@ public:
   std::string getType() const ;
 
   int getIntExtra(const std::string &name, int defaultValue) const;
+  std::string getStringExtra(const std::string &name) const;
 
   bool hasExtra(const std::string &name) const;
   bool hasCategory(const std::string &category) const;
