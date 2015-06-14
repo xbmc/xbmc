@@ -18,20 +18,18 @@
  *
  */
 
-#include "utils/TextSearch.h"
-#include "utils/log.h"
 #include "FileItem.h"
-#include "../addons/include/xbmc_pvr_types.h"
-
-#include "EpgSearchFilter.h"
-#include "EpgContainer.h"
-
+#include "addons/include/xbmc_pvr_types.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/TextSearch.h"
+#include "utils/log.h"
 
-using namespace std;
+#include "EpgContainer.h"
+#include "EpgSearchFilter.h"
+
 using namespace EPG;
 using namespace PVR;
 
@@ -236,7 +234,7 @@ int EpgSearchFilter::FilterTimers(CFileItemList &results)
   if (!g_PVRManager.IsStarted())
     return iRemoved;
 
-  vector<CFileItemPtr> timers = g_PVRTimers->GetActiveTimers();
+  std::vector<CFileItemPtr> timers = g_PVRTimers->GetActiveTimers();
   // TODO inefficient!
   for (unsigned int iTimerPtr = 0; iTimerPtr < timers.size(); iTimerPtr++)
   {

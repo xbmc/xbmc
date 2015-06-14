@@ -359,8 +359,8 @@ std::string CPVRTimerInfoTag::GetStatus() const
     strReturn = g_localizeStrings.Get(19162);
   else if (m_state == PVR_TIMER_STATE_CONFLICT_OK)
     strReturn = g_localizeStrings.Get(19275);
-  else if (m_state == PVR_TIMER_STATE_CONFLICT_NOK)	
-    strReturn = g_localizeStrings.Get(19276);	
+  else if (m_state == PVR_TIMER_STATE_CONFLICT_NOK)
+    strReturn = g_localizeStrings.Get(19276);
   else if (m_state == PVR_TIMER_STATE_ERROR)
     strReturn = g_localizeStrings.Get(257);
   else if (m_state == PVR_TIMER_STATE_DISABLED)

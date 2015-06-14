@@ -118,7 +118,7 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
 
     /* continue last watched channel */
     ContinueLastChannel();
-    
+
     /* trigger PVR data updates */
     TriggerChannelGroupsUpdate();
     TriggerChannelsUpdate();
@@ -361,7 +361,7 @@ void CPVRManager::Cleanup(void)
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
     delete m_pendingUpdates.at(iJobPtr);
   m_pendingUpdates.clear();
-  
+
   /* unregister application action listener */
   g_application.UnregisterActionListener(&CPVRActionListener::Get());
 
@@ -428,7 +428,7 @@ void CPVRManager::Start(bool bAsync /* = false */, int openWindowId /* = 0 */)
   if (!m_database)
     m_database = new CPVRDatabase;
   m_database->Open();
-  
+
   /* register application action listener */
   g_application.RegisterActionListener(&CPVRActionListener::Get());
 
@@ -476,7 +476,7 @@ ManagerState CPVRManager::GetState(void) const
   return m_managerState;
 }
 
-void CPVRManager::SetState(ManagerState state) 
+void CPVRManager::SetState(ManagerState state)
 {
   {
     CSingleLock lock(m_managerStateMutex);
@@ -531,10 +531,10 @@ void CPVRManager::Process(void)
         CSingleLock lock(m_critSection);
         m_bFirstStart = false;
       }
-      
+
       /* start job to search for missing channel icons */
       TriggerSearchMissingChannelIcons();
-      
+
       /* try to continue last watched channel otherwise set group to last played group */
       if (!ContinueLastChannel())
         SetPlayingGroup(m_channelGroups->GetLastPlayedGroup());
@@ -584,13 +584,13 @@ bool CPVRManager::SetWakeupCommand(void)
     if (nextEvent.IsValid())
     {
       nextEvent.GetAsTime(iWakeupTime);
-        
+
       std::string strExecCommand = StringUtils::Format("%s %ld", strWakeupCommand.c_str(), iWakeupTime);
-        
+
       const int iReturn = system(strExecCommand.c_str());
       if (iReturn != 0)
         CLog::Log(LOGERROR, "%s - failed to execute wakeup command '%s': %s (%d)", __FUNCTION__, strExecCommand.c_str(), strerror(iReturn), iReturn);
-        
+
       return iReturn == 0;
     }
   }
@@ -823,7 +823,7 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
         videoDatabase.EraseVideoSettings("pvr://recordings/");
         videoDatabase.Close();
       }
-      
+
       pDlgProgress->SetPercentage(80);
       pDlgProgress->Progress();
 
@@ -1104,20 +1104,20 @@ bool CPVRManager::PlayMedia(const CFileItem& item)
     pvrItem = *g_PVRChannelGroups->GetByPath(item.GetPath());
   else if (URIUtils::IsPVRRecording(item.GetPath()) && !item.HasPVRRecordingInfoTag())
     pvrItem = *g_PVRRecordings->GetByPath(item.GetPath());
-  
+
   if (!pvrItem.HasPVRChannelInfoTag() && !pvrItem.HasPVRRecordingInfoTag())
     return false;
-    
+
   // check parental lock if we want to play a channel
   if (pvrItem.IsPVRChannel() && !g_PVRManager.CheckParentalLock(pvrItem.GetPVRChannelInfoTag()))
     return false;
-  
-  if (!g_application.IsCurrentThread())  
+
+  if (!g_application.IsCurrentThread())
   {
     CApplicationMessenger::Get().MediaPlay(pvrItem);
     return true;
   }
-    
+
   return g_application.PlayFile(pvrItem, false) == PLAYBACK_OK;
 }
 
@@ -1332,11 +1332,11 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     // switch successful
     bSwitched = true;
 
-    // save previous and load new channel's settings (view mode is updated in 
+    // save previous and load new channel's settings (view mode is updated in
     // the player)
     g_application.SaveFileState();
     g_application.LoadVideoSettings(channel);
-    
+
     // set channel as selected item
     CGUIWindowPVRBase::SetSelectedItemPath(channel->IsRadio(), channel->Path());
 

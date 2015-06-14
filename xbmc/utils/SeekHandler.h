@@ -49,6 +49,7 @@ public:
   void SeekSeconds(int seconds);
   void Process();
   void Reset();
+  void Configure();
 
   int GetSeekSize() const;
   bool InProgress() const;
@@ -62,13 +63,13 @@ protected:
 private:
   static const int analogSeekDelay = 500;
   
-  int        GetSeekStepSize(SeekType type, int step);
-  int        m_seekDelay;
+  int GetSeekStepSize(SeekType type, int step);
+  int m_seekDelay;
   std::map<SeekType, int > m_seekDelays;
-  bool       m_requireSeek;
-  bool       m_analogSeek;
-  int        m_seekSize;
-  int        m_seekStep;
+  bool m_requireSeek;
+  bool m_analogSeek;
+  int m_seekSize;
+  int m_seekStep;
   std::map<SeekType, std::vector<int> > m_forwardSeekSteps;
   std::map<SeekType, std::vector<int> > m_backwardSeekSteps;
   CStopWatch m_timer;

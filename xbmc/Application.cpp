@@ -1226,6 +1226,9 @@ bool CApplication::Initialize()
 
   CAddonMgr::Get().StartServices(true);
 
+  // configure seek handler
+  CSeekHandler::Get().Configure();
+
   // register action listeners
   RegisterActionListener(&CSeekHandler::Get());
 
@@ -3889,8 +3892,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 #ifdef TARGET_DARWIN
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
-      // reset the seek handler
-      CSeekHandler::Get().Reset();
       CPlayList playList = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
 
       // Update our infoManager with the new details etc.

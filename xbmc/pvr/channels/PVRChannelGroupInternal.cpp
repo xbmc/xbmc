@@ -60,7 +60,7 @@ bool CPVRChannelGroupInternal::Load(void)
   {
     UpdateChannelPaths();
     g_PVRManager.RegisterObserver(this);
-      
+
     return true;
   }
 

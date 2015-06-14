@@ -17,19 +17,19 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include <cstdlib>
 
+#include "system.h"
+#include "addons/include/xbmc_pvr_types.h"
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "addons/include/xbmc_pvr_types.h"
 
-#include "EpgDatabase.h"
 #include "EpgContainer.h"
-#include "system.h"
+#include "EpgDatabase.h"
 
-using namespace std;
 using namespace dbiplus;
 using namespace EPG;
 
@@ -104,7 +104,7 @@ void CEpgDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 9)
     m_pDS->exec("ALTER TABLE epgtags ADD sIconPath varchar(255);");
-  
+
   if (iVersion < 10)
   {
     m_pDS->exec("ALTER TABLE epgtags ADD sOriginalTitle varchar(128);");
@@ -292,9 +292,9 @@ bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
-bool CEpgDatabase::Persist(const map<unsigned int, CEpg *> &epgs)
+bool CEpgDatabase::Persist(const std::map<unsigned int, CEpg *> &epgs)
 {
-  for (map<unsigned int, CEpg *>::const_iterator it = epgs.begin(); it != epgs.end(); ++it)
+  for (std::map<unsigned int, CEpg *>::const_iterator it = epgs.begin(); it != epgs.end(); ++it)
   {
     CEpg *epg = it->second;
     if (epg)
@@ -347,7 +347,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
 
   int iBroadcastId = tag.BroadcastId();
   std::string strQuery;
-  
+
   /* Only store the genre string when needed */
   std::string strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING) ? StringUtils::Join(tag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
 

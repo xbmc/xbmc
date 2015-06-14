@@ -18,7 +18,10 @@
  *
  */
 
+#include "addons/include/xbmc_epg_types.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -26,10 +29,6 @@
 
 #include "EpgDatabase.h"
 #include "EpgContainer.h"
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
-
-#include "../addons/include/xbmc_epg_types.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -737,8 +736,8 @@ bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
 
 bool CEpg::IsRadio(void) const
 {
-  CPVRChannelPtr channel = Channel();
-  return channel ? channel->IsRadio() : false;
+  CSingleLock lock(m_critSection);
+  return m_pvrChannel ? m_pvrChannel->IsRadio() : false;
 }
 
 bool CEpg::IsRemovableTag(const CEpgInfoTag &tag) const
@@ -859,6 +858,6 @@ bool CEpg::IsValid(void) const
 {
   CSingleLock lock(m_critSection);
   if (ScraperName() == "client")
-    return Channel().get() != NULL;
+    return m_pvrChannel != NULL;
   return true;
 }
