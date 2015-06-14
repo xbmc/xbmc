@@ -111,7 +111,7 @@ bool CLanguageResource::IsInUse() const
 void CLanguageResource::OnPostInstall(bool update, bool modal)
 {
   if (IsInUse() ||
-     (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), g_localizeStrings.Get(24132), "", "")))
+     (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), 24132)))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (toast)

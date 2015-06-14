@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,6 +19,8 @@
  *
  */
 
+#include <map>
+
 #include "XBDateTime.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
@@ -28,8 +29,6 @@
 
 #include "Epg.h"
 #include "EpgDatabase.h"
-
-#include <map>
 
 class CFileItemList;
 class CGUIDialogProgressBarHandle;

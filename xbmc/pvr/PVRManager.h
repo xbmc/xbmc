@@ -244,7 +244,7 @@ namespace PVR
     {
       return GetState() == ManagerStateStarting;
     }
-    
+
     /*!
      * @brief Check whether the PVRManager has fully started.
      * @return True if started, false otherwise.
@@ -259,7 +259,7 @@ namespace PVR
      * @return True if it should be restarted, false otherwise
      */
     bool RestartManagerOnAddonDisabled(void) const;
-    
+
     /*!
      * @brief Check whether the PVRManager is stopping
      * @return True while the PVRManager is stopping.
@@ -268,7 +268,7 @@ namespace PVR
     {
       return GetState() == ManagerStateStopping;
     }
-    
+
     /*!
      * @brief Check whether the PVRManager has been stopped.
      * @return True if stopped, false otherwise.
@@ -582,7 +582,7 @@ namespace PVR
      * @return If at least one client and all pvr data was loaded, false otherwise.
      */
     bool Load(void);
-    
+
     /*!
      * @brief Reset all properties.
      */
@@ -630,7 +630,7 @@ namespace PVR
     bool IsJobPending(const char *strJobName) const;
 
     /*!
-     * @brief Adds the job to the list of pending jobs unless an identical 
+     * @brief Adds the job to the list of pending jobs unless an identical
      * job is already queued
      * @param job the job
      */

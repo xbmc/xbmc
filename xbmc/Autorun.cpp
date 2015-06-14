@@ -489,7 +489,7 @@ bool CAutorun::IsEnabled() const
 
 bool CAutorun::PlayDiscAskResume(const std::string& path)
 {
-  return PlayDisc(path, true, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
+  return PlayDisc(path, true, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(341, "", "", "", 13404, 12021));
 }
 
 bool CAutorun::CanResumePlayDVD(const std::string& path)

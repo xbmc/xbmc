@@ -143,7 +143,7 @@ bool CGUIPassword::CheckStartUpLock()
         std::string strLabel = StringUtils::Format("%i %s", iLeft, strLabel1.c_str());
 
         // PopUp OK and Display: MasterLock mode has changed but no new Mastercode has been set!
-        CGUIDialogOK::ShowAndGetInput(12360, 12367, 12368, strLabel);
+        CGUIDialogOK::ShowAndGetInput(12360, 12367, strLabel, "");
       }
       else
         i=g_passwordManager.iMasterLockRetriesLeft;

@@ -68,10 +68,31 @@ void CJNIApplicationMainActivity::_onNewIntent(JNIEnv *env, jobject context, job
     m_appInstance->onNewIntent(CJNIIntent(jhobject(intent)));
 }
 
+void CJNIApplicationMainActivity::_callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr)
+{
+  (void)env;
+  (void)context;
+  ((void (*)(CVariant *))funcAddr)((CVariant *)variantAddr);
+}
+
+void CJNIApplicationMainActivity::runNativeOnUiThread(void (*callback)(CVariant *), CVariant* variant)
+{
+  call_method<void>(m_context,
+                    "runNativeOnUiThread", "(JJ)V", (jlong)callback, (jlong)variant);
+}
+
 void CJNIApplicationMainActivity::_onVolumeChanged(JNIEnv *env, jobject context, jint volume)
 {
   (void)env;
   (void)context;
   if(m_appInstance)
     m_appInstance->onVolumeChanged(volume);
+}
+
+void CJNIApplicationMainActivity::_onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange)
+{
+  (void)env;
+  (void)context;
+  if(m_appInstance)
+    m_appInstance->onAudioFocusChange(focusChange);
 }

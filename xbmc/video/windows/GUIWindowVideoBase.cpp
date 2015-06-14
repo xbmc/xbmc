@@ -443,7 +443,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
         bHasInfo = true;
         if (!info->IsNoop() && (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO))
         {
-          if (CGUIDialogYesNo::ShowAndGetInput(13346, 20446, -1, -1))
+          if (CGUIDialogYesNo::ShowAndGetInput(13346, 20446))
           {
             hasDetails = false;
             ignoreNfo = true;
@@ -1943,12 +1943,12 @@ void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, 
   searchItems.Clear();
 }
 
-bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int label1, int label2, int label3)
+bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int header, int text)
 {
   bool bCanceled;
   CVideoDatabase db;
   db.Open();
-  if (CGUIDialogYesNo::ShowAndGetInput(label1, label2, label3, -1, bCanceled))
+  if (CGUIDialogYesNo::ShowAndGetInput(header, text, bCanceled))
   {
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     db.RemoveContentForPath(path, progress);
@@ -1986,11 +1986,11 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
   {
     if(settings.exclude || (!info && info2))
     {
-      OnUnAssignContent(path,20375,20340,20341);
+      OnUnAssignContent(path, 20375, 20340);
     }
     else if (info != info2)
     {
-      if (OnUnAssignContent(path,20442,20443,20444))
+      if (OnUnAssignContent(path, 20442, 20443))
         bScan = true;
     }
   }

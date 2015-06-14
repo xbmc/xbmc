@@ -3146,7 +3146,6 @@ msgid "Mirror image"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#750"
 msgid "Are you sure?"
 msgstr ""
@@ -3407,21 +3406,12 @@ msgctxt "#1001"
 msgid "Unable to connect"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#1002"
-msgid "The connection to the network location couldn't be established."
+msgid "The connection to the network location couldn't be established. This could be due to the network not being connected. Would you like to add it anyway?"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogMediaSource.cpp
-msgctxt "#1003"
-msgid "This could be due to the network not being connected."
-msgstr ""
-
-#: xbmc/dialogs/GUIDialogMediaSource.cpp
-msgctxt "#1004"
-msgid "Would you like to add it anyway?"
-msgstr ""
-
-#empty string with id 1005
+#empty string from id 1003 to 1005
 
 msgctxt "#1006"
 msgid "IP address"
@@ -3514,7 +3504,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#1025"
-msgid "Couldn't retrieve directory information."
+msgid "Couldn't retrieve directory information. This could be due to the network not being connected. Would you like to add it anyway?"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
@@ -5001,15 +4991,10 @@ msgstr ""
 
 #: xbmc\GUIPassword.cpp
 msgctxt "#12367"
-msgid "Master code is not valid"
+msgid "Master code is not valid. Please enter a valid master code."
 msgstr ""
 
-#: xbmc\GUIPassword.cpp
-msgctxt "#12368"
-msgid "Please enter a valid master code"
-msgstr ""
-
-#empty strings from id 12369 to 12372
+#empty strings from id 12368 to 12372
 
 #: unknown
 msgctxt "#12373"
@@ -5027,7 +5012,7 @@ msgstr ""
 #: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
 #: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
 msgctxt "#12377"
-msgid "This will reset any previously saved values"
+msgid "This will reset any previously saved values. Are you sure?"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -7281,8 +7266,9 @@ msgctxt "#16026"
 msgid "Playback failed"
 msgstr ""
 
+#: xbmc/PlaylistPlayer.cpp
 msgctxt "#16027"
-msgid "One or more items failed to play."
+msgid "One or more items failed to play. Check the log for more information about this message."
 msgstr ""
 
 msgctxt "#16028"
@@ -7981,10 +7967,12 @@ msgid "Channel icons"
 msgstr ""
 
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr ""
 
+#: xbmc/pvr/recording/PVRRecording.cpp
 msgctxt "#19068"
 msgid "This recording couldn't be deleted.[CR]Check the log for more information about this message."
 msgstr ""
@@ -8125,6 +8113,7 @@ msgctxt "#19101"
 msgid "Provider"
 msgstr ""
 
+#: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr ""
@@ -8156,16 +8145,20 @@ msgctxt "#19108"
 msgid "Fallback framerate"
 msgstr ""
 
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 #: xbmc/pvr/timers/PVRTimers.cpp
 msgctxt "#19109"
 msgid "Couldn't save timer.[CR]Check the log for more information about this message."
 msgstr ""
 
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19110"
 msgid "An unexpected error occurred.[CR]Try again later or check the log for more information."
 msgstr ""
 
 #: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/recording/PVRRecording.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19111"
 msgid "PVR backend error.[CR]Check the log for more information about this message."
 msgstr ""
@@ -8315,6 +8308,7 @@ msgctxt "#19146"
 msgid "Groups"
 msgstr ""
 
+#: xbmc/pvr/recording/PVRRecording.cpp
 msgctxt "#19147"
 msgid "The PVR backend does not support this action.[CR]Check the log for more information about this message."
 msgstr ""
@@ -8490,20 +8484,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19185"
-msgid "Reset PVR database"
+msgid "Clear data"
 msgstr ""
 
 msgctxt "#19186"
-msgid "All data in the PVR database is being erased"
+msgid "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#19187"
-msgid "Reset guide database"
-msgstr ""
+#empty string with id 19187
 
 msgctxt "#19188"
-msgid "Guide is being reset"
+msgid "All your guide data will be cleared. Are you sure?"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -10582,6 +10573,8 @@ msgctxt "#20339"
 msgid "Director"
 msgstr ""
 
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
 #: xbmc/music/windows/GUIWindowMusicSongs.cpp
 msgctxt "#20340"
 msgid "Do you want to remove all items within this path from your library?"
@@ -10746,6 +10739,8 @@ msgctxt "#20374"
 msgid "Downloading movie information"
 msgstr ""
 
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#20375"
 msgid "Unassign content"
 msgstr ""
@@ -11049,10 +11044,12 @@ msgctxt "#20441"
 msgid "Remote fanart"
 msgstr ""
 
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#20442"
 msgid "Change content"
 msgstr ""
 
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#20443"
 msgid "Do you want to refresh information for all items within this path?"
 msgstr ""
@@ -13715,7 +13712,7 @@ msgstr ""
 
 #: xbmc/network/NetworkServices.cpp
 msgctxt "#34302"
-msgid "AirPlay requires Zeroconf to be enabled."
+msgid "Failed to start AirPlay as it requires Zeroconf to be enabled."
 msgstr ""
 
 #: xbmc/network/NetworkServices.cpp
@@ -14082,12 +14079,7 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr ""
 
-#: xbmc/peripherals/devices/peripheralcecadapter.cpp
-msgctxt "#36043"
-msgid "No CEC capable TV detected. Disable polling for CEC capable devices?"
-msgstr ""
-
-#empty strings from id 36044 to 36100
+#empty strings from id 36043 to 36100
 #strings from 36100 to 36999 are reserved for settings descriptions
 
 #. Description of settings section "Appearance"

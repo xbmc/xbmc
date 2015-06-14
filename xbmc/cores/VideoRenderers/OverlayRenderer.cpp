@@ -188,12 +188,13 @@ void CRenderer::Render(int idx)
   }
 
   float total_height = 0.0f;
+  float cur_height = 0.0f;
+  int subalign = CSettings::Get().GetInt("subtitles.align");
   for (std::vector<COverlay*>::iterator it = render.begin(); it != render.end(); ++it)
   {
     COverlay* o = *it;
     o->PrepareRender();
-    if (o->m_align == COverlay::ALIGN_SUBTITLE)
-      total_height += o->m_height;
+    total_height += o->m_height;
   }
 
   for (std::vector<COverlay*>::iterator it = render.begin(); it != render.end(); ++it)
@@ -201,7 +202,14 @@ void CRenderer::Render(int idx)
     COverlay* o = *it;
 
     float adjust_height = 0.0f;
-    if (o->m_align == COverlay::ALIGN_SUBTITLE)
+
+    if(subalign == SUBTITLE_ALIGN_TOP_INSIDE ||
+       subalign == SUBTITLE_ALIGN_TOP_OUTSIDE)
+    {
+      adjust_height = cur_height;
+      cur_height += o->m_height;
+    }
+    else
     {
       total_height -= o->m_height;
       adjust_height = -total_height;
@@ -235,8 +243,8 @@ void CRenderer::Render(COverlay* o, float adjust_height)
     if(align == COverlay::ALIGN_SCREEN
     || align == COverlay::ALIGN_SUBTITLE)
     {
-      scale_x = (float)rd.Width();
-      scale_y = (float)rd.Height();
+      scale_x = (float)rv.Width();
+      scale_y = (float)rv.Height();
     }
 
     if(align == COverlay::ALIGN_VIDEO)
@@ -258,19 +266,11 @@ void CRenderer::Render(COverlay* o, float adjust_height)
     if(align == COverlay::ALIGN_SCREEN
     || align == COverlay::ALIGN_SUBTITLE)
     {
-      float scale_x = rv.Width() / rd.Width();
-      float scale_y = rv.Height()  / rd.Height();
-
-      state.x      *= scale_x;
-      state.y      *= scale_y;
-      state.width  *= scale_x;
-      state.height *= scale_y;
-
       if(align == COverlay::ALIGN_SUBTITLE)
       {
         RESOLUTION_INFO res = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
         state.x += rv.x1 + rv.Width() * 0.5f;
-        state.y += rv.y1  + (res.iSubtitles - res.Overscan.top) * scale_y;
+        state.y += rv.y1  + (res.iSubtitles - res.Overscan.top);
       }
       else
       {

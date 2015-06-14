@@ -45,6 +45,7 @@
 #include "utils/log.h"
 #include "ApplicationMessenger.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "AppParamParser.h"
 #include "XbmcContext.h"
 #include <android/bitmap.h>
@@ -53,7 +54,6 @@
 #include "android/jni/Intent.h"
 #include "android/jni/PackageManager.h"
 #include "android/jni/Context.h"
-#include "android/jni/AudioManager.h"
 #include "android/jni/PowerManager.h"
 #include "android/jni/WakeLock.h"
 #include "android/jni/Environment.h"
@@ -72,6 +72,12 @@
 #include "android/jni/ContentResolver.h"
 #include "android/jni/MediaStore.h"
 #include "android/jni/Build.h"
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#endif
+#include "android/jni/Window.h"
+#include "android/jni/WindowManager.h"
+
 #include "CompileInfo.h"
 
 #define GIGABYTES       1073741824
@@ -84,6 +90,8 @@ void* thread_run(void* obj)
   (static_cast<T*>(obj)->*fn)();
   return NULL;
 }
+
+CXBMCApp* CXBMCApp::m_xbmcappinstance = NULL;
 CEvent CXBMCApp::m_windowCreated;
 ANativeActivity *CXBMCApp::m_activity = NULL;
 CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
@@ -98,6 +106,7 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIApplicationMainActivity(nativeActivity)
   , CJNIBroadcastReceiver("org/xbmc/kodi/XBMCBroadcastReceiver")
 {
+  m_xbmcappinstance = this;
   m_activity = nativeActivity;
   m_firstrun = true;
   m_exiting=false;
@@ -111,6 +120,7 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
 
 CXBMCApp::~CXBMCApp()
 {
+  m_xbmcappinstance = NULL;
   delete m_wakeLock;
 }
 
@@ -118,10 +128,15 @@ void CXBMCApp::onStart()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  // non-aml boxes will ignore this intent broadcast.
-  // setup aml scalers to play video as is, unscaled.
-  CJNIIntent intent_aml_video_on = CJNIIntent("android.intent.action.REALVIDEO_ON");
-  sendBroadcast(intent_aml_video_on);
+#if defined(HAS_LIBAMCODEC)
+  if (aml_permissions())
+  {
+    // non-aml boxes will ignore this intent broadcast.
+    // setup aml scalers to play video as is, unscaled.
+    CJNIIntent intent_aml_video_on = CJNIIntent("android.intent.action.REALVIDEO_ON");
+    sendBroadcast(intent_aml_video_on);
+  }
+#endif
 
   if (!m_firstrun)
   {
@@ -162,9 +177,14 @@ void CXBMCApp::onPause()
 
   unregisterReceiver(*this);
 
-  // non-aml boxes will ignore this intent broadcast.
-  CJNIIntent intent_aml_video_off = CJNIIntent("android.intent.action.REALVIDEO_OFF");
-  sendBroadcast(intent_aml_video_off);
+#if defined(HAS_LIBAMCODEC)
+  if (aml_permissions())
+  {
+    // non-aml boxes will ignore this intent broadcast.
+    CJNIIntent intent_aml_video_off = CJNIIntent("android.intent.action.REALVIDEO_OFF");
+    sendBroadcast(intent_aml_video_off);
+  }
+#endif
 
   EnableWakeLock(false);
 }
@@ -286,6 +306,45 @@ bool CXBMCApp::EnableWakeLock(bool on)
   return true;
 }
 
+bool CXBMCApp::AcquireAudioFocus()
+{
+  if (!m_xbmcappinstance)
+    return false;
+
+  CJNIAudioManager audioManager(getSystemService("audio"));
+
+  // Request audio focus for playback
+  int result = audioManager.requestAudioFocus(*m_xbmcappinstance,
+                                              // Use the music stream.
+                                              CJNIAudioManager::STREAM_MUSIC,
+                                              // Request permanent focus.
+                                              CJNIAudioManager::AUDIOFOCUS_GAIN);
+
+  if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
+  {
+    CXBMCApp::android_printf("Audio Focus request failed");
+    return false;
+  }
+  return true;
+}
+
+bool CXBMCApp::ReleaseAudioFocus()
+{
+  if (!m_xbmcappinstance)
+    return false;
+
+  CJNIAudioManager audioManager(getSystemService("audio"));
+
+  // Release audio focus after playback
+  int result = audioManager.abandonAudioFocus(*m_xbmcappinstance);
+  if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
+  {
+    CXBMCApp::android_printf("Audio Focus abandon failed");
+    return false;
+  }
+  return true;
+}
+
 bool CXBMCApp::HasFocus()
 {
   return m_hasFocus;
@@ -367,6 +426,36 @@ int CXBMCApp::SetBuffersGeometry(int width, int height, int format)
   return ANativeWindow_setBuffersGeometry(m_window, width, height, format);
 }
 
+#include "threads/Event.h"
+#include <time.h>
+
+void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
+{
+  float rate = rateVariant->asFloat();
+  delete rateVariant;
+
+  CJNIWindow window = getWindow();
+  if (window)
+  {
+    CJNIWindowManagerLayoutParams params = window.getAttributes();
+    if (params.getpreferredRefreshRate() != rate)
+    {
+      params.setpreferredRefreshRate(rate);
+      if (params.getpreferredRefreshRate() > 0.0)
+        window.setAttributes(params);
+    }
+  }
+}
+
+void CXBMCApp::SetRefreshRate(float rate)
+{
+  if (rate < 1.0)
+    return;
+
+  CVariant *variant = new CVariant(rate);
+  runNativeOnUiThread(SetRefreshRateCallback, variant);
+}
+
 int CXBMCApp::android_printf(const char *format, ...)
 {
   // For use before CLog is setup by XBMC_Run()
@@ -390,6 +479,31 @@ int CXBMCApp::GetDPI()
   AConfiguration_delete(config);
 
   return dpi;
+}
+
+void CXBMCApp::OnPlayBackStarted()
+{
+  AcquireAudioFocus();
+}
+
+void CXBMCApp::OnPlayBackPaused()
+{
+  ReleaseAudioFocus();
+}
+
+void CXBMCApp::OnPlayBackResumed()
+{
+  AcquireAudioFocus();
+}
+
+void CXBMCApp::OnPlayBackStopped()
+{
+  ReleaseAudioFocus();
+}
+
+void CXBMCApp::OnPlayBackEnded()
+{
+  ReleaseAudioFocus();
 }
 
 std::vector<androidPackage> CXBMCApp::GetApplications()
@@ -637,6 +751,13 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 void CXBMCApp::onVolumeChanged(int volume)
 {
   CApplicationMessenger::Get().SendAction(CAction(ACTION_VOLUME_SET, (float)volume), WINDOW_INVALID, false);
+}
+
+void CXBMCApp::onAudioFocusChange(int focusChange)
+{
+  CXBMCApp::android_printf("Audio Focus changed: %d", focusChange);
+  if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS && g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_PAUSE), WINDOW_INVALID, true);
 }
 
 void CXBMCApp::SetupEnv()

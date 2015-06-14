@@ -254,7 +254,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
       if (!m_resolutionChangeAborted)
       {
         bool cancelled = false;
-        if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, cancelled, -1, -1, 10000))
+        if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, cancelled, "", "", 10000))
         {
           m_resolutionChangeAborted = true;
           return false;
@@ -275,7 +275,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     if (!m_resolutionChangeAborted)
     {
       bool cancelled = false;
-      if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, cancelled, -1, -1, 10000))
+      if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, cancelled, "", "", 10000))
       {
         m_resolutionChangeAborted = true;
         return false;

@@ -19,16 +19,30 @@
  */
 
 #include "AudioManager.h"
+#include "Activity.h"
+#include "ClassLoader.h"
+
 #include "jutils/jutils-details.hpp"
+
+#include <algorithm>
 
 using namespace jni;
 
 int CJNIAudioManager::STREAM_MUSIC(3);
 
+int CJNIAudioManager::AUDIOFOCUS_GAIN(0x00000001);
+int CJNIAudioManager::AUDIOFOCUS_LOSS(0xffffffff);
+int CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED(0x00000001);
+int CJNIAudioManager::AUDIOFOCUS_REQUEST_FAILED(0x00000000);
+
 void CJNIAudioManager::PopulateStaticFields()
 {
   jhclass clazz = find_class("android/media/AudioManager");
   STREAM_MUSIC  = (get_static_field<int>(clazz, "STREAM_MUSIC"));
+  AUDIOFOCUS_GAIN  = (get_static_field<int>(clazz, "AUDIOFOCUS_GAIN"));
+  AUDIOFOCUS_LOSS  = (get_static_field<int>(clazz, "AUDIOFOCUS_LOSS"));
+  AUDIOFOCUS_REQUEST_GRANTED  = (get_static_field<int>(clazz, "AUDIOFOCUS_REQUEST_GRANTED"));
+  AUDIOFOCUS_REQUEST_FAILED  = (get_static_field<int>(clazz, "AUDIOFOCUS_REQUEST_FAILED"));
 }
 
 int CJNIAudioManager::getStreamMaxVolume()
@@ -49,5 +63,49 @@ void CJNIAudioManager::setStreamVolume(int index /* 0 */, int flags /* NONE */)
 {
   call_method<void>(m_object,
     "setStreamVolume", "(III)V",
-    STREAM_MUSIC, index, flags);
+                    STREAM_MUSIC, index, flags);
+}
+
+int CJNIAudioManager::requestAudioFocus(const CJNIAudioManagerAudioFocusChangeListener &listener, int streamType, int durationHint)
+{
+  return call_method<int>(m_object,
+                          "requestAudioFocus",
+                          "(Landroid/media/AudioManager$OnAudioFocusChangeListener;II)I", listener.get_raw(), streamType, durationHint);
+}
+
+int CJNIAudioManager::abandonAudioFocus(const CJNIAudioManagerAudioFocusChangeListener &listener)
+{
+  return call_method<int>(m_object,
+                          "abandonAudioFocus",
+                          "(Landroid/media/AudioManager$OnAudioFocusChangeListener;)I", listener.get_raw());
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+CJNIAudioManagerAudioFocusChangeListener* CJNIAudioManagerAudioFocusChangeListener::m_listenerInstance(NULL);
+
+CJNIAudioManagerAudioFocusChangeListener::CJNIAudioManagerAudioFocusChangeListener()
+: CJNIBase("org/xbmc/kodi/XBMCOnAudioFocusChangeListener")
+{
+  CJNIApplicationMainActivity *appInstance = CJNIApplicationMainActivity::GetAppInstance();
+  if (!appInstance)
+    return;
+
+  // Convert "the/class/name" to "the.class.name" as loadClass() expects it.
+  std::string dotClassName = GetClassName();
+  std::replace(dotClassName.begin(), dotClassName.end(), '/', '.');
+  m_object = new_object(appInstance->getClassLoader().loadClass(dotClassName));
+  m_object.setGlobal();
+
+  m_listenerInstance = this;
+}
+
+void CJNIAudioManagerAudioFocusChangeListener::_onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange)
+{
+  (void)env;
+  (void)context;
+  if (m_listenerInstance)
+  {
+    m_listenerInstance->onAudioFocusChange(focusChange);
+  }
 }

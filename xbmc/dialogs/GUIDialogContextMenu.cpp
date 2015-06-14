@@ -370,7 +370,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
         return false;
     }
     // prompt user if they want to really delete the source
-    if (!CGUIDialogYesNo::ShowAndGetInput(751, 750, -1, -1))
+    if (!CGUIDialogYesNo::ShowAndGetInput(751, 750))
       return false;
 
     // check default before we delete, as deletion will kill the share object
@@ -512,7 +512,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
-      if (!CGUIDialogYesNo::ShowAndGetInput(12335, 750, -1, -1))
+      if (!CGUIDialogYesNo::ShowAndGetInput(12335, 750))
         return false;
 
       share->m_iHasLock = 0;

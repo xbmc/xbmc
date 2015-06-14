@@ -43,7 +43,7 @@ private:
   double m_batteryLevel;
 };
 
-class CUPowerSyscall : public IPowerSyscall
+class CUPowerSyscall : public CAbstractPowerSyscall
 {
 public:
   CUPowerSyscall();

@@ -25,7 +25,7 @@
 #define _WIN32_POWER_SYSCALL_H_
 #include "powermanagement/IPowerSyscall.h"
 
-class CWin32PowerSyscall : public IPowerSyscall
+class CWin32PowerSyscall : public CAbstractPowerSyscall
 {
 public:
   CWin32PowerSyscall();

@@ -24,7 +24,7 @@
 #include "powermanagement/IPowerSyscall.h"
 #include "DBusUtil.h"
 
-class CLogindUPowerSyscall : public IPowerSyscall
+class CLogindUPowerSyscall : public CAbstractPowerSyscall
 {
 public:
   CLogindUPowerSyscall();

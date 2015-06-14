@@ -19,23 +19,22 @@
  */
 
 #include "Application.h"
-#include "threads/SingleLock.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
 
-#include "EpgContainer.h"
 #include "Epg.h"
+#include "EpgContainer.h"
 #include "EpgSearchFilter.h"
 
-using namespace std;
 using namespace EPG;
 using namespace PVR;
 
@@ -248,7 +247,7 @@ bool CEpgContainer::PersistAll(void)
   m_critSection.lock();
   std::map<unsigned int, CEpg*> copy = m_epgs;
   m_critSection.unlock();
-  
+
   for (EPGMAP_CITR it = copy.begin(); it != copy.end() && !m_bStop; it++)
   {
     CEpg *epg = it->second;
@@ -341,7 +340,7 @@ CEpg *CEpgContainer::GetById(int iEpgId) const
     return NULL;
 
   CSingleLock lock(m_critSection);
-  map<unsigned int, CEpg *>::const_iterator it = m_epgs.find((unsigned int) iEpgId);
+  std::map<unsigned int, CEpg *>::const_iterator it = m_epgs.find((unsigned int) iEpgId);
   return it != m_epgs.end() ? it->second : NULL;
 }
 
@@ -349,7 +348,7 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(int iBroadcastId) const
 {
   CEpgInfoTagPtr retval;
   CSingleLock lock(m_critSection);
-  for (map<unsigned int, CEpg *>::const_iterator it = m_epgs.begin(); !retval && it != m_epgs.end(); ++it)
+  for (std::map<unsigned int, CEpg *>::const_iterator it = m_epgs.begin(); !retval && it != m_epgs.end(); ++it)
     retval = it->second->GetTag(iBroadcastId);
   return retval;
 }
@@ -357,7 +356,7 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(int iBroadcastId) const
 CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
 {
   CSingleLock lock(m_critSection);
-  for (map<unsigned int, CEpg *>::const_iterator it = m_epgs.begin(); it != m_epgs.end(); ++it)
+  for (std::map<unsigned int, CEpg *>::const_iterator it = m_epgs.begin(); it != m_epgs.end(); ++it)
     if (channel.ChannelID() == it->second->ChannelID())
       return it->second;
 
@@ -383,7 +382,7 @@ void CEpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, c
     epg = new CEpg(iEpgID, strName, strScraperName, true);
     if (epg)
     {
-      m_epgs.insert(make_pair(iEpgID, epg));
+      m_epgs.insert(std::make_pair(iEpgID, epg));
       SetChanged();
       epg->RegisterObserver(this);
     }
@@ -408,7 +407,7 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
     epg = new CEpg(channel, false);
 
     CSingleLock lock(m_critSection);
-    m_epgs.insert(make_pair((unsigned int)epg->EpgID(), epg));
+    m_epgs.insert(std::make_pair((unsigned int)epg->EpgID(), epg));
     SetChanged();
     epg->RegisterObserver(this);
   }
@@ -579,7 +578,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     return false;
   }
 
-  vector<CEpg*> invalidTables;
+  std::vector<CEpg*> invalidTables;
 
   /* load or update all EPG tables */
   CEpg *epg;
@@ -617,7 +616,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       invalidTables.push_back(epg);
   }
 
-  for (vector<CEpg*>::iterator it = invalidTables.begin(); it != invalidTables.end(); ++it)
+  for (std::vector<CEpg*>::iterator it = invalidTables.begin(); it != invalidTables.end(); ++it)
     DeleteEpg(**it, true);
 
   if (bInterrupted)

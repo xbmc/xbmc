@@ -60,7 +60,7 @@ bool CPVRChannelGroupInternal::Load(void)
   {
     UpdateChannelPaths();
     g_PVRManager.RegisterObserver(this);
-      
+
     return true;
   }
 
@@ -168,7 +168,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
   CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
   if (currentChannel && currentChannel == channel)
   {
-    CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
+    CGUIDialogOK::ShowAndGetInput(19098, 19102);
     return false;
   }
 

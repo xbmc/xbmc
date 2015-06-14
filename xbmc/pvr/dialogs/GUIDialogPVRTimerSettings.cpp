@@ -184,7 +184,7 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const CSetting *setting)
       int start_hour      = timestop.GetHour();
       int start_minute    = timestop.GetMinute();
       CDateTime newEnd(start_year, start_month, start_day, start_hour, start_minute, 0);
-      
+
       // add a day to end time if end time is before start time
       // TODO: this should be removed after separate end date control was added
       if (newEnd < tag->StartAsLocalTime())
@@ -332,7 +332,7 @@ CSetting* CGUIDialogPVRTimerSettings::AddChannelNames(CSettingGroup *group, bool
 {
   std::vector< std::pair<std::string, int> > options;
   getChannelNames(bRadio, options, m_selectedChannelEntry, true);
-  
+
   // select the correct channel
   int timerChannelID = 0;
   if (m_timerItem->GetPVRTimerInfoTag()->ChannelTag())
@@ -418,13 +418,13 @@ void CGUIDialogPVRTimerSettings::getChannelNames(bool bRadio, std::vector< std::
 {
   CFileItemList channelsList;
   g_PVRChannelGroups->GetGroupAll(bRadio)->GetMembers(channelsList);
-  
+
   int entry = 0;
 
   for (int i = 0; i < channelsList.Size(); i++)
   {
     const CPVRChannelPtr channel(channelsList[i]->GetPVRChannelInfoTag());
-    
+
     list.push_back(std::make_pair(StringUtils::Format("%i %s", channel->ChannelNumber(), channel->ChannelName().c_str()), entry));
     if (updateChannelEntries)
       m_channelEntries.insert(std::make_pair(std::make_pair(bRadio, entry), channel->ChannelID()));
@@ -490,7 +490,7 @@ void CGUIDialogPVRTimerSettings::DaysOptionsFiller(const CSetting *setting, std:
   }
   else if (setting->GetId() == SETTING_TMR_FIRST_DAY)
     list.push_back(std::make_pair(g_localizeStrings.Get(19030), 0));
-  
+
   CDateTime time = CDateTime::GetCurrentDateTime();
   for (int i = 1; i < 365; ++i)
   {

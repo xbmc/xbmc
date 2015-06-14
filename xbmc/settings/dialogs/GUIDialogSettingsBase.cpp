@@ -753,7 +753,7 @@ void CGUIDialogSettingsBase::SetDescription(const CVariant &label)
 
 void CGUIDialogSettingsBase::OnResetSettings()
 {
-  if (CGUIDialogYesNo::ShowAndGetInput(10041, 10042, -1, -1))
+  if (CGUIDialogYesNo::ShowAndGetInput(10041, 10042))
   {
     for(vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
     {

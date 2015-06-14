@@ -1581,7 +1581,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (params.size() > 1)
       singleFile = StringUtils::EqualsNoCase(params[1], "true");
     else
-      singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20426, -1, -1, 20428, 20429, cancelled);
+      singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20426, cancelled, 20428, 20429);
 
     if (cancelled)
         return -1;
@@ -1591,7 +1591,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 2)
         thumbs = StringUtils::EqualsNoCase(params[2], "true");
       else
-        thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
+        thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20430, cancelled);
     }
 
     if (cancelled)
@@ -1602,7 +1602,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 4)
         actorThumbs = StringUtils::EqualsNoCase(params[4], "true");
       else
-        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
+        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20436, cancelled);
     }
 
     if (cancelled)
@@ -1613,7 +1613,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 3)
         overwrite = StringUtils::EqualsNoCase(params[3], "true");
       else
-        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
+        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20431, cancelled);
     }
 
     if (cancelled)

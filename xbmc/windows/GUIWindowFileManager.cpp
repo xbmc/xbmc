@@ -684,7 +684,7 @@ void CGUIWindowFileManager::OnMark(int iList, int iItem)
 
 void CGUIWindowFileManager::OnCopy(int iList)
 {
-  if (!CGUIDialogYesNo::ShowAndGetInput(120, 123, 0, 0))
+  if (!CGUIDialogYesNo::ShowAndGetInput(120, 123))
     return;
 
   AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy, 
@@ -695,7 +695,7 @@ void CGUIWindowFileManager::OnCopy(int iList)
 
 void CGUIWindowFileManager::OnMove(int iList)
 {
-  if (!CGUIDialogYesNo::ShowAndGetInput(121, 124, 0, 0))
+  if (!CGUIDialogYesNo::ShowAndGetInput(121, 124))
     return;
 
   AddJob(new CFileOperationJob(CFileOperationJob::ActionMove,
@@ -706,7 +706,7 @@ void CGUIWindowFileManager::OnMove(int iList)
 
 void CGUIWindowFileManager::OnDelete(int iList)
 {
-  if (!CGUIDialogYesNo::ShowAndGetInput(122, 125, 0, 0))
+  if (!CGUIDialogYesNo::ShowAndGetInput(122, 125))
     return;
 
   AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,

@@ -28,6 +28,10 @@ msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Chtěli byste odstranit tuto připomínku?"
 
+msgctxt "#32010"
+msgid "You can enable/disable it through add-on settings."
+msgstr "Je možno povolit/zakázat v nastavení doplňku"
+
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
 msgstr "Použijte správce balíčků (APT) k upgradu."
@@ -71,3 +75,27 @@ msgstr "Linux: Aktualizace celého systému"
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Linux: Aktualizace za použití apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Je k dispozici nová stabilní verze Kodi."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Navštivte http://kodi.tv pro více informací."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Je k dispozici nová stabilní verze Kodi."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Navštivte http://kodi.tv pro více informací."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Používáte %s zatímco je %s k dispozici."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "Je doporučeno upgradovat na novější verzi."

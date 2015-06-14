@@ -994,74 +994,104 @@ void CVideoLibrary::UpdateVideoTagField(const CVariant& parameterObject, const s
 void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork, std::set<std::string> &updatedDetails)
 {
   if (ParameterNotNull(parameterObject, "title"))
-    details.m_strTitle = parameterObject["title"].asString();
+    details.SetTitle(parameterObject["title"].asString());
   if (ParameterNotNull(parameterObject, "playcount"))
     details.m_playCount = (int)parameterObject["playcount"].asInteger();
   if (ParameterNotNull(parameterObject, "runtime"))
     details.m_duration = (int)parameterObject["runtime"].asInteger();
-  UpdateVideoTagField(parameterObject, "director", details.m_director, updatedDetails);
-  UpdateVideoTagField(parameterObject, "studio", details.m_studio, updatedDetails);
+
+  std::vector<std::string> director(details.m_director);
+  UpdateVideoTagField(parameterObject, "director", director, updatedDetails);
+  details.SetDirector(director);
+
+  std::vector<std::string> studio(details.m_studio);
+  UpdateVideoTagField(parameterObject, "studio", studio, updatedDetails);
+  details.SetStudio(studio);
+
   if (ParameterNotNull(parameterObject, "year"))
     details.m_iYear = (int)parameterObject["year"].asInteger();
   if (ParameterNotNull(parameterObject, "plot"))
-    details.m_strPlot = parameterObject["plot"].asString();
+    details.SetPlot(parameterObject["plot"].asString());
   if (ParameterNotNull(parameterObject, "album"))
-    details.m_strAlbum = parameterObject["album"].asString();
-  UpdateVideoTagField(parameterObject, "artist", details.m_artist, updatedDetails);
-  UpdateVideoTagField(parameterObject, "genre", details.m_genre, updatedDetails);
+    details.SetAlbum(parameterObject["album"].asString());
+
+  std::vector<std::string> artist(details.m_artist);
+  UpdateVideoTagField(parameterObject, "artist", artist, updatedDetails);
+  details.SetArtist(artist);
+
+  std::vector<std::string> genre(details.m_genre);
+  UpdateVideoTagField(parameterObject, "genre", genre, updatedDetails);
+  details.SetGenre(genre);
+
   if (ParameterNotNull(parameterObject, "track"))
     details.m_iTrack = (int)parameterObject["track"].asInteger();
   if (ParameterNotNull(parameterObject, "rating"))
     details.m_fRating = parameterObject["rating"].asFloat();
   if (ParameterNotNull(parameterObject, "mpaa"))
-    details.m_strMPAARating = parameterObject["mpaa"].asString();
+    details.SetMPAARating(parameterObject["mpaa"].asString());
   if (ParameterNotNull(parameterObject, "imdbnumber"))
-    details.m_strIMDBNumber = parameterObject["imdbnumber"].asString();
+    details.SetIMDBNumber(parameterObject["imdbnumber"].asString());
   if (ParameterNotNull(parameterObject, "premiered"))
     SetFromDBDate(parameterObject["premiered"], details.m_premiered);
   if (ParameterNotNull(parameterObject, "votes"))
-    details.m_strVotes = parameterObject["votes"].asString();
+    details.SetVotes(parameterObject["votes"].asString());
   if (ParameterNotNull(parameterObject, "lastplayed"))
     SetFromDBDateTime(parameterObject["lastplayed"], details.m_lastPlayed);
   if (ParameterNotNull(parameterObject, "firstaired"))
     SetFromDBDate(parameterObject["firstaired"], details.m_firstAired);
   if (ParameterNotNull(parameterObject, "productioncode"))
-    details.m_strProductionCode = parameterObject["productioncode"].asString();
+    details.SetProductionCode(parameterObject["productioncode"].asString());
   if (ParameterNotNull(parameterObject, "season"))
     details.m_iSeason = (int)parameterObject["season"].asInteger();
   if (ParameterNotNull(parameterObject, "episode"))
     details.m_iEpisode = (int)parameterObject["episode"].asInteger();
   if (ParameterNotNull(parameterObject, "originaltitle"))
-    details.m_strOriginalTitle = parameterObject["originaltitle"].asString();
+    details.SetOriginalTitle(parameterObject["originaltitle"].asString());
   if (ParameterNotNull(parameterObject, "trailer"))
-    details.m_strTrailer = parameterObject["trailer"].asString();
+    details.SetTrailer(parameterObject["trailer"].asString());
   if (ParameterNotNull(parameterObject, "tagline"))
-    details.m_strTagLine = parameterObject["tagline"].asString();
+    details.SetTagLine(parameterObject["tagline"].asString());
   if (ParameterNotNull(parameterObject, "plotoutline"))
-    details.m_strPlotOutline = parameterObject["plotoutline"].asString();
-  UpdateVideoTagField(parameterObject, "writer", details.m_writingCredits, updatedDetails);
-  UpdateVideoTagField(parameterObject, "country", details.m_country, updatedDetails);
+    details.SetPlotOutline(parameterObject["plotoutline"].asString());
+
+  std::vector<std::string> credits(details.m_writingCredits);
+  UpdateVideoTagField(parameterObject, "writer", credits, updatedDetails);
+  details.SetWritingCredits(credits);
+
+  std::vector<std::string> country(details.m_country);
+  UpdateVideoTagField(parameterObject, "country", country, updatedDetails);
+  details.SetCountry(country);
+
   if (ParameterNotNull(parameterObject, "top250"))
     details.m_iTop250 = (int)parameterObject["top250"].asInteger();
   if (ParameterNotNull(parameterObject, "sorttitle"))
-    details.m_strSortTitle = parameterObject["sorttitle"].asString();
+    details.SetSortTitle(parameterObject["sorttitle"].asString());
   if (ParameterNotNull(parameterObject, "episodeguide"))
-    details.m_strEpisodeGuide = parameterObject["episodeguide"].asString();
+    details.SetEpisodeGuide(parameterObject["episodeguide"].asString());
   if (ParameterNotNull(parameterObject, "set"))
   {
-    details.m_strSet = parameterObject["set"].asString();
+    details.SetSet(parameterObject["set"].asString());
     updatedDetails.insert("set");
   }
-  UpdateVideoTagField(parameterObject, "showlink", details.m_showLink, updatedDetails);
-  UpdateVideoTagField(parameterObject, "tag", details.m_tags, updatedDetails);
+
+  std::vector<std::string> showLink(details.m_showLink);
+  UpdateVideoTagField(parameterObject, "showlink", showLink, updatedDetails);
+  details.SetShowLink(showLink);
+
+  std::vector<std::string> tags(details.m_tags);
+  UpdateVideoTagField(parameterObject, "tag", tags, updatedDetails);
+  details.SetTags(tags);
+
   if (ParameterNotNull(parameterObject, "thumbnail"))
   {
-    artwork["thumb"] = parameterObject["thumbnail"].asString();
+    std::string value = parameterObject["thumbnail"].asString();
+    artwork["thumb"] = StringUtils::Trim(value);
     updatedDetails.insert("art.altered");
   }
   if (ParameterNotNull(parameterObject, "fanart"))
   {
-    artwork["fanart"] = parameterObject["fanart"].asString();
+    std::string value = parameterObject["fanart"].asString();
+    artwork["fanart"] = StringUtils::Trim(value);
     updatedDetails.insert("art.altered");
   }
 

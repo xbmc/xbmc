@@ -283,7 +283,7 @@ void CSkinInfo::OnPreInstall()
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
 {
-  if (IsInUse() || (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), g_localizeStrings.Get(24099),"","")))
+  if (IsInUse() || (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), 24099)))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (toast)

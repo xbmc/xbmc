@@ -223,7 +223,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
       // AirPlay needs zeroconf
       if (!CSettings::Get().GetBool("services.zeroconf"))
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(1273), g_localizeStrings.Get(33100), g_localizeStrings.Get(34302), "");
+        CGUIDialogOK::ShowAndGetInput(1273, 34302);
         return false;
       }
 #endif //HAS_ZEROCONF
@@ -412,7 +412,7 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
   {
     // okey we really don't need to restart, only deinit samba, but that could be damn hard if something is playing
     // TODO - General way of handling setting changes that require restart
-    if (CGUIDialogYesNo::ShowAndGetInput(14038, 14039, -1, -1))
+    if (CGUIDialogYesNo::ShowAndGetInput(14038, 14039))
     {
       CSettings::Get().Save();
       CApplicationMessenger::Get().RestartApp();
@@ -755,7 +755,7 @@ bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
     if (server->GetNumberOfClients() > 0)
     {
       bool cancelled = false;
-      if (!CGUIDialogYesNo::ShowAndGetInput(13140, 13141, cancelled, -1, -1, 10000)
+      if (!CGUIDialogYesNo::ShowAndGetInput(13140, 13141, cancelled, "", "", 10000)
           || cancelled)
       {
         CLog::Log(LOGNOTICE, "ES: Not stopping event server");

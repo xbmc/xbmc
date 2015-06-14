@@ -3407,8 +3407,6 @@ bool CDVDPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
   /* we are potentially going to be waiting on this */
   m_dvdPlayerAudio->SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
 
-  /* audio normally won't consume full cpu, so let it have prio */
-  m_dvdPlayerAudio->SetPriority(GetPriority()+1);
   return true;
 }
 
@@ -3469,20 +3467,6 @@ bool CDVDPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   /* we are potentially going to be waiting on this */
   m_dvdPlayerVideo->SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
 
-#if defined(TARGET_DARWIN)
-  // Apple thread scheduler works a little different than Linux. It
-  // will favor OS GUI side and can cause DVDPlayerVideo to miss frame
-  // updates when the OS gets busy. Apple's recomended method is to
-  // elevate time critical threads to SCHED_RR and OSX does this for
-  // the CoreAudio audio device handler thread. We do the same for
-  // the DVDPlayerVideo thread so it can run to sleep without getting
-  // swapped out by a busy OS.
-  m_dvdPlayerVideo->SetPriority(GetSchedRRPriority());
-#else
-  /* use same priority for video thread as demuxing thread, as */
-  /* otherwise demuxer will starve if video consumes the full cpu */
-  m_dvdPlayerVideo->SetPriority(GetPriority());
-#endif
   return true;
 
 }

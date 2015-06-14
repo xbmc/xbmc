@@ -109,9 +109,9 @@ namespace PVR
 
     void UpdateEpgEvent(bool bClear = false);
 
-    bool IsActive(void) const 
-    { 	
-      return m_state == PVR_TIMER_STATE_SCHEDULED 
+    bool IsActive(void) const
+    {
+      return m_state == PVR_TIMER_STATE_SCHEDULED
         || m_state == PVR_TIMER_STATE_RECORDING
         || m_state == PVR_TIMER_STATE_CONFLICT_OK
         || m_state == PVR_TIMER_STATE_CONFLICT_NOK

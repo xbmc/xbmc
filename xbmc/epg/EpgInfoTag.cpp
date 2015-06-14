@@ -18,11 +18,8 @@
  *
  */
 
+#include "addons/include/xbmc_pvr_types.h"
 #include "guilib/LocalizeStrings.h"
-#include "Epg.h"
-#include "EpgInfoTag.h"
-#include "EpgContainer.h"
-#include "EpgDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "settings/AdvancedSettings.h"
@@ -30,9 +27,12 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "addons/include/xbmc_pvr_types.h"
 
-using namespace std;
+#include "Epg.h"
+#include "EpgInfoTag.h"
+#include "EpgContainer.h"
+#include "EpgDatabase.h"
+
 using namespace EPG;
 using namespace PVR;
 
@@ -453,7 +453,7 @@ int CEpgInfoTag::GenreSubType(void) const
   return m_iGenreSubType;
 }
 
-const vector<string> CEpgInfoTag::Genre(void) const
+const std::vector<std::string> CEpgInfoTag::Genre(void) const
 {
   return m_genre;
 }

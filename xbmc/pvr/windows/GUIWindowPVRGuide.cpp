@@ -296,7 +296,7 @@ void CGUIWindowPVRGuide::UpdateViewNow()
 
   m_vecItems->Clear();
   int iEpgItems = GetGroup()->GetEPGNow(*m_vecItems);
-  
+
   if (iEpgItems == 0)
   {
     CFileItemPtr item;
@@ -355,23 +355,23 @@ void CGUIWindowPVRGuide::UpdateViewTimeline()
   CDateTime startDate(m_cachedChannelGroup->GetFirstEPGDate());
   CDateTime endDate(m_cachedChannelGroup->GetLastEPGDate());
   CDateTime currentDate = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
-  
+
   if (!startDate.IsValid())
     startDate = currentDate;
-  
+
   if (!endDate.IsValid() || endDate < startDate)
     endDate = startDate;
-  
+
   // limit start to linger time
   CDateTime maxPastDate = currentDate - CDateTimeSpan(0, 0, g_advancedSettings.m_iEpgLingerTime, 0);
   if (startDate < maxPastDate)
     startDate = maxPastDate;
-  
+
   epgGridContainer->SetStartEnd(startDate, endDate);
 
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetGroup()->GroupName());
-  
+
   m_viewControl.SetItems(*m_vecItems);
 
   epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
@@ -442,7 +442,7 @@ bool CGUIWindowPVRGuide::OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON butt
     epgGridContainer->GoToNow();
     bReturn = true;
   }
-  
+
   return bReturn;
 }
 

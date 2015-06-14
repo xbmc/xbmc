@@ -28,6 +28,10 @@ msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Želite li ukloniti ovog podsjetnika?"
 
+msgctxt "#32010"
+msgid "You can enable/disable it through add-on settings."
+msgstr "Možete ga omogućiti/onemogućiti u postavakama dodataka."
+
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
 msgstr "Koristite svoj upravitelj paketa (apt) za nadogradnju."
@@ -48,6 +52,10 @@ msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "Želite li provjeriti repozitorij za novu inačicu?"
 
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Dostupna je novija stabilna inačica Kodija."
+
 msgctxt "#32020"
 msgid "General"
 msgstr "Općenito"
@@ -67,3 +75,27 @@ msgstr "Linux: nadogradi cjelokupan sustav"
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Linux: ažurirajte koristeći 'apt'"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Dostupna je novija stabilna inačica Kodija."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Posjetite http://kodi.tv za više informacija."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Dostupna je novija stabilna inačica Kodija."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Posjetite http://kodi.tv za više informacija."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Koristite %s dok je %s dostupna."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "Preporučljivo je da nadogradite na noviju inačicu."

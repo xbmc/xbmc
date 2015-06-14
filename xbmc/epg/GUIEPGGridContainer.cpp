@@ -18,28 +18,26 @@
  *
  */
 
-#include "input/Key.h"
+#include <assert.h>
+#include <tinyxml.h>
+
+#include "GUIInfoManager.h"
+#include "guilib/DirtyRegion.h"
 #include "guilib/GUIControlFactory.h"
 #include "guilib/GUIListItem.h"
-#include "guilib/DirtyRegion.h"
-#include <tinyxml.h>
+#include "input/Key.h"
+#include "pvr/channels/PVRChannel.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "threads/SystemClock.h"
-#include "GUIInfoManager.h"
 
-#include "epg/Epg.h"
-#include "pvr/channels/PVRChannel.h"
-
+#include "Epg.h"
 #include "GUIEPGGridContainer.h"
-
-#include <assert.h>
 
 using namespace PVR;
 using namespace EPG;
-using namespace std;
 
 #define SHORTGAP     5 // how many blocks is considered a short-gap in nav logic
 #define MINSPERBLOCK 5 /// would be nice to offer zooming of busy schedules /// performance cost to increase resolution 5 fold?
@@ -517,7 +515,7 @@ void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CD
   {
     m_guiProgressIndicatorTexture.SetVisible(false);
   }
-  
+
   m_guiProgressIndicatorTexture.Process(currentTime);
 }
 
@@ -887,7 +885,7 @@ void CGUIEPGGridContainer::UpdateItems()
           m_gridIndex[row][block].item = item;
           break;
         }
-        
+
         progIdx++;
       }
 
@@ -1289,7 +1287,7 @@ CPVRChannelPtr CGUIEPGGridContainer::GetChannel(int iIndex)
     if (fileItem->HasPVRChannelInfoTag())
       return fileItem->GetPVRChannelInfoTag();
   }
-  
+
   return CPVRChannelPtr();
 }
 
@@ -1297,7 +1295,7 @@ void CGUIEPGGridContainer::SetSelectedChannel(int channelIndex)
 {
   if (channelIndex < 0)
     return;
-  
+
   if (channelIndex - m_channelOffset <= 0)
   {
     ScrollToChannelOffset(0);
@@ -1680,7 +1678,7 @@ void CGUIEPGGridContainer::GoToEnd()
   {
     if (!blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blockIndex].item != NULL)
       blocksEnd = blockIndex;
-    if (blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blocksEnd].item != 
+    if (blocksEnd && m_gridIndex[m_channelCursor + m_channelOffset][blocksEnd].item !=
                      m_gridIndex[m_channelCursor + m_channelOffset][blockIndex].item)
       blocksStart = blockIndex + 1;
   }

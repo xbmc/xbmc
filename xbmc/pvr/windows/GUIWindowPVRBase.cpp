@@ -148,7 +148,7 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
       SetProperty("IsRadio", m_bRadio ? "true" : "");
     }
     break;
-      
+
     case GUI_MSG_CLICKED:
     {
       switch (message.GetSenderId())

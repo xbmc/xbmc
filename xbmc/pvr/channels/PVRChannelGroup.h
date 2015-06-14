@@ -60,7 +60,7 @@ namespace PVR
     EPG_FIRST_DATE = 0,
     EPG_LAST_DATE = 1
   };
-  
+
   class CPVRChannelGroup;
   typedef std::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
@@ -412,13 +412,13 @@ namespace PVR
      * @return The amount of entries that were added.
      */
     int GetEPGNext(CFileItemList &results) const { return GetEPGNowOrNext(results, true); }
-    
+
     /*!
      * @brief Get the start time of the first entry.
      * @return The start time.
      */
     CDateTime GetFirstEPGDate(void) const;
-    
+
     /*!
      * @brief Get the end time of the last entry.
      * @return The end time.
@@ -538,7 +538,7 @@ namespace PVR
     PVR_CHANNEL_GROUP_SORTED_MEMBERS m_sortedMembers; /*!< members sorted by channel number */
     PVR_CHANNEL_GROUP_MEMBERS        m_members;       /*!< members with key clientid+uniqueid */
     CCriticalSection m_critSection;
-    
+
   private:
     CDateTime GetEPGDate(EpgDateType epgDateType) const;
     /*!

@@ -245,9 +245,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     // cancel a downloading job
     if (item->HasProperty("Addon.Downloading"))
     {
-      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
-                                           item->GetProperty("Addon.Name").asString(),
-                                           g_localizeStrings.Get(24066),""))
+      if (CGUIDialogYesNo::ShowAndGetInput(24000, item->GetProperty("Addon.Name").asString(), 24066, ""))
       {
         if (CAddonInstaller::Get().Cancel(item->GetProperty("Addon.ID").asString()))
           Refresh();

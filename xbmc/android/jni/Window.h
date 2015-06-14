@@ -22,11 +22,16 @@
 #include "JNIBase.h"
 
 class CJNIView;
+class CJNIWindowManagerLayoutParams;
+
 class CJNIWindow : public CJNIBase
 {
 public:
   CJNIWindow(const jni::jhobject &object) : CJNIBase(object) {};
   ~CJNIWindow() {};
+
+  CJNIWindowManagerLayoutParams getAttributes();
+  void setAttributes(const CJNIWindowManagerLayoutParams& attributes);
 
   CJNIView getDecorView();
 };

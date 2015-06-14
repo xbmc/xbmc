@@ -173,7 +173,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
   /* to collect timer with changed starting time */
   VecTimerInfoTag timersToMove;
-  
+
   /* check for deleted timers */
   for (MapTags::iterator it = m_tags.begin(); it != m_tags.end();)
   {
@@ -206,7 +206,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
 
         /* remember timer */
         timersToMove.push_back(timer);
-        
+
         /* remove timer for now, reinsert later */
         it2 = it->second->erase(it2);
 
@@ -629,10 +629,12 @@ CFileItemPtr CPVRTimers::GetTimerForEpgTag(const CFileItem *item) const
       for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
       {
         CPVRTimerInfoTagPtr timer = *timerIt;
-        if (timer->m_iClientChannelUid == channel->UniqueID() &&
+
+        if (timer->GetEpgInfoTag() == epgTag || 
+            (timer->m_iClientChannelUid == channel->UniqueID() &&
             timer->m_bIsRadio == channel->IsRadio() &&
             timer->StartAsUTC() <= epgTag->StartAsUTC() &&
-            timer->EndAsUTC() >= epgTag->EndAsUTC())
+            timer->EndAsUTC() >= epgTag->EndAsUTC()))
         {
           CFileItemPtr fileItem(new CFileItem(timer));
           return fileItem;

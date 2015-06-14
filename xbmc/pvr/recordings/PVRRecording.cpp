@@ -40,7 +40,7 @@ CPVRRecordingUid::CPVRRecordingUid() :
 CPVRRecordingUid::CPVRRecordingUid(const CPVRRecordingUid &recordingId) :
   m_iClientId(recordingId.m_iClientId),
   m_strRecordingId(recordingId.m_strRecordingId)
-{ 
+{
 }
 
 CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId) :
@@ -252,10 +252,10 @@ void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
 {
   if (m_bGotMetaData)
     return;
-    
+
   bool supportsPlayCount  = g_PVRClients->SupportsRecordingPlayCount(m_iClientId);
   bool supportsLastPlayed = g_PVRClients->SupportsLastPlayedPosition(m_iClientId);
-  
+
   if (!supportsPlayCount || !supportsLastPlayed)
   {
     if (!supportsPlayCount)
@@ -264,7 +264,7 @@ void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
     if (!supportsLastPlayed)
       db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
   }
-  
+
   m_bGotMetaData = true;
 }
 
@@ -315,11 +315,11 @@ std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
 void CPVRRecording::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
-    CGUIDialogOK::ShowAndGetInput(19033,19111,19110,0); /* print info dialog "Server error!" */
+    CGUIDialogOK::ShowAndGetInput(19033, 19111); /* print info dialog "Server error!" */
   else if (err == PVR_ERROR_REJECTED)
-    CGUIDialogOK::ShowAndGetInput(19033,19068,19110,0); /* print info dialog "Couldn't delete recording!" */
+    CGUIDialogOK::ShowAndGetInput(19033, 19068); /* print info dialog "Couldn't delete recording!" */
   else
-    CGUIDialogOK::ShowAndGetInput(19033,19147,19110,0); /* print info dialog "Unknown error!" */
+    CGUIDialogOK::ShowAndGetInput(19033, 19147); /* print info dialog "Unknown error!" */
 
   return;
 }
@@ -359,7 +359,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   {
     std::string strEpisode = m_strPlotOutline;
     std::string strTitle = m_strDirectory;
-    
+
     size_t pos = strTitle.rfind('/');
     strTitle.erase(0, pos + 1);
     strEpisode.erase(0, strShow.size());

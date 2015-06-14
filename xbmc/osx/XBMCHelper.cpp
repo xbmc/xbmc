@@ -114,7 +114,7 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
     if (IsRunning() && GetMode() != remoteMode)
     {
       bool cancelled;
-      if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, cancelled, -1, -1, 10000))
+      if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, cancelled, "", "", 10000))
         return false;
       // reload configuration
       else

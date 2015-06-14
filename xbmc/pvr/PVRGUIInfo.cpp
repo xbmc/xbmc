@@ -260,7 +260,7 @@ void CPVRGUIInfo::UpdateMisc(void)
   bool       bHasTVChannels            = bStarted && g_PVRChannelGroups->GetGroupAllTV()->HasChannels();
   bool       bHasRadioChannels         = bStarted && g_PVRChannelGroups->GetGroupAllRadio()->HasChannels();
   std::string strPlayingTVGroup        = (bStarted && bIsPlayingTV) ? g_PVRManager.GetPlayingGroup(false)->GroupName() : "";
-  
+
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
   bool       bHasNonRecordingTimers    = bStarted && m_iTimerAmount - m_iRecordingTimerAmount > 0;
 
@@ -706,6 +706,9 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   PVR_CLIENTMAP activeClients;
   iActiveClients = clients->GetConnectedClients(activeClients);
 
+  if (iActiveClients > 1 && !AddonInfoToggle())
+    return;
+
   {
     CSingleLock lock(m_critSection);
     if (m_iAddonInfoToggleCurrent >= iActiveClients)
@@ -715,9 +718,6 @@ void CPVRGUIInfo::UpdateBackendCache(void)
       m_iAddonInfoToggleCurrent = 0;
     }
   }
-
-  if (iActiveClients > 1 && !AddonInfoToggle())
-    return;
 
   if (iActiveClients > 0)
   {

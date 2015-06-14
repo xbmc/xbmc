@@ -95,7 +95,7 @@ bool CPVRClients::IsConnectedClient(int iClientId) const
 bool CPVRClients::IsConnectedClient(const AddonPtr addon)
 {
   CSingleLock lock(m_critSection);
-  
+
   for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
     if (itr->second->ID() == addon->ID())
       return itr->second->ReadyToUse();
@@ -209,7 +209,7 @@ bool CPVRClients::HasEnabledClients(void) const
 
 bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
 {
-  CSingleLock lock(m_critSection);  
+  CSingleLock lock(m_critSection);
   int iId = GetClientId(client);
   PVR_CLIENT mappedClient;
   if (GetClient(iId, mappedClient))
@@ -1137,7 +1137,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       }
 
       if (bDisabled && (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
-        CGUIDialogOK::ShowAndGetInput(24070, 24071, 16029, 0);
+        CGUIDialogOK::ShowAndGetInput(24070, 16029);
     }
   }
 
@@ -1290,9 +1290,9 @@ bool CPVRClients::UpdateAddons(void)
     CSingleLock lock(m_critSection);
     m_addons = addons;
   }
-  
+
   usableClients = m_addons.size();
-  
+
   // handle "new" addons which aren't yet in the db - these have to be added first
   for (VECADDONS::const_iterator it = addons.begin(); it != addons.end(); ++it)
   {
