@@ -43,6 +43,7 @@ namespace PVR
   class CPVRClient;
 
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
+  typedef std::vector<PVR_TIMER_TYPE> PVR_TIMER_TYPES;
   typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
   #define PVR_INVALID_CLIENT_ID (-2)
 
@@ -360,9 +361,10 @@ namespace PVR
      * @brief Delete a timer on the backend.
      * @param timer The timer to delete.
      * @param bForce Set to true to delete a timer that is currently recording a program.
+     * @param bDeleteSchedule Set to true to delete the complete timer schedule instead of the given timer only.
      * @return PVR_ERROR_NO_ERROR if the timer has been deleted successfully.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce = false);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce = false, bool bDeleteSchedule = false);
 
     /*!
      * @brief Rename a timer on the server.
@@ -378,6 +380,12 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR if the timer has been updated successfully.
      */
     PVR_ERROR UpdateTimer(const CPVRTimerInfoTag &timer);
+
+    /*!
+     * @brief Get all pre-defined and custom timer types supported by the backend.
+     * @return The timer types.
+     */
+    const PVR_TIMER_TYPES *GetTimerTypes(void) const;
 
     //@}
     /** @name PVR live stream methods */
@@ -526,7 +534,6 @@ namespace PVR
     bool SupportsRadio(void) const;
     bool SupportsRecordings(void) const;
     bool SupportsRecordingsUndelete(void) const;
-    bool SupportsRecordingFolders(void) const;
     bool SupportsRecordingPlayCount(void) const;
     bool SupportsRecordingEdl(void) const;
     bool SupportsTimers(void) const;
@@ -648,6 +655,7 @@ namespace PVR
     bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
     std::string            m_strHostName;          /*!< the host name */
     PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
+    PVR_TIMER_TYPES        m_timertypes;           /*!< timer types supported by this backend */
     int                    m_iClientId;            /*!< database ID of the client */
 
     /* cached data */

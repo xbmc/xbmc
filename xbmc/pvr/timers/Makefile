@@ -1,4 +1,5 @@
 SRCS=PVRTimerInfoTag.cpp \
+     PVRTimerType.cpp \
      PVRTimers.cpp
 
 LIB=pvrtimers.a

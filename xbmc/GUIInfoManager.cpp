@@ -590,6 +590,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "channelgroup",     LISTITEM_CHANNEL_GROUP },
                                   { "hasepg",           LISTITEM_HAS_EPG },
                                   { "hastimer",         LISTITEM_HASTIMER },
+                                  { "hastimerschedule", LISTITEM_HASTIMERSCHEDULE },
                                   { "hasrecording",     LISTITEM_HASRECORDING },
                                   { "isrecording",      LISTITEM_ISRECORDING },
                                   { "inprogress",       LISTITEM_INPROGRESS },
@@ -601,7 +602,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "stereoscopicmode", LISTITEM_STEREOSCOPIC_MODE },
                                   { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC },
                                   { "imdbnumber",       LISTITEM_IMDBNUMBER },
-                                  { "episodename",      LISTITEM_EPISODENAME }};
+                                  { "episodename",      LISTITEM_EPISODENAME },
+                                  { "timertype",        LISTITEM_TIMERTYPE }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -5354,6 +5356,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         return item->GetEPGInfoTag()->EpisodeName();
       break;
     }
+  case LISTITEM_TIMERTYPE:
+    {
+      if (item->HasPVRTimerInfoTag())
+        return item->GetPVRTimerInfoTag()->GetTypeAsString();
+    }
+    break;
   }
   return "";
 }
@@ -5475,6 +5483,15 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
         if (timer && timer->HasPVRTimerInfoTag())
           return timer->GetPVRTimerInfoTag()->IsActive();
+      }
+    }
+    else if (condition == LISTITEM_HASTIMERSCHEDULE)
+    {
+      if (pItem->HasEPGInfoTag())
+      {
+        CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
+        if (timer && timer->HasPVRTimerInfoTag())
+          return timer->GetPVRTimerInfoTag()->IsRepeating();
       }
     }
     else if (condition == LISTITEM_HASRECORDING)

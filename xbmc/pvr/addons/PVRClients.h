@@ -341,10 +341,11 @@ namespace PVR
      * @brief Delete a timer from the backend.
      * @param timer The timer to delete.
      * @param bForce Also delete when currently recording if true.
+     * @param bDeleteSchedule Also delete schedule instead of single timer.
      * @param error An error if it occured.
      * @return True if the timer was deleted successfully, false otherwise.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule);
 
     /*!
      * @brief Rename a timer on the backend.
@@ -354,6 +355,13 @@ namespace PVR
      * @return True if the timer was renamed successfully, false otherwise.
      */
     PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName);
+
+    /*!
+     * @brief Get all pre-defined and custom timer types supported by a client.
+     * @param iClientId The ID of the client to get the timer types for.
+     * @return The timer types.
+     */
+    const PVR_TIMER_TYPES *GetTimerTypes(int iClientID) const;
 
     //@}
 
@@ -602,7 +610,6 @@ namespace PVR
     bool SupportsChannelSettings(int iClientId) const;
     bool SupportsLastPlayedPosition(int iClientId) const;
     bool SupportsRadio(int iClientId) const;
-    bool SupportsRecordingFolders(int iClientId) const;
     bool SupportsRecordingPlayCount(int iClientId) const;
     bool SupportsRecordingEdl(int iClientId) const;
     bool SupportsTimers(int iClientId) const;

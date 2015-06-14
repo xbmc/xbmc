@@ -67,7 +67,7 @@ public:
   static void SettingOptionsAudioDevicesPassthroughFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsAudioQualityLevelsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   static void SettingOptionsAudioStreamsilenceFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
-  static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting);
+  static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data);
   static void KeepConfiguration(unsigned int millis);
   static void DeviceChange();
 

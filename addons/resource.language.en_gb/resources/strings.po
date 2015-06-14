@@ -3365,7 +3365,227 @@ msgctxt "#802"
 msgid "%s of %s available"
 msgstr ""
 
-#empty strings from id 803 to 849
+#. Label of list control for choosing the timer type (one time, repeating, ...) in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#803"
+msgid "Type"
+msgstr ""
+
+#. Label of 'Guide data title search' edit field in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#804"
+msgid "Search guide for"
+msgstr ""
+
+#. Help of 'Guide data title search' edit field in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#805"
+msgid "Enter the search string to use to lookup matching events in the guide"
+msgstr ""
+
+#. Label of "Fulltext search" edit field in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#806"
+msgid "Fulltext search (or title search only)"
+msgstr ""
+
+#. special days of week representation value for a timer schedule
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#807"
+msgid "Any day"
+msgstr ""
+
+#. special days of week representation for a repeating timer
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#808"
+msgid "Every day"
+msgstr ""
+
+#. special channel representation value for a repeating timer
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#809"
+msgid "Any channel"
+msgstr ""
+
+#. Label of "Any time" radio button in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#810"
+msgid "Any time"
+msgstr ""
+
+# empty string with id 811
+
+#. Label for setting TV->Recordings->Prevent duplicate episodes
+#: system/settings/settings.xml
+#. Label of prevent duplicate episodes list control (if user does not want to record the same episode multiple times) in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#812"
+msgid "Prevent duplicate episodes"
+msgstr ""
+
+#. Label of pre-record margin spinner in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#813"
+msgid "Start padding time"
+msgstr ""
+
+#. Label of post-record margin spinner in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#814"
+msgid "End padding time"
+msgstr ""
+
+#. Value of prevent duplicate episodes list control
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#815"
+msgid "Record all episodes"
+msgstr ""
+
+#. Value of prevent duplicate episodes list control
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#816"
+msgid "Record only new episodes"
+msgstr ""
+
+#empty strings from id 817 to 819
+
+#. Representation of a one-time timer.
+#: xbmc/pvr/addons/PVRClient.cpp
+msgctxt "#820"
+msgid "One time"
+msgstr ""
+
+#. Representation of an epg-based one-time timer.
+#: xbmc/pvr/addons/PVRClient.cpp
+msgctxt "#821"
+msgid "One time (guide-based)"
+msgstr ""
+
+#. Representation of a timer schedule
+#: xbmc/pvr/addons/PVRClient.cpp
+msgctxt "#822"
+msgid "Repeating"
+msgstr ""
+
+#. Representation of an epg-based timer schedule.
+#: xbmc/pvr/addons/PVRClient.cpp
+msgctxt "#823"
+msgid "Repeating (guide-based)"
+msgstr ""
+
+#empty string with id 824
+
+#. Representation of PVR timer state "disabled"
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#825"
+msgid "Inactive"
+msgstr ""
+
+#. Notification text to announce that a timer was activated
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#826"
+msgid "Timer activated"
+msgstr ""
+
+#. Notification text to announce that a timer was deactivated
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#827"
+msgid "Timer deactivated"
+msgstr ""
+
+#. Text for notification that a repeating timer has been deleted
+#: xbmc/pvr/timers/PVRTimers.cpp
+msgctxt "#828"
+msgid "Repeating timer deleted"
+msgstr ""
+
+#empty string from id 829 to 830
+
+#. Weekday representation
+#: xbmc/dialogs/GUIDialogPVRTimerWeekdaysSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#831"
+msgid "Mondays"
+msgstr ""
+
+#. Weekday representation
+#: xbmc/dialogs/GUIDialogPVRTimerWeekdaysSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#832"
+msgid "Tuesdays"
+msgstr ""
+
+#. Weekday representation
+#: xbmc/dialogs/GUIDialogPVRTimerWeekdaysSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#833"
+msgid "Wednesdays"
+msgstr ""
+
+#. Weekday representation
+#: xbmc/dialogs/GUIDialogPVRTimerWeekdaysSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#834"
+msgid "Thursdays"
+msgstr ""
+
+#. Weekday representation
+#: xbmc/dialogs/GUIDialogPVRTimerWeekdaysSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#835"
+msgid "Fridays"
+msgstr ""
+
+#. Weekday representation
+#: xbmc/dialogs/GUIDialogPVRTimerWeekdaysSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#836"
+msgid "Saturdays"
+msgstr ""
+
+#. Weekday representation
+#: xbmc/dialogs/GUIDialogPVRTimerWeekdaysSettings.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#837"
+msgid "Sundays"
+msgstr ""
+
+#empty strings from id 838 to 839
+
+#. Message in a dialog when a user wants to delete a repeating timer
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
+msgctxt "#840"
+msgid "You are about to delete a repeating timer. Do you also want to delete all timers currently scheduled by this timer?"
+msgstr ""
+
+#. Label of a context menu entry to create a new recording timer with advanced configuration options
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+msgctxt "#841"
+msgid "Add custom timer"
+msgstr ""
+
+#. Label of the option to switch between hierarchical and flat timer view (in confluence sideblade).
+#: skin.confluence
+msgctxt "#842"
+msgid "Group timers"
+msgstr ""
+
+#. Label of a context menu entry to activate a currently inactive timer
+#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
+msgctxt "#843"
+msgid "Activate"
+msgstr ""
+
+#. Label of a context menu entry to deactivate a currently active timer
+#: xbmc/pvr/windows/GUIWindowPVRTimers.cpp
+msgctxt "#844"
+msgid "Deactivate"
+msgstr ""
+
+#empty strings from id 845 to 849
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -8000,46 +8220,64 @@ msgctxt "#19073"
 msgid "Delay channel switch"
 msgstr ""
 
+#. Label of active/inactive radiobutton in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19074"
-msgid "Active:"
+msgid "Active"
 msgstr ""
 
+#. Label of name edit in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19075"
-msgid "Name:"
+msgid "Name"
 msgstr ""
 
+#. Label of recording folder edit in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19076"
-msgid "Folder:"
+msgid "Folder"
 msgstr ""
 
 #empty string with id 19077
 
+#. Label of channel selector list in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19078"
-msgid "Channel:"
+msgid "Channel"
 msgstr ""
 
+#. heading for PVR timer days of week settings dialog
+#: skin.confluence
+#. Label of days of week button in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19079"
-msgid "Day:"
+msgid "Days of week"
 msgstr ""
 
 msgctxt "#19080"
-msgid "Begin:"
+msgid "Begin"
 msgstr ""
 
 msgctxt "#19081"
-msgid "End:"
+msgid "End"
 msgstr ""
 
+#. Label of priority spinner in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19082"
-msgid "Priority:"
+msgid "Priority"
 msgstr ""
 
+#. Label of lifetime spinner in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19083"
-msgid "Lifetime (days):"
+msgid "Lifetime"
 msgstr ""
 
+#. Label of first day (dd mm yy) button in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19084"
-msgid "First day:"
+msgid "First day"
 msgstr ""
 
 msgctxt "#19085"
@@ -8224,18 +8462,26 @@ msgctxt "#19125"
 msgid "Ignore present recordings"
 msgstr ""
 
+#. Label of "Start time" spinner in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19126"
 msgid "Start time"
 msgstr ""
 
+#. Label of "End time" edit field in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19127"
 msgid "End time"
 msgstr ""
 
+#. Label of "Start date" spinner field in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19128"
 msgid "Start date"
 msgstr ""
 
+#. Label of "End date" edit field in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#19129"
 msgid "End date"
 msgstr ""
@@ -8365,7 +8611,11 @@ msgctxt "#19160"
 msgid "to"
 msgstr ""
 
-#empty string with id 19161
+#. timer schedule presentation string. <start-day-date|days-of-week> "from" <start-day-time|"any time"> "to" <end-day-time|"any time">
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
+msgctxt "#19161"
+msgid "any time"
+msgstr ""
 
 msgctxt "#19162"
 msgid "Recording active"
@@ -8432,12 +8682,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19175"
-msgid "Start padding time"
+msgid "Default start padding time"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19176"
-msgid "End padding time"
+msgid "Default end padding time"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -15926,7 +16176,11 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using Amlogic decoder."
 msgstr ""
 
-#empty string with id 36423
+#. Description of setting "TV -> Recording -> Prevent duplicate episodes" with label #812
+#: system/settings/settings.xml
+msgctxt "#36423"
+msgid "Repeating schedules shall only record new episodes. Not supported by all add-ons and backends."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36424"
