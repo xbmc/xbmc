@@ -2598,6 +2598,9 @@ void CApplication::Stop(int exitCode)
     vExitCode["exitcode"] = exitCode;
     CAnnouncementManager::Get().Announce(System, "xbmc", "OnQuit", vExitCode);
 
+    // Abort any active screensaver
+    WakeUpScreenSaverAndDPMS();
+
     SaveFileState(true);
 
     g_alarmClock.StopThread();
