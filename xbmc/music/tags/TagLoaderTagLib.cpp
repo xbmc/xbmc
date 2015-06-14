@@ -382,10 +382,12 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
   ReplayGain replayGainInfo;
 
   ID3v2::AttachedPictureFrame *pictures[3] = {};
+  bool artistsTagFound = false;
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
   for (ID3v2::FrameListMap::ConstIterator it = frameListMap.begin(); it != frameListMap.end(); ++it)
   {
-    if      (it->first == "TPE1")   SetArtist(tag, GetID3v2StringList(it->second));
+    // If the ARTISTS tag has been set the information in that tag should be prefered compared to TPE1
+    if      (it->first == "TPE1" && ! artistsTagFound )  SetArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TALB")   tag.SetAlbum(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TPE2")   SetAlbumArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TIT2")   tag.SetTitle(it->second.front()->toString().to8Bit(true));
@@ -448,6 +450,15 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
           SetAlbumArtist(tag, StringListToVectorString(stringList));
         else if (desc == "ALBUM ARTIST")
           SetAlbumArtist(tag, StringListToVectorString(stringList));
+        else if (desc == "ARTISTS" ) 
+        {
+          artistsTagFound = true;
+          // id3v2.3 uses / as the separator in the field
+          if (id3v2->header()->majorVersion() < 4)
+            SetArtist(tag,StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
+          else 
+            SetArtist(tag,StringListToVectorString(stringList));
+        }
         else if (desc == "MOOD")
           tag.SetMood(stringList.front().to8Bit(true));
         else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
@@ -528,11 +539,17 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
     return false;
 
   ReplayGain replayGainInfo;
+  bool artistsTagFound = false;
   const APE::ItemListMap itemListMap = ape->itemListMap();
   for (APE::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
   {
-    if (it->first == "ARTIST")
+    if (it->first == "ARTIST" && ! artistsTagFound)
       SetArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ARTISTS")
+    {
+      artistsTagFound = true;
+      SetArtist(tag, StringListToVectorString(it->second.toStringList()));
+    }
     else if (it->first == "ALBUM ARTIST" || it->first == "ALBUMARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUM")
@@ -590,12 +607,18 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
 
   FLAC::Picture pictures[3];
   ReplayGain replayGainInfo;
+  bool artistsTagFound = false;
 
   const Ogg::FieldListMap& fieldListMap = xiph->fieldListMap();
   for (Ogg::FieldListMap::ConstIterator it = fieldListMap.begin(); it != fieldListMap.end(); ++it)
   {
-    if (it->first == "ARTIST")
+    if (it->first == "ARTIST" && ! artistsTagFound )
       SetArtist(tag, StringListToVectorString(it->second));
+    else if (it->first == "ARTISTS")
+    {
+      SetArtist(tag, StringListToVectorString(it->second));
+      artistsTagFound = true;
+    }
     else if (it->first == "ALBUMARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "ALBUM ARTIST")
