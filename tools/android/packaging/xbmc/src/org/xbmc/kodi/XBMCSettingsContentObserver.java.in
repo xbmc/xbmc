@@ -41,8 +41,10 @@ public class XBMCSettingsContentObserver extends ContentObserver
 
     Log.d(TAG, "Setting changed: " + uri.toString());
 
-    if (uri.compareTo(Uri
-        .parse("content://settings/system/volume_music_speaker")) == 0)
+    if (
+        uri.compareTo(Uri.parse("content://settings/system/volume_music_speaker")) == 0 ||
+        uri.compareTo(Uri.parse("content://settings/system/volume_music_hdmi")) == 0
+        )
     {
       AudioManager audio = (AudioManager) context
           .getSystemService(Context.AUDIO_SERVICE);
