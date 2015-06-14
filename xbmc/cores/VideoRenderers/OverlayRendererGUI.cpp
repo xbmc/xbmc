@@ -170,7 +170,8 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   mat.m[0][3] = rd.x1;
   mat.m[1][3] = rd.y1;
 
-  float x = state.x, y = state.y;
+  float x = state.x;
+  float y = state.y;
   mat.InverseTransformPosition(x, y);
 
   g_graphicsContext.SetTransform(mat, 1.0f, 1.0f);
@@ -178,7 +179,7 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   float width_max = (float) res.Overscan.right - res.Overscan.left;
 
   if (m_subalign == SUBTITLE_ALIGN_MANUAL
-  ||  m_subalign == SUBTITLE_ALIGN_TOP_OUTSIDE
+  ||  m_subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE
   ||  m_subalign == SUBTITLE_ALIGN_BOTTOM_INSIDE)
     y -= m_height;
 
