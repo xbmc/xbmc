@@ -16,6 +16,86 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+msgctxt "#32001"
+msgid "We would like to recommend you to upgrade."
+msgstr "Sürüm güncellemenizi tavsiye ederiz."
+
+msgctxt "#32002"
+msgid "Visit Kodi.tv for more information."
+msgstr "Daha fazla bilgi için Kodi.tv adresini ziyaret edin."
+
+msgctxt "#32009"
+msgid "Would you like to remove this reminder?"
+msgstr "Bu hatırlatmayı kaldırmak istermisiniz?"
+
+msgctxt "#32010"
+msgid "You can enable/disable it through add-on settings."
+msgstr "Eklenti ayarlarından etkinleştir/etkinleştirmeyi kaldırabilirsiniz."
+
+msgctxt "#32011"
+msgid "Use your package manager(apt) to upgrade."
+msgstr "Güncelleme için paket yöneticinizi(apt) kullanabilirsiniz."
+
+msgctxt "#32012"
+msgid "A new version is available, do you want to upgrade now?"
+msgstr "Yeni bir versiyon mevcut, şimdi güncellemek istermisiniz?"
+
+msgctxt "#32013"
+msgid "Upgrade successful"
+msgstr "Güncelleme başarılı"
+
+msgctxt "#32014"
+msgid "Do you want to restart Kodi to finish the upgrade?"
+msgstr "Güncellemeyi tamamlamak için Kodi'yi yeniden başlatmak istermisiniz?"
+
+msgctxt "#32015"
+msgid "Do you want to check the repository for a new version?"
+msgstr "Yeni bir versiyon için depoyu kontrol etmek istermisiniz?"
+
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "Daha yeni stabil bir Kodi versiyonu mevcut."
+
 msgctxt "#32020"
 msgid "General"
 msgstr "Genel"
+
+msgctxt "#32021"
+msgid "Enable Kodi version check?"
+msgstr "Kodi versiyon kontrolünü etkinleştir?"
+
+msgctxt "#32022"
+msgid "Please enter your password"
+msgstr "Lütfen şifrenizi giriniz"
+
+msgctxt "#32023"
+msgid "Linux: Upgrade complete system"
+msgstr "Linux: Tüm sistemi güncelle"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "Linux: apt kullanarak güncelle"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Yeni stabil bir Kodi versiyonu mevcut."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Daha fazla bilgi için http://kodi.tv ziyaret ediniz."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Yeni stabil bir Kodi versiyonu mevcut."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Daha fazla bilgi için http://kodi.tv ziyaret ediniz."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "%s kullanırken %s mevcut."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "Daha yeni bir versiyona güncellemeniz tavsiye olunur."

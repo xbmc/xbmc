@@ -28,6 +28,10 @@ msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "¿Desea eliminar este recordatorio?"
 
+msgctxt "#32010"
+msgid "You can enable/disable it through add-on settings."
+msgstr "Puede activarlo/desactivarlo a través de los ajustes del add-on ."
+
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
 msgstr "Use su administrador de paquetes (apt) para actualizar."
@@ -71,3 +75,27 @@ msgstr "Linux: Actualizar sistema completo"
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Linux: Actualizar usado apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "Una nueva versión estable de Kodi está disponible."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Visite http://kodi.tv para más información."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "Una nueva versión estable de Kodi está disponible."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "Visite http://kodi.tv para más información."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Usando %s mientras que %s está disponible."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "Se recomienda que actualice a una nueva versión."

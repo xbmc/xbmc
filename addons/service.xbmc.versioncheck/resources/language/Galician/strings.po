@@ -28,13 +28,17 @@ msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Quere eliminar este aviso?"
 
+msgctxt "#32010"
+msgid "You can enable/disable it through add-on settings."
+msgstr "Pode des/activalo a través dos axustes do complemento."
+
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
 msgstr "Use o xestor de paquetes(apt) para actualizar."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr "Hai unha nova versión dispoñíbel, ¿quere actualizar agora?"
+msgstr "Hai unha nova versión dispoñíbel, quere actualizar agora?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
@@ -82,12 +86,16 @@ msgstr "Ir a http://kodi.tv para máis información."
 
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr "Está dispoñible unha versión estable nova de Kodi. "
+msgstr "Está dispoñíbel unha nova versión estábel de Kodi. "
 
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
 msgstr "Ir a http://kodi.tv para máis información."
 
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "Está a empregar a versión %s mentres que a %s está dispoñíbel."
+
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."
-msgstr "É recomendable actualizar á nova versión."
+msgstr "É recomendábel actualizar á nova versión."

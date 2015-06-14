@@ -1,3 +1,7 @@
+v0.3.3
+- Updated language files from Transifex
+- Update version list
+
 v0.3.2
 - Don't notify on newer unreleased builds
 

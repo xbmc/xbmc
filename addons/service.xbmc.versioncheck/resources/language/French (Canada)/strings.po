@@ -26,7 +26,7 @@ msgstr "Visitez Kodi.tv pour plus d'information."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr "Voulez-vous enlever ce rappel?"
+msgstr "Voulez-vous supprimer ce rappel?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
@@ -38,7 +38,7 @@ msgstr "Utilisez votre gestionnaire de paquets (apt) pour mettre à niveau."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr "Une nouvelle version est disponible, voulez-vous mettre à niveau maintenant?"
+msgstr "Une nouvelle version est proposée, voulez-vous mettre à niveau maintenant?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
@@ -50,11 +50,11 @@ msgstr "Voulez-vous redémarrer Kodi pour finir la mise à niveau?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr "Voulez-vous vérifier si une nouvelle version est disponible dans le dépôt?"
+msgstr "Voulez-vous vérifier si une nouvelle version est proposée dans le dépôt?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr "Il y a une nouvelle version stable de Kodi disponible."
+msgstr "Une nouvelle version stable de Kodi est proposée."
 
 msgctxt "#32020"
 msgid "General"
@@ -78,7 +78,7 @@ msgstr "Linux : mettre à niveau en utilisant apt"
 
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr "Une nouvelle version stable de Kodi est disponible."
+msgstr "Une nouvelle version stable de Kodi est proposée."
 
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
@@ -86,7 +86,7 @@ msgstr "Visitez http://kodi.tv pour plus d'informations."
 
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr "Une nouvelle version de Kodi est disponible."
+msgstr "Une nouvelle version de Kodi est proposée."
 
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
@@ -94,7 +94,7 @@ msgstr "Visitez http://kodi.tv pour plus d'informations."
 
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr "%s est utilisé alors que %s est disponible."
+msgstr "%s est utilisée alors que %s est proposée."
 
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."
