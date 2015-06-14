@@ -3313,6 +3313,9 @@ void CApplication::OnPlayBackEnded()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackEnded();
 #endif
+#ifdef TARGET_ANDROID
+  CXBMCApp::OnPlayBackEnded();
+#endif
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = true;
@@ -3334,6 +3337,9 @@ void CApplication::OnPlayBackStarted()
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted();
+#endif
+#ifdef TARGET_ANDROID
+  CXBMCApp::OnPlayBackStarted();
 #endif
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
@@ -3369,6 +3375,9 @@ void CApplication::OnPlayBackStopped()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackStopped();
 #endif
+#ifdef TARGET_ANDROID
+  CXBMCApp::OnPlayBackStopped();
+#endif
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = false;
@@ -3383,6 +3392,9 @@ void CApplication::OnPlayBackPaused()
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackPaused();
 #endif
+#ifdef TARGET_ANDROID
+  CXBMCApp::OnPlayBackPaused();
+#endif
 
   CVariant param;
   param["player"]["speed"] = 0;
@@ -3394,6 +3406,9 @@ void CApplication::OnPlayBackResumed()
 {
 #ifdef HAS_PYTHON
   g_pythonParser.OnPlayBackResumed();
+#endif
+#ifdef TARGET_ANDROID
+  CXBMCApp::OnPlayBackResumed();
 #endif
 
   CVariant param;

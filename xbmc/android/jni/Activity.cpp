@@ -88,3 +88,11 @@ void CJNIApplicationMainActivity::_onVolumeChanged(JNIEnv *env, jobject context,
   if(m_appInstance)
     m_appInstance->onVolumeChanged(volume);
 }
+
+void CJNIApplicationMainActivity::_onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange)
+{
+  (void)env;
+  (void)context;
+  if(m_appInstance)
+    m_appInstance->onAudioFocusChange(focusChange);
+}

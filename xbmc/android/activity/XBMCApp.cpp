@@ -54,7 +54,6 @@
 #include "android/jni/Intent.h"
 #include "android/jni/PackageManager.h"
 #include "android/jni/Context.h"
-#include "android/jni/AudioManager.h"
 #include "android/jni/PowerManager.h"
 #include "android/jni/WakeLock.h"
 #include "android/jni/Environment.h"
@@ -91,6 +90,8 @@ void* thread_run(void* obj)
   (static_cast<T*>(obj)->*fn)();
   return NULL;
 }
+
+CXBMCApp* CXBMCApp::m_xbmcappinstance = NULL;
 CEvent CXBMCApp::m_windowCreated;
 ANativeActivity *CXBMCApp::m_activity = NULL;
 CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
@@ -105,6 +106,7 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIApplicationMainActivity(nativeActivity)
   , CJNIBroadcastReceiver("org/xbmc/kodi/XBMCBroadcastReceiver")
 {
+  m_xbmcappinstance = this;
   m_activity = nativeActivity;
   m_firstrun = true;
   m_exiting=false;
@@ -118,6 +120,7 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
 
 CXBMCApp::~CXBMCApp()
 {
+  m_xbmcappinstance = NULL;
   delete m_wakeLock;
 }
 
@@ -303,6 +306,45 @@ bool CXBMCApp::EnableWakeLock(bool on)
   return true;
 }
 
+bool CXBMCApp::AcquireAudioFocus()
+{
+  if (!m_xbmcappinstance)
+    return false;
+
+  CJNIAudioManager audioManager(getSystemService("audio"));
+
+  // Request audio focus for playback
+  int result = audioManager.requestAudioFocus(*m_xbmcappinstance,
+                                              // Use the music stream.
+                                              CJNIAudioManager::STREAM_MUSIC,
+                                              // Request permanent focus.
+                                              CJNIAudioManager::AUDIOFOCUS_GAIN);
+
+  if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
+  {
+    CXBMCApp::android_printf("Audio Focus request failed");
+    return false;
+  }
+  return true;
+}
+
+bool CXBMCApp::ReleaseAudioFocus()
+{
+  if (!m_xbmcappinstance)
+    return false;
+
+  CJNIAudioManager audioManager(getSystemService("audio"));
+
+  // Release audio focus after playback
+  int result = audioManager.abandonAudioFocus(*m_xbmcappinstance);
+  if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
+  {
+    CXBMCApp::android_printf("Audio Focus abandon failed");
+    return false;
+  }
+  return true;
+}
+
 bool CXBMCApp::HasFocus()
 {
   return m_hasFocus;
@@ -437,6 +479,31 @@ int CXBMCApp::GetDPI()
   AConfiguration_delete(config);
 
   return dpi;
+}
+
+void CXBMCApp::OnPlayBackStarted()
+{
+  AcquireAudioFocus();
+}
+
+void CXBMCApp::OnPlayBackPaused()
+{
+  ReleaseAudioFocus();
+}
+
+void CXBMCApp::OnPlayBackResumed()
+{
+  AcquireAudioFocus();
+}
+
+void CXBMCApp::OnPlayBackStopped()
+{
+  ReleaseAudioFocus();
+}
+
+void CXBMCApp::OnPlayBackEnded()
+{
+  ReleaseAudioFocus();
 }
 
 std::vector<androidPackage> CXBMCApp::GetApplications()
@@ -684,6 +751,13 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 void CXBMCApp::onVolumeChanged(int volume)
 {
   CApplicationMessenger::Get().SendAction(CAction(ACTION_VOLUME_SET, (float)volume), WINDOW_INVALID, false);
+}
+
+void CXBMCApp::onAudioFocusChange(int focusChange)
+{
+  CXBMCApp::android_printf("Audio Focus changed: %d", focusChange);
+  if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS && g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_PAUSE), WINDOW_INVALID, true);
 }
 
 void CXBMCApp::SetupEnv()

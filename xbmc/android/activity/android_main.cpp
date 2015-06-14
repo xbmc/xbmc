@@ -90,6 +90,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   std::string bcReceiver = "org/xbmc/" + appName + "/XBMCBroadcastReceiver";
   std::string frameListener = "org/xbmc/" + appName + "/XBMCOnFrameAvailableListener";
   std::string settingsObserver = "org/xbmc/" + appName + "/XBMCSettingsContentObserver";
+  std::string audioFocusChangeListener = "org/xbmc/" + appName + "/XBMCOnAudioFocusChangeListener";
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
@@ -140,6 +141,17 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       (void*)&CJNIApplicationMainActivity::_onVolumeChanged
     };
     env->RegisterNatives(cSettingsObserver, &mOnVolumeChanged, 1);
+  }
+
+  jclass cAudioFocusChangeListener = env->FindClass(audioFocusChangeListener.c_str());
+  if(cAudioFocusChangeListener)
+  {
+    JNINativeMethod mOnAudioFocusChange = {
+      "_onAudioFocusChange",
+      "(I)V",
+      (void*)&CJNIApplicationMainActivity::_onAudioFocusChange
+    };
+    env->RegisterNatives(cAudioFocusChangeListener, &mOnAudioFocusChange, 1);
   }
 
   return version;
