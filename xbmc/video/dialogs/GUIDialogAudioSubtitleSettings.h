@@ -22,6 +22,8 @@
 
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
+class CVariant;
+
 class CGUIDialogAudioSubtitleSettings : public CGUIDialogSettingsManualBase
 {
 public:

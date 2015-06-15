@@ -27,6 +27,8 @@
 #include "JSONRPCUtils.h"
 #include "JSONServiceDescription.h"
 
+class CVariant;
+
 namespace JSONRPC
 {
   /*!

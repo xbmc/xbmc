@@ -63,6 +63,7 @@
 #include "video/VideoDbUrl.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/GroupUtils.h"
+#include "utils/Variant.h"
 #include "Application.h"
 #include "guiinfo/GUIInfoLabels.h"
 
@@ -4071,10 +4072,10 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath, CGUIDialog
 
     if (progress)
     {
-      progress->SetHeading(700);
-      progress->SetLine(0, "");
-      progress->SetLine(1, 313);
-      progress->SetLine(2, 330);
+      progress->SetHeading(CVariant{700});
+      progress->SetLine(0, CVariant{""});
+      progress->SetLine(1, CVariant{313});
+      progress->SetLine(2, CVariant{330});
       progress->SetPercentage(0);
       progress->StartModal();
       progress->ShowProgressBar(true);
@@ -7656,10 +7657,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (progress)
       {
-        progress->SetHeading(700);
-        progress->SetLine(0, "");
-        progress->SetLine(1, 313);
-        progress->SetLine(2, 330);
+        progress->SetHeading(CVariant{700});
+        progress->SetLine(0, CVariant{""});
+        progress->SetLine(1, CVariant{313});
+        progress->SetLine(2, CVariant{330});
         progress->SetPercentage(0);
         progress->StartModal();
         progress->ShowProgressBar(true);
@@ -8034,10 +8035,10 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
             if (pDialog != NULL)
             {
               CURL sourceUrl(sourcePath);
-              pDialog->SetHeading(15012);
-              pDialog->SetText(StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str()));
-              pDialog->SetChoice(0, 15015);
-              pDialog->SetChoice(1, 15014);
+              pDialog->SetHeading(CVariant{15012});
+              pDialog->SetText(CVariant{StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str())});
+              pDialog->SetChoice(0, CVariant{15015});
+              pDialog->SetChoice(1, CVariant{15014});
 
               //send message and wait for user input
               ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow() };
@@ -8165,10 +8166,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
 
     if (progress)
     {
-      progress->SetHeading(647);
-      progress->SetLine(0, 650);
-      progress->SetLine(1, "");
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{647});
+      progress->SetLine(0, CVariant{650});
+      progress->SetLine(1, CVariant{""});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
       progress->StartModal();
       progress->ShowProgressBar(true);
@@ -8213,7 +8214,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
 
       if (progress)
       {
-        progress->SetLine(1, movie.m_strTitle);
+        progress->SetLine(1, CVariant{movie.m_strTitle});
         progress->SetPercentage(current * 100 / total);
         progress->Progress();
         if (progress->IsCanceled())
@@ -8310,7 +8311,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
 
       if (progress)
       {
-        progress->SetLine(1, movie.m_strTitle);
+        progress->SetLine(1, CVariant{movie.m_strTitle});
         progress->SetPercentage(current * 100 / total);
         progress->Progress();
         if (progress->IsCanceled())
@@ -8408,7 +8409,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
 
       if (progress)
       {
-        progress->SetLine(1, tvshow.m_strTitle);
+        progress->SetLine(1, CVariant{tvshow.m_strTitle});
         progress->SetPercentage(current * 100 / total);
         progress->Progress();
         if (progress->IsCanceled())
@@ -8608,7 +8609,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
     progress->Close();
 
   if (iFailCount > 0)
-    CGUIDialogOK::ShowAndGetInput(647, StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount));
+    CGUIDialogOK::ShowAndGetInput(CVariant{647}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount)});
 }
 
 void CVideoDatabase::ExportActorThumbs(const std::string &strDir, const CVideoInfoTag &tag, bool singleFiles, bool overwrite /*=false*/)
@@ -8654,10 +8655,10 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
     progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
-      progress->SetHeading(648);
-      progress->SetLine(0, 649);
-      progress->SetLine(1, 330);
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{648});
+      progress->SetLine(0, CVariant{649});
+      progress->SetLine(1, CVariant{330});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
       progress->StartModal();
       progress->ShowProgressBar(true);
@@ -8794,7 +8795,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
       if (progress && total)
       {
         progress->SetPercentage(current * 100 / total);
-        progress->SetLine(2, info.m_strTitle);
+        progress->SetLine(2, CVariant{info.m_strTitle});
         progress->Progress();
         if (progress->IsCanceled())
         {

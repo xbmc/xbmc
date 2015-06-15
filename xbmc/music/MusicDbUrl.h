@@ -23,6 +23,8 @@
 
 #include "DbUrl.h"
 
+class CVariant;
+
 class CMusicDbUrl : public CDbUrl
 {
 public:

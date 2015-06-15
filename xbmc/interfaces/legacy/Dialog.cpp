@@ -30,6 +30,7 @@
 #include "ModuleXbmcgui.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "WindowException.h"
 #include "ApplicationMessenger.h"
 #include "Dialog.h"
@@ -63,18 +64,18 @@ namespace XBMCAddon
 
       // get lines, last 4 lines are optional.
       if (!heading.empty())
-        pDialog->SetHeading(heading);
+        pDialog->SetHeading(CVariant{heading});
       if (!line1.empty())
-        pDialog->SetLine(0, line1);
+        pDialog->SetLine(0, CVariant{line1});
       if (!line2.empty())
-        pDialog->SetLine(1, line2);
+        pDialog->SetLine(1, CVariant{line2});
       if (!line3.empty())
-        pDialog->SetLine(2, line3);
+        pDialog->SetLine(2, CVariant{line3});
 
       if (!nolabel.empty())
-        pDialog->SetChoice(0,nolabel);
+        pDialog->SetChoice(0, CVariant{nolabel});
       if (!yeslabel.empty())
-        pDialog->SetChoice(1,yeslabel);
+        pDialog->SetChoice(1, CVariant{yeslabel});
 
       if (autoclose > 0)
         pDialog->SetAutoClose(autoclose);
@@ -95,7 +96,7 @@ namespace XBMCAddon
 
       pDialog->Reset();
       if (!heading.empty())
-        pDialog->SetHeading(heading);
+        pDialog->SetHeading(CVariant{heading});
 
       String listLine;
       for(unsigned int i = 0; i < list.size(); i++)
@@ -124,13 +125,13 @@ namespace XBMCAddon
         throw WindowException("Error: Window is NULL, this is not possible :-)");
 
       if (!heading.empty())
-        pDialog->SetHeading(heading);
+        pDialog->SetHeading(CVariant{heading});
       if (!line1.empty())
-        pDialog->SetLine(0, line1);
+        pDialog->SetLine(0, CVariant{line1});
       if (!line2.empty())
-        pDialog->SetLine(1, line2);
+        pDialog->SetLine(1, CVariant{line2});
       if (!line3.empty())
-        pDialog->SetLine(2, line3);
+        pDialog->SetLine(2, CVariant{line3});
 
       //send message and wait for user input
       XBMCWaitForThreadMessage(TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW);
@@ -286,7 +287,7 @@ namespace XBMCAddon
         case INPUT_ALPHANUM:
           {
             bool bHiddenInput = (option & ALPHANUM_HIDE_INPUT) == ALPHANUM_HIDE_INPUT;
-            if (!CGUIKeyboardFactory::ShowAndGetInput(value, heading, true, bHiddenInput, autoclose))
+            if (!CGUIKeyboardFactory::ShowAndGetInput(value, CVariant{heading}, true, bHiddenInput, autoclose))
               value = emptyString;
           }
           break;
@@ -378,14 +379,14 @@ namespace XBMCAddon
       dlg = pDialog;
       open = true;
 
-      pDialog->SetHeading(heading);
+      pDialog->SetHeading(CVariant{heading});
 
       if (!line1.empty())
-        pDialog->SetLine(0, line1);
+        pDialog->SetLine(0, CVariant{line1});
       if (!line2.empty())
-        pDialog->SetLine(1, line2);
+        pDialog->SetLine(1, CVariant{line2});
       if (!line3.empty())
-        pDialog->SetLine(2, line3);
+        pDialog->SetLine(2, CVariant{line3});
 
       pDialog->StartModal();
     }
@@ -411,11 +412,11 @@ namespace XBMCAddon
       }
 
       if (!line1.empty())
-        pDialog->SetLine(0, line1);
+        pDialog->SetLine(0, CVariant{line1});
       if (!line2.empty())
-        pDialog->SetLine(1, line2);
+        pDialog->SetLine(1, CVariant{line2});
       if (!line3.empty())
-        pDialog->SetLine(2, line3);
+        pDialog->SetLine(2, CVariant{line3});
     }
 
     void DialogProgress::close()

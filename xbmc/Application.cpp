@@ -1539,7 +1539,7 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
     if (confirm && !m_skinReverting)
     {
       bool cancelled;
-      if (!CGUIDialogYesNo::ShowAndGetInput(13123, 13111, cancelled, "", "", 10000))
+      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13123}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, CVariant{10000}))
       {
         m_skinReverting = true;
         if (oldSkin.empty())
@@ -2996,7 +2996,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
     else
 #endif
-      CGUIDialogOK::ShowAndGetInput(435, 436);
+      CGUIDialogOK::ShowAndGetInput(CVariant{435}, CVariant{436});
 
     return PLAYBACK_OK;
   }
@@ -3910,7 +3910,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       else if (message.GetParam1() == GUI_MSG_UI_READY)
       {
         if (m_fallbackLanguageLoaded)
-          CGUIDialogOK::ShowAndGetInput(24133, 24134);
+          CGUIDialogOK::ShowAndGetInput(CVariant{24133}, CVariant{24134});
 
         // show info dialog about moved configuration files if needed
         ShowAppMigrationMessage();
@@ -4200,7 +4200,7 @@ void CApplication::ShowAppMigrationMessage()
   if (CFile::Exists("special://home/.kodi_data_was_migrated") &&
       !CFile::Exists("special://home/.kodi_migration_info_shown"))
   {
-    CGUIDialogOK::ShowAndGetInput(24128, 24129);
+    CGUIDialogOK::ShowAndGetInput(CVariant{24128}, CVariant{24129});
     CFile tmpFile;
     // create the file which will prevent this dialog from appearing in the future
     tmpFile.OpenForWrite("special://home/.kodi_migration_info_shown");

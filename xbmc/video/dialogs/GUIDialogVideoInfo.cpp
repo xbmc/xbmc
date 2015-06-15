@@ -56,9 +56,8 @@
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
-#ifdef HAS_UPNP
-#endif
 #include "utils/FileUtils.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -117,7 +116,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow)
         {
           bool bCanceled=false;
-          if (CGUIDialogYesNo::ShowAndGetInput(20377, 20378, bCanceled))
+          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20377}, CVariant{20378}, bCanceled))
           {
             m_bRefreshAll = true;
             CVideoDatabase db;
@@ -435,10 +434,10 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
   CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (progress)
   {
-    progress->SetHeading(194);
-    progress->SetLine(0, strSearch);
-    progress->SetLine(1, "");
-    progress->SetLine(2, "");
+    progress->SetHeading(CVariant{194});
+    progress->SetLine(0, CVariant{strSearch});
+    progress->SetLine(1, CVariant{""});
+    progress->SetLine(2, CVariant{""});
     progress->StartModal();
     progress->Progress();
   }
@@ -452,7 +451,7 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
   {
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDlgSelect->Reset();
-    pDlgSelect->SetHeading(283);
+    pDlgSelect->SetHeading(CVariant{283});
 
     for (int i = 0; i < (int)items.Size(); i++)
     {
@@ -474,7 +473,7 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
   }
   else
   {
-    CGUIDialogOK::ShowAndGetInput(194, 284);
+    CGUIDialogOK::ShowAndGetInput(CVariant{194}, CVariant{284});
   }
 }
 
@@ -602,7 +601,7 @@ string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string
     return "";
 
   CFileItemList items;
-  dialog->SetHeading(13511);
+  dialog->SetHeading(CVariant{13511});
   dialog->Reset();
   dialog->SetUseDetails(true);
   dialog->EnableButton(true, 13516);
@@ -646,7 +645,7 @@ string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string
   {
     // Get the new artwork name
     std::string strArtworkName;
-    if (!CGUIKeyboardFactory::ShowAndGetInput(strArtworkName, g_localizeStrings.Get(13516), false))
+    if (!CGUIKeyboardFactory::ShowAndGetInput(strArtworkName, CVariant{g_localizeStrings.Get(13516)}, false))
       return "";
 
     return strArtworkName;
@@ -1089,7 +1088,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 14057);
+    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{14057});
     return false;
   }
 
@@ -1112,7 +1111,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
     database.GetMusicVideoInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath, detail, iDbId);
 
   // get the new title
-  if (!CGUIKeyboardFactory::ShowAndGetInput(detail.m_strTitle, g_localizeStrings.Get(16105), false))
+  if (!CGUIKeyboardFactory::ShowAndGetInput(detail.m_strTitle, CVariant{g_localizeStrings.Get(16105)}, false))
     return false;
 
   database.UpdateMovieTitle(iDbId, detail.m_strTitle, iType);
@@ -1144,7 +1143,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 14057);
+    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{14057});
     return false;
   }
 
@@ -1176,19 +1175,19 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
       return false;
   }
 
-  pDialog->SetHeading(heading);
+  pDialog->SetHeading(CVariant{heading});
 
   if (unavailable)
   {
-    pDialog->SetLine(0, g_localizeStrings.Get(662));
-    pDialog->SetLine(1, g_localizeStrings.Get(663));
+    pDialog->SetLine(0, CVariant{g_localizeStrings.Get(662)});
+    pDialog->SetLine(1, CVariant{g_localizeStrings.Get(663)});
   }
   else
   {
-    pDialog->SetLine(0, StringUtils::Format(g_localizeStrings.Get(433).c_str(), item->GetLabel().c_str()));
-    pDialog->SetLine(1, "");
+    pDialog->SetLine(0, CVariant{StringUtils::Format(g_localizeStrings.Get(433).c_str(), item->GetLabel().c_str())});
+    pDialog->SetLine(1, CVariant{""});
   }
-  pDialog->SetLine(2, "");
+  pDialog->SetLine(2, CVariant{""});
   pDialog->DoModal();
 
   if (!pDialog->IsConfirmed())
@@ -1319,7 +1318,6 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
   if (!videodb.Open())
     return false;
 
-  std::string strHeading = g_localizeStrings.Get(20457);
   std::string baseDir = StringUtils::Format("videodb://movies/sets/%d", setItem->GetVideoInfoTag()->m_iDbId);
 
   if (!CDirectory::GetDirectory(baseDir, originalMovies) || originalMovies.Size() <= 0) // keep a copy of the original members of the set
@@ -1337,7 +1335,7 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
 
   dialog->Reset();
   dialog->SetMultiSelection(true);
-  dialog->SetHeading(strHeading);
+  dialog->SetHeading(CVariant{g_localizeStrings.Get(20457)});
   dialog->SetItems(&listItems);
   vector<int> selectedIndices;
   for (int i = 0; i < originalMovies.Size(); i++)
@@ -1406,9 +1404,8 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
   if (dialog == NULL)
     return false;
 
-  std::string strHeading = g_localizeStrings.Get(20466);
   dialog->Reset();
-  dialog->SetHeading(strHeading);
+  dialog->SetHeading(CVariant{g_localizeStrings.Get(20466)});
   dialog->SetItems(&listItems);
   if (currentSetId >= 0)
   {
@@ -1427,7 +1424,7 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
   if (dialog->IsButtonPressed())
   { // creating new set
     std::string newSetTitle;
-    if (!CGUIKeyboardFactory::ShowAndGetInput(newSetTitle, g_localizeStrings.Get(20468), false))
+    if (!CGUIKeyboardFactory::ShowAndGetInput(newSetTitle, CVariant{g_localizeStrings.Get(20468)}, false))
       return false;
     int idSet = videodb.AddSet(newSetTitle);
     map<string, string> movieArt, setArt;
@@ -1518,7 +1515,7 @@ bool CGUIDialogVideoInfo::GetItemsForTag(const std::string &strHeading, const st
 
   dialog->Reset();
   dialog->SetMultiSelection(true);
-  dialog->SetHeading(strHeading);
+  dialog->SetHeading(CVariant{strHeading});
   dialog->SetItems(&listItems);
   dialog->EnableButton(true, 186);
   dialog->DoModal();
@@ -1789,7 +1786,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
   // dont allow update while scanning
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(257, 14057);
+    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{14057});
     return false;
   }
 
@@ -1812,7 +1809,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
     currentTitle = detail.m_strSortTitle;
   
   // get the new sort title
-  if (!CGUIKeyboardFactory::ShowAndGetInput(currentTitle, g_localizeStrings.Get(16107), false))
+  if (!CGUIKeyboardFactory::ShowAndGetInput(currentTitle, CVariant{g_localizeStrings.Get(16107)}, false))
     return false;
 
   return database.UpdateVideoSortTitle(iDbId, currentTitle, iType);
@@ -1868,7 +1865,7 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemo
     CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDialog->Reset();
     pDialog->SetItems(&list);
-    pDialog->SetHeading(20356);
+    pDialog->SetHeading(CVariant{20356});
     pDialog->DoModal();
     iSelectedLabel = pDialog->GetSelectedLabel();
   }

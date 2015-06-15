@@ -23,7 +23,7 @@
 #include "settings/MediaSettings.h"
 #include "network/upnp/UPnP.h"
 #include "StringUtils.h"
-#include "Variant.h"
+#include "utils/Variant.h"
 #include "URIUtils.h"
 #include "URL.h"
 #include "log.h"

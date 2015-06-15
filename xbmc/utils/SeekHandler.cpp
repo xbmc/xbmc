@@ -30,6 +30,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 CSeekHandler::CSeekHandler()
 : m_seekDelay(500),

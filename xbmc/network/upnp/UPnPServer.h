@@ -23,6 +23,7 @@
 #include "interfaces/IAnnouncer.h"
 #include "FileItem.h"
 
+class CVariant;
 class CThumbLoader;
 class PLT_MediaObject;
 class PLT_HttpRequestContext;

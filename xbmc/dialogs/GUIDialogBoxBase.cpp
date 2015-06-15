@@ -23,6 +23,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+
 
 using namespace std;
 

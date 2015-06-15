@@ -31,6 +31,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
 #include "ContextMenuManager.h"
+#include "utils/Variant.h"
 
 using namespace XFILE;
 
@@ -188,7 +189,7 @@ void CGUIDialogFavourites::OnRename(int item)
     return;
 
   std::string label((*m_favourites)[item]->GetLabel());
-  if (CGUIKeyboardFactory::ShowAndGetInput(label, g_localizeStrings.Get(16008), false))
+  if (CGUIKeyboardFactory::ShowAndGetInput(label, CVariant{g_localizeStrings.Get(16008)}, false))
     (*m_favourites)[item]->SetLabel(label);
 
   CFavouritesDirectory::Save(*m_favourites);

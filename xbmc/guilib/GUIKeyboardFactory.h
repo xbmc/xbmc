@@ -20,9 +20,10 @@
  *
  */
 
-#include "utils/Variant.h"
 #include "GUIKeyboard.h"
 #include <string>
+
+class CVariant;
 
 class CGUIKeyboardFactory
 {

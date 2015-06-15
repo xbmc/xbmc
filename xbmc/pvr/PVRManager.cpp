@@ -40,6 +40,7 @@
 #include "utils/Stopwatch.h"
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
+#include "utils/Variant.h"
 #include "interfaces/AnnouncementManager.h"
 #include "video/VideoDatabase.h"
 #include "network/Network.h"
@@ -183,7 +184,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   else if (settingId == "pvrmanager.resetdb")
   {
     if (CheckParentalPIN(g_localizeStrings.Get(19262)) &&
-        CGUIDialogYesNo::ShowAndGetInput(19098, 19186))
+        CGUIDialogYesNo::ShowAndGetInput(CVariant{19098}, CVariant{19186}))
     {
       CDateTime::ResetTimezoneBias();
       ResetDatabase(false);
@@ -191,7 +192,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "epg.resetepg")
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188))
+    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{19098}, CVariant{19188}))
     {
       CDateTime::ResetTimezoneBias();
       ResetDatabase(true);
@@ -768,9 +769,9 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   g_EpgContainer.Stop();
 
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDlgProgress->SetLine(0, "");
-  pDlgProgress->SetLine(1, g_localizeStrings.Get(19186)); // All data in the PVR database is being erased
-  pDlgProgress->SetLine(2, "");
+  pDlgProgress->SetLine(0, CVariant{""});
+  pDlgProgress->SetLine(1, CVariant{g_localizeStrings.Get(19186)}); // All data in the PVR database is being erased
+  pDlgProgress->SetLine(2, CVariant{""});
   pDlgProgress->StartModal();
   pDlgProgress->Progress();
 
@@ -894,7 +895,7 @@ bool CPVRManager::ToggleRecordingOnChannel(unsigned int iChannelId)
     {
       bReturn = m_timers->InstantTimer(channel);
       if (!bReturn)
-        CGUIDialogOK::ShowAndGetInput(19033, 19164);
+        CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19164});
     }
     else
     {
@@ -921,7 +922,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     {
       bReturn = m_timers->InstantTimer(channel);
       if (!bReturn)
-        CGUIDialogOK::ShowAndGetInput(19033, 19164);
+        CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19164});
     }
     else if (!bOnOff && channel->IsRecording())
     {
@@ -978,7 +979,7 @@ bool CPVRManager::CheckParentalPIN(const std::string& strTitle /* = "" */)
   bool bValidPIN = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, !strTitle.empty() ? strTitle : g_localizeStrings.Get(19263), true);
   if (!bValidPIN)
     // display message: The entered PIN number was incorrect
-    CGUIDialogOK::ShowAndGetInput(19264, 19265);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19264}, CVariant{19265});
   else if (m_parentalTimer)
   {
     // reset the timer
@@ -1488,12 +1489,12 @@ bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
 
         // Inform user about PVR being busy. Ask if user wants to powerdown anyway.
         bool bCanceled = false;
-        bReturn = CGUIDialogYesNo::ShowAndGetInput(19685, // "Confirm shutdown"
-                                                   text,
+        bReturn = CGUIDialogYesNo::ShowAndGetInput(CVariant{19685}, // "Confirm shutdown"
+                                                   CVariant{text},
                                                    bCanceled,
-                                                   222,   // "Cancel"
-                                                   19696, // "Shutdown anyway"
-                                                   10000);
+                                                   CVariant{222},   // "Cancel"
+                                                   CVariant{19696}, // "Shutdown anyway"
+                                                   CVariant{10000});
       }
       else
         bReturn = false; // do not powerdown (busy, but no user interaction requested).

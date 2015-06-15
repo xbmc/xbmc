@@ -23,7 +23,7 @@
 #include "Archive.h"
 #include "IArchivable.h"
 #include "filesystem/File.h"
-#include "Variant.h"
+#include "utils/Variant.h"
 #include "utils/log.h"
 
 #ifdef __GNUC__

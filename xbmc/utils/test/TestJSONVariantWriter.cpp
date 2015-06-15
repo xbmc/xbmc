@@ -19,6 +19,7 @@
  */
 
 #include "utils/JSONVariantWriter.h"
+#include "utils/Variant.h"
 
 #include "gtest/gtest.h"
 

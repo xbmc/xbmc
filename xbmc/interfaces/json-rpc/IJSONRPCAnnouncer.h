@@ -21,6 +21,7 @@
 
 #include "interfaces/IAnnouncer.h"
 #include "utils/JSONVariantWriter.h"
+#include "utils/Variant.h"
 
 namespace JSONRPC
 {

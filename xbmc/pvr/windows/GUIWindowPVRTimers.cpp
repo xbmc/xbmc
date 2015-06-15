@@ -34,6 +34,7 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 using namespace PVR;
 
@@ -321,7 +322,7 @@ bool CGUIWindowPVRTimers::OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON 
     CPVRTimerInfoTagPtr timer = item->GetPVRTimerInfoTag();
 
     std::string strNewName(timer->m_strTitle);
-    if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19042), false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, CVariant{g_localizeStrings.Get(19042)}, false))
       g_PVRTimers->RenameTimer(*item, strNewName);
   }
 

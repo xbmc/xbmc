@@ -23,11 +23,12 @@
 #include <vector>
 
 #include "guilib/GUIDialog.h"
-#include "utils/Variant.h"
 #include "threads/CriticalSection.h"
 
 #define DIALOG_MAX_LINES 3
 #define DIALOG_MAX_CHOICES 2
+
+class CVariant;
 
 class CGUIDialogBoxBase :
       public CGUIDialog

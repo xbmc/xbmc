@@ -21,6 +21,8 @@
 
 #include "JSONRPC.h"
 
+class CVariant;
+
 namespace JSONRPC
 {
   class CTextureOperations

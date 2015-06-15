@@ -22,6 +22,8 @@
 
 #include "interfaces/IAnnouncer.h"
 
+class CVariant;
+
 namespace UPNP
 {
 

@@ -25,6 +25,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "utils/StringUtils.h"
 #include "utils/RegExp.h"
+#include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
 #include "epg/Epg.h"
@@ -315,11 +316,11 @@ std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
 void CPVRRecording::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
-    CGUIDialogOK::ShowAndGetInput(19033, 19111); /* print info dialog "Server error!" */
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19111}); /* print info dialog "Server error!" */
   else if (err == PVR_ERROR_REJECTED)
-    CGUIDialogOK::ShowAndGetInput(19033, 19068); /* print info dialog "Couldn't delete recording!" */
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19068}); /* print info dialog "Couldn't delete recording!" */
   else
-    CGUIDialogOK::ShowAndGetInput(19033, 19147); /* print info dialog "Unknown error!" */
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19147}); /* print info dialog "Unknown error!" */
 
   return;
 }

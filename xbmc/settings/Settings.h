@@ -29,7 +29,6 @@
 #include "settings/SettingCreator.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
-#include "utils/Variant.h"
 
 class CSetting;
 class CSettingList;
@@ -37,6 +36,7 @@ class CSettingSection;
 class CSettingsManager;
 class TiXmlElement;
 class TiXmlNode;
+class CVariant;
 
 /*!
  \brief Wrapper around CSettingsManager responsible for properly setting up

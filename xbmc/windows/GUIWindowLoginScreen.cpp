@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "utils/Weather.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "network/Network.h"
 #include "addons/Skin.h"
 #include "guilib/GUIMessage.h"
@@ -112,7 +113,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           else
           {
             if (!bCanceled && iItem != 0)
-              CGUIDialogOK::ShowAndGetInput(20068, 20117);
+              CGUIDialogOK::ShowAndGetInput(CVariant{20068}, CVariant{20117});
           }
         }
       }

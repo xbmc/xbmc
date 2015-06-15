@@ -22,6 +22,8 @@
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 
+class CVariant;
+
 #ifdef HAS_JSONRPC
 class CAddOnTransport : public JSONRPC::ITransportLayer
 {

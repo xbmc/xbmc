@@ -21,7 +21,7 @@
 #include <math.h>
 #include "StreamDetails.h"
 #include "StreamUtils.h"
-#include "Variant.h"
+#include "utils/Variant.h"
 #include "LangInfo.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/Archive.h"

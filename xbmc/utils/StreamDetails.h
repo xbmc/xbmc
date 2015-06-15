@@ -25,6 +25,7 @@
 #include <vector>
 
 class CStreamDetails;
+class CVariant;
 
 class CStreamDetail : public IArchivable, public ISerializable
 {

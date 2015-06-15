@@ -26,6 +26,7 @@
 #include "settings/lib/SettingSection.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 using namespace std;
 

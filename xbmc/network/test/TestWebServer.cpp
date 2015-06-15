@@ -33,6 +33,7 @@
 #include "utils/JSONVariantParser.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 
 using namespace XFILE;
 

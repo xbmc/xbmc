@@ -36,6 +36,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/Variant.h"
 
 #define XML_SETTINGS      "settings"
 #define XML_SETTING       "setting"
@@ -371,7 +372,7 @@ void CSkinInfo::OnPreInstall()
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
 {
-  if (IsInUse() || (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), 24099)))
+  if (IsInUse() || (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(CVariant{Name()}, CVariant{24099})))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (toast)

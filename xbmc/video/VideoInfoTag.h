@@ -31,6 +31,7 @@
 class CArchive;
 class TiXmlNode;
 class TiXmlElement;
+class CVariant;
 
 struct SActorInfo
 {

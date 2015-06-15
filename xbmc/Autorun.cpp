@@ -43,6 +43,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif
@@ -489,7 +490,7 @@ bool CAutorun::IsEnabled() const
 
 bool CAutorun::PlayDiscAskResume(const std::string& path)
 {
-  return PlayDisc(path, true, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(341, "", "", "", 13404, 12021));
+  return PlayDisc(path, true, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(CVariant{341}, CVariant{""}, CVariant{""}, CVariant{""}, CVariant{13404}, CVariant{12021}));
 }
 
 bool CAutorun::CanResumePlayDVD(const std::string& path)

@@ -33,6 +33,7 @@
 #include "playlists/PlayList.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "Application.h"
 #include "interfaces/AnnouncementManager.h"
 
@@ -100,10 +101,10 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   CGUIDialogProgress* pDialog = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   int iHeading = (m_bIsVideo ? 20250 : 20121);
   int iLine0 = (m_bIsVideo ? 20251 : 20123);
-  pDialog->SetHeading(iHeading);
-  pDialog->SetLine(0, iLine0);
-  pDialog->SetLine(1, "");
-  pDialog->SetLine(2, "");
+  pDialog->SetHeading(CVariant{iHeading});
+  pDialog->SetLine(0, CVariant{iLine0});
+  pDialog->SetLine(1, CVariant{""});
+  pDialog->SetLine(2, CVariant{""});
   pDialog->StartModal();
 
   ClearState();
@@ -186,7 +187,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   g_playlistPlayer.SetShuffle(iPlaylist, false);
   g_playlistPlayer.SetRepeat(iPlaylist, PLAYLIST::REPEAT_NONE);
 
-  pDialog->SetLine(0, (m_bIsVideo ? 20252 : 20124));
+  pDialog->SetLine(0, CVariant{m_bIsVideo ? 20252 : 20124});
   pDialog->Progress();
   // add initial songs
   if (!AddInitialSongs(songIDs))
@@ -512,7 +513,7 @@ void CPartyModeManager::Play(int iPos)
 void CPartyModeManager::OnError(int iError, const std::string&  strLogMessage)
 {
   // open error dialog
-  CGUIDialogOK::ShowAndGetInput(257, 16030, iError, 0);
+  CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{16030}, CVariant{iError}, CVariant{0});
   CLog::Log(LOGERROR, "PARTY MODE MANAGER: %s", strLogMessage.c_str());
   m_bEnabled = false;
   SendUpdateMessage();

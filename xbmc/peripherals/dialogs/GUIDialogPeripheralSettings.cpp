@@ -26,6 +26,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 
 #define CONTROL_BUTTON_DEFAULTS 50
 
@@ -106,7 +107,7 @@ void CGUIDialogPeripheralSettings::OnResetSettings()
   if (peripheral == NULL)
     return;
 
-  if (!CGUIDialogYesNo::ShowAndGetInput(10041, 10042))
+  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{10041}, CVariant{10042}))
     return;
 
   // reset the settings in the peripheral

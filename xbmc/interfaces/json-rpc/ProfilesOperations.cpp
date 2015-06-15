@@ -22,6 +22,7 @@
 #include "ApplicationMessenger.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/md5.h"
+#include "utils/Variant.h"
 
 using namespace JSONRPC;
 

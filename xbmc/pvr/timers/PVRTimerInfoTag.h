@@ -45,6 +45,7 @@
 #include <memory>
 
 class CFileItem;
+class CVariant;
 
 namespace EPG
 {

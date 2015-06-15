@@ -27,6 +27,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "epg/Epg.h"
 #include "epg/EpgContainer.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace JSONRPC;

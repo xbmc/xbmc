@@ -53,6 +53,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/FileUtils.h"
 #include "utils/LegacyPathTranslation.h"
@@ -66,6 +67,8 @@
 #include "playlists/SmartPlayList.h"
 #include "CueInfoLoader.h"
 #include "guiinfo/GUIInfoLabels.h"
+
+#include <utility>
 
 using namespace std;
 using namespace AUTOPTR;
@@ -2665,10 +2668,10 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
     pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (pDlgProgress)
     {
-      pDlgProgress->SetHeading(700);
-      pDlgProgress->SetLine(0, "");
-      pDlgProgress->SetLine(1, 318);
-      pDlgProgress->SetLine(2, 330);
+      pDlgProgress->SetHeading(CVariant{700});
+      pDlgProgress->SetLine(0, CVariant{""});
+      pDlgProgress->SetLine(1, CVariant{318});
+      pDlgProgress->SetLine(2, CVariant{330});
       pDlgProgress->SetPercentage(0);
       pDlgProgress->StartModal();
       pDlgProgress->ShowProgressBar(true);
@@ -2682,7 +2685,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // then the albums that are not linked to a song or to album, or whose path is removed
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 326);
+    pDlgProgress->SetLine(1, CVariant{326});
     pDlgProgress->SetPercentage(20);
     pDlgProgress->Progress();
   }
@@ -2694,7 +2697,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // now the paths
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 324);
+    pDlgProgress->SetLine(1, CVariant{324});
     pDlgProgress->SetPercentage(40);
     pDlgProgress->Progress();
   }
@@ -2706,7 +2709,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // and finally artists + genres
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 320);
+    pDlgProgress->SetLine(1, CVariant{320});
     pDlgProgress->SetPercentage(60);
     pDlgProgress->Progress();
   }
@@ -2717,7 +2720,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   }
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 322);
+    pDlgProgress->SetLine(1, CVariant{322});
     pDlgProgress->SetPercentage(80);
     pDlgProgress->Progress();
   }
@@ -2729,7 +2732,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // commit transaction
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 328);
+    pDlgProgress->SetLine(1, CVariant{328});
     pDlgProgress->SetPercentage(90);
     pDlgProgress->Progress();
   }
@@ -2741,7 +2744,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // and compress the database
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 331);
+    pDlgProgress->SetLine(1, CVariant{331});
     pDlgProgress->SetPercentage(100);
     pDlgProgress->Progress();
     pDlgProgress->Close();
@@ -2803,10 +2806,10 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     if (!pDlgSelect) return false;
 
     // Show progress dialog if we have to connect to freedb.org
-    pDialogProgress->SetHeading(255); //CDDB
-    pDialogProgress->SetLine(0, ""); // Querying freedb for CDDB info
-    pDialogProgress->SetLine(1, 256);
-    pDialogProgress->SetLine(2, "");
+    pDialogProgress->SetHeading(CVariant{255}); //CDDB
+    pDialogProgress->SetLine(0, CVariant{""}); // Querying freedb for CDDB info
+    pDialogProgress->SetLine(1, CVariant{256});
+    pDialogProgress->SetLine(2, CVariant{""});
     pDialogProgress->ShowProgressBar(false);
     pDialogProgress->StartModal();
 
@@ -2822,7 +2825,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         // ...yes, show the matches found in a select dialog
         // and let the user choose an entry.
         pDlgSelect->Reset();
-        pDlgSelect->SetHeading(255);
+        pDlgSelect->SetHeading(CVariant{255});
         int i = 1;
         while (1)
         {
@@ -2858,7 +2861,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         pCdInfo->SetNoCDDBInfo();
         // ..no, an error occured, display it to the user
         std::string strErrorText = StringUtils::Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
-        CGUIDialogOK::ShowAndGetInput(255, 257, strErrorText, 0);
+        CGUIDialogOK::ShowAndGetInput(CVariant{255}, CVariant{257}, CVariant{std::move(strErrorText)}, CVariant{0});
       }
     } // if ( !cddb.queryCDinfo( pCdInfo ) )
     else
@@ -2879,14 +2882,14 @@ void CMusicDatabase::DeleteCDDBInfo()
   CFileItemList items;
   if (!CDirectory::GetDirectory(CProfilesManager::Get().GetCDDBFolder(), items, ".cddb", DIR_FLAG_NO_FILE_DIRS))
   {
-    CGUIDialogOK::ShowAndGetInput(313, 426);
+    CGUIDialogOK::ShowAndGetInput(CVariant{313}, CVariant{426});
     return ;
   }
   // Show a selectdialog that the user can select the album to delete
   CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
-    pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
+    pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
     pDlg->Reset();
 
     map<ULONG, std::string> mapCDDBIds;
@@ -2951,11 +2954,11 @@ void CMusicDatabase::Clean()
   // other writing access to the database is prohibited.
   if (g_application.IsMusicScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(189, 14057);
+    CGUIDialogOK::ShowAndGetInput(CVariant{189}, CVariant{14057});
     return;
   }
 
-  if (CGUIDialogYesNo::ShowAndGetInput(313, 333))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
   {
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
@@ -2965,7 +2968,7 @@ void CMusicDatabase::Clean()
 
       if (iReturnString != ERROR_OK)
       {
-        CGUIDialogOK::ShowAndGetInput(313, iReturnString);
+        CGUIDialogOK::ShowAndGetInput(CVariant{313}, CVariant{iReturnString});
       }
     }
   }
@@ -4651,10 +4654,10 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
-      progress->SetHeading(20196);
-      progress->SetLine(0, 650);
-      progress->SetLine(1, "");
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{20196});
+      progress->SetLine(0, CVariant{650});
+      progress->SetLine(1, CVariant{""});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
       progress->StartModal();
       progress->ShowProgressBar(true);
@@ -4710,7 +4713,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
 
       if ((current % 50) == 0 && progress)
       {
-        progress->SetLine(1, album.strAlbum);
+        progress->SetLine(1, CVariant{album.strAlbum});
         progress->SetPercentage(current * 100 / total);
         progress->Progress();
         if (progress->IsCanceled())
@@ -4787,7 +4790,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
 
       if ((current % 50) == 0 && progress)
       {
-        progress->SetLine(1, artist.strArtist);
+        progress->SetLine(1, CVariant{artist.strArtist});
         progress->SetPercentage(current * 100 / total);
         progress->Progress();
         if (progress->IsCanceled())
@@ -4812,7 +4815,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     progress->Close();
 
   if (iFailCount > 0)
-    CGUIDialogOK::ShowAndGetInput(20196, StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount));
+    CGUIDialogOK::ShowAndGetInput(CVariant{20196}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount)});
 }
 
 void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
@@ -4832,10 +4835,10 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
 
     if (progress)
     {
-      progress->SetHeading(20197);
-      progress->SetLine(0, 649);
-      progress->SetLine(1, 330);
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{20197});
+      progress->SetLine(0, CVariant{649});
+      progress->SetLine(1, CVariant{330});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
       progress->StartModal();
       progress->ShowProgressBar(true);
@@ -4894,7 +4897,7 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
       if (progress && total)
       {
         progress->SetPercentage(current * 100 / total);
-        progress->SetLine(2, strTitle);
+        progress->SetLine(2, CVariant{std::move(strTitle)});
         progress->Progress();
         if (progress->IsCanceled())
         {
@@ -5012,10 +5015,10 @@ void CMusicDatabase::ExportKaraokeInfo(const std::string & outFile, bool asHTML)
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
-      progress->SetHeading(asHTML ? 22034 : 22035);
-      progress->SetLine(0, 650);
-      progress->SetLine(1, "");
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{asHTML ? 22034 : 22035});
+      progress->SetLine(0, CVariant{650});
+      progress->SetLine(1, CVariant{""});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
       progress->StartModal();
       progress->ShowProgressBar(true);
@@ -5104,10 +5107,10 @@ void CMusicDatabase::ImportKaraokeInfo(const std::string & inputFile)
 
     if (progress)
     {
-      progress->SetHeading( 22036 );
-      progress->SetLine(0, 649);
-      progress->SetLine(1, "");
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{22036});
+      progress->SetLine(0, CVariant{649});
+      progress->SetLine(1, CVariant{""});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
       progress->StartModal();
       progress->ShowProgressBar(true);

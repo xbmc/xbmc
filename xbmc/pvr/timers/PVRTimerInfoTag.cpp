@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #include "PVRTimers.h"
 #include "pvr/PVRManager.h"
@@ -504,7 +505,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */ , bool bDelete
   if (error == PVR_ERROR_RECORDING_RUNNING)
   {
     // recording running. ask the user if it should be deleted anyway
-    if (!CGUIDialogYesNo::ShowAndGetInput(122, 19122))
+    if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, CVariant{19122}))
       return false;
 
     error = g_PVRClients->DeleteTimer(*this, true, bDeleteSchedule);
@@ -594,13 +595,13 @@ bool CPVRTimerInfoTag::UpdateOnClient()
 void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
-    CGUIDialogOK::ShowAndGetInput(19033, 19111); /* print info dialog "Server error!" */
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19111}); /* print info dialog "Server error!" */
   else if (err == PVR_ERROR_REJECTED)
-    CGUIDialogOK::ShowAndGetInput(19033, 19109); /* print info dialog "Couldn't save timer!" */
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19109}); /* print info dialog "Couldn't save timer!" */
   else if (err == PVR_ERROR_ALREADY_PRESENT)
-    CGUIDialogOK::ShowAndGetInput(19033, 19067); /* print info dialog */
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19067}); /* print info dialog */
   else
-    CGUIDialogOK::ShowAndGetInput(19033, 19110); /* print info dialog "Unknown error!" */
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19110}); /* print info dialog "Unknown error!" */
 }
 
 void CPVRTimerInfoTag::SetEpgInfoTag(CEpgInfoTagPtr &tag)

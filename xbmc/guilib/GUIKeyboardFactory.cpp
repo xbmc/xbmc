@@ -28,6 +28,7 @@
 #include "settings/Settings.h"
 #include "utils/md5.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #if defined(TARGET_DARWIN_IOS)
@@ -125,7 +126,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, const CVaria
 
 bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, bool allowEmptyResult, unsigned int autoCloseMs /* = 0 */)
 {
-  return ShowAndGetInput(aTextString, "", allowEmptyResult, false, autoCloseMs);
+  return ShowAndGetInput(aTextString, CVariant{""}, allowEmptyResult, false, autoCloseMs);
 }
 
 // Shows keyboard and prompts for a password.
@@ -177,7 +178,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, con
     StringUtils::ToLower(newPassword);
     return true;
   }
-  CGUIDialogOK::ShowAndGetInput(12341, 12344);
+  CGUIDialogOK::ShowAndGetInput(CVariant{12341}, CVariant{12344});
   return false;
 }
 

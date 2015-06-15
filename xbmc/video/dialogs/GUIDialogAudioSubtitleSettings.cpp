@@ -41,6 +41,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
 #define SETTING_AUDIO_VOLUME                   "audio.volume"
@@ -228,7 +229,7 @@ void CGUIDialogAudioSubtitleSettings::Save()
     return;
 
   // prompt user if they are sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(12376, 12377))
+  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{12376}, CVariant{12377}))
     return;
 
   // reset the settings

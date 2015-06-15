@@ -63,6 +63,7 @@ class CSong;
 class CGenre;
 
 class CURL;
+class CVariant;
 
 class CFileItemList;
 class CCueDocument;

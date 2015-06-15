@@ -22,6 +22,7 @@
 
 #include <string>
 #include "GUIDialogBoxBase.h"
+#include "utils/Variant.h"
 
 class CGUIDialogYesNo :
       public CGUIDialogBoxBase

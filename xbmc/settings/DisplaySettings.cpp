@@ -33,6 +33,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "windowing/WindowingFactory.h"
 
@@ -254,7 +255,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
       if (!m_resolutionChangeAborted)
       {
         bool cancelled = false;
-        if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, cancelled, "", "", 10000))
+        if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13110}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, CVariant{10000}))
         {
           m_resolutionChangeAborted = true;
           return false;
@@ -275,7 +276,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     if (!m_resolutionChangeAborted)
     {
       bool cancelled = false;
-      if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, cancelled, "", "", 10000))
+      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13110}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, CVariant{10000}))
       {
         m_resolutionChangeAborted = true;
         return false;

@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #include "PVRTimers.h"
 #include "pvr/PVRManager.h"
@@ -562,13 +563,13 @@ bool CPVRTimers::AddTimer(const CPVRTimerInfoTagPtr &item)
   if (!item->m_channel && item->GetTimerType() && !item->GetTimerType()->IsRepeatingEpgBased())
   {
     CLog::Log(LOGERROR, "PVRTimers - %s - no channel given", __FUNCTION__);
-    CGUIDialogOK::ShowAndGetInput(19033, 19109); // Couldn't save timer
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19109}); // Couldn't save timer
     return false;
   }
 
   if (!g_PVRClients->SupportsTimers(item->m_iClientId))
   {
-    CGUIDialogOK::ShowAndGetInput(19033, 19215);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19215});
     return false;
   }
 

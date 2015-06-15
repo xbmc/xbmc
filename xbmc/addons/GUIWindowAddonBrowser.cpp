@@ -36,11 +36,14 @@
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "AddonDatabase.h"
 #include "storage/MediaManager.h"
 #include "LangInfo.h"
 #include "input/Key.h"
 #include "ContextMenuManager.h"
+
+#include <utility>
 
 #define CONTROL_AUTOUPDATE    5
 #define CONTROL_SHUTUP        6
@@ -250,7 +253,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     // cancel a downloading job
     if (item->HasProperty("Addon.Downloading"))
     {
-      if (CGUIDialogYesNo::ShowAndGetInput(24000, item->GetProperty("Addon.Name").asString(), 24066, ""))
+      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{24000}, item->GetProperty("Addon.Name"), CVariant{24066}, CVariant{""}))
       {
         if (CAddonInstaller::Get().Cancel(item->GetProperty("Addon.ID").asString()))
           Refresh();
@@ -564,7 +567,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
     heading += TranslateType(*type, true);
   }
 
-  dialog->SetHeading(heading);
+  dialog->SetHeading(CVariant{std::move(heading)});
   dialog->Reset();
   dialog->SetUseDetails(showDetails);
 

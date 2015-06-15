@@ -35,6 +35,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "Autorun.h"
 #include "cdrip/CDDARipper.h"
 #include "ContextMenuManager.h"
@@ -480,7 +481,7 @@ bool CGUIWindowMusicSongs::Update(const std::string &strDirectory, bool updateFi
 void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
 {
   bool bCanceled;
-  if (CGUIDialogYesNo::ShowAndGetInput(522, 20340, bCanceled))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{522}, CVariant{20340}, bCanceled))
   {
     MAPSONGS songs;
     CMusicDatabase database;

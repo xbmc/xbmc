@@ -498,10 +498,10 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
 
       if (progressBar)
       {
-        progressBar->SetHeading(scriptName);
-        progressBar->SetLine(0, 10214);
-        progressBar->SetLine(1, "");
-        progressBar->SetLine(2, "");
+        progressBar->SetHeading(CVariant{scriptName});
+        progressBar->SetLine(0, CVariant{10214});
+        progressBar->SetLine(1, CVariant{""});
+        progressBar->SetLine(2, CVariant{""});
         progressBar->ShowProgressBar(false);
         progressBar->StartModal();
       }

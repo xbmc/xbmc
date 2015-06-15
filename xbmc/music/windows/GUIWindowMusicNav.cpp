@@ -51,6 +51,7 @@
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "Util.h"
 #include "URL.h"
 #include "ContextMenuManager.h"
@@ -722,7 +723,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (CGUIDialogContentSettings::Show(scraper, content))
       {
         m_musicdatabase.SetScraperForPath(path,scraper);
-        if (CGUIDialogYesNo::ShowAndGetInput(20442, 20443))
+        if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20442}, CVariant{20443}))
         {
           OnInfoAll(itemNumber,true,true);
         }
@@ -758,7 +759,7 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CF
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK::ShowAndGetInput(6, 477);
+      CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
       return false; //hmmm unable to load playlist?
     }
     CPlayList playlist = *pPlayList;

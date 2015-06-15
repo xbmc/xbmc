@@ -19,7 +19,7 @@
  *
  */
 
-#include "Variant.h"
+#include "utils/Variant.h"
 
 #include <yajl/yajl_parse.h>
 

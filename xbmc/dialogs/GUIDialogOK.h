@@ -22,6 +22,9 @@
 
 #include "GUIDialogBoxBase.h"
 
+class CGUIMessage;
+class CVariant;
+
 class CGUIDialogOK :
       public CGUIDialogBoxBase
 {

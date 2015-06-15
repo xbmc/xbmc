@@ -35,6 +35,7 @@ class CGUIDialogProgressBarHandle;
 class CStopWatch;
 class CAction;
 class CFileItemList;
+class CVariant;
 
 namespace EPG
 {

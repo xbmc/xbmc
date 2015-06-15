@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "JSONUtils.h"
+#include "utils/Variant.h"
 
 namespace JSONRPC
 {

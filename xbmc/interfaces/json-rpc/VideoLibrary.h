@@ -24,6 +24,7 @@
 #include "FileItemHandler.h"
 
 class CVideoDatabase;
+class CVariant;
 
 namespace JSONRPC
 {

@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace XFILE;
@@ -72,7 +73,7 @@ void CRssManager::OnSettingAction(const CSetting *setting)
     ADDON::CAddonMgr::Get().GetAddon("script.rss.editor",addon);
     if (!addon)
     {
-      if (!CGUIDialogYesNo::ShowAndGetInput(24076, 24100, "RSS Editor", 24101))
+      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24076}, CVariant{24100}, CVariant{"RSS Editor"}, CVariant{24101}))
         return;
       CAddonInstaller::Get().Install("script.rss.editor", true, "", false);
     }

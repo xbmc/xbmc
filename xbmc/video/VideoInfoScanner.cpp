@@ -1412,8 +1412,8 @@ namespace VIDEO
   {
     if (pDlgProgress)
     {
-      pDlgProgress->SetLine(1, showInfo.m_strTitle);
-      pDlgProgress->SetLine(2, 20361);
+      pDlgProgress->SetLine(1, CVariant{showInfo.m_strTitle});
+      pDlgProgress->SetLine(2, CVariant{20361});
       pDlgProgress->SetPercentage(0);
       pDlgProgress->ShowProgressBar(true);
       pDlgProgress->Progress();
@@ -1429,7 +1429,7 @@ namespace VIDEO
       m_nfoReader.Close();
       if (pDlgProgress)
       {
-        pDlgProgress->SetLine(2, 20361);
+        pDlgProgress->SetLine(2, CVariant{20361});
         pDlgProgress->SetPercentage((int)((float)(iCurr++)/iMax*100));
         pDlgProgress->Progress();
       }
@@ -1480,7 +1480,7 @@ namespace VIDEO
 
           if (pDlgProgress)
           {
-            pDlgProgress->SetLine(2, 20354);
+            pDlgProgress->SetLine(2, CVariant{20354});
             pDlgProgress->Progress();
           }
 
@@ -1737,7 +1737,7 @@ namespace VIDEO
 
       if (pDialog)
       {
-        pDialog->SetLine(1, movieDetails.m_strTitle);
+        pDialog->SetLine(1, CVariant{movieDetails.m_strTitle});
         pDialog->Progress();
       }
 
@@ -2034,19 +2034,19 @@ namespace VIDEO
 
     if (pDialog)
     {
-      CGUIDialogOK::ShowAndGetInput(20448, 20449);
+      CGUIDialogOK::ShowAndGetInput(CVariant{20448}, CVariant{20449});
       return false;
     }
-    return CGUIDialogYesNo::ShowAndGetInput(20448, 20450);
+    return CGUIDialogYesNo::ShowAndGetInput(CVariant{20448}, CVariant{20450});
   }
 
   bool CVideoInfoScanner::ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1)
   {
     if (progress)
     {
-      progress->SetHeading(heading);
-      progress->SetLine(0, line1);
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{heading});
+      progress->SetLine(0, CVariant{line1});
+      progress->SetLine(2, CVariant{""});
       progress->Progress();
       return progress->IsCanceled();
     }

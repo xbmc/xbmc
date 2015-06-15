@@ -31,6 +31,7 @@
 #include "GUIDialogKeyboardGeneric.h"
 #include "settings/Settings.h"
 #include "utils/RegExp.h"
+#include "utils/Variant.h"
 #include "ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
 

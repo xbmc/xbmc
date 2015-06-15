@@ -23,6 +23,7 @@
 #include "utils/log.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "threads/SingleLock.h"
 
 #include "pvr/channels/PVRChannelGroupInternal.h"

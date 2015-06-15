@@ -22,6 +22,8 @@
 #include "FileItemHandler.h"
 #include "FileItem.h"
 
+class CVariant;
+
 namespace JSONRPC
 {
   class CPlaylistOperations : public CFileItemHandler

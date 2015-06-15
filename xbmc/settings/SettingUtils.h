@@ -21,8 +21,7 @@
 #include <vector>
 #include <memory>
 
-#include "utils/Variant.h"
-
+class CVariant;
 class CSettingList;
 class CSetting;
 
