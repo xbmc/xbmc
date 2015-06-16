@@ -962,7 +962,7 @@ bool CCurlFile::Open(const CURL& url)
   m_state->m_sendRange = m_seekable;
 
   m_httpresponse = m_state->Connect(m_bufferSize);
-  if (m_httpresponse < 0 || m_httpresponse >= 400)
+  if (m_httpresponse <= 0 || m_httpresponse >= 400)
   {
     CLog::Log(LOGERROR, "CCurlFile::Open failed with code %li for %s", m_httpresponse, url.GetRedacted().c_str());
     return false;
