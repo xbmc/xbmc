@@ -1293,10 +1293,8 @@ double CDVDPlayerVideo::GetCurrentPts()
 
     if (iRenderPts < 0)
       iRenderPts = 0;
-
-    return iRenderPts;
   }
-  return DVD_NOPTS_VALUE;
+  return iRenderPts;
 }
 
 #define MAXFRAMERATEDIFF   0.01
