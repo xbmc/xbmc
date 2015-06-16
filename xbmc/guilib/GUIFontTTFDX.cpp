@@ -119,6 +119,8 @@ void CGUIFontTTFDX::LastEnd()
 
     // Store current GPU transform
     XMMATRIX view = pGUIShader->GetView();
+    // Store currect scissor
+    CRect scissor = g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
@@ -128,6 +130,13 @@ void CGUIFontTTFDX::LastEnd()
 
       // Apply the clip rectangle
       CRect clip = g_Windowing.ClipRectToScissorRect(m_vertexTrans[i].clip);
+      // Intersect with current scissors
+      clip.Intersect(scissor);
+
+      // skip empty clip, a little improvement to not render invisible text
+      if (clip.IsEmpty())
+        continue;
+
       g_Windowing.SetScissors(clip);
 
       // Apply the translation to the model view matrix
@@ -151,7 +160,9 @@ void CGUIFontTTFDX::LastEnd()
       }
     }
 
-    g_Windowing.ResetScissors();
+    // restore scissor
+    g_Windowing.SetScissors(scissor);
+
     // Restore the original transform
     pGUIShader->SetView(view);
   }

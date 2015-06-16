@@ -178,7 +178,8 @@ protected:
   ID3D11RenderTargetView*     m_pRenderTargetView;
   ID3D11DepthStencilState*    m_depthStencilState;
   ID3D11DepthStencilView*     m_depthStencilView;
-  D3D11_VIEWPORT              m_viewPort; 
+  D3D11_VIEWPORT              m_viewPort;
+  CRect                       m_scissor;
 
   CGUIShaderDX*               m_pGUIShader;
   ID3D11BlendState*           m_BlendEnableState;

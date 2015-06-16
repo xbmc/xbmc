@@ -27,6 +27,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "guilib/D3DResource.h"
 #include "guilib/GUIShaderDX.h"
+#include "guilib/GUITextureD3D.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
@@ -93,6 +94,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_bHWStereoEnabled = false;
   ZeroMemory(&m_cachedMode, sizeof(m_cachedMode));
   ZeroMemory(&m_viewPort, sizeof(m_viewPort));
+  ZeroMemory(&m_scissor, sizeof(CRect));
 }
 
 CRenderSystemDX::~CRenderSystemDX()
@@ -1111,7 +1113,7 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
 
   FinishCommandList();
 
-  if (m_pSwapChain1) 
+  if (m_pSwapChain1)
   {
     // will use optimized present with dirty regions.
     DXGI_PRESENT_PARAMETERS presentParams = {};
@@ -1133,7 +1135,7 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
   {
     m_bResizeRequred = true;
     if (CreateWindowSizeDependentResources())
-      return true;
+      hr = S_OK;
   }
 
   if (FAILED(hr))
@@ -1141,6 +1143,10 @@ bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
     CLog::Log(LOGDEBUG, "%s - Present failed. %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     return false;
   }
+
+  // after present swapchain unbinds RT view from immediate context, need to restore it because it can be used by something else
+  if (m_pContext == m_pImdContext)
+    m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
 
   return true;
 }
@@ -1226,8 +1232,8 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
 
   float fColor[4];
   CD3DHelper::XMStoreColor(fColor, color);
+  ID3D11RenderTargetView* pRTView = m_pRenderTargetView;
 
-  // Unlike Direct3D 9, the full extent of the resource view is always cleared. Viewport and scissor settings are not applied.
   if ( m_stereoMode != RENDER_STEREO_MODE_OFF
     && m_stereoMode != RENDER_STEREO_MODE_MONO)
   {
@@ -1239,19 +1245,44 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
         && m_stereoMode != RENDER_STEREO_MODE_SPLIT_VERTICAL)
         FinishCommandList();
 
+      // do not clear RT for anaglyph modes
+      if ( m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
+        || m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
+        || m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
+      {
+        pRTView = nullptr;
+      }
       // for interlaced/checkerboard/hw clear right view
-      if (m_pRenderTargetViewRight)
-        m_pContext->ClearRenderTargetView(m_pRenderTargetViewRight, fColor);
+      else if (m_pRenderTargetViewRight)
+        pRTView = m_pRenderTargetViewRight;
 
       // for hw stereo clear depth view also
       if (m_stereoMode == RENDER_STEREO_MODE_HARDWAREBASED)
         m_pContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0, 0);
-
-      return true;
     }
   }
  
-  m_pContext->ClearRenderTargetView(m_pRenderTargetView, fColor);
+  if (pRTView == nullptr)
+    return true;
+
+  CRect clRect(0, 0, m_nBackBufferWidth, m_nBackBufferHeight);
+
+  // Unlike Direct3D 9, D3D11 ClearRenderTargetView always clears full extent of the resource view. 
+  // Viewport and scissor settings are not applied. So clear RT by drawing full sized rect with clear color
+  if (m_ScissorsEnabled && m_scissor != clRect)
+  {
+    bool alphaEnabled = m_BlendEnabled;
+    if (alphaEnabled)
+      SetAlphaBlendEnable(false);
+
+    CGUITextureD3D::DrawQuad(clRect, color);
+
+    if (alphaEnabled)
+      SetAlphaBlendEnable(true);
+  }
+  else
+    m_pContext->ClearRenderTargetView(pRTView, fColor);
+
   m_pContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0, 0);
   return true;
 }
@@ -1467,15 +1498,15 @@ void CRenderSystemDX::SetScissors(const CRect& rect)
   if (!m_bRenderCreated)
     return;
 
-  D3D11_RECT scissor;
-  scissor.left   = MathUtils::round_int(rect.x1);
-  scissor.top    = MathUtils::round_int(rect.y1);
-  scissor.right  = MathUtils::round_int(rect.x2);
-  scissor.bottom = MathUtils::round_int(rect.y2);
+  m_scissor = rect;
+  CD3D11_RECT scissor(MathUtils::round_int(rect.x1)
+                    , MathUtils::round_int(rect.y1)
+                    , MathUtils::round_int(rect.x2)
+                    , MathUtils::round_int(rect.y2));
 
+  m_pContext->RSSetScissorRects(1, &scissor);
   m_pContext->RSSetState(m_RSScissorEnable);
   m_ScissorsEnabled = true;
-  m_pContext->RSSetScissorRects(1, &scissor);
 }
 
 void CRenderSystemDX::ResetScissors()
@@ -1483,13 +1514,8 @@ void CRenderSystemDX::ResetScissors()
   if (!m_bRenderCreated)
     return;
 
-  D3D11_RECT scissor;
-  scissor.left = 0;
-  scissor.top = 0;
-  scissor.right = m_nBackBufferWidth;
-  scissor.bottom = m_nBackBufferHeight;
+  m_scissor.SetRect(0, 0, m_nBackBufferWidth, m_nBackBufferHeight);
 
-  m_pContext->RSSetScissorRects(1, &scissor);
   m_pContext->RSSetState(m_RSScissorDisable);
   m_ScissorsEnabled = false;
 }
