@@ -423,7 +423,7 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
   return strDirectory;
 }
 
-std::string URLEncodePath(const std::string& strPath)
+std::string URIUtils::URLEncodePath(const std::string& strPath)
 {
   vector<string> segments = StringUtils::Split(strPath, "/");
   for (vector<string>::iterator i = segments.begin(); i != segments.end(); ++i)
@@ -432,7 +432,7 @@ std::string URLEncodePath(const std::string& strPath)
   return StringUtils::Join(segments, "/");
 }
 
-std::string URLDecodePath(const std::string& strPath)
+std::string URIUtils::URLDecodePath(const std::string& strPath)
 {
   vector<string> segments = StringUtils::Split(strPath, "/");
   for (vector<string>::iterator i = segments.begin(); i != segments.end(); ++i)

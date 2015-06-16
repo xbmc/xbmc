@@ -469,8 +469,10 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "year",             LISTITEM_YEAR },
                                   { "genre",            LISTITEM_GENRE },
                                   { "director",         LISTITEM_DIRECTOR },
-                                  { "filename",         LISTITEM_FILENAME },
-                                  { "filenameandpath",  LISTITEM_FILENAME_AND_PATH },
+                                  { "filename",                LISTITEM_FILENAME },
+                                  { "filenamedecoded",         LISTITEM_FILENAME_DECODED },
+                                  { "filenameandpath",         LISTITEM_FILENAME_AND_PATH },
+                                  { "filenameandpathdecoded",  LISTITEM_FILENAME_AND_PATH_DECODED },
                                   { "fileextension",    LISTITEM_FILE_EXTENSION },
                                   { "date",             LISTITEM_DATE },
                                   { "size",             LISTITEM_SIZE },
@@ -488,9 +490,12 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "tvshowtitle",      LISTITEM_TVSHOW },
                                   { "premiered",        LISTITEM_PREMIERED },
                                   { "comment",          LISTITEM_COMMENT },
-                                  { "path",             LISTITEM_PATH },
-                                  { "foldername",       LISTITEM_FOLDERNAME },
-                                  { "folderpath",       LISTITEM_FOLDERPATH },
+                                  { "path",               LISTITEM_PATH },
+                                  { "pathdecoded",        LISTITEM_PATH_DECODED },
+                                  { "foldername",         LISTITEM_FOLDERNAME },
+                                  { "foldernamedecoded",  LISTITEM_FOLDERNAME_DECODED },
+                                  { "folderpath",         LISTITEM_FOLDERPATH },
+                                  { "folderpathdecoded",  LISTITEM_FOLDERPATH_DECODED },
                                   { "picturepath",      LISTITEM_PICTURE_PATH },
                                   { "pictureresolution",LISTITEM_PICTURE_RESOLUTION },
                                   { "picturedatetime",  LISTITEM_PICTURE_DATETIME },
@@ -4738,22 +4743,27 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return StringUtils::Join(item->GetMusicInfoTag()->GetGenre(), g_advancedSettings.m_musicItemSeparator);
     break;
   case LISTITEM_FILENAME:
+  case LISTITEM_FILENAME_DECODED:
   case LISTITEM_FILE_EXTENSION:
     {
-      std::string strFile;
+      std::string strPath;
       if (item->IsMusicDb() && item->HasMusicInfoTag())
-        strFile = URIUtils::GetFileName(item->GetMusicInfoTag()->GetURL());
+        strPath = item->GetMusicInfoTag()->GetURL();
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
-        strFile = URIUtils::GetFileName(item->GetVideoInfoTag()->m_strFileNameAndPath);
+        strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
       else
-        strFile = URIUtils::GetFileName(item->GetPath());
+        strPath = item->GetPath();
 
-      if (info==LISTITEM_FILE_EXTENSION)
+      std::string strFile = URIUtils::GetFileName(strPath);
+      if (info == LISTITEM_FILE_EXTENSION)
       {
         std::string strExtension = URIUtils::GetExtension(strFile);
         return StringUtils::TrimLeft(strExtension, ".");
       }
-      return strFile;
+      else if (info == LISTITEM_FILENAME_DECODED && URIUtils::HasEncodedFilename(CURL(strPath)))
+        return CURL::Decode(strFile);
+      else
+        return strFile;
     }
     break;
   case LISTITEM_DATE:
@@ -4976,9 +4986,18 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_THUMB:
     return item->GetArt("thumb");
   case LISTITEM_FOLDERPATH:
-    return CURL(item->GetPath()).GetWithoutUserDetails();
+  case LISTITEM_FOLDERPATH_DECODED:
+  {
+    std::string path = CURL(item->GetPath()).GetWithoutUserDetails();
+
+    if (info == LISTITEM_FOLDERPATH_DECODED && URIUtils::HasEncodedFilename(CURL(path)))
+      return URIUtils::URLDecodePath(path);
+    else
+      return path;
+  }
   case LISTITEM_FOLDERNAME:
   case LISTITEM_PATH:
+  case LISTITEM_PATH_DECODED:
     {
       std::string path;
       if (item->IsMusicDb() && item->HasMusicInfoTag())
@@ -4992,15 +5011,24 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       }
       else
         URIUtils::GetParentPath(item->GetPath(), path);
+
       path = CURL(path).GetWithoutUserDetails();
-      if (info==LISTITEM_FOLDERNAME)
+      if (info == LISTITEM_FOLDERNAME || info == LISTITEM_FOLDERNAME_DECODED)
       {
         URIUtils::RemoveSlashAtEnd(path);
-        path=URIUtils::GetFileName(path);
+        std::string strFolder = URIUtils::GetFileName(path);
+        if (LISTITEM_FOLDERNAME_DECODED && URIUtils::HasEncodedFilename(CURL(path))
+          return URIUtils::URLDecodePath(strFolder);
+        else
+          return strFolder;
       }
-      return path;
+      if (info == LISTITEM_PATH_DECODED && URIUtils::HasEncodedFilename(CURL(path)))
+        return URIUtils::URLDecodePath(path);
+      else
+        return path;
     }
   case LISTITEM_FILENAME_AND_PATH:
+  case LISTITEM_FILENAME_AND_PATH_DECODED:
     {
       std::string path;
       if (item->IsMusicDb() && item->HasMusicInfoTag())
@@ -5010,7 +5038,11 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       else
         path = item->GetPath();
       path = CURL(path).GetWithoutUserDetails();
-      return path;
+
+      if (info == LISTITEM_FILENAME_AND_PATH_DECODED && URIUtils::HasEncodedFilename(CURL(path)))
+        return URIUtils::URLDecodePath(path);
+      else
+        return path;
     }
   case LISTITEM_PICTURE_PATH:
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
