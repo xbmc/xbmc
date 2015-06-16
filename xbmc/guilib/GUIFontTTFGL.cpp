@@ -212,13 +212,22 @@ void CGUIFontTTFGL::LastEnd()
 
     // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
+    // Store currect scissor
+    CRect scissor = g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
       // Apply the clip rectangle
       CRect clip = g_Windowing.ClipRectToScissorRect(m_vertexTrans[i].clip);
       if (!clip.IsEmpty())
+      {
+        // intersect with current scissor
+        clip.Intersect(scissor);
+        // skip empty clip
+        if (clip.IsEmpty())
+          continue;
         g_Windowing.SetScissors(clip);
+      }
 
       // Apply the translation to the currently active (top-of-stack) model view matrix
       glMatrixModview.Push();
@@ -247,7 +256,7 @@ void CGUIFontTTFGL::LastEnd()
       glMatrixModview.Pop();
     }
     // Restore the original scissor rectangle
-    g_Windowing.ResetScissors();
+    g_Windowing.SetScissors(scissor);
     // Restore the original model view matrix
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
     // Unbind GL_ARRAY_BUFFER and GL_ELEMENT_ARRAY_BUFFER
