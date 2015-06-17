@@ -4267,7 +4267,7 @@ msgstr ""
 #empty strings from id 2082 to 2100
 
 msgctxt "#2101"
-msgid "Newer version needed.[CR]Check the log for more information about this message."
+msgid "Newer version needed. Check the log for more information about this message."
 msgstr ""
 
 #. Notification message indicating an add-on error. "<Add-on name> error".
@@ -7828,7 +7828,7 @@ msgid "Already started recording on this channel"
 msgstr ""
 
 msgctxt "#19035"
-msgid "%s couldn't be played.[CR]Check the log for more information about this message."
+msgid "%s couldn't be played. Check the log for more information about this message."
 msgstr ""
 
 #: xbmc/pvr/windows/GUIWindowPVRBase.cpp
@@ -13707,7 +13707,7 @@ msgstr ""
 
 #: xbmc\network\windows\ZeroconfWIN.cpp
 msgctxt "#34301"
-msgid "Is Apple's Bonjour service installed?[CR]Check the log for more information about this message."
+msgid "Is Apple's Bonjour service installed? Check the log for more information about this message."
 msgstr ""
 
 #: xbmc/network/NetworkServices.cpp
