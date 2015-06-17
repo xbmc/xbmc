@@ -90,6 +90,13 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     return avcodec_default_get_format(avctx, fmt);
   }
 
+  // fix an ffmpeg issue here, it calls us with an invalid profile
+  // then a 2nd call with a valid one
+  if (avctx->codec_id == AV_CODEC_ID_VC1 && avctx->profile == FF_PROFILE_UNKNOWN)
+  {
+    return avcodec_default_get_format(avctx, fmt);
+  }
+
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
   {
