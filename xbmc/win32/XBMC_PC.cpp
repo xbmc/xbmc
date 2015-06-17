@@ -53,6 +53,10 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   // set up some xbmc specific relationships
   XBMC::Context context;
 
+  // this fixes crash if OPENSSL_CONF is set to existed openssl.cfg
+  // need to set it as soon as possible
+  SetEnvironmentVariable("OPENSSL_CONF", "");
+
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
   //the loglevel set with the --debug flag
 #ifdef _DEBUG
