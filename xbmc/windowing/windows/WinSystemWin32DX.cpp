@@ -92,6 +92,20 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
   if (FS2Windowed)
     CRenderSystemDX::SetFullScreenInternal();
 
+  if (!m_useWindowedDX)
+  {
+    // if the window isn't focused, bring it to front or SetFullScreen will fail
+    BYTE keyState[256] = { 0 };
+    // to unlock SetForegroundWindow we need to imitate Alt pressing
+    if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
+      keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
+
+    BringWindowToTop(m_hWnd);
+
+    if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
+      keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+  }
+
   // to disable stereo mode in windowed mode we must recreate swapchain and then change display mode
   // so this flags delays call SetFullScreen _after_ resetting render system
   bool delaySetFS = CRenderSystemDX::m_bHWStereoEnabled && UseWindowedDX(fullScreen);
