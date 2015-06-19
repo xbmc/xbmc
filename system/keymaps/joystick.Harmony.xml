@@ -209,7 +209,7 @@
       <!-- Prev		-->      <button id="32">LockPreset</button>
       <!-- Info  	-->      <button id="31">Info</button>
       <!-- F8		-->      <button id="96">ActivateWindow(VisualisationPresetList)</button>
-      <!-- F9		-->      <button id="73">ActivateWindow(VisualisationSettings)</button>
+      <!-- F9		-->      <button id="73">Addon.Default.OpenSettings(xbmc.player.musicviz)</button>
     </joystick>
   </Visualisation>
   <MusicOSD>
