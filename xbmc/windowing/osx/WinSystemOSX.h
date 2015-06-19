@@ -81,6 +81,7 @@ public:
   void        StopLostDeviceTimer();
   
   void* GetCGLContextObj();
+  void* GetNSOpenGLContext();
 
   std::string GetClipboardText(void);
 
