@@ -481,14 +481,14 @@ BOOL CExternalPlayer::ExecuteAppAndroid(const char* strSwitches,const char* strP
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
 
-  int ret = CXBMCApp::StartActivity(strSwitches, "android.intent.action.VIEW", "video/*", strPath);
+  bool ret = CXBMCApp::StartActivity(strSwitches, "android.intent.action.VIEW", "video/*", strPath);
 
-  if (ret != 0)
+  if (!ret)
   {
-    CLog::Log(LOGNOTICE, "%s: Failure: %d", __FUNCTION__, ret);
+    CLog::Log(LOGNOTICE, "%s: Failure", __FUNCTION__);
   }
 
-  return ret == 0;
+  return ret;
 }
 #endif
 
