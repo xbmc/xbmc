@@ -87,6 +87,7 @@ public:
   std::string strFileName;
   std::string strTitle;
   std::vector<std::string> artist;
+  std::string strArtistDesc;
   VECARTISTCREDITS artistCredits;
   std::string strAlbum;
   std::vector<std::string> albumArtist;

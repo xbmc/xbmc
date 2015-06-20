@@ -369,8 +369,10 @@ int CMusicDatabase::AddAlbumInfoSong(int idAlbum, const CSong& song)
   }
 }
 
-std::string GetArtistString(const VECARTISTCREDITS &credits)
+std::string GetArtistString(const std::string &desc, const VECARTISTCREDITS &credits)
 {
+  if (!desc.empty())
+    return desc;
   std::string artistString;
   for (VECARTISTCREDITS::const_iterator i = credits.begin(); i != credits.end(); ++i)
     artistString += i->GetArtist() + i->GetJoinPhrase();
@@ -482,7 +484,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
 
   album.idAlbum = AddAlbum(album.strAlbum,
                            album.strMusicBrainzAlbumID,
-                           GetArtistString(album.artistCredits),
+                           GetArtistString(album.strArtistDesc, album.artistCredits),
                            album.GetGenreString(),
                            album.iYear,
                            album.bCompilation, album.releaseType);
@@ -502,17 +504,19 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
   for (VECSONGS::iterator song = album.songs.begin(); song != album.songs.end(); ++song)
   {
     song->idAlbum = album.idAlbum;
+
     song->idSong = AddSong(song->idAlbum,
                            song->strTitle, song->strMusicBrainzTrackID,
                            song->strFileName, song->strComment,
                            song->strMood, song->strThumb,
-                           GetArtistString(song->artistCredits), song->genre,
+                           GetArtistString(song->strArtistDesc, song->artistCredits), song->genre,
                            song->iTrack, song->iDuration, song->iYear,
                            song->iTimesPlayed, song->iStartOffset,
                            song->iEndOffset,
                            song->lastPlayed,
                            song->rating,
                            song->iKaraokeNumber);
+
 
     for (VECARTISTCREDITS::iterator artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end(); ++artistCredit)
     {
@@ -546,7 +550,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
 
   UpdateAlbum(album.idAlbum,
               album.strAlbum, album.strMusicBrainzAlbumID,
-              GetArtistString(album.artistCredits), album.GetGenreString(),
+              GetArtistString(album.strArtistDesc, album.artistCredits), album.GetGenreString(),
               StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator).c_str(),
               StringUtils::Join(album.styles, g_advancedSettings.m_musicItemSeparator).c_str(),
               StringUtils::Join(album.themes, g_advancedSettings.m_musicItemSeparator).c_str(),
@@ -578,7 +582,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
                song->strComment,
                song->strMood,
                song->strThumb,
-               GetArtistString(song->artistCredits),
+               GetArtistString(song->strArtistDesc, song->artistCredits),
                song->genre,
                song->iTrack,
                song->iDuration,
@@ -1178,7 +1182,14 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       if (m_pDS->num_rows() > 0)
       {
         int idArtist = (int)m_pDS->fv("idArtist").get_asInt();
+        bool update = m_pDS->fv("strArtist").get_asString().compare(strMusicBrainzArtistID) == 0;
         m_pDS->close();
+        if (update)
+        {
+          strSQL = PrepareSQL( "UPDATE artist SET strArtist = '%s' WHERE idArtist = %i", strArtist.c_str(), idArtist);
+          m_pDS->exec(strSQL.c_str());
+          m_pDS->close();
+        }
         return idArtist;
       }
       m_pDS->close();
@@ -1691,6 +1702,9 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.bCompilation = record->at(offset + song_bCompilation).get_asInt() == 1;
   song.albumArtist = StringUtils::Split(record->at(offset + song_strAlbumArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
 
+  // Set desc fields
+  song.strArtistDesc = record->at(offset + song_strArtists).get_asString();
+
   // Get filename with full path
   song.strFileName = URIUtils::AddFileToFolder(record->at(offset + song_strPath).get_asString(), record->at(offset + song_strFileName).get_asString());
   return song;
@@ -1762,6 +1776,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
     album.strAlbum = g_localizeStrings.Get(1050);
   album.strMusicBrainzAlbumID = record->at(offset + album_strMusicBrainzAlbumID).get_asString();
   album.artist = StringUtils::Split(record->at(offset + album_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.strArtistDesc = record->at(offset + album_strArtists).get_asString();
   album.genre = StringUtils::Split(record->at(offset + album_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
   album.iYear = record->at(offset + album_iYear).get_asInt();
   if (imageURL)
