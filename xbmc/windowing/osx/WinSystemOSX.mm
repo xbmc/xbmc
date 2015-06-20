@@ -1809,6 +1809,11 @@ void* CWinSystemOSX::GetCGLContextObj()
   return [(NSOpenGLContext*)m_glContext CGLContextObj];
 }
 
+void* CWinSystemOSX::GetNSOpenGLContext()
+{
+  return m_glContext;
+}
+
 std::string CWinSystemOSX::GetClipboardText(void)
 {
   std::string utf8_text;
