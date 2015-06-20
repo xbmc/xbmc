@@ -353,7 +353,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_mime = "video/avc";
       m_formatname = "amc-h264";
       // check for h264-avcC and convert to h264-annex-b
-      if (m_hints.extradata && *(uint8_t*)m_hints.extradata == 1)
+      if (m_hints.extradata)
       {
         m_bitstream = new CBitstreamConverter;
         if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
@@ -367,7 +367,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_mime = "video/hevc";
       m_formatname = "amc-h265";
       // check for hevc-hvcC and convert to h265-annex-b
-      if (m_hints.extradata && *(uint8_t*)m_hints.extradata == 1)
+      if (m_hints.extradata)
       {
         m_bitstream = new CBitstreamConverter;
         if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
