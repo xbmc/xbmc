@@ -357,7 +357,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
   Begin();
 
   uint32_t rawAlignment = alignment;
-  bool dirtyCache;
+  bool dirtyCache(false);
   bool hardwareClipping = g_Windowing.ScissorsCanEffectClipping();
   CGUIFontCacheStaticPosition staticPos(x, y);
   CGUIFontCacheDynamicPosition dynamicPos;
