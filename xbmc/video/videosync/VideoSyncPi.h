@@ -31,7 +31,8 @@ public:
   virtual void Run(volatile bool& stop);
   virtual void Cleanup();
   virtual float GetFps();
-  virtual void OnResetDevice();
+  virtual void OnResetDisplay();
+
 private:
   volatile bool m_abort;
 };

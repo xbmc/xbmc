@@ -1,0 +1,505 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: German (Germany) (http://www.transifex.com/projects/p/kodi-main/language/de_DE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Es läuft"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Suchen"
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Medien-Fanart als Hintergrund nutzen (wenn verfügbar)"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Modus ändern"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "In 2D ansehen"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Zufällige Filme"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Ungesehene Filme"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "Laufende TV Serien"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Icons herunterladen"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Laufende Filme"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Meistgespielte Alben"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Zufällige Alben"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Zufällige Artisten"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Ungespielte Alben"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Neue Aufnahmen"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Meistgespielte Kanäle"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Vorhersage"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Aktionen"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Sonstige Einstellungen"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Sortieren nach"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Ansicht"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Nächste Lieder"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Keine Favoriten gespeichert. Du kannst jedes beliebige Element aus den Medienansichten via Rechtsklick zu deinen Favoriten hinzufügen."
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Gehe zu Album"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Gehe zu Liedern"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Fanart zeigen"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Zuletzt angemeldet"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Genutzter Arbeitsspeicher"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Versionsinfos"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Reihenfolge"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Deine Wertung"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Erweiterte Infos"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Seiten"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "Einträge"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Songliste"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Rücklauf"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Schneller Vorlauf"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Update abbrechen"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Kamerahersteller"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Wiedergabelisten-Einstellungen"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Stelle den Typ ein und füge Regeln für die Smart Playlist hinzu. Diese Art von Playlisten sind dynamisch und beinhalten alle Medien aus deiner Datenbank, die die gesetzten Regeln erfüllen."
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Gruppe hinzufügen"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Gruppe umbenennen"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Gruppe löschen"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Weiterlesen..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Verfügbar"
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Drücke [B]Hoch[/B] zum Zurück- oder Vorspulen."
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "gefiltert"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial-basiert"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Drücke[B]Links[/B] zum Zurückspulen, oder [B]Rechts[/B] zum Vorspulen"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Untertitel-Download"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Gehe zu Playlist"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Login-Screen beim Programmstart anzeigen"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Automatischer Login beim Programmstart"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Updates verfügbar"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "Minuten"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Hauptmenüeinträge"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Shortcuts zu den \"Dateien\"-Sektionen der verschiedenen Medientypen. Folge ihnen, um zusätzliche Quellen für deine Datenbanken einzurichten."
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Sektionen"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "ungesehen"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Video-Playlist"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Musik-Playlist"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Event log"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Presets wählen"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Zuletzt aktualisiert"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Medienquellen hinzufügen"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "by"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Energieeinstellungen"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Titel"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Datenbank"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Filmkollektionen"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Optischen Datenträger abspielen"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Vorheriger Ort"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Nächster Ort"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Cast nicht verfügbar"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Endet um"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Album-Informationen"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Liedtexte-Addon"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Lyrics add-on Einstellungen"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Visualisierungs-Einstellungen"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Kanalgruppe"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadaten"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Provider-Einstellungen"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Inhalt-Scanning-Einstellungen"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Verfügbare Gruppen"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Trailer suchen"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Untertitel herunterladen"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Videomenü"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Wetterinformationen in oberer Leiste anzeigen"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Mediaflags für Videoeinträge zeigen"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Slide-Animationen aktivieren"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Lokaler Untertitel verfügbar"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Kanal-Einstellungen"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Bitte Kodi-Benutzerprofil auswählen[CR]um fortzufahren"
+
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Icon Wall"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Umschalttaste"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "InfoWall"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Wall"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Text hier eingeben..."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Füge Videoquellen hinzu und stellen den korrekten Inhaltstyp ein, um die Datenbank zu befüllen."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletext"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "WideList"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Individuellen globalen Hintergrund nutzen"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Bildpfad auswählen"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "\"Dateien\"-Sektion betreten"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Schaue dir deine persönlichen Fotos an oder probiere eines der vielen Bilder-Addons aus dem offiziellen Repository."
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Lokale Datenbank durchsuchen"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "YouTube durchsuchen"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "TheMovieDB durchsuchen"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Diesen Hauptmenüeintrag entfernen"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Menü editieren"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Add-on Browser betreten"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Du hast noch keine Add-ons installiert. Besuche den Add-on Browser, um unsere Add-on-Sammlung zu durchforsten und mit ihnen deine Kodi-Erfahrung zu verbessern."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Du hast noch keinen Wetterprovider eingerichtet. Um Wetterinformationen zu erhalten, wähle einen Wetterprovider und stelle deinen Ort in den Einstellungen ein."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Wetterprovider wählen"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Ungesehene TV Serien"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Filme des Direktors"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Bilder auf Karte zeigen"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Drücke \"hoch\" für Schauspieler-Infos"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Drücke \"OK\" zum Lesen der Handlung"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Icons zeigen"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Mitwirkende"

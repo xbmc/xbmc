@@ -6,8 +6,8 @@ INCLUDES += -I@abs_top_srcdir@/xbmc/linux
 INCLUDES += -I@abs_top_srcdir@/xbmc/utils
 INCLUDES += -I@abs_top_srcdir@/xbmc/guilib
 INCLUDES += -I@abs_top_srcdir@/xbmc/cores
-INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer
-INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer/Codecs/ffmpeg
+INCLUDES += -I@abs_top_srcdir@/xbmc/cores/VideoPlayer
+INCLUDES += -I@abs_top_srcdir@/xbmc/cores/VideoPlayer/Codecs/ffmpeg
 
 OSSLIBDIR=0
 -include /etc/oss.conf

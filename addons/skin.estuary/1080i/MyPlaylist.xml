@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<views>50</views>
+	<controls>
+		<include>DefaultBackground</include>
+		<include name="PlaylistWindowButtons">
+			<param name="width" value="400" />
+		</include>
+		<control type="group">
+			<include>OpenClose_Left</include>
+			<control type="image">
+				<left>100</left>
+				<top>550</top>
+				<width>400</width>
+				<height>358</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+		</control>
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<left>510</left>
+			<top>182</top>
+			<control type="image">
+				<description>background image</description>
+				<left>-20</left>
+				<top>-20</top>
+				<width>843</width>
+				<height>746</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="panel" id="50">
+				<left>2</left>
+				<top>3</top>
+				<width>800</width>
+				<height>700</height>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<orientation>vertical</orientation>
+				<onleft>700</onleft>
+				<onright>60</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<pagecontrol>60</pagecontrol>
+				<viewtype label="List">list</viewtype>
+				<preloaditems>1</preloaditems>
+				<focusedlayout height="63" width="800">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>800</width>
+						<height>63</height>
+						<texture>lists/focus.png</texture>
+					</control>
+					<control type="label">
+						<left>30</left>
+						<top>0</top>
+						<height>63</height>
+						<width>680</width>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$INFO[ListItem.Artist,[COLOR button_focus],[/COLOR] - ]$INFO[ListItem.Title]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>90</left>
+						<top>0</top>
+						<height>63</height>
+						<width>680</width>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$VAR[PlaylistLabel2Var]</label>
+						<textcolor>grey</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+				</focusedlayout>
+				<itemlayout height="63" width="800">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>800</width>
+						<height>63</height>
+						<texture border="90,3,90,3">lists/separator.png</texture>
+					</control>
+					<control type="label">
+						<left>30</left>
+						<top>0</top>
+						<height>63</height>
+						<width>680</width>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$INFO[ListItem.Artist,[COLOR button_focus],[/COLOR] - ]$INFO[ListItem.Title]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+					<control type="label">
+						<left>90</left>
+						<top>0</top>
+						<height>63</height>
+						<width>680</width>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$VAR[PlaylistLabel2Var]</label>
+						<textcolor>grey</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+				</itemlayout>
+			</control>
+			<control type="scrollbar" id="60">
+				<left>1005</left>
+				<top>0</top>
+				<width>12</width>
+				<height>704</height>
+				<onleft>50</onleft>
+				<onright>700</onright>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+		<control type="image">
+			<include>OpenClose_Right</include>
+			<visible>Window.IsActive(videoplaylist)</visible>
+			<top>163</top>
+			<left>1324</left>
+			<width>506</width>
+			<height>742</height>
+			<fadetime>200</fadetime>
+			<aspectratio aligny="bottom">keep</aspectratio>
+			<texture fallback="DefaultVideo.png" background="true">$VAR[PosterVar]</texture>
+			<bordertexture border="20">overlays/shadow.png</bordertexture>
+			<bordersize>20</bordersize>
+		</control>
+		<control type="group">
+			<left>1230</left>
+			<visible>Window.IsActive(musicplaylist)</visible>
+			<include>OpenClose_Right</include>
+			<include>ListThumbInfoPanel</include>
+		</control>
+		<control type="group">
+			<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+			<include>MediaFlags</include>
+		</control>
+		<include name="TopBar" condition="Window.IsActive(videoplaylist)">
+			<param name="breadcrumbs_label" value="$LOCALIZE[31065]" />
+			<param name="breadcrumbs_icon" value="icons/settings/video.png" />
+		</include>
+		<include name="TopBar" condition="Window.IsActive(musicplaylist)">
+			<param name="breadcrumbs_label" value="$LOCALIZE[31066]" />
+			<param name="breadcrumbs_icon" value="icons/settings/music.png" />
+		</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

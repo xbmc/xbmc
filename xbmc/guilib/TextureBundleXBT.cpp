@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,12 +13,11 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "squish.h"
 #include "system.h"
 #include "TextureBundleXBT.h"
 #include "Texture.h"
@@ -139,7 +138,7 @@ bool CTextureBundleXBT::LoadTexture(const std::string& Filename, CBaseTexture** 
   if (!m_XBTFReader->Get(name, file))
     return false;
 
-  if (file.GetFrames().size() == 0)
+  if (file.GetFrames().empty())
     return false;
 
   CXBTFFrame& frame = file.GetFrames().at(0);
@@ -163,7 +162,7 @@ int CTextureBundleXBT::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
   if (!m_XBTFReader->Get(name, file))
     return false;
 
-  if (file.GetFrames().size() == 0)
+  if (file.GetFrames().empty())
     return false;
 
   size_t nTextures = file.GetFrames().size();
@@ -192,7 +191,7 @@ int CTextureBundleXBT::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
 bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFrame& frame, CBaseTexture** ppTexture)
 {
   // found texture - allocate the necessary buffers
-  squish::u8 *buffer = new squish::u8[(size_t)frame.GetPackedSize()];
+  unsigned char *buffer = new unsigned char [(size_t)frame.GetPackedSize()];
   if (buffer == NULL)
   {
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %" PRIu64" bytes)", name.c_str(), frame.GetPackedSize());
@@ -210,7 +209,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name, CXBTFFram
   // check if it's packed with lzo
   if (frame.IsPacked())
   { // unpack
-    squish::u8 *unpacked = new squish::u8[(size_t)frame.GetUnpackedSize()];
+    unsigned char *unpacked = new unsigned char[(size_t)frame.GetUnpackedSize()];
     if (unpacked == NULL)
     {
       CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %" PRIu64" bytes)", name.c_str(), frame.GetUnpackedSize());

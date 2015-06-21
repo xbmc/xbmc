@@ -22,7 +22,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#if !defined(__arm__)
+#if !defined(__arm__) && !defined(__aarch64__)
 #include "WinSystemOSX.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/GlobalsHandling.h"
@@ -36,7 +36,7 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
 
 protected:
-  virtual bool PresentRenderImpl(const CDirtyRegionList &dirty);
+  virtual void PresentRenderImpl(bool rendered);
   virtual void SetVSyncImpl(bool enable);  
 };
 

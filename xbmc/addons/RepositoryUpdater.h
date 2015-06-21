@@ -46,7 +46,7 @@ public:
   /**
    * Check all repositories for updates.
    */
-  void CheckForUpdates(bool showProgress=false);
+  bool CheckForUpdates(bool showProgress=false);
 
   /**
    * Wait for any pending/in-progress updates to complete.

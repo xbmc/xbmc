@@ -32,6 +32,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/DisplaySettings.h"
 #include "guilib/GraphicContext.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/Texture.h"
 #include "utils/StringUtils.h"
 #include "guilib/DispResource.h"
@@ -45,9 +46,9 @@
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CADisplayLink.h>
 
-#import "ios/XBMCController.h"
-#import "osx/IOSScreenManager.h"
-#include "osx/DarwinUtils.h"
+#import "platform/darwin/ios/XBMCController.h"
+#import "platform/darwin/ios/IOSScreenManager.h"
+#include "platform/darwin/DarwinUtils.h"
 #import <dlfcn.h>
 
 // IOSDisplayLinkCallback is declared in the lower part of the file
@@ -58,6 +59,8 @@
 @property (nonatomic, setter=SetVideoSyncImpl:) CVideoSyncIos *_videoSyncImpl;
 - (void) runDisplayLink;
 @end
+
+using namespace KODI::MESSAGING;
 
 struct CADisplayLinkWrapper
 {
@@ -416,11 +419,11 @@ void CWinSystemIOS::DeinitDisplayLink(void)
 //------------DispalyLink stuff end
 //--------------------------------------------------------------
 
-bool CWinSystemIOS::PresentRenderImpl(const CDirtyRegionList &dirty)
+void CWinSystemIOS::PresentRenderImpl(bool rendered)
 {
   //glFlush;
-  [g_xbmcController presentFramebuffer];
-  return true;
+  if (rendered)
+    [g_xbmcController presentFramebuffer];
 }
 
 void CWinSystemIOS::SetVSyncImpl(bool enable)
@@ -450,14 +453,14 @@ bool CWinSystemIOS::HasCursor()
 void CWinSystemIOS::NotifyAppActiveChange(bool bActivated)
 {
   if (bActivated && m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
-    g_graphicsContext.ToggleFullScreenRoot();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
 }
 
 bool CWinSystemIOS::Minimize()
 {
   m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
   if (m_bWasFullScreenBeforeMinimize)
-    g_graphicsContext.ToggleFullScreenRoot();
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
 
   return true;
 }

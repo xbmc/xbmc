@@ -235,7 +235,8 @@ namespace XBMCAddon
        *     - album         : string (Pulse)
        *     - artist        : string (Muse)
        *     - title         : string (American Pie)
-       *     - rating        : string (3) - single character between 0 and 5
+       *     - rating        : float - range is between 0 and 10
+       *     - userrating    : integer - range is 1..10
        *     - lyrics        : string (On a dark desert highway...)
        *     - playcount     : integer (2) - number of times this item has been played
        *     - lastplayed    : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)

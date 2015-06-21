@@ -23,6 +23,7 @@
 #include <memory>
 
 #include "addons/AddonManager.h"
+#include "addons/AddonInstaller.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/PluginSource.h"
@@ -38,10 +39,24 @@
 
 #if defined(TARGET_DARWIN)
 #include "filesystem/SpecialProtocol.h"
-#include "osx/CocoaInterface.h"
+#include "platform/darwin/osx/CocoaInterface.h"
 #endif
 
 using namespace ADDON;
+
+/*! \brief Install an addon.
+ *  \param params The parameters.
+ *  \details params[0] = add-on id.
+ */
+static int InstallAddon(const std::vector<std::string>& params)
+{
+  const std::string& addonid = params[0];
+
+  AddonPtr addon;
+  CAddonInstaller::GetInstance().InstallModal(addonid, addon);
+
+  return 0;
+}
 
 /*! \brief Run a plugin.
  *  \param params The parameters.
@@ -77,11 +92,12 @@ static int RunAddon(const std::vector<std::string>& params)
 {
   if (params.size())
   {
+    const std::string& addonid = params[0];
+
     AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_PLUGIN))
+    if (CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_PLUGIN))
     {
       PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
-      std::string addonid = params[0];
       std::string urlParameters;
       std::vector<std::string> parameters;
       if (params.size() == 2 &&
@@ -109,22 +125,22 @@ static int RunAddon(const std::vector<std::string>& params)
       else if (plugin->Provides(CPluginSource::IMAGE))
         cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
       else
-        // Pass the script name (params[0]) and all the parameters
+        // Pass the script name (addonid) and all the parameters
         // (params[1] ... params[x]) separated by a comma to RunPlugin
         cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
       CBuiltins::GetInstance().Execute(cmd);
     }
-    else if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-        CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
-        CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
-        CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
+    else if (CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT) ||
+        CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT_WEATHER) ||
+        CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT_LYRICS) ||
+        CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT_LIBRARY))
     {
-      // Pass the script name (params[0]) and all the parameters
+      // Pass the script name (addonid) and all the parameters
       // (params[1] ... params[x]) separated by a comma to RunScript
       CBuiltins::GetInstance().Execute(StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str()));
     }
     else
-      CLog::Log(LOGERROR, "RunAddon: unknown add-on id '%s', or unexpected add-on type (not a script or plugin).", params[0].c_str());
+      CLog::Log(LOGERROR, "RunAddon: unknown add-on id '%s', or unexpected add-on type (not a script or plugin).", addonid.c_str());
   }
   else
   {
@@ -286,10 +302,110 @@ static int UpdateRepos(const std::vector<std::string>& params)
  */
 static int UpdateLocals(const std::vector<std::string>& params)
 {
-  CAddonMgr::GetInstance().FindAddons();
+  CAddonMgr::GetInstance().FindAddonsAndNotify();
 
   return 0;
 }
+
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_1 Add-on built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`Addon.Default.OpenSettings(extensionpoint)`</b>
+///     ,
+///     Open a settings dialog for the default addon of the given type
+///     (extensionpoint)
+///     @param[in] extensionpoint        The add-on type
+///   }
+///   \table_row2_l{
+///     <b>`Addon.Default.Set(extensionpoint)`</b>
+///     ,
+///     Open a select dialog to allow choosing the default addon of the given type
+///     (extensionpoint)
+///     @param[in] extensionpoint        The add-on type
+///   }
+///   \table_row2_l{
+///     <b>`Addon.OpenSettings(id)`</b>
+///     ,
+///     Open a settings dialog for the addon of the given id
+///     @param[in] id                    The add-on ID
+///   }
+///   \table_row2_l{
+///     <b>`InstallAddon(id)`</b>
+///     ,
+///     Install the specified plugin/script
+///     @param[in] id                    The add-on id
+///   }
+///   \table_row2_l{
+///     <b>`RunAddon(id[\,opt])`</b>
+///     ,
+///     Runs the specified plugin/script
+///     @param[in] id                    The add-on id.
+///     @param[in] opt                   is blank for no add-on parameters\n
+///     or
+///     @param[in] opt                   Add-on parameters in url format\n
+///     or
+///     @param[in] opt[\,...]            Additional parameters in format param=value.
+///   }
+///   \table_row2_l{
+///     <b>`RunAppleScript(script[\,args]*)`</b>
+///     ,
+///     Run the specified AppleScript command
+///     @param[in] script                Is the URL to the apple script\n
+///     or
+///     @param[in] script                Is the addon-ID to the script add-on\n
+///     or
+///     @param[in] script                Is the URL to the python script.
+///
+///     @note Set the OnlyApple template parameter to true to only attempt
+///     execution of applescripts.
+///   }
+///   \table_row2_l{
+///     <b>`RunPlugin(plugin)`</b>
+///     ,
+///     Runs the plugin. Full path must be specified. Does not work for folder
+///     plugins
+///     @param[in] plugin                plugin:// URL to script.
+///   }
+///   \table_row2_l{
+///     <b>`RunScript(script[\,args]*)`</b>
+///     ,
+///     Runs the python script. You must specify the full path to the script. If
+///     the script is an add-on\, you can also execute it using its add-on id. As
+///     of 2007/02/24\, all extra parameters are passed to the script as arguments
+///     and can be accessed by python using sys.argv
+///     @param[in] script                Is the addon-ID to the script add-on\n
+///     or
+///     @param[in] script                Is the URL to the python script.
+///   }
+///   \table_row2_l{
+///     <b>`StopScript(id)`</b>
+///     ,
+///     Stop the script by ID or path\, if running
+///     @param[in] id                    The add-on ID of the script to stop\n
+///     or
+///     @param[in] id                    The URL of the script to stop.
+///   }
+///   \table_row2_l{
+///     <b>`UpdateAddonRepos`</b>
+///     ,
+///     Triggers a forced update of enabled add-on repositories.
+///   }
+///   \table_row2_l{
+///     <b>`UpdateLocalAddons`</b>
+///     ,
+///     Triggers a scan of local add-on directories.
+///   }
+///  \table_end
+///
 
 CBuiltins::CommandMap CAddonBuiltins::GetOperations() const
 {
@@ -297,6 +413,7 @@ CBuiltins::CommandMap CAddonBuiltins::GetOperations() const
            {"addon.default.opensettings", {"Open a settings dialog for the default addon of the given type", 1, OpenDefaultSettings}},
            {"addon.default.set",          {"Open a select dialog to allow choosing the default addon of the given type", 1, SetDefaultAddon}},
            {"addon.opensettings",         {"Open a settings dialog for the addon of the given id", 1, AddonSettings}},
+           {"installaddon",               {"Install the specified plugin/script", 1, InstallAddon}},
            {"runaddon",                   {"Run the specified plugin/script", 1, RunAddon}},
 #ifdef TARGET_DARWIN
            {"runapplescript",             {"Run the specified AppleScript command", 1, RunScript<true>}},

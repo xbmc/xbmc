@@ -1,0 +1,125 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Galician (Spain) (http://www.transifex.com/projects/p/kodi-main/language/gl_ES/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: gl_ES\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Reproducindo"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Buscar"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Trocar o modo"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Ver como 2D"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Predición"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Accións"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Outras opcións"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Último ingreso"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Atrás"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Axiña adiante"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Opcións da listaxe de reprodución"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Engadir grupo"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Renomear grupo"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Eliminar grupo"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Baseado en Arial"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Última actualización"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Opcións de enerxía"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Información do Álbum"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Complemento de letras"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Canle do Grupo"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Opcións de escaneado de contidos"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Grupos dispoñíbeis"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Descargar subtítulos"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Subtítulo local dispoñíbel"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Opcións da Canle"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Selecione o seu perfíl de usuario de Kodi[CR]para ingresar e continuar"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

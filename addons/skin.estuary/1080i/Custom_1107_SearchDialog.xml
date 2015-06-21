@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1107">
+	<defaultcontrol always="true">5000</defaultcontrol>
+	<coordinates>
+		<left>660</left>
+		<top>300</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="600" />
+			<param name="DialogBackgroundHeight" value="340" />
+			<param name="DialogHeaderLabel" value="$LOCALIZE[137]" />
+			<param name="DialogHeaderId" value="" />
+		</include>
+		<control type="list" id="5000">
+			<left>2</left>
+			<top>107</top>
+			<width>596</width>
+			<height>660</height>
+			<onup>5000</onup>
+			<ondown>5000</ondown>
+			<onleft>99</onleft>
+			<onright>61</onright>
+			<include name="DefaultSimpleListLayout">
+				<param name="width" value="600" />
+				<param name="list_id" value="5000" />
+				<param name="align" value="center" />
+			</include>
+			<content>
+				<item>
+					<label>$LOCALIZE[31113]</label>
+					<onclick>Dialog.Close(all)</onclick>
+					<onclick condition="System.hasAddon(script.globalsearch)">RunScript(script.globalsearch)</onclick>
+					<onclick condition="!System.hasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
+				</item>
+				<item>
+					<label>$LOCALIZE[31114]</label>
+					<onclick>Dialog.Close(all)</onclick>
+					<onclick condition="System.hasAddon(plugin.video.youtube)">ActivateWindow(videos,plugin://plugin.video.youtube/kodion/search/input/,return)</onclick>
+					<onclick condition="!System.hasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick>
+				</item>
+				<item>
+					<label>$LOCALIZE[31115]</label>
+					<onclick>Dialog.Close(all)</onclick>
+					<onclick condition="System.hasAddon(script.extendedinfo)">RunScript(script.extendedinfo,info=moviedbbrowser,search=True)</onclick>
+					<onclick condition="!System.hasAddon(script.extendedinfo)">InstallAddon(script.extendedinfo)</onclick>
+				</item>
+			</content>
+		</control>
+	</controls>
+</window>

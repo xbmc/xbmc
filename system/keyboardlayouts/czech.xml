@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Czech" layout="QWERTZ">
+    <keyboard>
+      <row>ťěščřžýáíéó(</row>
+      <row>qwertzuiopú)</row>
+      <row>asdfghjklůď_</row>
+      <row>/yxcvbnmň:.-</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>ŤĚŠČŘŽÝÁÍÉÓ(</row>
+      <row>QWERTZUIOPÚ)</row>
+      <row>ASDFGHJKLŮĎ_</row>
+      <row>\YXCVBNMŇ:.-</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>1234567890%</row>
+      <row>+@#$~^&amp;*{}=</row>
+      <row>[]()/"'`;!</row>
+      <row>\|&lt;&gt;,.?:-_</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>

@@ -31,7 +31,7 @@
 #include <utility>
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
-    : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogOK.xml")
+    : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogConfirm.xml")
 {
   m_bCanceled = false;
   m_iRetries = 0;
@@ -45,8 +45,10 @@ CGUIDialogGamepad::~CGUIDialogGamepad(void)
 
 void CGUIDialogGamepad::OnInitWindow()
 {
-  // hide ok button from DialogOK
-  SET_CONTROL_HIDDEN(10);
+  // hide all controls
+  for (int i = 0; i < DIALOG_MAX_CHOICES; ++i)
+    SET_CONTROL_HIDDEN(CONTROL_CHOICES_START + i);
+  SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
 
   CGUIDialogBoxBase::OnInitWindow();
 }

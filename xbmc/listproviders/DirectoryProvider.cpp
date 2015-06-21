@@ -149,7 +149,6 @@ private:
 
 CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID)
  : IListProvider(parentID),
-   m_updateTime(0),
    m_updateState(OK),
    m_isAnnounced(false),
    m_jobID(0),
@@ -372,6 +371,7 @@ bool CDirectoryProvider::UpdateSort()
 
   m_currentSort.sortBy = sortMethod;
   m_currentSort.sortOrder = sortOrder;
+  m_currentSort.sortAttributes = SortAttributeIgnoreFolders;
 
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     m_currentSort.sortAttributes = static_cast<SortAttribute>(m_currentSort.sortAttributes | SortAttributeIgnoreArticle);

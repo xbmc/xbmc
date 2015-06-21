@@ -1,0 +1,213 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Albanian (Albania) (http://www.transifex.com/projects/p/kodi-main/language/sq_AL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sq_AL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Cilësime Audio"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Shkronja të Mëdha [Caps Lock]"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Zgjedhja e Vizualizimit"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Paracilësime të Vizualizimit"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Menu Konteksti"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Në Funksionim..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Filma"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Episodet"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Albumet"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Faqe"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Lista Info"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "PËRSHPEJTO"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "RIKTHE"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Koha e Përfundimit"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Rendit: Me Ngjitje"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Rendit: Me Zbritje"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Hape listën dëgjimi"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Ruaj listën dëgjimi"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Mbyll listën dëgjimi"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Skeda muzikore të sistemit"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Lista dëgjimi aktuale"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Mbrapa"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Lokalizimi"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Pamje"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Temperatura Aktuale"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Azhornuar së Fundmi"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Pajisës i të Dhënave"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Memorje Përdorur"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "I Loguar së Fundmi"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Në Transmetim"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Menu Vidjo"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Shkarko Titra"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Standarte e Maskës"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Në Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Ndrysho maskën - Cakto gjuhen dhe rajonin - Ndrysho opcionet e listës skedeve - Cakto një Ekran-ruajtese"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Menaxho bibliotekën video tënde - Cakto opcione të luarjes video - Ndrysho pamjen e listës video - Cakto shkrimin e subtitrave"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Cakto pamjen e listës imazhe - Konfiguro slideshows"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Cakto tri shtete për shkarkimin së informatave për motin"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Konfiguro kontrollimin së Kodi nëpërmjet UPnP dhe HTTP - Konfiguro shpërndimin e skedeve - Cakto opcionet e lidhjes së internetit"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Konfiguro dhe kalibro Ekranet - Konfiguro daljen zërit - Konfiguro telekomandët - Cakto opcionet për kursimin e rrymës - Aktivo debugging - Konfiguro dryrin përdorues"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Zgjedho Kodi profilin [CR]për të rregjistruar dhe vazhdo"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Opcione të llojllojshëm"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Informacionet dhe butonet të motit në Ekranin kryesor"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Shkurtore së Shtuesit"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Shto Grup"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Riemro Grupet"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Fshij Grupet"

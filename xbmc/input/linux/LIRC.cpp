@@ -33,6 +33,7 @@
 #include <sys/inotify.h>
 #endif
 #include "input/ButtonTranslator.h"
+#include "linux/PlatformDefs.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
@@ -131,7 +132,7 @@ void CRemoteControl::Process()
   struct sockaddr_un addr;
   if (m_deviceName.length() >= sizeof(addr.sun_path))
   {
-    CLog::Log(LOGERROR, "LIRC %s: device name is too long(%ud), maximum is %d",
+    CLog::Log(LOGERROR, "LIRC %s: device name is too long (%" PRIdS"), maximum is %" PRIdS"",
               __FUNCTION__, m_deviceName.length(), sizeof(addr.sun_path));
     return;
   }

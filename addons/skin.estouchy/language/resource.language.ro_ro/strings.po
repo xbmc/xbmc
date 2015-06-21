@@ -1,0 +1,249 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/kodi-main/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Setări Audio"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Opțiuni pentru Vizualizare"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Vizualizări predefinite"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Meniu Contextual"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Procesează..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Filme"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Episoade"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Albume"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Pagina"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Listă Informații"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Autentificare"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "ÎNAINTE"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "ÎNAPOI"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Se termină la"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Sort.: Ascendent"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Sort.: Descendent"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Deschide listă redare"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Salvare listă redare"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Închide listă redare"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Fisiere muzică"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Listă redare actuală"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Înapoi"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Locație"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Vizualizează"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Temperatură actuală"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Ultima actualizare"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Furnizor informații"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Memorie folosită:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Ultima intrare"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Difuzat pe"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Meniul Video"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Descărcare subtitrare"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Standard pentru costum"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Cu Arial la bază"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "schimbă skinul · Configurează limba și regiunea · Schimbă modul cum sunt afișate fișierele · Schimbă protecția ecranului"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Aranjează libraria video · Configurează opțiunile de tip video · Schimbă opțiunile de afișare video · Configurează dimensiunea subtitrării"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Configurează opțiunile de afișare a imaginilor - Configurează diaporama"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Configurează trei orașe pentru care să se colecteze informații despre vreme"
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Setați controlul Kodi prin UPnP sau HTTP Configurați sharingul de fișiere · Setați opțiunile de acces la internet"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Setați și calibrați display-ul · Configurați ieșirea audio · Setați controalele telecomenzii · Setați opțiunile de power saving · Activați debugging-ul · Setați parola principală"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Selectați profilul dumneavoastră de utilizator Kodi[CR]pentru a vă autentifica și a continua"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Pagina principală a legăturilor Suplimentelor"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Opțiuni Diverse"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Ecranul și butonul Informații Vreme"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Scurtatură Suplimente"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SINCRONIZARE"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Utilizează fundal personalizat"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Fundal: "
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "TV Live"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Ascunde fundal video"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Ascunde fundal vizualizare"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Setări canal"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Grupuri disponibile"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Adaugă Grup"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Redenumește Grup"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Șterge Grup"

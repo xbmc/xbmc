@@ -65,7 +65,7 @@
 #define SETTING_AUDIO_MAKE_DEFAULT             "audio.makedefault"
 
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings()
-  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "VideoOSDSettings.xml"),
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "DialogSettings.xml"),
     m_passthrough(false),
     m_dspEnabled(false)
 { }
@@ -204,7 +204,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
       strPath = g_application.CurrentFileItem().GetPath();
 
     std::string strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
-    if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
+    if (g_application.GetCurrentPlayer() == "VideoPlayer")
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
     VECSOURCES shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
     if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
@@ -263,6 +263,9 @@ void CGUIDialogAudioSubtitleSettings::SetupView()
   CGUIDialogSettingsManualBase::SetupView();
 
   SetHeading(13396);
+  SET_CONTROL_HIDDEN(CONTROL_SETTINGS_OKAY_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_SETTINGS_CUSTOM_BUTTON);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 15067);
 }
 
 void CGUIDialogAudioSubtitleSettings::InitializeSettings()

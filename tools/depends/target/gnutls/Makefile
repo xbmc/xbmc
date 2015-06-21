@@ -3,18 +3,20 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=gnutls
-VERSION=3.3.10
+VERSION=3.3.15
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
 ifeq (darwin, $(findstring darwin, $(HOST)))
 # darwins tar doesn't know about xz - so we need our native version of tar here
 ARCHIVE_TOOL=$(ARCHIVE_TOOL_NATIVE)
+CONFIGURE_HACKS = ac_cv_func_vfork_works=no
+CONFIGURE_HACKS+= ac_cv_func_fork=no
 endif
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --enable-local-libopts
+          ./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --enable-local-libopts --disable-doc --disable-tests $(CONFIGURE_HACKS)
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 

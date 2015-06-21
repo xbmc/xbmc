@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -57,7 +57,6 @@
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
-#include "music/karaoke/karaokelyricsfactory.h"
 #include "utils/Mime.h"
 
 #include <assert.h>
@@ -316,6 +315,11 @@ CFileItem::CFileItem(const CMediaSource& share)
   FillInMimeType(false);
 }
 
+CFileItem::CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo) : m_addonInfo(std::move(addonInfo))
+{
+  Initialize();
+}
+
 CFileItem::~CFileItem(void)
 {
   delete m_musicInfoTag;
@@ -386,6 +390,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
   m_pvrRadioRDSInfoTag = item.m_pvrRadioRDSInfoTag;
+  m_addonInfo = item.m_addonInfo;
 
   m_lStartOffset = item.m_lStartOffset;
   m_lStartPartNumber = item.m_lStartPartNumber;
@@ -403,6 +408,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_extrainfo = item.m_extrainfo;
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
+  m_doContentLookup = item.m_doContentLookup;
   return *this;
 }
 
@@ -492,6 +498,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_mimetype;
     ar << m_extrainfo;
     ar << m_specialSort;
+    ar << m_doContentLookup;
 
     if (m_musicInfoTag)
     {
@@ -549,6 +556,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_extrainfo;
     ar >> temp;
     m_specialSort = (SortSpecial)temp;
+    ar >> m_doContentLookup;
 
     int iType;
     ar >> iType;
@@ -644,6 +652,24 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 
   if (HasPVRChannelInfoTag())
     GetPVRChannelInfoTag()->ToSortable(sortable, field);
+
+  if (HasAddonInfo())
+  {
+    switch (field)
+    {
+      case FieldInstallDate:
+        sortable[FieldInstallDate] = GetAddonInfo()->InstallDate().GetAsDBDateTime();
+        break;
+      case FieldLastUpdated:
+        sortable[FieldLastUpdated] = GetAddonInfo()->LastUpdated().GetAsDBDateTime();
+        break;
+      case FieldLastUsed:
+        sortable[FieldLastUsed] = GetAddonInfo()->LastUsed().GetAsDBDateTime();
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
@@ -799,14 +825,6 @@ bool CFileItem::IsAudio() const
   }
 
   return URIUtils::HasExtension(m_strPath, g_advancedSettings.GetMusicExtensions());
-}
-
-bool CFileItem::IsKaraoke() const
-{
-  if (!IsAudio())
-    return false;
-
-  return CKaraokeLyricsFactory::HasLyrics( m_strPath );
 }
 
 bool CFileItem::IsPicture() const
@@ -1120,6 +1138,13 @@ bool CFileItem::IsReadOnly() const
 
 void CFileItem::FillInDefaultIcon()
 {
+  if (URIUtils::IsPVRGuideItem(m_strPath))
+  {
+    // epg items never have a default icon. no need to execute this expensive method.
+    // when filling epg grid window, easily tens of thousands of epg items are processed.
+    return;
+  }
+
   //CLog::Log(LOGINFO, "FillInDefaultIcon(%s)", pItem->GetLabel().c_str());
   // find the default icon for a file or folder item
   // for files this can be the (depending on the file type)
@@ -1444,6 +1469,19 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
   FillInMimeType(false);
 }
 
+void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag &music)
+{
+  if (!music.GetTitle().empty())
+    SetLabel(music.GetTitle());
+  if (!music.GetURL().empty())
+    m_strPath = music.GetURL();
+  m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
+
+  *GetMusicInfoTag() = music;
+  FillInDefaultIcon();
+  FillInMimeType(false);
+}
+
 void CFileItem::SetFromAlbum(const CAlbum &album)
 {
   if (!album.strAlbum.empty())
@@ -1530,9 +1568,9 @@ bool CFileItem::IsURL(const CURL& url) const
   return IsPath(url.Get());
 }
 
-bool CFileItem::IsPath(const std::string& path) const
+bool CFileItem::IsPath(const std::string& path, bool ignoreURLOptions /* = false */) const
 {
-  return URIUtils::PathEquals(m_strPath, path);
+  return URIUtils::PathEquals(m_strPath, path, false, ignoreURLOptions);
 }
 
 void CFileItem::SetCueDocument(const CCueDocumentPtr& cuePtr)
@@ -1639,6 +1677,7 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
 
 CFileItemList::CFileItemList()
 : CFileItem("", true),
+  m_ignoreURLOptions(false),
   m_fastLookup(false),
   m_sortIgnoreFolders(false),
   m_cacheToDisc(CACHE_IF_SLOW),
@@ -1648,6 +1687,7 @@ CFileItemList::CFileItemList()
 
 CFileItemList::CFileItemList(const std::string& strPath)
 : CFileItem(strPath, true),
+  m_ignoreURLOptions(false),
   m_fastLookup(false),
   m_sortIgnoreFolders(false),
   m_cacheToDisc(CACHE_IF_SLOW),
@@ -1680,6 +1720,17 @@ const CFileItemPtr CFileItemList::operator[] (const std::string& strPath) const
   return Get(strPath);
 }
 
+void CFileItemList::SetIgnoreURLOptions(bool ignoreURLOptions)
+{
+  m_ignoreURLOptions = ignoreURLOptions;
+
+  if (m_fastLookup)
+  {
+    m_fastLookup = false; // Force SetFastlookup to clear map
+    SetFastLookup(true);  // and regenerate map
+  }
+}
+
 void CFileItemList::SetFastLookup(bool fastLookup)
 {
   CSingleLock lock(m_lock);
@@ -1690,7 +1741,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
     for (unsigned int i=0; i < m_items.size(); i++)
     {
       CFileItemPtr pItem = m_items[i];
-      m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
+      m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
     }
   }
   if (!fastLookup && m_fastLookup)
@@ -1703,13 +1754,13 @@ bool CFileItemList::Contains(const std::string& fileName) const
   CSingleLock lock(m_lock);
 
   if (m_fastLookup)
-    return m_map.find(fileName) != m_map.end();
+    return m_map.find(m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName) != m_map.end();
 
   // slow method...
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     const CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(fileName))
+    if (pItem->IsPath(m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName))
       return true;
   }
   return false;
@@ -1751,7 +1802,7 @@ void CFileItemList::Add(const CFileItemPtr &pItem)
   m_items.push_back(pItem);
   if (m_fastLookup)
   {
-    m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
+    m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
   }
 }
 
@@ -1769,7 +1820,7 @@ void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
   }
   if (m_fastLookup)
   {
-    m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
+    m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
   }
 }
 
@@ -1784,7 +1835,7 @@ void CFileItemList::Remove(CFileItem* pItem)
       m_items.erase(it);
       if (m_fastLookup)
       {
-        m_map.erase(pItem->GetPath());
+        m_map.erase(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath());
       }
       break;
     }
@@ -1800,7 +1851,7 @@ void CFileItemList::Remove(int iItem)
     CFileItemPtr pItem = *(m_items.begin() + iItem);
     if (m_fastLookup)
     {
-      m_map.erase(pItem->GetPath());
+      m_map.erase(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath());
     }
     m_items.erase(m_items.begin() + iItem);
   }
@@ -1883,7 +1934,7 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath)
 
   if (m_fastLookup)
   {
-    IMAPFILEITEMS it=m_map.find(strPath);
+    IMAPFILEITEMS it = m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
     if (it != m_map.end())
       return it->second;
 
@@ -1893,7 +1944,7 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath)
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(strPath))
+    if (pItem->IsPath(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath))
       return pItem;
   }
 
@@ -1906,7 +1957,7 @@ const CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 
   if (m_fastLookup)
   {
-    std::map<std::string, CFileItemPtr>::const_iterator it=m_map.find(strPath);
+    std::map<std::string, CFileItemPtr>::const_iterator it = m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
     if (it != m_map.end())
       return it->second;
 
@@ -1916,7 +1967,7 @@ const CFileItemPtr CFileItemList::Get(const std::string& strPath) const
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(strPath))
+    if (pItem->IsPath(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath))
       return pItem;
   }
 
@@ -2031,10 +2082,12 @@ void CFileItemList::Archive(CArchive& ar)
     CFileItem::Archive(ar);
 
     int i = 0;
-    if (m_items.size() > 0 && m_items[0]->IsParentFolder())
+    if (!m_items.empty() && m_items[0]->IsParentFolder())
       i = 1;
 
     ar << (int)(m_items.size() - i);
+
+    ar << m_ignoreURLOptions;
 
     ar << m_fastLookup;
 
@@ -2076,9 +2129,9 @@ void CFileItemList::Archive(CArchive& ar)
         pParent.reset(new CFileItem(*pItem));
     }
 
+    SetIgnoreURLOptions(false);
     SetFastLookup(false);
     Clear();
-
 
     CFileItem::Archive(ar);
 
@@ -2095,7 +2148,10 @@ void CFileItemList::Archive(CArchive& ar)
     else
       m_items.reserve(iSize);
 
-    bool fastLookup=false;
+    bool ignoreURLOptions = false;
+    ar >> ignoreURLOptions;
+
+    bool fastLookup = false;
     ar >> fastLookup;
 
     int tempint;
@@ -2137,6 +2193,7 @@ void CFileItemList::Archive(CArchive& ar)
       Add(pItem);
     }
 
+    SetIgnoreURLOptions(ignoreURLOptions);
     SetFastLookup(fastLookup);
   }
 }
@@ -2518,7 +2575,7 @@ void CFileItemList::StackFiles()
                 if (StringUtils::EqualsNoCase(Ignore1, Ignore2) &&
                     StringUtils::EqualsNoCase(Extension1, Extension2))
                 {
-                  if (stack.size() == 0)
+                  if (stack.empty())
                   {
                     stackName = Title1 + Ignore1 + Extension1;
                     stack.push_back(i);
@@ -2923,7 +2980,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 
   if (bUseFolderNames &&
      (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) ||
-     (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 && !MediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
+     (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 && !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
   {
     std::string name2(strMovieName);
     URIUtils::GetParentPath(name2,strMovieName);

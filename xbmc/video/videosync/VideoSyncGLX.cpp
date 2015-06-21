@@ -34,7 +34,7 @@
 
 Display* CVideoSyncGLX::m_Dpy = NULL;
 
-void CVideoSyncGLX::OnLostDevice()
+void CVideoSyncGLX::OnLostDisplay()
 {
   if (!m_displayLost)
   {
@@ -43,7 +43,7 @@ void CVideoSyncGLX::OnLostDevice()
   }
 }
 
-void CVideoSyncGLX::OnResetDevice()
+void CVideoSyncGLX::OnResetDisplay()
 {
   m_displayReset = true;
 }

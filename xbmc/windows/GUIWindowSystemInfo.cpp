@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2015 Team XBMC
+ *      Copyright (C) 2005-2015 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -106,7 +106,7 @@ void CGUIWindowSystemInfo::FrameMove()
   else if (m_section == CONTROL_BT_STORAGE)
   {
     SET_CONTROL_LABEL(40, g_localizeStrings.Get(20155));
-    if (m_diskUsage.size() == 0)
+    if (m_diskUsage.empty())
       m_diskUsage = g_mediaManager.GetDiskUsage();
 
     for (size_t d = 0; d < m_diskUsage.size(); d++)
@@ -139,7 +139,7 @@ void CGUIWindowSystemInfo::FrameMove()
 #else
     SetControlLabel(i++, "%s %s", 22024, SYSTEM_RENDER_VERSION);
 #endif
-#if !defined(__arm__) && !defined(HAS_DX)
+#if !defined(__arm__) && !defined(__aarch64__) && !defined(HAS_DX)
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
 #endif
   }
@@ -155,7 +155,7 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUSerial());
 #endif
     SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
-#if !defined(__arm__) || defined(TARGET_RASPBERRY_PI)
+#if (!defined(__arm__) && !defined(__aarch64__)) || defined(TARGET_RASPBERRY_PI)
     SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
 #endif
 #if !(defined(__arm__) && defined(TARGET_LINUX))

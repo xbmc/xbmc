@@ -35,6 +35,7 @@ TEST(TestStreamDetails, General)
   video->m_iDuration = 30;
   video->m_strCodec = "h264";
   video->m_strStereoMode = "left_right";
+  video->m_strLanguage = "eng";
 
   audio->m_iChannels = 2;
   audio->m_strCodec = "aac";

@@ -1,0 +1,241 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/kodi-main/language/el_GR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: el_GR\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Τώρα εκτελείται"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Αναζήτηση"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Αλλαγή λειτουργίας"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Προβολή ως 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "τυχαίες ταινείες"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "Τηλεοπτικές σειρές σε εξέλιξη"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Ταινίες σε εξέλιξη"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Τυχαία σειρά καλλιτεχνών"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Πρόσφατες εγγραφές"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Πρόγνωση"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Ενέργειες"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Διάφορες επιλογές"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Ταξινόμηση κατά"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Επόμενα κομμάτια"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Τελευταία σύνδεση"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Πληροφορίες εκδοσης"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Παραγγελία"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Η αξιολόγηση σας"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Εκτεταμένες πληροφορίες"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Σελίδες"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "Αντικείμενα"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Πίσω"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Μπροστά"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Ακύρωση της ενημέρωσης"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Κατασκευαστής της φωτογραφικής μηχανής "
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Επιλογές λίστας αναπ/γής"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Προσθήκη Γκρουπ"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Μετονομασία Γκρουπ"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Διαγραφή Γκρουπ"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Διαβάστε περισσότερα"
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Διαθέσιμος"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Βασισμένη σε Arial"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Κατέβασμα υποτίτλων"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Πήγαινε στην λίστα αναπαραγωγής"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Ενημερώσεις διαθέσιμες"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "Λεπτά"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Τμήματα"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Τελευταία Ενημέρωση"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "υπο"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Επιλογές Ενέργειας"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Τίτλοι"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Επόμενη τοποθεσία"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Τελειώνει στο"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Πληροφορίες άλμπουμ"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Add-on στοίχων"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Γκρουπ Καναλιών"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Ρυθμίσεις παρόχου"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Επιλογές Σάρωσης Περιεχομένου"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Διαθέσιμα γκρουπ"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Λήψη Υποτίτλων"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Διαθέσιμος υπότιτλος τοπικά"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Επιλογές Καναλιού"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Επιλέξτε προφίλ χρήστη για το Kodi[CR]για να συνδεθείτε και να συνεχίσετε"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Αναζήτηση στην τοπική βιβλιοθήκη"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Αναζήτηση στο  Youtube"

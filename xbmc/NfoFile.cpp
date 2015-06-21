@@ -95,7 +95,7 @@ CNfoFile::NFOResult CNfoFile::Create(const std::string& strPath, const ScraperPt
 
   // Add all scrapers except selected and default
   VECADDONS addons;
-  CAddonMgr::GetInstance().GetAddons(m_type,addons);
+  CAddonMgr::GetInstance().GetAddons(addons, m_type);
 
   for (unsigned i = 0; i < addons.size(); ++i)
   {

@@ -1,24 +1,22 @@
 SRCS=Addon.cpp \
-     AddonCallbacks.cpp \
-     AddonCallbacksAddon.cpp \
-     AddonCallbacksAudioDSP.cpp \
-     AddonCallbacksAudioEngine.cpp \
-     AddonCallbacksCodec.cpp \
-     AddonCallbacksGUI.cpp \
-     AddonCallbacksPVR.cpp \
+     AddonBuilder.cpp \
+     BinaryAddonCache.cpp \
      AddonDatabase.cpp \
      AddonInstaller.cpp \
      AddonManager.cpp \
      AddonStatusHandler.cpp \
+     AddonSystemSettings.cpp \
      AddonVersion.cpp \
      AudioEncoder.cpp \
      ContextMenuAddon.cpp \
+     ContextMenus.cpp \
      AudioDecoder.cpp \
      GUIDialogAddonInfo.cpp \
      GUIDialogAddonSettings.cpp \
      GUIViewStateAddonBrowser.cpp \
      GUIWindowAddonBrowser.cpp \
      ImageResource.cpp \
+     InputStream.cpp \
      LanguageResource.cpp \
      PluginSource.cpp \
      Repository.cpp \

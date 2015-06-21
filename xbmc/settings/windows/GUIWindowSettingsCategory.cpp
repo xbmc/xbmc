@@ -27,6 +27,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/SettingSection.h"
+#include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
 #define SETTINGS_PICTURES               WINDOW_SETTINGS_MYPICTURES - WINDOW_SETTINGS_START
@@ -91,6 +92,10 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       m_iSection = (int)message.GetParam2() - (int)CGUIDialogSettingsManagerBase::GetID();
       CGUIDialogSettingsManagerBase::OnMessage(message);
       m_returningFromSkinLoad = false;
+
+      if (!message.GetStringParam(0).empty())
+        FocusCategory(message.GetStringParam(0));
+
       return true;
     }
     
@@ -203,4 +208,17 @@ CSettingSection* CGUIWindowSettingsCategory::GetSection()
 void CGUIWindowSettingsCategory::Save()
 {
   m_settings.Save();
+}
+
+void CGUIWindowSettingsCategory::FocusCategory(const std::string& categoryId)
+{
+  auto category = std::find_if(m_categories.cbegin(), m_categories.cend(),
+    [&categoryId](const CSettingCategory* category) { return category->GetId() == categoryId; });
+  if (category == m_categories.end())
+  {
+    CLog::Log(LOGERROR, "CGUIWindowSettingsCategory: asked to focus unknown category '%s'.", categoryId.c_str());
+    return;
+  }
+
+  SET_CONTROL_FOCUS(CONTROL_SETTINGS_START_BUTTONS + std::distance(m_categories.cbegin(), category), 0);
 }

@@ -22,8 +22,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include "../../../addons/library.kodi.audioengine/libKODI_audioengine.h"
-#include "addons/AddonCallbacks.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h"
+#include "addons/binary/interfaces/api1/AudioEngine/AddonCallbacksAudioEngine.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -33,6 +33,7 @@
 #endif
 
 using namespace std;
+using namespace V1::KodiAPI::AudioEngine;
 
 #define LIBRARY_NAME "libKODI_audioengine"
 
@@ -46,7 +47,7 @@ DLLEXPORT void* AudioEngine_register_me(void *hdl)
     fprintf(stderr, "%s-ERROR: AudioEngine_register_me is called with NULL handle !!!\n", LIBRARY_NAME);
   else
   {
-    cb = ((AddonCB*)hdl)->AudioEngineLib_RegisterMe(((AddonCB*)hdl)->addonData);
+    cb = (CB_AudioEngineLib*)((AddonCB*)hdl)->AudioEngineLib_RegisterMe(((AddonCB*)hdl)->addonData);
     if (!cb)
       fprintf(stderr, "%s-ERROR: AudioEngine_register_me can't get callback table from KODI !!!\n", LIBRARY_NAME);
   }
@@ -62,7 +63,7 @@ DLLEXPORT void AudioEngine_unregister_me(void *hdl, void* cb)
 // ---------------------------------------------
 // CAddonAEStream implementations
 // ---------------------------------------------
-DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AEDataFormat DataFormat, unsigned int SampleRate, unsigned int EncodedSampleRate, enum AEChannel *Channels, unsigned int Options)
+DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AudioEngineFormat Format, unsigned int Options)
 {
   if (!hdl || !cb)
   {
@@ -70,7 +71,7 @@ DLLEXPORT CAddonAEStream* AudioEngine_make_stream(void *hdl, void *cb, AEDataFor
     return NULL;
   }
 
-  AEStreamHandle *streamHandle = ((CB_AudioEngineLib*)cb)->MakeStream(DataFormat, SampleRate, EncodedSampleRate, Channels, Options);
+  AEStreamHandle *streamHandle = ((CB_AudioEngineLib*)cb)->MakeStream(Format, Options);
   if (!streamHandle)
   {
     fprintf(stderr, "%s-ERROR: AudioEngine_make_stream MakeStream failed!\n", LIBRARY_NAME);
@@ -209,11 +210,6 @@ const unsigned int CAddonAEStream::GetSampleRate() const
   return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_GetSampleRate(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
 }
 
-const unsigned int CAddonAEStream::GetEncodedSampleRate() const
-{
-  return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_GetEncodedSampleRate(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
-}
-
 const AEDataFormat CAddonAEStream::GetDataFormat() const
 {
   return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_GetDataFormat(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
@@ -224,13 +220,9 @@ double CAddonAEStream::GetResampleRatio()
   return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_GetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
 }
 
-bool CAddonAEStream::SetResampleRatio(double Ratio)
+void CAddonAEStream::SetResampleRatio(double Ratio)
 {
-  return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_SetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle, Ratio);
+  ((CB_AudioEngineLib*)m_Callbacks)->AEStream_SetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle, Ratio);
 }
 
-void CAddonAEStream::Discontinuity()
-{
-  return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_Discontinuity(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
-}
 };

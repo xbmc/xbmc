@@ -457,7 +457,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
       pDlgSelect->Add((*itr)->Name());
     pDlgSelect->Open();
 
-    iSelection = pDlgSelect->GetSelectedLabel();
+    iSelection = pDlgSelect->GetSelectedItem();
   }
 
   if (iSelection >= 0 && iSelection < (int)m_clientsWithSettingsList.size())
@@ -685,7 +685,7 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty("Number", StringUtils::Format("%i", channel->ChannelNumber()));
 
     std::string clientName;
-    g_PVRClients->GetClientName(channel->ClientID(), clientName);
+    g_PVRClients->GetClientFriendlyName(channel->ClientID(), clientName);
     channelFile->SetProperty("ClientName", clientName);
     channelFile->SetProperty("SupportsSettings", g_PVRClients->SupportsChannelSettings(channel->ClientID()));
 

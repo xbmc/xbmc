@@ -89,7 +89,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
   bool cancelled=false;
 
   if (params.size() > 1)
-    singleFile = StringUtils::EqualsNoCase(params[1], "true");
+    singleFile = StringUtils::EqualsNoCase(params[1], "false");
   else
   {
     HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20426}, CVariant{20428}, CVariant{20429});
@@ -100,7 +100,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
   if (cancelled)
     return -1;
 
-  if (singleFile)
+  if (!singleFile)
   {
     if (params.size() > 2)
       thumbs = StringUtils::EqualsNoCase(params[2], "true");
@@ -130,7 +130,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
   if (cancelled)
     return -1;
 
-  if (singleFile)
+  if (!singleFile)
   {
     if (params.size() > 3)
       overwrite = StringUtils::EqualsNoCase(params[3], "true");
@@ -147,7 +147,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
 
   if (params.size() > 2)
     path=params[2];
-  if ((singleFile && !path.empty()) ||
+  if (!singleFile || !path.empty() ||
       CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661),
                                                  path, true))
   {
@@ -210,6 +210,48 @@ static int SearchVideoLibrary(const std::vector<std::string>& params)
 
   return 0;
 }
+
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_8 Library built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`cleanlibrary(type)`</b>
+///     ,
+///      Clean the video/music library
+///     @param[in] type                  "video" or "music".
+///   }
+///   \table_row2_l{
+///     <b>`exportlibrary(type [\, exportSingeFile\, exportThumbs\, overwrite\, exportActorThumbs])`</b>
+///     ,
+///     Export the video/music library
+///     @param[in] type                  "video" or "music".
+///     @param[in] exportSingleFile      Add "true" to export to a single file (optional).
+///     @param[in] exportThumbs          Add "true" to export thumbs (optional).
+///     @param[in] overwrite             Add "true" to overwrite existing files (optional).
+///     @param[in] exportActorThumbs     Add "true" to export actor thumbs (optional).
+///   }
+///   \table_row2_l{
+///     <b>`updatelibrary([type\, suppressDialogs])`</b>
+///     ,
+///     Update the selected library (music or video)
+///     @param[in] type                  "video" or "music".
+///     @param[in] suppressDialogs       Add "true" to suppress dialogs (optional).
+///   }
+///   \table_row2_l{
+///     <b>`videolibrary.search`</b>
+///     ,
+///     Brings up a search dialog which will search the library
+///   }
+///  \table_end
+///
 
 CBuiltins::CommandMap CLibraryBuiltins::GetOperations() const
 {

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<coordinates>
+		<left>502</left>
+		<top>345</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="915" />
+			<param name="DialogBackgroundHeight" value="380" />
+			<param name="DialogHeaderLabel" value="" />
+			<param name="DialogHeaderId" value="1" />
+		</include>
+		<control type="textbox" id="9">
+			<description>text</description>
+			<left>30</left>
+			<top>82</top>
+			<width>855</width>
+			<height>150</height>
+			<label>-</label>
+			<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+		</control>
+		<control type="progress" id="20">
+			<description>Progressbar</description>
+			<left>45</left>
+			<top>252</top>
+			<width>825</width>
+			<height>24</height>
+			<info>System.Progressbar</info>
+		</control>
+		<control type="grouplist">
+			<orientation>horizontal</orientation>
+			<left>0</left>
+			<top>280</top>
+			<width>915</width>
+			<align>center</align>
+			<include name="DefaultDialogButton">
+				<param name="id" value="11" />
+				<param name="label" value="" />
+			</include>
+			<include name="DefaultDialogButton">
+				<param name="id" value="10" />
+				<param name="label" value="" />
+			</include>
+			<include name="DefaultDialogButton">
+				<param name="id" value="12" />
+				<param name="label" value="" />
+			</include>
+		</control>
+	</controls>
+</window>
+

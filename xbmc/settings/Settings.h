@@ -99,6 +99,7 @@ public:
   static const std::string SETTING_VIDEOLIBRARY_CLEANUP;
   static const std::string SETTING_VIDEOLIBRARY_EXPORT;
   static const std::string SETTING_VIDEOLIBRARY_IMPORT;
+  static const std::string SETTING_VIDEOLIBRARY_SHOWEMPTYTVSHOWS;
   static const std::string SETTING_LOCALE_AUDIOLANGUAGE;
   static const std::string SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG;
   static const std::string SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM;
@@ -117,6 +118,7 @@ public:
   static const std::string SETTING_VIDEOPLAYER_HQSCALERS;
   static const std::string SETTING_VIDEOPLAYER_USEAMCODEC;
   static const std::string SETTING_VIDEOPLAYER_USEMEDIACODEC;
+  static const std::string SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE;
   static const std::string SETTING_VIDEOPLAYER_USEVDPAU;
   static const std::string SETTING_VIDEOPLAYER_USEVDPAUMIXER;
   static const std::string SETTING_VIDEOPLAYER_USEVDPAUMPEG2;
@@ -135,6 +137,7 @@ public:
   static const std::string SETTING_VIDEOPLAYER_USEMMAL;
   static const std::string SETTING_VIDEOPLAYER_USESTAGEFRIGHT;
   static const std::string SETTING_VIDEOPLAYER_LIMITGUIUPDATE;
+  static const std::string SETTING_VIDEOPLAYER_SUPPORTMVC;
   static const std::string SETTING_MYVIDEOS_SELECTACTION;
   static const std::string SETTING_MYVIDEOS_EXTRACTFLAGS;
   static const std::string SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS;
@@ -213,7 +216,7 @@ public:
   static const std::string SETTING_PVRPARENTAL_PIN;
   static const std::string SETTING_PVRPARENTAL_DURATION;
   static const std::string SETTING_PVRCLIENT_MENUHOOK;
-  static const std::string SETTING_PVRTIMERS_TIMERTYPEFILTER;
+  static const std::string SETTING_PVRTIMERS_HIDEDISABLEDTIMERS;
   static const std::string SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS;
   static const std::string SETTING_MUSICLIBRARY_DOWNLOADINFO;
   static const std::string SETTING_MUSICLIBRARY_ALBUMSSCRAPER;
@@ -248,14 +251,6 @@ public:
   static const std::string SETTING_AUDIOCDS_ENCODER;
   static const std::string SETTING_AUDIOCDS_SETTINGS;
   static const std::string SETTING_AUDIOCDS_EJECTONRIP;
-  static const std::string SETTING_KARAOKE_ENABLED;
-  static const std::string SETTING_KARAOKE_AUTOPOPUPSELECTOR;
-  static const std::string SETTING_KARAOKE_FONT;
-  static const std::string SETTING_KARAOKE_FONTHEIGHT;
-  static const std::string SETTING_KARAOKE_FONTCOLORS;
-  static const std::string SETTING_KARAOKE_CHARSET;
-  static const std::string SETTING_KARAOKE_EXPORT;
-  static const std::string SETTING_KARAOKE_IMPORTCSV;
   static const std::string SETTING_MYMUSIC_STARTWINDOW;
   static const std::string SETTING_MYMUSIC_SONGTHUMBINVIS;
   static const std::string SETTING_MYMUSIC_DEFAULTLIBVIEW;
@@ -306,6 +301,7 @@ public:
   static const std::string SETTING_VIDEOSCREEN_GUICALIBRATION;
   static const std::string SETTING_VIDEOSCREEN_TESTPATTERN;
   static const std::string SETTING_VIDEOSCREEN_LIMITEDRANGE;
+  static const std::string SETTING_VIDEOSCREEN_FRAMEPACKING;
   static const std::string SETTING_AUDIOOUTPUT_AUDIODEVICE;
   static const std::string SETTING_AUDIOOUTPUT_CHANNELS;
   static const std::string SETTING_AUDIOOUTPUT_CONFIG;
@@ -327,10 +323,9 @@ public:
   static const std::string SETTING_AUDIOOUTPUT_DTSPASSTHROUGH;
   static const std::string SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH;
   static const std::string SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH;
-  static const std::string SETTING_AUDIOOUTPUT_SUPPORTSDTSHDCPUDECODING;
   static const std::string SETTING_INPUT_PERIPHERALS;
   static const std::string SETTING_INPUT_ENABLEMOUSE;
-  static const std::string SETTING_INPUT_ENABLEJOYSTICK;
+  static const std::string SETTING_INPUT_CONTROLLERCONFIG;
   static const std::string SETTING_INPUT_APPLEREMOTEMODE;
   static const std::string SETTING_INPUT_APPLEREMOTEALWAYSON;
   static const std::string SETTING_INPUT_APPLEREMOTESEQUENCETIME;
@@ -366,8 +361,11 @@ public:
   static const std::string SETTING_CACHEDVD_LAN;
   static const std::string SETTING_CACHEUNKNOWN_INTERNET;
   static const std::string SETTING_SYSTEM_PLAYLISTSPATH;
-  static const std::string SETTING_GENERAL_ADDONUPDATES;
-  static const std::string SETTING_GENERAL_ADDONNOTIFICATIONS;
+  static const std::string SETTING_ADDONS_AUTOUPDATES;
+  static const std::string SETTING_ADDONS_NOTIFICATIONS;
+  static const std::string SETTING_ADDONS_SHOW_RUNNING;
+  static const std::string SETTING_ADDONS_MANAGE_DEPENDENCIES;
+  static const std::string SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES;
   static const std::string SETTING_GENERAL_ADDONFOREIGNFILTER;
   static const std::string SETTING_GENERAL_ADDONBROKENFILTER;
 

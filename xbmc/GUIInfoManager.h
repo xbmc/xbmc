@@ -36,6 +36,7 @@
 #include "interfaces/info/InfoBool.h"
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
+#include "FileItem.h"
 
 #include <list>
 #include <map>
@@ -95,6 +96,8 @@ private:
   int m_data2;
 };
 
+class CSetCurrentItemJob;
+
 /*!
  \ingroup strings
  \brief
@@ -102,6 +105,8 @@ private:
 class CGUIInfoManager : public IMsgTargetCallback, public Observable,
                         public KODI::MESSAGING::IMessageTarget
 {
+friend CSetCurrentItemJob;
+
 public:
   CGUIInfoManager(void);
   virtual ~CGUIInfoManager(void);
@@ -130,7 +135,7 @@ public:
    \return the value of the evaluated expression.
    \sa Register
    */
-  bool EvaluateBool(const std::string &expression, int context = 0);
+  bool EvaluateBool(const std::string &expression, int context = 0, const CGUIListItemPtr &item = nullptr);
 
   int TranslateString(const std::string &strCondition);
 
@@ -151,7 +156,10 @@ public:
   std::string GetDate(bool bNumbersOnly = false);
   std::string GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
-  void SetCurrentItem(CFileItem &item);
+  /*! \brief Set currently playing file item
+   \param blocking whether to run in current thread (true) or background thread (false)
+   */
+  void SetCurrentItem(const CFileItemPtr item);
   void ResetCurrentItem();
   // Current song stuff
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
@@ -188,12 +196,9 @@ public:
   bool GetDisplayAfterSeek();
   void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
-  void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
   void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
   bool GetShowInfo() const { return m_playerShowInfo; }
-  void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
   bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
-  bool IsPlayerOSDActive() const;
   bool IsPlayerChannelPreviewActive() const;
 
   std::string GetSystemHeatInfo(int info);
@@ -292,6 +297,8 @@ protected:
    */
   EPG::CEpgInfoTagPtr GetEpgInfoTag() const;
 
+  void SetCurrentItemJob(const CFileItemPtr item);
+
   // Conditional string parameters are stored here
   std::vector<std::string> m_stringParameters;
 
@@ -316,7 +323,6 @@ protected:
   unsigned int m_AfterSeekTimeout;
   int m_seekOffset;
   bool m_playerShowTime;
-  bool m_playerShowCodec;
   bool m_playerShowInfo;
 
   // FPS counters
@@ -338,6 +344,10 @@ protected:
   int m_libraryHasMovieSets;
   int m_libraryHasSingles;
   int m_libraryHasCompilations;
+  
+  //Count of artists in music library contributing to song by role e.g. composers, conductors etc.
+  //For checking visibiliy of custom nodes for a role.
+  std::vector<std::pair<std::string, int>> m_libraryRoleCounts; 
 
   SPlayerVideoStreamInfo m_videoInfo;
   SPlayerAudioStreamInfo m_audioInfo;

@@ -34,16 +34,13 @@
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
+#include "settings/windows/GUIControlSettings.h"
 #include "storage/MediaManager.h"
 #include "Util.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-
-#define CONTROL_PROFILE_IMAGE         CONTROL_SETTINGS_CUSTOM + 1
-#define CONTROL_PROFILE_NAME          CONTROL_SETTINGS_CUSTOM + 2
-#define CONTROL_PROFILE_DIRECTORY     CONTROL_SETTINGS_CUSTOM + 3
 
 #define SETTING_PROFILE_NAME          "profile.name"
 #define SETTING_PROFILE_IMAGE         "profile.image"
@@ -53,7 +50,7 @@
 #define SETTING_PROFILE_MEDIA_SOURCES "profile.mediasources"
 
 CGUIDialogProfileSettings::CGUIDialogProfileSettings()
-    : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PROFILE_SETTINGS, "ProfileSettings.xml"),
+    : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PROFILE_SETTINGS, "DialogSettings.xml"),
       m_needsSaving(false)
 { }
 
@@ -203,10 +200,6 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
 void CGUIDialogProfileSettings::OnWindowLoaded()
 {
   CGUIDialogSettingsManualBase::OnWindowLoaded();
-
-  CGUIMessage msg(GUI_MSG_GET_FILENAME, GetID(), CONTROL_PROFILE_IMAGE);
-  OnMessage(msg);
-  m_defaultImage = msg.GetLabel();
 }
 
 void CGUIDialogProfileSettings::OnSettingChanged(const CSetting *setting)
@@ -220,7 +213,6 @@ void CGUIDialogProfileSettings::OnSettingChanged(const CSetting *setting)
   if (settingId == SETTING_PROFILE_NAME)
   {
     m_name = static_cast<const CSettingString*>(setting)->GetValue();
-    updateProfileName();
   }
   else if (settingId == SETTING_PROFILE_MEDIA)
     m_dbMode = static_cast<const CSettingInt*>(setting)->GetValue();
@@ -253,7 +245,7 @@ void CGUIDialogProfileSettings::OnSettingAction(const CSetting *setting)
     }
 
     CFileItemPtr item(new CFileItem("thumb://None", false));
-    item->SetArt("thumb", m_defaultImage);
+    item->SetArt("thumb", "DefaultUser.png");
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
 
@@ -264,7 +256,7 @@ void CGUIDialogProfileSettings::OnSettingAction(const CSetting *setting)
       m_needsSaving = true;
       m_thumb = StringUtils::EqualsNoCase(thumb, "thumb://None") ? "" : thumb;
 
-      SET_CONTROL_FILENAME(CONTROL_PROFILE_IMAGE, !m_thumb.empty() ? m_thumb : m_defaultImage);
+      UpdateProfileImage();
     }
   }
   else if (settingId == SETTING_PROFILE_DIRECTORY)
@@ -312,12 +304,13 @@ void CGUIDialogProfileSettings::SetupView()
   // set the heading
   SetHeading(!m_showDetails ? 20255 : 20067);
 
-  // set the profile name and directory
-  updateProfileName();
-  updateProfileDirectory();
+  SET_CONTROL_HIDDEN(CONTROL_SETTINGS_CUSTOM_BUTTON);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_OKAY_BUTTON, 186);
+  SET_CONTROL_LABEL(CONTROL_SETTINGS_CANCEL_BUTTON, 222);
 
-  // set the image
-  SET_CONTROL_FILENAME(CONTROL_PROFILE_IMAGE, !m_thumb.empty() ? m_thumb : m_defaultImage);
+  // set the profile image and directory
+  UpdateProfileImage();
+  updateProfileDirectory();
 }
 
 void CGUIDialogProfileSettings::InitializeSettings()
@@ -393,12 +386,16 @@ bool CGUIDialogProfileSettings::GetProfilePath(std::string &directory, bool isDe
   return true;
 }
 
-void CGUIDialogProfileSettings::updateProfileName()
+void CGUIDialogProfileSettings::UpdateProfileImage()
 {
-  SET_CONTROL_LABEL(CONTROL_PROFILE_NAME, m_name);
+  BaseSettingControlPtr settingControl = GetSettingControl(SETTING_PROFILE_IMAGE);
+  if (settingControl != NULL && settingControl->GetControl() != NULL)
+    SET_CONTROL_LABEL2(settingControl->GetID(), URIUtils::GetFileName(m_thumb));
 }
 
 void CGUIDialogProfileSettings::updateProfileDirectory()
 {
-  SET_CONTROL_LABEL(CONTROL_PROFILE_DIRECTORY, m_directory);
+  BaseSettingControlPtr settingControl = GetSettingControl(SETTING_PROFILE_DIRECTORY);
+  if (settingControl != NULL && settingControl->GetControl() != NULL)
+    SET_CONTROL_LABEL2(settingControl->GetID(), m_directory);
 }

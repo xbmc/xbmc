@@ -1,0 +1,233 @@
+# Kodi Media Center language file
+# Addon Name: Estouchy
+# Addon id: skin.estouchy
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/kodi-main/language/pt_PT/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_PT\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Definições de Áudio"
+
+msgctxt "#31003"
+msgid "IP"
+msgstr "IP"
+
+msgctxt "#31004"
+msgid "Caps[CR]Lock"
+msgstr "Caps[CR]Lock"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Opções de Visualização"
+
+msgctxt "#31006"
+msgid "Visualization Presets"
+msgstr "Pré-Selecções de visualização"
+
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Menu de Contexto"
+
+msgctxt "#31009"
+msgid "Working..."
+msgstr "Processando..."
+
+msgctxt "#31013"
+msgid "Movies"
+msgstr "Filmes"
+
+msgctxt "#31014"
+msgid "Episodes"
+msgstr "Episódios"
+
+msgctxt "#31016"
+msgid "Albums"
+msgstr "Álbuns"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Página"
+
+msgctxt "#31030"
+msgid "Info List"
+msgstr "Lista de info"
+
+msgctxt "#31038"
+msgid "Login"
+msgstr "Iniciar sessão"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "AVANÇAR"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "RECUAR"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Termina às"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Orientar: Ascendente"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Orientar: Descendente"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Abrir lista de reprodução"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Guardar lista de reprodução"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Fechar lista de reprodução"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Ficheiros de música do sistema"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Lista de reprodução actual"
+
+msgctxt "#31200"
+msgid "Back"
+msgstr "Retroceder"
+
+msgctxt "#31201"
+msgid "Location"
+msgstr "Localização"
+
+msgctxt "#31202"
+msgid "View"
+msgstr "Ver"
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Temp actual"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Última actualização"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Fornecedor de dados"
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Memória utilizada:"
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "Última vez ligado"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Transmitido a"
+
+msgctxt "#31355"
+msgid "Video Menu"
+msgstr "Menu de Vídeo"
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Transferir legendas"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Padrão do tema"
+
+msgctxt "#31391"
+msgid "Arial based"
+msgstr "Baseada em Arial"
+
+msgctxt "#31400"
+msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
+msgstr "Mudar de Tema - Definir linguagem e região - Opções de listagem de ficheiros - Mudar o protector de ecrã"
+
+msgctxt "#31401"
+msgid "Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts"
+msgstr "Gerir a biblioteca de vídeo - Definir opções de reprodução de video - Alterar opções de listagem de vídeos- Definir tipo de letra das legendas"
+
+msgctxt "#31403"
+msgid "Set picture listing options · Configure slideshows"
+msgstr "Definir opções de listagem de imagens - Definir apresentações de slides"
+
+msgctxt "#31404"
+msgid "Set three cities to collect weather information"
+msgstr "Definir três cidades para obter informações meteorológicas."
+
+msgctxt "#31405"
+msgid "Setup control of Kodi via UPnP and HTTP · Configure file sharing · Set internet access options"
+msgstr "Configurar controlo do Kodi através de UPnP e HTTP · Configurar partilha de ficheiros · Configurar acesso à Internet"
+
+msgctxt "#31406"
+msgid "Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock"
+msgstr "Configurar e calibrar ecrãs · Configurar saídas de áudio · Configurar controle remoto · Configurar poupança de energia · Activar depuração · Configurar fecho central"
+
+msgctxt "#31421"
+msgid "Select your Kodi user Profile[CR]to login and continue"
+msgstr "Escolha o seu perfil de utilizador do Kodi[CR]para iniciar sessão e continuar"
+
+msgctxt "#31500"
+msgid "Home Menu Catagory Buttons"
+msgstr "Botões de Categorias do Ecrã Inicial"
+
+msgctxt "#31501"
+msgid "Home Page Add-on Quick Links"
+msgstr "Atalhos de Add-on na página inicial"
+
+msgctxt "#31502"
+msgid "Miscellaneous Options"
+msgstr "Opções Diversas"
+
+msgctxt "#31550"
+msgid "Home Screen Weather Info and button"
+msgstr "Info e botão de meteorologia na página inicial"
+
+msgctxt "#31551"
+msgid "Add-on Shortcut"
+msgstr "Atalho para Add-on"
+
+msgctxt "#31556"
+msgid "Live TV"
+msgstr "TV ao Vivo"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Ocultar fundo de vídeo"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Grupos disponíveis"
+
+msgctxt "#31561"
+msgid "Add Group"
+msgstr "Adicionar Grupo"
+
+msgctxt "#31562"
+msgid "Rename Group"
+msgstr "Renomear Grupo"
+
+msgctxt "#31563"
+msgid "Delete Group"
+msgstr "Eliminar Grupo"

@@ -34,4 +34,5 @@ protected:
   virtual void UpdateVisibility();
 private:
   float m_dimLevel;
+  float m_newDimLevel;
 };

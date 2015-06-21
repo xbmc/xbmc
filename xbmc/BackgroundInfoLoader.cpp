@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -22,6 +22,7 @@
 #include "FileItem.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "URL.h"
 
 CBackgroundInfoLoader::CBackgroundInfoLoader() : m_thread (NULL)
 {
@@ -41,7 +42,7 @@ void CBackgroundInfoLoader::Run()
 {
   try
   {
-    if (m_vecItems.size() > 0)
+    if (!m_vecItems.empty())
     {
       OnLoaderStart();
 
@@ -61,7 +62,7 @@ void CBackgroundInfoLoader::Run()
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemCached - Unhandled exception for item %s", pItem->GetPath().c_str());
+          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemCached - Unhandled exception for item %s", CURL::GetRedacted(pItem->GetPath()).c_str());
         }
       }
 
@@ -81,7 +82,7 @@ void CBackgroundInfoLoader::Run()
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemLookup - Unhandled exception for item %s", pItem->GetPath().c_str());
+          CLog::Log(LOGERROR, "CBackgroundInfoLoader::LoadItemLookup - Unhandled exception for item %s", CURL::GetRedacted(pItem->GetPath()).c_str());
         }
       }
     }

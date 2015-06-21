@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Version Check
 # Addon id: service.xbmc.versioncheck
-# Addon Provider: XBMC Foundation
+# Addon Provider: Team Kodi
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
@@ -28,6 +28,10 @@ msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "התרצה להסיר תזכורת זאת?"
 
+msgctxt "#32010"
+msgid "You can enable/disable it through add-on settings."
+msgstr "אתה יכול להפעיל/לנטרל זאת בהגדרות ההרחבה."
+
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
 msgstr "השתמש במנהל החבילות (apt) לשידרוג."
@@ -48,6 +52,10 @@ msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
 msgstr "התרצה לבדוק האם זמינה גרסה חדשה במאגר?"
 
+msgctxt "#32016"
+msgid "There is a newer stable Kodi version available."
+msgstr "קיימת גרסה יציבה חדשה של קודי זמינה להורדה "
+
 msgctxt "#32020"
 msgid "General"
 msgstr "כללי"
@@ -63,3 +71,31 @@ msgstr "אנא הזן סיסמתך"
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
 msgstr "לינוקס: שדרוג מערכת מלא"
+
+msgctxt "#32024"
+msgid "Linux: Upgrade using apt"
+msgstr "לינוקס: שדרוג באמצעות apt"
+
+msgctxt "#32030"
+msgid "A new stable version of Kodi is available."
+msgstr "גרסה יציבה חדשה של קודי זמינה."
+
+msgctxt "#32031"
+msgid "Visit http://kodi.tv for more information."
+msgstr "בקר ב-http://kodi.tv למידע נוסף."
+
+msgctxt "#32032"
+msgid "A new stable version of Kodi is available."
+msgstr "גרסה יציבה חדשה של קודי זמינה."
+
+msgctxt "#32033"
+msgid "Visit http://kodi.tv for more information."
+msgstr "בקר ב-http://kodi.tv למידע נוסף."
+
+msgctxt "#32034"
+msgid "Using %s while %s is available."
+msgstr "שימוש בs% בעוד s% זמין."
+
+msgctxt "#32035"
+msgid "It is recommended that you to upgrade to a newer version."
+msgstr "מומלץ לך לשדרג לגרסה חדשה יותר."

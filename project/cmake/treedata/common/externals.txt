@@ -1,0 +1,3 @@
+xbmc/contrib/kissfft                  kissfft
+lib/libUPnP                           upnp
+lib/libexif                           exif

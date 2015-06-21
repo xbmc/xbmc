@@ -22,9 +22,6 @@
 #ifdef HAS_EGL
 #include "utils/log.h"
 #include <assert.h>
-#if defined(HAVE_WAYLAND)
-  #include "EGLNativeTypeWayland.h"
-#endif
 #if defined(TARGET_ANDROID)
   #include "EGLNativeTypeAndroid.h"
   #include "EGLNativeTypeAmlAndroid.h"
@@ -91,21 +88,18 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
   // Try to create each backend in sequence and go with the first one
   // that we know will work
   if (
-#if defined(HAVE_WAYLAND)
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeWayland>(implementation)) ||
-#endif
 #if defined(TARGET_ANDROID)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlAndroid>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRKAndroid>(implementation)) ||
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation)) ||
 #endif
 #if defined(TARGET_RASPBERRY_PI)
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation)) ||
-#endif
-#if defined(HAS_IMXVPU)
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation)) ||
-#endif
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation))
+#elif defined(HAS_IMXVPU)
+      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation))
+#else
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation))
+#endif
       )
   {
     m_nativeTypes = nativeGuess;
@@ -295,11 +289,6 @@ bool CEGLWrapper::CreateSurface(EGLDisplay display, EGLConfig config, EGLSurface
   *surface = eglCreateWindowSurface(display, config, *nativeWindow, NULL);
   CheckError();
   return *surface != EGL_NO_SURFACE;
-}
-
-bool CEGLWrapper::TrustSurfaceSize()
-{
-  return !(m_nativeTypes->GetQuirks() & EGL_QUIRK_DONT_TRUST_SURFACE_SIZE);
 }
 
 bool CEGLWrapper::GetSurfaceSize(EGLDisplay display, EGLSurface surface, EGLint *width, EGLint *height)

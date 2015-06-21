@@ -20,7 +20,7 @@
  */
 
 #include "FileItem.h"
-#include "addons/include/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "interfaces/IAnnouncer.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Event.h"
@@ -105,6 +105,12 @@ namespace PVR
      * @param channel The channel which is updated
      */
     void UpdateLastWatched(const CPVRChannelPtr &channel);
+
+    /*!
+     * @brief Set the playing group to the first group the channel is in if the given channel is not part of the current playing group
+     * @param channel The channel
+     */
+    void SetPlayingGroup(const CPVRChannelPtr &channel);
 
   public:
     /*!
@@ -328,10 +334,10 @@ namespace PVR
 
     /*!
      * @brief Open a stream from the given channel.
-     * @param channel The channel to open.
+     * @param fileItem The file item with the channel to open.
      * @return True if the stream was opened, false otherwise.
      */
-    bool OpenLiveStream(const CFileItem &channel);
+    bool OpenLiveStream(const CFileItem &fileItem);
 
     /*!
      * @brief Open a stream from the given recording.
@@ -442,11 +448,11 @@ namespace PVR
     bool UpdateItem(CFileItem& item);
 
     /*!
-     * @brief Switch to a channel given it's channel number.
-     * @param iChannelNumber The channel number to switch to.
+     * @brief Switch to a channel given it's channel id.
+     * @param iChannelId The channel id to switch to.
      * @return True if the channel was switched, false otherwise.
      */
-    bool ChannelSwitch(unsigned int iChannelNumber);
+    bool ChannelSwitchById(unsigned int iChannelId);
 
     /*!
      * @brief Switch to the next channel in this group.
@@ -590,9 +596,10 @@ namespace PVR
     /*!
      * @brief Load at least one client and load all other PVR data after loading the client.
      * If some clients failed to load here, the pvrmanager will retry to load them every second.
+     * @param bShowProgress True, to show a progress dialog for the different load stages.
      * @return If at least one client and all pvr data was loaded, false otherwise.
      */
-    bool Load(void);
+    bool Load(bool bShowProgress);
 
     /*!
      * @brief Reset all properties.
@@ -680,7 +687,7 @@ namespace PVR
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
     std::vector<std::string>        m_outdatedAddons;
-    static int                      m_pvrWindowIds[10];
+    static const int                m_pvrWindowIds[12];
   };
 
   class CPVREpgsCreateJob : public CJob

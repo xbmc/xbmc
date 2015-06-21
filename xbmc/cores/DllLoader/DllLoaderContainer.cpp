@@ -35,12 +35,12 @@
 
 #define ENV_PARTIAL_PATH "special://xbmcbin/system/;" \
                  "special://xbmcbin/system/players/mplayer/;" \
-                 "special://xbmcbin/system/players/dvdplayer/;" \
+                 "special://xbmcbin/system/players/VideoPlayer/;" \
                  "special://xbmcbin/system/players/paplayer/;" \
                  "special://xbmcbin/system/python/;" \
                  "special://xbmc/system/;" \
                  "special://xbmc/system/players/mplayer/;" \
-                 "special://xbmc/system/players/dvdplayer/;" \
+                 "special://xbmc/system/players/VideoPlayer/;" \
                  "special://xbmc/system/players/paplayer/;" \
                  "special://xbmc/system/python/"
 
@@ -239,16 +239,12 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 
   LibraryLoader* pLoader;
 #ifdef TARGET_POSIX
-  if (strstr(sName, ".so") != NULL || strstr(sName, ".vis") != NULL || strstr(sName, ".xbs") != NULL
-      || strstr(sName, ".mvis") != NULL || strstr(sName, ".dylib") != NULL || strstr(sName, ".framework") != NULL || strstr(sName, ".pvr") != NULL)
-    pLoader = new SoLoader(sName, bLoadSymbols);
-  else
+  pLoader = new SoLoader(sName, bLoadSymbols);
 #elif defined(TARGET_WINDOWS)
-  if (1)
-    pLoader = new Win32DllLoader(sName);
-  else
+  pLoader = new Win32DllLoader(sName);
+#else
+  pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
 #endif
-    pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
 
   if (!pLoader)
   {

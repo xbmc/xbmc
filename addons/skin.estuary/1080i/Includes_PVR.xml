@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<includes>
+	<include name="ChannelManagerList">
+		<control type="grouplist">
+			<orientation>horizontal</orientation>
+			<left>0</left>
+			<top>0</top>
+			<align>center</align>
+			<width>510</width>
+			<control type="label" id="$PARAM[header_id]">
+				<width>auto</width>
+				<height>70</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>button_focus</textcolor>
+			</control>
+			<control type="label">
+				<width>auto</width>
+				<height>70</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>button_focus</textcolor>
+				<label>: [COLOR white]$INFO[Container($PARAM[list_id]).Numitems][/COLOR]</label>
+			</control>
+		</control>
+		<control type="image">
+			<left>0</left>
+			<top>55</top>
+			<width>510</width>
+			<height>740</height>
+			<texture border="40">buttons/dialogbutton-nofo.png</texture>
+		</control>
+		<control type="list" id="$PARAM[list_id]">
+			<left>20</left>
+			<top>75</top>
+			<width>470</width>
+			<height>700</height>
+			<onup>$PARAM[list_id]</onup>
+			<ondown>$PARAM[list_id]</ondown>
+			<onleft>$PARAM[onleft]</onleft>
+			<onright>$PARAM[scrollbar_id]</onright>
+			<pagecontrol>$PARAM[scrollbar_id]</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="70">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>470</width>
+					<height>70</height>
+					<texture border="40">lists/separator.png</texture>
+				</control>
+				<control type="image">
+					<width>60</width>
+					<height>60</height>
+					<left>405</left>
+					<top>4</top>
+					<texture border="2">$INFO[ListItem.Icon]</texture>
+					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+					<bordersize>2</bordersize>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label">
+					<left>20</left>
+					<top>0</top>
+					<width>390</width>
+					<height>70</height>
+					<aligny>center</aligny>
+					<font>fontContextMenu</font>
+					<textcolor>grey</textcolor>
+					<label>$INFO[ListItem.ChannelNumberLabel,[B],[/B] - ]$INFO[ListItem.ChannelName]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout height="70">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>470</width>
+					<height>70</height>
+					<texture border="40">lists/separator.png</texture>
+					<visible>!Control.HasFocus($PARAM[list_id])</visible>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>470</width>
+					<height>70</height>
+					<texture>lists/focus.png</texture>
+					<visible>Control.HasFocus($PARAM[list_id])</visible>
+				</control>
+				<control type="image">
+					<width>60</width>
+					<height>60</height>
+					<left>405</left>
+					<top>4</top>
+					<texture border="2">$INFO[ListItem.Icon]</texture>
+					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+					<bordersize>2</bordersize>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label">
+					<left>20</left>
+					<top>0</top>
+					<width>390</width>
+					<height>70</height>
+					<font>fontContextMenu</font>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.ChannelNumberLabel,[B],[/B] - ]$INFO[ListItem.ChannelName]</label>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="scrollbar" id="$PARAM[scrollbar_id]">
+			<left>495</left>
+			<top>75</top>
+			<width>12</width>
+			<height>700</height>
+			<onleft>$PARAM[list_id]</onleft>
+			<onright>$PARAM[onright]</onright>
+			<ondown>$PARAM[scrollbar_id]</ondown>
+			<onup>$PARAM[scrollbar_id]</onup>
+			<orientation>vertical</orientation>
+		</control>
+	</include>
+	<include name="PVRGuideListViewtype">
+		<control type="group">
+			<visible>Control.IsVisible($PARAM[container_id])</visible>
+			<top>180</top>
+			<left>110</left>
+			<include>OpenClose_Left</include>
+			<include>Visible_Left</include>
+			<control type="image">
+				<left>-20</left>
+				<top>-20</top>
+				<width>1090</width>
+				<height>746</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="group">
+				<left>0</left>
+				<top>0</top>
+				<width>1740</width>
+				<height>600</height>
+				<visible>Control.IsVisible($PARAM[container_id])</visible>
+				<control type="list" id="$PARAM[container_id]">
+					<top>0</top>
+					<width>1740</width>
+					<height>700</height>
+					<onup>$PARAM[container_id]</onup>
+					<ondown>$PARAM[container_id]</ondown>
+					<onleft>9000</onleft>
+					<onright>76</onright>
+					<viewtype label="$PARAM[container_name]">list</viewtype>
+					<pagecontrol>76</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="58">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>1050</width>
+							<height>58</height>
+							<texture border="90,3,90,3">lists/separator.png</texture>
+						</control>
+						<control type="image">
+							<left>5</left>
+							<top>5</top>
+							<width>48</width>
+							<height>48</height>
+							<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Art(thumb)]</texture>
+							<fadetime>200</fadetime>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>65</left>
+							<width>285</width>
+							<height>58</height>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.ChannelName]</label>
+						</control>
+						<control type="label">
+							<left>378</left>
+							<top>2</top>
+							<width>300</width>
+							<height>58</height>
+							<aligny>top</aligny>
+							<font>font12</font>
+							<label>$INFO[ListItem.StartTime,, - ]$INFO[ListItem.EndTime]</label>
+						</control>
+						<control type="progress">
+							<left>380</left>
+							<top>35</top>
+							<width>220</width>
+							<height>12</height>
+							<info>ListItem.Progress</info>
+						</control>
+						<control type="label">
+							<left>620</left>
+							<width>430</width>
+							<height>58</height>
+							<textcolor>button_focus</textcolor>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<left>1000</left>
+							<top>15</top>
+							<width>35</width>
+							<height>35</height>
+							<texture>$VAR[PVRStatusImageVar]</texture>
+						</control>
+					</itemlayout>
+					<focusedlayout height="58">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>1050</width>
+							<height>58</height>
+							<texture border="90,3,90,3">lists/separator.png</texture>
+							<visible>!Control.HasFocus($PARAM[container_id])</visible>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>1050</width>
+							<height>58</height>
+							<texture>lists/focus.png</texture>
+							<visible>Control.HasFocus($PARAM[container_id])</visible>
+						</control>
+						<control type="image">
+							<left>5</left>
+							<top>5</top>
+							<width>48</width>
+							<height>48</height>
+							<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Art(thumb)]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>65</left>
+							<width>285</width>
+							<height>58</height>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.ChannelName]</label>
+						</control>
+						<control type="label">
+							<left>378</left>
+							<top>2</top>
+							<width>300</width>
+							<height>58</height>
+							<aligny>top</aligny>
+							<font>font12</font>
+							<label>$INFO[ListItem.StartTime,, - ]$INFO[ListItem.EndTime]</label>
+						</control>
+						<control type="progress">
+							<left>380</left>
+							<top>35</top>
+							<width>220</width>
+							<height>12</height>
+							<info>ListItem.Progress</info>
+							<midtexture border="3">progress/texturebg_white.png</midtexture>
+						</control>
+						<control type="label">
+							<left>620</left>
+							<width>430</width>
+							<height>58</height>
+							<textcolor>white</textcolor>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<left>1000</left>
+							<top>15</top>
+							<width>35</width>
+							<height>35</height>
+							<texture>$VAR[PVRStatusImageVar]</texture>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
+			<include name="UpDownArrows">
+				<param name="container_id" value="$PARAM[container_id]" />
+				<param name="posx" value="830" />
+				<param name="up_posy" value="-50" />
+				<param name="down_posy" value="730" />
+			</include>
+			<control type="scrollbar" id="76">
+				<left>1055</left>
+				<top>2</top>
+				<width>12</width>
+				<height>703</height>
+				<onleft>$PARAM[container_id]</onleft>
+				<onright>$PARAM[container_id]</onright>
+			</control>
+		</control>
+		<control type="group">
+			<left>1220</left>
+			<top>180</top>
+			<visible>!IsEmpty(ListItem.Date)</visible>
+			<visible>Control.IsVisible($PARAM[container_id])</visible>
+			<include>Visible_Right</include>
+			<include>OpenClose_Right</include>
+			<include>PVRInfoPanel</include>
+		</control>
+	</include>
+	<include name="PVRInfoPanel">
+		<control type="image">
+			<left>-40</left>
+			<top>-20</top>
+			<width>644</width>
+			<height>170</height>
+			<texture border="22">dialogs/dialog-bg.png</texture>
+		</control>
+		<control type="image">
+			<left>-40</left>
+			<top>130</top>
+			<width>644</width>
+			<height>596</height>
+			<texture border="22">dialogs/dialog-bg.png</texture>
+		</control>
+		<control type="group">
+			<left>150</left>
+			<top>40</top>
+			<control type="progress">
+				<top>60</top>
+				<width>360</width>
+				<height>12</height>
+				<colordiffuse>88FFFFFF</colordiffuse>
+				<visible>ListItem.HasEpg</visible>
+				<info>ListItem.Progress</info>
+			</control>
+			<control type="label">
+				<top>24</top>
+				<width>560</width>
+				<height>262</height>
+				<font>font12</font>
+				<visible>!StringCompare(ListItem.StartTime,ListItem.EndTime)</visible>
+				<label>$INFO[ListItem.StartTime]</label>
+			</control>
+			<control type="label">
+				<top>24</top>
+				<width>360</width>
+				<height>262</height>
+				<align>right</align>
+				<font>font12</font>
+				<visible>!StringCompare(ListItem.StartTime,ListItem.EndTime)</visible>
+				<label>$INFO[ListItem.EndTime]</label>
+			</control>
+			<control type="label">
+				<top>-30</top>
+				<width>430</width>
+				<height>262</height>
+				<textcolor>button_focus</textcolor>
+				<font>font24_title</font>
+				<label>$INFO[ListItem.ChannelName]</label>
+			</control>
+		</control>
+		<control type="image">
+			<left>-20</left>
+			<top>15</top>
+			<width>150</width>
+			<height>100</height>
+			<aspectratio>keep</aspectratio>
+			<texture fallback="DefaultTVShowsSquare.png">$INFO[Listitem.Art(thumb)]</texture>
+			<fadetime>200</fadetime>
+		</control>
+		<control type="label">
+			<top>154</top>
+			<width>560</width>
+			<height>262</height>
+			<textcolor>button_focus</textcolor>
+			<font>font24_title</font>
+			<label>$INFO[ListItem.Title]</label>
+		</control>
+		<control type="label">
+			<top>210</top>
+			<width>560</width>
+			<height>262</height>
+			<font>font12</font>
+			<label>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:[/COLOR] ]</label>
+		</control>
+		<control type="label">
+			<top>660</top>
+			<width>500</width>
+			<height>262</height>
+			<font>font12</font>
+			<label>$PARAM[bottom_label1]</label>
+		</control>
+		<control type="label">
+			<top>660</top>
+			<width>560</width>
+			<height>262</height>
+			<align>right</align>
+			<font>font12</font>
+			<label>$PARAM[bottom_label2]</label>
+		</control>
+		<control type="textbox" id="4380">
+			<top>254</top>
+			<width>560</width>
+			<height>307</height>
+			<align>left</align>
+			<font>font12</font>
+			<label>$INFO[ListItem.Plot]</label>
+		</control>
+		<control type="grouplist" id="4300">
+			<left>0</left>
+			<top>545</top>
+			<align>center</align>
+			<orientation>horizontal</orientation>
+			<width>560</width>
+			<onleft>60</onleft>
+			<onright>50</onright>
+			<control type="button" id="4301">
+				<width>auto</width>
+				<height>95</height>
+				<textoffsetx>30</textoffsetx>
+				<label>$LOCALIZE[31047]</label>
+				<font>font12</font>
+				<texturefocus border="40">buttons/dialogbutton-fo.png</texturefocus>
+				<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+				<onclick condition="!IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
+				<onclick condition="!IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
+				<onclick condition="!IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
+				<onclick>SetFocus(50)</onclick>
+				<visible>IntegerGreaterThan(Container(4380).NumPages,1)</visible>
+			</control>
+		</control>
+		<control type="textbox">
+			<top>330</top>
+			<width>560</width>
+			<height>362</height>
+			<align>center</align>
+			<font>font24_title</font>
+			<label>$LOCALIZE[19055]</label>
+			<visible>IsEmpty(Listitem.Plot) + IsEmpty(Listitem.Genre)</visible>
+		</control>
+	</include>
+</includes>

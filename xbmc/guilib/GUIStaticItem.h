@@ -29,7 +29,8 @@
 
 #include "GUIAction.h"
 #include "GUIInfoTypes.h"
-#include "xbmc/FileItem.h"
+#include "FileItem.h"
+#include "GUIAction.h"
 
 class TiXmlElement;
 

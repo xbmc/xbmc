@@ -1,0 +1,429 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Bulgarian (Bulgaria) (http://www.transifex.com/projects/p/kodi-main/language/bg_BG/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bg_BG\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Сега се възпроизвежда"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Търсене"
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Ползвай за фон фен-арт изображенията"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Режим \"Кино\""
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Промени режима"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Гледай в 2D режим"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Произволни филми"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Негледани филми"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "Следени сериали"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Следени филми"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Най-слушани албуми"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Произволни албуми"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Произволни изпълнители"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Последни записи"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Най-гледани канали"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Прогноза"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Действия"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Разни настройки"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Подредба"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Изглед"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Списъкът е празен. Можете да добавите даден елемент посредством контекстното меню."
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Към албумите"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Към песните"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Фен-арт"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Последно влизане"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Памет в употреба:"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Информация за версията"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Ред"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Моята оценка"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Разширена инф."
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Страници"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "елемента"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Превърти назад"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Превърти напред"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Отказ"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Производител на камерата"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Настройки на елементите в плейлиста"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "За да създадете плейлист изберете тип и добавете правила. Плейлистите са динамични и съдържанието им се изменя спрямо съвпаденията със съдържащите се елементи в библиотеката."
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Добави група"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Преименувай групата"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Изтрий групата"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Прочетете още..."
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Натиснете клавиша [B]Нагоре[/B] ако желаете да превъртите"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Натиснете клавиша [B]OK[/B] за спиране"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Основан на Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Натиснете [B]Наляво[/B] за превъртане назад или [B]Надясно[/B] за превъртане напред"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Сваляне на субтитри"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Към плейлиста"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Показвай екрана за влизане след стартиране"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Автоматично влизане след стартиране"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Налично е обновяване"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "минути"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Елементи в менюто"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Препратки към раздел \"Файлове\" на всеки тип медиа. От там можете да добавяте изтоници за попълване на библиотеката със съдържание."
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Раздели"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Видео плейлист"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Музикален плейлист"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Журнал за събития"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Последно обновяване"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Добавяне на медиен източик"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Изключи..."
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Заглавия"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Към библиотеката"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Поредици"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Предишно място"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Следващо място"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Ще свърши в"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Инф. за албума"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Добавка за лирики"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Настройки на визуализацията"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Група канали"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Метаданни"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Настройки за сканиране на съдържанието"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Налични групи"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Търси трейлър"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Сваляне на субтитри"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Видео меню"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Показвай метеорологични условия в горния колонтитул"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Локално са налични субтитри"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Настройки на канала"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Изберете потребителски профил,[CR]за да продължите"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Стена"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Въведете текст тук..."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Телетекст"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Широк списък"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Персонален общ фон"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Път до катината"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Секция Файлове"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Преглед на личните ви снимки, свалени такива или снимки предоставени посредством добавки. Добавки можете да намерите в официалното хранилище."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Превключи аудио потока"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Търси в библиотеката"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Търси в YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Търси в TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Премахни елемента от менюто"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Браузър за добавки"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Не сте инсталирали добавки. Можете да прегледате наличните, за инсталиране, добавки посредством браузъра за добавки."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Метеорологичната прогноза не е налично защото няма настроена метеорологична услуга. За целта е необходимо да изберете доставчик на данни и да въведете местоположението си."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Метеорологична услуга"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Негледани ТВ Сериали"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "От същия режисьор"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Натиснете [B]Нагоре[/B] за информация за актьора"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Натиснете [B]ОК[/B] за да прочетете сюжета"

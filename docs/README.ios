@@ -44,7 +44,6 @@ character itself should NOT be typed as part of the command.
     $ cd $HOME
     $ git clone git://github.com/xbmc/xbmc.git Kodi
     $ cd Kodi
-    $ git submodule update --init addons/skin.re-touched
 
 -----------------------------------------------------------------------------
 3.1 Install Xcode
@@ -126,7 +125,6 @@ end not simulator and select the target Kodi-iOS.
 
 If you have selected a specific iOS SDK Version in step 3.2 then you might need
 to adapt the active target to use the same iOS SDK version. Else build will fail
-(you will see alot of errors with at least non-found boost/shared_ptr.hpp).
 
 -----------------------------------------------------------------------------
 4.2 Using Terminal (command-line)

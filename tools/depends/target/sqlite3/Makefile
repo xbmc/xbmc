@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=sqlite
-VERSION=3080600
+VERSION=3100200
 SOURCE=$(LIBNAME)-autoconf-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -34,6 +34,9 @@ endif
 ifneq ($(OS),android)
 	cd $(PLATFORM); patch -p1 < ../sqlite3.c.patch
 endif
+	# do not build the program sqlite3
+	sed -ie "s|bin_PROGRAMS = sqlite3||" "$(PLATFORM)/Makefile.am";
+	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)

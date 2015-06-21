@@ -28,16 +28,16 @@ public:
   virtual ~CUniqueEvent() { }
 
 protected:
-  CUniqueEvent(const CVariant& label, const CVariant& description, EventLevel level = EventLevelInformation)
+  CUniqueEvent(const CVariant& label, const CVariant& description, EventLevel level = EventLevel::Information)
     : CBaseEvent(StringUtils::CreateUUID(), label, description, level)
   { }
-  CUniqueEvent(const CVariant& label, const CVariant& description, const std::string& icon, EventLevel level = EventLevelInformation)
+  CUniqueEvent(const CVariant& label, const CVariant& description, const std::string& icon, EventLevel level = EventLevel::Information)
     : CBaseEvent(StringUtils::CreateUUID(), label, description, icon, level)
   { }
-  CUniqueEvent(const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, EventLevel level = EventLevelInformation)
+  CUniqueEvent(const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, EventLevel level = EventLevel::Information)
     : CBaseEvent(StringUtils::CreateUUID(), label, description, icon, details, level)
   { }
-  CUniqueEvent(const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level = EventLevelInformation)
+  CUniqueEvent(const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level = EventLevel::Information)
     : CBaseEvent(StringUtils::CreateUUID(), label, description, icon, details, executionLabel, level)
   { }
 };

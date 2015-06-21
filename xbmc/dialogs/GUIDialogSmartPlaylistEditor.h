@@ -55,6 +55,7 @@ protected:
   void OnGroupMixed();
   void OnOK();
   void OnCancel();
+  void OnPopupMenu(int item);
   void UpdateButtons();
   void UpdateRuleControlButtons();
   int GetSelectedItem();

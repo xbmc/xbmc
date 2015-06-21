@@ -70,6 +70,8 @@ public:
    setting and will not be triggered afterwards.
 
    \param setting The setting which needs to be updated.
+   \param oldSettingId The id of the previous setting.
+   \param oldSettingNode The old setting node
    \return True if the setting has been successfully updated otherwise false
    */
   virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) { return false; }

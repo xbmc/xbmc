@@ -123,7 +123,7 @@ namespace EPG
 
     virtual void OnSettingChanged(const CSetting *setting) override;
 
-    CEpg *CreateChannelEpg(PVR::CPVRChannelPtr channel);
+    CEpgPtr CreateChannelEpg(PVR::CPVRChannelPtr channel);
 
     /*!
      * @brief Get all EPG tables and apply a filter.
@@ -157,21 +157,22 @@ namespace EPG
      * @param iEpgId The database ID of the table.
      * @return The table or NULL if it wasn't found.
      */
-    virtual CEpg *GetById(int iEpgId) const;
+    virtual CEpgPtr GetById(int iEpgId) const;
 
     /*!
      * @brief Get the EPG event with the given event id
+     * @param channel The channel to get the event for.
      * @param iBroadcastId The event id to get
      * @return The requested event, or an empty tag when not found
      */
-    virtual CEpgInfoTagPtr GetTagById(unsigned int iBroadcastId) const;
+    virtual CEpgInfoTagPtr GetTagById(const PVR::CPVRChannelPtr &channel, unsigned int iBroadcastId) const;
 
     /*!
      * @brief Get an EPG table given a PVR channel.
      * @param channel The channel to get the EPG table for.
      * @return The table or NULL if it wasn't found.
      */
-    virtual CEpg *GetByChannel(const PVR::CPVRChannel &channel) const;
+    virtual CEpgPtr GetByChannel(const PVR::CPVRChannel &channel) const;
 
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.

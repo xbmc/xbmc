@@ -33,17 +33,20 @@ namespace PVR
     CGUIWindowPVRGuide(bool bRadio);
     virtual ~CGUIWindowPVRGuide(void);
 
-    virtual void OnInitWindow();
-    bool OnMessage(CGUIMessage& message);
-    bool OnAction(const CAction &action);
-    void GetContextButtons(int itemNumber, CContextButtons &buttons);
-    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-    void ResetObservers(void);
-    void UnregisterObservers(void);
+    virtual void OnInitWindow() override;
+    virtual bool OnMessage(CGUIMessage& message) override;
+    virtual bool OnAction(const CAction &action) override;
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    virtual void UpdateButtons(void) override;
 
   protected:
-    void UpdateSelectedItemPath();
-    virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
+    virtual void UpdateSelectedItemPath() override;
+    virtual std::string GetDirectoryPath(void) override { return ""; }
+    virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
+    virtual void RegisterObservers(void) override;
+    virtual void UnregisterObservers(void) override;
 
   private:
     bool SelectPlayingFile(void);
@@ -55,6 +58,7 @@ namespace PVR
     bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUTTON button);
 
     void GetViewChannelItems(CFileItemList &items);
     void GetViewNowItems(CFileItemList &items);

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,6 +24,7 @@
 
 #include "FileItem.h"
 #include "filesystem/File.h"
+#include "GUIDialogContextMenu.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -128,6 +129,8 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
         OnGroupBy();
       else if (iControl == CONTROL_GROUP_MIXED)
         OnGroupMixed();
+      else if (iControl == CONTROL_RULE_LIST && (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK))
+        OnPopupMenu(GetSelectedItem());
       else
         return CGUIDialog::OnMessage(message);
       return true;
@@ -181,6 +184,27 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
     break;
   }
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogSmartPlaylistEditor::OnPopupMenu(int item)
+{
+  if (item < 0 || item >= m_ruleLabels->Size())
+    return;
+  if (m_playlist.m_ruleCombination.m_rules.size() == 1 && m_playlist.m_ruleCombination.m_rules[0]->m_field == FieldNone)
+    return;
+  // highlight the item
+  m_ruleLabels->Get(item)->Select(true);
+
+  CContextButtons choices;
+  choices.Add(1, 15015);
+
+  int button = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+
+  // unhighlight the item
+  m_ruleLabels->Get(item)->Select(false);
+
+  if (button == 1)
+    OnRuleRemove(item);
 }
 
 void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
@@ -373,7 +397,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 
   // disable the group controls if there's no group
   // or only one group which can't be mixed
-  if (groups.size() == 0 ||
+  if (groups.empty() ||
      (groups.size() == 1 && !CSmartPlaylistRule::CanGroupMix(groups[0])))
   {
     CONTROL_DISABLE(CONTROL_GROUP_BY);

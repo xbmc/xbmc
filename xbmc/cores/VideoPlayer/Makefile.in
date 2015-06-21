@@ -1,0 +1,24 @@
+CXXFLAGS+=-D__STDC_FORMAT_MACROS
+
+SRCS  = DVDAudio.cpp
+SRCS += DVDClock.cpp
+SRCS += DVDDemuxSPU.cpp
+SRCS += DVDFileInfo.cpp
+SRCS += DVDMessage.cpp
+SRCS += DVDMessageQueue.cpp
+SRCS += DVDOverlayContainer.cpp
+SRCS += VideoPlayer.cpp
+SRCS += VideoPlayerAudio.cpp
+SRCS += VideoPlayerSubtitle.cpp
+SRCS += VideoPlayerTeletext.cpp
+SRCS += VideoPlayerVideo.cpp
+SRCS += VideoPlayerRadioRDS.cpp
+SRCS += DVDStreamInfo.cpp
+SRCS += DVDTSCorrection.cpp
+SRCS += Edl.cpp
+
+LIB = VideoPlayer.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+

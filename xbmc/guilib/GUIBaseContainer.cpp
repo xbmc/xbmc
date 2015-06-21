@@ -19,6 +19,7 @@
  */
 
 #include "GUIBaseContainer.h"
+#include "ContextMenuManager.h"
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
@@ -348,7 +349,26 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
         return CGUIControl::OnAction(action);
       }
     }
+  case ACTION_CONTEXT_MENU:
+    if (m_listProvider)
+    {
+      int selected = GetSelectedItem();
+      if (selected >= 0 && selected < m_items.size())
+      {
+        CFileItemPtr fileItem = std::dynamic_pointer_cast<CFileItem>(m_items[selected]);
+        if (fileItem)
+          CONTEXTMENU::ShowFor(fileItem);
+        return true;
+      }
+    }
     break;
+  case ACTION_SHOW_INFO:
+    if (OnInfo())
+      return true;
+    else if (action.GetID())
+      return OnClick(action.GetID());
+    else
+      return false;
 
   case ACTION_FIRST_PAGE:
     SelectItem(0);
@@ -360,17 +380,11 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     return true;
 
   case ACTION_NEXT_LETTER:
-    {
-      OnNextLetter();
-      return true;
-    }
-    break;
+    OnNextLetter();
+    return true;
   case ACTION_PREV_LETTER:
-    {
-      OnPrevLetter();
-      return true;
-    }
-    break;
+    OnPrevLetter();
+    return true;
   case ACTION_JUMP_SMS2:
   case ACTION_JUMP_SMS3:
   case ACTION_JUMP_SMS4:
@@ -379,19 +393,13 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_JUMP_SMS7:
   case ACTION_JUMP_SMS8:
   case ACTION_JUMP_SMS9:
-    {
-      OnJumpSMS(action.GetID() - ACTION_JUMP_SMS2 + 2);
-      return true;
-    }
-    break;
+    OnJumpSMS(action.GetID() - ACTION_JUMP_SMS2 + 2);
+    return true;
 
   default:
-    if (action.GetID())
-    {
-      return OnClick(action.GetID());
-    }
+    break;
   }
-  return false;
+  return action.GetID() && OnClick(action.GetID());
 }
 
 bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
@@ -472,7 +480,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
 
 void CGUIBaseContainer::OnUp()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_UP);
+  CGUIAction action = GetAction(ACTION_MOVE_UP);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL && MoveUp(wrapAround))
     return;
@@ -482,7 +490,7 @@ void CGUIBaseContainer::OnUp()
 
 void CGUIBaseContainer::OnDown()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_DOWN);
+  CGUIAction action = GetAction(ACTION_MOVE_DOWN);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL && MoveDown(wrapAround))
     return;
@@ -492,7 +500,7 @@ void CGUIBaseContainer::OnDown()
 
 void CGUIBaseContainer::OnLeft()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_LEFT);
+  CGUIAction action = GetAction(ACTION_MOVE_LEFT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
   if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
     return;
@@ -507,7 +515,7 @@ void CGUIBaseContainer::OnLeft()
 
 void CGUIBaseContainer::OnRight()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_RIGHT);
+  CGUIAction action = GetAction(ACTION_MOVE_RIGHT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
   if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
     return;
@@ -752,7 +760,12 @@ bool CGUIBaseContainer::OnClick(int actionID)
     { // "select" action
       int selected = GetSelectedItem();
       if (selected >= 0 && selected < (int)m_items.size())
-        m_listProvider->OnClick(m_items[selected]);
+      {
+        if (m_clickActions.HasAnyActions())
+          m_clickActions.ExecuteActions(0, GetParentID(), m_items[selected]);
+        else
+          m_listProvider->OnClick(m_items[selected]);
+      }
       return true;
     }
     // grab the currently focused subitem (if applicable)
@@ -1314,5 +1327,16 @@ void CGUIBaseContainer::OnFocus()
   if (m_listProvider && m_listProvider->AlwaysFocusDefaultItem())
     SelectItem(m_listProvider->GetDefaultItem());
 
+  if (m_focusActions.HasAnyActions())
+    m_focusActions.ExecuteActions(GetID(), GetParentID());
+
   CGUIControl::OnFocus();
+}
+
+void CGUIBaseContainer::OnUnFocus()
+{
+  if (m_unfocusActions.HasAnyActions())
+    m_unfocusActions.ExecuteActions(GetID(), GetParentID());
+
+  CGUIControl::OnUnFocus();
 }

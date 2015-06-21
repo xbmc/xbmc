@@ -22,7 +22,7 @@
 #include <map>
 #include <memory>
 
-#include "addons/include/xbmc_pvr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "PVRTimerInfoTag.h"
 #include "utils/Observer.h"
 #include "XBDateTime.h"
@@ -148,10 +148,10 @@ namespace PVR
 
     /*!
      * @brief Delete a timer on the client. Doesn't delete the timer from the container. The backend will do this.
-     * @param bDeleteSchedule Also delete repeating schedule instead of single timer only.
+     * @param bDeleteRule Also delete the timer rule that scheduled the timer instead of single timer only.
      * @return True if it was sent correctly, false if not.
      */
-    static bool DeleteTimer(const CFileItem &item, bool bForce = false, bool bDeleteSchedule = false);
+    static bool DeleteTimer(const CFileItem &item, bool bForce = false, bool bDeleteRule = false);
 
     /*!
      * @brief Rename a timer on the client. Doesn't update the timer in the container. The backend will do this.
@@ -173,6 +173,13 @@ namespace PVR
     CFileItemPtr GetTimerForEpgTag(const CFileItem *item) const;
 
     /*!
+     * Get the timer rule for a given timer tag
+     * @param timer The timer to query the timer rule for
+     * @return The timer rule, or an empty fileitemptr if none was found.
+     */
+    CFileItemPtr GetTimerRule(const CFileItem *item) const;
+
+    /*!
      * @brief Update the channel pointers.
      */
     void UpdateChannels(void);
@@ -191,7 +198,6 @@ namespace PVR
     typedef std::vector<CPVRTimerInfoTagPtr> VecTimerInfoTag;
 
     void Unload(void);
-    void UpdateEpgEvent(CPVRTimerInfoTagPtr timer);
     bool UpdateEntries(const CPVRTimers &timers);
     CPVRTimerInfoTagPtr GetByClient(int iClientId, unsigned int iClientTimerId) const;
     bool GetRootDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
@@ -211,17 +217,17 @@ namespace PVR
 
     CPVRTimersPath(const std::string &strPath);
     CPVRTimersPath(const std::string &strPath, int iClientId, unsigned int iParentId);
-    CPVRTimersPath(bool bRadio, bool bGrouped);
+    CPVRTimersPath(bool bRadio, bool bTimerRules);
 
     bool IsValid() const { return m_bValid; }
 
-    const std::string &GetPath() const        { return m_path; }
-    bool              IsTimersRoot() const    { return m_bRoot; }
-    bool              IsTimerSchedule() const { return !IsTimersRoot(); }
-    bool              IsRadio() const         { return m_bRadio; }
-    bool              IsGrouped() const       { return m_bGrouped; }
-    int               GetClientId() const     { return m_iClientId; }
-    unsigned int      GetParentId() const     { return m_iParentId; }
+    const std::string &GetPath() const     { return m_path; }
+    bool              IsTimersRoot() const { return m_bRoot; }
+    bool              IsTimerRule() const  { return !IsTimersRoot(); }
+    bool              IsRadio() const      { return m_bRadio; }
+    bool              IsRules() const      { return m_bTimerRules; }
+    int               GetClientId() const  { return m_iClientId; }
+    unsigned int      GetParentId() const  { return m_iParentId; }
 
   private:
     bool Init(const std::string &strPath);
@@ -230,7 +236,7 @@ namespace PVR
     bool         m_bValid;
     bool         m_bRoot;
     bool         m_bRadio;
-    bool         m_bGrouped;
+    bool         m_bTimerRules;
     int          m_iClientId;
     unsigned int m_iParentId;
   };

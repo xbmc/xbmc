@@ -27,6 +27,16 @@
 
 #include "cores/omxplayer/OMXImage.h"
 
+#include <sys/ioctl.h>
+#include "rpi/rpi_user_vcsm.h"
+
+#define MAJOR_NUM 100
+#define IOCTL_MBOX_PROPERTY _IOWR(MAJOR_NUM, 0, char *)
+#define DEVICE_FILE_NAME "/dev/vcio"
+
+static int mbox_open();
+static void mbox_close(int file_desc);
+
 CRBP::CRBP()
 {
   m_initialized     = false;
@@ -34,6 +44,8 @@ CRBP::CRBP()
   m_DllBcmHost      = new DllBcmHost();
   m_OMX             = new COMXCore();
   m_display = DISPMANX_NO_HANDLE;
+  m_mb = mbox_open();
+  vcsm_init();
 }
 
 CRBP::~CRBP()
@@ -214,5 +226,107 @@ void CRBP::Deinitialize()
   m_omx_image_init  = false;
   m_initialized     = false;
   m_omx_initialized = false;
+  if (m_mb)
+    mbox_close(m_mb);
+  m_mb = 0;
+  vcsm_exit();
 }
+
+static int mbox_property(int file_desc, void *buf)
+{
+   int ret_val = ioctl(file_desc, IOCTL_MBOX_PROPERTY, buf);
+
+   if (ret_val < 0)
+   {
+     CLog::Log(LOGERROR, "%s: ioctl_set_msg failed:%d", __FUNCTION__, ret_val);
+   }
+   return ret_val;
+}
+
+static int mbox_open()
+{
+   int file_desc;
+
+   // open a char device file used for communicating with kernel mbox driver
+   file_desc = open(DEVICE_FILE_NAME, 0);
+   if (file_desc < 0)
+     CLog::Log(LOGERROR, "%s: Can't open device file: %s (%d)", __FUNCTION__, DEVICE_FILE_NAME, file_desc);
+
+   return file_desc;
+}
+
+static void mbox_close(int file_desc)
+{
+  close(file_desc);
+}
+
+static unsigned mem_lock(int file_desc, unsigned handle)
+{
+   int i=0;
+   unsigned p[32];
+   p[i++] = 0; // size
+   p[i++] = 0x00000000; // process request
+
+   p[i++] = 0x3000d; // (the tag id)
+   p[i++] = 4; // (size of the buffer)
+   p[i++] = 4; // (size of the data)
+   p[i++] = handle;
+
+   p[i++] = 0x00000000; // end tag
+   p[0] = i*sizeof *p; // actual size
+
+   mbox_property(file_desc, p);
+   return p[5];
+}
+
+unsigned mem_unlock(int file_desc, unsigned handle)
+{
+   int i=0;
+   unsigned p[32];
+   p[i++] = 0; // size
+   p[i++] = 0x00000000; // process request
+
+   p[i++] = 0x3000e; // (the tag id)
+   p[i++] = 4; // (size of the buffer)
+   p[i++] = 4; // (size of the data)
+   p[i++] = handle;
+
+   p[i++] = 0x00000000; // end tag
+   p[0] = i*sizeof *p; // actual size
+
+   mbox_property(file_desc, p);
+   return p[5];
+}
+
+CGPUMEM::CGPUMEM(unsigned int numbytes, bool cached)
+{
+  m_numbytes = numbytes;
+  m_vcsm_handle = vcsm_malloc_cache(numbytes, cached ? VCSM_CACHE_TYPE_HOST : VCSM_CACHE_TYPE_NONE, (char *)"CGPUMEM");
+  assert(m_vcsm_handle);
+  m_vc_handle = vcsm_vc_hdl_from_hdl(m_vcsm_handle);
+  assert(m_vc_handle);
+  m_arm = vcsm_lock(m_vcsm_handle);
+  assert(m_arm);
+  m_vc = mem_lock(g_RBP.GetMBox(), m_vc_handle);
+  assert(m_vc);
+}
+
+CGPUMEM::~CGPUMEM()
+{
+  mem_unlock(g_RBP.GetMBox(), m_vc_handle);
+  vcsm_unlock_ptr(m_arm);
+  vcsm_free(m_vcsm_handle);
+}
+
+// Call this to clean and invalidate a region of memory
+void CGPUMEM::Flush()
+{
+  struct vcsm_user_clean_invalid_s iocache = {};
+  iocache.s[0].handle = m_vcsm_handle;
+  iocache.s[0].cmd = 3; // clean+invalidate
+  iocache.s[0].addr = (int) m_arm;
+  iocache.s[0].size  = m_numbytes;
+  vcsm_clean_invalid( &iocache );
+}
+
 #endif

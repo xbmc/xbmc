@@ -30,13 +30,6 @@ struct CADeviceInstance
 };
 typedef std::vector< std::pair<struct CADeviceInstance, CAEDeviceInfo> > CADeviceList;
 
-typedef enum PassthroughMode
-{
-  PassthroughModeNone = 0,
-  PassthroughModeNative,
-  PassthroughModeBitstream
-} EPassthroughMode;
-
 //Hirarchy:
 // Device
 //       - 1..n streams
@@ -92,12 +85,11 @@ public:
   *
   * @param format    [in]     - the requested AE format which should be matched to the stream formats of CA
   * @param outputFormat [out] - the found CA format which matches best to the requested AE format
-  * @param passthrough [out]  - flag indicating that the found CA format is a native passthrough format, bitstreamed passthroughformat or no passthroughformat
   * @param outputStream [out] - the coreaudio streamid which contains the coreaudio format returned in outputFormat
   * @return true if a matching corea audio format was found - else false
   */
-  bool          FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, 
-                                            AudioStreamBasicDescription &outputFormat, EPassthroughMode &passthrough,
+  bool          FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, bool virt, 
+                                            AudioStreamBasicDescription &outputFormat,
                                             AudioStreamID &outputStream) const;
 
   /*!
@@ -179,6 +171,7 @@ private:
 
   bool              hasSampleRate(const AESampleRateList &list, const unsigned int samplerate) const;
   bool              hasDataFormat(const AEDataFormatList &list, const enum AEDataFormat format) const;
+  bool              hasDataType(const AEDataTypeList &list, CAEStreamInfo::DataType type) const;
 
   /*!
   * @brief Converts a CA format description to a list of AEFormat desciptions (as one format can result
@@ -190,6 +183,8 @@ private:
   * @return The list of converted AE formats.
   */
   AEDataFormatList  caFormatToAE(const AudioStreamBasicDescription &formatDesc, bool isDigital) const;
+  AEDataTypeList caFormatToAEType(const AudioStreamBasicDescription &formatDesc, bool isDigital) const;
+
 
   /*!
   * @brief Convet a CA channel label to an AE channel.
@@ -206,6 +201,8 @@ private:
   * @return - the list of AE formats in that stream.
   */
   AEDataFormatList  getFormatListForStream(UInt32 streamIdx) const;
+
+  AEDataTypeList  getTypeListForStream(UInt32 streamIdx) const;
 
   /*!
   * @brief Returns the AE channelinfo/channel map for the CA stream at the given index
@@ -244,6 +241,7 @@ private:
   {
     AudioStreamID streamID;
     StreamFormatList formatList;
+    StreamFormatList formatListVirt;
     UInt32 numChannels;
     bool isDigital;
     bool hasPassthroughFormats;

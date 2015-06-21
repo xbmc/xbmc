@@ -23,10 +23,8 @@
 #include "guilib/GUIMessage.h"
 #include "utils/Variant.h"
 
-#define ID_BUTTON_OK   10
-
 CGUIDialogOK::CGUIDialogOK(void)
-    : CGUIDialogBoxBase(WINDOW_DIALOG_OK, "DialogOK.xml")
+    : CGUIDialogBoxBase(WINDOW_DIALOG_OK, "DialogConfirm.xml")
 {
 }
 
@@ -38,7 +36,7 @@ bool CGUIDialogOK::OnMessage(CGUIMessage& message)
   if (message.GetMessage() == GUI_MSG_CLICKED)
   {
     int iControl = message.GetSenderId();
-    if (iControl == ID_BUTTON_OK)
+    if (iControl == CONTROL_YES_BUTTON)
     {
       m_bConfirmed = true;
       Close();
@@ -72,9 +70,19 @@ void CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant line0, CVariant li
   dialog->Open();
 }
 
+void CGUIDialogOK::OnInitWindow()
+{
+  SET_CONTROL_HIDDEN(CONTROL_NO_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_CUSTOM_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
+  SET_CONTROL_FOCUS(CONTROL_YES_BUTTON, 0);
+
+  CGUIDialogBoxBase::OnInitWindow();
+}
+
 int CGUIDialogOK::GetDefaultLabelID(int controlId) const
 {
-  if (controlId == ID_BUTTON_OK)
+  if (controlId == CONTROL_YES_BUTTON)
     return 186;
   return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
 }

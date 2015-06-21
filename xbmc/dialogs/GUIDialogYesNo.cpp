@@ -23,11 +23,8 @@
 #include "input/Key.h"
 #include "messaging/helpers/DialogHelper.h"
 
-#define CONTROL_NO_BUTTON 10
-#define CONTROL_YES_BUTTON 11
-
 CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
-    : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogYesNo.xml")
+    : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogConfirm.xml")
 {
   m_bConfirmed = false;
   m_bCanceled = false;
@@ -71,6 +68,15 @@ bool CGUIDialogYesNo::OnBack(int actionID)
   m_bCanceled = true;
   m_bConfirmed = false;
   return CGUIDialogBoxBase::OnBack(actionID);
+}
+
+void CGUIDialogYesNo::OnInitWindow()
+{
+  SET_CONTROL_HIDDEN(CONTROL_CUSTOM_BUTTON);
+  SET_CONTROL_HIDDEN(CONTROL_PROGRESS_BAR);
+  SET_CONTROL_FOCUS(CONTROL_NO_BUTTON, 0);
+
+  CGUIDialogBoxBase::OnInitWindow();
 }
 
 bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled)
@@ -146,6 +152,7 @@ int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNo
     SetChoice(1, options.yesLabel);
   if (options.autoclose > 0)
     SetAutoClose(options.autoclose);
+  m_bCanceled = false;
   
   for (size_t i = 0; i < 3; ++i)
   {

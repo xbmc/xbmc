@@ -29,7 +29,7 @@
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #if defined(TARGET_ANDROID)
 #include "URL.h"
@@ -111,32 +111,27 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
   if (pixels == NULL)
     return;
 
-  if (format & XB_FMT_DXT_MASK && !g_Windowing.SupportsDXT())
-  { // compressed format that we don't support
-    Allocate(width, height, XB_FMT_A8R8G8B8);
-    CDDSImage::Decompress(m_pixels, std::min(width, m_textureWidth), std::min(height, m_textureHeight), GetPitch(m_textureWidth), pixels, format);
-  }
+  if (format & XB_FMT_DXT_MASK)
+    return;
+
+  Allocate(width, height, format);
+
+  unsigned int srcPitch = pitch ? pitch : GetPitch(width);
+  unsigned int srcRows = GetRows(height);
+  unsigned int dstPitch = GetPitch(m_textureWidth);
+  unsigned int dstRows = GetRows(m_textureHeight);
+
+  if (srcPitch == dstPitch)
+    memcpy(m_pixels, pixels, srcPitch * std::min(srcRows, dstRows));
   else
   {
-    Allocate(width, height, format);
-
-    unsigned int srcPitch = pitch ? pitch : GetPitch(width);
-    unsigned int srcRows = GetRows(height);
-    unsigned int dstPitch = GetPitch(m_textureWidth);
-    unsigned int dstRows = GetRows(m_textureHeight);
-
-    if (srcPitch == dstPitch)
-      memcpy(m_pixels, pixels, srcPitch * std::min(srcRows, dstRows));
-    else
+    const unsigned char *src = pixels;
+    unsigned char* dst = m_pixels;
+    for (unsigned int y = 0; y < srcRows && y < dstRows; y++)
     {
-      const unsigned char *src = pixels;
-      unsigned char* dst = m_pixels;
-      for (unsigned int y = 0; y < srcRows && y < dstRows; y++)
-      {
-        memcpy(dst, src, std::min(srcPitch, dstPitch));
-        src += srcPitch;
-        dst += dstPitch;
-      }
+      memcpy(dst, src, std::min(srcPitch, dstPitch));
+      src += srcPitch;
+      dst += dstPitch;
     }
   }
   ClampToEdge();
@@ -184,18 +179,15 @@ CBaseTexture *CBaseTexture::LoadFromFile(const std::string& texturePath, unsigne
     XFILE::CFileAndroidApp file;
     if (file.Open(url))
     {
-      unsigned int imgsize = (unsigned int)file.GetLength();
-      unsigned char* inputBuff = new unsigned char[imgsize];
-      unsigned int inputBuffSize = file.Read(inputBuff, imgsize);
+      unsigned char* inputBuff;
+      unsigned int width;
+      unsigned int height;
+      unsigned int inputBuffSize = file.ReadIcon(&inputBuff, &width, &height);
       file.Close();
-      if (inputBuffSize != imgsize)
-      {
-        delete [] inputBuff;
+      if (!inputBuffSize)
         return NULL;
-      }
+
       CTexture *texture = new CTexture();
-      unsigned int width = file.GetIconWidth();
-      unsigned int height = file.GetIconHeight();
       texture->LoadFromMemory(width, height, width*4, XB_FMT_RGBA8, true, inputBuff);
       delete [] inputBuff;
       return texture;
@@ -270,14 +262,9 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
 
   if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height))
   {
+    CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, CURL::GetRedacted(texturePath).c_str());
     delete pImage;
-    pImage = ImageFactory::CreateFallbackLoader(texturePath);
-    if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height))
-    {
-      CLog::Log(LOGDEBUG, "%s - Load of %s failed.", __FUNCTION__, texturePath.c_str());
-      delete pImage;
-      return false;
-    }
+    return false;
   }
   delete pImage;
 
@@ -296,12 +283,7 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   if(!LoadIImage(pImage, buffer, size, width, height))
   {
     delete pImage;
-    pImage = ImageFactory::CreateFallbackLoader(mimeType);
-    if(!LoadIImage(pImage, buffer, size, width, height))
-    {
-      delete pImage;
-      return false;
-    }
+    return false;
   }
   delete pImage;
   return true;
@@ -314,13 +296,15 @@ bool CBaseTexture::LoadIImage(IImage *pImage, unsigned char* buffer, unsigned in
     if (pImage->Width() > 0 && pImage->Height() > 0)
     {
       Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
-      if (pImage->Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
+      if (pImage->Decode(m_pixels, GetTextureWidth(), GetRows(), GetPitch(), XB_FMT_A8R8G8B8))
       {
         if (pImage->Orientation())
           m_orientation = pImage->Orientation() - 1;
         m_hasAlpha = pImage->hasAlpha();
         m_originalWidth = pImage->originalWidth();
         m_originalHeight = pImage->originalHeight();
+        m_imageWidth = pImage->Width();
+        m_imageHeight = pImage->Height();
         ClampToEdge();
         return true;
       }

@@ -51,7 +51,7 @@ namespace XBMCAddon
         if (mode && strncmp(mode, "w", 1) == 0)
           file->OpenForWrite(filepath,true);
         else
-          file->Open(filepath, READ_NO_CACHE);
+          file->Open(filepath, XFILE::READ_NO_CACHE);
       }
 
       inline ~File() { delete file; }

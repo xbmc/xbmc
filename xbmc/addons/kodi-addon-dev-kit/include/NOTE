@@ -1,0 +1,15 @@
+NOTE:
+
+This directory contains independent Headers to build Add-on's
+without the whole Kodi source tree. The Add-on itself can add
+this headers to his source tree without dependencies to any
+Kodi related classes or functions.
+
+Also this headers are never changed without a API Version
+change.
+
+The current PVR API version can be found in xbmc_pvr_types.h:
+XBMC_PVR_API_VERSION
+
+The current audio DSP API version can be found in kodi_adsp_types.h:
+KODI_AE_DSP_API_VERSION

@@ -1,5 +1,5 @@
 /*!
-\file GuiControlFactory.h
+\file GUIControlFactory.h
 \brief
 */
 
@@ -73,7 +73,8 @@ public:
    If either the fallback_value or info_value are natural numbers they are interpreted
    as ids for lookup in strings.xml. The fallback attribute is optional.
    \param element XML element to process
-   \param infoLabel returned infoLabel
+   \param infoLabel Returned infoLabel
+   \param parentID The parent id
    \return true if a valid info label was read, false otherwise
    */
   static bool GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel, int parentID);

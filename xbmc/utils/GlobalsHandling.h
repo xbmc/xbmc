@@ -212,13 +212,3 @@ namespace xbmcutil
  * #define g_variable XBMC_GLOBAL_USE(classname)
  */
 #define XBMC_GLOBAL_USE(classname) (*(xbmcutil::GlobalsSingleton<classname>::getQuick()))
-
-/**
- * For pattern (1) above, you can use the following macro. WARNING: This should only 
- * be used when the global in question is never accessed, directly or indirectly, from
- * a static method called (again, directly or indirectly) during startup or shutdown.
- */
-#define XBMC_GLOBAL(classname,g_variable) \
-  XBMC_GLOBAL_REF(classname,g_variable); \
-  static classname & g_variable = (*(g_variable##Ref.get()))
-

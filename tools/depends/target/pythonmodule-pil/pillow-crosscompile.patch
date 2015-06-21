@@ -1,0 +1,207 @@
+--- setup.py.orig	2015-10-01 22:39:00.000000000 +0200
++++ setup.py	2015-10-25 12:28:22.023743244 +0100
+@@ -156,6 +156,15 @@
+ 
+         _add_directory(include_dirs, "libImaging")
+ 
++        compiler = os.environ.get('CC')
++        args = {}
++        # unfortunately, distutils doesn't let us provide separate C and C++
++        # compilers
++        if compiler is not None:
++            (ccshared,cflags) = sysconfig.get_config_vars('CCSHARED','CFLAGS')
++            args['compiler_so'] = compiler + ' ' + ccshared + ' ' + cflags
++        self.compiler.set_executables(**args)
++
+         #
+         # add configured kits
+ 
+@@ -187,10 +196,11 @@
+                 for d in os.environ[k].split(os.path.pathsep):
+                     _add_directory(library_dirs, d)
+ 
+-        prefix = sysconfig.get_config_var("prefix")
++        prefix = os.environ.get('PYTHONXCPREFIX')
+         if prefix:
+             _add_directory(library_dirs, os.path.join(prefix, "lib"))
+             _add_directory(include_dirs, os.path.join(prefix, "include"))
++            _add_directory(include_dirs, os.path.join(prefix, "include/python2.7"))
+ 
+         #
+         # add platform directories
+@@ -202,14 +212,14 @@
+ 
+         elif sys.platform == "darwin":
+             # attempt to make sure we pick freetype2 over other versions
+-            _add_directory(include_dirs, "/sw/include/freetype2")
+-            _add_directory(include_dirs, "/sw/lib/freetype2/include")
++            #_add_directory(include_dirs, "/sw/include/freetype2")
++            #_add_directory(include_dirs, "/sw/lib/freetype2/include")
+             # fink installation directories
+-            _add_directory(library_dirs, "/sw/lib")
+-            _add_directory(include_dirs, "/sw/include")
++            #_add_directory(library_dirs, "/sw/lib")
++            #_add_directory(include_dirs, "/sw/include")
+             # darwin ports installation directories
+-            _add_directory(library_dirs, "/opt/local/lib")
+-            _add_directory(include_dirs, "/opt/local/include")
++            #_add_directory(library_dirs, "/opt/local/lib")
++            #_add_directory(include_dirs, "/opt/local/include")
+ 
+             # if Homebrew is installed, use its lib and include directories
+             import subprocess
+@@ -234,15 +244,15 @@
+                 _add_directory(library_dirs, os.path.join(ft_prefix, 'lib'))
+                 _add_directory(
+                     include_dirs, os.path.join(ft_prefix, 'include'))
+-            else:
++            #else:
+                 # fall back to freetype from XQuartz if
+                 # Homebrew's freetype is missing
+-                _add_directory(library_dirs, "/usr/X11/lib")
+-                _add_directory(include_dirs, "/usr/X11/include")
++                #_add_directory(library_dirs, "/usr/X11/lib")
++                #_add_directory(include_dirs, "/usr/X11/include")
+ 
+         elif sys.platform.startswith("linux"):
+             arch_tp = (plat.processor(), plat.architecture()[0])
+-            if arch_tp == ("x86_64", "32bit"):
++            if arch_tp == ("x86_64xxx", "32bit"):
+                 # 32 bit build on 64 bit machine.
+                 _add_directory(library_dirs, "/usr/lib/i386-linux-gnu")
+             else:
+@@ -252,43 +262,43 @@
+                         continue
+ 
+                     if platform_ in ["x86_64", "64bit"]:
+-                        _add_directory(library_dirs, "/lib64")
+-                        _add_directory(library_dirs, "/usr/lib64")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/x86_64-linux-gnu")
++                        #_add_directory(library_dirs, "/lib64")
++                        #_add_directory(library_dirs, "/usr/lib64")
++                        #_add_directory(
++                        #    library_dirs, "/usr/lib/x86_64-linux-gnu")
+                         break
+                     elif platform_ in ["i386", "i686", "32bit"]:
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/i386-linux-gnu")
++                        #_add_directory(
++                        #    library_dirs, "/usr/lib/i386-linux-gnu")
+                         break
+                     elif platform_ in ["aarch64"]:
+-                        _add_directory(library_dirs, "/usr/lib64")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/aarch64-linux-gnu")
++                        #_add_directory(library_dirs, "/usr/lib64")
++                        #_add_directory(
++                        #    library_dirs, "/usr/lib/aarch64-linux-gnu")
+                         break
+                     elif platform_ in ["arm", "armv7l"]:
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/arm-linux-gnueabi")
++                        #_add_directory(
++                        #    library_dirs, "/usr/lib/arm-linux-gnueabi")
+                         break
+                     elif platform_ in ["ppc64"]:
+-                        _add_directory(library_dirs, "/usr/lib64")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/ppc64-linux-gnu")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/powerpc64-linux-gnu")
++                        #_add_directory(library_dirs, "/usr/lib64")
++                        #_add_directory(
++                        #    library_dirs, "/usr/lib/ppc64-linux-gnu")
++                        #_add_directory(
++                        #    library_dirs, "/usr/lib/powerpc64-linux-gnu")
+                         break
+                     elif platform_ in ["ppc"]:
+-                        _add_directory(library_dirs, "/usr/lib/ppc-linux-gnu")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/powerpc-linux-gnu")
++                        #_add_directory(library_dirs, "/usr/lib/ppc-linux-gnu")
++                        #_add_directory(
++                        #    library_dirs, "/usr/lib/powerpc-linux-gnu")
+                         break
+                     elif platform_ in ["s390x"]:
+-                        _add_directory(library_dirs, "/usr/lib64")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/s390x-linux-gnu")
++                        #_add_directory(library_dirs, "/usr/lib64")
++                        #_add_directory(
++                        #    library_dirs, "/usr/lib/s390x-linux-gnu")
+                         break
+                     elif platform_ in ["s390"]:
+-                        _add_directory(library_dirs, "/usr/lib/s390-linux-gnu")
++                        #_add_directory(library_dirs, "/usr/lib/s390-linux-gnu")
+                         break
+                 else:
+                     raise ValueError(
+@@ -297,18 +307,18 @@
+             # XXX Kludge. Above /\ we brute force support multiarch. Here we
+             # try Barry's more general approach. Afterward, something should
+             # work ;-)
+-            self.add_multiarch_paths()
++            #self.add_multiarch_paths()
+ 
+-        elif sys.platform.startswith("gnu"):
+-            self.add_multiarch_paths()
++        #elif sys.platform.startswith("gnu"):
++        #    self.add_multiarch_paths()
+ 
+-        elif sys.platform.startswith("netbsd"):
+-            _add_directory(library_dirs, "/usr/pkg/lib")
+-            _add_directory(include_dirs, "/usr/pkg/include")
+-
+-        elif sys.platform.startswith("sunos5"):
+-                    _add_directory(library_dirs, "/opt/local/lib")
+-                    _add_directory(include_dirs, "/opt/local/include")
++        #elif sys.platform.startswith("netbsd"):
++            #_add_directory(library_dirs, "/usr/pkg/lib")
++            #_add_directory(include_dirs, "/usr/pkg/include")
++
++        #elif sys.platform.startswith("sunos5"):
++                    #_add_directory(library_dirs, "/opt/local/lib")
++                    #_add_directory(include_dirs, "/opt/local/include")
+ 
+         # FIXME: check /opt/stuff directories here?
+ 
+@@ -350,11 +360,11 @@
+                 _add_directory(include_dirs, tcl_dir)
+ 
+         # standard locations
+-        _add_directory(library_dirs, "/usr/local/lib")
+-        _add_directory(include_dirs, "/usr/local/include")
++        #_add_directory(library_dirs, "/usr/local/lib")
++        #_add_directory(include_dirs, "/usr/local/include")
+ 
+-        _add_directory(library_dirs, "/usr/lib")
+-        _add_directory(include_dirs, "/usr/include")
++        #_add_directory(library_dirs, "/usr/lib")
++        #_add_directory(include_dirs, "/usr/include")
+ 
+         # on Windows, look for the OpenJPEG libraries in the location that
+         # the official installer puts them
+@@ -389,12 +399,7 @@
+         feature = self.feature
+ 
+         if feature.want('zlib'):
+-            if _find_include_file(self, "zlib.h"):
+-                if _find_library_file(self, "z"):
+-                    feature.zlib = "z"
+-                elif (sys.platform == "win32" and
+-                        _find_library_file(self, "zlib")):
+-                    feature.zlib = "zlib"  # alternative name
++            feature.zlib = "z"
+ 
+         if feature.want('jpeg'):
+             if _find_include_file(self, "jpeglib.h"):
+@@ -552,7 +557,7 @@
+ 
+         if feature.freetype:
+             exts.append(Extension(
+-                "PIL._imagingft", ["_imagingft.c"], libraries=["freetype"]))
++                "PIL._imagingft", ["_imagingft.c"], libraries=["freetype", "bz2", "z"]))
+ 
+         if os.path.isfile("_imagingtiff.c") and feature.tiff:
+             exts.append(Extension(

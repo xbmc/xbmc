@@ -30,6 +30,7 @@
 using namespace XFILE;
 
 CSplash::CSplash()
+  : m_image(nullptr)
 {
 }
 
@@ -71,7 +72,6 @@ void CSplash::Show()
 
   //show it on screen
   g_Windowing.EndRender();
-  CDirtyRegionList dirty;
-  g_graphicsContext.Flip(dirty);
+  g_graphicsContext.Flip(true);
   g_graphicsContext.Unlock();
 }

@@ -45,6 +45,8 @@ bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
 {
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(url);
   items.SetPath(path);
+  items.m_dwSize = -1;  // No size
+
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode.get())

@@ -102,7 +102,7 @@ namespace XFILE
       CVideoDatabase db;
       if (db.Open())
       {
-        MediaType mediaType = MediaTypes::FromString(playlist.GetType());
+        MediaType mediaType = CMediaTypes::FromString(playlist.GetType());
 
         std::string baseDir = strBaseDir;
         if (strBaseDir.empty())
@@ -161,7 +161,7 @@ namespace XFILE
         if (playlist.GetType() == "mixed" || playlist.GetType().empty())
           plist.SetType("songs");
 
-        MediaType mediaType = MediaTypes::FromString(plist.GetType());
+        MediaType mediaType = CMediaTypes::FromString(plist.GetType());
 
         std::string baseDir = strBaseDir;
         if (strBaseDir.empty())

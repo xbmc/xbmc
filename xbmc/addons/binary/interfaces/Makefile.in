@@ -1,0 +1,6 @@
+SRCS=AddonInterfaces.cpp \
+
+LIB=addon-interfaces.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

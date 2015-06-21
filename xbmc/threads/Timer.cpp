@@ -60,6 +60,13 @@ bool CTimer::Stop(bool wait /* = false */)
   return true;
 }
 
+void CTimer::RestartAsync(uint32_t timeout)
+{
+  m_timeout = timeout;
+  m_endTime = XbmcThreads::SystemClockMillis() + timeout;
+  m_eventTimeout.Set();
+}
+
 bool CTimer::Restart()
 {
   if (!IsRunning())
@@ -84,11 +91,11 @@ float CTimer::GetElapsedMilliseconds() const
 
 void CTimer::Process()
 {
-  uint32_t currentTime = XbmcThreads::SystemClockMillis();
-  m_endTime = currentTime + m_timeout;
-
   while (!m_bStop)
   {
+    uint32_t currentTime = XbmcThreads::SystemClockMillis();
+    m_endTime = currentTime + m_timeout;
+
     // wait the necessary time
     if (!m_eventTimeout.WaitMSec(m_endTime - currentTime))
     {
@@ -98,11 +105,9 @@ void CTimer::Process()
         // execute OnTimeout() callback
         m_callback->OnTimeout();
 
-        // stop if this is not an interval timer
-        if (!m_interval)
+        // continue if this is an interval timer, or if it was restarted during callback
+        if (!m_interval && m_endTime <= currentTime)
           break;
-
-        m_endTime = currentTime + m_timeout;
       }
     }
   }

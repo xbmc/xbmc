@@ -24,13 +24,13 @@
 
 class CDateTime;
 
-typedef enum EventLevel
+enum class EventLevel
 {
-  EventLevelBasic = 0,
-  EventLevelInformation,
-  EventLevelWarning,
-  EventLevelError
-} EventLevel;
+  Basic = 0,
+  Information = 1,
+  Warning = 2,
+  Error = 3,
+};
 
 class IEvent
 {

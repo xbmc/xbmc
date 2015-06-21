@@ -26,31 +26,27 @@
 
 using namespace ADDON;
 
-CWebinterface::CWebinterface(const ADDON::AddonProps &props, WebinterfaceType type /* = WebinterfaceTypeStatic */, const std::string &entryPoint /* = "WEBINTERFACE_DEFAULT_ENTRY_POINT" */)
-  : CAddon(props),
-    m_type(type),
-    m_entryPoint(entryPoint)
-{ }
-
-CWebinterface::CWebinterface(const cp_extension_t *ext)
-  : CAddon(ext),
-    m_type(WebinterfaceTypeStatic),
-    m_entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT)
+std::unique_ptr<CWebinterface> CWebinterface::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
   // determine the type of the webinterface
+  WebinterfaceType type(WebinterfaceTypeStatic);
   std::string webinterfaceType = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@type");
   if (StringUtils::EqualsNoCase(webinterfaceType.c_str(), "wsgi"))
-    m_type = WebinterfaceTypeWsgi;
+    type = WebinterfaceTypeWsgi;
   else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "static") && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "html"))
-    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", ID().c_str(), webinterfaceType.c_str());
+    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", props.id.c_str(), webinterfaceType.c_str());
 
   // determine the entry point of the webinterface
-  std::string entryPoint = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@entry");
-  if (!entryPoint.empty())
-    m_entryPoint = entryPoint;
+  std::string entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT);
+  std::string entry = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@entry");
+  if (!entry.empty())
+    entryPoint = entry;
+
+  return std::unique_ptr<CWebinterface>(new CWebinterface(std::move(props), type, entryPoint));
 }
 
-CWebinterface::~CWebinterface()
+CWebinterface::CWebinterface(ADDON::AddonProps props, WebinterfaceType type,
+    const std::string &entryPoint) : CAddon(std::move(props)), m_type(type), m_entryPoint(entryPoint)
 { }
 
 std::string CWebinterface::GetEntryPoint(const std::string &path) const
@@ -67,9 +63,4 @@ std::string CWebinterface::GetBaseLocation() const
     return "/addons/" + ID();
 
   return "";
-}
-
-AddonPtr CWebinterface::Clone() const
-{
-  return AddonPtr(new CWebinterface(*this));
 }

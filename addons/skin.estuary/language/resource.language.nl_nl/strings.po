@@ -1,0 +1,521 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/kodi-main/language/nl_NL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Nu afspelend"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Zoeken"
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Toon media fanart als achtergrond"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Bioscoopmodus"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Verander modus"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Bekijk als 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Willekeurige films"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Niet bekeken films"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "Lopende TV series"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Download pictogrammen"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Lopende films"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Meest afgespeelde albums"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Willekeurige albums"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Willekeurige artiesten"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Niet afgespeelde albums"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Recente opnames"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Meest gespeelde kanalen"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Voorspelling"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Acties"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Overige opties"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Sorteer op"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Viewtype"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Volgende nummers"
+
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Geen favorieten gevonden. U kunt ieder item uit media weergaven toevoegen aan deze lijst middels het context menu."
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Ga naar albums"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Ga naar liedjes"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Toon fanart"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Laatst ingelogd op"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Geheugen gebruikt"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Versie info"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Volgorde"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Uw waardering"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Uitgebreide info"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Pagina's"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "items"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Nummerlijst"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Terugspoelen"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Vooruitspoelen"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Annuleer update"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Camera fabrikant"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Afspeellijst opties"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Stel het type in en voeg regels toe om een slimme afspeellijst te maken. Deze afspeellijst zijn dynamisch en bevatten alle media items vanuit uw database die voldoen aan uw gekozen regels."
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Voeg groep toe"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Hernoem groep"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Verwijder Groep"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Lees meer..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Beschikbaar"
+
+msgctxt "#31049"
+msgid "Press [B]Up[/B] to rewind or fast-forward"
+msgstr "Kies [B]Up[/B] voor terugspoelen of snel vooruit"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Druk [B]Ok[/B] om te stoppen"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Scroll taal"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "gefilterd"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Gebaseerd op Arial"
+
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Druk [B]Links[/B] om terug te spoelen of [B]Rechts[/B] voor snel vooruit"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Ondertitel download"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Ga naar afspeellijst"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Toon inlogscherm bij opstarten"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Automatisch inloggen tijens opstarten"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Updates beschikbaar"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "minuten"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Hoofdmenu items"
+
+msgctxt "#31062"
+msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
+msgstr "Snelkoppeling naar de \"bestanden\" sectie van elk mediatype. Ga daarheen om extra bronnen toe te voegen aan uw databases."
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Secties"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "niet bekeken"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Video playlist"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Music playlist"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Gebeurtenis registratie"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Kies voorinstellingen"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Laatst bijgewerkt"
+
+msgctxt "#31070"
+msgid "Add media sources"
+msgstr "Voeg media bronnen toe"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "door"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Energiebeheer"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Titels"
+
+msgctxt "#31074"
+msgid "Library root"
+msgstr "Library root"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Filmsets"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Speel optische schijf af"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Vorige locatie"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Volgende locatie"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Uitzending niet beschikbaar"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Eindigt om"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Albuminformatie"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Songtekst add-on"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Songtekst add-on instellingen"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Visualisatie instellingen"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Kanaal groep"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadata"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Provider instellingen"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Opties inhoudsscanner"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Beschikbare groepen"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Zoek trailer"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Download ondertitels"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Video menu"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Toon weerbericht in bovenbalk"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Toon media markering voor films / afleveringen / muziek video's"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Gebruik schuif animaties"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Lokale ondertitel beschikbaar"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Kanaal opties"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Selecteer jouw Kodi Gebruikersprofiel[CR]om in te loggen en door te gaan"
+
+msgctxt "#31099"
+msgid "Icon Wall"
+msgstr "Icoon Muur"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Scheiden"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Infomuur"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Muur"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Voor hier tekst in..."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Voeg video bronnen toe en stel het juiste content type in om uw video bibliotheken te vullen."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletekst"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Breedelijst"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Gebruik aangepaste globale achtergrond"
+
+msgctxt "#31109"
+msgid "Choose image path"
+msgstr "Kies afbeelding locatie"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Geef bestandensectie"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Toon uw persoonlijke afbeeldingen of download één van de vele afbeeldingsadd-ons uit de officiële repository."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Toggle audio stream"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Zoek lokale bibliotheek"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Zoek YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Zoek TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Verwijder dit hoofdmenu item"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Wijzig nodes"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Invoeren add-on verkenner"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "U heeft nog geen add-ons geïnstalleerd. Bezoek onze add-on verkenner om door onze collectie te browsen en uw Kodi beleving te verbeteren."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "U heeft nog geen weerbericht provider ingesteld. Om weerberichten te zien, kies een weerprovider en stel uw locatie in."
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Stel weerprovider in"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Niet bekeken TV series"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Zelfde regisseur"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Toon afbeeldingen op kaart"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Kies 'Omhoog' voor acteursinformatie"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Kies 'OK' om het plot te lezen"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Toon pictogrammen"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Bijdragers"

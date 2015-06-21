@@ -160,7 +160,23 @@ namespace PVR
      * @param strName The friendly name of the client or an empty string when it wasn't found.
      * @return True if the client was found, false otherwise.
      */
-    bool GetClientName(int iClientId, std::string &strName) const;
+    bool GetClientFriendlyName(int iClientId, std::string &strName) const;
+
+    /*!
+     * @brief Get the addon name for the client with the given id.
+     * @param iClientId The id of the client.
+     * @param strName The addon name of the client or an empty string when it wasn't found.
+     * @return True if the client was found, false otherwise.
+     */
+    bool GetClientAddonName(int iClientId, std::string &strName) const;
+
+    /*!
+     * @brief Get the addon icon for the client with the given id.
+     * @param iClientId The id of the client.
+     * @param strIcon The path to the addon icon of the client or an empty string when it wasn't found.
+     * @return True if the client was found, false otherwise.
+     */
+    bool GetClientAddonIcon(int iClientId, std::string &strIcon) const;
 
     /*!
      * @brief Returns properties about all connected clients
@@ -321,6 +337,12 @@ namespace PVR
 
     /*! @name Timer methods */
     //@{
+
+    /*!
+     * @brief Check whether there is at least one connected client supporting timers.
+     * @return True if at least one connected client supports timers, false otherwise.
+     */
+    bool SupportsTimers() const;
 
     /*!
      * @brief Check whether a client supports timers.
@@ -509,6 +531,15 @@ namespace PVR
      */
     PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, EPG::CEpg *epg, time_t start, time_t end);
 
+    /*!
+     * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
+     * to Kodi using the callback function EpgEventStateChange. To be able to only push events that are actually of interest for Kodi,
+     * client needs to know about the epg time frame Kodi uses.
+     * @param iDays number of days from "now". EPG_TIMEFRAME_UNLIMITED means that Kodi is interested in all epg events, regardless of event times.
+     * @return PVR_ERROR_NO_ERROR if new value was successfully set.
+     */
+    PVR_ERROR SetEPGTimeFrame(int iDays);
+
     //@}
 
     /*! @name Channel methods */
@@ -656,6 +687,8 @@ namespace PVR
 
     int GetClientId(const std::string& strId) const;
 
+    bool IsRealTimeStream() const;
+
   private:
     /*!
      * @brief Update add-ons from the AddonManager
@@ -738,11 +771,9 @@ namespace PVR
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;
-    DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
     std::string           m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
     ADDON::VECADDONS      m_addons;
     PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
-    STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
     bool                  m_bNoAddonWarningDisplayed; /*!< true when a warning was displayed that no add-ons were found, false otherwise */
     CCriticalSection      m_critSection;
     std::map<int, time_t> m_connectionAttempts;       /*!< last connection attempt per add-on */

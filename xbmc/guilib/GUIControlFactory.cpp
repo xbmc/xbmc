@@ -64,6 +64,7 @@
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
+#include "games/controllers/guicontrols/GUIGameController.h"
 #include "Util.h"
 
 using namespace EPG;
@@ -100,12 +101,12 @@ static const ControlMapping controls[] =
     {"resize",            CGUIControl::GUICONTROL_RESIZE},
     {"edit",              CGUIControl::GUICONTROL_EDIT},
     {"visualisation",     CGUIControl::GUICONTROL_VISUALISATION},
-    {"karvisualisation",  CGUIControl::GUICONTROL_VISUALISATION},
     {"renderaddon",       CGUIControl::GUICONTROL_RENDERADDON},
     {"multiimage",        CGUIControl::GUICONTROL_MULTI_IMAGE},
     {"grouplist",         CGUIControl::GUICONTROL_GROUPLIST},
     {"scrollbar",         CGUIControl::GUICONTROL_SCROLLBAR},
     {"multiselect",       CGUIControl::GUICONTROL_MULTISELECT},
+    {"gamecontroller",    CGUIControl::GUICONTROL_GAMECONTROLLER},
     {"list",              CGUIControl::GUICONTAINER_LIST},
     {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
     {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
@@ -760,6 +761,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CLabelInfo labelInfo;
   CLabelInfo spinInfo;
 
+  CGUIInfoColor hitColor(0xFFFFFFFF);
   CGUIInfoColor textColor3;
   CGUIInfoColor headlineColor;
 
@@ -822,6 +824,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
 
+  GetInfoColor(pControlNode, "hitrectcolor", hitColor, parentID);
+
   GetActions(pControlNode, "onup",    actions[ACTION_MOVE_UP]);
   GetActions(pControlNode, "ondown",  actions[ACTION_MOVE_DOWN]);
   GetActions(pControlNode, "onleft",  actions[ACTION_MOVE_LEFT]);
@@ -829,6 +833,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetActions(pControlNode, "onnext",  actions[ACTION_NEXT_CONTROL]);
   GetActions(pControlNode, "onprev",  actions[ACTION_PREV_CONTROL]);
   GetActions(pControlNode, "onback",  actions[ACTION_NAV_BACK]);
+  GetActions(pControlNode, "oninfo",  actions[ACTION_SHOW_INFO]);
 
   if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
   {
@@ -1133,6 +1138,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
       control = new CGUIControlGroupList(
         parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align, scroller);
+      ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl, defaultAlways);
       ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
       ((CGUIControlGroupList *)control)->SetMinSize(minWidth, minHeight);
     }
@@ -1318,7 +1324,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     break;
   case CGUIControl::GUICONTROL_SCROLLBAR:
     {
-      control = new CGUIScrollBar(
+      control = new GUIScrollBarControl(
         parentID, id, posX, posY, width, height,
         textureBackground, textureBar, textureBarFocus, textureNib, textureNibFocus, orientation, showOnePage);
     }
@@ -1370,6 +1376,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIListContainer *)control)->SetPageControl(pageControl);
       ((CGUIListContainer *)control)->SetRenderOffset(offset);
       ((CGUIListContainer *)control)->SetAutoScrolling(pControlNode);
+      ((CGUIListContainer *)control)->SetClickActions(clickActions);
+      ((CGUIListContainer *)control)->SetFocusActions(focusActions);
+      ((CGUIListContainer *)control)->SetUnFocusActions(unfocusActions);
     }
     break;
   case CGUIControl::GUICONTAINER_WRAPLIST:
@@ -1384,6 +1393,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
       ((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);
       ((CGUIWrappingListContainer *)control)->SetAutoScrolling(pControlNode);
+      ((CGUIWrappingListContainer *)control)->SetClickActions(clickActions);
+      ((CGUIWrappingListContainer *)control)->SetFocusActions(focusActions);
+      ((CGUIWrappingListContainer *)control)->SetUnFocusActions(unfocusActions);
     }
     break;
   case CGUIControl::GUICONTAINER_EPGGRID:
@@ -1406,6 +1418,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
       ((CGUIFixedListContainer *)control)->SetRenderOffset(offset);
       ((CGUIFixedListContainer *)control)->SetAutoScrolling(pControlNode);
+      ((CGUIFixedListContainer *)control)->SetClickActions(clickActions);
+      ((CGUIFixedListContainer *)control)->SetFocusActions(focusActions);
+      ((CGUIFixedListContainer *)control)->SetUnFocusActions(unfocusActions);
     }
     break;
   case CGUIControl::GUICONTAINER_PANEL:
@@ -1420,6 +1435,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
       ((CGUIPanelContainer *)control)->SetRenderOffset(offset);
       ((CGUIPanelContainer *)control)->SetAutoScrolling(pControlNode);
+      ((CGUIPanelContainer *)control)->SetClickActions(clickActions);
+      ((CGUIPanelContainer *)control)->SetFocusActions(focusActions);
+      ((CGUIPanelContainer *)control)->SetUnFocusActions(unfocusActions);
     }
     break;
   case CGUIControl::GUICONTROL_TEXTBOX:
@@ -1478,6 +1496,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   case CGUIControl::GUICONTROL_RENDERADDON:
     control = new CGUIRenderingControl(parentID, id, posX, posY, width, height);
     break;
+  case CGUIControl::GUICONTROL_GAMECONTROLLER:
+    control = new GAME::CGUIGameController(parentID, id, posX, posY, width, height);
+    break;
   default:
     break;
   }
@@ -1485,12 +1506,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   // things that apply to all controls
   if (control)
   {
-    control->SetHitRect(hitRect);
+    control->SetHitRect(hitRect, hitColor);
     control->SetVisibleCondition(visibleCondition, allowHiddenFocus);
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);
     control->SetColorDiffuse(colorDiffuse);
-    control->SetNavigationActions(actions);
+    control->SetActions(actions);
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);

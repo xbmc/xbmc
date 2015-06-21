@@ -47,6 +47,18 @@ struct SActorInfo
   int        order;
 };
 
+class CRating
+{
+public:
+  CRating()
+    : CRating(0.0f, 0)
+  { }
+  CRating(float r, int v) { rating = r; votes = v; }
+  float rating;
+  int votes;
+};
+typedef std::map<std::string, CRating> RatingMap;
+
 class CVideoInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
@@ -72,6 +84,7 @@ public:
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem& sortable, Field field) const;
+  const CRating GetRating(std::string type = "") const;
   const std::string GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
@@ -106,7 +119,10 @@ public:
   void SetTitle(std::string title);
   void SetSortTitle(std::string sortTitle);
   void SetPictureURL(CScraperUrl &pictureURL);
-  void SetVotes(std::string votes);
+  void AddRating(float rating, int votes, const std::string& type = "");
+  void AddRating(CRating rating, const std::string& type = "");
+  void SetRating(float rating, const std::string& type = "");
+  void SetVotes(int votes, const std::string& type = "");
   void SetArtist(std::vector<std::string> artist);
   void SetSet(std::string set);
   void SetSetOverview(std::string setOverview);
@@ -126,6 +142,7 @@ public:
   void SetShowLink(std::vector<std::string> showLink);
   void SetUniqueId(std::string uniqueId);
   void SetNamedSeasons(std::map<int, std::string> namedSeasons);
+  void SetUserrating(int userrating);
 
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
@@ -176,9 +193,11 @@ public:
   int m_iSpecialSortSeason;
   int m_iSpecialSortEpisode;
   int m_iTrack;
-  float m_fRating;
+  RatingMap m_ratings;
+  int m_iIdRating;
+  std::string m_strDefaultRating;
   int m_iUserRating;
-  float m_fEpBookmark;
+  CBookmark m_EpBookmark;
   int m_iBookmarkId;
   int m_iIdShow;
   int m_iIdSeason;
@@ -188,6 +207,8 @@ public:
   CDateTime m_dateAdded;
   MediaType m_type;
   int m_duration; ///< duration in seconds
+  int m_relevance; // Used for actors' number of appearances
+  int m_parsedDetails;
 
 private:
   /* \brief Parse our native XML format for video info.

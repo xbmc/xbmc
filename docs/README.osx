@@ -32,6 +32,7 @@ codecs that support a multitude of music and video formats.
 
 On Mavericks (OSX 10.9.x) we recommend using Xcode 6.1.
 On Yosemite (OSX 10.10.x) we recommend using Xcode 6.4.
+On El Capitan (OSX 10.11.x) we recommend using Xcode 7.2.
 
 NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
 commands that need to be typed into a Terminal window. Note that the '$'
@@ -67,7 +68,7 @@ constellations of Xcode and osx versions (to be updated once we know more):
 3. XCode 6.2.0 against OSX SDK 10.10 (Y)
 4. XCode 6.3.0 against OSX SDK 10.10 (Y)
 5. Xcode 6.4.0 against OSX SDK 10.10 (Y)
-6. Xcode 7.x against OSX SDK 10.11 (Y)
+6. Xcode 7.x against OSX SDK 10.11 (EC)
 
 -----------------------------------------------------------------------------
 3.2 Install Kodi build depends
@@ -155,7 +156,6 @@ then build.
 
 If you have selected a specific OSX SDK Version in step 3.2 then you might need
 to adapt the active target to use the same OSX SDK version. Else build will fail
-(you will see a lot of errors with at least non-found boost/shared_ptr.hpp).
 
 The build process will take a long time when building the first time.
 You can see the progress in "Build Results". There are a large number of static
@@ -175,7 +175,7 @@ Or the release version:
 
 You can also build via Xcode from the command-line using the following:
 
-    $ xcodebuild -configuration Release ONLY_ACTIVE_ARCH=YES ARCHS=i386 VALID_ARCHS=i386 \
+    $ xcodebuild -configuration Release ONLY_ACTIVE_ARCH=YES ARCHS=x86_64 VALID_ARCHS=x86_64 \
       -target "Kodi.app" -project Kodi.xcodeproj
 
 You can specify "Release" instead of "Debug" as a configuration. Be sure to set *_ARCHS
@@ -214,7 +214,7 @@ distribution.
 
 2.  $ cd tools/darwin/packaging/osx
 
-3.  $ chmod +x ./mkdeb-osx.sh && ./mkdmg-osx.sh release
+3.  $ chmod +x ./mkdmg-osx.sh && ./mkdmg-osx.sh release
 
 4. Use release or debug - you have to be sure that you build the corresponding
    version before.

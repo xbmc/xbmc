@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,14 +27,14 @@
 #include "system.h" // for GetLastError()
 #include "network/WakeOnAccess.h"
 #include "Util.h"
+#include "utils/StringUtils.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
 #include "mysql/errmsg.h"
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
 #pragma comment(lib, "mysqlclient.lib")
 #endif
-
 
 #define MYSQL_OK          0
 #define ER_BAD_DB_ERROR   1049
@@ -97,6 +97,7 @@ int MysqlDatabase::setErr(int err_code, const char * qry) {
       snprintf(err, 256, "Undefined MySQL error: Code (%d)", err_code);
       error = err;
   }
+  error = "[" + db + "] " + error;
   error += "\nQuery: ";
   error += qry;
   error += "\n";
@@ -105,6 +106,47 @@ int MysqlDatabase::setErr(int err_code, const char * qry) {
 
 const char *MysqlDatabase::getErrorMsg() {
    return error.c_str();
+}
+
+void MysqlDatabase::configure_connection() {
+  char sqlcmd[512];
+  int ret;
+
+  // MySQL 5.7.5+: See #8393
+  strcpy(sqlcmd, "SET SESSION sql_mode = (SELECT REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY',''))");
+  if ((ret = mysql_real_query(conn, sqlcmd, strlen(sqlcmd))) != MYSQL_OK)
+    throw DbErrors("Can't disable sql_mode ONLY_FULL_GROUP_BY: '%s' (%d)", db.c_str(), ret);
+
+  // MySQL 5.7.6+: See #8393. Non-fatal if error, as not supported by MySQL 5.0.x
+  strcpy(sqlcmd, "SELECT @@SESSION.optimizer_switch");
+  if ((ret = mysql_real_query(conn, sqlcmd, strlen(sqlcmd))) == MYSQL_OK)
+  {
+    MYSQL_RES* res = mysql_store_result(conn);
+    MYSQL_ROW row;
+
+    if (res)
+    {
+      if ((row = mysql_fetch_row(res)) != NULL)
+      {
+        std::string column = row[0];
+        std::vector<std::string> split = StringUtils::Split(column, ',');
+
+        for (std::vector<std::string>::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
+        {
+          if (StringUtils::Trim(*itIn) == "derived_merge=on")
+          {
+            strcpy(sqlcmd, "SET SESSION optimizer_switch = 'derived_merge=off'");
+            if ((ret = mysql_real_query(conn, sqlcmd, strlen(sqlcmd))) != MYSQL_OK)
+              throw DbErrors("Can't set optimizer_switch = '%s': '%s' (%d)", StringUtils::Trim(*itIn).c_str(), db.c_str(), ret);
+            break;
+          }
+        }
+      }
+      mysql_free_result(res);
+    }
+  }
+  else
+    CLog::Log(LOGWARNING, "Unable to query optimizer_switch: '%s' (%d)", db.c_str(), ret);
 }
 
 int MysqlDatabase::connect(bool create_new) {
@@ -120,11 +162,11 @@ int MysqlDatabase::connect(bool create_new) {
     if (conn == NULL) {
       conn = mysql_init(conn);
       mysql_ssl_set(
-        conn, 
-        key.empty() ? NULL : key.c_str(), 
-        cert.empty() ? NULL : cert.c_str(), 
-        ca.empty() ? NULL : ca.c_str(), 
-        capath.empty() ? NULL : capath.c_str(), 
+        conn,
+        key.empty() ? NULL : key.c_str(),
+        cert.empty() ? NULL : cert.c_str(),
+        ca.empty() ? NULL : ca.c_str(),
+        capath.empty() ? NULL : capath.c_str(),
         ciphers.empty() ? NULL : ciphers.c_str());
     }
 
@@ -150,6 +192,8 @@ int MysqlDatabase::connect(bool create_new) {
         CLog::Log(LOGERROR, "Unable to set utf8 charset: %s [%d](%s)",
                   db.c_str(), mysql_errno(conn), mysql_error(conn));
       }
+
+      configure_connection();
 
       // check existence
       if (exists())
@@ -604,7 +648,6 @@ struct StrAccum {
 #define FLAG_INTERN  2     /* True if for internal use only */
 #define FLAG_STRING  4     /* Allow infinity precision */
 
-
 /*
 ** The following table is searched linearly, so it is good to put the
 ** most frequently used conversion types first.
@@ -677,8 +720,6 @@ void MysqlDatabase::appendSpace(StrAccum *pAccum, int N) {
 #endif
 
 #define etBUFSIZE MYSQL_PRINT_BUF_SIZE  /* Size of the output buffer */
-
-
 
 /*
 ** The maximum length of a TEXT or BLOB in bytes.   This also
@@ -848,7 +889,6 @@ void MysqlDatabase::mysqlVXPrintf(
       }
     }
     zExtra = 0;
-
 
     /* Limit the precision to prevent overflowing buf[] during conversion */
     if( precision>etBUFSIZE-40 && (infop->flags & FLAG_STRING)==0 ){
@@ -1283,7 +1323,6 @@ char *MysqlDatabase::mysql_vmprintf(const char *zFormat, va_list ap) {
   return z;
 }
 
-
 //************* MysqlDataset implementation ***************
 
 MysqlDataset::MysqlDataset():Dataset() {
@@ -1292,7 +1331,6 @@ MysqlDataset::MysqlDataset():Dataset() {
   errmsg = NULL;
   autorefresh = false;
 }
-
 
 MysqlDataset::MysqlDataset(MysqlDatabase *newDb):Dataset(newDb) {
   haveError = false;
@@ -1305,12 +1343,9 @@ MysqlDataset::~MysqlDataset() {
    if (errmsg) free(errmsg);
  }
 
-
 void MysqlDataset::set_autorefresh(bool val) {
     autorefresh = val;
 }
-
-
 
 //--------- protected functions implementation -----------------//
 
@@ -1365,13 +1400,12 @@ void MysqlDataset::make_edit() {
   make_query(update_sql);
 }
 
-
 void MysqlDataset::make_deletion() {
   make_query(delete_sql);
 }
 
 void MysqlDataset::fill_fields() {
-  if ((db == NULL) || (result.record_header.size() == 0) || (result.records.size() < (unsigned int)frecno)) return;
+  if ((db == NULL) || (result.record_header.empty()) || (result.records.size() < (unsigned int)frecno)) return;
 
   if (fields_object->size() == 0) // Filling columns name
   {
@@ -1399,7 +1433,6 @@ void MysqlDataset::fill_fields() {
   for (unsigned int i = 0; i < ncols; i++)
     (*fields_object)[i].val = "";
 }
-
 
 //------------- public functions implementation -----------------//
 bool MysqlDataset::dropIndex(const char *table, const char *index)
@@ -1454,7 +1487,7 @@ int MysqlDataset::exec(const std::string &sql) {
   }
 
   // force the charset and collation to UTF-8
-  if ( ci_find(qry, "CREATE TABLE") != std::string::npos 
+  if ( ci_find(qry, "CREATE TABLE") != std::string::npos
     || ci_find(qry, "CREATE TEMPORARY TABLE") != std::string::npos )
   {
     // If CREATE TABLE ... SELECT Syntax is used we need to add the encoding after the table before the select
@@ -1488,7 +1521,6 @@ int MysqlDataset::exec() {
 const void* MysqlDataset::getExecRes() {
   return &exec_res;
 }
-
 
 bool MysqlDataset::query(const std::string &query) {
   if(!handle()) throw DbErrors("No Database Connection");
@@ -1614,7 +1646,6 @@ void MysqlDataset::close() {
   active = false;
 }
 
-
 void MysqlDataset::cancel() {
   if ((ds_state == dsInsert) || (ds_state==dsEdit))
   {
@@ -1625,21 +1656,17 @@ void MysqlDataset::cancel() {
   }
 }
 
-
 int MysqlDataset::num_rows() {
   return result.records.size();
 }
-
 
 bool MysqlDataset::eof() {
   return feof;
 }
 
-
 bool MysqlDataset::bof() {
   return fbof;
 }
-
 
 void MysqlDataset::first() {
   Dataset::first();

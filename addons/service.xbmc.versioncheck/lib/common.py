@@ -22,12 +22,14 @@ import xbmcaddon
 import xbmcgui
 import xbmcvfs
 
-__addon__        = xbmcaddon.Addon()
-__addonversion__ = __addon__.getAddonInfo('version')
-__addonname__    = __addon__.getAddonInfo('name')
-__addonpath__    = __addon__.getAddonInfo('path').decode('utf-8')
-__addonprofile__ = xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode('utf-8')
-__icon__         = __addon__.getAddonInfo('icon')
+ADDON        = xbmcaddon.Addon()
+ADDONVERSION = ADDON.getAddonInfo('version')
+ADDONNAME    = ADDON.getAddonInfo('name')
+ADDONPATH    = ADDON.getAddonInfo('path').decode('utf-8')
+ADDONPROFILE = xbmc.translatePath( ADDON.getAddonInfo('profile') ).decode('utf-8')
+ICON         = ADDON.getAddonInfo('icon')
+
+monitor = xbmc.Monitor()
 
 # Fixes unicode problems
 def string_unicode(text, encoding='utf-8'):
@@ -45,7 +47,7 @@ def normalize_string(text):
     return text
 
 def localise(id):
-    string = normalize_string(__addon__.getLocalizedString(id))
+    string = normalize_string(ADDON.getLocalizedString(id))
     return string
 
 def log(txt):
@@ -55,41 +57,36 @@ def log(txt):
     xbmc.log(msg=message.encode("utf-8"), level=xbmc.LOGDEBUG)
 
 def get_password_from_user():
-    keyboard = xbmc.Keyboard("", __addonname__ + "," +localise(32022), True)
+    keyboard = xbmc.Keyboard("", ADDONNAME + "," +localise(32022), True)
     keyboard.doModal()
     if (keyboard.isConfirmed()):
         pwd = keyboard.getText()
     return pwd
 
 def message_upgrade_success():
-    xbmc.executebuiltin("XBMC.Notification(%s, %s, %d, %s)" %(__addonname__,
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, %d, %s)" %(ADDONNAME,
                                                               localise(32013),
                                                               15000,
-                                                              __icon__))
+                                                              ICON))
 
 def message_restart():
     if dialog_yesno(32014):
         xbmc.executebuiltin("RestartApp")
 
 def dialog_yesno(line1 = 0, line2 = 0):
-    return xbmcgui.Dialog().yesno(__addonname__,
+    return xbmcgui.Dialog().yesno(ADDONNAME,
                                   localise(line1),
                                   localise(line2))
 
 def upgrade_message(msg, oldversion, upgrade, msg_current, msg_available):
-    # Don't show while watching a video
-    while(xbmc.Player().isPlayingVideo() and not xbmc.abortRequested):
-        xbmc.sleep(1000)
-    i = 0
-    while(i < 5 and not xbmc.abortRequested):
-        xbmc.sleep(1000)
-        i += 1
-    if __addon__.getSetting("lastnotified_version") < __addonversion__:
-        xbmcgui.Dialog().ok(__addonname__,
+    wait_for_end_of_video()
+
+    if ADDON.getSetting("lastnotified_version") < ADDONVERSION:
+        xbmcgui.Dialog().ok(ADDONNAME,
                     localise(msg),
                     localise(32001),
                     localise(32002))
-        #__addon__.setSetting("lastnotified_version", __addonversion__)
+        #ADDON.setSetting("lastnotified_version", ADDONVERSION)
     else:
         log("Already notified one time for upgrading.")
         
@@ -108,47 +105,41 @@ def upgrade_message2( version_installed, version_available, version_stable, oldv
     msg_stable = version_stable['major'] + '.' + version_stable['minor'] + ' ' + version_stable['tag'] + version_stable.get('tagversion','')
     msg = localise(32034) %(msg_current, msg_available)
 
-    # Don't show notify while watching a video
-    while(xbmc.Player().isPlayingVideo() and not xbmc.abortRequested):
-        xbmc.sleep(1000)
-    i = 0
-    while(i < 10 and not xbmc.abortRequested):
-        xbmc.sleep(1000)
-        i += 1
+    wait_for_end_of_video()
 
     # hack: convert current version number to stable string
     # so users don't get notified again. remove in future
-    if __addon__.getSetting("lastnotified_version") == '0.1.24':
-        __addon__.setSetting("lastnotified_stable", msg_stable)
+    if ADDON.getSetting("lastnotified_version") == '0.1.24':
+        ADDON.setSetting("lastnotified_stable", msg_stable)
 
     # Show different dialogs depending if there's a newer stable available.
     # Also split them between xbmc and kodi notifications to reduce possible confusion.
     # People will find out once they visit the website.
     # For stable only notify once and when there's a newer stable available.
     # Ignore any add-on updates as those only count for != stable
-    if oldversion == 'stable' and __addon__.getSetting("lastnotified_stable") != msg_stable: 
+    if oldversion == 'stable' and ADDON.getSetting("lastnotified_stable") != msg_stable: 
         if xbmcaddon.Addon('xbmc.addon').getAddonInfo('version') < "13.9.0":
-            xbmcgui.Dialog().ok(__addonname__,
+            xbmcgui.Dialog().ok(ADDONNAME,
                                 msg,
                                 localise(32030),
                                 localise(32031))
         else:
-            xbmcgui.Dialog().ok(__addonname__,
+            xbmcgui.Dialog().ok(ADDONNAME,
                                 msg,
                                 localise(32032),
                                 localise(32033))
-        __addon__.setSetting("lastnotified_stable", msg_stable)
+        ADDON.setSetting("lastnotified_stable", msg_stable)
     
-    elif oldversion != 'stable' and __addon__.getSetting("lastnotified_version") != msg_available:
+    elif oldversion != 'stable' and ADDON.getSetting("lastnotified_version") != msg_available:
         if xbmcaddon.Addon('xbmc.addon').getAddonInfo('version') < "13.9.0":
             # point them to xbmc.org
-            xbmcgui.Dialog().ok(__addonname__,
+            xbmcgui.Dialog().ok(ADDONNAME,
                                 msg,
                                 localise(32035),
                                 localise(32031))
         else:
             #use kodi.tv
-            xbmcgui.Dialog().ok(__addonname__,
+            xbmcgui.Dialog().ok(ADDONNAME,
                                 msg,
                                 localise(32035),
                                 localise(32033))
@@ -162,10 +153,24 @@ def upgrade_message2( version_installed, version_available, version_stable, oldv
         else:
             msg = msg + ' ' + localise(32035)
         msg = msg + ' ' + localise(32031)
-        xbmcgui.Dialog().ok(__addonname__, msg)
-        #__addon__.setSetting("lastnotified_version", __addonversion__)
+        xbmcgui.Dialog().ok(ADDONNAME, msg)
+        #ADDON.setSetting("lastnotified_version", ADDONVERSION)
         '''
-        __addon__.setSetting("lastnotified_version", msg_available)
+        ADDON.setSetting("lastnotified_version", msg_available)
         
     else:
         log("Already notified one time for upgrading.")
+
+
+def wait_for_end_of_video():
+    # Don't show notify while watching a video
+    while xbmc.Player().isPlayingVideo() and not monitor.abortRequested():
+        if monitor.waitForAbort(1):
+            # Abort was requested while waiting. We should exit
+            break
+    i = 0
+    while i < 10 and not monitor.abortRequested():
+        if monitor.waitForAbort(1):
+            # Abort was requested while waiting. We should exit
+            break
+        i += 1

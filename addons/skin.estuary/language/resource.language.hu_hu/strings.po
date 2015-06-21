@@ -1,0 +1,153 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/kodi-main/language/hu_HU/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu_HU\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Most játszva"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Keresés"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Mód változtatása"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Megnézés 2D-ként"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Előrejelzés"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Műveletek"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Egyéb beállítások"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Utoljára bejelentkezve"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Visszatekerés"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Előretekerés"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Lejátszáslista lehetőségek"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Csoport hozzáadása"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Csoport átnevezése"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Csoport törlése"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial betűkészlet"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Eseménynapló"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Utoljára frissítve"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Kikapcsolási lehetőségek"
+
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Film gyűjtemények"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Albuminfó"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Dalszöveg kiegészítő"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Dalszöveg kiegészítő beállítások"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Csatorna csoportok"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Tartalomkeresési lehetőségek"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Elérhető csoportok"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Felirat letöltése"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Helyi felirat elérhető"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Csatorna opciók"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Válaszd ki a Kodi felhasználói profilod[CR]a belépéshez"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletext"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "YouTube keresés"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr " TheMovieDB keresés"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Szerzők"

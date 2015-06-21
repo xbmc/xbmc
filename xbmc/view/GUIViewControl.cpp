@@ -271,6 +271,12 @@ int CGUIViewControl::GetViewModeNumber(int number) const
   return 0;  // no view modes :(
 }
 
+// returns the amount of visible views
+int CGUIViewControl::GetViewModeCount() const
+{
+  return static_cast<int>(m_visibleViews.size());
+}
+
 int CGUIViewControl::GetViewModeByID(int id) const
 {
   for (unsigned int i = 0; i < m_visibleViews.size(); ++i)

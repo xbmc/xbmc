@@ -46,12 +46,18 @@
 # include <unistd.h>
 #endif  // GTEST_OS_LINUX
 
+#if GTEST_HAS_EXCEPTIONS
+# include <stdexcept>
+#endif
+
 #include <ctype.h>
+#include <float.h>
 #include <string.h>
 #include <iomanip>
 #include <limits>
 #include <set>
 
+#include "gtest/gtest-message.h"
 #include "gtest/internal/gtest-string.h"
 #include "gtest/internal/gtest-filepath.h"
 #include "gtest/internal/gtest-type-util.h"
@@ -66,36 +72,6 @@
 // http://www.parashift.com/c++-faq-lite/misc-technical-issues.html#faq-39.6
 #define GTEST_CONCAT_TOKEN_(foo, bar) GTEST_CONCAT_TOKEN_IMPL_(foo, bar)
 #define GTEST_CONCAT_TOKEN_IMPL_(foo, bar) foo ## bar
-
-// Google Test defines the testing::Message class to allow construction of
-// test messages via the << operator.  The idea is that anything
-// streamable to std::ostream can be streamed to a testing::Message.
-// This allows a user to use his own types in Google Test assertions by
-// overloading the << operator.
-//
-// util/gtl/stl_logging-inl.h overloads << for STL containers.  These
-// overloads cannot be defined in the std namespace, as that will be
-// undefined behavior.  Therefore, they are defined in the global
-// namespace instead.
-//
-// C++'s symbol lookup rule (i.e. Koenig lookup) says that these
-// overloads are visible in either the std namespace or the global
-// namespace, but not other namespaces, including the testing
-// namespace which Google Test's Message class is in.
-//
-// To allow STL containers (and other types that has a << operator
-// defined in the global namespace) to be used in Google Test assertions,
-// testing::Message must access the custom << operator from the global
-// namespace.  Hence this helper function.
-//
-// Note: Jeffrey Yasskin suggested an alternative fix by "using
-// ::operator<<;" in the definition of Message's operator<<.  That fix
-// doesn't require a helper function, but unfortunately doesn't
-// compile with MSVC.
-template <typename T>
-inline void GTestStreamToHelper(std::ostream* os, const T& val) {
-  *os << val;
-}
 
 class ProtocolMessage;
 namespace proto2 { class Message; }
@@ -128,11 +104,6 @@ GTEST_API_ extern int g_init_gtest_count;
 // stack trace.
 GTEST_API_ extern const char kStackTraceMarker[];
 
-// A secret type that Google Test users don't know about.  It has no
-// definition on purpose.  Therefore it's impossible to create a
-// Secret object, which is what we want.
-class Secret;
-
 // Two overloaded helpers for checking at compile time whether an
 // expression is a null pointer literal (i.e. NULL or any 0-valued
 // compile-time integral constant).  Their return values have
@@ -163,8 +134,23 @@ char (&IsNullLiteralHelper(...))[2];  // NOLINT
 #endif  // GTEST_ELLIPSIS_NEEDS_POD_
 
 // Appends the user-supplied message to the Google-Test-generated message.
-GTEST_API_ String AppendUserMessage(const String& gtest_msg,
-                                    const Message& user_msg);
+GTEST_API_ std::string AppendUserMessage(
+    const std::string& gtest_msg, const Message& user_msg);
+
+#if GTEST_HAS_EXCEPTIONS
+
+// This exception is thrown by (and only by) a failed Google Test
+// assertion when GTEST_FLAG(throw_on_failure) is true (if exceptions
+// are enabled).  We derive it from std::runtime_error, which is for
+// errors presumably detectable only at run time.  Since
+// std::runtime_error inherits from std::exception, many testing
+// frameworks know how to extract and print the message inside it.
+class GTEST_API_ GoogleTestFailureException : public ::std::runtime_error {
+ public:
+  explicit GoogleTestFailureException(const TestPartResult& failure);
+};
+
+#endif  // GTEST_HAS_EXCEPTIONS
 
 // A helper class for creating scoped traces in user programs.
 class GTEST_API_ ScopedTrace {
@@ -185,16 +171,6 @@ class GTEST_API_ ScopedTrace {
                             // c'tor and d'tor.  Therefore it doesn't
                             // need to be used otherwise.
 
-// Converts a streamable value to a String.  A NULL pointer is
-// converted to "(null)".  When the input value is a ::string,
-// ::std::string, ::wstring, or ::std::wstring object, each NUL
-// character in it is replaced with "\\0".
-// Declared here but defined in gtest.h, so that it has access
-// to the definition of the Message class, required by the ARM
-// compiler.
-template <typename T>
-String StreamableToString(const T& streamable);
-
 // Constructs and returns the message for an equality assertion
 // (e.g. ASSERT_EQ, EXPECT_STREQ, etc) failure.
 //
@@ -212,12 +188,12 @@ String StreamableToString(const T& streamable);
 // be inserted into the message.
 GTEST_API_ AssertionResult EqFailure(const char* expected_expression,
                                      const char* actual_expression,
-                                     const String& expected_value,
-                                     const String& actual_value,
+                                     const std::string& expected_value,
+                                     const std::string& actual_value,
                                      bool ignoring_case);
 
 // Constructs a failure message for Boolean assertions such as EXPECT_TRUE.
-GTEST_API_ String GetBoolAssertionFailureMessage(
+GTEST_API_ std::string GetBoolAssertionFailureMessage(
     const AssertionResult& assertion_result,
     const char* expression_text,
     const char* actual_predicate_value,
@@ -292,7 +268,7 @@ class FloatingPoint {
   // bits.  Therefore, 4 should be enough for ordinary use.
   //
   // See the following article for more details on ULP:
-  // http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm.
+  // http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
   static const size_t kMaxUlps = 4;
 
   // Constructs a FloatingPoint from a raw floating-point number.
@@ -318,6 +294,9 @@ class FloatingPoint {
   static RawType Infinity() {
     return ReinterpretBits(kExponentBitMask);
   }
+
+  // Returns the maximum representable finite floating-point number.
+  static RawType Max();
 
   // Non-static methods
 
@@ -398,6 +377,13 @@ class FloatingPoint {
 
   FloatingPointUnion u_;
 };
+
+// We cannot use std::numeric_limits<T>::max() as it clashes with the max()
+// macro defined by <windows.h>.
+template <>
+inline float FloatingPoint<float>::Max() { return FLT_MAX; }
+template <>
+inline double FloatingPoint<double>::Max() { return DBL_MAX; }
 
 // Typedefs the instances of the FloatingPoint template class that we
 // care to use.
@@ -493,7 +479,7 @@ typedef void (*TearDownTestCaseFunc)();
 //   test_case_name:   name of the test case
 //   name:             name of the test
 //   type_param        the name of the test's type parameter, or NULL if
-//                     this is not  a typed or a type-parameterized test.
+//                     this is not a typed or a type-parameterized test.
 //   value_param       text representation of the test's value parameter,
 //                     or NULL if this is not a type-parameterized test.
 //   fixture_class_id: ID of the test fixture class
@@ -503,7 +489,8 @@ typedef void (*TearDownTestCaseFunc)();
 //                     The newly created TestInfo instance will assume
 //                     ownership of the factory object.
 GTEST_API_ TestInfo* MakeAndRegisterTestInfo(
-    const char* test_case_name, const char* name,
+    const char* test_case_name,
+    const char* name,
     const char* type_param,
     const char* value_param,
     TypeId fixture_class_id,
@@ -563,9 +550,9 @@ inline const char* SkipComma(const char* str) {
 
 // Returns the prefix of 'str' before the first comma in it; returns
 // the entire string if it contains no comma.
-inline String GetPrefixUntilComma(const char* str) {
+inline std::string GetPrefixUntilComma(const char* str) {
   const char* comma = strchr(str, ',');
-  return comma == NULL ? String(str) : String(str, comma - str);
+  return comma == NULL ? str : std::string(str, comma);
 }
 
 // TypeParameterizedTest<Fixture, TestSel, Types>::Register()
@@ -591,8 +578,8 @@ class TypeParameterizedTest {
     // First, registers the first type-parameterized test in the type
     // list.
     MakeAndRegisterTestInfo(
-        String::Format("%s%s%s/%d", prefix, prefix[0] == '\0' ? "" : "/",
-                       case_name, index).c_str(),
+        (std::string(prefix) + (prefix[0] == '\0' ? "" : "/") + case_name + "/"
+         + StreamableToString(index)).c_str(),
         GetPrefixUntilComma(test_names).c_str(),
         GetTypeName<Type>().c_str(),
         NULL,  // No value parameter.
@@ -650,7 +637,7 @@ class TypeParameterizedTestCase<Fixture, Templates0, Types> {
 
 #endif  // GTEST_HAS_TYPED_TEST || GTEST_HAS_TYPED_TEST_P
 
-// Returns the current OS stack trace as a String.
+// Returns the current OS stack trace as an std::string.
 //
 // The maximum number of stack frames to be included is specified by
 // the gtest_stack_trace_depth flag.  The skip_count parameter
@@ -660,8 +647,8 @@ class TypeParameterizedTestCase<Fixture, Templates0, Types> {
 // For example, if Foo() calls Bar(), which in turn calls
 // GetCurrentOsStackTraceExceptTop(..., 1), Foo() will be included in
 // the trace but Bar() and GetCurrentOsStackTraceExceptTop() won't.
-GTEST_API_ String GetCurrentOsStackTraceExceptTop(UnitTest* unit_test,
-                                                  int skip_count);
+GTEST_API_ std::string GetCurrentOsStackTraceExceptTop(
+    UnitTest* unit_test, int skip_count);
 
 // Helpers for suppressing warnings on unreachable code or constant
 // condition.

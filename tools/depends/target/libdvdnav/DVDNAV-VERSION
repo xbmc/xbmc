@@ -1,0 +1,4 @@
+LIBNAME=libdvdnav
+BASE_URL=https://github.com/xbmc/libdvdnav
+VERSION=master
+

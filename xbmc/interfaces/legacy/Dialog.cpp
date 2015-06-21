@@ -103,7 +103,7 @@ namespace XBMCAddon
 
       pDialog->Open();
 
-      return pDialog->GetSelectedLabel();
+      return pDialog->GetSelectedItem();
     }
 
 

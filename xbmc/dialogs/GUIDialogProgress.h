@@ -30,7 +30,7 @@ public:
   CGUIDialogProgress(void);
   virtual ~CGUIDialogProgress(void);
 
-  void Open();
+  void Open(const std::string &param = "");
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
@@ -49,6 +49,7 @@ public:
   void SetCanCancel(bool bCanCancel);
 
 protected:
+  virtual void OnInitWindow();
   virtual int GetDefaultLabelID(int controlId) const;
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 

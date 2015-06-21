@@ -117,7 +117,7 @@ public:
    \return true if the paths are equal, false otherwise.
    \sa IsProtocol, PathStarts
    */
-  static bool PathEquals(const std::string& path1, const std::string &path2, bool ignoreTrailingSlash = false);
+  static bool PathEquals(const std::string& path1, const std::string &path2, bool ignoreTrailingSlash = false, bool ignoreURLOptions = false);
 
   static bool IsAddonsPath(const std::string& strFile);
   static bool IsSourcesPath(const std::string& strFile);
@@ -163,6 +163,7 @@ public:
   static bool IsLibraryFolder(const std::string& strFile);
   static bool IsLibraryContent(const std::string& strFile);
   static bool IsPVRChannel(const std::string& strFile);
+  static bool IsPVRGuideItem(const std::string& strFile);
   static bool IsUsingFastSwitch(const std::string& strFile);
 
   static void AddSlashAtEnd(std::string& strFolder);

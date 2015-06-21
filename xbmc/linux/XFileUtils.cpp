@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -29,6 +29,7 @@
 #include "XHandle.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 #if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID)
 #include <sys/vfs.h>
 #else
@@ -59,7 +60,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 
   std::string strPath(szPath);
 
-  if (IsAliasShortcut(strPath))
+  if (IsAliasShortcut(strPath, false))
     TranslateAliasShortcut(strPath);
 
   if (strPath.empty())
@@ -127,7 +128,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   }
   free(namelist);
 
-  if (pHandle->m_FindFileResults.size() == 0)
+  if (pHandle->m_FindFileResults.empty())
   {
     delete pHandle;
     return INVALID_HANDLE_VALUE;
@@ -149,7 +150,7 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   std::string strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
   std::string strFileNameTest = hHandle->m_FindFileDir + strFileName;
 
-  if (IsAliasShortcut(strFileNameTest))
+  if (IsAliasShortcut(strFileNameTest, false))
     TranslateAliasShortcut(strFileNameTest);
 
   struct stat64 fileStat;

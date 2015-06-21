@@ -1,0 +1,125 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/kodi-main/language/tr_TR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr_TR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Şimdi oynatılıyor"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Ara"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Modu değiştir"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "2 boyutlu olarak izle"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Hava Tahmini"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Eylemler"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Çeşitli seçenekler"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Son giriş yapan"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Geri sar"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "İleri sar"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Çalma listesi seçenekleri"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Grup ekle"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Grubu yeniden adlandır"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Grubu sil"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arial tabanlı"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Son Güncelleme"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Güç Seçenekleri"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Albüm bilgisi"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Şarkı sözleri eklentisi"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Kanal Grubu"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "İçerik tarama seçenekleri"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Kullanılabilir gruplar"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Altyazıları indir"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Yerel altyazı mevcut"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Kanal seçenekleri"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Oturum açıp devam etmek için[CR]Kodi kullanıcı profilinizi seçin"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Üst Karakter"

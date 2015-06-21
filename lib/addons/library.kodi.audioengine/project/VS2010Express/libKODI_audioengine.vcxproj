@@ -56,7 +56,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\..\..\xbmc\;..\..\..\..\..\xbmc\addons\include\;..\..\..\..\..\addons\library.xbmc.addon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\xbmc\;..\..\..\..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\;..\..\..\..\..\addons\library.xbmc.addon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;VDR_EXPORTS;_WIN32PC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <PrecompiledHeader>
@@ -68,7 +68,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\..\..\xbmc\;..\..\..\..\..\xbmc\addons\include\;..\..\..\..\..\addons\library.xbmc.addon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\xbmc\;..\..\..\..\..\xbmc\addons\kodi-addon-dev-kit\include\kodi\;..\..\..\..\..\addons\library.xbmc.addon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;HAS_SDL_OPENGL;HAS_SDL;_USRDLL;XBMC_VDR_EXPORTS;_WIN32PC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <PrecompiledHeader>

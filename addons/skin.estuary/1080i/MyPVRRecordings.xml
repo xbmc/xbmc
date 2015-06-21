@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<views>50</views>
+	<menucontrol>9000</menucontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<left>110</left>
+			<top>180</top>
+			<include>OpenClose_Left</include>
+			<control type="image">
+				<description>background image</description>
+				<left>-20</left>
+				<top>-20</top>
+				<width>1090</width>
+				<height>746</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo)">Conditional</animation>
+			<control type="list" id="50">
+				<left>2</left>
+				<top>3</top>
+				<width>1046</width>
+				<height>700</height>
+				<onleft>9000</onleft>
+				<onright>73</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<pagecontrol>73</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<focusedlayout height="70">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>1050</width>
+						<height>70</height>
+						<texture border="90,3,90,3">lists/separator.png</texture>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>1050</width>
+						<height>70</height>
+						<texture>lists/focus.png</texture>
+						<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(50)">Conditional</animation>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>10</top>
+						<width>50</width>
+						<height>50</height>
+						<texture background="true">icons/defaulticons/$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="label">
+						<left>60</left>
+						<textoffsetx>15</textoffsetx>
+						<top>0</top>
+						<height>70</height>
+						<width>1050</width>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+					</control>
+					<control type="label">
+						<left>0</left>
+						<textoffsetx>15</textoffsetx>
+						<top>0</top>
+						<height>70</height>
+						<width>1050</width>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$INFO[ListItem.Date]</label>
+						<textcolor>white</textcolor>
+					</control>
+				</focusedlayout>
+				<itemlayout height="70">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>1050</width>
+						<height>70</height>
+						<texture border="90,3,90,3">lists/separator.png</texture>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>10</top>
+						<width>50</width>
+						<height>50</height>
+						<texture background="true">icons/defaulticons/$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="label">
+						<left>60</left>
+						<textoffsetx>15</textoffsetx>
+						<top>0</top>
+						<height>70</height>
+						<width>1050</width>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+					</control>
+					<control type="label">
+						<left>0</left>
+						<textoffsetx>15</textoffsetx>
+						<top>0</top>
+						<height>70</height>
+						<width>1050</width>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<label>$INFO[ListItem.Date]</label>
+						<textcolor>grey</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+				</itemlayout>
+			</control>
+			<control type="scrollbar" id="73">
+				<left>1055</left>
+				<top>1</top>
+				<width>12</width>
+				<height>704</height>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+		<control type="group">
+			<left>1220</left>
+			<top>180</top>
+			<include>Visible_Right</include>
+			<include>OpenClose_Right</include>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo)">Conditional</animation>
+			<control type="group">
+				<visible>!ListItem.IsFolder</visible>
+				<control type="image">
+					<left>-40</left>
+					<top>-20</top>
+					<width>644</width>
+					<height>170</height>
+					<texture border="22">dialogs/dialog-bg.png</texture>
+				</control>
+				<control type="image">
+					<left>-40</left>
+					<top>130</top>
+					<width>644</width>
+					<height>520</height>
+					<texture border="22">dialogs/dialog-bg.png</texture>
+				</control>
+				<control type="group">
+					<left>150</left>
+					<top>40</top>
+					<control type="label">
+						<top>20</top>
+						<width>560</width>
+						<height>262</height>
+						<align>left</align>
+						<font>font12</font>
+						<wrapmultiline>true</wrapmultiline>
+						<label>$INFO[ListItem.Date][CR]$INFO[ListItem.Duration]</label>
+					</control>
+					<control type="label">
+						<top>-30</top>
+						<width>560</width>
+						<height>262</height>
+						<textcolor>button_focus</textcolor>
+						<font>font24_title</font>
+						<label>$INFO[ListItem.ChannelName]</label>
+					</control>
+				</control>
+				<control type="image">
+					<left>-20</left>
+					<top>15</top>
+					<width>150</width>
+					<height>100</height>
+					<fadetime>200</fadetime>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="label">
+					<top>154</top>
+					<width>560</width>
+					<height>262</height>
+					<textcolor>button_focus</textcolor>
+					<font>font24_title</font>
+					<label>$INFO[ListItem.Title]</label>
+				</control>
+				<control type="label">
+					<top>210</top>
+					<width>560</width>
+					<height>262</height>
+					<label>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:[/COLOR] ]</label>
+					<font>font12</font>
+				</control>
+				<control type="textbox">
+					<top>254</top>
+					<width>560</width>
+					<height>362</height>
+					<align>justify</align>
+					<label>$INFO[ListItem.Plot]</label>
+					<font>font12</font>
+				</control>
+			</control>
+			<control type="image">
+				<left>-40</left>
+				<top>632</top>
+				<width>644</width>
+				<height>94</height>
+				<texture border="22">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="label">
+				<description>Disk usage text</description>
+				<top>660</top>
+				<width>600</width>
+				<height>20</height>
+				<label>$INFO[PVR.backenddiskspace]</label>
+				<shadowcolor>black</shadowcolor>
+				<font>font12</font>
+				<visible>!IntegerGreaterThan(PVR.backenddiskspaceprogr,100)</visible>
+			</control>
+			<control type="progress">
+				<description>Disk usage bar</description>
+				<left>460</left>
+				<top>673</top>
+				<width>100</width>
+				<height>12</height>
+				<info>PVR.backenddiskspaceprogr</info>
+				<visible>!IntegerGreaterThan(PVR.backenddiskspaceprogr,100)</visible>
+			</control>
+			<control type="group">
+				<visible>ListItem.IsFolder</visible>
+				<control type="image">
+					<left>-40</left>
+					<top>-20</top>
+					<width>644</width>
+					<height>670</height>
+					<texture border="22">dialogs/dialog-bg.png</texture>
+				</control>
+				<control type="label">
+					<top>10</top>
+					<width>560</width>
+					<height>262</height>
+					<label>Folder ($INFO[Container(5000).NumItems,[B],[/B] items])</label>
+					<font>font16</font>
+					<visible>ListItem.IsFolder</visible>
+				</control>
+				<control type="group">
+					<left>-10</left>
+					<top>60</top>
+					<visible>ListItem.IsFolder</visible>
+					<include name="InfoList">
+						<param name="path" value="$INFO[ListItem.Path]/$INFO[ListItem.Label]" />
+						<param name="height" value="362" />
+						<param name="width" value="560" />
+						<param name="font" value="font12" />
+						<param name="item_label" value="$INFO[ListItem.Duration,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
+					</include>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>MediaMenuCommon</include>
+			<include>PVRSideBar</include>
+		</control>
+		<include name="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[19017]" />
+			<param name="breadcrumbs_icon" value="icons/settings/tvguide.png" />
+		</include>
+		<control type="label" id="29">
+			<font>-</font>
+			<include>HiddenObject</include>
+		</control>
+		<control type="label" id="30">
+			<font>-</font>
+			<include>HiddenObject</include>
+		</control>
+		<include>BottomBar</include>
+	</controls>
+</window>

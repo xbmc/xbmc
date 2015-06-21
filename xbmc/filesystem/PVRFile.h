@@ -53,7 +53,7 @@ public:
 
   virtual bool           NextChannel(bool preview = false);
   virtual bool           PrevChannel(bool preview = false);
-  virtual bool           SelectChannel(unsigned int channel);
+  virtual bool           SelectChannelById(unsigned int channelid);
 
   virtual int            GetTotalTime();
   virtual int            GetStartTime();
@@ -71,7 +71,6 @@ public:
 
 protected:
   bool            m_isPlayRecording;
-  int             m_playingItem;
 };
 
 }

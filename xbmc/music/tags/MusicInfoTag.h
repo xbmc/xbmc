@@ -30,6 +30,7 @@ class CVariant;
 #include "ReplayGain.h"
 #include "XBDateTime.h"
 #include "music/Album.h"
+#include "music/Artist.h"
 #include "music/EmbeddedArt.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
@@ -72,7 +73,6 @@ public:
   const std::string& GetMusicBrainzAlbumID() const;
   const std::vector<std::string>& GetMusicBrainzAlbumArtistID() const;
   const std::vector<std::string>& GetMusicBrainzAlbumArtistHints() const;
-  const std::string& GetMusicBrainzTRMID() const;
   const std::string& GetComment() const;
   const std::string& GetMood() const;
   const std::string& GetLyrics() const;
@@ -80,9 +80,11 @@ public:
   const CDateTime& GetLastPlayed() const;
   const CDateTime& GetDateAdded() const;
   bool  GetCompilation() const;
-  char  GetRating() const;
-  int  GetListeners() const;
-  int  GetPlayCount() const;
+  float GetRating() const;
+  int GetUserrating() const;
+  int GetVotes() const;
+  int GetListeners() const;
+  int GetPlayCount() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;
@@ -90,12 +92,12 @@ public:
   void SetURL(const std::string& strURL);
   void SetTitle(const std::string& strTitle);
   void SetArtist(const std::string& strArtist);
-  void SetArtist(const std::vector<std::string>& artists);
+  void SetArtist(const std::vector<std::string>& artists, bool FillDesc = false);
   void SetArtistDesc(const std::string& strArtistDesc);
   void SetAlbum(const std::string& strAlbum);
   void SetAlbumId(const int iAlbumId);
   void SetAlbumArtist(const std::string& strAlbumArtist);
-  void SetAlbumArtist(const std::vector<std::string>& albumArtists);
+  void SetAlbumArtist(const std::vector<std::string>& albumArtists, bool FillDesc = false);
   void SetAlbumArtistDesc(const std::string& strAlbumArtistDesc);
   void SetGenre(const std::string& strGenre);
   void SetGenre(const std::vector<std::string>& genres);
@@ -109,19 +111,20 @@ public:
   void SetLoaded(bool bOnOff = true);
   void SetArtist(const CArtist& artist);
   void SetAlbum(const CAlbum& album);
-  void SetSong(const CSong& song);
+  void SetSong(const CSong& song);  
   void SetMusicBrainzTrackID(const std::string& strTrackID);
   void SetMusicBrainzArtistID(const std::vector<std::string>& musicBrainzArtistId);
   void SetMusicBrainzArtistHints(const std::vector<std::string>& musicBrainzArtistHints);
   void SetMusicBrainzAlbumID(const std::string& strAlbumID);
   void SetMusicBrainzAlbumArtistID(const std::vector<std::string>& musicBrainzAlbumArtistId);
   void SetMusicBrainzAlbumArtistHints(const std::vector<std::string>& musicBrainzAlbumArtistHints);
-  void SetMusicBrainzTRMID(const std::string& strTRMID);
   void SetComment(const std::string& comment);
   void SetMood(const std::string& mood);
   void SetLyrics(const std::string& lyrics);
   void SetCueSheet(const std::string& cueSheet);
-  void SetRating(char rating);
+  void SetRating(float rating);
+  void SetUserrating(int rating);
+  void SetVotes(int votes);
   void SetListeners(int listeners);
   void SetPlayCount(int playcount);
   void SetLastPlayed(const std::string& strLastPlayed);
@@ -150,12 +153,23 @@ public:
    \param genre genre to add.
    */
   void AppendGenre(const std::string &genre);
+  
+  void AddArtistRole(const std::string& Role, const std::string& strArtist);
+  void AddArtistRole(const std::string& Role, const std::vector<std::string>& artists);
+  void AppendArtistRole(const CMusicRole& ArtistRole);
+  const std::string GetArtistStringForRole(const std::string& strRole) const;
+  const std::string GetContributorsText() const;
+  const std::string GetContributorsAndRolesText() const;
+  const VECMUSICROLES &GetContributors() const;
+  void SetContributors(const VECMUSICROLES& contributors);
+  bool HasContributors() const { return !m_musicRoles.empty(); }
 
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& ar) const;
   virtual void ToSortable(SortItem& sortable, Field field) const;
 
   void Clear();
+
 protected:
   /*! \brief Trim whitespace off the given string
    \param value string to trim
@@ -177,7 +191,7 @@ protected:
   std::string m_strMusicBrainzAlbumID;
   std::vector<std::string> m_musicBrainzAlbumArtistID;
   std::vector<std::string> m_musicBrainzAlbumArtistHints;
-  std::string m_strMusicBrainzTRMID;
+  VECMUSICROLES m_musicRoles; //Artists contributing to the recording and role (from tags other than ARTIST or ALBUMARTIST)
   std::string m_strComment;
   std::string m_strMood;
   std::string m_strLyrics;
@@ -190,7 +204,9 @@ protected:
   int m_iDbId;
   MediaType m_type; ///< item type "song", "album", "artist"
   bool m_bLoaded;
-  char m_rating;
+  float m_Rating;
+  int m_Userrating;
+  int m_Votes;
   int m_listeners;
   int m_iTimesPlayed;
   int m_iAlbumId;

@@ -1,0 +1,14 @@
+TARGET=Textures.xbt
+
+all: $(TARGET)
+
+.PHONY: force
+
+$(TARGET):
+	@TEXTUREPACKER@ -dupecheck -input . -output $(TARGET)
+
+clean:
+	rm -f $(TARGET)
+
+distclean: clean
+

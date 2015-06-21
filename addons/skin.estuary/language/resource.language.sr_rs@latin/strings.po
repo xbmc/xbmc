@@ -1,0 +1,185 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Serbian (Latin) (Serbia) (http://www.transifex.com/projects/p/kodi-main/language/sr_RS@latin/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sr_RS@latin\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Sada pušteno"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Pretraga"
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Prikaži slike ljubitelja kao pozadinu"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Bioskopski režim"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Promeni režim"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Gledaj kao 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Nasumični filmovi"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Neodgledani filmovi"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "TV Serije u toku"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Preuzmi ikonice"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Filmovi u toku"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Najslušaniji albumi"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Nasumični albumi"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Nasumični izvođači"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Nepreslušani albumi"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Skorašnji snimci"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Najslušaniji kanali"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Prognoza"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Akcije"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Ostale opcije"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Poređaj po"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Prikaz"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Sledeće pesme"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Poslednja prijava"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Premotaj unazad"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Premotaj unapred"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Opcije liste za reprodukciju"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Dodaj grupu"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Preimenuj grupu"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Izbriši grupu"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Zasnovano na Arial-u"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Poslednje ažuriranje"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Opcije napajanja"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Podaci o albumu"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Dodatni program za tekstove pesama"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Grupa programa"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Opcije analiziranja sadržaja"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Preuzmi titlove"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Lokalni prevod dostupan"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Opcije kanala"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Izaberite vaš Kodi korisnički profil[CR]za prijavu, a potom nastavite dalje"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"

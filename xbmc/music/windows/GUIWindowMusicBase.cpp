@@ -238,7 +238,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
-          OnInfo(iItem);
+          OnItemInfo(iItem);
         }
         else if (iAction == ACTION_DELETE_ITEM)
         {
@@ -311,7 +311,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent /* = false */, bool refresh /* = false */)
+void CGUIWindowMusicBase::OnItemInfoAll(int iItem, bool bCurrent /* = false */, bool refresh /* = false */)
 {
   CMusicDatabaseDirectory dir;
   std::string strPath = m_vecItems->GetPath();
@@ -328,7 +328,7 @@ void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent /* = false */, bool
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIDialogMusicInfo
 /// \param iItem Item in list/thumb control
-void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
+void CGUIWindowMusicBase::OnItemInfo(int iItem, bool bShowInfo)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size() )
     return;
@@ -347,10 +347,10 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
     return;
   }
 
-  OnInfo(item.get(), bShowInfo);
+  OnItemInfo(item.get(), bShowInfo);
 }
 
-void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
+void CGUIWindowMusicBase::OnItemInfo(CFileItem *pItem, bool bShowInfo)
 {
   if ((pItem->IsMusicDb() && !pItem->HasMusicInfoTag()) || pItem->IsParentFolder() ||
        URIUtils::IsSpecial(pItem->GetPath()) || StringUtils::StartsWithNoCase(pItem->GetPath(), "musicsearch://"))
@@ -539,9 +539,10 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
         continue;
       }
       else if (pDlgAlbumInfo->HasUpdatedThumb())
-      {
         UpdateThumb(album, album.strPath);
-      }
+      else if (pDlgAlbumInfo->NeedsUpdate())
+        Refresh(true); // update our file list
+
     }
     break;
   }
@@ -667,7 +668,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(playlist);
-    g_playlistPlayer.Play(iOldSize); // start playing at the first new item
+    g_playlistPlayer.Play(iOldSize, ""); // start playing at the first new item
   }
 }
 
@@ -836,8 +837,6 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   {
     if (item && !item->IsParentFolder())
     {
-      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-        buttons.Add(CONTEXT_BUTTON_INFO,24003); // Add-on info
       if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
       {
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
@@ -850,9 +849,9 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         }
         else
         { // check what players we have, if we have multiple display play with option
-          VECPLAYERCORES vecCores;
-          CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
-          if (vecCores.size() >= 1)
+          std::vector<std::string> players;
+          CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
+          if (players.size() >= 1)
             buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
         }
         if (item->IsSmartPlayList())
@@ -929,14 +928,8 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_INFO:
-    OnInfo(itemNumber);
+    OnItemInfo(itemNumber);
     return true;
-
-  case CONTEXT_BUTTON_SONG_INFO:
-    {
-      ShowSongInfo(item.get());
-      return true;
-    }
 
   case CONTEXT_BUTTON_EDIT:
     {
@@ -961,11 +954,11 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_PLAY_WITH:
     {
-      VECPLAYERCORES vecCores;  // base class?
-      CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
-      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(vecCores);
-      if( g_application.m_eForcedNextPlayer != EPC_NONE )
-        OnClick(itemNumber);
+      std::vector<std::string> players;
+      CPlayerCoreFactory::GetInstance().GetPlayers(*item, players);
+      std::string player = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(players);
+      if (!player.empty())
+        OnClick(itemNumber, player);
       return true;
     }
 
@@ -1144,7 +1137,7 @@ void CGUIWindowMusicBase::LoadPlayList(const std::string& strPlayList)
   }
 }
 
-bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
+bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
 {
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
@@ -1160,9 +1153,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
   { // single music file - if we get here then we have autoplaynextitem turned off or queuebydefault
     // turned on, but we still want to use the playlist player in order to handle more queued items
     // following etc.
-    // Karaoke items also can be added in runtime (while the song is played), so it should be queued too.
-    if ( (CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICPLAYER_QUEUEBYDEFAULT) && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST_EDITOR)
-       || pItem->IsKaraoke() )
+    if ( (CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICPLAYER_QUEUEBYDEFAULT) && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST_EDITOR) )
     {
       // TODO: Should the playlist be cleared if nothing is already playing?
       OnQueueItem(iItem);
@@ -1175,7 +1166,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
     g_playlistPlayer.Play();
     return true;
   }
-  return CGUIMediaWindow::OnPlayMedia(iItem);
+  return CGUIMediaWindow::OnPlayMedia(iItem, player);
 }
 
 void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const std::string &path)
@@ -1461,3 +1452,13 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
   if (!items.IsMusicDb())
     RetrieveMusicInfo();
 }
+
+void CGUIWindowMusicBase::OnAssignContent(const std::string &path)
+{
+  // Add content selection logic here, if music is ready for that some day
+
+  // This won't ask you to clean/delete your content, when you change the scraper to none (if music gets this), might ne nice in the future
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 20444 }, CVariant{ 20447 }))
+    g_application.StartMusicScan(path, true);
+}
+

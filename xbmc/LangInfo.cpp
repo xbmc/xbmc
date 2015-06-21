@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -43,7 +43,6 @@
 #include "utils/Weather.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -407,7 +406,6 @@ bool CLangInfo::Load(const std::string& strLanguage)
   m_strDVDSubtitleLanguage = m_languageAddon->GetDvdSubtitleLanguage();
   m_sortTokens = m_languageAddon->GetSortTokens();
 
-
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (pRootElement->ValueStr() != "language")
   {
@@ -569,7 +567,7 @@ void CLangInfo::SetDefaults()
   m_strDVDAudioLanguage = "en";
   m_strDVDSubtitleLanguage = "en";
   m_sortTokens.clear();
-  
+
   m_languageCodeGeneral = "eng";
 }
 
@@ -658,12 +656,14 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
       if (addondb.Open())
       {
         // update the addon repositories to check if there's a matching language addon available for download
-        ADDON::CRepositoryUpdater::GetInstance().CheckForUpdates();
-        ADDON::CRepositoryUpdater::GetInstance().Await();
+        if (ADDON::CRepositoryUpdater::GetInstance().CheckForUpdates())
+          ADDON::CRepositoryUpdater::GetInstance().Await();
 
         ADDON::VECADDONS languageAddons;
-        if (addondb.GetAddons(languageAddons, ADDON::ADDON_RESOURCE_LANGUAGE) && !languageAddons.empty())
+        if (addondb.GetRepositoryContent(languageAddons) && !languageAddons.empty())
         {
+          languageAddons.erase(std::remove_if(languageAddons.begin(), languageAddons.end(),
+              [](const ADDON:: AddonPtr& addon){ return !addon->IsType(ADDON::ADDON_RESOURCE_LANGUAGE); }), languageAddons.end());
           // try to get the proper language addon by its name from all available language addons
           if (ADDON::CLanguageResource::FindLanguageAddonByName(language, newLanguage, languageAddons))
           {
@@ -712,6 +712,17 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
   {
     CLog::LogF(LOGFATAL, "CLangInfo: failed to load %s language strings", language.c_str());
     return false;
+  }
+
+  ADDON::VECADDONS addons;
+  if (ADDON::CAddonMgr::GetInstance().GetInstalledAddons(addons))
+  {
+    auto locale = CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
+    for (const auto& addon : addons)
+    {
+      auto path = URIUtils::AddFileToFolder(addon->Path(), "resources/language/");
+      g_localizeStrings.LoadAddonStrings(path, locale, addon->ID());
+    }
   }
 
   if (reloadServices)
@@ -767,7 +778,7 @@ const std::string CLangInfo::GetDVDMenuLanguage() const
   std::string code;
   if (!g_LangCodeExpander.ConvertToISO6391(m_currentRegion->m_strLangLocaleName, code))
     code = m_strDVDMenuLanguage;
-  
+
   return code;
 }
 
@@ -777,7 +788,7 @@ const std::string CLangInfo::GetDVDAudioLanguage() const
   std::string code;
   if (!g_LangCodeExpander.ConvertToISO6391(m_audioLanguage, code))
     code = m_strDVDAudioLanguage;
-  
+
   return code;
 }
 
@@ -787,7 +798,7 @@ const std::string CLangInfo::GetDVDSubtitleLanguage() const
   std::string code;
   if (!g_LangCodeExpander.ConvertToISO6391(m_subtitleLanguage, code))
     code = m_strDVDSubtitleLanguage;
-  
+
   return code;
 }
 
@@ -1122,7 +1133,7 @@ void CLangInfo::SettingOptionsLanguageNamesFiller(const CSetting *setting, std::
 {
   // find languages...
   ADDON::VECADDONS addons;
-  if (!ADDON::CAddonMgr::GetInstance().GetAddons(ADDON::ADDON_RESOURCE_LANGUAGE, addons, true))
+  if (!ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_RESOURCE_LANGUAGE))
     return;
 
   for (ADDON::VECADDONS::const_iterator addon = addons.begin(); addon != addons.end(); ++addon)
@@ -1185,7 +1196,7 @@ void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector
     }
   }
 
-  if (!match && regions.size() > 0)
+  if (!match && !regions.empty())
     current = regions[0];
 }
 

@@ -24,6 +24,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "CompileInfo.h"
+#include "filesystem/SpecialProtocol.h"
 #include "input/ButtonTranslator.h"
 #include "guilib/GUIControlFactory.h"
 #include "guilib/GUIFontManager.h"
@@ -38,7 +39,7 @@ CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
   : CGUIDialog(WINDOW_DEBUG_INFO, "", DialogModalityType::MODELESS)
 {
   m_needsScaling = false;
-  m_layout = NULL;
+  m_layout = nullptr;
   m_renderOrder = RENDER_ORDER_WINDOW_DEBUG;
 }
 
@@ -59,7 +60,7 @@ bool CGUIWindowDebugInfo::OnMessage(CGUIMessage &message)
   if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {
     delete m_layout;
-    m_layout = NULL;
+    m_layout = nullptr;
   }
   return CGUIDialog::OnMessage(message);
 }
@@ -72,8 +73,8 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
 
   static int yShift = 20;
   static int xShift = 40;
-  static unsigned int lastShift = time(NULL);
-  time_t now = time(NULL);
+  static unsigned int lastShift = time(nullptr);
+  time_t now = time(nullptr);
   if (now - lastShift > 10)
   {
     yShift *= -1;
@@ -104,14 +105,18 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     std::string lcAppName = CCompileInfo::GetAppName();
     StringUtils::ToLower(lcAppName);
 #if !defined(TARGET_POSIX)
-    info = StringUtils::Format("LOG: %s%s.log\nMEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\nCPU: %s%s", g_advancedSettings.m_logFolder.c_str(), lcAppName.c_str(),
+    info = StringUtils::Format("LOG: %s%s.log\nMEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\nCPU: %s%s", CSpecialProtocol::TranslatePath("special://logpath").c_str(), lcAppName.c_str(),
                                stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
     std::string ucAppName = lcAppName;
     StringUtils::ToUpper(ucAppName);
-    info = StringUtils::Format("LOG: %s%s.log\nMEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\nCPU: %s (CPU-%s %4.2f%%%s)", g_advancedSettings.m_logFolder.c_str(), lcAppName.c_str(),
-                               stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), ucAppName.c_str(), dCPU, profiling.c_str());
+    info = StringUtils::Format("LOG: %s%s.log\n" 
+                                "MEM: %" PRIu64"/%" PRIu64" KB - FPS: %2.1f fps\n"
+                                "CPU: %s (CPU-%s %4.2f%%%s)",
+                                CSpecialProtocol::TranslatePath("special://logpath").c_str(), lcAppName.c_str(),
+                                stat.ullAvailPhys/1024, stat.ullTotalPhys/1024, g_infoManager.GetFPS(),
+                                strCores.c_str(), ucAppName.c_str(), dCPU, profiling.c_str());
 #endif
   }
 
@@ -139,7 +144,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
       point.y *= g_graphicsContext.GetGUIScaleY();
       g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
     }
-    info += StringUtils::Format("Mouse: (%d,%d)  ", (int)point.x, (int)point.y);
+    info += StringUtils::Format("Mouse: (%d,%d)  ", static_cast<int>(point.x), static_cast<int>(point.y));
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();

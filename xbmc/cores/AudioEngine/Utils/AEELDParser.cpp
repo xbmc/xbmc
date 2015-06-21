@@ -191,13 +191,13 @@ void CAEELDParser::Parse(const uint8_t *data, size_t length, CAEDeviceInfo& info
     AEDataFormat fmt = AE_FMT_INVALID;
     switch (formatCode)
     {
-      case CEA_861_FORMAT_AAC  : fmt = AE_FMT_AAC   ; break;
-      case CEA_861_FORMAT_AC3  : fmt = AE_FMT_AC3   ; break;
-      case CEA_861_FORMAT_DTS  : fmt = AE_FMT_DTS   ; break;
-      case CEA_861_FORMAT_DTSHD: fmt = AE_FMT_DTSHD ; break;
-      case CEA_861_FORMAT_EAC3 : fmt = AE_FMT_EAC3  ; break;
-      case CEA_861_FORMAT_LPCM : fmt = AE_FMT_LPCM  ; break;
-      case CEA_861_FORMAT_MLP  : fmt = AE_FMT_TRUEHD; break;
+      // TODO
+      case CEA_861_FORMAT_AC3  : fmt = AE_FMT_RAW   ; break;
+      case CEA_861_FORMAT_DTS  : fmt = AE_FMT_RAW   ; break;
+      case CEA_861_FORMAT_DTSHD: fmt = AE_FMT_RAW ; break;
+      case CEA_861_FORMAT_EAC3 : fmt = AE_FMT_RAW  ; break;
+      case CEA_861_FORMAT_LPCM : fmt = AE_FMT_RAW  ; break;
+      case CEA_861_FORMAT_MLP  : fmt = AE_FMT_RAW; break;
     }
 
     if (fmt == AE_FMT_INVALID)

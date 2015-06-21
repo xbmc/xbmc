@@ -86,6 +86,14 @@ namespace PVR
     CPVRChannelGroupPtr GetById(int iGroupId) const;
 
     /*!
+     * @brief Get all groups the given channel is a member.
+     * @param channel The channel.
+     * @param bExcludeHidden Whenever to exclude hidden channel groups.
+     * @return A list of groups the channel is a member.
+     */
+    std::vector<CPVRChannelGroupPtr> GetGroupsByChannel(const CPVRChannelPtr channel, bool bExcludeHidden = false) const;
+
+    /*!
      * @brief Get a group given it's name.
      * @param strName The name.
      * @return The group or NULL if it wan't found.
@@ -118,9 +126,10 @@ namespace PVR
     /*!
      * @brief Get the list of groups.
      * @param groups The list to store the results in.
+     * @param bExcludeHidden Whenever to exclude hidden channel groups.
      * @return The amount of items that were added.
      */
-    std::vector<CPVRChannelGroupPtr> GetMembers() const;
+    std::vector<CPVRChannelGroupPtr> GetMembers(bool bExcludeHidden = false) const;
 
     /*!
      * @brief Get the list of groups.

@@ -32,12 +32,12 @@ public:
 
 protected:
   // specialization of CGUIMediaWindow
-  virtual bool OnSelect(int item);
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void UpdateButtons();
-  virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
-  virtual std::string GetStartFolder(const std::string &dir);
+  bool OnSelect(int item) override;
+  void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+  void UpdateButtons() override;
+  bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
+  std::string GetStartFolder(const std::string &dir) override;
 
   bool OnSelect(CFileItemPtr item);
   bool OnDelete(CFileItemPtr item);

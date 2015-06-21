@@ -115,6 +115,68 @@ static int ShiftPage(const std::vector<std::string>& params)
   return 0;
 }
 
+// Note: For new Texts with comma add a "\" before!!! Is used for table text.
+//
+/// \page page_List_of_built_in_functions
+/// \section built_in_functions_7 GUI control built-in's
+///
+/// -----------------------------------------------------------------------------
+///
+/// \table_start
+///   \table_h2_l{
+///     Function,
+///     Description }
+///   \table_row2_l{
+///     <b>`control.message(controlId\, action[\, windowId])`</b>
+///     ,
+///     Send a given message to a control within a given window
+///     @param[in] controlId             ID of control.
+///     @param[in] action                Action name.
+///     @param[in] windowId              ID of window with control (optional).
+///   }
+///   \table_row2_l{
+///     <b>`control.move(id\, offset)`</b>
+///     ,
+///     Tells the specified control to 'move' to another entry specified by offset
+///     @param[in] id                    ID of control.
+///     @param[in] offset                Offset of move.
+///   }
+///   \table_row2_l{
+///     <b>`control.setfocus(controlId[\, subitemId])`</b>
+///     ,
+///     Change current focus to a different control id
+///     @param[in] controlId             ID of control.
+///     @param[in] subitemId             ID of subitem of control (optional).
+///   }
+///   \table_row2_l{
+///     <b>`pagedown(controlId)`</b>
+///     ,
+///     Send a page down event to the pagecontrol with given id
+///     @param[in] controlId             ID of control.
+///   }
+///   \table_row2_l{
+///     <b>`pageup(controlId)`</b>
+///     ,
+///     Send a page up event to the pagecontrol with given id
+///     @param[in] controlId             ID of control.
+///   }
+///   \table_row2_l{
+///     <b>`sendclick(controlId [\, windowId])`</b>
+///     ,
+///     Send a click message from the given control to the given window
+///     @param[in] controlId             ID of control.
+///     @param[in] windowId              ID for window with control (optional).
+///   }
+///   \table_row2_l{
+///     <b>`setfocus`</b>
+///     ,
+///     Change current focus to a different control id
+///     @param[in] controlId             ID of control.
+///     @param[in] subitemId             ID of subitem of control (optional).
+///   }
+///  \table_end
+///
+
 CBuiltins::CommandMap CGUIControlBuiltins::GetOperations() const
 {
   return {

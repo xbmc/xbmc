@@ -102,18 +102,6 @@ struct RefreshVideoLatency
   float delay;
 };
 
-struct StagefrightConfig
-{
-  int useAVCcodec;
-  int useHEVCcodec;
-  int useVC1codec;
-  int useVPXcodec;
-  int useMP4codec;
-  int useMPEG2codec;
-  bool useSwRenderer;
-  bool useInputDTS;
-};
-
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
 class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
@@ -145,11 +133,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_ac3Gain;
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
-    bool m_dvdplayerIgnoreDTSinWAV;
+    bool m_VideoPlayerIgnoreDTSinWAV;
     float m_limiterHold;
     float m_limiterRelease;
 
-    bool  m_omxHWAudioDecode;
     bool  m_omxDecodeStartWithValidFrame;
 
     float m_videoSubsDelayRange;
@@ -177,7 +164,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_musicPercentSeekBackward;
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
-    int m_videoBlackBarColour;
     int m_videoIgnoreSecondsAtStart;
     float m_videoIgnorePercentAtEnd;
     float m_audioApplyDrc;
@@ -200,11 +186,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVAAllowHqScaling;
     int  m_videoFpsDetect;
     int  m_videoBusyDialogDelay_ms;
-    StagefrightConfig m_stagefrightConfig;
     bool m_mediacodecForceSoftwareRendring;
 
     std::string m_videoDefaultPlayer;
-    std::string m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
 
     float m_slideshowBlackBarCompensation;
@@ -229,6 +213,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_videoCleanDateTimeRegExp;
     std::vector<std::string> m_videoCleanStringRegExps;
     std::vector<std::string> m_videoExcludeFromListingRegExps;
+    std::vector<std::string> m_allExcludeFromScanRegExps;
     std::vector<std::string> m_moviesExcludeFromScanRegExps;
     std::vector<std::string> m_tvshowExcludeFromScanRegExps;
     std::vector<std::string> m_audioExcludeFromListingRegExps;
@@ -249,11 +234,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     unsigned int m_fanartRes; ///< \brief the maximal resolution to cache fanart at (assumes 16x9)
     unsigned int m_imageRes;  ///< \brief the maximal resolution to cache images at (assumes 16x9)
-    /*! \brief the maximal size to cache thumbs at, assuming square
-     Used for actual thumbs (eg bookmark thumbs, picture thumbs) rather than cover art which uses m_imageRes instead
-     */
-    unsigned int GetThumbSize() const { return m_imageRes / 2; };
-    bool m_useDDSFanart;
     CPictureScalingAlgorithm::Algorithm m_imageScalingAlgorithm;
 
     int m_sambaclienttimeout;
@@ -279,7 +259,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_bVideoLibraryAllItemsOnBottom;
     int m_iVideoLibraryRecentlyAddedItems;
-    bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryUseFastHash;
     bool m_bVideoLibraryExportAutoThumbs;
@@ -308,6 +287,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iEdlMaxStartGap;          // seconds
     int m_iEdlCommBreakAutowait;    // seconds
     int m_iEdlCommBreakAutowind;    // seconds
+    bool m_bEdlCommAutoSkip; /*!< @brief true to automatically skip commercial breaks in Edit Decision Lists by defeault */
+    bool m_bEdlCommNotify; /*!< @brief true to display a notification of EDL commercial breaks (even if Commercial skip is off */
 
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
@@ -324,32 +305,24 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_playlistTimeout;
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
-    float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
     unsigned int m_RestrictCapsMask;
     float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool m_bVirtualShares;
     bool m_bAllowDeferredRendering;
 
-    float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
-    float m_karaokeSyncDelayLRC;
-    bool m_karaokeChangeGenreForKaraokeSongs;
-    bool m_karaokeKeepDelay; // store user-changed song delay in the database
-    int m_karaokeStartIndex; // auto-assign numbering start from this value
-    bool m_karaokeAlwaysEmptyOnCdgs; // always have empty background on CDG files
-    bool m_karaokeUseSongSpecificBackground; // use song-specific video or image if available instead of default
-    std::string m_karaokeDefaultBackgroundType; // empty string or "vis", "image" or "video"
-    std::string m_karaokeDefaultBackgroundFilePath; // only for "image" or "video" types above
-
     std::string m_cpuTempCmd;
     std::string m_gpuTempCmd;
+
+    // Touchscreen
+    int m_screenAlign_xOffset;
+    int m_screenAlign_yOffset;
+    float m_screenAlign_xStretchFactor;
+    float m_screenAlign_yStretchFactor;
 
     /* PVR/TV related advanced settings */
     int m_iPVRTimeCorrection;     /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. defaults to 0. */
     int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
-    int m_iPVRMinVideoCacheLevel;      /*!< @brief cache up to this level in the video buffer buffer before resuming playback if the buffers run dry */
-    int m_iPVRMinAudioCacheLevel;      /*!< @brief cache up to this level in the audio buffer before resuming playback if the buffers run dry */
-    bool m_bPVRCacheInDvdPlayer; /*!< @brief true to use "CACHESTATE_PVR" in CDVDPlayer (default) */
     bool m_bPVRChannelIconsAutoScan; /*!< @brief automatically scan user defined folder for channel icons when loading internal channel groups */
     bool m_bPVRAutoScanIconsUserSet; /*!< @brief mark channel icons populated by auto scan as "user set" */
     int m_iPVRNumericChannelSwitchTimeout; /*!< @brief time in ms before the numeric dialog auto closes when confirmchannelswitch is disabled */
@@ -402,8 +375,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     False to show at the bottom of video (default) */
     bool m_videoAssFixedWorks;
 
-    std::string m_logFolder;
-
     std::string m_userAgent;
 
   private:
@@ -411,4 +382,5 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 
-XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
+XBMC_GLOBAL_REF(CAdvancedSettings,g_advancedSettings);
+#define g_advancedSettings XBMC_GLOBAL_USE(CAdvancedSettings)

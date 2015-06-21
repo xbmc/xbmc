@@ -1,0 +1,405 @@
+# Kodi Media Center language file
+# Addon Name: Estuary
+# Addon id: skin.estuary
+# Addon Provider: phil65, Piers
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Swedish (Sweden) (http://www.transifex.com/projects/p/kodi-main/language/sv_SE/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv_SE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "Spelas nu"
+
+msgctxt "#31001"
+msgid "Search"
+msgstr "Sök"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Bio-läge"
+
+msgctxt "#31004"
+msgid "Change mode"
+msgstr "Ändra läge"
+
+msgctxt "#31005"
+msgid "Watch as 2D"
+msgstr "Se i 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Slumpmässiga filmer"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Osedda filmer"
+
+msgctxt "#31008"
+msgid "In-progress TV Shows"
+msgstr "Pågående TV-program"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Ladda ner ikoner"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Pågående filmer"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Mest spelade album"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Slumpmässiga album"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Slumpmässiga artister"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Ospelade album"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Nya inspelningar"
+
+msgctxt "#31018"
+msgid "Most played channels"
+msgstr "Mest spelade kanaler"
+
+msgctxt "#31019"
+msgid "Forecast"
+msgstr "Prognos"
+
+msgctxt "#31020"
+msgid "Actions"
+msgstr "Åtgärder"
+
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "Övriga val"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Sortera efter"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Vytyp"
+
+msgctxt "#31024"
+msgid "Next tracks"
+msgstr "Nästa spår"
+
+msgctxt "#31026"
+msgid "Go to albums"
+msgstr "Gå till album"
+
+msgctxt "#31027"
+msgid "Go to songs"
+msgstr "Go till låtar"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Visa fanart"
+
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "Senast inloggad"
+
+msgctxt "#31030"
+msgid "Memory used"
+msgstr "Använd minne"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Versionsinfo"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Ordning"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Ditt betyg"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Utökad info"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Sidor"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "objekt"
+
+msgctxt "#31037"
+msgid "Tracklist"
+msgstr "Spellista"
+
+msgctxt "#31038"
+msgid "Rewind"
+msgstr "Spola bakåt"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "Spola fram"
+
+msgctxt "#31040"
+msgid "Cancel update"
+msgstr "Avbryt uppdatering"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Kameratillverkare"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "Alternativ för spellista"
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "Lägg till grupp"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "Byt namn på grupp"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "Ta bort grupp"
+
+msgctxt "#31047"
+msgid "Read more..."
+msgstr "Läs mer..."
+
+msgctxt "#31048"
+msgid "Available"
+msgstr "Tillgänglig"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Tryck på [B]OK[/B] för att stoppa"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Välj språk"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrerad"
+
+msgctxt "#31053"
+msgid "Arial based"
+msgstr "Arialbaserad"
+
+msgctxt "#31055"
+msgid "Subtitle download"
+msgstr "Ladda ner undertext"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Gå till spellista"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Visa loginskärm vid uppstart"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Automatisk inloggning vid uppstart"
+
+msgctxt "#31059"
+msgid "Updates available"
+msgstr "Uppdateringar tillgängliga"
+
+msgctxt "#31060"
+msgid "minutes"
+msgstr "minuter"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Huvudmeny objekt"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Sektioner"
+
+msgctxt "#31064"
+msgid "unwatched"
+msgstr "osedda"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Spellista för video"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Händelselogg"
+
+msgctxt "#31069"
+msgid "Last Updated"
+msgstr "Senast uppdaterad"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "av"
+
+msgctxt "#31072"
+msgid "Power Options"
+msgstr "Energialternativ"
+
+msgctxt "#31073"
+msgid "Titles"
+msgstr "Titlar"
+
+msgctxt "#31076"
+msgid "Play optical disc"
+msgstr "Spela optisk skiva"
+
+msgctxt "#31077"
+msgid "Previous location"
+msgstr "Föregående plats"
+
+msgctxt "#31078"
+msgid "Next location"
+msgstr "Nästa plats"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Slutar vid"
+
+msgctxt "#31081"
+msgid "Album info"
+msgstr "Albuminfo"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Sångtextstillägg"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Visualiseringsinställningar"
+
+msgctxt "#31085"
+msgid "Channel Group"
+msgstr "Kanalgrupp"
+
+msgctxt "#31086"
+msgid "Metadata"
+msgstr "Metadata"
+
+msgctxt "#31087"
+msgid "Provider settings"
+msgstr "Inställningar för leverantör"
+
+msgctxt "#31088"
+msgid "Content scanning options"
+msgstr "Alternativ för innehållsskanning"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Tillgängliga grupper"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Sök efter trailer"
+
+msgctxt "#31091"
+msgid "Download subtitles"
+msgstr "Ladda hem undertexter"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Video-meny"
+
+msgctxt "#31094"
+msgid "Show media flags for movies / episodes / music videos"
+msgstr "Visa media-flaggor för filmer / avsnitt / musikvideor"
+
+msgctxt "#31096"
+msgid "Local subtitle available"
+msgstr "Lokal undertext tillgänglig"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "Kanalalternativ"
+
+msgctxt "#31098"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
+
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Vägg"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Fyll i text här..."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Texttv"
+
+msgctxt "#31108"
+msgid "Use custom global background"
+msgstr "Använd en anpassad global bakgrund"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Välj ljudström"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Sök i det lokala biblioteket"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Sök på Youtube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Sök i TheMovieDB"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "Redigera noder"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "O-sedda TV-program"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Samma direktör"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "Visa bilder på kartan"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Visa ikoner"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Medarbetare"

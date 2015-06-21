@@ -51,7 +51,7 @@
 
 #include "filesystem/File.h"
 
-#include "cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.h"
+#include "cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinStorageProvider.h"
@@ -543,12 +543,11 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());
 
 
-  CDVDInputStreamNavigator dvdNavigator(NULL);
-  dvdNavigator.Open(pathVideoTS.c_str(), "", true);
-  std::string labelString;
-  dvdNavigator.GetDVDTitleString(labelString);
-  std::string serialString;
-  dvdNavigator.GetDVDSerialString(serialString);
+  CFileItem item(pathVideoTS, false);
+  CDVDInputStreamNavigator dvdNavigator(NULL, item);
+  dvdNavigator.Open();
+  std::string labelString = dvdNavigator.GetDVDTitleString();
+  std::string serialString = dvdNavigator.GetDVDSerialString();
 
   std::string strID = StringUtils::Format("removable://%s_%s", labelString.c_str(), serialString.c_str());
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for DVD disk", strID.c_str());

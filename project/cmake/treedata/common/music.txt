@@ -1,0 +1,5 @@
+xbmc/music             music
+xbmc/music/dialogs     music/dialogs
+xbmc/music/infoscanner music/infoscanner
+xbmc/music/tags        music/tags
+xbmc/music/windows     music/windows

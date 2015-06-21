@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -38,7 +38,7 @@
 #include <sys/wait.h>
 #endif
 #if defined(TARGET_ANDROID)
-#include "android/bionic_supplement/bionic_supplement.h"
+#include "platform/android/bionic_supplement/bionic_supplement.h"
 #endif
 #include <stdlib.h>
 #include <algorithm>
@@ -69,7 +69,7 @@
 #endif
 #if defined(TARGET_DARWIN)
 #include "CompileInfo.h"
-#include "osx/DarwinUtils.h"
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #include "filesystem/File.h"
 #include "settings/MediaSettings.h"
@@ -85,8 +85,8 @@
 #include "utils/log.h"
 #include "utils/Environment.h"
 
-#include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
-#include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
+#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
+#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "URL.h"
 #include "utils/LangCodeExpander.h"
 #include "video/VideoInfoTag.h"
@@ -94,7 +94,7 @@
   #include <sys/capability.h>
 #endif
 
-#include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -166,10 +166,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
       strFilename = url.GetHostName();
     }
   }
-
-  // SAP Streams
-  else if (url.IsProtocol("sap") && strFilename.empty())
-    strFilename = "SAP Streams";
 
   // Root file views
   else if (url.IsProtocol("sources"))
@@ -359,7 +355,7 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
 #if defined(TARGET_DARWIN)
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
-    uint32_t path_size =2*MAXPATHLEN;
+    size_t path_size =2*MAXPATHLEN;
 
     result = CDarwinUtils::GetExecutablePath(given_path, &path_size);
     if (result == 0)
@@ -422,9 +418,6 @@ bool CUtil::IsPVR(const std::string& strFile)
 bool CUtil::IsLiveTV(const std::string& strFile)
 {
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
-    return true;
-
-  if(StringUtils::StartsWithNoCase(strFile, "sap:"))
     return true;
 
   return false;
@@ -1133,7 +1126,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
     std::vector<std::string> vecPaths;
 
     // add any concatenated paths if they exist
-    if (share.vecPaths.size() > 0)
+    if (!share.vecPaths.empty())
       vecPaths = share.vecPaths;
 
     // add the actual share path at the front of the vector
@@ -1422,7 +1415,6 @@ std::string CUtil::GetDefaultFolderThumb(const std::string &folderThumb)
 void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
 {
   static const std::string TexturesXbt = "Textures.xbt";
-  static const std::string TexturesXpr = "Textures.xpr";
 
   std::string strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
   CFileItemList items;
@@ -1435,8 +1427,7 @@ void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
     {
       std::string strExtension = URIUtils::GetExtension(pItem->GetPath());
       std::string strLabel = pItem->GetLabel();
-      if ((strExtension == ".xpr" && !StringUtils::EqualsNoCase(strLabel, TexturesXpr)) ||
-          (strExtension == ".xbt" && !StringUtils::EqualsNoCase(strLabel, TexturesXbt)))
+      if ((strExtension == ".xbt" && !StringUtils::EqualsNoCase(strLabel, TexturesXbt)))
         vecTheme.push_back(StringUtils::Left(strLabel, strLabel.size() - strExtension.size()));
     }
     else
@@ -1516,7 +1507,7 @@ bool CUtil::Command(const std::vector<std::string>& arrArgs, bool waitExit)
     close(0);
     close(1);
     close(2);
-    if (arrArgs.size() > 0)
+    if (!arrArgs.empty())
     {
       char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
       memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
@@ -1660,7 +1651,7 @@ std::string CUtil::ResolveExecutablePath()
   delete[] buf;
 #elif defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];
-  uint32_t path_size =2*MAXPATHLEN;
+  size_t path_size =2*MAXPATHLEN;
 
   CDarwinUtils::GetExecutablePath(given_path, &path_size);
   strExecutablePath = given_path;
@@ -1703,7 +1694,7 @@ std::string CUtil::GetFrameworksPath(bool forPython)
   std::string strFrameworksPath;
 #if defined(TARGET_DARWIN)
   char     given_path[2*MAXPATHLEN];
-  uint32_t path_size =2*MAXPATHLEN;
+  size_t path_size =2*MAXPATHLEN;
 
   CDarwinUtils::GetFrameworkPath(forPython, given_path, &path_size);
   strFrameworksPath = given_path;
@@ -1981,7 +1972,7 @@ void CUtil::GetExternalStreamDetailsFromFilename(const std::string& strVideo, co
   }
 
   // trim any non-alphanumeric char in the begining
-  std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), ::isalnum);
+  std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), StringUtils::isasciialphanum);
 
   std::string name;
   if (result != toParse.end()) // if we have anything to parse
@@ -2152,6 +2143,30 @@ std::string CUtil::GetVobSubIdxFromSub(const std::string& vobSub)
   }
 
   return std::string();
+}
+
+
+void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::string>& vecAudio)
+{
+  CFileItem item(videoPath, false);
+  if ( item.IsInternetStream()
+   ||  item.IsPlayList()
+   ||  item.IsLiveTV()
+   ||  item.IsPVR()
+   || !item.IsVideo()) 
+    return;
+
+  std::string strBasePath;
+  std::string strAudio;  
+
+  GetVideoBasePathAndFileName(videoPath, strBasePath, strAudio);
+  
+  CFileItemList items;
+  const std::vector<std::string> common_sub_dirs = { "audio", "tracks"};
+  GetItemsToScan(strBasePath, g_advancedSettings.GetMusicExtensions(), common_sub_dirs, items);
+
+  std::vector<std::string> exts = StringUtils::Split(g_advancedSettings.GetMusicExtensions(), "|");
+  ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
 }
 
 bool CUtil::CanBindPrivileged()

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="buttonMenu">
+	<defaultcontrol>9000</defaultcontrol>
+	<coordinates>
+		<left>710</left>
+		<top>213</top>
+	</coordinates>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include name="DialogBackgroundCommons">
+			<param name="DialogBackgroundWidth" value="500" />
+			<param name="DialogBackgroundHeight" value="100" />
+			<param name="DialogHeaderLabel" value="$LOCALIZE[31072]" />
+			<param name="DialogHeaderId" value="2" />
+		</include>
+		<control type="list" id="9000">
+			<left>0</left>
+			<top>100</top>
+			<width>500</width>
+			<height>700</height>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<itemlayout height="70">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>500</width>
+					<height>70</height>
+					<texture>lists/buttonmenu-separator.png</texture>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<textoffsetx>20</textoffsetx>
+					<top>0</top>
+					<width>500</width>
+					<height>70</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>grey</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout height="70">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>500</width>
+					<height>70</height>
+					<texture>lists/buttonmenu-separator.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>500</width>
+					<height>70</height>
+					<texture>lists/focus.png</texture>
+					<visible>Control.HasFocus(9000)</visible>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<textoffsetx>20</textoffsetx>
+					<top>0</top>
+					<width>500</width>
+					<height>70</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</focusedlayout>
+			<content>
+				<item>
+					<label>$LOCALIZE[13012]</label>
+					<onclick>Quit()</onclick>
+					<visible>System.ShowExitButton</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[13016]</label>
+					<onclick>Powerdown()</onclick>
+					<visible>System.CanPowerDown</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[20150]</label>
+					<onclick>AlarmClock(shutdowntimer,Shutdown())</onclick>
+					<visible>!System.HasAlarm(shutdowntimer)</visible>
+					<visible>System.CanPowerDown | System.CanSuspend | System.CanHibernate</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[20151]</label>
+					<onclick>CancelAlarm(shutdowntimer)</onclick>
+					<visible>System.HasAlarm(shutdowntimer)</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[13011]</label>
+					<onclick>Suspend()</onclick>
+					<visible>System.CanSuspend</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[13010]</label>
+					<onclick>Hibernate()</onclick>
+					<visible>System.CanHibernate</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[13013]</label>
+					<onclick>Reset()</onclick>
+					<visible>System.CanReboot</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[20126] $INFO[system.profilename]</label>
+					<onclick>dialog.close(all,true)</onclick>
+					<onclick>System.LogOff</onclick>
+					<visible>System.HasLoginScreen | IntegerGreaterThan(System.ProfileCount,1)</visible>
+					<visible>System.Loggedon</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[20046]</label>
+					<altlabel>$LOCALIZE[20045]</altlabel>
+					<usealttexture>!System.IsMaster</usealttexture>
+					<onclick>mastermode</onclick>
+					<visible>System.HasLocks</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[13017]</label>
+					<onclick>InhibitIdleShutdown(false)</onclick>
+					<visible>System.HasShutdown +!System.IsInhibit</visible>
+				</item>
+				<item>
+					<label>$LOCALIZE[13018]</label>
+					<onclick>InhibitIdleShutdown(false)</onclick>
+					<visible>System.HasShutdown + System.IsInhibit</visible>
+				</item>
+			</content>
+		</control>
+	</controls>
+</window>

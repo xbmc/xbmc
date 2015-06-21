@@ -393,25 +393,23 @@ const field_value Dataset::get_field_value(const char *f_name) {
 const field_value Dataset::get_field_value(int index) {
   if (ds_state != dsInactive) {
     if (ds_state == dsEdit || ds_state == dsInsert){
-      if (index <0 || index >field_count())
+      if (index < 0 || index >= field_count())
         throw DbErrors("Field index not found: %d",index);
 
       return (*edit_object)[index].val;
     }
     else
-      if (index <0 || index >field_count())
+      if (index < 0 || index >= field_count())
         throw DbErrors("Field index not found: %d",index);
 
       return (*fields_object)[index].val;
   }
   throw DbErrors("Dataset state is Inactive");
-  //field_value fv;
-  //return fv;
 }
 
 const sql_record* const Dataset::get_sql_record()
 {
-  if (result.records.size() == 0 || frecno >= (int)result.records.size())
+  if (result.records.empty() || frecno >= (int)result.records.size())
     return NULL;
 
   return result.records[frecno];

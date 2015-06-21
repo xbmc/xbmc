@@ -22,14 +22,14 @@
   #include "config.h"
 #endif
 
-#if TARGET_WINDOWS
+#if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
 #define PCRE_STATIC 1
 #ifdef _DEBUG
 #pragma comment(lib, "pcrecppd.lib")
 #else  // ! _DEBUG
 #pragma comment(lib, "pcrecpp.lib")
 #endif // ! _DEBUG
-#endif // TARGET_WINDOWS
+#endif // defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
 #include <pcrecpp.h>
 #include <cmath>
 #include "FTPParse.h"

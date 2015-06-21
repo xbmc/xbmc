@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010-2014 Team KODI
+ *      Copyright (C) 2010-2015 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with KODI; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -315,14 +315,14 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
      */
     CLog::Log(LOGDEBUG, "  ---- DSP input resample addon ---");
     const AE_DSP_MODELIST listInputResample = CActiveAEDSP::GetInstance().GetAvailableModes(AE_DSP_MODE_TYPE_INPUT_RESAMPLE);
-    if (listInputResample.size() == 0)
+    if (listInputResample.empty())
       CLog::Log(LOGDEBUG, "  | - no input resample addon present or enabled");
     for (unsigned int i = 0; i < listInputResample.size(); ++i)
     {
       /// For resample only one call is allowed. Use first one and ignore everything else.
       CActiveAEDSPModePtr pMode = listInputResample[i].first;
       AE_DSP_ADDON        addon = listInputResample[i].second;
-      if (addon->Enabled() && addon->SupportsInputResample() && pMode->IsEnabled())
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsInputResample() && pMode->IsEnabled())
       {
         ADDON_HANDLE_STRUCT handle;
         AE_DSP_ERROR err = addon->StreamCreate(&m_addonSettings, &m_addonStreamProperties, &handle);
@@ -374,7 +374,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
     {
       AE_DSP_ADDON addon = itr->second;
       int id = addon->GetID();
-      if (addon->Enabled() && id != foundInputResamplerId)
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && id != foundInputResamplerId)
       {
         ADDON_HANDLE_STRUCT handle;
         AE_DSP_ERROR err = addon->StreamCreate(&m_addonSettings, &m_addonStreamProperties, &handle);
@@ -415,7 +415,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
 
       if (m_usedMap.find(id) == m_usedMap.end())
         continue;
-      if (addon->Enabled() && addon->SupportsPreProcess() && pMode->IsEnabled() &&
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsPreProcess() && pMode->IsEnabled() &&
           addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
       {
         CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
@@ -445,7 +445,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
 
       if (m_usedMap.find(id) == m_usedMap.end())
         continue;
-      if (addon->Enabled() && addon->SupportsMasterProcess() && pMode->IsEnabled() &&
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsMasterProcess() && pMode->IsEnabled() &&
           addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
       {
         CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
@@ -520,7 +520,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
       if (m_usedMap.find(id) == m_usedMap.end())
         continue;
 
-      if (addon->Enabled() && addon->SupportsPostProcess() && pMode->IsEnabled() &&
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsPostProcess() && pMode->IsEnabled() &&
           addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
       {
         CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
@@ -544,7 +544,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
     if (m_addonSettings.iProcessSamplerate != m_outputFormat.m_sampleRate)
     {
       const AE_DSP_MODELIST listOutputResample = CActiveAEDSP::GetInstance().GetAvailableModes(AE_DSP_MODE_TYPE_OUTPUT_RESAMPLE);
-      if (listOutputResample.size() == 0)
+      if (listOutputResample.empty())
         CLog::Log(LOGDEBUG, "  | - no final post resample addon present or enabled, becomes performed by KODI");
       for (unsigned int i = 0; i < listOutputResample.size(); ++i)
       {
@@ -554,7 +554,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
         int                    id = addon->GetID();
 
         if (m_usedMap.find(id) != m_usedMap.end() &&
-            addon->Enabled() && addon->SupportsOutputResample() && pMode->IsEnabled() &&
+            !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsOutputResample() && pMode->IsEnabled() &&
             addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
         {
           int outSamplerate = addon->OutputResampleSampleRate(&m_addon_Handles[id]);

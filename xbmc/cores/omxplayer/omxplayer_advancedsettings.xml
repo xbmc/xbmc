@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <advancedsettings>
   <video>
-    <defaultplayer>dvdplayer</defaultplayer>
-    <defaultdvdplayer>dvdplayer</defaultdvdplayer>
+    <defaultplayer>VideoPlayer</defaultplayer>
+    <defaultVideoPlayer>VideoPlayer</defaultVideoPlayer>
   </video>
 </advancedsettings>

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -208,12 +208,12 @@ const std::string &CGUIInfoLabel::CacheLabel(bool rebuild) const
 
 bool CGUIInfoLabel::IsEmpty() const
 {
-  return m_info.size() == 0;
+  return m_info.empty();
 }
 
 bool CGUIInfoLabel::IsConstant() const
 {
-  return m_info.size() == 0 || (m_info.size() == 1 && m_info[0].m_info == 0);
+  return m_info.empty() || (m_info.size() == 1 && m_info[0].m_info == 0);
 }
 
 bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(const std::string &strInput, const std::string &strKeyword, const StringReplacerFunc &func, std::string &strOutput)
@@ -276,9 +276,9 @@ std::string AddonReplacer(const std::string &str)
 {
   // assumes "addon.id #####"
   size_t length = str.find(" ");
-  std::string id = str.substr(0, length);
+  std::string addonid = str.substr(0, length);
   int stringid = atoi(str.substr(length + 1).c_str());
-  return CAddonMgr::GetInstance().GetString(id, stringid);
+  return g_localizeStrings.GetAddonString(addonid, stringid);
 }
 
 std::string NumberReplacer(const std::string &str)
@@ -431,4 +431,10 @@ std::string CGUIInfoLabel::GetLabel(const std::string &label, int contextWindow 
 { // translate the label
   CGUIInfoLabel info(label, "", contextWindow);
   return info.GetLabel(contextWindow, preferImage);
+}
+
+std::string CGUIInfoLabel::GetItemLabel(const std::string &label, const CGUIListItem *item, bool preferImage /*= false */)
+{ // translate the label
+  CGUIInfoLabel info(label);
+  return info.GetItemLabel(item, preferImage);
 }

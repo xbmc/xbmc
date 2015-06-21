@@ -42,6 +42,11 @@ namespace XBMCAddon
       delete infoTag;
     }
 
+    int InfoTagVideo::getDbId()
+    {
+      return infoTag->m_iDbId;
+    }
+
     String InfoTagVideo::getDirector()
     {
       return StringUtils::Join(infoTag->m_director, g_advancedSettings.m_videoItemSeparator);
@@ -77,14 +82,24 @@ namespace XBMCAddon
       return infoTag->m_strPictureURL.GetFirstThumb().m_url;
     }
 
+    String InfoTagVideo::getTVShowTitle()
+    {
+      return infoTag->m_strShowTitle;
+    }
+
     String InfoTagVideo::getTitle()
     {
       return infoTag->m_strTitle;
     }
 
+    String InfoTagVideo::getMediaType()
+    {
+      return infoTag->m_type;
+    }
+
     String InfoTagVideo::getVotes()
     {
-      return infoTag->m_strVotes;
+      return StringUtils::Format("%i", infoTag->GetRating().votes);
     }
 
     String InfoTagVideo::getCast()
@@ -107,6 +122,16 @@ namespace XBMCAddon
       return infoTag->m_strIMDBNumber;
     }
 
+    int InfoTagVideo::getSeason()
+    {
+      return infoTag->m_iSeason;
+    }
+
+    int InfoTagVideo::getEpisode()
+    {
+      return infoTag->m_iEpisode;
+    }
+
     int InfoTagVideo::getYear()
     {
       return infoTag->m_iYear;
@@ -114,7 +139,7 @@ namespace XBMCAddon
 
     double InfoTagVideo::getRating()
     {
-      return infoTag->m_fRating;
+      return infoTag->GetRating().rating;
     }
 
     int InfoTagVideo::getPlayCount()

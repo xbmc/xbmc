@@ -36,8 +36,6 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_ADD_FAVOURITE,
                       CONTEXT_BUTTON_SETTINGS,
                       CONTEXT_BUTTON_GOTO_ROOT,
-                      CONTEXT_BUTTON_PLAY_DISC,
-                      CONTEXT_BUTTON_RESUME_DISC,
                       CONTEXT_BUTTON_RIP_CD,
                       CONTEXT_BUTTON_CANCEL_RIP_CD,
                       CONTEXT_BUTTON_RIP_TRACK,
@@ -72,7 +70,6 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_PLAY_PARTYMODE,
                       CONTEXT_BUTTON_PLAY_PART,
                       CONTEXT_BUTTON_RESUME_ITEM,
-                      CONTEXT_BUTTON_RESTART_ITEM,
                       CONTEXT_BUTTON_EDIT,
                       CONTEXT_BUTTON_EDIT_SMART_PLAYLIST,
                       CONTEXT_BUTTON_INFO,
@@ -87,7 +84,6 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_MARK_UNWATCHED,
                       CONTEXT_BUTTON_SET_CONTENT,
                       CONTEXT_BUTTON_ADD_TO_LIBRARY,
-                      CONTEXT_BUTTON_SONG_INFO,
                       CONTEXT_BUTTON_EDIT_PARTYMODE,
                       CONTEXT_BUTTON_LINK_MOVIE,
                       CONTEXT_BUTTON_UNLINK_MOVIE,
@@ -96,7 +92,6 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_PLAY_OTHER,
                       CONTEXT_BUTTON_SET_ACTOR_THUMB,
                       CONTEXT_BUTTON_UNLINK_BOOKMARK,
-                      CONTEXT_BUTTON_PLUGIN_SETTINGS,
                       CONTEXT_BUTTON_SCRIPT_SETTINGS,
                       CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM,
                       CONTEXT_BUTTON_LASTFM_UNBAN_ITEM,
@@ -105,8 +100,11 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_ADD,
                       CONTEXT_BUTTON_ACTIVATE,
                       CONTEXT_BUTTON_START_RECORD,
-                      CONTEXT_BUTTON_ADVANCED_RECORD,
+                      CONTEXT_BUTTON_ADD_TIMER,
                       CONTEXT_BUTTON_STOP_RECORD,
+                      CONTEXT_BUTTON_EDIT_TIMER,
+                      CONTEXT_BUTTON_EDIT_TIMER_RULE,
+                      CONTEXT_BUTTON_DELETE_TIMER,
                       CONTEXT_BUTTON_GROUP_MANAGER,
                       CONTEXT_BUTTON_CHANNEL_MANAGER,
                       CONTEXT_BUTTON_FILTER,
@@ -125,7 +123,6 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_PLAY_AND_QUEUE,
                       CONTEXT_BUTTON_PLAY_ONLY_THIS,
                       CONTEXT_BUTTON_UPDATE_EPG,
-                      CONTEXT_BUTTON_RECORD_ITEM,
                       CONTEXT_BUTTON_TAGS_ADD_ITEMS,
                       CONTEXT_BUTTON_TAGS_REMOVE_ITEMS,
                       CONTEXT_BUTTON_SET_MOVIESET,
@@ -176,10 +173,12 @@ public:
   static void GetContextButtons(const std::string &type, const CFileItemPtr& item, CContextButtons &buttons);
   static bool OnContextButton(const std::string &type, const CFileItemPtr& item, CONTEXT_BUTTON button);
 
-  /*! \brief Show the context menu with the given choices
-   \param choices the choices available for the user.
-   \return -1 if no choice is made, else the chosen option.
+  /*! Show the context menu with the given choices and return the index of the selected item,
+    or -1 if cancelled.
    */
+  static int Show(const CContextButtons& choices);
+
+  /*! Legacy method that returns the context menu id, or -1 on cancel */
   static int ShowAndGetChoice(const CContextButtons &choices);
 
 protected:

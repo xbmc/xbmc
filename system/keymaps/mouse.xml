@@ -29,4 +29,11 @@
       <wheeldown>NextPicture</wheeldown>
     </mouse>
   </SlideShow>
+  <FullscreenVideo>
+    <mouse>
+      <rightclick>Info</rightclick>
+    </mouse>
+  </FullscreenVideo>
+
+
 </keymap>

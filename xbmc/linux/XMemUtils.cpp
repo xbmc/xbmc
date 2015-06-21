@@ -95,9 +95,16 @@ void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
   {
       // Find page size.
       int pageSize;
+#if defined(TARGET_DARWIN) && defined(__aarch64__)
+      // Workaround for 64-bit arm devices (e.g. iPhone 5s, etc.).
+      // sysctl() and host_page_size() give both wrong 4x value (16384).
+      // So, we need to hardcode page size to 4096 here.
+      pageSize = 4096;
+#else
       mib[0] = CTL_HW; mib[1] = HW_PAGESIZE;
       len = sizeof(int);
       if (sysctl(mib, miblen, &pageSize, &len, NULL, 0) == 0)
+#endif
       {
           uint64_t used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pageSize;
 

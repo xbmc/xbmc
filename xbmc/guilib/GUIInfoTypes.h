@@ -111,6 +111,7 @@ public:
   const std::string &GetFallback() const { return m_fallback; };
 
   static std::string GetLabel(const std::string &label, int contextWindow = 0, bool preferImage = false);
+  static std::string GetItemLabel(const std::string &label, const CGUIListItem *item, bool preferImage = false);
 
   /*!
    \brief Replaces instances of $LOCALIZE[number] with the appropriate localized string

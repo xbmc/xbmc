@@ -223,6 +223,7 @@ Section "${APP_NAME}" SecAPP
   File "${app_root}\application\*.*"
   SetOutPath "$INSTDIR\addons"
   File /r "${app_root}\application\addons\*.*"
+  File /r "${app_root}\addons\peripheral.*"
   SetOutPath "$INSTDIR\media"
   File /r "${app_root}\application\media\*.*"
   SetOutPath "$INSTDIR\system"
@@ -281,6 +282,7 @@ SectionEnd
 !include /nonfatal "audiodecoder-addons.nsi"
 !include /nonfatal "audioencoder-addons.nsi"
 !include /nonfatal "audiodsp-addons.nsi"
+!include /nonfatal "inputstream-addons.nsi"
 !include /nonfatal "pvr-addons.nsi"
 !include /nonfatal "skin-addons.nsi"
 !include /nonfatal "screensaver-addons.nsi"
@@ -395,6 +397,17 @@ DetailPrint "Running VS2013 re-distributable setup..."
   ExecWait '"$TEMP\vc2013\vcredist_x86.exe" /q' $VSRedistSetupError
   RMDir /r "$TEMP\vc2013"
   DetailPrint "Finished VS2013 re-distributable setup"
+  SetOutPath "$INSTDIR"
+SectionEnd
+
+Section "VS2015 C++ re-distributable Package (x86)" SEC_VCREDIST4
+DetailPrint "Running VS2015 re-distributable setup..."
+  SectionIn 1 2 #section is in install type Full
+  SetOutPath "$TEMP\vc2015"
+  File "${app_root}\..\dependencies\vcredist\2015\vcredist_x86.exe"
+  ExecWait '"$TEMP\vc2015\vcredist_x86.exe" /q' $VSRedistSetupError
+  RMDir /r "$TEMP\vc2015"
+  DetailPrint "Finished VS2015 re-distributable setup"
   SetOutPath "$INSTDIR"
 SectionEnd
 

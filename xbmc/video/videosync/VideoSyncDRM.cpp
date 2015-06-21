@@ -165,7 +165,7 @@ void CVideoSyncDRM::EventHandler(int fd, unsigned int frame, unsigned int sec,
   info->videoSync->UpdateClock(vblanks, now);
 }
 
-void CVideoSyncDRM::OnResetDevice()
+void CVideoSyncDRM::OnResetDisplay()
 {
   m_abort = true;
 }
