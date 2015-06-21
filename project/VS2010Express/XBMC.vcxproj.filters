@@ -2371,9 +2371,6 @@
     <ClCompile Include="..\..\xbmc\utils\test\TestEndianSwap.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\test\Testfastmemcpy.cpp">
-      <Filter>utils\test</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\test\TestFileOperationJob.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
