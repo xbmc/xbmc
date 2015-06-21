@@ -258,6 +258,22 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_remove_directory");
       if (XBMC_remove_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+      XBMC_get_stream_playlist = (int (*)(void* HANDLE, void* CB, const char* strStreamUrl, void* strList, size_t uListSize))
+        dlsym(m_libXBMC_addon, "XBMC_get_stream_playlist");
+      if (XBMC_get_stream_playlist == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_open_stream = (void* (*)(void* HANDLE, void* CB, const char* strStreamUrl))
+        dlsym(m_libXBMC_addon, "XBMC_open_stream");
+      if (XBMC_open_stream == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_read_stream = (ssize_t (*)(void* HANDLE, void* CB, void* stream, void* lpBuf, size_t uiBufSize))
+        dlsym(m_libXBMC_addon, "XBMC_read_stream");
+      if (XBMC_read_stream == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_close_stream = (void (*)(void* HANDLE, void* CB, void* stream))
+        dlsym(m_libXBMC_addon, "XBMC_close_stream");
+      if (XBMC_close_stream == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
       m_Callbacks = XBMC_register_me(m_Handle);
       return m_Callbacks != NULL;
     }
@@ -557,6 +573,53 @@ namespace ADDON
       return XBMC_remove_directory(m_Handle, m_Callbacks, strPath);
     }
 
+    /*!
+    * @brief Get the stream play list (chunks) with streamUrl via XBMC's CDVDInputStream.
+    * @param strStreamUrl The play list url to open.
+    * @param strList The buffer to store the data (playlist) received from strStreamUrl separated with "\n"
+    * @param uListSize The size of the strList
+    * @return number of successfully read bytes if any bytes were read and stored in
+    *         strList, zero if no bytes are available to read,
+    *         -1 if uListSize is too small, -2 in case of any explicit error
+    */
+    int GetStreamPlaylist(const char* strStreamUrl, void* strList, size_t uListSize)
+    {
+      return XBMC_get_stream_playlist (m_Handle, m_Callbacks, strStreamUrl, strList, uListSize);
+    }
+
+    /*!
+    * @brief Open the stream with streamUrl via XBMC's CDVDInputStream. Needs to be closed by calling CloseStream() when done.
+    * @param strStreamUrl The stream url (rtmp,rtmpt,rtmpe,rtmpte,rtmps) to open.
+    * @return A handle for the CDVDInputStreamRTMP, or NULL if it couldn't be opened.
+    */
+    void* OpenStream(const char* strStreamUrl)
+    {
+      return XBMC_open_stream(m_Handle, m_Callbacks, strStreamUrl);
+    }
+
+    /*!
+    * @brief Read from an open stream.
+    * @param stream The stream handle to read from.
+    * @param lpBuf The buffer to store the data in.
+    * @param uiBufSize The size of the buffer.
+    * @return number of successfully read bytes if any bytes were read and stored in
+    *         buffer, zero if no bytes are available to read (end of stream was reached)
+    *         or undetectable error occur, -1 in case of any explicit error
+    */
+    ssize_t ReadStream(void* stream, void* lpBuf, size_t uiBufSize)
+    {
+      return XBMC_read_stream(m_Handle, m_Callbacks, stream, lpBuf, uiBufSize);
+    }
+
+    /*!
+    * @brief Close an open stream.
+    * @param file The stream handle to close.
+    */
+  void CloseStream(void* stream)
+  {
+    return XBMC_close_stream(m_Handle, m_Callbacks, stream);
+  }
+
   protected:
     void* (*XBMC_register_me)(void *HANDLE);
     void (*XBMC_unregister_me)(void *HANDLE, void* CB);
@@ -587,6 +650,10 @@ namespace ADDON
     bool (*XBMC_create_directory)(void *HANDLE, void* CB, const char* strPath);
     bool (*XBMC_directory_exists)(void *HANDLE, void* CB, const char* strPath);
     bool (*XBMC_remove_directory)(void *HANDLE, void* CB, const char* strPath);
+    int (*XBMC_get_stream_playlist)(void *HANDLE, void* CB, const char* strFileName, void* strList, size_t uListSize);
+    void* (*XBMC_open_stream)(void *HANDLE, void* CB, const char* strFileName);
+    ssize_t (*XBMC_read_stream)(void *HANDLE, void* CB, void* stream, void* lpBuf, size_t uiBufSize);
+    void (*XBMC_close_stream)(void *HANDLE, void* CB, void* stream);
 
   private:
     void *m_libXBMC_addon;

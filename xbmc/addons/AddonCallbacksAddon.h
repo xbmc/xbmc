@@ -65,6 +65,12 @@ public:
   static bool DirectoryExists(const void* addonData, const char *strPath);
   static bool RemoveDirectory(const void* addonData, const char *strPath);
 
+  // stream operations
+  static int GetStreamPlaylist(const void* addonData, const char* strStreamUrl, void* strList, size_t uListSize);
+  static void* OpenStream(const void* addonData, const char* strStreamUrl);
+  static ssize_t ReadStream(const void* addonData, void* stream, void* lpBuf, size_t uiBufSize);
+  static void CloseStream(const void* addonData, void* stream);
+
 private:
   CB_AddOnLib  *m_callbacks; /*!< callback addresses */
   CAddon       *m_addon;     /*!< the add-on */
