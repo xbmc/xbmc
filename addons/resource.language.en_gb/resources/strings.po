@@ -13103,7 +13103,7 @@ msgstr ""
 #. Used as the type name for context item addons
 #: xbmc/addons/Addons.cpp
 msgctxt "#24025"
-msgid "Context items"
+msgid "Context menus"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp

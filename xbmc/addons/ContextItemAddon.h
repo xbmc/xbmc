@@ -23,14 +23,9 @@
 #include <memory>
 #include "Addon.h"
 
-class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
+class CContextMenuItem;
+typedef struct cp_cfg_element_t cp_cfg_element_t;
 
-namespace INFO
-{
-  class InfoBool;
-  typedef std::shared_ptr<InfoBool> InfoPtr;
-}
 
 namespace ADDON
 {
@@ -41,25 +36,11 @@ namespace ADDON
     CContextItemAddon(const AddonProps &props);
     virtual ~CContextItemAddon();
 
-    std::string GetLabel();
-
-    /*!
-     * \brief Get the parent category of this context item.
-     *
-     * \details Returns empty string if at root level or
-     * CONTEXT_MENU_GROUP_MANAGE when it should be in the 'manage' submenu.
-     */
-    const std::string& GetParent() const { return m_parent; }
-
-    /*!
-     * \brief Returns true if this contex menu should be visible for given item.
-     */
-    bool IsVisible(const CFileItemPtr& item) const;
+    std::vector<CContextMenuItem> GetItems();
 
   private:
-    std::string m_label;
-    std::string m_parent;
-    INFO::InfoPtr m_visCondition;
+    void ParseMenu(cp_cfg_element_t* elem, const std::string& parent, int& anonGroupCount);
+    std::vector<CContextMenuItem> m_items;
   };
 
   typedef std::shared_ptr<CContextItemAddon> ContextItemAddonPtr;
