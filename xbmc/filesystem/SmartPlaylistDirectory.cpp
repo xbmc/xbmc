@@ -282,7 +282,7 @@ namespace XFILE
 
     // sort grouped list by label
     if (items.Size() > 1 && !group.empty())
-      items.Sort(SortByLabel, SortOrderAscending, SortAttributeIgnoreArticle);
+      items.Sort(SortByLabel, SortOrderAscending, CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
 
     // go through and set the playlist order
     for (int i = 0; i < items.Size(); i++)

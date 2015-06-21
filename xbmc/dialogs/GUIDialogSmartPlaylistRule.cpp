@@ -32,6 +32,7 @@
 #include "storage/MediaManager.h"
 #include "utils/LabelFormatter.h"
 #include "utils/StringUtils.h"
+#include "settings/Settings.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -337,7 +338,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
 
   // sort the items
-  items.Sort(SortByLabel, SortOrderAscending, SortAttributeIgnoreArticle);
+  items.Sort(SortByLabel, SortOrderAscending, CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
