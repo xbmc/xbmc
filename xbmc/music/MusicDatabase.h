@@ -479,7 +479,7 @@ protected:
 
   virtual void CreateTables();
   virtual void CreateAnalytics();
-  virtual int GetMinSchemaVersion() const { return 18; }
+  virtual int GetMinSchemaVersion() const { return 32; }
   virtual int GetSchemaVersion() const;
 
   const char *GetBaseDBName() const { return "MyMusic"; };
