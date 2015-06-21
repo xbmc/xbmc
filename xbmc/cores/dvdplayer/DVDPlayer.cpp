@@ -604,6 +604,9 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_omxplayer_mode                     = false;
 #endif
 
+  m_SkipCommercials = !CSettings::Get().GetBool("pvrplayback.commskipdisabled");
+  m_NotifyCommercials = CSettings::Get().GetBool("pvrplayback.commskipnotify");
+
   CreatePlayers();
 }
 
@@ -1168,13 +1171,27 @@ void CDVDPlayer::Process()
     }
     CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
   }
-  else if(m_Edl.InCut(0, &cut)
-      && (cut.action == CEdl::CUT || cut.action == CEdl::COMM_BREAK))
+  else if(m_Edl.InCut(0, &cut))
   {
-    starttime = cut.end;
-    CLog::Log(LOGDEBUG, "%s - Start position set to end of first cut or commercial break: %d", __FUNCTION__, starttime);
-    if(cut.action == CEdl::COMM_BREAK)
+    if (cut.action == CEdl::CUT)
     {
+      starttime = cut.end;
+      CLog::Log(LOGDEBUG, "%s - Start position set to end of first cut: %d", __FUNCTION__, starttime);
+    }
+    else if (cut.action == CEdl::COMM_BREAK)
+    {
+      if (m_SkipCommercials)
+      {
+        starttime = cut.end;
+        CLog::Log(LOGDEBUG, "%s - Start position set to end of first commercial break: %d", __FUNCTION__, starttime);
+      }
+
+      if (m_NotifyCommercials)
+      {
+        std::string strTimeString = StringUtils::SecondsToTimeString(cut.end / 1000, TIME_FORMAT_MM_SS);
+        CGUIDialogKaiToast::QueueNotification("Commercial", strTimeString);
+      }
+
       /*
        * Setup auto skip markers as if the commercial break had been skipped using standard
        * detection.
@@ -2181,13 +2198,24 @@ void CDVDPlayer::CheckAutoSceneSkip()
   &&      GetPlaySpeed() >= 0
   &&      cut.start > m_EdlAutoSkipMarkers.commbreak_end)
   {
-    CLog::Log(LOGDEBUG, "%s - Clock in commercial break [%s - %s]: %s. Automatically skipping to end of commercial break (only done once per break)",
-              __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
-              CEdl::MillisecondsToTimeString(clock).c_str());
-    /*
-     * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
-     */
-    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, m_omxplayer_mode, true, false, true));
+    if (m_NotifyCommercials)
+    {
+      std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
+      CGUIDialogKaiToast::QueueNotification("Commercial", strTimeString);
+    }
+
+    if (m_SkipCommercials)
+    {
+      CLog::Log(LOGDEBUG, "%s - Clock in commercial break [%s - %s]: %s. Automatically skipping to end of commercial break (only done once per break)",
+                __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
+                CEdl::MillisecondsToTimeString(clock).c_str());
+
+      /*
+       * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
+       */
+      m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, m_omxplayer_mode, true, false, !m_NotifyCommercials, true));
+    }
+
     /*
      * Each commercial break is only skipped once so poorly detected commercial breaks can be
      * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
@@ -2196,6 +2224,18 @@ void CDVDPlayer::CheckAutoSceneSkip()
     m_EdlAutoSkipMarkers.commbreak_start = cut.start;
     m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
     m_EdlAutoSkipMarkers.seek_to_start   = true; // Allow backwards Seek() to go directly to the start
+  }
+}
+
+void CDVDPlayer::ToggleCommSkip()
+{
+  m_SkipCommercials = !m_SkipCommercials;
+  if (m_NotifyCommercials)
+  {
+    if (m_SkipCommercials)
+      CGUIDialogKaiToast::QueueNotification("Commercial", "Auto Skip: ON");
+    else
+      CGUIDialogKaiToast::QueueNotification("Commercial", "Auto Skip: OFF");
   }
 }
 

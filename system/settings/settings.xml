@@ -1358,6 +1358,16 @@
             <formatlabel>14046</formatlabel>
           </control>
         </setting>
+        <setting id="pvrplayback.commskipdisabled" type="boolean" label="Commercial Skip Disabled" help="Check this to disable automatic commercial skipping">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pvrplayback.commskipnotify" type="boolean" label="Display Commercial Notifications" help="Show commercial notifications during playback">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="3">
         <setting id="pvrplayback.fps" type="integer" label="19108" help="36261">
