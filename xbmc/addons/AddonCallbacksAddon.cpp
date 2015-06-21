@@ -83,7 +83,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->DirectoryExists    = DirectoryExists;
   m_callbacks->RemoveDirectory    = RemoveDirectory;
   
-  m_callbacks->GetStreamChunksList = GetStreamChunksList;
+  m_callbacks->GetStreamPlaylist = GetStreamPlaylist;
   m_callbacks->OpenStream          = OpenStream;
   m_callbacks->ReadStream          = ReadStream;
   m_callbacks->CloseStream         = CloseStream;
