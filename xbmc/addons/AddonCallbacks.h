@@ -98,10 +98,10 @@ typedef struct CB_AddOn
   AddOnDirectoryExists    DirectoryExists;
   AddOnRemoveDirectory    RemoveDirectory;
 
-  AddOnGetStreamChunksList  GetStreamPlaylist;
-  AddOnOpenStream           OpenStream;
-  AddOnReadStream           ReadStream;
-  AddOnCloseStream          CloseStream;
+  AddOnGetStreamPlaylist  GetStreamPlaylist;
+  AddOnOpenStream         OpenStream;
+  AddOnReadStream         ReadStream;
+  AddOnCloseStream        CloseStream;
 } CB_AddOnLib;
 
 typedef xbmc_codec_t (*CODECGetCodecByName)(const void* addonData, const char* strCodecName);
