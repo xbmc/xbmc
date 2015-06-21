@@ -20,14 +20,17 @@
  */
 
 #include <map>
+#include "ContextMenuItem.h"
 #include "addons/ContextItemAddon.h"
 #include "dialogs/GUIDialogContextMenu.h"
 
-#define CONTEXT_MENU_GROUP_MANAGE "kodi.core.manage"
 
 class CContextMenuManager
 {
 public:
+  static const CContextMenuItem MAIN;
+  static const CContextMenuItem MANAGE;
+
   static CContextMenuManager& Get();
 
   /*!
@@ -42,10 +45,12 @@ public:
    * \brief Adds all registered context item to the list.
    * \param item - the currently selected item.
    * \param list - the context menu.
-   * \param parent - the ID of the context menu. Empty string if the root menu.
-   * CONTEXT_MENU_GROUP_MANAGE if the 'manage' submenu.
+   * \param root - the context menu responsible for this call.
    */
-  void AddVisibleItems(const CFileItemPtr& item, CContextButtons& list, const std::string& parent = "");
+  void AddVisibleItems(
+    const CFileItemPtr& item,
+    CContextButtons& list,
+    const CContextMenuItem& root = MAIN);
 
   /*!
    * \brief Adds a context item to this manager.
@@ -65,14 +70,11 @@ private:
   virtual ~CContextMenuManager() {}
 
   void Init();
+  bool IsVisible(
+    const CContextMenuItem& menuItem,
+    const CContextMenuItem& root,
+    const CFileItemPtr& fileItem);
 
-  /*!
-   * \brief Get a context menu item by its assigned id.
-   * \param id - the button id of the context item.
-   * \return the addon or NULL if no item with given id is registered.
-   */
-  ADDON::ContextItemAddonPtr GetContextItemByID(const unsigned int id);
-
-  std::map<unsigned int, ADDON::ContextItemAddonPtr> m_contextAddons;
+  std::map<unsigned int, CContextMenuItem> m_items;
   unsigned int m_iCurrentContextId;
 };

@@ -21,12 +21,13 @@
 #include "ContextItemAddon.h"
 #include "AddonManager.h"
 #include "ContextMenuManager.h"
+#include "ContextMenuItem.h"
 #include "GUIInfoManager.h"
 #include "interfaces/info/InfoBool.h"
 #include "utils/StringUtils.h"
-#include <boost/lexical_cast.hpp>
+#include "utils/URIUtils.h"
+#include <sstream>
 
-using namespace std;
 
 namespace ADDON
 {
@@ -41,32 +42,88 @@ CContextItemAddon::~CContextItemAddon()
 CContextItemAddon::CContextItemAddon(const cp_extension_t *ext)
   : CAddon(ext)
 {
-  ELEMENTS items;
-  if (CAddonMgr::Get().GetExtElements(ext->configuration, "item", items))
+  cp_cfg_element_t* menu = CAddonMgr::Get().GetExtElement(ext->configuration, "menu");
+  if (menu)
   {
-    cp_cfg_element_t *item = items[0];
+    int tmp = 0;
+    ParseMenu(menu, "", tmp);
+  }
+  else
+  {
+    //backwards compatibility. add first item definition
+    ELEMENTS items;
+    if (CAddonMgr::Get().GetExtElements(ext->configuration, "item", items))
+    {
+      cp_cfg_element_t *item = items[0];
 
-    m_label = CAddonMgr::Get().GetExtValue(item, "label");
-    m_parent = CAddonMgr::Get().GetExtValue(item, "parent");
+      std::string visCondition = CAddonMgr::Get().GetExtValue(item, "visible");
+      if (visCondition.empty())
+        visCondition = "false";
 
-    string visible = CAddonMgr::Get().GetExtValue(item, "visible");
-    if (visible.empty())
-      visible = "false";
+      std::string parent = CAddonMgr::Get().GetExtValue(item, "parent") == "kodi.core.manage"
+          ? CContextMenuManager::MANAGE.m_groupId : CContextMenuManager::MAIN.m_groupId;
 
-    m_visCondition = g_infoManager.Register(visible, 0);
+      CContextMenuItem menuItem = CContextMenuItem::CreateItem(
+        CAddonMgr::Get().GetExtValue(item, "label"),
+        parent,
+        LibPath(),
+        g_infoManager.Register(visCondition, 0));
+
+      m_items.push_back(menuItem);
+    }
   }
 }
 
-std::string CContextItemAddon::GetLabel()
+void CContextItemAddon::ParseMenu(cp_cfg_element_t* elem, const std::string& parent, int& anonGroupCount)
 {
-  if (StringUtils::IsNaturalNumber(m_label))
-    return GetString(boost::lexical_cast<int>(m_label.c_str()));
-  return m_label;
+  auto menuLabel = CAddonMgr::Get().GetExtValue(elem, "label");
+  auto menuId = CAddonMgr::Get().GetExtValue(elem, "@id");
+
+  if (menuId.empty())
+  {
+    //anonymous group. create a new unique internal id.
+    std::stringstream ss;
+    ss << ID() << ++anonGroupCount;
+    menuId = ss.str();
+  }
+
+  m_items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId));
+
+  ELEMENTS subMenus;
+  if (CAddonMgr::Get().GetExtElements(elem, "menu", subMenus))
+    for (const auto& subMenu : subMenus)
+      ParseMenu(subMenu, menuId, anonGroupCount);
+
+  ELEMENTS items;
+  if (CAddonMgr::Get().GetExtElements(elem, "item", items))
+  {
+    for (const auto& item : items)
+    {
+      auto label = CAddonMgr::Get().GetExtValue(item, "label");
+      auto visCondition = CAddonMgr::Get().GetExtValue(item, "visible");
+      auto library = CAddonMgr::Get().GetExtValue(item, "@library");
+
+      if (!label.empty() && !library.empty() && !visCondition.empty())
+      {
+        auto menu = CContextMenuItem::CreateItem(
+          label,
+          menuId,
+          URIUtils::AddFileToFolder(Path(), library),
+          g_infoManager.Register(visCondition, 0));
+
+        m_items.push_back(menu);
+      }
+    }
+  }
 }
 
-bool CContextItemAddon::IsVisible(const CFileItemPtr& item) const
+std::vector<CContextMenuItem> CContextItemAddon::GetItems()
 {
-  return item && m_visCondition && m_visCondition->Get(item.get());
+  //Return a copy which owns `this`
+  std::vector<CContextMenuItem> ret = m_items;
+  for (CContextMenuItem& menuItem : ret)
+    menuItem.m_addon = this->shared_from_this();
+  return ret;
 }
 
 }
