@@ -25,7 +25,7 @@
 				android:hasCode="true">
         <activity
             android:name=".Splash"
-            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize"
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:screenOrientation="sensorLandscape"
@@ -68,7 +68,7 @@
         -->
         <activity
             android:name=".Main"
-            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize"
             android:finishOnTaskLaunch="true"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
