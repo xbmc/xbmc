@@ -59,7 +59,6 @@ public:
   virtual void  Register(IDispResource *resource);
   virtual void  Unregister(IDispResource *resource);
 
-  virtual bool  Support3D(int width, int height, uint32_t mode)     const;
   virtual bool  ClampToGUIDisplayLimits(int &width, int &height);
 
   EGLConfig     GetEGLConfig();
