@@ -531,35 +531,6 @@ EGLConfig CWinSystemEGL::GetEGLConfig()
   return m_config;
 }
 
-// the logic in this function should match whether CBaseRenderer::FindClosestResolution picks a 3D mode
-bool CWinSystemEGL::Support3D(int width, int height, uint32_t mode) const
-{
-  RESOLUTION_INFO &curr = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
-
-  // if we are using automatic hdmi mode switching
-  if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
-  {
-    int searchWidth = curr.iScreenWidth;
-    int searchHeight = curr.iScreenHeight;
-
-    // only search the custom resolutions
-    for (unsigned int i = (int)RES_DESKTOP; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
-    {
-      RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(i);
-      if(res.iScreenWidth == searchWidth && res.iScreenHeight == searchHeight && (res.dwFlags & mode))
-        return true;
-    }
-  }
-  // otherwise just consider current mode
-  else
-  {
-     if (curr.dwFlags & mode)
-       return true;
-  }
-
-  return false;
-}
-
 bool CWinSystemEGL::ClampToGUIDisplayLimits(int &width, int &height)
 {
   width = width > m_nWidth ? m_nWidth : width;
