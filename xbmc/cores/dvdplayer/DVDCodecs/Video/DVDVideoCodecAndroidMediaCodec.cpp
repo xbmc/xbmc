@@ -529,6 +529,8 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
     m_codec->stop();
     m_codec->release();
     m_codec.reset();
+    if (xbmc_jnienv()->ExceptionCheck())
+      xbmc_jnienv()->ExceptionClear();
   }
   ReleaseSurfaceTexture();
 
