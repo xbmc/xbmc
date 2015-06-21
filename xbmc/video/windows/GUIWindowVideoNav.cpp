@@ -837,13 +837,13 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
       {
         if (info && info->Content() != CONTENT_NONE)
+        {
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
+          buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+        }
         else
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
       }
-
-      if (info)
-        buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
     }
   }
   else
