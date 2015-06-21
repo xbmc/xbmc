@@ -308,6 +308,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iEdlMaxStartGap;          // seconds
     int m_iEdlCommBreakAutowait;    // seconds
     int m_iEdlCommBreakAutowind;    // seconds
+    bool m_bEdlCommAutoSkip; /*!< @brief true to automatically skip commercial breaks in Edit Decision Lists by defeault */
+    bool m_bEdlCommNotify; /*!< @brief true to display a notification of EDL commercial breaks (even if Commercial skip is off */
 
     int m_curlconnecttimeout;
     int m_curllowspeedtime;

@@ -14030,7 +14030,22 @@ msgctxt "#25010"
 msgid "Chapter %u"
 msgstr ""
 
-#empty strings from id 25011 to 29800
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25011"
+msgid "Commercial"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25012"
+msgid "Auto-skip off"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25013"
+msgid "Auto-skip on"
+msgstr ""
+
+#empty strings from id 25014 to 29800
 
 #: unused
 msgctxt "#29801"
