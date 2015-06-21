@@ -129,7 +129,7 @@ DLLEXPORT int XBMC_get_stream_playlist(void *hdl, void* cb, const char* strStrea
   if (cb == NULL)
     return NULL;
 
-  return ((CB_AddOnLib*)cb)->GetStreamChunksList(((AddonCB*)hdl)->addonData, strStreamUrl, strList, uListSize);
+  return ((CB_AddOnLib*)cb)->GetStreamPlaylist(((AddonCB*)hdl)->addonData, strStreamUrl, strList, uListSize);
 }
 
 DLLEXPORT void* XBMC_open_stream(void *hdl, void* cb, const char* strStreamUrl)
