@@ -98,7 +98,7 @@ typedef struct CB_AddOn
   AddOnDirectoryExists    DirectoryExists;
   AddOnRemoveDirectory    RemoveDirectory;
 
-  AddOnGetStreamChunksList  GetStreamChunksList;
+  AddOnGetStreamChunksList  GetStreamPlaylist;
   AddOnOpenStream           OpenStream;
   AddOnReadStream           ReadStream;
   AddOnCloseStream          CloseStream;
