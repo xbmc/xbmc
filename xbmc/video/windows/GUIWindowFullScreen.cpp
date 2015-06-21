@@ -167,6 +167,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_TOGGLE_COMMSKIP:
+    g_application.m_pPlayer->ToggleCommSkip();
+    return true;
+    break;
+
   case ACTION_SHOW_OSD_TIME:
     m_bShowCurrentTime = !m_bShowCurrentTime;
     if(!m_bShowCurrentTime)
