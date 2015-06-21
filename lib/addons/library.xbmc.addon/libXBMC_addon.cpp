@@ -124,6 +124,38 @@ DLLEXPORT void XBMC_free_string(void* hdl, void* cb, char* str)
   ((CB_AddOnLib*)cb)->FreeString(((AddonCB*)hdl)->addonData, str);
 }
 
+DLLEXPORT int XBMC_get_stream_playlist(void *hdl, void* cb, const char* strStreamUrl, void* strList, size_t uListSize)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->GetStreamChunksList(((AddonCB*)hdl)->addonData, strStreamUrl, strList, uListSize);
+}
+
+DLLEXPORT void* XBMC_open_stream(void *hdl, void* cb, const char* strStreamUrl)
+{
+  if (cb == NULL)
+    return NULL;
+
+  return ((CB_AddOnLib*)cb)->OpenStream(((AddonCB*)hdl)->addonData, strStreamUrl);
+}
+
+DLLEXPORT ssize_t XBMC_read_stream(void *hdl, void* cb, void* stream, void* lpBuf, size_t uiBufSize)
+{
+  if (cb == NULL)
+    return -1;
+
+  return ((CB_AddOnLib*)cb)->ReadStream(((AddonCB*)hdl)->addonData, stream, lpBuf, uiBufSize);
+}
+
+DLLEXPORT void XBMC_close_stream(void *hdl, void* cb, void* stream)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_AddOnLib*)cb)->CloseStream(((AddonCB*)hdl)->addonData, stream);
+}
+
 DLLEXPORT void* XBMC_open_file(void *hdl, void* cb, const char* strFileName, unsigned int flags)
 {
   if (cb == NULL)

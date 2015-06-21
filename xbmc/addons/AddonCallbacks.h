@@ -62,6 +62,11 @@ typedef bool (*AddOnCreateDirectory)(const void* addonData, const char *strPath)
 typedef bool (*AddOnDirectoryExists)(const void* addonData, const char *strPath);
 typedef bool (*AddOnRemoveDirectory)(const void* addonData, const char *strPath);
 
+typedef int (*AddOnGetStreamPlaylist)(const void* addonData, const char* strStreamUrl, void* strList, size_t uListSize);
+typedef void* (*AddOnOpenStream)(const void* addonData, const char* strStreamUrl);
+typedef ssize_t (*AddOnReadStream)(const void* addonData, void* stream, void* lpBuf, size_t uiBufSize);
+typedef void (*AddOnCloseStream)(const void* addonData, void* stream);
+
 typedef struct CB_AddOn
 {
   AddOnLogCallback        Log;
@@ -92,6 +97,11 @@ typedef struct CB_AddOn
   AddOnCreateDirectory    CreateDirectory;
   AddOnDirectoryExists    DirectoryExists;
   AddOnRemoveDirectory    RemoveDirectory;
+
+  AddOnGetStreamChunksList  GetStreamChunksList;
+  AddOnOpenStream           OpenStream;
+  AddOnReadStream           ReadStream;
+  AddOnCloseStream          CloseStream;
 } CB_AddOnLib;
 
 typedef xbmc_codec_t (*CODECGetCodecByName)(const void* addonData, const char* strCodecName);
