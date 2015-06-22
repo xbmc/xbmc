@@ -32,6 +32,16 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 
+#include <vector>
+#include <string>
+#include <climits>
+#include "utils/StringUtils.h"
+#include "cores/dvdplayer/DVDInputStreams/DVDFactoryInputStream.h"
+#include "cores/dvdplayer/DVDInputStreams/DVDInputStream.h"
+#include "playlists/PlayList.h"
+#include "playlists/PlayListM3U.h"
+#include "settings/Settings.h"
+
 using namespace XFILE;
 
 namespace ADDON
@@ -72,6 +82,11 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->CreateDirectory    = CreateDirectory;
   m_callbacks->DirectoryExists    = DirectoryExists;
   m_callbacks->RemoveDirectory    = RemoveDirectory;
+  
+  m_callbacks->GetStreamPlaylist = GetStreamPlaylist;
+  m_callbacks->OpenStream          = OpenStream;
+  m_callbacks->ReadStream          = ReadStream;
+  m_callbacks->CloseStream         = CloseStream;
 }
 
 CAddonCallbacksAddon::~CAddonCallbacksAddon()
@@ -525,6 +540,98 @@ bool CAddonCallbacksAddon::RemoveDirectory(const void* addonData, const char *st
     CFile::Delete(fileItems.Get(i)->GetPath());
 
   return CDirectory::Remove(strPath);
+}
+
+int CAddonCallbacksAddon::GetStreamPlaylist(const void* addonData, const char* strStreamUrl, void* strList, size_t uListSize)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return -2;
+  
+  // get the available bandwidth and  determine the most appropriate stream
+  int bandwidth = CSettings::Get().GetInt("network.bandwidth");
+  if(bandwidth <= 0)
+    bandwidth = INT_MAX;
+  std::string selected;
+  selected = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(strStreamUrl, bandwidth);
+  if (selected.compare(strStreamUrl) != 0)
+    strStreamUrl = selected.c_str();
+
+  CFileItem item(strStreamUrl, false);
+  if (!item.IsType(".m3u8"))
+    return -2;
+
+  PLAYLIST::CPlayList* list = new PLAYLIST::CPlayListM3U;
+  list->Load(strStreamUrl);
+  if (!list->size())
+  {
+    delete (list);
+    return 0;
+  }
+
+  std::string t_strList;
+  bool first = true;
+  for (int elem=0; elem<list->size(); elem++)
+  {
+    CFileItemPtr playlistItem = list->operator[](elem);
+    CFileItem* name = playlistItem.get();
+    std::string strName = name->GetPath();
+    strName = StringUtils::Trim(strName);
+    if (first==true)
+      first = false;
+    else
+      t_strList.append("\n");
+    t_strList.append(strName);
+  }
+  delete (list);
+
+  size_t size = strlen(t_strList.c_str());
+  if (size>=uListSize)
+    return -1;
+  memcpy(strList, t_strList.c_str(), t_strList.size());
+  return size;
+}
+
+void* CAddonCallbacksAddon::OpenStream(const void* addonData, const char* strStreamUrl)
+{  
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return NULL;
+
+  CDVDInputStream *cInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strStreamUrl, "");
+  if (!cInputStream || cInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || cInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) || cInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    return NULL;
+
+  if (cInputStream->Open(strStreamUrl, "READ_NO_CACHE"))
+    return ((void*)cInputStream);
+  return NULL;
+}
+
+ssize_t CAddonCallbacksAddon::ReadStream(const void* addonData, void* stream, void* lpBuf, size_t uiBufSize)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return 0;
+
+  CDVDInputStream* cInputStream = (CDVDInputStream*)stream;
+  if (!cInputStream)
+    return 0;
+
+  return cInputStream->Read((uint8_t*)lpBuf, uiBufSize);
+}
+
+void CAddonCallbacksAddon::CloseStream(const void* addonData, void* stream)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return;
+
+  CDVDInputStream* cInputStream = (CDVDInputStream*)stream;
+  if (cInputStream)
+  {
+    cInputStream->Close();
+    delete cInputStream;
+  }
 }
 
 }; /* namespace ADDON */
