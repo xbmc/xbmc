@@ -78,6 +78,7 @@ protected:
   EGLSurface            m_surface;
   EGLContext            m_context;
   EGLConfig             m_config;
+  RENDER_STEREO_MODE    m_stereo_mode;
 
   CEGLWrapper           *m_egl;
   std::string           m_extensions;
