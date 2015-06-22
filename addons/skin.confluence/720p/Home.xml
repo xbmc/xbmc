@@ -31,7 +31,7 @@
 		<control type="group">
 			<left>0</left>
 			<top>60</top>
-			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo) + !SubString(Window(videolibrary).Property(PlayingBackgroundMedia),True)</visible>
+			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo) + IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="image">
@@ -233,7 +233,7 @@
 		<control type="group">
 			<left>0</left>
 			<top>50</top>
-			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + !SubString(Window(videolibrary).Property(PlayingBackgroundMedia),True)</visible>
+			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="group">
@@ -466,7 +466,7 @@
 				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="225" />
 				<effect type="fade" start="100" end="0" time="225" />
 			</animation>
-			<visible>!SubString(Window(videolibrary).Property(PlayingBackgroundMedia),True)</visible>
+			<visible>IsEmpty(Window(videolibrary).Property(PlayingBackgroundMedia))</visible>
 			<control type="image">
 				<description>Background End image</description>
 				<left>0</left>
