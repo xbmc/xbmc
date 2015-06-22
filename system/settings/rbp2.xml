@@ -27,6 +27,11 @@
         <setting id="audiooutput.ac3transcode" help="36429">
         </setting>
       </group>
+      <group id="1">
+        <setting id="audiooutput.processquality">
+          <default>30</default> <!-- AE_QUALITY_MID -->
+        </setting>
+      </group>
     </category>
   </section>
 </settings>
