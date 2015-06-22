@@ -170,6 +170,8 @@ void CURL::Parse(const std::string& strURL1)
   std::string strProtocol2 = GetTranslatedProtocol();
   if(IsProtocol("rss") ||
      IsProtocol("rar") ||
+     IsProtocol("apk") ||
+     IsProtocol("zip") ||
      IsProtocol("addons") ||
      IsProtocol("image") ||
      IsProtocol("videodb") ||
@@ -182,9 +184,7 @@ void CURL::Parse(const std::string& strURL1)
     || IsProtocolEqual(strProtocol2, "plugin")
     || IsProtocolEqual(strProtocol2, "addons")
     || IsProtocolEqual(strProtocol2, "hdhomerun")
-    || IsProtocolEqual(strProtocol2, "rtsp")
-    || IsProtocolEqual(strProtocol2, "apk")
-    || IsProtocolEqual(strProtocol2, "zip"))
+    || IsProtocolEqual(strProtocol2, "rtsp"))
     sep = "?;#|";
   else if(IsProtocolEqual(strProtocol2, "ftp")
        || IsProtocolEqual(strProtocol2, "ftps"))
