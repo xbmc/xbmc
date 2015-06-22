@@ -1179,19 +1179,27 @@ bool CGUIWindowMusicBase::CanContainFilter(const std::string &strDirectory) cons
 void CGUIWindowMusicBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();
-  if (CMediaSettings::Get().GetMusicNeedsUpdate() == 35 && !g_application.IsMusicScanning() &&
-      g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC))
+  if (CMediaSettings::Get().GetMusicNeedsUpdate() == 35)
   {
-    // rescan of music library required
-    if (CGUIDialogYesNo::ShowAndGetInput(799, 800))
+    if (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) && !g_application.IsMusicScanning())
     {
-      int flags = CMusicInfoScanner::SCAN_RESCAN;
-      if (CSettings::Get().GetBool("musiclibrary.downloadinfo"))
-        flags |= CMusicInfoScanner::SCAN_ONLINE;
-      if (CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
-        flags |= CMusicInfoScanner::SCAN_BACKGROUND;
-      g_application.StartMusicScan("", true, flags);
-      CMediaSettings::Get().SetMusicNeedsUpdate(0); // once is enough (user may interrupt, but that's up to them)
+      // rescan of music library required
+      if (CGUIDialogYesNo::ShowAndGetInput(799, 800))
+      {
+        int flags = CMusicInfoScanner::SCAN_RESCAN;
+        if (CSettings::Get().GetBool("musiclibrary.downloadinfo"))
+          flags |= CMusicInfoScanner::SCAN_ONLINE;
+        if (CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
+          flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+        g_application.StartMusicScan("", true, flags);
+        CMediaSettings::Get().SetMusicNeedsUpdate(0); // once is enough (user may interrupt, but that's up to them)
+        CSettings::Get().Save();
+      }
+    }
+    else
+    {
+      // no need to force a rescan if there's no music in the library or if a library scan is already active
+      CMediaSettings::Get().SetMusicNeedsUpdate(0);
       CSettings::Get().Save();
     }
   }
