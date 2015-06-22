@@ -834,19 +834,16 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       database.Open();
       ADDON::ScraperPtr info = database.GetScraperForPath(item->GetPath());
 
-      if (!g_application.IsVideoScanning())
+      if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
       {
-        if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
+        if (info && info->Content() != CONTENT_NONE)
         {
-          if (info && info->Content() != CONTENT_NONE)
-            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
-          else
-            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+          buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
+          buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
+        else
+          buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
       }
-
-      if (info)
-        buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
     }
   }
   else
@@ -962,13 +959,10 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         // add "Set/Change content" to folders
         if (item->m_bIsFolder && !item->IsVideoDb() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
         {
-          if (!g_application.IsVideoScanning())
-          {
-            if (info && info->Content() != CONTENT_NONE)
-              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
-            else
-              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-          }
+          if (info && info->Content() != CONTENT_NONE)
+            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
+          else
+            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
 
           if (info && info->Content() != CONTENT_NONE)
             buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
