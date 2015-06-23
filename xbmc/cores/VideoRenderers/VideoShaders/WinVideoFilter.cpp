@@ -248,92 +248,33 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
 
   DefinesMap defines;
 
-  if (fmt == RENDER_FMT_YUV420P16)
+  switch (fmt)
   {
+  case RENDER_FMT_YUV420P:
+  case RENDER_FMT_YUV420P10:
+  case RENDER_FMT_YUV420P16:
     defines["XBMC_YV12"] = "";
     texWidth = sourceWidth;
-    // D3DFMT_L16 -> DXGI_FORMAT_R16_UNORM
-    // TODO Use .r swizzle in shader to duplicate red to other components to get D3D9 behavior.
-    if ( !m_YUVPlanes[0].Create(texWidth,     m_sourceHeight,     1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R16_UNORM)
-      || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R16_UNORM)
-      || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R16_UNORM))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create 16 bit YV12 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_YUV420P10)
-  {
-    defines["XBMC_YV12"] = "";
-    texWidth = sourceWidth;
-    // D3DFMT_L16 -> DXGI_FORMAT_R16_UNORM
-    // TODO Use .r swizzle in shader to duplicate red to other components to get D3D9 behavior.
-    if ( !m_YUVPlanes[0].Create(texWidth,     m_sourceHeight,     1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R16_UNORM)
-      || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R16_UNORM)
-      || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R16_UNORM))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create 10 bit YV12 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_YUV420P)
-  {
-    defines["XBMC_YV12"] = "";
-    texWidth = sourceWidth;
-    // D3DFMT_L8 -> DXGI_FORMAT_R8_UNORM
-    // TODO Use .r swizzle in shader to duplicate red to other components to get D3D9 behavior.
-    if ( !m_YUVPlanes[0].Create(texWidth,     m_sourceHeight,     1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R8_UNORM)
-      || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R8_UNORM)
-      || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R8_UNORM))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create YV12 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_NV12)
-  {
+    break;
+  case RENDER_FMT_NV12:
     defines["XBMC_NV12"] = "";
     texWidth = sourceWidth;
-    DXGI_FORMAT uvFormat = DXGI_FORMAT_R8G8_UNORM;
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
-    if (!g_Windowing.IsFormatSupport(uvFormat, D3D11_FORMAT_SUPPORT_TEXTURE2D))
-    {
-      uvFormat = DXGI_FORMAT_R8G8_SNORM;
+    if (!g_Windowing.IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
       defines["NV12_SNORM_UV"] = "";
-    }
-    // D3DFMT_L8 -> DXGI_FORMAT_R8_UNORM, 
-    // D3DFMT_A8L8 -> DXGI_FORMAT_R8G8_UNORM/SNORM 
-    if ( !m_YUVPlanes[0].Create(texWidth,     m_sourceHeight,     1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_R8_UNORM)
-      || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, D3D11_USAGE_DYNAMIC, uvFormat))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create NV12 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_YUYV422)
-  {
-    defines["XBMC_YUY2"] = "";
-    texWidth = sourceWidth >> 1;
-
-    if (!m_YUVPlanes[0].Create(texWidth, m_sourceHeight, 1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_B8G8R8A8_UNORM))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create YUY2 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_UYVY422)
-  {
+    break;
+  case RENDER_FMT_UYVY422:
     defines["XBMC_UYVY"] = "";
     texWidth = sourceWidth >> 1;
-
-    if (!m_YUVPlanes[0].Create(texWidth, m_sourceHeight, 1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_B8G8R8A8_UNORM))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create UYVY planes.");
-      return false;
-    }
-  }
-  else
+    break;
+  case RENDER_FMT_YUYV422:
+    defines["XBMC_YUY2"] = "";
+    texWidth = sourceWidth >> 1;
+    break;
+  default:
     return false;
+    break;
+  }
 
   m_texSteps[0] = 1.0f/(float)texWidth;
   m_texSteps[1] = 1.0f/(float)sourceHeight;
@@ -371,7 +312,6 @@ void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
 {
   PrepareParameters(sourceRect, destRect,
                     contrast, brightness, flags);
-  UploadToGPU(YUVbuf);
   SetShaderParameters(YUVbuf);
   Execute(nullptr, 4);
 
@@ -382,11 +322,6 @@ void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
 
 CYUV2RGBShader::~CYUV2RGBShader()
 {
-  for(unsigned i = 0; i < MAX_PLANES; i++)
-  {
-    if (m_YUVPlanes[i].Get())
-      m_YUVPlanes[i].Release();
-  }
 }
 
 void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
@@ -451,11 +386,11 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
 {
   m_effect.SetTechnique("YUV2RGB_T");
   m_effect.SetMatrix("g_ColorMatrix", m_matrix.Matrix());
-  m_effect.SetTexture("g_YTexture", m_YUVPlanes[0]);
+  m_effect.SetTexture("g_YTexture", YUVbuf->planes[0].texture);
   if (YUVbuf->GetActivePlanes() > 1)
-    m_effect.SetTexture("g_UTexture", m_YUVPlanes[1]);
+    m_effect.SetTexture("g_UTexture", YUVbuf->planes[1].texture);
   if (YUVbuf->GetActivePlanes() > 2)
-    m_effect.SetTexture("g_VTexture", m_YUVPlanes[2]);
+    m_effect.SetTexture("g_VTexture", YUVbuf->planes[2].texture);
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
 
   // we need to set view port to the full size of current render target
@@ -487,18 +422,6 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
 
   m_effect.SetScalar("g_viewportWidth", viewPortWidth);
   m_effect.SetScalar("g_viewportHeight", viewPortHeight);
-}
-
-bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
-{
-  const POINT point = { 0, 0 };
-
-  for (unsigned int i = 0; i<YUVbuf->GetActivePlanes(); i++)
-  {
-    CD3D11_BOX rect(0, 0, 0, YUVbuf->planes[i].texture.GetWidth(), YUVbuf->planes[i].texture.GetHeight(), 1);
-    g_Windowing.Get3D11Context()->CopySubresourceRegion(m_YUVPlanes[i].Get(), 0, point.x, point.y, 0, YUVbuf->planes[i].texture.Get(), 0, &rect);
-  }
-  return true;
 }
 
 //==================================================================================

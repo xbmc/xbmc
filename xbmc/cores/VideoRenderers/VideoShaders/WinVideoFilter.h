@@ -98,14 +98,12 @@ protected:
                                  float brightness,
                                  unsigned int flags);
   virtual void SetShaderParameters(YUVBuffer* YUVbuf);
-  virtual bool UploadToGPU(YUVBuffer* YUVbuf);
 
 private:
   CYUV2RGBMatrix      m_matrix;
   unsigned int        m_sourceWidth, m_sourceHeight;
   CRect               m_sourceRect , m_destRect;
   ERenderFormat       m_format;
-  CD3DTexture         m_YUVPlanes[3];
   float               m_texSteps[2];
 
   struct CUSTOMVERTEX {

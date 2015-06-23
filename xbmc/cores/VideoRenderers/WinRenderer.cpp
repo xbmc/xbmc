@@ -1028,7 +1028,7 @@ bool CWinRenderer::CreateYV12Texture(int index)
   {
     YUVBuffer *buf = new YUVBuffer();
 
-    if (!buf->Create(m_format, m_sourceWidth, m_sourceHeight))
+    if (!buf->Create(m_format, m_sourceWidth, m_sourceHeight, m_renderMethod == RENDER_PS))
     {
       CLog::Log(LOGERROR, __FUNCTION__" - Unable to create YV12 video texture %i", index);
       delete buf;
@@ -1193,31 +1193,33 @@ YUVBuffer::~YUVBuffer()
   Release();
 }
 
-bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int height)
+bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int height, bool dynamic)
 {
   m_format = format;
   m_width = width;
   m_height = height;
+  m_mapType = dynamic ? D3D11_MAP_WRITE_DISCARD : D3D11_MAP_WRITE;
+  // Create the buffers with D3D11_USAGE_DYNAMIC which can be used as shader resource for PS rendering
+  // or D3D11_USAGE_STAGING which can be read and written for SW rendering
+  D3D11_USAGE usage = dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_STAGING;
 
-  // Create the buffers with D3D11_USAGE_STAGING which can be read and written:
-  // This helps with lost devices. A buffer can be locked for dvdplayer without interfering.
   switch(m_format)
   {
   case RENDER_FMT_YUV420P10:
   case RENDER_FMT_YUV420P16:
     { // D3DFMT_L16 -> DXGI_FORMAT_R16_UNORM
-      if ( !planes[PLANE_Y].texture.Create(m_width,     m_height,     1, D3D11_USAGE_STAGING, DXGI_FORMAT_R16_UNORM)
-        || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, D3D11_USAGE_STAGING, DXGI_FORMAT_R16_UNORM)
-        || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, D3D11_USAGE_STAGING, DXGI_FORMAT_R16_UNORM))
+      if ( !planes[PLANE_Y].texture.Create(m_width,      m_height,      1, usage, DXGI_FORMAT_R16_UNORM)
+        || !planes[PLANE_U].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R16_UNORM)
+        || !planes[PLANE_V].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R16_UNORM))
         return false;
       m_activeplanes = 3;
       break;
     }
   case RENDER_FMT_YUV420P:
     { // D3DFMT_L8 - > DXGI_FORMAT_R8_UNORM
-      if ( !planes[PLANE_Y].texture.Create(m_width,     m_height,     1, D3D11_USAGE_STAGING, DXGI_FORMAT_R8_UNORM)
-        || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, D3D11_USAGE_STAGING, DXGI_FORMAT_R8_UNORM)
-        || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, D3D11_USAGE_STAGING, DXGI_FORMAT_R8_UNORM))
+      if ( !planes[PLANE_Y].texture.Create(m_width,      m_height,      1, usage, DXGI_FORMAT_R8_UNORM)
+        || !planes[PLANE_U].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R8_UNORM)
+        || !planes[PLANE_V].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R8_UNORM))
         return false;
       m_activeplanes = 3;
       break;
@@ -1229,22 +1231,22 @@ bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int he
       // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
       if (!g_Windowing.IsFormatSupport(uvFormat, D3D11_FORMAT_SUPPORT_TEXTURE2D))
         uvFormat = DXGI_FORMAT_R8G8_SNORM;
-      if ( !planes[PLANE_Y].texture.Create( m_width,     m_height,     1, D3D11_USAGE_STAGING, DXGI_FORMAT_R8_UNORM)
-        || !planes[PLANE_UV].texture.Create(m_width / 2, m_height / 2, 1, D3D11_USAGE_STAGING, uvFormat))
+      if ( !planes[PLANE_Y].texture.Create( m_width,      m_height,      1, usage, DXGI_FORMAT_R8_UNORM)
+        || !planes[PLANE_UV].texture.Create(m_width >> 1, m_height >> 1, 1, usage, uvFormat))
         return false;
       m_activeplanes = 2;
       break;
     }
   case RENDER_FMT_YUYV422:
     { // D3DFMT_A8R8G8B8 -> DXGI_FORMAT_B8G8R8A8_UNORM
-      if ( !planes[PLANE_Y].texture.Create(m_width >> 1, m_height, 1, D3D11_USAGE_STAGING, DXGI_FORMAT_B8G8R8A8_UNORM))
+      if ( !planes[PLANE_Y].texture.Create(m_width >> 1, m_height, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
         return false;
       m_activeplanes = 1;
       break;
     }
   case RENDER_FMT_UYVY422:
     { // D3DFMT_A8R8G8B8 -> DXGI_FORMAT_B8G8R8A8_UNORM
-      if ( !planes[PLANE_Y].texture.Create(m_width >> 1, m_height, 1, D3D11_USAGE_STAGING, DXGI_FORMAT_B8G8R8A8_UNORM))
+      if ( !planes[PLANE_Y].texture.Create(m_width >> 1, m_height, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
         return false;
       m_activeplanes = 1;
       break;
@@ -1292,7 +1294,7 @@ void YUVBuffer::StartDecode()
   for(unsigned i = 0; i < m_activeplanes; i++)
   {
     if(planes[i].texture.Get()
-    && planes[i].texture.LockRect(0, &planes[i].rect, D3D11_MAP_WRITE) == false)
+    && planes[i].texture.LockRect(0, &planes[i].rect, m_mapType) == false)
     {
       memset(&planes[i].rect, 0, sizeof(planes[i].rect));
       CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture %d into memory", i);

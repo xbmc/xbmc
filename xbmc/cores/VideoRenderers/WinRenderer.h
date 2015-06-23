@@ -104,7 +104,7 @@ struct YUVBuffer : SVideoBuffer
 {
   YUVBuffer() : m_width(0), m_height(0), m_format(RENDER_FMT_NONE), m_activeplanes(0), m_locked(false) {}
   ~YUVBuffer();
-  bool Create(ERenderFormat format, unsigned int width, unsigned int height);
+  bool Create(ERenderFormat format, unsigned int width, unsigned int height, bool dynamic);
   virtual void Release();
   virtual void StartDecode();
   virtual void StartRender();
@@ -120,6 +120,7 @@ private:
   ERenderFormat    m_format;
   unsigned int     m_activeplanes;
   bool             m_locked;
+  D3D11_MAP        m_mapType;
 };
 
 struct DXVABuffer : SVideoBuffer
