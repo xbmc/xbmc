@@ -194,11 +194,20 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
   return false;
 }
 
+void CRepository::OnPostInstall(bool update, bool modal)
+{
+  // force refresh of addon repositories
+  CAddonInstaller::Get().UpdateRepos(true, false, true);
+}
+
 void CRepository::OnPostUnInstall()
 {
   CAddonDatabase database;
   database.Open();
   database.DeleteRepository(ID());
+
+  // force refresh of addon repositories
+  CAddonInstaller::Get().UpdateRepos(true, false, true);
 }
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
