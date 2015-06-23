@@ -54,6 +54,7 @@
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/FileUtils.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 #include "TextureCache.h"
@@ -157,7 +158,7 @@ void CMusicDatabase::CreateTables()
               " iTimesPlayed integer, iStartOffset integer, iEndOffset integer, "
               " idThumb integer, "
               " lastplayed varchar(20) default NULL, "
-              " rating char default '0', comment text, mood text)");
+              " rating char default '0', comment text, mood text, dateAdded text)");
   CLog::Log(LOGINFO, "create song_artist table");
   m_pDS->exec("CREATE TABLE song_artist (idArtist integer, idSong integer, strJoinPhrase text, boolFeatured integer, iOrder integer, strArtist text)");
   CLog::Log(LOGINFO, "create song_genre table");
@@ -277,7 +278,8 @@ void CMusicDatabase::CreateViews()
               "        album.bCompilation AS bCompilation,"
               "        album.strArtists AS strAlbumArtists,"
               "        album.strReleaseType AS strAlbumReleaseType,"
-              "        song.mood as mood "
+              "        song.mood as mood,"
+              "        song.dateAdded as dateAdded "
               "FROM song"
               "  JOIN album ON"
               "    song.idAlbum=album.idAlbum"
@@ -709,6 +711,8 @@ int CMusicDatabase::AddSong(const int idAlbum,
     if (bHasKaraoke)
       AddKaraokeData(idSong, iKaraokeNumber);
 
+    UpdateFileDateAdded(idSong, strPathAndFileName);
+
     AnnounceUpdate(MediaTypeSong, idSong);
   }
   catch (...)
@@ -827,6 +831,9 @@ int CMusicDatabase::UpdateSong(int idSong,
   strSQL += PrepareSQL(" WHERE idSong = %i", idSong);
 
   bool status = ExecuteQuery(strSQL);
+
+  UpdateFileDateAdded(idSong, strPathAndFileName);
+
   if (status)
     AnnounceUpdate(MediaTypeSong, idSong);
   return idSong;
@@ -1668,6 +1675,7 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.strTitle = record->at(offset + song_strTitle).get_asString();
   song.iTimesPlayed = record->at(offset + song_iTimesPlayed).get_asInt();
   song.lastPlayed.SetFromDBDateTime(record->at(offset + song_lastplayed).get_asString());
+  song.dateAdded.SetFromDBDateTime(record->at(offset + song_dateAdded).get_asString());
   song.iStartOffset = record->at(offset + song_iStartOffset).get_asInt();
   song.iEndOffset = record->at(offset + song_iEndOffset).get_asInt();
   song.strMusicBrainzTrackID = record->at(offset + song_strMusicBrainzTrackID).get_asString();
@@ -1716,6 +1724,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetMood(record->at(song_mood).get_asString());
   item->GetMusicInfoTag()->SetPlayCount(record->at(song_iTimesPlayed).get_asInt());
   item->GetMusicInfoTag()->SetLastPlayed(record->at(song_lastplayed).get_asString());
+  item->GetMusicInfoTag()->SetDateAdded(record->at(song_dateAdded).get_asString());
   std::string strRealPath = URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString());
   item->GetMusicInfoTag()->SetURL(strRealPath);
   item->GetMusicInfoTag()->SetCompilation(record->at(song_bCompilation).get_asInt() == 1);
@@ -3690,6 +3699,7 @@ bool CMusicDatabase::GetSongsNav(const std::string& strBaseDir, CFileItemList& i
 
 void CMusicDatabase::UpdateTables(int version)
 {
+  CLog::Log(LOGINFO, "%s - updating tables", __FUNCTION__);
   if (version < 34)
   {
     m_pDS->exec("ALTER TABLE artist ADD strMusicBrainzArtistID text\n");
@@ -3843,11 +3853,17 @@ void CMusicDatabase::UpdateTables(int version)
   {
     m_pDS->exec("ALTER TABLE song ADD mood text\n");
   }
+  if (version < 53)
+  {
+    m_pDS->exec("ALTER TABLE song ADD dateAdded text");
+    CMediaSettings::Get().SetMusicNeedsUpdate(53);
+    CSettings::Get().Save();
+  }
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 52;
+  return 53;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
@@ -5650,4 +5666,33 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
   }
 
   return true;
+}
+
+void CMusicDatabase::UpdateFileDateAdded(int songId, const std::string& strFileNameAndPath)
+{
+  if (songId < 0 || strFileNameAndPath.empty())
+    return;
+
+  CDateTime dateAdded;
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    // 1 prefering to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
+    if (g_advancedSettings.m_iMusicLibraryDateAdded == 1)
+      dateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
+    //2 using the newer datetime of the file's mtime and ctime
+    else if (g_advancedSettings.m_iMusicLibraryDateAdded == 2)
+      dateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, true);
+    //0 using the current datetime if non of the above matches or one returns an invalid datetime
+    if (!dateAdded.IsValid())
+      dateAdded = CDateTime::GetCurrentDateTime();
+
+    m_pDS->exec(PrepareSQL("UPDATE song SET dateAdded='%s' WHERE idSong=%d", dateAdded.GetAsDBDateTime().c_str(), songId));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s unable to update dateadded for song (%s) with date (%s)", __FUNCTION__, songId, dateAdded.GetAsDBDateTime().c_str());
+  }
 }
