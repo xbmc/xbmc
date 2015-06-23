@@ -1358,12 +1358,12 @@
             <formatlabel>14046</formatlabel>
           </control>
         </setting>
-        <setting id="pvrplayback.commskipdisabled" type="boolean" label="Commercial Skip Disabled" help="Check this to disable automatic commercial skipping">
+        <setting id="pvrplayback.commskipdisabled" type="boolean" label="38017" help="38018">
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="pvrplayback.commskipnotify" type="boolean" label="Display Commercial Notifications" help="Show commercial notifications during playback">
+        <setting id="pvrplayback.commskipnotify" type="boolean" label="38019" help="38020">
           <level>1</level>
           <default>false</default>
           <control type="toggle" />

@@ -13120,7 +13120,22 @@ msgctxt "#25010"
 msgid "Chapter %u"
 msgstr ""
 
-#empty strings from id 25011 to 29799
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25011"
+msgid "Commercial"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25012"
+msgid "Auto-skip off"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25013"
+msgid "Auto-skip on"
+msgstr ""
+
+#empty strings from id 25014 to 29799
 #strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
 
 #: skin.confluence
@@ -16618,4 +16633,24 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#38016"
 msgid "%d fps"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38017"
+msgid "Disable commercial skip"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38018"
+msgid "Check this to disable automatic commercial skipping"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38019"
+msgid "Display commercial notifications"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38020"
+msgid "Show notifications of commercials during playback (even if automatic skipping is disabled)"
 msgstr ""

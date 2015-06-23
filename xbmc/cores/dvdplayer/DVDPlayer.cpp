@@ -1189,7 +1189,7 @@ void CDVDPlayer::Process()
       if (m_NotifyCommercials)
       {
         std::string strTimeString = StringUtils::SecondsToTimeString(cut.end / 1000, TIME_FORMAT_MM_SS);
-        CGUIDialogKaiToast::QueueNotification("Commercial", strTimeString);
+        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
       }
 
       /*
@@ -2201,7 +2201,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
     if (m_NotifyCommercials)
     {
       std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
-      CGUIDialogKaiToast::QueueNotification("Commercial", strTimeString);
+      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
     }
 
     if (m_SkipCommercials)
@@ -2232,10 +2232,8 @@ void CDVDPlayer::ToggleCommSkip()
   m_SkipCommercials = !m_SkipCommercials;
   if (m_NotifyCommercials)
   {
-    if (m_SkipCommercials)
-      CGUIDialogKaiToast::QueueNotification("Commercial", "Auto Skip: ON");
-    else
-      CGUIDialogKaiToast::QueueNotification("Commercial", "Auto Skip: OFF");
+    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), 
+                                          g_localizeStrings.Get(m_SkipCommercials ? 25013 : 25012));
   }
 }
 
