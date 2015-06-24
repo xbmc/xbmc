@@ -259,7 +259,7 @@ bool CApplicationPlayer::SeekScene(bool bPlus)
 
 void CApplicationPlayer::ToggleCommSkip()
 {
-  boost::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->ToggleCommSkip();
 }
