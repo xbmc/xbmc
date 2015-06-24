@@ -605,7 +605,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 #endif
 
   m_SkipCommercials = CSettings::Get().GetBool("videoplayer.commskipenabled");
-  m_NotifyCommercials = CSettings::Get().GetBool("videoplater.commskipnotify");
+  m_NotifyCommercials = CSettings::Get().GetBool("videoplayer.commskipnotify");
 
   CreatePlayers();
 }
