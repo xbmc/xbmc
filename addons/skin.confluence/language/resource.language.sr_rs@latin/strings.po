@@ -230,7 +230,7 @@ msgstr "[B]KONFIGURISANjE POSTAVKI SISTEMA[/B][CR][CR]Podesite i kalibrišite ek
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]KONFIGURISANJE TV POSTAVKI[/B][CR][CR]Promenite informacije cielog ekrana · Upravljajte postavkama podataka elektronskog programskog vodiča (EPG) "
+msgstr "[B]KONFIGURISANJE TV POSTAVKI[/B][CR][CR]Promenite informacije celog ekrana · Upravljajte postavkama podataka elektronskog programskog vodiča (EPG) "
 
 msgctxt "#31413"
 msgid "Local subtitle available"
