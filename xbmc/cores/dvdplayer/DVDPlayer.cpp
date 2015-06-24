@@ -604,8 +604,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_omxplayer_mode                     = false;
 #endif
 
-  m_SkipCommercials = CSettings::Get().GetBool("videoplayer.commskipenabled");
-  m_NotifyCommercials = CSettings::Get().GetBool("videoplayer.commskipnotify");
+  m_SkipCommercials = g_advancedSettings.m_bEDLCommercialSkip;
 
   CreatePlayers();
 }
@@ -1186,7 +1185,7 @@ void CDVDPlayer::Process()
         CLog::Log(LOGDEBUG, "%s - Start position set to end of first commercial break: %d", __FUNCTION__, starttime);
       }
 
-      if (m_NotifyCommercials)
+      if (g_advancedSettings.m_bEDLCommercialNotify)
       {
         std::string strTimeString = StringUtils::SecondsToTimeString(cut.end / 1000, TIME_FORMAT_MM_SS);
         CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
@@ -2198,7 +2197,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
   &&      GetPlaySpeed() >= 0
   &&      cut.start > m_EdlAutoSkipMarkers.commbreak_end)
   {
-    if (m_NotifyCommercials)
+    if (g_advancedSettings.m_bEDLCommercialNotify)
     {
       std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
@@ -2213,7 +2212,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
       /*
        * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
        */
-      m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, m_omxplayer_mode, true, false, !m_NotifyCommercials, true));
+      m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, m_omxplayer_mode, true, false, !g_advancedSettings.m_bEDLCommercialNotify, true));
     }
 
     /*
@@ -2230,7 +2229,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
 void CDVDPlayer::ToggleCommSkip()
 {
   m_SkipCommercials = !m_SkipCommercials;
-  if (m_NotifyCommercials)
+  if (g_advancedSettings.m_bEDLCommercialNotify)
   {
     CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), 
                                           g_localizeStrings.Get(m_SkipCommercials ? 25013 : 25012));

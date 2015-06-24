@@ -350,6 +350,9 @@ void CAdvancedSettings::Initialize()
   m_bPVRAutoScanIconsUserSet       = false;
   m_iPVRNumericChannelSwitchTimeout = 1000;
 
+  m_bEDLCommercialSkip             = true;
+  m_bEDLCommercialNotify           = true;
+
   m_cacheMemBufferSize = 1024 * 1024 * 20;
   m_networkBufferMode = 0; // Default (buffer all internet streams/filesystems)
   // the following setting determines the readRate of a player data
@@ -1055,6 +1058,13 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pPVR, "channeliconsautoscan", m_bPVRChannelIconsAutoScan);
     XMLUtils::GetBoolean(pPVR, "autoscaniconsuserset", m_bPVRAutoScanIconsUserSet);
     XMLUtils::GetInt(pPVR, "numericchannelswitchtimeout", m_iPVRNumericChannelSwitchTimeout, 50, 60000);
+  }
+
+  TiXmlElement *pEDL = pRootElement->FirstChildElement("edl");
+  if (pEDL)
+  {
+    XMLUtils::GetBoolean(pEDL, "commercialskip", m_bEDLCommercialSkip);
+    XMLUtils::GetBoolean(pEDL, "commercialnotify", m_bEDLCommercialNotify);
   }
 
   TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");

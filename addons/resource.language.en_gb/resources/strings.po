@@ -16634,23 +16634,3 @@ msgstr ""
 msgctxt "#38016"
 msgid "%d fps"
 msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#38017"
-msgid "Automatic commercial skip"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#38018"
-msgid "Automaticly skip commercials in a video's edit decision list"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#38019"
-msgid "Display commercial notifications"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#38020"
-msgid "Show notifications of commercials during playback (even if automatic skipping is disabled)"
-msgstr ""

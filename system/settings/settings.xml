@@ -463,16 +463,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.commskipenabled" type="boolean" label="38017" help="38018">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="videoplayer.commskipnotify" type="boolean" label="38019" help="38020">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
       </group>
       <group id="2">
         <setting id="videolibrary.updateonstartup" type="boolean" label="22000" help="36146">
