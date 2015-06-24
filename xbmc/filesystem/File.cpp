@@ -235,18 +235,11 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
 
     CURL url(URIUtils::SubstitutePath(file));
 
-    if (!(m_flags & READ_NO_CACHE))
+    if (m_flags & READ_CACHED)
     {
-      const std::string pathToUrl(url.Get());
-      if (URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(pathToUrl) )
-        m_flags |= READ_CACHED;
-
-      if (m_flags & READ_CACHED)
-      {
-        // for internet stream, if it contains multiple stream, file cache need handle it specially.
-        m_pFile = new CFileCache((m_flags & READ_MULTI_STREAM) == READ_MULTI_STREAM);
-        return m_pFile->Open(url);
-      }
+      // If it's hinted as multistream, tell filecache so it can use double-caching
+      m_pFile = new CFileCache(m_flags & READ_MULTI_STREAM);
+      return m_pFile->Open(url);
     }
 
     m_pFile = CFileFactory::CreateLoader(url);

@@ -59,10 +59,7 @@ public:
 #define READ_CHUNKED   0x02
 
 /* use cache to access this file */
-#define READ_CACHED     0x04
-
-/* open without caching. regardless to file type. */
-#define READ_NO_CACHE  0x08
+#define READ_CACHED    0x04
 
 /* calcuate bitrate for file while reading */
 #define READ_BITRATE   0x10
