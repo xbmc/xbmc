@@ -302,6 +302,8 @@ void CAdvancedSettings::Initialize()
   m_iEdlMaxStartGap = 5 * 60;              // 5 minutes.
   m_iEdlCommBreakAutowait = 0;             // Off by default
   m_iEdlCommBreakAutowind = 0;             // Off by default
+  m_bEdlCommAutoSkip = true;               // On by default
+  m_bEdlCommNotify = true;                 // On by default
 
   m_curlconnecttimeout = 10;
   m_curllowspeedtime = 20;
@@ -349,9 +351,6 @@ void CAdvancedSettings::Initialize()
   m_bPVRChannelIconsAutoScan       = true;
   m_bPVRAutoScanIconsUserSet       = false;
   m_iPVRNumericChannelSwitchTimeout = 1000;
-
-  m_bEDLCommercialSkip             = true;
-  m_bEDLCommercialNotify           = true;
 
   m_cacheMemBufferSize = 1024 * 1024 * 20;
   m_networkBufferMode = 0; // Default (buffer all internet streams/filesystems)
@@ -887,6 +886,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
     XMLUtils::GetInt(pElement, "commbreakautowait", m_iEdlCommBreakAutowait, 0, 10);        // Between 0 and 10 seconds
     XMLUtils::GetInt(pElement, "commbreakautowind", m_iEdlCommBreakAutowind, 0, 10);        // Between 0 and 10 seconds
+    XMLUtils::GetBoolean(pElement, "commautoskip", m_bEdlCommAutoSkip);
+    XMLUtils::GetBoolean(pElement, "commnotify", m_bEdlCommNotify);
   }
 
   // picture exclude regexps
@@ -1058,13 +1059,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pPVR, "channeliconsautoscan", m_bPVRChannelIconsAutoScan);
     XMLUtils::GetBoolean(pPVR, "autoscaniconsuserset", m_bPVRAutoScanIconsUserSet);
     XMLUtils::GetInt(pPVR, "numericchannelswitchtimeout", m_iPVRNumericChannelSwitchTimeout, 50, 60000);
-  }
-
-  TiXmlElement *pEDL = pRootElement->FirstChildElement("edl");
-  if (pEDL)
-  {
-    XMLUtils::GetBoolean(pEDL, "commercialskip", m_bEDLCommercialSkip);
-    XMLUtils::GetBoolean(pEDL, "commercialnotify", m_bEDLCommercialNotify);
   }
 
   TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
