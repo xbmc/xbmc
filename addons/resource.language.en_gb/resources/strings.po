@@ -16637,12 +16637,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#38017"
-msgid "Disable commercial skip"
+msgid "Automatic commercial skip"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#38018"
-msgid "Check this to disable automatic commercial skipping"
+msgid "Automaticly skip commercials in a video's edit decision list"
 msgstr ""
 
 #: system/settings/settings.xml
