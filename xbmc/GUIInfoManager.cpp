@@ -429,6 +429,7 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "totaltime",        CONTAINER_TOTALTIME },
                                   { "hasthumb",         CONTAINER_HAS_THUMB },
                                   { "sortmethod",       CONTAINER_SORT_METHOD },
+                                  { "sortorder",        CONTAINER_SORT_ORDER },
                                   { "showplot",         CONTAINER_SHOWPLOT }};
 
 const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
@@ -1801,14 +1802,18 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       break;
     }
   case CONTAINER_SORT_METHOD:
-    {
+  case CONTAINER_SORT_ORDER:
+  {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
         const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
         if (viewState)
-          strLabel = g_localizeStrings.Get(viewState->GetSortMethodLabel());
-    }
+          if (info == CONTAINER_SORT_METHOD)
+            strLabel = g_localizeStrings.Get(viewState->GetSortMethodLabel());
+          else if (info == CONTAINER_SORT_ORDER)
+            strLabel = g_localizeStrings.Get(viewState->GetSortOrderLabel());
+      }
     }
     break;
   case CONTAINER_NUM_PAGES:
