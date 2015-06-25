@@ -31,7 +31,7 @@
 			<width>720</width>
 			<height>30</height>
 			<font>font13_title</font>
-			<label>$LOCALIZE[298]</label>
+			<label>$LOCALIZE[298] / $LOCALIZE[295]</label>
 			<align>center</align>
 			<aligny>center</aligny>
 			<textcolor>selected</textcolor>
