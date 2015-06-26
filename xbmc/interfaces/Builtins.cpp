@@ -1760,8 +1760,8 @@ int CBuiltins::Execute(const std::string& execString)
     ADDON::TYPE type = TranslateType(params[0]);
     if (CAddonMgr::Get().GetDefault(type, addon))
     {
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
-      if (type == ADDON_VIZ)
+      bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      if (type == ADDON_VIZ && changed)
         g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
     }
   }
