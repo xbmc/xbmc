@@ -5093,7 +5093,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
     Filter extFilter = filter;
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      std::string view, view_id, media_type, extraField;
+      std::string view, view_id, media_type, extraField, extraJoin;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
         view       = MediaTypeMovie;
@@ -5106,6 +5106,8 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
         view       = MediaTypeEpisode;
         view_id    = "idShow";
         media_type = MediaTypeTvShow;
+        // in order to make use of FieldPlaycount in smart playlists we need an extra join
+        extraJoin  = PrepareSQL("JOIN tvshow_view ON tvshow_view.idShow = tag_link.media_id");
       }
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
@@ -5124,6 +5126,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
       extFilter.AppendJoin(PrepareSQL("JOIN %s_view ON %s_link.media_id = %s_view.%s AND %s_link.media_type='%s'", view.c_str(), type, view.c_str(), view_id.c_str(), type, media_type.c_str()));
       extFilter.AppendJoin(PrepareSQL("JOIN files ON files.idFile = %s_view.idFile", view.c_str()));
       extFilter.AppendJoin("JOIN path ON path.idPath = files.idPath");
+      extFilter.AppendJoin(extraJoin);
     }
     else
     {
@@ -5272,91 +5275,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir, CFileItemList& 
 
 bool CVideoDatabase::GetTagsNav(const std::string& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */, bool countOnly /* = false */)
 {
-  std::string mediaType;
-  if (idContent == VIDEODB_CONTENT_MOVIES)
-    mediaType = MediaTypeMovie;
-  else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-    mediaType = MediaTypeTvShow;
-  else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-    mediaType = MediaTypeMusicVideo;
-  else
-    return false;
-
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    std::string strSQL = "SELECT %s FROM tag_link ";
-
-    Filter extFilter = filter;
-    extFilter.fields = "tag.tag_id, tag.name";
-    extFilter.AppendJoin("JOIN tag ON tag.tag_id = tag_link.tag_id");
-
-    if (idContent == (int)VIDEODB_CONTENT_MOVIES)
-      extFilter.AppendJoin("JOIN movie_view ON movie_view.idMovie = tag_link.media_id");
-
-    extFilter.AppendWhere(PrepareSQL("tag_link.media_type = '%s'", mediaType.c_str()));
-    extFilter.AppendGroup("tag_link.tag_id");
-
-    if (countOnly)
-    {
-      extFilter.fields = "COUNT(DISTINCT tag_link.tag_id)";
-      extFilter.group.clear();
-      extFilter.order.clear();
-    }
-    strSQL = StringUtils::Format(strSQL.c_str(), !extFilter.fields.empty() ? extFilter.fields.c_str() : "*");
-
-    // parse the base path to get additional filters
-    CVideoDbUrl videoUrl;
-    if (!BuildSQL(strBaseDir, strSQL, extFilter, strSQL, videoUrl))
-      return false;
-
-    int iRowsFound = RunQuery(strSQL);
-    if (iRowsFound <= 0)
-      return iRowsFound == 0;
-
-    if (countOnly)
-    {
-      CFileItemPtr pItem(new CFileItem());
-      pItem->SetProperty("total", iRowsFound == 1 ? m_pDS->fv(0).get_asInt() : iRowsFound);
-      items.Add(pItem);
-
-      m_pDS->close();
-      return true;
-    }
-
-    while (!m_pDS->eof())
-    {
-      int idTag = m_pDS->fv(0).get_asInt();
-
-      CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
-      pItem->m_bIsFolder = true;
-      pItem->GetVideoInfoTag()->m_iDbId = idTag;
-      pItem->GetVideoInfoTag()->m_type = "tag";
-
-      CVideoDbUrl itemUrl = videoUrl;
-      std::string path = StringUtils::Format("%i/", idTag);
-      itemUrl.AppendPath(path);
-      pItem->SetPath(itemUrl.ToString());
-
-      if (!items.Contains(pItem->GetPath()))
-      {
-        pItem->SetLabelPreformated(true);
-        items.Add(pItem);
-      }
-
-      m_pDS->next();
-    }
-    m_pDS->close();
-
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
+  return GetNavCommon(strBaseDir, items, "tag", idContent, filter, countOnly);
 }
 
 bool CVideoDatabase::GetSetsNav(const std::string& strBaseDir, CFileItemList& items, int idContent /* = -1 */, const Filter &filter /* = Filter() */, bool ignoreSingleMovieSets /* = false */)
