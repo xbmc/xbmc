@@ -825,6 +825,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_url = url2.GetWithoutUserDetails();
   else
     m_url = url2.Get();
+
+  StringUtils::Trim(m_url);
 }
 
 void CCurlFile::SetStreamProxy(const std::string &proxy, ProxyType type)
