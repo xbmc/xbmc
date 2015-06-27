@@ -15046,7 +15046,7 @@ msgstr ""
 #. Description of setting "Music -> File lists -> Enable tag reading" with label #258
 #: system/settings/settings.xml
 msgctxt "#36274"
-msgid "Read the tag information from song files. For large directories this can slow down read time, especially over a network."
+msgid "Read the tag information from song files. For large directories this can increase read time, especially over a network."
 msgstr ""
 
 #. Description of setting "Music -> File lists -> Track naming template" with label #13307
