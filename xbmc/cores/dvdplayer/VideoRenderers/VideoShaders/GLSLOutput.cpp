@@ -124,8 +124,10 @@ bool GLSLOutput::OnEnabled()
 void GLSLOutput::OnDisabled()
 {
   // disable textures
-  glActiveTexture(GL_TEXTURE0 + m_uDither);
-  glDisable(GL_TEXTURE_2D);
+  if (m_dither) {
+    glActiveTexture(GL_TEXTURE0 + m_uDither);
+    glDisable(GL_TEXTURE_2D);
+  }
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 }
