@@ -50,7 +50,7 @@ msgstr "Maksymalna częstotliwość odświeżania"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
-msgstr "Uruchom stereofoniczny tryb 3D"
+msgstr "Aktywuj stereofoniczny tryb 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
