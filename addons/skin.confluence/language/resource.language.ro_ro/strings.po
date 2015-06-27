@@ -182,7 +182,7 @@ msgstr "Opțiuni diverse"
 
 msgctxt "#31107"
 msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Ascunde marcare citită din numele fișierelor video [COLOR=grey3](de ex.: Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Ascunde etichetele citite din numele fișierelor video [COLOR=grey3](de ex.: Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"

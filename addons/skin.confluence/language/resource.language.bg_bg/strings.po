@@ -20,6 +20,10 @@ msgctxt "#31000"
 msgid "Change your"
 msgstr "Променете вашите"
 
+msgctxt "#31003"
+msgid "Power options"
+msgstr "Изключи..."
+
 msgctxt "#31004"
 msgid "Working..."
 msgstr "Работи..."

@@ -180,6 +180,10 @@ msgctxt "#31355"
 msgid "Movie menu"
 msgstr "Pelikula menua"
 
+msgctxt "#31356"
+msgid "Download subtitles"
+msgstr "Deskargatu azpitituluak"
+
 msgctxt "#31360"
 msgid "Watch as 2D"
 msgstr "Ikusi 2D bezala"

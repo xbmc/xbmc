@@ -62,7 +62,7 @@ msgstr "Einträge"
 
 msgctxt "#31026"
 msgid "Misc options"
-msgstr "Sonstige Optionen"
+msgstr "Sonstige Einstellungen"
 
 msgctxt "#31027"
 msgid "Location"
@@ -178,7 +178,7 @@ msgstr "Film-Trailer im Fenster abspielen [COLOR=grey3](gilt nur für Video-Info
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
-msgstr "Sonstige Optionen"
+msgstr "Sonstige Einstellungen"
 
 msgctxt "#31107"
 msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
@@ -202,7 +202,7 @@ msgstr "Verstecken"
 
 msgctxt "#31112"
 msgid "Options"
-msgstr "Optionen"
+msgstr "Einstellungen"
 
 msgctxt "#31116"
 msgid "Show recently added albums"
@@ -338,7 +338,7 @@ msgstr "Scraper auswählen"
 
 msgctxt "#31314"
 msgid "Content scanning options"
-msgstr "Inhalt-Scanning-Optionen"
+msgstr "Inhalt-Scanning-Einstellungen"
 
 msgctxt "#31317"
 msgid "Set fanart path"
@@ -362,7 +362,7 @@ msgstr "Ausgestrahlt"
 
 msgctxt "#31325"
 msgid "Playlist options"
-msgstr "Wiedergabelisten-Optionen"
+msgstr "Wiedergabelisten-Einstellungen"
 
 msgctxt "#31326"
 msgid "Created"
@@ -438,19 +438,19 @@ msgstr "Arial-basiert"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]ERSCHEINUNGSBILD KONFIGURIEREN[/B][CR][CR]Skin auswählen · Sprache und Region einstellen · Dateilistenoptionen ändern[CR]Bildschirmschoner festlegen"
+msgstr "[B]ERSCHEINUNGSBILD KONFIGURIEREN[/B][CR][CR]Skin auswählen · Sprache und Region einstellen · Dateilisteneinstellungen ändern[CR]Bildschirmschoner festlegen"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]VIDEO-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Video-Bibliothek verwalten · Videoabspieloptionen vornehmen · Videoauflistungsoptionen ändern[CR]Untertitel-Schriftarten einstellen"
+msgstr "[B]VIDEO-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Video-Bibliothek verwalten · Videoabspieleinstellungen vornehmen · Videoauflistungseinstellungen ändern[CR]Untertitel-Schriftarten einstellen"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]MUSIK-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Musik-Bibliothek verwalten· Musikabspieloptionen einstellen · Musikauflistungsoptionen ändern[CR]Musikübertragung einrichten · Karaoke-Optionen"
+msgstr "[B]MUSIK-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Die Musik-Bibliothek verwalten· Musikabspieleinstellungen · Musikauflistungseinstellungen ändern[CR]Musikübertragung einrichten · Karaoke-Einstellungen"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshow"
-msgstr "[B]BILDER-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Bildauflistungsoptionen einstellen · Diashow konfigurieren"
+msgstr "[B]BILDER-EINSTELLUNGEN KONFIGURIEREN[/B][CR][CR]Bildauflistungseinstellungen · Diashow konfigurieren"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set various cities to collect weather information"
@@ -478,7 +478,7 @@ msgstr "Hilfe für ersten Start..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
-msgstr "Dieses Symbol zeigt an, dass ein Menü an der Seite des Fensters versteckt ist, das weitere Optionen beinhaltet. Um es aufzurufen, nach links navigieren oder  mit der Maus darauf zeigen.[CR][CR]Auf \"OK\" klicken, um diesen Dialog zu schließen. Er wird nicht wieder angezeigt werden."
+msgstr "Dieses Symbol zeigt an, dass ein Menü an der Seite des Fensters versteckt ist, das weitere Einstellungen beinhaltet. Um es aufzurufen, nach links navigieren oder  mit der Maus darauf zeigen.[CR][CR]Auf \"OK\" klicken, um diesen Dialog zu schließen. Er wird nicht wieder angezeigt werden."
 
 msgctxt "#31413"
 msgid "Local subtitle available"

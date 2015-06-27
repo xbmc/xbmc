@@ -16,9 +16,21 @@ msgstr ""
 "Language: sv_SE\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Byt ditt"
+
+msgctxt "#31003"
+msgid "Power options"
+msgstr "Strömalternativ"
+
 msgctxt "#31004"
 msgid "Working..."
 msgstr "Arbetar..."
+
+msgctxt "#31005"
+msgid "Hide information"
+msgstr "Dölj information"
 
 msgctxt "#31006"
 msgid "View options"
@@ -27,6 +39,10 @@ msgstr "Vyalternativ"
 msgctxt "#31008"
 msgid "Full screen"
 msgstr "Fullskärm"
+
+msgctxt "#31009"
+msgid "Total duration"
+msgstr "Total längd"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -44,6 +60,10 @@ msgctxt "#31025"
 msgid "Items"
 msgstr "Objekt"
 
+msgctxt "#31026"
+msgid "Misc options"
+msgstr "Övriga val"
+
 msgctxt "#31027"
 msgid "Location"
 msgstr "Plats"
@@ -59,6 +79,10 @@ msgstr "Info"
 msgctxt "#31039"
 msgid "Actions"
 msgstr "Åtgärder"
+
+msgctxt "#31040"
+msgid "Now playing"
+msgstr "Spelas nu"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -116,6 +140,10 @@ msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "Denna fil är sammanslagen, välj den del du vill spela."
 
+msgctxt "#31061"
+msgid "Current selected"
+msgstr "För närvarande vald"
+
 msgctxt "#31101"
 msgid "Home screen options"
 msgstr "Hemskärmsalternativ"
@@ -124,9 +152,21 @@ msgctxt "#31102"
 msgid "Background"
 msgstr "Bakgrund"
 
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Visa \"pausat\" i bildspel"
+
+msgctxt "#31104"
+msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
+msgstr "Visa trailers i ett fönster "
+
 msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Övriga alternativ"
+
+msgctxt "#31108"
+msgid "Hide main menu buttons"
+msgstr "Dölj huvudmenyknappar"
 
 msgctxt "#31109"
 msgid "Enable custom background"
@@ -144,6 +184,26 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Alternativ"
 
+msgctxt "#31116"
+msgid "Show recently added albums"
+msgstr "Visa nyligen tillagda album"
+
+msgctxt "#31117"
+msgid "Show recently added videos"
+msgstr "Visa nyligen tillagda videos"
+
+msgctxt "#31119"
+msgid "Hide background fanart"
+msgstr "Dölj bakgrundsfanart"
+
+msgctxt "#31124"
+msgid "Show background \"Now playing\" video"
+msgstr "Visa bakgrund \"Nu spelas\" filmer"
+
+msgctxt "#31125"
+msgid "Show background \"Now playing\" visualisation"
+msgstr "Visa \"Spelas nu\" backgrundsvisualisering"
+
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
 msgstr "Spela TV-temasånger i videobiblioteket (TVTunes-tillägg)"
@@ -155,6 +215,10 @@ msgstr "TvTunes"
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Sångtexter"
+
+msgctxt "#31132"
+msgid "Lyrics add-on"
+msgstr "Sångtextstillägg"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -172,21 +236,89 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Genvägar"
 
+msgctxt "#31203"
+msgid "Choose your song"
+msgstr "Välj din låt"
+
+msgctxt "#31205"
+msgid "Lyrics source"
+msgstr "Sångtextkälla"
+
 msgctxt "#31206"
 msgid "Found"
 msgstr "Hittade"
+
+msgctxt "#31207"
+msgid "Find more items"
+msgstr "Hitta fler objekt"
+
+msgctxt "#31208"
+msgid "Upcoming episodes"
+msgstr "Kommande episoder"
+
+msgctxt "#31300"
+msgid "Current temperature"
+msgstr "Nuvarande temperatur"
+
+msgctxt "#31301"
+msgid "Last updated"
+msgstr "Senast uppdaterad"
 
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Dataleverantör"
 
+msgctxt "#31308"
+msgid "Movie details"
+msgstr "Filmdetaljer"
+
+msgctxt "#31309"
+msgid "Memory used:"
+msgstr "Använt minne:"
+
+msgctxt "#31310"
+msgid "Track number"
+msgstr "Spårnummer"
+
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
 msgstr "Fanart-bild[CR][CR]Inte Tillgänglig[CR][CR]Klicka på knappen för att ange"
 
+msgctxt "#31312"
+msgid "Current scraper"
+msgstr "Aktuell skrapare"
+
+msgctxt "#31313"
+msgid "Choose a scraper"
+msgstr "Välj en skrapare"
+
+msgctxt "#31314"
+msgid "Content scanning options"
+msgstr "Alternativ för innehållsskanning"
+
+msgctxt "#31317"
+msgid "Set fanart path"
+msgstr "Ange fanartsökväg"
+
+msgctxt "#31319"
+msgid "Selected profile"
+msgstr "Vald profil"
+
+msgctxt "#31320"
+msgid "Last logged in"
+msgstr "Senast inloggad"
+
+msgctxt "#31321"
+msgid "Karaoke song selector"
+msgstr "Låtväljare för kareoke"
+
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Sänt"
+
+msgctxt "#31325"
+msgid "Playlist options"
+msgstr "Alternativ för spellista"
 
 msgctxt "#31326"
 msgid "Created"
@@ -196,9 +328,21 @@ msgctxt "#31327"
 msgid "Resolution"
 msgstr "Upplösning"
 
+msgctxt "#31328"
+msgid "Recently added"
+msgstr "Nyligen tillagda"
+
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
 msgstr "[B]Timer satt![/B] [COLOR=grey2] - Automatisk avstängning av systemet om[/COLOR]"
+
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]movie trailer"
+msgstr "Klicka på knappen för att spela filmtrailern för [CR][CR]"
+
+msgctxt "#31331"
+msgid "Album details"
+msgstr "Albumdetaljer"
 
 msgctxt "#31351"
 msgid "Pause"
@@ -208,6 +352,10 @@ msgctxt "#31352"
 msgid "Stop"
 msgstr "Stopp"
 
+msgctxt "#31353"
+msgid "Fast forward"
+msgstr "Spola fram"
+
 msgctxt "#31354"
 msgid "Rewind"
 msgstr "Spola bakåt"
@@ -215,6 +363,10 @@ msgstr "Spola bakåt"
 msgctxt "#31355"
 msgid "Movie menu"
 msgstr "Filmmeny"
+
+msgctxt "#31356"
+msgid "Download subtitles"
+msgstr "Ladda hem undertexter"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
@@ -260,6 +412,10 @@ msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGURERA TJÄNSTINSTÄLLNINGAR[/B][CR][CR]Ställ in kontroll av Kodi via UPnP och HTTP · Konfigurera fildelning[CR]Aktivera Zeroconf · Konfigurera AirPlay"
 
+msgctxt "#31411"
+msgid "First run help..."
+msgstr "Förstagångshjälp"
+
 msgctxt "#31413"
 msgid "Local subtitle available"
 msgstr "Lokal undertext tillgänglig"
@@ -267,6 +423,10 @@ msgstr "Lokal undertext tillgänglig"
 msgctxt "#31420"
 msgid "Login"
 msgstr "Logga in"
+
+msgctxt "#31421"
+msgid "Select your Kodi user profile[CR]to login and continue"
+msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
 
 msgctxt "#31422"
 msgid "Show or hide the login screen at startup."
@@ -276,13 +436,49 @@ msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
 msgstr "Välj den profil som skall användas vid start då inloggningsskärmen inte visas."
 
+msgctxt "#31501"
+msgid "Scheduled time"
+msgstr "Schemalagd tid"
+
 msgctxt "#31502"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#31503"
+msgid "Add group"
+msgstr "Lägg till grupp"
+
+msgctxt "#31504"
+msgid "Rename group"
+msgstr "Byt namn på grupp"
+
+msgctxt "#31505"
+msgid "Delete group"
+msgstr "Ta bort grupp"
+
 msgctxt "#31506"
 msgid "Available[CR]Groups"
 msgstr "Tillgängliga[CR]grupper"
+
+msgctxt "#31511"
+msgid "Channel options"
+msgstr "Kanalalternativ"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "36-timmars prognos"
+
+msgctxt "#31902"
+msgid "Hourly forecast"
+msgstr "Timprognos"
+
+msgctxt "#31903"
+msgid "Weekend forecast"
+msgstr "Veckoprognos"
+
+msgctxt "#31904"
+msgid "Daily forecast"
+msgstr "Dygnsprognos"
 
 msgctxt "#31905"
 msgid "Forecast"

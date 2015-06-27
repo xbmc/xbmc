@@ -374,7 +374,7 @@ msgstr "Размеры"
 
 msgctxt "#31328"
 msgid "Recently added"
-msgstr "Недавно добавленные"
+msgstr "Последние"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
