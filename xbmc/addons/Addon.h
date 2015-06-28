@@ -230,7 +230,7 @@ protected:
    */
   virtual bool SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults = false);
 
-  /*! \brief Parse settings into an XML document
+  /*! \brief Write settings into an XML document
    \param doc XML document to receive the settings
    \sa SettingsFromXML
    */
