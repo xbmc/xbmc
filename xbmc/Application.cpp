@@ -85,6 +85,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/SeekHandler.h"
@@ -1614,7 +1615,13 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   if (!skin)
     return false;
 
+  // start/prepare the skin
   skin->Start();
+
+  // migrate any skin-specific settings that are still stored in guisettings.xml
+  CSkinSettings::Get().MigrateSettings(skin);
+
+  // check if the skin has been properly loaded and if it has a Home.xml
   if (!skin->HasSkinFile("Home.xml"))
     return false;
 
@@ -1740,6 +1747,9 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
 void CApplication::UnloadSkin(bool forReload /* = false */)
 {
   CLog::Log(LOGINFO, "Unloading old skin %s...", forReload ? "for reload " : "");
+
+  if (g_SkinInfo != nullptr)
+    g_SkinInfo->SaveSettings();
 
   g_audioManager.Enable(false);
 
