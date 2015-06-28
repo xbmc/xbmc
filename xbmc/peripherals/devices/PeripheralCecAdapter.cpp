@@ -621,7 +621,7 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
     case CEC_OPCODE_STANDBY:
       /* a device was put in standby mode */
       if (command.initiator == CECDEVICE_TV &&
-          (adapter->m_configuration.bPowerOffOnStandby == 1 || adapter->m_configuration.bShutdownOnStandby == 1) &&
+		  (adapter->m_configuration.bPowerOffOnStandby == 1 || adapter->m_configuration.bShutdownOnStandby == 1 || adapter->m_configuration.bPauseOnStandby == 1) &&
           (!adapter->m_standbySent.IsValid() || CDateTime::GetCurrentDateTime() - adapter->m_standbySent > CDateTimeSpan(0, 0, 0, SCREENSAVER_TIMEOUT)))
       {
         adapter->m_bStarted = false;
@@ -629,6 +629,8 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
           g_application.ExecuteXBMCAction("Suspend");
         else if (adapter->m_configuration.bShutdownOnStandby == 1)
           g_application.ExecuteXBMCAction("Shutdown");
+        else if (adapter->m_configuration.bPauseOnStandby == 1)
+          g_application.m_pPlayer->Pause();
       }
       break;
     case CEC_OPCODE_SET_MENU_LANGUAGE:
@@ -1269,6 +1271,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
   m_configuration.iFirmwareVersion = config.iFirmwareVersion;
   m_configuration.bShutdownOnStandby = config.bShutdownOnStandby;
+  m_configuration.bPauseOnStandby = config.bPauseOnStandby;
 
   memcpy(m_configuration.strDeviceLanguage, config.strDeviceLanguage, 3);
   m_configuration.iFirmwareBuildDate = config.iFirmwareBuildDate;
@@ -1277,7 +1280,9 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
   bChanged |= SetSetting("standby_pc_on_tv_standby",
              m_configuration.bPowerOffOnStandby == 1 ? 13011 :
-             m_configuration.bShutdownOnStandby == 1 ? 13005 : 36028);
+             m_configuration.bShutdownOnStandby == 1 ? 13005 : 
+			 m_configuration.bPauseOnStandby ==    1 ? 38017 :
+			 36028);
 
   if (bChanged)
     CLog::Log(LOGDEBUG, "SetConfigurationFromLibCEC - settings updated by libCEC");
@@ -1363,6 +1368,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
   m_configuration.bPowerOffOnStandby = iStandbyAction == 13011 ? 1 : 0;
   m_configuration.bShutdownOnStandby = iStandbyAction == 13005 ? 1 : 0;
+  m_configuration.bPauseOnStandby    = iStandbyAction == 38017 ? 1 : 0;
 
 #if defined(CEC_DOUBLE_TAP_TIMEOUT_MS_OLD)
   // double tap prevention timeout in ms. libCEC uses 50ms units for this in 2.2.0, so divide by 50
