@@ -222,6 +222,11 @@ protected:
    */
   virtual bool LoadUserSettings();
 
+  /* \brief Whether there are settings to be saved
+   \sa SaveSettings
+   */
+  virtual bool HasSettingsToSave() const;
+
   /*! \brief Parse settings from an XML document
    \param doc XML document to parse for settings
    \param loadDefaults if true, the default attribute is used and settings are reset prior to parsing, else the value attribute is used.
