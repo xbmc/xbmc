@@ -1281,8 +1281,8 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   bChanged |= SetSetting("standby_pc_on_tv_standby",
              m_configuration.bPowerOffOnStandby == 1 ? 13011 :
              m_configuration.bShutdownOnStandby == 1 ? 13005 : 
-			 m_configuration.bPauseOnStandby ==    1 ? 38017 :
-			 36028);
+             m_configuration.bPauseOnStandby ==    1 ? 38017 :
+             36028);
 
   if (bChanged)
     CLog::Log(LOGDEBUG, "SetConfigurationFromLibCEC - settings updated by libCEC");
