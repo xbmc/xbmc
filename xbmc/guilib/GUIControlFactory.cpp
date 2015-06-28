@@ -1210,6 +1210,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
       ((CGUIToggleButtonControl *)control)->SetLabel(strLabel);
       ((CGUIToggleButtonControl *)control)->SetAltLabel(altLabel);
+      ((CGUIToggleButtonControl *)control)->SetMinWidth(minWidth);
       ((CGUIToggleButtonControl *)control)->SetClickActions(clickActions);
       ((CGUIToggleButtonControl *)control)->SetAltClickActions(altclickActions);
       ((CGUIToggleButtonControl *)control)->SetFocusActions(focusActions);
