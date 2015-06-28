@@ -341,7 +341,12 @@ struct sortByClientChannelNumber
   bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2) const
   {
     if (channel1.channel->ClientChannelNumber() == channel2.channel->ClientChannelNumber())
-      return channel1.channel->ClientSubChannelNumber() < channel2.channel->ClientSubChannelNumber();
+    {
+      if (channel1.channel->ClientSubChannelNumber() > 0 || channel2.channel->ClientSubChannelNumber() > 0)
+        return channel1.channel->ClientSubChannelNumber() < channel2.channel->ClientSubChannelNumber();
+      else
+        return channel1.channel->ChannelName() < channel2.channel->ChannelName();
+    }
     return channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
   }
 };
