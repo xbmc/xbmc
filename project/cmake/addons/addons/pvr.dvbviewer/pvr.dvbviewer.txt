@@ -1,1 +1,1 @@
-pvr.dvbviewer https://github.com/kodi-pvr/pvr.dvbviewer 05e76da
+pvr.dvbviewer https://github.com/kodi-pvr/pvr.dvbviewer 6eac70c
