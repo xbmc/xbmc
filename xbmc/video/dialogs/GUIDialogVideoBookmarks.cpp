@@ -317,7 +317,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
 
   // add items to file list and mark the proper item as selected if the current playtime is above
   int selectedItemIndex = 0;
-  int playTime = g_application.GetTime();
+  double playTime = g_application.GetTime();
   for (auto& item : items)
   {
     m_vecItems->Add(item);
@@ -379,14 +379,14 @@ void CGUIDialogVideoBookmarks::GotoBookmark(int item)
     return;
 
   CFileItemPtr fileItem = m_vecItems->Get(item);
-  int chapter = fileItem->GetProperty("chapter").asInteger();
-  if (!chapter)
+  int chapter = static_cast<int>(fileItem->GetProperty("chapter").asInteger());
+  if (chapter <= 0)
   {
     g_application.m_pPlayer->SetPlayerState(fileItem->GetProperty("playerstate").asString());
     g_application.SeekTime(fileItem->GetProperty("resumepoint").asDouble());
   }
   else
-    g_application.m_pPlayer->SeekChapter(fileItem->GetProperty("chapter").asInteger());
+    g_application.m_pPlayer->SeekChapter(chapter);
 
   Close();
 }
