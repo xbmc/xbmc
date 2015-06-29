@@ -544,7 +544,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     CSingleLock lock(m_critSection);
     for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); !bFound && it != m_groups.end();)
     {
-      if ((*it)->GroupID() == group.GroupID())
+      if (*(*it) == group || (group.GroupID() > 0 && (*it)->GroupID() == group.GroupID()))
       {
         // update the selected group in the gui if it's deleted
         CPVRChannelGroupPtr selectedGroup = GetSelectedGroup();
