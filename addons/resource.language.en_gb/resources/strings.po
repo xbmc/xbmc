@@ -16619,3 +16619,10 @@ msgstr ""
 msgctxt "#38016"
 msgid "%d fps"
 msgstr ""
+
+#. Label for a select option
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
+#: system/peripherals.xml
+msgctxt "#38017"
+msgid "Pause"
+msgstr ""

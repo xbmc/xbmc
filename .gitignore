@@ -321,7 +321,8 @@ lib/cpluff/stamp-h1
 # /project/BuildDependencies
 /project/BuildDependencies/downloads
 /project/BuildDependencies/downloads2
-/project/BuildDependencies/include
+/project/BuildDependencies/include/*
+!/project/BuildDependencies/include/libcec
 /project/BuildDependencies/lib
 /project/BuildDependencies/msys
 /project/BuildDependencies/scripts/tmp
@@ -927,3 +928,9 @@ lib/cpluff/stamp-h1
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
 
 /pvr-addons
+*.dll
+project/BuildDependencies/include/libcec/version.h
+project/BuildDependencies/include/libcec/cecloader.h
+project/BuildDependencies/include/libcec/ceccloader.h
+project/BuildDependencies/include/libcec/cec.h
+project/BuildDependencies/include/libcec/cecc.h
