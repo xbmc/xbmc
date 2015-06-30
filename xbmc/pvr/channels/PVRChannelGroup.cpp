@@ -96,6 +96,26 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
   OnInit();
 }
 
+CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group) :
+    m_strGroupName(group.m_strGroupName)
+{
+  m_bRadio                      = group.m_bRadio;
+  m_iGroupType                  = group.m_iGroupType;
+  m_iGroupId                    = group.m_iGroupId;
+  m_bLoaded                     = group.m_bLoaded;
+  m_bChanged                    = group.m_bChanged;
+  m_bUsingBackendChannelOrder   = group.m_bUsingBackendChannelOrder;
+  m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
+  m_iLastWatched                = group.m_iLastWatched;
+  m_bHidden                     = group.m_bHidden;
+  m_bSelectedGroup              = group.m_bSelectedGroup;
+  m_bPreventSortAndRenumber     = group.m_bPreventSortAndRenumber;
+  m_members                     = group.m_members;
+  m_sortedMembers               = group.m_sortedMembers;
+  m_iPosition                   = group.m_iPosition;
+  OnInit();
+}
+
 CPVRChannelGroup::~CPVRChannelGroup(void)
 {
   CSettings::Get().UnregisterCallback(this);
@@ -121,26 +141,6 @@ PVRChannelGroupMember CPVRChannelGroup::EmptyMember = { CPVRChannelPtr(), 0, 0 }
 std::pair<int, int> CPVRChannelGroup::PathIdToStorageId(uint64_t storageId)
 {
   return std::make_pair(storageId >> 32, storageId & 0xFFFFFFFF);
-}
-
-CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group) :
-m_strGroupName(group.m_strGroupName)
-{
-  m_bRadio                      = group.m_bRadio;
-  m_iGroupType                  = group.m_iGroupType;
-  m_iGroupId                    = group.m_iGroupId;
-  m_bLoaded                     = group.m_bLoaded;
-  m_bChanged                    = group.m_bChanged;
-  m_bUsingBackendChannelOrder   = group.m_bUsingBackendChannelOrder;
-  m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
-  m_iLastWatched                = group.m_iLastWatched;
-  m_bHidden                     = group.m_bHidden;
-  m_bSelectedGroup              = group.m_bSelectedGroup;
-  m_bPreventSortAndRenumber     = group.m_bPreventSortAndRenumber;
-  m_members                     = group.m_members;
-  m_sortedMembers               = group.m_sortedMembers;
-  m_iPosition                   = group.m_iPosition;
-  OnInit();
 }
 
 void CPVRChannelGroup::OnInit(void)
