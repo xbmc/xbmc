@@ -1,1 +1,1 @@
-pvr.njoy https://github.com/kodi-pvr/pvr.njoy cb2a7e5
+pvr.njoy https://github.com/kodi-pvr/pvr.njoy e7f9458
