@@ -60,9 +60,9 @@ void CDVDSubtitleLineCollection::Sort()
   if (!m_pHead || !m_pHead->pNext)
     return;
   
-  for (ListElement* p1 = m_pHead; p1->pNext->pNext != NULL; p1 = p1->pNext)
+  for (ListElement* p1 = m_pHead; p1->pNext != NULL; p1 = p1->pNext)
   {
-    for (ListElement* p2 = p1->pNext; p2->pNext != NULL; p2 = p2->pNext)
+    for (ListElement* p2 = p1->pNext; p2 != NULL; p2 = p2->pNext)
     {
       if (p1->pOverlay->iPTSStartTime > p2->pOverlay->iPTSStartTime)
       {

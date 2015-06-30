@@ -16,9 +16,21 @@ msgstr ""
 "Language: nb_NO\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Endre dine"
+
+msgctxt "#31003"
+msgid "Power options"
+msgstr "Strømalternativer"
+
 msgctxt "#31004"
 msgid "Working..."
 msgstr "Arbeider..."
+
+msgctxt "#31005"
+msgid "Hide information"
+msgstr "Skjul informasjon"
 
 msgctxt "#31006"
 msgid "View options"
@@ -27,6 +39,10 @@ msgstr "Visningsalt."
 msgctxt "#31008"
 msgid "Full screen"
 msgstr "Fullskjerm"
+
+msgctxt "#31009"
+msgid "Total duration"
+msgstr "Total varighet"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -44,6 +60,10 @@ msgctxt "#31025"
 msgid "Items"
 msgstr "Elementer"
 
+msgctxt "#31026"
+msgid "Misc options"
+msgstr "Øvrige alternativer"
+
 msgctxt "#31027"
 msgid "Location"
 msgstr "Sted"
@@ -52,6 +72,10 @@ msgctxt "#31029"
 msgid "Fanart"
 msgstr "Fanart"
 
+msgctxt "#31031"
+msgid "Pic thumbs"
+msgstr "Bildeminiatyrer"
+
 msgctxt "#31033"
 msgid "Info"
 msgstr "Informasjon"
@@ -59,6 +83,10 @@ msgstr "Informasjon"
 msgctxt "#31039"
 msgid "Actions"
 msgstr "Handlinger"
+
+msgctxt "#31040"
+msgid "Now playing"
+msgstr "Spilles nå"
 
 msgctxt "#31042"
 msgid "PLAYING"

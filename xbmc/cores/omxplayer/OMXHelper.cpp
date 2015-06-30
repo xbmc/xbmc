@@ -128,7 +128,7 @@ bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, 
        (m_OmxPlayerState.current_deinterlace != VS_DEINTERLACEMODE_OFF &&
         m_OmxPlayerState.interlace_method != g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod)))
     {
-      CLog::Log(LOGERROR, "%s - Reopen stream due to interlace change (%d,%d,%d,%d)", __FUNCTION__,
+      CLog::Log(LOGNOTICE, "%s - Reopen stream due to interlace change (%d,%d,%d,%d)", __FUNCTION__,
         m_OmxPlayerState.current_deinterlace, CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode,
         m_OmxPlayerState.interlace_method, g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod));
 

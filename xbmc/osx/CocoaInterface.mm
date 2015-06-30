@@ -24,6 +24,7 @@
 #define BOOL XBMC_BOOL 
 #include "utils/log.h"
 #include "CompileInfo.h"
+#include "windowing/WindowingFactory.h"
 #undef BOOL
 
 #import <Cocoa/Cocoa.h>
@@ -53,23 +54,7 @@ CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 
 NSOpenGLContext* Cocoa_GL_GetCurrentContext(void)
 {
-  __block NSOpenGLContext* context = nil;
-  
-  if(![NSThread isMainThread])
-  {
-    // needs to be fetched from the main thread
-    dispatch_sync(dispatch_get_main_queue(), ^{
-
-      context = [NSOpenGLContext currentContext];
-
-    });
-  }
-  else
-  {
-    context = [NSOpenGLContext currentContext];
-  }
-
-  return context;
+  return (NSOpenGLContext *)g_Windowing.GetNSOpenGLContext();
 }
 
 uint32_t Cocoa_GL_GetCurrentDisplayID(void)

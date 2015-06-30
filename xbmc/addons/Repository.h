@@ -59,6 +59,7 @@ namespace ADDON
     static bool Parse(const DirInfo& dir, VECADDONS& addons);
     static std::string FetchChecksum(const std::string& url);
 
+    virtual void OnPostInstall(bool update, bool modal);
     virtual void OnPostUnInstall();
 
   private:

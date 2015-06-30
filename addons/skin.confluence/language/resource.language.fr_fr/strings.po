@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change your"
-msgstr "Changer votre"
+msgstr "Changer vos"
 
 msgctxt "#31003"
 msgid "Power options"
@@ -58,7 +58,7 @@ msgstr "Page"
 
 msgctxt "#31025"
 msgid "Items"
-msgstr "Eléments"
+msgstr "Éléments"
 
 msgctxt "#31026"
 msgid "Misc options"
@@ -214,7 +214,7 @@ msgstr "Afficher les vidéos ajoutées récemment"
 
 msgctxt "#31118"
 msgid "Home page programs submenu"
-msgstr "Page d'accueil du sous-menu Programmes"
+msgstr "Sous-menu \"Programmes\" de la page d'accueil"
 
 msgctxt "#31119"
 msgid "Hide background fanart"
@@ -230,7 +230,7 @@ msgstr "Afficher la visualisation en cours de lecture en arrière-plan"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Lire les génériques TV dans la vidéothèque (extension TvTunes)"
+msgstr "Jouer les génériques TV dans la vidéothèque (extension TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -338,7 +338,7 @@ msgstr "Choisir un scraper"
 
 msgctxt "#31314"
 msgid "Content scanning options"
-msgstr "Options des contenus scannés"
+msgstr "Options de balayage des contenus"
 
 msgctxt "#31317"
 msgid "Set fanart path"
@@ -362,7 +362,7 @@ msgstr "Diffusé"
 
 msgctxt "#31325"
 msgid "Playlist options"
-msgstr "Options des playlistes"
+msgstr "Options des listes de lecture"
 
 msgctxt "#31326"
 msgid "Created"
@@ -426,11 +426,11 @@ msgstr "Activé"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Thème par défaut"
+msgstr "Prédéfini par l'habillage"
 
 msgctxt "#31391"
 msgid "Skin default with no caps"
-msgstr "thème par défaut sans majuscules"
+msgstr "Prédéfini par l'habillage sans majuscules"
 
 msgctxt "#31392"
 msgid "Arial based"
@@ -438,7 +438,7 @@ msgstr "Basé sur Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]CONFIGURATION DES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changer le thème · Définir la langue et la région · Changer les options de liste de fichiers[CR]Configurer un économiseur d'écran"
+msgstr "[B]CONFIGURATION DES PARAMÈTRES D'APPARENCE[/B][CR][CR]Changer l'habillage · Définir la langue et la région · Changer les options de liste de fichiers[CR]Configurer un économiseur d'écran"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
@@ -466,7 +466,7 @@ msgstr "[B]CONFIGURATION DES EXTENSIONS[/B][CR][CR]Gérer vos extensions install
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change full screen info · Manage EPG data settings"
-msgstr "[B]CONFIGURER RÉGLAGES TV[/B][CR][CR]Changer les informations de plein écran · Gérer les données du guide des programmes"
+msgstr "[B]CONFIGURATION DES RÉGLAGES TV[/B][CR][CR]Changer les informations de plein écran · Gérer les données du guide des programmes"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of Kodi via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -498,7 +498,7 @@ msgstr "Afficher ou masquer l'écran de connexion au démarrage."
 
 msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
-msgstr "Sélection du profil utilisé au démarrage lorsque l'écran de connexion est désactivée."
+msgstr "Sélectionner le profil utilisé au démarrage lorsque l'écran de connexion est désactivé."
 
 msgctxt "#31501"
 msgid "Scheduled time"
@@ -602,7 +602,7 @@ msgstr "PROGRAMMES"
 
 msgctxt "#31958"
 msgid "PLAY DISC"
-msgstr "LIRE LE DISQUE"
+msgstr "DISQUE"
 
 msgctxt "#31959"
 msgid "SYSTEM"

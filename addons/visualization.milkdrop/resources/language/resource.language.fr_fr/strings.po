@@ -34,7 +34,7 @@ msgstr "Activer le filtre anisotropique"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
-msgstr "Permettre les changements brusques"
+msgstr "Activer les coupures brusques"
 
 msgctxt "#30005"
 msgid "Loudness Threshold For Hard Cuts"

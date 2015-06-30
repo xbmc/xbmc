@@ -313,7 +313,7 @@
       <m>OSD</m>
       <i>Info</i>
       <p>ActivateWindow(VisualisationPresetList)</p>
-      <v>ActivateWindow(VisualisationSettings)</v>
+      <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
       <n>ActivateWindow(MusicPlaylist)</n>
       <left>StepBack</left>
       <right>StepForward</right>
@@ -336,7 +336,7 @@
       <i>Info</i>
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
-      <v>ActivateWindow(VisualisationSettings)</v>
+      <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </MusicOSD>

@@ -1,1 +1,1 @@
-pvr.dvblink https://github.com/kodi-pvr/pvr.dvblink 7f51543
+pvr.dvblink https://github.com/kodi-pvr/pvr.dvblink 71dd19c

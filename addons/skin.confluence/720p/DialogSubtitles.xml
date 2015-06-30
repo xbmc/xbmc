@@ -65,9 +65,9 @@
 				</control>
 				<control type="label">
 					<description>Video label</description>
-					<left>330</left>
+					<left>255</left>
 					<top>110</top>
-					<width>550</width>
+					<width>625</width>
 					<height>30</height>
 					<font>font13_title</font>
 					<label>$INFO[Player.Filename]</label>
@@ -75,6 +75,7 @@
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>
 					<shadowcolor>black</shadowcolor>
+					<scroll>true</scroll>
 				</control>
 				<control type="image">
 					<left>30</left>

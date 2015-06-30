@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.fishbmc"
-  version="4.0.18"
+  version="4.0.19"
   name="FishBMC"
   provider-name="26elf">
   <extension
@@ -45,7 +45,7 @@
     <summary lang="ms_MY">Pengvisualan menunjukkan Kesan Gelombang dan Kabur</summary>
     <summary lang="nb_NO">Visualisering viser bølge- og uskarpeffekter</summary>
     <summary lang="nl_NL">Visualisatie waarbij Golven- en Blureffecten worden getoond </summary>
-    <summary lang="pl_PL">Wizualizacja prezentuje efekty fali i rozmycia</summary>
+    <summary lang="pl_PL">Wizualizacja wyświetlająca efekty fali i rozmycia</summary>
     <summary lang="pt_BR">Visualização mostrando Ondas e Efeitos Borrados</summary>
     <summary lang="pt_PT">Uma visualização com Ondas e Efeitos de Desfocagem</summary>
     <summary lang="ro_RO">Vizualizare care arată valuri și efecte de încețoșare</summary>

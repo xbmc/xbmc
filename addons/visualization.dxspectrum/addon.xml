@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.dxspectrum"
-  version="1.0.28"
+  version="1.0.29"
   name="DirectX Spectrum"
   provider-name="Team-Kodi">
   <extension
@@ -47,7 +47,7 @@
     <summary lang="my_MM">လည်ပတ်နေသော 3D Spectrum Analyzer ဖန်တီး ပြနေသည်</summary>
     <summary lang="nb_NO">Visualisering som viser en roterende 3D-spektrumanalysator</summary>
     <summary lang="nl_NL">DirectX-visualisatie die een roterende 3D-spectrumanalyse weergeeft</summary>
-    <summary lang="pl_PL">Wizualizacja pokazująca obracający się trójwymiarowy analizator widma akustycznego (DirectX)</summary>
+    <summary lang="pl_PL">Wizualizacja wyświetlająca obracający się 3 wymiarowy Analizator Widma Akustycznego</summary>
     <summary lang="pt_BR">Visualização que mostra um analisador espectral rotativo em 3D </summary>
     <summary lang="pt_PT">Visualização que mostra um analisador espectral rotativo em 3D</summary>
     <summary lang="ro_RO">Vizualizare care afișează un analizor de spectre 3D rotativ</summary>
@@ -101,7 +101,7 @@
     <description lang="ms_MY">Spektrum DirectX ialah Pengvisualan yang menunjukkan Penganalisis Spektrum 3D berputar dalam DirectX. Yang mana ia bergerak mengikut rentak muzik yang membentuk kesan bergelombang sepanjang grid spektrum.&#10;Ia juga mempunyai tetapan yang dapat melaras tinggi palang spektrum, kelajuannya, dan bagaimana palang dipersembahkan (pejal, mata, bingkai wayar) serta merupakan penggunaan cpu pengvisualan yang rendah, menarik dan nampak cantik.</description>
     <description lang="nb_NO">DirectX Spectrum er en visualisering som viser en roterende 3D-spektrumanalysator rendret i DirectX som beveger seg i takt med musikken og skaper en bølgeeffekt over lydspektrumet.&#10;Du kan stille inn søylehøyden, hastigheten og hvordan barene blir rendret (solid, punkt, trådramme) i lydspektrumet. Visualiseringen tar liten plass, krever lite av prosessoren og ser flott ut</description>
     <description lang="nl_NL">DirectX-spectrum toont een roterende 3D-spectrumanalyse via DirectX, die meebeweegt op de maat van de muziek, waarbij een golfeffect ontstaat over het spectrumraster.&#10;U kunt de hoogte, snelheid en weergave (vol, stippen, ...) van de spectrumbalk zelf instellen. Deze visualisatie vereist weinig geheugen en belast de processor nauwelijks.</description>
-    <description lang="pl_PL">DirectX Spectrum to obracający się, trójwymiarowy analizator widma akustycznego, renderowany za pośrednictwem DirectX, który porusza się w rytm muzyki, tworząc efekt fali w całym zakresie widma.&#10;Możesz zmieniać efekty, wysokość słupków, ich prędkość i wygląd. Świetna wizualizacja charakteryzująca się niskim obciążeniem procesora.</description>
+    <description lang="pl_PL">DirectX Spectrum to obracający się, 3 wymiarowy Analizator Widma Akustycznego, renderowany za pośrednictwem DirectX, który porusza się w rytm muzyki, tworząc efekt fali w całym zakresie widma.&#10;Możesz zmieniać efekty, wysokość słupków, ich prędkość i wygląd. Świetna wizualizacja charakteryzująca się niskim obciążeniem procesora.</description>
     <description lang="pt_BR">O DirectX Spectrum é uma visualização que mostra um analisador espectral rotacional 3d, renderizado em DirectX, que se sincroniza com a batida, criando assim um efeito de ondas na grelha espectral.&#10;Pode-se definir a altura das barras, a sua velocidade e como são renderizadas (sólido, pontos ou contorno). É uma visualização que utiliza pouco o CPU e com um visual fantástico</description>
     <description lang="pt_PT">O DirectX Spectrum é uma visualização que mostra um analisador espectral rotativo em 3D, renderizado em DirectX, que se sincroniza com o ritmo da música, criando assim um efeito de ondas na grelha espectral.&#10;Pode definir-se a altura das barras, a sua velocidade e como são renderizadas (sólido, pontos ou contorno). É uma visualização que não utiliza muito CPU e tem um aspecto fantástico.</description>
     <description lang="ro_RO">Spectrul DirectX este o vizualizare care afișează un analizor de spectre 3D rotativ randat în DirectX care se mișcă după bătăile muzicii creând un val dea-lungul grilei spectrale.&#10;De asemenea, are setări pentru ajustarea înălțimii bărilor spectrale, a vitezei, și a modului în care bările sunt randate (umplere, puncte, contur). Este o vizualizare cu consum redus al procesorului care arată fantastic de bine.</description>

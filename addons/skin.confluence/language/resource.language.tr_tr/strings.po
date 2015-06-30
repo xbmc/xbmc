@@ -170,7 +170,7 @@ msgstr "Arka Plan"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slideshow"
-msgstr "Slayt şov \"durdurulduğunda\" göster"
+msgstr "Resim slayt gösterisinde \"Duraklatıldı\"yı göster"
 
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
@@ -182,7 +182,7 @@ msgstr "Çeşitli seçenekler"
 
 msgctxt "#31107"
 msgid "Hide flagging read from video filenames [COLOR=grey3](e.g. Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Video dosya adlarında etiket okumayı gizle [COLOR=grey3](Blu-ray, HD-DVD vb.)[/COLOR]"
+msgstr "Video dosya adlarında etiket okumayı gizle [COLOR=grey3](örn. Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide main menu buttons"
@@ -330,11 +330,11 @@ msgstr "Fanart resmi[CR][CR]Mevcut Değil[CR][CR] Ayarlamak için düğmeye bas�
 
 msgctxt "#31312"
 msgid "Current scraper"
-msgstr "Geçerli scraper"
+msgstr "Geçerli sağlayıcı"
 
 msgctxt "#31313"
 msgid "Choose a scraper"
-msgstr "Scraper seç"
+msgstr "Sağlayıcı seç"
 
 msgctxt "#31314"
 msgid "Content scanning options"
@@ -458,7 +458,7 @@ msgstr "[B]HAVA DURUMU AYARLARINI YAPILANDIR[/B][CR][CR]Hava durumu bilgilerini 
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]SİSTEM AYARLARINI YAPILANDIR[/B][CR][CR]Görünümleri ayarla · Ses çıkış ayarlarını yapılandır · Uzaktan kumandaları ayarla[CR]Güç tasarrufu seçeneklerini ayarla · Hata ayıklamayı etkinleştir · Sistem kilit ayarları"
+msgstr "[B]SİSTEM AYARLARINI YAPILANDIR[/B][CR][CR]Görünümleri ayarla · Ses çıkış ayarlarını yapılandır · Uzaktan kumandaları ayarla[CR]Güç tasarrufu seçeneklerini ayarla · Hata ayıklamayı etkinleştir · Yönetici kilidini ayarla"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed add-ons · Browse for and install add-ons from kodi.tv[CR]Modify add-on settings"
@@ -478,7 +478,7 @@ msgstr "İlk çalıştırma yardımı..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section. To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"OK\" to close this dialogue. It will not appear again."
-msgstr "Bu sekme bu bölüm için ekstra özellikleri içeren bir menüye, bu pencerenin kenarından ulaşılabileceğini belirtir. Menüye ulaşmak için, uzaktan kumanda, klavye ya da fare imlecini sekmenin sol tarafına götürün. [CR][CR]Pencereyi kapatmak için \"Tamam\" tuşuna basın. Bu bildiri bir daha çıkmayacaktır."
+msgstr "Bu sekme bu bölüm için ekstra özellikleri içeren bir menüye, bu pencerenin kenarından ulaşılabileceğini belirtir. Menüye ulaşmak için, uzaktan kumanda, klavye veya fare imlecini sekmenin sol tarafına götürün. [CR][CR]Pencereyi kapatmak için \"Tamam\" tuşuna basın. Bu bildiri bir daha çıkmayacaktır."
 
 msgctxt "#31413"
 msgid "Local subtitle available"

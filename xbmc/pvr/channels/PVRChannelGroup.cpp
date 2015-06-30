@@ -57,6 +57,7 @@ CPVRChannelGroup::CPVRChannelGroup(void) :
     m_bHidden(false),
     m_iPosition(0)
 {
+  OnInit();
 }
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std::string &strGroupName) :
@@ -74,6 +75,7 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std
     m_bHidden(false),
     m_iPosition(0)
 {
+  OnInit();
 }
 
 CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
@@ -91,10 +93,32 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_bHidden(false),
     m_iPosition(group.iPosition)
 {
+  OnInit();
+}
+
+CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group) :
+    m_strGroupName(group.m_strGroupName)
+{
+  m_bRadio                      = group.m_bRadio;
+  m_iGroupType                  = group.m_iGroupType;
+  m_iGroupId                    = group.m_iGroupId;
+  m_bLoaded                     = group.m_bLoaded;
+  m_bChanged                    = group.m_bChanged;
+  m_bUsingBackendChannelOrder   = group.m_bUsingBackendChannelOrder;
+  m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
+  m_iLastWatched                = group.m_iLastWatched;
+  m_bHidden                     = group.m_bHidden;
+  m_bSelectedGroup              = group.m_bSelectedGroup;
+  m_bPreventSortAndRenumber     = group.m_bPreventSortAndRenumber;
+  m_members                     = group.m_members;
+  m_sortedMembers               = group.m_sortedMembers;
+  m_iPosition                   = group.m_iPosition;
+  OnInit();
 }
 
 CPVRChannelGroup::~CPVRChannelGroup(void)
 {
+  CSettings::Get().UnregisterCallback(this);
   Unload();
 }
 
@@ -119,23 +143,12 @@ std::pair<int, int> CPVRChannelGroup::PathIdToStorageId(uint64_t storageId)
   return std::make_pair(storageId >> 32, storageId & 0xFFFFFFFF);
 }
 
-CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group) :
-  m_strGroupName(group.m_strGroupName)
+void CPVRChannelGroup::OnInit(void)
 {
-  m_bRadio                      = group.m_bRadio;
-  m_iGroupType                  = group.m_iGroupType;
-  m_iGroupId                    = group.m_iGroupId;
-  m_bLoaded                     = group.m_bLoaded;
-  m_bChanged                    = group.m_bChanged;
-  m_bUsingBackendChannelOrder   = group.m_bUsingBackendChannelOrder;
-  m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
-  m_iLastWatched                = group.m_iLastWatched;
-  m_bHidden                     = group.m_bHidden;
-  m_bSelectedGroup              = group.m_bSelectedGroup;
-  m_bPreventSortAndRenumber     = group.m_bPreventSortAndRenumber;
-  m_members                     = group.m_members;
-  m_sortedMembers               = group.m_sortedMembers;
-  m_iPosition                   = group.m_iPosition;
+  CSettings::Get().RegisterCallback(this, {
+    "pvrmanager.backendchannelorder",
+    "pvrmanager.usebackendchannelnumbers"
+  });
 }
 
 bool CPVRChannelGroup::Load(void)
@@ -341,7 +354,12 @@ struct sortByClientChannelNumber
   bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2) const
   {
     if (channel1.channel->ClientChannelNumber() == channel2.channel->ClientChannelNumber())
-      return channel1.channel->ClientSubChannelNumber() < channel2.channel->ClientSubChannelNumber();
+    {
+      if (channel1.channel->ClientSubChannelNumber() > 0 || channel2.channel->ClientSubChannelNumber() > 0)
+        return channel1.channel->ClientSubChannelNumber() < channel2.channel->ClientSubChannelNumber();
+      else
+        return channel1.channel->ChannelName() < channel2.channel->ChannelName();
+    }
     return channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
   }
 };

@@ -34,9 +34,6 @@ namespace EPG
 
 namespace PVR
 {
-#define PVR_INTERNAL_GROUP_ID_RADIO 1
-#define PVR_INTERNAL_GROUP_ID_TV    2
-
 #define PVR_GROUP_TYPE_DEFAULT      0
 #define PVR_GROUP_TYPE_INTERNAL     1
 #define PVR_GROUP_TYPE_USER_DEFINED 2
@@ -195,7 +192,7 @@ namespace PVR
      * @brief Check if this group is the internal group containing all channels.
      * @return True if it's the internal group, false otherwise.
      */
-    virtual bool IsInternalGroup(void) const { return false; }
+    virtual bool IsInternalGroup(void) const { return m_iGroupType == PVR_GROUP_TYPE_INTERNAL; }
 
     /*!
      * @brief True if this group holds radio channels, false if it holds TV channels.
@@ -448,6 +445,11 @@ namespace PVR
     void SetPosition(int iPosition);
 
   protected:
+    /*!
+     * @brief Init class
+     */
+    virtual void OnInit(void);
+
     /*!
      * @brief Load the channels stored in the database.
      * @param bCompress If true, compress the database after storing the channels.

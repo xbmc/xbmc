@@ -67,8 +67,13 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromCl
   CPVRChannelGroupPtr updateGroup;
   {
     CSingleLock lock(m_critSection);
+
+    // There can be only one internal group! Make sure we never push a new one!
+    if (group.IsInternalGroup())
+      updateGroup = GetGroupAll();
+
     // try to find the group by id
-    if (group.GroupID() > 0)
+    if (!updateGroup && group.GroupID() > 0)
       updateGroup = GetById(group.GroupID());
 
     // try to find the group by name if we didn't find it yet
@@ -240,7 +245,12 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
 
     // add it if not
     if (!existingGroup)
-      m_groups.push_back(CPVRChannelGroupPtr(new CPVRChannelGroup(m_bRadio, -1, (*it)->GroupName())));
+    {
+      CPVRChannelGroupPtr newGroup(CPVRChannelGroupPtr(new CPVRChannelGroup()));
+      newGroup->SetRadio(m_bRadio);
+      newGroup->SetGroupName((*it)->GroupName());
+      m_groups.push_back(newGroup);
+    }
   }
 
   return true;
@@ -506,7 +516,9 @@ bool CPVRChannelGroups::AddGroup(const std::string &strName)
     if (!group)
     {
       // create a new group
-      group = CPVRChannelGroupPtr(new CPVRChannelGroup(m_bRadio, -1, strName));
+      group = CPVRChannelGroupPtr(new CPVRChannelGroup());
+      group->SetRadio(m_bRadio);
+      group->SetGroupName(strName);
       m_groups.push_back(group);
       bPersist = true;
     }
@@ -532,7 +544,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     CSingleLock lock(m_critSection);
     for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); !bFound && it != m_groups.end();)
     {
-      if ((*it)->GroupID() == group.GroupID())
+      if (*(*it) == group || (group.GroupID() > 0 && (*it)->GroupID() == group.GroupID()))
       {
         // update the selected group in the gui if it's deleted
         CPVRChannelGroupPtr selectedGroup = GetSelectedGroup();

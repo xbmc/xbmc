@@ -228,7 +228,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
       "map_channelgroups_channels.iChannelNumber, channels.idEpg "
       "FROM map_channelgroups_channels "
       "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
-      "WHERE map_channelgroups_channels.idGroup = %u", results.IsRadio() ? PVR_INTERNAL_GROUP_ID_RADIO : PVR_INTERNAL_GROUP_ID_TV);
+      "WHERE map_channelgroups_channels.idGroup = %u", results.GroupID());
   if (ResultQuery(strQuery))
   {
     try

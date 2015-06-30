@@ -417,8 +417,17 @@ public class Splash extends Activity {
   }
 
   private void MigrateUserData() {
-      String sOldUserDir = getExternalFilesDir(null).getParentFile().getParentFile() + "/org.xbmc.xbmc/files/.xbmc";
-      File fOldUserDir = new File(sOldUserDir);
+      String sOldUserDir;
+      File fOldUserDir;
+      try {
+        sOldUserDir = getExternalFilesDir(null).getParentFile().getParentFile() + "/org.xbmc.xbmc/files/.xbmc";
+        fOldUserDir = new File(sOldUserDir);
+        if (!fOldUserDir.exists())
+          return;
+      } catch (Exception e) {
+        return;
+      }
+
       File fNewUserDir = new File(getExternalFilesDir(null), ".@APP_NAME_LC@");
       String sKodiMigrated = fNewUserDir.getAbsolutePath() + "/.kodi_data_was_migrated";
       File fKodiMigrated = new File(sKodiMigrated);
@@ -547,16 +556,6 @@ public class Splash extends Activity {
   }
 
   protected void startXBMC() {
-    // The dynamic linker on droid is a mess.
-    // Depending on version, it might not be able to properly resolve
-    try
-    {
-      // Surround with try-catch to allow static version (3.0)
-      System.loadLibrary("smbclient");
-    }
-    catch (UnsatisfiedLinkError e) {}
-    System.loadLibrary("@APP_NAME_LC@");
-    
     // Run @APP_NAME@
     Intent intent = getIntent();
     intent.setClass(this, org.xbmc.@APP_NAME_LC@.Main.class);
