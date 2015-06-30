@@ -446,6 +446,11 @@ namespace PVR
 
   protected:
     /*!
+     * @brief Init class
+     */
+    virtual void OnInit(void);
+
+    /*!
      * @brief Load the channels stored in the database.
      * @param bCompress If true, compress the database after storing the channels.
      * @return The amount of channels that were added.
