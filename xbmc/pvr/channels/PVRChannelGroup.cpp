@@ -57,6 +57,7 @@ CPVRChannelGroup::CPVRChannelGroup(void) :
     m_bHidden(false),
     m_iPosition(0)
 {
+  OnInit();
 }
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std::string &strGroupName) :
@@ -74,6 +75,7 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std
     m_bHidden(false),
     m_iPosition(0)
 {
+  OnInit();
 }
 
 CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
@@ -91,10 +93,12 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_bHidden(false),
     m_iPosition(group.iPosition)
 {
+  OnInit();
 }
 
 CPVRChannelGroup::~CPVRChannelGroup(void)
 {
+  CSettings::Get().UnregisterCallback(this);
   Unload();
 }
 
@@ -120,7 +124,7 @@ std::pair<int, int> CPVRChannelGroup::PathIdToStorageId(uint64_t storageId)
 }
 
 CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group) :
-  m_strGroupName(group.m_strGroupName)
+m_strGroupName(group.m_strGroupName)
 {
   m_bRadio                      = group.m_bRadio;
   m_iGroupType                  = group.m_iGroupType;
@@ -136,6 +140,15 @@ CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group) :
   m_members                     = group.m_members;
   m_sortedMembers               = group.m_sortedMembers;
   m_iPosition                   = group.m_iPosition;
+  OnInit();
+}
+
+void CPVRChannelGroup::OnInit(void)
+{
+  CSettings::Get().RegisterCallback(this, {
+    "pvrmanager.backendchannelorder",
+    "pvrmanager.usebackendchannelnumbers"
+  });
 }
 
 bool CPVRChannelGroup::Load(void)
