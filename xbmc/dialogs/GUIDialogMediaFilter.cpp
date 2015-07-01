@@ -32,6 +32,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"

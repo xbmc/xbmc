@@ -63,6 +63,7 @@
 #include "utils/FileUtils.h"
 #include "utils/LabelFormatter.h"
 #include "utils/log.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"

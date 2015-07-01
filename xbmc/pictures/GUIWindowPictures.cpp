@@ -40,6 +40,7 @@
 #include "utils/URIUtils.h"
 #include "Autorun.h"
 #include "interfaces/AnnouncementManager.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "ContextMenuManager.h"
 #include "GUIWindowSlideShow.h"

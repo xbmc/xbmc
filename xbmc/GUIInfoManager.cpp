@@ -53,6 +53,7 @@
 #include "guilib/StereoscopicsManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/CPUInfo.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/MathUtils.h"
 #include "utils/SeekHandler.h"
