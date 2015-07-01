@@ -1015,23 +1015,30 @@ bool CPVRClients::IsKnownClient(const AddonPtr client) const
   return GetClientId(client) > 0;
 }
 
-int CPVRClients::RegisterClient(AddonPtr client)
+CPVRClients::AddonRegistrationStatus CPVRClients::RegisterClient(AddonPtr client)
 {
+  AddonRegistrationStatus retval(ADDON_REG_FAILED);
   int iClientId(-1);
   CAddonDatabase database;
   PVR_CLIENT addon;
 
   if (!client->Enabled() || !database.Open())
-    return -1;
-
-  CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
+    return retval;
 
   // check whether we already know this client
   iClientId = database.GetAddonId(client); //database->GetClientId(client->ID());
 
   // try to register the new client in the db
   if (iClientId <= 0)
+  {
+    CLog::Log(LOGDEBUG, "%s - registering add-on '%s'", __FUNCTION__, client->Name().c_str());
     iClientId = database.AddAddon(client, 0);
+    retval = ADDON_REG_NEW_ADDON;
+  }
+  else
+  {
+    retval = ADDON_REG_EXISTING_ADDON;
+  }
 
   if (iClientId > 0)
   // load and initialise the client libraries
@@ -1053,9 +1060,12 @@ int CPVRClients::RegisterClient(AddonPtr client)
   }
 
   if (iClientId <= 0)
+  {
+    retval = ADDON_REG_FAILED;
     CLog::Log(LOGERROR, "PVR - %s - can't register add-on '%s'", __FUNCTION__, client->Name().c_str());
+  }
 
-  return iClientId;
+  return retval;
 }
 
 bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = false */)
@@ -1089,8 +1099,8 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       bool bDisabled(false);
 
       // register the add-on in the pvr db, and create the CPVRClient instance
-      int iClientId = RegisterClient(*it);
-      if (iClientId <= 0)
+      AddonRegistrationStatus status = RegisterClient(*it);
+      if (status == ADDON_REG_FAILED)
       {
         // failed to register or create the add-on, disable it
         CLog::Log(LOGWARNING, "%s - failed to register add-on %s, disabling it", __FUNCTION__, (*it)->Name().c_str());
@@ -1100,15 +1110,17 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       else
       {
         ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
-        PVR_CLIENT addon;
+        PVR_CLIENT addon = std::dynamic_pointer_cast<CPVRClient>(*it);
+        CAddonDatabase database;
+        int iClientId(0);
+        if (database.Open())
+          iClientId = database.GetAddonId(*it);
+
+        if (!addon || iClientId <= 0)
         {
-          CSingleLock lock(m_critSection);
-          if (!GetClient(iClientId, addon))
-          {
-            CLog::Log(LOGWARNING, "%s - failed to find add-on %s, disabling it", __FUNCTION__, (*it)->Name().c_str());
-            disableAddons.push_back(*it);
-            bDisabled = true;
-          }
+          CLog::Log(LOGWARNING, "%s - failed to find add-on %s, disabling it", __FUNCTION__, (*it)->Name().c_str());
+          disableAddons.push_back(*it);
+          bDisabled = true;
         }
 
         // throttle connection attempts, no more than 1 attempt per 5 seconds
@@ -1284,6 +1296,7 @@ bool CPVRClients::UpdateAddons(void)
   bool bReturn(CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true));
   size_t usableClients;
   bool bDisable(false);
+  AddonRegistrationStatus status;
 
   if (bReturn)
   {
@@ -1296,9 +1309,9 @@ bool CPVRClients::UpdateAddons(void)
   // handle "new" addons which aren't yet in the db - these have to be added first
   for (VECADDONS::const_iterator it = addons.begin(); it != addons.end(); ++it)
   {
-    if (RegisterClient(*it) < 0)
+    if ((status = RegisterClient(*it)) == ADDON_REG_FAILED)
       bDisable = true;
-    else
+    else if (status == ADDON_REG_NEW_ADDON)
     {
       addon = std::dynamic_pointer_cast<CPVRClient>(*it);
       bDisable = addon &&
