@@ -201,6 +201,8 @@ std::string CFavouritesDirectory::GetExecutePath(const CFileItem &item, const st
       execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath).c_str());
     else if (item.IsMusicDb() && item.HasMusicInfoTag())
       execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()).c_str());
+    else if (item.IsPicture())
+      execute = StringUtils::Format("ShowPicture(%s)", StringUtils::Paramify(item.GetPath()).c_str());
     else
       execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetPath()).c_str());
   }

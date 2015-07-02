@@ -750,17 +750,6 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_AC3));
       }
 
-      /* Test format AAC */
-      wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_IEC61937_AAC;
-      hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
-      if (SUCCEEDED(hr) || aeDeviceType == AE_DEVTYPE_HDMI)
-      {
-        if(FAILED(hr))
-          CLog::Log(LOGNOTICE, __FUNCTION__": data format \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::DataFormatToStr(AE_FMT_AAC), strFriendlyName.c_str());
-
-        deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_AAC));
-      }
-
       /* Test format for PCM format iteration */
       wfxex.Format.cbSize               = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
       wfxex.dwChannelMask               = KSAUDIO_SPEAKER_STEREO;

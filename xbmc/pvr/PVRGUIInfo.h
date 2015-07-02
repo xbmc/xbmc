@@ -23,6 +23,7 @@
 #include "threads/SystemClock.h"
 #include "utils/Observer.h"
 #include "threads/Thread.h"
+#include "pvr/addons/PVRClients.h"
 #include "addons/include/xbmc_pvr_types.h"
 
 namespace EPG
@@ -100,7 +101,8 @@ namespace PVR
     void UpdateMisc(void);
     void UpdateNextTimer(void);
 
-    bool AddonInfoToggle(void);
+    const SBackend& GetCurrentActiveBackend() const;
+
     bool TimerInfoToggle(void);
     void UpdateTimersToggle(void);
     void ToggleShowInfo(void);
@@ -155,17 +157,12 @@ namespace PVR
     bool                            m_bHasRecordings;
     unsigned int                    m_iTimerAmount;
     unsigned int                    m_iRecordingTimerAmount;
-    int                             m_iActiveClients;
+    unsigned int                    m_iCurrentActiveClient;
     std::string                     m_strPlayingClientName;
-    std::string                     m_strBackendName;
-    std::string                     m_strBackendVersion;
-    std::string                     m_strBackendHost;
     std::string                     m_strBackendTimers;
     std::string                     m_strBackendRecordings;
     std::string                     m_strBackendDeletedRecordings;
     std::string                     m_strBackendChannels;
-    long long                       m_iBackendUsedDiskspace;
-    long long                       m_iBackendTotalDiskspace;
     unsigned int                    m_iDuration;
 
     bool                            m_bHasNonRecordingTimers;
@@ -179,13 +176,11 @@ namespace PVR
     //@}
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
-    unsigned int                    m_iAddonInfoToggleStart;
-    unsigned int                    m_iAddonInfoToggleCurrent;
     unsigned int                    m_iTimerInfoToggleStart;
     unsigned int                    m_iTimerInfoToggleCurrent;
     XbmcThreads::EndTime            m_ToggleShowInfo;
     EPG::CEpgInfoTagPtr             m_playingEpgTag;
-
+    std::vector<SBackend>           m_backendProperties;
     CCriticalSection                m_critSection;
   };
 }

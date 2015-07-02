@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Lithuanian" layout="AZERTY">
+    <keyboard>
+      <row>1234567890x</row>
+      <row>ąžertyuiopįw</row>
+      <row>asdšghjklųėq</row>
+      <row>zūcvbnmčfę</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890X</row>
+      <row>ĄŽERTYUIOPĮW</row>
+      <row>ASDŠGHJKLŲĖQ</row>
+      <row>ZŪCVBNMČFĘ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout language="Lithuanian" layout="QWERTY">
+    <keyboard>
+      <row>1234567890</row>
+      <row>qwertyuiopąč</row>
+      <row>asdfghjklęėį</row>
+      <row>zxcvbnmšųūž</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>QWERTYUIOPĄČ</row>
+      <row>ASDFGHJKLĘĖĮ</row>
+      <row>ZXCVBNMŠŲŪŽ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>
