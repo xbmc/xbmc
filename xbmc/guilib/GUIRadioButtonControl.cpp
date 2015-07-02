@@ -160,7 +160,8 @@ void CGUIRadioButtonControl::SetInvalid()
 void CGUIRadioButtonControl::SetPosition(float posX, float posY)
 {
   CGUIButtonControl::SetPosition(posX, posY);
-  float radioPosX = m_radioPosX ? m_posX + m_radioPosX : (m_posX + m_width - 8) - m_imgRadioOnFocus.GetWidth();
+  const float space = 5;
+  float radioPosX = m_radioPosX ? m_posX + m_radioPosX : (m_posX + m_width - space) - m_imgRadioOnFocus.GetWidth();
   float radioPosY = m_radioPosY ? m_posY + m_radioPosY : m_posY + (m_height - m_imgRadioOnFocus.GetHeight()) / 2;
   m_imgRadioOnFocus.SetPosition(radioPosX, radioPosY);
   m_imgRadioOnNoFocus.SetPosition(radioPosX, radioPosY);
