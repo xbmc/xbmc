@@ -782,7 +782,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<stri
   // don't activate a window if there are active modal dialogs of type NORMAL
   if (!force && HasModalDialog({ DialogModalityType::MODAL }))
   {
-    CLog::Log(LOG_LEVEL_DEBUG, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
+    CLog::Log(LOGINFO, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
     g_audioManager.PlayActionSound(CAction(ACTION_ERROR));
     return;
   }
