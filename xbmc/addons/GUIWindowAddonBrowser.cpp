@@ -191,13 +191,18 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber, CONTEXT_BUTTON butt
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   std::string addonId = pItem->GetProperty("Addon.ID").asString();
-  AddonPtr addon;
-  if (!addonId.empty() && CAddonMgr::Get().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
+  if (!addonId.empty())
   {
-    if (button == CONTEXT_BUTTON_SETTINGS)
-      return CGUIDialogAddonSettings::ShowAndGetInput(addon);
     if (button == CONTEXT_BUTTON_INFO)
+    {
       return CGUIDialogAddonInfo::ShowForItem(pItem);
+    }
+    else if (button == CONTEXT_BUTTON_SETTINGS)
+    {
+      AddonPtr addon;
+      if (CAddonMgr::Get().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
+        return CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    }
   }
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
