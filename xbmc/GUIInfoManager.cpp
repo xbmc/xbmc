@@ -1120,11 +1120,6 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           order = SortOrderDescending;
         return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
       }
-      else if (prop.name == "sort")
-      {
-        if (StringUtils::EqualsNoCase(prop.param(), "songrating"))
-          return AddMultiInfo(GUIInfo(CONTAINER_SORT_METHOD, SortByRating));
-      }
     }
     else if (cat.name == "listitem")
     {
