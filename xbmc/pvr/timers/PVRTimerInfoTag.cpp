@@ -171,7 +171,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iClientChannelUid   == right.m_iClientChannelUid &&
           m_bIsRadio            == right.m_bIsRadio &&
           m_iPreventDupEpisodes == right.m_iPreventDupEpisodes &&
-          m_iRecordingGroup     == m_iRecordingGroup &&
+          m_iRecordingGroup     == right.m_iRecordingGroup &&
           m_StartTime           == right.m_StartTime &&
           m_StopTime            == right.m_StopTime &&
           m_FirstDay            == right.m_FirstDay &&

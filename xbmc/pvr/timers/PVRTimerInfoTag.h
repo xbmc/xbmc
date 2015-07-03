@@ -223,7 +223,7 @@ namespace PVR
     std::string           m_strSummary;          /*!< @brief summary string with the time to show inside a GUI list */
     PVR_TIMER_STATE       m_state;               /*!< @brief the state of this timer */
     int                   m_iClientId;           /*!< @brief ID of the backend */
-    unsigned int          m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, -1 for new */
+    int                   m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, -1 for new */
     unsigned int          m_iParentClientIndex;  /*!< @brief for timers scheduled by repeated timers, the index number of the parent, given by the backend, 0 for no parent */
     int                   m_iClientChannelUid;   /*!< @brief channel uid */
     int                   m_iPriority;           /*!< @brief priority of the timer */
