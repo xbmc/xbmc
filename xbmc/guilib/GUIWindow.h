@@ -76,8 +76,6 @@ public:
 class CGUIWindow : public CGUIControlGroup, protected CCriticalSection
 {
 public:
-
-  enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
   enum LOAD_TYPE { LOAD_EVERY_TIME, LOAD_ON_GUI_INIT, KEEP_IN_MEMORY };
 
   CGUIWindow(int id, const std::string &xmlFile);

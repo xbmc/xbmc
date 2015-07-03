@@ -30,7 +30,7 @@
 CGUIDialog::CGUIDialog(int id, const std::string &xmlFile)
     : CGUIWindow(id, xmlFile)
 {
-  m_bModal = true;
+  m_modalityType = DialogModalityType::MODAL;
   m_wasRunning = false;
   m_renderOrder = 1;
   m_autoClosing = false;
@@ -169,7 +169,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const std
     return; // don't do anything
 
   m_closing = false;
-  m_bModal = true;
+  m_modalityType = DialogModalityType::MODAL;
   // set running before it's added to the window manager, else the auto-show code
   // could show it as well if we are in a different thread from
   // the main rendering thread (this should really be handled via
@@ -204,7 +204,7 @@ void CGUIDialog::Show_Internal()
   if (!g_windowManager.Initialized())
     return; // don't do anything
 
-  m_bModal = false;
+  m_modalityType = DialogModalityType::MODELESS;
 
   // set running before it's added to the window manager, else the auto-show code
   // could show it as well if we are in a different thread from
