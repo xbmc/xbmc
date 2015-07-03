@@ -88,6 +88,14 @@ public:
   static LONG UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd );
   static bool UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64= false );
 
+  static bool GetRegistrySZValue(const std::wstring& keyName, const wchar_t* constvalueName, std::string& returnValue);
+  static inline std::string GetRegistrySZValue(const std::wstring& keyName, const wchar_t* const valueName)
+  {
+    std::string value;
+    GetRegistrySZValue(keyName, valueName, value);
+    return value;
+  }
+
   static bool GetFocussedProcess(std::string &strProcessFile);
   static void CropSource(CRect& src, CRect& dst, CRect target);
 

@@ -1472,6 +1472,52 @@ bool CWIN32Util::GetFocussedProcess(std::string &strProcessFile)
   return true;
 }
 
+bool CWIN32Util::GetRegistrySZValue(const std::wstring& keyName, const wchar_t* const valueName, std::string& returnValue)
+{
+  returnValue.clear();
+
+  if (keyName.length() < 5) // 5 is length of "HKLM\" or "HKCU\"
+    return false;
+
+  HKEY rootKey, hKey;
+  if (keyName.compare(0, 5, L"HKLM\\", 5) == 0 || keyName.compare(0, 5, L"hklm\\", 5) == 0)
+    rootKey = HKEY_LOCAL_MACHINE;
+  else if (keyName.compare(0, 5, L"HKCU\\", 5) == 0 || keyName.compare(0, 5, L"hkcu\\", 5) == 0)
+    rootKey = HKEY_CURRENT_USER;
+  else
+    return false;
+
+  if (RegOpenKeyExW(rootKey, keyName.c_str() + 5, 0, KEY_QUERY_VALUE, &hKey) != ERROR_SUCCESS)
+    return false;
+
+  XUTILS::auto_buffer buf(1024);
+  DWORD valType, bufSize = buf.size();
+  LONG qRes = RegQueryValueExW(hKey, valueName, NULL, &valType, (PBYTE)buf.get(), &bufSize);
+  if (qRes == ERROR_MORE_DATA && valType == REG_SZ)
+  {
+    buf.allocate(bufSize);
+    bufSize = buf.size();
+    qRes = RegQueryValueExW(hKey, valueName, NULL, &valType, (PBYTE)buf.get(), &bufSize);
+  }
+  RegCloseKey(hKey);
+
+  if (qRes != ERROR_SUCCESS && valType != REG_SZ)
+    return false;
+
+  if (bufSize >= sizeof(wchar_t))
+  { // need to convert only if got non-empty string
+    std::wstring wValue(((const wchar_t*)buf.get()), bufSize / sizeof(wchar_t));
+    buf.clear(); // deallocate memory early
+    if (wValue.back() == 0)
+      wValue.pop_back(); // remove extra null-termination
+    
+    if (!wValue.empty())
+      return CCharsetConverter::wToUTF8(wValue, returnValue);
+  }
+  
+  return true;
+}
+
 // Adjust the src rectangle so that the dst is always contained in the target rectangle.
 void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target)
 {

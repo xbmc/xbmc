@@ -684,7 +684,8 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
   osNameVer = "Windows ";
   if (sysGetVersionExWByRef(osvi))
   {
-    switch (GetWindowsVersion())
+    const WindowsVersion winVer = GetWindowsVersion();
+    switch (winVer)
     {
     case WindowsVersionVista:
       if (osvi.wProductType == VER_NT_WORKSTATION)
@@ -710,12 +711,38 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
       else
         osNameVer.append("Server 2012 R2");
       break;
+    case WindowsVersionWin10:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        osNameVer.append("10");
+      else
+        osNameVer.append("Server vNext"); /* FIXME: Correct name if required */
+      break;
     case WindowsVersionFuture:
-      osNameVer.append("Unknown Future Version");
+      if (osvi.dwMajorVersion > 0)
+        osNameVer.append(StringUtils::Format("Unknown (%lu.%lu) Future Version", osvi.dwMajorVersion, osvi.dwMinorVersion));
+      else
+        osNameVer.append("Unknown Future Version");
       break;
     default:
-      osNameVer.append("Unknown version");
+      if (osvi.dwMajorVersion > 0)
+        osNameVer.append(StringUtils::Format("Unknown (%lu.%lu) version", osvi.dwMajorVersion, osvi.dwMinorVersion));
+      else
+        osNameVer.append("Unknown version");
       break;
+    }
+
+    std::string regOsName = CWIN32Util::GetRegistrySZValue(L"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"ProductName");
+    if (!regOsName.empty())
+    {
+      if (winVer != WindowsVersionUnknown && winVer != WindowsVersionFuture)
+      {
+        if (regOsName.compare(0, osNameVer.length(), osNameVer) == 0)
+          osNameVer = regOsName;
+        else
+          CLog::LogF(LOGWARNING, "Registry value for OS name \"%s\" doesn't match OS name \"%s\"", regOsName.c_str(), osNameVer.c_str());
+      }
+      else
+        osNameVer.append(" (").append(regOsName).append(")");
     }
 
     // Append Service Pack version if any
@@ -727,6 +754,15 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
         osNameVer.append(StringUtils::Format(".%d", osvi.wServicePackMinor));
       }
     }
+
+    osNameVer.append(" Build ");
+    std::string buildStr(StringUtils::Format("%lu", osvi.dwBuildNumber));
+    std::string fullBuildStr(CWIN32Util::GetRegistrySZValue(L"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"BuildLabEx"));
+    const size_t buildStrLenPlOne = buildStr.length() + 1; // length of build string plus dot
+    if (fullBuildStr.length() > buildStrLenPlOne && fullBuildStr.compare(0, buildStrLenPlOne, buildStr + '.') == 0)
+      osNameVer.append(fullBuildStr.substr(0, fullBuildStr.find('.', buildStrLenPlOne + 1)));
+    else
+      osNameVer.append(buildStr);
   }
   else
     osNameVer.append(" unknown");
@@ -897,8 +933,10 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
         m_WinVer = WindowsVersionWin8;
       else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) 
         m_WinVer = WindowsVersionWin8_1;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 4)
+        m_WinVer = WindowsVersionWin10;
       /* Insert checks for new Windows versions here */
-      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 6)
+      else if (osvi.dwMajorVersion >= 6)
         m_WinVer = WindowsVersionFuture;
     }
   }
@@ -1313,6 +1351,53 @@ std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
 
   return StringUtils::Format("version %d.%d-CURRENT", major, minor);
 #elif defined(TARGET_ANDROID)
+  switch(__ANDROID_API__)
+  {
+  case 1:
+    return "version 1.0";
+  case 2:
+    return "version 1.1";
+  case 3:
+    return "version 1.5";
+  case 4:
+    return "version 1.6";
+  case 5:
+    return "version 2.0";
+  case 6:
+    return "version 2.0.1";
+  case 7:
+    return "version 2.1";
+  case 8:
+    return "version 2.2";
+  case 9:
+    return "version 2.3";
+  case 10:
+    return "version 2.3.3";
+  case 11:
+    return "version 3.0";
+  case 12:
+    return "version 3.1";
+  case 13:
+    return "version 3.2";
+  case 14:
+    return "version 4.0";
+  case 15:
+    return "version 4.0.3";
+  case 16:
+    return "version 4.1";
+  case 17:
+    return "version 4.2";
+  case 18:
+    return "version 4.3";
+  case 19:
+    return "version 4.4";
+  case 20:
+    return "version 4.4W";
+  case 21:
+    return "version 5.0";
+    // Insert new Android versions here, when they published at
+    // http://developer.android.com/guide/topics/manifest/uses-sdk-element.html#ApiLevels
+  }
   return "API level " XSTR_MACRO(__ANDROID_API__);
 #elif defined(TARGET_LINUX)
   return StringUtils::Format("version %d.%d.%d", (LINUX_VERSION_CODE >> 16) & 0xFF , (LINUX_VERSION_CODE >> 8) & 0xFF, LINUX_VERSION_CODE & 0xFF);
