@@ -66,7 +66,7 @@ std::string CContextItemAddon::GetLabel()
 
 bool CContextItemAddon::IsVisible(const CFileItemPtr& item) const
 {
-  return item && m_visCondition->Get(item.get());
+  return item && m_visCondition && m_visCondition->Get(item.get());
 }
 
 }
