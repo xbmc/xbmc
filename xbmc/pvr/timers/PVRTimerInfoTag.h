@@ -216,6 +216,12 @@ namespace PVR
      */
     static std::string GetWeekdaysString(unsigned int iWeekdays, bool bEpgBased, bool bLongMultiDaysFormat);
 
+    /*!
+     * @brief For timers scheduled by repeated timers, return the id of the parent.
+     * @return the id of the timer schedule or 0 in case the timer was not scheduled by a repeating timer.
+     */
+    unsigned int GetTimerScheduleId() const { return m_iParentClientIndex; }
+
     std::string           m_strTitle;            /*!< @brief name of this timer */
     std::string           m_strEpgSearchString;  /*!< @brief a epg data match string for repeating epg-based timers. Format is backend-dependent, for example regexp */
     bool                  m_bFullTextEpgSearch;  /*!< @brief indicates whether only epg episode title can be matched by the pvr backend or "more" (backend-dependent") data. */
