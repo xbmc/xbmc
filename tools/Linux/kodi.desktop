@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
-Name=Kodi Media Center
-GenericName=Media Center
+Name=Kodi media center
+GenericName=Media center
 Comment=Manage and view your media
 Exec=kodi
 Icon=kodi

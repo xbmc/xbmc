@@ -1,12 +1,12 @@
---- How to build a XBMC debian package ---
+--- How to build a Kodi Debian package ---
 
 There are two available build methods:
 1.) debuild / debhelper
-  Requirements: debhelper, devscripts, all Xbmc build deps 
+  Requirements: debhelper, devscripts, all Kodi build deps 
       sudo apt-get install debhelper devscripts
-      sudo apt-get build-dep xbmc (if you have on of our repos/ppas added, else read docs/README.linux or docs/README.ubuntu)
+      sudo apt-get build-dep kodi (if you have on of our repos/ppas added, else read docs/README.linux or docs/README.ubuntu)
 
-  Result: debian package for your host distribution and architecture only
+  Result: Debian package for your host distribution and architecture only
   Recommended for local installs
 
   Example Usage: ./mk-debian-package.sh
@@ -16,11 +16,11 @@ There are two available build methods:
       For a comprehensive example how to setup pbuilder read: 
       https://wiki.ubuntu.com/PbuilderHowto
 
-  Result: debian package for arbitrary debian based distributions and architectures
+  Result: Debian package for arbitrary Debian based distributions and architectures.
   Recommended for hosting your own apt repository or (clean room) compile testing for various distributions
 
   Example Usage:
-  RELEASEV=13 \
+  RELEASEV=16 \
   DISTS=-"unstable" \
   ARCHS="i386 amd64" \
   BUILDER="pdebuild" \

@@ -47,7 +47,7 @@ do
       CRASHCOUNT=$((CRASHCOUNT+1))
       if [ $(($CRASHCOUNT >= 3)) = "1" ]; then # Too many, bail out
         LOOP=0
-        echo "${APP} has exited uncleanly 3 times in the last ${DIFF} seconds."
+        echo "${APP} has exited in an unclean state 3 times in the last ${DIFF} seconds."
         echo "Something is probably wrong"
       fi
     fi
