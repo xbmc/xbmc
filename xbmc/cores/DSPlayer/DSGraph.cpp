@@ -259,9 +259,9 @@ void CDSGraph::UpdateTime()
   if (SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
     m_State.time = Position;
 
-  if (m_State.time_total == 0)
-    //we dont have the duration of the video yet so try to request it
-    UpdateTotalTime();
+  // Update total time of video.
+  // Duration time may increase during playback of in-progress recordings
+  UpdateTotalTime();
 
   if ((CGraphFilters::Get()->VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0 && !CMadvrCallback::Get()->UsingMadvr())
   {
