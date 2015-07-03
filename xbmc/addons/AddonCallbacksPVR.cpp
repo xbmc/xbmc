@@ -211,12 +211,8 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
     return;
   }
 
+  /* Note: channel can be NULL here, for instance for epg-based repeating timers ("record on any channel" condition). */
   CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(timer->iClientChannelUid, client->GetID());
-  if (!channel)
-  {
-    CLog::Log(LOGERROR, "PVR - %s - cannot find channel %d on client %d", __FUNCTION__, timer->iClientChannelUid, client->GetID());
-    return;
-  }
 
   /* transfer this entry to the timers container */
   CPVRTimerInfoTagPtr transferTimer(new CPVRTimerInfoTag(*timer, channel, client->GetID()));

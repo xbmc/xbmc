@@ -27,6 +27,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerType.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -139,6 +140,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strClientPath         = CSpecialProtocol::TranslatePath(Path());
   m_pInfo->strClientPath  = m_strClientPath.c_str();
   m_menuhooks.clear();
+  m_timertypes.clear();
   m_bReadyToUse           = false;
   m_iClientId             = iClientId;
   m_strBackendVersion     = DEFAULT_INFO_STRING_VALUE;
@@ -282,25 +284,29 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
 
   memset(&addonTimer, 0, sizeof(addonTimer));
 
-  addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
-  addonTimer.state             = xbmcTimer.m_state;
-  addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
-  addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
+  addonTimer.iClientIndex              = xbmcTimer.m_iClientIndex;
+  addonTimer.iParentClientIndex        = xbmcTimer.m_iParentClientIndex;
+  addonTimer.state                     = xbmcTimer.m_state;
+  addonTimer.iTimerType                = xbmcTimer.GetTimerType() ? xbmcTimer.GetTimerType()->GetTypeId() : PVR_TIMER_TYPE_NONE;
+  addonTimer.iClientChannelUid         = xbmcTimer.m_iClientChannelUid;
   strncpy(addonTimer.strTitle, xbmcTimer.m_strTitle.c_str(), sizeof(addonTimer.strTitle) - 1);
+  strncpy(addonTimer.strEpgSearchString, xbmcTimer.m_strEpgSearchString.c_str(), sizeof(addonTimer.strEpgSearchString) - 1);
+  addonTimer.bFullTextEpgSearch        = xbmcTimer.m_bFullTextEpgSearch;
   strncpy(addonTimer.strDirectory, xbmcTimer.m_strDirectory.c_str(), sizeof(addonTimer.strDirectory) - 1);
-  addonTimer.iPriority         = xbmcTimer.m_iPriority;
-  addonTimer.iLifetime         = xbmcTimer.m_iLifetime;
-  addonTimer.bIsRepeating      = xbmcTimer.m_bIsRepeating;
-  addonTimer.iWeekdays         = xbmcTimer.m_iWeekdays;
-  addonTimer.startTime         = start - g_advancedSettings.m_iPVRTimeCorrection;
-  addonTimer.endTime           = end - g_advancedSettings.m_iPVRTimeCorrection;
-  addonTimer.firstDay          = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
-  addonTimer.iEpgUid           = epgTag ? epgTag->UniqueBroadcastID() : -1;
+  addonTimer.iPriority                 = xbmcTimer.m_iPriority;
+  addonTimer.iLifetime                 = xbmcTimer.m_iLifetime;
+  addonTimer.iPreventDuplicateEpisodes = xbmcTimer.m_iPreventDupEpisodes;
+  addonTimer.iRecordingGroup           = xbmcTimer.m_iRecordingGroup;
+  addonTimer.iWeekdays                 = xbmcTimer.m_iWeekdays;
+  addonTimer.startTime                 = start - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.endTime                   = end - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.firstDay                  = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.iEpgUid                   = epgTag ? epgTag->UniqueBroadcastID() : -1;
   strncpy(addonTimer.strSummary, xbmcTimer.m_strSummary.c_str(), sizeof(addonTimer.strSummary) - 1);
-  addonTimer.iMarginStart      = xbmcTimer.m_iMarginStart;
-  addonTimer.iMarginEnd        = xbmcTimer.m_iMarginEnd;
-  addonTimer.iGenreType        = xbmcTimer.m_iGenreType;
-  addonTimer.iGenreSubType     = xbmcTimer.m_iGenreSubType;
+  addonTimer.iMarginStart              = xbmcTimer.m_iMarginStart;
+  addonTimer.iMarginEnd                = xbmcTimer.m_iMarginEnd;
+  addonTimer.iGenreType                = xbmcTimer.m_iGenreType;
+  addonTimer.iGenreSubType             = xbmcTimer.m_iGenreSubType;
 }
 
 /*!
@@ -372,6 +378,7 @@ bool CPVRClient::GetAddonProperties(void)
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
   PVR_ADDON_CAPABILITIES addonCapabilities;
+  CPVRTimerTypes timerTypes;
 
   /* get the capabilities */
   try
@@ -405,6 +412,115 @@ bool CPVRClient::GetAddonProperties(void)
   try { strBackendHostname = m_pStruct->GetBackendHostname(); }
   catch (std::exception &e) { LogException(e, "GetBackendHostname()"); return false; }
 
+  /* timer types */
+  if (addonCapabilities.bSupportsTimers)
+  {
+    try
+    {
+      PVR_TIMER_TYPE types_array[PVR_ADDON_TIMERTYPE_ARRAY_SIZE];
+      int size = PVR_ADDON_TIMERTYPE_ARRAY_SIZE;
+
+      PVR_ERROR retval = m_pStruct->GetTimerTypes(types_array, &size);
+
+      if (retval == PVR_ERROR_NOT_IMPLEMENTED)
+      {
+        // begin compat section
+        CLog::Log(LOGWARNING, "%s - Addon %s does not support timer types. It will work, but not benefit from the timer features introduced with PVR Addon API 1.9.7.", __FUNCTION__, strFriendlyName.c_str());
+
+        // Create standard timer types (mostly) matching the timer functionality available in Isengard.
+        // This is for migration only and does not make changes to the addons obsolete. Addons should
+        // work and benefit from some UI changes (e.g. some of the timer settings dialog enhancements),
+        // but all old problems/bugs due to static attributes and values will remain the same as in
+        // Isengard. Also, new features (like epg search) are not available to addons automatically.
+        // This code can be removed once all addons actually support the respective PVR Addon API version.
+
+        size = 0;
+        // One-shot manual
+        memset(&types_array[size], 0, sizeof(types_array[size]));
+        types_array[size].iId         = size + 1;
+        types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
+                                        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
+                                        PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
+                                        PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
+                                        PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
+                                        PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+        size++;
+
+        // Repeating manual
+        memset(&types_array[size], 0, sizeof(types_array[size]));
+        types_array[size].iId         = size + 1;
+        types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
+                                        PVR_TIMER_TYPE_IS_REPEATING            |
+                                        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
+                                        PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
+                                        PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
+                                        PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
+                                        PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY      |
+                                        PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS       |
+                                        PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+        size++;
+
+        if (addonCapabilities.bSupportsEPG)
+        {
+          // One-shot epg-based
+          memset(&types_array[size], 0, sizeof(types_array[size]));
+          types_array[size].iId         = size + 1;
+          types_array[size].iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+                                          PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
+                                          PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
+                                          PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
+                                          PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
+                                          PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+          size++;
+        }
+
+        retval = PVR_ERROR_NO_ERROR;
+        // end compat section
+      }
+
+      if (retval == PVR_ERROR_NO_ERROR)
+      {
+        timerTypes.reserve(size);
+        for (int i = 0; i < size; ++i)
+        {
+          if (types_array[i].iId == PVR_TIMER_TYPE_NONE)
+          {
+            CLog::Log(LOGERROR, "PVR - invalid timer type supplied by add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
+            continue;
+          }
+
+          if (strlen(types_array[i].strDescription) == 0)
+          {
+            int id;
+            if (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_REPEATING)
+            {
+              id = (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
+                 ? 822  // "Repeating"
+                 : 823; // "Repeating (Guide-based)"
+            }
+            else
+            {
+              id = (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
+                 ? 820  // "One Time"
+                 : 821; // "One Time (Guide-based)
+            }
+            std::string descr(g_localizeStrings.Get(id));
+            strncpy(types_array[i].strDescription, descr.c_str(), descr.size());
+          }
+          timerTypes.push_back(CPVRTimerTypePtr(new CPVRTimerType(types_array[i], m_iClientId)));
+        }
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "PVR - couldn't get the timer types for add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
+        return false;
+      }
+    }
+    catch (std::exception &e) { LogException(e, "GetTimerTypes()"); return false; }
+  }
+
   /* update the members */
   m_strBackendName      = strBackendName;
   m_strConnectionString = strConnectionString;
@@ -412,6 +528,7 @@ bool CPVRClient::GetAddonProperties(void)
   m_strBackendVersion   = strBackendVersion;
   m_addonCapabilities   = addonCapabilities;
   m_strBackendHostname  = strBackendHostname;
+  m_timertypes          = timerTypes;
 
   return true;
 }
@@ -1089,7 +1206,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
   return retVal;
 }
 
-PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* = false */)
+PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* = false */, bool bDeleteSchedule /* = false */)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_REJECTED;
@@ -1103,7 +1220,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* 
     PVR_TIMER tag;
     WriteClientTimerInfo(timer, tag);
 
-    retVal = m_pStruct->DeleteTimer(tag, bForce);
+    retVal = m_pStruct->DeleteTimer(tag, bForce, bDeleteSchedule);
 
     LogError(retVal, __FUNCTION__);
   }
@@ -1165,6 +1282,12 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
   }
 
   return retVal;
+}
+
+PVR_ERROR CPVRClient::GetTimerTypes(CPVRTimerTypes& results) const
+{
+  results = m_timertypes;
+  return PVR_ERROR_NO_ERROR;
 }
 
 int CPVRClient::ReadStream(void* lpBuf, int64_t uiBufSize)
@@ -1470,11 +1593,6 @@ bool CPVRClient::SupportsRecordings(void) const
 bool CPVRClient::SupportsRecordingsUndelete(void) const
 {
   return m_addonCapabilities.bSupportsRecordingsUndelete;
-}
-
-bool CPVRClient::SupportsRecordingFolders(void) const
-{
-  return m_addonCapabilities.bSupportsRecordingFolders;
 }
 
 bool CPVRClient::SupportsRecordingPlayCount(void) const

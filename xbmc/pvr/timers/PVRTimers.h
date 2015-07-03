@@ -32,7 +32,7 @@ namespace EPG
 
 namespace PVR
 {
-  class CGUIDialogPVRTimerSettings;
+  class CPVRTimersPath;
 
   class CPVRTimers : public Observer,
                      public Observable
@@ -142,9 +142,10 @@ namespace PVR
 
     /*!
      * @brief Delete a timer on the client. Doesn't delete the timer from the container. The backend will do this.
+     * @param bDeleteSchedule Also delete repeating schedule instead of single timer only.
      * @return True if it was sent correctly, false if not.
      */
-    static bool DeleteTimer(const CFileItem &item, bool bForce = false);
+    static bool DeleteTimer(const CFileItem &item, bool bForce = false, bool bDeleteSchedule = false);
 
     /*!
      * @brief Rename a timer on the client. Doesn't update the timer in the container. The backend will do this.
@@ -186,11 +187,45 @@ namespace PVR
     void Unload(void);
     void UpdateEpgEvent(CPVRTimerInfoTagPtr timer);
     bool UpdateEntries(const CPVRTimers &timers);
-    CPVRTimerInfoTagPtr GetByClient(int iClientId, int iClientTimerId) const;
+    CPVRTimerInfoTagPtr GetByClient(int iClientId, unsigned int iClientTimerId) const;
+    bool GetRootDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
+    bool GetSubDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
 
     CCriticalSection  m_critSection;
     bool              m_bIsUpdating;
     MapTags           m_tags;
     unsigned int      m_iLastId;
+  };
+
+  class CPVRTimersPath
+  {
+  public:
+    static const std::string PATH_ADDTIMER;
+    static const std::string PATH_NEW;
+
+    CPVRTimersPath(const std::string &strPath);
+    CPVRTimersPath(const std::string &strPath, int iClientId, unsigned int iParentId);
+    CPVRTimersPath(bool bRadio, bool bGrouped);
+
+    bool IsValid() const { return m_bValid; }
+
+    const std::string &GetPath() const        { return m_path; }
+    bool              IsTimersRoot() const    { return m_bRoot; }
+    bool              IsTimerSchedule() const { return !IsTimersRoot(); }
+    bool              IsRadio() const         { return m_bRadio; }
+    bool              IsGrouped() const       { return m_bGrouped; }
+    int               GetClientId() const     { return m_iClientId; }
+    unsigned int      GetParentId() const     { return m_iParentId; }
+
+  private:
+    bool Init(const std::string &strPath);
+
+    std::string  m_path;
+    bool         m_bValid;
+    bool         m_bRoot;
+    bool         m_bRadio;
+    bool         m_bGrouped;
+    int          m_iClientId;
+    unsigned int m_iParentId;
   };
 }
