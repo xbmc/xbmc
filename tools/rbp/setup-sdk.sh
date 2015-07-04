@@ -28,6 +28,11 @@ else
   [ -w $(dirname $XBMCPREFIX) ] || SUDO="sudo"
 fi
 
+if [ -z "$KODI_MIRROR" ]
+then
+  KODI_MIRROR="http://mirrors.kodi.tv"
+fi
+
 $SUDO mkdir -p $XBMCPREFIX
 $SUDO chmod 777 $XBMCPREFIX
 mkdir -p $XBMCPREFIX/lib
@@ -39,7 +44,7 @@ echo "TARGETFS=$TARGETFS"                                              >> $SCRIP
 echo "TOOLCHAIN=$TOOLCHAIN"                                            >> $SCRIPT_PATH/Makefile.include
 echo "BUILDROOT=$BUILDROOT"                                            >> $SCRIPT_PATH/Makefile.include
 echo "USE_BUILDROOT=$USE_BUILDROOT"                                    >> $SCRIPT_PATH/Makefile.include
-echo "BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs"         >> $SCRIPT_PATH/Makefile.include
+echo "BASE_URL=${KODI_MIRROR}/build-deps/darwin-libs"                  >> $SCRIPT_PATH/Makefile.include
 echo "TARBALLS_LOCATION=$TARBALLS"                                     >> $SCRIPT_PATH/Makefile.include
 echo "RETRIEVE_TOOL=/usr/bin/curl"                                     >> $SCRIPT_PATH/Makefile.include
 echo "RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output \$(TARBALLS_LOCATION)/\$(ARCHIVE)" >> $SCRIPT_PATH/Makefile.include
