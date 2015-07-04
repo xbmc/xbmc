@@ -96,7 +96,7 @@ namespace PVR
      * @brief Check whether this type is for repeating ore one time timers.
      * @return True if repeating, false otherwise.
      */
-    bool IsRepeating() const { return m_iAttributes & PVR_TIMER_TYPE_IS_REPEATING; }
+    bool IsRepeating() const { return (m_iAttributes & PVR_TIMER_TYPE_IS_REPEATING) > 0; }
 
     /*!
      * @brief Check whether this type is for repeating ore one time timers.
@@ -108,7 +108,7 @@ namespace PVR
      * @brief Check whether this type is for epg-based or manual timers.
      * @return True if manual, false otherwise.
      */
-    bool IsManual() const { return m_iAttributes & PVR_TIMER_TYPE_IS_MANUAL; }
+    bool IsManual() const { return (m_iAttributes & PVR_TIMER_TYPE_IS_MANUAL) > 0; }
 
     /*!
      * @brief Check whether this type is for epg-based or manual timers.
@@ -144,92 +144,92 @@ namespace PVR
      * @brief Check whether this type is readonly (must not be modified after initial creation).
      * @return True if readonly, false otherwise.
      */
-    bool IsReadOnly() const { return m_iAttributes & PVR_TIMER_TYPE_IS_READONLY; }
+    bool IsReadOnly() const { return (m_iAttributes & PVR_TIMER_TYPE_IS_READONLY) > 0; }
 
     /*!
      * @brief Check whether this type forbids creation of new timers of this type.
      * @return True if new instances are forbidden, false otherwise.
      */
-    bool ForbidsNewInstances() const { return m_iAttributes & PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES; }
+    bool ForbidsNewInstances() const { return (m_iAttributes & PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES) > 0; }
 
     /*!
      * @brief Check whether this type supports the "enabling/disabling" of timers of its type.
      * @return True if "enabling/disabling" feature is supported, false otherwise.
      */
-    bool SupportsEnableDisable() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE; }
+    bool SupportsEnableDisable() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE) > 0; }
 
     /*!
      * @brief Check whether this type supports channels.
      * @return True if channels are supported, false otherwise.
      */
-    bool SupportsChannels() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_CHANNELS; }
+    bool SupportsChannels() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_CHANNELS) > 0; }
 
     /*!
      * @brief Check whether this type supports start time and end time.
      * @return True if start time and end time values is supported, false otherwise.
      */
-    bool SupportsStartEndTime() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_TIME; }
+    bool SupportsStartEndTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_TIME) > 0; }
 
     /*!
      * @brief Check whether this type supports matching a search string against epg episode title.
      * @return True if title matching is supported, false otherwise.
      */
-    bool SupportsEpgTitleMatch() const { return m_iAttributes & (PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH | PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH); }
+    bool SupportsEpgTitleMatch() const { return (m_iAttributes & (PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH | PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH)) > 0; }
 
     /*!
      * @brief Check whether this type supports matching a search string against extended (fulltext) epg data. This
               includes title matching.
      * @return True if fulltext matching is supported, false otherwise.
      */
-    bool SupportsEpgFulltextMatch() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH; }
+    bool SupportsEpgFulltextMatch() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH) > 0; }
 
     /*!
      * @brief Check whether this type supports a first day the timer is active.
      * @return True if first day is supported, false otherwise.
      */
-    bool SupportsFirstDay() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY; }
+    bool SupportsFirstDay() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY) > 0; }
 
     /*!
      * @brief Check whether this type supports weekdays for timer schedules.
      * @return True if weekdays are supported, false otherwise.
      */
-    bool SupportsWeekdays() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS; }
+    bool SupportsWeekdays() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS) > 0; }
 
     /*!
      * @brief Check whether this type supports the "record only new episodes" feature.
      * @return True if the "record only new episodes" feature is supported, false otherwise.
      */
-    bool SupportsRecordOnlyNewEpisodes() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES; }
+    bool SupportsRecordOnlyNewEpisodes() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES) > 0; }
 
     /*!
      * @brief Check whether this type supports pre and post record time.
      * @return True if pre and post record time is supported, false otherwise.
      */
-    bool SupportsStartEndMargin() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN; }
+    bool SupportsStartEndMargin() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN) > 0; }
 
     /*!
      * @brief Check whether this type supports recording priorities.
      * @return True if recording priority is supported, false otherwise.
      */
-    bool SupportsPriority() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_PRIORITY; }
+    bool SupportsPriority() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_PRIORITY) > 0; }
 
     /*!
      * @brief Check whether this type supports lifetime for recordings.
      * @return True if recording lifetime is supported, false otherwise.
      */
-    bool SupportsLifetime() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_LIFETIME; }
+    bool SupportsLifetime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_LIFETIME) > 0; }
 
     /*!
      * @brief Check whether this type supports user specified recording folders.
      * @return True if recording folders are supported, false otherwise.
      */
-    bool SupportsRecordingFolders() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS; }
+    bool SupportsRecordingFolders() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS) > 0; }
 
     /*!
      * @brief Check whether this type supports recording groups.
      * @return True if recording groups are supported, false otherwise.
      */
-    bool SupportsRecordingGroup() const { return m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP; }
+    bool SupportsRecordingGroup() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP) > 0; }
 
     /*!
      * @brief Obtain a list with all possible values for the priority attribute.
