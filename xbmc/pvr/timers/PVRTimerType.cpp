@@ -29,7 +29,6 @@
 
 using namespace PVR;
 
-// static
 const std::vector<CPVRTimerTypePtr> CPVRTimerType::GetAllTypes()
 {
   std::vector<CPVRTimerTypePtr> allTypes;
@@ -37,14 +36,12 @@ const std::vector<CPVRTimerTypePtr> CPVRTimerType::GetAllTypes()
   return allTypes;
 }
 
-// static
 const CPVRTimerTypePtr CPVRTimerType::GetFirstAvailableType()
 {
   std::vector<CPVRTimerTypePtr> allTypes(GetAllTypes());
   return allTypes.empty() ? CPVRTimerTypePtr() : *(allTypes.begin());
 }
 
-// static
 CPVRTimerTypePtr CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientId)
 {
   std::vector<CPVRTimerTypePtr> types;
@@ -62,7 +59,6 @@ CPVRTimerTypePtr CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientI
   return CPVRTimerTypePtr();
 }
 
-// static
 CPVRTimerTypePtr CPVRTimerType::CreateFromAttributes(
   unsigned int iMustHaveAttr, unsigned int iMustNotHaveAttr, int iClientId)
 {
@@ -102,7 +98,6 @@ CPVRTimerType::CPVRTimerType(const PVR_TIMER_TYPE &type, int iClientId) :
   InitAttributeValues(type);
 }
 
-// virtual
 CPVRTimerType::~CPVRTimerType()
 {
 }
@@ -277,4 +272,3 @@ void CPVRTimerType::GetRecordingGroupValues(std::vector< std::pair<std::string, 
   for (const auto &recordingGroup : m_recordingGroupValues)
     list.push_back(recordingGroup);
 }
-

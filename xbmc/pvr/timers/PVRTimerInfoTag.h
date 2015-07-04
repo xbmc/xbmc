@@ -123,15 +123,14 @@ namespace PVR
     bool IsRecording(void) const { return m_state == PVR_TIMER_STATE_RECORDING; }
 
     /*!
-      * @brief Checks whether is timer has a timer type. Can be false if
-      *        no PVR client supporting timers is enabled.
+      * @brief Checks whether this timer has a timer type.
       * @return True if this timer has a timer type, false otherwise
       */
     bool HasTimerType(void) const { return m_timerType.get() != NULL; }
 
     /*!
       * @brief Gets the type of this timer.
-      * @return the timer type.
+      * @return the timer type or NULL if this tag has no timer type.
       */
     const CPVRTimerTypePtr GetTimerType() const { return m_timerType; }
 
@@ -155,15 +154,19 @@ namespace PVR
 
     CDateTime StartAsUTC(void) const;
     CDateTime StartAsLocalTime(void) const;
-    bool IsStartAtAnyTime(void) const;
     void SetStartFromUTC(CDateTime &start) { m_StartTime = start; }
     void SetStartFromLocalTime(CDateTime &start) { m_StartTime = start.GetAsUTCDateTime(); }
 
+    bool IsStartAtAnyTime(void) const;
+    void SetStartAtAnyTime(void);
+
     CDateTime EndAsUTC(void) const;
     CDateTime EndAsLocalTime(void) const;
-    bool IsEndAtAnyTime(void) const;
     void SetEndFromUTC(CDateTime &end) { m_StopTime = end; }
     void SetEndFromLocalTime(CDateTime &end) { m_StopTime = end.GetAsUTCDateTime(); }
+
+    bool IsEndAtAnyTime(void) const;
+    void SetEndAtAnyTime(void);
 
     CDateTime FirstDayAsUTC(void) const;
     CDateTime FirstDayAsLocalTime(void) const;
@@ -230,7 +233,7 @@ namespace PVR
     PVR_TIMER_STATE       m_state;               /*!< @brief the state of this timer */
     int                   m_iClientId;           /*!< @brief ID of the backend */
     int                   m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, -1 for new */
-    unsigned int          m_iParentClientIndex;  /*!< @brief for timers scheduled by repeated timers, the index number of the parent, given by the backend, 0 for no parent */
+    unsigned int          m_iParentClientIndex;  /*!< @brief for timers scheduled by repeated timers, the index number of the parent, given by the backend, PVR_TIMER_NO_PARENT for no parent */
     int                   m_iClientChannelUid;   /*!< @brief channel uid */
     int                   m_iPriority;           /*!< @brief priority of the timer */
     int                   m_iLifetime;           /*!< @brief lifetime of the timer in days */

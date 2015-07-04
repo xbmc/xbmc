@@ -93,6 +93,16 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_NONE = 0; /*!< @brief "Null" value for a numeric timer type. */
 
   /*!
+   * @brief special PVR_TIMER.iParentClientIndex value to indicate that a timer has no parent.
+   */
+  const unsigned int PVR_TIMER_NO_PARENT = 0; /*!< @brief timer has no parent; it was not scheduled by a repeating timer. */
+
+  /*!
+   * @brief special PVR_TIMER.iClientChannelUid value to indicate "any channel". Useful for some repeating timer types.
+   */
+  const int PVR_TIMER_ANY_CHANNEL = -1; /*!< @brief denotes "any channel", not a specific one. */
+
+  /*!
    * @brief PVR timer type attributes (PVR_TIMER_TYPE.iAttributes values)
    */
   const unsigned int PVR_TIMER_TYPE_ATTRIBUTE_NONE                    = 0x00000000;
@@ -350,11 +360,11 @@ extern "C" {
     unsigned int iPreventDuplicateEpisodesDefault;          /*!< @brief (optional) The default value for PVR_TMER.iPreventDuplicateEpisodesSize. Must be filled if iPreventDuplicateEpisodesSize > 0 */
 
     /* recording folder list value definitions */
-    unsigned int iRecordingGroupSize;                       /*< @brief (required) Count of possible values of PVR_TIMER.iRecordingGroup. 0 means folder lists are not supported by this timer type */
+    unsigned int iRecordingGroupSize;                       /*!< @brief (required) Count of possible values of PVR_TIMER.iRecordingGroup. 0 means folder lists are not supported by this timer type */
     PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE
       recordingGroup[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
                                                             /*!< @brief (optional) Array containing the possible values of PVR_TMER.iRecordingGroup. Must be filled if iRecordingGroupSize > 0 */
-    unsigned int iRecordingGroupDefault;                    /*! @brief (optional) The default value for PVR_TIMER.iRecordingGroup. Must be filled in if PVR_TIMER.iRecordingGroupSize > 0 */
+    unsigned int iRecordingGroupDefault;                    /*!< @brief (optional) The default value for PVR_TIMER.iRecordingGroup. Must be filled in if PVR_TIMER.iRecordingGroupSize > 0 */
 
   } ATTRIBUTE_PACKED PVR_TIMER_TYPE;
 
@@ -363,12 +373,15 @@ extern "C" {
    */
   typedef struct PVR_TIMER {
     unsigned int    iClientIndex;                              /*!< @brief (required) the index of this timer given by the client */
-    unsigned int    iParentClientIndex;                        /*!< @brief (optional) for timers scheduled by a repeating timer, the index of the repeating that scheduled this timer. 0 indicates "no parent". */
-    int             iClientChannelUid;                         /*!< @brief (optional) unique identifier of the channel to record on. For repeating timers, -1 will indicate "any" channel. */
+    unsigned int    iParentClientIndex;                        /*!< @brief (optional) for timers scheduled by a repeating timer, the index of the repeating timer that scheduled this timer (it's PVR_TIMER.iClientIndex value). Use PVR_TIMER_NO_PARENT
+                                                                    to indicate that this timer was no scheduled by a repeating timer. */
+    int             iClientChannelUid;                         /*!< @brief (optional) unique identifier of the channel to record on. PVR_TIMER_ANY_CHANNEL will denote "any channel", not a specifoc one. */
     time_t          startTime;                                 /*!< @brief (optional) start time of the recording in UTC. Instant timers that are sent to the add-on by Kodi will have this value set to 0. For repeatimg timers, 0 will indicate "any" time. */
     time_t          endTime;                                   /*!< @brief (optional) end time of the recording in UTC. For repeating timers, 0 will indicate "any" time. */
     PVR_TIMER_STATE state;                                     /*!< @brief (required) the state of this timer */
-    unsigned int    iTimerType;                                /*!< @brief (required) the type of this timer */
+    unsigned int    iTimerType;                                /*!< @brief (required) the type of this timer. It is private to the addon and can be freely defined by the addon. The value must be greater than PVR_TIMER_TYPE_NONE.
+                                                                    Kodi does not interpret this value (except for checking for PVR_TIMER_TYPE_NONE), but will pass the right id to the addon with every PVR_TIMER instance, thus the addon easily can determine
+                                                                    the timer type. */
     char            strTitle[PVR_ADDON_NAME_STRING_LENGTH];    /*!< @brief (required) a title for this timer */
     char            strEpgSearchString[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (optional) a string used to search epg data for repeating epg-based timers. Format is backend-dependent, for example regexp */
     bool            bFullTextEpgSearch;                        /*!< @brief (optional) indicates, whether strEpgSearchString is to match against the epg episode title only or also against "other" epg data (backend-dependent) */

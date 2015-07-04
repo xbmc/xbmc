@@ -402,7 +402,7 @@ bool CGUIWindowPVRBase::StartRecordFile(CFileItem *item, bool bAdvanced)
   {
     // ask for confirmation before starting a timer
     if (!CGUIDialogYesNo::ShowAndGetInput(
-          264 /* "Stop Rec." */, tag->PVRChannelName(), "", tag->Title()))
+          264 /* "Record" */, tag->PVRChannelName(), "", tag->Title()))
       return false;
 
     CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(tag);
@@ -743,7 +743,6 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
   m_selectedItemPaths.at(m_bRadio) = m_viewControl.GetSelectedItemPath();
 }
 
-// static
 bool CGUIWindowPVRBase::ConfirmDeleteTimer(CFileItem *item, bool &bDeleteSchedule)
 {
   bool bConfirmed(false);

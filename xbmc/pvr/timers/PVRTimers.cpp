@@ -413,7 +413,7 @@ bool CPVRTimers::GetRootDirectory(const CPVRTimersPath &path, CFileItemList &ite
     for (const auto &timer : *tagsEntry.second)
     {
       if ((bRadio == timer->m_bIsRadio) &&
-          (!bGrouped || (timer->m_iParentClientIndex == 0)))
+          (!bGrouped || (timer->m_iParentClientIndex == PVR_TIMER_NO_PARENT)))
       {
         item.reset(new CFileItem(timer));
         std::string strItemPath(
@@ -440,7 +440,7 @@ bool CPVRTimers::GetSubDirectory(const CPVRTimersPath &path, CFileItemList &item
     for (const auto &timer : *tagsEntry.second)
     {
       if ((timer->m_bIsRadio == bRadio) &&
-          (timer->m_iParentClientIndex > 0) &&
+          (timer->m_iParentClientIndex != PVR_TIMER_NO_PARENT) &&
           (timer->m_iClientId == iClientId) &&
           (timer->m_iParentClientIndex == iParentId))
       {
