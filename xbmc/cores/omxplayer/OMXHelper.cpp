@@ -56,6 +56,12 @@ bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer
     CLog::Log(LOGNOTICE, "%s OMXPlayer unsuitable due to audio sink", __func__);
     return true;
   }
+  // omxplayer doesn't handle ac3 transcode
+  if (CSettings::Get().GetBool("audiooutput.ac3transcode"))
+  {
+    CLog::Log(LOGNOTICE, "%s OMXPlayer unsuitable due to ac3transcode", __func__);
+    return true;
+  }
   if (m_pDemuxer)
   {
     // find video stream
