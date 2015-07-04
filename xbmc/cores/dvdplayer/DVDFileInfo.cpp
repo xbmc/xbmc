@@ -346,6 +346,12 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (!pInputStream)
     return false;
 
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  {
+    delete pInputStream;
+    return false;
+  }
+
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open(playablePath.c_str(), ""))
   {
     delete pInputStream;
