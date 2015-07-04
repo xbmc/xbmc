@@ -425,7 +425,7 @@ bool CPVRClient::GetAddonProperties(void)
       if (retval == PVR_ERROR_NOT_IMPLEMENTED)
       {
         // begin compat section
-        CLog::Log(LOGWARNING, "%s - Addon %s does not support timer types. It will work, but not benefit from the timer features introduced with PVR Addon API 1.9.7.", __FUNCTION__, strFriendlyName.c_str());
+        CLog::Log(LOGWARNING, "%s - Addon %s does not support timer types. It will work, but not benefit from the timer features introduced with PVR Addon API 2.0.0", __FUNCTION__, strFriendlyName.c_str());
 
         // Create standard timer types (mostly) matching the timer functionality available in Isengard.
         // This is for migration only and does not make changes to the addons obsolete. Addons should
