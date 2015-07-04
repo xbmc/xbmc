@@ -1,1 +1,1 @@
-pvr.iptvsimple https://github.com/kodi-pvr/pvr.iptvsimple 3260a53
+pvr.iptvsimple https://github.com/kodi-pvr/pvr.iptvsimple 10626b4

@@ -1,1 +1,1 @@
-pvr.filmon https://github.com/kodi-pvr/pvr.filmon 2c16527
+pvr.filmon https://github.com/kodi-pvr/pvr.filmon c4858f8
