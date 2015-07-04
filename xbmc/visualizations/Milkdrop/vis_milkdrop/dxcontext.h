@@ -36,7 +36,8 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "shell_defines.h"
 //#include "defines.h"
 #include <d3d9.h>
-#include <d3dx9.h>
+#include <d3d11.h>
+#include "../DX11Context.h"
 
 typedef struct
 {
@@ -59,7 +60,7 @@ class DXContext
 {
     public:
         // PUBLIC FUNCTIONS
-		    DXContext(LPDIRECT3DDEVICE9 device, char* szIniFile);
+		    DXContext(ID3D11Device* device, ID3D11DeviceContext* context, char* szIniFile);
 //        DXContext(int hWndWinamp,HINSTANCE hInstance,LPCSTR szClassName,LPCSTR szWindowCaption,WNDPROC pProc,LONG uWindowLong, int minimize_winamp, char* szIniFile);
         ~DXContext();
         BOOL StartOrRestartDevice(DXCONTEXT_PARAMS *pParams); // also serves as Init() function
@@ -89,7 +90,7 @@ class DXContext
         RECT m_monitor_work_rect;   // same, but excludes the taskbar area.
         RECT m_monitor_work_rect_orig; // original work rect; does not account for pseudo-multimon modes like 2048x768
         DXCONTEXT_PARAMS       m_current_mode;
-        LPDIRECT3DDEVICE9      m_lpDevice;
+        DX11Context*           m_lpDevice;
         D3DPRESENT_PARAMETERS  m_d3dpp;
         //LPDIRECT3D9            m_lpD3D;
         D3DCAPS9               m_caps;

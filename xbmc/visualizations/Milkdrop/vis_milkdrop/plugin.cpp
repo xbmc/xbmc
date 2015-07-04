@@ -1151,12 +1151,12 @@ int CPlugin::AllocateMyDX8Stuff()
 		    m_nTexSize = (int)powf(2.0f, (float)nExp);
 	    }
 */	    
-
-		// clip texsize by max. from caps
-	    if (m_nTexSize > GetCaps()->MaxTextureWidth && GetCaps()->MaxTextureWidth>0)
-		    m_nTexSize = GetCaps()->MaxTextureWidth;
-	    if (m_nTexSize > GetCaps()->MaxTextureHeight && GetCaps()->MaxTextureHeight>0)
-		    m_nTexSize = GetCaps()->MaxTextureHeight;
+      // Commented because in DX11 minimal value of MaxTextureSize is 2048
+      // clip texsize by max. from caps
+	    //if (m_nTexSize > GetCaps()->MaxTextureWidth && GetCaps()->MaxTextureWidth>0)
+		  //  m_nTexSize = GetCaps()->MaxTextureWidth;
+	    //if (m_nTexSize > GetCaps()->MaxTextureHeight && GetCaps()->MaxTextureHeight>0)
+		  //  m_nTexSize = GetCaps()->MaxTextureHeight;
 
 	    // reallocate
 	    bool bSuccess = false;
@@ -1168,54 +1168,52 @@ int CPlugin::AllocateMyDX8Stuff()
 		    SafeRelease(m_lpVS[1]);
         SafeRelease(m_pZBuffer);
 
-        LPDIRECT3DSURFACE9 pBackBuffer, tmpSurface;
-        D3DSURFACE_DESC tmpDesc;
-        D3DVIEWPORT9 pVP;
+        ID3D11Texture2D *pBackBuffer, *tmpSurface;
+        D3D11_TEXTURE2D_DESC tmpDesc;
+        D3D11_VIEWPORT pVP;
 
-        GetDevice()->GetRenderTarget(0, &pBackBuffer );
-        GetDevice()->GetDepthStencilSurface(&tmpSurface);
+        GetDevice()->GetRenderTarget(&pBackBuffer, &tmpSurface);
         tmpSurface->GetDesc(&tmpDesc);
+        SafeRelease(pBackBuffer);
         SafeRelease(tmpSurface);
         GetDevice()->GetViewport(&pVP);
 
-        UINT uiwidth=(pVP.Width>m_nTexSize) ? pVP.Width:m_nTexSize;
-        UINT uiheight=(pVP.Height>m_nTexSize) ? pVP.Height:m_nTexSize;
-        
-        printf("CreateDepthStencilSurface with %u x %u", uiwidth, uiheight);
-        if(GetDevice()->CreateDepthStencilSurface(uiwidth, uiheight, tmpDesc.Format, D3DMULTISAMPLE_NONE, 0, TRUE, &m_pZBuffer, NULL) != D3D_OK)
+        //UINT uiwidth=(pVP.Width>m_nTexSize) ? pVP.Width : m_nTexSize;
+        //UINT uiheight=(pVP.Height>m_nTexSize) ? pVP.Height:m_nTexSize;
+        // DX11: create depth stencil with same dimension as the backbuffer
+        printf("CreateDepthStencilSurface with %u x %u", tmpDesc.Width, tmpDesc.Height);
+        if (!GetDevice()->CreateTexture(tmpDesc.Width, tmpDesc.Height, 1, D3D11_BIND_DEPTH_STENCIL, DXGI_FORMAT_D24_UNORM_S8_UINT, &m_pZBuffer))
           printf("Can't create DepthStencilSurface");
 
 		    // create VS1 and VS2
-        bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[0], NULL) == D3D_OK);
+        bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET, DXGI_FORMAT_B8G8R8A8_UNORM, &m_lpVS[0]));
         if (bSuccess)
 			  {
-				  IDirect3DSurface9* pNewTarget = NULL;
+          // DX11: no need to clear it
+				  /*IDirect3DSurface9* pNewTarget = NULL;
 				  if (m_lpVS[0]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
 				  {
 					  GetDevice()->SetRenderTarget(0, pNewTarget);
 					  GetDevice()->Clear(0, 0, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
 					  pNewTarget->Release();
-				  }
+				  }*/
 
-          bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[1], NULL) == D3D_OK);
+          bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET, DXGI_FORMAT_B8G8R8A8_UNORM, &m_lpVS[1]));
           if (bSuccess)
 				  {
-					  if (m_lpVS[1]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
+            // DX11: no need to clear it
+            /*if (m_lpVS[1]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK)
 					  {
 						  GetDevice()->SetRenderTarget(0, pNewTarget);
 						  GetDevice()->Clear(0, 0, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
 						  pNewTarget->Release();
-					  }
+					  }*/
 				  }
           else
             printf("failed to create texture %d x %d", m_nTexSize, m_nTexSize);
 			  }
         else
           printf("failed to create texture %d x %d", m_nTexSize, m_nTexSize);
-
-        GetDevice()->SetRenderTarget(0, pBackBuffer);
-        SafeRelease(pBackBuffer);
-
 
 		    if (!bSuccess && m_bTexSizeWasAuto)
 			    m_nTexSize /= 2;
@@ -1502,9 +1500,9 @@ void CPlugin::CleanUpMyDX8Stuff(int final_cleanup)
 
 void CPlugin::MyRenderFn(int redraw)
 {
-    LPDIRECT3DSURFACE9 tmpSurface;
-    GetDevice()->GetDepthStencilSurface(&tmpSurface);
-    GetDevice()->SetDepthStencilSurface(m_pZBuffer);
+    ID3D11Texture2D* rtSurface = NULL, *tmpSurface = NULL;
+    GetDevice()->GetRenderTarget(&rtSurface, &tmpSurface);
+    GetDevice()->SetRenderTarget(rtSurface, m_pZBuffer);
 
     // Render a frame of animation here.  
     // This function is called each frame just AFTER BeginScene().
@@ -1627,7 +1625,8 @@ void CPlugin::MyRenderFn(int redraw)
             m_text.QueueText(GetFont(DECORATIVE_FONT), buf, r, 0, 0xFFFF00FF);
     }
     /**/
-    GetDevice()->SetDepthStencilSurface(tmpSurface);
+    GetDevice()->SetRenderTarget(rtSurface, tmpSurface);
+    SafeRelease(rtSurface);
     SafeRelease(tmpSurface);
 }
 

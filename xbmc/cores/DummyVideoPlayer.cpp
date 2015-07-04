@@ -87,16 +87,10 @@ void CDummyVideoPlayer::Process()
     g_graphicsContext.Lock();
     if (g_graphicsContext.IsFullScreenVideo())
     {
-#ifdef HAS_DX	
-      g_Windowing.Get3DDevice()->BeginScene();
-#endif
       g_graphicsContext.Clear();
       g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
       Render();
       g_application.RenderNoPresent();
-#ifdef HAS_DX     
-      g_Windowing.Get3DDevice()->EndScene();
-#endif      
     }
     g_graphicsContext.Unlock();
   }
@@ -268,13 +262,13 @@ void CDummyVideoPlayer::Render()
 {
   const CRect vw = g_graphicsContext.GetViewWindow();
 #ifdef HAS_DX
-  D3DVIEWPORT9 newviewport;
-  D3DVIEWPORT9 oldviewport;
-  g_Windowing.Get3DDevice()->GetViewport(&oldviewport);
-  newviewport.MinZ = 0.0f;
-  newviewport.MaxZ = 1.0f;
-  newviewport.X = (DWORD)vw.x1;
-  newviewport.Y = (DWORD)vw.y1;
+  unsigned num = 1;
+  D3D11_VIEWPORT newviewport;
+  g_Windowing.Get3D11Context()->RSGetViewports(&num, &newviewport);
+  newviewport.MinDepth = 0.0f;
+  newviewport.MaxDepth = 1.0f;
+  newviewport.TopLeftX = (DWORD)vw.x1;
+  newviewport.TopLeftY = (DWORD)vw.y1;
   newviewport.Width = (DWORD)vw.Width();
   newviewport.Height = (DWORD)vw.Height();
   g_graphicsContext.SetClipRegion(vw.x1, vw.y1, vw.Width(), vw.Height());

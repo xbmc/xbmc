@@ -21,8 +21,6 @@
 #include <new>
 #include <stdio.h>
 
-using namespace std;
-
 Mesh::Mesh()
 {
 	m_iRefCount = 1;
@@ -53,7 +51,7 @@ void Mesh::Release()
 		delete this;
 }
 
-void Mesh::CreateTextMesh( string& InString, bool bCentered )
+void Mesh::CreateTextMesh( std::string& InString, bool bCentered )
 {
 	if ( m_pMesh )
 	{

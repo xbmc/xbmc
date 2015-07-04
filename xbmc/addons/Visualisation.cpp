@@ -65,8 +65,8 @@ void CAudioBuffer::Set(const float* psBuffer, int iSize)
 bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 {
   m_pInfo = new VIS_PROPS;
-  #ifdef HAS_DX
-  m_pInfo->device     = g_Windowing.Get3DDevice();
+#ifdef HAS_DX
+  m_pInfo->device     = g_Windowing.Get3D11Context();
 #else
   m_pInfo->device     = NULL;
 #endif

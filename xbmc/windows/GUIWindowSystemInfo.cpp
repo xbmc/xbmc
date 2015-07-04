@@ -138,10 +138,9 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "%s %s", 22007, SYSTEM_RENDER_VENDOR);
     SetControlLabel(i++, "%s %s", 22009, SYSTEM_RENDER_VERSION);
 #else
-    SetControlLabel(i++, "%s %s", 22023, SYSTEM_RENDER_VENDOR);
     SetControlLabel(i++, "%s %s", 22024, SYSTEM_RENDER_VERSION);
 #endif
-#ifndef __arm__
+#if !defined(__arm__) && !defined(HAS_DX)
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
 #endif
   }

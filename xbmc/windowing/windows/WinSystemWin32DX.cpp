@@ -65,7 +65,7 @@ void CWinSystemWin32DX::UpdateMonitor()
 bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   CWinSystemWin32::ResizeWindow(newWidth, newHeight, newLeft, newTop);
-  CRenderSystemDX::ResetRenderSystem(newWidth, newHeight, false, 0);
+  CRenderSystemDX::OnResize(newWidth, newHeight);
 
   return true;
 }
@@ -77,22 +77,49 @@ void CWinSystemWin32DX::OnMove(int x, int y)
 
 bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  // When going DX fullscreen -> windowed, we must reset the D3D device first to
+  // When going DX fullscreen -> windowed, we must switch DXGI device to windowed mode first to
   // get it out of fullscreen mode because it restores a former resolution.
   // We then change to the mode we want.
-  // In other cases, set the window/mode then reset the D3D device.
-
+  // In other cases, set the window/mode then swith DXGI mode.
   bool FS2Windowed = !m_useWindowedDX && UseWindowedDX(fullScreen);
 
   SetMonitor(GetMonitor(res.iScreen).hMonitor);
   CRenderSystemDX::m_interlaced = ((res.dwFlags & D3DPRESENTFLAG_INTERLACED) != 0);
   CRenderSystemDX::m_useWindowedDX = UseWindowedDX(fullScreen);
 
+  // this needed to prevent resize/move events from DXGI during changing mode
+  CWinSystemWin32::m_IsAlteringWindow = true;
   if (FS2Windowed)
-    CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
+    CRenderSystemDX::SetFullScreenInternal();
 
-  CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
+  if (!m_useWindowedDX)
+  {
+    // if the window isn't focused, bring it to front or SetFullScreen will fail
+    BYTE keyState[256] = { 0 };
+    // to unlock SetForegroundWindow we need to imitate Alt pressing
+    if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
+      keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
+
+    BringWindowToTop(m_hWnd);
+
+    if (GetKeyboardState((LPBYTE)&keyState) && !(keyState[VK_MENU] & 0x80))
+      keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+  }
+
+  // to disable stereo mode in windowed mode we must recreate swapchain and then change display mode
+  // so this flags delays call SetFullScreen _after_ resetting render system
+  bool delaySetFS = CRenderSystemDX::m_bHWStereoEnabled && UseWindowedDX(fullScreen);
+  if (!delaySetFS)
+    CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
+
+  // this needed to prevent resize/move events from DXGI during changing mode
+  CWinSystemWin32::m_IsAlteringWindow = true;
   CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
+  CWinSystemWin32::m_IsAlteringWindow = false;
+
+  if (delaySetFS)
+    // now resize window and force changing resolution if stereo mode disabled
+    CWinSystemWin32::SetFullScreenEx(fullScreen, res, blankOtherDisplays, !CRenderSystemDX::m_bHWStereoEnabled);
 
   return true;
 }
@@ -120,6 +147,23 @@ std::string CWinSystemWin32DX::GetClipboardText(void)
   g_charsetConverter.wToUTF8(unicode_text, utf8_text);
 
   return utf8_text;
+}
+
+void CWinSystemWin32DX::NotifyAppFocusChange(bool bGaining)
+{
+  CWinSystemWin32::NotifyAppFocusChange(bGaining);
+
+  // if true fullscreen we need switch render system to/from ff manually like dx9 does
+  if (!UseWindowedDX(m_bFullScreen) && CRenderSystemDX::m_bRenderCreated)
+  {
+    CRenderSystemDX::m_useWindowedDX = !bGaining;
+    CRenderSystemDX::SetFullScreenInternal();
+    CRenderSystemDX::CreateWindowSizeDependentResources();
+
+    // minimize window on lost focus
+    if (!bGaining)
+      ShowWindow(m_hWnd, SW_SHOWMINIMIZED);
+  }
 }
 
 #endif

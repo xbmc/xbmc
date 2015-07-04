@@ -19,7 +19,7 @@
 
 #ifndef _VORTEX_H_
 
-#include <d3d9.h>
+#include <d3d11_1.h>
 
 class asIScriptEngine;
 class VisTrack;
@@ -54,7 +54,7 @@ struct UserSettings
 class Vortex
 {
 public:
-	void Init( LPDIRECT3DDEVICE9 pD3DDevice, int iPosX, int iPosY, int iWidth, int iHeight, float fPixelRatio );
+  void Init( ID3D11DeviceContext* pD3DContext, int iPosX, int iPosY, int iWidth, int iHeight, float fPixelRatio);
 	void Start( int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName );
 	void Shutdown();
 	void AudioData( const float* pAudioData, int iAudioDataLength, float* pFreq, int iFreqDataLength );
@@ -74,6 +74,7 @@ public:
 	void SaveSettings();
 
 private:
+	void InitPaths(void);
 	bool InitAngelScript();
 	asIScriptEngine* m_pScriptEngine;
 };

@@ -278,12 +278,12 @@ class CRenderCaptureDX : public CRenderCaptureBase, public ID3DResource
     void SurfaceToBuffer();
     void CleanupDX();
 
-    LPDIRECT3DSURFACE9 m_renderSurface;
-    LPDIRECT3DSURFACE9 m_copySurface;
-    LPDIRECT3DQUERY9   m_query;
-
-    unsigned int       m_surfaceWidth;
-    unsigned int       m_surfaceHeight;
+    ID3D11Texture2D*        m_renderTexture;
+    ID3D11RenderTargetView* m_renderSurface;
+    ID3D11Texture2D*        m_copySurface;
+    ID3D11Query*            m_query;
+    unsigned int            m_surfaceWidth;
+    unsigned int            m_surfaceHeight;
 };
 
 class CRenderCapture : public CRenderCaptureDX

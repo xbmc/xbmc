@@ -12439,11 +12439,6 @@ msgid "Show video files in listings"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
-msgctxt "#22023"
-msgid "DirectX vendor:"
-msgstr ""
-
-#: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#22024"
 msgid "Direct3D version:"
 msgstr ""
@@ -16322,7 +16317,13 @@ msgctxt "#36510"
 msgid "Anaglyph yellow / blue"
 msgstr ""
 
-#empty strings from id 36511 to 36519
+#. name of a stereoscopic mode
+#: system/settings/settings.xml
+msgctxt "#36511"
+msgid "Checkerboard"
+msgstr ""
+
+#empty strings from id 36512 to 36519
 #end of reserved strings for 3d modes
 
 #. Name of a setting, asking the user for the default playback mode (2D, 3D, ask) of stereoscopic videos

@@ -398,35 +398,10 @@ SectionEnd
 
 SectionGroupEnd
 
-;--------------------------------
-;DirectX web-installer Section
-!define DXVERSIONDLL "$SYSDIR\D3DX9_43.dll"
-Section "DirectX Install" SEC_DIRECTX
-  SectionIn 1 2 #section is in install type Full/Normal and when not installed
-  DetailPrint "Running DirectX Setup..."
-  SetOutPath "$TEMP\dxsetup"
-  File "${app_root}\..\dependencies\dxsetup\*.*"
-  ExecWait '"$TEMP\dxsetup\dxsetup.exe" /silent' $DirectXSetupError
-  RMDir /r "$TEMP\dxsetup"
-  SetOutPath "$INSTDIR"
-  DetailPrint "Finished DirectX Setup"
-SectionEnd
-
-Section "-Check DirectX installation" SEC_DIRECTXCHECK
-
-  IfFileExists ${DXVERSIONDLL} +2 0
-    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "DirectX9 wasn't installed properly.$\nPlease download the DirectX End-User Runtime from Microsoft and install it again."
-
-SectionEnd
-
 Function .onInit
   ${IfNot} ${AtLeastWinVista}
     MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows Vista or above required.$\nThis program can not be run on Windows XP"
     Quit
   ${EndIf}
-  # set section 'SEC_DIRECTX' as selected and read-only if required dx version not found
-  IfFileExists ${DXVERSIONDLL} +3 0
-  IntOp $0 ${SF_SELECTED} | ${SF_RO}
-  SectionSetFlags ${SEC_DIRECTX} $0
   StrCpy $CleanDestDir "-1"
 FunctionEnd

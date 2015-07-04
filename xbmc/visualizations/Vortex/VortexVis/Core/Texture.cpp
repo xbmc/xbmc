@@ -22,8 +22,6 @@
 #include <new>
 #include <stdio.h>
 
-using namespace std;
-
 Texture::Texture()
 {
 	m_iRefCount = 1;
@@ -68,7 +66,7 @@ void Texture::CreateTexture()
 
 } // CreateTexture
 
-void Texture::LoadTexture(string& filename)
+void Texture::LoadTexture(std::string& filename)
 {
 	char fullname[ 512 ];
 	sprintf_s(fullname, 512, "%s%s", g_TexturePath, filename.c_str() );

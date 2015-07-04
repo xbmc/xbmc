@@ -32,40 +32,43 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __NULLSOFT_DX8_EXAMPLE_PLUGIN_SUPPORT_H__ 1
 #include <windows.h>
 //#include <xtl.h>
-#include <d3dx9.h>
+#include <d3d9.h>
+#include "../DX11Context.h"
 
 //extern "C" void SetTextureStageState( int x, DWORD dwY, DWORD dwZ);
 //extern "C" void d3dSetSamplerState( int x, DWORD dwY, DWORD dwZ);
 //extern "C" void d3dSetRenderState(DWORD dwY, DWORD dwZ);
 
-void MakeWorldMatrix( D3DXMATRIX* pOut, 
+using namespace DirectX;
+
+void MakeWorldMatrix( XMMATRIX* pOut, 
                       float xpos, float ypos, float zpos, 
                       float sx,   float sy,   float sz, 
                       float pitch, float yaw, float roll);
-void MakeProjectionMatrix( D3DXMATRIX* pOut,
+void MakeProjectionMatrix( XMMATRIX* pOut,
                            const float near_plane, // Distance to near clipping plane
                            const float far_plane,  // Distance to far clipping plane
                            const float fov_horiz,  // Horizontal field of view angle, in radians
                            const float fov_vert);   // Vertical field of view angle, in radians
 void PrepareFor3DDrawing(
-        IDirect3DDevice9 *pDevice, 
+        DX11Context* *pDevice, 
         int viewport_width,
         int viewport_height,
         float fov_in_degrees, 
         float near_clip,
         float far_clip,
-        D3DXVECTOR3* pvEye,
-        D3DXVECTOR3* pvLookat,
-        D3DXVECTOR3* pvUp
+        XMFLOAT3* pvEye,
+        XMFLOAT3* pvLookat,
+        XMFLOAT3* pvUp
     );
-void PrepareFor2DDrawing(IDirect3DDevice9 *pDevice);
+void PrepareFor2DDrawing(DX11Context *pDevice);
 
 // Define vertex formats you'll be using here:
 typedef struct _MYVERTEX 
 {
     float x, y;      // screen position    
     float z;         // Z-buffer depth    
-    DWORD Diffuse;   // diffuse color    
+    float r; float g; float b; float a; // diffuse color    
     float tu1, tv1;  // texture coordinates for texture #0
     float tu2, tv2;  // texture coordinates for texture #1
         // note: even though tu2/tv2 aren't used when multitexturing is off,
@@ -76,14 +79,14 @@ typedef struct _MYVERTEX
 typedef struct _WFVERTEX 
 {
     float x, y, z;
-    DWORD Diffuse;   // diffuse color. also acts as filler; aligns struct to 16 bytes (good for random access/indexed prims)
-} WFVERTEX, *LPWFVERTEX; 
+    float r; float g; float b; float a; // diffuse color. also acts as filler; aligns struct to 16 bytes (good for random access/indexed prims)
+} WFVERTEX, *LPWFVERTEX;
 
 typedef struct _SPRITEVERTEX 
 {
     float x, y;      // screen position    
     float z;         // Z-buffer depth    
-    DWORD Diffuse;   // diffuse color. also acts as filler; aligns struct to 16 bytes (good for random access/indexed prims)
+    float r; float g; float b; float a;// diffuse color. also acts as filler; aligns struct to 16 bytes (good for random access/indexed prims)
     float tu, tv;    // texture coordinates for texture #0
 } SPRITEVERTEX, *LPSPRITEVERTEX; 
 

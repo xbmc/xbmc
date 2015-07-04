@@ -18,13 +18,14 @@
  *
  */
 
-#include "OverlayRenderer.h"
-#include "OverlayRendererUtil.h"
-#include "OverlayRendererDX.h"
+#include "Application.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
-#include "Application.h"
+#include "guilib/D3DResource.h"
+#include "OverlayRenderer.h"
+#include "OverlayRendererUtil.h"
+#include "OverlayRendererDX.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 
@@ -36,128 +37,34 @@
 #ifdef HAS_DX
 
 using namespace OVERLAY;
+using namespace DirectX;
 
 #define USE_PREMULTIPLIED_ALPHA 1
 #define ALPHA_CHANNEL_OFFSET 3
 
 static bool LoadTexture(int width, int height, int stride
-                      , D3DFORMAT format
+                      , DXGI_FORMAT format
                       , const void* pixels
                       , float* u, float* v
                       , CD3DTexture* texture)
 {
-
-  if (!texture->Create(width, height, 1, g_Windowing.DefaultD3DUsage(), format, g_Windowing.DefaultD3DPool()))
+  if (!texture->Create(width, height, 1, D3D11_USAGE_IMMUTABLE, format, pixels, stride))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to allocate texture");
+    CLog::Log(LOGERROR, "%s - failed to allocate texture.", __FUNCTION__);
     return false;
   }
 
-  int bpp;
-  if     (format == D3DFMT_A8)
-    bpp = 1;
-  else if(format == D3DFMT_A8R8G8B8)
-    bpp = 4;
-  else
-    ASSERT(0);
-
-  D3DSURFACE_DESC desc;
-  if(!texture->GetLevelDesc(0, &desc))
+  D3D11_TEXTURE2D_DESC desc = {};
+  if (!texture->GetDesc(&desc))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to get level description");
+    CLog::Log(LOGERROR, "%s - failed to get texture description.", __FUNCTION__);
     texture->Release();
     return false;
   }
-  ASSERT(format == desc.Format || (format == D3DFMT_A8 && desc.Format == D3DFMT_A8R8G8B8));
+  ASSERT(format == desc.Format || (format == DXGI_FORMAT_R8_UNORM && desc.Format == DXGI_FORMAT_B8G8R8A8_UNORM));
 
-  // Some old hardware doesn't have D3DFMT_A8 and returns D3DFMT_A8R8G8B8 textures instead
-  int destbpp;
-  if     (desc.Format == D3DFMT_A8)
-    destbpp = 1;
-  else if(desc.Format == D3DFMT_A8R8G8B8)
-    destbpp = 4;
-  else
-    ASSERT(0);
-
-  *u = (float)width  / desc.Width;
-  *v = (float)height / desc.Height;
-
-  D3DLOCKED_RECT lr;
-  if (!texture->LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture");
-    texture->Release();
-    return false;
-  }
-
-  uint8_t* src   = (uint8_t*)pixels;
-  uint8_t* dst   = (uint8_t*)lr.pBits;
-
-  if (bpp == destbpp)
-  {
-    for (int y = 0; y < height; y++)
-    {
-      memcpy(dst, src, bpp * width);
-      src += stride;
-      dst += lr.Pitch;
-    }
-  }
-  else if (bpp == 1 && destbpp == 4)
-  {
-    for (int y = 0; y < height; y++)
-    {
-      for (int x = 0; x < width; x++)
-        dst[x*destbpp + ALPHA_CHANNEL_OFFSET] = src[x];
-      src += stride;
-      dst += lr.Pitch;
-    }
-  }
-
-  if((unsigned)width < desc.Width)
-  {
-    uint8_t* src   = (uint8_t*)pixels   + bpp *(width - 1);
-    uint8_t* dst   = (uint8_t*)lr.pBits + bpp * width;
-
-    if (bpp == destbpp)
-    {
-      for (int y = 0; y < height; y++)
-      {
-        memcpy(dst, src, bpp);
-        src += stride;
-        dst += lr.Pitch;
-      }
-    }
-    else if (bpp == 1 && destbpp == 4)
-    {
-      for (int y = 0; y < height; y++)
-      {
-        dst[ALPHA_CHANNEL_OFFSET] = src[0];
-        src += stride;
-        dst += lr.Pitch;
-      }
-    }
-  }
-
-  if((unsigned)height < desc.Height)
-  {
-    uint8_t* src   = (uint8_t*)pixels   + stride   * (height - 1);
-    uint8_t* dst   = (uint8_t*)lr.pBits + lr.Pitch * height;
-
-    if (bpp == destbpp)
-      memcpy(dst, src, bpp * width);
-    else if (bpp == 1 && destbpp == 4)
-    {
-      for (int x = 0; x < width; x++)
-        dst[x*destbpp + ALPHA_CHANNEL_OFFSET] = src[x];
-    }
-  }
-
-  if (!texture->UnlockRect(0))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock texture");
-    texture->Release();
-    return false;
-  }
+  *u = float(width) / desc.Width;
+  *v = float(height) / desc.Height;
 
   return true;
 }
@@ -171,7 +78,6 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   m_x      = 0.0f;
   m_y      = 0.0f;
   m_count  = 0;
-  m_fvf    = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
   SQuads quads;
   if(!convert_quad(images, quads))
@@ -181,7 +87,7 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   if(!LoadTexture(quads.size_x
                 , quads.size_y
                 , quads.size_x
-                , D3DFMT_A8
+                , DXGI_FORMAT_R8_UNORM
                 , quads.data
                 , &u, &v
                 , &m_texture))
@@ -189,62 +95,46 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
     return;
   }
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, D3DUSAGE_WRITEONLY, m_fvf, g_Windowing.DefaultD3DPool()))
-  {
-    CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
-    m_texture.Release();
-    return;
-  }
-
-  VERTEX* vt = NULL;
+  Vertex* vt = new Vertex[6 * quads.count], *vt_orig = vt;
   SQuad*  vs = quads.quad;
 
-  if (!m_vertex.Lock(0, 0, (void**)&vt, 0))
-  {
-    CLog::Log(LOGERROR, "%s - failed to lock vertex buffer", __FUNCTION__);
-    m_texture.Release();
-    return;
-  }
-
-  float scale_u = u    / quads.size_x;
-  float scale_v = v    / quads.size_y;
+  float scale_u = u / quads.size_x;
+  float scale_v = v / quads.size_y;
 
   float scale_x = 1.0f / width;
   float scale_y = 1.0f / height;
 
-  for(int i = 0; i < quads.count; i++)
+  for (int i = 0; i < quads.count; i++)
   {
-    for(int s = 0; s < 6; s++)
+    for (int s = 0; s < 6; s++)
     {
-      vt[s].c = D3DCOLOR_ARGB(vs->a, vs->r, vs->g, vs->b);
-      vt[s].z = 0.0f;
-      vt[s].x = scale_x;
-      vt[s].y = scale_y;
-      vt[s].u = scale_u;
-      vt[s].v = scale_v;
+      CD3DHelper::XMStoreColor(&vt[s].color, vs->a, vs->r, vs->g, vs->b);
+      vt[s].pos = XMFLOAT3(scale_x, scale_y, 0.0f);
+      vt[s].texCoord = XMFLOAT2(scale_u, scale_v);
+      vt[s].texCoord2 = XMFLOAT2(0.0f, 0.0f);
     }
 
-    vt[0].x *= vs->x;
-    vt[0].u *= vs->u;
-    vt[0].y *= vs->y;
-    vt[0].v *= vs->v;
+    vt[0].pos.x *= vs->x;
+    vt[0].texCoord.x *= vs->u;
+    vt[0].pos.y *= vs->y;
+    vt[0].texCoord.y *= vs->v;
 
-    vt[1].x *= vs->x + vs->w;
-    vt[1].u *= vs->u + vs->w;
-    vt[1].y *= vs->y;
-    vt[1].v *= vs->v;
+    vt[1].pos.x *= vs->x + vs->w;
+    vt[1].texCoord.x *= vs->u + vs->w;
+    vt[1].pos.y *= vs->y;
+    vt[1].texCoord.y *= vs->v;
 
-    vt[2].x *= vs->x;
-    vt[2].u *= vs->u;
-    vt[2].y *= vs->y + vs->h;
-    vt[2].v *= vs->v + vs->h;
+    vt[2].pos.x *= vs->x;
+    vt[2].texCoord.x *= vs->u;
+    vt[2].pos.y *= vs->y + vs->h;
+    vt[2].texCoord.y *= vs->v + vs->h;
 
     vt[3] = vt[1];
 
-    vt[4].x *= vs->x + vs->w;
-    vt[4].u *= vs->u + vs->w;
-    vt[4].y *= vs->y + vs->h;
-    vt[4].v *= vs->v + vs->h;
+    vt[4].pos.x *= vs->x + vs->w;
+    vt[4].texCoord.x *= vs->u + vs->w;
+    vt[4].pos.y *= vs->y + vs->h;
+    vt[4].texCoord.y *= vs->v + vs->h;
 
     vt[5] = vt[2];
 
@@ -252,8 +142,16 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
     vt += 6;
   }
 
-  m_vertex.Unlock();
-  m_count  = quads.count;
+  vt = vt_orig;
+  m_count = quads.count;
+
+  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 6 * quads.count, sizeof(Vertex), DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, vt))
+  {
+    CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
+    m_texture.Release();
+  }
+
+  delete[] vt;
 }
 
 COverlayQuadsDX::~COverlayQuadsDX()
@@ -265,60 +163,34 @@ void COverlayQuadsDX::Render(SRenderState &state)
   if (m_count == 0)
     return;
 
-  D3DXMATRIX orig;
-  LPDIRECT3DDEVICE9 device = g_Windowing.Get3DDevice();
-  device->GetTransform(D3DTS_WORLD, &orig);
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
 
-  D3DXMATRIX world = orig;
-  D3DXMATRIX trans, scale;
+  XMMATRIX world = pGUIShader->GetWorld();
+  XMMATRIX trans = XMMatrixTranslation(state.x, state.y, 0.0f);
+  XMMATRIX scale = XMMatrixScaling(state.width, state.height, 1.0f);
 
-  D3DXMatrixTranslation(&trans, state.x - 0.5f
-                              , state.y - 0.5f
-                              , 0.0f);
+  pGUIShader->SetWorld(XMMatrixMultiply(XMMatrixMultiply(world, scale), trans));
 
-  D3DXMatrixScaling    (&scale, state.width
-                              , state.height
-                              , 1.0f);
+  const unsigned stride = sizeof(Vertex);
+  const unsigned offset = 0;
 
-  D3DXMatrixMultiply(&world, &world, &scale);
-  D3DXMatrixMultiply(&world, &world, &trans);
+  ID3D11Buffer* vertexBuffer = m_vertex.Get();
+  // Set the vertex buffer to active in the input assembler so it can be rendered.
+  pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+  // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-  device->SetTransform(D3DTS_WORLD, &world);
+  g_Windowing.SetAlphaBlendEnable(true);
+  pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
 
-  device->SetTexture( 0, m_texture.Get() );
-  device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-  device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  device->SetSamplerState(0, D3DSAMP_ADDRESSU , D3DTADDRESS_CLAMP);
-  device->SetSamplerState(0, D3DSAMP_ADDRESSV , D3DTADDRESS_CLAMP);
+  ID3D11ShaderResourceView* views[] = { m_texture.GetShaderResource() };
+  pGUIShader->SetShaderViews(1, views);
+  pGUIShader->Draw(m_count * 6, 0);
 
-  device->SetTextureStageState(0, D3DTSS_COLOROP  , D3DTOP_SELECTARG1 );
-  device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE );
-  device->SetTextureStageState(0, D3DTSS_ALPHAOP  , D3DTOP_MODULATE );
-  device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-
-  device->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-  device->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-
-  device->SetRenderState( D3DRS_LIGHTING , FALSE );
-  device->SetRenderState( D3DRS_ZENABLE  , FALSE );
-  device->SetRenderState( D3DRS_FOGENABLE, FALSE );
-
-  device->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-  device->SetRenderState( D3DRS_ALPHAREF , 0 );
-  device->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
-  device->SetRenderState( D3DRS_FILLMODE , D3DFILL_SOLID );
-  device->SetRenderState( D3DRS_CULLMODE , D3DCULL_NONE );
-
-  device->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-  device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_SRCALPHA );
-  device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-  device->SetFVF(m_fvf);
-  device->SetStreamSource(0, m_vertex.Get(), 0, sizeof(VERTEX));
-  device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_count*2);
-
-  device->SetTexture(0, NULL);
-  device->SetTransform(D3DTS_WORLD, &orig);
+  // restoring transformation
+  pGUIShader->SetWorld(world);
+  pGUIShader->RestoreBuffers();
 }
 
 COverlayImageDX::~COverlayImageDX()
@@ -413,131 +285,75 @@ COverlayImageDX::COverlayImageDX(CDVDOverlaySpu* o)
 
 void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
 {
-  m_fvf    = D3DFVF_XYZ | D3DFVF_TEX1;
-
   float u, v;
   if(!LoadTexture(width
                 , height
                 , stride
-                , D3DFMT_A8R8G8B8
+                , DXGI_FORMAT_B8G8R8A8_UNORM
                 , rgba
                 , &u, &v
                 , &m_texture))
     return;
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6, D3DUSAGE_WRITEONLY, m_fvf, g_Windowing.DefaultD3DPool()))
-  {
-    CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
-    m_texture.Release();
-    return;
-  }
+  Vertex* vt = new Vertex[6];
 
-  VERTEX*  vt = NULL;
-  if (!m_vertex.Lock(0, 0, (void**)&vt, 0))
-  {
-    CLog::Log(LOGERROR, "%s - failed to lock texture", __FUNCTION__);
-    m_texture.Release();
-    m_vertex.Release();
-    return;
-  }
+  vt[0].texCoord = XMFLOAT2(0.0f, 0.0f);
+  vt[0].pos      = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-  vt[0].u = 0.0f;
-  vt[0].v = 0.0f;
-  vt[0].x = 0.0f;
-  vt[0].y = 0.0f;
-  vt[0].z = 0.0f;
+  vt[1].texCoord = XMFLOAT2(u, 0.0f);
+  vt[1].pos      = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
-  vt[1].u = u;
-  vt[1].v = 0.0f;
-  vt[1].x = 1.0f;
-  vt[1].y = 0.0f;
-  vt[1].z = 0.0f;
-
-  vt[2].u = 0.0f;
-  vt[2].v = v;
-  vt[2].x = 0.0f;
-  vt[2].y = 1.0f;
-  vt[2].z = 0.0f;
+  vt[2].texCoord = XMFLOAT2(0.0f, v);
+  vt[2].pos      = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
   vt[3] = vt[1];
 
-  vt[4].u = u;
-  vt[4].v = v;
-  vt[4].x = 1.0f;
-  vt[4].y = 1.0f;
-  vt[4].z = 0.0f;
+  vt[4].texCoord = XMFLOAT2(u, v);
+  vt[4].pos      = XMFLOAT3(1.0f, 1.0f, 0.0f);
 
   vt[5] = vt[2];
 
-  m_vertex.Unlock();
+  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 6, sizeof(Vertex), DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, vt))
+  {
+    CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
+    m_texture.Release();
+  }
+
+  delete[] vt;
 }
 
 void COverlayImageDX::Render(SRenderState &state)
 {
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
 
-  D3DXMATRIX orig;
-  LPDIRECT3DDEVICE9 device = g_Windowing.Get3DDevice();
-  device->GetTransform(D3DTS_WORLD, &orig);
+  XMMATRIX world = pGUIShader->GetWorld();
+  XMMATRIX trans = m_pos == POSITION_RELATIVE
+                 ? XMMatrixTranslation(state.x - state.width  * 0.5f, state.y - state.height * 0.5f, 0.0f)
+                 : XMMatrixTranslation(state.x, state.y, 0.0f),
+           scale = XMMatrixScaling(state.width, state.height, 1.0f);
 
-  D3DXMATRIX world = orig;
-  D3DXMATRIX trans, scale;
+  pGUIShader->SetWorld(XMMatrixMultiply(XMMatrixMultiply(world, scale), trans));
 
-  if(m_pos == POSITION_RELATIVE)
-    D3DXMatrixTranslation(&trans, state.x - state.width  * 0.5f - 0.5f
-                                , state.y - state.height * 0.5f - 0.5f
-                                , 0.0f);
-  else
-    D3DXMatrixTranslation(&trans, state.x - 0.5f
-                                , state.y - 0.5f
-                                , 0.0f);
+  const unsigned stride = m_vertex.GetStride();
+  const unsigned offset = 0;
 
-  D3DXMatrixScaling    (&scale, state.width
-                              , state.height
-                              , 1.0f);
+  ID3D11Buffer* vertexBuffer = m_vertex.Get();
+  // Set the vertex buffer to active in the input assembler so it can be rendered.
+  pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+  // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-  D3DXMatrixMultiply(&world, &world, &scale);
-  D3DXMatrixMultiply(&world, &world, &trans);
+  pGUIShader->Begin(SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
+  g_Windowing.SetAlphaBlendEnable(true);
 
-  device->SetTransform(D3DTS_WORLD, &world);
+  ID3D11ShaderResourceView* views[] = { m_texture.GetShaderResource() };
+  pGUIShader->SetShaderViews(1, views);
+  pGUIShader->Draw(6, 0);
 
-  device->SetTexture( 0, m_texture.Get() );
-  device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-  device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  device->SetSamplerState(0, D3DSAMP_ADDRESSU , D3DTADDRESS_CLAMP);
-  device->SetSamplerState(0, D3DSAMP_ADDRESSV , D3DTADDRESS_CLAMP);
-
-  device->SetTextureStageState(0, D3DTSS_COLOROP  , D3DTOP_SELECTARG1 );
-  device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  device->SetTextureStageState(0, D3DTSS_ALPHAOP  , D3DTOP_SELECTARG1 );
-  device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-
-  device->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-  device->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-
-  device->SetRenderState( D3DRS_LIGHTING , FALSE );
-  device->SetRenderState( D3DRS_ZENABLE  , FALSE );
-  device->SetRenderState( D3DRS_FOGENABLE, FALSE );
-
-  device->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-  device->SetRenderState( D3DRS_ALPHAREF , 0 );
-  device->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
-  device->SetRenderState( D3DRS_FILLMODE , D3DFILL_SOLID );
-  device->SetRenderState( D3DRS_CULLMODE , D3DCULL_NONE );
-  device->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-
-#if USE_PREMULTIPLIED_ALPHA
-  device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_ONE );
-#else
-  device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_SRCALPHA );
-#endif
-  device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-
-  device->SetFVF(m_fvf);
-  device->SetStreamSource(0, m_vertex.Get(), 0, sizeof(VERTEX));
-  device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
-
-  device->SetTexture( 0, NULL );
-  device->SetTransform(D3DTS_WORLD, &orig);
+  // restoring transformation
+  pGUIShader->SetWorld(world);
+  pGUIShader->RestoreBuffers();
 }
 
 #endif

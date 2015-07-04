@@ -22,7 +22,6 @@
 #if defined(TARGET_WINDOWS)
 
 #include "video/videosync/VideoSync.h"
-#include <d3d9.h>
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"
 
@@ -39,8 +38,8 @@ public:
   virtual void OnDestroyDevice();
   virtual void OnResetDevice();
 private:
-  LPDIRECT3DDEVICE9 m_D3dDev;
-  int m_height;
+  static std::string GetErrorDescription(HRESULT hr);
+
   volatile bool m_displayLost;
   volatile bool m_displayReset;
   CEvent m_lostEvent;

@@ -58,8 +58,8 @@ static const struct StereoModeMap VideoModeToGuiModeMap[] =
   { "right_left",               RENDER_STEREO_MODE_SPLIT_VERTICAL },
   { "top_bottom",               RENDER_STEREO_MODE_SPLIT_HORIZONTAL },
   { "bottom_top",               RENDER_STEREO_MODE_SPLIT_HORIZONTAL },
-  { "checkerboard_rl",          RENDER_STEREO_MODE_OFF }, // unsupported
-  { "checkerboard_lr",          RENDER_STEREO_MODE_OFF }, // unsupported
+  { "checkerboard_rl",          RENDER_STEREO_MODE_CHECKERBOARD }, 
+  { "checkerboard_lr",          RENDER_STEREO_MODE_CHECKERBOARD },
   { "row_interleaved_rl",       RENDER_STEREO_MODE_INTERLACED },
   { "row_interleaved_lr",       RENDER_STEREO_MODE_INTERLACED },
   { "col_interleaved_rl",       RENDER_STEREO_MODE_OFF }, // unsupported
@@ -83,6 +83,7 @@ static const struct StereoModeMap StringToGuiModeMap[] =
   { "tab",                      RENDER_STEREO_MODE_SPLIT_HORIZONTAL }, // alias
   { "row_interleaved",          RENDER_STEREO_MODE_INTERLACED },
   { "interlaced",               RENDER_STEREO_MODE_INTERLACED }, // alias
+  { "checkerboard",             RENDER_STEREO_MODE_CHECKERBOARD },
   { "anaglyph_cyan_red",        RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN },
   { "anaglyph_green_magenta",   RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA },
   { "anaglyph_yellow_blue",     RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE },
@@ -276,6 +277,9 @@ const std::string &CStereoscopicsManager::GetLabelForStereoMode(const RENDER_STE
     case RENDER_STEREO_MODE_INTERLACED:
 	  msgId = 36507;
 	  break;
+    case RENDER_STEREO_MODE_CHECKERBOARD:
+    msgId = 36511;
+    break;
     case RENDER_STEREO_MODE_HARDWAREBASED:
 	  msgId = 36508;
 	  break;

@@ -9,6 +9,10 @@ float mx, my;
 
 void Init()
 {
+}
+
+void Render()
+{
 	for (y=0;y<24;y=y+1)
 	{
       for (x=0;x<32;x=x+1)
@@ -22,10 +26,6 @@ void Init()
          map.SetValues(x, y, mx, my, (3.0+Cos(theta))*0.275, (3.0+Cos(theta*2.0))*0.275, (3.0+Cos(theta*4.0))*0.275);
       } 
 	}
-}
-
-void Render()
-{
 	map.Render();
 
 	gfxSetRenderTarget(map);
