@@ -36,6 +36,9 @@
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+#include "android/activity/XBMCApp.h"
+#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderFlags.h"
 
 #include "android/jni/ByteBuffer.h"
 #include "android/jni/MediaCodec.h"
@@ -115,67 +118,19 @@ static bool IsSupportedColorFormat(int color_format)
 
 /*****************************************************************************/
 /*****************************************************************************/
-class CNULL_Listener : public CJNISurfaceTextureOnFrameAvailableListener
-{
-public:
-  CNULL_Listener() : CJNISurfaceTextureOnFrameAvailableListener(jni::jhobject(NULL)) {};
-
-protected:
-  virtual void OnFrameAvailable(CJNISurfaceTexture &surface) {};
-};
-
-class CDVDMediaCodecOnFrameAvailable : public CEvent, CJNISurfaceTextureOnFrameAvailableListener
-{
-public:
-  CDVDMediaCodecOnFrameAvailable(std::shared_ptr<CJNISurfaceTexture> &surfaceTexture)
-  : m_surfaceTexture(surfaceTexture)
-  {
-    m_surfaceTexture->setOnFrameAvailableListener(*this);
-  }
-
-  virtual ~CDVDMediaCodecOnFrameAvailable()
-  {
-    // unhook the callback
-    CNULL_Listener null_listener;
-    m_surfaceTexture->setOnFrameAvailableListener(null_listener);
-  }
-
-protected:
-  virtual void OnFrameAvailable(CJNISurfaceTexture &surface)
-  {
-    Set();
-  }
-
-private:
-  std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
-
-};
-
-/*****************************************************************************/
-/*****************************************************************************/
 CDVDMediaCodecInfo::CDVDMediaCodecInfo(
     int index
-  , unsigned int texture
   , std::shared_ptr<CJNIMediaCodec> &codec
-  , std::shared_ptr<CJNISurfaceTexture> &surfacetexture
-  , std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready
 )
 : m_refs(1)
-, m_valid(true)
 , m_isReleased(true)
 , m_index(index)
-, m_texture(texture)
 , m_timestamp(0)
 , m_codec(codec)
-, m_surfacetexture(surfacetexture)
-, m_frameready(frameready)
 {
   // paranoid checks
   assert(m_index >= 0);
-  assert(m_texture > 0);
   assert(m_codec != NULL);
-  assert(m_surfacetexture != NULL);
-  assert(m_frameready != NULL);
 }
 
 CDVDMediaCodecInfo::~CDVDMediaCodecInfo()
@@ -202,25 +157,14 @@ long CDVDMediaCodecInfo::Release()
   return count;
 }
 
-void CDVDMediaCodecInfo::Validate(bool state)
-{
-  CSingleLock lock(m_section);
-
-  m_valid = state;
-}
-
 void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
 {
   CSingleLock lock(m_section);
 
-  if (!m_valid || m_isReleased)
+  if (m_isReleased)
     return;
 
   // release OutputBuffer and render if indicated
-  // then wait for rendered frame to become avaliable.
-
-  if (render)
-    m_frameready->Reset();
 
   m_codec->releaseOutputBuffer(m_index, render);
   m_isReleased = true;
@@ -241,67 +185,12 @@ int CDVDMediaCodecInfo::GetIndex() const
   return m_index;
 }
 
-int CDVDMediaCodecInfo::GetTextureID() const
-{
-  // since m_texture never changes,
-  // we do not need a m_section lock here.
-  return m_texture;
-}
-
-void CDVDMediaCodecInfo::GetTransformMatrix(float *textureMatrix)
-{
-  CSingleLock lock(m_section);
-
-  if (!m_valid)
-    return;
-
-  m_surfacetexture->getTransformMatrix(textureMatrix);
-}
-
-void CDVDMediaCodecInfo::UpdateTexImage()
-{
-  CSingleLock lock(m_section);
-
-  if (!m_valid)
-    return;
-
-  // updateTexImage will check and spew any prior gl errors,
-  // clear them before we call updateTexImage.
-  glGetError();
-
-  // this is key, after calling releaseOutputBuffer, we must
-  // wait a little for MediaCodec to render to the surface.
-  // Then we can updateTexImage without delay. If we do not
-  // wait, then video playback gets jerky. To optomize this,
-  // we hook the SurfaceTexture OnFrameAvailable callback
-  // using CJNISurfaceTextureOnFrameAvailableListener and wait
-  // on a CEvent to fire. 50ms seems to be a good max fallback.
-  m_frameready->WaitMSec(50);
-
-  m_surfacetexture->updateTexImage();
-  if (xbmc_jnienv()->ExceptionCheck())
-  {
-    CLog::Log(LOGERROR, "CDVDMediaCodecInfo::UpdateTexImage updateTexImage:ExceptionCheck");
-    xbmc_jnienv()->ExceptionDescribe();
-    xbmc_jnienv()->ExceptionClear();
-  }
-
-  m_timestamp = m_surfacetexture->getTimestamp();
-  if (xbmc_jnienv()->ExceptionCheck())
-  {
-    CLog::Log(LOGERROR, "CDVDMediaCodecInfo::UpdateTexImage getTimestamp:ExceptionCheck");
-    xbmc_jnienv()->ExceptionDescribe();
-    xbmc_jnienv()->ExceptionClear();
-  }
-}
-
 /*****************************************************************************/
 /*****************************************************************************/
 CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec()
 : m_formatname("mediacodec")
 , m_opened(false)
 , m_surface(NULL)
-, m_textureId(0)
 , m_bitstream(NULL)
 , m_render_sw(false)
 {
@@ -498,6 +387,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_opened = true;
   memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
 
+  g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
+  //g_renderManager.RegisterRenderCaptureCallBack((const void*)this, RenderCaptureCallBack);
+  g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
+  //g_renderManager.RegisterDeinterlaceMethodsCallBack((const void*)this, DeinterlaceMethodsCallBack);
+  g_renderManager.RegisterRenderLockCallBack((const void*)this, RenderLockCallBack);
+  g_renderManager.RegisterRenderReleaseCallBack((const void*)this, RenderReleaseCallBack);
+
   return m_opened;
 }
 
@@ -508,6 +404,13 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
 
   m_opened = false;
 
+  g_renderManager.RegisterRenderUpdateCallBack((const void*)NULL, NULL);
+  //g_renderManager.RegisterRenderCaptureCallBack((const void*)NULL, NULL);
+  g_renderManager.RegisterRenderFeaturesCallBack((const void*)NULL, NULL);
+  //g_renderManager.RegisterDeinterlaceMethodsCallBack((const void*)NULL, NULL);
+  g_renderManager.RegisterRenderLockCallBack((const void*)NULL, NULL);
+  g_renderManager.RegisterRenderReleaseCallBack((const void*)NULL, NULL);
+
   // release any retained demux packets
   if (m_demux_pkt.pData)
     free(m_demux_pkt.pData);
@@ -517,6 +420,8 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   m_input.clear();
   m_output.clear();
   FlushInternal();
+  for (size_t i = 0; i < m_inflight.size(); i++)
+    m_inflight[i]->Release();
 
   // clear m_videobuffer bits
   if (m_render_sw)
@@ -528,7 +433,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   m_videobuffer.iFlags = 0;
   // m_videobuffer.mediacodec is unioned with m_videobuffer.data[0]
   // so be very careful when and how you touch it.
-  m_videobuffer.mediacodec = NULL;
+  m_videobuffer.render_ctx = NULL;
 
   if (m_codec)
   {
@@ -538,7 +443,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
     if (xbmc_jnienv()->ExceptionCheck())
       xbmc_jnienv()->ExceptionClear();
   }
-  ReleaseSurfaceTexture();
+  CXBMCApp::get()->clearVideoView();
 
   SAFE_DELETE(m_bitstream);
 }
@@ -703,7 +608,7 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
     // Invalidate our local DVDVideoPicture bits
     m_videobuffer.pts = DVD_NOPTS_VALUE;
     if (!m_render_sw)
-      m_videobuffer.mediacodec = NULL;
+      m_videobuffer.render_ctx = NULL;
   }
 }
 
@@ -717,15 +622,15 @@ bool CDVDVideoCodecAndroidMediaCodec::GetPicture(DVDVideoPicture* pDvdVideoPictu
   // Invalidate our local DVDVideoPicture bits
   m_videobuffer.pts = DVD_NOPTS_VALUE;
   if (!m_render_sw)
-    m_videobuffer.mediacodec = NULL;
+    m_videobuffer.render_ctx = NULL;
 
   return true;
 }
 
 bool CDVDVideoCodecAndroidMediaCodec::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  if (pDvdVideoPicture->format == RENDER_FMT_MEDIACODEC)
-    SAFE_RELEASE(pDvdVideoPicture->mediacodec);
+  if (pDvdVideoPicture->format == RENDER_FMT_BYPASS)
+    ((CDVDMediaCodecInfo*)pDvdVideoPicture->render_ctx)->Release();
   memset(pDvdVideoPicture, 0x00, sizeof(DVDVideoPicture));
 
   return true;
@@ -766,15 +671,7 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
     return;
 
   for (size_t i = 0; i < m_inflight.size(); i++)
-    m_inflight[i]->Validate(false);
-  m_inflight.clear();
-
-  for (size_t i = 0; i < m_output.size(); i++)  // Deprecated as of API 21
-  {
-    m_inflight.push_back(
-      new CDVDMediaCodecInfo(i, m_textureId, m_codec, m_surfaceTexture, m_frameAvailable)
-    );
-  }
+    m_inflight[i]->ReleaseOutputBuffer(false);
 }
 
 bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
@@ -807,7 +704,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     mediaformat.setByteBuffer("csd-0", bytebuffer);
   }
 
-  InitSurfaceTexture();
+  m_videosurface = CXBMCApp::get()->getVideoViewSurface();
 
   // configure and start the codec.
   // use the MediaFormat that we have setup.
@@ -824,12 +721,13 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   }
   else
   {
-    m_codec->configure(mediaformat, *m_surface, crypto, flags);
+    m_codec->configure(mediaformat, m_videosurface, crypto, flags);
   }
   // always, check/clear jni exceptions.
   if (xbmc_jnienv()->ExceptionCheck())
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::ExceptionCheck: configure");
+    xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
     return false;
   }
@@ -840,6 +738,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   if (xbmc_jnienv()->ExceptionCheck())
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::ExceptionCheck: start");
+    xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
     return false;
   }
@@ -855,7 +754,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
 {
   int rtn = 0;
 
-  int64_t timeout_us = 1000;
+  int64_t timeout_us = 10000;
   CJNIMediaCodecBufferInfo bufferInfo;
   int index = m_codec->dequeueOutputBuffer(bufferInfo, timeout_us);
   if (xbmc_jnienv()->ExceptionCheck())
@@ -928,10 +827,9 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
       }
       if (i == m_inflight.size())
         m_inflight.push_back(
-          new CDVDMediaCodecInfo(index, m_textureId, m_codec, m_surfaceTexture, m_frameAvailable)
+          new CDVDMediaCodecInfo(index, m_codec)
         );
-      m_videobuffer.mediacodec = m_inflight[i]->Retain();
-      m_videobuffer.mediacodec->Validate(true);
+      m_videobuffer.render_ctx = (void *)m_inflight[i]->Retain();
     }
     else
     {
@@ -1077,7 +975,7 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
   if (!m_render_sw)
   {
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Direct Surface Rendering");
-    m_videobuffer.format = RENDER_FMT_MEDIACODEC;
+    m_videobuffer.format = RENDER_FMT_BYPASS;
   }
   else
   {
@@ -1236,70 +1134,48 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
     xbmc_jnienv()->ExceptionClear();
 }
 
-void CDVDVideoCodecAndroidMediaCodec::CallbackInitSurfaceTexture(void *userdata)
+/**********************************/
+
+void CDVDVideoCodecAndroidMediaCodec::RenderFeaturesCallBack(const void *ctx, Features &renderFeatures)
 {
-  CDVDVideoCodecAndroidMediaCodec *ctx = static_cast<CDVDVideoCodecAndroidMediaCodec*>(userdata);
-  ctx->InitSurfaceTexture();
+  renderFeatures.push_back(RENDERFEATURE_ZOOM);
+  renderFeatures.push_back(RENDERFEATURE_STRETCH);
+  renderFeatures.push_back(RENDERFEATURE_PIXEL_RATIO);
 }
 
-void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
+void CDVDVideoCodecAndroidMediaCodec::DeinterlaceMethodsCallBack(const void *ctx, Features &deinterlaceMethods)
 {
-  if (m_render_sw)
-    return;
-
-  // We MUST create the GLES texture on the main thread
-  // to match where the valid GLES context is located.
-  // It would be nice to move this out of here, we would need
-  // to create/fetch/create from g_RenderMananger. But g_RenderMananger
-  // does not know we are using MediaCodec until Configure and we
-  // we need m_surfaceTexture valid before then. Chicken, meet Egg.
-  if (g_application.IsCurrentThread())
-  {
-    // localize GLuint so we do not spew gles includes in our header
-    GLuint texture_id;
-
-    glGenTextures(1, &texture_id);
-    glBindTexture(  GL_TEXTURE_EXTERNAL_OES, texture_id);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(  GL_TEXTURE_EXTERNAL_OES, 0);
-    m_textureId = texture_id;
-
-    m_surfaceTexture = std::shared_ptr<CJNISurfaceTexture>(new CJNISurfaceTexture(m_textureId));
-    // hook the surfaceTexture OnFrameAvailable callback
-    m_frameAvailable = std::shared_ptr<CDVDMediaCodecOnFrameAvailable>(new CDVDMediaCodecOnFrameAvailable(m_surfaceTexture));
-    m_surface = new CJNISurface(*m_surfaceTexture);
-  }
-  else
-  {
-    ThreadMessageCallback callbackData;
-    callbackData.callback = &CallbackInitSurfaceTexture;
-    callbackData.userptr  = (void*)this;
-
-    // wait for it.
-    CApplicationMessenger::Get().SendMsg(TMSG_CALLBACK, -1, -1, static_cast<void*>(&callbackData));
-  }
-
-  return;
 }
 
-void CDVDVideoCodecAndroidMediaCodec::ReleaseSurfaceTexture(void)
+void CDVDVideoCodecAndroidMediaCodec::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect, DWORD flags, const void* render_ctx)
 {
-  if (m_render_sw)
-    return;
+  static CRect cur_rect;
 
-  // it is safe to delete here even though these items
-  // were created in the main thread instance
-  SAFE_DELETE(m_surface);
-  m_frameAvailable.reset();
-  m_surfaceTexture.reset();
-
-  if (m_textureId > 0)
+  if (DestRect != cur_rect)
   {
-    GLuint texture_id = m_textureId;
-    glDeleteTextures(1, &texture_id);
-    m_textureId = 0;
+    CXBMCApp::get()->setVideoViewSurfaceRect(DestRect.x1, DestRect.y1, DestRect.x2, DestRect.y2);
+    cur_rect = DestRect;
   }
+
+  CDVDMediaCodecInfo *buffer = (CDVDMediaCodecInfo*)render_ctx;
+  if (buffer)
+    buffer->ReleaseOutputBuffer(true);
+}
+
+void CDVDVideoCodecAndroidMediaCodec::RenderCaptureCallBack(const void *ctx, const CRect &SrcRect, const void *render_ctx)
+{
+}
+
+void CDVDVideoCodecAndroidMediaCodec::RenderLockCallBack(const void *ctx, const void* render_ctx)
+{
+  CDVDMediaCodecInfo *buffer = (CDVDMediaCodecInfo*)render_ctx;
+  if (buffer)
+    buffer->Retain();
+}
+
+void CDVDVideoCodecAndroidMediaCodec::RenderReleaseCallBack(const void *ctx, const void* render_ctx)
+{
+  CDVDMediaCodecInfo *buffer = (CDVDMediaCodecInfo*)render_ctx;
+  if (buffer)
+    buffer->Release();
 }

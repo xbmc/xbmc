@@ -37,6 +37,10 @@ public:
   static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
   static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
 
+  CJNISurface getVideoViewSurface();
+  void clearVideoView();
+  void setVideoViewSurfaceRect(int l, int t, int r, int b);
+
 private:
   static CJNIMainActivity *m_appInstance;
 
