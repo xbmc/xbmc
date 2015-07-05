@@ -37,6 +37,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/md5.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "Util.h"

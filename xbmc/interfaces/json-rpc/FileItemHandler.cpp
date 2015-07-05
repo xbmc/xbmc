@@ -25,6 +25,7 @@
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
 #include "FileOperations.h"
+#include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/ISerializable.h"
 #include "utils/Variant.h"

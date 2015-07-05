@@ -27,6 +27,7 @@
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/SortUtils.h"
 #include "view/ViewStateSettings.h"
 
 #include "filesystem/Directory.h"

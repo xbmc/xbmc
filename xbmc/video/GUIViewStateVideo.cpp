@@ -30,6 +30,7 @@
 #include "FileItem.h"
 #include "guilib/WindowIDs.h"
 #include "view/ViewStateSettings.h"
+#include "utils/SortUtils.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
