@@ -525,6 +525,8 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldYear:                     sortable[FieldYear] = m_iYear; break;
   case FieldSeason:                   sortable[FieldSeason] = m_iSeason; break;
   case FieldEpisodeNumber:            sortable[FieldEpisodeNumber] = m_iEpisode; break;
+  case FieldNumberOfEpisodes:         sortable[FieldNumberOfEpisodes] = m_iEpisode; break;
+  case FieldNumberOfWatchedEpisodes:  sortable[FieldNumberOfWatchedEpisodes] = m_iEpisode; break;
   case FieldEpisodeNumberSpecialSort: sortable[FieldEpisodeNumberSpecialSort] = m_iSpecialSortEpisode; break;
   case FieldSeasonSpecialSort:        sortable[FieldSeasonSpecialSort] = m_iSpecialSortSeason; break;
   case FieldRating:                   sortable[FieldRating] = m_fRating; break;
