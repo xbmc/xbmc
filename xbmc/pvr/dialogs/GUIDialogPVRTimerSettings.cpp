@@ -359,7 +359,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
 
   if (settingId == SETTING_TMR_TYPE)
   {
-    int idx = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+    int idx = static_cast<const CSettingInt*>(setting)->GetValue();
     const auto it = m_typeEntries.find(idx);
     if (it != m_typeEntries.end())
     {
@@ -375,23 +375,23 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_TMR_ACTIVE)
   {
-    m_bTimerActive = dynamic_cast<const CSettingBool*>(setting)->GetValue();
+    m_bTimerActive = static_cast<const CSettingBool*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_NAME)
   {
-    m_strTitle = dynamic_cast<const CSettingString*>(setting)->GetValue();
+    m_strTitle = static_cast<const CSettingString*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_EPGSEARCH)
   {
-    m_strEpgSearchString = dynamic_cast<const CSettingString*>(setting)->GetValue();
+    m_strEpgSearchString = static_cast<const CSettingString*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_FULLTEXT)
   {
-    m_bFullTextEpgSearch = dynamic_cast<const CSettingBool*>(setting)->GetValue();
+    m_bFullTextEpgSearch = static_cast<const CSettingBool*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_CHANNEL)
   {
-    int idx = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+    int idx = static_cast<const CSettingInt*>(setting)->GetValue();
     const auto it = m_channelEntries.find(idx);
     if (it != m_channelEntries.end())
     {
@@ -404,7 +404,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_TMR_WEEKDAYS)
   {
-    const CSettingList *settingList = dynamic_cast<const CSettingList*>(setting);
+    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
     if (settingList->GetElementType() != SettingTypeInteger)
     {
       CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::OnSettingChanged - wrong weekdays element type");
@@ -425,47 +425,47 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_TMR_ANYTIME)
   {
-    m_bStartAnytime = m_bEndAnytime = dynamic_cast<const CSettingBool*>(setting)->GetValue();
+    m_bStartAnytime = m_bEndAnytime = static_cast<const CSettingBool*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_START_DAY)
   {
-    SetDateFromInt(m_startLocalTime, dynamic_cast<const CSettingInt*>(setting)->GetValue());
+    SetDateFromInt(m_startLocalTime, static_cast<const CSettingInt*>(setting)->GetValue());
   }
   else if (settingId == SETTING_TMR_END_DAY)
   {
-    SetDateFromInt(m_endLocalTime, dynamic_cast<const CSettingInt*>(setting)->GetValue());
+    SetDateFromInt(m_endLocalTime, static_cast<const CSettingInt*>(setting)->GetValue());
   }
   else if (settingId == SETTING_TMR_FIRST_DAY)
   {
-    SetDateFromInt(m_firstDayLocalTime, dynamic_cast<const CSettingInt*>(setting)->GetValue());
+    SetDateFromInt(m_firstDayLocalTime, static_cast<const CSettingInt*>(setting)->GetValue());
   }
   else if (settingId == SETTING_TMR_NEW_EPISODES)
   {
-    m_iPreventDupEpisodes = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+    m_iPreventDupEpisodes = static_cast<const CSettingInt*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_BEGIN_PRE)
   {
-    m_iMarginStart = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+    m_iMarginStart = static_cast<const CSettingInt*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_END_POST)
   {
-    m_iMarginEnd = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+    m_iMarginEnd = static_cast<const CSettingInt*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_PRIORITY)
   {
-    m_iPriority = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+    m_iPriority = static_cast<const CSettingInt*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_LIFETIME)
   {
-    m_iLifetime = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+    m_iLifetime = static_cast<const CSettingInt*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_DIR)
   {
-    m_strDirectory = dynamic_cast<const CSettingString*>(setting)->GetValue();
+    m_strDirectory = static_cast<const CSettingString*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_REC_GROUP)
   {
-    m_iRecordingGroup = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+    m_iRecordingGroup = static_cast<const CSettingInt*>(setting)->GetValue();
   }
 }
 
@@ -971,7 +971,7 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string &condit
   }
 
   // Let the PVR client decide...
-  int idx = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+  int idx = static_cast<const CSettingInt*>(setting)->GetValue();
   const auto entry = pThis->m_typeEntries.find(idx);
   if (entry != pThis->m_typeEntries.end())
     return !entry->second->IsReadOnly();
@@ -1004,7 +1004,7 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string &condit
   if (!StringUtils::EqualsNoCase(value, "true"))
     return false;
 
-  int idx = dynamic_cast<const CSettingInt*>(setting)->GetValue();
+  int idx = static_cast<const CSettingInt*>(setting)->GetValue();
   const auto entry = pThis->m_typeEntries.find(idx);
   if (entry != pThis->m_typeEntries.end())
   {
@@ -1089,7 +1089,7 @@ bool CGUIDialogPVRTimerSettings::AnytimeSetCondition(const std::string &conditio
       (cond == SETTING_TMR_BEGIN)     ||
       (cond == SETTING_TMR_END))
   {
-    bool bAnytime = dynamic_cast<const CSettingBool*>(setting)->GetValue();
+    bool bAnytime = static_cast<const CSettingBool*>(setting)->GetValue();
     return !bAnytime;
   }
   return false;
