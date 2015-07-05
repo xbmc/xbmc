@@ -1594,8 +1594,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_BROWSE_INTO:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
-      if(Update(item->GetPath()))
-        return true;
+      Update(item->GetPath());
       return true;
     }
   case CONTEXT_BUTTON_USER1:

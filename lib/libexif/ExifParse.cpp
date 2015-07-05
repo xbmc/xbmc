@@ -507,10 +507,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
         // Tends to be less accurate as distance increases.
         {
           float distance = (float)ConvertAnyFormat(ValuePtr, Format);
-          if (distance < 0)
-            m_ExifInfo->Distance = distance; // infinite
-          else             
-            m_ExifInfo->Distance = distance;
+          m_ExifInfo->Distance = distance;
         }
       break;
 

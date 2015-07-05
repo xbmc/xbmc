@@ -50,6 +50,7 @@ Database::Database():
   sequence_table("db_sequence")
 {
   active = false;	// No connection yet
+  compression = false;
 }
 
 Database::~Database() {
