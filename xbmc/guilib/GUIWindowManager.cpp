@@ -779,10 +779,10 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<stri
     return;
   }
 
-  // don't activate a window if there are active modal dialogs
-  if (!force && HasModalDialog())
+  // don't activate a window if there are active modal dialogs of type NORMAL
+  if (!force && HasModalDialog({ DialogModalityType::MODAL }))
   {
-    CLog::Log(LOG_LEVEL_DEBUG, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
+    CLog::Log(LOGINFO, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
     g_audioManager.PlayActionSound(CAction(ACTION_ERROR));
     return;
   }
@@ -1132,15 +1132,25 @@ void CGUIWindowManager::RemoveDialog(int id)
   }
 }
 
-bool CGUIWindowManager::HasModalDialog() const
+bool CGUIWindowManager::HasModalDialog(const std::vector<DialogModalityType>& types) const
 {
   CSingleLock lock(g_graphicsContext);
   for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
-    CGUIWindow *window = *it;
-    if (window->IsModalDialog())
-    { // have a modal window
-      if (!window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    if ((*it)->IsDialog() &&
+        (*it)->IsModalDialog() &&
+        !(*it)->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    {
+      if (types.size() > 0)
+      {
+        CGUIDialog *dialog = static_cast<CGUIDialog*>(*it);
+        for (const auto &type : types)
+        {
+          if (dialog->GetModalityType() == type)
+            return true;
+        }
+      }
+      else
         return true;
     }
   }
