@@ -614,17 +614,7 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
     GetMusicInfoTag()->ToSortable(sortable, field);
 
   if (HasVideoInfoTag())
-  {
     GetVideoInfoTag()->ToSortable(sortable, field);
-
-    if (GetVideoInfoTag()->m_type == MediaTypeTvShow)
-    {
-      if (field == FieldNumberOfEpisodes && HasProperty("totalepisodes"))
-        sortable[FieldNumberOfEpisodes] = GetProperty("totalepisodes");
-      if (field == FieldNumberOfWatchedEpisodes && HasProperty("unwatchedepisodes"))
-        sortable[FieldNumberOfWatchedEpisodes] = GetProperty("unwatchedepisodes");
-    }
-  }
 
   if (HasPictureInfoTag())
     GetPictureInfoTag()->ToSortable(sortable, field);
