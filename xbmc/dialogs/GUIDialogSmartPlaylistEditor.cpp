@@ -142,6 +142,40 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
       HighlightItem(-1);
     }
     break;
+  case GUI_MSG_WINDOW_INIT:
+    {
+      const std::string& startupList = message.GetStringParam(0);
+      if (!startupList.empty())
+      {
+        int party = 0;
+        if (URIUtils::PathEquals(startupList, CProfilesManager::Get().GetUserDataItem("PartyMode.xsp")))
+          party = 1;
+        else if (URIUtils::PathEquals(startupList, CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp")))
+          party = 2;
+
+        if ((party && !XFILE::CFile::Exists(startupList)) ||
+             m_playlist.Load(startupList))
+        {
+          m_path = startupList;
+
+          if (party == 1)
+            m_mode = "partymusic";
+          else if (party == 2)
+            m_mode = "partyvideo";
+          else
+          {
+            PLAYLIST_TYPE type = ConvertType(m_playlist.GetType());
+            if (type == TYPE_SONGS || type == TYPE_ALBUMS || type == TYPE_ARTISTS)
+              m_mode = "music";
+            else
+              m_mode = "video";
+          }
+        }
+        else
+          return false;
+      }
+    }
+    break;
   }
   return CGUIDialog::OnMessage(message);
 }
