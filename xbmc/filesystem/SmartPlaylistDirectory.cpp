@@ -76,7 +76,7 @@ namespace XFILE
     items.SetSortIgnoreFolders((sorting.sortAttributes & SortAttributeIgnoreFolders) == SortAttributeIgnoreFolders);
 
     std::string option = !filter ? "xsp" : "filter";
-    const std::string& group = playlist.GetGroup();
+    std::string group = playlist.GetGroup();
     bool isGrouped = !group.empty() && !StringUtils::EqualsNoCase(group, "none") && !playlist.IsGroupMixed();
 
     // get all virtual folders and add them to the item list
@@ -232,6 +232,15 @@ namespace XFILE
         CVideoDbUrl videoUrl;
         if (!videoUrl.FromString(baseDir))
           return false;
+
+        // adjust the group in case we're retrieving a grouped playlist
+        // based on artists. This is needed because the video library
+        // is using the actorslink table for artists.
+        if (isGrouped && group == "artists")
+        {
+          group = "actors";
+          mvidPlaylist.SetGroup(group);
+        }
 
         // store the smartplaylist as JSON in the URL as well
         std::string xsp;
