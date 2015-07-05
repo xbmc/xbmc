@@ -420,9 +420,8 @@ void CGUIWindowFullScreen::FrameMove()
                                        , clockspeed - 100.0
                                        , g_renderManager.GetVSyncState().c_str());
 
-      strGeneralFPS = StringUtils::Format("%s\nW( fps:%02.2f %s )\n%s"
+      strGeneralFPS = StringUtils::Format("%s\nW( %s )\n%s"
                                           , strGeneral.c_str()
-                                          , g_infoManager.GetFPS()
                                           , strCores.c_str(), strClock.c_str() );
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
