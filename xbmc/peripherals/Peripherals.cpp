@@ -312,15 +312,7 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
 
 void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &peripheral)
 {
-  CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
-  if (dialog && dialog->IsActive())
-    dialog->Update();
-
-  // refresh settings (peripherals manager could be enabled now)
-  CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
-  g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_SYSTEM);
-
-  SetChanged();
+  OnDeviceChanged();
 
   // don't show a notification for devices detected during the initial scan
   if (bus.IsInitialised())
@@ -329,17 +321,22 @@ void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &p
 
 void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral &peripheral)
 {
-  CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
-  if (dialog && dialog->IsActive())
-    dialog->Update();
-
-  // refresh settings (peripherals manager could be disabled now)
-  CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
-  g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_SYSTEM);
-
-  SetChanged();
+  OnDeviceChanged();
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
+}
+
+void CPeripherals::OnDeviceChanged()
+{
+  // refresh peripherals manager
+  CGUIMessage msgManager(GUI_MSG_UPDATE, WINDOW_DIALOG_PERIPHERAL_MANAGER, 0);
+  g_windowManager.SendThreadMessage(msgManager, WINDOW_DIALOG_PERIPHERAL_MANAGER);
+
+  // refresh settings (peripherals manager could be enabled/disabled now)
+  CGUIMessage msgSettings(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
+  g_windowManager.SendThreadMessage(msgSettings, WINDOW_SETTINGS_SYSTEM);
+
+  SetChanged();
 }
 
 bool CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const
