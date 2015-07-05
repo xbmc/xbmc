@@ -905,7 +905,7 @@ private:
    */
   int GetPlayCount(int iFileId);
 
-  virtual int GetMinSchemaVersion() const { return 60; };
+  virtual int GetMinSchemaVersion() const { return 75; };
   virtual int GetSchemaVersion() const;
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
