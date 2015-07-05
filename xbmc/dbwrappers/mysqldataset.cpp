@@ -420,26 +420,29 @@ long MysqlDatabase::nextid(const char* sname) {
     return DB_UNEXPECTED_RESULT;
   }
   res = mysql_store_result(conn);
-  if (mysql_num_rows(res) == 0)
+  if (res)
   {
-    id = 1;
-    sprintf(sqlcmd,"insert into %s (nextid,seq_name) values (%d,'%s')",seq_table,id,sname);
-    mysql_free_result(res);
-    if ((last_err = query_with_reconnect(sqlcmd)) != 0) return DB_UNEXPECTED_RESULT;
-    return id;
-  }
-  else
-  {
-    MYSQL_ROW row = mysql_fetch_row(res);
-    //id = (int)row[0];
-    id = -1;
-    unsigned long *lengths;
-    lengths = mysql_fetch_lengths(res);
-    CLog::Log(LOGINFO,"Next id is [%.*s] ", (int) lengths[0], row[0]);
-    sprintf(sqlcmd,"update %s set nextid=%d where seq_name = '%s'",seq_table,id,sname);
-    mysql_free_result(res);
-    if ((last_err = query_with_reconnect(sqlcmd)) != 0) return DB_UNEXPECTED_RESULT;
-    return id;
+    if (mysql_num_rows(res) == 0)
+    {
+      id = 1;
+      sprintf(sqlcmd, "insert into %s (nextid,seq_name) values (%d,'%s')", seq_table, id, sname);
+      mysql_free_result(res);
+      if ((last_err = query_with_reconnect(sqlcmd)) != 0) return DB_UNEXPECTED_RESULT;
+      return id;
+    }
+    else
+    {
+      MYSQL_ROW row = mysql_fetch_row(res);
+      //id = (int)row[0];
+      id = -1;
+      unsigned long *lengths;
+      lengths = mysql_fetch_lengths(res);
+      CLog::Log(LOGINFO, "Next id is [%.*s] ", (int)lengths[0], row[0]);
+      sprintf(sqlcmd, "update %s set nextid=%d where seq_name = '%s'", seq_table, id, sname);
+      mysql_free_result(res);
+      if ((last_err = query_with_reconnect(sqlcmd)) != 0) return DB_UNEXPECTED_RESULT;
+      return id;
+    }
   }
   return DB_UNEXPECTED_RESULT;
 }
@@ -1512,6 +1515,8 @@ bool MysqlDataset::query(const std::string &query) {
 
   MYSQL* conn = handle();
   stmt = mysql_store_result(conn);
+  if (stmt == NULL)
+    throw DbErrors("Missing result set!");
 
   // column headers
   const unsigned int numColumns = mysql_num_fields(stmt);
