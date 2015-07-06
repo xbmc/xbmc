@@ -11178,7 +11178,30 @@ msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr ""
 
-#empty strings from id 21331 to 21335
+#: xbmc/storage/AutorunMediaJob.cpp
+msgctxt "#21331"
+msgid "New media detected"
+msgstr ""
+
+#: xbmc/storage/AutorunMediaJob.cpp
+msgctxt "#21332"
+msgid "Browse videos"
+msgstr ""
+
+#: xbmc/storage/AutorunMediaJob.cpp
+msgctxt "#21333"
+msgid "Browse music"
+msgstr ""
+
+#: xbmc/storage/AutorunMediaJob.cpp
+msgctxt "#21334"
+msgid "Browse pictures"
+msgstr ""
+
+#: xbmc/storage/AutorunMediaJob.cpp
+msgctxt "#21335"
+msgid "Browse files"
+msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#21336"
