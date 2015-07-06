@@ -68,7 +68,7 @@ void CVideoInfoDownloader::ShowErrorDialog(const ADDON::CScraperError &sce)
     CGUIDialogOK *pdlg = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     pdlg->SetHeading(CVariant{sce.Title()});
     pdlg->SetLine(0, CVariant{sce.Message()});
-    CApplicationMessenger::Get().DoModal(pdlg, WINDOW_DIALOG_OK);
+    pdlg->Open();
   }
 }
 

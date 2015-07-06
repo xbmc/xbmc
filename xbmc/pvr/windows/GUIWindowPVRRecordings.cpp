@@ -336,7 +336,7 @@ bool CGUIWindowPVRRecordings::ActionDeleteRecording(CFileItem *item)
   pDialog->SetChoice(1, CVariant{117}); // Delete
 
   /* prompt for the user's confirmation */
-  pDialog->DoModal();
+  pDialog->Open();
   if (!pDialog->IsConfirmed())
     return bReturn;
 
@@ -409,7 +409,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonDeleteAll(CFileItem *item, CONTEXT_
   pDialog->SetChoice(1, CVariant{117}); // Delete
 
   /* prompt for the user's confirmation */
-  pDialog->DoModal();
+  pDialog->Open();
   if (!pDialog->IsConfirmed())
     return bReturn;
 

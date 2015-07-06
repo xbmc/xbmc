@@ -283,7 +283,7 @@ void CGUIWindowPVRSearch::OpenDialogSearch()
   m_searchfilter.m_bIsRadio = m_bRadio;
 
   /* Open dialog window */
-  dlgSearch->DoModal();
+  dlgSearch->Open();
 
   if (dlgSearch->IsConfirmed())
   {

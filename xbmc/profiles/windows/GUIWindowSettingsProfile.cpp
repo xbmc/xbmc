@@ -263,7 +263,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
   dialog->Reset();
   dialog->SetItems(&items);
   dialog->SetSelected(autoLoginProfileId);
-  dialog->DoModal();
+  dialog->Open();
 
   if (dialog->IsButtonPressed() || dialog->GetSelectedLabel() < 0)
     return false; // user cancelled

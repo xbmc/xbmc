@@ -214,7 +214,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
 
     pDialog->m_addon = addon;
     pDialog->m_saveToDisk = saveToDisk;
-    pDialog->DoModal();
+    pDialog->Open();
     ret = true;
   }
   else
@@ -336,7 +336,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               if (selected == (int)i || (selected < 0 && StringUtils::EqualsNoCase(valuesVec[i], value)))
                 pDlg->SetSelected(i); // FIXME: the SetSelected() does not select "i", it always defaults to the first position
             }
-            pDlg->DoModal();
+            pDlg->Open();
             int iSelected = pDlg->GetSelectedLabel();
             if (iSelected >= 0)
             {

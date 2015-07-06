@@ -98,7 +98,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant
   dialog->SetChoice(0, !noLabel.empty() ? noLabel : 106);
   dialog->SetChoice(1, !yesLabel.empty() ? yesLabel : 107);
   dialog->m_bCanceled = false;
-  dialog->DoModal();
+  dialog->Open();
 
   bCanceled = dialog->m_bCanceled;
   return (dialog->IsConfirmed()) ? true : false;
@@ -123,7 +123,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, bool &bCa
   dialog->m_bCanceled = false;
   dialog->SetChoice(0, !noLabel.empty() ? noLabel : 106);
   dialog->SetChoice(1, !yesLabel.empty() ? yesLabel : 107);
-  dialog->DoModal();
+  dialog->Open();
 
   bCanceled = dialog->m_bCanceled;
   return (dialog->IsConfirmed()) ? true : false;

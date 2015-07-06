@@ -133,7 +133,7 @@ void CGUIDialogPVRGuideOSD::ShowInfo(int item)
 
   /* inform dialog about the file item and open dialog window */
   pDlgInfo->SetProgInfo(pItem.get());
-  pDlgInfo->DoModal();
+  pDlgInfo->Open();
 }
 
 void CGUIDialogPVRGuideOSD::OnWindowLoaded()

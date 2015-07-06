@@ -135,7 +135,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const std::string &type)
   dialog->Initialize();
   dialog->SetShare(CMediaSource());
   dialog->SetTypeOfMedia(type);
-  dialog->DoModal();
+  dialog->Open();
   bool confirmed(dialog->IsConfirmed());
   if (confirmed)
   { // yay, add this share
@@ -188,7 +188,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const std::string &type, cons
   dialog->Initialize();
   dialog->SetShare(share);
   dialog->SetTypeOfMedia(type, true);
-  dialog->DoModal();
+  dialog->Open();
   bool confirmed(dialog->IsConfirmed());
   if (confirmed)
   { // yay, add this share

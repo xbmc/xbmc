@@ -206,7 +206,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
   }
 
   dialog->SetScanSettings(settings);
-  dialog->DoModal();
+  dialog->Open();
 
   bool confirmed = dialog->IsConfirmed();
   if (confirmed)

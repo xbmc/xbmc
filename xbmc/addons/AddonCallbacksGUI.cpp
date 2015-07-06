@@ -1883,7 +1883,7 @@ void CAddonCallbacksGUI::Dialog_TextViewer(const char *heading, const char *text
   CGUIDialogTextViewer* pDialog = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
   pDialog->SetHeading(heading);
   pDialog->SetText(text);
-  pDialog->DoModal();
+  pDialog->Open();
 }
 //@}
 
@@ -1901,7 +1901,7 @@ int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[]
   if (selected > 0)
     pDialog->SetSelected(selected);
 
-  pDialog->DoModal();
+  pDialog->Open();
   return pDialog->GetSelectedLabel();
 }
 //@}

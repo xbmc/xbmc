@@ -139,7 +139,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage &message)
     pDialog->SetLine(0, CVariant{""});
     pDialog->SetLine(1, CVariant{m_selectedGroup->GroupName()});
     pDialog->SetLine(2, CVariant{""});
-    pDialog->DoModal();
+    pDialog->Open();
 
     if (pDialog->IsConfirmed())
     {

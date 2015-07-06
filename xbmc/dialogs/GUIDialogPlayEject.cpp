@@ -129,7 +129,7 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
     pDialog->SetAutoClose(uiAutoCloseTime);
 
   // Display the dialog
-  pDialog->DoModal();
+  pDialog->Open();
 
   return pDialog->IsConfirmed();
 }

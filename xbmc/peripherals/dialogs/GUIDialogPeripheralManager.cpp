@@ -96,7 +96,7 @@ bool CGUIDialogPeripheralManager::OpenSettingsDialog(void)
   if (dialog)
   {
     dialog->SetFileItem(GetCurrentListItem().get());
-    dialog->DoModal();
+    dialog->Open();
     return true;
   }
 

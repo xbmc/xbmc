@@ -57,7 +57,7 @@ public:
    */
   static bool WaitOnEvent(CEvent &event, unsigned int timeout = 100, bool allowCancel = true);
 protected:
-  virtual void Show_Internal(); // modeless'ish
+  virtual void Open_Internal();
   bool m_bCanceled;
   bool m_bLastVisible;
   float m_progress; ///< current progress

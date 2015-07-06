@@ -615,7 +615,7 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
   if (pictureInfo)
   {
     pictureInfo->SetPicture(item.get());
-    pictureInfo->DoModal();
+    pictureInfo->Open();
   }
 }
 

@@ -429,7 +429,7 @@ bool CGUIWindowPVRTimers::ShowTimerSettings(CFileItem *item)
   pDlgInfo->SetTimer(item);
 
   /* Open dialog window */
-  pDlgInfo->DoModal();
+  pDlgInfo->Open();
 
   /* Get modify flag from window and return it to caller */
   return pDlgInfo->IsConfirmed();

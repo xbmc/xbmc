@@ -354,7 +354,7 @@ bool CGUIWindowPVRChannels::OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BU
     pDialog->SetLine(0, CVariant{g_localizeStrings.Get(19252)});
     pDialog->SetLine(1, CVariant{channel->ChannelName()});
     pDialog->SetLine(2, CVariant{""});
-    pDialog->DoModal();
+    pDialog->Open();
 
     if (!pDialog->IsConfirmed())
       return bReturn;
@@ -374,7 +374,7 @@ void CGUIWindowPVRChannels::ShowChannelManager()
 {
   CGUIDialogPVRChannelManager *dialog = (CGUIDialogPVRChannelManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
   if (dialog)
-    dialog->DoModal();
+    dialog->Open();
 }
 
 void CGUIWindowPVRChannels::ShowGroupManager(void)
@@ -385,7 +385,7 @@ void CGUIWindowPVRChannels::ShowGroupManager(void)
     return;
 
   pDlgInfo->SetRadio(m_bRadio);
-  pDlgInfo->DoModal();
+  pDlgInfo->Open();
 
   return;
 }

@@ -25,7 +25,7 @@
 #include <climits>
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
-    : CGUIDialog(WINDOW_SCREENSAVER_DIM, "")
+  : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS)
 {
   m_needsScaling = false;
   m_dimLevel = 100.0f;
@@ -44,7 +44,7 @@ void CGUIWindowScreensaverDim::UpdateVisibility()
   if (level)
   {
     m_dimLevel = level;
-    Show();
+    Open();
   }
   else
     Close();

@@ -684,7 +684,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
     pMenu->SetInitialVisibility();
     pMenu->SetupButtons();
     pMenu->PositionAtCurrentFocus();
-    pMenu->DoModal();
+    pMenu->Open();
     return pMenu->m_clickedButton;
   }
   return -1;

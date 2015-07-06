@@ -50,7 +50,7 @@ bool CAutorunMediaJob::DoWork()
   pDialog->Add(g_localizeStrings.Get(21334));
   pDialog->Add(g_localizeStrings.Get(21335));
 
-  pDialog->DoModal();
+  pDialog->Open();
 
   int selection = pDialog->GetSelectedLabel();
   if (selection >= 0)

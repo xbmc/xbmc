@@ -602,7 +602,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
   }
   dialog->SetItems(&items);
   dialog->SetMultiSelection(multipleSelection);
-  dialog->DoModal();
+  dialog->Open();
 
   // if the "Get More" button has been pressed and we haven't shown the
   // installable addons so far show a list of installable addons

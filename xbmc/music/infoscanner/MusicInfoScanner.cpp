@@ -1149,7 +1149,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
         if (pDialog && bestRelevance < THRESHOLD)
         {
           pDlg->Sort(false);
-          pDlg->DoModal();
+          pDlg->Open();
 
           // and wait till user selects one
           if (pDlg->GetSelectedLabel() < 0)
@@ -1345,7 +1345,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
             item.m_idepth = i; // use this to hold the index of the album in the scraper
             pDlg->Add(&item);
           }
-          pDlg->DoModal();
+          pDlg->Open();
 
           // and wait till user selects one
           if (pDlg->GetSelectedLabel() < 0)

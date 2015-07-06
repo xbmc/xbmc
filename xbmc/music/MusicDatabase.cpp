@@ -2839,7 +2839,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
           pDlgSelect->Add(strTitle);
           i++;
         }
-        pDlgSelect->DoModal();
+        pDlgSelect->Open();
 
         // Has the user selected a match...
         int iSelectedCD = pDlgSelect->GetSelectedLabel();
@@ -2922,7 +2922,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     }
 
     pDlg->Sort();
-    pDlg->DoModal();
+    pDlg->Open();
 
     // and wait till user selects one
     int iSelectedAlbum = pDlg->GetSelectedLabel();

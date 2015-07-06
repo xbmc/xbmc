@@ -250,21 +250,21 @@ void CGUIDialogKaraokeSongSelector::OnDeinitWindow(int nextWindowID)
 }
 
 
-void CGUIDialogKaraokeSongSelectorSmall::DoModal(unsigned int startcode, int iWindowID, const std::string & param)
+void CGUIDialogKaraokeSongSelectorSmall::Open(unsigned int startcode)
 {
   m_songSelected = false;
   m_selectedNumber = 0;
 
   OnButtonNumeric( startcode, false );
-  CGUIDialog::DoModal( iWindowID, param );
+  CGUIDialog::Open();
 }
 
 
-void CGUIDialogKaraokeSongSelectorLarge::DoModal(int iWindowID, const std::string & param)
+void CGUIDialogKaraokeSongSelectorLarge::Open()
 {
   m_songSelected = false;
   m_selectedNumber = 0;
 
   OnButtonNumeric( 0, false );
-  CGUIDialog::DoModal( iWindowID, param );
+  CGUIDialog::Open();
 }

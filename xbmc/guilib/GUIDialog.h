@@ -43,7 +43,7 @@ class CGUIDialog :
       public CGUIWindow
 {
 public:
-  CGUIDialog(int id, const std::string &xmlFile);
+  CGUIDialog(int id, const std::string &xmlFile, DialogModalityType modalityType = DialogModalityType::MODAL);
   virtual ~CGUIDialog(void);
 
   virtual bool OnAction(const CAction &action);
@@ -51,8 +51,7 @@ public:
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
 
-  void DoModal(int iWindowID = WINDOW_INVALID, const std::string &param = ""); // modal
-  void Show(); // modeless
+  void Open();
   
   virtual bool OnBack(int actionID);
 
@@ -72,8 +71,8 @@ protected:
   virtual void OnWindowLoaded();
   virtual void UpdateVisibility();
 
-  virtual void DoModal_Internal(int iWindowID = WINDOW_INVALID, const std::string &param = ""); // modal
-  virtual void Show_Internal(); // modeless
+  virtual void Open_Internal();
+  virtual void Open_Internal(bool bProcessRenderLoop);
   virtual void OnDeinitWindow(int nextWindowID);
 
   bool m_wasRunning; ///< \brief true if we were running during the last DoProcess()

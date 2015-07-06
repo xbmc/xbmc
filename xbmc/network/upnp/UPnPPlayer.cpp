@@ -192,7 +192,7 @@ static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime& timeout, CGUI
 
   if(dialog == NULL) {
     dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    dialog->Show();
+    dialog->Open();
   }
 
   g_windowManager.ProcessRenderLoop(false);

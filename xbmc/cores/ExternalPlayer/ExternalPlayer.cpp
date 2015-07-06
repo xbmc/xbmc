@@ -345,7 +345,8 @@ void CExternalPlayer::Process()
       m_dialog->SetLine(3, CVariant{23106});
     }
 
-    if (!m_bAbortRequest) m_dialog->DoModal();
+    if (!m_bAbortRequest)
+      m_dialog->Open();
   }
 
   m_bIsPlaying = false;

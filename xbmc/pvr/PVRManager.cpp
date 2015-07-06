@@ -209,7 +209,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
     {
       CGUIDialogPVRChannelManager *dialog = (CGUIDialogPVRChannelManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
       if (dialog)
-        dialog->DoModal();
+        dialog->Open();
     }
   }
   else if (settingId == "pvrmanager.groupmanager")
@@ -218,7 +218,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
     {
       CGUIDialogPVRGroupManager *dialog = (CGUIDialogPVRGroupManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
-        dialog->DoModal();
+        dialog->Open();
     }
   }
   else if (settingId == "pvrclient.menuhook")

@@ -170,7 +170,7 @@ bool CPowerManager::Powerdown()
   {
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
-      dialog->Show();
+      dialog->Open();
 
     return true;
   }
@@ -184,7 +184,7 @@ bool CPowerManager::Suspend()
   {
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
-      dialog->Show();
+      dialog->Open();
 
     return true;
   }
@@ -198,7 +198,7 @@ bool CPowerManager::Hibernate()
   {
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
-      dialog->Show();
+      dialog->Open();
 
     return true;
   }
@@ -215,7 +215,7 @@ bool CPowerManager::Reboot()
 
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
-      dialog->Show();
+      dialog->Open();
   }
 
   return success;

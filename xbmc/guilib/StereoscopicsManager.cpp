@@ -239,7 +239,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const std::s
     }
   }
 
-  pDlgSelect->DoModal();
+  pDlgSelect->Open();
 
   int iItem = pDlgSelect->GetSelectedLabel();
   if (iItem > -1 && pDlgSelect->IsConfirmed())
@@ -573,7 +573,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
 
       int idx_select = pDlgSelect->Add( g_localizeStrings.Get(36531) ); // other / select
 
-      pDlgSelect->DoModal();
+      pDlgSelect->Open();
 
       if(pDlgSelect->IsConfirmed())
       {

@@ -68,7 +68,6 @@ void CGUIDialogProgress::StartModal()
   // the main rendering thread (this should really be handled via
   // a thread message though IMO)
   m_active = true;
-  m_modalityType = DialogModalityType::MODAL;
   m_closing = false;
   g_windowManager.RegisterDialog(this);
 
