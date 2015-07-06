@@ -6,26 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXNativeTarget section */
-		6E2FACBA0E26DF7A00DF79EA /* Kodi.app */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXNativeTarget "Kodi.app" */;
-			buildPhases = (
-				F5DEC3580E6DEBB2005A4E24 /* copy root files */,
-				6E2FACC70E26E22400DF79EA /* copy frameworks */,
-				81B8FC150E7D927A00354E2E /* update version info */,
-				1D64E5FC157BD76F001ACEBE /* genoutputdirlink */,
-			);
-			dependencies = (
-				6E2FACC40E26E08100DF79EA /* PBXTargetDependency */,
-			);
-			name = Kodi.app;
-			productName = Kodi.app;
-			productReference = D6299ABB1AFC2A9F00E3059D /* Kodi.app */;
-			productType = "com.apple.product-type.application";
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		0E3036EC1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
 		0E3036ED1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
@@ -176,6 +156,8 @@
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
+		391416BF1B4A3EFA00BBF0AA /* guiinfo in Resources */ = {isa = PBXBuildFile; fileRef = 391416BE1B4A3EFA00BBF0AA /* guiinfo */; };
+		391416C01B4A3EFA00BBF0AA /* guiinfo in Resources */ = {isa = PBXBuildFile; fileRef = 391416BE1B4A3EFA00BBF0AA /* guiinfo */; };
 		395897151AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
 		395897161AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
 		395897171AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */; };
@@ -3545,6 +3527,7 @@
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
 		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		391416BE1B4A3EFA00BBF0AA /* guiinfo */ = {isa = PBXFileReference; lastKnownFileType = folder; name = guiinfo; path = xbmc/guiinfo; sourceTree = SOURCE_ROOT; };
 		395897131AAD94F00033D27C /* KeyboardLayoutManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardLayoutManager.cpp; sourceTree = "<group>"; };
 		395897141AAD94F00033D27C /* KeyboardLayoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardLayoutManager.h; sourceTree = "<group>"; };
 		395938731AC28F5A0053A590 /* EmbeddedArt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmbeddedArt.h; sourceTree = "<group>"; };
@@ -4201,7 +4184,6 @@
 		889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSDirectory.h; sourceTree = "<group>"; };
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* Kodi */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Kodi; sourceTree = BUILT_PRODUCTS_DIR; };
-		D6299ABB1AFC2A9F00E3059D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE4E87A517354C4A00D15206 /* XSLTUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSLTUtils.cpp; sourceTree = "<group>"; };
 		AE4E87A617354C4A00D15206 /* XSLTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSLTUtils.h; sourceTree = "<group>"; };
 		AE84CB5915A5B8A600A3810E /* TagLibVFSStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLibVFSStream.cpp; sourceTree = "<group>"; };
@@ -4318,6 +4300,7 @@
 		C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemGlobals.cpp; sourceTree = "<group>"; };
 		C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
+		D6299ABB1AFC2A9F00E3059D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF00492B162DAEA200A971AD /* PVROperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVROperations.cpp; sourceTree = "<group>"; };
 		DF00492C162DAEA200A971AD /* PVROperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVROperations.h; sourceTree = "<group>"; };
 		DF02BA601A910623006DCA16 /* VideoSyncIos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VideoSyncIos.cpp; path = videosync/VideoSyncIos.cpp; sourceTree = "<group>"; };
@@ -5434,7 +5417,7 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E47252BF175115F9001C1AAA /* Codesign.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Codesign.command; sourceTree = "<group>"; };
-		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Kodi.app; path = .app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4991089174D0D2600741B6D /* Kodi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kodi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E499108B174D0D2600741B6D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		E499108D174D0D2600741B6D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E499108F174D0D2600741B6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
@@ -5951,6 +5934,7 @@
 		18B7C3AA1294219F009E7A26 /* guilib */ = {
 			isa = PBXGroup;
 			children = (
+				391416BE1B4A3EFA00BBF0AA /* guiinfo */,
 				18B7C7541294222E009E7A26 /* AnimatedGif.cpp */,
 				18B7C6F61294222D009E7A26 /* AnimatedGif.h */,
 				DF404A3416B9896C00D8023E /* cximage.cpp */,
@@ -9728,6 +9712,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6E2FACBA0E26DF7A00DF79EA /* Kodi.app */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXNativeTarget "Kodi.app" */;
+			buildPhases = (
+				F5DEC3580E6DEBB2005A4E24 /* copy root files */,
+				6E2FACC70E26E22400DF79EA /* copy frameworks */,
+				81B8FC150E7D927A00354E2E /* update version info */,
+				1D64E5FC157BD76F001ACEBE /* genoutputdirlink */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6E2FACC40E26E08100DF79EA /* PBXTargetDependency */,
+			);
+			name = Kodi.app;
+			productName = Kodi.app;
+			productReference = D6299ABB1AFC2A9F00E3059D /* Kodi.app */;
+			productType = "com.apple.product-type.application";
+		};
 		8DD76F740486A8DE00D96B5E /* Kodi */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "Kodi" */;
@@ -9828,6 +9831,7 @@
 			files = (
 				DFF0F49D1752838E002DA3A4 /* InfoPlist.strings in Resources */,
 				DFFA43FF19104C0800C3923B /* AppIcon.png in Resources */,
+				391416C01B4A3EFA00BBF0AA /* guiinfo in Resources */,
 				7CCDA1B9192753E30074CF51 /* X_MS_MediaReceiverRegistrarSCPD.xml in Resources */,
 				7CCDA1C4192753E30074CF51 /* AVTransportSCPD.xml in Resources */,
 				7CCDA1C6192753E30074CF51 /* AVTransportSCPDFull.xml in Resources */,
@@ -9870,6 +9874,7 @@
 				7CCDA1E4192753E30074CF51 /* RdrConnectionManagerSCPD.xml in Resources */,
 				7CCDA1EF192753E30074CF51 /* RenderingControlSCPD.xml in Resources */,
 				7CCDA1F1192753E30074CF51 /* RenderingControlSCPD_Full.xml in Resources */,
+				391416BF1B4A3EFA00BBF0AA /* guiinfo in Resources */,
 				7CCDA1FC192753E30074CF51 /* ConnectionManagerSCPD.xml in Resources */,
 				7CCDA207192753E30074CF51 /* ContentDirectorySCPD.xml in Resources */,
 				7CCDA212192753E30074CF51 /* ContentDirectorywSearchSCPD.xml in Resources */,
@@ -13621,7 +13626,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "Kodi.app" */ = {
+		6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXNativeTarget "Kodi.app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6E2FACBB0E26DF7A00DF79EA /* Debug */,
