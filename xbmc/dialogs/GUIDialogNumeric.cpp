@@ -92,6 +92,7 @@ void CGUIDialogNumeric::OnInitWindow()
     data["title"] = control->GetDescription();
 
   data["value"] = GetOutput();
+  m_renderOrder = INT_MAX;
   ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
 }
 
