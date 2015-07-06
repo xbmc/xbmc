@@ -1,1 +1,1 @@
-pvr.mythtv https://github.com/kodi-pvr/pvr.mythtv 8da190f
+pvr.mythtv https://github.com/kodi-pvr/pvr.mythtv db1d3cd
