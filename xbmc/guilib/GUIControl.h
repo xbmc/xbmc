@@ -105,6 +105,7 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnBack();
+  virtual bool OnInfo();
   virtual void OnNextControl();
   virtual void OnPrevControl();
   virtual void OnFocus() {};

@@ -350,6 +350,15 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_SHOW_INFO:
+    {
+      if (OnInfo())
+        return true;
+      else if (action.GetID())
+        return OnClick(action.GetID());
+    }
+    break;
+
   case ACTION_FIRST_PAGE:
     SelectItem(0);
     return true;

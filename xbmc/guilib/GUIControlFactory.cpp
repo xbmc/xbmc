@@ -832,6 +832,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetActions(pControlNode, "onnext",  actions[ACTION_NEXT_CONTROL]);
   GetActions(pControlNode, "onprev",  actions[ACTION_PREV_CONTROL]);
   GetActions(pControlNode, "onback",  actions[ACTION_NAV_BACK]);
+  GetActions(pControlNode, "oninfo",  actions[ACTION_SHOW_INFO]);
 
   if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
   {
