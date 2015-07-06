@@ -49,7 +49,7 @@ bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &text)
+void CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant text)
 {
   CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
   if (!dialog)
@@ -60,7 +60,7 @@ void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &text
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2)
+void CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2)
 {
   CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
   if (!dialog) 

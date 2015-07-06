@@ -407,7 +407,7 @@ bool CGUIWindowPVRBase::StartRecordFile(CFileItem *item, bool bAdvanced)
     if (!CGUIDialogYesNo::ShowAndGetInput(
         CVariant{264} /* "Record" */, CVariant{tag->PVRChannelName()}, CVariant{""}, CVariant{tag->Title()}))
       return false;
-
+  
     CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(tag);
 
     if (newTimer)

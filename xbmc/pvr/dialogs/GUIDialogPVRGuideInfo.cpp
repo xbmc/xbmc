@@ -95,21 +95,21 @@ bool CGUIDialogPVRGuideInfo::ActionCancelTimer(CFileItemPtr timer)
     // prompt user for confirmation for deleting the complete repeating timer, including scheduled timers.
     bool bCancel(false);
     bDeleteScheduled = CGUIDialogYesNo::ShowAndGetInput(
-                        CVariant{122}, // "Confirm delete"
-                        CVariant{840}, // "You are about to delete a repeating timer. Do you also want to delete all timers currently scheduled by this timer?"
-                        CVariant{""},
-                        CVariant{timer->GetPVRTimerInfoTag()->Title()},
-                        bCancel);
+                                                        CVariant{122}, // "Confirm delete"
+                                                        CVariant{840}, // "You are about to delete a repeating timer. Do you also want to delete all timers currently scheduled by this timer?"
+                                                        CVariant{""},
+                                                        CVariant{timer->GetPVRTimerInfoTag()->Title()},
+                                                        bCancel);
     bDelete = !bCancel;
   }
   else
   {
     // prompt user for confirmation for deleting the timer
     bDelete = CGUIDialogYesNo::ShowAndGetInput(
-                        CVariant{122}, // "Confirm delete"
-                        CVariant{19040}, // Timer
-                        CVariant{""},
-                        CVariant{timer->GetPVRTimerInfoTag()->Title()});
+                                               CVariant{122}, // "Confirm delete"
+                                               CVariant{19040}, // Timer
+                                               CVariant{""},
+                                               CVariant{timer->GetPVRTimerInfoTag()->Title()});
     bDeleteScheduled = false;
   }
 

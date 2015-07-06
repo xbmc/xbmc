@@ -38,9 +38,9 @@ public:
   virtual ~CGUIDialogBoxBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   bool IsConfirmed() const;
-  void SetLine(unsigned int iLine, const CVariant &line);
-  void SetText(const CVariant &text);
-  void SetHeading(const CVariant &heading);
+  void SetLine(unsigned int iLine, CVariant line);
+  void SetText(CVariant text);
+  void SetHeading(CVariant heading);
   void SetChoice(int iButton, const CVariant &choice);
 protected:
   std::string GetDefaultLabel(int controlId) const;
