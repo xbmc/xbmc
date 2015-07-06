@@ -31,6 +31,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "listproviders/IListProvider.h"
 #include "settings/Settings.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 using namespace std;
 

@@ -64,6 +64,7 @@
 #include "URL.h"
 #include "playlists/SmartPlayList.h"
 #include "CueInfoLoader.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 using namespace std;
 using namespace AUTOPTR;

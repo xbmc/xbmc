@@ -24,11 +24,10 @@
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
-#ifdef HAS_SYSINFO
 #include "utils/SystemInfo.h"
-#endif
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 #define CONTROL_BT_STORAGE  94
 #define CONTROL_BT_DEFAULT  95
@@ -56,8 +55,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION).c_str() +
-                            " (Compiled: " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE).c_str() +")");
+      SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + CSysInfo::GetVersion() +
+                            " (Compiled: " + CSysInfo::GetBuildDate() +")");
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR,
                                   PVR::CPVRManager::Get().IsStarted());
       return true;
@@ -95,9 +94,7 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
     SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
-#ifdef HAS_SYSINFO
     SetControlLabel(i++, "%s %s", 13283, SYSTEM_OS_VERSION_INFO);
-#endif
     SetControlLabel(i++, "%s: %s", 12390, SYSTEM_UPTIME);
     SetControlLabel(i++, "%s: %s", 12394, SYSTEM_TOTALUPTIME);
     SetControlLabel(i++, "%s: %s", 12395, SYSTEM_BATTERY_LEVEL);
@@ -116,10 +113,8 @@ void CGUIWindowSystemInfo::FrameMove()
   else if (m_section == CONTROL_BT_NETWORK)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_LINK_STATE));
     SetControlLabel(i++, "%s: %s", 149, NETWORK_MAC_ADDRESS);
-#endif
     SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
     SetControlLabel(i++, "%s: %s", 13159, NETWORK_SUBNET_MASK);
     SetControlLabel(i++, "%s: %s", 13160, NETWORK_GATEWAY_ADDRESS);
@@ -130,10 +125,8 @@ void CGUIWindowSystemInfo::FrameMove()
   else if (m_section == CONTROL_BT_VIDEO)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
-#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
-#endif
 #ifndef HAS_DX
     SetControlLabel(i++, "%s %s", 22007, SYSTEM_RENDER_VENDOR);
     SetControlLabel(i++, "%s %s", 22009, SYSTEM_RENDER_VERSION);
@@ -147,7 +140,6 @@ void CGUIWindowSystemInfo::FrameMove()
   else if (m_section == CONTROL_BT_HARDWARE)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
-#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUModel());
 #if defined(__arm__) && defined(TARGET_LINUX)
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUBogoMips());
@@ -158,7 +150,6 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
 #if !defined(__arm__) || defined(TARGET_RASPBERRY_PI)
     SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
-#endif
 #endif
 #if !(defined(__arm__) && defined(TARGET_LINUX))
     SetControlLabel(i++, "%s %s", 13271, SYSTEM_CPU_USAGE);

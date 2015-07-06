@@ -62,6 +62,7 @@
 #include <memory>
 #include <functional>
 #include "cores/DataCacheCore.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -1844,13 +1845,13 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_BUILD_VERSION_SHORT:
-    strLabel = GetVersionShort();
+    strLabel = CSysInfo::GetVersionShort();
     break;
   case SYSTEM_BUILD_VERSION:
-    strLabel = GetVersion();
+    strLabel = CSysInfo::GetVersion();
     break;
   case SYSTEM_BUILD_DATE:
-    strLabel = GetBuild();
+    strLabel = CSysInfo::GetBuildDate();
     break;
   case SYSTEM_FREE_MEMORY:
   case SYSTEM_FREE_MEMORY_PERCENT:
@@ -1946,17 +1947,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_FRIENDLY_NAME:
-    {
-      std::string friendlyName = CSettings::Get().GetString("services.devicename");
-      if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
-      {
-        std::string hostname("[unknown]");
-        g_application.getNetwork().GetHostName(hostname);
-        strLabel = StringUtils::Format("%s (%s)", friendlyName.c_str(), hostname.c_str());
-      }
-      else
-        strLabel = friendlyName;
-    }
+    strLabel = CSysInfo::GetDeviceName();
     break;
   case SYSTEM_STEREOSCOPIC_MODE:
     {
@@ -4348,30 +4339,6 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
   return CTemperature();
 }
 
-// Version string MUST NOT contain spaces.  It is used
-// in the HTTP request user agent.
-std::string CGUIInfoManager::GetVersionShort(void)
-{
-  if (strlen(CCompileInfo::GetSuffix()) == 0)
-    return StringUtils::Format("%d.%d", CCompileInfo::GetMajor(), CCompileInfo::GetMinor());
-  else
-    return StringUtils::Format("%d.%d-%s", CCompileInfo::GetMajor(), CCompileInfo::GetMinor(), CCompileInfo::GetSuffix());
-}
-
-std::string CGUIInfoManager::GetVersion()
-{
-  return GetVersionShort() + " Git:" + CCompileInfo::GetSCMID();
-}
-
-std::string CGUIInfoManager::GetBuild()
-{
-  return StringUtils::Format("%s", __DATE__);
-}
-
-std::string CGUIInfoManager::GetAppName()
-{
-  return CCompileInfo::GetAppName();
-}
 
 void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut, int seekOffset)
 {

@@ -46,6 +46,7 @@
 #include "input/ButtonTranslator.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/IPlayer.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 #include <stdio.h>
 #include <algorithm>

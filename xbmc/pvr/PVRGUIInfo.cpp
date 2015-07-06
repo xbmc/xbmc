@@ -32,6 +32,7 @@
 #include "epg/EpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 using namespace PVR;
 using namespace EPG;

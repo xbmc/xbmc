@@ -57,6 +57,7 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 
 using namespace std;
@@ -1182,20 +1183,20 @@ void CGUIWindowMusicBase::OnInitWindow()
   if (CMediaSettings::Get().GetMusicNeedsUpdate() == 35)
   {
     if (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) && !g_application.IsMusicScanning())
-    {
-      // rescan of music library required
+  {
+    // rescan of music library required
       if (CGUIDialogYesNo::ShowAndGetInput(799, 800))
-      {
-        int flags = CMusicInfoScanner::SCAN_RESCAN;
-        if (CSettings::Get().GetBool("musiclibrary.downloadinfo"))
-          flags |= CMusicInfoScanner::SCAN_ONLINE;
-        if (CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
-          flags |= CMusicInfoScanner::SCAN_BACKGROUND;
-        g_application.StartMusicScan("", true, flags);
-        CMediaSettings::Get().SetMusicNeedsUpdate(0); // once is enough (user may interrupt, but that's up to them)
-        CSettings::Get().Save();
-      }
+    {
+      int flags = CMusicInfoScanner::SCAN_RESCAN;
+      if (CSettings::Get().GetBool("musiclibrary.downloadinfo"))
+        flags |= CMusicInfoScanner::SCAN_ONLINE;
+      if (CSettings::Get().GetBool("musiclibrary.backgroundupdate"))
+        flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+      g_application.StartMusicScan("", true, flags);
+      CMediaSettings::Get().SetMusicNeedsUpdate(0); // once is enough (user may interrupt, but that's up to them)
+      CSettings::Get().Save();
     }
+  }
     else
     {
       // no need to force a rescan if there's no music in the library or if a library scan is already active

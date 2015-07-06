@@ -27,7 +27,6 @@
 #include "shellapi.h"
 #include "Application.h"
 #include "XbmcContext.h"
-#include "GUIInfoManager.h"
 #include "utils/CPUInfo.h"
 #include "utils/Environment.h"
 #include <mmdeviceapi.h>
@@ -70,7 +69,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
   // Initializes CreateMiniDump to handle exceptions.
-  win32_exception::set_version(g_infoManager.GetVersion());
+  win32_exception::set_version(CSysInfo::GetVersion());
   SetUnhandledExceptionFilter( CreateMiniDump );
 
   // check if Kodi is already running

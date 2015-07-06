@@ -28,7 +28,7 @@
 #else
 #include <sys/utsname.h>
 #endif
-#include "GUIInfoManager.h"
+#include "guiinfo/GUIInfoLabels.h"
 #include "filesystem/CurlFile.h"
 #include "network/Network.h"
 #include "Application.h"
@@ -36,6 +36,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "CompileInfo.h"
+#include "settings/Settings.h"
 
 #ifdef TARGET_WINDOWS
 #include "dwmapi.h"
@@ -1082,7 +1083,7 @@ std::string CSysInfo::GetUserAgent()
   if (!result.empty())
     return result;
 
-  result = GetAppName() + "/" + (std::string)g_infoManager.GetLabel(SYSTEM_BUILD_VERSION_SHORT) + " (";
+  result = GetAppName() + "/" + CSysInfo::GetVersionShort() + " (";
 #if defined(TARGET_WINDOWS)
   result += GetKernelName() + " " + GetKernelVersion();
   BOOL bIsWow = FALSE;
@@ -1208,11 +1209,44 @@ std::string CSysInfo::GetUserAgent()
 
   result += " App_Bitness/" + StringUtils::Format("%d", GetXbmcBitness());
 
-  std::string fullVer(g_infoManager.GetLabel(SYSTEM_BUILD_VERSION));
+  std::string fullVer(CSysInfo::GetVersion());
   StringUtils::Replace(fullVer, ' ', '-');
   result += " Version/" + fullVer;
 
   return result;
+}
+
+std::string CSysInfo::GetDeviceName()
+{
+  std::string friendlyName = CSettings::Get().GetString("services.devicename");
+  if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
+  {
+    std::string hostname("[unknown]");
+    g_application.getNetwork().GetHostName(hostname);
+    return StringUtils::Format("%s (%s)", friendlyName.c_str(), hostname.c_str());
+  }
+  
+  return friendlyName;
+}
+
+// Version string MUST NOT contain spaces.  It is used
+// in the HTTP request user agent.
+std::string CSysInfo::GetVersionShort()
+{
+  if (strlen(CCompileInfo::GetSuffix()) == 0)
+    return StringUtils::Format("%d.%d", CCompileInfo::GetMajor(), CCompileInfo::GetMinor());
+  else
+    return StringUtils::Format("%d.%d-%s", CCompileInfo::GetMajor(), CCompileInfo::GetMinor(), CCompileInfo::GetSuffix());
+}
+
+std::string CSysInfo::GetVersion()
+{
+  return GetVersionShort() + " Git:" + CCompileInfo::GetSCMID();
+}
+
+std::string CSysInfo::GetBuildDate()
+{
+  return StringUtils::Format("%s", __DATE__);
 }
 
 bool CSysInfo::IsAppleTV2()

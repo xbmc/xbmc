@@ -38,9 +38,9 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
-#include "GUIInfoManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -870,7 +870,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   //##########################################################
   // Send the Hello message
-  std::string version = g_infoManager.GetLabel(SYSTEM_BUILD_VERSION);
+  std::string version = CSysInfo::GetVersion();
   std::string lcAppName = CCompileInfo::GetAppName();
   StringUtils::ToLower(lcAppName);
   if (version.find(" ") != std::string::npos)
