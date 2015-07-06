@@ -122,6 +122,7 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
+							<visible>!Control.HasFocus(8000)</visible>
 						</control>
 						<control type="label">
 							<left>15</left>
@@ -383,6 +384,7 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
+							<visible>!Control.HasFocus(8001)</visible>
 						</control>
 						<control type="label">
 							<left>20</left>
@@ -644,6 +646,7 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
+							<visible>!Control.HasFocus(8002)</visible>
 						</control>
 						<control type="label">
 							<left>10</left>
