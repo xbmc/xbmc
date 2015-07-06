@@ -31,7 +31,7 @@
 
 
 CGUIDialogVideoOverlay::CGUIDialogVideoOverlay()
-    : CGUIDialog(WINDOW_DIALOG_VIDEO_OVERLAY, "VideoOverlay.xml")
+  : CGUIDialog(WINDOW_DIALOG_VIDEO_OVERLAY, "VideoOverlay.xml", DialogModalityType::MODELESS)
 {
   m_renderOrder = 0;
   m_loadType = KEEP_IN_MEMORY;

@@ -27,7 +27,7 @@
 #define CONTROL_LOGO_PIC    1
 
 CGUIDialogMusicOverlay::CGUIDialogMusicOverlay()
-    : CGUIDialog(WINDOW_DIALOG_MUSIC_OVERLAY, "MusicOverlay.xml")
+  : CGUIDialog(WINDOW_DIALOG_MUSIC_OVERLAY, "MusicOverlay.xml", DialogModalityType::MODELESS)
 {
   m_renderOrder = 0;
   m_loadType = KEEP_IN_MEMORY;
