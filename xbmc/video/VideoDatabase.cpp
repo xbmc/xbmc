@@ -4077,7 +4077,7 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath, CGUIDialog
       progress->SetLine(1, CVariant{313});
       progress->SetLine(2, CVariant{330});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
     vector< pair<int,string> > paths;
@@ -7663,7 +7663,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
         progress->SetLine(1, CVariant{313});
         progress->SetLine(2, CVariant{330});
         progress->SetPercentage(0);
-        progress->StartModal();
+        progress->Open();
         progress->ShowProgressBar(true);
       }
     }
@@ -8169,7 +8169,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
       progress->SetLine(1, CVariant{""});
       progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
 
@@ -8658,7 +8658,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
       progress->SetLine(1, CVariant{330});
       progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
 

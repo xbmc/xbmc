@@ -438,7 +438,7 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
     progress->SetLine(0, CVariant{strSearch});
     progress->SetLine(1, CVariant{""});
     progress->SetLine(2, CVariant{""});
-    progress->StartModal();
+    progress->Open();
     progress->Progress();
   }
   CFileItemList items;

@@ -462,7 +462,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       pDlgProgress->SetLine(0, CVariant{movieName}); //don't use std::move as it's used further down
       pDlgProgress->SetLine(1, CVariant{""});
       pDlgProgress->SetLine(2, CVariant{""});
-      pDlgProgress->StartModal();
+      pDlgProgress->Open();
       pDlgProgress->Progress();
 
       // 4b. do the websearch
@@ -591,7 +591,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       pDlgProgress->SetLine(0, CVariant{movieName});
       pDlgProgress->SetLine(1, CVariant{scrUrl.strTitle});
       pDlgProgress->SetLine(2, CVariant{""});
-      pDlgProgress->StartModal();
+      pDlgProgress->Open();
       pDlgProgress->Progress();
       if (bHasInfo && movieDetails.m_iDbId != -1)
       {
@@ -1740,7 +1740,7 @@ void CGUIWindowVideoBase::OnSearch()
     m_dlgProgress->SetLine(0, CVariant{strSearch});
     m_dlgProgress->SetLine(1, CVariant{""});
     m_dlgProgress->SetLine(2, CVariant{""});
-    m_dlgProgress->StartModal();
+    m_dlgProgress->Open();
     m_dlgProgress->Progress();
   }
   CFileItemList items;

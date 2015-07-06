@@ -1644,7 +1644,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
   progress->SetHeading(CVariant{1040}); // Loading Directory
   progress->SetLine(1, CVariant{url.GetWithoutUserDetails()});
   progress->ShowProgressBar(false);
-  progress->StartModal();
+  progress->Open();
   while (!g_application.getNetwork().IsAvailable())
   {
     progress->Progress();

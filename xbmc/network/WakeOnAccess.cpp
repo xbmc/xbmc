@@ -211,7 +211,7 @@ public:
       if (m_dialog)
       {
         if (!m_dialog->IsActive())
-          m_dialog->StartModal();
+          m_dialog->Open();
 
         if (m_dialog->IsCanceled())
           return Canceled;

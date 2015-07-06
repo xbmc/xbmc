@@ -772,7 +772,7 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   pDlgProgress->SetLine(0, CVariant{""});
   pDlgProgress->SetLine(1, CVariant{g_localizeStrings.Get(19186)}); // All data in the PVR database is being erased
   pDlgProgress->SetLine(2, CVariant{""});
-  pDlgProgress->StartModal();
+  pDlgProgress->Open();
   pDlgProgress->Progress();
 
   if (m_addons && m_addons->IsPlaying())

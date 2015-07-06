@@ -99,7 +99,7 @@ public:
         if (!shown)
         {
           dlg->SetHeading(CVariant{heading});
-          dlg->StartModal();
+          dlg->Open();
         }
         if (progress >= 0)
         {

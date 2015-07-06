@@ -153,7 +153,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
     {
       dlgProgress->SetHeading(CVariant{194});
       dlgProgress->SetText(CVariant{m_searchfilter.m_strSearchTerm});
-      dlgProgress->StartModal();
+      dlgProgress->Open();
       dlgProgress->Progress();
     }
 

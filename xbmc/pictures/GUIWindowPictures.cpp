@@ -239,7 +239,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
         m_dlgProgress->SetLine(0, CVariant{505});
         m_dlgProgress->SetLine(1, CVariant{""});
         m_dlgProgress->SetLine(2, CVariant{url.GetWithoutUserDetails()});
-        m_dlgProgress->StartModal();
+        m_dlgProgress->Open();
         m_dlgProgress->ShowProgressBar(true);
         bProgressVisible = true;
       }

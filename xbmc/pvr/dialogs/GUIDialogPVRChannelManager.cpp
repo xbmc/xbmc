@@ -761,7 +761,7 @@ void CGUIDialogPVRChannelManager::SaveList(void)
   pDlgProgress->SetLine(0, CVariant{""});
   pDlgProgress->SetLine(1, CVariant{328});
   pDlgProgress->SetLine(2, CVariant{""});
-  pDlgProgress->StartModal();
+  pDlgProgress->Open();
   pDlgProgress->Progress();
   pDlgProgress->SetPercentage(0);
 

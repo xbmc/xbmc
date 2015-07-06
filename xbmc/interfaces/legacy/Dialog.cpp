@@ -392,7 +392,7 @@ namespace XBMCAddon
       if (!line3.empty())
         pDialog->SetLine(2, CVariant{line3});
 
-      pDialog->StartModal();
+      pDialog->Open();
     }
 
     void DialogProgress::update(int percent, const String& line1, 

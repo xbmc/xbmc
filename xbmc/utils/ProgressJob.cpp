@@ -108,7 +108,7 @@ void CProgressJob::ShowProgressDialog() const
     return;
 
   // show the progress dialog as a modal dialog with a progress bar
-  m_progressDialog->StartModal();
+  m_progressDialog->Open();
   m_progressDialog->ShowProgressBar(true);
 }
 
