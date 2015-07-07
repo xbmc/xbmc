@@ -2794,7 +2794,8 @@ bool CxImage::Lut(BYTE* pLut)
 			// faster loop for full image
 			BYTE *iSrc=info.pImage;
 			for(unsigned long i=0; i < head.biSizeImage ; i++){
-				*iSrc++ = pLut[*iSrc];
+				*iSrc = pLut[*iSrc];
+				iSrc++;
 			}
 			return true;
 		}
