@@ -177,6 +177,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "PVR.GetRecordingDetails",                      CPVROperations::GetRecordingDetails },
   { "PVR.Record",                                   CPVROperations::Record },
   { "PVR.Scan",                                     CPVROperations::Scan },
+  { "PVR.SearchMissingChannelIcons",                CPVROperations::SearchMissingChannelIcons },
 
 // Profiles operations
   { "Profiles.GetProfiles",                         CProfilesOperations::GetProfiles},
