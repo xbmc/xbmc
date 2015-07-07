@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include
 
 # lib name, version
 LIBNAME=shairplay
-VERSION=139d5ef
+VERSION=0f41ade
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
@@ -21,11 +21,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-ifeq ($(OS),ios)
-	cd $(PLATFORM); patch -p1 < ../xcode-llmvfix.patch
-endif
-	cd $(PLATFORM); patch -p1 < ../02-fixipv4ipv6race.patch
-	cd $(PLATFORM); patch -p1 < ../03-fixpasswordauthitunes.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 

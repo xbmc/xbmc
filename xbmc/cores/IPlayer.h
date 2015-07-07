@@ -205,6 +205,14 @@ public:
    */
   virtual int64_t GetTime() { return 0; }
   /*!
+   \brief Sets the current time. This 
+   can be used for injecting the current time. 
+   This is not to be confused with a seek. It just
+   can be used if endless streams contain multiple
+   tracks in reality (like with airtunes)
+   */
+  virtual void SetTime(int64_t time) { }
+  /*!
    \brief time of frame on screen in milliseconds
    */
   virtual int64_t GetDisplayTime() { return GetTime(); }
@@ -212,6 +220,12 @@ public:
    \brief total time in milliseconds
    */
   virtual int64_t GetTotalTime() { return 0; }
+  /*!
+   \brief Set the total time  in milliseconds
+   this can be used for injecting the duration in case
+   its not available in the underlaying decoder (airtunes for example)
+   */
+  virtual void SetTotalTime(int64_t time) { }
   virtual void GetVideoStreamInfo(SPlayerVideoStreamInfo &info){};
   virtual int GetSourceBitrate(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}

@@ -890,6 +890,9 @@
 		DF6A0D861A4584E80075BBFC /* OverrideFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6A0D7F1A4584E80075BBFC /* OverrideFile.cpp */; };
 		DF6D1DFE18312525009DB64F /* OverlayRendererGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D3604C1826CAB900DA66D2 /* OverlayRendererGUI.cpp */; };
 		DF6D1DFF18312525009DB64F /* OverlayRendererGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55D3604C1826CAB900DA66D2 /* OverlayRendererGUI.cpp */; };
+		DF6F52AE1AF6D03F001BC57D /* dacp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6F52AC1AF6D03F001BC57D /* dacp.cpp */; };
+		DF6F52AF1AF6D03F001BC57D /* dacp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6F52AC1AF6D03F001BC57D /* dacp.cpp */; };
+		DF6F52B01AF6D03F001BC57D /* dacp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6F52AC1AF6D03F001BC57D /* dacp.cpp */; };
 		DF830D0C15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D0A15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp */; };
 		DF830D1215BB262700602BE6 /* GUIKeyboardFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF830D0F15BB262700602BE6 /* GUIKeyboardFactory.cpp */; };
 		DF89901C1709BB2D00B35C21 /* MediaSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8990161709BB2D00B35C21 /* MediaSettings.cpp */; };
@@ -4488,6 +4491,8 @@
 		DF6A0D7E1A4584E80075BBFC /* OverrideDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverrideDirectory.h; sourceTree = "<group>"; };
 		DF6A0D7F1A4584E80075BBFC /* OverrideFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverrideFile.cpp; sourceTree = "<group>"; };
 		DF6A0D801A4584E80075BBFC /* OverrideFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverrideFile.h; sourceTree = "<group>"; };
+		DF6F52AC1AF6D03F001BC57D /* dacp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dacp.cpp; sourceTree = "<group>"; };
+		DF6F52AD1AF6D03F001BC57D /* dacp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dacp.h; sourceTree = "<group>"; };
 		DF830D0A15BB260C00602BE6 /* GUIDialogKeyboardGeneric.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogKeyboardGeneric.cpp; sourceTree = "<group>"; };
 		DF830D0B15BB260C00602BE6 /* GUIDialogKeyboardGeneric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogKeyboardGeneric.h; sourceTree = "<group>"; };
 		DF830D0E15BB262700602BE6 /* GUIKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboard.h; sourceTree = "<group>"; };
@@ -6540,6 +6545,7 @@
 		431376F212D6449100680C15 /* network */ = {
 			isa = PBXGroup;
 			children = (
+				DF6F52AB1AF6D03F001BC57D /* dacp */,
 				DFCA6AB8152245CD000BFAAE /* httprequesthandler */,
 				432D7CE112D86D4900CE4C49 /* linux */,
 				4313772312D646E300680C15 /* osx */,
@@ -7832,6 +7838,15 @@
 				DF8990201709BB5400B35C21 /* ViewStateSettings.h */,
 			);
 			path = view;
+			sourceTree = "<group>";
+		};
+		DF6F52AB1AF6D03F001BC57D /* dacp */ = {
+			isa = PBXGroup;
+			children = (
+				DF6F52AC1AF6D03F001BC57D /* dacp.cpp */,
+				DF6F52AD1AF6D03F001BC57D /* dacp.h */,
+			);
+			path = dacp;
 			sourceTree = "<group>";
 		};
 		DFA0E8C619FD6BFC00269A92 /* videosync */ = {
@@ -10504,6 +10519,7 @@
 				E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */,
 				B5101B5819DFF8DD00294D1E /* BlurayFile.cpp in Sources */,
 				E49ACD9F10074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */,
+				DF6F52AE1AF6D03F001BC57D /* dacp.cpp in Sources */,
 				E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */,
 				F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */,
 				7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */,
@@ -12174,6 +12190,7 @@
 				7C525DF7195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 				7C908896196358A8003D0619 /* auto_buffer.cpp in Sources */,
 				7CF34DA11930264A00D543C5 /* AudioEncoder.cpp in Sources */,
+				DF6F52B01AF6D03F001BC57D /* dacp.cpp in Sources */,
 				7CF80DCB19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -12625,6 +12642,7 @@
 				E4991328174E5DAD00741B6D /* Texture.cpp in Sources */,
 				E4991329174E5DAD00741B6D /* TextureBundle.cpp in Sources */,
 				397877D61AAAF87700F98A45 /* Speed.cpp in Sources */,
+				DF6F52AF1AF6D03F001BC57D /* dacp.cpp in Sources */,
 				E499132A174E5DAD00741B6D /* TextureBundleXBT.cpp in Sources */,
 				E499132B174E5DAD00741B6D /* TextureBundleXPR.cpp in Sources */,
 				E499132C174E5DAD00741B6D /* TextureDX.cpp in Sources */,
