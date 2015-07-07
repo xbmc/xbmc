@@ -2416,7 +2416,7 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // Check for global volume control
-  if ((action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN) || action.GetID() == ACTION_VOLUME_SET))
+  if ((action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN)) || action.GetID() == ACTION_VOLUME_SET)
   {
     if (!m_pPlayer->IsPassthrough())
     {
