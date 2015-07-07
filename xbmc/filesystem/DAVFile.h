@@ -20,6 +20,7 @@
  */
 
 #include "CurlFile.h"
+#include "utils/XBMCTinyXML.h"
 
 namespace XFILE
 {
@@ -34,9 +35,15 @@ namespace XFILE
     virtual bool Delete(const CURL& url);
     virtual bool Rename(const CURL& url, const CURL& urlnew);
 
-    virtual int GetLastResponseCode() { return lastResponseCode; }
+    virtual bool Exists(const CURL& url);
+    virtual int Stat(const CURL& url, struct __stat64* buffer);
+
+    virtual int GetLastResponseCode() { return m_lastResponseCode; }
 
   private:
-    int lastResponseCode;
+    bool ParseResponse(const TiXmlElement *pElement, struct __stat64* statBuffer);
+
+    int m_lastResponseCode;
+    CXBMCTinyXML m_davResponse;
   };
 }
