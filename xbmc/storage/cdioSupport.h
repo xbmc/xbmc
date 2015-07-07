@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv/
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -176,9 +176,6 @@ public:
   // CD-ROM with Panasonic 3DO filesystem
   bool Is3DO( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_3DO); }
 
-  // CD-ROM with XBOX UDFX filesystem
-  bool IsUDFX( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UDFX); }
-
   // Mixed Mode CD-ROM
   bool IsMixedMode( int nTrack ) { return (m_nFirstData == 1 && m_nNumAudio > 0); }
 
@@ -218,7 +215,7 @@ public:
   bool IsUDF( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UDF); }
 
   // Has the cd a filesystem that is readable by the xbox
-  bool IsValidFs() { return (IsISOHFS(1) || IsIso9660(1) || IsIso9660Interactive(1) || IsISOUDF(1) || IsUDF(1) || IsUDFX(1) || IsAudio(1)); }
+  bool IsValidFs() { return (IsISOHFS(1) || IsIso9660(1) || IsIso9660Interactive(1) || IsISOUDF(1) || IsUDF(1) || IsAudio(1)); }
 
   void SetFirstTrack( int nTrack ) { m_nFirstTrack = nTrack; }
   void SetTrackCount( int nCount ) { m_nNumTrack = nCount; }

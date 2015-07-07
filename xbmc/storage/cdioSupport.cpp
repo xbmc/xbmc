@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv/
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,8 +44,7 @@ std::shared_ptr<CLibcdio> CLibcdio::m_pInstance;
 #define UFS_SUPERBLOCK_SECTOR   4  /* buffer[2] */
 #define BOOT_SECTOR            17  /* buffer[3] */
 #define VCD_INFO_SECTOR       150  /* buffer[4] */
-#define UDFX_SECTOR          32  /* buffer[4] */
-#define UDF_ANCHOR_SECTOR   256  /* buffer[5] */
+#define UDF_ANCHOR_SECTOR     256  /* buffer[5] */
 
 
 signature_t CCdIoSupport::sigs[] =
@@ -64,7 +63,6 @@ signature_t CCdIoSupport::sigs[] =
     {3, 7, "EL TORITO", "BOOTABLE"},
     {4, 0, "VIDEO_CD", "VIDEO CD"},
     {4, 0, "SUPERVCD", "Chaoji VCD"},
-    {0, 0, "MICROSOFT*XBOX*MEDIA", "UDFX CD"},
     {0, 1, "BEA01", "UDF"},
     { 0 }
   };
@@ -72,7 +70,7 @@ signature_t CCdIoSupport::sigs[] =
 #undef DEBUG_CDIO
 
 static void
-xbox_cdio_log_handler (cdio_log_level_t level, const char message[])
+cdio_log_handler (cdio_log_level_t level, const char message[])
 {
 #ifdef DEBUG_CDIO
   switch (level)
@@ -104,7 +102,7 @@ xbox_cdio_log_handler (cdio_log_level_t level, const char message[])
 //////////////////////////////////////////////////////////////////////
 CLibcdio::CLibcdio(): s_defaultDevice(NULL)
 {
-  cdio_log_set_handler( xbox_cdio_log_handler );
+  cdio_log_set_handler( cdio_log_handler );
 }
 
 CLibcdio::~CLibcdio()
@@ -386,9 +384,6 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
   case FS_3DO:
     CLog::Log(LOGINFO, "CD-ROM with Panasonic 3DO filesystem");
     break;
-  case FS_UDFX:
-    CLog::Log(LOGINFO, "CD-ROM with UDFX filesystem");
-    break;
   case FS_UNKNOWN:
     CLog::Log(LOGINFO, "CD-ROM with unknown filesystem");
     break;
@@ -605,11 +600,6 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 
     case CDIO_FS_EXT2:
       ret = FS_EXT2;
-      break;
-
-    case CDIO_FS_UDFX:
-      ret = FS_UDFX;
-      udf = true;
       break;
 
     case CDIO_FS_UDF:
