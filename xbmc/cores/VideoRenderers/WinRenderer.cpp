@@ -822,7 +822,7 @@ void CWinRenderer::Stage1()
     // At DX9 setting a new render target will cause the viewport 
     // to be set to the full size of the new render target.
     // In DX11 we should do this manualy
-    CD3D11_VIEWPORT viewPort(0.0f, 0.0f, m_IntermediateTarget.GetWidth(), m_IntermediateTarget.GetHeight());
+    CD3D11_VIEWPORT viewPort(0.0f, 0.0f, static_cast<float>(m_IntermediateTarget.GetWidth()), static_cast<float>(m_IntermediateTarget.GetHeight()));
     pContext->RSSetViewports(1, &viewPort);
 
     ID3D11RenderTargetView *newRT = m_IntermediateTarget.GetRenderTarget();
@@ -832,7 +832,7 @@ void CWinRenderer::Stage1()
     // Switch the render target to the temporary destination
     pContext->OMSetRenderTargets(1, &newRT, nullptr);
 
-    CRect srcRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
+    CRect srcRect(0.0f, 0.0f, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight));
 
     m_colorShader->Render(srcRect, srcRect,
                           CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast,
@@ -859,9 +859,9 @@ void CWinRenderer::Stage2()
   if (m_renderMethod == RENDER_DXVA)
   {
     sourceRect.y1 = 0.0f;
-    sourceRect.y2 = m_sourceHeight;
+    sourceRect.y2 = static_cast<float>(m_sourceHeight);
     sourceRect.x1 = 0.0f;
-    sourceRect.x2 = m_sourceWidth;
+    sourceRect.x2 = static_cast<float>(m_sourceWidth);
   }
   else
     sourceRect = m_sourceRect;
@@ -877,9 +877,9 @@ void CWinRenderer::RenderProcessor(DWORD flags)
   if (m_bUseHQScaler)
   {
     destRect.y1 = 0.0f;
-    destRect.y2 = m_sourceHeight;
+    destRect.y2 = static_cast<float>(m_sourceHeight);
     destRect.x1 = 0.0f;
-    destRect.x2 = m_sourceWidth;
+    destRect.x2 = static_cast<float>(m_sourceWidth);
   }
   else
     destRect = g_graphicsContext.StereoCorrection(m_destRect);
