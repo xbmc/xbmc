@@ -48,7 +48,7 @@ namespace PVR
   protected:
     // implementation of ISettingCallback
     virtual void OnSettingChanged(const CSetting *setting);
-    virtual void OnSettingAction (const CSetting *setting);
+    virtual void OnSettingAction(const CSetting *setting);
 
     // specialization of CGUIDialogSettingsBase
     virtual bool AllowResettingSettings() const { return false; }

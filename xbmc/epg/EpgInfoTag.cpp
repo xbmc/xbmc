@@ -524,7 +524,7 @@ bool CEpgInfoTag::HasTimer(void) const
 bool CEpgInfoTag::HasTimerSchedule(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_timer && (m_timer->m_iParentClientIndex > 0);
+  return m_timer && (m_timer->GetTimerScheduleId() != PVR_TIMER_NO_PARENT);
 }
 
 CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const

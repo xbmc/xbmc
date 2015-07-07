@@ -1286,6 +1286,9 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
 
 PVR_ERROR CPVRClient::GetTimerTypes(CPVRTimerTypes& results) const
 {
+  if (!m_bReadyToUse)
+    return PVR_ERROR_REJECTED;
+
   results = m_timertypes;
   return PVR_ERROR_NO_ERROR;
 }

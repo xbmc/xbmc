@@ -5459,7 +5459,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       {
         CFileItemPtr timer = g_PVRTimers->GetTimerForEpgTag(pItem);
         if (timer && timer->HasPVRTimerInfoTag())
-          return timer->GetPVRTimerInfoTag()->IsRepeating();
+          return timer->GetPVRTimerInfoTag()->GetTimerScheduleId() > 0;
       }
     }
     else if (condition == LISTITEM_HASRECORDING)

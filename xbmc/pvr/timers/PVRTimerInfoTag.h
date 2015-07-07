@@ -123,15 +123,14 @@ namespace PVR
     bool IsRecording(void) const { return m_state == PVR_TIMER_STATE_RECORDING; }
 
     /*!
-      * @brief Checks whether is timer has a timer type. Can be false if
-      *        no PVR client supporting timers is enabled.
+      * @brief Checks whether this timer has a timer type.
       * @return True if this timer has a timer type, false otherwise
       */
     bool HasTimerType(void) const { return m_timerType.get() != NULL; }
 
     /*!
       * @brief Gets the type of this timer.
-      * @return the timer type.
+      * @return the timer type or NULL if this tag has no timer type.
       */
     const CPVRTimerTypePtr GetTimerType() const { return m_timerType; }
 
@@ -155,15 +154,19 @@ namespace PVR
 
     CDateTime StartAsUTC(void) const;
     CDateTime StartAsLocalTime(void) const;
-    bool IsStartAtAnyTime(void) const;
     void SetStartFromUTC(CDateTime &start) { m_StartTime = start; }
     void SetStartFromLocalTime(CDateTime &start) { m_StartTime = start.GetAsUTCDateTime(); }
 
+    bool IsStartAtAnyTime(void) const;
+    void SetStartAtAnyTime(void);
+
     CDateTime EndAsUTC(void) const;
     CDateTime EndAsLocalTime(void) const;
-    bool IsEndAtAnyTime(void) const;
     void SetEndFromUTC(CDateTime &end) { m_StopTime = end; }
     void SetEndFromLocalTime(CDateTime &end) { m_StopTime = end.GetAsUTCDateTime(); }
+
+    bool IsEndAtAnyTime(void) const;
+    void SetEndAtAnyTime(void);
 
     CDateTime FirstDayAsUTC(void) const;
     CDateTime FirstDayAsLocalTime(void) const;
@@ -216,6 +219,12 @@ namespace PVR
      */
     static std::string GetWeekdaysString(unsigned int iWeekdays, bool bEpgBased, bool bLongMultiDaysFormat);
 
+    /*!
+     * @brief For timers scheduled by repeated timers, return the id of the parent.
+     * @return the id of the timer schedule or 0 in case the timer was not scheduled by a repeating timer.
+     */
+    unsigned int GetTimerScheduleId() const { return m_iParentClientIndex; }
+
     std::string           m_strTitle;            /*!< @brief name of this timer */
     std::string           m_strEpgSearchString;  /*!< @brief a epg data match string for repeating epg-based timers. Format is backend-dependent, for example regexp */
     bool                  m_bFullTextEpgSearch;  /*!< @brief indicates whether only epg episode title can be matched by the pvr backend or "more" (backend-dependent") data. */
@@ -223,8 +232,8 @@ namespace PVR
     std::string           m_strSummary;          /*!< @brief summary string with the time to show inside a GUI list */
     PVR_TIMER_STATE       m_state;               /*!< @brief the state of this timer */
     int                   m_iClientId;           /*!< @brief ID of the backend */
-    unsigned int          m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, -1 for new */
-    unsigned int          m_iParentClientIndex;  /*!< @brief for timers scheduled by repeated timers, the index number of the parent, given by the backend, 0 for no parent */
+    int                   m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, -1 for new */
+    unsigned int          m_iParentClientIndex;  /*!< @brief for timers scheduled by repeated timers, the index number of the parent, given by the backend, PVR_TIMER_NO_PARENT for no parent */
     int                   m_iClientChannelUid;   /*!< @brief channel uid */
     int                   m_iPriority;           /*!< @brief priority of the timer */
     int                   m_iLifetime;           /*!< @brief lifetime of the timer in days */
