@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv/
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -251,7 +251,7 @@ void CDetectDVDMedia::DetectMediaType()
   }
   else
   {
-    if (m_pCdInfo->IsUDF(1) || m_pCdInfo->IsUDFX(1))
+    if (m_pCdInfo->IsUDF(1))
       strNewUrl = "D:\\";
     else if (m_pCdInfo->IsAudio(1))
     {
