@@ -26,9 +26,6 @@
 #include "D3DResource.h"
 #include <DirectXMath.h>
 
-#define __RENDER_GUI_INDICES_COUNT    6
-#define __RENDER_GUI_VERTICES_COUNT   4
-
 using namespace DirectX;
 
 struct Vertex {
@@ -132,7 +129,6 @@ private:
   ID3D11Buffer*       m_pWVPBuffer;
   ID3D11Buffer*       m_pVPBuffer;
   ID3D11Buffer*       m_pVertexBuffer;
-  ID3D11Buffer*       m_pIndexBuffer;
   bool                m_bIsWVPDirty;
   bool                m_bIsVPDirty;
 
