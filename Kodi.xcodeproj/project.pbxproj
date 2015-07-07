@@ -12,7 +12,6 @@
 		0E3036EE1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E3036EA1760F68A00D93596 /* FavouritesDirectory.cpp */; };
 		180F6C8117CE9A5700127892 /* smc.c in Sources */ = {isa = PBXBuildFile; fileRef = 180F6C8017CE9A5700127892 /* smc.c */; };
 		183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
-		18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B74B13993D8A007C848B /* JSONVariantParser.cpp */; };
 		1840B75313993DA0007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B75113993DA0007C848B /* JSONVariantWriter.cpp */; };
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
@@ -902,7 +901,6 @@
 		DF923E5D1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
 		DF923E5E1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
 		DF923E5F1A11536A008CDB0C /* DataCacheCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */; };
-		DF93D65D1444A7A3007C6459 /* SlingboxDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D65C1444A7A3007C6459 /* SlingboxDirectory.cpp */; };
 		DF93D69A1444A8B1007C6459 /* DirectoryCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6651444A8B0007C6459 /* DirectoryCache.cpp */; };
 		DF93D69B1444A8B1007C6459 /* FileCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6671444A8B0007C6459 /* FileCache.cpp */; };
 		DF93D69C1444A8B1007C6459 /* CDDAFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6691444A8B0007C6459 /* CDDAFile.cpp */; };
@@ -917,7 +915,6 @@
 		DF93D6A81444A8B1007C6459 /* RarFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6811444A8B0007C6459 /* RarFile.cpp */; };
 		DF93D6AA1444A8B1007C6459 /* SFTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6851444A8B0007C6459 /* SFTPFile.cpp */; };
 		DF93D6AB1444A8B1007C6459 /* ShoutcastFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6871444A8B0007C6459 /* ShoutcastFile.cpp */; };
-		DF93D6AC1444A8B1007C6459 /* SlingboxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */; };
 		DF93D6AD1444A8B1007C6459 /* SMBFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SMBFile.cpp */; };
 		DF93D6AE1444A8B1007C6459 /* SpecialProtocolFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68D1444A8B0007C6459 /* SpecialProtocolFile.cpp */; };
 		DF93D6B11444A8B1007C6459 /* UDFFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6931444A8B0007C6459 /* UDFFile.cpp */; };
@@ -1031,7 +1028,6 @@
 		DFF0EC531752821B002DA3A4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EB8D17528174002DA3A4 /* Foundation.framework */; };
 		DFF0EC891752822E002DA3A4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EB9517528174002DA3A4 /* UIKit.framework */; };
 		DFF0EC8C17528283002DA3A4 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFF0EC8B17528283002DA3A4 /* VideoToolbox.framework */; };
-		DFF0ECA7175282AD002DA3A4 /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		DFF0F0EF17528350002DA3A4 /* archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CE60D25F9FC00618676 /* archive.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		DFF0F0F017528350002DA3A4 /* arcread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CE80D25F9FC00618676 /* arcread.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		DFF0F0F117528350002DA3A4 /* cmddata.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1CEA0D25F9FC00618676 /* cmddata.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
@@ -1319,8 +1315,6 @@
 		DFF0F24317528350002DA3A4 /* SFTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */; };
 		DFF0F24417528350002DA3A4 /* SFTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6851444A8B0007C6459 /* SFTPFile.cpp */; };
 		DFF0F24517528350002DA3A4 /* ShoutcastFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6871444A8B0007C6459 /* ShoutcastFile.cpp */; };
-		DFF0F24717528350002DA3A4 /* SlingboxDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D65C1444A7A3007C6459 /* SlingboxDirectory.cpp */; };
-		DFF0F24817528350002DA3A4 /* SlingboxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */; };
 		DFF0F24917528350002DA3A4 /* SmartPlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */; };
 		DFF0F24A17528350002DA3A4 /* SMBDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */; };
 		DFF0F24B17528350002DA3A4 /* SMBFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SMBFile.cpp */; };
@@ -2499,8 +2493,6 @@
 		E49912AC174E5D9900741B6D /* SFTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */; };
 		E49912AD174E5D9900741B6D /* SFTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6851444A8B0007C6459 /* SFTPFile.cpp */; };
 		E49912AE174E5D9900741B6D /* ShoutcastFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6871444A8B0007C6459 /* ShoutcastFile.cpp */; };
-		E49912B0174E5D9900741B6D /* SlingboxDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D65C1444A7A3007C6459 /* SlingboxDirectory.cpp */; };
-		E49912B1174E5D9900741B6D /* SlingboxFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */; };
 		E49912B2174E5D9900741B6D /* SmartPlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */; };
 		E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */; };
 		E49912B4174E5D9900741B6D /* SMBFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D68B1444A8B0007C6459 /* SMBFile.cpp */; };
@@ -3015,7 +3007,6 @@
 		E499156F174E65AC00741B6D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		E4991574174E661400741B6D /* WinEventsIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991571174E661300741B6D /* WinEventsIOS.mm */; };
 		E4991575174E661400741B6D /* WinSystemIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4991573174E661300741B6D /* WinSystemIOS.mm */; };
-		E4991581174E681600741B6D /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		E4991582174E682F00741B6D /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
 		E4991583174E684000741B6D /* CocoaInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */; };
 		E4991584174E684000741B6D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
@@ -3211,7 +3202,6 @@
 		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
 		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
 		183FDF8911AF0B0500B81E9C /* PluginSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginSource.h; sourceTree = "<group>"; };
-		18404DA51396C31B00863BBA /* SlingboxLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = SlingboxLib.a; path = lib/SlingboxLib/SlingboxLib.a; sourceTree = "<group>"; };
 		1840B74B13993D8A007C848B /* JSONVariantParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantParser.cpp; sourceTree = "<group>"; };
 		1840B74C13993D8A007C848B /* JSONVariantParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantParser.h; sourceTree = "<group>"; };
 		1840B75113993DA0007C848B /* JSONVariantWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantWriter.cpp; sourceTree = "<group>"; };
@@ -4502,8 +4492,6 @@
 		DF8990201709BB5400B35C21 /* ViewStateSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewStateSettings.h; sourceTree = "<group>"; };
 		DF923E5B1A11536A008CDB0C /* DataCacheCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataCacheCore.cpp; sourceTree = "<group>"; };
 		DF923E5C1A11536A008CDB0C /* DataCacheCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataCacheCore.h; sourceTree = "<group>"; };
-		DF93D65B1444A7A3007C6459 /* SlingboxDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlingboxDirectory.h; sourceTree = "<group>"; };
-		DF93D65C1444A7A3007C6459 /* SlingboxDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SlingboxDirectory.cpp; sourceTree = "<group>"; };
 		DF93D6651444A8B0007C6459 /* DirectoryCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryCache.cpp; sourceTree = "<group>"; };
 		DF93D6661444A8B0007C6459 /* DirectoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryCache.h; sourceTree = "<group>"; };
 		DF93D6671444A8B0007C6459 /* FileCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileCache.cpp; sourceTree = "<group>"; };
@@ -4532,8 +4520,6 @@
 		DF93D6861444A8B0007C6459 /* SFTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFTPFile.h; sourceTree = "<group>"; };
 		DF93D6871444A8B0007C6459 /* ShoutcastFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShoutcastFile.cpp; sourceTree = "<group>"; };
 		DF93D6881444A8B0007C6459 /* ShoutcastFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShoutcastFile.h; sourceTree = "<group>"; };
-		DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SlingboxFile.cpp; sourceTree = "<group>"; };
-		DF93D68A1444A8B0007C6459 /* SlingboxFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlingboxFile.h; sourceTree = "<group>"; };
 		DF93D68B1444A8B0007C6459 /* SMBFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SMBFile.cpp; sourceTree = "<group>"; };
 		DF93D68C1444A8B0007C6459 /* SMBFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMBFile.h; sourceTree = "<group>"; };
 		DF93D68D1444A8B0007C6459 /* SpecialProtocolFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocolFile.cpp; sourceTree = "<group>"; };
@@ -5741,7 +5727,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */,
 				F56C8CE7131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F5364D55155B3C7B0016D00B /* libm.dylib in Frameworks */,
 				F56C8CF3131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */,
@@ -5780,7 +5765,6 @@
 				DFF0EBC41752820F002DA3A4 /* CoreGraphics.framework in Frameworks */,
 				DFF0EC531752821B002DA3A4 /* Foundation.framework in Frameworks */,
 				DFF0EC891752822E002DA3A4 /* UIKit.framework in Frameworks */,
-				DFF0ECA7175282AD002DA3A4 /* SlingboxLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5802,7 +5786,6 @@
 				E4991090174D0D2600741B6D /* CoreGraphics.framework in Frameworks */,
 				E49910F8174E561500741B6D /* libz.dylib in Frameworks */,
 				E49910F9174E561D00741B6D /* libiconv.dylib in Frameworks */,
-				E4991581174E681600741B6D /* SlingboxLib.a in Frameworks */,
 				DFF0EBB7175281E1002DA3A4 /* CoreAudio.framework in Frameworks */,
 				DFF0EC8C17528283002DA3A4 /* VideoToolbox.framework in Frameworks */,
 			);
@@ -5815,7 +5798,6 @@
 			isa = PBXGroup;
 			children = (
 				08FB7795FE84155DC02AAC07 /* Source */,
-				F57E1ED20E36E8FD00700C9D /* internal libs */,
 				08FB779DFE84155DC02AAC07 /* System Libs and Frameworks */,
 				E49910C2174E2CDE00741B6D /* Configurations */,
 				E47252BE175115F9001C1AAA /* Support */,
@@ -8767,10 +8749,6 @@
 				DF93D6861444A8B0007C6459 /* SFTPFile.h */,
 				DF93D6871444A8B0007C6459 /* ShoutcastFile.cpp */,
 				DF93D6881444A8B0007C6459 /* ShoutcastFile.h */,
-				DF93D65C1444A7A3007C6459 /* SlingboxDirectory.cpp */,
-				DF93D65B1444A7A3007C6459 /* SlingboxDirectory.h */,
-				DF93D6891444A8B0007C6459 /* SlingboxFile.cpp */,
-				DF93D68A1444A8B0007C6459 /* SlingboxFile.h */,
 				E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */,
 				E38E17540D25F9FA00618676 /* SmartPlaylistDirectory.h */,
 				E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */,
@@ -9512,14 +9490,6 @@
 				F56352B916E5403400D21BAD /* GUIWindowTestPattern.h */,
 			);
 			name = windows;
-			sourceTree = "<group>";
-		};
-		F57E1ED20E36E8FD00700C9D /* internal libs */ = {
-			isa = PBXGroup;
-			children = (
-				18404DA51396C31B00863BBA /* SlingboxLib.a */,
-			);
-			name = "internal libs";
 			sourceTree = "<group>";
 		};
 		F5AE407F13415D9E0004BD79 /* json-rpc */ = {
@@ -10736,7 +10706,6 @@
 				DFCA6AC9152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp in Sources */,
 				DFCA6ACA152245CD000BFAAE /* HTTPWebinterfaceHandler.cpp in Sources */,
 				DFCA6ACB152245CD000BFAAE /* IHTTPRequestHandler.cpp in Sources */,
-				DF93D65D1444A7A3007C6459 /* SlingboxDirectory.cpp in Sources */,
 				DF93D69A1444A8B1007C6459 /* DirectoryCache.cpp in Sources */,
 				DF93D69B1444A8B1007C6459 /* FileCache.cpp in Sources */,
 				3994427A1A8DD920006C39E9 /* VideoLibraryScanningJob.cpp in Sources */,
@@ -10752,7 +10721,6 @@
 				DF93D6A81444A8B1007C6459 /* RarFile.cpp in Sources */,
 				DF93D6AA1444A8B1007C6459 /* SFTPFile.cpp in Sources */,
 				DF93D6AB1444A8B1007C6459 /* ShoutcastFile.cpp in Sources */,
-				DF93D6AC1444A8B1007C6459 /* SlingboxFile.cpp in Sources */,
 				DF93D6AD1444A8B1007C6459 /* SMBFile.cpp in Sources */,
 				DF93D6AE1444A8B1007C6459 /* SpecialProtocolFile.cpp in Sources */,
 				DF6A0D811A4584E80075BBFC /* OverrideDirectory.cpp in Sources */,
@@ -11427,8 +11395,6 @@
 				395C29C71A98A0E100EBC7AD /* ILanguageInvoker.cpp in Sources */,
 				DFF0F24417528350002DA3A4 /* SFTPFile.cpp in Sources */,
 				DFF0F24517528350002DA3A4 /* ShoutcastFile.cpp in Sources */,
-				DFF0F24717528350002DA3A4 /* SlingboxDirectory.cpp in Sources */,
-				DFF0F24817528350002DA3A4 /* SlingboxFile.cpp in Sources */,
 				DFF0F24917528350002DA3A4 /* SmartPlaylistDirectory.cpp in Sources */,
 				DFF0F24A17528350002DA3A4 /* SMBDirectory.cpp in Sources */,
 				DFF0F24B17528350002DA3A4 /* SMBFile.cpp in Sources */,
@@ -12469,9 +12435,7 @@
 				E49912AC174E5D9900741B6D /* SFTPDirectory.cpp in Sources */,
 				E49912AD174E5D9900741B6D /* SFTPFile.cpp in Sources */,
 				E49912AE174E5D9900741B6D /* ShoutcastFile.cpp in Sources */,
-				E49912B0174E5D9900741B6D /* SlingboxDirectory.cpp in Sources */,
 				395C29C21A98A0A000EBC7AD /* Webinterface.cpp in Sources */,
-				E49912B1174E5D9900741B6D /* SlingboxFile.cpp in Sources */,
 				E49912B2174E5D9900741B6D /* SmartPlaylistDirectory.cpp in Sources */,
 				E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */,
 				E49912B4174E5D9900741B6D /* SMBFile.cpp in Sources */,
@@ -13260,7 +13224,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
@@ -13320,7 +13283,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
@@ -13426,7 +13388,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",
@@ -13481,7 +13442,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/legacy\"",
 					"\"$(SRCROOT)/xbmc/interfaces/python\"",

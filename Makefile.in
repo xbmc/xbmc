@@ -27,7 +27,6 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
                    xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a
 
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
-                   lib/SlingboxLib/SlingboxLib.a \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
                    xbmc/contrib/kissfft/kissfft.a \
@@ -415,8 +414,7 @@ libs: $(LIBSSE4) imagelib libexif system/libcpluff-@ARCH@.so
 externals: codecs libs visualizations screensavers libaddon
 
 xcode_depends: \
-	codecs libs visualizations screensavers eventclients skins libaddon \
-	lib/SlingboxLib/SlingboxLib.a
+	codecs libs visualizations screensavers eventclients skins libaddon
 
 DYNOBJSXBMC= \
 	xbmc/linux/linux.a \

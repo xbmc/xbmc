@@ -181,7 +181,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacks.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAddon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksCodec.cpp" />
@@ -372,8 +371,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\SFTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\SFTPFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ShoutcastFile.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\SlingboxDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\SlingboxFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\SmartPlaylistDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\SourcesDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\SpecialProtocol.cpp" />
@@ -1145,8 +1142,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\SFTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\SFTPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ShoutcastFile.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\SlingboxDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\SlingboxFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\SmartPlaylistDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\SourcesDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\SpecialProtocol.h" />
@@ -1683,7 +1678,6 @@
     <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksGUI.h" />

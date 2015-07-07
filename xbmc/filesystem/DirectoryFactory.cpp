@@ -80,7 +80,6 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
 #endif
-#include "SlingboxDirectory.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "RSSDirectory.h"
@@ -188,7 +187,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #ifdef HAS_UPNP
     if (url.IsProtocol("upnp")) return new CUPnPDirectory();
 #endif
-    if (url.IsProtocol("sling")) return new CSlingboxDirectory();
     if (url.IsProtocol("rss")) return new CRSSDirectory();
 #ifdef HAS_FILESYSTEM_SAP
     if (url.IsProtocol("sap")) return new CSAPDirectory();

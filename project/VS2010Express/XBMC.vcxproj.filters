@@ -193,9 +193,6 @@
     <Filter Include="pvr\addons">
       <UniqueIdentifier>{dbfd4898-7df3-4393-8b04-ab0cc1265c33}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libs\SlingboxLib">
-      <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="interfaces\info">
       <UniqueIdentifier>{cea579fc-bdd7-499e-a6a6-07d681d1ab24}</UniqueIdentifier>
     </Filter>
@@ -1771,9 +1768,6 @@
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp">
       <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp">
-      <Filter>libs\SlingboxLib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -2057,12 +2051,6 @@
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\ShoutcastFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\SlingboxDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\SlingboxFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\SmartPlaylistDirectory.cpp">
@@ -4717,9 +4705,6 @@
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h">
       <Filter>addons</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h">
-      <Filter>libs\SlingboxLib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h">
       <Filter>dialogs</Filter>
     </ClInclude>
@@ -4976,12 +4961,6 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ShoutcastFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\SlingboxDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\SlingboxFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\SmartPlaylistDirectory.h">
