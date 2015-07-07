@@ -30,6 +30,8 @@
 
 using namespace DirectX;
 
+#define KODI_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT 4
+
 typedef enum SHADER_METHOD {
   SHADER_METHOD_RENDER_DEFAULT,
   SHADER_METHOD_RENDER_TEXTURE_NOBLEND,
@@ -94,7 +96,7 @@ public:
   // helper function to properly "clear" shader resources
   static inline void PSClearShaderResources(ID3D11DeviceContext* pContext)
   {
-    ID3D11ShaderResourceView* shader_resource_views[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {};
+    ID3D11ShaderResourceView* shader_resource_views[KODI_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {};
     pContext->PSSetShaderResources(0, ARRAYSIZE(shader_resource_views), shader_resource_views);
   }
 
