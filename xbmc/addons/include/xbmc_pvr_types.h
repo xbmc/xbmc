@@ -71,7 +71,7 @@ struct DemuxPacket;
 #define PVR_ADDON_INPUT_FORMAT_STRING_LENGTH  32
 #define PVR_ADDON_EDL_LENGTH                  32
 #define PVR_ADDON_TIMERTYPE_ARRAY_SIZE        32
-#define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE 512
+#define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE 64
 #define PVR_ADDON_TIMERTYPE_STRING_LENGTH     64
 
 /* using the default avformat's MAX_STREAMS value to be safe */
