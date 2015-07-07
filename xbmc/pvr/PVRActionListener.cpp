@@ -126,17 +126,6 @@ bool CPVRActionListener::OnAction(const CAction &action)
             }
           }
         }
-        else
-        {
-          // filesystem provider like slingbox etc
-          int iChannelNumber = -1;
-          std::string strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
-          if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000)))
-            iChannelNumber = atoi(strChannel.c_str());
-
-          if (iChannelNumber > 0)
-            CApplicationMessenger::Get().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber), WINDOW_INVALID, false);
-        }
       }
       return true;
     }
