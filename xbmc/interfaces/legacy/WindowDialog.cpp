@@ -32,7 +32,7 @@ namespace XBMCAddon
       Window(true), WindowDialogMixin(this)
     {
       CSingleLock lock(g_graphicsContext);
-      setWindow(new Interceptor<CGUIWindow>("CGUIWindow",this,getNextAvailalbeWindowId()));
+      setWindow(new Interceptor<CGUIWindow>("CGUIWindow",this,getNextAvailableWindowId()));
     }
 
     WindowDialog::~WindowDialog() { deallocating(); }
