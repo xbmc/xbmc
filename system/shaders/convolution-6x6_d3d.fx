@@ -21,8 +21,7 @@
 texture2D g_Texture;
 texture2D g_KernelTexture;
 float2    g_StepXY;
-float     g_viewportWidth;
-float     g_viewportHeight;
+float2    g_viewPort;
 
 SamplerState RGBSampler : IMMUTABLE
 {
@@ -40,8 +39,8 @@ SamplerState KernelSampler : IMMUTABLE
 
 struct VS_OUTPUT
 {
-  float4 Position   : SV_POSITION;
   float2 TextureUV  : TEXCOORD0;
+  float4 Position   : SV_POSITION;
 };
 
 //
@@ -50,8 +49,8 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_OUTPUT In)
 {
   VS_OUTPUT output  = (VS_OUTPUT)0;
-  output.Position.x =  (In.Position.x / (g_viewportWidth  / 2.0)) - 1;
-  output.Position.y = -(In.Position.y / (g_viewportHeight / 2.0)) + 1;
+  output.Position.x =  (In.Position.x / (g_viewPort.x  / 2.0)) - 1;
+  output.Position.y = -(In.Position.y / (g_viewPort.y / 2.0)) + 1;
   output.Position.z = output.Position.z;
   output.Position.w = 1.0;
   output.TextureUV  = In.TextureUV;
@@ -73,21 +72,25 @@ half3 weight(float pos)
   return w;
 }
 
+inline half3 pixel(float xpos, float ypos)
+{
+  return g_Texture.Sample(RGBSampler, float2(xpos, ypos)).rgb;
+}
+
 inline half3 getLine(float ypos, float3 xpos1, float3 xpos2, half3 linetaps1, half3 linetaps2)
 {
   return
-    g_Texture.Sample(RGBSampler, float2(xpos1.r, ypos)).rgb * linetaps1.r +
-    g_Texture.Sample(RGBSampler, float2(xpos1.g, ypos)).rgb * linetaps2.r +
-    g_Texture.Sample(RGBSampler, float2(xpos1.b, ypos)).rgb * linetaps1.g +
-    g_Texture.Sample(RGBSampler, float2(xpos2.r, ypos)).rgb * linetaps2.g +
-    g_Texture.Sample(RGBSampler, float2(xpos2.g, ypos)).rgb * linetaps1.b +
-    g_Texture.Sample(RGBSampler, float2(xpos2.b, ypos)).rgb * linetaps2.b;
+    pixel(xpos1.r, ypos) * linetaps1.r +
+    pixel(xpos1.g, ypos) * linetaps2.r +
+    pixel(xpos1.b, ypos) * linetaps1.g +
+    pixel(xpos2.r, ypos) * linetaps2.g +
+    pixel(xpos2.g, ypos) * linetaps1.b +
+    pixel(xpos2.b, ypos) * linetaps2.b;
 }
 
-float4 CONVOLUTION6x6(VS_OUTPUT In) : SV_TARGET
+float4 CONVOLUTION6x6(in float2 TextureUV  : TEXCOORD0) : SV_TARGET
 {
-  float2 pos = In.TextureUV + g_StepXY * 0.5;
-  float2 f = frac(pos / g_StepXY);
+  float2 f = frac(TextureUV / g_StepXY + 0.5);
 
   half3 linetaps1   = weight((1.0 - f.x) / 2.0);
   half3 linetaps2   = weight((1.0 - f.x) / 2.0 + 0.5);
@@ -96,32 +99,28 @@ float4 CONVOLUTION6x6(VS_OUTPUT In) : SV_TARGET
 
   // kernel generation code made sure taps add up to 1, no need to adjust here.
 
-  float2 xystart = (-2.0 - f) * g_StepXY + In.TextureUV;
-  float3 xpos1 = float3(
-      xystart.x,
-      xystart.x + g_StepXY.x,
-      xystart.x + g_StepXY.x * 2.0);
-  float3 xpos2 = half3(
-      xystart.x + g_StepXY.x * 3.0,
-      xystart.x + g_StepXY.x * 4.0,
-      xystart.x + g_StepXY.x * 5.0);
+  float2 xystart = (-2.0 - f) * g_StepXY + TextureUV;
+  float3 xpos1 = xystart.x + g_StepXY.x * float3(0.0, 1.0, 2.0);
+  float3 xpos2 = xystart.x + g_StepXY.x * float3(3.0, 4.0, 5.0);
+  float3 ypos1 = xystart.y + g_StepXY.y * float3(0.0, 1.0, 2.0);
+  float3 ypos2 = xystart.y + g_StepXY.y * float3(3.0, 4.0, 5.0);
 
   float3 rgb =  
-        getLine(xystart.y                   , xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r +
-				getLine(xystart.y + g_StepXY.y      , xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r +
-				getLine(xystart.y + g_StepXY.y * 2.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g +
-				getLine(xystart.y + g_StepXY.y * 3.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.g +
-				getLine(xystart.y + g_StepXY.y * 4.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b +
-				getLine(xystart.y + g_StepXY.y * 5.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
+        getLine(ypos1.x, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r +
+		getLine(ypos1.y, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r +
+		getLine(ypos1.z, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g +
+		getLine(ypos2.x, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.g +
+		getLine(ypos2.y, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b +
+		getLine(ypos2.z, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
 
   return float4(rgb, 1.0f);
 }
 
-technique10 SCALER_T
+technique11 SCALER_T
 {
   pass P0
   {
-    SetVertexShader( CompileShader( vs_4_0_level_9_3, VS() ) );
+    SetVertexShader( CompileShader( vs_4_0_level_9_1, VS() ) );
     SetPixelShader( CompileShader( ps_4_0_level_9_3, CONVOLUTION6x6() ) );
   }
 };

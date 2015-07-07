@@ -20,10 +20,8 @@
 
 texture2D g_Texture;
 texture2D g_KernelTexture;
-float2    g_StepXY_P0;
-float2    g_StepXY_P1;
-float     g_viewportWidth;
-float     g_viewportHeight;
+float4    g_StepXY;
+float2    g_viewPort;
 
 SamplerState RGBSampler : IMMUTABLE
 {
@@ -47,8 +45,8 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-  float4 Position   : SV_POSITION;
   float2 TextureUV  : TEXCOORD0;
+  float4 Position   : SV_POSITION;
 };
 
 //
@@ -57,8 +55,8 @@ struct VS_OUTPUT
 VS_OUTPUT VS(VS_INPUT In)
 {
   VS_OUTPUT output  = (VS_OUTPUT)0;
-  output.Position.x =  (In.Position.x / (g_viewportWidth  / 2.0)) - 1;
-  output.Position.y = -(In.Position.y / (g_viewportHeight / 2.0)) + 1;
+  output.Position.x =  (In.Position.x / (g_viewPort.x  / 2.0)) - 1;
+  output.Position.y = -(In.Position.y / (g_viewPort.y / 2.0)) + 1;
   output.Position.z = output.Position.z;
   output.Position.w = 1.0;
   output.TextureUV  = In.TextureUV;
@@ -80,9 +78,9 @@ inline half4 weight(float pos)
   return w;
 }
 
-inline half3 pixel(texture2D tex, float xpos, float ypos)
+inline half3 pixel(float xpos, float ypos)
 {
-  return tex.Sample(RGBSampler, float2(xpos, ypos)).rgb;
+  return g_Texture.Sample(RGBSampler, float2(xpos, ypos)).rgb;
 }
 
 // Code for first pass - horizontal
@@ -90,30 +88,22 @@ inline half3 pixel(texture2D tex, float xpos, float ypos)
 inline half3 getLine(float ypos, float4 xpos, half4 linetaps)
 {
   return
-    pixel(g_Texture, xpos.r, ypos) * linetaps.r +
-    pixel(g_Texture, xpos.g, ypos) * linetaps.g +
-    pixel(g_Texture, xpos.b, ypos) * linetaps.b +
-    pixel(g_Texture, xpos.a, ypos) * linetaps.a;
+    pixel(xpos.r, ypos) * linetaps.r +
+    pixel(xpos.g, ypos) * linetaps.g +
+    pixel(xpos.b, ypos) * linetaps.b +
+    pixel(xpos.a, ypos) * linetaps.a;
 }
 
-float4 CONVOLUTION4x4Horiz(VS_OUTPUT In) : SV_TARGET
+float4 CONVOLUTION4x4Horiz(in float2 TextureUV : TEXCOORD0) : SV_TARGET
 {
-  float2 pos = In.TextureUV + g_StepXY_P0 * 0.5;
-  float2 f = frac(pos / g_StepXY_P0);
-
+  float2 f = frac(TextureUV / g_StepXY.xy + 0.5);
   half4 linetaps = weight(1.0 - f.x);
 
   // kernel generation code made sure taps add up to 1, no need to adjust here.
+  float xystart = (-1.0 - f.x) * g_StepXY.x + TextureUV.x;
 
-  float xystart = (-1.0 - f.x) * g_StepXY_P0.x + In.TextureUV.x;
-
-  float4 xpos = float4(
-      xystart,
-      xystart + g_StepXY_P0.x,
-      xystart + g_StepXY_P0.x * 2.0,
-      xystart + g_StepXY_P0.x * 3.0);
-
-  return float4(getLine(In.TextureUV.y, xpos, linetaps), 1.0f);
+  float4 xpos = xystart + g_StepXY.x * float4(0.0, 1.0, 2.0, 3.0);
+  return float4(getLine(TextureUV.y, xpos, linetaps), 1.0f);
 }
 
 // Code for second pass - vertical
@@ -121,42 +111,34 @@ float4 CONVOLUTION4x4Horiz(VS_OUTPUT In) : SV_TARGET
 inline half3 getRow(float xpos, float4 ypos, half4 columntaps)
 {
   return
-    pixel(g_Texture, xpos, ypos.r) * columntaps.r +
-    pixel(g_Texture, xpos, ypos.g) * columntaps.g +
-    pixel(g_Texture, xpos, ypos.b) * columntaps.b +
-    pixel(g_Texture, xpos, ypos.a) * columntaps.a;
+    pixel(xpos, ypos.r) * columntaps.r +
+    pixel(xpos, ypos.g) * columntaps.g +
+    pixel(xpos, ypos.b) * columntaps.b +
+    pixel(xpos, ypos.a) * columntaps.a;
 }
 
-float4 CONVOLUTION4x4Vert(VS_OUTPUT In) : SV_TARGET
+float4 CONVOLUTION4x4Vert(in float2 TextureUV : TEXCOORD0) : SV_TARGET
 {
-  float2 pos = In.TextureUV + g_StepXY_P1 * 0.5;
-  float2 f = frac(pos / g_StepXY_P1);
-
+  float2 f = frac(TextureUV / g_StepXY.zw + 0.5);
   half4 columntaps = weight(1.0 - f.y);
 
   // kernel generation code made sure taps add up to 1, no need to adjust here.
+  float xystart = (-1.0 - f.y) * g_StepXY.w + TextureUV.y;
 
-  float xystart = (-1.0 - f.y) * g_StepXY_P1.y + In.TextureUV.y;
-
-  float4 ypos = float4(
-      xystart,
-      xystart + g_StepXY_P1.y,
-      xystart + g_StepXY_P1.y * 2.0,
-      xystart + g_StepXY_P1.y * 3.0);
-
-  return float4(getRow(In.TextureUV.x, ypos, columntaps), 1.0f);
+  float4 ypos = xystart + g_StepXY.w * float4(0.0, 1.0, 2.0, 3.0);
+  return float4(getRow(TextureUV.x, ypos, columntaps), 1.0f);
 }
 
-technique10 SCALER_T
+technique11 SCALER_T
 {
   pass P0
   {
-    SetVertexShader( CompileShader( vs_4_0_level_9_3, VS() ) );
+    SetVertexShader( CompileShader( vs_4_0_level_9_1, VS() ) );
     SetPixelShader( CompileShader( ps_4_0_level_9_3, CONVOLUTION4x4Horiz() ) );
   }
   pass P1
   {
-    SetVertexShader( CompileShader( vs_4_0_level_9_3, VS() ) );
+    SetVertexShader( CompileShader( vs_4_0_level_9_1, VS() ) );
     SetPixelShader( CompileShader( ps_4_0_level_9_3, CONVOLUTION4x4Vert() ) );
   }
 

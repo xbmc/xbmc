@@ -23,8 +23,7 @@ texture2D  g_UTexture;
 texture2D  g_VTexture;
 float4x4   g_ColorMatrix;
 float2     g_StepXY;
-float      g_viewportWidth;
-float      g_viewportHeight;
+float2     g_viewPort;
 
 
 SamplerState YUVSampler : IMMUTABLE
@@ -52,17 +51,17 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-  float4 Position   : SV_POSITION;
   float2 TextureY   : TEXCOORD0;
   float2 TextureU   : TEXCOORD1;
   float2 TextureV   : TEXCOORD2;
+  float4 Position   : SV_POSITION;
 };
 
 VS_OUTPUT VS(VS_INPUT In)
 {
   VS_OUTPUT output = (VS_OUTPUT)0;
-  output.Position.x =  (In.Position.x / (g_viewportWidth  / 2.0)) - 1;
-  output.Position.y = -(In.Position.y / (g_viewportHeight / 2.0)) + 1;
+  output.Position.x =  (In.Position.x / (g_viewPort.x  / 2.0)) - 1;
+  output.Position.y = -(In.Position.y / (g_viewPort.y / 2.0)) + 1;
   output.Position.z = output.Position.z;
   output.Position.w = 1.0;
   output.TextureY   = In.TextureY;
@@ -132,12 +131,11 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
   return float4(mul(YUV, g_ColorMatrix).rgb, 1.0);
 }
 
-technique10 YUV2RGB_T
+technique11 YUV2RGB_T
 {
   pass P0
   {
     SetVertexShader( CompileShader( vs_4_0_level_9_1, VS() ) );
-    SetGeometryShader( NULL );
     SetPixelShader( CompileShader( ps_4_0_level_9_1, YUV2RGB() ) );
   }
 };
