@@ -2471,8 +2471,12 @@ void DCR_CLASS dcr_sony_decrypt (DCRAW *p, unsigned *data, int len, int start, i
 		for (p->sony_decrypt_p=0; p->sony_decrypt_p < 127; p->sony_decrypt_p++)
 			p->sony_decrypt_pad[p->sony_decrypt_p] = htonl(p->sony_decrypt_pad[p->sony_decrypt_p]);
 	}
-	while (len--)
-		*data++ ^= p->sony_decrypt_pad[p->sony_decrypt_p++ & 127] = p->sony_decrypt_pad[(p->sony_decrypt_p+1) & 127] ^ p->sony_decrypt_pad[(p->sony_decrypt_p+65) & 127];
+	while (len--) {
+		p->sony_decrypt_pad[p->sony_decrypt_p & 127] = p->sony_decrypt_pad[(p->sony_decrypt_p+1) & 127] ^ p->sony_decrypt_pad[(p->sony_decrypt_p+65) & 127];
+		*data ^= p->sony_decrypt_pad[p->sony_decrypt_p & 127];
+		data++;
+		p->sony_decrypt_p++;
+	}
 }
 
 void DCR_CLASS dcr_sony_load_raw(DCRAW* p)
