@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
+#include "utils/SystemInfo.h"
 
 #ifdef TARGET_WINDOWS
 #include <tpcshrd.h>
@@ -472,19 +473,61 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res, bool forceChange /*=
     sDevMode.dmDisplayFlags = (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? DM_INTERLACED : 0;
     sDevMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_DISPLAYFLAGS;
 
-    // CDS_FULLSCREEN is for temporary fullscreen mode and prevents icons and windows from moving
-    // to fit within the new dimensions of the desktop
-    LONG rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), &sDevMode, NULL, CDS_FULLSCREEN, NULL);
-    if (rc != DISP_CHANGE_SUCCESSFUL)
+    LONG rc = DISP_CHANGE_SUCCESSFUL;
+    bool bResChanged = false;
+
+    // Windows 8 refresh rate workaround for 24.0, 48.0 and 60.0 Hz
+    if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8) && (res.fRefreshRate == 24.0 || res.fRefreshRate == 48.0 || res.fRefreshRate == 60.0))
     {
-      CLog::Log(LOGERROR, "%s : ChangeDisplaySettingsEx failed with %d", __FUNCTION__, rc);
-      return false;
+      CLog::Log(LOGDEBUG, "%s : Using Windows 8+ workaround for refresh rate %d Hz", __FUNCTION__, (int)res.fRefreshRate);
+
+      // Get current resolution stored in registry
+      DEVMODEW sDevModeRegistry;
+      ZeroMemory(&sDevModeRegistry, sizeof(sDevModeRegistry));
+      sDevModeRegistry.dmSize = sizeof(sDevModeRegistry);
+      if (EnumDisplaySettingsW(details.DeviceNameW.c_str(), ENUM_REGISTRY_SETTINGS, &sDevModeRegistry))
+      {
+        // Set requested mode in registry without actually changing resolution
+        rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), &sDevMode, NULL, CDS_UPDATEREGISTRY | CDS_NORESET, NULL);
+        if (rc == DISP_CHANGE_SUCCESSFUL)
+        {
+          // Change resolution based on registry setting
+          rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), NULL, NULL, CDS_FULLSCREEN, NULL);
+          if (rc == DISP_CHANGE_SUCCESSFUL)
+            bResChanged = true;
+          else
+            CLog::Log(LOGERROR, "%s : ChangeDisplaySettingsEx (W8+ change resolution) failed with %d, using fallback", __FUNCTION__, rc);
+
+          // Restore registry with original values
+          sDevModeRegistry.dmSize = sizeof(sDevModeRegistry);
+          sDevModeRegistry.dmDriverExtra = 0;
+          sDevModeRegistry.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_DISPLAYFLAGS;
+          rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), &sDevModeRegistry, NULL, CDS_UPDATEREGISTRY | CDS_NORESET, NULL);
+          if (rc != DISP_CHANGE_SUCCESSFUL)
+            CLog::Log(LOGERROR, "%s : ChangeDisplaySettingsEx (W8+ restore registry) failed with %d", __FUNCTION__, rc);
+        }
+        else
+          CLog::Log(LOGERROR, "%s : ChangeDisplaySettingsEx (W8+ set registry) failed with %d, using fallback", __FUNCTION__, rc);
+      }
+      else
+        CLog::Log(LOGERROR, "%s : Unable to retrieve registry settings for Windows 8+ workaround, using fallback", __FUNCTION__);
     }
-    else
+
+    // Standard resolution change/fallback for Windows 8+ workaround
+    if (!bResChanged)
     {
-      return true;
+      // CDS_FULLSCREEN is for temporary fullscreen mode and prevents icons and windows from moving
+      // to fit within the new dimensions of the desktop
+      rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), &sDevMode, NULL, CDS_FULLSCREEN, NULL);
+      if (rc == DISP_CHANGE_SUCCESSFUL)
+        bResChanged = true;
+      else
+        CLog::Log(LOGERROR, "%s : ChangeDisplaySettingsEx failed with %d", __FUNCTION__, rc);
     }
+
+    return bResChanged;
   }
+
   // nothing to do, return success
   return true;
 }
