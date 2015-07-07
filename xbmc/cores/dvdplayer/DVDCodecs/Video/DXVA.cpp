@@ -770,7 +770,7 @@ CDecoder::CDecoder()
 
 CDecoder::~CDecoder()
 {
-  CLog::Log(LOGDEBUG, "%s - destructing decoder, %ld", __FUNCTION__, this);
+  CLog::Log(LOGDEBUG, "%s - destructing decoder, %p", __FUNCTION__, this);
   g_Windowing.Unregister(this);
   Close();
   free(m_context->surface);
@@ -1167,7 +1167,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   view = m_surface_context->GetFree(view != nullptr ? view : nullptr);
   if (view == nullptr)
   {
-    CLog::Log(LOGERROR, "%s - no surface available - dec: %d, render: %d", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - no surface available", __FUNCTION__);
     m_state = DXVA_LOST;
     return -1;
   }

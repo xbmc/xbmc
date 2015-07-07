@@ -510,7 +510,7 @@ bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned i
 
   if(!m_IntermediateTarget.Create(width, height, 1, D3D11_USAGE_DEFAULT, format))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": intermediate render target creation failed.", format);
+    CLog::Log(LOGERROR, __FUNCTION__": intermediate render target creation failed.");
     return false;
   }
   return true;

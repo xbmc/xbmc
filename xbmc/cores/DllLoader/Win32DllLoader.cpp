@@ -249,7 +249,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
 
   if (!image_base)
   {
-    CLog::Log(LOGERROR, "%s - unable to GetModuleHandle for dll %s", dll.c_str());
+    CLog::Log(LOGERROR, "%s - unable to GetModuleHandle for dll %s", __FUNCTION__, dll.c_str());
     return;
   }
 
@@ -261,7 +261,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
 
   if (!imp_desc)
   {
-    CLog::Log(LOGERROR, "%s - unable to get import directory for dll %s", dll.c_str());
+    CLog::Log(LOGERROR, "%s - unable to get import directory for dll %s", __FUNCTION__, dll.c_str());
     return;
   }
 
