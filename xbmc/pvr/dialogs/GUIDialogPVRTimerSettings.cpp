@@ -927,7 +927,6 @@ void CGUIDialogPVRTimerSettings::AddTypeDependentEnableCondition(CSetting *setti
 
 bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  bool bRet(true);
   if (setting == NULL)
     return false;
 
