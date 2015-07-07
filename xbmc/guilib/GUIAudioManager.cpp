@@ -65,10 +65,11 @@ bool CGUIAudioManager::OnSettingUpdate(CSetting* &setting, const char *oldSettin
 
   if (setting->GetId() == CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN)
   {
-    //We change to new resource.uisounds.confluence default only if current
-    //skin is confluence. Otherwise keep it as SKINDEFAULT.
-    return !(((CSettingString*)setting)->GetValue() == "SKINDEFAULT"
-        && CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == "skin.confluence");
+    //Migrate the old settings
+    if (((CSettingString*)setting)->GetValue() == "SKINDEFAULT")
+      ((CSettingString*)setting)->Reset();
+    else if (((CSettingString*)setting)->GetValue() == "OFF")
+      ((CSettingString*)setting)->SetValue("");
   }
   return true;
 }
@@ -222,30 +223,22 @@ void CGUIAudioManager::UnLoad()
 
 std::string GetSoundSkinPath()
 {
-  const std::string id = CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN);
-  if (id == "OFF")
+  auto setting = static_cast<CSettingString*>(CSettings::Get().GetSetting(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN));
+  auto value = setting->GetValue();
+  if (value.empty())
     return "";
 
-  if (id == "SKINDEFAULT")
-    return URIUtils::AddFileToFolder(g_SkinInfo->Path(), "sounds");
-
   ADDON::AddonPtr addon;
-  if (ADDON::CAddonMgr::Get().GetAddon(id, addon, ADDON::ADDON_RESOURCE_UISOUNDS))
-    return URIUtils::AddFileToFolder("resource://", id);
-
-  //Check special directories
-  std::string path = URIUtils::AddFileToFolder("special://home/sounds", id);
-  if (XFILE::CDirectory::Exists(path))
-    return path;
-
-  return URIUtils::AddFileToFolder("special://xbmc/sounds", id);
+  if (!ADDON::CAddonMgr::Get().GetAddon(value, addon, ADDON::ADDON_RESOURCE_UISOUNDS))
+  {
+    CLog::Log(LOGNOTICE, "Unknown sounds addon '%s'. Setting default sounds.", value.c_str());
+    setting->Reset();
+  }
+  return URIUtils::AddFileToFolder("resource://", setting->GetValue());
 }
 
 
 // \brief Load the config file (sounds.xml) for nav sounds
-// Can be located in a folder "sounds" in the skin or from a
-// subfolder of the folder "sounds" in the root directory of
-// xbmc
 bool CGUIAudioManager::Load()
 {
   CSingleLock lock(m_cs);
@@ -406,7 +399,7 @@ IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const std::s
 void CGUIAudioManager::Enable(bool bEnable)
 {
   // always deinit audio when we don't want gui sounds
-  if (CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN)=="OFF")
+  if (CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN).empty())
     bEnable = false;
 
   CSingleLock lock(m_cs);

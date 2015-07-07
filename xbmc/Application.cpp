@@ -1103,7 +1103,6 @@ void CApplication::CreateUserDirs()
   CDirectory::Create("special://home/addons");
   CDirectory::Create("special://home/addons/packages");
   CDirectory::Create("special://home/media");
-  CDirectory::Create("special://home/sounds");
   CDirectory::Create("special://home/system");
   CDirectory::Create("special://masterprofile/");
   CDirectory::Create("special://temp/");
@@ -1124,7 +1123,6 @@ bool CApplication::Initialize()
 #endif
   {
     CDirectory::Create("special://xbmc/addons");
-    CDirectory::Create("special://xbmc/sounds");
   }
 
   // load the language and its translated strings
@@ -1373,22 +1371,11 @@ void CApplication::OnSettingChanged(const CSetting *setting)
       return;
     }
 
-    // Reset sounds setting if new skin doen't provide sounds
-    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN) == "SKINDEFAULT")
-    {
-      ADDON::AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(((CSettingString*)setting)->GetValue(), addon, ADDON_SKIN))
-      {
-        if (!CDirectory::Exists(URIUtils::AddFileToFolder(addon->Path(), "sounds")))
-          CSettings::Get().GetSetting(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN)->Reset();
-      }
-    }
-
-      std::string builtin("ReloadSkin");
-      if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
-        builtin += "(confirm)";
-      CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
-    }
+    std::string builtin("ReloadSkin");
+    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
+      builtin += "(confirm)";
+    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+  }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME)
   {
     // also set the default color theme
