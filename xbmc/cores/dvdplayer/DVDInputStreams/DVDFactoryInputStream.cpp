@@ -25,7 +25,6 @@
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamPVRManager.h"
-#include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"

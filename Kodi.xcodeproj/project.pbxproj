@@ -1151,7 +1151,6 @@
 		DFF0F17C17528350002DA3A4 /* DVDInputStreamNavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */; };
 		DFF0F17D17528350002DA3A4 /* DVDInputStreamPVRManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848290E156CFFA0005A996F /* DVDInputStreamPVRManager.cpp */; };
 		DFF0F17E17528350002DA3A4 /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
-		DFF0F17F17528350002DA3A4 /* DVDInputStreamTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */; };
 		DFF0F18017528350002DA3A4 /* DVDStateSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15740D25F9FA00618676 /* DVDStateSerializer.cpp */; };
 		DFF0F18117528350002DA3A4 /* DVDSubtitleParserSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */; };
 		DFF0F18217528350002DA3A4 /* DVDSubtitlesLibass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */; };
@@ -1858,7 +1857,6 @@
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
-		E33979960D62FD48004ECDDA /* DVDInputStreamTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */; };
 		E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */; };
 		E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DB0DA72429001F0C9D /* Artist.cpp */; };
 		E36C29E00DA72429001F0C9D /* Album.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DC0DA72429001F0C9D /* Album.cpp */; };
@@ -2329,7 +2327,6 @@
 		E49911E4174E5D3700741B6D /* DVDInputStreamNavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */; };
 		E49911E5174E5D3700741B6D /* DVDInputStreamPVRManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C848290E156CFFA0005A996F /* DVDInputStreamPVRManager.cpp */; };
 		E49911E6174E5D3700741B6D /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
-		E49911E7174E5D3700741B6D /* DVDInputStreamTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */; };
 		E49911E8174E5D3700741B6D /* DVDStateSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15740D25F9FA00618676 /* DVDStateSerializer.cpp */; };
 		E49911E9174E5D3E00741B6D /* DVDSubtitleParserSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */; };
 		E49911EA174E5D3E00741B6D /* DVDSubtitlesLibass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */; };
@@ -4687,8 +4684,6 @@
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
 		E33466A50D2E5103005A65EC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamTV.cpp; sourceTree = "<group>"; };
-		E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamTV.h; sourceTree = "<group>"; };
 		E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerCodec.cpp; sourceTree = "<group>"; };
 		E36578870D3AA7B40033CC1C /* DVDPlayerCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerCodec.h; sourceTree = "<group>"; };
 		E36C29DB0DA72429001F0C9D /* Artist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Artist.cpp; sourceTree = "<group>"; };
@@ -8498,8 +8493,6 @@
 				C848290F156CFFA0005A996F /* DVDInputStreamPVRManager.h */,
 				815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */,
 				815EE6340E17F1DC009FBE3C /* DVDInputStreamRTMP.h */,
-				E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */,
-				E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */,
 				E38E15740D25F9FA00618676 /* DVDStateSerializer.cpp */,
 				E38E15750D25F9FA00618676 /* DVDStateSerializer.h */,
 			);
@@ -10379,7 +10372,6 @@
 				395897151AAD94F00033D27C /* KeyboardLayoutManager.cpp in Sources */,
 				E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */,
 				E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */,
-				E33979960D62FD48004ECDDA /* DVDInputStreamTV.cpp in Sources */,
 				E3DAAF8D0D6E1B0500F17647 /* SMBDirectory.cpp in Sources */,
 				E3E91FFD0D8C61DF002BF43D /* EventPacket.cpp in Sources */,
 				E3E91FFE0D8C61DF002BF43D /* EventServer.cpp in Sources */,
@@ -11224,7 +11216,6 @@
 				DFF0F17C17528350002DA3A4 /* DVDInputStreamNavigator.cpp in Sources */,
 				DFF0F17D17528350002DA3A4 /* DVDInputStreamPVRManager.cpp in Sources */,
 				DFF0F17E17528350002DA3A4 /* DVDInputStreamRTMP.cpp in Sources */,
-				DFF0F17F17528350002DA3A4 /* DVDInputStreamTV.cpp in Sources */,
 				DFF0F18017528350002DA3A4 /* DVDStateSerializer.cpp in Sources */,
 				DFF0F18117528350002DA3A4 /* DVDSubtitleParserSSA.cpp in Sources */,
 				DFF0F18217528350002DA3A4 /* DVDSubtitlesLibass.cpp in Sources */,
@@ -12260,7 +12251,6 @@
 				E49911E4174E5D3700741B6D /* DVDInputStreamNavigator.cpp in Sources */,
 				E49911E5174E5D3700741B6D /* DVDInputStreamPVRManager.cpp in Sources */,
 				E49911E6174E5D3700741B6D /* DVDInputStreamRTMP.cpp in Sources */,
-				E49911E7174E5D3700741B6D /* DVDInputStreamTV.cpp in Sources */,
 				E49911E8174E5D3700741B6D /* DVDStateSerializer.cpp in Sources */,
 				E49911E9174E5D3E00741B6D /* DVDSubtitleParserSSA.cpp in Sources */,
 				E49911EA174E5D3E00741B6D /* DVDSubtitlesLibass.cpp in Sources */,
