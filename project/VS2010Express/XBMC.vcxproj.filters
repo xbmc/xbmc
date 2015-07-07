@@ -345,6 +345,7 @@
     </Filter>
     <Filter Include="guiinfo">
       <UniqueIdentifier>{bc76faa4-e05e-4f08-b332-a91d7bc3207f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="network\dacp">
       <UniqueIdentifier>{33ec4ead-1923-47c2-8a7f-44561adaebf3}</UniqueIdentifier>
     </Filter>
