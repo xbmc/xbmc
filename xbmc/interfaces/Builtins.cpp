@@ -71,6 +71,7 @@
 #include "cores/IPlayer.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/PVRManager.h"
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -234,6 +235,7 @@ const BUILT_IN commands[] = {
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
   { "StartPVRManager",            false,  "(Re)Starts the PVR manager" },
   { "StopPVRManager",             false,  "Stops the PVR manager" },
+  { "PVR.SearchMissingChannelIcons", false,  "Search for missing channel icons" },
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
@@ -1850,6 +1852,10 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "stoppvrmanager")
   {
     g_application.StopPVRManager();
+  }
+  else if (execute == "pvr.searchmissingchannelicons")
+  {
+    PVR::CPVRManager::Get().TriggerSearchMissingChannelIcons();
   }
   else if (execute == "startandroidactivity" && !params.empty())
   {
