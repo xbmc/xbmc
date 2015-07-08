@@ -30,6 +30,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "epg/EpgContainer.h"
 #include "pvr/addons/PVRClients.h"
+#include "utils/Variant.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -150,8 +151,8 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
     CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (dlgProgress)
     {
-      dlgProgress->SetHeading(194);
-      dlgProgress->SetText(CVariant(m_searchfilter.m_strSearchTerm));
+      dlgProgress->SetHeading(CVariant{194});
+      dlgProgress->SetText(CVariant{m_searchfilter.m_strSearchTerm});
       dlgProgress->StartModal();
       dlgProgress->Progress();
     }
@@ -164,7 +165,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 
     if (items.IsEmpty())
     {
-      CGUIDialogOK::ShowAndGetInput(194, 284);
+      CGUIDialogOK::ShowAndGetInput(CVariant{194}, CVariant{284});
       m_bSearchConfirmed = false;
     }
   }

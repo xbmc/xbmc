@@ -41,6 +41,8 @@
 #include "interfaces/IActionListener.h"
 
 class CDACP;
+class CVariant;
+
 class CAirTunesServer : public ANNOUNCEMENT::IAnnouncer, public IActionListener, public CThread
 {
 public:

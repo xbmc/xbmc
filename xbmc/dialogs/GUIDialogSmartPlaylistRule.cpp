@@ -33,6 +33,9 @@
 #include "utils/LabelFormatter.h"
 #include "utils/StringUtils.h"
 #include "settings/Settings.h"
+#include "utils/Variant.h"
+
+#include <utility>
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -344,7 +347,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   pDialog->Reset();
   pDialog->SetItems(&items);
   std::string strHeading = StringUtils::Format(g_localizeStrings.Get(13401).c_str(), g_localizeStrings.Get(iLabel).c_str());
-  pDialog->SetHeading(strHeading);
+  pDialog->SetHeading(CVariant{std::move(strHeading)});
   pDialog->SetMultiSelection(m_rule.m_field != FieldPlaylist && m_rule.m_field != FieldVirtualFolder);
 
   if (!m_rule.m_parameter.empty())

@@ -1,3 +1,4 @@
+
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -27,6 +28,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "filesystem/Directory.h"
 #include "filesystem/PVRDirectory.h"
 #include "GUIDialogYesNo.h"
@@ -360,7 +362,7 @@ void CGUIDialogMediaSource::OnPath(int item)
     m_bNameChanged=true;
 
   std::string path(m_paths->Get(item)->GetPath());
-  CGUIKeyboardFactory::ShowAndGetInput(path, g_localizeStrings.Get(1021), false);
+  CGUIKeyboardFactory::ShowAndGetInput(path, CVariant{g_localizeStrings.Get(1021)}, false);
   m_paths->Get(item)->SetPath(path);
 
   if (!m_bNameChanged || m_name.empty())
@@ -384,7 +386,7 @@ void CGUIDialogMediaSource::OnOK()
   VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(m_type);
   if (shares)
     shares->push_back(share);
-  if (StringUtils::StartsWithNoCase(share.strPath, "plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(1001, 1025))
+  if (StringUtils::StartsWithNoCase(share.strPath, "plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(CVariant{1001}, CVariant{1025}))
   {
     m_confirmed = true;
     Close();

@@ -33,6 +33,7 @@
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/Variant.h"
 
 #include <assert.h>
 
@@ -627,8 +628,8 @@ PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
     // have user select client
     CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDialog->Reset();
-    pDialog->SetHeading(19292);                 /* Delete all permanently */
-    pDialog->Add(g_localizeStrings.Get(24032)); /* All Add-ons */
+    pDialog->SetHeading(CVariant{19292});       //Delete all permanently
+    pDialog->Add(g_localizeStrings.Get(24032)); // All Add-ons
 
     PVR_CLIENTMAP_CITR itrClients;
     for (itrClients = clients.begin(); itrClients != clients.end(); ++itrClients)
@@ -870,7 +871,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
       // have user select client
       CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
       pDialog->Reset();
-      pDialog->SetHeading(19196);
+      pDialog->SetHeading(CVariant{19196});
 
       PVR_CLIENTMAP_CITR itrClients;
       for (itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
@@ -902,7 +903,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
 
     CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDialog->Reset();
-    pDialog->SetHeading(19196);
+    pDialog->SetHeading(CVariant{19196});
     for (unsigned int i = 0; i < hooks->size(); i++)
       if (hooks->at(i).category == cat || hooks->at(i).category == PVR_MENUHOOK_ALL)
       {
@@ -953,7 +954,7 @@ void CPVRClients::StartChannelScan(void)
     CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
     pDialog->Reset();
-    pDialog->SetHeading(19119);
+    pDialog->SetHeading(CVariant{19119});
 
     for (unsigned int i = 0; i < possibleScanClients.size(); i++)
       pDialog->Add(possibleScanClients[i]->GetFriendlyName());
@@ -972,7 +973,7 @@ void CPVRClients::StartChannelScan(void)
   /* no clients found */
   else if (!scanClient)
   {
-    CGUIDialogOK::ShowAndGetInput(19033, 19192);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19192});
     return;
   }
 
@@ -987,7 +988,7 @@ void CPVRClients::StartChannelScan(void)
   /* do the scan */
   if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
     /* an error occured */
-    CGUIDialogOK::ShowAndGetInput(19111, 19193);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19111}, CVariant{19193});
 
   /* restart the supervisor thread */
   g_PVRManager.StartUpdateThreads();
@@ -1026,7 +1027,7 @@ bool CPVRClients::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
 
   if (error == PVR_ERROR_NOT_IMPLEMENTED)
   {
-    CGUIDialogOK::ShowAndGetInput(19033, 19038);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
     return true;
   }
 
@@ -1045,7 +1046,7 @@ bool CPVRClients::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
 
   if (error == PVR_ERROR_NOT_IMPLEMENTED)
   {
-    CGUIDialogOK::ShowAndGetInput(19033, 19038);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
     return true;
   }
 
@@ -1064,7 +1065,7 @@ bool CPVRClients::DeleteChannel(const CPVRChannelPtr &channel)
 
   if (error == PVR_ERROR_NOT_IMPLEMENTED)
   {
-    CGUIDialogOK::ShowAndGetInput(19033, 19038);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
     return true;
   }
 
@@ -1212,7 +1213,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       }
 
       if (bDisabled && (g_PVRManager.IsStarted() || g_PVRManager.IsInitialising()))
-        CGUIDialogOK::ShowAndGetInput(24070, 16029);
+        CGUIDialogOK::ShowAndGetInput(CVariant{24070}, CVariant{16029});
     }
   }
 
@@ -1344,7 +1345,7 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
   if (!g_PVRManager.IsStarted() && !g_PVRManager.IsInitialising())
     return;
 
-  CGUIDialogOK::ShowAndGetInput(19240, 19241);
+  CGUIDialogOK::ShowAndGetInput(CVariant{19240}, CVariant{19241});
 
   std::vector<std::string> params;
   params.push_back("addons://disabled/xbmc.pvrclient");
@@ -1398,7 +1399,7 @@ bool CPVRClients::UpdateAddons(void)
     // You need a tuner, backend software, and an add-on for the backend to be able to use PVR.
     // Please visit http://kodi.wiki/view/PVR to learn more.
     m_bNoAddonWarningDisplayed = true;
-    CGUIDialogOK::ShowAndGetInput(19271, 19272);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19271}, CVariant{19272});
     CSettings::Get().SetBool("pvrmanager.enabled", false);
     CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_MYPVR, 0);
     g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_MYPVR);

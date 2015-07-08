@@ -30,6 +30,7 @@
 
 #define EPG_DEBUGGING 0
 
+class CVariant;
 /** an EPG info tag */
 namespace EPG
 {

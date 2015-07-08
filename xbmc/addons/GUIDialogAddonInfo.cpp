@@ -36,9 +36,12 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "addons/AddonInstaller.h"
 #include "Util.h"
 #include "interfaces/Builtins.h"
+
+#include <utility>
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7
@@ -216,7 +219,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
   {
     string line0 = StringUtils::Format(g_localizeStrings.Get(24046).c_str(), m_localAddon->Name().c_str());
     string line1 = StringUtils::Join(deps, ", ");
-    CGUIDialogOK::ShowAndGetInput(heading, line0, line1, line2);
+    CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{std::move(line0)}, CVariant{std::move(line1)}, CVariant{line2});
     return true;
   }
   return false;
@@ -235,7 +238,7 @@ void CGUIDialogAddonInfo::OnUninstall()
     return;
 
   // prompt user to be sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(24037, 750))
+  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{750}))
     return;
 
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),

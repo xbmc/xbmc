@@ -24,6 +24,7 @@
 #include "GUIWindowWeather.h"
 #include "utils/Weather.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #ifdef HAS_PYTHON
 #endif
 #include "LangInfo.h"

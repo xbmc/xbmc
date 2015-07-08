@@ -26,6 +26,7 @@
 #include "ApplicationMessenger.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
+#include "utils/Variant.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;

@@ -24,6 +24,8 @@
 #include "interfaces/IAnnouncer.h"
 #include "utils/Job.h"
 
+class CVariant;
+
 class CGUIWindowHome :
       public CGUIWindow,
       public ANNOUNCEMENT::IAnnouncer,

@@ -39,6 +39,7 @@
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5
@@ -237,10 +238,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage &message)
     if (!pDialog)
       return true;
 
-    pDialog->SetHeading(20052);
-    pDialog->SetLine(0, "");
-    pDialog->SetLine(1, 19212);
-    pDialog->SetLine(2, 20103);
+    pDialog->SetHeading(CVariant{20052});
+    pDialog->SetLine(0, CVariant{""});
+    pDialog->SetLine(1, CVariant{19212});
+    pDialog->SetLine(2, CVariant{20103});
     pDialog->DoModal();
 
     if (pDialog->IsConfirmed())
@@ -447,7 +448,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
     if (!pDlgSelect)
       return false;
 
-    pDlgSelect->SetHeading(19213); // Select Client
+    pDlgSelect->SetHeading(CVariant{19213}); // Select Client
 
     PVR_CLIENT_ITR itr;
     for (itr = m_clientsWithSettingsList.begin() ; itr != m_clientsWithSettingsList.end(); ++itr)
@@ -469,7 +470,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
     if (g_PVRClients->OpenDialogChannelAdd(channel))
       Update();
     else
-      CGUIDialogOK::ShowAndGetInput(2103, 16029);  // Add-on error;Check the log file for details.
+      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
   }
   return true;
 }
@@ -596,7 +597,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   else if (button == CONTEXT_BUTTON_SETTINGS)
   {
     if (!g_PVRClients->OpenDialogChannelSettings(pItem->GetPVRChannelInfoTag()))
-      CGUIDialogOK::ShowAndGetInput(2103, 16029);  // Add-on error;Check the log file for details.
+      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
   }
   else if (button == CONTEXT_BUTTON_DELETE)
   {
@@ -604,8 +605,8 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
     if (!pDialog)
       return true;
 
-    pDialog->SetHeading(19211); // Delete channel
-    pDialog->SetText(750);      // Are you sure?
+    pDialog->SetHeading(CVariant{19211}); // Delete channel
+    pDialog->SetText(CVariant{750});      // Are you sure?
     pDialog->DoModal();
 
     if (pDialog->IsConfirmed())
@@ -619,13 +620,13 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
         Renumber();
       }
       else
-        CGUIDialogOK::ShowAndGetInput(2103, 16029);  // Add-on error;Check the log file for details.
+        CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
     }
   }
   else if (button == CONTEXT_BUTTON_EDIT_SOURCE)
   {
     std::string strURL = pItem->GetProperty("StreamURL").asString();
-    if (CGUIKeyboardFactory::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(strURL, CVariant{g_localizeStrings.Get(19214)}, false))
       pItem->SetProperty("StreamURL", strURL);
   }
   return true;
@@ -727,7 +728,7 @@ void CGUIDialogPVRChannelManager::RenameChannel(CFileItemPtr pItem)
     channel->SetChannelName(strChannelName);
 
     if (!g_PVRClients->RenameChannel(channel))
-      CGUIDialogOK::ShowAndGetInput(2103, 16029);  // Add-on error;Check the log file for details.
+      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
   }
 }
 
@@ -756,10 +757,10 @@ void CGUIDialogPVRChannelManager::SaveList(void)
 
   /* display the progress dialog */
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDlgProgress->SetHeading(190);
-  pDlgProgress->SetLine(0, "");
-  pDlgProgress->SetLine(1, 328);
-  pDlgProgress->SetLine(2, "");
+  pDlgProgress->SetHeading(CVariant{190});
+  pDlgProgress->SetLine(0, CVariant{""});
+  pDlgProgress->SetLine(1, CVariant{328});
+  pDlgProgress->SetLine(2, CVariant{""});
   pDlgProgress->StartModal();
   pDlgProgress->Progress();
   pDlgProgress->SetPercentage(0);

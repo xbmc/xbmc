@@ -25,6 +25,7 @@
 #include "network/WebServer.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 
 #define MAX_STRING_POST_SIZE 20000
 

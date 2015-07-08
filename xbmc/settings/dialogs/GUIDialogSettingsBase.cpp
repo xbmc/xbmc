@@ -36,6 +36,7 @@
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -753,7 +754,7 @@ void CGUIDialogSettingsBase::SetDescription(const CVariant &label)
 
 void CGUIDialogSettingsBase::OnResetSettings()
 {
-  if (CGUIDialogYesNo::ShowAndGetInput(10041, 10042))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{10041}, CVariant{10042}))
   {
     for(vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
     {

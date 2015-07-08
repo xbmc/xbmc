@@ -25,6 +25,7 @@
 #include "GUIDialogOK.h"
 #include "input/XBMC_vkeys.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
@@ -733,7 +734,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12340), false))
   {
     // Show error to user saying the password entry was blank
-    CGUIDialogOK::ShowAndGetInput(12357, 12358); // Password is empty/blank
+    CGUIDialogOK::ShowAndGetInput(CVariant{12357}, CVariant{12358}); // Password is empty/blank
     return false;
   }
 
@@ -745,7 +746,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12341), true))
   {
     // Show error to user saying the password re-entry failed
-    CGUIDialogOK::ShowAndGetInput(12357, 12344); // Password do not match
+    CGUIDialogOK::ShowAndGetInput(CVariant{12357}, CVariant{12344}); // Password do not match
     return false;
   }
 

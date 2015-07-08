@@ -21,6 +21,7 @@
 
 class CSong;
 class CArtist;
+class CVariant;
 
 #include <stdint.h>
 #include <string>

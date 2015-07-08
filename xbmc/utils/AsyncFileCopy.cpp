@@ -25,6 +25,7 @@
 #include "log.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
+#include "utils/Variant.h"
 
 CAsyncFileCopy::CAsyncFileCopy() : CThread("AsyncFileCopy")
 {
@@ -65,20 +66,19 @@ bool CAsyncFileCopy::Copy(const std::string &from, const std::string &to, const 
     // start the dialog up as needed
     if (dlg && !dlg->IsDialogRunning() && (XbmcThreads::SystemClockMillis() - time) > 500) // wait 0.5 seconds before starting dialog
     {
-      dlg->SetHeading(heading);
-      dlg->SetLine(0, url1.GetWithoutUserDetails());
-      dlg->SetLine(1, url2.GetWithoutUserDetails());
+      dlg->SetHeading(CVariant{heading});
+      dlg->SetLine(0, CVariant{url1.GetWithoutUserDetails()});
+      dlg->SetLine(1, CVariant{url2.GetWithoutUserDetails()});
       dlg->SetPercentage(0);
       dlg->StartModal();
     }
     // and update the dialog as we go
     if (dlg && dlg->IsDialogRunning())
     {
-      std::string speedString = StringUtils::Format("%2.2f KB/s", m_speed / 1024);
-      dlg->SetHeading(heading);
-      dlg->SetLine(0, url1.Get());
-      dlg->SetLine(1, url2.Get());
-      dlg->SetLine(2, speedString);
+      dlg->SetHeading(CVariant{heading});
+      dlg->SetLine(0, CVariant{url1.Get()});
+      dlg->SetLine(1, CVariant{url2.Get()});
+      dlg->SetLine(2, CVariant{ StringUtils::Format("%2.2f KB/s", m_speed / 1024) });
       dlg->SetPercentage(m_percent);
       dlg->Progress();
       m_cancelled = dlg->IsCanceled();

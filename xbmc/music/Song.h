@@ -32,6 +32,8 @@
 #include <string>
 #include <vector>
 
+class CVariant;
+
 /*!
  \ingroup music
  \brief Class to store and read album information from CMusicDatabase

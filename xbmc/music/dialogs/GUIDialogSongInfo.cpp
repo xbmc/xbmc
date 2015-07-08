@@ -21,6 +21,7 @@
 #include "GUIDialogSongInfo.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"

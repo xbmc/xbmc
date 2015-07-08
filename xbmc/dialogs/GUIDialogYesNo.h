@@ -22,6 +22,7 @@
 
 #include <string>
 #include "GUIDialogBoxBase.h"
+#include "utils/Variant.h"
 
 class CGUIDialogYesNo :
       public CGUIDialogBoxBase
@@ -40,7 +41,7 @@ public:
    \param bCanceled Holds true if the dialog was canceled otherwise false
    \return true if user selects Yes, otherwise false if user selects No.
    */
-  static bool ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2, bool &bCanceled);
+  static bool ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled);
 
   /*! \brief Show a yes-no dialog, then wait for user to dismiss it.
    \param heading Localized label id or string for the heading of the dialog
@@ -51,7 +52,7 @@ public:
    \param iYesLabel Localized label id or string for the yes button
    \return true if user selects Yes, otherwise false if user selects No.
    */
-  static bool ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2, const CVariant &noLabel = "", const CVariant &yesLabel = "");
+  static bool ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, CVariant noLabel = "", CVariant yesLabel = "");
 
   /*! \brief Show a yes-no dialog, then wait for user to dismiss it.
    \param heading Localized label id or string for the heading of the dialog
@@ -64,14 +65,14 @@ public:
    \param autoCloseTime Time in ms before the dialog becomes automatically closed
    \return true if user selects Yes, otherwise false if user selects No.
    */
-  static bool ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2, bool &bCanceled, const CVariant &noLabel, const CVariant &yesLabel, unsigned int autoCloseTime = 0);
+  static bool ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled, CVariant noLabel, CVariant yesLabel, unsigned int autoCloseTime = 0);
 
   /*! \brief Show a yes-no dialog, then wait for user to dismiss it.
    \param heading Localized label id or string for the heading of the dialog
    \param text Localized label id or string for the dialog message
    \return true if user selects Yes, otherwise false if user selects No.
    */
-  static bool ShowAndGetInput(const CVariant &heading, const CVariant &text);
+  static bool ShowAndGetInput(CVariant heading, CVariant text);
 
   /*! \brief Show a yes-no dialog, then wait for user to dismiss it.
    \param heading Localized label id or string for the heading of the dialog
@@ -82,7 +83,7 @@ public:
    \param autoCloseTime Time in ms before the dialog becomes automatically closed
    \return true if user selects Yes, otherwise false if user selects No.
    */
-  static bool ShowAndGetInput(const CVariant &heading, const CVariant &text, bool &bCanceled, const CVariant &noLabel = "", const CVariant &yesLabel = "", unsigned int autoCloseTime = 0);
+  static bool ShowAndGetInput(CVariant heading, CVariant text, bool &bCanceled, CVariant noLabel = "", CVariant yesLabel = "", unsigned int autoCloseTime = 0);
 
 protected:
   virtual int GetDefaultLabelID(int controlId) const;

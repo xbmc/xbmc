@@ -41,6 +41,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "interfaces/AnnouncementManager.h"
 #include "pictures/GUIViewStatePictures.h"
 #include "pictures/PictureThumbLoader.h"

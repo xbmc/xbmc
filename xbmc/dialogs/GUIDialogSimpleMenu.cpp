@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 #include "URL.h"
+#include "utils/Variant.h"
 
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
@@ -98,7 +99,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
   while (true)
   {
     dialog->Reset();
-    dialog->SetHeading(25006 /* Select playback item */);
+    dialog->SetHeading(CVariant{25006}); // Select playback item
     dialog->SetItems(&items);
     dialog->SetUseDetails(true);
     dialog->DoModal();

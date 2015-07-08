@@ -33,6 +33,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #include <assert.h>
 
@@ -1919,10 +1920,10 @@ bool CPVRClient::Autoconfigure(void)
         std::string strLogLine(StringUtils::Format(g_localizeStrings.Get(19689).c_str(), (*it).GetName().c_str(), (*it).GetIP().c_str()));
         CLog::Log(LOGDEBUG, "%s - %s", __FUNCTION__, strLogLine.c_str());
 
-        if (!CGUIDialogYesNo::ShowAndGetInput(19688, // Scanning for PVR services
-                                              strLogLine,
-                                              19690, // Do you want to use this service?
-                                              ""))
+        if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19688}, // Scanning for PVR services
+                                              CVariant{strLogLine},
+                                              CVariant{19690}, // Do you want to use this service?
+                                              CVariant{""}))
         {
           CLog::Log(LOGDEBUG, "%s - %s service found but not enabled by the user", __FUNCTION__, (*it).GetName().c_str());
           m_rejectedAvahiHosts.push_back(*it);

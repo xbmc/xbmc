@@ -32,6 +32,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "threads/SingleLock.h"
 #include "pvr/addons/PVRClients.h"
 #include "video/windows/GUIWindowVideoNav.h"
@@ -327,11 +328,12 @@ bool CGUIWindowPVRRecordings::ActionDeleteRecording(CFileItem *item)
   if (!pDialog)
     return bReturn;
 
-  pDialog->SetHeading(122); // Confirm delete
-  pDialog->SetLine(0, item->m_bIsFolder ? 19113 : item->GetPVRRecordingInfoTag()->IsDeleted() ? 19294 : 19112); // Delete all recordings in this folder? / Delete this recording permanently? / Delete this recording?
-  pDialog->SetLine(1, "");
-  pDialog->SetLine(2, item->GetLabel());
-  pDialog->SetChoice(1, 117); // Delete
+  int iLine0 = item->m_bIsFolder ? 19113 : item->GetPVRRecordingInfoTag()->IsDeleted() ? 19294 : 19112;
+  pDialog->SetHeading(CVariant{122}); // Confirm delete
+  pDialog->SetLine(0, CVariant{iLine0}); // Delete all recordings in this folder? / Delete this recording permanently? / Delete this recording?
+  pDialog->SetLine(1, CVariant{""});
+  pDialog->SetLine(2, CVariant{item->GetLabel()});
+  pDialog->SetChoice(1, CVariant{117}); // Delete
 
   /* prompt for the user's confirmation */
   pDialog->DoModal();
@@ -400,11 +402,11 @@ bool CGUIWindowPVRRecordings::OnContextButtonDeleteAll(CFileItem *item, CONTEXT_
     return bReturn;
 
 
-  pDialog->SetHeading(19292); // Delete all permanently
-  pDialog->SetLine(0, 19293); // Delete all recordings permanently?
-  pDialog->SetLine(1, "");
-  pDialog->SetLine(2, "");
-  pDialog->SetChoice(1, 117); // Delete
+  pDialog->SetHeading(CVariant{19292}); // Delete all permanently
+  pDialog->SetLine(0, CVariant{19293}); // Delete all recordings permanently?
+  pDialog->SetLine(1, CVariant{""});
+  pDialog->SetLine(2, CVariant{""});
+  pDialog->SetChoice(1, CVariant{117}); // Delete
 
   /* prompt for the user's confirmation */
   pDialog->DoModal();
@@ -467,7 +469,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUT
       bReturn = true;
 
       std::string strNewName = recording->m_strTitle;
-      if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
+      if (CGUIKeyboardFactory::ShowAndGetInput(strNewName, CVariant{g_localizeStrings.Get(19041)}, false))
       {
         if (g_PVRRecordings->RenameRecording(*item, strNewName))
           Refresh(true);

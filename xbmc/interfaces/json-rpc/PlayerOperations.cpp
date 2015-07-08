@@ -43,6 +43,7 @@
 #include "cores/playercorefactory/PlayerCoreConfig.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "utils/SeekHandler.h"
+#include "utils/Variant.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;

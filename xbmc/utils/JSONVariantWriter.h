@@ -19,8 +19,10 @@
  *
  */
 
-#include "Variant.h"
 #include <yajl/yajl_gen.h>
+#include <string>
+
+class CVariant;
 
 class CJSONVariantWriter
 {

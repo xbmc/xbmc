@@ -78,6 +78,7 @@
 #include "utils/Weather.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/SeekHandler.h"
+#include "utils/Variant.h"
 #include "view/ViewStateSettings.h"
 #include "input/InputManager.h"
 

@@ -30,6 +30,8 @@
 
 #define PVR_INVALID_CHANNEL_UID -1
 
+class CVariant;
+
 namespace EPG
 {
   class CEpg;

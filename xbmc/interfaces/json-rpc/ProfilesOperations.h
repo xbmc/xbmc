@@ -22,6 +22,8 @@
 #include "JSONRPC.h"
 #include "FileItemHandler.h"
 
+class CVariant;
+
 namespace JSONRPC
 {
   class CProfilesOperations : CFileItemHandler

@@ -37,6 +37,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "epg/EpgContainer.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "threads/SingleLock.h"
 
 using namespace PVR;
@@ -248,7 +249,7 @@ bool CGUIWindowPVRChannels::OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON b
 
   if (button == CONTEXT_BUTTON_ADD)
   {
-    CGUIDialogOK::ShowAndGetInput(19033, 19038);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
     bReturn = true;
   }
 
@@ -349,10 +350,10 @@ bool CGUIWindowPVRChannels::OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BU
 
     CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
 
-    pDialog->SetHeading(19251);
-    pDialog->SetLine(0, g_localizeStrings.Get(19252));
-    pDialog->SetLine(1, channel->ChannelName());
-    pDialog->SetLine(2, "");
+    pDialog->SetHeading(CVariant{19251});
+    pDialog->SetLine(0, CVariant{g_localizeStrings.Get(19252)});
+    pDialog->SetLine(1, CVariant{channel->ChannelName()});
+    pDialog->SetLine(2, CVariant{""});
     pDialog->DoModal();
 
     if (!pDialog->IsConfirmed())

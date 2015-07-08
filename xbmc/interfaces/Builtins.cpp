@@ -64,6 +64,7 @@
 #include "settings/SkinSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoLibraryQueue.h"
 #include "Util.h"
 #include "URL.h"
@@ -1346,7 +1347,7 @@ int CBuiltins::Execute(const std::string& execString)
     g_mediaManager.GetLocalDrives(localShares);
     if (execute == "skin.setstring")
     {
-      if (CGUIKeyboardFactory::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
+      if (CGUIKeyboardFactory::ShowAndGetInput(value, CVariant{g_localizeStrings.Get(1029)}, true))
         CSkinSettings::Get().SetString(string, value);
     }
     else if (execute == "skin.setnumeric")
@@ -1581,7 +1582,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (params.size() > 1)
       singleFile = StringUtils::EqualsNoCase(params[1], "true");
     else
-      singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20426, cancelled, 20428, 20429);
+      singleFile = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20426}, cancelled, CVariant{20428}, CVariant{20429});
 
     if (cancelled)
         return -1;
@@ -1591,7 +1592,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 2)
         thumbs = StringUtils::EqualsNoCase(params[2], "true");
       else
-        thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20430, cancelled);
+        thumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20430}, cancelled);
     }
 
     if (cancelled)
@@ -1602,7 +1603,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 4)
         actorThumbs = StringUtils::EqualsNoCase(params[4], "true");
       else
-        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20436, cancelled);
+        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20436}, cancelled);
     }
 
     if (cancelled)
@@ -1613,7 +1614,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 3)
         overwrite = StringUtils::EqualsNoCase(params[3], "true");
       else
-        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20431, cancelled);
+        overwrite = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20431}, cancelled);
     }
 
     if (cancelled)

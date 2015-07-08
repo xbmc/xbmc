@@ -23,6 +23,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+
 
 using namespace std;
 
@@ -63,7 +65,7 @@ bool CGUIDialogBoxBase::IsConfirmed() const
   return m_bConfirmed;
 }
 
-void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
+void CGUIDialogBoxBase::SetHeading(CVariant heading)
 {
   std::string label = GetLocalized(heading);
   CSingleLock lock(m_section);
@@ -74,7 +76,7 @@ void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
   }
 }
 
-void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
+void CGUIDialogBoxBase::SetLine(unsigned int iLine, CVariant line)
 {
   std::string label = GetLocalized(line);
   CSingleLock lock(m_section);
@@ -86,7 +88,7 @@ void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
   SetText(text);
 }
 
-void CGUIDialogBoxBase::SetText(const CVariant& text)
+void CGUIDialogBoxBase::SetText(CVariant text)
 {
   std::string label = GetLocalized(text);
   CSingleLock lock(m_section);

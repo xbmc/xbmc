@@ -23,6 +23,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
@@ -169,7 +170,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
   CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
   if (currentChannel && currentChannel == channel)
   {
-    CGUIDialogOK::ShowAndGetInput(19098, 19102);
+    CGUIDialogOK::ShowAndGetInput(CVariant{19098}, CVariant{19102});
     return false;
   }
 

@@ -25,6 +25,7 @@
 #include "system.h"
 #include "CompileInfo.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include <string.h>
 
 using namespace JSONRPC;

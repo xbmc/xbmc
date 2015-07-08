@@ -24,6 +24,7 @@
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindow.h"
 #include "input/ButtonTranslator.h"
+#include "utils/Variant.h"
 
 using namespace JSONRPC;
 

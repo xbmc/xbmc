@@ -21,6 +21,7 @@
 #include "TextureOperations.h"
 #include "TextureDatabase.h"
 #include "TextureCache.h"
+#include "utils/Variant.h"
 
 using namespace JSONRPC;
 

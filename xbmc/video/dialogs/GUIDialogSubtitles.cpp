@@ -39,6 +39,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "URL.h"
 #include "Util.h"
 #include "video/VideoDatabase.h"
@@ -146,7 +147,7 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
     else if (iControl == CONTROL_MANUALSEARCH)
     {
       //manual search
-      if (CGUIKeyboardFactory::ShowAndGetInput(m_strManualSearch, g_localizeStrings.Get(24121), true))
+      if (CGUIKeyboardFactory::ShowAndGetInput(m_strManualSearch, CVariant{g_localizeStrings.Get(24121)}, true))
       {
         Search(m_strManualSearch);
         return true;

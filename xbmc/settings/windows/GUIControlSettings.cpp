@@ -45,6 +45,7 @@
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 using namespace ADDON;
 
@@ -285,7 +286,7 @@ bool CGUIControlListSetting::OnClick()
   const CSettingControlList *control = static_cast<const CSettingControlList*>(m_pSetting->GetControl());
   
   dialog->Reset();
-  dialog->SetHeading(g_localizeStrings.Get(m_pSetting->GetLabel()));
+  dialog->SetHeading(CVariant{g_localizeStrings.Get(m_pSetting->GetLabel())});
   dialog->SetItems(&options);
   dialog->SetMultiSelection(control->CanMultiSelect());
   dialog->DoModal();

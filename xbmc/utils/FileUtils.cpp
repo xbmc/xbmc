@@ -34,6 +34,7 @@
 #include "StringUtils.h"
 #include "URL.h"
 #include "settings/Settings.h"
+#include "utils/Variant.h"
 
 using namespace XFILE;
 using namespace std;
@@ -55,10 +56,10 @@ bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!force && pDialog)
   {
-    pDialog->SetHeading(122);
-    pDialog->SetLine(0, 125);
-    pDialog->SetLine(1, CURL(item->GetPath()).GetWithoutUserDetails());
-    pDialog->SetLine(2, "");
+    pDialog->SetHeading(CVariant{122});
+    pDialog->SetLine(0, CVariant{125});
+    pDialog->SetLine(1, CVariant{CURL(item->GetPath()).GetWithoutUserDetails()});
+    pDialog->SetLine(2, CVariant{""});
     pDialog->DoModal();
     if (!pDialog->IsConfirmed()) return false;
   }
@@ -82,7 +83,7 @@ bool CFileUtils::RenameFile(const std::string &strFile)
   URIUtils::RemoveSlashAtEnd(strFileAndPath);
   std::string strFileName = URIUtils::GetFileName(strFileAndPath);
   std::string strPath = URIUtils::GetDirectory(strFileAndPath);
-  if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
+  if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, CVariant{g_localizeStrings.Get(16013)}, false))
   {
     strPath = URIUtils::AddFileToFolder(strPath, strFileName);
     CLog::Log(LOGINFO,"FileUtils: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());

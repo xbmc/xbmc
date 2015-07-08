@@ -25,6 +25,7 @@
 #include "FileItemHandler.h"
 
 class CMusicDatabase;
+class CVariant;
 
 namespace JSONRPC
 {

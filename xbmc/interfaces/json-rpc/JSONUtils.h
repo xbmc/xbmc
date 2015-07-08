@@ -29,6 +29,7 @@
 #include "utils/JSONVariantWriter.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 namespace JSONRPC
 {

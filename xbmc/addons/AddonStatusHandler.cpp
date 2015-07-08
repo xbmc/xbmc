@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 namespace ADDON
 {
@@ -98,9 +99,9 @@ void CAddonStatusHandler::Process()
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       if (!pDialog) return;
 
-      pDialog->SetHeading(heading);
-      pDialog->SetLine(1, 24070);
-      pDialog->SetLine(2, 24073);
+      pDialog->SetHeading(CVariant{heading});
+      pDialog->SetLine(1, CVariant{24070});
+      pDialog->SetLine(2, CVariant{24073});
 
       //send message and wait for user input
       ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
@@ -116,8 +117,8 @@ void CAddonStatusHandler::Process()
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24074);
+    pDialog->SetHeading(CVariant{heading});
+    pDialog->SetLine(1, CVariant{24074});
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
@@ -131,10 +132,10 @@ void CAddonStatusHandler::Process()
     CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
 
-    pDialogYesNo->SetHeading(heading);
-    pDialogYesNo->SetLine(1, 24070);
-    pDialogYesNo->SetLine(2, 24072);
-    pDialogYesNo->SetLine(3, m_message);
+    pDialogYesNo->SetHeading(CVariant{heading});
+    pDialogYesNo->SetLine(1, CVariant{24070});
+    pDialogYesNo->SetLine(2, CVariant{24072});
+    pDialogYesNo->SetLine(3, CVariant{m_message});
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
@@ -158,10 +159,10 @@ void CAddonStatusHandler::Process()
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24070);
-    pDialog->SetLine(2, 24071);
-    pDialog->SetLine(3, m_message);
+    pDialog->SetHeading(CVariant{heading});
+    pDialog->SetLine(1, CVariant{24070});
+    pDialog->SetLine(2, CVariant{24071});
+    pDialog->SetLine(3, CVariant{m_message});
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};

@@ -49,6 +49,7 @@
 #include "utils/log.h"
 #include "URL.h"
 #include "utils/XMLUtils.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace ADDON;
@@ -218,7 +219,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
   }
   else
   { // addon does not support settings, inform user
-    CGUIDialogOK::ShowAndGetInput(24000, 24030);
+    CGUIDialogOK::ShowAndGetInput(CVariant{24000}, CVariant{24030});
   }
 
   return ret;
@@ -276,7 +277,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           if (bEncoded)
             value = CURL::Decode(value);
 
-          if (CGUIKeyboardFactory::ShowAndGetInput(value, label, true, bHidden))
+          if (CGUIKeyboardFactory::ShowAndGetInput(value, CVariant{label}, true, bHidden))
           {
             // if hidden hide input
             if (bHidden)
@@ -304,7 +305,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
           if (pDlg)
           {
-            pDlg->SetHeading(label.c_str());
+            pDlg->SetHeading(CVariant{label});
             pDlg->Reset();
 
             int selected = -1;

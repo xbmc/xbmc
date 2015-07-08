@@ -66,6 +66,7 @@
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoLibraryQueue.h"
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -1064,7 +1065,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
   {
     if (!g_mediaManager.IsDiscInDrive(strPath))
     {
-      CGUIDialogOK::ShowAndGetInput(218, 219);
+      CGUIDialogOK::ShowAndGetInput(CVariant{218}, CVariant{219});
       return false;
     }
   }
@@ -1073,7 +1074,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
     // TODO: Handle not connected to a remote share
     if ( !g_application.getNetwork().IsConnected() )
     {
-      CGUIDialogOK::ShowAndGetInput(220, 221);
+      CGUIDialogOK::ShowAndGetInput(CVariant{220}, CVariant{221});
       return false;
     }
   }
@@ -1097,7 +1098,7 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
   else
     idMessageText = 15300; // Path not found or invalid
 
-  CGUIDialogOK::ShowAndGetInput(220, idMessageText);
+  CGUIDialogOK::ShowAndGetInput(CVariant{220}, CVariant{idMessageText});
 }
 
 // \brief The functon goes up one level in the directory tree
@@ -1640,8 +1641,8 @@ bool CGUIMediaWindow::WaitForNetwork() const
     return true;
 
   CURL url(m_vecItems->GetPath());
-  progress->SetHeading(1040); // Loading Directory
-  progress->SetLine(1, url.GetWithoutUserDetails());
+  progress->SetHeading(CVariant{1040}); // Loading Directory
+  progress->SetLine(1, CVariant{url.GetWithoutUserDetails()});
   progress->ShowProgressBar(false);
   progress->StartModal();
   while (!g_application.getNetwork().IsAvailable())

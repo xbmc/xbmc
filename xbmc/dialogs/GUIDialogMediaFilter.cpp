@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 

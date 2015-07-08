@@ -42,6 +42,7 @@
 #include "utils/log.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "windowing/WindowingFactory.h"
 #include "guiinfo/GUIInfoLabels.h"
 
@@ -213,9 +214,9 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const std::s
   CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDlgSelect->Reset();
   if (heading.empty())
-    pDlgSelect->SetHeading(g_localizeStrings.Get(36528).c_str());
+    pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(36528)});
   else
-    pDlgSelect->SetHeading(heading.c_str());
+    pDlgSelect->SetHeading(CVariant{heading});
 
   // prepare selectable stereo modes
   std::vector<RENDER_STEREO_MODE> selectableModes;
@@ -552,7 +553,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
 
       CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
       pDlgSelect->Reset();
-      pDlgSelect->SetHeading(g_localizeStrings.Get(36527).c_str());
+      pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(36527)});
 
       int idx_playing   = -1;
 

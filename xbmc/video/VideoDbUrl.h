@@ -21,6 +21,8 @@
 
 #include "DbUrl.h"
 
+class CVariant;
+
 class CVideoDbUrl : public CDbUrl
 {
 public:

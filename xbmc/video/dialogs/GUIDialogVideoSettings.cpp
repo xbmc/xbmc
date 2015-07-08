@@ -34,6 +34,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "utils/Variant.h"
 
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
 #define SETTING_VIDEO_ZOOM                "video.zoom"
@@ -169,7 +170,7 @@ void CGUIDialogVideoSettings::Save()
     return;
 
   // prompt user if they are sure
-  if (CGUIDialogYesNo::ShowAndGetInput(12376, 12377))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant(12376), CVariant(12377)))
   { // reset the settings
     CVideoDatabase db;
     if (!db.Open())

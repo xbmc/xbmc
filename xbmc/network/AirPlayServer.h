@@ -33,6 +33,7 @@
 #include "interfaces/IAnnouncer.h"
 
 class DllLibPlist;
+class CVariant;
 
 #define AIRPLAY_SERVER_VERSION_STR "101.28"
 

@@ -34,6 +34,7 @@
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/AnnouncementManager.h"
 #include "utils/XMLUtils.h"
+#include "utils/Variant.h"
 #include "Util.h"
 
 namespace ADDON

@@ -24,6 +24,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 CAutorunMediaJob::CAutorunMediaJob(const std::string &label, const std::string &path):
   m_path(path),
@@ -40,9 +41,9 @@ bool CAutorunMediaJob::DoWork()
 
   pDialog->Reset();
   if (m_label.size() > 0)
-    pDialog->SetHeading(m_label);
+    pDialog->SetHeading(CVariant{m_label});
   else
-    pDialog->SetHeading(g_localizeStrings.Get(21331));
+    pDialog->SetHeading(CVariant{g_localizeStrings.Get(21331)});
 
   pDialog->Add(g_localizeStrings.Get(21332));
   pDialog->Add(g_localizeStrings.Get(21333));

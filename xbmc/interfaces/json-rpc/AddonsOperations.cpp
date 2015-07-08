@@ -27,6 +27,7 @@
 #include "TextureCache.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace JSONRPC;

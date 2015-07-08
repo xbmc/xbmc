@@ -28,6 +28,7 @@
 #include "interfaces/IAnnouncer.h"
 
 class TiXmlElement;
+class CVariant;
 
 typedef enum
 {

@@ -45,6 +45,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
 // TODO
@@ -294,13 +295,11 @@ bool CProfilesManager::DeleteProfile(size_t index)
   if (dlgYesNo == NULL)
     return false;
 
-  string message;
   string str = g_localizeStrings.Get(13201);
-  message = StringUtils::Format(str.c_str(), profile->getName().c_str());
-  dlgYesNo->SetHeading(13200);
-  dlgYesNo->SetLine(0, message);
-  dlgYesNo->SetLine(1, "");
-  dlgYesNo->SetLine(2, "");
+  dlgYesNo->SetHeading(CVariant{13200});
+  dlgYesNo->SetLine(0, CVariant{StringUtils::Format(str.c_str(), profile->getName().c_str())});
+  dlgYesNo->SetLine(1, CVariant{""});
+  dlgYesNo->SetLine(2, CVariant{""});
   dlgYesNo->DoModal();
 
   if (!dlgYesNo->IsConfirmed())

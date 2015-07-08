@@ -25,6 +25,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -32,6 +33,8 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
+
+#include <utility>
 
 using namespace PVR;
 using namespace EPG;
@@ -64,7 +67,7 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTagPtr &tag)
     return false;
 
   // prompt user for confirmation of channel record
-  if (CGUIDialogYesNo::ShowAndGetInput( 264 /* "Record" */, tag->Title()))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{264} /* "Record" */, CVariant{tag->Title()}))
   {
     Close();
 
@@ -92,21 +95,21 @@ bool CGUIDialogPVRGuideInfo::ActionCancelTimer(CFileItemPtr timer)
     // prompt user for confirmation for deleting the complete repeating timer, including scheduled timers.
     bool bCancel(false);
     bDeleteScheduled = CGUIDialogYesNo::ShowAndGetInput(
-                        122, // "Confirm delete"
-                        840, // "You are about to delete a repeating timer. Do you also want to delete all timers currently scheduled by this timer?"
-                        "",
-                        timer->GetPVRTimerInfoTag()->Title(),
-                        bCancel);
+                                                        CVariant{122}, // "Confirm delete"
+                                                        CVariant{840}, // "You are about to delete a repeating timer. Do you also want to delete all timers currently scheduled by this timer?"
+                                                        CVariant{""},
+                                                        CVariant{timer->GetPVRTimerInfoTag()->Title()},
+                                                        bCancel);
     bDelete = !bCancel;
   }
   else
   {
     // prompt user for confirmation for deleting the timer
     bDelete = CGUIDialogYesNo::ShowAndGetInput(
-                        122, // "Confirm delete"
-                        19040, // Timer
-                        "",
-                        timer->GetPVRTimerInfoTag()->Title());
+                                               CVariant{122}, // "Confirm delete"
+                                               CVariant{19040}, // Timer
+                                               CVariant{""},
+                                               CVariant{timer->GetPVRTimerInfoTag()->Title()});
     bDeleteScheduled = false;
   }
 
@@ -144,7 +147,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
     if (!tag || !tag->HasPVRChannel())
     {
       /* invalid channel */
-      CGUIDialogOK::ShowAndGetInput(19033, 19067);
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19067});
       Close();
       return bReturn;
     }
@@ -184,7 +187,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
     if (ret == PLAYBACK_FAIL)
     {
       std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), g_localizeStrings.Get(19029).c_str()); // Channel could not be played. Check the log for details.
-      CGUIDialogOK::ShowAndGetInput(19033, msg);
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{std::move(msg)});
     }
     else if (ret == PLAYBACK_OK)
     {

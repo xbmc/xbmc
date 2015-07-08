@@ -25,6 +25,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #define LANGUAGE_SETTING        "locale.language"
 #define LANGUAGE_ADDON_PREFIX   "resource.language."
@@ -111,7 +112,7 @@ bool CLanguageResource::IsInUse() const
 void CLanguageResource::OnPostInstall(bool update, bool modal)
 {
   if (IsInUse() ||
-     (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), 24132)))
+     (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(CVariant{Name()}, CVariant{24132})))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (toast)

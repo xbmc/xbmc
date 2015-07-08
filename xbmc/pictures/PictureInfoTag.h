@@ -89,6 +89,8 @@
 #define SLIDE_IPTC_COUNTRY_CODE     979
 #define SLIDE_IPTC_REF_SERVICE      980
 
+class CVariant;
+
 class CPictureInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:

@@ -26,6 +26,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -123,7 +124,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
         string strHeading = m_strHeading;
         strHeading.append(" : ");
         strHeading.append(g_localizeStrings.Get(16024));
-        CGUIDialogBoxBase::SetHeading(strHeading);
+        CGUIDialogBoxBase::SetHeading(CVariant{strHeading});
         m_bCanceled = true;
         return true;
       }

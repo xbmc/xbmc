@@ -22,6 +22,7 @@
 
 #include "DbUrl.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
