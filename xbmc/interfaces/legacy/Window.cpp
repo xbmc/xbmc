@@ -110,7 +110,7 @@ namespace XBMCAddon
         canPulse = true;
         existingWindow = false;
 
-        setWindow(new Interceptor<CGUIWindow>("CGUIWindow",this,getNextAvailalbeWindowId()));
+        setWindow(new Interceptor<CGUIWindow>("CGUIWindow",this,getNextAvailableWindowId()));
       }
       else
       {
@@ -216,7 +216,7 @@ namespace XBMCAddon
         g_windowManager.Add(window->get());
     }
 
-    int Window::getNextAvailalbeWindowId()
+    int Window::getNextAvailableWindowId()
     {
       XBMC_TRACE;
       // window id's 13000 - 13100 are reserved for python

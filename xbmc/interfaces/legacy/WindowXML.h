@@ -61,7 +61,7 @@ namespace XBMCAddon
        * This helper retrieves the next available id. It is doesn't
        *  assume that the global lock is already being held.
        */
-      static int lockingGetNextAvailalbeWindowId();
+      static int lockingGetNextAvailableWindowId();
 
       WindowXMLInterceptor* interceptor;
 #endif

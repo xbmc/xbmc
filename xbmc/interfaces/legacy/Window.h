@@ -140,7 +140,7 @@ namespace XBMCAddon
        * This helper retrieves the next available id. It is assumed 
        *  that the global lock is already being held.
        */
-      static int getNextAvailalbeWindowId();
+      static int getNextAvailableWindowId();
 
       /**
        * Child classes MUST call this in their constructors. It should

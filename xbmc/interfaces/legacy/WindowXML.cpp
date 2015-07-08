@@ -142,16 +142,16 @@ namespace XBMCAddon
       m_scriptPath = scriptPath;
 //      sXMLFileName = strSkinPath;
 
-      interceptor = new WindowXMLInterceptor(this, lockingGetNextAvailalbeWindowId(),strSkinPath.c_str());
+      interceptor = new WindowXMLInterceptor(this, lockingGetNextAvailableWindowId(),strSkinPath.c_str());
       setWindow(interceptor);
       interceptor->SetCoordsRes(res);
     }
 
-    int WindowXML::lockingGetNextAvailalbeWindowId()
+    int WindowXML::lockingGetNextAvailableWindowId()
     {
       XBMC_TRACE;
       CSingleLock lock(g_graphicsContext);
-      return getNextAvailalbeWindowId();
+      return getNextAvailableWindowId();
     }
 
     void WindowXML::addItem(const Alternative<String, const ListItem*>& item, int position)
