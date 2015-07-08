@@ -954,11 +954,6 @@ bool URIUtils::IsUPnP(const std::string& strFile)
   return IsProtocol(strFile, "upnp");
 }
 
-bool URIUtils::IsHDHomeRun(const std::string& strFile)
-{
-  return IsProtocol(strFile, "hdhomerun");
-}
-
 bool URIUtils::IsSlingbox(const std::string& strFile)
 {
   return IsProtocol(strFile, "sling");
@@ -969,8 +964,7 @@ bool URIUtils::IsLiveTV(const std::string& strFile)
   std::string strFileWithoutSlash(strFile);
   RemoveSlashAtEnd(strFileWithoutSlash);
 
-  if (IsHDHomeRun(strFile)
-  || IsSlingbox(strFile)
+  if (IsSlingbox(strFile)
   || IsProtocol(strFile, "sap")
   ||(StringUtils::EndsWithNoCase(strFileWithoutSlash, ".pvr") && !PathStarts(strFileWithoutSlash, "pvr://recordings")))
     return true;

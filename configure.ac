@@ -2478,7 +2478,6 @@ OUTPUT_FILES="Makefile \
     xbmc/network/httprequesthandler/python/Makefile \
     xbmc/network/upnp/Makefile \
     lib/libexif/Makefile \
-    lib/libhdhomerun/Makefile \
     lib/cximage-6.0/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \

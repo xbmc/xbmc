@@ -332,8 +332,6 @@
     <ClCompile Include="..\..\xbmc\filesystem\FileReaderFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FTPParse.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\HDHomeRunDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\filesystem\HDHomeRunFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HTTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HTTPFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\IDirectory.cpp" />
@@ -1117,8 +1115,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\FileReaderFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FTPParse.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\HDHomeRunDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\HDHomeRunFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HTTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\IDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\IFile.h" />

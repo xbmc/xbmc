@@ -130,7 +130,6 @@ public:
   static bool IsUDP(const std::string& strFile);
   static bool IsTCP(const std::string& strFile);
   static bool IsHD(const std::string& strFileName);
-  static bool IsHDHomeRun(const std::string& strFile);
   static bool IsSlingbox(const std::string& strFile);
   static bool IsInArchive(const std::string& strFile);
   static bool IsInRAR(const std::string& strFile);

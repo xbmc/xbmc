@@ -183,7 +183,6 @@ void CURL::Parse(const std::string& strURL1)
     || IsProtocolEqual(strProtocol2, "https")
     || IsProtocolEqual(strProtocol2, "plugin")
     || IsProtocolEqual(strProtocol2, "addons")
-    || IsProtocolEqual(strProtocol2, "hdhomerun")
     || IsProtocolEqual(strProtocol2, "rtsp"))
     sep = "?;#|";
   else if(IsProtocolEqual(strProtocol2, "ftp")

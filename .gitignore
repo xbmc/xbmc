@@ -362,7 +362,6 @@ lib/cpluff/stamp-h1
 /system/libgif.dll
 /system/libssh2.dll
 /system/libssl32.dll
-/system/hdhomerun.dll
 /system/ssh.dll
 /system/sqlite3.dll
 /system/libnfs.dll
@@ -905,8 +904,6 @@ lib/cpluff/stamp-h1
 /lib/libexif/Debug (DLL)
 /lib/libexif/Release (DLL)
 /lib/libexif/libexif.lib
-
-/lib/libhdhomerun/Makefile
 
 /lib/libsquish/Makefile
 /lib/libsquish/lib/squishd.lib
