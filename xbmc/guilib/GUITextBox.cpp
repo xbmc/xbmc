@@ -240,6 +240,7 @@ void CGUITextBox::Render()
     {
       m_font->Begin();
       int current = offset;
+      m_colors.push_back(m_textColor);
       while (posY < m_posY + m_renderHeight && current < (int)m_lines.size())
       {
         uint32_t align = alignment;
