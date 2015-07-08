@@ -293,6 +293,7 @@
 #define CONTAINER_CURRENT_PAGE      375
 #define CONTAINER_SHOWPLOT          376
 #define CONTAINER_TOTALTIME         377
+#define CONTAINER_SORT_ORDER        378
 
 #define MUSICPM_ENABLED             381
 #define MUSICPM_SONGSPLAYED         382

@@ -2548,10 +2548,12 @@ msgctxt "#583"
 msgid "Remember views for different folders"
 msgstr ""
 
+#: xbmc/view/GUIViewState.cpp
 msgctxt "#584"
 msgid "Ascending"
 msgstr ""
 
+#: xbmc/view/GUIViewState.cpp
 msgctxt "#585"
 msgid "Descending"
 msgstr ""
