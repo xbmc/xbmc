@@ -1272,6 +1272,7 @@
     <ClCompile Include="..\..\xbmc\utils\StreamDetails.cpp" />
     <ClCompile Include="..\..\xbmc\utils\StreamUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\StringUtils.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\StubUtil.cpp" />
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp" />
     <ClCompile Include="..\..\xbmc\utils\test\TestFileOperationJob.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -2122,6 +2123,7 @@
     <ClInclude Include="..\..\xbmc\utils\StreamDetails.h" />
     <ClInclude Include="..\..\xbmc\utils\StreamUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\StringUtils.h" />
+    <ClInclude Include="..\..\xbmc\utils\StubUtil.h" />
     <ClInclude Include="..\..\xbmc\utils\SystemInfo.h" />
     <ClCompile Include="..\..\xbmc\utils\test\TestGlobalsHandlingPattern1.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

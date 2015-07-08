@@ -101,7 +101,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
     m_bIsPlaying = true;
     m_time = 0;
     m_playbackStartTime = XbmcThreads::SystemClockMillis();
-    m_launchFilename = file.GetPath();
+    m_launchFilename = file.GetPlayablePath();
     CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, m_launchFilename.c_str());
     Create();
 

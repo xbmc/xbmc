@@ -124,6 +124,9 @@ public:
   void SetPath(const std::string &path) { m_strPath = path; };
   bool IsPath(const std::string& path) const;
 
+  std::string GetPlayablePath() const;
+  void SetPlayablePath(const std::string &path);
+
   /*! \brief reset class to it's default values as per construction.
    Free's all allocated memory.
    \sa Initialize
@@ -152,8 +155,9 @@ public:
    \return true if item is video, false otherwise. 
    */
   bool IsVideo() const;
-
+  bool IsStub(bool checkPlayablePath = false) const;
   bool IsDiscStub() const;
+  bool IsEfileStub(bool checkPlayablePath = false) const;
 
   /*!
    \brief Check whether an item is a picture item. Note that this returns true for
@@ -170,7 +174,6 @@ public:
    \return true if item is audio, false otherwise. 
    */
   bool IsAudio() const;
-
   bool IsKaraoke() const;
   bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;

@@ -635,7 +635,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_PlayerOptions = options;
     m_item     = file;
     m_mimetype  = file.GetMimeType();
-    m_filename = file.GetPath();
+    m_filename = file.GetPlayablePath();
 
     m_ready.Reset();
 

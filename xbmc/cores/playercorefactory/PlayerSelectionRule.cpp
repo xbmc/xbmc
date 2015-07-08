@@ -27,6 +27,8 @@
 #include "utils/RegExp.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "filesystem/StackDirectory.h"
+#include "utils/StubUtil.h"
 
 CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
 {
@@ -154,7 +156,13 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
         !MatchesRegExp(CStreamDetails::VideoAspectToAspectDescription(streamDetails.GetVideoAspect()),  regExp)) return;
   }
 
-  CURL url(item.GetPath());
+  std::string path = item.GetPath();
+  if (item.IsStack())
+    path = XFILE::CStackDirectory::GetFirstStackedFile(item.GetPath());
+  if (g_stubutil.IsEfileStub(path))
+    g_stubutil.GetXMLString(path, "efilestub", "path", path);
+
+  CURL url(path);
 
   if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return;
 
@@ -162,7 +170,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
 
   if (CompileRegExp(m_mimeTypes, regExp) && !MatchesRegExp(item.GetMimeType(), regExp)) return;
 
-  if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.GetPath(), regExp)) return;
+  if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(path, regExp)) return;
 
   CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: matches rule: %s", m_name.c_str());
 

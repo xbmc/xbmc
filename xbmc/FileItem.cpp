@@ -58,6 +58,7 @@
 #include "utils/Variant.h"
 #include "music/karaoke/karaokelyricsfactory.h"
 #include "utils/Mime.h"
+#include "utils/StubUtil.h"
 
 #include <assert.h>
 #include <algorithm>
@@ -739,6 +740,17 @@ bool CFileItem::IsPVRTimer() const
   return HasPVRTimerInfoTag();
 }
 
+bool CFileItem::IsStub(bool checkPlayablePath) const
+{
+  std::string path;
+  if (checkPlayablePath)
+    path = GetPlayablePath();
+  else
+    path = GetPath();
+
+  return URIUtils::HasExtension(path, g_advancedSettings.m_discStubExtensions);
+}
+
 bool CFileItem::IsDiscStub() const
 {
   if (IsVideoDb() && HasVideoInfoTag())
@@ -747,7 +759,25 @@ bool CFileItem::IsDiscStub() const
     return dbItem.IsDiscStub();
   }
 
-  return URIUtils::HasExtension(m_strPath, g_advancedSettings.m_discStubExtensions);
+  if (IsStub())
+    return g_stubutil.CheckRootElement(m_strPath, "discstub");
+
+  return false;
+}
+
+bool CFileItem::IsEfileStub(bool checkPlayablePath) const
+{
+  if (checkPlayablePath)
+  {
+    if (IsStub(true))
+      return g_stubutil.CheckRootElement(GetPlayablePath(), "efilestub");
+  }
+  else
+  {
+    if (IsStub())
+      return g_stubutil.CheckRootElement(GetPath(), "efilestub");
+  }
+  return false;
 }
 
 bool CFileItem::IsAudio() const
@@ -983,7 +1013,7 @@ bool CFileItem::IsStack() const
 
 bool CFileItem::IsPlugin() const
 {
-  return URIUtils::IsPlugin(m_strPath);
+  return URIUtils::IsPlugin(GetPlayablePath());
 }
 
 bool CFileItem::IsScript() const
@@ -3289,4 +3319,17 @@ double CFileItem::GetCurrentResumeTime() const
   }
   // Resume from start when resume points are invalid or the PVR server returns an error
   return 0;
+}
+
+std::string CFileItem::GetPlayablePath() const
+{
+  if (HasProperty("playable_path"))
+    return GetProperty("playable_path").asString();
+  else
+    return GetPath();
+}
+
+void CFileItem::SetPlayablePath(const std::string &path)
+{
+  SetProperty("playable_path", path);
 }
