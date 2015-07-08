@@ -57,6 +57,7 @@ public:
   std::string GetMediaTitle();
   void GetMediaFiles(std::vector<std::string>& mediaFiles);
   void UpdateMediaFile(const std::string& oldMediaFile, const std::string& mediaFile);
+  bool IsOneFilePerTrack() const;
   bool IsLoaded() const;
 private:
   void Clear();
@@ -70,6 +71,8 @@ private:
   int m_iTrack;   // current track
   int m_iDiscNumber;  // Disc number
   ReplayGain::Info m_albumReplayGain;
+
+  bool m_bOneFilePerTrack;
 
   // cuetrack array
   typedef std::vector<CCueTrack> Tracks;

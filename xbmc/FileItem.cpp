@@ -75,6 +75,13 @@ CFileItem::CFileItem(const CSong& song)
   SetFromSong(song);
 }
 
+CFileItem::CFileItem(const CSong& song, const CMusicInfoTag& music)
+{
+  Initialize();
+  SetFromSong(song);
+  *GetMusicInfoTag() = music;
+}
+
 CFileItem::CFileItem(const CURL &url, const CAlbum& album)
 {
   Initialize();
@@ -1551,6 +1558,8 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
 
   VECSONGS tracks;
   m_cueDocument->GetSongs(tracks);
+
+  bool oneFilePerTrack = m_cueDocument->IsOneFilePerTrack();
   m_cueDocument.reset();
 
   int tracksFound = 0;
@@ -1586,7 +1595,15 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
       { // must be the last song
         song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
       }
-      scannedItems.Add(CFileItemPtr(new CFileItem(song)));
+      if ( tag.Loaded() && oneFilePerTrack && ! ( tag.GetAlbum().empty() || tag.GetArtist().empty() || tag.GetTitle().empty() ) )
+      {
+        // If there are multiple files in a cue file, the tags from the files should be prefered if they exist.
+        scannedItems.Add(CFileItemPtr(new CFileItem(song, tag)));
+      }
+      else
+      {
+        scannedItems.Add(CFileItemPtr(new CFileItem(song)));
+      }
       ++tracksFound;
     }
   }
