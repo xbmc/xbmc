@@ -167,9 +167,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
       strFilename = url.GetHostName();
     }
   }
-  // Slingbox Devices
-  else if (url.IsProtocol("sling"))
-    strFilename = "Slingbox";
 
   // SAP Streams
   else if (url.IsProtocol("sap") && strFilename.empty())
@@ -1708,7 +1705,6 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   
   CFileItem item(strMovie, false);
   if ( item.IsInternetStream()
-    || item.IsSlingbox()
     || item.IsPlayList()
     || item.IsLiveTV()
     || !item.IsVideo())

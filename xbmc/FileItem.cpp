@@ -693,7 +693,7 @@ bool CFileItem::IsVideo() const
   if (IsPVRRecording())
     return true;
 
-  if (URIUtils::IsDVD(m_strPath) || IsSlingbox())
+  if (URIUtils::IsDVD(m_strPath))
     return true;
 
   std::string extension;
@@ -1049,11 +1049,6 @@ bool CFileItem::IsSmb() const
 bool CFileItem::IsURL() const
 {
   return URIUtils::IsURL(m_strPath);
-}
-
-bool CFileItem::IsSlingbox() const
-{
-  return URIUtils::IsSlingbox(m_strPath);
 }
 
 bool CFileItem::IsPVR() const

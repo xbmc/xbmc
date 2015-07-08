@@ -281,11 +281,6 @@ TEST_F(TestURIUtils, IsHD)
   EXPECT_TRUE(URIUtils::IsHD("rar://path/to/file"));
 }
 
-TEST_F(TestURIUtils, IsSlingbox)
-{
-  EXPECT_TRUE(URIUtils::IsSlingbox("sling://path/to/file"));
-}
-
 TEST_F(TestURIUtils, IsInArchive)
 {
   EXPECT_TRUE(URIUtils::IsInArchive("zip://path/to/file"));
@@ -317,7 +312,6 @@ TEST_F(TestURIUtils, IsISO9660)
 
 TEST_F(TestURIUtils, IsLiveTV)
 {
-  EXPECT_TRUE(URIUtils::IsLiveTV("sling://path/to/file"));
   EXPECT_TRUE(URIUtils::IsLiveTV("sap://path/to/file"));
 }
 
