@@ -216,6 +216,8 @@ namespace PERIPHERALS
     bool GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const;
     static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<std::string, PeripheralDeviceSetting> &m_settings);
 
+    void OnDeviceChanged();
+
     bool                                 m_bInitialised;
     bool                                 m_bIsStarted;
 #if !defined(HAVE_LIBCEC)
