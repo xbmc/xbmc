@@ -214,7 +214,10 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     {
       m_paths = (struct iso_directories *)malloc(sizeof(struct iso_directories));
       if (!m_paths )
+      {
+        free(pCurr_dir_cache);
         return NULL;
+      }
 
       m_paths->path = NULL;
       m_paths->dir = NULL;
