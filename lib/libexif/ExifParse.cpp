@@ -83,6 +83,7 @@ static void ErrNonfatal(const char* const msg, int a1, int a2);
 #define TAG_FOCALLENGTH        0x920A
 #define TAG_MAKER_NOTE         0x927C           // Not processed yet. Maybe in the future.
 #define TAG_USERCOMMENT        0x9286
+#define TAG_XP_COMMENT         0x9c9c
 #define TAG_FLASHPIX_VERSION   0xA000           // Not processed.
 #define TAG_COLOUR_SPACE       0xA001           // Not processed. Format int16u. Values: 1-RGB; 2-Adobe RGB 65535-Uncalibrated
 #define TAG_EXIF_IMAGEWIDTH    0xa002
@@ -477,6 +478,15 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
           memcpy(m_ExifInfo->Comments, ValuePtr + EXIF_COMMENT_CHARSET_LENGTH, length);
 //          FixComment(comment);                          // Ensure comment is printable
         }
+      }
+      break;
+
+      case TAG_XP_COMMENT:
+      {
+        // The XP user comment field is always unicode (UCS-2) encoded
+        m_ExifInfo->CommentsCharset = EXIF_COMMENT_CHARSET_UNICODE;
+
+        memcpy(m_ExifInfo->Comments, ValuePtr, ByteCount);
       }
       break;
 
