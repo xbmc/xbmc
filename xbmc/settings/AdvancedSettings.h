@@ -265,6 +265,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_fanartImages;
 
     int m_iMusicLibraryRecentlyAddedItems;
+    int m_iMusicLibraryDateAdded;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
     bool m_bMusicLibraryCleanOnUpdate;

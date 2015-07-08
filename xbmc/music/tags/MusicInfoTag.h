@@ -73,6 +73,7 @@ public:
   const std::string& GetLyrics() const;
   const std::string& GetCueSheet() const;
   const CDateTime& GetLastPlayed() const;
+  const CDateTime& GetDateAdded() const;
   bool  GetCompilation() const;
   char  GetRating() const;
   int  GetListeners() const;
@@ -116,6 +117,8 @@ public:
   void SetPlayCount(int playcount);
   void SetLastPlayed(const std::string& strLastPlayed);
   void SetLastPlayed(const CDateTime& strLastPlayed);
+  void SetDateAdded(const std::string& strLastPlayed);
+  void SetDateAdded(const CDateTime& strLastPlayed);
   void SetCompilation(bool compilation);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
@@ -167,6 +170,7 @@ protected:
   std::string m_strLyrics;
   std::string m_cuesheet;
   CDateTime m_lastPlayed;
+  CDateTime m_dateAdded;
   bool m_bCompilation;
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
