@@ -498,9 +498,14 @@ bool CAddon::LoadUserSettings()
   return m_userSettingsLoaded;
 }
 
+bool CAddon::HasSettingsToSave() const
+{
+  return !m_settings.empty();
+}
+
 void CAddon::SaveSettings(void)
 {
-  if (m_settings.empty())
+  if (!HasSettingsToSave())
     return; // no settings to save
 
   // break down the path into directories

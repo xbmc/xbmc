@@ -19,31 +19,14 @@
  *
  */
 
-#include <map>
+#include <set>
 #include <string>
 
+#include "addons/Skin.h"
 #include "settings/lib/ISubSettings.h"
 #include "threads/CriticalSection.h"
 
 class TiXmlNode;
-
-class CSkinString
-{
-public:
-  std::string name;
-  std::string value;
-};
-
-class CSkinBool
-{
-public:
-  CSkinBool()
-    : value(false)
-  { }
-
-  std::string name;
-  bool value;
-};
 
 class CSkinSettings : public ISubSettings
 {
@@ -53,6 +36,8 @@ public:
   virtual bool Load(const TiXmlNode *settings);
   virtual bool Save(TiXmlNode *settings) const;
   virtual void Clear();
+
+  void MigrateSettings(const ADDON::SkinPtr& skin);
 
   int TranslateString(const std::string &setting);
   const std::string& GetString(int setting) const;
@@ -71,10 +56,7 @@ protected:
   CSkinSettings& operator=(CSkinSettings const&);
   virtual ~CSkinSettings();
 
-  std::string GetCurrentSkin() const;
-
 private:
-  std::map<int, CSkinString> m_strings;
-  std::map<int, CSkinBool> m_bools;
   CCriticalSection m_critical;
+  std::set<ADDON::CSkinSettingPtr> m_settings;
 };
