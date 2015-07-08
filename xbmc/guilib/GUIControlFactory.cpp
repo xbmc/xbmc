@@ -1142,7 +1142,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
           parentID, id, posX, posY, width, height,
           labelInfo, wrapMultiLine, bHasPath);
         ((CGUILabelControl *)control)->SetInfo(content);
-        ((CGUILabelControl *)control)->SetWidthControl(minWidth, (scrollValue == CGUIControl::ALWAYS) ? true : false);
+        ((CGUILabelControl *)control)->SetWidthControl(minWidth, (scrollValue == CGUIControl::ALWAYS));
       }
     }
     break;
@@ -1174,6 +1174,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         labelInfo, scrollOut, timeToPauseAtEnd, resetOnLabelChange);
 
       ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
+
+      // check whether or not a scroll tag was specified.
+      if (scrollValue != CGUIControl::FOCUS)
+        ((CGUIFadeLabelControl *)control)->SetScrolling(scrollValue == CGUIControl::ALWAYS);
     }
     break;
   case CGUIControl::GUICONTROL_RSS:
@@ -1191,10 +1195,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       control = new CGUIButtonControl(
         parentID, id, posX, posY, width, height,
         textureFocus, textureNoFocus,
-        labelInfo);
+        labelInfo, wrapMultiLine);
 
       ((CGUIButtonControl *)control)->SetLabel(strLabel);
       ((CGUIButtonControl *)control)->SetLabel2(strLabel2);
+      ((CGUIButtonControl *)control)->SetMinWidth(minWidth);
       ((CGUIButtonControl *)control)->SetClickActions(clickActions);
       ((CGUIButtonControl *)control)->SetFocusActions(focusActions);
       ((CGUIButtonControl *)control)->SetUnFocusActions(unfocusActions);
@@ -1209,6 +1214,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
       ((CGUIToggleButtonControl *)control)->SetLabel(strLabel);
       ((CGUIToggleButtonControl *)control)->SetAltLabel(altLabel);
+      ((CGUIToggleButtonControl *)control)->SetMinWidth(minWidth);
       ((CGUIToggleButtonControl *)control)->SetClickActions(clickActions);
       ((CGUIToggleButtonControl *)control)->SetAltClickActions(altclickActions);
       ((CGUIToggleButtonControl *)control)->SetFocusActions(focusActions);
