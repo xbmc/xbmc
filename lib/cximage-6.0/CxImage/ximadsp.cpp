@@ -2794,7 +2794,8 @@ bool CxImage::Lut(BYTE* pLut)
 			// faster loop for full image
 			BYTE *iSrc=info.pImage;
 			for(unsigned long i=0; i < head.biSizeImage ; i++){
-				*iSrc++ = pLut[*iSrc];
+				*iSrc = pLut[*iSrc];
+				iSrc++;
 			}
 			return true;
 		}
@@ -3334,7 +3335,7 @@ int  CxImage::OptimalThreshold(long method, RECT * pBox, CxImage* pContrastMask)
 		//max entropy
 		L = 0;
 		for (k=gray_min;k<=i;k++) if (p[k] > 0)	L -= p[k]*log(p[k]/w1)/w1;
-		for (k;k<=gray_max;k++) if (p[k] > 0)	L -= p[k]*log(p[k]/w2)/w2;
+		for (;k<=gray_max;k++) if (p[k] > 0)	L -= p[k]*log(p[k]/w2)/w2;
 		if (L3max < L || th3<0){
 			L3max = L;
 			th3 = i;
@@ -3347,7 +3348,7 @@ int  CxImage::OptimalThreshold(long method, RECT * pBox, CxImage* pContrastMask)
 		for (k=gray_min;k<=i;k++)
 			vdiff += p[k]*(i-k)*(i-k);
 		double vsum = vdiff;
-		for (k;k<=gray_max;k++){
+		for (;k<=gray_max;k++){
 			double dv = p[k]*(k-i)*(k-i);
 			vdiff -= dv;
 			vsum += dv;
