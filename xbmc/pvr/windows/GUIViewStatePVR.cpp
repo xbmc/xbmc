@@ -78,8 +78,10 @@ void CGUIViewStateWindowPVRGuide::SaveViewState(void)
 
 CGUIViewStateWindowPVRTimers::CGUIViewStateWindowPVRTimers(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
-  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""));   // FileName, Size | Foldername, empty
-  AddSortMethod(SortByDate, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
+  int sortAttributes(CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
+  sortAttributes |= SortAttributeIgnoreFolders;
+  AddSortMethod(SortByLabel, static_cast<SortAttribute>(sortAttributes), 551, LABEL_MASKS("%L", "%I", "%L", ""));   // FileName, Size | Foldername, empty
+  AddSortMethod(SortByDate, static_cast<SortAttribute>(sortAttributes), 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
 
   // Default sorting
   SetSortMethod(SortByDate);
