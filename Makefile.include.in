@@ -91,22 +91,22 @@ GEN_DEPS=\
 
 %.o: %.cpp
 	@rm -f $@
-	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(CPPFLAGS) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.cc
 	@rm -f $@
-	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(CPPFLAGS) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.c
 	@rm -f $@
-	$(SILENT_CC) $(CC) -MF $*.d -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_CC) $(CC) -MF $*.d -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $(CPPFLAGS) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.C
 	@rm -f $@
-	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $(CPPFLAGS) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.S
