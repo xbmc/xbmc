@@ -220,8 +220,6 @@ CDateTime CFileUtils::GetModificationDate(const std::string& strFileNameAndPath,
           dateAdded = *time;
       }
     }
-    
-    return dateAdded;
   }
   catch (...)
   {
