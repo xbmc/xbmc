@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -711,15 +711,15 @@ bool CURL::IsFileOnly(const std::string &url)
 
 bool CURL::IsFullPath(const std::string &url)
 {
-  if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
-  if (url.find("://") != std::string::npos) return true;                 //   foo://bar.ext
-  if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
-  if (URIUtils::PathStarts(url, "\\\\")) return true;    //   \\UNC\path\to\file
+  if (url.size() && url[0] == '/') return true;           //   /foo/bar.ext
+  if (url.find("://") != std::string::npos) return true;  //   foo://bar.ext
+  if (url.size() > 1 && url[1] == ':') return true;       //   c:\\foo\\bar\\bar.ext
+  if (URIUtils::PathStarts(url, "\\\\")) return true;     //   \\UNC\path\to\file
   return false;
 }
 
 std::string CURL::Decode(const std::string& strURLData)
-//modified to be more accomodating - if a non hex value follows a % take the characters directly and don't raise an error.
+// Modified to be more accommodating - if a non hex value follows a % take the characters directly and don't raise an error.
 // However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {
   std::string strResult;
@@ -767,12 +767,11 @@ std::string CURL::Encode(const std::string& strURLData)
   {
     const char kar = strURLData[i];
     
-    // Don't URL encode "-_.!()" according to RFC1738
-    // TODO: Update it to "-_.~" after Gotham according to RFC3986
-    if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
+    // Previously was using RFC1738 chars, now RFC3986
+    if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '_' || kar == '.' || kar == '~')
       strResult.push_back(kar);
     else
-      strResult += StringUtils::Format("%%%02.2x", (unsigned int)((unsigned char)kar)); // TODO: Change to "%%%02.2X" after Gotham
+      strResult += StringUtils::Format("%%%02.2X", (unsigned int)((unsigned char)kar));
   }
 
   return strResult;
