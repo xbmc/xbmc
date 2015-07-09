@@ -189,7 +189,7 @@ public:
    \sa SetNavigationAction
    */
   typedef std::map<int, CGUIAction> ActionMap;
-  void SetNavigationActions(const ActionMap &actions);
+  void SetActions(const ActionMap &actions);
 
   /*! \brief Set actions to perform on navigation
    Navigations are set if replace is true or if there is no previously set action
@@ -198,12 +198,12 @@ public:
    \param replace Actions are set only if replace is true or there is no previously set action.  Defaults to true
    \sa SetNavigationActions
    */
-  void SetNavigationAction(int actionID, const CGUIAction &action, bool replace = true);
+  void SetAction(int actionID, const CGUIAction &action, bool replace = true);
 
   /*! \brief Get an action the control can be perform.
    \param action the actionID to retrieve.
    */
-  CGUIAction GetNavigateAction(int actionID) const;
+  CGUIAction GetAction(int actionID) const;
 
   /*! \brief  Start navigating in given direction.
    */

@@ -1083,7 +1083,7 @@ void CGUIEPGGridContainer::ProgrammesScroll(int amount)
 
 void CGUIEPGGridContainer::OnUp()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_UP);
+  CGUIAction action = GetAction(ACTION_MOVE_UP);
   if (m_channelCursor > 0)
   {
     SetChannel(m_channelCursor - 1);
@@ -1109,7 +1109,7 @@ void CGUIEPGGridContainer::OnUp()
 
 void CGUIEPGGridContainer::OnDown()
 {
-  CGUIAction action = GetNavigateAction(ACTION_MOVE_DOWN);
+  CGUIAction action = GetAction(ACTION_MOVE_DOWN);
   if (m_channelOffset + m_channelCursor + 1 < m_channels)
   {
     if (m_channelCursor + 1 < m_channelsPerPage)

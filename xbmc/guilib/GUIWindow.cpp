@@ -969,7 +969,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   while (control)
   { // grab the next control direction
     moveHistory.push_back(nextControl);
-    CGUIAction action = control->GetNavigateAction(moveAction);
+    CGUIAction action = control->GetAction(moveAction);
     action.ExecuteActions(nextControl, GetParentID());
     nextControl = action.GetNavigation();
     if (!nextControl) // 0 isn't valid control id
