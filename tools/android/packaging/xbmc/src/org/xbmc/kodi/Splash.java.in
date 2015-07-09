@@ -7,7 +7,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.System;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -57,6 +60,8 @@ public class Splash extends Activity {
   private static final int CachingDone = 6;
   private static final int WaitingStorageChecked = 7;
   private static final int StorageChecked = 8;
+  private static final int DownloadingObb = 90;
+  private static final int DownloadObbDone = 91;
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
@@ -67,7 +72,7 @@ public class Splash extends Activity {
 
   private ProgressBar mProgress = null;
   private TextView mTextView = null;
-  
+
   private int mState = Uninitialized;
   public AlertDialog myAlertDialog;
 
@@ -85,12 +90,12 @@ public class Splash extends Activity {
   private class StateMachine extends Handler {
 
     private Splash mSplash = null;
-    
+
     StateMachine(Splash a) {
       this.mSplash = a;
     }
-    
-    
+
+
     @Override
     public void handleMessage(Message msg) {
       mSplash.mState = msg.what;
@@ -103,6 +108,11 @@ public class Splash extends Activity {
         case Clearing:
           mSplash.mTextView.setText("Clearing cache...");
           mSplash.mProgress.setVisibility(View.INVISIBLE);
+          break;
+        case DownloadingObb:
+          break;
+        case DownloadObbDone:
+          new FillCache(mSplash).execute();
           break;
         case Caching:
           break;
@@ -147,6 +157,115 @@ public class Splash extends Activity {
     }
   }
   private StateMachine mStateMachine = new StateMachine(this);
+
+  private class DownloadObb extends AsyncTask<String, Integer, Integer>
+  {
+    private Splash mSplash = null;
+    private int mProgressStatus = 0;
+
+    public DownloadObb(Splash splash) {
+      this.mSplash = splash;
+    }
+
+    @Override
+    protected Integer doInBackground(String... sUrl) {
+      InputStream input = null;
+      OutputStream output = null;
+      HttpURLConnection connection = null;
+      int ret = 0;
+
+      String src = sUrl[0];
+      String dest = sUrl[1];
+
+      Log.d(TAG, "Downloading " + src + " to " + dest);
+
+      try {
+        URL url = new URL(src);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.connect();
+
+        // expect HTTP 200 OK, so we don't mistakenly save error report
+        // instead of the file
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            return -1;
+        }
+
+        // this will be useful to display download percentage
+        // might be -1: server did not report the length
+        int fileLength = connection.getContentLength();
+
+        // download the file
+        input = connection.getInputStream();
+        output = new FileOutputStream(dest);
+
+        byte data[] = new byte[4096];
+        long total = 0;
+        int count;
+        mProgress.setProgress(0);
+        mProgress.setMax(fileLength);
+        while ((count = input.read(data)) != -1) {
+          // allow canceling with back button
+          if (isCancelled()) {
+            ret = -1;
+            break;
+          }
+          total += count;
+          // publishing the progress....
+          if (fileLength > 0) // only if total length is known
+            publishProgress((int) total);
+          output.write(data, 0, count);
+        }
+      } catch (Exception e) {
+        return -1;
+      } finally {
+        try {
+          if (output != null)
+            output.close();
+          if (input != null)
+            input.close();
+        } catch (IOException ignored) {
+        }
+
+        if (connection != null)
+          connection.disconnect();
+      }
+      if (ret == 0)
+        mState = DownloadObbDone;
+      else
+      {
+        File obb = new File(dest);
+        obb.delete();
+      }
+
+      publishProgress(0);
+      return ret;
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+      switch (mState) {
+      case DownloadingObb:
+        mSplash.mTextView.setText("Downloading OBB...");
+        mSplash.mProgress.setVisibility(View.VISIBLE);
+        mSplash.mProgress.setProgress(values[0]);
+        break;
+      case DownloadObbDone:
+        mSplash.mProgress.setVisibility(View.INVISIBLE);
+        break;
+      }
+    }
+
+    @Override
+    protected void onPostExecute(Integer result) {
+      super.onPostExecute(result);
+      if (result < 0) {
+        mState = InError;
+        mErrorMsg = "Cannot download obb.";
+      }
+
+      mStateMachine.sendEmptyMessage(mState);
+    }
+  }
 
   private class FillCache extends AsyncTask<Void, Integer, Integer> {
 
@@ -208,7 +327,7 @@ public class Splash extends Activity {
               continue;
             sFullPath = getApplicationInfo().nativeLibraryDir + "/" + new File(sName).getName();
           }
-          else 
+          else
           {
             sFullPath = sXbmcHome + "/" + sName;
             File fFullPath = new File(sFullPath);
@@ -218,7 +337,7 @@ public class Splash extends Activity {
             }
             fFullPath.getParentFile().mkdirs();
          }
- 
+
           try {
             InputStream in = zip.getInputStream(e);
             BufferedOutputStream out = new BufferedOutputStream(
@@ -244,6 +363,8 @@ public class Splash extends Activity {
       } catch (IOException e) {
         e.printStackTrace();
         mErrorMsg = "Cannot read package.";
+        File obb = new File(sPackagePath);
+        obb.delete();
         return -1;
       }
 
@@ -366,6 +487,7 @@ public class Splash extends Activity {
 
     sPackagePath = getPackageResourcePath();
     fPackagePath = new File(sPackagePath);
+    String obbfn = "";
     if (fPackagePath.length() < 40 * 1024 * 1024)
     {
       sPackagePath = System.getProperty("@APP_NAME@.obb", "");
@@ -373,46 +495,20 @@ public class Splash extends Activity {
       {
         try
         {
+          obbfn = "main." + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + "." + getPackageName() + ".obb";
           sPackagePath = Environment.getExternalStorageDirectory()
-              + "/Android/obb/" + getPackageName() + "/main."
-              + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode
-              + "." + getPackageName() + ".obb";
+              + "/Android/obb/" + getPackageName() + "/" + obbfn;
         } catch (Exception e) {}
       }
 
       fPackagePath = new File(sPackagePath);
+      if (fPackagePath.length() < 20 * 1024 * 1024)
+        fPackagePath.delete();  // borked download
       if (!fPackagePath.exists())
       {
-        // Check for latest obb
-        String obbdir = Environment.getExternalStorageDirectory()
-            + "/Android/obb/" + getPackageName();
-        File[] obbfiles = new File(obbdir).listFiles();
-        if (obbfiles != null && obbfiles.length > 0)
-        {
-          Arrays.sort(obbfiles, new Comparator<File>()
-          {
-            public int compare(File f1, File f2)
-            {
-              // Sort by lastmodified descending
-              return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
-            }
-          });
-          fPackagePath = obbfiles[0];
-        }
+        mState = DownloadingObb;
+        new DownloadObb(this).execute("http://mirrors.kodi.tv/releases/android/obb/" + obbfn, sPackagePath);
       }
-    }
-
-    if (fPackagePath.exists())
-    {
-      sPackagePath = fPackagePath.getAbsolutePath();
-      Log.i(TAG, "Using OBB: " + sPackagePath);
-    }
-    else
-    {
-      // No OBB and apk < 40Mb? Nah...
-      mErrorMsg = "OBB not yet present. Please retry later...";
-      Log.e(TAG, mErrorMsg);
-      mState = InError;
     }
   }
 
@@ -477,7 +573,7 @@ public class Splash extends Activity {
   // We can't find a way to properly detect and monitor status of
   //  a physical sdcard currently.
   // "External storage" points to internal flash storage on modern
-  //  devices and nothing else seems available. 
+  //  devices and nothing else seems available.
   //
   // ParseMounts() was part of the attempts to solve the issue and is not in use currently,
   //   but kept for possible future use.
@@ -591,7 +687,7 @@ public class Splash extends Activity {
       Log.e(TAG, mErrorMsg);
       mState = InError;
    }
-    
+
     if (mState != InError) {
       // Check if we are on the proper arch
 
@@ -617,7 +713,7 @@ public class Splash extends Activity {
         mState = InError;
       }
     }
-    
+
     if (mState != InError) {
       if (curArch.equalsIgnoreCase("arm")) {
         // arm arch: check if the cpu supports neon
@@ -637,24 +733,24 @@ public class Splash extends Activity {
         }
       }
     }
-    
+
     Log.d(TAG, "External storage = " + Environment.getExternalStorageDirectory().getAbsolutePath() + "; state = " + Environment.getExternalStorageState());
     if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
       mExternalStorageChecked = true;
 
     if (mState != InError && mExternalStorageChecked) {
       mState = ChecksDone;
-      
+
       SetupEnvironment();
       MigrateUserData();
 
-      if (mState != InError && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified() && !mInstallLibs) {
+      if ((mState != DownloadingObb && mState != InError) && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified() && !mInstallLibs) {
         mState = CachingDone;
         mCachingDone = true;
       }
     }
 
-    if (mState != InError && mCachingDone && mExternalStorageChecked) {
+    if ((mState != DownloadingObb && mState != InError) && mCachingDone && mExternalStorageChecked) {
       startXBMC();
       return;
     }
@@ -663,11 +759,11 @@ public class Splash extends Activity {
     mProgress = (ProgressBar) findViewById(R.id.progressBar1);
     mTextView = (TextView) findViewById(R.id.textView1);
 
-    if (mState == InError) {
-      mStateMachine.sendEmptyMessage(InError);
+    if (mState == DownloadingObb || mState == InError) {
+      mStateMachine.sendEmptyMessage(mState);
       return;
     }
-          
+
     if (!mExternalStorageChecked) {
       startWatchingExternalStorage();
       mStateMachine.sendEmptyMessage(WaitingStorageChecked);
