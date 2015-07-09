@@ -440,6 +440,8 @@ bool CGUIWindow::OnAction(const CAction &action)
     case ACTION_NAV_BACK:
     case ACTION_PREVIOUS_MENU:
       return OnBack(action.GetID());
+    case ACTION_SHOW_INFO:
+      return OnInfo(action.GetID());
     case ACTION_MENU:
       if (m_menuControlID > 0)
       {
