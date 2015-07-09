@@ -153,11 +153,6 @@ static std::string ToSettingTimeFormat(const CDateTime& time, const std::string&
   return StringUtils::Format(g_localizeStrings.Get(20036).c_str(), time.GetAsLocalizedTime(timeFormat, true).c_str(), timeFormat.c_str());
 }
 
-static std::string ToSettingTimeFormat(const CDateTime& time, bool use24HourClock, bool singleHour, bool meridiem)
-{
-  return ToSettingTimeFormat(time, ToTimeFormat(use24HourClock, singleHour, meridiem));
-}
-
 static CTemperature::Unit StringToTemperatureUnit(const std::string& temperatureUnit)
 {
   std::string unit(temperatureUnit);
