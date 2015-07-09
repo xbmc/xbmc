@@ -1804,10 +1804,12 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       {
         const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
         if (viewState)
+        {
           if (info == CONTAINER_SORT_METHOD)
             strLabel = g_localizeStrings.Get(viewState->GetSortMethodLabel());
           else if (info == CONTAINER_SORT_ORDER)
             strLabel = g_localizeStrings.Get(viewState->GetSortOrderLabel());
+        }
       }
     }
     break;
