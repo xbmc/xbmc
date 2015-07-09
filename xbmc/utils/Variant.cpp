@@ -287,9 +287,12 @@ CVariant::CVariant(const CVariant &variant)
 }
 
 CVariant::CVariant(CVariant&& rhs)
-  : m_type(rhs.m_type)
-  , m_data(std::move(rhs.m_data))
 {
+  //Set this so that operator= don't try and run cleanup
+  //when we're not initialized.
+  m_type = VariantTypeNull;
+
+  *this = std::move(rhs);
 }
 
 CVariant::~CVariant()
@@ -612,8 +615,27 @@ CVariant& CVariant::operator=(CVariant&& rhs)
 {
   if (this == &rhs)
     return *this;
+
+  //Make sure that if we're moved into we don't leak any pointers
+  if (m_type != VariantTypeNull)
+    cleanup();
+
   m_type = rhs.m_type;
   m_data = std::move(rhs.m_data);
+
+  //Should be enough to just set m_type here
+  //but better safe than sorry, could probably lead to coverity warnings
+  if (rhs.m_type == VariantTypeString)
+    rhs.m_data.string = nullptr;
+  else if (rhs.m_type == VariantTypeWideString)
+    rhs.m_data.wstring = nullptr;
+  else if (rhs.m_type == VariantTypeArray)
+    rhs.m_data.array = nullptr;
+  else if (rhs.m_type == VariantTypeObject)
+    rhs.m_data.map = nullptr;
+
+  rhs.m_type = VariantTypeNull;
+
   return *this;
 }
 
