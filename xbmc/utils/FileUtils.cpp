@@ -227,4 +227,5 @@ CDateTime CFileUtils::GetModificationDate(const std::string& strFileNameAndPath,
   {
     CLog::Log(LOGERROR, "%s unable to extract modification date for file (%s)", __FUNCTION__, strFileNameAndPath.c_str());
   }
+  return dateAdded;
 }
