@@ -733,7 +733,7 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
   CGUIWindowVideoBase::PlayItem(iItem);
 }
 
-void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
+void CGUIWindowVideoNav::OnItemInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 {
   if (!scraper || scraper->Content() == CONTENT_NONE)
   {
@@ -748,7 +748,7 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
     }
     m_database.Close();
   }
-  CGUIWindowVideoBase::OnInfo(pItem,scraper);
+  CGUIWindowVideoBase::OnItemInfo(pItem,scraper);
 }
 
 void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
