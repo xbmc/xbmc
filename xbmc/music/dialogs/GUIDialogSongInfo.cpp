@@ -98,7 +98,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
           std::string path = StringUtils::Format("musicdb://albums/%li",m_albumId);
           item.SetPath(path);
           item.m_bIsFolder = true;
-          window->OnInfo(&item, true);
+          window->OnItemInfo(&item, true);
         }
         return true;
       }

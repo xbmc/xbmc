@@ -36,7 +36,7 @@ public:
 
 protected:
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList& items);
-  virtual void OnInfo(int item);
+  virtual void OnItemInfo(int item);
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
   virtual void OnPrepareFileItems(CFileItemList& items);
