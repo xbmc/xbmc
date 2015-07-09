@@ -120,7 +120,7 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   m_endLocalTime      = m_timerInfoTag->IsEndAtAnyTime()   ? now : InitializeDateTime(m_timerInfoTag->EndAsLocalTime());
   m_timerStartTimeStr = m_startLocalTime.GetAsLocalizedTime("", false);
   m_timerEndTimeStr   = m_endLocalTime.GetAsLocalizedTime("", false);
-  m_firstDayLocalTime = InitializeDateTime(m_timerInfoTag->FirstDayAsLocalTime());
+  m_firstDayLocalTime = m_timerInfoTag->FirstDayAsLocalTime();
 
   m_strEpgSearchString = m_timerInfoTag->m_strEpgSearchString;
 
@@ -584,9 +584,6 @@ void CGUIDialogPVRTimerSettings::Save()
     m_timerInfoTag->m_iWeekdays = PVR_WEEKDAY_NONE;
 
   // First day (only for repeating timers)
-  if (m_firstDayLocalTime < now)
-    m_firstDayLocalTime = now;
-
   m_timerInfoTag->SetFirstDayFromLocalTime(m_firstDayLocalTime);
 
   // "New episodes only" (only for repeating timers)
