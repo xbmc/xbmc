@@ -714,16 +714,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
   }
 
   newTag->SetTimerType(timerType);
-
-  if (tag->Plot().empty())
-  {
-    newTag->UpdateSummary();
-  }
-  else
-  {
-    newTag->m_strSummary = tag->Plot();
-  }
-
+  newTag->UpdateSummary();
   newTag->m_epgTag = g_EpgContainer.GetById(tag->EpgID())->GetTag(tag->StartAsUTC());
 
   /* unused only for reference */
