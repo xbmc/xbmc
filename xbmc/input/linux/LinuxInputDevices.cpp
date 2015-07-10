@@ -558,22 +558,27 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
  */
 bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& devt)
 {
+  bool motion = false;
+  bool wheel  = false;
+
   switch (levt.code)
   {
   case REL_X:
     m_mouseX += levt.value;
     devt.motion.xrel = levt.value;
     devt.motion.yrel = 0;
+    motion = true;
     break;
-
   case REL_Y:
     m_mouseY += levt.value;
     devt.motion.xrel = 0;
     devt.motion.yrel = levt.value;
+    motion = true;
     break;
-
-  case REL_Z:
   case REL_WHEEL:
+    wheel = (levt.value != 0); // process wheel event only when there was some delta
+    break;
+  case REL_Z:
   default:
     CLog::Log(LOGWARNING, "CLinuxInputDevice::RelEvent: Unknown rel event code: %d\n", levt.code);
     return false;
@@ -588,13 +593,35 @@ bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& dev
   m_mouseY = std::max(0, m_mouseY);
 
 
-  devt.type = XBMC_MOUSEMOTION;
-  devt.motion.type = XBMC_MOUSEMOTION;
-  devt.motion.x = m_mouseX;
-  devt.motion.y = m_mouseY;
-  devt.motion.state = 0;
-  devt.motion.which = m_deviceIndex;
+  if (motion)
+  {
+    devt.type = XBMC_MOUSEMOTION;
+    devt.motion.type = XBMC_MOUSEMOTION;
+    devt.motion.x = m_mouseX;
+    devt.motion.y = m_mouseY;
+    devt.motion.state = 0;
+    devt.motion.which = m_deviceIndex;
+  }
+  else if (wheel)
+  {
+     devt.type = XBMC_MOUSEBUTTONUP;
+     devt.button.state = XBMC_RELEASED;
+     devt.button.type = devt.type;
+     devt.button.x = m_mouseX;
+     devt.button.y = m_mouseY;
+     devt.button.button = (levt.value<0) ? XBMC_BUTTON_WHEELDOWN:XBMC_BUTTON_WHEELUP;
 
+     /* but WHEEL up enent to the queue */
+     m_equeue.push_back(devt);
+
+     /* prepare and return WHEEL down event */
+     devt.button.state = XBMC_PRESSED;
+     devt.type = XBMC_MOUSEBUTTONDOWN;
+  }
+  else
+  {
+     return false;
+  }
 
   return true;
 }
@@ -693,56 +720,64 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
 
   XBMC_Event devt;
 
-  while (1)
+  if (m_equeue.empty())
   {
-    bzero(&levt, sizeof(levt));
-
-    bzero(&devt, sizeof(devt));
-    devt.type = XBMC_NOEVENT;
-
-    if(m_devicePreferredId == LI_DEVICE_NONE)
-      return devt;
-
-    readlen = read(m_fd, &levt, sizeof(levt));
-
-    if (readlen <= 0)
+    while (1)
     {
-      if (errno == ENODEV)
+      bzero(&levt, sizeof(levt));
+
+      bzero(&devt, sizeof(devt));
+      devt.type = XBMC_NOEVENT;
+
+      if(m_devicePreferredId == LI_DEVICE_NONE)
+        return devt;
+
+      readlen = read(m_fd, &levt, sizeof(levt));
+
+      if (readlen <= 0)
       {
-        CLog::Log(LOGINFO,"input device was unplugged %s",m_deviceName);
-        m_bUnplugged = true;
+        if (errno == ENODEV)
+        {
+          CLog::Log(LOGINFO,"input device was unplugged %s",m_deviceName);
+          m_bUnplugged = true;
+        }
+
+        break;
       }
 
-      break;
-    }
+      //printf("read event readlen = %d device name %s m_fileName %s\n", readlen, m_deviceName, m_fileName.c_str());
 
-    //printf("read event readlen = %d device name %s m_fileName %s\n", readlen, m_deviceName, m_fileName.c_str());
-
-    // sanity check if we realy read the event
-    if(readlen != sizeof(levt))
-    {
-      printf("CLinuxInputDevice: read error : %s\n", strerror(errno));
-      break;
-    }
-
-    if (!TranslateEvent(levt, devt))
-      continue;
-
-    /* Flush previous event with DIEF_FOLLOW? */
-    if (devt.type != XBMC_NOEVENT)
-    {
-      //printf("new event! type = %d\n", devt.type);
-      //printf("key: %d %d %d %c\n", devt.key.keysym.scancode, devt.key.keysym.sym, devt.key.keysym.mod, devt.key.keysym.unicode);
-
-      if (m_hasLeds && (m_keyMods != m_lastKeyMods))
+      // sanity check if we realy read the event
+      if(readlen != sizeof(levt))
       {
-        SetLed(LED_NUML, m_keyMods & XBMCKMOD_NUM);
-        SetLed(LED_CAPSL, m_keyMods & XBMCKMOD_CAPS);
-        m_lastKeyMods = m_keyMods;
+        printf("CLinuxInputDevice: read error : %s\n", strerror(errno));
+        break;
       }
 
-      break;
+      if (!TranslateEvent(levt, devt))
+        continue;
+
+      /* Flush previous event with DIEF_FOLLOW? */
+      if (devt.type != XBMC_NOEVENT)
+      {
+        //printf("new event! type = %d\n", devt.type);
+        //printf("key: %d %d %d %c\n", devt.key.keysym.scancode, devt.key.keysym.sym, devt.key.keysym.mod, devt.key.keysym.unicode);
+
+        if (m_hasLeds && (m_keyMods != m_lastKeyMods))
+        {
+          SetLed(LED_NUML, m_keyMods & XBMCKMOD_NUM);
+          SetLed(LED_CAPSL, m_keyMods & XBMCKMOD_CAPS);
+          m_lastKeyMods = m_keyMods;
+        }
+
+        break;
+      }
     }
+  }
+  else
+  {
+     devt = m_equeue.front();
+     m_equeue.pop_front();
   }
 
   return devt;
