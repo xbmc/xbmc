@@ -258,7 +258,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
    }
    free(buf);
 #else
-   FILE* fp = fopen("/proc/net/route", "r");
+   FILE* fp = isIPv4() ? fopen("/proc/net/route", "r") : fopen("/proc/net/ipv6_route", "r");
    if (!fp)
    {
      // TBD: Error
@@ -269,35 +269,45 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
    char iface[16];
    char dst[128];
    char gateway[128];
+   unsigned int metric;
+   unsigned int metric_prev = -1;
    size_t linel = 0;
    int n;
    int linenum = 0;
    while (getdelim(&line, &linel, '\n', fp) > 0)
    {
       // skip first two lines
-      if (linenum++ < 1)
+      if (isIPv4() && linenum++ < 1)
          continue;
 
       // search where the word begins
-      n = sscanf(line,  "%15s %127s %127s",
-         iface, dst, gateway);
+      if (isIPv4())
+        n = sscanf(line,  "%15s %127s %127s",
+           iface, dst, gateway);
+      else
+        n = sscanf(line,  "%*32s %*2s %32s %*2s %32s %8x %*8s %*8s %*8s %8s",
+           dst, gateway, &metric, iface);
 
       if (n < 3)
          continue;
 
       if (strcmp(iface, m_interfaceName.c_str()) == 0 &&
-          strcmp(dst, "00000000") == 0 &&
-          strcmp(gateway, "00000000") != 0)
+         (strcmp(dst, "00000000") == 0 || strcmp(dst, "00000000000000000000000000000000") == 0) &&
+          strcmp(gateway, "00000000") != 0 && strcmp(gateway, "00000000000000000000000000000000") != 0)
       {
-         unsigned char gatewayAddr[4];
-         int len = CNetwork::ParseHex(gateway, gatewayAddr);
-         if (len == 4)
+         if (isIPv4())
          {
-            struct in_addr in;
-            in.s_addr = (gatewayAddr[0] << 24) | (gatewayAddr[1] << 16) |
-                        (gatewayAddr[2] << 8) | (gatewayAddr[3]);
-            result = inet_ntoa(in);
-            break;
+           struct in_addr in;
+           sscanf(gateway, "%8x", &in.s_addr);
+           result = inet_ntoa(in);
+         }
+         else if (metric < metric_prev)
+         {
+           metric_prev = metric;
+           std::string tstr = gateway;
+           for(int i = 7; i > 0; i--)
+             tstr.insert(tstr.begin() + i*4, ':');
+           result = CNetwork::CanonizeIPv6(tstr);
          }
       }
    }
