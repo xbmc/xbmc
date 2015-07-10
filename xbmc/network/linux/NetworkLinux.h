@@ -23,9 +23,9 @@
 
 #include <string>
 #include <vector>
+#include <forward_list>
 #include <cstdio>
 #include "network/Network.h"
-#include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
 class CNetworkLinux;
@@ -33,8 +33,12 @@ class CNetworkLinuxUpdateThread;
 
 class CNetworkInterfaceLinux : public CNetworkInterface
 {
+  friend class CNetworkLinux;
+
 public:
-   CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]);
+   CNetworkInterfaceLinux(CNetworkLinux* network, bool sa_ipv6,
+                unsigned int ifa_flags, std::string ifa_addr, std::string ifa_netmask,
+                std::string interfaceName, char interfaceMacAddrRaw[6]);
    ~CNetworkInterfaceLinux(void);
 
    virtual std::string& GetName(void);
@@ -58,9 +62,23 @@ public:
 
    // Returns the list of access points in the area
    virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
-    
+
+   bool Exists(const std::string &addr, const std::string &mask, const std::string &name)
+   {
+     return (addr == m_interfaceAddr && mask == m_interfaceNetmask && name == m_interfaceName);
+   }
+
+protected:
+   void SetRemoved(bool removed = true) { m_removed = removed; }
+   bool IsRemoved(void) { return m_removed; }
+
 private:
    void WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
+   bool            m_interfaceIpv6;
+   unsigned int    m_interfaceFlags;   /* Flags from SIOCGIFFLAGS */
+   std::string     m_interfaceAddr;    /* Address of interface */
+   std::string     m_interfaceNetmask; /* Netmask of interface */
+   bool            m_removed;
    std::string     m_interfaceName;
    std::string     m_interfaceMacAdr;
    char           m_interfaceMacAddrRaw[6];
@@ -77,7 +95,7 @@ public:
    virtual ~CNetworkLinux(void);
 
    // Return the list of interfaces
-   virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
+   virtual std::forward_list<CNetworkInterface*>& GetInterfaceList(void);
    virtual CNetworkInterface* GetFirstConnectedInterface(void);        
     
    virtual bool SupportsIPv6() { return true; }
@@ -90,14 +108,19 @@ public:
    virtual void SetNameServers(const std::vector<std::string>& nameServers);
 
 private:
+   CNetworkInterfaceLinux *Exists(const std::string &addr, const std::string &mask, const std::string &name);
+   void InterfacesClear(void);
+   void DeleteRemoved(void);
+
    int GetSocket() { return m_sock; }
-   void GetMacAddress(const std::string& interfaceName, char macAddrRaw[6]);
-   void queryInterfaceList();
-   std::vector<CNetworkInterface*> m_interfaces;
+   void GetMacAddress(const std::string& interfaceName, char rawMac[6]);
+   bool queryInterfaceList();
+   std::forward_list<CNetworkInterface*> m_interfaces;
    int m_sock;
 
    CNetworkLinuxUpdateThread      *m_updThread;
-   CCriticalSection                m_lock;
+
+   static bool IsRemoved(const CNetworkInterface *i) { return ((CNetworkInterfaceLinux*)i)->IsRemoved(); }
 };
 
 class CNetworkLinuxUpdateThread : public CThread

@@ -27,10 +27,18 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#ifdef TARGET_ANDROID
+  #include "network/linux/android-ifaddrs/ifaddrs.h"
+#endif
 #if defined(TARGET_LINUX)
   #include <linux/if.h>
   #include <linux/wireless.h>
   #include <linux/sockios.h>
+  #include <linux/netlink.h>
+  #include <linux/rtnetlink.h>
+#ifndef _IFADDRS_H_
+  #include <ifaddrs.h>
+#endif
 #else
   #include "network/osx/priv_netlink.h"
 #endif
@@ -74,7 +82,14 @@
 
 using namespace KODI::MESSAGING;
 
-CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]):
+CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, bool sa_ipv6, unsigned int ifa_flags,
+                                               std::string ifa_addr, std::string ifa_netmask, std::string interfaceName,
+                                               char interfaceMacAddrRaw[6]) :
+  m_interfaceIpv6(sa_ipv6),
+  m_interfaceFlags(ifa_flags),
+  m_interfaceAddr(ifa_addr),
+  m_interfaceNetmask(ifa_netmask),
+  m_removed(false),
   m_interfaceName(interfaceName),
   m_interfaceMacAdr(StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
                                         (uint8_t)interfaceMacAddrRaw[0],
@@ -329,7 +344,7 @@ CNetworkLinux::~CNetworkLinux(void)
     close(CNetworkLinux::m_sock);
 
   m_updThread->StopThread(false);
-  CSingleLock lock(m_lock);
+  CSingleLock lock(m_lockInterfaces);
   InterfacesClear();
   DeleteRemoved();
   m_updThread->StopThread(true);
@@ -337,18 +352,20 @@ CNetworkLinux::~CNetworkLinux(void)
 
 void CNetworkLinux::DeleteRemoved(void)
 {
-  std::vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
-  while(it != m_interfaces.end())
-  {
-    CNetworkInterface* nInt = *it;
-    delete nInt;
-    it = m_interfaces.erase(it);
-  }
+  CSingleLock lock(m_lockInterfaces);
+  m_interfaces.remove_if(IsRemoved);
 }
 
-std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
+void CNetworkLinux::InterfacesClear(void)
 {
-   return m_interfaces;
+  for (auto &&iface: m_interfaces)
+    ((CNetworkInterfaceLinux*)iface)->SetRemoved();
+}
+
+std::forward_list<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
+{
+  CSingleLock lock(m_lockInterfaces);
+  return m_interfaces;
 }
 
 //! @bug
@@ -423,67 +440,76 @@ void CNetworkLinux::GetMacAddress(const std::string& interfaceName, char rawMac[
 #endif
 }
 
-void CNetworkLinux::queryInterfaceList()
+CNetworkInterfaceLinux *CNetworkLinux::Exists(const std::string &addr, const std::string &mask, const std::string &name)
 {
-  char macAddrRaw[6];
-  m_interfaces.clear();
+  for (auto &&iface: m_interfaces)
+    if (((CNetworkInterfaceLinux*)iface)->Exists(addr, mask, name))
+      return (CNetworkInterfaceLinux*)iface;
 
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
+  return NULL;
+}
 
-   // Query the list of interfaces.
-   struct ifaddrs *list;
-   if (getifaddrs(&list) < 0)
-     return;
+bool CNetworkLinux::queryInterfaceList()
+{
+  bool change = false;
+
+  CSingleLock lock(m_lockInterfaces);
+
+  // Query the list of interfaces.
+  struct ifaddrs *list;
+  if (getifaddrs(&list) < 0)
+    return false;
+
+  InterfacesClear();
+
+  // find last IPv4 record, we will add new interfaces
+  // right after this one (to keep IPv4 in front).
+  auto pos = m_interfaces.before_begin();
+  for (auto &&iface : m_interfaces)
+  {
+    if (iface && iface->isIPv6())
+      break;
+    ++pos;
+  }
 
    struct ifaddrs *cur;
    for(cur = list; cur != NULL; cur = cur->ifa_next)
    {
-     if(cur->ifa_addr->sa_family != AF_INET)
+     if(cur->ifa_addr->sa_family != AF_INET
+     && cur->ifa_addr->sa_family != AF_INET6)
        continue;
 
-     GetMacAddress(cur->ifa_name, macAddrRaw);
      // Add the interface.
-     m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name, macAddrRaw));
+     std::string addr = CNetwork::GetIpStr(cur->ifa_addr);
+     std::string mask = CNetwork::GetIpStr(cur->ifa_netmask);
+     std::string name = cur->ifa_name;
+
+     CNetworkInterfaceLinux *iface = Exists(addr, mask, name);
+     if (iface)
+     {
+       iface->SetRemoved(false);
+       iface->m_interfaceFlags = cur->ifa_flags;
+       continue;
+     }
+
+     char macAddrRaw[6] = {0};
+     GetMacAddress(cur, macAddrRaw);
+
+     CNetworkInterfaceLinux *i = new CNetworkInterfaceLinux(this, cur->ifa_addr->sa_family == AF_INET6,
+                                                            cur->ifa_flags, addr, mask, name, macAddrRaw);
+
+     m_interfaces.insert_after(pos, i);
+     if (i->isIPv4())
+       pos++;
+     change = true;
    }
 
    freeifaddrs(list);
 
-#else
-   FILE* fp = fopen("/proc/net/dev", "r");
-   if (!fp)
-   {
-     // TBD: Error
-     return;
-   }
+   change |= std::count_if(m_interfaces.begin(), m_interfaces.end(), IsRemoved);
+   DeleteRemoved();
 
-   char* line = NULL;
-   size_t linel = 0;
-   int n;
-   char* p;
-   int linenum = 0;
-   while (getdelim(&line, &linel, '\n', fp) > 0)
-   {
-      // skip first two lines
-      if (linenum++ < 2)
-         continue;
-
-    // search where the word begins
-      p = line;
-      while (isspace(*p))
-      ++p;
-
-      // read word until :
-      n = strcspn(p, ": \t");
-      p[n] = 0;
-
-      // save the result
-      std::string interfaceName = p;
-      GetMacAddress(interfaceName, macAddrRaw);
-      m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName, macAddrRaw));
-   }
-   free(line);
-   fclose(fp);
-#endif
+   return change;
 }
 
 std::vector<std::string> CNetworkLinux::GetNameServers(void)
@@ -1182,8 +1208,11 @@ void CNetworkLinuxUpdateThread::Process(void)
       while (!m_bStop && recv(fds, &msg, sizeof(msg), 0) > 0);
       if (m_bStop)
         continue;
+
+      if (!m_owner->queryInterfaceList())
+        continue;
+
       CLog::Log(LOGINFO, "Interfaces change %s", __FUNCTION__);
-      m_owner->queryInterfaceList();
       CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, m_owner->NETWORK_CHANGED, 0);
     }
 }

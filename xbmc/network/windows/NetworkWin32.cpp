@@ -160,6 +160,8 @@ CNetworkWin32::~CNetworkWin32(void)
 
 void CNetworkWin32::CleanInterfaceList()
 {
+  CSingleLock lock (m_lockInterfaces);
+
   std::vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
   while(it != m_interfaces.end())
   {
@@ -171,7 +173,7 @@ void CNetworkWin32::CleanInterfaceList()
 
 std::vector<CNetworkInterface*>& CNetworkWin32::GetInterfaceList(void)
 {
-  CSingleLock lock (m_critSection);
+  CSingleLock lock (m_lockInterfaces);
   if(m_netrefreshTimer.GetElapsedSeconds() >= 5.0f)
     queryInterfaceList();
 

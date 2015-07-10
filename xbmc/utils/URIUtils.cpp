@@ -631,9 +631,9 @@ bool URIUtils::IsOnLAN(const std::string& strPath)
 
 static bool addr_match(uint32_t addr, const char* target, const char* submask)
 {
-  uint32_t addr2 = ntohl(inet_addr(target));
-  uint32_t mask = ntohl(inet_addr(submask));
-  return (addr & mask) == (addr2 & mask);
+  struct in_addr in = { htonl(addr) };
+  std::string address = inet_ntoa(in);
+  return CNetwork::AddrMatch(address, target, submask);
 }
 
 bool URIUtils::IsHostOnLAN(const std::string& host, bool offLineCheck)
@@ -646,32 +646,19 @@ bool URIUtils::IsHostOnLAN(const std::string& host, bool offLineCheck)
   if(host.find('.') == std::string::npos)
     return true;
 
-  uint32_t address = ntohl(inet_addr(host.c_str()));
-  if(address == INADDR_NONE)
-  {
-    std::string ip;
-    if(CDNSNameCache::Lookup(host, ip))
-      address = ntohl(inet_addr(ip.c_str()));
-  }
+  std::string address;
+  if (!CDNSNameCache::Lookup(host, address))
+    return false;
 
-  if(address != INADDR_NONE)
-  {
-    if (offLineCheck) // check if in private range, ref https://en.wikipedia.org/wiki/Private_network
-    {
-      if (
-        addr_match(address, "192.168.0.0", "255.255.0.0") ||
-        addr_match(address, "10.0.0.0", "255.0.0.0") ||
-        addr_match(address, "172.16.0.0", "255.240.0.0")
-        )
-        return true;
-    }
-    // check if we are on the local subnet
-    if (!g_application.getNetwork().GetFirstConnectedInterface())
-      return false;
+  if (offLineCheck && /* check if in private range, ref https://en.wikipedia.org/wiki/Private_network */
+     (CNetwork::AddrMatch(address, "192.168.0.0", "255.255.0.0") ||
+      CNetwork::AddrMatch(address, "10.0.0.0", "255.0.0.0") ||
+      CNetwork::AddrMatch(address, "172.16.0.0", "255.240.0.0"))
+     )
+     return true;
 
-    if (g_application.getNetwork().HasInterfaceForIP(address))
-      return true;
-  }
+  if (g_application.getNetwork().HasInterfaceForIP(address))
+    return true;
 
   return false;
 }

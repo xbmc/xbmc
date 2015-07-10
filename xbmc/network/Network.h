@@ -21,9 +21,11 @@
 
 #include <string>
 #include <vector>
+#include <forward_list>
 
 #include "system.h"
 #include "threads/Event.h"
+#include "threads/CriticalSection.h"
 
 #include "settings/lib/ISettingCallback.h"
 #include <sys/socket.h>
@@ -120,7 +122,8 @@ public:
    virtual bool GetHostName(std::string& hostname);
 
    // Return the list of interfaces
-   virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;
+   virtual std::forward_list<CNetworkInterface*>& GetInterfaceList(void) = 0;
+
    CNetworkInterface* GetInterfaceByName(const std::string& name);
 
    // Return the first interface which is active
@@ -296,6 +299,9 @@ public:
 
    // Waits for the first network interface to become available
    void WaitForNet();
+
+protected:
+   CCriticalSection m_lockInterfaces;
 
 private:
    CEvent  m_signalNetworkChange;
