@@ -22,10 +22,11 @@
 
 #include <vector>
 #include <string>
+#include "interfaces/AnnouncementManager.h"
 
 class CCriticalSection;
 
-class CDNSNameCache
+class CDNSNameCache : public ANNOUNCEMENT::IAnnouncer
 {
 public:
   class CDNSName
@@ -39,8 +40,11 @@ public:
   static bool Lookup(const std::string& strHostName, std::string& strIpAddress);
   static void Add(const std::string& strHostName, const std::string& strIpAddress);
 
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+
 protected:
   static bool GetCached(const std::string& strHostName, std::string& strIpAddress);
+  void Flush();
   static CCriticalSection m_critical;
   std::vector<CDNSName> m_vecDNSNames;
 };

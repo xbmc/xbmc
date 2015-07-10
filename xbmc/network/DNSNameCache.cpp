@@ -29,15 +29,34 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
+using namespace ANNOUNCEMENT;
+
 CDNSNameCache g_DNSCache;
 
 CCriticalSection CDNSNameCache::m_critical;
 
 CDNSNameCache::CDNSNameCache(void)
-{}
+{
+  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+}
 
 CDNSNameCache::~CDNSNameCache(void)
-{}
+{
+  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+}
+
+void CDNSNameCache::Flush()
+{
+  CSingleLock lock(m_critical);
+  CLog::Log(LOGINFO, "%s - DNS cache flushed (%u records)", __FUNCTION__, g_DNSCache.m_vecDNSNames.size());
+  g_DNSCache.m_vecDNSNames.clear();
+}
+
+void CDNSNameCache::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if (!strcmp(sender, "network") && !strcmp(message, "OnInterfacesChange"))
+    Flush();
+}
 
 bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAddress)
 {
