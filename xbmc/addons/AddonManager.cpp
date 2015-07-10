@@ -53,7 +53,7 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
-#include "ContextItemAddon.h"
+#include "ContextMenuAddon.h"
 #include "Util.h"
 #include "addons/Webinterface.h"
 
@@ -193,7 +193,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(props));
     case ADDON_CONTEXT_ITEM:
-      return AddonPtr(new CContextItemAddon(props));
+      return AddonPtr(new CContextMenuAddon(props));
     default:
       break;
   }
@@ -871,7 +871,7 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     case ADDON_CONTEXT_ITEM:
-      return AddonPtr(new CContextItemAddon(addonProps));
+      return AddonPtr(new CContextMenuAddon(addonProps));
     default:
       break;
   }

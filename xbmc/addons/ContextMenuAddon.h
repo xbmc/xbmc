@@ -29,12 +29,12 @@ typedef struct cp_cfg_element_t cp_cfg_element_t;
 
 namespace ADDON
 {
-  class CContextItemAddon : public CAddon
+  class CContextMenuAddon : public CAddon
   {
   public:
-    CContextItemAddon(const cp_extension_t *ext);
-    CContextItemAddon(const AddonProps &props);
-    virtual ~CContextItemAddon();
+    CContextMenuAddon(const cp_extension_t *ext);
+    CContextMenuAddon(const AddonProps &props);
+    virtual ~CContextMenuAddon();
 
     std::vector<CContextMenuItem> GetItems();
 
@@ -43,5 +43,5 @@ namespace ADDON
     std::vector<CContextMenuItem> m_items;
   };
 
-  typedef std::shared_ptr<CContextItemAddon> ContextItemAddonPtr;
+  typedef std::shared_ptr<CContextMenuAddon> ContextItemAddonPtr;
 }

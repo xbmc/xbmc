@@ -22,7 +22,7 @@
 #include "ContextMenuItem.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
-#include "addons/ContextItemAddon.h"
+#include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/ContextItemAddonInvoker.h"
@@ -54,7 +54,7 @@ void CContextMenuManager::Init()
   VECADDONS addons;
   if (CAddonMgr::Get().GetAddons(ADDON_CONTEXT_ITEM, addons))
     for (const auto& addon : addons)
-      Register(std::static_pointer_cast<CContextItemAddon>(addon));
+      Register(std::static_pointer_cast<CContextMenuAddon>(addon));
 }
 
 void CContextMenuManager::Register(const ContextItemAddonPtr& cm)
