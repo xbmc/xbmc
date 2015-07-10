@@ -22,6 +22,8 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "network/Network.h"
+#include "Application.h"
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -42,15 +44,18 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   if (strHostName.empty() && strIpAddress.empty())
     return false;
 
-  // first see if this is already an ip address
-  unsigned long address = inet_addr(strHostName.c_str());
   strIpAddress.clear();
-
-  if (address != INADDR_NONE)
+  // first see if this is already an ip address
   {
-    strIpAddress = StringUtils::Format("%lu.%lu.%lu.%lu", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
-    return true;
+    struct sockaddr_in sa;
+
+    if (CNetwork::ConvIPv6(strHostName))
+      strIpAddress = CNetwork::CanonizeIPv6(strHostName);
+    else if (CNetwork::ConvIPv4(strHostName, &sa))
+      strIpAddress = inet_ntoa(sa.sin_addr);
   }
+  if (!strIpAddress.empty())
+    return true;
 
   // check if there's a custom entry or if it's already cached
   if(g_DNSCache.GetCached(strHostName, strIpAddress))
@@ -84,20 +89,48 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
 #endif
 
   // perform dns lookup
-  struct hostent *host = gethostbyname(strHostName.c_str());
-  if (host && host->h_addr_list[0])
+  struct addrinfo hints;
+  struct addrinfo *result = NULL;
+
+  memset(&hints, 0, sizeof(struct addrinfo));
+  int err;
+
+  // prefer DNS record type (A vs AAAA) be the same as active interface(address).
+  // otherwise (by default) system prefers A(IPv4) records. this can make
+  // troubles on dual stack configured hosts or even make network access completely
+  // unusable in case of pure IPv6 configuration because returning IPv4 record as first.
+
+  // (NOTE/TODO: we might consider for future iterating via all returned results,
+  // while checking accessibiity and use record which we can access. For now we just grab
+  // first record from returned list).
+  do
   {
-    strIpAddress = StringUtils::Format("%d.%d.%d.%d",
-                                       (unsigned char)host->h_addr_list[0][0],
-                                       (unsigned char)host->h_addr_list[0][1],
-                                       (unsigned char)host->h_addr_list[0][2],
-                                       (unsigned char)host->h_addr_list[0][3]);
+    if (result)
+      freeaddrinfo(result);
+    hints.ai_family = hints.ai_family == 0 ? g_application.getNetwork().GetFirstConnectedFamily() : AF_UNSPEC;
+    err = getaddrinfo(strHostName.c_str(), NULL, &hints, &result);
+  } while ((err || !result) && hints.ai_family != AF_UNSPEC);
+
+  std::string str_err;
+  if (err)
+    str_err = gai_strerror(err);
+
+  bool bReturn;
+  if (result)
+  {
+    strIpAddress = CNetwork::GetIpStr(result->ai_addr);
+    freeaddrinfo(result);
+    CLog::Log(LOGDEBUG, "%s - %s", __FUNCTION__, strIpAddress.c_str());
     g_DNSCache.Add(strHostName, strIpAddress);
-    return true;
+    bReturn = true;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "Unable to lookup host: '%s' (err detail: %s)", strHostName.c_str(), str_err.c_str());
+    bReturn = false;
   }
 
-  CLog::Log(LOGERROR, "Unable to lookup host: '%s'", strHostName.c_str());
-  return false;
+  return bReturn;
 }
 
 bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIpAddress)
