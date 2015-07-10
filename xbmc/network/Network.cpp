@@ -689,7 +689,8 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     {
       closesocket(sock);
       sock = -1;
-      CLog::Log(LOGDEBUG, "%s Server: Failed to bind ipv6 serversocket, trying ipv4", callerName);
+      CLog::Log(LOGDEBUG, "%s Server: Failed to bind ipv6 serversocket on port %d, trying ipv4 (error was %s (%d))",
+                           callerName, port, strerror(errno), errno);
     }
   }
   
@@ -711,7 +712,8 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     if (bind( sock, (struct sockaddr *) &addr, sizeof(struct sockaddr_in)) < 0)
     {
       closesocket(sock);
-      CLog::Log(LOGERROR, "%s Server: Failed to bind ipv4 serversocket", callerName);
+      CLog::Log(LOGERROR, "%s Server: Failed to bind ipv4 serversocket on port %d, trying ipv4 (error was %s (%d))",
+                           callerName, port, strerror(errno), errno);
       return INVALID_SOCKET;
     }
   }
