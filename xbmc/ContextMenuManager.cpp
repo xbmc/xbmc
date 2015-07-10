@@ -31,7 +31,7 @@
 
 using namespace ADDON;
 
-typedef std::map<unsigned int, CContextMenuItem>::value_type ValueType;
+typedef std::pair<unsigned int, CContextMenuItem> Item;
 
 const CContextMenuItem CContextMenuManager::MAIN = CContextMenuItem::CreateGroup("", "", "kodi.core.main");
 const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGroup("", "", "kodi.core.manage");
@@ -65,15 +65,15 @@ void CContextMenuManager::Register(const ContextItemAddonPtr& cm)
   for (const auto& menuItem : cm->GetItems())
   {
     auto existing = std::find_if(m_items.begin(), m_items.end(),
-        [&](const ValueType& kv){ return kv.second == menuItem; });
+        [&](const Item& kv){ return kv.second == menuItem; });
     if (existing != m_items.end())
     {
       if (!menuItem.GetLabel().empty())
-        m_items[existing->first] = menuItem;
+        existing->second = menuItem;
     }
     else
     {
-      m_items[m_nextButtonId] = menuItem;
+      m_items.push_back(std::make_pair(m_nextButtonId, menuItem));
       ++m_nextButtonId;
     }
   }
@@ -106,7 +106,7 @@ bool CContextMenuManager::IsVisible(
 
   if (menuItem.IsGroup())
     return std::any_of(m_items.begin(), m_items.end(),
-        [&](const ValueType& kv){ return menuItem.IsParentOf(kv.second) && kv.second.IsVisible(fileItem); });
+        [&](const Item& kv){ return menuItem.IsParentOf(kv.second) && kv.second.IsVisible(fileItem); });
 
   return menuItem.IsVisible(fileItem);
 }
@@ -128,7 +128,8 @@ bool CContextMenuManager::OnClick(unsigned int id, const CFileItemPtr& item)
   if (!item)
     return false;
 
-  auto it = m_items.find(id);
+  auto it = std::find_if(m_items.begin(), m_items.end(),
+      [id](const Item& kv){ return kv.first == id; });
   if (it == m_items.end())
   {
     CLog::Log(LOGERROR, "CContextMenuManager: unknown button id '%u'", id);
