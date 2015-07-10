@@ -19,7 +19,7 @@
  *
  */
 
-#include <map>
+#include <vector>
 #include "ContextMenuItem.h"
 #include "addons/ContextMenuAddon.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -74,6 +74,6 @@ private:
     const CContextMenuItem& root,
     const CFileItemPtr& fileItem);
 
-  std::map<unsigned int, CContextMenuItem> m_items;
+  std::vector<std::pair<unsigned int, CContextMenuItem>> m_items;
   unsigned int m_nextButtonId;
 };
