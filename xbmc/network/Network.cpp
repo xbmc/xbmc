@@ -36,6 +36,9 @@
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
 #endif
+#ifdef TARGET_DARWIN
+#include <stdlib.h> // for malloc() and free()
+#endif
 #include "utils/StringUtils.h"
 
 using namespace KODI::MESSAGING;
@@ -147,6 +150,37 @@ CNetwork::~CNetwork()
   CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_DOWN, 0);
 }
 
+std::string CNetwork::GetIpStr(const struct sockaddr *sa)
+{
+  std::string result;
+  if (!sa)
+    return result;
+
+  char s[INET6_ADDRSTRLEN] = {0};
+  switch(sa->sa_family)
+  {
+  case AF_INET:
+    inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, INET6_ADDRSTRLEN);
+    break;
+  case AF_INET6:
+    inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, INET6_ADDRSTRLEN);
+    break;
+  default:
+    return result;
+  }
+
+  result = s;
+  return result;
+}
+
+std::string CNetwork::GetIpStr(unsigned long address)
+{
+  struct in_addr in = { htonl(address) };
+  std::string addr = inet_ntoa(in);
+
+  return addr;
+}
+
 int CNetwork::ParseHex(char *str, unsigned char *addr)
 {
    int len = 0;
@@ -164,6 +198,58 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
    }
 
    return len;
+}
+
+bool CNetwork::ConvIPv4(const std::string &address, struct sockaddr_in *sa, unsigned short port)
+{
+  if (address.empty())
+    return false;
+
+  struct in_addr sin_addr;
+  int ret = inet_pton(AF_INET, address.c_str(), &sin_addr);
+
+  if (ret > 0 && sa)
+  {
+    sa->sin_family = AF_INET;
+    sa->sin_port = htons(port);
+    memcpy(&(sa->sin_addr), &sin_addr, sizeof(struct in_addr));
+  }
+
+  return (ret > 0);
+}
+
+bool CNetwork::ConvIPv6(const std::string &address, struct sockaddr_in6 *sa, unsigned short port)
+{
+  if (address.empty())
+    return false;
+
+  struct in6_addr sin6_addr;
+  int ret = inet_pton(AF_INET6, address.c_str(), &sin6_addr);
+
+  if (ret > 0 && sa)
+  {
+    sa->sin6_family = AF_INET6;
+    sa->sin6_port = htons((uint16_t)port);
+    memcpy(&(sa->sin6_addr), &sin6_addr, sizeof(struct in6_addr));
+  }
+
+  return (ret > 0);
+}
+
+struct sockaddr_storage *CNetwork::ConvIP(const std::string &address, unsigned short port)
+{
+  struct sockaddr_storage *sa = NULL;
+
+  if (!address.empty())
+    if ((sa = (struct sockaddr_storage *) malloc(sizeof(struct sockaddr_storage))))
+      if (ConvIPv4(address, (struct sockaddr_in  *) sa, port)
+      ||  ConvIPv6(address, (struct sockaddr_in6 *) sa, port))
+        return sa;
+
+  if (sa)
+    free(sa);
+
+  return NULL;
 }
 
 bool CNetwork::GetHostName(std::string& hostname)
@@ -224,6 +310,63 @@ CNetworkInterface* CNetwork::GetFirstConnectedInterface()
    }
 
    return NULL;
+}
+
+bool CNetwork::AddrMatch(const std::string &addr, const std::string &match_ip, const std::string &match_mask)
+{
+  if (ConvIPv4(addr) && ConvIPv4(match_ip) && ConvIPv4(match_mask))
+  {
+    unsigned long address = ntohl(inet_addr(addr.c_str()));
+    unsigned long subnet = ntohl(inet_addr(match_mask.c_str()));
+    unsigned long local = ntohl(inet_addr(match_ip.c_str()));
+    return ((address & subnet) == (local & subnet));
+  }
+  else if (!g_application.getNetwork().SupportsIPv6())
+  {
+    return false;
+  }
+  else
+  {
+    struct sockaddr_in6 address;
+    struct sockaddr_in6 local;
+    struct sockaddr_in6 subnet;
+    if (!ConvIPv6(addr, &address) || !ConvIPv6(match_ip, &local)
+     || !ConvIPv6(match_mask, &subnet))
+      return false;
+
+    // mask matching of IPv6 follows same rule as for IPv4, only
+    // difference is the storage object of IPv6 address what
+    // is 16 segments of 8bit information (16bytes => 128bits)
+    // lets assume we match fd::2 against fd::1/16. this means
+    // for illustration:
+    // 00fd:0000:0000:0000:0000:0000:0000:0002
+    // to
+    // 00fd:0000:0000:0000:0000:0000:0000:0001 with mask
+    // ffff:0000:0000:0000:0000:0000:0000:0000
+    // as with IPv4, addr1 & mask == addr2 & mask - for each segment
+
+    // despite the comment explaining uint_8[16] structure
+    // (what at the time of writing this text was valid for OSX/Linux/BSD)
+    // rather let's use type independent construction. this is because (OSX????)
+    // .h files commented the internal s6_addr structure type inside
+    // sockaddr_in6 as not being mandatory specified by RFC - devil never sleeps.
+    unsigned int m;
+    for (m = 0; m < sizeof(address.sin6_addr.s6_addr); m++)
+      if ((address.sin6_addr.s6_addr[m] & subnet.sin6_addr.s6_addr[m]) !=
+          (  local.sin6_addr.s6_addr[m] & subnet.sin6_addr.s6_addr[m]))
+      {
+        m = -1;
+      }
+
+    // in case of matching addresses, we loop through each segment,
+    // leaving m with final value of 16.
+    // if we don't match, m is set to <unsigned int>.max() and for() is ended.
+    // RESULT: any value of m smaller than <unsigned int>.max() indicates success.
+    if (m < (unsigned int)~0)
+      return true;
+  }
+
+  return false;
 }
 
 bool CNetwork::HasInterfaceForIP(unsigned long address)
@@ -464,6 +607,54 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
   }
 
   return err_msg == 0;
+}
+
+std::string CNetwork::CanonizeIPv6(const std::string &address)
+{
+  std::string result = address;
+
+  struct sockaddr_in6 addr;
+  if (!ConvIPv6(address, &addr))
+    return result;
+
+  result = GetIpStr((const sockaddr*)&addr);
+  return result;
+}
+
+int CNetwork::PrefixLengthIPv6(const std::string &address)
+{
+  struct sockaddr_in6 mask;
+  if (!ConvIPv6(address, &mask))
+    return -1;
+
+  unsigned int m;
+  unsigned int segment_size = 128 / sizeof(mask.sin6_addr.s6_addr);
+  auto segment_tmax = mask.sin6_addr.s6_addr[0];
+  segment_tmax = -1;
+
+  // let's assume mask being ff80:: - in binary form:
+  // 11111111:10000000
+  // as prefix-length is count of leftmost contiguous bits,
+  // we can simply check how many segments are full of bits (0xff).
+  // this * nr_bits in segment + individual bits from the first segment
+  // not full is our prefix-length.
+  for (m = 0;
+       m < sizeof(mask.sin6_addr.s6_addr) && (mask.sin6_addr.s6_addr[m] == segment_tmax);
+       m += 1);
+
+  m *= segment_size;
+  // if we didn't match all segments (prefixlength not /128)
+  if (m < 128)
+  {
+    // we shift left until we get all bits zero,
+    // then we have final length (in this case it is /9)
+    auto leftover_bits = mask.sin6_addr.s6_addr[m / segment_size];
+    do {
+      m++;
+    } while (leftover_bits <<= 1);
+  }
+
+  return m;
 }
 
 //creates, binds and listens a tcp socket on the desired port. Set bindLocal to

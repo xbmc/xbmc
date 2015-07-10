@@ -74,6 +74,8 @@ public:
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
    virtual CNetworkInterface* GetFirstConnectedInterface(void);        
     
+   virtual bool SupportsIPv6() { return true; }
+
    // Ping remote host
    virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
 
