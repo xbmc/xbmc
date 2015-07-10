@@ -123,7 +123,7 @@ void CContextMenuManager::AddVisibleItems(
 }
 
 
-bool CContextMenuManager::Execute(unsigned int id, const CFileItemPtr& item)
+bool CContextMenuManager::OnClick(unsigned int id, const CFileItemPtr& item)
 {
   if (!item)
     return false;
@@ -150,7 +150,7 @@ bool CContextMenuManager::Execute(unsigned int id, const CFileItemPtr& item)
     if (choice == -1)
       return false;
 
-    return Execute(choice, item);
+    return OnClick(choice, item);
   }
 
   return menuItem.Execute(item);

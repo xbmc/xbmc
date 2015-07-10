@@ -34,12 +34,11 @@ public:
   static CContextMenuManager& Get();
 
   /*!
-   * \brief Executes a context menu item.
-   * \param id - id of the context button to execute.
-   * \param item - the currently selected item.
-   * \return true if executed successfully, false otherwise
+   * \param id - id of the context button clicked on.
+   * \param item - the selected file item.
+   * \return true on success, otherwise false.
    */
-  bool Execute(unsigned int id, const CFileItemPtr& item);
+  bool OnClick(unsigned int id, const CFileItemPtr& item);
 
   /*!
    * \brief Adds all registered context item to the list.

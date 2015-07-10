@@ -151,7 +151,7 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   else if (button == 5)
     OnSetThumb(item);
   else if (button >= CONTEXT_BUTTON_FIRST_ADDON)
-    CContextMenuManager::Get().Execute(button, itemPtr);
+    CContextMenuManager::Get().OnClick(button, itemPtr);
 }
 
 void CGUIDialogFavourites::OnMoveItem(int item, int amount)
