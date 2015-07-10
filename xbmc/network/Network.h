@@ -133,6 +133,8 @@ public:
    int GetFirstConnectedFamily() { return (GetFirstConnectedInterface() && GetFirstConnectedInterface()->isIPv6() ? AF_INET6 : AF_INET); }
 
    // Return true if there is a interface for the same network as address
+   bool HasInterfaceForIP(const std::string &address);
+   // Backward compatibility call. It wraps IPv6 compatible function above
    bool HasInterfaceForIP(unsigned long address);
 
    // Return true if there's at least one defined network interface
