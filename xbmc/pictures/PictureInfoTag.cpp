@@ -345,6 +345,16 @@ const std::string CPictureInfoTag::GetInfo(int info) const
       g_charsetConverter.unknownToUTF8(m_exifInfo.Comments, value);
     }
     break;
+  case SLIDE_EXIF_XPCOMMENT:
+    if (m_exifInfo.XPCommentsCharset == EXIF_COMMENT_CHARSET_UNICODE)
+    {
+      g_charsetConverter.ucs2ToUTF8(std::u16string((char16_t*)m_exifInfo.XPComment), value);
+    }
+    else
+    {
+      value = "Illegal charset used.";
+    }
+    break;
   case SLIDE_EXIF_LONG_DATE_TIME:
     if (m_dateTimeTaken.IsValid())
       value = m_dateTimeTaken.GetAsLocalizedDateTime(true);

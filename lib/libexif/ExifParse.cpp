@@ -486,10 +486,10 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       case TAG_XP_COMMENT:
       {
         // The XP user comment field is always unicode (UCS-2) encoded
-        m_ExifInfo->CommentsCharset = EXIF_COMMENT_CHARSET_UNICODE;
+        m_ExifInfo->XPCommentsCharset = EXIF_COMMENT_CHARSET_UNICODE;
         size_t length = min(ByteCount, MAX_COMMENT);
-        memcpy(m_ExifInfo->Comments, ValuePtr, length);
-        m_ExifInfo->Comments[length] = '\0';
+        memcpy(m_ExifInfo->XPComment, ValuePtr, length);
+        m_ExifInfo->XPComment[length] = '\0';
       }
       break;
 
