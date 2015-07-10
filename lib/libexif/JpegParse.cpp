@@ -100,6 +100,12 @@ void CJpegParse::ProcessSOFn (void)
 //--------------------------------------------------------------------------
 bool CJpegParse::GetSection (FILE *infile, const unsigned short sectionLength)
 {
+  if (sectionLength < 2)
+  {
+    printf("JpgParse: invalid section length");
+    return false;
+  }
+
   m_SectionBuffer = new unsigned char[sectionLength];
   if (m_SectionBuffer == NULL)
   {
