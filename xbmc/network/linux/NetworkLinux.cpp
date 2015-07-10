@@ -128,31 +128,20 @@ bool CNetworkInterfaceLinux::IsWireless()
 
 bool CNetworkInterfaceLinux::IsEnabled()
 {
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
-      return false;
-
-   return ((ifr.ifr_flags & IFF_UP) == IFF_UP);
+   return (!IsRemoved() && m_interfaceFlags & IFF_UP);
 }
 
 bool CNetworkInterfaceLinux::IsConnected()
 {
-   struct ifreq ifr;
-   int zero = 0;
-   memset(&ifr,0,sizeof(struct ifreq));
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
-      return false;
-
    // ignore loopback
-   int iRunning = ( (ifr.ifr_flags & IFF_RUNNING) && (!(ifr.ifr_flags & IFF_LOOPBACK)));
+   if (IsRemoved() || m_interfaceFlags & IFF_LOOPBACK)
+     return false;
 
-   if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) < 0)
-      return false;
+   unsigned int needFlags = IFF_RUNNING | IFF_LOWER_UP;
+   bool iRunning = (m_interfaceFlags & needFlags) == needFlags;
 
    // return only interfaces which has ip address
-   return iRunning && (0 != memcmp(ifr.ifr_addr.sa_data+sizeof(short), &zero, sizeof(int)));
+   return iRunning && !m_interfaceAddr.empty();
 }
 
 std::string CNetworkInterfaceLinux::GetMacAddress()
@@ -169,14 +158,7 @@ std::string CNetworkInterfaceLinux::GetCurrentIPAddress(void)
 {
    std::string result;
 
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   ifr.ifr_addr.sa_family = AF_INET;
-   if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
-   {
-      result = inet_ntoa((*((struct sockaddr_in *)&ifr.ifr_addr)).sin_addr);
-   }
-
+   result = m_interfaceAddr;
    return result;
 }
 
@@ -184,14 +166,10 @@ std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
 {
    std::string result;
 
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   ifr.ifr_addr.sa_family = AF_INET;
-   if (ioctl(m_network->GetSocket(), SIOCGIFNETMASK, &ifr) >= 0)
-   {
-      result = inet_ntoa((*((struct sockaddr_in*)&ifr.ifr_addr)).sin_addr);
-   }
-
+   if (isIPv4())
+     result = m_interfaceNetmask;
+   else
+     result = StringUtils::Format("%d", CNetwork::PrefixLengthIPv6(m_interfaceNetmask));
    return result;
 }
 
