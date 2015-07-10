@@ -43,8 +43,6 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL void OnDeinitWindow(int nextWindowID);
 
       SWIGHIDDENVIRTUAL bool IsDialogRunning() const { return WindowDialogMixin::IsDialogRunning(); }
-      SWIGHIDDENVIRTUAL bool IsModalDialog() const { XBMC_TRACE; return true; };
-      SWIGHIDDENVIRTUAL bool IsDialog() const { XBMC_TRACE; return true; };
 
       SWIGHIDDENVIRTUAL inline void show() { XBMC_TRACE; WindowDialogMixin::show(); }
       SWIGHIDDENVIRTUAL inline void close() { XBMC_TRACE; WindowDialogMixin::close(); }

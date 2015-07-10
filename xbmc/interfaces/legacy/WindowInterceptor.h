@@ -21,7 +21,9 @@
 #pragma once
 
 #include "guilib/GUIWindow.h"
+#include "guilib/GUIDialog.h"
 #include "Window.h"
+#include "WindowDialog.h"
 
 #include "threads/ThreadLocal.h"
 
@@ -168,30 +170,33 @@ namespace XBMCAddon
       virtual void OnDeinitWindow(int nextWindowID)
       { XBMC_TRACE; if(up()) P::OnDeinitWindow(nextWindowID); else checkedv(OnDeinitWindow(nextWindowID)); }
 
-      virtual bool    IsModalDialog() const { XBMC_TRACE; return checkedb(IsModalDialog()); };
-
+      virtual bool    IsModalDialog() const { XBMC_TRACE; return P::IsModalDialog(); };
       virtual bool    IsDialogRunning() const { XBMC_TRACE; return checkedb(IsDialogRunning()); };
-      virtual bool    IsDialog() const { XBMC_TRACE; return checkedb(IsDialog()); };
+      virtual bool    IsDialog() const { XBMC_TRACE; return P::IsDialog(); };
       virtual bool    IsMediaWindow() const { XBMC_TRACE; return checkedb(IsMediaWindow());; };
 
       virtual void    setActive(bool active) { XBMC_TRACE; P::m_active = active; }
       virtual bool    isActive() { XBMC_TRACE; return P::m_active; }
     };
 
-    template <class P /* extends CGUIWindow*/> class InterceptorDialog : 
+    template <class P /* extends CGUIDialog*/> class InterceptorDialog :
       public Interceptor<P>
     {
     public:
       InterceptorDialog(const char* specializedName,
-                        Window* _window, int windowid) : 
+                        WindowDialog* _window, int windowid) :
         Interceptor<P>(specializedName, _window, windowid)
-      { }
+      {
+        P::m_modalityType = DialogModalityType::PARENTLESS_MODAL;
+      }
                     
       InterceptorDialog(const char* specializedName,
-                  Window* _window, int windowid,
+                  WindowDialog* _window, int windowid,
                   const char* xmlfile) : 
-        Interceptor<P>(specializedName, _window, windowid,xmlfile)
-      { }
+        Interceptor<P>(specializedName, _window, windowid, xmlfile)
+      {
+        P::m_modalityType = DialogModalityType::PARENTLESS_MODAL;
+      }
     };
 
 #undef checkedb

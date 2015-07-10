@@ -54,12 +54,12 @@ namespace XBMCAddon
 
 
     // TODO: This should be done with template specialization
-    class WindowXMLInterceptor : public InterceptorDialog<CGUIMediaWindow>
+    class WindowXMLInterceptor : public Interceptor<CGUIMediaWindow>
     {
       WindowXML* xwin;
     public:
       WindowXMLInterceptor(WindowXML* _window, int windowid,const char* xmlfile) :
-        InterceptorDialog<CGUIMediaWindow>("CGUIMediaWindow",_window,windowid,xmlfile), xwin(_window) 
+        Interceptor<CGUIMediaWindow>("CGUIMediaWindow",_window,windowid,xmlfile), xwin(_window) 
       { }
 
       virtual void AllocResources(bool forceLoad = false)

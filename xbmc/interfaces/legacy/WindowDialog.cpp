@@ -20,7 +20,7 @@
 
 #include "WindowDialog.h"
 
-#include "guilib/GUIWindow.h"
+#include "guilib/GUIDialog.h"
 #include "guilib/GUIWindowManager.h"
 #include "WindowInterceptor.h"
 
@@ -32,7 +32,7 @@ namespace XBMCAddon
       Window(true), WindowDialogMixin(this)
     {
       CSingleLock lock(g_graphicsContext);
-      setWindow(new Interceptor<CGUIWindow>("CGUIWindow",this,getNextAvailableWindowId()));
+      setWindow(new InterceptorDialog<CGUIDialog>("CGUIDialog", this, getNextAvailableWindowId()));
     }
 
     WindowDialog::~WindowDialog() { deallocating(); }
