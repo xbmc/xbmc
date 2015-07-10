@@ -60,6 +60,9 @@ public:
    virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
    virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
 
+   bool isIPv6() { return m_interfaceIpv6; }
+   bool isIPv4() { return !m_interfaceIpv6; }
+
    // Returns the list of access points in the area
    virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
 
@@ -96,14 +99,25 @@ public:
 
    // Return the list of interfaces
    virtual std::forward_list<CNetworkInterface*>& GetInterfaceList(void);
+   // list of available interfaces is always sorted: by AF_FAMILY, dependence of their type
+   // on other types and alphabetically at last.
+   // AF_PACKET comes first, then AF_INET, AF_INET6. physical interfaces (eg network cards)
+   // come first. bridges later before virtual itnerfaces, then tunnels ...
+   // this assures that ppp0 won't be picked up (presented as GetFirstConnectedInterface())
+   // at the expense of eth0 for instance / thus providing nonsense info to services expecting
+   // interface with MAC address.
    virtual CNetworkInterface* GetFirstConnectedInterface(void);        
-    
+
    virtual bool SupportsIPv6() { return true; }
 
    // Ping remote host
    virtual bool PingHostImpl(const std::string &target, unsigned int timeout_ms = 2000);
 
    // Get/set the nameserver(s)
+   // Current code is safe for any stack configuration, but APi
+   // used provides IPv4 nameservers only (those specified in system
+   // via IPv4 address). empty otherwise.
+   // TODO: find a method to get list of all defined nameservers
    virtual std::vector<std::string> GetNameServers(void);
    virtual void SetNameServers(const std::vector<std::string>& nameServers);
 
@@ -113,7 +127,7 @@ private:
    void DeleteRemoved(void);
 
    int GetSocket() { return m_sock; }
-   void GetMacAddress(const std::string& interfaceName, char rawMac[6]);
+   void GetMacAddress(struct ifaddrs *tif, char *mac);
    bool queryInterfaceList();
    std::forward_list<CNetworkInterface*> m_interfaces;
    int m_sock;

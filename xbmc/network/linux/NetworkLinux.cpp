@@ -377,54 +377,25 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
     return pNetIf;
 }
 
-
-void CNetworkLinux::GetMacAddress(const std::string& interfaceName, char rawMac[6])
+void CNetworkLinux::GetMacAddress(struct ifaddrs *tif, char *mac)
 {
-  memset(rawMac, 0, 6);
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-
+#if !defined(TARGET_LINUX)
 #if !defined(IFT_ETHER)
 #define IFT_ETHER 0x6/* Ethernet CSMACD */
 #endif
-  const struct sockaddr_dl* dlAddr = NULL;
-  const uint8_t * base = NULL;
-  // Query the list of interfaces.
-  struct ifaddrs *list;
-  struct ifaddrs *interface;
-
-  if( getifaddrs(&list) < 0 )
+  if (((const struct sockaddr_dl*) tif->ifa_addr)->sdl_type == IFT_ETHER)
   {
-    return;
+    const struct sockaddr_dl *dlAddr = (const struct sockaddr_dl *) tif->ifa_addr;
+    const uint8_t *base = (const uint8_t*) &dlAddr->sdl_data[dlAddr->sdl_nlen];
+
+    if( dlAddr->sdl_alen > 5 )
+      memcpy(mac, base, 6);
   }
-
-  for(interface = list; interface != NULL; interface = interface->ifa_next)
-  {
-    if(interfaceName == interface->ifa_name)
-    {
-      if ( (interface->ifa_addr->sa_family == AF_LINK) && (((const struct sockaddr_dl *) interface->ifa_addr)->sdl_type == IFT_ETHER) ) 
-      {
-        dlAddr = (const struct sockaddr_dl *) interface->ifa_addr;
-        base = (const uint8_t *) &dlAddr->sdl_data[dlAddr->sdl_nlen];
-
-        if( dlAddr->sdl_alen > 5 )
-        {
-          memcpy(rawMac, base, 6);
-        }
-      }
-      break;
-    }
-  }
-
-  freeifaddrs(list);
-
 #else
-
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, interfaceName.c_str());
-   if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
-   {
-      memcpy(rawMac, ifr.ifr_hwaddr.sa_data, 6);
-   }
+  struct ifreq ifr;
+  strcpy(ifr.ifr_name, tif->ifa_name);
+  if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
+    memcpy(mac, ifr.ifr_hwaddr.sa_data, 6);
 #endif
 }
 
@@ -524,8 +495,6 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
     }
     pclose(pipe);
   } 
-  if (result.empty())
-    CLog::Log(LOGWARNING, "Unable to determine nameserver");
 #elif defined(TARGET_ANDROID)
   char nameserver[PROP_VALUE_MAX];
 
@@ -535,19 +504,19 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
     result.push_back(nameserver);
   if (__system_property_get("net.dns3",nameserver))
     result.push_back(nameserver);
-
-  if (!result.size())
-       CLog::Log(LOGWARNING, "Unable to determine nameserver");
 #else
-   res_init();
+   int res = res_init();
 
-   for (int i = 0; i < _res.nscount; i ++)
+   for (int i = 0; i < _res.nscount && !res; i ++)
    {
-      std::string ns = inet_ntoa(((struct sockaddr_in *)&_res.nsaddr_list[i])->sin_addr);
-      result.push_back(ns);
+      std::string strIp = CNetwork::GetIpStr((struct sockaddr *)&_res.nsaddr_list[i]);
+      result.push_back(strIp);
    }
 #endif
-   return result;
+  if (result.empty())
+       CLog::Log(LOGWARNING, "Unable to determine nameserver");
+
+  return result;
 }
 
 void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
