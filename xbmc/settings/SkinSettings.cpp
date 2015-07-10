@@ -93,10 +93,13 @@ bool CSkinSettings::Load(const TiXmlNode *settings)
     return false;
 
   const TiXmlElement *rootElement = settings->FirstChildElement(XML_SKINSETTINGS);
+  
+  //return true in the case skinsettings is missing. It just means that
+  //it's been migrated and it's not an error
   if (rootElement == nullptr)
   {
-    CLog::Log(LOGWARNING, "CSkinSettings: no <skinsettings> tag found");
-    return false;
+    CLog::Log(LOGDEBUG, "CSkinSettings: no <skinsettings> tag found");
+    return true;
   }
 
   CSingleLock lock(m_critical);
