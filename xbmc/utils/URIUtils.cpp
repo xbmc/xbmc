@@ -1356,3 +1356,18 @@ bool URIUtils::IsUsingFastSwitch(const std::string& strFile)
 {
   return IsUDP(strFile) || IsTCP(strFile) || IsPVRChannel(strFile);
 }
+
+bool URIUtils::ConvIPv6(const std::string &address, struct sockaddr_in6 *sa)
+{
+  return CNetwork::ConvIPv6(address, sa);
+}
+
+bool URIUtils::ConvIPv4(const std::string &address, struct sockaddr_in  *sa)
+{
+  return CNetwork::ConvIPv4(address, sa);
+}
+
+std::string URIUtils::CanonizeIPv6(const std::string &address)
+{
+  return CNetwork::CanonizeIPv6(address);
+}
