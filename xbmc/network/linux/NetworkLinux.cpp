@@ -20,7 +20,10 @@
 
 #include <cstdlib>
 
+#include "xbmc/messaging/ApplicationMessenger.h"
+#include <poll.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -28,6 +31,8 @@
   #include <linux/if.h>
   #include <linux/wireless.h>
   #include <linux/sockios.h>
+#else
+  #include "network/osx/priv_netlink.h"
 #endif
 #ifdef TARGET_ANDROID
 #include "platform/android/bionic_supplement/bionic_supplement.h"
@@ -66,6 +71,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+
+using namespace KODI::MESSAGING;
 
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]):
   m_interfaceName(interfaceName),
@@ -312,6 +319,8 @@ CNetworkLinux::CNetworkLinux(void)
 {
    m_sock = socket(AF_INET, SOCK_DGRAM, 0);
    queryInterfaceList();
+   m_updThread = new CNetworkLinuxUpdateThread(this);
+   m_updThread->Create(false);
 }
 
 CNetworkLinux::~CNetworkLinux(void)
@@ -319,6 +328,15 @@ CNetworkLinux::~CNetworkLinux(void)
   if (m_sock != -1)
     close(CNetworkLinux::m_sock);
 
+  m_updThread->StopThread(false);
+  CSingleLock lock(m_lock);
+  InterfacesClear();
+  DeleteRemoved();
+  m_updThread->StopThread(true);
+}
+
+void CNetworkLinux::DeleteRemoved(void)
+{
   std::vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
   while(it != m_interfaces.end())
   {
@@ -1126,4 +1144,46 @@ void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignmen
       fprintf(fw, "auto %s\n\n", GetName().c_str());
 }
 
+CNetworkLinuxUpdateThread::CNetworkLinuxUpdateThread(CNetworkLinux *owner)
+  : CThread("NetConfUpdater")
+  , m_owner(owner)
+{
+}
 
+void CNetworkLinuxUpdateThread::Process(void)
+{
+  struct sockaddr_nl addr;
+  int fds = socket(PF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  struct pollfd m_fds = { fds, POLLIN, 0 };
+  char msg[4096];
+
+  memset (&addr, 0, sizeof(struct sockaddr_nl));
+  addr.nl_family = AF_NETLINK;
+  addr.nl_pid = getpid ();
+#if defined(TARGET_LINUX)
+  addr.nl_groups = RTMGRP_LINK | RTMGRP_IPV4_IFADDR | RTMGRP_IPV6_IFADDR;
+                /* RTMGRP_IPV4_IFADDR | RTMGRP_TC | RTMGRP_IPV4_MROUTE |
+                   RTMGRP_IPV4_ROUTE | RTMGRP_IPV4_RULE |
+                   RTMGRP_IPV6_IFADDR | RTMGRP_IPV6_MROUTE |
+                   RTMGRP_IPV6_ROUTE | RTMGRP_IPV6_IFINFO |
+                   RTMGRP_IPV6_PREFIX */
+#else
+  addr.nl_groups = RTMGRP_LINK;
+#endif
+
+  if (-1 == bind(fds, (const struct sockaddr *) &addr, sizeof(struct sockaddr)))
+    return;
+
+  fcntl(fds, F_SETFL, O_NONBLOCK);
+
+  while(!m_bStop)
+    if (poll(&m_fds, 1, 1000) > 0)
+    {
+      while (!m_bStop && recv(fds, &msg, sizeof(msg), 0) > 0);
+      if (m_bStop)
+        continue;
+      CLog::Log(LOGINFO, "Interfaces change %s", __FUNCTION__);
+      m_owner->queryInterfaceList();
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, m_owner->NETWORK_CHANGED, 0);
+    }
+}

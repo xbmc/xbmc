@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "system.h"
+#include "threads/Event.h"
 
 #include "settings/lib/ISettingCallback.h"
 #include <sys/socket.h>
@@ -295,6 +296,10 @@ public:
 
    // Waits for the first network interface to become available
    void WaitForNet();
+
+private:
+   CEvent  m_signalNetworkChange;
+   bool    m_bStop;
 };
 
 #ifdef HAS_LINUX_NETWORK

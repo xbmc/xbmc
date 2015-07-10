@@ -25,8 +25,11 @@
 #include <vector>
 #include <cstdio>
 #include "network/Network.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
 
 class CNetworkLinux;
+class CNetworkLinuxUpdateThread;
 
 class CNetworkInterfaceLinux : public CNetworkInterface
 {
@@ -66,6 +69,9 @@ private:
 
 class CNetworkLinux : public CNetwork
 {
+   friend class CNetworkLinuxUpdateThread;
+   friend class CNetworkInterfaceLinux;
+
 public:
    CNetworkLinux(void);
    virtual ~CNetworkLinux(void);
@@ -83,14 +89,26 @@ public:
    virtual std::vector<std::string> GetNameServers(void);
    virtual void SetNameServers(const std::vector<std::string>& nameServers);
 
-   friend class CNetworkInterfaceLinux;
-
 private:
    int GetSocket() { return m_sock; }
    void GetMacAddress(const std::string& interfaceName, char macAddrRaw[6]);
    void queryInterfaceList();
    std::vector<CNetworkInterface*> m_interfaces;
    int m_sock;
+
+   CNetworkLinuxUpdateThread      *m_updThread;
+   CCriticalSection                m_lock;
+};
+
+class CNetworkLinuxUpdateThread : public CThread
+{
+public:
+   CNetworkLinuxUpdateThread(CNetworkLinux *owner);
+   virtual ~CNetworkLinuxUpdateThread(void) {};
+
+protected:
+   void Process(void);
+   CNetworkLinux *m_owner;
 };
 
 #endif
