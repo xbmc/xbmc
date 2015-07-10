@@ -327,6 +327,8 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     }
     break;
   case SLIDE_COMMENT:
+    g_charsetConverter.unknownToUTF8(m_exifInfo.FileComment, value);
+    break;
   case SLIDE_EXIF_COMMENT:
     // The charset used for the UserComment is stored in CommentsCharset:
     // Ascii, Unicode (UCS2), JIS (X208-1990), Unknown (application specific)

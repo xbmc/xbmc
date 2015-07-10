@@ -109,6 +109,7 @@ typedef struct {
     int   LightSource;
     int   CommentsCharset;             // EXIF_COMMENT_CHARSET_*
     char  Comments[MAX_COMMENT];
+    char  FileComment[MAX_COMMENT];
     char  Description[MAX_COMMENT];
 
     unsigned ThumbnailOffset;          // Exif offset to thumbnail

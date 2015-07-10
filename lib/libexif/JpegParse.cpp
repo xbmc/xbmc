@@ -200,7 +200,8 @@ bool CJpegParse::ExtractInfo (FILE *infile)
         if (m_SectionBuffer != NULL)
         {
        //   CExifParse::FixComment(comment);          // Ensure comment is printable
-          strncpy(m_ExifInfo.Comments, (char *)&m_SectionBuffer[2], min(itemlen-2, MAX_COMMENT));
+          unsigned short length = min(itemlen - 2, MAX_COMMENT);
+          strncpy(m_ExifInfo.FileComment, (char *)&m_SectionBuffer[2], length);
 		    }
         ReleaseSection();
       break;
