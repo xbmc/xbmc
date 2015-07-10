@@ -1070,7 +1070,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
         break;
 
       default:
-        result = CContextMenuManager::Get().Execute(button, item);
+        result = CContextMenuManager::Get().OnClick(button, item);
         break;
     }
   }

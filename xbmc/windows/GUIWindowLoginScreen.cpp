@@ -257,7 +257,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     m_vecItems->Get(iItem)->Select(bSelect);
 
   if (choice >= CONTEXT_BUTTON_FIRST_ADDON)
-    return CContextMenuManager::Get().Execute(choice, pItem);
+    return CContextMenuManager::Get().OnClick(choice, pItem);
   return false;
 }
 
