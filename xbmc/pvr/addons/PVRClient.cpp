@@ -36,6 +36,7 @@
 #include "utils/Variant.h"
 
 #include <assert.h>
+#include <memory>
 
 using namespace ADDON;
 using namespace PVR;
@@ -418,10 +419,10 @@ bool CPVRClient::GetAddonProperties(void)
   {
     try
     {
-      PVR_TIMER_TYPE types_array[PVR_ADDON_TIMERTYPE_ARRAY_SIZE];
+      std::unique_ptr<PVR_TIMER_TYPE[]> types_array(new PVR_TIMER_TYPE[PVR_ADDON_TIMERTYPE_ARRAY_SIZE]);
       int size = PVR_ADDON_TIMERTYPE_ARRAY_SIZE;
 
-      PVR_ERROR retval = m_pStruct->GetTimerTypes(types_array, &size);
+      PVR_ERROR retval = m_pStruct->GetTimerTypes(types_array.get(), &size);
 
       if (retval == PVR_ERROR_NOT_IMPLEMENTED)
       {
