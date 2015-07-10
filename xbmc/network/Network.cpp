@@ -40,6 +40,7 @@
 #include <stdlib.h> // for malloc() and free()
 #endif
 #include "utils/StringUtils.h"
+#include "xbmc/interfaces/AnnouncementManager.h"
 
 using namespace KODI::MESSAGING;
 
@@ -413,6 +414,13 @@ void CNetwork::NetworkMessage(EMESSAGE message, int param)
       CNetworkServices::GetInstance().Stop(false); // tell network services to stop, but don't wait for them yet
       CLog::Log(LOGDEBUG, "%s - Waiting for network services to stop",__FUNCTION__);
       CNetworkServices::GetInstance().Stop(true); // wait for network services to stop
+      break;
+
+    case NETWORK_CHANGED:
+      CLog::Log(LOGDEBUG, "%s - Network setup changed. Will restart network services",__FUNCTION__);
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Network, "network", "OnInterfacesChange");
+      NetworkMessage(SERVICES_DOWN, 0);
+      NetworkMessage(SERVICES_UP, 0);
       break;
   }
 }

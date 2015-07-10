@@ -108,7 +108,8 @@ public:
   enum EMESSAGE
   {
     SERVICES_UP,
-    SERVICES_DOWN
+    SERVICES_DOWN,
+    NETWORK_CHANGED
   };
 
    CNetwork();
