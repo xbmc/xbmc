@@ -18,7 +18,7 @@
  *
  */
 
-#include "ContextItemAddon.h"
+#include "ContextMenuAddon.h"
 #include "AddonManager.h"
 #include "ContextMenuManager.h"
 #include "ContextMenuItem.h"
@@ -32,14 +32,14 @@
 namespace ADDON
 {
 
-CContextItemAddon::CContextItemAddon(const AddonProps &props)
+CContextMenuAddon::CContextMenuAddon(const AddonProps &props)
   : CAddon(props)
 { }
 
-CContextItemAddon::~CContextItemAddon()
+CContextMenuAddon::~CContextMenuAddon()
 { }
 
-CContextItemAddon::CContextItemAddon(const cp_extension_t *ext)
+CContextMenuAddon::CContextMenuAddon(const cp_extension_t *ext)
   : CAddon(ext)
 {
   cp_cfg_element_t* menu = CAddonMgr::Get().GetExtElement(ext->configuration, "menu");
@@ -74,7 +74,7 @@ CContextItemAddon::CContextItemAddon(const cp_extension_t *ext)
   }
 }
 
-void CContextItemAddon::ParseMenu(cp_cfg_element_t* elem, const std::string& parent, int& anonGroupCount)
+void CContextMenuAddon::ParseMenu(cp_cfg_element_t* elem, const std::string& parent, int& anonGroupCount)
 {
   auto menuLabel = CAddonMgr::Get().GetExtValue(elem, "label");
   auto menuId = CAddonMgr::Get().GetExtValue(elem, "@id");
@@ -117,7 +117,7 @@ void CContextItemAddon::ParseMenu(cp_cfg_element_t* elem, const std::string& par
   }
 }
 
-std::vector<CContextMenuItem> CContextItemAddon::GetItems()
+std::vector<CContextMenuItem> CContextMenuAddon::GetItems()
 {
   //Return a copy which owns `this`
   std::vector<CContextMenuItem> ret = m_items;

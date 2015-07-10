@@ -21,7 +21,7 @@
 
 #include <map>
 #include "ContextMenuItem.h"
-#include "addons/ContextItemAddon.h"
+#include "addons/ContextMenuAddon.h"
 #include "dialogs/GUIDialogContextMenu.h"
 
 

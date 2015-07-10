@@ -20,13 +20,13 @@
  */
 
 #include <map>
-#include "addons/ContextItemAddon.h"
+#include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
 #include "dialogs/GUIDialogContextMenu.h"
 
 namespace ADDON
 {
-  class CContextItemAddon;
+  class CContextMenuAddon;
 }
 
 class CContextMenuItem
@@ -51,7 +51,7 @@ public:
     const std::string& library,
     const INFO::InfoPtr& condition);
 
-  friend class ADDON::CContextItemAddon;
+  friend class ADDON::CContextMenuAddon;
 
 private:
   std::string m_label;

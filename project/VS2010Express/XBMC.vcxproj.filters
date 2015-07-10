@@ -744,7 +744,7 @@
     <ClCompile Include="..\..\xbmc\addons\AudioEncoder.cpp">
       <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\ContextItemAddon.cpp">
+    <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp">
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Scraper.cpp">
@@ -3623,7 +3623,7 @@
     <ClInclude Include="..\..\xbmc\addons\AudioEncoder.h">
       <Filter>addons</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\ContextItemAddon.h">
+    <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h">
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllAddon.h">
