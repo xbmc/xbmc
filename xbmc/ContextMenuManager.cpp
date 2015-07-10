@@ -117,9 +117,21 @@ void CContextMenuManager::AddVisibleItems(
   if (!item)
     return;
 
+  const int initialSize = list.size();
+
   for (const auto& kv : m_items)
     if (IsVisible(kv.second, root, item))
       list.push_back(std::make_pair(kv.first, kv.second.GetLabel()));
+
+  if (root == MAIN || root == MANAGE)
+  {
+    std::stable_sort(list.begin() + initialSize, list.end(),
+      [](const std::pair<int, std::string>& lhs, const std::pair<int, std::string>& rhs)
+      {
+        return lhs.second < rhs.second;
+      }
+    );
+  }
 }
 
 
