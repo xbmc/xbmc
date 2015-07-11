@@ -750,7 +750,7 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
       // sanity check if we realy read the event
       if(readlen != sizeof(levt))
       {
-        printf("CLinuxInputDevice: read error : %s\n", strerror(errno));
+        CLog::Log(LOGERROR,"CLinuxInputDevice: read error : %s\n", strerror(errno));
         break;
       }
 
