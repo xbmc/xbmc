@@ -113,8 +113,8 @@ bool CWinShader::CreateVertexBuffer(unsigned int vertCount, unsigned int vertSiz
   if (!m_vb.Create(D3D11_BIND_VERTEX_BUFFER, vertCount, vertSize, DXGI_FORMAT_UNKNOWN, D3D11_USAGE_DYNAMIC))
     return false;
 
-  uint16_t id[6] = { 0, 1, 2, 2, 3, 0 };
-  if (!m_ib.Create(D3D11_BIND_INDEX_BUFFER, 6, sizeof(uint16_t), DXGI_FORMAT_R16_UINT, D3D11_USAGE_IMMUTABLE, id))
+  uint16_t id[4] = { 3, 0, 2, 1 };
+  if (!m_ib.Create(D3D11_BIND_INDEX_BUFFER, ARRAYSIZE(id), sizeof(uint16_t), DXGI_FORMAT_R16_UINT, D3D11_USAGE_IMMUTABLE, id))
     return false;
 
   m_vbsize = vertCount * vertSize;
@@ -201,7 +201,7 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
   pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
   pContext->IASetIndexBuffer(indexBuffer, m_ib.GetFormat(), 0);
   pContext->IASetInputLayout(m_inputLayout);
-  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
   for (iPass = 0; iPass < cPasses; iPass++)
   {
@@ -216,7 +216,7 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
       break;
     }
 
-    pContext->DrawIndexed(6, 0, iPass * vertexIndexStep);
+    pContext->DrawIndexed(4, 0, iPass * vertexIndexStep);
 
     if (!m_effect.EndPass())
       CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect pass");
@@ -330,9 +330,6 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
                                        float brightness,
                                        unsigned int flags)
 {
-  //See RGB renderer for comment on this
-  #define CHROMAOFFSET_HORIZ 0.25f
-
   if (m_sourceRect != sourceRect || m_destRect != destRect)
   {
     m_sourceRect = sourceRect;
@@ -346,32 +343,32 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
     v[0].z = 0.0f;
     v[0].tu = sourceRect.x1 / m_sourceWidth;
     v[0].tv = sourceRect.y1 / m_sourceHeight;
-    v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
-    v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
+    v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
+    v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
 
     v[1].x = destRect.x2;
     v[1].y = destRect.y1;
     v[1].z = 0.0f;
     v[1].tu = sourceRect.x2 / m_sourceWidth;
     v[1].tv = sourceRect.y1 / m_sourceHeight;
-    v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
-    v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
+    v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
+    v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
 
     v[2].x = destRect.x2;
     v[2].y = destRect.y2;
     v[2].z = 0.0f;
     v[2].tu = sourceRect.x2 / m_sourceWidth;
     v[2].tv = sourceRect.y2 / m_sourceHeight;
-    v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
-    v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
+    v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
+    v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
 
     v[3].x = destRect.x1;
     v[3].y = destRect.y2;
     v[3].z = 0.0f;
     v[3].tu = sourceRect.x1 / m_sourceWidth;
     v[3].tv = sourceRect.y2 / m_sourceHeight;
-    v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
-    v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
+    v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
+    v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
 
     CWinShader::UnlockVertexBuffer();
   }
@@ -409,8 +406,8 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
   {
     D3D11_TEXTURE2D_DESC rtDescr = {};
     rtTexture->GetDesc(&rtDescr);
-    viewPortWidth = rtDescr.Width;
-    viewPortHeight = rtDescr.Height;
+    viewPortWidth = static_cast<float>(rtDescr.Width);
+    viewPortHeight = static_cast<float>(rtDescr.Height);
   }
 
   SAFE_RELEASE(rtTexture);
@@ -419,9 +416,7 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
 
   D3D11_VIEWPORT viewPort = { 0.0f, 0.0f, viewPortWidth, viewPortHeight, 0.0, 1.0f };
   g_Windowing.Get3D11Context()->RSSetViewports(1, &viewPort);
-
-  m_effect.SetScalar("g_viewportWidth", viewPortWidth);
-  m_effect.SetScalar("g_viewportHeight", viewPortHeight);
+  m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
 }
 
 //==================================================================================
@@ -609,8 +604,7 @@ void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, fl
   UINT numVP = 1;
   D3D11_VIEWPORT viewPort = {};
   g_Windowing.Get3D11Context()->RSGetViewports(&numVP, &viewPort);
-  m_effect.SetScalar("g_viewportWidth", viewPort.Width);
-  m_effect.SetScalar("g_viewportHeight", viewPort.Height);
+  m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
 }
 
 //==================================================================================
@@ -691,9 +685,14 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
     CreateIntermediateRenderTarget(destWidth, sourceHeight);
 
   PrepareParameters(sourceWidth, sourceHeight, destWidth, destHeight, sourceRect, destRect);
-  float texSteps1[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
-  float texSteps2[] = { 1.0f/(float)destWidth, 1.0f/(float)(sourceHeight)};
-  SetShaderParameters(sourceTexture, &texSteps1[0], ARRAY_SIZE(texSteps1), &texSteps2[0], ARRAY_SIZE(texSteps2));
+  float texSteps[] = 
+  { 
+    1.0f / static_cast<float>(sourceWidth), 
+    1.0f / static_cast<float>(sourceHeight), 
+    1.0f / static_cast<float>(destWidth), 
+    1.0f / static_cast<float>(sourceHeight)
+  };
+  SetShaderParameters(sourceTexture, texSteps, 4);
 
   Execute(nullptr, 4);
 
@@ -756,10 +755,6 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
   || m_destWidth != destWidth || m_destHeight != destHeight
   || m_sourceRect != sourceRect || m_destRect != destRect)
   {
-    // fixme better: clearing the whole render target when changing the source/dest rect is not optimal.
-    // Problem is that the edges of the final picture may retain content when the rects change.
-    // For example when changing zoom value, the edges can retain content from the previous zoom value.
-    // Playing with coordinates was unsuccessful so far, this is a quick fix for release.
     ClearIntermediateRenderTarget();
 
     m_sourceWidth = sourceWidth;
@@ -774,7 +769,7 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
 
     // Alter rectangles the destination rectangle exceeds the intermediate target width when zooming and causes artifacts.
     // Work on the parameters rather than the members to avoid disturbing the parameter change detection the next time the function is called
-    CRect tgtRect(0, 0, destWidth, destHeight);
+    CRect tgtRect(0, 0, static_cast<float>(destWidth), static_cast<float>(destHeight));
     CWIN32Util::CropSource(sourceRect, destRect, tgtRect);
 
     // Manipulate the coordinates to work only on the active parts of the textures,
@@ -839,13 +834,12 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
   }
 }
 
-void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps1, int texStepsCount1, float* texSteps2, int texStepsCount2)
+void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount)
 {
   m_effect.SetTechnique( "SCALER_T" );
   m_effect.SetTexture( "g_Texture",  sourceTexture );
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
-  m_effect.SetFloatArray("g_StepXY_P0", texSteps1, texStepsCount1);
-  m_effect.SetFloatArray("g_StepXY_P1", texSteps2, texStepsCount2);
+  m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
 }
 
 void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
@@ -876,8 +870,8 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
     {
       D3D11_TEXTURE2D_DESC rtDescr = {};
       rtTexture->GetDesc(&rtDescr);
-      viewPortWidth = rtDescr.Width;
-      viewPortHeight = rtDescr.Height;
+      viewPortWidth = static_cast<float>(rtDescr.Width);
+      viewPortHeight = static_cast<float>(rtDescr.Height);
     }
 
     SAFE_RELEASE(rtTexture);
@@ -894,8 +888,7 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
   CD3D11_VIEWPORT viewPort(0.0f, 0.0f, viewPortWidth, viewPortHeight);
   pContext->RSSetViewports(1, &viewPort);
   // pass viewport dimention to the shaders
-  m_effect.SetScalar("g_viewportWidth", viewPort.Width);
-  m_effect.SetScalar("g_viewportHeight", viewPort.Height);
+  m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
 }
 
 //==========================================================

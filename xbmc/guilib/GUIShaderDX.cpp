@@ -61,7 +61,6 @@ CGUIShaderDX::CGUIShaderDX() :
     m_pVPBuffer(NULL),
     m_pWVPBuffer(NULL),
     m_pVertexBuffer(NULL),
-    m_pIndexBuffer(NULL),
     m_clipXFactor(0.0f),
     m_clipXOffset(0.0f),
     m_clipYFactor(0.0f),
@@ -125,25 +124,10 @@ bool CGUIShaderDX::CreateBuffers()
   ID3D11Device* pDevice = g_Windowing.Get3D11Device();
 
   // create vertex buffer
-  CD3D11_BUFFER_DESC bufferDesc(sizeof(Vertex) * __RENDER_GUI_VERTICES_COUNT, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+  CD3D11_BUFFER_DESC bufferDesc(sizeof(Vertex) * 4, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
   if (FAILED(pDevice->CreateBuffer(&bufferDesc, NULL, &m_pVertexBuffer)))
   {
     CLog::Log(LOGERROR, __FUNCTION__ " - Failed to create GUI vertex buffer.");
-    return false;
-  }
-
-  // create index buffer
-  bufferDesc.ByteWidth = sizeof(uint16_t) * __RENDER_GUI_INDICES_COUNT;
-  bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-  bufferDesc.Usage = D3D11_USAGE_IMMUTABLE; // index buffer never change, so create it as static
-  bufferDesc.CPUAccessFlags = 0;
-
-  uint16_t quadIndices[] = { 2, 3, 0, 1, 2, 0, };
-  D3D11_SUBRESOURCE_DATA initData = { 0 };
-  initData.pSysMem = quadIndices;
-  if (FAILED(pDevice->CreateBuffer(&bufferDesc, &initData, &m_pIndexBuffer)))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__ " - Failed to create GUI index buffer.");
     return false;
   }
 
@@ -166,8 +150,7 @@ bool CGUIShaderDX::CreateBuffers()
   m_cbViewPort.Height = viewPort.Height();
 
   cbbd.ByteWidth = sizeof(cbViewPort);
-  initData.pSysMem = &m_cbViewPort;
-
+  D3D11_SUBRESOURCE_DATA initData = { &m_cbViewPort, 0, 0 };
   // create viewport buffer
   if (FAILED(pDevice->CreateBuffer(&cbbd, &initData, &m_pVPBuffer)))
     return false;
@@ -252,13 +235,13 @@ void CGUIShaderDX::DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4)
   D3D11_MAPPED_SUBRESOURCE resource;
   if (SUCCEEDED(pContext->Map(m_pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
   {
-    Vertex verticies[] = { v1, v2, v3, v4 };
+    // we are using strip topology
+    Vertex verticies[4] = { v2, v3, v1, v4 };
     memcpy(resource.pData, &verticies, sizeof(Vertex) * 4);
     pContext->Unmap(m_pVertexBuffer, 0);
+    // Draw primitives
+    pContext->Draw(4, 0);
   }
-
-  // Draw primitives
-  pContext->DrawIndexed(6, 0, 0);
 }
 
 void CGUIShaderDX::DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int startVertex)
@@ -297,7 +280,6 @@ void CGUIShaderDX::SetSampler(SHADER_SAMPLER sampler)
 
 void CGUIShaderDX::Release()
 {
-  SAFE_RELEASE(m_pIndexBuffer);
   SAFE_RELEASE(m_pVertexBuffer);
   SAFE_RELEASE(m_pWVPBuffer);
   SAFE_RELEASE(m_pVPBuffer);
@@ -389,13 +371,10 @@ void CGUIShaderDX::RestoreBuffers(void)
   const unsigned offset = 0;
 
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-
   // Set the vertex buffer to active in the input assembler so it can be rendered.
   pContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
-  // Set the index buffer to active in the input assembler so it can be rendered.
-  pContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
   // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 }
 
 void CGUIShaderDX::ClipToScissorParams(void)
