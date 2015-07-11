@@ -756,7 +756,7 @@ bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
     if (server->GetNumberOfClients() > 0)
     {
       bool cancelled = false;
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13140}, CVariant{13141}, cancelled, CVariant{""}, CVariant{""}, CVariant{10000})
+      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13140}, CVariant{13141}, cancelled, CVariant{""}, CVariant{""}, 10000)
           || cancelled)
       {
         CLog::Log(LOGNOTICE, "ES: Not stopping event server");

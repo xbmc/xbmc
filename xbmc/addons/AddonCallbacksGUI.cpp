@@ -1872,7 +1872,7 @@ bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputLineText(const char *headin
 
 bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputLineButtonText(const char *heading, const char *line0, const char *line1, const char *line2, bool &bCanceled, const char *noLabel, const char *yesLabel)
 {
-  return CGUIDialogYesNo::ShowAndGetInput(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2}, bCanceled, CVariant{noLabel}, CVariant{yesLabel});
+  return CGUIDialogYesNo::ShowAndGetInput(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2}, bCanceled, CVariant{noLabel}, CVariant{yesLabel}, CGUIDialogYesNo::NO_TIMEOUT);
 }
 //@}
 

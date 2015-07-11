@@ -33,6 +33,11 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnBack(int actionID);
 
+  enum TimeOut
+  {
+    NO_TIMEOUT = 0
+  };
+
   /*! \brief Show a yes-no dialog, then wait for user to dismiss it.
    \param heading Localized label id or string for the heading of the dialog
    \param line0 Localized label id or string for line 1 of the dialog message
@@ -65,7 +70,7 @@ public:
    \param autoCloseTime Time in ms before the dialog becomes automatically closed
    \return true if user selects Yes, otherwise false if user selects No.
    */
-  static bool ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled, CVariant noLabel, CVariant yesLabel, unsigned int autoCloseTime = 0);
+  static bool ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled, CVariant noLabel, CVariant yesLabel, unsigned int autoCloseTime);
 
   /*! \brief Show a yes-no dialog, then wait for user to dismiss it.
    \param heading Localized label id or string for the heading of the dialog
@@ -83,7 +88,7 @@ public:
    \param autoCloseTime Time in ms before the dialog becomes automatically closed
    \return true if user selects Yes, otherwise false if user selects No.
    */
-  static bool ShowAndGetInput(CVariant heading, CVariant text, bool &bCanceled, CVariant noLabel = "", CVariant yesLabel = "", unsigned int autoCloseTime = 0);
+  static bool ShowAndGetInput(CVariant heading, CVariant text, bool &bCanceled, CVariant noLabel, CVariant yesLabel, unsigned int autoCloseTime);
 
 protected:
   virtual int GetDefaultLabelID(int controlId) const;

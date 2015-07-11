@@ -1494,7 +1494,7 @@ bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
                                                    bCanceled,
                                                    CVariant{222},   // "Cancel"
                                                    CVariant{19696}, // "Shutdown anyway"
-                                                   CVariant{10000});
+                                                   10000); //This is a timeout and IS NOT a CVariant
       }
       else
         bReturn = false; // do not powerdown (busy, but no user interaction requested).
