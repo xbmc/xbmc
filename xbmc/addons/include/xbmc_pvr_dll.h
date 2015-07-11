@@ -332,12 +332,13 @@ extern "C"
 
   /*!
   * Retrieve the timer types supported by the backend.
-  * @param types out: The function has to write the definition of the supported timer types into this array.
+  * Timer type entries are added to XBMC by calling TransferTimerTypeEntry() on the callback.
+  * @param handle Handle to pass to the callback method.
   * @param typesCount in: The maximum size of the list, out: the actual size of the list. default: PVR_ADDON_TIMERTYPE_ARRAY_SIZE
   * @return PVR_ERROR_NO_ERROR if the types were successfully written to the array.
   * @remarks Required if bSupportsTimers is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
   */
-  PVR_ERROR GetTimerTypes(PVR_TIMER_TYPE types[], int *typesCount);
+  PVR_ERROR GetTimerTypes(ADDON_HANDLE handle);
 
   //@}
   /** @name PVR timer methods

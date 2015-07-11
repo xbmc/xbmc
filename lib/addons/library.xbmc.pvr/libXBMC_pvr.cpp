@@ -92,6 +92,14 @@ DLLEXPORT void PVR_transfer_recording_entry(void *hdl, void* cb, const ADDON_HAN
   ((CB_PVRLib*)cb)->TransferRecordingEntry(((AddonCB*)hdl)->addonData, handle, recording);
 }
 
+DLLEXPORT void PVR_transfer_timer_type_entry(void *hdl, void* cb, const ADDON_HANDLE handle, const PVR_TIMER_TYPE *timertype)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_PVRLib*)cb)->TransferTimerTypeEntry(((AddonCB*)hdl)->addonData, handle, timertype);
+}
+
 DLLEXPORT void PVR_add_menu_hook(void *hdl, void* cb, PVR_MENUHOOK *hook)
 {
   if (cb == NULL)
