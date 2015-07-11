@@ -12168,7 +12168,11 @@ msgctxt "#21843"
 msgid "Orientation"
 msgstr ""
 
-#empty strings from id 21844 to 21856
+msgctxt "#21844"
+msgid "XP comment"
+msgstr ""
+
+#empty strings from id 21845 to 21856
 
 msgctxt "#21857"
 msgid "Sub-location"

@@ -81,7 +81,7 @@ typedef struct {
 #define EXIF_COMMENT_CHARSET_UNICODE    3 // Exif: Unicode (UTF-16)
 #define EXIF_COMMENT_CHARSET_JIS        4 // Exif: JIS X208-1990
 
-#define MAX_COMMENT 2000
+#define MAX_COMMENT 65533 // 2 bytes - 2 for the length param
 #define MAX_DATE_COPIES 10
 
 typedef struct {
@@ -108,8 +108,11 @@ typedef struct {
     int   ISOequivalent;
     int   LightSource;
     int   CommentsCharset;             // EXIF_COMMENT_CHARSET_*
-    char  Comments[MAX_COMMENT];
-    char  Description[MAX_COMMENT];
+    int   XPCommentsCharset;
+    char  Comments[MAX_COMMENT + 1];   // +1 for null termination
+    char  FileComment[MAX_COMMENT + 1];
+    char  XPComment[MAX_COMMENT + 1];
+    char  Description[MAX_COMMENT + 1];
 
     unsigned ThumbnailOffset;          // Exif offset to thumbnail
     unsigned ThumbnailSize;            // Size of thumbnail.

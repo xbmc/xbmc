@@ -420,6 +420,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
         int length = max(ByteCount, 0);
         length = min(length, MAX_COMMENT);
         strncpy(m_ExifInfo->Description, (char *)ValuePtr, length);
+        m_ExifInfo->Description[length] = '\0';
         break;
       }
       case TAG_MAKE:              strncpy(m_ExifInfo->CameraMake, (char *)ValuePtr, 32);    break;
@@ -476,6 +477,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
           int length = ByteCount - EXIF_COMMENT_CHARSET_LENGTH;
           length = min(length, MAX_COMMENT);
           memcpy(m_ExifInfo->Comments, ValuePtr + EXIF_COMMENT_CHARSET_LENGTH, length);
+          m_ExifInfo->Comments[length] = '\0';
 //          FixComment(comment);                          // Ensure comment is printable
         }
       }
@@ -484,9 +486,10 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       case TAG_XP_COMMENT:
       {
         // The XP user comment field is always unicode (UCS-2) encoded
-        m_ExifInfo->CommentsCharset = EXIF_COMMENT_CHARSET_UNICODE;
-
-        memcpy(m_ExifInfo->Comments, ValuePtr, ByteCount);
+        m_ExifInfo->XPCommentsCharset = EXIF_COMMENT_CHARSET_UNICODE;
+        size_t length = min(ByteCount, MAX_COMMENT);
+        memcpy(m_ExifInfo->XPComment, ValuePtr, length);
+        m_ExifInfo->XPComment[length] = '\0';
       }
       break;
 
