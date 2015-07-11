@@ -172,13 +172,19 @@ public class Splash extends Activity {
       InputStream input = null;
       OutputStream output = null;
       HttpURLConnection connection = null;
-      int ret = 0;
 
       String src = sUrl[0];
       String dest = sUrl[1];
+      File fObb = new File(dest);
 
       Log.d(TAG, "Downloading " + src + " to " + dest);
 
+      if (!fObb.getParentFile().exists() && !fObb.getParentFile().mkdirs()) {
+        Log.e(TAG, "Error creating directory " + fObb.getParentFile().getAbsolutePath());
+        return -1;
+      }
+
+      int ret = 0;
       try {
         URL url = new URL(src);
         connection = (HttpURLConnection) url.openConnection();
@@ -232,10 +238,7 @@ public class Splash extends Activity {
       if (ret == 0)
         mState = DownloadObbDone;
       else
-      {
-        File obb = new File(dest);
-        obb.delete();
-      }
+        fObb.delete();
 
       publishProgress(0);
       return ret;
