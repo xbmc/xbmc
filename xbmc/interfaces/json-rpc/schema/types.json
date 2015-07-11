@@ -1574,7 +1574,7 @@
     "properties": {
       "type": { "$ref": "Setting.Type", "required": true },
       "enabled": { "type": "boolean", "required": true },
-      "level": { "type": "integer", "required": true },
+      "level": { "$ref": "Setting.Level", "required": true },
       "parent": { "type": "string" },
       "control": { "$ref": "Setting.Details.Control" }
     },
