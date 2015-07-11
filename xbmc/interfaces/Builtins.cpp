@@ -1592,7 +1592,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 2)
         thumbs = StringUtils::EqualsNoCase(params[2], "true");
       else
-        thumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20430}, cancelled);
+        thumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20430}, cancelled, CVariant{""}, CVariant{""}, CGUIDialogYesNo::NO_TIMEOUT);
     }
 
     if (cancelled)
@@ -1603,7 +1603,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 4)
         actorThumbs = StringUtils::EqualsNoCase(params[4], "true");
       else
-        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20436}, cancelled);
+        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20436}, cancelled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT);
     }
 
     if (cancelled)
@@ -1614,7 +1614,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 3)
         overwrite = StringUtils::EqualsNoCase(params[3], "true");
       else
-        overwrite = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20431}, cancelled);
+        overwrite = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20431}, cancelled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT);
     }
 
     if (cancelled)

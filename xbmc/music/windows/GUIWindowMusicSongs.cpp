@@ -481,7 +481,7 @@ bool CGUIWindowMusicSongs::Update(const std::string &strDirectory, bool updateFi
 void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
 {
   bool bCanceled;
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{522}, CVariant{20340}, bCanceled))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{522}, CVariant{20340}, bCanceled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT))
   {
     MAPSONGS songs;
     CMusicDatabase database;

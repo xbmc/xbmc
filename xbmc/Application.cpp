@@ -1539,7 +1539,7 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
     if (confirm && !m_skinReverting)
     {
       bool cancelled;
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13123}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, CVariant{10000}))
+      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13123}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, 10000))
       {
         m_skinReverting = true;
         if (oldSkin.empty())

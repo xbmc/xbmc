@@ -116,7 +116,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeTvShow)
         {
           bool bCanceled=false;
-          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20377}, CVariant{20378}, bCanceled))
+          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20377}, CVariant{20378}, bCanceled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT))
           {
             m_bRefreshAll = true;
             CVideoDatabase db;

@@ -74,16 +74,16 @@ bool CGUIDialogYesNo::OnBack(int actionID)
 
 bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled)
 {
-  return ShowAndGetInput(heading, line0, line1, line2, bCanceled, "", "");
+  return ShowAndGetInput(heading, line0, line1, line2, bCanceled, "", "", NO_TIMEOUT);
 }
 
 bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, CVariant noLabel /* = "" */, CVariant yesLabel /* = "" */)
 {
   bool bDummy;
-  return ShowAndGetInput(heading, line0, line1, line2, bDummy, noLabel, yesLabel);
+  return ShowAndGetInput(heading, line0, line1, line2, bDummy, noLabel, yesLabel, NO_TIMEOUT);
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled, CVariant noLabel, CVariant yesLabel, unsigned int autoCloseTime /* = 0 */)
+bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled, CVariant noLabel, CVariant yesLabel, unsigned int autoCloseTime)
 {
   CGUIDialogYesNo *dialog = (CGUIDialogYesNo *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!dialog)
@@ -110,7 +110,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text)
   return ShowAndGetInput(heading, text, bDummy, "", "");
 }
 
-bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, bool &bCanceled, CVariant noLabel /* = "" */, CVariant yesLabel /* = "" */, unsigned int autoCloseTime /* = 0 */)
+bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, bool &bCanceled, CVariant noLabel /* = "" */, CVariant yesLabel /* = "" */, unsigned int autoCloseTime)
 {
   CGUIDialogYesNo *dialog = (CGUIDialogYesNo *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!dialog)
