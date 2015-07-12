@@ -38,7 +38,7 @@ const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGro
 
 
 CContextMenuManager::CContextMenuManager()
-  : m_iCurrentContextId(CONTEXT_BUTTON_FIRST_ADDON)
+  : m_nextButtonId(CONTEXT_BUTTON_FIRST_ADDON)
 {
   Init();
 }
@@ -73,8 +73,8 @@ void CContextMenuManager::Register(const ContextItemAddonPtr& cm)
     }
     else
     {
-      m_items[m_iCurrentContextId] = menuItem;
-      ++m_iCurrentContextId;
+      m_items[m_nextButtonId] = menuItem;
+      ++m_nextButtonId;
     }
   }
 }
