@@ -734,6 +734,9 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       case GUI_MSG_LABEL_BIND:
         if (message.GetPointer())
         {
+          /* Safe currently selected epg tag. Selection shall be restored after update. */
+          const CEpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
+
           Reset();
           CFileItemList *items = (CFileItemList *)message.GetPointer();
 
@@ -806,6 +809,49 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
           }
 
           UpdateItems();
+
+          m_channels = m_epgItemsPtr.size();
+
+          if (prevSelectedEpgTag)
+          {
+            // Grid index got recreated. Do cursors and offsets still point to the same epg tag?
+            if (prevSelectedEpgTag == GetSelectedEpgInfoTag())
+              return true;
+
+            int newChannelCursor = GetChannel(prevSelectedEpgTag);
+            if (newChannelCursor >= 0)
+            {
+              int newBlockCursor = GetBlock(prevSelectedEpgTag, newChannelCursor);
+              if (newBlockCursor >= 0)
+              {
+                if (newChannelCursor == m_channelCursor && newBlockCursor == m_blockCursor)
+                  return true;
+
+                if (newBlockCursor > 0 && newBlockCursor != m_blockCursor)
+                {
+                  SetInvalid();
+                  SetSelectedBlock(newBlockCursor);
+                }
+
+                if (newChannelCursor != m_channelCursor)
+                {
+                  SetInvalid();
+                  SetSelectedChannel(newChannelCursor);
+                }
+
+                if (newBlockCursor > 0)
+                  return true;
+              }
+            }
+          }
+
+          // Fallback. Goto now.
+          m_item = GetItem(m_channelCursor);
+          if (m_item)
+            SetBlock(GetBlock(m_item->item, m_channelCursor));
+
+          SetInvalid();
+          GoToNow();
           return true;
         }
         break;
@@ -937,14 +983,6 @@ void CGUIEPGGridContainer::UpdateItems()
   /******************************************* END ******************************************/
 
   CLog::Log(LOGDEBUG, "CGUIEPGGridContainer - %s completed successfully in %u ms", __FUNCTION__, (unsigned int)(XbmcThreads::SystemClockMillis()-tick));
-
-  m_channels = (int)m_epgItemsPtr.size();
-  m_item = GetItem(m_channelCursor);
-  if (m_item)
-    SetBlock(GetBlock(m_item->item, m_channelCursor));
-
-  SetInvalid();
-  GoToNow();
 }
 
 void CGUIEPGGridContainer::ChannelScroll(int amount)
@@ -1317,6 +1355,32 @@ void CGUIEPGGridContainer::SetSelectedChannel(int channelIndex)
   }
 }
 
+void CGUIEPGGridContainer::SetSelectedBlock(int blockIndex)
+{
+  if (blockIndex < 0)
+    return;
+
+  if (blockIndex - m_blockOffset <= 0)
+  {
+    ScrollToBlockOffset(0);
+    SetBlock(blockIndex);
+  }
+  else if (blockIndex - m_blockOffset < m_blocksPerPage && blockIndex - m_blockOffset >= 0)
+  {
+    SetBlock(blockIndex - m_blockOffset);
+  }
+  else if(blockIndex < m_blocks - m_blocksPerPage)
+  {
+    ScrollToBlockOffset(blockIndex - m_blocksPerPage + 1);
+    SetBlock(m_blocksPerPage - 1);
+  }
+  else
+  {
+    ScrollToBlockOffset(m_blocks - m_blocksPerPage);
+    SetBlock(blockIndex - (m_blocks - m_blocksPerPage));
+  }
+}
+
 int CGUIEPGGridContainer::GetSelectedItem() const
 {
   if (m_gridIndex.empty() ||
@@ -1334,6 +1398,67 @@ int CGUIEPGGridContainer::GetSelectedItem() const
     if (currentItem == m_programmeItems[i])
       return i;
   }
+  return -1;
+}
+
+CEpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const
+{
+  CEpgInfoTagPtr tag;
+
+  if (!m_gridIndex.empty() &&
+      !m_epgItemsPtr.empty() &&
+      m_channelCursor + m_channelOffset < m_channels &&
+      m_blockCursor + m_blockOffset < m_blocks)
+  {
+    CGUIListItemPtr currentItem(m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item);
+    if (currentItem)
+      tag = static_cast<CFileItem *>(currentItem.get())->GetEPGInfoTag();
+  }
+
+  return tag;
+}
+
+int CGUIEPGGridContainer::GetBlock(const CEpgInfoTagPtr &tag, int channel) const
+{
+  for (int block = 0; block < m_blocks; ++block)
+  {
+    CGUIListItemPtr item = m_gridIndex[channel + m_channelOffset][block].item;
+    if (item)
+    {
+      CEpgInfoTagPtr currentTag(static_cast<CFileItem *>(item.get())->GetEPGInfoTag());
+      if (currentTag == tag)
+        return (block - m_blockOffset >= 0) ? block - m_blockOffset : 0;
+    }
+  }
+
+  return -1;
+}
+
+int CGUIEPGGridContainer::GetChannel(const CEpgInfoTagPtr &tag) const
+{
+  if (tag->HasPVRChannel())
+  {
+    int channelId = tag->ChannelTag()->ChannelID();
+    for (int row = 0; row < m_channels; ++row)
+    {
+      for (int block = 0; block < m_blocks; ++block)
+      {
+        CGUIListItemPtr item = m_gridIndex[row][block].item;
+        if (item)
+        {
+          CEpgInfoTagPtr currentTag(static_cast<CFileItem *>(item.get())->GetEPGInfoTag());
+          if (currentTag->HasPVRChannel()) // Take care. Gap tags have no channel.
+          {
+            if (currentTag->ChannelTag()->ChannelID() == channelId)
+              return (row - m_channelOffset >= 0) ? row - m_channelOffset : 0;
+            else
+              break;
+          }
+        }
+      }
+    }
+  }
+
   return -1;
 }
 
