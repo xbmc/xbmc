@@ -45,8 +45,10 @@ namespace EPG
     CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width, float height,
                          int scrollTime, int preloadItems, int minutesPerPage,
                          int rulerUnit, const CTextureInfo& progressIndicatorTexture);
+    CGUIEPGGridContainer(const CGUIEPGGridContainer &other);
+
     virtual ~CGUIEPGGridContainer(void);
-    virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); };
+    virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); }
 
     virtual bool OnAction(const CAction &action);
     virtual void OnDown();
@@ -63,7 +65,7 @@ namespace EPG
     virtual std::string GetDescription() const;
     const int GetNumChannels()   { return m_channels; };
     virtual int GetSelectedItem() const;
-    const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
+    const int GetSelectedChannel() const;
     void SetSelectedChannel(int channelIndex);
     PVR::CPVRChannelPtr GetChannel(int iIndex);
     void SetSelectedBlock(int blockIndex);
@@ -95,8 +97,6 @@ namespace EPG
   protected:
     bool OnClick(int actionID);
     bool SelectItemFromPoint(const CPoint &point, bool justGrid = true);
-
-    void UpdateItems();
 
     void SetChannel(int channel);
     void SetBlock(int block);
@@ -171,11 +171,13 @@ namespace EPG
     void GetChannelCacheOffsets(int &cacheBefore, int &cacheAfter);
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
 
+  private:
+    void UpdateItems();
+
     EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
     int GetBlock(const EPG::CEpgInfoTagPtr &tag, int channel) const;
     int GetChannel(const EPG::CEpgInfoTagPtr &tag) const;
 
-  private:
     int m_rulerUnit; //! number of blocks that makes up one element of the ruler
     int m_channels;
     int m_channelsPerPage;
@@ -224,5 +226,7 @@ namespace EPG
     int m_channelScrollLastTime;
     float m_channelScrollSpeed;
     float m_channelScrollOffset;
+
+    CCriticalSection m_critSection;
   };
 }
