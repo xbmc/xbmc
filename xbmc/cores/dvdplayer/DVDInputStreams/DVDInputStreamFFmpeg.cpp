@@ -48,7 +48,7 @@ bool CDVDInputStreamFFmpeg::IsEOF()
     return false;
 }
 
-bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content)
+bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content, bool contentLookup)
 {
   CFileItem item(strFile, false);
   std::string selected;
@@ -66,7 +66,7 @@ bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content
     }
   }
 
-  if (!CDVDInputStream::Open(strFile, content))
+  if (!CDVDInputStream::Open(strFile, content, contentLookup))
     return false;
 
   m_can_pause = true;

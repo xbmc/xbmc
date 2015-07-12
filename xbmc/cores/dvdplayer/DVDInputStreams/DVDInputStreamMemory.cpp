@@ -40,9 +40,9 @@ bool CDVDInputStreamMemory::IsEOF()
   return false;
 }
 
-bool CDVDInputStreamMemory::Open(const char* strFile, const std::string& content)
+bool CDVDInputStreamMemory::Open(const char* strFile, const std::string& content, bool contentLookup)
 {
-  if (!CDVDInputStream::Open(strFile, content)) return false;
+  if (!CDVDInputStream::Open(strFile, content, contentLookup)) return false;
 
   return true;
 }

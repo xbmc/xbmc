@@ -50,9 +50,9 @@ bool CDVDInputStreamHttp::IsEOF()
   return true;
 }
 
-bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content)
+bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content, bool contentLookup)
 {
-  if (!CDVDInputStream::Open(strFile, content)) return false;
+  if (!CDVDInputStream::Open(strFile, content, contentLookup)) return false;
 
   m_pFile = new CCurlFile();
   if (!m_pFile) return false;

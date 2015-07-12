@@ -135,7 +135,7 @@ static const struct {
  { NULL }
 };
 
-bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
+bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content, bool contentLookup)
 {
   if (m_sStreamPlaying)
   {
@@ -143,7 +143,7 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
     m_sStreamPlaying = NULL;
   }
 
-  if (!m_rtmp || !CDVDInputStream::Open(strFile, "video/x-flv"))
+  if (!m_rtmp || !CDVDInputStream::Open(strFile, "video/x-flv", contentLookup))
     return false;
 
   CSingleLock lock(m_RTMPSection);

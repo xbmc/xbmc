@@ -413,6 +413,12 @@ public:
    */
   void FillInMimeType(bool lookup = true);
 
+  /*!
+   \brief Some sources do not support HTTP HEAD request to determine i.e. mime type
+   \return false if HEAD requests have to be avoided
+   */
+  bool ContentLookup() { return true; };
+
   /* general extra info about the contents of the item, not for display */
   void SetExtraInfo(const std::string& info) { m_extrainfo = info; };
   const std::string& GetExtraInfo() const { return m_extrainfo; };
