@@ -637,6 +637,10 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
       ScrollToBlockOffset(m_blockOffset - (12 * 60 / MINSPERBLOCK));
       return true;
 
+    case REMOTE_0:
+      GoToNow();
+      return true;
+
     case ACTION_PAGE_UP:
       if (m_channelOffset == 0)
       { // already on the first page, so move to the first item

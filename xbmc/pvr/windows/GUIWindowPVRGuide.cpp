@@ -161,7 +161,6 @@ bool CGUIWindowPVRGuide::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-    case REMOTE_0:
     case REMOTE_1:
     case REMOTE_2:
     case REMOTE_3:
