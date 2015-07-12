@@ -111,7 +111,8 @@ typedef enum {
   ViewModeWideZoom,
   ViewModeStretch16x9,
   ViewModeOriginal,
-  ViewModeCustom
+  ViewModeCustom,
+  ViewModeStretch16x9Nonlin
 } ViewMode;
 
 class CVideoSettings

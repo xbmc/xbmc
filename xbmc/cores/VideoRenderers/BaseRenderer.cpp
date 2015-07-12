@@ -688,7 +688,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
     CDisplaySettings::Get().SetNonLinearStretched(true);
   }
   else if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeStretch16x9 ||
-           (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9))
+           (is43 && (CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9 ||
+                     CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9Nonlin)))
   { // stretch image to 16:9 ratio
     CDisplaySettings::Get().SetZoomAmount(1.0);
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
@@ -701,6 +702,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
       // incorrect behaviour, but it's what the users want, so...
       CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
     }
+    if (is43)
+      CDisplaySettings::Get().SetNonLinearStretched(CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9Nonlin);
+
   }
   else  if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeOriginal)
   { // zoom image so that the height is the original size

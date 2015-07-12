@@ -2787,6 +2787,11 @@ msgctxt "#643"
 msgid "Avoid clipping on ReplayGained files"
 msgstr ""
 
+#: system/settings/settings.xml
+msgctxt "#644"
+msgid "Stretch 16:9 - Nonlinear"
+msgstr ""
+
 #empty string with id 644
 
 msgctxt "#645"
