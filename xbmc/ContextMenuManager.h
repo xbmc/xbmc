@@ -75,5 +75,5 @@ private:
     const CFileItemPtr& fileItem);
 
   std::map<unsigned int, CContextMenuItem> m_items;
-  unsigned int m_iCurrentContextId;
+  unsigned int m_nextButtonId;
 };
