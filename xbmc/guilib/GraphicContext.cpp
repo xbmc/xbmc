@@ -409,9 +409,19 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   {
     //pause the player during the refreshrate change
     int delay = CSettings::Get().GetInt("videoplayer.pauseafterrefreshchange");
-    if (delay > 0 && CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback())
+    if (delay > 0 && CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo())
     {
-      g_application.m_pPlayer->Pause();
+      if (!g_application.m_pPlayer->IsPausedPlayback()) {
+        g_application.m_pPlayer->Pause();
+      } else {
+        // IsPausedPlayback() also gives true when the player is in fact waiting for data.
+        // As soon as enough data is available the player will unpause, that's not what
+        // we want to have the change delay.
+        // "Pressing pause twice" puts the player into the normal "paused until unpause" state,
+        // it will no longer automatically unpause when more data arrives.
+        g_application.m_pPlayer->Pause();
+        g_application.m_pPlayer->Pause();
+      }
       ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
       CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
       pauseMessage->Create(true);
