@@ -66,6 +66,7 @@ namespace EPG
     const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
     void SetSelectedChannel(int channelIndex);
     PVR::CPVRChannelPtr GetChannel(int iIndex);
+    void SetSelectedBlock(int blockIndex);
     virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
     virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
@@ -169,6 +170,10 @@ namespace EPG
 
     void GetChannelCacheOffsets(int &cacheBefore, int &cacheAfter);
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
+
+    EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
+    int GetBlock(const EPG::CEpgInfoTagPtr &tag, int channel) const;
+    int GetChannel(const EPG::CEpgInfoTagPtr &tag) const;
 
   private:
     int m_rulerUnit; //! number of blocks that makes up one element of the ruler
