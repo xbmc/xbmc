@@ -306,7 +306,7 @@ ssize_t CZipFile::Read(void* lpBuf, size_t uiBufSize)
   {
     uLong iDecompressed = 0;
     uLong prevOut = m_ZStream.total_out;
-    while ((static_cast<size_t>(iDecompressed) < uiBufSize) && ((m_iZipFilePos < mZipItem.csize) || (m_bFlush)))
+    while ((iDecompressed < uiBufSize) && ((m_iZipFilePos < mZipItem.csize) || (m_bFlush)))
     {
       m_ZStream.next_out = (Bytef*)(lpBuf)+iDecompressed;
       m_ZStream.avail_out = static_cast<uInt>(uiBufSize-iDecompressed);

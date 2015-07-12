@@ -24,6 +24,7 @@
 #include "URL.h"
 #include "iso9660.h"
 
+#include <algorithm>
 #include <sys/stat.h>
 
 using namespace std;
@@ -84,10 +85,7 @@ ssize_t CISOFile::Read(void *lpBuf, size_t uiBufSize)
     {
       if (m_cache.getMaxReadSize() )
       {
-        long lBytes2Read = m_cache.getMaxReadSize();
-        if (lBytes2Read > static_cast<long>(uiBufSize))
-          lBytes2Read = static_cast<long>(uiBufSize);
-
+        unsigned int lBytes2Read = std::min(m_cache.getMaxReadSize(), static_cast<unsigned int>(uiBufSize));
         m_cache.ReadData(pData, lBytes2Read );
         uiBufSize -= lBytes2Read ;
         pData += lBytes2Read;

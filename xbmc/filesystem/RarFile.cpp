@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "RarFile.h"
+#include <algorithm>
 #include <sys/stat.h>
 #include "Util.h"
 #include "utils/CharsetConverter.h"
@@ -302,7 +303,7 @@ ssize_t CRarFile::Read(void *lpBuf, size_t uiBufSize)
   int64_t uicBufSize = uiBufSize;
   if (m_iDataInBuffer > 0)
   {
-    int64_t iCopy = (uiBufSize < static_cast<size_t>(m_iDataInBuffer)) ? uiBufSize : m_iDataInBuffer;
+    int64_t iCopy = std::min(static_cast<int64_t>(uiBufSize), m_iDataInBuffer);
     memcpy(lpBuf,m_szStartOfBuffer,size_t(iCopy));
     m_szStartOfBuffer += iCopy;
     m_iDataInBuffer -= int(iCopy);

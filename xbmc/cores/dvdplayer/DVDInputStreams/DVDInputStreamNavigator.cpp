@@ -476,7 +476,8 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         {
           uint64_t* times = NULL;
           uint64_t duration;
-          int entries = static_cast<int>(m_dll.dvdnav_describe_title_chapters(m_dvdnav, m_iTitle, &times, &duration));
+          //dvdnav_describe_title_chapters returns 0 on failure and NULL for times
+          int entries = m_dll.dvdnav_describe_title_chapters(m_dvdnav, m_iTitle, &times, &duration);
 
           if (entries != m_iPartCount)
             CLog::Log(LOGDEBUG, "%s - Number of chapters/positions differ: Chapters %d, positions %d\n", __FUNCTION__, m_iPartCount, entries);

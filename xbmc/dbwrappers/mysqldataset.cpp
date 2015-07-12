@@ -918,8 +918,8 @@ void MysqlDatabase::mysqlVXPrintf(
         }
         bufpt = &buf[etBUFSIZE-1];
         {
-          register const char *cset;      /* Use registers for speed */
-          register int base;
+          const char *cset;
+          int base;
           cset = &aDigits[infop->charset];
           base = infop->base;
           do{                                           /* Convert to ascii */
@@ -1167,7 +1167,7 @@ void MysqlDatabase::mysqlVXPrintf(
     ** the output.
     */
     if( !flag_leftjustify ){
-      register int nspace;
+      int nspace;
       nspace = width-length;
       if( nspace>0 ){
         appendSpace(pAccum, nspace);
@@ -1177,7 +1177,7 @@ void MysqlDatabase::mysqlVXPrintf(
       mysqlStrAccumAppend(pAccum, bufpt, length);
     }
     if( flag_leftjustify ){
-      register int nspace;
+      int nspace;
       nspace = width-length;
       if( nspace>0 ){
         appendSpace(pAccum, nspace);

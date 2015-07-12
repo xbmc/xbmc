@@ -126,6 +126,7 @@ config.log
 /addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
 /addons/kodi.guilib/addon.xml
+/addons/audiodecoder.*
 
 # /lib/
 /lib/Makefile
@@ -434,6 +435,8 @@ lib/cpluff/stamp-h1
 /tools/depends/target/ffmpeg/ffmpeg-*-*.tar.gz
 /tools/depends/target/ffmpeg/ffmpeg-*-*/
 /tools/depends/target/ffmpeg/ffmpeg-install/
+/tools/depends/target/Toolchain_binaddons.cmake
+/tools/depends/target/config-binaddons.site
 
 # /tools/EventClients/
 /tools/EventClients/*.pyc
