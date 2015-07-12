@@ -459,7 +459,6 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
   unsigned int startTime = XbmcThreads::SystemClockMillis();
   CGUIDialogProgress *progressBar = NULL;
   bool cancelled = false;
-  bool inMainAppThread = g_application.IsCurrentThread();
 
   CLog::Log(LOGDEBUG, "%s - waiting on the %s (id=%d) plugin...", __FUNCTION__, scriptName.c_str(), scriptId);
   while (true)
@@ -515,10 +514,6 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
         m_cancelled = true;
       }
     }
-    else // if the progressBar exists and we call StartModal or Progress we get the
-         //  ProcessRenderLoop call anyway.
-      if (inMainAppThread) 
-        g_windowManager.ProcessRenderLoop();
 
     if (!cancelled && m_cancelled)
     {
