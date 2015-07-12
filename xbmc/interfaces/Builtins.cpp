@@ -40,6 +40,7 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogTextViewer.h"
 #include "GUIUserMessages.h"
 #include "windows/GUIWindowLoginScreen.h"
 #include "video/windows/GUIWindowVideoBase.h"
@@ -168,6 +169,7 @@ const BUILT_IN commands[] = {
   { "CancelAlarm",                true,   "Cancels an alarm" },
   { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
+  { "TextViewer",                 true,   "Opens textviewer dialog, specify header, then message." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Skin.ToggleSetting",         true,   "Toggles a skin setting on or off" },
@@ -769,7 +771,7 @@ int CBuiltins::Execute(const std::string& execString)
         bool isVideo = items[i]->IsVideo();
         containsMusic |= !isVideo;
         containsVideo |= isVideo;
-        
+
         if (containsMusic && containsVideo)
           break;
       }
@@ -789,7 +791,7 @@ int CBuiltins::Execute(const std::string& execString)
             items.Remove(i);
         }
       }
-      
+
       g_playlistPlayer.ClearPlaylist(playlist);
       g_playlistPlayer.Add(playlist, items);
       g_playlistPlayer.SetCurrentPlaylist(playlist);
@@ -1119,7 +1121,7 @@ int CBuiltins::Execute(const std::string& execString)
     {
       if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
       {
-        CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);  
+        CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);
       }
     }
   }
@@ -1226,6 +1228,18 @@ int CBuiltins::Execute(const std::string& execString)
       CGUIDialogKaiToast::QueueNotification("",params[0],params[1],atoi(params[2].c_str()));
     else
       CGUIDialogKaiToast::QueueNotification(params[0],params[1]);
+  }
+  else if (execute == "textviewer")
+  {
+    if (params.size() < 2)
+      return -1;
+    CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
+    if (pDlgInfo)
+    {
+      pDlgInfo->SetHeading(params[0]);
+      pDlgInfo->SetText(params[1]);
+      pDlgInfo->DoModal();
+    }
   }
   else if (execute == "cancelalarm")
   {
@@ -1410,7 +1424,7 @@ int CBuiltins::Execute(const std::string& execString)
             CSkinSettings::Get().SetString(string, replace);
         }
       }
-      else 
+      else
       {
         if (params.size() > 2)
         {
@@ -1774,7 +1788,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (type == ADDON_VIZ)
       allowNone = true;
 
-    if (type != ADDON_UNKNOWN && 
+    if (type != ADDON_UNKNOWN &&
         CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
     {
       CAddonMgr::Get().SetDefault(type,addonID);
