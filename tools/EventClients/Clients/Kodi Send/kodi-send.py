@@ -19,13 +19,13 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-import sys
+import sys, os
 import getopt
 from socket import *
 try:
     from kodi.xbmcclient import *
 except:
-    sys.path.append('../../lib/python')
+    sys.path.append(os.path.join(os.path.realpath(os.path.dirname(__file__)), '../../lib/python'))
     from xbmcclient import *
 
 def usage():
