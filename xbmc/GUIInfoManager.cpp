@@ -427,6 +427,8 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "pluginname",       CONTAINER_PLUGINNAME },
                                   { "viewmode",         CONTAINER_VIEWMODE },
                                   { "totaltime",        CONTAINER_TOTALTIME },
+                                  { "totalwatched",     CONTAINER_TOTALWATCHED },
+                                  { "totalunwatched",   CONTAINER_TOTALUNWATCHED },
                                   { "hasthumb",         CONTAINER_HAS_THUMB },
                                   { "sortmethod",       CONTAINER_SORT_METHOD },
                                   { "sortorder",        CONTAINER_SORT_ORDER },
@@ -1827,22 +1829,31 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case CONTAINER_TOTALTIME:
+  case CONTAINER_TOTALWATCHED:
+  case CONTAINER_TOTALUNWATCHED:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
         const CFileItemList& items=((CGUIMediaWindow *)window)->CurrentDirectory();
-        int duration=0;
+        int count=0;
         for (int i=0;i<items.Size();++i)
         {
+          // Iterate through container and count watched, unwatched and total duration.
           CFileItemPtr item=items.Get(i);
-          if (item->HasMusicInfoTag())
-            duration += item->GetMusicInfoTag()->GetDuration();
-          else if (item->HasVideoInfoTag())
-            duration += item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration();
+          if (info == CONTAINER_TOTALWATCHED && item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0)
+            count += 1;
+          else if (info == CONTAINER_TOTALUNWATCHED && item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount == 0)
+            count += 1;
+          else if (info == CONTAINER_TOTALTIME && item->HasMusicInfoTag())
+            count += item->GetMusicInfoTag()->GetDuration();
+          else if (info == CONTAINER_TOTALTIME && item->HasVideoInfoTag())
+            count += item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration();
         }
-        if (duration > 0)
-          return StringUtils::SecondsToTimeString(duration);
+        if (info == CONTAINER_TOTALTIME && count > 0)
+          return StringUtils::SecondsToTimeString(count);
+        else if (info == CONTAINER_TOTALWATCHED || info == CONTAINER_TOTALUNWATCHED)
+          return StringUtils::Format("%i", count);
       }
     }
     break;
