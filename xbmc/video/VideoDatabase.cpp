@@ -886,7 +886,7 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to update dateadded for file (%s) with date (%s)", __FUNCTION__, idFile, dateAdded.GetAsDBDateTime().c_str());
+    CLog::Log(LOGERROR, "%s (%s, %s) failed", __FUNCTION__, CURL::GetRedacted(strFileNameAndPath).c_str(), dateAdded.GetAsDBDateTime().c_str());
   }
 }
 
