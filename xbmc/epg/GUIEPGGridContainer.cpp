@@ -48,6 +48,8 @@ using namespace EPG;
 #define BLOCKJUMP    4 // how many blocks are jumped with each analogue scroll action
 #define BLOCK_SCROLL_OFFSET 60 / MINSPERBLOCK // how many blocks are jumped if we are at left/right edge of grid
 
+#define MAX_UPDATE_FREQUENCY 3000 // Do at maximum 1 grid data update in MAX_UPDATE_FREQUENCY milliseconds
+
 CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width,
                                            float height, int scrollTime, int preloadItems, int timeBlocks, int rulerUnit,
                                            const CTextureInfo& progressIndicatorTexture)
@@ -160,6 +162,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_channelScrollLastTime   = other.m_channelScrollLastTime;
   m_channelScrollSpeed      = other.m_channelScrollSpeed;
   m_channelScrollOffset     = other.m_channelScrollOffset;
+  m_nextUpdateTimeout       = other.m_nextUpdateTimeout;
 }
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
 {
@@ -804,7 +807,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
         return true;
 
       case GUI_MSG_LABEL_BIND:
-        if (message.GetPointer())
+        if (message.GetPointer() && m_nextUpdateTimeout.IsTimePast())
         {
           CSingleLock lock(m_critSection);
 
@@ -890,7 +893,10 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
           {
             // Grid index got recreated. Do cursors and offsets still point to the same epg tag?
             if (prevSelectedEpgTag == GetSelectedEpgInfoTag())
+            {
+              m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY); // TODO ksooo: Refactor to have only one return statement.
               return true;
+            }
 
             int newChannelCursor = GetChannel(prevSelectedEpgTag);
             if (newChannelCursor >= 0)
@@ -899,7 +905,10 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
               if (newBlockCursor >= 0)
               {
                 if (newChannelCursor == m_channelCursor && newBlockCursor == m_blockCursor)
+                {
+                  m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY); // TODO ksooo: Refactor to have only one return statement.
                   return true;
+                }
 
                 if (newBlockCursor > 0 && newBlockCursor != m_blockCursor)
                 {
@@ -914,7 +923,10 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
                 }
 
                 if (newBlockCursor > 0)
+                {
+                  m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY); // TODO ksooo: Refactor to have only one return statement.
                   return true;
+                }
               }
             }
           }
@@ -926,6 +938,8 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
 
           SetInvalid();
           GoToNow();
+
+          m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY); // TODO ksooo: Refactor to have only one return statement.
           return true;
         }
         break;
