@@ -32,7 +32,7 @@ enum class DialogModalityType
 {
   MODELESS,
   MODAL,
-  SYSTEM_MODAL
+  PARENTLESS_MODAL
 };
 
 /*!
@@ -57,7 +57,7 @@ public:
 
   virtual bool IsDialogRunning() const { return m_active; };
   virtual bool IsDialog() const { return true;};
-  virtual bool IsModalDialog() const { return m_modalityType == DialogModalityType::MODAL || m_modalityType == DialogModalityType::SYSTEM_MODAL; };
+  virtual bool IsModalDialog() const { return m_modalityType == DialogModalityType::MODAL || m_modalityType == DialogModalityType::PARENTLESS_MODAL; };
   virtual DialogModalityType GetModalityType() const { return m_modalityType; };
 
   void SetAutoClose(unsigned int timeoutMs);
