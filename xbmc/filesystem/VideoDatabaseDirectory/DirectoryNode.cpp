@@ -336,6 +336,11 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
         pItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
       }
       break;
+    case NODE_TYPE_MUSICVIDEOS_ALBUM:
+      pItem.reset(new CFileItem(g_localizeStrings.Get(15102)));  // "All Albums"
+      videoUrl.AppendPath("-1/");
+      pItem->SetPath(videoUrl.ToString());
+      break;
     default:
       break;
   }
