@@ -35,7 +35,6 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float po
   m_scrollSpeed = labelInfo.scrollSpeed;  // save it for later
   m_resetOnLabelChange = resetOnLabelChange;
   m_shortText = true;
-  m_width = 0;
 }
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
