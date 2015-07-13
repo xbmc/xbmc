@@ -233,8 +233,10 @@ const BUILT_IN commands[] = {
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
-  { "StartPVRManager",            false,  "(Re)Starts the PVR manager" },
-  { "StopPVRManager",             false,  "Stops the PVR manager" },
+  { "StartPVRManager",            false,  "(Re)Starts the PVR manager (Deprecated)" },
+  { "StopPVRManager",             false,  "Stops the PVR manager (Deprecated)" },
+  { "PVR.StartManager",            false,  "(Re)Starts the PVR manager" },
+  { "PVR.StopManager",             false,  "Stops the PVR manager" },
   { "PVR.SearchMissingChannelIcons", false,  "Search for missing channel icons" },
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
@@ -1845,11 +1847,21 @@ int CBuiltins::Execute(const std::string& execString)
     CSettings::Get().SetBool("debug.showloginfo", !debug);
     g_advancedSettings.SetDebugMode(!debug);
   }
+  //TODO deprecated. To be replaced by pvr.startmanager
   else if (execute == "startpvrmanager")
   {
     g_application.StartPVRManager();
   }
+  else if (execute == "pvr.startmanager")
+  {
+    g_application.StartPVRManager();
+  }
+  //TODO deprecated. To be replaced by pvr.stopmanager
   else if (execute == "stoppvrmanager")
+  {
+    g_application.StopPVRManager();
+  }
+  else if (execute == "pvr.stopmanager")
   {
     g_application.StopPVRManager();
   }
