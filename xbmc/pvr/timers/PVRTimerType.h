@@ -84,7 +84,7 @@ namespace PVR
      * @brief Get the numeric type id of this type.
      * @return The type id.
      */
-    int GetTypeId() const { return m_iTypeId; }
+    unsigned int GetTypeId() const { return m_iTypeId; }
 
     /*!
      * @brief Get the plain text (UI) description of this type.
