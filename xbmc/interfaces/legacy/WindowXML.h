@@ -238,6 +238,8 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool    OnAction(const CAction &action);
       SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
 
+      SWIGHIDDENVIRTUAL bool    LoadXML(const String &strPath, const String &strPathLower);
+
       SWIGHIDDENVIRTUAL inline void show() { XBMC_TRACE; WindowDialogMixin::show(); }
       SWIGHIDDENVIRTUAL inline void close() { XBMC_TRACE; WindowDialogMixin::close(); }
 

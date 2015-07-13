@@ -31,6 +31,11 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
+    enum RenderOrder {
+      WINDOW = 0,
+      DIALOG = 1
+    };
+
     // Forward declare the interceptor as the AddonWindowInterceptor.h 
     // file needs to include the Window class because of the template
     class InterceptorBase;
