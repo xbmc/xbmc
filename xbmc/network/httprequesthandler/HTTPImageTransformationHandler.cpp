@@ -29,8 +29,9 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-#define TRANSFORMATION_OPTION_WIDTH   "width"
-#define TRANSFORMATION_OPTION_HEIGHT  "height"
+#define TRANSFORMATION_OPTION_WIDTH             "width"
+#define TRANSFORMATION_OPTION_HEIGHT            "height"
+#define TRANSFORMATION_OPTION_SCALING_ALGORITHM "scaling_algorithm"
 
 static const std::string ImageBasePath = "/image/";
 
@@ -140,6 +141,10 @@ int CHTTPImageTransformationHandler::HandleRequest()
   option = options.find(TRANSFORMATION_OPTION_HEIGHT);
   if (option != options.end())
     urlOptions.push_back(TRANSFORMATION_OPTION_HEIGHT "=" + option->second);
+
+  option = options.find(TRANSFORMATION_OPTION_SCALING_ALGORITHM);
+  if (option != options.end())
+    urlOptions.push_back(TRANSFORMATION_OPTION_SCALING_ALGORITHM "=" + option->second);
 
   std::string imagePath = m_url;
   if (!urlOptions.empty())

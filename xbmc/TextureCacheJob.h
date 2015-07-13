@@ -23,6 +23,8 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+
+#include "pictures/PictureScalingAlgorithm.h"
 #include "utils/Job.h"
 
 class CBaseTexture;
@@ -103,10 +105,11 @@ private:
    \param url wrapped URL of the image
    \param width width derived from URL
    \param height height derived from URL
+   \param scalingAlgorithm scaling algorithm derived from URL
    \param additional_info additional information, such as "flipped" to flip horizontally
    \return URL of the underlying image file.
    */
-  static std::string DecodeImageURL(const std::string &url, unsigned int &width, unsigned int &height, std::string &additional_info);
+  static std::string DecodeImageURL(const std::string &url, unsigned int &width, unsigned int &height, CPictureScalingAlgorithm::Algorithm& scalingAlgorithm, std::string &additional_info);
 
   /*! \brief Load an image at a given target size and orientation.
 

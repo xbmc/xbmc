@@ -3096,6 +3096,9 @@
     <ClCompile Include="..\..\xbmc\addons\ImageResource.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\pictures\PictureScalingAlgorithm.cpp">
+      <Filter>pictures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5985,6 +5988,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\ImageResource.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pictures\PictureScalingAlgorithm.h">
+      <Filter>pictures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
