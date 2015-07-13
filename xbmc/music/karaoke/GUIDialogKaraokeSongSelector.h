@@ -74,7 +74,7 @@ class CGUIDialogKaraokeSongSelectorSmall : public CGUIDialogKaraokeSongSelector
 {
   public:
     CGUIDialogKaraokeSongSelectorSmall();
-    void DoModal(unsigned int startcode, int iWindowID = WINDOW_INVALID, const std::string &param = "");
+    void Open(unsigned int startcode);
 };
 
 
@@ -83,5 +83,5 @@ class CGUIDialogKaraokeSongSelectorLarge : public CGUIDialogKaraokeSongSelector
 {
   public:
     CGUIDialogKaraokeSongSelectorLarge();
-    void DoModal(int iWindowID = WINDOW_INVALID, const std::string &param = "");
+    void Open();
 };

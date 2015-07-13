@@ -300,7 +300,7 @@ bool CProfilesManager::DeleteProfile(size_t index)
   dlgYesNo->SetLine(0, CVariant{StringUtils::Format(str.c_str(), profile->getName().c_str())});
   dlgYesNo->SetLine(1, CVariant{""});
   dlgYesNo->SetLine(2, CVariant{""});
-  dlgYesNo->DoModal();
+  dlgYesNo->Open();
 
   if (!dlgYesNo->IsConfirmed())
     return false;

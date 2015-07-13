@@ -762,7 +762,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       if (pictureInfo)
       {
         // no need to set the picture here, it's done in Render()
-        pictureInfo->DoModal();
+        pictureInfo->Open();
       }
     }
     break;

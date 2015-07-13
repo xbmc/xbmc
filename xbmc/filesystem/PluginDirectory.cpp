@@ -503,7 +503,7 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
         progressBar->SetLine(1, CVariant{""});
         progressBar->SetLine(2, CVariant{""});
         progressBar->ShowProgressBar(false);
-        progressBar->StartModal();
+        progressBar->Open();
       }
     }
 

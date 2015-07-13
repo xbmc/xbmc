@@ -81,7 +81,7 @@ void CGUIDialogCache::OpenDialog()
       m_pDlg->SetHeading(CVariant{m_strHeader});
 
     m_pDlg->SetLine(2, CVariant{m_strLinePrev});
-    m_pDlg->StartModal();
+    m_pDlg->Open();
   }
   bSentCancel = false;
 }

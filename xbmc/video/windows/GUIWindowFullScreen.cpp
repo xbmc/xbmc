@@ -181,7 +181,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (pDialog)
       {
         CFileItem item(g_application.CurrentFileItem());
-        pDialog->DoModal();
+        pDialog->Open();
         return true;
       }
       break;
@@ -636,7 +636,7 @@ void CGUIWindowFullScreen::ToggleOSD()
     if (pOSD->IsDialogRunning())
       pOSD->Close();
     else
-      pOSD->DoModal();
+      pOSD->Open();
   }
 
   MarkDirtyRegion();
@@ -648,6 +648,6 @@ void CGUIWindowFullScreen::TriggerOSD()
   if (pOSD && !pOSD->IsDialogRunning())
   {
     pOSD->SetAutoClose(3000);
-    pOSD->DoModal();
+    pOSD->Open();
   }
 }

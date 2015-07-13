@@ -99,7 +99,7 @@ public:
         if (!shown)
         {
           dlg->SetHeading(CVariant{heading});
-          dlg->StartModal();
+          dlg->Open();
         }
         if (progress >= 0)
         {
@@ -175,7 +175,8 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
       pDialog->SetLine(0, CVariant{645});
       pDialog->SetLine(1, CVariant{URIUtils::GetFileName(strPathInRar)});
       pDialog->SetLine(2, CVariant{""});
-      pDialog->DoModal();
+      pDialog->Open();
+
       if (!pDialog->IsConfirmed())
         iRes = 2; // pretend to be canceled
     }

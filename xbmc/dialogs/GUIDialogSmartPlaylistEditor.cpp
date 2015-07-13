@@ -561,7 +561,7 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const std::string &type)
   editor->m_playlist = CSmartPlaylist();
   editor->m_mode = type;
   editor->Initialize();
-  editor->DoModal(g_windowManager.GetActiveWindow());
+  editor->Open();
   return !editor->m_cancelled;
 }
 
@@ -589,6 +589,6 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const std::string &path, const 
   editor->m_playlist = playlist;
   editor->m_path = path;
   editor->Initialize();
-  editor->DoModal(g_windowManager.GetActiveWindow());
+  editor->Open();
   return !editor->m_cancelled;
 }

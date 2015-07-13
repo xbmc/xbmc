@@ -37,7 +37,7 @@
 #include <climits>
 
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
-    : CGUIDialog(WINDOW_DEBUG_INFO, "")
+  : CGUIDialog(WINDOW_DEBUG_INFO, "", DialogModalityType::MODELESS)
 {
   m_needsScaling = false;
   m_layout = NULL;
@@ -51,7 +51,7 @@ CGUIWindowDebugInfo::~CGUIWindowDebugInfo(void)
 void CGUIWindowDebugInfo::UpdateVisibility()
 {
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel || g_SkinInfo->IsDebugging())
-    Show();
+    Open();
   else
     Close();
 }

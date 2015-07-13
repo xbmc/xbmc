@@ -82,7 +82,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(CProfile::CLock &locks, int buttonLa
   dialog->m_getUser = false;
   dialog->m_conditionalDetails = conditional;
   dialog->m_details = details;
-  dialog->DoModal();
+  dialog->Open();
 
   if (!dialog->m_changed)
     return false;
@@ -102,7 +102,7 @@ bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(std::string &user, std::s
   dialog->m_user = user;
   dialog->m_url = url;
   dialog->m_saveUserDetails = saveUserDetails;
-  dialog->DoModal();
+  dialog->Open();
 
   if (!dialog->m_changed)
     return false;

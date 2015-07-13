@@ -364,7 +364,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
         m_dlgProgress->SetLine(0, CVariant{pItem->GetMusicInfoTag()->GetArtist()});
         m_dlgProgress->SetLine(1, CVariant{""});
         m_dlgProgress->SetLine(2, CVariant{""});
-        m_dlgProgress->StartModal();
+        m_dlgProgress->Open();
       }
 
       CMusicInfoScanner scanner;
@@ -382,7 +382,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
     if (pDlgArtistInfo)
     {
       pDlgArtistInfo->SetArtist(artist, artist.strPath);
-      pDlgArtistInfo->DoModal();
+      pDlgArtistInfo->Open();
 
       if (pDlgArtistInfo->NeedRefresh())
       {
@@ -441,7 +441,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
         m_dlgProgress->SetLine(0, CVariant{pItem->GetMusicInfoTag()->GetAlbum()});
         m_dlgProgress->SetLine(1, CVariant{StringUtils::Join(pItem->GetMusicInfoTag()->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator)});
         m_dlgProgress->SetLine(2, CVariant{""});
-        m_dlgProgress->StartModal();
+        m_dlgProgress->Open();
       }
 
       CMusicInfoScanner scanner;
@@ -461,7 +461,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
     if (pDlgAlbumInfo)
     {
       pDlgAlbumInfo->SetAlbum(album, album.strPath);
-      pDlgAlbumInfo->DoModal();
+      pDlgAlbumInfo->Open();
 
       if (pDlgAlbumInfo->NeedRefresh())
       {
@@ -491,7 +491,7 @@ void CGUIWindowMusicBase::ShowSongInfo(CFileItem* pItem)
       return;
 
     dialog->SetSong(pItem);
-    dialog->DoModal(GetID());
+    dialog->Open();
     if (dialog->NeedsUpdate())
       Refresh(true); // update our file list
   }
@@ -1092,7 +1092,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
         m_dlgProgress->SetLine(0, CVariant{505});
         m_dlgProgress->SetLine(1, CVariant{""});
         m_dlgProgress->SetLine(2, CVariant{url.GetWithoutUserDetails()});
-        m_dlgProgress->StartModal();
+        m_dlgProgress->Open();
         m_dlgProgress->ShowProgressBar(true);
         bProgressVisible = true;
       }

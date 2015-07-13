@@ -1724,7 +1724,8 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
     for (unsigned int i = 0; i < currentModelessWindows.size(); i++)
     {
       CGUIDialog *dialog = (CGUIDialog *)g_windowManager.GetWindow(currentModelessWindows[i]);
-      if (dialog) dialog->Show();
+      if (dialog)
+        dialog->Open();
     }
     if (iCtrlID != -1)
     {
@@ -2494,7 +2495,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       {
         if (!toast->IsDialogRunning())
         {
-          toast->Show();
+          toast->Open();
         }
       }
       g_graphicsContext.Unlock();
@@ -4448,7 +4449,7 @@ void CApplication::ShowVolumeBar(const CAction *action)
   CGUIDialog *volumeBar = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
   if (volumeBar)
   {
-    volumeBar->Show();
+    volumeBar->Open();
     if (action)
       volumeBar->OnAction(*action);
   }

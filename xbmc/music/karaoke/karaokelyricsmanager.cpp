@@ -155,7 +155,7 @@ void CKaraokeLyricsManager::ProcessSlow()
   CGUIDialogKaraokeSongSelectorLarge * selector =
       (CGUIDialogKaraokeSongSelectorLarge*)g_windowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SELECTOR );
 
-  selector->DoModal();
+  selector->Open();
 }
 
 void CKaraokeLyricsManager::SetPaused(bool now_paused)

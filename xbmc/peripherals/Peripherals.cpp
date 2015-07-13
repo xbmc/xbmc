@@ -721,6 +721,6 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
   {
     CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
     if (dialog != NULL)
-      dialog->DoModal();
+      dialog->Open();
   }
 }

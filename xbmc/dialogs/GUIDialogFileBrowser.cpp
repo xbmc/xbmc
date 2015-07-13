@@ -629,7 +629,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VE
   }
   browser->SetHeading(heading);
   browser->m_flipEnabled = flip?true:false;
-  browser->DoModal();
+  browser->Open();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
   {
@@ -706,7 +706,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSOURCES &shares, const std::
   browser->m_rootDir.SetMask(strMask);
   browser->m_selectedPath = path;
   browser->m_addNetworkShareEnabled = false;
-  browser->DoModal();
+  browser->Open();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
     path = browser->m_selectedPath;
@@ -762,7 +762,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const s
   browser->m_rootDir.SetMask(strMask);
   browser->m_selectedPath = directory;
   browser->m_addNetworkShareEnabled = false;
-  browser->DoModal();
+  browser->Open();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
     path = browser->m_selectedPath;
@@ -795,7 +795,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFileList(const VECSOURCES &shares, const s
   browser->m_browsingForFolders = 0;
   browser->m_rootDir.SetMask(mask);
   browser->m_addNetworkShareEnabled = false;
-  browser->DoModal();
+  browser->Open();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
   {
@@ -870,7 +870,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(std::string &path, bool allowNetwor
   browser->m_browsingForFolders = 1;
   browser->m_addNetworkShareEnabled = allowNetworkShares;
   browser->m_selectedPath = "";
-  browser->DoModal();
+  browser->Open();
   bool confirmed = browser->IsConfirmed();
   if (confirmed)
     path = browser->m_selectedPath;
@@ -962,7 +962,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
         m_browsingForFolders = 1;
         m_addNetworkShareEnabled = true;
         m_selectedPath = newPath;
-        DoModal();
+        Open();
       }
     }
     else

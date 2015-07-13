@@ -203,7 +203,7 @@ EVENT_RESULT CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CM
     if (pOSD)
     {
       pOSD->SetAutoClose(3000);
-      pOSD->DoModal();
+      pOSD->Open();
     }
     return EVENT_RESULT_HANDLED;
   }

@@ -66,7 +66,7 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
   
     default:
       if ( CGUIDialogKaraokeSongSelector::GetKeyNumber( action.GetID() ) != -1 && songSelector && !songSelector->IsActive() )
-        songSelector->DoModal( CGUIDialogKaraokeSongSelector::GetKeyNumber( action.GetID() ) );
+        songSelector->Open( CGUIDialogKaraokeSongSelector::GetKeyNumber( action.GetID() ) );
 
       break;
   }

@@ -377,7 +377,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
-    pDlgInfo->DoModal();
+    pDlgInfo->Open();
     needsRefresh = pDlgInfo->NeedRefresh();
     if (!needsRefresh)
       return pDlgInfo->HasUpdatedThumb();
@@ -462,7 +462,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       pDlgProgress->SetLine(0, CVariant{movieName}); //don't use std::move as it's used further down
       pDlgProgress->SetLine(1, CVariant{""});
       pDlgProgress->SetLine(2, CVariant{""});
-      pDlgProgress->StartModal();
+      pDlgProgress->Open();
       pDlgProgress->Progress();
 
       // 4b. do the websearch
@@ -482,7 +482,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
           for (unsigned int i = 0; i < movielist.size(); ++i)
             pDlgSelect->Add(movielist[i].strTitle);
           pDlgSelect->EnableButton(true, 413); // manual
-          pDlgSelect->DoModal();
+          pDlgSelect->Open();
 
           // and wait till user selects one
           int iSelectedMovie = pDlgSelect->GetSelectedLabel();
@@ -591,7 +591,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       pDlgProgress->SetLine(0, CVariant{movieName});
       pDlgProgress->SetLine(1, CVariant{scrUrl.strTitle});
       pDlgProgress->SetLine(2, CVariant{""});
-      pDlgProgress->StartModal();
+      pDlgProgress->Open();
       pDlgProgress->Progress();
       if (bHasInfo && movieDetails.m_iDbId != -1)
       {
@@ -636,7 +636,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
 
         *item->GetVideoInfoTag() = movieDetails;
         pDlgInfo->SetMovie(item);
-        pDlgInfo->DoModal();
+        pDlgInfo->Open();
         item->SetArt("thumb", pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
         listNeedsUpdating = true;
@@ -1146,7 +1146,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
   CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)g_windowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
   if (!dlg) return true;
   dlg->SetNumberOfFiles(parts.Size());
-  dlg->DoModal();
+  dlg->Open();
   int selectedFile = dlg->GetSelectedFile();
   if (selectedFile > 0)
   {
@@ -1688,7 +1688,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     return;
   pSelect->SetItems(&items);
   pSelect->EnableButton(true, 531); // New Genre
-  pSelect->DoModal();
+  pSelect->Open();
   std::string strGenre;
   int iSelected = pSelect->GetSelectedLabel();
   if (iSelected >= 0)
@@ -1740,7 +1740,7 @@ void CGUIWindowVideoBase::OnSearch()
     m_dlgProgress->SetLine(0, CVariant{strSearch});
     m_dlgProgress->SetLine(1, CVariant{""});
     m_dlgProgress->SetLine(2, CVariant{""});
-    m_dlgProgress->StartModal();
+    m_dlgProgress->Open();
     m_dlgProgress->Progress();
   }
   CFileItemList items;
@@ -1761,7 +1761,7 @@ void CGUIWindowVideoBase::OnSearch()
       pDlgSelect->Add(pItem->GetLabel());
     }
 
-    pDlgSelect->DoModal();
+    pDlgSelect->Open();
 
     int iItem = pDlgSelect->GetSelectedLabel();
     if (iItem < 0)

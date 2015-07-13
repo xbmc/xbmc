@@ -153,7 +153,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
     {
       dlgProgress->SetHeading(CVariant{194});
       dlgProgress->SetText(CVariant{m_searchfilter.m_strSearchTerm});
-      dlgProgress->StartModal();
+      dlgProgress->Open();
       dlgProgress->Progress();
     }
 
@@ -283,7 +283,7 @@ void CGUIWindowPVRSearch::OpenDialogSearch()
   m_searchfilter.m_bIsRadio = m_bRadio;
 
   /* Open dialog window */
-  dlgSearch->DoModal();
+  dlgSearch->Open();
 
   if (dlgSearch->IsConfirmed())
   {

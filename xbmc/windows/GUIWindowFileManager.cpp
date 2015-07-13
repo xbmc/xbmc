@@ -1051,7 +1051,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
       progress->SetHeading(CVariant{13394});
       for (int i=0; i < 3; i++)
         progress->SetLine(i, CVariant{""});
-      progress->StartModal();
+      progress->Open();
     }
 
     //  Calculate folder size for each selected item

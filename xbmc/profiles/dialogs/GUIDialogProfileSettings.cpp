@@ -122,7 +122,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_locks = profile->GetLocks();
   }
 
-  dialog->DoModal();
+  dialog->Open();
   if (dialog->m_needsSaving)
   {
     if (iProfile >= CProfilesManager::Get().GetNumberOfProfiles())

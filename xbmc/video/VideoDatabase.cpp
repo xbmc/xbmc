@@ -4077,7 +4077,7 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath, CGUIDialog
       progress->SetLine(1, CVariant{313});
       progress->SetLine(2, CVariant{330});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
     vector< pair<int,string> > paths;
@@ -7665,7 +7665,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
         progress->SetLine(1, CVariant{313});
         progress->SetLine(2, CVariant{330});
         progress->SetPercentage(0);
-        progress->StartModal();
+        progress->Open();
         progress->ShowProgressBar(true);
       }
     }
@@ -8042,10 +8042,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
               pDialog->SetText(CVariant{StringUtils::Format(g_localizeStrings.Get(15013).c_str(), sourceUrl.GetWithoutUserDetails().c_str())});
               pDialog->SetChoice(0, CVariant{15015});
               pDialog->SetChoice(1, CVariant{15014});
-
-              //send message and wait for user input
-              ThreadMessage tMsg = { TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow() };
-              CApplicationMessenger::Get().SendMessage(tMsg, true);
+              pDialog->Open();
 
               del = !pDialog->IsConfirmed();
             }
@@ -8174,7 +8171,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFiles /* = 
       progress->SetLine(1, CVariant{""});
       progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
 
@@ -8663,7 +8660,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
       progress->SetLine(1, CVariant{330});
       progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
 

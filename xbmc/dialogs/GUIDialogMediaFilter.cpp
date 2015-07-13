@@ -184,7 +184,7 @@ void CGUIDialogMediaFilter::ShowAndEditMediaFilter(const std::string &path, CSma
   if (!dialog->SetPath(path))
     return;
 
-  dialog->DoModal();
+  dialog->Open();
 }
 
 void CGUIDialogMediaFilter::OnWindowLoaded()

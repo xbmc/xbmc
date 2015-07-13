@@ -172,29 +172,32 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
           if(!get.Wait(TIME_TO_BUSY_DIALOG))
           {
             CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-            dialog->Show();
-
-            while(!get.Wait(10))
+            if (dialog)
             {
-              CSingleLock lock(g_graphicsContext);
+              dialog->Open();
 
-              // update progress
-              float progress = pDirectory->GetProgress();
-              if (progress > 0)
-                dialog->SetProgress(progress);
-
-              if(dialog->IsCanceled())
+              while(!get.Wait(10))
               {
-                cancel = true;
-                pDirectory->CancelDirectory();
-                break;
+                CSingleLock lock(g_graphicsContext);
+
+                // update progress
+                float progress = pDirectory->GetProgress();
+                if (progress > 0)
+                  dialog->SetProgress(progress);
+
+                if (dialog->IsCanceled())
+                {
+                  cancel = true;
+                  pDirectory->CancelDirectory();
+                  break;
+                }
+
+                lock.Leave(); // prevent an occasional deadlock on exit
+                g_windowManager.ProcessRenderLoop(false);
               }
 
-              lock.Leave(); // prevent an occasional deadlock on exit
-              g_windowManager.ProcessRenderLoop(false);
-            }
-            if(dialog)
               dialog->Close();
+            }
           }
           result = get.GetDirectory(items);
         }

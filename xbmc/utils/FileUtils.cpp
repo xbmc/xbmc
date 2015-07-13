@@ -60,7 +60,7 @@ bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
     pDialog->SetLine(0, CVariant{125});
     pDialog->SetLine(1, CVariant{CURL(item->GetPath()).GetWithoutUserDetails()});
     pDialog->SetLine(2, CVariant{""});
-    pDialog->DoModal();
+    pDialog->Open();
     if (!pDialog->IsConfirmed()) return false;
   }
 

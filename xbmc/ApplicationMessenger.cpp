@@ -176,7 +176,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   msg->strParam = message.strParam;
   msg->params = message.params;
 
-  if (msg->dwMessage == TMSG_DIALOG_DOMODAL)
+  if (msg->dwMessage == TMSG_GUI_DIALOG_OPEN)
     m_vecWindowMessages.push(msg);
   else
     m_vecMessages.push(msg);
@@ -673,33 +673,17 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       break;
 
     // Window messages below here...
-    case TMSG_DIALOG_DOMODAL:  //doModel of window
-      {
-        CGUIDialog* pDialog = (CGUIDialog*)g_windowManager.GetWindow(pMsg->param1);
-        if (!pDialog) return ;
-        pDialog->DoModal();
-      }
-      break;
-
     case TMSG_NETWORKMESSAGE:
       {
         g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->param1, pMsg->param2);
       }
       break;
 
-    case TMSG_GUI_DO_MODAL:
+    case TMSG_GUI_DIALOG_OPEN:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
         if (pDialog)
-          pDialog->DoModal(pMsg->param1, pMsg->strParam);
-      }
-      break;
-
-    case TMSG_GUI_SHOW:
-      {
-        CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
-        if (pDialog)
-          pDialog->Show();
+          pDialog->Open();
       }
       break;
 
@@ -1226,15 +1210,6 @@ void CApplicationMessenger::Minimize(bool wait)
   SendMessage(tMsg, wait);
 }
 
-void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const std::string &param)
-{
-  ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};
-  tMsg.lpVoid = pDialog;
-  tMsg.param1 = iWindowID;
-  tMsg.strParam = param;
-  SendMessage(tMsg, true);
-}
-
 void CApplicationMessenger::ExecOS(const std::string &command, bool waitExit)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_OS};
@@ -1249,12 +1224,13 @@ void CApplicationMessenger::UserEvent(int code)
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::Show(CGUIDialog *pDialog)
+void CApplicationMessenger::Open(CGUIDialog *pDialog)
 {
-  ThreadMessage tMsg = {TMSG_GUI_SHOW};
+  ThreadMessage tMsg = {TMSG_GUI_DIALOG_OPEN};
   tMsg.lpVoid = pDialog;
   SendMessage(tMsg, true);
 }
+
 
 void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool waitResult /*= true*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {

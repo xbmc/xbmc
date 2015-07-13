@@ -242,7 +242,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage &message)
     pDialog->SetLine(0, CVariant{""});
     pDialog->SetLine(1, CVariant{19212});
     pDialog->SetLine(2, CVariant{20103});
-    pDialog->DoModal();
+    pDialog->Open();
 
     if (pDialog->IsConfirmed())
       SaveList();
@@ -433,7 +433,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage &message
   pDlgInfo->SetRadio(m_bIsRadio);
 
   /* Open dialog window */
-  pDlgInfo->DoModal();
+  pDlgInfo->Open();
 
   Update();
   return true;
@@ -453,7 +453,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
     PVR_CLIENT_ITR itr;
     for (itr = m_clientsWithSettingsList.begin() ; itr != m_clientsWithSettingsList.end(); ++itr)
       pDlgSelect->Add((*itr)->Name());
-    pDlgSelect->DoModal();
+    pDlgSelect->Open();
 
     iSelection = pDlgSelect->GetSelectedLabel();
   }
@@ -607,7 +607,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
 
     pDialog->SetHeading(CVariant{19211}); // Delete channel
     pDialog->SetText(CVariant{750});      // Are you sure?
-    pDialog->DoModal();
+    pDialog->Open();
 
     if (pDialog->IsConfirmed())
     {
@@ -761,7 +761,7 @@ void CGUIDialogPVRChannelManager::SaveList(void)
   pDlgProgress->SetLine(0, CVariant{""});
   pDlgProgress->SetLine(1, CVariant{328});
   pDlgProgress->SetLine(2, CVariant{""});
-  pDlgProgress->StartModal();
+  pDlgProgress->Open();
   pDlgProgress->Progress();
   pDlgProgress->SetPercentage(0);
 

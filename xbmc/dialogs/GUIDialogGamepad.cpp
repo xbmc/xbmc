@@ -291,7 +291,7 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(std::string& strToVerify, const std::
     pDialog->SetLine(2, CVariant{atoi(dlgLine2.c_str())});
 
   g_audioManager.Enable(false); // dont do sounds during pwd input
-  pDialog->DoModal();
+  pDialog->Open();
   g_audioManager.Enable(true);
 
   if (bGetUserInput && !pDialog->IsCanceled())

@@ -105,7 +105,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   pDialog->SetLine(0, CVariant{iLine0});
   pDialog->SetLine(1, CVariant{""});
   pDialog->SetLine(2, CVariant{""});
-  pDialog->StartModal();
+  pDialog->Open();
 
   ClearState();
   unsigned int time = XbmcThreads::SystemClockMillis();

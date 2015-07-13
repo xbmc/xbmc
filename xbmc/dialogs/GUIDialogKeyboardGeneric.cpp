@@ -467,9 +467,7 @@ bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const
   pKeyboard->SetHeading(heading);
   pKeyboard->SetHiddenInput(bHiddenInput);
   pKeyboard->SetText(initialString);
-  // do this using a thread message to avoid render() conflicts
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, g_windowManager.GetActiveWindow()};
-  CApplicationMessenger::Get().SendMessage(tMsg, true);
+  pKeyboard->Open();
   pKeyboard->Close();
 
   // If have text - update this.

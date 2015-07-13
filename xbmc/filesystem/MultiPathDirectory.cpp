@@ -71,7 +71,7 @@ bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         dlgProgress->SetLine(0, CVariant{15311});
         dlgProgress->SetLine(1, CVariant{""});
         dlgProgress->SetLine(2, CVariant{""});
-        dlgProgress->StartModal();
+        dlgProgress->Open();
         dlgProgress->ShowProgressBar(true);
         dlgProgress->SetProgressMax((int)vecPaths.size()*2);
         dlgProgress->Progress();

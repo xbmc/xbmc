@@ -757,7 +757,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433).c_str(),pItem->GetLabel().c_str());
     pDialog->SetLine(1, CVariant{std::move(strLabel)});
     pDialog->SetLine(2, CVariant{""});
-    pDialog->DoModal();
+    pDialog->Open();
     if (pDialog->IsConfirmed())
     {
       CFileItemList items;
@@ -777,7 +777,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     pDialog->SetHeading(CVariant{432});
     pDialog->SetLine(1, CVariant{ StringUtils::Format(g_localizeStrings.Get(433).c_str(), pItem->GetLabel().c_str()) });
     pDialog->SetLine(2, CVariant{""});
-    pDialog->DoModal();
+    pDialog->Open();
     if (pDialog->IsConfirmed())
     {
       CVideoDatabaseDirectory dir;

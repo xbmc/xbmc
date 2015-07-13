@@ -293,7 +293,7 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
     /* inform dialog about the file item and open dialog window */
     CFileItem *itemNow  = new CFileItem(epgnow);
     pDlgInfo->SetProgInfo(itemNow);
-    pDlgInfo->DoModal();
+    pDlgInfo->Open();
     delete itemNow; /* delete previuosly created FileItem */
   }
 
