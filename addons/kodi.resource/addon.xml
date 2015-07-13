@@ -6,4 +6,5 @@
   </requires>
   <extension-point id="resource.language" schema="language.xsd"/>
   <extension-point id="resource.uisounds" schema="uisounds.xsd"/>
+  <extension-point id="resource.images" schema="images.xsd"/>
 </addon>
