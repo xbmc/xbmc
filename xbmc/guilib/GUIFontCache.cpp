@@ -23,49 +23,37 @@
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
 
-#if defined(TARGET_DARWIN )
-// apple clang with c++11 doesn't like
-// the forwards declarations of boost
-// disable them ...
-#define BOOST_DETAIL_NO_CONTAINER_FWD 1
-#endif
+inline bool Match(const CGUIFontCacheStaticPosition &a, const TransformMatrix &a_m,
+  const CGUIFontCacheStaticPosition &b, const TransformMatrix &b_m,
+  bool scrolling)
+{
+  return a.m_x == b.m_x && a.m_y == b.m_y && a_m == b_m;
+}
 
-#include "boost/multi_index_container.hpp"
-#include "boost/multi_index/sequenced_index.hpp"
-#include "boost/multi_index/hashed_index.hpp"
-#include "boost/multi_index/member.hpp"
-
-using namespace boost::multi_index;
+inline bool Match(const CGUIFontCacheDynamicPosition &a, const TransformMatrix &a_m,
+  const CGUIFontCacheDynamicPosition &b, const TransformMatrix &b_m,
+  bool scrolling)
+{
+  float diffX = a.m_x - b.m_x + FONT_CACHE_DIST_LIMIT;
+  float diffY = a.m_y - b.m_y + FONT_CACHE_DIST_LIMIT;
+  float diffZ = a.m_z - b.m_z + FONT_CACHE_DIST_LIMIT;
+  return (scrolling || diffX - floorf(diffX) < 2 * FONT_CACHE_DIST_LIMIT) &&
+    diffY - floorf(diffY) < 2 * FONT_CACHE_DIST_LIMIT &&
+    diffZ - floorf(diffZ) < 2 * FONT_CACHE_DIST_LIMIT &&
+    a_m.m[0][0] == b_m.m[0][0] &&
+    a_m.m[1][1] == b_m.m[1][1] &&
+    a_m.m[2][2] == b_m.m[2][2];
+  // We already know the first 3 columns of both matrices are diagonal, so no need to check the other elements
+}
 
 template<class Position, class Value>
 class CGUIFontCacheImpl
 {
-  /* Empty structs used as tags to identify indexes */
-  struct Age {};
-  struct Hash {};
-
-  typedef multi_index_container <
-    CGUIFontCacheEntry<Position, Value>,
-    indexed_by<
-    sequenced<tag<Age> >,
-    hashed_unique<tag<Hash>,
-    member<CGUIFontCacheEntry<Position, Value>,
-    CGUIFontCacheKey<Position>, &CGUIFontCacheEntry<Position, Value>::m_key
-    >,
-    CGUIFontCacheHash<Position>, CGUIFontCacheKeysMatch < Position >
-    >
-    >
-  > EntryList;
-
-  typedef typename EntryList::template index<Age>::type::iterator EntryAgeIterator;
-  typedef typename EntryList::template index<Hash>::type::iterator EntryHashIterator;
-
-  EntryList m_list;
-  CGUIFontCache<Position, Value> *m_parent;
+  std::list<CGUIFontCacheEntry<Position, Value>*> m_list;
 
 public:
 
-  CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
+  CGUIFontCacheImpl() {}
   Value &Lookup(Position &pos,
                 const vecColors &colors, const vecText &text,
                 uint32_t alignment, float maxPixelWidth,
@@ -75,33 +63,15 @@ public:
 };
 
 template<class Position, class Value>
-void CGUIFontCacheEntry<Position, Value>::Reassign::operator()(CGUIFontCacheEntry<Position, Value> &entry)
-{
-  entry.m_key.m_pos = m_key.m_pos;
-  entry.m_key.m_colors.assign(m_key.m_colors.begin(), m_key.m_colors.end());
-  entry.m_key.m_text.assign(m_key.m_text.begin(), m_key.m_text.end());
-  entry.m_key.m_alignment = m_key.m_alignment;
-  entry.m_key.m_maxPixelWidth = m_key.m_maxPixelWidth;
-  entry.m_key.m_scrolling = m_key.m_scrolling;
-  entry.m_matrix = m_key.m_matrix;
-  entry.m_key.m_scaleX = m_key.m_scaleX;
-  entry.m_key.m_scaleY = m_key.m_scaleY;
-
-  entry.m_lastUsedMillis = m_nowMillis;
-  entry.m_value.clear();
-}
-
-template<class Position, class Value>
 CGUIFontCacheEntry<Position, Value>::~CGUIFontCacheEntry()
 {
   delete &m_key.m_colors;
   delete &m_key.m_text;
-  m_value.clear();
 }
 
 template<class Position, class Value>
 CGUIFontCache<Position, Value>::CGUIFontCache(CGUIFontTTFBase &font)
-: m_impl(new CGUIFontCacheImpl<Position, Value>(this))
+: m_impl(new CGUIFontCacheImpl<Position, Value>())
 , m_font(font)
 {
 }
@@ -120,7 +90,7 @@ Value &CGUIFontCache<Position, Value>::Lookup(Position &pos,
                                               unsigned int nowMillis, bool &dirtyCache)
 {
   if (m_impl == nullptr)
-    m_impl = new CGUIFontCacheImpl<Position, Value>(this);
+    m_impl = new CGUIFontCacheImpl<Position, Value>();
 
   return m_impl->Lookup(pos, colors, text, alignment, maxPixelWidth, scrolling, nowMillis, dirtyCache);
 }
@@ -137,38 +107,52 @@ Value &CGUIFontCacheImpl<Position, Value>::Lookup(Position &pos,
                                        alignment, maxPixelWidth,
                                        scrolling, g_graphicsContext.GetGUIMatrix(),
                                        g_graphicsContext.GetGUIScaleX(), g_graphicsContext.GetGUIScaleY());
-  auto i = m_list.template get<Hash>().find(key);
-  if (i == m_list.template get<Hash>().end())
+  auto i = std::find_if(m_list.begin(), m_list.end(), [&key](CGUIFontCacheEntry<Position, Value>* entry) 
+  {
+    return key.m_text ==          entry->m_key.m_text &&
+           key.m_colors ==        entry->m_key.m_colors &&
+           key.m_alignment ==     entry->m_key.m_alignment &&
+           key.m_scrolling ==     entry->m_key.m_scrolling &&
+           key.m_maxPixelWidth == entry->m_key.m_maxPixelWidth &&
+           key.m_scaleX ==        entry->m_key.m_scaleX &&
+           key.m_scaleY ==        entry->m_key.m_scaleY &&
+           Match(entry->m_key.m_pos, entry->m_key.m_matrix, key.m_pos, key.m_matrix, entry->m_key.m_scrolling);
+  });
+
+  if (i == m_list.end())
   {
     /* Cache miss */
-    EntryAgeIterator oldest = m_list.template get<Age>().begin();
-    if (!m_list.template get<Age>().empty() && nowMillis - oldest->m_lastUsedMillis > FONT_CACHE_TIME_LIMIT)
+    auto oldest = m_list.back();
+    if (!m_list.empty() && nowMillis - oldest->m_lastUsedMillis > FONT_CACHE_TIME_LIMIT)
     {
       /* The oldest existing entry is old enough to expire and reuse */
-      m_list.template get<Hash>().modify(m_list.template project<Hash>(oldest), typename CGUIFontCacheEntry<Position, Value>::Reassign(key, nowMillis));
-      m_list.template get<Age>().relocate(m_list.template get<Age>().end(), oldest);
+      m_list.pop_back();
+      delete oldest;
+      m_list.push_front(new CGUIFontCacheEntry<Position, Value>(key, nowMillis));
     }
     else
     {
       /* We need a new entry instead */
       /* Yes, this causes the creation an destruction of a temporary entry, but
        * this code ought to only be used infrequently, when the cache needs to grow */
-      m_list.template get<Age>().push_back(CGUIFontCacheEntry<Position, Value>(*m_parent, key, nowMillis));
+      m_list.push_front(new CGUIFontCacheEntry<Position, Value>(key, nowMillis));
     }
     dirtyCache = true;
-    return (--m_list.template get<Age>().end())->m_value;
+    return m_list.back()->m_value;
   }
   else
   {
+    auto* entry = (*i);
     /* Cache hit */
     /* Update the translation arguments so that they hold the offset to apply
      * to the cached values (but only in the dynamic case) */
-    pos.UpdateWithOffsets(i->m_key.m_pos, scrolling);
+    pos.UpdateWithOffsets(entry->m_key.m_pos, scrolling);
     /* Update time in entry and move to the back of the list */
-    i->m_lastUsedMillis = nowMillis;
-    m_list.template get<Age>().relocate(m_list.template get<Age>().end(), m_list.template project<Age>(i));
+    entry->m_lastUsedMillis = nowMillis;
+    m_list.remove(*i);
+    m_list.push_front(entry);
     dirtyCache = false;
-    return i->m_value;
+    return entry->m_value;
   }
 }
 
@@ -181,25 +165,25 @@ void CGUIFontCache<Position, Value>::Flush()
 template<class Position, class Value>
 void CGUIFontCacheImpl<Position, Value>::Flush()
 {
-  m_list.template get<Age>().clear();
+  for (auto* i : m_list)
+    delete i;
+  m_list.clear();
 }
 
 template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::CGUIFontCache(CGUIFontTTFBase &font);
 template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCache();
-template void CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Reassign::operator()(CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue> &entry);
 template CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheStaticValue &CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Lookup(CGUIFontCacheStaticPosition &, const vecColors &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
 template void CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Flush();
 
 template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::CGUIFontCache(CGUIFontTTFBase &font);
 template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCache();
-template void CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Reassign::operator()(CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue> &entry);
 template CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheDynamicValue &CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition &, const vecColors &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
 template void CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Flush();
 
 void CVertexBuffer::clear()
 {
-  if (m_font != NULL)
+  if (m_font != nullptr)
     m_font->DestroyVertexBuffer(*this);
 }
