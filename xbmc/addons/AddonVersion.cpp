@@ -100,11 +100,31 @@ namespace ADDON
     return (CompareComponent(mRevision.c_str(), other.mRevision.c_str()) < 0);
   }
 
+  bool AddonVersion::operator>(const AddonVersion & other) const
+  {
+    return !(*this <= other);
+  }
+
   bool AddonVersion::operator==(const AddonVersion& other) const
   {
     return mEpoch == other.mEpoch
       && CompareComponent(mUpstream.c_str(), other.mUpstream.c_str()) == 0
       && CompareComponent(mRevision.c_str(), other.mRevision.c_str()) == 0;
+  }
+
+  bool AddonVersion::operator!=(const AddonVersion & other) const
+  {
+    return !(*this == other);
+  }
+
+  bool AddonVersion::operator<=(const AddonVersion& other) const
+  {
+    return *this < other || *this == other;
+  }
+
+  bool AddonVersion::operator>=(const AddonVersion & other) const
+  {
+    return !(*this < other);
   }
 
   bool AddonVersion::empty() const
