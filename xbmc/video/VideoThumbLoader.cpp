@@ -436,7 +436,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     m_videoDatabase->Open();
     if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       SetArt(item, artwork);
-    else if (tag.m_type == MediaTypeArtist)
+    else if (tag.m_type == "actor" && !tag.m_artist.empty())
     { // we retrieve music video art from the music database (no backward compat)
       CMusicDatabase database;
       database.Open();
