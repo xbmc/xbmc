@@ -57,8 +57,6 @@ namespace XBMCAddon
 
       WsgiResponseBody m_body;
 #endif
-    };    
+    };
   }
 }
-
-
