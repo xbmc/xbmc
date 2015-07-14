@@ -948,7 +948,13 @@ void CGUIEPGGridContainer::UpdateItems()
     SetBlock(GetBlock(m_item->item, m_channelCursor));
 
   SetInvalid();
-  GoToNow();
+
+  // On initial update, go to "now", to the current block offset otherwise.
+  // (Do not jump away from the position the user currently might have selected.)
+  if (m_blockOffset == 0)
+    GoToNow();
+  else
+    ScrollToBlockOffset(m_blockOffset);
 }
 
 void CGUIEPGGridContainer::ChannelScroll(int amount)
