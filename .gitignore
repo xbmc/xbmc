@@ -370,6 +370,7 @@ lib/cpluff/stamp-h1
 /system/libcec.dll
 /system/pthreadVC2.dll
 /system/libxslt.dll
+/system/ssleay32.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
