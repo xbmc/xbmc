@@ -3237,6 +3237,11 @@ bool CMusicDatabase::GetMusicLabelsNav(const std::string &strBaseDir, CFileItemL
   return GetCommonNav(strBaseDir, "albumview", "albumview.strLabel", items, filter, countOnly);
 }
 
+bool CMusicDatabase::GetSongMoodsNav(const std::string &strBaseDir, CFileItemList &items, const Filter &filter /* = Filter() */, bool countOnly /* = false */)
+{
+  return GetCommonNav(strBaseDir, "songview", "songview.mood", items, filter, countOnly);
+}
+
 bool CMusicDatabase::GetArtistsNav(const std::string& strBaseDir, CFileItemList& items, bool albumArtistsOnly /* = false */, int idGenre /* = -1 */, int idAlbum /* = -1 */, int idSong /* = -1 */, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */, bool countOnly /* = false */)
 {
   if (NULL == m_pDB.get()) return false;
