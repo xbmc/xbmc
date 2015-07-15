@@ -91,6 +91,9 @@ public:
   void SetInitMadvr(bool b) { m_isInitMadvr = b; }
   bool GetRenderOnMadvr() { return m_renderOnMadvr; }
   void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
+  void IncRenderCount() { m_renderCount =+ 1;  }
+  void ResetRenderCount() { m_renderCount = 0; }
+  bool IsGuiActive() { return m_renderCount > 0; }
 
 private:
   CMadvrCallback();
@@ -101,5 +104,6 @@ private:
   bool m_isInitMadvr;
   bool m_renderOnMadvr;
   bool m_isVideoLayer;
+  int m_renderCount;
   MADVR_RENDER_LAYER m_renderLayer;
 };

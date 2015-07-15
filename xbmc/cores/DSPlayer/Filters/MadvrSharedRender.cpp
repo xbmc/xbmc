@@ -21,6 +21,7 @@
  *
  */
 #include "MadvrSharedRender.h"
+#include "mvrInterfaces.h"
 #include "Application.h"
 #include "Utils/Log.h"
 #include "guilib/GUIWindowManager.h"
@@ -43,17 +44,11 @@ CMadvrSharedRender::CMadvrSharedRender()
 
 CMadvrSharedRender::~CMadvrSharedRender()
 {
-  // Release Shared Resources
-  if (m_pMadvrVertexBuffer)
-    m_pMadvrVertexBuffer->Release();
-  if (m_pMadvrUnderTexture)
-    m_pMadvrUnderTexture->Release();
-  if (m_pKodiUnderTexture)
-    m_pKodiUnderTexture->Release();
-  if (m_pMadvrOverTexture)
-    m_pMadvrOverTexture->Release();
-  if (m_pKodiOverTexture)
-    m_pKodiOverTexture->Release();
+  m_pMadvrVertexBuffer = nullptr;
+  m_pMadvrUnderTexture = nullptr;
+  m_pKodiUnderTexture = nullptr;
+  m_pMadvrOverTexture = nullptr;
+  m_pKodiOverTexture = nullptr;
 }
 
 HRESULT CMadvrSharedRender::CreateTextures(IDirect3DDevice9Ex* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height)
@@ -86,7 +81,13 @@ HRESULT CMadvrSharedRender::CreateTextures(IDirect3DDevice9Ex* pD3DDeviceKodi, I
 
 HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer, int width, int height)
 {
-  HRESULT hr = E_UNEXPECTED;
+  HRESULT hr = CALLBACK_EMPTY;
+
+  if (!CMadvrCallback::Get()->GetRenderOnMadvr())
+    return hr;
+
+  // Reset render count to notice when the GUI it's active or deactive
+  CMadvrCallback::Get()->ResetRenderCount();
 
   m_dwWidth = width;
   m_dwHeight = height;
@@ -111,7 +112,7 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer, int width, int
   }
 
   // Store madVR States
-  if (FAILED(hr = StoreMadDeviceState()))
+  if (FAILED(StoreMadDeviceState()))
     return hr;
 
   // Render Kodi Gui
@@ -122,43 +123,40 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer, int width, int
   m_pD3DDeviceKodi->Present(NULL, NULL, NULL, NULL);
 
   //Setup madVR Device
-  if (FAILED(hr = SetupMadDeviceState()))
+  if (FAILED(SetupMadDeviceState()))
     return hr;
 
   // Setup Vertex Buffer
-  if (FAILED(hr = SetupVertex()))
+  if (FAILED(SetupVertex()))
     return hr;
 
   // Draw Kodi shared texture on madVR
-  if (FAILED(hr = RenderTexture(layer)))
+  if (FAILED(RenderTexture(layer)))
     return hr;
 
   // Restore madVR states
-  if (FAILED(hr = RestoreMadDeviceState()))
+  if (FAILED(RestoreMadDeviceState()))
     return hr;
 
-  // quickfix for high gpu load while paused
-  if (g_application.m_pPlayer->IsPausedPlayback() && (layer == RENDER_LAYER_OVER))
-    Sleep(25);
-
-  return S_OK;
+  // return an hresult for madVR renderOSD latency mode
+  return CMadvrCallback::Get()->IsGuiActive() ? CALLBACK_USER_INTERFACE : CALLBACK_EMPTY;
 }
 
 HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
 {
   HRESULT hr = E_UNEXPECTED;
 
-  IDirect3DTexture9* pTexture;
-  IDirect3DSurface9* pSurface;
+  Com::SmartPtr<IDirect3DTexture9> pTexture;
+  Com::SmartPtr<IDirect3DSurface9> pSurface;
   layer == RENDER_LAYER_UNDER ? pTexture = m_pKodiUnderTexture : pTexture = m_pKodiOverTexture;
 
   if (FAILED(hr = pTexture->GetSurfaceLevel(0, &pSurface)))
     return hr;
 
-  if (FAILED(m_pD3DDeviceKodi->SetRenderTarget(0, pSurface)))
+  if (FAILED(hr = m_pD3DDeviceKodi->SetRenderTarget(0, pSurface)))
     return hr;
 
-  if (FAILED(m_pD3DDeviceKodi->Clear(0, NULL, D3DCLEAR_TARGET, D3DXCOLOR(0, 0, 0, 0), 1.0f, 0)))
+  if (FAILED(hr = m_pD3DDeviceKodi->Clear(0, NULL, D3DCLEAR_TARGET, D3DXCOLOR(0, 0, 0, 0), 1.0f, 0)))
     return hr;
 
   return hr;
@@ -166,7 +164,7 @@ HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
 
 HRESULT CMadvrSharedRender::RenderTexture(MADVR_RENDER_LAYER layer)
 {
-  IDirect3DTexture9* pTexture;
+  Com::SmartPtr<IDirect3DTexture9> pTexture;
   layer == RENDER_LAYER_UNDER ? pTexture = m_pMadvrUnderTexture : pTexture = m_pMadvrOverTexture;
 
   HRESULT hr = m_pD3DDeviceMadVR->SetStreamSource(0, m_pMadvrVertexBuffer, 0, sizeof(VID_FRAME_VERTEX));

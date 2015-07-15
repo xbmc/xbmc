@@ -21,7 +21,9 @@
 #include "Texture.h"
 #include "GUITextureD3D.h"
 #include "windowing/WindowingFactory.h"
-
+#ifdef HAS_DS_PLAYER
+#include "MadvrCallback.h"
+#endif
 #ifdef HAS_DX
 
 CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo &texture)
@@ -34,6 +36,11 @@ void CGUITextureD3D::Begin(color_t color)
   int unit = 0;
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   LPDIRECT3DDEVICE9 p3DDevice = g_Windowing.Get3DDevice();
+#ifdef HAS_DS_PLAYER
+  // Render count to notice when GUI it's active or deactive (useful for madVR latency mode)
+  if (CMadvrCallback::Get()->UsingMadvr())
+    CMadvrCallback::Get()->IncRenderCount();
+#endif
 
   texture->LoadToGPU();
   if (m_diffuse.size())

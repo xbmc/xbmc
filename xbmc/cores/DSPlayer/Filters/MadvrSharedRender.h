@@ -41,11 +41,11 @@ private:
   HRESULT SetupMadDeviceState();
   HRESULT RestoreMadDeviceState();
 
-  IDirect3DTexture9 *m_pKodiUnderTexture = nullptr;
-  IDirect3DTexture9 *m_pKodiOverTexture = nullptr;
-  IDirect3DTexture9 *m_pMadvrUnderTexture = nullptr;
-  IDirect3DTexture9 *m_pMadvrOverTexture = nullptr;
-  IDirect3DVertexBuffer9* m_pMadvrVertexBuffer = nullptr;
+  Com::SmartPtr<IDirect3DTexture9> m_pKodiUnderTexture = nullptr;
+  Com::SmartPtr<IDirect3DTexture9> m_pKodiOverTexture = nullptr;
+  Com::SmartPtr<IDirect3DTexture9> m_pMadvrUnderTexture = nullptr;
+  Com::SmartPtr<IDirect3DTexture9> m_pMadvrOverTexture = nullptr;
+  Com::SmartPtr<IDirect3DVertexBuffer9> m_pMadvrVertexBuffer = nullptr;
   HANDLE m_pSharedUnderHandle = nullptr;
   HANDLE m_pSharedOverHandle = nullptr;
 

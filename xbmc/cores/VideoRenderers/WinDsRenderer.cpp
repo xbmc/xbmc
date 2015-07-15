@@ -37,6 +37,7 @@
 #include "IPaintCallback.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
+#include "MadvrCallback.h"
 
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false), m_paintCallback(NULL)
@@ -165,7 +166,8 @@ void CWinDsRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   CSingleLock lock(g_graphicsContext);
 
-  ManageDisplay();
+  if (!CMadvrCallback::Get()->UsingMadvr()) 
+    ManageDisplay();
 
   Render(flags);
 }
@@ -174,7 +176,8 @@ void CWinDsRenderer::Flush()
 {
   PreInit();
   SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
-  ManageDisplay();
+  if (!CMadvrCallback::Get()->UsingMadvr())
+    ManageDisplay();
 
   m_bConfigured = true;
 }

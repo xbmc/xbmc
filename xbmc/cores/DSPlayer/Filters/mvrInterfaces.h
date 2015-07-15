@@ -1,11 +1,12 @@
 // ***************************************************************
-//  mvrInterfaces.h           version: 1.0.7  ·  date: 2014-01-18
+//  mvrInterfaces.h           version: 1.0.8  ·  date: 2015-06-21
 //  -------------------------------------------------------------
 //  various interfaces exported by madVR
 //  -------------------------------------------------------------
-//  Copyright (C) 2011 - 2014 www.madshi.net, BSD license
+//  Copyright (C) 2011 - 2015 www.madshi.net, BSD license
 // ***************************************************************
 
+// 2015-06-21 1.0.8 added IMadVRCommand
 // 2014-01-18 1.0.7 added IMadVRSettings2
 // 2013-06-04 1.0.6 added IMadVRInfo
 // 2013-01-23 1.0.5 added IMadVRSubclassReplacement
@@ -56,6 +57,11 @@ DEFINE_GUID(CLSID_madVR, 0xe1a8b82a, 0x32ce, 0x4b0d, 0xbe, 0x0d, 0xaa, 0x68, 0xc
 // if you want the mouse message to be "eaten" (instead of passed on)
 typedef void (__stdcall *OSDMOUSECALLBACK)(LPCSTR name, LPVOID context, UINT message, WPARAM wParam, int posX, int posY);
 
+// return values for IOsdRenderCallback::ClearBackground/RenderOsd callbacks
+const static HRESULT CALLBACK_EMPTY          = 4306;   // the render callback didn't do anything at all
+const static HRESULT CALLBACK_INFO_DISPLAY   = 0;      // info display, doesn't need low latency
+const static HRESULT CALLBACK_USER_INTERFACE = 77001;  // user interface, switches madVR into low latency mode
+
 // when using the (2) render callbacks method, you need to provide
 // madVR with an instance of the IOsdRenderCallback interface
 // it contains three callbacks you have to provide
@@ -73,9 +79,15 @@ interface IOsdRenderCallback : public IUnknown
   // fullOutputRect  = (0, 0, outputSurfaceWidth, outputSurfaceHeight)
   // activeVideoRect = active video rendering rect inside of fullOutputRect
   // background area = the part of fullOutputRect which isn't covered by activeVideoRect
+  // possible return values: CALLBACK_EMPTY etc, see definitions above
   STDMETHOD(ClearBackground)(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect) = 0;
   STDMETHOD(RenderOsd      )(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect) = 0;
 };
+
+// flags for IMadVROsdServices::OsdSetBitmap
+const static int BITMAP_STRETCH_TO_OUTPUT = 1;  // stretch OSD bitmap to video/output rect
+const static int BITMAP_INFO_DISPLAY      = 2;  // info display, doesn't need low latency
+const static int BITMAP_USER_INTERFACE    = 4;  // user interface, switches madVR into low latency mode
 
 // this is the main interface which madVR provides to you
 [uuid("3AE03A88-F613-4BBA-AD3E-EE236976BF9A")]
@@ -92,7 +104,7 @@ interface IMadVROsdServices : public IUnknown
     bool posRelativeToVideoRect = false,   // draw relative to TRUE: the active video rect; FALSE: the full output rect
     int zOrder = 0,                        // high zOrder OSD elements are drawn on top of those with smaller zOrder values
     DWORD duration = 0,                    // how many milliseconds shall the OSD element be shown (0 = infinite)?
-    DWORD flags = 0,                       // 0x00000001 = stretch OSD bitmap to video/output rect
+    DWORD flags = 0,                       // see definitions above
     OSDMOUSECALLBACK callback = NULL,      // optional callback for mouse events
     LPVOID callbackContext = NULL,         // this context is passed to the callback
     LPVOID reserved = NULL                 // undefined - set to NULL
@@ -165,33 +177,6 @@ interface IMadVRSubclassReplacement : public IUnknown
 };
 
 // ---------------------------------------------------------------------------
-// IMadVRSeekbarControl
-// ---------------------------------------------------------------------------
-
-// if you draw your own seekbar and absolutely insist on disliking madVR's
-// own seekbar, you can forcefully hide it by using this interface
-// using this interface only affects the current madVR instance
-
-[uuid("D2D3A520-7CFA-46EB-BA3B-6194A028781C")]
-interface IMadVRSeekbarControl : public IUnknown
-{
-  STDMETHOD(DisableSeekbar)(BOOL disable) = 0;
-};
-
-// ---------------------------------------------------------------------------
-// IMadVRExclusiveModeControl
-// ---------------------------------------------------------------------------
-
-// you can use this interface to turn madVR's automatic exclusive mode on/off
-// using this interface only affects the current madVR instance
-
-[uuid("88A69329-3CD3-47D6-ADEF-89FA23AFC7F3")]
-interface IMadVRExclusiveModeControl : public IUnknown
-{
-  STDMETHOD(DisableExclusiveMode)(BOOL disable) = 0;
-};
-
-// ---------------------------------------------------------------------------
 // IMadVRExclusiveModeCallback
 // ---------------------------------------------------------------------------
 
@@ -208,36 +193,6 @@ interface IMadVRExclusiveModeCallback : public IUnknown
 {
   STDMETHOD(  Register)(EXCLUSIVEMODECALLBACK exclusiveModeCallback, LPVOID context) = 0;
   STDMETHOD(Unregister)(EXCLUSIVEMODECALLBACK exclusiveModeCallback, LPVOID context) = 0;
-};
-
-// ---------------------------------------------------------------------------
-// IMadVRDirect3D9Manager
-// ---------------------------------------------------------------------------
-
-// You can make madVR use your Direct3D9 device(s) instead of creating its
-// own. If you do that, madVR will not automatically switch between
-// fullscreen and windowed mode, anymore. It's your duty then to enter
-// fullscreen exclusive mode, if you want madVR to use it. madVR will still
-// reset the devices, though, if necessary (lost device etc).
-
-[uuid("1CAEE23B-D14B-4DB4-8AEA-F3528CB78922")]
-interface IMadVRDirect3D9Manager : public IUnknown
-{
-  // Creating 3 different devices for scanline reading, rendering and
-  // presentation can improve overall performance. If you don't like that
-  // idea, just feed madVR with the same device for all tasks.
-  // You can't create new devices if one device is already in fullscreen
-  // exclusive mode. So if you want to provide madVR with 3 different
-  // devices, while still using exclusive mode, make sure you create the
-  // scanline reading and rendering devices before setting the presentation
-  // device to fullscreen exclusive mode.
-  STDMETHOD(UseTheseDevices)(LPDIRECT3DDEVICE9 scanlineReading, LPDIRECT3DDEVICE9 rendering, LPDIRECT3DDEVICE9 presentation) = 0;
-
-  // madVR contains a display mode changer which, depending on the video
-  // size and frame rate, may decide to switch display modes. If you don't
-  // want madVR to change either resolution or refresh rates, you can
-  // disable this functionality partially or completely.
-  STDMETHOD(ConfigureDisplayModeChanger)(BOOL allowResolutionChanges, BOOL allowRefreshRateChanges) = 0;
 };
 
 // ---------------------------------------------------------------------------
@@ -297,6 +252,35 @@ interface IMadVRInfo : public IUnknown
 // dxvaScalingActive,       bool,      is DXVA2 scaling       being used at the moment?
 // ivtcActive,              bool,      is madVR's IVTC algorithm active at the moment?
 // osdLatency,              int,       how much milliseconds will pass for an OSD change to become visible?
+
+// ---------------------------------------------------------------------------
+// IMadVRCommand
+// ---------------------------------------------------------------------------
+
+// This interface allows you to give commands to madVR. These commands only
+// affect the current madVR instance. They don't change permanent settings.
+
+[uuid("5E9599D1-C5DB-4A84-98A9-09BC5F8F1B79")]
+interface IMadVRCommand : public IUnknown
+{
+  // Command names and LPWSTR values are treated case insensitive.
+  STDMETHOD(SendCommand         )(LPCSTR command) = 0;
+  STDMETHOD(SendCommandBool     )(LPCSTR command, bool      parameter) = 0;
+  STDMETHOD(SendCommandInt      )(LPCSTR command, int       parameter) = 0;
+  STDMETHOD(SendCommandSize     )(LPCSTR command, SIZE      parameter) = 0;
+  STDMETHOD(SendCommandRect     )(LPCSTR command, RECT      parameter) = 0;
+  STDMETHOD(SendCommandUlonglong)(LPCSTR command, ULONGLONG parameter) = 0;
+  STDMETHOD(SendCommandDouble   )(LPCSTR command, double    parameter) = 0;
+  STDMETHOD(SendCommandString   )(LPCSTR command, LPWSTR    parameter) = 0;
+  STDMETHOD(SendCommandBin      )(LPCSTR command, LPVOID    parameter,
+                                                  int       size     ) = 0;
+};
+
+// available commands:
+// -------------------
+// disableSeekbar,          bool,      turn madVR's automatic exclusive mode on/off
+// disableExclusiveMode,    bool,      turn madVR's automatic exclusive mode on/off
+// restoreDisplayModeNow,              makes madVR immediately restore the original display mode
 
 // ---------------------------------------------------------------------------
 // IMadVRSettings
@@ -444,10 +428,6 @@ interface IMadVRSettings2 : public IMadVRSettings
 //       currentGammaCurve,         current gamma curve,                                                string,  pure power curve|BT.709/601 curve
 //       currentGammaValue,         current gamma value,                                                string,  1.80|1.85|1.90|1.95|2.00|2.05|2.10|2.15|2.20|2.25|2.30|2.35|2.40|2.45|2.50|2.55|2.60|2.65|2.70|2.75|2.80
 // processing, processing
-//   decoding, processing
-//     decodeH264,                  decode h264,                                                        string,  disable|libav|intel|hardware
-//     decodeVc1,                   decode VC-1,                                                        string,  disable|libav|intel|hardware
-//     decodeMpeg2,                 decode MPEG2,                                                       string,  disable|libav|intel|hardware
 //   deinterlacing, deinterlacing
 //     autoActivateDeinterlacing,   automatically activate deinterlacing when needed,                   boolean
 //     ifInDoubtDeinterlace,        if in doubt, activate deinterlacing,                                boolean
@@ -486,7 +466,6 @@ interface IMadVRSettings2 : public IMadVRSettings
 //     lumaDownLinear,              downscale luma in linear light,                                     boolean
 // rendering, rendering
 //   basicRendering, general settings
-//     managedUpload,               use managed upload textures (XP only),                              boolean
 //     uploadInRenderThread,        upload frames in render thread,                                     boolean
 //     delayPlaybackStart2,         delay playback start until render queue is full,                    boolean
 //     delaySeek,                   delay playback start after seeking, too,                            boolean
@@ -494,7 +473,6 @@ interface IMadVRSettings2 : public IMadVRSettings
 //     enableExclusive,             enable automatic fullscreen exclusive mode,                         boolean
 //     disableAero,                 disable desktop composition (Vista and newer),                      boolean
 //     disableAeroCfg,              disable desktop composition configuration,                          string,  during exclusive - windowed mode switch|while madVR is in exclusive mode|while media player is in fullscreen mode|always
-//     splitNv12ViaOpenCL,          use OpenCL to process DXVA NV12 surfaces (Intel, AMD),              boolean
 //     separateDevice,              use a separate device for presentation (Vista and newer),           boolean
 //     useD3d11,                    use D3D11 for presentation,                                         boolean
 //     dxvaDevice,                  use separate device for DXVA processing (Vista and newer),          boolean
@@ -513,8 +491,6 @@ interface IMadVRSettings2 : public IMadVRSettings
 //     exclusiveDelay,              delay switch to exclusive mode by 3 seconds,                        boolean
 //     oldExclusivePath,            use old fse rendering path,                                         boolean
 //     presentThread,               run presentation in a separate thread,                              boolean
-//     avoidGlitches,               limit rendering times to avoid glitches,                            boolean
-//     overshootMaxLatency,         overshoot max frame latency (Vista and newer),                      boolean
 //     preRenderFrames,             no of pre-presented frames,                                         integer, 1..16
 //     backbufferCountExcl,         no of backbuffers,                                                  integer, 1..8
 //     flushAfterRenderStepsExcl,   after render steps,                                                 string,  don''t flush|flush|flush & wait (sleep)|flush & wait (loop)
@@ -531,12 +507,13 @@ interface IMadVRSettings2 : public IMadVRSettings
 //     dynamicDither,               change dither for every frame,                                      boolean
 //   tradeQuality, trade quality for performance
 //     fastSubtitles,               optimize subtitles for performance instead of quality,              boolean
+//     dxvaChromaWhenDecode,        use DXVA chroma upscaling when doing native DXVA decoding           boolean
+//     dxvaChromaWhenDeint,         use DXVA chroma upscaling when doing DXVA deinterlacing             boolean
+//     mayLoseBtb,                  lose BTB and WTW if it improves performance                         boolean
 //     customShaders16f,            store custom pixel shader results in 16bit buffer instead of 32bit, boolean
 //     gammaDithering,              don't use linear light for dithering,                               boolean
 //     noGradientAngles,            don't analyze gradient angles for debanding,                        boolean
 //     dontRerenderFades,           don't rerender frames when fade in/out is detected,                 boolean
-//     noDeintCopyback,             don't use "copyback" for DXVA deinterlacing,                        boolean
-//     noDecodeCopyback,            don't use "copyback" for DXVA decoding,                             boolean
 //     gammaBlending,               don't use linear light for smooth motion frame blending,            boolean
 //     10bitChroma,                 use 10bit chroma buffer instead of 16bit,                           boolean
 //     10bitLuma,                   use 10bit image buffer instead of 16bit,                            boolean
@@ -633,6 +610,7 @@ interface IMadVRSettings2 : public IMadVRSettings
 //     keyDisplayModeChanger,       display mode switcher - toggle on/off,                              string
 //     keyDisplayBitdepth,          display bitdepth - toggle,                                          string
 //     keyDithering,                dithering - toggle on/off,                                          string
+//     key3dlutSplitScreen,         3dlut split screen - toggle on,                                     string
 
 // profile settings: id, name, type, valid values
 // ----------------------------------------------
@@ -723,6 +701,48 @@ interface IMadVRExclusiveModeInfo : public IUnknown
 interface IMadVRRefreshRateInfo : public IUnknown
 {
   STDMETHOD(GetRefreshRate)(double *refreshRate) = 0;
+};
+
+// ---------------------------------------------------------------------------
+// IMadVRSeekbarControl (obsolete)
+// ---------------------------------------------------------------------------
+
+// CAUTION: This interface is obsolete. Use IMadVRCommand instead:
+// IMadVRCommand::SendCommandBool("disableSeekbar", true)
+
+[uuid("D2D3A520-7CFA-46EB-BA3B-6194A028781C")]
+interface IMadVRSeekbarControl : public IUnknown
+{
+  STDMETHOD(DisableSeekbar)(BOOL disable) = 0;
+};
+
+// ---------------------------------------------------------------------------
+// IMadVRExclusiveModeControl (obsolete)
+// ---------------------------------------------------------------------------
+
+// CAUTION: This interface is obsolete. Use IMadVRCommand instead:
+// IMadVRCommand::SendCommandBool("disableExclusiveMode", true)
+
+[uuid("88A69329-3CD3-47D6-ADEF-89FA23AFC7F3")]
+interface IMadVRExclusiveModeControl : public IUnknown
+{
+  STDMETHOD(DisableExclusiveMode)(BOOL disable) = 0;
+};
+
+// ---------------------------------------------------------------------------
+// IMadVRDirect3D9Manager (obsolete)
+// ---------------------------------------------------------------------------
+
+// CAUTION: This interface is obsolete. Instead use texture/surface sharing,
+// so that both media player and madVR can render to their own devices. You
+// can then blend the media player's GUI on top of madVR's rendered video
+// frames in madVR's OSD callback function.
+
+[uuid("1CAEE23B-D14B-4DB4-8AEA-F3528CB78922")]
+interface IMadVRDirect3D9Manager : public IUnknown
+{
+  STDMETHOD(UseTheseDevices)(LPDIRECT3DDEVICE9 scanlineReading, LPDIRECT3DDEVICE9 rendering, LPDIRECT3DDEVICE9 presentation) = 0;
+  STDMETHOD(ConfigureDisplayModeChanger)(BOOL allowResolutionChanges, BOOL allowRefreshRateChanges) = 0;
 };
 
 // ---------------------------------------------------------------------------

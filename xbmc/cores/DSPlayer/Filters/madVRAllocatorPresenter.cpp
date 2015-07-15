@@ -73,8 +73,13 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
     ((CSubRenderCallback*)(ISubRenderCallback2*)m_pSRCB)->SetDXRAP(nullptr);
   }
 
+  // Unregister madVR Exclusive Callback
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Unregister(m_exclusiveCallback, this);
+
+  // Let's madVR restore original display mode (when adjust refresh it's handled by madVR)
+  if (Com::SmartQIPtr<IMadVRCommand> pMadVrCmd = m_pDXR)
+    pMadVrCmd->SendCommand("restoreDisplayModeNow");
 
   g_renderManager.UnInit();
   
@@ -146,8 +151,8 @@ void CmadVRAllocatorPresenter::ExclusiveCallback(LPVOID context, int event)
 void CmadVRAllocatorPresenter::ConfigureMadvr()
 {
 
-  if (Com::SmartQIPtr<IMadVRSeekbarControl> pMadVrSeek = m_pDXR)
-    pMadVrSeek->DisableSeekbar(true);
+  if (Com::SmartQIPtr<IMadVRCommand> pMadVrCmd = m_pDXR)
+    pMadVrCmd->SendCommandBool("disableSeekbar", true);
 
   if (Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR)
     pMadvrSettings->SettingsSetBoolean(L"delayPlaybackStart2", CSettings::Get().GetBool("dsplayer.delaymadvrplayback"));
@@ -165,8 +170,8 @@ void CmadVRAllocatorPresenter::ConfigureMadvr()
   }
   else
   {
-    if (Com::SmartQIPtr<IMadVRExclusiveModeControl> pMadVrEx = m_pDXR)
-      pMadVrEx->DisableExclusiveMode(true);
+    if (Com::SmartQIPtr<IMadVRCommand> pMadVrCmd = m_pDXR)
+      pMadVrCmd->SendCommandBool("disableExclusiveMode", true);
   }
 }
 
@@ -185,15 +190,15 @@ bool CmadVRAllocatorPresenter::IsCurrentThreadId()
 
 STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
 {
-  if (!g_graphicsContext.IsFullScreenVideo() && CMadvrCallback::Get()->GetRenderOnMadvr())
-    m_pMadvrShared->RenderMadvr(RENDER_LAYER_UNDER, fullOutputRect->right - fullOutputRect->left, fullOutputRect->bottom - fullOutputRect->top);
-
-  return S_OK;
+  if (!g_graphicsContext.IsFullScreenVideo())
+    return m_pMadvrShared->RenderMadvr(RENDER_LAYER_UNDER, fullOutputRect->right - fullOutputRect->left, fullOutputRect->bottom - fullOutputRect->top);
+  else
+    return CALLBACK_EMPTY;
 }
 
 STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
 {
-  return S_OK;
+  return m_pMadvrShared->RenderMadvr(RENDER_LAYER_OVER, fullOutputRect->right - fullOutputRect->left, fullOutputRect->bottom - fullOutputRect->top);
 }
 
 STDMETHODIMP CmadVRAllocatorPresenter::SetDeviceOsd(IDirect3DDevice9* pD3DDev)
@@ -288,9 +293,6 @@ HRESULT CmadVRAllocatorPresenter::Render( REFERENCE_TIME rtStart, REFERENCE_TIME
   }
 
   AlphaBltSubPic(Com::SmartSize(width, height));
-
-  if (CMadvrCallback::Get()->GetRenderOnMadvr())
-    m_pMadvrShared->RenderMadvr(RENDER_LAYER_OVER, width, height);
 
   return S_OK;
 }
