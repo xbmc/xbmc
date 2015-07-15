@@ -513,6 +513,8 @@ bool CRenderSystemDX::CreateDevice()
   {
     D3D_FEATURE_LEVEL_11_1,
     D3D_FEATURE_LEVEL_11_0,
+    D3D_FEATURE_LEVEL_10_1,
+    D3D_FEATURE_LEVEL_10_0,
     D3D_FEATURE_LEVEL_9_3,
     D3D_FEATURE_LEVEL_9_2,
     D3D_FEATURE_LEVEL_9_1,
@@ -530,18 +532,23 @@ bool CRenderSystemDX::CreateDevice()
 
   if (FAILED(hr))
   {
+    // DirectX 11.0 platforms will not recognize D3D_FEATURE_LEVEL_11_1 so we need to retry without it
     CLog::Log(LOGDEBUG, "%s - First try to create device failed with error: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
+    CLog::Log(LOGDEBUG, "%s - Trying to create device with lowest feature level: %#x.", __FUNCTION__, featureLevels[1]);
 
-    for (int i = 1; i < ARRAYSIZE(featureLevels); i++)
+    hr = D3D11CreateDevice(m_adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, createDeviceFlags, &featureLevels[1], ARRAYSIZE(featureLevels) - 1,
+                           D3D11_SDK_VERSION, &m_pD3DDev, &m_featureLevel, &m_pImdContext);
+    if (FAILED(hr))
     {
-      CLog::Log(LOGDEBUG, "%s - Trying to create device with lowest feature level: %#x.", __FUNCTION__, featureLevels[i]);
-      // DirectX 11.0 platforms will not recognize D3D_FEATURE_LEVEL_11_1 so we need to retry without it
-      hr = D3D11CreateDevice(m_adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, createDeviceFlags, &featureLevels[i], ARRAYSIZE(featureLevels) - i,
+      // still failed. seems driver doesn't support video API acceleration, try without VIDEO_SUPPORT flag
+      CLog::Log(LOGDEBUG, "%s - Next try to create device failed with error: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
+      CLog::Log(LOGDEBUG, "%s - Trying to create device without video API support.", __FUNCTION__);
+
+      createDeviceFlags &= ~D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
+      hr = D3D11CreateDevice(m_adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, createDeviceFlags, &featureLevels[1], ARRAYSIZE(featureLevels) - 1,
                              D3D11_SDK_VERSION, &m_pD3DDev, &m_featureLevel, &m_pImdContext);
       if (SUCCEEDED(hr))
-        break;
-
-      CLog::Log(LOGDEBUG, "%s - Next try to create device failed with error: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
+        CLog::Log(LOGNOTICE, "%s - Your video driver doesn't support DirectX 11 Video Acceleration API. Application is not be able to use hardware video processing and decoding", __FUNCTION__);
     }
   }
 
