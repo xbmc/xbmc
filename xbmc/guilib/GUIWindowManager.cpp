@@ -72,8 +72,6 @@
 #include "windows/GUIWindowStartup.h"
 #include "video/windows/GUIWindowFullScreen.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
-#include "music/dialogs/GUIDialogMusicOverlay.h"
-#include "video/dialogs/GUIDialogVideoOverlay.h"
 
 
 // Dialog includes
@@ -298,8 +296,6 @@ void CGUIWindowManager::CreateWindows()
 #endif
 
   Add(new CGUIDialogVideoOSD);
-  Add(new CGUIDialogMusicOverlay);
-  Add(new CGUIDialogVideoOverlay);
   Add(new CGUIWindowScreensaver);
   Add(new CGUIWindowWeather);
   Add(new CGUIWindowStartup);
@@ -401,8 +397,6 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_SYSTEM_INFORMATION);
     Delete(WINDOW_SCREENSAVER);
     Delete(WINDOW_DIALOG_VIDEO_OSD);
-    Delete(WINDOW_DIALOG_MUSIC_OVERLAY);
-    Delete(WINDOW_DIALOG_VIDEO_OVERLAY);
     Delete(WINDOW_SLIDESHOW);
     Delete(WINDOW_ADDON_BROWSER);
     Delete(WINDOW_SKIN_SETTINGS);
@@ -966,14 +960,6 @@ bool CGUIWindowManager::OnAction(const CAction &action) const
         return false;
       }
       return true; // do nothing with the action until the anim is finished
-    }
-    // music or video overlay are handled as a special case, as they're modeless, but we allow
-    // clicking on them with the mouse.
-    if (action.IsMouse() && (dialog->GetID() == WINDOW_DIALOG_VIDEO_OVERLAY ||
-                             dialog->GetID() == WINDOW_DIALOG_MUSIC_OVERLAY))
-    {
-      if (dialog->OnAction(action))
-        return true;
     }
     lock.Enter();
     if (topMost > m_activeDialogs.size())

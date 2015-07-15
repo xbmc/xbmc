@@ -632,8 +632,6 @@ const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
 
 const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
                                   { "currentcolourtheme",SKIN_COLOUR_THEME },
-                                  {"hasvideooverlay",   SKIN_HAS_VIDEO_OVERLAY},
-                                  {"hasmusicoverlay",   SKIN_HAS_MUSIC_OVERLAY},
                                   {"aspectratio",       SKIN_ASPECT_RATIO}};
 
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
@@ -2464,14 +2462,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     g_sysinfo.GetInfo(condition);
     bReturn = g_sysinfo.HasInternet();
-  }
-  else if (condition == SKIN_HAS_VIDEO_OVERLAY)
-  {
-    bReturn = g_windowManager.IsOverlayAllowed() && g_application.m_pPlayer->IsPlayingVideo();
-  }
-  else if (condition == SKIN_HAS_MUSIC_OVERLAY)
-  {
-    bReturn = g_windowManager.IsOverlayAllowed() && g_application.m_pPlayer->IsPlayingAudio();
   }
   else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
   {

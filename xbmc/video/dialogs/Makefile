@@ -6,7 +6,6 @@ SRCS=GUIDialogAudioSubtitleSettings.cpp \
      GUIDialogVideoBookmarks.cpp \
      GUIDialogVideoInfo.cpp \
      GUIDialogVideoOSD.cpp \
-     GUIDialogVideoOverlay.cpp \
      GUIDialogVideoSettings.cpp \
 
 LIB=videodialogs.a

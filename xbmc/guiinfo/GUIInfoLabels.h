@@ -329,8 +329,6 @@
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
-#define SKIN_HAS_MUSIC_OVERLAY      602
-#define SKIN_HAS_VIDEO_OVERLAY      603
 #define SKIN_THEME                  604
 #define SKIN_COLOUR_THEME           605
 #define SKIN_HAS_THEME              606

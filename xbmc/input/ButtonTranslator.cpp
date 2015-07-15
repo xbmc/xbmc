@@ -389,8 +389,6 @@ static const ActionMapping windows[] =
     { "videoosd"                 , WINDOW_DIALOG_VIDEO_OSD },
     { "videomenu"                , WINDOW_VIDEO_MENU },
     { "videotimeseek"            , WINDOW_VIDEO_TIME_SEEK },
-    { "musicoverlay"             , WINDOW_DIALOG_MUSIC_OVERLAY },
-    { "videooverlay"             , WINDOW_DIALOG_VIDEO_OVERLAY },
     { "startwindow"              , WINDOW_START },
     { "startup"                  , WINDOW_STARTUP_ANIM },
     { "peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER },
