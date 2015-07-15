@@ -13413,7 +13413,22 @@ msgctxt "#25010"
 msgid "Chapter %u"
 msgstr ""
 
-#empty strings from id 25011 to 29799
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25011"
+msgid "Commercial"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25012"
+msgid "Auto-skip off"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+msgctxt "#25013"
+msgid "Auto-skip on"
+msgstr ""
+
+#empty strings from id 25014 to 29799
 #strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
 
 #: skin.confluence

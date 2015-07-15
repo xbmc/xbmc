@@ -226,6 +226,7 @@ public:
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
   virtual bool SeekScene(bool bPlus = true);
+  virtual void ToggleCommSkip();
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
   virtual float GetCachePercentage();
@@ -527,6 +528,7 @@ protected:
   CEvent m_ready;
 
   CEdl m_Edl;
+  bool m_SkipCommercials;
 
   struct SEdlAutoSkipMarkers {
 

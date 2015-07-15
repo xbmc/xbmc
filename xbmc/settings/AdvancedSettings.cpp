@@ -309,6 +309,8 @@ void CAdvancedSettings::Initialize()
   m_iEdlMaxStartGap = 5 * 60;              // 5 minutes.
   m_iEdlCommBreakAutowait = 0;             // Off by default
   m_iEdlCommBreakAutowind = 0;             // Off by default
+  m_bEdlCommAutoSkip = true;               // On by default
+  m_bEdlCommNotify = true;                 // On by default
 
   m_curlconnecttimeout = 10;
   m_curllowspeedtime = 20;
@@ -888,6 +890,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
     XMLUtils::GetInt(pElement, "commbreakautowait", m_iEdlCommBreakAutowait, 0, 10);        // Between 0 and 10 seconds
     XMLUtils::GetInt(pElement, "commbreakautowind", m_iEdlCommBreakAutowind, 0, 10);        // Between 0 and 10 seconds
+    XMLUtils::GetBoolean(pElement, "commautoskip", m_bEdlCommAutoSkip);
+    XMLUtils::GetBoolean(pElement, "commnotify", m_bEdlCommNotify);
   }
 
   // picture exclude regexps
