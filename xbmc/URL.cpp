@@ -32,7 +32,9 @@
 #include <sys\stat.h>
 #endif
 
-using namespace std;
+#include <string>
+#include <vector>
+
 using namespace ADDON;
 
 CURL::CURL(const std::string& strURL1)
@@ -552,7 +554,7 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
     CFileItemList items;
     XFILE::CStackDirectory dir;
     dir.GetDirectory(*this,items);
-    vector<std::string> newItems;
+    std::vector<std::string> newItems;
     for (int i=0;i<items.Size();++i)
     {
       CURL url(items[i]->GetPath());

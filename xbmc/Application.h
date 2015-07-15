@@ -27,6 +27,7 @@
 #include "utils/GlobalsHandling.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
 class CAction;

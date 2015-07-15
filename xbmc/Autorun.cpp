@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include <utility>
 
 #ifdef HAS_DVD_DRIVE
 #include <stdlib.h>
@@ -509,10 +510,10 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
 
 void CAutorun::SettingOptionAudioCdActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  list.push_back(make_pair(g_localizeStrings.Get(16018), AUTOCD_NONE));
-  list.push_back(make_pair(g_localizeStrings.Get(14098), AUTOCD_PLAY));
+  list.push_back(std::make_pair(g_localizeStrings.Get(16018), AUTOCD_NONE));
+  list.push_back(std::make_pair(g_localizeStrings.Get(14098), AUTOCD_PLAY));
 #ifdef HAS_CDDA_RIPPER
-  list.push_back(make_pair(g_localizeStrings.Get(14096), AUTOCD_RIP));
+  list.push_back(std::make_pair(g_localizeStrings.Get(14096), AUTOCD_RIP));
 #endif
 }
 

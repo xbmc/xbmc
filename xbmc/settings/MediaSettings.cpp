@@ -18,6 +18,8 @@
  *
  */
 
+#include <string>
+
 #include <limits.h>
 
 #include "MediaSettings.h"
@@ -37,8 +39,6 @@
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
-
-using namespace std;
 
 CMediaSettings::CMediaSettings()
 {

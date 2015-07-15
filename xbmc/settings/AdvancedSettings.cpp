@@ -18,6 +18,11 @@
  *
  */
 
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <utility>
+
 #include <limits.h>
 
 #include "system.h"
@@ -47,7 +52,6 @@
 
 using namespace ADDON;
 using namespace XFILE;
-using namespace std;
 
 CAdvancedSettings::CAdvancedSettings()
 {
@@ -973,7 +977,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         CLog::Log(LOGDEBUG,"  Registering substition pair:");
         CLog::Log(LOGDEBUG,"    From: [%s]", strFrom.c_str());
         CLog::Log(LOGDEBUG,"    To:   [%s]", strTo.c_str());
-        m_pathSubstitutions.push_back(make_pair(strFrom,strTo));
+        m_pathSubstitutions.push_back(std::make_pair(strFrom,strTo));
       }
       else
       {
@@ -1147,8 +1151,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (!seekSteps.empty())
   {
     m_seekSteps.clear();
-    std::vector<string> steps = StringUtils::Split(seekSteps, ',');
-    for(std::vector<string>::iterator it = steps.begin(); it != steps.end(); ++it)
+    std::vector<std::string> steps = StringUtils::Split(seekSteps, ',');
+    for(std::vector<std::string>::iterator it = steps.begin(); it != steps.end(); ++it)
       m_seekSteps.push_back(atoi((*it).c_str()));
   }
 
@@ -1281,8 +1285,8 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, std::str
     extensions += "|" + extraExtensions;
   if (XMLUtils::GetString(pRootElement, "remove", extraExtensions) && !extraExtensions.empty())
   {
-    vector<string> exts = StringUtils::Split(extraExtensions, '|');
-    for (vector<string>::const_iterator i = exts.begin(); i != exts.end(); ++i)
+    std::vector<std::string> exts = StringUtils::Split(extraExtensions, '|');
+    for (std::vector<std::string>::const_iterator i = exts.begin(); i != exts.end(); ++i)
     {
       size_t iPos = extensions.find(*i);
       if (iPos != std::string::npos)

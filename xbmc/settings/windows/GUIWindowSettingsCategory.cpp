@@ -18,6 +18,8 @@
  *
  */
 
+#include <string>
+
 #include "GUIWindowSettingsCategory.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -26,8 +28,6 @@
 #include "settings/Settings.h"
 #include "settings/lib/SettingSection.h"
 #include "view/ViewStateSettings.h"
-
-using namespace std;
 
 #define SETTINGS_PICTURES               WINDOW_SETTINGS_MYPICTURES - WINDOW_SETTINGS_START
 #define SETTINGS_PROGRAMS               WINDOW_SETTINGS_MYPROGRAMS - WINDOW_SETTINGS_START
@@ -43,7 +43,7 @@ using namespace std;
 
 typedef struct {
   int id;
-  string name;
+  std::string name;
 } SettingGroup;
 
 static const SettingGroup s_settingGroupMap[] = { { SETTINGS_PICTURES,    "pictures" },

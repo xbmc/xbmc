@@ -26,7 +26,6 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 
-using namespace std;
 using namespace VIDEO;
 
 #ifndef __GNUC__

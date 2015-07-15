@@ -59,8 +59,10 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
-#include <memory>
+#include <algorithm>
 #include <functional>
+#include <iterator>
+#include <memory>
 #include "cores/DataCacheCore.h"
 #include "guiinfo/GUIInfoLabels.h"
 
@@ -99,7 +101,6 @@ static CLinuxResourceCounter m_resourceCounter;
 
 #define SYSHEATUPDATEINTERVAL 60000
 
-using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace ADDON;
@@ -775,7 +776,7 @@ unsigned int CGUIInfoManager::Property::num_params() const
   return params.size();
 }
 
-void CGUIInfoManager::SplitInfoString(const std::string &infoString, vector<Property> &info)
+void CGUIInfoManager::SplitInfoString(const std::string &infoString, std::vector<Property> &info)
 {
   // our string is of the form:
   // category[(params)][.info(params).info2(params)] ...
@@ -842,7 +843,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
   std::string strTest = strCondition;
   StringUtils::Trim(strTest);
 
-  vector< Property> info;
+  std::vector< Property> info;
   SplitInfoString(strTest, info);
 
   if (info.empty())
@@ -2002,14 +2003,14 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case NETWORK_DNS1_ADDRESS:
     {
-      vector<std::string> nss = g_application.getNetwork().GetNameServers();
+      std::vector<std::string> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
         return nss[0];
     }
     break;
   case NETWORK_DNS2_ADDRESS:
     {
-      vector<std::string> nss = g_application.getNetwork().GetNameServers();
+      std::vector<std::string> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
         return nss[1];
     }
@@ -2222,7 +2223,7 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
 
   CSingleLock lock(m_critInfo);
   // do we have the boolean expression already registered?
-  vector<InfoPtr>::const_iterator i = find_if(m_bools.begin(), m_bools.end(), InfoBoolFinder(condition, context));
+  std::vector<InfoPtr>::const_iterator i = std::find_if(m_bools.begin(), m_bools.end(), InfoBoolFinder(condition, context));
   if (i != m_bools.end())
     return *i;
 
@@ -2485,7 +2486,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
     {
-      map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());
+      std::map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());
       if (it != m_containerMoves.end())
       {
         if (condition > CONTAINER_STATIC) // moving up
@@ -2958,7 +2959,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case CONTAINER_MOVE_NEXT:
       case CONTAINER_SCROLL_NEXT:
         {
-          map<int,int>::const_iterator it = m_containerMoves.find(info.GetData1());
+          std::map<int,int>::const_iterator it = m_containerMoves.find(info.GetData1());
           if (it != m_containerMoves.end())
           {
             if (condition > CONTAINER_STATIC) // moving up
@@ -4286,7 +4287,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   m_currentMovieThumb = item.GetArt("thumb");
 }
 
-string CGUIInfoManager::GetSystemHeatInfo(int info)
+std::string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
   if (CTimeUtils::GetFrameTime() - m_lastSysHeatInfoTime >= SYSHEATUPDATEINTERVAL)
   { // update our variables
@@ -4383,14 +4384,14 @@ void CGUIInfoManager::Clear()
     will remove those bools that are no longer dependencies of other bools
     in the vector.
    */
-  vector<InfoPtr>::iterator i = remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
+  std::vector<InfoPtr>::iterator i = std::remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
   while (i != m_bools.end())
   {
     m_bools.erase(i, m_bools.end());
-    i = remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
+    i = std::remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
   }
   // log which ones are used - they should all be gone by now
-  for (vector<InfoPtr>::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+  for (std::vector<InfoPtr>::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
     CLog::Log(LOGDEBUG, "Infobool '%s' still used by %u instances", (*i)->GetExpression().c_str(), (unsigned int) i->use_count());
 }
 
@@ -4462,9 +4463,9 @@ int CGUIInfoManager::ConditionalStringParameter(const std::string &parameter, bo
   // check to see if we have this parameter already
   if (caseSensitive)
   {
-    vector<string>::const_iterator i = find(m_stringParameters.begin(), m_stringParameters.end(), parameter);
+    std::vector<std::string>::const_iterator i = std::find(m_stringParameters.begin(), m_stringParameters.end(), parameter);
     if (i != m_stringParameters.end())
-      return (int)distance<vector<string>::const_iterator>(m_stringParameters.begin(), i);
+      return (int)std::distance<std::vector<std::string>::const_iterator>(m_stringParameters.begin(), i);
   }
   else
   {
@@ -5525,7 +5526,7 @@ void CGUIInfoManager::ResetCache()
   m_containerMoves.clear();
   // mark our infobools as dirty
   CSingleLock lock(m_critInfo);
-  for (vector<InfoPtr>::iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+  for (std::vector<InfoPtr>::iterator i = m_bools.begin(); i != m_bools.end(); ++i)
     (*i)->SetDirty();
 }
 
@@ -5815,7 +5816,7 @@ int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString* info)
 
 int CGUIInfoManager::TranslateSkinVariableString(const std::string& name, int context)
 {
-  for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
+  for (std::vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
        it != m_skinVariableStrings.end(); ++it)
   {
     if (StringUtils::EqualsNoCase(it->GetName(), name) && it->GetContext() == context)

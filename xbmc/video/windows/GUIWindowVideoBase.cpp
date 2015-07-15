@@ -64,7 +64,6 @@
 #include "utils/GroupUtils.h"
 #include "TextureDatabase.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
@@ -548,11 +547,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       std::string strPath=item->GetPath();
       if (item->IsVideoDb() || fromDB)
       {
-        vector<string> paths;
+        std::vector<std::string> paths;
         if (item->GetVideoInfoTag()->m_type == "tvshow" && pDlgInfo->RefreshAll() &&
             m_database.GetPathsLinkedToTvShow(item->GetVideoInfoTag()->m_iDbId, paths))
         {
-          for (vector<string>::const_iterator i = paths.begin(); i != paths.end(); ++i)
+          for (std::vector<std::string>::const_iterator i = paths.begin(); i != paths.end(); ++i)
           {
             CFileItemPtr newItem(new CFileItem(*item->GetVideoInfoTag()));
             newItem->SetPath(*i);
@@ -756,7 +755,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     // just an item
     if (pItem->IsPlayList())
     {
-      unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
+      std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
       if (pPlayList.get())
       {
         // load it
@@ -1064,7 +1063,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         if (URIUtils::IsStack(path))
         {
-          vector<int> times;
+          std::vector<int> times;
           if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
@@ -1173,7 +1172,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     {
       if (selectedFile > 1)
       {
-        vector<int> times;
+        std::vector<int> times;
         if (m_database.GetStackTimes(path,times))
           stack->m_lStartOffset = times[selectedFile-2]*75; // wtf?
       }
@@ -1373,7 +1372,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
           CDirectory::GetDirectory(dir, items);
           items.Sort(SortByFile, SortOrderAscending);
 
-          vector<int> stack;
+          std::vector<int> stack;
           for (int i = 0; i < items.Size(); ++i)
           {
             if (URIUtils::HasExtension(items[i]->GetPath(), ext))
@@ -1479,7 +1478,7 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
 
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
+  std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if (pPlayList.get())
   {
     // load it

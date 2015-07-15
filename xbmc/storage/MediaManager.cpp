@@ -31,6 +31,8 @@
 #ifdef HAS_DVD_DRIVE
 #ifndef TARGET_WINDOWS
 // TODO: switch all ports to use auto sources
+#include <map>
+#include <utility>
 #include "DetectDVDType.h"
 #include "filesystem/iso9660.h"
 #endif
@@ -65,7 +67,9 @@
 #include "windows/Win32StorageProvider.h"
 #endif
 
-using namespace std;
+#include <string>
+#include <vector>
+
 using namespace XFILE;
 
 #ifdef HAS_DVD_DRIVE
@@ -158,7 +162,7 @@ bool CMediaManager::SaveSources()
   TiXmlNode *pNetworkNode = pRoot->InsertEndChild(networkNode);
   if (pNetworkNode)
   {
-    for (vector<CNetworkLocation>::iterator it = m_locations.begin(); it != m_locations.end(); ++it)
+    for (std::vector<CNetworkLocation>::iterator it = m_locations.begin(); it != m_locations.end(); ++it)
     {
       TiXmlElement locationNode("location");
       locationNode.SetAttribute("id", (*it).id);

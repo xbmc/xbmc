@@ -22,10 +22,6 @@
 #include "WMIInterface.h"
 #include "../Util.h"
 
-using namespace std;
-
-
-
 CWIN32Wmi::CWIN32Wmi(void)
 {
   bconnected = false;

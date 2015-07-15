@@ -54,7 +54,6 @@
 
 extern HWND g_hWnd;
 
-using namespace std;
 using namespace MEDIA_DETECT;
 
 CWIN32Util::CWIN32Util(void)
@@ -338,7 +337,7 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
 
 std::vector<std::string> CWIN32Util::GetDiskUsage()
 {
-  vector<std::string> result;
+  std::vector<std::string> result;
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 

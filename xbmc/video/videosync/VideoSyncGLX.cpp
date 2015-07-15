@@ -32,8 +32,6 @@
 #include "utils/TimeUtils.h"
 #include <string>
 
-using namespace std;
-
 Display* CVideoSyncGLX::m_Dpy = NULL;
 
 void CVideoSyncGLX::OnLostDevice()
@@ -102,8 +100,8 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
   }
 
   bool          ExtensionFound = false;
-  istringstream Extensions(glXQueryExtensionsString(m_Dpy, g_Windowing.GetCurrentScreen()));
-  string        ExtensionStr;
+  std::istringstream Extensions(glXQueryExtensionsString(m_Dpy, g_Windowing.GetCurrentScreen()));
+  std::string        ExtensionStr;
 
   while (!ExtensionFound)
   {

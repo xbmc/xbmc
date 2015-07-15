@@ -43,6 +43,8 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include <string>
+#include <vector>
 
 #define SETTING_AUDIO_VOLUME                   "audio.volume"
 #define SETTING_AUDIO_VOLUME_AMPLIFICATION     "audio.volumeamplification"
@@ -57,8 +59,6 @@
 #define SETTING_SUBTITLE_BROWSER               "subtitles.browser"
 
 #define SETTING_AUDIO_MAKE_DEFAULT             "audio.makedefault"
-
-using namespace std;
 
 CGUIDialogAudioSubtitleSettings::CGUIDialogAudioSubtitleSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "VideoOSDSettings.xml"),
