@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<node order="3" type="filter">
+	<label>C</label>
+	<content>artists</content>
+	<rule field="artist" operator="startswith">
+		<value>C</value>
+	</rule>
+</node>
