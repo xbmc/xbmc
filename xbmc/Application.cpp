@@ -1712,13 +1712,6 @@ bool CApplication::LoadSkin(const SkinPtr& skin)
   if (g_SkinInfo->HasSkinFile("DialogFullScreenInfo.xml"))
     g_windowManager.Add(new CGUIDialogFullScreenInfo);
 
-  { // we can't register visible condition in dialog's ctor because infomanager is cleared when unloading skin
-    CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OVERLAY);
-    if (overlay) overlay->SetVisibleCondition("skin.hasvideooverlay");
-    overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OVERLAY);
-    if (overlay) overlay->SetVisibleCondition("skin.hasmusicoverlay");
-  }
-
   CLog::Log(LOGINFO, "  skin loaded...");
 
   // leave the graphics lock
@@ -1878,18 +1871,7 @@ bool CApplication::RenderNoPresent()
 //  g_graphicsContext.AcquireCurrentContext();
 
   g_graphicsContext.Lock();
-
-  // dont show GUI when playing full screen video
-  if (g_graphicsContext.IsFullScreenVideo())
-  {
-    // close window overlays
-    CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OVERLAY);
-    if (overlay) overlay->Close(true);
-    overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OVERLAY);
-    if (overlay) overlay->Close(true);
-
-  }
-
+  
   bool hasRendered = g_windowManager.Render();
 
   g_graphicsContext.Unlock();
