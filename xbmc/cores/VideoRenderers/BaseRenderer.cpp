@@ -620,7 +620,7 @@ void CBaseRenderer::ManageDisplay()
 
 void CBaseRenderer::SetViewMode(int viewMode)
 {
-  if (viewMode < ViewModeNormal || viewMode > ViewModeCustom)
+  if (viewMode < ViewModeNormal || viewMode > ViewModeStretch16x9Nonlin)
     viewMode = ViewModeNormal;
 
   CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = viewMode;
