@@ -32,7 +32,6 @@
 #undef BOOL
 
 using namespace KODI::MESSAGING;
-//dummy edit, jenkins doesn't seem to fetch latest
 
 void SendKeyboardText(const char *text)
 {
