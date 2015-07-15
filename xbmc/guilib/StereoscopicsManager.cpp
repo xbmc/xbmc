@@ -27,7 +27,7 @@
 #include "StereoscopicsManager.h"
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIInfoManager.h"
@@ -46,6 +46,7 @@
 #include "windowing/WindowingFactory.h"
 #include "guiinfo/GUIInfoLabels.h"
 
+using namespace KODI::MESSAGING;
 
 struct StereoModeMap
 {
@@ -549,7 +550,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
   {
   case STEREOSCOPIC_PLAYBACK_MODE_ASK: // Ask
     {
-      CApplicationMessenger::Get().MediaPause();
+      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
 
       CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
       pDlgSelect->Reset();
@@ -586,7 +587,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
         SetStereoModeByUser( mode );
       }
 
-      CApplicationMessenger::Get().MediaUnPause();
+      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_UNPAUSE);
     }
     break;
   case STEREOSCOPIC_PLAYBACK_MODE_PREFERRED: // Stereoscopic

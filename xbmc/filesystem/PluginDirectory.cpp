@@ -34,13 +34,14 @@
 #include "video/VideoInfoTag.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Application.h"
 #include "URL.h"
 
 using namespace XFILE;
 using namespace std;
 using namespace ADDON;
+using namespace KODI::MESSAGING;
 
 map<int, CPluginDirectory *> CPluginDirectory::globalHandles;
 int CPluginDirectory::handleCounter = 0;
@@ -537,7 +538,7 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
   }
 
   if (progressBar)
-    CApplicationMessenger::Get().Close(progressBar, false, false);
+    CApplicationMessenger::Get().PostMsg(TMSG_GUI_WINDOW_CLOSE, -1, 0, static_cast<void*>(progressBar));
 
   return !cancelled && m_success;
 }

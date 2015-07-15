@@ -21,12 +21,13 @@
 #include "VideoInfoDownloader.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogOK.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 
 using namespace VIDEO;
+using namespace KODI::MESSAGING;
 
 #ifndef __GNUC__
 #pragma warning (disable:4018)

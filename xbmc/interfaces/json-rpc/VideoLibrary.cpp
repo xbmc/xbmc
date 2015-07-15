@@ -19,7 +19,7 @@
  */
 
 #include "VideoLibrary.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "TextureDatabase.h"
 #include "Util.h"
 #include "utils/SortUtils.h"
@@ -29,6 +29,7 @@
 #include "video/VideoDatabase.h"
 
 using namespace JSONRPC;
+using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CVideoLibrary::GetMovies(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -752,7 +753,7 @@ JSONRPC_STATUS CVideoLibrary::Scan(const std::string &method, ITransportLayer *t
   std::string directory = parameterObject["directory"].asString();
   std::string cmd = StringUtils::Format("updatelibrary(video, %s, %s)", StringUtils::Paramify(directory).c_str(), parameterObject["showdialogs"].asBoolean() ? "true" : "false");
 
-  CApplicationMessenger::Get().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
@@ -767,14 +768,14 @@ JSONRPC_STATUS CVideoLibrary::Export(const std::string &method, ITransportLayer 
                               parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false",
                               parameterObject["options"]["actorthumbs"].asBoolean() ? "true" : "false");
 
-  CApplicationMessenger::Get().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
 JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string cmd = StringUtils::Format("cleanlibrary(video, %s)", parameterObject["showdialogs"].asBoolean() ? "true" : "false");
-  CApplicationMessenger::Get().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 

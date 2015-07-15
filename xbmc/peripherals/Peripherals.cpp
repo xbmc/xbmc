@@ -48,6 +48,8 @@
 #include "Util.h"
 #include "input/Key.h"
 #include "settings/lib/Setting.h"
+#include "messaging/ThreadMessage.h"
+#include "messaging/ApplicationMessenger.h"
 
 using namespace PERIPHERALS;
 using namespace XFILE;
@@ -100,6 +102,7 @@ void CPeripherals::Initialise(void)
     }
 
     m_bInitialised = true;
+    KODI::MESSAGING::CApplicationMessenger::Get().RegisterReceveiver(this);
   }
 }
 
@@ -723,4 +726,27 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
     if (dialog != NULL)
       dialog->Open();
   }
+}
+
+void CPeripherals::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
+{
+  switch (pMsg->dwMessage)
+  {
+  case TMSG_CECTOGGLESTATE:
+    *static_cast<bool*>(pMsg->lpVoid) = ToggleDeviceState(STATE_SWITCH_TOGGLE);
+    break;
+
+  case TMSG_CECACTIVATESOURCE:
+    ToggleDeviceState(STATE_ACTIVATE_SOURCE);
+    break;
+
+  case TMSG_CECSTANDBY:
+    ToggleDeviceState(STATE_STANDBY);
+    break;
+  }
+}
+
+int CPeripherals::GetMessageMask()
+{
+  return TMSG_MASK_PERIPHERALS;
 }

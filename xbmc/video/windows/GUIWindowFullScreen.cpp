@@ -22,7 +22,7 @@
 #include "system.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -53,6 +53,8 @@
 #if defined(TARGET_DARWIN)
 #include "linux/LinuxResourceCounter.h"
 #endif
+
+using namespace KODI::MESSAGING;
 
 #define BLUE_BAR                          0
 #define LABEL_ROW1                       10

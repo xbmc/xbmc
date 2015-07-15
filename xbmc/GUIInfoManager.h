@@ -28,6 +28,7 @@
 
 #include "threads/CriticalSection.h"
 #include "guilib/IMsgTargetCallback.h"
+#include "messaging/IMessageTarget.h"
 #include "inttypes.h"
 #include "XBDateTime.h"
 #include "utils/Observer.h"
@@ -93,7 +94,8 @@ private:
  \ingroup strings
  \brief
  */
-class CGUIInfoManager : public IMsgTargetCallback, public Observable
+class CGUIInfoManager : public IMsgTargetCallback, public Observable,
+                        public KODI::MESSAGING::IMessageTarget
 {
 public:
   CGUIInfoManager(void);
@@ -101,6 +103,9 @@ public:
 
   void Clear();
   virtual bool OnMessage(CGUIMessage &message);
+
+  virtual int GetMessageMask() override;
+  virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
 
   /*! \brief Register a boolean condition/expression
    This routine allows controls or other clients of the info manager to register

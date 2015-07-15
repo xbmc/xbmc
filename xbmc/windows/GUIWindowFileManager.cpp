@@ -21,7 +21,7 @@
 #include "system.h"
 #include "GUIWindowFileManager.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/ZipManager.h"
@@ -60,6 +60,7 @@
 
 using namespace XFILE;
 using namespace PLAYLIST;
+using namespace KODI::MESSAGING;
 
 #define ACTION_COPY                     1
 #define ACTION_MOVE                     2

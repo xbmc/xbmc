@@ -26,7 +26,7 @@
 #include "WinSystemOSX.h"
 #include "WinEventsOSX.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "CompileInfo.h"
 #include "guilib/DispResource.h"
 #include "guilib/GUIWindowManager.h"
@@ -54,6 +54,8 @@
 
 // turn off deprecated warning spew.
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+using namespace KODI::MESSAGING;
 
 //------------------------------------------------------------------------------------------
 // special object-c class for handling the inhibit display NSTimer callback.
@@ -1616,10 +1618,7 @@ void CWinSystemOSX::HandlePossibleRefreshrateChange()
     oldRefreshRate = m_refreshRate;
     // send a message so that videoresolution (and refreshrate)
     // is changed
-    ThreadMessage msg = {TMSG_VIDEORESIZE};
-    msg.param1 = m_SDLSurface->w;
-    msg.param2 = m_SDLSurface->h;
-    CApplicationMessenger::Get().SendMessage(msg, false);
+    CApplicationMessenger::Get().PostMsg(TMSG_VIDEORESIZE, m_SDLSurface->w, m_SDLSurface->h);
   }
 }
 

@@ -33,7 +33,7 @@
 #include "UPnPSettings.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "utils/log.h"
 #include "URL.h"
@@ -51,6 +51,7 @@
 
 using namespace std;
 using namespace UPNP;
+using namespace KODI::MESSAGING;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 

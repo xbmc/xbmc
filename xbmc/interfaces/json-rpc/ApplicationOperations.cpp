@@ -21,7 +21,11 @@
 #include "ApplicationOperations.h"
 #include "InputOperations.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
+#include "FileItem.h"
+#include "Util.h"
+#include "utils/log.h"
+#include "GUIInfoManager.h"
 #include "system.h"
 #include "CompileInfo.h"
 #include "utils/StringUtils.h"
@@ -29,6 +33,7 @@
 #include <string.h>
 
 using namespace JSONRPC;
+using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CApplicationOperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -84,7 +89,7 @@ JSONRPC_STATUS CApplicationOperations::SetVolume(const std::string &method, ITra
   else
     return InvalidParams;
 
-  CApplicationMessenger::Get().ShowVolumeBar(up);
+  CApplicationMessenger::Get().PostMsg(TMSG_VOLUME_SHOW, up ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
 
   return GetPropertyValue("volume", result);
 }
@@ -93,7 +98,7 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const std::string &method, ITrans
 {
   if ((parameterObject["mute"].isString() && parameterObject["mute"].asString().compare("toggle") == 0) ||
       (parameterObject["mute"].isBoolean() && parameterObject["mute"].asBoolean() != g_application.IsMuted()))
-    CApplicationMessenger::Get().SendAction(CAction(ACTION_MUTE));
+      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_MUTE)));
   else if (!parameterObject["mute"].isBoolean() && !parameterObject["mute"].isString())
     return InvalidParams;
 
@@ -102,7 +107,7 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const std::string &method, ITrans
 
 JSONRPC_STATUS CApplicationOperations::Quit(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CApplicationMessenger::Get().Quit();
+  CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
   return ACK;
 }
 

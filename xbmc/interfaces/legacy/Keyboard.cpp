@@ -23,6 +23,9 @@
 
 #include "guilib/GUIKeyboardFactory.h"
 #include "utils/Variant.h"
+#include "messaging/ApplicationMessenger.h"
+
+using namespace KODI::MESSAGING;
 
 namespace XBMCAddon
 {

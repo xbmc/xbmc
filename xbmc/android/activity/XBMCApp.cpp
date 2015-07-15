@@ -43,7 +43,7 @@
 #include "windowing/WinEvents.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "AppParamParser.h"
@@ -83,6 +83,7 @@
 #define GIGABYTES       1073741824
 
 using namespace std;
+using namespace KODI::MESSAGING;
 
 template<class T, void(T::*fn)()>
 void* thread_run(void* obj)
@@ -401,24 +402,28 @@ void CXBMCApp::XBMC_Pause(bool pause)
   android_printf("XBMC_Pause(%s)", pause ? "true" : "false");
   // Only send the PAUSE action if we are pausing XBMC and video is currently playing
   if (pause && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
-    CApplicationMessenger::Get().SendAction(CAction(ACTION_PAUSE), WINDOW_INVALID, true);
+    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
 }
 
 void CXBMCApp::XBMC_Stop()
 {
-  CApplicationMessenger::Get().Quit();
+  CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
 }
 
 bool CXBMCApp::XBMC_SetupDisplay()
 {
   android_printf("XBMC_SetupDisplay()");
-  return CApplicationMessenger::Get().SetupDisplay();
+  bool result;
+  CApplicationMessenger::Get().SendMsg(TMSG_DISPLAY_SETUP, -1, -1, static_cast<void*>(&result));
+  return result;
 }
 
 bool CXBMCApp::XBMC_DestroyDisplay()
 {
   android_printf("XBMC_DestroyDisplay()");
-  return CApplicationMessenger::Get().DestroyDisplay();
+  bool result;
+  CApplicationMessenger::Get().SendMsg(TMSG_DISPLAY_DESTROY, -1, -1, static_cast<void*>(&result));
+  return result;
 }
 
 int CXBMCApp::SetBuffersGeometry(int width, int height, int format)
@@ -743,21 +748,23 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
   std::string action = intent.getAction();
   if (action == "android.intent.action.VIEW")
   {
-    std::string playFile = GetFilenameFromIntent(intent);
-    CApplicationMessenger::Get().MediaPlay(playFile);
+    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(
+                                         new CFileItem(GetFilenameFromIntent(intent))));
   }
 }
 
 void CXBMCApp::onVolumeChanged(int volume)
 {
-  CApplicationMessenger::Get().SendAction(CAction(ACTION_VOLUME_SET, (float)volume), WINDOW_INVALID, false);
+  CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
+                                       new CAction(ACTION_VOLUME_SET, static_cast<float>(volume))));
 }
 
 void CXBMCApp::onAudioFocusChange(int focusChange)
 {
   CXBMCApp::android_printf("Audio Focus changed: %d", focusChange);
   if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS && g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-    CApplicationMessenger::Get().SendAction(CAction(ACTION_PAUSE), WINDOW_INVALID, true);
+    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
+                                         new CAction(ACTION_PAUSE)));
 }
 
 void CXBMCApp::SetupEnv()

@@ -29,7 +29,7 @@
 #include "system.h"
 #include "PythonInvoker.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
@@ -67,6 +67,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 
 using namespace std;
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 extern "C"
 {

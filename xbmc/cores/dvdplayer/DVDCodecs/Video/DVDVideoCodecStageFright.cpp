@@ -33,13 +33,15 @@
 #include "DVDVideoCodecStageFright.h"
 #include "utils/log.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 
 #include "DllLibStageFrightCodec.h"
 
 #define CLASSNAME "CDVDVideoCodecStageFright"
+
+using namespace KODI::MESSAGING;
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -30,13 +30,15 @@
 #include "music/Artist.h"
 #include "music/Album.h"
 #include "music/Song.h"
-#include "ApplicationMessenger.h"
+#include "music/Artist.h"
+#include "messaging/ApplicationMessenger.h"
 #include "filesystem/Directory.h"
 #include "settings/Settings.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -533,7 +535,7 @@ JSONRPC_STATUS CAudioLibrary::Scan(const std::string &method, ITransportLayer *t
   std::string directory = parameterObject["directory"].asString();
   std::string cmd = StringUtils::Format("updatelibrary(music, %s, %s)", StringUtils::Paramify(directory).c_str(), parameterObject["showdialogs"].asBoolean() ? "true" : "false");
 
-  CApplicationMessenger::Get().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
@@ -547,14 +549,14 @@ JSONRPC_STATUS CAudioLibrary::Export(const std::string &method, ITransportLayer 
                               parameterObject["options"]["images"].asBoolean() ? "true" : "false",
                               parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false");
 
-  CApplicationMessenger::Get().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
 JSONRPC_STATUS CAudioLibrary::Clean(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string cmd = StringUtils::Format("cleanlibrary(music, %s)", parameterObject["showdialogs"].asBoolean() ? "true" : "false");
-  CApplicationMessenger::Get().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 

@@ -26,7 +26,7 @@
 #include "WinEvents.h"
 #include "WinEventsX11.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
 #include "X11/WinSystemX11GL.h"
@@ -42,6 +42,8 @@
 #ifdef HAS_SDL_JOYSTICK
 #include "input/SDLJoystick.h"
 #endif
+
+using namespace KODI::MESSAGING;
 
 CWinEventsX11Imp* CWinEventsX11Imp::WinEvents = 0;
 
@@ -406,7 +408,7 @@ bool CWinEventsX11Imp::MessagePump()
       case ClientMessage:
       {
         if ((unsigned int)xevent.xclient.data.l[0] == WinEvents->m_wmDeleteMessage)
-          if (!g_application.m_bStop) CApplicationMessenger::Get().Quit();
+          if (!g_application.m_bStop) CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
         break;
       }
 

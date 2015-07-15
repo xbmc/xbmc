@@ -24,8 +24,10 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "input/Key.h"
+
+using namespace KODI::MESSAGING;
 
 CGUIDialog::CGUIDialog(int id, const std::string &xmlFile, DialogModalityType modalityType /* = DialogModalityType::MODAL */)
     : CGUIWindow(id, xmlFile)
@@ -188,15 +190,15 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop)
   // process render loop
   if (bProcessRenderLoop)
   {
-    if (!m_windowLoaded)
-      Close(true);
+  if (!m_windowLoaded)
+    Close(true);
 
-    lock.Leave();
+  lock.Leave();
 
-    while (m_active && !g_application.m_bStop)
-    {
-      g_windowManager.ProcessRenderLoop();
-    }
+  while (m_active && !g_application.m_bStop)
+  {
+    g_windowManager.ProcessRenderLoop();
+  }
   }
 }
 
@@ -206,7 +208,7 @@ void CGUIDialog::Open()
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    CApplicationMessenger::Get().Open(this);
+    CApplicationMessenger::Get().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, -1, static_cast<void*>(this));
   }
   else
     Open_Internal();

@@ -27,9 +27,12 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "utils/log.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "input/Key.h"
 #undef BOOL
+
+using namespace KODI::MESSAGING;
+//dummy edit, jenkins doesn't seem to fetch latest
 
 void SendKeyboardText(const char *text)
 {
@@ -39,12 +42,9 @@ void SendKeyboardText(const char *text)
   if ((unsigned char)*text < ' ' || *text == 127)
     return;
 
-  ThreadMessage tMsg = {TMSG_GUI_ACTION};
-  tMsg.param1 = WINDOW_INVALID;
   CAction *action = new CAction(ACTION_INPUT_TEXT);
   action->SetText(text);
-  tMsg.lpVoid = action;
-  CApplicationMessenger::Get().SendMessage(tMsg, false);
+  CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(action));
 }
 
 void SendEditingText(const char *text, unsigned int location, unsigned int length)

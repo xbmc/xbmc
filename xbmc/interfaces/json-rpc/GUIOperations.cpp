@@ -20,7 +20,7 @@
 
 #include "GUIOperations.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
@@ -35,6 +35,7 @@
 using namespace std;
 using namespace JSONRPC;
 using namespace ADDON;
+using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CGUIOperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -95,7 +96,9 @@ JSONRPC_STATUS CGUIOperations::SetFullscreen(const std::string &method, ITranspo
        parameterObject["fullscreen"].asString().compare("toggle") == 0) ||
       (parameterObject["fullscreen"].isBoolean() &&
        parameterObject["fullscreen"].asBoolean() != g_application.IsFullScreen()))
-    CApplicationMessenger::Get().SendAction(CAction(ACTION_SHOW_GUI));
+  {
+    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_SHOW_GUI)));
+  }
   else if (!parameterObject["fullscreen"].isBoolean() && !parameterObject["fullscreen"].isString())
     return InvalidParams;
 
@@ -107,7 +110,7 @@ JSONRPC_STATUS CGUIOperations::SetStereoscopicMode(const std::string &method, IT
   CAction action = CStereoscopicsManager::Get().ConvertActionCommandToAction("SetStereoMode", parameterObject["mode"].asString());
   if (action.GetID() != ACTION_NONE)
   {
-    CApplicationMessenger::Get().SendAction(action);
+    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
     return ACK;
   }
 

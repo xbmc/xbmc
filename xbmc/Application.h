@@ -25,6 +25,7 @@
 
 #include "guilib/IMsgTargetCallback.h"
 #include "utils/GlobalsHandling.h"
+#include "messaging/IMessageTarget.h"
 
 #include <map>
 #include <memory>
@@ -34,6 +35,8 @@ class CAction;
 class CFileItem;
 class CFileItemList;
 class CKey;
+
+
 namespace ADDON
 {
   class CSkinInfo;
@@ -114,7 +117,8 @@ protected:
 };
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
-                     public ISettingCallback, public ISettingsHandler, public ISubSettings
+                     public ISettingCallback, public ISettingsHandler, public ISubSettings,
+                     public KODI::MESSAGING::IMessageTarget
 {
   friend class CApplicationPlayer;
 public:
@@ -174,6 +178,10 @@ public:
   virtual void OnPlayBackSeek(int iTime, int seekOffset);
   virtual void OnPlayBackSeekChapter(int iChapter);
   virtual void OnPlayBackSpeedChanged(int iSpeed);
+
+  virtual int  GetMessageMask() override;
+  virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
+
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const std::string& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);

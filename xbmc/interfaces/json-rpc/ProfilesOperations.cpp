@@ -19,12 +19,14 @@
  */
 
 #include "ProfilesOperations.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
+#include "guilib/LocalizeStrings.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/md5.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
+using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -128,7 +130,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
 
   if (bLoadProfile)
   {
-    CApplicationMessenger::Get().LoadProfile(index);
+    CApplicationMessenger::Get().PostMsg(TMSG_LOADPROFILE, index);
     return ACK;
   }
   return InvalidParams;

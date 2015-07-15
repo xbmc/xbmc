@@ -19,10 +19,12 @@
  */
 
 #include "GenericTouchActionHandler.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "windowing/WinEvents.h"
+
+using namespace KODI::MESSAGING;
 
 CGenericTouchActionHandler &CGenericTouchActionHandler::Get()
 {

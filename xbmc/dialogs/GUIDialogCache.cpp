@@ -20,7 +20,7 @@
  
 #include "threads/SystemClock.h"
 #include "GUIDialogCache.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/LocalizeStrings.h"
@@ -28,6 +28,8 @@
 #include "threads/SingleLock.h"
 #include "utils/Variant.h"
 
+
+using namespace KODI::MESSAGING;
 
 CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, const std::string& strMsg) : CThread("GUIDialogCache"),
   m_strHeader(strHeader),
@@ -59,7 +61,7 @@ void CGUIDialogCache::Close(bool bForceClose)
   // we cannot wait for the app thread to process the close message
   // as this might happen during player startup which leads to a deadlock
   if (m_pDlg && m_pDlg->IsDialogRunning())
-    CApplicationMessenger::Get().Close(m_pDlg,bForceClose,false);
+    CApplicationMessenger::Get().PostMsg(TMSG_GUI_WINDOW_CLOSE, -1, bForceClose ? 1 : 0, static_cast<void*>(m_pDlg));
 
   //Set stop, this will kill this object, when thread stops  
   CThread::m_bStop = true;

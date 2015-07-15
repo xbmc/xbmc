@@ -20,7 +20,7 @@
 
 #include "GUIMediaWindow.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "ContextMenuManager.h"
 #include "FileItemListModification.h"
 #include "GUIPassword.h"
@@ -84,6 +84,7 @@
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
 
 using namespace ADDON;
+using namespace KODI::MESSAGING;
 
 CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -1609,7 +1610,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_USER10:
     {
       std::string action = StringUtils::Format("contextmenuaction(%i)", button - CONTEXT_BUTTON_USER1);
-      CApplicationMessenger::Get().ExecBuiltIn(m_vecItems->Get(itemNumber)->GetProperty(action).asString());
+      CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, m_vecItems->Get(itemNumber)->GetProperty(action).asString());
       return true;
     }
   default:

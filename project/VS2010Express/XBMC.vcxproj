@@ -204,7 +204,6 @@
     <ClCompile Include="..\..\xbmc\addons\UISoundsResource.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Webinterface.cpp" />
     <ClCompile Include="..\..\xbmc\Application.cpp" />
-    <ClCompile Include="..\..\xbmc\ApplicationMessenger.cpp" />
     <ClCompile Include="..\..\xbmc\ApplicationPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\AppParamParser.cpp" />
     <ClCompile Include="..\..\xbmc\Autorun.cpp" />
@@ -604,6 +603,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\media\MediaType.cpp" />
+    <ClCompile Include="..\..\xbmc\messaging\ApplicationMessenger.cpp" />
     <ClCompile Include="..\..\xbmc\music\Album.cpp" />
     <ClCompile Include="..\..\xbmc\music\Artist.cpp" />
     <ClCompile Include="..\..\xbmc\music\CueInfoLoader.cpp" />
@@ -994,6 +994,9 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\pythreadstate.h" />
     <ClInclude Include="..\..\xbmc\main\win32\MessagePrinter.h" />
     <ClInclude Include="..\..\xbmc\media\MediaType.h" />
+    <ClInclude Include="..\..\xbmc\messaging\ApplicationMessenger.h" />
+    <ClInclude Include="..\..\xbmc\messaging\IMessageTarget.h" />
+    <ClInclude Include="..\..\xbmc\messaging\ThreadMessage.h" />
     <ClInclude Include="..\..\xbmc\music\CueInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\music\EmbeddedArt.h" />
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
@@ -1700,7 +1703,6 @@
     <ClInclude Include="..\..\xbmc\addons\Service.h" />
     <ClInclude Include="..\..\xbmc\addons\Skin.h" />
     <ClInclude Include="..\..\xbmc\Application.h" />
-    <ClInclude Include="..\..\xbmc\ApplicationMessenger.h" />
     <ClInclude Include="..\..\xbmc\Autorun.h" />
     <ClInclude Include="..\..\xbmc\AutoSwitch.h" />
     <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />

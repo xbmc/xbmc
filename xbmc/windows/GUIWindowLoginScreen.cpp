@@ -20,7 +20,7 @@
 
 #include "system.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "GUIWindowLoginScreen.h"
 #include "profiles/Profile.h"
 #include "profiles/ProfilesManager.h"
@@ -49,6 +49,8 @@
 #include "view/ViewState.h"
 #include "pvr/PVRManager.h"
 #include "ContextMenuManager.h"
+
+using namespace KODI::MESSAGING;
 
 #define CONTROL_BIG_LIST               52
 #define CONTROL_LABEL_HEADER            2
@@ -240,7 +242,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     if (g_passwordManager.CheckLock(CProfilesManager::Get().GetMasterProfile().getLockMode(),CProfilesManager::Get().GetMasterProfile().getLockCode(),20075))
       g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries");
     else // be inconvenient
-      CApplicationMessenger::Get().Shutdown();
+      CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
 
     return true;
   }

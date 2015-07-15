@@ -28,7 +28,7 @@
 #include "filesystem/Directory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "utils/JobManager.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -47,7 +47,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
-
+using namespace KODI::MESSAGING;
 
 struct find_map : public binary_function<CAddonInstaller::JobMap::value_type, unsigned int, bool>
 {

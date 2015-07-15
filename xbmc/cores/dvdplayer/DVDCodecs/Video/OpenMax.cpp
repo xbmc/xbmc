@@ -33,13 +33,15 @@
 #include "DVDVideoCodec.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Application.h"
 
 #include <OMX_Core.h>
 #include <OMX_Component.h>
 #include <OMX_Index.h>
 #include <OMX_Image.h>
+
+using namespace KODI::MESSAGING;
 
 #define CLASSNAME "COpenMax"
 

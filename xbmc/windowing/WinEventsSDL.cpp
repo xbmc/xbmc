@@ -24,7 +24,7 @@
 #include "WinEvents.h"
 #include "WinEventsSDL.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "GUIUserMessages.h"
 #include "settings/DisplaySettings.h"
 #include "guilib/GUIWindowManager.h"
@@ -45,6 +45,8 @@
 #include "input/XBMC_keysym.h"
 #include "utils/log.h"
 #endif
+
+using namespace KODI::MESSAGING;
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
 // The following chunk of code is Linux specific. For keys that have
@@ -227,7 +229,7 @@ bool CWinEventsSDL::MessagePump()
     {
       case SDL_QUIT:
         if (!g_application.m_bStop) 
-          CApplicationMessenger::Get().Quit();
+          CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
         break;
 
 #ifdef HAS_SDL_JOYSTICK
@@ -439,7 +441,7 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
     {
     case SDLK_q:  // CMD-q to quit
       if (!g_application.m_bStop)
-        CApplicationMessenger::Get().Quit();
+        CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
       return true;
 
     case SDLK_f: // CMD-f to toggle fullscreen
@@ -455,7 +457,7 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
       return true;
 
     case SDLK_m: // CMD-m to minimize
-      CApplicationMessenger::Get().Minimize();
+      CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
       return true;
 
     default:

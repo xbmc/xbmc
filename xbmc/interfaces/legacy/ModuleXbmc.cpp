@@ -28,7 +28,8 @@
 #include "ModuleXbmc.h"
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
+#include "utils/URIUtils.h"
 #include "aojsonrpc.h"
 #ifndef TARGET_WINDOWS
 #include "XTimeUtils.h"
@@ -60,6 +61,8 @@
 #include <vector>
 #include "utils/log.h"
 
+using namespace KODI::MESSAGING;
+
 namespace XBMCAddon
 {
 
@@ -79,15 +82,13 @@ namespace XBMCAddon
     void shutdown()
     {
       XBMC_TRACE;
-      ThreadMessage tMsg = {TMSG_SHUTDOWN};
-      CApplicationMessenger::Get().SendMessage(tMsg);
+      CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
     }
 
     void restart()
     {
       XBMC_TRACE;
-      ThreadMessage tMsg = {TMSG_RESTART};
-      CApplicationMessenger::Get().SendMessage(tMsg);
+      CApplicationMessenger::Get().PostMsg(TMSG_RESTART);
     }
 
     void executescript(const char* script)
@@ -96,9 +97,7 @@ namespace XBMCAddon
       if (! script)
         return;
 
-      ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
-      tMsg.strParam = script;
-      CApplicationMessenger::Get().SendMessage(tMsg);
+      CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_SCRIPT, -1, -1, nullptr, script);
     }
 
     void executebuiltin(const char* function, bool wait /* = false*/)
@@ -106,7 +105,10 @@ namespace XBMCAddon
       XBMC_TRACE;
       if (! function)
         return;
-      CApplicationMessenger::Get().ExecBuiltIn(function,wait);
+      if (wait)
+        CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, function);
+      else
+        CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, function);
     }
 
     String executeJSONRPC(const char* jsonrpccommand)

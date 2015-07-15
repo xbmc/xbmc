@@ -20,7 +20,7 @@
 
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -39,6 +39,8 @@
 #include "utils/Variant.h"
 
 #include <utility>
+
+using namespace KODI::MESSAGING;
 
 CGUIPassword::CGUIPassword(void)
 {
@@ -160,7 +162,7 @@ bool CGUIPassword::CheckStartUpLock()
   }
   else
   {
-    CApplicationMessenger::Get().Shutdown(); // Turn off the box
+    CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN); // Turn off the box
     return false;
   }
 }

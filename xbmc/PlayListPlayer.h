@@ -20,6 +20,7 @@
  */
 
 #include "guilib/IMsgTargetCallback.h"
+#include "messaging/IMessageTarget.h"
 #include <memory>
 
 #define PLAYLIST_NONE    -1
@@ -43,13 +44,17 @@ enum REPEAT_STATE { REPEAT_NONE = 0, REPEAT_ONE, REPEAT_ALL };
 
 class CPlayList;
 
-class CPlayListPlayer : public IMsgTargetCallback
+class CPlayListPlayer : public IMsgTargetCallback,
+                        public KODI::MESSAGING::IMessageTarget
 {
 
 public:
   CPlayListPlayer(void);
   virtual ~CPlayListPlayer(void);
   virtual bool OnMessage(CGUIMessage &message);
+
+  virtual int GetMessageMask() override;
+  virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
 
   /*! \brief Play the next (or another) entry in the current playlist
    \param offset The offset from the current entry (defaults to 1, i.e. the next entry).

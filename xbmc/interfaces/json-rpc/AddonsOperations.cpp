@@ -23,7 +23,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonDatabase.h"
 #include "addons/PluginSource.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "TextureCache.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
@@ -33,6 +33,7 @@ using namespace std;
 using namespace JSONRPC;
 using namespace ADDON;
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -196,7 +197,11 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
     cmd = StringUtils::Format("RunAddon(%s)", id.c_str());
   else
     cmd = StringUtils::Format("RunAddon(%s, %s)", id.c_str(), argv.c_str());
-  CApplicationMessenger::Get().ExecBuiltIn(cmd, parameterObject["wait"].asBoolean());
+
+  if (params["wait"].asBoolean())
+    CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  else
+    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   
   return ACK;
 }

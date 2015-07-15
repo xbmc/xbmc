@@ -21,7 +21,7 @@
 #include "system.h"
 #include "GraphicContext.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
@@ -34,6 +34,7 @@
 #include "video/VideoReferenceClock.h"
 
 using namespace std;
+using namespace KODI::MESSAGING;
 
 extern bool g_fullScreen;
 
@@ -380,10 +381,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   }
   else
   {
-    ThreadMessage msg = {TMSG_SETVIDEORESOLUTION};
-    msg.param1 = res;
-    msg.param2 = forceUpdate ? 1 : 0;
-    CApplicationMessenger::Get().SendMessage(msg, true);
+    CApplicationMessenger::Get().SendMsg(TMSG_SETVIDEORESOLUTION, res, forceUpdate ? 1 : 0);
   }
 }
 
@@ -412,7 +410,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
     if (delay > 0 && CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback())
     {
       g_application.m_pPlayer->Pause();
-      ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
+      KODI::MESSAGING::ThreadMessage msg{TMSG_MEDIA_UNPAUSE};
       CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
       pauseMessage->Create(true);
     }

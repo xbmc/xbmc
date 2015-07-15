@@ -20,7 +20,9 @@
 
 #include "LangInfo.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
+#include "FileItem.h"
+#include "Util.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/LanguageResource.h"
@@ -43,6 +45,7 @@
 #include <utility>
 
 using namespace PVR;
+using namespace KODI::MESSAGING;
 
 static std::string shortDateFormats[] = {
   // short date formats using "/"
@@ -707,7 +710,7 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
     // also tell our weather and skin to reload as these are localized
     g_weatherManager.Refresh();
     g_PVRManager.LocalizationChanged();
-    CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin", false);
+    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
   }
 
   return true;

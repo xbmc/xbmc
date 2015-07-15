@@ -20,7 +20,6 @@
 
 #include "Skin.h"
 #include "AddonManager.h"
-#include "ApplicationMessenger.h"
 #include "Util.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -37,6 +36,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
+#include "messaging/ApplicationMessenger.h"
 
 #define XML_SETTINGS      "settings"
 #define XML_SETTING       "setting"
@@ -46,6 +46,7 @@
 
 using namespace std;
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 std::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 
@@ -367,7 +368,7 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string
 void CSkinInfo::OnPreInstall()
 {
   if (IsInUse())
-    CApplicationMessenger::Get().ExecBuiltIn("UnloadSkin", true);
+    CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "UnloadSkin");
 }
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
@@ -381,7 +382,7 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
       toast->Close(true);
     }
     if (CSettings::Get().GetString("lookandfeel.skin") == ID())
-      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin", true);
+      CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
     else
       CSettings::Get().SetString("lookandfeel.skin", ID());
   }

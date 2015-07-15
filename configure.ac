@@ -2470,6 +2470,7 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/paplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \
     xbmc/cores/playercorefactory/Makefile \
+    xbmc/messaging/Makefile \
     xbmc/music/karaoke/Makefile \
     xbmc/osx/Makefile \
     xbmc/guilib/Makefile \
