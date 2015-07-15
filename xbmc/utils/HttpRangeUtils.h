@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include "system.h"
+
 class CHttpRange
 {
 public:
@@ -136,6 +138,7 @@ public:
   */
   static std::string GenerateContentRangeHeaderValue(uint64_t start, uint64_t end, uint64_t total);
 
+#ifdef HAS_WEB_SERVER
   /*!
    * \brief Generates a multipart boundary that can be used in ranged HTTP
    * responses.
@@ -195,5 +198,5 @@ public:
   * \return Multipart boundary end that can be used in a ranged HTTP response
   */
   static std::string GenerateMultipartBoundaryEnd(const std::string& multipartBoundary);
+#endif // HAS_WEB_SERVER
 };
-

@@ -42,8 +42,6 @@ namespace XBMCAddon
 #ifndef SWIG
       String m_data;
 #endif
-    };    
+    };
   }
 }
-
-
