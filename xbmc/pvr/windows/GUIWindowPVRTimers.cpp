@@ -346,7 +346,7 @@ bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
 {
   /* check if the timer tag is valid */
   CPVRTimerInfoTagPtr timerTag = item->GetPVRTimerInfoTag();
-  if (!timerTag || timerTag->m_iClientIndex < 0)
+  if (!timerTag || timerTag->m_state == PVR_TIMER_STATE_NEW)
     return false;
 
   bool bDeleteSchedule(false);
