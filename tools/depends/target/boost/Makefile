@@ -1,11 +1,11 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include add-arm-mem-barrier.patch fix-deprecated-swp.patch fix_shared_ptr_multithread.patch Makefile
+DEPS= ../../Makefile.include Makefile
 
 #Headers Only!
 LIBNAME=boost
-VERSION=1_44_0
+VERSION=1_57_0
 SOURCE=$(LIBNAME)_$(VERSION)
-ARCHIVE=$(SOURCE).tar.bz2
+ARCHIVE=$(SOURCE)_stripped.tar.bz2
 
 all: .installed-$(PLATFORM)
 
@@ -15,23 +15,15 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	echo 'using gcc : : $(CC) : ' > $(PLATFORM)/tools/build/v2/user-config.jam
-	echo '	<cflags>"$(CFLAGS)"' >> $(PLATFORM)/tools/build/v2/user-config.jam
-	echo '  <cxxflags>"$(CXXFLAGS)"' >> $(PLATFORM)/tools/build/v2/user-config.jam
-	echo '	;' >> $(PLATFORM)/tools/build/v2/user-config.jam
-	cd $(PLATFORM); patch -p1 < ../add-arm-mem-barrier.patch
-	cd $(PLATFORM); patch -p1 < ../fix-deprecated-swp.patch
 ifeq (arm, $(findstring arm, $(CPU)))
-	cd $(PLATFORM); patch -p0 < ../fix_shared_ptr_multithread.patch
+	#ugly hack to avoid issue with line endings. boost headers use \r\n and patch
+	#will be converted by git to \n and fail to apply
+	cd $(PLATFORM); echo "#define BOOST_SP_USE_SPINLOCK" >> boost/config/user.hpp
 endif
-	cd $(PLATFORM); patch -p1 < ../fix-self-assignment-warnings.patch
-	cd $(PLATFORM); ./bootstrap.sh --prefix=$(PREFIX)
+	cd $(PLATFORM); cp -r boost $(PREFIX)/include/
 
 .installed-$(PLATFORM): $(PLATFORM)
-	cd $(PLATFORM); ./bjam --prefix=$(PREFIX) toolset=gcc --toolset-root=$(TOOLCHAIN)/$(HOST)/bin --disable-icu \
-	--without-date_time --without-filesystem --without-graph --without-graph_parallel --without-iostreams --without-math --without-mpi --without-program_options \
---without-python --without-random --without-regex --without-serialization --without-signals --without-system --without-test --without-thread --without-wave install 
-	touch .installed-$(PLATFORM)
+	cd $(PLATFORM); touch .installed-$(PLATFORM)
 
 clean:
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
