@@ -43,7 +43,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_bFullTextEpgSearch(false)
 {
   m_iClientId           = g_PVRClients->GetFirstConnectedClientID();
-  m_iClientIndex        = -1;
+  m_iClientIndex        = 0;
   m_iParentClientIndex  = PVR_TIMER_NO_PARENT;
   m_iClientChannelUid   = PVR_INVALID_CHANNEL_UID;
   m_iPriority           = CSettings::Get().GetInt("pvrrecord.defaultpriority");
@@ -110,7 +110,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_channel             = channel;
   m_bIsRadio            = channel && channel->IsRadio();
   m_state               = timer.state;
-  m_strFileNameAndPath  = StringUtils::Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex);
+  m_strFileNameAndPath  = StringUtils::Format("pvr://client%i/timers/%u", m_iClientId, m_iClientIndex);
   m_iTimerId            = 0;
 
   if (g_PVRClients->SupportsTimers(m_iClientId))
@@ -676,8 +676,6 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
   /* set the timer data */
   CDateTime newStart = tag->StartAsUTC();
   CDateTime newEnd = tag->EndAsUTC();
-  newTag->m_iClientIndex       = -1;
-  newTag->m_iParentClientIndex = PVR_TIMER_NO_PARENT;
   newTag->m_strTitle           = tag->Title().empty() ? channel->ChannelName() : tag->Title();
   newTag->m_iChannelNumber     = channel->ChannelNumber();
   newTag->m_iClientChannelUid  = channel->UniqueID();

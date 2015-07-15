@@ -131,7 +131,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
             timerNotifications.push_back(strMessage);
           }
 
-          CLog::Log(LOGDEBUG,"PVRTimers - %s - updated timer %d on client %d",
+          CLog::Log(LOGDEBUG,"PVRTimers - %s - updated timer %u on client %d",
               __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
         }
       }
@@ -167,7 +167,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
           timerNotifications.push_back(strMessage);
         }
 
-        CLog::Log(LOGDEBUG,"PVRTimers - %s - added timer %d on client %d",
+        CLog::Log(LOGDEBUG,"PVRTimers - %s - added timer %u on client %d",
             __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
       }
     }
@@ -185,7 +185,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
       if (!timers.GetByClient(timer->m_iClientId, timer->m_iClientIndex))
       {
         /* timer was not found */
-        CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d",
+        CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %u on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
         if (g_PVRManager.IsStarted())
@@ -201,7 +201,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
       else if (timer->StartAsUTC() != it->first)
       {
         /* timer start has changed */
-        CLog::Log(LOGDEBUG,"PVRTimers - %s - changed start time timer %d on client %d",
+        CLog::Log(LOGDEBUG,"PVRTimers - %s - changed start time timer %u on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
         timer->ClearEpgTag();
@@ -492,7 +492,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
 
         if (bDeleteActiveItem && bDeleteRepeatingItem && bChannelsMatch)
         {
-          CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
+          CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %u on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
           bReturn = (*timerIt)->DeleteFromClient(true, false) || bReturn;
           SetChanged();
         }
@@ -521,7 +521,6 @@ bool CPVRTimers::InstantTimer(const CPVRChannelPtr &channel)
   {
     newTimer.reset(new CPVRTimerInfoTag);
     /* set the timer data */
-    newTimer->m_iClientIndex      = -1;
     newTimer->m_strTitle          = channel->ChannelName();
     newTimer->m_strSummary        = g_localizeStrings.Get(19056);
     newTimer->m_iChannelNumber    = channel->ChannelNumber();
