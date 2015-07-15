@@ -485,17 +485,17 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
 
     std::wstring text = GetDisplayedText();
-    std::string hint = m_hintInfo.GetLabel(GetParentID());
 
-    if (!HasFocus() && text.empty() && !hint.empty())
-      changed |= m_label2.SetText(hint);
-    else
+    if (!HasFocus() && text.empty())
     {
-      if (m_inputType != INPUT_TYPE_READONLY)
-        changed |= SetStyledText(text);
-      else
-        changed |= m_label2.SetTextW(text);
+      std::string hint = m_hintInfo.GetLabel(GetParentID());
+      if (!hint.empty())
+        changed |= m_label2.SetText(hint);
     }
+    else if (HasFocus() && m_inputType != INPUT_TYPE_READONLY)
+      changed |= SetStyledText(text);
+    else
+      changed |= m_label2.SetTextW(text);
 
     changed |= m_label2.SetAlign(align);
     changed |= m_label2.SetColor(GetTextColor());
