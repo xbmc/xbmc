@@ -193,8 +193,8 @@ public:
   std::string GetAsSaveString() const;
   std::string GetAsDBDateTime() const;
   std::string GetAsDBDate() const;
-  std::string GetAsLocalizedDate(bool longDate=false, bool withShortNames=true) const;
-  std::string GetAsLocalizedDate(const std::string &strFormat, bool withShortNames=true) const;
+  std::string GetAsLocalizedDate(bool longDate=false) const;
+  std::string GetAsLocalizedDate(const std::string &strFormat) const;
   std::string GetAsLocalizedTime(const std::string &format, bool withSeconds=true) const;
   std::string GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
   std::string GetAsRFC1123DateTime() const;
