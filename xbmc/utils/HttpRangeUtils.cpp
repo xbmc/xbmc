@@ -18,13 +18,15 @@
  *
  */
 
+#include <algorithm>
+
 #include "HttpRangeUtils.h"
 #include "Util.h"
+#ifdef HAS_WEB_SERVER
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
+#endif // HAS_WEB_SERVER
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-
-#include <algorithm>
 
 #define HEADER_NEWLINE        "\r\n"
 #define HEADER_SEPARATOR      HEADER_NEWLINE HEADER_NEWLINE
@@ -370,6 +372,8 @@ std::string HttpRangeUtils::GenerateContentRangeHeaderValue(uint64_t start, uint
   return StringUtils::Format(CONTENT_RANGE_FORMAT_TOTAL_UNKNOWN, start, end);
 }
 
+#ifdef HAS_WEB_SERVER
+
 std::string HttpRangeUtils::GenerateMultipartBoundary()
 {
   static char chars[] = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -431,3 +435,5 @@ std::string HttpRangeUtils::GenerateMultipartBoundaryEnd(const std::string& mult
 
   return HEADER_NEWLINE HEADER_BOUNDARY + multipartBoundary + HEADER_BOUNDARY;
 }
+
+#endif // HAS_WEB_SERVER
