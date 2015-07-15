@@ -1833,7 +1833,7 @@ bool CApplication::LoadUserWindows()
           CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
           if (StringUtils::EqualsNoCase(strType, "dialog"))
-            pWindow = new CGUIDialog(id + WINDOW_HOME, skinFile);
+            pWindow = new CGUIDialog(id + WINDOW_HOME, skinFile, visibleCondition.empty() ? DialogModalityType::MODAL : DialogModalityType::MODELESS);
           else if (StringUtils::EqualsNoCase(strType, "submenu"))
             pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, skinFile);
           else if (StringUtils::EqualsNoCase(strType, "buttonmenu"))
