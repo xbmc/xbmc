@@ -30,6 +30,16 @@
 #include "client/linux/handler/exception_handler.h"
 #endif
 
+#ifdef TARGET_WINDOWS
+#include <mmdeviceapi.h>
+#include "win32/IMMNotificationClient.h"
+#include "main/win32/MessagePrinter.h"
+#endif
+
+#if !defined(TARGET_WINDOWS)
+#include "main/posix/MessagePrinter.h"
+#endif
+
 extern "C" int XBMC_Run(bool renderGUI)
 {
   int status = -1;
@@ -48,7 +58,7 @@ extern "C" int XBMC_Run(bool renderGUI)
 
   if (!g_application.Create())
   {
-    fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
+    CMessagePrinter::DisplayError("ERROR: Unable to create application. Exiting");
     return status;
   }
 
@@ -72,24 +82,55 @@ extern "C" int XBMC_Run(bool renderGUI)
 
   if (renderGUI && !g_application.CreateGUI())
   {
-    fprintf(stderr, "ERROR: Unable to create GUI. Exiting\n");
+    CMessagePrinter::DisplayError("ERROR: Unable to create GUI. Exiting");
     return status;
   }
   if (!g_application.Initialize())
   {
-    fprintf(stderr, "ERROR: Unable to Initialize. Exiting\n");
+    CMessagePrinter::DisplayError("ERROR: Unable to Initialize. Exiting");
     return status;
   }
+
+#ifdef TARGET_WINDOWS
+  IMMDeviceEnumerator *pEnumerator = nullptr;
+  CMMNotificationClient cMMNC;
+  HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator,
+                                reinterpret_cast<void**>(&pEnumerator));
+  if (SUCCEEDED(hr))
+  {
+    pEnumerator->RegisterEndpointNotificationCallback(&cMMNC);
+    SAFE_RELEASE(pEnumerator);
+  }
+#endif
 
   try
   {
     status = g_application.Run();
   }
-  catch(...)
+#ifdef TARGET_WINDOWS
+  catch (const XbmcCommons::UncheckedException &e)
   {
-    fprintf(stderr, "ERROR: Exception caught on main loop. Exiting\n");
+    e.LogThrowMessage("CApplication::Create()");
+    CMessagePrinter::DisplayError("ERROR: Exception caught on main loop. Exiting");
     status = -1;
   }
+#endif
+  catch(...)
+  {
+    CMessagePrinter::DisplayError("ERROR: Exception caught on main loop. Exiting");
+    status = -1;
+  }
+
+#ifdef TARGET_WINDOWS
+  // the end
+  hr = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator,
+                        reinterpret_cast<void**>(&pEnumerator));
+  if (SUCCEEDED(hr))
+  {
+    pEnumerator->UnregisterEndpointNotificationCallback(&cMMNC);
+    SAFE_RELEASE(pEnumerator);
+  }
+#endif
 
 #ifdef TARGET_RASPBERRY_PI
   g_RBP.Deinitialize();

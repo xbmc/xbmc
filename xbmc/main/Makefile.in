@@ -1,6 +1,7 @@
-.SUFFIXES : .m .mm
+.SUFFIXES : .m .mm .cpp
 
 SRCS  = main.cpp
+SRCS += posix/MessagePrinter.cpp
 
 ifeq ($(findstring osx,@ARCH@),osx)
 SRCS += osx/SDLMain.mm

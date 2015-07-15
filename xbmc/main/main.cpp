@@ -42,6 +42,9 @@
 #endif
 #include "XbmcContext.h"
 
+#ifdef __cplusplus
+extern "C"
+#endif
 int main(int argc, char* argv[])
 {
   // set up some xbmc specific relationships
@@ -70,9 +73,8 @@ int main(int argc, char* argv[])
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
 
-#ifndef TARGET_WINDOWS
   CAppParamParser appParamParser;
-  appParamParser.Parse((const char **)argv, argc);
-#endif
+  appParamParser.Parse(const_cast<const char**>(argv), argc);
+  
   return XBMC_Run(renderGUI);
 }

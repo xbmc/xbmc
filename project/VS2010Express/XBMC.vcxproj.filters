@@ -346,6 +346,12 @@
     <Filter Include="network\dacp">
       <UniqueIdentifier>{33ec4ead-1923-47c2-8a7f-44561adaebf3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{e8f91abe-5d75-4a38-b576-8d971f5fa64b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main\win32">
+      <UniqueIdentifier>{b2cf6073-0796-485b-a2f8-0b54851262b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -358,9 +364,6 @@
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\XBMC_PC.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DummyVideoPlayer.cpp">
@@ -3098,6 +3101,15 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pictures\PictureScalingAlgorithm.cpp">
       <Filter>pictures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\main\main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\main\win32\WinMain.cpp">
+      <Filter>main\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\main\win32\MessagePrinter.cpp">
+      <Filter>main\win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5935,7 +5947,7 @@
     <ClInclude Include="..\..\xbmc\addons\LanguageResource.h">
       <Filter>addons</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\UISoundsResource.h">
+     <ClInclude Include="..\..\xbmc\addons\UISoundsResource.h">
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ResourceFile.h">
@@ -5991,6 +6003,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pictures\PictureScalingAlgorithm.h">
       <Filter>pictures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\main\win32\MessagePrinter.h">
+      <Filter>main\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
