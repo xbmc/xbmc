@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -17,15 +18,14 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef XBTF_H_
-#define XBTF_H_
 
 #include <string>
 #include <vector>
+
 #include <stdint.h>
 
-#define XBTF_MAGIC "XBTF"
-#define XBTF_VERSION "2"
+static const std::string XBTF_MAGIC = "XBTF";
+static const std::string XBTF_VERSION = "2";
 
 #define XB_FMT_MASK   0xffff ///< mask for format info - other flags are outside this
 #define XB_FMT_DXT_MASK   15
@@ -44,21 +44,30 @@ class CXBTFFrame
 {
 public:
   CXBTFFrame();
+
   uint32_t GetWidth() const;
   void SetWidth(uint32_t width);
+
   uint32_t GetFormat(bool raw = false) const;
   void SetFormat(uint32_t format);
+
   uint32_t GetHeight() const;
   void SetHeight(uint32_t height);
+
   uint64_t GetUnpackedSize() const;
   void SetUnpackedSize(uint64_t size);
+
   uint64_t GetPackedSize() const;
   void SetPackedSize(uint64_t size);
+
   uint64_t GetOffset() const;
   void SetOffset(uint64_t offset);
+
   uint64_t GetHeaderSize() const;
+
   uint32_t GetDuration() const;
   void SetDuration(uint32_t duration);
+
   bool IsPacked() const;
   bool HasAlpha() const;
 
@@ -77,28 +86,21 @@ class CXBTFFile
 public:
   CXBTFFile();
   CXBTFFile(const CXBTFFile& ref);
-  char* GetPath();
+
+  const std::string& GetPath() const;
   void SetPath(const std::string& path);
+
   uint32_t GetLoop() const;
   void SetLoop(uint32_t loop);
+
+  const std::vector<CXBTFFrame>& GetFrames() const;
   std::vector<CXBTFFrame>& GetFrames();
   uint64_t GetHeaderSize() const;
 
+  static const size_t MaximumPathLength = 256;
+
 private:
-  char         m_path[256];
-  uint32_t     m_loop;
+  std::string m_path;
+  uint32_t m_loop;
   std::vector<CXBTFFrame> m_frames;
 };
-
-class CXBTF
-{
-public:
-  CXBTF();
-  uint64_t GetHeaderSize() const;
-  std::vector<CXBTFFile>& GetFiles();
-
-private:
-  std::vector<CXBTFFile> m_files;
-};
-
-#endif

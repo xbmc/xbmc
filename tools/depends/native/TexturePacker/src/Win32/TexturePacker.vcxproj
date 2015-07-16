@@ -99,6 +99,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\..\xbmc\guilib\XBTFReader.cpp" />
     <ClCompile Include="..\DecoderManager.cpp" />
     <ClCompile Include="..\decoder\GIFDecoder.cpp" />
     <ClCompile Include="..\decoder\GifHelper.cpp" />
@@ -111,6 +112,7 @@
     <ClCompile Include="..\XBTFWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\..\xbmc\guilib\XBTFReader.h" />
     <ClInclude Include="..\cmdlineargs.h" />
     <ClInclude Include="..\DecoderManager.h" />
     <ClInclude Include="..\decoder\GIFDecoder.h" />

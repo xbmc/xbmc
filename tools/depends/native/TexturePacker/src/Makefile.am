@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 AM_CFLAGS = -DTARGET_POSIX -DUSE_LZO_PACKING
 AM_CFLAGS += @EXTRA_DEFINES@
-AM_CXXFLAGS = $(AM_CFLAGS)
+AM_CXXFLAGS = $(AM_CFLAGS) -std=c++11
 
 AM_CPPFLAGS = \
   -I. \
@@ -25,7 +25,11 @@ TexturePacker_SOURCES =  md5.cpp \
   decoder/JPGDecoder.cpp \
   decoder/GifHelper.cpp \
   decoder/GIFDecoder.cpp \
-  XBTF.cpp
+  XBTF.cpp \
+  XBTFReader.cpp
 
 XBTF.cpp:
 	@cp @KODI_SRC_DIR@/xbmc/guilib/XBTF.cpp .
+
+XBTFReader.cpp:
+	@cp @KODI_SRC_DIR@/xbmc/guilib/XBTFReader.cpp .

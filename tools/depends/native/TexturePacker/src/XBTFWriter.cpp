@@ -22,6 +22,7 @@
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include "guilib/XBTF.h"
+#include "guilib/XBTFReader.h"
 #include "utils/EndianSwap.h"
 #if defined(TARGET_FREEBSD) || defined(TARGET_DARWIN)
 #include <stdlib.h>
@@ -34,7 +35,7 @@
 #define WRITE_U32(i, file) { uint32_t _n = Endian_SwapLE32(i); fwrite(&_n, 4, 1, file); }
 #define WRITE_U64(i, file) { uint64_t _n = i; _n = Endian_SwapLE64(i); fwrite(&_n, 8, 1, file); }
 
-CXBTFWriter::CXBTFWriter(CXBTF& xbtf, const std::string& outputFile) : m_xbtf(xbtf)
+CXBTFWriter::CXBTFWriter(CXBTFReader& xbtfReader, const std::string& outputFile) : m_xbtfReader(xbtfReader)
 {
   m_outputFile = outputFile;
   m_file = NULL;
@@ -104,26 +105,23 @@ bool CXBTFWriter::UpdateHeader(const std::vector<unsigned int>& dupes)
     return false;
   }
 
-  uint64_t offset = m_xbtf.GetHeaderSize();
+  uint64_t offset = m_xbtfReader.GetHeaderSize();
 
-  WRITE_STR(XBTF_MAGIC, 4, m_file);
-  WRITE_STR(XBTF_VERSION, 1, m_file);
+  WRITE_STR(XBTF_MAGIC.c_str(), 4, m_file);
+  WRITE_STR(XBTF_VERSION.c_str(), 1, m_file);
 
-  std::vector<CXBTFFile>& files = m_xbtf.GetFiles();
+  std::vector<CXBTFFile> files = m_xbtfReader.GetFiles();
   WRITE_U32(files.size(), m_file);
   for (size_t i = 0; i < files.size(); i++)
   {
     CXBTFFile& file = files[i];
 
     // Convert path to lower case
-    char* ch = file.GetPath();
-    while (*ch)
-    {
+    std::string path = file.GetPath();
+    for (std::string::iterator ch = path.begin(); ch != path.end(); ++ch)
       *ch = tolower(*ch);
-      ch++;
-    }
 
-    WRITE_STR(file.GetPath(), 256, m_file);
+    WRITE_STR(path.c_str(), 256, m_file);
     WRITE_U32(file.GetLoop(), m_file);
 
     std::vector<CXBTFFrame>& frames = file.GetFrames();
@@ -151,9 +149,9 @@ bool CXBTFWriter::UpdateHeader(const std::vector<unsigned int>& dupes)
 
   // Sanity check
   int64_t pos = ftell(m_file);
-  if (pos != (int64_t)m_xbtf.GetHeaderSize())
+  if (pos != (int64_t)m_xbtfReader.GetHeaderSize())
   {
-    printf("Expected header size (%" PRId64 ") != actual size (%" PRId64 ")\n", m_xbtf.GetHeaderSize(), pos);
+    printf("Expected header size (%" PRId64 ") != actual size (%" PRId64 ")\n", m_xbtfReader.GetHeaderSize(), pos);
     return false;
   }
 

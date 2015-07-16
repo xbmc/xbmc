@@ -25,12 +25,12 @@
 #include <string>
 #include <stdio.h>
 
-class CXBTF;
+class CXBTFReader;
 
 class CXBTFWriter
 {
 public:
-  CXBTFWriter(CXBTF& xbtf, const std::string& outputFile);
+  CXBTFWriter(CXBTFReader& xbtfReader, const std::string& outputFile);
   bool Create();
   bool Close();
   bool AppendContent(unsigned char const* data, size_t length);
@@ -39,7 +39,7 @@ public:
 private:
   void Cleanup();
 
-  CXBTF& m_xbtf;
+  CXBTFReader& m_xbtfReader;
   std::string m_outputFile;
   FILE* m_file;
   unsigned char *m_data;
