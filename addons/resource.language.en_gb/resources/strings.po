@@ -16922,3 +16922,33 @@ msgstr ""
 msgctxt "#38016"
 msgid "%d fps"
 msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38017"
+msgid "Recently added TV shows"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38018"
+msgid "In progress and recently added TV shows"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38019"
+msgid "Show seen videos on homescreen"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38020"
+msgid "TV show preview on homescreen"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38021"
+msgid "When activated, it shows the seen movies and episodes/tvshows on the homescreen preview."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38022"
+msgid "The preview of TV shows on the homescreen have 4 possible options\n[recently added episodes] shows the recently added episodes\n[recently added TV shows] shows the recently added TV shows\n[in progress TV shows] shows the in progress TV shows\n[in progress and recently added TV shows] show the in progress TV shows, filled up with the recently added\n\nThe shown TV shows present the first unseen episode with the cover of the TV show."
+msgstr ""

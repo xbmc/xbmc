@@ -6454,6 +6454,27 @@ int CVideoDatabase::GetTvShowForEpisode(int idEpisode)
   return false;
 }
 
+/* select the first unseen expisode of a tvshow.
+ * when all seen, the first episode is selected.
+ */
+bool CVideoDatabase::GetNextEpisodeFromTvShow(const int idTvShow, CFileItemPtr& item)
+{
+  CFileItemList items;
+  std::string dbURL = StringUtils::Format("videodb://tvshows/titles/%i/-1/", idTvShow);
+  Filter filter;
+  filter.order = PrepareSQL("(playcount is NULL) desc, CASE WHEN c%u = -1 THEN cast(c%u as SIGNED) ELSE cast(c%u as SIGNED) END, CASE WHEN c%u = -1 THEN cast(c%u as SIGNED) ELSE cast(c%u as SIGNED) END, c%u desc",
+                            VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_SORTSEASON,
+                            VIDEODB_ID_EPISODE_SORTEPISODE, VIDEODB_ID_EPISODE_EPISODE, VIDEODB_ID_EPISODE_SORTEPISODE,
+                            VIDEODB_ID_EPISODE_SORTEPISODE);
+  filter.limit = "1";
+
+  if (!GetEpisodesByWhere(dbURL, filter, items) && items.Size() != 1)
+    return false;
+
+  item = items.Get(0);
+  return true;
+}
+
 int CVideoDatabase::GetSeasonForEpisode(int idEpisode)
 {
   char column[5];

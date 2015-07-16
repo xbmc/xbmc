@@ -702,6 +702,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("videolibrary.cleanup");
   settingSet.insert("videolibrary.import");
   settingSet.insert("videolibrary.export");
+  settingSet.insert("videolibrary.showseeninhome");
+  settingSet.insert("videolibrary.tvshowsinhome");
   m_settingsManager->RegisterCallback(&CMediaSettings::Get(), settingSet);
 
   settingSet.clear();
