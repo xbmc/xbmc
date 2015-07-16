@@ -857,7 +857,7 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
   itemsPointer.start = 0;
   for (unsigned int i = 0; i < m_programmeItems.size(); ++i)
   {
-    const CEpgInfoTagPtr tag(((CFileItem*)m_programmeItems[i].get())->GetEPGInfoTag());
+    const CEpgInfoTagPtr tag(m_programmeItems[i]->GetEPGInfoTag());
     if (!tag)
       continue;
 
@@ -874,7 +874,7 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
         itemsPointer.start = i;
       }
       iLastChannelID = iCurrentChannelID;
-      CGUIListItemPtr item(new CFileItem(channel));
+      CFileItemPtr item(new CFileItem(channel));
       m_channelItems.push_back(item);
     }
   }
@@ -898,13 +898,13 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
   CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
   CDateTime rulerEnd; rulerEnd.SetFromUTCDateTime(m_gridEnd);
   CDateTimeSpan unit(0, 0, m_rulerUnit * MINSPERBLOCK, 0);
-  CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true)));
+  CFileItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true)));
   rulerItem->SetProperty("DateLabel", true);
   m_rulerItems.push_back(rulerItem);
 
   for (; ruler < rulerEnd; ruler += unit)
   {
-    CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedTime("", false)));
+    CFileItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedTime("", false)));
     rulerItem->SetLabel2(ruler.GetAsLocalizedDate(true));
     m_rulerItems.push_back(rulerItem);
   }
@@ -942,7 +942,7 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
     CDateTime gridCursor      = m_gridStart; //reset cursor for new channel
     unsigned long progIdx     = m_epgItemsPtr[row].start;
     unsigned long lastIdx     = m_epgItemsPtr[row].stop;
-    const CEpgInfoTagPtr info = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag();
+    const CEpgInfoTagPtr info = m_programmeItems[progIdx]->GetEPGInfoTag();
     int iEpgId                = info ? info->EpgID() : -1;
 
     /** FOR EACH BLOCK **********************************************************************/
@@ -951,8 +951,8 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
     {
       while (progIdx <= lastIdx)
       {
-        CGUIListItemPtr item = m_programmeItems[progIdx];
-        const CEpgInfoTagPtr tag(((CFileItem *)item.get())->GetEPGInfoTag());
+        CFileItemPtr item = m_programmeItems[progIdx];
+        const CEpgInfoTagPtr tag(item->GetEPGInfoTag());
         if (!tag)
         {
           progIdx++;
@@ -980,7 +980,7 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
 
     for (int block = 0; block < m_blocks; block++)
     {
-      CGUIListItemPtr item = m_gridIndex[row][block].item;
+      CFileItemPtr item = m_gridIndex[row][block].item;
 
       if (item != m_gridIndex[row][block+1].item)
       {
@@ -995,7 +995,7 @@ void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
         }
         else
         {
-          const CEpgInfoTagPtr tag(((CFileItem *)item.get())->GetEPGInfoTag());
+          const CEpgInfoTagPtr tag(item->GetEPGInfoTag());
           if (tag)
             m_gridIndex[row][savedBlock].item->SetProperty("GenreType", tag->GenreType());
         }
@@ -1408,7 +1408,7 @@ CPVRChannelPtr CGUIEPGGridContainer::GetChannel(int iIndex)
 {
   if (iIndex >= 0 && (size_t) iIndex < m_channelItems.size())
   {
-    CFileItemPtr fileItem = std::static_pointer_cast<CFileItem>(m_channelItems[iIndex]);
+    CFileItemPtr fileItem = m_channelItems[iIndex];
     if (fileItem->HasPVRChannelInfoTag())
       return fileItem->GetPVRChannelInfoTag();
   }
@@ -1502,9 +1502,9 @@ CEpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const
       m_channelCursor + m_channelOffset < m_channels &&
       m_blockCursor + m_blockOffset < m_blocks)
   {
-    CGUIListItemPtr currentItem(m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item);
+    CFileItemPtr currentItem(m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item);
     if (currentItem)
-      tag = static_cast<CFileItem *>(currentItem.get())->GetEPGInfoTag();
+      tag = currentItem->GetEPGInfoTag();
   }
 
   return tag;
@@ -1514,10 +1514,10 @@ int CGUIEPGGridContainer::GetBlock(const CEpgInfoTagPtr &tag, int channel) const
 {
   for (int block = 0; block < m_blocks; ++block)
   {
-    CGUIListItemPtr item = m_gridIndex[channel + m_channelOffset][block].item;
+    CFileItemPtr item = m_gridIndex[channel + m_channelOffset][block].item;
     if (item)
     {
-      CEpgInfoTagPtr currentTag(static_cast<CFileItem *>(item.get())->GetEPGInfoTag());
+      CEpgInfoTagPtr currentTag(item->GetEPGInfoTag());
       if (currentTag == tag)
         return (block - m_blockOffset >= 0) ? block - m_blockOffset : 0;
     }
@@ -1535,10 +1535,10 @@ int CGUIEPGGridContainer::GetChannel(const CEpgInfoTagPtr &tag) const
     {
       for (int block = 0; block < m_blocks; ++block)
       {
-        CGUIListItemPtr item = m_gridIndex[row][block].item;
+        CFileItemPtr item = m_gridIndex[row][block].item;
         if (item)
         {
-          CEpgInfoTagPtr currentTag(static_cast<CFileItem *>(item.get())->GetEPGInfoTag());
+          CEpgInfoTagPtr currentTag(item->GetEPGInfoTag());
           if (currentTag->HasPVRChannel()) // Take care. Gap tags have no channel.
           {
             if (currentTag->ChannelTag()->ChannelID() == channelId)
@@ -2064,11 +2064,11 @@ void CGUIEPGGridContainer::SetRenderOffset(const CPoint &offset)
 void CGUIEPGGridContainer::FreeItemsMemory()
 {
   // free memory of items
-  for (std::vector<CGUIListItemPtr>::iterator it = m_channelItems.begin(); it != m_channelItems.end(); ++it)
+  for (std::vector<CFileItemPtr>::iterator it = m_channelItems.begin(); it != m_channelItems.end(); ++it)
     (*it)->FreeMemory();
-  for (std::vector<CGUIListItemPtr>::iterator it = m_rulerItems.begin(); it != m_rulerItems.end(); ++it)
+  for (std::vector<CFileItemPtr>::iterator it = m_rulerItems.begin(); it != m_rulerItems.end(); ++it)
     (*it)->FreeMemory();
-  for (std::vector<CGUIListItemPtr>::iterator it = m_programmeItems.begin(); it != m_programmeItems.end(); ++it)
+  for (std::vector<CFileItemPtr>::iterator it = m_programmeItems.begin(); it != m_programmeItems.end(); ++it)
     (*it)->FreeMemory();
 }
 

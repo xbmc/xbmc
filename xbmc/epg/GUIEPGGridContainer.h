@@ -33,7 +33,7 @@ namespace EPG
 
   struct GridItemsPtr
   {
-    CGUIListItemPtr item;
+    CFileItemPtr item;
     float originWidth;
     float originHeight;
     float width;
@@ -144,9 +144,9 @@ namespace EPG
       long stop;
     };
     std::vector<ItemsPtr> m_epgItemsPtr;
-    std::vector<CGUIListItemPtr> m_channelItems;
-    std::vector<CGUIListItemPtr> m_rulerItems;
-    std::vector<CGUIListItemPtr> m_programmeItems;
+    std::vector<CFileItemPtr> m_channelItems;
+    std::vector<CFileItemPtr> m_rulerItems;
+    std::vector<CFileItemPtr> m_programmeItems;
     std::vector<CGUIListItemLayout> m_channelLayouts;
     std::vector<CGUIListItemLayout> m_focusedChannelLayouts;
     std::vector<CGUIListItemLayout> m_focusedProgrammeLayouts;
