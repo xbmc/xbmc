@@ -25,6 +25,7 @@
 #include "URL.h"
 #include "ZipManager.h"
 #include "FileItem.h"
+#include "filesystem/Directorization.h"
 #include "utils/StringUtils.h"
 
 #include <vector>
@@ -32,6 +33,19 @@
 using namespace std;
 namespace XFILE
 {
+
+  static CFileItemPtr ZipEntryToFileItem(const SZipEntry& entry, const std::string& label, const std::string& path, bool isFolder)
+  {
+    CFileItemPtr item(new CFileItem(label));
+    if (!isFolder)
+    {
+      item->m_dwSize = entry.usize;
+      item->m_idepth = entry.method;
+    }
+
+    return item;
+  }
+
   CZipDirectory::CZipDirectory()
   {
   }
@@ -48,92 +62,19 @@ namespace XFILE
     if (!urlOrig.IsProtocol("zip"))
       urlZip = URIUtils::CreateArchivePath("zip", urlOrig);
 
-    CURL url(urlZip);
-    std::string strOptions = url.GetOptions();
-    std::string strPathInZip = url.GetFileName();
-
-    url.SetOptions(""); // delete options to have a clean path to add stuff too
-    url.SetFileName(""); // delete filename too as our names later will contain it
-
-    std::string strSlashPath = url.Get();
-
-    std::string strBuffer;
-
-    // the RAR code depends on things having a "/" at the end of the path
-    URIUtils::AddSlashAtEnd(strSlashPath);
-
-    vector<SZipEntry> entries;
-    // turn on fast lookups
-    bool bWasFast(items.GetFastLookup());
-    items.SetFastLookup(true);
-    if (!g_ZipManager.GetZipList(urlZip,entries))
+    vector<SZipEntry> zipEntries;
+    if (!g_ZipManager.GetZipList(urlZip, zipEntries))
       return false;
 
-    vector<std::string> baseTokens;
-    if (!strPathInZip.empty())
-      StringUtils::Tokenize(strPathInZip,baseTokens,"/");
+    // prepare the ZIP entries for directorization
+    DirectorizeEntries<SZipEntry> entries;
+    entries.reserve(zipEntries.size());
+    for (const auto& zipEntry : zipEntries)
+      entries.push_back(DirectorizeEntry<SZipEntry>(zipEntry.name, zipEntry));
 
-    for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
-    {
-      std::string strEntryName(ze->name);
-      StringUtils::Replace(strEntryName, '\\','/');
-      if (strEntryName == strPathInZip) // skip the listed dir
-        continue;
+    // directorize the ZIP entries into files and directories
+    Directorize(urlZip, entries, ZipEntryToFileItem, items);
 
-      vector<std::string> pathTokens;
-      StringUtils::Tokenize(strEntryName,pathTokens,"/");
-      if (pathTokens.size() < baseTokens.size()+1)
-        continue;
-
-      bool bAdd=true;
-      strEntryName = "";
-      for ( unsigned int i=0;i<baseTokens.size();++i )
-      {
-        if (pathTokens[i] != baseTokens[i])
-        {
-          bAdd = false;
-          break;
-        }
-        strEntryName += pathTokens[i] + "/";
-      }
-      if (!bAdd)
-        continue;
-
-      strEntryName += pathTokens[baseTokens.size()];
-      char c=ze->name[strEntryName.size()];
-      if (c == '/' || c == '\\')
-        strEntryName += '/';
-      bool bIsFolder = false;
-      if (strEntryName[strEntryName.size()-1] != '/') // this is a file
-      {
-        strBuffer = strSlashPath + strEntryName + strOptions;
-      }
-      else
-      { // this is new folder. add if not already added
-        bIsFolder = true;
-        strBuffer = strSlashPath + strEntryName + strOptions;
-        if (items.Contains(strBuffer)) // already added
-          continue;
-      }
-
-      CFileItemPtr pFileItem(new CFileItem);
-
-      g_charsetConverter.unknownToUTF8(pathTokens[baseTokens.size()]);
-
-      pFileItem->SetLabel(pathTokens[baseTokens.size()]);
-      if (bIsFolder)
-      {
-        pFileItem->m_dwSize = 0;
-        URIUtils::AddSlashAtEnd(strBuffer);
-      }
-      else
-        pFileItem->m_dwSize = ze->usize;
-      pFileItem->SetPath(strBuffer);
-      pFileItem->m_bIsFolder = bIsFolder;
-      pFileItem->m_idepth = ze->method;
-      items.Add(pFileItem);
-    }
-    items.SetFastLookup(bWasFast);
     return true;
   }
 
