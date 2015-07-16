@@ -173,7 +173,7 @@ namespace EPG
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
 
   private:
-    void UpdateItems();
+    void UpdateItems(CFileItemList *items);
 
     EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
     int GetBlock(const EPG::CEpgInfoTagPtr &tag, int channel) const;

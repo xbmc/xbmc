@@ -807,139 +807,10 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
         return true;
 
       case GUI_MSG_LABEL_BIND:
-        if (message.GetPointer() && m_nextUpdateTimeout.IsTimePast())
+        if (m_nextUpdateTimeout.IsTimePast())
         {
-          CSingleLock lock(m_critSection);
-
-          /* Safe currently selected epg tag. Selection shall be restored after update. */
-          const CEpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
-
-          Reset();
-
-          CFileItemList *items = (CFileItemList *)message.GetPointer();
-
-          /* Create programme items */
-          m_programmeItems.reserve(items->Size());
-          for (int i = 0; i < items->Size(); i++)
-          {
-            CFileItemPtr fileItem = items->Get(i);
-            if (fileItem->HasEPGInfoTag() && fileItem->GetEPGInfoTag()->HasPVRChannel())
-              m_programmeItems.push_back(fileItem);
-          }
-
-          /* Create Channel items */
-          int iLastChannelID = -1;
-          ItemsPtr itemsPointer;
-          itemsPointer.start = 0;
-          for (unsigned int i = 0; i < m_programmeItems.size(); ++i)
-          {
-            const CEpgInfoTagPtr tag(((CFileItem*)m_programmeItems[i].get())->GetEPGInfoTag());
-            if (!tag)
-              continue;
-
-            CPVRChannelPtr channel = tag->ChannelTag();
-            if (!channel)
-              continue;
-            int iCurrentChannelID = channel->ChannelID();
-            if (iCurrentChannelID != iLastChannelID)
-            {
-              if (i > 0)
-              {
-                itemsPointer.stop = i-1;
-                m_epgItemsPtr.push_back(itemsPointer);
-                itemsPointer.start = i;
-              }
-              iLastChannelID = iCurrentChannelID;
-              CGUIListItemPtr item(new CFileItem(channel));
-              m_channelItems.push_back(item);
-            }
-          }
-          if (!m_programmeItems.empty())
-          {
-            itemsPointer.stop = m_programmeItems.size()-1;
-            m_epgItemsPtr.push_back(itemsPointer);
-          }
-
-          m_gridIndex.reserve(m_channelItems.size());
-          for (unsigned int i = 0; i < m_channelItems.size(); i++)
-          {
-            std::vector<GridItemsPtr> blocks(MAXBLOCKS);
-            m_gridIndex.push_back(blocks);
-          }
-
-          FreeItemsMemory();
-          UpdateLayout();
-
-          /* Create Ruler items */
-          CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
-          CDateTime rulerEnd; rulerEnd.SetFromUTCDateTime(m_gridEnd);
-          CDateTimeSpan unit(0, 0, m_rulerUnit * MINSPERBLOCK, 0);
-          CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true)));
-          rulerItem->SetProperty("DateLabel", true);
-          m_rulerItems.push_back(rulerItem);
-
-          for (; ruler < rulerEnd; ruler += unit)
-          {
-            CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedTime("", false)));
-            rulerItem->SetLabel2(ruler.GetAsLocalizedDate(true));
-            m_rulerItems.push_back(rulerItem);
-          }
-
-          UpdateItems();
-
-          m_channels = m_epgItemsPtr.size();
-
-          if (prevSelectedEpgTag)
-          {
-            // Grid index got recreated. Do cursors and offsets still point to the same epg tag?
-            if (prevSelectedEpgTag == GetSelectedEpgInfoTag())
-            {
-              m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY); // TODO ksooo: Refactor to have only one return statement.
-              return true;
-            }
-
-            int newChannelCursor = GetChannel(prevSelectedEpgTag);
-            if (newChannelCursor >= 0)
-            {
-              int newBlockCursor = GetBlock(prevSelectedEpgTag, newChannelCursor);
-              if (newBlockCursor >= 0)
-              {
-                if (newChannelCursor == m_channelCursor && newBlockCursor == m_blockCursor)
-                {
-                  m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY); // TODO ksooo: Refactor to have only one return statement.
-                  return true;
-                }
-
-                if (newBlockCursor > 0 && newBlockCursor != m_blockCursor)
-                {
-                  SetInvalid();
-                  SetSelectedBlock(newBlockCursor);
-                }
-
-                if (newChannelCursor != m_channelCursor)
-                {
-                  SetInvalid();
-                  SetSelectedChannel(newChannelCursor);
-                }
-
-                if (newBlockCursor > 0)
-                {
-                  m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY); // TODO ksooo: Refactor to have only one return statement.
-                  return true;
-                }
-              }
-            }
-          }
-
-          // Fallback. Goto now.
-          m_item = GetItem(m_channelCursor);
-          if (m_item)
-            SetBlock(GetBlock(m_item->item, m_channelCursor));
-
-          SetInvalid();
-          GoToNow();
-
-          m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY); // TODO ksooo: Refactor to have only one return statement.
+          UpdateItems(static_cast<CFileItemList *>(message.GetPointer()));
+          m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY);
           return true;
         }
         break;
@@ -959,8 +830,85 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
-void CGUIEPGGridContainer::UpdateItems()
+void CGUIEPGGridContainer::UpdateItems(CFileItemList *items)
 {
+  if (!items)
+    return;
+
+  CSingleLock lock(m_critSection);
+
+  /* Safe currently selected epg tag. Selection shall be restored after update. */
+  const CEpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
+
+  Reset();
+
+  /* Create programme items */
+  m_programmeItems.reserve(items->Size());
+  for (int i = 0; i < items->Size(); i++)
+  {
+    CFileItemPtr fileItem = items->Get(i);
+    if (fileItem->HasEPGInfoTag() && fileItem->GetEPGInfoTag()->HasPVRChannel())
+      m_programmeItems.push_back(fileItem);
+  }
+
+  /* Create Channel items */
+  int iLastChannelID = -1;
+  ItemsPtr itemsPointer;
+  itemsPointer.start = 0;
+  for (unsigned int i = 0; i < m_programmeItems.size(); ++i)
+  {
+    const CEpgInfoTagPtr tag(((CFileItem*)m_programmeItems[i].get())->GetEPGInfoTag());
+    if (!tag)
+      continue;
+
+    CPVRChannelPtr channel = tag->ChannelTag();
+    if (!channel)
+      continue;
+    int iCurrentChannelID = channel->ChannelID();
+    if (iCurrentChannelID != iLastChannelID)
+    {
+      if (i > 0)
+      {
+        itemsPointer.stop = i-1;
+        m_epgItemsPtr.push_back(itemsPointer);
+        itemsPointer.start = i;
+      }
+      iLastChannelID = iCurrentChannelID;
+      CGUIListItemPtr item(new CFileItem(channel));
+      m_channelItems.push_back(item);
+    }
+  }
+  if (!m_programmeItems.empty())
+  {
+    itemsPointer.stop = m_programmeItems.size()-1;
+    m_epgItemsPtr.push_back(itemsPointer);
+  }
+
+  m_gridIndex.reserve(m_channelItems.size());
+  for (unsigned int i = 0; i < m_channelItems.size(); i++)
+  {
+    std::vector<GridItemsPtr> blocks(MAXBLOCKS);
+    m_gridIndex.push_back(blocks);
+  }
+
+  FreeItemsMemory();
+  UpdateLayout();
+
+  /* Create Ruler items */
+  CDateTime ruler; ruler.SetFromUTCDateTime(m_gridStart);
+  CDateTime rulerEnd; rulerEnd.SetFromUTCDateTime(m_gridEnd);
+  CDateTimeSpan unit(0, 0, m_rulerUnit * MINSPERBLOCK, 0);
+  CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true)));
+  rulerItem->SetProperty("DateLabel", true);
+  m_rulerItems.push_back(rulerItem);
+
+  for (; ruler < rulerEnd; ruler += unit)
+  {
+    CGUIListItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedTime("", false)));
+    rulerItem->SetLabel2(ruler.GetAsLocalizedDate(true));
+    m_rulerItems.push_back(rulerItem);
+  }
+
   /* check for invalid start and end time */
   if (m_gridStart >= m_gridEnd)
   {
@@ -1071,6 +1019,49 @@ void CGUIEPGGridContainer::UpdateItems()
   /******************************************* END ******************************************/
 
   CLog::Log(LOGDEBUG, "CGUIEPGGridContainer - %s completed successfully in %u ms", __FUNCTION__, (unsigned int)(XbmcThreads::SystemClockMillis()-tick));
+
+  m_channels = m_epgItemsPtr.size();
+
+  if (prevSelectedEpgTag)
+  {
+    // Grid index got recreated. Do cursors and offsets still point to the same epg tag?
+    if (prevSelectedEpgTag == GetSelectedEpgInfoTag())
+      return;
+
+    int newChannelCursor = GetChannel(prevSelectedEpgTag);
+    if (newChannelCursor >= 0)
+    {
+      int newBlockCursor = GetBlock(prevSelectedEpgTag, newChannelCursor);
+      if (newBlockCursor >= 0)
+      {
+        if (newChannelCursor == m_channelCursor && newBlockCursor == m_blockCursor)
+          return;
+
+        if (newBlockCursor > 0 && newBlockCursor != m_blockCursor)
+        {
+          SetInvalid();
+          SetSelectedBlock(newBlockCursor);
+        }
+
+        if (newChannelCursor != m_channelCursor)
+        {
+          SetInvalid();
+          SetSelectedChannel(newChannelCursor);
+        }
+
+        if (newBlockCursor > 0)
+          return;
+      }
+    }
+  }
+
+  // Fallback. Goto now.
+  m_item = GetItem(m_channelCursor);
+  if (m_item)
+    SetBlock(GetBlock(m_item->item, m_channelCursor));
+
+  SetInvalid();
+  GoToNow();
 }
 
 void CGUIEPGGridContainer::ChannelScroll(int amount)
