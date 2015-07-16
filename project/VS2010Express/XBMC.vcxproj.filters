@@ -6172,6 +6172,9 @@
     <ClInclude Include="..\..\xbmc\events\UniqueEvent.h">
       <Filter>events</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\Directorization.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
