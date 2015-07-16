@@ -166,7 +166,7 @@ void CWinDsRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   CSingleLock lock(g_graphicsContext);
 
-  if (!CMadvrCallback::Get()->UsingMadvr()) 
+  if (!CMadvrCallback::Get()->UsingMadvr() || !g_graphicsContext.IsFullScreenVideo())
     ManageDisplay();
 
   Render(flags);
@@ -176,7 +176,7 @@ void CWinDsRenderer::Flush()
 {
   PreInit();
   SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
-  if (!CMadvrCallback::Get()->UsingMadvr())
+  if (!CMadvrCallback::Get()->UsingMadvr() || !g_graphicsContext.IsFullScreenVideo())
     ManageDisplay();
 
   m_bConfigured = true;
