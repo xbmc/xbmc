@@ -845,7 +845,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_GUI_DIALOG_OPEN:  
   {
     CGUIDialog* pDialog = static_cast<CGUIDialog*>(GetWindow(pMsg->param1));
-    if (!pDialog)
+    if (pDialog)
       pDialog->Open();
   }
   break;
