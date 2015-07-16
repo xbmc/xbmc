@@ -160,7 +160,7 @@ namespace ADDON
     {
       XbmcPvrStream *foundStream = GetStreamById(iPhysicalId);
       if (foundStream)
-        stream = foundStream;
+        *stream = *foundStream;
       else
       {
         stream->iIdentifier = -1;
