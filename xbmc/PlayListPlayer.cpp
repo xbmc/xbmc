@@ -39,6 +39,7 @@
 #include "messaging/ApplicationMessenger.h"
 
 using namespace PLAYLIST;
+using namespace KODI::MESSAGING;
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
@@ -875,7 +876,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       if (GetCurrentPlaylist() != pMsg->param1)
         SetCurrentPlaylist(pMsg->param1);
 
-      //PlayListPlayerPlay(pMsg->param2);
+      CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, pMsg->param2);
     }
   }
   break;
