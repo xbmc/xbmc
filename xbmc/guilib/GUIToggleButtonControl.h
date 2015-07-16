@@ -51,6 +51,7 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
+  virtual void SetMinWidth(float minWidth);
   void SetLabel(const std::string& strLabel);
   void SetAltLabel(const std::string& label);
   virtual std::string GetDescription() const;
