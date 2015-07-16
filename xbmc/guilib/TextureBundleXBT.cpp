@@ -122,7 +122,7 @@ void CTextureBundleXBT::GetTexturesFromPath(const std::string &path, std::vector
   std::string testPath = Normalize(path);
   URIUtils::AddSlashAtEnd(testPath);
 
-  std::vector<CXBTFFile>& files = m_XBTFReader.GetFiles();
+  std::vector<CXBTFFile> files = m_XBTFReader.GetFiles();
   for (size_t i = 0; i < files.size(); i++)
   {
     std::string path = files[i].GetPath();
@@ -136,14 +136,14 @@ bool CTextureBundleXBT::LoadTexture(const std::string& Filename, CBaseTexture** 
 {
   std::string name = Normalize(Filename);
 
-  CXBTFFile* file = m_XBTFReader.Find(name);
-  if (!file)
+  CXBTFFile file;
+  if (!m_XBTFReader.Get(name, file))
     return false;
 
-  if (file->GetFrames().size() == 0)
+  if (file.GetFrames().size() == 0)
     return false;
 
-  CXBTFFrame& frame = file->GetFrames().at(0);
+  CXBTFFrame& frame = file.GetFrames().at(0);
   if (!ConvertFrameToTexture(Filename, frame, ppTexture))
   {
     return false;
@@ -160,20 +160,20 @@ int CTextureBundleXBT::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
 {
   std::string name = Normalize(Filename);
 
-  CXBTFFile* file = m_XBTFReader.Find(name);
-  if (!file)
+  CXBTFFile file;
+  if (!m_XBTFReader.Get(name, file))
     return false;
 
-  if (file->GetFrames().size() == 0)
+  if (file.GetFrames().size() == 0)
     return false;
 
-  size_t nTextures = file->GetFrames().size();
+  size_t nTextures = file.GetFrames().size();
   *ppTextures = new CBaseTexture*[nTextures];
   *ppDelays = new int[nTextures];
 
   for (size_t i = 0; i < nTextures; i++)
   {
-    CXBTFFrame& frame = file->GetFrames().at(i);
+    CXBTFFrame& frame = file.GetFrames().at(i);
 
     if (!ConvertFrameToTexture(Filename, frame, &((*ppTextures)[i])))
     {
@@ -183,9 +183,9 @@ int CTextureBundleXBT::LoadAnim(const std::string& Filename, CBaseTexture*** ppT
     (*ppDelays)[i] = frame.GetDuration();
   }
 
-  width = file->GetFrames().at(0).GetWidth();
-  height = file->GetFrames().at(0).GetHeight();
-  nLoops = file->GetLoop();
+  width = file.GetFrames().at(0).GetWidth();
+  height = file.GetFrames().at(0).GetHeight();
+  nLoops = file.GetLoop();
 
   return nTextures;
 }

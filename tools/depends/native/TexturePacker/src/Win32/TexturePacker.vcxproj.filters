@@ -48,6 +48,9 @@
     <ClCompile Include="..\DecoderManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\xbmc\guilib\XBTFReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cmdlineargs.h">
@@ -91,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="..\DecoderManager.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\xbmc\guilib\XBTFReader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
