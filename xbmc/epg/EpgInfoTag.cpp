@@ -68,8 +68,8 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::s
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
     m_iUniqueBroadcastID(-1),
-    m_strIconPath(strIconPath),
     m_iYear(0),
+    m_strIconPath(strIconPath),
     m_epg(epg),
     m_pvrChannel(pvrChannel)
 {
