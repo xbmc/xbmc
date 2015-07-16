@@ -116,7 +116,7 @@ void CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
   
   CSingleLock lock (m_critSection);
 
-  if (msg->dwMessage == TMSG_GUI_DIALOG_OPEN)
+  if (msg->dwMessage == TMSG_GUI_MESSAGE)
     m_vecWindowMessages.push(msg);
   else
     m_vecMessages.push(msg);
