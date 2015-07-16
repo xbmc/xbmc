@@ -62,10 +62,25 @@ const std::array<TYPE, 5> infoProviderTypes = {
   ADDON_SCRAPER_TVSHOWS,
 };
 
+const std::array<TYPE, 7> lookAndFeelTypes = {
+  ADDON_SKIN,
+  ADDON_SCREENSAVER,
+  ADDON_RESOURCE_IMAGES,
+  ADDON_RESOURCE_LANGUAGE,
+  ADDON_RESOURCE_UISOUNDS,
+  ADDON_VIZ,
+};
+
+
 
 static bool IsInfoProviderType(const AddonPtr& addon)
 {
   return std::find(infoProviderTypes.begin(), infoProviderTypes.end(), addon->Type()) != infoProviderTypes.end();
+}
+
+static bool IsLookAndFeelType(const AddonPtr& addon)
+{
+  return std::find(lookAndFeelTypes.begin(), lookAndFeelTypes.end(), addon->Type()) != lookAndFeelTypes.end();
 }
 
 static bool IsSystemAddon(const AddonPtr& addon)
@@ -130,12 +145,24 @@ static void GenerateCategoryListing(const CURL& path, const VECADDONS& addons, C
       item->SetArt("thumb", thumb);
     items.Add(item);
   }
+  if (std::any_of(addons.begin(), addons.end(), IsLookAndFeelType))
+  {
+    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24997)));
+    item->SetPath(URIUtils::AddFileToFolder(path.Get(), "group.lookandfeel"));
+    item->m_bIsFolder = true;
+    const std::string thumb = "DefaultAddonLookAndFeel.png";
+    if (g_TextureManager.HasTexture(thumb))
+      item->SetArt("thumb", thumb);
+    items.Add(item);
+  }
   for (unsigned int i = ADDON_UNKNOWN + 1; i < ADDON_MAX - 1; ++i)
   {
     const TYPE type = (TYPE)i;
     if (std::find(dependencyTypes.begin(), dependencyTypes.end(), type) != dependencyTypes.end())
       continue;
     if (std::find(infoProviderTypes.begin(), infoProviderTypes.end(), type) != infoProviderTypes.end())
+      continue;
+    if (std::find(lookAndFeelTypes.begin(), lookAndFeelTypes.end(), type) != lookAndFeelTypes.end())
       continue;
 
     for (unsigned int j = 0; j < addons.size(); ++j)
@@ -164,6 +191,30 @@ static void GenerateAddonListingForCategory(const CURL& path, VECADDONS& addons,
     items.SetLabel(g_localizeStrings.Get(24993));
 
     for (const auto& type : infoProviderTypes)
+    {
+      for (const auto& addon : addons)
+      {
+        if (addon->IsType(type))
+        {
+          CFileItemPtr item(new CFileItem(TranslateType(type, true)));
+          CURL itemPath = path;
+          itemPath.SetFileName(TranslateType(type, false));
+          item->SetPath(itemPath.Get());
+          item->m_bIsFolder = true;
+          std::string thumb = GetIcon(type);
+          if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
+            item->SetArt("thumb", thumb);
+          items.Add(item);
+          break;
+        }
+      }
+    }
+  }
+  else if (category == "group.lookandfeel")
+  {
+    items.SetProperty("addoncategory", g_localizeStrings.Get(24997));
+    items.SetLabel(g_localizeStrings.Get(24997));
+    for (const auto& type : lookAndFeelTypes)
     {
       for (const auto& addon : addons)
       {
