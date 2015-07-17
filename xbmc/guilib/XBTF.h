@@ -95,6 +95,9 @@ public:
 
   const std::vector<CXBTFFrame>& GetFrames() const;
   std::vector<CXBTFFrame>& GetFrames();
+
+  uint64_t GetPackedSize() const;
+  uint64_t GetUnpackedSize() const;
   uint64_t GetHeaderSize() const;
 
   static const size_t MaximumPathLength = 256;
