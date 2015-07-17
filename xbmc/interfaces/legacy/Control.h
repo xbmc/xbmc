@@ -833,6 +833,16 @@ namespace XBMCAddon
        virtual void addLabel(const String& label);
 
       /**
+       * setScrolling(scroll) -- Set scrolling.
+       *
+       * scroll          : boolean - True = enabled / False = disabled
+       *
+       * example:
+       *   - self.fadelabel.setScrolling(False)
+       */
+      virtual void setScrolling(bool scroll);
+
+      /**
        * reset() -- Clear this fade label.
        * 
        * example:
