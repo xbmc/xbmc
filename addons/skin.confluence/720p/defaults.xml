@@ -69,6 +69,8 @@
 		<top>126</top>
 		<textureup>scroll-up-2.png</textureup>
 		<texturedown>scroll-down-2.png</texturedown>
+		<textureupdisabled colordiffuse="40FFFFFF">scroll-up-2.png</textureupdisabled>
+		<texturedowndisabled colordiffuse="40FFFFFF">scroll-down-2.png</texturedowndisabled>
 		<textureupfocus>scroll-up-focus-2.png</textureupfocus>
 		<texturedownfocus>scroll-down-focus-2.png</texturedownfocus>
 		<align>right</align>
@@ -94,6 +96,8 @@
 		<texturenofocus>-</texturenofocus>
 		<textureup>scroll-up-2.png</textureup>
 		<texturedown>scroll-down-2.png</texturedown>
+		<textureupdisabled colordiffuse="40FFFFFF">scroll-up-2.png</textureupdisabled>
+		<texturedowndisabled colordiffuse="40FFFFFF">scroll-down-2.png</texturedowndisabled>
 		<textureupfocus>scroll-up-focus-2.png</textureupfocus>
 		<texturedownfocus>scroll-down-focus-2.png</texturedownfocus>
 		<font>font13</font>
@@ -115,6 +119,8 @@
 		<textureradioonnofocus>radiobutton-focus.png</textureradioonnofocus>
 		<textureradioofffocus>radiobutton-nofocus.png</textureradioofffocus>
 		<textureradiooffnofocus>radiobutton-nofocus.png</textureradiooffnofocus>
+		<textureradioondisabled colordiffuse="40FFFFFF">radiobutton-focus.png</textureradioondisabled>
+		<textureradiooffdisabled colordiffuse="40FFFFFF">radiobutton-focus.png</textureradiooffdisabled>
 		<texturefocus border="5">button-focus.png</texturefocus>
 		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		<label>215</label>
