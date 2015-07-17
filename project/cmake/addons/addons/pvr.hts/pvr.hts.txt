@@ -1,1 +1,1 @@
-pvr.hts https://github.com/kodi-pvr/pvr.hts f5c5afb
+pvr.hts https://github.com/kodi-pvr/pvr.hts 60931a9

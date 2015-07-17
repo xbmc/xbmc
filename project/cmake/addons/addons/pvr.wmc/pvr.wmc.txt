@@ -1,1 +1,1 @@
-pvr.wmc https://github.com/kodi-pvr/pvr.wmc 3907c8b
+pvr.wmc https://github.com/kodi-pvr/pvr.wmc 6dc412f
