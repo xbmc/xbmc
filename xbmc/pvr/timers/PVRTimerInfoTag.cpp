@@ -323,32 +323,35 @@ void CPVRTimerInfoTag::UpdateSummary(void)
   CSingleLock lock(m_critSection);
   m_strSummary.clear();
 
-  const std::string startDate(StartAsLocalTime().GetAsLocalizedDate());
-  const std::string endDate(EndAsLocalTime().GetAsLocalizedDate());
+  const std::string startDate(IsStartAtAnyTime() ?
+      g_localizeStrings.Get(807) /* "Any day" */ : StartAsLocalTime().GetAsLocalizedDate());
+  const std::string endDate(IsEndAtAnyTime() ?
+      g_localizeStrings.Get(807) /* "Any day" */ : EndAsLocalTime().GetAsLocalizedDate());
 
   if ((m_iWeekdays != PVR_WEEKDAY_NONE) || (startDate == endDate))
   {
     m_strSummary = StringUtils::Format("%s %s %s %s %s",
         m_iWeekdays != PVR_WEEKDAY_NONE ?
-          GetWeekdaysString().c_str() : startDate.c_str(),
-        g_localizeStrings.Get(19159).c_str(),
+          GetWeekdaysString().c_str() : (IsStartAtAnyTime() && IsEndAtAnyTime() && FirstDayAsLocalTime().IsValid()) ?
+            FirstDayAsLocalTime().GetAsLocalizedDate().c_str() : startDate.c_str(),
+        g_localizeStrings.Get(19159).c_str(), // "from"
         IsStartAtAnyTime() ?
-          g_localizeStrings.Get(19161).c_str() : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
-        g_localizeStrings.Get(19160).c_str(),
+          g_localizeStrings.Get(19161).c_str() /* "any time" */ : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
+        g_localizeStrings.Get(19160).c_str(), // "to"
         IsEndAtAnyTime() ?
-          g_localizeStrings.Get(19161).c_str() : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
+          g_localizeStrings.Get(19161).c_str() /* "any time" */ : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
   else
   {
     m_strSummary = StringUtils::Format("%s %s %s %s %s %s",
         startDate.c_str(),
-        g_localizeStrings.Get(19159).c_str(),
+        g_localizeStrings.Get(19159).c_str(), // "from"
         IsStartAtAnyTime() ?
-          g_localizeStrings.Get(19161).c_str() : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
-        g_localizeStrings.Get(19160).c_str(),
+          g_localizeStrings.Get(19161).c_str() /* "any time" */ : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
+        g_localizeStrings.Get(19160).c_str(), // "to"
         endDate.c_str(),
         IsEndAtAnyTime() ?
-          g_localizeStrings.Get(19161).c_str() : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
+          g_localizeStrings.Get(19161).c_str() /* "any time" */ : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
 }
 
@@ -711,16 +714,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
   }
 
   newTag->SetTimerType(timerType);
-
-  if (tag->Plot().empty())
-  {
-    newTag->UpdateSummary();
-  }
-  else
-  {
-    newTag->m_strSummary = tag->Plot();
-  }
-
+  newTag->UpdateSummary();
   newTag->m_epgTag = g_EpgContainer.GetById(tag->EpgID())->GetTag(tag->StartAsUTC());
 
   /* unused only for reference */
