@@ -557,6 +557,11 @@ namespace PVR
     static const char *ToString(const PVR_ERROR error);
 
     /*!
+     * @brief is timeshift active?
+     */
+    bool IsTimeshifting() const;
+
+    /*!
      * @brief actual playing time
      */
     time_t GetPlayingTime() const;

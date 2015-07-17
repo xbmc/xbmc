@@ -1829,6 +1829,21 @@ bool CPVRClient::CanSeekStream(void) const
   return bReturn;
 }
 
+bool CPVRClient::IsTimeshifting(void) const
+{
+  bool bReturn(false);
+  if (IsPlaying())
+  {
+    try
+    {
+      if (m_pStruct->IsTimeshifting)
+        bReturn = m_pStruct->IsTimeshifting();
+    }
+    catch (std::exception &e) { LogException(e, __FUNCTION__); }
+  }
+  return bReturn;
+}
+
 time_t CPVRClient::GetPlayingTime(void) const
 {
   time_t time = 0;
