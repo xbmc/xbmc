@@ -1,1 +1,1 @@
-pvr.demo https://github.com/kodi-pvr/pvr.demo 92cea88
+pvr.demo https://github.com/kodi-pvr/pvr.demo 3b2cd18

@@ -1,1 +1,1 @@
-pvr.stalker https://github.com/kodi-pvr/pvr.stalker c9f2ac3
+pvr.stalker https://github.com/kodi-pvr/pvr.stalker 5f6eb19
