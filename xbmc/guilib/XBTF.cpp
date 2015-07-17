@@ -169,6 +169,24 @@ std::vector<CXBTFFrame>& CXBTFFile::GetFrames()
   return m_frames;
 }
 
+uint64_t CXBTFFile::GetPackedSize() const
+{
+  uint64_t size = 0;
+  for (const auto& frame : m_frames)
+    size += frame.GetPackedSize();
+
+  return size;
+}
+
+uint64_t CXBTFFile::GetUnpackedSize() const
+{
+  uint64_t size = 0;
+  for (const auto& frame : m_frames)
+    size += frame.GetUnpackedSize();
+
+  return size;
+}
+
 uint64_t CXBTFFile::GetHeaderSize() const
 {
   uint64_t result =
