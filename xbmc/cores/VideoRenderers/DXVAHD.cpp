@@ -34,6 +34,7 @@
 #include "settings/MediaSettings.h"
 #include "utils/AutoPtrHandle.h"
 #include "utils/Log.h"
+#include "utils/win32/memcpy_sse2.h"
 #include "win32/WIN32Util.h"
 #include "windowing/WindowingFactory.h"
 
@@ -434,9 +435,9 @@ bool CProcessorHD::CreateSurfaces()
 CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
 {
   // RENDER_FMT_YUV420P -> DXGI_FORMAT_NV12
-  // RENDER_FMT_YUV420P10 -> DXGI_FORMAT_P010/DXGI_FORMAT_Y410
-  // RENDER_FMT_YUV420P16 -> DXGI_FORMAT_P016/DXGI_FORMAT_Y416
-  if (picture->format != RENDER_FMT_YUV420P
+  // RENDER_FMT_YUV420P10 -> DXGI_FORMAT_P010
+  // RENDER_FMT_YUV420P16 -> DXGI_FORMAT_P016
+  if ( picture->format != RENDER_FMT_YUV420P
     && picture->format != RENDER_FMT_YUV420P10
     && picture->format != RENDER_FMT_YUV420P16)
   {
@@ -470,28 +471,38 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
     return nullptr;
   }
 
-  // Convert to NV12 - Luma
-  // TODO: Optimize this later using shaders/swscale/etc.
-  uint8_t *s = picture->data[0];
-  uint8_t* bits = (uint8_t*)rectangle.pData;
-  for (unsigned y = 0; y < picture->iHeight; y++)
+  if (picture->format == RENDER_FMT_YUV420P)
   {
-    memcpy(bits, s, picture->iWidth);
-    s += picture->iLineSize[0];
-    bits += rectangle.RowPitch;
+    uint8_t*  pData = static_cast<uint8_t*>(rectangle.pData);
+    uint8_t*  dst[] = { pData, pData + sDesc.Height * rectangle.RowPitch };
+    int dstStride[] = { rectangle.RowPitch, rectangle.RowPitch };
+    convert_yuv420_nv12(picture->data, picture->iLineSize, picture->iHeight, picture->iWidth, dst, dstStride);
   }
-
-  // Convert to NV12 - Chroma
-  uint8_t *s_u, *s_v, *d_uv;
-  for (unsigned y = 0; y < picture->iHeight / 2; y++)
+  else
   {
-    s_u = picture->data[1] + y * picture->iLineSize[1];
-    s_v = picture->data[2] + y * picture->iLineSize[2];
-    d_uv = (uint8_t*)rectangle.pData + (sDesc.Height + y) * rectangle.RowPitch;
-    for (unsigned x = 0; x < picture->iWidth / 2; x++)
+    // TODO: Optimize this later using sse2/sse4
+    uint16_t * d_y = static_cast<uint16_t*>(rectangle.pData);
+    uint16_t * d_uv = d_y + sDesc.Height * rectangle.RowPitch;
+    // Convert to NV12 - Luma
+    for (size_t line = 0; line < picture->iHeight; ++line)
     {
-      *d_uv++ = *s_u++;
-      *d_uv++ = *s_v++;
+      uint16_t * y = (uint16_t*)(picture->data[0] + picture->iLineSize[0] * line);
+      uint16_t * d = d_y + rectangle.RowPitch * line;
+      memcpy(d, y, picture->iLineSize[0]);
+    }
+    // Convert to NV12 - Chroma
+    size_t chromaWidth = (picture->iWidth + 1) >> 1;
+    size_t chromaHeight = picture->iHeight >> 1;
+    for (size_t line = 0; line < chromaHeight; ++line)
+    {
+      uint16_t * u = (uint16_t*)picture->data[1] + line * picture->iLineSize[1];
+      uint16_t * v = (uint16_t*)picture->data[2] + line * picture->iLineSize[2];
+      uint16_t * d = d_uv + line * rectangle.RowPitch;
+      for (size_t x = 0; x < chromaWidth; x++)
+      {
+        *d++ = *u++; 
+        *d++ = *v++;
+      }
     }
   }
   pContext->Unmap(texture, subresource);
@@ -502,7 +513,6 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
   pic->view           = view;
   return pic;
 }
-
 
 bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def)
 {
