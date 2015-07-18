@@ -425,6 +425,7 @@ void CFileItem::Initialize()
   m_iHasLock = 0;
   m_bCanQueue = true;
   m_specialSort = SortSpecialNone;
+  m_doContentLookup = true;
 }
 
 void CFileItem::Reset()

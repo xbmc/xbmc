@@ -417,7 +417,13 @@ public:
    \brief Some sources do not support HTTP HEAD request to determine i.e. mime type
    \return false if HEAD requests have to be avoided
    */
-  bool ContentLookup() { return true; };
+  bool ContentLookup() { return m_doContentLookup; };
+
+  /*! 
+   *\brief Lookup via HTTP HEAD request might not be needed, use this setter to
+   * disable ContentLookup.
+   */
+  void SetContentLookup(bool enable) { m_doContentLookup = enable; };
 
   /* general extra info about the contents of the item, not for display */
   void SetExtraInfo(const std::string& info) { m_extrainfo = info; };
@@ -490,6 +496,7 @@ private:
   bool m_bLabelPreformated;
   std::string m_mimetype;
   std::string m_extrainfo;
+  bool m_doContentLookup;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
   EPG::CEpgInfoTagPtr m_epgInfoTag;
