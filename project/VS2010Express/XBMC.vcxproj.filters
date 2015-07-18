@@ -6190,6 +6190,9 @@
     <ClInclude Include="..\..\xbmc\utils\win32\gpu_memcpy_sse4.h">
       <Filter>utils\win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\win32\memcpy_sse2.h">
+      <Filter>utils\win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
