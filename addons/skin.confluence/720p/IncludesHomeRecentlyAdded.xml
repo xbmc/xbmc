@@ -138,7 +138,7 @@
 							<visible>Control.HasFocus(8000)</visible>
 						</control>
 					</focusedlayout>
-					<content>special://skin/playlists/recentmovies.xsp</content>
+					<content limit="10">videodb://recentlyaddedmovies/</content>
 				</control>
 				<control type="button">
 					<description>left Arrow</description>
@@ -319,7 +319,7 @@
 							<visible>Control.HasFocus(8001)</visible>
 						</control>
 					</focusedlayout>
-					<content>special://skin/playlists/recentepisodes.xsp</content>
+					<content limit="10">videodb://recentlyaddedepisodes/</content>
 				</control>
 				<control type="button">
 					<description>left Arrow</description>
