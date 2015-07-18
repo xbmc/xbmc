@@ -57,7 +57,7 @@ using namespace XFILE;
 #define LOCALIZED_TOKEN_FIRSTID4    71
 #define LOCALIZED_TOKEN_LASTID4     97
 
-static const std::string IconAddonPath = "resource://resource.images.weather.default";
+static const std::string IconAddonPath = "resource://resource.images.weathericons.default";
 
 /*
 FIXME'S
