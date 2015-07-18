@@ -79,6 +79,14 @@ public:
   static void PVRTransferChannelEntry(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL* entry);
 
   /*!
+   * @brief Transfer a timer type entry from the add-on to XBMC
+   * @param addonData A pointer to the add-on.
+   * @param handle The handle parameter that XBMC used when requesting the timer type list
+   * @param entry The entry to transfer to XBMC
+   */
+  static void PVRTransferTimerTypeEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER_TYPE *entry);
+
+  /*!
    * @brief Transfer a timer entry from the add-on to XBMC
    * @param addonData A pointer to the add-on.
    * @param handle The handle parameter that XBMC used when requesting the timers list

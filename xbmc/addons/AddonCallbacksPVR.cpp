@@ -49,6 +49,7 @@ CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
   m_callbacks->TransferChannelEntry       = PVRTransferChannelEntry;
   m_callbacks->TransferTimerEntry         = PVRTransferTimerEntry;
   m_callbacks->TransferRecordingEntry     = PVRTransferRecordingEntry;
+  m_callbacks->TransferTimerTypeEntry     = PVRTransferTimerTypeEntry;
   m_callbacks->AddMenuHook                = PVRAddMenuHook;
   m_callbacks->Recording                  = PVRRecording;
   m_callbacks->TriggerChannelUpdate       = PVRTriggerChannelUpdate;
@@ -193,6 +194,32 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_
   /* transfer this entry to the recordings container */
   CPVRRecordingPtr transferRecording(new CPVRRecording(*recording, client->GetID()));
   xbmcRecordings->UpdateFromClient(transferRecording);
+}
+
+void CAddonCallbacksPVR::PVRTransferTimerTypeEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER_TYPE *timerType)
+{
+  if (!handle)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
+  CPVRClient *client             = GetPVRClient(addonData);
+  CPVRTimerTypes *xbmcTimerTypes = static_cast<CPVRTimerTypes *>(handle->dataAddress);
+  if (!timerType || !client || !xbmcTimerTypes)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
+  if (timerType->iId == PVR_TIMER_TYPE_NONE)
+    CLog::Log(LOGERROR, "PVR - invalid timer type supplied by add-on '%s'. Please contact the developer of this add-on: %s", client->GetFriendlyName().c_str(), client->Author().c_str());
+  else
+  {
+    /* transfer this entry to the timer types container */
+    CPVRTimerTypePtr transferTimerType(new CPVRTimerType(*timerType, client->GetID()));
+    xbmcTimerTypes->push_back(transferTimerType);
+  }
 }
 
 void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER *timer)

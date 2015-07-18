@@ -380,7 +380,6 @@ bool CPVRClient::GetAddonProperties(void)
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
   PVR_ADDON_CAPABILITIES addonCapabilities;
-  CPVRTimerTypes timerTypes;
 
   /* get the capabilities */
   try
@@ -417,14 +416,16 @@ bool CPVRClient::GetAddonProperties(void)
   /* timer types */
   if (addonCapabilities.bSupportsTimers)
   {
+    PVR_ERROR retVal(PVR_ERROR_UNKNOWN);
     try
     {
-      std::unique_ptr<PVR_TIMER_TYPE[]> types_array(new PVR_TIMER_TYPE[PVR_ADDON_TIMERTYPE_ARRAY_SIZE]);
-      int size = PVR_ADDON_TIMERTYPE_ARRAY_SIZE;
+      m_timertypes.clear();
+      ADDON_HANDLE_STRUCT handle;
+      handle.callerAddress = this;
+      handle.dataAddress = (CPVRTimerTypes*) &m_timertypes;
+      retVal = m_pStruct->GetTimerTypes(&handle);
 
-      PVR_ERROR retval = m_pStruct->GetTimerTypes(types_array.get(), &size);
-
-      if (retval == PVR_ERROR_NOT_IMPLEMENTED)
+      if (retVal == PVR_ERROR_NOT_IMPLEMENTED)
       {
         // begin compat section
         CLog::Log(LOGWARNING, "%s - Addon %s does not support timer types. It will work, but not benefit from the timer features introduced with PVR Addon API 2.0.0", __FUNCTION__, strFriendlyName.c_str());
@@ -435,92 +436,62 @@ bool CPVRClient::GetAddonProperties(void)
         // but all old problems/bugs due to static attributes and values will remain the same as in
         // Isengard. Also, new features (like epg search) are not available to addons automatically.
         // This code can be removed once all addons actually support the respective PVR Addon API version.
-
-        size = 0;
+        std::unique_ptr<PVR_TIMER_TYPE> type(new PVR_TIMER_TYPE);
+        int index = 0;
         // One-shot manual
-        memset(&types_array[size], 0, sizeof(types_array[size]));
-        types_array[size].iId         = size + 1;
-        types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
-                                        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
-                                        PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
-                                        PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
-                                        PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
-                                        PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-        size++;
+        memset(type.get(), 0, sizeof(PVR_TIMER_TYPE));
+        type->iId         = ++index;
+        type->iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
+                            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+                            PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
+                            PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
+                            PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
+                            PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
+                            PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+        m_timertypes.push_back(CPVRTimerTypePtr(new CPVRTimerType(*type, GetID())));
 
         // Repeating manual
-        memset(&types_array[size], 0, sizeof(types_array[size]));
-        types_array[size].iId         = size + 1;
-        types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
-                                        PVR_TIMER_TYPE_IS_REPEATING            |
-                                        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
-                                        PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
-                                        PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
-                                        PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
-                                        PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY      |
-                                        PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS       |
-                                        PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-        size++;
+        memset(type.get(), 0, sizeof(PVR_TIMER_TYPE));
+        type->iId         = ++index;
+        type->iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
+                            PVR_TIMER_TYPE_IS_REPEATING            |
+                            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+                            PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
+                            PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
+                            PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
+                            PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
+                            PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY      |
+                            PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS       |
+                            PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+        m_timertypes.push_back(CPVRTimerTypePtr(new CPVRTimerType(*type, GetID())));
 
         if (addonCapabilities.bSupportsEPG)
         {
           // One-shot epg-based
-          memset(&types_array[size], 0, sizeof(types_array[size]));
-          types_array[size].iId         = size + 1;
-          types_array[size].iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-                                          PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
-                                          PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
-                                          PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
-                                          PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
-                                          PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-          size++;
+          memset(type.get(), 0, sizeof(PVR_TIMER_TYPE));
+          type->iId         = ++index;
+          type->iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+                              PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
+                              PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
+                              PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
+                              PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
+                              PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+          m_timertypes.push_back(CPVRTimerTypePtr(new CPVRTimerType(*type, GetID())));
         }
-
-        retval = PVR_ERROR_NO_ERROR;
         // end compat section
       }
-
-      if (retval == PVR_ERROR_NO_ERROR)
-      {
-        timerTypes.reserve(size);
-        for (int i = 0; i < size; ++i)
-        {
-          if (types_array[i].iId == PVR_TIMER_TYPE_NONE)
-          {
-            CLog::Log(LOGERROR, "PVR - invalid timer type supplied by add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
-            continue;
-          }
-
-          if (strlen(types_array[i].strDescription) == 0)
-          {
-            int id;
-            if (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_REPEATING)
-            {
-              id = (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
-                 ? 822  // "Repeating"
-                 : 823; // "Repeating (Guide-based)"
-            }
-            else
-            {
-              id = (types_array[i].iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
-                 ? 820  // "One Time"
-                 : 821; // "One Time (Guide-based)
-            }
-            std::string descr(g_localizeStrings.Get(id));
-            strncpy(types_array[i].strDescription, descr.c_str(), descr.size());
-          }
-          timerTypes.push_back(CPVRTimerTypePtr(new CPVRTimerType(types_array[i], m_iClientId)));
-        }
-      }
-      else
+      else if (retVal != PVR_ERROR_NO_ERROR)
       {
         CLog::Log(LOGERROR, "PVR - couldn't get the timer types for add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
         return false;
       }
+
+      LogError(retVal, __FUNCTION__);
     }
-    catch (std::exception &e) { LogException(e, "GetTimerTypes()"); return false; }
+    catch (std::exception &e)
+    {
+      LogException(e, __FUNCTION__);
+    }
   }
 
   /* update the members */
@@ -530,7 +501,6 @@ bool CPVRClient::GetAddonProperties(void)
   m_strBackendVersion   = strBackendVersion;
   m_addonCapabilities   = addonCapabilities;
   m_strBackendHostname  = strBackendHostname;
-  m_timertypes          = timerTypes;
 
   return true;
 }

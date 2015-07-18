@@ -497,7 +497,7 @@ extern "C" {
     PVR_ERROR    (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);
     int          (__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING&);
     PVR_ERROR    (__cdecl* GetRecordingEdl)(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*);
-    PVR_ERROR    (__cdecl* GetTimerTypes)(PVR_TIMER_TYPE[], int*);
+    PVR_ERROR    (__cdecl* GetTimerTypes)(ADDON_HANDLE);
     int          (__cdecl* GetTimersAmount)(void);
     PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE);
     PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER&);

@@ -125,6 +125,24 @@ bool CPVRTimerType::operator !=(const CPVRTimerType& right) const
 
 void CPVRTimerType::InitAttributeValues(const PVR_TIMER_TYPE &type)
 {
+  if (strlen(type.strDescription) == 0)
+  {
+    int id;
+    if (type.iAttributes & PVR_TIMER_TYPE_IS_REPEATING)
+    {
+      id = (type.iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
+         ? 822  // "Repeating"
+         : 823; // "Repeating (Guide-based)"
+    }
+    else
+    {
+      id = (type.iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
+         ? 820  // "One Time"
+         : 821; // "One Time (Guide-based)
+    }
+    m_strDescription.assign(g_localizeStrings.Get(id));
+  }
+
   InitPriorityValues(type);
   InitLifetimeValues(type);
   InitPreventDuplicateEpisodesValues(type);

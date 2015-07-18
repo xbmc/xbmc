@@ -108,6 +108,10 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_transfer_recording_entry");
     if (PVR_transfer_recording_entry == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    PVR_transfer_timer_type_entry = (void (*)(void* HANDLE, void* CB, const ADDON_HANDLE handle, const PVR_TIMER_TYPE *timertype))
+      dlsym(m_libXBMC_pvr, "PVR_transfer_timer_type_entry");
+    if (PVR_transfer_timer_type_entry == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
     PVR_add_menu_hook = (void (*)(void* HANDLE, void* CB, PVR_MENUHOOK *hook))
       dlsym(m_libXBMC_pvr, "PVR_add_menu_hook");
     if (PVR_add_menu_hook == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
@@ -176,6 +180,16 @@ public:
   void TransferChannelEntry(const ADDON_HANDLE handle, const PVR_CHANNEL* entry)
   {
     return PVR_transfer_channel_entry(m_Handle, m_Callbacks, handle, entry);
+  }
+
+  /*!
+   * @brief Transfer a timer type entry from the add-on to XBMC
+   * @param handle The handle parameter that XBMC used when requesting the timer types list
+   * @param entry The entry to transfer to XBMC
+   */
+  void TransferTimerTypeEntry(const ADDON_HANDLE handle, const PVR_TIMER_TYPE* entry)
+  {
+    return PVR_transfer_timer_type_entry(m_Handle, m_Callbacks, handle, entry);
   }
 
   /*!
@@ -307,6 +321,7 @@ protected:
   void (*PVR_transfer_channel_entry)(void*, void*, const ADDON_HANDLE, const PVR_CHANNEL*);
   void (*PVR_transfer_timer_entry)(void*, void*, const ADDON_HANDLE, const PVR_TIMER*);
   void (*PVR_transfer_recording_entry)(void*, void*, const ADDON_HANDLE, const PVR_RECORDING*);
+  void (*PVR_transfer_timer_type_entry)(void*, void*, const ADDON_HANDLE, const PVR_TIMER_TYPE*);
   void (*PVR_add_menu_hook)(void*, void*, PVR_MENUHOOK*);
   void (*PVR_recording)(void*, void*, const char*, const char*, bool);
   void (*PVR_trigger_channel_update)(void*, void*);
