@@ -21,6 +21,7 @@
 #include <array>
 #include <algorithm>
 #include <functional>
+#include <set>
 #include "AddonsDirectory.h"
 #include "addons/AddonDatabase.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -39,22 +40,21 @@ using namespace ADDON;
 namespace XFILE
 {
 
-CAddonsDirectory::CAddonsDirectory(void)
-{
-}
+CAddonsDirectory::CAddonsDirectory(void) {}
 
-CAddonsDirectory::~CAddonsDirectory(void)
-{}
+CAddonsDirectory::~CAddonsDirectory(void) {}
 
+const auto CATEGORY_INFO_PROVIDERS = "category.infoproviders";
+const auto CATEGORY_LOOK_AND_FEEL = "category.lookandfeel";
 
-const std::array<TYPE, 4> dependencyTypes = {
+const std::set<TYPE> dependencyTypes = {
     ADDON_VIZ_LIBRARY,
     ADDON_SCRAPER_LIBRARY,
     ADDON_SCRIPT_LIBRARY,
     ADDON_SCRIPT_MODULE,
 };
 
-const std::array<TYPE, 5> infoProviderTypes = {
+const std::set<TYPE> infoProviderTypes = {
   ADDON_SCRAPER_ALBUMS,
   ADDON_SCRAPER_ARTISTS,
   ADDON_SCRAPER_MOVIES,
@@ -62,7 +62,7 @@ const std::array<TYPE, 5> infoProviderTypes = {
   ADDON_SCRAPER_TVSHOWS,
 };
 
-const std::array<TYPE, 7> lookAndFeelTypes = {
+const std::set<TYPE> lookAndFeelTypes = {
   ADDON_SKIN,
   ADDON_SCREENSAVER,
   ADDON_RESOURCE_IMAGES,
@@ -71,16 +71,29 @@ const std::array<TYPE, 7> lookAndFeelTypes = {
   ADDON_VIZ,
 };
 
-
-
-static bool IsInfoProviderType(const AddonPtr& addon)
+static bool IsInfoProviderType(TYPE type)
 {
-  return std::find(infoProviderTypes.begin(), infoProviderTypes.end(), addon->Type()) != infoProviderTypes.end();
+  return infoProviderTypes.find(type) != infoProviderTypes.end();
 }
 
-static bool IsLookAndFeelType(const AddonPtr& addon)
+static bool IsInfoProviderTypeAddon(const AddonPtr& addon)
 {
-  return std::find(lookAndFeelTypes.begin(), lookAndFeelTypes.end(), addon->Type()) != lookAndFeelTypes.end();
+  return IsInfoProviderType(addon->Type());
+}
+
+static bool IsLookAndFeelType(TYPE type)
+{
+  return lookAndFeelTypes.find(type) != lookAndFeelTypes.end();
+}
+
+static bool IsLookAndFeelTypeAddon(const AddonPtr& addon)
+{
+  return IsLookAndFeelType(addon->Type());
+}
+
+static bool IsDependecyType(TYPE type)
+{
+  return dependencyTypes.find(type) != dependencyTypes.end();
 }
 
 static bool IsSystemAddon(const AddonPtr& addon)
@@ -133,44 +146,20 @@ static void SetUpdateAvailProperties(CFileItemList &items)
   }
 }
 
-static void GenerateCategoryListing(const CURL& path, const VECADDONS& addons, CFileItemList& items)
+// Creates categories from addon types, if we have any addons with that type.
+static void GenerateTypeListing(const CURL& path, const std::set<TYPE>& types,
+    const VECADDONS& addons, CFileItemList& items)
 {
-  if (std::any_of(addons.begin(), addons.end(), IsInfoProviderType))
+  for (const auto& type : types)
   {
-    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24993)));
-    item->SetPath(URIUtils::AddFileToFolder(path.Get(), "group.infoproviders"));
-    item->m_bIsFolder = true;
-    const std::string thumb = "DefaultAddonInfoProvider.png";
-    if (g_TextureManager.HasTexture(thumb))
-      item->SetArt("thumb", thumb);
-    items.Add(item);
-  }
-  if (std::any_of(addons.begin(), addons.end(), IsLookAndFeelType))
-  {
-    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24997)));
-    item->SetPath(URIUtils::AddFileToFolder(path.Get(), "group.lookandfeel"));
-    item->m_bIsFolder = true;
-    const std::string thumb = "DefaultAddonLookAndFeel.png";
-    if (g_TextureManager.HasTexture(thumb))
-      item->SetArt("thumb", thumb);
-    items.Add(item);
-  }
-  for (unsigned int i = ADDON_UNKNOWN + 1; i < ADDON_MAX - 1; ++i)
-  {
-    const TYPE type = (TYPE)i;
-    if (std::find(dependencyTypes.begin(), dependencyTypes.end(), type) != dependencyTypes.end())
-      continue;
-    if (std::find(infoProviderTypes.begin(), infoProviderTypes.end(), type) != infoProviderTypes.end())
-      continue;
-    if (std::find(lookAndFeelTypes.begin(), lookAndFeelTypes.end(), type) != lookAndFeelTypes.end())
-      continue;
-
-    for (unsigned int j = 0; j < addons.size(); ++j)
+    for (const auto& addon : addons)
     {
-      if (addons[j]->IsType(type))
+      if (addon->IsType(type))
       {
         CFileItemPtr item(new CFileItem(TranslateType(type, true)));
-        item->SetPath(URIUtils::AddFileToFolder(path.Get(), TranslateType(type, false)));
+        CURL itemPath = path;
+        itemPath.SetFileName(TranslateType(type, false));
+        item->SetPath(itemPath.Get());
         item->m_bIsFolder = true;
         std::string thumb = GetIcon(type);
         if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
@@ -182,57 +171,57 @@ static void GenerateCategoryListing(const CURL& path, const VECADDONS& addons, C
   }
 }
 
-static void GenerateAddonListingForCategory(const CURL& path, VECADDONS& addons, CFileItemList& items)
+//Creates the top-level category list
+static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addons,
+    CFileItemList& items)
+{
+  if (std::any_of(addons.begin(), addons.end(), IsInfoProviderTypeAddon))
+  {
+    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24993)));
+    item->SetPath(URIUtils::AddFileToFolder(path.Get(), CATEGORY_INFO_PROVIDERS));
+    item->m_bIsFolder = true;
+    const std::string thumb = "DefaultAddonInfoProvider.png";
+    if (g_TextureManager.HasTexture(thumb))
+      item->SetArt("thumb", thumb);
+    items.Add(item);
+  }
+  if (std::any_of(addons.begin(), addons.end(), IsLookAndFeelTypeAddon))
+  {
+    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(24997)));
+    item->SetPath(URIUtils::AddFileToFolder(path.Get(), CATEGORY_LOOK_AND_FEEL));
+    item->m_bIsFolder = true;
+    const std::string thumb = "DefaultAddonLookAndFeel.png";
+    if (g_TextureManager.HasTexture(thumb))
+      item->SetArt("thumb", thumb);
+    items.Add(item);
+  }
+
+  std::set<TYPE> uncategorized;
+  for (unsigned int i = ADDON_UNKNOWN + 1; i < ADDON_MAX - 1; ++i)
+  {
+    const TYPE type = (TYPE)i;
+    if (!IsInfoProviderType(type) && !IsLookAndFeelType(type) && !IsDependecyType(type))
+      uncategorized.insert(static_cast<TYPE>(i));
+  }
+  GenerateTypeListing(path, uncategorized, addons, items);
+}
+
+//Creates sub-categories or addon list for a category
+static void GenerateCategoryListing(const CURL& path, VECADDONS& addons,
+    CFileItemList& items)
 {
   const std::string category = path.GetFileName();
-  if (category == "group.infoproviders")
+  if (category == CATEGORY_INFO_PROVIDERS)
   {
     items.SetProperty("addoncategory", g_localizeStrings.Get(24993));
     items.SetLabel(g_localizeStrings.Get(24993));
-
-    for (const auto& type : infoProviderTypes)
-    {
-      for (const auto& addon : addons)
-      {
-        if (addon->IsType(type))
-        {
-          CFileItemPtr item(new CFileItem(TranslateType(type, true)));
-          CURL itemPath = path;
-          itemPath.SetFileName(TranslateType(type, false));
-          item->SetPath(itemPath.Get());
-          item->m_bIsFolder = true;
-          std::string thumb = GetIcon(type);
-          if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
-            item->SetArt("thumb", thumb);
-          items.Add(item);
-          break;
-        }
-      }
-    }
+    GenerateTypeListing(path, infoProviderTypes, addons, items);
   }
-  else if (category == "group.lookandfeel")
+  else if (category == CATEGORY_LOOK_AND_FEEL)
   {
     items.SetProperty("addoncategory", g_localizeStrings.Get(24997));
     items.SetLabel(g_localizeStrings.Get(24997));
-    for (const auto& type : lookAndFeelTypes)
-    {
-      for (const auto& addon : addons)
-      {
-        if (addon->IsType(type))
-        {
-          CFileItemPtr item(new CFileItem(TranslateType(type, true)));
-          CURL itemPath = path;
-          itemPath.SetFileName(TranslateType(type, false));
-          item->SetPath(itemPath.Get());
-          item->m_bIsFolder = true;
-          std::string thumb = GetIcon(type);
-          if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
-            item->SetArt("thumb", thumb);
-          items.Add(item);
-          break;
-        }
-      }
-    }
+    GenerateTypeListing(path, lookAndFeelTypes, addons, items);
   }
   else
   { // fallback to addon type
@@ -278,7 +267,7 @@ static void UserInstalledAddons(const CURL& path, CFileItemList &items)
   const std::string category = path.GetFileName();
   if (category.empty())
   {
-    GenerateCategoryListing(path, addons, items);
+    GenerateMainCategoryListing(path, addons, items);
 
     //"All" node
     CFileItemPtr item(new CFileItem());
@@ -297,7 +286,7 @@ static void UserInstalledAddons(const CURL& path, CFileItemList &items)
   }
   else
   {
-    GenerateAddonListingForCategory(path, addons, items);
+    GenerateCategoryListing(path, addons, items);
     SetUpdateAvailProperties(items);
   }
 }
@@ -395,9 +384,9 @@ static bool Browse(const CURL& path, CFileItemList &items)
 
   const std::string category = path.GetFileName();
   if (category.empty())
-    GenerateCategoryListing(path, addons, items);
+    GenerateMainCategoryListing(path, addons, items);
   else
-    GenerateAddonListingForCategory(path, addons, items);
+    GenerateCategoryListing(path, addons, items);
   return true;
 }
 
@@ -536,9 +525,7 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
 }
 
 void CAddonsDirectory::GenerateAddonListing(const CURL &path,
-                                            const VECADDONS& addons,
-                                            CFileItemList &items,
-                                            const std::string label)
+    const VECADDONS& addons, CFileItemList &items, const std::string label)
 {
   items.ClearItems();
   items.SetLabel(label);
@@ -568,7 +555,8 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
   }
 }
 
-CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const std::string& path, bool folder)
+CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
+    const std::string& path, bool folder)
 {
   if (!addon)
     return CFileItemPtr();
