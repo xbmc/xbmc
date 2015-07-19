@@ -487,14 +487,16 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
 
     std::wstring text = GetDisplayedText();
 
-    if (!HasFocus() && text.empty())
+    if ((HasFocus() || GetParentID() == WINDOW_DIALOG_KEYBOARD) && m_inputType != INPUT_TYPE_READONLY)
+    {
+      changed |= SetStyledText(text);
+    }
+    else if (!HasFocus() && text.empty())
     {
       std::string hint = m_hintInfo.GetLabel(GetParentID());
       if (!hint.empty())
         changed |= m_label2.SetText(hint);
     }
-    else if ((HasFocus() || GetParentID() == WINDOW_DIALOG_KEYBOARD) && m_inputType != INPUT_TYPE_READONLY)
-      changed |= SetStyledText(text);
     else
       changed |= m_label2.SetTextW(text);
 
