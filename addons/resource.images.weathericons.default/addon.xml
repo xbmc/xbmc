@@ -3,6 +3,9 @@
        name="Weather Icons - Default"
        version="1.1.8"
        provider-name="Team Kodi">
+  <requires>
+    <import addon="kodi.resource" version="1.0.0"/>
+  </requires>
   <extension point="kodi.resource.images"
              type="weather" />
   <extension point="xbmc.addon.metadata">
