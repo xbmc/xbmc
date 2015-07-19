@@ -27,7 +27,7 @@ extern "C" {
 #include "PictureScalingAlgorithm.h"
 #include "utils/StringUtils.h"
 
-CPictureScalingAlgorithm::Algorithm CPictureScalingAlgorithm::Default = CPictureScalingAlgorithm::FastBilinear;
+CPictureScalingAlgorithm::Algorithm CPictureScalingAlgorithm::Default = CPictureScalingAlgorithm::Bicubic;
 
 CPictureScalingAlgorithm::AlgorithmMap CPictureScalingAlgorithm::m_algorithms = {
   { FastBilinear,     { "fast_bilinear",    SWS_FAST_BILINEAR } },
