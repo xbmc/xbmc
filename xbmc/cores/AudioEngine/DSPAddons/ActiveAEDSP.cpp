@@ -31,7 +31,7 @@ extern "C" {
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "addons/AddonInstaller.h"
@@ -52,6 +52,7 @@ extern "C" {
 using namespace std;
 using namespace ADDON;
 using namespace ActiveAE;
+using namespace KODI::MESSAGING;
 
 #define MIN_DSP_ARRAY_SIZE 4096
 
@@ -79,6 +80,42 @@ CActiveAEDSP &CActiveAEDSP::Get(void)
 {
   static CActiveAEDSP activeAEDSPManagerInstance;
   return activeAEDSPManagerInstance;
+}
+//@}
+
+/*! @name message handling methods */
+//@{
+void CActiveAEDSP::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
+{
+  switch(pMsg->dwMessage)
+  {
+    case TMSG_SETAUDIODSPSTATE:
+      if(pMsg->param1 == ACTIVE_AE_DSP_STATE_ON)
+      {
+        if(pMsg->param1 == ACTIVE_AE_DSP_ASYNC_ACTIVATE)
+        {
+          Activate(true);
+        }
+        else
+        {
+          Activate();
+        }
+      }
+      else if(pMsg->param1 == ACTIVE_AE_DSP_STATE_OFF)
+      {
+        Deactivate();
+      }
+    break;
+
+    default:
+      CLog::Log(LOGERROR, "CActiveAEDSP received a invalid message! Nothing is processed.");
+    break;
+  }
+}
+
+int CActiveAEDSP::GetMessageMask()
+{
+  return TMSG_MASK_AUDIO_DSP;
 }
 //@}
 
@@ -168,7 +205,7 @@ void CActiveAEDSP::TriggerModeUpdate(bool bAsync /* = true */)
   if (m_usedProcessesCnt > 0)
   {
     CLog::Log(LOGNOTICE, "ActiveAE DSP - restarting playback after disabled dsp system");
-    CApplicationMessenger::Get().MediaRestart(false);
+    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_RESTART);
   }
 }
 
@@ -248,7 +285,7 @@ void CActiveAEDSP::ResetDatabase(void)
   if (IsProcessing())
   {
     CLog::Log(LOGNOTICE, "ActiveAE DSP - stopping playback");
-    CApplicationMessenger::Get().MediaStop();
+    CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_STOP);
   }
 
   /* stop the thread */

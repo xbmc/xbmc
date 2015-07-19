@@ -25,10 +25,15 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
+#include "messaging/IMessageTarget.h"
 
 #include "ActiveAEDSPAddon.h"
 #include "ActiveAEDSPDatabase.h"
 #include "ActiveAEDSPMode.h"
+
+#define ACTIVE_AE_DSP_STATE_ON  0
+#define ACTIVE_AE_DSP_STATE_OFF 1
+#define ACTIVE_AE_DSP_ASYNC_ACTIVATE  1
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -55,6 +60,7 @@ namespace ActiveAE
   class CActiveAEDSP : public ADDON::IAddonMgrCallback,
                        public ISettingCallback,
                        public Observer,
+                       public KODI::MESSAGING::IMessageTarget,
                        private CThread
   {
   /*! @name Master audio dsp control class */
@@ -76,6 +82,12 @@ namespace ActiveAE
      * @return The ActiveAEDSP instance.
      */
     static CActiveAEDSP &Get(void);
+  //@}
+
+  /*! @name message handling methods */
+  //@{
+    virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
+    virtual int  GetMessageMask() override;
   //@}
 
   /*! @name initialization and configuration methods */
