@@ -447,6 +447,13 @@ bool CApplication::Create()
   SetupNetwork();
   Preflight();
 
+  // here we register all global classes for the CApplicationMessenger, 
+  // after that we can send messages to the correspnding modules
+  CApplicationMessenger::Get().RegisterReceveiver(this);
+  CApplicationMessenger::Get().RegisterReceveiver(&g_playlistPlayer);
+  CApplicationMessenger::Get().RegisterReceveiver(&g_infoManager);
+  CApplicationMessenger::Get().RegisterReceveiver(&g_AEDSPManager);
+
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {
     g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
@@ -1134,10 +1141,6 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/sounds");
   }
-
-  CApplicationMessenger::Get().RegisterReceveiver(this);
-  CApplicationMessenger::Get().RegisterReceveiver(&g_playlistPlayer);
-  CApplicationMessenger::Get().RegisterReceveiver(&g_infoManager);
 
   // load the language and its translated strings
   if (!LoadLanguage(false))
