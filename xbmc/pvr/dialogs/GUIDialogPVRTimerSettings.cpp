@@ -116,8 +116,8 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   m_strTitle      = m_timerInfoTag->m_strTitle;
 
   const CDateTime now(CDateTime::GetCurrentDateTime());
-  m_startLocalTime    = m_timerInfoTag->IsStartAtAnyTime() ? now : InitializeDateTime(m_timerInfoTag->StartAsLocalTime());
-  m_endLocalTime      = m_timerInfoTag->IsEndAtAnyTime()   ? now : InitializeDateTime(m_timerInfoTag->EndAsLocalTime());
+  m_startLocalTime    = m_timerInfoTag->IsStartAtAnyTime() ? now : m_timerInfoTag->StartAsLocalTime();
+  m_endLocalTime      = m_timerInfoTag->IsEndAtAnyTime()   ? now : m_timerInfoTag->EndAsLocalTime();
   m_timerStartTimeStr = m_startLocalTime.GetAsLocalizedTime("", false);
   m_timerEndTimeStr   = m_endLocalTime.GetAsLocalizedTime("", false);
   m_firstDayLocalTime = m_timerInfoTag->FirstDayAsLocalTime();
@@ -561,13 +561,33 @@ void CGUIDialogPVRTimerSettings::Save()
   const CDateTime now(CDateTime::GetCurrentDateTime());
   if (!bStartSet || !bEndSet)
   {
-    if (m_startLocalTime < now)
-      m_startLocalTime = now;
-
-    if (m_endLocalTime < m_startLocalTime)
+    if (m_timerType->SupportsStartEndTime() && // has start/end clock entry
+        m_timerType->IsRepeating())            // but no start/end day spinners
     {
-      CLog::Log(LOGWARNING, "CGUIDialogPVRTimerSettings::Save - end time is before start time! Setting to start time.");
-      m_endLocalTime = m_startLocalTime;
+      if (m_endLocalTime < m_startLocalTime)   // And the end clock is earlier than the start clock
+      {
+        CLog::Log(LOGDEBUG, "CGUIDialogPVRTimerSettings::Save - End before start, adding a day.");
+        m_endLocalTime += CDateTimeSpan(1, 0, 0, 0);
+        if (m_endLocalTime < m_startLocalTime)
+        {
+          CLog::Log(LOGWARNING, "CGUIDialogPVRTimerSettings::Save - End before start. Setting end time to start time.");
+          m_endLocalTime = m_startLocalTime;
+        }
+      }
+      else if (m_endLocalTime > (m_startLocalTime + CDateTimeSpan(1, 0, 0, 0))) // Or the duration is more than a day
+      {
+        CLog::Log(LOGDEBUG, "CGUIDialogPVRTimerSettings::Save - End > 1 day after start, removing a day.");
+        m_endLocalTime -= CDateTimeSpan(1, 0, 0, 0);
+        if (m_endLocalTime > (m_startLocalTime + CDateTimeSpan(1, 0, 0, 0)))
+        {
+          CLog::Log(LOGWARNING, "CGUIDialogPVRTimerSettings::Save - End > 1 day after start. Setting end time to start time.");
+          m_endLocalTime = m_startLocalTime;
+        }
+      }
+    }
+    else if (m_endLocalTime < m_startLocalTime) // Assume the user knows what they are doing, but log a warning just in case
+    {
+      CLog::Log(LOGWARNING, "CGUIDialogPVRTimerSettings::Save - Specified recording end time < start time: expect errors!");
     }
 
     if (!bStartSet)
@@ -679,16 +699,6 @@ void CGUIDialogPVRTimerSettings::SetTimeFromSystemTime(CDateTime &datetime, cons
   datetime.SetDateTime(
     datetime.GetYear(), datetime.GetMonth(), datetime.GetDay(),
     newTime.GetHour(), newTime.GetMinute(), newTime.GetSecond());
-}
-
-CDateTime CGUIDialogPVRTimerSettings::InitializeDateTime(const CDateTime &datetime)
-{
-  const CDateTime now(CDateTime::GetCurrentDateTime());
-  CDateTime dt(datetime);
-  if (now > dt)
-    dt = now;
-
-  return dt;
 }
 
 void CGUIDialogPVRTimerSettings::InitializeTypesList()
