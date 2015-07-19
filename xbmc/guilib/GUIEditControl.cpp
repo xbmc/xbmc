@@ -486,14 +486,16 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
 
     std::wstring text = GetDisplayedText();
 
-    if (!HasFocus() && text.empty())
+    if ((HasFocus() || GetParentID() == WINDOW_DIALOG_KEYBOARD) && m_inputType != INPUT_TYPE_READONLY)
+    {
+      changed |= SetStyledText(text);
+    }
+    else if (!HasFocus() && text.empty())
     {
       std::string hint = m_hintInfo.GetLabel(GetParentID());
       if (!hint.empty())
         changed |= m_label2.SetText(hint);
     }
-    else if (HasFocus() && m_inputType != INPUT_TYPE_READONLY)
-      changed |= SetStyledText(text);
     else
       changed |= m_label2.SetTextW(text);
 
@@ -582,13 +584,10 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   }
 
   // show the cursor
-  if (HasFocus() || GetParentID() == WINDOW_DIALOG_KEYBOARD)
-  {
-    unsigned int ch = L'|';
-    if ((++m_cursorBlink % 64) > 32)
-      ch |= (3 << 16);
-    styled.insert(styled.begin() + m_cursorPos, ch);
-  }
+  unsigned int ch = L'|';
+  if ((++m_cursorBlink % 64) > 32)
+    ch |= (3 << 16);
+  styled.insert(styled.begin() + m_cursorPos, ch);
 
   return m_label2.SetStyledText(styled, colors);
 }
