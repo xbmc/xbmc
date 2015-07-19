@@ -1,4 +1,6 @@
-SRCS=GUIDialogContentSettings.cpp \
+SRCS=GUIDialogAudioDSPManager.cpp \
+     GUIDialogAudioDSPSettings.cpp \
+     GUIDialogContentSettings.cpp \
      GUIDialogSettingsBase.cpp \
      GUIDialogSettingsManagerBase.cpp \
      GUIDialogSettingsManualBase.cpp \

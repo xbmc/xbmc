@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
@@ -289,6 +290,7 @@ void CSettings::Uninitialize()
 #if defined(TARGET_DARWIN_OSX)
   m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
+  m_settingsManager->UnregisterCallback(&ActiveAE::CActiveAEDSP::Get());
 
   // cleanup the settings manager
   m_settingsManager->Clear();
@@ -742,6 +744,8 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("audiooutput.passthroughdevice");
   settingSet.insert("audiooutput.streamsilence");
   settingSet.insert("audiooutput.maintainoriginalvolume");
+  settingSet.insert("audiooutput.normalizelevels");
+  settingSet.insert("audiooutput.dspaddonsenabled");
   settingSet.insert("lookandfeel.skin");
   settingSet.insert("lookandfeel.skinsettings");
   settingSet.insert("lookandfeel.font");
@@ -860,6 +864,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert("input.appleremotealwayson");
   m_settingsManager->RegisterCallback(&XBMCHelper::GetInstance(), settingSet);
 #endif
+
+  settingSet.clear();
+  settingSet.insert("audiooutput.dspaddonsenabled");
+  settingSet.insert("audiooutput.dspsettings");
+  settingSet.insert("audiooutput.dspresetdb");
+  m_settingsManager->RegisterCallback(&ActiveAE::CActiveAEDSP::Get(), settingSet);
 }
 
 bool CSettings::Reset()

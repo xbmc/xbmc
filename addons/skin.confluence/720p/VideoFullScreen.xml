@@ -4,7 +4,7 @@
 	<controls>
 		<!-- media infos -->
 		<control type="group" id="1">
-			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
+			<visible>[Player.ShowInfo | Window.IsActive(VideoOSD)] + ![Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(SliderDialog)]</visible>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<control type="image" id="1">
 				<left>0</left>
@@ -214,11 +214,28 @@
 						<texture>$INFO[VideoPlayer.VideoResolution,flagging/video/,.png]</texture>
 					</control>
 					<control type="image" id="1">
+						<description>ADSP Master Mode Image</description>
+						<width>85</width>
+						<height>35</height>
+						<aspectratio align="right">keep</aspectratio>
+						<visible>!IsEmpty(ADSP.MasterOwnIcon)</visible>
+						<texture>$INFO[ADSP.MasterOwnIcon]</texture>
+					</control>
+					<control type="image" id="1">
 						<description>Audio Codec Image</description>
 						<width>85</width>
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
+						<visible>IsEmpty(ADSP.MasterOverrideIcon)</visible>
 						<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
+					</control>
+					<control type="image" id="1">
+						<description>ADSP Audio Codec Override Image</description>
+						<width>85</width>
+						<height>35</height>
+						<aspectratio align="right">keep</aspectratio>
+						<visible>!IsEmpty(ADSP.MasterOverrideIcon)</visible>
+						<texture>$INFO[ADSP.MasterOverrideIcon]</texture>
 					</control>
 					<control type="image" id="1">
 						<description>Audio Channels Image</description>

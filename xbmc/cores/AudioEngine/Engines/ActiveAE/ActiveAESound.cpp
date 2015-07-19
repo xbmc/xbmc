@@ -38,7 +38,8 @@ using namespace XFILE;
 CActiveAESound::CActiveAESound(const std::string &filename) :
   IAESound         (filename),
   m_filename       (filename),
-  m_volume         (1.0f    )
+  m_volume         (1.0f    ),
+  m_channel        (AE_CH_NULL)
 {
   m_orig_sound = NULL;
   m_dst_sound = NULL;

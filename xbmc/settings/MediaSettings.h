@@ -25,6 +25,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
+#include "settings/AudioDSPSettings.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
 
@@ -54,6 +55,11 @@ public:
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }
   const CVideoSettings& GetCurrentVideoSettings() const { return m_currentVideoSettings; }
   CVideoSettings& GetCurrentVideoSettings() { return m_currentVideoSettings; }
+
+  const CAudioSettings& GetDefaultAudioSettings() const { return m_defaultAudioSettings; }
+  CAudioSettings& GetDefaultAudioSettings() { return m_defaultAudioSettings; }
+  const CAudioSettings& GetCurrentAudioSettings() const { return m_currentAudioSettings; }
+  CAudioSettings& GetCurrentAudioSettings() { return m_currentAudioSettings; }
 
   /*! \brief Retreive the watched mode for the given content type
    \param content Current content type
@@ -102,6 +108,9 @@ protected:
 private:
   CVideoSettings m_defaultVideoSettings;
   CVideoSettings m_currentVideoSettings;
+
+  CAudioSettings m_defaultAudioSettings;
+  CAudioSettings m_currentAudioSettings;
 
   typedef std::map<std::string, WatchedMode> WatchedModes;
   WatchedModes m_watchedModes;

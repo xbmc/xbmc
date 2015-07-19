@@ -2617,6 +2617,43 @@
         </setting>
       </group>
       <group id="2">
+        <setting id="audiooutput.dspaddonsenabled" type="boolean" label="36441" help="36438">
+          <level>0</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.dspaddonsenabled</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.dspaddonsenabled</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="audiooutput.dspsettings" type="action" label="36436" help="36437">
+          <level>1</level>
+          <control type="button" format="action" />
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspsettings</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="audiooutput.dspresetdb" type="action" label="334" help="36439">
+          <level>1</level>
+          <control type="button" format="action" />
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspresetdb</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group id="3">
         <setting id="audiooutput.guisoundmode" type="integer" label="34120" help="36373">
           <level>0</level>
           <default>1</default> <!-- AE_SOUND_IDLE -->

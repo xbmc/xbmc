@@ -49,6 +49,8 @@
 
 #include <utility>
 
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+
 using namespace PVR;
 using namespace EPG;
 using namespace KODI::MESSAGING;
@@ -210,6 +212,21 @@ bool CGUIWindowPVRBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
 
   return bReturn || CGUIMediaWindow::OnContextButton(itemNumber, button);
+}
+
+bool CGUIWindowPVRBase::OnContextButtonActiveAEDSPSettings(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS)
+  {
+    bReturn = true;
+
+    if (ActiveAE::CActiveAEDSP::Get().IsProcessing())
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
+  }
+
+  return bReturn;
 }
 
 void CGUIWindowPVRBase::SetInvalid()

@@ -21,6 +21,7 @@
 #include "Addon.h"
 #include "AddonCallbacks.h"
 #include "AddonCallbacksAddon.h"
+#include "AddonCallbacksAudioDSP.h"
 #include "AddonCallbacksCodec.h"
 #include "AddonCallbacksGUI.h"
 #include "AddonCallbacksPVR.h"
@@ -35,6 +36,7 @@ CAddonCallbacks::CAddonCallbacks(CAddon* addon)
   m_addon       = addon;
   m_callbacks   = new AddonCB;
   m_helperAddon = NULL;
+  m_helperADSP  = NULL;
   m_helperGUI   = NULL;
   m_helperPVR   = NULL;
   m_helperCODEC = NULL;
@@ -43,6 +45,8 @@ CAddonCallbacks::CAddonCallbacks(CAddon* addon)
   m_callbacks->addonData             = this;
   m_callbacks->AddOnLib_RegisterMe   = CAddonCallbacks::AddOnLib_RegisterMe;
   m_callbacks->AddOnLib_UnRegisterMe = CAddonCallbacks::AddOnLib_UnRegisterMe;
+  m_callbacks->ADSPLib_RegisterMe    = CAddonCallbacks::ADSPLib_RegisterMe;
+  m_callbacks->ADSPLib_UnRegisterMe  = CAddonCallbacks::ADSPLib_UnRegisterMe;
   m_callbacks->CODECLib_RegisterMe   = CAddonCallbacks::CODECLib_RegisterMe;
   m_callbacks->CODECLib_UnRegisterMe = CAddonCallbacks::CODECLib_UnRegisterMe;
   m_callbacks->GUILib_RegisterMe     = CAddonCallbacks::GUILib_RegisterMe;
@@ -55,6 +59,8 @@ CAddonCallbacks::~CAddonCallbacks()
 {
   delete m_helperAddon;
   m_helperAddon = NULL;
+  delete m_helperADSP;
+  m_helperADSP = NULL;
   delete m_helperCODEC;
   m_helperCODEC = NULL;
   delete m_helperGUI;
@@ -90,6 +96,32 @@ void CAddonCallbacks::AddOnLib_UnRegisterMe(void *addonData, CB_AddOnLib *cbTabl
 
   delete addon->m_helperAddon;
   addon->m_helperAddon = NULL;
+}
+
+CB_ADSPLib* CAddonCallbacks::ADSPLib_RegisterMe(void *addonData)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    return NULL;
+  }
+
+  addon->m_helperADSP = new CAddonCallbacksADSP(addon->m_addon);
+  return addon->m_helperADSP->GetCallbacks();
+}
+
+void CAddonCallbacks::ADSPLib_UnRegisterMe(void *addonData, CB_ADSPLib *cbTable)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  delete addon->m_helperADSP;
+  addon->m_helperADSP = NULL;
 }
 
 CB_CODECLib* CAddonCallbacks::CODECLib_RegisterMe(void *addonData)
