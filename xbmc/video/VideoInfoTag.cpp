@@ -73,6 +73,7 @@ void CVideoInfoTag::Reset()
   m_iSpecialSortSeason = -1;
   m_iSpecialSortEpisode = -1;
   m_fRating = 0.0f;
+  m_iUserRating = 0;
   m_iDbId = -1;
   m_iFileId = -1;
   m_iBookmarkId = -1;
@@ -112,6 +113,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   if (!m_strSortTitle.empty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::SetFloat(movie, "rating", m_fRating);
+  XMLUtils::SetInt(movie, "userrating", m_iUserRating);
   XMLUtils::SetFloat(movie, "epbookmark", m_fEpBookmark);
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
@@ -310,6 +312,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iEpisode;
     ar << m_strUniqueId;
     ar << m_fRating;
+    ar << m_iUserRating;
     ar << m_iDbId;
     ar << m_iFileId;
     ar << m_iSpecialSortSeason;
@@ -387,6 +390,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iEpisode;
     ar >> m_strUniqueId;
     ar >> m_fRating;
+    ar >> m_iUserRating;
     ar >> m_iDbId;
     ar >> m_iFileId;
     ar >> m_iSpecialSortSeason;
@@ -461,6 +465,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["episode"] = m_iEpisode;
   value["uniqueid"]["unknown"] = m_strUniqueId;
   value["rating"] = m_fRating;
+  value["userrating"] = m_iUserRating;
   value["dbid"] = m_iDbId;
   value["fileid"] = m_iFileId;
   value["track"] = m_iTrack;
@@ -530,6 +535,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldEpisodeNumberSpecialSort: sortable[FieldEpisodeNumberSpecialSort] = m_iSpecialSortEpisode; break;
   case FieldSeasonSpecialSort:        sortable[FieldSeasonSpecialSort] = m_iSpecialSortSeason; break;
   case FieldRating:                   sortable[FieldRating] = m_fRating; break;
+  case FieldUserRating:               sortable[FieldUserRating] = m_iUserRating; break;
   case FieldId:                       sortable[FieldId] = m_iDbId; break;
   case FieldTrackNumber:              sortable[FieldTrackNumber] = m_iTrack; break;
   case FieldTag:                      sortable[FieldTag] = m_tags; break;
@@ -584,6 +590,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     SetSortTitle(value);
 
   XMLUtils::GetFloat(movie, "rating", m_fRating);
+  XMLUtils::GetInt(movie, "userrating", m_iUserRating);
   XMLUtils::GetFloat(movie, "epbookmark", m_fEpBookmark);
   int max_value = 10;
   const TiXmlElement* rElement = movie->FirstChildElement("rating");
@@ -591,6 +598,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   {
     m_fRating = m_fRating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
   }
+  const TiXmlElement* urElement = movie->FirstChildElement("userrating");
+  if (urElement && (urElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
+    m_iUserRating = m_iUserRating / max_value * 10; // Normalise the user Movie Rating to between 1 and 10
   XMLUtils::GetInt(movie, "year", m_iYear);
   XMLUtils::GetInt(movie, "top250", m_iTop250);
   XMLUtils::GetInt(movie, "season", m_iSeason);
