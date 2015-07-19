@@ -911,7 +911,7 @@ AC_FUNC_STRFTIME
 AC_FUNC_STRTOD
 AC_FUNC_UTIME_NULL
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd gethostbyaddr gethostbyname gethostname getpagesize getpass gettimeofday inet_ntoa lchown localeconv memchr memmove memset mkdir modf munmap pow rmdir select setenv setlocale socket sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strpbrk strrchr strspn strstr strtol strtoul sysinfo tzset utime posix_fadvise localtime_r])
+AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd gethostbyaddr gethostbyname gethostname getpagesize getpass gettimeofday inet_ntoa lchown localeconv memchr memmove memset mkdir modf munmap pow rmdir select setenv setlocale socket sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strpbrk strrchr strspn strstr strtol strtoul sysinfo tzset utime posix_fadvise localtime_r eventfd_read eventfd_write])
 
 # Check for various sizes
 AC_CHECK_SIZEOF([int])
@@ -2064,6 +2064,9 @@ fi
 if test "$use_alsa" = "yes"; then
   USE_ALSA=1
   AC_DEFINE([USE_ALSA],[1],["Define to 1 if alsa is installed"])
+  if test "$ac_cv_func_eventfd_read" = "yes" -a "$ac_cv_func_eventfd_write" = "yes"; then
+      AC_DEFINE([HAVE_EVENTFD],[1],["Define to 1 if eventfd is installed"])
+  fi
   final_message="$final_message\n  ALSA:\t\tYes"
 else
   USE_ALSA=0

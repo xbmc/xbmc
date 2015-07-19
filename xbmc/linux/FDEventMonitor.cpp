@@ -28,6 +28,18 @@
 
 #include "FDEventMonitor.h"
 
+#ifndef HAVE_EVENTFD
+static int eventfd_read(int __fd, eventfd_t *__value)
+{
+  return read(__fd, __value, sizeof(eventfd_t)) == sizeof(eventfd_t) ? 0 : -1;
+}
+
+static int eventfd_write(int __fd, eventfd_t __value)
+{
+  return write(__fd, &__value, sizeof(eventfd_t)) == sizeof(eventfd_t) ? 0 : -1;
+}
+#endif
+
 CFDEventMonitor::CFDEventMonitor() :
   CThread("FDEventMonitor"),
   m_nextID(0),
