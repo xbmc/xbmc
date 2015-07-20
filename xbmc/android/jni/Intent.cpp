@@ -24,6 +24,14 @@
 
 using namespace jni;
 
+std::string CJNIIntent::EXTRA_KEY_EVENT;
+
+void CJNIIntent::PopulateStaticFields()
+{
+  jhclass clazz = find_class("android/content/Intent");
+  EXTRA_KEY_EVENT  = jcast<std::string>(get_static_field<jhstring>(clazz,"EXTRA_KEY_EVENT"));
+}
+
 CJNIIntent::CJNIIntent(const std::string &action) : CJNIBase("android/content/Intent")
 {
   if(action.empty())
@@ -70,6 +78,13 @@ std::string CJNIIntent::getStringExtra(const std::string &name) const
   return jcast<std::string>(call_method<jhstring>(m_object,
     "getStringExtra", "(Ljava/lang/String;I)Ljava/lang/String;",
     jcast<jhstring>(name)));
+}
+
+jni::jhobject CJNIIntent::getParcelableExtra(const std::string &name) const
+{
+  return call_method<jhobject>(m_object,
+    "getParcelableExtra", "(Ljava/lang/String;)Landroid/os/Parcelable;",
+    jcast<jhstring>(name));
 }
 
 bool CJNIIntent::hasExtra(const std::string &name) const

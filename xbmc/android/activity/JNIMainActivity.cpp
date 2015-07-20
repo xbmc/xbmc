@@ -93,3 +93,15 @@ void CJNIMainActivity::setVideoViewSurfaceRect(int l, int t, int r, int b)
   call_method<void>(m_context,
                     "setVideoViewSurfaceRect", "(IIII)V", l, t, r, b);
 }
+
+void CJNIMainActivity::registerMediaButtonEventReceiver()
+{
+  call_method<void>(m_context,
+                    "registerMediaButtonEventReceiver", "()V");
+}
+
+void CJNIMainActivity::unregisterMediaButtonEventReceiver()
+{
+  call_method<void>(m_context,
+                    "unregisterMediaButtonEventReceiver", "()V");
+}
