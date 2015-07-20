@@ -114,7 +114,7 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
     if (IsRunning() && GetMode() != remoteMode)
     {
       bool cancelled;
-      if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, cancelled, "", "", 10000))
+      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13144}, CVariant{13145}, cancelled, CVariant{""}, CVariant{""}, 10000))
         return false;
       // reload configuration
       else
@@ -127,7 +127,7 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
     if (ErrorStarting() == true)
     {
       // inform user about error
-      CGUIDialogOK::ShowAndGetInput(13620, 13621);
+      CGUIDialogOK::ShowAndGetInput(CVariant{13620}, CVariant{13621});
       return false;
     }
   }
