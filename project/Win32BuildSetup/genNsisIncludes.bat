@@ -1,7 +1,7 @@
 @ECHO OFF
 rem Application for Windows install script
-rem Copyright (C) 2005-2013 Team XBMC
-rem http://xbmc.org
+rem Copyright (C) 2005-2015 Team XBMC
+rem http://kodi.tv
 
 rem Script by chadoe
 rem This script generates NullSoft NSIS installer include files for application's add-ons
@@ -35,7 +35,7 @@ IF EXIST BUILD_WIN32\addons\audiodecoder.* (
     SET "output=%%P"
     SET output=!output:audiodecoder.=!
     ECHO Section "!output!" SecAudioDecoderAddons!Counter! >> audiodecoder-addons.nsi
-    ECHO SectionIn 1 2 3 #section is in installtype Full >> audiodecoder-addons.nsi
+    ECHO SectionIn 1 #section is in installtype Full >> audiodecoder-addons.nsi
     ECHO SetOutPath "$INSTDIR\addons\%%P" >> audiodecoder-addons.nsi
     ECHO File /r "${app_root}\addons\%%P\*.*" >> audiodecoder-addons.nsi
     ECHO SectionEnd >> audiodecoder-addons.nsi
@@ -58,6 +58,22 @@ IF EXIST BUILD_WIN32\addons\audioencoder.* (
     SET /A Counter = !Counter! + 1
     )
   ECHO SectionGroupEnd >> audioencoder-addons.nsi
+)
+
+SET Counter=1
+IF EXIST BUILD_WIN32\addons\adsp.* (
+  ECHO SectionGroup "Audio DSP Add-ons" SecAudioDSPAddons >> audiodsp-addons.nsi
+  FOR /F "tokens=*" %%P IN ('dir /B /AD BUILD_WIN32\addons\adsp.*') DO (
+    SET "output=%%P"
+    SET output=!output:adsp.=!
+    ECHO Section "!output!" SecAudioDSPAddons!Counter! >> audiodsp-addons.nsi
+    ECHO SectionIn 1 #section is in installtype Full >> audiodsp-addons.nsi
+    ECHO SetOutPath "$INSTDIR\addons\%%P" >> audiodsp-addons.nsi
+    ECHO File /r "${app_root}\addons\%%P\*.*" >> audiodsp-addons.nsi
+    ECHO SectionEnd >> audiodsp-addons.nsi
+    SET /A Counter = !Counter! + 1
+    )
+  ECHO SectionGroupEnd >> audiodsp-addons.nsi
 )
 
 SET Counter=1
