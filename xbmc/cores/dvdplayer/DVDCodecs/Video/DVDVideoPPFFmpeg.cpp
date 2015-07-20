@@ -143,7 +143,7 @@ bool CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
   if (m_deinterlace)
     m_pTarget->iFlags &= ~DVP_FLAG_INTERLACED;
   m_pTarget->iFrameType = m_pSource->iFrameType;
-  m_pTarget->iRepeatPicture = m_pSource->iRepeatPicture;;
+  m_pTarget->iRepeatPicture = m_pSource->iRepeatPicture;
   m_pTarget->iDuration = m_pSource->iDuration;
   m_pTarget->qp_table = m_pSource->qp_table;
   m_pTarget->qstride = m_pSource->qstride;

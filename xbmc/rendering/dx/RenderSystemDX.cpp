@@ -1410,7 +1410,7 @@ bool CRenderSystemDX::TestRender()
     0, D3DFVF_CUSTOMVERTEX,
     D3DPOOL_DEFAULT, &pVB, NULL ) ) )
   {
-    return false;;
+    return false;
   }
 
   // Now we fill the vertex buffer. To do this, we need to Lock() the VB to

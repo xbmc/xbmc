@@ -1202,7 +1202,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
         if(pts > m_last_pts)
           m_last_pts = pts;
         else
-          omx_buffer->nFlags = OMX_BUFFERFLAG_TIME_UNKNOWN;;
+          omx_buffer->nFlags = OMX_BUFFERFLAG_TIME_UNKNOWN;
       }
       else if (m_last_pts == pts)
       {

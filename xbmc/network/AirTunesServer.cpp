@@ -376,7 +376,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
 
   CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
 
-  CFileItem *item = new CFileItem();;
+  CFileItem *item = new CFileItem();
   item->SetPath(pipe->GetName());
   item->SetMimeType("audio/x-xbmc-pcm");
   m_streamStarted = true;

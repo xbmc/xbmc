@@ -302,7 +302,7 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   name += extension;
   name += " ";
 
-  return m_RenderExtensions.find(name) != std::string::npos;;
+  return m_RenderExtensions.find(name) != std::string::npos;
 }
 
 bool CRenderSystemGL::PresentRender(const CDirtyRegionList& dirty)

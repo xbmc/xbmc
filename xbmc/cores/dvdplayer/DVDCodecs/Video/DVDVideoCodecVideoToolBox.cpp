@@ -1328,7 +1328,7 @@ int CDVDVideoCodecVideoToolBox::Decode(uint8_t* pData, int iSize, double dts, do
     OSStatus status;
     double sort_time;
     uint32_t decoderFlags = 0;
-    CFDictionaryRef frameInfo = NULL;;
+    CFDictionaryRef frameInfo = NULL;
     CMSampleBufferRef sampleBuff = NULL;
     AVIOContext *pb = NULL;
     int demux_size = 0;

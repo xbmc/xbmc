@@ -264,7 +264,7 @@ const CSysData &CSysInfoJob::GetData() const
 std::string CSysInfoJob::GetCPUFreqInfo()
 {
   double CPUFreq = GetCPUFrequency();
-  return StringUtils::Format("%4.0f MHz", CPUFreq);;
+  return StringUtils::Format("%4.0f MHz", CPUFreq);
 }
 
 CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()

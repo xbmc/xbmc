@@ -76,7 +76,7 @@ void CGUITextLayout::Render(float x, float y, float angle, color_t color, color_
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
   {
-    y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
+    y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;
     alignment &= ~XBFONT_CENTER_Y;
   }
   m_font->Begin();
@@ -126,7 +126,7 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t colo
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
   {
-    y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
+    y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;
     alignment &= ~XBFONT_CENTER_Y;
   }
   m_font->Begin();
@@ -160,7 +160,7 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
   {
-    y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;;
+    y -= m_font->GetTextHeight(m_lines.size()) * 0.5f;
     alignment &= ~XBFONT_CENTER_Y;
   }
   if (m_borderFont)

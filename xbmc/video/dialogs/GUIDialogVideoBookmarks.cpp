@@ -328,7 +328,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   }
 
   m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(selectedItemIndex);;
+  m_viewControl.SetSelectedItem(selectedItemIndex);
 }
 
 void CGUIDialogVideoBookmarks::Update()

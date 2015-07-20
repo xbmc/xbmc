@@ -548,7 +548,7 @@ std::wstring CGUIEditControl::GetDisplayedText() const
       text.append(m_text2.size() - m_cursorPos, L'*');
     }
     else
-      text.append(m_text2.size(), L'*');;
+      text.append(m_text2.size(), L'*');
   }
   else if (!m_edit.empty())
     text.insert(m_editOffset, m_edit);

@@ -3775,7 +3775,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 
   CVariant param;
   CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
-  CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);;
+  CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   param["player"]["speed"] = m_pPlayer->GetPlaySpeed();
   CAnnouncementManager::Get().Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
