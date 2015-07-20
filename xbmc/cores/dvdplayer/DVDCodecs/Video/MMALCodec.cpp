@@ -623,6 +623,11 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     m_dec_input->format->es->video.width = ALIGN_UP(m_hints.width, 32);
     m_dec_input->format->es->video.height = ALIGN_UP(m_hints.height, 16);
   }
+  if (hints.fpsrate > 0 && hints.fpsscale > 0)
+  {
+    m_dec_input->format->es->video.frame_rate.num = hints.fpsrate;
+    m_dec_input->format->es->video.frame_rate.den = hints.fpsscale;
+  }
   m_dec_input->format->flags |= MMAL_ES_FORMAT_FLAG_FRAMED;
 
   error_concealment.hdr.id = MMAL_PARAMETER_VIDEO_DECODE_ERROR_CONCEALMENT;
