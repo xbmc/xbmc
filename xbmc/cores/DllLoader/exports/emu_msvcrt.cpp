@@ -1234,7 +1234,7 @@ extern "C"
     int fd = dll_open(filename, convert_fmode(mode));
     if (fd >= 0)
     {
-      file = g_emuFileWrapper.GetStreamByDescriptor(fd);;
+      file = g_emuFileWrapper.GetStreamByDescriptor(fd);
     }
 
     return file;

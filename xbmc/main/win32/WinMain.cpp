@@ -35,7 +35,7 @@ LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
 {
   win32_exception::write_stacktrace(pEp);
   win32_exception::write_minidump(pEp);
-  return pEp->ExceptionRecord->ExceptionCode;;
+  return pEp->ExceptionRecord->ExceptionCode;
 }
 
 //-----------------------------------------------------------------------------

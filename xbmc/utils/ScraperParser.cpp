@@ -575,7 +575,7 @@ void CScraperParser::ClearBuffers()
 void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool defvalue)
 {
   for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
-    result[iBuf] = defvalue;;
+    result[iBuf] = defvalue;
   if (attribute)
   {
     vector<std::string> vecBufs;

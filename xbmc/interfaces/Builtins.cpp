@@ -787,7 +787,7 @@ int CBuiltins::Execute(const std::string& execString)
       else
         items.Sort(SortByLabel, SortOrderAscending);
 
-      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;;
+      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
       if (containsMusic && containsVideo) //mixed content found in the folder
       {
         for (int i = items.Size() - 1; i >= 0; i--) //remove music entries

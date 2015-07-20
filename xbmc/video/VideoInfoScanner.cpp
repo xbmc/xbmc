@@ -1502,7 +1502,7 @@ namespace VIDEO
       EPISODE key(file->iSeason, file->iEpisode, file->iSubepisode);
       EPISODE backupkey(file->iSeason, file->iEpisode, 0);
       bool bFound = false;
-      EPISODELIST::iterator guide = episodes.begin();;
+      EPISODELIST::iterator guide = episodes.begin();
       EPISODELIST matches;
 
       for (; guide != episodes.end(); ++guide )

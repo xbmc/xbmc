@@ -144,7 +144,7 @@ void CVideoDatabase::CreateTables()
   columns = "CREATE TABLE tvshow ( idShow integer primary key";
 
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
-    columns += StringUtils::Format(",c%02d text", i);;
+    columns += StringUtils::Format(",c%02d text", i);
 
   columns += ")";
   m_pDS->exec(columns.c_str());
@@ -177,7 +177,7 @@ void CVideoDatabase::CreateTables()
   CLog::Log(LOGINFO, "create musicvideo table");
   columns = "CREATE TABLE musicvideo ( idMVideo integer primary key, idFile integer";
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
-    columns += StringUtils::Format(",c%02d text", i);;
+    columns += StringUtils::Format(",c%02d text", i);
 
   columns += ")";
   m_pDS->exec(columns.c_str());

@@ -2510,7 +2510,7 @@ int CTeletextDecoder::RenderChar(color_t *buffer,    // pointer to render buffer
     }
 
     *pPosX += curfontwidth;
-    return 0;;
+    return 0;
   }
 
   if (Attribute->charset == C_G3)

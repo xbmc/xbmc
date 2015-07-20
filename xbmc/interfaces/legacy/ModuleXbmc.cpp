@@ -368,7 +368,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       Crc32 crc;
       crc.ComputeFromLowerCase(path);
-      return StringUtils::Format("%08x.tbn", (unsigned __int32)crc);;
+      return StringUtils::Format("%08x.tbn", (unsigned __int32)crc);
     }
 
     String makeLegalFilename(const String& filename, bool fatX)

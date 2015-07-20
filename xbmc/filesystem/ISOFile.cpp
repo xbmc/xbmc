@@ -105,7 +105,7 @@ ssize_t CISOFile::Read(void *lpBuf, size_t uiBufSize)
     return lTotalBytesRead;
   }
 
-  return m_isoReader.ReadFile( m_hFile, (uint8_t*)pData, (long)uiBufSize);;
+  return m_isoReader.ReadFile( m_hFile, (uint8_t*)pData, (long)uiBufSize);
 }
 
 //*********************************************************************************************

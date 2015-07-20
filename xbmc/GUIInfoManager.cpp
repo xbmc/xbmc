@@ -3682,7 +3682,7 @@ std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAY
   {
   case PLAYLIST_LENGTH:
     {
-      return StringUtils::Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());;
+      return StringUtils::Format("%i", g_playlistPlayer.GetPlaylist(iPlaylist).size());
     }
   case PLAYLIST_POSITION:
     {
@@ -4836,7 +4836,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_PROGRAM_COUNT:
     {
-      return StringUtils::Format("%i", item->m_iprogramCount);;
+      return StringUtils::Format("%i", item->m_iprogramCount);
     }
   case LISTITEM_DURATION:
     {
@@ -5326,7 +5326,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       int val;
       if (GetItemInt(val, item, info))
       {
-        return StringUtils::Format("%d", val);;
+        return StringUtils::Format("%d", val);
       }
       break;
     }
@@ -5341,11 +5341,11 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_DBID:
     if (item->HasVideoInfoTag())
       {
-        return StringUtils::Format("%i", item->GetVideoInfoTag()->m_iDbId);;
+        return StringUtils::Format("%i", item->GetVideoInfoTag()->m_iDbId);
       }
     if (item->HasMusicInfoTag())
       {
-        return StringUtils::Format("%i", item->GetMusicInfoTag()->GetDatabaseId());;
+        return StringUtils::Format("%i", item->GetMusicInfoTag()->GetDatabaseId());
       }
     break;
   case LISTITEM_STEREOSCOPIC_MODE:

@@ -63,7 +63,7 @@ bool CRecentlyAddedJob::UpdateVideo()
     {
       CFileItemPtr item = items.Get(i);
       std::string   value = StringUtils::Format("%i", i + 1);
-      std::string   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);;
+      std::string   strRating = StringUtils::Format("%.1f", item->GetVideoInfoTag()->m_fRating);
       
       home->SetProperty("LatestMovie." + value + ".Title"       , item->GetLabel());
       home->SetProperty("LatestMovie." + value + ".Rating"      , strRating);

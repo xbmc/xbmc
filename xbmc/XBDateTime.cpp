@@ -874,7 +874,7 @@ std::string CDateTime::GetAsSaveString() const
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
-  return StringUtils::Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);;
+  return StringUtils::Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 }
 
 bool CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)

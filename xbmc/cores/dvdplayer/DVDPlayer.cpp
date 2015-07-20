@@ -4365,7 +4365,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
         stream.flags = static_cast<CDemuxStream::EFlags>(info.flag);
     }
 
-    return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);;
+    return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
   }
   if(ext == ".sub")
   {

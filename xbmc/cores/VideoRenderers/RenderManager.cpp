@@ -1148,7 +1148,7 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
   m_overlays.Release(m_free.front());
 
   // return buffer level
-  return m_queued.size() + m_discard.size();;
+  return m_queued.size() + m_discard.size();
 }
 
 void CXBMCRenderManager::PrepareNextRender()
