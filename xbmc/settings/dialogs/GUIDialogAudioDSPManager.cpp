@@ -210,8 +210,7 @@ void CGUIDialogAudioDSPManager::OnDeinitWindow(int nextWindowID)
     else
     {
       bool canceled;
-      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(19098), g_localizeStrings.Get(15079), canceled, "", ""))
-//      if (CGUIDialogYesNo::ShowAndGetInput(19098, 15079, -1, -1))
+      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{19098}, CVariant{15079}, canceled, CVariant{""}, CVariant{""}))
       {
         SaveList();
       }
@@ -679,7 +678,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     }
     else
     {
-      CGUIDialogOK::ShowAndGetInput(19033, 0, 15040, 0);
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{15040});
     }
   }
 

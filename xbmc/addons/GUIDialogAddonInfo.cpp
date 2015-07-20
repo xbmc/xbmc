@@ -94,7 +94,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
         {
           if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
           {
-            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
+            CGUIDialogOK::ShowAndGetInput(CVariant{24137}, CVariant{24138});
             return true;
           }
         }
@@ -121,7 +121,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
         {
           if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
           {
-            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
+            CGUIDialogOK::ShowAndGetInput(CVariant{24137}, CVariant{24138});
             return true;
           }
         }

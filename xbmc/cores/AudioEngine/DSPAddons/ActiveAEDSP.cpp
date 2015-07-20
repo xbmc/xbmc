@@ -331,7 +331,7 @@ void CActiveAEDSP::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "audiooutput.dspresetdb")
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(19098, 36440, 750, 0))
+    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{19098}, CVariant{36440}))
     {
       CDateTime::ResetTimezoneBias();
       ResetDatabase();
@@ -708,7 +708,7 @@ bool CActiveAEDSP::UpdateAndInitialiseAudioDSPAddons(bool bInitialiseAllAudioDSP
       }
 
       if (bDisabled && IsActivated())
-        CGUIDialogOK::ShowAndGetInput(24070, 24071, 16029, 0);
+        CGUIDialogOK::ShowAndGetInput(CVariant{24070}, CVariant{24139});
     }
   }
 
@@ -764,7 +764,7 @@ bool CActiveAEDSP::UpdateAddons(void)
   {
     m_noAddonWarningDisplayed = true;
     CSettings::Get().SetBool("audiooutput.dspaddonsenabled", false);
-    CGUIDialogOK::ShowAndGetInput(24055, 24056, 24057, 24058);
+    CGUIDialogOK::ShowAndGetInput(24055, 24056, 24057, 24058); // Completely wrong labels
     CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
     g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_SYSTEM);
   }
@@ -813,7 +813,7 @@ void CActiveAEDSP::ShowDialogNoAddonsEnabled(void)
   if (!IsActivated())
     return;
 
-  CGUIDialogOK::ShowAndGetInput(15048, 15049, 0, 0);
+  CGUIDialogOK::ShowAndGetInput(CVariant{15048}, CVariant{15049});
 
   vector<string> params;
   params.push_back("addons://disabled/kodi.adsp");
