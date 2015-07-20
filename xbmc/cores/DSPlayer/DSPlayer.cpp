@@ -1177,7 +1177,7 @@ void CGraphManagementThread::Process()
         }
         else if (newPos >= g_dsGraph->GetTotalTime())
         {
-          m_pPlayer->CloseFile();
+          CApplicationMessenger::Get().MediaStop();
           break;
         }
 
