@@ -105,7 +105,11 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
       return new CDVDInputStreamFFmpeg();
 
     if (contentlookup)
+    {
+      // request header
+      item.SetMimeType("");
       item.FillInMimeType();
+    }
 
     if (item.GetMimeType() == "application/vnd.apple.mpegurl")
       return new CDVDInputStreamFFmpeg();
