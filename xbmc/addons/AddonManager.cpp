@@ -893,9 +893,13 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
 #if defined(TARGET_ANDROID)
       if (*platform == "android")
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-      if (*platform == "linux")
+      if (*platform == "linux"
+#if defined(TARGET_FREEBSD)
+        || *platform == "freebsd"
+#endif
+        )
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-      if (*platform == "windx")
+      if (*platform == "windx" || *platform == "windows")
 #elif defined(TARGET_DARWIN_OSX)
 // Remove this after Frodo and add an architecture filter
 // in addition to platform.
@@ -976,10 +980,23 @@ std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
 #if defined(TARGET_ANDROID)
   libraryName = GetExtValue(base, "@library_android");
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+#if defined(TARGET_FREEBSD)
+  libraryName = GetExtValue(base, "@library_freebsd");
+  if (libraryName.empty())
+#elif defined(TARGET_RASPBERRY_PI)
+  libraryName = GetExtValue(base, "@library_rbpi");
+  if (libraryName.empty())
+#endif
   libraryName = GetExtValue(base, "@library_linux");
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
   libraryName = GetExtValue(base, "@library_windx");
+  if (libraryName.empty())
+    libraryName = GetExtValue(base, "@library_windows");
 #elif defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
+  libraryName = GetExtValue(base, "@library_ios");
+  if (libraryName.empty())
+#endif
   libraryName = GetExtValue(base, "@library_osx");
 #endif
 
