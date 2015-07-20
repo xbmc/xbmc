@@ -99,7 +99,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   if (ext && m_strLibName.empty())
   {
 #if defined(TARGET_ANDROID)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_android");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_android");
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
