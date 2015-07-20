@@ -22,7 +22,12 @@ endmacro()
 
 # Grab the version from a given add-on's addon.xml
 macro (addon_version dir prefix)
-  FILE(READ ${dir}/addon.xml ADDONXML)
+  IF(EXISTS ${PROJECT_SOURCE_DIR}/${dir}/addon.xml.in)
+    FILE(READ ${PROJECT_SOURCE_DIR}/${dir}/addon.xml.in ADDONXML)
+  ELSE()
+    FILE(READ ${dir}/addon.xml ADDONXML)
+  ENDIF()
+
   STRING(REGEX MATCH "<addon[^>]*version.?=.?.[0-9\\.]+" VERSION_STRING ${ADDONXML}) 
   STRING(REGEX REPLACE ".*version=.([0-9\\.]+).*" "\\1" ${prefix}_VERSION ${VERSION_STRING})
   message(STATUS ${prefix}_VERSION=${${prefix}_VERSION})
@@ -39,6 +44,18 @@ macro (build_addon target prefix libs)
   IF(OS STREQUAL "android")
     SET_TARGET_PROPERTIES(${target} PROPERTIES PREFIX "lib")
   ENDIF(OS STREQUAL "android")
+
+  SET(LIBRARY_LOCATION $<TARGET_FILE:${target}>)
+  SET(LIBRARY_FILENAME $<TARGET_FILE_NAME:${target}>)
+
+  # if there's an addon.xml.in we need to generate the addon.xml
+  IF(EXISTS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
+    SET(PLATFORM ${CORE_SYSTEM_NAME})
+
+    FILE(READ ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in addon_file)
+    STRING(CONFIGURE ${addon_file} addon_file_conf @ONLY)
+    FILE(GENERATE OUTPUT ${PROJECT_SOURCE_DIR}/${target}/addon.xml CONTENT ${addon_file_conf})
+  ENDIF()
 
   # set zip as default if addon-package is called without PACKAGE_XXX
   SET(CPACK_GENERATOR "ZIP")
@@ -57,23 +74,21 @@ macro (build_addon target prefix libs)
     set(CPACK_COMPONENTS_IGNORE_GROUPS 1)
     list(APPEND CPACK_COMPONENTS_ALL ${target}-${${prefix}_VERSION})
     # Pack files together to create an archive
-    INSTALL(DIRECTORY ${target} DESTINATION ./ COMPONENT ${target}-${${prefix}_VERSION})
+    INSTALL(DIRECTORY ${target} DESTINATION ./ COMPONENT ${target}-${${prefix}_VERSION} PATTERN "addon.xml.in" EXCLUDE)
     IF(WIN32)
-      # get the installation location for the addon's target
-      get_property(dll_location TARGET ${target} PROPERTY LOCATION)
       # in case of a VC++ project the installation location contains a $(Configuration) VS variable
       # we replace it with ${CMAKE_BUILD_TYPE} (which doesn't cover the case when the build configuration
       # is changed within Visual Studio)
-      string(REPLACE "$(Configuration)" "${CMAKE_BUILD_TYPE}" dll_location "${dll_location}")
+      string(REPLACE "$(Configuration)" "${CMAKE_BUILD_TYPE}" LIBRARY_LOCATION "${LIBRARY_LOCATION}")
 
       # install the generated DLL file
-      INSTALL(PROGRAMS ${dll_location} DESTINATION ${target}
+      INSTALL(PROGRAMS ${LIBRARY_LOCATION} DESTINATION ${target}
               COMPONENT ${target}-${${prefix}_VERSION})
 
       IF(CMAKE_BUILD_TYPE MATCHES Debug)
         # for debug builds also install the PDB file
-        get_filename_component(dll_directory ${dll_location} DIRECTORY)
-        INSTALL(FILES ${dll_directory}/${target}.pdb DESTINATION ${target}
+        get_filename_component(LIBRARY_DIR ${LIBRARY_LOCATION} DIRECTORY)
+        INSTALL(FILES ${LIBRARY_DIR}/${target}.pdb DESTINATION ${target}
                 COMPONENT ${target}-${${prefix}_VERSION})
       ENDIF()
     ELSE(WIN32)
@@ -98,7 +113,7 @@ macro (build_addon target prefix libs)
       set(CMAKE_INSTALL_LIBDIR "lib/${APP_NAME_LC}")
     endif()
     INSTALL(TARGETS ${target} DESTINATION ${CMAKE_INSTALL_LIBDIR}/addons/${target})
-    INSTALL(DIRECTORY ${target} DESTINATION share/${APP_NAME_LC}/addons)
+    INSTALL(DIRECTORY ${target} DESTINATION share/${APP_NAME_LC}/addons PATTERN "addon.xml.in" EXCLUDE)
   ENDIF(PACKAGE_ZIP OR PACKAGE_TGZ)
 endmacro()
 
