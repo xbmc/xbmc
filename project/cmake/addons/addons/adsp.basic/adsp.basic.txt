@@ -1,1 +1,1 @@
-adsp.basic https://github.com/kodi-adsp/adsp.basic master
+adsp.basic https://github.com/kodi-adsp/adsp.basic da6ee5d
