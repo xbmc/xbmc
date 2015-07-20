@@ -144,17 +144,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         { // built in audio encoder
           return AddonPtr(new CAudioEncoder(props));
         }
-        std::string tograb;
-#if defined(TARGET_ANDROID)
-          tograb = "@library_android";
-#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-          tograb = "@library_linux";
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-          tograb = "@library_windx";
-#elif defined(TARGET_DARWIN)
-          tograb = "@library_osx";
-#endif
-        value = GetExtValue(props->plugin->extensions->configuration, tograb.c_str());
+
+        value = GetPlatformLibraryName(props->plugin->extensions->configuration);
         if (value.empty())
           break;
         if (type == ADDON_VIZ)
@@ -977,6 +968,22 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<std:
     return false;
   StringUtils::Tokenize(all, result, ' ');
   return true;
+}
+
+std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
+{
+  std::string libraryName;
+#if defined(TARGET_ANDROID)
+  libraryName = GetExtValue(base, "@library_android");
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+  libraryName = GetExtValue(base, "@library_linux");
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
+  libraryName = GetExtValue(base, "@library_windx");
+#elif defined(TARGET_DARWIN)
+  libraryName = GetExtValue(base, "@library_osx");
+#endif
+
+  return libraryName;
 }
 
 AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,

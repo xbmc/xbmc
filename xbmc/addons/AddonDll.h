@@ -97,17 +97,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
 {
   // if library attribute isn't present, look for a system-dependent one
   if (ext && m_strLibName.empty())
-  {
-#if defined(TARGET_ANDROID)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_android");
-#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
-#elif defined(TARGET_DARWIN)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
-#endif
-  }
+    m_strLibName = CAddonMgr::Get().GetPlatformLibraryName(ext->configuration);
 
   m_pStruct     = NULL;
   m_initialized = false;
