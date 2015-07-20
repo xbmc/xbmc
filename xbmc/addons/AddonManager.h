@@ -178,6 +178,10 @@ namespace ADDON
 
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
 
+    /*! \brief Retrieves the platform-specific library name from the given configuration element
+     */
+    std::string GetPlatformLibraryName(cp_cfg_element_t *base) const;
+
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.
      \param path folder that contains the addon.
