@@ -958,7 +958,7 @@ const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, con
   return NULL;
 }
 
-std::string CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
+std::string CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path) const
 {
   const char *value = "";
   if (base && (value = m_cpluff->lookup_cfg_value(base, path)))

@@ -149,7 +149,7 @@ namespace ADDON
     bool CanAddonBeInstalled(const AddonPtr& addon);
 
     /* libcpluff */
-    std::string GetExtValue(cp_cfg_element_t *base, const char *path);
+    std::string GetExtValue(cp_cfg_element_t *base, const char *path) const;
 
     /*! \brief Retrieve an element from a given configuration element
      \param base the base configuration element.
