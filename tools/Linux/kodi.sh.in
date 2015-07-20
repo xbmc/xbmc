@@ -113,7 +113,9 @@ print_crash_report()
     fi
     single_stacktrace "$BASEDIR" 5
     # find in userdata dir
-    single_stacktrace $USERDATA_DIR/ 5
+    single_stacktrace "$HOME" 5
+    # try /proc/sys/kernel/core_pattern
+    [ -d $(dirname $(cat /proc/sys/kernel/core_pattern)) ] && single_stacktrace $(dirname $(cat /proc/sys/kernel/core_pattern)) 1
   else
     echo "gdb not installed, can't get stack trace." >> $FILE
   fi
