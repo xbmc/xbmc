@@ -32,7 +32,7 @@ extern "C" {
 
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
-#include "GUIInfoManager.h"
+#include "guiinfo/GUIInfoLabels.h"
 #include "GUIUserMessages.h"
 #include "addons/AddonInstaller.h"
 #include "addons/GUIDialogAddonSettings.h"
