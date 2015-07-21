@@ -24,6 +24,7 @@
 #include "threads/Thread.h"
 #include "utils/BitstreamConverter.h"
 #include "guilib/Geometry.h"
+#include "cores/VideoRenderers/RenderFeatures.h"
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
 
@@ -140,7 +141,7 @@ public:
   // Captures the current visible frame buffer page and blends it into
   // the passed overlay. The buffer format is BGRA (4 byte)
   void CaptureDisplay(unsigned char *buffer, int iWidth, int iHeight);
-  bool PushCaptureTask(CIMXBuffer *source, CRect *dest);
+  bool PushCaptureTask(CIMXBuffer *source, const CRect *dest);
   void *GetCaptureBuffer() const { if (m_bufferCapture) return m_bufferCapture->buf_vaddr; else return NULL; }
   void WaitCapture();
 
@@ -169,7 +170,7 @@ private:
 
   bool PushTask(const IPUTask &);
   void PrepareTask(IPUTask &ipu, CIMXBuffer *source_p, CIMXBuffer *source,
-                   bool topBottomFields, CRect *dest = NULL);
+                   bool topBottomFields, const CRect *dest = NULL);
   bool DoTask(IPUTask &ipu, int targetPage);
 
   virtual void OnStartup();
@@ -345,4 +346,12 @@ protected:
 #ifdef DUMP_STREAM
   FILE                        *m_dump;
 #endif
+
+private:
+  static void RenderFeaturesCallBack(const void *ctx, Features &renderFeatures);
+  static void DeinterlaceMethodsCallBack(const void *ctx, Features &deinterlaceMethods);
+  static void RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect, DWORD flags, const void* render_ctx);
+  static void RenderCaptureCallBack(const void *ctx, const CRect &SrcRect, const void* render_ctx);
+  static void RenderLockCallBack(const void *ctx, const void *render_ctx);
+  static void RenderReleaseCallBack(const void *ctx, const void *render_ctx);
 };
