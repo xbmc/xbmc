@@ -628,7 +628,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
     // audio delay setting
     if (SupportsAudioFeature(IPC_AUD_OFFSET))
     {
-      CSettingNumber *settingAudioDelay = AddSlider(groupInternal, SETTING_AUDIO_POST_PROC_AUDIO_DELAY, 297, 0, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.025f, g_advancedSettings.m_videoAudioDelayRange, -1, usePopup);
+      CSettingNumber *settingAudioDelay = AddSlider(groupInternal, SETTING_AUDIO_POST_PROC_AUDIO_DELAY, 297, 0, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.025f, g_advancedSettings.m_videoAudioDelayRange, 297, usePopup);
       static_cast<CSettingControlSlider*>(settingAudioDelay->GetControl())->SetFormatter(SettingFormatterDelay);
     }
     GetAudioDSPMenus(groupAddon, AE_DSP_MENUHOOK_POST_PROCESS);
