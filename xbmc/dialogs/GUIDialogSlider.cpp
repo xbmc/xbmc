@@ -101,6 +101,11 @@ void CGUIDialogSlider::OnWindowLoaded()
   CGUIDialog::OnWindowLoaded();
 }
 
+void CGUIDialogSlider::SetModalityType(DialogModalityType type)
+{
+  m_modalityType = type;
+}
+
 void CGUIDialogSlider::ShowAndGetInput(const std::string &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
 {
   // grab the slider dialog
@@ -111,6 +116,7 @@ void CGUIDialogSlider::ShowAndGetInput(const std::string &label, float value, fl
   // set the label and value
   slider->Initialize();
   slider->SetSlider(label, value, min, delta, max, callback, callbackData);
+  slider->SetModalityType(DialogModalityType::MODAL);
   slider->Open();
 }
 
@@ -125,5 +131,6 @@ void CGUIDialogSlider::Display(int label, float value, float min, float delta, f
   slider->Initialize();
   slider->SetAutoClose(1000);
   slider->SetSlider(g_localizeStrings.Get(label), value, min, delta, max, callback, NULL);
+  slider->SetModalityType(DialogModalityType::MODELESS);
   slider->Open();
 }

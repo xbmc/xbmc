@@ -31,6 +31,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
 
+  void SetModalityType(DialogModalityType type);
+
   /*! \brief Show the slider dialog and wait for the user to change the value
    Shows the slider until the user is happy with the adjusted value.  Calls back with each change to the callback function
    allowing changes to take place immediately.
