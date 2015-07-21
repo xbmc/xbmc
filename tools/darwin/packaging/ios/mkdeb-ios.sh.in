@@ -67,11 +67,11 @@ mkdir -p $DIRNAME/$PACKAGE/DEBIAN
 echo "Package: $PACKAGE"                          >  $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Priority: Extra"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Name: @APP_NAME@-iOS"                       >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Depends: firmware (>= 4.1)"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Depends: firmware (>= 5.1)"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Architecture: iphoneos-arm"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Installed-Size: $SIZE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Description: @APP_NAME@ Entertainment Center for 4.x iOS" >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Description: @APP_NAME@ Entertainment Center for 5.x iOS" >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Homepage: http://kodi.tv/"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Maintainer: Memphiz"                        >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Author: Team-@APP_NAME@"                    >> $DIRNAME/$PACKAGE/DEBIAN/control
