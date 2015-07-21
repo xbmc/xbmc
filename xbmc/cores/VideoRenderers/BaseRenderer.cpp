@@ -620,7 +620,7 @@ void CBaseRenderer::ManageDisplay()
   {
     case CONF_FLAGS_STEREO_MODE_TAB:
       // Those are flipped in y
-      if (m_format == RENDER_FMT_CVBREF || m_format == RENDER_FMT_MEDIACODEC)
+      if (m_format == RENDER_FMT_CVBREF)
       {
         if (stereo_view == RENDER_STEREO_VIEW_LEFT)
           m_sourceRect.y1 += m_sourceRect.y2*0.5f;

@@ -54,7 +54,6 @@ class COpenMax;
 class COpenMaxVideo;
 struct OpenMaxVideoBufferHolder;
 class CDVDVideoCodecStageFright;
-class CDVDMediaCodecInfo;
 class CMMALVideoBuffer;
 typedef void* EGLImageKHR;
 
@@ -96,10 +95,6 @@ struct DVDVideoPicture
     struct {
       CDVDVideoCodecStageFright* stf;
       EGLImageKHR eglimg;
-    };
-
-    struct {
-      CDVDMediaCodecInfo *mediacodec;
     };
 
     struct {

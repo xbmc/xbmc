@@ -1045,10 +1045,6 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   else if(pic.format == RENDER_FMT_EGLIMG)
     m_pRenderer->AddProcessor(pic.stf, pic.eglimg, index);
 #endif
-#if defined(TARGET_ANDROID)
-  else if(pic.format == RENDER_FMT_MEDIACODEC)
-    m_pRenderer->AddProcessor(pic.mediacodec, index);
-#endif
 #ifdef HAS_MMAL
   else if(pic.format == RENDER_FMT_MMAL)
     m_pRenderer->AddProcessor(pic.MMALBuffer, index);
