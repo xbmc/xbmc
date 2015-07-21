@@ -967,23 +967,23 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
     GetNativeSystemInfo(&si);
     if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL ||
         si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
-        kernelCpuFamily = "x86";
+        kernelCpuFamily = KERNEL_CPU_FAMILY_X86;
     else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
-      kernelCpuFamily = "ARM";
+      kernelCpuFamily = KERNEL_CPU_FAMILY_ARM;
 #elif defined(TARGET_DARWIN)
     const NXArchInfo* archInfo = NXGetLocalArchInfo();
     if (archInfo)
     {
       const cpu_type_t cpuType = (archInfo->cputype & ~CPU_ARCH_ABI64); // get CPU family without 64-bit ABI flag
       if (cpuType == CPU_TYPE_I386)
-        kernelCpuFamily = "x86";
+        kernelCpuFamily = KERNEL_CPU_FAMILY_X86;
       else if (cpuType == CPU_TYPE_ARM)
-        kernelCpuFamily = "ARM";
+        kernelCpuFamily = KERNEL_CPU_FAMILY_ARM;
       else if (cpuType == CPU_TYPE_POWERPC)
         kernelCpuFamily = "PowerPC";
 #ifdef CPU_TYPE_MIPS
       else if (cpuType == CPU_TYPE_MIPS)
-        kernelCpuFamily = "MIPS";
+        kernelCpuFamily = KERNEL_CPU_FAMILY_MIPS;
 #endif // CPU_TYPE_MIPS
     }
 #elif defined(TARGET_POSIX)
@@ -992,11 +992,11 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
     {
       std::string machine(un.machine);
       if (machine.compare(0, 3, "arm", 3) == 0)
-        kernelCpuFamily = "ARM";
+        kernelCpuFamily = KERNEL_CPU_FAMILY_ARM;
       else if (machine.compare(0, 4, "mips", 4) == 0)
-        kernelCpuFamily = "MIPS";
+        kernelCpuFamily = KERNEL_CPU_FAMILY_MIPS;
       else if (machine.compare(0, 4, "i686", 4) == 0 || machine == "i386" || machine == "amd64" ||  machine.compare(0, 3, "x86", 3) == 0)
-        kernelCpuFamily = "x86";
+        kernelCpuFamily = KERNEL_CPU_FAMILY_X86;
       else if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
         kernelCpuFamily = "PowerPC";
     }

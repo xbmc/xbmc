@@ -30,6 +30,9 @@
 #define TB  (1024*GB)       // 1 TerraByte (1TB)  1024 GB (2^10 GB)
 
 #define MAX_KNOWN_ATTRIBUTES  46
+#define KERNEL_CPU_FAMILY_X86 "x86"
+#define KERNEL_CPU_FAMILY_ARM "ARM"
+#define KERNEL_CPU_FAMILY_MIPS "MIPS"
 
 
 class CSysData

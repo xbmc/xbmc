@@ -426,6 +426,13 @@ namespace INFO
 #define SYSTEM_CAN_HIBERNATE        752
 #define SYSTEM_CAN_REBOOT           753
 
+#define SYSTEM_ARCH_X86_32          760
+#define SYSTEM_ARCH_X86_64          761
+#define SYSTEM_ARCH_ARM_32          762
+#define SYSTEM_ARCH_ARM_64          763
+#define SYSTEM_ARCH_MIPS_32         764
+#define SYSTEM_ARCH_MIPS_64         765
+
 #define SLIDESHOW_ISPAUSED          800
 #define SLIDESHOW_ISRANDOM          801
 #define SLIDESHOW_ISACTIVE          802

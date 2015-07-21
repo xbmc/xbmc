@@ -1320,6 +1320,24 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       else if (platform == "atv2") return SYSTEM_PLATFORM_DARWIN_ATV2;
       else if (platform == "android") return SYSTEM_PLATFORM_ANDROID;
     }
+
+    if (info[0].name == "system" && info[1].name == "arch")
+    {
+      CStdString arch = info[2].name;
+      if (arch == "x86_32")
+        return SYSTEM_ARCH_X86_32;
+      else if (arch == "x86_64")
+        return SYSTEM_ARCH_X86_64;
+      else if (arch == "arm_32")
+        return SYSTEM_ARCH_ARM_32;
+      else if (arch == "arm_64")
+        return SYSTEM_ARCH_ARM_64;
+      else if (arch == "mips_32")
+        return SYSTEM_ARCH_MIPS_32;
+      else if (arch == "mips_64")
+        return SYSTEM_ARCH_MIPS_64;
+    }
+
     if (info[0].name == "musicplayer")
     { // TODO: these two don't allow duration(foo) and also don't allow more than this number of levels...
       if (info[1].name == "position")
@@ -2388,6 +2406,48 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #else
     bReturn = false;
 #endif
+  else if (condition == SYSTEM_ARCH_X86_32)
+  {
+    if (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_X86 && g_sysinfo.GetXbmcBitness() == 32)
+      bReturn = true;
+    else
+      bReturn = false;
+  }
+  else if (condition == SYSTEM_ARCH_X86_64)
+  {
+    if (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_X86 && g_sysinfo.GetXbmcBitness() == 64)
+      bReturn = true;
+    else
+      bReturn = false;
+  }
+  else if (condition == SYSTEM_ARCH_ARM_32)
+  {
+    if (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_ARM && g_sysinfo.GetXbmcBitness() == 32)
+      bReturn = true;
+    else
+      bReturn = false;
+  }
+  else if (condition == SYSTEM_ARCH_ARM_64)
+  {
+    if (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_ARM && g_sysinfo.GetXbmcBitness() == 64)
+      bReturn = true;
+    else
+      bReturn = false;
+  }
+  else if (condition == SYSTEM_ARCH_MIPS_32)
+  {
+    if (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_MIPS && g_sysinfo.GetXbmcBitness() == 32)
+      bReturn = true;
+    else
+      bReturn = false;
+  }
+  else if (condition == SYSTEM_ARCH_MIPS_64)
+  {
+    if (g_sysinfo.GetKernelCpuFamily() == KERNEL_CPU_FAMILY_MIPS && g_sysinfo.GetXbmcBitness() == 64)
+      bReturn = true;
+    else
+      bReturn = false;
+  }
   else if (condition == SYSTEM_MEDIA_DVD)
     bReturn = g_mediaManager.IsDiscInDrive();
 #ifdef HAS_DVD_DRIVE
