@@ -1867,6 +1867,11 @@ bool CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
+#ifdef HAS_DS_PLAYER
+  if (CMadvrCallback::Get()->ReadyMadvr() && !CMadvrCallback::Get()->GetCallback()->IsCurrentThreadId())
+    return false;
+#endif
+
 // DXMERGE: This may have been important?
 //  g_graphicsContext.AcquireCurrentContext();
 
@@ -1906,21 +1911,6 @@ float CApplication::GetDimScreenSaverLevel() const
   return 100.0f;
 }
 
-#ifdef HAS_DS_PLAYER
-void CApplication::RenderMadvr()
-{
-  // do not render if we are stopped or in background
-  if (m_bStop)
-    return;
-
-  g_infoManager.UpdateFPS();
-
-  RenderNoPresent();
-
-  m_renderMadvrEvent.Set();
-}
-#endif
-
 void CApplication::Render()
 {
   // do not render if we are stopped or in background
@@ -1929,26 +1919,6 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
-#ifdef HAS_DS_PLAYER
-  if (CMadvrCallback::Get()->ReadyMadvr())
-  {
-    m_renderMadvrEvent.Reset();
-    m_renderMadvrEvent.WaitMSec(100);
-    
-    g_windowManager.AfterRender();
-
-    g_infoManager.ResetCache();
-
-    m_lastFrameTime = XbmcThreads::SystemClockMillis();
-    CTimeUtils::UpdateFrameTime(true, false);
-
-    g_renderManager.UpdateResolution();
-    g_renderManager.ManageCaptures();
-
-    return;
-  }
-#endif  
-  
   int vsync_mode = CSettings::Get().GetInt("videoscreen.vsync");
 
   bool hasRendered = false;
@@ -2026,6 +1996,9 @@ void CApplication::Render()
   if (m_bPresentFrame && m_pPlayer->IsPlaying() && !m_pPlayer->IsPaused())
     ResetScreenSaver();
 
+#ifdef HAS_DS_PLAYER
+  if (!CMadvrCallback::Get()->ReadyMadvr())
+#endif
   if(!g_Windowing.BeginRender())
     return;
 
@@ -2061,6 +2034,9 @@ void CApplication::Render()
   // render video layer
   g_windowManager.RenderEx();
 
+#ifdef HAS_DS_PLAYER
+  if (!CMadvrCallback::Get()->ReadyMadvr())
+#endif
   g_Windowing.EndRender();
 
   // reset our info cache - we do this at the end of Render so that it is
@@ -2097,6 +2073,9 @@ void CApplication::Render()
       Sleep(singleFrameTime - frameTime);
   }
 
+#ifdef HAS_DS_PLAYER
+  if (!CMadvrCallback::Get()->ReadyMadvr())
+#endif
   if (flip)
     g_graphicsContext.Flip(dirtyRegions);
 

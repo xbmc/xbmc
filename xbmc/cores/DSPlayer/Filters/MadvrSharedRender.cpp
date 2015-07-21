@@ -118,7 +118,8 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer, int width, int
   // Render Kodi Gui
   RenderToTexture(layer);
   m_pD3DDeviceKodi->BeginScene();
-  layer == RENDER_LAYER_UNDER ? g_windowManager.Render() : g_application.RenderMadvr();
+  (layer == RENDER_LAYER_UNDER) ? g_windowManager.Render() : g_application.RenderNoPresent();
+  g_renderManager.NewFrame();
   m_pD3DDeviceKodi->EndScene();
   m_pD3DDeviceKodi->Present(NULL, NULL, NULL, NULL);
 
