@@ -65,6 +65,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visVortex", "..\..\xbmc\vis
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Effects11", "..\..\lib\win32\Effects11\Effects11_2013.vcxproj", "{DF460EAB-570D-4B50-9089-2E2FC801BF38}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libKODI_adsp", "..\..\lib\addons\library.kodi.adsp\project\VS2010Express\libKODI_adsp.vcxproj", "{44F93C4D-85DD-4452-99BB-F1D196174024}"
 EndProject
 Global
@@ -182,12 +183,6 @@ Global
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Debug|Win32.Build.0 = Debug|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Release|Win32.ActiveCfg = Release|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Release|Win32.Build.0 = Release|Win32
-		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug|Win32.Build.0 = Debug|Win32
-		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release|Win32.ActiveCfg = Release|Win32
-		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release|Win32.Build.0 = Release|Win32
 		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
 		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Debug|Win32.Build.0 = Debug|Win32
@@ -237,6 +232,12 @@ Global
 		{DF460EAB-570D-4B50-9089-2E2FC801BF38}.Debug|Win32.Build.0 = Debug|Win32
 		{DF460EAB-570D-4B50-9089-2E2FC801BF38}.Release|Win32.ActiveCfg = Release|Win32
 		{DF460EAB-570D-4B50-9089-2E2FC801BF38}.Release|Win32.Build.0 = Release|Win32
+		{44F93C4D-85DD-4452-99BB-F1D196174024}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{44F93C4D-85DD-4452-99BB-F1D196174024}.Debug Testsuite|Win32.Build.0 = Debug|Win32
+		{44F93C4D-85DD-4452-99BB-F1D196174024}.Debug|Win32.ActiveCfg = Debug|Win32
+		{44F93C4D-85DD-4452-99BB-F1D196174024}.Debug|Win32.Build.0 = Debug|Win32
+		{44F93C4D-85DD-4452-99BB-F1D196174024}.Release|Win32.ActiveCfg = Release|Win32
+		{44F93C4D-85DD-4452-99BB-F1D196174024}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
