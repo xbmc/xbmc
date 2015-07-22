@@ -246,10 +246,8 @@ void CDSGraph::UpdateTime()
   
   LONGLONG Position;
 
-  if (g_pPVRStream || CGraphFilters::Get()->UsingMediaPortalTsReader())
+  if (g_pPVRStream)
   {
-    // For live tv and in-progress recordings.
-    // When seek position is close to the end of the file.
 	  if (SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
 		  m_State.time = Position;
 
@@ -670,9 +668,10 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
   }
   CSingleLock lock(m_ObjectLock);
 
-  if (g_pPVRStream)    
-  {  
-    // If seek time is close to the end of the timeshift file.
+  if (g_pPVRStream || CGraphFilters::Get()->UsingMediaPortalTsReader())
+  {
+    // For live tv and in-progress recordings.
+    // When seek position is close to the end of the file.
     uint64_t endOfTimeShiftFile = (GetTotalTime() >= (uint64_t)MSEC_TO_DS_TIME(2000)) ? (GetTotalTime() - (uint64_t)MSEC_TO_DS_TIME(2000)) : 0;
     if (position > endOfTimeShiftFile)
       position = endOfTimeShiftFile;
