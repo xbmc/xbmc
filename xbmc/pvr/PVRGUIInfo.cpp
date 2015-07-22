@@ -747,7 +747,14 @@ void CPVRGUIInfo::UpdateBackendCache(void)
 
   // Update the backend information for all backends once per iteration
   if (m_iCurrentActiveClient == 0)
-    m_backendProperties = g_PVRClients->GetBackendProperties();
+  {
+    std::vector<SBackend> backendProperties;
+    {
+      CSingleExit exit(m_critSection);
+      backendProperties = g_PVRClients->GetBackendProperties();
+    }
+    m_backendProperties = backendProperties;
+  }
 
   // Get the properties for the currently active backend
   const auto &backend = GetCurrentActiveBackend();
