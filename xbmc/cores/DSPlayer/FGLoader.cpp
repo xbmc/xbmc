@@ -51,6 +51,7 @@
 #include "DVDFileInfo.h"
 #include "video/VideoInfoTag.h"
 #include "utils/URIUtils.h"
+#include "utils/DSFileUtils.h"
 
 using namespace std;
 
@@ -176,8 +177,13 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   CURL url(pFileItem.GetPath());
 
   CStdString pWinFilePath = url.Get();
-  if ((pWinFilePath.Left(6)).Equals("smb://", false))
-    pWinFilePath.Replace("smb://", "\\\\");
+  /*
+  * Convert SMB to windows UNC
+  * SMB: smb://HOSTNAME/share/file.ts
+  * SMB: smb://user:pass@HOSTNAME/share/file.ts
+  * windows UNC: \\\\HOSTNAME\share\file.ts
+  */
+  pWinFilePath = CDSFile::SmbToUncPath(pWinFilePath);
 
   if (!pFileItem.IsInternetStream())
     pWinFilePath.Replace("/", "\\");
