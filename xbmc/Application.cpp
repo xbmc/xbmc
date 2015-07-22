@@ -263,7 +263,6 @@ CApplication::CApplication(void)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
   , m_musicInfoScanner(new CMusicInfoScanner)
-  , m_playerController(new CPlayerController)
   , m_fallbackLanguageLoaded(false)
 {
   m_network = NULL;
@@ -332,7 +331,6 @@ CApplication::~CApplication(void)
 #endif
 
   delete m_dpms;
-  delete m_playerController;
   delete m_pInertialScrollingHandler;
   delete m_pPlayer;
 
@@ -2404,7 +2402,7 @@ bool CApplication::OnAction(const CAction &action)
         m_pPlayer->Record(!m_pPlayer->IsRecording());
     }
 
-    if (m_playerController->OnAction(action))
+    if (CPlayerController::Get().OnAction(action))
       return true;
   }
 

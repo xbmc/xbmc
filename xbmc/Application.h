@@ -48,7 +48,6 @@ namespace MEDIA_DETECT
 {
   class CAutorun;
 }
-class CPlayerController;
 
 #include "cores/IPlayerCallback.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -501,7 +500,6 @@ protected:
   bool InitDirectoriesWin32();
   void CreateUserDirs();
 
-  CPlayerController *m_playerController;
   CInertialScrollingHandler *m_pInertialScrollingHandler;
   CNetwork    *m_network;
 #ifdef HAS_PERFORMANCE_SAMPLE

@@ -32,8 +32,7 @@
 class CPlayerController : public ISliderCallback
 {
 public:
-  CPlayerController();
-  virtual ~CPlayerController();
+  static CPlayerController& Get();
 
   /*! \brief Perform a player control action if appropriate.
   \param action the action to perform.
@@ -45,6 +44,12 @@ public:
    \sa CGUIDialogSlider
    */
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);
+
+protected:
+  CPlayerController();
+  CPlayerController(const CPlayerController&);
+  CPlayerController& operator=(CPlayerController const&);
+  virtual ~CPlayerController();
 
 private:
   /*! \brief pop up a slider dialog for a particular action
