@@ -5247,7 +5247,7 @@ msgstr ""
 #: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
 #: xbmc\video\dialogs\GUIDialogVideoSettings.cpp
 msgctxt "#12376"
-msgid "Set as default for all videos"
+msgid "Set as default for all media"
 msgstr ""
 
 #: xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp
@@ -7379,7 +7379,7 @@ msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogAudioDSPManager.cpp
 msgctxt "#15040"
-msgid "Settings dialogue can be only used on OSD menu during playback!"
+msgid "The settings dialogue can only be opened from the OSD menu during playback"
 msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
@@ -7407,7 +7407,7 @@ msgstr ""
 
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#15049"
-msgid "The audio DSP manager has been enabled without any enabled DSP add-on. Enable at least one add-on in order to use the audio DSP functionality."
+msgid "The audio DSP manager has been enabled without any enabled DSP add-on. Enable at least one add-on in order to use the DSP functionality."
 msgstr ""
 
 #. Name of a list with amount of entries behind on GUI
