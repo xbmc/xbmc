@@ -195,8 +195,8 @@ void CGUIControlSpinExSetting::FillControl()
       if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
       {
         DynamicStringSettingOptions options = pSettingString->UpdateDynamicOptions();
-        for (std::vector< std::pair<std::string, std::string> >::const_iterator option = options.begin(); option != options.end(); ++option)
-          m_pSpin->AddLabel(option->first, option->second);
+        for (const auto& option : options)
+          m_pSpin->AddLabel(option.first, option.second);
 
         m_pSpin->SetStringValue(pSettingString->GetValue());
       }
@@ -212,8 +212,8 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl()
     case SettingOptionsTypeStatic:
     {
       const StaticIntegerSettingOptions& options = pSettingInt->GetOptions();
-      for (StaticIntegerSettingOptions::const_iterator it = options.begin(); it != options.end(); ++it)
-        m_pSpin->AddLabel(g_localizeStrings.Get(it->first), it->second);
+      for (const auto& option : options)
+        m_pSpin->AddLabel(g_localizeStrings.Get(option.first), option.second);
 
       break;
     }
@@ -221,8 +221,8 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl()
     case SettingOptionsTypeDynamic:
     {
       DynamicIntegerSettingOptions options = pSettingInt->UpdateDynamicOptions();
-      for (DynamicIntegerSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
-        m_pSpin->AddLabel(option->first, option->second);
+      for (const auto& option : options)
+        m_pSpin->AddLabel(option.first, option.second);
 
       break;
     }
@@ -412,11 +412,11 @@ bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemL
 
     pSettingInt = static_cast<const CSettingInt*>(settingList->GetDefinition());
     std::vector<CVariant> list = CSettingUtils::GetList(settingList);
-    for (std::vector<CVariant>::const_iterator itValue = list.begin(); itValue != list.end(); ++itValue)
+    for (const auto& itValue : list)
     {
-      if (!itValue->isInteger())
+      if (!itValue.isInteger())
         return false;
-      values.insert((int)itValue->asInteger());
+      values.insert((int)itValue.asInteger());
     }
   }
   else
@@ -427,11 +427,11 @@ bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemL
     case SettingOptionsTypeStatic:
     {
       const StaticIntegerSettingOptions& options = pSettingInt->GetOptions();
-      for (StaticIntegerSettingOptions::const_iterator it = options.begin(); it != options.end(); ++it)
+      for (const auto& option : options)
       {
-        CFileItemPtr pItem = GetItem(g_localizeStrings.Get(it->first), it->second);
+        CFileItemPtr pItem = GetItem(g_localizeStrings.Get(option.first), option.second);
 
-        if (values.find(it->second) != values.end())
+        if (values.find(option.second) != values.end())
           pItem->Select(true);
 
         items.Add(pItem);
@@ -442,11 +442,11 @@ bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemL
     case SettingOptionsTypeDynamic:
     {
       DynamicIntegerSettingOptions options = const_cast<CSettingInt*>(pSettingInt)->UpdateDynamicOptions();
-      for (DynamicIntegerSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
+      for (const auto& option : options)
       {
-        CFileItemPtr pItem = GetItem(option->first, option->second);
+        CFileItemPtr pItem = GetItem(option.first, option.second);
 
-        if (values.find(option->second) != values.end())
+        if (values.find(option.second) != values.end())
           pItem->Select(true);
 
         items.Add(pItem);
@@ -479,11 +479,11 @@ bool CGUIControlListSetting::GetStringItems(const CSetting *setting, CFileItemLi
 
     pSettingString = static_cast<const CSettingString*>(settingList->GetDefinition());
     std::vector<CVariant> list = CSettingUtils::GetList(settingList);
-    for (std::vector<CVariant>::const_iterator itValue = list.begin(); itValue != list.end(); ++itValue)
+    for (const auto& itValue : list)
     {
-      if (!itValue->isString())
+      if (!itValue.isString())
         return false;
-      values.insert(itValue->asString());
+      values.insert(itValue.asString());
     }
   }
   else
@@ -492,11 +492,11 @@ bool CGUIControlListSetting::GetStringItems(const CSetting *setting, CFileItemLi
   if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
   {
     DynamicStringSettingOptions options = const_cast<CSettingString*>(pSettingString)->UpdateDynamicOptions();
-    for (DynamicStringSettingOptions::const_iterator option = options.begin(); option != options.end(); ++option)
+    for (const auto& option : options)
     {
-      CFileItemPtr pItem = GetItem(option->first, option->second);
+      CFileItemPtr pItem = GetItem(option.first, option.second);
 
-      if (values.find(option->second) != values.end())
+      if (values.find(option.second) != values.end())
         pItem->Select(true);
 
       items.Add(pItem);
@@ -671,9 +671,9 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
 
   VECSOURCES shares;
   const std::vector<std::string>& sources = pathSetting->GetSources();
-  for (std::vector<std::string>::const_iterator source = sources.begin(); source != sources.end(); ++source)
+  for (const auto& source : sources)
   {
-    VECSOURCES *sources = CMediaSourceSettings::Get().GetSources(*source);
+    VECSOURCES *sources = CMediaSourceSettings::Get().GetSources(source);
     if (sources != NULL)
       shares.insert(shares.end(), sources->begin(), sources->end());
   }
