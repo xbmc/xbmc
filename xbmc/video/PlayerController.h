@@ -22,6 +22,7 @@
 
 #include "guilib/ISliderCallback.h"
 #include "input/Key.h"
+#include "interfaces/IActionListener.h"
 
 /*! \brief Player controller class to handle user actions.
 
@@ -29,7 +30,7 @@
  altering subtitles and audio tracks, changing aspect ratio, subtitle placement,
  and placement of the video on screen.
  */
-class CPlayerController : public ISliderCallback
+class CPlayerController : public ISliderCallback, public IActionListener
 {
 public:
   static CPlayerController& Get();
@@ -38,7 +39,7 @@ public:
   \param action the action to perform.
   \return true if the action is considered handled, false if it should be handled elsewhere.
   */
-  bool OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action);
 
   /*! \brief Callback from the slider dialog.
    \sa CGUIDialogSlider

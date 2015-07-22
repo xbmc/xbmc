@@ -1249,6 +1249,7 @@ bool CApplication::Initialize()
 
   // register action listeners
   RegisterActionListener(&CSeekHandler::Get());
+  RegisterActionListener(&CPlayerController::Get());
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -2401,9 +2402,6 @@ bool CApplication::OnAction(const CAction &action)
       if (m_pPlayer->CanRecord())
         m_pPlayer->Record(!m_pPlayer->IsRecording());
     }
-
-    if (CPlayerController::Get().OnAction(action))
-      return true;
   }
 
 
@@ -3021,6 +3019,7 @@ void CApplication::Stop(int exitCode)
 
     // unregister action listeners
     UnregisterActionListener(&CSeekHandler::Get());
+    UnregisterActionListener(&CPlayerController::Get());
 
     // stop all remaining scripts; must be done after skin has been unloaded,
     // not before some windows still need it when deinitializing during skin
