@@ -533,7 +533,7 @@ bool CD3DEffect::SetTexture(LPCSTR handle, CD3DTexture &texture)
   {
     ID3DX11EffectShaderResourceVariable* var = m_effect->GetVariableByName(handle)->AsShaderResource();
     if (var->IsValid())
-      return (var->SetResource(texture.GetShaderResource()));
+      return SUCCEEDED(var->SetResource(texture.GetShaderResource()));
   }
   return false;
 }

@@ -409,9 +409,6 @@ bool CRenderSystemDX::IsFormatSupport(DXGI_FORMAT format, unsigned int usage)
 
 bool CRenderSystemDX::DestroyRenderSystem()
 {
-  if (m_pSwapChain)
-    m_pSwapChain->SetFullscreenState(false, NULL);
-
   DeleteDevice();
 
   SAFE_RELEASE(m_pOutput);
@@ -449,7 +446,11 @@ void CRenderSystemDX::DeleteDevice()
   SAFE_RELEASE(m_depthStencilState);
   SAFE_RELEASE(m_depthStencilView);
   SAFE_RELEASE(m_pRenderTargetView);
-  SAFE_RELEASE(m_pSwapChain);
+  if (m_pSwapChain)
+  {
+    m_pSwapChain->SetFullscreenState(false, NULL);
+    SAFE_RELEASE(m_pSwapChain);
+  }
   SAFE_RELEASE(m_pSwapChain1);
   SAFE_RELEASE(m_pD3DDev);
   if (m_pContext && m_pContext != m_pImdContext)
@@ -495,10 +496,10 @@ void CRenderSystemDX::OnDeviceReset()
   { // we're back
     for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDevice();
-
-    g_renderManager.Flush();
-    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   }
+
+  g_renderManager.Flush();
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
 }
 
 bool CRenderSystemDX::CreateDevice()
