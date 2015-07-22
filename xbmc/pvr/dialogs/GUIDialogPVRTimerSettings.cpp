@@ -282,7 +282,7 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_ANYTIME);
 
   // Start day (day + month + year only, no hours, minutes)
-  setting = AddSpinner(group, SETTING_TMR_START_DAY, 19128, 0, GetDateAsInt(m_startLocalTime), DaysFiller);
+  setting = AddSpinner(group, SETTING_TMR_START_DAY, 19128, 0, GetDateAsIndex(m_startLocalTime), DaysFiller);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_START_DAY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_START_DAY);
   AddAnytimeDependentVisibilityCondition(setting, SETTING_TMR_START_DAY);
@@ -294,7 +294,7 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddAnytimeDependentVisibilityCondition(setting, SETTING_TMR_BEGIN);
 
   // End day (day + month + year only, no hours, minutes)
-  setting = AddSpinner(group, SETTING_TMR_END_DAY, 19129, 0, GetDateAsInt(m_endLocalTime), DaysFiller);
+  setting = AddSpinner(group, SETTING_TMR_END_DAY, 19129, 0, GetDateAsIndex(m_endLocalTime), DaysFiller);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END_DAY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END_DAY);
   AddAnytimeDependentVisibilityCondition(setting, SETTING_TMR_END_DAY);
@@ -306,7 +306,7 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddAnytimeDependentVisibilityCondition(setting, SETTING_TMR_END);
 
   // First day (only for repeating timers)
-  setting = AddSpinner(group, SETTING_TMR_FIRST_DAY, 19084, 0, GetDateAsInt(m_firstDayLocalTime), DaysFiller);
+  setting = AddSpinner(group, SETTING_TMR_FIRST_DAY, 19084, 0, GetDateAsIndex(m_firstDayLocalTime), DaysFiller);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_FIRST_DAY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_FIRST_DAY);
 
@@ -429,15 +429,15 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_TMR_START_DAY)
   {
-    SetDateFromInt(m_startLocalTime, static_cast<const CSettingInt*>(setting)->GetValue());
+    SetDateFromIndex(m_startLocalTime, static_cast<const CSettingInt*>(setting)->GetValue());
   }
   else if (settingId == SETTING_TMR_END_DAY)
   {
-    SetDateFromInt(m_endLocalTime, static_cast<const CSettingInt*>(setting)->GetValue());
+    SetDateFromIndex(m_endLocalTime, static_cast<const CSettingInt*>(setting)->GetValue());
   }
   else if (settingId == SETTING_TMR_FIRST_DAY)
   {
-    SetDateFromInt(m_firstDayLocalTime, static_cast<const CSettingInt*>(setting)->GetValue());
+    SetDateFromIndex(m_firstDayLocalTime, static_cast<const CSettingInt*>(setting)->GetValue());
   }
   else if (settingId == SETTING_TMR_NEW_EPISODES)
   {
@@ -677,7 +677,7 @@ void CGUIDialogPVRTimerSettings::AddCondition(
   setting->SetDependencies(deps);
 }
 
-int CGUIDialogPVRTimerSettings::GetDateAsInt(const CDateTime &datetime)
+int CGUIDialogPVRTimerSettings::GetDateAsIndex(const CDateTime &datetime)
 {
   const CDateTime date(datetime.GetYear(), datetime.GetMonth(), datetime.GetDay(), 0, 0, 0);
   time_t t(0);
@@ -685,7 +685,7 @@ int CGUIDialogPVRTimerSettings::GetDateAsInt(const CDateTime &datetime)
   return static_cast<int>(t);
 }
 
-void CGUIDialogPVRTimerSettings::SetDateFromInt(CDateTime &datetime, int date)
+void CGUIDialogPVRTimerSettings::SetDateFromIndex(CDateTime &datetime, int date)
 {
   const CDateTime newDate(static_cast<time_t>(date));
   datetime.SetDateTime(
@@ -840,20 +840,20 @@ void CGUIDialogPVRTimerSettings::DaysFiller(
     const CDateTime oldCDate(oldCDateTime.GetYear(), oldCDateTime.GetMonth(), oldCDateTime.GetDay(), 0, 0, 0);
 
     if ((oldCDate < time) || (oldCDate > yesterdayPlusOneYear))
-      list.push_back(std::make_pair(oldCDate.GetAsLocalizedDate(), GetDateAsInt(oldCDate)));
+      list.push_back(std::make_pair(oldCDate.GetAsLocalizedDate(), GetDateAsIndex(oldCDate)));
 
     while (time <= yesterdayPlusOneYear)
     {
-      list.push_back(std::make_pair(time.GetAsLocalizedDate(), GetDateAsInt(time)));
+      list.push_back(std::make_pair(time.GetAsLocalizedDate(), GetDateAsIndex(time)));
       time += CDateTimeSpan(1, 0, 0, 0);
     }
 
     if (setting->GetId() == SETTING_TMR_FIRST_DAY)
-      current = GetDateAsInt(pThis->m_firstDayLocalTime);
+      current = GetDateAsIndex(pThis->m_firstDayLocalTime);
     else if (setting->GetId() == SETTING_TMR_START_DAY)
-      current = GetDateAsInt(pThis->m_startLocalTime);
+      current = GetDateAsIndex(pThis->m_startLocalTime);
     else
-      current = GetDateAsInt(pThis->m_endLocalTime);
+      current = GetDateAsIndex(pThis->m_endLocalTime);
   }
   else
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::DaysFiller - No dialog");
