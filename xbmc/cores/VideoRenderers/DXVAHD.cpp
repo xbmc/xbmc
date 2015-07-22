@@ -110,7 +110,7 @@ bool CProcessorHD::PreInit()
 
   D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc1;
   ZeroMemory(&desc1, sizeof(D3D11_VIDEO_PROCESSOR_CONTENT_DESC));
-  desc1.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
+  desc1.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
   desc1.InputWidth = 640;
   desc1.InputHeight = 480;
   desc1.OutputWidth = 640;
@@ -153,7 +153,7 @@ bool CProcessorHD::InitProcessor()
 
   D3D11_VIDEO_PROCESSOR_CONTENT_DESC contentDesc;
   ZeroMemory(&contentDesc, sizeof(contentDesc));
-  contentDesc.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
+  contentDesc.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
   contentDesc.InputWidth = m_width;
   contentDesc.InputHeight = m_height;
   contentDesc.OutputWidth = m_width;
