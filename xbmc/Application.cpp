@@ -263,7 +263,6 @@ CApplication::CApplication(void)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
   , m_musicInfoScanner(new CMusicInfoScanner)
-  , m_playerController(new CPlayerController)
   , m_fallbackLanguageLoaded(false)
 {
   m_network = NULL;
@@ -332,7 +331,6 @@ CApplication::~CApplication(void)
 #endif
 
   delete m_dpms;
-  delete m_playerController;
   delete m_pInertialScrollingHandler;
   delete m_pPlayer;
 
@@ -1251,6 +1249,7 @@ bool CApplication::Initialize()
 
   // register action listeners
   RegisterActionListener(&CSeekHandler::Get());
+  RegisterActionListener(&CPlayerController::Get());
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -2403,9 +2402,6 @@ bool CApplication::OnAction(const CAction &action)
       if (m_pPlayer->CanRecord())
         m_pPlayer->Record(!m_pPlayer->IsRecording());
     }
-
-    if (m_playerController->OnAction(action))
-      return true;
   }
 
 
@@ -3023,6 +3019,7 @@ void CApplication::Stop(int exitCode)
 
     // unregister action listeners
     UnregisterActionListener(&CSeekHandler::Get());
+    UnregisterActionListener(&CPlayerController::Get());
 
     // stop all remaining scripts; must be done after skin has been unloaded,
     // not before some windows still need it when deinitializing during skin
