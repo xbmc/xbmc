@@ -3146,6 +3146,9 @@
     <ClCompile Include="..\..\xbmc\messaging\ApplicationMessenger.cpp">
       <Filter>messaging</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksInterfaces.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6079,6 +6082,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\dialogs\GUIDialogAudioDSPSettings.h">
       <Filter>settings\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksInterfaces.h">
+      <Filter>addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
