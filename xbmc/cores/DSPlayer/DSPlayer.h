@@ -203,7 +203,7 @@ public:
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
 
-  virtual bool SwitchChannel(PVR::CPVRChannelPtr &channel);
+  virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
   virtual bool CachePVRStream(void) const;
 
   //CDSPlayer
