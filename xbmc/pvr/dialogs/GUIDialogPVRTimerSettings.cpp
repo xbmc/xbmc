@@ -840,11 +840,11 @@ void CGUIDialogPVRTimerSettings::DaysFiller(
     const CDateTime oldCDate(oldCDateTime.GetYear(), oldCDateTime.GetMonth(), oldCDateTime.GetDay(), 0, 0, 0);
 
     if ((oldCDate < time) || (oldCDate > yesterdayPlusOneYear))
-      list.push_back(std::make_pair(oldCDate.GetAsLocalizedDate(), GetDateAsIndex(oldCDate)));
+      list.push_back(std::make_pair(oldCDate.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(oldCDate)));
 
     while (time <= yesterdayPlusOneYear)
     {
-      list.push_back(std::make_pair(time.GetAsLocalizedDate(), GetDateAsIndex(time)));
+      list.push_back(std::make_pair(time.GetAsLocalizedDate(true /*long date*/), GetDateAsIndex(time)));
       time += CDateTimeSpan(1, 0, 0, 0);
     }
 
