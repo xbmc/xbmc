@@ -409,9 +409,6 @@ bool CRenderSystemDX::IsFormatSupport(DXGI_FORMAT format, unsigned int usage)
 
 bool CRenderSystemDX::DestroyRenderSystem()
 {
-  if (m_pSwapChain)
-    m_pSwapChain->SetFullscreenState(false, NULL);
-
   DeleteDevice();
 
   SAFE_RELEASE(m_pOutput);
@@ -449,7 +446,11 @@ void CRenderSystemDX::DeleteDevice()
   SAFE_RELEASE(m_depthStencilState);
   SAFE_RELEASE(m_depthStencilView);
   SAFE_RELEASE(m_pRenderTargetView);
-  SAFE_RELEASE(m_pSwapChain);
+  if (m_pSwapChain)
+  {
+    m_pSwapChain->SetFullscreenState(false, NULL);
+    SAFE_RELEASE(m_pSwapChain);
+  }
   SAFE_RELEASE(m_pSwapChain1);
   SAFE_RELEASE(m_pD3DDev);
   if (m_pContext && m_pContext != m_pImdContext)
