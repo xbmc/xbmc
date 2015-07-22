@@ -246,8 +246,10 @@ void CDSGraph::UpdateTime()
   
   LONGLONG Position;
 
-  if (g_pPVRStream)
+  if (g_pPVRStream || CGraphFilters::Get()->UsingMediaPortalTsReader())
   {
+    // For live tv and in-progress recordings.
+    // When seek position is close to the end of the file.
 	  if (SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
 		  m_State.time = Position;
 
@@ -768,7 +770,7 @@ uint64_t CDSGraph::GetTime(bool forcePlaybackTime)
     return m_State.time;
   else                                                                    // Used by GUI on PVR video
   {
-    if (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
+    if (g_PVRManager.IsPlayingTV() && g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
       return MSEC_TO_DS_TIME(g_pPVRStream->GetTime());  // LiveTV EPG time
     else
       return m_State.time;                              // Playback Time
@@ -782,9 +784,9 @@ uint64_t CDSGraph::GetTotalTime(bool forcePlaybackTime)
 
   if (!g_pPVRStream || CDSPlayer::IsCurrentThread() || forcePlaybackTime) // Used by seek or none PVR video
     return m_State.time_total;
-  else 												                      // Used by GUI on PVR video
+  else 												                                            // Used by GUI on PVR video
   {
-    if (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
+    if (g_PVRManager.IsPlayingTV() && g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
       return MSEC_TO_DS_TIME(g_pPVRStream->GetTotalTime()); // LiveTV EPG time
     else
       return m_State.time_total;                            // Playback Time
