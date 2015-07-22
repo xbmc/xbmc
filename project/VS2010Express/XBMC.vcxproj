@@ -273,6 +273,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSFileUtils.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSFilterEnumerator.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.cpp" />
@@ -971,6 +972,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibSubs.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\AudioEnumerator.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSFileUtils.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSFilterEnumerator.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.h" />
