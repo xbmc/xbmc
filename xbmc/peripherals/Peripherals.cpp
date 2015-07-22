@@ -102,7 +102,7 @@ void CPeripherals::Initialise(void)
     }
 
     m_bInitialised = true;
-    KODI::MESSAGING::CApplicationMessenger::Get().RegisterReceveiver(this);
+    KODI::MESSAGING::CApplicationMessenger::Get().RegisterReceiver(this);
   }
 }
 

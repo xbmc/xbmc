@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -253,7 +253,7 @@ void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windo
   SendMsg(std::move(tMsg), waitResult);
 }
 
-void CApplicationMessenger::RegisterReceveiver(IMessageTarget* target)
+void CApplicationMessenger::RegisterReceiver(IMessageTarget* target)
 {
   CSingleLock lock(m_critSection);
   m_mapTargets.insert(std::make_pair(target->GetMessageMask(), target));

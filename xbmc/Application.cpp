@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -448,11 +448,11 @@ bool CApplication::Create()
   Preflight();
 
   // here we register all global classes for the CApplicationMessenger, 
-  // after that we can send messages to the correspnding modules
-  CApplicationMessenger::Get().RegisterReceveiver(this);
-  CApplicationMessenger::Get().RegisterReceveiver(&g_playlistPlayer);
-  CApplicationMessenger::Get().RegisterReceveiver(&g_infoManager);
-  CApplicationMessenger::Get().RegisterReceveiver(&g_AEDSPManager);
+  // after that we can send messages to the corresponding modules
+  CApplicationMessenger::Get().RegisterReceiver(this);
+  CApplicationMessenger::Get().RegisterReceiver(&g_playlistPlayer);
+  CApplicationMessenger::Get().RegisterReceiver(&g_infoManager);
+  CApplicationMessenger::Get().RegisterReceiver(&g_AEDSPManager);
 
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {

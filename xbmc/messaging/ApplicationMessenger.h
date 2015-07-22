@@ -1,8 +1,8 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -30,13 +30,13 @@
 #include <string>
 #include <vector>
 
-#define TMSG_MASK_MESSAGE         0xFFFF0000 // only keep the high bits to route messages
-#define TMSG_MASK_APPLICATION     (1<<30) //Don't use bit 31 as it'll fail to build, using unsigned variable to hold the message.
-#define TMSG_MASK_PLAYLISTPLAYER  (1<<29)
-#define TMSG_MASK_GUIINFOMANAGER  (1<<28)
-#define TMSG_MASK_WINDOWMANAGER   (1<<27)
-#define TMSG_MASK_PERIPHERALS     (1<<26)
-#define TMSG_MASK_AUDIO_DSP       (1<<25)
+#define TMSG_MASK_MESSAGE                 0xFFFF0000 // only keep the high bits to route messages
+#define TMSG_MASK_APPLICATION             (1<<30) //Don't use bit 31 as it'll fail to build, using unsigned variable to hold the message.
+#define TMSG_MASK_PLAYLISTPLAYER          (1<<29)
+#define TMSG_MASK_GUIINFOMANAGER          (1<<28)
+#define TMSG_MASK_WINDOWMANAGER           (1<<27)
+#define TMSG_MASK_PERIPHERALS             (1<<26)
+#define TMSG_MASK_AUDIO_DSP               (1<<25)
 
 // defines here
 #define TMSG_PLAYLISTPLAYER_PLAY          TMSG_MASK_PLAYLISTPLAYER + 0
@@ -61,61 +61,61 @@
 
 
 
-#define TMSG_SHUTDOWN               TMSG_MASK_APPLICATION + 0
-#define TMSG_POWERDOWN              TMSG_MASK_APPLICATION + 1
-#define TMSG_QUIT                   TMSG_MASK_APPLICATION + 2
-#define TMSG_HIBERNATE              TMSG_MASK_APPLICATION + 3
-#define TMSG_SUSPEND                TMSG_MASK_APPLICATION + 4
-#define TMSG_RESTART                TMSG_MASK_APPLICATION + 5
-#define TMSG_RESET                  TMSG_MASK_APPLICATION + 6
-#define TMSG_RESTARTAPP             TMSG_MASK_APPLICATION + 7
-#define TMSG_ACTIVATESCREENSAVER    TMSG_MASK_APPLICATION + 8
-#define TMSG_NETWORKMESSAGE         TMSG_MASK_APPLICATION + 9
-#define TMSG_SETPVRMANAGERSTATE     TMSG_MASK_APPLICATION + 10
-#define TMSG_VOLUME_SHOW            TMSG_MASK_APPLICATION + 11
-#define TMSG_SPLASH_MESSAGE         TMSG_MASK_APPLICATION + 12
-#define TMSG_DISPLAY_SETUP          TMSG_MASK_APPLICATION + 13
-#define TMSG_DISPLAY_DESTROY        TMSG_MASK_APPLICATION + 14
-#define TMSG_SETVIDEORESOLUTION     TMSG_MASK_APPLICATION + 15
-#define TMSG_SWITCHTOFULLSCREEN     TMSG_MASK_APPLICATION + 16
-#define TMSG_MINIMIZE               TMSG_MASK_APPLICATION + 17
-#define TMSG_TOGGLEFULLSCREEN       TMSG_MASK_APPLICATION + 18
-#define TMSG_SETLANGUAGE            TMSG_MASK_APPLICATION + 19
-#define TMSG_RENDERER_FLUSH         TMSG_MASK_APPLICATION + 20
-#define TMSG_INHIBITIDLESHUTDOWN    TMSG_MASK_APPLICATION + 21
-#define TMSG_START_ANDROID_ACTIVITY TMSG_MASK_APPLICATION + 22
-#define TMSG_EXECUTE_SCRIPT         TMSG_MASK_APPLICATION + 23
-#define TMSG_EXECUTE_BUILT_IN       TMSG_MASK_APPLICATION + 24
-#define TMSG_EXECUTE_OS             TMSG_MASK_APPLICATION + 25
-#define TMSG_PICTURE_SHOW           TMSG_MASK_APPLICATION + 26
-#define TMSG_PICTURE_SLIDESHOW      TMSG_MASK_APPLICATION + 27
-#define TMSG_LOADPROFILE            TMSG_MASK_APPLICATION + 28
-#define TMSG_VIDEORESIZE            TMSG_MASK_APPLICATION + 29
+#define TMSG_SHUTDOWN                     TMSG_MASK_APPLICATION + 0
+#define TMSG_POWERDOWN                    TMSG_MASK_APPLICATION + 1
+#define TMSG_QUIT                         TMSG_MASK_APPLICATION + 2
+#define TMSG_HIBERNATE                    TMSG_MASK_APPLICATION + 3
+#define TMSG_SUSPEND                      TMSG_MASK_APPLICATION + 4
+#define TMSG_RESTART                      TMSG_MASK_APPLICATION + 5
+#define TMSG_RESET                        TMSG_MASK_APPLICATION + 6
+#define TMSG_RESTARTAPP                   TMSG_MASK_APPLICATION + 7
+#define TMSG_ACTIVATESCREENSAVER          TMSG_MASK_APPLICATION + 8
+#define TMSG_NETWORKMESSAGE               TMSG_MASK_APPLICATION + 9
+#define TMSG_SETPVRMANAGERSTATE           TMSG_MASK_APPLICATION + 10
+#define TMSG_VOLUME_SHOW                  TMSG_MASK_APPLICATION + 11
+#define TMSG_SPLASH_MESSAGE               TMSG_MASK_APPLICATION + 12
+#define TMSG_DISPLAY_SETUP                TMSG_MASK_APPLICATION + 13
+#define TMSG_DISPLAY_DESTROY              TMSG_MASK_APPLICATION + 14
+#define TMSG_SETVIDEORESOLUTION           TMSG_MASK_APPLICATION + 15
+#define TMSG_SWITCHTOFULLSCREEN           TMSG_MASK_APPLICATION + 16
+#define TMSG_MINIMIZE                     TMSG_MASK_APPLICATION + 17
+#define TMSG_TOGGLEFULLSCREEN             TMSG_MASK_APPLICATION + 18
+#define TMSG_SETLANGUAGE                  TMSG_MASK_APPLICATION + 19
+#define TMSG_RENDERER_FLUSH               TMSG_MASK_APPLICATION + 20
+#define TMSG_INHIBITIDLESHUTDOWN          TMSG_MASK_APPLICATION + 21
+#define TMSG_START_ANDROID_ACTIVITY       TMSG_MASK_APPLICATION + 22
+#define TMSG_EXECUTE_SCRIPT               TMSG_MASK_APPLICATION + 23
+#define TMSG_EXECUTE_BUILT_IN             TMSG_MASK_APPLICATION + 24
+#define TMSG_EXECUTE_OS                   TMSG_MASK_APPLICATION + 25
+#define TMSG_PICTURE_SHOW                 TMSG_MASK_APPLICATION + 26
+#define TMSG_PICTURE_SLIDESHOW            TMSG_MASK_APPLICATION + 27
+#define TMSG_LOADPROFILE                  TMSG_MASK_APPLICATION + 28
+#define TMSG_VIDEORESIZE                  TMSG_MASK_APPLICATION + 29
 
-#define TMSG_SETAUDIODSPSTATE       TMSG_MASK_AUDIO_DSP   + 30
+#define TMSG_SETAUDIODSPSTATE             TMSG_MASK_AUDIO_DSP   + 30
 
-#define TMSG_GUI_INFOLABEL          TMSG_MASK_GUIINFOMANAGER + 0
-#define TMSG_GUI_INFOBOOL           TMSG_MASK_GUIINFOMANAGER + 1
-#define TMSG_UPDATE_CURRENT_ITEM    TMSG_MASK_GUIINFOMANAGER + 2
-
-
-#define TMSG_CECTOGGLESTATE       TMSG_MASK_PERIPHERALS + 1
-#define TMSG_CECACTIVATESOURCE    TMSG_MASK_PERIPHERALS + 2
-#define TMSG_CECSTANDBY           TMSG_MASK_PERIPHERALS + 3
+#define TMSG_GUI_INFOLABEL                TMSG_MASK_GUIINFOMANAGER + 0
+#define TMSG_GUI_INFOBOOL                 TMSG_MASK_GUIINFOMANAGER + 1
+#define TMSG_UPDATE_CURRENT_ITEM          TMSG_MASK_GUIINFOMANAGER + 2
 
 
+#define TMSG_CECTOGGLESTATE               TMSG_MASK_PERIPHERALS + 1
+#define TMSG_CECACTIVATESOURCE            TMSG_MASK_PERIPHERALS + 2
+#define TMSG_CECSTANDBY                   TMSG_MASK_PERIPHERALS + 3
 
 
-#define TMSG_GUI_DIALOG_OPEN          TMSG_MASK_WINDOWMANAGER + 1
-#define TMSG_GUI_ACTIVATE_WINDOW      TMSG_MASK_WINDOWMANAGER + 2
-#define TMSG_GUI_PYTHON_DIALOG        TMSG_MASK_WINDOWMANAGER + 3
-#define TMSG_GUI_WINDOW_CLOSE         TMSG_MASK_WINDOWMANAGER + 4
-#define TMSG_GUI_ACTION               TMSG_MASK_WINDOWMANAGER + 5
-#define TMSG_GUI_ADDON_DIALOG         TMSG_MASK_WINDOWMANAGER + 6
-#define TMSG_GUI_MESSAGE              TMSG_MASK_WINDOWMANAGER + 7
 
 
-#define TMSG_CALLBACK             800
+#define TMSG_GUI_DIALOG_OPEN              TMSG_MASK_WINDOWMANAGER + 1
+#define TMSG_GUI_ACTIVATE_WINDOW          TMSG_MASK_WINDOWMANAGER + 2
+#define TMSG_GUI_PYTHON_DIALOG            TMSG_MASK_WINDOWMANAGER + 3
+#define TMSG_GUI_WINDOW_CLOSE             TMSG_MASK_WINDOWMANAGER + 4
+#define TMSG_GUI_ACTION                   TMSG_MASK_WINDOWMANAGER + 5
+#define TMSG_GUI_ADDON_DIALOG             TMSG_MASK_WINDOWMANAGER + 6
+#define TMSG_GUI_MESSAGE                  TMSG_MASK_WINDOWMANAGER + 7
+
+
+#define TMSG_CALLBACK                     800
 
 
 
@@ -177,10 +177,10 @@ public:
    */
   void SendGUIMessage(const CGUIMessage &msg, int windowID = WINDOW_INVALID, bool waitResult=false);
 
-  void RegisterReceveiver(IMessageTarget* target);
+  void RegisterReceiver(IMessageTarget* target);
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CApplicationMessenger();
   CApplicationMessenger(const CApplicationMessenger&) = delete;
   CApplicationMessenger const& operator=(CApplicationMessenger const&) = delete;
