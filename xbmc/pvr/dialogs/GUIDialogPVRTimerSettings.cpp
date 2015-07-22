@@ -830,6 +830,18 @@ void CGUIDialogPVRTimerSettings::DaysFiller(
     const CDateTime yesterdayPlusOneYear(
       time.GetYear() + 1, time.GetMonth(), time.GetDay() - 1, time.GetHour(), time.GetMinute(), time.GetSecond());
 
+    CDateTime oldCDateTime;
+    if (setting->GetId() == SETTING_TMR_FIRST_DAY)
+      oldCDateTime = pThis->m_timerInfoTag->FirstDayAsLocalTime();
+    else if (setting->GetId() == SETTING_TMR_START_DAY)
+      oldCDateTime = pThis->m_timerInfoTag->StartAsLocalTime();
+    else
+      oldCDateTime = pThis->m_timerInfoTag->EndAsLocalTime();
+    const CDateTime oldCDate(oldCDateTime.GetYear(), oldCDateTime.GetMonth(), oldCDateTime.GetDay(), 0, 0, 0);
+
+    if ((oldCDate < time) || (oldCDate > yesterdayPlusOneYear))
+      list.push_back(std::make_pair(oldCDate.GetAsLocalizedDate(), GetDateAsInt(oldCDate)));
+
     while (time <= yesterdayPlusOneYear)
     {
       list.push_back(std::make_pair(time.GetAsLocalizedDate(), GetDateAsInt(time)));
