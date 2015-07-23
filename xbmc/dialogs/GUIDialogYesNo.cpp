@@ -107,7 +107,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant
 bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text)
 {
   bool bDummy(false);
-  return ShowAndGetInput(heading, text, bDummy, "", "");
+  return ShowAndGetInput(heading, text, "", "", bDummy);
 }
 
 bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, bool &bCanceled, CVariant noLabel /* = "" */, CVariant yesLabel /* = "" */, unsigned int autoCloseTime)
