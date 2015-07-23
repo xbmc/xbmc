@@ -43,6 +43,7 @@
 #include <algorithm>
 #include <locale>
 #include <utility>
+#include <set>
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -1133,6 +1134,12 @@ void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std
 
   std::string dummy;
   SettingOptionsISO6391LanguagesFiller(NULL, list, dummy, NULL);
+  SettingOptionsLanguageNamesFiller(NULL, list, dummy, NULL);
+
+  // convert the vector to a set and back again to remove duplicates
+  std::set<std::pair<std::string, std::string>> languages(list.begin(), list.end());
+  list.assign(languages.begin(), languages.end());
+  std::sort(list.begin(), list.end(), SortLanguage());
 }
 
 void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
