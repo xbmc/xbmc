@@ -2927,7 +2927,7 @@ void CApplication::Stop(int exitCode)
   {
     CVariant vExitCode(CVariant::VariantTypeObject);
     vExitCode["exitcode"] = exitCode;
-    CAnnouncementManager::Get().Announce(System, "xbmc", "OnQuit", vExitCode);
+    CAnnouncementManager::Get().Announce(System, "kodi", "OnQuit", vExitCode);
 
     // Abort any active screensaver
     WakeUpScreenSaverAndDPMS();
@@ -3654,7 +3654,7 @@ void CApplication::OnPlayBackEnded()
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = true;
-  CAnnouncementManager::Get().Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
+  CAnnouncementManager::Get().Announce(Player, "kodi", "OnStop", m_itemCurrentFile, data);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
@@ -3716,7 +3716,7 @@ void CApplication::OnPlayBackStopped()
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = false;
-  CAnnouncementManager::Get().Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
+  CAnnouncementManager::Get().Announce(Player, "kodi", "OnStop", m_itemCurrentFile, data);
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   g_windowManager.SendThreadMessage(msg);
@@ -3734,7 +3734,7 @@ void CApplication::OnPlayBackPaused()
   CVariant param;
   param["player"]["speed"] = 0;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
-  CAnnouncementManager::Get().Announce(Player, "xbmc", "OnPause", m_itemCurrentFile, param);
+  CAnnouncementManager::Get().Announce(Player, "kodi", "OnPause", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -3749,7 +3749,7 @@ void CApplication::OnPlayBackResumed()
   CVariant param;
   param["player"]["speed"] = 1;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
-  CAnnouncementManager::Get().Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
+  CAnnouncementManager::Get().Announce(Player, "kodi", "OnPlay", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -3761,7 +3761,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   CVariant param;
   param["player"]["speed"] = iSpeed;
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
-  CAnnouncementManager::Get().Announce(Player, "xbmc", "OnSpeedChanged", m_itemCurrentFile, param);
+  CAnnouncementManager::Get().Announce(Player, "kodi", "OnSpeedChanged", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
@@ -3775,7 +3775,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   param["player"]["speed"] = m_pPlayer->GetPlaySpeed();
-  CAnnouncementManager::Get().Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
+  CAnnouncementManager::Get().Announce(Player, "kodi", "OnSeek", m_itemCurrentFile, param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset);
 }
 
@@ -3972,7 +3972,7 @@ bool CApplication::ToggleDPMS(bool manual)
       m_dpmsIsActive = false;
       m_dpmsIsManual = false;
       SetRenderGUI(true);
-      CAnnouncementManager::Get().Announce(GUI, "xbmc", "OnDPMSDeactivated");
+      CAnnouncementManager::Get().Announce(GUI, "kodi", "OnDPMSDeactivated");
       return m_dpms->DisablePowerSaving();
     }
     else
@@ -3982,7 +3982,7 @@ bool CApplication::ToggleDPMS(bool manual)
         m_dpmsIsActive = true;
         m_dpmsIsManual = manual;
         SetRenderGUI(false);
-        CAnnouncementManager::Get().Announce(GUI, "xbmc", "OnDPMSActivated");
+        CAnnouncementManager::Get().Announce(GUI, "kodi", "OnDPMSActivated");
         return true;
       }
     }
@@ -4010,10 +4010,10 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
 
   if(result)
   {
-    // allow listeners to ignore the deactivation if it preceeds a powerdown/suspend etc
+    // allow listeners to ignore the deactivation if it precedes a powerdown/suspend etc
     CVariant data(CVariant::VariantTypeObject);
     data["shuttingdown"] = bPowerOffKeyPressed;
-    CAnnouncementManager::Get().Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
+    CAnnouncementManager::Get().Announce(GUI, "kodi", "OnScreensaverDeactivated", data);
 #ifdef TARGET_ANDROID
     // Screensaver deactivated -> acquire wake lock
     CXBMCApp::EnableWakeLock(true);
@@ -4147,7 +4147,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!CAddonMgr::Get().GetAddon(CSettings::Get().GetString("screensaver.mode"), m_screenSaver))
     m_screenSaver.reset(new CScreenSaver(""));
 
-  CAnnouncementManager::Get().Announce(GUI, "xbmc", "OnScreensaverActivated");
+  CAnnouncementManager::Get().Announce(GUI, "kodi", "OnScreensaverActivated");
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
@@ -4271,7 +4271,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CVariant param;
       param["player"]["speed"] = 1;
       param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
-      CAnnouncementManager::Get().Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
+      CAnnouncementManager::Get().Announce(Player, "kodi", "OnPlay", m_itemCurrentFile, param);
 
       if (m_pPlayer->IsPlayingAudio())
       {
@@ -4855,7 +4855,7 @@ void CApplication::VolumeChanged() const
   CVariant data(CVariant::VariantTypeObject);
   data["volume"] = GetVolume();
   data["muted"] = m_muted;
-  CAnnouncementManager::Get().Announce(Application, "xbmc", "OnVolumeChanged", data);
+  CAnnouncementManager::Get().Announce(Application, "kodi", "OnVolumeChanged", data);
 
   // if player has volume control, set it.
   if (m_pPlayer->ControlsVolume())

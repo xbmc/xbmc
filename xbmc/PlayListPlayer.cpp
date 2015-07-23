@@ -718,7 +718,7 @@ void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &
   CVariant data;
   data["player"]["playerid"] = iPlaylist;
   data["property"][strProperty] = value;
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
+  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "kodi", "OnPropertyChanged", data);
 }
 
 int PLAYLIST::CPlayListPlayer::GetMessageMask()

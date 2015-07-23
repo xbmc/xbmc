@@ -169,7 +169,7 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
 
 void CAirTunesServer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if ( (flag & Player) && strcmp(sender, "xbmc") == 0)
+  if ( (flag & Player) && strcmp(sender, "kodi") == 0)
   {
     if (strcmp(message, "OnPlay") == 0 && m_streamStarted)
     {

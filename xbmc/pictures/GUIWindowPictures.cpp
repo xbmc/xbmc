@@ -362,7 +362,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
     CVariant param;
     param["player"]["speed"] = 1;
     param["player"]["playerid"] = PLAYLIST_PICTURE;
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", pSlideShow->GetCurrentSlide(), param);
+    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "kodi", "OnPlay", pSlideShow->GetCurrentSlide(), param);
   }
 
   m_slideShowStarted = true;

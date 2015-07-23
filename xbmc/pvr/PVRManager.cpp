@@ -1711,7 +1711,7 @@ bool CPVRChannelSwitchJob::DoWork(void)
   {
     CVariant data(CVariant::VariantTypeObject);
     data["end"] = true;
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", CFileItemPtr(m_previous), data);
+    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "kodi", "OnStop", CFileItemPtr(m_previous), data);
   }
 
   // announce OnPlay if the switch was successful
@@ -1720,7 +1720,7 @@ bool CPVRChannelSwitchJob::DoWork(void)
     CVariant param;
     param["player"]["speed"] = 1;
     param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", CFileItemPtr(new CFileItem(*m_next)), param);
+    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "kodi", "OnPlay", CFileItemPtr(new CFileItem(*m_next)), param);
   }
 
   return true;

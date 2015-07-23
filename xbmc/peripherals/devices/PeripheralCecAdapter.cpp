@@ -144,14 +144,14 @@ void CPeripheralCecAdapter::ResetMembers(void)
 
 void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
+  if (flag == System && !strcmp(sender, "kodi") && !strcmp(message, "OnQuit") && m_bIsReady)
   {
     CSingleLock lock(m_critSection);
     m_iExitCode = static_cast<int>(data["exitcode"].asInteger(EXITCODE_QUIT));
     CAnnouncementManager::Get().RemoveAnnouncer(this);
     StopThread(false);
   }
-  else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
+  else if (flag == GUI && !strcmp(sender, "kodi") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
   {
     bool bIgnoreDeactivate(false);
     if (data["shuttingdown"].isBoolean())
@@ -169,7 +169,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
       ActivateSource();
     }
   }
-  else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated") && m_bIsReady)
+  else if (flag == GUI && !strcmp(sender, "kodi") && !strcmp(message, "OnScreensaverActivated") && m_bIsReady)
   {
     // Don't put devices to standby if application is currently playing
     if ((!g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused()) && m_configuration.bPowerOffScreensaver == 1)
@@ -179,7 +179,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
         StandbyDevices();
     }
   }
-  else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnSleep"))
+  else if (flag == System && !strcmp(sender, "kodi") && !strcmp(message, "OnSleep"))
   {
     // this will also power off devices when we're the active source
     {
@@ -188,7 +188,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
     }
     StopThread();
   }
-  else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnWake"))
+  else if (flag == System && !strcmp(sender, "kodi") && !strcmp(message, "OnWake"))
   {
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
     if (ReopenConnection())
@@ -203,13 +203,13 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
         ActivateSource();
     }
   }
-  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnStop"))
+  else if (flag == Player && !strcmp(sender, "kodi") && !strcmp(message, "OnStop"))
   {
     CSingleLock lock(m_critSection);
     m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
     m_bOnPlayReceived = false;
   }
-  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
+  else if (flag == Player && !strcmp(sender, "kodi") && !strcmp(message, "OnPlay"))
   {
     // activate the source when playback started, and the option is enabled
     bool bActivateSource(false);
@@ -775,7 +775,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const CecButtonPress &key)
       // update the duration
       if (m_bHasButton)
         m_currentButton.iDuration = key.iDuration;
-      // ignore this one, since it's already been handled by xbmc
+      // ignore this one, since it's already been handled by kodi
       return;
     }
     // if we received a keypress with a duration set, try to find the same one without a duration set, and replace it

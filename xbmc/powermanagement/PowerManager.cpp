@@ -211,7 +211,7 @@ bool CPowerManager::Reboot()
 
   if (success)
   {
-    CAnnouncementManager::Get().Announce(System, "xbmc", "OnRestart");
+    CAnnouncementManager::Get().Announce(System, "kodi", "OnRestart");
 
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
@@ -253,7 +253,7 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
-  CAnnouncementManager::Get().Announce(System, "xbmc", "OnSleep");
+  CAnnouncementManager::Get().Announce(System, "kodi", "OnSleep");
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
   // stop lirc
@@ -302,7 +302,7 @@ void CPowerManager::OnWake()
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
 
-  CAnnouncementManager::Get().Announce(System, "xbmc", "OnWake");
+  CAnnouncementManager::Get().Announce(System, "kodi", "OnWake");
 }
 
 void CPowerManager::OnLowBattery()
@@ -311,7 +311,7 @@ void CPowerManager::OnLowBattery()
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
-  CAnnouncementManager::Get().Announce(System, "xbmc", "OnLowBattery");
+  CAnnouncementManager::Get().Announce(System, "kodi", "OnLowBattery");
 }
 
 void CPowerManager::SettingOptionsShutdownStatesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
