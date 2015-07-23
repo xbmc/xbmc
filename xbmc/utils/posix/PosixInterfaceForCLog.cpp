@@ -40,6 +40,7 @@ CPosixInterfaceForCLog::~CPosixInterfaceForCLog()
 {
   if (m_file)
     fclose(m_file);
+  m_file = NULL;
 }
 
 bool CPosixInterfaceForCLog::OpenLogFile(const std::string &logFilename, const std::string &backupOldLogToFilename)
