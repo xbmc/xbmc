@@ -13,6 +13,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\libKODI_guilib.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\addons\library.kodi.guilib\libKODI_guilib.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}</ProjectGuid>
     <RootNamespace>XBMC_VDR</RootNamespace>

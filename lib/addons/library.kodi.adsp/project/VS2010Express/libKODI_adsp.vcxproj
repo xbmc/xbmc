@@ -75,6 +75,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\libKODI_adsp.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\addons\library.kodi.adsp\libKODI_adsp.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
