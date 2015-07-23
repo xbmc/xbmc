@@ -63,9 +63,8 @@ namespace PVR
     void InitializeChannelsList();
     void SetButtonLabels();
 
-    static CDateTime InitializeDateTime(const CDateTime &datetime);
-    static int  GetDateAsInt(const CDateTime &datetime);
-    static void SetDateFromInt(CDateTime &datetime, int date);
+    static int  GetDateAsIndex(const CDateTime &datetime);
+    static void SetDateFromIndex(CDateTime &datetime, int date);
     static void SetTimeFromSystemTime(CDateTime &datetime, const SYSTEMTIME &time);
 
     static void TypesFiller(
