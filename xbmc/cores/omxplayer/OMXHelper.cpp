@@ -75,7 +75,7 @@ bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer
     {
       int iStream = it->id;
       CDemuxStream *stream = m_pDemuxer->GetStream(iStream);
-      if(!stream || stream->disabled)
+      if(!stream || stream->disabled || stream->flags & AV_DISPOSITION_ATTACHED_PIC)
         continue;
       CDVDStreamInfo hint(*stream, true);
 
