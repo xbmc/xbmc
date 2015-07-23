@@ -2828,7 +2828,7 @@
             <step>512</step>
             <maximum>102400</maximum>
           </constraints>
-          <control type="list" format="string">
+          <control type="spinner" format="string">
             <formatlabel>14048</formatlabel>
           </control>
         </setting>
