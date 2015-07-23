@@ -323,6 +323,13 @@ void CDSGraph::UpdateTotalTime()
   }
 }
 
+void CDSGraph::UpdateMadvrWindowPosition()
+{
+  CRect srcRect, destRect, viewRect;
+  g_renderManager.GetVideoRect(srcRect, destRect, viewRect);
+  CMadvrCallback::Get()->GetCallback()->SetMadvrPosition(viewRect, destRect);
+}
+
 void CDSGraph::UpdateWindowPosition()
 {
   if (m_pVideoWindow && m_pVideoWindow)

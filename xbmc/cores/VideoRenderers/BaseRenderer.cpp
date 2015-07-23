@@ -36,6 +36,7 @@
 #ifdef HAS_DS_PLAYER
 #include "MadvrCallback.h"
 #include "Application.h"
+#include "DSPlayer.h"
 #endif
 
 
@@ -520,10 +521,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   }
 #ifdef HAS_DS_PLAYER
   if (CMadvrCallback::Get()->UsingMadvr())
-  {
-    const CRect view = g_graphicsContext.GetViewWindow();
-    CMadvrCallback::Get()->GetCallback()->SetMadvrPosition(view, m_destRect);
-  }
+    CDSPlayer::PostMessage(new CDSMsg(CDSMsg::MADVR_SET_WINDOW_POS), false);
 #endif
 }
 

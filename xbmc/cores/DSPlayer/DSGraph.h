@@ -121,6 +121,8 @@ public:
   virtual void UpdateDvdState();
   // Updating the video position is needed for dvd menu navigation
   virtual void UpdateWindowPosition();
+  // Updating the madVR video position
+  virtual void UpdateMadvrWindowPosition();
   /// Update current player state
   virtual void UpdateState();
   /// @return Current playing time in DS_TIME_BASE unit
