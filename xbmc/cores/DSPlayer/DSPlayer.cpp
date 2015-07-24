@@ -726,7 +726,8 @@ void CDSPlayer::HandleMessages()
     else
     {
       CDSMsg* pMsg = reinterpret_cast<CDSMsg *>(msg.lParam);
-      CLog::Log(LOGDEBUG, "%s Message received : %d on thread 0x%X", __FUNCTION__, pMsg->GetMessageType(), m_threadID);
+      if (!pMsg->IsType(CDSMsg::MADVR_SET_WINDOW_POS))
+        CLog::Log(LOGDEBUG, "%s Message received : %d on thread 0x%X", __FUNCTION__, pMsg->GetMessageType(), m_threadID);
 
       if (CDSPlayer::PlayerState == DSPLAYER_CLOSED || CDSPlayer::PlayerState == DSPLAYER_LOADING)
       {
