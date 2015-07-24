@@ -196,6 +196,7 @@ namespace XBMCAddon
        *     - top250        : integer (192)
        *     - tracknumber   : integer (3)
        *     - rating        : float (6.4) - range is 0..10
+       *     - userrating    : integer (9) - range is 1..10
        *     - watched       : depreciated - use playcount instead
        *     - playcount     : integer (2) - number of times this item has been played
        *     - overlay       : integer (2) - range is 0..8.  See GUIListItem.h for values
