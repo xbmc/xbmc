@@ -168,7 +168,7 @@ namespace PVR
      * @brief Check whether this type supports start time and end time.
      * @return True if start time and end time values is supported, false otherwise.
      */
-    bool SupportsStartEndTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_TIME) > 0; }
+    bool SupportsStartEndTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_TIME) > 0; }
 
     /*!
      * @brief Check whether this type supports matching a search string against epg episode title.

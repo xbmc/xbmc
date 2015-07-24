@@ -443,7 +443,7 @@ bool CPVRClient::GetAddonProperties(void)
         types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
                                         PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
                                         PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
-                                        PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
+                                        PVR_TIMER_TYPE_SUPPORTS_START_TIME     |
                                         PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
                                         PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
                                         PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
@@ -456,7 +456,7 @@ bool CPVRClient::GetAddonProperties(void)
                                         PVR_TIMER_TYPE_IS_REPEATING            |
                                         PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
                                         PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
-                                        PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
+                                        PVR_TIMER_TYPE_SUPPORTS_START_TIME     |
                                         PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
                                         PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
                                         PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY      |
@@ -471,7 +471,7 @@ bool CPVRClient::GetAddonProperties(void)
           types_array[size].iId         = size + 1;
           types_array[size].iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
                                           PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
-                                          PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
+                                          PVR_TIMER_TYPE_SUPPORTS_START_TIME     |
                                           PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
                                           PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
                                           PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
