@@ -146,13 +146,16 @@ void CGUIButtonControl::ProcessText(unsigned int currentTime)
   changed |= m_label.SetText(m_info.GetLabel(m_parentID));
   changed |= m_label.SetScrolling(HasFocus());
 
+  // text changed - images need resizing
+  if (m_minWidth && (m_label.GetRenderRect() != labelRenderRect))
+    SetInvalid();
+
   // render the second label if it exists
-  std::string label2(m_info2.GetLabel(m_parentID));
-  changed |= m_label2.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
-  changed |= m_label2.SetText(label2);
-  if (!label2.empty())
+  if (!m_info2.GetLabel(m_parentID).empty())
   {
     changed |= m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
+    changed |= m_label2.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
+    changed |= m_label2.SetText(m_info2.GetLabel(m_parentID));
     changed |= m_label2.SetScrolling(HasFocus());
 
     // If overlapping was corrected - compare render rects to determine
