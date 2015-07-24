@@ -1215,7 +1215,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       control = new CGUIToggleButtonControl(
         parentID, id, posX, posY, width, height,
         textureFocus, textureNoFocus,
-        textureAltFocus, textureAltNoFocus, labelInfo);
+        textureAltFocus, textureAltNoFocus,
+        labelInfo, wrapMultiLine);
 
       ((CGUIToggleButtonControl *)control)->SetLabel(strLabel);
       ((CGUIToggleButtonControl *)control)->SetAltLabel(altLabel);
