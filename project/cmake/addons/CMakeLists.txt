@@ -4,6 +4,13 @@ cmake_minimum_required(VERSION 2.8)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
+option(ADDON_TARBALL_CACHING "Cache downloaded addon source tarballs?" ON)
+if(ADDON_TARBALL_CACHING)
+  message(STATUS "Addon source tarball caching is enabled")
+else()
+  message(STATUS "Addon source tarball caching is disabled")
+endif()
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -227,7 +234,7 @@ foreach(addon ${addons})
         # download the addon if necessary
         if(NOT "${archive_name}" STREQUAL "")
           # download and extract the addon
-          if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
+          if(NOT ADDON_TARBALL_CACHING OR NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
             # cleanup any of the previously downloaded archives of this addon
             file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
             if(archives)
