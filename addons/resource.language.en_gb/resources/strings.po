@@ -1005,6 +1005,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: system/settings/settings.xml
+#: xbmc/LangInfo.cpp
 msgctxt "#231"
 msgid "None"
 msgstr ""
