@@ -291,7 +291,8 @@ void CGUIViewState::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, i
     // the following sort methods are sorted in descending order by default
     if (sortBy == SortByDate || sortBy == SortBySize || sortBy == SortByPlaycount ||
         sortBy == SortByRating || sortBy == SortByProgramCount ||
-        sortBy == SortByBitrate || sortBy == SortByListeners)
+        sortBy == SortByBitrate || sortBy == SortByListeners || 
+        sortBy == SortByUserRating)
       sortOrder = SortOrderDescending;
     else
       sortOrder = SortOrderAscending;

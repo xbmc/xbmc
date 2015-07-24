@@ -381,6 +381,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "season",           VIDEOPLAYER_SEASON },
                                   { "rating",           VIDEOPLAYER_RATING },
                                   { "ratingandvotes",   VIDEOPLAYER_RATING_AND_VOTES },
+                                  { "userrating",       VIDEOPLAYER_USER_RATING },
                                   { "votes",            VIDEOPLAYER_VOTES },
                                   { "tvshowtitle",      VIDEOPLAYER_TVSHOW },
                                   { "premiered",        VIDEOPLAYER_PREMIERED },
@@ -493,6 +494,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "size",             LISTITEM_SIZE },
                                   { "rating",           LISTITEM_RATING },
                                   { "ratingandvotes",   LISTITEM_RATING_AND_VOTES },
+                                  { "userrating",       LISTITEM_USER_RATING },
                                   { "votes",            LISTITEM_VOTES },
                                   { "programcount",     LISTITEM_PROGRAM_COUNT },
                                   { "duration",         LISTITEM_DURATION },
@@ -1669,6 +1671,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_SEASON:
   case VIDEOPLAYER_RATING:
   case VIDEOPLAYER_RATING_AND_VOTES:
+  case VIDEOPLAYER_USER_RATING:
   case VIDEOPLAYER_TVSHOW:
   case VIDEOPLAYER_PREMIERED:
   case VIDEOPLAYER_STUDIO:
@@ -4096,6 +4099,13 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         return strRatingAndVotes;
       }
       break;
+    case VIDEOPLAYER_USER_RATING:
+    {
+      std::string strUserRating;
+      if (m_currentFile->GetVideoInfoTag()->m_iUserRating > 0)
+        strUserRating = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iUserRating);
+      return strUserRating;
+    }
     case VIDEOPLAYER_VOTES:
       return m_currentFile->GetVideoInfoTag()->m_strVotes;
     case VIDEOPLAYER_YEAR:
@@ -4899,6 +4909,14 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
                                                   g_localizeStrings.Get(20350).c_str());
         return strRatingAndVotes;
       }
+    }
+    break;
+  case LISTITEM_USER_RATING:
+    {
+      std::string strUserRating;
+      if (item->GetVideoInfoTag()->m_iUserRating > 0)
+        strUserRating = StringUtils::Format("%i", item->GetVideoInfoTag()->m_iUserRating);
+      return strUserRating;
     }
     break;
   case LISTITEM_VOTES:
