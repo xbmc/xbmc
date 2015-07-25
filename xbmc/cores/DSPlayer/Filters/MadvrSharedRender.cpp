@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "Utils/Log.h"
 #include "guilib/GUIWindowManager.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 const DWORD D3DFVF_VID_FRAME_VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX1;
 
