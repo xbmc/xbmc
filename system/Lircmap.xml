@@ -456,7 +456,7 @@
 		<mypictures>KEY_CAMERA</mypictures>
 		<mytv>KEY_TV</mytv>
 		<liveradio>KEY_RADIO</liveradio>
-		<mytv>KEY_TUNER</mytv>
+		<livetv>KEY_TUNER</livetv>
 		<one>KEY_1</one>
 		<two>KEY_2</two>
 		<three>KEY_3</three>
@@ -574,7 +574,7 @@
 		<myvideo>KEY_VIDEO</myvideo>
 		<mymusic>KEY_AUDIO</mymusic>
 		<mypictures>KEY_CAMERA</mypictures>
-		<mytv>KEY_TUNER</mytv>
+		<livetv>KEY_TUNER</livetv>
 		<mytv>KEY_TV</mytv>
 		<teletext>KEY_TEXT</teletext>
 		<one>KEY_NUMERIC_1</one>
