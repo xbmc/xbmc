@@ -261,12 +261,21 @@ bool CPVRClients::GetClientName(int iClientId, std::string &strName) const
 std::vector<SBackend> CPVRClients::GetBackendProperties() const
 {
   std::vector<SBackend> backendProperties;
-  CSingleLock lock(m_critSection);
+  std::vector<PVR_CLIENT> clients;
 
-  for (const auto &entry : m_clientMap)
   {
-    const auto &client = entry.second;
-    
+    CSingleLock lock(m_critSection);
+
+    for (PVR_CLIENTMAP_CITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
+    {
+      PVR_CLIENT client = itr->second;
+      if (client)
+        clients.push_back(client);
+    }
+  }
+
+  for (const auto &client : clients)
+  {
     if (!client->ReadyToUse())
       continue;
 
