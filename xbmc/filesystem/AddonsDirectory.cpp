@@ -494,8 +494,10 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
   for (const auto& addon : addons)
   {
     CURL itemPath = path;
+    // For lists containing items from mixed categories, prefix addon name with type for better readability.
+    bool addTypeToLabel = path.GetFileName() == "all" || path.GetHostName() == "search";
     itemPath.SetFileName(addon->ID());
-    CFileItemPtr pItem = FileItemFromAddon(addon, itemPath.Get(), false);
+    CFileItemPtr pItem = FileItemFromAddon(addon, itemPath.Get(), false, addTypeToLabel);
 
     AddonPtr installedAddon;
     if (CAddonMgr::Get().GetAddon(addon->ID(), installedAddon))
@@ -517,16 +519,19 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
   }
 }
 
-CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const std::string& path, bool folder)
+CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon, const std::string& path, bool folder /* = false */, bool addTypeToLabel /* = false */)
 {
   if (!addon)
     return CFileItemPtr();
 
   CFileItemPtr item(new CFileItem(path, folder));
 
-  std::string strLabel(addon->Name());
-  if (CURL(path).GetHostName() == "search")
+  std::string strLabel;
+  if (addTypeToLabel)
     strLabel = StringUtils::Format("%s - %s", TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
+  else
+    strLabel = addon->Name();
+
   item->SetLabel(strLabel);
   item->SetArt("thumb", addon->Icon());
   item->SetLabelPreformated(true);
