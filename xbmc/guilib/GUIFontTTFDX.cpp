@@ -26,6 +26,9 @@
 #include "gui3d.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
+#ifdef HAS_DS_PLAYER
+#include "MadvrCallback.h"
+#endif
 
 // stuff for freetype
 #include <ft2build.h>
@@ -58,6 +61,12 @@ bool CGUIFontTTFDX::FirstBegin()
     CLog::Log(LOGERROR, __FUNCTION__" - failed to get Direct3D device");
     return false;
   }
+
+#ifdef HAS_DS_PLAYER
+  // Render count to detect when the GUI it's active or deactive (useful for madVR latency mode)
+  if (CMadvrCallback::Get()->UsingMadvr())
+    CMadvrCallback::Get()->IncRenderCount();
+#endif
 
   int unit = 0;
   // just have to blit from our texture.
