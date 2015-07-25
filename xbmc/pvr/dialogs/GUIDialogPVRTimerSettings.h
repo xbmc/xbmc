@@ -96,8 +96,11 @@ namespace PVR
     static bool TypeSupportsCondition(
       const std::string &condition, const std::string &value, const CSetting *setting, void *data);
 
-    void AddAnytimeDependentVisibilityCondition(CSetting *setting, const std::string &identifier);
-    static bool AnytimeSetCondition(
+    void AddStartAnytimeDependentVisibilityCondition(CSetting *setting, const std::string &identifier);
+    static bool StartAnytimeSetCondition(
+      const std::string &condition, const std::string &value, const CSetting *setting, void *data);
+    void AddEndAnytimeDependentVisibilityCondition(CSetting *setting, const std::string &identifier);
+    static bool EndAnytimeSetCondition(
       const std::string &condition, const std::string &value, const CSetting *setting, void *data);
 
     typedef std::map<int, CPVRTimerTypePtr>  TypeEntriesMap;
@@ -137,14 +140,14 @@ namespace PVR
     bool                m_bIsRadio;
     bool                m_bIsNewTimer;
     bool                m_bTimerActive;
-    bool                m_bStartAnytime;
-    bool                m_bEndAnytime;
     std::string         m_strTitle;
     std::string         m_strEpgSearchString;
     bool                m_bFullTextEpgSearch;
     ChannelDescriptor   m_channel;
     CDateTime           m_startLocalTime;
     CDateTime           m_endLocalTime;
+    bool                m_bStartAnyTime;
+    bool                m_bEndAnyTime;
     unsigned int        m_iWeekdays;
     CDateTime           m_firstDayLocalTime;
     unsigned int        m_iPreventDupEpisodes;
