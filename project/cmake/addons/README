@@ -32,6 +32,8 @@ specific paths:
        you want to build (default is "all").
      - a regular expression that every <addon-id> is matched against
        e.g.: ADDONS_TO_BUILD=pvr.* to build all pvr addons
+  * ADDONS_DEFINITION_DIR points to the directory containing the definitions
+    for the addons to be built.
   * ADDON_SRC_PREFIX can be used to override the addon repository location.
     It must point to the locally available parent directory of the addon(s) to build
     <addon-id> will be appended to this path automatically

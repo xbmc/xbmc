@@ -124,6 +124,13 @@ else()
   separate_arguments(ADDONS_TO_BUILD)
 endif()
 
+if(NOT ADDONS_DEFINITION_DIR)
+  set(ADDONS_DEFINITION_DIR ${PROJECT_SOURCE_DIR}/addons)
+else()
+  file(TO_CMAKE_PATH "${ADDONS_DEFINITION_DIR}" ADDONS_DEFINITION_DIR)
+endif()
+get_filename_component(ADDONS_DEFINITION_DIR "${ADDONS_DEFINITION_DIR}" ABSOLUTE)
+
 if(ADDON_SRC_PREFIX)
   message(STATUS "Overriding addon source directory prefix: ${ADDON_SRC_PREFIX}")
 endif()
@@ -177,7 +184,7 @@ add_custom_target(package-addons)
 
 ### get and build all the binary addons
 # look for all the addons to be built
-file(GLOB_RECURSE addons ${PROJECT_SOURCE_DIR}/addons/*.txt)
+file(GLOB_RECURSE addons ${ADDONS_DEFINITION_DIR}/*.txt)
 foreach(addon ${addons})
   if(NOT (addon MATCHES platforms.txt))
     file(STRINGS ${addon} def)
