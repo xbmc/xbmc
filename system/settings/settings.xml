@@ -979,7 +979,7 @@
           <level>1</level>
           <default>English</default>
           <constraints>
-            <options>iso6391languages</options>
+            <options>streamlanguages</options>
             <delimiter>,</delimiter>
             <minimumitems>1</minimumitems>
           </constraints>
