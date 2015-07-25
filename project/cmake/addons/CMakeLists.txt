@@ -78,9 +78,10 @@ if(MSVC)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
+option(PACKAGE_ZIP "Prepare built addons for packaging" OFF)
 if(PACKAGE_ZIP)
   # needed for project installing
-  list(APPEND BUILD_ARGS -DPACKAGE_ZIP=1)
+  list(APPEND BUILD_ARGS -DPACKAGE_ZIP=ON)
   MESSAGE(STATUS "ZIP packaging enabled")
 endif()
 
