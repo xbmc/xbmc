@@ -29,6 +29,7 @@
   int iSize;     // data size
   int iStreamId; // integer representing the stream index
   int iGroupId;  // the group this data belongs to, used to group data from different streams together
+  char frameType; // the frametype as ASCII value: 'I', 'P', 'B', or 0 if unknown or missing
 
   double pts; // pts in DVD_TIME_BASE
   double dts; // dts in DVD_TIME_BASE
