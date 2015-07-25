@@ -158,16 +158,10 @@ namespace PVR
     void SetStartFromUTC(CDateTime &start) { m_StartTime = start; }
     void SetStartFromLocalTime(CDateTime &start) { m_StartTime = start.GetAsUTCDateTime(); }
 
-    bool IsStartAtAnyTime(void) const;
-    void SetStartAtAnyTime(void);
-
     CDateTime EndAsUTC(void) const;
     CDateTime EndAsLocalTime(void) const;
     void SetEndFromUTC(CDateTime &end) { m_StopTime = end; }
     void SetEndFromLocalTime(CDateTime &end) { m_StopTime = end.GetAsUTCDateTime(); }
-
-    bool IsEndAtAnyTime(void) const;
-    void SetEndAtAnyTime(void);
 
     CDateTime FirstDayAsUTC(void) const;
     CDateTime FirstDayAsLocalTime(void) const;
@@ -236,6 +230,8 @@ namespace PVR
     int                   m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, -1 for new */
     unsigned int          m_iParentClientIndex;  /*!< @brief for timers scheduled by repeated timers, the index number of the parent, given by the backend, PVR_TIMER_NO_PARENT for no parent */
     int                   m_iClientChannelUid;   /*!< @brief channel uid */
+    bool                  m_bStartAnyTime;       /*!< @brief Ignore start date and time clock. Record at 'Any Time' */
+    bool                  m_bEndAnyTime;         /*!< @brief Ignore end date and time clock. Record at 'Any Time' */
     int                   m_iPriority;           /*!< @brief priority of the timer */
     int                   m_iLifetime;           /*!< @brief lifetime of the timer in days */
     unsigned int          m_iWeekdays;           /*!< @brief bit based store of weekdays for repeating timers */
