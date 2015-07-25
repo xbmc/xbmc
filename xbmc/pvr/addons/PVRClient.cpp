@@ -302,6 +302,8 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   addonTimer.iWeekdays                 = xbmcTimer.m_iWeekdays;
   addonTimer.startTime                 = start - g_advancedSettings.m_iPVRTimeCorrection;
   addonTimer.endTime                   = end - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.bStartAnyTime             = xbmcTimer.m_bStartAnyTime;
+  addonTimer.bEndAnyTime               = xbmcTimer.m_bEndAnyTime;
   addonTimer.firstDay                  = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
   addonTimer.iEpgUid                   = epgTag ? epgTag->UniqueBroadcastID() : -1;
   strncpy(addonTimer.strSummary, xbmcTimer.m_strSummary.c_str(), sizeof(addonTimer.strSummary) - 1);
@@ -444,6 +446,7 @@ bool CPVRClient::GetAddonProperties(void)
                                         PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
                                         PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
                                         PVR_TIMER_TYPE_SUPPORTS_START_TIME     |
+                                        PVR_TIMER_TYPE_SUPPORTS_END_TIME       |
                                         PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
                                         PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
                                         PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
@@ -457,6 +460,7 @@ bool CPVRClient::GetAddonProperties(void)
                                         PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
                                         PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
                                         PVR_TIMER_TYPE_SUPPORTS_START_TIME     |
+                                        PVR_TIMER_TYPE_SUPPORTS_END_TIME       |
                                         PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
                                         PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
                                         PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY      |
@@ -472,6 +476,7 @@ bool CPVRClient::GetAddonProperties(void)
           types_array[size].iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
                                           PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
                                           PVR_TIMER_TYPE_SUPPORTS_START_TIME     |
+                                          PVR_TIMER_TYPE_SUPPORTS_END_TIME       |
                                           PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
                                           PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
                                           PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
