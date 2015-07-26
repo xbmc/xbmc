@@ -431,7 +431,8 @@ void CRenderManager::FrameWait(int ms)
 bool CRenderManager::HasFrame()
 {
   CSingleLock lock(m_presentlock);
-  if (m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2)
+  if (m_presentstep == PRESENT_READY ||
+      m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2)
     return true;
   else
     return false;

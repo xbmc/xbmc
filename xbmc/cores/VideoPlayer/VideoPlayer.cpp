@@ -4798,7 +4798,7 @@ void CVideoPlayer::FrameWait(int ms)
 
 bool CVideoPlayer::HasFrame()
 {
-  m_renderManager.HasFrame();
+  return m_renderManager.HasFrame();
 }
 
 void CVideoPlayer::Render(bool clear, uint32_t alpha, bool gui)
