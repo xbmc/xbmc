@@ -1867,9 +1867,7 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   if (m_old_pictcnt == m_cur_pictcnt)
     m_ready_event.WaitMSec(25);
 
-  // we must return VC_BUFFER or VC_PICTURE,
-  // default to VC_BUFFER.
-  int rtn = VC_BUFFER;
+  int rtn = 0;
   if (m_old_pictcnt != m_cur_pictcnt)
   {
     m_old_pictcnt++;
