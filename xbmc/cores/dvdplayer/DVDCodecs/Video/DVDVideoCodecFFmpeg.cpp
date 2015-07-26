@@ -97,6 +97,15 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     return avcodec_default_get_format(avctx, fmt);
   }
 
+  // hardware decoder de-selected, restore standard ffmpeg
+  if (ctx->GetHardware())
+  {
+    ctx->SetHardware(NULL);
+    avctx->get_buffer2 = avcodec_default_get_buffer2;
+    avctx->slice_flags = 0;
+    avctx->hwaccel_context = 0;
+  }
+
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
   {
@@ -157,15 +166,6 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     }
 #endif
     cur++;
-  }
-
-  // hardware decoder de-selected, restore standard ffmpeg
-  if (ctx->GetHardware())
-  {
-    ctx->SetHardware(NULL);
-    avctx->get_buffer2     = avcodec_default_get_buffer2;
-    avctx->slice_flags     = 0;
-    avctx->hwaccel_context = 0;
   }
 
   ctx->m_decoderState = STATE_HW_FAILED;
