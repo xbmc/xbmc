@@ -25,12 +25,14 @@
 #include "ClassLoader.h"
 #include "jutils/jutils-details.hpp"
 
+#include "android/activity/JNIMainActivity.h"
+
 using namespace jni;
 
 CJNIBroadcastReceiver *CJNIBroadcastReceiver::m_receiverInstance(NULL);
 CJNIBroadcastReceiver::CJNIBroadcastReceiver(const std::string &className) : CJNIBase(className)
 {
-  CJNIApplicationMainActivity *appInstance = CJNIApplicationMainActivity::GetAppInstance();
+  CJNIMainActivity *appInstance = CJNIMainActivity::GetAppInstance();
   if (!appInstance || className.empty())
     return;
 

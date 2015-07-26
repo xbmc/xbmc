@@ -37,29 +37,3 @@ private:
   CJNIActivity();
 };
 
-///////////////////////////////////
-
-class CJNIApplicationMainActivity : public CJNIActivity
-{
-public:
-  CJNIApplicationMainActivity(const ANativeActivity *nativeActivity);
-  ~CJNIApplicationMainActivity();
-
-  static CJNIApplicationMainActivity* GetAppInstance() { return m_appInstance; }
-
-  static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
-  static void _onVolumeChanged(JNIEnv *env, jobject context, jint volume);
-  static void _onAudioFocusChange(JNIEnv *env, jobject context, jint focusChange);
-
-  static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
-  static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
-
-private:
-  static CJNIApplicationMainActivity *m_appInstance;
-
-protected:
-  virtual void onNewIntent(CJNIIntent intent)=0;
-  virtual void onVolumeChanged(int volume)=0;
-  virtual void onAudioFocusChange(int focusChange)=0;
-};
-
