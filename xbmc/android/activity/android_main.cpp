@@ -27,6 +27,8 @@
 #include "utils/StringUtils.h"
 #include "CompileInfo.h"
 
+#include "android/activity/JNIMainActivity.h"
+
 // copied from new android_native_app_glue.c
 static void process_input(struct android_app* app, struct android_poll_source* source) {
     AInputEvent* event = NULL;
@@ -98,14 +100,14 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
     JNINativeMethod mOnNewIntent = {
       "_onNewIntent",
       "(Landroid/content/Intent;)V",
-      (void*)&CJNIApplicationMainActivity::_onNewIntent
+      (void*)&CJNIMainActivity::_onNewIntent
     };
     env->RegisterNatives(cMain, &mOnNewIntent, 1);
 
     JNINativeMethod mCallNative = {
       "_callNative",
       "(JJ)V",
-      (void*)&CJNIApplicationMainActivity::_callNative
+      (void*)&CJNIMainActivity::_callNative
     };
     env->RegisterNatives(cMain, &mCallNative, 1);
   }
@@ -138,7 +140,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
     JNINativeMethod mOnVolumeChanged = {
       "_onVolumeChanged",
       "(I)V",
-      (void*)&CJNIApplicationMainActivity::_onVolumeChanged
+      (void*)&CJNIMainActivity::_onVolumeChanged
     };
     env->RegisterNatives(cSettingsObserver, &mOnVolumeChanged, 1);
   }
@@ -149,7 +151,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
     JNINativeMethod mOnAudioFocusChange = {
       "_onAudioFocusChange",
       "(I)V",
-      (void*)&CJNIApplicationMainActivity::_onAudioFocusChange
+      (void*)&CJNIMainActivity::_onAudioFocusChange
     };
     env->RegisterNatives(cAudioFocusChangeListener, &mOnAudioFocusChange, 1);
   }
