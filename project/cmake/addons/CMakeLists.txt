@@ -204,6 +204,19 @@ foreach(addon ${addons})
         if(deflength GREATER 2 AND "${SOURCE_DIR}" STREQUAL "")
           list(GET def 2 revision)
 
+          # we need access to a git executable
+          find_package(Git REQUIRED)
+
+          # resolve revision to git hash
+          execute_process(COMMAND ${GIT_EXECUTABLE} ls-remote ${url} ${revision} OUTPUT_VARIABLE revision_hash)
+          # git ls-remote only works on branches and tag names but not on revisions
+          if(NOT "${revision_hash}" STREQUAL "")
+            string(REPLACE "\t" ";" revision_list ${revision_hash})
+            list(GET revision_list 0 revision_hash)
+            message(STATUS "${id}: git branch/tag ${revision} resolved to hash: ${revision_hash}")
+            set(revision ${revision_hash})
+          endif()
+
           # Note: downloading specific revisions via http in the format below is probably github specific
           # if we ever use other repositories, this might need adapting
           set(url ${url}/archive/${revision}.tar.gz)
