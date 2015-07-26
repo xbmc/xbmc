@@ -1183,7 +1183,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   int maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50);
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
-    maxWaitTime = 0;
+    maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime), 0);
   int buffer = g_renderManager.WaitForBuffer(m_bStop, maxWaitTime);
   if (buffer < 0)
   {
