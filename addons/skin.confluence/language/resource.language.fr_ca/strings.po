@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change your"
-msgstr "Changer vos"
+msgstr "Changez vos"
 
 msgctxt "#31003"
 msgid "Power options"

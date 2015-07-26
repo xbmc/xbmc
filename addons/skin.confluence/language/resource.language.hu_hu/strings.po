@@ -162,7 +162,7 @@ msgstr "Jelenleg kiválasztott"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Sajátképernyő lehetőségei"
+msgstr "Főképernyő lehetőségei"
 
 msgctxt "#31102"
 msgid "Background"

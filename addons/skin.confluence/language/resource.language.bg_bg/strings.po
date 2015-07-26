@@ -22,11 +22,15 @@ msgstr "Променете вашите"
 
 msgctxt "#31003"
 msgid "Power options"
-msgstr "Изключи..."
+msgstr "Настройки за захранване"
 
 msgctxt "#31004"
 msgid "Working..."
 msgstr "Работи..."
+
+msgctxt "#31005"
+msgid "Hide information"
+msgstr "Скрий информацията"
 
 msgctxt "#31006"
 msgid "View options"
@@ -163,6 +167,10 @@ msgstr "Настройки на началния екран"
 msgctxt "#31102"
 msgid "Background"
 msgstr "Фон"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slideshow"
+msgstr "Показвай \"На Пауза\" индикация при слайдшоу от снимки"
 
 msgctxt "#31104"
 msgid "Play trailers in a window [COLOR=grey3](Video information dialogue only)[/COLOR]"
@@ -492,6 +500,10 @@ msgctxt "#31423"
 msgid "Select the profile that will be used at startup when the login screen is disabled."
 msgstr "Изберете кой профил да се ползва за влизане, когато екрана за вписване е изключен"
 
+msgctxt "#31501"
+msgid "Scheduled time"
+msgstr "График"
+
 msgctxt "#31502"
 msgid "TV"
 msgstr "Телевизия"
@@ -515,6 +527,14 @@ msgstr "Налични[CR]групи"
 msgctxt "#31509"
 msgid "Channel group"
 msgstr "Група канали"
+
+msgctxt "#31510"
+msgid "Timer set"
+msgstr "Настройка на брояча"
+
+msgctxt "#31511"
+msgid "Channel options"
+msgstr "Настройки на канала"
 
 msgctxt "#31901"
 msgid "36-hour forecast"

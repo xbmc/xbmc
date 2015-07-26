@@ -16,6 +16,10 @@ msgstr ""
 "Language: es_MX\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31000"
+msgid "Change your"
+msgstr "Cambiar al tuyo"
+
 msgctxt "#31004"
 msgid "Working..."
 msgstr "Trabajando..."

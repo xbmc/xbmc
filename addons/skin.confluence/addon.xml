@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.7.3"
+  version="2.7.4"
   name="Confluence"
   provider-name="Jezz_X, Team Kodi">
   <requires>
@@ -17,7 +17,7 @@
     <summary lang="af_ZA">Confluence tema deur Jezz_X. (Kodi se standaard tema)</summary>
     <summary lang="ar_SA">جلد "كونفليونس" من صنع Jezz_x. (الجلد المبدأى لبرنامج إكس بى إم سى)</summary>
     <summary lang="be_BY">Confluence skin by Jezz_X. (Kodi's default skin)</summary>
-    <summary lang="bg_BG">Облик от Jezz_X. (стандартния за Kodi)</summary>
+    <summary lang="bg_BG">Confluence облик от Jezz_X. (стандартния облик за Kodi)</summary>
     <summary lang="ca_ES">Pell Confluence, per Jezz_X. (Pell per defecte del Kodi)</summary>
     <summary lang="cs_CZ">Vzhled Confluence od Jezz_X. (výchozí vzhled Kodi)</summary>
     <summary lang="cy_GB">Croen Confluence gan Jezz_X. (Croen rhagosodedig Kodi)</summary>

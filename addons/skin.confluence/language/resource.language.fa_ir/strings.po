@@ -60,6 +60,10 @@ msgctxt "#31039"
 msgid "Actions"
 msgstr "عملیات"
 
+msgctxt "#31040"
+msgid "Now playing"
+msgstr "در حال پخش"
+
 msgctxt "#31042"
 msgid "PLAYING"
 msgstr "در حال پخش"
@@ -152,6 +156,10 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "اشعار"
 
+msgctxt "#31132"
+msgid "Lyrics add-on"
+msgstr "افزونه متن ترانه"
+
 msgctxt "#31140"
 msgid "Music OSD"
 msgstr "موسیقی"
@@ -211,6 +219,10 @@ msgstr "بازکشت"
 msgctxt "#31355"
 msgid "Movie menu"
 msgstr "منو فیلم"
+
+msgctxt "#31356"
+msgid "Download subtitles"
+msgstr "دانلود زیر نویس ها"
 
 msgctxt "#31360"
 msgid "Watch as 2D"
@@ -276,9 +288,33 @@ msgctxt "#31502"
 msgid "TV"
 msgstr "تلویزیون"
 
+msgctxt "#31503"
+msgid "Add group"
+msgstr "افزودن گروه"
+
+msgctxt "#31504"
+msgid "Rename group"
+msgstr "تغییر نام گروه"
+
+msgctxt "#31505"
+msgid "Delete group"
+msgstr "حذف گروه"
+
 msgctxt "#31506"
 msgid "Available[CR]Groups"
 msgstr "گروه های [CR]موجود"
+
+msgctxt "#31901"
+msgid "36-hour forecast"
+msgstr "پیش بینی 36 ساعته"
+
+msgctxt "#31903"
+msgid "Weekend forecast"
+msgstr "پیش بینی هفتگی"
+
+msgctxt "#31904"
+msgid "Daily forecast"
+msgstr "پیش بینی روزانه"
 
 msgctxt "#31905"
 msgid "Forecast"

@@ -118,7 +118,7 @@ msgstr "PRZEWIJANIE"
 
 msgctxt "#31048"
 msgid "Visualisation presets"
-msgstr "Szablony wizualizacji"
+msgstr "Wzorce wizualizacji"
 
 msgctxt "#31049"
 msgid "End time"
@@ -194,7 +194,7 @@ msgstr "Pokazuj niestandardowe tło"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Ścieżka do folderu obrazów tła:"
+msgstr "Ścieżka do folderu z obrazami tła:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -222,11 +222,11 @@ msgstr "Nie używaj fototapet w roli tła"
 
 msgctxt "#31124"
 msgid "Show background \"Now playing\" video"
-msgstr "Wyświetlaj panel Teraz odtwarzane w tle interfejsu"
+msgstr "Wyświetlaj odtwarzane wideo w tle interfejsu"
 
 msgctxt "#31125"
 msgid "Show background \"Now playing\" visualisation"
-msgstr "Wyświetlaj wizualizację Teraz odtwarzane w tle interfejsu"
+msgstr "Wyświetlaj wizualizację muzyki w tle interfejsu"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -342,7 +342,7 @@ msgstr "Opcje skanowania zawartości"
 
 msgctxt "#31317"
 msgid "Set fanart path"
-msgstr "Ustaw ścieżkę do folderu tapet"
+msgstr "Ustaw ścieżkę do folderu z tapetami"
 
 msgctxt "#31319"
 msgid "Selected profile"
