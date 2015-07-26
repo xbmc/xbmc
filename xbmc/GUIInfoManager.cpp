@@ -612,7 +612,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isstereoscopic",   LISTITEM_IS_STEREOSCOPIC },
                                   { "imdbnumber",       LISTITEM_IMDBNUMBER },
                                   { "episodename",      LISTITEM_EPISODENAME },
-                                  { "timertype",        LISTITEM_TIMERTYPE }};
+                                  { "timertype",        LISTITEM_TIMERTYPE },
+                                  { "epgeventtitle",    LISTITEM_EPG_EVENT_TITLE }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -4625,6 +4626,18 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetTitle();
     break;
+  case LISTITEM_EPG_EVENT_TITLE:
+    if (item->HasEPGInfoTag())
+      return item->GetEPGInfoTag()->Title();
+    if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->HasEpgInfoTag())
+      return item->GetPVRTimerInfoTag()->GetEpgInfoTag()->Title();
+    if (item->HasPVRChannelInfoTag())
+    {
+      CEpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
+      if (epgTag)
+        return epgTag->Title();
+    }
+    break;
   case LISTITEM_ORIGINALTITLE:
     if (item->HasPVRChannelInfoTag())
     {
@@ -5530,6 +5543,10 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       if (pItem->HasPVRChannelInfoTag())
       {
         return (pItem->GetPVRChannelInfoTag()->GetEPGNow().get() != NULL);
+      }
+      if (pItem->HasPVRTimerInfoTag() && pItem->GetPVRTimerInfoTag()->HasEpgInfoTag())
+      {
+        return true;
       }
       else
       {
