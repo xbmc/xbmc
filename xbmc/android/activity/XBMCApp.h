@@ -35,6 +35,8 @@
 #include "android/jni/AudioManager.h"
 #include "threads/Event.h"
 
+#include "JNIMainActivity.h"
+
 // forward delares
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
@@ -54,7 +56,7 @@ struct androidPackage
   std::string packageLabel;
 };
 
-class CXBMCApp : public IActivityHandler, public CJNIApplicationMainActivity, public CJNIBroadcastReceiver, public CJNIAudioManagerAudioFocusChangeListener
+class CXBMCApp : public IActivityHandler, public CJNIMainActivity, public CJNIBroadcastReceiver, public CJNIAudioManagerAudioFocusChangeListener
 {
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
@@ -117,6 +119,8 @@ public:
   static void OnPlayBackResumed();
   static void OnPlayBackStopped();
   static void OnPlayBackEnded();
+
+  static CXBMCApp* get() { return m_xbmcappinstance; }
 
 protected:
   // limit who can access Volume
