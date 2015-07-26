@@ -1,1 +1,0 @@
-pvr.mediaportal.tvserver https://github.com/kodi-pvr/pvr.mediaportal.tvserver master

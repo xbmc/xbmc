@@ -1,1 +1,0 @@
-pvr.njoy https://github.com/kodi-pvr/pvr.njoy master
