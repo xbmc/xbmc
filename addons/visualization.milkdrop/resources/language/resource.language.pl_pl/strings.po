@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Automatic Blend Time"
-msgstr "Interwał automatycznego mieszania"
+msgstr "Częstotliwość mieszania"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Interwał zdefiniowanych ustawień"
+msgstr "Częstotliwość zmiany wzorców"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -54,27 +54,27 @@ msgstr "Aktywuj stereofoniczny tryb 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Pakiet zdefiniowanych ustawień"
+msgstr "Pakiet wzorców"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Folder ustawień użytkownika"
+msgstr "Folder wzorców użytkownika"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Tryb losowych ustawień"
+msgstr "Tryb losowych wzorców"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
-msgstr "Ustawienia WA51"
+msgstr "Wzorce WA51"
 
 msgctxt "#30021"
 msgid "Winamp Presets"
-msgstr "Ustawienia Winampa"
+msgstr "Wzorce Winampa"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Folder zdefiniowanych ustawień użytkownika"
+msgstr "Folder wzorców użytkownika"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

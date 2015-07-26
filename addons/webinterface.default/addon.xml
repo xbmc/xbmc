@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.2.24"
+  version="2.2.25"
   name="Default webinterface"
   provider-name="Team-Kodi">
   <requires>
@@ -59,7 +59,7 @@
     <summary lang="sk_SK">Webové rozhranie tímu Kodi. (predvolené webové rozhranie pre Kodi)</summary>
     <summary lang="sl_SI">Spletni vmesnik ekipe Kodi. (Privzet spletni vmesnik za Kodi)</summary>
     <summary lang="sr_RS">Веб интерфејс од програмера Kodi-а (подразумевани веб интерфејс Kodi-а)</summary>
-    <summary lang="sr_RS@latin">Веб интерфејс од програмера Kodi-а (подразумевани веб интерфејс Kodi-а)</summary>
+    <summary lang="sr_RS@latin">Web interfejs Kodi Tima (podrazuevani web interfejs Kodia)</summary>
     <summary lang="sv_SE">Team-Kodi webbgränsnitt. (Kodi's standardwebbgränssnitt)</summary>
     <summary lang="szl">Webowy interfejs ôd Team-Kodi (wychodny webowy interface we Kodi).</summary>
     <summary lang="ta_IN">கோடி குழுமத்தின் இணைய இடைமுகம். (கோடியின் நிரந்தர இணைய இடைமுகம்)</summary>
@@ -123,7 +123,7 @@
     <description lang="sk_SK">Predvolené webové rozhranie pre Kodi; Navrhnuté pre zariadenia zobrazujúce v akomkoľvek rozlíšení</description>
     <description lang="sl_SI">Privzet spletni vmesnik za Kodi, ustvarjen za naprave vseh ločljivosti</description>
     <description lang="sr_RS">Подразумевани веб интерфејс Kodi-а, намењен уређајима свих резолуција</description>
-    <description lang="sr_RS@latin">Подразумевани веб интерфејс Kodi-а, намењен уређајима свих резолуција</description>
+    <description lang="sr_RS@latin">Podrazumevani web interfejs Kodia; Namenjen uređajima svih rezolucija</description>
     <description lang="sv_SE">Standardwebbgränssnitt för Kodi; Utformat för alla enheter oavsett skärmupplösning</description>
     <description lang="szl">Wychodny webowy interface we Kodi. Zrychtowany dlŏ maszin we wszyjskich rozdziylczościach.</description>
     <description lang="ta_IN">கோடி இற்கான நிரந்தர இணைய இடைமுகம்; சகல சாதனங்களின் திரைகளுக்கும் வடிவமைக்கப்பட்டது</description>

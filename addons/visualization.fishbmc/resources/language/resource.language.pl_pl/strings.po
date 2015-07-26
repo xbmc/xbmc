@@ -46,7 +46,7 @@ msgstr "Szybkość [pomija niektóre klatki]"
 
 msgctxt "#30007"
 msgid "Very Low"
-msgstr "Bardzo niski"
+msgstr "Bardzo niskie"
 
 msgctxt "#30008"
 msgid "Low"

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.26"
+       version="1.0.27"
        provider-name="Team-Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -53,6 +53,7 @@
     <summary lang="sk_SK">Šetrič obrazovky, ktorú ju zmení na čiernu</summary>
     <summary lang="sl_SI">Ohranjevalnik zaslona, ki počrni zaslon</summary>
     <summary lang="sr_RS">Чувар екрана који поцрни ваш екран</summary>
+    <summary lang="sr_RS@latin">Čuvar ekrana koji zacrni vaš ekran</summary>
     <summary lang="sv_SE">En skärmsläckare som gör din skärm svart</summary>
     <summary lang="tg_TJ">Пардаи экран бо таъсири «Пардаи экрани сиёҳ»</summary>
     <summary lang="th_TH">สกรีนเซฟเวอร์ที่จะพักหน้าจอของคุณให้เป็นสีดำ</summary>
@@ -109,6 +110,7 @@
     <description lang="sk_SK">Black je jednoduchý šetrič, ktorý zmení vašu obrazovku na čiernu.</description>
     <description lang="sl_SI">Black je enostaven ohranjevalnik zaslona, ki počrni zaslon.</description>
     <description lang="sr_RS">Black је једноставан чувар екрана који поцрни ваш екран.</description>
+    <description lang="sr_RS@latin">Crno je jednostavan čuvar ekrana koji će zacrniti vaš ekran.</description>
     <description lang="sv_SE">Detta är en enkel skärmsläckare som gör din skärm svart.</description>
     <description lang="tg_TJ">Ин пардаи экрани осон мебошад, ки таъсири «Пардаи экрани сиёҳ»-ро истифода мебарад.</description>
     <description lang="th_TH">หน้าจอสีดำเป็นสกรีนเซฟเวอร์แบบง่ายๆที่จะเปิดหน้าจอของคุณให้เป็นสีดำ</description>

@@ -18,31 +18,31 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Random Presets"
-msgstr "Losowe ustawienia"
+msgstr "Losowe wzorce wizualizacji"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Interwał zdefiniowanych ustawień"
+msgstr "Częstotliwość zmiany wzorców"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
-msgstr "Dodatkowy czas losowy"
+msgstr "Dodatkowy losowy czas"
 
 msgctxt "#30003"
 msgid "Lock Preset"
-msgstr "Zablokuj zdefiniowane ustawienia"
+msgstr "Zablokuj wzorzec"
 
 msgctxt "#30004"
 msgid "Enable Transitions"
-msgstr "Włącz przejścia"
+msgstr "Aktywuj przejścia"
 
 msgctxt "#30005"
 msgid "Stop first preset"
-msgstr "Zatrzymaj pierwsze zdefiniowane ustawienie"
+msgstr "Zatrzymaj pierwszy szablon"
 
 msgctxt "#30006"
 msgid "Show FPS"
-msgstr "Pokaż szybkość klatek"
+msgstr "Pokazuj częstotliwość klatek"
 
 msgctxt "#30007"
 msgid "Show debug console"
@@ -50,7 +50,7 @@ msgstr "Pokazuj konsolę diagnostyczną"
 
 msgctxt "#30008"
 msgid "Show audio analysis"
-msgstr "Pokaż analizę dźwięku "
+msgstr "Pokazuj analizę dźwięku "
 
 msgctxt "#30050"
 msgid "%2.0f secs"

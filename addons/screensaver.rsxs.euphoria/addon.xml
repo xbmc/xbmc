@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.euphoria"
-  version="1.0.26"
+  version="1.0.27"
   name="Euphoria"
   provider-name="mogumbo, Team-Kodi">
   <requires>
@@ -47,6 +47,7 @@
     <summary lang="lt_LT">Psihodelinė užsklanda nunešanti stoga</summary>
     <summary lang="lv_LV">Cik nu vien psihodēlisks ekrānsaudzētājs var būt</summary>
     <summary lang="mk_MK">Најпсиходелична заштита на екран</summary>
+    <summary lang="mn_MN">Дэлгэц хадгалагчийн хамгийн галзуу хувилбар.</summary>
     <summary lang="ms_MY">Perihal as psychedelic as screensavers get</summary>
     <summary lang="nb_NO">Så psykadelisk som en skjermsparer kan bli</summary>
     <summary lang="nl_NL">Een meer psychedelische schermbeveiliging vindt u niet</summary>
@@ -100,6 +101,7 @@
     <description lang="lt_LT">Tai stogą nunešanti psichodelinė užsklanda. Mogumbo galvojo, kad jo Plasma užsklandos niekas neperšoks, tačiau ši užsklanda tai kažkas tokio. Geriau susiraskite vieną iš tų lėktuvo maišelių, jei supykintų, prieš spoksant į tai per ilgai..</description>
     <description lang="lv_LV">Ekrānsaudzētājs nevarētu būt vēl vairāk psihodēlisks. mogumbo domāja, ka viņa "Plasma saver" bija saraksta augšgalā, bet šis ir vēl šķebinošāks. Labāk apsēdies un sameklē kādu maisņu nelabai dūšai pirms skaties šo pārāk ilgi.</description>
     <description lang="mk_MK">This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
+    <description lang="mn_MN">Дэлгэц хадгалагчийн хамгийн галзуу гэсэн хувилбар бол энэ. mogumbo ийн хийсэн Plasma дэлгэц хадгалагч хамгийн оргил дээд нь гэж бодож байсан боловч энэ бол бүр ч их толгой эргүүлмээр болсон. Энэ дэлгэцрүү удаан ширтэхээсээ өмнө онгоцонд өгдөг бөөлждөг уутыг урдаа бэлдсэн нь дээр байх.</description>
     <description lang="ms_MY">Ia mengenai as psychedelic as screensavers get. mogumbo berpendapat penyelamat Plasmanya adlaah yang terbaik, tetapi yang ini adalah lebih meloyakan. Oleh itu anda perlu cari beg muntah sebelum anda melihatnya dengan lebih lama.</description>
     <description lang="nb_NO">Dette er så psykadelisk som en skjermsparer kan bli. Mogumbo trodde hans Plasma skjermsparer var på toppen av skalaen, men denne er enda mer kvalmende. Du bør skaffe deg en sånn spypose som de deler ut på fly før du stirrer på denne for lenge.</description>
     <description lang="nl_NL">Ongetwijfeld de meest psychedelische screensaver. mogumbo dacht dat zijn Plasmascreensaver al bovenaan deze lijst stond, maar deze is nóg meer misselijkmakend. Houd uw braakzakje bij de hand, mocht u hier te lang naar staren.</description>
