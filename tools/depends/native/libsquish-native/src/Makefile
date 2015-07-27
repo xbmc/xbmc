@@ -1,6 +1,10 @@
 
 include config
 
+AR_FOR_BUILD ?= ar
+CXX_FOR_BUILD ?= cxx
+RANLIB_FOR_BUILD ?= ranlib
+
 SRC = alpha.cpp clusterfit.cpp colourblock.cpp colourfit.cpp colourset.cpp maths.cpp rangefit.cpp singlecolourfit.cpp squish.cpp
 
 OBJ = $(SRC:%.cpp=%.o)
@@ -19,11 +23,11 @@ uninstall:
 	$(RM) $(INSTALL_DIR)/lib/libsquish.a
 
 $(LIB) : $(OBJ)
-	$(AR) cr $@ $?
-	ranlib $@
+	$(AR_FOR_BUILD) cr $@ $?
+	$(RANLIB_FOR_BUILD) $@
 
 %.o : %.cpp
-	$(CXX) $(CPPFLAGS) -I. $(CXXFLAGS) -o$@ -c $<
+	$(CXX_FOR_BUILD) $(CPPFLAGS) -I. $(CXXFLAGS) -o$@ -c $<
 
 clean :
 	$(RM) $(OBJ) $(LIB)
