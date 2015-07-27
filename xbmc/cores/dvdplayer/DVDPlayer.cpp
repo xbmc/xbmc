@@ -138,6 +138,7 @@ private:
   std::string audiolang;
   bool original;
   bool nosub;
+  bool onlyforced;
 public:
   /** \brief The class' operator() decides if the given (subtitle) SelectionStream is relevant wrt.
   *          preferred subtitle language and audio language. If the subtitle is relevant <B>false</B> false is returned.
@@ -153,7 +154,8 @@ public:
   PredicateSubtitleFilter(std::string& lang)
     : audiolang(lang),
       original(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "original")),
-      nosub(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "none"))
+      nosub(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "none")),
+      onlyforced(StringUtils::EqualsNoCase(CSettings::Get().GetString("locale.subtitlelanguage"), "foced_only"))
   {
   };
 
@@ -165,6 +167,14 @@ public:
     if (nosub)
       return true;
 
+    if (onlyforced)
+    {
+      if ((ss.flags & CDemuxStream::FLAG_FORCED) && g_LangCodeExpander.CompareISO639Codes(ss.language, audiolang))
+        return false;
+      else
+        return true;
+    }
+      
     if(STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_DEMUX_SUB || STREAM_SOURCE_MASK(ss.source) == STREAM_SOURCE_TEXT)
       return false;
 
