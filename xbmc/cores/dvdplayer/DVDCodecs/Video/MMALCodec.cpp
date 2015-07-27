@@ -109,6 +109,7 @@ CMMALVideo::CMMALVideo()
   m_interlace_mode = MMAL_InterlaceProgressive;
   m_interlace_method = VS_INTERLACEMETHOD_NONE;
   m_decoderPts = DVD_NOPTS_VALUE;
+  m_demuxerPts = DVD_NOPTS_VALUE;
 
   m_dec = NULL;
   m_dec_input = NULL;
@@ -847,7 +848,11 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
       break;
   }
   int ret = 0;
-  double queued = m_decoderPts != DVD_NOPTS_VALUE && pts != DVD_NOPTS_VALUE ? pts - m_decoderPts : 0.0;
+  if (pts != DVD_NOPTS_VALUE)
+    m_demuxerPts = pts;
+  else if (dts != DVD_NOPTS_VALUE)
+    m_demuxerPts = dts;
+  double queued = m_decoderPts != DVD_NOPTS_VALUE && m_demuxerPts != DVD_NOPTS_VALUE ? m_demuxerPts - m_decoderPts : 0.0;
   if (mmal_queue_length(m_dec_input_pool->queue) > 0 && !m_demux_queue_length && queued <= DVD_MSEC_TO_TIME(500))
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -941,6 +946,7 @@ void CMMALVideo::Reset(void)
     Prime();
   }
   m_decoderPts = DVD_NOPTS_VALUE;
+  m_demuxerPts = DVD_NOPTS_VALUE;
   m_preroll = !m_hints.stills && (m_speed == DVD_PLAYSPEED_NORMAL || m_speed == DVD_PLAYSPEED_PAUSE);
 }
 
@@ -1033,7 +1039,7 @@ bool CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (pDvdVideoPicture->pts != DVD_NOPTS_VALUE)
     m_decoderPts = pDvdVideoPicture->pts;
   else
-    m_decoderPts = pDvdVideoPicture->dts; // xxx is DVD_NOPTS_VALUE better?
+    m_decoderPts = pDvdVideoPicture->dts;
 
   return true;
 }

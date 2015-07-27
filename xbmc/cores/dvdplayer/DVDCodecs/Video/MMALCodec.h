@@ -126,6 +126,7 @@ protected:
   // Components
   MMAL_INTERLACETYPE_T m_interlace_mode;
   EINTERLACEMETHOD  m_interlace_method;
+  double            m_demuxerPts;
   double            m_decoderPts;
   int               m_speed;
   bool              m_preroll;
