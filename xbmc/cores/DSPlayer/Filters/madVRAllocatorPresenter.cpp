@@ -130,6 +130,9 @@ void CmadVRAllocatorPresenter::SetResolution()
     CDSPlayer::SetDsWndVisible(true);
     g_graphicsContext.SetVideoResolution(bestRes);
   }
+  else
+    g_renderManager.UpdateDisplayLatencyForMadvr(fps);
+
   CMadvrCallback::Get()->SetInitMadvr(false);
 }
 

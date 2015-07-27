@@ -206,6 +206,9 @@ public:
   CRenderInfo GetRenderInfo();
 
   void Recover(); // called after resolution switch if something special is needed
+#ifdef HAS_DS_PLAYER
+  void UpdateDisplayLatencyForMadvr(float fps);
+#endif
 
   CSharedSection& GetSection() { return m_sharedSection; };
 
