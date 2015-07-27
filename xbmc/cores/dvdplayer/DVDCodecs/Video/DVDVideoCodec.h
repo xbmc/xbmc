@@ -244,22 +244,6 @@ public:
    */
   virtual void SetSpeed(int iSpeed) {};
 
-  /*
-   * returns the number of demuxer bytes in any internal buffers
-   */
-  virtual int GetDataSize(void)
-  {
-    return 0;
-  }
-
-  /*
-   * returns the time in seconds for demuxer bytes in any internal buffers
-   */
-  virtual double GetTimeSize(void)
-  {
-    return 0;
-  }
-
   enum EFilterFlags {
     FILTER_NONE                =  0x0,
     FILTER_DEINTERLACE_YADIF   =  0x1,  /* use first deinterlace mode */
