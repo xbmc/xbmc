@@ -302,6 +302,40 @@ int aml_axis_value(AML_DISPLAY_AXIS_PARAM param)
   return value[param];
 }
 
+SAmlWindowAxis amlGetWindowAxis()
+{
+  SAmlWindowAxis mWindowAxis;
+  std::string sWindowAxis;
+  if (!SysfsUtils::Has("/sys/class/graphics/fb0/window_axis"))
+  {
+    CLog::Log(LOGDEBUG, "amlGetWindowAxis: Cannot access /sys/class/graphics/fb0/window_axis");
+    mWindowAxis.bError = true;
+  }
+  else
+  {
+    SysfsUtils::GetString("/sys/class/graphics/fb0/window_axis", sWindowAxis);
+
+    int iStartValues = sWindowAxis.find('[') + 1;
+    int iEndValues = sWindowAxis.find(']');
+    sWindowAxis = sWindowAxis.substr(iStartValues, iEndValues - iStartValues);
+
+    sscanf(sWindowAxis.c_str(), "%d %d %d %d", &mWindowAxis.iX, &mWindowAxis.iY, &mWindowAxis.iWidth, &mWindowAxis.iHeight);
+    if ((mWindowAxis.iWidth > 0) && (mWindowAxis.iHeight > 0))
+    {
+      mWindowAxis.bError = false;
+      CLog::Log(LOGDEBUG, "amlGetWindowAxis: window_axis parsed OK; X: %d; Y: %d; Width: %d; Height: %d",
+                 mWindowAxis.iX, mWindowAxis.iY, mWindowAxis.iWidth, mWindowAxis.iHeight);
+    }
+    else
+    {
+      mWindowAxis.bError = true;
+      CLog::Log(LOGERROR, "amlGetWindowAxis: Error while parsing window_axis");
+    }
+  }
+
+  return mWindowAxis;
+}
+
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
 {
   if (!res)
