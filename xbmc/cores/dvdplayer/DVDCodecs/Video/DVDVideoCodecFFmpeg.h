@@ -82,7 +82,6 @@ protected:
   int  FilterOpen(const std::string& filters, bool scale);
   void FilterClose();
   int  FilterProcess(AVFrame* frame);
-  void DisposeHWDecoders();
 
   void UpdateName()
   {
@@ -117,7 +116,6 @@ protected:
   std::string m_name;
   int m_decoderState;
   IHardwareDecoder *m_pHardware;
-  std::vector<IHardwareDecoder*> m_disposeDecoders;
   int m_iLastKeyframe;
   double m_dts;
   bool   m_started;
