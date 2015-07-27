@@ -289,5 +289,8 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
+  bool m_HasVideo;
+  bool m_HasAudio;
+
 };
 

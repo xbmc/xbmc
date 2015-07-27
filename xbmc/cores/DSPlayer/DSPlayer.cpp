@@ -79,6 +79,8 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
   m_pGraphThread(this),
   m_bEof(false)
 {
+  m_HasVideo = false;
+  m_HasAudio = false;
   m_isMadvr = (CSettings::Get().GetString("dsplayer.videorenderer") == "madVR");
   if (m_isMadvr)
   { 
@@ -338,6 +340,9 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
         }
       }
 
+      m_HasVideo = true;
+      m_HasAudio = true;
+
       // Madvr Settings
       if (CMadvrCallback::Get()->UsingMadvr())
         SetMadvrResolution();
@@ -406,6 +411,8 @@ bool CDSPlayer::CloseFile(bool reopen)
     return true;
 
   PlayerState = DSPLAYER_CLOSING;
+  m_HasVideo = false;
+  m_HasAudio = false;
 
   // set the abort request so that other threads can finish up
   m_bEof = g_dsGraph->IsEof();
@@ -487,11 +494,11 @@ bool CDSPlayer::IsPlaying() const
 
 bool CDSPlayer::HasVideo() const
 {
-  return true;
+  return m_HasVideo;
 }
 bool CDSPlayer::HasAudio() const
 {
-  return true;
+  return m_HasAudio;
 }
 
 void CDSPlayer::GetAudioInfo(std::string& strAudioInfo)
