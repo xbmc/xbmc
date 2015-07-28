@@ -2597,11 +2597,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   }
   break;
 
-  case TMSG_SPLASH_MESSAGE:
-    if (GetSplash())
-      GetSplash()->Show(pMsg->strParam);
-    break;
-
   case TMSG_DISPLAY_SETUP:
     *static_cast<bool*>(pMsg->lpVoid) = InitWindow();
     SetRenderGUI(true);
