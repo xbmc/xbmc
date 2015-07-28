@@ -171,6 +171,7 @@ private:
   bool m_firstBoot;
   bool m_isEnteringExclusive;
   int m_shaderStage;
+  bool m_updateDisplayLatencyForMadvr;
   CMadvrSharedRender *m_pMadvrShared;
 };
 
