@@ -37,7 +37,7 @@
 class CGUIToggleButtonControl : public CGUIButtonControl
 {
 public:
-  CGUIToggleButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo);
+  CGUIToggleButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo, bool wrapMultiline = false);
   virtual ~CGUIToggleButtonControl(void);
   virtual CGUIToggleButtonControl *Clone() const { return new CGUIToggleButtonControl(*this); };
 
