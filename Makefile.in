@@ -56,7 +56,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/interfaces/python/python_binding.a \
                    xbmc/linux/linux.a \
                    xbmc/listproviders/listproviders.a \
-                   xbmc/main/main.a \
+                   xbmc/main/posix/MessagePrinter.a \
                    xbmc/media/media.a \
                    xbmc/messaging/messaging.a \
                    xbmc/music/dialogs/musicdialogs.a \
