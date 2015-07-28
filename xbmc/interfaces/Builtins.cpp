@@ -1593,7 +1593,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (params.size() > 1)
       singleFile = StringUtils::EqualsNoCase(params[1], "true");
     else
-      singleFile = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20426}, cancelled, CVariant{20428}, CVariant{20429});
+      singleFile = !CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20426}, cancelled, CVariant{20428}, CVariant{20429});
 
     if (cancelled)
         return -1;
