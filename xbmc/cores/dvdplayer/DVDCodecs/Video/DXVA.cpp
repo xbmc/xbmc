@@ -818,7 +818,15 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFo
     return false;
   }
 
-  m_format.SampleWidth  = avctx->coded_width;
+  CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
+  if (m_input == DXVADDI_Intel_ModeH264_E && avctx->refs > 11)
+  {
+    const dxva2_mode_t *mode = dxva2_find_mode(&m_input);
+    CLog::Log(LOGWARNING, "DXVA - too many references %d for selected decoder '%s'.", avctx->refs, mode->name);
+    return false;
+  }
+
+  m_format.SampleWidth = avctx->coded_width;
   m_format.SampleHeight = avctx->coded_height;
   m_format.SampleFormat.SampleFormat  = DXVA2_SampleProgressiveFrame;
   m_format.SampleFormat.VideoLighting = DXVA2_VideoLighting_dim;
@@ -929,8 +937,6 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFo
     else
       m_refs = 2;
   }
-  CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
-
   DXVA2_ConfigPictureDecode config = {};
   if (!m_dxva_context->GetConfig(m_input, &m_format, config))
     return false;
