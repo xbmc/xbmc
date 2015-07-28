@@ -74,7 +74,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldMusicLabel) return "albumview.strLabel";
     else if (field == FieldAlbumType) return "albumview.strType";
     else if (field == FieldRating) return "albumview.iRating";
-    else if (field == FieldDateAdded && queryPart == DatabaseQueryPartOrderBy) return "albumview.idalbum";    // only used for order clauses
+    else if (field == FieldDateAdded) return "albumview.dateAdded";
     else if (field == FieldPlaycount) return "albumview.iTimesPlayed";
   }
   else if (mediaType == MediaTypeSong)
@@ -111,6 +111,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldBandFormed) return "artistview.strFormed";
     else if (field == FieldDisbanded) return "artistview.strDisbanded";
     else if (field == FieldDied) return "artistview.strDied";
+    else if (field == FieldDateAdded) return "artistview.dateAdded";
   }
   else if (mediaType == MediaTypeMusicVideo)
   {
@@ -488,6 +489,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldAlbumType) return CMusicDatabase::album_strType;
     else if (field == FieldRating) return CMusicDatabase::album_iRating;
     else if (field == FieldPlaycount) return CMusicDatabase::album_iTimesPlayed;
+    else if (field == FieldDateAdded) return CMusicDatabase::album_dtDateAdded;
   }
   else if (mediaType == MediaTypeSong)
   {
@@ -522,6 +524,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldBandFormed) return CMusicDatabase::artist_strFormed;
     else if (field == FieldDisbanded) return CMusicDatabase::artist_strDisbanded;
     else if (field == FieldDied) return CMusicDatabase::artist_strDied;
+    else if (field == FieldDateAdded) return CMusicDatabase::artist_dtDateAdded;
   }
   else if (mediaType == MediaTypeMusicVideo)
   {

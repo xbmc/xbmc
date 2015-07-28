@@ -127,8 +127,7 @@ void CMusicDatabase::CreateTables()
               " strStyles text, strInstruments text, strBiography text, "
               " strDied text, strDisbanded text, strYearsActive text, "
               " strImage text, strFanart text, "
-              " lastScraped varchar(20) default NULL, "
-              " dateAdded varchar (20) default NULL)");
+              " lastScraped varchar(20) default NULL)");
   CLog::Log(LOGINFO, "create album table");
   m_pDS->exec("CREATE TABLE album (idAlbum integer primary key, "
               " strAlbum varchar(256), strMusicBrainzAlbumID text, "
@@ -140,7 +139,6 @@ void CMusicDatabase::CreateTables()
               " strType text, "
               " iRating integer, "
               " lastScraped varchar(20) default NULL, "
-              " dateAdded varchar (20) default NULL, "
               " strReleaseType text)");
   CLog::Log(LOGINFO, "create album_artist table");
   m_pDS->exec("CREATE TABLE album_artist (idArtist integer, idAlbum integer, strJoinPhrase text, boolFeatured integer, iOrder integer, strArtist text)");
@@ -309,7 +307,8 @@ void CMusicDatabase::CreateViews()
               "        iRating, "
               "        bCompilation, "
               "        (SELECT MIN(song.iTimesPlayed) FROM song WHERE song.idAlbum = album.idAlbum) AS iTimesPlayed, "
-              "        strReleaseType "
+              "        strReleaseType, "
+              "        (SELECT MAX(song.dateAdded) FROM song WHERE song.idAlbum = album.idAlbum) AS dateAdded "
               "FROM album"
               );
 
@@ -320,7 +319,9 @@ void CMusicDatabase::CreateViews()
               "  strBorn, strFormed, strGenres,"
               "  strMoods, strStyles, strInstruments, "
               "  strBiography, strDied, strDisbanded, "
-              "  strYearsActive, strImage, strFanart "
+              "  strYearsActive, strImage, strFanart, "
+              "  (SELECT MAX(song.dateAdded) FROM song_artist INNER JOIN song ON song.idSong = song_artist.idSong "
+              "  WHERE song_artist.idArtist = artist.idArtist) AS dateAdded "
               "FROM artist");
 
   CLog::Log(LOGINFO, "create albumartist view");
@@ -1777,6 +1778,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.bCompilation = record->at(offset + album_bCompilation).get_asInt() == 1;
   album.iTimesPlayed = record->at(offset + album_iTimesPlayed).get_asInt();
   album.SetReleaseType(record->at(offset + album_strReleaseType).get_asString());
+  album.SetDateAdded(record->at(offset + album_dtDateAdded).get_asString());
   return album;
 }
 
@@ -1812,6 +1814,7 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
   artist.strDisbanded = record->at(offset + artist_strDisbanded).get_asString();
   artist.yearsActive = StringUtils::Split(record->at(offset + artist_strYearsActive).get_asString(), g_advancedSettings.m_musicItemSeparator);
   artist.instruments = StringUtils::Split(record->at(offset + artist_strInstruments).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  artist.SetDateAdded(record->at(offset + artist_dtDateAdded).get_asString());
 
   if (needThumb)
   {
@@ -3862,11 +3865,74 @@ void CMusicDatabase::UpdateTables(int version)
     CMediaSettings::Get().SetMusicNeedsUpdate(53);
     CSettings::Get().Save();
   }
+  if (version < 54)
+  {
+      //Remove dateAdded from artist table
+      m_pDS->exec("CREATE TABLE artist_new ( idArtist integer primary key, "
+              " strArtist varchar(256), strMusicBrainzArtistID text, "
+              " strBorn text, strFormed text, strGenres text, strMoods text, "
+              " strStyles text, strInstruments text, strBiography text, "
+              " strDied text, strDisbanded text, strYearsActive text, "
+              " strImage text, strFanart text, "
+              " lastScraped varchar(20) default NULL)");
+      m_pDS->exec("INSERT INTO artist_new "
+          "(idArtist, strArtist, strMusicBrainzArtistID, "
+          " strBorn, strFormed, strGenres, strMoods, "
+          " strStyles , strInstruments , strBiography , "
+          " strDied, strDisbanded, strYearsActive, "
+          " strImage, strFanart, lastScraped) "
+          " SELECT "
+          " idArtist, "
+          " strArtist, strMusicBrainzArtistID, "
+          " strBorn, strFormed, strGenres, strMoods, "
+          " strStyles, strInstruments, strBiography, "
+          " strDied, strDisbanded, strYearsActive, "
+          " strImage, strFanart, lastScraped "
+          " FROM artist");
+      m_pDS->exec("DROP TABLE artist");
+      m_pDS->exec("ALTER TABLE artist_new RENAME TO artist");
+
+      //Remove dateAdded from album table
+      m_pDS->exec("CREATE TABLE album_new (idAlbum integer primary key, "
+              " strAlbum varchar(256), strMusicBrainzAlbumID text, "
+              " strArtists text, strGenres text, "
+              " iYear integer, idThumb integer, "
+              " bCompilation integer not null default '0', "
+              " strMoods text, strStyles text, strThemes text, "
+              " strReview text, strImage text, strLabel text, "
+              " strType text, "
+              " iRating integer, "
+              " lastScraped varchar(20) default NULL, "
+              " strReleaseType text)");
+      m_pDS->exec("INSERT INTO album_new "
+          "(idAlbum, "
+          " strAlbum, strMusicBrainzAlbumID, "
+          " strArtists, strGenres, "
+          " iYear, idThumb, "
+          " bCompilation, "
+          " strMoods, strStyles, strThemes, "
+          " strReview, strImage, strLabel, "
+          " strType, iRating, lastScraped, "
+          " strReleaseType) "
+          " SELECT "
+          " album.idAlbum, "
+          " strAlbum, strMusicBrainzAlbumID, "
+          " strArtists, strGenres, "
+          " iYear, idThumb, "
+          " bCompilation, "
+          " strMoods, strStyles, strThemes, "
+          " strReview, strImage, strLabel, "
+          " strType, iRating, lastScraped, "
+          " strReleaseType"
+          " FROM album");
+      m_pDS->exec("DROP TABLE album");
+      m_pDS->exec("ALTER TABLE album_new RENAME TO album");
+   }
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 53;
+  return 54;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
