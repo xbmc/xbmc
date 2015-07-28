@@ -82,7 +82,7 @@ HRESULT CMadvrSharedRender::CreateTextures(IDirect3DDevice9Ex* pD3DDeviceKodi, I
 
 HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer, int width, int height)
 {
-  HRESULT hr = CALLBACK_EMPTY;
+  HRESULT hr = CALLBACK_INFO_DISPLAY;
 
   if (!CMadvrCallback::Get()->GetRenderOnMadvr())
     return hr;
@@ -141,7 +141,7 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer, int width, int
     return hr;
 
   // return an hresult for madVR renderOSD latency mode
-  return CMadvrCallback::Get()->IsGuiActive() ? CALLBACK_USER_INTERFACE : CALLBACK_EMPTY;
+  return CMadvrCallback::Get()->IsGuiActive() ? CALLBACK_USER_INTERFACE : CALLBACK_INFO_DISPLAY;
 }
 
 HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
