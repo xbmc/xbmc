@@ -6983,7 +6983,6 @@ msgctxt "#14060"
 msgid "Unknown type cache - Internet"
 msgstr ""
 
-#. Name of a class/preset for audio DSP
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#14061"
 msgid "Auto"
@@ -7501,7 +7500,7 @@ msgstr ""
 #. DSP manager yes/no dialog text
 #: xbmc/settings/dialogs/GUIDialogAudioDSPManager.cpp
 msgctxt "#15079"
-msgid "You have changed some audio DSP settings.\nWould you like to keep the new settings?"
+msgid "You have changed some audio DSP settings. Would you like to keep the new settings?"
 msgstr ""
 
 #. DSP manager dialog context menu entry
@@ -13333,6 +13332,7 @@ msgctxt "#24070"
 msgid "Add-on couldn't be loaded."
 msgstr ""
 
+#: xbmc/addons/AddonStatusHandler.cpp
 msgctxt "#24071"
 msgid "An unknown error has occurred."
 msgstr ""
@@ -13689,7 +13689,17 @@ msgctxt "#24138"
 msgid "DSP add-on is currently in use and can't be removed."
 msgstr ""
 
-#empty strings from id 24139 to 24991
+#: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
+msgctxt "#24139"
+msgid "An unknown error has occurred. Check the log for more information about this message."
+msgstr ""
+
+#:  system/settings/settings.xml
+msgctxt "#24140"
+msgid "Reset AudioDSP settings"
+msgstr ""
+
+#empty strings from id 24141 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -16684,16 +16694,16 @@ msgctxt "#36438"
 msgid "Enables digital signal processing (DSP) of audio channels specified by the speaker configuration."
 msgstr ""
 
-#. Description of setting "System -> Audio output -> Reset the Audio DSP database..." with label 311
+#. Description of setting "System -> Audio output -> Reset the Audio DSP database..." with label 24140
 #: system/settings/settings.xml
 msgctxt "#36439"
-msgid "All data (add-on settings and audio DSP manager settings) in the audio DSP database is being erased."
+msgid "All data (add-on settings and audio DSP manager settings) in the audio DSP database will be erased."
 msgstr ""
 
 #. Used in confirm on dialog to erase database
 #: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
 msgctxt "#36440"
-msgid "Erasing all DSP add-on and audio DSP manager settings in the audio DSP database."
+msgid "Erasing all DSP add-on and audio DSP manager settings from the audio DSP database. Are you sure?"
 msgstr ""
 
 #. Settings boolean value name
