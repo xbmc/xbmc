@@ -54,6 +54,11 @@ void CGUIWindowPVRGuide::OnInitWindow()
   if (m_guiState.get())
     m_viewControl.SetCurrentView(m_guiState->GetViewAsControl(), false);
 
+  CGUIEPGGridContainer *epgGridContainer =
+    dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+  if (epgGridContainer)
+    epgGridContainer->GoToNow();
+
   CGUIWindowPVRBase::OnInitWindow();
 }
 
