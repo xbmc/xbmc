@@ -904,6 +904,13 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFo
   }
 
   CLog::Log(LOGDEBUG, "DXVA - Selected input/output format: %d", m_format.OutputFormat);
+  CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
+  if (m_format.Guid == DXVADDI_Intel_ModeH264_E && avctx->refs > 11)
+  {
+    const dxva2_mode_t *mode = dxva2_find_mode(&m_format.Guid);
+    CLog::Log(LOGWARNING, "DXVA - too many references %d for selected decoder '%s'.", avctx->refs, mode->name);
+    return false;
+  }
 
   m_format.SampleWidth = avctx->coded_width;
   m_format.SampleHeight = avctx->coded_height;
@@ -924,8 +931,6 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFo
     else
       m_refs = 2;
   }
-  CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
-
   /* decoding MPEG-2 requires additional alignment on some Intel GPUs,
      but it causes issues for H.264 on certain AMD GPUs..... */
   if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO)
