@@ -131,6 +131,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldPlaycount) return "musicvideo_view.playCount";
     else if (field == FieldLastPlayed) return "musicvideo_view.lastPlayed";
     else if (field == FieldDateAdded) return "musicvideo_view.dateAdded";
+    else if (field == FieldUserRating) return "musicvideo_view.userrating";
 
     if (!result.empty())
       return result;
@@ -175,6 +176,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldPlaycount) return "movie_view.playCount";
     else if (field == FieldLastPlayed) return "movie_view.lastPlayed";
     else if (field == FieldDateAdded) return "movie_view.dateAdded";
+    else if (field == FieldUserRating) return "movie_view.userrating";
 
     if (!result.empty())
       return result;
@@ -206,6 +208,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldSeason) return "tvshow_view.totalSeasons";
     else if (field == FieldNumberOfEpisodes) return "tvshow_view.totalCount";
     else if (field == FieldNumberOfWatchedEpisodes) return "tvshow_view.watchedcount";
+    else if (field == FieldUserRating) return "tvshow_view.userrating";
 
     if (!result.empty())
       return result;
@@ -236,6 +239,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldYear) return "episode_view.premiered";
     else if (field == FieldMPAA) return "episode_view.mpaa";
     else if (field == FieldStudio) return "episode_view.strStudio";
+    else if (field == FieldUserRating) return "episode_view.userrating";
 
     if (!result.empty())
       return result;
@@ -541,6 +545,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldPlaycount) return VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT;
     else if (field == FieldLastPlayed) return VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED;
     else if (field == FieldDateAdded) return VIDEODB_DETAILS_MUSICVIDEO_DATEADDED;
+    else if (field == FieldUserRating) return VIDEODB_DETAILS_MUSICVIDEO_USER_RATING;
 
     if (index < 0)
       return index;
@@ -578,6 +583,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldPlaycount) return VIDEODB_DETAILS_MOVIE_PLAYCOUNT;
     else if (field == FieldLastPlayed) return VIDEODB_DETAILS_MOVIE_LASTPLAYED;
     else if (field == FieldDateAdded) return VIDEODB_DETAILS_MOVIE_DATEADDED;
+    else if (field == FieldUserRating) return VIDEODB_DETAILS_MOVIE_USER_RATING;
 
     if (index < 0)
       return index;
@@ -608,6 +614,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldNumberOfEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_EPISODES;
     else if (field == FieldNumberOfWatchedEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_WATCHED;
     else if (field == FieldSeason) return VIDEODB_DETAILS_TVSHOW_NUM_SEASONS;
+    else if (field == FieldUserRating) return VIDEODB_DETAILS_TVSHOW_USER_RATING;
 
     if (index < 0)
       return index;
@@ -644,6 +651,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldStudio) return VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO;
     else if (field == FieldYear) return VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED;
     else if (field == FieldMPAA) return VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA;
+    else if (field == FieldUserRating) return VIDEODB_DETAILS_EPISODE_USER_RATING;
 
     if (index < 0)
       return index;
