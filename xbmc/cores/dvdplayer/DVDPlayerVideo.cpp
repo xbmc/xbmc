@@ -1148,6 +1148,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       }
       return result | EOS_DROPPED;
     }
+    else if (pts_org < (renderPts - DVD_MSEC_TO_TIME(-1500 * m_speed)))
+    {
+      return result | EOS_DROPPED;
+    }
 
     if (iSleepTime > DVD_MSEC_TO_TIME(20))
       iSleepTime = DVD_MSEC_TO_TIME(20);
@@ -1207,7 +1211,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   int maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50);
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
-    maxWaitTime = 0;
+    maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime), 0);
   int buffer = g_renderManager.WaitForBuffer(m_bStop, maxWaitTime);
   if (buffer < 0)
   {

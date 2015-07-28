@@ -1219,8 +1219,10 @@ void CXBMCRenderManager::DiscardBuffer()
   while(!m_queued.empty())
     requeue(m_discard, m_queued);
 
+  m_Queue[m_presentsource].timestamp = GetPresentTime();
+
   if(m_presentstep == PRESENT_READY)
-    m_presentstep   = PRESENT_IDLE;
+    m_presentstep = PRESENT_IDLE;
   m_presentevent.notifyAll();
 }
 

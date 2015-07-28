@@ -1827,7 +1827,7 @@ void CDVDPlayer::HandlePlaySpeed()
         check = false;
       // skip if frame on screen has not changed
       else if (m_SpeedState.lastpts == m_dvdPlayerVideo->GetCurrentPts() &&
-          fabs(m_SpeedState.lastabstime - CDVDClock::GetAbsoluteClock()) < DVD_MSEC_TO_TIME(1000))
+               (m_SpeedState.lastpts > m_State.dts || m_playSpeed > 0))
         check = false;
 
       if (check)
