@@ -96,7 +96,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldPath) return "songview.strPath";
     else if (field == FieldArtist || field == FieldAlbumArtist) return "songview.strArtists";
     else if (field == FieldGenre) return "songview.strGenre";
-    else if (field == FieldDateAdded && queryPart == DatabaseQueryPartOrderBy) return "songview.dateAdded";
+    else if (field == FieldDateAdded) return "songview.dateAdded";
   }
   else if (mediaType == MediaTypeArtist)
   {

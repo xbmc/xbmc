@@ -286,12 +286,7 @@ TEST(TestDatabaseUtils, GetField_MediaTypeSong)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "songview.idSong";
-  varstr = DatabaseUtils::GetField(FieldDateAdded, MediaTypeSong,
-                                   DatabaseQueryPartOrderBy);
-  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-
-  refstr = "";
+  refstr = "songview.dateAdded";
   varstr = DatabaseUtils::GetField(FieldDateAdded, MediaTypeSong,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
