@@ -172,7 +172,6 @@ protected:
 
   CDXVADecoderWrapper*         m_decoder;
   HANDLE                       m_device;
-  GUID                         m_input;
   D3D11_VIDEO_DECODER_DESC     m_format;
   int                          m_refs;
   CRenderPicture              *m_presentPicture;

@@ -957,7 +957,7 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFo
 
   m_avctx = mainctx;
   DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
-  if (AIdentifier.VendorId == PCIV_Intel && m_input == DXVADDI_Intel_ModeH264_E)
+  if (AIdentifier.VendorId == PCIV_Intel && m_format.Guid == DXVADDI_Intel_ModeH264_E)
   {
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     m_context->workaround |= FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO;
