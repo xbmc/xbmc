@@ -190,15 +190,15 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop)
   // process render loop
   if (bProcessRenderLoop)
   {
-  if (!m_windowLoaded)
-    Close(true);
+    if (!m_windowLoaded)
+      Close(true);
 
-  lock.Leave();
+    lock.Leave();
 
-  while (m_active && !g_application.m_bStop)
-  {
-    g_windowManager.ProcessRenderLoop();
-  }
+    while (m_active && !g_application.m_bStop)
+    {
+      g_windowManager.ProcessRenderLoop();
+    }
   }
 }
 
