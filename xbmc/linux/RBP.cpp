@@ -29,6 +29,7 @@
 
 #include <sys/ioctl.h>
 #include "rpi/rpi_user_vcsm.h"
+#include "utils/TimeUtils.h"
 
 #define MAJOR_NUM 100
 #define IOCTL_MBOX_PROPERTY _IOWR(MAJOR_NUM, 0, char *)
@@ -46,6 +47,8 @@ CRBP::CRBP()
   m_display = DISPMANX_NO_HANDLE;
   m_mb = mbox_open();
   vcsm_init();
+  m_vsync_count = 0;
+  m_vsync_time = 0;
 }
 
 CRBP::~CRBP()
@@ -57,7 +60,7 @@ CRBP::~CRBP()
 
 bool CRBP::Initialize()
 {
-  CSingleLock lock (m_critSection);
+  CSingleLock lock(m_critSection);
   if (m_initialized)
     return true;
 
@@ -114,24 +117,39 @@ void CRBP::LogFirmwareVerison()
   CLog::Log(LOGNOTICE, "Config:\n%s", response);
 }
 
+static void vsync_callback_static(DISPMANX_UPDATE_HANDLE_T u, void *arg)
+{
+  CRBP *rbp = reinterpret_cast<CRBP*>(arg);
+  rbp->VSyncCallback();
+}
+
 DISPMANX_DISPLAY_HANDLE_T CRBP::OpenDisplay(uint32_t device)
 {
+  CSingleLock lock(m_critSection);
   if (m_display == DISPMANX_NO_HANDLE)
+  {
     m_display = vc_dispmanx_display_open( 0 /*screen*/ );
+    int s = vc_dispmanx_vsync_callback(m_display, vsync_callback_static, (void *)this);
+    assert(s == 0);
+  }
   return m_display;
 }
 
 void CRBP::CloseDisplay(DISPMANX_DISPLAY_HANDLE_T display)
 {
+  CSingleLock lock(m_critSection);
   assert(display == m_display);
+  int s = vc_dispmanx_vsync_callback(m_display, NULL, NULL);
+  assert(s == 0);
   vc_dispmanx_display_close(m_display);
   m_display = DISPMANX_NO_HANDLE;
 }
 
 void CRBP::GetDisplaySize(int &width, int &height)
 {
+  CSingleLock lock(m_critSection);
   DISPMANX_MODEINFO_T info;
-  if (vc_dispmanx_display_get_info(m_display, &info) == 0)
+  if (m_display != DISPMANX_NO_HANDLE && vc_dispmanx_display_get_info(m_display, &info) == 0)
   {
     width = info.width;
     height = info.height;
@@ -160,13 +178,13 @@ unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool sw
     flags |= DISPMANX_SNAPSHOT_PACK;
 
   stride = ((width + 15) & ~15) * 4;
-  image = new unsigned char [height * stride];
 
-  if (image)
+  CSingleLock lock(m_critSection);
+  if (m_display != DISPMANX_NO_HANDLE)
   {
+    image = new unsigned char [height * stride];
     resource = vc_dispmanx_resource_create( VC_IMAGE_RGBA32, width, height, &vc_image_ptr );
 
-    assert(m_display != DISPMANX_NO_HANDLE);
     vc_dispmanx_snapshot(m_display, resource, (DISPMANX_TRANSFORM_T)flags);
 
     vc_dispmanx_rect_set(&rect, 0, 0, width, height);
@@ -178,34 +196,48 @@ unsigned char *CRBP::CaptureDisplay(int width, int height, int *pstride, bool sw
   return image;
 }
 
-
-static void vsync_callback(DISPMANX_UPDATE_HANDLE_T u, void *arg)
+void CRBP::VSyncCallback()
 {
-  CEvent *sync = (CEvent *)arg;
-  sync->Set();
+  CSingleLock lock(m_vsync_lock);
+  m_vsync_count++;
+  m_vsync_time = CurrentHostCounter();
+  m_vsync_cond.notifyAll();
 }
 
-void CRBP::WaitVsync()
+uint32_t CRBP::WaitVsync(uint32_t target)
 {
-  int s;
-  DISPMANX_DISPLAY_HANDLE_T m_display = vc_dispmanx_display_open( 0 /*screen*/ );
-  if (m_display == DISPMANX_NO_HANDLE)
+  CSingleLock vlock(m_vsync_lock);
+  DISPMANX_DISPLAY_HANDLE_T display = m_display;
+  XbmcThreads::EndTime delay(50);
+  if (target == ~0U)
+    target = m_vsync_count+1;
+  while (!delay.IsTimePast())
   {
-    CLog::Log(LOGDEBUG, "CRBP::%s skipping while display closed", __func__);
-    return;
+    CSingleLock lock(m_critSection);
+    if ((signed)(m_vsync_count - target) >= 0)
+      break;
+    lock.Leave();
+    if (!m_vsync_cond.wait(vlock, delay.MillisLeft()))
+      break;
   }
-  m_vsync.Reset();
-  s = vc_dispmanx_vsync_callback(m_display, vsync_callback, (void *)&m_vsync);
-  if (s == 0)
-  {
-    m_vsync.WaitMSec(1000);
-  }
-  else assert(0);
-  s = vc_dispmanx_vsync_callback(m_display, NULL, NULL);
-  assert(s == 0);
-  vc_dispmanx_display_close( m_display );
+  if (m_vsync_count < target)
+    CLog::Log(LOGDEBUG, "CRBP::%s no  vsync %d/%d display:%x(%x) delay:%d", __FUNCTION__, m_vsync_count, target, m_display, display, delay.MillisLeft());
+
+  return m_vsync_count;
 }
 
+uint32_t CRBP::LastVsync(int64_t &time)
+{
+  CSingleLock lock(m_vsync_lock);
+  time = m_vsync_time;
+  return m_vsync_count;
+}
+
+uint32_t CRBP::LastVsync()
+{
+  int64_t time = 0;
+  return LastVsync(time);
+}
 
 void CRBP::Deinitialize()
 {
