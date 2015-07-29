@@ -49,14 +49,14 @@ SET buildconfig=Release
 set WORKSPACE=%CD%\..\..
 
 
-  REM look for MSBuild.exe delivered with Visual Studio 2013
-  FOR /F "tokens=2,* delims= " %%A IN ('REG QUERY HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0 /v MSBuildToolsRoot') DO SET MSBUILDROOT=%%B
-  SET NET="%MSBUILDROOT%12.0\bin\MSBuild.exe"
+  REM look for MSBuild.exe delivered with Visual Studio 2015
+  FOR /F "tokens=2,* delims= " %%A IN ('REG QUERY HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0 /v MSBuildToolsRoot') DO SET MSBUILDROOT=%%B
+  SET NET="%MSBUILDROOT%14.0\bin\MSBuild.exe"
 
   IF EXIST "!NET!" (
     set msbuildemitsolution=1
-    set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Build /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120" /m
-    set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Clean /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V120"
+    set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Build /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V140" /m
+    set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Clean /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V140"
   )
 
   IF NOT EXIST %NET% (

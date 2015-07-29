@@ -27,7 +27,11 @@ using namespace TagLib;
 using namespace MUSIC_INFO;
 
 #if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
+#ifdef _DEBUG
+#pragma comment(lib, "tagd.lib")
+#else
 #pragma comment(lib, "tag.lib")
+#endif
 #endif
 
 /*!

@@ -1229,6 +1229,11 @@ extern "C"
       return fopen(filename, mode);
     }
 #endif
+    //let the os try to open it, if that fails we try to emulate
+    file = fopen(filename, mode);
+    if (file)
+      return file;
+
     int fd = dll_open(filename, convert_fmode(mode));
     if (fd >= 0)
     {

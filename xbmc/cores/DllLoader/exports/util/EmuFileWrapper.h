@@ -32,20 +32,27 @@
 #endif
 
 #define MAX_EMULATED_FILES    50
-#define FILE_WRAPPER_OFFSET   0x00000100
+#define FILE_WRAPPER_OFFSET   0x00000200
 
 namespace XFILE
 {
   class CFile;
 }
 
+#if defined(TARGET_WINDOWS)
+struct kodi_iobuf {
+  int   _file;
+};
+#endif
+
 typedef struct stEmuFileObject
 {
-  bool    used;
   FILE    file_emu;
   XFILE::CFile*  file_xbmc;
   CCriticalSection *file_lock;
   int mode;
+  //Stick this last to avoid 3-7 bytes of padding
+  bool    used;
 } EmuFileObject;
 
 class CEmuFileWrapper
@@ -53,20 +60,20 @@ class CEmuFileWrapper
 public:
   CEmuFileWrapper();
   ~CEmuFileWrapper();
-  
+
   /**
    * Only to be called when shutting down xbmc
    */
   void CleanUp();
-  
+
   EmuFileObject* RegisterFileObject(XFILE::CFile* pFile);
   void UnRegisterFileObjectByDescriptor(int fd);
   void UnRegisterFileObjectByStream(FILE* stream);
   void LockFileObjectByDescriptor(int fd);
   bool TryLockFileObjectByDescriptor(int fd);
   void UnlockFileObjectByDescriptor(int fd);
-  EmuFileObject* GetFileObjectByDescriptor(int fd);  
-  EmuFileObject* GetFileObjectByStream(FILE* stream);  
+  EmuFileObject* GetFileObjectByDescriptor(int fd);
+  EmuFileObject* GetFileObjectByStream(FILE* stream);
   XFILE::CFile* GetFileXbmcByDescriptor(int fd);
   XFILE::CFile* GetFileXbmcByStream(FILE* stream);
   static int GetDescriptorByStream(FILE* stream);

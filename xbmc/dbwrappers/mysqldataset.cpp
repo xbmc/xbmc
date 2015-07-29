@@ -33,7 +33,7 @@
 #include "mysqldataset.h"
 #include "mysql/errmsg.h"
 #if defined(TARGET_WINDOWS) && !defined(BUILDING_WITH_CMAKE)
-#pragma comment(lib, "mysqlclient.lib")
+#pragma comment(lib, "libmysql.lib")
 #endif
 
 #define MYSQL_OK          0

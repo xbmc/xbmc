@@ -7,8 +7,8 @@
 ; -> ...
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
 bzip2-1.0.5-win32.7z
-crossguid-8f399e8bd4-win32.7z
-curl-7.42.1-win32.7z
+crossguid-8f399e-win32-vc140.7z
+curl-7.46.0-win32-vc140.7z
 dnssd-541-win32.zip
 doxygen-1.8.2-win32.7z
 fontconfig-2.8.0-win32.7z
@@ -22,17 +22,15 @@ libcec-3.0.0-win32-2.7z
 libexpat_2.0.1-win32.7z
 libflac-1.2.1-win32.7z
 libfribidi-0.19.2-win32.7z
-libiconv-1.14-win32-vc120.7z
+libiconv-1.14-win32-vc140.7z
 libjpeg-turbo-1.2.0-win32.7z
 liblzo-2.04-win32.7z
-libmicrohttpd-svn-35533-win32-vc120.7z
+libmicrohttpd-0.9.48-win32-vc140.7z
 libnfs-1.10.0-win32.7z
 libogg-vc100-1.2.0-win32.7z
 libplist-1.7-win32-3.7z
 libpng-1.5.13-win32.7z
 librtmp-20150114-git-a107ce-win32.7z
-libsdl-1.2.10-win32.7z
-libsdl_image-1.2.14-win32.7z
 libshairplay-52fd9db-win32.7z
 libssh-0.5.0-1-win32.zip
 libvorbis-vc100-1.3.1-win32.7z
@@ -40,12 +38,14 @@ libxml2-2.7.8_1-win32.7z
 libxslt-1.1.26_1-win32.7z
 libyajl-2.0.1-win32.7z
 libzlib-vc100-1.2.5-win32.7z
-mysqlclient-6.1.3-win32-vc120.7z
-pcre-8.34-win32-vc120.7z
-PIL-1.1.7p-win32.7z
-python-2.7.10-win32.7z
+mysql-connector-c-6.1.6-win32-vc140.7z
+openssl-1.0.2e-win32-vc140.7z
+pcre-8.37-win32-vc140.7z
+pillow-3.1.0-win32-vc140.7z
+python-2.7.11-win32-vc140.7z
 sqlite-3.10.2-win32-vc140.7z
 swig-2.0.7-win32-1.7z
 taglib-1.10-win32-vc120.7z
 texturepacker-1.1.0-win32.7z
 tinyxml-2.6.2_3-win32-vc120.7z
+zlib-1.2.8-win32-vc140.7z

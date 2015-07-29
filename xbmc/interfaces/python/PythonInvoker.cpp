@@ -51,6 +51,7 @@
 #include "utils/URIUtils.h"
 
 #ifdef TARGET_WINDOWS
+#pragma comment(lib, "python27.lib")
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
 #define fopen_utf8 fopen
