@@ -341,7 +341,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         CApplicationMessenger::Get().Quit();
       break;
     case XBMC_VIDEORESIZE:
-      if (!g_application.m_bInitializing &&
+      if (g_windowManager.Initialized() &&
           !g_advancedSettings.m_fullScreen)
       {
         g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);

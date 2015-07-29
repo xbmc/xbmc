@@ -51,6 +51,8 @@ void CGUIWindowSplash::OnInitWindow()
 void CGUIWindowSplash::Render()
 {
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), true);
+  m_image->SetWidth(g_graphicsContext.GetWidth());
+  m_image->SetHeight(g_graphicsContext.GetHeight());
   m_image->AllocResources();
   m_image->Render();
   m_image->FreeResources();
