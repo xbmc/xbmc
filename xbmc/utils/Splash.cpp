@@ -61,12 +61,13 @@ void CSplash::Show(const std::string& message)
   g_graphicsContext.Lock();
   g_graphicsContext.Clear();
 
-  RESOLUTION_INFO res(1280,720,0);
+  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+
   g_graphicsContext.SetRenderingResolution(res, true);  
   if (!m_image)
   {
-    m_image = new CGUIImage(0, 0, 0, 0, 1280, 720, CTextureInfo(m_ImageName));
-    m_image->SetAspectRatio(CAspectRatio::AR_CENTER);
+    m_image = new CGUIImage(0, 0, 0, 0, res.iWidth, res.iHeight, CTextureInfo(m_ImageName));
+    m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
   }
 
   //render splash image
