@@ -725,6 +725,8 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
 
     m_wave_header.dwChannelMask = m_src_chan_layout;
   }
+  else
+    SetAudioProps(m_Passthrough, 0);
 
   m_SampleRate    = m_format.m_sampleRate;
   m_BitsPerSample = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
