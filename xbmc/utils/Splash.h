@@ -28,16 +28,18 @@ class CGUIImage;
 class CSplash
 {
 public:
-  CSplash(const std::string& imageName);
-  virtual ~CSplash();
+  static CSplash& Get();
 
   void Show();
   void Show(const std::string& message);
 
-private:
-  float m_fade;
-  std::string m_imageName;
+protected:
+  CSplash();
+  CSplash(const CSplash&);
+  CSplash& operator=(CSplash const&);
+  virtual ~CSplash();
 
+private:
   CGUITextLayout* m_messageLayout;
   CGUIImage* m_image;
   bool m_layoutWasLoading;

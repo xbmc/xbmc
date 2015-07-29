@@ -299,7 +299,6 @@ CApplication::CApplication(void)
   m_Autorun = new CAutorun();
 #endif
 
-  m_splash = NULL;
   m_threadID = 0;
   m_progressTrackingPlayCountUpdate = false;
   m_currentStackPosition = 0;
@@ -798,20 +797,7 @@ bool CApplication::CreateGUI()
     CDisplaySettings::Get().SetCurrentResolution(RES_DESKTOP, true);
 
   if (g_advancedSettings.m_splashImage)
-  {
-    std::string strUserSplash = "special://home/media/Splash.png";
-    if (CFile::Exists(strUserSplash))
-    {
-      CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
-      m_splash = new CSplash(strUserSplash);
-    }
-    else
-    {
-      CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png").c_str());
-      m_splash = new CSplash("special://xbmc/media/Splash.png");
-    }
-    m_splash->Show();
-  }
+    CSplash::Get().Show();
 
   // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
@@ -1162,10 +1148,7 @@ bool CApplication::Initialize()
     // because we need a real window in the background which gets
     // rendered while we load the main window or enter the master lock key
     if (g_advancedSettings.m_splashImage)
-    {
-      SAFE_DELETE(m_splash);
       g_windowManager.ActivateWindow(WINDOW_SPLASH);
-    }
 
     // Make sure we have at least the default skin
     string defaultSkin = ((const CSettingString*)CSettings::Get().GetSetting("lookandfeel.skin"))->GetDefault();
