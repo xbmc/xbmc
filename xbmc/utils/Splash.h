@@ -22,7 +22,6 @@
 
 #include <string>
 
-class CGUITextLayout;
 class CGUIImage;
 
 class CSplash
@@ -31,7 +30,6 @@ public:
   static CSplash& Get();
 
   void Show();
-  void Show(const std::string& message);
 
 protected:
   CSplash();
@@ -40,9 +38,7 @@ protected:
   virtual ~CSplash();
 
 private:
-  CGUITextLayout* m_messageLayout;
   CGUIImage* m_image;
-  bool m_layoutWasLoading;
 #ifdef HAS_DX
   D3DGAMMARAMP newRamp;
   D3DGAMMARAMP oldRamp;
