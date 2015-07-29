@@ -98,24 +98,6 @@ void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList 
   CGUIButtonControl::Process(currentTime, dirtyregions);
 }
 
-void CGUIRadioButtonControl::ProcessText(unsigned int currentTime)
-{
-  bool changed = false;
-
-  if (m_bInvalidated)
-  {
-    changed |= m_label.SetMaxRect(m_posX, m_posY, m_width - m_imgRadioOnFocus.GetWidth(), m_height);
-    changed |= m_label.SetText(m_info.GetLabel(GetParentID()));
-  }
-
-  changed |= m_label.SetScrolling(HasFocus());
-  changed |= m_label.SetColor(GetTextColor());
-  changed |= m_label.Process(currentTime);
-
-  if (changed)
-    MarkDirtyRegion();
-}
-
 bool CGUIRadioButtonControl::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SELECT_ITEM)
