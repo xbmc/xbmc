@@ -82,7 +82,16 @@ option(PACKAGE_ZIP "Prepare built addons for packaging" OFF)
 if(PACKAGE_ZIP)
   # needed for project installing
   list(APPEND BUILD_ARGS -DPACKAGE_ZIP=ON)
-  MESSAGE(STATUS "ZIP packaging enabled")
+
+  # figure out where to store the packaged ZIP archives
+  if(NOT PACKAGE_DIR)
+    set(PACKAGE_DIR "${BUILD_DIR}/zips")
+  else()
+    file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
+  endif()
+  list(APPEND BUILD_ARGS -DPACKAGE_DIR=${PACKAGE_DIR})
+
+  MESSAGE(STATUS "ZIP packaging enabled (destination: ${PACKAGE_DIR}})")
 endif()
 
 if(CMAKE_TOOLCHAIN_FILE)
