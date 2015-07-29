@@ -29,9 +29,10 @@
 
 using namespace XFILE;
 
-CSplash::CSplash(const std::string& imageName) : CThread("Splash"), m_ImageName(imageName)
+CSplash::CSplash(const std::string& imageName)
 {
-  fade = 0.5;
+  m_imageName = imageName;
+  m_fade = 0.5;
   m_messageLayout = NULL;
   m_image = NULL;
   m_layoutWasLoading = false;
@@ -40,16 +41,9 @@ CSplash::CSplash(const std::string& imageName) : CThread("Splash"), m_ImageName(
 
 CSplash::~CSplash()
 {
-  Stop();
   delete m_image;
   delete m_messageLayout;
 }
-
-void CSplash::OnStartup()
-{}
-
-void CSplash::OnExit()
-{}
 
 void CSplash::Show()
 {
@@ -62,11 +56,11 @@ void CSplash::Show(const std::string& message)
   g_graphicsContext.Clear();
 
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  g_graphicsContext.SetRenderingResolution(res, true);
 
-  g_graphicsContext.SetRenderingResolution(res, true);  
   if (!m_image)
   {
-    m_image = new CGUIImage(0, 0, 0, 0, res.iWidth, res.iHeight, CTextureInfo(m_ImageName));
+    m_image = new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), CTextureInfo(m_imageName));
     m_image->SetAspectRatio(CAspectRatio::AR_CENTER);
   }
 
@@ -83,6 +77,7 @@ void CSplash::Show(const std::string& message)
     if (!m_layoutWasLoading)
     {
       // load arial font, white body, no shadow, size: 20, no additional styling
+
       CGUIFont *messageFont = g_fontManager.LoadTTF("__splash__", "arial.ttf", 0xFFFFFFFF, 0, 20, FONT_STYLE_NORMAL, false, 1.0f, 1.0f, &res);
       if (messageFont)
         m_messageLayout = new CGUITextLayout(messageFont, true, 0);
@@ -108,29 +103,4 @@ void CSplash::Show(const std::string& message)
   CDirtyRegionList dirty;
   g_graphicsContext.Flip(dirty);
   g_graphicsContext.Unlock();
-}
-
-void CSplash::Hide()
-{
-}
-
-void CSplash::Process()
-{
-  Show();
-}
-
-bool CSplash::Start()
-{
-  if (m_ImageName.empty() || !CFile::Exists(m_ImageName))
-  {
-    CLog::Log(LOGDEBUG, "Splash image %s not found", m_ImageName.c_str());
-    return false;
-  }
-  Create();
-  return true;
-}
-
-void CSplash::Stop()
-{
-  StopThread();
 }
