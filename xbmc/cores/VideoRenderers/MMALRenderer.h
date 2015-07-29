@@ -42,12 +42,25 @@ class CMMALVideoBuffer;
 
 struct DVDVideoPicture;
 
+class CYUVVideoBuffer
+{
+public:
+  CYUVVideoBuffer();
+  ~CYUVVideoBuffer();
+  // reference counting
+  CYUVVideoBuffer *Acquire();
+  long Release();
+  MMAL_BUFFER_HEADER_T *mmal_buffer;
+protected:
+  long m_refs;
+};
+
 class CMMALRenderer : public CBaseRenderer
 {
   struct YUVBUFFER
   {
     CMMALVideoBuffer *MMALBuffer; // used for hw decoded buffers
-    MMAL_BUFFER_HEADER_T *mmal_buffer;  // used for sw decoded buffers
+    CYUVVideoBuffer  *YUVBuffer;  // used for sw decoded buffers
   };
 public:
   CMMALRenderer();
@@ -105,6 +118,7 @@ protected:
   RENDER_STEREO_MODE        m_video_stereo_mode;
   RENDER_STEREO_MODE        m_display_stereo_mode;
   bool                      m_StereoInvert;
+  int                       m_inflight;
 
   CCriticalSection m_sharedSection;
   MMAL_COMPONENT_T *m_vout;
