@@ -28,6 +28,7 @@
 #include "settings/VideoSettings.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "guilib/Geometry.h"
+#include "threads/Thread.h"
 
 #include <interface/mmal/mmal.h>
 #include <interface/mmal/util/mmal_util.h>
@@ -42,12 +43,13 @@ class CMMALBuffer;
 
 struct DVDVideoPicture;
 
-class CMMALRenderer : public CBaseRenderer
+class CMMALRenderer : public CBaseRenderer, public CThread
 {
 public:
   CMMALRenderer();
   ~CMMALRenderer();
 
+  void Process();
   virtual void Update();
 
   bool RenderCapture(CRenderCapture* capture);
@@ -106,6 +108,8 @@ protected:
   MMAL_COMPONENT_T *m_vout;
   MMAL_PORT_T *m_vout_input;
   MMAL_POOL_T *m_vout_input_pool;
+  MMAL_QUEUE_T *m_queue;
+  double m_error;
 
   bool init_vout(ERenderFormat format, bool opaque);
   void ReleaseBuffers();
