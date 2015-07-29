@@ -1120,7 +1120,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       }
       return result | EOS_DROPPED;
     }
-    else if (pts_org < (renderPts - DVD_MSEC_TO_TIME(-1500 * m_speed)))
+    else if (pts_org < iPlayingClock)
     {
       return result | EOS_DROPPED;
     }
