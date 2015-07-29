@@ -72,6 +72,7 @@ struct DemuxPacket;
 #define PVR_ADDON_EDL_LENGTH                  32
 #define PVR_ADDON_TIMERTYPE_ARRAY_SIZE        32
 #define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE 512
+#define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL 128
 #define PVR_ADDON_TIMERTYPE_STRING_LENGTH     64
 
 /* using the default avformat's MAX_STREAMS value to be safe */
@@ -128,6 +129,7 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_END_TIME                 = 0x00020000; /*!< @brief this type supports a recording end time (PVR_TIMER.endTime) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME            = 0x00040000; /*!< @brief enables an 'Any Time' over-ride option for startTime (using PVR_TIMER.bStartAnyTime) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME              = 0x00080000; /*!< @brief enables a separate 'Any Time' over-ride for endTime (using PVR_TIMER.bEndAnyTime) */
+  const unsigned int PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS           = 0x00100000; /*!< @brief this type supports specifying a maximum recordings setting' (PVR_TIMER.iMaxRecordings) */
 
   /*!
    * @brief PVR timer weekdays (PVR_TIMER.iWeekdays values)
@@ -369,6 +371,13 @@ extern "C" {
                                                             /*!< @brief (optional) Array containing the possible values of PVR_TMER.iRecordingGroup. Must be filled if iRecordingGroupSize > 0 */
     unsigned int iRecordingGroupDefault;                    /*!< @brief (optional) The default value for PVR_TIMER.iRecordingGroup. Must be filled in if PVR_TIMER.iRecordingGroupSize > 0 */
 
+    /* max recordings value definitions */
+    unsigned int iMaxRecordingsSize;                        /*!< @brief (required) Count of possible values of PVR_TIMER.iMaxRecordings. 0 means max recordings are not supported by this timer type */
+    PVR_TIMER_TYPE_ATTRIBUTE_INT_VALUE
+      maxRecordings[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL];
+                                                            /*!< @brief (optional) Array containing the possible values of PVR_TMER.iMaxRecordings. */
+    int iMaxRecordingsDefault;                              /*!< @brief (optional) The default value for PVR_TIMER.iMaxRecordings. Must be filled in if PVR_TIMER.iMaxRecordingsSize > 0 */
+
   } ATTRIBUTE_PACKED PVR_TIMER_TYPE;
 
   /*!
@@ -394,6 +403,7 @@ extern "C" {
     char            strSummary[PVR_ADDON_DESC_STRING_LENGTH];  /*!< @brief (optional) the summary for this timer */
     int             iPriority;                                 /*!< @brief (optional) the priority of this timer */
     int             iLifetime;                                 /*!< @brief (optional) lifetime of this timer in days. After this time period, the recording shall be automatically deleted by the backend */
+    int             iMaxRecordings;                            /*!< @brief (optional) maximum number of recordings this timer shall create. > 0 number of recordings, < 0 addon defined integer list reference, == 0 disabled */
     unsigned int    iRecordingGroup;                           /*!< @brief (optional) integer ref to addon/backend defined list of recording groups*/
     time_t          firstDay;                                  /*!< @brief (optional) the first day this timer is active, for repeating timers */
     unsigned int    iWeekdays;                                 /*!< @brief (optional) week days, for repeating timers */
