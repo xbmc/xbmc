@@ -25,6 +25,7 @@
 #include "epg/EpgContainer.h"
 #include "FileItem.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/PVRManager.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -69,31 +70,6 @@ std::string CPVRRecordings::TrimSlashes(const std::string &strOrig) const
   return strReturn;
 }
 
-const std::string CPVRRecordings::GetDirectoryFromPath(const std::string &strPath, const std::string &strBase) const
-{
-  std::string strReturn;
-  std::string strUsePath = TrimSlashes(strPath);
-  std::string strUseBase = TrimSlashes(strBase);
-
-  /* strip the base or return an empty value if it doesn't fit or match */
-  if (!strUseBase.empty())
-  {
-    /* adding "/" to make sure that base matches the complete folder name and not only parts of it */
-    if (strUsePath.size() <= strUseBase.size() || !StringUtils::StartsWith(strUsePath, strUseBase + "/"))
-      return strReturn;
-    strUsePath.erase(0, strUseBase.size());
-  }
-
-  /* check for more occurences */
-  size_t iDelimiter = strUsePath.find('/');
-  if (iDelimiter != std::string::npos && iDelimiter > 0)
-    strReturn = strUsePath.substr(0, iDelimiter);
-  else
-    strReturn = strUsePath;
-
-  return TrimSlashes(strReturn);
-}
-
 bool CPVRRecordings::IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory) const
 {
   std::string strUseDirectory = TrimSlashes(strDirectory);
@@ -105,11 +81,10 @@ bool CPVRRecordings::IsDirectoryMember(const std::string &strDirectory, const st
         StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory);
 }
 
-void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList *results)
+void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, CFileItemList *results)
 {
   // Only active recordings are fetched to provide sub directories.
   // Not applicable for deleted view which is supposed to be flattened.
-  std::string strUseBase = TrimSlashes(strBase);
   std::set<CFileItemPtr> unwatchedFolders;
 
   for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
@@ -117,15 +92,14 @@ void CPVRRecordings::GetSubDirectories(const std::string &strBase, CFileItemList
     CPVRRecordingPtr current = it->second;
     if (current->IsDeleted())
       continue;
-    const std::string strCurrent = GetDirectoryFromPath(current->m_strDirectory, strUseBase);
+
+    const std::string strCurrent = recParentPath.GetSubDirectoryPath(current->m_strDirectory);
     if (strCurrent.empty())
       continue;
 
-    std::string strFilePath;
-    if(strUseBase.empty())
-      strFilePath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/" PVR_RECORDING_ACTIVE_PATH "/%s/", strCurrent.c_str());
-    else
-      strFilePath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/" PVR_RECORDING_ACTIVE_PATH "/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
+    CPVRRecordingsPath recChildPath(recParentPath);
+    recChildPath.AppendSegment(strCurrent);
+    std::string strFilePath(recChildPath);
 
     CFileItemPtr pFileItem;
     if (m_database.IsOpen())
@@ -342,22 +316,14 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
 {
   CSingleLock lock(m_critSection);
 
-  CURL url(strPath);
-  std::string strDirectoryPath = url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(strDirectoryPath);
-
-  if (StringUtils::StartsWith(strDirectoryPath, PVR_RECORDING_BASE_PATH))
+  CPVRRecordingsPath recPath(strPath);
+  if (recPath.IsValid())
   {
-    strDirectoryPath.erase(0, sizeof(PVR_RECORDING_BASE_PATH) - 1);
-
-    // Check directory name is for deleted recordings
-    bool bDeleted = StringUtils::StartsWith(strDirectoryPath, "/" PVR_RECORDING_DELETED_PATH);
-    strDirectoryPath.erase(0, bDeleted ? sizeof(PVR_RECORDING_DELETED_PATH) : sizeof(PVR_RECORDING_ACTIVE_PATH));
-
     // Get the directory structure if in non-flatten mode
     // Deleted view is always flatten. So only for an active view
-    if (!bDeleted && m_bGroupItems)
-      GetSubDirectories(strDirectoryPath, &items);
+    std::string strDirectory(recPath.GetDirectoryPath());
+    if (!recPath.IsDeleted() && m_bGroupItems)
+      GetSubDirectories(recPath, &items);
 
     // get all files of the currrent directory or recursively all files starting at the current directory if in flatten mode
     for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
@@ -365,7 +331,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       CPVRRecordingPtr current = it->second;
 
       // skip items that are not members of the target directory
-      if (!IsDirectoryMember(strDirectoryPath, current->m_strDirectory) || current->IsDeleted() != bDeleted)
+      if (!IsDirectoryMember(strDirectory, current->m_strDirectory) || current->IsDeleted() != recPath.IsDeleted())
         continue;
 
       if (m_database.IsOpen())
@@ -439,17 +405,13 @@ CFileItemPtr CPVRRecordings::GetById(unsigned int iId) const
 
 CFileItemPtr CPVRRecordings::GetByPath(const std::string &path)
 {
-  CURL url(path);
-  std::string fileName = url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(fileName);
-
   CSingleLock lock(m_critSection);
 
-  if (StringUtils::StartsWith(fileName, PVR_RECORDING_BASE_PATH "/"))
+  CPVRRecordingsPath recPath(path);
+  if (recPath.IsValid())
   {
     // Check directory name is for deleted recordings
-    fileName.erase(0, sizeof(PVR_RECORDING_BASE_PATH));
-    bool bDeleted = StringUtils::StartsWith(fileName, PVR_RECORDING_DELETED_PATH "/");
+    bool bDeleted = recPath.IsDeleted();
 
     for (PVR_RECORDINGMAP_CITR it = m_recordings.begin(); it != m_recordings.end(); it++)
     {

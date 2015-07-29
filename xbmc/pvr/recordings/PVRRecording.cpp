@@ -23,12 +23,12 @@
 #include "epg/EpgContainer.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
-#include "utils/RegExp.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 
 #include "PVRRecording.h"
 
@@ -402,36 +402,8 @@ void CPVRRecording::UpdatePath(void)
   }
   else
   {
-    std::string strTitle(m_strTitle);
-    std::string strDatetime(m_recordingTime.GetAsSaveString());
-    std::string strDirectory;
-    std::string strSubtitle;
-    std::string strSeasonEpisode;
-    if ((m_iSeason > -1 && m_iEpisode > -1 && (m_iSeason > 0 || m_iEpisode > 0)))
-      strSeasonEpisode = StringUtils::Format("s%02de%02d", m_iSeason, m_iEpisode);
-    std::string strYear(m_iYear > 0 ? StringUtils::Format(" (%i)", m_iYear) : "");
-    std::string strChannel;
-    StringUtils::Replace(strTitle, '/', ' ');
-
-    if (!m_strDirectory.empty())
-      strDirectory = StringUtils::Format("%s/", m_strDirectory.c_str());
-    if (!m_strChannelName.empty())
-    {
-      strChannel = StringUtils::Format(" (%s)", m_strChannelName.c_str());
-      StringUtils::Replace(strChannel, '/', ' ');
-    }
-    if (!m_strShowTitle.empty())
-    {
-      strSubtitle = StringUtils::Format(" %s", m_strShowTitle.c_str());
-      StringUtils::Replace(strSubtitle, '/', ' ');
-    }
-    if (!strSeasonEpisode.empty())
-      strSeasonEpisode = StringUtils::Format(" %s", strSeasonEpisode.c_str());
-
-    m_strFileNameAndPath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/%s/%s%s%s%s%s, TV%s, %s.pvr",
-      m_bIsDeleted ? PVR_RECORDING_DELETED_PATH : PVR_RECORDING_ACTIVE_PATH, strDirectory.c_str(),
-      strTitle.c_str(), strSeasonEpisode.c_str(), strYear.c_str(), strSubtitle.c_str(),
-      strChannel.c_str(), strDatetime.c_str());
+    m_strFileNameAndPath = CPVRRecordingsPath(
+      m_bIsDeleted, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode, m_iYear, m_strShowTitle, m_strChannelName, m_recordingTime);
   }
 }
 
@@ -445,14 +417,7 @@ const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
 
 std::string CPVRRecording::GetTitleFromURL(const std::string &url)
 {
-  CRegExp reg(true);
-  if (reg.RegComp("pvr://" PVR_RECORDING_BASE_PATH "/(.*/)*(.*), TV( \\(.*\\))?, "
-      "(19[0-9][0-9]|20[0-9][0-9])[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9].pvr"))
-  {
-    if (reg.RegFind(url.c_str()) >= 0)
-      return reg.GetMatch(2);
-  }
-  return "";
+  return CPVRRecordingsPath(url).GetTitle();
 }
 
 void CPVRRecording::CopyClientInfo(CVideoInfoTag *target) const

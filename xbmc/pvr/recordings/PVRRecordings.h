@@ -25,10 +25,10 @@
 
 #include "PVRRecording.h"
 
-#define PVR_ALL_RECORDINGS_PATH_EXTENSION "-1"
-
 namespace PVR
 {
+  class CPVRRecordingsPath;
+
   class CPVRRecordings : public Observable
   {
   private:
@@ -46,9 +46,8 @@ namespace PVR
 
     virtual void UpdateFromClients(void);
     virtual std::string TrimSlashes(const std::string &strOrig) const;
-    virtual const std::string GetDirectoryFromPath(const std::string &strPath, const std::string &strBase) const;
     virtual bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory) const;
-    virtual void GetSubDirectories(const std::string &strBase, CFileItemList *results);
+    virtual void GetSubDirectories(const CPVRRecordingsPath &recParentPath, CFileItemList *results);
 
     /**
      * @brief recursively deletes all recordings in the specified directory
