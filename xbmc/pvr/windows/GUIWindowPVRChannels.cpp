@@ -229,6 +229,8 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
       {
         case ObservableMessageChannelGroup:
         case ObservableMessageTimers:
+        case ObservableMessageEpg:
+        case ObservableMessageEpgContainer:
         case ObservableMessageEpgActiveItem:
         case ObservableMessageCurrentItem:
         {
