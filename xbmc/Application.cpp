@@ -1194,17 +1194,15 @@ bool CApplication::Initialize()
 #endif
       ADDON::CAddonMgr::Get().StartServices(false);
 
-      // let's start the PVR manager and decide if the PVR manager handle the startup window activation
-      if (StartPVRManager())
-        uiInitializationFinished = false;
-      else
-      {
-        int firstWindow = g_SkinInfo->GetFirstWindow();
-        // the startup window is considered part of the initialization as it most likely switches to the final window
-        uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
+      // start the PVR manager
+      StartPVRManager();
 
-        g_windowManager.ActivateWindow(firstWindow);
-      }
+      // activate the configured start window
+      int firstWindow = g_SkinInfo->GetFirstWindow();
+      g_windowManager.ActivateWindow(firstWindow);
+
+      // the startup window is considered part of the initialization as it most likely switches to the final window
+      uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
 
       CStereoscopicsManager::Get().Initialize();
       CApplicationMessenger::Get().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON); // send a blocking message to active AudioDSP engine
@@ -1312,18 +1310,12 @@ bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* 
   return ret;
 }
 
-bool CApplication::StartPVRManager()
+void CApplication::StartPVRManager()
 {
   if (!CSettings::Get().GetBool("pvrmanager.enabled"))
-    return false;
+    return;
 
-  int firstWindowId = 0;
-  if (g_PVRManager.IsPVRWindow(g_SkinInfo->GetStartWindow()))
-    firstWindowId = g_SkinInfo->GetFirstWindow();
-
-  g_PVRManager.Start(true, firstWindowId);
-
-  return (firstWindowId > 0);
+  g_PVRManager.Start(true);
 }
 
 void CApplication::StopPVRManager()
