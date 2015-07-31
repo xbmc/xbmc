@@ -952,6 +952,13 @@ std::string StringUtils::SizeToString(int64_t size)
 
   if (!i)
     strLabel = StringUtils::Format("%.0lf B", s);
+  else if (i == ARRAY_SIZE(prefixes))
+  {
+    if (s >= 1000.0)
+      strLabel = StringUtils::Format(">999.99 %cB", prefixes[i - 1]);
+    else
+      strLabel = StringUtils::Format("%.2lf %cB", s, prefixes[i - 1]);
+  }
   else if (s >= 100.0)
     strLabel = StringUtils::Format("%.1lf %cB", s, prefixes[i]);
   else
