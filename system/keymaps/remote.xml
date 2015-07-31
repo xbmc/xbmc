@@ -70,7 +70,7 @@
       <myvideo>ActivateWindow(MyVideos)</myvideo>
       <mymusic>ActivateWindow(MyMusic)</mymusic>
       <mypictures>ActivateWindow(MyPictures)</mypictures>
-      <mytv>ActivateWindow(TVChannels)</mytv>
+      <mytv>ActivateWindow(Videos,TvShows)</mytv>
       <guide>ActivateWindow(TVGuide)</guide>
       <livetv>ActivateWindow(TVChannels)</livetv>
       <liveradio>ActivateWindow(RadioChannels)</liveradio>
