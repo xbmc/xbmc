@@ -96,7 +96,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 					</control>
 					<control type="label">
 						<left>225</left>
@@ -172,7 +172,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
 					</control>
 					<control type="label">
 						<left>225</left>
@@ -253,7 +253,7 @@
 					<top>230</top>
 					<width>290</width>
 					<height>25</height>
-					<label>$INFO[Container(50).ListItem.Title]</label>
+					<label>$INFO[Container(50).ListItem.Title]$INFO[ListItem.EpisodeName, (,)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font13</font>
