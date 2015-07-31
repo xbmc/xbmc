@@ -75,6 +75,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\libXBMC_pvr.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\addons\library.xbmc.pvr\libXBMC_pvr.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
