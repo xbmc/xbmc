@@ -45,6 +45,8 @@
 #include "utils/StringUtils.h"
 #include "utils/Observer.h"
 
+#define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
+
 using namespace PVR;
 using namespace EPG;
 
@@ -212,10 +214,14 @@ bool CGUIWindowPVRBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVRBase::SetInvalid()
 {
-  VECFILEITEMS items = m_vecItems->GetList();
-  for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
-    (*it)->SetInvalid();
-  CGUIMediaWindow::SetInvalid();
+  if (m_refreshTimeout.IsTimePast())
+  {
+    VECFILEITEMS items = m_vecItems->GetList();
+    for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
+      (*it)->SetInvalid();
+    CGUIMediaWindow::SetInvalid();
+    m_refreshTimeout.Set(MAX_INVALIDATION_FREQUENCY);
+  }
 }
 
 bool CGUIWindowPVRBase::OpenGroupSelectionDialog(void)
