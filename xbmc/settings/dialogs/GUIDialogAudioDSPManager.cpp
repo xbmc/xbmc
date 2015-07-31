@@ -209,9 +209,7 @@ void CGUIDialogAudioDSPManager::OnDeinitWindow(int nextWindowID)
     }
     else
     {
-      bool canceled;
-      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(19098), g_localizeStrings.Get(15079), canceled, "", ""))
-//      if (CGUIDialogYesNo::ShowAndGetInput(19098, 15079, -1, -1))
+      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(19098), g_localizeStrings.Get(15079)))
       {
         SaveList();
       }
