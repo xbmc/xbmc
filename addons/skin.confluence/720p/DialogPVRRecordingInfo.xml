@@ -24,7 +24,7 @@
 			<width>650</width>
 			<height>30</height>
 			<font>font13_title</font>
-			<label>$INFO[ListItem.Title]</label>
+			<label>$INFO[ListItem.Title]$INFO[ListItem.EpisodeName, (,)]</label>
 			<align>center</align>
 			<aligny>center</aligny>
 			<textcolor>blue</textcolor>
