@@ -45,6 +45,7 @@ namespace PVR
     virtual void OnDeinitWindow(int nextWindowID);
     virtual void RestoreControlStates();
     virtual void SaveControlStates();
+    virtual void SetInvalid();
 
     void CloseOrSelect(unsigned int iItem);
     void GotoChannel(int iItem);
@@ -62,6 +63,7 @@ namespace PVR
     std::map<int, std::string> m_groupSelectedItemPaths;
     void SaveSelectedItemPath(int iGroupID);
     std::string GetLastSelectedItemPath(int iGroupID) const;
+    XbmcThreads::EndTime m_refreshTimeout;
   };
 }
 
