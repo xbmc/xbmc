@@ -118,5 +118,6 @@ namespace PVR
 
   private:
     CPVRChannelGroupPtr m_group;
+    XbmcThreads::EndTime m_refreshTimeout;
   };
 }
