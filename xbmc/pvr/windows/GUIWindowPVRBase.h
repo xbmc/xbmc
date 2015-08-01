@@ -98,6 +98,7 @@ namespace PVR
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool UpdateEpgForChannel(CFileItem *item);
     virtual void UpdateSelectedItemPath();
+    virtual bool IsValidMessage(CGUIMessage& message);
     void CheckResumeRecording(CFileItem *item);
 
     /*!

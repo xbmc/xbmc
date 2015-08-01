@@ -168,6 +168,9 @@ bool CGUIWindowPVRChannels::OnAction(const CAction &action)
 
 bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
 {
+  if (!IsValidMessage(message))
+    return false;
+
   bool bReturn = false;
   switch (message.GetMessage())
   {
