@@ -24,6 +24,8 @@
 #include "utils/URIUtils.h"
 #include "DDSImage.h"
 #include "filesystem/File.h"
+#include "filesystem/ResourceFile.h"
+#include "filesystem/XbtFile.h"
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
@@ -238,6 +240,26 @@ bool CBaseTexture::LoadFromFileInternal(const std::string& texturePath, unsigned
 
   if (file.LoadFile(texturePath, buf) <= 0)
     return false;
+
+  CURL url(texturePath);
+  // make sure resource:// paths are properly resolved
+  if (url.IsProtocol("resource"))
+  {
+    std::string translatedPath;
+    if (XFILE::CResourceFile::TranslatePath(url, translatedPath))
+      url.Parse(translatedPath);
+  }
+
+  // handle xbt:// paths differently because it allows loading the texture directly from memory
+  if (url.IsProtocol("xbt"))
+  {
+    XFILE::CXbtFile xbtFile;
+    if (!xbtFile.Open(url))
+      return false;
+
+    return LoadFromMemory(xbtFile.GetImageWidth(), xbtFile.GetImageHeight(), 0, xbtFile.GetImageFormat(),
+                          xbtFile.HasImageAlpha(), reinterpret_cast<unsigned char*>(buf.get()));
+  }
 
   IImage* pImage;
 
