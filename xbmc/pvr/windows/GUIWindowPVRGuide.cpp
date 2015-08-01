@@ -185,6 +185,9 @@ bool CGUIWindowPVRGuide::OnAction(const CAction &action)
 
 bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
 {
+  if (!IsValidMessage(message))
+    return false;
+  
   bool bReturn = false;
   switch (message.GetMessage())
   {
