@@ -81,9 +81,8 @@ bool CProgressJob::DoModal()
   // do the work
   bool result = DoWork();
 
-  // close the progress dialog
-  if (m_autoClose)
-    m_progressDialog->Close();
+  // mark the progress dialog as finished (will close it)
+  MarkFinished();
   m_modal = false;
 
   return result;
@@ -181,18 +180,13 @@ void CProgressJob::MarkFinished()
     if (m_updateProgress)
     {
       m_progress->MarkFinished();
-      //We don't own this pointer and it will be deleted after it's marked finished
-      //just set it to nullptr so we don't try to use it again
+      // We don't own this pointer and it will be deleted after it's marked finished
+      // just set it to nullptr so we don't try to use it again
       m_progress = nullptr;
     }
   }
   else if (m_progressDialog != NULL && m_autoClose)
-  {
     m_progressDialog->Close();
-    //We don't own this pointer and it will be deleted after it's marked finished
-    //just set it to nullptr so we don't try to use it again
-    m_progressDialog = nullptr;
-  }
 }
 
 bool CProgressJob::IsCancelled() const
