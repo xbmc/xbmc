@@ -181,8 +181,8 @@ void CProgressJob::MarkFinished()
     if (m_updateProgress)
     {
       m_progress->MarkFinished();
-      //We don't own this pointer and it will be deleted after it's marked finished
-      //just set it to nullptr so we don't try to use it again
+      // We don't own this pointer and it will be deleted after it's marked finished
+      // just set it to nullptr so we don't try to use it again
       m_progress = nullptr;
     }
   }
