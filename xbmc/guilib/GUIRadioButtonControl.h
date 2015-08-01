@@ -72,4 +72,5 @@ protected:
   float m_radioPosX;
   float m_radioPosY;
   INFO::InfoPtr m_toggleSelect;
+  bool m_useLabel2;
 };
