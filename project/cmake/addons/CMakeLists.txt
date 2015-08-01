@@ -4,6 +4,13 @@ cmake_minimum_required(VERSION 2.8)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
+option(ADDON_TARBALL_CACHING "Cache downloaded addon source tarballs?" ON)
+if(ADDON_TARBALL_CACHING)
+  message(STATUS "Addon source tarball caching is enabled")
+else()
+  message(STATUS "Addon source tarball caching is disabled")
+endif()
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -197,6 +204,19 @@ foreach(addon ${addons})
         if(deflength GREATER 2 AND "${SOURCE_DIR}" STREQUAL "")
           list(GET def 2 revision)
 
+          # we need access to a git executable
+          find_package(Git REQUIRED)
+
+          # resolve revision to git hash
+          execute_process(COMMAND ${GIT_EXECUTABLE} ls-remote ${url} ${revision} OUTPUT_VARIABLE revision_hash)
+          # git ls-remote only works on branches and tag names but not on revisions
+          if(NOT "${revision_hash}" STREQUAL "")
+            string(REPLACE "\t" ";" revision_list ${revision_hash})
+            list(GET revision_list 0 revision_hash)
+            message(STATUS "${id}: git branch/tag ${revision} resolved to hash: ${revision_hash}")
+            set(revision ${revision_hash})
+          endif()
+
           # Note: downloading specific revisions via http in the format below is probably github specific
           # if we ever use other repositories, this might need adapting
           set(url ${url}/archive/${revision}.tar.gz)
@@ -227,7 +247,7 @@ foreach(addon ${addons})
         # download the addon if necessary
         if(NOT "${archive_name}" STREQUAL "")
           # download and extract the addon
-          if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
+          if(NOT ADDON_TARBALL_CACHING OR NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
             # cleanup any of the previously downloaded archives of this addon
             file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
             if(archives)
