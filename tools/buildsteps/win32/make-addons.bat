@@ -6,6 +6,7 @@ SET EXITCODE=0
 
 SET install=false
 SET clean=false
+SET package=false
 SET addon=
 
 SETLOCAL EnableDelayedExpansion
@@ -14,9 +15,11 @@ FOR %%b IN (%*) DO (
     SET install=true
   ) ELSE ( IF %%b == clean (
     SET clean=true
+  ) ELSE ( IF %%b == package (
+    SET package=true
   ) ELSE (
     SET addon=!addon! %%b
-  ))
+  )))
 )
 SETLOCAL DisableDelayedExpansion
 
@@ -129,7 +132,17 @@ FOR %%a IN (%ADDONS_TO_MAKE%) DO (
     ECHO nmake %%a error level: %ERRORLEVEL% > %ERRORFILE%
     ECHO %%a >> %ADDONS_FAILURE_FILE%
   ) ELSE (
-    ECHO %%a >> %ADDONS_SUCCESS_FILE%
+    if %package% == true (
+      nmake package-%%a
+      IF ERRORLEVEL 1 (
+        ECHO nmake package-%%a error level: %ERRORLEVEL% > %ERRORFILE%
+        ECHO %%a >> %ADDONS_FAILURE_FILE%
+      ) ELSE (
+        ECHO %%a >> %ADDONS_SUCCESS_FILE%
+      )
+    ) ELSE (
+      ECHO %%a >> %ADDONS_SUCCESS_FILE%
+    )
   )
 )
 

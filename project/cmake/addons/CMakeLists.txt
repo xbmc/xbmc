@@ -82,7 +82,16 @@ option(PACKAGE_ZIP "Prepare built addons for packaging" OFF)
 if(PACKAGE_ZIP)
   # needed for project installing
   list(APPEND BUILD_ARGS -DPACKAGE_ZIP=ON)
-  MESSAGE(STATUS "ZIP packaging enabled")
+
+  # figure out where to store the packaged ZIP archives
+  if(NOT PACKAGE_DIR)
+    set(PACKAGE_DIR "${BUILD_DIR}/zips")
+  else()
+    file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
+  endif()
+  list(APPEND BUILD_ARGS -DPACKAGE_DIR=${PACKAGE_DIR})
+
+  MESSAGE(STATUS "ZIP packaging enabled (destination: ${PACKAGE_DIR}})")
 endif()
 
 if(CMAKE_TOOLCHAIN_FILE)
@@ -145,6 +154,9 @@ include(prepare-env)
 
 ### add the depends subdirectory for any general dependencies
 add_subdirectory(depends)
+
+# add a custom target "package-addons" which will package and install all addons
+add_custom_target(package-addons)
 
 ### get and build all the binary addons
 # look for all the addons to be built
@@ -280,6 +292,12 @@ foreach(addon ${addons})
               add_dependencies(${id} ${${id}_DEPS})
             endif()
           endif()
+
+          # create a forwarding target to the addon-package target
+          add_custom_target(package-${id}
+                    COMMAND ${CMAKE_COMMAND} --build ${BUILD_DIR}/${id}-prefix/src/${id}-build --target addon-package
+                    DEPENDS ${id})
+          add_dependencies(package-addons package-${id})
         else()
           message(FATAL_ERROR "${id}: invalid or missing addon source directory at ${SOURCE_DIR}")
         endif()
