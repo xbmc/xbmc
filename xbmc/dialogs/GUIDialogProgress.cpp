@@ -36,17 +36,24 @@ using namespace std;
 CGUIDialogProgress::CGUIDialogProgress(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_PROGRESS, "DialogProgress.xml")
 {
-  m_bCanceled = false;
-  m_iCurrent=0;
-  m_iMax=0;
-  m_percentage = 0;
-  m_showProgress = false;
-  m_bCanCancel = true;
+  Reset();
 }
 
 CGUIDialogProgress::~CGUIDialogProgress(void)
 {
 
+}
+
+void CGUIDialogProgress::Reset()
+{
+  CSingleLock lock(m_section);
+  m_bCanceled = false;
+  m_iCurrent = 0;
+  m_iMax = 0;
+  m_percentage = 0;
+  m_showProgress = false;
+  m_bCanCancel = true;
+  SetInvalid();
 }
 
 void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
@@ -58,7 +65,7 @@ void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
 
 void CGUIDialogProgress::Open()
 {
-  CLog::Log(LOGDEBUG, "DialogProgress::StartModal called %s", m_active ? "(already running)!" : "");
+  CLog::Log(LOGDEBUG, "DialogProgress::Open called %s", m_active ? "(already running)!" : "");
 
   {
     CSingleLock lock(g_graphicsContext);
@@ -101,7 +108,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
   {
 
   case GUI_MSG_WINDOW_DEINIT:
-    SetCanCancel(true);
+    Reset();
     break;
 
   case GUI_MSG_CLICKED:
