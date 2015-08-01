@@ -104,7 +104,10 @@ bool CGUIWindowPVRBase::OnBack(int actionID)
   {
     // don't call CGUIMediaWindow as it will attempt to go to the parent folder which we don't want.
     if (GetPreviousWindow() != WINDOW_FULLSCREEN_LIVETV)
+    {
       g_windowManager.ActivateWindow(WINDOW_HOME);
+      return true;
+    }
     else
       return CGUIWindow::OnBack(actionID);
   }
