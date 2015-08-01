@@ -81,9 +81,8 @@ bool CProgressJob::DoModal()
   // do the work
   bool result = DoWork();
 
-  // close the progress dialog
-  if (m_autoClose)
-    m_progressDialog->Close();
+  // mark the progress dialog as finished (will close it)
+  MarkFinished();
   m_modal = false;
 
   return result;
