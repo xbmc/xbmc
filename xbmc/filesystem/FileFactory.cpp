@@ -56,6 +56,7 @@
 #if defined(TARGET_ANDROID)
 #include "APKFile.h"
 #endif
+#include "XbtFile.h"
 #include "ZipFile.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarFile.h"
@@ -120,6 +121,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
 #endif
   }
+  else if (url.IsProtocol("xbt")) return new CXbtFile();
   else if (url.IsProtocol("musicdb")) return new CMusicDatabaseFile();
   else if (url.IsProtocol("videodb")) return NULL;
   else if (url.IsProtocol("special")) return new CSpecialProtocolFile();

@@ -173,6 +173,7 @@ void CURL::Parse(const std::string& strURL1)
   if(IsProtocol("rss") ||
      IsProtocol("rar") ||
      IsProtocol("apk") ||
+     IsProtocol("xbt") ||
      IsProtocol("zip") ||
      IsProtocol("addons") ||
      IsProtocol("image") ||
@@ -483,6 +484,7 @@ const std::string CURL::GetFileNameWithoutPath() const
   // *.zip and *.rar store the actual zip/rar path in the hostname of the url
   if ((IsProtocol("rar")  ||
        IsProtocol("zip")  ||
+       IsProtocol("xbt")  ||
        IsProtocol("apk")) &&
        m_strFileName.empty())
     return URIUtils::GetFileName(m_strHostName);
