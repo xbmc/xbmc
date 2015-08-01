@@ -108,6 +108,9 @@ bool CGUIWindowPVRTimers::Update(const std::string &strDirectory, bool updateFil
 
 bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
 {
+  if (!IsValidMessage(message))
+    return false;
+  
   bool bReturn = false;
   switch (message.GetMessage())
   {

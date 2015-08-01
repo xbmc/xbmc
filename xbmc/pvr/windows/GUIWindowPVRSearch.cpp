@@ -170,6 +170,9 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 
 bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
 {
+  if (!IsValidMessage(message))
+    return false;
+  
   if (message.GetMessage() == GUI_MSG_CLICKED)
   {
     if (message.GetSenderId() == m_viewControl.GetCurrentControl())

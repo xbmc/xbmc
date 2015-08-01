@@ -193,6 +193,32 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
+bool CGUIWindowPVRBase::IsValidMessage(CGUIMessage& message)
+{
+  bool bReturn = false;
+
+  // we need to protect the pvr windows against certain messages
+  // if the pvr manager is not started yet. we only want to support
+  // that the window can be loaded to show the user an info about
+  // the manager startup. Any other interactions with the windows
+  // would cause access violations.
+  switch (message.GetMessage())
+  {
+    // valid messages
+    case GUI_MSG_WINDOW_LOAD:
+    case GUI_MSG_WINDOW_INIT:
+    case GUI_MSG_WINDOW_DEINIT:
+      bReturn = true;
+      break;
+    default:
+      if (g_PVRManager.IsStarted())
+        bReturn = true;
+      break;
+  }
+
+  return bReturn;
+}
+
 bool CGUIWindowPVRBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
