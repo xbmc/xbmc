@@ -58,7 +58,7 @@ bool CSettingControlCheckmark::SetFormat(const std::string &format)
   return format.empty() || StringUtils::EqualsNoCase(format, "boolean");
 }
 
-bool CSettingControlSpinner::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingControlFormattedRange::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   if (!ISettingControl::Deserialize(node, update))
     return false;
@@ -215,7 +215,7 @@ bool CSettingControlButton::SetFormat(const std::string &format)
 
 bool CSettingControlList::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  if (!ISettingControl::Deserialize(node, update))
+  if (!CSettingControlFormattedRange::Deserialize(node, update))
     return false;
   
   XMLUtils::GetInt(node, SETTING_XML_ELM_CONTROL_HEADING, m_heading);
