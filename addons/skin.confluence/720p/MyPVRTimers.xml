@@ -129,7 +129,7 @@
 					<left>0</left>
 					<top>55</top>
 					<width>1100</width>
-					<height>480</height>
+					<height>330</height>
 					<onup>50</onup>
 					<ondown>50</ondown>
 					<onleft>103</onleft>
@@ -159,14 +159,6 @@
 						</control>
 						<control type="group">
 							<visible>!IsEmpty(ListItem.Date)</visible>
-							<control type="image">
-								<left>0</left>
-								<top>8</top>
-								<width>50</width>
-								<height>26</height>
-								<texture border="1">$INFO[ListItem.Icon]</texture>
-								<aspectratio>keep</aspectratio>
-							</control>
 							<control type="label">
 								<left>50</left>
 								<top>0</top>
@@ -251,14 +243,6 @@
 						</control>
 						<control type="group">
 							<visible>!IsEmpty(ListItem.Date)</visible>
-							<control type="image">
-								<left>0</left>
-								<top>8</top>
-								<width>50</width>
-								<height>26</height>
-								<texture border="1">$INFO[ListItem.Icon]</texture>
-								<aspectratio>keep</aspectratio>
-							</control>
 							<control type="label">
 								<left>50</left>
 								<top>0</top>
@@ -316,7 +300,7 @@
 					<left>1105</left>
 					<top>50</top>
 					<width>25</width>
-					<height>480</height>
+					<height>330</height>
 					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -329,9 +313,77 @@
 				</control>
 				<control type="image">
 					<description>separator image</description>
-					<left>55</left>
+					<left>0</left>
+					<top>390</top>
+					<width>1100</width>
+					<height>1</height>
+					<colordiffuse>88FFFFFF</colordiffuse>
+					<texture>separator2.png</texture>
+				</control>
+				<control type="group">
+					<visible>!ListItem.HasEPG</visible>
+					<left>0</left>
+					<top>400</top>
+					<control type="label">
+						<left>0</left>
+						<top>0</top>
+						<width>1100</width>
+						<height>20</height>
+						<label>$LOCALIZE[19055]</label>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<align>center</align>
+					</control>
+				</control>
+				<control type="group">
+					<visible>ListItem.HasEPG</visible>
+					<left>0</left>
+					<top>400</top>
+					<control type="image">
+						<left>62</left>
+						<top>6</top>
+						<width>130</width>
+						<height>130</height>
+						<texture background="true">$INFO[ListItem.Icon]</texture>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+					</control>
+					<control type="label">
+						<left>280</left>
+						<top>0</top>
+						<width>800</width>
+						<height>20</height>
+						<label>[B]$INFO[ListItem.EpgEventTitle]$INFO[ListItem.EpisodeName, (,)][/B]</label>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<left>280</left>
+						<top>25</top>
+						<width>800</width>
+						<height>20</height>
+						<label>$INFO[ListItem.StartTime]$INFO[ListItem.EndTime, - ]$INFO[ListItem.Season, • $LOCALIZE[20373] ]$INFO[ListItem.Episode, • $LOCALIZE[20359] ]$INFO[ListItem.Genre, • ]</label>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="textbox">
+						<description>Plot value</description>
+						<left>280</left>
+						<top>57</top>
+						<width>800</width>
+						<height>63</height>
+						<font>font12</font>
+						<align>justify</align>
+						<textcolor>grey</textcolor>
+						<autoscroll delay="10000" time="3000" repeat="6000">true</autoscroll>
+						<label>$INFO[ListItem.Plot]</label>
+					</control>
+				</control>
+				<control type="image">
+					<description>separator image</description>
+					<left>0</left>
 					<top>540</top>
-					<width>1010</width>
+					<width>1100</width>
 					<height>1</height>
 					<colordiffuse>88FFFFFF</colordiffuse>
 					<texture>separator2.png</texture>
