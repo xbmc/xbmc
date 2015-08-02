@@ -10,7 +10,7 @@
         android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
         android:layout_alignParentTop="true" 
-        android:scaleType="center"
+        android:scaleType="centerCrop"
         android:src="@drawable/splash" />
 
     <RelativeLayout

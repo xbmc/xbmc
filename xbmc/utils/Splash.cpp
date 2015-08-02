@@ -29,45 +29,38 @@
 
 using namespace XFILE;
 
-CSplash::CSplash(const std::string& imageName) : CThread("Splash"), m_ImageName(imageName)
+CSplash::CSplash()
 {
-  fade = 0.5;
-  m_messageLayout = NULL;
-  m_image = NULL;
-  m_layoutWasLoading = false;
 }
-
 
 CSplash::~CSplash()
 {
-  Stop();
   delete m_image;
-  delete m_messageLayout;
 }
 
-void CSplash::OnStartup()
-{}
-
-void CSplash::OnExit()
-{}
+CSplash& CSplash::Get()
+{
+  static CSplash instance;
+  return instance;
+}
 
 void CSplash::Show()
 {
-  Show("");
-}
+  if (!m_image)
+  {
+    std::string splashImage = "special://home/media/Splash.png";
+    if (!XFILE::CFile::Exists(splashImage))
+      splashImage = "special://xbmc/media/Splash.png";
 
-void CSplash::Show(const std::string& message)
-{
+    m_image = new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), CTextureInfo(splashImage));
+    m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
+  }
+
   g_graphicsContext.Lock();
   g_graphicsContext.Clear();
 
-  RESOLUTION_INFO res(1280,720,0);
-  g_graphicsContext.SetRenderingResolution(res, true);  
-  if (!m_image)
-  {
-    m_image = new CGUIImage(0, 0, 0, 0, 1280, 720, CTextureInfo(m_ImageName));
-    m_image->SetAspectRatio(CAspectRatio::AR_CENTER);
-  }
+  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  g_graphicsContext.SetRenderingResolution(res, true);
 
   //render splash image
   g_Windowing.BeginRender();
@@ -76,60 +69,9 @@ void CSplash::Show(const std::string& message)
   m_image->Render();
   m_image->FreeResources();
 
-  // render message
-  if (!message.empty())
-  {
-    if (!m_layoutWasLoading)
-    {
-      // load arial font, white body, no shadow, size: 20, no additional styling
-      CGUIFont *messageFont = g_fontManager.LoadTTF("__splash__", "arial.ttf", 0xFFFFFFFF, 0, 20, FONT_STYLE_NORMAL, false, 1.0f, 1.0f, &res);
-      if (messageFont)
-        m_messageLayout = new CGUITextLayout(messageFont, true, 0);
-      m_layoutWasLoading = true;
-    }
-    if (m_messageLayout)
-    {
-      m_messageLayout->Update(message, 1150, false, true);
-
-      float textWidth, textHeight;
-      m_messageLayout->GetTextExtent(textWidth, textHeight);
-      // ideally place text in center of empty area below splash image
-      float y = 540 + m_image->GetTextureHeight() / 4 - textHeight / 2;
-      if (y + textHeight > 720) // make sure entire text is visible
-        y = 720 - textHeight;
-
-      m_messageLayout->RenderOutline(640, y, 0, 0xFF000000, XBFONT_CENTER_X, 1280);
-    }
-  }
-
   //show it on screen
   g_Windowing.EndRender();
   CDirtyRegionList dirty;
   g_graphicsContext.Flip(dirty);
   g_graphicsContext.Unlock();
-}
-
-void CSplash::Hide()
-{
-}
-
-void CSplash::Process()
-{
-  Show();
-}
-
-bool CSplash::Start()
-{
-  if (m_ImageName.empty() || !CFile::Exists(m_ImageName))
-  {
-    CLog::Log(LOGDEBUG, "Splash image %s not found", m_ImageName.c_str());
-    return false;
-  }
-  Create();
-  return true;
-}
-
-void CSplash::Stop()
-{
-  StopThread();
 }
