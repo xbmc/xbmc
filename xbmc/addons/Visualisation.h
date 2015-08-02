@@ -61,6 +61,7 @@ namespace ADDON
     CVisualisation(const cp_extension_t *ext) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(ext) {}
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);
+    virtual bool IsInUse() const;
     bool Create(int x, int y, int w, int h, void *device);
     void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const std::string &strSongName);
     void AudioData(const float *pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
