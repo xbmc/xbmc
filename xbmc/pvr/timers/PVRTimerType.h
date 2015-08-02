@@ -153,6 +153,18 @@ namespace PVR
     bool ForbidsNewInstances() const { return (m_iAttributes & PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES) > 0; }
 
     /*!
+     * @brief Check whether this timer type is forbidden when epg tag info is present.
+     * @return True if new instances are forbidden when epg info is present, false otherwise.
+     */
+    bool ForbidsEpgTagOnCreate() const { return (m_iAttributes & PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE) > 0; }
+
+    /*!
+     * @brief Check whether this timer type requires epg tag info to be present.
+     * @return True if new instances require EPG info, false otherwise.
+     */
+    bool RequiresEpgTagOnCreate() const { return (m_iAttributes & PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE) > 0; }
+
+    /*!
      * @brief Check whether this type supports the "enabling/disabling" of timers of its type.
      * @return True if "enabling/disabling" feature is supported, false otherwise.
      */
