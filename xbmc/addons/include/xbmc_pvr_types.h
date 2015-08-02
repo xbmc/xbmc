@@ -126,7 +126,7 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_LIFETIME                 = 0x00004000; /*!< @brief this type supports recording lifetime (PVR_TIMER.iLifetime) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS        = 0x00008000; /*!< @brief this type supports placing recordings in user defined folders (PVR_TIMER.strDirectory) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP          = 0x00010000; /*!> @brief this type supports a list of recording groups (PVR_TIMER.iRecordingGroup) */
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS           = 0x00100000; /*!< @brief this type supports a 'maximum number of recordings' (PVR_TIMER.iMaxRecordings) */
+  const unsigned int PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS           = 0x00100000; /*!< @brief this type supports specifying a maximum recordings setting' (PVR_TIMER.iMaxRecordings) */
 
   /*!
    * @brief PVR timer weekdays (PVR_TIMER.iWeekdays values)
@@ -398,7 +398,7 @@ extern "C" {
     char            strSummary[PVR_ADDON_DESC_STRING_LENGTH];  /*!< @brief (optional) the summary for this timer */
     int             iPriority;                                 /*!< @brief (optional) the priority of this timer */
     int             iLifetime;                                 /*!< @brief (optional) lifetime of this timer in days. After this time period, the recording shall be automatically deleted by the backend */
-    int             iMaxRecordings;                            /*!< @brief (optional) the maximum number of recordings to make using this timer. */
+    int             iMaxRecordings;                            /*!< @brief (optional) integer ref to addon/backend defined list of maximum recording values */
     unsigned int    iRecordingGroup;                           /*!< @brief (optional) integer ref to addon/backend defined list of recording groups*/
     time_t          firstDay;                                  /*!< @brief (optional) the first day this timer is active, for repeating timers */
     unsigned int    iWeekdays;                                 /*!< @brief (optional) week days, for repeating timers */
