@@ -52,6 +52,15 @@ namespace XBMCAddon
     // If it's a list of items then the items can be either a String or a Tuple.
     typedef Dictionary<InfoLabelValue> InfoLabelDict;
 
+    /**
+     * ListItem([label, label2, iconImage, thumbnailImage, path])\n
+     * \n
+     * label : [opt] string
+     * label2 : [opt] string
+     * iconImage : [opt] string
+     * thumbnailImage : [opt] string
+     * path : [opt] string
+     */
     class ListItem : public AddonClass
     {
     public:
