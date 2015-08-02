@@ -397,7 +397,7 @@ extern "C" {
     char            strDirectory[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) the (relative) directory where the recording will be stored in */
     char            strSummary[PVR_ADDON_DESC_STRING_LENGTH];  /*!< @brief (optional) the summary for this timer */
     int             iPriority;                                 /*!< @brief (optional) the priority of this timer */
-    int             iLifetime;                                 /*!< @brief (optional) lifetime of this timer in days. After this time period, the recording shall be automatically deleted by the backend */
+    int             iLifetime;                                 /*!< @brief (optional) integer ref to addon/backend defined list of lifetime values */
     int             iMaxRecordings;                            /*!< @brief (optional) integer ref to addon/backend defined list of maximum recording values */
     unsigned int    iRecordingGroup;                           /*!< @brief (optional) integer ref to addon/backend defined list of recording groups*/
     time_t          firstDay;                                  /*!< @brief (optional) the first day this timer is active, for repeating timers */
