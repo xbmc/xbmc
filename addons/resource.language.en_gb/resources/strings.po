@@ -3483,9 +3483,14 @@ msgstr ""
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#817"
 msgid "End any time"
+
+# Label of "MaxRecordings" list in the PVR timer setting dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#818"
+msgid "Max recordings"
 msgstr ""
 
-#empty strings from id 818 to 819
+#empty strings from id 819
 
 #. Representation of a one-time timer.
 #: xbmc/pvr/addons/PVRClient.cpp
