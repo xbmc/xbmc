@@ -156,6 +156,7 @@ namespace XBMCAddon
        *     - clearart      : string - image filename
        *     - clearlogo     : string - image filename
        *     - landscape     : string - image filename
+       *     - icon          : string - image filename
        *
        * example:
        *   - self.list.getSelectedItem().setArt({ 'poster': 'poster.png', 'banner' : 'banner.png' })
