@@ -23,6 +23,8 @@
 
 #include "addons/Resource.h"
 
+class CURL;
+
 namespace ADDON
 {
 
@@ -37,14 +39,18 @@ public:
   virtual ~CImageResource() { }
 
   virtual AddonPtr Clone() const;
+  virtual void OnPreUnInstall();
 
   virtual bool IsAllowed(const std::string &file) const;
+  virtual std::string GetFullPath(const std::string &filePath) const;
 
   //! \brief Returns type of image collection
   const std::string& GetType() const { return m_type; }
 
 private:
   CImageResource(const CImageResource &rhs);
+
+  bool HasXbt(CURL& xbtUrl) const;
 
   std::string m_type; //!< Type of images
 };
