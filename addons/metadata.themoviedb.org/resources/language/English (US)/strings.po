@@ -20,10 +20,6 @@ msgctxt "#30000"
 msgid "Enable Fanart"
 msgstr "Enable Fanart"
 
-msgctxt "#30001"
-msgid "Prefer Trailer from HD-Trailers.net"
-msgstr "Prefer Trailer from HD-Trailers.net"
-
 msgctxt "#30002"
 msgid "Preferred Language"
 msgstr "Preferred Language"

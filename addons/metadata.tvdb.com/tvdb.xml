@@ -83,7 +83,7 @@
 				<RegExp input="$$5" output="\1" dest="11">
 					<expression clear="yes">&lt;IMDB_ID&gt;([^&lt;]+)&lt;/IMDB_ID&gt;</expression>
 				</RegExp>
-				<RegExp input="$$11">
+				<RegExp input="$$11" output="\1" dest="13">
 					<RegExp conditional="fallback" input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="13+">
 						<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
 					</RegExp>
@@ -329,7 +329,7 @@
 				<RegExp input="$$8" output="\1" dest="11">
 					<expression clear="yes">&lt;IMDB_ID&gt;([^&lt;]+)&lt;/IMDB_ID&gt;</expression>
 				</RegExp>
-				<RegExp input="$$11">
+				<RegExp input="$$11" output="\1" dest="13">
 					<RegExp conditional="fallback" input="$$8" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="13+">
 						<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
 					</RegExp>
