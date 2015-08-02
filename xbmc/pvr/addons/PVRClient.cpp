@@ -474,12 +474,13 @@ bool CPVRClient::GetAddonProperties(void)
           // One-shot epg-based
           memset(&types_array[size], 0, sizeof(types_array[size]));
           types_array[size].iId         = size + 1;
-          types_array[size].iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-                                          PVR_TIMER_TYPE_SUPPORTS_CHANNELS       |
-                                          PVR_TIMER_TYPE_SUPPORTS_START_TIME     |
-                                          PVR_TIMER_TYPE_SUPPORTS_END_TIME       |
-                                          PVR_TIMER_TYPE_SUPPORTS_PRIORITY       |
-                                          PVR_TIMER_TYPE_SUPPORTS_LIFETIME       |
+          types_array[size].iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE    |
+                                          PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
+                                          PVR_TIMER_TYPE_SUPPORTS_CHANNELS          |
+                                          PVR_TIMER_TYPE_SUPPORTS_START_TIME        |
+                                          PVR_TIMER_TYPE_SUPPORTS_END_TIME          |
+                                          PVR_TIMER_TYPE_SUPPORTS_PRIORITY          |
+                                          PVR_TIMER_TYPE_SUPPORTS_LIFETIME          |
                                           PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
           size++;
         }

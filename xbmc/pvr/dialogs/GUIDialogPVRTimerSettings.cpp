@@ -727,8 +727,12 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
       if (type->IsReadOnly())
         continue;
 
-      // For new timers, skip one time epg-based types. Those cannot be created using this dialog (yet).
-      if (type->IsOnetimeEpgBased())
+      // Drop TimerTypes that require EPGInfo, if none is populated
+      if (type->RequiresEpgTagOnCreate() && !m_timerInfoTag->HasEpgInfoTag())
+        continue;
+
+      // Drop TimerTypes that forbid EPGInfo, if it is populated
+      if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->HasEpgInfoTag())
         continue;
     }
 
