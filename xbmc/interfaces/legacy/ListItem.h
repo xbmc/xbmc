@@ -57,8 +57,8 @@ namespace XBMCAddon
      * \n
      * label : [opt] string
      * label2 : [opt] string
-     * iconImage : [opt] string
-     * thumbnailImage : [opt] string
+     * iconImage : Deprecated. Use setArt
+     * thumbnailImage : Deprecated. Use setArt
      * path : [opt] string
      */
     class ListItem : public AddonClass
@@ -124,22 +124,12 @@ namespace XBMCAddon
       void setLabel2(const String& label);
 
       /**
-       * setIconImage(icon) -- Sets the listitem's icon image.\n
-       * \n
-       * icon            : string - image filename.\n
-       * \n
-       * example:
-       *   - self.list.getSelectedItem().setIconImage('emailread.png')
+       *  Deprecated. Use setArt
        */
       void setIconImage(const String& iconImage);
 
       /**
-       * setThumbnailImage(thumbFilename) -- Sets the listitem's thumbnail image.\n
-       * \n
-       * thumb           : string - image filename.\n
-       * \n
-       * example:
-       *   - self.list.getSelectedItem().setThumbnailImage('emailread.png')
+       * Deprecated. Use setArt
        */
       void setThumbnailImage(const String& thumbFilename);
 
