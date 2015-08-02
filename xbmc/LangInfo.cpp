@@ -1129,6 +1129,8 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(const CSetting *setting, st
 
 void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
+  list.push_back(make_pair(g_localizeStrings.Get(231), "none"));
+  list.push_back(make_pair(g_localizeStrings.Get(13207), "forced_only"));
   list.push_back(make_pair(g_localizeStrings.Get(308), "original"));
   list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
 

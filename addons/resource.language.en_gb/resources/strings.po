@@ -1005,6 +1005,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: system/settings/settings.xml
+#: xbmc/LangInfo.cpp
 msgctxt "#231"
 msgid "None"
 msgstr ""
@@ -1338,10 +1339,12 @@ msgstr ""
 
 #empty string with id 307
 
+#: xbmc/LangInfo.cpp
 msgctxt "#308"
 msgid "Original stream's language"
 msgstr ""
 
+#: xbmc/LangInfo.cpp
 msgctxt "#309"
 msgid "User interface language"
 msgstr ""
@@ -5770,7 +5773,11 @@ msgctxt "#13206"
 msgid "Overwrite"
 msgstr ""
 
-#empty string with id 13207
+#. Subtitle selection to only use forced subtitles
+#:  xbmc/LangInfo.cpp
+msgctxt "#13207"
+msgid "Forced only"
+msgstr ""
 
 msgctxt "#13208"
 msgid "Alarm clock"
