@@ -234,6 +234,7 @@ namespace PVR
     bool                  m_bEndAnyTime;         /*!< @brief Ignore end date and time clock. Record at 'Any Time' */
     int                   m_iPriority;           /*!< @brief priority of the timer */
     int                   m_iLifetime;           /*!< @brief lifetime of the timer in days */
+    int                   m_iMaxRecordings;      /*!< @brief (optional) backend setting for maximum number of recordings to keep*/
     unsigned int          m_iWeekdays;           /*!< @brief bit based store of weekdays for repeating timers */
     unsigned int          m_iPreventDupEpisodes; /*!< @brief only record new episodes for repeating epg based timers */
     unsigned int          m_iRecordingGroup;     /*!< @brief (optional) if set, the addon/backend stores the recording to a group (sub-folder) */
