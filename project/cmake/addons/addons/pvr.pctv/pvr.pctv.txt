@@ -1,1 +1,1 @@
-pvr.pctv https://github.com/kodi-pvr/pvr.pctv ff5d536
+pvr.pctv https://github.com/kodi-pvr/pvr.pctv master
