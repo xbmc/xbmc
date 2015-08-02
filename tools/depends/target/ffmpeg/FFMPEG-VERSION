@@ -1,5 +1,5 @@
 LIBNAME=ffmpeg
 BASE_URL=https://github.com/xbmc/FFmpeg/archive
-VERSION=2.6.3-Isengard
+VERSION=2.6.4-Isengard
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
