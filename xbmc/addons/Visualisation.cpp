@@ -26,6 +26,7 @@
 #include "guilib/WindowIDs.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -473,3 +474,7 @@ std::string CVisualisation::GetPresetName()
     return "";
 }
 
+bool CVisualisation::IsInUse() const
+{
+  return CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION) == ID();
+}
