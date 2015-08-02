@@ -1,1 +1,1 @@
-pvr.dvblink https://github.com/kodi-pvr/pvr.dvblink 1855e44
+pvr.dvblink https://github.com/kodi-pvr/pvr.dvblink master
