@@ -1,3 +1,6 @@
+[B]2.4.1[/B]
+Fixed: Proper scraping of "Official" releases that may have a "disambiguation" attribute in musicbrainz.
+
 [B]2.4.0[/B]
 Changed: Language is now a selection list
 

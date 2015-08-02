@@ -1,3 +1,6 @@
+[B]3.8.4[/B]
+- removed: option to scrape trailers from hd-trailers.net (it was broken)
+
 [B]3.8.3[/B]
 - fixed: further fixes to the broken search results due to API changes
 
