@@ -232,9 +232,7 @@ int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageIn
   if (addon != NULL)
     invokerThread->SetAddon(addon);
 
-  CSingleLock lock(m_critSection);
-  invokerThread->SetId(m_nextId++);
-  lock.Leave();
+  invokerThread->SetId(GetNextScriptId());
 
   LanguageInvokerThread thread = { invokerThread, script, false };
   m_scripts.insert(make_pair(invokerThread->GetId(), thread));
@@ -333,6 +331,20 @@ bool CScriptInvocationManager::IsRunning(const std::string& scriptPath) const
   return IsRunning(it->second);
 }
 
+int CScriptInvocationManager::GetNextScriptId()
+{
+  CSingleLock lock(m_critSection);
+  int returnId = m_nextId++;
+  // only script IDs >= 0 are valid
+  if(m_nextId < 0)
+  {
+    m_nextId = 0;
+  }
+
+  lock.Leave();
+
+  return returnId;
+}
 void CScriptInvocationManager::OnScriptEnded(int scriptId)
 {
   if (scriptId < 0)

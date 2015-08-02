@@ -33,22 +33,28 @@
 #include "XBPython.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "profiles/ProfilesManager.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "pythreadstate.h"
+#include "utils/TimeUtils.h"
 #include "Util.h"
+#include "guilib/GraphicContext.h"
 #ifdef TARGET_WINDOWS
 #include "utils/Environment.h"
 #endif
 #include "settings/AdvancedSettings.h"
 
 #include "threads/SystemClock.h"
+#include "addons/Addon.h"
 #include "interfaces/AnnouncementManager.h"
 
 #include "interfaces/legacy/Monitor.h"
 #include "interfaces/legacy/AddonUtils.h"
 #include "interfaces/python/AddonPythonInvoker.h"
 #include "interfaces/python/PythonInvoker.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 
 using namespace ANNOUNCEMENT;
 
@@ -537,6 +543,11 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
   if (invoker == NULL)
     return false;
 
+  return InitInterpreter();
+}
+
+bool XBPython::InitInterpreter()
+{
   XBMC_TRACE;
   CLog::Log(LOGINFO, "initializing python engine.");
   CSingleLock lock(m_critSection);
@@ -596,7 +607,12 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     CEnvironment::putenv(buf);
 
 #elif defined(TARGET_ANDROID)
-    // Set earlier to avoid random crashes
+    std::string apkPath = getenv("XBMC_ANDROID_APK");
+    apkPath += "/assets/python2.6";
+    setenv("PYTHONHOME", apkPath.c_str(), 1);
+    setenv("PYTHONPATH", "", 1);
+    setenv("PYTHONOPTIMIZE", "", 1);
+    setenv("PYTHONNOUSERSITE", "1", 1);
 #endif
 
     if (PyEval_ThreadsInitialized())
@@ -604,7 +620,11 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     else
       PyEval_InitThreads();
 
-    Py_Initialize();
+    if(!Py_IsInitialized())
+    {
+      Py_Initialize();
+    }
+
     PyEval_ReleaseLock();
 
     // If this is not the first time we initialize Python, the interpreter
@@ -713,4 +733,120 @@ bool XBPython::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
   if (ret)
     m_globalEvent.Reset();
   return ret != NULL;
+}
+
+
+int XBPython::GetAddonInterpreter()
+{
+  if(!InitInterpreter())
+  { // Python interpreter is not initialized
+    CLog::Log(LOGERROR, "%s - Failed to initialize Python Interpreter!", __FUNCTION__);
+    return -1;
+  }
+
+  PyElem pyElem;
+  pyElem.id = CScriptInvocationManager::Get().GetNextScriptId();
+  pyElem.bDone = false;
+  pyElem.addonPythonState = Py_NewInterpreter();
+  pyElem.pyThread = NULL;
+  if(!pyElem.addonPythonState)
+  {
+    CLog::Log(LOGERROR, "%s - Failed to create a new Python Addon Interpreter!", __FUNCTION__);
+    return -1;
+  }
+
+  CSingleLock lock(m_vecPyList);
+  m_vecPyList.push_back(pyElem);
+  lock.Leave();
+
+  return pyElem.id;
+}
+
+bool XBPython::DestroyAddonInterpreter(int Id)
+{
+  if(Id <= 0)
+  {
+    CLog::Log(LOGERROR, "%s - Invalid input! No valid addon interpreter Id! Id should be >= 0!", __FUNCTION__);
+    return false;
+  }
+
+  CSingleLock lockPyList(m_vecPyList);
+  PyList::iterator it;
+  bool found = false;
+  for(it = m_vecPyList.begin(); it != m_vecPyList.end() && !found; it++)
+  {
+    if(it->id == Id)
+    {
+      CLog::Log(LOGINFO, "Python Addon Interpreter stopped.");
+      it->bDone = true;
+      found = true;
+    }
+  }
+
+  CSingleLock lockCrit(m_critSection);
+  m_iDllScriptCounter--;
+}
+
+bool XBPython::ActiveAddonInterpreter(int Id)
+{
+  if(Id < 0)
+  {
+    CLog::Log(LOGERROR, "%s - Python Addon Interpreter Id:%i is invalid! Id should be >= 0", __FUNCTION__, Id);
+    return false;
+  }
+
+  CSingleLock lock(m_vecPyList);
+  PyList::iterator it;
+  // search the correct ID in the m_vecPyList object
+  for(it = m_vecPyList.begin(); it != m_vecPyList.end() && it->id != Id; it++);
+
+  if(it == m_vecPyList.end())
+  {
+
+    CLog::Log(LOGERROR, "%s - Python Addon Interpreter Id:%i not found!", __FUNCTION__, Id);
+    return false;
+  }
+
+  if(!it->addonPythonState)
+  {
+    CLog::Log(LOGERROR, "%s - Python Addon Interpreter Id:%i is not a Addon Interpreter!", __FUNCTION__, Id);
+    return false;
+  }
+
+  PyEval_AcquireLock();
+  PyThreadState_Swap(it->addonPythonState);
+  CLog::Log(LOGDEBUG, "%s - Python Addon Interpreter Id:%i activated Addon Interpreter!", __FUNCTION__, Id);
+
+  return true;
+}
+
+bool XBPython::DeactiveAddonInterpreter(int Id)
+{
+  CSingleLock lock(m_vecPyList);
+  PyList::iterator it;
+  // search the correct ID in the m_vecPyList object
+  for(it = m_vecPyList.begin(); it != m_vecPyList.end() && it->id != Id; it++);
+
+  if(it == m_vecPyList.end())
+  {
+    CLog::Log(LOGERROR, "%s - Python Addon Interpreter Id:%i not found!", __FUNCTION__, Id);
+    return false;
+  }
+
+  if(!it->addonPythonState)
+  {
+    CLog::Log(LOGERROR, "%s - Python Addon Interpreter Id:%i is not a Addon Interpreter!", __FUNCTION__, Id);
+    return false;
+  }
+
+  //PyEval_AcquireLock();
+  PyThreadState_Swap(NULL);
+  PyThreadState_Clear(it->addonPythonState);
+  PyEval_ReleaseLock();
+  CLog::Log(LOGDEBUG, "%s - Python Addon Interpreter Id:%i deactivated Addon Interpreter!", __FUNCTION__, Id);
+}
+
+bool XBPython::FinishAddonInterpreter(int Id)
+{
+  return true;
 }

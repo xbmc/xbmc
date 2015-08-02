@@ -68,6 +68,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Effects11", "..\..\lib\win3
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libKODI_adsp", "..\..\lib\addons\library.kodi.adsp\project\VS2010Express\libKODI_adsp.vcxproj", "{44F93C4D-85DD-4452-99BB-F1D196174024}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libKODI_interfaces", "..\..\lib\addons\library.kodi.interfaces\project\VS2010Express\libKODI_interfaces.vcxproj", "{0FF79243-6137-4DD1-A7E2-0C55362D7A64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Testsuite|Win32 = Debug Testsuite|Win32
@@ -238,6 +240,12 @@ Global
 		{44F93C4D-85DD-4452-99BB-F1D196174024}.Debug|Win32.Build.0 = Debug|Win32
 		{44F93C4D-85DD-4452-99BB-F1D196174024}.Release|Win32.ActiveCfg = Release|Win32
 		{44F93C4D-85DD-4452-99BB-F1D196174024}.Release|Win32.Build.0 = Release|Win32
+		{0FF79243-6137-4DD1-A7E2-0C55362D7A64}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{0FF79243-6137-4DD1-A7E2-0C55362D7A64}.Debug Testsuite|Win32.Build.0 = Debug|Win32
+		{0FF79243-6137-4DD1-A7E2-0C55362D7A64}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0FF79243-6137-4DD1-A7E2-0C55362D7A64}.Debug|Win32.Build.0 = Debug|Win32
+		{0FF79243-6137-4DD1-A7E2-0C55362D7A64}.Release|Win32.ActiveCfg = Release|Win32
+		{0FF79243-6137-4DD1-A7E2-0C55362D7A64}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="kodi.interfaces" version="0.0.1" provider-name="Team KODI">
+  <backwards-compatibility abi="0.0.1"/>
+  <requires>
+    <import addon="xbmc.core" version="0.1.0"/>
+  </requires>
+</addon>

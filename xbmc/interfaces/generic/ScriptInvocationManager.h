@@ -104,6 +104,7 @@ public:
 
   bool IsRunning(int scriptId) const;
   bool IsRunning(const std::string& scriptPath) const;
+  int GetNextScriptId();
 
 protected:
   friend class CLanguageInvokerThread;

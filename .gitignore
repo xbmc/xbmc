@@ -159,6 +159,8 @@ config.log
 /lib/addons/library.xbmc.codec/project/VS2010Express/Debug
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Release
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Debug
+/lib/addons/library.kodi.interfaces/project/VS2010Express/Debug
+/lib/addons/library.kodi.interfaces/project/VS2010Express/Release
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -940,6 +942,8 @@ xbmc/main/posix/Makefile
 /addons/library.kodi.guilib/libKODI_guilib.lib
 /addons/library.xbmc.pvr/libXBMC_pvr.dll
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
+/addons/library.kodi.interfaces/libKODI_interfaces.dll
+/addons/library.kodi.interfaces/libKODI_interfaces.lib
 
 /pvr-addons
 /adsp-addons

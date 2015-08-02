@@ -26,6 +26,8 @@
 #include "threads/Thread.h"
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
+#include "addons/IAddon.h"
+#include <Python.h>
 
 #include <memory>
 #include <vector>
@@ -33,11 +35,21 @@
 class CPythonInvoker;
 class CVariant;
 
-typedef struct {
+typedef struct PyElem
+{
   int id;
   bool bDone;
-  CPythonInvoker* pyThread;
-}PyElem;
+  CPythonInvoker *pyThread;
+  PyThreadState  *addonPythonState; // this pointer is only used by binary add-ons to controll a full python interpreter
+
+  PyElem()
+  {
+    id = 0;
+    bDone = false;
+    pyThread = NULL;
+    addonPythonState = NULL;
+  };
+} PyElem;
 
 class LibraryLoader;
 
@@ -107,7 +119,21 @@ public:
   void UnregisterExtensionLib(LibraryLoader *pLib);
   void UnloadExtensionLibs();
 
+  // ------------------------------------------------------------------
+  //               Python Addon Interpreter methods
+  // ------------------------------------------------------------------
+  /**
+   * This method tries to get a new Python interpreter thread state, which can be used by dynamic linking to Python.dll.
+   * @return a new ScriptId.
+   */
+  int  GetAddonInterpreter();
+  bool DestroyAddonInterpreter(int Id);
+  bool ActiveAddonInterpreter(int Id);
+  bool DeactiveAddonInterpreter(int Id);
+  bool FinishAddonInterpreter(int Id);
+
 private:
+  bool InitInterpreter();
   void Finalize();
 
   CCriticalSection    m_critSection;
