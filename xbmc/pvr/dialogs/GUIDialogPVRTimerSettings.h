@@ -81,6 +81,8 @@ namespace PVR
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void LifetimesFiller(
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void MaxRecordingsFiller(
+      const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
     static void RecordingGroupFiller(
       const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
@@ -152,6 +154,7 @@ namespace PVR
     unsigned int        m_iMarginEnd;
     int                 m_iPriority;
     int                 m_iLifetime;
+    int                 m_iMaxRecordings;
     std::string         m_strDirectory;
     unsigned int        m_iRecordingGroup;
   };

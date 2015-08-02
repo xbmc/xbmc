@@ -48,6 +48,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_iClientChannelUid   = PVR_INVALID_CHANNEL_UID;
   m_iPriority           = CSettings::Get().GetInt("pvrrecord.defaultpriority");
   m_iLifetime           = CSettings::Get().GetInt("pvrrecord.defaultlifetime");
+  m_iMaxRecordings      = 0;
   m_iPreventDupEpisodes = CSettings::Get().GetInt("pvrrecord.preventduplicateepisodes");
   m_iRecordingGroup     = 0;
   m_iChannelNumber      = 0;
@@ -102,6 +103,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_iWeekdays           = timer.iWeekdays;
   m_iPriority           = timer.iPriority;
   m_iLifetime           = timer.iLifetime;
+  m_iMaxRecordings      = timer.iMaxRecordings;
   m_iMarginStart        = timer.iMarginStart;
   m_iMarginEnd          = timer.iMarginEnd;
   m_genre               = StringUtils::Split(CEpg::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
@@ -179,6 +181,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iWeekdays           == right.m_iWeekdays &&
           m_iPriority           == right.m_iPriority &&
           m_iLifetime           == right.m_iLifetime &&
+          m_iMaxRecordings      == right.m_iMaxRecordings &&
           m_strFileNameAndPath  == right.m_strFileNameAndPath &&
           m_strTitle            == right.m_strTitle &&
           m_strEpgSearchString  == right.m_strEpgSearchString &&
@@ -300,6 +303,7 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
   value["epgsearchstring"]   = m_strEpgSearchString;
   value["fulltextepgsearch"] = m_bFullTextEpgSearch;
   value["recordinggroup"]    = m_iRecordingGroup;
+  value["maxrecordings"]     = m_iMaxRecordings;
 }
 
 int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
@@ -364,6 +368,7 @@ void CPVRTimerInfoTag::SetTimerType(const CPVRTimerTypePtr &type)
   {
     m_iPriority           = m_timerType->GetPriorityDefault();
     m_iLifetime           = m_timerType->GetLifetimeDefault();
+    m_iMaxRecordings      = m_timerType->GetMaxRecordingsDefault();
     m_iPreventDupEpisodes = m_timerType->GetPreventDuplicateEpisodesDefault();
   }
 
@@ -561,6 +566,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
   m_FirstDay            = tag->m_FirstDay;
   m_iPriority           = tag->m_iPriority;
   m_iLifetime           = tag->m_iLifetime;
+  m_iMaxRecordings      = tag->m_iMaxRecordings;
   m_state               = tag->m_state;
   m_iPreventDupEpisodes = tag->m_iPreventDupEpisodes;
   m_iRecordingGroup     = tag->m_iRecordingGroup;

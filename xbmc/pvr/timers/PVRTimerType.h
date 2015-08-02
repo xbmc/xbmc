@@ -220,6 +220,12 @@ namespace PVR
     bool SupportsLifetime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_LIFETIME) > 0; }
 
     /*!
+     * @brief Check whether this type supports MaxRecordings for recordings.
+     * @return True if MaxRecordings is supported, false otherwise.
+     */
+    bool SupportsMaxRecordings() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS) > 0; }
+
+    /*!
      * @brief Check whether this type supports user specified recording folders.
      * @return True if recording folders are supported, false otherwise.
      */
@@ -256,6 +262,18 @@ namespace PVR
     int GetLifetimeDefault() const { return m_iLifetimeDefault; }
 
     /*!
+     * @brief Obtain a list with all possible values for the MaxRecordings attribute.
+     * @param list out, the list with the values or an empty list, if MaxRecordings is not supported by this type.
+     */
+    void GetMaxRecordingsValues(std::vector< std::pair<std::string, int> > &list) const;
+
+    /*!
+     * @brief Obtain the default value for the MaxRecordings attribute.
+     * @return the default value.
+     */
+    int GetMaxRecordingsDefault() const { return m_iMaxRecordingsDefault; }
+
+    /*!
      * @brief Obtain a list with all possible values for the duplicate episode prevention attribute.
      * @param list out, the list with the values or an empty list, if duplicate episode prevention is not supported by this type.
      */
@@ -284,6 +302,7 @@ namespace PVR
     void InitAttributeValues(const PVR_TIMER_TYPE &type);
     void InitPriorityValues(const PVR_TIMER_TYPE &type);
     void InitLifetimeValues(const PVR_TIMER_TYPE &type);
+    void InitMaxRecordingsValues(const PVR_TIMER_TYPE &type);
     void InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &type);
     void InitRecordingGroupValues(const PVR_TIMER_TYPE &type);
 
@@ -295,6 +314,8 @@ namespace PVR
     int           m_iPriorityDefault;
     std::vector< std::pair<std::string, int> > m_lifetimeValues;
     int           m_iLifetimeDefault;
+    std::vector< std::pair<std::string, int> > m_maxRecordingsValues;
+    int           m_iMaxRecordingsDefault;
     std::vector< std::pair<std::string, int> > m_preventDupEpisodesValues;
     unsigned int  m_iPreventDupEpisodesDefault;
     std::vector< std::pair<std::string, int> > m_recordingGroupValues;

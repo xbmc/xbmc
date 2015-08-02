@@ -57,6 +57,7 @@ using namespace PVR;
 #define SETTING_TMR_END_POST      "timer.endmargin"
 #define SETTING_TMR_PRIORITY      "timer.priority"
 #define SETTING_TMR_LIFETIME      "timer.lifetime"
+#define SETTING_TMR_MAX_REC       "timer.maxrecordings"
 #define SETTING_TMR_DIR           "timer.directory"
 #define SETTING_TMR_REC_GROUP     "timer.recgroup"
 
@@ -81,6 +82,7 @@ CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings() :
   m_iMarginEnd(0),
   m_iPriority(0),
   m_iLifetime(0),
+  m_iMaxRecordings(0),
   m_iRecordingGroup(0)
 {
   m_loadType = LOAD_EVERY_TIME;
@@ -138,6 +140,7 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   m_iMarginEnd          = m_timerInfoTag->m_iMarginEnd;
   m_iPriority           = m_timerInfoTag->m_iPriority;
   m_iLifetime           = m_timerInfoTag->m_iLifetime;
+  m_iMaxRecordings      = m_timerInfoTag->m_iMaxRecordings;
   m_strDirectory        = m_timerInfoTag->m_strDirectory;
   m_iRecordingGroup     = m_timerInfoTag->m_iRecordingGroup;
 
@@ -334,6 +337,11 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_LIFETIME);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_LIFETIME);
 
+  // MaxRecordings
+  setting = AddList(group, SETTING_TMR_MAX_REC, 817, 0, m_iMaxRecordings, MaxRecordingsFiller, 817);
+  AddTypeDependentVisibilityCondition(setting, SETTING_TMR_MAX_REC);
+  AddTypeDependentEnableCondition(setting, SETTING_TMR_MAX_REC);
+
   // Recording folder
   setting = AddEdit(group, SETTING_TMR_DIR, 19076, 0, m_strDirectory, true, false, 19104);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_DIR);
@@ -458,6 +466,10 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_TMR_LIFETIME)
   {
     m_iLifetime = static_cast<const CSettingInt*>(setting)->GetValue();
+  }
+  else if (settingId == SETTING_TMR_MAX_REC)
+  {
+    m_iMaxRecordings = static_cast<const CSettingInt*>(setting)->GetValue();
   }
   else if (settingId == SETTING_TMR_DIR)
   {
@@ -618,6 +630,9 @@ void CGUIDialogPVRTimerSettings::Save()
 
   // Lifetime
   m_timerInfoTag->m_iLifetime = m_iLifetime;
+
+  // MaxRecordings
+  m_timerInfoTag->m_iMaxRecordings = m_iMaxRecordings;
 
   // Recording folder
   m_timerInfoTag->m_strDirectory = m_strDirectory;
@@ -922,6 +937,20 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::LifetimesFiller - No dialog");
 }
 
+void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(
+  const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  CGUIDialogPVRTimerSettings *pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  if (pThis)
+  {
+    list.clear();
+    pThis->m_timerType->GetMaxRecordingsValues(list);
+    current = pThis->m_iMaxRecordings;
+  }
+  else
+    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::MaxRecordingsFiller - No dialog");
+}
+
 void CGUIDialogPVRTimerSettings::RecordingGroupFiller(
   const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
@@ -1058,6 +1087,8 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string &condit
       return entry->second->SupportsPriority();
     else if (cond == SETTING_TMR_LIFETIME)
       return entry->second->SupportsLifetime();
+	else if (cond == SETTING_TMR_MAX_REC)
+      return entry->second->SupportsMaxRecordings();
     else if (cond == SETTING_TMR_DIR)
       return entry->second->SupportsRecordingFolders();
     else if (cond == SETTING_TMR_REC_GROUP)
