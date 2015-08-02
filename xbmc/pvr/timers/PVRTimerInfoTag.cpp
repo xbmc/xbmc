@@ -365,6 +365,7 @@ void CPVRTimerInfoTag::SetTimerType(const CPVRTimerTypePtr &type)
     m_iPriority           = m_timerType->GetPriorityDefault();
     m_iLifetime           = m_timerType->GetLifetimeDefault();
     m_iPreventDupEpisodes = m_timerType->GetPreventDuplicateEpisodesDefault();
+    m_iRecordingGroup     = m_timerType->GetRecordingGroupDefault();
   }
 
   if (m_timerType && !m_timerType->IsRepeating())
