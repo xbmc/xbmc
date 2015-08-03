@@ -79,8 +79,9 @@ bool FFmpegVideoDecoder::isOpened() const
 
 double FFmpegVideoDecoder::getDuration() const
 {
-  if ( m_pFormatCtx && m_pFormatCtx->duration / AV_TIME_BASE > 0.0 )
-	return m_pFormatCtx->duration / AV_TIME_BASE;
+  double duration = static_cast<double>(m_pFormatCtx->duration) / AV_TIME_BASE;
+  if ( m_pFormatCtx && duration > 0.0 )
+	return duration;
 
   return 0.0;
 }
