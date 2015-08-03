@@ -447,6 +447,7 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "currentpage",      CONTAINER_CURRENT_PAGE },
                                   { "scrolling",        CONTAINER_SCROLLING },
                                   { "hasnext",          CONTAINER_HAS_NEXT },
+                                  { "hasparent",        CONTAINER_HAS_PARENT_ITEM },
                                   { "hasprevious",      CONTAINER_HAS_PREVIOUS },
                                   { "canfilter",        CONTAINER_CAN_FILTER },
                                   { "canfilteradvanced",CONTAINER_CAN_FILTERADVANCED },
@@ -2493,8 +2494,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     if (pWindow)
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasArt("thumb");
   }
-  else if (condition == CONTAINER_HAS_NEXT || condition == CONTAINER_HAS_PREVIOUS
-           || condition == CONTAINER_SCROLLING || condition == CONTAINER_ISUPDATING)
+  else if (condition == CONTAINER_HAS_NEXT || condition == CONTAINER_HAS_PREVIOUS ||
+           condition == CONTAINER_SCROLLING || condition == CONTAINER_ISUPDATING ||
+           condition == CONTAINER_HAS_PARENT_ITEM)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
@@ -3043,6 +3045,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case CONTAINER_SCROLLING:
       case CONTAINER_SUBITEM:
       case CONTAINER_ISUPDATING:
+      case CONTAINER_HAS_PARENT_ITEM:
         {
           const CGUIControl *control = NULL;
           if (info.GetData1())
