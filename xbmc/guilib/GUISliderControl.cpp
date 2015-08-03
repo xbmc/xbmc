@@ -555,13 +555,19 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    Move(10);
-    return EVENT_RESULT_HANDLED;
+    if (m_guiBackground.HitTest(point))
+    {
+      Move(10);
+      return EVENT_RESULT_HANDLED;
+    }
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    Move(-10);
-    return EVENT_RESULT_HANDLED;
+    if (m_guiBackground.HitTest(point))
+    {
+      Move(-10);
+      return EVENT_RESULT_HANDLED;
+    }
   }
   else if (event.m_id == ACTION_GESTURE_NOTIFY)
   {
