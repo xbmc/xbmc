@@ -1167,6 +1167,8 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
     return (HasNextPage());
   case CONTAINER_HAS_PREVIOUS:
     return (HasPreviousPage());
+  case CONTAINER_HAS_PARENT_ITEM:
+    return (m_items.size() && m_items[0]->IsFileItem() && (std::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder());
   case CONTAINER_SUBITEM:
     {
       CGUIListItemLayout *layout = GetFocusedLayout();
