@@ -290,6 +290,7 @@ void updateScreen (cc708_service_decoder *decoder)
       left=0;
     int copyrows=top + wnd[i]->row_count >= I708_SCREENGRID_ROWS ?
         I708_SCREENGRID_ROWS - top : wnd[i]->row_count;
+    copyrows = copyrows > I708_MAX_ROWS ? I708_MAX_ROWS : copyrows;
     int copycols=left + wnd[i]->col_count >= I708_SCREENGRID_COLUMNS ?
         I708_SCREENGRID_COLUMNS - left : wnd[i]->col_count;
     for (int j=0;j<copyrows;j++)
