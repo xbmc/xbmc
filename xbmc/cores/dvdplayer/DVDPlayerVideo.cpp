@@ -1143,9 +1143,6 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
       return result | EOS_DROPPED;
     }
-
-    if (iSleepTime > DVD_MSEC_TO_TIME(20))
-      iSleepTime = DVD_MSEC_TO_TIME(20);
   }
 
   // sync clock if we are master
