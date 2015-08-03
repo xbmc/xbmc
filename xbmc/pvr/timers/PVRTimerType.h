@@ -165,10 +165,27 @@ namespace PVR
     bool SupportsChannels() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_CHANNELS) > 0; }
 
     /*!
-     * @brief Check whether this type supports start time and end time.
-     * @return True if start time and end time values is supported, false otherwise.
+     * @brief Check whether this type supports start time.
+     * @return True if start time values are supported, false otherwise.
      */
-    bool SupportsStartEndTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_END_TIME) > 0; }
+    bool SupportsStartTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_TIME) > 0; }
+
+    /*!
+     * @brief Check whether this type supports end time.
+     * @return True if end time values are supported, false otherwise.
+     */
+    bool SupportsEndTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_END_TIME) > 0; }
+    /*!
+     * @brief Check whether this type supports start any time.
+     * @return True if start any time is supported, false otherwise.
+     */
+    bool SupportsStartAnyTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME) > 0; }
+
+    /*!
+     * @brief Check whether this type supports end any time.
+     * @return True if end any time is supported, false otherwise.
+     */
+    bool SupportsEndAnyTime() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME) > 0; }
 
     /*!
      * @brief Check whether this type supports matching a search string against epg episode title.

@@ -3427,10 +3427,10 @@ msgctxt "#809"
 msgid "Any channel"
 msgstr ""
 
-#. Label of "Any time" radio button in PVR timer settings dialog
+#. Label of "Start any time" radio button in PVR timer settings dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#810"
-msgid "Any time"
+msgid "Start any time"
 msgstr ""
 
 # Label of "Recording group" list in the PVR timer setting dialog
@@ -3471,7 +3471,13 @@ msgctxt "#816"
 msgid "Record only new episodes"
 msgstr ""
 
-#empty strings from id 817 to 819
+#. Label of "End any time" radio button in PVR timer settings dialog
+#: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
+msgctxt "#817"
+msgid "End any time"
+msgstr ""
+
+#empty strings from id 818 to 819
 
 #. Representation of a one-time timer.
 #: xbmc/pvr/addons/PVRClient.cpp

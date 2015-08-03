@@ -58,6 +58,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_iGenreSubType       = 0;
   m_StartTime           = CDateTime::GetUTCDateTime();
   m_StopTime            = m_StartTime;
+  m_bStartAnyTime       = false;
+  m_bEndAnyTime         = false;
   m_state               = PVR_TIMER_STATE_NEW;
   m_FirstDay.SetValid(false);
   m_iTimerId            = 0;
@@ -96,6 +98,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_iChannelNumber      = channel ? g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->GetChannelNumber(channel) : 0;
   m_StartTime           = timer.startTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_StopTime            = timer.endTime + g_advancedSettings.m_iPVRTimeCorrection;
+  m_bStartAnyTime       = timer.bStartAnyTime;
+  m_bEndAnyTime         = timer.bEndAnyTime;
   m_iPreventDupEpisodes = timer.iPreventDuplicateEpisodes;
   m_iRecordingGroup     = timer.iRecordingGroup;
   m_FirstDay            = timer.firstDay + g_advancedSettings.m_iPVRTimeCorrection;
@@ -175,6 +179,8 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iRecordingGroup     == right.m_iRecordingGroup &&
           m_StartTime           == right.m_StartTime &&
           m_StopTime            == right.m_StopTime &&
+          m_bStartAnyTime       == right.m_bStartAnyTime &&
+          m_bEndAnyTime         == right.m_bEndAnyTime &&
           m_FirstDay            == right.m_FirstDay &&
           m_iWeekdays           == right.m_iWeekdays &&
           m_iPriority           == right.m_iPriority &&
@@ -213,6 +219,8 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
   value["preventduplicateepisodes"] = m_iPreventDupEpisodes;
   value["starttime"] = m_StartTime.IsValid() ? m_StartTime.GetAsDBDateTime() : "";
   value["endtime"] = m_StopTime.IsValid() ? m_StopTime.GetAsDBDateTime() : "";
+  value["startanytime"] = m_bStartAnyTime;
+  value["endanytime"] = m_bEndAnyTime;
   value["runtime"] = m_StartTime.IsValid() && m_StopTime.IsValid() ? (m_StopTime - m_StartTime).GetSecondsTotal() : 0;
   value["firstday"] = m_FirstDay.IsValid() ? m_FirstDay.GetAsDBDate() : "";
 
@@ -323,22 +331,28 @@ void CPVRTimerInfoTag::UpdateSummary(void)
   CSingleLock lock(m_critSection);
   m_strSummary.clear();
 
-  const std::string startDate(IsStartAtAnyTime() ?
-      g_localizeStrings.Get(807) /* "Any day" */ : StartAsLocalTime().GetAsLocalizedDate());
-  const std::string endDate(IsEndAtAnyTime() ?
-      g_localizeStrings.Get(807) /* "Any day" */ : EndAsLocalTime().GetAsLocalizedDate());
+  const std::string startDate(StartAsLocalTime().GetAsLocalizedDate());
+  const std::string endDate(EndAsLocalTime().GetAsLocalizedDate());
 
-  if ((m_iWeekdays != PVR_WEEKDAY_NONE) || (startDate == endDate))
+  if (m_bEndAnyTime)
+  {
+    m_strSummary = StringUtils::Format("%s %s %s",
+        m_iWeekdays != PVR_WEEKDAY_NONE ?
+          GetWeekdaysString().c_str() : startDate.c_str(), //for "Any day" set PVR_WEEKDAY_ALLDAYS
+        g_localizeStrings.Get(19107).c_str(), // "at"
+        m_bStartAnyTime ?
+          g_localizeStrings.Get(19161).c_str() /* "any time" */ : StartAsLocalTime().GetAsLocalizedTime("", false).c_str());
+  }
+  else if ((m_iWeekdays != PVR_WEEKDAY_NONE) || (startDate == endDate))
   {
     m_strSummary = StringUtils::Format("%s %s %s %s %s",
         m_iWeekdays != PVR_WEEKDAY_NONE ?
-          GetWeekdaysString().c_str() : (IsStartAtAnyTime() && IsEndAtAnyTime() && FirstDayAsLocalTime().IsValid()) ?
-            FirstDayAsLocalTime().GetAsLocalizedDate().c_str() : startDate.c_str(),
+          GetWeekdaysString().c_str() : startDate.c_str(), //for "Any day" set PVR_WEEKDAY_ALLDAYS
         g_localizeStrings.Get(19159).c_str(), // "from"
-        IsStartAtAnyTime() ?
+        m_bStartAnyTime ?
           g_localizeStrings.Get(19161).c_str() /* "any time" */ : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
         g_localizeStrings.Get(19160).c_str(), // "to"
-        IsEndAtAnyTime() ?
+        m_bEndAnyTime ?
           g_localizeStrings.Get(19161).c_str() /* "any time" */ : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
   else
@@ -346,11 +360,11 @@ void CPVRTimerInfoTag::UpdateSummary(void)
     m_strSummary = StringUtils::Format("%s %s %s %s %s %s",
         startDate.c_str(),
         g_localizeStrings.Get(19159).c_str(), // "from"
-        IsStartAtAnyTime() ?
+        m_bStartAnyTime ?
           g_localizeStrings.Get(19161).c_str() /* "any time" */ : StartAsLocalTime().GetAsLocalizedTime("", false).c_str(),
         g_localizeStrings.Get(19160).c_str(), // "to"
         endDate.c_str(),
-        IsEndAtAnyTime() ?
+        m_bEndAnyTime ?
           g_localizeStrings.Get(19161).c_str() /* "any time" */ : EndAsLocalTime().GetAsLocalizedTime("", false).c_str());
   }
 }
@@ -559,6 +573,8 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
   m_iClientChannelUid   = tag->m_iClientChannelUid;
   m_StartTime           = tag->m_StartTime;
   m_StopTime            = tag->m_StopTime;
+  m_bStartAnyTime       = tag->m_bStartAnyTime;
+  m_bEndAnyTime         = tag->m_bEndAnyTime;
   m_FirstDay            = tag->m_FirstDay;
   m_iPriority           = tag->m_iPriority;
   m_iLifetime           = tag->m_iLifetime;
@@ -737,21 +753,6 @@ CDateTime CPVRTimerInfoTag::StartAsLocalTime(void) const
   return retVal;
 }
 
-bool CPVRTimerInfoTag::IsStartAtAnyTime(void) const
-{
-  time_t time = 0;
-  CDateTime start(m_StartTime);
-  start.GetAsTime(time);
-  return time == 0;
-}
-
-void CPVRTimerInfoTag::SetStartAtAnyTime(void)
-{
-  time_t time = 0;
-  CDateTime start(time);
-  SetStartFromUTC(start);
-}
-
 CDateTime CPVRTimerInfoTag::EndAsUTC(void) const
 {
   CDateTime retVal = m_StopTime;
@@ -763,21 +764,6 @@ CDateTime CPVRTimerInfoTag::EndAsLocalTime(void) const
   CDateTime retVal;
   retVal.SetFromUTCDateTime(m_StopTime);
   return retVal;
-}
-
-bool CPVRTimerInfoTag::IsEndAtAnyTime(void) const
-{
-  time_t time = 0;
-  CDateTime stop(m_StopTime);
-  stop.GetAsTime(time);
-  return time == 0;
-}
-
-void CPVRTimerInfoTag::SetEndAtAnyTime(void)
-{
-  time_t time = 0;
-  CDateTime stop(time);
-  SetEndFromUTC(stop);
 }
 
 CDateTime CPVRTimerInfoTag::FirstDayAsUTC(void) const
