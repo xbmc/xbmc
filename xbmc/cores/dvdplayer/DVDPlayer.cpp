@@ -2986,7 +2986,7 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
       CSingleLock lock(m_StateSection);
       if(m_StateInput.cache_bytes >= 0)
       {
-        strBuf += StringUtils::Format(" cache:%s %2.0f%%"
+        strBuf += StringUtils::Format(" forward:%s %2.0f%%"
                                       , StringUtils::SizeToString(m_StateInput.cache_bytes).c_str()
                                       , m_StateInput.cache_level * 100);
         if(m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
@@ -3022,7 +3022,7 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
       CSingleLock lock(m_StateSection);
       if(m_StateInput.cache_bytes >= 0)
       {
-        strBuf += StringUtils::Format(" cache:%s %2.0f%%"
+        strBuf += StringUtils::Format(" forward:%s %2.0f%%"
                                       , StringUtils::SizeToString(m_StateInput.cache_bytes).c_str()
                                       , m_StateInput.cache_level * 100);
         if(m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
