@@ -605,6 +605,7 @@ case $host in
      build_shared_lib=yes    
      ;;
   i*86*-linux-gnu*|i*86*-*-linux-uclibc*)
+     target_platform=target_linux
      ARCH="i486-linux"
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86"
@@ -626,6 +627,7 @@ case $host in
      fi
      ;;
   x86_64-*-linux-gnu*|x86_64-*-linux-uclibc*)
+     target_platform=target_linux
      ARCH="x86_64-linux"
      if test "$use_cpu" = "no" -a "$cross_compiling" = "yes";  then
         use_arch="x86_64"
@@ -634,10 +636,12 @@ case $host in
      USE_STATIC_FFMPEG=1
      ;;
   i386-*-freebsd*)
+     target_platform=target_linux
      ARCH="x86-freebsd"
      MAKE="gmake"
      ;;
   amd64-*-freebsd*)
+     target_platform=target_linux
      ARCH="x86_64-freebsd"
      MAKE="gmake"
      ;;
@@ -682,6 +686,7 @@ case $host in
      ARCH="powerpc64-linux"
      ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
+     target_platform=target_linux
      ARCH="arm"
      use_arch="arm"
      use_joystick=no
@@ -705,6 +710,7 @@ case $host in
      build_shared_lib=yes
      ;;
   mips*-*-linux-gnu*)
+     target_platform=target_linux
      ARCH="mips"
      use_arch="mips"
      use_joystick=no
@@ -847,6 +853,9 @@ if test "$host_vendor" = "apple" ; then
     LIBS="$LIBS -framework QuartzCore"
     LIBS="$LIBS -framework SystemConfiguration"
     LIBS="$LIBS -framework VideoDecodeAcceleration"
+  else
+    #arm/ios
+    LIBS="$LIBS -framework CoreFoundation"
   fi
 elif test "$target_platform" = "target_raspberry_pi"; then
   ARCH="arm"
@@ -1167,6 +1176,26 @@ int main() {
     ]])],[AC_CHECK_LIB([tinyxml], [main],, AC_MSG_ERROR("tinyxml >= 2.6.2 not found"))], [AC_MSG_ERROR([tinyxml >= 2.6.2 not found])]
   )])
 AC_LANG_POP([C++])
+
+if test "${target_platform}" = "target_linux" || test "${target_platform}" = "target_raspberry_pi"; then
+  PKG_CHECK_MODULES([UUID], [uuid],, AC_MSG_ERROR(libuuid not found))
+fi
+
+AC_MSG_CHECKING("for libcrossguid")
+AC_LANG_PUSH([C++])
+SAVED_LIBS="$LIBS"
+LIBS="$LIBS -lcrossguid $UUID_LIBS"
+AC_LINK_IFELSE(
+  [AC_LANG_PROGRAM(
+    [#include <guid.h>],
+    [Guid dummy])],
+  [AC_MSG_RESULT(yes); SAVED_LIBS="$SAVED_LIBS $LDFLAGS -lcrossguid $UUID_LIBS"],
+  [AC_MSG_ERROR(crossguid not found)])
+LIBS="$SAVED_LIBS"
+AC_LANG_POP([C++])
+if test "${target_platform}" = "target_android"; then
+  CXXFLAGS="$CXXFLAGS -DGUID_ANDROID"
+fi
 
 PKG_CHECK_MODULES([YAJL], [yajl >= 2],
   [INCLUDES="$INCLUDES $YAJL_CFLAGS"; LIBS="$LIBS $YAJL_LIBS"; YAJL_FOUND="true"],
