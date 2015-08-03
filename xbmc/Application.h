@@ -151,11 +151,7 @@ public:
 
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
-  /*!
-   * @brief Starts the PVR manager and decide if the manager should handle the startup window activation.
-   * @return true, if the startup window activation is handled by the pvr manager, otherwise false
-   */
-  bool StartPVRManager();
+  void StartPVRManager();
   void StopPVRManager();
   bool IsCurrentThread() const;
   void Stop(int exitCode);
