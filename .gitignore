@@ -901,6 +901,7 @@ xbmc/main/posix/Makefile
 
 #/lib/win32/ffmpeg
 /lib/win32/ffmpeg/
+/lib/win32/FFmpeg*
 
 # lib/cximage-6.0/
 /lib/cximage-6.0/Makefile
