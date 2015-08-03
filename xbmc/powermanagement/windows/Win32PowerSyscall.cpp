@@ -26,34 +26,59 @@
 bool CWin32PowerSyscall::m_OnResume = false;
 bool CWin32PowerSyscall::m_OnSuspend = false;
 
+bool CWin32PowerStateWorker::QueryStateChange(PowerState state)
+{
+  if (!IsRunning())
+    return false;
+
+  if (m_state.exchange(state) != state)
+  {
+    m_queryEvent.Set();
+    return true;
+  }
+
+  return false;
+}
+
+void CWin32PowerStateWorker::Process(void)
+{
+  while (!m_bStop)
+  {
+    if (AbortableWait(m_queryEvent, -1) == WAIT_SIGNALED)
+    {
+      CWIN32Util::PowerManagement(m_state.load());
+      m_state.exchange(POWERSTATE_NONE);
+      m_queryEvent.Reset();
+    }
+  }
+}
 
 CWin32PowerSyscall::CWin32PowerSyscall()
 {
+  m_worker.Create();
+}
+
+CWin32PowerSyscall::~CWin32PowerSyscall()
+{
+  if (m_worker.IsRunning())
+    m_worker.StopThread();
 }
 
 bool CWin32PowerSyscall::Powerdown()
 {
-  return CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN);
+  return m_worker.QueryStateChange(POWERSTATE_SHUTDOWN);
 }
 bool CWin32PowerSyscall::Suspend()
 {
-  // On Vista+, we don't receive the PBT_APMSUSPEND message as we have fired the suspend mode
-  // Set the flag manually
-  CWin32PowerSyscall::SetOnSuspend();
-
-  return CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
+  return m_worker.QueryStateChange(POWERSTATE_SUSPEND);
 }
 bool CWin32PowerSyscall::Hibernate()
 {
-  // On Vista+, we don't receive the PBT_APMSUSPEND message as we have fired the suspend mode
-  // Set the flag manually
-  CWin32PowerSyscall::SetOnSuspend();
-
-  return CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
+  return m_worker.QueryStateChange(POWERSTATE_HIBERNATE);
 }
 bool CWin32PowerSyscall::Reboot()
 {
-  return CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
+  return m_worker.QueryStateChange(POWERSTATE_REBOOT);
 }
 
 bool CWin32PowerSyscall::CanPowerdown()
