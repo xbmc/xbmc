@@ -180,31 +180,14 @@ bool CPowerManager::Powerdown()
 
 bool CPowerManager::Suspend()
 {
-  if (CanSuspend() && m_instance->Suspend())
-  {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Open();
-
-    return true;
-  }
-
-  return false;
+  return (CanSuspend() && m_instance->Suspend());
 }
 
 bool CPowerManager::Hibernate()
 {
-  if (CanHibernate() && m_instance->Hibernate())
-  {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    if (dialog)
-      dialog->Open();
-
-    return true;
-  }
-
-  return false;
+  return (CanHibernate() && m_instance->Hibernate());
 }
+
 bool CPowerManager::Reboot()
 {
   bool success = CanReboot() ? m_instance->Reboot() : false;
@@ -254,6 +237,11 @@ void CPowerManager::ProcessEvents()
 void CPowerManager::OnSleep()
 {
   CAnnouncementManager::Get().Announce(System, "xbmc", "OnSleep");
+
+  CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  if (dialog)
+    dialog->Open();
+
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
   // stop lirc
