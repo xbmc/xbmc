@@ -30,6 +30,8 @@
 
 #include "epg/Epg.h"
 
+#include <sstream>
+
 using namespace PVR;
 using namespace EPG;
 
@@ -86,6 +88,15 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
 
   m_strRecordingId                 = recording.strRecordingId;
   m_strTitle                       = recording.strTitle;
+  m_strShowTitle                   = recording.strEpisodeName;
+  if (recording.iSeriesNumber > 0 || recording.iEpisodeNumber > 0)
+  {
+    m_iSeason                      = recording.iSeriesNumber;
+    m_iEpisode                     = recording.iEpisodeNumber;
+  }
+  else
+    m_iSeason = m_iEpisode = -1;
+  m_iYear                          = recording.iYear;
   m_iClientId                      = iClientId;
   m_recordingTime                  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_duration                       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
@@ -124,6 +135,10 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_strDirectory       == right.m_strDirectory &&
        m_strFileNameAndPath == right.m_strFileNameAndPath &&
        m_strTitle           == right.m_strTitle &&
+       m_strShowTitle       == right.m_strShowTitle &&
+       m_iSeason            == right.m_iSeason &&
+       m_iEpisode           == right.m_iEpisode &&
+       m_iYear              == right.m_iYear &&
        m_strIconPath        == right.m_strIconPath &&
        m_strThumbnailPath   == right.m_strThumbnailPath &&
        m_strFanartPath      == right.m_strFanartPath &&
@@ -330,6 +345,10 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strRecordingId    = tag.m_strRecordingId;
   m_iClientId         = tag.m_iClientId;
   m_strTitle          = tag.m_strTitle;
+  m_strShowTitle      = tag.m_strShowTitle;
+  m_iSeason           = tag.m_iSeason;
+  m_iEpisode          = tag.m_iEpisode;
+  m_iYear             = tag.m_iYear;
   m_recordingTime     = tag.m_recordingTime;
   m_duration          = tag.m_duration;
   m_iPriority         = tag.m_iPriority;
@@ -355,19 +374,21 @@ void CPVRRecording::Update(const CPVRRecording &tag)
     m_resumePoint.totalTimeInSeconds = tag.m_resumePoint.totalTimeInSeconds;
   }
 
+  //Old Method of identifying TV show title and subtitle using m_strDirectory and strPlotOutline (deprecated)
   std::string strShow = StringUtils::Format("%s - ", g_localizeStrings.Get(20364).c_str());
   if (StringUtils::StartsWithNoCase(m_strPlotOutline, strShow))
   {
+    CLog::Log(LOGDEBUG,"CPVRRecording::Update - PVR addon provides episode name in strPlotOutline which is deprecated");
     std::string strEpisode = m_strPlotOutline;
     std::string strTitle = m_strDirectory;
 
     size_t pos = strTitle.rfind('/');
     strTitle.erase(0, pos + 1);
     strEpisode.erase(0, strShow.size());
-    m_strTitle = StringUtils::Format("%s - %s", strTitle.c_str(), strEpisode.c_str());
+    m_strTitle = strTitle;
     pos = strEpisode.find('-');
     strEpisode.erase(0, pos + 2);
-    m_strPlotOutline = strEpisode;
+    m_strShowTitle = strEpisode;
   }
 
   if (m_bIsDeleted)
@@ -387,6 +408,9 @@ void CPVRRecording::UpdatePath(void)
     std::string strTitle(m_strTitle);
     std::string strDatetime(m_recordingTime.GetAsSaveString());
     std::string strDirectory;
+    std::string strSubtitle;
+    std::string strSeasonEpisode(MakeSeasonEpisode(m_iSeason, m_iEpisode));
+    std::string strYear( m_iYear > 0 ? StringUtils::Format(" (%i)",m_iYear) : "");
     std::string strChannel;
     StringUtils::Replace(strTitle, '/',' ');
 
@@ -397,7 +421,18 @@ void CPVRRecording::UpdatePath(void)
       strChannel = StringUtils::Format(" (%s)", m_strChannelName.c_str());
       StringUtils::Replace(strChannel, '/',' ');
     }
-    m_strFileNameAndPath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/%s/%s%s, TV%s, %s.pvr", m_bIsDeleted ? PVR_RECORDING_DELETED_PATH : PVR_RECORDING_ACTIVE_PATH,  strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
+    if (!m_strShowTitle.empty())
+    {
+      strSubtitle = StringUtils::Format(" %s", m_strShowTitle.c_str());
+      StringUtils::Replace(strSubtitle, '/',' ');
+    }
+    if (!strSeasonEpisode.empty())
+      strSeasonEpisode = StringUtils::Format(" %s", strSeasonEpisode.c_str());
+
+    m_strFileNameAndPath = StringUtils::Format("pvr://" PVR_RECORDING_BASE_PATH "/%s/%s%s%s%s%s, TV%s, %s.pvr",
+      m_bIsDeleted ? PVR_RECORDING_DELETED_PATH : PVR_RECORDING_ACTIVE_PATH, strDirectory.c_str(),
+      strTitle.c_str(), strSeasonEpisode.c_str(), strYear.c_str(), strSubtitle.c_str(),
+      strChannel.c_str(), strDatetime.c_str());
   }
 }
 
@@ -449,4 +484,24 @@ bool CPVRRecording::IsBeingRecorded(void) const
     return epgTag ? epgTag->HasRecording() : false;
   }
   return false;
+}
+
+std::string CPVRRecording::MakeSeasonEpisode(int season, int episode)
+{
+  std::ostringstream convert;
+  if (season>=0)
+  {
+    convert << "S";
+    if(season<10)
+      convert << "0";
+    convert << season;
+  }
+  if (episode>=0)
+  {
+    convert << "E";
+    if(episode<10)
+      convert << "0";
+    convert << episode;
+  }
+  return convert.str();
 }
