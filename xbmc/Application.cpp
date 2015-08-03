@@ -1956,7 +1956,7 @@ void CApplication::Render()
         limitFrames = true; // not using vsync.
         vsync = false;
       }
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000 / singleFrameTime)
+      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000.0f / singleFrameTime)
       {
         limitFrames = true; // using vsync, but it isn't working.
         vsync = false;
