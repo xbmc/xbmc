@@ -127,11 +127,31 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   NotifyObservers(ObservableMessageEpgContainer);
 
   if (bThreadRunning)
-    Start();
+    Start(true);
 }
 
-void CEpgContainer::Start(void)
+class CEPGContainerStartJob : public CJob
 {
+public:
+  CEPGContainerStartJob() {}
+  ~CEPGContainerStartJob(void) {}
+
+  bool DoWork(void)
+  {
+    g_EpgContainer.Start(false);
+    return true;
+  }
+};
+
+void CEpgContainer::Start(bool bAsync)
+{
+  if (bAsync)
+  {
+    CEPGContainerStartJob *job = new CEPGContainerStartJob();
+    CJobManager::GetInstance().AddJob(job, NULL);
+    return;
+  }
+
   Stop();
 
   {
@@ -150,7 +170,10 @@ void CEpgContainer::Start(void)
 
   LoadFromDB();
   if (g_PVRManager.IsStarted())
+  {
+    g_PVRManager.TriggerEpgsCreate();
     g_PVRManager.Recordings()->UpdateEpgTags();
+  }
 
   CSingleLock lock(m_critSection);
   if (!m_bStop)
