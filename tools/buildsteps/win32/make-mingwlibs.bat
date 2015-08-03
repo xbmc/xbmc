@@ -4,7 +4,10 @@ SETLOCAL
 rem batch file to compile mingw libs via BuildSetup
 SET WORKDIR=%WORKSPACE%
 rem set M$ env
-call "%VS120COMNTOOLS%vsvars32.bat" || exit /b 1
+
+SET VSCOMNTOOLS_PATH=%VS120COMNTOOLS%
+IF "%VSCOMNTOOLS%"=="" SET VSCOMNTOOLS_PATH=%VS140COMNTOOLS%
+call "%VSCOMNTOOLS_PATH%"vsvars32.bat || exit /b 1
 
 SET PROMPTLEVEL=prompt
 SET BUILDMODE=clean
