@@ -203,16 +203,19 @@ void CRenderer::Render(int idx)
 
     float adjust_height = 0.0f;
 
-    if(subalign == SUBTITLE_ALIGN_TOP_INSIDE ||
-       subalign == SUBTITLE_ALIGN_TOP_OUTSIDE)
+    if (o->m_type == COverlay::TYPE_GUITEXT)
     {
-      adjust_height = cur_height;
-      cur_height += o->m_height;
-    }
-    else
-    {
-      total_height -= o->m_height;
-      adjust_height = -total_height;
+      if(subalign == SUBTITLE_ALIGN_TOP_INSIDE ||
+         subalign == SUBTITLE_ALIGN_TOP_OUTSIDE)
+      {
+        adjust_height = cur_height;
+        cur_height += o->m_height;
+      }
+      else
+      {
+        total_height -= o->m_height;
+        adjust_height = -total_height;
+      }
     }
 
     Render(o, adjust_height);
