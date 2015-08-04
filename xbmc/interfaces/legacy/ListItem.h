@@ -268,7 +268,7 @@ namespace XBMCAddon
        *     - language      : string (en)
        * 
        * example:
-       *   - self.list.getSelectedItem().addStreamInfo('video', { 'Codec': 'h264', 'Width' : 1280 })
+       *   - self.list.getSelectedItem().addStreamInfo('video', { 'codec': 'h264', 'width' : 1280 })
        */
       void addStreamInfo(const char* cType, const Properties& dictionary);
 
