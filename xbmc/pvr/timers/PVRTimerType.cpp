@@ -84,6 +84,7 @@ CPVRTimerType::CPVRTimerType() :
   m_iAttributes(PVR_TIMER_TYPE_ATTRIBUTE_NONE),
   m_iPriorityDefault(50),
   m_iLifetimeDefault(365),
+  m_iMaxRecordingsDefault(0),
   m_iPreventDupEpisodesDefault(0),
   m_iRecordingGroupDefault(0)
 {
@@ -112,6 +113,8 @@ bool CPVRTimerType::operator ==(const CPVRTimerType& right) const
           m_iPriorityDefault           == right.m_iPriorityDefault &&
           m_lifetimeValues             == right.m_lifetimeValues &&
           m_iLifetimeDefault           == right.m_iLifetimeDefault &&
+          m_maxRecordingsValues        == right.m_maxRecordingsValues &&
+          m_iMaxRecordingsDefault      == right.m_iMaxRecordingsDefault &&
           m_preventDupEpisodesValues   == right.m_preventDupEpisodesValues &&
           m_iPreventDupEpisodesDefault == right.m_iPreventDupEpisodesDefault &&
           m_recordingGroupValues       == right.m_recordingGroupValues &&
@@ -127,9 +130,9 @@ void CPVRTimerType::InitAttributeValues(const PVR_TIMER_TYPE &type)
 {
   InitPriorityValues(type);
   InitLifetimeValues(type);
+  InitMaxRecordingsValues(type);
   InitPreventDuplicateEpisodesValues(type);
   InitRecordingGroupValues(type);
-
 }
 
 void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE &type)
@@ -207,6 +210,33 @@ void CPVRTimerType::GetLifetimeValues(std::vector< std::pair<std::string, int> >
 {
   for (const auto &lifetime : m_lifetimeValues)
     list.push_back(lifetime);
+}
+
+void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE &type)
+{
+  if (type.iMaxRecordingsSize > 0)
+  {
+    for (unsigned int i = 0; i < type.iMaxRecordingsSize; ++i)
+    {
+      std::string strDescr(type.maxRecordings[i].strDescription);
+      if (strDescr.size() == 0)
+      {
+        // No description given by addon. Create one from value.
+        strDescr = StringUtils::Format("%s %d",
+                                       g_localizeStrings.Get(817).c_str(), // Max Recordings
+                                       type.maxRecordings[i].iValue);
+      }
+      m_maxRecordingsValues.push_back(std::make_pair(strDescr, type.maxRecordings[i].iValue));
+    }
+
+    m_iMaxRecordingsDefault = type.iMaxRecordingsDefault;
+  }
+}
+
+void CPVRTimerType::GetMaxRecordingsValues(std::vector< std::pair<std::string, int> > &list) const
+{
+  for (const auto &maxRecordings : m_maxRecordingsValues)
+    list.push_back(maxRecordings);
 }
 
 void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &type)
