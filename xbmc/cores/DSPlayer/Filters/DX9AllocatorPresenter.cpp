@@ -803,9 +803,11 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   ZeroMemory(m_TimeChangeHistory, sizeof(m_TimeChangeHistory));
   ZeroMemory(m_ClockChangeHistory, sizeof(m_ClockChangeHistory));
   m_ClockTimeChangeHistoryPos = 0;
+  //todo dx11
+  /*
   m_pD3DDev = g_Windowing.Get3DDevice();
   m_pD3D = g_Windowing.Get3DObject();
-
+  */
 
   m_pResizerPixelShader[0] = 0;
   m_pResizerPixelShader[1] = 0;
@@ -930,7 +932,8 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
 
     // Rendering target
     uint32_t height = 0, width = 0;
-    g_Windowing.GetBackbufferSize(width, height);
+    //todo dx11
+    //g_Windowing.GetBackbufferSize(width, height);
     if (FAILED(hr = m_pD3DDev->CreateTexture(width, height, 1, D3DUSAGE_RENDERTARGET, Format,
       D3DPOOL_DEFAULT, &m_pVideoTexture[m_nNbDXSurface + 2], NULL)))
       return hr;
@@ -2676,9 +2679,11 @@ void CDX9AllocatorPresenter::BeforeDeviceReset()
 
 void CDX9AllocatorPresenter::AfterDeviceReset()
 {
+  //todo dx11
+  /*
   m_pD3DDev = g_Windowing.Get3DDevice();
   m_pD3D = g_Windowing.Get3DObject();
-
+  */
   AllocSurfaces();
 
   if (CStreamsManager::Get()->SubtitleManager)

@@ -361,7 +361,7 @@ int CGUIDialogDSPlayercoreFactory::ShowDSPlayercoreFactory()
   }
 
   pDlg->Add(g_localizeStrings.Get(66002).c_str());
-  pDlg->DoModal();
+  pDlg->Open();
 
   selected = pDlg->GetSelectedLabel();
   Get()->m_dsmanager->SetisNew(selected == count);

@@ -101,7 +101,9 @@ bool CWinDsRenderer::RenderCapture(CRenderCapture* capture)
 
   bool succeeded = false;
 
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  // todo dx11
+  //LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  LPDIRECT3DDEVICE9 pD3DDevice = NULL;
 
   CRect saveSize = m_destRect;
   saveRotatedCoords();//backup current m_rotatedDestCoords
@@ -151,7 +153,9 @@ RESOLUTION CWinDsRenderer::ChooseBestMadvrResolution(float fps)
 
 void CWinDsRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  // todo dx11
+  //LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  LPDIRECT3DDEVICE9 pD3DDevice = NULL;
 
   if (clear)
     g_graphicsContext.Clear(m_clearColour);

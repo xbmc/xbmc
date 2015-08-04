@@ -32,7 +32,7 @@
 #include "windowing/WindowingFactory.h" //important needed to get d3d object and device
 #include "Util.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include <iomanip>
@@ -67,6 +67,7 @@ enum
 #include "FGManager2.h"
 
 using namespace std;
+using namespace KODI::MESSAGING;
 
 CDSGraph* g_dsGraph = NULL;
 
@@ -396,19 +397,19 @@ HRESULT CDSGraph::HandleGraphEvent()
     {
     case EC_STEP_COMPLETE:
       CLog::Log(LOGDEBUG, "%s EC_STEP_COMPLETE", __FUNCTION__);
-      CApplicationMessenger::Get().MediaStop();
+      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
       break;
     case EC_COMPLETE:
       CLog::Log(LOGDEBUG, "%s EC_COMPLETE", __FUNCTION__);
       m_State.eof = true;
-      CApplicationMessenger::Get().MediaStop();
+      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
       break;
     case EC_BUFFERING_DATA:
       CLog::Log(LOGDEBUG, "%s EC_BUFFERING_DATA", __FUNCTION__);
       break;
     case EC_USERABORT:
       CLog::Log(LOGDEBUG, "%s EC_USERABORT", __FUNCTION__);
-      CApplicationMessenger::Get().MediaStop();
+      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
       break;
     case EC_ERRORABORT:
     case EC_ERRORABORTEX:
@@ -419,7 +420,7 @@ HRESULT CDSGraph::HandleGraphEvent()
       }
       else
         CLog::Log(LOGDEBUG, "%s EC_ERRORABORT. Error code: 0x%X", __FUNCTION__, evParam1);
-      CApplicationMessenger::Get().MediaStop();
+      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
       break;
     case EC_STATE_CHANGE:
       CLog::Log(LOGDEBUG, "%s EC_STATE_CHANGE", __FUNCTION__);

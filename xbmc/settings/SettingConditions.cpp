@@ -144,13 +144,6 @@ bool ProfileHasProgramsLocked(const std::string &condition, const std::string &v
 }
 
 bool ProfileHasSettingsLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
-#ifdef HAS_DS_PLAYER  
-bool IsWindowsVersionAtLeast(const std::string &condition, const std::string &value, const CSetting *setting)
-{
-  return g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista);
-}
-#endif
-
 {
   LOCK_LEVEL::SETTINGS_LOCK slValue=LOCK_LEVEL::ALL;
   if (StringUtils::EqualsNoCase(value, "none"))
@@ -178,6 +171,13 @@ bool ProfileLockMode(const std::string &condition, const std::string &value, con
 
   return CProfilesManager::Get().GetCurrentProfile().getLockMode() == lock;
 }
+
+#ifdef HAS_DS_PLAYER  
+bool IsWindowsVersionAtLeast(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  return g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionVista);
+}
+#endif
 
 std::set<std::string> CSettingConditions::m_simpleConditions;
 std::map<std::string, SettingConditionCheck> CSettingConditions::m_complexConditions;

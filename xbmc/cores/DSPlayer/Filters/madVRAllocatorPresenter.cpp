@@ -23,7 +23,7 @@
 #include <moreuuids.h>
 #include "RendererSettings.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
@@ -33,6 +33,8 @@
 #include "settings/DisplaySettings.h"
 #include "PixelShaderList.h"
 #include "DSPlayer.h"
+
+using namespace KODI::MESSAGING;
 
 #define ShaderStage_PreScale 0
 #define ShaderStage_PostScale 1
@@ -230,7 +232,8 @@ HRESULT CmadVRAllocatorPresenter::SetDevice(IDirect3DDevice9* pD3DDev)
 
   if (m_firstBoot)
   { 
-    m_pMadvrShared->CreateTextures((IDirect3DDevice9Ex*)g_Windowing.Get3DDevice(), (IDirect3DDevice9Ex*)pD3DDev, (int)m_ScreenSize.cx, (int)m_ScreenSize.cy);
+    //todo dx11
+    //m_pMadvrShared->CreateTextures((IDirect3DDevice9Ex*)g_Windowing.Get3DDevice(), (IDirect3DDevice9Ex*)pD3DDev, (int)m_ScreenSize.cx, (int)m_ScreenSize.cy);
 
     m_firstBoot = false;
     m_threadID = CThread::GetCurrentThreadId();

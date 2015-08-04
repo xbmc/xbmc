@@ -104,10 +104,12 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
       if (pDialog && pDialog->IsDialogRunning())
         pDialog->Close(true);
 #ifdef HAS_DS_PLAYER
-      CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
-      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+      if (pDialog && pDialog->IsDialogRunning()) 
+        pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
-      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      if (pDialog && pDialog->IsDialogRunning()) 
+        pDialog->Close(true);
 #endif
     }
     break;

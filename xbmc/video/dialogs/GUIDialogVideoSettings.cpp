@@ -320,7 +320,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
     }
     EndEnumFilters
     pDlg->SetHeading(55062);
-    pDlg->DoModal();
+    pDlg->Open();
 
     IBaseFilter *pBF = NULL;
     CStdStringW strNameW;
@@ -350,7 +350,7 @@ void CGUIDialogVideoSettings::SaveChoice()
   pDlg->Add(g_localizeStrings.Get(12376).c_str());
 
   pDlg->SetHeading(70600);
-  pDlg->DoModal();
+  pDlg->Open();
 
   int selected = pDlg->GetSelectedLabel();
 

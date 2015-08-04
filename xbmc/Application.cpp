@@ -3837,7 +3837,6 @@ void CApplication::SaveFileState(bool bForeground /* = false */)
       m_progressTrackingPlayCountUpdate,
       CMediaSettings::Get().GetCurrentVideoSettings(),
       CMediaSettings::Get().GetCurrentAudioSettings()
-      CMediaSettings::Get().GetCurrentVideoSettings()
 #ifdef HAS_DS_PLAYER
       ,
       CMediaSettings::Get().GetCurrentMadvrSettings()

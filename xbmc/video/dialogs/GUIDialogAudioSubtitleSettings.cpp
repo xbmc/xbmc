@@ -645,7 +645,7 @@ void CGUIDialogAudioSubtitleSettings::ShowAudioSelector()
 
   pDlg->SetHeading(460);
   pDlg->SetSelected(selected);
-  pDlg->DoModal();
+  pDlg->Open();
 
   selected = pDlg->GetSelectedLabel();
 
@@ -689,7 +689,7 @@ void CGUIDialogAudioSubtitleSettings::ShowSubsSelector()
   pDlg->SetHeading(462);
   pDlg->SetSelected(selected);
   pDlg->EnableButton(true, CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn ? 55058 : 13397);
-  pDlg->DoModal();
+  pDlg->Open();
 
   selected = pDlg->GetSelectedLabel();
 

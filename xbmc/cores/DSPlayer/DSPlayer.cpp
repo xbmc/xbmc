@@ -47,7 +47,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "DSInputStreamPVRManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
@@ -65,6 +65,7 @@
 
 using namespace PVR;
 using namespace std;
+using namespace KODI::MESSAGING;
 
 DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
 CFileItem CDSPlayer::currentFileItem;
@@ -265,7 +266,7 @@ void CDSPlayer::ShowEditionDlg(bool playStart)
     }
 
     dialog->SetSelected(selected);
-    dialog->DoModal();
+    dialog->Open();
 
     selected = dialog->GetSelectedLabel();
     if (selected >= 0)
@@ -617,7 +618,7 @@ void CDSPlayer::Process()
     if (g_pPVRStream->UpdateItem(item))
     {
       g_application.CurrentFileItem() = item;
-      CApplicationMessenger::Get().SetCurrentItem(item);
+      CApplicationMessenger::Get().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(item)));
     }
   }
 
@@ -1188,7 +1189,7 @@ void CGraphManagementThread::Process()
         }
         else if (newPos >= g_dsGraph->GetTotalTime())
         {
-          CApplicationMessenger::Get().MediaStop();
+          CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
           break;
         }
 

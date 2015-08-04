@@ -588,7 +588,7 @@ int CGUIDialogDSRules::ShowDSRulesList()
 
   pDlg->Add(g_localizeStrings.Get(60014).c_str());
 
-  pDlg->DoModal();
+  pDlg->Open();
   selected = pDlg->GetSelectedLabel();
 
   Get()->m_dsmanager->SetisNew(selected == count);

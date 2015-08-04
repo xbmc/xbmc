@@ -6523,7 +6523,6 @@
       <Filter>cores\DSPlayer\FilterCoreFactory</Filter>
     </None>
   </ItemGroup>
-</Project>
   <ItemGroup>
     <FxCompile Include="..\..\system\shaders\guishader_vert.hlsl">
       <Filter>shaders</Filter>

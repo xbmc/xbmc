@@ -97,8 +97,11 @@ HRESULT CPixelShaderCompiler::CompileShader(
 
   if (ppPixelShader)
   {
+    //todo dx11
+    /*
     if (!g_Windowing.Get3DDevice()) return E_FAIL;
     hr = g_Windowing.Get3DDevice()->CreatePixelShader((DWORD*)pShader->GetBufferPointer(), ppPixelShader);
+    */
     if (FAILED(hr)) return hr;
   }
 

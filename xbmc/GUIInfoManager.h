@@ -53,13 +53,6 @@ namespace INFO
   class InfoSingle;
 }
 
-//todo dx11
-/*
-#ifdef HAS_DS_PLAYER
-#define LISTITEM_ITEM_TYPE          (LISTITEM_START + 148)
-#endif
-*/
-
 // forward
 class CGUIWindow;
 namespace EPG

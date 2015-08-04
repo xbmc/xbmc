@@ -157,10 +157,11 @@ HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
 
   if (FAILED(hr = m_pD3DDeviceKodi->SetRenderTarget(0, pSurface)))
     return hr;
-
+  //todo dx11
+  /*
   if (FAILED(hr = m_pD3DDeviceKodi->Clear(0, NULL, D3DCLEAR_TARGET, D3DXCOLOR(0, 0, 0, 0), 1.0f, 0)))
     return hr;
-
+  */
   return hr;
 }
 
