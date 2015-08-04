@@ -1190,6 +1190,11 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   return action;
 }
 
+CAction CButtonTranslator::GetGlobalAction(const CKey &key)
+{
+  return GetAction(-1, key, true);
+}
+
 int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &strAction) const
 {
   uint32_t code = key.GetButtonCode();

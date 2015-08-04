@@ -131,6 +131,11 @@ void CPVRGUIInfo::ToggleShowInfo(void)
   {
     m_ToggleShowInfo.SetInfinite();
     g_infoManager.SetShowInfo(false);
+    g_PVRManager.UpdateCurrentChannel();
+  }
+  else if (!g_infoManager.GetShowInfo()) // channel infos (no longer) displayed?
+  {
+    g_PVRManager.UpdateCurrentChannel();
   }
 }
 

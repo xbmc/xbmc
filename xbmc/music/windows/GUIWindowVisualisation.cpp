@@ -20,10 +20,12 @@
 
 #include "GUIWindowVisualisation.h"
 #include "Application.h"
+#include "FileItem.h"
 #include "music/dialogs/GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/ButtonTranslator.h"
 #include "input/Key.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -44,6 +46,17 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
+  if (CSettings::Get().GetBool("pvrplayback.confirmchannelswitch") &&
+      g_infoManager.IsPlayerChannelPreviewActive() &&
+      CButtonTranslator::GetInstance().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM)
+  {
+    // If confirm channel switch is active, channel preview is currently shown
+    // and the button that caused this action matches global action "Select" (OK)
+    // switch to the channel currently displayed within the preview.
+    g_application.m_pPlayer->SwitchChannel(g_application.CurrentFileItem().GetPVRChannelInfoTag());
+    return true;
+  }
+
   bool passToVis = false;
   switch (action.GetID())
   {

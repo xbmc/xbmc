@@ -838,6 +838,20 @@ bool CPVRManager::IsPlaying(void) const
   return IsStarted() && m_addons && m_addons->IsPlaying();
 }
 
+bool CPVRManager::IsPlayingChannel(const CPVRChannelPtr &channel) const
+{
+  bool bReturn(false);
+
+  if (channel && IsStarted())
+  {
+    CPVRChannelPtr current(GetCurrentChannel());
+    if (current && *current == *channel)
+      bReturn = true;
+  }
+
+  return bReturn;
+}
+
 CPVRChannelPtr CPVRManager::GetCurrentChannel(void) const
 {
   return m_addons ? m_addons->GetPlayingChannel() : CPVRChannelPtr();
@@ -1105,6 +1119,21 @@ bool CPVRManager::PlayMedia(const CFileItem& item)
   }
 
   return g_application.PlayFile(pvrItem, false) == PLAYBACK_OK;
+}
+
+void CPVRManager::UpdateCurrentChannel(void)
+{
+  CSingleLock lock(m_critSection);
+
+  CPVRChannelPtr playingChannel(GetCurrentChannel());
+  if (m_currentFile &&
+      playingChannel &&
+      !IsPlayingChannel(m_currentFile->GetPVRChannelInfoTag()))
+  {
+    delete m_currentFile;
+    m_currentFile = new CFileItem(playingChannel);
+    UpdateItem(*m_currentFile);
+  }
 }
 
 void CPVRManager::UpdateCurrentFile(void)
