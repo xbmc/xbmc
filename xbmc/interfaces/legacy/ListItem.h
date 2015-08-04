@@ -244,7 +244,7 @@ namespace XBMCAddon
        *     - exif*         : string (See CPictureInfoTag::TranslateString in PictureInfoTag.cpp for valid strings)
        * 
        * example:\n
-       *   - self.list.getSelectedItem().setInfo('video', { 'Genre': 'Comedy' })n\n
+       *   - self.list.getSelectedItem().setInfo('video', { 'genre': 'Comedy' })n\n
        */
       void setInfo(const char* type, const InfoLabelDict& infoLabels);
 
