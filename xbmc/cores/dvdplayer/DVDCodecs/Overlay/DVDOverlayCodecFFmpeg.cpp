@@ -273,39 +273,6 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->height   = rect.h;
     overlay->bForced  = rect.flags != 0;
 
-    int right  = overlay->x + overlay->width;
-    int bottom = overlay->y + overlay->height;
-
-    if (render_stereo_mode == RENDER_STEREO_MODE_OFF)
-    {
-      if(bottom > m_height)
-      {
-        if     (bottom <= 480)
-          m_height      = 480;
-        else if(bottom <= 576)
-          m_height      = 576;
-        else if(bottom <= 720)
-          m_height      = 720;
-        else if(bottom <= 1080)
-          m_height      = 1080;
-        else
-          m_height      = bottom;
-      }
-      if(right > m_width)
-      {
-        if     (right <= 720)
-          m_width      = 720;
-        else if(right <= 1024)
-          m_width      = 1024;
-        else if(right <= 1280)
-          m_width      = 1280;
-        else if(right <= 1920)
-          m_width      = 1920;
-        else
-          m_width      = right;
-      }
-    }
-
     overlay->source_width  = m_width;
     overlay->source_height = m_height;
 
