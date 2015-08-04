@@ -19,7 +19,7 @@
  */
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Addon.h"
 #include "AddonCallbacksGUI.h"
 #include "utils/log.h"
@@ -28,6 +28,7 @@
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "guilib/TextureManager.h"
@@ -50,6 +51,7 @@
 #define CONTROL_LABELFILES      12
 
 using namespace std;
+using namespace KODI::MESSAGING;
 
 namespace ADDON
 {
@@ -1667,7 +1669,7 @@ void CAddonCallbacksGUI::RenderAddon_Delete(void *addonData, GUIHANDLE handle)
 bool CAddonCallbacksGUI::Dialog_Keyboard_ShowAndGetInputWithHead(char &aTextString, unsigned int iMaxStringSize, const char *strHeading, bool allowEmptyResult, bool hiddenInput, unsigned int autoCloseMs)
 {
   std::string str = &aTextString;
-  bool bRet = CGUIKeyboardFactory::ShowAndGetInput(str, strHeading, allowEmptyResult, hiddenInput, autoCloseMs);
+  bool bRet = CGUIKeyboardFactory::ShowAndGetInput(str, CVariant{strHeading}, allowEmptyResult, hiddenInput, autoCloseMs);
   if (bRet)
     strncpy(&aTextString, str.c_str(), iMaxStringSize);
   return bRet;
@@ -1848,12 +1850,12 @@ bool CAddonCallbacksGUI::Dialog_FileBrowser_ShowAndGetFile(const char *directory
 //@{
 void CAddonCallbacksGUI::Dialog_OK_ShowAndGetInputSingleText(const char *heading, const char *text)
 {
-  CGUIDialogOK::ShowAndGetInput(heading, text);
+  CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{text});
 }
 
 void CAddonCallbacksGUI::Dialog_OK_ShowAndGetInputLineText(const char *heading, const char *line0, const char *line1, const char *line2)
 {
-  CGUIDialogOK::ShowAndGetInput(heading, line0, line1, line2);
+  CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2});
 }
 //@}
 
@@ -1861,17 +1863,17 @@ void CAddonCallbacksGUI::Dialog_OK_ShowAndGetInputLineText(const char *heading, 
 //@{
 bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputSingleText(const char *heading, const char *text, bool& bCanceled, const char *noLabel, const char *yesLabel)
 {
-  return CGUIDialogYesNo::ShowAndGetInput(heading, text, bCanceled, noLabel, yesLabel);
+  return CGUIDialogYesNo::ShowAndGetInput(CVariant{heading}, CVariant{text}, CVariant{bCanceled}, CVariant{noLabel}, CVariant{yesLabel});
 }
 
 bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputLineText(const char *heading, const char *line0, const char *line1, const char *line2, const char *noLabel, const char *yesLabel)
 {
-  return CGUIDialogYesNo::ShowAndGetInput(heading, line0, line1, line2, noLabel, yesLabel);
+  return CGUIDialogYesNo::ShowAndGetInput(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2}, CVariant{noLabel}, CVariant{yesLabel});
 }
 
 bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputLineButtonText(const char *heading, const char *line0, const char *line1, const char *line2, bool &bCanceled, const char *noLabel, const char *yesLabel)
 {
-  return CGUIDialogYesNo::ShowAndGetInput(heading, line0, line1, line2, bCanceled, noLabel, yesLabel);
+  return CGUIDialogYesNo::ShowAndGetInput(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2}, bCanceled, CVariant{noLabel}, CVariant{yesLabel}, CGUIDialogYesNo::NO_TIMEOUT);
 }
 //@}
 
@@ -1882,7 +1884,7 @@ void CAddonCallbacksGUI::Dialog_TextViewer(const char *heading, const char *text
   CGUIDialogTextViewer* pDialog = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
   pDialog->SetHeading(heading);
   pDialog->SetText(text);
-  pDialog->DoModal();
+  pDialog->Open();
 }
 //@}
 
@@ -1892,7 +1894,7 @@ int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[]
 {
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
-  pDialog->SetHeading(heading);
+  pDialog->SetHeading(CVariant{heading});
 
   for (unsigned int i = 0; i < size; i++)
     pDialog->Add(entries[i]);
@@ -1900,7 +1902,7 @@ int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[]
   if (selected > 0)
     pDialog->SetSelected(selected);
 
-  pDialog->DoModal();
+  pDialog->Open();
   return pDialog->GetSelectedLabel();
 }
 //@}
@@ -2184,9 +2186,7 @@ bool CGUIAddonWindowDialog::OnMessage(CGUIMessage &message)
 void CGUIAddonWindowDialog::Show(bool show /* = true */)
 {
   unsigned int iCount = g_graphicsContext.exit();
-  ThreadMessage tMsg = {TMSG_GUI_ADDON_DIALOG, 1, show ? 1 : 0};
-  tMsg.lpVoid = this;
-  CApplicationMessenger::Get().SendMessage(tMsg, true);
+  CApplicationMessenger::Get().SendMsg(TMSG_GUI_ADDON_DIALOG, 1, show ? 1 : 0, static_cast<void*>(this));
   g_graphicsContext.restore(iCount);
 }
 

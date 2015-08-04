@@ -25,6 +25,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"
+#include "settings/AudioDSPSettings.h"
 #include "settings/VideoSettings.h"
 #ifdef HAS_DS_PLAYER
 #include "cores/DSplayer/Filters/MadvrSettings.h"
@@ -57,6 +58,11 @@ public:
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }
   const CVideoSettings& GetCurrentVideoSettings() const { return m_currentVideoSettings; }
   CVideoSettings& GetCurrentVideoSettings() { return m_currentVideoSettings; }
+
+  const CAudioSettings& GetDefaultAudioSettings() const { return m_defaultAudioSettings; }
+  CAudioSettings& GetDefaultAudioSettings() { return m_defaultAudioSettings; }
+  const CAudioSettings& GetCurrentAudioSettings() const { return m_currentAudioSettings; }
+  CAudioSettings& GetCurrentAudioSettings() { return m_currentAudioSettings; }
 
 #ifdef HAS_DS_PLAYER
   const CVideoSettings& GetAtStartVideoSettings() const { return m_atstartVideoSettings; }
@@ -117,6 +123,9 @@ protected:
 private:
   CVideoSettings m_defaultVideoSettings;
   CVideoSettings m_currentVideoSettings;
+
+  CAudioSettings m_defaultAudioSettings;
+  CAudioSettings m_currentAudioSettings;
 
 #ifdef HAS_DS_PLAYER
   CVideoSettings m_atstartVideoSettings;

@@ -27,7 +27,6 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
                    xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a
 
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
-                   lib/SlingboxLib/SlingboxLib.a \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
                    xbmc/contrib/kissfft/kissfft.a \
@@ -53,15 +52,20 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/interfaces/info/info.a \
                    xbmc/interfaces/interfaces.a \
                    xbmc/interfaces/json-rpc/json-rpc.a \
+                   xbmc/interfaces/legacy/legacy.a \
+                   xbmc/interfaces/python/python_binding.a \
                    xbmc/linux/linux.a \
                    xbmc/listproviders/listproviders.a \
+                   xbmc/main/posix/MessagePrinter.a \
                    xbmc/media/media.a \
+                   xbmc/messaging/messaging.a \
                    xbmc/music/dialogs/musicdialogs.a \
                    xbmc/music/infoscanner/musicscanner.a \
                    xbmc/music/karaoke/karaoke.a \
                    xbmc/music/music.a \
                    xbmc/music/tags/musictags.a \
                    xbmc/music/windows/musicwindows.a \
+                   xbmc/network/dacp/dacp.a \
                    xbmc/network/websocket/websocket.a \
                    xbmc/network/network.a \
                    xbmc/peripherals/bus/peripheral-bus.a \
@@ -104,13 +108,10 @@ NWAOBJSXBMC=	xbmc/threads/threads.a \
 
 
 ifeq (@USE_WEB_SERVER@,1)
+DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/wsgi/legacy-wsgi.a
 DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/httprequesthandlers.a
 DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/python/httprequesthandlers-python.a
 endif
-
-DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/legacy.a
-DIRECTORY_ARCHIVES += xbmc/interfaces/legacy/wsgi/legacy-wsgi.a
-DIRECTORY_ARCHIVES += xbmc/interfaces/python/python_binding.a
 
 ifeq (@USE_OPENGL@,1)
 DIRECTORY_ARCHIVES += xbmc/rendering/gl/rendering_gl.a
@@ -188,7 +189,6 @@ endif
 LIB_DIRS=\
 	lib/cximage-6.0 \
 	lib/libexif \
-	lib/libhdhomerun \
 	lib/cpluff \
 	lib/xbmc-dll-symbols
 
@@ -231,6 +231,7 @@ endif
 
 LIBADDON_DIRS=\
 	lib/addons/library.xbmc.addon \
+	lib/addons/library.kodi.adsp \
 	lib/addons/library.xbmc.codec \
 	lib/addons/library.xbmc.pvr \
 	lib/addons/library.kodi.guilib \
@@ -381,6 +382,7 @@ screensavers: $(SS_DIRS)
 
 libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.addon
+	$(MAKE) -C lib/addons/library.kodi.adsp
 	$(MAKE) -C lib/addons/library.xbmc.codec
 	$(MAKE) -C lib/addons/library.kodi.guilib
 	$(MAKE) -C lib/addons/library.xbmc.pvr
@@ -404,21 +406,18 @@ else
 endif
 libexif: dllloader
 	$(MAKE) -C lib/libexif
-libhdhomerun: dllloader
-	$(MAKE) -C lib/libhdhomerun
 
 imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
 codecs: dvdpcodecs dvdpextcodecs
 
-libs: $(LIBSSE4) libhdhomerun imagelib libexif system/libcpluff-@ARCH@.so
+libs: $(LIBSSE4) imagelib libexif system/libcpluff-@ARCH@.so
 
 externals: codecs libs visualizations screensavers libaddon
 
 xcode_depends: \
-	codecs libs visualizations screensavers eventclients skins libaddon \
-	lib/SlingboxLib/SlingboxLib.a
+	codecs libs visualizations screensavers eventclients skins libaddon
 
 DYNOBJSXBMC= \
 	xbmc/linux/linux.a \

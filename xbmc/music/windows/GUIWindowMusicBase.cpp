@@ -55,8 +55,11 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "URL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
+#include "guiinfo/GUIInfoLabels.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 
 
 using namespace std;
@@ -351,24 +354,24 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
 
       if (g_application.IsMusicScanning())
       {
-        CGUIDialogOK::ShowAndGetInput(189, 14057);
+        CGUIDialogOK::ShowAndGetInput(CVariant{189}, CVariant{14057});
         break;
       }
 
       // show dialog box indicating we're searching the album
       if (m_dlgProgress && bShowInfo)
       {
-        m_dlgProgress->SetHeading(21889);
-        m_dlgProgress->SetLine(0, pItem->GetMusicInfoTag()->GetArtist());
-        m_dlgProgress->SetLine(1, "");
-        m_dlgProgress->SetLine(2, "");
-        m_dlgProgress->StartModal();
+        m_dlgProgress->SetHeading(CVariant{21889});
+        m_dlgProgress->SetLine(0, CVariant{pItem->GetMusicInfoTag()->GetArtist()});
+        m_dlgProgress->SetLine(1, CVariant{""});
+        m_dlgProgress->SetLine(2, CVariant{""});
+        m_dlgProgress->Open();
       }
 
       CMusicInfoScanner scanner;
       if (scanner.UpdateDatabaseArtistInfo(artist, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
       {
-        CGUIDialogOK::ShowAndGetInput(21889, 20199);
+        CGUIDialogOK::ShowAndGetInput(CVariant{21889}, CVariant{20199});
         break;
       }
     }
@@ -380,7 +383,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
     if (pDlgArtistInfo)
     {
       pDlgArtistInfo->SetArtist(artist, artist.strPath);
-      pDlgArtistInfo->DoModal();
+      pDlgArtistInfo->Open();
 
       if (pDlgArtistInfo->NeedRefresh())
       {
@@ -426,7 +429,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
 
       if (g_application.IsMusicScanning())
       {
-        CGUIDialogOK::ShowAndGetInput(189, 14057);
+        CGUIDialogOK::ShowAndGetInput(CVariant{189}, CVariant{14057});
         if (m_dlgProgress)
           m_dlgProgress->Close();
         return false;
@@ -435,17 +438,17 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
       // show dialog box indicating we're searching the album
       if (m_dlgProgress && bShowInfo)
       {
-        m_dlgProgress->SetHeading(185);
-        m_dlgProgress->SetLine(0, pItem->GetMusicInfoTag()->GetAlbum());
-        m_dlgProgress->SetLine(1, StringUtils::Join(pItem->GetMusicInfoTag()->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator));
-        m_dlgProgress->SetLine(2, "");
-        m_dlgProgress->StartModal();
+        m_dlgProgress->SetHeading(CVariant{185});
+        m_dlgProgress->SetLine(0, CVariant{pItem->GetMusicInfoTag()->GetAlbum()});
+        m_dlgProgress->SetLine(1, CVariant{StringUtils::Join(pItem->GetMusicInfoTag()->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator)});
+        m_dlgProgress->SetLine(2, CVariant{""});
+        m_dlgProgress->Open();
       }
 
       CMusicInfoScanner scanner;
       if (scanner.UpdateDatabaseAlbumInfo(album, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
       {
-        CGUIDialogOK::ShowAndGetInput(185, 500);
+        CGUIDialogOK::ShowAndGetInput(CVariant{185}, CVariant{500});
         if (m_dlgProgress)
           m_dlgProgress->Close();
         return false;
@@ -459,7 +462,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
     if (pDlgAlbumInfo)
     {
       pDlgAlbumInfo->SetAlbum(album, album.strPath);
-      pDlgAlbumInfo->DoModal();
+      pDlgAlbumInfo->Open();
 
       if (pDlgAlbumInfo->NeedRefresh())
       {
@@ -489,7 +492,7 @@ void CGUIWindowMusicBase::ShowSongInfo(CFileItem* pItem)
       return;
 
     dialog->SetSong(pItem);
-    dialog->DoModal(GetID());
+    dialog->Open();
     if (dialog->NeedsUpdate())
       Refresh(true); // update our file list
   }
@@ -655,7 +658,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
         // load it
         if (!pPlayList->Load(pItem->GetPath()))
         {
-          CGUIDialogOK::ShowAndGetInput(6, 477);
+          CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
           return; //hmmm unable to load playlist?
         }
 
@@ -762,6 +765,8 @@ void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
 {
   if (!m_vecItems->IsVirtualDirectoryRoot())
     buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
+  if (ActiveAE::CActiveAEDSP::Get().IsProcessing())
+    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);
   buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);
 }
 
@@ -832,6 +837,10 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     Update("");
     return true;
 
+  case CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS:
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
+    return true;
+
   case CONTEXT_BUTTON_SETTINGS:
     g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
     return true;
@@ -853,7 +862,7 @@ void CGUIWindowMusicBase::OnRipCD()
 #endif
     }
     else
-      CGUIDialogOK::ShowAndGetInput(257, 20099);
+      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{20099});
   }
 }
 
@@ -869,7 +878,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 #endif
     }
     else
-      CGUIDialogOK::ShowAndGetInput(257, 20099);
+      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{20099});
   }
 }
 
@@ -944,7 +953,7 @@ void CGUIWindowMusicBase::LoadPlayList(const std::string& strPlayList)
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK::ShowAndGetInput(6, 477);
+      CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
       return; //hmmm unable to load playlist?
     }
   }
@@ -1086,12 +1095,11 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
       if (!bProgressVisible && elapsed>1500 && m_dlgProgress)
       { // tag loading takes more then 1.5 secs, show a progress dialog
         CURL url(items.GetPath());
-        std::string strStrippedPath = url.GetWithoutUserDetails();
-        m_dlgProgress->SetHeading(189);
-        m_dlgProgress->SetLine(0, 505);
-        m_dlgProgress->SetLine(1, "");
-        m_dlgProgress->SetLine(2, strStrippedPath );
-        m_dlgProgress->StartModal();
+        m_dlgProgress->SetHeading(CVariant{189});
+        m_dlgProgress->SetLine(0, CVariant{505});
+        m_dlgProgress->SetLine(1, CVariant{""});
+        m_dlgProgress->SetLine(2, CVariant{url.GetWithoutUserDetails()});
+        m_dlgProgress->Open();
         m_dlgProgress->ShowProgressBar(true);
         bProgressVisible = true;
       }
@@ -1179,12 +1187,12 @@ bool CGUIWindowMusicBase::CanContainFilter(const std::string &strDirectory) cons
 void CGUIWindowMusicBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();
-  if (CMediaSettings::Get().GetMusicNeedsUpdate() == 35)
+  if (CMediaSettings::Get().GetMusicNeedsUpdate() == 53)
   {
     if (g_infoManager.GetLibraryBool(LIBRARY_HAS_MUSIC) && !g_application.IsMusicScanning())
     {
       // rescan of music library required
-      if (CGUIDialogYesNo::ShowAndGetInput(799, 800))
+      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{799}, CVariant{800}))
       {
         int flags = CMusicInfoScanner::SCAN_RESCAN;
         if (CSettings::Get().GetBool("musiclibrary.downloadinfo"))

@@ -28,6 +28,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "utils/URIUtils.h"
 
 using namespace std;
@@ -66,11 +67,11 @@ bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
       {
-        dlgProgress->SetHeading(15310);
-        dlgProgress->SetLine(0, 15311);
-        dlgProgress->SetLine(1, "");
-        dlgProgress->SetLine(2, "");
-        dlgProgress->StartModal();
+        dlgProgress->SetHeading(CVariant{15310});
+        dlgProgress->SetLine(0, CVariant{15311});
+        dlgProgress->SetLine(1, CVariant{""});
+        dlgProgress->SetLine(2, CVariant{""});
+        dlgProgress->Open();
         dlgProgress->ShowProgressBar(true);
         dlgProgress->SetProgressMax((int)vecPaths.size()*2);
         dlgProgress->Progress();
@@ -79,7 +80,7 @@ bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     if (dlgProgress)
     {
       CURL url(vecPaths[i]);
-      dlgProgress->SetLine(1, url.GetWithoutUserDetails());
+      dlgProgress->SetLine(1, CVariant{url.GetWithoutUserDetails()});
       dlgProgress->SetProgressAdvance();
       dlgProgress->Progress();
     }

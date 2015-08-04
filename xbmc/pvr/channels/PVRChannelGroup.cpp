@@ -798,9 +798,15 @@ bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannelPtr &channel)
       m_bChanged = true;
       break;
     }
+    else
+    {
+      ++it;
+    }
   }
 
-  Renumber();
+  // no need to renumber if nothing was removed
+  if (bReturn)
+    Renumber();
 
   return bReturn;
 }

@@ -29,6 +29,7 @@
 #include "utils/JSONVariantWriter.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 namespace JSONRPC
 {
@@ -515,7 +516,7 @@ namespace JSONRPC
         return;
 
       stringArray.clear();
-      for (CVariant::const_iterator_array it = jsonStringArray.begin_array(); it != jsonStringArray.end_array(); it++)
+      for (CVariant::const_iterator_array it = jsonStringArray.begin_array(); it != jsonStringArray.end_array(); ++it)
         stringArray.push_back(it->asString());
     }
 

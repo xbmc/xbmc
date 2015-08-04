@@ -21,12 +21,13 @@
 #include "VideoInfoDownloader.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogOK.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 
-using namespace std;
 using namespace VIDEO;
+using namespace KODI::MESSAGING;
 
 #ifndef __GNUC__
 #pragma warning (disable:4018)
@@ -65,9 +66,9 @@ void CVideoInfoDownloader::ShowErrorDialog(const ADDON::CScraperError &sce)
   if (!sce.Title().empty())
   {
     CGUIDialogOK *pdlg = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    pdlg->SetHeading(sce.Title());
-    pdlg->SetLine(0, sce.Message());
-    CApplicationMessenger::Get().DoModal(pdlg, WINDOW_DIALOG_OK);
+    pdlg->SetHeading(CVariant{sce.Title()});
+    pdlg->SetLine(0, CVariant{sce.Message()});
+    pdlg->Open();
   }
 }
 

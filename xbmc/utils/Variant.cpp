@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sstream>
+#include <utility>
 
 #include "Variant.h"
 
@@ -226,6 +227,12 @@ CVariant::CVariant(const string &str)
   m_data.string = new string(str);
 }
 
+CVariant::CVariant(std::string &&str)
+{
+  m_type = VariantTypeString;
+  m_data.string = new string(std::move(str));
+}
+
 CVariant::CVariant(const wchar_t *str)
 {
   m_type = VariantTypeWideString;
@@ -244,13 +251,19 @@ CVariant::CVariant(const wstring &str)
   m_data.wstring = new wstring(str);
 }
 
+CVariant::CVariant(std::wstring &&str)
+{
+  m_type = VariantTypeWideString;
+  m_data.wstring = new std::wstring(std::move(str));
+}
+
 CVariant::CVariant(const std::vector<std::string> &strArray)
 {
   m_type = VariantTypeArray;
   m_data.array = new VariantArray;
   m_data.array->reserve(strArray.size());
-  for (unsigned int index = 0; index < strArray.size(); index++)
-    m_data.array->push_back(strArray.at(index));
+  for (const auto& item : strArray)
+    m_data.array->push_back(CVariant(item));
 }
 
 CVariant::CVariant(const std::map<std::string, std::string> &strMap)
@@ -271,6 +284,15 @@ CVariant::CVariant(const CVariant &variant)
 {
   m_type = VariantTypeNull;
   *this = variant;
+}
+
+CVariant::CVariant(CVariant&& rhs)
+{
+  //Set this so that operator= don't try and run cleanup
+  //when we're not initialized.
+  m_type = VariantTypeNull;
+
+  *this = std::move(rhs);
 }
 
 CVariant::~CVariant()
@@ -589,6 +611,34 @@ CVariant &CVariant::operator=(const CVariant &rhs)
   return *this;
 }
 
+CVariant& CVariant::operator=(CVariant&& rhs)
+{
+  if (this == &rhs)
+    return *this;
+
+  //Make sure that if we're moved into we don't leak any pointers
+  if (m_type != VariantTypeNull)
+    cleanup();
+
+  m_type = rhs.m_type;
+  m_data = std::move(rhs.m_data);
+
+  //Should be enough to just set m_type here
+  //but better safe than sorry, could probably lead to coverity warnings
+  if (rhs.m_type == VariantTypeString)
+    rhs.m_data.string = nullptr;
+  else if (rhs.m_type == VariantTypeWideString)
+    rhs.m_data.wstring = nullptr;
+  else if (rhs.m_type == VariantTypeArray)
+    rhs.m_data.array = nullptr;
+  else if (rhs.m_type == VariantTypeObject)
+    rhs.m_data.map = nullptr;
+
+  rhs.m_type = VariantTypeNull;
+
+  return *this;
+}
+
 bool CVariant::operator==(const CVariant &rhs) const
 {
   if (m_type == rhs.m_type)
@@ -631,9 +681,26 @@ void CVariant::push_back(const CVariant &variant)
     m_data.array->push_back(variant);
 }
 
+void CVariant::push_back(CVariant &&variant)
+{
+  if (m_type == VariantTypeNull)
+  {
+    m_type = VariantTypeArray;
+    m_data.array = new VariantArray;
+  }
+
+  if (m_type == VariantTypeArray)
+    m_data.array->push_back(std::move(variant));
+}
+
 void CVariant::append(const CVariant &variant)
 {
   push_back(variant);
+}
+
+void CVariant::append(CVariant&& variant)
+{
+  push_back(std::move(variant));
 }
 
 const char *CVariant::c_str() const

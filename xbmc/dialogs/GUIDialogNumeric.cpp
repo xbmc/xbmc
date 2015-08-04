@@ -25,6 +25,7 @@
 #include "GUIDialogOK.h"
 #include "input/XBMC_vkeys.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
@@ -657,7 +658,7 @@ bool CGUIDialogNumeric::ShowAndGetSeconds(std::string &timeString, const std::st
   time.wSecond = seconds - time.wHour * 3600 - time.wMinute * 60;
   pDialog->SetMode(INPUT_TIME_SECONDS, (void *)&time);
   pDialog->SetHeading(heading);
-  pDialog->DoModal();
+  pDialog->Open();
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
     return false;
   pDialog->GetOutput(&time);
@@ -672,7 +673,7 @@ bool CGUIDialogNumeric::ShowAndGetTime(SYSTEMTIME &time, const std::string &head
   if (!pDialog) return false;
   pDialog->SetMode(INPUT_TIME, (void *)&time);
   pDialog->SetHeading(heading);
-  pDialog->DoModal();
+  pDialog->Open();
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
     return false;
   pDialog->GetOutput(&time);
@@ -685,7 +686,7 @@ bool CGUIDialogNumeric::ShowAndGetDate(SYSTEMTIME &date, const std::string &head
   if (!pDialog) return false;
   pDialog->SetMode(INPUT_DATE, (void *)&date);
   pDialog->SetHeading(heading);
-  pDialog->DoModal();
+  pDialog->Open();
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
     return false;
   pDialog->GetOutput(&date);
@@ -698,7 +699,7 @@ bool CGUIDialogNumeric::ShowAndGetIPAddress(std::string &IPAddress, const std::s
   if (!pDialog) return false;
   pDialog->SetMode(INPUT_IP_ADDRESS, (void *)&IPAddress);
   pDialog->SetHeading(heading);
-  pDialog->DoModal();
+  pDialog->Open();
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
     return false;
   pDialog->GetOutput(&IPAddress);
@@ -715,7 +716,7 @@ bool CGUIDialogNumeric::ShowAndGetNumber(std::string& strInput, const std::strin
   if (iAutoCloseTimeoutMs)
     pDialog->SetAutoClose(iAutoCloseTimeoutMs);
 
-  pDialog->DoModal();
+  pDialog->Open();
 
   if (!pDialog->IsAutoClosed() && (!pDialog->IsConfirmed() || pDialog->IsCanceled()))
     return false;
@@ -733,7 +734,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12340), false))
   {
     // Show error to user saying the password entry was blank
-    CGUIDialogOK::ShowAndGetInput(12357, 12358); // Password is empty/blank
+    CGUIDialogOK::ShowAndGetInput(CVariant{12357}, CVariant{12358}); // Password is empty/blank
     return false;
   }
 
@@ -745,7 +746,7 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
   if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12341), true))
   {
     // Show error to user saying the password re-entry failed
-    CGUIDialogOK::ShowAndGetInput(12357, 12344); // Password do not match
+    CGUIDialogOK::ShowAndGetInput(CVariant{12357}, CVariant{12344}); // Password do not match
     return false;
   }
 
@@ -790,7 +791,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(std::string& strToVerify, const std::
   if (!bVerifyInput)
     strInput = strToVerify;
   pDialog->SetMode(INPUT_PASSWORD, (void *)&strInput);
-  pDialog->DoModal();
+  pDialog->Open();
 
   pDialog->GetOutput(&strInput);
 

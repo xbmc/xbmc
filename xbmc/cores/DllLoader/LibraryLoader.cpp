@@ -42,7 +42,7 @@ const char *LibraryLoader::GetName() const
   size_t pos = m_fileName.find_last_of('/');
   if (pos != std::string::npos)
     return &m_fileName.at(pos);
-  return "";
+  return m_fileName.c_str();
 }
 
 const char *LibraryLoader::GetFileName() const

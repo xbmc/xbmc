@@ -34,9 +34,11 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "windowing/WindowingFactory.h"
 
-using namespace std;
+#include <string>
+#include <utility>
 
 #define CONTROL_LABEL_ROW1  2
 #define CONTROL_LABEL_ROW2  3
@@ -74,13 +76,13 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
   case ACTION_CALIBRATE_RESET:
     {
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-      pDialog->SetHeading(20325);
+      pDialog->SetHeading(CVariant{20325});
       std::string strText = StringUtils::Format(g_localizeStrings.Get(20326).c_str(), g_graphicsContext.GetResInfo(m_Res[m_iCurRes]).strMode.c_str());
-      pDialog->SetLine(0, strText);
-      pDialog->SetLine(1, 20327);
-      pDialog->SetChoice(0, 222);
-      pDialog->SetChoice(1, 186);
-      pDialog->DoModal();
+      pDialog->SetLine(0, CVariant{std::move(strText)});
+      pDialog->SetLine(1, CVariant{20327});
+      pDialog->SetChoice(0, CVariant{222});
+      pDialog->SetChoice(1, CVariant{186});
+      pDialog->Open();
       if (pDialog->IsConfirmed())
       {
         g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);

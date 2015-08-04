@@ -146,8 +146,21 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
         m_includes.insert({ tagName, { *includeBody, std::move(defaultParams) } });
     }
     else if (node->Attribute("file"))
-    { // load this file in as well
-      LoadIncludes(g_SkinInfo->GetSkinPath(node->Attribute("file")));
+    { 
+      const char *condition = node->Attribute("condition");
+      if (condition)
+      { // check this condition
+        INFO::InfoPtr conditionID = g_infoManager.Register(condition);
+        bool value = conditionID->Get();
+
+        if (value)
+        {
+          // load this file in as well
+          LoadIncludes(g_SkinInfo->GetSkinPath(node->Attribute("file")));
+        }
+      }
+      else
+        LoadIncludes(g_SkinInfo->GetSkinPath(node->Attribute("file")));
     }
     node = node->NextSiblingElement("include");
   }

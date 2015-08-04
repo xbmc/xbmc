@@ -3152,7 +3152,7 @@ bool CLinuxRendererGL::UploadRGBTexture(int source)
       ((CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness!=50) ||
        (CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast!=50)))
   {
-    GLfloat brightness = ((GLfloat)CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness - 50.0f)/100.0f;;
+    GLfloat brightness = ((GLfloat)CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness - 50.0f)/100.0f;
     GLfloat contrast   = ((GLfloat)CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)/50.0f;
 
     glPixelTransferf(GL_RED_SCALE  , contrast);

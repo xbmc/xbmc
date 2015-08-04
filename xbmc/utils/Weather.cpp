@@ -57,16 +57,12 @@ using namespace XFILE;
 #define LOCALIZED_TOKEN_FIRSTID4    71
 #define LOCALIZED_TOKEN_LASTID4     97
 
+static const std::string IconAddonPath = "resource://resource.images.weathericons.default";
+
 /*
 FIXME'S
 >strings are not centered
 */
-
-#define WEATHER_BASE_PATH "special://temp/weather/"
-#define WEATHER_ICON_PATH "special://temp/weather/"
-#define WEATHER_SOURCE_FILE "special://xbmc/media/weather.zip"
-
-bool CWeatherJob::m_imagesOkay = false;
 
 CWeatherJob::CWeatherJob(int location)
 {
@@ -101,12 +97,6 @@ bool CWeatherJob::DoWork()
       if (!CScriptInvocationManager::Get().IsRunning(scriptId))
         break;
       Sleep(100);
-    }
-    if (!m_imagesOkay)
-    {
-      CDirectory::Create(WEATHER_BASE_PATH);
-      g_ZipManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
-      m_imagesOkay = true;
     }
 
     SetFromProperties();
@@ -248,7 +238,7 @@ static std::string ConstructPath(std::string in) // copy intended
   if (in.empty() || in == "N/A")
     in = "na.png";
 
-  return URIUtils::AddFileToFolder(WEATHER_ICON_PATH,in);
+  return URIUtils::AddFileToFolder(IconAddonPath, in);
 }
 
 void CWeatherJob::SetFromProperties()
@@ -322,7 +312,7 @@ CWeather::~CWeather(void)
 std::string CWeather::BusyInfo(int info) const
 {
   if (info == WEATHER_IMAGE_CURRENT_ICON)
-    return URIUtils::AddFileToFolder(WEATHER_ICON_PATH,"na.png");
+    return URIUtils::AddFileToFolder(IconAddonPath, "na.png");
 
   return CInfoLoader::BusyInfo(info);
 }

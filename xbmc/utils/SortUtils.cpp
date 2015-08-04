@@ -95,7 +95,7 @@ string ByDate(SortAttribute attributes, const SortItem &values)
 
 string ByDateAdded(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%s %d", values.at(FieldDateAdded).asString().c_str(), (int)values.at(FieldId).asInteger());;
+  return StringUtils::Format("%s %d", values.at(FieldDateAdded).asString().c_str(), (int)values.at(FieldId).asInteger());
 }
 
 string BySize(SortAttribute attributes, const SortItem &values)
@@ -342,7 +342,7 @@ string ByAudioCodec(SortAttribute attributes, const SortItem &values)
 
 string ByAudioLanguage(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%s %s", values.at(FieldAudioLanguage).asString().c_str(), ByLabel(attributes, values).c_str());;
+  return StringUtils::Format("%s %s", values.at(FieldAudioLanguage).asString().c_str(), ByLabel(attributes, values).c_str());
 }
 
 string BySubtitleLanguage(SortAttribute attributes, const SortItem &values)
@@ -357,12 +357,12 @@ string ByBitrate(SortAttribute attributes, const SortItem &values)
 
 string ByListeners(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%" PRId64, values.at(FieldListeners).asInteger());;
+  return StringUtils::Format("%" PRId64, values.at(FieldListeners).asInteger());
 }
 
 string ByRandom(SortAttribute attributes, const SortItem &values)
 {
-  return StringUtils::Format("%i", CUtil::GetRandomNumber());;
+  return StringUtils::Format("%i", CUtil::GetRandomNumber());
 }
 
 string ByChannel(SortAttribute attributes, const SortItem &values)

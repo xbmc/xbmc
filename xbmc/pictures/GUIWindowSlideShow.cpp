@@ -22,7 +22,7 @@
 #include "system.h"
 #include "GUIWindowSlideShow.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "guilib/TextureManager.h"
@@ -41,11 +41,13 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "interfaces/AnnouncementManager.h"
 #include "pictures/GUIViewStatePictures.h"
 #include "pictures/PictureThumbLoader.h"
 
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 #define MAX_ZOOM_FACTOR                     10
 #define MAX_PICTURE_SIZE             2048*2048
@@ -761,7 +763,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       if (pictureInfo)
       {
         // no need to set the picture here, it's done in Render()
-        pictureInfo->DoModal();
+        pictureInfo->Open();
       }
     }
     break;

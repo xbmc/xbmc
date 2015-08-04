@@ -19,6 +19,7 @@
  */
 
 #include "system.h"
+#include <utility>
 
 #ifdef HAS_DVD_DRIVE
 #include <stdlib.h>
@@ -43,6 +44,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif
@@ -489,7 +491,7 @@ bool CAutorun::IsEnabled() const
 
 bool CAutorun::PlayDiscAskResume(const std::string& path)
 {
-  return PlayDisc(path, true, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(341, "", "", "", 13404, 12021));
+  return PlayDisc(path, true, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(CVariant{341}, CVariant{""}, CVariant{""}, CVariant{""}, CVariant{13404}, CVariant{12021}));
 }
 
 bool CAutorun::CanResumePlayDVD(const std::string& path)
@@ -508,10 +510,10 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
 
 void CAutorun::SettingOptionAudioCdActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  list.push_back(make_pair(g_localizeStrings.Get(16018), AUTOCD_NONE));
-  list.push_back(make_pair(g_localizeStrings.Get(14098), AUTOCD_PLAY));
+  list.push_back(std::make_pair(g_localizeStrings.Get(16018), AUTOCD_NONE));
+  list.push_back(std::make_pair(g_localizeStrings.Get(14098), AUTOCD_PLAY));
 #ifdef HAS_CDDA_RIPPER
-  list.push_back(make_pair(g_localizeStrings.Get(14096), AUTOCD_RIP));
+  list.push_back(std::make_pair(g_localizeStrings.Get(14096), AUTOCD_RIP));
 #endif
 }
 

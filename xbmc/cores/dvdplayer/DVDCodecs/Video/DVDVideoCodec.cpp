@@ -23,7 +23,7 @@
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 
-bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting)
+bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   if (setting == NULL || value.empty())
     return false;
@@ -72,7 +72,7 @@ bool CDVDVideoCodec::IsCodecDisabled(DVDCodecAvailableType* map, unsigned int si
     }
   }
   if(index > -1)
-    return (!CSettings::Get().GetBool(map[index].setting) || !CDVDVideoCodec::IsSettingVisible("unused", "unused", CSettings::Get().GetSetting(map[index].setting)));
+    return (!CSettings::Get().GetBool(map[index].setting) || !CDVDVideoCodec::IsSettingVisible("unused", "unused", CSettings::Get().GetSetting(map[index].setting), NULL));
 
   return false; //don't disable what we don't have
 }

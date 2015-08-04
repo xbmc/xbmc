@@ -26,6 +26,7 @@
 #include "FileItem.h"
 
 class CThumbLoader;
+class CVariant;
 
 namespace JSONRPC
 {

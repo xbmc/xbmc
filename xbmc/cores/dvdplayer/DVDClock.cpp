@@ -170,7 +170,16 @@ bool CDVDClock::Update(double clock, double absolute, double limit, const char* 
   double was_absolute = SystemToAbsolute(m_startClock);
   double was_clock    = m_iDisc + absolute - was_absolute;
   lock.Leave();
-  if(std::abs(clock - was_clock) > limit)
+
+  double error = std::abs(clock - was_clock);
+
+  // skip minor updates while speed adjust is active
+  // -> adjusting buffer levels
+  if (m_speedAdjust != 0 && error < DVD_MSEC_TO_TIME(100))
+  {
+    return false;
+  }
+  else if (error > limit)
   {
     Discontinuity(clock, absolute);
 

@@ -95,7 +95,7 @@ protected:
     int          GetWidth();             // returns width of plugin window interior, in pixels.
     int          GetHeight();            // returns height of plugin window interior, in pixels.
     int          GetBitDepth();          // returns 8, 16, 24 (rare), or 32
-    LPDIRECT3DDEVICE9  GetDevice();      // returns a pointer to the DirectX 8 Device.  NOT persistent; can change!
+    DX11Context* GetDevice();            // returns a pointer to the DirectX 8 Device.  NOT persistent; can change!
     D3DCAPS9*    GetCaps();              // returns a pointer to the D3DCAPS8 structer for the device.  NOT persistent; can change.
     D3DFORMAT    GetBackBufFormat();     // returns the pixelformat of the back buffer (probably D3DFMT_R8G8B8, D3DFMT_A8R8G8B8, D3DFMT_X8R8G8B8, D3DFMT_R5G6B5, D3DFMT_X1R5G5B5, D3DFMT_A1R5G5B5, D3DFMT_A4R4G4B4, D3DFMT_R3G3B2, D3DFMT_A8R3G3B2, D3DFMT_X4R4G4B4, or D3DFMT_UNKNOWN)
     D3DFORMAT    GetBackBufZFormat();    // returns the pixelformat of the back buffer's Z buffer (probably D3DFMT_D16_LOCKABLE, D3DFMT_D32, D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D16, D3DFMT_D24X8, D3DFMT_D24X4S4, or D3DFMT_UNKNOWN)
@@ -178,7 +178,8 @@ private:
     DXContext*   m_lpDX;            // pointer to DXContext object
     char         m_szPluginsDirPath[MAX_PATH];  // usually 'c:\\program files\\winamp\\plugins\\'
     char         m_szConfigIniFile[MAX_PATH];   // usually 'c:\\program files\\winamp\\plugins\\something.ini' - filename is determined from identifiers in 'defines.h'
-    LPDIRECT3DDEVICE9   m_device;
+    ID3D11Device* m_device;
+    ID3D11DeviceContext* m_context;
     // FONTS
 	IDirect3DTexture9* m_lpDDSText;
 //    LPD3DXFONT   m_d3dx_font[NUM_BASIC_FONTS + NUM_EXTRA_FONTS];
@@ -266,7 +267,7 @@ public:
     
     // called by vis.cpp, on behalf of Winamp:
     int  PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance);    
-    int  PluginInitialize(LPDIRECT3DDEVICE9 device, int iPosX, int iPosY, int iWidth, int iHeight, float pixelRatio);                                                
+    int  PluginInitialize(ID3D11DeviceContext* context, int iPosX, int iPosY, int iWidth, int iHeight, float pixelRatio);
     int  PluginRender(unsigned char *pWaveL, unsigned char *pWaveR);
     void PluginQuit();
     int  AllocateDX8Stuff();
@@ -301,13 +302,13 @@ private:
     void CleanUpNonDx8Stuff();
     int  InitVJStuff(RECT* pClientRect=NULL);
     void CleanUpVJStuff();
-    int  AllocateFonts(IDirect3DDevice9 *pDevice);
+    int  AllocateFonts(DX11Context *pDevice);
     void CleanUpFonts();
     void AllocateTextSurface();
     void ToggleDesktop();
     void OnUserResizeWindow();
     void OnUserResizeTextWindow();
-    void PrepareFor2DDrawing_B(IDirect3DDevice9 *pDevice, int w, int h);
+    void PrepareFor2DDrawing_B(DX11Context *pDevice, int w, int h);
     void RenderBuiltInTextMsgs();
 public:
     void ToggleFullScreen();
@@ -337,7 +338,7 @@ private:
 	  int		m_nTextWndHeight;
 	  bool		m_bTextWindowClassRegistered;
       LPDIRECT3D9 m_vjd3d8;
-      LPDIRECT3DDEVICE9 m_vjd3d8_device;
+      DX11Context* m_vjd3d8_device;
 	  //HDC		m_memDC;		// memory device context
 	  //HBITMAP m_memBM, m_oldBM;
 	  //HBRUSH  m_hBlackBrush;
@@ -365,7 +366,7 @@ private:
     void    SaveAdapter(int screenmode);
     void    SaveMaxFps(int screenmode);
     void    OnTabChanged(int nNewTab);
-    LPDIRECT3DDEVICE9 GetTextDevice() { return (m_vjd3d8_device) ? m_vjd3d8_device : m_lpDX->m_lpDevice; }
+    DX11Context* GetTextDevice() { return (m_vjd3d8_device) ? m_vjd3d8_device : m_lpDX->m_lpDevice; }
 };
 
 

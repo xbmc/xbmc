@@ -31,6 +31,7 @@
 #include <vector>
 
 class CPythonInvoker;
+class CVariant;
 
 typedef struct {
   int id;

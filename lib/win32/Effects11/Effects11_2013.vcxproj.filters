@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns:atg="http://atg.xbox.com" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{8e114980-c1a3-4ada-ad7c-83caadf5daeb}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <CLInclude Include="pchfx.h" />
+    <CLInclude Include=".\Inc\d3dx11effect.h" />
+    <CLInclude Include=".\Inc\d3dxglobal.h" />
+    <CLInclude Include=".\Binary\EffectBinaryFormat.h" />
+    <CLInclude Include=".\Binary\EffectStateBase11.h" />
+    <CLInclude Include=".\Binary\EffectStates11.h" />
+    <CLInclude Include=".\Binary\SOParser.h" />
+    <ClCompile Include="d3dxGlobal.cpp" />
+    <CLInclude Include="Effect.h" />
+    <ClCompile Include="EffectAPI.cpp" />
+    <ClCompile Include="EffectLoad.cpp" />
+    <CLInclude Include="EffectLoad.h" />
+    <ClCompile Include="EffectNonRuntime.cpp" />
+    <ClCompile Include="EffectReflection.cpp" />
+    <ClCompile Include="EffectRuntime.cpp" />
+    <None Include="EffectVariable.inl" />
+    <CLInclude Include="IUnknownImp.h" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

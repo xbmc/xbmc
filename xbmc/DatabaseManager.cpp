@@ -28,13 +28,14 @@
 #include "pvr/PVRDatabase.h"
 #include "epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #ifdef HAS_DS_PLAYER
 #include "DSPlayerDatabase.h"
 #endif
 
-using namespace std;
 using namespace EPG;
 using namespace PVR;
+using namespace ActiveAE;
 
 CDatabaseManager &CDatabaseManager::Get()
 {
@@ -66,6 +67,7 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   { CVideoDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseVideo); }
   { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
   { CEpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
+  { CActiveAEDSPDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseADSP); }
 #ifdef HAS_DS_PLAYER
   { CDSPlayerDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseDSPlayer); }
 #endif
@@ -81,7 +83,7 @@ void CDatabaseManager::Deinitialize()
 bool CDatabaseManager::CanOpen(const std::string &name)
 {
   CSingleLock lock(m_section);
-  map<string, DB_STATUS>::const_iterator i = m_dbStatus.find(name);
+  std::map<std::string, DB_STATUS>::const_iterator i = m_dbStatus.find(name);
   if (i != m_dbStatus.end())
     return i->second == DB_READY;
   return false; // db isn't even attempted to update yet

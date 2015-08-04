@@ -63,6 +63,7 @@
 #define SLIDE_EXIF_GPS_LONGITUDE    941
 #define SLIDE_EXIF_GPS_ALTITUDE     942
 #define SLIDE_EXIF_ORIENTATION      943
+#define SLIDE_EXIF_XPCOMMENT        944
 
 #define SLIDE_IPTC_SUBLOCATION      957
 #define SLIDE_IPTC_IMAGETYPE        958
@@ -88,6 +89,8 @@
 #define SLIDE_IPTC_URGENCY          978
 #define SLIDE_IPTC_COUNTRY_CODE     979
 #define SLIDE_IPTC_REF_SERVICE      980
+
+class CVariant;
 
 class CPictureInfoTag : public IArchivable, public ISerializable, public ISortable
 {

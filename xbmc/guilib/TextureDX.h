@@ -38,12 +38,19 @@ public:
   virtual void LoadToGPU();
   void BindToUnit(unsigned int unit);
 
-  LPDIRECT3DTEXTURE9 GetTextureObject()
+  ID3D11Texture2D* GetTextureObject()
   {
     return m_texture.Get();
   };
+
+  ID3D11ShaderResourceView* GetShaderResource()
+  {
+    return m_texture.GetShaderResource();
+  };
+
 private:
   CD3DTexture m_texture;
+  DXGI_FORMAT GetFormat();
 };
 
 #endif

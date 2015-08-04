@@ -26,9 +26,9 @@
 
 using namespace std;
 
-CGUIToggleButtonControl::CGUIToggleButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo)
-    : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
-    , m_selectButton(parentID, controlID, posX, posY, width, height, altTextureFocus, altTextureNoFocus, labelInfo)
+CGUIToggleButtonControl::CGUIToggleButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo, bool wrapMultiLine)
+    : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo, wrapMultiLine)
+    , m_selectButton(parentID, controlID, posX, posY, width, height, altTextureFocus, altTextureNoFocus, labelInfo, wrapMultiLine)
 {
   ControlType = GUICONTROL_TOGGLEBUTTON;
 }
@@ -124,6 +124,12 @@ void CGUIToggleButtonControl::SetHeight(float height)
 {
   CGUIButtonControl::SetHeight(height);
   m_selectButton.SetHeight(height);
+}
+
+void CGUIToggleButtonControl::SetMinWidth(float minWidth)
+{
+  CGUIButtonControl::SetMinWidth(minWidth);
+  m_selectButton.SetMinWidth(minWidth);
 }
 
 bool CGUIToggleButtonControl::UpdateColors()

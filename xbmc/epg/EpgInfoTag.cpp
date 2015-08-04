@@ -52,6 +52,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
     m_iUniqueBroadcastID(-1),
+    m_iYear(0),
     m_epg(NULL)
 {
 }
@@ -67,6 +68,7 @@ CEpgInfoTag::CEpgInfoTag(CEpg *epg, PVR::CPVRChannelPtr pvrChannel, const std::s
     m_iEpisodeNumber(0),
     m_iEpisodePart(0),
     m_iUniqueBroadcastID(-1),
+    m_iYear(0),
     m_strIconPath(strIconPath),
     m_epg(epg),
     m_pvrChannel(pvrChannel)
@@ -204,6 +206,7 @@ void CEpgInfoTag::Serialize(CVariant &value) const
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
   value["hastimer"] = HasTimer();
+  value["hastimerschedule"] = HasTimerSchedule();
   value["hasrecording"] = HasRecording();
   value["recording"] = recording ? recording->m_strFileNameAndPath : "";
   value["isactive"] = IsActive();
@@ -518,6 +521,12 @@ std::string CEpgInfoTag::Path(void) const
 bool CEpgInfoTag::HasTimer(void) const
 {
   return m_timer != NULL;
+}
+
+bool CEpgInfoTag::HasTimerSchedule(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_timer && (m_timer->GetTimerScheduleId() != PVR_TIMER_NO_PARENT);
 }
 
 CPVRTimerInfoTagPtr CEpgInfoTag::Timer(void) const

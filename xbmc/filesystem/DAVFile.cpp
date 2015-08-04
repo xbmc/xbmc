@@ -34,7 +34,7 @@ using namespace XCURL;
 
 CDAVFile::CDAVFile(void)
   : CCurlFile()
-  , lastResponseCode(0)
+  , m_lastResponseCode(0)
 {
 }
 
@@ -60,15 +60,15 @@ bool CDAVFile::Execute(const CURL& url)
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
 
-  lastResponseCode = m_state->Connect(m_bufferSize);
-  if( lastResponseCode < 0 || lastResponseCode >= 400)
+  m_lastResponseCode = m_state->Connect(m_bufferSize);
+  if (m_lastResponseCode < 0 || m_lastResponseCode >= 400)
     return false;
 
   char* efurl;
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL,&efurl) && efurl)
     m_url = efurl;
 
-  if (lastResponseCode == 207)
+  if (m_lastResponseCode == 207)
   {
     std::string strResponse;
     ReadData(strResponse);
@@ -78,7 +78,7 @@ bool CDAVFile::Execute(const CURL& url)
 
     if (!davResponse.Parse(strResponse))
     {
-      CLog::Log(LOGERROR, "%s - Unable to process dav response (%s)", __FUNCTION__, m_url.c_str());
+      CLog::Log(LOGERROR, "CDAVFile::Execute - Unable to process dav response (%s)", CURL(m_url).GetRedacted().c_str());
       Close();
       return false;
     }
@@ -96,8 +96,8 @@ bool CDAVFile::Execute(const CURL& url)
         {
           if (rxCode.GetSubCount())
           {
-            lastResponseCode = atoi(rxCode.GetMatch(1).c_str());
-            if( lastResponseCode < 0 || lastResponseCode >= 400)
+            m_lastResponseCode = atoi(rxCode.GetMatch(1).c_str());
+            if (m_lastResponseCode < 0 || m_lastResponseCode >= 400)
               return false;
           }
         }
@@ -119,9 +119,10 @@ bool CDAVFile::Delete(const CURL& url)
 
   dav.SetCustomRequest(strRequest);
  
+  CLog::Log(LOGDEBUG, "CDAVFile::Delete - Execute DELETE (%s)", url.GetRedacted().c_str());
   if (!dav.Execute(url))
   {
-    CLog::Log(LOGERROR, "%s - Unable to delete dav resource (%s)", __FUNCTION__, url.Get().c_str());
+    CLog::Log(LOGERROR, "CDAVFile::Delete - Unable to delete dav resource (%s)", url.GetRedacted().c_str());
     return false;
   }
 
@@ -145,9 +146,10 @@ bool CDAVFile::Rename(const CURL& url, const CURL& urlnew)
   dav.SetCustomRequest(strRequest);
   dav.SetRequestHeader("Destination", url2.GetWithoutUserDetails());
 
+  CLog::Log(LOGDEBUG, "CDAVFile::Rename - Execute MOVE (%s -> %s)", url.GetRedacted().c_str(), url2.GetRedacted().c_str());
   if (!dav.Execute(url))
   {
-    CLog::Log(LOGERROR, "%s - Unable to rename dav resource (%s)", __FUNCTION__, url.Get().c_str());
+    CLog::Log(LOGERROR, "CDAVFile::Rename - Unable to rename dav resource (%s -> %s)", url.GetRedacted().c_str(), url2.GetRedacted().c_str());
     return false;
   }
 

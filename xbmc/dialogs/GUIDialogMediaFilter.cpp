@@ -32,7 +32,9 @@
 #include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 
@@ -182,7 +184,7 @@ void CGUIDialogMediaFilter::ShowAndEditMediaFilter(const std::string &path, CSma
   if (!dialog->SetPath(path))
     return;
 
-  dialog->DoModal();
+  dialog->Open();
 }
 
 void CGUIDialogMediaFilter::OnWindowLoaded()

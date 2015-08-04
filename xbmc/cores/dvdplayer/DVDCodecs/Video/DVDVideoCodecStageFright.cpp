@@ -33,13 +33,15 @@
 #include "DVDVideoCodecStageFright.h"
 #include "utils/log.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 
 #include "DllLibStageFrightCodec.h"
 
 #define CLASSNAME "CDVDVideoCodecStageFright"
+
+using namespace KODI::MESSAGING;
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,7 +75,14 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 
     switch (hints.codec)
     {
-      case CODEC_ID_H264:
+      case AV_CODEC_ID_H264:
+        switch(hints.profile)
+        {
+          case FF_PROFILE_H264_HIGH_10:
+          case FF_PROFILE_H264_HIGH_10_INTRA:
+            // No known h/w decoder supporting Hi10P
+            return false;
+        }
         m_pFormatName = "stf-h264";
         if (hints.extrasize < 7 || hints.extradata == NULL)
         {

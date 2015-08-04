@@ -63,6 +63,7 @@ class CSong;
 class CGenre;
 
 class CURL;
+class CVariant;
 
 class CFileItemList;
 class CCueDocument;
@@ -105,6 +106,7 @@ public:
   CFileItem(const CURL& path, bool bIsFolder);
   CFileItem(const std::string& strPath, bool bIsFolder);
   CFileItem(const CSong& song);
+  CFileItem(const CSong& song, const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CURL &path, const CAlbum& album);
   CFileItem(const std::string &path, const CAlbum& album);
   CFileItem(const CArtist& artist);
@@ -222,8 +224,6 @@ public:
   bool IsParentFolder() const;
   bool IsFileFolder(EFileFolderType types = EFILEFOLDER_MASK_ALL) const;
   bool IsRemovable() const;
-  bool IsHDHomeRun() const;
-  bool IsSlingbox() const;
   bool IsPVR() const;
   bool IsLiveTV() const;
   bool IsRSS() const;
@@ -415,6 +415,12 @@ public:
    Set lookup=false to skip any internet lookups and always return immediately.
    */
   void FillInMimeType(bool lookup = true);
+
+  /*!
+   \brief Some sources do not support HTTP HEAD request to determine i.e. mime type
+   \return false if HEAD requests have to be avoided
+   */
+  bool ContentLookup() { return true; };
 
   /* general extra info about the contents of the item, not for display */
   void SetExtraInfo(const std::string& info) { m_extrainfo = info; };

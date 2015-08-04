@@ -33,6 +33,7 @@ namespace XFILE
   class CFile;
 }
 class CDateTime;
+class CVariant;
 
 class CWebServer : public JSONRPC::ITransportLayer
 {

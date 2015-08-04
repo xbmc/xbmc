@@ -82,7 +82,9 @@ void CProfile::Load(const TiXmlNode *node, int nextIdProfile)
   XMLUtils::GetBoolean(node, "hassources", m_bSources);
   XMLUtils::GetBoolean(node, "canwritesources", m_bCanWriteSources);
   XMLUtils::GetBoolean(node, "lockaddonmanager", m_locks.addonManager);
-  XMLUtils::GetInt(node, "locksettings", (int&)m_locks.settings);
+  int settings = m_locks.settings;
+  XMLUtils::GetInt(node, "locksettings", settings);
+  m_locks.settings = (LOCK_LEVEL::SETTINGS_LOCK)settings;
   XMLUtils::GetBoolean(node, "lockfiles", m_locks.files);
   XMLUtils::GetBoolean(node, "lockmusic", m_locks.music);
   XMLUtils::GetBoolean(node, "lockvideo", m_locks.video);

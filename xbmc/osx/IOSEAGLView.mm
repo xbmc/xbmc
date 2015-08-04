@@ -29,7 +29,7 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "WindowingFactory.h"
 #include "VideoReferenceClock.h"
 #include "utils/log.h"
@@ -53,6 +53,8 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 #import "XBMCDebugHelpers.h"
+
+using namespace KODI::MESSAGING;
 
 //--------------------------------------------------------------
 @interface IOSEAGLView (PrivateMethods)
@@ -359,8 +361,7 @@
     xbmcAlive = FALSE;
     if (!g_application.m_bStop)
     {
-      ThreadMessage tMsg = {TMSG_QUIT};
-      CApplicationMessenger::Get().SendMessage(tMsg);
+      CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
     }
     // wait for animation thread to die
     if ([animationThread isFinished] == NO)

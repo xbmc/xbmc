@@ -23,27 +23,114 @@
 #include "Util.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
+// fallback for new skin resolution code
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
-#include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "ApplicationMessenger.h"
+#include "utils/URIUtils.h"
+#include "utils/XMLUtils.h"
+#include "utils/Variant.h"
+#include "messaging/ApplicationMessenger.h"
 
-// fallback for new skin resolution code
-#include "filesystem/Directory.h"
+#define XML_SETTINGS      "settings"
+#define XML_SETTING       "setting"
+#define XML_ATTR_TYPE     "type"
+#define XML_ATTR_NAME     "name"
+#define XML_ATTR_ID       "id"
 
 using namespace std;
 using namespace XFILE;
+using namespace KODI::MESSAGING;
 
 std::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 
 namespace ADDON
 {
+
+bool CSkinSetting::Serialize(TiXmlElement* parent) const
+{
+  if (parent == nullptr)
+    return false;
+
+  TiXmlElement setting(XML_SETTING);
+  setting.SetAttribute(XML_ATTR_ID, name.c_str());
+  setting.SetAttribute(XML_ATTR_TYPE, GetType());
+
+  if (!SerializeSetting(&setting))
+    return false;
+
+  parent->InsertEndChild(setting);
+
+  return true;
+}
+
+bool CSkinSetting::Deserialize(const TiXmlElement* element)
+{
+  if (element == nullptr)
+    return false;
+
+  name = XMLUtils::GetAttribute(element, XML_ATTR_ID);
+
+  // backwards compatibility for guisettings.xml
+  if (name.empty())
+    name = XMLUtils::GetAttribute(element, XML_ATTR_NAME);
+
+  return true;
+}
+
+bool CSkinSettingString::Deserialize(const TiXmlElement* element)
+{
+  value.clear();
+
+  if (!CSkinSetting::Deserialize(element))
+    return false;
+
+  if (element->FirstChild() != nullptr)
+    value = element->FirstChild()->Value();
+
+  return true;
+}
+
+bool CSkinSettingString::SerializeSetting(TiXmlElement* element) const
+{
+  if (element == nullptr)
+    return false;
+
+  TiXmlText xmlValue(value);
+  element->InsertEndChild(xmlValue);
+
+  return true;
+}
+
+bool CSkinSettingBool::Deserialize(const TiXmlElement* element)
+{
+  value = false;
+
+  if (!CSkinSetting::Deserialize(element))
+    return false;
+
+  if (element->FirstChild() != nullptr)
+    value = StringUtils::EqualsNoCase(element->FirstChild()->ValueStr(), "true");
+
+  return true;
+}
+
+bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
+{
+  if (element == nullptr)
+    return false;
+
+  TiXmlText xmlValue(value ? "true" : "false");
+  element->InsertEndChild(xmlValue);
+
+  return true;
+}
 
 CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
   : CAddon(props), m_defaultRes(resolution), m_version(""), m_effectsSlowDown(1.f), m_debugging(false)
@@ -124,6 +211,9 @@ struct closestRes
 
 void CSkinInfo::Start()
 {
+  if (!LoadUserSettings())
+    CLog::Log(LOGWARNING, "CSkinInfo: failed to load skin settings");
+
   if (!m_resolutions.size())
   { // try falling back to whatever resolutions exist in the directory
     CFileItemList items;
@@ -278,12 +368,12 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string
 void CSkinInfo::OnPreInstall()
 {
   if (IsInUse())
-    CApplicationMessenger::Get().ExecBuiltIn("UnloadSkin", true);
+    CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "UnloadSkin");
 }
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
 {
-  if (IsInUse() || (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(Name(), 24099)))
+  if (IsInUse() || (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(CVariant{Name()}, CVariant{24099})))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (toast)
@@ -292,7 +382,7 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
       toast->Close(true);
     }
     if (CSettings::Get().GetString("lookandfeel.skin") == ID())
-      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin", true);
+      CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
     else
       CSettings::Get().SetString("lookandfeel.skin", ID());
   }
@@ -484,6 +574,226 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std:
   // if the current value hasn't been properly set, set it to the first window in the list
   if (current < 0)
     current = list[0].second;
+}
+
+void CSkinInfo::ToggleDebug()
+{
+  m_debugging = !m_debugging;
+}
+
+int CSkinInfo::TranslateString(const string &setting)
+{
+  // run through and see if we have this setting
+  for (const auto& it : m_strings)
+  {
+    if (StringUtils::EqualsNoCase(setting, it.second->name))
+      return it.first;
+  }
+
+  // didn't find it - insert it
+  CSkinSettingStringPtr skinString(new CSkinSettingString());
+  skinString->name = setting;
+
+  int number = m_bools.size() + m_strings.size();
+  m_strings.insert(std::pair<int, CSkinSettingStringPtr>(number, skinString));
+
+  return number;
+}
+
+const string& CSkinInfo::GetString(int setting) const
+{
+  const auto& it = m_strings.find(setting);
+  if (it != m_strings.end())
+    return it->second->value;
+
+  return StringUtils::Empty;
+}
+
+void CSkinInfo::SetString(int setting, const string &label)
+{
+  auto&& it = m_strings.find(setting);
+  if (it != m_strings.end())
+  {
+    it->second->value = label;
+    return;
+  }
+
+  CLog::Log(LOGFATAL, "%s: unknown setting (%d) requested", __FUNCTION__, setting);
+  assert(false);
+}
+
+int CSkinInfo::TranslateBool(const string &setting)
+{
+  // run through and see if we have this setting
+  for (const auto& it : m_bools)
+  {
+    if (StringUtils::EqualsNoCase(setting, it.second->name))
+      return it.first;
+  }
+
+  // didn't find it - insert it
+  CSkinSettingBoolPtr skinBool(new CSkinSettingBool());
+  skinBool->name = setting;
+
+  int number = m_bools.size() + m_strings.size();
+  m_bools.insert(std::pair<int, CSkinSettingBoolPtr>(number, skinBool));
+
+  return number;
+}
+
+bool CSkinInfo::GetBool(int setting) const
+{
+  const auto& it = m_bools.find(setting);
+  if (it != m_bools.end())
+    return it->second->value;
+
+  // default is to return false
+  return false;
+}
+
+void CSkinInfo::SetBool(int setting, bool set)
+{
+  auto&& it = m_bools.find(setting);
+  if (it != m_bools.end())
+  {
+    it->second->value = set;
+    return;
+  }
+
+  CLog::Log(LOGFATAL, "%s: unknown setting (%d) requested", __FUNCTION__, setting);
+  assert(false);
+}
+
+void CSkinInfo::Reset(const string &setting)
+{
+  // run through and see if we have this setting as a string
+  for (auto& it : m_strings)
+  {
+    if (StringUtils::EqualsNoCase(setting, it.second->name))
+    {
+      it.second->value.clear();
+      return;
+    }
+  }
+
+  // and now check for the skin bool
+  for (auto& it : m_bools)
+  {
+    if (StringUtils::EqualsNoCase(setting, it.second->name))
+    {
+      it.second->value = false;
+      return;
+    }
+  }
+}
+
+void CSkinInfo::Reset()
+{
+  // clear all the settings and strings from this skin.
+  for (auto& it : m_bools)
+    it.second->value = false;
+
+  for (auto& it : m_strings)
+    it.second->value.clear();
+}
+
+std::set<CSkinSettingPtr> CSkinInfo::ParseSettings(const TiXmlElement* rootElement)
+{
+  std::set<CSkinSettingPtr> settings;
+  if (rootElement == nullptr)
+    return settings;
+
+  const TiXmlElement *settingElement = rootElement->FirstChildElement(XML_SETTING);
+  while (settingElement != nullptr)
+  {
+    CSkinSettingPtr setting = ParseSetting(settingElement);
+    if (setting != nullptr)
+      settings.insert(setting);
+
+    settingElement = settingElement->NextSiblingElement(XML_SETTING);
+  }
+
+  return settings;
+}
+
+CSkinSettingPtr CSkinInfo::ParseSetting(const TiXmlElement* element)
+{
+  if (element == nullptr)
+    return CSkinSettingPtr();
+
+  std::string settingType = XMLUtils::GetAttribute(element, XML_ATTR_TYPE);
+  CSkinSettingPtr setting;
+  if (settingType == "string")
+    setting = CSkinSettingPtr(new CSkinSettingString());
+  else if (settingType == "bool")
+    setting = CSkinSettingPtr(new CSkinSettingBool());
+  else
+    return CSkinSettingPtr();
+
+  if (setting == nullptr)
+    return CSkinSettingPtr();
+
+  if (!setting->Deserialize(element))
+    return CSkinSettingPtr();
+
+  return setting;
+}
+
+bool CSkinInfo::HasSettingsToSave() const
+{
+  return !m_strings.empty() || !m_bools.empty();
+}
+
+bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = false */)
+{
+  const TiXmlElement *rootElement = doc.RootElement();
+  if (rootElement == nullptr || rootElement->ValueStr().compare(XML_SETTINGS) != 0)
+  {
+    CLog::Log(LOGWARNING, "CSkinInfo: no <skinsettings> tag found");
+    return false;
+  }
+
+  m_strings.clear();
+  m_bools.clear();
+
+  int number = 0;
+  std::set<CSkinSettingPtr> settings = ParseSettings(rootElement);
+  for (const auto& setting : settings)
+  {
+    if (setting->GetType() == "string")
+      m_strings.insert(std::pair<int, CSkinSettingStringPtr>(number++, std::dynamic_pointer_cast<CSkinSettingString>(setting)));
+    else if (setting->GetType() == "bool")
+      m_bools.insert(std::pair<int, CSkinSettingBoolPtr>(number++, std::dynamic_pointer_cast<CSkinSettingBool>(setting)));
+    else
+      CLog::Log(LOGWARNING, "CSkinInfo: ignoring setting of unknwon type \"%s\"", setting->GetType().c_str());
+  }
+
+  return true;
+}
+
+void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
+{
+  // add the <skinsettings> tag
+  TiXmlElement rootElement(XML_SETTINGS);
+  TiXmlNode *settingsNode = doc.InsertEndChild(rootElement);
+  if (settingsNode == NULL)
+  {
+    CLog::Log(LOGWARNING, "CSkinInfo: could not create <skinsettings> tag");
+    return;
+  }
+
+  TiXmlElement* settingsElement = settingsNode->ToElement();
+  for (const auto& it : m_bools)
+  {
+    if (!it.second->Serialize(settingsElement))
+      CLog::Log(LOGWARNING, "CSkinInfo: failed to save string setting \"%s\"", it.second->name.c_str());
+  }
+
+  for (const auto& it : m_strings)
+  {
+    if (!it.second->Serialize(settingsElement))
+      CLog::Log(LOGWARNING, "CSkinInfo: failed to save bool setting \"%s\"", it.second->name.c_str());
+  }
 }
 
 } /*namespace ADDON*/

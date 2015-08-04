@@ -25,7 +25,7 @@
 		<!-- media infos -->
 		<control type="group">
 			<animation effect="fade" time="150">VisibleChange</animation>
-			<visible>[Player.ShowInfo | Window.IsActive(MusicOSD)] + ![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
+			<visible>[Player.ShowInfo | Window.IsActive(MusicOSD)] + ![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 			<control type="image">
 				<left>0</left>
 				<top>-150</top>
@@ -73,6 +73,7 @@
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<label>$INFO[System.Time]</label>
+				<animation effect="slide" start="0,0" end="-30,0" time="0" condition="Window.IsVisible(Mutebug)">conditional</animation>
 				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="Window.IsVisible(MusicOSD)">conditional</animation>
 			</control>
 			<control type="image">
@@ -128,6 +129,7 @@
 					<height>35</height>
 					<itemgap>5</itemgap>
 					<orientation>horizontal</orientation>
+					<visible>!system.getbool(audiooutput.dspaddonsenabled)</visible>
 					<control type="label">
 						<width min="10" max="700">auto</width>
 						<height>30</height>
@@ -144,6 +146,72 @@
 						<height>35</height>
 						<aspectratio align="right">keep</aspectratio>
 						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
+					</control>
+					<control type="group">
+						<description>Rating</description>
+						<width>110</width>
+						<height>35</height>
+						<control type="image">
+							<description>rating back</description>
+							<left>0</left>
+							<top>0</top>
+							<width>110</width>
+							<height>35</height>
+							<aspectratio align="left">stretch</aspectratio>
+							<texture border="5">flagging/blank.png</texture>
+						</control>
+						<control type="image">
+							<description>Rating</description>
+							<left>5</left>
+							<top>0</top>
+							<width>100</width>
+							<height>35</height>
+							<aspectratio align="center">keep</aspectratio>
+							<texture fallback="LeftRating/rating0.png">$INFO[Player.StarRating,LeftRating/]</texture>
+						</control>
+					</control>
+				</control>
+				<control type="grouplist">
+					<left>20</left>
+					<top>60</top>
+					<width>910</width>
+					<height>35</height>
+					<itemgap>5</itemgap>
+					<orientation>horizontal</orientation>
+					<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
+					<control type="label">
+						<width min="10" max="620">auto</width>
+						<height>30</height>
+						<font>font30</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[Player.Title]</label>
+						<textcolor>orange</textcolor>
+						<scroll>true</scroll>
+					</control>
+					<control type="image">
+						<description>ADSP Master Mode Image</description>
+						<width>80</width>
+						<height>35</height>
+						<aspectratio align="right">keep</aspectratio>
+						<visible>!IsEmpty(ADSP.MasterOwnIcon)</visible>
+						<texture>$INFO[ADSP.MasterOwnIcon]</texture>
+					</control>
+					<control type="image">
+						<description>Audio Codec Image</description>
+						<width>80</width>
+						<height>35</height>
+						<aspectratio align="center">keep</aspectratio>
+						<visible>IsEmpty(ADSP.MasterOverrideIcon)</visible>
+						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
+					</control>
+					<control type="image">
+						<description>ADSP Audio Codec Override Image</description>
+						<width>80</width>
+						<height>35</height>
+						<aspectratio align="center">keep</aspectratio>
+						<visible>!IsEmpty(ADSP.MasterOverrideIcon)</visible>
+						<texture>$INFO[ADSP.MasterOverrideIcon]</texture>
 					</control>
 					<control type="group">
 						<description>Rating</description>
@@ -221,7 +289,7 @@
 		<control type="group" id="0">
 			<left>0</left>
 			<top>50</top>
-			<visible>Player.ShowCodec + ![Window.IsVisible(script-cu-lrclyrics-main.xml) | Window.IsVisible(VisualisationSettings) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
+			<visible>Player.ShowCodec + ![Window.IsVisible(script-cu-lrclyrics-main.xml) | Window.IsVisible(VisualisationSettings) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(Addon)]</visible>
 			<animation effect="fade" time="150">VisibleChange</animation>
 			<control type="image">
 				<description>media info background image</description>

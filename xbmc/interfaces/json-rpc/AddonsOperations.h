@@ -23,6 +23,7 @@
 #include "addons/IAddon.h"
 
 class CAddonDatabase;
+class CVariant;
 
 namespace JSONRPC
 {

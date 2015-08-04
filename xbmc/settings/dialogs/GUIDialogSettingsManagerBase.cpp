@@ -18,10 +18,11 @@
  *
  */
 
+#include <set>
+#include <string>
+
 #include "GUIDialogSettingsManagerBase.h"
 #include "settings/lib/SettingsManager.h"
-
-using namespace std;
 
 CGUIDialogSettingsManagerBase::CGUIDialogSettingsManagerBase(int windowId, const std::string &xmlFile)
     : CGUIDialogSettingsBase(windowId, xmlFile),

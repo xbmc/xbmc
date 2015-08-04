@@ -36,8 +36,12 @@
 #include "DInput.h"
 //#include "DSound.h"
 #ifdef HAS_DX
-#include "D3D9.h"
-#include "D3DX9.h"
+#include "d3d9.h"
+#include "d3d11_1.h"
+#include "dxgi.h"
+#include "d3dcompiler.h"
+#include "directxmath.h"
+#include "directxcolors.h" 
 #else
 #include <d3d9types.h>
 #endif

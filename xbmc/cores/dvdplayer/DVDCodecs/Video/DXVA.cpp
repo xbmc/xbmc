@@ -24,29 +24,22 @@
 // which we don't use here
 #define FF_API_OLD_SAMPLE_FMT 0
 
-#include <windows.h>
 #include <d3d9.h>
-#include <Initguid.h>
 #include <dxva.h>
-#include <dxva2api.h>
-#include "libavcodec/dxva2.h"
-#include "../DVDCodecUtils.h"
-
-#include "DXVA.h"
-#include "windowing/WindowingFactory.h"
-#include "settings/Settings.h"
-#include <memory>
-#include "utils/AutoPtrHandle.h"
-#include "utils/StringUtils.h"
-#include "settings/AdvancedSettings.h"
+#include <d3d11.h>
+#include <Initguid.h>
+#include <windows.h>
 #include "cores/VideoRenderers/RenderManager.h"
+#include "../DVDCodecUtils.h"
+#include "DXVA.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/AutoPtrHandle.h"
 #include "utils/Log.h"
-
-#define ALLOW_ADDING_SURFACES 0
+#include "utils/StringUtils.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace DXVA;
 using namespace AUTOPTR;
-using namespace std;
 
 static void RelBufferS(void *opaque, uint8_t *data)
 { ((CDecoder*)opaque)->RelBuffer(data); }
@@ -54,17 +47,16 @@ static void RelBufferS(void *opaque, uint8_t *data)
 static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags) 
 {  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic, flags); }
 
-
 DEFINE_GUID(DXVADDI_Intel_ModeH264_A, 0x604F8E64,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeH264_C, 0x604F8E66,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeH264_E, 0x604F8E68,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeVC1_E , 0xBCC5DB6D,0xA2B6,0x4AF0,0xAC,0xE4,0xAD,0xB1,0xF7,0x87,0xBC,0x89);
 
-#if _MSC_VER < 1700
-DEFINE_GUID(DXVA_ModeMPEG2and1_VLD,   0x86695f12,0x340e,0x4f04,0x9f,0xd3,0x92,0x53,0xdd,0x32,0x74,0x60);
-// When exposed by an accelerator, indicates compliance with the August 2010 spec update
-DEFINE_GUID(DXVA_ModeVC1_D2010,       0x1b81beA4,0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+// redefine DXVA_NoEncrypt with other macro, solves unresolved external symbol linker error
+#ifdef DXVA_NoEncrypt 
+#undef DXVA_NoEncrypt
 #endif
+DEFINE_GUID(DXVA_NoEncrypt, 0x1b81beD0, 0xa0c7, 0x11d3, 0xb9, 0x84, 0x00, 0xc0, 0x4f, 0x2e, 0x73, 0xc5);
 
 typedef struct {
     const char   *name;
@@ -74,10 +66,10 @@ typedef struct {
 
 /* XXX Prefered modes must come first */
 static const dxva2_mode_t dxva2_modes[] = {
-    { "MPEG2 VLD",    &DXVA2_ModeMPEG2_VLD,     AV_CODEC_ID_MPEG2VIDEO },
-    { "MPEG1/2 VLD",  &DXVA_ModeMPEG2and1_VLD,  AV_CODEC_ID_MPEG2VIDEO },
-    { "MPEG2 MoComp", &DXVA2_ModeMPEG2_MoComp,  0 },
-    { "MPEG2 IDCT",   &DXVA2_ModeMPEG2_IDCT,    0 },
+    { "MPEG2 VLD",    &D3D11_DECODER_PROFILE_MPEG2_VLD,     AV_CODEC_ID_MPEG2VIDEO },
+    { "MPEG1/2 VLD",  &D3D11_DECODER_PROFILE_MPEG2and1_VLD, AV_CODEC_ID_MPEG2VIDEO },
+    { "MPEG2 MoComp", &D3D11_DECODER_PROFILE_MPEG2_MOCOMP,  0 },
+    { "MPEG2 IDCT",   &D3D11_DECODER_PROFILE_MPEG2_IDCT,    0 },
 
 #ifndef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     /* We must prefer Intel specific ones if the flag doesn't exists */
@@ -87,31 +79,31 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
 #endif
 
-    { "H.264 variable-length decoder (VLD), FGT",               &DXVA2_ModeH264_F, AV_CODEC_ID_H264 },
-    { "H.264 VLD, no FGT",                                      &DXVA2_ModeH264_E, AV_CODEC_ID_H264 },
-    { "H.264 IDCT, FGT",                                        &DXVA2_ModeH264_D, 0,            },
-    { "H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVA2_ModeH264_C, 0,            },
-    { "H.264 MoComp, FGT",                                      &DXVA2_ModeH264_B, 0,            },
-    { "H.264 motion compensation (MoComp), no FGT",             &DXVA2_ModeH264_A, 0,            },
+    { "H.264 variable-length decoder (VLD), FGT",               &D3D11_DECODER_PROFILE_H264_VLD_FGT,      AV_CODEC_ID_H264 },
+    { "H.264 VLD, no FGT",                                      &D3D11_DECODER_PROFILE_H264_VLD_NOFGT,    AV_CODEC_ID_H264 },
+    { "H.264 IDCT, FGT",                                        &D3D11_DECODER_PROFILE_H264_IDCT_FGT,     0, },
+    { "H.264 inverse discrete cosine transform (IDCT), no FGT", &D3D11_DECODER_PROFILE_H264_IDCT_NOFGT,   0, },
+    { "H.264 MoComp, FGT",                                      &D3D11_DECODER_PROFILE_H264_MOCOMP_FGT,   0, },
+    { "H.264 motion compensation (MoComp), no FGT",             &D3D11_DECODER_PROFILE_H264_MOCOMP_NOFGT, 0, },
 
-    { "Windows Media Video 8 MoComp",           &DXVA2_ModeWMV8_B, 0 },
-    { "Windows Media Video 8 post processing",  &DXVA2_ModeWMV8_A, 0 },
+    { "Windows Media Video 8 MoComp",           &D3D11_DECODER_PROFILE_WMV8_MOCOMP,   0 },
+    { "Windows Media Video 8 post processing",  &D3D11_DECODER_PROFILE_WMV8_POSTPROC, 0 },
 
-    { "Windows Media Video 9 IDCT",             &DXVA2_ModeWMV9_C, 0 },
-    { "Windows Media Video 9 MoComp",           &DXVA2_ModeWMV9_B, 0 },
-    { "Windows Media Video 9 post processing",  &DXVA2_ModeWMV9_A, 0 },
+    { "Windows Media Video 9 IDCT",             &D3D11_DECODER_PROFILE_WMV9_IDCT,     0 },
+    { "Windows Media Video 9 MoComp",           &D3D11_DECODER_PROFILE_WMV9_MOCOMP,   0 },
+    { "Windows Media Video 9 post processing",  &D3D11_DECODER_PROFILE_WMV9_POSTPROC, 0 },
 
-    { "VC-1 VLD",             &DXVA2_ModeVC1_D,    AV_CODEC_ID_VC1 },
-    { "VC-1 VLD",             &DXVA2_ModeVC1_D,    AV_CODEC_ID_WMV3 },
-    { "VC-1 VLD 2010",        &DXVA_ModeVC1_D2010, AV_CODEC_ID_VC1 },
-    { "VC-1 VLD 2010",        &DXVA_ModeVC1_D2010, AV_CODEC_ID_WMV3 },
-    { "VC-1 IDCT",            &DXVA2_ModeVC1_C,    0 },
-    { "VC-1 MoComp",          &DXVA2_ModeVC1_B,    0 },
-    { "VC-1 post processing", &DXVA2_ModeVC1_A,    0 },
+    { "VC-1 VLD",             &D3D11_DECODER_PROFILE_VC1_VLD,      AV_CODEC_ID_VC1 },
+    { "VC-1 VLD",             &D3D11_DECODER_PROFILE_VC1_VLD,      AV_CODEC_ID_WMV3 },
+    { "VC-1 VLD 2010",        &D3D11_DECODER_PROFILE_VC1_D2010,    AV_CODEC_ID_VC1 },
+    { "VC-1 VLD 2010",        &D3D11_DECODER_PROFILE_VC1_D2010,    AV_CODEC_ID_WMV3 },
+    { "VC-1 IDCT",            &D3D11_DECODER_PROFILE_VC1_IDCT,     0 },
+    { "VC-1 MoComp",          &D3D11_DECODER_PROFILE_VC1_MOCOMP,   0 },
+    { "VC-1 post processing", &D3D11_DECODER_PROFILE_VC1_POSTPROC, 0 },
 
     /* HEVC / H.265 */
-    { "HEVC / H.265 variable-length decoder, main",   &DXVA_ModeHEVC_VLD_Main,   AV_CODEC_ID_HEVC },
-    { "HEVC / H.265 variable-length decoder, main10", &DXVA_ModeHEVC_VLD_Main10, 0 },
+    { "HEVC / H.265 variable-length decoder, main",   &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN,   AV_CODEC_ID_HEVC },
+    { "HEVC / H.265 variable-length decoder, main10", &D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10, 0 },
 
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     /* Intel specific modes (only useful on older GPUs) */
@@ -125,10 +117,11 @@ static const dxva2_mode_t dxva2_modes[] = {
 };
 
 // Prefered targets must be first
-static const D3DFORMAT render_targets[] = {
-    (D3DFORMAT)MAKEFOURCC('N','V','1','2'),
-    (D3DFORMAT)MAKEFOURCC('Y','V','1','2'),
-    D3DFMT_UNKNOWN
+static const DXGI_FORMAT render_targets_dxgi[] = {
+  DXGI_FORMAT_NV12,
+  DXGI_FORMAT_P010,
+  DXGI_FORMAT_P016,
+  DXGI_FORMAT_UNKNOWN
 };
 
 // List of PCI Device ID of ATI cards with UVD or UVD+ decoding block.
@@ -215,22 +208,94 @@ static const dxva2_mode_t *dxva2_find_mode(const GUID *guid)
         if (IsEqualGUID(*dxva2_modes[i].guid, *guid))
             return &dxva2_modes[i];
     }
-    return NULL;
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// DXVA to D3D11 Video API Wrapper
+//-----------------------------------------------------------------------------
+
+CDXVADecoderWrapper::CDXVADecoderWrapper(ID3D11VideoContext* pContext, ID3D11VideoDecoder* pDecoder)
+  : m_refs(1), m_pContext(pContext), m_pDecoder(pDecoder)
+{
+  assert(pContext != nullptr);
+  assert(pDecoder != nullptr);
+  m_pContext->AddRef();
+  m_pDecoder->AddRef();
+};
+
+CDXVADecoderWrapper::~CDXVADecoderWrapper()
+{
+  SAFE_RELEASE(m_pContext);
+  SAFE_RELEASE(m_pDecoder);
+};
+
+STDMETHODIMP_(ULONG) CDXVADecoderWrapper::AddRef(void) 
+{
+  return AtomicIncrement(&m_refs); 
+}
+
+STDMETHODIMP_(ULONG) CDXVADecoderWrapper::Release(void)
+{
+  AtomicDecrement(&m_refs);
+  assert(m_refs >= 0);
+  if (m_refs == 0) delete this;
+  return m_refs;
+};
+
+STDMETHODIMP CDXVADecoderWrapper::GetBuffer(UINT BufferType, void **ppBuffer, UINT *pBufferSize)
+{
+  return m_pContext->GetDecoderBuffer(m_pDecoder, (D3D11_VIDEO_DECODER_BUFFER_TYPE)BufferType, pBufferSize, ppBuffer);
+};
+
+STDMETHODIMP CDXVADecoderWrapper::ReleaseBuffer(UINT BufferType)
+{
+  return m_pContext->ReleaseDecoderBuffer(m_pDecoder, (D3D11_VIDEO_DECODER_BUFFER_TYPE)BufferType);
+};
+
+STDMETHODIMP CDXVADecoderWrapper::BeginFrame(IDirect3DSurface9 *pRenderTarget, void *pvPVPData)
+{
+  return m_pContext->DecoderBeginFrame(m_pDecoder, reinterpret_cast<ID3D11VideoDecoderOutputView*>(pRenderTarget), 0, pvPVPData);
+};
+
+STDMETHODIMP CDXVADecoderWrapper::EndFrame(HANDLE *pHandleComplete)
+{
+  return m_pContext->DecoderEndFrame(m_pDecoder);
+};
+
+STDMETHODIMP CDXVADecoderWrapper::Execute(const DXVA2_DecodeExecuteParams *pExecuteParams)
+{
+  D3D11_VIDEO_DECODER_BUFFER_DESC buffer[4];
+  for (size_t i = 0; i < pExecuteParams->NumCompBuffers; i++)
+  {
+    ZeroMemory(&buffer[i], sizeof(D3D11_VIDEO_DECODER_BUFFER_DESC));
+    buffer[i].BufferType      = (D3D11_VIDEO_DECODER_BUFFER_TYPE)pExecuteParams->pCompressedBuffers[i].CompressedBufferType;
+    buffer[i].BufferIndex     = pExecuteParams->pCompressedBuffers[i].BufferIndex;
+    buffer[i].DataOffset      = pExecuteParams->pCompressedBuffers[i].DataOffset;
+    buffer[i].DataSize        = pExecuteParams->pCompressedBuffers[i].DataSize;
+    buffer[i].FirstMBaddress  = pExecuteParams->pCompressedBuffers[i].FirstMBaddress;
+    buffer[i].NumMBsInBuffer  = pExecuteParams->pCompressedBuffers[i].NumMBsInBuffer;
+    buffer[i].Width           = pExecuteParams->pCompressedBuffers[i].Width;
+    buffer[i].Height          = pExecuteParams->pCompressedBuffers[i].Height;
+    buffer[i].Stride          = pExecuteParams->pCompressedBuffers[i].Stride;
+    buffer[i].ReservedBits    = pExecuteParams->pCompressedBuffers[i].ReservedBits;
+    buffer[i].pIV             = pExecuteParams->pCompressedBuffers[i].pvPVPState;
+  }
+  return m_pContext->SubmitDecoderBuffers(m_pDecoder, pExecuteParams->NumCompBuffers, buffer);
 }
 
 //-----------------------------------------------------------------------------
 // DXVA Context
 //-----------------------------------------------------------------------------
 
-CDXVAContext *CDXVAContext::m_context = NULL;
+CDXVAContext *CDXVAContext::m_context = nullptr;
 CCriticalSection CDXVAContext::m_section;
-HMODULE CDXVAContext::m_dlHandle = NULL;
-DXVA2CreateVideoServicePtr CDXVAContext::m_DXVA2CreateVideoService = NULL;
 CDXVAContext::CDXVAContext()
 {
-  m_context = NULL;
+  m_context = nullptr;
   m_refCount = 0;
-  m_service = NULL;
+  m_service = nullptr;
+  m_vcontext = nullptr;
   m_atiWorkaround = false;
 }
 
@@ -246,7 +311,7 @@ void CDXVAContext::Release(CDecoder *decoder)
   {
     Close();
     delete this;
-    m_context = 0;
+    m_context = nullptr;
   }
 }
 
@@ -254,19 +319,6 @@ void CDXVAContext::Close()
 {
   CLog::Log(LOGNOTICE, "DXVA::Close - closing decoder context");
   DestroyContext();
-}
-
-bool CDXVAContext::LoadSymbols()
-{
-  CSingleLock lock(m_section);
-  if (m_dlHandle == NULL)
-    m_dlHandle = LoadLibraryEx("dxva2.dll", NULL, 0);
-  if (m_dlHandle == NULL)
-    return false;
-  m_DXVA2CreateVideoService = (DXVA2CreateVideoServicePtr)GetProcAddress(m_dlHandle, "DXVA2CreateVideoService");
-  if (m_DXVA2CreateVideoService == NULL)
-    return false;
-  return true;
 }
 
 bool CDXVAContext::EnsureContext(CDXVAContext **ctx, CDecoder *decoder)
@@ -283,11 +335,11 @@ bool CDXVAContext::EnsureContext(CDXVAContext **ctx, CDecoder *decoder)
   m_context = new CDXVAContext();
   *ctx = m_context;
   {
-    if (!m_context->LoadSymbols() || !m_context->CreateContext())
+    if (!m_context->CreateContext())
     {
       delete m_context;
-      m_context = 0;
-      *ctx = NULL;
+      m_context = nullptr;
+      *ctx = nullptr;
       return false;
     }
   }
@@ -302,7 +354,13 @@ bool CDXVAContext::EnsureContext(CDXVAContext **ctx, CDecoder *decoder)
 
 bool CDXVAContext::CreateContext()
 {
-  m_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoDecoderService, (void**)&m_service);
+  if ( FAILED(g_Windowing.Get3D11Device()->QueryInterface(__uuidof(ID3D11VideoDevice), reinterpret_cast<void**>(&m_service)))
+    || FAILED(g_Windowing.GetImmediateContext()->QueryInterface(__uuidof(ID3D11VideoContext), reinterpret_cast<void**>(&m_vcontext))))
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - failed to get Video Device and Context.");
+    return false;
+  }
+
   QueryCaps();
 
   // Some older Ati devices can only open a single decoder at a given time
@@ -320,88 +378,82 @@ bool CDXVAContext::CreateContext()
 
 void CDXVAContext::DestroyContext()
 {
-  CoTaskMemFree(m_input_list);
+  delete[] m_input_list;
   SAFE_RELEASE(m_service);
+  SAFE_RELEASE(m_vcontext);
 }
 
 void CDXVAContext::QueryCaps()
 {
-  HRESULT res = m_service->GetDecoderDeviceGuids(&m_input_count, &m_input_list);
-  if (FAILED(res))
-  {
-    CLog::Log(LOGNOTICE, "%s - failed getting device guids", __FUNCTION__);
-    return;
-  }
-
+  m_input_count = m_service->GetVideoDecoderProfileCount();
+  
+  m_input_list = new GUID[m_input_count];
   for (unsigned i = 0; i < m_input_count; i++)
   {
-    const GUID *g = &m_input_list[i];
-    const dxva2_mode_t *mode = dxva2_find_mode(g);
+    if (FAILED(m_service->GetVideoDecoderProfile(i, &m_input_list[i])))
+    {
+      CLog::Log(LOGNOTICE, "%s - failed getting device guids", __FUNCTION__);
+      return;
+    }
+    const dxva2_mode_t *mode = dxva2_find_mode(&m_input_list[i]);
     if (mode)
       CLog::Log(LOGDEBUG, "DXVA - supports '%s'", mode->name);
     else
-      CLog::Log(LOGDEBUG, "DXVA - supports %s", GUIDToString(*g).c_str());
+      CLog::Log(LOGDEBUG, "DXVA - supports %s", GUIDToString(m_input_list[i]).c_str());
   }
 }
 
-bool CDXVAContext::GetInputAndTarget(int codec, GUID &inGuid, D3DFORMAT &outFormat)
+bool CDXVAContext::GetInputAndTarget(int codec, GUID &inGuid, DXGI_FORMAT &outFormat)
 {
-  outFormat = D3DFMT_UNKNOWN;
-  UINT output_count = 0;
-  D3DFORMAT *output_list = NULL;
+  outFormat = DXGI_FORMAT_UNKNOWN;
 
   // iterate through our predifined dxva modes and find the first matching for desired codec
-  // once we found a mode, get a target we support in render_targets
-  for (const dxva2_mode_t* mode = dxva2_modes; mode->name && outFormat == D3DFMT_UNKNOWN; mode++)
+  // once we found a mode, get a target we support in render_targets_dxgi DXGI_FORMAT_UNKNOWN
+  for (const dxva2_mode_t* mode = dxva2_modes; mode->name && outFormat == DXGI_FORMAT_UNKNOWN; mode++)
   {
     if (mode->codec != codec)
       continue;
 
-    for (unsigned i = 0; i < m_input_count && outFormat == D3DFMT_UNKNOWN; i++)
+    for (unsigned i = 0; i < m_input_count && outFormat == DXGI_FORMAT_UNKNOWN; i++)
     {
       if (!IsEqualGUID(m_input_list[i], *mode->guid))
         continue;
 
       CLog::Log(LOGDEBUG, "DXVA - trying '%s'", mode->name);
-      HRESULT res = m_service->GetDecoderRenderTargets(m_input_list[i], &output_count, &output_list);
-      if (FAILED(res))
+      for (unsigned j = 0; render_targets_dxgi[j] != DXGI_FORMAT_UNKNOWN && outFormat == DXGI_FORMAT_UNKNOWN; j++)
       {
-        CLog::Log(LOGNOTICE, "%s - failed getting render targets", __FUNCTION__);
-        break;
-      }
-
-      for (unsigned j = 0; render_targets[j] != D3DFMT_UNKNOWN && outFormat == D3DFMT_UNKNOWN; j++)
-      {
-        for (unsigned k = 0; k < output_count; k++)
+        BOOL supported;
+        HRESULT res = m_service->CheckVideoDecoderFormat(&m_input_list[i], render_targets_dxgi[j], &supported);
+        if (FAILED(res))
         {
-          if (output_list[k] == render_targets[j])
-          {
-            inGuid = m_input_list[i];
-            outFormat = output_list[k];
-            break;
-          }
+          CLog::Log(LOGNOTICE, "%s - failed check supported decoder format.", __FUNCTION__);
+          break;
+        }
+        if (supported)
+        {
+          inGuid = m_input_list[i];
+          outFormat = render_targets_dxgi[j];
+          break;
         }
       }
     }
   }
 
-  CoTaskMemFree(output_list);
-
-  if (outFormat == D3DFMT_UNKNOWN)
+  if (outFormat == DXGI_FORMAT_UNKNOWN)
     return false;
 
   return true;
 }
 
-bool CDXVAContext::GetConfig(GUID &inGuid, const DXVA2_VideoDesc *format, DXVA2_ConfigPictureDecode &config)
+bool CDXVAContext::GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO_DECODER_CONFIG &config)
 {
   // find what decode configs are available
   UINT cfg_count = 0;
-  DXVA2_ConfigPictureDecode *cfg_list = NULL;
-  HRESULT res = m_service->GetDecoderConfigurations(inGuid, format, NULL, &cfg_count, &cfg_list);
+  HRESULT res = m_service->GetVideoDecoderConfigCount(format, &cfg_count);
+
   if (FAILED(res))
   {
-    CLog::Log(LOGNOTICE, "%s - failed getting decoder configuration", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s - failed getting decoder configuration count", __FUNCTION__);
     return false;
   }
 
@@ -409,20 +461,26 @@ bool CDXVAContext::GetConfig(GUID &inGuid, const DXVA2_VideoDesc *format, DXVA2_
   unsigned bitstream = 2; // ConfigBitstreamRaw = 2 is required for Poulsbo and handles skipping better with nVidia
   for (unsigned i = 0; i< cfg_count; i++)
   {
+    D3D11_VIDEO_DECODER_CONFIG pConfig = {0};
+    if (FAILED(m_service->GetVideoDecoderConfig(format, i, &pConfig)))
+    {
+      CLog::Log(LOGNOTICE, "%s - failed getting decoder configuration", __FUNCTION__);
+      return false;
+    }
+
     CLog::Log(LOGDEBUG,
       "DXVA - config %d: bitstream type %d%s",
       i,
-      cfg_list[i].ConfigBitstreamRaw,
-      IsEqualGUID(cfg_list[i].guidConfigBitstreamEncryption, DXVA_NoEncrypt) ? "" : ", encrypted");
-    // select first available
-    if (config.ConfigBitstreamRaw == 0 && cfg_list[i].ConfigBitstreamRaw != 0)
-      config = cfg_list[i];
-    // overide with preferred if found
-    if (config.ConfigBitstreamRaw != bitstream && cfg_list[i].ConfigBitstreamRaw == bitstream)
-      config = cfg_list[i];
-  }
+      pConfig.ConfigBitstreamRaw,
+      IsEqualGUID(pConfig.guidConfigBitstreamEncryption, DXVA_NoEncrypt) ? "" : ", encrypted");
 
-  CoTaskMemFree(cfg_list);
+    // select first available
+    if (config.ConfigBitstreamRaw == 0 && pConfig.ConfigBitstreamRaw != 0)
+      config = pConfig;
+    // overide with preferred if found
+    if (config.ConfigBitstreamRaw != bitstream && pConfig.ConfigBitstreamRaw == bitstream)
+      config = pConfig;
+  }
 
   if (!config.ConfigBitstreamRaw)
   {
@@ -433,21 +491,40 @@ bool CDXVAContext::GetConfig(GUID &inGuid, const DXVA2_VideoDesc *format, DXVA2_
   return true;
 }
 
-bool CDXVAContext::CreateSurfaces(int width, int height, D3DFORMAT format, unsigned int count, LPDIRECT3DSURFACE9 *surfaces)
+bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int count, unsigned int alignment, ID3D11Texture2D **texture, ID3D11VideoDecoderOutputView **surfaces)
 {
-  HRESULT res = m_service->CreateSurface((width + 15) & ~15, (height + 15) & ~15, count, format,
-                                          D3DPOOL_DEFAULT, 0, DXVA2_VideoDecoderRenderTarget,
-                                          surfaces, NULL);
-  if (FAILED(res))
+  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+
+  CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat, 
+                                FFALIGN(format.SampleWidth, alignment), 
+                                FFALIGN(format.SampleHeight, alignment), 
+                                count, 1, D3D11_BIND_DECODER);
+
+  if (FAILED(pDevice->CreateTexture2D(&texDesc, NULL, texture)))
   {
-    CLog::Log(LOGNOTICE, "%s - failed creating surfaces", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s - failed creating decoder texture array", __FUNCTION__);
     return false;
   }
 
+  D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vdovDesc = {0};
+  vdovDesc.DecodeProfile = format.Guid;
+  vdovDesc.Texture2D.ArraySlice = 0;
+  vdovDesc.ViewDimension = D3D11_VDOV_DIMENSION_TEXTURE2D;
+
+  for (unsigned i = 0; i < count; ++i)
+  {
+    vdovDesc.Texture2D.ArraySlice = D3D11CalcSubresource(0, i, texDesc.MipLevels);
+    if (FAILED(m_service->CreateVideoDecoderOutputView(*texture, &vdovDesc, &surfaces[i])))
+    {
+      CLog::Log(LOGNOTICE, "%s - failed creating surfaces", __FUNCTION__);
+      return false;
+    }
+
+  }
   return true;
 }
 
-bool CDXVAContext::CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DXVA2_ConfigPictureDecode *config, LPDIRECT3DSURFACE9 *surfaces, unsigned int count, IDirectXVideoDecoder **decoder)
+bool CDXVAContext::CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_VIDEO_DECODER_CONFIG *config, CDXVADecoderWrapper **decoder)
 {
   CSingleLock lock(m_section);
 
@@ -456,9 +533,12 @@ bool CDXVAContext::CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DX
   {
     if (!m_atiWorkaround || retry > 0)
     {
-      HRESULT res = m_service->CreateVideoDecoder(inGuid, format, config, surfaces, count, decoder);
+      ID3D11VideoDecoder* pDecoder = nullptr;
+      HRESULT res = m_service->CreateVideoDecoder(format, config, &pDecoder);
       if (!FAILED(res))
       {
+        *decoder = new CDXVADecoderWrapper(m_vcontext, pDecoder);
+        SAFE_RELEASE(pDecoder);
         return true;
       }
     }
@@ -504,14 +584,14 @@ CSurfaceContext::~CSurfaceContext()
   Reset();
 }
 
-void CSurfaceContext::AddSurface(IDirect3DSurface9* surf)
+void CSurfaceContext::AddSurface(ID3D11View* view)
 {
   CSingleLock lock(m_section);
-  m_state[surf] = 0;
-  m_freeSurfaces.push_back(surf);
+  m_state[view] = 0;
+  m_freeViews.push_back(view);
 }
 
-void CSurfaceContext::ClearReference(IDirect3DSurface9* surf)
+void CSurfaceContext::ClearReference(ID3D11View* surf)
 {
   CSingleLock lock(m_section);
   if (m_state.find(surf) == m_state.end())
@@ -522,11 +602,11 @@ void CSurfaceContext::ClearReference(IDirect3DSurface9* surf)
   m_state[surf] &= ~SURFACE_USED_FOR_REFERENCE;
   if (m_state[surf] == 0)
   {
-    m_freeSurfaces.push_back(surf);
+    m_freeViews.push_back(surf);
   }
 }
 
-bool CSurfaceContext::MarkRender(IDirect3DSurface9* surf)
+bool CSurfaceContext::MarkRender(ID3D11View* surf)
 {
   CSingleLock lock(m_section);
   if (m_state.find(surf) == m_state.end())
@@ -534,17 +614,17 @@ bool CSurfaceContext::MarkRender(IDirect3DSurface9* surf)
     CLog::Log(LOGWARNING, "%s - surface invalid", __FUNCTION__);
     return false;
   }
-  std::list<IDirect3DSurface9*>::iterator it;
-  it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
-  if (it != m_freeSurfaces.end())
+  std::list<ID3D11View*>::iterator it;
+  it = std::find(m_freeViews.begin(), m_freeViews.end(), surf);
+  if (it != m_freeViews.end())
   {
-    m_freeSurfaces.erase(it);
+    m_freeViews.erase(it);
   }
   m_state[surf] |= SURFACE_USED_FOR_RENDER;
   return true;
 }
 
-void CSurfaceContext::ClearRender(IDirect3DSurface9* surf)
+void CSurfaceContext::ClearRender(ID3D11View* surf)
 {
   CSingleLock lock(m_section);
   if (m_state.find(surf) == m_state.end())
@@ -555,11 +635,11 @@ void CSurfaceContext::ClearRender(IDirect3DSurface9* surf)
   m_state[surf] &= ~SURFACE_USED_FOR_RENDER;
   if (m_state[surf] == 0)
   {
-    m_freeSurfaces.push_back(surf);
+    m_freeViews.push_back(surf);
   }
 }
 
-bool CSurfaceContext::IsValid(IDirect3DSurface9* surf)
+bool CSurfaceContext::IsValid(ID3D11View* surf)
 {
   CSingleLock lock(m_section);
   if (m_state.find(surf) != m_state.end())
@@ -568,39 +648,39 @@ bool CSurfaceContext::IsValid(IDirect3DSurface9* surf)
     return false;
 }
 
-IDirect3DSurface9* CSurfaceContext::GetFree(IDirect3DSurface9* surf)
+ID3D11View* CSurfaceContext::GetFree(ID3D11View* surf)
 {
   CSingleLock lock(m_section);
   if (m_state.find(surf) != m_state.end())
   {
-    std::list<IDirect3DSurface9*>::iterator it;
-    it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
-    if (it == m_freeSurfaces.end())
+    std::list<ID3D11View*>::iterator it;
+    it = std::find(m_freeViews.begin(), m_freeViews.end(), surf);
+    if (it == m_freeViews.end())
     {
       CLog::Log(LOGWARNING, "%s - surface not free", __FUNCTION__);
     }
     else
     {
-      m_freeSurfaces.erase(it);
+      m_freeViews.erase(it);
       m_state[surf] = SURFACE_USED_FOR_REFERENCE;
       return surf;
     }
   }
-  if (!m_freeSurfaces.empty())
+  if (!m_freeViews.empty())
   {
-    IDirect3DSurface9* freeSurf = m_freeSurfaces.front();
-    m_freeSurfaces.pop_front();
+    ID3D11View* freeSurf = m_freeViews.front();
+    m_freeViews.pop_front();
     m_state[freeSurf] = SURFACE_USED_FOR_REFERENCE;
     return freeSurf;
   }
-  return NULL;
+  return nullptr;
 }
 
-IDirect3DSurface9* CSurfaceContext::GetAtIndex(unsigned int idx)
+ID3D11View* CSurfaceContext::GetAtIndex(unsigned int idx)
 {
   if (idx >= m_state.size())
-    return NULL;
-  std::map<IDirect3DSurface9*, int>::iterator it = m_state.begin();
+    return nullptr;
+  std::map<ID3D11View*, int>::iterator it = m_state.begin();
   for (unsigned int i = 0; i < idx; i++)
     ++it;
   return it->first;
@@ -609,9 +689,11 @@ IDirect3DSurface9* CSurfaceContext::GetAtIndex(unsigned int idx)
 void CSurfaceContext::Reset()
 {
   CSingleLock lock(m_section);
-  for (map<IDirect3DSurface9*, int>::iterator it = m_state.begin(); it != m_state.end(); ++it)
+  for (std::map<ID3D11View*, int>::iterator it = m_state.begin(); it != m_state.end(); ++it)
+  {
     it->first->Release();
-  m_freeSurfaces.clear();
+  }
+  m_freeViews.clear();
   m_state.clear();
 }
 
@@ -624,13 +706,13 @@ int CSurfaceContext::Size()
 bool CSurfaceContext::HasFree()
 {
   CSingleLock lock(m_section);
-  return !m_freeSurfaces.empty();
+  return !m_freeViews.empty();
 }
 
 bool CSurfaceContext::HasRefs()
 {
   CSingleLock lock(m_section);
-  for (map<IDirect3DSurface9*, int>::iterator it = m_state.begin(); it != m_state.end(); ++it)
+  for (std::map<ID3D11View*, int>::iterator it = m_state.begin(); it != m_state.end(); ++it)
   {
     if (it->second & SURFACE_USED_FOR_REFERENCE)
       return true;
@@ -649,7 +731,7 @@ CRenderPicture::CRenderPicture(CSurfaceContext *context)
 
 CRenderPicture::~CRenderPicture()
 {
-  surface_context->ClearRender(surface);
+  surface_context->ClearRender(view);
   surface_context->Release();
 }
 
@@ -662,17 +744,19 @@ CDecoder::CDecoder()
 {
   m_event.Set();
   m_state     = DXVA_OPEN;
-  m_device    = NULL;
-  m_decoder   = NULL;
+  m_device    = nullptr;
+  m_decoder   = nullptr;
   m_refs         = 0;
   m_shared       = 0;
-  m_surface_context = NULL;
-  m_presentPicture = NULL;
-  m_dxva_context = NULL;
+  m_surface_context = nullptr;
+  m_presentPicture = nullptr;
+  m_dxva_context = nullptr;
   memset(&m_format, 0, sizeof(m_format));
   m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
-  m_context->cfg     = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
-  m_context->surface = (IDirect3DSurface9**)calloc(32, sizeof(IDirect3DSurface9*));
+  m_context->cfg     = reinterpret_cast<DXVA2_ConfigPictureDecode*>(calloc(1, sizeof(DXVA2_ConfigPictureDecode)));
+  m_context->surface = reinterpret_cast<IDirect3DSurface9**>(calloc(32, sizeof(IDirect3DSurface9*)));
+  m_viewResource = nullptr;
+  m_surface_alignment = 16;
   g_Windowing.Register(this);
 }
 
@@ -709,7 +793,8 @@ void CDecoder::Close()
     CLog::Log(LOGNOTICE, "%s - closing decoder", __FUNCTION__);
     m_dxva_context->Release(this);
   }
-  m_dxva_context = NULL;
+  m_dxva_context = nullptr;
+  SAFE_RELEASE(m_viewResource);
 }
 
 static bool CheckH264L41(AVCodecContext *avctx)
@@ -723,7 +808,7 @@ static bool CheckH264L41(AVCodecContext *avctx)
 
 static bool IsL41LimitedATI()
 {
-  D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
 
   if(AIdentifier.VendorId == PCIV_ATI)
   {
@@ -740,7 +825,7 @@ static bool HasVP3WidthBug(AVCodecContext *avctx)
 {
   // Some nVidia VP3 hardware cannot do certain macroblock widths
 
-  D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
 
   if(AIdentifier.VendorId == PCIV_nVidia
   && !CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
@@ -812,106 +897,23 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFo
   if (!CDXVAContext::EnsureContext(&m_dxva_context, this))
     return false;
 
-  if (!m_dxva_context->GetInputAndTarget(avctx->codec_id, m_input, m_format.Format))
+  if (!m_dxva_context->GetInputAndTarget(avctx->codec_id, m_format.Guid, m_format.OutputFormat))
   {
     CLog::Log(LOGDEBUG, "DXVA - unable to find an input/output format combination");
     return false;
   }
 
-  m_format.SampleWidth  = avctx->coded_width;
+  CLog::Log(LOGDEBUG, "DXVA - Selected input/output format: %d", m_format.OutputFormat);
+  CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
+  if (m_format.Guid == DXVADDI_Intel_ModeH264_E && avctx->refs > 11)
+  {
+    const dxva2_mode_t *mode = dxva2_find_mode(&m_format.Guid);
+    CLog::Log(LOGWARNING, "DXVA - too many references %d for selected decoder '%s'.", avctx->refs, mode->name);
+    return false;
+  }
+
+  m_format.SampleWidth = avctx->coded_width;
   m_format.SampleHeight = avctx->coded_height;
-  m_format.SampleFormat.SampleFormat  = DXVA2_SampleProgressiveFrame;
-  m_format.SampleFormat.VideoLighting = DXVA2_VideoLighting_dim;
-
-  if     (avctx->color_range == AVCOL_RANGE_JPEG)
-    m_format.SampleFormat.NominalRange = DXVA2_NominalRange_0_255;
-  else if(avctx->color_range == AVCOL_RANGE_MPEG)
-    m_format.SampleFormat.NominalRange = DXVA2_NominalRange_16_235;
-  else
-    m_format.SampleFormat.NominalRange = DXVA2_NominalRange_Unknown;
-
-  switch(avctx->chroma_sample_location)
-  {
-    case AVCHROMA_LOC_LEFT:
-      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Horizontally_Cosited 
-                                                   | DXVA2_VideoChromaSubsampling_Vertically_AlignedChromaPlanes;
-      break;
-    case AVCHROMA_LOC_CENTER:
-      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Vertically_AlignedChromaPlanes;
-      break;
-    case AVCHROMA_LOC_TOPLEFT:
-      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Horizontally_Cosited 
-                                                   | DXVA2_VideoChromaSubsampling_Vertically_Cosited;
-      break;
-    default:
-      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Unknown;      
-  }
-
-  switch(avctx->colorspace)
-  {
-    case AVCOL_SPC_BT709:
-      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_BT709;
-      break;
-    case AVCOL_SPC_BT470BG:
-    case AVCOL_SPC_SMPTE170M:
-      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_BT601;
-      break;
-    case AVCOL_SPC_SMPTE240M:
-      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_SMPTE240M;
-      break;
-    case AVCOL_SPC_FCC:
-    case AVCOL_SPC_UNSPECIFIED:
-    case AVCOL_SPC_RGB:
-    default:
-      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_Unknown;
-  }
-
-  switch(avctx->color_primaries)
-  {
-    case AVCOL_PRI_BT709:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT709;
-      break;
-    case AVCOL_PRI_BT470M:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT470_2_SysM;
-      break;
-    case AVCOL_PRI_BT470BG:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT470_2_SysBG;
-      break;
-    case AVCOL_PRI_SMPTE170M:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_SMPTE170M;
-      break;
-    case AVCOL_PRI_SMPTE240M:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_SMPTE240M;
-      break;
-    case AVCOL_PRI_FILM:
-    case AVCOL_PRI_UNSPECIFIED:
-    default:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_Unknown;
-  }
-
-  switch(avctx->color_trc)
-  {
-    case AVCOL_TRC_BT709:
-      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_709;
-      break;
-    case AVCOL_TRC_GAMMA22:
-      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_22;
-      break;
-    case AVCOL_TRC_GAMMA28:
-      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_28;
-      break;
-    default:
-      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_Unknown;
-  }
-
-  if (avctx->time_base.den > 0 && avctx->time_base.num > 0)
-  {
-    m_format.InputSampleFreq.Numerator   = avctx->time_base.num;
-    m_format.InputSampleFreq.Denominator = avctx->time_base.den;
-  } 
-  m_format.OutputFrameFreq = m_format.InputSampleFreq;
-  m_format.UABProtectionLevel = FALSE;
-  m_format.Reserved = 0;
 
   if (surfaces > m_shared)
     m_shared = surfaces;
@@ -929,13 +931,23 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFo
     else
       m_refs = 2;
   }
-  CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
+  /* decoding MPEG-2 requires additional alignment on some Intel GPUs,
+     but it causes issues for H.264 on certain AMD GPUs..... */
+  if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO)
+    m_surface_alignment = 32;
+  /* the HEVC DXVA2 spec asks for 128 pixel aligned surfaces to ensure
+     all coding features have enough room to work with */
+  else if (avctx->codec_id == AV_CODEC_ID_HEVC)
+    m_surface_alignment = 128;
+  else
+    m_surface_alignment = 16;
 
-  DXVA2_ConfigPictureDecode config = {};
-  if (!m_dxva_context->GetConfig(m_input, &m_format, config))
+
+  D3D11_VIDEO_DECODER_CONFIG config = {0};
+  if (!m_dxva_context->GetConfig(&m_format, config))
     return false;
 
-  *const_cast<DXVA2_ConfigPictureDecode*>(m_context->cfg) = config;
+  memcpy((void *)m_context->cfg, &config, sizeof(DXVA2_ConfigPictureDecode));
 
   m_surface_context = new CSurfaceContext();
 
@@ -949,9 +961,8 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum PixelFo
   mainctx->hwaccel_context = m_context;
 
   m_avctx = mainctx;
-
-  D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
-  if (AIdentifier.VendorId == PCIV_Intel && m_input == DXVADDI_Intel_ModeH264_E)
+  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  if (AIdentifier.VendorId == PCIV_Intel && m_format.Guid == DXVADDI_Intel_ModeH264_E)
   {
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     m_context->workaround |= FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO;
@@ -983,11 +994,11 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
   if(frame)
   {
-    if (m_surface_context->IsValid((IDirect3DSurface9*)frame->data[3]))
+    if (m_surface_context->IsValid(reinterpret_cast<ID3D11View*>(frame->data[3])))
     {
       m_presentPicture = new CRenderPicture(m_surface_context);
-      m_presentPicture->surface = (IDirect3DSurface9*)frame->data[3];
-      m_surface_context->MarkRender(m_presentPicture->surface);
+      m_presentPicture->view = reinterpret_cast<ID3D11View*>(frame->data[3]);
+      m_surface_context->MarkRender(m_presentPicture->view);
       return VC_BUFFER | VC_PICTURE;
     }
     CLog::Log(LOGWARNING, "DXVA - ignoring invalid surface");
@@ -1004,7 +1015,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 
   picture->dxva = m_presentPicture;
   picture->format = RENDER_FMT_DXVA;
-  picture->extended_format = (unsigned int)m_format.Format;
+  picture->extended_format = (unsigned int)m_format.OutputFormat;
   return true;
 }
 
@@ -1050,13 +1061,8 @@ int CDecoder::Check(AVCodecContext* avctx)
     if(avctx->refs > m_refs)
     {
       CLog::Log(LOGWARNING, "CDecoder::Check - number of required reference frames increased, recreating decoder");
-#if ALLOW_ADDING_SURFACES
-      if(!OpenDecoder())
-        return VC_ERROR;
-#else
       Close();
       return VC_FLUSHED;
-#endif
     }
   }
 
@@ -1065,20 +1071,19 @@ int CDecoder::Check(AVCodecContext* avctx)
   && avctx->codec_id != AV_CODEC_ID_VC1
   && avctx->codec_id != AV_CODEC_ID_WMV3)
     return 0;
-
-  DXVA2_DecodeExecuteParams params = {};
-  DXVA2_DecodeExtensionData data   = {};
+  
+  D3D11_VIDEO_DECODER_EXTENSION data = {0};
   union {
     DXVA_Status_H264 h264;
     DXVA_Status_VC1  vc1;
   } status = {};
 
-  params.pExtensionData = &data;
+  /* I'm not sure, but MSDN says nothing about extentions functions in D3D11, try to using with same way as in DX9 */
   data.Function = DXVA_STATUS_REPORTING_FUNCTION;
   data.pPrivateOutputData    = &status;
   data.PrivateOutputDataSize = avctx->codec_id == AV_CODEC_ID_H264 ? sizeof(DXVA_Status_H264) : sizeof(DXVA_Status_VC1);
   HRESULT hr;
-  if(FAILED( hr = m_decoder->Execute(&params)))
+  if (FAILED(hr = m_dxva_context->GetVideoContext()->DecoderExtension(m_decoder->m_pDecoder, &data)))
   {
     CLog::Log(LOGWARNING, "DXVA - failed to get decoder status - 0x%08X", hr);
     return VC_ERROR;
@@ -1100,22 +1105,22 @@ int CDecoder::Check(AVCodecContext* avctx)
 bool CDecoder::OpenDecoder()
 {
   SAFE_RELEASE(m_decoder);
-  m_context->decoder = NULL;
+  m_context->decoder = nullptr;
 
   m_context->surface_count = m_refs + 1 + 1 + m_shared; // refs + 1 decode + 1 libavcodec safety + processor buffer
 
-  CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count);
+  CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces with format %d", m_context->surface_count, m_format.OutputFormat);
 
-  if (!m_dxva_context->CreateSurfaces(m_format.SampleWidth, m_format.SampleHeight, m_format.Format,
-                                      m_context->surface_count, m_context->surface))
+  if (!m_dxva_context->CreateSurfaces(m_format, m_context->surface_count, m_surface_alignment, 
+                                      &m_viewResource, reinterpret_cast<ID3D11VideoDecoderOutputView**>(m_context->surface)))
     return false;
 
   for(unsigned i = 0; i < m_context->surface_count; i++)
   {
-    m_surface_context->AddSurface(m_context->surface[i]);
+    m_surface_context->AddSurface(reinterpret_cast<ID3D11VideoDecoderOutputView*>(m_context->surface[i]));
   }
 
-  if (!m_dxva_context->CreateDecoder(m_input, &m_format, m_context->cfg, m_context->surface, m_context->surface_count, &m_decoder))
+  if (!m_dxva_context->CreateDecoder(&m_format, reinterpret_cast<D3D11_VIDEO_DECODER_CONFIG*>((DXVA2_ConfigPictureDecode*)m_context->cfg), &m_decoder))
     return false;
 
   m_context->decoder = m_decoder;
@@ -1133,13 +1138,13 @@ bool CDecoder::Supports(enum PixelFormat fmt)
 void CDecoder::RelBuffer(uint8_t *data)
 {
   CSingleLock lock(m_section);
-  IDirect3DSurface9* surface = (IDirect3DSurface9*)(uintptr_t)data;
+  ID3D11VideoDecoderOutputView* view = (ID3D11VideoDecoderOutputView*)(uintptr_t)data;
 
-  if (!m_surface_context->IsValid(surface))
+  if (!m_surface_context->IsValid(view))
   {
     CLog::Log(LOGWARNING, "%s - return of invalid surface", __FUNCTION__);
   }
-  m_surface_context->ClearReference(surface);
+  m_surface_context->ClearReference(view);
 
   IHardwareDecoder::Release();
 }
@@ -1151,9 +1156,9 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   if (!m_decoder)
     return -1;
 
-  IDirect3DSurface9* surf = (IDirect3DSurface9*)(uintptr_t)pic->data[3];
-  surf = m_surface_context->GetFree(surf != 0 ? surf : NULL);
-  if (surf == NULL)
+  ID3D11View* view = reinterpret_cast<ID3D11View*>(pic->data[3]);
+  view = m_surface_context->GetFree(view != nullptr ? view : nullptr);
+  if (view == nullptr)
   {
     CLog::Log(LOGERROR, "%s - no surface available - dec: %d, render: %d", __FUNCTION__);
     m_state = DXVA_LOST;
@@ -1164,12 +1169,12 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 
   for(unsigned i = 0; i < 4; i++)
   {
-    pic->data[i] = NULL;
+    pic->data[i] = nullptr;
     pic->linesize[i] = 0;
   }
 
-  pic->data[0] = (uint8_t*)surf;
-  pic->data[3] = (uint8_t*)surf;
+  pic->data[0] = (uint8_t*)view;
+  pic->data[3] = (uint8_t*)view;
   AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, RelBufferS, this, 0);
   if (!buffer)
   {
@@ -1187,7 +1192,6 @@ unsigned CDecoder::GetAllowedReferences()
 {
   return m_shared;
 }
-
 
 void CDecoder::CloseDXVADecoder()
 {

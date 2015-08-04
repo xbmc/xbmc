@@ -19,11 +19,12 @@
  */
 
 #include "GUIDialogPeripheralManager.h"
-#include "GUIDialogPeripheralSettings.h"
-#include "guilib/GUIWindowManager.h"
-#include "peripherals/Peripherals.h"
 #include "FileItem.h"
+#include "GUIUserMessages.h"
+#include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "peripherals/Peripherals.h"
+#include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 
 #define BUTTON_CLOSE     10
 #define BUTTON_SETTINGS  11
@@ -95,7 +96,7 @@ bool CGUIDialogPeripheralManager::OpenSettingsDialog(void)
   if (dialog)
   {
     dialog->SetFileItem(GetCurrentListItem().get());
-    dialog->DoModal();
+    dialog->Open();
     return true;
   }
 
@@ -131,6 +132,13 @@ bool CGUIDialogPeripheralManager::OnMessage(CGUIMessage& message)
       return true;
     case GUI_MSG_CLICKED:
       return OnMessageClick(message);
+    case GUI_MSG_UPDATE:
+      if (IsActive())
+      {
+        Update();
+        return true;
+      }
+      break;
   }
 
   return CGUIDialog::OnMessage(message);

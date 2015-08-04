@@ -19,6 +19,7 @@
  */
 
 #pragma once
+
 #include "OverlayRenderer.h"
 #include "guilib/D3DResource.h"
 
@@ -41,16 +42,10 @@ namespace OVERLAY {
 
     void Render(SRenderState& state);
 
-    struct VERTEX {
-        FLOAT x, y, z;
-        DWORD c;
-        FLOAT u, v;
-    };
-
-    int                          m_count;
-    DWORD                        m_fvf;
-    CD3DTexture                  m_texture;
-    CD3DVertexBuffer             m_vertex;
+    int                    m_count;
+    DWORD                  m_fvf;
+    CD3DTexture            m_texture;
+    CD3DBuffer             m_vertex;
   };
 
   class COverlayImageDX
@@ -64,15 +59,10 @@ namespace OVERLAY {
     void Load(uint32_t* rgba, int width, int height, int stride);
     void Render(SRenderState& state);
 
-    struct VERTEX {
-        FLOAT x, y, z;
-        FLOAT u, v;
-    };
-
-    DWORD                        m_fvf;
-    CD3DTexture                  m_texture;
-    CD3DVertexBuffer             m_vertex;
-    bool                         m_pma;
+    DWORD                  m_fvf;
+    CD3DTexture            m_texture;
+    CD3DBuffer             m_vertex;
+    bool                   m_pma;
   };
 
 }

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -22,7 +22,7 @@
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "GUIPassword.h"
 #include "GUIInfoManager.h"
 #include "threads/SingleLock.h"
@@ -67,6 +67,7 @@
 #include "windows/GUIWindowScreensaver.h"
 #include "windows/GUIWindowScreensaverDim.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "windows/GUIWindowSplash.h"
 #include "windows/GUIWindowStartup.h"
 #include "video/windows/GUIWindowFullScreen.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
@@ -136,6 +137,8 @@
 #include "dialogs/GUIDialogPlayEject.h"
 #include "dialogs/GUIDialogMediaFilter.h"
 #include "video/dialogs/GUIDialogSubtitles.h"
+#include "settings/dialogs/GUIDialogAudioDSPManager.h"
+#include "settings/dialogs/GUIDialogAudioDSPSettings.h"
 
 #ifdef HAS_KARAOKE
 #include "music/karaoke/GUIDialogKaraokeSongSelector.h"
@@ -144,6 +147,7 @@
 
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
+#include "addons/AddonCallbacksGUI.h"
 
 #ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/GUIDialogShaderList.h"
@@ -156,6 +160,7 @@
 using namespace std;
 using namespace PVR;
 using namespace PERIPHERALS;
+using namespace KODI::MESSAGING;
 
 CGUIWindowManager::CGUIWindowManager(void)
 {
@@ -172,9 +177,12 @@ CGUIWindowManager::~CGUIWindowManager(void)
 void CGUIWindowManager::Initialize()
 {
   m_tracker.SelectAlgorithm();
+
   m_initialized = true;
 
   LoadNotOnDemandWindows();
+
+  CApplicationMessenger::Get().RegisterReceiver(this);
 }
 
 void CGUIWindowManager::CreateWindows()
@@ -286,6 +294,9 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogPVRChannelsOSD);
   Add(new CGUIDialogPVRGuideOSD);
 
+  Add(new ActiveAE::CGUIDialogAudioDSPManager);
+  Add(new ActiveAE::CGUIDialogAudioDSPSettings);
+
   Add(new CGUIDialogSelect);
   Add(new CGUIDialogMusicInfo);
   Add(new CGUIDialogOK);
@@ -305,12 +316,14 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowScreensaver);
   Add(new CGUIWindowWeather);
   Add(new CGUIWindowStartup);
+  Add(new CGUIWindowSplash);
 }
 
 bool CGUIWindowManager::DestroyWindows()
 {
   try
   {
+    Delete(WINDOW_SPLASH);
     Delete(WINDOW_MUSIC_PLAYLIST);
     Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     Delete(WINDOW_MUSIC_FILES);
@@ -387,6 +400,9 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_PVR_OSD_CHANNELS);
     Delete(WINDOW_DIALOG_PVR_OSD_GUIDE);
     Delete(WINDOW_DIALOG_OSD_TELETEXT);
+
+    Delete(WINDOW_DIALOG_AUDIO_DSP_MANAGER);
+    Delete(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
 
     Delete(WINDOW_DIALOG_TEXT_VIEWER);
     Delete(WINDOW_DIALOG_PLAY_EJECT);
@@ -737,7 +753,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<string>& para
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    CApplicationMessenger::Get().ActivateWindow(iWindowID, params, swappingWindows, force);
+    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, iWindowID, swappingWindows ? 1 : 0, nullptr, "", params);
   }
   else
   {
@@ -794,15 +810,15 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<stri
     if (!pNewWindow->IsDialogRunning())
     {
       CSingleExit exitit(g_graphicsContext);
-      ((CGUIDialog *)pNewWindow)->DoModal(iWindowID, params.size() ? params[0] : "");
+      ((CGUIDialog *)pNewWindow)->Open();
     }
     return;
   }
 
-  // don't activate a window if there are active modal dialogs
-  if (!force && HasModalDialog())
+  // don't activate a window if there are active modal dialogs of type NORMAL
+  if (!force && HasModalDialog({ DialogModalityType::MODAL }))
   {
-    CLog::Log(LOG_LEVEL_DEBUG, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
+    CLog::Log(LOGINFO, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
     g_audioManager.PlayActionSound(CAction(ACTION_ERROR));
     return;
   }
@@ -852,6 +868,95 @@ void CGUIWindowManager::CloseInternalModalDialogs(bool forceClose) const
     if (dialog->IsModalDialog() && !IsAddonWindow(dialog->GetID()) && !IsPythonWindow(dialog->GetID()))
       dialog->Close(forceClose);
   }
+}
+
+void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
+{
+  switch (pMsg->dwMessage)
+  {
+  case TMSG_GUI_DIALOG_OPEN:  
+  {
+    if (pMsg->lpVoid)
+      static_cast<CGUIDialog*>(pMsg->lpVoid)->Open();
+    else
+    {
+      CGUIDialog* pDialog = static_cast<CGUIDialog*>(GetWindow(pMsg->param1));
+      if (pDialog)
+        pDialog->Open();
+    }
+  }
+  break;
+
+  case TMSG_GUI_WINDOW_CLOSE:
+  {
+    CGUIWindow *window = static_cast<CGUIWindow *>(pMsg->lpVoid);
+    if (window)
+      window->Close(pMsg->param1 & 0x1 ? true : false, pMsg->param1, pMsg->param1 & 0x2 ? true : false);
+  }
+  break;
+
+  case TMSG_GUI_ACTIVATE_WINDOW:
+  {
+    ActivateWindow(pMsg->param1, pMsg->params, pMsg->param2 > 0);
+  }
+  break;
+
+  case TMSG_GUI_ADDON_DIALOG:
+  {
+    if (pMsg->lpVoid)
+    { // TODO: This is ugly - really these python dialogs should just be normal XBMC dialogs
+      static_cast<ADDON::CGUIAddonWindowDialog *>(pMsg->lpVoid)->Show_Internal(pMsg->param2 > 0);
+    }
+  }
+  break;
+
+#ifdef HAS_PYTHON
+  case TMSG_GUI_PYTHON_DIALOG:
+  {
+    // This hack is not much better but at least I don't need to make ApplicationMessenger
+    //  know about Addon (Python) specific classes.
+    CAction caction(pMsg->param1);
+    static_cast<CGUIWindow*>(pMsg->lpVoid)->OnAction(caction);
+  }
+  break;
+#endif
+
+  case TMSG_GUI_ACTION:
+  {
+    if (pMsg->lpVoid)
+    {
+      CAction *action = static_cast<CAction *>(pMsg->lpVoid);
+      if (pMsg->param1 == WINDOW_INVALID)
+        g_application.OnAction(*action);
+      else
+      {
+        CGUIWindow *pWindow = GetWindow(pMsg->param1);
+        if (pWindow)
+          pWindow->OnAction(*action);
+        else
+          CLog::Log(LOGWARNING, "Failed to get window with ID %i to send an action to", pMsg->param1);
+      }
+      delete action;
+    }
+  }
+  break;
+
+  case TMSG_GUI_MESSAGE:
+  {
+    if (pMsg->lpVoid)
+    {
+      CGUIMessage *message = static_cast<CGUIMessage *>(pMsg->lpVoid);
+      SendMessage(*message, pMsg->param1);
+      delete message;
+    }
+  }
+  break;
+  }
+}
+
+int CGUIWindowManager::GetMessageMask()
+{
+  return TMSG_MASK_WINDOWMANAGER;
 }
 
 bool CGUIWindowManager::OnAction(const CAction &action) const
@@ -1152,15 +1257,25 @@ void CGUIWindowManager::RemoveDialog(int id)
   }
 }
 
-bool CGUIWindowManager::HasModalDialog() const
+bool CGUIWindowManager::HasModalDialog(const std::vector<DialogModalityType>& types) const
 {
   CSingleLock lock(g_graphicsContext);
   for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
-    CGUIWindow *window = *it;
-    if (window->IsModalDialog())
-    { // have a modal window
-      if (!window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    if ((*it)->IsDialog() &&
+        (*it)->IsModalDialog() &&
+        !(*it)->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    {
+      if (types.size() > 0)
+      {
+        CGUIDialog *dialog = static_cast<CGUIDialog*>(*it);
+        for (const auto &type : types)
+        {
+          if (dialog->GetModalityType() == type)
+            return true;
+        }
+      }
+      else
         return true;
     }
   }

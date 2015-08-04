@@ -614,6 +614,7 @@
               <option label="630">0</option> <!-- ViewModeNormal -->
               <option label="633">3</option> <!-- ViewModeWideZoom -->
               <option label="634">4</option> <!-- ViewModeStretch16x9 -->
+              <option label="644">7</option> <!-- ViewModeStretch16x9 - nonlinear -->
               <option label="631">1</option> <!-- ViewModeZoom -->
             </options>
           </constraints>
@@ -1046,7 +1047,7 @@
           <level>1</level>
           <default>English</default>
           <constraints>
-            <options>iso6391languages</options>
+            <options>streamlanguages</options>
             <delimiter>,</delimiter>
             <minimumitems>1</minimumitems>
           </constraints>
@@ -1618,6 +1619,17 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
+        <setting id="pvrrecord.preventduplicateepisodes" type="integer" label="812" help="36423">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="815">0</option>  <!-- record all episodes (no dup detect) -->
+              <option label="816">1</option>  <!-- record only new episodes -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
       </group>
       <group id="2">
         <setting id="pvrrecord.timernotifications" type="boolean" label="19233" help="36239">
@@ -1743,6 +1755,14 @@
         <setting id="pvrclient.menuhook" type="action" label="19280" help="36252">
           <level>1</level>
           <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
+    <category id="pvrtimers" label="" help="">
+      <group id="1">
+        <setting id="pvrtimers.timertypefilter" type="boolean" label="" help="">
+          <level>4</level>
+          <default>true</default>
         </setting>
       </group>
     </category>
@@ -2781,6 +2801,43 @@
         </setting>
       </group>
       <group id="2">
+        <setting id="audiooutput.dspaddonsenabled" type="boolean" label="36441" help="36438">
+          <level>0</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.dspaddonsenabled</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.dspaddonsenabled</condition>
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="audiooutput.dspsettings" type="action" label="36436" help="36437">
+          <level>1</level>
+          <control type="button" format="action" />
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspsettings</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="audiooutput.dspresetdb" type="action" label="334" help="36439">
+          <level>1</level>
+          <control type="button" format="action" />
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspresetdb</condition>
+              </or>
+            </dependency>
+          </dependencies>
+        </setting>
+      </group>
+      <group id="3">
         <setting id="audiooutput.guisoundmode" type="integer" label="34120" help="36373">
           <level>0</level>
           <default>1</default> <!-- AE_SOUND_IDLE -->

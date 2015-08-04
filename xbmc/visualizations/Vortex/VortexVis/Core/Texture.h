@@ -21,6 +21,7 @@
 #define _TEXTURE_H_
 
 #include "Renderer.h"
+#include "TextureDX.h"
 #include <string>
 
 class Texture
@@ -33,7 +34,7 @@ public:
 	void AddRef();
 	void Release();
 
-	LPDIRECT3DTEXTURE9 m_pTexture;
+	TextureDX* m_pTexture;
 	bool m_renderTarget;
 
 protected:

@@ -41,6 +41,7 @@
 #include "android/bionic_supplement/bionic_supplement.h"
 #endif
 #include <stdlib.h>
+#include <algorithm>
 
 #include "Application.h"
 #include "Util.h"
@@ -94,8 +95,6 @@
 #endif
 
 #include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
-
-using namespace std;
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -167,13 +166,6 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
       strFilename = url.GetHostName();
     }
   }
-  // HDHomerun Devices
-  else if (url.IsProtocol("hdhomerun") && strFilename.empty())
-    strFilename = "HDHomerun Devices";
-
-  // Slingbox Devices
-  else if (url.IsProtocol("sling"))
-    strFilename = "Slingbox";
 
   // SAP Streams
   else if (url.IsProtocol("sap") && strFilename.empty())
@@ -218,7 +210,7 @@ void CUtil::CleanString(const std::string& strFileName,
   if (strFileName == "..")
    return;
 
-  const vector<string> &regexps = g_advancedSettings.m_videoCleanStringRegExps;
+  const std::vector<std::string> &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
   CRegExp reTags(true, CRegExp::autoUtf8);
   CRegExp reYear(false, CRegExp::autoUtf8);
@@ -395,7 +387,7 @@ void CUtil::GetHomePath(std::string& strPath, const std::string& strTarget)
     }
 #endif
     size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
-    if (last_sep != string::npos)
+    if (last_sep != std::string::npos)
       strPath = strHomePath.substr(0, last_sep);
     else
       strPath = strHomePath;
@@ -432,10 +424,6 @@ bool CUtil::IsLiveTV(const std::string& strFile)
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
     return true;
 
-  if(URIUtils::IsHDHomeRun(strFile)
-  || StringUtils::StartsWithNoCase(strFile, "sap:"))
-    return true;
-
   return false;
 }
 
@@ -450,7 +438,7 @@ bool CUtil::IsPicture(const std::string& strFile)
                   g_advancedSettings.m_pictureExtensions + "|.tbn|.dds");
 }
 
-bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder, const vector<string>& regexps)
+bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps)
 {
   if (strFileOrFolder.empty())
     return false;
@@ -818,12 +806,12 @@ bool CUtil::CreateDirectoryEx(const std::string& strPath)
     return false;
   }
 
-  vector<string> dirs = URIUtils::SplitPath(strPath);
+  std::vector<std::string> dirs = URIUtils::SplitPath(strPath);
   if (dirs.empty())
     return false;
   std::string dir(dirs.front());
   URIUtils::AddSlashAtEnd(dir);
-  for (vector<string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
+  for (std::vector<std::string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
   {
     dir = URIUtils::AddFileToFolder(dir, *it);
     CDirectory::Create(dir);
@@ -868,7 +856,7 @@ std::string CUtil::MakeLegalPath(const std::string &strPathAndFile, int LegalTyp
     return strPathAndFile; // we don't support writing anywhere except HD, SMB and NFS - no need to legalize path
 
   bool trailingSlash = URIUtils::HasSlashAtEnd(strPathAndFile);
-  vector<string> dirs = URIUtils::SplitPath(strPathAndFile);
+  std::vector<std::string> dirs = URIUtils::SplitPath(strPathAndFile);
   if (dirs.empty())
     return strPathAndFile;
   // we just add first token to path and don't legalize it - possible values: 
@@ -876,7 +864,7 @@ std::string CUtil::MakeLegalPath(const std::string &strPathAndFile, int LegalTyp
   // "protocol://domain"
   std::string dir(dirs.front());
   URIUtils::AddSlashAtEnd(dir);
-  for (vector<string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
+  for (std::vector<std::string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
     dir = URIUtils::AddFileToFolder(dir, MakeLegalFileName(*it, LegalType));
   if (trailingSlash) URIUtils::AddSlashAtEnd(dir);
   return dir;
@@ -944,7 +932,7 @@ bool CUtil::IsUsingTTFSubtitles()
   return URIUtils::HasExtension(CSettings::Get().GetString("subtitles.font"), ".ttf");
 }
 
-void CUtil::SplitExecFunction(const std::string &execString, std::string &function, vector<string> &parameters)
+void CUtil::SplitExecFunction(const std::string &execString, std::string &function, std::vector<std::string> &parameters)
 {
   std::string paramString;
 
@@ -1141,7 +1129,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
     }
 
     // doesnt match a name, so try the source path
-    vector<string> vecPaths;
+    std::vector<std::string> vecPaths;
 
     // add any concatenated paths if they exist
     if (share.vecPaths.size() > 0)
@@ -1235,7 +1223,7 @@ std::string CUtil::TranslateSpecialSource(const std::string &strSpecial)
 
 std::string CUtil::MusicPlaylistsLocation()
 {
-  vector<string> vec;
+  std::vector<std::string> vec;
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music"));
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "mixed"));
   return XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
@@ -1243,7 +1231,7 @@ std::string CUtil::MusicPlaylistsLocation()
 
 std::string CUtil::VideoPlaylistsLocation()
 {
-  vector<string> vec;
+  std::vector<std::string> vec;
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "video"));
   vec.push_back(URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "mixed"));
   return XFILE::CMultiPathDirectory::ConstructMultiPath(vec);
@@ -1309,7 +1297,7 @@ void CUtil::GetRecursiveDirsListing(const std::string& strPath, CFileItemList& i
 void CUtil::ForceForwardSlashes(std::string& strPath)
 {
   size_t iPos = strPath.rfind('\\');
-  while (iPos != string::npos)
+  while (iPos != std::string::npos)
   {
     strPath.at(iPos) = '/';
     iPos = strPath.rfind('\\');
@@ -1430,7 +1418,7 @@ std::string CUtil::GetDefaultFolderThumb(const std::string &folderThumb)
   return "";
 }
 
-void CUtil::GetSkinThemes(vector<std::string>& vecTheme)
+void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
 {
   std::string strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
   CFileItemList items;
@@ -1450,7 +1438,7 @@ void CUtil::GetSkinThemes(vector<std::string>& vecTheme)
       }
     }
   }
-  sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
+  std::sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
 
 void CUtil::InitRandomSeed()
@@ -1466,13 +1454,13 @@ void CUtil::InitRandomSeed()
 #ifdef TARGET_POSIX
 bool CUtil::RunCommandLine(const std::string& cmdLine, bool waitExit)
 {
-  vector<string> args = StringUtils::Split(cmdLine, ",");
+  std::vector<std::string> args = StringUtils::Split(cmdLine, ",");
 
   // Strip quotes and whitespace around the arguments, or exec will fail.
   // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
   // But it's still limited, for example quotes inside the strings are not expanded, etc.
   // TODO: Maybe some python library routine can parse this more properly ?
-  for (vector<string>::iterator it = args.begin(); it != args.end(); ++it)
+  for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it)
   {
     size_t pos;
     pos = it->find_first_not_of(" \t\n\"'");
@@ -1716,8 +1704,6 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   
   CFileItem item(strMovie, false);
   if ( item.IsInternetStream()
-    || item.IsHDHomeRun()
-    || item.IsSlingbox()
     || item.IsPlayList()
     || item.IsLiveTV()
     || !item.IsVideo())
@@ -1749,7 +1735,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     strBasePath = URIUtils::GetBasePath(strMovie);
 
   CFileItemList items;
-  vector<std::string> strLookInPaths;
+  std::vector<std::string> strLookInPaths;
 
   int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
 
@@ -1782,7 +1768,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     
     CMediaSettings::Get().SetAdditionalSubtitleDirectoryChecked(1);
   }
- 
+
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
   if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() == 1)
   {

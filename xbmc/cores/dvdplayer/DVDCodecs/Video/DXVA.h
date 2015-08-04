@@ -19,15 +19,14 @@
  */
 #pragma once
 
-#include "libavcodec/avcodec.h"
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-#include "guilib/D3DResource.h"
-#include "threads/Event.h"
-#include "DVDResource.h"
-#include <dxva2api.h>
-#include <deque>
-#include <vector>
 #include <list>
+#include <vector>
+#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#include "DVDResource.h"
+#include "guilib/D3DResource.h"
+#include "libavcodec/avcodec.h"
+#include "libavcodec/dxva2.h"
+#include "threads/Event.h"
 
 namespace DXVA {
 
@@ -48,21 +47,21 @@ public:
   CSurfaceContext();
   ~CSurfaceContext();
 
-  void AddSurface(IDirect3DSurface9* surf);
-  void ClearReference(IDirect3DSurface9* surf);
-  bool MarkRender(IDirect3DSurface9* surf);
-  void ClearRender(IDirect3DSurface9* surf);
-  bool IsValid(IDirect3DSurface9* surf);
-  IDirect3DSurface9* GetFree(IDirect3DSurface9* surf);
-  IDirect3DSurface9* GetAtIndex(unsigned int idx);
+  void AddSurface(ID3D11View* view);
+  void ClearReference(ID3D11View* view);
+  bool MarkRender(ID3D11View* view);
+  void ClearRender(ID3D11View* view);
+  bool IsValid(ID3D11View* view);
+  ID3D11View* GetFree(ID3D11View* view);
+  ID3D11View* GetAtIndex(unsigned int idx);
   void Reset();
   int Size();
   bool HasFree();
   bool HasRefs();
 
 protected:
-  std::map<IDirect3DSurface9*, int> m_state;
-  std::list<IDirect3DSurface9*> m_freeSurfaces;
+  std::map<ID3D11View*, int> m_state;
+  std::list<ID3D11View*> m_freeViews;
   CCriticalSection m_section;
 };
 
@@ -72,35 +71,62 @@ class CRenderPicture
 public:
   CRenderPicture(CSurfaceContext *context);
   ~CRenderPicture();
-  IDirect3DSurface9* surface;
+  ID3D11View*      view;
 protected:
   CSurfaceContext *surface_context;
 };
 
-typedef HRESULT(__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
+//-----------------------------------------------------------------------------
+// DXVA to D3D11 Video API Wrapper
+//-----------------------------------------------------------------------------
+class CDXVADecoderWrapper : public IDirectXVideoDecoder
+{
+public:
+  CDXVADecoderWrapper(ID3D11VideoContext* pContext, ID3D11VideoDecoder* pDecoder);
+  ~CDXVADecoderWrapper();
+  // unused
+  STDMETHODIMP         QueryInterface(REFIID riid, void** ppvObject) { return E_NOTIMPL; };
+  STDMETHODIMP_(ULONG) AddRef(void);
+  STDMETHODIMP_(ULONG) Release(void);
+  // unused
+  STDMETHODIMP GetVideoDecoderService(IDirectXVideoDecoderService **ppService) { return E_NOTIMPL; };
+  // unused
+  STDMETHODIMP GetCreationParameters(GUID *pDeviceGuid, DXVA2_VideoDesc *pVideoDesc, DXVA2_ConfigPictureDecode *pConfig,
+                                     IDirect3DSurface9 ***pDecoderRenderTargets, UINT *pNumSurfaces)  { return E_NOTIMPL; };
+  STDMETHODIMP GetBuffer(UINT BufferType, void **ppBuffer, UINT *pBufferSize);
+  STDMETHODIMP ReleaseBuffer(UINT BufferType);
+  STDMETHODIMP BeginFrame(IDirect3DSurface9 *pRenderTarget, void *pvPVPData);
+  STDMETHODIMP EndFrame(HANDLE *pHandleComplete);
+  STDMETHODIMP Execute(const DXVA2_DecodeExecuteParams *pExecuteParams);
+
+  ID3D11VideoDecoder*  m_pDecoder;
+private:
+  volatile long        m_refs;
+  ID3D11VideoContext*  m_pContext;
+};
+
 class CDecoder;
 class CDXVAContext
 {
 public:
   static bool EnsureContext(CDXVAContext **ctx, CDecoder *decoder);
-  bool GetInputAndTarget(int codec, GUID &inGuid, D3DFORMAT &outFormat);
-  bool GetConfig(GUID &inGuid, const DXVA2_VideoDesc *format, DXVA2_ConfigPictureDecode &config);
-  bool CreateSurfaces(int width, int height, D3DFORMAT format, unsigned int count, LPDIRECT3DSURFACE9 *surfaces);
-  bool CreateDecoder(GUID &inGuid, DXVA2_VideoDesc *format, const DXVA2_ConfigPictureDecode *config, LPDIRECT3DSURFACE9 *surfaces, unsigned int count, IDirectXVideoDecoder **decoder);
+  bool GetInputAndTarget(int codec, GUID &inGuid, DXGI_FORMAT &outFormat);
+  bool GetConfig(const D3D11_VIDEO_DECODER_DESC *format, D3D11_VIDEO_DECODER_CONFIG &config);
+  bool CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int count, unsigned int alignment, ID3D11Texture2D **texture, ID3D11VideoDecoderOutputView **surfaces);
+  bool CreateDecoder(D3D11_VIDEO_DECODER_DESC *format, const D3D11_VIDEO_DECODER_CONFIG *config, CDXVADecoderWrapper **decoder);
   void Release(CDecoder *decoder);
+  ID3D11VideoContext* GetVideoContext() { return m_vcontext; }
 private:
   CDXVAContext();
   void Close();
-  bool LoadSymbols();
   bool CreateContext();
   void DestroyContext();
   void QueryCaps();
   bool IsValidDecoder(CDecoder *decoder);
   static CDXVAContext *m_context;
   static CCriticalSection m_section;
-  static HMODULE m_dlHandle;
-  static DXVA2CreateVideoServicePtr m_DXVA2CreateVideoService;
-  IDirectXVideoDecoderService* m_service;
+  ID3D11VideoContext* m_vcontext;
+  ID3D11VideoDevice* m_service;
   int m_refCount;
   UINT m_input_count;
   GUID *m_input_list;
@@ -124,7 +150,6 @@ public:
   virtual unsigned GetAllowedReferences();
   virtual long Release();
 
-  bool  OpenTarget(const GUID &guid);
   bool  OpenDecoder();
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
   void  RelBuffer(uint8_t *data);
@@ -145,10 +170,9 @@ protected:
   virtual void OnLostDevice()    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
   virtual void OnResetDevice()   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
 
-  IDirectXVideoDecoder*        m_decoder;
+  CDXVADecoderWrapper*         m_decoder;
   HANDLE                       m_device;
-  GUID                         m_input;
-  DXVA2_VideoDesc              m_format;
+  D3D11_VIDEO_DECODER_DESC     m_format;
   int                          m_refs;
   CRenderPicture              *m_presentPicture;
 
@@ -159,9 +183,10 @@ protected:
   AVCodecContext*              m_avctx;
 
   unsigned int                 m_shared;
-
+  unsigned int                 m_surface_alignment;
   CCriticalSection             m_section;
   CEvent                       m_event;
+  ID3D11Texture2D*             m_viewResource;
 };
 
 };

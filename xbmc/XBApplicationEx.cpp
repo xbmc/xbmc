@@ -82,13 +82,6 @@ INT CXBApplicationEx::Run()
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
-#ifdef XBMC_TRACK_EXCEPTIONS
-  BYTE processExceptionCount = 0;
-  BYTE frameMoveExceptionCount = 0;
-  BYTE renderExceptionCount = 0;
-  const BYTE MAX_EXCEPTION_COUNT = 10;
-#endif
-
   // Run xbmc
   while (!m_bStop)
   {
@@ -106,30 +99,17 @@ INT CXBApplicationEx::Run()
       Process();
       //reset exception count
 #ifdef XBMC_TRACK_EXCEPTIONS
-      processExceptionCount = 0;
 
     }
     catch (const XbmcCommons::UncheckedException &e)
     {
       e.LogThrowMessage("CApplication::Process()");
-      processExceptionCount++;
-      //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
-      if (processExceptionCount > MAX_EXCEPTION_COUNT)
-      {
-        CLog::Log(LOGERROR, "CApplication::Process(), too many exceptions");
-        throw;
-      }
+      throw;
     }
     catch (...)
     {
       CLog::Log(LOGERROR, "exception in CApplication::Process()");
-      processExceptionCount++;
-      //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
-      if (processExceptionCount > MAX_EXCEPTION_COUNT)
-      {
-        CLog::Log(LOGERROR, "CApplication::Process(), too many exceptions");
-        throw;
-      }
+      throw;
     }
 #endif
     // Frame move the scene
@@ -140,30 +120,16 @@ INT CXBApplicationEx::Run()
       if (!m_bStop) FrameMove(true, m_renderGUI);
       //reset exception count
 #ifdef XBMC_TRACK_EXCEPTIONS
-      frameMoveExceptionCount = 0;
-
     }
     catch (const XbmcCommons::UncheckedException &e)
     {
       e.LogThrowMessage("CApplication::FrameMove()");
-      frameMoveExceptionCount++;
-      //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
-      if (frameMoveExceptionCount > MAX_EXCEPTION_COUNT)
-      {
-        CLog::Log(LOGERROR, "CApplication::FrameMove(), too many exceptions");
-        throw;
-      }
+      throw;
     }
     catch (...)
     {
       CLog::Log(LOGERROR, "exception in CApplication::FrameMove()");
-      frameMoveExceptionCount++;
-      //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
-      if (frameMoveExceptionCount > MAX_EXCEPTION_COUNT)
-      {
-        CLog::Log(LOGERROR, "CApplication::FrameMove(), too many exceptions");
-        throw;
-      }
+      throw;
     }
 #endif
 
@@ -180,31 +146,16 @@ INT CXBApplicationEx::Run()
           Sleep(noRenderFrameTime - frameTime);
       }
 #ifdef XBMC_TRACK_EXCEPTIONS
-      //reset exception count
-      renderExceptionCount = 0;
-
     }
     catch (const XbmcCommons::UncheckedException &e)
     {
       e.LogThrowMessage("CApplication::Render()");
-      renderExceptionCount++;
-      //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
-      if (renderExceptionCount > MAX_EXCEPTION_COUNT)
-      {
-        CLog::Log(LOGERROR, "CApplication::Render(), too many exceptions");
-        throw;
-      }
+      throw;
     }
     catch (...)
     {
       CLog::Log(LOGERROR, "exception in CApplication::Render()");
-      renderExceptionCount++;
-      //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
-      if (renderExceptionCount > MAX_EXCEPTION_COUNT)
-      {
-        CLog::Log(LOGERROR, "CApplication::Render(), too many exceptions");
-        throw;
-      }
+      throw;
     }
 #endif
   } // while (!m_bStop)

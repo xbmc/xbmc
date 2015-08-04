@@ -704,7 +704,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
       CLog::Log(LOGDEBUG, __FUNCTION__": window resize event");
 
-      if (!g_Windowing.IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
+      if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
         m_pEventFunc(newEvent);
 
       return(0);
@@ -715,7 +715,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
       CLog::Log(LOGDEBUG, __FUNCTION__": window move event");
 
-      if (!g_Windowing.IsAlteringWindow())
+      if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow())
         m_pEventFunc(newEvent);
 
       return(0);

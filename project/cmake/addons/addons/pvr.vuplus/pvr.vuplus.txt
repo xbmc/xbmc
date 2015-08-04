@@ -1,1 +1,1 @@
-pvr.vuplus https://github.com/kodi-pvr/pvr.vuplus f7dfd47
+pvr.vuplus https://github.com/kodi-pvr/pvr.vuplus master

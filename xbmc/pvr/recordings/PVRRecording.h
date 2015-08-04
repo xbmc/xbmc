@@ -44,6 +44,7 @@
 #define PVR_RECORDING_ACTIVE_PATH   "active"
 
 class CVideoDatabase;
+class CVariant;
 
 namespace PVR
 {

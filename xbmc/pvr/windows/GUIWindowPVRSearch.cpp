@@ -30,6 +30,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "epg/EpgContainer.h"
 #include "pvr/addons/PVRClients.h"
+#include "utils/Variant.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -53,16 +54,18 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
       if (!pItem->GetEPGInfoTag()->HasTimer())
       {
         if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-          buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* RECORD programme */
-        else
-          buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061); /* Create a Timer */
+          buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record */
+
+        buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061);   /* add timer */
+        buttons.Add(CONTEXT_BUTTON_ADVANCED_RECORD, 841);  /* add custom timer */
       }
       else
       {
         if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
-          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
-        else
-          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* Delete Timer */
+          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* stop recording */
+        else if (pItem->GetPVRTimerInfoTag()->HasTimerType() &&
+                 !pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
+          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* delete timer */
       }
     }
 
@@ -148,9 +151,9 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
     CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (dlgProgress)
     {
-      dlgProgress->SetHeading(194);
-      dlgProgress->SetText(CVariant(m_searchfilter.m_strSearchTerm));
-      dlgProgress->StartModal();
+      dlgProgress->SetHeading(CVariant{194});
+      dlgProgress->SetText(CVariant{m_searchfilter.m_strSearchTerm});
+      dlgProgress->Open();
       dlgProgress->Progress();
     }
 
@@ -162,7 +165,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 
     if (items.IsEmpty())
     {
-      CGUIDialogOK::ShowAndGetInput(194, 284);
+      CGUIDialogOK::ShowAndGetInput(CVariant{194}, CVariant{284});
       m_bSearchConfirmed = false;
     }
   }
@@ -170,6 +173,9 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
 
 bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
 {
+  if (!IsValidMessage(message))
+    return false;
+  
   if (message.GetMessage() == GUI_MSG_CLICKED)
   {
     if (message.GetSenderId() == m_viewControl.GetCurrentControl())
@@ -244,11 +250,11 @@ bool CGUIWindowPVRSearch::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BU
 {
   bool bReturn = false;
 
-  if (button == CONTEXT_BUTTON_START_RECORD)
+  if ((button == CONTEXT_BUTTON_START_RECORD) ||
+      (button == CONTEXT_BUTTON_ADVANCED_RECORD))
   {
+    StartRecordFile(item, button == CONTEXT_BUTTON_ADVANCED_RECORD);
     bReturn = true;
-
-    StartRecordFile(*item);
   }
 
   return bReturn;
@@ -260,9 +266,8 @@ bool CGUIWindowPVRSearch::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUT
 
   if (button == CONTEXT_BUTTON_STOP_RECORD)
   {
+    StopRecordFile(item);
     bReturn = true;
-
-    StopRecordFile(*item);
   }
 
   return bReturn;
@@ -281,7 +286,7 @@ void CGUIWindowPVRSearch::OpenDialogSearch()
   m_searchfilter.m_bIsRadio = m_bRadio;
 
   /* Open dialog window */
-  dlgSearch->DoModal();
+  dlgSearch->Open();
 
   if (dlgSearch->IsConfirmed())
   {

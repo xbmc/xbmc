@@ -32,7 +32,10 @@ LINK_ICONV=@link_iconv@
 ENABLE_GPLV3=@use_gplv3@
 HAS_LIBCRYSTAX=@has_libcrystax@
 
-BASE_URL=http://mirrors.xbmc.org/build-deps/sources
+BASE_URL=http://mirrors.kodi.tv/build-deps/sources
+ifneq ($(KODI_MIRROR),)
+BASE_URL=$(KODI_MIRROR)/build-deps/sources
+endif
 RETRIEVE_TOOL_FLAGS=-Ls --create-dirs -f -O
 ARCHIVE_TOOL_FLAGS=--strip-components=1 -xf
 CONFIG_SUB=@prefix@/@tool_dir@/share/automake-1.11/config.sub

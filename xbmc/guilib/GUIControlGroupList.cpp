@@ -20,7 +20,7 @@
 
 #include "GUIControlGroupList.h"
 #include "input/Key.h"
-#include "GUIInfoManager.h"
+#include "guiinfo/GUIInfoLabels.h"
 #include "GUIControlProfiler.h"
 #include "GUIFont.h" // for XBFONT_* definitions
 

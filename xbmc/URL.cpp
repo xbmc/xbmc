@@ -32,7 +32,9 @@
 #include <sys\stat.h>
 #endif
 
-using namespace std;
+#include <string>
+#include <vector>
+
 using namespace ADDON;
 
 CURL::CURL(const std::string& strURL1)
@@ -170,6 +172,8 @@ void CURL::Parse(const std::string& strURL1)
   std::string strProtocol2 = GetTranslatedProtocol();
   if(IsProtocol("rss") ||
      IsProtocol("rar") ||
+     IsProtocol("apk") ||
+     IsProtocol("zip") ||
      IsProtocol("addons") ||
      IsProtocol("image") ||
      IsProtocol("videodb") ||
@@ -181,10 +185,7 @@ void CURL::Parse(const std::string& strURL1)
     || IsProtocolEqual(strProtocol2, "https")
     || IsProtocolEqual(strProtocol2, "plugin")
     || IsProtocolEqual(strProtocol2, "addons")
-    || IsProtocolEqual(strProtocol2, "hdhomerun")
-    || IsProtocolEqual(strProtocol2, "rtsp")
-    || IsProtocolEqual(strProtocol2, "apk")
-    || IsProtocolEqual(strProtocol2, "zip"))
+    || IsProtocolEqual(strProtocol2, "rtsp"))
     sep = "?;#|";
   else if(IsProtocolEqual(strProtocol2, "ftp")
        || IsProtocolEqual(strProtocol2, "ftps"))
@@ -253,35 +254,33 @@ void CURL::Parse(const std::string& strURL1)
     }
   }
 
-  // detect hostname:port/
-  if (iSlash == std::string::npos)
+  std::string strHostNameAndPort = strURL.substr(iPos, (iSlash == std::string::npos) ? iEnd - iPos : iSlash - iPos);
+  // check for IPv6 numerical representation inside [].
+  // if [] found, let's store string inside as hostname
+  // and remove that parsed part from strHostNameAndPort
+  size_t iBrk = strHostNameAndPort.rfind("]");
+  if (iBrk != std::string::npos && strHostNameAndPort.find("[") == 0)
   {
-    std::string strHostNameAndPort = strURL.substr(iPos, iEnd - iPos);
-    size_t iColon = strHostNameAndPort.find(":");
-    if (iColon != std::string::npos)
-    {
-      m_strHostName = strHostNameAndPort.substr(0, iColon);
-      m_iPort = atoi(strHostNameAndPort.substr(iColon + 1).c_str());
-    }
-    else
-    {
-      m_strHostName = strHostNameAndPort;
-    }
-
+    m_strHostName = strHostNameAndPort.substr(1, iBrk-1);
+    strHostNameAndPort.erase(0, iBrk+1);
   }
-  else
+
+  // detect hostname:port/ or just :port/ if previous step found [IPv6] format
+  size_t iColon = strHostNameAndPort.rfind(":");
+  if (iColon != std::string::npos && iColon == strHostNameAndPort.find(":"))
   {
-    std::string strHostNameAndPort = strURL.substr(iPos, iSlash - iPos);
-    size_t iColon = strHostNameAndPort.find(":");
-    if (iColon != std::string::npos)
-    {
+    if (m_strHostName.empty())
       m_strHostName = strHostNameAndPort.substr(0, iColon);
-      m_iPort = atoi(strHostNameAndPort.substr(iColon + 1).c_str());
-    }
-    else
-    {
-      m_strHostName = strHostNameAndPort;
-    }
+    m_iPort = atoi(strHostNameAndPort.substr(iColon + 1).c_str());
+  }
+
+  // if we still don't have hostname, the strHostNameAndPort substring
+  // is 'just' hostname without :port specification - so use it as is.
+  if (m_strHostName.empty())
+    m_strHostName = strHostNameAndPort;
+
+  if (iSlash != std::string::npos)
+  {
     iPos = iSlash + 1;
     if (iEnd > iPos)
       m_strFileName = strURL.substr(iPos, iEnd - iPos);
@@ -494,6 +493,16 @@ const std::string CURL::GetFileNameWithoutPath() const
   return URIUtils::GetFileName(file);
 }
 
+inline
+void protectIPv6(std::string &hn)
+{
+  if (!hn.empty() && hn.find(":") != hn.rfind(":")
+   && hn.find(":") != std::string::npos)
+  {
+    hn = '[' + hn + ']';
+  }
+}
+
 char CURL::GetDirectorySeparator() const
 {
 #ifndef TARGET_POSIX
@@ -545,7 +554,7 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
     CFileItemList items;
     XFILE::CStackDirectory dir;
     dir.GetDirectory(*this,items);
-    vector<std::string> newItems;
+    std::vector<std::string> newItems;
     for (int i=0;i<items.Size();++i)
     {
       CURL url(items[i]->GetPath());
@@ -595,14 +604,16 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
       strHostName = m_strHostName;
 
     if (URIUtils::HasEncodedHostname(*this))
-      strURL += Encode(strHostName);
-    else
-      strURL += strHostName;
+      strHostName = Encode(strHostName);
 
     if ( HasPort() )
     {
-      strURL += StringUtils::Format(":%i", m_iPort);
+      protectIPv6(strHostName);
+      strURL += strHostName + StringUtils::Format(":%i", m_iPort);
     }
+    else
+      strURL += strHostName;
+
     strURL += "/";
   }
   strURL += m_strFileName;
@@ -654,12 +665,21 @@ std::string CURL::GetWithoutFilename() const
 
   if (!m_strHostName.empty())
   {
+    std::string hostname;
+
     if( URIUtils::HasEncodedHostname(*this) )
-      strURL += Encode(m_strHostName);
+      hostname = Encode(m_strHostName);
     else
-      strURL += m_strHostName;
+      hostname = m_strHostName;
+
     if (HasPort())
-      strURL += ':' + StringUtils::Format("%i", m_iPort);
+    {
+      protectIPv6(hostname);
+      strURL += hostname + StringUtils::Format(":%i", m_iPort);
+    }
+    else
+      strURL += hostname;
+
     strURL += "/";
   }
 

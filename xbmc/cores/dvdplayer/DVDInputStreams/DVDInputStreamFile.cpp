@@ -43,9 +43,9 @@ bool CDVDInputStreamFile::IsEOF()
   return !m_pFile || m_eof;
 }
 
-bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
+bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content, bool contentLookup)
 {
-  if (!CDVDInputStream::Open(strFile, content))
+  if (!CDVDInputStream::Open(strFile, content, contentLookup))
     return false;
 
   m_pFile = new CFile();

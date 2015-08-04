@@ -20,7 +20,7 @@
 
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -36,6 +36,11 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "view/ViewStateSettings.h"
+#include "utils/Variant.h"
+
+#include <utility>
+
+using namespace KODI::MESSAGING;
 
 CGUIPassword::CGUIPassword(void)
 {
@@ -68,7 +73,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
     {
       if (0 != CSettings::Get().GetInt("masterlock.maxretries") && pItem->m_iBadPwdCount >= CSettings::Get().GetInt("masterlock.maxretries"))
       { // user previously exhausted all retries, show access denied error
-        CGUIDialogOK::ShowAndGetInput(12345, 12346);
+        CGUIDialogOK::ShowAndGetInput(CVariant{12345}, CVariant{12346});
         return false;
       }
       // show the appropriate lock dialog
@@ -143,7 +148,7 @@ bool CGUIPassword::CheckStartUpLock()
         std::string strLabel = StringUtils::Format("%i %s", iLeft, strLabel1.c_str());
 
         // PopUp OK and Display: MasterLock mode has changed but no new Mastercode has been set!
-        CGUIDialogOK::ShowAndGetInput(12360, 12367, strLabel, "");
+        CGUIDialogOK::ShowAndGetInput(CVariant{12360}, CVariant{12367}, CVariant{strLabel}, CVariant{""});
       }
       else
         i=g_passwordManager.iMasterLockRetriesLeft;
@@ -157,7 +162,7 @@ bool CGUIPassword::CheckStartUpLock()
   }
   else
   {
-    CApplicationMessenger::Get().Shutdown(); // Turn off the box
+    CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN); // Turn off the box
     return false;
   }
 }
@@ -281,7 +286,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
         // user has run out of retry attempts
         g_passwordManager.iMasterLockRetriesLeft = 0;
         // Tell the user they ran out of retry attempts
-        CGUIDialogOK::ShowAndGetInput(12345, 12346);
+        CGUIDialogOK::ShowAndGetInput(CVariant{12345}, CVariant{12346});
         return ;
       }
     }
@@ -290,7 +295,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
       dlgLine1 = StringUtils::Format("%d %s",
                                      g_passwordManager.iMasterLockRetriesLeft,
                                      g_localizeStrings.Get(12343).c_str());
-    CGUIDialogOK::ShowAndGetInput(20075, 12345, dlgLine1, 0);
+    CGUIDialogOK::ShowAndGetInput(CVariant{20075}, CVariant{12345}, CVariant{std::move(dlgLine1)}, CVariant{0});
   }
   else
     g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries"); // user entered correct mastercode, reset retries to max allowed

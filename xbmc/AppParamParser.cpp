@@ -19,12 +19,12 @@
  */
 
 #include "AppParamParser.h"
-#include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
 #include "input/InputManager.h"
 #ifdef TARGET_WINDOWS
@@ -34,6 +34,8 @@
 #include "linux/XTimeUtils.h"
 #endif
 #include <stdlib.h>
+
+using namespace KODI::MESSAGING;
 
 CAppParamParser::CAppParamParser()
 {
@@ -80,23 +82,23 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
 
 void CAppParamParser::DisplayVersion()
 {
-  printf("%s Media Center %s\n", g_infoManager.GetVersion().c_str(), g_infoManager.GetAppName().c_str());
-  printf("Copyright (C) 2005-2013 Team %s - http://kodi.tv\n", g_infoManager.GetAppName().c_str());
+  printf("%s Media Center %s\n", CSysInfo::GetVersion().c_str(), CSysInfo::GetAppName().c_str());
+  printf("Copyright (C) 2005-2013 Team %s - http://kodi.tv\n", CSysInfo::GetAppName().c_str());
   exit(0);
 }
 
 void CAppParamParser::DisplayHelp()
 {
-  std::string lcAppName = g_infoManager.GetAppName();
+  std::string lcAppName = CSysInfo::GetAppName();
   StringUtils::ToLower(lcAppName);
   printf("Usage: %s [OPTION]... [FILE]...\n\n", lcAppName.c_str());
   printf("Arguments:\n");
   printf("  -d <n>\t\tdelay <n> seconds before starting\n");
-  printf("  -fs\t\t\tRuns %s in full screen\n", g_infoManager.GetAppName().c_str());
-  printf("  --standalone\t\t%s runs in a stand alone environment without a window \n", g_infoManager.GetAppName().c_str());
+  printf("  -fs\t\t\tRuns %s in full screen\n", CSysInfo::GetAppName().c_str());
+  printf("  --standalone\t\t%s runs in a stand alone environment without a window \n", CSysInfo::GetAppName().c_str());
   printf("\t\t\tmanager and supporting applications. For example, that\n");
   printf("\t\t\tenables network settings.\n");
-  printf("  -p or --portable\t%s will look for configurations in install folder instead of ~/.%s\n", g_infoManager.GetAppName().c_str(), lcAppName.c_str());
+  printf("  -p or --portable\t%s will look for configurations in install folder instead of ~/.%s\n", CSysInfo::GetAppName().c_str(), lcAppName.c_str());
   printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
 #ifdef HAS_LIRC
   printf("  -l or --lircdev\tLircDevice to use default is " LIRC_DEVICE " .\n");
@@ -155,6 +157,5 @@ void CAppParamParser::PlayPlaylist()
     g_playlistPlayer.SetCurrentPlaylist(0);
   }
 
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, -1};
-  CApplicationMessenger::Get().SendMessage(tMsg, false);
+  CApplicationMessenger::Get().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
 }

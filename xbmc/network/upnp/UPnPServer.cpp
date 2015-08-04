@@ -37,8 +37,10 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/md5.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "Util.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
@@ -993,7 +995,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
       return BuildResponse(action, itemsall, filter, starting_index, requested_count, sort_criteria, context, NULL);
   } else if (NPT_String(search_criteria).Find("object.item.imageItem") >= 0) {
       CFileItemList items;
-      return BuildResponse(action, items, filter, starting_index, requested_count, sort_criteria, context, NULL);;
+      return BuildResponse(action, items, filter, starting_index, requested_count, sort_criteria, context, NULL);
   }
 
   return NPT_FAILURE;

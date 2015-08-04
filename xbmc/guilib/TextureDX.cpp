@@ -39,32 +39,35 @@ CDXTexture::~CDXTexture()
 
 void CDXTexture::CreateTextureObject()
 {
-  D3DFORMAT format = D3DFMT_UNKNOWN;
+  m_texture.Create(m_textureWidth, m_textureHeight, 1, g_Windowing.DefaultD3DUsage(), GetFormat());
+}
+
+DXGI_FORMAT CDXTexture::GetFormat()
+{
+  DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN; // DXGI_FORMAT_UNKNOWN
 
   switch (m_format)
   {
   case XB_FMT_DXT1:
-    format = D3DFMT_DXT1;
+    format = DXGI_FORMAT_BC1_UNORM; // D3DFMT_DXT1 -> DXGI_FORMAT_BC1_UNORM & DXGI_FORMAT_BC1_UNORM_SRGB
     break;
   case XB_FMT_DXT3:
-    format = D3DFMT_DXT3;
+    format = DXGI_FORMAT_BC2_UNORM; // D3DFMT_DXT3 -> DXGI_FORMAT_BC2_UNORM & DXGI_FORMAT_BC2_UNORM_SRGB
     break;
   case XB_FMT_DXT5:
   case XB_FMT_DXT5_YCoCg:
-    format = D3DFMT_DXT5;
+    format = DXGI_FORMAT_BC3_UNORM; // XB_FMT_DXT5 -> DXGI_FORMAT_BC3_UNORM & DXGI_FORMAT_BC3_UNORM_SRGB
     break;
   case XB_FMT_RGB8:
   case XB_FMT_A8R8G8B8:
-    format = D3DFMT_A8R8G8B8;
+    format = DXGI_FORMAT_B8G8R8A8_UNORM; // D3DFMT_A8R8G8B8 -> DXGI_FORMAT_B8G8R8A8_UNORM | DXGI_FORMAT_B8G8R8A8_UNORM_SRGB
     break;
   case XB_FMT_A8:
-    format = D3DFMT_A8;
+    format = DXGI_FORMAT_R8_UNORM; // XB_FMT_A8 -> DXGI_FORMAT_A8_UNORM
     break;
-  default:
-    return;
   }
 
-  m_texture.Create(m_textureWidth, m_textureHeight, 1, g_Windowing.DefaultD3DUsage(), format, g_Windowing.DefaultD3DPool());
+  return format;
 }
 
 void CDXTexture::DestroyTextureObject()
@@ -80,28 +83,41 @@ void CDXTexture::LoadToGPU()
     return;
   }
 
-  if (m_texture.Get() == NULL)
+  D3D11_USAGE usage = g_Windowing.DefaultD3DUsage();
+  if (m_format == XB_FMT_RGB8 && usage == D3D11_USAGE_DEFAULT)
+    usage = D3D11_USAGE_DYNAMIC; // force switch to dynamic to allow CPU write to texture
+
+  if (m_texture.Get() == nullptr)
   {
-    CreateTextureObject();
-    if (m_texture.Get() == NULL)
+    // creates texture with initial data
+    if (m_format != XB_FMT_RGB8)
+    {
+      // this is faster way to create texture with initial data instead of create empty and then copy to it
+      m_texture.Create(m_textureWidth, m_textureHeight, 1, usage, GetFormat(), m_pixels, GetPitch());
+    }
+    else
+      m_texture.Create(m_textureWidth, m_textureHeight, 1, usage, GetFormat());
+
+    if (m_texture.Get() == nullptr)
     {
       CLog::Log(LOGDEBUG, "CDXTexture::CDXTexture: Error creating new texture for size %d x %d", m_textureWidth, m_textureHeight);
       return;
     }
   }
 
-  D3DLOCKED_RECT lr;
-  if (m_texture.LockRect( 0, &lr, NULL, D3DLOCK_DISCARD ))
+  if (m_format == XB_FMT_RGB8 && (usage == D3D11_USAGE_DYNAMIC || usage == D3D11_USAGE_STAGING))
   {
-    unsigned char *dst = (unsigned char *)lr.pBits;
-    unsigned char *src = m_pixels;
-    unsigned int dstPitch = lr.Pitch;
-    unsigned int srcPitch = GetPitch();
-    unsigned int minPitch = std::min(srcPitch, dstPitch);
-
-    unsigned int rows = GetRows();
-    if (m_format == XB_FMT_RGB8)
+    D3D11_MAP mapType = (usage == D3D11_USAGE_STAGING) ? D3D11_MAP_WRITE : D3D11_MAP_WRITE_DISCARD;
+    D3D11_MAPPED_SUBRESOURCE lr;
+    if (m_texture.LockRect(0, &lr, mapType))
     {
+      unsigned char *dst = (unsigned char *)lr.pData;
+      unsigned char *src = m_pixels;
+      unsigned int dstPitch = lr.RowPitch;
+      unsigned int srcPitch = GetPitch();
+      unsigned int minPitch = std::min(srcPitch, dstPitch);
+
+      unsigned int rows = GetRows();
       for (unsigned int y = 0; y < rows; y++)
       {
         unsigned char *dst2 = dst;
@@ -117,40 +133,20 @@ void CDXTexture::LoadToGPU()
         dst += dstPitch;
       }
     }
-    else if (srcPitch == dstPitch)
-    {
-      memcpy(dst, src, srcPitch * rows);
-    }
     else
     {
-      for (unsigned int y = 0; y < rows; y++)
-      {
-        memcpy(dst, src, minPitch);
-        src += srcPitch;
-        dst += dstPitch;
-      }
+      CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture");
     }
+    m_texture.UnlockRect(0);
   }
-  else
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture");
-  }
-  m_texture.UnlockRect(0);
 
   delete [] m_pixels;
-  m_pixels = NULL;
-
+  m_pixels = nullptr;
   m_loadedToGPU = true;
 }
 
 void CDXTexture::BindToUnit(unsigned int unit)
 {
-  LPDIRECT3DDEVICE9 p3DDevice = g_Windowing.Get3DDevice();
-  p3DDevice->SetTexture( unit, m_texture.Get() );
-  p3DDevice->SetSamplerState( unit, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-  p3DDevice->SetSamplerState( unit, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-  p3DDevice->SetSamplerState( unit, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-  p3DDevice->SetSamplerState( unit, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
 }
 
 #endif

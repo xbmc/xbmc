@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team XBMC
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,11 +24,10 @@
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
-#ifdef HAS_SYSINFO
 #include "utils/SystemInfo.h"
-#endif
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 #define CONTROL_BT_STORAGE  94
 #define CONTROL_BT_DEFAULT  95
@@ -40,37 +39,40 @@
 #define CONTROL_START       CONTROL_BT_STORAGE
 #define CONTROL_END         CONTROL_BT_PVR
 
-CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
-:CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
+CGUIWindowSystemInfo::CGUIWindowSystemInfo(void) :
+    CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {
   m_section = CONTROL_BT_DEFAULT;
   m_loadType = KEEP_IN_MEMORY;
 }
+
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
 }
+
 bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
+  switch (message.GetMessage())
   {
-  case GUI_MSG_WINDOW_INIT:
+    case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION).c_str() +
-                            " (Compiled: " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE).c_str() +")");
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR,
-                                  PVR::CPVRManager::Get().IsStarted());
+      SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + CSysInfo::GetVersion());
+      SET_CONTROL_LABEL(53, CSysInfo::GetBuildDate());
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR, PVR::CPVRManager::Get().IsStarted());
       return true;
     }
     break;
-  case GUI_MSG_WINDOW_DEINIT:
+
+    case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIWindow::OnMessage(message);
       m_diskUsage.clear();
       return true;
     }
     break;
-  case GUI_MSG_FOCUSED:
+
+    case GUI_MSG_FOCUSED:
     {
       CGUIWindow::OnMessage(message);
       int focusedControl = GetFocusedControlID();
@@ -91,20 +93,19 @@ void CGUIWindowSystemInfo::FrameMove()
   int i = 2;
   if (m_section == CONTROL_BT_DEFAULT)
   {
-    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20154));
+    SET_CONTROL_LABEL(40, g_localizeStrings.Get(20154));
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
     SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
-#ifdef HAS_SYSINFO
     SetControlLabel(i++, "%s %s", 13283, SYSTEM_OS_VERSION_INFO);
-#endif
     SetControlLabel(i++, "%s: %s", 12390, SYSTEM_UPTIME);
     SetControlLabel(i++, "%s: %s", 12394, SYSTEM_TOTALUPTIME);
     SetControlLabel(i++, "%s: %s", 12395, SYSTEM_BATTERY_LEVEL);
   }
+
   else if (m_section == CONTROL_BT_STORAGE)
   {
-    SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
+    SET_CONTROL_LABEL(40, g_localizeStrings.Get(20155));
     if (m_diskUsage.size() == 0)
       m_diskUsage = g_mediaManager.GetDiskUsage();
 
@@ -113,13 +114,12 @@ void CGUIWindowSystemInfo::FrameMove()
       SET_CONTROL_LABEL(i++, m_diskUsage[d]);
     }
   }
+
   else if (m_section == CONTROL_BT_NETWORK)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_LINK_STATE));
     SetControlLabel(i++, "%s: %s", 149, NETWORK_MAC_ADDRESS);
-#endif
     SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
     SetControlLabel(i++, "%s: %s", 13159, NETWORK_SUBNET_MASK);
     SetControlLabel(i++, "%s: %s", 13160, NETWORK_GATEWAY_ADDRESS);
@@ -127,28 +127,26 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "%s: %s", 20307, NETWORK_DNS2_ADDRESS);
     SetControlLabel(i++, "%s %s", 13295, SYSTEM_INTERNET_STATE);
   }
+
   else if (m_section == CONTROL_BT_VIDEO)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
-#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
-#endif
 #ifndef HAS_DX
     SetControlLabel(i++, "%s %s", 22007, SYSTEM_RENDER_VENDOR);
     SetControlLabel(i++, "%s %s", 22009, SYSTEM_RENDER_VERSION);
 #else
-    SetControlLabel(i++, "%s %s", 22023, SYSTEM_RENDER_VENDOR);
     SetControlLabel(i++, "%s %s", 22024, SYSTEM_RENDER_VERSION);
 #endif
-#ifndef __arm__
+#if !defined(__arm__) && !defined(HAS_DX)
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
 #endif
   }
+
   else if (m_section == CONTROL_BT_HARDWARE)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
-#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUModel());
 #if defined(__arm__) && defined(TARGET_LINUX)
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUBogoMips());
@@ -160,31 +158,30 @@ void CGUIWindowSystemInfo::FrameMove()
 #if !defined(__arm__) || defined(TARGET_RASPBERRY_PI)
     SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
 #endif
-#endif
 #if !(defined(__arm__) && defined(TARGET_LINUX))
     SetControlLabel(i++, "%s %s", 13271, SYSTEM_CPU_USAGE);
 #endif
-    i++; // empty line
+    i++;  // empty line
     SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
   }
-  else if(m_section == CONTROL_BT_PVR)
+
+  else if (m_section == CONTROL_BT_PVR)
   {
-    SET_CONTROL_LABEL(40,g_localizeStrings.Get(19166));
+    SET_CONTROL_LABEL(40, g_localizeStrings.Get(19166));
     int i = 2;
 
     SetControlLabel(i++, "%s: %s", 19120, PVR_BACKEND_NUMBER);
-    i++; // empty line
+    i++;  // empty line
     SetControlLabel(i++, "%s: %s", 19012, PVR_BACKEND_NAME);
     SetControlLabel(i++, "%s: %s", 19114, PVR_BACKEND_VERSION);
     SetControlLabel(i++, "%s: %s", 19115, PVR_BACKEND_HOST);
     SetControlLabel(i++, "%s: %s", 19116, PVR_BACKEND_DISKSPACE);
     SetControlLabel(i++, "%s: %s", 19019, PVR_BACKEND_CHANNELS);
     SetControlLabel(i++, "%s: %s", 19163, PVR_BACKEND_RECORDINGS);
-    SetControlLabel(i++, "%s: %s", 19168, PVR_BACKEND_DELETED_RECORDINGS); // Deleted and recoverable recordings
+    SetControlLabel(i++, "%s: %s", 19168, PVR_BACKEND_DELETED_RECORDINGS);  // Deleted and recoverable recordings
     SetControlLabel(i++, "%s: %s", 19025, PVR_BACKEND_TIMERS);
   }
-
   CGUIWindow::FrameMove();
 }
 
@@ -192,12 +189,13 @@ void CGUIWindowSystemInfo::ResetLabels()
 {
   for (int i = 2; i < 12; i++)
   {
-    SET_CONTROL_LABEL(i,"");
+    SET_CONTROL_LABEL(i, "");
   }
 }
 
 void CGUIWindowSystemInfo::SetControlLabel(int id, const char *format, int label, int info)
 {
-  std::string tmpStr = StringUtils::Format(format, g_localizeStrings.Get(label).c_str(), g_infoManager.GetLabel(info).c_str());
+  std::string tmpStr = StringUtils::Format(format, g_localizeStrings.Get(label).c_str(),
+      g_infoManager.GetLabel(info).c_str());
   SET_CONTROL_LABEL(id, tmpStr);
 }

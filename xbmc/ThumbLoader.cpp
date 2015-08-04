@@ -23,7 +23,6 @@
 #include "FileItem.h"
 #include "TextureCache.h"
 
-using namespace std;
 using namespace XFILE;
 
 CThumbLoader::CThumbLoader() :

@@ -32,6 +32,7 @@
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 #include "FileItem.h"
 #include "TextureDatabase.h"
@@ -301,7 +302,7 @@ bool CRepositoryUpdateJob::DoWork()
           std::string line = g_localizeStrings.Get(24096);
           if (newAddon->Props().broken == "DEPSNOTMET")
             line = g_localizeStrings.Get(24104);
-          if (addon && CGUIDialogYesNo::ShowAndGetInput(newAddon->Name(), line, 24097, ""))
+          if (addon && CGUIDialogYesNo::ShowAndGetInput(CVariant{newAddon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}))
             CAddonMgr::Get().DisableAddon(newAddon->ID());
         }
       }

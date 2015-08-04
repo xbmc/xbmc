@@ -30,6 +30,8 @@
 #include "threads/Thread.h"
 #include "websocket/WebSocket.h"
 
+class CVariant;
+
 namespace JSONRPC
 {
   class CTCPServer : public ITransportLayer, public JSONRPC::IJSONRPCAnnouncer, public CThread

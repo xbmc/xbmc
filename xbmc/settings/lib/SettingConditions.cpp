@@ -118,7 +118,7 @@ void CSettingConditionsManager::AddCondition(const std::string &condition)
   m_defines.insert(tmpCondition);
 }
 
-void CSettingConditionsManager::AddCondition(const std::string &identifier, SettingConditionCheck condition)
+void CSettingConditionsManager::AddCondition(const std::string &identifier, SettingConditionCheck condition, void *data /*= NULL*/)
 {
   if (identifier.empty() || condition == NULL)
     return;
@@ -126,7 +126,7 @@ void CSettingConditionsManager::AddCondition(const std::string &identifier, Sett
   std::string tmpIdentifier = identifier;
   StringUtils::ToLower(tmpIdentifier);
 
-  m_conditions.insert(SettingConditionPair(tmpIdentifier, condition));
+  m_conditions.insert(SettingConditionPair(tmpIdentifier, std::make_pair(condition, data)));
 }
 
 bool CSettingConditionsManager::Check(const std::string &condition, const std::string &value /* = "" */, const CSetting *setting /* = NULL */) const
@@ -150,7 +150,7 @@ bool CSettingConditionsManager::Check(const std::string &condition, const std::s
   if (conditionIt == m_conditions.end())
     return false;
 
-  return conditionIt->second(tmpCondition, value, setting);
+  return conditionIt->second.first(tmpCondition, value, setting, conditionIt->second.second);
 }
 
 CSettingConditionsManager::CSettingConditionsManager()

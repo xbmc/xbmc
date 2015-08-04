@@ -66,7 +66,6 @@
 
 #include <set>
 
-using namespace std;
 using namespace XFILE;
 
 // Stuff for read CUE data from different sources.
@@ -160,6 +159,7 @@ CCueDocument::CCueDocument()
   : m_iYear(0)
   , m_iTrack(0)
   , m_iDiscNumber(0)
+  , m_bOneFilePerTrack(false)
 {
 }
 
@@ -209,9 +209,9 @@ void CCueDocument::UpdateMediaFile(const std::string& oldMediaFile, const std::s
   }
 }
 
-void CCueDocument::GetMediaFiles(vector<std::string>& mediaFiles)
+void CCueDocument::GetMediaFiles(std::vector<std::string>& mediaFiles)
 {
-  typedef set<std::string> TSet;
+  typedef std::set<std::string> TSet;
   TSet uniqueFiles;
   for (Tracks::const_iterator it = m_tracks.begin(); it != m_tracks.end(); ++it)
     uniqueFiles.insert(it->strFile);
@@ -228,6 +228,11 @@ std::string CCueDocument::GetMediaTitle()
 bool CCueDocument::IsLoaded() const
 {
   return !m_tracks.empty();
+}
+
+bool CCueDocument::IsOneFilePerTrack() const
+{
+  return m_bOneFilePerTrack;
 }
 
 bool CCueDocument::GetSong(int aTrackNumber, CSong& aSong)
@@ -294,6 +299,7 @@ bool CCueDocument::Parse(CueReader& reader, const std::string& strFile)
   bool bCurrentFileChanged = false;
   int time;
   int totalTracks = -1;
+  int numberFiles = -1;
 
   // Run through the .CUE file and extract the tracks...
   while (true)
@@ -359,6 +365,7 @@ bool CCueDocument::Parse(CueReader& reader, const std::string& strFile)
     }
     else if (StringUtils::StartsWithNoCase(strLine, "FILE"))
     {
+      numberFiles++;
       // already a file name? then the time computation will be changed
       if (!strCurrentFile.empty())
         bCurrentFileChanged = true;
@@ -395,6 +402,10 @@ bool CCueDocument::Parse(CueReader& reader, const std::string& strFile)
     m_tracks[totalTracks].iEndTime = 0;
   else
     CLog::Log(LOGERROR, "No INDEX 01 tags in CUE file!");
+
+  if ( totalTracks == numberFiles )
+    m_bOneFilePerTrack = true;
+
   return (totalTracks >= 0);
 }
 
@@ -441,7 +452,7 @@ int CCueDocument::ExtractTimeFromIndex(const std::string &index)
   }
   StringUtils::TrimLeft(numberTime);
   // split the resulting string
-  vector<string> time = StringUtils::Split(numberTime, ":");
+  std::vector<std::string> time = StringUtils::Split(numberTime, ":");
   if (time.size() != 3)
     return -1;
 

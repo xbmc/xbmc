@@ -23,7 +23,7 @@
 #include "settings/MediaSettings.h"
 #include "network/upnp/UPnP.h"
 #include "StringUtils.h"
-#include "Variant.h"
+#include "utils/Variant.h"
 #include "URIUtils.h"
 #include "URL.h"
 #include "log.h"
@@ -34,6 +34,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #ifdef HAS_DS_PLAYER
 #include "DSPlayerDatabase.h"
 #endif
@@ -211,6 +212,30 @@ bool CSaveFileStateJob::DoWork()
             musicdatabase.Close();
           }
         }
+      }
+    }
+
+    if (ActiveAE::CActiveAEDSP::Get().IsProcessing())
+    {
+      std::string redactPath = CURL::GetRedacted(progressTrackingFile);
+      CLog::Log(LOGDEBUG, "%s - Saving file state for dsp audio item %s", __FUNCTION__, redactPath.c_str());
+
+      ActiveAE::CActiveAEDSPDatabase audiodatabase;
+      if (!audiodatabase.Open())
+      {
+        CLog::Log(LOGWARNING, "%s - Unable to open dsp audio database. Can not save file state!", __FUNCTION__);
+      }
+      else
+      {
+        if (m_audioSettings != CMediaSettings::Get().GetDefaultAudioSettings())
+        {
+          audiodatabase.SetActiveDSPSettings(m_item, m_audioSettings);
+        }
+        else
+        {
+          audiodatabase.DeleteActiveDSPSettings(m_item);
+        }
+        audiodatabase.Close();
       }
     }
   }

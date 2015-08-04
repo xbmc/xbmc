@@ -29,6 +29,7 @@
 #include "dataset.h"
 #include "utils/log.h"
 #include <cstring>
+#include <algorithm>
 
 #ifndef __GNUC__
 #pragma warning (disable:4800)
@@ -49,6 +50,7 @@ Database::Database():
   sequence_table("db_sequence")
 {
   active = false;	// No connection yet
+  compression = false;
 }
 
 Database::~Database() {
@@ -93,6 +95,7 @@ Dataset::Dataset():
   frecno = 0;
   fbof = feof = true;
   autocommit = true;
+  fieldIndexMapID = ~0;
 
   fields_object = new Fields();
 
@@ -110,6 +113,7 @@ Dataset::Dataset(Database *newDb):
   frecno = 0;
   fbof = feof = true;
   autocommit = true;
+  fieldIndexMapID = ~0;
 
   fields_object = new Fields();
 
@@ -205,6 +209,10 @@ void Dataset::close(void) {
   frecno = 0;
   fbof = feof = true;
   active = false;
+
+  fieldIndexMap_Entries.clear();
+  fieldIndexMap_Sorter.clear();
+  fieldIndexMapID = ~0;
 }
 
 
@@ -321,25 +329,64 @@ bool Dataset::set_field_value(const char *f_name, const field_value &value) {
   //  return false;
 }
 
+/********* INDEXMAP SECTION START *********/
+bool Dataset::get_index_map_entry(const char *f_name) {
+  if (~fieldIndexMapID)
+  {
+    unsigned int next(fieldIndexMapID+1 >= fieldIndexMap_Entries.size() ? 0 : fieldIndexMapID + 1);
+    if (fieldIndexMap_Entries[next].strName == f_name) //Yes, our assumption hits.
+    {
+      fieldIndexMapID = next;
+      return true;
+    }
+  }
+  // indexMap not found on the expected way, either first row strange retrival order
+  FieldIndexMapEntry tmp(f_name);
+  std::vector<unsigned int>::iterator ins(lower_bound(fieldIndexMap_Sorter.begin(), fieldIndexMap_Sorter.end(), tmp, FieldIndexMapComparator(fieldIndexMap_Entries)));
+  if (ins == fieldIndexMap_Sorter.end() || (tmp <  fieldIndexMap_Entries[*ins])) //new entry
+  {
+    //Insert the new item just behind last retrieved item
+    //In general this should be always end(), but could be different
+    fieldIndexMap_Sorter.insert(ins, ++fieldIndexMapID);
+    fieldIndexMap_Entries.insert(fieldIndexMap_Entries.begin() + fieldIndexMapID, tmp);
+  }
+  else //entry already existing!
+  {
+    fieldIndexMapID = *ins;
+    return true;
+  }
+  return false; //invalid
+}
+/********* INDEXMAP SECTION END *********/
 
 const field_value Dataset::get_field_value(const char *f_name) {
-  const char* name=strstr(f_name, ".");
-  if (name) name++;
-  if (ds_state != dsInactive) {
+  if (ds_state != dsInactive)
+  {
     if (ds_state == dsEdit || ds_state == dsInsert){
       for (unsigned int i=0; i < edit_object->size(); i++)
-		if (str_compare((*edit_object)[i].props.name.c_str(), f_name)==0) {
-	  		return (*edit_object)[i].val;
-			}
+        if (str_compare((*edit_object)[i].props.name.c_str(), f_name)==0) {
+          return (*edit_object)[i].val;
+        }
       throw DbErrors("Field not found: %s",f_name);
-       }
+    }
     else
+    {
+      //Lets try to reuse a string ->index conversation
+      if (get_index_map_entry(f_name))
+        return get_field_value(static_cast<int>(fieldIndexMap_Entries[fieldIndexMapID].fieldIndex));
+
+      const char* name=strstr(f_name, ".");
+      if (name)
+        name++;
+
       for (unsigned int i=0; i < fields_object->size(); i++) 
-			if (str_compare((*fields_object)[i].props.name.c_str(), f_name)==0 || (name && str_compare((*fields_object)[i].props.name.c_str(), name)==0)) {
-	  			return (*fields_object)[i].val;
-			}
-      throw DbErrors("Field not found: %s",f_name);
-       }
+        if (str_compare((*fields_object)[i].props.name.c_str(), f_name) == 0 || (name && str_compare((*fields_object)[i].props.name.c_str(), name) == 0)) {
+          fieldIndexMap_Entries[fieldIndexMapID].fieldIndex = i;
+          return (*fields_object)[i].val;
+        }
+    }
+    throw DbErrors("Field not found: %s",f_name);
+  }
   throw DbErrors("Dataset state is Inactive");
   //field_value fv;
   //return fv;

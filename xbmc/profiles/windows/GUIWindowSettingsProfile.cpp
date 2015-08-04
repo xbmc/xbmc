@@ -35,6 +35,7 @@
 #include "FileItem.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/Variant.h"
 
 using namespace XFILE;
 
@@ -258,11 +259,11 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
     items.Add(item);
   }
 
-  dialog->SetHeading(20093); // Profile name
+  dialog->SetHeading(CVariant{20093}); // Profile name
   dialog->Reset();
   dialog->SetItems(&items);
   dialog->SetSelected(autoLoginProfileId);
-  dialog->DoModal();
+  dialog->Open();
 
   if (dialog->IsButtonPressed() || dialog->GetSelectedLabel() < 0)
     return false; // user cancelled

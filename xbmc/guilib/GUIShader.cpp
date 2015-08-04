@@ -51,6 +51,7 @@ CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_ver
 
   m_proj   = NULL;
   m_model  = NULL;
+  m_clipPossible = false;
 }
 
 void CGUIShader::OnCompiledAndLinked()

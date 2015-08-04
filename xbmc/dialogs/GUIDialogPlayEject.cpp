@@ -22,7 +22,10 @@
 #include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+
+#include <utility>
 
 #define ID_BUTTON_PLAY      11
 #define ID_BUTTON_EJECT     10
@@ -116,17 +119,17 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
     strLine1 = item.GetLabel();
 
   // Setup dialog parameters
-  pDialog->SetHeading(219);
-  pDialog->SetLine(0, 429);
-  pDialog->SetLine(1, strLine1);
-  pDialog->SetLine(2, strLine2);
+  pDialog->SetHeading(CVariant{219});
+  pDialog->SetLine(0, CVariant{429});
+  pDialog->SetLine(1, CVariant{std::move(strLine1)});
+  pDialog->SetLine(2, CVariant{std::move(strLine2)});
   pDialog->SetChoice(ID_BUTTON_PLAY - 10, 208);
   pDialog->SetChoice(ID_BUTTON_EJECT - 10, 13391);
   if (uiAutoCloseTime)
     pDialog->SetAutoClose(uiAutoCloseTime);
 
   // Display the dialog
-  pDialog->DoModal();
+  pDialog->Open();
 
   return pDialog->IsConfirmed();
 }

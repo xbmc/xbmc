@@ -61,20 +61,12 @@ public:
   virtual bool SetFormat(const std::string &format);
 };
 
-class CSettingControlSpinner : public ISettingControl
+class CSettingControlFormattedRange : public ISettingControl
 {
 public:
-  CSettingControlSpinner()
-    : m_formatLabel(-1),
-      m_formatString("%i"),
-      m_minimumLabel(-1)
-  { }
-  virtual ~CSettingControlSpinner() { }
+  virtual ~CSettingControlFormattedRange() { }
 
-  // implementation of ISettingControl
-  virtual std::string GetType() const { return "spinner"; }
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
-  virtual bool SetFormat(const std::string &format);
 
   int GetFormatLabel() const { return m_formatLabel; }
   void SetFormatLabel(int formatLabel) { m_formatLabel = formatLabel; }
@@ -84,9 +76,28 @@ public:
   void SetMinimumLabel(int minimumLabel) { m_minimumLabel = minimumLabel; }
 
 protected:
+  CSettingControlFormattedRange()
+    : m_formatLabel(-1),
+    m_formatString("%i"),
+    m_minimumLabel(-1)
+  { }
+
   int m_formatLabel;
   std::string m_formatString;
   int m_minimumLabel;
+};
+
+class CSettingControlSpinner : public CSettingControlFormattedRange
+{
+public:
+  CSettingControlSpinner() { }
+  virtual ~CSettingControlSpinner() { }
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const { return "spinner"; }
+
+  // specialization of CSettingControlFormattedRange
+  virtual bool SetFormat(const std::string &format);
 };
 
 class CSettingControlEdit : public ISettingControl
@@ -161,7 +172,7 @@ protected:
   bool m_showMoreAddons;
 };
 
-class CSettingControlList : public ISettingControl
+class CSettingControlList : public CSettingControlFormattedRange
 {
 public:
   CSettingControlList()
@@ -173,6 +184,8 @@ public:
 
   // implementation of ISettingControl
   virtual std::string GetType() const { return "list"; }
+
+  // specialization of CSettingControlFormattedRange
   virtual bool Deserialize(const TiXmlNode *node, bool update = false);
   virtual bool SetFormat(const std::string &format);
   

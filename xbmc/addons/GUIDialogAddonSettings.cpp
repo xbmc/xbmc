@@ -37,7 +37,7 @@
 #include "input/Key.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
@@ -49,9 +49,11 @@
 #include "utils/log.h"
 #include "URL.h"
 #include "utils/XMLUtils.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace ADDON;
+using namespace KODI::MESSAGING;
 using XFILE::CDirectory;
 
 #define CONTROL_SETTINGS_AREA           2
@@ -213,12 +215,12 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
 
     pDialog->m_addon = addon;
     pDialog->m_saveToDisk = saveToDisk;
-    pDialog->DoModal();
+    pDialog->Open();
     ret = true;
   }
   else
   { // addon does not support settings, inform user
-    CGUIDialogOK::ShowAndGetInput(24000, 24030);
+    CGUIDialogOK::ShowAndGetInput(CVariant{24000}, CVariant{24030});
   }
 
   return ret;
@@ -250,7 +252,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           StringUtils::Replace(action, "$ID", m_addon->ID());
           if (option)
             bCloseDialog = (strcmpi(option, "close") == 0);
-          CApplicationMessenger::Get().ExecBuiltIn(action);
+          CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, action);
         }
         break;
       }
@@ -276,7 +278,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           if (bEncoded)
             value = CURL::Decode(value);
 
-          if (CGUIKeyboardFactory::ShowAndGetInput(value, label, true, bHidden))
+          if (CGUIKeyboardFactory::ShowAndGetInput(value, CVariant{label}, true, bHidden))
           {
             // if hidden hide input
             if (bHidden)
@@ -304,7 +306,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
           if (pDlg)
           {
-            pDlg->SetHeading(label.c_str());
+            pDlg->SetHeading(CVariant{label});
             pDlg->Reset();
 
             int selected = -1;
@@ -335,7 +337,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               if (selected == (int)i || (selected < 0 && StringUtils::EqualsNoCase(valuesVec[i], value)))
                 pDlg->SetSelected(i); // FIXME: the SetSelected() does not select "i", it always defaults to the first position
             }
-            pDlg->DoModal();
+            pDlg->Open();
             int iSelected = pDlg->GetSelectedLabel();
             if (iSelected >= 0)
             {

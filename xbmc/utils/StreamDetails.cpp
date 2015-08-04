@@ -21,7 +21,7 @@
 #include <math.h>
 #include "StreamDetails.h"
 #include "StreamUtils.h"
-#include "Variant.h"
+#include "utils/Variant.h"
 #include "LangInfo.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/Archive.h"
@@ -319,6 +319,9 @@ int CStreamDetails::GetSubtitleStreamCount(void) const
 
 CStreamDetails::CStreamDetails(const CStreamDetails &that)
 {
+  m_pBestVideo = nullptr;
+  m_pBestAudio = nullptr;
+  m_pBestSubtitle = nullptr;
   *this = that;
 }
 
@@ -330,9 +333,9 @@ void CStreamDetails::AddStream(CStreamDetail *item)
 
 void CStreamDetails::Reset(void)
 {
-  m_pBestVideo = NULL;
-  m_pBestAudio = NULL;
-  m_pBestSubtitle = NULL;
+  m_pBestVideo = nullptr;
+  m_pBestAudio = nullptr;
+  m_pBestSubtitle = nullptr;
 
   std::vector<CStreamDetail *>::iterator iter;
   for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)

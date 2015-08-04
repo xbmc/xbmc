@@ -20,10 +20,16 @@
 			<datadir zip="true">http://mirrors.kodi.tv/addons/helix</datadir>
 			<hashes>true</hashes>
 		</dir>
-		<dir minversion="14.9.0">
+		<dir minversion="15.0.0">
 			<info compressed="true">http://mirrors.kodi.tv/addons/isengard/addons.xml</info>
 			<checksum>http://mirrors.kodi.tv/addons/isengard/addons.xml.md5</checksum>
 			<datadir zip="true">http://mirrors.kodi.tv/addons/isengard</datadir>
+			<hashes>true</hashes>
+		</dir>
+		<dir minversion="15.9.0">
+			<info compressed="true">http://mirrors.kodi.tv/addons/jarvis/addons.xml</info>
+			<checksum>http://mirrors.kodi.tv/addons/jarvis/addons.xml.md5</checksum>
+			<datadir zip="true">http://mirrors.kodi.tv/addons/jarvis</datadir>
 			<hashes>true</hashes>
 		</dir>
 	</extension>

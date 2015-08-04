@@ -29,14 +29,17 @@
 #include "playlists/PlayList.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "music/tags/MusicInfoTag.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "input/Key.h"
 #include "URL.h"
+#include "messaging/ApplicationMessenger.h"
 
 using namespace PLAYLIST;
+using namespace KODI::MESSAGING;
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
@@ -299,7 +302,7 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       CLog::Log(LOGDEBUG,"Playlist Player: one or more items failed to play... aborting playback");
 
       // open error dialog
-      CGUIDialogOK::ShowAndGetInput(16026, 16027);
+      CGUIDialogOK::ShowAndGetInput(CVariant{16026}, CVariant{16027});
 
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
       g_windowManager.SendThreadMessage(msg);
@@ -717,3 +720,226 @@ void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &
   data["property"][strProperty] = value;
   ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
 }
+
+int PLAYLIST::CPlayListPlayer::GetMessageMask()
+{
+  return TMSG_MASK_PLAYLISTPLAYER;
+}
+
+void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
+{
+  switch (pMsg->dwMessage)
+  {
+  case TMSG_PLAYLISTPLAYER_PLAY:
+    if (pMsg->param1 != -1)
+      Play(pMsg->param1);
+    else
+      Play();
+    break;
+
+  case TMSG_PLAYLISTPLAYER_PLAY_SONG_ID:
+    if (pMsg->param1 != -1)
+    {
+      bool *result = (bool*)pMsg->lpVoid;
+      *result = PlaySongId(pMsg->param1);
+    }
+    else
+      Play();
+    break;
+
+  case TMSG_PLAYLISTPLAYER_NEXT:
+    PlayNext();
+    break;
+
+  case TMSG_PLAYLISTPLAYER_PREV:
+    PlayPrevious();
+    break;
+
+  case TMSG_PLAYLISTPLAYER_ADD:
+    if (pMsg->lpVoid)
+    {
+      CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
+
+      Add(pMsg->param1, (*list));
+      delete list;
+    }
+    break;
+
+  case TMSG_PLAYLISTPLAYER_INSERT:
+    if (pMsg->lpVoid)
+    {
+      CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
+      Insert(pMsg->param1, (*list), pMsg->param2);
+      delete list;
+    }
+    break;
+
+  case TMSG_PLAYLISTPLAYER_REMOVE:
+    if (pMsg->param1 != -1)
+      Remove(pMsg->param1, pMsg->param2);
+    break;
+
+  case TMSG_PLAYLISTPLAYER_CLEAR:
+    ClearPlaylist(pMsg->param1);
+    break;
+
+  case TMSG_PLAYLISTPLAYER_SHUFFLE:
+    SetShuffle(pMsg->param1, pMsg->param2 > 0);
+    break;
+
+  case TMSG_PLAYLISTPLAYER_REPEAT:
+    SetRepeat(pMsg->param1, (PLAYLIST::REPEAT_STATE)pMsg->param2);
+    break;
+
+  case TMSG_PLAYLISTPLAYER_GET_ITEMS:
+    if (pMsg->lpVoid)
+    {
+      PLAYLIST::CPlayList playlist = GetPlaylist(pMsg->param1);
+      CFileItemList *list = static_cast<CFileItemList*>(pMsg->lpVoid);
+
+      for (int i = 0; i < playlist.size(); i++)
+        list->Add(std::make_shared<CFileItem>(*playlist[i]));
+    }
+    break;
+
+  case TMSG_PLAYLISTPLAYER_SWAP:
+    if (pMsg->lpVoid)
+    {
+      auto indexes = static_cast<std::vector<int>*>(pMsg->lpVoid);
+      if (indexes->size() == 2)
+        Swap(pMsg->param1, indexes->at(0), indexes->at(1));
+      delete indexes;
+    }
+    break;
+
+  case TMSG_MEDIA_PLAY:
+  {
+    // first check if we were called from the PlayFile() function
+    if (pMsg->lpVoid && pMsg->param2 == 0)
+    {
+      CFileItem *item = (CFileItem *)pMsg->lpVoid;
+      g_application.PlayFile(*item, pMsg->param1 != 0);
+      delete item;
+      return;
+    }
+    // restore to previous window if needed
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+      g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+      g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      g_windowManager.PreviousWindow();
+
+    g_application.ResetScreenSaver();
+    g_application.WakeUpScreenSaverAndDPMS();
+
+    //g_application.StopPlaying();
+    // play file
+    if (pMsg->lpVoid)
+    {
+      CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
+
+      if (list->Size() > 0)
+      {
+        int playlist = PLAYLIST_MUSIC;
+        for (int i = 0; i < list->Size(); i++)
+        {
+          if ((*list)[i]->IsVideo())
+          {
+            playlist = PLAYLIST_VIDEO;
+            break;
+          }
+        }
+
+        ClearPlaylist(playlist);
+        SetCurrentPlaylist(playlist);
+        //For single item lists try PlayMedia. This covers some more cases where a playlist is not appropriate
+        //It will fall through to PlayFile
+        if (list->Size() == 1 && !(*list)[0]->IsPlayList())
+          g_application.PlayMedia(*((*list)[0]), playlist);
+        else
+        {
+          // Handle "shuffled" option if present
+          if (list->HasProperty("shuffled") && list->GetProperty("shuffled").isBoolean())
+            SetShuffle(playlist, list->GetProperty("shuffled").asBoolean(), false);
+          // Handle "repeat" option if present
+          if (list->HasProperty("repeat") && list->GetProperty("repeat").isInteger())
+            SetRepeat(playlist, (PLAYLIST::REPEAT_STATE)list->GetProperty("repeat").asInteger(), false);
+
+          Add(playlist, (*list));
+          Play(pMsg->param1);
+        }
+      }
+
+      delete list;
+    }
+    else if (pMsg->param1 == PLAYLIST_MUSIC || pMsg->param1 == PLAYLIST_VIDEO)
+    {
+      if (GetCurrentPlaylist() != pMsg->param1)
+        SetCurrentPlaylist(pMsg->param1);
+
+      CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, pMsg->param2);
+    }
+  }
+  break;
+
+  case TMSG_MEDIA_RESTART:
+    g_application.Restart(true);
+    break;
+
+  case TMSG_MEDIA_STOP:
+  {
+    // restore to previous window if needed
+    bool stopSlideshow = true;
+    bool stopVideo = true;
+    bool stopMusic = true;
+    if (pMsg->param1 >= PLAYLIST_MUSIC && pMsg->param1 <= PLAYLIST_PICTURE)
+    {
+      stopSlideshow = (pMsg->param1 == PLAYLIST_PICTURE);
+      stopVideo = (pMsg->param1 == PLAYLIST_VIDEO);
+      stopMusic = (pMsg->param1 == PLAYLIST_MUSIC);
+    }
+
+    if ((stopSlideshow && g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) ||
+      (stopVideo && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO) ||
+      (stopMusic && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION))
+      g_windowManager.PreviousWindow();
+
+    g_application.ResetScreenSaver();
+    g_application.WakeUpScreenSaverAndDPMS();
+
+    // stop playing file
+    if (g_application.m_pPlayer->IsPlaying()) g_application.StopPlaying();
+  }
+  break;
+
+  case TMSG_MEDIA_PAUSE:
+    if (g_application.m_pPlayer->HasPlayer())
+    {
+      g_application.ResetScreenSaver();
+      g_application.WakeUpScreenSaverAndDPMS();
+      g_application.m_pPlayer->Pause();
+    }
+    break;
+
+  case TMSG_MEDIA_UNPAUSE:
+    if (g_application.m_pPlayer->IsPausedPlayback())
+    {
+      g_application.ResetScreenSaver();
+      g_application.WakeUpScreenSaverAndDPMS();
+      g_application.m_pPlayer->Pause();
+    }
+    break;
+
+  case TMSG_MEDIA_PAUSE_IF_PLAYING:
+    if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
+    {
+      g_application.ResetScreenSaver();
+      g_application.WakeUpScreenSaverAndDPMS();
+      g_application.m_pPlayer->Pause();
+    }
+    break;
+  default:
+    break;
+  }
+}
+
+

@@ -34,6 +34,14 @@
 #include "utils/auto_buffer.h"
 #include "Geometry.h"
 
+#ifdef HAS_DX
+#include "DirectXMath.h"
+#include "DirectXPackedVector.h"
+
+using namespace DirectX;
+using namespace DirectX::PackedVector;
+#endif
+
 // forward definition
 class CBaseTexture;
 
@@ -63,7 +71,7 @@ struct SVertex
 {
   float x, y, z;
 #ifdef HAS_DX
-  unsigned char b, g, r, a;
+  XMFLOAT4 col;
 #else
   unsigned char r, g, b, a;
 #endif

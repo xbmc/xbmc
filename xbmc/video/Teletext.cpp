@@ -55,8 +55,6 @@ do {						\
 #define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len) << 2)
 #endif
 
-using namespace std;
-
 static const char *TeletextFont = "special://xbmc/media/Fonts/teletext.ttf";
 
 /* spacing attributes */
@@ -2512,7 +2510,7 @@ int CTeletextDecoder::RenderChar(color_t *buffer,    // pointer to render buffer
     }
 
     *pPosX += curfontwidth;
-    return 0;;
+    return 0;
   }
 
   if (Attribute->charset == C_G3)

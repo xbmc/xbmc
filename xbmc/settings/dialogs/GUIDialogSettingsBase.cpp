@@ -18,6 +18,10 @@
  *
  */
 
+#include <set>
+#include <string>
+#include <vector>
+
 #include "GUIDialogSettingsBase.h"
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -36,8 +40,7 @@
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/StringUtils.h"
-
-using namespace std;
+#include "utils/Variant.h"
 
 #if defined(TARGET_WINDOWS) // disable 4355: 'this' used in base member initializer list
 #pragma warning(push)
@@ -565,7 +568,7 @@ std::string CGUIDialogSettingsBase::GetSettingsLabel(CSetting *pSetting)
 
 void CGUIDialogSettingsBase::UpdateSettings()
 {
-  for (vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
+  for (std::vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
   {
     BaseSettingControlPtr pSettingControl = *it;
     CSetting *pSetting = pSettingControl->GetSetting();
@@ -598,7 +601,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
   if (parentLevels > 0)
   {
     // add additional 2 spaces indentation for anything past one level
-    string indentation;
+    std::string indentation;
     for (int index = 1; index < parentLevels; index++)
       indentation.append("  ");
     label = StringUtils::Format(g_localizeStrings.Get(168).c_str(), indentation.c_str(), label.c_str());
@@ -753,9 +756,9 @@ void CGUIDialogSettingsBase::SetDescription(const CVariant &label)
 
 void CGUIDialogSettingsBase::OnResetSettings()
 {
-  if (CGUIDialogYesNo::ShowAndGetInput(10041, 10042))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{10041}, CVariant{10042}))
   {
-    for(vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
+    for(std::vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin(); it != m_settingControls.end(); ++it)
     {
       CSetting *setting = (*it)->GetSetting();
       if (setting != NULL)
@@ -842,7 +845,7 @@ void CGUIDialogSettingsBase::SetControlLabel(int controlId, const CVariant &labe
 
 BaseSettingControlPtr CGUIDialogSettingsBase::GetSettingControl(const std::string &strSetting)
 {
-  for (vector<BaseSettingControlPtr>::iterator control = m_settingControls.begin(); control != m_settingControls.end(); ++control)
+  for (std::vector<BaseSettingControlPtr>::iterator control = m_settingControls.begin(); control != m_settingControls.end(); ++control)
   {
     if ((*control)->GetSetting() != NULL && (*control)->GetSetting()->GetId() == strSetting)
       return *control;

@@ -30,7 +30,7 @@ void MakeNew(int n)
 
 void Init()
 {
-	envTexture.LoadTexture("xbmc_icon.png");
+	envTexture.LoadTexture("kodi_logo.png");
 	
 	for (x=0;x<256;x=x+1)
 	{

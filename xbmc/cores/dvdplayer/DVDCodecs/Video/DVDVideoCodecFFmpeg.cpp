@@ -97,6 +97,15 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     return avcodec_default_get_format(avctx, fmt);
   }
 
+  // hardware decoder de-selected, restore standard ffmpeg
+  if (ctx->GetHardware())
+  {
+    ctx->SetHardware(NULL);
+    avctx->get_buffer2 = avcodec_default_get_buffer2;
+    avctx->slice_flags = 0;
+    avctx->hwaccel_context = 0;
+  }
+
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
   {
@@ -157,15 +166,6 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     }
 #endif
     cur++;
-  }
-
-  // hardware decoder de-selected, restore standard ffmpeg
-  if (ctx->GetHardware())
-  {
-    ctx->SetHardware(NULL);
-    avctx->get_buffer2     = avcodec_default_get_buffer2;
-    avctx->slice_flags     = 0;
-    avctx->hwaccel_context = 0;
   }
 
   ctx->m_decoderState = STATE_HW_FAILED;
@@ -353,7 +353,6 @@ void CDVDVideoCodecFFmpeg::Dispose()
     m_pCodecContext = NULL;
   }
   SAFE_RELEASE(m_pHardware);
-  DisposeHWDecoders();
 
   FilterClose();
 }
@@ -572,8 +571,6 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 
   if(result & VC_FLUSHED)
     Reset();
-
-  DisposeHWDecoders();
 
   return result;
 }
@@ -919,17 +916,7 @@ void CDVDVideoCodecFFmpeg::SetCodecControl(int flags)
 
 void CDVDVideoCodecFFmpeg::SetHardware(IHardwareDecoder* hardware)
 {
-  if (m_pHardware)
-    m_disposeDecoders.push_back(m_pHardware);
+  SAFE_RELEASE(m_pHardware);
   m_pHardware = hardware;
   UpdateName();
-}
-
-void CDVDVideoCodecFFmpeg::DisposeHWDecoders()
-{
-  while (!m_disposeDecoders.empty())
-  {
-    m_disposeDecoders.back()->Release();
-    m_disposeDecoders.pop_back();
-  }
 }

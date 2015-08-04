@@ -253,7 +253,7 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filena
 }
 
 
-bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content)
+bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content, bool contentLookup)
 {
   if(m_player == NULL)
     return false;

@@ -34,10 +34,10 @@
 #define HAS_KARAOKE
 #define HAS_SCREENSAVER
 #define HAS_PYTHON
-#define HAS_SYSINFO
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
 #define HAS_PVRCLIENTS
+#define HAS_ADSPADDONS
 
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
@@ -200,8 +200,11 @@
 #undef GetFreeSpace
 #include "PlatformInclude.h"
 #ifdef HAS_DX
-#include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
-#include "D3DX9.h"  // or the reference video clock.
+#include "d3d9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
+#include "d3d11_1.h"
+#include "dxgi.h"
+#include "d3dcompiler.h"
+#include "directxmath.h"
 #else
 #include <d3d9types.h>
 #endif

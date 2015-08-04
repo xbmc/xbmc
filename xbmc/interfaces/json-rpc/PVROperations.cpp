@@ -19,6 +19,7 @@
  */
 
 #include "PVROperations.h"
+#include "messaging/ApplicationMessenger.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -27,11 +28,13 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "epg/Epg.h"
 #include "epg/EpgContainer.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace JSONRPC;
 using namespace PVR;
 using namespace EPG;
+using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CPVROperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {

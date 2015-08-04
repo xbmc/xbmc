@@ -354,10 +354,11 @@ namespace PVR
      * @brief Delete a timer from the backend.
      * @param timer The timer to delete.
      * @param bForce Also delete when currently recording if true.
+     * @param bDeleteSchedule Also delete schedule instead of single timer.
      * @param error An error if it occured.
      * @return True if the timer was deleted successfully, false otherwise.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, bool bDeleteSchedule);
 
     /*!
      * @brief Rename a timer on the backend.
@@ -367,6 +368,21 @@ namespace PVR
      * @return True if the timer was renamed successfully, false otherwise.
      */
     PVR_ERROR RenameTimer(const CPVRTimerInfoTag &timer, const std::string &strNewName);
+
+    /*!
+     * @brief Get all supported timer types.
+     * @param results The container to store the result in.
+     * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
+     */
+    PVR_ERROR GetTimerTypes(CPVRTimerTypes& results) const;
+
+    /*!
+     * @brief Get all timer types supported by a certain client.
+     * @param iClientId The id of the client.
+     * @param results The container to store the result in.
+     * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
+     */
+    PVR_ERROR GetTimerTypes(CPVRTimerTypes& results, int iClientId) const;
 
     //@}
 
@@ -615,7 +631,6 @@ namespace PVR
     bool SupportsChannelSettings(int iClientId) const;
     bool SupportsLastPlayedPosition(int iClientId) const;
     bool SupportsRadio(int iClientId) const;
-    bool SupportsRecordingFolders(int iClientId) const;
     bool SupportsRecordingPlayCount(int iClientId) const;
     bool SupportsRecordingEdl(int iClientId) const;
     bool SupportsTimers(int iClientId) const;
@@ -627,6 +642,7 @@ namespace PVR
 
     std::string GetBackendHostnameByClientId(int iClientId) const;
 
+    bool IsTimeshifting() const;
     time_t GetPlayingTime() const;
     time_t GetBufferTimeStart() const;
     time_t GetBufferTimeEnd() const;

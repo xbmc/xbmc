@@ -22,6 +22,8 @@
 #include "FileItemHandler.h"
 #include "pvr/channels/PVRChannelGroup.h"
 
+class CVariant;
+
 namespace JSONRPC
 {
   class CPVROperations : public CFileItemHandler

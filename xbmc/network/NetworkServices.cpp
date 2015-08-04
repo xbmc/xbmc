@@ -20,8 +20,7 @@
 
 #include "NetworkServices.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
-#include "GUIInfoManager.h"
+#include "messaging/ApplicationMessenger.h"
 #ifdef TARGET_LINUX
 #include "Util.h"
 #endif
@@ -82,7 +81,10 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/RssManager.h"
+#include "utils/SystemInfo.h"
+#include "utils/Variant.h"
 
+using namespace KODI::MESSAGING;
 using namespace std;
 #ifdef HAS_JSONRPC
 using namespace JSONRPC;
@@ -181,7 +183,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
     {
       if (!StartWebserver())
       {
-        CGUIDialogOK::ShowAndGetInput(33101, 33100);
+        CGUIDialogOK::ShowAndGetInput(CVariant{33101}, CVariant{33100});
         return false;
       }
     }
@@ -203,7 +205,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
       // cannot disable 
       if (IsAirPlayServerRunning() || IsAirTunesServerRunning())
       {
-        CGUIDialogOK::ShowAndGetInput(1259, 34303);
+        CGUIDialogOK::ShowAndGetInput(CVariant{1259}, CVariant{34303});
         return false;
       }
 
@@ -223,7 +225,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
       // AirPlay needs zeroconf
       if (!CSettings::Get().GetBool("services.zeroconf"))
       {
-        CGUIDialogOK::ShowAndGetInput(1273, 34302);
+        CGUIDialogOK::ShowAndGetInput(CVariant{1273}, CVariant{34302});
         return false;
       }
 #endif //HAS_ZEROCONF
@@ -232,14 +234,14 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 #ifdef HAS_AIRTUNES
       if (!StartAirTunesServer())
       {
-        CGUIDialogOK::ShowAndGetInput(1274, 33100);
+        CGUIDialogOK::ShowAndGetInput(CVariant{1274}, CVariant{33100});
         return false;
       }
 #endif //HAS_AIRTUNES
       
       if (!StartAirPlayServer())
       {
-        CGUIDialogOK::ShowAndGetInput(1273, 33100);
+        CGUIDialogOK::ShowAndGetInput(CVariant{1273}, CVariant{33100});
         return false;
       }      
     }
@@ -312,7 +314,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
     {
       if (!StartEventServer())
       {
-        CGUIDialogOK::ShowAndGetInput(33102, 33100);
+        CGUIDialogOK::ShowAndGetInput(CVariant{33102}, CVariant{33100});
         return false;
       }
     }
@@ -325,7 +327,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
     {
       if (!StartJSONRPCServer())
       {
-        CGUIDialogOK::ShowAndGetInput(33103, 33100);
+        CGUIDialogOK::ShowAndGetInput(CVariant{33103}, CVariant{33100});
         return false;
       }
     }
@@ -342,7 +344,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 
     if (!StartEventServer())
     {
-      CGUIDialogOK::ShowAndGetInput(33102, 33100);
+      CGUIDialogOK::ShowAndGetInput(CVariant{33102}, CVariant{33100});
       return false;
     }
 
@@ -362,7 +364,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 
       if (!StartEventServer())
       {
-        CGUIDialogOK::ShowAndGetInput(33102, 33100);
+        CGUIDialogOK::ShowAndGetInput(CVariant{33102}, CVariant{33100});
         return false;
       }
     }
@@ -373,7 +375,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
     {
       if (!StartJSONRPCServer())
       {
-        CGUIDialogOK::ShowAndGetInput(33103, 33100);
+        CGUIDialogOK::ShowAndGetInput(CVariant{33103}, CVariant{33100});
         return false;
       }
     }
@@ -412,10 +414,10 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
   {
     // okey we really don't need to restart, only deinit samba, but that could be damn hard if something is playing
     // TODO - General way of handling setting changes that require restart
-    if (CGUIDialogYesNo::ShowAndGetInput(14038, 14039))
+    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{14038}, CVariant{14039}))
     {
       CSettings::Get().Save();
-      CApplicationMessenger::Get().RestartApp();
+      CApplicationMessenger::Get().PostMsg(TMSG_RESTARTAPP);
     }
   }
 }
@@ -499,10 +501,10 @@ bool CNetworkServices::StartWebserver()
   std::vector<std::pair<std::string, std::string> > txt;
   // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
-  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", CSysInfo::GetDeviceName(), webPort, txt);
 #endif // HAS_WEB_INTERFACE
 #ifdef HAS_JSONRPC
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-h._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-h._tcp", CSysInfo::GetDeviceName(), webPort, txt);
 #endif // HAS_JSONRPC
 #endif // HAS_ZEROCONF
 
@@ -583,7 +585,7 @@ bool CNetworkServices::StartAirPlayServer()
     txt.push_back(make_pair("features", "0x77"));
   }
 
-  CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_airPlayPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_airPlayPort, txt);
 #endif // HAS_ZEROCONF
 
   return true;
@@ -672,7 +674,7 @@ bool CNetworkServices::StartJSONRPCServer()
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_jsonTcpPort, txt);
 #endif // HAS_ZEROCONF
 
   return true;
@@ -755,7 +757,7 @@ bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
     if (server->GetNumberOfClients() > 0)
     {
       bool cancelled = false;
-      if (!CGUIDialogYesNo::ShowAndGetInput(13140, 13141, cancelled, "", "", 10000)
+      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13140}, CVariant{13141}, cancelled, CVariant{""}, CVariant{""}, 10000)
           || cancelled)
       {
         CLog::Log(LOGNOTICE, "ES: Not stopping event server");

@@ -20,9 +20,9 @@
 
 #ifdef HAS_DX
 
-#include "Util.h"
 #include "WinRenderer.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/FFmpeg.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
@@ -31,10 +31,8 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/SystemInfo.h"
 #include "VideoShaders/WinVideoFilter.h"
 #include "windowing/WindowingFactory.h"
-#include "cores/FFmpeg.h"
 
 typedef struct {
   RenderMethod  method;
@@ -54,7 +52,7 @@ static RenderMethodDetail *FindRenderMethod(RenderMethod m)
     if (RenderMethodDetails[i].method == m)
       return &RenderMethodDetails[i];
   }
-  return NULL;
+  return nullptr;
 }
 
 CWinRenderer::CWinRenderer()
@@ -62,8 +60,8 @@ CWinRenderer::CWinRenderer()
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 0;
 
-  m_colorShader = NULL;
-  m_scalerShader = NULL;
+  m_colorShader = nullptr;
+  m_scalerShader = nullptr;
   m_extended_format = 0;
 
   m_iRequestedMethod = RENDER_METHOD_AUTO;
@@ -71,21 +69,21 @@ CWinRenderer::CWinRenderer()
   m_renderMethod = RENDER_PS;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
-  m_TextureFilter = D3DTEXF_POINT;
+  m_TextureFilter = SHADER_SAMPLER_POINT;
 
   m_bUseHQScaler = false;
   m_bFilterInitialized = false;
 
   for (int i = 0; i<NUM_BUFFERS; i++)
-    m_VideoBuffers[i] = NULL;
+    m_VideoBuffers[i] = nullptr;
 
-  m_sw_scale_ctx = NULL;
+  m_sw_scale_ctx = nullptr;
   m_destWidth = 0;
   m_destHeight = 0;
   m_bConfigured = false;
   m_clearColour = 0;
   m_format = RENDER_FMT_NONE;
-  m_processor = NULL;
+  m_processor = nullptr;
   m_neededBuffers = 0;
 }
 
@@ -96,13 +94,14 @@ CWinRenderer::~CWinRenderer()
 
 static enum PixelFormat PixelFormatFromFormat(ERenderFormat format)
 {
-  if      (format == RENDER_FMT_YUV420P)   return PIX_FMT_YUV420P;
-  else if (format == RENDER_FMT_YUV420P10) return PIX_FMT_YUV420P10;
-  else if (format == RENDER_FMT_YUV420P16) return PIX_FMT_YUV420P16;
-  else if (format == RENDER_FMT_NV12)      return PIX_FMT_NV12;
-  else if (format == RENDER_FMT_UYVY422)   return PIX_FMT_UYVY422;
-  else if (format == RENDER_FMT_YUYV422)   return PIX_FMT_YUYV422;
-  else return PIX_FMT_NONE;
+  if (format == RENDER_FMT_DXVA)      return PIX_FMT_NV12;
+  if (format == RENDER_FMT_YUV420P)   return PIX_FMT_YUV420P;
+  if (format == RENDER_FMT_YUV420P10) return PIX_FMT_YUV420P10;
+  if (format == RENDER_FMT_YUV420P16) return PIX_FMT_YUV420P16;
+  if (format == RENDER_FMT_NV12)      return PIX_FMT_NV12;
+  if (format == RENDER_FMT_UYVY422)   return PIX_FMT_UYVY422;
+  if (format == RENDER_FMT_YUYV422)   return PIX_FMT_YUYV422;
+  return PIX_FMT_NONE;
 }
 
 void CWinRenderer::ManageTextures()
@@ -147,7 +146,6 @@ void CWinRenderer::SelectRenderMethod()
 
     switch(m_iRequestedMethod)
     {
-      case RENDER_METHOD_DXVAHD:
       case RENDER_METHOD_DXVA:
         if (!m_processor || !m_processor->Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
         {
@@ -163,8 +161,6 @@ void CWinRenderer::SelectRenderMethod()
       // Drop through to pixel shader
       case RENDER_METHOD_AUTO:
       case RENDER_METHOD_D3D_PS:
-        // Try the pixel shaders support
-        if (m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0))
         {
           CTestShader shader;
           if (shader.Create())
@@ -179,12 +175,8 @@ void CWinRenderer::SelectRenderMethod()
             CLog::Log(LOGNOTICE, "D3D: unable to load test shader - D3D installation is most likely incomplete");
             CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
           }
+          CLog::Log(LOGNOTICE, "D3D: falling back to SW mode");
         }
-        else
-        {
-          CLog::Log(LOGNOTICE, "D3D: graphics adapter does not support Pixel Shaders 2.0");
-        }
-        CLog::Log(LOGNOTICE, "D3D: falling back to SW mode");
       // drop through to software
       case RENDER_METHOD_SOFTWARE:
       default:
@@ -195,7 +187,7 @@ void CWinRenderer::SelectRenderMethod()
   }
 
   RenderMethodDetail *rmdet = FindRenderMethod(m_renderMethod);
-  CLog::Log(LOGDEBUG, __FUNCTION__": Selected render method %d: %s", m_renderMethod, rmdet != NULL ? rmdet->name : "unknown");
+  CLog::Log(LOGDEBUG, __FUNCTION__": Selected render method %d: %s", m_renderMethod, rmdet != nullptr ? rmdet->name : "unknown");
   m_frameIdx = 0;
 }
 
@@ -206,7 +198,7 @@ bool CWinRenderer::UpdateRenderMethod()
 
   if (m_renderMethod == RENDER_SW)
   {
-    if(!m_SWTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DYNAMIC, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT))
+    if (!m_SWTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3D11_USAGE_DYNAMIC, DXGI_FORMAT_B8G8R8X8_UNORM))
     {
       CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create sw render target.");
       return false;
@@ -230,11 +222,11 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   }
   else
   {
-    if (m_VideoBuffers[m_iYV12RenderBuffer] != NULL)
+    if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
       m_VideoBuffers[m_iYV12RenderBuffer]->StartDecode();
 
     m_iYV12RenderBuffer = 0;
-    if (m_VideoBuffers[0] != NULL)
+    if (m_VideoBuffers[0] != nullptr)
       m_VideoBuffers[0]->StartRender();
   }
 
@@ -324,8 +316,8 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
   for(int i=0;i<3;i++)
   {
-    image->stride[i] = buf->planes[i].rect.Pitch;
-    image->plane[i]  = (BYTE*)buf->planes[i].rect.pBits;
+    image->stride[i] = buf->planes[i].rect.RowPitch;
+    image->plane[i]  = (BYTE*)buf->planes[i].rect.pData;
   }
 
   return source;
@@ -348,15 +340,13 @@ void CWinRenderer::Update()
 
 void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-
   if (clear)
     g_graphicsContext.Clear(m_clearColour);
 
-  if(alpha < 255)
-    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  if (alpha < 255)
+    g_Windowing.SetAlphaBlendEnable(true);
   else
-    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+    g_Windowing.SetAlphaBlendEnable(false);
 
   if (!m_bConfigured) 
     return;
@@ -375,7 +365,7 @@ void CWinRenderer::FlipPage(int source)
   if(source == AUTOSOURCE)
     source = NextYV12Texture();
 
-  if (m_VideoBuffers[m_iYV12RenderBuffer] != NULL)
+  if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
     m_VideoBuffers[m_iYV12RenderBuffer]->StartDecode();
 
   if( source >= 0 && source < m_NumYV12Buffers )
@@ -383,7 +373,7 @@ void CWinRenderer::FlipPage(int source)
   else
     m_iYV12RenderBuffer = 0;
 
-  if (m_VideoBuffers[m_iYV12RenderBuffer] != NULL)
+  if (m_VideoBuffers[m_iYV12RenderBuffer] != nullptr)
     m_VideoBuffers[m_iYV12RenderBuffer]->StartRender();
 
 #ifdef MP_DIRECTRENDERING
@@ -405,40 +395,29 @@ unsigned int CWinRenderer::PreInit()
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
 
-  g_Windowing.Get3DDevice()->GetDeviceCaps(&m_deviceCaps);
-
   m_formats.clear();
   m_formats.push_back(RENDER_FMT_YUV420P);
 
   m_iRequestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
 
   if (g_advancedSettings.m_DXVAForceProcessorRenderer
-  ||  m_iRequestedMethod == RENDER_METHOD_DXVA
-  ||  m_iRequestedMethod == RENDER_METHOD_DXVAHD)
+  ||  m_iRequestedMethod == RENDER_METHOD_DXVA)
   {
-    if (m_iRequestedMethod != RENDER_METHOD_DXVA && CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin7))
+    m_processor = new DXVA::CProcessorHD();
+    if (!m_processor->PreInit())
     {
-      m_processor = new DXVA::CProcessorHD();
-      if (!m_processor->PreInit())
-      {
-        CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA-HD processor - skipping");
-        SAFE_DELETE(m_processor);
-      }
+      CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA processor - skipping");
+      SAFE_DELETE(m_processor);
     }
-    if (!m_processor)
-    {
-      m_processor = new DXVA::CProcessor();
-      if (!m_processor->PreInit())
-      {
-        CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA2 processor - skipping");
-        SAFE_DELETE(m_processor);
-      }
-    }
+    else
+      m_processor->ApplySupportedFormats(&m_formats);
   }
+
   // allow other color spaces besides YV12 in case DXVA rendering is not used or not available
-  if (!m_processor || (m_iRequestedMethod != RENDER_METHOD_DXVA && m_iRequestedMethod != RENDER_METHOD_DXVAHD))
+  if (!m_processor || (m_iRequestedMethod != RENDER_METHOD_DXVA))
   {
-    if (g_Windowing.IsTextureFormatOk(D3DFMT_L16, 0))
+    if ( g_Windowing.IsFormatSupport(DXGI_FORMAT_R16_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE)
+      || g_Windowing.IsFormatSupport(DXGI_FORMAT_R16_UNORM, D3D11_FORMAT_SUPPORT_SHADER_LOAD))
     {
       m_formats.push_back(RENDER_FMT_YUV420P10);
       m_formats.push_back(RENDER_FMT_YUV420P16);
@@ -474,7 +453,7 @@ void CWinRenderer::UnInit()
   if (m_sw_scale_ctx)
   {
     sws_freeContext(m_sw_scale_ctx);
-    m_sw_scale_ctx = NULL;
+    m_sw_scale_ctx = nullptr;
   }
 
   if (m_processor)
@@ -498,19 +477,12 @@ void CWinRenderer::Flush()
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height)
 {
-  // Initialize a render target for intermediate rendering
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  D3DFORMAT format = D3DFMT_X8R8G8B8;
-  DWORD usage = D3DUSAGE_RENDERTARGET;
+  unsigned int usage = D3D11_FORMAT_SUPPORT_RENDER_TARGET | D3D11_FORMAT_SUPPORT_SHADER_SAMPLE;
 
-  if      (m_renderMethod == RENDER_DXVA)                            format = D3DFMT_X8R8G8B8;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2R10G10B10, usage)) format = D3DFMT_A2R10G10B10;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2B10G10R10, usage)) format = D3DFMT_A2B10G10R10;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, usage))    format = D3DFMT_A8R8G8B8;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, usage))    format = D3DFMT_A8B8G8R8;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8R8G8B8, usage))    format = D3DFMT_X8R8G8B8;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8B8G8R8, usage))    format = D3DFMT_X8B8G8R8;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_R8G8B8, usage))      format = D3DFMT_R8G8B8;
+  DXGI_FORMAT format = DXGI_FORMAT_B8G8R8X8_UNORM;
+  if      (m_renderMethod == RENDER_DXVA)                                   format = DXGI_FORMAT_B8G8R8X8_UNORM;
+  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_B8G8R8A8_UNORM, usage))  format = DXGI_FORMAT_B8G8R8A8_UNORM;
+  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_B8G8R8X8_UNORM, usage))  format = DXGI_FORMAT_B8G8R8X8_UNORM;
 
   // don't create new one if it exists with requested size and format
   if ( m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format
@@ -522,7 +494,7 @@ bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned i
 
   CLog::Log(LOGDEBUG, __FUNCTION__": format %i", format);
 
-  if(!m_IntermediateTarget.Create(width, height, 1, usage, format, D3DPOOL_DEFAULT))
+  if(!m_IntermediateTarget.Create(width, height, 1, D3D11_USAGE_DEFAULT, format))
   {
     CLog::Log(LOGERROR, __FUNCTION__": intermediate render target creation failed.", format);
     return false;
@@ -538,13 +510,13 @@ void CWinRenderer::SelectSWVideoFilter()
   case VS_SCALINGMETHOD_LINEAR:
     if (Supports(VS_SCALINGMETHOD_LINEAR))
     {
-      m_TextureFilter = D3DTEXF_LINEAR;
+      m_TextureFilter = SHADER_SAMPLER_LINEAR;
       break;
     }
     // fall through for fallback
   case VS_SCALINGMETHOD_NEAREST:
   default:
-    m_TextureFilter = D3DTEXF_POINT;
+    m_TextureFilter = SHADER_SAMPLER_POINT;
     break;
   }
 }
@@ -621,7 +593,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     }
 
     // Fallback on the one pass version
-    if (m_scalerShader == NULL)
+    if (m_scalerShader == nullptr)
     {
       m_scalerShader = new CConvolutionShader1Pass();
 
@@ -712,9 +684,9 @@ void CWinRenderer::Render(DWORD flags)
   if (m_renderMethod == RENDER_DXVA)
   {
     UpdateVideoFilter();
-    if (m_bUseHQScaler)
-      g_Windowing.FlushGPU();
     CWinRenderer::RenderProcessor(flags);
+    if (m_bUseHQScaler) // restore GUI states after HQ scalers
+      g_Windowing.ApplyStateBlock();
     return;
   }
 
@@ -731,20 +703,10 @@ void CWinRenderer::Render(DWORD flags)
     */
   CSingleLock lock(g_graphicsContext);
 
-  // Don't need a stencil/depth buffer and a buffer smaller than the render target causes D3D complaints and nVidia issues
-  // Save & restore when we're done.
-  LPDIRECT3DSURFACE9 pZBuffer;
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  pD3DDevice->GetDepthStencilSurface(&pZBuffer);
-  pD3DDevice->SetDepthStencilSurface(NULL);
-
   if (m_renderMethod == RENDER_SW)
     RenderSW();
   else if (m_renderMethod == RENDER_PS)
     RenderPS();
-
-  pD3DDevice->SetDepthStencilSurface(pZBuffer);
-  pZBuffer->Release();
 }
 
 void CWinRenderer::RenderSW()
@@ -753,33 +715,33 @@ void CWinRenderer::RenderSW()
 
   // 1. convert yuv to rgb
   m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
-                                                      m_sourceWidth, m_sourceHeight, format,
-                                                      m_sourceWidth, m_sourceHeight, PIX_FMT_BGRA,
-                                                      SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+                                        m_sourceWidth, m_sourceHeight, format,
+                                        m_sourceWidth, m_sourceHeight, PIX_FMT_BGRA,
+                                        SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
   YUVBuffer* buf = (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
-  D3DLOCKED_RECT   srclr[MAX_PLANES];
-  uint8_t         *src[MAX_PLANES];
-  int              srcStride[MAX_PLANES];
+  D3D11_MAPPED_SUBRESOURCE srclr[MAX_PLANES];
+  uint8_t*                 src[MAX_PLANES];
+  int                      srcStride[MAX_PLANES];
 
   for (unsigned int idx = 0; idx < buf->GetActivePlanes(); idx++)
   {
-    if(!(buf->planes[idx].texture.LockRect(0, &srclr[idx], NULL, D3DLOCK_READONLY)))
+    if(!(buf->planes[idx].texture.LockRect(0, &srclr[idx], D3D11_MAP_READ)))
       CLog::Log(LOGERROR, __FUNCTION__" - failed to lock yuv textures into memory");
     else
     {
-      src[idx] = (uint8_t*)srclr[idx].pBits;
-      srcStride[idx] = srclr[idx].Pitch;
+      src[idx] = (uint8_t*)srclr[idx].pData;
+      srcStride[idx] = srclr[idx].RowPitch;
     }
   }
   
-  D3DLOCKED_RECT destlr = {0,0};
-  if (!m_SWTarget.LockRect(0, &destlr, NULL, D3DLOCK_DISCARD))
+  D3D11_MAPPED_SUBRESOURCE destlr;
+  if (!m_SWTarget.LockRect(0, &destlr, D3D11_MAP_WRITE_DISCARD))
     CLog::Log(LOGERROR, __FUNCTION__" - failed to lock swtarget texture into memory");
 
-  uint8_t *dst[]  = { (uint8_t*) destlr.pBits, 0, 0, 0 };
-  int dstStride[] = { destlr.Pitch, 0, 0, 0 };
+  uint8_t *dst[] = { (uint8_t*)destlr.pData, 0, 0, 0 };
+  int dstStride[] = { destlr.RowPitch, 0, 0, 0 };
 
   sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
 
@@ -796,65 +758,13 @@ void CWinRenderer::RenderSW()
   if ((m_destRect.x1 < 0 && m_destRect.x2 < 0) || (m_destRect.y1 < 0 && m_destRect.y2 < 0))
     return;
 
-  ScaleFixedPipeline();
+  ScaleGUIShader();
 }
 
-/*
-Code kept for reference, as a basis to re-enable StretchRect and 
-do the color conversion with it.
-See IDirect3D9::CheckDeviceFormat() for support of non-standard fourcc textures
-and IDirect3D9::CheckDeviceFormatConversion for color conversion support
-
-void CWinRenderer::ScaleStretchRect()
+void CWinRenderer::ScaleGUIShader()
 {
-  // Test HW scaler support. StretchRect is slightly faster than drawing a quad.
-  // If linear filtering is not supported, drop back to quads, as most HW has linear filtering for quads.
-  //if(m_deviceCaps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES
-  //&& m_deviceCaps.StretchRectFilterCaps & D3DPTFILTERCAPS_MINFLINEAR
-  //&& m_deviceCaps.StretchRectFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
-  //{
-  //  m_StretchRectSupported = true;
-  //}
-
-  CRect sourceRect = m_sourceRect;
-  CRect destRect = m_destRect;
-
-  D3DSURFACE_DESC desc;
-  if (FAILED(target->GetDesc(&desc)))
-    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer description");
-  CRect tgtRect(0, 0, desc.Width, desc.Height);
-
-  // Need to manipulate the coordinates since StretchRect doesn't accept off-screen coordinates.
-  CWIN32Util::CropSource(sourceRect, destRect, tgtRect);
-
-  RECT srcRect = { sourceRect.x1, sourceRect.y1, sourceRect.x2, sourceRect.y2 };
-  IDirect3DSurface9* source;
-  if(!m_SWTarget.GetSurfaceLevel(0, &source))
-    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get source");
-
-  RECT dstRect = { destRect.x1, destRect.y1, destRect.x2, destRect.y2 };
-  IDirect3DSurface9* target;
-  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
-    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer");
-
-  HRESULT hr;
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-
-  if(FAILED(hr = pD3DDevice->StretchRect(source, &srcRect, target, &dstRect, m_TextureFilter)))
-    CLog::Log(LOGERROR, __FUNCTION__" - StretchRect failed (0x%08X)", hr);
-
-  target->Release();
-  source->Release();
-}
-*/
-
-void CWinRenderer::ScaleFixedPipeline()
-{
-  HRESULT hr;
-  IDirect3DDevice9 *pD3DDev = g_Windowing.Get3DDevice();
-  D3DSURFACE_DESC srcDesc;
-  if (FAILED(hr = m_SWTarget.Get()->GetLevelDesc(0, &srcDesc)))
-    CLog::Log(LOGERROR, __FUNCTION__": GetLevelDesc failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
+  D3D11_TEXTURE2D_DESC srcDesc;
+  m_SWTarget.Get()->GetDesc(&srcDesc);
 
   float srcWidth  = (float)srcDesc.Width;
   float srcHeight = (float)srcDesc.Height;
@@ -863,83 +773,13 @@ void CWinRenderer::ScaleFixedPipeline()
   unsigned int contrast   = (unsigned int)(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast *.01f * 255.0f); // we have to divide by two here/multiply by two later
   unsigned int brightness = (unsigned int)(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * .01f * 255.0f);
 
-  D3DCOLOR diffuse  = D3DCOLOR_ARGB(255, contrast, contrast, contrast);
-  D3DCOLOR specular = D3DCOLOR_ARGB(255, brightness, brightness, brightness);
+  CRect tu = { m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight };
 
-  struct VERTEX
-  {
-    FLOAT x,y,z,rhw;
-    D3DCOLOR diffuse;
-    D3DCOLOR specular;
-    FLOAT tu, tv;
-  };
+  g_Windowing.GetGUIShader()->SetSampler(m_TextureFilter);
 
-  // Vertex format ignores viewport offsets, so correct for that here
-  CRect dest = g_graphicsContext.StereoCorrection(m_destRect);
-
-  VERTEX vertex[] =
-  {
-    {dest.x1, dest.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {dest.x2, dest.y1, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y1 / srcHeight},
-    {dest.x2, dest.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight},
-    {dest.x1, dest.y2, 0.0f, 1.0f, diffuse, specular, m_sourceRect.x1 / srcWidth, m_sourceRect.y2 / srcHeight},
-  };
-
-  // Compensate for D3D coordinates system
-  for(int i = 0; i < ARRAY_SIZE(vertex); i++)
-  {
-    vertex[i].x -= 0.5f;
-    vertex[i].y -= 0.5f;
-  };
-
-  pD3DDev->SetTexture(0, m_SWTarget.Get());
-
-  if (!cbcontrol)
-  {
-    pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-    pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-    pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  }
-  else
-  {
-    pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE2X );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
-
-    pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
-    pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
-    pD3DDev->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_SPECULAR );
-    pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_CURRENT );
-
-    pD3DDev->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
-    pD3DDev->SetTextureStageState( 2, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  }
-
-  pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-  pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
-  pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
-  pD3DDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-  pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-  pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-  pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-
-  pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, m_TextureFilter);
-  pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, m_TextureFilter);
-  pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-  pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-
-  pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1);
-
-  if (FAILED(hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX))))
-    CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
-
-  pD3DDev->SetTexture(0, NULL);
+  // pass contrast and brightness as diffuse color elements (see shader code)
+  CD3DTexture::DrawQuad(m_destRect, D3DCOLOR_ARGB(255, contrast, brightness, 255), &m_SWTarget, &tu,
+                       !cbcontrol ? SHADER_METHOD_RENDER_VIDEO : SHADER_METHOD_RENDER_VIDEO_CONTROL);
 }
 
 void CWinRenderer::RenderPS()
@@ -953,60 +793,75 @@ void CWinRenderer::RenderPS()
     Stage1();
     Stage2();
   }
+
+  // restore GUI states after color/HQ shaders
+  g_Windowing.ApplyStateBlock();
 }
 
 void CWinRenderer::Stage1()
 {
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  g_Windowing.ResetScissors();
+
+  // Store current render target and depth view.
+  ID3D11RenderTargetView *oldRT = nullptr; ID3D11DepthStencilView* oldDS = nullptr;
+  pContext->OMGetRenderTargets(1, &oldRT, &oldDS);
+
   if (!m_bUseHQScaler)
   {
+    // disable depth
+    pContext->OMSetRenderTargets(1, &oldRT, nullptr);
+    // render video frame
     m_colorShader->Render(m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect),
                             CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast,
                             CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness,
-                            m_iFlags,
-                            (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
+                            m_iFlags, (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
   }
   else
   {
+    // At DX9 setting a new render target will cause the viewport 
+    // to be set to the full size of the new render target.
+    // In DX11 we should do this manualy
+    CD3D11_VIEWPORT viewPort(0.0f, 0.0f, static_cast<float>(m_IntermediateTarget.GetWidth()), static_cast<float>(m_IntermediateTarget.GetHeight()));
+    pContext->RSSetViewports(1, &viewPort);
+
+    ID3D11RenderTargetView *newRT = m_IntermediateTarget.GetRenderTarget();
+
+    // this needs to avoid binding m_IntermediateTarget as shader resource and as render target at the same time
+    CD3DHelper::PSClearShaderResources(pContext);
     // Switch the render target to the temporary destination
-    LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-    LPDIRECT3DSURFACE9 newRT, oldRT;
-    m_IntermediateTarget.GetSurfaceLevel(0, &newRT);
-    pD3DDevice->GetRenderTarget(0, &oldRT);
-    pD3DDevice->SetRenderTarget(0, newRT);
+    pContext->OMSetRenderTargets(1, &newRT, nullptr);
 
-    CRect srcRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
-    CRect rtRect(0.0f, 0.0f, m_sourceWidth, m_sourceHeight);
+    CRect srcRect(0.0f, 0.0f, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight));
 
-    m_colorShader->Render(srcRect, rtRect,
+    m_colorShader->Render(srcRect, srcRect,
                           CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast,
                           CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness,
-                          m_iFlags,
-                          (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
+                          m_iFlags, (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
 
-    // Restore the render target
-    pD3DDevice->SetRenderTarget(0, oldRT);
-
-    // MSDN says: Setting a new render target will cause the viewport 
-    // to be set to the full size of the new render target.
-    // So we need restore our viewport
+    // Restore our view port.
     g_Windowing.RestoreViewPort();
-
-    oldRT->Release();
-    newRT->Release();
   }
+
+  // Restore the render target and depth view.
+  pContext->OMSetRenderTargets(1, &oldRT, oldDS);
+  SAFE_RELEASE(oldRT);
+  SAFE_RELEASE(oldDS);
 }
 
 void CWinRenderer::Stage2()
 {
+  g_Windowing.ResetScissors();
+
   CRect sourceRect;
 
   // fixup stereo+dxva+hq scaling issue
   if (m_renderMethod == RENDER_DXVA)
   {
     sourceRect.y1 = 0.0f;
-    sourceRect.y2 = m_sourceHeight;
+    sourceRect.y2 = static_cast<float>(m_sourceHeight);
     sourceRect.x1 = 0.0f;
-    sourceRect.x2 = m_sourceWidth;
+    sourceRect.x2 = static_cast<float>(m_sourceWidth);
   }
   else
     sourceRect = m_sourceRect;
@@ -1017,15 +872,14 @@ void CWinRenderer::Stage2()
 void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
-  HRESULT hr;
   CRect destRect;
 
   if (m_bUseHQScaler)
   {
     destRect.y1 = 0.0f;
-    destRect.y2 = m_sourceHeight;
+    destRect.y2 = static_cast<float>(m_sourceHeight);
     destRect.x1 = 0.0f;
-    destRect.x2 = m_sourceWidth;
+    destRect.x2 = static_cast<float>(m_sourceWidth);
   }
   else
     destRect = g_graphicsContext.StereoCorrection(m_destRect);
@@ -1035,30 +889,31 @@ void CWinRenderer::RenderProcessor(DWORD flags)
   if (!image->pic)
     return;
 
-  IDirect3DSurface9* target;
+  ID3D11Resource* target;
   if ( m_bUseHQScaler 
     || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
     || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
-    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
+    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE
+    || true /* workaround for some GPUs */)
   {
-    m_IntermediateTarget.GetSurfaceLevel(0, &target);
+    target = m_IntermediateTarget.Get();
+    //target->AddRef(); // uncomment when workaround removed
   }
-  else
+  else // dead code.
   {
-    if(FAILED(hr = g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
-    {
-      CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get render target. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
-      return;
-    }
+    ID3D11RenderTargetView* rtv = nullptr;
+    g_Windowing.Get3D11Context()->OMGetRenderTargets(1, &rtv, nullptr);
+    rtv->GetResource(&target);
+    rtv->Release();
   }
-
-  IDirect3DSurface9 *source[8];
-  memset(source, 0, 8 * sizeof(IDirect3DSurface9*));
-  source[2] = image->pic->surface;
 
   int past = 0;
   int future = 0;
   DXVABuffer **buffers = (DXVABuffer**)m_VideoBuffers;
+
+  ID3D11View* views[8];
+  memset(views, 0, 8 * sizeof(ID3D11View*));
+  views[2] = image->pic->view;
 
   // set future frames
   while (future < 2)
@@ -1068,7 +923,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     {
       if (buffers[i] && buffers[i]->pic && buffers[i]->frameIdx == image->frameIdx + (future*2 + 2))
       {
-        source[1 - future++] = buffers[i]->pic->surface;
+        views[1 - future++] = buffers[i]->pic->view;
         found = true;
         break;
       }
@@ -1085,7 +940,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     {
       if (buffers[i] && buffers[i]->pic && buffers[i]->frameIdx == image->frameIdx - (past*2 + 2))
       {
-        source[3 + past++] = buffers[i]->pic->surface;
+        views[3 + past++] = buffers[i]->pic->view;
         found = true;
         break;
       }
@@ -1094,53 +949,21 @@ void CWinRenderer::RenderProcessor(DWORD flags)
       break;
   }
 
-
-  m_processor->Render(m_sourceRect, destRect, target, source, flags, image->frameIdx);
-
-  target->Release();
-
+  m_processor->Render(m_sourceRect, destRect, target, views, flags, image->frameIdx);
+  //target->Release(); // uncomment when workaround removed
+  
   if (m_bUseHQScaler)
   {
     Stage2();
   }
-  else if ( g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
+  // uncomment when workaround removed
+  else /*if ( g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN
          || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA
-         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
+         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)*/
   {
-    IDirect3DDevice9 *pD3DDev = g_Windowing.Get3DDevice();
-
-    struct VERTEX
-    {
-      FLOAT x,y,z;
-      FLOAT tu,tv;
-    };
-
-    VERTEX vertex[] =
-    {
-      {destRect.x1 - 0.5f, destRect.y1 - 0.5f, 0.0f, m_destRect.x1 / m_destWidth, m_destRect.y1 / m_destHeight},
-      {destRect.x2 - 0.5f, destRect.y1 - 0.5f, 0.0f, m_destRect.x2 / m_destWidth, m_destRect.y1 / m_destHeight},
-      {destRect.x2 - 0.5f, destRect.y2 - 0.5f, 0.0f, m_destRect.x2 / m_destWidth, m_destRect.y2 / m_destHeight},
-      {destRect.x1 - 0.5f, destRect.y2 - 0.5f, 0.0f, m_destRect.x1 / m_destWidth, m_destRect.y2 / m_destHeight},
-    };
-
-    pD3DDev->SetTexture(0, m_IntermediateTarget.Get());
-
-    pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-    pD3DDev->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-    pD3DDev->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-
-    pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-    pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-
-    pD3DDev->SetFVF(D3DFVF_XYZ | D3DFVF_TEX1);
-
-    if (FAILED(hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX))))
-      CLog::Log(LOGERROR, __FUNCTION__": DrawPrimitiveUP failed. %s", CRenderSystemDX::GetErrorDescription(hr).c_str());
-
-    pD3DDev->SetTexture(0, NULL);
+    // texels
+    CRect tu = { destRect.x1 / m_destWidth, destRect.y1 / m_destHeight, destRect.x2 / m_destWidth, destRect.y2 / m_destHeight };
+    CD3DTexture::DrawQuad(m_destRect, 0, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
   }
 }
 
@@ -1151,7 +974,7 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
 
   bool succeeded = false;
 
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
 
   CRect saveSize = m_destRect;
   saveRotatedCoords();//backup current m_rotatedDestCoords
@@ -1159,21 +982,21 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
   m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
   syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
 
-  LPDIRECT3DSURFACE9 oldSurface;
-  pD3DDevice->GetRenderTarget(0, &oldSurface);
+  ID3D11DepthStencilView* oldDepthView;
+  ID3D11RenderTargetView* oldSurface;
+  pContext->OMGetRenderTargets(1, &oldSurface, &oldDepthView);
 
   capture->BeginRender();
   if (capture->GetState() != CAPTURESTATE_FAILED)
   {
-    pD3DDevice->BeginScene();
     Render(0);
-    pD3DDevice->EndScene();
     capture->EndRender();
     succeeded = true;
   }
 
-  pD3DDevice->SetRenderTarget(0, oldSurface);
+  pContext->OMSetRenderTargets(1, &oldSurface, oldDepthView);
   oldSurface->Release();
+  SAFE_RELEASE(oldDepthView); // it can be nullptr
 
   m_destRect = saveSize;
   restoreRotatedCoords();//restores the previous state of the rotated dest coords
@@ -1187,7 +1010,7 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
 void CWinRenderer::DeleteYV12Texture(int index)
 {
   CSingleLock lock(g_graphicsContext);
-  if (m_VideoBuffers[index] != NULL)
+  if (m_VideoBuffers[index] != nullptr)
     SAFE_DELETE(m_VideoBuffers[index]);
   m_NumYV12Buffers = 0;
 }
@@ -1205,7 +1028,7 @@ bool CWinRenderer::CreateYV12Texture(int index)
   {
     YUVBuffer *buf = new YUVBuffer();
 
-    if (!buf->Create(m_format, m_sourceWidth, m_sourceHeight))
+    if (!buf->Create(m_format, m_sourceWidth, m_sourceHeight, m_renderMethod == RENDER_PS))
     {
       CLog::Log(LOGERROR, __FUNCTION__" - Unable to create YV12 video texture %i", index);
       delete buf;
@@ -1240,9 +1063,9 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
   if (m_renderMethod == RENDER_DXVA)
   {
-    if(method == VS_INTERLACEMETHOD_DXVA_BOB
-    || method == VS_INTERLACEMETHOD_DXVA_BEST)
-      return true;
+    //if(method == VS_INTERLACEMETHOD_DXVA_BOB
+    //|| method == VS_INTERLACEMETHOD_DXVA_BEST)
+      return false; // only auto. DXVA processor selects deinterlacing method automatically
   }
 
   if(m_format != RENDER_FMT_DXVA
@@ -1287,12 +1110,11 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
         return false;
     }
 
-    if(m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0)
-    && (   method == VS_SCALINGMETHOD_AUTO
-       || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS) ))
+    if (  method == VS_SCALINGMETHOD_AUTO
+      || (method == VS_SCALINGMETHOD_LINEAR && m_renderMethod == RENDER_PS)) 
         return true;
 
-    if(m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(3, 0))
+    if (g_Windowing.GetFeatureLevel() >= D3D_FEATURE_LEVEL_9_3)
     {
       if(method == VS_SCALINGMETHOD_CUBIC
       || method == VS_SCALINGMETHOD_LANCZOS2
@@ -1314,11 +1136,8 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
   else if(m_renderMethod == RENDER_SW)
   {
     if(method == VS_SCALINGMETHOD_AUTO
-    || method == VS_SCALINGMETHOD_NEAREST)
-      return true;
-    if(method == VS_SCALINGMETHOD_LINEAR
-    && m_deviceCaps.TextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR
-    && m_deviceCaps.TextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
+    || method == VS_SCALINGMETHOD_NEAREST
+    || method == VS_SCALINGMETHOD_LINEAR)
       return true;
   }
   return false;
@@ -1374,56 +1193,60 @@ YUVBuffer::~YUVBuffer()
   Release();
 }
 
-bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int height)
+bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int height, bool dynamic)
 {
   m_format = format;
   m_width = width;
   m_height = height;
+  m_mapType = dynamic ? D3D11_MAP_WRITE_DISCARD : D3D11_MAP_WRITE;
+  // Create the buffers with D3D11_USAGE_DYNAMIC which can be used as shader resource for PS rendering
+  // or D3D11_USAGE_STAGING which can be read and written for SW rendering
+  D3D11_USAGE usage = dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_STAGING;
 
-  // Create the buffers in system memory and copy to D3DPOOL_DEFAULT:
-  // - helps with lost devices. A buffer can be locked for dvdplayer without interfering.
-  // - Dynamic + D3DPOOL_DEFAULT caused trouble for Intel i3 and some IGP. Bad sync/locking in the driver  I suppose
-  // and Present failed every second time for the second video played.
-  // - this is what D3D9 does behind the scenes anyway
   switch(m_format)
   {
   case RENDER_FMT_YUV420P10:
   case RENDER_FMT_YUV420P16:
-    {
-      if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L16, D3DPOOL_SYSTEMMEM)
-        || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L16, D3DPOOL_SYSTEMMEM)
-        || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L16, D3DPOOL_SYSTEMMEM))
+    { // D3DFMT_L16 -> DXGI_FORMAT_R16_UNORM
+      if ( !planes[PLANE_Y].texture.Create(m_width,      m_height,      1, usage, DXGI_FORMAT_R16_UNORM)
+        || !planes[PLANE_U].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R16_UNORM)
+        || !planes[PLANE_V].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R16_UNORM))
         return false;
       m_activeplanes = 3;
       break;
     }
   case RENDER_FMT_YUV420P:
-    {
-      if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
-        || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
-        || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM))
+    { // D3DFMT_L8 - > DXGI_FORMAT_R8_UNORM
+      if ( !planes[PLANE_Y].texture.Create(m_width,      m_height,      1, usage, DXGI_FORMAT_R8_UNORM)
+        || !planes[PLANE_U].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R8_UNORM)
+        || !planes[PLANE_V].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R8_UNORM))
         return false;
       m_activeplanes = 3;
       break;
     }
+  case RENDER_FMT_DXVA:
   case RENDER_FMT_NV12:
-    {
-      if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
-        || !planes[PLANE_UV].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_A8L8, D3DPOOL_SYSTEMMEM))
+    { // D3DFMT_L8 -> DXGI_FORMAT_R8_UNORM, D3DFMT_A8L8/D3DFMT_V8U8 -> DXGI_FORMAT_R8G8_UNORM / DXGI_FORMAT_R8G8_SNORM
+      DXGI_FORMAT uvFormat = DXGI_FORMAT_R8G8_UNORM;
+      // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
+      if (!g_Windowing.IsFormatSupport(uvFormat, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+        uvFormat = DXGI_FORMAT_R8G8_SNORM;
+      if ( !planes[PLANE_Y].texture.Create( m_width,      m_height,      1, usage, DXGI_FORMAT_R8_UNORM)
+        || !planes[PLANE_UV].texture.Create(m_width >> 1, m_height >> 1, 1, usage, uvFormat))
         return false;
       m_activeplanes = 2;
       break;
     }
   case RENDER_FMT_YUYV422:
-    {
-      if ( !planes[PLANE_Y].texture.Create(m_width >> 1    , m_height    , 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM))
+    { // D3DFMT_A8R8G8B8 -> DXGI_FORMAT_B8G8R8A8_UNORM
+      if ( !planes[PLANE_Y].texture.Create(m_width >> 1, m_height, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
         return false;
       m_activeplanes = 1;
       break;
     }
   case RENDER_FMT_UYVY422:
-    {
-      if ( !planes[PLANE_Y].texture.Create(m_width >> 1    , m_height    , 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM))
+    { // D3DFMT_A8R8G8B8 -> DXGI_FORMAT_B8G8R8A8_UNORM
+      if ( !planes[PLANE_Y].texture.Create(m_width >> 1, m_height, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
         return false;
       m_activeplanes = 1;
       break;
@@ -1454,7 +1277,7 @@ void YUVBuffer::StartRender()
 
   for(unsigned i = 0; i < m_activeplanes; i++)
   {
-    if(planes[i].texture.Get() && planes[i].rect.pBits)
+    if(planes[i].texture.Get() && planes[i].rect.pData)
       if (!planes[i].texture.UnlockRect(0))
         CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock texture %d", i);
     memset(&planes[i].rect, 0, sizeof(planes[i].rect));
@@ -1471,10 +1294,11 @@ void YUVBuffer::StartDecode()
   for(unsigned i = 0; i < m_activeplanes; i++)
   {
     if(planes[i].texture.Get()
-    && planes[i].texture.LockRect(0, &planes[i].rect, NULL, D3DLOCK_DISCARD) == false)
+    && planes[i].texture.LockRect(0, &planes[i].rect, m_mapType) == false)
     {
       memset(&planes[i].rect, 0, sizeof(planes[i].rect));
       CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture %d into memory", i);
+      m_locked = false;
     }
   }
 }
@@ -1487,40 +1311,41 @@ void YUVBuffer::Clear()
   {
   case RENDER_FMT_YUV420P16:
     {
-      wmemset((wchar_t*)planes[PLANE_Y].rect.pBits, 0,     planes[PLANE_Y].rect.Pitch *  m_height    / 2);
-      wmemset((wchar_t*)planes[PLANE_U].rect.pBits, 32768, planes[PLANE_U].rect.Pitch * (m_height/2) / 2);
-      wmemset((wchar_t*)planes[PLANE_V].rect.pBits, 32768, planes[PLANE_V].rect.Pitch * (m_height/2) / 2);
+      wmemset((wchar_t*)planes[PLANE_Y].rect.pData, 0,     planes[PLANE_Y].rect.RowPitch *  m_height    / 2);
+      wmemset((wchar_t*)planes[PLANE_U].rect.pData, 32768, planes[PLANE_U].rect.RowPitch * (m_height / 2) / 2);
+      wmemset((wchar_t*)planes[PLANE_V].rect.pData, 32768, planes[PLANE_V].rect.RowPitch * (m_height / 2) / 2);
       break;
     }
   case RENDER_FMT_YUV420P10:
     {
-      wmemset((wchar_t*)planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height    / 2);
-      wmemset((wchar_t*)planes[PLANE_U].rect.pBits, 512, planes[PLANE_U].rect.Pitch * (m_height/2) / 2);
-      wmemset((wchar_t*)planes[PLANE_V].rect.pBits, 512, planes[PLANE_V].rect.Pitch * (m_height/2) / 2);
+      wmemset((wchar_t*)planes[PLANE_Y].rect.pData, 0, planes[PLANE_Y].rect.RowPitch *  m_height / 2);
+      wmemset((wchar_t*)planes[PLANE_U].rect.pData, 512, planes[PLANE_U].rect.RowPitch * (m_height / 2) / 2);
+      wmemset((wchar_t*)planes[PLANE_V].rect.pData, 512, planes[PLANE_V].rect.RowPitch * (m_height / 2) / 2);
       break;
     }
   case RENDER_FMT_YUV420P:
     {
-      memset(planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height);
-      memset(planes[PLANE_U].rect.pBits, 128, planes[PLANE_U].rect.Pitch * (m_height/2));
-      memset(planes[PLANE_V].rect.pBits, 128, planes[PLANE_V].rect.Pitch * (m_height/2));
+      memset(planes[PLANE_Y].rect.pData, 0, planes[PLANE_Y].rect.RowPitch *  m_height);
+      memset(planes[PLANE_U].rect.pData, 128, planes[PLANE_U].rect.RowPitch * (m_height / 2));
+      memset(planes[PLANE_V].rect.pData, 128, planes[PLANE_V].rect.RowPitch * (m_height / 2));
       break;
     }
+  case RENDER_FMT_DXVA:
   case RENDER_FMT_NV12:
     {
-      memset(planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height);
-      memset(planes[PLANE_UV].rect.pBits, 128, planes[PLANE_U].rect.Pitch * (m_height/2));
+      memset(planes[PLANE_Y].rect.pData,    0, planes[PLANE_Y].rect.RowPitch *  m_height);
+      memset(planes[PLANE_UV].rect.pData, 128, planes[PLANE_U].rect.RowPitch * (m_height / 2));
       break;
     }
   // YUY2, UYVY: wmemset to set a 16bit pattern, byte-swapped because x86 is LE
   case RENDER_FMT_YUYV422:
     {
-      wmemset((wchar_t*)planes[PLANE_Y].rect.pBits, 0x8000, planes[PLANE_Y].rect.Pitch / 2 * m_height);
+      wmemset((wchar_t*)planes[PLANE_Y].rect.pData, 0x8000, planes[PLANE_Y].rect.RowPitch / 2 * m_height);
       break;
     }
   case RENDER_FMT_UYVY422:
     {
-      wmemset((wchar_t*)planes[PLANE_Y].rect.pBits, 0x0080, planes[PLANE_Y].rect.Pitch / 2 * m_height);
+      wmemset((wchar_t*)planes[PLANE_Y].rect.pData, 0x0080, planes[PLANE_Y].rect.RowPitch / 2 * m_height);
       break;
     }
 

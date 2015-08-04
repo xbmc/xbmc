@@ -35,15 +35,14 @@ public:
 	void Render();
 	void SetValues( unsigned int x, unsigned int y, float uOffset, float vOffset, float r, float g, float b);
 	void SetTimed();
-	IDirect3DTexture9* GetTexture() { return m_texture; }
-	IDirect3DTexture9* GetRenderTarget() { return m_texture; }
+  TextureDX* GetTexture() { return m_texture; }
 
 private:
-	IDirect3DVertexBuffer9*  m_vBuffer;
-	IDirect3DIndexBuffer9* m_iBuffer;
-	LPDIRECT3DTEXTURE9  m_texture;
-	LPDIRECT3DTEXTURE9  m_tex1;
-	LPDIRECT3DTEXTURE9  m_tex2;
+	ID3D11Buffer* m_vBuffer;
+  ID3D11Buffer* m_iBuffer;
+  TextureDX*    m_texture;
+  TextureDX*    m_tex1;
+  TextureDX*    m_tex2;
 	int m_iCurrentTexture;
 	PosColNormalUVVertex* m_vertices;
 	int m_numIndices;

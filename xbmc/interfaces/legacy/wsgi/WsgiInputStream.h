@@ -93,8 +93,6 @@ namespace XBMCAddon
 
       HTTPPythonRequest* m_request;
 #endif
-    };    
+    };
   }
 }
-
-

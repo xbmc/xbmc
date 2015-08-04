@@ -21,7 +21,10 @@
 #define _RENDERER_H_
 
 #include <d3d9.h>
-#include <d3dx9.h>
+#include <d3d11.h>
+#include <DirectXMath.h>
+#include "TextureDX.h"
+#include "CommonStates.h"
 
 enum eBlendMode
 {
@@ -33,48 +36,50 @@ enum eBlendMode
 
 struct PosColNormalUVVertex
 {
-	D3DXVECTOR3	Coord;
-	D3DXVECTOR3	Normal;
-//	DWORD Diffuse;				// diffuse color
-	float u, v;					// Texture 0 coords
-	D3DXVECTOR4 FDiffuse;		// float diffuse color
+  DirectX::XMFLOAT3	Coord;
+  DirectX::XMFLOAT3	Normal;
+	float u, v;         // Texture 0 coords
+  DirectX::XMFLOAT4 FDiffuse;  // float diffuse color
 };
 
 struct PosNormalVertex
 {
-	D3DXVECTOR3	Coord;
-	D3DXVECTOR3	Normal;
+  DirectX::XMFLOAT3	Coord;
+  DirectX::XMFLOAT3	Normal;
 };
 
-#define SCRATCH_TEXTURE ((LPDIRECT3DTEXTURE9)-1)
+#define SCRATCH_TEXTURE ((TextureDX*)-1)
 
-extern LPDIRECT3DVERTEXDECLARATION9    g_pPosNormalColUVDeclaration;
-extern LPDIRECT3DVERTEXDECLARATION9    g_pPosColUVDeclaration;
-extern LPDIRECT3DVERTEXDECLARATION9    g_pPosNormalDeclaration;
+extern ID3D11InputLayout*    g_pPosNormalColUVDeclaration;
+extern ID3D11InputLayout*    g_pPosColUVDeclaration;
+extern ID3D11InputLayout*    g_pPosNormalDeclaration;
 
 extern char g_TexturePath[];
+
+class Shader;
 
 class Renderer
 {
 public:
-	static void Init( LPDIRECT3DDEVICE9 pD3DDevice, int iXPos, int iYPos, int iWidth, int iHeight, float fPixelRatio );
-	static void Exit();
+  static void Init( ID3D11DeviceContext* pD3DContext, int iXPos, int iYPos, int iWidth, int iHeight, float fPixelRatio);
+  static void Exit();
 	static void GetBackBuffer();
 	static void ReleaseBackbuffer();
 	static void SetDefaults();
-	static LPDIRECT3DDEVICE9 GetDevice();
+  static ID3D11Device* GetDevice();
+  static ID3D11DeviceContext* GetContext();
 
-	static void SetRenderTarget(LPDIRECT3DTEXTURE9 texture);
+  static void SetRenderTarget(TextureDX* texture);
 	static void SetRenderTargetBackBuffer();
 
 	static void SetDrawMode2d();
 	static void SetDrawMode3d();
-	static void SetProjection(D3DXMATRIX& matProj);
-	static void SetView(D3DXMATRIX& matView);
+  static void SetProjection(const DirectX::XMMATRIX& matProj);
+  static void SetView(const DirectX::XMMATRIX& matView);
 
-	static void GetProjection( D3DXMATRIX& matProj );
-	static LPD3DXMESH CreateD3DXTextMesh( const char* pString, bool bCentered );
-	static void DrawMesh( LPD3DXMESH pMesh );
+  static void GetProjection(DirectX::XMMATRIX& matProj);
+	static IUnknown* CreateD3DXTextMesh(const char* pString, bool bCentered);
+	static void DrawMesh(IUnknown* pMesh);
 
 
 	static void Clear( DWORD Col );
@@ -84,19 +89,19 @@ public:
 	static void Line( float x1, float y1, float x2, float y2, DWORD Col );
 	static void Point( float x, float y, DWORD Col );
 
-	static LPDIRECT3DTEXTURE9 CreateTexture( int iWidth, int iHeight, D3DFORMAT Format = D3DFMT_X8R8G8B8, bool bDynamic = FALSE );
-	static LPDIRECT3DTEXTURE9 LoadTexture( char* pFilename, bool bAutoResize = true );
-	static void ReleaseTexture( LPDIRECT3DTEXTURE9 pTexture );
+	static TextureDX* CreateTexture( int iWidth, int iHeight, DXGI_FORMAT Format = DXGI_FORMAT_B8G8R8A8_UNORM, bool bDynamic = FALSE );
+  static TextureDX* LoadTexture(char* pFilename, bool bAutoResize = true);
+	static void ReleaseTexture( TextureDX* pTexture );
 	static void DrawText( float x, float y, char* txt, DWORD Col = 0xffffffff);
 
-	static int GetViewportWidth();
-	static int GetViewportHeight();
+	static float GetViewportWidth();
+	static float GetViewportHeight();
 	static void SetBlendMode(eBlendMode blendMode);
 	static float GetAspect();
 	static void SetAspect(float aspect);
 
-	static void SetTexture(LPDIRECT3DTEXTURE9 texture);
-	static void SetEnvTexture(LPDIRECT3DTEXTURE9 texture);
+	static void SetTexture(TextureDX* texture);
+  static void SetEnvTexture(TextureDX* texture);
 
 	static void CopyToScratch();
 
@@ -114,7 +119,7 @@ public:
 	static void Sphere(int del_uhol_x, int del_uhol_y, float size);
 	static void SimpleSphere(float size);
 
-	static void Circle(float radius, int numSides, D3DXVECTOR3& dir);
+	static void Circle(float radius, int numSides, DirectX::XMFLOAT3& dir);
 	static void PushMatrix();
 	static void PopMatrix();
 	static void SetIdentity();
@@ -127,23 +132,29 @@ public:
 	static void Rect(float x1, float y1, float x2, float y2);
 	static void TexRect(float x1, float y1, float x2, float y2);
 
-	static void DrawPrimitive(D3DPRIMITIVETYPE primType, unsigned int startIndex, unsigned int numPrims);
+  static void DrawPrimitive(unsigned int primType, unsigned int numPrims, unsigned int startIndex);
 	static void SetLineWidth(float width);
 	static void SetFillMode(int fillMode);
 	
-	static void CommitTransforms( class DiffuseUVVertexShader* pShader );
+	static void CommitTransforms( class Shader* pShader );
 	static void CommitTextureState();
 
-	static IDirect3DPixelShader9* CreatePixelShader( DWORD* pCode );
-	static IDirect3DVertexShader9* CreateVertexShader( DWORD* pCode );
-	static void SetConstantTableMatrix( LPD3DXCONSTANTTABLE pConstantTable, char* pConstantName, D3DXMATRIX* pMatrix );
-	static void SetConstantTableVector( LPD3DXCONSTANTTABLE pConstantTable, char* pConstantName, D3DXVECTOR4* pVector );
+	static void CreatePixelShader( const void* pCode, unsigned int iCodeLen, ID3D11PixelShader** ppPixelShader );
+	static void CreateVertexShader( const void* pCode, unsigned int iCodeLen, ID3D11VertexShader** ppVertexShader );
+
+  static void CreateRenderTarget(ID3D11Texture2D* pTexture, ID3D11RenderTargetView** ppRTView);
+  static void CreateShaderView(ID3D11Texture2D* pTexture, ID3D11ShaderResourceView** ppSRView);
+
+  static DirectX::CommonStates* GetStates();
+  static void UpdateVBuffer(PosColNormalUVVertex* verticies, unsigned int iNum);
+
+  static void SetShader( Shader* pShader );
+  static void SetShaderTexture(unsigned int iStartSlot, TextureDX* pTextures);
 
 private:
 	static void CreateCubeBuffers();
 	static void CreateFonts();
 	static void CompileShaders();
-
 };
 
 #endif

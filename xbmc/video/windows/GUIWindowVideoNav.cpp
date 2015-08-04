@@ -34,7 +34,7 @@
 #include "filesystem/Directory.h"
 #include "FileItem.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -45,15 +45,18 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "video/VideoInfoScanner.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "ContextMenuManager.h"
 
+#include <utility>
+
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
-using namespace std;
+using namespace KODI::MESSAGING;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -403,7 +406,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         // grab the show thumb
         CVideoInfoTag details;
         m_database.GetTvShowInfo("", details, params.GetTvShowId());
-        map<string, string> art;
+        std::map<std::string, std::string> art;
         if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art))
         {
           items.AppendArt(art, details.m_type);
@@ -790,11 +793,11 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
            pItem->GetPath().size() > 22 && pItem->m_bIsFolder)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    pDialog->SetHeading(432);
+    pDialog->SetHeading(CVariant{432});
     std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433).c_str(),pItem->GetLabel().c_str());
-    pDialog->SetLine(1, strLabel);
-    pDialog->SetLine(2, "");;
-    pDialog->DoModal();
+    pDialog->SetLine(1, CVariant{std::move(strLabel)});
+    pDialog->SetLine(2, CVariant{""});
+    pDialog->Open();
     if (pDialog->IsConfirmed())
     {
       CFileItemList items;
@@ -811,11 +814,10 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   else if (m_vecItems->GetContent() == "tags" && pItem->m_bIsFolder)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    pDialog->SetHeading(432);
-    std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433).c_str(), pItem->GetLabel().c_str());
-    pDialog->SetLine(1, strLabel);
-    pDialog->SetLine(2, "");
-    pDialog->DoModal();
+    pDialog->SetHeading(CVariant{432});
+    pDialog->SetLine(1, CVariant{ StringUtils::Format(g_localizeStrings.Get(433).c_str(), pItem->GetLabel().c_str()) });
+    pDialog->SetLine(2, CVariant{""});
+    pDialog->Open();
     if (pDialog->IsConfirmed())
     {
       CVideoDatabaseDirectory dir;
@@ -1095,7 +1097,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
                                                                         m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strTitle),
                                                                         song))
       {
-        CApplicationMessenger::Get().PlayFile(song);
+        CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(song)));
       }
       return true;
     }
@@ -1125,7 +1127,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     }
     else
     {
-      CGUIDialogOK::ShowAndGetInput(257, 662);
+      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{662});
       return true;
     }	  
   }
@@ -1134,13 +1136,13 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     // dont allow update while scanning
     if (g_application.IsVideoScanning())
     {
-      CGUIDialogOK::ShowAndGetInput(257, 14057);
+      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{14057});
       return true;
     }
 
     //Get the new title
     std::string strTag;
-    if (!CGUIKeyboardFactory::ShowAndGetInput(strTag, g_localizeStrings.Get(20462), false))
+    if (!CGUIKeyboardFactory::ShowAndGetInput(strTag, CVariant{g_localizeStrings.Get(20462)}, false))
       return true;
 
     CVideoDatabase videodb;
@@ -1157,7 +1159,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
     if (!videodb.GetSingleValue("tag", "tag.tag_id", videodb.PrepareSQL("tag.name = '%s' AND tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.media_type = '%s')", strTag.c_str(), mediaType.c_str())).empty())
     {
       std::string strError = StringUtils::Format(g_localizeStrings.Get(20463).c_str(), strTag.c_str());
-      CGUIDialogOK::ShowAndGetInput(20462, strError);
+      CGUIDialogOK::ShowAndGetInput(CVariant{20462}, CVariant{std::move(strError)});
       return true;
     }
 

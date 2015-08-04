@@ -1,5 +1,4 @@
 SRCS=Application.cpp \
-     ApplicationMessenger.cpp \
      ApplicationPlayer.cpp \
      AppParamParser.cpp \
      Autorun.cpp \
@@ -46,10 +45,10 @@ DISTCLEAN_FILES=DllPaths_generated.h CompileInfo.cpp
 all: $(SRCS) $(LIB)
 
 CompileInfo.cpp: ../version.txt CompileInfo.cpp.in GitRevision
-	make -f gen-compileinfo.mk
+	$(MAKE) -f gen-compileinfo.mk
 
 GitRevision:
-	make -f gen-compileinfo.mk GitRevision
+	$(MAKE) -f gen-compileinfo.mk GitRevision
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

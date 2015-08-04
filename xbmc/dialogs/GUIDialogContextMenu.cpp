@@ -45,6 +45,7 @@
 #include "video/windows/GUIWindowVideoBase.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -370,7 +371,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
         return false;
     }
     // prompt user if they want to really delete the source
-    if (!CGUIDialogYesNo::ShowAndGetInput(751, 750))
+    if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{751}, CVariant{750}))
       return false;
 
     // check default before we delete, as deletion will kill the share object
@@ -512,7 +513,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
-      if (!CGUIDialogYesNo::ShowAndGetInput(12335, 750))
+      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{12335}, CVariant{750}))
         return false;
 
       share->m_iHasLock = 0;
@@ -683,7 +684,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
     pMenu->SetInitialVisibility();
     pMenu->SetupButtons();
     pMenu->PositionAtCurrentFocus();
-    pMenu->DoModal();
+    pMenu->Open();
     return pMenu->m_clickedButton;
   }
   return -1;

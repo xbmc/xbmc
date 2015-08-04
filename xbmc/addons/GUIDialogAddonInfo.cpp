@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "GUIDialogAddonSettings.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "GUIUserMessages.h"
@@ -36,9 +37,12 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "addons/AddonInstaller.h"
 #include "Util.h"
 #include "interfaces/Builtins.h"
+
+#include <utility>
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7
@@ -86,6 +90,15 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       if (iControl == CONTROL_BTN_INSTALL)
       {
+        if (m_localAddon)
+        {
+          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
+          {
+            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
+            return true;
+          }
+        }
+
         if (!m_localAddon)
         {
           OnInstall();
@@ -104,6 +117,15 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_ENABLE)
       {
+        if (m_localAddon)
+        {
+          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
+          {
+            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
+            return true;
+          }
+        }
+
         OnEnable(!m_item->GetProperty("Addon.Enabled").asBoolean());
         return true;
       }
@@ -216,7 +238,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
   {
     string line0 = StringUtils::Format(g_localizeStrings.Get(24046).c_str(), m_localAddon->Name().c_str());
     string line1 = StringUtils::Join(deps, ", ");
-    CGUIDialogOK::ShowAndGetInput(heading, line0, line1, line2);
+    CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{std::move(line0)}, CVariant{std::move(line1)}, CVariant{line2});
     return true;
   }
   return false;
@@ -235,7 +257,7 @@ void CGUIDialogAddonInfo::OnUninstall()
     return;
 
   // prompt user to be sure
-  if (!CGUIDialogYesNo::ShowAndGetInput(24037, 750))
+  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{750}))
     return;
 
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),
@@ -297,7 +319,7 @@ void CGUIDialogAddonInfo::OnChangeLog()
     pDlgInfo->SetText(m_item->GetProperty("Addon.Changelog").asString());
 
   m_changelog = true;
-  pDlgInfo->DoModal();
+  pDlgInfo->Open();
   m_changelog = false;
 }
 
@@ -349,7 +371,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   if (!dialog->SetItem(item))
     return false;
 
-  dialog->DoModal(); 
+  dialog->Open(); 
   return true;
 }
 

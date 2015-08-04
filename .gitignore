@@ -123,9 +123,11 @@ config.log
 /addons/script.module.pil/
 /addons/audioencoder.*
 /addons/pvr.*
+/addons/adsp.*
 /addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
 /addons/kodi.guilib/addon.xml
+/addons/audiodecoder.*
 
 # /lib/
 /lib/Makefile
@@ -146,10 +148,13 @@ config.log
 /lib/addons/library.kodi.guilib/project/VS2010Express/Release
 /lib/addons/library.kodi.guilib/project/VS2010Express/Debug
 /lib/addons/library.xbmc.addon/Makefile
+/lib/addons/library.kodi.adsp/Makefile
 /lib/addons/library.xbmc.pvr/Makefile
 /lib/addons/library.xbmc.codec/Makefile
 /lib/addons/library.xbmc.addon/project/VS2010Express/Release
 /lib/addons/library.xbmc.addon/project/VS2010Express/Debug
+/lib/addons/library.kodi.adsp/project/VS2010Express/Release
+/lib/addons/library.kodi.adsp/project/VS2010Express/Debug
 /lib/addons/library.xbmc.codec/project/VS2010Express/Release
 /lib/addons/library.xbmc.codec/project/VS2010Express/Debug
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Release
@@ -342,6 +347,7 @@ lib/cpluff/stamp-h1
 /project/VS2010Express/libs
 /project/VS2010Express/objs
 /project/VS2010Express/ipch
+/project/VS2010Express/shaders
 /project/VS2010Express/*.vsp
 /project/VS2010Express/*.metaproj
 /project/VS2010Express/*.metaproj.tmp
@@ -361,7 +367,6 @@ lib/cpluff/stamp-h1
 /system/libgif.dll
 /system/libssh2.dll
 /system/libssl32.dll
-/system/hdhomerun.dll
 /system/ssh.dll
 /system/sqlite3.dll
 /system/libnfs.dll
@@ -369,6 +374,7 @@ lib/cpluff/stamp-h1
 /system/libcec.dll
 /system/pthreadVC2.dll
 /system/libxslt.dll
+/system/ssleay32.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
@@ -434,6 +440,8 @@ lib/cpluff/stamp-h1
 /tools/depends/target/ffmpeg/ffmpeg-*-*.tar.gz
 /tools/depends/target/ffmpeg/ffmpeg-*-*/
 /tools/depends/target/ffmpeg/ffmpeg-install/
+/tools/depends/target/Toolchain_binaddons.cmake
+/tools/depends/target/config-binaddons.site
 
 # /tools/EventClients/
 /tools/EventClients/*.pyc
@@ -554,6 +562,9 @@ lib/cpluff/stamp-h1
 # /xbmc/main/
 /xbmc/main/Makefile
 
+# /xbmc/messaging/
+/xbmc/messaging/Makefile
+
 # /xbmc/music/
 /xbmc/music/karaoke/Makefile
 
@@ -571,6 +582,9 @@ lib/cpluff/stamp-h1
 # /xbmc/peripherals/
 /xbmc/peripherals/bus/Makefile
 /xbmc/peripherals/devices/Makefile
+
+# /xbmc/main/posix/
+xbmc/main/posix/Makefile
 
 #/xbmc/screensavers/
 /xbmc/screensavers/Makefile
@@ -905,8 +919,6 @@ lib/cpluff/stamp-h1
 /lib/libexif/Release (DLL)
 /lib/libexif/libexif.lib
 
-/lib/libhdhomerun/Makefile
-
 /lib/libsquish/Makefile
 /lib/libsquish/lib/squishd.lib
 /lib/libsquish/lib/squish.lib
@@ -920,6 +932,8 @@ lib/cpluff/stamp-h1
 
 /addons/library.xbmc.addon/libXBMC_addon.dll
 /addons/library.xbmc.addon/libXBMC_addon.lib
+/addons/library.kodi.adsp/libKODI_adsp.dll
+/addons/library.kodi.adsp/libKODI_adsp.lib
 /addons/library.xbmc.codec/libXBMC_codec.dll
 /addons/library.xbmc.codec/libXBMC_codec.lib
 /addons/library.kodi.guilib/libKODI_guilib.dll
@@ -928,3 +942,4 @@ lib/cpluff/stamp-h1
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
 
 /pvr-addons
+/adsp-addons

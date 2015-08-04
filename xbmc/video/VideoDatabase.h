@@ -258,6 +258,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_SEASON_TVSHOW_MPAA = 9,
   VIDEODB_ID_SEASON_EPISODES_TOTAL = 10,
   VIDEODB_ID_SEASON_EPISODES_WATCHED = 11,
+  VIDEODB_ID_SEASON_PREMIERED = 12,
   VIDEODB_ID_SEASON_MAX
 } VIDEODB_SEASON_IDS;
 
@@ -918,7 +919,7 @@ private:
    */
   int GetPlayCount(int iFileId);
 
-  virtual int GetMinSchemaVersion() const { return 60; };
+  virtual int GetMinSchemaVersion() const { return 75; };
   virtual int GetSchemaVersion() const;
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };

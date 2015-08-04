@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 
@@ -77,8 +78,10 @@ void CGUIViewStateWindowPVRGuide::SaveViewState(void)
 
 CGUIViewStateWindowPVRTimers::CGUIViewStateWindowPVRTimers(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
-  AddSortMethod(SortByLabel, 551, LABEL_MASKS("%L", "%I", "%L", ""));   // FileName, Size | Foldername, empty
-  AddSortMethod(SortByDate, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
+  int sortAttributes(CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone);
+  sortAttributes |= SortAttributeIgnoreFolders;
+  AddSortMethod(SortByLabel, static_cast<SortAttribute>(sortAttributes), 551, LABEL_MASKS("%L", "%I", "%L", ""));   // FileName, Size | Foldername, empty
+  AddSortMethod(SortByDate, static_cast<SortAttribute>(sortAttributes), 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
 
   // Default sorting
   SetSortMethod(SortByDate);
@@ -89,6 +92,11 @@ CGUIViewStateWindowPVRTimers::CGUIViewStateWindowPVRTimers(const int windowId, c
 void CGUIViewStateWindowPVRTimers::SaveViewState(void)
 {
   SaveViewToDb("pvr://timers/", m_windowId, CViewStateSettings::Get().Get("pvrtimers"));
+}
+
+bool CGUIViewStateWindowPVRTimers::HideParentDirItems(void)
+{
+  return (CGUIViewState::HideParentDirItems() || CPVRTimersPath(m_items.GetPath()).IsTimersRoot());
 }
 
 CGUIViewStateWindowPVRSearch::CGUIViewStateWindowPVRSearch(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)

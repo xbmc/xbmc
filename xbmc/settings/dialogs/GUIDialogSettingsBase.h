@@ -56,6 +56,8 @@ class CSettingAction;
 class CSettingCategory;
 class CSettingSection;
 
+class CVariant;
+
 typedef std::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;
 
 class CGUIDialogSettingsBase

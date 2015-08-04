@@ -25,7 +25,6 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
 using namespace XFILE;
 
 bool CMediaSource::IsWritable() const
@@ -33,7 +32,7 @@ bool CMediaSource::IsWritable() const
   return CUtil::SupportsWriteFileOperations(strPath);
 }
 
-void CMediaSource::FromNameAndPaths(const std::string &category, const std::string &name, const vector<string> &paths)
+void CMediaSource::FromNameAndPaths(const std::string &category, const std::string &name, const std::vector<std::string> &paths)
 {
   vecPaths = paths;
   if (paths.size() == 0)

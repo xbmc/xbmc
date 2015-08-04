@@ -646,7 +646,7 @@ void CBaseRenderer::ManageDisplay()
 
 void CBaseRenderer::SetViewMode(int viewMode)
 {
-  if (viewMode < ViewModeNormal || viewMode > ViewModeCustom)
+  if (viewMode < ViewModeNormal || viewMode > ViewModeStretch16x9Nonlin)
     viewMode = ViewModeNormal;
 
   CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode = viewMode;
@@ -714,7 +714,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
     CDisplaySettings::Get().SetNonLinearStretched(true);
   }
   else if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeStretch16x9 ||
-           (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9))
+           (is43 && (CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9 ||
+                     CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9Nonlin)))
   { // stretch image to 16:9 ratio
     CDisplaySettings::Get().SetZoomAmount(1.0);
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
@@ -728,6 +729,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
       // incorrect behaviour, but it's what the users want, so...
       CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
     }
+    if (is43)
+      CDisplaySettings::Get().SetNonLinearStretched(CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9Nonlin);
+
   }
   else  if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeOriginal)
   { // zoom image so that the height is the original size
@@ -773,8 +777,6 @@ void CBaseRenderer::SettingOptionsRenderMethodsFiller(const CSetting *setting, s
   list.push_back(make_pair(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO));
 
 #ifdef HAS_DX
-  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin7))
-    list.push_back(make_pair(g_localizeStrings.Get(16326), RENDER_METHOD_DXVAHD));
   list.push_back(make_pair(g_localizeStrings.Get(16319), RENDER_METHOD_DXVA));
   list.push_back(make_pair(g_localizeStrings.Get(13431), RENDER_METHOD_D3D_PS));
   list.push_back(make_pair(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE));

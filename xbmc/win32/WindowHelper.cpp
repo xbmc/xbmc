@@ -22,8 +22,6 @@
 
 extern HWND g_hWnd;
 
-using namespace std;
-
 CWHelper g_windowHelper;
 
 CWHelper::CWHelper(void) : CThread("WindowHelper")

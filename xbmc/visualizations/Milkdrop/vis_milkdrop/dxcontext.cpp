@@ -64,14 +64,14 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //#endif
 
 //DXContext::DXContext(HWND hWndWinamp,HINSTANCE hInstance,LPCSTR szClassName,LPCSTR szWindowCaption,WNDPROC pProc,LONG uWindowLong, int minimize_winamp, char* szIniFile)
-DXContext::DXContext(LPDIRECT3DDEVICE9 device, char* szIniFile)
+DXContext::DXContext(ID3D11Device* device, ID3D11DeviceContext* context, char* szIniFile)
 {
     m_szClassName[0] = 0;
     m_szWindowCaption[0] = 0;
     m_hwnd = NULL;
     //m_lpD3D = NULL;
     //HRESULT state = device->GetDirect3D(&m_lpD3D);
-    m_lpDevice = device;
+    m_lpDevice = new DX11Context(device, context);
     m_hmod_d3d8 = NULL;
     m_zFormat = D3DFMT_UNKNOWN;
     for (int i=0; i<MAX_DXC_ADAPTERS; i++)
@@ -139,6 +139,8 @@ void DXContext::Internal_CleanUp()
 {
     // clear active flag
     m_ready=FALSE;
+    if (m_lpDevice)
+      delete m_lpDevice;
 
     // release 3D interfaces
 //    SafeRelease(m_lpDevice);
@@ -487,7 +489,8 @@ BOOL DXContext::Internal_Init(DXCONTEXT_PARAMS *pParams, BOOL bFirstInit)
 
     // 4. some DirectX- / DDraw-specific stuff.  Also determine hPluginMonitor.
 
-    m_lpDevice->GetDeviceCaps(&m_caps);
+    //m_lpDevice->GetDeviceCaps(&m_caps);
+    m_lpDevice->Initialize();
 
 #if 0
 	HMONITOR hPluginMonitor = NULL;

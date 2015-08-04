@@ -23,7 +23,7 @@
 #include "Application.h"
 #include "InputManager.h"
 #include "input/Key.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/Geometry.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIControl.h"
@@ -73,6 +73,7 @@
 using EVENTSERVER::CEventServer;
 #endif
 
+using namespace KODI::MESSAGING;
 using PERIPHERALS::CPeripherals;
 
 CInputManager& CInputManager::Get()
@@ -490,13 +491,16 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
 
     if ((actionId >= ACTION_TOUCH_TAP && actionId <= ACTION_GESTURE_END)
         || (actionId >= ACTION_MOUSE_START && actionId <= ACTION_MOUSE_END))
-        CApplicationMessenger::Get().SendAction(CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2), WINDOW_INVALID, false);
+    {
+      auto action = new CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2);
+      CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(action));
+    }
     else
     {
       if (actionId == ACTION_BUILT_IN_FUNCTION && !actionString.empty())
-        CApplicationMessenger::Get().SendAction(CAction(actionId, actionString), WINDOW_INVALID, false);
+        CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionId, actionString)));
       else
-        CApplicationMessenger::Get().SendAction(CAction(actionId), WINDOW_INVALID, false);
+        CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionId)));
     }
 
     // Post an unfocus message for touch device after the action.
@@ -541,12 +545,14 @@ bool CInputManager::OnKey(const CKey& key)
     if (StringUtils::StartsWithNoCase(action.GetName(), "CECToggleState"))
     {
       CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device", action.GetName().c_str(), action.GetID());
-      if (!CApplicationMessenger::Get().CECToggleState())
+      bool result;
+      CApplicationMessenger::Get().SendMsg(TMSG_CECTOGGLESTATE, 0, 0, static_cast<void*>(&result));
+      if (!result)
         return true;
     }
     else
     {
-      CApplicationMessenger::Get().CECStandby();
+      CApplicationMessenger::Get().PostMsg(TMSG_CECSTANDBY);
       return true;
     }
   }

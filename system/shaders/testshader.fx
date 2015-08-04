@@ -18,15 +18,15 @@
  *
  */
 
-float4 TEST() : COLOR
+float4 TEST() : SV_TARGET
 {
   return float4(0.0, 0.0, 0.0, 0.0);
 }
 
-technique TEST_T
+technique11 TEST_T
 {
   pass P0
   {
-    PixelShader  = compile ps_2_0 TEST();
+    SetPixelShader( CompileShader( ps_4_0_level_9_3, TEST() ) );
   }
 };

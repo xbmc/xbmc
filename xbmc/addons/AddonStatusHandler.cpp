@@ -20,7 +20,7 @@
 #include "AddonStatusHandler.h"
 #include "AddonManager.h"
 #include "threads/SingleLock.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -29,6 +29,9 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
+
+using namespace KODI::MESSAGING;
 
 namespace ADDON
 {
@@ -98,13 +101,10 @@ void CAddonStatusHandler::Process()
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       if (!pDialog) return;
 
-      pDialog->SetHeading(heading);
-      pDialog->SetLine(1, 24070);
-      pDialog->SetLine(2, 24073);
-
-      //send message and wait for user input
-      ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
-      CApplicationMessenger::Get().SendMessage(tMsg, true);
+      pDialog->SetHeading(CVariant{heading});
+      pDialog->SetLine(1, CVariant{24070});
+      pDialog->SetLine(2, CVariant{24073});
+      pDialog->Open();
 
       if (pDialog->IsConfirmed())
         CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
@@ -116,12 +116,9 @@ void CAddonStatusHandler::Process()
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24074);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-    CApplicationMessenger::Get().SendMessage(tMsg, true);
+    pDialog->SetHeading(CVariant{heading});
+    pDialog->SetLine(1, CVariant{24074});
+    pDialog->Open();
 
     CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
   }
@@ -131,14 +128,11 @@ void CAddonStatusHandler::Process()
     CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
 
-    pDialogYesNo->SetHeading(heading);
-    pDialogYesNo->SetLine(1, 24070);
-    pDialogYesNo->SetLine(2, 24072);
-    pDialogYesNo->SetLine(3, m_message);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
-    CApplicationMessenger::Get().SendMessage(tMsg, true);
+    pDialogYesNo->SetHeading(CVariant{heading});
+    pDialogYesNo->SetLine(1, CVariant{24070});
+    pDialogYesNo->SetLine(2, CVariant{24072});
+    pDialogYesNo->SetLine(3, CVariant{m_message});
+    pDialogYesNo->Open();
 
     if (!pDialogYesNo->IsConfirmed()) return;
 
@@ -158,14 +152,11 @@ void CAddonStatusHandler::Process()
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24070);
-    pDialog->SetLine(2, 24071);
-    pDialog->SetLine(3, m_message);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-    CApplicationMessenger::Get().SendMessage(tMsg, true);
+    pDialog->SetHeading(CVariant{heading});
+    pDialog->SetLine(1, CVariant{24070});
+    pDialog->SetLine(2, CVariant{24071});
+    pDialog->SetLine(3, CVariant{m_message});
+    pDialog->Open();
   }
 }
 

@@ -28,9 +28,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <d3d9.h>
-
 #include <stdio.h>
+#include <string.h>
 
 #define XML_ROOT_NODE 0
 #define XML_MAX_TAGNAME_SIZE	32

@@ -32,6 +32,8 @@
 #include <string>
 #include <vector>
 
+class CVariant;
+
 /*!
  \ingroup music
  \brief Class to store and read album information from CMusicDatabase
@@ -101,6 +103,7 @@ public:
   int iYear;
   int iTimesPlayed;
   CDateTime lastPlayed;
+  CDateTime dateAdded;
   int iStartOffset;
   int iEndOffset;
   bool bCompilation;

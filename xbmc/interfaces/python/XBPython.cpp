@@ -35,6 +35,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "Util.h"
 #ifdef TARGET_WINDOWS
 #include "utils/Environment.h"

@@ -33,7 +33,7 @@
 #include "UPnPSettings.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "utils/log.h"
 #include "URL.h"
@@ -43,14 +43,15 @@
 #include "GUIUserMessages.h"
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
 #include "video/VideoInfoTag.h"
 #include "input/Key.h"
 #include "Util.h"
+#include "utils/SystemInfo.h"
 
 using namespace std;
 using namespace UPNP;
+using namespace KODI::MESSAGING;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 
@@ -627,7 +628,7 @@ CUPnPServer*
 CUPnP::CreateServer(int port /* = 0 */)
 {
     CUPnPServer* device =
-        new CUPnPServer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str(),
+        new CUPnPServer(CSysInfo::GetDeviceName().c_str(),
                         CUPnPSettings::Get().GetServerUUID().length() ? CUPnPSettings::Get().GetServerUUID().c_str() : NULL,
                         port);
 
@@ -639,7 +640,7 @@ CUPnP::CreateServer(int port /* = 0 */)
                     "/").ToString();
 
     device->m_ModelName        = "Kodi";
-    device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
+    device->m_ModelNumber      = CSysInfo::GetVersion().c_str();
     device->m_ModelDescription = "Kodi - Media Server";
     device->m_ModelURL         = "http://kodi.tv/";
     device->m_Manufacturer     = "XBMC Foundation";
@@ -711,7 +712,7 @@ CUPnPRenderer*
 CUPnP::CreateRenderer(int port /* = 0 */)
 {
     CUPnPRenderer* device =
-        new CUPnPRenderer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str(),
+        new CUPnPRenderer(CSysInfo::GetDeviceName().c_str(),
                           false,
                           (CUPnPSettings::Get().GetRendererUUID().length() ? CUPnPSettings::Get().GetRendererUUID().c_str() : NULL),
                           port);
@@ -721,7 +722,7 @@ CUPnP::CreateRenderer(int port /* = 0 */)
                     CSettings::Get().GetInt("services.webserverport"),
                     "/").ToString();
     device->m_ModelName        = "Kodi";
-    device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
+    device->m_ModelNumber      = CSysInfo::GetVersion().c_str();
     device->m_ModelDescription = "Kodi - Media Renderer";
     device->m_ModelURL         = "http://kodi.tv/";
     device->m_Manufacturer     = "XBMC Foundation";

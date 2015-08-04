@@ -92,14 +92,14 @@ void DebugConsole::Render()
 //  	if ( bHasError == false )
 //  		return;
 
-	int iViewportHeight = Renderer::GetViewportHeight();
+	float iViewportHeight = Renderer::GetViewportHeight();
 	int iLineToDraw = iCurrentLine - 1;
 	if ( iLineToDraw < 0 )
 		iLineToDraw += NUM_LINES;
 
 	for ( int iLine = NUM_LINES - 1; iLine >= 0; iLine-- )
 	{
-		Renderer::DrawText( 0, ( float )iViewportHeight - ( ( NUM_LINES - iLine )* iLineHeight ), Lines[ iLineToDraw ].Txt, Lines[ iLineToDraw ].Col );
+		Renderer::DrawText( 0, iViewportHeight - ( ( NUM_LINES - iLine )* iLineHeight ), Lines[ iLineToDraw ].Txt, Lines[ iLineToDraw ].Col );
 		iLineToDraw = ( iLineToDraw - 1 );
 		if ( iLineToDraw < 0 )
 			iLineToDraw += NUM_LINES;

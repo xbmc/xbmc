@@ -27,13 +27,40 @@
 #include <GL/glew.h>
 #else
 #ifdef _WIN32
-#include <D3D9.h>
+#include <d3d11_1.h>
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+#include <stdio.h>
 #endif
 #endif
 
 char g_visName[512];
 #ifndef HAS_GL
-LPDIRECT3DDEVICE9 g_device;
+ID3D11Device*             g_device = NULL;
+ID3D11DeviceContext*      g_context = NULL;
+ID3D11VertexShader*       g_vShader = NULL;
+ID3D11PixelShader*        g_pShader = NULL;
+ID3D11InputLayout*        g_inputLayout = NULL;
+ID3D11Buffer*             g_vBuffer = NULL;
+ID3D11Buffer*             g_cViewPort = NULL;
+
+using namespace DirectX;
+using namespace DirectX::PackedVector;
+
+// Include the precompiled shader code.
+namespace
+{
+  #include "DefaultPixelShader.inc"
+  #include "DefaultVertexShader.inc"
+}
+
+struct cbViewPort
+{
+  float g_viewPortWidth;
+  float g_viewPortHeigh;
+  float align1, align2;
+};
+
 #else
 void* g_device;
 #endif
@@ -41,27 +68,69 @@ float g_fWaveform[2][512];
 
 #ifdef HAS_GL
 typedef struct {
-  int X;
-  int Y;
+  int TopLeftX;
+  int TopLeftY;
   int Width;
   int Height;
-  int MinZ;
-  int MaxZ;
-} D3DVIEWPORT9;
+  int MinDepth;
+  int MaxDepth;
+} D3D11_VIEWPORT;
 typedef unsigned long D3DCOLOR;
 #endif
 
-D3DVIEWPORT9  g_viewport;
+D3D11_VIEWPORT g_viewport;
 
 struct Vertex_t
 {
   float x, y, z;
+#ifdef HAS_GL
   D3DCOLOR  col;
+#else
+  XMFLOAT4 col;
+#endif
 };
 
 #ifndef HAS_GL
-#define VERTEX_FORMAT     (D3DFVF_XYZ | D3DFVF_DIFFUSE)
-#endif
+bool init_renderer_objs()
+{
+  // Create vertex shader
+  if (S_OK != g_device->CreateVertexShader(DefaultVertexShaderCode, sizeof(DefaultVertexShaderCode), nullptr, &g_vShader))
+    return false;
+
+  // Create input layout
+  D3D11_INPUT_ELEMENT_DESC layout[] =
+  {
+    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  };
+  if (S_OK != g_device->CreateInputLayout(layout, ARRAYSIZE(layout), DefaultVertexShaderCode, sizeof(DefaultVertexShaderCode), &g_inputLayout))
+    return false;
+
+  // Create pixel shader
+  if (S_OK != g_device->CreatePixelShader(DefaultPixelShaderCode, sizeof(DefaultPixelShaderCode), nullptr, &g_pShader))
+    return false;
+
+  // create buffers
+  CD3D11_BUFFER_DESC desc(sizeof(Vertex_t) * 512, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+  if (S_OK != g_device->CreateBuffer(&desc, NULL, &g_vBuffer))
+    return false;
+
+  desc.ByteWidth = sizeof(cbViewPort);
+  desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+  desc.Usage = D3D11_USAGE_DEFAULT;
+  desc.CPUAccessFlags = 0;
+
+  cbViewPort viewPort = { (float)g_viewport.Width, (float)g_viewport.Height, 0.0f, 0.0f };
+  D3D11_SUBRESOURCE_DATA initData;
+  initData.pSysMem = &viewPort;
+
+  if (S_OK != g_device->CreateBuffer(&desc, &initData, &g_cViewPort))
+    return false;
+
+  // we are ready
+  return true;
+}
+#endif // !HAS_GL
 
 //-- Create -------------------------------------------------------------------
 // Called on load. Addon should fully initalize or return error status
@@ -73,17 +142,21 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   VIS_PROPS* visProps = (VIS_PROPS*)props;
 
-#ifndef HAS_GL
-  g_device = (LPDIRECT3DDEVICE9)visProps->device;
-#else
+#ifdef HAS_GL
   g_device = visProps->device;
 #endif
-  g_viewport.X = visProps->x;
-  g_viewport.Y = visProps->y;
+  g_viewport.TopLeftX = visProps->x;
+  g_viewport.TopLeftY = visProps->y;
   g_viewport.Width = visProps->width;
   g_viewport.Height = visProps->height;
-  g_viewport.MinZ = 0;
-  g_viewport.MaxZ = 1;
+  g_viewport.MinDepth = 0;
+  g_viewport.MaxDepth = 1;
+#ifndef HAS_GL  
+  g_context = (ID3D11DeviceContext*)visProps->device;
+  g_context->GetDevice(&g_device);
+  if (!init_renderer_objs())
+    return ADDON_STATUS_PERMANENT_FAILURE;
+#endif
 
   return ADDON_STATUS_OK;
 }
@@ -123,8 +196,14 @@ extern "C" void Render()
   Vertex_t  verts[512];
 
 #ifndef HAS_GL
-  g_device->SetFVF(VERTEX_FORMAT);
-  g_device->SetPixelShader(NULL);
+  unsigned stride = sizeof(Vertex_t), offset = 0;
+  g_context->IASetVertexBuffers(0, 1, &g_vBuffer, &stride, &offset);
+  g_context->IASetInputLayout(g_inputLayout);
+  g_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+  g_context->VSSetShader(g_vShader, 0, 0);
+  g_context->VSSetConstantBuffers(0, 1, &g_cViewPort);
+  g_context->PSSetShader(g_pShader, 0, 0);
+  float xcolor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 #endif
 
   // Left channel
@@ -138,9 +217,13 @@ extern "C" void Render()
 #endif
   for (int i = 0; i < 256; i++)
   {
+#ifdef HAS_GL
     verts[i].col = 0xffffffff;
-    verts[i].x = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
-    verts[i].y = g_viewport.Y + g_viewport.Height * 0.33f + (g_fWaveform[0][i] * g_viewport.Height * 0.15f);
+#else
+    verts[i].col = XMFLOAT4(xcolor);;
+#endif
+    verts[i].x = g_viewport.TopLeftX + ((i / 255.0f) * g_viewport.Width);
+    verts[i].y = g_viewport.TopLeftY + g_viewport.Height * 0.33f + (g_fWaveform[0][i] * g_viewport.Height * 0.15f);
     verts[i].z = 1.0;
 #ifdef HAS_GL
     glVertex2f(verts[i].x, verts[i].y);
@@ -152,19 +235,24 @@ extern "C" void Render()
   if ((errcode=glGetError())!=GL_NO_ERROR) {
     printf("Houston, we have a GL problem: %s\n", gluErrorString(errcode));
   }
-#elif !defined(HAS_GL)
-  g_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 255, verts, sizeof(Vertex_t));
 #endif
 
   // Right channel
 #ifdef HAS_GL
   glBegin(GL_LINE_STRIP);
-#endif
   for (int i = 0; i < 256; i++)
+#else
+  for (int i = 256; i < 512; i++)
+#endif
   {
+#ifdef HAS_GL
     verts[i].col = 0xffffffff;
-    verts[i].x = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
-    verts[i].y = g_viewport.Y + g_viewport.Height * 0.66f + (g_fWaveform[1][i] * g_viewport.Height * 0.15f);
+    verts[i].x = g_viewport.TopLeftX + ((i / 255.0f) * g_viewport.Width);
+#else
+    verts[i].col = XMFLOAT4(xcolor);
+    verts[i].x = g_viewport.TopLeftX + (((i - 256) / 255.0f) * g_viewport.Width);
+#endif
+    verts[i].y = g_viewport.TopLeftY + g_viewport.Height * 0.66f + (g_fWaveform[1][i] * g_viewport.Height * 0.15f);
     verts[i].z = 1.0;
 #ifdef HAS_GL
     glVertex2f(verts[i].x, verts[i].y);
@@ -179,7 +267,17 @@ extern "C" void Render()
     printf("Houston, we have a GL problem: %s\n", gluErrorString(errcode));
   }
 #elif !defined(HAS_GL)
-  g_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 255, verts, sizeof(Vertex_t));
+  // a little optimization: generate and send all vertecies for both channels
+  D3D11_MAPPED_SUBRESOURCE res;
+  if (S_OK == g_context->Map(g_vBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res))
+  {
+    memcpy(res.pData, verts, sizeof(Vertex_t) * 512);
+    g_context->Unmap(g_vBuffer, 0);
+  }
+  // draw left channel
+  g_context->Draw(256, 0);
+  // draw right channel
+  g_context->Draw(256, 256);
 #endif
 
 }
@@ -248,6 +346,20 @@ extern "C" void ADDON_Stop()
 //-----------------------------------------------------------------------------
 extern "C" void ADDON_Destroy()
 {
+#ifndef HAS_GL
+  if (g_cViewPort)
+    g_cViewPort->Release();
+  if (g_vBuffer)
+    g_vBuffer->Release();
+  if (g_inputLayout)
+    g_inputLayout->Release();
+  if (g_vShader)
+    g_vShader->Release();
+  if (g_pShader)
+    g_pShader->Release();
+  if (g_device)
+    g_device->Release();
+#endif
 }
 
 //-- HasSettings --------------------------------------------------------------

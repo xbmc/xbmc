@@ -31,6 +31,11 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
+    enum RenderOrder {
+      WINDOW = 0,
+      DIALOG = 1
+    };
+
     // Forward declare the interceptor as the AddonWindowInterceptor.h 
     // file needs to include the Window class because of the template
     class InterceptorBase;
@@ -140,7 +145,7 @@ namespace XBMCAddon
        * This helper retrieves the next available id. It is assumed 
        *  that the global lock is already being held.
        */
-      static int getNextAvailalbeWindowId();
+      static int getNextAvailableWindowId();
 
       /**
        * Child classes MUST call this in their constructors. It should

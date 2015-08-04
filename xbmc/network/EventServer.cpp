@@ -28,7 +28,6 @@
 #include "Socket.h"
 #include "threads/CriticalSection.h"
 #include "Application.h"
-#include "GUIInfoManager.h"
 #include "interfaces/Builtins.h"
 #include "input/ButtonTranslator.h"
 #include "threads/SingleLock.h"
@@ -36,6 +35,8 @@
 #include "guilib/GUIAudioManager.h"
 #include "input/Key.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
+
 #include <map>
 #include <queue>
 #include <cassert>
@@ -193,7 +194,7 @@ void CEventServer::Run()
   std::vector<std::pair<std::string, std::string> > txt;
   CZeroconf::GetInstance()->PublishService("servers.eventserver",
                                "_xbmc-events._udp",
-                               g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),
+                               CSysInfo::GetDeviceName(),
                                m_iPort,
                                txt);
 

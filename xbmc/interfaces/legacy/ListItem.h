@@ -224,6 +224,7 @@ namespace XBMCAddon
        *     - votes         : string (12345 votes)
        *     - trailer       : string (/home/user/trailer.avi)
        *     - dateadded     : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
+       *     - mediatype     : string - "video", "movie", "tvshow", "season", "episode" or "musicvideo"
        * - Music Values:
        *     - tracknumber   : integer (8)
        *     - discnumber    : integer (2)

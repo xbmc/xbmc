@@ -22,7 +22,7 @@
 #include "system.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -46,12 +46,15 @@
 #include "input/ButtonTranslator.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/IPlayer.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 #include <stdio.h>
 #include <algorithm>
 #if defined(TARGET_DARWIN)
 #include "linux/LinuxResourceCounter.h"
 #endif
+
+using namespace KODI::MESSAGING;
 
 #define BLUE_BAR                          0
 #define LABEL_ROW1                       10
@@ -180,7 +183,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (pDialog)
       {
         CFileItem item(g_application.CurrentFileItem());
-        pDialog->DoModal();
+        pDialog->Open();
         return true;
       }
       break;
@@ -420,9 +423,8 @@ void CGUIWindowFullScreen::FrameMove()
                                        , clockspeed - 100.0
                                        , g_renderManager.GetVSyncState().c_str());
 
-      strGeneralFPS = StringUtils::Format("%s\nW( fps:%02.2f %s )\n%s"
+      strGeneralFPS = StringUtils::Format("%s\nW( %s )\n%s"
                                           , strGeneral.c_str()
-                                          , g_infoManager.GetFPS()
                                           , strCores.c_str(), strClock.c_str() );
 
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
@@ -639,7 +641,7 @@ void CGUIWindowFullScreen::ToggleOSD()
     if (pOSD->IsDialogRunning())
       pOSD->Close();
     else
-      pOSD->DoModal();
+      pOSD->Open();
   }
 
   MarkDirtyRegion();
@@ -651,6 +653,6 @@ void CGUIWindowFullScreen::TriggerOSD()
   if (pOSD && !pOSD->IsDialogRunning())
   {
     pOSD->SetAutoClose(3000);
-    pOSD->DoModal();
+    pOSD->Open();
   }
 }

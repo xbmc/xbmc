@@ -30,12 +30,14 @@
 #include "utils/RegExp.h"
 #include "utils/HTMLUtil.h"
 #include "utils/CharsetConverter.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "FileCache.h"
+#include "FileItem.h"
 #include <climits>
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using namespace KODI::MESSAGING;
 
 CShoutcastFile::CShoutcastFile() :
   IFile(), CThread("ShoutcastFile")
@@ -202,7 +204,7 @@ void CShoutcastFile::Process()
     {
       while (!m_bStop && m_cacheReader->GetPosition() < m_tagPos)
         Sleep(20);
-      CApplicationMessenger::Get().SetCurrentSongTag(m_tag);
+      CApplicationMessenger::Get().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1,-1, static_cast<void*>(new CFileItem(m_tag)));
       m_tagPos = 0;
     }
   }

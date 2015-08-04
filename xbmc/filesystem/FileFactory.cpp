@@ -80,8 +80,6 @@
 #include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
 #include "UDFFile.h"
-#include "HDHomeRunFile.h"
-#include "SlingboxFile.h"
 #include "ImageFile.h"
 #include "ResourceFile.h"
 #include "Application.h"
@@ -156,8 +154,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (url.IsProtocol("sftp") || url.IsProtocol("ssh")) return new CSFTPFile();
 #endif
     else if (url.IsProtocol("shout")) return new CShoutcastFile();
-    else if (url.IsProtocol("hdhomerun")) return new CHomeRunFile();
-    else if (url.IsProtocol("sling")) return new CSlingboxFile();
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
     else if (url.IsProtocol("smb")) return new CWin32SMBFile();

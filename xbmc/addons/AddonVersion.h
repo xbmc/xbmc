@@ -19,7 +19,6 @@
  */
 
 #include <string>
-#include <boost/operators.hpp>
 
 namespace ADDON
 {
@@ -35,7 +34,8 @@ namespace ADDON
 
     See here for more info: http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
     */
-  class AddonVersion : public boost::totally_ordered<AddonVersion> {
+  class AddonVersion
+  {
   public:
     AddonVersion(const AddonVersion& other) { *this = other; }
     explicit AddonVersion(const std::string& version);
@@ -46,8 +46,12 @@ namespace ADDON
     const std::string &Revision() const { return mRevision; }
 
     AddonVersion& operator=(const AddonVersion& other);
-    bool operator<(const AddonVersion& other) const;
+    bool operator< (const AddonVersion& other) const;
+    bool operator> (const AddonVersion& other) const;
+    bool operator<=(const AddonVersion& other) const;
+    bool operator>=(const AddonVersion& other) const;
     bool operator==(const AddonVersion& other) const;
+    bool operator!=(const AddonVersion& other) const;
     std::string asString() const;
     bool empty() const;
 

@@ -299,8 +299,8 @@ public:
 	float		m_fRandStart[4];
 
   // DIRECTX 8:
-	IDirect3DTexture9 *m_lpVS[2];
-  IDirect3DSurface9 *m_pZBuffer;
+	ID3D11Texture2D *m_lpVS[2];
+  ID3D11Texture2D *m_pZBuffer;
 //	IDirect3DTexture8 *m_lpDDSTitle;    // CAREFUL: MIGHT BE NULL (if not enough mem)!
 	int               m_nTitleTexSizeX, m_nTitleTexSizeY;
 	SPRITEVERTEX      *m_verts;

@@ -26,62 +26,76 @@
   #define M_PI       3.14159265358979323846
 #endif
 
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW|D3DFVF_DIFFUSE)
-
 CGUIWindowTestPatternDX::CGUIWindowTestPatternDX(void) : CGUIWindowTestPattern()
 {
+  m_vb = NULL;
+  m_bufferWidth = 0;
 }
 
 CGUIWindowTestPatternDX::~CGUIWindowTestPatternDX(void)
 {
+  SAFE_RELEASE(m_vb);
+  m_bufferWidth = 0;
 }
 
 void CGUIWindowTestPatternDX::DrawVerticalLines(int top, int left, int bottom, int right)
 {
-  CUSTOMVERTEX* vert = new CUSTOMVERTEX[2+(right-left)];
+  Vertex* vert = new Vertex[2 + (right - left)];
   int p = 0;
   for (int i = left; i <= right; i += 2)
   {
-    vert[p].x = (float)i;
-    vert[p].y = (float)top;
-    vert[p].z = 0.5f;
-    vert[p].rhw = 1.0f;
-    vert[p].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
+    vert[p].pos.x = (float)i;
+    vert[p].pos.y = (float)top;
+    vert[p].pos.z = 0.5f;
+    vert[p].color = XMFLOAT4(m_white, m_white, m_white, 1.0f);
     ++p;
-    vert[p].x = (float)i;
-    vert[p].y = (float)bottom;
-    vert[p].z = 0.5f;
-    vert[p].rhw = 1.0f;
-    vert[p].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
+    vert[p].pos.x = (float)i;
+    vert[p].pos.y = (float)bottom;
+    vert[p].pos.z = 0.5f;
+    vert[p].color = XMFLOAT4(m_white, m_white, m_white, 1.0f);
     ++p;
   }
-  g_Windowing.Get3DDevice()->SetFVF(D3DFVF_CUSTOMVERTEX);
-  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_LINELIST, p/2, vert, sizeof(CUSTOMVERTEX));
+  UpdateVertexBuffer(vert, p);
+
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+
+  pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
+  unsigned stride = sizeof(Vertex), offset = 0;
+  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+  pGUIShader->Draw(p, 0);
 
   delete [] vert;
 }
 
 void CGUIWindowTestPatternDX::DrawHorizontalLines(int top, int left, int bottom, int right)
 {
-  CUSTOMVERTEX* vert = new CUSTOMVERTEX[2+(bottom-top)];
+  Vertex* vert = new Vertex[2 + (bottom - top)];
   int p = 0;
   for (int i = top; i <= bottom; i += 2)
   {
-    vert[p].x = (float)left;
-    vert[p].y = (float)i;
-    vert[p].z = 0.5f;
-    vert[p].rhw = 1.0f;
-    vert[p].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
+    vert[p].pos.x = (float)left;
+    vert[p].pos.y = (float)i;
+    vert[p].pos.z = 0.5f;
+    vert[p].color = XMFLOAT4(m_white, m_white, m_white, 1.0f);
     ++p;
-    vert[p].x = (float)right;
-    vert[p].y = (float)i;
-    vert[p].z = 0.5f;
-    vert[p].rhw = 1.0f;
-    vert[p].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
+    vert[p].pos.x = (float)right;
+    vert[p].pos.y = (float)i;
+    vert[p].pos.z = 0.5f;
+    vert[p].color = XMFLOAT4(m_white, m_white, m_white, 1.0f);
     ++p;
   }
-  g_Windowing.Get3DDevice()->SetFVF(D3DFVF_CUSTOMVERTEX);
-  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_LINELIST, p/2, vert, sizeof(CUSTOMVERTEX));
+  UpdateVertexBuffer(vert, p);
+
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+
+  pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
+  unsigned stride = sizeof(Vertex), offset = 0;
+  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+  pGUIShader->Draw(p, 0);
 
   delete [] vert;
 }
@@ -91,7 +105,7 @@ void CGUIWindowTestPatternDX::DrawCheckers(int top, int left, int bottom, int ri
   int c = (bottom-top+1)*(1+(right-left)/2);
   if (c < 1)
     return;
-  CUSTOMVERTEX* vert = new CUSTOMVERTEX[c];
+  Vertex* vert = new Vertex[c];
   int i=0;
   for (int y = top; y <= bottom; y++)
   {
@@ -99,25 +113,31 @@ void CGUIWindowTestPatternDX::DrawCheckers(int top, int left, int bottom, int ri
     {
       if (y % 2 == 0)
       {
-        vert[i].x = (float)x;
-        vert[i].y = (float)y;
-        vert[i].z = 0.5f;
-        vert[i].rhw = 1.0f;
-        vert[i].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
+        vert[i].pos.x = (float)x;
+        vert[i].pos.y = (float)y;
+        vert[i].pos.z = 0.5f;
+        vert[i].color = XMFLOAT4(m_white, m_white, m_white, 1.0f);
       }
       else
       {
-        vert[i].x = (float)x+1.0f;
-        vert[i].y = (float)y;
-        vert[i].z = 0.5f;
-        vert[i].rhw = 1.0f;
-        vert[i].color = D3DCOLOR_COLORVALUE(m_white, m_white, m_white, 1.0f);
+        vert[i].pos.x = (float)x+1.0f;
+        vert[i].pos.y = (float)y;
+        vert[i].pos.z = 0.5f;
+        vert[i].color = XMFLOAT4(m_white, m_white, m_white, 1.0f);
       }
       ++i;
     }
   }
-  g_Windowing.Get3DDevice()->SetFVF(D3DFVF_CUSTOMVERTEX);
-  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_POINTLIST, i, vert, sizeof(CUSTOMVERTEX));
+  UpdateVertexBuffer(vert, i);
+
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+
+  pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
+  unsigned stride = sizeof(Vertex), offset = 0;
+  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+  pGUIShader->Draw(i, 0);
 
   delete [] vert;
 }
@@ -166,29 +186,41 @@ void CGUIWindowTestPatternDX::DrawContrastBrightnessPattern(int top, int left, i
   DrawRectangle(x50p, (float)top, (float)right, y50p, color_white);
   DrawRectangle((float)left, (float)y50p, x50p, (float)bottom, color_white);
 
-  // draw border lines
-  CUSTOMVERTEX vert[] = 
-  {
-    {(float)left, y5p, 0.5f, 1.0f, color_white},
-    {x50p, y5p, 0.5f, 1.0f, color_white},
-    {x5p, (float)top, 0.5f, 1.0f, color_white},
-    {x5p, y50p, 0.5f, 1.0f, color_white},
-    {x50p, y95p, 0.5f, 1.0f, color_white},
-    {(float)right, y95p, 0.5f, 1.0f, color_white},
-    {x95p, y50p, 0.5f, 1.0f, color_white},
-    {x95p, (float)bottom, 0.5f, 1.0f, color_white},
+  XMFLOAT4 xcolor_white, xcolor_black;
+  CD3DHelper::XMStoreColor(&xcolor_white, color_white);
+  CD3DHelper::XMStoreColor(&xcolor_black, color_black);
 
-    {x50p, y5p, 0.5f, 1.0f, color_black},
-    {(float)right, y5p, 0.5f, 1.0f, color_black},
-    {x5p, y50p, 0.5f, 1.0f, color_black},
-    {x5p, (float)bottom, 0.5f, 1.0f, color_black},
-    {(float)left, y95p, 0.5f, 1.0f, color_black},
-    {x50p, y95p, 0.5f, 1.0f, color_black},
-    {x95p, (float)top, 0.5f, 1.0f, color_black},
-    {x95p, y50p, 0.5f, 1.0f, color_black}
+  // draw border lines
+  Vertex vert[] = 
+  {
+    { XMFLOAT3((float)left, y5p, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x50p, y5p, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x5p, (float)top, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x5p, y50p, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x50p, y95p, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3((float)right, y95p, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x95p, y50p, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x95p, (float)bottom, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+
+    { XMFLOAT3(x50p, y5p, 0.5f), xcolor_black, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3((float)right, y5p, 0.5f), xcolor_black, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x5p, y50p, 0.5f), xcolor_black, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x5p, (float)bottom, 0.5f), xcolor_black, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3((float)left, y95p, 0.5f), xcolor_black, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x50p, y95p, 0.5f), xcolor_black, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x95p, (float)top, 0.5f), xcolor_black, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x95p, y50p, 0.5f), xcolor_black, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
   };
-  g_Windowing.Get3DDevice()->SetFVF(D3DFVF_CUSTOMVERTEX);
-  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_LINELIST, 8, vert, sizeof(CUSTOMVERTEX));
+  UpdateVertexBuffer(vert, ARRAYSIZE(vert));
+
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+
+  pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
+  unsigned stride = sizeof(Vertex), offset = 0;
+  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+  pGUIShader->Draw(ARRAYSIZE(vert), 0);
 
   // draw inner rectangles
   DrawRectangle(x12p, y12p, x37p, y37p, color_white);
@@ -225,7 +257,7 @@ void CGUIWindowTestPatternDX::DrawCircleEx(float originX, float originY, float r
   float vectorY;
   float vectorY1 = originY;
   float vectorX1 = originX;
-  CUSTOMVERTEX vert[1083]; // 361*3
+  Vertex vert[1084]; // 361*3 + 1
   int p = 0;
 
   for (int i = 0; i <= 360; i++)
@@ -233,50 +265,107 @@ void CGUIWindowTestPatternDX::DrawCircleEx(float originX, float originY, float r
     angle = (float)(((double)i)/57.29577957795135);
     vectorX = originX + (radius*(float)sin((double)angle));
     vectorY = originY + (radius*(float)cos((double)angle));
-    vert[p].x = originX;
-    vert[p].y = originY;
-    vert[p].z = 0.5f;
-    vert[p].rhw = 1.0f;
-    vert[p].color = color;
+    vert[p].pos.x = originX;
+    vert[p].pos.y = originY;
+    vert[p].pos.z = 0.5f;
+    CD3DHelper::XMStoreColor(&vert[p].color, color);
     ++p;
-    vert[p].x = vectorX1;
-    vert[p].y = vectorY1;
-    vert[p].z = 0.5f;
-    vert[p].rhw = 1.0f;
-    vert[p].color = color;
+    vert[p].pos.x = vectorX1;
+    vert[p].pos.y = vectorY1;
+    vert[p].pos.z = 0.5f;
+    CD3DHelper::XMStoreColor(&vert[p].color, color);
     ++p;
-    vert[p].x = vectorX;
-    vert[p].y = vectorY;
-    vert[p].z = 0.5f;
-    vert[p].rhw = 1.0f;
-    vert[p].color = color;
+    vert[p].pos.x = vectorX;
+    vert[p].pos.y = vectorY;
+    vert[p].pos.z = 0.5f;
+    CD3DHelper::XMStoreColor(&vert[p].color, color);
     ++p;
     vectorY1 = vectorY;
     vectorX1 = vectorX;
   }
-  g_Windowing.Get3DDevice()->SetFVF(D3DFVF_CUSTOMVERTEX);
-  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 361, vert, sizeof(CUSTOMVERTEX));
+  vert[1083] = vert[0];
+
+  UpdateVertexBuffer(vert, ARRAYSIZE(vert));
+
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+
+  pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
+  unsigned stride = sizeof(Vertex), offset = 0;
+  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+  pGUIShader->Draw(ARRAYSIZE(vert), 0);
 }
 
 void CGUIWindowTestPatternDX::BeginRender()
 {
-  g_Windowing.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  ID3D11RenderTargetView* renderTarget;
+
+  pContext->OMGetRenderTargets(1, &renderTarget, NULL);
+  float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+  pContext->ClearRenderTargetView(renderTarget, color);
+  renderTarget->Release();
 }
 
 void CGUIWindowTestPatternDX::EndRender()
 {
+  g_Windowing.GetGUIShader()->RestoreBuffers();
 }
 
 void CGUIWindowTestPatternDX::DrawRectangle(float x, float y, float x2, float y2, DWORD color)
 {
-  CUSTOMVERTEX vert[] = 
+  XMFLOAT4 float4;
+  CD3DHelper::XMStoreColor(&float4, color);
+
+  Vertex vert[] = 
   {
-    {x, y, 0.5f, 1.0f, color},
-    {x2, y, 0.5f, 1.0f, color},
-    {x2, y2, 0.5f, 1.0f, color},
-    {x, y2, 0.5f, 1.0f, color},
-    {x, y, 0.5f, 1.0f, color},
+    { XMFLOAT3( x, y, 0.5f), float4, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x2, y, 0.5f), float4, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x2, y2, 0.5f), float4, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x2, y2, 0.5f), float4, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(x, y2, 0.5f), float4, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3( x, y, 0.5f), float4, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
   };
-  g_Windowing.Get3DDevice()->SetFVF(D3DFVF_CUSTOMVERTEX);
-  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 3, vert, sizeof(CUSTOMVERTEX));
+
+  UpdateVertexBuffer(vert, ARRAYSIZE(vert));
+
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+
+  pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
+  unsigned stride = sizeof(Vertex), offset = 0;
+  pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+  pGUIShader->Draw(ARRAYSIZE(vert), 0);
+}
+
+void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertecies, unsigned count)
+{
+  unsigned width = sizeof(Vertex) * count;
+
+  if (!m_vb || width > m_bufferWidth) // create new
+  {
+    SAFE_RELEASE(m_vb);
+
+    CD3D11_BUFFER_DESC desc(width, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+    D3D11_SUBRESOURCE_DATA initData = {};
+    initData.pSysMem = vertecies;
+    initData.SysMemPitch = width;
+    if (SUCCEEDED(g_Windowing.Get3D11Device()->CreateBuffer(&desc, &initData, &m_vb)))
+    {
+      m_bufferWidth = width;
+    }
+    return;
+  }
+  else // update 
+  {
+    ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+    D3D11_MAPPED_SUBRESOURCE res;
+    if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
+    {
+      memcpy(res.pData, vertecies, sizeof(Vertex) * count);
+      pContext->Unmap(m_vb, 0);
+    }
+  }
 }

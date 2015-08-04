@@ -194,7 +194,7 @@ char*     CPluginShell::GetPluginsDirPath() { return m_szPluginsDirPath;  };
 char*     CPluginShell::GetConfigIniFile()  { return m_szConfigIniFile;   };
 //int       CPluginShell::GetFontHeight(eFontIndex idx) { if (idx >= 0 && idx < NUM_BASIC_FONTS + NUM_EXTRA_FONTS) return m_fontinfo[idx].nSize; else return 0; };
 int       CPluginShell::GetBitDepth()       { return m_lpDX->GetBitDepth(); };
-LPDIRECT3DDEVICE9 CPluginShell::GetDevice() { if (m_lpDX) return m_lpDX->m_lpDevice; else return NULL; };
+DX11Context* CPluginShell::GetDevice()      { if (m_lpDX) return m_lpDX->m_lpDevice; else return NULL; };
 D3DCAPS9* CPluginShell::GetCaps()           { if (m_lpDX) return &(m_lpDX->m_caps);  else return NULL; };
 D3DFORMAT CPluginShell::GetBackBufFormat()  { if (m_lpDX) return m_lpDX->m_current_mode.display_mode.Format; else return D3DFMT_UNKNOWN; };
 D3DFORMAT CPluginShell::GetBackBufZFormat() { if (m_lpDX) return m_lpDX->GetZFormat(); else return D3DFMT_UNKNOWN; };
@@ -493,7 +493,7 @@ void CPluginShell::CleanUpVJStuff()
 #endif
 }
 
-int CPluginShell::AllocateFonts(IDirect3DDevice9* pDevice)
+int CPluginShell::AllocateFonts(DX11Context* pDevice)
 {
 #if 0
     // Create D3DX system font:
@@ -849,7 +849,7 @@ int CPluginShell::InitDirectX()
 {
 
 //    m_lpDX = new DXContext(m_hWndWinamp,m_hInstance,CLASSNAME,WINDOWCAPTION,CPluginShell::WindowProc,(LONG)this, m_minimize_winamp, m_szConfigIniFile);
-  m_lpDX = new DXContext(m_device, m_szConfigIniFile);
+  m_lpDX = new DXContext(m_device, m_context, m_szConfigIniFile);
     if (!m_lpDX)
     {
 //        MessageBox(NULL, "Unable to initialize DXContext;\rprobably out of memory.", "ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
@@ -888,6 +888,7 @@ int CPluginShell::InitDirectX()
 void CPluginShell::CleanUpDirectX()
 {
     SafeDelete(m_lpDX);
+    SafeRelease(m_device);
 }
 
 int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance)
@@ -1124,12 +1125,13 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
     return TRUE;
 }
 
-int CPluginShell::PluginInitialize(LPDIRECT3DDEVICE9 device, int iPosX, int iPosY, int iWidth, int iHeight, float pixelRatio)
+int CPluginShell::PluginInitialize(ID3D11DeviceContext* context, int iPosX, int iPosY, int iWidth, int iHeight, float pixelRatio)
 {
   // note: initialize GDI before DirectX.  Also separate them because
   // when we change windowed<->fullscreen, or lose the device and restore it,
   // we don't want to mess with any (persistent) GDI stuff.
-  m_device = device;
+  m_context = context;
+  context->GetDevice(&m_device);
   if (!InitDirectX())        return FALSE;  // gives its own error messages
   m_lpDX->m_client_width = iWidth;
   m_lpDX->m_client_height = iHeight;
@@ -1939,7 +1941,7 @@ void CPluginShell::AnalyzeNewSound(unsigned char *pWaveL, unsigned char *pWaveR)
     }
 }
 
-void CPluginShell::PrepareFor2DDrawing_B(IDirect3DDevice9 *pDevice, int w, int h)
+void CPluginShell::PrepareFor2DDrawing_B(DX11Context *pDevice, int w, int h)
 {
     // New 2D drawing area will have x,y coords in the range <-1,-1> .. <1,1>
     //         +--------+ Y=-1
@@ -1954,43 +1956,49 @@ void CPluginShell::PrepareFor2DDrawing_B(IDirect3DDevice9 *pDevice, int w, int h
     // before rendering primitives!
     // Also, be sure your sprites have a z coordinate of 0.
 
-    pDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-    pDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
-    pDevice->SetRenderState( D3DRS_ZFUNC,     D3DCMP_LESSEQUAL );
-    pDevice->SetRenderState( D3DRS_SHADEMODE, D3DSHADE_GOURAUD );
-    pDevice->SetRenderState( D3DRS_FILLMODE,  D3DFILL_SOLID );
-    pDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-    pDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-//    pDevice->SetRenderState( D3DRS_CLIPPING, TRUE );
-    pDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
-    pDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-    pDevice->SetRenderState( D3DRS_LOCALVIEWER, FALSE );
-    pDevice->SetRenderState( D3DRS_COLORVERTEX, TRUE );
-
+    // Setup DX11 stuff
+    pDevice->SetDepth(false);
+    pDevice->SetRasterizerState(D3D11_CULL_NONE, D3D11_FILL_SOLID);
     pDevice->SetTexture(0, NULL);
     pDevice->SetTexture(1, NULL);
-    pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);//D3DTEXF_LINEAR);
-    pDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_POINT);//D3DTEXF_LINEAR);
-    pDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
-    pDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
-    pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-    pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT );
-    pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+    pDevice->SetSamplerState(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP); // or WRAP?! TODO DX11
+    pDevice->SetShader(1); // see DX11Contex implementation
+    pDevice->SetBlendState(false, D3D11_BLEND_ONE, D3D11_BLEND_ZERO);
 
-    pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
-    pDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+  //pDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+    //pDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
+    //pDevice->SetRenderState( D3DRS_ZFUNC,     D3DCMP_LESSEQUAL );
+    //pDevice->SetRenderState( D3DRS_SHADEMODE, D3DSHADE_GOURAUD );
+    //pDevice->SetRenderState( D3DRS_FILLMODE,  D3DFILL_SOLID );
+    //pDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
+    //pDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+//    pDevice->SetRenderState( D3DRS_CLIPPING, TRUE );
+    //pDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
+    //pDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+    //pDevice->SetRenderState( D3DRS_LOCALVIEWER, FALSE );
+    //pDevice->SetRenderState( D3DRS_COLORVERTEX, TRUE );
 
-    pDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+    //pDevice->SetTexture(0, NULL);
+    //pDevice->SetTexture(1, NULL);
+    //pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);//D3DTEXF_LINEAR);
+    //pDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_POINT);//D3DTEXF_LINEAR);
+    //pDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+    //pDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+    //pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+    //pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    //pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT );
+    //pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+
+    //pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    //pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+    //pDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+
+    //pDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 
     // set up for 2D drawing:
     {
-        D3DXMATRIX Ortho2D;
-        D3DXMATRIX Identity;
-
-        D3DXMatrixOrthoLH(&Ortho2D, w, h, 0.0f, 1.0f);
-        D3DXMatrixIdentity(&Identity);
+        DirectX::XMMATRIX Ortho2D = DirectX::XMMatrixOrthographicLH(w, h, 0.0f, 1.0f);
+        DirectX::XMMATRIX Identity = DirectX::XMMatrixIdentity();
 
         pDevice->SetTransform(D3DTS_PROJECTION, &Ortho2D);
         pDevice->SetTransform(D3DTS_WORLD, &Identity);

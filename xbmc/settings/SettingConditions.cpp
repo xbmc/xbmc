@@ -44,7 +44,7 @@
 #include "osx/DarwinUtils.h"
 #endif// defined(TARGET_DARWIN_OSX)
 
-bool AddonHasSettings(const std::string &condition, const std::string &value, const CSetting *setting)
+bool AddonHasSettings(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   if (setting == NULL)
     return false;
@@ -63,86 +63,87 @@ bool AddonHasSettings(const std::string &condition, const std::string &value, co
   return addon->HasSettings();
 }
 
-bool CheckMasterLock(const std::string &condition, const std::string &value, const CSetting *setting)
+bool CheckMasterLock(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return g_passwordManager.IsMasterLockUnlocked(StringUtils::EqualsNoCase(value, "true"));
 }
 
-bool CheckPVRParentalPin(const std::string &condition, const std::string &value, const CSetting *setting)
+bool CheckPVRParentalPin(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return PVR::g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str());
 }
 
-bool HasPeripherals(const std::string &condition, const std::string &value, const CSetting *setting)
+bool HasPeripherals(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return PERIPHERALS::g_peripherals.GetNumberOfPeripherals() > 0;
 }
 
-bool IsFullscreen(const std::string &condition, const std::string &value, const CSetting *setting)
+bool IsFullscreen(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return g_Windowing.IsFullScreen();
 }
 
-bool IsMasterUser(const std::string &condition, const std::string &value, const CSetting *setting)
+bool IsMasterUser(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return g_passwordManager.bMasterUser;
 }
 
-bool IsUsingTTFSubtitles(const std::string &condition, const std::string &value, const CSetting *setting)
+bool IsUsingTTFSubtitles(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CUtil::IsUsingTTFSubtitles();
 }
 
-bool ProfileCanWriteDatabase(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileCanWriteDatabase(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().canWriteDatabases();
 }
 
-bool ProfileCanWriteSources(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileCanWriteSources(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().canWriteSources();
 }
 
-bool ProfileHasAddons(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileHasAddons(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().hasAddons();
 }
 
-bool ProfileHasDatabase(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileHasDatabase(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().hasDatabases();
 }
 
-bool ProfileHasSources(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileHasSources(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().hasSources();
 }
 
-bool ProfileHasAddonManagerLocked(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileHasAddonManagerLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().addonmanagerLocked();
 }
 
-bool ProfileHasFilesLocked(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileHasFilesLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().filesLocked();
 }
 
-bool ProfileHasMusicLocked(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileHasMusicLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().musicLocked();
 }
 
-bool ProfileHasPicturesLocked(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileHasPicturesLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().picturesLocked();
 }
 
-bool ProfileHasProgramsLocked(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileHasProgramsLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().programsLocked();
 }
 
+bool ProfileHasSettingsLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 #ifdef HAS_DS_PLAYER  
 bool IsWindowsVersionAtLeast(const std::string &condition, const std::string &value, const CSetting *setting)
 {
@@ -150,7 +151,6 @@ bool IsWindowsVersionAtLeast(const std::string &condition, const std::string &va
 }
 #endif
 
-bool ProfileHasSettingsLocked(const std::string &condition, const std::string &value, const CSetting *setting)
 {
   LOCK_LEVEL::SETTINGS_LOCK slValue=LOCK_LEVEL::ALL;
   if (StringUtils::EqualsNoCase(value, "none"))
@@ -164,12 +164,12 @@ bool ProfileHasSettingsLocked(const std::string &condition, const std::string &v
   return slValue <= CProfilesManager::Get().GetCurrentProfile().settingsLockLevel();
 }
 
-bool ProfileHasVideosLocked(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileHasVideosLocked(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   return CProfilesManager::Get().GetCurrentProfile().videoLocked();
 }
 
-bool ProfileLockMode(const std::string &condition, const std::string &value, const CSetting *setting)
+bool ProfileLockMode(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
   char *tmp = NULL;
   LockType lock = (LockType)strtol(value.c_str(), &tmp, 0);
@@ -315,7 +315,7 @@ bool CSettingConditions::Check(const std::string &condition, const std::string &
 
   std::map<std::string, SettingConditionCheck>::const_iterator itCondition = m_complexConditions.find(condition);
   if (itCondition != m_complexConditions.end())
-    return itCondition->second(condition, value, setting);
+    return itCondition->second(condition, value, setting, NULL);
 
   return Check(condition);
 }

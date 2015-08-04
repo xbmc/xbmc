@@ -22,6 +22,11 @@
 
 #include "GUIWindowPVRBase.h"
 
+#include <memory>
+
+class CFileItem;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
+
 namespace PVR
 {
   class CGUIWindowPVRTimers : public CGUIWindowPVRBase
@@ -31,9 +36,11 @@ namespace PVR
     virtual ~CGUIWindowPVRTimers(void) {};
 
     bool OnMessage(CGUIMessage& message);
+    bool OnAction(const CAction &action);
     void GetContextButtons(int itemNumber, CContextButtons &buttons);
     bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     bool Update(const std::string &strDirectory, bool updateFilterPath = true);
+    void UpdateButtons(void);
     void UnregisterObservers(void);
     void ResetObservers(void);
 
@@ -51,5 +58,8 @@ namespace PVR
     bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+
+    CFileItemPtr m_currentFileItem;
   };
 }

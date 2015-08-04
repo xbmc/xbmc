@@ -49,10 +49,12 @@
 #include "video/VideoThumbLoader.h"
 #include "filesystem/File.h"
 #include "TextureCache.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
+#include <string>
+#include <vector>
 
-using namespace std;
+using namespace KODI::MESSAGING;
 
 #define BOOKMARK_THUMB_WIDTH g_advancedSettings.GetThumbSize()
 
@@ -317,7 +319,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
 
   // add items to file list and mark the proper item as selected if the current playtime is above
   int selectedItemIndex = 0;
-  int playTime = g_application.GetTime();
+  double playTime = g_application.GetTime();
   for (auto& item : items)
   {
     m_vecItems->Add(item);
@@ -326,7 +328,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   }
 
   m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(selectedItemIndex);;
+  m_viewControl.SetSelectedItem(selectedItemIndex);
 }
 
 void CGUIDialogVideoBookmarks::Update()
@@ -336,7 +338,7 @@ void CGUIDialogVideoBookmarks::Update()
 
   if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
   {
-    vector<CVideoInfoTag> episodes;
+    std::vector<CVideoInfoTag> episodes;
     videoDatabase.GetEpisodesByFile(g_application.CurrentFile(),episodes);
     if (episodes.size() > 1)
     {
@@ -379,14 +381,14 @@ void CGUIDialogVideoBookmarks::GotoBookmark(int item)
     return;
 
   CFileItemPtr fileItem = m_vecItems->Get(item);
-  int chapter = fileItem->GetProperty("chapter").asInteger();
-  if (!chapter)
+  int chapter = static_cast<int>(fileItem->GetProperty("chapter").asInteger());
+  if (chapter <= 0)
   {
     g_application.m_pPlayer->SetPlayerState(fileItem->GetProperty("playerstate").asString());
     g_application.SeekTime(fileItem->GetProperty("resumepoint").asDouble());
   }
   else
-    g_application.m_pPlayer->SeekChapter(fileItem->GetProperty("chapter").asInteger());
+    g_application.m_pPlayer->SeekChapter(chapter);
 
   Close();
 }
@@ -510,7 +512,7 @@ CGUIControl *CGUIDialogVideoBookmarks::GetFirstFocusableControl(int id)
 
 bool CGUIDialogVideoBookmarks::AddEpisodeBookmark()
 {
-  vector<CVideoInfoTag> episodes;
+  std::vector<CVideoInfoTag> episodes;
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
   videoDatabase.GetEpisodesByFile(g_application.CurrentFile(), episodes);
@@ -561,7 +563,7 @@ bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
   {
     CVideoDatabase videoDatabase;
     videoDatabase.Open();
-    vector<CVideoInfoTag> episodes;
+    std::vector<CVideoInfoTag> episodes;
     videoDatabase.GetEpisodesByFile(g_application.CurrentFile(),episodes);
     if (episodes.size() > 1)
     {

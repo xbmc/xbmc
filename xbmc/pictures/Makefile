@@ -5,6 +5,7 @@ SRCS=GUIDialogPictureInfo.cpp \
      Picture.cpp \
      PictureInfoLoader.cpp \
      PictureInfoTag.cpp \
+     PictureScalingAlgorithm.cpp \
      PictureThumbLoader.cpp \
      SlideShowPicture.cpp \
      

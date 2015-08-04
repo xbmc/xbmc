@@ -44,6 +44,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "TextureCache.h"
 #include "music/MusicThumbLoader.h"
 #include "interfaces/AnnouncementManager.h"
@@ -963,11 +964,11 @@ loop:
   {
     if (pDialog && bAllowSelection)
     {
-      if (!CGUIKeyboardFactory::ShowAndGetInput(album.strAlbum, g_localizeStrings.Get(16011), false))
+      if (!CGUIKeyboardFactory::ShowAndGetInput(album.strAlbum, CVariant{g_localizeStrings.Get(16011)}, false))
         return INFO_CANCELLED;
 
       std::string strTempArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
-      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
+      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, CVariant{g_localizeStrings.Get(16025)}, false))
         return INFO_CANCELLED;
 
       album.artist = StringUtils::Split(strTempArtist, g_advancedSettings.m_musicItemSeparator);
@@ -1000,7 +1001,7 @@ loop:
   {
     if (pDialog && bAllowSelection)
     {
-      if (!CGUIKeyboardFactory::ShowAndGetInput(artist.strArtist, g_localizeStrings.Get(16025), false))
+      if (!CGUIKeyboardFactory::ShowAndGetInput(artist.strArtist, CVariant{g_localizeStrings.Get(16025)}, false))
         return INFO_CANCELLED;
       goto loop;
     }
@@ -1114,7 +1115,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
         if (pDialog)
         {
           pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-          pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
+          pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
           pDlg->Reset();
           pDlg->EnableButton(true, 413); // manual
         }
@@ -1148,7 +1149,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
         if (pDialog && bestRelevance < THRESHOLD)
         {
           pDlg->Sort(false);
-          pDlg->DoModal();
+          pDlg->Open();
 
           // and wait till user selects one
           if (pDlg->GetSelectedLabel() < 0)
@@ -1158,14 +1159,17 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
 
             // manual button pressed
             std::string strNewAlbum = album.strAlbum;
-            if (!CGUIKeyboardFactory::ShowAndGetInput(strNewAlbum, g_localizeStrings.Get(16011), false)) return INFO_CANCELLED;
-            if (strNewAlbum == "") return INFO_CANCELLED;
+            if (!CGUIKeyboardFactory::ShowAndGetInput(strNewAlbum, CVariant{g_localizeStrings.Get(16011)}, false))
+              return INFO_CANCELLED;
+            if (strNewAlbum == "")
+              return INFO_CANCELLED;
 
             std::string strNewArtist = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
-            if (!CGUIKeyboardFactory::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return INFO_CANCELLED;
+            if (!CGUIKeyboardFactory::ShowAndGetInput(strNewArtist, CVariant{g_localizeStrings.Get(16025)}, false))
+              return INFO_CANCELLED;
 
-            pDialog->SetLine(0, strNewAlbum);
-            pDialog->SetLine(1, strNewArtist);
+            pDialog->SetLine(0, CVariant{strNewAlbum});
+            pDialog->SetLine(1, CVariant{strNewArtist});
             pDialog->Progress();
 
             CAlbum newAlbum = album;
@@ -1320,7 +1324,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
         CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
         if (pDlg)
         {
-          pDlg->SetHeading(g_localizeStrings.Get(21890));
+          pDlg->SetHeading(CVariant{g_localizeStrings.Get(21890)});
           pDlg->Reset();
           pDlg->EnableButton(true, 413); // manual
 
@@ -1341,7 +1345,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
             item.m_idepth = i; // use this to hold the index of the album in the scraper
             pDlg->Add(&item);
           }
-          pDlg->DoModal();
+          pDlg->Open();
 
           // and wait till user selects one
           if (pDlg->GetSelectedLabel() < 0)
@@ -1351,11 +1355,12 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
 
             // manual button pressed
             std::string strNewArtist = artist.strArtist;
-            if (!CGUIKeyboardFactory::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return INFO_CANCELLED;
+            if (!CGUIKeyboardFactory::ShowAndGetInput(strNewArtist, CVariant{g_localizeStrings.Get(16025)}, false))
+              return INFO_CANCELLED;
 
             if (pDialog)
             {
-              pDialog->SetLine(0, strNewArtist);
+              pDialog->SetLine(0, CVariant{strNewArtist});
               pDialog->Progress();
             }
 

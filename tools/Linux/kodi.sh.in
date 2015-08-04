@@ -45,7 +45,7 @@ done
 
 migrate_home()
 {
-  [ "$(basename $0)" = "xbmc" ] && echo "WARNING: running ${bin_name} as "xbmc" is deprecated and will be removed in later versions, please switch to using the ${bin_name} binary"
+  [ "$(basename $0)" = "xbmc" ] && echo "WARNING: Running ${bin_name} as "xbmc" is deprecated and will be removed in later versions, please switch to using the ${bin_name} binary"
 
   #check if data migration is needed
   if [ -d "${HOME}/.xbmc" ] && [ ! -d "${USERDATA_DIR}" ]; then
@@ -113,7 +113,9 @@ print_crash_report()
     fi
     single_stacktrace "$BASEDIR" 5
     # find in userdata dir
-    single_stacktrace $USERDATA_DIR/ 5
+    single_stacktrace "$HOME" 5
+    # try /proc/sys/kernel/core_pattern
+    [ -d $(dirname $(cat /proc/sys/kernel/core_pattern)) ] && single_stacktrace $(dirname $(cat /proc/sys/kernel/core_pattern)) 1
   else
     echo "gdb not installed, can't get stack trace." >> $FILE
   fi
@@ -127,7 +129,7 @@ print_crash_report()
     echo >> $FILE
   else
     echo "Logfile not found in the usual place." >> $FILE
-    echo "Please attach it seperately." >> $FILE
+    echo "Please attach it separately." >> $FILE
     echo "Use pastebin.com or similar for forums or IRC." >> $FILE
   fi
   echo >> $FILE

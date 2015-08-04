@@ -26,6 +26,7 @@
 #include "JobManager.h"
 #include "FileOperationJob.h"
 #include "URIUtils.h"
+#include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include <vector>
 #include "settings/MediaSourceSettings.h"
@@ -33,6 +34,7 @@
 #include "StringUtils.h"
 #include "URL.h"
 #include "settings/Settings.h"
+#include "utils/Variant.h"
 
 using namespace XFILE;
 using namespace std;
@@ -54,11 +56,11 @@ bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!force && pDialog)
   {
-    pDialog->SetHeading(122);
-    pDialog->SetLine(0, 125);
-    pDialog->SetLine(1, CURL(item->GetPath()).GetWithoutUserDetails());
-    pDialog->SetLine(2, "");
-    pDialog->DoModal();
+    pDialog->SetHeading(CVariant{122});
+    pDialog->SetLine(0, CVariant{125});
+    pDialog->SetLine(1, CVariant{CURL(item->GetPath()).GetWithoutUserDetails()});
+    pDialog->SetLine(2, CVariant{""});
+    pDialog->Open();
     if (!pDialog->IsConfirmed()) return false;
   }
 
@@ -81,7 +83,7 @@ bool CFileUtils::RenameFile(const std::string &strFile)
   URIUtils::RemoveSlashAtEnd(strFileAndPath);
   std::string strFileName = URIUtils::GetFileName(strFileAndPath);
   std::string strPath = URIUtils::GetDirectory(strFileAndPath);
-  if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
+  if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, CVariant{g_localizeStrings.Get(16013)}, false))
   {
     strPath = URIUtils::AddFileToFolder(strPath, strFileName);
     CLog::Log(LOGINFO,"FileUtils: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
@@ -161,4 +163,67 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
       return true;
   }
   return false;
+}
+
+CDateTime CFileUtils::GetModificationDate(const std::string& strFileNameAndPath, const bool& bUseLatestDate)
+{
+  CDateTime dateAdded;
+  if (strFileNameAndPath.empty())
+  {
+    CLog::Log(LOGDEBUG, "%s empty strFileNameAndPath variable", __FUNCTION__);
+    return dateAdded;
+  }
+
+  try
+  {
+    std::string file = strFileNameAndPath;
+    if (URIUtils::IsStack(strFileNameAndPath))
+      file = CStackDirectory::GetFirstStackedFile(strFileNameAndPath);
+
+    if (URIUtils::IsInArchive(file))
+      file = CURL(file).GetHostName();
+
+    // Let's try to get the modification datetime
+    struct __stat64 buffer;
+    if (CFile::Stat(file, &buffer) == 0 && (buffer.st_mtime != 0 || buffer.st_ctime != 0))
+    {
+      time_t now = time(NULL);
+      time_t addedTime;
+      // Prefer the modification time if it's valid
+      if (!bUseLatestDate)
+      {
+        if (buffer.st_mtime != 0 && (time_t)buffer.st_mtime <= now)
+          addedTime = (time_t)buffer.st_mtime;
+        else
+          addedTime = (time_t)buffer.st_ctime;
+      }
+      // Use the newer of the creation and modification time
+      else
+      {
+        addedTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+        // if the newer of the two dates is in the future, we try it with the older one
+        if (addedTime > now)
+          addedTime = min((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+      }
+
+      // make sure the datetime does is not in the future
+      if (addedTime <= now)
+      {
+        struct tm *time;
+#ifdef HAVE_LOCALTIME_R
+        struct tm result = {};
+        time = localtime_r(&addedTime, &result);
+#else
+        time = localtime(&addedTime);
+#endif
+        if (time)
+          dateAdded = *time;
+      }
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s unable to extract modification date for file (%s)", __FUNCTION__, strFileNameAndPath.c_str());
+  }
+  return dateAdded;
 }

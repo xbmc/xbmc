@@ -21,35 +21,21 @@
 #include <stdio.h>
 #include "Shader.h"
 #include "angelscript.h"
+#include "CommonStates.h"
 
-using namespace std;
-
-char ColourRemapPixelShaderSrc[] =
+namespace
 {
-	" sampler2D SpectrumTexture : tex0;										\n"
-	" sampler2D RemapTexture : tex1;										\n"
-	"		struct PS_INPUT													\n"
-	"		{																\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"																		\n"
-	" void Main( PS_INPUT input, out float4 OutColor : COLOR0 )				\n"
-	" {																		\n"
-	"	float4 SpecCol = tex2D( SpectrumTexture, input.Tex0 );				\n"
-	"	OutColor = tex2D( RemapTexture, SpecCol.ra );						\n"
-	" }																		\n"
-	"																		\n"
-};
-
+  #include "../Shaders/ColourRemapPixelShader.inc"
+}
 
 class ColourRemapPixelShader : public Shader
 {
 	DECLARE_SHADER(ColourRemapPixelShader);
 public:
-	ColourRemapPixelShader( EShaderType ShaderType, char* pShaderSrc ) : Shader( ShaderType, pShaderSrc ){};
+	ColourRemapPixelShader( EShaderType ShaderType, const void* pShaderCode, unsigned int iCodeLen ) : Shader( ShaderType, pShaderCode, iCodeLen ){};
 };
 
-IMPLEMENT_SHADER(ColourRemapPixelShader, ColourRemapPixelShaderSrc, ST_PIXEL);
+IMPLEMENT_SHADER(ColourRemapPixelShader, ColourRemapPixelShaderCode, sizeof(ColourRemapPixelShaderCode), ST_PIXEL);
 
 // TODO
 float GetSpecLeft(int index);
@@ -62,7 +48,7 @@ VoicePrint::VoicePrint()
 	m_tex2 = Renderer::CreateTexture(512, 512);
 	m_colourMap = NULL;
 
-	m_spectrumTexture = Renderer::CreateTexture(1, 512, D3DFMT_A8R8G8B8, true);
+  m_spectrumTexture = Renderer::CreateTexture(1, 512, DXGI_FORMAT_B8G8R8A8_UNORM, true);
 
 	m_speed = 0.008f;
 	m_minX = 0.99f;
@@ -74,10 +60,8 @@ VoicePrint::VoicePrint()
 
 VoicePrint::~VoicePrint()
 {
-	if (m_colourMap)
-	{
-		Renderer::ReleaseTexture( m_colourMap );
-	}
+	if ( m_colourMap )
+    m_colourMap->Release();
 
 	if ( m_tex1 )
 		m_tex1->Release();
@@ -90,7 +74,7 @@ VoicePrint::~VoicePrint()
 
 } // Destructor
 
-void VoicePrint::LoadColourMap(string& filename)
+void VoicePrint::LoadColourMap(std::string& filename)
 {
 	char fullname[ 512 ];
 	sprintf_s(fullname, 512, "%s%s", g_TexturePath, filename.c_str() );
@@ -126,25 +110,27 @@ void VoicePrint::Render()
 
 	//---------------------------------------------------------------------------
 	// Update spectrum texture
-	D3DLOCKED_RECT	lockedRect;
-	m_spectrumTexture->LockRect(0, &lockedRect, NULL, 0);
+	D3D11_MAPPED_SUBRESOURCE	lockedRect;
+  if (m_spectrumTexture->LockRect(0, &lockedRect))
+  {
+    unsigned char* data = (unsigned char*)lockedRect.pData;
 
-	unsigned char* data = (unsigned char*)lockedRect.pBits; 
+    for (int i = 0; i < 512; i++)
+    {
+      int val = ((int)(GetSpecLeft(i) * 0.8f * 255.0f));
+      val = min(val, 255);
+      val = max(0, val);
 
-	for (int i=0; i<512; i++)
-	{
-		int val = ((int)(GetSpecLeft(i) * 0.8f * 255.0f));
-		val = min(val, 255);
-		val = max(0, val);
+      float xVal = (m_minX * 255) + (val * (m_maxX - m_minX));
+      float yVal = ((m_minY * 255) + (val * (m_maxY - m_minY)));
 
-		float xVal = (m_minX * 255) + (val * (m_maxX - m_minX));
-		float yVal = ((m_minY * 255) + (val * (m_maxY - m_minY)));
-
-		data[3] = (char)yVal; // r = y
-		data[2] = (char)xVal; // a = x
-		data += lockedRect.Pitch;
-	}
-	m_spectrumTexture->UnlockRect( 0 );
+      // 0 - b, 1 - g, 2 - r, 3 - a
+      data[3] = (char)yVal; // r = y
+      data[2] = (char)xVal; // a = x
+      data += lockedRect.RowPitch;
+    }
+    m_spectrumTexture->UnlockRect(0);
+  }
 
 	//---------------------------------------------------------------------------
 	// Shift voiceprint texture to the left a bit
@@ -162,29 +148,22 @@ void VoicePrint::Render()
 	}
 	m_iCurrentTexture = 1 - m_iCurrentTexture;
 
-
 	Renderer::SetDrawMode2d();
 
 	DiffuseUVVertexShader* pShader = &DiffuseUVVertexShader::StaticType;
-	Renderer::CommitTransforms( pShader );
+  Renderer::SetShader( pShader );
+  Renderer::CommitTransforms( pShader );
 	Renderer::CommitTextureState();
-	Renderer::GetDevice()->SetVertexShader( pShader->GetVertexShader() );
-	Renderer::GetDevice()->SetVertexDeclaration( g_pPosColUVDeclaration );
-
-	for (int i = 0; i < 2; i++)
-	{
-		Renderer::GetDevice()->SetSamplerState( i, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-		Renderer::GetDevice()->SetSamplerState( i, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-		Renderer::GetDevice()->SetSamplerState( i, D3DSAMP_MINFILTER, D3DTEXF_POINT);
-		Renderer::GetDevice()->SetSamplerState( i, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
-	}
+  {
+    ID3D11SamplerState* states[1] = { Renderer::GetStates()->PointClamp() };
+    Renderer::GetContext()->PSSetSamplers(0, ARRAYSIZE(states), states);
+  }
 
 	PosColNormalUVVertex v[4];
 
 	v[0].Coord.x = -1 - mySpeed;
 	v[0].Coord.y = -1;
 	v[0].Coord.z = 0.0f;
-//	v[0].Diffuse = 0xffffffff;
 	v[0].FDiffuse.x = 1.0f;
 	v[0].FDiffuse.y = 1.0f;
 	v[0].FDiffuse.z = 1.0f;
@@ -195,7 +174,6 @@ void VoicePrint::Render()
 	v[1].Coord.x = 1 - mySpeed;
 	v[1].Coord.y = -1;
 	v[1].Coord.z = 0.0f;
-//	v[1].Diffuse = 0xffffffff;
 	v[1].FDiffuse = v[0].FDiffuse;
 	v[1].u = 1.0f + (0.5f / 512);
 	v[1].v = 0.0f + (0.5f / 512);
@@ -203,7 +181,6 @@ void VoicePrint::Render()
 	v[2].Coord.x = 1 - mySpeed;
 	v[2].Coord.y = 1;
 	v[2].Coord.z = 0.0f;
-//	v[2].Diffuse = 0xffffffff;
 	v[2].FDiffuse = v[0].FDiffuse;
 	v[2].u = 1.0f + (0.5f / 512);
 	v[2].v = 1.0f + (0.5f / 512);
@@ -211,22 +188,21 @@ void VoicePrint::Render()
 	v[3].Coord.x = -1 - mySpeed;
 	v[3].Coord.y = 1;
 	v[3].Coord.z = 0.0f;
-//	v[3].Diffuse = 0xffffffff;
 	v[3].FDiffuse = v[0].FDiffuse;
 	v[3].u = 0.0f + (0.5f / 512);
 	v[3].v = 1.0f + (0.5f / 512);
 
-	Renderer::GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, &v, sizeof(PosColNormalUVVertex));
-
+  Renderer::UpdateVBuffer(v, 4);
+  Renderer::DrawPrimitive(D3DPT_TRIANGLEFAN, 6, 0);
 
 	//---------------------------------------------------------------------------
 	// Draw this frame's voiceprint data to right hand side of voice print texture
-	Renderer::SetTexture(m_spectrumTexture);
- 	Renderer::GetDevice()->SetTexture(1, m_colourMap);
-	ColourRemapPixelShader* pPShader = &ColourRemapPixelShader::StaticType;
+  ColourRemapPixelShader* pPShader = &ColourRemapPixelShader::StaticType;
+  Renderer::SetShader(pPShader);
+  Renderer::SetTexture(m_spectrumTexture);
+  Renderer::SetShaderTexture(1, m_colourMap);
 
-	Renderer::GetDevice()->SetPixelShader( pPShader->GetPixelShader() );
-	v[0].Coord.x = (1-mySpeed);
+  v[0].Coord.x = (1-mySpeed);
 	v[0].Coord.y = (-1);
 	v[1].Coord.x = (1);
 	v[1].Coord.y = (-1);
@@ -235,18 +211,16 @@ void VoicePrint::Render()
 	v[3].Coord.x = (1-mySpeed);
 	v[3].Coord.y = (1);
 
-	Renderer::GetDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, &v, sizeof(PosColNormalUVVertex));
-	for (int i = 0; i < 2; i++)
-	{
-		Renderer::GetDevice()->SetSamplerState( i, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
-		Renderer::GetDevice()->SetSamplerState( i, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-		Renderer::GetDevice()->SetSamplerState( i, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-		Renderer::GetDevice()->SetSamplerState( i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	}
-	Renderer::GetDevice()->SetTexture(1, NULL);
-	Renderer::SetTexture(NULL);
-	Renderer::GetDevice()->SetPixelShader( NULL );
-	Renderer::SetRenderTargetBackBuffer();
+  Renderer::UpdateVBuffer(v, 4);
+  Renderer::DrawPrimitive(D3DPT_TRIANGLEFAN, 6, 0);
+  {
+    ID3D11SamplerState* states[1] = { Renderer::GetStates()->LinearWrap() };
+    Renderer::GetContext()->PSSetSamplers(0, ARRAYSIZE(states), states);
+  }
+  Renderer::SetShaderTexture(1, NULL);
+  Renderer::SetTexture(NULL);
+  Renderer::CommitTextureState();        // need to unbind color remap shader
+  Renderer::SetRenderTargetBackBuffer();
 
 } // Render
 

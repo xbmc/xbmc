@@ -25,6 +25,8 @@
 #include "URL.h"
 #include "utils/UrlOptions.h"
 
+class CVariant;
+
 class CDbUrl : public CUrlOptions
 {
 public:

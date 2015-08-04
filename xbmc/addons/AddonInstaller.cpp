@@ -22,12 +22,13 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/Directory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "utils/JobManager.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -46,7 +47,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
-
+using namespace KODI::MESSAGING;
 
 struct find_map : public binary_function<CAddonInstaller::JobMap::value_type, unsigned int, bool>
 {
@@ -182,7 +183,7 @@ bool CAddonInstaller::InstallModal(const std::string &addonID, ADDON::AddonPtr &
 
   // if specified ask the user if he wants it installed
   if (promptForInstall &&
-      !CGUIDialogYesNo::ShowAndGetInput(24076, 24100, addon->Name().c_str(), 24101))
+      !CGUIDialogYesNo::ShowAndGetInput(CVariant{24076}, CVariant{24100}, CVariant{addon->Name()}, CVariant{24101}))
     return false;
 
   if (!Install(addonID, true, "", false, true))
@@ -899,7 +900,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
       msg = g_localizeStrings.Get(addon2 != NULL ? 113 : 114);
 
     if (IsModal())
-      CGUIDialogOK::ShowAndGetInput(m_addon->Name(), msg);
+      CGUIDialogOK::ShowAndGetInput(CVariant{m_addon->Name()}, CVariant{msg});
     else
       CGUIDialogKaiToast::QueueNotification(addon->Icon(), addon->Name(), msg, TOAST_DISPLAY_TIME, false);
   }
@@ -908,7 +909,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
     if (msg.empty())
       msg = g_localizeStrings.Get(114);
     if (IsModal())
-      CGUIDialogOK::ShowAndGetInput(fileName, msg);
+      CGUIDialogOK::ShowAndGetInput(CVariant{fileName}, CVariant{msg});
     else
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, fileName, msg, TOAST_DISPLAY_TIME, false);
   }

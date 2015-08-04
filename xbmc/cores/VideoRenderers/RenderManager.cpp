@@ -32,7 +32,7 @@
 #include "utils/StringUtils.h"
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -62,7 +62,10 @@
   #include "../dvdplayer/DVDCodecs/Video/VAAPI.h"
 #endif
 
+using namespace KODI::MESSAGING;
+
 #define MAXPRESENTDELAY 0.500
+
 
 /* at any point we want an exclusive lock on rendermanager */
 /* we must make sure we don't have a graphiccontext lock */
@@ -270,7 +273,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     if( flags & CONF_FLAGS_FULLSCREEN )
     {
       lock.Leave();
-      CApplicationMessenger::Get().SwitchToFullscreen();
+      CApplicationMessenger::Get().PostMsg(TMSG_SWITCHTOFULLSCREEN);
       lock.Enter();
     }
     lock2.Enter();
@@ -537,9 +540,8 @@ bool CXBMCRenderManager::Flush()
   }
   else
   {
-    ThreadMessage msg = {TMSG_RENDERER_FLUSH};
     m_flushEvent.Reset();
-    CApplicationMessenger::Get().SendMessage(msg, false);
+    CApplicationMessenger::Get().PostMsg(TMSG_RENDERER_FLUSH);
     if (!m_flushEvent.WaitMSec(1000))
     {
       CLog::Log(LOGERROR, "%s - timed out waiting for renderer to flush", __FUNCTION__);
@@ -1198,7 +1200,7 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
   m_overlays.Release(m_free.front());
 
   // return buffer level
-  return m_queued.size() + m_discard.size();;
+  return m_queued.size() + m_discard.size();
 }
 
 void CXBMCRenderManager::PrepareNextRender()
@@ -1275,8 +1277,10 @@ void CXBMCRenderManager::DiscardBuffer()
   while(!m_queued.empty())
     requeue(m_discard, m_queued);
 
+  m_Queue[m_presentsource].timestamp = GetPresentTime();
+
   if(m_presentstep == PRESENT_READY)
-    m_presentstep   = PRESENT_IDLE;
+    m_presentstep = PRESENT_IDLE;
   m_presentevent.notifyAll();
 }
 

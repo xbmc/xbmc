@@ -20,6 +20,8 @@
 
 #include "GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
+#include "utils/Variant.h"
 
 #define ID_BUTTON_OK   10
 
@@ -47,18 +49,18 @@ bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &text)
+void CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant text)
 {
   CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
   if (!dialog)
     return;
   dialog->SetHeading(heading);
   dialog->SetText(text);
-  dialog->DoModal();
+  dialog->Open();
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2)
+void CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2)
 {
   CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
   if (!dialog) 
@@ -67,7 +69,7 @@ void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &line
   dialog->SetLine(0, line0);
   dialog->SetLine(1, line1);
   dialog->SetLine(2, line2);
-  dialog->DoModal();
+  dialog->Open();
 }
 
 int CGUIDialogOK::GetDefaultLabelID(int controlId) const

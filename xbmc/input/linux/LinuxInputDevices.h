@@ -22,6 +22,7 @@
 
 #include <vector>
 #include <string>
+#include <deque>
 #include "windowing/XBMC_events.h"
 #include "input/XBMC_keyboard.h"
 #include "threads/SingleLock.h"
@@ -79,6 +80,7 @@ private:
   int m_deviceMaxAxis;
   bool m_bSkipNonKeyEvents;
   bool m_bUnplugged;
+  std::deque<XBMC_Event> m_equeue;
 };
 
 class CLinuxInputDevices

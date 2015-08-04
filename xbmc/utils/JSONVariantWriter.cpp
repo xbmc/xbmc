@@ -21,6 +21,7 @@
 #include <locale>
 
 #include "JSONVariantWriter.h"
+#include "utils/Variant.h"
 
 using namespace std;
 

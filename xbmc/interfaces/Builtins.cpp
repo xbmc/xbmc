@@ -24,7 +24,7 @@
 #include "utils/Screenshot.h"
 #include "utils/SeekHandler.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Autorun.h"
 #include "Builtins.h"
 #include "input/ButtonTranslator.h"
@@ -48,6 +48,7 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "addons/Skin.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "network/NetworkServices.h"
@@ -64,6 +65,7 @@
 #include "settings/SkinSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoLibraryQueue.h"
 #include "Util.h"
 #include "URL.h"
@@ -71,6 +73,7 @@
 #include "cores/IPlayer.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/PVRManager.h"
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -108,6 +111,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
+using namespace KODI::MESSAGING;
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -170,6 +174,7 @@ const BUILT_IN commands[] = {
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Skin.ToggleSetting",         true,   "Toggles a skin setting on or off" },
+  { "Skin.ToggleDebug",           false,  "Toggles skin debug info on or off" },
   { "Skin.SetString",             true,   "Prompts and sets skin string" },
   { "Skin.SetNumeric",            true,   "Prompts and sets numeric input" },
   { "Skin.SetPath",               true,   "Prompts and sets a skin path" },
@@ -232,8 +237,11 @@ const BUILT_IN commands[] = {
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
-  { "StartPVRManager",            false,  "(Re)Starts the PVR manager" },
-  { "StopPVRManager",             false,  "Stops the PVR manager" },
+  { "StartPVRManager",            false,  "(Re)Starts the PVR manager (Deprecated)" },
+  { "StopPVRManager",             false,  "Stops the PVR manager (Deprecated)" },
+  { "PVR.StartManager",            false,  "(Re)Starts the PVR manager" },
+  { "PVR.StopManager",             false,  "Stops the PVR manager" },
+  { "PVR.SearchMissingChannelIcons", false,  "Search for missing channel icons" },
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
@@ -319,44 +327,44 @@ int CBuiltins::Execute(const std::string& execString)
 
   if (execute == "reboot" || execute == "restart" || execute == "reset")  //Will reboot the system
   {
-    CApplicationMessenger::Get().Restart();
+    CApplicationMessenger::Get().PostMsg(TMSG_RESTART);
   }
   else if (execute == "shutdown")
   {
-    CApplicationMessenger::Get().Shutdown();
+    CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
   }
   else if (execute == "powerdown")
   {
-    CApplicationMessenger::Get().Powerdown();
+    CApplicationMessenger::Get().PostMsg(TMSG_POWERDOWN);
   }
   else if (execute == "restartapp")
   {
-    CApplicationMessenger::Get().RestartApp();
+    CApplicationMessenger::Get().PostMsg(TMSG_RESTARTAPP);
   }
   else if (execute == "hibernate")
   {
-    CApplicationMessenger::Get().Hibernate();
+    CApplicationMessenger::Get().PostMsg(TMSG_HIBERNATE);
   }
   else if (execute == "suspend")
   {
-    CApplicationMessenger::Get().Suspend();
+    CApplicationMessenger::Get().PostMsg(TMSG_SUSPEND);
   }
   else if (execute == "quit")
   {
-    CApplicationMessenger::Get().Quit();
+    CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
   }
   else if (execute == "inhibitidleshutdown")
   {
     bool inhibit = (params.size() == 1 && StringUtils::EqualsNoCase(params[0], "true"));
-    CApplicationMessenger::Get().InhibitIdleShutdown(inhibit);
+    CApplicationMessenger::Get().PostMsg(TMSG_INHIBITIDLESHUTDOWN, inhibit);
   }
   else if (execute == "activatescreensaver")
   {
-    CApplicationMessenger::Get().ActivateScreensaver();
+    CApplicationMessenger::Get().PostMsg(TMSG_ACTIVATESCREENSAVER);
   }
   else if (execute == "minimize")
   {
-    CApplicationMessenger::Get().Minimize();
+    CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
   }
   else if (execute == "loadprofile")
   {
@@ -367,7 +375,7 @@ int CBuiltins::Execute(const std::string& execString)
         && (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
             || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
     {
-      CApplicationMessenger::Get().LoadProfile(index);
+      CApplicationMessenger::Get().PostMsg(TMSG_LOADPROFILE, index);
     }
   }
   else if (execute == "mastermode")
@@ -393,7 +401,7 @@ int CBuiltins::Execute(const std::string& execString)
   {
     if (params.size())
     {
-      CApplicationMessenger::Get().SetGUILanguage(params[0]);
+      CApplicationMessenger::Get().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, params[0]);
     }
   }
   else if (execute == "takescreenshot")
@@ -566,13 +574,13 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "system.exec")
   {
-    CApplicationMessenger::Get().Minimize();
-    CApplicationMessenger::Get().ExecOS(parameter, false);
+    CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
+    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_OS, 0, -1, nullptr, parameter);
   }
   else if (execute == "system.execwait")
   {
-    CApplicationMessenger::Get().Minimize();
-    CApplicationMessenger::Get().ExecOS(parameter, true);
+    CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
+    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_OS, 1, -1, nullptr, parameter);
   }
   else if (execute == "resolution")
   {
@@ -779,7 +787,7 @@ int CBuiltins::Execute(const std::string& execString)
       else
         items.Sort(SortByLabel, SortOrderAscending);
 
-      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;;
+      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
       if (containsMusic && containsVideo) //mixed content found in the folder
       {
         for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
@@ -1118,7 +1126,7 @@ int CBuiltins::Execute(const std::string& execString)
     {
       if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
       {
-        CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);  
+        CApplicationMessenger::Get().PostMsg(TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
       }
     }
   }
@@ -1346,7 +1354,7 @@ int CBuiltins::Execute(const std::string& execString)
     g_mediaManager.GetLocalDrives(localShares);
     if (execute == "skin.setstring")
     {
-      if (CGUIKeyboardFactory::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
+      if (CGUIKeyboardFactory::ShowAndGetInput(value, CVariant{g_localizeStrings.Get(1029)}, true))
         CSkinSettings::Get().SetString(string, value);
     }
     else if (execute == "skin.setnumeric")
@@ -1466,6 +1474,10 @@ int CBuiltins::Execute(const std::string& execString)
       CSettings::Get().Save();
     }
   }
+  else if (execute == "skin.toggledebug")
+  {
+    g_SkinInfo->ToggleDebug();
+  }
   else if (execute == "dialog.close" && params.size())
   {
     bool bForce = false;
@@ -1581,7 +1593,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (params.size() > 1)
       singleFile = StringUtils::EqualsNoCase(params[1], "true");
     else
-      singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20426, cancelled, 20428, 20429);
+      singleFile = !CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20426}, cancelled, CVariant{20428}, CVariant{20429});
 
     if (cancelled)
         return -1;
@@ -1591,7 +1603,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 2)
         thumbs = StringUtils::EqualsNoCase(params[2], "true");
       else
-        thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20430, cancelled);
+        thumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20430}, cancelled, CVariant{""}, CVariant{""}, CGUIDialogYesNo::NO_TIMEOUT);
     }
 
     if (cancelled)
@@ -1602,7 +1614,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 4)
         actorThumbs = StringUtils::EqualsNoCase(params[4], "true");
       else
-        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20436, cancelled);
+        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20436}, cancelled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT);
     }
 
     if (cancelled)
@@ -1613,7 +1625,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 3)
         overwrite = StringUtils::EqualsNoCase(params[3], "true");
       else
-        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading, 20431, cancelled);
+        overwrite = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20431}, cancelled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT);
     }
 
     if (cancelled)
@@ -1735,7 +1747,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
       int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
-      CApplicationMessenger::Get().SendAction(CAction(actionID), windowID);
+      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, windowID, -1, static_cast<void*>(new CAction(actionID)));
     }
   }
   else if (execute == "setproperty" && params.size() >= 2)
@@ -1801,15 +1813,16 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "cectogglestate")
   {
-    CApplicationMessenger::Get().CECToggleState();
+    bool result;
+    CApplicationMessenger::Get().SendMsg(TMSG_CECTOGGLESTATE, 0, 0, static_cast<void*>(&result));
   }
   else if (execute == "cecactivatesource")
   {
-    CApplicationMessenger::Get().CECActivateSource();
+    CApplicationMessenger::Get().PostMsg(TMSG_CECACTIVATESOURCE);
   }
   else if (execute == "cecstandby")
   {
-    CApplicationMessenger::Get().CECStandby();
+    CApplicationMessenger::Get().PostMsg(TMSG_CECSTANDBY);
   }
   else if (execute == "weather.locationset" && !params.empty())
   {
@@ -1843,23 +1856,37 @@ int CBuiltins::Execute(const std::string& execString)
     CSettings::Get().SetBool("debug.showloginfo", !debug);
     g_advancedSettings.SetDebugMode(!debug);
   }
+  //TODO deprecated. To be replaced by pvr.startmanager
   else if (execute == "startpvrmanager")
   {
     g_application.StartPVRManager();
   }
+  else if (execute == "pvr.startmanager")
+  {
+    g_application.StartPVRManager();
+  }
+  //TODO deprecated. To be replaced by pvr.stopmanager
   else if (execute == "stoppvrmanager")
   {
     g_application.StopPVRManager();
   }
+  else if (execute == "pvr.stopmanager")
+  {
+    g_application.StopPVRManager();
+  }
+  else if (execute == "pvr.searchmissingchannelicons")
+  {
+    PVR::CPVRManager::Get().TriggerSearchMissingChannelIcons();
+  }
   else if (execute == "startandroidactivity" && !params.empty())
   {
-    CApplicationMessenger::Get().StartAndroidActivity(params);
+    CApplicationMessenger::Get().PostMsg(TMSG_START_ANDROID_ACTIVITY, -1, -1, static_cast<void*>(&params));
   }
   else if (execute == "setstereomode" && !parameter.empty())
   {
     CAction action = CStereoscopicsManager::Get().ConvertActionCommandToAction(execute, parameter);
     if (action.GetID() != ACTION_NONE)
-      CApplicationMessenger::Get().SendAction(action);
+      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
     else
     {
       CLog::Log(LOGERROR,"Builtin 'SetStereoMode' called with unknown parameter: %s", parameter.c_str());

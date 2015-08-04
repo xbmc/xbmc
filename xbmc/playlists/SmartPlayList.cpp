@@ -18,6 +18,12 @@
  *
  */
 
+#include <cstdlib>
+#include <memory>
+#include <set>
+#include <string>
+#include <vector>
+
 #include "SmartPlayList.h"
 #include "Util.h"
 #include "filesystem/File.h"
@@ -34,7 +40,6 @@
 #include "utils/XMLUtils.h"
 #include "video/VideoDatabase.h"
 
-using namespace std;
 using namespace XFILE;
 
 typedef struct
@@ -238,8 +243,8 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
     return true;
 
   // split the input into multiple values and validate every value separately
-  vector<string> values = StringUtils::Split(input, RULE_VALUE_SEPARATOR);
-  for (vector<string>::const_iterator it = values.begin(); it != values.end(); ++it)
+  std::vector<std::string> values = StringUtils::Split(input, RULE_VALUE_SEPARATOR);
+  for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it)
   {
     if (!validator(*it, data))
       return false;
@@ -251,17 +256,17 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
 bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
 {
   char *end = NULL;
-  string strRating = input;
+  std::string strRating = input;
   StringUtils::Trim(strRating);
 
-  double rating = strtod(strRating.c_str(), &end);
+  double rating = std::strtod(strRating.c_str(), &end);
   return (end == NULL || *end == '\0') &&
          rating >= 0.0 && rating <= 10.0;
 }
 
-vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
+std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
 {
-  vector<Field> fields;
+  std::vector<Field> fields;
   bool isVideo = false;
   if (type == "mixed")
   {
@@ -440,7 +445,7 @@ vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
 
 std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
 {
-  vector<SortBy> orders;
+  std::vector<SortBy> orders;
   orders.push_back(SortByNone);
   if (type == "songs")
   {
@@ -550,7 +555,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
 
 std::vector<Field> CSmartPlaylistRule::GetGroups(const std::string &type)
 {
-  vector<Field> groups;
+  std::vector<Field> groups;
   groups.push_back(FieldUnknown);
 
   if (type == "artists")
@@ -623,7 +628,7 @@ std::string CSmartPlaylistRule::GetLocalizedRule() const
 std::string CSmartPlaylistRule::GetVideoResolutionQuery(const std::string &parameter) const
 {
   std::string retVal(" IN (SELECT DISTINCT idFile FROM streamdetails WHERE iVideoWidth ");
-  int iRes = (int)strtol(parameter.c_str(), NULL, 10);
+  int iRes = (int)std::strtol(parameter.c_str(), NULL, 10);
 
   int min, max;
   if (iRes >= 1080)     { min = 1281; max = INT_MAX; }
@@ -726,7 +731,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     table = "songview";
 
     if (m_field == FieldGenre)
-      query = negate + " EXISTS (SELECT 1 FROM song_genre, genre WHERE song_genre.idSong = " + GetField(FieldId, strType) + " AND song_genre.idGenre = genre.idGenre AND genre.name" + parameter + ")";
+      query = negate + " EXISTS (SELECT 1 FROM song_genre, genre WHERE song_genre.idSong = " + GetField(FieldId, strType) + " AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
     else if (m_field == FieldArtist)
       query = negate + " EXISTS (SELECT 1 FROM song_artist, artist WHERE song_artist.idSong = " + GetField(FieldId, strType) + " AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     else if (m_field == FieldAlbumArtist)
@@ -739,7 +744,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     table = "albumview";
 
     if (m_field == FieldGenre)
-      query = negate + " EXISTS (SELECT 1 FROM song, song_genre, genre WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND song.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.name" + parameter + ")";
+      query = negate + " EXISTS (SELECT 1 FROM song, song_genre, genre WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND song.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
     else if (m_field == FieldArtist)
       query = negate + " EXISTS (SELECT 1 FROM song, song_artist, artist WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND song.idSong = song_artist.idSong AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     else if (m_field == FieldAlbumArtist)
@@ -750,7 +755,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     table = "artistview";
 
     if (m_field == FieldGenre)
-      query = negate + " EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist, song_genre, genre WHERE song_artist.idArtist = " + GetField(FieldId, strType) + " AND song_artist.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.name" + parameter + ")";
+      query = negate + " EXISTS (SELECT DISTINCT song_artist.idArtist FROM song_artist, song_genre, genre WHERE song_artist.idArtist = " + GetField(FieldId, strType) + " AND song_artist.idSong = song_genre.idSong AND song_genre.idGenre = genre.idGenre AND genre.strGenre" + parameter + ")";
   }
   else if (strType == "movies")
   {
@@ -1331,7 +1336,7 @@ bool CSmartPlaylist::IsMusicType(const std::string &type)
          type == "songs" || type == "mixed";
 }
 
-std::string CSmartPlaylist::GetWhereClause(const CDatabase &db, set<std::string> &referencedPlaylists) const
+std::string CSmartPlaylist::GetWhereClause(const CDatabase &db, std::set<std::string> &referencedPlaylists) const
 {
   return m_ruleCombination.GetWhereClause(db, GetType(), referencedPlaylists);
 }
@@ -1353,8 +1358,8 @@ std::string CSmartPlaylist::GetSaveLocation() const
 
 void CSmartPlaylist::GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList)
 {
-  vector<Field> typeFields = CSmartPlaylistRule::GetFields(type);
-  for (vector<Field>::const_iterator field = typeFields.begin(); field != typeFields.end(); ++field)
+  std::vector<Field> typeFields = CSmartPlaylistRule::GetFields(type);
+  for (std::vector<Field>::const_iterator field = typeFields.begin(); field != typeFields.end(); ++field)
   {
     for (unsigned int i = 0; i < NUM_FIELDS; i++)
     {

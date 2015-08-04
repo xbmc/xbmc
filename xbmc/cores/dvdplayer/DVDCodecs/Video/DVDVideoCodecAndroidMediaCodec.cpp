@@ -29,7 +29,7 @@
 #include "DVDVideoCodecAndroidMediaCodec.h"
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "DVDClock.h"
 #include "threads/Atomics.h"
 #include "utils/BitstreamConverter.h"
@@ -51,6 +51,8 @@
 #include <GLES2/gl2ext.h>
 
 #include <cassert>
+
+using namespace KODI::MESSAGING;
 
 static bool CanSurfaceRenderBlackList(const std::string &name)
 {
@@ -350,6 +352,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
     case AV_CODEC_ID_H264:
+      switch(hints.profile)
+      {
+        case FF_PROFILE_H264_HIGH_10:
+        case FF_PROFILE_H264_HIGH_10_INTRA:
+          // No known h/w decoder supporting Hi10P
+          return false;
+      }
       m_mime = "video/avc";
       m_formatname = "amc-h264";
       // check for h264-avcC and convert to h264-annex-b
@@ -359,7 +368,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
         {
           SAFE_DELETE(m_bitstream);
-          return false;
         }
       }
       break;
@@ -372,9 +380,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         m_bitstream = new CBitstreamConverter;
         if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
         {
-          CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open CBitstreamConverter Open failed");
           SAFE_DELETE(m_bitstream);
-          return false;
         }
       }
       break;
@@ -1254,12 +1260,8 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
     callbackData.callback = &CallbackInitSurfaceTexture;
     callbackData.userptr  = (void*)this;
 
-    ThreadMessage msg;
-    msg.dwMessage = TMSG_CALLBACK;
-    msg.lpVoid = (void*)&callbackData;
-
     // wait for it.
-    CApplicationMessenger::Get().SendMessage(msg, true);
+    CApplicationMessenger::Get().SendMsg(TMSG_CALLBACK, -1, -1, static_cast<void*>(&callbackData));
   }
 
   return;

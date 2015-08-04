@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010-2013 Team XBMC
+ *      Copyright (C) 2005-2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,62 +18,66 @@
  *
  */
 
-texture g_Texture;
-texture g_KernelTexture;
-float2  g_StepXY;
+texture2D g_Texture;
+texture2D g_KernelTexture;
+float2    g_StepXY;
+float2    g_viewPort;
 
-sampler RGBSampler =
-  sampler_state {
-    Texture = <g_Texture>;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = POINT;
-    MagFilter = POINT;
-  };
+SamplerState RGBSampler : IMMUTABLE
+{
+  AddressU = CLAMP;
+  AddressV = CLAMP;
+  Filter   = MIN_MAG_MIP_POINT;
+};
 
-sampler KernelSampler =
-  sampler_state
-  {
-    Texture = <g_KernelTexture>;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-  };
+SamplerState KernelSampler : IMMUTABLE
+{
+  AddressU = CLAMP;
+  AddressV = CLAMP;
+  Filter   = MIN_MAG_MIP_LINEAR;
+};
 
 struct VS_OUTPUT
 {
-  float4 Position   : POSITION;
   float2 TextureUV  : TEXCOORD0;
+  float4 Position   : SV_POSITION;
 };
 
-struct PS_OUTPUT
+//
+// VS for rendering in screen space
+//
+VS_OUTPUT VS(VS_OUTPUT In)
 {
-  float4 RGBColor : COLOR0;
-};
+  VS_OUTPUT output  = (VS_OUTPUT)0;
+  output.Position.x =  (In.Position.x / (g_viewPort.x  / 2.0)) - 1;
+  output.Position.y = -(In.Position.y / (g_viewPort.y / 2.0)) + 1;
+  output.Position.z = output.Position.z;
+  output.Position.w = 1.0;
+  output.TextureUV  = In.TextureUV;
+
+  return output;
+}
 
 half3 weight(float pos)
 {
-  half3 w;
 #ifdef HAS_RGBA
-  w = tex1D(KernelSampler, pos).rgb;
+  half3 w = g_KernelTexture.Sample(KernelSampler, pos).rgb;
 #else
-  w = tex1D(KernelSampler, pos).bgr;
+  half3 w = g_KernelTexture.Sample(KernelSampler, pos).bgr;
 #endif
 
-#ifdef HAS_FLOAT_TEXTURE
+#ifndef HAS_FLOAT_TEXTURE
+  w = w * 2.0 - 1.0;
+#endif
   return w;
-#else
-  return w * 2.0 - 1.0;
-#endif
 }
 
-half3 pixel(float xpos, float ypos)
+inline half3 pixel(float xpos, float ypos)
 {
-  return tex2D(RGBSampler, float2(xpos, ypos)).rgb;
+  return g_Texture.Sample(RGBSampler, float2(xpos, ypos)).rgb;
 }
 
-half3 getLine(float ypos, float3 xpos1, float3 xpos2, half3 linetaps1, half3 linetaps2)
+inline half3 getLine(float ypos, float3 xpos1, float3 xpos2, half3 linetaps1, half3 linetaps2)
 {
   return
     pixel(xpos1.r, ypos) * linetaps1.r +
@@ -84,12 +88,9 @@ half3 getLine(float ypos, float3 xpos1, float3 xpos2, half3 linetaps1, half3 lin
     pixel(xpos2.b, ypos) * linetaps2.b;
 }
 
-PS_OUTPUT CONVOLUTION6x6(VS_OUTPUT In)
+float4 CONVOLUTION6x6(in float2 TextureUV  : TEXCOORD0) : SV_TARGET
 {
-  PS_OUTPUT OUT;
-
-  float2 pos = In.TextureUV + g_StepXY * 0.5;
-  float2 f = frac(pos / g_StepXY);
+  float2 f = frac(TextureUV / g_StepXY + 0.5);
 
   half3 linetaps1   = weight((1.0 - f.x) / 2.0);
   half3 linetaps2   = weight((1.0 - f.x) / 2.0 + 0.5);
@@ -98,34 +99,28 @@ PS_OUTPUT CONVOLUTION6x6(VS_OUTPUT In)
 
   // kernel generation code made sure taps add up to 1, no need to adjust here.
 
-  float2 xystart = (-2.0 - f) * g_StepXY + In.TextureUV;
-  float3 xpos1 = float3(
-      xystart.x,
-      xystart.x + g_StepXY.x,
-      xystart.x + g_StepXY.x * 2.0);
-  float3 xpos2 = half3(
-      xystart.x + g_StepXY.x * 3.0,
-      xystart.x + g_StepXY.x * 4.0,
-      xystart.x + g_StepXY.x * 5.0);
+  float2 xystart = (-2.0 - f) * g_StepXY + TextureUV;
+  float3 xpos1 = xystart.x + g_StepXY.x * float3(0.0, 1.0, 2.0);
+  float3 xpos2 = xystart.x + g_StepXY.x * float3(3.0, 4.0, 5.0);
+  float3 ypos1 = xystart.y + g_StepXY.y * float3(0.0, 1.0, 2.0);
+  float3 ypos2 = xystart.y + g_StepXY.y * float3(3.0, 4.0, 5.0);
 
-  OUT.RGBColor.rgb = getLine(xystart.y                   , xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r +
-					 getLine(xystart.y + g_StepXY.y      , xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r +
-					 getLine(xystart.y + g_StepXY.y * 2.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g +
-					 getLine(xystart.y + g_StepXY.y * 3.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.g +
-					 getLine(xystart.y + g_StepXY.y * 4.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b +
-					 getLine(xystart.y + g_StepXY.y * 5.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
+  float3 rgb =  
+        getLine(ypos1.x, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r +
+		getLine(ypos1.y, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r +
+		getLine(ypos1.z, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g +
+		getLine(ypos2.x, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.g +
+		getLine(ypos2.y, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b +
+		getLine(ypos2.z, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
 
-  OUT.RGBColor.a = 1.0;
-  return OUT;
+  return float4(rgb, 1.0f);
 }
 
-technique SCALER_T
+technique11 SCALER_T
 {
   pass P0
   {
-    PixelShader  = compile ps_3_0 CONVOLUTION6x6();
-    ZEnable = False;
-    FillMode = Solid;
-    FogEnable = False;
+    SetVertexShader( CompileShader( vs_4_0_level_9_1, VS() ) );
+    SetPixelShader( CompileShader( ps_4_0_level_9_3, CONVOLUTION6x6() ) );
   }
 };

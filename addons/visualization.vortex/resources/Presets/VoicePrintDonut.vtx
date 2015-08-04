@@ -13,18 +13,6 @@ void Init()
 {
 	vp.LoadColourMap("huemap.jpg");
 	vp.SetSpeed(0.5);
-
-	for (int y=0;y<24;y=y+1)
-	{
-		for (int x=0;x<32;x=x+1)
-		{
-			float dx = (x-16)/16.0;
-			float dy = (y-12)/12.0;
-			float s = (Mag(dx,dy))-1.5;
-			map.SetValues(x, y, dx*s, dy*s, 1, 1, 1);
-		}
-	}
-	
 }
 
 void Render()
@@ -44,6 +32,16 @@ void Render()
 	gfxTranslate(0, 0, 2.414);
 	gfxTexRect(-1, 1, 1, -1);
 
+	for (int y=0;y<24;y=y+1)
+	{
+		for (int x=0;x<32;x=x+1)
+		{
+			float dx = (x-16)/16.0;
+			float dy = (y-12)/12.0;
+			float s = (Mag(dx,dy))-1.5;
+			map.SetValues(x, y, dx*s, dy*s, 1, 1, 1);
+		}
+	}
 	map.Render();
 	gfxSetRenderTarget(0);
 	gfxSetTexture(map);

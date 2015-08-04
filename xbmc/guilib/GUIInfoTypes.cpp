@@ -302,7 +302,7 @@ std::string CGUIInfoLabel::ReplaceAddonStrings(const std::string &label)
   return work;
 }
 
-enum EINFOFORMAT { NONE = 0, FORMATINFO, FORMATESCINFO, FORMATVAR };
+enum EINFOFORMAT { NONE = 0, FORMATINFO, FORMATESCINFO, FORMATVAR, FORMATESCVAR };
 
 typedef struct
 {
@@ -310,9 +310,10 @@ typedef struct
   EINFOFORMAT  val;
 } infoformat;
 
-const static infoformat infoformatmap[] = {{ "$INFO[",    FORMATINFO },
+const static infoformat infoformatmap[] = {{ "$INFO[",    FORMATINFO},
                                            { "$ESCINFO[", FORMATESCINFO},
-                                           { "$VAR[",     FORMATVAR}};
+                                           { "$VAR[",     FORMATVAR},
+                                           { "$ESCVAR[",  FORMATESCVAR}};
 
 void CGUIInfoLabel::Parse(const std::string &label, int context)
 {
@@ -355,7 +356,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
         if (!params.empty())
         {
           int info;
-          if (format == FORMATVAR)
+          if (format == FORMATVAR || format == FORMATESCVAR)
           {
             info = g_infoManager.TranslateSkinVariableString(params[0], context);
             if (info == 0)
@@ -370,7 +371,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
             prefix = params[1];
           if (params.size() > 2)
             postfix = params[2];
-          m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO));
+          m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO || format == FORMATESCVAR));
         }
         // and delete it from our work string
         work = work.substr(pos2 + 1);

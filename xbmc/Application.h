@@ -25,14 +25,18 @@
 
 #include "guilib/IMsgTargetCallback.h"
 #include "utils/GlobalsHandling.h"
+#include "messaging/IMessageTarget.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
 class CAction;
 class CFileItem;
 class CFileItemList;
 class CKey;
+
+
 namespace ADDON
 {
   class CSkinInfo;
@@ -44,7 +48,6 @@ namespace MEDIA_DETECT
 {
   class CAutorun;
 }
-class CPlayerController;
 
 #include "cores/IPlayerCallback.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -113,7 +116,8 @@ protected:
 };
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
-                     public ISettingCallback, public ISettingsHandler, public ISubSettings
+                     public ISettingCallback, public ISettingsHandler, public ISubSettings,
+                     public KODI::MESSAGING::IMessageTarget
 {
   friend class CApplicationPlayer;
 public:
@@ -146,11 +150,7 @@ public:
   void StopServices();
   bool StartServer(enum ESERVERS eServer, bool bStart, bool bWait = false);
 
-  /*!
-   * @brief Starts the PVR manager and decide if the manager should handle the startup window activation.
-   * @return true, if the startup window activation is handled by the pvr manager, otherwise false
-   */
-  bool StartPVRManager();
+  void StartPVRManager();
   void StopPVRManager();
 #ifdef HAS_DS_PLAYER
   bool IsCurrentThread(bool checkForMadvr = true) const;
@@ -176,6 +176,10 @@ public:
   virtual void OnPlayBackSeek(int iTime, int seekOffset);
   virtual void OnPlayBackSeekChapter(int iChapter);
   virtual void OnPlayBackSpeedChanged(int iSpeed);
+
+  virtual int  GetMessageMask() override;
+  virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
+
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const std::string& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
@@ -370,7 +374,6 @@ public:
 
   bool SwitchToFullScreen(bool force = false);
 
-  CSplash* GetSplash() { return m_splash; }
   void SetRenderGUI(bool renderGUI);
   bool GetRenderGUI() const { return m_renderGUI; };
 
@@ -451,7 +454,6 @@ protected:
   CFileItemPtr m_stackFileItemToUpdate;
 
   std::string m_prevMedia;
-  CSplash* m_splash;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
   bool m_bInitializing;
   bool m_bPlatformDirectories;
@@ -495,7 +497,6 @@ protected:
   bool InitDirectoriesWin32();
   void CreateUserDirs();
 
-  CPlayerController *m_playerController;
   CInertialScrollingHandler *m_pInertialScrollingHandler;
   CNetwork    *m_network;
 #ifdef HAS_PERFORMANCE_SAMPLE

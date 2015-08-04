@@ -34,7 +34,9 @@ void Shader::ReleaseAllShaders()
 			(*ShaderIterator)->m_pVShader->Release();
 		if ( (*ShaderIterator)->m_pPShader )
 			(*ShaderIterator)->m_pPShader->Release();
-	}
+    if ((*ShaderIterator)->m_pConstantBuffer)
+      (*ShaderIterator)->m_pConstantBuffer->Release();
+  }
 }
 
 bool Shader::CompileAllShaders()
@@ -55,235 +57,45 @@ bool Shader::CompileAllShaders()
 
 bool Shader::CompileShader()
 {
-	DWORD dwShaderFlags = D3DXSHADER_PARTIALPRECISION;
-	LPD3DXBUFFER pCode;
-	LPD3DXBUFFER pErrors;
-
-	int iSrcLen = strlen( m_pShaderSrc );
-	if ( iSrcLen == 0 )
+	if ( m_iCodeLen == 0 )
 		return false;
-
-	HRESULT hr = ( D3DXCompileShader( m_pShaderSrc,
-		iSrcLen,
-		NULL,											// defines
-		NULL,											// include
-		"Main",											// Function name
-		m_ShaderType == ST_PIXEL ? "ps_2_0": "vs_2_0",	// profile
-		dwShaderFlags,									// Flags
-		&pCode,											// Output compiled shader
-		&pErrors,										// error messages
-		&m_pConstantTable								// constant table
-		) );
-
-	if( FAILED( hr ) )
-	{
-		char* errors = (char*)pErrors->GetBufferPointer();
-		OutputDebugStringA( errors );
-		return false;
-	}
 
 	if ( m_ShaderType == ST_PIXEL )
-	{
-		m_pPShader = Renderer::CreatePixelShader( ( DWORD* )pCode->GetBufferPointer() );
-	}
+		Renderer::CreatePixelShader( m_pShaderSrc, m_iCodeLen, &m_pPShader );
 	else
-	{
-		m_pVShader = Renderer::CreateVertexShader( ( DWORD* )pCode->GetBufferPointer() );
-	}
+		Renderer::CreateVertexShader( m_pShaderSrc, m_iCodeLen, &m_pVShader );
 
-	pCode->Release();
 	return true;
 }
 
-char DiffuseUVVertexShaderSrc[] =
+void Shader::CommitConstants(ID3D11DeviceContext* pContext)
 {
-	"		struct VS_INPUT													\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"		struct VS_OUTPUT												\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"																		\n"
-	" float4x4 WVPMat;														\n"
-	" VS_OUTPUT Main( VS_INPUT input )										\n"
-	" {																		\n"
-	"	VS_OUTPUT output;													\n"
-	"	// Transform coord													\n"
-	"	output.vPosition = mul(WVPMat, float4(input.vPosition.xyz, 1.0f));	\n"
-	"	output.Colour = input.Colour;										\n"
-	"	output.Tex0 = input.Tex0;											\n"
-	"	return output;														\n"
-	" }																		\n"
-	"																		\n"
-};
+  if (m_ShaderType != ST_VERTEX)
+    return;
 
-char DiffuseUVEnvVertexShaderSrc[] =
+  if (!m_pConstantBuffer)
+    CreateConstantBuffer();
+
+  D3D11_MAPPED_SUBRESOURCE res;
+  if (S_OK == pContext->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res))
+  {
+    *(ShaderContants*)res.pData = m_ShaderContants;
+    pContext->Unmap(m_pConstantBuffer, 0);
+  }
+
+  pContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+}
+
+void Shader::CreateConstantBuffer()
 {
-	"		struct VS_INPUT													\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 vNormal : NORMAL;									\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"		struct VS_OUTPUT												\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"																		\n"
-	" float4x4 WVMat;														\n"
-	" float4x4 WVPMat;														\n"
-	" VS_OUTPUT Main( VS_INPUT input )										\n"
-	" {																		\n"
-	"	VS_OUTPUT output;													\n"
-	"	// Transform coord													\n"
-	"	output.vPosition = mul(WVPMat, float4(input.vPosition.xyz, 1.0f));	\n"
-	"	output.Colour = input.Colour;										\n"
-	"	float4 NormalCamSpace = mul(WVMat, float4(input.vNormal.xyz, 0.0f));\n"
-	"	output.Tex0.xy = (NormalCamSpace.xy * 0.8f) + 0.5f;					\n"
-//	"	output.Colour = float4(NormalCamSpace.xyz, 1);						\n"
-	"	return output;														\n"
-	" }																		\n"
-	"																		\n"
-};
+  CD3D11_BUFFER_DESC bDesc(sizeof(ShaderContants), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+  Renderer::GetDevice()->CreateBuffer(&bDesc, NULL, &m_pConstantBuffer);
+}
 
-char DiffuseUVCubeVertexShaderSrc[] =
-{
-	"		struct VS_INPUT													\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"		struct VS_OUTPUT												\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"																		\n"
-	" float4 Col;															\n"
-	" float4 vScale;														\n"
-	" float4x4 WVMat;														\n"
-	" float4x4 WVPMat;														\n"
-	" VS_OUTPUT Main( VS_INPUT input )										\n"
-	" {																		\n"
-	"	VS_OUTPUT output;													\n"
-	"	float4 vPos = float4(input.vPosition.xyz * vScale, 1);				\n"
-	"	// Transform coord													\n"
-	"	output.vPosition = mul(WVPMat, vPos);								\n"
-	"	output.Colour = Col;												\n"
-	"	output.Tex0.xy = input.Tex0;										\n"
-	"	return output;														\n"
-	" }																		\n"
-	"																		\n"
-};
 
-char DiffuseUVEnvCubeVertexShaderSrc[] =
-{
-	"		struct VS_INPUT													\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 vNormal : NORMAL;									\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"		struct VS_OUTPUT												\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"																		\n"
-	" float4 Col;															\n"
-	" float4 vScale;														\n"
-	" float4x4 WVMat;														\n"
-	" float4x4 WVPMat;														\n"
-	" VS_OUTPUT Main( VS_INPUT input )										\n"
-	" {																		\n"
-	"	VS_OUTPUT output;													\n"
-	"	float4 vPos = float4(input.vPosition.xyz * vScale, 1);				\n"
-	"	// Transform coord													\n"
-	"	output.vPosition = mul(WVPMat, vPos);								\n"
-	"	output.Colour = Col;												\n"
-	"	float4 NormalCamSpace = mul(WVMat, float4(input.vNormal.xyz, 0.0f));\n"
-	"	output.Tex0.xy = (NormalCamSpace.xy * 0.5f) + 0.5f;					\n"
-	"	return output;														\n"
-	" }																		\n"
-	"																		\n"
-};
-
-char DiffuseNormalEnvCubeVertexShaderSrc[] =
-{
-	"		struct VS_INPUT													\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 vNormal : NORMAL;									\n"
-	"		};																\n"
-	"		struct VS_OUTPUT												\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"																		\n"
-	" float4 Col;															\n"
-	" float4x4 WVMat;														\n"
-	" float4x4 WVPMat;														\n"
-	" VS_OUTPUT Main( VS_INPUT input )										\n"
-	" {																		\n"
-	"	VS_OUTPUT output;													\n"
-	"	float4 vPos = float4(input.vPosition.xyz, 1);						\n"
-	"	// Transform coord													\n"
-	"	output.vPosition = mul(WVPMat, vPos);								\n"
-	"	output.Colour = 0xffffffff;											\n"
-	"	float4 NormalCamSpace = mul(WVMat, float4(input.vNormal.xyz, 0.0f));\n"
-	"	output.Tex0.xy = (NormalCamSpace.xy * 0.2f) + 0.5f;					\n"
-	"	return output;														\n"
-	" }																		\n"
-	"																		\n"
-};
-
-char UVNormalEnvVertexShaderSrc[] =
-{
-	"		struct VS_INPUT													\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 vNormal : NORMAL;									\n"
-	"		};																\n"
-	"		struct VS_OUTPUT												\n"
-	"		{																\n"
-	"			float4 vPosition : POSITION;								\n"
-	"			float4 Colour : COLOR;										\n"
-	"			float2 Tex0 : TEXCOORD0;	    							\n"
-	"		};																\n"
-	"																		\n"
-	" float4x4 WVMat;														\n"
-	" float4x4 WVPMat;														\n"
-	" VS_OUTPUT Main( VS_INPUT input )										\n"
-	" {																		\n"
-	"	VS_OUTPUT output;													\n"
-	"	// Transform coord													\n"
-	"	output.vPosition = mul(WVPMat, float4(input.vPosition.xyz, 1.0f));	\n"
-	"	output.Colour = 0xffffffff;											\n"
-	"	float4 NormalCamSpace = mul(WVMat, float4(input.vNormal.xyz, 0.0f));\n"
-	"	output.Tex0.xy = (NormalCamSpace.xy * 0.2f) + 0.5f;					\n"
-	"	return output;														\n"
-	" }																		\n"
-	"																		\n"
-};
-
-IMPLEMENT_SHADER(DiffuseUVVertexShader, DiffuseUVVertexShaderSrc, ST_VERTEX);
-IMPLEMENT_SHADER(DiffuseUVEnvVertexShader, DiffuseUVEnvVertexShaderSrc, ST_VERTEX);
-IMPLEMENT_SHADER(DiffuseUVCubeVertexShader, DiffuseUVCubeVertexShaderSrc, ST_VERTEX);
-IMPLEMENT_SHADER(DiffuseUVEnvCubeVertexShader, DiffuseUVEnvCubeVertexShaderSrc, ST_VERTEX);
-IMPLEMENT_SHADER(DiffuseNormalEnvCubeVertexShader, DiffuseNormalEnvCubeVertexShaderSrc, ST_VERTEX);
-IMPLEMENT_SHADER(UVNormalEnvVertexShader, UVNormalEnvVertexShaderSrc, ST_VERTEX);
+IMPLEMENT_SHADER(DiffuseUVVertexShader, DiffuseUVVertexShaderCode, sizeof(DiffuseUVVertexShaderCode), ST_VERTEX);
+IMPLEMENT_SHADER(DiffuseUVEnvVertexShader, DiffuseUVEnvVertexShaderCode, sizeof(DiffuseUVEnvVertexShaderCode), ST_VERTEX);
+IMPLEMENT_SHADER(DiffuseUVCubeVertexShader, DiffuseUVCubeVertexShaderCode, sizeof(DiffuseUVCubeVertexShaderCode), ST_VERTEX);
+IMPLEMENT_SHADER(DiffuseUVEnvCubeVertexShader, DiffuseUVEnvCubeVertexShaderCode, sizeof(DiffuseUVEnvCubeVertexShaderCode), ST_VERTEX);
+IMPLEMENT_SHADER(DiffuseNormalEnvCubeVertexShader, DiffuseNormalEnvCubeVertexShaderCode, sizeof(DiffuseNormalEnvCubeVertexShaderCode), ST_VERTEX);
+IMPLEMENT_SHADER(UVNormalEnvVertexShader, UVNormalEnvVertexShaderCode, sizeof(UVNormalEnvVertexShaderCode), ST_VERTEX);

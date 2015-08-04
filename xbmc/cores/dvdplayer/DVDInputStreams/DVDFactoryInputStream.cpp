@@ -25,7 +25,6 @@
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamPVRManager.h"
-#include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"
@@ -40,9 +39,11 @@
 #include "utils/URIUtils.h"
 
 
-CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
+CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content, bool contentlookup)
 {
   CFileItem item(file.c_str(), false);
+
+  item.SetMimeType(content);
 
   if(item.IsDiscImage())
   {
@@ -86,8 +87,6 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 7) == "mmst://"
        || file.substr(0, 7) == "mmsh://")
     return new CDVDInputStreamFFmpeg();
-  else if(file.substr(0, 8) == "sling://")
-    return new CDVDInputStreamTV();
 #ifdef ENABLE_DVDINPUTSTREAM_STACK
   else if(file.substr(0, 8) == "stack://")
     return new CDVDInputStreamStack();
@@ -104,7 +103,14 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     if (item.IsType(".m3u8"))
       return new CDVDInputStreamFFmpeg();
-    item.FillInMimeType();
+
+    if (contentlookup)
+    {
+      // request header
+      item.SetMimeType("");
+      item.FillInMimeType();
+    }
+
     if (item.GetMimeType() == "application/vnd.apple.mpegurl")
       return new CDVDInputStreamFFmpeg();
   }

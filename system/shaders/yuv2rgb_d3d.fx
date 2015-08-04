@@ -18,41 +18,30 @@
  *
  */
 
-texture g_YTexture;
-texture g_UTexture;
-texture g_VTexture;
-float4x4 g_ColorMatrix;
-float2  g_StepXY;
+texture2D  g_YTexture;
+texture2D  g_UTexture;
+texture2D  g_VTexture;
+float4x4   g_ColorMatrix;
+float2     g_StepXY;
+float2     g_viewPort;
 
-sampler YSampler =
-  sampler_state {
-    Texture = <g_YTexture>;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-  };
 
-sampler USampler =
-  sampler_state {
-    Texture = <g_UTexture>;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-  };
+SamplerState YUVSampler : IMMUTABLE
+{
+  AddressU = CLAMP;
+  AddressV = CLAMP;
+  Filter   = MIN_MAG_MIP_LINEAR;
+};
+#ifdef NV12_SNORM_UV
+SamplerState UVSamplerSNORM : IMMUTABLE
+{
+  AddressU = CLAMP;
+  AddressV = CLAMP;
+  Filter   = MIN_MAG_MIP_POINT;
+};
+#endif
 
-sampler VSampler =
-  sampler_state
-  {
-    Texture = <g_VTexture>;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-  };
-
-struct VS_OUTPUT
+struct VS_INPUT
 {
   float4 Position   : POSITION;
   float2 TextureY   : TEXCOORD0;
@@ -60,22 +49,55 @@ struct VS_OUTPUT
   float2 TextureV   : TEXCOORD2;
 };
 
-struct PS_OUTPUT
+struct VS_OUTPUT
 {
-  float4 RGBColor : COLOR0;
+  float2 TextureY   : TEXCOORD0;
+  float2 TextureU   : TEXCOORD1;
+  float2 TextureV   : TEXCOORD2;
+  float4 Position   : SV_POSITION;
 };
 
-PS_OUTPUT YUV2RGB( VS_OUTPUT In)
+VS_OUTPUT VS(VS_INPUT In)
 {
-  PS_OUTPUT OUT;
-#if defined(XBMC_YV12)
-  float4 YUV = float4(tex2D (YSampler, In.TextureY).x
-                    , tex2D (USampler, In.TextureU).x
-                    , tex2D (VSampler, In.TextureV).x
+  VS_OUTPUT output = (VS_OUTPUT)0;
+  output.Position.x =  (In.Position.x / (g_viewPort.x  / 2.0)) - 1;
+  output.Position.y = -(In.Position.y / (g_viewPort.y / 2.0)) + 1;
+  output.Position.z = output.Position.z;
+  output.Position.w = 1.0;
+  output.TextureY   = In.TextureY;
+  output.TextureU   = In.TextureU;
+  output.TextureV   = In.TextureV;
+
+  return output;
+}
+
+#ifdef NV12_SNORM_UV
+inline float unormU(float c)
+{
+  c *= 0.5;
+  if (c < 0.0) c += 1.0;
+  return saturate(c);
+}
+inline float2 unormUV(float2 rg)
+{
+  return float2(unormU(rg.x), unormU(rg.y));
+}
+#endif
+
+float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
+{
+#if defined(XBMC_YV12) //|| defined(XBMC_NV12)
+  float4 YUV = float4(g_YTexture.Sample(YUVSampler, In.TextureY).r
+                    , g_UTexture.Sample(YUVSampler, In.TextureU).r
+                    , g_VTexture.Sample(YUVSampler, In.TextureV).r
                     , 1.0);
 #elif defined(XBMC_NV12)
-  float4 YUV = float4(tex2D (YSampler, In.TextureY).x
-                    , tex2D (USampler, In.TextureU).ra
+  float4 YUV = float4(g_YTexture.Sample(YUVSampler, In.TextureY).r
+  #if defined(NV12_SNORM_UV)
+                    , unormUV(g_UTexture.Sample(UVSamplerSNORM, In.TextureU).rg)
+  #else
+                    , g_UTexture.Sample(YUVSampler, In.TextureU).rg
+  #endif
                     , 1.0);
 #elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
   // The HLSL compiler is smart enough to optimize away these redundant assignments.
@@ -87,8 +109,8 @@ PS_OUTPUT YUV2RGB( VS_OUTPUT In)
 
   //y axis will be correctly interpolated by opengl
   //x axis will not, so we grab two pixels at the center of two columns and interpolate ourselves
-  float4 c1 = tex2D(YSampler, float2(pos.x + ((0.5 - f.x) * stepxy.x), pos.y));
-  float4 c2 = tex2D(YSampler, float2(pos.x + ((1.5 - f.x) * stepxy.x), pos.y));
+  float4 c1 = g_YTexture.Sample(YUVSampler, float2(pos.x + ((0.5 - f.x) * stepxy.x), pos.y));
+  float4 c2 = g_YTexture.Sample(YUVSampler, float2(pos.x + ((1.5 - f.x) * stepxy.x), pos.y));
 
   /* each pixel has two Y subpixels and one UV subpixel
       YUV  Y  YUV
@@ -106,18 +128,14 @@ PS_OUTPUT YUV2RGB( VS_OUTPUT In)
     float4 YUV    = float4(outY, outUV, 1.0);
 #endif
 
-  OUT.RGBColor = mul(YUV, g_ColorMatrix);
-  OUT.RGBColor.a = 1.0;
-  return OUT;
+  return float4(mul(YUV, g_ColorMatrix).rgb, 1.0);
 }
 
-technique YUV2RGB_T
+technique11 YUV2RGB_T
 {
   pass P0
   {
-    PixelShader  = compile ps_2_0 YUV2RGB();
-    ZEnable = False;
-    FillMode = Solid;
-    FogEnable = False;
+    SetVertexShader( CompileShader( vs_4_0_level_9_1, VS() ) );
+    SetPixelShader( CompileShader( ps_4_0_level_9_1, YUV2RGB() ) );
   }
 };

@@ -57,6 +57,12 @@ SRCS += Sinks/AESinkPULSE.cpp
 endif
 endif
 
+SRCS += DSPAddons/ActiveAEDSP.cpp
+SRCS += DSPAddons/ActiveAEDSPMode.cpp
+SRCS += DSPAddons/ActiveAEDSPAddon.cpp
+SRCS += DSPAddons/ActiveAEDSPDatabase.cpp
+SRCS += DSPAddons/ActiveAEDSPProcess.cpp
+
 SRCS += Utils/AEChannelInfo.cpp
 SRCS += Utils/AEBuffer.cpp
 SRCS += Utils/AEUtil.cpp

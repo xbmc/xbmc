@@ -100,6 +100,7 @@ namespace PVR
     void UpdateQualityData(void);
     void UpdateMisc(void);
     void UpdateNextTimer(void);
+    void UpdateTimeshift(void);
 
     const SBackend& GetCurrentActiveBackend() const;
 
@@ -142,6 +143,9 @@ namespace PVR
     void CharInfoService(std::string &strValue) const;
     void CharInfoMux(std::string &strValue) const;
     void CharInfoProvider(std::string &strValue) const;
+    void CharInfoTimeshiftStartTime(std::string &strValue) const;
+    void CharInfoTimeshiftEndTime(std::string &strValue) const;
+    void CharInfoTimeshiftPlayTime(std::string &strValue) const;
 
     /** @name GUIInfoManager data */
     //@{
@@ -181,6 +185,15 @@ namespace PVR
     XbmcThreads::EndTime            m_ToggleShowInfo;
     EPG::CEpgInfoTagPtr             m_playingEpgTag;
     std::vector<SBackend>           m_backendProperties;
+
+    bool                            m_bIsTimeshifting;
+    time_t                          m_iTimeshiftStartTime;
+    time_t                          m_iTimeshiftEndTime;
+    time_t                          m_iTimeshiftPlayTime;
+    std::string                     m_strTimeshiftStartTime;
+    std::string                     m_strTimeshiftEndTime;
+    std::string                     m_strTimeshiftPlayTime;
+
     CCriticalSection                m_critSection;
   };
 }

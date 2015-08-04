@@ -69,6 +69,7 @@ namespace PVR
 
   protected:
     virtual void SaveViewState();
+    virtual bool HideParentDirItems(void);
   };
 
   class CGUIViewStateWindowPVRSearch : public CGUIViewStatePVR

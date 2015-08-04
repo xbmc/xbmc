@@ -35,6 +35,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <DirectXMath.h>
 
 bool g_bDebugOutput = false;
 bool g_bDumpFileCleared = false;
@@ -47,9 +48,9 @@ void PrepareFor3DDrawing(
         float fov_in_degrees, 
         float near_clip,
         float far_clip,
-        D3DXVECTOR3* pvEye,
-        D3DXVECTOR3* pvLookat,
-        D3DXVECTOR3* pvUp
+        XMFLOAT3* pvEye,
+        XMFLOAT3* pvLookat,
+        XMFLOAT3* pvUp
     )
 {
 #if 0
@@ -137,7 +138,7 @@ void PrepareFor3DDrawing(
 #endif
 }
 
-void PrepareFor2DDrawing(IDirect3DDevice9 *pDevice)
+void PrepareFor2DDrawing(DX11Context* pDevice)
 {
     // New 2D drawing area will have x,y coords in the range <-1,-1> .. <1,1>
     //         +--------+ Y=-1
@@ -151,44 +152,50 @@ void PrepareFor2DDrawing(IDirect3DDevice9 *pDevice)
     //  2. SetTexture(), if you need it
     // before rendering primitives!
     // Also, be sure your sprites have a z coordinate of 0.
-    pDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
-    pDevice->SetRenderState( D3DRS_ZWRITEENABLE, TRUE );
-    pDevice->SetRenderState( D3DRS_ZFUNC,     D3DCMP_LESSEQUAL );
-    pDevice->SetRenderState( D3DRS_SHADEMODE, D3DSHADE_FLAT );
-    pDevice->SetRenderState( D3DRS_FILLMODE,  D3DFILL_SOLID );
-    pDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-    pDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-//    d3dSetRenderState( D3DRS_CLIPPING, TRUE ); 
-    pDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
-    pDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-    pDevice->SetRenderState( D3DRS_LOCALVIEWER, FALSE );
-    
+
+    // Setup DX11 stuff
+    pDevice->SetDepth(true);
+    pDevice->SetRasterizerState(D3D11_CULL_NONE, D3D11_FILL_SOLID);
+    pDevice->SetSamplerState(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP); // or CLAMP?! TODO DX11
+    pDevice->SetShader(1); // see DX11Context implementation
+    pDevice->SetBlendState(false, D3D11_BLEND_ONE, D3D11_BLEND_ZERO);
     pDevice->SetTexture(0, NULL);
     pDevice->SetTexture(1, NULL);
+
+    //pDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
+    //pDevice->SetRenderState( D3DRS_ZWRITEENABLE, TRUE );
+    //pDevice->SetRenderState( D3DRS_ZFUNC,     D3DCMP_LESSEQUAL );
+    //pDevice->SetRenderState( D3DRS_SHADEMODE, D3DSHADE_FLAT );
+    //pDevice->SetRenderState( D3DRS_FILLMODE,  D3DFILL_SOLID );
+    //pDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
+    //pDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+//    d3dSetRenderState( D3DRS_CLIPPING, TRUE ); 
+    //pDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
+    //pDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+    //pDevice->SetRenderState( D3DRS_LOCALVIEWER, FALSE );
+    
+    //pDevice->SetTexture(0, NULL);
+    //pDevice->SetTexture(1, NULL);
 //    SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_POINT);//D3DTEXF_LINEAR);
 //    SetTextureStageState(1, D3DTSS_MAGFILTER, D3DTEXF_POINT);//D3DTEXF_LINEAR);
-	  pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	  pDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-    pDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
-    pDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);    
-    pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-    pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT );
-    pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+	  //pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	  //pDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    //pDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
+    //pDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);    
+    //pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+    //pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    //pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT );
+    //pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE );
 
-    pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
-    pDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-
-    pDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+    //pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+    //pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+    //pDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+    //pDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
     
     // set up for 2D drawing:
     {
-        D3DXMATRIX Ortho2D;    
-        D3DXMATRIX Identity;
-        
-        D3DXMatrixOrthoLH(&Ortho2D, 2.0f, -2.0f, 0.0f, 1.0f);
-        D3DXMatrixIdentity(&Identity);
+        DirectX::XMMATRIX Ortho2D = DirectX::XMMatrixOrthographicLH(2.0f, -2.0f, 0.0f, 1.0f);
+        DirectX::XMMATRIX Identity = DirectX::XMMatrixIdentity();
 
         pDevice->SetTransform(D3DTS_PROJECTION, &Ortho2D);
         pDevice->SetTransform(D3DTS_WORLD, &Identity);
@@ -198,7 +205,7 @@ void PrepareFor2DDrawing(IDirect3DDevice9 *pDevice)
 
 //---------------------------------------------------
 
-void MakeWorldMatrix( D3DXMATRIX* pOut, 
+void MakeWorldMatrix( XMMATRIX* pOut, 
                       float xpos, float ypos, float zpos, 
                       float sx,   float sy,   float sz, 
                       float pitch, float yaw, float roll)
@@ -241,7 +248,7 @@ void MakeWorldMatrix( D3DXMATRIX* pOut,
 #endif
 }
 
-void MakeProjectionMatrix( D3DXMATRIX* pOut,
+void MakeProjectionMatrix( XMMATRIX* pOut,
                            const float near_plane, // Distance to near clipping plane
                            const float far_plane,  // Distance to far clipping plane
                            const float fov_horiz,  // Horizontal field of view angle, in radians
@@ -251,12 +258,10 @@ void MakeProjectionMatrix( D3DXMATRIX* pOut,
     float h = (float)1/tanf(fov_vert*0.5f);   // 1/tan(x) == cot(x)
     float Q = far_plane/(far_plane - near_plane);
  
-    ZeroMemory(pOut, sizeof(D3DXMATRIX));
-    pOut->_11 = w;
-    pOut->_22 = h;
-    pOut->_33 = Q;
-    pOut->_43 = -Q*near_plane;
-    pOut->_34 = 1;
+    *pOut = XMMATRIX(    w, 0.0f,          0.0f, 0.0f,
+                      0.0f,    h,          0.0f, 0.0f,
+                      0.0f, 0.0f,             Q, 1.0f,
+                      0.0f, 0.0f, -Q*near_plane, 0.0f);
 }
 
 //---------------------------------------------------

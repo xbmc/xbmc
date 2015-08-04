@@ -26,6 +26,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
+#include "messaging/IMessageTarget.h"
 
 class CFileItemList;
 class CSetting;
@@ -39,7 +40,8 @@ namespace PERIPHERALS
   #define g_peripherals CPeripherals::Get()
 
   class CPeripherals :  public ISettingCallback,
-                        public Observable
+                        public Observable,
+                        public KODI::MESSAGING::IMessageTarget
   {
   public:
     static CPeripherals &Get(void);
@@ -210,11 +212,16 @@ namespace PERIPHERALS
     virtual void OnSettingChanged(const CSetting *setting);
     virtual void OnSettingAction(const CSetting *setting);
 
+    virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
+    virtual int GetMessageMask() override;
+
   private:
     CPeripherals(void);
     bool LoadMappings(void);
     bool GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const;
     static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<std::string, PeripheralDeviceSetting> &m_settings);
+
+    void OnDeviceChanged();
 
     bool                                 m_bInitialised;
     bool                                 m_bIsStarted;

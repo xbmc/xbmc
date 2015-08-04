@@ -53,7 +53,9 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/FileUtils.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 #include "TextureCache.h"
@@ -64,6 +66,9 @@
 #include "URL.h"
 #include "playlists/SmartPlayList.h"
 #include "CueInfoLoader.h"
+#include "guiinfo/GUIInfoLabels.h"
+
+#include <utility>
 
 using namespace std;
 using namespace AUTOPTR;
@@ -156,7 +161,7 @@ void CMusicDatabase::CreateTables()
               " iTimesPlayed integer, iStartOffset integer, iEndOffset integer, "
               " idThumb integer, "
               " lastplayed varchar(20) default NULL, "
-              " rating char default '0', comment text, mood text)");
+              " rating char default '0', comment text, mood text, dateAdded text)");
   CLog::Log(LOGINFO, "create song_artist table");
   m_pDS->exec("CREATE TABLE song_artist (idArtist integer, idSong integer, strJoinPhrase text, boolFeatured integer, iOrder integer, strArtist text)");
   CLog::Log(LOGINFO, "create song_genre table");
@@ -276,7 +281,8 @@ void CMusicDatabase::CreateViews()
               "        album.bCompilation AS bCompilation,"
               "        album.strArtists AS strAlbumArtists,"
               "        album.strReleaseType AS strAlbumReleaseType,"
-              "        song.mood as mood "
+              "        song.mood as mood,"
+              "        song.dateAdded as dateAdded "
               "FROM song"
               "  JOIN album ON"
               "    song.idAlbum=album.idAlbum"
@@ -708,6 +714,8 @@ int CMusicDatabase::AddSong(const int idAlbum,
     if (bHasKaraoke)
       AddKaraokeData(idSong, iKaraokeNumber);
 
+    UpdateFileDateAdded(idSong, strPathAndFileName);
+
     AnnounceUpdate(MediaTypeSong, idSong);
   }
   catch (...)
@@ -826,6 +834,9 @@ int CMusicDatabase::UpdateSong(int idSong,
   strSQL += PrepareSQL(" WHERE idSong = %i", idSong);
 
   bool status = ExecuteQuery(strSQL);
+
+  UpdateFileDateAdded(idSong, strPathAndFileName);
+
   if (status)
     AnnounceUpdate(MediaTypeSong, idSong);
   return idSong;
@@ -1667,6 +1678,7 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.strTitle = record->at(offset + song_strTitle).get_asString();
   song.iTimesPlayed = record->at(offset + song_iTimesPlayed).get_asInt();
   song.lastPlayed.SetFromDBDateTime(record->at(offset + song_lastplayed).get_asString());
+  song.dateAdded.SetFromDBDateTime(record->at(offset + song_dateAdded).get_asString());
   song.iStartOffset = record->at(offset + song_iStartOffset).get_asInt();
   song.iEndOffset = record->at(offset + song_iEndOffset).get_asInt();
   song.strMusicBrainzTrackID = record->at(offset + song_strMusicBrainzTrackID).get_asString();
@@ -1715,6 +1727,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetMood(record->at(song_mood).get_asString());
   item->GetMusicInfoTag()->SetPlayCount(record->at(song_iTimesPlayed).get_asInt());
   item->GetMusicInfoTag()->SetLastPlayed(record->at(song_lastplayed).get_asString());
+  item->GetMusicInfoTag()->SetDateAdded(record->at(song_dateAdded).get_asString());
   std::string strRealPath = URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString());
   item->GetMusicInfoTag()->SetURL(strRealPath);
   item->GetMusicInfoTag()->SetCompilation(record->at(song_bCompilation).get_asInt() == 1);
@@ -2655,12 +2668,12 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
     pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (pDlgProgress)
     {
-      pDlgProgress->SetHeading(700);
-      pDlgProgress->SetLine(0, "");
-      pDlgProgress->SetLine(1, 318);
-      pDlgProgress->SetLine(2, 330);
+      pDlgProgress->SetHeading(CVariant{700});
+      pDlgProgress->SetLine(0, CVariant{""});
+      pDlgProgress->SetLine(1, CVariant{318});
+      pDlgProgress->SetLine(2, CVariant{330});
       pDlgProgress->SetPercentage(0);
-      pDlgProgress->StartModal();
+      pDlgProgress->Open();
       pDlgProgress->ShowProgressBar(true);
     }
   }
@@ -2672,7 +2685,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // then the albums that are not linked to a song or to album, or whose path is removed
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 326);
+    pDlgProgress->SetLine(1, CVariant{326});
     pDlgProgress->SetPercentage(20);
     pDlgProgress->Progress();
   }
@@ -2684,7 +2697,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // now the paths
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 324);
+    pDlgProgress->SetLine(1, CVariant{324});
     pDlgProgress->SetPercentage(40);
     pDlgProgress->Progress();
   }
@@ -2696,7 +2709,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // and finally artists + genres
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 320);
+    pDlgProgress->SetLine(1, CVariant{320});
     pDlgProgress->SetPercentage(60);
     pDlgProgress->Progress();
   }
@@ -2707,7 +2720,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   }
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 322);
+    pDlgProgress->SetLine(1, CVariant{322});
     pDlgProgress->SetPercentage(80);
     pDlgProgress->Progress();
   }
@@ -2719,7 +2732,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // commit transaction
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 328);
+    pDlgProgress->SetLine(1, CVariant{328});
     pDlgProgress->SetPercentage(90);
     pDlgProgress->Progress();
   }
@@ -2731,7 +2744,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // and compress the database
   if (pDlgProgress)
   {
-    pDlgProgress->SetLine(1, 331);
+    pDlgProgress->SetLine(1, CVariant{331});
     pDlgProgress->SetPercentage(100);
     pDlgProgress->Progress();
     pDlgProgress->Close();
@@ -2793,12 +2806,12 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     if (!pDlgSelect) return false;
 
     // Show progress dialog if we have to connect to freedb.org
-    pDialogProgress->SetHeading(255); //CDDB
-    pDialogProgress->SetLine(0, ""); // Querying freedb for CDDB info
-    pDialogProgress->SetLine(1, 256);
-    pDialogProgress->SetLine(2, "");
+    pDialogProgress->SetHeading(CVariant{255}); //CDDB
+    pDialogProgress->SetLine(0, CVariant{""}); // Querying freedb for CDDB info
+    pDialogProgress->SetLine(1, CVariant{256});
+    pDialogProgress->SetLine(2, CVariant{""});
     pDialogProgress->ShowProgressBar(false);
-    pDialogProgress->StartModal();
+    pDialogProgress->Open();
 
     // get cddb information
     if (!cddb.queryCDinfo(pCdInfo))
@@ -2812,7 +2825,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         // ...yes, show the matches found in a select dialog
         // and let the user choose an entry.
         pDlgSelect->Reset();
-        pDlgSelect->SetHeading(255);
+        pDlgSelect->SetHeading(CVariant{255});
         int i = 1;
         while (1)
         {
@@ -2826,7 +2839,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
           pDlgSelect->Add(strTitle);
           i++;
         }
-        pDlgSelect->DoModal();
+        pDlgSelect->Open();
 
         // Has the user selected a match...
         int iSelectedCD = pDlgSelect->GetSelectedLabel();
@@ -2848,7 +2861,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         pCdInfo->SetNoCDDBInfo();
         // ..no, an error occured, display it to the user
         std::string strErrorText = StringUtils::Format("[%d] %s", cddb.getLastError(), cddb.getLastErrorText());
-        CGUIDialogOK::ShowAndGetInput(255, 257, strErrorText, 0);
+        CGUIDialogOK::ShowAndGetInput(CVariant{255}, CVariant{257}, CVariant{std::move(strErrorText)}, CVariant{0});
       }
     } // if ( !cddb.queryCDinfo( pCdInfo ) )
     else
@@ -2869,14 +2882,14 @@ void CMusicDatabase::DeleteCDDBInfo()
   CFileItemList items;
   if (!CDirectory::GetDirectory(CProfilesManager::Get().GetCDDBFolder(), items, ".cddb", DIR_FLAG_NO_FILE_DIRS))
   {
-    CGUIDialogOK::ShowAndGetInput(313, 426);
+    CGUIDialogOK::ShowAndGetInput(CVariant{313}, CVariant{426});
     return ;
   }
   // Show a selectdialog that the user can select the album to delete
   CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
-    pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
+    pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
     pDlg->Reset();
 
     map<ULONG, std::string> mapCDDBIds;
@@ -2909,7 +2922,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     }
 
     pDlg->Sort();
-    pDlg->DoModal();
+    pDlg->Open();
 
     // and wait till user selects one
     int iSelectedAlbum = pDlg->GetSelectedLabel();
@@ -2941,11 +2954,11 @@ void CMusicDatabase::Clean()
   // other writing access to the database is prohibited.
   if (g_application.IsMusicScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(189, 14057);
+    CGUIDialogOK::ShowAndGetInput(CVariant{189}, CVariant{14057});
     return;
   }
 
-  if (CGUIDialogYesNo::ShowAndGetInput(313, 333))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
   {
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
@@ -2955,7 +2968,7 @@ void CMusicDatabase::Clean()
 
       if (iReturnString != ERROR_OK)
       {
-        CGUIDialogOK::ShowAndGetInput(313, iReturnString);
+        CGUIDialogOK::ShowAndGetInput(CVariant{313}, CVariant{iReturnString});
       }
     }
   }
@@ -3689,233 +3702,7 @@ bool CMusicDatabase::GetSongsNav(const std::string& strBaseDir, CFileItemList& i
 
 void CMusicDatabase::UpdateTables(int version)
 {
-  if (version < 19)
-  {
-    int len = g_advancedSettings.m_musicItemSeparator.size() + 1;
-    std::string sql = PrepareSQL("UPDATE song SET strExtraArtists=SUBSTR(strExtraArtists,%i), strExtraGenres=SUBSTR(strExtraGenres,%i)", len, len);
-    m_pDS->exec(sql.c_str());
-    sql = PrepareSQL("UPDATE album SET strExtraArtists=SUBSTR(strExtraArtists,%i), strExtraGenres=SUBSTR(strExtraGenres,%i)", len, len);
-    m_pDS->exec(sql.c_str());
-  }
-
-  if (version < 21)
-  {
-    m_pDS->exec("CREATE TABLE album_artist ( idArtist integer, idAlbum integer, boolFeatured integer, iOrder integer )\n");
-    m_pDS->exec("INSERT INTO album_artist (idArtist, idAlbum, boolFeatured, iOrder) SELECT idArtist, idAlbum, 1, iPosition FROM exartistalbum");
-    m_pDS->exec("REPLACE INTO album_artist (idArtist, idAlbum, boolFeatured, iOrder) SELECT idArtist, idAlbum, 0, 0 FROM album");
-
-    std::string strSQL;
-    strSQL=PrepareSQL("SELECT album.idAlbum AS idAlbum, strExtraArtists,"
-                      "  album.idArtist AS idArtist, strArtist FROM album "
-                      "  LEFT OUTER JOIN artist ON album.idArtist=artist.idArtist");
-    m_pDS->query(strSQL.c_str());
-
-    VECALBUMS albums;
-    while (!m_pDS->eof())
-    {
-      CAlbum album;
-      album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
-      album.artist.push_back(m_pDS->fv("strArtist").get_asString());
-      if (!m_pDS->fv("strExtraArtists").get_asString().empty())
-      {
-        std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv("strExtraArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
-        album.artist.insert(album.artist.end(), extraArtists.begin(), extraArtists.end());
-      }
-      albums.push_back(album);
-      m_pDS->next();
-    }
-    m_pDS->close();
-    m_pDS->exec("CREATE TABLE album_new ( idAlbum integer primary key, strAlbum varchar(256), strArtists text, idGenre integer, strExtraGenres text, iYear integer, idThumb integer)");
-    m_pDS->exec("INSERT INTO album_new ( idAlbum, strAlbum, idGenre, strExtraGenres, iYear, idThumb ) SELECT idAlbum, strAlbum, idGenre, strExtraGenres, iYear, idThumb FROM album");
-
-    for (VECALBUMS::iterator it = albums.begin(); it != albums.end(); ++it)
-    {
-      std::string strSQL;
-      strSQL = PrepareSQL("UPDATE album_new SET strArtists='%s' WHERE idAlbum=%i", StringUtils::Join(it->artist, g_advancedSettings.m_musicItemSeparator).c_str(), it->idAlbum);
-      m_pDS->exec(strSQL);
-    }
-
-    m_pDS->exec("DROP TABLE album");
-    m_pDS->exec("ALTER TABLE album_new RENAME TO album");
-    m_pDS->exec("DROP TABLE IF EXISTS exartistalbum");
-  }
-
-  if (version < 22)
-  {
-    m_pDS->exec("CREATE TABLE song_artist ( idArtist integer, idSong integer, boolFeatured integer, iOrder integer )\n");
-    m_pDS->exec("INSERT INTO song_artist (idArtist, idSong, boolFeatured, iOrder) SELECT idArtist, idSong, 1, iPosition FROM exartistsong");
-    m_pDS->exec("REPLACE INTO song_artist (idArtist, idSong, boolFeatured, iOrder) SELECT idArtist, idSong, 0, 0 FROM song");
-
-    std::string strSQL;
-    strSQL=PrepareSQL("SELECT song.idSong AS idSong, strExtraArtists,"
-                      "  song.idArtist AS idArtist, strArtist FROM song "
-                      "  LEFT OUTER JOIN artist ON song.idArtist=artist.idArtist");
-    m_pDS->query(strSQL.c_str());
-
-    VECSONGS songs;
-    while (!m_pDS->eof())
-    {
-      CSong song;
-      song.idSong = m_pDS->fv("idSong").get_asInt();
-      song.artist.push_back(m_pDS->fv("strArtist").get_asString());
-      if (!m_pDS->fv("strExtraArtists").get_asString().empty())
-      {
-        std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv("strExtraArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
-        song.artist.insert(song.artist.end(), extraArtists.begin(), extraArtists.end());
-      }
-      songs.push_back(song);
-      m_pDS->next();
-    }
-    m_pDS->close();
-    m_pDS->exec("CREATE TABLE song_new ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, idGenre integer, strExtraGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)");
-    m_pDS->exec("INSERT INTO song_new ( idSong, idAlbum, idPath, idGenre, strExtraGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment ) SELECT idSong, idAlbum, idPath, idGenre, strExtraGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment FROM song");
-
-    for (VECSONGS::iterator it = songs.begin(); it != songs.end(); ++it)
-    {
-      std::string strSQL;
-      strSQL = PrepareSQL("UPDATE song_new SET strArtists='%s' WHERE idSong=%i", StringUtils::Join(it->artist, g_advancedSettings.m_musicItemSeparator).c_str(), it->idSong);
-      m_pDS->exec(strSQL);
-    }
-
-    m_pDS->exec("DROP TABLE song");
-    m_pDS->exec("ALTER TABLE song_new RENAME TO song");
-    m_pDS->exec("DROP TABLE IF EXISTS exartistsong");
-  }
-
-  if (version < 23)
-  {
-    m_pDS->exec("CREATE TABLE album_genre ( idGenre integer, idAlbum integer, iOrder integer )\n");
-    m_pDS->exec("INSERT INTO album_genre ( idGenre, idAlbum, iOrder) SELECT idGenre, idAlbum, iPosition FROM exgenrealbum");
-    m_pDS->exec("REPLACE INTO album_genre ( idGenre, idAlbum, iOrder) SELECT idGenre, idAlbum, 0 FROM album");
-
-    std::string strSQL;
-    strSQL=PrepareSQL("SELECT album.idAlbum AS idAlbum, strExtraGenres,"
-                      "  album.idGenre AS idGenre, strGenre FROM album "
-                      "  JOIN genre ON album.idGenre=genre.idGenre");
-    m_pDS->query(strSQL.c_str());
-
-    VECALBUMS albums;
-    while (!m_pDS->eof())
-    {
-      CAlbum album;
-      album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
-      album.genre.push_back(m_pDS->fv("strGenre").get_asString());
-      if (!m_pDS->fv("strExtraGenres").get_asString().empty())
-      {
-        std::vector<std::string> extraGenres = StringUtils::Split(m_pDS->fv("strExtraGenres").get_asString(), g_advancedSettings.m_musicItemSeparator);
-        album.genre.insert(album.genre.end(), extraGenres.begin(), extraGenres.end());
-      }
-      albums.push_back(album);
-      m_pDS->next();
-    }
-    m_pDS->close();
-    m_pDS->exec("CREATE TABLE album_new ( idAlbum integer primary key, strAlbum varchar(256), strArtists text, strGenres text, iYear integer, idThumb integer)");
-    m_pDS->exec("INSERT INTO album_new ( idAlbum, strAlbum, strArtists, iYear, idThumb) SELECT idAlbum, strAlbum, strArtists, iYear, idThumb FROM album");
-
-    for (VECALBUMS::iterator it = albums.begin(); it != albums.end(); ++it)
-    {
-      std::string strSQL;
-      strSQL = PrepareSQL("UPDATE album_new SET strGenres='%s' WHERE idAlbum=%i", StringUtils::Join(it->genre, g_advancedSettings.m_musicItemSeparator).c_str(), it->idAlbum);
-      m_pDS->exec(strSQL);
-    }
-
-    m_pDS->exec("DROP TABLE album");
-    m_pDS->exec("ALTER TABLE album_new RENAME TO album");
-    m_pDS->exec("DROP TABLE IF EXISTS exgenrealbum");
-  }
-
-  if (version < 24)
-  {
-    m_pDS->exec("CREATE TABLE song_genre ( idGenre integer, idSong integer, iOrder integer )\n");
-    m_pDS->exec("INSERT INTO song_genre ( idGenre, idSong, iOrder) SELECT idGenre, idSong, iPosition FROM exgenresong");
-    m_pDS->exec("REPLACE INTO song_genre ( idGenre, idSong, iOrder) SELECT idGenre, idSong, 0 FROM song");
-
-    std::string strSQL;
-    strSQL=PrepareSQL("SELECT song.idSong AS idSong, strExtraGenres,"
-                      "  song.idGenre AS idGenre, strGenre FROM song "
-                      "  JOIN genre ON song.idGenre=genre.idGenre");
-    m_pDS->query(strSQL.c_str());
-
-    VECSONGS songs;
-    while (!m_pDS->eof())
-    {
-      CSong song;
-      song.idSong = m_pDS->fv("idSong").get_asInt();
-      song.genre.push_back(m_pDS->fv("strGenre").get_asString());
-      if (!m_pDS->fv("strExtraGenres").get_asString().empty())
-      {
-        std::vector<std::string> extraGenres = StringUtils::Split(m_pDS->fv("strExtraGenres").get_asString(), g_advancedSettings.m_musicItemSeparator);
-        song.genre.insert(song.genre.end(), extraGenres.begin(), extraGenres.end());
-      }
-      songs.push_back(song);
-      m_pDS->next();
-    }
-    m_pDS->close();
-    m_pDS->exec("CREATE TABLE song_new ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, strGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
-    m_pDS->exec("INSERT INTO song_new ( idSong, idAlbum, idPath, strArtists, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment) SELECT idSong, idAlbum, idPath, strArtists, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment FROM song");
-
-    for (VECSONGS::iterator it = songs.begin(); it != songs.end(); ++it)
-    {
-      std::string strSQL;
-      strSQL = PrepareSQL("UPDATE song_new SET strGenres='%s' WHERE idSong=%i", StringUtils::Join(it->genre, g_advancedSettings.m_musicItemSeparator).c_str(), it->idSong);
-      m_pDS->exec(strSQL);
-    }
-
-    m_pDS->exec("DROP TABLE song");
-    m_pDS->exec("ALTER TABLE song_new RENAME TO song");
-    m_pDS->exec("DROP TABLE IF EXISTS exgenresong");
-  }
-
-  if (version < 25)
-  {
-    m_pDS->exec("ALTER TABLE album ADD bCompilation integer not null default '0'");
-  }
-
-  if (version < 26)
-  { // add art table
-    m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
-  }
-
-  if (version < 27)
-  {
-    m_pDS->exec("DROP TABLE IF EXISTS thumb");
-
-    CMediaSettings::Get().SetMusicNeedsUpdate(27);
-    CSettings::Get().Save();
-  }
-
-  if (version < 29)
-  { // update old art URLs
-    m_pDS->query("select art_id,url from art where url like 'image://%%'");
-    vector< pair<int, string> > art;
-    while (!m_pDS->eof())
-    {
-      art.push_back(make_pair(m_pDS->fv(0).get_asInt(), CURL(m_pDS->fv(1).get_asString()).Get()));
-      m_pDS->next();
-    }
-    m_pDS->close();
-    for (vector< pair<int, string> >::iterator i = art.begin(); i != art.end(); ++i)
-      m_pDS->exec(PrepareSQL("update art set url='%s' where art_id=%d", i->second.c_str(), i->first));
-  }
-  if (version < 30)
-  { // update URL encoded paths
-    m_pDS->query("select idSong, strFileName from song");
-    vector< pair<int, string> > files;
-    while (!m_pDS->eof())
-    {
-      files.push_back(make_pair(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString()));
-      m_pDS->next();
-    }
-    m_pDS->close();
-
-    for (vector< pair<int, string> >::iterator i = files.begin(); i != files.end(); ++i)
-    {
-      std::string filename = i->second;
-      if (URIUtils::UpdateUrlEncoding(filename))
-        m_pDS->exec(PrepareSQL("UPDATE song SET strFileName='%s' WHERE idSong=%d", filename.c_str(), i->first));
-    }
-  }
-
+  CLog::Log(LOGINFO, "%s - updating tables", __FUNCTION__);
   if (version < 34)
   {
     m_pDS->exec("ALTER TABLE artist ADD strMusicBrainzArtistID text\n");
@@ -4069,11 +3856,17 @@ void CMusicDatabase::UpdateTables(int version)
   {
     m_pDS->exec("ALTER TABLE song ADD mood text\n");
   }
+  if (version < 53)
+  {
+    m_pDS->exec("ALTER TABLE song ADD dateAdded text");
+    CMediaSettings::Get().SetMusicNeedsUpdate(53);
+    CSettings::Get().Save();
+  }
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 52;
+  return 53;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
@@ -4861,12 +4654,12 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
-      progress->SetHeading(20196);
-      progress->SetLine(0, 650);
-      progress->SetLine(1, "");
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{20196});
+      progress->SetLine(0, CVariant{650});
+      progress->SetLine(1, CVariant{""});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
 
@@ -4920,7 +4713,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
 
       if ((current % 50) == 0 && progress)
       {
-        progress->SetLine(1, album.strAlbum);
+        progress->SetLine(1, CVariant{album.strAlbum});
         progress->SetPercentage(current * 100 / total);
         progress->Progress();
         if (progress->IsCanceled())
@@ -4997,7 +4790,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
 
       if ((current % 50) == 0 && progress)
       {
-        progress->SetLine(1, artist.strArtist);
+        progress->SetLine(1, CVariant{artist.strArtist});
         progress->SetPercentage(current * 100 / total);
         progress->Progress();
         if (progress->IsCanceled())
@@ -5022,7 +4815,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
     progress->Close();
 
   if (iFailCount > 0)
-    CGUIDialogOK::ShowAndGetInput(20196, StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount));
+    CGUIDialogOK::ShowAndGetInput(CVariant{20196}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011).c_str(), iFailCount)});
 }
 
 void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
@@ -5042,12 +4835,12 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
 
     if (progress)
     {
-      progress->SetHeading(20197);
-      progress->SetLine(0, 649);
-      progress->SetLine(1, 330);
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{20197});
+      progress->SetLine(0, CVariant{649});
+      progress->SetLine(1, CVariant{330});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
 
@@ -5104,7 +4897,7 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
       if (progress && total)
       {
         progress->SetPercentage(current * 100 / total);
-        progress->SetLine(2, strTitle);
+        progress->SetLine(2, CVariant{std::move(strTitle)});
         progress->Progress();
         if (progress->IsCanceled())
         {
@@ -5222,12 +5015,12 @@ void CMusicDatabase::ExportKaraokeInfo(const std::string & outFile, bool asHTML)
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
-      progress->SetHeading(asHTML ? 22034 : 22035);
-      progress->SetLine(0, 650);
-      progress->SetLine(1, "");
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{asHTML ? 22034 : 22035});
+      progress->SetLine(0, CVariant{650});
+      progress->SetLine(1, CVariant{""});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
 
@@ -5314,12 +5107,12 @@ void CMusicDatabase::ImportKaraokeInfo(const std::string & inputFile)
 
     if (progress)
     {
-      progress->SetHeading( 22036 );
-      progress->SetLine(0, 649);
-      progress->SetLine(1, "");
-      progress->SetLine(2, "");
+      progress->SetHeading(CVariant{22036});
+      progress->SetLine(0, CVariant{649});
+      progress->SetLine(1, CVariant{""});
+      progress->SetLine(2, CVariant{""});
       progress->SetPercentage(0);
-      progress->StartModal();
+      progress->Open();
       progress->ShowProgressBar(true);
     }
 
@@ -5876,4 +5669,33 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
   }
 
   return true;
+}
+
+void CMusicDatabase::UpdateFileDateAdded(int songId, const std::string& strFileNameAndPath)
+{
+  if (songId < 0 || strFileNameAndPath.empty())
+    return;
+
+  CDateTime dateAdded;
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    // 1 prefering to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
+    if (g_advancedSettings.m_iMusicLibraryDateAdded == 1)
+      dateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
+    //2 using the newer datetime of the file's mtime and ctime
+    else if (g_advancedSettings.m_iMusicLibraryDateAdded == 2)
+      dateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, true);
+    //0 using the current datetime if non of the above matches or one returns an invalid datetime
+    if (!dateAdded.IsValid())
+      dateAdded = CDateTime::GetCurrentDateTime();
+
+    m_pDS->exec(PrepareSQL("UPDATE song SET dateAdded='%s' WHERE idSong=%d", dateAdded.GetAsDBDateTime().c_str(), songId));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s, %s) failed", __FUNCTION__, CURL::GetRedacted(strFileNameAndPath).c_str(), dateAdded.GetAsDBDateTime().c_str());
+  }
 }

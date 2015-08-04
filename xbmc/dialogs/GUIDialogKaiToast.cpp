@@ -25,15 +25,12 @@
 #define POPUP_ICON                400
 #define POPUP_CAPTION_TEXT        401
 #define POPUP_NOTIFICATION_BUTTON 402
-#define POPUP_ICON_INFO           403
-#define POPUP_ICON_WARNING        404
-#define POPUP_ICON_ERROR          405
 
 CGUIDialogKaiToast::TOASTQUEUE CGUIDialogKaiToast::m_notifications;
 CCriticalSection CGUIDialogKaiToast::m_critical;
 
 CGUIDialogKaiToast::CGUIDialogKaiToast(void)
-: CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml")
+  : CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml", DialogModalityType::MODELESS)
 {
   m_loadType = LOAD_ON_GUI_INIT;
   m_timer = 0;
@@ -63,14 +60,6 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
     break;
   }
   return CGUIDialog::OnMessage(message);
-}
-
-void CGUIDialogKaiToast::OnWindowLoaded()
-{
-  CGUIDialog::OnWindowLoaded();
-  CGUIMessage msg(GUI_MSG_GET_FILENAME, GetID(), POPUP_ICON);
-  if (OnMessage(msg))
-    m_defaultIcon = msg.GetLabel();
 }
 
 void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
@@ -129,29 +118,17 @@ bool CGUIDialogKaiToast::DoWork()
 
     // set the appropriate icon
     {
-      std::string strTypeImage = toast.imagefile;
-
-      if (strTypeImage.empty())
+      std::string icon = toast.imagefile;
+      if (icon.empty())
       {
-        if (toast.eType == Default)
-          strTypeImage = m_defaultIcon;
+        if (toast.eType == Warning)
+          icon = "DefaultIconWarning.png";
+        else if (toast.eType == Error)
+          icon = "DefaultIconError.png";
         else
-        {
-          int imageControl = -1;
-          if (toast.eType == Info)
-            imageControl = POPUP_ICON_INFO;
-          else if (toast.eType == Warning)
-            imageControl = POPUP_ICON_WARNING;
-          else if (toast.eType == Error)
-            imageControl = POPUP_ICON_ERROR;
-
-          CGUIMessage msg(GUI_MSG_GET_FILENAME, GetID(), imageControl);
-          if (OnMessage(msg))
-            strTypeImage = msg.GetLabel();
-        }
+          icon = "DefaultIconInfo.png";
       }
-
-      SET_CONTROL_FILENAME(POPUP_ICON, strTypeImage);
+      SET_CONTROL_FILENAME(POPUP_ICON, icon);
     }
 
     //  Play the window specific init sound for each notification queued

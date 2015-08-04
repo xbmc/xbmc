@@ -61,7 +61,7 @@ bool CGUIRenderingControl::InitCallback(IRenderingCallback *callback)
 
   void *device = NULL;
 #if HAS_DX
-  device = g_Windowing.Get3DDevice();
+  device = g_Windowing.Get3D11Device();
 #endif
   if (callback->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f), device))
     m_callback = callback;

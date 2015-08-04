@@ -72,6 +72,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if (pCodec->capabilities & CODEC_CAP_TRUNCATED)
     m_pCodecContext->flags |= CODEC_FLAG_TRUNCATED;
 
+  m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   m_channels = 0;
   m_pCodecContext->channels = hints.channels;
   m_pCodecContext->sample_rate = hints.samplerate;
@@ -105,6 +106,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pFrame1 = av_frame_alloc();
   m_bOpenedCodec = true;
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
+  m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
 
   return true;
 }
@@ -146,6 +148,21 @@ int CDVDAudioCodecFFmpeg::Decode(uint8_t* pData, int iSize)
   {
     CLog::Log(LOGWARNING, "CDVDAudioCodecFFmpeg::Decode - decoder attempted to consume more data than given");
     iBytesUsed = iSize;
+  }
+
+  if (m_pFrame1->nb_side_data)
+  {
+    for (int i = 0; i < m_pFrame1->nb_side_data; i++)
+    {
+      AVFrameSideData *sd = m_pFrame1->side_data[i];
+      if (sd->data)
+      {
+        if (sd->type == AV_FRAME_DATA_MATRIXENCODING)
+        {
+          m_matrixEncoding = *(enum AVMatrixEncoding*)sd->data;
+        }
+      }
+    }
   }
 
   return iBytesUsed;
@@ -207,6 +224,25 @@ enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
 int CDVDAudioCodecFFmpeg::GetBitRate()
 {
   if (m_pCodecContext) return m_pCodecContext->bit_rate;
+  return 0;
+}
+
+enum AVMatrixEncoding CDVDAudioCodecFFmpeg::GetMatrixEncoding()
+{
+  return m_matrixEncoding;
+}
+
+enum AVAudioServiceType CDVDAudioCodecFFmpeg::GetAudioServiceType()
+{
+  if (m_pCodecContext)
+    return m_pCodecContext->audio_service_type;
+  return AV_AUDIO_SERVICE_TYPE_MAIN;
+}
+
+int CDVDAudioCodecFFmpeg::GetProfile()
+{
+  if (m_pCodecContext)
+    return m_pCodecContext->profile;
   return 0;
 }
 

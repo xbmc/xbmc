@@ -42,7 +42,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <math.h>
 //#include <shellapi.h>
 
-
+#define COLOR_NORM(x) (((int)(x*255)&0xFF) / 255.0f)
 
 #define D3DCOLOR_RGBA_01(r,g,b,a) D3DCOLOR_RGBA(((int)(r*255)),((int)(g*255)),((int)(b*255)),((int)(a*255)))
 #define FRAND ((rand() % 7381)/7380.0f)
@@ -856,73 +856,83 @@ void CPlugin::RenderFrame(int bRedraw)
 	// restore any lost surfaces
 	//m_lpDD->RestoreAllSurfaces();
 
-    LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+    DX11Context* lpDevice = GetDevice();
     if (!lpDevice)
         return;
 
     // Remember the original backbuffer and zbuffer
-    LPDIRECT3DSURFACE9 pBackBuffer, pZBuffer;
-    lpDevice->GetRenderTarget(0, &pBackBuffer );
-    lpDevice->GetDepthStencilSurface( &pZBuffer );
+    ID3D11Texture2D *pBackBuffer = NULL, *pZBuffer = NULL;
+    lpDevice->GetRenderTarget(&pBackBuffer, &pZBuffer);
 
-	D3DSURFACE_DESC	desc; 
-	pBackBuffer->GetDesc(&desc);
+	  D3D11_TEXTURE2D_DESC	desc; 
+	  pBackBuffer->GetDesc(&desc);
 
-	m_backBufferWidth = desc.Width;
-	m_backBufferHeight = desc.Height;
+	  m_backBufferWidth = desc.Width;
+	  m_backBufferHeight = desc.Height;
 
     // set up render state
     {
-        DWORD texaddr = (*m_pState->var_pf_wrap) ? D3DTADDRESS_WRAP : D3DTADDRESS_CLAMP;
-        lpDevice->SetRenderState(D3DRS_WRAP0, 0);
-        lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, texaddr);
-        lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, texaddr);
-        lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSW, texaddr);
+         // Setup DX11 stuff
+         D3D11_TEXTURE_ADDRESS_MODE texAddress = (*m_pState->var_pf_wrap) ? D3D11_TEXTURE_ADDRESS_WRAP : D3D11_TEXTURE_ADDRESS_CLAMP;
+         lpDevice->SetRasterizerState(D3D11_CULL_NONE, D3D11_FILL_SOLID);
+         lpDevice->SetBlendState(false);
+         lpDevice->SetDepth(false);
+         lpDevice->SetShader(0); // see DX11Contex implementation
+         if (m_bAnisotropicFiltering)
+           lpDevice->SetSamplerState(D3D11_FILTER_ANISOTROPIC, texAddress);
+         else
+           lpDevice->SetSamplerState(D3D11_FILTER_MIN_MAG_MIP_LINEAR, texAddress);
+
+         //DWORD texaddr = (*m_pState->var_pf_wrap) ? D3DTADDRESS_WRAP : D3DTADDRESS_CLAMP;
+        //lpDevice->SetRenderState(D3DRS_WRAP0, 0);
+        //lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, texaddr);
+        //lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, texaddr);
+        //lpDevice->SetSamplerState(0, D3DSAMP_ADDRESSW, texaddr);
         
-        lpDevice->SetRenderState( D3DRS_SHADEMODE, D3DSHADE_GOURAUD );
-	      lpDevice->SetRenderState( D3DRS_SPECULARENABLE, FALSE );
-        lpDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-        lpDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-        lpDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
-        lpDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
-        lpDevice->SetRenderState( D3DRS_COLORVERTEX, TRUE );
-        lpDevice->SetRenderState( D3DRS_FILLMODE,  D3DFILL_SOLID );
-        lpDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-	    lpDevice->SetRenderState( D3DRS_AMBIENT, 0xFFFFFFFF );  //?
+         //lpDevice->SetRenderState( D3DRS_SHADEMODE, D3DSHADE_GOURAUD );
+	      //lpDevice->SetRenderState( D3DRS_SPECULARENABLE, FALSE );
+        //lpDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+        //lpDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+        //lpDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
+        //lpDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
+        //lpDevice->SetRenderState( D3DRS_COLORVERTEX, TRUE );
+        //lpDevice->SetRenderState( D3DRS_FILLMODE,  D3DFILL_SOLID );
+        //lpDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+	    //lpDevice->SetRenderState( D3DRS_AMBIENT, 0xFFFFFFFF );  //?
 //        lpDevice->SetRenderState( D3DRS_CLIPPING, TRUE );
 
         // set min/mag/mip filtering modes; use anisotropy if available.
-        if (m_bAnisotropicFiltering && (GetCaps()->TextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC))
-	        lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
+        //if (m_bAnisotropicFiltering && (GetCaps()->TextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC))
+	      //  lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
 //        else if (GetCaps()->TextureFilterCaps & D3DPTFILTERCAPS_MAGFLINEAR)
-		else
-	        lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		    //else
+	      //  lpDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 //        else
 //            SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_POINT);
 
-        if (m_bAnisotropicFiltering && (GetCaps()->TextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC))
-	        lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
-		else
+        //if (m_bAnisotropicFiltering && (GetCaps()->TextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC))
+	      //  lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
+		    //else
 //        else if (GetCaps()->TextureFilterCaps & D3DPTFILTERCAPS_MINFLINEAR)
-	        lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	      //  lpDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
   //      else
 //	        SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
 
-        lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
+        //lpDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR );
 
         // note: this texture stage state setup works for 0 or 1 texture.
         // if you set a texture, it will be modulated with the current diffuse color.
         // if you don't set a texture, it will just use the current diffuse color.
-        lpDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-	      lpDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-	      lpDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE);
-        lpDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-	      lpDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-        lpDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
-        lpDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+        //lpDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+	      //lpDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+	      //lpDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE);
+        //lpDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+	      //lpDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
+        //lpDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+        //lpDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
-	    if (GetCaps()->RasterCaps & D3DPRASTERCAPS_DITHER)
-	    	lpDevice->SetRenderState(D3DRS_DITHERENABLE, FALSE);    
+	    //if (GetCaps()->RasterCaps & D3DPRASTERCAPS_DITHER)
+	    //	lpDevice->SetRenderState(D3DRS_DITHERENABLE, FALSE);    
 	    /* WISO: if (GetCaps()->RasterCaps & D3DPRASTERCAPS_ANTIALIASEDGES)
 		    lpDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);*/
 
@@ -948,15 +958,7 @@ void CPlugin::RenderFrame(int bRedraw)
     // set up to render [from NULL] to VS0 (for motion vectors).
     {
 	    lpDevice->SetTexture(0, NULL);
-
-        IDirect3DSurface9* pNewTarget = NULL;
-        if (m_lpVS[0]->GetSurfaceLevel(0, &pNewTarget) != D3D_OK) 
-            return;
-        lpDevice->SetRenderTarget(0, pNewTarget);
-        pNewTarget->Release();
-		lpDevice->SetDepthStencilSurface( NULL );
-
-	    lpDevice->SetTexture(0, NULL);
+      lpDevice->SetRenderTarget(m_lpVS[0], NULL);
     }
 
     // draw motion vectors to VS0
@@ -965,31 +967,25 @@ void CPlugin::RenderFrame(int bRedraw)
     // set up to render [from VS0] to VS1.
     {
 	    lpDevice->SetTexture(0, NULL);
-
-        IDirect3DSurface9* pNewTarget = NULL;
-        if (m_lpVS[1]->GetSurfaceLevel(0, &pNewTarget) != D3D_OK) 
-            return;
-        lpDevice->SetRenderTarget(0, pNewTarget);
-		lpDevice->SetDepthStencilSurface( NULL );
-        pNewTarget->Release();
+      lpDevice->SetRenderTarget(m_lpVS[1], NULL);
     }
 
 	// do the warping for this frame
-	if (GetCaps()->RasterCaps & D3DPRASTERCAPS_DITHER)
-	    lpDevice->SetRenderState(D3DRS_DITHERENABLE, TRUE);    
+	//if (GetCaps()->RasterCaps & D3DPRASTERCAPS_DITHER)
+	//    lpDevice->SetRenderState(D3DRS_DITHERENABLE, TRUE);    
 	/* WISO: if (GetCaps()->RasterCaps & D3DPRASTERCAPS_ANTIALIASEDGES)
 		lpDevice->SetRenderState(D3DRS_EDGEANTIALIAS, FALSE);*/
 	WarpedBlitFromVS0ToVS1();
-	if (GetCaps()->RasterCaps & D3DPRASTERCAPS_DITHER)
-	    lpDevice->SetRenderState(D3DRS_DITHERENABLE, FALSE);    
-	/*if (GetCaps()->RasterCaps & D3DPRASTERCAPS_ANTIALIASEDGES)
-		lpDevice->SetRenderState(D3DRS_EDGEANTIALIAS, TRUE);*/
+	//if (GetCaps()->RasterCaps & D3DPRASTERCAPS_DITHER)
+	//    lpDevice->SetRenderState(D3DRS_DITHERENABLE, FALSE);    
+	//if (GetCaps()->RasterCaps & D3DPRASTERCAPS_ANTIALIASEDGES)
+	//	lpDevice->SetRenderState(D3DRS_EDGEANTIALIAS, TRUE);
 
 	// draw audio data
-    DrawCustomShapes(); // draw these first; better for feedback if the waves draw *over* them.
-	DrawCustomWaves();
-	DrawWave(mysound.fWave[0], mysound.fWave[1]);
-	DrawSprites();
+  DrawCustomShapes(); // draw these first; better for feedback if the waves draw *over* them.
+  DrawCustomWaves();
+  DrawWave(mysound.fWave[0], mysound.fWave[1]);
+  DrawSprites();
 
 	// if song title animation just ended, render it into the VS:
 	if (m_supertext.fStartTime >= 0 &&
@@ -1003,8 +999,7 @@ void CPlugin::RenderFrame(int bRedraw)
   // Change the rendertarget back to the original setup
   lpDevice->SetTexture(0, NULL);
   // WISO: lpDevice->SetRenderTarget( pBackBuffer, pZBuffer );
-  lpDevice->SetRenderTarget(0, pBackBuffer);
-  lpDevice->SetDepthStencilSurface( pZBuffer );
+  lpDevice->SetRenderTarget(pBackBuffer, pZBuffer);
 
   SafeRelease(pBackBuffer);
   SafeRelease(pZBuffer);
@@ -1028,14 +1023,14 @@ void CPlugin::RenderFrame(int bRedraw)
 	DrawUserSprites();
 
 	// flip buffers
-	IDirect3DTexture9* pTemp = m_lpVS[0];
+	ID3D11Texture2D* pTemp = m_lpVS[0];
 	m_lpVS[0] = m_lpVS[1];
 	m_lpVS[1] = pTemp;
 
 	/* WISO: if (GetCaps()->RasterCaps & D3DPRASTERCAPS_ANTIALIASEDGES)
 		lpDevice->SetRenderState(D3DRS_EDGEANTIALIAS, FALSE);*/
-	if (GetCaps()->RasterCaps & D3DPRASTERCAPS_DITHER)
-	    lpDevice->SetRenderState(D3DRS_DITHERENABLE, FALSE);    
+	//if (GetCaps()->RasterCaps & D3DPRASTERCAPS_DITHER)
+	//    lpDevice->SetRenderState(D3DRS_DITHERENABLE, FALSE);    
 }
 
 
@@ -1045,12 +1040,13 @@ void CPlugin::DrawMotionVectors()
 	if ((float)*m_pState->var_pf_mv_a >= 0.001f)
 	{
         //-------------------------------------------------------
-        LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+        DX11Context* lpDevice = GetDevice();
         if (!lpDevice)
             return;
 
         lpDevice->SetTexture(0, NULL);
-        lpDevice->SetFVF(WFVERTEX_FORMAT);
+        lpDevice->SetVertexColor(true);
+        //lpDevice->SetFVF(WFVERTEX_FORMAT);
         //-------------------------------------------------------
 
 		int x,y;
@@ -1104,13 +1100,18 @@ void CPlugin::DrawMotionVectors()
 
 			WFVERTEX v[(64+1)*2];
 			ZeroMemory(v, sizeof(WFVERTEX)*(64+1)*2);
-			v[0].Diffuse = D3DCOLOR_RGBA_01((float)*m_pState->var_pf_mv_r,(float)*m_pState->var_pf_mv_g,(float)*m_pState->var_pf_mv_b,(float)*m_pState->var_pf_mv_a);
-			for (x=1; x<(nX+1)*2; x++)
-				v[x].Diffuse = v[0].Diffuse;
+      for (x = 0; x < (nX + 1) * 2; x++)
+      {
+        v[x].r = COLOR_NORM((float)*m_pState->var_pf_mv_r);
+        v[x].g = COLOR_NORM((float)*m_pState->var_pf_mv_g);
+        v[x].b = COLOR_NORM((float)*m_pState->var_pf_mv_b);
+        v[x].a = COLOR_NORM((float)*m_pState->var_pf_mv_a);
+      }
 
-			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+      lpDevice->SetBlendState(true, D3D11_BLEND_SRC_ALPHA, D3D11_BLEND_INV_SRC_ALPHA);
+			//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 			for (y=0; y<nY; y++)
 			{
@@ -1185,11 +1186,12 @@ void CPlugin::DrawMotionVectors()
 
 					// draw it
 					if (n != 0)
-						lpDevice->DrawPrimitiveUP(D3DPT_LINELIST, n/2, v, sizeof(WFVERTEX));
+						lpDevice->DrawPrimitive(D3DPT_LINELIST, n/2, v, sizeof(WFVERTEX));
 				}
 			}
 
-			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+      lpDevice->SetBlendState(false);
+			//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 		}
 	}
 }
@@ -1358,12 +1360,13 @@ void CPlugin::WarpedBlitFromVS0ToVS1()
 {
 	MungeFPCW(NULL);	// puts us in single-precision mode & disables exceptions
 
-    LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+    DX11Context* lpDevice = GetDevice();
     if (!lpDevice)
         return;
 
 	lpDevice->SetTexture(0, m_lpVS[0]);
-  lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
+  lpDevice->SetVertexColor(false);
+  //lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
 
 	// warp stuff
 	float fWarpTime = GetTime() * m_pState->m_fWarpAnimSpeed;
@@ -1390,7 +1393,8 @@ void CPlugin::WarpedBlitFromVS0ToVS1()
 	//if (m_pState->m_bBlending)
 	//	fDecay = fDecay*(fCosineBlend) + (1.0f-fCosineBlend)*((float)(*m_pOldState->var_pf_decay));
 
-    if (m_bAutoGamma && GetFrame()==0)
+  /* Comment this because DX11 cannot use the following formats for backbuffer
+  if (m_bAutoGamma && GetFrame()==0)
 	{
 		if (strstr(GetDriverDescription(), "nvidia") ||
 			strstr(GetDriverDescription(), "nVidia") ||
@@ -1409,8 +1413,10 @@ void CPlugin::WarpedBlitFromVS0ToVS1()
     {
 		fDecay = min(fDecay, (32.0f - m_n16BitGamma)/32.0f);
     }
+  */
 
 	D3DCOLOR cDecay = D3DCOLOR_RGBA_01(fDecay,fDecay,fDecay,1);
+	fDecay = COLOR_NORM(fDecay);
 
 
 	for (int rep=0; rep<num_reps; rep++)
@@ -1582,7 +1588,10 @@ void CPlugin::WarpedBlitFromVS0ToVS1()
 
 	for (poly=0; poly<m_nGridX+2; poly++)
 	{
-		m_verts_temp[poly].Diffuse = cDecay;
+    m_verts_temp[poly].r = fDecay;
+    m_verts_temp[poly].g = fDecay;
+    m_verts_temp[poly].b = fDecay;
+    m_verts_temp[poly].a = 1.0f;
 	}
 
 	for (int strip=0; strip<m_nGridY*2; strip++)
@@ -1601,13 +1610,13 @@ void CPlugin::WarpedBlitFromVS0ToVS1()
 			index++;
 		}
 
-        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, m_nGridX, (void*)m_verts_temp, sizeof(SPRITEVERTEX));
+        lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, m_nGridX, (void*)m_verts_temp, sizeof(SPRITEVERTEX));
 	}
 }
 
 void CPlugin::DrawCustomShapes()
 {
-    LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+    DX11Context* lpDevice = GetDevice();
     if (!lpDevice)
         return;
 
@@ -1682,9 +1691,10 @@ void CPlugin::DrawCustomShapes()
                 if (sides<3) sides=3;
                 if (sides>100) sides=100;
 
-	            lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-                lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
-                lpDevice->SetRenderState(D3DRS_DESTBLEND, ((int)(*pState->m_shape[i].var_pf_additive) != 0) ? D3DBLEND_ONE : D3DBLEND_INVSRCALPHA);
+                lpDevice->SetBlendState(true, D3D11_BLEND_SRC_ALPHA, ((int)(*pState->m_shape[i].var_pf_additive) != 0) ? D3D11_BLEND_ONE : D3D11_BLEND_INV_SRC_ALPHA);
+	            //lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+              //  lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+              //  lpDevice->SetRenderState(D3DRS_DESTBLEND, ((int)(*pState->m_shape[i].var_pf_additive) != 0) ? D3DBLEND_ONE : D3DBLEND_INVSRCALPHA);
 
                 SPRITEVERTEX v[512];  // for textured shapes (has texcoords)
                 WFVERTEX v2[512];     // for untextured shapes + borders
@@ -1694,16 +1704,14 @@ void CPlugin::DrawCustomShapes()
                 v[0].z = 0;
                 v[0].tu = 0.5f;
                 v[0].tv = 0.5f;
-                v[0].Diffuse = 
-                    ((((int)(*pState->m_shape[i].var_pf_a * 255 * alpha_mult)) & 0xFF) << 24) |
-                    ((((int)(*pState->m_shape[i].var_pf_r * 255)) & 0xFF) << 16) |
-                    ((((int)(*pState->m_shape[i].var_pf_g * 255)) & 0xFF) <<  8) |
-                    ((((int)(*pState->m_shape[i].var_pf_b * 255)) & 0xFF)      );
-                v[1].Diffuse = 
-                    ((((int)(*pState->m_shape[i].var_pf_a2 * 255 * alpha_mult)) & 0xFF) << 24) |
-                    ((((int)(*pState->m_shape[i].var_pf_r2 * 255)) & 0xFF) << 16) |
-                    ((((int)(*pState->m_shape[i].var_pf_g2 * 255)) & 0xFF) <<  8) |
-                    ((((int)(*pState->m_shape[i].var_pf_b2 * 255)) & 0xFF)      );
+                v[0].a = COLOR_NORM((float)(*pState->m_shape[i].var_pf_a * alpha_mult));
+                v[0].r = COLOR_NORM((float)(*pState->m_shape[i].var_pf_r));
+                v[0].g = COLOR_NORM((float)(*pState->m_shape[i].var_pf_g));
+                v[0].b = COLOR_NORM((float)(*pState->m_shape[i].var_pf_b));
+                v[1].a = COLOR_NORM((float)(*pState->m_shape[i].var_pf_a2 * alpha_mult));
+                v[1].r = COLOR_NORM((float)(*pState->m_shape[i].var_pf_r2));
+                v[1].g = COLOR_NORM((float)(*pState->m_shape[i].var_pf_g2));
+                v[1].b = COLOR_NORM((float)(*pState->m_shape[i].var_pf_b2));
 
                 for (int j=1; j<sides+1; j++)
                 {
@@ -1713,16 +1721,21 @@ void CPlugin::DrawCustomShapes()
                     v[j].z = 0;
                     v[j].tu = 0.5f + 0.5f*cosf(t*3.1415927f*2 + (float)*pState->m_shape[i].var_pf_tex_ang + 3.1415927f*0.25f)/((float)*pState->m_shape[i].var_pf_tex_zoom) * ASPECT; // DON'T TOUCH!
                     v[j].tv = 0.5f + 0.5f*sinf(t*3.1415927f*2 + (float)*pState->m_shape[i].var_pf_tex_ang + 3.1415927f*0.25f)/((float)*pState->m_shape[i].var_pf_tex_zoom);   // DON'T TOUCH!
-                    v[j].Diffuse = v[1].Diffuse;
+                    v[j].a = v[1].a;
+                    v[j].r = v[1].r;
+                    v[j].g = v[1].g;
+                    v[j].b = v[1].b;
+
                 }
                 v[sides+1] = v[1];
 
                 if ((int)(*pState->m_shape[i].var_pf_textured) != 0)
                 {
                     // draw textured version
+                    lpDevice->SetVertexColor(false);
                     lpDevice->SetTexture(0, m_lpVS[0]);
-                    lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
-                    lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, sides, (void*)v, sizeof(SPRITEVERTEX));
+                    //lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
+                    lpDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, sides, (void*)v, sizeof(SPRITEVERTEX));
                 }
                 else
                 {
@@ -1732,11 +1745,15 @@ void CPlugin::DrawCustomShapes()
                         v2[j].x       = v[j].x;
                         v2[j].y       = v[j].y;
                         v2[j].z       = v[j].z;
-                        v2[j].Diffuse = v[j].Diffuse;
+                        v2[j].a = v[j].a;
+                        v2[j].r = v[j].r;
+                        v2[j].g = v[j].g;
+                        v2[j].b = v[j].b;
                     }
                     lpDevice->SetTexture(0, NULL);
-                    lpDevice->SetFVF( WFVERTEX_FORMAT );
-                    lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, sides, (void*)v2, sizeof(WFVERTEX));
+                    lpDevice->SetVertexColor(true);
+                    //lpDevice->SetFVF( WFVERTEX_FORMAT );
+                    lpDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, sides, (void*)v2, sizeof(WFVERTEX));
                 }
                     
 
@@ -1744,19 +1761,22 @@ void CPlugin::DrawCustomShapes()
                 if (*pState->m_shape[i].var_pf_border_a > 0)
                 {
                     lpDevice->SetTexture(0, NULL);
-                    lpDevice->SetFVF( WFVERTEX_FORMAT );
+                    lpDevice->SetVertexColor(true);
+                    //lpDevice->SetFVF( WFVERTEX_FORMAT );
 
-                    v2[0].Diffuse = 
-                        ((((int)(*pState->m_shape[i].var_pf_border_a * 255 * alpha_mult)) & 0xFF) << 24) |
-                        ((((int)(*pState->m_shape[i].var_pf_border_r * 255)) & 0xFF) << 16) |
-                        ((((int)(*pState->m_shape[i].var_pf_border_g * 255)) & 0xFF) <<  8) |
-                        ((((int)(*pState->m_shape[i].var_pf_border_b * 255)) & 0xFF)      );
+                    v2[0].a = COLOR_NORM(*pState->m_shape[i].var_pf_border_a * alpha_mult);
+                    v2[0].r = COLOR_NORM(*pState->m_shape[i].var_pf_border_r);
+                    v2[0].g = COLOR_NORM(*pState->m_shape[i].var_pf_border_g);
+                    v2[0].b = COLOR_NORM(*pState->m_shape[i].var_pf_border_b);
                     for (int j=0; j<sides+2; j++)
                     {
                         v2[j].x = v[j].x;
                         v2[j].y = v[j].y;
                         v2[j].z = v[j].z;
-                        v2[j].Diffuse = v2[0].Diffuse;
+                        v2[j].a = v2[0].a;
+                        v2[j].r = v2[0].r;
+                        v2[j].g = v2[0].g;
+                        v2[j].b = v2[0].b;
                     }
                     
                     int its = ((int)(*pState->m_shape[i].var_pf_thick) != 0) ? 4 : 1;
@@ -1770,19 +1790,21 @@ void CPlugin::DrawCustomShapes()
 			            case 2: for (int j=0; j<sides+2; j++) v2[j].y += x_inc; break;		// draw fat dots
 			            case 3: for (int j=0; j<sides+2; j++) v2[j].x -= x_inc; break;		// draw fat dots
 			            }
-                        lpDevice->DrawPrimitiveUP(D3DPT_LINESTRIP, sides, (void*)&v2[1], sizeof(WFVERTEX));
+                        lpDevice->DrawPrimitive(D3DPT_LINESTRIP, sides, (void*)&v2[1], sizeof(WFVERTEX));
                     }
 
                     lpDevice->SetTexture(0, m_lpVS[0]);
-                    lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
+                    lpDevice->SetVertexColor(false);
+                    //lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
                 }
             }
         }
     }
 
-	lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
-	lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    lpDevice->SetBlendState(false, D3D11_BLEND_SRC_ALPHA, D3D11_BLEND_INV_SRC_ALPHA);
+	//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+	//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 void CPlugin::LoadCustomShapePerFrameEvallibVars(CState* pState, int i)
@@ -1873,12 +1895,13 @@ void CPlugin::LoadCustomWavePerFrameEvallibVars(CState* pState, int i)
 
 void CPlugin::DrawCustomWaves()
 {
-    LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+    DX11Context* lpDevice = GetDevice();
     if (!lpDevice)
         return;
 
     lpDevice->SetTexture(0, NULL);
-    lpDevice->SetFVF( WFVERTEX_FORMAT );
+    lpDevice->SetVertexColor(true);
+    //lpDevice->SetFVF( WFVERTEX_FORMAT );
 
     // note: read in all sound data from CPluginShell's m_sound
 	int num_reps = (m_pState->m_bBlending) ? 2 : 1;
@@ -2001,11 +2024,10 @@ void CPlugin::DrawCustomWaves()
                         v[j].x = (float)(*pState->m_wave[i].var_pp_x* 2-1);//*ASPECT;
                         v[j].y = (float)(*pState->m_wave[i].var_pp_y*-2+1);
                         v[j].z = 0;
-                        v[j].Diffuse = 
-                            ((((int)(*pState->m_wave[i].var_pp_a * 255 * alpha_mult)) & 0xFF) << 24) |
-                            ((((int)(*pState->m_wave[i].var_pp_r * 255)) & 0xFF) << 16) |
-                            ((((int)(*pState->m_wave[i].var_pp_g * 255)) & 0xFF) <<  8) |
-                            ((((int)(*pState->m_wave[i].var_pp_b * 255)) & 0xFF)      );
+                        v[j].a = COLOR_NORM(*pState->m_wave[i].var_pp_a * alpha_mult);
+                        v[j].r = COLOR_NORM(*pState->m_wave[i].var_pp_r);
+                        v[j].g = COLOR_NORM(*pState->m_wave[i].var_pp_g);
+                        v[j].b = COLOR_NORM(*pState->m_wave[i].var_pp_b);
                     }
 
                     #ifndef _NO_EXPR_
@@ -2025,51 +2047,75 @@ void CPlugin::DrawCustomWaves()
                     */
 
                     // 3. draw it
-	                lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	                lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
-                    lpDevice->SetRenderState(D3DRS_DESTBLEND, pState->m_wave[i].bAdditive ? D3DBLEND_ONE : D3DBLEND_INVSRCALPHA);
+                    lpDevice->SetBlendState(true, D3D11_BLEND_SRC_ALPHA, pState->m_wave[i].bAdditive ? D3D11_BLEND_ONE :D3D11_BLEND_INV_SRC_ALPHA);
+                    //lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+                    //lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+                    //lpDevice->SetRenderState(D3DRS_DESTBLEND, pState->m_wave[i].bAdditive ? D3DBLEND_ONE : D3DBLEND_INVSRCALPHA);
                 
                     float ptsize = ((m_nTexSize >= 1024) ? 2.0f : 1.0f) + (pState->m_wave[i].bDrawThick ? 1.0f : 0.0f);
-                    if (pState->m_wave[i].bUseDots)
-                        lpDevice->SetRenderState(D3DRS_POINTSIZE, *((DWORD*)&ptsize) ); 
-
-                    int its = (pState->m_wave[i].bDrawThick && !pState->m_wave[i].bUseDots) ? 4 : 1;
-		            float x_inc = 2.0f / (float)m_nTexSize;
-                    for (int it=0; it<its; it++)
+                    //if (pState->m_wave[i].bUseDots)
+                    //    lpDevice->SetRenderState(D3DRS_POINTSIZE, *((DWORD*)&ptsize) ); 
+                    // DX11: have not point size, so render quads
+                    if (pState->m_wave[i].bUseDots && ptsize > 1.0)
                     {
-			            switch(it)
-			            {
-			            case 0: break;
-			            case 1: for (j=0; j<nSamples; j++) v[j].x += x_inc; break;		// draw fat dots
-			            case 2: for (j=0; j<nSamples; j++) v[j].y += x_inc; break;		// draw fat dots
-			            case 3: for (j=0; j<nSamples; j++) v[j].x -= x_inc; break;		// draw fat dots
-			            }
-                        lpDevice->DrawPrimitiveUP(pState->m_wave[i].bUseDots ? D3DPT_POINTLIST : D3DPT_LINESTRIP, nSamples - (pState->m_wave[i].bUseDots ? 0 : 1), (void*)v, sizeof(WFVERTEX));
-                    }
+                      float dx = ptsize / (float)m_nTexSize;
+                      WFVERTEX *v2 = new WFVERTEX[nSamples * 6];
+                      int j = 0;
+                      for (int k=0; k<nSamples*6; k+=6)
+                      {
+                        v2[k]   = v[j]; v2[ k ].x -= dx; v2[ k ].y -= dx;
+                        v2[k+1] = v[j]; v2[k+1].x += dx; v2[k+1].y -= dx;
+                        v2[k+2] = v[j]; v2[k+2].x += dx; v2[k+2].y += dx;
 
-                    ptsize = 1.0f;
-                    if (pState->m_wave[i].bUseDots)
-                        lpDevice->SetRenderState(D3DRS_POINTSIZE, *((DWORD*)&ptsize) ); 
+                        v2[k+3] = v2[k];
+                        v2[k+4] = v2[k+2];
+                        v2[k+5] = v[j]; v2[k+5].x -= dx; v2[k+5].y += dx;
+                        ++j;
+                      }
+                      lpDevice->DrawPrimitive(D3DPT_TRIANGLELIST, nSamples * 2, (void*)v2, sizeof(WFVERTEX));
+                      delete[] v2;
+                    }
+                    else
+                    {
+                      int its = (pState->m_wave[i].bDrawThick && !pState->m_wave[i].bUseDots) ? 4 : 1;
+                      float x_inc = 2.0f / (float)m_nTexSize;
+                      for (int it = 0; it < its; it++)
+                      {
+                        switch (it)
+                        {
+                        case 0: break;
+                        case 1: for (j = 0; j < nSamples; j++) v[j].x += x_inc; break;		// draw fat dots
+                        case 2: for (j = 0; j < nSamples; j++) v[j].y += x_inc; break;		// draw fat dots
+                        case 3: for (j = 0; j < nSamples; j++) v[j].x -= x_inc; break;		// draw fat dots
+                        }
+                        lpDevice->DrawPrimitive(pState->m_wave[i].bUseDots ? D3DPT_POINTLIST : D3DPT_LINESTRIP, nSamples - (pState->m_wave[i].bUseDots ? 0 : 1), (void*)v, sizeof(WFVERTEX));
+                      }
+                    }
+                    // DX11: do not use point size
+                    //if (pState->m_wave[i].bUseDots)
+                    //    lpDevice->SetRenderState(D3DRS_POINTSIZE, *((DWORD*)&ptsize) ); 
                 }
             }
         }
     }
 
-	lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
-	lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    lpDevice->SetBlendState(false, D3D11_BLEND_SRC_ALPHA, D3D11_BLEND_INV_SRC_ALPHA);
+	//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+	//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 void CPlugin::DrawWave(float *fL, float *fR)
 {
 	//return;
 
-    LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+    DX11Context* lpDevice = GetDevice();
     if (!lpDevice)
         return;
 
     lpDevice->SetTexture(0, NULL);
-    lpDevice->SetFVF( WFVERTEX_FORMAT );
+    lpDevice->SetVertexColor(true);
+    //lpDevice->SetFVF( WFVERTEX_FORMAT );
 
 	int i;
 	WFVERTEX v1[576+1], v2[576+1];
@@ -2094,9 +2140,10 @@ void CPlugin::DrawWave(float *fL, float *fR)
 	}
     */
 
-	lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
-	lpDevice->SetRenderState(D3DRS_DESTBLEND, (*m_pState->var_pf_wave_additive) ? D3DBLEND_ONE : D3DBLEND_INVSRCALPHA);
+  lpDevice->SetBlendState(true, D3D11_BLEND_SRC_ALPHA, (*m_pState->var_pf_wave_additive) ? D3D11_BLEND_ONE : D3D11_BLEND_INV_SRC_ALPHA);
+	//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+	//lpDevice->SetRenderState(D3DRS_DESTBLEND, (*m_pState->var_pf_wave_additive) ? D3DBLEND_ONE : D3DBLEND_INVSRCALPHA);
 
 	//float cr = m_pState->m_waveR.eval(GetTime());
 	//float cg = m_pState->m_waveG.eval(GetTime());
@@ -2595,11 +2642,13 @@ void CPlugin::DrawWave(float *fL, float *fR)
 	// apply color & alpha
     // ALSO reverse all y values, to stay consistent with the pre-VMS milkdrop,
     //  which DIDN'T:
-	v1[0].Diffuse = D3DCOLOR_RGBA_01(cr, cg, cb, alpha1);
 	for (i=0; i<nVerts1; i++)
     {
-		v1[i].Diffuse = v1[0].Diffuse;
-        v1[i].y = -v1[i].y;
+      v1[i].r = COLOR_NORM(cr);
+      v1[i].g = COLOR_NORM(cg);
+      v1[i].b = COLOR_NORM(cb);
+      v1[i].a = COLOR_NORM(alpha1);
+      v1[i].y = -v1[i].y;
     }
 	
 	// draw primitives
@@ -2624,9 +2673,9 @@ void CPlugin::DrawWave(float *fL, float *fR)
 			{
 				//m_lpD3DDev->DrawPrimitive(primtype, D3DFVF_LVERTEX, (LPVOID)v1, nVerts1, NULL);
                 if (*m_pState->var_pf_wave_usedots)
-                    lpDevice->DrawPrimitiveUP(D3DPT_POINTLIST, nVerts1, (void*)v1, sizeof(WFVERTEX));
+                    lpDevice->DrawPrimitive(D3DPT_POINTLIST, nVerts1, (void*)v1, sizeof(WFVERTEX));
                 else
-                    lpDevice->DrawPrimitiveUP(D3DPT_LINESTRIP, nVerts1-1, (void*)v1, sizeof(WFVERTEX));
+                    lpDevice->DrawPrimitive(D3DPT_LINESTRIP, nVerts1-1, (void*)v1, sizeof(WFVERTEX));
 			}
 			else
 			{
@@ -2634,48 +2683,51 @@ void CPlugin::DrawWave(float *fL, float *fR)
 				//m_lpD3DDev->DrawPrimitive(primtype, D3DFVF_LVERTEX, (LPVOID)&v1[nBreak1], nVerts1-nBreak1, NULL);
                 if (*m_pState->var_pf_wave_usedots)
                 {
-                    lpDevice->DrawPrimitiveUP(D3DPT_POINTLIST, nBreak1, (void*)v1, sizeof(WFVERTEX));
-                    lpDevice->DrawPrimitiveUP(D3DPT_POINTLIST, nVerts1-nBreak1, (void*)&v1[nBreak1], sizeof(WFVERTEX));
+                    lpDevice->DrawPrimitive(D3DPT_POINTLIST, nBreak1, (void*)v1, sizeof(WFVERTEX));
+                    lpDevice->DrawPrimitive(D3DPT_POINTLIST, nVerts1-nBreak1, (void*)&v1[nBreak1], sizeof(WFVERTEX));
                 }
                 else
                 {
-                    lpDevice->DrawPrimitiveUP(D3DPT_LINESTRIP, nBreak1-1, (void*)v1, sizeof(WFVERTEX));
-                    lpDevice->DrawPrimitiveUP(D3DPT_LINESTRIP, nVerts1-nBreak1-1, (void*)&v1[nBreak1], sizeof(WFVERTEX));
+                    lpDevice->DrawPrimitive(D3DPT_LINESTRIP, nBreak1-1, (void*)v1, sizeof(WFVERTEX));
+                    lpDevice->DrawPrimitive(D3DPT_LINESTRIP, nVerts1-nBreak1-1, (void*)&v1[nBreak1], sizeof(WFVERTEX));
                 }
 			}
 		}
 	}
 
-	lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+  lpDevice->SetBlendState(false);
+	//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 }
 
 
 
 void CPlugin::DrawSprites()
 {
-    LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+    DX11Context* lpDevice = GetDevice();
     if (!lpDevice)
         return;
 
     lpDevice->SetTexture(0, NULL);
-    lpDevice->SetFVF( WFVERTEX_FORMAT );
+    lpDevice->SetVertexColor(true);
+    //lpDevice->SetFVF( WFVERTEX_FORMAT );
 
 	if (*m_pState->var_pf_darken_center)
 	{
-		lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-		lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);//SRCALPHA);
-		lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    lpDevice->SetBlendState(true, D3D11_BLEND_SRC_ALPHA, D3D11_BLEND_INV_SRC_ALPHA);
+		//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+		//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);//SRCALPHA);
+		//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 		WFVERTEX v3[6];
 		ZeroMemory(v3, sizeof(WFVERTEX)*6);
 		
 		// colors:
-		v3[0].Diffuse = D3DCOLOR_RGBA_01(0, 0, 0, 3.0f/32.0f);
-		v3[1].Diffuse = D3DCOLOR_RGBA_01(0, 0, 0, 0.0f/32.0f);
-		v3[2].Diffuse = v3[1].Diffuse;
-		v3[3].Diffuse = v3[1].Diffuse;
-		v3[4].Diffuse = v3[1].Diffuse;
-		v3[5].Diffuse = v3[1].Diffuse;
+    v3[0].r = v3[0].g = v3[0].b = 0.0f; v3[0].a = 3.0f / 32.0f;
+    v3[1].r = v3[1].g = v3[1].b = v3[1].a = 0.0f;
+    v3[2].r = v3[2].g = v3[2].b = v3[2].a = 0.0f;
+    v3[3].r = v3[3].g = v3[3].b = v3[3].a = 0.0f;
+    v3[4].r = v3[4].g = v3[4].b = v3[4].a = 0.0f;
+    v3[5].r = v3[5].g = v3[5].b = v3[5].a = 0.0f;
 
 		// positioning:
 		float fHalfSize = 0.05f;
@@ -2694,9 +2746,10 @@ void CPlugin::DrawSprites()
 		//v3[0].tu = 0;	v3[1].tu = 1;	v3[2].tu = 0;	v3[3].tu = 1;
 		//v3[0].tv = 1;	v3[1].tv = 1;	v3[2].tv = 0;	v3[3].tv = 0;
 
-		lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 4, (LPVOID)v3, sizeof(WFVERTEX));
+		lpDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 4, (LPVOID)v3, sizeof(WFVERTEX));
 
-		lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    lpDevice->SetBlendState(false);
+    //lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	}
 
 
@@ -2705,9 +2758,10 @@ void CPlugin::DrawSprites()
 		float fOuterBorderSize = (float)*m_pState->var_pf_ob_size;
 		float fInnerBorderSize = (float)*m_pState->var_pf_ib_size;
 
-		lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-		lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
-		lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    lpDevice->SetBlendState(true, D3D11_BLEND_SRC_ALPHA, D3D11_BLEND_INV_SRC_ALPHA);
+    //lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+		//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+		//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 		for (int it=0; it<2; it++)
 		{
@@ -2721,10 +2775,10 @@ void CPlugin::DrawSprites()
 			float a = (it==0) ? (float)*m_pState->var_pf_ob_a : (float)*m_pState->var_pf_ib_a;
 			if (a > 0.001f)
 			{
-				v3[0].Diffuse = D3DCOLOR_RGBA_01(r,g,b,a);
-				v3[1].Diffuse = v3[0].Diffuse;
-				v3[2].Diffuse = v3[0].Diffuse;
-				v3[3].Diffuse = v3[0].Diffuse;
+				v3[0].r = v3[1].r = v3[2].r = v3[3].r = COLOR_NORM(r);
+				v3[0].g = v3[1].g = v3[2].g = v3[3].g = COLOR_NORM(g);
+				v3[0].b = v3[1].b = v3[2].b = v3[3].b = COLOR_NORM(b);
+				v3[0].a = v3[1].a = v3[2].a = v3[3].a = COLOR_NORM(a);
 
 				// positioning:
 				float fInnerRad = (it==0) ? 1.0f - fOuterBorderSize : 1.0f - fOuterBorderSize - fInnerBorderSize;
@@ -2740,7 +2794,7 @@ void CPlugin::DrawSprites()
 
 				for (int rot=0; rot<4; rot++)
 				{
-		            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, (LPVOID)v3, sizeof(WFVERTEX));
+		            lpDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 2, (LPVOID)v3, sizeof(WFVERTEX));
 
 					// rotate by 90 degrees
 					for (int v=0; v<4; v++)
@@ -2754,7 +2808,8 @@ void CPlugin::DrawSprites()
 				}
 			}
 		}
-		lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    lpDevice->SetBlendState(false);
+		//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	}
 }
 
@@ -3134,14 +3189,16 @@ void CPlugin::DrawUserSprites()	// from system memory, to back buffer.
 
 void CPlugin::ShowToUser(int bRedraw)
 {
-    LPDIRECT3DDEVICE9 lpDevice = GetDevice();
+    DX11Context* lpDevice = GetDevice();
     if (!lpDevice)
         return;
 
 	lpDevice->SetTexture(0, m_lpVS[1]);
-    lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
+  lpDevice->SetVertexColor(false);
+    //lpDevice->SetFVF( SPRITEVERTEX_FORMAT );
 
-	lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+  lpDevice->SetBlendState(false);
+	//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
 	float fZoom = 1.0f;
 	SPRITEVERTEX v3[4];
@@ -3215,7 +3272,8 @@ void CPlugin::ShowToUser(int bRedraw)
         float fGammaAdj = (float)*m_pState->var_pf_gamma;//m_pState->m_fGammaAdj.eval(GetTime());
         int gamma_passes = (int)(fGammaAdj + 0.999f);
 
-		lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+        lpDevice->SetBlendState(false);
+		//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
         
         for (int pass=0; pass<gamma_passes; pass++)
         {
@@ -3255,13 +3313,28 @@ void CPlugin::ShowToUser(int bRedraw)
 				    }
 			    }
 
-			    if (rep==0)
-				    m_verts_temp[0].Diffuse = D3DCOLOR_RGBA_01(m_cRightEye3DColor[0]*colormult,m_cRightEye3DColor[1]*colormult,m_cRightEye3DColor[2]*colormult,1);		// should be the color of right lens (~red)
-			    else
-				    m_verts_temp[0].Diffuse = D3DCOLOR_RGBA_01(m_cLeftEye3DColor[0]*colormult,m_cLeftEye3DColor[1]*colormult,m_cLeftEye3DColor[2]*colormult,1);		// should be the color of left lens (~blue)
+          if (rep == 0)
+          {
+            m_verts_temp[0].r = COLOR_NORM(m_cRightEye3DColor[0] * colormult);
+            m_verts_temp[0].g = COLOR_NORM(m_cRightEye3DColor[1] * colormult);
+            m_verts_temp[0].b = COLOR_NORM(m_cRightEye3DColor[2] * colormult);
+            m_verts_temp[0].a = 1.0f;
+          }
+          else
+          {
+            m_verts_temp[0].r = COLOR_NORM(m_cLeftEye3DColor[0] * colormult);
+            m_verts_temp[0].g = COLOR_NORM(m_cLeftEye3DColor[1] * colormult);
+            m_verts_temp[0].b = COLOR_NORM(m_cLeftEye3DColor[2] * colormult);
+            m_verts_temp[0].a = 1.0f;
+          }
 
 			    for (int poly=1; poly<m_nGridX+2; poly++)
-				    m_verts_temp[poly].Diffuse = m_verts_temp[0].Diffuse;
+          {
+            m_verts_temp[poly].r = m_verts_temp[0].r;
+            m_verts_temp[poly].g = m_verts_temp[0].g;
+            m_verts_temp[poly].b = m_verts_temp[0].b;
+            m_verts_temp[poly].a = m_verts_temp[0].a;
+          }
 
 			    for (int strip=0; strip<m_nGridY*2; strip++)
 			    {
@@ -3286,15 +3359,17 @@ void CPlugin::ShowToUser(int bRedraw)
 					    index++;
 				    }
 
-                    lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, m_nGridX, (void*)m_verts_temp, sizeof(SPRITEVERTEX));
-			    }
+                    lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, m_nGridX, (void*)m_verts_temp, sizeof(SPRITEVERTEX));
+          }
 
-			    lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-			    lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
-			    lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+          lpDevice->SetBlendState(true, D3D11_BLEND_ONE, D3D11_BLEND_ONE);
+			    //lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+			    //lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
+			    //lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 		    }
         }
-		lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    lpDevice->SetBlendState(false, D3D11_BLEND_ONE, D3D11_BLEND_ONE);
+		//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 
 	}
 	else	// regular display (non-stereo)
@@ -3326,7 +3401,10 @@ void CPlugin::ShowToUser(int bRedraw)
 				{
 					shade[i][k] = shade[i][k]*(fShaderAmount) + 1.0f*(1.0f - fShaderAmount);
 				}
-				v3[i].Diffuse = D3DCOLOR_RGBA_01(shade[i][0],shade[i][1],shade[i][2],1);
+        v3[i].r = COLOR_NORM(shade[i][0]);
+        v3[i].g = COLOR_NORM(shade[i][1]);
+        v3[i].b = COLOR_NORM(shade[i][2]);
+				v3[i].a = 1.0f;
 			}
 		}
 
@@ -3354,9 +3432,10 @@ void CPlugin::ShowToUser(int bRedraw)
 		if (fVideoEchoAlpha > 0.001f)
 		{
 			// video echo
-			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+      lpDevice->SetBlendState(true, D3D11_BLEND_ONE, D3D11_BLEND_ZERO);
+			//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 
 			for (int i=0; i<2; i++)
 			{
@@ -3388,14 +3467,20 @@ void CPlugin::ShowToUser(int bRedraw)
 
 				float mix = (i==1) ? fVideoEchoAlpha : 1.0f - fVideoEchoAlpha;
 				for (int k=0; k<4; k++)	
-					v3[k].Diffuse = D3DCOLOR_RGBA_01(mix*shade[k][0],mix*shade[k][1],mix*shade[k][2],1);
+        {
+          v3[k].r = COLOR_NORM(mix*shade[k][0]);
+          v3[k].g = COLOR_NORM(mix*shade[k][1]);
+          v3[k].b = COLOR_NORM(mix*shade[k][2]);
+          v3[k].a = 1.0f;
+        }
 
-                lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+                lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
 
 				if (i==0)
 				{
-					lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
-					lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+          lpDevice->SetBlendState(true, D3D11_BLEND_ONE, D3D11_BLEND_ONE);
+					//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
+					//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 				}
 
 				if (fGammaAdj > 0.001f)
@@ -3412,8 +3497,13 @@ void CPlugin::ShowToUser(int bRedraw)
 							gamma = 1.0f;
 
 						for (int k=0; k<4; k++)
-							v3[k].Diffuse = D3DCOLOR_RGBA_01(gamma*mix*shade[k][0],gamma*mix*shade[k][1],gamma*mix*shade[k][2],1);
-                        lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+						{
+							v3[k].r = COLOR_NORM(gamma*mix*shade[k][0]);
+							v3[k].g = COLOR_NORM(gamma*mix*shade[k][1]);
+							v3[k].b = COLOR_NORM(gamma*mix*shade[k][2]);
+							v3[k].a = 1.0f;
+						}
+            lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
 					}
 				}
 			}
@@ -3424,9 +3514,10 @@ void CPlugin::ShowToUser(int bRedraw)
 			v3[0].tu = 0.5f / m_nTexSize;	v3[1].tu = 1;	v3[2].tu = 0.5f / m_nTexSize;	v3[3].tu = 1;
 			v3[0].tv = 1;	v3[1].tv = 1;	v3[2].tv = 0.5f / m_nTexSize;	v3[3].tv = 0.5f / m_nTexSize;
 
-			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+      lpDevice->SetBlendState(false, D3D11_BLEND_ONE, D3D11_BLEND_ZERO);
+			//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 
 			// draw it iteratively, solid the first time, and additively after that
 			int nPasses = (int)(fGammaAdj - 0.001f) + 1;
@@ -3440,14 +3531,20 @@ void CPlugin::ShowToUser(int bRedraw)
 					gamma = 1.0f;
 
 				for (int k=0; k<4; k++)
-					v3[k].Diffuse = D3DCOLOR_RGBA_01(gamma*shade[k][0],gamma*shade[k][1],gamma*shade[k][2],1);
-                lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+        {
+          v3[k].r = COLOR_NORM(gamma*shade[k][0]);
+          v3[k].g = COLOR_NORM(gamma*shade[k][1]);
+          v3[k].b = COLOR_NORM(gamma*shade[k][2]);
+          v3[k].a = 1.0f;
+        }
+        lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
 
 				if (nPass==0)
 				{
-					lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-					lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
-					lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+          lpDevice->SetBlendState(true, D3D11_BLEND_ONE, D3D11_BLEND_ONE);
+					//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+					//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ONE);
+					//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 				}
 			}
 		}
@@ -3465,11 +3562,11 @@ void CPlugin::ShowToUser(int bRedraw)
 		v3[2].y = -fOnePlusInvHeight;
 		v3[3].y = -fOnePlusInvHeight;
 */
-		for (int i=0; i<4; i++) v3[i].Diffuse = D3DCOLOR_RGBA_01(1,1,1,1);
-
-		if (*m_pState->var_pf_brighten &&
+		for (int i=0; i<4; i++) v3[i].r = v3[i].g = v3[i].b = v3[i].a = 1.0f;
+    
+		if (*m_pState->var_pf_brighten /*&& // DX11 has no caps
 			(GetCaps()->SrcBlendCaps  & D3DPBLENDCAPS_INVDESTCOLOR ) &&
-			(GetCaps()->DestBlendCaps & D3DPBLENDCAPS_DESTCOLOR)
+			(GetCaps()->DestBlendCaps & D3DPBLENDCAPS_DESTCOLOR)*/
 			)
 		{
 			// square root filter
@@ -3478,26 +3575,30 @@ void CPlugin::ShowToUser(int bRedraw)
 			//lpDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT); //?
 
 			lpDevice->SetTexture(0, NULL);
-			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+      lpDevice->SetVertexColor(true);
+			//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
 			// first, a perfect invert
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+      lpDevice->SetBlendState(true, D3D11_BLEND_INV_DEST_COLOR, D3D11_BLEND_ZERO);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+            lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
 
 			// then modulate by self (square it)
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ZERO);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTCOLOR);
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+      lpDevice->SetBlendState(true, D3D11_BLEND_ZERO, D3D11_BLEND_DEST_COLOR);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ZERO);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTCOLOR);
+            lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
 
 			// then another perfect invert
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
-		}
+      lpDevice->SetBlendState(true, D3D11_BLEND_INV_DEST_COLOR, D3D11_BLEND_ZERO);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+            lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+    }
 
-		if (*m_pState->var_pf_darken && 
-			(GetCaps()->DestBlendCaps & D3DPBLENDCAPS_DESTCOLOR)
+		if (*m_pState->var_pf_darken /*&&  // DX11 has no caps
+			(GetCaps()->DestBlendCaps & D3DPBLENDCAPS_DESTCOLOR)*/
 			)
 		{
 			// squaring filter
@@ -3506,11 +3607,13 @@ void CPlugin::ShowToUser(int bRedraw)
 			//lpDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);    //?
 
 			lpDevice->SetTexture(0, NULL);
-			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+      lpDevice->SetVertexColor(true);
+			//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ZERO);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTCOLOR);
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+      lpDevice->SetBlendState(true, D3D11_BLEND_ZERO, D3D11_BLEND_DEST_COLOR);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ZERO);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_DESTCOLOR);
+            lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
 
 			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_DESTCOLOR);
 			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
@@ -3518,43 +3621,48 @@ void CPlugin::ShowToUser(int bRedraw)
 
 		}
 		
-		if (*m_pState->var_pf_solarize && 
+		if (*m_pState->var_pf_solarize /*&&  // DX11 has no caps
 			(GetCaps()->SrcBlendCaps  & D3DPBLENDCAPS_DESTCOLOR ) &&
-			(GetCaps()->DestBlendCaps & D3DPBLENDCAPS_INVDESTCOLOR)
+			(GetCaps()->DestBlendCaps & D3DPBLENDCAPS_INVDESTCOLOR)*/
 			)
 		{
 			//lpDevice->SetRenderState(D3DRS_COLORVERTEX, FALSE);        //?
 			//lpDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);  //?
 
 			lpDevice->SetTexture(0, NULL);
-			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+      lpDevice->SetVertexColor(true);
+			//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ZERO);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVDESTCOLOR);
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+      lpDevice->SetBlendState(true, D3D11_BLEND_ZERO, D3D11_BLEND_INV_DEST_COLOR);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_ZERO);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVDESTCOLOR);
+            lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
 
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_DESTCOLOR);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
-		}
+      lpDevice->SetBlendState(true, D3D11_BLEND_DEST_COLOR, D3D11_BLEND_ONE);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_DESTCOLOR);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+            lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+    }
 
-		if (*m_pState->var_pf_invert && 
-			(GetCaps()->SrcBlendCaps  & D3DPBLENDCAPS_INVDESTCOLOR )
+		if (*m_pState->var_pf_invert /*&&  // DX11 has no caps
+			(GetCaps()->SrcBlendCaps  & D3DPBLENDCAPS_INVDESTCOLOR )*/
 			)
 		{
 			//lpDevice->SetRenderState(D3DRS_COLORVERTEX, FALSE);        //?
 			//lpDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);  //?
 
 			lpDevice->SetTexture(0, NULL);
-			lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-			lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
-			lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+      lpDevice->SetVertexColor(true);
+      lpDevice->SetBlendState(true, D3D11_BLEND_INV_DEST_COLOR, D3D11_BLEND_ZERO);
+			//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+			//lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
+			//lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 			
-            lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
-		}
+            lpDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 2, (void*)v3, sizeof(SPRITEVERTEX));
+    }
 		
-
-		lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    lpDevice->SetBlendState(false, D3D11_BLEND_ONE, D3D11_BLEND_ZERO);
+		//lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	}
 }
 

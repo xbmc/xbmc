@@ -22,6 +22,10 @@
 #include "LanguageHook.h"
 
 #include "guilib/GUIKeyboardFactory.h"
+#include "utils/Variant.h"
+#include "messaging/ApplicationMessenger.h"
+
+using namespace KODI::MESSAGING;
 
 namespace XBMCAddon
 {
@@ -41,7 +45,7 @@ namespace XBMCAddon
       // using keyboardfactory method to get native keyboard if there is.
       strText = strDefault;
       std::string text(strDefault);
-      bConfirmed = CGUIKeyboardFactory::ShowAndGetInput(text, strHeading, true, bHidden, autoclose * 1000);
+      bConfirmed = CGUIKeyboardFactory::ShowAndGetInput(text, CVariant{strHeading}, true, bHidden, autoclose * 1000);
       strText = text;
     }
 

@@ -64,6 +64,7 @@ set WORKSPACE=%CD%\..\..
   
   set EXE= "..\VS2010Express\XBMC\%buildconfig%\%APP_NAME%.exe"
   set PDB= "..\VS2010Express\XBMC\%buildconfig%\%APP_NAME%.pdb"
+  set D3D= "..\VS2010Express\XBMC\%buildconfig%\D3DCompile*.DLL"
   
   :: sets the BRANCH env var
   call getbranch.bat
@@ -200,6 +201,7 @@ set WORKSPACE=%CD%\..\..
   md BUILD_WIN32\application
 
   xcopy %EXE% BUILD_WIN32\application > NUL
+  xcopy %D3D% BUILD_WIN32\application > NUL
   xcopy ..\..\userdata BUILD_WIN32\application\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   copy ..\..\copying.txt BUILD_WIN32\application > NUL
   copy ..\..\LICENSE.GPL BUILD_WIN32\application > NUL

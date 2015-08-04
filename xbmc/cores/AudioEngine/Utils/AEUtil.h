@@ -226,6 +226,7 @@ public:
   static bool S16NeedsByteSwap(AEDataFormat in, AEDataFormat out);
 
   static uint64_t GetAVChannelLayout(CAEChannelInfo &info);
+  static CAEChannelInfo GetAEChannelLayout(uint64_t layout);
   static AVSampleFormat GetAVSampleFormat(AEDataFormat format);
   static uint64_t GetAVChannel(enum AEChannel aechannel);
   static int GetAVChannelIndex(enum AEChannel aechannel, uint64_t layout);

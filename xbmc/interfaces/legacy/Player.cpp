@@ -24,11 +24,13 @@
 #include "PlayListPlayer.h"
 #include "settings/MediaSettings.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "AddonUtils.h"
 #include "utils/log.h"
 #include "cores/IPlayer.h"
+
+using namespace KODI::MESSAGING;
 
 namespace XBMCAddon
 {
@@ -98,12 +100,13 @@ namespace XBMCAddon
         {
           // set m_strPath to the passed url
           listitem->item->SetPath(item.c_str());
-          CApplicationMessenger::Get().PlayFile((const CFileItem)(*(listitem->item)), false);
+          CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*listitem->item)));
         }
         else
         {
-          CFileItem nextitem(item, false);
-          CApplicationMessenger::Get().MediaPlay(nextitem.GetPath());
+          CFileItemList *l = new CFileItemList; //don't delete,
+          l->Add(std::make_shared<CFileItem>(item, false));
+          CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
         }
       }
       else
@@ -123,7 +126,7 @@ namespace XBMCAddon
       // play current file in playlist
       if (g_playlistPlayer.GetCurrentPlaylist() != iPlayList)
         g_playlistPlayer.SetCurrentPlaylist(iPlayList);
-      CApplicationMessenger::Get().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
+      CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, g_playlistPlayer.GetCurrentSong());
     }
 
     void Player::playPlaylist(const PlayList* playlist, bool windowed, int startpos)
@@ -143,7 +146,7 @@ namespace XBMCAddon
         g_playlistPlayer.SetCurrentPlaylist(iPlayList);
         if (startpos > -1)
           g_playlistPlayer.SetCurrentSong(startpos);
-        CApplicationMessenger::Get().PlayListPlayerPlay(startpos);
+        CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, startpos);
       }
       else
         playCurrent(windowed);
@@ -152,13 +155,13 @@ namespace XBMCAddon
     void Player::stop()
     {
       XBMC_TRACE;
-      CApplicationMessenger::Get().MediaStop();
+      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
     }
 
     void Player::pause()
     {
       XBMC_TRACE;
-      CApplicationMessenger::Get().MediaPause();
+      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
     }
 
     void Player::playnext()
@@ -168,7 +171,7 @@ namespace XBMCAddon
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
 
-      CApplicationMessenger::Get().PlayListPlayerNext();
+      CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_NEXT);
     }
 
     void Player::playprevious()
@@ -178,7 +181,7 @@ namespace XBMCAddon
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
 
-      CApplicationMessenger::Get().PlayListPlayerPrevious();
+      CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_PREV);
     }
 
     void Player::playselected(int selected)
@@ -194,7 +197,7 @@ namespace XBMCAddon
       }
       g_playlistPlayer.SetCurrentSong(selected);
 
-      CApplicationMessenger::Get().PlayListPlayerPlay(selected);
+      CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, selected);
       //g_playlistPlayer.Play(selected);
       //CLog::Log(LOGNOTICE, "Current Song After Play: %i", g_playlistPlayer.GetCurrentSong());
     }

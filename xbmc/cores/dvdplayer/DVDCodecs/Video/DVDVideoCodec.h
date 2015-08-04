@@ -244,22 +244,6 @@ public:
    */
   virtual void SetSpeed(int iSpeed) {};
 
-  /*
-   * returns the number of demuxer bytes in any internal buffers
-   */
-  virtual int GetDataSize(void)
-  {
-    return 0;
-  }
-
-  /*
-   * returns the time in seconds for demuxer bytes in any internal buffers
-   */
-  virtual double GetTimeSize(void)
-  {
-    return 0;
-  }
-
   enum EFilterFlags {
     FILTER_NONE                =  0x0,
     FILTER_DEINTERLACE_YADIF   =  0x1,  /* use first deinterlace mode */
@@ -301,7 +285,7 @@ public:
    * Hide or Show Settings depending on the currently running hardware 
    *
    */
-   static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting);
+   static bool IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data);
 
   /**
   * Interact with user settings so that user disabled codecs are disabled

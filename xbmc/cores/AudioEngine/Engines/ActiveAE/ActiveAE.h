@@ -62,6 +62,7 @@ struct AudioSettings
   bool stereoupmix;
   bool normalizelevels;
   bool passthrough;
+  bool dspaddonsenabled;
   int config;
   int guisoundmode;
   unsigned int samplerate;
@@ -88,6 +89,7 @@ public:
     STREAMAMP,
     STREAMRESAMPLERATIO,
     STREAMFADE,
+    STREAMFFMPEGINFO,
     STOPSOUND,
     GETSTATE,
     DISPLAYLOST,
@@ -146,6 +148,7 @@ struct MsgStreamParameter
   {
     float float_par;
     double double_par;
+    int int_par;
   } parameter;
 };
 
@@ -155,6 +158,14 @@ struct MsgStreamFade
   float from;
   float target;
   unsigned int millis;
+};
+
+struct MsgStreamFFmpegInfo
+{
+  CActiveAEStream *stream;
+  int profile;
+  enum AVMatrixEncoding matrix_encoding;
+  enum AVAudioServiceType audio_service_type;
 };
 
 class CEngineStats
@@ -171,9 +182,11 @@ public:
   int64_t GetPlayingPTS();
   int Discontinuity(bool reset = false);
   void SetSuspended(bool state);
+  void SetDSP(bool state);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
   bool IsSuspended();
+  bool HasDSP();
   CCriticalSection *GetLock() { return &m_lock; }
 protected:
   int64_t m_playingPTS;
@@ -184,6 +197,7 @@ protected:
   unsigned int m_sinkSampleRate;
   AEDelayStatus m_sinkDelay;
   bool m_suspended;
+  bool m_hasDSP;
   CCriticalSection m_lock;
 };
 
@@ -236,6 +250,7 @@ public:
   virtual bool IsSettingVisible(const std::string &settingId);
   virtual void KeepConfiguration(unsigned int millis);
   virtual void DeviceChange();
+  virtual bool HasDSP();
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback();
@@ -260,6 +275,7 @@ protected:
   void SetStreamReplaygain(CActiveAEStream *stream, float rgain);
   void SetStreamVolume(CActiveAEStream *stream, float volume);
   void SetStreamResampleRatio(CActiveAEStream *stream, double ratio);
+  void SetStreamFFmpegInfo(CActiveAEStream *stream, int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type);
   void SetStreamFade(CActiveAEStream *stream, float from, float target, unsigned int millis);
 
 protected:
@@ -360,5 +376,6 @@ protected:
   // polled via the interface
   float m_aeVolume;
   bool m_aeMuted;
+  bool m_aeGUISoundForce;
 };
 };

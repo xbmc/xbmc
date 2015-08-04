@@ -147,8 +147,15 @@ bool CRenderSystemGL::InitRenderSystem()
   }
 
   // Get our driver vendor and renderer
-  m_RenderVendor = (const char*) glGetString(GL_VENDOR);
-  m_RenderRenderer = (const char*) glGetString(GL_RENDERER);
+  const char* tmpVendor = (const char*) glGetString(GL_VENDOR);
+  m_RenderVendor.clear();
+  if (tmpVendor != NULL)
+    m_RenderVendor = tmpVendor;
+
+  const char* tmpRenderer = (const char*) glGetString(GL_RENDERER);
+  m_RenderRenderer.clear();
+  if (tmpRenderer != NULL)
+    m_RenderRenderer = tmpRenderer;
 
   // grab our capabilities
   if (glewIsSupported("GL_EXT_texture_compression_s3tc"))
@@ -164,7 +171,11 @@ bool CRenderSystemGL::InitRenderSystem()
   CheckOpenGLQuirks();
 	
   m_RenderExtensions  = " ";
-  m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
+
+  const char *tmpExtensions = (const char*) glGetString(GL_EXTENSIONS);
+  if (tmpExtensions != NULL)
+    m_RenderExtensions += tmpExtensions;
+
   m_RenderExtensions += " ";
 
   LogGraphicsInfo();
@@ -291,7 +302,7 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   name += extension;
   name += " ";
 
-  return m_RenderExtensions.find(name) != std::string::npos;;
+  return m_RenderExtensions.find(name) != std::string::npos;
 }
 
 bool CRenderSystemGL::PresentRender(const CDirtyRegionList& dirty)

@@ -21,8 +21,10 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "Util.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/File.h"
@@ -31,6 +33,7 @@
 #include "FileItem.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+
 
 using namespace std;
 
@@ -142,6 +145,40 @@ bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)
       HighlightItem(-1);
     }
     break;
+  case GUI_MSG_WINDOW_INIT:
+    {
+      const std::string& startupList = message.GetStringParam(0);
+      if (!startupList.empty())
+      {
+        int party = 0;
+        if (URIUtils::PathEquals(startupList, CProfilesManager::Get().GetUserDataItem("PartyMode.xsp")))
+          party = 1;
+        else if (URIUtils::PathEquals(startupList, CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp")))
+          party = 2;
+
+        if ((party && !XFILE::CFile::Exists(startupList)) ||
+             m_playlist.Load(startupList))
+        {
+          m_path = startupList;
+
+          if (party == 1)
+            m_mode = "partymusic";
+          else if (party == 2)
+            m_mode = "partyvideo";
+          else
+          {
+            PLAYLIST_TYPE type = ConvertType(m_playlist.GetType());
+            if (type == TYPE_SONGS || type == TYPE_ALBUMS || type == TYPE_ARTISTS)
+              m_mode = "music";
+            else
+              m_mode = "video";
+          }
+        }
+        else
+          return false;
+      }
+    }
+    break;
   }
   return CGUIDialog::OnMessage(message);
 }
@@ -166,7 +203,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
   {
     std::string filename(CUtil::MakeLegalFileName(m_playlist.m_playlistName));
     std::string path;
-    if (CGUIKeyboardFactory::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(filename, CVariant{g_localizeStrings.Get(16013)}, false))
     {
       path = URIUtils::AddFileToFolder(systemPlaylistsPath, m_playlist.GetSaveLocation());
       path = URIUtils::AddFileToFolder(path, CUtil::MakeLegalFileName(filename));
@@ -524,7 +561,7 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const std::string &type)
   editor->m_playlist = CSmartPlaylist();
   editor->m_mode = type;
   editor->Initialize();
-  editor->DoModal(g_windowManager.GetActiveWindow());
+  editor->Open();
   return !editor->m_cancelled;
 }
 
@@ -552,6 +589,6 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const std::string &path, const 
   editor->m_playlist = playlist;
   editor->m_path = path;
   editor->Initialize();
-  editor->DoModal(g_windowManager.GetActiveWindow());
+  editor->Open();
   return !editor->m_cancelled;
 }

@@ -36,6 +36,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #include <set>
 
@@ -97,8 +98,8 @@ public:
       {
         if (!shown)
         {
-          dlg->SetHeading(heading);
-          dlg->StartModal();
+          dlg->SetHeading(CVariant{heading});
+          dlg->Open();
         }
         if (progress >= 0)
         {
@@ -106,7 +107,7 @@ public:
           dlg->SetPercentage(progress);
         }
         if (text)
-          dlg->SetLine(1, text);
+          dlg->SetLine(1, CVariant{text});
         cont = !dlg->IsCanceled();
         shown = true;
         // tell render loop to spin
@@ -170,11 +171,12 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (pDialog)
     {
-      pDialog->SetHeading(120);
-      pDialog->SetLine(0, 645);
-      pDialog->SetLine(1, URIUtils::GetFileName(strPathInRar));
-      pDialog->SetLine(2, "");
-      pDialog->DoModal();
+      pDialog->SetHeading(CVariant{120});
+      pDialog->SetLine(0, CVariant{645});
+      pDialog->SetLine(1, CVariant{URIUtils::GetFileName(strPathInRar)});
+      pDialog->SetLine(2, CVariant{""});
+      pDialog->Open();
+
       if (!pDialog->IsConfirmed())
         iRes = 2; // pretend to be canceled
     }

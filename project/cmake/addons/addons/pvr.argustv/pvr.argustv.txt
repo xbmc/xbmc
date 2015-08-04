@@ -1,1 +1,1 @@
-pvr.argustv https://github.com/kodi-pvr/pvr.argustv 3e2350c
+pvr.argustv https://github.com/kodi-pvr/pvr.argustv master

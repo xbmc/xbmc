@@ -20,12 +20,16 @@
  
 #include "threads/SystemClock.h"
 #include "GUIDialogCache.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#include "utils/Variant.h"
+
+
+using namespace KODI::MESSAGING;
 
 CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, const std::string& strMsg) : CThread("GUIDialogCache"),
   m_strHeader(strHeader),
@@ -57,7 +61,7 @@ void CGUIDialogCache::Close(bool bForceClose)
   // we cannot wait for the app thread to process the close message
   // as this might happen during player startup which leads to a deadlock
   if (m_pDlg && m_pDlg->IsDialogRunning())
-    CApplicationMessenger::Get().Close(m_pDlg,bForceClose,false);
+    CApplicationMessenger::Get().PostMsg(TMSG_GUI_WINDOW_CLOSE, -1, bForceClose ? 1 : 0, static_cast<void*>(m_pDlg));
 
   //Set stop, this will kill this object, when thread stops  
   CThread::m_bStop = true;
@@ -74,12 +78,12 @@ void CGUIDialogCache::OpenDialog()
   if (m_pDlg)
   {
     if (m_strHeader.empty())
-      m_pDlg->SetHeading(438);
+      m_pDlg->SetHeading(CVariant{438});
     else
-      m_pDlg->SetHeading(m_strHeader);
+      m_pDlg->SetHeading(CVariant{m_strHeader});
 
-    m_pDlg->SetLine(2, m_strLinePrev);
-    m_pDlg->StartModal();
+    m_pDlg->SetLine(2, CVariant{m_strLinePrev});
+    m_pDlg->Open();
   }
   bSentCancel = false;
 }
@@ -98,9 +102,9 @@ void CGUIDialogCache::SetMessage(const std::string& strMessage)
 {
   if (m_pDlg)
   {
-    m_pDlg->SetLine(0, m_strLinePrev2);
-    m_pDlg->SetLine(1, m_strLinePrev);
-    m_pDlg->SetLine(2, strMessage);
+    m_pDlg->SetLine(0, CVariant{m_strLinePrev2});
+    m_pDlg->SetLine(1, CVariant{m_strLinePrev});
+    m_pDlg->SetLine(2, CVariant{strMessage});
   }
   m_strLinePrev2 = m_strLinePrev;
   m_strLinePrev = strMessage; 

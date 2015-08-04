@@ -52,6 +52,9 @@ CVideoSettings::CVideoSettings()
   m_AudioDelay = 0.0f;
   m_OutputToAllSpeakers = false;
   m_ResumeTime = 0;
+  m_StereoMode = 0;
+  m_StereoInvert = false;
+
 }
 
 #ifdef HAS_DS_PLAYER

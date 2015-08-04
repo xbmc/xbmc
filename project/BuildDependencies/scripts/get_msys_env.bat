@@ -4,6 +4,7 @@ SET LOC_PATH=%CD%
 SET FILES=%LOC_PATH%\get_msys_env.txt
 
 CALL dlextract.bat msys_env %FILES%
+IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
 cd %TMP_PATH%
 

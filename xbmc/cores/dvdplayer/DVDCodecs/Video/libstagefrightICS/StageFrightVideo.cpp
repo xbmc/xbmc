@@ -33,7 +33,7 @@
 #include "threads/Thread.h"
 #include "threads/Event.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "android/jni/Build.h"
 
@@ -55,6 +55,7 @@
 #define EGL_IMAGE_PRESERVED_KHR   0x30D2
 
 using namespace android;
+using namespace KODI::MESSAGING;
 
 static int64_t pts_dtoi(double pts)
 {

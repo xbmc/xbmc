@@ -705,6 +705,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CTextureInfo textureLeftFocus, textureRightFocus;
   CTextureInfo textureUp, textureDown;
   CTextureInfo textureUpFocus, textureDownFocus;
+  CTextureInfo textureUpDisabled, textureDownDisabled;
   CTextureInfo texture, borderTexture;
   CGUIInfoLabel textureFile;
   CTextureInfo textureCheckMark, textureCheckMarkNF;
@@ -712,6 +713,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CTextureInfo textureAltFocus, textureAltNoFocus;
   CTextureInfo textureRadioOnFocus, textureRadioOnNoFocus;
   CTextureInfo textureRadioOffFocus, textureRadioOffNoFocus;
+  CTextureInfo textureRadioOnDisabled, textureRadioOffDisabled;
   CTextureInfo imageNoFocus, imageFocus;
   CTextureInfo textureProgressIndicator;
   CGUIInfoLabel texturePath;
@@ -888,6 +890,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "texturedown", textureDown);
   GetTexture(pControlNode, "textureupfocus", textureUpFocus);
   GetTexture(pControlNode, "texturedownfocus", textureDownFocus);
+  GetTexture(pControlNode, "textureupdisabled", textureUpDisabled);
+  GetTexture(pControlNode, "texturedowndisabled", textureDownDisabled);
 
   GetTexture(pControlNode, "textureleft", textureLeft);
   GetTexture(pControlNode, "textureright", textureRight);
@@ -922,7 +926,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     GetTexture(pControlNode, "textureradiooff", textureRadioOffFocus);
     textureRadioOffNoFocus = textureRadioOffFocus;
   }
-
+  GetTexture(pControlNode, "textureradioondisabled", textureRadioOnDisabled);
+  GetTexture(pControlNode, "textureradiooffdisabled", textureRadioOffDisabled);
   GetTexture(pControlNode, "texturesliderbackground", textureBackground);
   GetTexture(pControlNode, "texturesliderbar", textureBar);
   GetTexture(pControlNode, "texturesliderbarfocus", textureBarFocus);
@@ -1142,7 +1147,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
           parentID, id, posX, posY, width, height,
           labelInfo, wrapMultiLine, bHasPath);
         ((CGUILabelControl *)control)->SetInfo(content);
-        ((CGUILabelControl *)control)->SetWidthControl(minWidth, (scrollValue == CGUIControl::ALWAYS) ? true : false);
+        ((CGUILabelControl *)control)->SetWidthControl(minWidth, (scrollValue == CGUIControl::ALWAYS));
       }
     }
     break;
@@ -1174,6 +1179,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         labelInfo, scrollOut, timeToPauseAtEnd, resetOnLabelChange);
 
       ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
+
+      // check whether or not a scroll tag was specified.
+      if (scrollValue != CGUIControl::FOCUS)
+        ((CGUIFadeLabelControl *)control)->SetScrolling(scrollValue == CGUIControl::ALWAYS);
     }
     break;
   case CGUIControl::GUICONTROL_RSS:
@@ -1191,10 +1200,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       control = new CGUIButtonControl(
         parentID, id, posX, posY, width, height,
         textureFocus, textureNoFocus,
-        labelInfo);
+        labelInfo, wrapMultiLine);
 
       ((CGUIButtonControl *)control)->SetLabel(strLabel);
       ((CGUIButtonControl *)control)->SetLabel2(strLabel2);
+      ((CGUIButtonControl *)control)->SetMinWidth(minWidth);
       ((CGUIButtonControl *)control)->SetClickActions(clickActions);
       ((CGUIButtonControl *)control)->SetFocusActions(focusActions);
       ((CGUIButtonControl *)control)->SetUnFocusActions(unfocusActions);
@@ -1205,10 +1215,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       control = new CGUIToggleButtonControl(
         parentID, id, posX, posY, width, height,
         textureFocus, textureNoFocus,
-        textureAltFocus, textureAltNoFocus, labelInfo);
+        textureAltFocus, textureAltNoFocus,
+        labelInfo, wrapMultiLine);
 
       ((CGUIToggleButtonControl *)control)->SetLabel(strLabel);
       ((CGUIToggleButtonControl *)control)->SetAltLabel(altLabel);
+      ((CGUIToggleButtonControl *)control)->SetMinWidth(minWidth);
       ((CGUIToggleButtonControl *)control)->SetClickActions(clickActions);
       ((CGUIToggleButtonControl *)control)->SetAltClickActions(altclickActions);
       ((CGUIToggleButtonControl *)control)->SetFocusActions(focusActions);
@@ -1232,9 +1244,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         parentID, id, posX, posY, width, height,
         textureFocus, textureNoFocus,
         labelInfo,
-        textureRadioOnFocus, textureRadioOnNoFocus, textureRadioOffFocus, textureRadioOffNoFocus);
+        textureRadioOnFocus, textureRadioOnNoFocus, textureRadioOffFocus, textureRadioOffNoFocus, textureRadioOnDisabled, textureRadioOffDisabled);
 
       ((CGUIRadioButtonControl *)control)->SetLabel(strLabel);
+      ((CGUIRadioButtonControl *)control)->SetLabel2(strLabel2);
       ((CGUIRadioButtonControl *)control)->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
       ((CGUIRadioButtonControl *)control)->SetToggleSelect(toggleSelect);
       ((CGUIRadioButtonControl *)control)->SetClickActions(clickActions);
@@ -1257,6 +1270,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       control = new CGUISpinControl(
         parentID, id, posX, posY, width, height,
         textureUp, textureDown, textureUpFocus, textureDownFocus,
+        textureUpDisabled, textureDownDisabled,
         labelInfo, iType);
 
       ((CGUISpinControl *)control)->SetReverse(bReverse);
@@ -1448,7 +1462,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       control = new CGUISpinControlEx(
         parentID, id, posX, posY, width, height, spinWidth, spinHeight,
         labelInfo, textureFocus, textureNoFocus, textureUp, textureDown, textureUpFocus, textureDownFocus,
-        labelInfo, iType);
+        textureUpDisabled, textureDownDisabled, labelInfo, iType);
 
       ((CGUISpinControlEx *)control)->SetSpinPosition(spinPosX);
       ((CGUISpinControlEx *)control)->SetText(strLabel);

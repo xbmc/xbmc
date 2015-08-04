@@ -36,7 +36,7 @@
 #include "filesystem/Directory.h"
 #include "FileItem.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/md5.h"
 #include "utils/Variant.h"
 #include "settings/Settings.h"
@@ -49,6 +49,7 @@
 #endif // HAS_ZEROCONF
 
 using namespace ANNOUNCEMENT;
+using namespace KODI::MESSAGING;
 using namespace std;
 
 #ifdef TARGET_WINDOWS
@@ -821,14 +822,14 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       {
         if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
         {
-          CApplicationMessenger::Get().MediaPause();
+          CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
         }
       }
       else
       {
         if (g_application.m_pPlayer->IsPausedPlayback())
         {
-          CApplicationMessenger::Get().MediaPause();
+          CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
         }
       }
   }
@@ -856,7 +857,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
         {
           backupVolume();
           g_application.SetVolume(volume);          
-          CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);
+          CApplicationMessenger::Get().PostMsg(TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
         }
       }
   }
@@ -981,12 +982,15 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       // froce to internal dvdplayer cause it is the only
       // one who will work well with airplay
       g_application.m_eForcedNextPlayer = EPC_DVDPLAYER;
-      CApplicationMessenger::Get().MediaPlay(fileToPlay);
+
+      CFileItemList *l = new CFileItemList; //don't delete,
+      l->Add(std::make_shared<CFileItem>(fileToPlay));
+      CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
       // allow starting the player paused in ios8 mode (needed by camera roll app)
       if (CSettings::Get().GetBool("services.airplayios8compat") && !startPlayback)
       {
-        CApplicationMessenger::Get().MediaPause();
+        CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
         g_application.m_pPlayer->SeekPercentage(position * 100.0f);
       }
     }
@@ -1039,12 +1043,12 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     {
       if (IsPlaying()) //only stop player if we started him
       {
-        CApplicationMessenger::Get().MediaStop();
+        CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
         CAirPlayServer::m_isPlaying--;
       }
       else //if we are not playing and get the stop request - we just wanna stop picture streaming
       {
-        CApplicationMessenger::Get().SendAction(ACTION_PREVIOUS_MENU);
+        CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PREVIOUS_MENU)));
       }
     }
     ClearPhotoAssetCache();
@@ -1115,7 +1119,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
               CLog::Log(LOGWARNING, "AIRPLAY: Asset %s not found in our cache.", photoCacheId.c_str());
           }
           else
-            CApplicationMessenger::Get().PictureShow(tmpFileName);
+            CApplicationMessenger::Get().PostMsg(TMSG_PICTURE_SHOW, -1, -1, nullptr, tmpFileName);
         }
         else
         {

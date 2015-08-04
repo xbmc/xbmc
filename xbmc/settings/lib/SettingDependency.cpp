@@ -18,6 +18,10 @@
  *
  */
 
+#include <memory>
+#include <set>
+#include <string>
+
 #include <stdlib.h>
 
 #include "SettingDependency.h"

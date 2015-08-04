@@ -23,6 +23,7 @@
 #include "ViewStateSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/SortUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
@@ -33,8 +34,6 @@
 #define XML_SORTATTRIBUTES    "sortattributes"
 #define XML_GENERAL           "general"
 #define XML_SETTINGLEVEL      "settinglevel"
-
-using namespace std;
 
 CViewStateSettings::CViewStateSettings()
 {
@@ -61,7 +60,7 @@ CViewStateSettings::CViewStateSettings()
 
 CViewStateSettings::~CViewStateSettings()
 {
-  for (map<string, CViewState*>::const_iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
+  for (std::map<std::string, CViewState*>::const_iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
     delete viewState->second;
   m_viewStates.clear();
 }
@@ -85,7 +84,7 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
     return false;
   }
 
-  for (map<string, CViewState*>::iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
+  for (std::map<std::string, CViewState*>::iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
   {
     const TiXmlNode* pViewState = pElement->FirstChildElement(viewState->first);
     if (pViewState == NULL)
@@ -142,7 +141,7 @@ bool CViewStateSettings::Save(TiXmlNode *settings) const
     return false;
   }
 
-  for (map<string, CViewState*>::const_iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
+  for (std::map<std::string, CViewState*>::const_iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
   {
     TiXmlElement newElement(viewState->first);
     TiXmlNode *pNewNode = pViewStateNode->InsertEndChild(newElement);
@@ -177,7 +176,7 @@ void CViewStateSettings::Clear()
 const CViewState* CViewStateSettings::Get(const std::string &viewState) const
 {
   CSingleLock lock(m_critical);
-  map<string, CViewState*>::const_iterator view = m_viewStates.find(viewState);
+  std::map<std::string, CViewState*>::const_iterator view = m_viewStates.find(viewState);
   if (view != m_viewStates.end())
     return view->second;
 
@@ -187,7 +186,7 @@ const CViewState* CViewStateSettings::Get(const std::string &viewState) const
 CViewState* CViewStateSettings::Get(const std::string &viewState)
 {
   CSingleLock lock(m_critical);
-  map<string, CViewState*>::iterator view = m_viewStates.find(viewState);
+  std::map<std::string, CViewState*>::iterator view = m_viewStates.find(viewState);
   if (view != m_viewStates.end())
     return view->second;
 

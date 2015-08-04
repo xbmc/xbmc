@@ -18,6 +18,11 @@
  *
  */
 
+#include <iostream>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "PlayListPLS.h"
 #include "PlayListFactory.h"
 #include "Util.h"
@@ -31,7 +36,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
 
@@ -129,7 +133,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
       }
       else if (StringUtils::StartsWith(strLeft, "file"))
       {
-        vector <int>::size_type idx = atoi(strLeft.c_str() + 4);
+        std::vector <int>::size_type idx = atoi(strLeft.c_str() + 4);
         if (!Resize(idx))
         {
           bFailed = true;
@@ -154,7 +158,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
       }
       else if (StringUtils::StartsWith(strLeft, "title"))
       {
-        vector <int>::size_type idx = atoi(strLeft.c_str() + 5);
+        std::vector <int>::size_type idx = atoi(strLeft.c_str() + 5);
         if (!Resize(idx))
         {
           bFailed = true;
@@ -165,7 +169,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
       }
       else if (StringUtils::StartsWith(strLeft, "length"))
       {
-        vector <int>::size_type idx = atoi(strLeft.c_str() + 6);
+        std::vector <int>::size_type idx = atoi(strLeft.c_str() + 6);
         if (!Resize(idx))
         {
           bFailed = true;
@@ -239,11 +243,11 @@ void CPlayListPLS::Save(const std::string& strFileName) const
   file.Close();
 }
 
-bool CPlayListASX::LoadAsxIniInfo(istream &stream)
+bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
 {
   CLog::Log(LOGINFO, "Parsing INI style ASX");
 
-  string name, value;
+  std::string name, value;
 
   while( stream.good() )
   {
@@ -283,7 +287,7 @@ bool CPlayListASX::LoadAsxIniInfo(istream &stream)
   return true;
 }
 
-bool CPlayListASX::LoadData(istream& stream)
+bool CPlayListASX::LoadData(std::istream& stream)
 {
   CLog::Log(LOGNOTICE, "Parsing ASX");
 
@@ -381,7 +385,7 @@ bool CPlayListASX::LoadData(istream& stream)
         value = XMLUtils::GetAttribute(pElement, "href");
         if (!value.empty())
         { // found an entryref, let's try loading that url
-          unique_ptr<CPlayList> playlist(CPlayListFactory::Create(value));
+          std::unique_ptr<CPlayList> playlist(CPlayListFactory::Create(value));
           if (NULL != playlist.get())
             if (playlist->Load(value))
               Add(*playlist);
@@ -395,7 +399,7 @@ bool CPlayListASX::LoadData(istream& stream)
 }
 
 
-bool CPlayListRAM::LoadData(istream& stream)
+bool CPlayListRAM::LoadData(std::istream& stream)
 {
   CLog::Log(LOGINFO, "Parsing RAM");
 
@@ -410,7 +414,7 @@ bool CPlayListRAM::LoadData(istream& stream)
   return true;
 }
 
-bool CPlayListPLS::Resize(vector <int>::size_type newSize)
+bool CPlayListPLS::Resize(std::vector <int>::size_type newSize)
 {
   if (newSize == 0)
     return false;

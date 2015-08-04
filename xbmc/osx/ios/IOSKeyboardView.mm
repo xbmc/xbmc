@@ -93,6 +93,10 @@ static CEvent keyboardFinishedEvent;
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidChangeFrame:)
+                                                 name:UIKeyboardDidChangeFrameNotification 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
@@ -174,6 +178,34 @@ static CEvent keyboardFinishedEvent;
   _confirmed = YES;
   [_textField resignFirstResponder];
   return YES;
+}
+
+- (void)keyboardDidChangeFrame:(id)sender
+{
+#if __IPHONE_8_0
+  // when compiled against ios 8.x sdk and runtime is ios
+  // 5.1.1 (f.e. ipad1 which has 5.1.1 as latest available ios version)
+  // there is an incompatibility which somehowe prevents us from getting
+  // notified about "keyboardDidHide". This makes the keyboard
+  // useless on those ios platforms.
+  // Instead we are called here with "DidChangeFrame" and
+  // and an invalid frame set (height, width == 0 and pos is inf).
+  // Lets detect this situation and treat this as "keyboard was hidden"
+  // message
+  if (CDarwinUtils::GetIOSVersion() < 6.0)
+  {
+    PRINT_SIGNATURE();
+
+    NSDictionary* info = [sender userInfo];
+    CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+//    LOG(@"keyboardWillShow: keyboard frame: %f %f %f %f", kbRect.origin.x, kbRect.origin.y, kbRect.size.width, kbRect.size.height);
+    if (kbRect.size.height == 0)
+    {
+      LOG(@"keyboardDidChangeFrame: working around missing keyboardDidHide Message on iOS 5.x");
+      [self keyboardDidHide:sender];
+    }
+  }
+#endif
 }
 
 - (void)keyboardDidHide:(id)sender

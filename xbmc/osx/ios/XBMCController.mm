@@ -31,7 +31,7 @@
 #include "MusicInfoTag.h"
 #include "SpecialProtocol.h"
 #include "PlayList.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Application.h"
 #include "interfaces/AnnouncementManager.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
@@ -49,6 +49,8 @@
 #undef id
 #include <math.h>
 #include "osx/DarwinUtils.h"
+
+using namespace KODI::MESSAGING;
 
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433832795028842
@@ -1021,36 +1023,36 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     switch (receivedEvent.subtype)
     {
       case UIEventSubtypeRemoteControlTogglePlayPause:
-        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAYPAUSE);
+        CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlPlay:
-        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAY);
+	    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       case UIEventSubtypeRemoteControlPause:
         // ACTION_PAUSE sometimes cause unpause, use MediaPauseIfPlaying to make sure pause only
-        CApplicationMessenger::Get().MediaPauseIfPlaying();
+        CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
         break;
       case UIEventSubtypeRemoteControlNextTrack:
-        CApplicationMessenger::Get().SendAction(ACTION_NEXT_ITEM);
+	    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
         break;
       case UIEventSubtypeRemoteControlPreviousTrack:
-        CApplicationMessenger::Get().SendAction(ACTION_PREV_ITEM);
+	    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
         break;
       case UIEventSubtypeRemoteControlBeginSeekingForward:
         // use 4X speed forward.
-        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_FORWARD);
-        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_FORWARD);
+		CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
+		CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
         break;
       case UIEventSubtypeRemoteControlBeginSeekingBackward:
         // use 4X speed rewind.
-        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_REWIND);
-        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_REWIND);
+		CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
+		CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
         break;
       case UIEventSubtypeRemoteControlEndSeekingForward:
       case UIEventSubtypeRemoteControlEndSeekingBackward:
         // restore to normal playback speed.
         if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-          CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAY);
+		  CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, -1, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       default:
         LOG(@"unhandled subtype: %d", receivedEvent.subtype);
@@ -1066,7 +1068,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::Get().MediaPauseIfPlaying();
+    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   g_Windowing.OnAppFocusChange(false);
 }
@@ -1078,7 +1080,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   // when we come back, restore playing if we were.
   if (m_isPlayingBeforeInactive)
   {
-    CApplicationMessenger::Get().MediaUnPause();
+    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_UNPAUSE);
     m_isPlayingBeforeInactive = NO;
   }
 }
@@ -1090,7 +1092,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   if (g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::Get().MediaPauseIfPlaying();
+    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   // check whether we need disable network auto suspend.
   [self rescheduleNetworkAutoSuspend];

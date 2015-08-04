@@ -189,7 +189,7 @@
 					<textcolor>blue</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
-					<visible>Control.IsVisible(5) | Control.IsVisible(6) | Control.IsVisible(7)</visible>
+					<visible>Control.IsVisible(5) | Control.IsVisible(6) | Control.IsVisible(7) | Control.IsVisible(8)</visible>
 				</control>
 				<control type="radiobutton" id="5">
 					<description>Group recording items by folder structure</description>
@@ -211,6 +211,13 @@
 					<include>ButtonCommonValues</include>
 					<label>19184</label>
 					<visible>Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
+				</control>
+				<control type="radiobutton" id="8">
+					<description>Group timers</description>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>842</label>
+					<visible>Window.IsActive(TVTimers) | Window.IsActive(RadioTimers)</visible>
 				</control>
 				<!-- Playback controls -->
 				<include>CommonNowPlaying_Controls</include>

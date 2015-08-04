@@ -20,7 +20,7 @@
 
 #include "system.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "GUIWindowLoginScreen.h"
 #include "profiles/Profile.h"
 #include "profiles/ProfilesManager.h"
@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "utils/Weather.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "network/Network.h"
 #include "addons/Skin.h"
 #include "guilib/GUIMessage.h"
@@ -48,6 +49,9 @@
 #include "view/ViewState.h"
 #include "pvr/PVRManager.h"
 #include "ContextMenuManager.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+
+using namespace KODI::MESSAGING;
 
 #define CONTROL_BIG_LIST               52
 #define CONTROL_LABEL_HEADER            2
@@ -112,7 +116,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           else
           {
             if (!bCanceled && iItem != 0)
-              CGUIDialogOK::ShowAndGetInput(20068, 20117);
+              CGUIDialogOK::ShowAndGetInput(CVariant{20068}, CVariant{20117});
           }
         }
       }
@@ -239,7 +243,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     if (g_passwordManager.CheckLock(CProfilesManager::Get().GetMasterProfile().getLockMode(),CProfilesManager::Get().GetMasterProfile().getLockCode(),20075))
       g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries");
     else // be inconvenient
-      CApplicationMessenger::Get().Shutdown();
+      CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
 
     return true;
   }
@@ -274,6 +278,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   // stop PVR related services
   g_application.StopPVRManager();
+
+  // stop audio DSP services with a blocking message
+  CApplicationMessenger::Get().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF);
 
   if (profile != 0 || !CProfilesManager::Get().IsMasterProfile())
   {
@@ -328,6 +335,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   g_application.UpdateLibraries();
   CStereoscopicsManager::Get().Initialize();
+
+  // start audio DSP related services with a blocking message
+  CApplicationMessenger::Get().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)

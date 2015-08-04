@@ -6,6 +6,7 @@ SRCS=GUIMediaWindow.cpp \
      GUIWindowPointer.cpp \
      GUIWindowScreensaver.cpp \
      GUIWindowScreensaverDim.cpp \
+     GUIWindowSplash.cpp \
      GUIWindowStartup.cpp \
      GUIWindowSystemInfo.cpp \
      GUIWindowWeather.cpp \

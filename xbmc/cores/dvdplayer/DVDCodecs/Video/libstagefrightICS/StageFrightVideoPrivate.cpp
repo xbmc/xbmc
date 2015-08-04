@@ -29,7 +29,7 @@
 #include <GLES2/gl2ext.h>
 #include "windowing/egl/EGLWrapper.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -39,6 +39,8 @@
 #include "android/jni/SurfaceTexture.h"
 
 #define CLASSNAME "CStageFrightVideoPrivate"
+
+using namespace KODI::MESSAGING;
 
 GLint glerror;
 #define CheckEglError(x) while((glerror = eglGetError()) != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",x, glerror);

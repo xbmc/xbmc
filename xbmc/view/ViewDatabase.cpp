@@ -23,6 +23,7 @@
 #include "view/ViewState.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #ifdef TARGET_POSIX
 #include "linux/ConvUtils.h" // GetLastError()

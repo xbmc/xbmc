@@ -23,7 +23,6 @@
 #include "Util.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
-#include "utils/Variant.h"
 #include "addons/GUIDialogAddonInfo.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
@@ -54,6 +53,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
+#include "utils/Variant.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "utils/URIUtils.h"
@@ -69,8 +69,6 @@
 #include "utils/StdString.h"
 #include "filesystem/File.h"
 #endif
-
-using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
@@ -259,7 +257,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
       // no video file in this folder
       if (!bFoundFile)
       {
-        CGUIDialogOK::ShowAndGetInput(13346, 20349);
+        CGUIDialogOK::ShowAndGetInput(CVariant{13346}, CVariant{20349});
         return;
       }
     }
@@ -383,7 +381,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
-    pDlgInfo->DoModal();
+    pDlgInfo->Open();
     needsRefresh = pDlgInfo->NeedRefresh();
     if (!needsRefresh)
       return pDlgInfo->HasUpdatedThumb();
@@ -406,7 +404,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
 
   if (g_application.IsVideoScanning())
   {
-    CGUIDialogOK::ShowAndGetInput(13346, 14057);
+    CGUIDialogOK::ShowAndGetInput(CVariant{13346}, CVariant{14057});
     return false;
   }
 
@@ -443,7 +441,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
         bHasInfo = true;
         if (!info->IsNoop() && (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO))
         {
-          if (CGUIDialogYesNo::ShowAndGetInput(13346, 20446))
+          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{13346}, CVariant{20446}))
           {
             hasDetails = false;
             ignoreNfo = true;
@@ -464,11 +462,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
     {
       // 4a. show dialog that we're busy querying www.imdb.com
       std::string strHeading = StringUtils::Format(g_localizeStrings.Get(197).c_str(),info->Name().c_str());
-      pDlgProgress->SetHeading(strHeading);
-      pDlgProgress->SetLine(0, movieName);
-      pDlgProgress->SetLine(1, "");
-      pDlgProgress->SetLine(2, "");
-      pDlgProgress->StartModal();
+      pDlgProgress->SetHeading(CVariant{std::move(strHeading)});
+      pDlgProgress->SetLine(0, CVariant{movieName}); //don't use std::move as it's used further down
+      pDlgProgress->SetLine(1, CVariant{""});
+      pDlgProgress->SetLine(2, CVariant{""});
+      pDlgProgress->Open();
       pDlgProgress->Progress();
 
       // 4b. do the websearch
@@ -483,12 +481,12 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
           int iString = 196;
           if (info->Content() == CONTENT_TVSHOWS)
             iString = 20356;
-          pDlgSelect->SetHeading(iString);
+          pDlgSelect->SetHeading(CVariant{iString});
           pDlgSelect->Reset();
           for (unsigned int i = 0; i < movielist.size(); ++i)
             pDlgSelect->Add(movielist[i].strTitle);
           pDlgSelect->EnableButton(true, 413); // manual
-          pDlgSelect->DoModal();
+          pDlgSelect->Open();
 
           // and wait till user selects one
           int iSelectedMovie = pDlgSelect->GetSelectedLabel();
@@ -527,7 +525,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       int iString = 16009;
       if (info->Content() == CONTENT_TVSHOWS)
         iString = 20357;
-      if (!CGUIKeyboardFactory::ShowAndGetInput(movieName, g_localizeStrings.Get(iString), false))
+      if (!CGUIKeyboardFactory::ShowAndGetInput(movieName, CVariant{g_localizeStrings.Get(iString)}, false))
       {
         m_database.Close();
         return listNeedsUpdating; // user backed out
@@ -554,11 +552,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       std::string strPath=item->GetPath();
       if (item->IsVideoDb() || fromDB)
       {
-        vector<string> paths;
+        std::vector<std::string> paths;
         if (item->GetVideoInfoTag()->m_type == "tvshow" && pDlgInfo->RefreshAll() &&
             m_database.GetPathsLinkedToTvShow(item->GetVideoInfoTag()->m_iDbId, paths))
         {
-          for (vector<string>::const_iterator i = paths.begin(); i != paths.end(); ++i)
+          for (std::vector<std::string>::const_iterator i = paths.begin(); i != paths.end(); ++i)
           {
             CFileItemPtr newItem(new CFileItem(*item->GetVideoInfoTag()));
             newItem->SetPath(*i);
@@ -593,11 +591,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
       }
       if (info->Content() == CONTENT_MUSICVIDEOS)
         iString = 20394;
-      pDlgProgress->SetHeading(iString);
-      pDlgProgress->SetLine(0, movieName);
-      pDlgProgress->SetLine(1, scrUrl.strTitle);
-      pDlgProgress->SetLine(2, "");
-      pDlgProgress->StartModal();
+      pDlgProgress->SetHeading(CVariant{iString});
+      pDlgProgress->SetLine(0, CVariant{movieName});
+      pDlgProgress->SetLine(1, CVariant{scrUrl.strTitle});
+      pDlgProgress->SetLine(2, CVariant{""});
+      pDlgProgress->Open();
       pDlgProgress->Progress();
       if (bHasInfo && movieDetails.m_iDbId != -1)
       {
@@ -642,7 +640,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
 
         *item->GetVideoInfoTag() = movieDetails;
         pDlgInfo->SetMovie(item);
-        pDlgInfo->DoModal();
+        pDlgInfo->Open();
         item->SetArt("thumb", pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
         listNeedsUpdating = true;
@@ -655,7 +653,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2, boo
           m_database.Close();
           return listNeedsUpdating; // user cancelled
         }
-        CGUIDialogOK::ShowAndGetInput(195, movieName);
+        CGUIDialogOK::ShowAndGetInput(CVariant{195}, CVariant{movieName});
         m_database.Close();
         return listNeedsUpdating;
       }
@@ -762,13 +760,13 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     // just an item
     if (pItem->IsPlayList())
     {
-      unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
+      std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
       if (pPlayList.get())
       {
         // load it
         if (!pPlayList->Load(pItem->GetPath()))
         {
-          CGUIDialogOK::ShowAndGetInput(6, 477);
+          CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
           return; //hmmm unable to load playlist?
         }
 
@@ -1107,7 +1105,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         if (URIUtils::IsStack(path))
         {
-          vector<int> times;
+          std::vector<int> times;
           if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
@@ -1189,7 +1187,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
   CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)g_windowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
   if (!dlg) return true;
   dlg->SetNumberOfFiles(parts.Size());
-  dlg->DoModal();
+  dlg->Open();
   int selectedFile = dlg->GetSelectedFile();
   if (selectedFile > 0)
   {
@@ -1221,7 +1219,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     {
       if (selectedFile > 1)
       {
-        vector<int> times;
+        std::vector<int> times;
         if (m_database.GetStackTimes(path,times))
           stack->m_lStartOffset = times[selectedFile-2]*75; // wtf?
       }
@@ -1425,7 +1423,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
           CDirectory::GetDirectory(dir, items);
           items.Sort(SortByFile, SortOrderAscending);
 
-          vector<int> stack;
+          std::vector<int> stack;
           for (int i = 0; i < items.Size(); ++i)
           {
             if (URIUtils::HasExtension(items[i]->GetPath(), ext))
@@ -1449,7 +1447,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
       else
       {
         CLog::Log(LOGERROR, "CGUIWindowTV: Can't open recording, no valid filename!");
-        CGUIDialogOK::ShowAndGetInput(19033, 19036);
+        CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19036});
         return false;
       }
     }
@@ -1535,13 +1533,13 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
 
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
+  std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if (pPlayList.get())
   {
     // load it
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK::ShowAndGetInput(6, 477);
+      CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
       return; //hmmm unable to load playlist?
     }
   }
@@ -1733,7 +1731,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   // prompt for data
   // enter a new title
   std::string strTitle = pItem->GetLabel();
-  if (!CGUIKeyboardFactory::ShowAndGetInput(strTitle, g_localizeStrings.Get(528), false)) // Enter Title
+  if (!CGUIKeyboardFactory::ShowAndGetInput(strTitle, CVariant{g_localizeStrings.Get(528)}, false)) // Enter Title
     return;
 
   // pick genre
@@ -1741,14 +1739,14 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (!pSelect)
     return;
 
-  pSelect->SetHeading(530); // Select Genre
+  pSelect->SetHeading(CVariant{530}); // Select Genre
   pSelect->Reset();
   CFileItemList items;
   if (!CDirectory::GetDirectory("videodb://movies/genres/", items))
     return;
   pSelect->SetItems(&items);
   pSelect->EnableButton(true, 531); // New Genre
-  pSelect->DoModal();
+  pSelect->Open();
   std::string strGenre;
   int iSelected = pSelect->GetSelectedLabel();
   if (iSelected >= 0)
@@ -1760,7 +1758,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   if (strGenre.empty())
   {
     strGenre = g_localizeStrings.Get(532); // Manual Addition
-    if (!CGUIKeyboardFactory::ShowAndGetInput(strGenre, g_localizeStrings.Get(533), false)) // Enter Genre
+    if (!CGUIKeyboardFactory::ShowAndGetInput(strGenre, CVariant{g_localizeStrings.Get(533)}, false)) // Enter Genre
       return; // user backed out
     if (strGenre.empty())
       return; // no genre string
@@ -1778,7 +1776,9 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   m_database.Close();
 
   // done...
-  CGUIDialogOK::ShowAndGetInput(20177, movie.m_strTitle, StringUtils::Join(movie.m_genre, g_advancedSettings.m_videoItemSeparator), movie.m_strIMDBNumber);
+  CGUIDialogOK::ShowAndGetInput(CVariant{20177}, CVariant{movie.m_strTitle},
+                                CVariant{StringUtils::Join(movie.m_genre, g_advancedSettings.m_videoItemSeparator)},
+                                CVariant{movie.m_strIMDBNumber});
 
   // library view cache needs to be cleared
   CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1788,17 +1788,17 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
 void CGUIWindowVideoBase::OnSearch()
 {
   std::string strSearch;
-  if (!CGUIKeyboardFactory::ShowAndGetInput(strSearch, g_localizeStrings.Get(16017), false))
+  if (!CGUIKeyboardFactory::ShowAndGetInput(strSearch, CVariant{g_localizeStrings.Get(16017)}, false))
     return ;
 
   StringUtils::ToLower(strSearch);
   if (m_dlgProgress)
   {
-    m_dlgProgress->SetHeading(194);
-    m_dlgProgress->SetLine(0, strSearch);
-    m_dlgProgress->SetLine(1, "");
-    m_dlgProgress->SetLine(2, "");
-    m_dlgProgress->StartModal();
+    m_dlgProgress->SetHeading(CVariant{194});
+    m_dlgProgress->SetLine(0, CVariant{strSearch});
+    m_dlgProgress->SetLine(1, CVariant{""});
+    m_dlgProgress->SetLine(2, CVariant{""});
+    m_dlgProgress->Open();
     m_dlgProgress->Progress();
   }
   CFileItemList items;
@@ -1811,7 +1811,7 @@ void CGUIWindowVideoBase::OnSearch()
   {
     CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDlgSelect->Reset();
-    pDlgSelect->SetHeading(283);
+    pDlgSelect->SetHeading(CVariant{283});
 
     for (int i = 0; i < (int)items.Size(); i++)
     {
@@ -1819,7 +1819,7 @@ void CGUIWindowVideoBase::OnSearch()
       pDlgSelect->Add(pItem->GetLabel());
     }
 
-    pDlgSelect->DoModal();
+    pDlgSelect->Open();
 
     int iItem = pDlgSelect->GetSelectedLabel();
     if (iItem < 0)
@@ -1831,7 +1831,7 @@ void CGUIWindowVideoBase::OnSearch()
   }
   else
   {
-    CGUIDialogOK::ShowAndGetInput(194, 284);
+    CGUIDialogOK::ShowAndGetInput(CVariant{194}, CVariant{284});
   }
 }
 
@@ -1948,7 +1948,7 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int header,
   bool bCanceled;
   CVideoDatabase db;
   db.Open();
-  if (CGUIDialogYesNo::ShowAndGetInput(header, text, bCanceled))
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{header}, CVariant{text}, bCanceled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT))
   {
     CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     db.RemoveContentForPath(path, progress);

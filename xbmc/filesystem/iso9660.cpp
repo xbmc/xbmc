@@ -214,7 +214,10 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     {
       m_paths = (struct iso_directories *)malloc(sizeof(struct iso_directories));
       if (!m_paths )
+      {
+        free(pCurr_dir_cache);
         return NULL;
+      }
 
       m_paths->path = NULL;
       m_paths->dir = NULL;
@@ -379,7 +382,10 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
           pFile_Pointer->next = (struct iso_dirtree *)malloc(sizeof(struct iso_dirtree));
           if (!pFile_Pointer->next)
+          {
+            free(pCurr_dir_cache);
             return NULL;
+          }
 
           m_vecDirsAndFiles.push_back(pFile_Pointer->next);
           pFile_Pointer = pFile_Pointer->next;
@@ -588,7 +594,7 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
   work = (char *)malloc(from_723(m_info.iso.logical_block_size));
 
   char *temp;
-  struct iso_directories *lastpath = NULL;;
+  struct iso_directories *lastpath = NULL;
 
   if ( strpbrk(Folder, ":") )
     strcpy(work, strpbrk(Folder, ":") + 1);

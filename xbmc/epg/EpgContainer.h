@@ -74,8 +74,9 @@ namespace EPG
 
     /*!
      * @brief Start the EPG update thread.
+     * @param bAsync Should the EPG container starts asynchronously
      */
-    virtual void Start(void);
+    virtual void Start(bool bAsync);
 
     /*!
      * @brief Stop the EPG update thread.
@@ -280,10 +281,6 @@ namespace EPG
     void LoadFromDB(void);
 
     void InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName);
-
-    typedef std::map<unsigned int, CEpg*> EPGMAP;
-    typedef EPGMAP::iterator              EPGMAP_ITR;
-    typedef EPGMAP::const_iterator        EPGMAP_CITR;
 
     CEpgDatabase m_database;           /*!< the EPG database */
 

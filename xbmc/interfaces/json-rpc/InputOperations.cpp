@@ -20,12 +20,19 @@
 
 #include "InputOperations.h"
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindow.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "input/ButtonTranslator.h"
+#include "utils/Variant.h"
+#include "input/XBMC_keyboard.h"
+#include "input/XBMC_vkeys.h"
+#include "threads/SingleLock.h"
 
 using namespace JSONRPC;
+using namespace KODI::MESSAGING;
 
 //TODO the breakage of the screensaver should be refactored
 //to one central super duper place for getting rid of
@@ -45,7 +52,10 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
   {
     g_application.ResetSystemIdleTimer();
     g_audioManager.PlayActionSound(actionID);
-    CApplicationMessenger::Get().SendAction(CAction(actionID), WINDOW_INVALID, waitResult);
+    if (waitResult)
+      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
+    else
+      CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
   }
   return ACK;
 }
@@ -53,14 +63,25 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
 JSONRPC_STATUS CInputOperations::activateWindow(int windowID)
 {
   if(!handleScreenSaver())
-    CApplicationMessenger::Get().ActivateWindow(windowID, std::vector<std::string>(), false);
+    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, windowID, 0);
 
   return ACK;
 }
 
 JSONRPC_STATUS CInputOperations::SendText(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CApplicationMessenger::Get().SendText(parameterObject["text"].asString(), parameterObject["done"].asBoolean());
+  if (CGUIKeyboardFactory::SendTextToActiveKeyboard(parameterObject["text"].asString(), parameterObject["done"].asBoolean()))
+    return ACK;
+
+  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+  if (!window)
+    return ACK;
+
+  CGUIMessage msg(GUI_MSG_SET_TEXT, 0, window->GetFocusedControlID());
+  msg.SetLabel(parameterObject["text"].asString());
+  msg.SetParam1(parameterObject["done"].asBoolean() ? 1 : 0);
+  CApplicationMessenger::Get().SendGUIMessage(msg, window->GetID());
+
   return ACK;
 }
 

@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+	<zorder>1</zorder>
+	<defaultcontrol>9000</defaultcontrol>
+	<include>dialogeffect</include>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+		<left>40</left>
+		<top>40</top>
+	</coordinates>
+	<controls>
+		<include>BehindDialogFadeOut</include>
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1200</width>
+			<height>640</height>
+			<texture border="40">$VAR[SelectBack]</texture>
+			<texture>dialogheader.png</texture>
+		</control>
+		<control type="group">
+			<left>0</left>
+			<top>0</top>
+			<width>1200</width>
+			<height>40</height>
+			<control type="button">
+				<description>dialog close button</description>
+				<left>1120</left>
+				<top>15</top>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<visible>system.getbool(input.enablemouse)</visible>
+				<include>VisibleFadeEffect</include>
+			</control>
+			<control type="image">
+				<description>dialog header image</description>
+				<centerleft>600</centerleft>
+				<top>16</top>
+				<width>1140</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
+			</control>
+			<control type="label">
+				<description>window header label</description>
+				<left>0</left>
+				<top>20</top>
+				<width>1200</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[15020]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+		</control>
+		<control type="list" id="9000">
+			<description>processing mode selection list</description>
+			<left>30</left>
+			<top>70</top>
+			<width>1140</width>
+			<height>40</height>
+			<onup>9001</onup>
+			<ondown>200</ondown>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<orientation>horizontal</orientation>
+			<scrolltime tween="sine" easing="out">200</scrolltime>
+			<itemlayout width="228" height="40">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>228</width>
+					<height>40</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>218</width>
+					<height>40</height>
+					<textcolor>grey3</textcolor>
+					<font>font13_title</font>
+					<aligny>center</aligny>
+					<align>center</align>
+					<info>ListItem.Label</info>
+					<scroll>false</scroll>
+					<scrollspeed>0</scrollspeed>
+				</control>
+			</itemlayout>
+			<focusedlayout width="228" height="40">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>228</width>
+					<height>40</height>
+					<texture border="5">button-focus2.png</texture>
+					<animation effect="fade" start="100" end="50" time="0" condition="!Control.HasFocus(9000)">conditional</animation>
+				</control>
+				<control type="label">
+					<posx>5</posx>
+					<posy>0</posy>
+					<width>218</width>
+					<height>40</height>
+					<textcolor>white</textcolor>
+					<font>font13_title</font>
+					<aligny>center</aligny>
+					<align>center</align>
+					<info>ListItem.Label</info>
+					<scroll>false</scroll>
+					<scrollspeed>0</scrollspeed>
+				</control>
+			</focusedlayout>
+			<content>
+				<description>processing mode selection list</description>
+				<item id="91">
+					<label>1. $LOCALIZE[15057]</label>
+					<label2>$LOCALIZE[15114]</label2>
+					<visible>true</visible>
+					<onclick>noop</onclick>
+					<property name="currentMode">InputResampling</property>
+				</item>
+				<item id="92">
+					<label>2. $LOCALIZE[15058]</label>
+					<label2>$LOCALIZE[15113]</label2>
+					<visible>true</visible>
+					<onclick>noop</onclick>
+					<property name="currentMode">Preprocessing</property>
+				</item>
+				<item id="93">
+					<label>3. $LOCALIZE[15059]</label>
+					<label2>$LOCALIZE[15115]</label2>
+					<visible>true</visible>
+					<onclick>noop</onclick>
+					<property name="currentMode">Masterprocessing</property>
+				</item>
+				<item id="94">
+					<label>4. $LOCALIZE[15060]</label>
+					<label2>$LOCALIZE[15117]</label2>
+					<visible>true</visible>
+					<onclick>noop</onclick>
+					<property name="currentMode">Postprocessing</property>
+				</item>
+				<item id="95">
+					<label>5. $LOCALIZE[15061]</label>
+					<label2>$LOCALIZE[15116]</label2>
+					<visible>true</visible>
+					<onclick>noop</onclick>
+					<property name="currentMode">OutputResampling</property>
+				</item>
+			</content>
+		</control>
+		<control type="group">
+			<description>white borders and mode description</description>
+			<left>30</left>
+			<top>109</top>
+			<width>1140</width>
+			<height>500</height>
+			<control type="image">
+				<description>blue border</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1140</width>
+				<height>500</height>
+				<texture border="5">button-focus3.png</texture>
+				<colordiffuse>80FFFFFF</colordiffuse>
+			</control>
+			<control type="label">
+				<description>current mode description label</description>
+				<left>10</left>
+				<top>0</top>
+				<width>1120</width>
+				<height>30</height>
+				<font>font12</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>selected</selectedcolor>
+				<label>$INFO[Container(9000).ListItem.Label2]</label>
+			</control>
+		</control>
+		<control type="group" id="200">
+			<description>available- and active mode lists</description>
+			<left>30</left>
+			<top>150</top>
+			<width>1140</width>
+			<height>500</height>
+			<ondown>9001</ondown>
+			<onup>9000</onup>
+			<control type="group">
+				<description>available modes group</description>
+				<left>0</left>
+				<top>0</top>
+				<width>570</width>
+				<height>360</height>
+				<control type="label">
+					<description>blue available modes</description>
+					<left>25</left>
+					<top>2</top>
+					<width>550</width>
+					<height>30</height>
+					<font>font12_title</font>
+					<label>$LOCALIZE[15050] ($INFO[Container(20).NumItems])</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="image">
+					<description>available modes list border</description>
+					<left>25</left>
+					<top>30</top>
+					<width>538</width>
+					<height>350</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="scrollbar" id="60">
+					<description>scrollbar for available modes list</description>
+					<left>5</left>
+					<top>30</top>
+					<width>25</width>
+					<height>350</height>
+					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>ScrollBarNib.png</textureslidernib>
+					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+					<onleft>61</onleft>
+					<onright>20</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="list" id="20">
+					<description>available modes list</description>
+					<left>30</left>
+					<top>35</top>
+					<width>528</width>
+					<height>345</height>
+					<onup>9000</onup>
+					<ondown>9001</ondown>
+					<onleft>60</onleft>
+					<onright>21</onright>
+					<pagecontrol>60</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="46" width="528">
+						<control type="image">
+							<left>0</left>
+							<top>3</top>
+							<width>528</width>
+							<height>40</height>
+							<texture border="5">button-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<left>15</left>
+							<top>8</top>
+							<width>30</width>
+							<height>30</height>
+							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
+							<aspectratio>keep</aspectratio>
+							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
+						</control>
+						<control type="image">
+							<left>15</left>
+							<top>8</top>
+							<width>30</width>
+							<height>30</height>
+							<texture aligny="center" align="left">DefaultAudioDSP.png</texture>
+							<aspectratio>keep</aspectratio>
+							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
+						</control>
+						<control type="label">
+							<description>active addon name and mode name</description>
+							<left>80</left>
+							<top>3</top>
+							<width>435</width>
+							<height>40</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textcolor>white</textcolor>
+							<scroll>false</scroll>
+							<selectedcolor>selected</selectedcolor>
+							<label>$INFO[ListItem.Property(AddonName)]: $INFO[ListItem.Property(Name)]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="66" width="528">
+						<control type="image">
+							<left>0</left>
+							<top>3</top>
+							<width>528</width>
+							<height>60</height>
+							<texture border="5">button-focus2.png</texture>
+							<animation effect="fade" start="100" end="30" time="0" condition="!Control.HasFocus(20)">conditional</animation>
+						</control>
+						<control type="image">
+							<left>5</left>
+							<top>8</top>
+							<width>50</width>
+							<height>50</height>
+							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
+							<aspectratio>keep</aspectratio>
+							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
+						</control>
+						<control type="image">
+							<left>5</left>
+							<top>8</top>
+							<height>50</height>
+							<width>50</width>
+							<texture aligny="center" align="left">DefaultAudioDSP.png</texture>
+							<aspectratio>keep</aspectratio>
+							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
+						</control>
+						<control type="label">
+							<description>addon name and mode name on focus</description>
+							<left>80</left>
+							<top>3</top>
+							<width>435</width>
+							<height>40</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textcolor>white</textcolor>
+							<scroll>false</scroll>
+							<selectedcolor>selected</selectedcolor>
+							<label>$INFO[ListItem.Property(AddonName)]: $INFO[ListItem.Property(Name)]</label>
+						</control>
+						<control type="label">
+							<description>ADSP-Mode description on focus</description>
+							<left>80</left>
+							<top>33</top>
+							<width>435</width>
+							<height>30</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textcolor>grey2</textcolor>
+							<scroll>false</scroll>
+							<selectedcolor>selected</selectedcolor>
+							<label>$INFO[ListItem.Property(Description)]</label>
+							<visible>!Control.HasFocus(20)</visible>
+						</control>
+						<control type="label">
+							<description>ADSP-Mode description on focus</description>
+							<left>80</left>
+							<top>33</top>
+							<width>435</width>
+							<height>30</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textcolor>grey2</textcolor>
+							<scroll>true</scroll>
+							<scrollsuffix>&gt;   &lt;</scrollsuffix>
+							<selectedcolor>selected</selectedcolor>
+							<label>$INFO[ListItem.Property(Description)]</label>
+							<visible>Control.HasFocus(20)</visible>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
+			<control type="group">
+				<left>568</left>
+				<top>0</top>
+				<width>570</width>
+				<height>360</height>
+				<control type="label">
+					<description>blue active modes</description>
+					<left>10</left>
+					<top>2</top>
+					<width>550</width>
+					<height>30</height>
+					<font>font12_title</font>
+					<label>$LOCALIZE[15051] ($INFO[Container(21).NumItems])</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="image">
+					<description>active modes list border</description>
+					<left>10</left>
+					<top>30</top>
+					<width>538</width>
+					<height>350</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="scrollbar" id="61">
+					<description>scrollbar for active modes list</description>
+					<left>542</left>
+					<top>30</top>
+					<width>25</width>
+					<height>350</height>
+					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>ScrollBarNib.png</textureslidernib>
+					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+					<onleft>21</onleft>
+					<onright>60</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="list" id="21">
+					<description>active modes list</description>
+					<left>15</left>
+					<top>35</top>
+					<width>538</width>
+					<height>345</height>
+					<onup>9000</onup>
+					<ondown>9001</ondown>
+					<onleft>20</onleft>
+					<onright>61</onright>
+					<pagecontrol>61</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="46" width="528">
+						<control type="image">
+							<left>0</left>
+							<top>3</top>
+							<width>528</width>
+							<height>40</height>
+							<texture border="5">button-nofocus.png</texture>
+						</control>
+						<control type="image">
+							<left>15</left>
+							<top>8</top>
+							<width>30</width>
+							<height>30</height>
+							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
+							<aspectratio>keep</aspectratio>
+							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
+						</control>
+						<control type="image">
+							<left>15</left>
+							<top>8</top>
+							<width>30</width>
+							<height>30</height>
+							<texture aligny="center" align="left">DefaultAudioDSP.png</texture>
+							<aspectratio>keep</aspectratio>
+							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
+						</control>
+						<control type="label">
+							<description>active addon name and mode name</description>
+							<left>80</left>
+							<top>3</top>
+							<width>435</width>
+							<height>40</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textcolor>white</textcolor>
+							<scroll>false</scroll>
+							<selectedcolor>selected</selectedcolor>
+							<label>$INFO[ListItem.Property(Number)].  $INFO[ListItem.Property(AddonName)]: $INFO[ListItem.Property(Name)]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="66" width="528">
+						<control type="image">
+							<left>0</left>
+							<top>3</top>
+							<width>528</width>
+							<height>60</height>
+							<texture border="5">button-focus2.png</texture>
+							<animation effect="fade" start="100" end="30" time="0" condition="!Control.HasFocus(21)">conditional</animation>
+						</control>
+						<control type="image">
+							<left>5</left>
+							<top>8</top>
+							<width>50</width>
+							<height>50</height>
+							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
+							<aspectratio>keep</aspectratio>
+							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
+						</control>
+						<control type="image">
+							<left>5</left>
+							<top>8</top>
+							<height>50</height>
+							<width>50</width>
+							<texture aligny="center" align="left">DefaultAudioDSP.png</texture>
+							<aspectratio>keep</aspectratio>
+							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
+						</control>
+						<control type="label">
+							<description>addon name and mode name on focus</description>
+							<left>80</left>
+							<top>3</top>
+							<width>435</width>
+							<height>40</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textcolor>white</textcolor>
+							<scroll>false</scroll>
+							<selectedcolor>selected</selectedcolor>
+							<label>$INFO[ListItem.Property(Number)].  $INFO[ListItem.Property(AddonName)]: $INFO[ListItem.Property(Name)]</label>
+							<visible>true</visible>
+						</control>
+						<control type="label">
+							<description>ADSP-Mode description on focus</description>
+							<left>80</left>
+							<top>33</top>
+							<width>435</width>
+							<height>30</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textcolor>grey2</textcolor>
+							<scroll>false</scroll>
+							<selectedcolor>selected</selectedcolor>
+							<label>$INFO[ListItem.Property(Description)]</label>
+							<visible>!Control.HasFocus(21)</visible>
+						</control>
+						<control type="label">
+							<description>ADSP-Mode description on focus</description>
+							<left>80</left>
+							<top>33</top>
+							<width>435</width>
+							<height>30</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<textcolor>grey2</textcolor>
+							<scroll>true</scroll>
+							<scrollsuffix>&gt;   &lt;</scrollsuffix>
+							<selectedcolor>selected</selectedcolor>
+							<label>$INFO[ListItem.Property(Description)]</label>
+							<visible>Control.HasFocus(21)</visible>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
+		</control>
+		<control type="group" id="9001">
+			<left>55</left>
+			<top>528</top>
+			<width>1090</width>
+			<control type="radiobutton" id="22">
+				<description>Default RadioButton</description>
+				<left>0</left>
+				<top>15</top>
+				<height>40</height>
+				<width>280</width>
+				<onup>200</onup>
+				<ondown>9000</ondown>
+				<onleft>24</onleft>
+				<onright>23</onright>
+				<textwidth>252</textwidth>
+				<font>font13</font>
+				<textcolor>grey2</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>15064</label>
+				<include>ButtonCommonValues</include>
+			</control>
+			<control type="button" id="23">
+				<description>Apply changes button</description>
+				<left>288</left>
+				<top>15</top>
+				<height>40</height>
+				<width>250</width>
+				<onup>200</onup>
+				<ondown>9000</ondown>
+				<onleft>22</onleft>
+				<onright>24</onright>
+				<font>font13</font>
+				<disabledcolor>15FFFFFF</disabledcolor>
+				<textcolor>grey3</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<label>14070</label>
+				<align>center</align>
+			</control>
+			<control type="button" id="24">
+				<description>Clear active modes button</description>
+				<left>841</left>
+				<top>15</top>
+				<height>40</height>
+				<width>250</width>
+				<onup>200</onup>
+				<ondown>9000</ondown>
+				<onleft>23</onleft>
+				<onright>22</onright>
+				<font>font13</font>
+				<disabledcolor>30FFFFFF</disabledcolor>
+				<textcolor>grey3</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<label>15066</label>
+				<align>center</align>
+			</control>
+		</control>
+	</controls>
+</window>

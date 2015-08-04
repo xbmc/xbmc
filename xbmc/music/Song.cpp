@@ -76,6 +76,7 @@ CSong::CSong(CFileItem& item)
   bCompilation = tag.GetCompilation();
   embeddedArt = tag.GetCoverArtInfo();
   strFileName = tag.GetURL().empty() ? item.GetPath() : tag.GetURL();
+  dateAdded = tag.GetDateAdded();
   strThumb = item.GetUserMusicThumb(true);
   iStartOffset = item.m_lStartOffset;
   iEndOffset = item.m_lEndOffset;
@@ -121,6 +122,7 @@ void CSong::Serialize(CVariant& value) const
   value["rating"] = rating;
   value["timesplayed"] = iTimesPlayed;
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
+  value["dateadded"] = dateAdded.IsValid() ? dateAdded.GetAsDBDateTime() : "";
   value["karaokenumber"] = (int64_t) iKaraokeNumber;
   value["albumid"] = idAlbum;
 }
@@ -146,6 +148,7 @@ void CSong::Clear()
   idSong = -1;
   iTimesPlayed = 0;
   lastPlayed.Reset();
+  dateAdded.Reset();
   iKaraokeNumber = 0;
   strKaraokeLyrEncoding.clear();
   iKaraokeDelay = 0;

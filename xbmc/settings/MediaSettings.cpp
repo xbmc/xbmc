@@ -18,6 +18,8 @@
  *
  */
 
+#include <string>
+
 #include <limits.h>
 
 #include "MediaSettings.h"
@@ -32,17 +34,19 @@
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+
 #ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/Dialogs/GUIDialogDSRules.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSFilters.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSPlayercoreFactory.h"
 #endif
-using namespace std;
-
 CMediaSettings::CMediaSettings()
 {
   m_watchedModes["files"] = WatchedModeAll;
@@ -135,6 +139,31 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultVideoSettings.m_StereoMode = 0;
 
     m_defaultVideoSettings.m_SubtitleCached = false;
+  }
+
+  pElement = settings->FirstChildElement("defaultaudiosettings");
+  if (pElement != NULL)
+  {
+    if (!XMLUtils::GetInt(pElement, "masterstreamtype", m_defaultAudioSettings.m_MasterStreamType))
+      m_defaultAudioSettings.m_MasterStreamType = AE_DSP_ASTREAM_AUTO;
+    if (!XMLUtils::GetInt(pElement, "masterstreamtypesel", m_defaultAudioSettings.m_MasterStreamTypeSel))
+      m_defaultAudioSettings.m_MasterStreamTypeSel = AE_DSP_ASTREAM_AUTO;
+    if (!XMLUtils::GetInt(pElement, "masterstreambase", m_defaultAudioSettings.m_MasterStreamBase))
+      m_defaultAudioSettings.m_MasterStreamBase = AE_DSP_ABASE_STEREO;
+
+    std::string strTag;
+    for (int type = AE_DSP_ASTREAM_BASIC; type < AE_DSP_ASTREAM_MAX; type++)
+    {
+      for (int base = AE_DSP_ABASE_STEREO; base < AE_DSP_ABASE_MAX; base++)
+      {
+        int tmp;
+        strTag = StringUtils::Format("masterprocess_%i_%i", type, base);
+        if (XMLUtils::GetInt(pElement, strTag.c_str(), tmp))
+          m_defaultAudioSettings.m_MasterModes[type][base] = tmp;
+        else
+          m_defaultAudioSettings.m_MasterModes[type][base] = 0;
+      }
+    }
   }
 
 #ifdef HAS_DS_PLAYER
@@ -273,6 +302,26 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetFloat(pNode, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay);
   XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
   XMLUtils::SetInt(pNode, "stereomode", m_defaultVideoSettings.m_StereoMode);
+
+  // default audio settings for dsp addons
+  TiXmlElement audioSettingsNode("defaultaudiosettings");
+  pNode = settings->InsertEndChild(audioSettingsNode);
+  if (pNode == NULL)
+    return false;
+
+  XMLUtils::SetInt(pNode, "masterstreamtype", m_defaultAudioSettings.m_MasterStreamType);
+  XMLUtils::SetInt(pNode, "masterstreamtypesel", m_defaultAudioSettings.m_MasterStreamTypeSel);
+  XMLUtils::SetInt(pNode, "masterstreambase", m_defaultAudioSettings.m_MasterStreamBase);
+
+  std::string strTag;
+  for (int type = AE_DSP_ASTREAM_BASIC; type < AE_DSP_ASTREAM_MAX; type++)
+  {
+    for (int base = AE_DSP_ABASE_STEREO; base < AE_DSP_ABASE_MAX; base++)
+    {
+      strTag = StringUtils::Format("masterprocess_%i_%i", type, base);
+      XMLUtils::SetInt(pNode, strTag.c_str(), m_defaultAudioSettings.m_MasterModes[type][base]);
+    }
+  }
 
 #ifdef HAS_DS_PLAYER
   //madvr settings
@@ -413,7 +462,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "musiclibrary.cleanup")
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(313, 333))
+    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
       g_application.StartMusicCleanup(true);
   }
   else if (settingId == "musiclibrary.export")
@@ -433,7 +482,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == "videolibrary.cleanup")
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(313, 333))
+    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
       g_application.StartVideoCleanup(true);
   }
   else if (settingId == "videolibrary.export")

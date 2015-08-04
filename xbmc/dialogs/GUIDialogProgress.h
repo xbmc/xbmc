@@ -30,7 +30,7 @@ public:
   CGUIDialogProgress(void);
   virtual ~CGUIDialogProgress(void);
 
-  void StartModal();
+  void Open();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
@@ -59,4 +59,7 @@ protected:
   int  m_iMax;
   int m_percentage;
   bool m_showProgress;
+
+private:
+  void Reset();
 };

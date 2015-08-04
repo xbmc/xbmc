@@ -435,6 +435,8 @@ void CDVDPlayerVideo::Process()
 
       m_stalled = true;
       m_started = false;
+
+      g_renderManager.DiscardBuffer();
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -807,34 +809,6 @@ void CDVDPlayerVideo::Flush()
   m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
 }
 
-int CDVDPlayerVideo::GetLevel() const
-{
-  int level = m_messageQueue.GetLevel();
-
-  // fast exit, if the message queue is full, we do not care about the codec queue.
-  if (level == 100)
-    return level;
-
-  // Now for the harder choices, the message queue could be time or size based.
-  // In order to return the proper summed level, we need to know which.
-  if (m_messageQueue.IsDataBased())
-  {
-    int datasize = m_messageQueue.GetDataSize();
-    if (m_pVideoCodec)
-      datasize += m_pVideoCodec->GetDataSize();
-    return min(100, MathUtils::round_int((100.0 * datasize) / m_messageQueue.GetMaxDataSize()));
-  }
-  else
-  {
-    double timesize = m_messageQueue.GetTimeSize();
-    if (m_pVideoCodec)
-      timesize += m_pVideoCodec->GetTimeSize();
-    return min(100, MathUtils::round_int(100.0 * m_messageQueue.GetMaxTimeSize() * timesize));
-  }
-
-  return level;
-}
-
 #ifdef HAS_VIDEO_PLAYBACK
 void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
 {
@@ -1146,6 +1120,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       }
       return result | EOS_DROPPED;
     }
+    else if (pts_org < iPlayingClock)
+    {
+      return result | EOS_DROPPED;
+    }
 
     if (iSleepTime > DVD_MSEC_TO_TIME(20))
       iSleepTime = DVD_MSEC_TO_TIME(20);
@@ -1165,9 +1143,6 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
       return result | EOS_DROPPED;
     }
-
-    if (iSleepTime > DVD_MSEC_TO_TIME(20))
-      iSleepTime = DVD_MSEC_TO_TIME(20);
   }
 
   // sync clock if we are master
@@ -1205,7 +1180,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   int maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime) + 500, 50);
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
-    maxWaitTime = 0;
+    maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime), 0);
   int buffer = g_renderManager.WaitForBuffer(m_bStop, maxWaitTime);
   if (buffer < 0)
   {

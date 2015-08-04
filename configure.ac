@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([kodi], [14.9.901], [http://trac.kodi.tv])
+AC_INIT([kodi], [15.9.702], [http://trac.kodi.tv])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -1593,9 +1593,10 @@ if test "x$use_airtunes" != "xno"; then
 
   if test "x$USE_AIRTUNES" != "x0"; then
     XB_FIND_SONAME([SHAIRPLAY], [shairplay], [USE_AIRTUNES])
-    AC_CHECK_MEMBERS([struct raop_callbacks_s.cls],,,
+    AC_CHECK_MEMBERS([struct raop_callbacks_s.audio_remote_control_id],
+                     AC_DEFINE([HAVE_LIBSHAIRPLAY],[1],["Define to 1 if you have libshairplay."]),
+                     USE_AIRTUNES=0,
                      [[#include <shairplay/raop.h>]])
-    AC_DEFINE([HAVE_LIBSHAIRPLAY],[1],["Define to 1 if you have libshairplay."])
   fi
 
   if test "x$USE_AIRTUNES" == "x0"; then
@@ -2469,16 +2470,15 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/paplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \
     xbmc/cores/playercorefactory/Makefile \
+    xbmc/messaging/Makefile \
     xbmc/music/karaoke/Makefile \
     xbmc/osx/Makefile \
     xbmc/guilib/Makefile \
     xbmc/input/linux/Makefile \
     xbmc/interfaces/Makefile \
     xbmc/network/Makefile \
-    xbmc/network/httprequesthandler/python/Makefile \
     xbmc/network/upnp/Makefile \
     lib/libexif/Makefile \
-    lib/libhdhomerun/Makefile \
     lib/cximage-6.0/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
@@ -2495,6 +2495,7 @@ OUTPUT_FILES="Makefile \
     xbmc/windowing/Makefile \
     xbmc/windowing/egl/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
+    lib/addons/library.kodi.adsp/Makefile \
     lib/addons/library.xbmc.codec/Makefile \
     lib/addons/library.kodi.guilib/Makefile \
     lib/addons/library.xbmc.pvr/Makefile \
@@ -2511,6 +2512,7 @@ OUTPUT_FILES="Makefile \
     xbmc/android/jni/Makefile \
     xbmc/utils/Makefile \
     xbmc/main/Makefile \
+    xbmc/main/posix/Makefile \
     tools/darwin/Configurations/App.xcconfig \
     tools/darwin/Configurations/Common.xcconfig \
     tools/darwin/packaging/ios/mkdeb-ios.sh \
@@ -2533,6 +2535,10 @@ OUTPUT_FILES="Makefile \
     tools/android/packaging/xbmc/src/org/xbmc/kodi/XBMCOnAudioFocusChangeListener.java \
     tools/android/packaging/xbmc/strings.xml \
     addons/xbmc.addon/addon.xml"
+
+if test "$use_webserver" = "yes"; then
+OUTPUT_FILES="$OUTPUT_FILES xbmc/network/httprequesthandler/python/Makefile"
+fi
 
 if test "$use_wayland" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES xbmc/windowing/tests/wayland/Makefile"

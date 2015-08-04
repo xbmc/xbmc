@@ -41,13 +41,19 @@ Map::Map()
 
 	m_vertices = NULL;
 
-	Renderer::GetDevice()->CreateIndexBuffer( NUM_INDICES * 2, D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_iBuffer, NULL );
-	Renderer::GetDevice()->CreateVertexBuffer( GRID_WIDTH * GRID_HEIGHT * sizeof( PosColNormalUVVertex ),
-											   D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC, 0, D3DPOOL_DEFAULT,
-											   &m_vBuffer, NULL );
+  //---------------------------------------------------------------------------
+  // Create verticies buffer
+  CD3D11_BUFFER_DESC bDesc(GRID_WIDTH * GRID_HEIGHT * sizeof(PosColNormalUVVertex),
+                            D3D11_BIND_VERTEX_BUFFER,
+                            D3D11_USAGE_DYNAMIC,
+                            D3D11_CPU_ACCESS_WRITE );
+  Renderer::GetDevice()->CreateBuffer(&bDesc, NULL, &m_vBuffer);
 
-	PosColNormalUVVertex* v;
-	m_vBuffer->Lock( 0, 0, (void**)&v, 0 );
+  //---------------------------------------------------------------------------
+  // Build verticies
+  D3D11_MAPPED_SUBRESOURCE res;
+  Renderer::GetContext()->Map(m_vBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+  PosColNormalUVVertex* v = (PosColNormalUVVertex*)res.pData;
 
 	for (int y = 0; y < GRID_HEIGHT; y++)
 	{
@@ -57,12 +63,10 @@ Map::Map()
 			//      15-(32 / 2) / (32 / 2) = -1
 			v->Coord.x = ((float)x - ((GRID_WIDTH -1 ) / 2.0f)) / ((GRID_WIDTH -1 ) / 2.0f);
 			v->Coord.y = -(((float)y - ((GRID_HEIGHT -1 ) / 2.0f)) / ((GRID_HEIGHT -1 ) / 2.0f));
-//			v->Diffuse= 0xffffffff;
 			v->FDiffuse.x = 1.0f;
 			v->FDiffuse.y = 1.0f;
 			v->FDiffuse.z = 1.0f;
 			v->FDiffuse.w = 1.0f;
-			//			v->coord. = 1.0f;
 			v->Coord.z = 0.0f;
 			//			v->u = ((((float)x - ((GRID_WIDTH -1 ) / 2.0f)) / ((GRID_WIDTH -1 ) / 2.0f) * 256 + 256) * (1.0f / 512)) + (0.5f / 512);
 			//			v->v = ((((float)y - ((GRID_HEIGHT -1 ) / 2.0f)) / ((GRID_HEIGHT -1 ) / 2.0f) * 256 + 256) * (1.0f / 512)) + (0.5f / 512);
@@ -71,17 +75,15 @@ Map::Map()
 			v++;
 		}
 	}
-	m_vBuffer->Unlock();
-
+  Renderer::GetContext()->Unmap(m_vBuffer, 0);
 
 	//---------------------------------------------------------------------------
 	// Build indices
-	unsigned short* pIndices;
-	m_iBuffer->Lock( 0, 0, (void**)&pIndices, 0 );
+  unsigned short indices[NUM_INDICES * 2], *pIndices = indices;
 	int numIndices = 0;
 	unsigned short iIndex = 0;
 
-	for (int a = 0; a < GRID_HEIGHT; ++a)
+	for (int a = 0; a < GRID_HEIGHT - 1; ++a)
 	{
 		for (int i = 0; i < GRID_WIDTH; ++i, pIndices += 2, ++iIndex )
 		{
@@ -103,14 +105,22 @@ Map::Map()
 
 	m_numIndices = numIndices - 2;
 
-	m_iBuffer->Unlock();
+  //---------------------------------------------------------------------------
+  // Create indices buffer
+  bDesc.ByteWidth = sizeof(indices);
+  bDesc.BindFlags      = D3D11_BIND_INDEX_BUFFER;
+  bDesc.Usage          = D3D11_USAGE_IMMUTABLE;
+  bDesc.CPUAccessFlags = 0;
+  D3D11_SUBRESOURCE_DATA bData = { 0 };
+  bData.pSysMem        = indices;
+  Renderer::GetDevice()->CreateBuffer(&bDesc, &bData, &m_iBuffer);
 }
 
 Map::~Map()
 {
 	if ( m_vertices != NULL )
 	{
-		m_vBuffer->Unlock();
+    Renderer::GetContext()->Unmap(m_vBuffer, 0);
 		m_vertices = NULL;
 	}
 	m_vBuffer->Release();
@@ -154,7 +164,9 @@ void Map::SetValues(unsigned int x, unsigned int y, float uOffset, float vOffset
 
 	if( m_vertices == NULL )
 	{
-		m_vBuffer->Lock( 0, 0, (void**)&m_vertices, 0 );
+    D3D11_MAPPED_SUBRESOURCE res;
+    Renderer::GetContext()->Map(m_vBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res);
+    m_vertices = (PosColNormalUVVertex*)res.pData;
 	}
 
 	PosColNormalUVVertex* v = &m_vertices[ index ];
@@ -166,12 +178,6 @@ void Map::SetValues(unsigned int x, unsigned int y, float uOffset, float vOffset
 	{
 		v->u = ((float)x * invWidth ) + (0.5f / TEX_WIDTH)  + ( ( uOffset ) * invWidth );
 		v->v = ((float)y * invHeight ) + (0.5f / TEX_HEIGHT) + ( ( vOffset ) * invHeight );
-/*		unsigned char* col = (unsigned char*)&v->Diffuse;
-		col[3] = 0xff;
-		col[2] = int(MapCol(r) * 255);
-		col[1] = int(MapCol(g) * 255);
-		col[0] = int(MapCol(b) * 255);
-*/
 		v->FDiffuse.x = MapCol(r);
 		v->FDiffuse.y = MapCol(g);
 		v->FDiffuse.z = MapCol(b);
@@ -181,11 +187,6 @@ void Map::SetValues(unsigned int x, unsigned int y, float uOffset, float vOffset
 	{
 		v->u = ((float)x * invWidth ) + (0.5f / TEX_WIDTH)  + ((uOffset));
 		v->v = ((float)y * invHeight ) + (0.5f / TEX_HEIGHT) + ((vOffset));
-//		unsigned char* col = (unsigned char*)&v->Diffuse;
-// 		col[3] = 0xff;
-// 		col[2] = int(Clamp(r) * 255);
-// 		col[1] = int(Clamp(g) * 255);
-// 		col[0] = int(Clamp(b) * 255);
 		v->FDiffuse.x = r;
 		v->FDiffuse.y = g;
 		v->FDiffuse.z = b;
@@ -197,20 +198,20 @@ void Map::Render()
 {
 	if ( m_vertices != NULL )
 	{
-		m_vBuffer->Unlock();
-		m_vertices = NULL;
-	}
+    Renderer::GetContext()->Unmap( m_vBuffer, 0 );
+    m_vertices = NULL;
+  }
 
 	if ( m_iCurrentTexture == 0 )
 	{
-		Renderer::SetRenderTarget(m_tex1);
-		Renderer::SetTexture(m_tex2);
+		Renderer::SetRenderTarget( m_tex1 );
+		Renderer::SetTexture( m_tex2 );
 		m_texture = m_tex1;
 	}
 	else
 	{
-		Renderer::SetRenderTarget(m_tex2);
-		Renderer::SetTexture(m_tex1);
+		Renderer::SetRenderTarget( m_tex2 );
+		Renderer::SetTexture( m_tex1 );
 		m_texture = m_tex2;
 	}
 
@@ -220,31 +221,21 @@ void Map::Render()
 	Renderer::SetAspect(0);
 	Renderer::Translate(0, 0, 2.414f);
 
-	DiffuseUVVertexShader* pShader = &DiffuseUVVertexShader::StaticType;
-	Renderer::CommitTransforms( pShader );
+  DiffuseUVVertexShader* pShader = &DiffuseUVVertexShader::StaticType;
+  Renderer::SetShader( pShader );
+  Renderer::CommitTransforms( pShader );
 	Renderer::CommitTextureState();
-	Renderer::GetDevice()->SetVertexShader( pShader->GetVertexShader() );
-	Renderer::GetDevice()->SetVertexDeclaration( g_pPosColUVDeclaration );
 
-	Renderer::GetDevice()->SetStreamSource( 0,
-											m_vBuffer,
-											0,
-											sizeof( PosColNormalUVVertex ) );
+  unsigned int strides = sizeof(PosColNormalUVVertex), offsets = 0;
+  Renderer::GetContext()->IASetInputLayout( g_pPosNormalColUVDeclaration );
+  Renderer::GetContext()->IASetVertexBuffers( 0, 1, &m_vBuffer, &strides, &offsets );
+  Renderer::GetContext()->IASetIndexBuffer( m_iBuffer, DXGI_FORMAT_R16_UINT, 0 );
+  Renderer::GetContext()->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
+  Renderer::GetContext()->DrawIndexed( m_numIndices, 0, 0 );
 
-	Renderer::GetDevice()->SetIndices( m_iBuffer );
-
-	Renderer::GetDevice()->DrawIndexedPrimitive( D3DPT_TRIANGLESTRIP, 0, 0, GRID_WIDTH * GRID_HEIGHT, 0, 1514 );
-
-	Renderer::GetDevice()->SetStreamSource( 0,
-											NULL,
-											0,
-											0 );
-
-	Renderer::GetDevice()->SetIndices( NULL );
-
-	Renderer::SetTexture(NULL);
+	Renderer::SetTexture( NULL );
 	Renderer::PopMatrix();
-	Renderer::SetAspect(oldAspect);
+	Renderer::SetAspect( oldAspect );
 
 	m_iCurrentTexture = 1 - m_iCurrentTexture;
 

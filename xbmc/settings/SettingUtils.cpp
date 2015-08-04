@@ -21,6 +21,7 @@
 #include "SettingUtils.h"
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 std::vector<CVariant> CSettingUtils::GetList(const CSettingList *settingList)
 {

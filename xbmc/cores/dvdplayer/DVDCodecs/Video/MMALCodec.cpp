@@ -35,7 +35,7 @@
 #include "utils/TimeUtils.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "Application.h"
 #include "threads/Atomics.h"
 #include "guilib/GUIWindowManager.h"
@@ -45,6 +45,8 @@
 #include "settings/AdvancedSettings.h"
 
 #include "linux/RBP.h"
+
+using namespace KODI::MESSAGING;
 
 #define CLASSNAME "CMMALVideoBuffer"
 

@@ -42,6 +42,7 @@ void quad(float rt, float sz)
    dyx = Sin(rt)*sz;
    dyy = 0.0f-Cos(rt)*sz;
 
+   gfxColour(1.0f,1.0f,1.0f,1.0f);
    gfxTexCoord((0.0f-dxx)+(0.0f+dyx),(0.0f-dxy)+(0.0f+dyy));
    gfxVertex(1.0,-1,0);
    gfxTexCoord((0.0f+dxx)+(0.0f+dyx),(0.0f+dxy)+(0.0f+dyy));

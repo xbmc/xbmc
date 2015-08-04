@@ -4,6 +4,13 @@ cmake_minimum_required(VERSION 2.8)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
+option(ADDON_TARBALL_CACHING "Cache downloaded addon source tarballs?" ON)
+if(ADDON_TARBALL_CACHING)
+  message(STATUS "Addon source tarball caching is enabled")
+else()
+  message(STATUS "Addon source tarball caching is disabled")
+endif()
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -78,16 +85,26 @@ if(MSVC)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
+option(PACKAGE_ZIP "Prepare built addons for packaging" OFF)
 if(PACKAGE_ZIP)
   # needed for project installing
-  list(APPEND BUILD_ARGS -DPACKAGE_ZIP=1)
-  MESSAGE("package zip specified")
+  list(APPEND BUILD_ARGS -DPACKAGE_ZIP=ON)
+
+  # figure out where to store the packaged ZIP archives
+  if(NOT PACKAGE_DIR)
+    set(PACKAGE_DIR "${BUILD_DIR}/zips")
+  else()
+    file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
+  endif()
+  list(APPEND BUILD_ARGS -DPACKAGE_DIR=${PACKAGE_DIR})
+
+  MESSAGE(STATUS "ZIP packaging enabled (destination: ${PACKAGE_DIR}})")
 endif()
 
 if(CMAKE_TOOLCHAIN_FILE)
   list(APPEND BUILD_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
-  MESSAGE("toolchain specified")
-  MESSAGE(${BUILD_ARGS})
+  MESSAGE(STATUS "Toolchain specified")
+  MESSAGE(STATUS ${BUILD_ARGS})
 endif()
 
 if(NOT ADDONS_TO_BUILD)
@@ -121,13 +138,15 @@ endif()
 # include check_target_platform() function
 include(${APP_ROOT}/project/cmake/scripts/common/check_target_platform.cmake)
 
-# check install permissions
 set(ADDON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
-check_install_permissions(${CMAKE_INSTALL_PREFIX} can_write)
-if(NOT ${can_write} AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  set(NEED_SUDO TRUE)
-  set(ADDON_INSTALL_DIR ${CMAKE_BINARY_DIR}/.install)
-  message(STATUS "NEED_SUDO: ${NEED_SUDO}")
+if(NOT WIN32)
+  # check install permissions
+  check_install_permissions(${CMAKE_INSTALL_PREFIX} can_write)
+  if(NOT ${can_write} AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(NEED_SUDO TRUE)
+    set(ADDON_INSTALL_DIR ${CMAKE_BINARY_DIR}/.install)
+    message(STATUS "NEED_SUDO: ${NEED_SUDO}")
+  endif()
 endif()
 
 ### prepare the build environment for the binary addons
@@ -142,6 +161,9 @@ include(prepare-env)
 
 ### add the depends subdirectory for any general dependencies
 add_subdirectory(depends)
+
+# add a custom target "package-addons" which will package and install all addons
+add_custom_target(package-addons)
 
 ### get and build all the binary addons
 # look for all the addons to be built
@@ -182,6 +204,19 @@ foreach(addon ${addons})
         if(deflength GREATER 2 AND "${SOURCE_DIR}" STREQUAL "")
           list(GET def 2 revision)
 
+          # we need access to a git executable
+          find_package(Git REQUIRED)
+
+          # resolve revision to git hash
+          execute_process(COMMAND ${GIT_EXECUTABLE} ls-remote ${url} ${revision} OUTPUT_VARIABLE revision_hash)
+          # git ls-remote only works on branches and tag names but not on revisions
+          if(NOT "${revision_hash}" STREQUAL "")
+            string(REPLACE "\t" ";" revision_list ${revision_hash})
+            list(GET revision_list 0 revision_hash)
+            message(STATUS "${id}: git branch/tag ${revision} resolved to hash: ${revision_hash}")
+            set(revision ${revision_hash})
+          endif()
+
           # Note: downloading specific revisions via http in the format below is probably github specific
           # if we ever use other repositories, this might need adapting
           set(url ${url}/archive/${revision}.tar.gz)
@@ -212,7 +247,7 @@ foreach(addon ${addons})
         # download the addon if necessary
         if(NOT "${archive_name}" STREQUAL "")
           # download and extract the addon
-          if(NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
+          if(NOT ADDON_TARBALL_CACHING OR NOT EXISTS ${BUILD_DIR}/download/${archive_name}.tar.gz)
             # cleanup any of the previously downloaded archives of this addon
             file(GLOB archives "${BUILD_DIR}/download/${id}*.tar.gz")
             if(archives)
@@ -277,6 +312,12 @@ foreach(addon ${addons})
               add_dependencies(${id} ${${id}_DEPS})
             endif()
           endif()
+
+          # create a forwarding target to the addon-package target
+          add_custom_target(package-${id}
+                    COMMAND ${CMAKE_COMMAND} --build ${BUILD_DIR}/${id}-prefix/src/${id}-build --target addon-package
+                    DEPENDS ${id})
+          add_dependencies(package-addons package-${id})
         else()
           message(FATAL_ERROR "${id}: invalid or missing addon source directory at ${SOURCE_DIR}")
         endif()

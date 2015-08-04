@@ -40,6 +40,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 
 #include "WakeOnAccess.h"
 
@@ -167,16 +168,15 @@ public:
 
     if (m_dialog)
     {
-      m_dialog->SetHeading (heading); 
-      m_dialog->SetLine(0, "");
-      m_dialog->SetLine(1, "");
-      m_dialog->SetLine(2, "");
+      m_dialog->SetHeading(CVariant{heading}); 
+      m_dialog->SetLine(0, CVariant{""});
+      m_dialog->SetLine(1, CVariant{""});
+      m_dialog->SetLine(2, CVariant{""});
 
       int nest_level = NestDetect::Level();
       if (nest_level > 1)
       {
-        std::string nest = StringUtils::Format("Nesting:%d", nest_level);
-        m_dialog->SetLine(2, nest);
+        m_dialog->SetLine(2, CVariant{StringUtils::Format("Nesting:%d", nest_level)});
       }
     }
   }
@@ -196,7 +196,7 @@ public:
 
     if (m_dialog)
     {
-      m_dialog->SetLine(1, line1);
+      m_dialog->SetLine(1, CVariant{line1});
 
       m_dialog->SetPercentage(1); // avoid flickering by starting at 1% ..
     }
@@ -211,7 +211,7 @@ public:
       if (m_dialog)
       {
         if (!m_dialog->IsActive())
-          m_dialog->StartModal();
+          m_dialog->Open();
 
         if (m_dialog->IsCanceled())
           return Canceled;

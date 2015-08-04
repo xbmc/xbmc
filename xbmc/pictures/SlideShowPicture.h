@@ -22,7 +22,9 @@
 #include "threads/CriticalSection.h"
 #include "guilib/DirtyRegion.h"
 #include <string>
-
+#ifdef HAS_DX
+#include "guilib/GUIShaderDX.h"
+#endif
 typedef uint32_t color_t;
 
 class CBaseTexture;
@@ -131,4 +133,8 @@ private:
   bool m_bTransistionImmediately;
 
   CCriticalSection m_textureAccess;
+#ifdef HAS_DX
+  ID3D11Buffer*    m_vb;
+  bool             UpdateVertexBuffer(Vertex *vertecies);
+#endif
 };

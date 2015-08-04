@@ -14,6 +14,9 @@
     <Filter Include="Source Files\EvalLib">
       <UniqueIdentifier>{786d27fa-7523-42e7-a465-a1fcf9186fc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DX11Stuff">
+      <UniqueIdentifier>{6ea4c808-d88d-4e14-9cd9-9e02efeb7aa8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MilkdropXBMC.cpp">
@@ -70,6 +73,12 @@
     <ClCompile Include="vis_milkdrop\evallib\Yylex.c">
       <Filter>Source Files\EvalLib</Filter>
     </ClCompile>
+    <ClCompile Include="CommonStates.cpp">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="DX11Context.cpp">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XmlDocument.h">
@@ -108,5 +117,34 @@
     <ClInclude Include="vis_milkdrop\evallib\Lex.h">
       <Filter>Source Files\EvalLib</Filter>
     </ClInclude>
+    <ClInclude Include="CommonStates.h">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="DemandCreate.h">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXHelpers.h">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedResourcePool.h">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="DX11Context.h">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="DefaultVertexShader.hlsl">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </FxCompile>
+    <FxCompile Include="TexturePixelShader.hlsl">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </FxCompile>
+    <FxCompile Include="DiffusePixelShader.hlsl">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorPixelShader.hlsl">
+      <Filter>Source Files\DX11Stuff</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

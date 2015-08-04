@@ -601,7 +601,10 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
   m_orientation   = 0;
 
   if(!m_image_size)
+  {
+    CLog::Log(LOGERROR, "%s::%s %s m_image_size unexpected (%lu)\n", CLASSNAME, __func__, m_filename, m_image_size);
     return OMX_IMAGE_CodingMax;
+  }
 
   uint8_t *p = m_image_buffer;
   uint8_t *q = m_image_buffer + m_image_size;
@@ -848,16 +851,13 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
 
     }
   }
+  else
+    CLog::Log(LOGERROR, "%s::%s error unsupported image format\n", CLASSNAME, __func__);
 
   // apply input orientation
   m_orientation = m_orientation ^ orientation;
   if(m_orientation < 0 || m_orientation >= 8)
     m_orientation = 0;
-
-  if(eCompressionFormat == OMX_IMAGE_CodingMax)
-  {
-    CLog::Log(LOGERROR, "%s::%s error unsupported image format\n", CLASSNAME, __func__);
-  }
 
   if(progressive)
   {
@@ -881,7 +881,7 @@ bool COMXImageFile::ReadFile(const std::string& inputFile, int orientation)
   m_filename = inputFile.c_str();
   if(!m_pFile.Open(inputFile, 0))
   {
-    CLog::Log(LOGERROR, "%s::%s %s not found\n", CLASSNAME, __func__, inputFile.c_str());
+    CLog::Log(LOGERROR, "%s::%s %s not found\n", CLASSNAME, __func__, m_filename);
     return false;
   }
 
@@ -893,13 +893,13 @@ bool COMXImageFile::ReadFile(const std::string& inputFile, int orientation)
 
   if(!m_image_size)
   {
-    CLog::Log(LOGERROR, "%s::%s %s m_image_size zero\n", CLASSNAME, __func__, inputFile.c_str());
+    CLog::Log(LOGERROR, "%s::%s %s m_image_size zero\n", CLASSNAME, __func__, m_filename);
     return false;
   }
   m_image_buffer = (uint8_t *)malloc(m_image_size);
   if(!m_image_buffer)
   {
-    CLog::Log(LOGERROR, "%s::%s %s m_image_buffer null (%lu)\n", CLASSNAME, __func__, inputFile.c_str(), m_image_size);
+    CLog::Log(LOGERROR, "%s::%s %s m_image_buffer null (%lu)\n", CLASSNAME, __func__, m_filename, m_image_size);
     return false;
   }
   
@@ -907,15 +907,9 @@ bool COMXImageFile::ReadFile(const std::string& inputFile, int orientation)
   m_pFile.Close();
 
   OMX_IMAGE_CODINGTYPE eCompressionFormat = GetCodingType(m_width, m_height, orientation);
-  if(eCompressionFormat != OMX_IMAGE_CodingJPEG)
+  if(eCompressionFormat != OMX_IMAGE_CodingJPEG || m_width < 1 || m_height < 1)
   {
-    CLog::Log(LOGERROR, "%s::%s %s GetCodingType=0x%x\n", CLASSNAME, __func__, inputFile.c_str(), eCompressionFormat);
-    return false;
-  }
-
-  if(m_width < 1 || m_height < 1)
-  {
-    CLog::Log(LOGERROR, "%s::%s %s m_width=%d m_height=%d\n", CLASSNAME, __func__, inputFile.c_str(), m_width, m_height);
+    CLog::Log(LOGDEBUG, "%s::%s %s GetCodingType=0x%x (%dx%x)\n", CLASSNAME, __func__, m_filename, eCompressionFormat, m_width, m_height);
     return false;
   }
 

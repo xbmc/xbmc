@@ -38,12 +38,18 @@
 #include "utils/StringUtils.h"
 
 CPlayerController::CPlayerController()
+  : m_sliderAction(0)
 {
-  m_sliderAction = 0;
 }
 
 CPlayerController::~CPlayerController()
 {
+}
+
+CPlayerController& CPlayerController::Get()
+{
+  static CPlayerController instance;
+  return instance;
 }
 
 bool CPlayerController::OnAction(const CAction &action)

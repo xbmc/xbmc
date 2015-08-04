@@ -20,6 +20,7 @@
 
 #ifdef HAS_DX
 
+#include <DirectXPackedVector.h>
 #include "WinVideoFilter.h"
 #include "windowing/WindowingFactory.h"
 #include "../../../utils/log.h"
@@ -29,6 +30,8 @@
 #include "YUV2RGBShader.h"
 #include "win32/WIN32Util.h"
 #include "Util.h"
+
+using namespace DirectX::PackedVector;
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
@@ -63,7 +66,7 @@ void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned in
   }
 }
 
-D3DXMATRIX* CYUV2RGBMatrix::Matrix()
+XMFLOAT4X4* CYUV2RGBMatrix::Matrix()
 {
   if (m_NeedRecalc)
   {
@@ -98,25 +101,43 @@ CWinShader::~CWinShader()
 {
   if (m_effect.Get())
     m_effect.Release();
-
   if (m_vb.Get())
     m_vb.Release();
+  if (m_ib.Get())
+    m_ib.Release();
+  SAFE_RELEASE(m_inputLayout);
 }
 
-bool CWinShader::CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount)
+bool CWinShader::CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize)
 {
-  if (!m_vb.Create(vertCount * vertSize, D3DUSAGE_WRITEONLY, FVF, g_Windowing.DefaultD3DPool()))
+  if (!m_vb.Create(D3D11_BIND_VERTEX_BUFFER, vertCount, vertSize, DXGI_FORMAT_UNKNOWN, D3D11_USAGE_DYNAMIC))
     return false;
+
+  uint16_t id[4] = { 3, 0, 2, 1 };
+  if (!m_ib.Create(D3D11_BIND_INDEX_BUFFER, ARRAYSIZE(id), sizeof(uint16_t), DXGI_FORMAT_R16_UINT, D3D11_USAGE_IMMUTABLE, id))
+    return false;
+
   m_vbsize = vertCount * vertSize;
-  m_FVF = FVF;
   m_vertsize = vertSize;
-  m_primitivesCount = primitivesCount;
+
   return true;
+}
+
+bool CWinShader::CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned numElements)
+{
+  D3DX11_PASS_DESC desc = {};
+  if (FAILED(m_effect.Get()->GetTechniqueByIndex(0)->GetPassByIndex(0)->GetDesc(&desc)))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to get first pass description.");
+    return false;
+  }
+
+  return S_OK == g_Windowing.Get3D11Device()->CreateInputLayout(layout, numElements, desc.pIAInputSignature, desc.IAInputSignatureSize, &m_inputLayout);
 }
 
 bool CWinShader::LockVertexBuffer(void **data)
 {
-  if (!m_vb.Lock(0, m_vbsize, data, 0))
+  if (!m_vb.Map(data))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - failed to lock vertex buffer");
     return false;
@@ -126,7 +147,7 @@ bool CWinShader::LockVertexBuffer(void **data)
 
 bool CWinShader::UnlockVertexBuffer()
 {
-  if (!m_vb.Unlock())
+  if (!m_vb.Unmap())
   {
     CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock vertex buffer");
     return false;
@@ -157,56 +178,59 @@ bool CWinShader::LoadEffect(const std::string& filename, DefinesMap* defines)
   return true;
 }
 
-bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int vertexIndexStep)
+bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned int vertexIndexStep)
 {
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+  ID3D11RenderTargetView* oldRT = nullptr;
 
-  LPDIRECT3DSURFACE9 oldRT = 0;
   // The render target will be overriden: save the caller's original RT
-  if (vecRT != NULL && !vecRT->empty())
-    pD3DDevice->GetRenderTarget(0, &oldRT);
-
-  pD3DDevice->SetFVF(m_FVF);
-  pD3DDevice->SetStreamSource(0, m_vb.Get(), 0, m_vertsize);
+  if (vecRT != nullptr && !vecRT->empty())
+    pContext->OMGetRenderTargets(1, &oldRT, nullptr);
 
   UINT cPasses, iPass;
-  if (!m_effect.Begin( &cPasses, 0 ))
+  if (!m_effect.Begin(&cPasses, 0))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - failed to begin d3d effect");
     return false;
   }
 
-  for( iPass = 0; iPass < cPasses; iPass++ )
+  ID3D11Buffer* vertexBuffer = m_vb.Get();
+  ID3D11Buffer* indexBuffer = m_ib.Get();
+  unsigned int stride = m_vb.GetStride();
+  unsigned int offset = 0;
+  pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+  pContext->IASetIndexBuffer(indexBuffer, m_ib.GetFormat(), 0);
+  pContext->IASetInputLayout(m_inputLayout);
+  pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+  for (iPass = 0; iPass < cPasses; iPass++)
   {
-    if (!m_effect.BeginPass( iPass ))
+    if (vecRT != nullptr && vecRT->size() > iPass)
+      pContext->OMSetRenderTargets(1, &vecRT->at(iPass), nullptr);
+
+    SetStepParams(iPass);
+
+    if (!m_effect.BeginPass(iPass))
     {
       CLog::Log(LOGERROR, __FUNCTION__" - failed to begin d3d effect pass");
       break;
     }
 
-    if (vecRT != NULL && vecRT->size() > iPass)
-      pD3DDevice->SetRenderTarget(0, (*vecRT)[iPass]);
-
-    HRESULT hr = pD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, iPass * vertexIndexStep, m_primitivesCount);
-    if (FAILED(hr))
-      CLog::Log(LOGERROR, __FUNCTION__" - failed DrawPrimitive %08X", hr);
+    pContext->DrawIndexed(4, 0, iPass * vertexIndexStep);
 
     if (!m_effect.EndPass())
       CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect pass");
+
+    CD3DHelper::PSClearShaderResources(pContext);
   }
   if (!m_effect.End())
     CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect");
 
-  if (oldRT != 0)
+  if (oldRT != nullptr)
   {
-    pD3DDevice->SetRenderTarget(0, oldRT);
+    pContext->OMSetRenderTargets(1, &oldRT, nullptr);
     oldRT->Release();
   }
-
-  // MSDN says: Setting a new render target will cause the viewport 
-  // to be set to the full size of the new render target.
-  // So we need restore our viewport
-  g_Windowing.RestoreViewPort();
   return true;
 }
 
@@ -214,7 +238,7 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
 
 bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt)
 {
-  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
+  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
 
   m_sourceWidth = sourceWidth;
   m_sourceHeight = sourceHeight;
@@ -224,81 +248,33 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
 
   DefinesMap defines;
 
-  if (fmt == RENDER_FMT_YUV420P16)
+  switch (fmt)
   {
+  case RENDER_FMT_YUV420P:
+  case RENDER_FMT_YUV420P10:
+  case RENDER_FMT_YUV420P16:
     defines["XBMC_YV12"] = "";
     texWidth = sourceWidth;
-
-    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create 16 bit YV12 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_YUV420P10)
-  {
-    defines["XBMC_YV12"] = "";
-    texWidth = sourceWidth;
-
-    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create 10 bit YV12 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_YUV420P)
-  {
-    defines["XBMC_YV12"] = "";
-    texWidth = sourceWidth;
-
-    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create YV12 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_NV12)
-  {
+    break;
+  case RENDER_FMT_NV12:
     defines["XBMC_NV12"] = "";
     texWidth = sourceWidth;
-
-    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_A8L8, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create NV12 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_YUYV422)
-  {
-    defines["XBMC_YUY2"] = "";
-    texWidth = sourceWidth >> 1;
-
-    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create YUY2 planes.");
-      return false;
-    }
-  }
-  else if (fmt == RENDER_FMT_UYVY422)
-  {
+    // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
+    if (!g_Windowing.IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+      defines["NV12_SNORM_UV"] = "";
+    break;
+  case RENDER_FMT_UYVY422:
     defines["XBMC_UYVY"] = "";
     texWidth = sourceWidth >> 1;
-
-    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create UYVY planes.");
-      return false;
-    }
-  }
-  else
+    break;
+  case RENDER_FMT_YUYV422:
+    defines["XBMC_YUY2"] = "";
+    texWidth = sourceWidth >> 1;
+    break;
+  default:
     return false;
+    break;
+  }
 
   m_texSteps[0] = 1.0f/(float)texWidth;
   m_texSteps[1] = 1.0f/(float)sourceHeight;
@@ -311,6 +287,20 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
     return false;
   }
 
+  // Create input layout
+  D3D11_INPUT_ELEMENT_DESC layout[] =
+  {
+    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    { "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT,    0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    { "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT,    0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  };
+
+  if (!CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout)))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to create input layout for Input Assembler.");
+    return false;
+  }
   return true;
 }
 
@@ -322,18 +312,16 @@ void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
 {
   PrepareParameters(sourceRect, destRect,
                     contrast, brightness, flags);
-  UploadToGPU(YUVbuf);
   SetShaderParameters(YUVbuf);
-  Execute(NULL,4);
+  Execute(nullptr, 4);
+
+  // we changed view port, so we need to restore our real viewport.
+  g_Windowing.RestoreViewPort();
+
 }
 
 CYUV2RGBShader::~CYUV2RGBShader()
 {
-  for(unsigned i = 0; i < MAX_PLANES; i++)
-  {
-    if (m_YUVPlanes[i].Get())
-      m_YUVPlanes[i].Release();
-  }
 }
 
 void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
@@ -342,9 +330,6 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
                                        float brightness,
                                        unsigned int flags)
 {
-  //See RGB renderer for comment on this
-  #define CHROMAOFFSET_HORIZ 0.25f
-
   if (m_sourceRect != sourceRect || m_destRect != destRect)
   {
     m_sourceRect = sourceRect;
@@ -355,41 +340,36 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
 
     v[0].x = destRect.x1;
     v[0].y = destRect.y1;
+    v[0].z = 0.0f;
     v[0].tu = sourceRect.x1 / m_sourceWidth;
     v[0].tv = sourceRect.y1 / m_sourceHeight;
-    v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
-    v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
+    v[0].tu2 = v[0].tu3 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
+    v[0].tv2 = v[0].tv3 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
 
     v[1].x = destRect.x2;
     v[1].y = destRect.y1;
+    v[1].z = 0.0f;
     v[1].tu = sourceRect.x2 / m_sourceWidth;
     v[1].tv = sourceRect.y1 / m_sourceHeight;
-    v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
-    v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
+    v[1].tu2 = v[1].tu3 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
+    v[1].tv2 = v[1].tv3 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
 
     v[2].x = destRect.x2;
     v[2].y = destRect.y2;
+    v[2].z = 0.0f;
     v[2].tu = sourceRect.x2 / m_sourceWidth;
     v[2].tv = sourceRect.y2 / m_sourceHeight;
-    v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
-    v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
+    v[2].tu2 = v[2].tu3 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
+    v[2].tv2 = v[2].tv3 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
 
     v[3].x = destRect.x1;
     v[3].y = destRect.y2;
+    v[3].z = 0.0f;
     v[3].tu = sourceRect.x1 / m_sourceWidth;
     v[3].tv = sourceRect.y2 / m_sourceHeight;
-    v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1);
-    v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1);
+    v[3].tu2 = v[3].tu3 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
+    v[3].tv2 = v[3].tv3 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
 
-    // -0.5 offset to compensate for D3D rasterization
-    // set z and rhw
-    for(int i = 0; i < 4; i++)
-    {
-      v[i].x -= 0.5;
-      v[i].y -= 0.5;
-      v[i].z = 0.0f;
-      v[i].rhw = 1.0f;
-    }
     CWinShader::UnlockVertexBuffer();
   }
 
@@ -401,40 +381,42 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
 
 void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
 {
-  m_effect.SetMatrix("g_ColorMatrix", m_matrix.Matrix());
   m_effect.SetTechnique("YUV2RGB_T");
-  m_effect.SetTexture("g_YTexture", m_YUVPlanes[0]);
+  m_effect.SetMatrix("g_ColorMatrix", m_matrix.Matrix());
+  m_effect.SetTexture("g_YTexture", YUVbuf->planes[0].texture);
   if (YUVbuf->GetActivePlanes() > 1)
-    m_effect.SetTexture("g_UTexture", m_YUVPlanes[1]);
+    m_effect.SetTexture("g_UTexture", YUVbuf->planes[1].texture);
   if (YUVbuf->GetActivePlanes() > 2)
-    m_effect.SetTexture("g_VTexture", m_YUVPlanes[2]);
+    m_effect.SetTexture("g_VTexture", YUVbuf->planes[2].texture);
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
-}
 
-bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
-{
-  const POINT point = { 0, 0 };
+  // we need to set view port to the full size of current render target
+  ID3D11RenderTargetView* rtView = nullptr;
+  g_Windowing.Get3D11Context()->OMGetRenderTargets(1, &rtView, nullptr);
 
-  for (unsigned int i = 0; i<YUVbuf->GetActivePlanes(); i++)
+  // get dimention of render target
+  ID3D11Resource* rtResource = nullptr;
+  rtView->GetResource(&rtResource);
+  ID3D11Texture2D* rtTexture = nullptr;
+  HRESULT hr = rtResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&rtTexture));
+
+  float viewPortWidth = 0.0f, viewPortHeight = 0.0f;
+
+  if (S_OK == hr && rtTexture)
   {
-    const RECT rect = { 0, 0, YUVbuf->planes[i].texture.GetWidth(), YUVbuf->planes[i].texture.GetHeight() };
-    IDirect3DSurface9 *src, *dest;
-    if(FAILED(YUVbuf->planes[i].texture.Get()->GetSurfaceLevel(0, &src)))
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for source YUV plane %d", i);
-    if (FAILED(m_YUVPlanes[i].Get()->GetSurfaceLevel(0, &dest)))
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for destination YUV plane %d", i);
-
-    if (FAILED(g_Windowing.Get3DDevice()->UpdateSurface(src, &rect, dest, &point)))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to copy plane %d from sysmem to vidmem.", i);
-      src->Release();
-      dest->Release();
-      return false;
-    }
-    src->Release();
-    dest->Release();
+    D3D11_TEXTURE2D_DESC rtDescr = {};
+    rtTexture->GetDesc(&rtDescr);
+    viewPortWidth = static_cast<float>(rtDescr.Width);
+    viewPortHeight = static_cast<float>(rtDescr.Height);
   }
-  return true;
+
+  SAFE_RELEASE(rtTexture);
+  SAFE_RELEASE(rtResource);
+  SAFE_RELEASE(rtView);
+
+  D3D11_VIEWPORT viewPort = { 0.0f, 0.0f, viewPortWidth, viewPortHeight, 0.0, 1.0f };
+  g_Windowing.Get3D11Context()->RSSetViewports(1, &viewPort);
+  m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
 }
 
 //==================================================================================
@@ -447,21 +429,21 @@ CConvolutionShader::~CConvolutionShader()
 
 bool CConvolutionShader::ChooseKernelD3DFormat()
 {
-  if (g_Windowing.IsTextureFormatOk(D3DFMT_A16B16G16R16F, 0))
+  if (g_Windowing.IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
   {
-    m_KernelFormat = D3DFMT_A16B16G16R16F;
+    m_KernelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
     m_floattex = true;
     m_rgba = true;
   }
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, 0))
+  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_R8G8B8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
   {
-    m_KernelFormat = D3DFMT_A8B8G8R8;
+    m_KernelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
     m_floattex = false;
     m_rgba = true;
   }
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, 0))
+  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
   {
-    m_KernelFormat = D3DFMT_A8R8G8B8;
+    m_KernelFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
     m_floattex = false;
     m_rgba = false;
   }
@@ -474,38 +456,30 @@ bool CConvolutionShader::ChooseKernelD3DFormat()
 bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
 {
   CConvolutionKernel kern(method, 256);
-
-  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, g_Windowing.DefaultD3DUsage(), m_KernelFormat, g_Windowing.DefaultD3DPool()))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
-    return false;
-  }
-
   void *kernelVals;
   int kernelValsSize;
 
   if (m_floattex)
   {
     float *rawVals = kern.GetFloatPixels();
-    D3DXFLOAT16* float16Vals = new D3DXFLOAT16[kern.GetSize()*4];
+    HALF* float16Vals = new HALF[kern.GetSize() * 4];
 
-    for(int i = 0; i < kern.GetSize()*4; i++)
-      float16Vals[i] = rawVals[i];
+    XMConvertFloatToHalfStream(float16Vals, sizeof(HALF), rawVals, sizeof(float), kern.GetSize()*4);
+
     kernelVals = float16Vals;
-    kernelValsSize = sizeof(D3DXFLOAT16)*kern.GetSize()*4;
+    kernelValsSize = sizeof(HALF)*kern.GetSize() * 4;
   }
   else
   {
     kernelVals = kern.GetUint8Pixels();
-    kernelValsSize = sizeof(uint8_t)*kern.GetSize()*4;
+    kernelValsSize = sizeof(uint8_t)*kern.GetSize() * 4;
   }
 
-  D3DLOCKED_RECT lr;
-  if (!m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to lock kernel texture.");
-  memcpy(lr.pBits, kernelVals, kernelValsSize);
-  if (!m_HQKernelTexture.UnlockRect(0))
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to unlock kernel texture.");
+  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, D3D11_USAGE_IMMUTABLE, m_KernelFormat, kernelVals, kernelValsSize))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
+    return false;
+  }
 
   if (m_floattex)
     delete[] kernelVals;
@@ -539,7 +513,7 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
     return false;
   }
 
-  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
+  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
 
   DefinesMap defines;
   if (m_floattex)
@@ -556,7 +530,13 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
   if (!CreateHQKernel(method))
     return false;
 
-  return true;
+  // Create input layout
+  D3D11_INPUT_ELEMENT_DESC layout[] =
+  {
+    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  };
+  return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
 }
 
 void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
@@ -568,7 +548,7 @@ void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   SetShaderParameters(sourceTexture, &texSteps[0], ARRAY_SIZE(texSteps));
-  Execute(NULL,4);
+  Execute(nullptr, 4);
 }
 
 void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
@@ -588,33 +568,27 @@ void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsign
 
     v[0].x = destRect.x1;
     v[0].y = destRect.y1;
+    v[0].z = 0;
     v[0].tu = sourceRect.x1 / sourceWidth;
     v[0].tv = sourceRect.y1 / sourceHeight;
 
     v[1].x = destRect.x2;
     v[1].y = destRect.y1;
+    v[1].z = 0;
     v[1].tu = sourceRect.x2 / sourceWidth;
     v[1].tv = sourceRect.y1 / sourceHeight;
 
     v[2].x = destRect.x2;
     v[2].y = destRect.y2;
+    v[2].z = 0;
     v[2].tu = sourceRect.x2 / sourceWidth;
     v[2].tv = sourceRect.y2 / sourceHeight;
 
     v[3].x = destRect.x1;
     v[3].y = destRect.y2;
+    v[3].z = 0;
     v[3].tu = sourceRect.x1 / sourceWidth;
     v[3].tv = sourceRect.y2 / sourceHeight;
-
-    // -0.5 offset to compensate for D3D rasterization
-    // set z and rhw
-    for(int i = 0; i < 4; i++)
-    {
-      v[i].x -= 0.5;
-      v[i].y -= 0.5;
-      v[i].z = 0.0f;
-      v[i].rhw = 1.0f;
-    }
 
     CWinShader::UnlockVertexBuffer();
   }
@@ -626,11 +600,16 @@ void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, fl
   m_effect.SetTexture( "g_Texture",  sourceTexture ) ;
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
   m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
+
+  UINT numVP = 1;
+  D3D11_VIEWPORT viewPort = {};
+  g_Windowing.Get3D11Context()->RSGetViewports(&numVP, &viewPort);
+  m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
 }
 
 //==================================================================================
 
-CConvolutionShaderSeparable::CConvolutionShaderSeparable()
+CConvolutionShaderSeparable::CConvolutionShaderSeparable() : CConvolutionShader()
 {
   m_sourceWidth = -1;
   m_sourceHeight = -1;
@@ -670,7 +649,7 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
     return false;
   }
 
-  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 8, sizeof(CUSTOMVERTEX), 2);
+  CWinShader::CreateVertexBuffer(8, sizeof(CUSTOMVERTEX));
 
   DefinesMap defines;
   if (m_floattex)
@@ -687,7 +666,13 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
   if (!CreateHQKernel(method))
     return false;
 
-  return true;
+  // Create input layout
+  D3D11_INPUT_ELEMENT_DESC layout[] =
+  {
+    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  };
+  return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
 }
 
 void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
@@ -696,41 +681,39 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
                                 CRect sourceRect,
                                 CRect destRect)
 {
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-
   if(m_destWidth != destWidth || m_sourceHeight != sourceHeight)
     CreateIntermediateRenderTarget(destWidth, sourceHeight);
 
   PrepareParameters(sourceWidth, sourceHeight, destWidth, destHeight, sourceRect, destRect);
-  float texSteps1[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
-  float texSteps2[] = { 1.0f/(float)destWidth, 1.0f/(float)(sourceHeight)};
-  SetShaderParameters(sourceTexture, &texSteps1[0], ARRAY_SIZE(texSteps1), &texSteps2[0], ARRAY_SIZE(texSteps2));
+  float texSteps[] = 
+  { 
+    1.0f / static_cast<float>(sourceWidth), 
+    1.0f / static_cast<float>(sourceHeight), 
+    1.0f / static_cast<float>(destWidth), 
+    1.0f / static_cast<float>(sourceHeight)
+  };
+  SetShaderParameters(sourceTexture, texSteps, 4);
 
-  // This part should be cleaned up, but how?
-  std::vector<LPDIRECT3DSURFACE9> rts;
-  LPDIRECT3DSURFACE9 intRT, currentRT;
-  m_IntermediateTarget.GetSurfaceLevel(0, &intRT);
-  pD3DDevice->GetRenderTarget(0, &currentRT);
-  rts.push_back(intRT);
-  rts.push_back(currentRT);
-  Execute(&rts, 4);
-  intRT->Release();
-  currentRT->Release();
+  Execute(nullptr, 4);
+
+  // we changed view port, so we need to restore our real viewport.
+  g_Windowing.RestoreViewPort();
 }
 
 CConvolutionShaderSeparable::~CConvolutionShaderSeparable()
 {
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
+  SAFE_RELEASE(m_oldRenderTarget);
 }
 
 bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
 {
-  DWORD usage = D3DUSAGE_RENDERTARGET;
+  D3D11_FORMAT_SUPPORT usage = D3D11_FORMAT_SUPPORT_RENDER_TARGET;
 
   // Need a float texture, as the output of the first pass can contain negative values.
-  if      (g_Windowing.IsTextureFormatOk(D3DFMT_A16B16G16R16F, usage)) m_IntermediateFormat = D3DFMT_A16B16G16R16F;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A32B32G32R32F, usage)) m_IntermediateFormat = D3DFMT_A32B32G32R32F;
+  if      (g_Windowing.IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+  else if (g_Windowing.IsFormatSupport(DXGI_FORMAT_R32G32B32A32_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
   else
   {
     CLog::Log(LOGNOTICE, __FUNCTION__": no float format available for the intermediate render target");
@@ -747,7 +730,7 @@ bool CConvolutionShaderSeparable::CreateIntermediateRenderTarget(unsigned int wi
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  if(!m_IntermediateTarget.Create(width, height, 1, D3DUSAGE_RENDERTARGET, m_IntermediateFormat, D3DPOOL_DEFAULT))
+  if (!m_IntermediateTarget.Create(width, height, 1, D3D11_USAGE_DEFAULT, m_IntermediateFormat))
   {
     CLog::Log(LOGERROR, __FUNCTION__": render target creation failed.");
     return false;
@@ -757,26 +740,9 @@ bool CConvolutionShaderSeparable::CreateIntermediateRenderTarget(unsigned int wi
 
 bool CConvolutionShaderSeparable::ClearIntermediateRenderTarget()
 {
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-
-  LPDIRECT3DSURFACE9 currentRT;
-  pD3DDevice->GetRenderTarget(0, &currentRT);
-
-  LPDIRECT3DSURFACE9 intermediateRT;
-  m_IntermediateTarget.GetSurfaceLevel(0, &intermediateRT);
-
-  pD3DDevice->SetRenderTarget(0, intermediateRT);
-
-  pD3DDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0L, 1.0f, 0L);
-
-  pD3DDevice->SetRenderTarget(0, currentRT);
-  currentRT->Release();
-  intermediateRT->Release();
-
-  // MSDN says: Setting a new render target will cause the viewport 
-  // to be set to the full size of the new render target.
-  // So we need restore our viewport
-  g_Windowing.RestoreViewPort();
+  float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+  ID3D11RenderTargetView* intermediateRT = m_IntermediateTarget.GetRenderTarget();
+  g_Windowing.Get3D11Context()->ClearRenderTargetView(intermediateRT, color);
   return true;
 }
 
@@ -789,10 +755,6 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
   || m_destWidth != destWidth || m_destHeight != destHeight
   || m_sourceRect != sourceRect || m_destRect != destRect)
   {
-    // fixme better: clearing the whole render target when changing the source/dest rect is not optimal.
-    // Problem is that the edges of the final picture may retain content when the rects change.
-    // For example when changing zoom value, the edges can retain content from the previous zoom value.
-    // Playing with coordinates was unsuccessful so far, this is a quick fix for release.
     ClearIntermediateRenderTarget();
 
     m_sourceWidth = sourceWidth;
@@ -807,7 +769,7 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
 
     // Alter rectangles the destination rectangle exceeds the intermediate target width when zooming and causes artifacts.
     // Work on the parameters rather than the members to avoid disturbing the parameter change detection the next time the function is called
-    CRect tgtRect(0, 0, destWidth, destHeight);
+    CRect tgtRect(0, 0, static_cast<float>(destWidth), static_cast<float>(destHeight));
     CWIN32Util::CropSource(sourceRect, destRect, tgtRect);
 
     // Manipulate the coordinates to work only on the active parts of the textures,
@@ -820,21 +782,25 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     
     v[0].x = 0;
     v[0].y = 0;
+    v[0].z = 0;
     v[0].tu = sourceRect.x1 / sourceWidth;
     v[0].tv = sourceRect.y1 / sourceHeight;
 
     v[1].x = destRect.x2 - destRect.x1;
     v[1].y = 0;
+    v[1].z = 0;
     v[1].tu = sourceRect.x2 / sourceWidth;
     v[1].tv = sourceRect.y1 / sourceHeight;
 
     v[2].x = destRect.x2 - destRect.x1;
     v[2].y = sourceRect.y2 - sourceRect.y1;
+    v[2].z = 0;
     v[2].tu = sourceRect.x2 / sourceWidth;
     v[2].tv = sourceRect.y2 / sourceHeight;
 
     v[3].x = 0;
     v[3].y = sourceRect.y2 - sourceRect.y1;
+    v[3].z = 0;
     v[3].tu = sourceRect.x1 / sourceWidth;
     v[3].tv = sourceRect.y2 / sourceHeight;
 
@@ -842,48 +808,88 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
 
     v[4].x = destRect.x1;
     v[4].y = destRect.y1;
+    v[4].z = 0;
     v[4].tu = 0;
     v[4].tv = 0;
 
     v[5].x = destRect.x2;
     v[5].y = destRect.y1;
+    v[5].z = 0;
     v[5].tu = (destRect.x2 - destRect.x1) / destWidth;
     v[5].tv = 0;
 
     v[6].x = destRect.x2;
     v[6].y = destRect.y2;
+    v[6].z = 0;
     v[6].tu = (destRect.x2 - destRect.x1) / destWidth;
     v[6].tv = (sourceRect.y2 - sourceRect.y1) / sourceHeight;
 
     v[7].x = destRect.x1;
     v[7].y = destRect.y2;
+    v[7].z = 0;
     v[7].tu = 0;
     v[7].tv = (sourceRect.y2 - sourceRect.y1) / sourceHeight;
-
-    // -0.5 offset to compensate for D3D rasterization
-    // set z and rhw
-    for(int i = 0; i < 8; i++)
-    {
-      v[i].x -= 0.5;
-      v[i].y -= 0.5;
-      v[i].z = 0.0f;
-      v[i].rhw = 1.0f;
-    }
 
     CWinShader::UnlockVertexBuffer();
   }
 }
 
-void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps1, int texStepsCount1, float* texSteps2, int texStepsCount2)
+void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount)
 {
   m_effect.SetTechnique( "SCALER_T" );
-  m_effect.SetTexture( "g_Texture",  sourceTexture ) ;
+  m_effect.SetTexture( "g_Texture",  sourceTexture );
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
-  m_effect.SetTexture( "g_IntermediateTexture",  m_IntermediateTarget ) ;
-  m_effect.SetFloatArray("g_StepXY_P0", texSteps1, texStepsCount1);
-  m_effect.SetFloatArray("g_StepXY_P1", texSteps2, texStepsCount2);
+  m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
 }
 
+void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
+{
+  float viewPortWidth = 0.0f, viewPortHeight = 0.0f;
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+
+  if (iPass == 0)
+  {
+    // store old RT
+    pContext->OMGetRenderTargets(1, &m_oldRenderTarget, nullptr);
+    viewPortWidth = (float)m_IntermediateTarget.GetWidth();
+    viewPortHeight = (float)m_IntermediateTarget.GetHeight();
+
+    // setting new RT
+    ID3D11RenderTargetView* newRT = m_IntermediateTarget.GetRenderTarget();
+    pContext->OMSetRenderTargets(1, &newRT, nullptr);
+  }
+  else if (iPass == 1)
+  {
+    // get dimention of old render target
+    ID3D11Resource* rtResource = nullptr;
+    m_oldRenderTarget->GetResource(&rtResource);
+    ID3D11Texture2D* rtTexture = nullptr;
+    HRESULT hr = rtResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&rtTexture));
+
+    if (S_OK == hr && rtTexture)
+    {
+      D3D11_TEXTURE2D_DESC rtDescr = {};
+      rtTexture->GetDesc(&rtDescr);
+      viewPortWidth = static_cast<float>(rtDescr.Width);
+      viewPortHeight = static_cast<float>(rtDescr.Height);
+    }
+
+    SAFE_RELEASE(rtTexture);
+    SAFE_RELEASE(rtResource);
+
+    pContext->OMSetRenderTargets(1, &m_oldRenderTarget, nullptr);
+    SAFE_RELEASE(m_oldRenderTarget);
+
+    // at the second pass m_IntermediateTarget is a source of data
+    m_effect.SetTexture("g_Texture", m_IntermediateTarget);
+  }
+
+  // setting view port to the full size of the current render target
+  CD3D11_VIEWPORT viewPort(0.0f, 0.0f, viewPortWidth, viewPortHeight);
+  pContext->RSSetViewports(1, &viewPort);
+  // pass viewport dimention to the shaders
+  m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
+}
 
 //==========================================================
 
@@ -891,7 +897,7 @@ bool CTestShader::Create()
 {
   std::string effectString = "special://xbmc/system/shaders/testshader.fx";
 
-  if(!LoadEffect(effectString, NULL))
+  if(!LoadEffect(effectString, nullptr))
   {
     CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
     return false;

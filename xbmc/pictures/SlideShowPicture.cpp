@@ -54,6 +54,9 @@ CSlideShowPic::CSlideShowPic()
 
   m_bCanMoveHorizontally = false;
   m_bCanMoveVertically = false;
+#ifdef HAS_DX
+  m_vb = NULL;
+#endif
 }
 
 CSlideShowPic::~CSlideShowPic()
@@ -74,6 +77,9 @@ void CSlideShowPic::Close()
   m_bDrawNextImage = false;
   m_bTransistionImmediately = false;
   m_bIsDirty = true;
+#ifdef HAS_DX
+  SAFE_RELEASE(m_vb);
+#endif
 }
 
 void CSlideShowPic::Reset(DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
@@ -742,72 +748,87 @@ void CSlideShowPic::Render()
   Render(m_ox, m_oy, NULL, PICTURE_VIEW_BOX_COLOR);
 }
 
+#ifdef HAS_DX
+bool CSlideShowPic::UpdateVertexBuffer(Vertex* vericies)
+{
+  if (!m_vb) // create new
+  {
+    CD3D11_BUFFER_DESC desc(sizeof(Vertex) * 5, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+    D3D11_SUBRESOURCE_DATA initData = {};
+    initData.pSysMem = vericies;
+    initData.SysMemPitch = sizeof(Vertex) * 5;
+    if (SUCCEEDED(g_Windowing.Get3D11Device()->CreateBuffer(&desc, &initData, &m_vb)))
+      return true;
+  }
+  else // update 
+  {
+    ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+    D3D11_MAPPED_SUBRESOURCE res;
+    if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
+    {
+      memcpy(res.pData, vericies, sizeof(Vertex) * 5);
+      pContext->Unmap(m_vb, 0);
+      return true;
+    }
+  }
+
+  return false;
+}
+#endif
+
 void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t color)
 {
 #ifdef HAS_DX
-  struct VERTEX
-  {
-    D3DXVECTOR3 p;
-    D3DCOLOR col;
-    FLOAT tu, tv;
-  };
   static const DWORD FVF_VERTEX = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
-  VERTEX vertex[5];
-
+  Vertex vertex[5];
   for (int i = 0; i < 4; i++)
   {
-    vertex[i].p = D3DXVECTOR3( x[i], y[i], 0);
-    vertex[i].tu = 0;
-    vertex[i].tv = 0;
-    vertex[i].col = color;
+    vertex[i].pos = XMFLOAT3( x[i], y[i], 0);
+    CD3DHelper::XMStoreColor(&vertex[i].color, color);
+    vertex[i].texCoord = XMFLOAT2(0.0f, 0.0f);
+    vertex[i].texCoord2 = XMFLOAT2(0.0f, 0.0f);
   }
 
   if (pTexture)
   {
-    vertex[1].tu = vertex[2].tu = (float)pTexture->GetWidth() / pTexture->GetTextureWidth();
-    vertex[2].tv = vertex[3].tv = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
+    vertex[1].texCoord.x = vertex[2].texCoord.x = (float) pTexture->GetWidth() / pTexture->GetTextureWidth();
+    vertex[2].texCoord.y = vertex[3].texCoord.y = (float) pTexture->GetHeight() / pTexture->GetTextureHeight();
   }
   else
   {
-    vertex[1].tu = vertex[2].tu = 1.0f;
-    vertex[2].tv = vertex[3].tv = 1.0f;
+    vertex[1].texCoord.x = vertex[2].texCoord.x = 1.0f;
+    vertex[2].texCoord.y = vertex[3].texCoord.y = 1.0f;
   }
-  
   vertex[4] = vertex[0]; // Not used when pTexture != NULL
+
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  pGUIShader->Begin(SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
   // Set state to render the image
   if (pTexture)
   {
     pTexture->LoadToGPU();
-    pTexture->BindToUnit(0);
+    CDXTexture* dxTexture = reinterpret_cast<CDXTexture*>(pTexture);
+    ID3D11ShaderResourceView* shaderRes = dxTexture->GetShaderResource();
+    pGUIShader->SetShaderViews(1, &shaderRes);
+    pGUIShader->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
   }
-
-  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-  g_Windowing.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-  g_Windowing.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
-  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
-  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-  g_Windowing.Get3DDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
-  g_Windowing.Get3DDevice()->SetFVF( FVF_VERTEX );
-  // Render the image
-  if (pTexture)
+  else
   {
-    g_Windowing.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
-    g_Windowing.Get3DDevice()->SetTexture(0, NULL);
-  } else
-    g_Windowing.Get3DDevice()->DrawPrimitiveUP( D3DPT_LINESTRIP, 4, vertex, sizeof(VERTEX) );
+    if (!UpdateVertexBuffer(vertex))
+      return;
+
+    ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+
+    unsigned stride = sizeof(Vertex);
+    unsigned offset = 0;
+    pContext->IASetVertexBuffers(0, 1, &m_vb, &stride, &offset);
+    pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+
+    pGUIShader->Draw(5, 0);
+    pGUIShader->RestoreBuffers();
+  }
 
 #elif defined(HAS_GL)
   g_graphicsContext.BeginPaint();

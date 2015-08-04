@@ -24,6 +24,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "guilib/GUIWindowManager.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -81,9 +82,8 @@ bool CProgressJob::DoModal()
   // do the work
   bool result = DoWork();
 
-  // close the progress dialog
-  if (m_autoClose)
-    m_progressDialog->Close();
+  // mark the progress dialog as finished (will close it)
+  MarkFinished();
   m_modal = false;
 
   return result;
@@ -107,7 +107,7 @@ void CProgressJob::ShowProgressDialog() const
     return;
 
   // show the progress dialog as a modal dialog with a progress bar
-  m_progressDialog->StartModal();
+  m_progressDialog->Open();
   m_progressDialog->ShowProgressBar(true);
 }
 
@@ -120,7 +120,7 @@ void CProgressJob::SetTitle(const std::string &title)
     m_progress->SetTitle(title);
   else if (m_progressDialog != NULL)
   {
-    m_progressDialog->SetHeading(title);
+    m_progressDialog->SetHeading(CVariant{title});
 
     ShowProgressDialog();
   }
@@ -135,7 +135,7 @@ void CProgressJob::SetText(const std::string &text)
     m_progress->SetText(text);
   else if (m_progressDialog != NULL)
   {
-    m_progressDialog->SetText(text);
+    m_progressDialog->SetText(CVariant{text});
 
     ShowProgressDialog();
   }
@@ -179,7 +179,12 @@ void CProgressJob::MarkFinished()
   if (m_progress != NULL)
   {
     if (m_updateProgress)
+    {
       m_progress->MarkFinished();
+      // We don't own this pointer and it will be deleted after it's marked finished
+      // just set it to nullptr so we don't try to use it again
+      m_progress = nullptr;
+    }
   }
   else if (m_progressDialog != NULL && m_autoClose)
     m_progressDialog->Close();

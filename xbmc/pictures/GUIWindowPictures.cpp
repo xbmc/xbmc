@@ -38,8 +38,10 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "Autorun.h"
 #include "interfaces/AnnouncementManager.h"
+#include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "ContextMenuManager.h"
 #include "GUIWindowSlideShow.h"
@@ -233,11 +235,11 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
       { // tag loading takes more then 1.5 secs, show a progress dialog
         CURL url(items.GetPath());
 
-        m_dlgProgress->SetHeading(189);
-        m_dlgProgress->SetLine(0, 505);
-        m_dlgProgress->SetLine(1, "");
-        m_dlgProgress->SetLine(2, url.GetWithoutUserDetails());
-        m_dlgProgress->StartModal();
+        m_dlgProgress->SetHeading(CVariant{189});
+        m_dlgProgress->SetLine(0, CVariant{505});
+        m_dlgProgress->SetLine(1, CVariant{""});
+        m_dlgProgress->SetLine(2, CVariant{url.GetWithoutUserDetails()});
+        m_dlgProgress->Open();
         m_dlgProgress->ShowProgressBar(true);
         bProgressVisible = true;
       }
@@ -565,7 +567,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
   {
     if (!pPlayList->Load(strPlayList))
     {
-      CGUIDialogOK::ShowAndGetInput(6, 477);
+      CGUIDialogOK::ShowAndGetInput(CVariant{6}, CVariant{477});
       return ; //hmmm unable to load playlist?
     }
   }
@@ -613,7 +615,7 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
   if (pictureInfo)
   {
     pictureInfo->SetPicture(item.get());
-    pictureInfo->DoModal();
+    pictureInfo->Open();
   }
 }
 

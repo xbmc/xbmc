@@ -21,7 +21,7 @@
 #include "PVRActionListener.h"
 
 #include "Application.h"
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -34,6 +34,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace PVR;
+using namespace KODI::MESSAGING;
 
 CPVRActionListener::CPVRActionListener()
 {
@@ -103,7 +104,8 @@ bool CPVRActionListener::OnAction(const CAction &action)
               if (fileItem && fileItem->HasPVRChannelInfoTag())
               {
                 CLog::Log(LOGDEBUG, "%s - switch to channel number %d", __FUNCTION__, fileItem->GetPVRChannelInfoTag()->ChannelNumber());
-                CApplicationMessenger::Get().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float) fileItem->GetPVRChannelInfoTag()->ChannelNumber()), WINDOW_INVALID, false);
+                CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,static_cast<void*>(
+                  new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(fileItem->GetPVRChannelInfoTag()->ChannelNumber()))));
               }
             }
           }
@@ -121,27 +123,16 @@ bool CPVRActionListener::OnAction(const CAction &action)
                 if (!channel || !channel->HasPVRChannelInfoTag())
                   return false;
 
-                CApplicationMessenger::Get().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber), WINDOW_INVALID, false);
+                CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
+                  new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(iChannelNumber))));
               }
             }
           }
-        }
-        else
-        {
-          // filesystem provider like slingbox etc
-          int iChannelNumber = -1;
-          std::string strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
-          if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000)))
-            iChannelNumber = atoi(strChannel.c_str());
-
-          if (iChannelNumber > 0)
-            CApplicationMessenger::Get().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber), WINDOW_INVALID, false);
         }
       }
       return true;
     }
     break;
   }
-
   return false;
 }

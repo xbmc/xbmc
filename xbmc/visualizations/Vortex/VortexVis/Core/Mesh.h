@@ -31,12 +31,12 @@ public:
 
 		void AddRef();
 		void Release();
-		LPD3DXMESH GetMesh() { return m_pMesh; };
+		IUnknown* GetMesh() { return m_pMesh; };
 protected:
 		~Mesh();
 		int m_iRefCount;
 
-		LPD3DXMESH	m_pMesh;
+		IUnknown*	m_pMesh;
 
 };
 

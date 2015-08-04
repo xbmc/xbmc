@@ -874,7 +874,7 @@ std::string CDateTime::GetAsSaveString() const
   SYSTEMTIME st;
   GetAsSystemTime(st);
 
-  return StringUtils::Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);;
+  return StringUtils::Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 }
 
 bool CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
@@ -1264,12 +1264,12 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
   return strOut;
 }
 
-std::string CDateTime::GetAsLocalizedDate(bool longDate/*=false*/, bool withShortNames/*=true*/) const
+std::string CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
 {
-  return GetAsLocalizedDate(g_langInfo.GetDateFormat(longDate), withShortNames);
+  return GetAsLocalizedDate(g_langInfo.GetDateFormat(longDate));
 }
 
-std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat, bool withShortNames/*=true*/) const
+std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
 {
   std::string strOut;
 
@@ -1332,7 +1332,7 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat, bool wit
       {
         int wday = dateTime.wDayOfWeek;
         if (wday < 1 || wday > 7) wday = 7;
-        str = g_localizeStrings.Get(((withShortNames || c =='d') ? 40 : 10) + wday);
+        str = g_localizeStrings.Get((c =='d' ? 40 : 10) + wday);
       }
       strOut+=str;
     }
@@ -1364,7 +1364,7 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat, bool wit
       {
         int wmonth = dateTime.wMonth;
         if (wmonth < 1 || wmonth > 12) wmonth = 12;
-        str = g_localizeStrings.Get(((withShortNames || c =='m') ? 50 : 20) + wmonth);
+        str = g_localizeStrings.Get((c =='m' ? 50 : 20) + wmonth);
       }
       strOut+=str;
     }

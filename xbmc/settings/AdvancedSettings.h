@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 
+#include "pictures/PictureScalingAlgorithm.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
@@ -252,6 +253,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
      */
     unsigned int GetThumbSize() const { return m_imageRes / 2; };
     bool m_useDDSFanart;
+    CPictureScalingAlgorithm::Algorithm m_imageScalingAlgorithm;
 
     int m_sambaclienttimeout;
     std::string m_sambadoscodepage;
@@ -265,6 +267,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_fanartImages;
 
     int m_iMusicLibraryRecentlyAddedItems;
+    int m_iMusicLibraryDateAdded;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
     bool m_bMusicLibraryCleanOnUpdate;
@@ -324,12 +327,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
-    bool m_AllowD3D9Ex;
-    bool m_ForceD3D9Ex;
-    bool m_AllowDynamicTextures;
     unsigned int m_RestrictCapsMask;
     float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool m_bVirtualShares;
+    bool m_bAllowDeferredRendering;
 
     float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
     float m_karaokeSyncDelayLRC;
@@ -358,6 +359,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     DatabaseSettings m_databaseVideo; // advanced video database setup
     DatabaseSettings m_databaseTV;    // advanced tv database setup
     DatabaseSettings m_databaseEpg;   /*!< advanced EPG database setup */
+    DatabaseSettings m_databaseADSP;  /*!< advanced audio dsp database setup */
 #ifdef HAS_DS_PLAYER
     DatabaseSettings m_databaseDSPlayer; // advanced DSPlayer database setup
 #endif

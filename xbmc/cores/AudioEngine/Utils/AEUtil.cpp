@@ -558,6 +558,33 @@ uint64_t CAEUtil::GetAVChannelLayout(CAEChannelInfo &info)
   return channelLayout;
 }
 
+CAEChannelInfo CAEUtil::GetAEChannelLayout(uint64_t layout)
+{
+  CAEChannelInfo channelLayout;
+  channelLayout.Reset();
+
+  if (layout & AV_CH_FRONT_LEFT)       channelLayout += AE_CH_FL;
+  if (layout & AV_CH_FRONT_RIGHT)      channelLayout += AE_CH_FR;
+  if (layout & AV_CH_FRONT_CENTER)     channelLayout += AE_CH_FC;
+  if (layout & AV_CH_LOW_FREQUENCY)    channelLayout += AE_CH_LFE;
+  if (layout & AV_CH_BACK_LEFT)        channelLayout += AE_CH_BL;
+  if (layout & AV_CH_BACK_RIGHT)       channelLayout += AE_CH_BR;
+  if (layout & AV_CH_FRONT_LEFT_OF_CENTER)  channelLayout += AE_CH_FLOC;
+  if (layout & AV_CH_FRONT_RIGHT_OF_CENTER) channelLayout += AE_CH_FROC;
+  if (layout & AV_CH_BACK_CENTER)      channelLayout += AE_CH_BC;
+  if (layout & AV_CH_SIDE_LEFT)        channelLayout += AE_CH_SL;
+  if (layout & AV_CH_SIDE_RIGHT)       channelLayout += AE_CH_SR;
+  if (layout & AV_CH_TOP_CENTER)       channelLayout += AE_CH_TC;
+  if (layout & AV_CH_TOP_FRONT_LEFT)   channelLayout += AE_CH_TFL;
+  if (layout & AV_CH_TOP_FRONT_CENTER) channelLayout += AE_CH_TFC;
+  if (layout & AV_CH_TOP_FRONT_RIGHT)  channelLayout += AE_CH_TFR;
+  if (layout & AV_CH_TOP_BACK_LEFT)    channelLayout += AE_CH_BL;
+  if (layout & AV_CH_TOP_BACK_CENTER)  channelLayout += AE_CH_BC;
+  if (layout & AV_CH_TOP_BACK_RIGHT)   channelLayout += AE_CH_BR;
+
+  return channelLayout;
+}
+
 AVSampleFormat CAEUtil::GetAVSampleFormat(AEDataFormat format)
 {
   if      (format == AE_FMT_U8)     return AV_SAMPLE_FMT_U8;

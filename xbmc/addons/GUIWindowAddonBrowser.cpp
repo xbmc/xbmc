@@ -36,11 +36,14 @@
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "AddonDatabase.h"
 #include "storage/MediaManager.h"
 #include "LangInfo.h"
 #include "input/Key.h"
 #include "ContextMenuManager.h"
+
+#include <utility>
 
 #define CONTROL_AUTOUPDATE    5
 #define CONTROL_SHUTUP        6
@@ -191,13 +194,18 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber, CONTEXT_BUTTON butt
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   std::string addonId = pItem->GetProperty("Addon.ID").asString();
-  AddonPtr addon;
-  if (!addonId.empty() && CAddonMgr::Get().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
+  if (!addonId.empty())
   {
-    if (button == CONTEXT_BUTTON_SETTINGS)
-      return CGUIDialogAddonSettings::ShowAndGetInput(addon);
     if (button == CONTEXT_BUTTON_INFO)
+    {
       return CGUIDialogAddonInfo::ShowForItem(pItem);
+    }
+    else if (button == CONTEXT_BUTTON_SETTINGS)
+    {
+      AddonPtr addon;
+      if (CAddonMgr::Get().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
+        return CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    }
   }
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
@@ -245,7 +253,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     // cancel a downloading job
     if (item->HasProperty("Addon.Downloading"))
     {
-      if (CGUIDialogYesNo::ShowAndGetInput(24000, item->GetProperty("Addon.Name").asString(), 24066, ""))
+      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{24000}, item->GetProperty("Addon.Name"), CVariant{24066}, CVariant{""}))
       {
         if (CAddonInstaller::Get().Cancel(item->GetProperty("Addon.ID").asString()))
           Refresh();
@@ -559,7 +567,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
     heading += TranslateType(*type, true);
   }
 
-  dialog->SetHeading(heading);
+  dialog->SetHeading(CVariant{std::move(heading)});
   dialog->Reset();
   dialog->SetUseDetails(showDetails);
 
@@ -594,7 +602,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
   }
   dialog->SetItems(&items);
   dialog->SetMultiSelection(multipleSelection);
-  dialog->DoModal();
+  dialog->Open();
 
   // if the "Get More" button has been pressed and we haven't shown the
   // installable addons so far show a list of installable addons

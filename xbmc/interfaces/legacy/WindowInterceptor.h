@@ -67,7 +67,9 @@ namespace XBMCAddon
 
       virtual CGUIWindow* get() = 0;
 
-      virtual void setActive(bool active) { } ;
+      virtual void SetRenderOrder(int renderOrder) { }
+
+      virtual void setActive(bool active) { }
       virtual bool isActive() { return false; }
       
       friend class ref;
@@ -173,6 +175,8 @@ namespace XBMCAddon
       virtual bool    IsDialogRunning() const { XBMC_TRACE; return checkedb(IsDialogRunning()); };
       virtual bool    IsDialog() const { XBMC_TRACE; return checkedb(IsDialog()); };
       virtual bool    IsMediaWindow() const { XBMC_TRACE; return checkedb(IsMediaWindow());; };
+
+      virtual void    SetRenderOrder(int renderOrder) { XBMC_TRACE; P::m_renderOrder = renderOrder; }
 
       virtual void    setActive(bool active) { XBMC_TRACE; P::m_active = active; }
       virtual bool    isActive() { XBMC_TRACE; return P::m_active; }

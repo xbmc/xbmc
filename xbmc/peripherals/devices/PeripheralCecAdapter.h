@@ -58,6 +58,7 @@ namespace PERIPHERALS
 #include <libcec/cectypes.h>
 
 class DllLibCEC;
+class CVariant;
 
 namespace CEC
 {
