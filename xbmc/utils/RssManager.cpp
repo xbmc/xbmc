@@ -26,6 +26,7 @@
 #include "interfaces/Builtins.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/RssReader.h"
@@ -67,7 +68,7 @@ void CRssManager::OnSettingAction(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "lookandfeel.rssedit")
+  if (settingId == CSettings::SETTING_LOOKANDFEEL_RSSEDIT)
   {
     ADDON::AddonPtr addon;
     ADDON::CAddonMgr::Get().GetAddon("script.rss.editor",addon);

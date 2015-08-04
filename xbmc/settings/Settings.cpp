@@ -673,7 +673,7 @@ bool CSettings::GetBool(const std::string &id) const
 {
   // Backward compatibility (skins use this setting)
   if (StringUtils::EqualsNoCase(id, "lookandfeel.enablemouse"))
-    return GetBool("input.enablemouse");
+    return GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE);
 
   return m_settingsManager->GetBool(id);
 }
@@ -844,8 +844,8 @@ void CSettings::InitializeVisibility()
 {
   // hide some settings if necessary
 #if defined(TARGET_DARWIN)
-  CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting("locale.timezonecountry");
-  CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting("locale.timezone");
+  CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY);
+  CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE);
 
   if (!g_sysinfo.IsAppleTV2() || CDarwinUtils::GetIOSVersion() >= 4.3)
   {
@@ -859,12 +859,12 @@ void CSettings::InitializeDefaults()
 {
   // set some default values if necessary
 #if defined(HAS_TOUCH_SKIN) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
-  ((CSettingAddon*)m_settingsManager->GetSetting("lookandfeel.skin"))->SetDefault("skin.re-touched");
+  ((CSettingAddon*)m_settingsManager->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKIN))->SetDefault("skin.re-touched");
 #endif
 
 #if defined(TARGET_POSIX)
-  CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting("locale.timezonecountry");
-  CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting("locale.timezone");
+  CSettingString* timezonecountry = (CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY);
+  CSettingString* timezone = (CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE);
 
   if (timezonecountry->IsVisible())
     timezonecountry->SetDefault(g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()));
@@ -874,7 +874,7 @@ void CSettings::InitializeDefaults()
 
 #if defined(TARGET_WINDOWS)
   #if defined(HAS_DX)
-  ((CSettingString*)m_settingsManager->GetSetting("musicplayer.visualisation"))->SetDefault("visualization.milkdrop");
+  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_MUSICPLAYER_VISUALISATION))->SetDefault("visualization.milkdrop");
   #endif
 
   #if !defined(HAS_GL)
@@ -883,21 +883,21 @@ void CSettings::InitializeDefaults()
   // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
   // the front
   if (g_sysinfo.IsAeroDisabled())
-    ((CSettingBool*)m_settingsManager->GetSetting("videoscreen.fakefullscreen"))->SetDefault(false);
+    ((CSettingBool*)m_settingsManager->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))->SetDefault(false);
   #endif
 #endif
 
 #if !defined(TARGET_WINDOWS)
-  ((CSettingString*)m_settingsManager->GetSetting("audiooutput.audiodevice"))->SetDefault(CAEFactory::GetDefaultDevice(false));
-  ((CSettingString*)m_settingsManager->GetSetting("audiooutput.passthroughdevice"))->SetDefault(CAEFactory::GetDefaultDevice(true));
+  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE))->SetDefault(CAEFactory::GetDefaultDevice(false));
+  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE))->SetDefault(CAEFactory::GetDefaultDevice(true));
 #endif
 
   if (g_application.IsStandAlone())
-    ((CSettingInt*)m_settingsManager->GetSetting("powermanagement.shutdownstate"))->SetDefault(POWERSTATE_SHUTDOWN);
+    ((CSettingInt*)m_settingsManager->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);
 
 #if defined(HAS_WEB_SERVER)
   if (CUtil::CanBindPrivileged())
-    ((CSettingInt*)m_settingsManager->GetSetting("services.webserverport"))->SetDefault(80);
+    ((CSettingInt*)m_settingsManager->GetSetting(CSettings::SETTING_SERVICES_WEBSERVERPORT))->SetDefault(80);
 #endif
 }
 
@@ -998,177 +998,177 @@ void CSettings::InitializeISettingCallbacks()
 {
   // register any ISettingCallback implementations
   std::set<std::string> settingSet;
-  settingSet.insert("debug.showloginfo");
-  settingSet.insert("debug.extralogging");
-  settingSet.insert("debug.setextraloglevel");
+  settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
+  settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
+  settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
   m_settingsManager->RegisterCallback(&g_advancedSettings, settingSet);
 
   settingSet.clear();
-  settingSet.insert("karaoke.export");
-  settingSet.insert("karaoke.importcsv");
-  settingSet.insert("musiclibrary.cleanup");
-  settingSet.insert("musiclibrary.export");
-  settingSet.insert("musiclibrary.import");
-  settingSet.insert("musicfiles.trackformat");
-  settingSet.insert("musicfiles.trackformatright");
-  settingSet.insert("videolibrary.flattentvshows");
+  settingSet.insert(CSettings::SETTING_KARAOKE_EXPORT);
+  settingSet.insert(CSettings::SETTING_KARAOKE_IMPORTCSV);
+  settingSet.insert(CSettings::SETTING_MUSICLIBRARY_CLEANUP);
+  settingSet.insert(CSettings::SETTING_MUSICLIBRARY_EXPORT);
+  settingSet.insert(CSettings::SETTING_MUSICLIBRARY_IMPORT);
+  settingSet.insert(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
+  settingSet.insert(CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT);
+  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS);
   settingSet.insert("videolibrary.removeduplicates");
-  settingSet.insert("videolibrary.groupmoviesets");
-  settingSet.insert("videolibrary.cleanup");
-  settingSet.insert("videolibrary.import");
-  settingSet.insert("videolibrary.export");
+  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS);
+  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_CLEANUP);
+  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_IMPORT);
+  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_EXPORT);
   m_settingsManager->RegisterCallback(&CMediaSettings::Get(), settingSet);
 
   settingSet.clear();
-  settingSet.insert("videoscreen.screen");
-  settingSet.insert("videoscreen.resolution");
-  settingSet.insert("videoscreen.screenmode");
-  settingSet.insert("videoscreen.vsync");
-  settingSet.insert("videoscreen.monitor");
-  settingSet.insert("videoscreen.preferedstereoscopicmode");
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_SCREEN);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_RESOLUTION);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_SCREENMODE);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_VSYNC);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE);
   m_settingsManager->RegisterCallback(&CDisplaySettings::Get(), settingSet);
   
   settingSet.clear();
-  settingSet.insert("videoplayer.seekdelay");
-  settingSet.insert("videoplayer.seeksteps");
-  settingSet.insert("musicplayer.seekdelay");
-  settingSet.insert("musicplayer.seeksteps");
+  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY);
+  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
+  settingSet.insert(CSettings::SETTING_MUSICPLAYER_SEEKDELAY);
+  settingSet.insert(CSettings::SETTING_MUSICPLAYER_SEEKSTEPS);
   m_settingsManager->RegisterCallback(&CSeekHandler::Get(), settingSet);
 
   settingSet.clear();
-  settingSet.insert("videoscreen.stereoscopicmode");
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
   m_settingsManager->RegisterCallback(&CStereoscopicsManager::Get(), settingSet);
 
   settingSet.clear();
-  settingSet.insert("audiooutput.config");
-  settingSet.insert("audiooutput.samplerate");
-  settingSet.insert("audiooutput.passthrough");
-  settingSet.insert("audiooutput.channels");
-  settingSet.insert("audiooutput.processquality");
-  settingSet.insert("audiooutput.guisoundmode");
-  settingSet.insert("audiooutput.stereoupmix");
-  settingSet.insert("audiooutput.ac3passthrough");
-  settingSet.insert("audiooutput.ac3transcode");
-  settingSet.insert("audiooutput.eac3passthrough");
-  settingSet.insert("audiooutput.dtspassthrough");
-  settingSet.insert("audiooutput.truehdpassthrough");
-  settingSet.insert("audiooutput.dtshdpassthrough");
-  settingSet.insert("audiooutput.audiodevice");
-  settingSet.insert("audiooutput.passthroughdevice");
-  settingSet.insert("audiooutput.streamsilence");
-  settingSet.insert("audiooutput.maintainoriginalvolume");
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_CONFIG);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
   settingSet.insert("audiooutput.normalizelevels");
-  settingSet.insert("audiooutput.dspaddonsenabled");
-  settingSet.insert("lookandfeel.skin");
-  settingSet.insert("lookandfeel.skinsettings");
-  settingSet.insert("lookandfeel.font");
-  settingSet.insert("lookandfeel.skintheme");
-  settingSet.insert("lookandfeel.skincolors");
-  settingSet.insert("lookandfeel.skinzoom");
-  settingSet.insert("musicplayer.replaygainpreamp");
-  settingSet.insert("musicplayer.replaygainnogainpreamp");
-  settingSet.insert("musicplayer.replaygaintype");
-  settingSet.insert("musicplayer.replaygainavoidclipping");
-  settingSet.insert("scrapers.musicvideosdefault");
-  settingSet.insert("screensaver.mode");
-  settingSet.insert("screensaver.preview");
-  settingSet.insert("screensaver.settings");
-  settingSet.insert("audiocds.settings");
-  settingSet.insert("videoscreen.guicalibration");
-  settingSet.insert("videoscreen.testpattern");
-  settingSet.insert("videoplayer.useamcodec");
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKIN);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_FONT);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINZOOM);
+  settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
+  settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
+  settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE);
+  settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
+  settingSet.insert(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT);
+  settingSet.insert(CSettings::SETTING_SCREENSAVER_MODE);
+  settingSet.insert(CSettings::SETTING_SCREENSAVER_PREVIEW);
+  settingSet.insert(CSettings::SETTING_SCREENSAVER_SETTINGS);
+  settingSet.insert(CSettings::SETTING_AUDIOCDS_SETTINGS);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION);
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_TESTPATTERN);
+  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC);
   settingSet.insert("videoplayer.usemediacodec");
   m_settingsManager->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();
-  settingSet.insert("lookandfeel.soundskin");
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN);
   m_settingsManager->RegisterCallback(&g_audioManager, settingSet);
 
   settingSet.clear();
-  settingSet.insert("subtitles.charset");
-  settingSet.insert("karaoke.charset");
-  settingSet.insert("locale.charset");
+  settingSet.insert(CSettings::SETTING_SUBTITLES_CHARSET);
+  settingSet.insert(CSettings::SETTING_KARAOKE_CHARSET);
+  settingSet.insert(CSettings::SETTING_LOCALE_CHARSET);
   m_settingsManager->RegisterCallback(&g_charsetConverter, settingSet);
 
   settingSet.clear();
-  settingSet.insert("videoscreen.fakefullscreen");
+  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
   m_settingsManager->RegisterCallback(&g_graphicsContext, settingSet);
 
   settingSet.clear();
-  settingSet.insert("locale.audiolanguage");
-  settingSet.insert("locale.subtitlelanguage");
-  settingSet.insert("locale.language");
-  settingSet.insert("locale.country");
-  settingSet.insert("locale.shortdateformat");
-  settingSet.insert("locale.longdateformat");
-  settingSet.insert("locale.timeformat");
-  settingSet.insert("locale.use24hourclock");
-  settingSet.insert("locale.temperatureunit");
-  settingSet.insert("locale.speedunit");
+  settingSet.insert(CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
+  settingSet.insert(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
+  settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
+  settingSet.insert(CSettings::SETTING_LOCALE_COUNTRY);
+  settingSet.insert(CSettings::SETTING_LOCALE_SHORTDATEFORMAT);
+  settingSet.insert(CSettings::SETTING_LOCALE_LONGDATEFORMAT);
+  settingSet.insert(CSettings::SETTING_LOCALE_TIMEFORMAT);
+  settingSet.insert(CSettings::SETTING_LOCALE_USE24HOURCLOCK);
+  settingSet.insert(CSettings::SETTING_LOCALE_TEMPERATUREUNIT);
+  settingSet.insert(CSettings::SETTING_LOCALE_SPEEDUNIT);
   m_settingsManager->RegisterCallback(&g_langInfo, settingSet);
 
   settingSet.clear();
-  settingSet.insert("input.enablejoystick");
-  settingSet.insert("input.enablemouse");
+  settingSet.insert(CSettings::SETTING_INPUT_ENABLEJOYSTICK);
+  settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
   m_settingsManager->RegisterCallback(&CInputManager::Get(), settingSet);
 
   settingSet.clear();
-  settingSet.insert("services.webserver");
-  settingSet.insert("services.webserverport");
-  settingSet.insert("services.webserverusername");
-  settingSet.insert("services.webserverpassword");
-  settingSet.insert("services.zeroconf");
-  settingSet.insert("services.airplay");
-  settingSet.insert("services.airplayvolumecontrol");
-  settingSet.insert("services.useairplaypassword");
-  settingSet.insert("services.airplaypassword");
-  settingSet.insert("services.upnpserver");
-  settingSet.insert("services.upnprenderer");
-  settingSet.insert("services.upnpcontroller");
-  settingSet.insert("services.esenabled");
-  settingSet.insert("services.esport");
-  settingSet.insert("services.esallinterfaces");
-  settingSet.insert("services.esinitialdelay");
-  settingSet.insert("services.escontinuousdelay");
-  settingSet.insert("smb.winsserver");
-  settingSet.insert("smb.workgroup");
+  settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVER);
+  settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERPORT);
+  settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME);
+  settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD);
+  settingSet.insert(CSettings::SETTING_SERVICES_ZEROCONF);
+  settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAY);
+  settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL);
+  settingSet.insert(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD);
+  settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD);
+  settingSet.insert(CSettings::SETTING_SERVICES_UPNPSERVER);
+  settingSet.insert(CSettings::SETTING_SERVICES_UPNPRENDERER);
+  settingSet.insert(CSettings::SETTING_SERVICES_UPNPCONTROLLER);
+  settingSet.insert(CSettings::SETTING_SERVICES_ESENABLED);
+  settingSet.insert(CSettings::SETTING_SERVICES_ESPORT);
+  settingSet.insert(CSettings::SETTING_SERVICES_ESALLINTERFACES);
+  settingSet.insert(CSettings::SETTING_SERVICES_ESINITIALDELAY);
+  settingSet.insert(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
+  settingSet.insert(CSettings::SETTING_SMB_WINSSERVER);
+  settingSet.insert(CSettings::SETTING_SMB_WORKGROUP);
   m_settingsManager->RegisterCallback(&CNetworkServices::Get(), settingSet);
 
   settingSet.clear();
-  settingSet.insert("masterlock.lockcode");
+  settingSet.insert(CSettings::SETTING_MASTERLOCK_LOCKCODE);
   m_settingsManager->RegisterCallback(&g_passwordManager, settingSet);
 
   settingSet.clear();
-  settingSet.insert("pvrmanager.enabled");
-  settingSet.insert("pvrmanager.channelmanager");
-  settingSet.insert("pvrmanager.groupmanager");
-  settingSet.insert("pvrmanager.channelscan");
-  settingSet.insert("pvrmanager.resetdb");
-  settingSet.insert("pvrclient.menuhook");
-  settingSet.insert("pvrmenu.searchicons");
-  settingSet.insert("epg.resetepg");
-  settingSet.insert("pvrparental.enabled");
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_ENABLED);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELMANAGER);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_GROUPMANAGER);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELSCAN);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_RESETDB);
+  settingSet.insert(CSettings::SETTING_PVRCLIENT_MENUHOOK);
+  settingSet.insert(CSettings::SETTING_PVRMENU_SEARCHICONS);
+  settingSet.insert(CSettings::SETTING_EPG_RESETEPG);
+  settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
   m_settingsManager->RegisterCallback(&PVR::g_PVRManager, settingSet);
 
   settingSet.clear();
-  settingSet.insert("lookandfeel.rssedit");
+  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_RSSEDIT);
   m_settingsManager->RegisterCallback(&CRssManager::Get(), settingSet);
 
 #if defined(TARGET_LINUX)
   settingSet.clear();
-  settingSet.insert("locale.timezone");
-  settingSet.insert("locale.timezonecountry");
+  settingSet.insert(CSettings::SETTING_LOCALE_TIMEZONE);
+  settingSet.insert(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY);
   m_settingsManager->RegisterCallback(&g_timezone, settingSet);
 #endif
 
   settingSet.clear();
-  settingSet.insert("weather.addon");
-  settingSet.insert("weather.addonsettings");
+  settingSet.insert(CSettings::SETTING_WEATHER_ADDON);
+  settingSet.insert(CSettings::SETTING_WEATHER_ADDONSETTINGS);
   m_settingsManager->RegisterCallback(&g_weatherManager, settingSet);
 
   settingSet.clear();
-  settingSet.insert("input.peripherals");
-  settingSet.insert("locale.language");
+  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALS);
+  settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
   m_settingsManager->RegisterCallback(&PERIPHERALS::CPeripherals::Get(), settingSet);
 
 #if defined(TARGET_DARWIN_OSX)
@@ -1179,9 +1179,9 @@ void CSettings::InitializeISettingCallbacks()
 #endif
 
   settingSet.clear();
-  settingSet.insert("audiooutput.dspaddonsenabled");
-  settingSet.insert("audiooutput.dspsettings");
-  settingSet.insert("audiooutput.dspresetdb");
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB);
   m_settingsManager->RegisterCallback(&ActiveAE::CActiveAEDSP::Get(), settingSet);
 }
 

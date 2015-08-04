@@ -91,17 +91,17 @@ protected:
      */
     /* TODO
     CSettingsCategory *loc = CSettings::Get().AddCategory(7, "locale", 14090);
-    CSettings::Get().AddString(loc, "locale.language",248,"english",
+    CSettings::Get().AddString(loc, CSettings::SETTING_LOCALE_LANGUAGE,248,"english",
                             SPIN_CONTROL_TEXT);
-    CSettings::Get().AddString(loc, "locale.country", 20026, "USA",
+    CSettings::Get().AddString(loc, CSettings::SETTING_LOCALE_COUNTRY, 20026, "USA",
                             SPIN_CONTROL_TEXT);
-    CSettings::Get().AddString(loc, "locale.charset", 14091, "DEFAULT",
+    CSettings::Get().AddString(loc, CSettings::SETTING_LOCALE_CHARSET, 14091, "DEFAULT",
                             SPIN_CONTROL_TEXT); // charset is set by the
                                                 // language file
 
     // Add default settings for subtitles
     CSettingsCategory *sub = CSettings::Get().AddCategory(5, "subtitles", 287);
-    CSettings::Get().AddString(sub, "subtitles.charset", 735, "DEFAULT",
+    CSettings::Get().AddString(sub, CSettings::SETTING_SUBTITLES_CHARSET, 735, "DEFAULT",
                             SPIN_CONTROL_TEXT);
     */
     CSettings::Get().Initialize();

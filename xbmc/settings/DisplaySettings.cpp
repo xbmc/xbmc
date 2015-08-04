@@ -222,13 +222,13 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     return false;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "videoscreen.resolution" ||
-      settingId == "videoscreen.screen")
+  if (settingId == CSettings::SETTING_VIDEOSCREEN_RESOLUTION ||
+      settingId == CSettings::SETTING_VIDEOSCREEN_SCREEN)
   {
     RESOLUTION newRes = RES_DESKTOP;
-    if (settingId == "videoscreen.resolution")
+    if (settingId == CSettings::SETTING_VIDEOSCREEN_RESOLUTION)
       newRes = (RESOLUTION)((CSettingInt*)setting)->GetValue();
-    else if (settingId == "videoscreen.screen")
+    else if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREEN)
     {
       int screen = ((CSettingInt*)setting)->GetValue();
 
@@ -241,9 +241,9 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     }
 
     std::string screenmode = GetStringFromResolution(newRes);
-    CSettings::Get().SetString("videoscreen.screenmode", screenmode);
+    CSettings::Get().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, screenmode);
   }
-  if (settingId == "videoscreen.screenmode")
+  if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENMODE)
   {
     RESOLUTION oldRes = GetCurrentResolution();
     RESOLUTION newRes = GetResolutionFromString(((CSettingString*)setting)->GetValue());
@@ -268,7 +268,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
         m_resolutionChangeAborted = false;
     }
   }
-  else if (settingId == "videoscreen.monitor")
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_MONITOR)
   {
     g_Windowing.UpdateResolutions();
     RESOLUTION newRes = GetResolutionForScreen();
@@ -291,7 +291,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     return true;
   }
 #if defined(HAS_GLX)
-  else if (settingId == "videoscreen.blankdisplays")
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS)
   {
     g_Windowing.UpdateResolutions();
   }
@@ -306,7 +306,7 @@ bool CDisplaySettings::OnSettingUpdate(CSetting* &setting, const char *oldSettin
     return false;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "videoscreen.screenmode")
+  if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENMODE)
   {
     CSettingString *screenmodeSetting = (CSettingString*)setting;
     std::string screenmode = screenmodeSetting->GetValue();
@@ -318,7 +318,7 @@ bool CDisplaySettings::OnSettingUpdate(CSetting* &setting, const char *oldSettin
     if (screenmode.size() == 21)
       return screenmodeSetting->SetValue(screenmode + "std");
   }
-  else if (settingId == "videoscreen.vsync")
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_VSYNC)
   {
     // This ifdef is intended to catch everything except Linux and FreeBSD
 #if !defined(TARGET_LINUX) || defined(TARGET_DARWIN) || defined(TARGET_ANDROID) || defined(TARGET_RASPBERRY_PI)
@@ -328,22 +328,22 @@ bool CDisplaySettings::OnSettingUpdate(CSetting* &setting, const char *oldSettin
       return vsyncSetting->SetValue(VSYNC_ALWAYS);
 #endif
   }
-  else if (settingId == "videoscreen.preferedstereoscopicmode")
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE)
   {
     CSettingInt *stereomodeSetting = (CSettingInt*)setting;
-    STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CSettings::Get().GetInt("videoplayer.stereoscopicplaybackmode");
+    STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
     if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_OFF)
     {
       // if preferred playback mode was OFF, update playback mode to ignore
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
-        CSettings::Get().SetInt("videoplayer.stereoscopicplaybackmode", STEREOSCOPIC_PLAYBACK_MODE_IGNORE);
+        CSettings::Get().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_IGNORE);
       return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
     }
     else if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_MONO)
     {
       // if preferred playback mode was MONO, update playback mode
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
-        CSettings::Get().SetInt("videoplayer.stereoscopicplaybackmode", STEREOSCOPIC_PLAYBACK_MODE_MONO);
+        CSettings::Get().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_MONO);
       return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
     }
   }
@@ -359,7 +359,7 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
   if (save)
   {
     std::string mode = GetStringFromResolution(resolution);
-    CSettings::Get().SetString("videoscreen.screenmode", mode.c_str());
+    CSettings::Get().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
   }
 
   if (resolution != m_currentResolution)
@@ -371,7 +371,7 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
 
 RESOLUTION CDisplaySettings::GetDisplayResolution() const
 {
-  return GetResolutionFromString(CSettings::Get().GetString("videoscreen.screenmode"));
+  return GetResolutionFromString(CSettings::Get().GetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE));
 }
 
 const RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(size_t index) const
@@ -610,7 +610,7 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
 
 RESOLUTION CDisplaySettings::GetResolutionForScreen()
 {
-  DisplayMode mode = CSettings::Get().GetInt("videoscreen.screen");
+  DisplayMode mode = CSettings::Get().GetInt(CSettings::SETTING_VIDEOSCREEN_SCREEN);
   if (mode == DM_WINDOWED)
     return RES_WINDOW;
 
@@ -762,7 +762,7 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(const CSetting *setting, std
 #if defined(HAS_GLX)
   std::vector<std::string> monitors;
   g_Windowing.GetConnectedOutputs(&monitors);
-  std::string currentMonitor = CSettings::Get().GetString("videoscreen.monitor");
+  std::string currentMonitor = CSettings::Get().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   for (unsigned int i=0; i<monitors.size(); ++i)
   {
     if(currentMonitor.compare("Default") != 0 &&

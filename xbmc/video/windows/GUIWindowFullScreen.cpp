@@ -122,7 +122,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
   }
 
-  if (CSettings::Get().GetBool("pvrplayback.confirmchannelswitch") &&
+  if (CSettings::Get().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
       g_infoManager.IsPlayerChannelPreviewActive() &&
       CButtonTranslator::GetInstance().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM)
   {

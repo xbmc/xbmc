@@ -241,7 +241,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (choice == 2)
   {
     if (g_passwordManager.CheckLock(CProfilesManager::Get().GetMasterProfile().getLockMode(),CProfilesManager::Get().GetMasterProfile().getLockCode(),20075))
-      g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries");
+      g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     else // be inconvenient
       CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
 

@@ -92,28 +92,28 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       {
         const CGUIControl *control = GetControl(CONTROL_AUTOUPDATE);
         if (control && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
-          CSettings::Get().SetInt("general.addonupdates", (CSettings::Get().GetInt("general.addonupdates")+1) % AUTO_UPDATES_MAX);
+          CSettings::Get().SetInt(CSettings::SETTING_GENERAL_ADDONUPDATES, (CSettings::Get().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES)+1) % AUTO_UPDATES_MAX);
         else
-          CSettings::Get().SetInt("general.addonupdates", (CSettings::Get().GetInt("general.addonupdates") == 0) ? 1 : 0);
+          CSettings::Get().SetInt(CSettings::SETTING_GENERAL_ADDONUPDATES, (CSettings::Get().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == 0) ? 1 : 0);
         UpdateButtons();
         return true;
       }
       else if (iControl == CONTROL_SHUTUP)
       {
-        CSettings::Get().ToggleBool("general.addonnotifications");
+        CSettings::Get().ToggleBool(CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS);
         CSettings::Get().Save();
         return true;
       }
       else if (iControl == CONTROL_FOREIGNFILTER)
       {
-        CSettings::Get().ToggleBool("general.addonforeignfilter");
+        CSettings::Get().ToggleBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER);
         CSettings::Get().Save();
         Refresh();
         return true;
       }
       else if (iControl == CONTROL_BROKENFILTER)
       {
-        CSettings::Get().ToggleBool("general.addonbrokenfilter");
+        CSettings::Get().ToggleBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER);
         CSettings::Get().Save();
         Refresh();
         return true;
@@ -275,7 +275,7 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   const CGUIControl *control = GetControl(CONTROL_AUTOUPDATE);
   if (control && control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
   { // set label
-    CSettingInt *setting = (CSettingInt *)CSettings::Get().GetSetting("general.addonupdates");
+    CSettingInt *setting = (CSettingInt *)CSettings::Get().GetSetting(CSettings::SETTING_GENERAL_ADDONUPDATES);
     if (setting)
     {
       const StaticIntegerSettingOptions& options = setting->GetOptions();
@@ -291,11 +291,11 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   }
   else
   { // old skin with toggle button - set on if auto updates are on
-    SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE, CSettings::Get().GetInt("general.addonupdates") == AUTO_UPDATES_ON);
+    SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE, CSettings::Get().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON);
   }
-  SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP, CSettings::Get().GetBool("general.addonnotifications"));
-  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER, CSettings::Get().GetBool("general.addonforeignfilter"));
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BROKENFILTER, CSettings::Get().GetBool("general.addonbrokenfilter"));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP, CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER, CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BROKENFILTER, CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER));
   CONTROL_ENABLE(CONTROL_CHECK_FOR_UPDATES);
 
   bool allowFilter = CAddonsDirectory::IsRepoDirectory(CURL(m_vecItems->GetPath()));
@@ -348,7 +348,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory,
 
     if (CAddonsDirectory::IsRepoDirectory(CURL(strDirectory)))
     {
-      if (CSettings::Get().GetBool("general.addonforeignfilter"))
+      if (CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER))
       {
         int i=0;
         while (i < items.Size())
@@ -363,7 +363,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory,
             items.Remove(i);
         }
       }
-      if (CSettings::Get().GetBool("general.addonbrokenfilter"))
+      if (CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER))
       {
         for (int i = items.Size() - 1; i >= 0; i--)
         {

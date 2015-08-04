@@ -453,11 +453,11 @@ bool CVideoSurfaces::HasRefs()
 
 // settings codecs mapping
 DVDCodecAvailableType g_vaapi_available[] = {
-  { AV_CODEC_ID_H263, "videoplayer.usevaapimpeg4" },
-  { AV_CODEC_ID_MPEG4, "videoplayer.usevaapimpeg4" },
-  { AV_CODEC_ID_WMV3, "videoplayer.usevaapivc1" },
-  { AV_CODEC_ID_VC1, "videoplayer.usevaapivc1" },
-  { AV_CODEC_ID_MPEG2VIDEO, "videoplayer.usevaapimpeg2" },
+  { AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG4.c_str() },
+  { AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG4.c_str() },
+  { AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USEVAAPIVC1.c_str() },
+  { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVAAPIVC1.c_str() },
+  { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG2.c_str() },
 };
 const size_t settings_count = sizeof(g_vaapi_available) / sizeof(DVDCodecAvailableType);
 
@@ -1922,7 +1922,7 @@ void COutput::InitCycle()
     if (!m_pp)
     {
       m_config.stats->SetVpp(false);
-      if (!CSettings::Get().GetBool("videoplayer.prefervaapirender"))
+      if (!CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
         m_pp = new CFFmpegPostproc();
       else
         m_pp = new CSkipPostproc();
@@ -3290,7 +3290,7 @@ bool CFFmpegPostproc::Compatible(EINTERLACEMETHOD method)
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
   else if (method == VS_INTERLACEMETHOD_NONE &&
-           !CSettings::Get().GetBool("videoplayer.prefervaapirender"))
+           !CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
     return true;
 
   return false;

@@ -376,7 +376,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
   if (CGUIKeyboardFactory::ShowAndGetInput(strNewFileName, CVariant{g_localizeStrings.Get(16012)}, false))
   {
     // need 2 rename it
-    std::string strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "video");
+    std::string strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "video");
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
     std::string strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);

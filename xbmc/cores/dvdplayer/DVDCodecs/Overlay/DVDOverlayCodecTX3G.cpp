@@ -67,7 +67,7 @@ CDVDOverlayCodecTX3G::CDVDOverlayCodecTX3G() : CDVDOverlayCodec("TX3G Subtitle D
   m_pOverlay = NULL;
   // stupid, this comes from a static global in GUIWindowFullScreen.cpp
   uint32_t colormap[8] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF, 0xFFE5E5E5, 0xFFC0C0C0 };
-  m_textColor = colormap[CSettings::Get().GetInt("subtitles.color")];
+  m_textColor = colormap[CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_COLOR)];
 }
 
 CDVDOverlayCodecTX3G::~CDVDOverlayCodecTX3G()

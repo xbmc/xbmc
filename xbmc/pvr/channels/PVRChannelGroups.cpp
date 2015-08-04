@@ -53,7 +53,7 @@ void CPVRChannelGroups::Clear(void)
 
 bool CPVRChannelGroups::GetGroupsFromClients(void)
 {
-  if (! CSettings::Get().GetBool("pvrmanager.syncchannelgroups"))
+  if (! CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS))
     return true;
 
   return g_PVRClients->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
@@ -199,7 +199,7 @@ void CPVRChannelGroups::RemoveFromAllGroups(const CPVRChannelPtr &channel)
 
 bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
 {
-  bool bUpdateAllGroups = !bChannelsOnly && CSettings::Get().GetBool("pvrmanager.syncchannelgroups");
+  bool bUpdateAllGroups = !bChannelsOnly && CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
   bool bReturn(true);
 
   // sync groups
@@ -258,7 +258,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
 
 bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 {
-  bool bSyncWithBackends = CSettings::Get().GetBool("pvrmanager.syncchannelgroups");
+  bool bSyncWithBackends = CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
 
   CSingleLock lock(m_critSection);
 

@@ -1226,7 +1226,7 @@ std::string CSysInfo::GetUserAgent()
 
 std::string CSysInfo::GetDeviceName()
 {
-  std::string friendlyName = CSettings::Get().GetString("services.devicename");
+  std::string friendlyName = CSettings::Get().GetString(CSettings::SETTING_SERVICES_DEVICENAME);
   if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
   {
     std::string hostname("[unknown]");

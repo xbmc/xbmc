@@ -114,7 +114,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
           }
           else
           {
-            int autoCloseTime = CSettings::Get().GetBool("pvrplayback.confirmchannelswitch") ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
+            int autoCloseTime = CSettings::Get().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
             std::string strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
             if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
             {

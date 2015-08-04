@@ -47,11 +47,11 @@ using namespace VDPAU;
 
 // settings codecs mapping
 DVDCodecAvailableType g_vdpau_available[] = {
-  { AV_CODEC_ID_H263, "videoplayer.usevdpaumpeg4" },
-  { AV_CODEC_ID_MPEG4, "videoplayer.usevdpaumpeg4" },
-  { AV_CODEC_ID_WMV3, "videoplayer.usevdpauvc1" },
-  { AV_CODEC_ID_VC1, "videoplayer.usevdpauvc1" },
-  { AV_CODEC_ID_MPEG2VIDEO, "videoplayer.usevdpaumpeg2" },
+  { AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4.c_str() },
+  { AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4.c_str() },
+  { AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1.c_str() },
+  { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1.c_str() },
+  { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2.c_str() },
 };
 const size_t settings_count = sizeof(g_vdpau_available) / sizeof(DVDCodecAvailableType);
 
@@ -1896,7 +1896,7 @@ void CMixer::SetColor()
   }
 
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
-  if (CSettings::Get().GetBool("videoscreen.limitedrange"))
+  if (CSettings::Get().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
   {
     float studioCSC[3][4];
     GenerateStudioCSCMatrix(colorStandard, studioCSC);
@@ -2049,7 +2049,7 @@ void CMixer::SetDeinterlacing()
 
   SetDeintSkipChroma();
 
-  m_config.useInteropYuv = !CSettings::Get().GetBool("videoplayer.usevdpaumixer");
+  m_config.useInteropYuv = !CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
 }
 
 void CMixer::SetDeintSkipChroma()
@@ -2243,7 +2243,7 @@ void CMixer::Init()
   m_vdpError = false;
 
   m_config.upscale = g_advancedSettings.m_videoVDPAUScaling;
-  m_config.useInteropYuv = !CSettings::Get().GetBool("videoplayer.usevdpaumixer");
+  m_config.useInteropYuv = !CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
 
   CreateVdpauMixer();
 }

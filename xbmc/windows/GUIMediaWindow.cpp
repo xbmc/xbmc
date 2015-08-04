@@ -578,7 +578,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
       {
         sorting.sortBy = sortBy;
         sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
-        sorting.sortAttributes = CSettings::Get().GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone;
+        sorting.sortAttributes = CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone;
 
         // if the sort order is descending, we need to switch the original sort order, as we assume
         // in CGUIViewState::AddPlaylistOrder that SortByPlaylistOrder is ascending.
@@ -1018,8 +1018,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
-    bool do_not_add_karaoke = CSettings::Get().GetBool("karaoke.enabled") &&
-      CSettings::Get().GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
+    bool do_not_add_karaoke = CSettings::Get().GetBool(CSettings::SETTING_KARAOKE_ENABLED) &&
+      CSettings::Get().GetBool(CSettings::SETTING_KARAOKE_AUTOPOPUPSELECTOR) && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
     if (m_vecItems->IsPlugin())

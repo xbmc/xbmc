@@ -585,10 +585,10 @@ std::string CKaraokeLyricsTextKAR::convertText( const char * data )
   std::string strUTF8;
 
   // Use some heuristics; need to replace by real detection stuff later
-  if (CUtf8Utils::isValidUtf8(data) || CSettings::Get().GetString("karaoke.charset") == "DEFAULT")
+  if (CUtf8Utils::isValidUtf8(data) || CSettings::Get().GetString(CSettings::SETTING_KARAOKE_CHARSET) == "DEFAULT")
     strUTF8 = data;
   else
-    g_charsetConverter.ToUtf8( CSettings::Get().GetString("karaoke.charset"), data, strUTF8 );
+    g_charsetConverter.ToUtf8( CSettings::Get().GetString(CSettings::SETTING_KARAOKE_CHARSET), data, strUTF8 );
 
   if ( strUTF8.size() == 0 )
     strUTF8 = " ";

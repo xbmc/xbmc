@@ -76,7 +76,7 @@ bool CWeatherJob::DoWork()
     return false;
 
   AddonPtr addon;
-  if (!ADDON::CAddonMgr::Get().GetAddon(CSettings::Get().GetString("weather.addon"), addon, ADDON_SCRIPT_WEATHER))
+  if (!ADDON::CAddonMgr::Get().GetAddon(CSettings::Get().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER))
     return false;
 
   // initialize our sys.argv variables
@@ -152,7 +152,7 @@ void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
   std::string language = LANGUAGE_DEFAULT;
-  CSettingString* languageSetting = static_cast<CSettingString*>(CSettings::Get().GetSetting("locale.language"));
+  CSettingString* languageSetting = static_cast<CSettingString*>(CSettings::Get().GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
   if (languageSetting != NULL)
     language = languageSetting->GetDefault();
 
@@ -371,7 +371,7 @@ const day_forecast &CWeather::GetForecast(int day) const
  */
 void CWeather::SetArea(int iLocation)
 {
-  CSettings::Get().SetInt("weather.currentlocation", iLocation);
+  CSettings::Get().SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
   CSettings::Get().Save();
 }
 
@@ -381,7 +381,7 @@ void CWeather::SetArea(int iLocation)
  */
 int CWeather::GetArea() const
 {
-  return CSettings::Get().GetInt("weather.currentlocation");
+  return CSettings::Get().GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
 }
 
 CJob *CWeather::GetJob() const
@@ -401,7 +401,7 @@ void CWeather::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string settingId = setting->GetId();
-  if (settingId == "weather.addon")
+  if (settingId == CSettings::SETTING_WEATHER_ADDON)
   {
     // clear "WeatherProviderLogo" property that some weather addons set
     CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
@@ -416,10 +416,10 @@ void CWeather::OnSettingAction(const CSetting *setting)
     return;
 
   const std::string settingId = setting->GetId();
-  if (settingId == "weather.addonsettings")
+  if (settingId == CSettings::SETTING_WEATHER_ADDONSETTINGS)
   {
     AddonPtr addon;
-    if (CAddonMgr::Get().GetAddon(CSettings::Get().GetString("weather.addon"), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
+    if (CAddonMgr::Get().GetAddon(CSettings::Get().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
     { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
       Refresh();

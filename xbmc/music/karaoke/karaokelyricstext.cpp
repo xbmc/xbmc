@@ -69,7 +69,7 @@ CKaraokeLyricsText::CKaraokeLyricsText()
   m_preambleLayout = 0;
   m_karaokeFont = 0;
 
-  int coloridx = CSettings::Get().GetInt("karaoke.fontcolors");
+  int coloridx = CSettings::Get().GetInt(CSettings::SETTING_KARAOKE_FONTCOLORS);
   if ( coloridx < KARAOKE_COLOR_START || coloridx >= KARAOKE_COLOR_END )
     coloridx = 0;
 
@@ -140,13 +140,13 @@ bool CKaraokeLyricsText::InitGraphics()
   if ( m_lyrics.empty() )
     return false;
 
-  std::string fontPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CSettings::Get().GetString("karaoke.font"));
+  std::string fontPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CSettings::Get().GetString(CSettings::SETTING_KARAOKE_FONT));
   if (!XFILE::CFile::Exists(fontPath))
-      fontPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", CSettings::Get().GetString("karaoke.font"));
+      fontPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", CSettings::Get().GetString(CSettings::SETTING_KARAOKE_FONT));
   m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
-                  m_colorLyrics, 0, CSettings::Get().GetInt("karaoke.fontheight"), FONT_STYLE_BOLD );
+                  m_colorLyrics, 0, CSettings::Get().GetInt(CSettings::SETTING_KARAOKE_FONTHEIGHT), FONT_STYLE_BOLD );
   CGUIFont *karaokeBorder = g_fontManager.LoadTTF("__karaokeborder__", fontPath,
-                            m_colorLyrics, 0, CSettings::Get().GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, true );
+                            m_colorLyrics, 0, CSettings::Get().GetInt(CSettings::SETTING_KARAOKE_FONTHEIGHT), FONT_STYLE_BOLD, true );
 
   if ( !m_karaokeFont )
   {
