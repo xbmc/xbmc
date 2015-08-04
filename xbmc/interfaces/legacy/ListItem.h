@@ -199,8 +199,8 @@ namespace XBMCAddon
        *     - watched       : depreciated - use playcount instead
        *     - playcount     : integer (2) - number of times this item has been played
        *     - overlay       : integer (2) - range is 0..8.  See GUIListItem.h for values
-       *     - cast          : list (Michal C. Hall)
-       *     - castandrole   : list (Michael C. Hall|Dexter)
+       *     - cast          : list (["Michal C. Hall","Jennifer Carpenter"]) - if provided a list of tuples cast will be interpreted as castandrole
+       *     - castandrole   : list of tuples ([("Michael C. Hall","Dexter"),("Jennifer Carpenter","Debra")])
        *     - director      : string (Dagur Kari)
        *     - mpaa          : string (PG-13)
        *     - plot          : string (Long Description)
