@@ -118,8 +118,8 @@ public:
   void SetPlayCount(int playcount);
   void SetLastPlayed(const std::string& strLastPlayed);
   void SetLastPlayed(const CDateTime& strLastPlayed);
-  void SetDateAdded(const std::string& strLastPlayed);
-  void SetDateAdded(const CDateTime& strLastPlayed);
+  void SetDateAdded(const std::string& strDateAdded);
+  void SetDateAdded(const CDateTime& strDateAdded);
   void SetCompilation(bool compilation);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
