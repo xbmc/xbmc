@@ -24,6 +24,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -85,7 +86,9 @@ bool CPVRActionListener::OnAction(const CAction &action)
     case REMOTE_8:
     case REMOTE_9:
     {
-      if (g_application.IsFullScreen() && g_application.CurrentFileItem().IsLiveTV())
+      if (g_application.CurrentFileItem().IsLiveTV() &&
+          (g_windowManager.IsWindowActive(WINDOW_FULLSCREEN_VIDEO) ||
+           g_windowManager.IsWindowActive(WINDOW_VISUALISATION)))
       {
         if(g_PVRManager.IsPlaying())
         {
