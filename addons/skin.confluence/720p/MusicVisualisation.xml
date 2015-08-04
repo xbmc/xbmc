@@ -146,6 +146,7 @@
 						<height>35</height>
 						<aspectratio align="right">keep</aspectratio>
 						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
+						<visible>!Player.ChannelPreviewActive</visible>
 					</control>
 					<control type="group">
 						<description>Rating</description>
@@ -194,7 +195,7 @@
 						<width>80</width>
 						<height>35</height>
 						<aspectratio align="right">keep</aspectratio>
-						<visible>!IsEmpty(ADSP.MasterOwnIcon)</visible>
+						<visible>![IsEmpty(ADSP.MasterOwnIcon) | Player.ChannelPreviewActive]</visible>
 						<texture>$INFO[ADSP.MasterOwnIcon]</texture>
 					</control>
 					<control type="image">
@@ -202,7 +203,7 @@
 						<width>80</width>
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
-						<visible>IsEmpty(ADSP.MasterOverrideIcon)</visible>
+						<visible>IsEmpty(ADSP.MasterOverrideIcon) + !Player.ChannelPreviewActive</visible>
 						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
 					</control>
 					<control type="image">
@@ -210,7 +211,7 @@
 						<width>80</width>
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
-						<visible>!IsEmpty(ADSP.MasterOverrideIcon)</visible>
+						<visible>![IsEmpty(ADSP.MasterOwnIcon) | Player.ChannelPreviewActive]</visible>
 						<texture>$INFO[ADSP.MasterOverrideIcon]</texture>
 					</control>
 					<control type="group">

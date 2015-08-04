@@ -216,7 +216,8 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "filename",         PLAYER_FILENAME },
                                   { "isinternetstream", PLAYER_ISINTERNETSTREAM },
                                   { "pauseenabled",     PLAYER_CAN_PAUSE },
-                                  { "seekenabled",      PLAYER_CAN_SEEK }};
+                                  { "seekenabled",      PLAYER_CAN_SEEK },
+                                  { "channelpreviewactive", PLAYER_IS_CHANNEL_PREVIEW_ACTIVE}};
 
 const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 
@@ -2183,7 +2184,14 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
           switch( info )
           {
           case PLAYER_PROGRESS:
-            value = (int)(g_application.GetPercentage());
+            if (IsPlayerChannelPreviewActive())
+            {
+              CEpgInfoTagPtr tag(GetEpgInfoTag());
+              if (tag)
+                value = tag->ProgressPercentage();
+            }
+            else
+              value = (int)(g_application.GetPercentage());
             break;
           case PLAYER_PROGRESS_CACHE:
             value = (int)(g_application.GetCachePercentage());
@@ -2413,6 +2421,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = m_playerShowInfo;
   else if (condition == PLAYER_SHOWCODEC)
     bReturn = m_playerShowCodec;
+  else if (condition == PLAYER_IS_CHANNEL_PREVIEW_ACTIVE)
+    bReturn = IsPlayerChannelPreviewActive();
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
     return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
@@ -5889,6 +5899,21 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
       return true;
   }
   return false;
+}
+
+bool CGUIInfoManager::IsPlayerOSDActive() const
+{
+  return m_playerShowInfo &&
+         (g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD) ||
+          g_windowManager.IsWindowActive(WINDOW_DIALOG_MUSIC_OSD));
+}
+
+bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
+{
+  return m_playerShowInfo &&
+         g_application.m_pPlayer->IsPlaying() &&
+         m_currentFile->HasPVRChannelInfoTag() &&
+         !g_PVRManager.IsPlayingChannel(m_currentFile->GetPVRChannelInfoTag());
 }
 
 CEpgInfoTagPtr CGUIInfoManager::GetEpgInfoTag() const

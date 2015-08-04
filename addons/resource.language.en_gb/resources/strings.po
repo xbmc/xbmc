@@ -15485,7 +15485,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36231"
-msgid "Pressing a number button in full screen mode will automatically switch to the channel number that was entered after 1 second."
+msgid "When flipping through channels using channel up/down buttons or when pressing a number button in full screen mode, channel switches must be confirmed using the OK button."
 msgstr ""
 
 #: system/settings/settings.xml

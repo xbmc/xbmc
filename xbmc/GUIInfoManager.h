@@ -183,8 +183,11 @@ public:
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
   void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
+  bool GetShowInfo() const { return m_playerShowInfo; }
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
   bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
+  bool IsPlayerOSDActive() const;
+  bool IsPlayerChannelPreviewActive() const;
 
   std::string GetSystemHeatInfo(int info);
   CTemperature GetGPUTemperature();

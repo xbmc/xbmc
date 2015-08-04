@@ -78,7 +78,19 @@ public:
   static void GetActions(std::vector<std::string> &actionList);
   static void GetWindows(std::vector<std::string> &windowList);
 
+  /*! \brief Obtain the action configured for a given window and key
+   \param window the window id
+   \param key the key to query the action for
+   \param fallback if no action is directly configured for the given window, obtain the action from fallback window, if exists or from global config as last resort
+   \return the action matching the key
+   */
   CAction GetAction(int window, const CKey &key, bool fallback = true);
+
+  /*! \brief Obtain the global action configured for a given key
+   \param key the key to query the action for
+   \return the global action
+   */
+  CAction GetGlobalAction(const CKey &key);
 
   /*! \brief Translate between a window name and it's id
    \param window name of the window
