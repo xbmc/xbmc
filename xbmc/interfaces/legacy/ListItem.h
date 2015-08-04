@@ -243,7 +243,7 @@ namespace XBMCAddon
        *     - exif*         : string (See CPictureInfoTag::TranslateString in PictureInfoTag.cpp for valid strings)
        * 
        * example:\n
-       *   - self.list.getSelectedItem().setInfo('video', { 'Genre': 'Comedy' })n\n
+       *   - self.list.getSelectedItem().setInfo('video', { 'genre': 'Comedy' })n\n
        */
       void setInfo(const char* type, const InfoLabelDict& infoLabels);
 
@@ -267,7 +267,7 @@ namespace XBMCAddon
        *     - language      : string (en)
        * 
        * example:
-       *   - self.list.getSelectedItem().addStreamInfo('video', { 'Codec': 'h264', 'Width' : 1280 })
+       *   - self.list.getSelectedItem().addStreamInfo('video', { 'codec': 'h264', 'width' : 1280 })
        */
       void addStreamInfo(const char* cType, const Properties& dictionary);
 
