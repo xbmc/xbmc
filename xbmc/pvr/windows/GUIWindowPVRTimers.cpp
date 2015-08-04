@@ -143,6 +143,10 @@ bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
       switch(message.GetParam1())
       {
         case ObservableMessageTimers:
+        case ObservableMessageEpg:
+        case ObservableMessageEpgContainer:
+        case ObservableMessageEpgActiveItem:
+        case ObservableMessageCurrentItem:
         {
           if (IsActive())
             SetInvalid();

@@ -35,9 +35,12 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
+#include "epg/EpgContainer.h"
 
 using namespace PVR;
 using namespace EPG;
+
+#define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
 
 #define CONTROL_LIST                  11
 
@@ -54,6 +57,8 @@ CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 
   if (IsObserving(g_infoManager))
     g_infoManager.UnregisterObserver(this);
+  if (IsObserving(g_EpgContainer))
+    g_EpgContainer.UnregisterObserver(this);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
@@ -81,6 +86,22 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
           ShowInfo(iItem);
           return true;
         }
+      }
+    }
+    break;
+  case GUI_MSG_REFRESH_LIST:
+    {
+      switch(message.GetParam1())
+      {
+        case ObservableMessageCurrentItem:
+          m_viewControl.SetItems(*m_vecItems);
+          return true;
+        case ObservableMessageEpg:
+        case ObservableMessageEpgContainer:
+        case ObservableMessageEpgActiveItem:
+          if (IsActive())
+            SetInvalid();
+          return true;
       }
     }
     break;
@@ -166,6 +187,8 @@ void CGUIDialogPVRChannelsOSD::Update()
 
   if (!IsObserving(g_infoManager))
     g_infoManager.RegisterObserver(this);
+  if (!IsObserving(g_EpgContainer))
+    g_EpgContainer.RegisterObserver(this);
 
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
 
@@ -191,6 +214,18 @@ void CGUIDialogPVRChannelsOSD::Update()
   }
 
   g_graphicsContext.Unlock();
+}
+
+void CGUIDialogPVRChannelsOSD::SetInvalid()
+{
+  if (m_refreshTimeout.IsTimePast())
+  {
+    VECFILEITEMS items = m_vecItems->GetList();
+    for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
+      (*it)->SetInvalid();
+    CGUIDialog::SetInvalid();
+    m_refreshTimeout.Set(MAX_INVALIDATION_FREQUENCY);
+  }
 }
 
 void CGUIDialogPVRChannelsOSD::SaveControlStates()
@@ -324,12 +359,8 @@ CGUIControl *CGUIDialogPVRChannelsOSD::GetFirstFocusableControl(int id)
 
 void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg == ObservableMessageCurrentItem)
-  {
-    g_graphicsContext.Lock();
-    m_viewControl.SetItems(*m_vecItems);
-    g_graphicsContext.Unlock();
-  }
+  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
+  CApplicationMessenger::Get().SendGUIMessage(m);
 }
 
 void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)
