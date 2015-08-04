@@ -139,7 +139,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       m_addon.reset();
       // Setup new screensaver instance
       AddonPtr addon;
-      if (!CAddonMgr::Get().GetAddon(CSettings::Get().GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
+      if (!CAddonMgr::Get().GetAddon(CSettings::Get().GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
         return false;
 
       m_addon = std::dynamic_pointer_cast<CScreenSaver>(addon);

@@ -427,7 +427,7 @@ bool CAddon::LoadStrings()
   // Path where the language strings reside
   std::string chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
 
-  m_hasStrings = m_strings.Load(chosenPath, CSettings::Get().GetString("locale.language"));
+  m_hasStrings = m_strings.Load(chosenPath, CSettings::Get().GetString(CSettings::SETTING_LOCALE_LANGUAGE));
   return m_checkedStrings = true;
 }
 

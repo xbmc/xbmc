@@ -565,31 +565,31 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
   switch (type)
   {
   case ADDON_VIZ:
-    setting = CSettings::Get().GetString("musicplayer.visualisation");
+    setting = CSettings::Get().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
     break;
   case ADDON_SCREENSAVER:
-    setting = CSettings::Get().GetString("screensaver.mode");
+    setting = CSettings::Get().GetString(CSettings::SETTING_SCREENSAVER_MODE);
     break;
   case ADDON_SCRAPER_ALBUMS:
-    setting = CSettings::Get().GetString("musiclibrary.albumsscraper");
+    setting = CSettings::Get().GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER);
     break;
   case ADDON_SCRAPER_ARTISTS:
-    setting = CSettings::Get().GetString("musiclibrary.artistsscraper");
+    setting = CSettings::Get().GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER);
     break;
   case ADDON_SCRAPER_MOVIES:
-    setting = CSettings::Get().GetString("scrapers.moviesdefault");
+    setting = CSettings::Get().GetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT);
     break;
   case ADDON_SCRAPER_MUSICVIDEOS:
-    setting = CSettings::Get().GetString("scrapers.musicvideosdefault");
+    setting = CSettings::Get().GetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT);
     break;
   case ADDON_SCRAPER_TVSHOWS:
-    setting = CSettings::Get().GetString("scrapers.tvshowsdefault");
+    setting = CSettings::Get().GetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT);
     break;
   case ADDON_WEB_INTERFACE:
-    setting = CSettings::Get().GetString("services.webskin");
+    setting = CSettings::Get().GetString(CSettings::SETTING_SERVICES_WEBSKIN);
     break;
   case ADDON_RESOURCE_LANGUAGE:
-    setting = CSettings::Get().GetString("locale.language");
+    setting = CSettings::Get().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
     break;
   default:
     return false;
@@ -602,28 +602,28 @@ bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
   switch (type)
   {
   case ADDON_VIZ:
-    CSettings::Get().SetString("musicplayer.visualisation",addonID);
+    CSettings::Get().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION,addonID);
     break;
   case ADDON_SCREENSAVER:
-    CSettings::Get().SetString("screensaver.mode",addonID);
+    CSettings::Get().SetString(CSettings::SETTING_SCREENSAVER_MODE,addonID);
     break;
   case ADDON_SCRAPER_ALBUMS:
-    CSettings::Get().SetString("musiclibrary.albumsscraper",addonID);
+    CSettings::Get().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER,addonID);
     break;
   case ADDON_SCRAPER_ARTISTS:
-    CSettings::Get().SetString("musiclibrary.artistsscraper",addonID);
+    CSettings::Get().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER,addonID);
     break;
   case ADDON_SCRAPER_MOVIES:
-    CSettings::Get().SetString("scrapers.moviesdefault",addonID);
+    CSettings::Get().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT,addonID);
     break;
   case ADDON_SCRAPER_MUSICVIDEOS:
-    CSettings::Get().SetString("scrapers.musicvideosdefault",addonID);
+    CSettings::Get().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,addonID);
     break;
   case ADDON_SCRAPER_TVSHOWS:
-    CSettings::Get().SetString("scrapers.tvshowsdefault",addonID);
+    CSettings::Get().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT,addonID);
     break;
   case ADDON_RESOURCE_LANGUAGE:
-    CSettings::Get().SetString("locale.language", addonID);
+    CSettings::Get().SetString(CSettings::SETTING_LOCALE_LANGUAGE, addonID);
     break;
   default:
     return false;

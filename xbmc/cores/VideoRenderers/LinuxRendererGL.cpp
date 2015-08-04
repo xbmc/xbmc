@@ -925,7 +925,7 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else
   {
-    int requestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
+    int requestedMethod = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
     CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
 
     if (m_pYUVShader)
@@ -3240,7 +3240,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 {
   if(feature == RENDERFEATURE_BRIGHTNESS)
   {
-    if ((m_renderMethod & RENDER_VDPAU) && !CSettings::Get().GetBool("videoscreen.limitedrange"))
+    if ((m_renderMethod & RENDER_VDPAU) && !CSettings::Get().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
       return true;
 
     if (m_renderMethod & RENDER_VAAPI)
@@ -3253,7 +3253,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   
   if(feature == RENDERFEATURE_CONTRAST)
   {
-    if ((m_renderMethod & RENDER_VDPAU) && !CSettings::Get().GetBool("videoscreen.limitedrange"))
+    if ((m_renderMethod & RENDER_VDPAU) && !CSettings::Get().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
       return true;
 
     if (m_renderMethod & RENDER_VAAPI)
@@ -3389,7 +3389,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
     // if scaling is below level, avoid hq scaling
     float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
     float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-    int minScale = CSettings::Get().GetInt("videoplayer.hqscalers");
+    int minScale = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
     if (scaleX < minScale && scaleY < minScale)
       return false;
 

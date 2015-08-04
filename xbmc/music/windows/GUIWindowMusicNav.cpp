@@ -108,7 +108,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        message.SetStringParam(CSettings::Get().GetString("mymusic.defaultlibview"));
+        message.SetStringParam(CSettings::Get().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW));
       
       DisplayEmptyDatabaseMessage(false); // reset message state
 
@@ -515,9 +515,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
          nodetype == NODE_TYPE_OVERVIEW ||
          nodetype == NODE_TYPE_TOP100))
     {
-      if (!item->IsPath(CSettings::Get().GetString("mymusic.defaultlibview")))
+      if (!item->IsPath(CSettings::Get().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW)))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
-      if (!CSettings::Get().GetString("mymusic.defaultlibview").empty())
+      if (!CSettings::Get().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW).empty())
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->GetPath());
@@ -642,12 +642,12 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_SET_DEFAULT:
-    CSettings::Get().SetString("mymusic.defaultlibview", GetQuickpathName(item->GetPath()));
+    CSettings::Get().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, GetQuickpathName(item->GetPath()));
     CSettings::Get().Save();
     return true;
 
   case CONTEXT_BUTTON_CLEAR_DEFAULT:
-    CSettings::Get().SetString("mymusic.defaultlibview", "");
+    CSettings::Get().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, "");
     CSettings::Get().Save();
     return true;
 

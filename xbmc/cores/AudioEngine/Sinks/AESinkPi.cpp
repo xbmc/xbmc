@@ -191,11 +191,11 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   m_initDevice = device;
   m_initFormat = format;
 
-  if (m_passthrough || CSettings::Get().GetString("audiooutput.audiodevice") == "PI:HDMI")
+  if (m_passthrough || CSettings::Get().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:HDMI")
     m_output = AESINKPI_HDMI;
-  else if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Analogue")
+  else if (CSettings::Get().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Analogue")
     m_output = AESINKPI_ANALOGUE;
-  else if (CSettings::Get().GetString("audiooutput.audiodevice") == "PI:Both")
+  else if (CSettings::Get().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Both")
     m_output = AESINKPI_BOTH;
   else assert(0);
 
@@ -222,7 +222,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
 
   CLog::Log(LOGDEBUG, "%s:%s Format:%d Channels:%d Samplerate:%d framesize:%d bufsize:%d bytes/s=%.2f dest=%s", CLASSNAME, __func__,
                 m_format.m_dataFormat, channels, m_format.m_sampleRate, m_format.m_frameSize, m_format.m_frameSize * m_format.m_frames, 1.0/m_sinkbuffer_sec_per_byte,
-                CSettings::Get().GetString("audiooutput.audiodevice").c_str());
+                CSettings::Get().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE).c_str());
 
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
 

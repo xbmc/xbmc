@@ -118,7 +118,7 @@ void CPVRClient::OnPreUnInstall()
 
 void CPVRClient::OnPostUnInstall()
 {
-  if (CSettings::Get().GetBool("pvrmanager.enabled"))
+  if (CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
     PVR::CPVRManager::Get().Start(true);
 }
 

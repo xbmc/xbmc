@@ -149,7 +149,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
     return true;
   else
   {
-    std::string strPlaylistsPath = CSettings::Get().GetString("system.playlistspath");
+    std::string strPlaylistsPath = CSettings::Get().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
     URIUtils::RemoveSlashAtEnd(strPlaylistsPath);
     if (StringUtils::StartsWithNoCase(realPath, strPlaylistsPath)) 
       return true;

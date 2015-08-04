@@ -649,7 +649,7 @@ void CWakeOnAccess::OnSettingsLoaded()
 
 void CWakeOnAccess::OnSettingsSaved()
 {
-  bool enabled = CSettings::Get().GetBool("powermanagement.wakeonaccess");
+  bool enabled = CSettings::Get().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
 
   if (enabled != IsEnabled())
   {
@@ -669,7 +669,7 @@ void CWakeOnAccess::SetEnabled(bool enabled)
 
 void CWakeOnAccess::LoadFromXML()
 {
-  bool enabled = CSettings::Get().GetBool("powermanagement.wakeonaccess");
+  bool enabled = CSettings::Get().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(GetSettingFile()))

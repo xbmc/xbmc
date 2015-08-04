@@ -355,7 +355,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       if (!item->IsParentFolder() && !item->IsReadOnly())
       {
         // either we're at the playlist location or its been explicitly allowed
-        if (inPlaylists || CSettings::Get().GetBool("filelists.allowfiledeletion"))
+        if (inPlaylists || CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION))
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
