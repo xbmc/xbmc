@@ -136,6 +136,8 @@ COverlayText::COverlayText(CDVDOverlayText * src)
   }
   m_width  = 0;
   m_height = 0;
+
+  m_type = TYPE_GUITEXT;
 }
 
 COverlayText::~COverlayText()
