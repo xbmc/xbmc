@@ -616,6 +616,10 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
 
 void CFGLoader::SettingOptionsDSVideoRendererFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
+  //todo dx11
+  list.push_back(std::make_pair("madshi Video Renderer (madVR)", "madVR"));
+  return;
+  
   list.push_back(std::make_pair("Enhanced Video Renderer (EVR)", "EVR"));
   list.push_back(std::make_pair("Video Mixing Renderer 9 (VMR9)", "VMR9"));
   

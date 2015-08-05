@@ -1189,7 +1189,7 @@
         </setting>
         <setting id="dsplayer.videorenderer" type="string" label="55001" help="">
           <level>0</level>
-          <default>EVR</default>
+          <default>madVR</default>
           <constraints>
             <options>dsvideorenderer</options>
           </constraints>
