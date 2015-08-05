@@ -79,4 +79,6 @@ private:
   DWORD m_D3DRS_DESTBLEND = 0;
 
   IDirect3DPixelShader9* m_pPix = nullptr;
+
+  float m_fColor[4];
 };

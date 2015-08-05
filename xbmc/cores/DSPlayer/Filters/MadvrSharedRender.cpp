@@ -43,6 +43,8 @@ struct VID_FRAME_VERTEX
 
 CMadvrSharedRender::CMadvrSharedRender()
 {
+  color_t clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
+  CD3DHelper::XMStoreColor(m_fColor, clearColour);
 }
 
 CMadvrSharedRender::~CMadvrSharedRender()
@@ -213,8 +215,6 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer, int width, int
   // Render Kodi Gui
   g_Windowing.BeginRender();
   RenderToTexture(layer);
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  pContext->Flush();
   (layer == RENDER_LAYER_UNDER) ? g_windowManager.Render() : g_application.RenderNoPresent();
   g_Windowing.EndRender();
   CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
@@ -230,8 +230,11 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer, int width, int
     return hr;
 
   // Draw Kodi shared texture on madVR
-  if (FAILED(RenderTexture(layer)))
-    return hr;
+  if (CMadvrCallback::Get()->IsGuiActive())
+  { 
+    if (FAILED(RenderTexture(layer)))
+      return hr;
+  }
 
   // Restore madVR states
   if (FAILED(RestoreMadDeviceState()))
@@ -246,13 +249,11 @@ HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
   HRESULT hr = S_OK;
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   ID3D11RenderTargetView* pRenderTargetView;
-  color_t clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
+
   (layer == RENDER_LAYER_UNDER) ? pRenderTargetView = m_pUnderSurface : pRenderTargetView = m_pOverSurface;
 
-  pContext->OMSetRenderTargets(1, &m_pOverSurface, 0);
-
-  if (!g_Windowing.ClearBuffers(clearColour))
-    return E_FAIL;
+  pContext->OMSetRenderTargets(1, &pRenderTargetView, 0);
+  pContext->ClearRenderTargetView(pRenderTargetView, m_fColor);
 
   return hr;
 }
