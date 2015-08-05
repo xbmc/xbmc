@@ -207,6 +207,7 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer)
 
   // Call the render from madVR thread
   (layer == RENDER_LAYER_UNDER) ? g_windowManager.Render() : g_application.RenderNoPresent();
+  g_Windowing.FinishCommandList();
 
   // Present the frame from madVR thread
   CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
