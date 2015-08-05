@@ -33,7 +33,7 @@ CGUIDialogTeletext::CGUIDialogTeletext()
     : CGUIDialog(WINDOW_DIALOG_OSD_TELETEXT, "")
 {
   m_pTxtTexture = NULL;
-  m_renderOrder = INT_MAX - 3;
+  m_renderOrder = RENDER_ORDER_DIALOG_TELETEXT;
 }
 
 CGUIDialogTeletext::~CGUIDialogTeletext()
