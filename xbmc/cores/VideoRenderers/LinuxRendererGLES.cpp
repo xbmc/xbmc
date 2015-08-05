@@ -801,7 +801,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
 #ifdef TARGET_DARWIN_IOS
   float ios_version = CDarwinUtils::GetIOSVersion();
 #endif
-  int requestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
+  int requestedMethod = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
 
   ReleaseShaders();

@@ -495,7 +495,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         case SC_MONITORPOWER:
           if (g_application.m_pPlayer->IsPlaying() || g_application.m_pPlayer->IsPausedPlayback())
             return 0;
-          else if(CSettings::Get().GetInt("powermanagement.displaysoff") == 0)
+          else if(CSettings::Get().GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) == 0)
             return 0;
           break;
         case SC_SCREENSAVE:

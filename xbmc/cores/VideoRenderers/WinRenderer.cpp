@@ -398,7 +398,7 @@ unsigned int CWinRenderer::PreInit()
   m_formats.clear();
   m_formats.push_back(RENDER_FMT_YUV420P);
 
-  m_iRequestedMethod = CSettings::Get().GetInt("videoplayer.rendermethod");
+  m_iRequestedMethod = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
 
   if (g_advancedSettings.m_DXVAForceProcessorRenderer
   ||  m_iRequestedMethod == RENDER_METHOD_DXVA)
@@ -1126,7 +1126,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
         // if scaling is below level, avoid hq scaling
         float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
         float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-        int minScale = CSettings::Get().GetInt("videoplayer.hqscalers");
+        int minScale = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
         if (scaleX < minScale && scaleY < minScale)
           return false;
         return true;

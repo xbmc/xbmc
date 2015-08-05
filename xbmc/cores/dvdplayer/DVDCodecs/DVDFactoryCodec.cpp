@@ -209,7 +209,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 
 #if defined(HAS_LIBAMCODEC)
   // amcodec can handle dvd playback.
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.useamcodec"))
+  if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC))
   {
     switch(hint.codec)
     {
@@ -234,7 +234,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(TARGET_DARWIN_OSX)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usevda") && !g_advancedSettings.m_useFfmpegVda)
+  if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA) && !g_advancedSettings.m_useFfmpegVda)
   {
     if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
     {
@@ -244,7 +244,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usevideotoolbox"))
+  if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
   {
     if (g_sysinfo.HasVideoToolBoxDecoder())
     {
@@ -282,7 +282,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(HAVE_LIBOPENMAX)
-    if (CSettings::Get().GetBool("videoplayer.useomx") && !hint.software )
+    if (CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMX) && !hint.software )
     {
       if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_VC1)
       {

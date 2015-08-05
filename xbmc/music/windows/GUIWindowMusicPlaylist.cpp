@@ -286,7 +286,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
   if (CGUIKeyboardFactory::ShowAndGetInput(strNewFileName, CVariant{g_localizeStrings.Get(16012)}, false))
   {
     // need 2 rename it
-    std::string strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString("system.playlistspath"), "music");
+    std::string strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "music");
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
     std::string strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
@@ -448,12 +448,12 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    std::string strTrackLeft=CSettings::Get().GetString("musicfiles.nowplayingtrackformat");
+    std::string strTrackLeft=CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT);
     if (strTrackLeft.empty())
-      strTrackLeft = CSettings::Get().GetString("musicfiles.trackformat");
-    std::string strTrackRight=CSettings::Get().GetString("musicfiles.nowplayingtrackformatright");
+      strTrackLeft = CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
+    std::string strTrackRight=CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMATRIGHT);
     if (strTrackRight.empty())
-      strTrackRight = CSettings::Get().GetString("musicfiles.trackformatright");
+      strTrackRight = CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT);
     CLabelFormatter formatter(strTrackLeft, strTrackRight);
     formatter.FormatLabels(pItem);
   } // if (pItem->m_musicInfoTag.Loaded())

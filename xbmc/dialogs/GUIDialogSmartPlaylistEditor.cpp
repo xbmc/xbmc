@@ -197,7 +197,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 
 void CGUIDialogSmartPlaylistEditor::OnOK()
 {
-  std::string systemPlaylistsPath = CSettings::Get().GetString("system.playlistspath");
+  std::string systemPlaylistsPath = CSettings::Get().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
   // save our playlist
   if (m_path.empty())
   {

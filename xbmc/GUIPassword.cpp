@@ -71,7 +71,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
     }
     else
     {
-      if (0 != CSettings::Get().GetInt("masterlock.maxretries") && pItem->m_iBadPwdCount >= CSettings::Get().GetInt("masterlock.maxretries"))
+      if (0 != CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) && pItem->m_iBadPwdCount >= CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
       { // user previously exhausted all retries, show access denied error
         CGUIDialogOK::ShowAndGetInput(CVariant{12345}, CVariant{12346});
         return false;
@@ -106,7 +106,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
     case 1:
       {
         // password entry failed
-        if (0 != CSettings::Get().GetInt("masterlock.maxretries"))
+        if (0 != CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
           pItem->m_iBadPwdCount++;
         sprintf(buffer,"%i",pItem->m_iBadPwdCount);
         CMediaSourceSettings::Get().UpdateSource(strType, strLabel, "badpwdcount", buffer);
@@ -130,7 +130,7 @@ bool CGUIPassword::CheckStartUpLock()
   int iVerifyPasswordResult = -1;
   std::string strHeader = g_localizeStrings.Get(20075);
   if (iMasterLockRetriesLeft == -1)
-    iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries");
+    iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
   if (g_passwordManager.iMasterLockRetriesLeft == 0) g_passwordManager.iMasterLockRetriesLeft = 1;
   std::string strPassword = CProfilesManager::Get().GetMasterProfile().getLockCode();
   if (CProfilesManager::Get().GetMasterProfile().getLockMode() == 0)
@@ -157,7 +157,7 @@ bool CGUIPassword::CheckStartUpLock()
 
   if (iVerifyPasswordResult == 0)
   {
-    g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries");
+    g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     return true;  // OK The MasterCode Accepted! XBMC Can Run!
   }
   else
@@ -233,7 +233,7 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
 {
   bCanceled = false;
   if (iMasterLockRetriesLeft == -1)
-    iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries");
+    iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
   if ((LOCK_MODE_EVERYONE < CProfilesManager::Get().GetMasterProfile().getLockMode() && !bMasterUser) && !bPromptUser)
     // not unlocked, but calling code doesn't want to prompt user
     return false;
@@ -273,7 +273,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
   if (!bResetCount)
   {
     // Bad mastercode entered
-    if (0 < CSettings::Get().GetInt("masterlock.maxretries"))
+    if (0 < CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
     {
       // We're keeping track of how many bad passwords are entered
       if (1 < g_passwordManager.iMasterLockRetriesLeft)
@@ -298,7 +298,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     CGUIDialogOK::ShowAndGetInput(CVariant{20075}, CVariant{12345}, CVariant{std::move(dlgLine1)}, CVariant{0});
   }
   else
-    g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt("masterlock.maxretries"); // user entered correct mastercode, reset retries to max allowed
+    g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES); // user entered correct mastercode, reset retries to max allowed
 }
 
 bool CGUIPassword::CheckLock(LockType btnType, const std::string& strPassword, int iHeading)
@@ -506,7 +506,7 @@ void CGUIPassword::OnSettingAction(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "masterlock.lockcode")
+  if (settingId == CSettings::SETTING_MASTERLOCK_LOCKCODE)
     SetMasterLockMode();
 }
 

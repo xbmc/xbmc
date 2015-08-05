@@ -233,7 +233,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
   {
     try
     {
-      bool bIgnoreEpgDB = CSettings::Get().GetBool("epg.ignoredbforclient");
+      bool bIgnoreEpgDB = CSettings::Get().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
       while (!m_pDS->eof())
       {
         CPVRChannelPtr channel = CPVRChannelPtr(new CPVRChannel());

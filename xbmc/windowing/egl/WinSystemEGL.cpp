@@ -334,7 +334,7 @@ bool CWinSystemEGL::DestroyWindow()
 bool CWinSystemEGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight, true, 0);
-  int vsync_mode = CSettings::Get().GetInt("videoscreen.vsync");
+  int vsync_mode = CSettings::Get().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
   if (vsync_mode != VSYNC_DRIVER)
     SetVSyncImpl(m_iVSyncMode);
   return true;
@@ -344,7 +344,7 @@ bool CWinSystemEGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 {
   CreateNewWindow("", fullScreen, res, NULL);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
-  int vsync_mode = CSettings::Get().GetInt("videoscreen.vsync");
+  int vsync_mode = CSettings::Get().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
   if (vsync_mode != VSYNC_DRIVER)
     SetVSyncImpl(m_iVSyncMode);
   return true;
@@ -537,7 +537,7 @@ bool CWinSystemEGL::Support3D(int width, int height, uint32_t mode) const
   RESOLUTION_INFO &curr = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
 
   // if we are using automatic hdmi mode switching
-  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
+  if (CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
   {
     int searchWidth = curr.iScreenWidth;
     int searchHeight = curr.iScreenHeight;

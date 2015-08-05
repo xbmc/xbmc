@@ -49,15 +49,15 @@ bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer
     return false;
 
   // omxplayer only handles Pi sink
-  if (CSettings::Get().GetString("audiooutput.audiodevice") != "PI:Analogue" &&
-      CSettings::Get().GetString("audiooutput.audiodevice") != "PI:HDMI" &&
-      CSettings::Get().GetString("audiooutput.audiodevice") != "PI:Both")
+  if (CSettings::Get().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:Analogue" &&
+      CSettings::Get().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:HDMI" &&
+      CSettings::Get().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:Both")
   {
     CLog::Log(LOGNOTICE, "%s OMXPlayer unsuitable due to audio sink", __func__);
     return true;
   }
   // omxplayer doesn't handle ac3 transcode
-  if (CSettings::Get().GetBool("audiooutput.ac3transcode"))
+  if (CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE))
   {
     CLog::Log(LOGNOTICE, "%s OMXPlayer unsuitable due to ac3transcode", __func__);
     return true;

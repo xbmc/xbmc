@@ -92,7 +92,7 @@ void CAddonStatusHandler::Process()
   {
     if (m_addon->Type() == ADDON_PVRDLL)
     {
-      if (!CSettings::Get().GetBool("pvrmanager.hideconnectionlostwarning"))
+      if (!CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING))
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, m_addon->Name().c_str(), g_localizeStrings.Get(36030)); // connection lost
       // TODO handle disconnects after the add-on's been initialised
     }

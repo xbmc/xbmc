@@ -39,7 +39,7 @@ CWinSystemWin32DX::~CWinSystemWin32DX()
 
 bool CWinSystemWin32DX::UseWindowedDX(bool fullScreen)
 {
-  return (CSettings::Get().GetBool("videoscreen.fakefullscreen") || !fullScreen);
+  return (CSettings::Get().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN) || !fullScreen);
 }
 
 bool CWinSystemWin32DX::CreateNewWindow(std::string name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)

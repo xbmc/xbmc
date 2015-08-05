@@ -748,7 +748,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<stri
   // virtual music window which returns the last open music window (aka the music start window)
   if (iWindowID == WINDOW_MUSIC)
   {
-    iWindowID = CSettings::Get().GetInt("mymusic.startwindow");
+    iWindowID = CSettings::Get().GetInt(CSettings::SETTING_MYMUSIC_STARTWINDOW);
     // ensure the music virtual window only returns music files and music library windows
     if (iWindowID != WINDOW_MUSIC_NAV)
       iWindowID = WINDOW_MUSIC_FILES;

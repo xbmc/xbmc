@@ -32,6 +32,7 @@
 #include "music/MusicDatabase.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
+#include "settings/Settings.h"
 #include "storage/MediaManager.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
@@ -312,7 +313,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "karaoke.export")
+  if (settingId == CSettings::SETTING_KARAOKE_EXPORT)
   {
     CContextButtons choices;
     choices.Add(1, g_localizeStrings.Get(22034));
@@ -343,7 +344,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
       }
     }
   }
-  else if (settingId == "karaoke.importcsv")
+  else if (settingId == CSettings::SETTING_KARAOKE_IMPORTCSV)
   {
     std::string path(CProfilesManager::Get().GetDatabaseFolder());
     VECSOURCES shares;
@@ -356,14 +357,14 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
       musicdatabase.Close();
     }
   }
-  else if (settingId == "musiclibrary.cleanup")
+  else if (settingId == CSettings::SETTING_MUSICLIBRARY_CLEANUP)
   {
     if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
       g_application.StartMusicCleanup(true);
   }
-  else if (settingId == "musiclibrary.export")
+  else if (settingId == CSettings::SETTING_MUSICLIBRARY_EXPORT)
     CBuiltins::Execute("exportlibrary(music)");
-  else if (settingId == "musiclibrary.import")
+  else if (settingId == CSettings::SETTING_MUSICLIBRARY_IMPORT)
   {
     std::string path;
     VECSOURCES shares;
@@ -376,14 +377,14 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
       musicdatabase.Close();
     }
   }
-  else if (settingId == "videolibrary.cleanup")
+  else if (settingId == CSettings::SETTING_VIDEOLIBRARY_CLEANUP)
   {
     if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
       g_application.StartVideoCleanup(true);
   }
-  else if (settingId == "videolibrary.export")
+  else if (settingId == CSettings::SETTING_VIDEOLIBRARY_EXPORT)
     CBuiltins::Execute("exportlibrary(video)");
-  else if (settingId == "videolibrary.import")
+  else if (settingId == CSettings::SETTING_VIDEOLIBRARY_IMPORT)
   {
     std::string path;
     VECSOURCES shares;

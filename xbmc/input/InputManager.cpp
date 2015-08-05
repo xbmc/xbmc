@@ -96,7 +96,7 @@ void CInputManager::InitializeInputs()
   m_Keyboard.Initialize();
 
   m_Mouse.Initialize();
-  m_Mouse.SetEnabled(CSettings::Get().GetBool("input.enablemouse"));
+  m_Mouse.SetEnabled(CSettings::Get().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 }
 
 void CInputManager::ReInitializeJoystick()
@@ -836,11 +836,11 @@ void CInputManager::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "input.enablemouse")
+  if (settingId == CSettings::SETTING_INPUT_ENABLEMOUSE)
     m_Mouse.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue());
 
 #if defined(HAS_SDL_JOYSTICK)
-  if (settingId == "input.enablejoystick")
+  if (settingId == CSettings::SETTING_INPUT_ENABLEJOYSTICK)
     m_Joystick.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue() &&
     PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
 #endif

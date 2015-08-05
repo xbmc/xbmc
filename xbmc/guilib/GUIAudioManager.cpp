@@ -51,7 +51,7 @@ void CGUIAudioManager::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "lookandfeel.soundskin")
+  if (settingId == CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN)
   {
     Enable(true);
     Load();
@@ -63,12 +63,12 @@ bool CGUIAudioManager::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   if (setting == NULL)
     return false;
 
-  if (setting->GetId() == "lookandfeel.soundskin")
+  if (setting->GetId() == CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN)
   {
     //We change to new resource.uisounds.confluence default only if current
     //skin is confluence. Otherwise keep it as SKINDEFAULT.
     return !(((CSettingString*)setting)->GetValue() == "SKINDEFAULT"
-        && CSettings::Get().GetString("lookandfeel.skin") == "skin.confluence");
+        && CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == "skin.confluence");
   }
   return true;
 }
@@ -222,7 +222,7 @@ void CGUIAudioManager::UnLoad()
 
 std::string GetSoundSkinPath()
 {
-  const std::string id = CSettings::Get().GetString("lookandfeel.soundskin");
+  const std::string id = CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN);
   if (id == "OFF")
     return "";
 
@@ -406,7 +406,7 @@ IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const std::s
 void CGUIAudioManager::Enable(bool bEnable)
 {
   // always deinit audio when we don't want gui sounds
-  if (CSettings::Get().GetString("lookandfeel.soundskin")=="OFF")
+  if (CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN)=="OFF")
     bEnable = false;
 
   CSingleLock lock(m_cs);

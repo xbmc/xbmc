@@ -151,7 +151,7 @@ void CActiveAEDSP::Activate(bool bAsync /* = false */)
   CLog::Log(LOGNOTICE, "ActiveAE DSP - starting");
 
   /* don't start if Settings->System->Audio->Audio DSP isn't checked */
-  if (!CSettings::Get().GetBool("audiooutput.dspaddonsenabled"))
+  if (!CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
     return;
 
   Cleanup();
@@ -260,7 +260,7 @@ bool CActiveAEDSP::InstallAddonAllowed(const string &strAddonId) const
 
 void CActiveAEDSP::MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer)
 {
-  if (IsActivated() && CSettings::Get().GetInt("general.addonupdates") == AUTO_UPDATES_ON)
+  if (IsActivated() && CSettings::Get().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
   {
     CSingleLock lock(m_critSection);
     m_outdatedAddons.insert(make_pair(strAddonId, strReferer));
@@ -302,7 +302,7 @@ void CActiveAEDSP::ResetDatabase(void)
 
   CLog::Log(LOGNOTICE, "ActiveAE DSP - database cleared");
 
-  if (CSettings::Get().GetBool("audiooutput.dspaddonsenabled"))
+  if (CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
   {
     CLog::Log(LOGNOTICE, "ActiveAE DSP - restarting the audio DSP handler");
     m_databaseDSP.Open();
@@ -320,7 +320,7 @@ void CActiveAEDSP::OnSettingAction(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "audiooutput.dspsettings")
+  if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS)
   {
     if (IsActivated())
     {
@@ -329,7 +329,7 @@ void CActiveAEDSP::OnSettingAction(const CSetting *setting)
         dialog->Open();
     }
   }
-  else if (settingId == "audiooutput.dspresetdb")
+  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB)
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 36440, 750, 0))
     {
@@ -763,7 +763,7 @@ bool CActiveAEDSP::UpdateAddons(void)
       IsActivated())
   {
     m_noAddonWarningDisplayed = true;
-    CSettings::Get().SetBool("audiooutput.dspaddonsenabled", false);
+    CSettings::Get().SetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED, false);
     CGUIDialogOK::ShowAndGetInput(24055, 24056, 24057, 24058);
     CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
     g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_SYSTEM);

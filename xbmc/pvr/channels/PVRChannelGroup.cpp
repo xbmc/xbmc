@@ -146,8 +146,8 @@ std::pair<int, int> CPVRChannelGroup::PathIdToStorageId(uint64_t storageId)
 void CPVRChannelGroup::OnInit(void)
 {
   CSettings::Get().RegisterCallback(this, {
-    "pvrmanager.backendchannelorder",
-    "pvrmanager.usebackendchannelnumbers"
+    CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER,
+    CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS
   });
 }
 
@@ -156,8 +156,8 @@ bool CPVRChannelGroup::Load(void)
   /* make sure this container is empty before loading */
   Unload();
 
-  m_bUsingBackendChannelOrder   = CSettings::Get().GetBool("pvrmanager.backendchannelorder");
-  m_bUsingBackendChannelNumbers = CSettings::Get().GetBool("pvrmanager.usebackendchannelnumbers");
+  m_bUsingBackendChannelOrder   = CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER);
+  m_bUsingBackendChannelNumbers = CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS);
 
   int iChannelCount = m_iGroupId > 0 ? LoadFromDb() : 0;
   CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
@@ -192,7 +192,7 @@ void CPVRChannelGroup::Unload(void)
 bool CPVRChannelGroup::Update(void)
 {
   if (GroupType() == PVR_GROUP_TYPE_USER_DEFINED ||
-      !CSettings::Get().GetBool("pvrmanager.syncchannelgroups"))
+      !CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS))
     return true;
 
   CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName);
@@ -272,7 +272,7 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
 
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
-  std::string iconPath = CSettings::Get().GetString("pvrmenu.iconpath");
+  std::string iconPath = CSettings::Get().GetString(CSettings::SETTING_PVRMENU_ICONPATH);
   if (iconPath.empty())
     return;
 
@@ -913,7 +913,7 @@ bool CPVRChannelGroup::Renumber(void)
 {
   bool bReturn(false);
   unsigned int iChannelNumber(0);
-  bool bUseBackendChannelNumbers(CSettings::Get().GetBool("pvrmanager.usebackendchannelnumbers") && g_PVRClients->EnabledClientAmount() == 1);
+  bool bUseBackendChannelNumbers(CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) && g_PVRClients->EnabledClientAmount() == 1);
 
   if (PreventSortAndRenumber())
     return true;
@@ -1013,11 +1013,11 @@ void CPVRChannelGroup::OnSettingChanged(const CSetting *setting)
   }
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "pvrmanager.backendchannelorder" || settingId == "pvrmanager.usebackendchannelnumbers")
+  if (settingId == CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER || settingId == CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS)
   {
     CSingleLock lock(m_critSection);
-    bool bUsingBackendChannelOrder   = CSettings::Get().GetBool("pvrmanager.backendchannelorder");
-    bool bUsingBackendChannelNumbers = CSettings::Get().GetBool("pvrmanager.usebackendchannelnumbers");
+    bool bUsingBackendChannelOrder   = CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER);
+    bool bUsingBackendChannelNumbers = CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS);
     bool bChannelNumbersChanged      = m_bUsingBackendChannelNumbers != bUsingBackendChannelNumbers;
     bool bChannelOrderChanged        = m_bUsingBackendChannelOrder != bUsingBackendChannelOrder;
 

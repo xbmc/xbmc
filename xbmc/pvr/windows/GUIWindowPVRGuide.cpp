@@ -204,7 +204,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
           {
             case ACTION_SELECT_ITEM:
             case ACTION_MOUSE_LEFT_CLICK:
-              switch(CSettings::Get().GetInt("epg.selectaction"))
+              switch(CSettings::Get().GetInt(CSettings::SETTING_EPG_SELECTACTION))
               {
                 case EPG_SELECT_ACTION_CONTEXT_MENU:
                   OnPopupMenu(iItem);

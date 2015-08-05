@@ -243,7 +243,7 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, std::vector<REFRESHRA
 bool CWinSystemBase::UseLimitedColor()
 {
 #if defined(HAS_GL) || defined(HAS_DX)
-  static CSettingBool* setting = (CSettingBool*)CSettings::Get().GetSetting("videoscreen.limitedrange");
+  static CSettingBool* setting = (CSettingBool*)CSettings::Get().GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
   return setting->GetValue();
 #else
   return false;
