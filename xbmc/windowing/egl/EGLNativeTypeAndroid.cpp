@@ -69,6 +69,7 @@ void CEGLNativeTypeAndroid::Initialize()
   std::string displaySize;
   m_width = m_height = 0;
 
+  /*
   // FIXME: Temporary shield specific hack to obtain HDMI resolution
   //        Remove and use New Android M API
   if (DeviceCanUseDisplaysize(CJNIBuild::DEVICE))
@@ -89,6 +90,7 @@ void CEGLNativeTypeAndroid::Initialize()
       m_height = StringUtils::IsInteger(aSize[1]) ? atoi(aSize[1].c_str()) : 0;
     }
   }
+  */
 
   return;
 }

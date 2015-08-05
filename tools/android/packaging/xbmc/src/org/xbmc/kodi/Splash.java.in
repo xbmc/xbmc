@@ -64,7 +64,7 @@ public class Splash extends Activity {
   private static final int DownloadObbDone = 91;
   private static final int StartingXBMC = 99;
 
-  private static final String TAG = "@APP_NAME@";
+  private static final String TAG = "KODI";
 
   private String mCpuinfo = "";
   private ArrayList<String> mMounts = new ArrayList<String>();

@@ -1782,11 +1782,6 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
   if (!m_opened)
     return VC_BUFFER;
 
-  // grr, m_RenderUpdateCallBackFn in g_renderManager is NULL'ed during
-  // g_renderManager.Configure call by player, which happens after the codec
-  // OpenDecoder call. So we need to restore it but it does not seem to stick :)
-  g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
-
   if (pData)
   {
     am_private->am_pkt.data = pData;
@@ -2346,7 +2341,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   ShowMainVideo(true);
 }
 
-void CAMLCodec::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
+void CAMLCodec::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect, DWORD flags, const void*)
 {
   CAMLCodec *codec = (CAMLCodec*)ctx;
   codec->SetVideoRect(SrcRect, DestRect);

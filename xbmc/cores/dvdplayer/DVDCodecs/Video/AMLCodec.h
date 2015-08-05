@@ -63,7 +63,7 @@ private:
   std::string   GetStereoMode();
   static void   RenderFeaturesCallBack(const void *ctx, Features &renderFeatures);
   void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
-  static void   RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
+  static void   RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect, DWORD flags, const void*);
 
   DllLibAmCodec   *m_dll;
   bool             m_opened;

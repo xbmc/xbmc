@@ -41,10 +41,6 @@ namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
 class CDVDVideoCodecStageFright;
-class CDVDMediaCodecInfo;
-#ifdef HAS_IMXVPU
-class CDVDVideoCodecIMXBuffer;
-#endif
 typedef std::vector<int>     Features;
 
 
@@ -92,8 +88,6 @@ enum RenderMethod
   RENDER_CVREF  = 0x080,
   RENDER_BYPASS = 0x100,
   RENDER_EGLIMG = 0x200,
-  RENDER_MEDIACODEC = 0x400,
-  RENDER_IMXMAP = 0x800
 };
 
 enum RenderQuality
@@ -169,13 +163,7 @@ public:
 #ifdef HAS_LIBSTAGEFRIGHT
   virtual void         AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index);
 #endif
-#if defined(TARGET_ANDROID)
-  // mediaCodec
-  virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
-#endif
-#ifdef HAS_IMXVPU
-  virtual void         AddProcessor(CDVDVideoCodecIMXBuffer *codecinfo, int index);
-#endif
+  virtual void         AddProcessor(void *render_ctx, int index);
 
 protected:
   virtual void Render(DWORD flags, int index);
@@ -213,17 +201,9 @@ protected:
   void DeleteEGLIMGTexture(int index);
   bool CreateEGLIMGTexture(int index);
 
-  void UploadSurfaceTexture(int index);
-  void DeleteSurfaceTexture(int index);
-  bool CreateSurfaceTexture(int index);
-
   void UploadOpenMaxTexture(int index);
   void DeleteOpenMaxTexture(int index);
   bool CreateOpenMaxTexture(int index);
-
-  void UploadIMXMAPTexture(int index);
-  void DeleteIMXMAPTexture(int index);
-  bool CreateIMXMAPTexture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
@@ -234,8 +214,6 @@ protected:
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderEglImage(int index, int field);       // Android OES texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
-  void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
-  void RenderIMXMAPTexture(int index, int field); // IMXMAP rendering
 
   CFrameBufferObject m_fbo;
 
@@ -288,6 +266,7 @@ protected:
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
 
+    void* render_ctx;
 #ifdef HAVE_LIBOPENMAX
     OpenMaxVideoBufferHolder *openMaxBufferHolder;
 #endif
@@ -297,13 +276,6 @@ protected:
 #ifdef HAS_LIBSTAGEFRIGHT
     CDVDVideoCodecStageFright* stf;
     EGLImageKHR eglimg;
-#endif
-#if defined(TARGET_ANDROID)
-    // mediacodec
-    CDVDMediaCodecInfo *mediacodec;
-#endif
-#ifdef HAS_IMXVPU
-    CDVDVideoCodecIMXBuffer *IMXBuffer;
 #endif
   };
 

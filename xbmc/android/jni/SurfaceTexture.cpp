@@ -26,6 +26,7 @@
 
 #include "jutils/jutils-details.hpp"
 
+#include "android/activity/JNIMainActivity.h"
 #include <algorithm>
 
 using namespace jni;
@@ -37,7 +38,7 @@ CJNISurfaceTextureOnFrameAvailableListener* CJNISurfaceTextureOnFrameAvailableLi
 CJNISurfaceTextureOnFrameAvailableListener::CJNISurfaceTextureOnFrameAvailableListener()
 : CJNIBase("org/xbmc/kodi/XBMCOnFrameAvailableListener")
 {
-  CJNIApplicationMainActivity *appInstance = CJNIApplicationMainActivity::GetAppInstance();
+  CJNIMainActivity *appInstance = CJNIMainActivity::GetAppInstance();
   if (!appInstance)
     return;
 

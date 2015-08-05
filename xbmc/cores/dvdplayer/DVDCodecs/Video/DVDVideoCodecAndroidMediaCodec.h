@@ -28,12 +28,12 @@
 #include "DVDStreamInfo.h"
 #include "threads/Thread.h"
 #include "threads/SingleLock.h"
+#include "android/jni/Surface.h"
+#include "guilib/Geometry.h"
+#include "cores/VideoRenderers/RenderFeatures.h"
 
-class CJNISurface;
-class CJNISurfaceTexture;
 class CJNIMediaCodec;
 class CJNIMediaFormat;
-class CDVDMediaCodecOnFrameAvailable;
 class CJNIByteBuffer;
 class CBitstreamConverter;
 
@@ -48,10 +48,7 @@ class CDVDMediaCodecInfo
 {
 public:
   CDVDMediaCodecInfo( int index,
-                      unsigned int texture,
-                      std::shared_ptr<CJNIMediaCodec> &codec,
-                      std::shared_ptr<CJNISurfaceTexture> &surfacetexture,
-                      std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready);
+                      std::shared_ptr<CJNIMediaCodec> &codec);
 
   // reference counting
   CDVDMediaCodecInfo* Retain();
@@ -61,28 +58,20 @@ public:
   void                Validate(bool state);
   // MediaCodec related
   void                ReleaseOutputBuffer(bool render);
-  // SurfaceTexture released
   int                 GetIndex() const;
-  int                 GetTextureID() const;
-  void                GetTransformMatrix(float *textureMatrix);
-  void                UpdateTexImage();
 
 private:
   // private because we are reference counted
   virtual            ~CDVDMediaCodecInfo();
 
   long                m_refs;
-  bool                m_valid;
   bool                m_isReleased;
   int                 m_index;
-  unsigned int        m_texture;
   int64_t             m_timestamp;
   CCriticalSection    m_section;
   // shared_ptr bits, shared between
   // CDVDVideoCodecAndroidMediaCodec and LinuxRenderGLES.
   std::shared_ptr<CJNIMediaCodec> m_codec;
-  std::shared_ptr<CJNISurfaceTexture> m_surfacetexture;
-  std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameready;
 };
 
 class CDVDVideoCodecAndroidMediaCodec : public CDVDVideoCodec
@@ -105,15 +94,17 @@ public:
   virtual unsigned GetAllowedReferences();
 
 protected:
+  static void RenderFeaturesCallBack(const void *ctx, Features &renderFeatures);
+  static void DeinterlaceMethodsCallBack(const void *ctx, Features &deinterlaceMethods);
+  static void RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect, DWORD flags, const void* render_ctx);
+  static void RenderCaptureCallBack(const void *ctx, const CRect &SrcRect, const void* render_ctx);
+  static void RenderLockCallBack(const void *ctx, const void *render_ctx);
+  static void RenderReleaseCallBack(const void *ctx, const void *render_ctx);
+
   void            FlushInternal(void);
   bool            ConfigureMediaCodec(void);
   int             GetOutputPicture(void);
   void            ConfigureOutputFormat(CJNIMediaFormat* mediaformat);
-
-  // surface handling functions
-  static void     CallbackInitSurfaceTexture(void*);
-  void            InitSurfaceTexture(void);
-  void            ReleaseSurfaceTexture(void);
 
   CDVDStreamInfo  m_hints;
   std::string     m_mime;
@@ -124,13 +115,11 @@ protected:
   bool            m_drop;
 
   CJNISurface    *m_surface;
-  unsigned int    m_textureId;
+  CJNISurface     m_videosurface;
   // we need these as shared_ptr because CDVDVideoCodecAndroidMediaCodec
   // will get deleted before CLinuxRendererGLES is shut down and
   // CLinuxRendererGLES refs them via CDVDMediaCodecInfo.
   std::shared_ptr<CJNIMediaCodec> m_codec;
-  std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
-  std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
 
   amc_demux m_demux_pkt;
   std::vector<CJNIByteBuffer> m_input;

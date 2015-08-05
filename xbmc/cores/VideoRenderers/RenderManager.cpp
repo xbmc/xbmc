@@ -793,10 +793,34 @@ void CXBMCRenderManager::RegisterRenderUpdateCallBack(const void *ctx, RenderUpd
     m_pRenderer->RegisterRenderUpdateCallBack(ctx, fn);
 }
 
+void CXBMCRenderManager::RegisterRenderCaptureCallBack(const void *ctx, RenderCaptureCallBackFn fn)
+{
+  if (m_pRenderer)
+    m_pRenderer->RegisterRenderCaptureCallBack(ctx, fn);
+}
+
 void CXBMCRenderManager::RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn)
 {
   if (m_pRenderer)
     m_pRenderer->RegisterRenderFeaturesCallBack(ctx, fn);
+}
+
+void CXBMCRenderManager::RegisterDeinterlaceMethodsCallBack(const void *ctx, DeinterlaceMethodsCallBackFn fn)
+{
+  if (m_pRenderer)
+    m_pRenderer->RegisterDeinterlaceMethodsCallBack(ctx, fn);
+}
+
+void CXBMCRenderManager::RegisterRenderLockCallBack(const void *ctx, RenderLockCallBackFn fn)
+{
+  if (m_pRenderer)
+    m_pRenderer->RegisterRenderLockCallBack(ctx, fn);
+}
+
+void CXBMCRenderManager::RegisterRenderReleaseCallBack(const void *ctx, RenderReleaseCallBackFn fn)
+{
+  if (m_pRenderer)
+    m_pRenderer->RegisterRenderReleaseCallBack(ctx, fn);
 }
 
 void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
@@ -1021,17 +1045,13 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   else if(pic.format == RENDER_FMT_EGLIMG)
     m_pRenderer->AddProcessor(pic.stf, pic.eglimg, index);
 #endif
-#if defined(TARGET_ANDROID)
-  else if(pic.format == RENDER_FMT_MEDIACODEC)
-    m_pRenderer->AddProcessor(pic.mediacodec, index);
-#endif
-#ifdef HAS_IMXVPU
-  else if(pic.format == RENDER_FMT_IMXMAP)
-    m_pRenderer->AddProcessor(pic.IMXBuffer, index);
-#endif
 #ifdef HAS_MMAL
   else if(pic.format == RENDER_FMT_MMAL)
     m_pRenderer->AddProcessor(pic.MMALBuffer, index);
+#endif
+#if defined(HAS_IMXVPU) || defined(HAS_LIBAMCODEC) || defined(HAS_RKSTF)
+  else if (pic.format == RENDER_FMT_BYPASS)
+    m_pRenderer->AddProcessor(pic.render_ctx, index);
 #endif
 
   m_pRenderer->ReleaseImage(index, false);

@@ -179,7 +179,6 @@ ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/android/loader/AndroidDyload.a
 DIRECTORY_ARCHIVES += xbmc/windowing/android/windowing_android.a
 DIRECTORY_ARCHIVES += xbmc/android/bionic_supplement/bionic_supplement.a
-DIRECTORY_ARCHIVES += xbmc/android/jni/jni.a
 endif
 
 ifeq (@USE_OMXPLAYER@,1)
@@ -451,6 +450,7 @@ $(FFMPEGOBJS): dvdpcodecs
 endif
 
 ifeq (@USE_ANDROID@,1)
+MAINOBJS+=xbmc/android/jni/jni.a
 MAINOBJS+=xbmc/android/activity/activity.a
 else
 MAINOBJS+=xbmc/main/main.a
