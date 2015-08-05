@@ -51,11 +51,11 @@ CMadvrSharedRender::~CMadvrSharedRender()
 {
   Release(m_pMadvrVertexBuffer);
   Release(m_pMadvrUnderTexture);
-  Release(m_pMadvrOverTexture);
-  Release(m_pKodiUnderTexture);
-  Release(m_pKodiOverTexture);
+  Release(m_pMadvrOverTexture);  
   Release(m_pKodiUnderSurface);
   Release(m_pKodiOverSurface);
+  Release(m_pKodiUnderTexture);
+  Release(m_pKodiOverTexture);
 }
 
 void CMadvrSharedRender::Release(IUnknown* pUnknown)
