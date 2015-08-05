@@ -2608,7 +2608,9 @@ void CDVDPlayer::HandleMessages()
         if(input)
         {
           bool bSwitchSuccessful(false);
-          bool bShowPreview(CSettings::Get().GetInt("pvrplayback.channelentrytimeout") > 0);
+          bool bShowPreview(!g_infoManager.IsPlayerOSDActive() &&
+                            (CSettings::Get().GetBool("pvrplayback.confirmchannelswitch") ||
+                             CSettings::Get().GetInt("pvrplayback.channelentrytimeout") > 0));
 
           if (!bShowPreview)
           {
@@ -2626,7 +2628,12 @@ void CDVDPlayer::HandleMessages()
             if (bShowPreview)
             {
               UpdateApplication(0);
-              m_ChannelEntryTimeOut.Set(CSettings::Get().GetInt("pvrplayback.channelentrytimeout"));
+
+              if (!g_infoManager.IsPlayerOSDActive() &&
+                  CSettings::Get().GetBool("pvrplayback.confirmchannelswitch"))
+                m_ChannelEntryTimeOut.SetInfinite();
+              else
+                m_ChannelEntryTimeOut.Set(CSettings::Get().GetInt("pvrplayback.channelentrytimeout"));
             }
             else
             {
@@ -4111,7 +4118,9 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_NEXT_ITEM:
       case ACTION_CHANNEL_UP:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
-        g_infoManager.SetDisplayAfterSeek();
+        if (g_infoManager.IsPlayerOSDActive() ||
+            !CSettings::Get().GetBool("pvrplayback.confirmchannelswitch"))
+          g_infoManager.SetDisplayAfterSeek();
         ShowPVRChannelInfo();
         return true;
       break;
@@ -4120,7 +4129,9 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_PREV_ITEM:
       case ACTION_CHANNEL_DOWN:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
-        g_infoManager.SetDisplayAfterSeek();
+        if (g_infoManager.IsPlayerOSDActive() ||
+            !CSettings::Get().GetBool("pvrplayback.confirmchannelswitch"))
+          g_infoManager.SetDisplayAfterSeek();
         ShowPVRChannelInfo();
         return true;
       break;
@@ -4652,6 +4663,9 @@ std::string CDVDPlayer::GetPlayingTitle()
 
 bool CDVDPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 {
+  if (g_PVRManager.IsPlayingChannel(channel))
+    return false; // desired channel already active, nothing to do.
+
   if (!g_PVRManager.CheckParentalLock(channel))
     return false;
 
