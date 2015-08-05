@@ -199,10 +199,6 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer)
     CMadvrCallback::Get()->SetRenderLayer(layer);
   }
 
-  // Store madVR States
-  if (FAILED(StoreMadDeviceState()))
-    return hr;
-
   // Begin render Kodi Gui
   g_Windowing.BeginRender();
 
@@ -224,6 +220,10 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer)
 
   // Return without render in madVR if the Kodi Gui isn't visible or if there is a resize in progress
   if (!CMadvrCallback::Get()->IsGuiActive() || g_Windowing.GetResizeInProgress())
+    return hr;
+
+  // Store madVR States
+  if (FAILED(StoreMadDeviceState()))
     return hr;
 
   // Setup madVR Device
