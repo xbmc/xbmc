@@ -101,9 +101,7 @@ bool CWinDsRenderer::RenderCapture(CRenderCapture* capture)
 
   bool succeeded = false;
 
-  // todo dx11
-  //LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  LPDIRECT3DDEVICE9 pD3DDevice = NULL;
+  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
 
   CRect saveSize = m_destRect;
   saveRotatedCoords();//backup current m_rotatedDestCoords
@@ -111,21 +109,21 @@ bool CWinDsRenderer::RenderCapture(CRenderCapture* capture)
   m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
   syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
 
-  LPDIRECT3DSURFACE9 oldSurface;
-  pD3DDevice->GetRenderTarget(0, &oldSurface);
+  ID3D11DepthStencilView* oldDepthView;
+  ID3D11RenderTargetView* oldSurface;
+  pContext->OMGetRenderTargets(1, &oldSurface, &oldDepthView);
 
   capture->BeginRender();
   if (capture->GetState() != CAPTURESTATE_FAILED)
   {
-    pD3DDevice->BeginScene();
     Render(0);
-    pD3DDevice->EndScene();
     capture->EndRender();
     succeeded = true;
   }
 
-  pD3DDevice->SetRenderTarget(0, oldSurface);
+  pContext->OMSetRenderTargets(1, &oldSurface, oldDepthView);
   oldSurface->Release();
+  SAFE_RELEASE(oldDepthView); // it can be nullptr
 
   m_destRect = saveSize;
   restoreRotatedCoords();//restores the previous state of the rotated dest coords
@@ -153,17 +151,13 @@ RESOLUTION CWinDsRenderer::ChooseBestMadvrResolution(float fps)
 
 void CWinDsRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  // todo dx11
-  //LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  LPDIRECT3DDEVICE9 pD3DDevice = NULL;
-
   if (clear)
     g_graphicsContext.Clear(m_clearColour);
 
   if (alpha < 255)
-    pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    g_Windowing.SetAlphaBlendEnable(true);
   else
-    pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    g_Windowing.SetAlphaBlendEnable(false);
 
   if (!m_bConfigured)
     return;
