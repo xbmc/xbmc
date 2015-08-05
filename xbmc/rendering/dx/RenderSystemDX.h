@@ -97,6 +97,9 @@ public:
   bool                    Interlaced()         { return m_interlaced; }
   int                     GetBackbufferCount() const { return 2; }
   void                    SetAlphaBlendEnable(bool enable);
+#if HAS_DS_PLAYER
+  bool                    GetResizeInProgress() { return m_resizeInProgress; }
+#endif
 
   /*!
    \brief Register as a dependent of the DirectX Render System

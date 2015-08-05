@@ -33,7 +33,7 @@ public:
   HRESULT CMadvrSharedRender::GetSharedHandle(IUnknown* pUnknown, HANDLE* pHandle);
   HRESULT CMadvrSharedRender::CreateTextureDX11(ID3D11Device* m_pDevice, UINT Width, UINT Height, DXGI_FORMAT format, ID3D11Texture2D** ppTexture, HANDLE* pHandle);
   HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height);
-  HRESULT RenderMadvr(MADVR_RENDER_LAYER layer, int width, int height);
+  HRESULT RenderMadvr(MADVR_RENDER_LAYER layer);
   
 private:
   HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
@@ -44,14 +44,15 @@ private:
   HRESULT SetupMadDeviceState();
   HRESULT RestoreMadDeviceState();
   HRESULT CreateRenderTargetView();
+  void Release(IUnknown* pUnknown);
 
-  ID3D11RenderTargetView* m_pUnderSurface;
-  ID3D11RenderTargetView* m_pOverSurface;
   ID3D11Texture2D* m_pKodiUnderTexture = nullptr;
   ID3D11Texture2D* m_pKodiOverTexture = nullptr;
-  Com::SmartPtr<IDirect3DTexture9> m_pMadvrUnderTexture = nullptr;
-  Com::SmartPtr<IDirect3DTexture9> m_pMadvrOverTexture = nullptr;
-  Com::SmartPtr<IDirect3DVertexBuffer9> m_pMadvrVertexBuffer = nullptr;
+  ID3D11RenderTargetView* m_pKodiUnderSurface = nullptr;
+  ID3D11RenderTargetView* m_pKodiOverSurface = nullptr;
+  IDirect3DTexture9* m_pMadvrUnderTexture = nullptr;
+  IDirect3DTexture9* m_pMadvrOverTexture = nullptr;
+  IDirect3DVertexBuffer9* m_pMadvrVertexBuffer = nullptr;
   HANDLE m_pSharedUnderHandle = nullptr;
   HANDLE m_pSharedOverHandle = nullptr;
 
