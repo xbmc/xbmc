@@ -35,6 +35,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "pvr/PVRManager.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
@@ -250,6 +251,7 @@ void CPowerManager::OnSleep()
   CBuiltins::Execute("LIRC.Stop");
 #endif
 
+  PVR::CPVRManager::Get().SetWakeupCommand();
   g_application.SaveFileState(true);
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
