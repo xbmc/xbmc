@@ -20,23 +20,13 @@
  */
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEStreamData.h"
 #include "cores/IAudioCallback.h"
 #include <stdint.h>
 
 extern "C" {
 #include "libavcodec/avcodec.h"
 }
-
-/**
- * Bit options to pass to IAE::GetStream
- */
-enum AEStreamOptions
-{
-  AESTREAM_FORCE_RESAMPLE = 0x01, /* force resample even if rates match */
-  AESTREAM_PAUSED         = 0x02, /* create the stream paused */
-  AESTREAM_AUTOSTART      = 0x04, /* autostart the stream when enough data is buffered */
-  AESTREAM_BYPASS_ADSP    = 0x08  /* if this option is set the ADSP-System is bypassed and raw stream will be passed through IAESink */
-};
 
 /**
  * IAEStream Stream Interface for streaming audio
