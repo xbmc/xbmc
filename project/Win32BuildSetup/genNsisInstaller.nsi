@@ -33,7 +33,6 @@
 
   Var StartMenuFolder
   Var PageProfileState
-  Var DirectXSetupError
   Var VSRedistSetupError
   Var /GLOBAL CleanDestDir
   
