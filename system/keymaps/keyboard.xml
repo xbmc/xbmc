@@ -62,11 +62,13 @@
       <backspace>Back</backspace>
       <backspace mod="longpress">ActivateWindow(Home)</backspace>
       <key id='65446'>Back</key>
-      <m>ActivateWindow(PlayerControls)</m>
+      <m>Menu</m>
+      <m mod="ctrl">ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
       <i>Info</i>
-      <menu>ContextMenu</menu>
+      <menu>Menu</menu>
+      <menu mod="longpress">ContextMenu</menu>
       <c>ContextMenu</c>
       <space>Pause</space>
       <x>Stop</x>
@@ -183,7 +185,7 @@
   </VirtualKeyboard>
   <MyTVChannels>
     <keyboard>
-      <m>Move</m>
+      <m mod="ctrl">Move</m>
     </keyboard>
   </MyTVChannels>
   <MyTVRecordings>
@@ -200,7 +202,7 @@
   </MyTVTimers>
   <MyRadioChannels>
     <keyboard>
-      <m>Move</m>
+      <m mod="ctrl">Move</m>
     </keyboard>
   </MyRadioChannels>
   <MyRadioRecordings>
@@ -303,7 +305,7 @@
   </FullscreenInfo>
   <PlayerControls>
     <keyboard>
-      <m>Back</m>
+      <m mod="ctrl">Back</m>
     </keyboard>
   </PlayerControls>
   <Visualisation>
