@@ -577,16 +577,20 @@
     <remote>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>ChannelUp</up>
-      <down>ChannelDown</down>
+      <up>Up</up>
+      <down>Down</down>
+      <pageplus>ChannelUp</pageplus>
+      <pageminus>ChannelDown</pageminus>
     </remote>
   </FullscreenLiveTV>
   <FullscreenRadio>
     <remote>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>ChannelUp</up>
-      <down>ChannelDown</down>
+      <up>Up</up>
+      <down>Down</down>
+      <pageplus>ChannelUp</pageplus>
+      <pageminus>ChannelDown</pageminus>
     </remote>
   </FullscreenRadio>
   <PVROSDChannels>
