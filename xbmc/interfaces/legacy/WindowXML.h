@@ -40,14 +40,14 @@ namespace XBMCAddon
      * WindowXML(self, xmlFilename, scriptPath[, defaultSkin, defaultRes]) -- Create a new WindowXML script.
      * 
      * xmlFilename     : string - the name of the xml file to look for.\n
-     * scriptPath      : string - path to script. used to fallback to if the xml doesn't exist in the current skin. (eg os.getcwd())\n
+     * scriptPath      : string - path to script. used to fallback to if the xml doesn't exist in the current skin. (eg xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'))\n
      * defaultSkin     : [opt] string - name of the folder in the skins path to look in for the xml. (default='Default')\n
      * defaultRes      : [opt] string - default skins resolution. (default='720p')
      * 
      * *Note, skin folder structure is eg(resources/skins/Default/720p)
      * 
      * example:\n
-     *  - ui = GUI('script-Lyrics-main.xml', os.getcwd(), 'LCARS', 'PAL')\n
+     *  - ui = GUI('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p')\n
      *    ui.doModal()\n
      *    del ui
      */
@@ -209,14 +209,14 @@ namespace XBMCAddon
      * WindowXMLDialog(self, xmlFilename, scriptPath[, defaultSkin, defaultRes]) -- Create a new WindowXMLDialog script.
      * 
      * xmlFilename     : string - the name of the xml file to look for.\n
-     * scriptPath      : string - path to script. used to fallback to if the xml doesn't exist in the current skin. (eg os.getcwd())\n
+     * scriptPath      : string - path to script. used to fallback to if the xml doesn't exist in the current skin. (eg xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'))\n
      * defaultSkin     : [opt] string - name of the folder in the skins path to look in for the xml. (default='Default')\n
      * defaultRes      : [opt] string - default skins resolution. (default='720p')
      * 
      * *Note, skin folder structure is eg(resources/skins/Default/720p)
      * 
      * example:
-     *  - ui = GUI('script-Lyrics-main.xml', os.getcwd(), 'LCARS', 'PAL')
+     *  - ui = GUI('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p')
      *  - ui.doModal()
      *  - del ui
      */
