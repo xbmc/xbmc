@@ -412,7 +412,7 @@
 	</remote>
 
 	<remote device="linux-input-layer">
-	<altname>cx23885_remote</altname>
+		<altname>cx23885_remote</altname>
 		<left>KEY_LEFT</left>
 		<right>KEY_RIGHT</right>
 		<up>KEY_UP</up>
@@ -438,8 +438,8 @@
 		<reverse>KEY_REWIND</reverse>
 		<volumeplus>KEY_VOLUMEUP</volumeplus>
 		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
-		<channelplus>KEY_CHANNELUP</channelplus>
-		<channelminus>KEY_CHANNELDOWN</channelminus>
+		<pageplus>KEY_CHANNELUP</pageplus>
+		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<skipplus>KEY_NEXTSONG</skipplus>
 		<skipplus>KEY_NEXT</skipplus>
 		<skipminus>KEY_PREVIOUSSONG</skipminus>
@@ -556,8 +556,8 @@
 		<reverse>KEY_REWIND</reverse>
 		<volumeplus>KEY_VOLUMEUP</volumeplus>
 		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
-		<channelplus>KEY_CHANNELUP</channelplus>
-		<channelminus>KEY_CHANNELDOWN</channelminus>
+		<pageplus>KEY_CHANNELUP</pageplus>
+		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<skipplus>KEY_NEXT</skipplus>
 		<skipminus>KEY_PREVIOUS</skipminus>
 		<title>KEY_EPG</title>
