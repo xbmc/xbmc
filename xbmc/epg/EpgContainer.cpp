@@ -169,11 +169,9 @@ void CEpgContainer::Start(bool bAsync)
   }
 
   LoadFromDB();
+
   if (g_PVRManager.IsStarted())
-  {
-    g_PVRManager.TriggerEpgsCreate();
     g_PVRManager.Recordings()->UpdateEpgTags();
-  }
 
   CSingleLock lock(m_critSection);
   if (!m_bStop)
@@ -184,6 +182,8 @@ void CEpgContainer::Start(bool bAsync)
     SetPriority(-1);
 
     m_bStarted = true;
+
+    g_PVRManager.TriggerEpgsCreate();
 
     CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
   }
