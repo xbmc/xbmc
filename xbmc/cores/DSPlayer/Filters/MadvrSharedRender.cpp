@@ -88,10 +88,6 @@ HRESULT CMadvrSharedRender::CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect
   if (FAILED(hr = m_pD3DDeviceMadVR->CreateVertexBuffer(sizeof(VID_FRAME_VERTEX) * 4, D3DUSAGE_WRITEONLY, D3DFVF_VID_FRAME_VERTEX, D3DPOOL_DEFAULT, &m_pMadvrVertexBuffer, NULL)))
     CLog::Log(LOGDEBUG, "%s Failed to create madVR vertex buffer", __FUNCTION__);
 
-  // Create Under Shared Texture
-  if (FAILED(hr = CreateSharedResource(&m_pMadvrUnderTexture, &m_pKodiUnderTexture, &m_pKodiUnderSurface)))
-    CLog::Log(LOGDEBUG, "%s Failed to create under shared texture", __FUNCTION__);
-
   // Create Over Shared Texture
   if (FAILED(hr = CreateSharedResource(&m_pMadvrOverTexture, &m_pKodiOverTexture, &m_pKodiOverSurface)))
     CLog::Log(LOGDEBUG, "%s Failed to create over shared texture", __FUNCTION__);
@@ -111,6 +107,16 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer)
   // if the context it's kodi menu manage the layer
   if (!g_graphicsContext.IsFullScreenVideo())
   {
+    if (layer == RENDER_LAYER_UNDER)
+    {
+      // Create Under Shared Texture
+      if (!m_pMadvrUnderTexture)
+      {
+        if (FAILED(hr = CreateSharedResource(&m_pMadvrUnderTexture, &m_pKodiUnderTexture, &m_pKodiUnderSurface)))
+          CLog::Log(LOGDEBUG, "%s Failed to create under shared texture", __FUNCTION__);
+      }
+    }
+
     if (layer == RENDER_LAYER_OVER && !CMadvrCallback::Get()->IsVideoLayer())
     {
       // re-check if there is a videolayer before render over
@@ -135,7 +141,6 @@ HRESULT CMadvrSharedRender::RenderMadvr(MADVR_RENDER_LAYER layer)
 
   // Call the render from madVR thread
   (layer == RENDER_LAYER_UNDER) ? g_windowManager.Render() : g_application.RenderNoPresent();
-  g_Windowing.FinishCommandList();
 
   // End Render Kodi Gui
   g_Windowing.EndRender();
