@@ -44,9 +44,9 @@ namespace XBMCAddon
      *        Once you use a keyword, all following arguments require the keyword.\n
      * \n
      * Text is written to the log for the following conditions.\n
-     *           XBMC loglevel == -1 (NONE, nothing at all is logged)\n
-     *           XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)\n
-     *           XBMC loglevel == 1 (DEBUG, shows all)\n
+     *           - loglevel == -1 (NONE, nothing at all is logged)
+     *           - loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)
+     *           - loglevel == 1 (DEBUG, shows all)
      *           See pydocs for valid values for level.\n
      *           
      *           example:
@@ -80,7 +80,7 @@ namespace XBMCAddon
     void executescript(const char* script);
 
     /**
-     * executebuiltin(function) -- Execute a built in XBMC function.
+     * executebuiltin(function) -- Execute a built in Kodi function.
      * 
      * function       : string - builtin function to execute.
      * 
