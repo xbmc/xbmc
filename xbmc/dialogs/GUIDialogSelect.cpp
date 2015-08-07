@@ -88,6 +88,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
+      m_bButtonPressed = false;
+      m_bConfirmed = false;
       CGUIDialog::OnMessage(message);
       return true;
     }
