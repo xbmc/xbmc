@@ -124,7 +124,7 @@ namespace XBMCAddon
       /**
        * onPlayBackStarted() -- onPlayBackStarted method.
        * 
-       * Will be called when xbmc starts playing a file
+       * Will be called when Kodi starts playing a file
        */
       // Player_OnPlayBackStarted
       virtual void onPlayBackStarted();
@@ -133,7 +133,7 @@ namespace XBMCAddon
       /**
        * onPlayBackEnded() -- onPlayBackEnded method.
        * 
-       * Will be called when xbmc stops playing a file
+       * Will be called when Kodi stops playing a file
        */
       // Player_OnPlayBackEnded
       virtual void onPlayBackEnded();
@@ -141,7 +141,7 @@ namespace XBMCAddon
       /**
        * onPlayBackStopped() -- onPlayBackStopped method.
        * 
-       * Will be called when user stops xbmc playing a file
+       * Will be called when user stops Kodi playing a file
        */
       // Player_OnPlayBackStopped
       virtual void onPlayBackStopped();
@@ -200,19 +200,19 @@ namespace XBMCAddon
       virtual void onPlayBackSeekChapter(int chapter);
 
       /**
-       * isPlaying() -- returns True is xbmc is playing a file.
+       * isPlaying() -- returns True is Kodi is playing a file.
        */
       // Player_IsPlaying
       bool isPlaying();
 
       /**
-       * isPlayingAudio() -- returns True is xbmc is playing an audio file.
+       * isPlayingAudio() -- returns True is Kodi is playing an audio file.
        */
       // Player_IsPlayingAudio
       bool isPlayingAudio();
 
       /**
-       * isPlayingVideo() -- returns True if xbmc is playing a video.
+       * isPlayingVideo() -- returns True if Kodi is playing a video.
        */
       // Player_IsPlayingVideo
       bool isPlayingVideo();
