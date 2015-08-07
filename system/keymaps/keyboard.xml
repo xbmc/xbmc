@@ -529,16 +529,20 @@
     <keyboard>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>ChannelUp</up>
-      <down>ChannelDown</down>
+      <up>Up</up>
+      <down>Down</down>
+      <pageup>ChannelUp</pageup>
+      <pagedown>ChannelDown</pagedown>
     </keyboard>
   </FullscreenLiveTV>
   <FullscreenRadio>
     <keyboard>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>ChannelUp</up>
-      <down>ChannelDown</down>
+      <up>Up</up>
+      <down>Down</down>
+      <pageup>ChannelUp</pageup>
+      <pagedown>ChannelDown</pagedown>
     </keyboard>
   </FullscreenRadio>
   <PVROSDChannels>
