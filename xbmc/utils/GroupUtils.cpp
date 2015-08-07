@@ -94,7 +94,6 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       setInfo->m_strPath = pItem->GetPath();
       setInfo->m_strTitle = pItem->GetLabel();
 
-      int ratings = 0;
       int iWatched = 0; // have all the movies been played at least once?
       std::set<std::string> pathSet;
       for (std::set<CFileItemPtr>::const_iterator movie = set->second.begin(); movie != set->second.end(); ++movie)
@@ -103,8 +102,8 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
         // handle rating
         if (movieInfo->m_fRating > 0.0f)
         {
-          ratings++;
-          setInfo->m_fRating += movieInfo->m_fRating;
+          if (movieInfo->m_fRating > setInfo->m_fRating)
+            setInfo->m_fRating = movieInfo->m_fRating;
         }
         
         // handle year
@@ -133,9 +132,6 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       }
       setInfo->m_basePath = XFILE::CMultiPathDirectory::ConstructMultiPath(pathSet);
 
-      if (ratings > 1)
-        pItem->GetVideoInfoTag()->m_fRating /= ratings;
-        
       setInfo->m_playCount = iWatched >= (int)set->second.size() ? (setInfo->m_playCount / set->second.size()) : 0;
       pItem->SetProperty("total", (int)set->second.size());
       pItem->SetProperty("watched", iWatched);
