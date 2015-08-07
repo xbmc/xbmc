@@ -356,10 +356,9 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   pDialog->Open();
   if (pDialog->IsConfirmed())
   {
-    const CFileItemList &items = pDialog->GetSelectedItems();
     m_rule.m_parameter.clear();
-    for (int index = 0; index < items.Size(); index++)
-      m_rule.m_parameter.push_back(items[index]->GetLabel());
+    for (int i : pDialog->GetSelectedItems())
+      m_rule.m_parameter.push_back(items.Get(i)->GetLabel());
 
     UpdateButtons();
   }

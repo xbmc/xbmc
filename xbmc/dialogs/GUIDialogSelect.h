@@ -43,7 +43,7 @@ public:
   int GetSelectedLabel() const;
   const std::string& GetSelectedLabelText() const;
   const CFileItemPtr GetSelectedItem() const;
-  const CFileItemList& GetSelectedItems() const;
+  const std::vector<int>& GetSelectedItems() const;
   void EnableButton(bool enable, int string);
   bool IsButtonPressed();
   void Sort(bool bSortOrder = true);
@@ -67,7 +67,7 @@ protected:
   bool m_useDetails;
   bool m_multiSelection;
 
-  CFileItemList* m_selectedItems;
+  std::vector<int> m_selectedItems;
   CFileItemList* m_vecList;
   CGUIViewControl m_viewControl;
 };
