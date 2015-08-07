@@ -1359,7 +1359,8 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
 
   if (dialog->IsConfirmed())
   {
-    selectedMovies.Copy(dialog->GetSelectedItems());
+    for (int i : dialog->GetSelectedItems())
+      selectedMovies.Add(listItems.Get(i));
     return (selectedMovies.Size() > 0);
   }
   else
@@ -1524,7 +1525,8 @@ bool CGUIDialogVideoInfo::GetItemsForTag(const std::string &strHeading, const st
   dialog->EnableButton(true, 186);
   dialog->Open();
 
-  items.Copy(dialog->GetSelectedItems());
+  for (int i : dialog->GetSelectedItems())
+    items.Add(listItems.Get(i));
   return items.Size() > 0;
 }
 
