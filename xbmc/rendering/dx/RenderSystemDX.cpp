@@ -1079,7 +1079,11 @@ bool CRenderSystemDX::CreateStates()
   blendState.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA; // D3D11_BLEND_INV_SRC_ALPHA;
   blendState.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
   blendState.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+#ifdef HAS_DS_PLAYER
+  blendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+#else
   blendState.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+#endif
   blendState.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
   blendState.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
