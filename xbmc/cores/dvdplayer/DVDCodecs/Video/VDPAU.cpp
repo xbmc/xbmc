@@ -66,6 +66,9 @@ CDecoder::Desc decoder_profiles[] = {
 {"VC1_MAIN",     VDP_DECODER_PROFILE_VC1_MAIN},
 {"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
 {"MPEG4_PART2_ASP", VDP_DECODER_PROFILE_MPEG4_PART2_ASP},
+#ifdef VDP_DECODER_PROFILE_HEVC_MAIN
+{"HEVC_MAIN", VDP_DECODER_PROFILE_HEVC_MAIN},
+#endif
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CDecoder::Desc);
 
@@ -844,6 +847,12 @@ void CDecoder::ReadFormatOf( AVCodecID codec
       vdp_decoder_profile = VDP_DECODER_PROFILE_H264_HIGH;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
+#ifdef VDP_DECODER_PROFILE_HEVC_MAIN
+    case AV_CODEC_ID_HEVC:
+      vdp_decoder_profile = VDP_DECODER_PROFILE_HEVC_MAIN;
+      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      break;
+#endif
     case AV_CODEC_ID_WMV3:
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_MAIN;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
@@ -882,11 +891,17 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   ReadFormatOf(avctx->codec_id, vdp_decoder_profile, m_vdpauConfig.vdpChromaType);
 
-  if(avctx->codec_id == AV_CODEC_ID_H264)
+  if (avctx->codec_id == AV_CODEC_ID_H264)
   {
     m_vdpauConfig.maxReferences = ref_frames;
     if (m_vdpauConfig.maxReferences > 16) m_vdpauConfig.maxReferences = 16;
     if (m_vdpauConfig.maxReferences < 5)  m_vdpauConfig.maxReferences = 5;
+  }
+  else if (avctx->codec_id == AV_CODEC_ID_HEVC)
+  {
+    // The DPB works quite differently in hevc and there isn't  a per-file max
+    // reference number, so we force the maximum number (source: upstream ffmpeg)
+    m_vdpauConfig.maxReferences = 16;
   }
   else
     m_vdpauConfig.maxReferences = 2;
