@@ -159,7 +159,7 @@ namespace XBMCAddon
        * method : name of the notification\n
        * data   : JSON-encoded data of the notification\n
        *\n
-       * Will be called when XBMC receives or sends a notification\n
+       * Will be called when Kodi receives or sends a notification\n
        */
       virtual void    onNotification(const String sender, const String method, const String data) { XBMC_TRACE; }
 
