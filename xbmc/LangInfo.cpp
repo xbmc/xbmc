@@ -263,7 +263,14 @@ void CLangInfo::CRegion::SetGlobalLocale()
   std::string strLocale;
   if (m_strRegionLocaleName.length() > 0)
   {
-    strLocale = m_strLangLocaleName + "_" + m_strRegionLocaleName;
+    std::string strLang, strRegion;
+    g_LangCodeExpander.ConvertToISO6391(m_strLangLocaleName, strLang);
+    g_LangCodeExpander.ConvertToISO6391(m_strRegionLocaleName, strRegion);
+#ifdef TARGET_WINDOWS
+    strLocale = strLang + "-" + strRegion;
+#else
+    strLocale = strLang + "_" + strRegion;
+#endif
 #ifdef TARGET_POSIX
     strLocale += ".UTF-8";
 #endif
