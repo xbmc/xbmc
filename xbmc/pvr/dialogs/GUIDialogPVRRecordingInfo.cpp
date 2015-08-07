@@ -23,10 +23,10 @@
 
 using namespace PVR;
 
-#define CONTROL_BTN_OK  10
+#define CONTROL_BTN_OK  7
 
 CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo(void)
-  : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRRecordingInfo.xml")
+  : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRInfo.xml")
   , m_recordItem(new CFileItem)
 {
 }
