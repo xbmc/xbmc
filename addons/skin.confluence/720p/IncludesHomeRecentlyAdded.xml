@@ -296,7 +296,7 @@
 							<top>10</top>
 							<width>220</width>
 							<height>155</height>
-							<aspectratio>scale</aspectratio>
+							<aspectratio>keep</aspectratio>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
 							<bordertexture border="5">button-nofocus.png</bordertexture>
 							<bordersize>5</bordersize>
@@ -342,7 +342,7 @@
 							<top>10</top>
 							<width>220</width>
 							<height>155</height>
-							<aspectratio>scale</aspectratio>
+							<aspectratio>keep</aspectratio>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
 							<bordertexture border="5">folder-focus.png</bordertexture>
 							<bordersize>5</bordersize>
@@ -353,7 +353,7 @@
 							<top>10</top>
 							<width>220</width>
 							<height>155</height>
-							<aspectratio>scale</aspectratio>
+							<aspectratio>keep</aspectratio>
 							<texture>$INFO[ListItem.Icon]</texture>
 							<bordertexture border="5">button-nofocus.png</bordertexture>
 							<bordersize>5</bordersize>
@@ -402,83 +402,83 @@
 					</focusedlayout>
 					<content>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.1.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.1.ShowTitle)] - $INFO[Window.Property(LatestEpisode.1.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.1.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.1.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.1.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.1.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.1.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.1.EpisodeTitle))</visible>
 						</item>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.2.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.2.ShowTitle)] - $INFO[Window.Property(LatestEpisode.2.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.2.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.2.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.2.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.2.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.2.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.2.EpisodeTitle))</visible>
 						</item>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.3.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.3.ShowTitle)] - $INFO[Window.Property(LatestEpisode.3.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.3.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.3.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.3.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.3.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.3.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.3.EpisodeTitle))</visible>
 						</item>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.4.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.4.ShowTitle)] - $INFO[Window.Property(LatestEpisode.4.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.4.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.4.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.4.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.4.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.4.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.4.EpisodeTitle))</visible>
 						</item>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.5.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.5.ShowTitle)] - $INFO[Window.Property(LatestEpisode.5.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.5.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.5.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.5.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.5.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.5.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.5.EpisodeTitle))</visible>
 						</item>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.6.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.6.ShowTitle)] - $INFO[Window.Property(LatestEpisode.6.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.6.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.6.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.6.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.6.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.6.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.6.EpisodeTitle))</visible>
 						</item>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.7.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.7.ShowTitle)] - $INFO[Window.Property(LatestEpisode.7.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.7.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.7.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.7.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.7.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.7.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.7.EpisodeTitle))</visible>
 						</item>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.8.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.8.ShowTitle)] - $INFO[Window.Property(LatestEpisode.8.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.8.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.8.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.8.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.8.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.8.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.8.EpisodeTitle))</visible>
 						</item>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.9.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.9.ShowTitle)] - $INFO[Window.Property(LatestEpisode.9.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.9.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.9.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.9.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.9.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.9.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.9.EpisodeTitle))</visible>
 						</item>
 						<item>
-							<label>$INFO[Window.Property(LatestEpisode.10.EpisodeTitle)]</label>
-							<label2>$INFO[Window.Property(LatestEpisode.10.ShowTitle)] - $INFO[Window.Property(LatestEpisode.10.EpisodeNo)]</label2>
+							<label2>$INFO[Window.Property(LatestEpisode.10.EpisodeNo)]</label2>
+							<label>$INFO[Window.Property(LatestEpisode.10.ShowTitle)]</label>
 							<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.10.Path)])</onclick>
 							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestEpisode.10.Thumb)]</thumb>
+							<thumb>$INFO[Window.Property(LatestEpisode.10.ShowThumb)]</thumb>
 							<visible>!IsEmpty(Window.Property(LatestEpisode.10.EpisodeTitle))</visible>
 						</item>
 					</content>
