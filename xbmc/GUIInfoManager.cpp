@@ -421,7 +421,8 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE },
                                   { "canresumelivetv",  VIDEOPLAYER_CAN_RESUME_LIVE_TV },
                                   { "imdbnumber",       VIDEOPLAYER_IMDBNUMBER },
-                                  { "episodename",      VIDEOPLAYER_EPISODENAME }
+                                  { "episodename",      VIDEOPLAYER_EPISODENAME },
+                                  { "recordeddate",     VIDEOPLAYER_RECORDED_DATE }
 };
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
@@ -1696,6 +1697,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VIDEOPLAYER_PARENTAL_RATING:
   case VIDEOPLAYER_PLAYCOUNT:
   case VIDEOPLAYER_LASTPLAYED:
+  case VIDEOPLAYER_RECORDED_DATE:
   case VIDEOPLAYER_IMDBNUMBER:
   case VIDEOPLAYER_EPISODENAME:
     strLabel = GetVideoLabel(info);
@@ -4015,6 +4017,21 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         if (tag && !tag->IsRadio())
           return g_PVRManager.GetPlayingTVGroupName();
       }
+    }
+  }
+  else if (m_currentFile->HasPVRRecordingInfoTag())
+  {
+    switch (item)
+    {
+      /* Now playing infos */
+    case VIDEOPLAYER_TITLE:
+      return m_currentFile->GetPVRRecordingInfoTag()->m_strTitle;
+    case VIDEOPLAYER_PLOT:
+      return m_currentFile->GetPVRRecordingInfoTag()->m_strPlot;
+    case VIDEOPLAYER_PLOT_OUTLINE:
+      return m_currentFile->GetPVRRecordingInfoTag()->m_strPlotOutline;
+    case VIDEOPLAYER_RECORDED_DATE:
+      return m_currentFile->GetPVRRecordingInfoTag()->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(false, false);
     }
   }
   else if (m_currentFile->HasVideoInfoTag())
