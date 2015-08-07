@@ -70,22 +70,22 @@ extern "C" {
    */
   typedef struct EPG_TAG {
     unsigned int  iUniqueBroadcastId;  /*!< @brief (required) identifier for this event */
-    const char *  strTitle;            /*!< @brief (required) this event's title */
+    char *  strTitle;                  /*!< @brief (required) this event's title */
     unsigned int  iChannelNumber;      /*!< @brief (required) the number of the channel this event occurs on */
     time_t        startTime;           /*!< @brief (required) start time in UTC */
     time_t        endTime;             /*!< @brief (required) end time in UTC */
-    const char *  strPlotOutline;      /*!< @brief (optional) plot outline */
-    const char *  strPlot;             /*!< @brief (optional) plot */
-    const char *  strOriginalTitle;    /*!< @brief (optional) originaltitle */
-    const char *  strCast;             /*!< @brief (optional) cast */
-    const char *  strDirector;         /*!< @brief (optional) director */
-    const char *  strWriter;           /*!< @brief (optional) writer */
+    char *  strPlotOutline;            /*!< @brief (optional) plot outline */
+    char *  strPlot;                   /*!< @brief (optional) plot */
+    char *  strOriginalTitle;          /*!< @brief (optional) originaltitle */
+    char *  strCast;                   /*!< @brief (optional) cast */
+    char *  strDirector;               /*!< @brief (optional) director */
+    char *  strWriter;                 /*!< @brief (optional) writer */
     int           iYear;               /*!< @brief (optional) year */
-    const char *  strIMDBNumber;       /*!< @brief (optional) IMDBNumber */
-    const char *  strIconPath;         /*!< @brief (optional) icon path */
+    char *  strIMDBNumber;             /*!< @brief (optional) IMDBNumber */
+    char *  strIconPath;               /*!< @brief (optional) icon path */
     int           iGenreType;          /*!< @brief (optional) genre type */
     int           iGenreSubType;       /*!< @brief (optional) genre sub type */
-    const char *  strGenreDescription; /*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
+    char *  strGenreDescription;       /*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
     time_t        firstAired;          /*!< @brief (optional) first aired in UTC */
     int           iParentalRating;     /*!< @brief (optional) parental rating */
     int           iStarRating;         /*!< @brief (optional) star rating */
@@ -93,7 +93,7 @@ extern "C" {
     int           iSeriesNumber;       /*!< @brief (optional) series number */
     int           iEpisodeNumber;      /*!< @brief (optional) episode number */
     int           iEpisodePartNumber;  /*!< @brief (optional) episode part number */
-    const char *  strEpisodeName;      /*!< @brief (optional) episode name */
+    char *  strEpisodeName;            /*!< @brief (optional) episode name */
   } ATTRIBUTE_PACKED EPG_TAG;
 
 #ifdef __cplusplus
