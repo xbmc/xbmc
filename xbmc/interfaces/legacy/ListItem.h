@@ -341,7 +341,7 @@ namespace XBMCAddon
        * \n
        * mimetype           : string or unicode - mimetype.\n
        * \n
-       * *If known prehand, this can avoid xbmc doing HEAD requests to http servers to figure out file type.\n
+       * *If known prehand, this can avoid Kodi doing HEAD requests to http servers to figure out file type.\n
        */
       void setMimeType(const String& mimetype);
 

@@ -47,7 +47,7 @@ namespace XBMCAddon
                           bool isFolder = false, int totalItems = 0);
 
     /**
-     * addDirectoryItems(handle, items [,totalItems]) -- Callback function to pass directory contents back to XBMC as a list.
+     * addDirectoryItems(handle, items [,totalItems]) -- Callback function to pass directory contents back to Kodi as a list.
      *  - Returns a bool for successful completion.
      * 
      * handle      : integer - handle the plugin was started with.\n
@@ -65,7 +65,7 @@ namespace XBMCAddon
                            int totalItems = 0);
 
     /**
-     * endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.
+     * endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell Kodi that the end of the directory listing in a virtualPythonFolder module is reached.
      * 
      * handle           : integer - handle the plugin was started with.\n
      * succeeded        : [opt] bool - True=script completed successfully(Default)/False=Script did not.\n
@@ -79,7 +79,7 @@ namespace XBMCAddon
                         bool cacheToDisc = true);
 
     /**
-     * setResolvedUrl(handle, succeeded, listitem) -- Callback function to tell XBMC that the file plugin has been resolved to a url
+     * setResolvedUrl(handle, succeeded, listitem) -- Callback function to tell Kodi that the file plugin has been resolved to a url
      * 
      * handle           : integer - handle the plugin was started with.\n
      * succeeded        : bool - True=script completed successfully/False=Script did not.\n
