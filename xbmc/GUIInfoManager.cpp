@@ -4017,6 +4017,15 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       }
     }
   }
+  else if (m_currentFile->HasPVRRecordingInfoTag())
+  {
+    switch (item)
+    {
+      /* Now playing infos */
+    case VIDEOPLAYER_PLOT:
+      return m_currentFile->GetPVRRecordingInfoTag()->m_strPlot;
+    }
+  }
   else if (m_currentFile->HasVideoInfoTag())
   {
     switch (item)
