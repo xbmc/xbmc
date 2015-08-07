@@ -90,7 +90,7 @@ public:
   void SetInitMadvr(bool b) { m_isInitMadvr = b; }
   bool GetRenderOnMadvr() { return m_renderOnMadvr; }
   void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
-  void IncRenderCount() { m_renderCount =+ 1;  }
+  void IncRenderCount() { m_renderCount += 1; }
   void ResetRenderCount() { m_renderCount = 0; }
   bool IsGuiActive() { return m_renderCount > 0; }
 

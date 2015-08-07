@@ -29,22 +29,20 @@ public:
   CMadvrSharedRender();
   virtual ~CMadvrSharedRender();
 
-
-  HRESULT CMadvrSharedRender::GetSharedHandle(IUnknown* pUnknown, HANDLE* pHandle);
-  HRESULT CMadvrSharedRender::CreateTextureDX11(ID3D11Device* m_pDevice, UINT Width, UINT Height, DXGI_FORMAT format, ID3D11Texture2D** ppTexture, HANDLE* pHandle);
   HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height);
+  HRESULT CreateSharedResource(IDirect3DTexture9** ppTexture9, ID3D11Texture2D** ppTexture11, ID3D11RenderTargetView** ppSurface11);
   HRESULT RenderMadvr(MADVR_RENDER_LAYER layer);
   
 private:
   HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
   HRESULT RenderTexture(MADVR_RENDER_LAYER layer);
   HRESULT SetupVertex();
-
   HRESULT StoreMadDeviceState();
   HRESULT SetupMadDeviceState();
   HRESULT RestoreMadDeviceState();
-  HRESULT CreateRenderTargetView();
-  void Release(IUnknown* pUnknown);
+
+  ID3D11Device* m_pD3DDeviceKodi = nullptr;
+  IDirect3DDevice9Ex* m_pD3DDeviceMadVR = nullptr;
 
   ID3D11Texture2D* m_pKodiUnderTexture = nullptr;
   ID3D11Texture2D* m_pKodiOverTexture = nullptr;
@@ -53,14 +51,10 @@ private:
   IDirect3DTexture9* m_pMadvrUnderTexture = nullptr;
   IDirect3DTexture9* m_pMadvrOverTexture = nullptr;
   IDirect3DVertexBuffer9* m_pMadvrVertexBuffer = nullptr;
-  HANDLE m_pSharedUnderHandle = nullptr;
-  HANDLE m_pSharedOverHandle = nullptr;
-
-  ID3D11Device* m_pD3DDeviceKodi = nullptr;
-  IDirect3DDevice9Ex* m_pD3DDeviceMadVR = nullptr;
 
   DWORD m_dwWidth = 0;
   DWORD m_dwHeight = 0;
+  float m_fColor[4];
 
   // stored mad device state
   IDirect3DVertexShader9* m_pOldVS = nullptr;
@@ -80,6 +74,4 @@ private:
   DWORD m_D3DRS_DESTBLEND = 0;
 
   IDirect3DPixelShader9* m_pPix = nullptr;
-
-  float m_fColor[4];
 };
