@@ -763,6 +763,7 @@ xbmc/main/posix/Makefile
 /lib/libdvd/libdvdcss/stamp-doxygen
 /lib/libdvd/libdvdcss/test/Makefile
 /lib/libdvd/libdvdcss/doc/doxygen.cfg
+/lib/libdvd/libdvdcss/doc/doxygen_sqlite3.db
 /lib/libdvd/libdvdcss/doc/Makefile
 /lib/libdvd/libdvdcss/doc/Makefile.in
 /lib/libdvd/libdvdcss/doc/html/
