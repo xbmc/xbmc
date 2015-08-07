@@ -40,6 +40,7 @@
 #include "Utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/StdString.h"
+#include "utils/DSFileUtils.h"
 
 CDSStreamDetail::CDSStreamDetail()
   : IAMStreamSelect_Index(0), flags(0), pObj(NULL), pUnk(NULL), lcid(0),
@@ -825,12 +826,16 @@ int CStreamsManager::AddSubtitle(const std::string& subFilePath)
   if (!m_bIsXYVSFilter)
     return -1;
 
-  CStdStringW subfileW;
-  g_charsetConverter.utf8ToW(subFilePath, subfileW);
+  CStdStringW subFileW;
+  std::string subFile;
 
-  CLog::Log(LOGDEBUG, "%s Successfully loaded external subtitle name  \"%s\" ", __FUNCTION__, subFilePath.c_str());
+  subFile = CDSFile::SmbToUncPath(subFilePath);
 
-  m_pIDirectVobSub->put_FileName(const_cast<wchar_t*>(subfileW.c_str()));
+  g_charsetConverter.utf8ToW(subFile, subFileW);
+
+  CLog::Log(LOGDEBUG, "%s Successfully loaded external subtitle name  \"%s\" ", __FUNCTION__, subFile.c_str());
+
+  m_pIDirectVobSub->put_FileName(const_cast<wchar_t*>(subFileW.c_str()));
 
   m_subfilterStreams = m_subfilterStreams_int;
 
