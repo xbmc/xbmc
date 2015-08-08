@@ -823,6 +823,7 @@ bool CApplication::CreateGUI()
             info.iWidth,
             info.iHeight,
             info.strMode.c_str());
+
   g_windowManager.Initialize();
 
   return true;
@@ -1157,6 +1158,15 @@ bool CApplication::Initialize()
     g_windowManager.CreateWindows();
     /* window id's 3000 - 3100 are reserved for python */
 
+    // initialize splash window after splash screen disappears
+    // because we need a real window in the background which gets
+    // rendered while we load the main window or enter the master lock key
+    if (g_advancedSettings.m_splashImage)
+    {
+      SAFE_DELETE(m_splash);
+      g_windowManager.ActivateWindow(WINDOW_SPLASH);
+    }
+
     // Make sure we have at least the default skin
     string defaultSkin = ((const CSettingString*)CSettings::Get().GetSetting("lookandfeel.skin"))->GetDefault();
     if (!LoadSkin(CSettings::Get().GetString("lookandfeel.skin")) && !LoadSkin(defaultSkin))
@@ -1164,9 +1174,6 @@ bool CApplication::Initialize()
       CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", defaultSkin.c_str());
       return false;
     }
-
-    if (g_advancedSettings.m_splashImage)
-      SAFE_DELETE(m_splash);
 
     if (CSettings::Get().GetBool("masterlock.startuplock") &&
         CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
@@ -3891,6 +3898,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1() == GUI_MSG_UI_READY)
       {
+        // remove splash window
+        g_windowManager.Delete(WINDOW_SPLASH);
+
         if (m_fallbackLanguageLoaded)
           CGUIDialogOK::ShowAndGetInput(24133, 24134);
 

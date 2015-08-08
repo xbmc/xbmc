@@ -272,6 +272,9 @@
 		3994427F1A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
 		399442801A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
 		399442811A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
+		4260D5C71B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
+		4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
+		4260D5C91B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC1701A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
@@ -3607,6 +3610,8 @@
 		3994426A1A8DD920006C39E9 /* VideoLibraryScanningJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryScanningJob.h; sourceTree = "<group>"; };
 		3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryQueue.cpp; sourceTree = "<group>"; };
 		3994427E1A8DD96F006C39E9 /* VideoLibraryQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryQueue.h; sourceTree = "<group>"; };
+		4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowSplash.cpp; sourceTree = "<group>"; };
+		4260D5C61B67BB8F003F6F2D /* GUIWindowSplash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSplash.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
 		42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRActionListener.cpp; sourceTree = "<group>"; };
 		42DAC16D1A6E789E0066B4C8 /* PVRActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRActionListener.h; sourceTree = "<group>"; };
@@ -6671,6 +6676,8 @@
 				E38E18260D25F9FA00618676 /* GUIWindowScreensaver.h */,
 				7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */,
 				7C89619113B6A16F003631FE /* GUIWindowScreensaverDim.h */,
+				4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */,
+				4260D5C61B67BB8F003F6F2D /* GUIWindowSplash.h */,
 				E38E18370D25F9FA00618676 /* GUIWindowStartup.cpp */,
 				E38E18380D25F9FA00618676 /* GUIWindowStartup.h */,
 				E38E18390D25F9FA00618676 /* GUIWindowSystemInfo.cpp */,
@@ -10590,6 +10597,7 @@
 				18B7C7C61294222E009E7A26 /* GUIIncludes.cpp in Sources */,
 				18B7C7C71294222E009E7A26 /* GUIInfoTypes.cpp in Sources */,
 				18B7C7C81294222E009E7A26 /* GUILabel.cpp in Sources */,
+				4260D5C71B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */,
 				18B7C7C91294222E009E7A26 /* GUILabelControl.cpp in Sources */,
 				18B7C7CA1294222E009E7A26 /* GUIListContainer.cpp in Sources */,
 				18B7C7CB1294222E009E7A26 /* GUIListGroup.cpp in Sources */,
@@ -11559,6 +11567,7 @@
 				DFF0F2B817528350002DA3A4 /* imagefactory.cpp in Sources */,
 				DFF0F2B917528350002DA3A4 /* IWindowManagerCallback.cpp in Sources */,
 				DFF0F2BA17528350002DA3A4 /* JpegIO.cpp in Sources */,
+				4260D5C91B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */,
 				DFF0F2BC17528350002DA3A4 /* LocalizeStrings.cpp in Sources */,
 				DFF0F2BD17528350002DA3A4 /* MatrixGLES.cpp in Sources */,
 				DFF0F2BE17528350002DA3A4 /* Shader.cpp in Sources */,
@@ -13024,6 +13033,7 @@
 				E499156A174E65AB00741B6D /* ButtonTranslator.cpp in Sources */,
 				E499156B174E65AB00741B6D /* InertialScrollingHandler.cpp in Sources */,
 				E499156D174E65AB00741B6D /* KeyboardStat.cpp in Sources */,
+				4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */,
 				E499156E174E65AB00741B6D /* SDLJoystick.cpp in Sources */,
 				E499156F174E65AC00741B6D /* XBMC_keytable.cpp in Sources */,
 				E4991574174E661400741B6D /* WinEventsIOS.mm in Sources */,
