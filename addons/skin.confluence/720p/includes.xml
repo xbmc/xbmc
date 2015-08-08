@@ -21,10 +21,6 @@
 		<value condition="!ListItem.IsStereoscopic">$INFO[ListItem.VideoResolution,flagging/lists/,.png]</value>
 		<value>flagging/lists/3D.png</value>
 	</variable>
-	<variable name="OverlayVar">
-		<value condition="!ListItem.IsResumable">$INFO[ListItem.Overlay]</value>
-		<value>OverlayWatching.png</value>
-	</variable>
 	<variable name="BannerThumb">
 		<value condition="!IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
 		<value>$INFO[ListItem.Icon]</value>
