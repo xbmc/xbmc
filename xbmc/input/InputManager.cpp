@@ -458,11 +458,30 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   switch (newEvent.type)
   {
   case XBMC_KEYDOWN:
+  {
     m_Keyboard.ProcessKeyDown(newEvent.key.keysym);
-    OnKey(m_Keyboard.TranslateKey(newEvent.key.keysym));
+    CKey key = m_Keyboard.TranslateKey(newEvent.key.keysym);
+    if (!CButtonTranslator::GetInstance().HasLonpressMapping(g_windowManager.GetActiveWindowID(), key))
+    {
+      m_LastKey.Reset();
+      OnKey(key);
+    }
+    else
+    {
+      if (key.GetButtonCode() != m_LastKey.GetButtonCode() && key.GetButtonCode() & CKey::MODIFIER_LONG)
+      {
+        m_LastKey = key;  // OnKey is reentrant; need to do this before entering
+        OnKey(key);
+      }
+      m_LastKey = key;
+    }
     break;
+  }
   case XBMC_KEYUP:
     m_Keyboard.ProcessKeyUp();
+    if (m_LastKey.GetButtonCode() != KEY_INVALID && !(m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG))
+      OnKey(m_LastKey);
+    m_LastKey.Reset();
     break;
   case XBMC_MOUSEBUTTONDOWN:
   case XBMC_MOUSEBUTTONUP:

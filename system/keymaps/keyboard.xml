@@ -35,6 +35,10 @@
 <!--                                                                                          -->
 <!--  Axis Ids / Analog Controls                                                              -->
 <!--   Coming soon.                                                                           -->
+<!--                                                                                          -->
+<!--  Long presses                                                                            -->
+<!--   A limitation is that if a single press is mapped in a section, a global "longpress"    -->
+<!--   will be ignored. The workaround is to duplicate the long mapping in the section.       -->
 <keymap>
   <global>
     <keyboard>
@@ -52,8 +56,11 @@
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
       <return>Select</return>
+      <return mod="longpress">ContextMenu</return>
       <enter>Select</enter>
+      <enter mod="longpress">ContextMenu</enter>
       <backspace>Back</backspace>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
       <key id='65446'>Back</key>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
