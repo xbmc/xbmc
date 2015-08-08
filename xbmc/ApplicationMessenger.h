@@ -111,7 +111,6 @@ namespace MUSIC_INFO
 #define TMSG_CALLBACK             800
 
 #define TMSG_VOLUME_SHOW          900
-#define TMSG_SPLASH_MESSAGE       901
 
 #define TMSG_DISPLAY_SETUP      1000
 #define TMSG_DISPLAY_DESTROY    1001
@@ -250,9 +249,6 @@ public:
   std::vector<bool> GetInfoBooleans(const std::vector<std::string> &properties);
 
   void ShowVolumeBar(bool up);
-
-  void SetSplashMessage(const std::string& message);
-  void SetSplashMessage(int stringID);
 
   /*! \brief Used to enable/disable PVR system without waiting.
    \param onOff if true it becomes switched on otherwise off
