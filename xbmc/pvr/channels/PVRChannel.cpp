@@ -808,8 +808,13 @@ int CPVRChannel::EpgID(void) const
 void CPVRChannel::SetEpgID(int iEpgId)
 {
   CSingleLock lock(m_critSection);
-  m_iEpgId = iEpgId;
-  SetChanged();
+
+  if (m_iEpgId != iEpgId)
+  {
+    m_iEpgId = iEpgId;
+    SetChanged();
+    m_bChanged = true;
+  }
 }
 
 bool CPVRChannel::EPGEnabled(void) const
