@@ -190,7 +190,7 @@
     <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\ContextItemAddon.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\ContextMenuAddon.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AudioDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonInfo.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonSettings.cpp" />
@@ -211,6 +211,7 @@
     <ClCompile Include="..\..\xbmc\AutoSwitch.cpp" />
     <ClCompile Include="..\..\xbmc\BackgroundInfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\CompileInfo.cpp" />
+    <ClCompile Include="..\..\xbmc\ContextMenuItem.cpp" />
     <ClCompile Include="..\..\xbmc\ContextMenuManager.cpp" />
     <ClCompile Include="..\..\xbmc\contrib\kissfft\kiss_fft.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
@@ -857,7 +858,7 @@
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAudioDSP.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksCodec.h" />
     <ClInclude Include="..\..\xbmc\addons\AudioDecoder.h" />
-    <ClInclude Include="..\..\xbmc\addons\ContextItemAddon.h" />
+    <ClInclude Include="..\..\xbmc\addons\ContextMenuAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\ImageResource.h" />
     <ClInclude Include="..\..\xbmc\addons\Webinterface.h" />
     <ClInclude Include="..\..\xbmc\addons\UISoundsResource.h" />
@@ -1726,6 +1727,7 @@
     <ClInclude Include="..\..\xbmc\Autorun.h" />
     <ClInclude Include="..\..\xbmc\AutoSwitch.h" />
     <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />
+    <ClInclude Include="..\..\xbmc\ContextMenuItem.h" />
     <ClInclude Include="..\..\xbmc\ContextMenuManager.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.h" />

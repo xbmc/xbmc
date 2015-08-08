@@ -1006,7 +1006,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
 
   buttons.Add(CONTEXT_BUTTON_DELETE, 646);
 
-  CContextMenuManager::Get().AddVisibleItems(item, buttons, CONTEXT_MENU_GROUP_MANAGE);
+  CContextMenuManager::Get().AddVisibleItems(item, buttons, CContextMenuManager::MANAGE);
 
   bool result = false;
   int button = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
@@ -1070,7 +1070,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
         break;
 
       default:
-        result = CContextMenuManager::Get().Execute(button, item);
+        result = CContextMenuManager::Get().OnClick(button, item);
         break;
     }
   }

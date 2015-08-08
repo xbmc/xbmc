@@ -646,7 +646,7 @@ void OnEnabled(const std::string& id)
     std::static_pointer_cast<CService>(addon)->Start();
 
   if (CAddonMgr::Get().GetAddon(id, addon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::Get().Register(std::static_pointer_cast<CContextItemAddon>(addon));
+    CContextMenuManager::Get().Register(std::static_pointer_cast<CContextMenuAddon>(addon));
 }
 
 void OnDisabled(const std::string& id)
@@ -660,7 +660,7 @@ void OnDisabled(const std::string& id)
     std::static_pointer_cast<CService>(addon)->Stop();
 
   if (CAddonMgr::Get().GetAddon(id, addon, ADDON_CONTEXT_ITEM, false))
-    CContextMenuManager::Get().Unregister(std::static_pointer_cast<CContextItemAddon>(addon));
+    CContextMenuManager::Get().Unregister(std::static_pointer_cast<CContextMenuAddon>(addon));
 }
 
 void OnPreInstall(const AddonPtr& addon)
@@ -672,7 +672,7 @@ void OnPreInstall(const AddonPtr& addon)
     std::static_pointer_cast<CService>(localAddon)->Stop();
 
   if (CAddonMgr::Get().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::Get().Unregister(std::static_pointer_cast<CContextItemAddon>(localAddon));
+    CContextMenuManager::Get().Unregister(std::static_pointer_cast<CContextMenuAddon>(localAddon));
 
   //Fallback to the pre-install callback in the addon.
   //BUG: If primary extension point have changed we're calling the wrong method.
@@ -686,7 +686,7 @@ void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
     std::static_pointer_cast<CService>(localAddon)->Start();
 
   if (CAddonMgr::Get().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::Get().Register(std::static_pointer_cast<CContextItemAddon>(localAddon));
+    CContextMenuManager::Get().Register(std::static_pointer_cast<CContextMenuAddon>(localAddon));
 
   addon->OnPostInstall(update, modal);
 }
@@ -698,7 +698,7 @@ void OnPreUnInstall(const AddonPtr& addon)
     std::static_pointer_cast<CService>(localAddon)->Stop();
 
   if (CAddonMgr::Get().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::Get().Unregister(std::static_pointer_cast<CContextItemAddon>(localAddon));
+    CContextMenuManager::Get().Unregister(std::static_pointer_cast<CContextMenuAddon>(localAddon));
 
   addon->OnPreUnInstall();
 }

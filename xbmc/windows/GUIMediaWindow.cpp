@@ -1617,7 +1617,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     break;
   }
   if (button >= CONTEXT_BUTTON_FIRST_ADDON)
-    return CContextMenuManager::Get().Execute(button, m_vecItems->Get(itemNumber));
+    return CContextMenuManager::Get().OnClick(button, m_vecItems->Get(itemNumber));
   return false;
 }
 
