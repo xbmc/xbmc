@@ -22,6 +22,7 @@
 
 #include "GUIWindowPVRBase.h"
 #include "epg/GUIEPGGridContainer.h"
+#include "threads/SystemClock.h"
 
 class CSetting;
 
@@ -65,5 +66,7 @@ namespace PVR
     CPVRChannelGroupPtr m_cachedChannelGroup;
 
     bool m_bUpdateRequired;
+
+    XbmcThreads::EndTime m_nextUpdateTimeout;
   };
 }
