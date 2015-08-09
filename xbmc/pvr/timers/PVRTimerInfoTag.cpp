@@ -58,7 +58,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_iGenreSubType       = 0;
   m_StartTime           = CDateTime::GetUTCDateTime();
   m_StopTime            = m_StartTime;
-  m_state               = PVR_TIMER_STATE_NEW;
+  m_state               = PVR_TIMER_STATE_SCHEDULED;
   m_FirstDay.SetValid(false);
   m_iTimerId            = 0;
 
@@ -360,7 +360,7 @@ void CPVRTimerInfoTag::SetTimerType(const CPVRTimerTypePtr &type)
   CSingleLock lock(m_critSection);
   m_timerType = type;
 
-  if (m_timerType && (m_state == PVR_TIMER_STATE_NEW))
+  if (m_timerType && m_iClientIndex == -1)
   {
     m_iPriority           = m_timerType->GetPriorityDefault();
     m_iLifetime           = m_timerType->GetLifetimeDefault();
