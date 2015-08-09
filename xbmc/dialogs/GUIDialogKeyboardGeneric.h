@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2012-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2012-2013 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #include "guilib/GUIKeyboard.h"
 #include "guilib/GUIDialog.h"
 #include "input/KeyboardLayout.h"
+
+class CGUIFont;
 
 enum KEYBOARD {CAPS, LOWER, SYMBOLS};
 
@@ -64,6 +66,11 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void Backspace();
     void SetEditText(const std::string& text);
     void SendSearchMessage();
+    float GetStringWidth(const std::wstring& utf16);
+    void ChangeWordList(int direct);  // direct: 0 - first page, 1 - next page, -1 - prev page
+    void ShowWordList(int which); // which: 0 - current page, 1 - next page, -1 -prev page
+    bool CodingCharacter(const std::string &ch);
+    void NormalCharacter(const std::string &ch);
 
     bool m_bIsConfirmed;
     KEYBOARD m_keyType;
@@ -77,6 +84,15 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
 
     std::string m_strHeading;
     std::string m_text;       ///< current text
+
+    IInputCodingTable *m_codingtable;
+    std::vector<std::wstring> m_words;
+    std::string m_hzcode;
+    int         m_pos;
+    int         m_num;
+    float       m_listwidth;
+    CGUIFont   *m_listfont;
+    CCriticalSection  m_CS;
 
     char_callback_t m_pCharCallback;
 };
