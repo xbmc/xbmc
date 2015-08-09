@@ -163,7 +163,7 @@ extern "C" {
    */
   typedef enum
   {
-    PVR_TIMER_STATE_NEW          = 0, /*!< @brief a new, unsaved timer */
+    PVR_TIMER_STATE_NEW          = 0, /*!< @brief the timer was just created on the backend and is not yet active. This state must not be used for timers just created on the client side. */
     PVR_TIMER_STATE_SCHEDULED    = 1, /*!< @brief the timer is scheduled for recording */
     PVR_TIMER_STATE_RECORDING    = 2, /*!< @brief the timer is currently recordings */
     PVR_TIMER_STATE_COMPLETED    = 3, /*!< @brief the recording completed successfully */
