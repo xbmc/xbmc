@@ -395,10 +395,15 @@ unsigned int CGUITextBox::GetRows() const
   return m_lines.size();
 }
 
+int CGUITextBox::GetNumPages() const
+{
+  return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+}
+
 int CGUITextBox::GetCurrentPage() const
 {
   if (m_offset + m_itemsPerPage >= GetRows())  // last page
-    return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+    return GetNumPages();
   return m_offset / m_itemsPerPage + 1;
 }
 
@@ -408,7 +413,7 @@ std::string CGUITextBox::GetLabel(int info) const
   switch (info)
   {
   case CONTAINER_NUM_PAGES:
-    label = StringUtils::Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
+    label = StringUtils::Format("%u", GetNumPages());
     break;
   case CONTAINER_CURRENT_PAGE:
     label = StringUtils::Format("%u", GetCurrentPage());
@@ -417,6 +422,19 @@ std::string CGUITextBox::GetLabel(int info) const
     break;
   }
   return label;
+}
+
+bool CGUITextBox::GetCondition(int condition, int data) const
+{
+  switch (condition)
+  {
+  case CONTAINER_HAS_NEXT:
+      return (GetCurrentPage() < GetNumPages());
+  case CONTAINER_HAS_PREVIOUS:
+    return (GetCurrentPage() > 1);
+  default:
+    return false;
+  }
 }
 
 std::string CGUITextBox::GetDescription() const
