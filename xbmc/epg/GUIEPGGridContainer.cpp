@@ -48,8 +48,6 @@ using namespace EPG;
 #define BLOCKJUMP    4 // how many blocks are jumped with each analogue scroll action
 #define BLOCK_SCROLL_OFFSET 60 / MINSPERBLOCK // how many blocks are jumped if we are at left/right edge of grid
 
-#define MAX_UPDATE_FREQUENCY 3000 // Do at maximum 1 grid data update in MAX_UPDATE_FREQUENCY milliseconds
-
 CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width,
                                            float height, int scrollTime, int preloadItems, int timeBlocks, int rulerUnit,
                                            const CTextureInfo& progressIndicatorTexture)
@@ -162,8 +160,8 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_channelScrollLastTime   = other.m_channelScrollLastTime;
   m_channelScrollSpeed      = other.m_channelScrollSpeed;
   m_channelScrollOffset     = other.m_channelScrollOffset;
-  m_nextUpdateTimeout       = other.m_nextUpdateTimeout;
 }
+
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
 {
   Reset();
@@ -809,13 +807,8 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
         return true;
 
       case GUI_MSG_LABEL_BIND:
-        if (m_nextUpdateTimeout.IsTimePast())
-        {
-          UpdateItems(static_cast<CFileItemList *>(message.GetPointer()));
-          m_nextUpdateTimeout.Set(MAX_UPDATE_FREQUENCY);
-          return true;
-        }
-        break;
+        UpdateItems(static_cast<CFileItemList *>(message.GetPointer()));
+        return true;
 
       case GUI_MSG_REFRESH_LIST:
         // update our list contents
