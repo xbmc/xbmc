@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2010-2013 Team XBMC
+ *      Copyright (C) 2013-2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,23 +19,29 @@
  *
  */
 
-#include "AEResampleFactory.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResampleFFMPEG.h"
-#if defined(TARGET_RASPBERRY_PI)
-  #include "settings/Settings.h"
-  #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEResamplePi.h"
-#endif
+#include <list>
+#include <memory>
+#include "Addon.h"
 
-namespace ActiveAE
+class CContextMenuItem;
+typedef struct cp_cfg_element_t cp_cfg_element_t;
+
+
+namespace ADDON
 {
+  class CContextMenuAddon : public CAddon
+  {
+  public:
+    CContextMenuAddon(const cp_extension_t *ext);
+    CContextMenuAddon(const AddonProps &props);
+    virtual ~CContextMenuAddon();
 
-IAEResample *CAEResampleFactory::Create(uint32_t flags /* = 0 */)
-{
-#if defined(TARGET_RASPBERRY_PI)
-  if (!(flags & AERESAMPLEFACTORY_QUICK_RESAMPLE) && CSettings::Get().GetInt(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY) == AE_QUALITY_GPU)
-    return new CActiveAEResamplePi();
-#endif
-  return new CActiveAEResampleFFMPEG();
-}
+    std::vector<CContextMenuItem> GetItems();
 
+  private:
+    void ParseMenu(cp_cfg_element_t* elem, const std::string& parent, int& anonGroupCount);
+    std::vector<CContextMenuItem> m_items;
+  };
+
+  typedef std::shared_ptr<CContextMenuAddon> ContextItemAddonPtr;
 }

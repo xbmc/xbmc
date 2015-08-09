@@ -126,7 +126,7 @@ namespace XBMCAddon
       // setVisibleCondition() Method
       /**
        * setVisibleCondition(visible[,allowHiddenFocus]) -- Set's the control's visible condition.
-       *     Allows XBMC to control the visible status of the control.
+       *     Allows Kodi to control the visible status of the control.
        * 
        * visible          : string - Visible condition.\n
        * allowHiddenFocus : bool - True=gains focus even if hidden.
@@ -141,7 +141,7 @@ namespace XBMCAddon
       // setEnableCondition() Method
       /**
        * setEnableCondition(enable) -- Set's the control's enabled condition.
-       *     Allows XBMC to control the enabled status of the control.
+       *     Allows Kodi to control the enabled status of the control.
        * 
        * enable           : string - Enable condition.
        * 

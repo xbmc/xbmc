@@ -169,11 +169,9 @@ void CEpgContainer::Start(bool bAsync)
   }
 
   LoadFromDB();
+
   if (g_PVRManager.IsStarted())
-  {
-    g_PVRManager.TriggerEpgsCreate();
     g_PVRManager.Recordings()->UpdateEpgTags();
-  }
 
   CSingleLock lock(m_critSection);
   if (!m_bStop)
@@ -184,6 +182,8 @@ void CEpgContainer::Start(bool bAsync)
     SetPriority(-1);
 
     m_bStarted = true;
+
+    g_PVRManager.TriggerEpgsCreate();
 
     CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
   }
@@ -214,8 +214,8 @@ void CEpgContainer::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "epg.ignoredbforclient" || settingId == "epg.epgupdate" ||
-      settingId == "epg.daystodisplay")
+  if (settingId == CSettings::SETTING_EPG_IGNOREDBFORCLIENT || settingId == CSettings::SETTING_EPG_EPGUPDATE ||
+      settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
     LoadSettings();
 }
 
@@ -452,9 +452,9 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 
 bool CEpgContainer::LoadSettings(void)
 {
-  m_bIgnoreDbForClient = CSettings::Get().GetBool("epg.ignoredbforclient");
-  m_iUpdateTime        = CSettings::Get().GetInt ("epg.epgupdate") * 60;
-  m_iDisplayTime       = CSettings::Get().GetInt ("epg.daystodisplay") * 24 * 60 * 60;
+  m_bIgnoreDbForClient = CSettings::Get().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
+  m_iUpdateTime        = CSettings::Get().GetInt (CSettings::SETTING_EPG_EPGUPDATE) * 60;
+  m_iDisplayTime       = CSettings::Get().GetInt (CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
 
   return true;
 }
@@ -539,7 +539,7 @@ bool CEpgContainer::InterruptUpdate(void) const
   bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
 
   return bReturn ||
-    (CSettings::Get().GetBool("epg.preventupdateswhileplayingtv") &&
+    (CSettings::Get().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
      g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying());
 }
 

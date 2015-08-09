@@ -86,11 +86,11 @@ CProfilesManager& CProfilesManager::Get()
 void CProfilesManager::OnSettingsLoaded()
 {
   // check them all
-  std::string strDir = CSettings::Get().GetString("system.playlistspath");
+  std::string strDir = CSettings::Get().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
   if (strDir == "set default" || strDir.empty())
   {
     strDir = "special://profile/playlists/";
-    CSettings::Get().SetString("system.playlistspath", strDir.c_str());
+    CSettings::Get().SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
   }
 
   CDirectory::Create(strDir);
@@ -255,7 +255,7 @@ bool CProfilesManager::LoadProfile(size_t index)
   CDatabaseManager::Get().Initialize();
   CButtonTranslator::GetInstance().Load(true);
 
-  CInputManager::Get().SetMouseEnabled(CSettings::Get().GetBool("input.enablemouse"));
+  CInputManager::Get().SetMouseEnabled(CSettings::Get().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 
   g_infoManager.ResetCache();
   g_infoManager.ResetLibraryBools();
@@ -265,8 +265,8 @@ bool CProfilesManager::LoadProfile(size_t index)
     CXBMCTinyXML doc;
     if (doc.LoadFile(URIUtils::AddFileToFolder(GetUserDataFolder(), "guisettings.xml")))
     {
-      CSettings::Get().LoadSetting(doc.RootElement(), "masterlock.maxretries");
-      CSettings::Get().LoadSetting(doc.RootElement(), "masterlock.startuplock");
+      CSettings::Get().LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+      CSettings::Get().LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_STARTUPLOCK);
     }
   }
 

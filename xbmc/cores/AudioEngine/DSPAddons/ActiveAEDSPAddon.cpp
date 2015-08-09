@@ -98,7 +98,7 @@ void CActiveAEDSPAddon::OnPreUnInstall()
 
 void CActiveAEDSPAddon::OnPostUnInstall()
 {
-  if (CSettings::Get().GetBool("audiooutput.dspaddonsenabled"))
+  if (CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
     CActiveAEDSP::Get().Activate(true);
 }
 

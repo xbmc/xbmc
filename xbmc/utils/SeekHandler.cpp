@@ -59,15 +59,15 @@ void CSeekHandler::Configure()
   Reset();
 
   m_seekDelays.clear();
-  m_seekDelays.insert(std::make_pair(SEEK_TYPE_VIDEO, CSettings::Get().GetInt("videoplayer.seekdelay")));
-  m_seekDelays.insert(std::make_pair(SEEK_TYPE_MUSIC, CSettings::Get().GetInt("musicplayer.seekdelay")));
+  m_seekDelays.insert(std::make_pair(SEEK_TYPE_VIDEO, CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY)));
+  m_seekDelays.insert(std::make_pair(SEEK_TYPE_MUSIC, CSettings::Get().GetInt(CSettings::SETTING_MUSICPLAYER_SEEKDELAY)));
 
   m_forwardSeekSteps.clear();
   m_backwardSeekSteps.clear();
 
   std::map<SeekType, std::string> seekTypeSettingMap;
-  seekTypeSettingMap.insert(std::make_pair(SEEK_TYPE_VIDEO, "videoplayer.seeksteps"));
-  seekTypeSettingMap.insert(std::make_pair(SEEK_TYPE_MUSIC, "musicplayer.seeksteps"));
+  seekTypeSettingMap.insert(std::make_pair(SEEK_TYPE_VIDEO, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS));
+  seekTypeSettingMap.insert(std::make_pair(SEEK_TYPE_MUSIC, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS));
 
   for (std::map<SeekType, std::string>::iterator it = seekTypeSettingMap.begin(); it!=seekTypeSettingMap.end(); ++it)
   {
@@ -237,10 +237,10 @@ void CSeekHandler::OnSettingChanged(const CSetting *setting)
   if (setting == NULL)
     return;
 
-  if (setting->GetId() == "videoplayer.seekdelay" ||
-      setting->GetId() == "videoplayer.seeksteps" ||
-      setting->GetId() == "musicplayer.seekdelay" ||
-      setting->GetId() == "musicplayer.seeksteps")
+  if (setting->GetId() == CSettings::SETTING_VIDEOPLAYER_SEEKDELAY ||
+      setting->GetId() == CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS ||
+      setting->GetId() == CSettings::SETTING_MUSICPLAYER_SEEKDELAY ||
+      setting->GetId() == CSettings::SETTING_MUSICPLAYER_SEEKSTEPS)
     Configure();
 }
 

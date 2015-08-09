@@ -102,9 +102,9 @@ void CBaseRenderer::ChooseBestResolution(float fps)
   // Adjust refreshrate to match source fps
 #if !defined(TARGET_DARWIN_IOS)
 #ifdef HAS_DS_PLAYER
-  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && canChange)
+  if (CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && canChange)
 #else
-  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
+  if (CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
 #endif
   {
     float weight;
@@ -446,7 +446,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
 
   // allow a certain error to maximize screen size
   float fCorrection = screenWidth / screenHeight / outputFrameRatio - 1.0f;
-  float fAllowed    = CSettings::Get().GetInt("videoplayer.errorinaspect") * 0.01f;
+  float fAllowed    = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_ERRORINASPECT) * 0.01f;
   if(fCorrection >   fAllowed) fCorrection =   fAllowed;
   if(fCorrection < - fAllowed) fCorrection = - fAllowed;
 
@@ -674,7 +674,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   CDisplaySettings::Get().SetNonLinearStretched(false);
 
   if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeZoom ||
-       (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeZoom))
+       (is43 && CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeZoom))
   { // zoom image so no black bars
     CDisplaySettings::Get().SetPixelRatio(1.0);
     // calculate the desired output ratio
@@ -706,7 +706,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     }
   }
   else if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeWideZoom ||
-           (is43 && CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeWideZoom))
+           (is43 && CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeWideZoom))
   { // super zoom
     float stretchAmount = (screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio;
     CDisplaySettings::Get().SetPixelRatio(pow(stretchAmount, float(2.0/3.0)));
@@ -714,8 +714,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
     CDisplaySettings::Get().SetNonLinearStretched(true);
   }
   else if ( CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeStretch16x9 ||
-           (is43 && (CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9 ||
-                     CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9Nonlin)))
+           (is43 && (CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9 ||
+                     CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin)))
   { // stretch image to 16:9 ratio
     CDisplaySettings::Get().SetZoomAmount(1.0);
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
@@ -730,7 +730,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
       CDisplaySettings::Get().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
     }
     if (is43)
-      CDisplaySettings::Get().SetNonLinearStretched(CSettings::Get().GetInt("videoplayer.stretch43") == ViewModeStretch16x9Nonlin);
+      CDisplaySettings::Get().SetNonLinearStretched(CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin);
 
   }
   else  if (CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode == ViewModeOriginal)

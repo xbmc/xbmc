@@ -735,7 +735,7 @@ void CAirPlayServer::restoreVolume()
 {
   CSingleLock lock(ServerInstanceLock);
 
-  if (ServerInstance && ServerInstance->m_origVolume != -1 && CSettings::Get().GetBool("services.airplayvolumecontrol"))
+  if (ServerInstance && ServerInstance->m_origVolume != -1 && CSettings::Get().GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
   {
     g_application.SetVolume((float)ServerInstance->m_origVolume);
     ServerInstance->m_origVolume = -1;
@@ -853,7 +853,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       {
         float oldVolume = g_application.GetVolume();
         volume *= 100;
-        if(oldVolume != volume && CSettings::Get().GetBool("services.airplayvolumecontrol"))
+        if(oldVolume != volume && CSettings::Get().GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
         {
           backupVolume();
           g_application.SetVolume(volume);          
@@ -988,7 +988,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
       // allow starting the player paused in ios8 mode (needed by camera roll app)
-      if (CSettings::Get().GetBool("services.airplayios8compat") && !startPlayback)
+      if (CSettings::Get().GetBool(CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT) && !startPlayback)
       {
         CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
         g_application.m_pPlayer->SeekPercentage(position * 100.0f);

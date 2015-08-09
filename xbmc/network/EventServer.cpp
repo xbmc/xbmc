@@ -88,11 +88,11 @@ void CEventServer::StartServer()
     return;
 
   // set default port
-  m_iPort = CSettings::Get().GetInt("services.esport");
+  m_iPort = CSettings::Get().GetInt(CSettings::SETTING_SERVICES_ESPORT);
   assert(m_iPort <= 65535 && m_iPort >= 1);
 
   // max clients
-  m_iMaxClients = CSettings::Get().GetInt("services.esmaxclients");
+  m_iMaxClients = CSettings::Get().GetInt(CSettings::SETTING_SERVICES_ESMAXCLIENTS);
   if (m_iMaxClients < 0)
   {
     CLog::Log(LOGERROR, "ES: Invalid maximum number of clients specified %d", m_iMaxClients);
@@ -178,7 +178,7 @@ void CEventServer::Run()
   }
 
   // bind to IP and start listening on port
-  int port_range = CSettings::Get().GetInt("services.esportrange");
+  int port_range = CSettings::Get().GetInt(CSettings::SETTING_SERVICES_ESPORTRANGE);
   if (port_range < 1 || port_range > 100)
   {
     CLog::Log(LOGERROR, "ES: Invalid port range specified %d, defaulting to 10", port_range);

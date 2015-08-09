@@ -62,7 +62,7 @@ void CGUIWindowPVRTimers::ResetObservers(void)
 std::string CGUIWindowPVRTimers::GetDirectoryPath(void)
 {
   const std::string basePath(
-    CPVRTimersPath(m_bRadio, CSettings::Get().GetBool("pvrtimers.timertypefilter")).GetPath());
+    CPVRTimersPath(m_bRadio, CSettings::Get().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER)).GetPath());
   return StringUtils::StartsWith(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
 
@@ -152,7 +152,7 @@ bool CGUIWindowPVRTimers::Update(const std::string &strDirectory, bool updateFil
 
 void CGUIWindowPVRTimers::UpdateButtons(void)
 {
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNTIMERTYPEFILTER, CSettings::Get().GetBool("pvrtimers.timertypefilter"));
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNTIMERTYPEFILTER, CSettings::Get().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER));
 
   CGUIWindowPVRBase::UpdateButtons();
 
@@ -215,7 +215,7 @@ bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
       }
       else if (message.GetSenderId() == CONTROL_BTNTIMERTYPEFILTER)
       {
-        CSettings::Get().ToggleBool("pvrtimers.timertypefilter");
+        CSettings::Get().ToggleBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER);
         CSettings::Get().Save();
         Update(GetDirectoryPath());
         bReturn = true;

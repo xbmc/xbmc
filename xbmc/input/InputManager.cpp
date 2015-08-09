@@ -96,7 +96,7 @@ void CInputManager::InitializeInputs()
   m_Keyboard.Initialize();
 
   m_Mouse.Initialize();
-  m_Mouse.SetEnabled(CSettings::Get().GetBool("input.enablemouse"));
+  m_Mouse.SetEnabled(CSettings::Get().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 }
 
 void CInputManager::ReInitializeJoystick()
@@ -458,11 +458,30 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   switch (newEvent.type)
   {
   case XBMC_KEYDOWN:
+  {
     m_Keyboard.ProcessKeyDown(newEvent.key.keysym);
-    OnKey(m_Keyboard.TranslateKey(newEvent.key.keysym));
+    CKey key = m_Keyboard.TranslateKey(newEvent.key.keysym);
+    if (!CButtonTranslator::GetInstance().HasLonpressMapping(g_windowManager.GetActiveWindowID(), key))
+    {
+      m_LastKey.Reset();
+      OnKey(key);
+    }
+    else
+    {
+      if (key.GetButtonCode() != m_LastKey.GetButtonCode() && key.GetButtonCode() & CKey::MODIFIER_LONG)
+      {
+        m_LastKey = key;  // OnKey is reentrant; need to do this before entering
+        OnKey(key);
+      }
+      m_LastKey = key;
+    }
     break;
+  }
   case XBMC_KEYUP:
     m_Keyboard.ProcessKeyUp();
+    if (m_LastKey.GetButtonCode() != KEY_INVALID && !(m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG))
+      OnKey(m_LastKey);
+    m_LastKey.Reset();
     break;
   case XBMC_MOUSEBUTTONDOWN:
   case XBMC_MOUSEBUTTONUP:
@@ -836,11 +855,11 @@ void CInputManager::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "input.enablemouse")
+  if (settingId == CSettings::SETTING_INPUT_ENABLEMOUSE)
     m_Mouse.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue());
 
 #if defined(HAS_SDL_JOYSTICK)
-  if (settingId == "input.enablejoystick")
+  if (settingId == CSettings::SETTING_INPUT_ENABLEJOYSTICK)
     m_Joystick.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue() &&
     PERIPHERALS::CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
 #endif

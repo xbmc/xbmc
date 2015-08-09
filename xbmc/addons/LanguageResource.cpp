@@ -27,7 +27,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-#define LANGUAGE_SETTING        "locale.language"
 #define LANGUAGE_ADDON_PREFIX   "resource.language."
 
 using namespace std;
@@ -106,7 +105,7 @@ AddonPtr CLanguageResource::Clone() const
 
 bool CLanguageResource::IsInUse() const
 {
-  return StringUtils::EqualsNoCase(CSettings::Get().GetString(LANGUAGE_SETTING), ID());
+  return StringUtils::EqualsNoCase(CSettings::Get().GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
 }
 
 void CLanguageResource::OnPostInstall(bool update, bool modal)
@@ -124,7 +123,7 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
     if (IsInUse())
       g_langInfo.SetLanguage(ID());
     else
-      CSettings::Get().SetString(LANGUAGE_SETTING, ID());
+      CSettings::Get().SetString(CSettings::SETTING_LOCALE_LANGUAGE, ID());
   }
 }
 

@@ -195,22 +195,22 @@ extern "C" void __stdcall init_emu_environ()
 extern "C" void __stdcall update_emu_environ()
 {
   // Use a proxy, if the GUI was configured as such
-  if (CSettings::Get().GetBool("network.usehttpproxy")
-      && !CSettings::Get().GetString("network.httpproxyserver").empty()
-      && CSettings::Get().GetInt("network.httpproxyport") > 0
-      && CSettings::Get().GetInt("network.httpproxytype") == 0)
+  if (CSettings::Get().GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
+      && !CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
+      && CSettings::Get().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
+      && CSettings::Get().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE) == 0)
   {
     std::string strProxy;
-    if (!CSettings::Get().GetString("network.httpproxyusername").empty() &&
-        !CSettings::Get().GetString("network.httpproxypassword").empty())
+    if (!CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).empty() &&
+        !CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).empty())
     {
       strProxy = StringUtils::Format("%s:%s@",
-                                     CSettings::Get().GetString("network.httpproxyusername").c_str(),
-                                     CSettings::Get().GetString("network.httpproxypassword").c_str());
+                                     CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).c_str(),
+                                     CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).c_str());
     }
 
-    strProxy += CSettings::Get().GetString("network.httpproxyserver");
-    strProxy += StringUtils::Format(":%d", CSettings::Get().GetInt("network.httpproxyport"));
+    strProxy += CSettings::Get().GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
+    strProxy += StringUtils::Format(":%d", CSettings::Get().GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
 
     CEnvironment::setenv( "HTTP_PROXY", "http://" + strProxy, true );
     CEnvironment::setenv( "HTTPS_PROXY", "http://" + strProxy, true );

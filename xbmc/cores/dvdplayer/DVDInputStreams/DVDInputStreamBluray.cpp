@@ -354,7 +354,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     return false;
   }
 
-  int mode = CSettings::Get().GetInt("disc.playback");
+  int mode = CSettings::Get().GetInt(CSettings::SETTING_DISC_PLAYBACK);
 
   if (URIUtils::HasExtension(filename, ".mpls"))
   {
@@ -384,7 +384,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
 
   if(m_navmode)
   {
-    int region = CSettings::Get().GetInt("dvds.playerregion");
+    int region = CSettings::Get().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
     if(region == 0)
     {
       CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Open - region dvd must be set in setting, assuming region 1");

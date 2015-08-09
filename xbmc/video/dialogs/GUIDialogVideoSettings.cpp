@@ -269,7 +269,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
   {
     // launch calibration window
     if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE  &&
-        g_passwordManager.CheckSettingLevelLock(CSettings::Get().GetSetting("videoscreen.guicalibration")->GetLevel()))
+        g_passwordManager.CheckSettingLevelLock(CSettings::Get().GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)->GetLevel()))
       return;
     g_windowManager.ForceActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }

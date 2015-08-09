@@ -35,12 +35,12 @@ protected:
   {
     /* TODO
     CSettingsCategory* fl = CSettings::Get().AddCategory(7, "filelists", 14081);
-    CSettings::Get().AddBool(fl, "filelists.showparentdiritems", 13306, true);
-    CSettings::Get().AddBool(fl, "filelists.showextensions", 497, true);
-    CSettings::Get().AddBool(fl, "filelists.ignorethewhensorting", 13399, true);
-    CSettings::Get().AddBool(fl, "filelists.allowfiledeletion", 14071, false);
-    CSettings::Get().AddBool(fl, "filelists.showaddsourcebuttons", 21382,  true);
-    CSettings::Get().AddBool(fl, "filelists.showhidden", 21330, false);
+    CSettings::Get().AddBool(fl, CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS, 13306, true);
+    CSettings::Get().AddBool(fl, CSettings::SETTING_FILELISTS_SHOWEXTENSIONS, 497, true);
+    CSettings::Get().AddBool(fl, CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING, 13399, true);
+    CSettings::Get().AddBool(fl, CSettings::SETTING_FILELISTS_ALLOWFILEDELETION, 14071, false);
+    CSettings::Get().AddBool(fl, CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS, 21382,  true);
+    CSettings::Get().AddBool(fl, CSettings::SETTING_FILELISTS_SHOWHIDDEN, 21330, false);
     */
   }
 

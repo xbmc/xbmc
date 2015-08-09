@@ -45,7 +45,7 @@ static color_t color[8] = { 0xFFFFFF00
 static CGUITextLayout* GetFontLayout()
 {
   if (CUtil::IsUsingTTFSubtitles())
-  { std::string font_file = CSettings::Get().GetString("subtitles.font");
+  { std::string font_file = CSettings::Get().GetString(CSettings::SETTING_SUBTITLES_FONT);
     std::string font_path = URIUtils::AddFileToFolder("special://home/media/Fonts/", font_file);
     if (!XFILE::CFile::Exists(font_path))
       font_path = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", font_file);
@@ -54,17 +54,17 @@ static CGUITextLayout* GetFontLayout()
     RESOLUTION_INFO pal(720, 576, 0);
     CGUIFont *subtitle_font = g_fontManager.LoadTTF("__subtitle__"
                                                     , font_path
-                                                    , color[CSettings::Get().GetInt("subtitles.color")]
+                                                    , color[CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_COLOR)]
                                                     , 0
-                                                    , CSettings::Get().GetInt("subtitles.height")
-                                                    , CSettings::Get().GetInt("subtitles.style")
+                                                    , CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT)
+                                                    , CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_STYLE)
                                                     , false, 1.0f, 1.0f, &pal, true);
     CGUIFont *border_font   = g_fontManager.LoadTTF("__subtitleborder__"
                                                     , font_path
                                                     , 0xFF000000
                                                     , 0
-                                                    , CSettings::Get().GetInt("subtitles.height")
-                                                    , CSettings::Get().GetInt("subtitles.style")
+                                                    , CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT)
+                                                    , CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_STYLE)
                                                     , true, 1.0f, 1.0f, &pal, true);
     if (!subtitle_font || !border_font)
       CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
@@ -115,7 +115,7 @@ COverlayText::COverlayText(CDVDOverlayText * src)
 
   m_layout = GetFontLayout();
 
-  m_subalign = CSettings::Get().GetInt("subtitles.align");
+  m_subalign = CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   if (m_subalign == SUBTITLE_ALIGN_MANUAL)
   {
     m_align  = ALIGN_SUBTITLE;
@@ -136,6 +136,8 @@ COverlayText::COverlayText(CDVDOverlayText * src)
   }
   m_width  = 0;
   m_height = 0;
+
+  m_type = TYPE_GUITEXT;
 }
 
 COverlayText::~COverlayText()

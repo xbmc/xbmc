@@ -48,7 +48,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 #endif
     return true;
 
-  if (CSettings::Get().GetInt("disc.playback") != BD_PLAYBACK_SIMPLE_MENU)
+  if (CSettings::Get().GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
   std::string path;

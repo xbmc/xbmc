@@ -814,7 +814,7 @@ float CXBMCRenderManager::GetMaximumFPS()
 {
   float fps;
 
-  if (CSettings::Get().GetInt("videoscreen.vsync") != VSYNC_DISABLED)
+  if (CSettings::Get().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC) != VSYNC_DISABLED)
   {
     fps = (float)g_VideoReferenceClock.GetRefreshRate();
     if (fps <= 0) fps = g_graphicsContext.GetFPS();

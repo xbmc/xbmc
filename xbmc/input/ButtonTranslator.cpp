@@ -1196,6 +1196,43 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   return action;
 }
 
+CAction CButtonTranslator::GetGlobalAction(const CKey &key)
+{
+  return GetAction(-1, key, true);
+}
+
+bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
+{
+  map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
+  if (it == m_translatorMap.end())
+  {
+    if (window > -1)
+      return HasLonpressMapping(GetFallbackWindow(window), key);
+    return false;
+  }
+
+  uint32_t code = key.GetButtonCode();
+  code |= CKey::MODIFIER_LONG;
+  buttonMap::const_iterator it2 = (*it).second.find(code);
+
+  if (it2 != (*it).second.end())
+    return true;
+
+#ifdef TARGET_POSIX
+  // Some buttoncodes changed in Hardy
+  if ((code & KEY_VKEY) == KEY_VKEY && (code & 0x0F00))
+  {
+    code &= ~0x0F00;
+    it2 = (*it).second.find(code);
+    if (it2 != (*it).second.end())
+      return true;
+  }
+#endif
+  if (window > -1)
+    return HasLonpressMapping(GetFallbackWindow(window), key);
+  return false;
+}
+
 int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &strAction) const
 {
   uint32_t code = key.GetButtonCode();
@@ -1205,6 +1242,11 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &s
     return 0;
   buttonMap::const_iterator it2 = (*it).second.find(code);
   int action = 0;
+  if (it2 == (*it).second.end() && code & CKey::MODIFIER_LONG) // If long action not found, try short one
+  {
+    code &= ~CKey::MODIFIER_LONG;
+    it2 = (*it).second.find(code);
+  }
   if (it2 != (*it).second.end())
   {
     action = (*it2).second.id;
@@ -1599,6 +1641,8 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
         button_id |= CKey::MODIFIER_SUPER;
       else if (substr == "meta" || substr == "cmd")
         button_id |= CKey::MODIFIER_META;
+      else if (substr == "longpress")
+        button_id |= CKey::MODIFIER_LONG;
       else
         CLog::Log(LOGERROR, "Keyboard Translator: Unknown key modifier %s in %s", substr.c_str(), strMod.c_str());
      }

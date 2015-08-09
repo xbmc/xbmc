@@ -122,6 +122,17 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
   }
 
+  if (CSettings::Get().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
+      g_infoManager.IsPlayerChannelPreviewActive() &&
+      CButtonTranslator::GetInstance().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM)
+  {
+    // If confirm channel switch is active, channel preview is currently shown
+    // and the button that caused this action matches global action "Select" (OK)
+    // switch to the channel currently displayed within the preview.
+    g_application.m_pPlayer->SwitchChannel(g_application.CurrentFileItem().GetPVRChannelInfoTag());
+    return true;
+  }
+
   switch (action.GetID())
   {
   case ACTION_SHOW_OSD:

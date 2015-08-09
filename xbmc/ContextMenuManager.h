@@ -19,33 +19,37 @@
  *
  */
 
-#include <map>
-#include "addons/ContextItemAddon.h"
+#include <vector>
+#include "ContextMenuItem.h"
+#include "addons/ContextMenuAddon.h"
 #include "dialogs/GUIDialogContextMenu.h"
 
-#define CONTEXT_MENU_GROUP_MANAGE "kodi.core.manage"
 
 class CContextMenuManager
 {
 public:
+  static const CContextMenuItem MAIN;
+  static const CContextMenuItem MANAGE;
+
   static CContextMenuManager& Get();
 
   /*!
-   * \brief Executes a context menu item.
-   * \param id - id of the context button to execute.
-   * \param item - the currently selected item.
-   * \return true if executed successfully, false otherwise
+   * \param id - id of the context button clicked on.
+   * \param item - the selected file item.
+   * \return true on success, otherwise false.
    */
-  bool Execute(unsigned int id, const CFileItemPtr& item);
+  bool OnClick(unsigned int id, const CFileItemPtr& item);
 
   /*!
    * \brief Adds all registered context item to the list.
    * \param item - the currently selected item.
    * \param list - the context menu.
-   * \param parent - the ID of the context menu. Empty string if the root menu.
-   * CONTEXT_MENU_GROUP_MANAGE if the 'manage' submenu.
+   * \param root - the context menu responsible for this call.
    */
-  void AddVisibleItems(const CFileItemPtr& item, CContextButtons& list, const std::string& parent = "");
+  void AddVisibleItems(
+    const CFileItemPtr& item,
+    CContextButtons& list,
+    const CContextMenuItem& root = MAIN);
 
   /*!
    * \brief Adds a context item to this manager.
@@ -65,14 +69,11 @@ private:
   virtual ~CContextMenuManager() {}
 
   void Init();
+  bool IsVisible(
+    const CContextMenuItem& menuItem,
+    const CContextMenuItem& root,
+    const CFileItemPtr& fileItem);
 
-  /*!
-   * \brief Get a context menu item by its assigned id.
-   * \param id - the button id of the context item.
-   * \return the addon or NULL if no item with given id is registered.
-   */
-  ADDON::ContextItemAddonPtr GetContextItemByID(const unsigned int id);
-
-  std::map<unsigned int, ADDON::ContextItemAddonPtr> m_contextAddons;
-  unsigned int m_iCurrentContextId;
+  std::vector<std::pair<unsigned int, CContextMenuItem>> m_items;
+  unsigned int m_nextButtonId;
 };

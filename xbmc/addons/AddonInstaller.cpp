@@ -676,7 +676,7 @@ bool CAddonInstallJob::DoWork()
     return false;
 
   // run any post-install guff
-  if (!IsModal() && CSettings::Get().GetBool("general.addonnotifications"))
+  if (!IsModal() && CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS))
     CGUIDialogKaiToast::QueueNotification(m_addon->Icon(), m_addon->Name(),
                                           g_localizeStrings.Get(m_update ? 24065 : 24064),
                                           TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);

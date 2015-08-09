@@ -159,13 +159,13 @@ void CLinuxTimezone::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  if (settingId == "locale.timezone")
+  if (settingId == CSettings::SETTING_LOCALE_TIMEZONE)
   {
     SetTimezone(((CSettingString*)setting)->GetValue());
 
     CDateTime::ResetTimezoneBias();
   }
-  else if (settingId == "locale.timezonecountry")
+  else if (settingId == CSettings::SETTING_LOCALE_TIMEZONECOUNTRY)
   {
     // nothing to do here. Changing locale.timezonecountry will trigger an
     // update of locale.timezone and automatically adjust its value
@@ -175,7 +175,7 @@ void CLinuxTimezone::OnSettingChanged(const CSetting *setting)
 
 void CLinuxTimezone::OnSettingsLoaded()
 {
-  SetTimezone(CSettings::Get().GetString("locale.timezone"));
+  SetTimezone(CSettings::Get().GetString(CSettings::SETTING_LOCALE_TIMEZONE));
   CDateTime::ResetTimezoneBias();
 }
 
@@ -265,7 +265,7 @@ void CLinuxTimezone::SettingOptionsTimezonesFiller(const CSetting *setting, std:
 {
   current = ((const CSettingString*)setting)->GetValue();
   bool found = false;
-  vector<std::string> timezones = g_timezone.GetTimezonesByCountry(CSettings::Get().GetString("locale.timezonecountry"));
+  vector<std::string> timezones = g_timezone.GetTimezonesByCountry(CSettings::Get().GetString(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY));
   for (unsigned int i = 0; i < timezones.size(); i++)
   {
     if (!found && StringUtils::EqualsNoCase(timezones[i], current))

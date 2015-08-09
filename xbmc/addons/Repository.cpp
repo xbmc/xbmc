@@ -276,7 +276,7 @@ bool CRepositoryUpdateJob::DoWork()
         !database.IsAddonBlacklisted(newAddon->ID(),newAddon->Version().asString()) &&
         deps_met)
     {
-      if (CSettings::Get().GetInt("general.addonupdates") == AUTO_UPDATES_ON)
+      if (CSettings::Get().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
       {
         string referer;
         if (URIUtils::IsInternetStream(newAddon->Path()))
@@ -312,7 +312,7 @@ bool CRepositoryUpdateJob::DoWork()
   database.CommitMultipleExecute();
   textureDB.CommitMultipleExecute();
   MarkFinished();
-  if (!notifications.empty() && CSettings::Get().GetBool("general.addonnotifications"))
+  if (!notifications.empty() && CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS))
   {
     if (notifications.size() == 1)
       CGUIDialogKaiToast::QueueNotification(notifications[0]->Icon(),

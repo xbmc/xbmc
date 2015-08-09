@@ -20,10 +20,12 @@
 
 #include "GUIWindowVisualisation.h"
 #include "Application.h"
+#include "FileItem.h"
 #include "music/dialogs/GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/ButtonTranslator.h"
 #include "input/Key.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -44,6 +46,17 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
+  if (CSettings::Get().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
+      g_infoManager.IsPlayerChannelPreviewActive() &&
+      CButtonTranslator::GetInstance().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM)
+  {
+    // If confirm channel switch is active, channel preview is currently shown
+    // and the button that caused this action matches global action "Select" (OK)
+    // switch to the channel currently displayed within the preview.
+    g_application.m_pPlayer->SwitchChannel(g_application.CurrentFileItem().GetPVRChannelInfoTag());
+    return true;
+  }
+
   bool passToVis = false;
   switch (action.GetID())
   {
@@ -58,7 +71,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   case ACTION_SHOW_INFO:
     {
       m_initTimer.Stop();
-      CSettings::Get().SetBool("mymusic.songthumbinvis", g_infoManager.ToggleShowInfo());
+      CSettings::Get().SetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS, g_infoManager.ToggleShowInfo());
       return true;
     }
     break;
@@ -173,7 +186,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       if (g_infoManager.GetCurrentSongTag())
         m_tag = *g_infoManager.GetCurrentSongTag();
 
-      if (CSettings::Get().GetBool("mymusic.songthumbinvis"))
+      if (CSettings::Get().GetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS))
       { // always on
         m_initTimer.Stop();
       }
@@ -224,7 +237,7 @@ void CGUIWindowVisualisation::FrameMove()
   if (m_initTimer.IsRunning() && m_initTimer.GetElapsedSeconds() > (float)g_advancedSettings.m_songInfoDuration)
   {
     m_initTimer.Stop();
-    if (!CSettings::Get().GetBool("mymusic.songthumbinvis"))
+    if (!CSettings::Get().GetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS))
     { // reached end of fade in, fade out again
       g_infoManager.SetShowInfo(false);
     }
