@@ -75,6 +75,11 @@ CmadVRAllocatorPresenter::~CmadVRAllocatorPresenter()
     // nasty, but we have to let it know about our death somehow
     ((CSubRenderCallback*)(ISubRenderCallback2*)m_pSRCB)->SetDXRAP(nullptr);
   }
+  
+  if (m_pORCB) {
+    // nasty, but we have to let it know about our death somehow
+    ((COsdRenderCallback*)(IOsdRenderCallback*)m_pORCB)->SetDXRAP(nullptr);
+  }
 
   // Unregister madVR Exclusive Callback
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
@@ -196,10 +201,7 @@ bool CmadVRAllocatorPresenter::IsCurrentThreadId()
 
 STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
 {
-  if (!g_graphicsContext.IsFullScreenVideo())
-    return m_pMadvrShared->RenderMadvr(RENDER_LAYER_UNDER);
-  else
-    return CALLBACK_INFO_DISPLAY;
+  return m_pMadvrShared->RenderMadvr(RENDER_LAYER_UNDER);
 }
 
 STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)

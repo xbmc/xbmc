@@ -31,6 +31,7 @@ CMadvrCallback::CMadvrCallback()
   m_pMadvr = NULL;  
   m_renderOnMadvr = false;
   m_isInitMadvr = false;
+  ResetRenderCount();
 }
 
 CMadvrCallback::~CMadvrCallback()
@@ -39,13 +40,19 @@ CMadvrCallback::~CMadvrCallback()
 
 CMadvrCallback* CMadvrCallback::Get()
 {
-  //return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CMadvrCallback());
-  if (m_pSingleton)
-    return m_pSingleton;
-  else
-    return m_pSingleton = new CMadvrCallback();
+  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CMadvrCallback());
 }
 
+void CMadvrCallback::IncRenderCount()
+{ 
+  m_currentVideoLayer == RENDER_LAYER_UNDER ? m_renderUnderCount += 1 : m_renderOverCount += 1;
+}
+
+void CMadvrCallback::ResetRenderCount()
+{
+  m_renderUnderCount = 0;  
+  m_renderOverCount = 0;
+}
 
 bool CMadvrCallback::UsingMadvr()
 {

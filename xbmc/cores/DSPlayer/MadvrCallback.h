@@ -34,8 +34,6 @@
 
 enum MADVR_RENDER_LAYER
 {
-  RENDER_LAYER_ALL,
-  RENDER_LAYER_CHECK,
   RENDER_LAYER_UNDER,
   RENDER_LAYER_OVER
 };
@@ -50,6 +48,7 @@ public:
   virtual void SetMadvrPixelShader(){};
   virtual void RestoreMadvrSettings(){};
   virtual void SetResolution(){};
+  virtual void RenderToTexture(MADVR_RENDER_LAYER layer){};
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; }
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
   virtual void SettingSetScaling(CStdStringW path, int scaling) {};
@@ -79,10 +78,6 @@ public:
 
   IPaintCallbackMadvr* GetCallback() { return m_pMadvr != NULL ? m_pMadvr : this; }
   void SetCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
-  MADVR_RENDER_LAYER GetRenderLayer(){ return m_renderLayer; }
-  void SetRenderLayer(MADVR_RENDER_LAYER value){ m_renderLayer = value; }
-  bool IsVideoLayer(){ return m_isVideoLayer; }
-  void SetVideoLayer(bool b){ m_isVideoLayer = b; }
   bool UsingMadvr();
   bool ReadyMadvr();
   bool IsEnteringExclusiveMadvr();
@@ -90,10 +85,13 @@ public:
   void SetInitMadvr(bool b) { m_isInitMadvr = b; }
   bool GetRenderOnMadvr() { return m_renderOnMadvr; }
   void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
-  void IncRenderCount() { m_renderCount += 1; }
-  void ResetRenderCount() { m_renderCount = 0; }
-  bool IsGuiActive() { return m_renderCount > 0; }
-
+  void SetCurrentVideoLayer(MADVR_RENDER_LAYER layer) { m_currentVideoLayer = layer; }
+  void IncRenderCount();
+  void ResetRenderCount();
+  bool IsGuiActive() { return m_renderUnderCount + m_renderOverCount > 0; }
+  bool IsUnderGuiActive() { return m_renderUnderCount > 0; }
+  bool IsOverGuiActive() { return m_renderOverCount > 0; }
+  
 private:
   CMadvrCallback();
   ~CMadvrCallback();
@@ -102,7 +100,8 @@ private:
   IPaintCallbackMadvr* m_pMadvr;
   bool m_isInitMadvr;
   bool m_renderOnMadvr;
-  bool m_isVideoLayer;
   int m_renderCount;
-  MADVR_RENDER_LAYER m_renderLayer;
+  int m_renderUnderCount;
+  int m_renderOverCount;
+  MADVR_RENDER_LAYER m_currentVideoLayer;
 };

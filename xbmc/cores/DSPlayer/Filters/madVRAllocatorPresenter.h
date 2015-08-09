@@ -145,6 +145,7 @@ public:
   virtual void SetMadvrPixelShader();
   virtual void RestoreMadvrSettings();
   virtual void SetResolution();
+  virtual void RenderToTexture(MADVR_RENDER_LAYER layer){ m_pMadvrShared->RenderToTexture(layer); };
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
   virtual void SettingSetScaling(CStdStringW path, int scaling);
