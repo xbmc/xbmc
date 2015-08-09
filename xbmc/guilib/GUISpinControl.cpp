@@ -948,13 +948,19 @@ EVENT_RESULT CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEven
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    MoveUp();
-    return EVENT_RESULT_HANDLED;
+    if (m_imgspinUpFocus.HitTest(point) || m_imgspinDownFocus.HitTest(point))
+    {
+      MoveUp();
+      return EVENT_RESULT_HANDLED;
+    }
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    MoveDown();
-    return EVENT_RESULT_HANDLED;
+    if (m_imgspinUpFocus.HitTest(point) || m_imgspinDownFocus.HitTest(point))
+    {
+      MoveDown();
+      return EVENT_RESULT_HANDLED;
+    }
   }
   return EVENT_RESULT_UNHANDLED;
 }
