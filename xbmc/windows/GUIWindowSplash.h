@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,28 +20,20 @@
  *
  */
 
-#include <string>
+#include "guilib/GUIWindow.h"
 
+class CGUITextLayout;
 class CGUIImage;
 
-class CSplash
+class CGUIWindowSplash : public CGUIWindow
 {
 public:
-  static CSplash& Get();
-
-  void Show();
-
+  CGUIWindowSplash(void);
+  virtual ~CGUIWindowSplash(void);
+  virtual bool OnAction(const CAction &action) { return false; };
+  virtual void Render();
 protected:
-  CSplash();
-  CSplash(const CSplash&);
-  CSplash& operator=(CSplash const&);
-  virtual ~CSplash();
-
+  virtual void OnInitWindow();
 private:
   CGUIImage* m_image;
-#ifdef HAS_DX
-  D3DGAMMARAMP newRamp;
-  D3DGAMMARAMP oldRamp;
-
-#endif
 };

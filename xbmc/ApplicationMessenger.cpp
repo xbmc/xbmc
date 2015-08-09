@@ -40,7 +40,6 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/Resolution.h"
 #include "GUIInfoManager.h"
-#include "utils/Splash.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "music/tags/MusicInfoTag.h"
@@ -802,13 +801,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         g_application.ShowVolumeBar(&action);
       }
       break;
-
-    case TMSG_SPLASH_MESSAGE:
-      {
-        if (g_application.GetSplash())
-          g_application.GetSplash()->Show(pMsg->strParam);
-      }
-      break;
       
     case TMSG_DISPLAY_SETUP:
     {
@@ -1330,18 +1322,6 @@ void CApplicationMessenger::ShowVolumeBar(bool up)
   ThreadMessage tMsg = {TMSG_VOLUME_SHOW};
   tMsg.param1 = up ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN;
   SendMessage(tMsg, false);
-}
-
-void CApplicationMessenger::SetSplashMessage(const std::string& message)
-{
-  ThreadMessage tMsg = {TMSG_SPLASH_MESSAGE};
-  tMsg.strParam = message;
-  SendMessage(tMsg, true);
-}
-
-void CApplicationMessenger::SetSplashMessage(int stringID)
-{
-  SetSplashMessage(g_localizeStrings.Get(stringID));
 }
 
 bool CApplicationMessenger::SetupDisplay()

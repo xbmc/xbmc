@@ -67,6 +67,7 @@
 #include "windows/GUIWindowScreensaver.h"
 #include "windows/GUIWindowScreensaverDim.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "windows/GUIWindowSplash.h"
 #include "windows/GUIWindowStartup.h"
 #include "video/windows/GUIWindowFullScreen.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
@@ -164,6 +165,7 @@ CGUIWindowManager::~CGUIWindowManager(void)
 void CGUIWindowManager::Initialize()
 {
   m_tracker.SelectAlgorithm();
+
   m_initialized = true;
 
   LoadNotOnDemandWindows();
@@ -291,12 +293,14 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowScreensaver);
   Add(new CGUIWindowWeather);
   Add(new CGUIWindowStartup);
+  Add(new CGUIWindowSplash);
 }
 
 bool CGUIWindowManager::DestroyWindows()
 {
   try
   {
+    Delete(WINDOW_SPLASH);
     Delete(WINDOW_MUSIC_PLAYLIST);
     Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     Delete(WINDOW_MUSIC_FILES);

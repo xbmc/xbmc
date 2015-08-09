@@ -3096,6 +3096,9 @@
     <ClCompile Include="..\..\xbmc\contrib\kissfft\kiss_fftr.c">
       <Filter>contrib\kissfft</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowSplash.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5988,6 +5991,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\contrib\kissfft\kiss_fftr.h">
       <Filter>contrib\kissfft</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowSplash.h">
+      <Filter>windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
