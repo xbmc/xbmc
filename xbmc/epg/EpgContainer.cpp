@@ -47,6 +47,7 @@ CEpgContainer::CEpgContainer(void) :
   m_bIsInitialising = true;
   m_iNextEpgId = 0;
   m_bPreventUpdates = false;
+  m_bMarkForPersist = false;
   m_updateEvent.Reset();
   m_bStarted = false;
   m_bLoaded = false;
@@ -256,6 +257,14 @@ void CEpgContainer::LoadFromDB(void)
   m_bLoaded = bLoaded;
 }
 
+bool CEpgContainer::MarkTablesForPersist(void)
+{
+  /* Set m_bMarkForPersist to persist tables on the next Process() run but only
+  if epg.ignoredbforclient is set, otherwise persistAll does already persisting. */
+  CSingleLock lock(m_critSection);
+  return m_bMarkForPersist = CSettings::Get().GetBool("epg.ignoredbforclient");
+}
+
 bool CEpgContainer::PersistTables(void)
 {
   m_critSection.lock();
@@ -345,6 +354,13 @@ void CEpgContainer::Process(void)
     /* check for updated active tag */
     if (!m_bStop)
       CheckPlayingEvents();
+
+    /* Check if PVR requests an update of Epg Channels */
+    if (m_bMarkForPersist)
+    {
+      PersistTables();
+      m_bMarkForPersist = false;
+    }
 
     /* check for changes that need to be saved every 60 seconds */
     if (iNow - iLastSave > 60)
