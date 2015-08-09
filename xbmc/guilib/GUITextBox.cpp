@@ -283,11 +283,8 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       m_scrollOffset = 0;
       ResetAutoScrolling();
       CGUITextLayout::Reset();
-      if (m_pageControl)
-      {
-        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_lines.size());
-        SendWindowMessage(msg);
-      }
+      UpdatePageControl();
+      SetInvalid();
     }
 
     if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
