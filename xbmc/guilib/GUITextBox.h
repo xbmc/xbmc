@@ -62,7 +62,9 @@ public:
   void SetAutoScrolling(const TiXmlNode *node);
   void SetAutoScrolling(int delay, int time, int repeatTime, const std::string &condition = "");
   void ResetAutoScrolling();
-  std::string GetLabel(int info) const;
+
+  virtual bool GetCondition(int condition, int data) const;
+  virtual std::string GetLabel(int info) const;
   std::string GetDescription() const;
 
   void Scroll(unsigned int offset);
@@ -75,6 +77,7 @@ protected:
   void ScrollToOffset(int offset, bool autoScroll = false);
   unsigned int GetRows() const;
   int GetCurrentPage() const;
+  int GetNumPages() const;
 
   // auto-height
   float m_minHeight;
