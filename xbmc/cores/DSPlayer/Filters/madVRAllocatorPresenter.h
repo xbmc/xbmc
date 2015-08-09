@@ -172,6 +172,7 @@ private:
   bool m_firstBoot;
   bool m_isEnteringExclusive;
   int m_shaderStage;
+  int m_kodiGuiDirtyAlgo;
   bool m_updateDisplayLatencyForMadvr;
   CMadvrSharedRender *m_pMadvrShared;
 };
