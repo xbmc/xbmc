@@ -2509,7 +2509,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     switch (CSettings::Get().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))
     {
     case POWERSTATE_SHUTDOWN:
-      CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
+      CApplicationMessenger::Get().PostMsg(TMSG_POWERDOWN);
       break;
 
     case POWERSTATE_SUSPEND:
