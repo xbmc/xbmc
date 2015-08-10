@@ -245,6 +245,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "trayopen",         SYSTEM_TRAYOPEN },
                                   { "haslocks",         SYSTEM_HASLOCKS },
                                   { "hasloginscreen",   SYSTEM_HAS_LOGINSCREEN },
+                                  { "hasmodaldialog",   SYSTEM_HAS_MODAL_DIALOG },
                                   { "ismaster",         SYSTEM_ISMASTER },
                                   { "isfullscreen",     SYSTEM_ISFULLSCREEN },
                                   { "isstandalone",     SYSTEM_ISSTANDALONE },
@@ -2451,6 +2452,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_advancedSettings.m_showExitButton;
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
     bReturn = CProfilesManager::Get().UsingLoginScreen();
+  else if (condition == SYSTEM_HAS_MODAL_DIALOG)
+    bReturn = g_windowManager.HasModalDialog();
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)

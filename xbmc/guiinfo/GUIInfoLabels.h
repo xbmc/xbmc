@@ -125,6 +125,7 @@
 #define SYSTEM_PROFILENAME          146
 #define SYSTEM_PROFILETHUMB         147
 #define SYSTEM_HAS_LOGINSCREEN      148
+#define SYSTEM_HAS_MODAL_DIALOG     149
 #define SYSTEM_HDD_SMART            150
 #define SYSTEM_HDD_TEMPERATURE      151
 #define SYSTEM_HDD_MODEL            152
