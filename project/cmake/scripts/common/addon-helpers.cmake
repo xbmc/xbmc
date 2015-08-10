@@ -53,8 +53,8 @@ macro (build_addon target prefix libs)
     SET(PLATFORM ${CORE_SYSTEM_NAME})
 
     FILE(READ ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in addon_file)
-    STRING(CONFIGURE ${addon_file} addon_file_conf @ONLY)
-    FILE(GENERATE OUTPUT ${PROJECT_SOURCE_DIR}/${target}/addon.xml CONTENT ${addon_file_conf})
+    STRING(CONFIGURE "${addon_file}" addon_file_conf @ONLY)
+    FILE(GENERATE OUTPUT ${PROJECT_SOURCE_DIR}/${target}/addon.xml CONTENT "${addon_file_conf}")
   ENDIF()
 
   # set zip as default if addon-package is called without PACKAGE_XXX
