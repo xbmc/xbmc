@@ -188,7 +188,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CONFIGURATION_BUILD_DIR = ../../../darwin/runtime;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -203,7 +202,7 @@
 				PRODUCT_NAME = XBMCHelper;
 				SDKROOT = macosx;
 				STRIP_STYLE = debugging;
-				VALID_ARCHS = x86_64;
+				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
@@ -211,7 +210,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CONFIGURATION_BUILD_DIR = ../../../darwin/runtime;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
@@ -222,7 +220,7 @@
 				PRODUCT_NAME = XBMCHelper;
 				SDKROOT = macosx;
 				STRIP_STYLE = debugging;
-				VALID_ARCHS = x86_64;
+				VALID_ARCHS = i386;
 			};
 			name = Release;
 		};
