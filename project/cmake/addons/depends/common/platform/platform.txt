@@ -1,1 +1,1 @@
-platform http://mirrors.kodi.tv/build-deps/sources/platform-1.0.10.tar.gz
+platform https://github.com/Pulse-Eight/platform.git 081032fdb0daf16d443692c37e3ffc62732399ac
