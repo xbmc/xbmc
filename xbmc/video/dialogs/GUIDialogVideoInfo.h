@@ -82,6 +82,10 @@ protected:
   static bool UpdateVideoItemSortTitle(const CFileItemPtr &pItem);
   static bool LinkMovieToTvShow(const CFileItemPtr &item, bool bRemove, CVideoDatabase &database);
 
+  // Utils to change the selected audio and subs
+  void SelectAudioStream(int iItem, bool m_isPlaying);
+  void SelectSubtitleStream(int iItem, bool m_isPlaying);
+
   /*! \brief Pop up a fanart chooser. Does not utilise remote URLs.
    \param videoItem the item to choose fanart for.
    */

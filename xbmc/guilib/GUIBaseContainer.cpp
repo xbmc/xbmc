@@ -422,7 +422,23 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     }
     if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
     {
+      // Set the selected item
+      //CLog::Log(LOGDEBUG,"CGUIBaseContainer::OnMessage : ITEM_SELECT");
       SelectItem(message.GetParam1());
+
+      return true;
+    }
+    else if (message.GetMessage() == GUI_MSG_FILEITEM_SELECT)
+    {
+      int sel = message.GetParam1();
+      // Force selection if index is out of range
+      if(sel<0 || sel>=m_items.size())
+        sel = 0;
+      //CLog::Log(LOGDEBUG,"CGUIBaseContainer::OnMessage : FILEITEM_SELECT %d", sel);
+      for (iItems it = m_items.begin(); it != m_items.end(); ++it)
+        (*it)->Select(false);
+      m_items[sel]->Select(true);
+
       return true;
     }
     else if (message.GetMessage() == GUI_MSG_SETFOCUS)
@@ -435,6 +451,8 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     }
     else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
     {
+      // Return the selected item
+      //CLog::Log(LOGDEBUG,"CGUIBaseContainer::OnMessage : ITEM_SELECTED");
       message.SetParam1(GetSelectedItem());
       return true;
     }

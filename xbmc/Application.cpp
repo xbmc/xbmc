@@ -3877,6 +3877,17 @@ void CApplication::UpdateFileState()
   }
 }
 
+void CApplication::SaveVideoSettings(const std::string &path)
+{
+  CVideoDatabase dbs;
+  if (dbs.Open())
+  {
+    CLog::Log(LOGDEBUG, "Saving settings for %s", path.c_str());
+    dbs.SetVideoSettings(path, CMediaSettings::Get().GetCurrentVideoSettings());
+    dbs.Close();
+  }
+}
+
 void CApplication::LoadVideoSettings(const CFileItem& item)
 {
   CVideoDatabase dbs;
@@ -4609,6 +4620,8 @@ void CApplication::ProcessSlow()
 
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
+
+  // check for any idle myth sessions
 
 #ifdef HAS_KARAOKE
   if ( m_pKaraokeMgr )

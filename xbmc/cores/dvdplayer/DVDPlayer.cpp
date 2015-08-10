@@ -649,9 +649,9 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
     m_PlayerOptions = options;
-    m_item     = file;
-    m_mimetype  = file.GetMimeType();
-    m_filename = file.GetPath();
+    m_item          = file;
+    m_mimetype      = file.GetMimeType();
+    m_filename      = file.GetPath();
 
     m_ready.Reset();
 
@@ -1106,6 +1106,34 @@ void CDVDPlayer::CheckBetterStream(CCurrentStream& current, CDemuxStream* stream
 
   if (IsBetterStream(current, stream))
     OpenStream(current, stream->iId, stream->source);
+}
+
+int CDVDPlayer::PreloadFileInfo(const CFileItem& file, const CPlayerOptions &options)
+{
+  m_bAbortRequest = false;
+  SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+
+  m_State.Clear();
+  memset(&m_SpeedState, 0, sizeof(m_SpeedState));
+  m_UpdateApplication = 0;
+  m_offset_pts = 0;
+  m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
+  m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
+
+  m_PlayerOptions = options;
+  m_item          = file;
+  m_mimetype      = file.GetMimeType();
+  m_filename      = file.GetPath();
+
+  m_ready.Reset();
+
+  //CGUIDialogBusy::WaitOnEvent(m_ready, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
+
+  //FIXME: To be done in background thread
+  if (!OpenInputStream())
+    return -1;
+  else
+    return OpenDemuxStream();
 }
 
 void CDVDPlayer::Process()
