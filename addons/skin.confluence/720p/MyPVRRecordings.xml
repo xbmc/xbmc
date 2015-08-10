@@ -112,19 +112,18 @@
 					<control type="image">
 						<left>730</left>
 						<top>14</top>
-						<width>20</width>
-						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>730</left>
-						<top>14</top>
 						<width>16</width>
 						<height>16</height>
 						<texture>OverlayWatching.png</texture>
 						<visible>ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<left>730</left>
+						<top>14</top>
+						<width>20</width>
+						<height>16</height>
+						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="760">
@@ -189,19 +188,18 @@
 					<control type="image">
 						<left>730</left>
 						<top>14</top>
-						<width>20</width>
-						<height>16</height>
-						<texture>$INFO[ListItem.Overlay]</texture>
-						<aspectratio>keep</aspectratio>
-						<visible>!ListItem.IsResumable</visible>
-					</control>
-					<control type="image">
-						<left>730</left>
-						<top>14</top>
 						<width>16</width>
 						<height>16</height>
 						<texture>OverlayWatching.png</texture>
 						<visible>ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<left>730</left>
+						<top>14</top>
+						<width>20</width>
+						<height>16</height>
+						<texture>$INFO[ListItem.Overlay]</texture>
+						<aspectratio>keep</aspectratio>
 					</control>
 				</focusedlayout>
 			</control>
