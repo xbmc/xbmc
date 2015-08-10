@@ -63,7 +63,7 @@ CGUIWindow::CGUIWindow(int id, const std::string &xmlFile)
   m_loadType = LOAD_EVERY_TIME;
   m_closing = false;
   m_active = false;
-  m_renderOrder = 0;
+  m_renderOrder = RENDER_ORDER_WINDOW;
   m_dynamicResourceAlloc = true;
   m_previousWindow = WINDOW_INVALID;
   m_animationsEnabled = true;
@@ -958,7 +958,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
 
 void CGUIWindow::SetDefaults()
 {
-  m_renderOrder = 0;
+  m_renderOrder = RENDER_ORDER_WINDOW;
   m_defaultAlways = false;
   m_defaultControl = 0;
   m_posX = m_posY = m_width = m_height = 0;

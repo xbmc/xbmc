@@ -22,7 +22,6 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/GUITexture.h"
 #include "Application.h"
-#include <climits>
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
   : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS)
@@ -31,7 +30,7 @@ CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
   m_dimLevel = 100.0f;
   m_animations.push_back(CAnimation::CreateFader(0, 100, 0, 1000, ANIM_TYPE_WINDOW_OPEN));
   m_animations.push_back(CAnimation::CreateFader(100, 0, 0, 1000, ANIM_TYPE_WINDOW_CLOSE));
-  m_renderOrder = INT_MAX;
+  m_renderOrder = RENDER_ORDER_WINDOW_SCREENSAVER;
 }
 
 CGUIWindowScreensaverDim::~CGUIWindowScreensaverDim(void)
