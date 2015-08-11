@@ -162,6 +162,12 @@ void CmadVRAllocatorPresenter::ExclusiveCallback(LPVOID context, int event)
   CLog::Log(LOGDEBUG, "%s madVR %s in Fullscreen Exclusive-Mode", __FUNCTION__, strEvent[event - 1].c_str());
 }
 
+void CmadVRAllocatorPresenter::EnableExclusive(bool bEnable)
+{
+  if (Com::SmartQIPtr<IMadVRCommand> pMadVrCmd = m_pDXR)
+    pMadVrCmd->SendCommandBool("disableExclusiveMode", !bEnable);
+};
+
 void CmadVRAllocatorPresenter::ConfigureMadvr()
 {
 

@@ -142,6 +142,7 @@ public:
   //IPaintCallbackMadvr
   virtual bool IsCurrentThreadId();
   virtual bool IsEnteringExclusive(){ return m_isEnteringExclusive; }
+  virtual void EnableExclusive(bool bEnable);
   virtual void SetMadvrPixelShader();
   virtual void RestoreMadvrSettings();
   virtual void SetResolution();

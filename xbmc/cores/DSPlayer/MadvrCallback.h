@@ -46,6 +46,7 @@ public:
 
   virtual bool IsCurrentThreadId() { return false; }
   virtual bool IsEnteringExclusive(){ return false; }
+  virtual void EnableExclusive(bool bEnable){};
   virtual void SetMadvrPixelShader(){};
   virtual void RestoreMadvrSettings(){};
   virtual void SetResolution(){};
