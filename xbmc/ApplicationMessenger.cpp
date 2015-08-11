@@ -269,14 +269,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
     case TMSG_HIBERNATE:
       {
-        g_PVRManager.SetWakeupCommand();
         g_powerManager.Hibernate();
       }
       break;
 
     case TMSG_SUSPEND:
       {
-        g_PVRManager.SetWakeupCommand();
         g_powerManager.Suspend();
       }
       break;
