@@ -15,7 +15,7 @@ DEPENDS = \
 	python26 libshairplay \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs libmp3lame \
-	pythonmodule-pil libxslt ffmpeg platform
+	pythonmodule-pil libxslt ffmpeg platform crossguid
 
 FFMPEG_DEPENDS = gnutls
 
@@ -56,6 +56,7 @@ endif
 ALSA_LIB=
 LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
+  DEPENDS += libuuid
   #not for raspberry pi
   ifneq ($(TARGET_PLATFORM),raspberry-pi)
     DEPENDS += libsdl2 linux-system-libs
@@ -98,6 +99,9 @@ libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt
 ffmpeg: $(ICONV) $(ZLIB) bzip2 libvorbis $(FFMPEG_DEPENDS)
 libcec: platform
+ifeq ($(OS),linux)
+crossguid: libuuid
+endif
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@

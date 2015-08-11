@@ -19,6 +19,7 @@
  */
 
 #include "view/GUIViewState.h"
+#include "events/windows/GUIViewStateEventLog.h"
 #include "pvr/windows/GUIViewStatePVR.h"
 #include "addons/GUIViewStateAddonBrowser.h"
 #include "music/GUIViewStateMusic.h"
@@ -108,6 +109,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.IsProtocol("androidapp"))
     return new CGUIViewStateWindowPrograms(items);
 
+  if (url.IsProtocol("activities"))
+    return new CGUIViewStateEventLog(items);
+
   if (windowId == WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicNav(items);
 
@@ -167,6 +171,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   
   if (windowId == WINDOW_ADDON_BROWSER)
     return new CGUIViewStateAddonBrowser(items);
+
+  if (windowId == WINDOW_EVENT_LOG)
+    return new CGUIViewStateEventLog(items);
 
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);

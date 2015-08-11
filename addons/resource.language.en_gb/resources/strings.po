@@ -79,7 +79,6 @@ msgid "Kodi media center"
 msgstr ""
 
 #empty string with id 10
-#strings from 11 to 17 are reserved for weather translation
 
 #. Weather token
 msgctxt "#11"
@@ -247,7 +246,6 @@ msgid "Dec"
 msgstr ""
 
 #empty strings from id 63 to 70
-#strings from 71 to 97 are reserved for weather translation
 
 #. Weather token
 msgctxt "#71"
@@ -744,7 +742,17 @@ msgctxt "#176"
 msgid "Styles"
 msgstr ""
 
-#empty strings from id 177 to 178
+#. <application name> successfully started
+#: xbmc/Application.cpp
+msgctxt "#177"
+msgid "%s successfully started"
+msgstr ""
+
+#. <application name> has been successfully started.
+#: xbmc/Application.cpp
+msgctxt "#178"
+msgid "%s has been successfully started."
+msgstr ""
 
 #: xbmc/media/MediaTypes.cpp
 #: xbmc/music/karaoke/GUIDialogKaraokeSongSelector.cpp
@@ -3940,6 +3948,7 @@ msgstr ""
 
 #empty string with id 1209
 
+#: xbmc/event/windows/GUIWindowEventLog.cpp
 msgctxt "#1210"
 msgid "Remove"
 msgstr ""
@@ -7129,7 +7138,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14092"
-msgid "Debugging"
+msgid "Logging"
 msgstr ""
 
 msgctxt "#14093"
@@ -7224,7 +7233,66 @@ msgctxt "#14110"
 msgid "Long date format"
 msgstr ""
 
-#empty strings from id 14111 to 15003
+#: Used in Confluence as a title for the event log window/view
+msgctxt "#14111"
+msgid "Events"
+msgstr ""
+
+#. Label of setting to enable/disable event logging
+#: system/settings/settings.xml
+msgctxt "#14112"
+msgid "Enable event logging"
+msgstr ""
+
+#. Label of setting to enable/disable event logging for notifications
+#: system/settings/settings.xml
+msgctxt "#14113"
+msgid "Enable notification event logging"
+msgstr ""
+
+#. Label of setting to go into the event log window
+#: system/settings/settings.xml
+msgctxt "#14114"
+msgid "Show event log"
+msgstr ""
+
+#. Label for the "Basic" event level
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14115"
+msgid "Basic"
+msgstr ""
+
+#. Label for the "Information" event level
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14116"
+msgid "Information"
+msgstr ""
+
+#. Label for the "Warning" event level
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14117"
+msgid "Warning"
+msgstr ""
+
+#. Label for the "Error" event level
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14118"
+msgid "Error"
+msgstr ""
+
+#. Label to show the currently active/displayed event level in the event log window
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14119"
+msgid "Level: %s"
+msgstr ""
+
+#. Label for the option to show/hide higher level events in the event log window
+#: xbmc/event/windows/GUIWindowEventLog.cpp
+msgctxt "#14120"
+msgid "Show higher levels"
+msgstr ""
+
+#empty strings from id 14121 to 15003
 
 #. Name of a class/preset for audio DSP
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
@@ -8407,6 +8475,7 @@ msgctxt "#19032"
 msgid "Timeline"
 msgstr ""
 
+#: xbmc/event/windows/GUIWindowEventLog.cpp
 #: xbmc/pvr/addons/PVRClients.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 #: xbmc/pvr/PVRManager.cpp
@@ -13208,9 +13277,10 @@ msgctxt "#24044"
 msgid "Dependencies not met. Please contact add-on author."
 msgstr ""
 
+#. Used as an event log description for add-ons failed to install from zip
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24045"
-msgid "Add-on does not have the correct structure"
+msgid "Failed to install Add-on from zip file"
 msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
@@ -13307,7 +13377,9 @@ msgctxt "#24063"
 msgid "Auto update"
 msgstr ""
 
+#. Used as an event log description for add-ons that have been installed/enabled
 #: xbmc/addons/AddonInstaller.cpp
+#: xbmc/addons/AddonManager.cpp
 msgctxt "#24064"
 msgid "Add-on enabled"
 msgstr ""
@@ -13696,7 +13768,63 @@ msgctxt "#24138"
 msgid "DSP add-on is currently in use and can't be removed."
 msgstr ""
 
-#empty strings from id 24139 to 24991
+#. Label for the action provided by addon management events to jump to a specific Add-on
+#: xbmc/events/AddonManagementEvent.cpp
+msgctxt "#24139"
+msgid "View Add-on"
+msgstr ""
+
+#. Label for the action provided by media library events to jump to a specific path/file
+#: xbmc/events/MediaLibraryEvent.cpp
+msgctxt "#24140"
+msgid "View"
+msgstr ""
+
+#. Used as an event log description for add-ons that have been disabled
+#: xbmc/addons/AddonManager.cpp
+msgctxt "#24141"
+msgid "Add-on disabled"
+msgstr ""
+
+#. The dependency on <addon id> version <addon version> coult not be satisfied.
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24142"
+msgid "The dependency on %s version %s could not be satisfied."
+msgstr ""
+
+#. Installing the addon from zip file located at <path to zip file> failed due to an invalid structure.
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24143"
+msgid "Installing the Add-on from zip file located at %s failed due to an invalid structure."
+msgstr ""
+
+#. Used as an event log description for add-ons that have been uninstalled
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24144"
+msgid "Add-on uninstalled"
+msgstr ""
+
+#. Used as an event log title for the video library scanner
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#24145"
+msgid "Video library scanner"
+msgstr ""
+
+#. Used as an event log title for the music library scanner
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
+msgctxt "#24146"
+msgid "Music library scanner"
+msgstr ""
+
+#. Used as an event log description for files that failed to be processed by the library scanner
+#. Failed to scan <media type>: <filename>
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#24147"
+msgid "Failed to scan %s: %s"
+msgstr ""
+
+#empty strings from id 24148 to 24991
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -16418,25 +16546,25 @@ msgctxt "#36390"
 msgid "Define what action to perform when the shutdown function timer lapsed."
 msgstr ""
 
-#. Description of settings category "System -> Debugging" with label #14092
+#. Description of settings category "System -> Logging" with label #14092
 #: system/settings/settings.xml
 msgctxt "#36391"
-msgid "This category contains the settings for enabling debug functions. You can also enable component-specific debug logging in order to help troubleshoot related issues in more detail."
+msgid "This category contains the settings for enabling event and debug logging. You can also enable component-specific debug logging in order to help troubleshoot related issues in more detail."
 msgstr ""
 
-#. Description of setting "System -> Debugging -> Enable debug logging" with label #20191
+#. Description of setting "System -> Logging -> Enable debug logging" with label #20191
 #: system/settings/settings.xml
 msgctxt "#36392"
 msgid "Turn debug logging on or off. Useful for troubleshooting."
 msgstr ""
 
-#. Description of setting "System -> Debugging -> Screenshot folder" with label #20004
+#. Description of setting "System -> Logging -> Screenshot folder" with label #20004
 #: system/settings/settings.xml
 msgctxt "#36393"
 msgid "Select the folder where screenshots should be saved in."
 msgstr ""
 
-#. Description of setting "System -> Debugging -> Enable component-specific logging" with label #666
+#. Description of setting "System -> Logging -> Enable component-specific logging" with label #666
 #: system/settings/settings.xml
 msgctxt "#36394"
 msgid "Enables verbose messages from additional libraries to be included in the debug log."
@@ -16647,7 +16775,11 @@ msgctxt "#36430"
 msgid "Configure how video processing will be accelerated. This includes things like decoding and scaling."
 msgstr ""
 
-#empty string with id 36431
+#. Description of setting "System -> Logging -> Show event log" with label #13438
+#: system/settings/settings.xml
+msgctxt "#36431"
+msgid "Shows all events in the event log for the current profile with options to only show specific levels."
+msgstr ""
 
 #. Description for international setting #310: Keyboard layouts
 #: system/settings/settings.xml
@@ -16709,7 +16841,21 @@ msgctxt "#36441"
 msgid "Enable audio DSP processing"
 msgstr ""
 
-#empty strings from id 36442 to 36499
+#empty strings from id 36459 to 36499
+
+#. Description of settings "System -> Logging -> Enable event logging" with label #14112
+#: system/settings/settings.xml
+msgctxt "#36460"
+msgid "Event logging allows to keep track of what has happened."
+msgstr ""
+
+#. Description of settings "System -> Logging -> Enable notification event logging" with label #14113
+#: system/settings/settings.xml
+msgctxt "#36461"
+msgid "Notification event describe regular processes and actions performed by the system or the user."
+msgstr ""
+
+#empty strings from id 36462 to 36499
 
 #end reservation
 
@@ -16863,7 +17009,7 @@ msgctxt "#36533"
 msgid "Select how audio is downmixed, e.g. from 5.1 to 2.0.[CR][Enabled] Maintains volume level of the original audio source however the dynamic range is compressed.[CR][Disabled] Maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note: Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
 msgstr ""
 
-#. Description of setting "System -> Debugging -> Component-specific logging..." with label #668
+#. Description of setting "System -> Logging -> Component-specific logging..." with label #668
 #: system/settings/settings.xml
 msgctxt "#36534"
 msgid "Specify additional libraries whose verbose messages are to be included in the debug log."

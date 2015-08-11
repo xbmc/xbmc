@@ -35,6 +35,7 @@
 #include "VideoDatabaseDirectory.h"
 #include "FavouritesDirectory.h"
 #include "LibraryDirectory.h"
+#include "EventsDirectory.h"
 #include "AddonsDirectory.h"
 #include "SourcesDirectory.h"
 #include "FTPDirectory.h"
@@ -204,6 +205,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
       if (url.IsProtocol("bluray")) return new CBlurayDirectory();
 #endif
       if (url.IsProtocol("resource")) return new CResourceDirectory();
+      if (url.IsProtocol("events")) return new CEventsDirectory();
   }
 
   CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str() );

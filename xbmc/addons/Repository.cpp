@@ -20,6 +20,8 @@
 
 #include <iterator>
 #include "Repository.h"
+#include "events/EventLog.h"
+#include "events/AddonManagementEvent.h"
 #include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
@@ -260,9 +262,13 @@ bool CRepositoryUpdateJob::DoWork()
       break;
 
     AddonPtr newAddon = i->second;
+    bool markedAsBroken = false;
     bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon, &database);
     if (!deps_met && newAddon->Props().broken.empty())
+    {
       newAddon->Props().broken = "DEPSNOTMET";
+      markedAsBroken = true;
+    }
 
     // invalidate the art associated with this item
     if (!newAddon->Props().fanart.empty())
@@ -307,6 +313,9 @@ bool CRepositoryUpdateJob::DoWork()
         }
       }
       database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
+
+      if (markedAsBroken)
+        CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(newAddon, 24096)));
     }
   }
   database.CommitMultipleExecute();

@@ -72,13 +72,23 @@ public:
   bool InstallFromZip(const std::string &path);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
+  Iterates through the addon's dependencies, checking they're installed or installable.
+  Each dependency must also satisfies CheckDependencies in turn.
+  \param addon the addon to check
+  \param database the database instance to update. Defaults to NULL.
+  \return true if dependencies are available, false otherwise.
+  */
+  bool CheckDependencies(const ADDON::AddonPtr &addon, CAddonDatabase *database = NULL);
+
+  /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
    Each dependency must also satisfies CheckDependencies in turn.
    \param addon the addon to check
+   \param failedDep Dependency addon that isn't available
    \param database the database instance to update. Defaults to NULL.
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, CAddonDatabase *database = NULL);
+  bool CheckDependencies(const ADDON::AddonPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database = NULL);
 
   /*! \brief Update all repositories (if needed)
    Runs through all available repositories and queues an update of them if they
@@ -140,9 +150,10 @@ private:
    \param addon the addon to check
    \param preDeps previous dependencies encountered during recursion. aids in avoiding infinite recursion
    \param database database instance to update
+   \param failedDep Dependency addon that isn't available
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database);
+  bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database, std::pair<std::string, std::string> &failedDep);
 
   void PrunePackageCache();
   int64_t EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result);

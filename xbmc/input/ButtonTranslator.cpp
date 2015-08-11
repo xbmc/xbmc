@@ -405,7 +405,8 @@ static const ActionMapping windows[] =
     { "peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS },
     { "extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS },
     { "mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER },
-    { "addon"                    , WINDOW_ADDON_START }
+    { "addon"                    , WINDOW_ADDON_START },
+    { "eventlog"                 , WINDOW_EVENT_LOG}
 };
 
 static const ActionMapping mousekeys[] =

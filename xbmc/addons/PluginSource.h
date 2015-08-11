@@ -34,6 +34,7 @@ public:
   CPluginSource(const AddonProps &props);
   virtual ~CPluginSource() {}
   virtual AddonPtr Clone() const;
+  virtual TYPE FullType() const;
   virtual bool IsType(TYPE type) const;
   bool Provides(const Content& content) const
   {
