@@ -31,16 +31,12 @@ public:
 
   HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height);
   HRESULT CreateSharedResource(IDirect3DTexture9** ppTexture9, ID3D11Texture2D** ppTexture11, ID3D11RenderTargetView** ppSurface11);
-  HRESULT RenderMadvr(MADVR_RENDER_LAYER layer);
-  HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
+  HRESULT Render(MADVR_RENDER_LAYER layer);  HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
   
 private:
-  HRESULT CreateSharedResource(IDirect3DTexture9** ppTextureMadvr, IDirect3DTexture9** ppTextureKodi);
-  HRESULT RenderUnder();
-  HRESULT RenderOver();
+  HRESULT CreateSharedResource(IDirect3DTexture9** ppTextureMadvr, IDirect3DTexture9** ppTextureKodi, IDirect3DSurface9** ppSurfaceKodi);
   void RenderKodi(MADVR_RENDER_LAYER layer);
-  HRESULT RenderMadvrInternal(MADVR_RENDER_LAYER layer);
-  HRESULT RenderTexture(MADVR_RENDER_LAYER layer);
+  HRESULT RenderMadvr(MADVR_RENDER_LAYER layer);  HRESULT RenderTexture(MADVR_RENDER_LAYER layer);
   HRESULT SetupVertex();
   HRESULT StoreMadDeviceState();
   HRESULT SetupMadDeviceState();

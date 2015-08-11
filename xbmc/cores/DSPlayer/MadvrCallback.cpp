@@ -54,6 +54,24 @@ void CMadvrCallback::ResetRenderCount()
   m_renderOverCount = 0;
 }
 
+bool CMadvrCallback::GuiVisible(MADVR_RENDER_LAYER layer)
+{
+  bool result = false;
+  switch (layer)
+  {
+  case RENDER_LAYER_UNDER:
+    result = m_renderUnderCount > 0;
+    break;
+  case RENDER_LAYER_OVER:
+    result = m_renderOverCount > 0;
+    break;
+  case RENDER_LAYER_ALL:
+    result = m_renderOverCount + m_renderUnderCount > 0;
+    break;
+  }
+  return result;
+}
+
 bool CMadvrCallback::UsingMadvr()
 {
   if (m_pMadvr == NULL)

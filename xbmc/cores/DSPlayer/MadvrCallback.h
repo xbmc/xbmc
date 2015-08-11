@@ -34,6 +34,7 @@
 
 enum MADVR_RENDER_LAYER
 {
+  RENDER_LAYER_ALL,
   RENDER_LAYER_UNDER,
   RENDER_LAYER_OVER
 };
@@ -88,9 +89,7 @@ public:
   void SetCurrentVideoLayer(MADVR_RENDER_LAYER layer) { m_currentVideoLayer = layer; }
   void IncRenderCount();
   void ResetRenderCount();
-  bool IsGuiActive() { return m_renderUnderCount + m_renderOverCount > 0; }
-  bool IsUnderGuiActive() { return m_renderUnderCount > 0; }
-  bool IsOverGuiActive() { return m_renderOverCount > 0; }
+  bool GuiVisible(MADVR_RENDER_LAYER layer = RENDER_LAYER_ALL);
   
 private:
   CMadvrCallback();
@@ -100,7 +99,6 @@ private:
   IPaintCallbackMadvr* m_pMadvr;
   bool m_isInitMadvr;
   bool m_renderOnMadvr;
-  int m_renderCount;
   int m_renderUnderCount;
   int m_renderOverCount;
   MADVR_RENDER_LAYER m_currentVideoLayer;
