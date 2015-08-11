@@ -83,8 +83,8 @@ EventPtr CEventLog::Get(const std::string& eventPtrIdentifier) const
 void CEventLog::Add(const EventPtr& eventPtr)
 {
   if (eventPtr == nullptr || eventPtr->GetIdentifier().empty() ||
-      !CSettings::Get().GetBool("eventlog.enabled") ||
-     (eventPtr->GetLevel() == EventLevelInformation && !CSettings::Get().GetBool("eventlog.enablednotifications")))
+      !CSettings::Get().GetBool(CSettings::SETTING_EVENTS_ENABLED) ||
+     (eventPtr->GetLevel() == EventLevelInformation && !CSettings::Get().GetBool(CSettings::SETTING_EVENTS_ENABLED_NOTIFICATIONS)))
     return;
 
   CSingleLock lock(m_critical);
@@ -227,7 +227,7 @@ void CEventLog::OnSettingAction(const CSetting *setting)
     return;
 
   const std::string& settingId = setting->GetId();
-  if (settingId == "eventlog.show")
+  if (settingId == CSettings::SETTING_EVENTS_SHOW)
     ShowFullEventLog();
 }
 

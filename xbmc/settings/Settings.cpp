@@ -383,7 +383,9 @@ const std::string CSettings::SETTING_DEBUG_SHOWLOGINFO = "debug.showloginfo";
 const std::string CSettings::SETTING_DEBUG_EXTRALOGGING = "debug.extralogging";
 const std::string CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL = "debug.setextraloglevel";
 const std::string CSettings::SETTING_DEBUG_SCREENSHOTPATH = "debug.screenshotpath";
-const std::string CSettings::SETTING_EVENTS_SHOWLOG = "eventlog.show";
+const std::string CSettings::SETTING_EVENTS_ENABLED = "eventlog.enabled";
+const std::string CSettings::SETTING_EVENTS_ENABLED_NOTIFICATIONS = "eventlog.enablednotifications";
+const std::string CSettings::SETTING_EVENTS_SHOW = "eventlog.show";
 const std::string CSettings::SETTING_MASTERLOCK_LOCKCODE = "masterlock.lockcode";
 const std::string CSettings::SETTING_MASTERLOCK_STARTUPLOCK = "masterlock.startuplock";
 const std::string CSettings::SETTING_MASTERLOCK_MAXRETRIES = "masterlock.maxretries";
@@ -1004,7 +1006,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
   settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
   settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
-  settingSet.insert(CSettings::SETTING_EVENTS_SHOWLOG);
+  settingSet.insert(CSettings::SETTING_EVENTS_SHOW);
   m_settingsManager->RegisterCallback(&g_advancedSettings, settingSet);
 
   settingSet.clear();
