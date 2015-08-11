@@ -1003,10 +1003,13 @@ void CSettings::InitializeISettingCallbacks()
 {
   // register any ISettingCallback implementations
   std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_EVENTS_SHOW);
+  m_settingsManager->RegisterCallback(&CEventLog::GetInstance(), settingSet);
+
+  settingSet.clear();
   settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
   settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
   settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
-  settingSet.insert(CSettings::SETTING_EVENTS_SHOW);
   m_settingsManager->RegisterCallback(&g_advancedSettings, settingSet);
 
   settingSet.clear();
