@@ -30,6 +30,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 #include "FileItem.h"
 #include "video/VideoInfoTag.h"
 #include "utils/log.h"
@@ -606,3 +607,13 @@ float CPluginDirectory::GetProgress() const
     return (m_listItems->Size() * 100.0f) / m_totalItems;
   return 0.0f;
 }
+
+bool CPluginDirectory::GetHideWatched(int handle, const char *content)
+{
+  CSingleLock lock(m_handleLock);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (!dir)
+    return false;
+  return CMediaSettings::Get().GetWatchedMode((!content || !content[0]) ? dir->m_listItems->GetContent() : content) == WatchedModeUnwatched;
+}
+

@@ -190,6 +190,20 @@ namespace XBMCAddon
      */
     void setProperty(int handle, const char* key, const String& value);
 
+    /**
+     * getHideWatched(handle[, content]) -- Get the hide watched flag for given content type.
+     *  - Returns a bool indicating the value of the flag.
+     * 
+     * handle      : integer - handle the plugin was started with.\n
+     * content     : [opt] string - content type; defaults to plugin content type.\n
+     * 
+     * example:
+     *   - xbmcplugin.getHideWatched(int(sys.argv[1]), 'tvshows')
+     */
+    bool getHideWatched(int handle, const char* content = NULL);
+
+    SWIG_CONSTANT(int,SORT_METHOD_NONE);
+
     SWIG_CONSTANT(int,SORT_METHOD_NONE);
     SWIG_CONSTANT(int,SORT_METHOD_LABEL);
     SWIG_CONSTANT(int,SORT_METHOD_LABEL_IGNORE_THE);

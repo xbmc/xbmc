@@ -171,7 +171,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         else
           CMediaSettings::Get().SetWatchedMode(m_vecItems->GetContent(), WatchedModeAll);
         CSettings::Get().Save();
-        OnFilterItems(GetProperty("filter").asString());
+        if (m_vecItems->IsPlugin())
+          Refresh();
+        else
+          OnFilterItems(GetProperty("filter").asString());
         return true;
       }
       else if (iControl == CONTROL_UPDATE_LIBRARY)
