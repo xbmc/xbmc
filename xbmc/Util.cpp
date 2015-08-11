@@ -424,6 +424,9 @@ bool CUtil::IsLiveTV(const std::string& strFile)
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
     return true;
 
+  if(StringUtils::StartsWithNoCase(strFile, "sap:"))
+    return true;
+
   return false;
 }
 
