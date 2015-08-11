@@ -87,6 +87,16 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           break;
       }
       break;
+    case 599:
+      switch(res.iScreenWidth)
+      {
+        default:
+          if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+            return SetDisplayResolution("1080i59hz");
+          else
+            return SetDisplayResolution("1080p59hz");
+          break;
+      }
     case 500:
       switch(res.iScreenWidth)
       {
@@ -113,6 +123,17 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           break;
       }
       break;
+    case 299:
+      switch(res.iScreenWidth)
+      {
+        case 3840:
+          return SetDisplayResolution("4k2k29hz");
+          break;
+        default:
+          return SetDisplayResolution("1080p29hz");
+          break;
+      }
+      break;
     case 250:
       switch(res.iScreenWidth)
       {
@@ -135,6 +156,17 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
           break;
         default:
           return SetDisplayResolution("1080p24hz");
+          break;
+      }
+      break;
+    case 239:
+      switch(res.iScreenWidth)
+      {
+        case 3840:
+          return SetDisplayResolution("4k2k23hz");
+          break;
+        default:
+          return SetDisplayResolution("1080p23hz");
           break;
       }
       break;
