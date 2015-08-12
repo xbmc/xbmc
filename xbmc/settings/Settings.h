@@ -350,9 +350,9 @@ public:
   static const std::string SETTING_DEBUG_EXTRALOGGING;
   static const std::string SETTING_DEBUG_SETEXTRALOGLEVEL;
   static const std::string SETTING_DEBUG_SCREENSHOTPATH;
-  static const std::string SETTING_EVENTS_ENABLED;
-  static const std::string SETTING_EVENTS_ENABLED_NOTIFICATIONS;
-  static const std::string SETTING_EVENTS_SHOW;
+  static const std::string SETTING_EVENTLOG_ENABLED;
+  static const std::string SETTING_EVENTLOG_ENABLED_NOTIFICATIONS;
+  static const std::string SETTING_EVENTLOG_SHOW;
   static const std::string SETTING_MASTERLOCK_LOCKCODE;
   static const std::string SETTING_MASTERLOCK_STARTUPLOCK;
   static const std::string SETTING_MASTERLOCK_MAXRETRIES;
