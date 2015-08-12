@@ -35,6 +35,7 @@
 #include "LangInfo.h"
 #include "utils/SystemInfo.h"
 #include "guilib/GUITextBox.h"
+#include "guilib/GUIControlGroupList.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
@@ -3379,6 +3380,8 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     {
       if (control->IsContainer())
         return ((IGUIContainer *)control)->GetLabel(info.m_info);
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
+        return ((CGUIControlGroupList *)control)->GetLabel(info.m_info);
       else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
         return ((CGUITextBox *)control)->GetLabel(info.m_info);
     }

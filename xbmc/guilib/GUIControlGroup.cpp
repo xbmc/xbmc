@@ -19,6 +19,8 @@
  */
 
 #include "GUIControlGroup.h"
+#include "guiinfo/GUIInfoLabels.h"
+#include "utils/StringUtils.h"
 
 #include <cassert>
 
@@ -551,6 +553,42 @@ void CGUIControlGroup::AddControl(CGUIControl *control, int position /* = -1*/)
   control->SetPushUpdates(m_pushedUpdates);
   AddLookup(control);
   SetInvalid();
+}
+
+std::string CGUIControlGroup::GetLabel(int info) const
+{
+  switch (info)
+  {
+  case CONTAINER_CURRENT_ITEM:
+    return StringUtils::Format("%i", GetSelectedItem());
+  case CONTAINER_NUM_ITEMS:
+    return StringUtils::Format("%i", GetNumItems());
+  default:
+    break;
+  }
+  return "";
+}
+
+int CGUIControlGroup::GetNumItems() const
+{
+  return std::count_if(m_children.begin(), m_children.end(), [&](const CGUIControl *child) {
+    return (child->IsVisible() && child->CanFocus());
+  });
+}
+
+int CGUIControlGroup::GetSelectedItem() const
+{
+  int index = 1;
+  for (const auto& child : m_children)
+  {
+    if (child->IsVisible() && child->CanFocus())
+    {
+      if (child->HasFocus())
+        return index;
+      index++;
+    }
+  }
+  return -1;
 }
 
 void CGUIControlGroup::AddLookup(CGUIControl *control)
