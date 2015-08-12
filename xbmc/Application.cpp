@@ -1495,7 +1495,7 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   }
 #endif
 #if defined(TARGET_ANDROID)
-  if (settingId == "videoplayer.usestagefright")
+  if (settingId == CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT)
   {
     CSettingBool *usestagefright = (CSettingBool*)setting;
     return usestagefright->SetValue(false);
@@ -2805,7 +2805,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     // This code reduces rendering fps of the GUI layer when playing videos in fullscreen mode
     // it makes only sense on architectures with multiple layers
     if (g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback() && g_renderManager.IsVideoLayer())
-      fps = CSettings::Get().GetInt("videoplayer.limitguiupdate");
+      fps = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE);
 #endif
 
     unsigned int now = XbmcThreads::SystemClockMillis();
