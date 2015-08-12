@@ -574,7 +574,6 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterSettingOptionsFiller("iso6391languages");
   m_settingsManager->UnregisterSettingOptionsFiller("skincolors");
   m_settingsManager->UnregisterSettingOptionsFiller("skinfonts");
-  m_settingsManager->UnregisterSettingOptionsFiller("skinsounds");
   m_settingsManager->UnregisterSettingOptionsFiller("skinthemes");
 #if defined(TARGET_LINUX)
   m_settingsManager->UnregisterSettingOptionsFiller("timezonecountries");
@@ -941,7 +940,6 @@ void CSettings::InitializeOptionFillers()
   m_settingsManager->RegisterSettingOptionsFiller("iso6391languages", CLangInfo::SettingOptionsISO6391LanguagesFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skincolors", ADDON::CSkinInfo::SettingOptionsSkinColorsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinfonts", ADDON::CSkinInfo::SettingOptionsSkinFontsFiller);
-  m_settingsManager->RegisterSettingOptionsFiller("skinsounds", ADDON::CSkinInfo::SettingOptionsSkinSoundFiller);
   m_settingsManager->RegisterSettingOptionsFiller("skinthemes", ADDON::CSkinInfo::SettingOptionsSkinThemesFiller);
 #ifdef TARGET_LINUX
   m_settingsManager->RegisterSettingOptionsFiller("timezonecountries", CLinuxTimezone::SettingOptionsTimezoneCountriesFiller);

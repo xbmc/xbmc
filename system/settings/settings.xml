@@ -79,19 +79,19 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="lookandfeel.soundskin" type="string" label="15108" help="36110">
+        <setting id="lookandfeel.soundskin" type="addon" label="15108" help="36110">
           <level>0</level>
           <default>resource.uisounds.confluence</default>
           <constraints>
-            <options>skinsounds</options>
+            <addontype>kodi.resource.uisounds</addontype>
+            <allowempty>true</allowempty>
           </constraints>
-          <dependencies>
-            <dependency type="update" setting="lookandfeel.skin" />
-          </dependencies>
           <updates>
             <update type="change" />
           </updates>
-          <control type="list" format="string" />
+          <control type="button" format="addon">
+            <show more="true" details="true">installed</show>
+          </control>
         </setting>
       </group>
       <group id="2">
