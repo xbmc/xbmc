@@ -2415,9 +2415,9 @@ bool CApplication::OnAction(const CAction &action)
         step *= action.GetRepeat() * 50; // 50 fps
 #endif
       if (action.GetID() == ACTION_VOLUME_UP)
-        volume += (float)fabs(action.GetAmount()) * action.GetAmount() * step;
+        volume += (float)(action.GetAmount() * action.GetAmount() * step);
       else if (action.GetID() == ACTION_VOLUME_DOWN)
-        volume -= (float)fabs(action.GetAmount()) * action.GetAmount() * step;
+        volume -= (float)(action.GetAmount() * action.GetAmount() * step);
       else
         volume = action.GetAmount() * step;
       if (volume != m_volumeLevel)
