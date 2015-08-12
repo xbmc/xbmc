@@ -1296,7 +1296,10 @@ msgctxt "#294"
 msgid "Create bookmark"
 msgstr ""
 
-#empty string with id 295
+#: skin.confluence/720p/VideoOSDBookmarks.xml
+msgctxt "#295"
+msgid "Chapters"
+msgstr ""
 
 msgctxt "#296"
 msgid "Clear bookmarks"
@@ -1306,6 +1309,9 @@ msgctxt "#297"
 msgid "Audio offset"
 msgstr ""
 
+#: skin.confluence/720p/VideoOSD.xml
+#: skin.confluence/720p/VideoOSDBookmarks.xml
+#: xbmc/video/dialogs/GUIDialogVideoBookmarks.cpp
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr ""
