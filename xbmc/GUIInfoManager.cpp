@@ -2511,12 +2511,17 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
            condition == CONTAINER_SCROLLING || condition == CONTAINER_ISUPDATING ||
            condition == CONTAINER_HAS_PARENT_ITEM)
   {
+    const CGUIControl *control = NULL;
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
+      control = window->GetControl(window->GetViewContainerID());
+
+    if (control)
     {
-      const CGUIControl* control = window->GetControl(window->GetViewContainerID());
-      if (control)
+      if (control->IsContainer())
         bReturn = control->GetCondition(condition, 0);
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
+        bReturn = ((CGUITextBox *)control)->GetCondition(condition, 0);
     }
   }
   else if (condition == CONTAINER_CAN_FILTER)
