@@ -87,6 +87,7 @@ public:
   static const std::string SETTING_VIDEOLIBRARY_ACTORTHUMBS;
   static const std::string SETTING_MYVIDEOS_FLATTEN;
   static const std::string SETTING_VIDEOLIBRARY_FLATTENTVSHOWS;
+  static const std::string SETTING_VIDEOLIBRARY_REMOVE_DUPLICATES;
   static const std::string SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM;
   static const std::string SETTING_VIDEOLIBRARY_TVSHOWSINCLUDEALLSEASONSANDSPECIALS;
   static const std::string SETTING_VIDEOLIBRARY_SHOWALLITEMS;
@@ -113,6 +114,7 @@ public:
   static const std::string SETTING_VIDEOPLAYER_RENDERMETHOD;
   static const std::string SETTING_VIDEOPLAYER_HQSCALERS;
   static const std::string SETTING_VIDEOPLAYER_USEAMCODEC;
+  static const std::string SETTING_VIDEOPLAYER_USEMEDIACODEC;
   static const std::string SETTING_VIDEOPLAYER_USEVDPAU;
   static const std::string SETTING_VIDEOPLAYER_USEVDPAUMIXER;
   static const std::string SETTING_VIDEOPLAYER_USEVDPAUMPEG2;
@@ -128,6 +130,9 @@ public:
   static const std::string SETTING_VIDEOPLAYER_USEOMX;
   static const std::string SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX;
   static const std::string SETTING_VIDEOPLAYER_USEVDA;
+  static const std::string SETTING_VIDEOPLAYER_USEMMAL;
+  static const std::string SETTING_VIDEOPLAYER_USESTAGEFRIGHT;
+  static const std::string SETTING_VIDEOPLAYER_LIMITGUIUPDATE;
   static const std::string SETTING_MYVIDEOS_SELECTACTION;
   static const std::string SETTING_MYVIDEOS_EXTRACTFLAGS;
   static const std::string SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS;
@@ -309,6 +314,7 @@ public:
   static const std::string SETTING_AUDIOOUTPUT_SAMPLERATE;
   static const std::string SETTING_AUDIOOUTPUT_STEREOUPMIX;
   static const std::string SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME;
+  static const std::string SETTING_AUDIOOUTPUT_NORMALIZELEVELS;
   static const std::string SETTING_AUDIOOUTPUT_PROCESSQUALITY;
   static const std::string SETTING_AUDIOOUTPUT_STREAMSILENCE;
   static const std::string SETTING_AUDIOOUTPUT_DSPADDONSENABLED;
@@ -326,6 +332,9 @@ public:
   static const std::string SETTING_INPUT_PERIPHERALS;
   static const std::string SETTING_INPUT_ENABLEMOUSE;
   static const std::string SETTING_INPUT_ENABLEJOYSTICK;
+  static const std::string SETTING_INPUT_APPLEREMOTEMODE;
+  static const std::string SETTING_INPUT_APPLEREMOTEALWAYSON;
+  static const std::string SETTING_INPUT_APPLEREMOTESEQUENCETIME;
   static const std::string SETTING_NETWORK_USEHTTPPROXY;
   static const std::string SETTING_NETWORK_HTTPPROXYTYPE;
   static const std::string SETTING_NETWORK_HTTPPROXYSERVER;
@@ -341,9 +350,9 @@ public:
   static const std::string SETTING_DEBUG_EXTRALOGGING;
   static const std::string SETTING_DEBUG_SETEXTRALOGLEVEL;
   static const std::string SETTING_DEBUG_SCREENSHOTPATH;
-  static const std::string SETTING_EVENTS_ENABLED;
-  static const std::string SETTING_EVENTS_ENABLED_NOTIFICATIONS;
-  static const std::string SETTING_EVENTS_SHOW;
+  static const std::string SETTING_EVENTLOG_ENABLED;
+  static const std::string SETTING_EVENTLOG_ENABLED_NOTIFICATIONS;
+  static const std::string SETTING_EVENTLOG_SHOW;
   static const std::string SETTING_MASTERLOCK_LOCKCODE;
   static const std::string SETTING_MASTERLOCK_STARTUPLOCK;
   static const std::string SETTING_MASTERLOCK_MAXRETRIES;
