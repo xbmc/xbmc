@@ -262,7 +262,7 @@ bool CEpgContainer::MarkTablesForPersist(void)
   /* Set m_bMarkForPersist to persist tables on the next Process() run but only
   if epg.ignoredbforclient is set, otherwise persistAll does already persisting. */
   CSingleLock lock(m_critSection);
-  return m_bMarkForPersist = CSettings::Get().GetBool("epg.ignoredbforclient");
+  return m_bMarkForPersist = CSettings::Get().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
 }
 
 bool CEpgContainer::PersistTables(void)

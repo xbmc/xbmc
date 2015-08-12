@@ -263,7 +263,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(TARGET_ANDROID)
-  if (!hint.software && CSettings::Get().GetBool("videoplayer.usemediacodec"))
+  if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC))
   {
     switch(hint.codec)
     {
@@ -292,7 +292,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(HAS_MMAL)
-    if (CSettings::Get().GetBool("videoplayer.usemmal") && !hint.software )
+    if (CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) && !hint.software )
     {
       if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_H263 || hint.codec == AV_CODEC_ID_MPEG4 ||
           hint.codec == AV_CODEC_ID_MPEG1VIDEO || hint.codec == AV_CODEC_ID_MPEG2VIDEO ||
@@ -305,7 +305,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(HAS_LIBSTAGEFRIGHT)
-    if (!hint.software && CSettings::Get().GetBool("videoplayer.usestagefright"))
+    if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT))
     {
       switch(hint.codec)
       {
