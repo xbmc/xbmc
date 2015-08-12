@@ -148,7 +148,15 @@ int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
   if (!g_windowManager.SendMessage(msg))
     return 0;
 
-  return msg.GetParam1();
+  int result = 0;
+  if (msg.GetPointer())
+  {
+    int *p = static_cast<int*>(msg.GetPointer());
+    msg.SetPointer(nullptr);
+    result = *p;
+    delete p;
+  }
+  return result;
 }
 
 void CGenericTouchActionHandler::touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y)
