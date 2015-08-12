@@ -39,6 +39,7 @@ File::~File()
       Close();*/
   m_File.Close();
   delete &m_File;
+  delete m_File;
 }
 
 
