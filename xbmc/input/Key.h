@@ -296,6 +296,7 @@
 
 #define ACTION_AUDIO_DELAY            161
 #define ACTION_SUBTITLE_DELAY         162
+#define ACTION_MENU                   163
 
 #define ACTION_RECORD                 170
 
