@@ -165,12 +165,10 @@ bool CGUISliderControl::OnAction(const CAction &action)
   switch ( action.GetID() )
   {
   case ACTION_MOVE_LEFT:
-    //case ACTION_OSD_SHOW_VALUE_MIN:
     Move(-1);
     return true;
 
   case ACTION_MOVE_RIGHT:
-    //case ACTION_OSD_SHOW_VALUE_PLUS:
     Move(1);
     return true;
 
