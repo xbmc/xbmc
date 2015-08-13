@@ -68,6 +68,7 @@ protected:
   bool IsFirstFocusableControl(const CGUIControl *control) const;
   bool IsLastFocusableControl(const CGUIControl *control) const;
   void ValidateOffset();
+  void CalculateItemGap();
   inline float Size(const CGUIControl *control) const;
   void ScrollTo(float offset);
   float GetAlignOffset() const;
