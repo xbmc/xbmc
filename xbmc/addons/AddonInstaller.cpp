@@ -32,9 +32,9 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "utils/JobManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "addons/AddonManager.h"
 #include "addons/Repository.h"
 #include "guilib/GUIWindowManager.h"      // for callback
@@ -49,6 +49,8 @@
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 struct find_map : public std::binary_function<CAddonInstaller::JobMap::value_type, unsigned int, bool>
 {
@@ -172,9 +174,14 @@ bool CAddonInstaller::InstallModal(const std::string &addonID, ADDON::AddonPtr &
     return false;
 
   // if specified ask the user if he wants it installed
-  if (promptForInstall &&
-      !CGUIDialogYesNo::ShowAndGetInput(CVariant{24076}, CVariant{24100}, CVariant{addon->Name()}, CVariant{24101}))
-    return false;
+  if (promptForInstall)
+  {
+    if (HELPERS::ShowYesNoDialogLines(CVariant{24076}, CVariant{24100}, CVariant{addon->Name()}, CVariant{24101}) !=
+      DialogResponse::YES)
+    {
+      return false;
+    }
+  }
 
   if (!InstallOrUpdate(addonID, "", false, true))
     return false;

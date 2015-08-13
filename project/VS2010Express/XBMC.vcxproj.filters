@@ -364,6 +364,9 @@
     <Filter Include="events\windows">
       <UniqueIdentifier>{87d4e872-1a96-49a2-9ef0-78dd9fc30da9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="messaging\helpers">
+      <UniqueIdentifier>{b0eadc46-feeb-4aca-9898-590e6b8d29b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3191,6 +3194,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\Gif.cpp">
       <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp">
+      <Filter>messaging\helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6189,6 +6195,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\Gif.h">
       <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\messaging\helpers\DialogHelper.h">
+      <Filter>messaging\helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

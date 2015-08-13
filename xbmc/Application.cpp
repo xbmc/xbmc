@@ -60,6 +60,7 @@
 #include "input/InertialScrollingHandler.h"
 #include "messaging/ThreadMessage.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIUserMessages.h"
@@ -149,7 +150,6 @@
 
 // Dialog includes
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSubMenu.h"
@@ -250,6 +250,8 @@ using namespace KODI::MESSAGING;
 using namespace ActiveAE;
 
 using namespace XbmcThreads;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1569,8 +1571,8 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
        user as to whether they want to keep the current skin. */
     if (confirm && !m_skinReverting)
     {
-      bool cancelled;
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13123}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, 10000))
+      if (HELPERS::ShowYesNoDialogText(CVariant{13123}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) != 
+        DialogResponse::YES)
       {
         m_skinReverting = true;
         if (oldSkin.empty())

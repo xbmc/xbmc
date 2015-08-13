@@ -626,6 +626,7 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\media\MediaType.cpp" />
     <ClCompile Include="..\..\xbmc\messaging\ApplicationMessenger.cpp" />
+    <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp" />
     <ClCompile Include="..\..\xbmc\music\Album.cpp" />
     <ClCompile Include="..\..\xbmc\music\Artist.cpp" />
     <ClCompile Include="..\..\xbmc\music\CueInfoLoader.cpp" />
@@ -1045,6 +1046,7 @@
     <ClInclude Include="..\..\xbmc\main\win32\MessagePrinter.h" />
     <ClInclude Include="..\..\xbmc\media\MediaType.h" />
     <ClInclude Include="..\..\xbmc\messaging\ApplicationMessenger.h" />
+    <ClInclude Include="..\..\xbmc\messaging\helpers\DialogHelper.h" />
     <ClInclude Include="..\..\xbmc\messaging\IMessageTarget.h" />
     <ClInclude Include="..\..\xbmc\messaging\ThreadMessage.h" />
     <ClInclude Include="..\..\xbmc\music\CueInfoLoader.h" />

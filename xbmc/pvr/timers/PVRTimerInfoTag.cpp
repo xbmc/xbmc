@@ -20,7 +20,8 @@
 
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogYesNo.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -37,6 +38,9 @@
 
 using namespace PVR;
 using namespace EPG;
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_strTitle(g_localizeStrings.Get(19056)), // New Timer
@@ -528,7 +532,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */ , bool bDelete
   if (error == PVR_ERROR_RECORDING_RUNNING)
   {
     // recording running. ask the user if it should be deleted anyway
-    if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, CVariant{19122}))
+    if (HELPERS::ShowYesNoDialogText(CVariant{122}, CVariant{19122}) != DialogResponse::YES)
       return false;
 
     error = g_PVRClients->DeleteTimer(*this, true, bDeleteSchedule);

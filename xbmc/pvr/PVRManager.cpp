@@ -20,6 +20,7 @@
 
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "GUIInfoManager.h"
 #include "Util.h"
 #include "dialogs/GUIDialogOK.h"
@@ -27,7 +28,6 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
@@ -67,6 +67,8 @@ using namespace PVR;
 using namespace EPG;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 int CPVRManager::m_pvrWindowIds[10] = {
     WINDOW_TV_CHANNELS,
@@ -184,7 +186,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   else if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
   {
     if (CheckParentalPIN(g_localizeStrings.Get(19262)) &&
-        CGUIDialogYesNo::ShowAndGetInput(CVariant{19098}, CVariant{19186}))
+      HELPERS::ShowYesNoDialogText(CVariant{19098}, CVariant{19186}) == DialogResponse::YES)
     {
       CDateTime::ResetTimezoneBias();
       ResetDatabase(false);
@@ -192,7 +194,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_EPG_RESETEPG)
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{19098}, CVariant{19188}))
+    if (HELPERS::ShowYesNoDialogText(CVariant{19098}, CVariant{19188}) == DialogResponse::YES)
     {
       CDateTime::ResetTimezoneBias();
       ResetDatabase(true);
@@ -1506,13 +1508,12 @@ bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
         }
 
         // Inform user about PVR being busy. Ask if user wants to powerdown anyway.
-        bool bCanceled = false;
-        bReturn = CGUIDialogYesNo::ShowAndGetInput(CVariant{19685}, // "Confirm shutdown"
-                                                   CVariant{text},
-                                                   bCanceled,
-                                                   CVariant{222},   // "Cancel"
-                                                   CVariant{19696}, // "Shutdown anyway"
-                                                   10000); //This is a timeout and IS NOT a CVariant
+        bReturn = HELPERS::DialogResponse::YES == 
+          HELPERS::ShowYesNoDialogText(CVariant{19685}, // "Confirm shutdown"
+                                       CVariant{text},
+                                       CVariant{222}, // "Shutdown anyway",
+                                       CVariant{19696}, // "Cancel"
+                                       10000); // timeout value before closing
       }
       else
         bReturn = false; // do not powerdown (busy, but no user interaction requested).

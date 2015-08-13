@@ -22,13 +22,14 @@
 #include "AddonManager.h"
 #include "Util.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 // fallback for new skin resolution code
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
@@ -36,7 +37,6 @@
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/Variant.h"
-#include "messaging/ApplicationMessenger.h"
 
 #define XML_SETTINGS      "settings"
 #define XML_SETTING       "setting"
@@ -46,6 +46,8 @@
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 std::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 
@@ -372,7 +374,8 @@ void CSkinInfo::OnPreInstall()
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
 {
-  if (IsInUse() || (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(CVariant{Name()}, CVariant{24099})))
+  if (IsInUse() || (!update && !modal && 
+    HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24099}) == DialogResponse::YES))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (toast)
