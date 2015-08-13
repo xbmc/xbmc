@@ -145,6 +145,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAVE_LIBBLURAY
   else if (url.IsProtocol("bluray")) return new CBlurayFile();
 #endif
+  else if (url.IsProtocol("resource")) return new CResourceFile();
 
   bool networkAvailable = g_application.getNetwork().IsAvailable();
   if (networkAvailable)
@@ -177,7 +178,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_UPNP
     else if (url.IsProtocol("upnp")) return new CUPnPFile();
 #endif
-    else if (url.IsProtocol("resource")) return new CResourceFile();
   }
 
   CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str());
