@@ -166,6 +166,9 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("androidapp")) return new CAndroidAppDirectory();
 #endif
+#ifdef HAVE_LIBBLURAY
+  if (url.IsProtocol("bluray")) return new CBlurayDirectory();
+#endif
 
   bool networkAvailable = g_application.getNetwork().IsAvailable(true); // true to wait for the network (if possible)
   if (networkAvailable)
@@ -200,9 +203,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM_NFS
     if (url.IsProtocol("nfs")) return new CNFSDirectory();
-#endif
-#ifdef HAVE_LIBBLURAY
-      if (url.IsProtocol("bluray")) return new CBlurayDirectory();
 #endif
       if (url.IsProtocol("resource")) return new CResourceDirectory();
       if (url.IsProtocol("events")) return new CEventsDirectory();

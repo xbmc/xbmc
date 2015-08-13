@@ -142,6 +142,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("androidapp")) return new CFileAndroidApp();
 #endif
   else if (url.IsProtocol("pipe")) return new CPipeFile();
+#ifdef HAVE_LIBBLURAY
+  else if (url.IsProtocol("bluray")) return new CBlurayFile();
+#endif
 
   bool networkAvailable = g_application.getNetwork().IsAvailable();
   if (networkAvailable)
@@ -173,9 +176,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_UPNP
     else if (url.IsProtocol("upnp")) return new CUPnPFile();
-#endif
-#ifdef HAVE_LIBBLURAY
-    else if (url.IsProtocol("bluray")) return new CBlurayFile();
 #endif
     else if (url.IsProtocol("resource")) return new CResourceFile();
   }
