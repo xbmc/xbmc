@@ -2532,6 +2532,9 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
+    <ProjectReference Include="..\..\xbmc\cores\DSPlayer\SurfaceQueueLib\SurfaceQueueLib.vcxproj">
+      <Project>{007ECB80-A7F7-48FD-8D17-DB2A70B3A8FB}</Project>
+    </ProjectReference>
     <ProjectReference Include="libPlatinum.vcxproj">
       <Project>{b2975495-fbe4-4f94-aac5-b21a9842bf50}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

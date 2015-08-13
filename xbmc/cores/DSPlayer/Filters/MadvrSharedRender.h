@@ -22,6 +22,7 @@
  */
 
 #include "MadvrCallback.h"
+#include "SurfaceQueueLib/SurfaceQueue.h"
 
 class CMadvrSharedRender
 {
@@ -30,8 +31,8 @@ public:
   virtual ~CMadvrSharedRender();
 
   HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height);
-  HRESULT CreateSharedResource(IDirect3DTexture9** ppTexture9, ID3D11Texture2D** ppTexture11, ID3D11RenderTargetView** ppSurface11);
   HRESULT Render(MADVR_RENDER_LAYER layer);  HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
+  void Flush(MADVR_RENDER_LAYER layer);
   
 private:
   HRESULT CreateSharedResource(IDirect3DTexture9** ppTextureMadvr, IDirect3DTexture9** ppTextureKodi, IDirect3DSurface9** ppSurfaceKodi);
@@ -42,16 +43,20 @@ private:
   HRESULT SetupMadDeviceState();
   HRESULT RestoreMadDeviceState();
 
-  ID3D11Device* m_pD3DDeviceKodi = nullptr;
-  IDirect3DDevice9Ex* m_pD3DDeviceMadVR = nullptr;
+  ID3D11Device*             m_pD3DDeviceKodi = nullptr;
+  IDirect3DDevice9Ex*       m_pD3DDeviceMadVR = nullptr;
 
-  ID3D11Texture2D* m_pKodiUnderTexture = nullptr;
-  ID3D11Texture2D* m_pKodiOverTexture = nullptr;
-  ID3D11RenderTargetView* m_pKodiUnderSurface = nullptr;
-  ID3D11RenderTargetView* m_pKodiOverSurface = nullptr;
-  IDirect3DTexture9* m_pMadvrUnderTexture = nullptr;
-  IDirect3DTexture9* m_pMadvrOverTexture = nullptr;
-  IDirect3DVertexBuffer9* m_pMadvrVertexBuffer = nullptr;
+  IDirect3DVertexBuffer9*   m_pMadvrVertexBuffer = nullptr;
+  ID3D11Texture2D*          m_pKodiTexture = nullptr;
+  ID3D11RenderTargetView*   m_pKodiSurface = nullptr;
+  IDirect3DTexture9*        m_pMadvrTexture = nullptr;
+  
+  ISurfaceQueue*            m_pD3D11Queue = nullptr;
+  ISurfaceQueue*            m_pD3D9Queue = nullptr;
+  ISurfaceProducer*         m_pD3D11Producer = nullptr;
+  ISurfaceConsumer*         m_pD3D11Consumer = nullptr;
+  ISurfaceProducer*         m_pD3D9Producer = nullptr;
+  ISurfaceConsumer*         m_pD3D9Consumer = nullptr;
 
   DWORD m_dwWidth = 0;
   DWORD m_dwHeight = 0;
