@@ -143,6 +143,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #if defined(TARGET_ANDROID)
   else if (url.IsProtocol("androidapp")) return new CFileAndroidApp();
 #endif
+  else if (url.IsProtocol("pipe")) return new CPipeFile();
 
   bool networkAvailable = g_application.getNetwork().IsAvailable();
   if (networkAvailable)
@@ -172,7 +173,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM_NFS
     else if (url.IsProtocol("nfs")) return new CNFSFile();
 #endif
-    else if (url.IsProtocol("pipe")) return new CPipeFile();    
 #ifdef HAS_UPNP
     else if (url.IsProtocol("upnp")) return new CUPnPFile();
 #endif
