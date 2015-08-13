@@ -262,13 +262,9 @@ bool CRepositoryUpdateJob::DoWork()
       break;
 
     AddonPtr newAddon = i->second;
-    bool markedAsBroken = false;
     bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon, &database);
     if (!deps_met && newAddon->Props().broken.empty())
-    {
       newAddon->Props().broken = "DEPSNOTMET";
-      markedAsBroken = true;
-    }
 
     // invalidate the art associated with this item
     if (!newAddon->Props().fanart.empty())
@@ -310,12 +306,11 @@ bool CRepositoryUpdateJob::DoWork()
             line = g_localizeStrings.Get(24104);
           if (addon && CGUIDialogYesNo::ShowAndGetInput(CVariant{newAddon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}))
             CAddonMgr::Get().DisableAddon(newAddon->ID());
+
+          CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(newAddon, 24096)));
         }
       }
       database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
-
-      if (markedAsBroken)
-        CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(newAddon, 24096)));
     }
   }
   database.CommitMultipleExecute();
