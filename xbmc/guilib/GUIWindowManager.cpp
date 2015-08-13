@@ -23,6 +23,7 @@
 #include "GUIDialog.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "GUIPassword.h"
 #include "GUIInfoManager.h"
 #include "threads/SingleLock.h"
@@ -915,15 +916,33 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_GUI_MESSAGE:
-  {
     if (pMsg->lpVoid)
     {
       CGUIMessage *message = static_cast<CGUIMessage *>(pMsg->lpVoid);
       SendMessage(*message, pMsg->param1);
       delete message;
     }
-  }
-  break;
+    break;
+
+  case TMSG_GUI_DIALOG_YESNO:
+    if (!pMsg->lpVoid && pMsg->param1 < 0 && pMsg->param2 < 0)
+      return;
+
+    auto dialog = static_cast<CGUIDialogYesNo*>(GetWindow(WINDOW_DIALOG_YES_NO));
+    if (!dialog)
+      return;
+
+    if (pMsg->lpVoid)
+      pMsg->SetResult(dialog->ShowAndGetInput(*static_cast<HELPERS::DialogYesNoMessage*>(pMsg->lpVoid)));
+    else
+    {
+      HELPERS::DialogYesNoMessage options;
+      options.heading = pMsg->param1;
+      options.text = pMsg->param2;
+      pMsg->SetResult(dialog->ShowAndGetInput(options));
+    }
+
+    break;
   }
 }
 

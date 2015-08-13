@@ -30,6 +30,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/JobManager.h"
@@ -43,6 +44,9 @@
 
 using namespace XFILE;
 using namespace ADDON;
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 AddonPtr CRepository::Clone() const
 {
@@ -249,12 +253,12 @@ bool CRepositoryUpdateJob::DoWork()
   //unnecessary HEAD requests being sent to server. icons and fanart rarely
   //change, and cannot change if there is no version bump.
   {
-    CTextureDatabase textureDB;
-    textureDB.Open();
-    textureDB.BeginMultipleExecute();
+  CTextureDatabase textureDB;
+  textureDB.Open();
+  textureDB.BeginMultipleExecute();
 
     for (const auto& addon : addons)
-    {
+  {
       if (!addon->Props().fanart.empty())
         textureDB.InvalidateCachedTexture(addon->Props().fanart);
       if (!addon->Props().icon.empty())
@@ -288,11 +292,14 @@ bool CRepositoryUpdateJob::DoWork()
       if (!addon->Props().broken.empty() && !brokenInDb)
       {
         //newly broken
-        std::string line = g_localizeStrings.Get(24096);
+        int line = 24096;
         if (addon->Props().broken == "DEPSNOTMET")
-          line = g_localizeStrings.Get(24104);
-        if (CGUIDialogYesNo::ShowAndGetInput(CVariant{addon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}))
+          line = 24104;
+        if (HELPERS::ShowYesNoDialogLines(CVariant{addon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}) 
+          == DialogResponse::YES)
+        {
           CAddonMgr::GetInstance().DisableAddon(addon->ID());
+        }
 
         CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] addon '%s' marked broken. reason: \"%s\"",
              m_repo->ID().c_str(), addon->ID().c_str(), addon->Props().broken.c_str());
@@ -304,8 +311,8 @@ bool CRepositoryUpdateJob::DoWork()
         //Unbroken
         CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[%s] addon '%s' unbroken",
             m_repo->ID().c_str(), addon->ID().c_str());
-      }
     }
+  }
 
     //Update broken status
     database.BreakAddon(addon->ID(), addon->Props().broken);
@@ -342,21 +349,21 @@ CRepositoryUpdateJob::FetchStatus CRepositoryUpdateJob::FetchIfChanged(const std
   if (oldChecksum == checksum && !oldChecksum.empty())
     return STATUS_NOT_MODIFIED;
 
-  std::map<std::string, AddonPtr> uniqueAddons;
+    std::map<std::string, AddonPtr> uniqueAddons;
   for (auto it = m_repo->m_dirs.cbegin(); it != m_repo->m_dirs.cend(); ++it)
-  {
+    {
     if (ShouldCancel(m_repo->m_dirs.size() + std::distance(m_repo->m_dirs.cbegin(), it), total))
       return STATUS_ERROR;
 
-    VECADDONS addons;
-    if (!CRepository::Parse(*it, addons))
+      VECADDONS addons;
+      if (!CRepository::Parse(*it, addons))
     {
       CLog::Log(LOGERROR, "CRepositoryUpdateJob[%s] failed to read or parse "
           "directory '%s'", m_repo->ID().c_str(), it->info.c_str());
       return STATUS_ERROR;
+      }
+      MergeAddons(uniqueAddons, addons);
     }
-    MergeAddons(uniqueAddons, addons);
-  }
 
   for (const auto& kv : uniqueAddons)
     addons.push_back(kv.second);

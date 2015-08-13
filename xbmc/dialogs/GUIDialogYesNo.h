@@ -20,9 +20,19 @@
  *
  */
 
-#include <string>
 #include "GUIDialogBoxBase.h"
 #include "utils/Variant.h"
+
+namespace KODI
+{
+  namespace MESSAGING
+  {
+    namespace HELPERS
+    {
+      struct DialogYesNoMessage;
+    }
+  }
+}
 
 class CGUIDialogYesNo :
       public CGUIDialogBoxBase
@@ -89,6 +99,17 @@ public:
    \return true if user selects Yes, otherwise false if user selects No.
    */
   static bool ShowAndGetInput(CVariant heading, CVariant text, bool &bCanceled, CVariant noLabel, CVariant yesLabel, unsigned int autoCloseTime);
+
+  /*!
+    \brief Open a Yes/No dialog and wait for input
+
+    \param[in] options  a struct of type DialogYesNoMessage containing
+                        the options to set for this dialog.
+
+    \returns -1 for cancelled, 0 for No and 1 for Yes
+    \sa KODI::MESSAGING::HELPERS::DialogYesNoMessage
+  */
+  int ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNoMessage& options);
 
 protected:
   virtual int GetDefaultLabelID(int controlId) const;

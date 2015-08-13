@@ -25,6 +25,7 @@
 #include "utils/SeekHandler.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "Autorun.h"
 #include "Builtins.h"
 #include "input/ButtonTranslator.h"
@@ -39,7 +40,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "GUIUserMessages.h"
 #include "windows/GUIWindowLoginScreen.h"
 #include "video/windows/GUIWindowVideoBase.h"
@@ -116,6 +116,8 @@ using namespace KODI::MESSAGING;
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
 #endif
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 typedef struct
 {
@@ -1594,7 +1596,11 @@ int CBuiltins::Execute(const std::string& execString)
     if (params.size() > 1)
       singleFile = StringUtils::EqualsNoCase(params[1], "true");
     else
-      singleFile = !CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20426}, cancelled, CVariant{20428}, CVariant{20429});
+    {
+      DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20426}, CVariant{20428}, CVariant{20429});
+      cancelled = result == DialogResponse::CANCELLED;
+      singleFile = result != DialogResponse::YES;
+    }
 
     if (cancelled)
         return -1;
@@ -1604,7 +1610,11 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 2)
         thumbs = StringUtils::EqualsNoCase(params[2], "true");
       else
-        thumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20430}, cancelled, CVariant{""}, CVariant{""}, CGUIDialogYesNo::NO_TIMEOUT);
+      {
+        DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20430}, CVariant{20428}, CVariant{20429});
+        cancelled = result == DialogResponse::CANCELLED;
+        thumbs = result == DialogResponse::YES;
+      }
     }
 
     if (cancelled)
@@ -1615,7 +1625,11 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 4)
         actorThumbs = StringUtils::EqualsNoCase(params[4], "true");
       else
-        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20436}, cancelled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT);
+      {
+        DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20436});
+        cancelled = result == DialogResponse::CANCELLED;
+        actorThumbs = result == DialogResponse::YES;
+      }
     }
 
     if (cancelled)
@@ -1626,7 +1640,11 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 3)
         overwrite = StringUtils::EqualsNoCase(params[3], "true");
       else
-        overwrite = CGUIDialogYesNo::ShowAndGetInput(CVariant{iHeading}, CVariant{20431}, cancelled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT);
+      {
+        DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20431});
+        cancelled = result == DialogResponse::CANCELLED;
+        overwrite = result == DialogResponse::YES;
+      }
     }
 
     if (cancelled)

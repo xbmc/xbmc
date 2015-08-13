@@ -20,6 +20,7 @@
 
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "Addon.h"
 #include "AddonCallbacksGUI.h"
 #include "utils/log.h"
@@ -40,7 +41,6 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -51,6 +51,7 @@
 #define CONTROL_LABELFILES      12
 
 using namespace KODI::MESSAGING;
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 namespace ADDON
 {
@@ -1862,17 +1863,22 @@ void CAddonCallbacksGUI::Dialog_OK_ShowAndGetInputLineText(const char *heading, 
 //@{
 bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputSingleText(const char *heading, const char *text, bool& bCanceled, const char *noLabel, const char *yesLabel)
 {
-  return CGUIDialogYesNo::ShowAndGetInput(CVariant{heading}, CVariant{text}, CVariant{bCanceled}, CVariant{noLabel}, CVariant{yesLabel});
+  DialogResponse result = HELPERS::ShowYesNoDialogText(heading, text, noLabel, yesLabel);
+  bCanceled = result == DialogResponse::CANCELLED;
+  return result == DialogResponse::YES;
 }
 
 bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputLineText(const char *heading, const char *line0, const char *line1, const char *line2, const char *noLabel, const char *yesLabel)
 {
-  return CGUIDialogYesNo::ShowAndGetInput(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2}, CVariant{noLabel}, CVariant{yesLabel});
+  return HELPERS::ShowYesNoDialogLines(heading, line0, line1, line2, noLabel, yesLabel) ==
+    DialogResponse::YES;
 }
 
 bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputLineButtonText(const char *heading, const char *line0, const char *line1, const char *line2, bool &bCanceled, const char *noLabel, const char *yesLabel)
 {
-  return CGUIDialogYesNo::ShowAndGetInput(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2}, bCanceled, CVariant{noLabel}, CVariant{yesLabel}, CGUIDialogYesNo::NO_TIMEOUT);
+  DialogResponse result = HELPERS::ShowYesNoDialogLines(heading, line0, line1, line2, noLabel, yesLabel);
+  bCanceled = result == DialogResponse::CANCELLED;
+  return result == DialogResponse::YES;
 }
 //@}
 

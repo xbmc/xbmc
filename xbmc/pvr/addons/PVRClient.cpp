@@ -20,7 +20,8 @@
 
 #include "Application.h"
 #include "PVRClient.h"
-#include "dialogs/GUIDialogYesNo.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "epg/Epg.h"
@@ -37,10 +38,14 @@
 
 #include <assert.h>
 #include <memory>
+#include <algorithm>
 
 using namespace ADDON;
 using namespace PVR;
 using namespace EPG;
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
@@ -1943,10 +1948,10 @@ bool CPVRClient::Autoconfigure(void)
         std::string strLogLine(StringUtils::Format(g_localizeStrings.Get(19689).c_str(), (*it).GetName().c_str(), (*it).GetIP().c_str()));
         CLog::Log(LOGDEBUG, "%s - %s", __FUNCTION__, strLogLine.c_str());
 
-        if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19688}, // Scanning for PVR services
-                                              CVariant{strLogLine},
-                                              CVariant{19690}, // Do you want to use this service?
-                                              CVariant{""}))
+        if (DialogResponse::YES != 
+          HELPERS::ShowYesNoDialogLines(CVariant{19688}, // Scanning for PVR services
+                                        CVariant{strLogLine},
+                                        CVariant{19690})) // Do you want to use this service?
         {
           CLog::Log(LOGDEBUG, "%s - %s service found but not enabled by the user", __FUNCTION__, (*it).GetName().c_str());
           m_rejectedAvahiHosts.push_back(*it);

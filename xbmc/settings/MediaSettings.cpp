@@ -27,9 +27,10 @@
 #include "PlayListPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "interfaces/Builtins.h"
 #include "music/MusicDatabase.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -42,6 +43,10 @@
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CMediaSettings::CMediaSettings()
 {
@@ -359,7 +364,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_CLEANUP)
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
+    if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
       g_application.StartMusicCleanup(true);
   }
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_EXPORT)
@@ -382,7 +387,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_CLEANUP)
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
+    if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
       g_application.StartVideoCleanup(true);
   }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_EXPORT)

@@ -27,11 +27,12 @@
 #include <float.h>
 
 #include "DisplaySettings.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/gui3d.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -41,6 +42,10 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "windowing/WindowingFactory.h"
+
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 // 0.1 second increments
 #define MAX_REFRESH_CHANGE_DELAY 200
@@ -257,8 +262,8 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     {
       if (!m_resolutionChangeAborted)
       {
-        bool cancelled = false;
-        if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13110}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, 10000))
+        if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
+          DialogResponse::YES)
         {
           m_resolutionChangeAborted = true;
           return false;
@@ -278,8 +283,8 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
 
     if (!m_resolutionChangeAborted)
     {
-      bool cancelled = false;
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13110}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, 10000))
+      if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
+        DialogResponse::YES)
       {
         m_resolutionChangeAborted = true;
         return false;

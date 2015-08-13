@@ -38,7 +38,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/File.h"
@@ -67,13 +66,17 @@
 #include "playlists/SmartPlayList.h"
 #include "CueInfoLoader.h"
 #include "guiinfo/GUIInfoLabels.h"
+#include "messaging/helpers/DialogHelper.h"
 
 #include <utility>
 
 using namespace AUTOPTR;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
+using namespace KODI::MESSAGING;
+
 using ADDON::AddonPtr;
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
@@ -2975,8 +2978,8 @@ void CMusicDatabase::Clean()
     CGUIDialogOK::ShowAndGetInput(CVariant{189}, CVariant{14057});
     return;
   }
-
-  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{313}, CVariant{333}))
+  
+  if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
   {
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())

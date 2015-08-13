@@ -33,6 +33,8 @@
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/File.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "playlists/PlayList.h"
@@ -40,7 +42,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
 #include "video/VideoDatabase.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -52,6 +53,9 @@
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CAutorun::CAutorun()
 {
@@ -491,7 +495,9 @@ bool CAutorun::IsEnabled() const
 
 bool CAutorun::PlayDiscAskResume(const std::string& path)
 {
-  return PlayDisc(path, true, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(CVariant{341}, CVariant{""}, CVariant{""}, CVariant{""}, CVariant{13404}, CVariant{12021}));
+  return PlayDisc(path, true, !CanResumePlayDVD(path) ||
+    HELPERS::ShowYesNoDialogText(CVariant{341}, CVariant{""}, CVariant{13404}, CVariant{12021}) == 
+    DialogResponse::YES);
 }
 
 bool CAutorun::CanResumePlayDVD(const std::string& path)
