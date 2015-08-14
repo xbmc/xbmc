@@ -8,9 +8,6 @@
 	<controls>
 		<include>CommonBackground</include>
 		<include>ContentPanelBackgrounds</include>
-		<control type="group">
-			<include>Window_OpenClose_Animation</include>
-		</control>
 		<include>CommonPageCount</include>
 		<include>CommonNowPlaying</include>
 		<include>MainWindowMouseButtons</include>
@@ -27,6 +24,7 @@
 		</control>
 		<control type="group">
 			<visible>Control.IsVisible(570)</visible>
+			<include>Window_OpenClose_Animation</include>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
 				<left>75</left>
