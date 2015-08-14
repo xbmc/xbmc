@@ -77,6 +77,7 @@
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif
+#include "XbtDirectory.h"
 #include "ZipDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
@@ -149,6 +150,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
 #endif
   }
+  if (url.IsProtocol("xbt")) return new CXbtDirectory();
   if (url.IsProtocol("multipath")) return new CMultiPathDirectory();
   if (url.IsProtocol("stack")) return new CStackDirectory();
   if (url.IsProtocol("playlistmusic")) return new CPlaylistDirectory();

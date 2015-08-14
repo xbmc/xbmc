@@ -3189,6 +3189,15 @@
     <ClCompile Include="..\..\xbmc\events\MediaLibraryEvent.cpp">
       <Filter>events</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\XbtDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\XbtFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\XbtManager.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6171,6 +6180,18 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\events\UniqueEvent.h">
       <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\Directorization.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\XbtDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\XbtFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\XbtManager.h">
+      <Filter>filesystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

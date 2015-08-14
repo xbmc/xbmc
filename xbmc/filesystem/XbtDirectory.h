@@ -1,8 +1,6 @@
-#ifndef XBTFWRITER_H_
-#define XBTFWRITER_H_
-
+#pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,29 +19,26 @@
  *
  */
 
-#include <vector>
+#include <map>
 #include <string>
-#include <stdio.h>
 
-class CXBTFReader;
+#include "IFileDirectory.h"
 
-class CXBTFWriter
+class CXBTFFile;
+
+namespace XFILE
+{
+class CXbtDirectory : public IFileDirectory
 {
 public:
-  CXBTFWriter(CXBTFReader& xbtfReader, const std::string& outputFile);
-  bool Create();
-  bool Close();
-  bool AppendContent(unsigned char const* data, size_t length);
-  bool UpdateHeader(const std::vector<unsigned int>& dupes);
+  CXbtDirectory();
+  ~CXbtDirectory();
 
-private:
-  void Cleanup();
+  // specialization of IDirectory
+  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_ALWAYS; };
+  virtual bool GetDirectory(const CURL& url, CFileItemList& items) override;
 
-  CXBTFReader& m_xbtfReader;
-  std::string m_outputFile;
-  FILE* m_file;
-  unsigned char *m_data;
-  size_t         m_size;
+  // specialization of IFileDirectory
+  virtual bool ContainsFiles(const CURL& url) override;
 };
-
-#endif
+}
