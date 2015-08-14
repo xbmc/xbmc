@@ -564,6 +564,15 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum P
       }
       break;
     }
+#if VA_CHECK_VERSION(0,38,0)
+    case AV_CODEC_ID_HEVC:
+    {
+      profile = VAProfileHEVCMain;
+      if (!m_vaapiConfig.context->SupportsProfile(profile))
+        return false;
+      break;
+    }
+#endif
     case AV_CODEC_ID_WMV3:
       profile = VAProfileVC1Main;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
@@ -586,7 +595,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum P
     return false;
   }
 
-  if(avctx->codec_id == AV_CODEC_ID_H264)
+  if (avctx->codec_id == AV_CODEC_ID_H264)
   {
     m_vaapiConfig.maxReferences = avctx->refs;
     if (m_vaapiConfig.maxReferences > 16)
@@ -594,6 +603,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum P
     if (m_vaapiConfig.maxReferences < 5)
       m_vaapiConfig.maxReferences = 5;
   }
+  else if (avctx->codec_id == AV_CODEC_ID_HEVC)
+    m_vaapiConfig.maxReferences = 16;
   else
     m_vaapiConfig.maxReferences = 2;
 
