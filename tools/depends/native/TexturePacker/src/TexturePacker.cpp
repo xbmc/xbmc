@@ -396,6 +396,8 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     }
     DecoderManager::FreeDecodedFrames(frames);
     file.SetLoop(0);
+
+    writer.UpdateFile(file);
   }
 
   if (!writer.UpdateHeader(dupes))
