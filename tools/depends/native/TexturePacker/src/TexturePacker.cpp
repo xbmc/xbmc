@@ -82,7 +82,7 @@ const char *GetFormatString(unsigned int format)
   }
 }
 
-void CreateSkeletonHeaderImpl(CXBTFReader& xbtfReader, std::string fullPath, std::string relativePath)
+void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter, std::string fullPath, std::string relativePath)
 {
   struct dirent* dp;
   struct stat stat_p;
@@ -109,7 +109,7 @@ void CreateSkeletonHeaderImpl(CXBTFReader& xbtfReader, std::string fullPath, std
             tmpPath += "/";
           }
 
-          CreateSkeletonHeaderImpl(xbtfReader, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
+          CreateSkeletonHeaderImpl(xbtfWriter, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
         }
         else if (DecoderManager::IsSupportedGraphicsFile(dp->d_name))
         {
@@ -124,7 +124,7 @@ void CreateSkeletonHeaderImpl(CXBTFReader& xbtfReader, std::string fullPath, std
 
           CXBTFFile file;
           file.SetPath(fileName);
-          xbtfReader.AddFile(file);
+          xbtfWriter.AddFile(file);
         }
       }
     }
@@ -137,10 +137,10 @@ void CreateSkeletonHeaderImpl(CXBTFReader& xbtfReader, std::string fullPath, std
   }
 }
 
-void CreateSkeletonHeader(CXBTFReader& xbtfReader, std::string fullPath)
+void CreateSkeletonHeader(CXBTFWriter& xbtfWriter, std::string fullPath)
 {
   std::string temp;
-  CreateSkeletonHeaderImpl(xbtfReader, fullPath, temp);
+  CreateSkeletonHeaderImpl(xbtfWriter, fullPath, temp);
 }
 
 CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, bool hasAlpha, unsigned int flags)
@@ -321,24 +321,23 @@ static bool checkDupe(struct MD5Context* ctx,
 
 int createBundle(const std::string& InputDir, const std::string& OutputFile, double maxMSE, unsigned int flags, bool dupecheck)
 {
+  CXBTFWriter writer(OutputFile);
+  if (!writer.Create())
+  {
+    fprintf(stderr, "Error creating file\n");
+    return 1;
+  }
+
   map<string,unsigned int> hashes;
   vector<unsigned int> dupes;
-  CXBTFReader xbtfReader;
-  CreateSkeletonHeader(xbtfReader, InputDir);
+  CreateSkeletonHeader(writer, InputDir);
 
-  std::vector<CXBTFFile> files = xbtfReader.GetFiles();
+  std::vector<CXBTFFile> files = writer.GetFiles();
   dupes.resize(files.size());
   if (!dupecheck)
   {
     for (unsigned int i=0;i<dupes.size();++i)
       dupes[i] = i;
-  }
-
-  CXBTFWriter writer(xbtfReader, OutputFile);
-  if (!writer.Create())
-  {
-    fprintf(stderr, "Error creating file\n");
-    return 1;
   }
 
   for (size_t i = 0; i < files.size(); i++)
