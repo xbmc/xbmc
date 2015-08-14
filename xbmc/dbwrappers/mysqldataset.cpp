@@ -380,7 +380,7 @@ int MysqlDatabase::drop_analytics(void) {
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
       {
         mysql_free_result(res);
-        throw DbErrors("Can't create trigger '%s'\nError: %s", row[0], ret);
+        throw DbErrors("Can't create trigger '%s'\nError: %d", row[0], ret);
       }
     }
     mysql_free_result(res);
