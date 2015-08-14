@@ -25,12 +25,14 @@
 #include <string>
 #include <stdio.h>
 
-class CXBTFReader;
+#include "guilib/XBTF.h"
 
-class CXBTFWriter
+class CXBTFWriter : public CXBTFBase
 {
 public:
-  CXBTFWriter(CXBTFReader& xbtfReader, const std::string& outputFile);
+  CXBTFWriter(const std::string& outputFile);
+  ~CXBTFWriter();
+
   bool Create();
   bool Close();
   bool AppendContent(unsigned char const* data, size_t length);
@@ -39,7 +41,6 @@ public:
 private:
   void Cleanup();
 
-  CXBTFReader& m_xbtfReader;
   std::string m_outputFile;
   FILE* m_file;
   unsigned char *m_data;
