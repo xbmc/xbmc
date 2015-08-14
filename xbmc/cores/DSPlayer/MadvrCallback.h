@@ -50,7 +50,7 @@ public:
   virtual void SetMadvrPixelShader(){};
   virtual void RestoreMadvrSettings(){};
   virtual void SetResolution(){};
-  virtual void Flush(MADVR_RENDER_LAYER layer){};
+  virtual void Flush(){};
   virtual void RenderToTexture(MADVR_RENDER_LAYER layer){};
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; }
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};

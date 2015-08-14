@@ -2019,7 +2019,10 @@ void CApplication::Render()
     return;
 #ifdef HAS_DS_PLAYER
   if (CMadvrCallback::Get()->ReadyMadvr())
+  {
+    CMadvrCallback::Get()->ResetRenderCount();
     CMadvrCallback::Get()->GetCallback()->RenderToTexture(RENDER_LAYER_UNDER);
+  }
 #endif
   CDirtyRegionList dirtyRegions;
 
@@ -2093,7 +2096,7 @@ void CApplication::Render()
 
 #ifdef HAS_DS_PLAYER    
     if (CMadvrCallback::Get()->ReadyMadvr())
-      CMadvrCallback::Get()->GetCallback()->Flush(RENDER_LAYER_UNDER);
+        CMadvrCallback::Get()->GetCallback()->Flush();
     else
 #endif
   if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())

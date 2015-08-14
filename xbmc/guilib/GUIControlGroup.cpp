@@ -132,11 +132,8 @@ void CGUIControlGroup::Render()
 #ifdef HAS_DS_PLAYER
     {
       if (CMadvrCallback::Get()->ReadyMadvr() && control->GetControlType() == GUICONTROL_VIDEO && control->IsVisible())
-      {
-        // TODO ISurfaceQueue
-        //CMadvrCallback::Get()->GetCallback()->Flush(RENDER_LAYER_OVER);
-        //CMadvrCallback::Get()->GetCallback()->RenderToTexture(RENDER_LAYER_OVER);
-      }
+        CMadvrCallback::Get()->GetCallback()->RenderToTexture(RENDER_LAYER_OVER);
+
       control->DoRender();
     }
 #else      

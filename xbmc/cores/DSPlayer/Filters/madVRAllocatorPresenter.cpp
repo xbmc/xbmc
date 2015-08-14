@@ -210,8 +210,7 @@ bool CmadVRAllocatorPresenter::IsCurrentThreadId()
 
 STDMETHODIMP CmadVRAllocatorPresenter::ClearBackground(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
 {
-  //return m_pMadvrShared->Render(RENDER_LAYER_UNDER);
-  return CALLBACK_EMPTY;
+  return m_pMadvrShared->Render(RENDER_LAYER_UNDER);
 }
 
 STDMETHODIMP CmadVRAllocatorPresenter::RenderOsd(LPCSTR name, REFERENCE_TIME frameStart, RECT *fullOutputRect, RECT *activeVideoRect)
