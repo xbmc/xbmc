@@ -19,17 +19,15 @@
  *
  */
 
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include <stdint.h>
 
-class CXBTFFile;
-class CXBTFFrame;
+#include "XBTF.h"
 
-class CXBTFReader
+class CXBTFReader : public CXBTFBase
 {
 public:
   CXBTFReader();
@@ -40,19 +38,12 @@ public:
   void Close();
 
   time_t GetLastModificationTimestamp() const;
-  uint64_t GetHeaderSize() const;
-
-  bool Exists(const std::string& name) const;
-  bool Get(const std::string& name, CXBTFFile& file) const;
-  std::vector<CXBTFFile> GetFiles() const;
-  void AddFile(const CXBTFFile& file);
 
   bool Load(const CXBTFFrame& frame, unsigned char* buffer) const;
 
 private:
   std::string m_path;
   FILE* m_file;
-  std::map<std::string, CXBTFFile> m_files;
 };
 
 typedef std::shared_ptr<CXBTFReader> CXBTFReaderPtr;

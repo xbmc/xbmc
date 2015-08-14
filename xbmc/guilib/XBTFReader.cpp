@@ -66,9 +66,9 @@ static bool ReadUInt64(FILE* file, uint64_t& value)
 }
 
 CXBTFReader::CXBTFReader()
-  : m_path(),
-    m_file(nullptr),
-    m_files()
+  : CXBTFBase(),
+    m_path(),
+    m_file(nullptr)
 { }
 
 CXBTFReader::~CXBTFReader()
@@ -208,33 +208,6 @@ time_t CXBTFReader::GetLastModificationTimestamp() const
   return fileStat.st_mtime;
 }
 
-uint64_t CXBTFReader::GetHeaderSize() const
-{
-  uint64_t result = XBTF_MAGIC.size() + XBTF_VERSION.size() +
-    sizeof(uint32_t) /* number of files */;
-
-  for (const auto& file : m_files)
-    result += file.second.GetHeaderSize();
-
-  return result;
-}
-
-bool CXBTFReader::Exists(const std::string& name) const
-{
-  CXBTFFile dummy;
-  return Get(name, dummy);
-}
-
-bool CXBTFReader::Get(const std::string& name, CXBTFFile& file) const
-{
-  const auto& iter = m_files.find(name);
-  if (iter == m_files.end())
-    return false;
-
-  file = iter->second;
-  return true;
-}
-
 bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer) const
 {
   if (m_file == nullptr)
@@ -251,20 +224,4 @@ bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer) const
     return false;
 
   return true;
-}
-
-std::vector<CXBTFFile> CXBTFReader::GetFiles() const
-{
-  std::vector<CXBTFFile> files;
-  files.reserve(m_files.size());
-
-  for (const auto& file : m_files)
-    files.push_back(file.second);
-
-  return files;
-}
-
-void CXBTFReader::AddFile(const CXBTFFile& file)
-{
-  m_files.insert(std::make_pair(file.GetPath(), file));
 }
