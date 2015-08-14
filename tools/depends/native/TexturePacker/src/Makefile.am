@@ -25,11 +25,7 @@ TexturePacker_SOURCES =  md5.cpp \
   decoder/JPGDecoder.cpp \
   decoder/GifHelper.cpp \
   decoder/GIFDecoder.cpp \
-  XBTF.cpp \
-  XBTFReader.cpp
+  XBTF.cpp
 
 XBTF.cpp:
 	@cp @KODI_SRC_DIR@/xbmc/guilib/XBTF.cpp .
-
-XBTFReader.cpp:
-	@cp @KODI_SRC_DIR@/xbmc/guilib/XBTFReader.cpp .
