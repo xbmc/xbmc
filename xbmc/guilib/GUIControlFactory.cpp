@@ -782,6 +782,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   CRect hitRect;
   CPoint camera;
+  float stereo = 0.f;
   bool   hasCamera = false;
   bool resetOnLabelChange = true;
   bool bPassword = false;
@@ -1092,6 +1093,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     cam->QueryFloatAttribute("x", &camera.x);
     cam->QueryFloatAttribute("y", &camera.y);
   }
+
+  if (XMLUtils::GetFloat(pControlNode, "depth", stereo))
+    stereo = std::max(-1.f, std::min(1.f, stereo));
 
   XMLUtils::GetInt(pControlNode, "scrollspeed", labelInfo.scrollSpeed);
   spinInfo.scrollSpeed = labelInfo.scrollSpeed;
@@ -1491,6 +1495,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);
+    control->SetStereoFactor(stereo);
   }
   return control;
 }
