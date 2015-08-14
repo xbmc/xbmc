@@ -245,7 +245,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   g_Windowing.SetViewPort(newviewport);
 
 
-  UpdateCameraPosition(m_cameras.top());
+  UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
   return true;
 }
 
@@ -257,7 +257,7 @@ void CGraphicContext::RestoreViewPort()
   CRect viewport = StereoCorrection(m_viewStack.top());
   g_Windowing.SetViewPort(viewport);
 
-  UpdateCameraPosition(m_cameras.top());
+  UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
 }
 
 CPoint CGraphicContext::StereoCorrection(const CPoint &point) const
@@ -833,6 +833,9 @@ void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool need
   while (!m_cameras.empty())
     m_cameras.pop();
   m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
+  while (!m_stereoFactors.empty())
+    m_stereoFactors.pop();
+  m_stereoFactors.push(0.0f);
 
   // and reset the final transform
   m_finalTransform = m_guiTransform;
@@ -843,7 +846,7 @@ void CGraphicContext::SetRenderingResolution(const RESOLUTION_INFO &res, bool ne
 {
   Lock();
   SetScalingResolution(res, needsScaling);
-  UpdateCameraPosition(m_cameras.top());
+  UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
   Unlock();
 }
 
@@ -888,14 +891,27 @@ void CGraphicContext::SetCameraPosition(const CPoint &camera)
   cam.y *= (float)m_iScreenHeight / m_windowResolution.iHeight;
 
   m_cameras.push(cam);
-  UpdateCameraPosition(m_cameras.top());
+  UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
 }
 
 void CGraphicContext::RestoreCameraPosition()
 { // remove the top camera from the stack
   assert(m_cameras.size());
   m_cameras.pop();
-  UpdateCameraPosition(m_cameras.top());
+  UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
+}
+
+void CGraphicContext::SetStereoFactor(float factor)
+{
+  m_stereoFactors.push(factor);
+  UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
+}
+
+void CGraphicContext::RestoreStereoFactor()
+{ // remove the top factor from the stack
+  assert(m_stereoFactors.size());
+  m_stereoFactors.pop();
+  UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
 }
 
 CRect CGraphicContext::generateAABB(const CRect &rect) const
@@ -938,9 +954,20 @@ CRect CGraphicContext::generateAABB(const CRect &rect) const
 //       the camera has changed, and if so, changes it.  Similarly, it could set
 //       the world transform at that point as well (or even combine world + view
 //       to cut down on one setting)
-void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
+void CGraphicContext::UpdateCameraPosition(const CPoint &camera, const float &factor)
 {
-  g_Windowing.SetCameraPosition(camera, m_iScreenWidth, m_iScreenHeight);
+  float stereoFactor = 0.f;
+  if ( m_stereoMode != RENDER_STEREO_MODE_OFF
+    && m_stereoMode != RENDER_STEREO_MODE_MONO
+    && m_stereoView != RENDER_STEREO_VIEW_OFF)
+  {
+    RESOLUTION_INFO res = GetResInfo();
+    RESOLUTION_INFO desktop = GetResInfo(RES_DESKTOP);
+    // currently use 5 as max. 
+    float scaleX = 5.f * (static_cast<float>(res.iWidth) / static_cast<float>(desktop.iWidth));
+    stereoFactor = factor * (m_stereoView == RENDER_STEREO_VIEW_LEFT ? scaleX : -scaleX);
+  }
+  g_Windowing.SetCameraPosition(camera, m_iScreenWidth, m_iScreenHeight, stereoFactor);
 }
 
 bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
