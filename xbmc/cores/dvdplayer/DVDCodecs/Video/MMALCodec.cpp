@@ -822,8 +822,16 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
        {
          EDEINTERLACEMODE deinterlace_request = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
          EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
-
          bool deinterlace = m_interlace_mode != MMAL_InterlaceProgressive;
+
+         // we don't keep up when running at 60fps in the background so switch to half rate
+         if (!g_graphicsContext.IsFullScreenVideo())
+         {
+           if (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
+             interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF;
+           if (interlace_method == VS_INTERLACEMETHOD_MMAL_BOB)
+             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB_HALF;
+         }
 
          if (m_hints.stills || deinterlace_request == VS_DEINTERLACEMODE_OFF || interlace_method == VS_INTERLACEMETHOD_NONE)
            deinterlace = false;
