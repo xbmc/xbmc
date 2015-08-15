@@ -236,6 +236,12 @@ namespace XBMCAddon
       item->SetMimeType(mimetype);
     }
 
+    void ListItem::setContentLookup(bool enable)
+    {
+      LOCKGUI;
+      item->SetContentLookup(enable);
+    }
+
     String ListItem::getdescription()
     {
       return item->GetLabel();
