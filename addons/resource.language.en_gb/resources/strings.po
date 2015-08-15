@@ -13866,7 +13866,10 @@ msgctxt "#24996"
 msgid "Dependencies"
 msgstr ""
 
-#empty string with id 24997
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24997"
+msgid "Look and feel"
+msgstr ""
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
