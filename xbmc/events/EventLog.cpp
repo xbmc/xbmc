@@ -231,7 +231,7 @@ void CEventLog::OnSettingAction(const CSetting *setting)
     ShowFullEventLog();
 }
 
-void CEventLog::SendMessage(const EventPtr eventPtr, int message)
+void CEventLog::SendMessage(const EventPtr& eventPtr, int message)
 {
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, message, 0, XFILE::CEventsDirectory::EventToFileItem(eventPtr));
   g_windowManager.SendThreadMessage(msg);

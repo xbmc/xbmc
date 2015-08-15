@@ -162,7 +162,7 @@ namespace ActiveAE
      * @param addon The pointer to the addon class
      * @return The database ID of the client.
      */
-    int Persist(const ADDON::AddonPtr addon);
+    int Persist(const ADDON::AddonPtr &addon);
     //@}
 
     /*! @name Settings methods */

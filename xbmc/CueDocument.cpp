@@ -216,7 +216,7 @@ void CCueDocument::GetMediaFiles(std::vector<std::string>& mediaFiles)
   for (Tracks::const_iterator it = m_tracks.begin(); it != m_tracks.end(); ++it)
     uniqueFiles.insert(it->strFile);
 
-  for (TSet::const_iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
+  for (TSet::const_iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); ++it)
     mediaFiles.push_back(*it);
 }
 

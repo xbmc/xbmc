@@ -821,7 +821,7 @@ void CD3DVertexShader::ReleaseShader()
   m_inited = false;
 }
 
-bool CD3DVertexShader::Create(const std::wstring vertexFile, D3D11_INPUT_ELEMENT_DESC* vertexLayout, unsigned int vertexLayoutSize)
+bool CD3DVertexShader::Create(const std::wstring& vertexFile, D3D11_INPUT_ELEMENT_DESC* vertexLayout, unsigned int vertexLayoutSize)
 {
   ReleaseShader();
 
@@ -975,7 +975,7 @@ void CD3DPixelShader::ReleaseShader()
   m_inited = false;
 }
 
-bool CD3DPixelShader::Create(const std::wstring wstrFile)
+bool CD3DPixelShader::Create(const std::wstring& wstrFile)
 {
   ReleaseShader();
 
