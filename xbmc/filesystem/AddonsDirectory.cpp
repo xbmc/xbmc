@@ -394,6 +394,7 @@ static bool Browse(const CURL& path, CFileItemList &items)
 static bool Repos(const CURL& path, CFileItemList &items)
 {
   items.SetLabel(g_localizeStrings.Get(24033));
+  items.SetContent("addons");
 
   VECADDONS addons;
   CAddonMgr::GetInstance().GetAddons(ADDON_REPOSITORY, addons, true);
@@ -450,7 +451,6 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   CURL path(tmp);
   const std::string endpoint = path.GetHostName();
   items.ClearProperties();
-  items.SetContent("addons");
   items.SetPath(path.Get());
 
   if (endpoint == "user")
@@ -528,6 +528,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     const VECADDONS& addons, CFileItemList &items, const std::string label)
 {
   items.ClearItems();
+  items.SetContent("addons");
   items.SetLabel(label);
   for (const auto& addon : addons)
   {
