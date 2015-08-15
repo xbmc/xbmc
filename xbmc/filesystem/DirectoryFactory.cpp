@@ -167,6 +167,10 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("androidapp")) return new CAndroidAppDirectory();
 #endif
+#ifdef HAVE_LIBBLURAY
+  if (url.IsProtocol("bluray")) return new CBlurayDirectory();
+#endif
+  if (url.IsProtocol("resource")) return new CResourceDirectory();
 
   bool networkAvailable = g_application.getNetwork().IsAvailable(true); // true to wait for the network (if possible)
   if (networkAvailable)
@@ -204,10 +208,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #ifdef HAS_FILESYSTEM_NFS
     if (url.IsProtocol("nfs")) return new CNFSDirectory();
 #endif
-#ifdef HAVE_LIBBLURAY
-      if (url.IsProtocol("bluray")) return new CBlurayDirectory();
-#endif
-      if (url.IsProtocol("resource")) return new CResourceDirectory();
   }
 
   CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str() );

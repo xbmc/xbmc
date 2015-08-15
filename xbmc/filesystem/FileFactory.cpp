@@ -143,6 +143,11 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #if defined(TARGET_ANDROID)
   else if (url.IsProtocol("androidapp")) return new CFileAndroidApp();
 #endif
+  else if (url.IsProtocol("pipe")) return new CPipeFile();
+#ifdef HAVE_LIBBLURAY
+  else if (url.IsProtocol("bluray")) return new CBlurayFile();
+#endif
+  else if (url.IsProtocol("resource")) return new CResourceFile();
 
   bool networkAvailable = g_application.getNetwork().IsAvailable();
   if (networkAvailable)
@@ -174,14 +179,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM_NFS
     else if (url.IsProtocol("nfs")) return new CNFSFile();
 #endif
-    else if (url.IsProtocol("pipe")) return new CPipeFile();    
 #ifdef HAS_UPNP
     else if (url.IsProtocol("upnp")) return new CUPnPFile();
 #endif
-#ifdef HAVE_LIBBLURAY
-    else if (url.IsProtocol("bluray")) return new CBlurayFile();
-#endif
-    else if (url.IsProtocol("resource")) return new CResourceFile();
   }
 
   CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str());
