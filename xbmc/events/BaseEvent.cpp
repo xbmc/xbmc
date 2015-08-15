@@ -54,7 +54,7 @@ CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, con
     m_dateTime(CDateTime::GetCurrentDateTime())
 { }
 
-CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level /* = EventLevelInformation */)
+CBaseEvent::CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level /* = EventLevelInformation */)
   : m_level(level),
     m_identifier(identifier),
     m_icon(icon),

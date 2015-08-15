@@ -68,7 +68,7 @@ protected:
   virtual void OnSettingAction(const CSetting *setting);
 
 private:
-  void SendMessage(const EventPtr event, int message);
+  void SendMessage(const EventPtr& event, int message);
 
   typedef std::vector<EventPtr> EventsList;
   typedef std::map<std::string, EventPtr> EventsMap;

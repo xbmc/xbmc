@@ -526,7 +526,7 @@ int CActiveAEDSPDatabase::GetAudioDSPAddonId(const string &strAddonUid)
   return strtol(strValue.c_str(), NULL, 10);
 }
 
-int CActiveAEDSPDatabase::Persist(const AddonPtr addon)
+int CActiveAEDSPDatabase::Persist(const AddonPtr& addon)
 {
   int iReturn(-1);
 
