@@ -27,6 +27,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoLibraryQueue.h"
 
 using namespace JSONRPC;
 using namespace KODI::MESSAGING;
@@ -725,6 +726,92 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const std::string &method, IT
   UpdateResumePoint(parameterObject, infos, videodatabase);
 
   CJSONRPCUtils::NotifyItemUpdated();
+  return ACK;
+}
+
+JSONRPC_STATUS CVideoLibrary::RefreshMovie(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = static_cast<int>(parameterObject["movieid"].asInteger());
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  if (!videodatabase.GetMovieInfo("", infos, id) || infos.m_iDbId <= 0)
+    return InvalidParams;
+
+  bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
+  std::string searchTitle = parameterObject["title"].asString();
+  CVideoLibraryQueue::Get().RefreshItem(CFileItemPtr(new CFileItem(infos)), ignoreNfo, true, false, searchTitle);
+
+  return ACK;
+}
+
+JSONRPC_STATUS CVideoLibrary::RefreshTVShow(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = static_cast<int>(parameterObject["tvshowid"].asInteger());
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CFileItemPtr item(new CFileItem());
+  CVideoInfoTag infos;
+  if (!videodatabase.GetTvShowInfo("", infos, id, item.get()) || infos.m_iDbId <= 0)
+    return InvalidParams;
+
+  item->SetFromVideoInfoTag(infos);
+
+  bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
+  bool refreshEpisodes = parameterObject["refreshepisodes"].asBoolean();
+  std::string searchTitle = parameterObject["title"].asString();
+  CVideoLibraryQueue::Get().RefreshItem(item, ignoreNfo, true, refreshEpisodes, searchTitle);
+
+  return ACK;
+}
+
+JSONRPC_STATUS CVideoLibrary::RefreshEpisode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["episodeid"].asInteger();
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  if (!videodatabase.GetEpisodeInfo("", infos, id) || infos.m_iDbId <= 0)
+    return InvalidParams;
+
+  CFileItemPtr item = CFileItemPtr(new CFileItem(infos));
+  // We need to set the correct base path to get the valid fanart
+  int tvshowid = infos.m_iIdShow;
+  if (tvshowid <= 0)
+    tvshowid = videodatabase.GetTvShowForEpisode(id);
+
+  bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
+  std::string searchTitle = parameterObject["title"].asString();
+  CVideoLibraryQueue::Get().RefreshItem(item, ignoreNfo, true, false, searchTitle);
+
+  return ACK;
+}
+
+JSONRPC_STATUS CVideoLibrary::RefreshMusicVideo(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = static_cast<int>(parameterObject["musicvideoid"].asInteger());
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  if (!videodatabase.GetMusicVideoInfo("", infos, id) || infos.m_iDbId <= 0)
+    return InvalidParams;
+
+  bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
+  std::string searchTitle = parameterObject["title"].asString();
+  CVideoLibraryQueue::Get().RefreshItem(CFileItemPtr(new CFileItem(infos)), ignoreNfo, true, false, searchTitle);
+
   return ACK;
 }
 

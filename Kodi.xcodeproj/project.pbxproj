@@ -259,6 +259,9 @@
 		42DAC16E1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC16F1A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
 		42DAC1701A6E789E0066B4C8 /* PVRActionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */; };
+		42E2E1C91B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E1C71B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp */; };
+		42E2E1CA1B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E1C71B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp */; };
+		42E2E1CB1B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42E2E1C71B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp */; };
 		431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		432D7CE412D86DA500CE4C49 /* NetworkLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 432D7CE312D86DA500CE4C49 /* NetworkLinux.cpp */; };
 		432D7CF712D870E800CE4C49 /* TCPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 432D7CF612D870E800CE4C49 /* TCPServer.cpp */; };
@@ -3666,6 +3669,8 @@
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
 		42DAC16C1A6E789E0066B4C8 /* PVRActionListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRActionListener.cpp; sourceTree = "<group>"; };
 		42DAC16D1A6E789E0066B4C8 /* PVRActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRActionListener.h; sourceTree = "<group>"; };
+		42E2E1C71B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryRefreshingJob.cpp; sourceTree = "<group>"; };
+		42E2E1C81B53F74D005C7E4E /* VideoLibraryRefreshingJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryRefreshingJob.h; sourceTree = "<group>"; };
 		430C881312D64A730098821A /* IPowerSyscall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPowerSyscall.h; sourceTree = "<group>"; };
 		431376FF12D6455C00680C15 /* GUIDialogCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogCache.h; sourceTree = "<group>"; };
 		431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererUtil.cpp; sourceTree = "<group>"; };
@@ -6456,6 +6461,8 @@
 				399442661A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.h */,
 				399442671A8DD920006C39E9 /* VideoLibraryProgressJob.cpp */,
 				399442681A8DD920006C39E9 /* VideoLibraryProgressJob.h */,
+				42E2E1C71B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp */,
+				42E2E1C81B53F74D005C7E4E /* VideoLibraryRefreshingJob.h */,
 				399442691A8DD920006C39E9 /* VideoLibraryScanningJob.cpp */,
 				3994426A1A8DD920006C39E9 /* VideoLibraryScanningJob.h */,
 			);
@@ -10961,6 +10968,7 @@
 				DFCA6AC8152245CD000BFAAE /* HTTPVfsHandler.cpp in Sources */,
 				DFCA6AC9152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp in Sources */,
 				DFCA6ACA152245CD000BFAAE /* HTTPWebinterfaceHandler.cpp in Sources */,
+				42E2E1C91B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp in Sources */,
 				DFCA6ACB152245CD000BFAAE /* IHTTPRequestHandler.cpp in Sources */,
 				DF93D69A1444A8B1007C6459 /* DirectoryCache.cpp in Sources */,
 				DF93D69B1444A8B1007C6459 /* FileCache.cpp in Sources */,
@@ -11512,6 +11520,7 @@
 				DFF0F18717528350002DA3A4 /* DVDSubtitleLineCollection.cpp in Sources */,
 				DFF0F18817528350002DA3A4 /* DVDSubtitleParserSubrip.cpp in Sources */,
 				DFF0F18917528350002DA3A4 /* DVDSubtitleParserVplayer.cpp in Sources */,
+				42E2E1CB1B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp in Sources */,
 				DFF0F18A17528350002DA3A4 /* DVDSubtitleStream.cpp in Sources */,
 				DFF0F18B17528350002DA3A4 /* DVDSubtitleTagMicroDVD.cpp in Sources */,
 				DFF0F18C17528350002DA3A4 /* DVDSubtitleTagSami.cpp in Sources */,
@@ -13369,6 +13378,7 @@
 				7CC7B6C1191869EA00DDB120 /* SettingCreator.cpp in Sources */,
 				7CC7B6C4191869EA00DDB120 /* SettingUtils.cpp in Sources */,
 				7CC7B6C919186A8800DDB120 /* SettingConditions.cpp in Sources */,
+				42E2E1CA1B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp in Sources */,
 				DF5E699B1B28121E009A88C3 /* PVRTimerType.cpp in Sources */,
 				7CCDA0DC192753E30074CF51 /* PltAction.cpp in Sources */,
 				7CCDA0E5192753E30074CF51 /* PltArgument.cpp in Sources */,

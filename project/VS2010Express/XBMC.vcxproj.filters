@@ -3198,6 +3198,9 @@
     <ClCompile Include="..\..\xbmc\filesystem\XbtManager.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp">
+      <Filter>video\jobs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6192,6 +6195,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\XbtManager.h">
       <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.h">
+      <Filter>video\jobs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
