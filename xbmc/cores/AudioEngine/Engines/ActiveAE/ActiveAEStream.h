@@ -95,6 +95,7 @@ protected:
   int m_streamFreeBuffers;
   bool m_streamIsBuffering;
   bool m_streamIsFlushed;
+  bool m_bypassDSP;
   IAEStream *m_streamSlave;
   CCriticalSection m_streamLock;
   uint8_t *m_leftoverBuffer;

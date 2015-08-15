@@ -24,9 +24,11 @@
 #include "AudioDecoder.h"
 #include "ContextMenuManager.h"
 #include "DllLibCPluff.h"
-#include "ImageResource.h"
-#include "LanguageResource.h"
-#include "UISoundsResource.h"
+#include "addons/ImageResource.h"
+#include "addons/LanguageResource.h"
+#include "addons/UISoundsResource.h"
+#include "events/EventLog.h"
+#include "events/AddonManagementEvent.h"
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
 #include "threads/SingleLock.h"
@@ -144,17 +146,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         { // built in audio encoder
           return AddonPtr(new CAudioEncoder(props));
         }
-        std::string tograb;
-#if defined(TARGET_ANDROID)
-          tograb = "@library_android";
-#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-          tograb = "@library_linux";
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-          tograb = "@library_windx";
-#elif defined(TARGET_DARWIN)
-          tograb = "@library_osx";
-#endif
-        value = GetExtValue(props->plugin->extensions->configuration, tograb.c_str());
+
+        value = GetPlatformLibraryName(props->plugin->extensions->configuration);
         if (value.empty())
           break;
         if (type == ADDON_VIZ)
@@ -680,6 +673,10 @@ bool CAddonMgr::DisableAddon(const std::string& id)
   if (!m_disabled.insert(id).second)
     return false;
 
+  AddonPtr addon;
+  if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
+    CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
+
   //success
   ADDON::OnDisabled(id);
   return true;
@@ -695,6 +692,10 @@ bool CAddonMgr::EnableAddon(const std::string& id)
     return false;
   if (m_disabled.erase(id) == 0)
     return false;
+
+  AddonPtr addon;
+  if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
+    CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
   //success
   ADDON::OnEnabled(id);
@@ -902,9 +903,13 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
 #if defined(TARGET_ANDROID)
       if (*platform == "android")
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-      if (*platform == "linux")
+      if (*platform == "linux"
+#if defined(TARGET_FREEBSD)
+        || *platform == "freebsd"
+#endif
+        )
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-      if (*platform == "windx")
+      if (*platform == "windx" || *platform == "windows")
 #elif defined(TARGET_DARWIN_OSX)
 // Remove this after Frodo and add an architecture filter
 // in addition to platform.
@@ -958,7 +963,7 @@ const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, con
   return NULL;
 }
 
-std::string CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
+std::string CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path) const
 {
   const char *value = "";
   if (base && (value = m_cpluff->lookup_cfg_value(base, path)))
@@ -977,6 +982,35 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<std:
     return false;
   StringUtils::Tokenize(all, result, ' ');
   return true;
+}
+
+std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
+{
+  std::string libraryName;
+#if defined(TARGET_ANDROID)
+  libraryName = GetExtValue(base, "@library_android");
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+#if defined(TARGET_FREEBSD)
+  libraryName = GetExtValue(base, "@library_freebsd");
+  if (libraryName.empty())
+#elif defined(TARGET_RASPBERRY_PI)
+  libraryName = GetExtValue(base, "@library_rbpi");
+  if (libraryName.empty())
+#endif
+  libraryName = GetExtValue(base, "@library_linux");
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
+  libraryName = GetExtValue(base, "@library_windx");
+  if (libraryName.empty())
+    libraryName = GetExtValue(base, "@library_windows");
+#elif defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
+  libraryName = GetExtValue(base, "@library_ios");
+  if (libraryName.empty())
+#endif
+  libraryName = GetExtValue(base, "@library_osx");
+#endif
+
+  return libraryName;
 }
 
 AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,

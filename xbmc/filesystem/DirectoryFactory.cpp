@@ -35,6 +35,7 @@
 #include "VideoDatabaseDirectory.h"
 #include "FavouritesDirectory.h"
 #include "LibraryDirectory.h"
+#include "EventsDirectory.h"
 #include "AddonsDirectory.h"
 #include "SourcesDirectory.h"
 #include "FTPDirectory.h"
@@ -76,6 +77,7 @@
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif
+#include "XbtDirectory.h"
 #include "ZipDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
@@ -148,6 +150,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
 #endif
   }
+  if (url.IsProtocol("xbt")) return new CXbtDirectory();
   if (url.IsProtocol("multipath")) return new CMultiPathDirectory();
   if (url.IsProtocol("stack")) return new CStackDirectory();
   if (url.IsProtocol("playlistmusic")) return new CPlaylistDirectory();
@@ -204,6 +207,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
       if (url.IsProtocol("bluray")) return new CBlurayDirectory();
 #endif
       if (url.IsProtocol("resource")) return new CResourceDirectory();
+      if (url.IsProtocol("events")) return new CEventsDirectory();
   }
 
   CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str() );

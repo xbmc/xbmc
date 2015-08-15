@@ -277,7 +277,7 @@ int MysqlDatabase::copy(const char *backup_name) {
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
       {
         mysql_free_result(res);
-        throw DbErrors("Can't copy schema for table '%s'\nError: %s", db.c_str(), ret);
+        throw DbErrors("Can't copy schema for table '%s'\nError: %d", db.c_str(), ret);
       }
 
       // copy the table data
@@ -380,7 +380,7 @@ int MysqlDatabase::drop_analytics(void) {
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
       {
         mysql_free_result(res);
-        throw DbErrors("Can't create trigger '%s'\nError: %s", row[0], ret);
+        throw DbErrors("Can't create trigger '%s'\nError: %d", row[0], ret);
       }
     }
     mysql_free_result(res);

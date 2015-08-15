@@ -1,1 +1,1 @@
-audiodecoder.snesapu https://github.com/notspiff/audiodecoder.snesapu 399d1d3
+audiodecoder.snesapu https://github.com/notspiff/audiodecoder.snesapu master

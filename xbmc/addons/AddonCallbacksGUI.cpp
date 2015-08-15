@@ -2204,7 +2204,7 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
 
     // this dialog is derived from GUiMediaWindow
     // make sure it is rendered last
-    m_renderOrder = 1;
+    m_renderOrder = RENDER_ORDER_DIALOG;
     while (m_bRunning && !g_application.m_bStop)
     {
       g_windowManager.ProcessRenderLoop();

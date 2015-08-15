@@ -109,7 +109,7 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   // Copy data we need from tag. Do not modify the tag itself until Save()!
   m_timerType     = m_timerInfoTag->GetTimerType();
   m_bIsRadio      = m_timerInfoTag->m_bIsRadio;
-  m_bIsNewTimer   = m_timerInfoTag->m_state == PVR_TIMER_STATE_NEW;
+  m_bIsNewTimer   = m_timerInfoTag->m_iClientIndex == -1;
   m_bStartAnytime = m_bIsNewTimer || m_timerInfoTag->IsStartAtAnyTime();
   m_bEndAnytime   = m_bIsNewTimer || m_timerInfoTag->IsEndAtAnyTime();
   m_bTimerActive  = m_bIsNewTimer || m_timerInfoTag->IsActive();

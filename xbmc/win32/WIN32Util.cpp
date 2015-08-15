@@ -217,18 +217,15 @@ bool CWIN32Util::PowerManagement(PowerState State)
       return false;
   }
 
-  // process OnSleep() events. This is called in main thread.
-  g_powerManager.ProcessEvents();
-
   switch (State)
   {
   case POWERSTATE_HIBERNATE:
     CLog::Log(LOGINFO, "Asking Windows to hibernate...");
-    return SetSuspendState(true,true,false) == TRUE;
+    return SetSuspendState(true, true, false) == TRUE;
     break;
   case POWERSTATE_SUSPEND:
     CLog::Log(LOGINFO, "Asking Windows to suspend...");
-    return SetSuspendState(false,true,false) == TRUE;
+    return SetSuspendState(false, true, false) == TRUE;
     break;
   case POWERSTATE_SHUTDOWN:
     CLog::Log(LOGINFO, "Shutdown Windows...");

@@ -22,7 +22,7 @@ are:
   * platforms.txt: List of platforms to build an addon for (or "all"). It is
     also supported to specify negated platforms with a leading exclamation mark
     (i), e.g. "!windows".
-    Available platforms are: linux, windows, darwin, ios, android, rbpi
+    Available platforms are: linux, windows, osx, ios, android, rbpi, freebsd
 
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access

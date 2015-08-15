@@ -1,1 +1,1 @@
-audioencoder.lame https://github.com/xbmc/audioencoder.lame 0f612d4
+audioencoder.lame https://github.com/xbmc/audioencoder.lame master

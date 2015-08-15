@@ -65,7 +65,7 @@ bool CResourceFile::TranslatePath(const CURL &url, std::string &translatedPath)
   if (!resource->IsAllowed(filePath))
     return false;
 
-  translatedPath = CUtil::ValidatePath(URIUtils::AddFileToFolder(addon->Path(), "resources/" + filePath));
+  translatedPath = CUtil::ValidatePath(resource->GetFullPath(filePath));
   return true;
 }
 

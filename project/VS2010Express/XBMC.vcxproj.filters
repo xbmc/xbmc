@@ -394,6 +394,12 @@
     <Filter Include="messaging">
       <UniqueIdentifier>{378b3a72-20d2-4482-8dbb-91f041290ceb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="events">
+      <UniqueIdentifier>{ae30b290-9c36-46d4-a286-3f3b7afd2f93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="events\windows">
+      <UniqueIdentifier>{87d4e872-1a96-49a2-9ef0-78dd9fc30da9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3327,6 +3333,51 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowSplash.cpp">
       <Filter>windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\InputCodingTableBaiduPY.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\InputCodingTableBasePY.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\InputCodingTableFactory.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\EventsDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\events\windows\GUIViewStateEventLog.cpp">
+      <Filter>events\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\events\windows\GUIWindowEventLog.cpp">
+      <Filter>events\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\events\AddonEvent.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\events\AddonManagementEvent.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\events\BaseEvent.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\events\EventLog.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\events\MediaLibraryEvent.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\XbtDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\XbtFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\XbtManager.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp">
+      <Filter>video\jobs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6468,6 +6519,66 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowSplash.h">
       <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputCodingTable.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputCodingTableBaiduPY.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputCodingTableBasePY.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputCodingTableFactory.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\EventsDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\windows\GUIViewStateEventLog.h">
+      <Filter>events\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\windows\GUIWindowEventLog.h">
+      <Filter>events\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\AddonEvent.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\AddonManagementEvent.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\BaseEvent.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\EventLog.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\IEvent.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\MediaLibraryEvent.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\NotificationEvent.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\events\UniqueEvent.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\Directorization.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\XbtDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\XbtFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\XbtManager.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.h">
+      <Filter>video\jobs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

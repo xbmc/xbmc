@@ -56,6 +56,8 @@
 
 #define WINDOW_ADDON_BROWSER              10040
 
+#define WINDOW_EVENT_LOG                  10050
+
 #define WINDOW_SCREENSAVER_DIM               97
 #define WINDOW_DEBUG_INFO                    98
 #define WINDOW_DIALOG_POINTER             10099

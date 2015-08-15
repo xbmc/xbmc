@@ -22,6 +22,7 @@
 #include <memory>
 
 #include "addons/Addon.h"
+#include "utils/URIUtils.h"
 
 namespace ADDON
 {
@@ -35,6 +36,11 @@ public:
 
   virtual bool IsAllowed(const std::string &file) const = 0;
 
+  virtual std::string GetFullPath(const std::string &filePath) const
+  {
+    return URIUtils::AddFileToFolder(GetResourcePath(), filePath);
+  }
+
 protected:
   CResource(const AddonProps &props)
     : CAddon(props)
@@ -45,6 +51,11 @@ protected:
   CResource(const CResource &rhs)
     : CAddon(rhs)
   { }
+
+  std::string GetResourcePath() const
+  {
+    return URIUtils::AddFileToFolder(Path(), "resources");
+  }
 };
 
 }

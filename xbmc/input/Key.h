@@ -180,13 +180,6 @@
 #define REMOTE_9                    67
 
 #define ACTION_PLAY                 68  // Unused at the moment
-#define ACTION_OSD_SHOW_LEFT        69  // Move left in OSD. Can b used in videoFullScreen.xml window id=2005
-#define ACTION_OSD_SHOW_RIGHT       70  // Move right in OSD. Can b used in videoFullScreen.xml window id=2005
-#define ACTION_OSD_SHOW_UP          71  // Move up in OSD. Can b used in videoFullScreen.xml window id=2005
-#define ACTION_OSD_SHOW_DOWN        72  // Move down in OSD. Can b used in videoFullScreen.xml window id=2005
-#define ACTION_OSD_SHOW_SELECT      73  // toggle/select option in OSD. Can b used in videoFullScreen.xml window id=2005
-#define ACTION_OSD_SHOW_VALUE_PLUS  74  // increase value of current option in OSD. Can b used in videoFullScreen.xml window id=2005
-#define ACTION_OSD_SHOW_VALUE_MIN   75  // decrease value of current option in OSD. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_SMALL_STEP_BACK      76  // jumps a few seconds back during playback of movie. Can b used in videoFullScreen.xml window id=2005
 
 #define ACTION_PLAYER_FORWARD        77  // FF in current file played. global action, can be used anywhere
@@ -196,8 +189,6 @@
 #define ACTION_DELETE_ITEM          80  // delete current selected item. Can be used in myfiles.xml window id=3 and in myvideoTitle.xml window id=25
 #define ACTION_COPY_ITEM            81  // copy current selected item. Can be used in myfiles.xml window id=3
 #define ACTION_MOVE_ITEM            82  // move current selected item. Can be used in myfiles.xml window id=3
-#define ACTION_SHOW_MPLAYER_OSD     83  // toggles mplayers OSD. Can be used in videofullscreen.xml window id=2005
-#define ACTION_OSD_HIDESUBMENU      84  // removes an OSD sub menu. Can be used in videoOSD.xml window id=2901
 #define ACTION_TAKE_SCREENSHOT      85  // take a screenshot
 #define ACTION_RENAME_ITEM          87  // rename item
 
@@ -296,6 +287,7 @@
 
 #define ACTION_AUDIO_DELAY            161
 #define ACTION_SUBTITLE_DELAY         162
+#define ACTION_MENU                   163
 
 #define ACTION_RECORD                 170
 

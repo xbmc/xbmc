@@ -341,9 +341,19 @@ namespace XBMCAddon
        * \n
        * mimetype           : string or unicode - mimetype.\n
        * \n
-       * *If known prehand, this can avoid Kodi doing HEAD requests to http servers to figure out file type.\n
+       * If known prehand, this can (but does not have to) avoid HEAD requests
+       * being sent to HTTP servers to figure out file type.\n
        */
       void setMimeType(const String& mimetype);
+
+      /**
+       * setContentLookup(enable) -- Enable or disable content lookup for item.
+       *
+       * If disabled, HEAD requests to e.g determine mime type will not be sent.
+       *
+       * enable : bool
+       */
+      void setContentLookup(bool enable);
 
       /**
        * setSubtitles() -- Sets subtitles for this listitem.\n

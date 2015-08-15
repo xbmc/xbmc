@@ -21,6 +21,8 @@
 #include "threads/SystemClock.h"
 #include "FileItem.h"
 #include "VideoInfoScanner.h"
+#include "events/EventLog.h"
+#include "events/MediaLibraryEvent.h"
 #include "filesystem/DirectoryCache.h"
 #include "Util.h"
 #include "NfoFile.h"
@@ -464,6 +466,16 @@ namespace VIDEO
       else if (ret == INFO_NOT_FOUND)
       {
         CLog::Log(LOGWARNING, "No information found for item '%s', it won't be added to the library.", CURL::GetRedacted(pItem->GetPath()).c_str());
+
+        MediaType mediaType = MediaTypeMovie;
+        if (info2->Content() == CONTENT_TVSHOWS)
+          mediaType = MediaTypeTvShow;
+        else if (info2->Content() == CONTENT_MUSICVIDEOS)
+          mediaType = MediaTypeMusicVideo;
+        CEventLog::GetInstance().Add(EventPtr(new CMediaLibraryEvent(
+          mediaType, pItem->GetPath(), 24145,
+          StringUtils::Format(g_localizeStrings.Get(24147).c_str(), mediaType.c_str(), URIUtils::GetFileName(pItem->GetPath()).c_str()),
+          pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevelWarning)));
       }
 
       pURL = NULL;
@@ -1975,7 +1987,7 @@ namespace VIDEO
     if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS
         || (info->Content() == CONTENT_TVSHOWS && !pItem->m_bIsFolder))
       strNfoFile = GetnfoFile(pItem, bGrabAny);
-    if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
+    else if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
       strNfoFile = URIUtils::AddFileToFolder(pItem->GetPath(), "tvshow.nfo");
 
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;

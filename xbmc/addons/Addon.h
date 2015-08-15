@@ -148,6 +148,7 @@ public:
 
   // properties
   TYPE Type() const { return m_props.type; }
+  virtual TYPE FullType() const { return Type(); }
   bool IsType(TYPE type) const { return type == m_props.type; }
   AddonProps Props() const { return m_props; }
   AddonProps& Props() { return m_props; }

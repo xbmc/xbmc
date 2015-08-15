@@ -75,6 +75,7 @@ static const ActionMapping actions[] =
     { "parentdir"                , ACTION_NAV_BACK },                   // backward compatibility
     { "parentfolder"             , ACTION_PARENT_DIR },
     { "back"                     , ACTION_NAV_BACK },
+    { "menu"                     , ACTION_MENU},
     { "previousmenu"             , ACTION_PREVIOUS_MENU },
     { "info"                     , ACTION_SHOW_INFO },
     { "pause"                    , ACTION_PAUSE },
@@ -142,13 +143,6 @@ static const ActionMapping actions[] =
     { "number7"                  , REMOTE_7 },
     { "number8"                  , REMOTE_8 },
     { "number9"                  , REMOTE_9 },
-    { "osdleft"                  , ACTION_OSD_SHOW_LEFT },
-    { "osdright"                 , ACTION_OSD_SHOW_RIGHT },
-    { "osdup"                    , ACTION_OSD_SHOW_UP },
-    { "osddown"                  , ACTION_OSD_SHOW_DOWN },
-    { "osdselect"                , ACTION_OSD_SHOW_SELECT },
-    { "osdvalueplus"             , ACTION_OSD_SHOW_VALUE_PLUS },
-    { "osdvalueminus"            , ACTION_OSD_SHOW_VALUE_MIN },
     { "smallstepback"            , ACTION_SMALL_STEP_BACK },
     { "fastforward"              , ACTION_PLAYER_FORWARD },
     { "rewind"                   , ACTION_PLAYER_REWIND },
@@ -158,8 +152,6 @@ static const ActionMapping actions[] =
     { "delete"                   , ACTION_DELETE_ITEM },
     { "copy"                     , ACTION_COPY_ITEM },
     { "move"                     , ACTION_MOVE_ITEM },
-    { "mplayerosd"               , ACTION_SHOW_MPLAYER_OSD },
-    { "hidesubmenu"              , ACTION_OSD_HIDESUBMENU },
     { "screenshot"               , ACTION_TAKE_SCREENSHOT },
     { "rename"                   , ACTION_RENAME_ITEM },
     { "togglewatched"            , ACTION_TOGGLE_WATCHED },
@@ -411,7 +403,8 @@ static const ActionMapping windows[] =
     { "peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS },
     { "extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS },
     { "mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER },
-    { "addon"                    , WINDOW_ADDON_START }
+    { "addon"                    , WINDOW_ADDON_START },
+    { "eventlog"                 , WINDOW_EVENT_LOG}
 };
 
 static const ActionMapping mousekeys[] =

@@ -22,6 +22,8 @@
 #include "threads/SystemClock.h"
 #include "system.h"
 #include "Application.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
 #include "interfaces/Builtins.h"
 #include "utils/Variant.h"
 #include "utils/Splash.h"
@@ -1114,7 +1116,6 @@ void CApplication::CreateUserDirs()
   CDirectory::Create("special://home/addons");
   CDirectory::Create("special://home/addons/packages");
   CDirectory::Create("special://home/media");
-  CDirectory::Create("special://home/sounds");
   CDirectory::Create("special://home/system");
   CDirectory::Create("special://masterprofile/");
   CDirectory::Create("special://temp/");
@@ -1135,12 +1136,16 @@ bool CApplication::Initialize()
 #endif
   {
     CDirectory::Create("special://xbmc/addons");
-    CDirectory::Create("special://xbmc/sounds");
   }
 
   // load the language and its translated strings
   if (!LoadLanguage(false))
     return false;
+
+  CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(
+    StringUtils::Format(g_localizeStrings.Get(177).c_str(), g_sysinfo.GetAppName().c_str()),
+    StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
+    "special://xbmc/media/icon256x256.png", EventLevelBasic)));
 
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
@@ -1384,22 +1389,11 @@ void CApplication::OnSettingChanged(const CSetting *setting)
       return;
     }
 
-    // Reset sounds setting if new skin doen't provide sounds
-    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN) == "SKINDEFAULT")
-    {
-      ADDON::AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(((CSettingString*)setting)->GetValue(), addon, ADDON_SKIN))
-      {
-        if (!CDirectory::Exists(URIUtils::AddFileToFolder(addon->Path(), "sounds")))
-          CSettings::Get().GetSetting(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN)->Reset();
-      }
-    }
-
-      std::string builtin("ReloadSkin");
-      if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
-        builtin += "(confirm)";
-      CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
-    }
+    std::string builtin("ReloadSkin");
+    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
+      builtin += "(confirm)";
+    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+  }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME)
   {
     // also set the default color theme
@@ -1512,7 +1506,7 @@ bool CApplication::OnSettingUpdate(CSetting* &setting, const char *oldSettingId,
   }
 #endif
 #if defined(TARGET_ANDROID)
-  if (settingId == "videoplayer.usestagefright")
+  if (settingId == CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT)
   {
     CSettingBool *usestagefright = (CSettingBool*)setting;
     return usestagefright->SetValue(false);
@@ -1970,7 +1964,7 @@ void CApplication::Render()
         limitFrames = true; // not using vsync.
         vsync = false;
       }
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000 / singleFrameTime)
+      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000.0f / singleFrameTime)
       {
         limitFrames = true; // using vsync, but it isn't working.
         vsync = false;
@@ -2544,7 +2538,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     switch (CSettings::Get().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))
     {
     case POWERSTATE_SHUTDOWN:
-      CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
+      CApplicationMessenger::Get().PostMsg(TMSG_POWERDOWN);
       break;
 
     case POWERSTATE_SUSPEND:
@@ -2571,12 +2565,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_HIBERNATE:
-    g_PVRManager.SetWakeupCommand();
     g_powerManager.Hibernate();
     break;
 
   case TMSG_SUSPEND:
-    g_PVRManager.SetWakeupCommand();
     g_powerManager.Suspend();
     break;
 
@@ -2849,7 +2841,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     // This code reduces rendering fps of the GUI layer when playing videos in fullscreen mode
     // it makes only sense on architectures with multiple layers
     if (g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback() && g_renderManager.IsVideoLayer())
-      fps = CSettings::Get().GetInt("videoplayer.limitguiupdate");
+      fps = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE);
 #endif
 
     unsigned int now = XbmcThreads::SystemClockMillis();

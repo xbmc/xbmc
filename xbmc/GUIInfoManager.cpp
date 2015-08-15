@@ -35,6 +35,7 @@
 #include "LangInfo.h"
 #include "utils/SystemInfo.h"
 #include "guilib/GUITextBox.h"
+#include "guilib/GUIControlGroupList.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
@@ -244,6 +245,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "trayopen",         SYSTEM_TRAYOPEN },
                                   { "haslocks",         SYSTEM_HASLOCKS },
                                   { "hasloginscreen",   SYSTEM_HAS_LOGINSCREEN },
+                                  { "hasmodaldialog",   SYSTEM_HAS_MODAL_DIALOG },
                                   { "ismaster",         SYSTEM_ISMASTER },
                                   { "isfullscreen",     SYSTEM_ISFULLSCREEN },
                                   { "isstandalone",     SYSTEM_ISSTANDALONE },
@@ -484,6 +486,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "filenameandpath",  LISTITEM_FILENAME_AND_PATH },
                                   { "fileextension",    LISTITEM_FILE_EXTENSION },
                                   { "date",             LISTITEM_DATE },
+                                  { "datetime",         LISTITEM_DATETIME },
                                   { "size",             LISTITEM_SIZE },
                                   { "rating",           LISTITEM_RATING },
                                   { "ratingandvotes",   LISTITEM_RATING_AND_VOTES },
@@ -1234,10 +1237,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         { // TODO: The parameter for these should really be on the first not the second property
           if (prop.param().find("xml") != std::string::npos)
             return AddMultiInfo(GUIInfo(window_bools[i].val, 0, ConditionalStringParameter(prop.param())));
-          int winID = prop.param().empty() ? 0 : CButtonTranslator::TranslateWindow(prop.param());
-          if (winID != WINDOW_INVALID)
-            return AddMultiInfo(GUIInfo(window_bools[i].val, winID, 0));
-          return 0;
+          int winID = prop.param().empty() ? WINDOW_INVALID : CButtonTranslator::TranslateWindow(prop.param());
+          return winID != WINDOW_INVALID ? AddMultiInfo(GUIInfo(window_bools[i].val, winID, 0)) : window_bools[i].val;
         }
       }
     }
@@ -2454,6 +2455,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_advancedSettings.m_showExitButton;
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
     bReturn = CProfilesManager::Get().UsingLoginScreen();
+  else if (condition == SYSTEM_HAS_MODAL_DIALOG)
+    bReturn = g_windowManager.HasModalDialog();
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)
@@ -2511,12 +2514,17 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
            condition == CONTAINER_SCROLLING || condition == CONTAINER_ISUPDATING ||
            condition == CONTAINER_HAS_PARENT_ITEM)
   {
+    const CGUIControl *control = NULL;
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
+      control = window->GetControl(window->GetViewContainerID());
+
+    if (control)
     {
-      const CGUIControl* control = window->GetControl(window->GetViewContainerID());
-      if (control)
+      if (control->IsContainer())
         bReturn = control->GetCondition(condition, 0);
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
+        bReturn = ((CGUITextBox *)control)->GetCondition(condition, 0);
     }
   }
   else if (condition == CONTAINER_CAN_FILTER)
@@ -3383,6 +3391,8 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     {
       if (control->IsContainer())
         return ((IGUIContainer *)control)->GetLabel(info.m_info);
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
+        return ((CGUIControlGroupList *)control)->GetLabel(info.m_info);
       else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
         return ((CGUITextBox *)control)->GetLabel(info.m_info);
     }
@@ -4842,6 +4852,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return item->GetPVRTimerInfoTag()->Summary();
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate();
+    break;
+  case LISTITEM_DATETIME:
+    if (item->m_dateTime.IsValid())
+      return item->m_dateTime.GetAsLocalizedDateTime();
     break;
   case LISTITEM_SIZE:
     if (!item->m_bIsFolder || item->m_dwSize)
