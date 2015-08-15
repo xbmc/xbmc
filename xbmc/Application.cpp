@@ -2017,12 +2017,10 @@ void CApplication::Render()
 
   if(!g_Windowing.BeginRender())
     return;
+
 #ifdef HAS_DS_PLAYER
   if (CMadvrCallback::Get()->ReadyMadvr())
-  {
-    CMadvrCallback::Get()->ResetRenderCount();
     CMadvrCallback::Get()->GetCallback()->RenderToTexture(RENDER_LAYER_UNDER);
-  }
 #endif
   CDirtyRegionList dirtyRegions;
 

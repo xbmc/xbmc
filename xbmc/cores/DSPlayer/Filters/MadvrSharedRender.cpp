@@ -57,6 +57,7 @@ CMadvrSharedRender::~CMadvrSharedRender()
   SAFE_RELEASE(m_pKodiOverSurface);
   SAFE_RELEASE(m_pKodiOverTexture);
 
+  SAFE_RELEASE(m_pUnderTexture9);
   SAFE_RELEASE(m_pUnderSurface11);
   SAFE_RELEASE(m_pUnderTexture11);
   
@@ -181,8 +182,9 @@ void CMadvrSharedRender::DeQueue(MADVR_RENDER_LAYER layer)
   HRESULT hr = m_pD3D9Consumer->Dequeue(__uuidof(IDirect3DTexture9), (void**)&pTexture9, &metaData, &size, 0);
   if (SUCCEEDED(hr))
   {
+    SAFE_RELEASE(m_pUnderTexture9);
+
     m_pUnderTexture9 = pTexture9;
-    m_pOverTexture9 = metaData->pTexture9;
     m_bGuiVisible = metaData->bGuiVisible;
     m_bGuiVisibleOver = metaData->bGuiVisibleOver;
 
@@ -229,12 +231,16 @@ HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
 {
   HRESULT hr = S_OK;
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
+
   CMadvrCallback::Get()->SetCurrentVideoLayer(layer);
+  g_Windowing.SetVSync(false);
 
   if (layer == RENDER_LAYER_UNDER)
   {
     ID3D11RenderTargetView* pRenderTargetView = nullptr;
     ID3D11Texture2D*        pSurface11 = nullptr;
+
+    CMadvrCallback::Get()->ResetRenderCount();
 
     hr = m_pD3D11Consumer->Dequeue(__uuidof(ID3D11Texture2D), (void**)&pSurface11, NULL, NULL, INFINITE);
     if (SUCCEEDED(hr))
@@ -259,7 +265,6 @@ HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
 void CMadvrSharedRender::Flush()
 {
   CMetaData *metaData = DNew CMetaData();
-  metaData->pTexture9 = m_pMadvrOverTexture;
   metaData->bGuiVisible = CMadvrCallback::Get()->GuiVisible();
   metaData->bGuiVisibleOver = CMadvrCallback::Get()->GuiVisible(RENDER_LAYER_OVER);
 
@@ -273,7 +278,7 @@ HRESULT CMadvrSharedRender::RenderTexture(MADVR_RENDER_LAYER layer)
 {
   IDirect3DTexture9* pTexture9;
 
-  layer == RENDER_LAYER_UNDER ? pTexture9 = m_pUnderTexture9 : pTexture9 = m_pOverTexture9;
+  layer == RENDER_LAYER_UNDER ? pTexture9 = m_pUnderTexture9 : pTexture9 = m_pMadvrOverTexture;
 
   HRESULT hr = m_pD3DDeviceMadVR->SetStreamSource(0, m_pMadvrVertexBuffer, 0, sizeof(VID_FRAME_VERTEX));
   if (FAILED(hr))

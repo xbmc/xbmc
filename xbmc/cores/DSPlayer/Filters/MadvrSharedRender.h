@@ -29,13 +29,11 @@ class CMetaData
 public:  
   CMetaData() 
   { 
-    pTexture9 = nullptr; 
     bGuiVisible = false;
     bGuiVisibleOver = false; 
   };
   virtual ~CMetaData(){};
 
-  IDirect3DTexture9 * pTexture9;
   bool bGuiVisible;
   bool bGuiVisibleOver;
 };
@@ -71,7 +69,6 @@ private:
   IDirect3DTexture9*        m_pMadvrOverTexture = nullptr;
 
   IDirect3DTexture9*        m_pUnderTexture9 = nullptr;
-  IDirect3DTexture9*        m_pOverTexture9 = nullptr;
   ID3D11Texture2D*          m_pUnderTexture11 = nullptr;
   ID3D11RenderTargetView*   m_pUnderSurface11 = nullptr;
   
