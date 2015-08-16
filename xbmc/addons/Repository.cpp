@@ -297,18 +297,17 @@ bool CRepositoryUpdateJob::DoWork()
                      database.GetAddonVersion(newAddon->ID()) > newAddon->Version();
     if (!haveNewer)
     {
-      if (!newAddon->Props().broken.empty())
+      // if the add-on is installed and has just been marked as broken (but not in the database yet)
+      // ask the user whether he wants to disable the add-on
+      if (addon && !newAddon->Props().broken.empty() && database.IsAddonBroken(newAddon->ID()).empty())
       {
-        if (database.IsAddonBroken(newAddon->ID()).empty())
-        {
-          std::string line = g_localizeStrings.Get(24096);
-          if (newAddon->Props().broken == "DEPSNOTMET")
-            line = g_localizeStrings.Get(24104);
-          if (addon && CGUIDialogYesNo::ShowAndGetInput(CVariant{newAddon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}))
-            CAddonMgr::Get().DisableAddon(newAddon->ID());
+        std::string line = g_localizeStrings.Get(24096);
+        if (newAddon->Props().broken == "DEPSNOTMET")
+          line = g_localizeStrings.Get(24104);
+        if (CGUIDialogYesNo::ShowAndGetInput(CVariant{newAddon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}))
+          CAddonMgr::Get().DisableAddon(newAddon->ID());
 
-          CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(newAddon, 24096)));
-        }
+        CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(newAddon, 24096)));
       }
       database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
     }
