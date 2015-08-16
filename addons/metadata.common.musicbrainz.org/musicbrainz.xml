@@ -10,8 +10,8 @@
 			<RegExp input="" output="" dest="2">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\4&lt;/year&gt;&lt;title&gt;\2&lt;/title&gt;&lt;label&gt;\1&lt;/label&gt;&lt;/album&gt;" dest="2">
-				<expression repeat="yes" clear="yes" fixchars="1,2,3" noclean="1,2,3"> type="Album" id="([^"]*)"&gt;&lt;title&gt;([^&lt;]*)&lt;/title&gt;&lt;first-release-date(\s/)?&gt;(\d{4})?</expression>
+			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\5&lt;/year&gt;&lt;title&gt;\3&lt;/title&gt;&lt;label&gt;\1\2&lt;/label&gt;&lt;/album&gt;" dest="2">
+				<expression repeat="yes" clear="yes" fixchars="1,2,3" noclean="1,2,3">(?: id="([^"]*)")? type="Album"(?: id="([^"]*)")?&gt;&lt;title&gt;([^&lt;]*)&lt;/title&gt;&lt;first-release-date(\s/)?&gt;(\d{4})?</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
