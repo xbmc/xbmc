@@ -242,7 +242,7 @@ HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
 
     CMadvrCallback::Get()->ResetRenderCount();
 
-    hr = m_pD3D11Consumer->Dequeue(__uuidof(ID3D11Texture2D), (void**)&pSurface11, NULL, NULL, INFINITE);
+    hr = m_pD3D11Consumer->Dequeue(__uuidof(ID3D11Texture2D), (void**)&pSurface11, NULL, NULL, 100);
     if (SUCCEEDED(hr))
     {
       m_pD3DDeviceKodi->CreateRenderTargetView(pSurface11, NULL, &pRenderTargetView);
