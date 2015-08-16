@@ -622,6 +622,13 @@ bool CMMALRenderer::Supports(EDEINTERLACEMODE mode)
 
 bool CMMALRenderer::Supports(EINTERLACEMETHOD method)
 {
+  if (m_format == RENDER_FMT_YUV420P)
+  {
+    if (method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+      return true;
+    else
+      return false;
+  }
   if (method == VS_INTERLACEMETHOD_AUTO)
     return true;
   if (method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
@@ -655,6 +662,8 @@ bool CMMALRenderer::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CMMALRenderer::AutoInterlaceMethod()
 {
+  if (m_format == RENDER_FMT_YUV420P)
+    return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
   return m_sourceWidth * m_sourceHeight <= 576 * 720 ? VS_INTERLACEMETHOD_MMAL_ADVANCED : VS_INTERLACEMETHOD_MMAL_BOB;
 }
 
