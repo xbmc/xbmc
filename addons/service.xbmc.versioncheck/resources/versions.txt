@@ -122,6 +122,24 @@
         ],
         "releasecandidate": [
             {
+                "major": "15",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "tagversion":"2",
+                "revision": "20150711-0aa930b",
+                "extrainfo": "RC2",
+                "addon_support": "yes"
+            },
+            {
+                "major": "15",
+                "minor": "0",
+                "tag": "releasecandidate",
+                "tagversion":"1",
+                "revision": "20150702-9ff25f8",
+                "extrainfo": "RC1",
+                "addon_support": "yes"
+            },
+            {
                 "major": "14",
                 "minor": "0",
                 "tag": "releasecandidate",
@@ -222,6 +240,14 @@
             }
         ],
         "beta": [
+            {
+                "major": "15",
+                "minor": "0",
+                "tag": "beta",
+                "tagversion":"2",
+                "revision": "20150614-daedd5f",
+                "addon_support": "yes"
+            },
             {
                 "major": "15",
                 "minor": "0",
