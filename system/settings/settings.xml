@@ -29,7 +29,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.skincolors" type="string" parent="lookandfeel.skin" label="14078" help="36106">
           <level>1</level>
@@ -40,7 +40,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.font" type="string" parent="lookandfeel.skin" label="13303" help="36107">
           <level>1</level>
@@ -51,7 +51,7 @@
           <dependencies>
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
-          <control type="spinner" format="string" delayed="true" />
+          <control type="list" format="string" />
         </setting>
         <setting id="lookandfeel.skinzoom" type="integer" parent="lookandfeel.skin" label="20109" help="36108">
           <level>2</level>
@@ -228,7 +228,7 @@
           <dependencies>
             <dependency type="update" setting="locale.country" />
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="4">
