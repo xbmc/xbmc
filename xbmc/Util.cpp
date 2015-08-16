@@ -1423,6 +1423,9 @@ std::string CUtil::GetDefaultFolderThumb(const std::string &folderThumb)
 
 void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
 {
+  static const std::string TexturesXbt = "Textures.xbt";
+  static const std::string TexturesXpr = "Textures.xpr";
+
   std::string strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
   CFileItemList items;
   CDirectory::GetDirectory(strPath, items);
@@ -1433,12 +1436,21 @@ void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
     if (!pItem->m_bIsFolder)
     {
       std::string strExtension = URIUtils::GetExtension(pItem->GetPath());
-      if ((strExtension == ".xpr" && !StringUtils::EqualsNoCase(pItem->GetLabel(), "Textures.xpr")) ||
-          (strExtension == ".xbt" && !StringUtils::EqualsNoCase(pItem->GetLabel(), "Textures.xbt")))
-      {
-        std::string strLabel = pItem->GetLabel();
-        vecTheme.push_back(strLabel.substr(0, strLabel.size() - 4));
-      }
+      std::string strLabel = pItem->GetLabel();
+      if ((strExtension == ".xpr" && !StringUtils::EqualsNoCase(strLabel, TexturesXpr)) ||
+          (strExtension == ".xbt" && !StringUtils::EqualsNoCase(strLabel, TexturesXbt)))
+        vecTheme.push_back(StringUtils::Left(strLabel, strLabel.size() - strExtension.size()));
+    }
+    else
+    {
+      // check if this is an xbt:// VFS path
+      CURL itemUrl(pItem->GetPath());
+      if (!itemUrl.IsProtocol("xbt") || !itemUrl.GetFileName().empty())
+        continue;
+
+      std::string strLabel = URIUtils::GetFileName(itemUrl.GetHostName());
+      if (!StringUtils::EqualsNoCase(strLabel, TexturesXbt))
+        vecTheme.push_back(StringUtils::Left(strLabel, strLabel.size() - URIUtils::GetExtension(strLabel).size()));
     }
   }
   std::sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
