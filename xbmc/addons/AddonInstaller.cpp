@@ -321,18 +321,21 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     bool optional = i->second.second;
     AddonPtr dep;
     bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dep);
-    // we have it but our version isn't good enough, or we don't have it and we need it
     if ((haveAddon && !dep->MeetsVersion(version)) || (!haveAddon && !optional))
     {
-      // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
-      CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.asString().c_str());
-      database.Close();
+      // we have it but our version isn't good enough, or we don't have it and we need it
+      if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(version))
+      {
+        // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
+        CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.asString().c_str());
+        database.Close();
 
-      // fill in the details of the failed dependency
-      failedDep.first = addon->ID();
-      failedDep.second = version.asString();
+        // fill in the details of the failed dependency
+        failedDep.first = addon->ID();
+        failedDep.second = version.asString();
 
-      return false;
+        return false;
+      }
     }
 
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
