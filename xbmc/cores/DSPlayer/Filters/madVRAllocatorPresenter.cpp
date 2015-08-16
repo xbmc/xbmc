@@ -175,7 +175,11 @@ void CmadVRAllocatorPresenter::ConfigureMadvr()
     pMadVrCmd->SendCommandBool("disableSeekbar", true);
 
   if (Com::SmartQIPtr<IMadVRSettings> pMadvrSettings = m_pDXR)
+  {
     pMadvrSettings->SettingsSetBoolean(L"delayPlaybackStart2", CSettings::Get().GetBool("dsplayer.delaymadvrplayback"));
+    pMadvrSettings->SettingsSetString(L"flushAfterPresent", L"flush");
+    pMadvrSettings->SettingsSetString(L"flushAfterPresentExcl", L"flush");
+  }
 
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Register(m_exclusiveCallback, this);
