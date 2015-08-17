@@ -47,6 +47,7 @@
 
 #define SET_CHROMA_UPSCALING                   "madvr.chromaupscaling"
 #define SET_CHROMA_ANTIRING                    "madvr.chromaantiring"
+#define SET_CHROMA_SUPER_RES                   "madvr.chromasuperres"
 
 #define SET_IMAGE_DOUBLING                     "madvr.imagedoubling"
 
@@ -157,12 +158,17 @@ void CGUIDialogMadvrScaling::InitializeSettings()
   entries.push_back(make_pair(70014, MADVR_SCALING_SOFTCUBIC_100));
   entries.push_back(make_pair(70015, MADVR_SCALING_LANCZOS_3));
   entries.push_back(make_pair(70016, MADVR_SCALING_LANCZOS_4));
-  entries.push_back(make_pair(70017, MADVR_SCALING_LANCZOS_8));
   entries.push_back(make_pair(70018, MADVR_SCALING_SPLINE_36));
   entries.push_back(make_pair(70019, MADVR_SCALING_SPLINE_64));
   entries.push_back(make_pair(70020, MADVR_SCALING_JINC_3));
-  entries.push_back(make_pair(70021, MADVR_SCALING_JINC_4));
-  entries.push_back(make_pair(70022, MADVR_SCALING_JINC_8));
+  entries.push_back(make_pair(70033, MADVR_SCALING_BILATERAL));
+  entries.push_back(make_pair(70034, MADVR_SCALING_SUPERXBR25));
+  entries.push_back(make_pair(70035, MADVR_SCALING_SUPERXBR50));
+  entries.push_back(make_pair(70036, MADVR_SCALING_SUPERXBR75));
+  entries.push_back(make_pair(70037, MADVR_SCALING_SUPERXBR100));
+  entries.push_back(make_pair(70038, MADVR_SCALING_SUPERXBR125));
+  entries.push_back(make_pair(70039, MADVR_SCALING_SUPERXBR150));
+  entries.push_back(make_pair(70040, MADVR_SCALING_NEDI));
   entries.push_back(make_pair(70023, MADVR_SCALING_NNEDI3_16));
   entries.push_back(make_pair(70024, MADVR_SCALING_NNEDI3_32));
   entries.push_back(make_pair(70025, MADVR_SCALING_NNEDI3_64));
@@ -171,6 +177,7 @@ void CGUIDialogMadvrScaling::InitializeSettings()
 
   AddList(groupMadvrChromaScaling, SET_CHROMA_UPSCALING, 70028, 0, static_cast<int>(madvrSettings.m_ChromaUpscaling), entries, 70028);
   AddToggle(groupMadvrChromaScaling, SET_CHROMA_ANTIRING, 70031, 0, madvrSettings.m_ChromaAntiRing);
+  AddToggle(groupMadvrChromaScaling, SET_CHROMA_SUPER_RES, 70041, 0, madvrSettings.m_ChromaSuperRes);
 
   //MADVR IMAGE UPSCALING
   entries.clear();
@@ -190,12 +197,9 @@ void CGUIDialogMadvrScaling::InitializeSettings()
   entries.push_back(make_pair(70014, MADVR_SCALING_SOFTCUBIC_100));
   entries.push_back(make_pair(70015, MADVR_SCALING_LANCZOS_3));
   entries.push_back(make_pair(70016, MADVR_SCALING_LANCZOS_4));
-  entries.push_back(make_pair(70017, MADVR_SCALING_LANCZOS_8));
   entries.push_back(make_pair(70018, MADVR_SCALING_SPLINE_36));
   entries.push_back(make_pair(70019, MADVR_SCALING_SPLINE_64));
   entries.push_back(make_pair(70020, MADVR_SCALING_JINC_3));
-  entries.push_back(make_pair(70021, MADVR_SCALING_JINC_4));
-  entries.push_back(make_pair(70022, MADVR_SCALING_JINC_8));
   AddList(groupMadvrUpScaling, SET_IMAGE_UPSCALING, 70029, 0, static_cast<int>(madvrSettings.m_ImageUpscaling), entries, 70029);
   AddToggle(groupMadvrUpScaling, SET_IMAGE_UP_ANTIRING, 70031, 0, madvrSettings.m_ImageUpAntiRing);
   AddToggle(groupMadvrUpScaling, SET_IMAGE_UP_LINEAR, 70032, 0, madvrSettings.m_ImageUpLinear);
@@ -284,6 +288,11 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
   {
     madvrSettings.m_ChromaAntiRing = static_cast<const CSettingBool*>(setting)->GetValue();
     CMadvrCallback::Get()->GetCallback()->SettingSetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
+  }
+  else if (settingId == SET_CHROMA_SUPER_RES)
+  {
+    madvrSettings.m_ChromaSuperRes = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("superChromaRes", madvrSettings.m_ChromaSuperRes);
   }
   else if (settingId == SET_IMAGE_UPSCALING)
   {

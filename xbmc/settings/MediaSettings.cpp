@@ -175,6 +175,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     if (!XMLUtils::GetInt(pElement, "chromaupscaling", m_defaultMadvrSettings.m_ChromaUpscaling))
       m_defaultMadvrSettings.m_ChromaUpscaling = MADVR_SCALING_BICUBIC_75;
     XMLUtils::GetBoolean(pElement, "chromaantiring", m_defaultMadvrSettings.m_ChromaAntiRing);
+    XMLUtils::GetBoolean(pElement, "chromasuperres", m_defaultMadvrSettings.m_ChromaSuperRes);
 
     if (!XMLUtils::GetInt(pElement, "imageupscaling", m_defaultMadvrSettings.m_ImageUpscaling))
       m_defaultMadvrSettings.m_ImageUpscaling = MADVR_SCALING_LANCZOS_3;
@@ -333,6 +334,7 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
 
   XMLUtils::SetInt(pNode, "chromaupscaling", m_defaultMadvrSettings.m_ChromaUpscaling);
   XMLUtils::SetBoolean(pNode, "chromaantiring", m_defaultMadvrSettings.m_ChromaAntiRing);
+  XMLUtils::SetBoolean(pNode, "chromasuperres", m_defaultMadvrSettings.m_ChromaSuperRes);
   XMLUtils::SetInt(pNode, "imageupscaling", m_defaultMadvrSettings.m_ImageUpscaling);
   XMLUtils::SetBoolean(pNode, "imageupantiring", m_defaultMadvrSettings.m_ImageUpAntiRing);
   XMLUtils::SetBoolean(pNode, "imageuplinear", m_defaultMadvrSettings.m_ImageUpLinear);

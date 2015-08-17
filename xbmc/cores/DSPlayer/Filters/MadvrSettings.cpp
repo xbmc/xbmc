@@ -33,6 +33,7 @@ CMadvrSettings::CMadvrSettings()
 
   m_ChromaUpscaling = MADVR_SCALING_BICUBIC_75;  
   m_ChromaAntiRing = false;
+  m_ChromaSuperRes = false;
   
   m_ImageUpscaling = MADVR_SCALING_LANCZOS_3;
   m_ImageUpAntiRing = false;
@@ -71,6 +72,7 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
 {
   if (m_ChromaUpscaling != right.m_ChromaUpscaling) return true;
   if (m_ChromaAntiRing != right.m_ChromaAntiRing) return true;
+  if (m_ChromaSuperRes != right.m_ChromaSuperRes) return true;
 
   if (m_ImageUpscaling != right.m_ImageUpscaling) return true;
   if (m_ImageUpAntiRing != right.m_ImageUpAntiRing) return true;

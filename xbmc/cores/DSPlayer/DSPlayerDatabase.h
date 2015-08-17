@@ -66,9 +66,9 @@ protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();
 
-  virtual int GetMinSchemaVersion() const { return 3; };
+  virtual int GetMinSchemaVersion() const { return 4; };
   virtual int GetExportVersion() const { return 1; };
-  virtual int GetSchemaVersion() const;
+  virtual int GetSchemaVersion() const { return 4; };
   const char *GetBaseDBName() const { return "DSPlayer"; };
 
 };

@@ -17993,7 +17993,7 @@ msgid "Spline (4 taps)"
 msgstr ""
 
 msgctxt "#70020"
-msgid "Jinc (3 taps)"
+msgid "Jinc"
 msgstr ""
 
 msgctxt "#70021"
@@ -18043,6 +18043,42 @@ msgstr ""
 msgctxt "#70032"
 msgid "- scale in linear light"
 msgstr ""
+
+msgctxt "#70033"
+msgid "Bilateral"
+msgstr ""
+
+msgctxt "#70034"
+msgid "Super-Xbr (sharpness 25)"
+msgstr ""
+
+msgctxt "#70035"
+msgid "Super-Xbr (sharpness 50)"
+msgstr ""
+
+msgctxt "#70036"
+msgid "Super-Xbr (sharpness 75)"
+msgstr 
+
+msgctxt "#70037"
+msgid "Super-Xbr (sharpness 100)"
+msgstr 
+
+msgctxt "#70038"
+msgid "Super-Xbr (sharpness 125)"
+msgstr 
+
+msgctxt "#70039"
+msgid "Super-Xbr (sharpness 150)"
+msgstr 
+
+msgctxt "#70040"
+msgid "Nedi"
+msgstr 
+
+msgctxt "#70041"
+msgid "- super-res filter"
+msgstr 
 
 msgctxt "#70100"
 msgid "NNEDI3 to double Luma resolution"

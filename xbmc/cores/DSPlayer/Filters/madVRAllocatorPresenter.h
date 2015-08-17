@@ -27,6 +27,7 @@
 #include "MadvrCallback.h"
 #include "threads/Thread.h"
 #include "MadvrSharedRender.h"
+#include "MadvrSettingsManager.h"
 #include "utils/log.h"
 
 class CmadVRAllocatorPresenter
@@ -150,17 +151,16 @@ public:
   virtual void RenderToTexture(MADVR_RENDER_LAYER layer){ m_pMadvrShared->RenderToTexture(layer); };
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
-  virtual void SettingSetScaling(CStdStringW path, int scaling);
-  virtual void SettingSetDoubling(CStdStringW path, int iValue);
-  virtual void SettingSetDoublingCondition(CStdStringW path, int condition);
-  virtual void SettingSetQuadrupleCondition(CStdStringW path, int condition);
-  virtual void SettingSetDeintActive(CStdStringW path, int iValue);
-  virtual void SettingSetDeintForce(CStdStringW path, int iValue);
-  virtual void SettingSetSmoothmotion(CStdStringW path, int iValue);
-  virtual void SettingSetDithering(CStdStringW path, int iValue);
-  virtual void SettingSetBool(CStdStringW path, BOOL bValue);
-  virtual void SettingSetInt(CStdStringW path, int iValue);
-  virtual CStdString GetDXVADecoderDescription();
+  virtual void SettingSetScaling(CStdString path, int scaling);
+  virtual void SettingSetDoubling(CStdString path, int iValue);
+  virtual void SettingSetDoublingCondition(CStdString path, int condition);
+  virtual void SettingSetQuadrupleCondition(CStdString path, int condition);
+  virtual void SettingSetDeintActive(CStdString path, int iValue);
+  virtual void SettingSetDeintForce(CStdString path, int iValue);
+  virtual void SettingSetSmoothmotion(CStdString path, int iValue);
+  virtual void SettingSetDithering(CStdString path, int iValue);
+  virtual void SettingSetBool(CStdString path, BOOL bValue);
+  virtual void SettingSetInt(CStdString path, int iValue);
 
 private:
   void ConfigureMadvr();
@@ -177,5 +177,6 @@ private:
   int m_kodiGuiDirtyAlgo;
   bool m_updateDisplayLatencyForMadvr;
   CMadvrSharedRender *m_pMadvrShared;
+  CMadvrSettingsManager *m_pSettingsManager;
 };
 
