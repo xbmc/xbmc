@@ -958,7 +958,12 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
   if (CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LONGDATEFORMAT) == SETTING_REGIONAL_DEFAULT)
     SetLongDateFormat(m_currentRegion->m_strDateFormatLong);
   if (CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_USE24HOURCLOCK) == SETTING_REGIONAL_DEFAULT)
+  {
     Set24HourClock(m_currentRegion->m_strTimeFormat);
+
+    // update the time format
+    SetTimeFormat(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_TIMEFORMAT));
+  }
   if (CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_TIMEFORMAT) == SETTING_REGIONAL_DEFAULT)
     SetTimeFormat(m_currentRegion->m_strTimeFormat);
   if (CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_TEMPERATUREUNIT) == SETTING_REGIONAL_DEFAULT)
