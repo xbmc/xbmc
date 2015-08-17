@@ -62,7 +62,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_bStartAnyTime       = false;
   m_bEndAnyTime         = false;
   m_state               = PVR_TIMER_STATE_SCHEDULED;
-  m_FirstDay.SetValid(false);
+  m_FirstDay            = m_StartTime;
   m_iTimerId            = 0;
 
   if (g_PVRClients->SupportsTimers(m_iClientId))
@@ -714,6 +714,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
   newTag->m_channel            = channel;
   newTag->SetStartFromUTC(newStart);
   newTag->SetEndFromUTC(newEnd);
+  newTag->SetFirstDayFromUTC(newStart);
 
   CPVRTimerTypePtr timerType;
   if (bRepeating)
