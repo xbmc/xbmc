@@ -44,8 +44,11 @@ static bool PredicateVideoPriority(const SelectionStream& lh, const SelectionStr
 
 bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer, CDVDInputStream* m_pInputStream, CSelectionStreams &m_SelectionStreams)
 {
+  // if no OMXPlayer acceleration then it is not suitable
+  if (!CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER))
+    return true;
   // if no MMAL acceleration stick with omxplayer regardless
-  if (!CSettings::Get().GetBool("videoplayer.usemmal"))
+  if (!CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL))
     return false;
 
   // omxplayer only handles Pi sink
@@ -72,7 +75,7 @@ bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer
     {
       int iStream = it->id;
       CDemuxStream *stream = m_pDemuxer->GetStream(iStream);
-      if(!stream || stream->disabled)
+      if(!stream || stream->disabled || stream->flags & AV_DISPOSITION_ATTACHED_PIC)
         continue;
       CDVDStreamInfo hint(*stream, true);
 
