@@ -42,7 +42,7 @@ public:
    \brief The only way through which the global instance of the CDatabaseManager should be accessed.
    \return the global instance.
    */
-  static CDatabaseManager &Get();
+  static CDatabaseManager &GetInstance();
 
   /*! \brief Initalize the database manager
    Checks that all databases are up to date, otherwise updates them.

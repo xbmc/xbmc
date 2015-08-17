@@ -130,9 +130,9 @@ CScraper::CScraper(const cp_extension_t *ext) : CAddon(ext), m_fLoaded(false)
 {
   if (ext)
   {
-    m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "@language");
-    m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"@requiressettings") == "true";
-    std::string persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "@cachepersistence");
+    m_language = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@language");
+    m_requiressettings = CAddonMgr::GetInstance().GetExtValue(ext->configuration,"@requiressettings") == "true";
+    std::string persistence = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@cachepersistence");
     if (!persistence.empty())
       m_persistence.SetFromTimeString(persistence);
   }
@@ -370,7 +370,7 @@ bool CScraper::Load()
 
       bool bOptional = itr->second.second;
 
-      if (CAddonMgr::Get().GetAddon((*itr).first, dep))
+      if (CAddonMgr::GetInstance().GetAddon((*itr).first, dep))
       {
         CXBMCTinyXML doc;
         if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))

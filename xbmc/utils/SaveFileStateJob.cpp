@@ -117,14 +117,14 @@ bool CSaveFileStateJob::DoWork()
               CVariant data;
               data["id"] = m_item.GetVideoInfoTag()->m_iDbId;
               data["type"] = m_item.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
             }
 
             updateListing = true;
           }
         }
 
-        if (m_videoSettings != CMediaSettings::Get().GetDefaultVideoSettings())
+        if (m_videoSettings != CMediaSettings::GetInstance().GetDefaultVideoSettings())
         {
           videodatabase.SetVideoSettings(progressTrackingFile, m_videoSettings);
         }
@@ -191,7 +191,7 @@ bool CSaveFileStateJob::DoWork()
       }
     }
 
-    if (ActiveAE::CActiveAEDSP::Get().IsProcessing())
+    if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
     {
       std::string redactPath = CURL::GetRedacted(progressTrackingFile);
       CLog::Log(LOGDEBUG, "%s - Saving file state for dsp audio item %s", __FUNCTION__, redactPath.c_str());
@@ -203,7 +203,7 @@ bool CSaveFileStateJob::DoWork()
       }
       else
       {
-        if (m_audioSettings != CMediaSettings::Get().GetDefaultAudioSettings())
+        if (m_audioSettings != CMediaSettings::GetInstance().GetDefaultAudioSettings())
         {
           audiodatabase.SetActiveDSPSettings(m_item, m_audioSettings);
         }

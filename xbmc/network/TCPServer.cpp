@@ -257,7 +257,7 @@ bool CTCPServer::Initialize()
 
   if (started)
   {
-    CAnnouncementManager::Get().AddAnnouncer(this);
+    CAnnouncementManager::GetInstance().AddAnnouncer(this);
     CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
     return true;
   }
@@ -479,7 +479,7 @@ void CTCPServer::Deinitialize()
   m_sdpd = NULL;
 #endif
 
-  CAnnouncementManager::Get().RemoveAnnouncer(this);
+  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
 }
 
 CTCPServer::CTCPClient::CTCPClient()

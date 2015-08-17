@@ -205,7 +205,7 @@ bool CPVRRecording::Delete(void)
 
 void CPVRRecording::OnDelete(void)
 {
-  EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(EpgEvent());
+  EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(EpgEvent());
   if (epgTag)
     epgTag->ClearRecording();
 }
@@ -434,7 +434,7 @@ CPVRChannelPtr CPVRRecording::Channel(void) const
 {
   if (m_iEpgEventId)
   {
-    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(m_iEpgEventId);
+    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_iEpgEventId);
     if (epgTag)
       return epgTag->ChannelTag();
   }
@@ -445,7 +445,7 @@ bool CPVRRecording::IsBeingRecorded(void) const
 {
   if (m_iEpgEventId)
   {
-    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(m_iEpgEventId);
+    EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_iEpgEventId);
     return epgTag ? epgTag->HasRecording() : false;
   }
   return false;

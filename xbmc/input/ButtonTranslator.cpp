@@ -605,7 +605,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
   else
     CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system %s found, skipping", REMOTEMAP);
 
-  lircmapPath = CProfilesManager::Get().GetUserDataItem(REMOTEMAP);
+  lircmapPath = CProfilesManager::GetInstance().GetUserDataItem(REMOTEMAP);
   if(CFile::Exists(lircmapPath))
     success |= LoadLircMap(lircmapPath);
   else

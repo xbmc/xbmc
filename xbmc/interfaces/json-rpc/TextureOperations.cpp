@@ -97,7 +97,7 @@ JSONRPC_STATUS CTextureOperations::RemoveTexture(const std::string &method, ITra
 {
   int id = (int)parameterObject["textureid"].asInteger();
 
-  if (!CTextureCache::Get().ClearCachedImage(id))
+  if (!CTextureCache::GetInstance().ClearCachedImage(id))
     return InvalidParams;
 
   return ACK;

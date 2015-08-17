@@ -32,7 +32,7 @@ CImageResource::CImageResource(const cp_extension_t *ext)
   : CResource(ext)
 {
   if (ext != nullptr)
-    m_type = CAddonMgr::Get().GetExtValue(ext->configuration, "@type");
+    m_type = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@type");
 }
 
 CImageResource::CImageResource(const CImageResource &rhs)

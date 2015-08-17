@@ -261,10 +261,10 @@ void CGUIDialogPVRChannelsOSD::Clear()
 
 void CGUIDialogPVRChannelsOSD::CloseOrSelect(unsigned int iItem)
 {
-  if (CSettings::Get().GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
   {
-    if (CSettings::Get().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
-      g_PVRManager.ShowPlayerInfo(CSettings::Get().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
+      g_PVRManager.ShowPlayerInfo(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
     Close();
   }
   else
@@ -297,7 +297,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     }
   }
   else
-    CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pItem)));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*pItem)));
 
   m_group = GetPlayingGroup();
 
@@ -361,7 +361,7 @@ CGUIControl *CGUIDialogPVRChannelsOSD::GetFirstFocusableControl(int id)
 void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMessage msg)
 {
   CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
-  CApplicationMessenger::Get().SendGUIMessage(m);
+  CApplicationMessenger::GetInstance().SendGUIMessage(m);
 }
 
 void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)

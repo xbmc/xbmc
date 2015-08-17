@@ -88,7 +88,7 @@ bool CEncoderFFmpeg::Init(audioenc_callbacks &callbacks)
   }
 
   AddonPtr addon;
-  CAddonMgr::Get().GetAddon(CSettings::Get().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon);
+  CAddonMgr::GetInstance().GetAddon(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon);
   if (addon)
   {
     m_Format->bit_rate = (128+32*strtol(addon->GetSetting("bitrate").c_str(), NULL, 10))*1000;

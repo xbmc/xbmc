@@ -151,7 +151,7 @@ public:
    \brief The only way through which the global instance of the CApplicationMessenger should be accessed.
    \return the global instance.
    */
-  static CApplicationMessenger& Get();
+  static CApplicationMessenger& GetInstance();
 
   void Cleanup();
   // if a message has to be send to the gui, use MSG_TYPE_WINDOW instead

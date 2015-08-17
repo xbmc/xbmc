@@ -42,7 +42,7 @@ class CHTTPWebinterfaceAddonsHandler;
 class CNetworkServices : public ISettingCallback
 {
 public:
-  static CNetworkServices& Get();
+  static CNetworkServices& GetInstance();
   
   virtual bool OnSettingChanging(const CSetting *setting);
   virtual void OnSettingChanged(const CSetting *setting);

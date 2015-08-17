@@ -59,7 +59,7 @@ EVENT_RESULT CGUIDialogMusicOverlay::OnMouseEvent(const CPoint &point, const CMo
   if (pControl && pControl->HitTest(point))
   {
     // send highlight message
-    CInputManager::Get().SetMouseState(MOUSE_STATE_FOCUS);
+    CInputManager::GetInstance().SetMouseState(MOUSE_STATE_FOCUS);
     if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
     { // send mouse message
       CGUIMessage message(GUI_MSG_FULLSCREEN, CONTROL_LOGO_PIC, GetID());

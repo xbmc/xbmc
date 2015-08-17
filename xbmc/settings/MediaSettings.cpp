@@ -65,7 +65,7 @@ CMediaSettings::CMediaSettings()
 CMediaSettings::~CMediaSettings()
 { }
 
-CMediaSettings& CMediaSettings::Get()
+CMediaSettings& CMediaSettings::GetInstance()
 {
   static CMediaSettings sMediaSettings;
   return sMediaSettings;
@@ -322,7 +322,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
     int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )
     {
-      std::string path(CProfilesManager::Get().GetDatabaseFolder());
+      std::string path(CProfilesManager::GetInstance().GetDatabaseFolder());
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares);
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
@@ -346,7 +346,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_KARAOKE_IMPORTCSV)
   {
-    std::string path(CProfilesManager::Get().GetDatabaseFolder());
+    std::string path(CProfilesManager::GetInstance().GetDatabaseFolder());
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "karaoke.csv", g_localizeStrings.Get(651) , path))

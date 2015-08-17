@@ -62,7 +62,7 @@ void CGUIWindowPVRTimers::ResetObservers(void)
 std::string CGUIWindowPVRTimers::GetDirectoryPath(void)
 {
   const std::string basePath(
-    CPVRTimersPath(m_bRadio, CSettings::Get().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER)).GetPath());
+    CPVRTimersPath(m_bRadio, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER)).GetPath());
   return StringUtils::StartsWith(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
 
@@ -111,7 +111,7 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
   }
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 bool CGUIWindowPVRTimers::OnAction(const CAction &action)
@@ -152,7 +152,7 @@ bool CGUIWindowPVRTimers::Update(const std::string &strDirectory, bool updateFil
 
 void CGUIWindowPVRTimers::UpdateButtons(void)
 {
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNTIMERTYPEFILTER, CSettings::Get().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER));
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNTIMERTYPEFILTER, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER));
 
   CGUIWindowPVRBase::UpdateButtons();
 
@@ -215,8 +215,8 @@ bool CGUIWindowPVRTimers::OnMessage(CGUIMessage &message)
       }
       else if (message.GetSenderId() == CONTROL_BTNTIMERTYPEFILTER)
       {
-        CSettings::Get().ToggleBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER);
-        CSettings::Get().Save();
+        CSettings::GetInstance().ToggleBool(CSettings::SETTING_PVRTIMERS_TIMERTYPEFILTER);
+        CSettings::GetInstance().Save();
         Update(GetDirectoryPath());
         bReturn = true;
       }

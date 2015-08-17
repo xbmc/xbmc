@@ -120,7 +120,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
-  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 void CGUIWindowPVRGuide::UpdateSelectedItemPath()
@@ -206,7 +206,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
           {
             case ACTION_SELECT_ITEM:
             case ACTION_MOUSE_LEFT_CLICK:
-              switch(CSettings::Get().GetInt(CSettings::SETTING_EPG_SELECTACTION))
+              switch(CSettings::GetInstance().GetInt(CSettings::SETTING_EPG_SELECTACTION))
               {
                 case EPG_SELECT_ACTION_CONTEXT_MENU:
                   OnPopupMenu(iItem);

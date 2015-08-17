@@ -65,7 +65,7 @@ CEpgContainer::~CEpgContainer(void)
   Unload();
 }
 
-CEpgContainer &CEpgContainer::Get(void)
+CEpgContainer &CEpgContainer::GetInstance()
 {
   static CEpgContainer epgInstance;
   return epgInstance;
@@ -262,7 +262,7 @@ bool CEpgContainer::MarkTablesForPersist(void)
   /* Set m_bMarkForPersist to persist tables on the next Process() run but only
   if epg.ignoredbforclient is set, otherwise persistAll does already persisting. */
   CSingleLock lock(m_critSection);
-  return m_bMarkForPersist = CSettings::Get().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
+  return m_bMarkForPersist = CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
 }
 
 bool CEpgContainer::PersistTables(void)
@@ -468,9 +468,9 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 
 bool CEpgContainer::LoadSettings(void)
 {
-  m_bIgnoreDbForClient = CSettings::Get().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
-  m_iUpdateTime        = CSettings::Get().GetInt (CSettings::SETTING_EPG_EPGUPDATE) * 60;
-  m_iDisplayTime       = CSettings::Get().GetInt (CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
+  m_bIgnoreDbForClient = CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
+  m_iUpdateTime        = CSettings::GetInstance().GetInt (CSettings::SETTING_EPG_EPGUPDATE) * 60;
+  m_iDisplayTime       = CSettings::GetInstance().GetInt (CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
 
   return true;
 }
@@ -555,7 +555,7 @@ bool CEpgContainer::InterruptUpdate(void) const
   bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
 
   return bReturn ||
-    (CSettings::Get().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
+    (CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
      g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying());
 }
 

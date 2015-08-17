@@ -25,12 +25,12 @@
 
 CAndroidTouch::CAndroidTouch() : m_dpi(160)
 {
-  CGenericTouchInputHandler::Get().RegisterHandler(&CGenericTouchActionHandler::Get());
+  CGenericTouchInputHandler::GetInstance().RegisterHandler(&CGenericTouchActionHandler::GetInstance());
 }
 
 CAndroidTouch::~CAndroidTouch()
 {
-  CGenericTouchInputHandler::Get().UnregisterHandler();
+  CGenericTouchInputHandler::GetInstance().UnregisterHandler();
 }
 
 bool CAndroidTouch::onTouchEvent(AInputEvent* event)
@@ -82,11 +82,11 @@ bool CAndroidTouch::onTouchEvent(AInputEvent* event)
 
   // first update all touch pointers
   for (unsigned int pointer = 0; pointer < numPointers; pointer++)
-    CGenericTouchInputHandler::Get().UpdateTouchPointer(pointer, AMotionEvent_getX(event, pointer), AMotionEvent_getY(event, pointer),
+    CGenericTouchInputHandler::GetInstance().UpdateTouchPointer(pointer, AMotionEvent_getX(event, pointer), AMotionEvent_getY(event, pointer),
     AMotionEvent_getEventTime(event), m_dpi / 16.0f);
 
   // now send the event
-  return CGenericTouchInputHandler::Get().HandleTouchInput(touchEvent, x, y, time, touchPointer, size);
+  return CGenericTouchInputHandler::GetInstance().HandleTouchInput(touchEvent, x, y, time, touchPointer, size);
 }
 
 void CAndroidTouch::setDPI(uint32_t dpi)
@@ -95,6 +95,6 @@ void CAndroidTouch::setDPI(uint32_t dpi)
   {
     m_dpi = dpi;
 
-    CGenericTouchInputHandler::Get().SetScreenDPI(m_dpi);
+    CGenericTouchInputHandler::GetInstance().SetScreenDPI(m_dpi);
   }
 }

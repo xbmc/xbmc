@@ -61,7 +61,7 @@ void TestBasicEnvironment::SetUp()
    * that the initialization of these components won't be needed.
    */
   g_powerManager.Initialize();
-  CSettings::Get().Initialize();
+  CSettings::GetInstance().Initialize();
 
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.

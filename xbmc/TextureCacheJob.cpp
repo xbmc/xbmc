@@ -68,7 +68,7 @@ bool CTextureCacheJob::DoWork()
 
   // check whether we need cache the job anyway
   bool needsRecaching = false;
-  std::string path(CTextureCache::Get().CheckCachedImage(m_url, false, needsRecaching));
+  std::string path(CTextureCache::GetInstance().CheckCachedImage(m_url, false, needsRecaching));
   if (!path.empty() && !needsRecaching)
     return false;
   return CacheTexture();
@@ -208,7 +208,7 @@ CBaseTexture *CTextureCacheJob::LoadImage(const std::string &image, unsigned int
       && !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") && !StringUtils::EqualsNoCase(file.GetMimeType(), "application/octet-stream")) // ignore non-pictures
     return NULL;
 
-  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, CSettings::Get().GetBool(CSettings::SETTING_PICTURES_USEEXIFROTATION), requirePixels, file.GetMimeType());
+  CBaseTexture *texture = CBaseTexture::LoadFromFile(image, width, height, CSettings::GetInstance().GetBool(CSettings::SETTING_PICTURES_USEEXIFROTATION), requirePixels, file.GetMimeType());
   if (!texture)
     return NULL;
 

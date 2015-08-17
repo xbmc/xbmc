@@ -1853,8 +1853,8 @@ void COutput::InitCycle()
 
   m_config.stats->SetCanSkipDeint(false);
 
-  EDEINTERLACEMODE mode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
-  EINTERLACEMETHOD method = CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod;
+  EDEINTERLACEMODE mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+  EINTERLACEMETHOD method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
   bool interlaced = m_currentPicture.DVDPic.iFlags & DVP_FLAG_INTERLACED;
 
   if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
@@ -1922,7 +1922,7 @@ void COutput::InitCycle()
     if (!m_pp)
     {
       m_config.stats->SetVpp(false);
-      if (!CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+      if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
         m_pp = new CFFmpegPostproc();
       else
         m_pp = new CSkipPostproc();
@@ -3290,7 +3290,7 @@ bool CFFmpegPostproc::Compatible(EINTERLACEMETHOD method)
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
   else if (method == VS_INTERLACEMETHOD_NONE &&
-           !CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+           !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
     return true;
 
   return false;

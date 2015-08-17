@@ -578,10 +578,10 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
   if (!views[2])
     return false;
 
-  EDEINTERLACEMODE deinterlace_mode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+  EDEINTERLACEMODE deinterlace_mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
   if (g_advancedSettings.m_DXVANoDeintProcForProgressive)
     deinterlace_mode = (flags & RENDER_FLAG_FIELD0 || flags & RENDER_FLAG_FIELD1) ? VS_DEINTERLACEMODE_FORCE : VS_DEINTERLACEMODE_OFF;
-  EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
+  EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
   bool progressive = deinterlace_mode == VS_DEINTERLACEMODE_OFF
                   || (   interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
@@ -706,9 +706,9 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11Vi
 
   m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor, &colorSpace);
 
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness
                                              , 0, 100, 50);
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast
                                              , 0, 100, 50);
 
   //

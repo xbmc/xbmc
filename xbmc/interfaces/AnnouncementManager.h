@@ -34,7 +34,7 @@ namespace ANNOUNCEMENT
   public:
     virtual ~CAnnouncementManager();
 
-    static CAnnouncementManager& Get();
+    static CAnnouncementManager& GetInstance();
 
     void Deinitialize();
 

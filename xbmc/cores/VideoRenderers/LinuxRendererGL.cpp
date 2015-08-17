@@ -283,7 +283,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
-  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
   m_bConfigured = true;
@@ -719,7 +719,7 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
-  m_resolution = CDisplaySettings::Get().GetCurrentResolution();
+  m_resolution = CDisplaySettings::GetInstance().GetCurrentResolution();
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
 
@@ -767,13 +767,13 @@ unsigned int CLinuxRendererGL::PreInit()
 
 void CLinuxRendererGL::UpdateVideoFilter()
 {
-  bool pixelRatioChanged    = (CDisplaySettings::Get().GetPixelRatio() > 1.001f || CDisplaySettings::Get().GetPixelRatio() < 0.999f) !=
+  bool pixelRatioChanged    = (CDisplaySettings::GetInstance().GetPixelRatio() > 1.001f || CDisplaySettings::GetInstance().GetPixelRatio() < 0.999f) !=
                               (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
   bool nonLinStretchChanged = false;
-  if (m_nonLinStretchGui != CDisplaySettings::Get().IsNonLinearStretched() || pixelRatioChanged)
+  if (m_nonLinStretchGui != CDisplaySettings::GetInstance().IsNonLinearStretched() || pixelRatioChanged)
   {
-    m_nonLinStretchGui   = CDisplaySettings::Get().IsNonLinearStretched();
-    m_pixelRatio         = CDisplaySettings::Get().GetPixelRatio();
+    m_nonLinStretchGui   = CDisplaySettings::GetInstance().IsNonLinearStretched();
+    m_pixelRatio         = CDisplaySettings::GetInstance().GetPixelRatio();
     m_reloadShaders      = 1;
     nonLinStretchChanged = true;
 
@@ -789,7 +789,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
-  if (m_scalingMethodGui == CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod && !nonLinStretchChanged)
+  if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod && !nonLinStretchChanged)
     return;
 
   //recompile YUV shader when non-linear stretch is turned on/off
@@ -797,7 +797,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   if (m_nonLinStretch || nonLinStretchChanged)
     m_reloadShaders = 1;
 
-  m_scalingMethodGui = CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod;
+  m_scalingMethodGui = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
   if(!Supports(m_scalingMethod))
@@ -925,7 +925,7 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else
   {
-    int requestedMethod = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+    int requestedMethod = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
     CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
 
     if (m_pYUVShader)
@@ -1251,8 +1251,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
 
@@ -1261,7 +1261,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   if (g_application.m_pPlayer->IsInMenu())
     m_pYUVShader->SetNonLinStretch(1.0);
   else
-    m_pYUVShader->SetNonLinStretch(pow(CDisplaySettings::Get().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
+    m_pYUVShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
 
   if     (field == FIELD_TOP)
     m_pYUVShader->SetField(1);
@@ -1370,8 +1370,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   m_fbo.fbo.BeginRender();
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
@@ -1485,7 +1485,7 @@ void CLinuxRendererGL::RenderFromFBO()
     if (g_application.m_pPlayer->IsInMenu())
       m_pVideoFilterShader->SetNonLinStretch(1.0);
     else
-      m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::Get().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
+      m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
 
     m_pVideoFilterShader->Enable();
   }
@@ -1589,7 +1589,7 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
     if (g_application.m_pPlayer->IsInMenu())
       m_pVideoFilterShader->SetNonLinStretch(1.0);
     else
-      m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::Get().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
+      m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), g_advancedSettings.m_videoNonLinStretchRatio));
 
     m_pVideoFilterShader->Enable();
   }
@@ -3149,11 +3149,11 @@ bool CLinuxRendererGL::UploadRGBTexture(int source)
   }
 
   if (imaging==1 &&
-      ((CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness!=50) ||
-       (CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast!=50)))
+      ((CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness!=50) ||
+       (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast!=50)))
   {
-    GLfloat brightness = ((GLfloat)CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness - 50.0f)/100.0f;
-    GLfloat contrast   = ((GLfloat)CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)/50.0f;
+    GLfloat brightness = ((GLfloat)CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness - 50.0f)/100.0f;
+    GLfloat contrast   = ((GLfloat)CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast)/50.0f;
 
     glPixelTransferf(GL_RED_SCALE  , contrast);
     glPixelTransferf(GL_GREEN_SCALE, contrast);
@@ -3240,7 +3240,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 {
   if(feature == RENDERFEATURE_BRIGHTNESS)
   {
-    if ((m_renderMethod & RENDER_VDPAU) && !CSettings::Get().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
+    if ((m_renderMethod & RENDER_VDPAU) && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
       return true;
 
     if (m_renderMethod & RENDER_VAAPI)
@@ -3253,7 +3253,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   
   if(feature == RENDERFEATURE_CONTRAST)
   {
-    if ((m_renderMethod & RENDER_VDPAU) && !CSettings::Get().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
+    if ((m_renderMethod & RENDER_VDPAU) && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
       return true;
 
     if (m_renderMethod & RENDER_VAAPI)
@@ -3389,7 +3389,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
     // if scaling is below level, avoid hq scaling
     float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
     float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-    int minScale = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+    int minScale = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
     if (scaleX < minScale && scaleY < minScale)
       return false;
 

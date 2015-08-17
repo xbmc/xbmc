@@ -130,7 +130,7 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
     }
   }
 
-  ResetScanTimeout((unsigned int) CSettings::Get().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
+  ResetScanTimeout((unsigned int) CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_SCANTIME) * 1000);
   m_content = content;
   m_contentLookup = contentLookup;
   CLog::Log(LOGDEBUG, "CDVDInputStreamPVRManager::Open - stream opened: %s", transFile.c_str());

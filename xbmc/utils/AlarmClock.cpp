@@ -123,7 +123,7 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
   }
   else
   {
-    CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, iter->second.m_strCommand);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, iter->second.m_strCommand);
     if (iter->second.m_loop)
     {
       iter->second.watch.Reset();

@@ -42,7 +42,7 @@ CPluginSource::CPluginSource(const cp_extension_t *ext)
   std::string provides;
   if (ext)
   {
-    provides = CAddonMgr::Get().GetExtValue(ext->configuration, "provides");
+    provides = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "provides");
     if (!provides.empty())
       Props().extrainfo.insert(make_pair("provides", provides));
   }

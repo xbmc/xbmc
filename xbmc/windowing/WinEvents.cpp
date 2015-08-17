@@ -64,7 +64,7 @@ void Init()
   CSingleLock lock(g_lock);
   if (!g_init)
   {
-    PERIPHERALS::CPeripherals::Get().RegisterObserver(&g_imp);
+    PERIPHERALS::CPeripherals::GetInstance().RegisterObserver(&g_imp);
     g_init = true;
   }
 }

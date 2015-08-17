@@ -578,7 +578,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
       {
         sorting.sortBy = sortBy;
         sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
-        sorting.sortAttributes = CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone;
+        sorting.sortAttributes = CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone;
 
         // if the sort order is descending, we need to switch the original sort order, as we assume
         // in CGUIViewState::AddPlaylistOrder that SortByPlaylistOrder is ascending.
@@ -878,7 +878,7 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
 // It's used to load tag info for music.
 void CGUIMediaWindow::OnPrepareFileItems(CFileItemList &items)
 {
-  CFileItemListModification::Get().Modify(items);
+  CFileItemListModification::GetInstance().Modify(items);
 }
 
 // \brief This function will be called by Update() before
@@ -926,10 +926,10 @@ bool CGUIMediaWindow::OnClick(int iItem)
     // execute the script
     CURL url(pItem->GetPath());
     AddonPtr addon;
-    if (CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
+    if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
     {
-      if (!CScriptInvocationManager::Get().Stop(addon->LibPath()))
-        CScriptInvocationManager::Get().ExecuteAsync(addon->LibPath(), addon);
+      if (!CScriptInvocationManager::GetInstance().Stop(addon->LibPath()))
+        CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon);
       return true;
     }
   }
@@ -939,7 +939,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if ( pItem->m_bIsShareOrDrive )
     {
       const std::string& strLockType=m_guiState->GetLockType();
-      if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+      if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
         if (!strLockType.empty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
             return true;
 
@@ -948,8 +948,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // check for the partymode playlist items - they may not exist yet
-    if ((pItem->GetPath() == CProfilesManager::Get().GetUserDataItem("PartyMode.xsp")) ||
-        (pItem->GetPath() == CProfilesManager::Get().GetUserDataItem("PartyMode-Video.xsp")))
+    if ((pItem->GetPath() == CProfilesManager::GetInstance().GetUserDataItem("PartyMode.xsp")) ||
+        (pItem->GetPath() == CProfilesManager::GetInstance().GetUserDataItem("PartyMode-Video.xsp")))
     {
       // party mode playlist item - if it doesn't exist, prompt for user to define it
       if (!XFILE::CFile::Exists(pItem->GetPath()))
@@ -1018,15 +1018,15 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
-    bool do_not_add_karaoke = CSettings::Get().GetBool(CSettings::SETTING_KARAOKE_ENABLED) &&
-      CSettings::Get().GetBool(CSettings::SETTING_KARAOKE_AUTOPOPUPSELECTOR) && pItem->IsKaraoke();
+    bool do_not_add_karaoke = CSettings::GetInstance().GetBool(CSettings::SETTING_KARAOKE_ENABLED) &&
+      CSettings::GetInstance().GetBool(CSettings::SETTING_KARAOKE_AUTOPOPUPSELECTOR) && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
     if (m_vecItems->IsPlugin())
     {
       CURL url(m_vecItems->GetPath());
       AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon))
+      if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(),addon))
       {
         PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
         if (plugin && plugin->Provides(CPluginSource::AUDIO))
@@ -1421,7 +1421,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
   if (item->IsPlayList())
     item->m_bIsFolder = false;
 
-  if (CProfilesManager::Get().GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE && CProfilesManager::Get().GetCurrentProfile().filesLocked())
+  if (CProfilesManager::GetInstance().GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE && CProfilesManager::GetInstance().GetCurrentProfile().filesLocked())
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
@@ -1435,7 +1435,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size()) return;
 
-  if (CProfilesManager::Get().GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE && CProfilesManager::Get().GetCurrentProfile().filesLocked())
+  if (CProfilesManager::GetInstance().GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE && CProfilesManager::GetInstance().GetCurrentProfile().filesLocked())
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
@@ -1570,7 +1570,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
       m_viewControl.SetSelectedItem(m_viewControl.GetSelectedItem() + 1);
-      CVideoLibraryQueue::Get().MarkAsWatched(item, (button == CONTEXT_BUTTON_MARK_WATCHED));
+      CVideoLibraryQueue::GetInstance().MarkAsWatched(item, (button == CONTEXT_BUTTON_MARK_WATCHED));
       return true;
     }
   case CONTEXT_BUTTON_ADD_FAVOURITE:
@@ -1587,7 +1587,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       bool isPluginOrScriptItem = (item && (item->IsPlugin() || item->IsScript()));
       CURL plugin(isPluginOrScriptItem ? item->GetPath() : m_vecItems->GetPath());
       ADDON::AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon))
+      if (CAddonMgr::GetInstance().GetAddon(plugin.GetHostName(), addon))
         if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
           Refresh();
       return true;
@@ -1610,14 +1610,14 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_USER10:
     {
       std::string action = StringUtils::Format("contextmenuaction(%i)", button - CONTEXT_BUTTON_USER1);
-      CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, m_vecItems->Get(itemNumber)->GetProperty(action).asString());
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, m_vecItems->Get(itemNumber)->GetProperty(action).asString());
       return true;
     }
   default:
     break;
   }
   if (button >= CONTEXT_BUTTON_FIRST_ADDON)
-    return CContextMenuManager::Get().OnClick(button, m_vecItems->Get(itemNumber));
+    return CContextMenuManager::GetInstance().OnClick(button, m_vecItems->Get(itemNumber));
   return false;
 }
 

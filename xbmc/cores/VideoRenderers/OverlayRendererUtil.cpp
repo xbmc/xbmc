@@ -303,7 +303,7 @@ int GetStereoscopicDepth()
   if(g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_MONO
   && g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_OFF)
   {
-    depth  = CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH);
+    depth  = CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH);
     depth *= (g_graphicsContext.GetStereoView() == RENDER_STEREO_VIEW_LEFT ? 1 : -1);
   }
 

@@ -141,16 +141,16 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   : CAddon(ext), m_version(""), m_effectsSlowDown(1.f)
 {
   ELEMENTS elements;
-  if (CAddonMgr::Get().GetExtElements(ext->configuration, "res", elements))
+  if (CAddonMgr::GetInstance().GetExtElements(ext->configuration, "res", elements))
   {
     for (ELEMENTS::iterator i = elements.begin(); i != elements.end(); ++i)
     {
-      int width = atoi(CAddonMgr::Get().GetExtValue(*i, "@width").c_str());
-      int height = atoi(CAddonMgr::Get().GetExtValue(*i, "@height").c_str());
-      bool defRes = CAddonMgr::Get().GetExtValue(*i, "@default") == "true";
-      std::string folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
+      int width = atoi(CAddonMgr::GetInstance().GetExtValue(*i, "@width").c_str());
+      int height = atoi(CAddonMgr::GetInstance().GetExtValue(*i, "@height").c_str());
+      bool defRes = CAddonMgr::GetInstance().GetExtValue(*i, "@default") == "true";
+      std::string folder = CAddonMgr::GetInstance().GetExtValue(*i, "@folder");
       float aspect = 0;
-      std::string strAspect = CAddonMgr::Get().GetExtValue(*i, "@aspect");
+      std::string strAspect = CAddonMgr::GetInstance().GetExtValue(*i, "@aspect");
       vector<string> fracs = StringUtils::Split(strAspect, ':');
       if (fracs.size() == 2)
         aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
@@ -166,17 +166,17 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   }
   else
   { // no resolutions specified -> backward compatibility
-    std::string defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultwideresolution");
+    std::string defaultWide = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@defaultwideresolution");
     if (defaultWide.empty())
-      defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolution");
+      defaultWide = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@defaultresolution");
     TranslateResolution(defaultWide, m_defaultRes);
   }
 
-  std::string str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
+  std::string str = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@effectslowdown");
   if (!str.empty())
     m_effectsSlowDown = (float)atof(str.c_str());
 
-  m_debugging = CAddonMgr::Get().GetExtValue(ext->configuration, "@debugging") == "true";
+  m_debugging = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@debugging") == "true";
 
   LoadStartupWindows(ext);
 
@@ -289,7 +289,7 @@ void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool
 
 int CSkinInfo::GetStartWindow() const
 {
-  int windowID = CSettings::Get().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW);
+  int windowID = CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW);
   assert(m_startupWindows.size());
   for (vector<CStartupWindow>::const_iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); ++it)
   {
@@ -357,7 +357,7 @@ int CSkinInfo::GetFirstWindow() const
 bool CSkinInfo::IsInUse() const
 {
   // Could extend this to prompt for reverting to the standard skin perhaps
-  return CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID();
+  return CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID();
 }
 
 const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string& name, int context)
@@ -368,7 +368,7 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const std::string
 void CSkinInfo::OnPreInstall()
 {
   if (IsInUse())
-    CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "UnloadSkin");
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "UnloadSkin");
 }
 
 void CSkinInfo::OnPostInstall(bool update, bool modal)
@@ -381,10 +381,10 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
       toast->ResetTimer();
       toast->Close(true);
     }
-    if (CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID())
-      CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
+    if (CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN) == ID())
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
     else
-      CSettings::Get().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, ID());
+      CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, ID());
   }
 }
 

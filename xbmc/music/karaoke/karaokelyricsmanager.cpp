@@ -63,7 +63,7 @@ bool CKaraokeLyricsManager::Start(const std::string & strSongPath)
     Stop();  // shouldn't happen, but...
 
   // If disabled by configuration, do nothing
-  if ( !CSettings::Get().GetBool(CSettings::SETTING_KARAOKE_ENABLED) )
+  if ( !CSettings::GetInstance().GetBool(CSettings::SETTING_KARAOKE_ENABLED) )
     return false;
 
   m_Lyrics = CKaraokeLyricsFactory::CreateLyrics( strSongPath );
@@ -143,7 +143,7 @@ void CKaraokeLyricsManager::ProcessSlow()
     return;
   }
 
-  if ( !m_karaokeSongPlayed || !CSettings::Get().GetBool(CSettings::SETTING_KARAOKE_AUTOPOPUPSELECTOR) )
+  if ( !m_karaokeSongPlayed || !CSettings::GetInstance().GetBool(CSettings::SETTING_KARAOKE_AUTOPOPUPSELECTOR) )
     return;
 
   // If less than 750ms passed return; we're still processing STOP events

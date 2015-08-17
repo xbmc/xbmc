@@ -114,7 +114,7 @@ void CPasswordManager::Clear()
 void CPasswordManager::Load()
 {
   Clear();
-  std::string passwordsFile = CProfilesManager::Get().GetUserDataItem("passwords.xml");
+  std::string passwordsFile = CProfilesManager::GetInstance().GetUserDataItem("passwords.xml");
   if (XFILE::CFile::Exists(passwordsFile))
   {
     CXBMCTinyXML doc;
@@ -163,7 +163,7 @@ void CPasswordManager::Save() const
     XMLUtils::SetPath(path, "to", i->second);
   }
 
-  doc.SaveFile(CProfilesManager::Get().GetUserDataItem("passwords.xml"));
+  doc.SaveFile(CProfilesManager::GetInstance().GetUserDataItem("passwords.xml"));
 }
 
 std::string CPasswordManager::GetLookupPath(const CURL &url) const

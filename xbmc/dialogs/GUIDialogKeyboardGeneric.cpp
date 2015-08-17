@@ -128,8 +128,8 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   // fill in the keyboard layouts
   m_currentLayout = 0;
   m_layouts.clear();
-  const KeyboardLayouts& keyboardLayouts = CKeyboardLayoutManager::Get().GetLayouts();
-  std::vector<CVariant> layoutNames = CSettings::Get().GetList(CSettings::SETTING_LOCALE_KEYBOARDLAYOUTS);
+  const KeyboardLayouts& keyboardLayouts = CKeyboardLayoutManager::GetInstance().GetLayouts();
+  std::vector<CVariant> layoutNames = CSettings::GetInstance().GetList(CSettings::SETTING_LOCALE_KEYBOARDLAYOUTS);
 
   for (std::vector<CVariant>::const_iterator layoutName = layoutNames.begin(); layoutName != layoutNames.end(); ++layoutName)
   {
@@ -172,7 +172,7 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   data["title"] = m_strHeading;
   data["type"] = !m_hiddenInput ? "keyboard" : "password";
   data["value"] = GetText();
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
 }
 
 bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
@@ -461,7 +461,7 @@ void CGUIDialogKeyboardGeneric::OnDeinitWindow(int nextWindowID)
   // reset the heading (we don't always have this)
   m_strHeading = "";
 
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputFinished");
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputFinished");
 }
 
 void CGUIDialogKeyboardGeneric::MoveCursor(int iAmount)

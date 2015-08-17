@@ -127,7 +127,7 @@ bool CPeripheralBus::ScanForDevices(void)
     UnregisterRemovedDevices(results);
     RegisterNewDevices(results);
 
-    CPeripherals::Get().NotifyObservers(ObservableMessagePeripheralsChanged);
+    CPeripherals::GetInstance().NotifyObservers(ObservableMessagePeripheralsChanged);
 
     bReturn = true;
   }

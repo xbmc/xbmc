@@ -57,13 +57,13 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
         {
           if ((argv[next][0] != '-') && (argv[next][0] == '/'))
           {
-            CInputManager::Get().SetRemoteControlName(argv[next]);
+            CInputManager::GetInstance().SetRemoteControlName(argv[next]);
             i++;
           }
         }
       }
       else if (strnicmp(argv[i], "-n", 2) == 0 || strnicmp(argv[i], "--nolirc", 8) == 0)
-        CInputManager::Get().DisableRemoteControl();
+        CInputManager::GetInstance().DisableRemoteControl();
 
       if (stricmp(argv[i], "-d") == 0)
       {
@@ -157,5 +157,5 @@ void CAppParamParser::PlayPlaylist()
     g_playlistPlayer.SetCurrentPlaylist(0);
   }
 
-  CApplicationMessenger::Get().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
 }

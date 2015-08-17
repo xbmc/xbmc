@@ -32,7 +32,7 @@
 
 using namespace XFILE;
 
-CTextureCache &CTextureCache::Get()
+CTextureCache &CTextureCache::GetInstance()
 {
   static CTextureCache s_cache;
   return s_cache;
@@ -68,7 +68,7 @@ bool CTextureCache::IsCachedImage(const std::string &url) const
       URIUtils::IsInPath(url, "special://temp/") ||
       URIUtils::IsInPath(url, "resource://") ||
       URIUtils::IsInPath(url, "androidapp://")   ||
-      URIUtils::IsInPath(url, CProfilesManager::Get().GetThumbnailsFolder()))
+      URIUtils::IsInPath(url, CProfilesManager::GetInstance().GetThumbnailsFolder()))
     return true;
   return false;
 }
@@ -260,7 +260,7 @@ std::string CTextureCache::GetCacheFile(const std::string &url)
 
 std::string CTextureCache::GetCachedPath(const std::string &file)
 {
-  return URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), file);
+  return URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetThumbnailsFolder(), file);
 }
 
 void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)

@@ -52,7 +52,7 @@ CDVDVideoCodecOpenMax::~CDVDVideoCodecOpenMax()
 bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   // we always qualify even if DVDFactoryCodec does this too.
-  if (CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMX) && !hints.software)
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMX) && !hints.software)
   {
     m_convert_bitstream = false;
 

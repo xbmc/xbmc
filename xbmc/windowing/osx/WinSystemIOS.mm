@@ -253,7 +253,7 @@ void CWinSystemIOS::UpdateResolutions()
   //first screen goes into the current desktop mode
   if(GetScreenResolution(&w, &h, &fps, 0))
   {
-    UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, w, h, fps);
+    UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, w, h, fps);
   }
 
 #ifndef TARGET_DARWIN_IOS_ATV2
@@ -267,7 +267,7 @@ void CWinSystemIOS::UpdateResolutions()
     if(GetScreenResolution(&w, &h, &fps, i))
     {
       UpdateDesktopResolution(res, i, w, h, fps);
-      CDisplaySettings::Get().AddResolutionInfo(res);
+      CDisplaySettings::GetInstance().AddResolutionInfo(res);
     }
   }
   
@@ -313,7 +313,7 @@ void CWinSystemIOS::FillInVideoModes()
       //the same resolution twice... - thats why i add a FIXME here.
       res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
       g_graphicsContext.ResetOverscan(res);
-      CDisplaySettings::Get().AddResolutionInfo(res);
+      CDisplaySettings::GetInstance().AddResolutionInfo(res);
     }
   }
 }

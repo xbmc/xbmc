@@ -2186,7 +2186,7 @@ bool CGUIAddonWindowDialog::OnMessage(CGUIMessage &message)
 void CGUIAddonWindowDialog::Show(bool show /* = true */)
 {
   unsigned int iCount = g_graphicsContext.exit();
-  CApplicationMessenger::Get().SendMsg(TMSG_GUI_ADDON_DIALOG, 1, show ? 1 : 0, static_cast<void*>(this));
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 1, show ? 1 : 0, static_cast<void*>(this));
   g_graphicsContext.restore(iCount);
 }
 

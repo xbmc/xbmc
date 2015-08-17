@@ -34,7 +34,7 @@ CCriticalSection CEventLog::s_critical;
 
 CEventLog& CEventLog::GetInstance()
 {
-  int currentProfileId = CProfilesManager::Get().GetCurrentProfileId();
+  int currentProfileId = CProfilesManager::GetInstance().GetCurrentProfileId();
 
   CSingleLock lock(s_critical);
   auto eventLog = s_eventLogs.find(currentProfileId);
@@ -83,8 +83,8 @@ EventPtr CEventLog::Get(const std::string& eventPtrIdentifier) const
 void CEventLog::Add(const EventPtr& eventPtr)
 {
   if (eventPtr == nullptr || eventPtr->GetIdentifier().empty() ||
-      !CSettings::Get().GetBool(CSettings::SETTING_EVENTLOG_ENABLED) ||
-     (eventPtr->GetLevel() == EventLevelInformation && !CSettings::Get().GetBool(CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS)))
+      !CSettings::GetInstance().GetBool(CSettings::SETTING_EVENTLOG_ENABLED) ||
+     (eventPtr->GetLevel() == EventLevelInformation && !CSettings::GetInstance().GetBool(CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS)))
     return;
 
   CSingleLock lock(m_critical);

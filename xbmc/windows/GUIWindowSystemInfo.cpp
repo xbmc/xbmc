@@ -59,7 +59,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + CSysInfo::GetVersion());
       SET_CONTROL_LABEL(53, CSysInfo::GetBuildDate());
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR, PVR::CPVRManager::Get().IsStarted());
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR, PVR::CPVRManager::GetInstance().IsStarted());
       return true;
     }
     break;

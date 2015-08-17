@@ -58,7 +58,7 @@ void CGUIWindowPointer::UpdateVisibility()
 {
   if(g_Windowing.HasCursor())
   {
-    if (CInputManager::Get().IsMouseActive())
+    if (CInputManager::GetInstance().IsMouseActive())
       Open();
     else
       Close();
@@ -80,14 +80,14 @@ void CGUIWindowPointer::OnWindowLoaded()
 
 void CGUIWindowPointer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  bool active = CInputManager::Get().IsMouseActive();
+  bool active = CInputManager::GetInstance().IsMouseActive();
   if (active != m_active)
   {
     MarkDirtyRegion();
     m_active = active;
   }
-  MousePosition pos = CInputManager::Get().GetMousePosition();
+  MousePosition pos = CInputManager::GetInstance().GetMousePosition();
   SetPosition((float)pos.x, (float)pos.y);
-  SetPointer(CInputManager::Get().GetMouseState());
+  SetPointer(CInputManager::GetInstance().GetMouseState());
   return CGUIWindow::Process(currentTime, dirtyregions);
 }

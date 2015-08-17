@@ -50,15 +50,15 @@ namespace XBMCAddon
       if (id.empty())
         throw AddonException("No valid addon id could be obtained. None was passed and the script wasn't executed in a normal xbmc manner.");
 
-      if (!ADDON::CAddonMgr::Get().GetAddon(id.c_str(), pAddon))
+      if (!ADDON::CAddonMgr::GetInstance().GetAddon(id.c_str(), pAddon))
         throw AddonException("Unknown addon id '%s'.", id.c_str());
 
-      CAddonMgr::Get().AddToUpdateableAddons(pAddon);
+      CAddonMgr::GetInstance().AddToUpdateableAddons(pAddon);
     }
 
     Addon::~Addon()
     {
-      CAddonMgr::Get().RemoveFromUpdateableAddons(pAddon);
+      CAddonMgr::GetInstance().RemoveFromUpdateableAddons(pAddon);
     }
 
     String Addon::getLocalizedString(int id)
