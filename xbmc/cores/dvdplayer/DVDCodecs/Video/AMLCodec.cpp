@@ -1440,6 +1440,7 @@ CAMLCodec::CAMLCodec() : CThread("CAMLCodec")
   m_dll = new DllLibAmCodec;
   m_dll->Load();
   am_private->m_dll = m_dll;
+  m_WindowAxis = amlGetWindowAxis();
 }
 
 
@@ -1680,12 +1681,19 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
 
-  m_display_rect = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight);
+  if ((aml_get_device_type() >= AML_DEVICE_TYPE_M8) && (aml_get_device_type() <= AML_DEVICE_TYPE_M8M2) && (!m_WindowAxis.bError))
+  {
+    m_display_rect = CRect(m_WindowAxis.iX, m_WindowAxis.iY, m_WindowAxis.iWidth, m_WindowAxis.iHeight);
+  }
+  else
+  {
+    m_display_rect = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight);
 
-  std::string strScaler;
-  SysfsUtils::GetString("/sys/class/ppmgr/ppscaler", strScaler);
-  if (strScaler.find("enabled") == std::string::npos)     // Scaler not enabled, use screen size
-    m_display_rect = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight);
+    std::string strScaler;
+    SysfsUtils::GetString("/sys/class/ppmgr/ppscaler", strScaler);
+    if (strScaler.find("enabled") == std::string::npos)     // Scaler not enabled, use screen size
+      m_display_rect = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight);
+  }
 
 /*
   // if display is set to 1080xxx, then disable deinterlacer for HD content
@@ -2213,7 +2221,12 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   }
 
   // dest_rect
-  CRect dst_rect = DestRect;
+  CRect dst_rect;
+
+  if ((aml_get_device_type() >= AML_DEVICE_TYPE_M8) && (aml_get_device_type() <= AML_DEVICE_TYPE_M8M2) && (!m_WindowAxis.bError))
+    dst_rect = CRect(m_WindowAxis.iX, m_WindowAxis.iY, m_WindowAxis.iWidth, m_WindowAxis.iHeight);
+  else
+    dst_rect = DestRect;
   // handle orientation
   switch (am_private->video_rotation_degree)
   {
@@ -2225,7 +2238,10 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     case 3:
       {
         int diff = (int) ((dst_rect.Height() - dst_rect.Width()) / 2);
-        dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
+        if ((aml_get_device_type() >= AML_DEVICE_TYPE_M8) && (aml_get_device_type() <= AML_DEVICE_TYPE_M8M2) && (!m_WindowAxis.bError))
+          dst_rect = CRect(m_WindowAxis.iX - diff, m_WindowAxis.iY, m_WindowAxis.iWidth + diff, m_WindowAxis.iHeight);
+        else
+          dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
       }
 
   }
@@ -2244,14 +2260,18 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   }
 
   CRect gui, display;
-  gui = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight);
+
+  if ((aml_get_device_type() >= AML_DEVICE_TYPE_M8) && (aml_get_device_type() <= AML_DEVICE_TYPE_M8M2) && (!m_WindowAxis.bError))
+    gui = CRect(m_WindowAxis.iX, m_WindowAxis.iY, m_WindowAxis.iWidth, m_WindowAxis.iHeight);
+  else
+    gui = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight);
 
 #ifdef TARGET_ANDROID
   display = m_display_rect;
 #else
   display = gui;
 #endif
-  if (gui != display)
+  if (((gui != display) && ((aml_get_device_type() >= AML_DEVICE_TYPE_M1) && (aml_get_device_type() <= AML_DEVICE_TYPE_M6))) || (m_WindowAxis.bError))
   {
     float xscale = display.Width() / gui.Width();
     float yscale = display.Height() / gui.Height();
@@ -2259,10 +2279,25 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
       xscale /= 2.0;
     else if (m_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
       yscale /= 2.0;
+
     dst_rect.x1 *= xscale;
     dst_rect.x2 *= xscale;
     dst_rect.y1 *= yscale;
     dst_rect.y2 *= yscale;
+  }
+  else
+  {
+    float xscale = 1;
+    float yscale = 1;
+    if (m_stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+      xscale /= 2.0;
+    else if (m_stereo_mode == RENDER_STEREO_MODE_SPLIT_HORIZONTAL)
+      yscale /= 2.0;
+
+    dst_rect.x1 = m_WindowAxis.iX * xscale;
+    dst_rect.x2 = m_WindowAxis.iWidth * xscale;
+    dst_rect.y1 = m_WindowAxis.iY * yscale;
+    dst_rect.y2 = m_WindowAxis.iHeight * yscale;
   }
 
   if (m_stereo_mode == RENDER_STEREO_MODE_MONO)
@@ -2329,10 +2364,14 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:m_stereo_view(%d)", m_stereo_view);
 #endif
 
-  // goofy 0/1 based difference in aml axis coordinates.
-  // fix them.
-  dst_rect.x2--;
-  dst_rect.y2--;
+  // Not needed on M8 platforms
+  if ((aml_get_device_type() >= AML_DEVICE_TYPE_M1) && (aml_get_device_type() <= AML_DEVICE_TYPE_M6))
+  {
+    // goofy 0/1 based difference in aml axis coordinates.
+    // fix them.
+    dst_rect.x2--;
+    dst_rect.y2--;
+  }
 
   char video_axis[256] = {};
   sprintf(video_axis, "%d %d %d %d", (int)dst_rect.x1, (int)dst_rect.y1, (int)dst_rect.x2, (int)dst_rect.y2);

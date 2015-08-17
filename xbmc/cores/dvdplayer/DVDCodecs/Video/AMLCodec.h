@@ -25,6 +25,7 @@
 #include "guilib/Geometry.h"
 #include "rendering/RenderSystem.h"
 #include "threads/Thread.h"
+#include "utils/AMLUtils.h"
 
 typedef struct am_private_t am_private_t;
 
@@ -79,6 +80,8 @@ private:
   int64_t          m_start_dts;
   int64_t          m_start_pts;
   CEvent           m_ready_event;
+
+  SAmlWindowAxis   m_WindowAxis;
 
   CRect            m_dst_rect;
   CRect            m_display_rect;
