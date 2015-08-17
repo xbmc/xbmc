@@ -265,17 +265,17 @@
 						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
 					</control>
 					<control type="label">
-						<left>1</left>
-						<top>70</top>
-						<width>191</width>
-						<height>25</height>
+						<left>0</left>
+						<top>0</top>
+						<width>193</width>
+						<height>186</height>
 						<font>font13_title</font>
 						<textcolor>ffaa0000</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<selectedcolor>red</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<angle>45</angle>
+						<animation effect="rotate" start="0" end="45" center="auto" time="0" condition="true">Conditional</animation>
 						<label>24098</label>
 						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
 					</control>
@@ -318,17 +318,17 @@
 						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
 					</control>
 					<control type="label">
-						<left>1</left>
-						<top>70</top>
-						<width>191</width>
-						<height>25</height>
+						<left>0</left>
+						<top>0</top>
+						<width>193</width>
+						<height>186</height>
 						<font>font13_title</font>
 						<textcolor>ffaa0000</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<selectedcolor>red</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<angle>45</angle>
+						<animation effect="rotate" start="0" end="45" center="auto" time="0" condition="true">Conditional</animation>
 						<label>24098</label>
 						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
 					</control>
