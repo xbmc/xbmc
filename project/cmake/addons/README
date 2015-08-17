@@ -1,7 +1,8 @@
 KODI ADDONS
 ===========
 This directory contains the cmake-based buildsystem for addons. It looks into
-the "addons" sub-directory and parses all *.txt files recursively. Each addon
+the directory pointed to by the ADDONS_DEFINITION_DIR option (which defaults to
+the "addons" sub-directory) and parses all *.txt files recursively. Each addon
 must have its own <addon-id>.txt file in a separate sub-directory which must
 follow one of the defined format:
   <addon-id> <git-url> <git-revision>
@@ -23,6 +24,14 @@ are:
     also supported to specify negated platforms with a leading exclamation mark
     (i), e.g. "!windows".
     Available platforms are: linux, windows, osx, ios, android, rbpi, freebsd
+
+ATTENTION: If no addon definitions could be found the buildsystem assumes that
+           the bootstrapping of the addon definition repositories hasn't been
+           performed yet and automatically executes the addon bootstrapping
+           buildsystem located in the "bootstrap" sub-directory with the default
+           settings (i.e. all addons from all pre-defined addon definition
+           repositories are bootstrapped into the directory pointed to by the
+           ADDONS_DEFINITION_DIR option).
 
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access

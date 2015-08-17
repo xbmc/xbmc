@@ -185,6 +185,37 @@ add_custom_target(package-addons)
 ### get and build all the binary addons
 # look for all the addons to be built
 file(GLOB_RECURSE addons ${ADDONS_DEFINITION_DIR}/*.txt)
+
+#if there are no addons assume that bootstrapping hasn't happened yet
+if(NOT addons)
+  message(STATUS "Bootstrapping all default repositories as no addons were found...")
+  set(BOOTSTRAP_BUILD_DIR "${BUILD_DIR}/bootstrap")
+
+  # make sure that the bootstraps build addon exists
+  if(NOT EXISTS ${BOOTSTRAP_BUILD_DIR})
+    file(MAKE_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
+  endif()
+
+  # generate the bootstrap buildsystem
+  execute_process(COMMAND ${CMAKE_COMMAND} ${PROJECT_SOURCE_DIR}/bootstrap
+                                           -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                                           -DCMAKE_INSTALL_PREFIX:PATH=${ADDONS_DEFINITION_DIR}
+                                           -DBUILD_DIR:PATH=${BOOTSTRAP_BUILD_DIR}
+                                           -DADDONS_TO_BUILD=${ADDONS_TO_BUILD}
+                  WORKING_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
+
+  # execute the generated bootstrap buildsystem
+  execute_process(COMMAND ${CMAKE_COMMAND} --build ${BOOTSTRAP_BUILD_DIR}
+                  WORKING_DIRECTORY ${BOOTSTRAP_BUILD_DIR})
+
+  # now look for all the addons to be built again
+  file(GLOB_RECURSE addons ${ADDONS_DEFINITION_DIR}/*.txt)
+
+  if(NOT addons)
+    message(FATAL_ERROR "No addons available to be built")
+  endif()
+endif()
+
 foreach(addon ${addons})
   if(NOT (addon MATCHES platforms.txt))
     file(STRINGS ${addon} def)
@@ -194,7 +225,7 @@ foreach(addon ${addons})
     set(ADDON_FOUND FALSE)
     # try to find a perfect match
     list(FIND ADDONS_TO_BUILD ${id} idx)
-    if(idx GREATER -1 OR ADDONS_TO_BUILD STREQUAL "all")
+    if(idx GREATER -1 OR "${ADDONS_TO_BUILD}" STREQUAL "all")
       set(ADDON_FOUND TRUE)
     # Maybe we have a regex
     elseif(id MATCHES "${ADDONS_TO_BUILD}")
