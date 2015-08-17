@@ -22,6 +22,7 @@
 */
 
 #include "MadvrSettingsManager.h"
+#include "MadvrSettings.h"
 #include "mvrInterfaces.h"
 
 CMadvrSettingsManager::CMadvrSettingsManager(IUnknown* pUnk)
@@ -81,6 +82,7 @@ BOOL CMadvrSettingsManager::SetSettings(MADVR_SETTINGS_TYPE type, LPCWSTR path, 
       return pMadvrSettings2->SettingsSetInteger(path, iValue);
     }
   }
+  return FALSE;
 }
 
 void CMadvrSettingsManager::EnumProfilesGroups(MADVR_SETTINGS_TYPE type, std::string path, std::vector<std::string> *sVector)
@@ -226,6 +228,51 @@ void CMadvrSettingsManager::SetInt(std::string path, int iValue)
   SetSettings(MADVR_SETTINGS_INT, pathW.c_str(), NULL, NULL, iValue);
 }
 
+void CMadvrSettingsManager::SetDoubling(CStdString path, int iValue)
+{
+  CStdString strBool = "nnedi" + path + "Enable";
+  CStdString strInt = "nnedi" + path + "Quality";
+  CStdString strAlgo = path + "Algo";
+
+  SetBool(strBool, (iValue>-1));
+  if (iValue > -1)
+  {
+    SetInt(strInt, MadvrDoubleQuality[iValue].id);
+    SetStr(strAlgo, MadvrDoubleQuality[iValue].algo);
+  }
+}
+
+void CMadvrSettingsManager::SetDeintActive(CStdString path, int iValue)
+{
+  CStdString strAuto = "autoActivateDeinterlacing";
+  CStdString strIfDoubt = "ifInDoubtDeinterlace";
+
+  SetBool(strAuto, (iValue > -1));
+  SetBool(strIfDoubt, (iValue == MADVR_DEINT_IFDOUBT_ACTIVE));
+}
+
+void CMadvrSettingsManager::SetSmoothmotion(CStdString path, int iValue)
+{
+  CStdString stEnabled = "smoothMotionEnabled";
+  CStdString strMode = "smoothMotionMode";
+  std::vector<std::string> vecMadvrMode = { "avoidJudder", "almostAlways", "always" };
+
+  SetBool(stEnabled, (iValue > -1));
+  if (iValue > -1)
+    SetStr(strMode, vecMadvrMode[iValue].c_str());
+}
+
+void CMadvrSettingsManager::SetDithering(CStdString path, int iValue)
+{
+  CStdString stDisable = "dontDither";
+  CStdString strMode = "ditheringAlgo";
+  std::vector<std::string> vecMadvrMode = { "random", "ordered", "errorDifMedNoise", "errorDifLowNoise" };
+
+  SetBool(stDisable, (iValue == -1));
+  if (iValue > -1)
+    SetStr(strMode, vecMadvrMode[iValue].c_str());
+}
+
 void CMadvrSettingsManager::ListSettings(std::string path)
 {
   std::vector<std::string> vecProfileGroups;
@@ -238,22 +285,22 @@ void CMadvrSettingsManager::ListSettings(std::string path)
   std::vector<std::string> vecValuesType;
 
   EnumGroups(path, &vecProfileGroups);
-  for (int i = 0; i < vecProfileGroups.size(); i++)
+  for (unsigned int i = 0; i < vecProfileGroups.size(); i++)
   {
     CLog::Log(0, "madVR Profile Groups: %s", vecProfileGroups[i].c_str());
 
     EnumProfiles(path + "\\" + vecProfileGroups[i], &vecProfileName);
-    for (int a = 0; a < vecProfileName.size(); a++)
+    for (unsigned int a = 0; a < vecProfileName.size(); a++)
     {
       CLog::Log(0, "madVR Profiles: %s", vecProfileName[a].c_str());
 
       EnumFolders(path + "\\" + vecProfileGroups[i] + "\\" + vecProfileName[a], &vecFoldersId, &vecFoldersName, &vecFoldersType);
-      for (int b = 0; b < vecFoldersId.size(); b++)
+      for (unsigned int b = 0; b < vecFoldersId.size(); b++)
       {
         CLog::Log(0, "madVR Folders %s %s %s", vecFoldersId[b].c_str(), vecFoldersName[b].c_str(), vecFoldersType[b].c_str());
 
         EnumValues(path + "\\" + vecProfileGroups[i] + "\\" + vecProfileName[a] + "\\" + vecFoldersId[b], &vecValuesId, &vecValuesName, &vecValuesType);
-        for (int c = 0; c < vecValuesId.size(); c++)
+        for (unsigned int c = 0; c < vecValuesId.size(); c++)
         {
           CLog::Log(0, "madVR Values %s %s %s", vecValuesId[c].c_str(), vecValuesName[c].c_str(), vecValuesType[c].c_str());
         }

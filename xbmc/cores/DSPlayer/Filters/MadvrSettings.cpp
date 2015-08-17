@@ -31,15 +31,15 @@ CMadvrSettings::CMadvrSettings()
 {
   m_Resolution = -1;
 
-  m_ChromaUpscaling = MADVR_SCALING_BICUBIC_75;  
+  m_ChromaUpscaling = ChromaUpDef;
   m_ChromaAntiRing = false;
   m_ChromaSuperRes = false;
   
-  m_ImageUpscaling = MADVR_SCALING_LANCZOS_3;
+  m_ImageUpscaling = LumaUpDef;
   m_ImageUpAntiRing = false;
   m_ImageUpLinear = false;
 
-  m_ImageDownscaling = MADVR_SCALING_CATMULL_ROM;
+  m_ImageDownscaling = LumaDownDef;
   m_ImageDownAntiRing = false;
   m_ImageDownLinear = false;
 
@@ -48,13 +48,13 @@ CMadvrSettings::CMadvrSettings()
   m_ImageQuadrupleLuma = -1;
   m_ImageQuadrupleChroma = -1;
 
-  m_ImageDoubleLumaFactor = MADVR_DOUBLE_FACTOR_1_5;
-  m_ImageDoubleChromaFactor = MADVR_DOUBLE_FACTOR_1_5;
-  m_ImageQuadrupleLumaFactor = MADVR_QUADRUPLE_FACTOR_3_0;
-  m_ImageQuadrupleChromaFactor = MADVR_QUADRUPLE_FACTOR_3_0;
+  m_ImageDoubleLumaFactor = MadvrDoubleFactorDef;
+  m_ImageDoubleChromaFactor = MadvrDoubleFactorDef;
+  m_ImageQuadrupleLumaFactor = MadvrQuadrupleFactorDef;
+  m_ImageQuadrupleChromaFactor = MadvrQuadrupleFactorDef;
 
   m_deintactive = MADVR_DEINT_IFDOUBT_DEACTIVE;
-  m_deintforce = MADVR_DEINT_FORCE_AUTO;
+  m_deintforce = MadvrDeintForceDef;
   m_deintlookpixels = true;
 
   m_smoothMotion = -1;

@@ -151,16 +151,15 @@ public:
   virtual void RenderToTexture(MADVR_RENDER_LAYER layer){ m_pMadvrShared->RenderToTexture(layer); };
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
-  virtual void SettingSetScaling(CStdString path, int scaling);
-  virtual void SettingSetDoubling(CStdString path, int iValue);
-  virtual void SettingSetDoublingCondition(CStdString path, int condition);
-  virtual void SettingSetQuadrupleCondition(CStdString path, int condition);
-  virtual void SettingSetDeintActive(CStdString path, int iValue);
-  virtual void SettingSetDeintForce(CStdString path, int iValue);
-  virtual void SettingSetSmoothmotion(CStdString path, int iValue);
-  virtual void SettingSetDithering(CStdString path, int iValue);
-  virtual void SettingSetBool(CStdString path, BOOL bValue);
-  virtual void SettingSetInt(CStdString path, int iValue);
+
+  //Madvr Settings
+  virtual void SettingSetStr(CStdString path, CStdString sValue) { m_pSettingsManager->SetStr(path, sValue); };
+  virtual void SettingSetBool(CStdString path, BOOL bValue) { m_pSettingsManager->SetBool(path, bValue); };
+  virtual void SettingSetInt(CStdString path, int iValue) { m_pSettingsManager->SetInt(path, iValue); };
+  virtual void SettingSetDoubling(CStdString path, int iValue) { m_pSettingsManager->SetDoubling(path, iValue); };
+  virtual void SettingSetDeintActive(CStdString path, int iValue) { m_pSettingsManager->SetDeintActive(path, iValue); };
+  virtual void SettingSetSmoothmotion(CStdString path, int iValue) { m_pSettingsManager->SetSmoothmotion(path, iValue); };
+  virtual void SettingSetDithering(CStdString path, int iValue) { m_pSettingsManager->SetDithering(path, iValue); };
 
 private:
   void ConfigureMadvr();

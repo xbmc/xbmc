@@ -56,6 +56,11 @@ public:
   void SetBool(std::string path, BOOL bValue);
   void SetInt(std::string path, int iValue);
 
+  virtual void SetDoubling(CStdString path, int iValue);
+  virtual void SetDeintActive(CStdString path, int iValue);
+  virtual void SetSmoothmotion(CStdString path, int iValue);
+  virtual void SetDithering(CStdString path, int iValue);
+
   void ListSettings(std::string path);
 
 private:

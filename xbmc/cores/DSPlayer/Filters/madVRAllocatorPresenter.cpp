@@ -170,20 +170,12 @@ void CmadVRAllocatorPresenter::EnableExclusive(bool bEnable)
 
 void CmadVRAllocatorPresenter::ConfigureMadvr()
 {
-
   if (Com::SmartQIPtr<IMadVRCommand> pMadVrCmd = m_pDXR)
     pMadVrCmd->SendCommandBool("disableSeekbar", true);
 
   m_pSettingsManager->SetBool("delayPlaybackStart2", CSettings::Get().GetBool("dsplayer.delaymadvrplayback"));
   m_pSettingsManager->SetStr("flushAfterPresent", "flush");
   m_pSettingsManager->SetStr("flushAfterPresentExcl", "flush");
-
-
-  m_pSettingsManager->ListSettings("scalingParent");
-
-  std::string str;
-  m_pSettingsManager->GetStr("chromaUp", &str);
-  CLog::Log(0, "Madvr ChromaUp %s", str.c_str());
 
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Register(m_exclusiveCallback, this);
@@ -484,128 +476,32 @@ STDMETHODIMP CmadVRAllocatorPresenter::SetPixelShader(LPCSTR pSrcData, LPCSTR pT
   return hr;
 }
 
-//IPaintCallbackMadvr
-
-void CmadVRAllocatorPresenter::SettingSetScaling(CStdString path, int scaling)
-{
-  std::vector<std::string> vecMadvrScaling =
-  {
-    "Nearest Neighbor",
-    "Bilinear",
-    "Dvxa",
-    "Mitchell-Netravali",
-    "Catmull-Rom",
-    "Bicubic50", "Bicubic60", "Bicubic75", "Bicubic100",
-    "SoftCubic50", "SoftCubic60", "SoftCubic70", "SoftCubic80", "SoftCubic100",
-    "Lanczos3", "Lanczos4", "Lanczos8",
-    "Spline36", "Spline64",
-    "Jinc3", "Jinc4", "Jinc8",
-    "Bilateral",
-    "SuperXbr25", "SuperXbr50", "SuperXbr75", "SuperXbr100", "SuperXbr125", "SuperXbr150",
-    "Nedi",
-    "Nnedi16", "Nnedi32", "Nnedi64", "Nnedi128", "Nnedi256",
-  };
-
-  m_pSettingsManager->SetStr(path, vecMadvrScaling[scaling].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetDoubling(CStdString path, int iValue)
-{
-  CStdString strBool, strInt;
-  strBool = path + "Enable";
-  strInt = path + "Quality";
-
-  m_pSettingsManager->SetBool(strBool, (iValue>-1));
-  if (iValue>-1)
-    m_pSettingsManager->SetInt(strInt, iValue);
-}
-
-void CmadVRAllocatorPresenter::SettingSetDoublingCondition(CStdString path, int condition)
-{
-  std::vector<std::string> vecMadvrCondition = { "2.0x", "1.5x", "1.2x", "always" };
-  m_pSettingsManager->SetStr(path, vecMadvrCondition[condition].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetQuadrupleCondition(CStdString path, int condition)
-{
-  std::vector<std::string> vecMadvrCondition = { "4.0x", "3.0x", "2.4x", "always" };
-  m_pSettingsManager->SetStr(path, vecMadvrCondition[condition].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetDeintActive(CStdString path, int iValue)
-{
-  CStdString strAuto = "autoActivateDeinterlacing";
-  CStdString strIfDoubt = "ifInDoubtDeinterlace";
-
-  m_pSettingsManager->SetBool(strAuto, (iValue > -1));
-  m_pSettingsManager->SetBool(strIfDoubt, (iValue == MADVR_DEINT_IFDOUBT_ACTIVE));
-}
-
-void CmadVRAllocatorPresenter::SettingSetDeintForce(CStdString path, int iValue)
-{
-  std::vector<std::string> vecMadvrCondition = { "auto", "film", "video" };
-  m_pSettingsManager->SetStr(path, vecMadvrCondition[iValue].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetSmoothmotion(CStdString path, int iValue)
-{
-  CStdString stEnabled = "smoothMotionEnabled";
-  CStdString strMode = "smoothMotionMode";
-  std::vector<std::string> vecMadvrMode = { "avoidJudder", "almostAlways", "always" };
-
-  m_pSettingsManager->SetBool(stEnabled, (iValue > -1));
-  if (iValue > -1)
-    m_pSettingsManager->SetStr(strMode, vecMadvrMode[iValue].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetDithering(CStdString path, int iValue)
-{
-  CStdString stDisable = "dontDither";
-  CStdString strMode = "ditheringAlgo";
-  std::vector<std::string> vecMadvrMode = { "random", "ordered", "errorDifMedNoise", "errorDifLowNoise" };
-
-  m_pSettingsManager->SetBool(stDisable, (iValue == -1));
-  if (iValue > -1)
-    m_pSettingsManager->SetStr(strMode, vecMadvrMode[iValue].c_str());
-}
-
-void CmadVRAllocatorPresenter::SettingSetBool(CStdString path, BOOL bValue)
-{
-  m_pSettingsManager->SetBool(path, bValue);
-}
-
-void CmadVRAllocatorPresenter::SettingSetInt(CStdString path, int iValue)
-{
-  m_pSettingsManager->SetInt(path, iValue);
-}
-
 void CmadVRAllocatorPresenter::RestoreMadvrSettings()
 {
-
   if (!CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
     return;
 
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
 
-  SettingSetScaling("chromaUp", madvrSettings.m_ChromaUpscaling);
+  SettingSetStr("chromaUp", MadvrScaling[madvrSettings.m_ChromaUpscaling].name);
   SettingSetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
   SettingSetBool("superChromaRes", madvrSettings.m_ChromaSuperRes);
-  SettingSetScaling("LumaUp", madvrSettings.m_ImageUpscaling);
+  SettingSetStr("LumaUp", MadvrScaling[madvrSettings.m_ImageUpscaling].name);
   SettingSetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
   SettingSetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
-  SettingSetScaling("LumaDown", madvrSettings.m_ImageDownscaling);
+  SettingSetStr("LumaDown", MadvrScaling[madvrSettings.m_ImageDownscaling].name);
   SettingSetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
   SettingSetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
-  SettingSetDoubling("nnediDL", madvrSettings.m_ImageDoubleLuma);
-  SettingSetDoublingCondition("nnediDLScalingFactor", madvrSettings.m_ImageDoubleLumaFactor);
-  SettingSetDoubling("nnediDC", madvrSettings.m_ImageDoubleChroma);
-  SettingSetDoublingCondition("nnediDCScalingFactor", madvrSettings.m_ImageDoubleChromaFactor);
-  SettingSetDoubling("nnediQL", madvrSettings.m_ImageQuadrupleLuma);
-  SettingSetQuadrupleCondition("nnediQLScalingFactor", madvrSettings.m_ImageQuadrupleLumaFactor);
-  SettingSetDoubling("nnediQC", madvrSettings.m_ImageQuadrupleChroma);
-  SettingSetQuadrupleCondition("nnediQCScalingFactor", madvrSettings.m_ImageQuadrupleChromaFactor);
+  SettingSetDoubling("DL", madvrSettings.m_ImageDoubleLuma);
+  SettingSetStr("nnediDLScalingFactor", MadvrDoubleFactor[madvrSettings.m_ImageDoubleLumaFactor].name);
+  SettingSetDoubling("DC", madvrSettings.m_ImageDoubleChroma);
+  SettingSetStr("nnediDCScalingFactor", MadvrDoubleFactor[madvrSettings.m_ImageDoubleChromaFactor].name);
+  SettingSetDoubling("QL", madvrSettings.m_ImageQuadrupleLuma);
+  SettingSetStr("nnediQLScalingFactor", MadvrQuadrupleFactor[madvrSettings.m_ImageQuadrupleLumaFactor].name);
+  SettingSetDoubling("QC", madvrSettings.m_ImageQuadrupleChroma);
+  SettingSetStr("nnediQCScalingFactor", MadvrQuadrupleFactor[madvrSettings.m_ImageQuadrupleChromaFactor].name);
   SettingSetDeintActive("", madvrSettings.m_deintactive);
-  SettingSetDeintForce("contentType", madvrSettings.m_deintforce);
+  SettingSetStr("contentType", MadvrDeintForce[madvrSettings.m_deintforce].name);
   SettingSetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
   SettingSetBool("debandActive", madvrSettings.m_deband);
   SettingSetInt("debandLevel", madvrSettings.m_debandLevel);

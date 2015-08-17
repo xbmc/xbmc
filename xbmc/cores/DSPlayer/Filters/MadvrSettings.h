@@ -26,81 +26,119 @@
 
 #pragma once
 
-enum MADVR_SCALING
+typedef struct
 {
-  MADVR_SCALING_NEAREST_NEIGHBOR,
-  MADVR_SCALING_BILINEAR,
-  MADVR_SCALING_DXVA2,
-  MADVR_SCALING_MITCHEL_NETRAVALI,
-  MADVR_SCALING_CATMULL_ROM,
-  MADVR_SCALING_BICUBIC_50,
-  MADVR_SCALING_BICUBIC_60,
-  MADVR_SCALING_BICUBIC_75,
-  MADVR_SCALING_BICUBIC_100,
-  MADVR_SCALING_SOFTCUBIC_50,
-  MADVR_SCALING_SOFTCUBIC_60,
-  MADVR_SCALING_SOFTCUBIC_70,
-  MADVR_SCALING_SOFTCUBIC_80,
-  MADVR_SCALING_SOFTCUBIC_100,
-  MADVR_SCALING_LANCZOS_3,
-  MADVR_SCALING_LANCZOS_4,
-  MADVR_SCALING_LANCZOS_8,
-  MADVR_SCALING_SPLINE_36,
-  MADVR_SCALING_SPLINE_64,
-  MADVR_SCALING_JINC_3,
-  MADVR_SCALING_JINC_4,
-  MADVR_SCALING_JINC_8,
-  MADVR_SCALING_BILATERAL,
-  MADVR_SCALING_SUPERXBR25,
-  MADVR_SCALING_SUPERXBR50,
-  MADVR_SCALING_SUPERXBR75,
-  MADVR_SCALING_SUPERXBR100,
-  MADVR_SCALING_SUPERXBR125,
-  MADVR_SCALING_SUPERXBR150,
-  MADVR_SCALING_NEDI,
-  MADVR_SCALING_NNEDI3_16,
-  MADVR_SCALING_NNEDI3_32,
-  MADVR_SCALING_NNEDI3_64,
-  MADVR_SCALING_NNEDI3_128,
-  MADVR_SCALING_NNEDI3_256,
+  const std::string name;
+  const int label;
+  bool chromaUp;
+  bool lumaUp;
+  bool lumaDown;
+} MADVR_SCALING;
+
+typedef struct
+{
+  const std::string name;
+  const int label;
+} MADVR_SETTINGS;
+
+typedef struct
+{
+  const std::string name;
+  const std::string algo;
+  const int id;
+  const int label;
+} MADVR_DOUBLE_QUALITY;
+
+
+static const int ChromaUpDef = 7; // BICUBIC75
+static const int LumaUpDef = 14; // LANCZOS3
+static const int LumaDownDef = 4; // CATMUL-ROM
+static const MADVR_SCALING MadvrScaling[] =
+{
+  { "Nearest Neighbor", 70001, true, true, true },
+  { "Bilinear", 70002, true, true, true },
+  { "Dvxa", 70003, false, true, true },
+  { "Mitchell-Netravali", 70004, true, true, true },
+  { "Catmull-Rom", 70005, true, true, true },
+  { "Bicubic50", 70006, true, true, true },
+  { "Bicubic60", 70007, true, true, true },
+  { "Bicubic75", 70008, true, true, true },
+  { "Bicubic100", 70009, true, true, true },
+  { "SoftCubic50", 70010, true, true, true },
+  { "SoftCubic60", 70011, true, true, true },
+  { "SoftCubic70", 70012, true, true, true },
+  { "SoftCubic80", 70013, true, true, true },
+  { "SoftCubic100", 70014, true, true, true },
+  { "Lanczos3", 70015, true, true, true },
+  { "Lanczos4", 70016, true, true, true },
+  { "Lanczos8", 70017, false, false, false },
+  { "Spline36", 70018, true, true, true },
+  { "Spline64", 70019, true, true, true },
+  { "Jinc3", 70020, true, true, false },
+  { "Jinc4", 70021, false, false, false },
+  { "Jinc8", 70022, false, false, false },
+  { "Bilateral", 70033, true, false, false },
+  { "SuperXbr25", 70034, true, false, false },
+  { "SuperXbr50", 70035, true, false, false },
+  { "SuperXbr75", 70036, true, false, false },
+  { "SuperXbr100", 70037, true, false, false },
+  { "SuperXbr125", 70038, true, false, false },
+  { "SuperXbr150", 70039, true, false, false },
+  { "Nedi", true, false, false },
+  { "Nnedi16", 70023, true, false, false },
+  { "Nnedi32", 70024, true, false, false },
+  { "Nnedi64", 70025, true, false, false },
+  { "Nnedi128", 70026, true, false, false },
+  { "Nnedi256", 70027, true, false, false },
 };
 
-enum MADVR_NNEDI3_QUALITY
+static const MADVR_DOUBLE_QUALITY MadvrDoubleQuality[] =
 {
-  MADVR_NNEDI3_16NEURONS,
-  MADVR_NNEDI3_32NEURONS,
-  MADVR_NNEDI3_64NEURONS,
-  MADVR_NNEDI3_128NEURONS,
-  MADVR_NNEDI3_256NEURONS
+  { "SuperXbr25", "SuperXbr25", 0, 70034 },
+  { "SuperXbr50", "SuperXbr50", 1, 70035 },
+  { "SuperXbr75", "SuperXbr75", 2, 70036 },
+  { "SuperXbr100", "SuperXbr100", 3, 70037 },
+  { "SuperXbr125", "SuperXbr125", 4, 70038 },
+  { "SuperXbr150", "SuperXbr150", 5, 70039 },
+  { "SuperXbr150", "SuperXbr150", 6, 70039 },
+  { "NEDI", "NEDI", 0, 70040 },
+  { "16Neurons", "NNEDI3", 0, 70023 },
+  { "32Neurons", "NNEDI3", 1, 70024 },
+  { "64Neurons", "NNEDI3", 2, 70025 },
+  { "128Neurons", "NNEDI3", 3, 70026 },
+  { "256Neurons", "NNEDI3", 4, 70027 },
 };
 
-enum MADVR_DOUBLE_FACTOR
+static const int MadvrDoubleFactorDef = 1; //1.5x
+static const MADVR_SETTINGS MadvrDoubleFactor[] =
 {
-  MADVR_DOUBLE_FACTOR_2_0,
-  MADVR_DOUBLE_FACTOR_1_5,
-  MADVR_DOUBLE_FACTOR_1_2,
-  MADVR_DOUBLE_FACTOR_ALWAYS
+  { "2.0x", 70109 },
+  { "1.5x", 70110 },
+  { "1.2x", 70111 },
+  { "always", 70112 }
 };
 
-enum MADVR_QUADRUPLE_FACTOR
+static const int MadvrQuadrupleFactorDef = 1; //3.0x
+static const MADVR_SETTINGS MadvrQuadrupleFactor[] =
 {
-  MADVR_QUADRUPLE_FACTOR_4_0,
-  MADVR_QUADRUPLE_FACTOR_3_0,
-  MADVR_QUADRUPLE_FACTOR_2_4,
-  MADVR_QUADRUPLE_FACTOR_ALWAYS
+  { "4.0x", 70113 },
+  { "3.0x", 70114 },
+  { "2.4x", 70115 },
+  { "always", 70112 }
+};
+
+static const int MadvrDeintForceDef = 0; //AUTO
+static const MADVR_SETTINGS MadvrDeintForce[] =
+{
+  { "auto", 70202 },
+  { "film", 70203 },
+  { "video", 70204 }
 };
 
 enum MADVR_DEINT_ACTIVE
 {
   MADVR_DEINT_IFDOUBT_ACTIVE,
   MADVR_DEINT_IFDOUBT_DEACTIVE
-};
-
-enum MADVR_DEINT_FORCE
-{
-  MADVR_DEINT_FORCE_AUTO,
-  MADVR_DEINT_FORCE_FILM,
-  MADVR_DEINT_FORCE_VIDEO
 };
 
 enum MADVR_SMOOTHMOTION

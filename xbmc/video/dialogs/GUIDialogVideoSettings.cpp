@@ -133,7 +133,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_MADVR_DEINT_FORCE)
   {
     madvrSettings.m_deintforce = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->GetCallback()->SettingSetDeintForce("contentType", madvrSettings.m_deintforce);
+    CMadvrCallback::Get()->GetCallback()->SettingSetStr("contentType", MadvrDeintForce[madvrSettings.m_deintforce].name);
   }
   else if (settingId == SETTING_MADVR_DEINT_LOOKPIXELS)
   {
@@ -639,10 +639,10 @@ void CGUIDialogVideoSettings::InitializeSettings()
       entries.push_back(std::make_pair(70205, MADVR_DEINT_IFDOUBT_ACTIVE));
       entries.push_back(std::make_pair(70206, MADVR_DEINT_IFDOUBT_DEACTIVE));
       AddList(groupMadvrProcessing, SETTING_MADVR_DEINT_ACTIVE, 70200, 0, static_cast<int>(madvrSettings.m_deintactive), entries,70200);
+
       entries.clear();
-      entries.push_back(std::make_pair(70202, MADVR_DEINT_FORCE_AUTO));
-      entries.push_back(std::make_pair(70203, MADVR_DEINT_FORCE_FILM));
-      entries.push_back(std::make_pair(70204, MADVR_DEINT_FORCE_VIDEO));
+      for (unsigned int i = 0; i < countof(MadvrDeintForce); i++)
+        entries.push_back(std::make_pair(MadvrDeintForce[i].label, i));
       AddList(groupMadvrProcessing, SETTING_MADVR_DEINT_FORCE, 70201, 0, static_cast<int>(madvrSettings.m_deintforce), entries, 70201);
       AddToggle(groupMadvrProcessing, SETTING_MADVR_DEINT_LOOKPIXELS, 70207, 0, madvrSettings.m_deintlookpixels);
 

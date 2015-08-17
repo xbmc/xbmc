@@ -54,16 +54,13 @@ public:
   virtual void RenderToTexture(MADVR_RENDER_LAYER layer){};
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; }
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
-  virtual void SettingSetScaling(CStdString path, int scaling) {};
-  virtual void SettingSetDoubling(CStdString path, int iValue) {};
-  virtual void SettingSetDoublingCondition(CStdString path, int condition) {};
-  virtual void SettingSetQuadrupleCondition(CStdString path, int condition) {};
-  virtual void SettingSetDeintActive(CStdString path, int iValue) {};
-  virtual void SettingSetDeintForce(CStdString path, int iValue) {};
-  virtual void SettingSetSmoothmotion(CStdString path, int iValue) {};
-  virtual void SettingSetDithering(CStdString path, int iValue) {};
+  virtual void SettingSetStr(CStdString path, CStdString sValue) {};
   virtual void SettingSetBool(CStdString path, BOOL bValue) {};
   virtual void SettingSetInt(CStdString path, int iValue) {};
+  virtual void SettingSetDoubling(CStdString path, int iValue) {};
+  virtual void SettingSetDeintActive(CStdString path, int iValue) {};
+  virtual void SettingSetSmoothmotion(CStdString path, int iValue) {};
+  virtual void SettingSetDithering(CStdString path, int iValue) {};
 };
 
 class CMadvrCallback : public IPaintCallbackMadvr

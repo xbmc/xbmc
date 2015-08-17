@@ -173,17 +173,17 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
   if (pElement != NULL)
   {
     if (!XMLUtils::GetInt(pElement, "chromaupscaling", m_defaultMadvrSettings.m_ChromaUpscaling))
-      m_defaultMadvrSettings.m_ChromaUpscaling = MADVR_SCALING_BICUBIC_75;
+      m_defaultMadvrSettings.m_ChromaUpscaling = ChromaUpDef;
     XMLUtils::GetBoolean(pElement, "chromaantiring", m_defaultMadvrSettings.m_ChromaAntiRing);
     XMLUtils::GetBoolean(pElement, "chromasuperres", m_defaultMadvrSettings.m_ChromaSuperRes);
 
     if (!XMLUtils::GetInt(pElement, "imageupscaling", m_defaultMadvrSettings.m_ImageUpscaling))
-      m_defaultMadvrSettings.m_ImageUpscaling = MADVR_SCALING_LANCZOS_3;
+      m_defaultMadvrSettings.m_ImageUpscaling = LumaUpDef;
     XMLUtils::GetBoolean(pElement, "imageupantiring", m_defaultMadvrSettings.m_ImageUpAntiRing);
     XMLUtils::GetBoolean(pElement, "imageuplinear", m_defaultMadvrSettings.m_ImageUpLinear);
 
     if (!XMLUtils::GetInt(pElement, "imagedownscaling", m_defaultMadvrSettings.m_ImageDownscaling))
-      m_defaultMadvrSettings.m_ImageDownscaling= MADVR_SCALING_CATMULL_ROM;
+      m_defaultMadvrSettings.m_ImageDownscaling = LumaDownDef;
     XMLUtils::GetBoolean(pElement, "imagedownantiring", m_defaultMadvrSettings.m_ImageDownAntiRing);
     XMLUtils::GetBoolean(pElement, "imagedownlinear", m_defaultMadvrSettings.m_ImageDownLinear);
 
@@ -197,18 +197,18 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultMadvrSettings.m_ImageQuadrupleChroma = -1;
 
     if (!XMLUtils::GetInt(pElement, "imagedoublelumafactor", m_defaultMadvrSettings.m_ImageDoubleLumaFactor))
-      m_defaultMadvrSettings.m_ImageDoubleLumaFactor = MADVR_DOUBLE_FACTOR_1_5;
+      m_defaultMadvrSettings.m_ImageDoubleLumaFactor = MadvrDoubleFactorDef;
     if (!XMLUtils::GetInt(pElement, "imagedoublechromafactor", m_defaultMadvrSettings.m_ImageDoubleChromaFactor))
-      m_defaultMadvrSettings.m_ImageDoubleChromaFactor = MADVR_DOUBLE_FACTOR_1_5;
+      m_defaultMadvrSettings.m_ImageDoubleChromaFactor = MadvrDoubleFactorDef;
     if (!XMLUtils::GetInt(pElement, "imagequadruplelumafactor", m_defaultMadvrSettings.m_ImageQuadrupleLumaFactor))
-      m_defaultMadvrSettings.m_ImageQuadrupleLumaFactor = MADVR_QUADRUPLE_FACTOR_3_0;
+      m_defaultMadvrSettings.m_ImageQuadrupleLumaFactor = MadvrQuadrupleFactorDef;
     if (!XMLUtils::GetInt(pElement, "imagequadruplechromafactor", m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor))
-      m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor = MADVR_QUADRUPLE_FACTOR_3_0;
+      m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor = MadvrQuadrupleFactorDef;
 
     if (!XMLUtils::GetInt(pElement, "deintactive", m_defaultMadvrSettings.m_deintactive))
       m_defaultMadvrSettings.m_deintactive = MADVR_DEINT_IFDOUBT_DEACTIVE;
     if (!XMLUtils::GetInt(pElement, "deintforce", m_defaultMadvrSettings.m_deintforce))
-      m_defaultMadvrSettings.m_deintforce = MADVR_DEINT_FORCE_AUTO;
+      m_defaultMadvrSettings.m_deintforce = MadvrDeintForceDef;
     XMLUtils::GetBoolean(pElement, "deintlookpixels", m_defaultMadvrSettings.m_deintlookpixels);
 
     if (!XMLUtils::GetInt(pElement, "smoothmotion", m_defaultMadvrSettings.m_smoothMotion))

@@ -895,11 +895,7 @@ CStdString CDSGraph::GetVideoInfo()
   CStdString strDXVA;
   if (!CMadvrCallback::Get()->UsingMadvr())
     strDXVA = GetDXVADecoderDescription();
-  /*
-  // I Don't know if this work properly
-  else
-    strDXVA = CMadvrCallback::Get()->GetCallback()->GetDXVADecoderDescription();
-  */
+
   if (!strDXVA.empty())
     videoInfo += " | " + strDXVA;
 
