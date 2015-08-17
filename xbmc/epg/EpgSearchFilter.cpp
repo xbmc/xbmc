@@ -171,7 +171,7 @@ bool EpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
   {
     CPVRChannelGroupPtr group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup) : g_PVRChannelGroups->GetGroupAllTV();
     if (!group)
-      group = CPVRManager::Get().ChannelGroups()->GetGroupAllTV();
+      group = CPVRManager::GetInstance().ChannelGroups()->GetGroupAllTV();
 
     bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(tag.ChannelTag()));
   }

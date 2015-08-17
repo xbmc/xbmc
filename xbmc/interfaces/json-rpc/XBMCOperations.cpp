@@ -41,7 +41,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const std::string &method, ITransp
   if (info.size() > 0)
   {
     std::vector<std::string> infoLabels;
-    CApplicationMessenger::Get().SendMsg(TMSG_GUI_INFOLABEL, -1, -1, static_cast<void*>(&infoLabels), "", info);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_INFOLABEL, -1, -1, static_cast<void*>(&infoLabels), "", info);
 
     for (unsigned int i = 0; i < info.size(); i++)
     {
@@ -84,7 +84,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const std::string &method, ITran
   if (info.size() > 0)
   {
     std::vector<bool> infoLabels;
-    CApplicationMessenger::Get().SendMsg(TMSG_GUI_INFOBOOL, -1, -1, static_cast<void*>(&infoLabels), "", info);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_INFOBOOL, -1, -1, static_cast<void*>(&infoLabels), "", info);
     for (unsigned int i = 0; i < info.size(); i++)
     {
       if (i >= infoLabels.size())

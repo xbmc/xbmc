@@ -298,10 +298,10 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     VECSOURCES sources;
     if (m_type == "songs" || m_type == "mixed")
-      sources = *CMediaSourceSettings::Get().GetSources("music");
+      sources = *CMediaSourceSettings::GetInstance().GetSources("music");
     if (CSmartPlaylist::IsVideoType(m_type))
     {
-      VECSOURCES sources2 = *CMediaSourceSettings::Get().GetSources("video");
+      VECSOURCES sources2 = *CMediaSourceSettings::GetInstance().GetSources("video");
       sources.insert(sources.end(),sources2.begin(),sources2.end());
     }
     g_mediaManager.GetLocalDrives(sources);
@@ -341,7 +341,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
 
   // sort the items
-  items.Sort(SortByLabel, SortOrderAscending, CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+  items.Sort(SortByLabel, SortOrderAscending, CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
 
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   pDialog->Reset();

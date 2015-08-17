@@ -33,9 +33,9 @@ using namespace XFILE;
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
   AddSortMethod(SortByLabel, 551, LABEL_MASKS("%K", "%I", "%L", ""),  // Titel, Size | Foldername, empty
-    CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+    CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
 
-  const CViewState *viewState = CViewStateSettings::Get().Get("programs");
+  const CViewState *viewState = CViewStateSettings::GetInstance().Get("programs");
   SetSortMethod(viewState->m_sortDescription);
   SetViewAsControl(viewState->m_viewMode);
   SetSortOrder(viewState->m_sortDescription.sortOrder);
@@ -45,7 +45,7 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
 
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS, CViewStateSettings::Get().Get("programs"));
+  SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS, CViewStateSettings::GetInstance().Get("programs"));
 }
 
 std::string CGUIViewStateWindowPrograms::GetLockType()
@@ -65,7 +65,7 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
   AddAndroidSource("apps", g_localizeStrings.Get(20244), "DefaultProgram.png");
 #endif
 
-  VECSOURCES *programSources = CMediaSourceSettings::Get().GetSources("programs");
+  VECSOURCES *programSources = CMediaSourceSettings::GetInstance().GetSources("programs");
   AddOrReplace(*programSources, CGUIViewState::GetSources());
   return *programSources;
 }

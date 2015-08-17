@@ -743,7 +743,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshMovie(const std::string &method, ITransport
 
   bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
   std::string searchTitle = parameterObject["title"].asString();
-  CVideoLibraryQueue::Get().RefreshItem(CFileItemPtr(new CFileItem(infos)), ignoreNfo, true, false, searchTitle);
+  CVideoLibraryQueue::GetInstance().RefreshItem(CFileItemPtr(new CFileItem(infos)), ignoreNfo, true, false, searchTitle);
 
   return ACK;
 }
@@ -766,7 +766,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshTVShow(const std::string &method, ITranspor
   bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
   bool refreshEpisodes = parameterObject["refreshepisodes"].asBoolean();
   std::string searchTitle = parameterObject["title"].asString();
-  CVideoLibraryQueue::Get().RefreshItem(item, ignoreNfo, true, refreshEpisodes, searchTitle);
+  CVideoLibraryQueue::GetInstance().RefreshItem(item, ignoreNfo, true, refreshEpisodes, searchTitle);
 
   return ACK;
 }
@@ -791,7 +791,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshEpisode(const std::string &method, ITranspo
 
   bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
   std::string searchTitle = parameterObject["title"].asString();
-  CVideoLibraryQueue::Get().RefreshItem(item, ignoreNfo, true, false, searchTitle);
+  CVideoLibraryQueue::GetInstance().RefreshItem(item, ignoreNfo, true, false, searchTitle);
 
   return ACK;
 }
@@ -810,7 +810,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshMusicVideo(const std::string &method, ITran
 
   bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
   std::string searchTitle = parameterObject["title"].asString();
-  CVideoLibraryQueue::Get().RefreshItem(CFileItemPtr(new CFileItem(infos)), ignoreNfo, true, false, searchTitle);
+  CVideoLibraryQueue::GetInstance().RefreshItem(CFileItemPtr(new CFileItem(infos)), ignoreNfo, true, false, searchTitle);
 
   return ACK;
 }
@@ -840,7 +840,7 @@ JSONRPC_STATUS CVideoLibrary::Scan(const std::string &method, ITransportLayer *t
   std::string directory = parameterObject["directory"].asString();
   std::string cmd = StringUtils::Format("updatelibrary(video, %s, %s)", StringUtils::Paramify(directory).c_str(), parameterObject["showdialogs"].asBoolean() ? "true" : "false");
 
-  CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
@@ -855,14 +855,14 @@ JSONRPC_STATUS CVideoLibrary::Export(const std::string &method, ITransportLayer 
                               parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false",
                               parameterObject["options"]["actorthumbs"].asBoolean() ? "true" : "false");
 
-  CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
 JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string cmd = StringUtils::Format("cleanlibrary(video, %s)", parameterObject["showdialogs"].asBoolean() ? "true" : "false");
-  CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 

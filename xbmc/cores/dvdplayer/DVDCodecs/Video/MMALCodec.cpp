@@ -512,10 +512,10 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   CSingleLock lock(m_sharedSection);
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s usemmal:%d software:%d %dx%d pool:%p", CLASSNAME, __func__, CSettings::Get().GetBool("videoplayer.usemmal"), hints.software, hints.width, hints.height, options.m_opaque_pointer);
+    CLog::Log(LOGDEBUG, "%s::%s usemmal:%d software:%d %dx%d pool:%p", CLASSNAME, __func__, CSettings::GetInstance().GetBool("videoplayer.usemmal"), hints.software, hints.width, hints.height, options.m_opaque_pointer);
 
   // we always qualify even if DVDFactoryCodec does this too.
-  if (!CSettings::Get().GetBool("videoplayer.usemmal") || hints.software)
+  if (!CSettings::GetInstance().GetBool("videoplayer.usemmal") || hints.software)
     return false;
 
   m_hints = hints;
@@ -820,8 +820,8 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
 
        if (demuxer_bytes == 0)
        {
-         EDEINTERLACEMODE deinterlace_request = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
-         EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
+         EDEINTERLACEMODE deinterlace_request = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
+         EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
          bool deinterlace = m_interlace_mode != MMAL_InterlaceProgressive;
 
          // we don't keep up when running at 60fps in the background so switch to half rate

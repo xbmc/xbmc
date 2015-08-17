@@ -131,17 +131,17 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
     RootDir = FullFileName;
 
   if (RootDir == "subtitles")
-    translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH), FileName);
+    translatedPath = URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH), FileName);
   else if (RootDir == "userdata")
-    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), FileName);
+    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetUserDataFolder(), FileName);
   else if (RootDir == "database")
-    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetDatabaseFolder(), FileName);
+    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetDatabaseFolder(), FileName);
   else if (RootDir == "thumbnails")
-    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::Get().GetThumbnailsFolder(), FileName);
+    translatedPath = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetThumbnailsFolder(), FileName);
   else if (RootDir == "recordings" || RootDir == "cdrips")
-    translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH), FileName);
+    translatedPath = URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH), FileName);
   else if (RootDir == "screenshots")
-    translatedPath = URIUtils::AddFileToFolder(CSettings::Get().GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH), FileName);
+    translatedPath = URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH), FileName);
   else if (RootDir == "musicplaylists")
     translatedPath = URIUtils::AddFileToFolder(CUtil::MusicPlaylistsLocation(), FileName);
   else if (RootDir == "videoplaylists")

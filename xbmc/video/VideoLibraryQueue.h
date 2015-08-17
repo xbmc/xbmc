@@ -43,7 +43,7 @@ public:
   /*!
    \brief Gets the singleton instance of the video library queue.
   */
-  static CVideoLibraryQueue& Get();
+  static CVideoLibraryQueue& GetInstance();
 
   /*!
    \brief Enqueue a library scan job.

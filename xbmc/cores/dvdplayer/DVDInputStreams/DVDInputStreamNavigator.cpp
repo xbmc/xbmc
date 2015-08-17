@@ -102,7 +102,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
     return false;
   }
 
-  int region = CSettings::Get().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
+  int region = CSettings::GetInstance().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
   int mask = 0;
   if(region > 0)
     mask = 1 << (region-1);
@@ -177,7 +177,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   }
 
   // jump directly to title menu
-  if(CSettings::Get().GetBool(CSettings::SETTING_DVDS_AUTOMENU))
+  if(CSettings::GetInstance().GetBool(CSettings::SETTING_DVDS_AUTOMENU))
   {
     int len, event;
     uint8_t buf[2048];

@@ -162,7 +162,7 @@ int CHTTPPythonHandler::HandleRequest()
 
     CHTTPPythonInvoker* pythonInvoker = new CHTTPPythonWsgiInvoker(&g_pythonParser, pythonRequest);
     LanguageInvokerPtr languageInvokerPtr(pythonInvoker);
-    int result = CScriptInvocationManager::Get().ExecuteSync(m_scriptPath, languageInvokerPtr, m_addon, args, 30000, false);
+    int result = CScriptInvocationManager::GetInstance().ExecuteSync(m_scriptPath, languageInvokerPtr, m_addon, args, 30000, false);
 
     // check if the script couldn't be started
     if (result < 0)

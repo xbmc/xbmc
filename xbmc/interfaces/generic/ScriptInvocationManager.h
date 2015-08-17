@@ -33,7 +33,7 @@ typedef std::shared_ptr<CLanguageInvokerThread> CLanguageInvokerThreadPtr;
 class CScriptInvocationManager
 {
 public:
-  static CScriptInvocationManager& Get();
+  static CScriptInvocationManager& GetInstance();
 
   void Process();
   void Uninitialize();

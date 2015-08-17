@@ -139,7 +139,7 @@ void CPVRDatabase::UpdateTables(int iVersion)
   {
     VECADDONS addons;
     CAddonDatabase database;
-    if (database.Open() && CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
+    if (database.Open() && CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, addons, true))
     {
       /** find all old client IDs */
       std::string strQuery(PrepareSQL("SELECT idClient, sUid FROM clients"));
@@ -233,7 +233,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
   {
     try
     {
-      bool bIgnoreEpgDB = CSettings::Get().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
+      bool bIgnoreEpgDB = CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
       while (!m_pDS->eof())
       {
         CPVRChannelPtr channel = CPVRChannelPtr(new CPVRChannel());

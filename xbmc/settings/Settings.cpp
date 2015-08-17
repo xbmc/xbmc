@@ -427,7 +427,7 @@ CSettings::~CSettings()
   delete m_settingsManager;
 }
 
-CSettings& CSettings::Get()
+CSettings& CSettings::GetInstance()
 {
   static CSettings sSettings;
   return sSettings;
@@ -466,7 +466,7 @@ bool CSettings::Initialize()
 
 bool CSettings::Load()
 {
-  return Load(CProfilesManager::Get().GetSettingsFile());
+  return Load(CProfilesManager::GetInstance().GetSettingsFile());
 }
 
 bool CSettings::Load(const std::string &file)
@@ -520,7 +520,7 @@ void CSettings::SetLoaded()
 
 bool CSettings::Save()
 {
-  return Save(CProfilesManager::Get().GetSettingsFile());
+  return Save(CProfilesManager::GetInstance().GetSettingsFile());
 }
 
 bool CSettings::Save(const std::string &file)
@@ -594,51 +594,51 @@ void CSettings::Uninitialize()
   // unregister ISettingCallback implementations
   m_settingsManager->UnregisterCallback(&CEventLog::GetInstance());
   m_settingsManager->UnregisterCallback(&g_advancedSettings);
-  m_settingsManager->UnregisterCallback(&CMediaSettings::Get());
-  m_settingsManager->UnregisterCallback(&CDisplaySettings::Get());
-  m_settingsManager->UnregisterCallback(&CSeekHandler::Get());
-  m_settingsManager->UnregisterCallback(&CStereoscopicsManager::Get());
+  m_settingsManager->UnregisterCallback(&CMediaSettings::GetInstance());
+  m_settingsManager->UnregisterCallback(&CDisplaySettings::GetInstance());
+  m_settingsManager->UnregisterCallback(&CSeekHandler::GetInstance());
+  m_settingsManager->UnregisterCallback(&CStereoscopicsManager::GetInstance());
   m_settingsManager->UnregisterCallback(&g_application);
   m_settingsManager->UnregisterCallback(&g_audioManager);
   m_settingsManager->UnregisterCallback(&g_charsetConverter);
   m_settingsManager->UnregisterCallback(&g_graphicsContext);
   m_settingsManager->UnregisterCallback(&g_langInfo);
-  m_settingsManager->UnregisterCallback(&CInputManager::Get());
-  m_settingsManager->UnregisterCallback(&CNetworkServices::Get());
+  m_settingsManager->UnregisterCallback(&CInputManager::GetInstance());
+  m_settingsManager->UnregisterCallback(&CNetworkServices::GetInstance());
   m_settingsManager->UnregisterCallback(&g_passwordManager);
   m_settingsManager->UnregisterCallback(&PVR::g_PVRManager);
-  m_settingsManager->UnregisterCallback(&CRssManager::Get());
+  m_settingsManager->UnregisterCallback(&CRssManager::GetInstance());
 #if defined(TARGET_LINUX)
   m_settingsManager->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
   m_settingsManager->UnregisterCallback(&g_weatherManager);
-  m_settingsManager->UnregisterCallback(&PERIPHERALS::CPeripherals::Get());
+  m_settingsManager->UnregisterCallback(&PERIPHERALS::CPeripherals::GetInstance());
 #if defined(TARGET_DARWIN_OSX)
   m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
-  m_settingsManager->UnregisterCallback(&ActiveAE::CActiveAEDSP::Get());
+  m_settingsManager->UnregisterCallback(&ActiveAE::CActiveAEDSP::GetInstance());
 
   // cleanup the settings manager
   m_settingsManager->Clear();
 
   // unregister ISubSettings implementations
   m_settingsManager->UnregisterSubSettings(&g_application);
-  m_settingsManager->UnregisterSubSettings(&CDisplaySettings::Get());
-  m_settingsManager->UnregisterSubSettings(&CMediaSettings::Get());
-  m_settingsManager->UnregisterSubSettings(&CSkinSettings::Get());
+  m_settingsManager->UnregisterSubSettings(&CDisplaySettings::GetInstance());
+  m_settingsManager->UnregisterSubSettings(&CMediaSettings::GetInstance());
+  m_settingsManager->UnregisterSubSettings(&CSkinSettings::GetInstance());
   m_settingsManager->UnregisterSubSettings(&g_sysinfo);
-  m_settingsManager->UnregisterSubSettings(&CViewStateSettings::Get());
+  m_settingsManager->UnregisterSubSettings(&CViewStateSettings::GetInstance());
 
   // unregister ISettingsHandler implementations
   m_settingsManager->UnregisterSettingsHandler(&g_advancedSettings);
-  m_settingsManager->UnregisterSettingsHandler(&CMediaSourceSettings::Get());
-  m_settingsManager->UnregisterSettingsHandler(&CPlayerCoreFactory::Get());
-  m_settingsManager->UnregisterSettingsHandler(&CProfilesManager::Get());
+  m_settingsManager->UnregisterSettingsHandler(&CMediaSourceSettings::GetInstance());
+  m_settingsManager->UnregisterSettingsHandler(&CPlayerCoreFactory::GetInstance());
+  m_settingsManager->UnregisterSettingsHandler(&CProfilesManager::GetInstance());
 #ifdef HAS_UPNP
-  m_settingsManager->UnregisterSettingsHandler(&CUPnPSettings::Get());
+  m_settingsManager->UnregisterSettingsHandler(&CUPnPSettings::GetInstance());
 #endif
-  m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::Get());
-  m_settingsManager->UnregisterSettingsHandler(&CRssManager::Get());
+  m_settingsManager->UnregisterSettingsHandler(&CWakeOnAccess::GetInstance());
+  m_settingsManager->UnregisterSettingsHandler(&CRssManager::GetInstance());
   m_settingsManager->UnregisterSettingsHandler(&g_langInfo);
   m_settingsManager->UnregisterSettingsHandler(&g_application);
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
@@ -979,31 +979,31 @@ void CSettings::InitializeISettingsHandlers()
   // register ISettingsHandler implementations
   // The order of these matters! Handlers are processed in the order they were registered.
   m_settingsManager->RegisterSettingsHandler(&g_advancedSettings);
-  m_settingsManager->RegisterSettingsHandler(&CMediaSourceSettings::Get());
-  m_settingsManager->RegisterSettingsHandler(&CPlayerCoreFactory::Get());
-  m_settingsManager->RegisterSettingsHandler(&CProfilesManager::Get());
+  m_settingsManager->RegisterSettingsHandler(&CMediaSourceSettings::GetInstance());
+  m_settingsManager->RegisterSettingsHandler(&CPlayerCoreFactory::GetInstance());
+  m_settingsManager->RegisterSettingsHandler(&CProfilesManager::GetInstance());
 #ifdef HAS_UPNP
-  m_settingsManager->RegisterSettingsHandler(&CUPnPSettings::Get());
+  m_settingsManager->RegisterSettingsHandler(&CUPnPSettings::GetInstance());
 #endif
-  m_settingsManager->RegisterSettingsHandler(&CWakeOnAccess::Get());
-  m_settingsManager->RegisterSettingsHandler(&CRssManager::Get());
+  m_settingsManager->RegisterSettingsHandler(&CWakeOnAccess::GetInstance());
+  m_settingsManager->RegisterSettingsHandler(&CRssManager::GetInstance());
   m_settingsManager->RegisterSettingsHandler(&g_langInfo);
   m_settingsManager->RegisterSettingsHandler(&g_application);
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
   m_settingsManager->RegisterSettingsHandler(&g_timezone);
 #endif
-  m_settingsManager->RegisterSettingsHandler(&CMediaSettings::Get());
+  m_settingsManager->RegisterSettingsHandler(&CMediaSettings::GetInstance());
 }
 
 void CSettings::InitializeISubSettings()
 {
   // register ISubSettings implementations
   m_settingsManager->RegisterSubSettings(&g_application);
-  m_settingsManager->RegisterSubSettings(&CDisplaySettings::Get());
-  m_settingsManager->RegisterSubSettings(&CMediaSettings::Get());
-  m_settingsManager->RegisterSubSettings(&CSkinSettings::Get());
+  m_settingsManager->RegisterSubSettings(&CDisplaySettings::GetInstance());
+  m_settingsManager->RegisterSubSettings(&CMediaSettings::GetInstance());
+  m_settingsManager->RegisterSubSettings(&CSkinSettings::GetInstance());
   m_settingsManager->RegisterSubSettings(&g_sysinfo);
-  m_settingsManager->RegisterSubSettings(&CViewStateSettings::Get());
+  m_settingsManager->RegisterSubSettings(&CViewStateSettings::GetInstance());
 }
 
 void CSettings::InitializeISettingCallbacks()
@@ -1033,7 +1033,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_CLEANUP);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_IMPORT);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_EXPORT);
-  m_settingsManager->RegisterCallback(&CMediaSettings::Get(), settingSet);
+  m_settingsManager->RegisterCallback(&CMediaSettings::GetInstance(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_SCREEN);
@@ -1042,18 +1042,18 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_VSYNC);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE);
-  m_settingsManager->RegisterCallback(&CDisplaySettings::Get(), settingSet);
+  m_settingsManager->RegisterCallback(&CDisplaySettings::GetInstance(), settingSet);
   
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY);
   settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
   settingSet.insert(CSettings::SETTING_MUSICPLAYER_SEEKDELAY);
   settingSet.insert(CSettings::SETTING_MUSICPLAYER_SEEKSTEPS);
-  m_settingsManager->RegisterCallback(&CSeekHandler::Get(), settingSet);
+  m_settingsManager->RegisterCallback(&CSeekHandler::GetInstance(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
-  m_settingsManager->RegisterCallback(&CStereoscopicsManager::Get(), settingSet);
+  m_settingsManager->RegisterCallback(&CStereoscopicsManager::GetInstance(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_CONFIG);
@@ -1126,7 +1126,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_INPUT_ENABLEJOYSTICK);
   settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
-  m_settingsManager->RegisterCallback(&CInputManager::Get(), settingSet);
+  m_settingsManager->RegisterCallback(&CInputManager::GetInstance(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVER);
@@ -1148,7 +1148,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
   settingSet.insert(CSettings::SETTING_SMB_WINSSERVER);
   settingSet.insert(CSettings::SETTING_SMB_WORKGROUP);
-  m_settingsManager->RegisterCallback(&CNetworkServices::Get(), settingSet);
+  m_settingsManager->RegisterCallback(&CNetworkServices::GetInstance(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_MASTERLOCK_LOCKCODE);
@@ -1168,7 +1168,7 @@ void CSettings::InitializeISettingCallbacks()
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_LOOKANDFEEL_RSSEDIT);
-  m_settingsManager->RegisterCallback(&CRssManager::Get(), settingSet);
+  m_settingsManager->RegisterCallback(&CRssManager::GetInstance(), settingSet);
 
 #if defined(TARGET_LINUX)
   settingSet.clear();
@@ -1185,7 +1185,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALS);
   settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
-  m_settingsManager->RegisterCallback(&PERIPHERALS::CPeripherals::Get(), settingSet);
+  m_settingsManager->RegisterCallback(&PERIPHERALS::CPeripherals::GetInstance(), settingSet);
 
 #if defined(TARGET_DARWIN_OSX)
   settingSet.clear();
@@ -1198,12 +1198,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB);
-  m_settingsManager->RegisterCallback(&ActiveAE::CActiveAEDSP::Get(), settingSet);
+  m_settingsManager->RegisterCallback(&ActiveAE::CActiveAEDSP::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()
 {
-  std::string settingsFile = CProfilesManager::Get().GetSettingsFile();
+  std::string settingsFile = CProfilesManager::GetInstance().GetSettingsFile();
   // try to delete the settings file
   if (XFILE::CFile::Exists(settingsFile, false) && !XFILE::CFile::Delete(settingsFile))
     CLog::Log(LOGWARNING, "Unable to delete old settings file at %s", settingsFile.c_str());

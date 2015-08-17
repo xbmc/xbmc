@@ -27,7 +27,7 @@
 class CWakeOnAccess : private IJobCallback, public ISettingsHandler
 {
 public:
-  static CWakeOnAccess &Get();
+  static CWakeOnAccess &GetInstance();
 
   bool WakeUpHost (const CURL& fileUrl);
   bool WakeUpHost (const std::string& hostName, const std::string& customMessage);

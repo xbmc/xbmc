@@ -91,7 +91,7 @@ void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage ms
 {
   UpdateSelectedItemPath();
   CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
-  CApplicationMessenger::Get().SendGUIMessage(m);
+  CApplicationMessenger::GetInstance().SendGUIMessage(m);
 }
 
 bool CGUIWindowPVRBase::OnAction(const CAction &action)
@@ -280,7 +280,7 @@ bool CGUIWindowPVRBase::OnContextButtonActiveAEDSPSettings(CFileItem *item, CONT
   {
     bReturn = true;
 
-    if (ActiveAE::CActiveAEDSP::Get().IsProcessing())
+    if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
       g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
   }
 
@@ -367,7 +367,7 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
     return true;
   }
 
-  CMediaSettings::Get().SetVideoStartWindowed(bPlayMinimized);
+  CMediaSettings::GetInstance().SetVideoStartWindowed(bPlayMinimized);
 
   if (item->HasPVRRecordingInfoTag())
   {
@@ -395,7 +395,7 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
           if (pDialog->IsConfirmed())
           {
             CFileItem recordingItem(recording);
-            return PlayRecording(&recordingItem, CSettings::Get().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), bCheckResume);
+            return PlayRecording(&recordingItem, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), bCheckResume);
           }
         }
       }
@@ -410,7 +410,7 @@ bool CGUIWindowPVRBase::PlayFile(CFileItem *item, bool bPlayMinimized /* = false
 
       if (!bSwitchSuccessful)
       {
-        CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
         return true;
       }
     }
@@ -540,7 +540,7 @@ bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = 
   {
     if (bCheckResume)
       CheckResumeRecording(item);
-    CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
     return true;
   }
 
@@ -592,7 +592,7 @@ bool CGUIWindowPVRBase::PlayRecording(CFileItem *item, bool bPlayMinimized /* = 
 
   if (bCheckResume)
     CheckResumeRecording(item);
-  CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));
 
   return true;
 }
@@ -693,7 +693,7 @@ bool CGUIWindowPVRBase::ActionInputChannelNumber(int input)
 
 bool CGUIWindowPVRBase::ActionPlayChannel(CFileItem *item)
 {
-  return PlayFile(item, CSettings::Get().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED));
+  return PlayFile(item, CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED));
 }
 
 bool CGUIWindowPVRBase::ActionPlayEpg(CFileItem *item, bool bPlayRecording)

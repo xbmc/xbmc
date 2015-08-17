@@ -41,25 +41,25 @@ CLanguageResource::CLanguageResource(const cp_extension_t *ext)
   if (ext != NULL)
   {
     // parse <extension> attributes
-    std::string locale = CAddonMgr::Get().GetExtValue(ext->configuration, "@locale");
+    std::string locale = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@locale");
     m_locale = CLocale::FromString(locale);
 
     // parse <charsets>
-    cp_cfg_element_t *charsetsElement = CAddonMgr::Get().GetExtElement(ext->configuration, "charsets");
+    cp_cfg_element_t *charsetsElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "charsets");
     if (charsetsElement != NULL)
     {
-      m_charsetGui = CAddonMgr::Get().GetExtValue(charsetsElement, "gui");
-      m_forceUnicodeFont = CAddonMgr::Get().GetExtValue(charsetsElement, "gui@unicodefont") == "true";
-      m_charsetSubtitle = CAddonMgr::Get().GetExtValue(charsetsElement, "subtitle");
+      m_charsetGui = CAddonMgr::GetInstance().GetExtValue(charsetsElement, "gui");
+      m_forceUnicodeFont = CAddonMgr::GetInstance().GetExtValue(charsetsElement, "gui@unicodefont") == "true";
+      m_charsetSubtitle = CAddonMgr::GetInstance().GetExtValue(charsetsElement, "subtitle");
     }
 
     // parse <dvd>
-    cp_cfg_element_t *dvdElement = CAddonMgr::Get().GetExtElement(ext->configuration, "dvd");
+    cp_cfg_element_t *dvdElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "dvd");
     if (dvdElement != NULL)
     {
-      m_dvdLanguageMenu = CAddonMgr::Get().GetExtValue(dvdElement, "menu");
-      m_dvdLanguageAudio = CAddonMgr::Get().GetExtValue(dvdElement, "audio");
-      m_dvdLanguageSubtitle = CAddonMgr::Get().GetExtValue(dvdElement, "subtitle");
+      m_dvdLanguageMenu = CAddonMgr::GetInstance().GetExtValue(dvdElement, "menu");
+      m_dvdLanguageAudio = CAddonMgr::GetInstance().GetExtValue(dvdElement, "audio");
+      m_dvdLanguageSubtitle = CAddonMgr::GetInstance().GetExtValue(dvdElement, "subtitle");
     }
     // fall back to the language of the addon if a DVD language is not defined
     if (m_dvdLanguageMenu.empty())
@@ -70,7 +70,7 @@ CLanguageResource::CLanguageResource(const cp_extension_t *ext)
       m_dvdLanguageSubtitle = m_locale.GetLanguageCode();
 
     // parse <sorttokens>
-    cp_cfg_element_t *sorttokensElement = CAddonMgr::Get().GetExtElement(ext->configuration, "sorttokens");
+    cp_cfg_element_t *sorttokensElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "sorttokens");
     if (sorttokensElement != NULL)
     {
       for (size_t i = 0; i < sorttokensElement->num_children; ++i)
@@ -80,7 +80,7 @@ CLanguageResource::CLanguageResource(const cp_extension_t *ext)
             tokenElement.value != NULL)
         {
           std::string token(tokenElement.value);
-          std::string separators = CAddonMgr::Get().GetExtValue(&tokenElement, "@separators");
+          std::string separators = CAddonMgr::GetInstance().GetExtValue(&tokenElement, "@separators");
           if (separators.empty())
             separators = " ._";
 
@@ -105,7 +105,7 @@ AddonPtr CLanguageResource::Clone() const
 
 bool CLanguageResource::IsInUse() const
 {
-  return StringUtils::EqualsNoCase(CSettings::Get().GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
+  return StringUtils::EqualsNoCase(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
 }
 
 void CLanguageResource::OnPostInstall(bool update, bool modal)
@@ -123,7 +123,7 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
     if (IsInUse())
       g_langInfo.SetLanguage(ID());
     else
-      CSettings::Get().SetString(CSettings::SETTING_LOCALE_LANGUAGE, ID());
+      CSettings::GetInstance().SetString(CSettings::SETTING_LOCALE_LANGUAGE, ID());
   }
 }
 
@@ -156,7 +156,7 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
   std::string addonId = GetAddonId(locale);
 
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(addonId, addon, ADDON_RESOURCE_LANGUAGE, true))
+  if (!CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_RESOURCE_LANGUAGE, true))
     return false;
 
   legacyLanguage = addon->Name();
@@ -171,7 +171,7 @@ bool CLanguageResource::FindLanguageAddonByName(const std::string &legacyLanguag
   VECADDONS addons;
   if (!languageAddons.empty())
     addons = languageAddons;
-  else if (!CAddonMgr::Get().GetAddons(ADDON_RESOURCE_LANGUAGE, addons, true) || addons.empty())
+  else if (!CAddonMgr::GetInstance().GetAddons(ADDON_RESOURCE_LANGUAGE, addons, true) || addons.empty())
     return false;
 
   // try to find a language that matches the old language in name or id

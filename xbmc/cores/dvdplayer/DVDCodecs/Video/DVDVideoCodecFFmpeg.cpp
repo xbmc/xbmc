@@ -110,7 +110,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   while(*cur != PIX_FMT_NONE)
   {
 #ifdef HAVE_LIBVDPAU
-    if(VDPAU::CDecoder::IsVDPAUFormat(*cur) && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
+    if(VDPAU::CDecoder::IsVDPAUFormat(*cur) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
     {
       CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::GetFormat - Creating VDPAU(%ix%i)", avctx->width, avctx->height);
       VDPAU::CDecoder* vdp = new VDPAU::CDecoder();
@@ -124,7 +124,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     }
 #endif
 #ifdef HAS_DX
-  if(DXVA::CDecoder::Supports(*cur) && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
+  if(DXVA::CDecoder::Supports(*cur) && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
   {
     CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::GetFormat - Creating DXVA(%ix%i)", avctx->width, avctx->height);
     DXVA::CDecoder* dec = new DXVA::CDecoder();
@@ -139,7 +139,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #endif
 #ifdef HAVE_LIBVA
     // mpeg4 vaapi decoding is disabled
-    if(*cur == PIX_FMT_VAAPI_VLD && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
+    if(*cur == PIX_FMT_VAAPI_VLD && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
     {
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
       if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount) == true)
@@ -153,7 +153,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 #endif
 
 #ifdef TARGET_DARWIN_OSX
-    if (*cur == AV_PIX_FMT_VDA && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA) && g_advancedSettings.m_useFfmpegVda)
+    if (*cur == AV_PIX_FMT_VDA && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA) && g_advancedSettings.m_useFfmpegVda)
     {
       VDA::CDecoder* dec = new VDA::CDecoder();
       if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
@@ -245,19 +245,19 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   {
     bool tryhw = false;
 #ifdef HAVE_LIBVDPAU
-    if(CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
+    if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
       tryhw = true;
 #endif
 #ifdef HAVE_LIBVA
-    if(CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
+    if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
       tryhw = true;
 #endif
 #ifdef HAS_DX
-    if(CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
+    if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
       tryhw = true;
 #endif
 #ifdef TARGET_DARWIN_OSX
-    if(CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
+    if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA))
       tryhw = true;
 #endif
     if (tryhw && m_decoderState == STATE_NONE)

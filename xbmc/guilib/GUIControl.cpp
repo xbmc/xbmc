@@ -547,8 +547,8 @@ EVENT_RESULT CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent 
 // override this function to implement custom mouse behaviour
 bool CGUIControl::OnMouseOver(const CPoint &point)
 {
-  if (CInputManager::Get().GetMouseState() != MOUSE_STATE_DRAG)
-    CInputManager::Get().SetMouseState(MOUSE_STATE_FOCUS);
+  if (CInputManager::GetInstance().GetMouseState() != MOUSE_STATE_DRAG)
+    CInputManager::GetInstance().SetMouseState(MOUSE_STATE_FOCUS);
   if (!CanFocus()) return false;
   if (!HasFocus())
   {

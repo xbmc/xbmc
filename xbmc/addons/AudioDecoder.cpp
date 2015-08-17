@@ -25,15 +25,15 @@ namespace ADDON
 
 CAudioDecoder::CAudioDecoder(const cp_extension_t* ext)
  : AudioDecoderDll(ext),
-   m_extension(CAddonMgr::Get().GetExtValue(ext->configuration, "@extension")),
-   m_mimetype(CAddonMgr::Get().GetExtValue(ext->configuration, "@mimetype")),
+   m_extension(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension")),
+   m_mimetype(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@mimetype")),
    m_context(NULL),
-   m_tags(CAddonMgr::Get().GetExtValue(ext->configuration, "@tags") == "true"),
-   m_tracks(CAddonMgr::Get().GetExtValue(ext->configuration, "@tracks") == "true"),
+   m_tags(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@tags") == "true"),
+   m_tracks(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@tracks") == "true"),
    m_channel(NULL)
 {
-  m_CodecName = CAddonMgr::Get().GetExtValue(ext->configuration, "@name");
-  m_strExt = CAddonMgr::Get().GetExtValue(ext->configuration, "@name")+"stream";
+  m_CodecName = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@name");
+  m_strExt = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@name")+"stream";
 }
 
 AddonPtr CAudioDecoder::Clone() const

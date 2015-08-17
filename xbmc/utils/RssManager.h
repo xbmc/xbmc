@@ -42,7 +42,7 @@ typedef std::map<int, RssSet> RssUrls;
 class CRssManager : public ISettingCallback, public ISettingsHandler
 {
 public:
-  static CRssManager& Get();
+  static CRssManager& GetInstance();
 
   virtual void OnSettingsLoaded();
   virtual void OnSettingsUnloaded();

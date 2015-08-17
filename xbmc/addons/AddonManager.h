@@ -71,7 +71,7 @@ namespace ADDON
   class CAddonMgr : public Observable
   {
   public:
-    static CAddonMgr &Get();
+    static CAddonMgr &GetInstance();
     bool ReInit() { DeInit(); return Init(); }
     bool Init();
     void DeInit();

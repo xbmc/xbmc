@@ -75,7 +75,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   CPVRChannelPtr channel(pItem->GetPVRChannelInfoTag());
 
-  if (ActiveAE::CActiveAEDSP::Get().IsProcessing())
+  if (ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
     buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);                        /* if something is played and dsp is active, allow settings selection */
 
   buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
@@ -90,7 +90,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
 
   buttons.Add(CONTEXT_BUTTON_EDIT, 16106);                                          /* "Manage" submenu */
 
-  CContextMenuManager::Get().AddVisibleItems(pItem, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
 }
 
 std::string CGUIWindowPVRChannels::GetDirectoryPath(void)

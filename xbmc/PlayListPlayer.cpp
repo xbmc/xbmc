@@ -718,7 +718,7 @@ void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &
   CVariant data;
   data["player"]["playerid"] = iPlaylist;
   data["property"][strProperty] = value;
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
 }
 
 int PLAYLIST::CPlayListPlayer::GetMessageMask()
@@ -876,7 +876,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       if (GetCurrentPlaylist() != pMsg->param1)
         SetCurrentPlaylist(pMsg->param1);
 
-      CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, pMsg->param2);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, pMsg->param2);
     }
   }
   break;

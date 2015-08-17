@@ -66,7 +66,7 @@ bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
     // check if we should clear all items
     if (iControl == CONTROL_BUTTON_CLEAR)
     {
-      CEventLog::GetInstance().Clear(CViewStateSettings::Get().GetEventLevel(), CViewStateSettings::Get().ShowHigherEventLevels());
+      CEventLog::GetInstance().Clear(CViewStateSettings::GetInstance().GetEventLevel(), CViewStateSettings::GetInstance().ShowHigherEventLevels());
 
       // refresh the list
       Refresh(true);
@@ -77,8 +77,8 @@ bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
     if (iControl == CONTROL_BUTTON_LEVEL)
     {
       // update the event level
-      CViewStateSettings::Get().CycleEventLevel();
-      CSettings::Get().Save();
+      CViewStateSettings::GetInstance().CycleEventLevel();
+      CSettings::GetInstance().Save();
 
       // update the listing
       Refresh();
@@ -89,8 +89,8 @@ bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
     if (iControl == CONTROL_BUTTON_LEVEL_ONLY)
     {
       // update whether to show higher event levels
-      CViewStateSettings::Get().ToggleShowHigherEventLevels();
-      CSettings::Get().Save();
+      CViewStateSettings::GetInstance().ToggleShowHigherEventLevels();
+      CSettings::GetInstance().Save();
 
       // update the listing
       Refresh();
@@ -206,13 +206,13 @@ void CGUIWindowEventLog::UpdateButtons()
   // only enable the "clear" button if there is something to clear
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_CLEAR, m_vecItems->GetObjectCount() > 0);
 
-  EventLevel eventLevel = CViewStateSettings::Get().GetEventLevel();
+  EventLevel eventLevel = CViewStateSettings::GetInstance().GetEventLevel();
   // set the label of the "level" button
   SET_CONTROL_LABEL(CONTROL_BUTTON_LEVEL, StringUtils::Format(g_localizeStrings.Get(14119).c_str(), g_localizeStrings.Get(14115 + (int)eventLevel).c_str()));
 
   // set the label, value and enabled state of the "level only" button
   SET_CONTROL_LABEL(CONTROL_BUTTON_LEVEL_ONLY, 14120);
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BUTTON_LEVEL_ONLY, CViewStateSettings::Get().ShowHigherEventLevels());
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BUTTON_LEVEL_ONLY, CViewStateSettings::GetInstance().ShowHigherEventLevels());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_LEVEL_ONLY, eventLevel < EventLevelError);
 
   CGUIMediaWindow::UpdateButtons();
@@ -222,8 +222,8 @@ bool CGUIWindowEventLog::GetDirectory(const std::string &strDirectory, CFileItem
 {
   bool result = CGUIMediaWindow::GetDirectory(strDirectory, items);
 
-  EventLevel currentLevel = CViewStateSettings::Get().GetEventLevel();
-  bool showHigherLevels = CViewStateSettings::Get().ShowHigherEventLevels();
+  EventLevel currentLevel = CViewStateSettings::GetInstance().GetEventLevel();
+  bool showHigherLevels = CViewStateSettings::GetInstance().ShowHigherEventLevels();
 
   CFileItemList filteredItems(items.GetPath());
   for (int i = 0; i < items.Size(); i++)

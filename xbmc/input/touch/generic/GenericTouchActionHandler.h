@@ -34,7 +34,7 @@ public:
   /*!
    \brief Get an instance of the touch input manager
    */
-  static CGenericTouchActionHandler &Get();
+  static CGenericTouchActionHandler &GetInstance();
 
   // implementation of ITouchActionHandler
   virtual void OnTouchAbort();

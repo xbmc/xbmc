@@ -295,7 +295,7 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   ChooseBestResolution(fps);
   m_destWidth = g_graphicsContext.GetResInfo(m_resolution).iWidth;
   m_destHeight = g_graphicsContext.GetResInfo(m_resolution).iHeight;
-  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
   m_bMMALConfigured = init_vout(format);
@@ -535,7 +535,7 @@ unsigned int CMMALRenderer::PreInit()
 
   m_iFlags = 0;
 
-  m_resolution = CDisplaySettings::Get().GetCurrentResolution();
+  m_resolution = CDisplaySettings::GetInstance().GetCurrentResolution();
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
 
@@ -721,8 +721,8 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
   // might need to scale up m_dst_rect to display size as video decodes
   // to separate video plane that is at display size.
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  CRect gui(0, 0, CDisplaySettings::Get().GetResolutionInfo(res).iWidth, CDisplaySettings::Get().GetResolutionInfo(res).iHeight);
-  CRect display(0, 0, CDisplaySettings::Get().GetResolutionInfo(res).iScreenWidth, CDisplaySettings::Get().GetResolutionInfo(res).iScreenHeight);
+  CRect gui(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iHeight);
+  CRect display(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenHeight);
 
   if (display_stereo_mode != RENDER_STEREO_MODE_OFF && display_stereo_mode != RENDER_STEREO_MODE_MONO)
   switch (video_stereo_mode)

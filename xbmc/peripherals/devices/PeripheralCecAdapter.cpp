@@ -94,7 +94,7 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
 {
   {
     CSingleLock lock(m_critSection);
-    CAnnouncementManager::Get().RemoveAnnouncer(this);
+    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
     m_bStop = true;
   }
 
@@ -148,7 +148,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   {
     CSingleLock lock(m_critSection);
     m_iExitCode = static_cast<int>(data["exitcode"].asInteger(EXITCODE_QUIT));
-    CAnnouncementManager::Get().RemoveAnnouncer(this);
+    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
     StopThread(false);
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
@@ -366,7 +366,7 @@ void CPeripheralCecAdapter::Process(void)
     m_bActiveSourceBeforeStandby = false;
   }
 
-  CAnnouncementManager::Get().AddAnnouncer(this);
+  CAnnouncementManager::GetInstance().AddAnnouncer(this);
 
   m_queryThread = new CPeripheralCecAdapterUpdateThread(this, &m_configuration);
   m_queryThread->Create(false);
@@ -602,7 +602,7 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)
   if (!strGuiLanguage.empty())
   {
     strGuiLanguage = "resource.language." + strGuiLanguage;
-    CApplicationMessenger::Get().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, strGuiLanguage);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, strGuiLanguage);
     CLog::Log(LOGDEBUG, "%s - language set to '%s'", __FUNCTION__, strGuiLanguage.c_str());
   }
   else
@@ -1172,7 +1172,7 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
         pSlideShow->OnAction(CAction(ACTION_PAUSE));
       else
         // pause/resume player
-        CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
     }
   }
 }
@@ -1657,7 +1657,7 @@ bool CPeripheralCecAdapter::ReopenConnection(void)
   {
     CSingleLock lock(m_critSection);
     m_iExitCode = EXITCODE_RESTARTAPP;
-    CAnnouncementManager::Get().RemoveAnnouncer(this);
+    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
     StopThread(false);
   }
   StopThread();

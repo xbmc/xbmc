@@ -209,7 +209,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 
 #if defined(HAS_LIBAMCODEC)
   // amcodec can handle dvd playback.
-  if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC))
+  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC))
   {
     switch(hint.codec)
     {
@@ -234,7 +234,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(TARGET_DARWIN_OSX)
-  if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA) && !g_advancedSettings.m_useFfmpegVda)
+  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDA) && !g_advancedSettings.m_useFfmpegVda)
   {
     if (hint.codec == AV_CODEC_ID_H264 && !hint.ptsinvalid)
     {
@@ -244,7 +244,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
-  if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
+  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVIDEOTOOLBOX))
   {
     if (g_sysinfo.HasVideoToolBoxDecoder())
     {
@@ -263,7 +263,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(TARGET_ANDROID)
-  if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC))
+  if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC))
   {
     switch(hint.codec)
     {
@@ -282,7 +282,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(HAVE_LIBOPENMAX)
-    if (CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMX) && !hint.software )
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMX) && !hint.software )
     {
       if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_VC1)
       {
@@ -292,7 +292,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(HAS_MMAL)
-    if (CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) && !hint.software )
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) && !hint.software )
     {
       if (hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_H263 || hint.codec == AV_CODEC_ID_MPEG4 ||
           hint.codec == AV_CODEC_ID_MPEG1VIDEO || hint.codec == AV_CODEC_ID_MPEG2VIDEO ||
@@ -305,7 +305,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, const C
 #endif
 
 #if defined(HAS_LIBSTAGEFRIGHT)
-    if (!hint.software && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT))
+    if (!hint.software && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT))
     {
       switch(hint.codec)
       {

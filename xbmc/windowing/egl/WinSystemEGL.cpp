@@ -334,7 +334,7 @@ bool CWinSystemEGL::DestroyWindow()
 bool CWinSystemEGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight, true, 0);
-  int vsync_mode = CSettings::Get().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
+  int vsync_mode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
   if (vsync_mode != VSYNC_DRIVER)
     SetVSyncImpl(m_iVSyncMode);
   return true;
@@ -344,7 +344,7 @@ bool CWinSystemEGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 {
   CreateNewWindow("", fullScreen, res, NULL);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
-  int vsync_mode = CSettings::Get().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
+  int vsync_mode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_VSYNC);
   if (vsync_mode != VSYNC_DRIVER)
     SetVSyncImpl(m_iVSyncMode);
   return true;
@@ -387,14 +387,14 @@ void CWinSystemEGL::UpdateResolutions()
   {
     // if this is a new setting,
     // create a new empty setting to fill in.
-    if ((int)CDisplaySettings::Get().ResolutionInfoSize() <= res_index)
+    if ((int)CDisplaySettings::GetInstance().ResolutionInfoSize() <= res_index)
     {
       RESOLUTION_INFO res;
-      CDisplaySettings::Get().AddResolutionInfo(res);
+      CDisplaySettings::GetInstance().AddResolutionInfo(res);
     }
 
     g_graphicsContext.ResetOverscan(resolutions[i]);
-    CDisplaySettings::Get().GetResolutionInfo(res_index) = resolutions[i];
+    CDisplaySettings::GetInstance().GetResolutionInfo(res_index) = resolutions[i];
 
     CLog::Log(LOGNOTICE, "Found resolution %d x %d for display %d with %d x %d%s @ %f Hz\n",
       resolutions[i].iWidth,
@@ -427,9 +427,9 @@ void CWinSystemEGL::UpdateResolutions()
       resDesktop.fRefreshRate,
       (int)ResDesktop, (int)RES_DESKTOP);
 
-    RESOLUTION_INFO desktop = CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP);
-    CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP) = CDisplaySettings::Get().GetResolutionInfo(ResDesktop);
-    CDisplaySettings::Get().GetResolutionInfo(ResDesktop) = desktop;
+    RESOLUTION_INFO desktop = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+    CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = CDisplaySettings::GetInstance().GetResolutionInfo(ResDesktop);
+    CDisplaySettings::GetInstance().GetResolutionInfo(ResDesktop) = desktop;
   }
 }
 
@@ -534,18 +534,18 @@ EGLConfig CWinSystemEGL::GetEGLConfig()
 // the logic in this function should match whether CBaseRenderer::FindClosestResolution picks a 3D mode
 bool CWinSystemEGL::Support3D(int width, int height, uint32_t mode) const
 {
-  RESOLUTION_INFO &curr = CDisplaySettings::Get().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
+  RESOLUTION_INFO &curr = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
 
   // if we are using automatic hdmi mode switching
-  if (CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
   {
     int searchWidth = curr.iScreenWidth;
     int searchHeight = curr.iScreenHeight;
 
     // only search the custom resolutions
-    for (unsigned int i = (int)RES_DESKTOP; i < CDisplaySettings::Get().ResolutionInfoSize(); i++)
+    for (unsigned int i = (int)RES_DESKTOP; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
     {
-      RESOLUTION_INFO res = CDisplaySettings::Get().GetResolutionInfo(i);
+      RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(i);
       if(res.iScreenWidth == searchWidth && res.iScreenHeight == searchHeight && (res.dwFlags & mode))
         return true;
     }

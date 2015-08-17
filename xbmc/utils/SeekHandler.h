@@ -38,7 +38,7 @@ enum SeekType
 class CSeekHandler : public ISettingCallback, public IActionListener
 {
 public:
-  static CSeekHandler& Get();
+  static CSeekHandler& GetInstance();
 
   static void SettingOptionsSeekStepsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   

@@ -51,7 +51,7 @@ public:
   /*!
    * @return static instance of CStereoscopicsManager
    */
-  static CStereoscopicsManager& Get(void);
+  static CStereoscopicsManager& GetInstance();
 
   void Initialize(void);
   RENDER_STEREO_MODE GetStereoMode(void);

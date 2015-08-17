@@ -165,14 +165,14 @@ void CGUIWindowLoginScreen::FrameMove()
   if (GetFocusedControlID() == CONTROL_BIG_LIST && g_windowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
-  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, CProfilesManager::Get().GetNumberOfProfiles());
+  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, CProfilesManager::GetInstance().GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
 
 void CGUIWindowLoginScreen::OnInitWindow()
 {
-  m_iSelectedItem = (int)CProfilesManager::Get().GetLastUsedProfileIndex();
+  m_iSelectedItem = (int)CProfilesManager::GetInstance().GetLastUsedProfileIndex();
   // Update list/thumb control
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
   Update();
@@ -200,9 +200,9 @@ void CGUIWindowLoginScreen::OnWindowUnload()
 void CGUIWindowLoginScreen::Update()
 {
   m_vecItems->Clear();
-  for (unsigned int i=0;i<CProfilesManager::Get().GetNumberOfProfiles(); ++i)
+  for (unsigned int i=0;i<CProfilesManager::GetInstance().GetNumberOfProfiles(); ++i)
   {
-    const CProfile *profile = CProfilesManager::Get().GetProfile(i);
+    const CProfile *profile = CProfilesManager::GetInstance().GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
     std::string strLabel;
     if (profile->getDate().empty())
@@ -235,15 +235,15 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (iItem == 0 && g_passwordManager.iMasterLockRetriesLeft == 0)
     choices.Add(2, 12334);
 
-  CContextMenuManager::Get().AddVisibleItems(pItem, choices);
+  CContextMenuManager::GetInstance().AddVisibleItems(pItem, choices);
 
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 2)
   {
-    if (g_passwordManager.CheckLock(CProfilesManager::Get().GetMasterProfile().getLockMode(),CProfilesManager::Get().GetMasterProfile().getLockCode(),20075))
-      g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+    if (g_passwordManager.CheckLock(CProfilesManager::GetInstance().GetMasterProfile().getLockMode(),CProfilesManager::GetInstance().GetMasterProfile().getLockCode(),20075))
+      g_passwordManager.iMasterLockRetriesLeft = CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     else // be inconvenient
-      CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
 
     return true;
   }
@@ -253,11 +253,11 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
   
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
-  if (iItem < (int)CProfilesManager::Get().GetNumberOfProfiles())
+  if (iItem < (int)CProfilesManager::GetInstance().GetNumberOfProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
 
   if (choice >= CONTEXT_BUTTON_FIRST_ADDON)
-    return CContextMenuManager::Get().OnClick(choice, pItem);
+    return CContextMenuManager::GetInstance().OnClick(choice, pItem);
   return false;
 }
 
@@ -274,18 +274,18 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 {
   // stop service addons and give it some time before we start it again
-  ADDON::CAddonMgr::Get().StopServices(true);
+  ADDON::CAddonMgr::GetInstance().StopServices(true);
 
   // stop PVR related services
   g_application.StopPVRManager();
 
   // stop audio DSP services with a blocking message
-  CApplicationMessenger::Get().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF);
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF);
 
-  if (profile != 0 || !CProfilesManager::Get().IsMasterProfile())
+  if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    CProfilesManager::Get().LoadProfile(profile);
+    CProfilesManager::GetInstance().LoadProfile(profile);
   }
   else
   {
@@ -295,10 +295,10 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   }
   g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
 
-  CProfilesManager::Get().UpdateCurrentProfileDate();
-  CProfilesManager::Get().Save();
+  CProfilesManager::GetInstance().UpdateCurrentProfileDate();
+  CProfilesManager::GetInstance().Save();
 
-  if (CProfilesManager::Get().GetLastUsedProfileIndex() != profile)
+  if (CProfilesManager::GetInstance().GetLastUsedProfileIndex() != profile)
   {
     g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
@@ -306,11 +306,11 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   }
 
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
-  ADDON::CAddonMgr::Get().ReInit();
+  ADDON::CAddonMgr::GetInstance().ReInit();
 
   if (!g_application.LoadLanguage(true))
   {
-    CLog::Log(LOGFATAL, "CGUIWindowLoginScreen: unable to load language for profile \"%s\"", CProfilesManager::Get().GetCurrentProfile().getName().c_str());
+    CLog::Log(LOGFATAL, "CGUIWindowLoginScreen: unable to load language for profile \"%s\"", CProfilesManager::GetInstance().GetCurrentProfile().getName().c_str());
     return;
   }
 
@@ -322,7 +322,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #endif
 
   // start services which should run on login 
-  ADDON::CAddonMgr::Get().StartServices(false);
+  ADDON::CAddonMgr::GetInstance().StartServices(false);
 
   // start PVR related services
   g_application.StartPVRManager();
@@ -334,10 +334,10 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   g_windowManager.ChangeActiveWindow(firstWindow);
 
   g_application.UpdateLibraries();
-  CStereoscopicsManager::Get().Initialize();
+  CStereoscopicsManager::GetInstance().Initialize();
 
   // start audio DSP related services with a blocking message
-  CApplicationMessenger::Get().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)

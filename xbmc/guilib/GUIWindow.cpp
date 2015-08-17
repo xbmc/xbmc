@@ -410,9 +410,9 @@ void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bo
     CSingleExit leaveIt(g_graphicsContext);
     int param2 = (forceClose ? 0x01 : 0) | (enableSound ? 0x02 : 0);
     if (bWait)
-      CApplicationMessenger::Get().SendMsg(TMSG_GUI_WINDOW_CLOSE, nextWindowID, param2, static_cast<void*>(this));
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_WINDOW_CLOSE, nextWindowID, param2, static_cast<void*>(this));
     else
-      CApplicationMessenger::Get().PostMsg(TMSG_GUI_WINDOW_CLOSE, nextWindowID, param2, static_cast<void*>(this));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_WINDOW_CLOSE, nextWindowID, param2, static_cast<void*>(this));
   }
   else
     Close_Internal(forceClose, nextWindowID, enableSound);
@@ -842,7 +842,7 @@ bool CGUIWindow::Initialize()
     // if not app thread, send gui msg via app messenger
     // and wait for results, so windowLoaded flag would be updated
     CGUIMessage msg(GUI_MSG_WINDOW_LOAD, 0, 0);
-    CApplicationMessenger::Get().SendGUIMessage(msg, GetID(), true);
+    CApplicationMessenger::GetInstance().SendGUIMessage(msg, GetID(), true);
   }
   return m_windowLoaded;
 }

@@ -140,8 +140,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         if (!g_partyModeManager.IsEnabled())
         {
           g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, !(g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC)));
-          CMediaSettings::Get().SetMusicPlaylistShuffled(g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC));
-          CSettings::Get().Save();
+          CMediaSettings::GetInstance().SetMusicPlaylistShuffled(g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC));
+          CSettings::GetInstance().Save();
           UpdateButtons();
           Refresh();
         }
@@ -190,8 +190,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
           g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
 
         // save settings
-        CMediaSettings::Get().SetMusicPlaylistRepeat(g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL);
-        CSettings::Get().Save();
+        CMediaSettings::GetInstance().SetMusicPlaylistRepeat(g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL);
+        CSettings::GetInstance().Save();
 
         UpdateButtons();
       }
@@ -286,7 +286,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
   if (CGUIKeyboardFactory::ShowAndGetInput(strNewFileName, CVariant{g_localizeStrings.Get(16012)}, false))
   {
     // need 2 rename it
-    std::string strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "music");
+    std::string strFolder = URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "music");
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
     std::string strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
@@ -448,12 +448,12 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
   { // set label 1+2 from tags
     if (m_guiState.get()) m_hideExtensions = m_guiState->HideExtensions();
-    std::string strTrackLeft=CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT);
+    std::string strTrackLeft=CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMAT);
     if (strTrackLeft.empty())
-      strTrackLeft = CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
-    std::string strTrackRight=CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMATRIGHT);
+      strTrackLeft = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
+    std::string strTrackRight=CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_NOWPLAYINGTRACKFORMATRIGHT);
     if (strTrackRight.empty())
-      strTrackRight = CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT);
+      strTrackRight = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT);
     CLabelFormatter formatter(strTrackLeft, strTrackRight);
     formatter.FormatLabels(pItem);
   } // if (pItem->m_musicInfoTag.Loaded())
@@ -517,7 +517,7 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     { // aren't in a move
       // check what players we have, if we have multiple display play with option
       VECPLAYERCORES vecCores;
-      CPlayerCoreFactory::Get().GetPlayers(*item, vecCores);
+      CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
       if (vecCores.size() > 1)
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
 
@@ -544,7 +544,7 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
   }
 
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
-    CContextMenuManager::Get().AddVisibleItems(m_vecItems->Get(itemNumber), buttons);
+    CContextMenuManager::GetInstance().AddVisibleItems(m_vecItems->Get(itemNumber), buttons);
 }
 
 bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -560,8 +560,8 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
         break;
 
       VECPLAYERCORES vecCores;  
-      CPlayerCoreFactory::Get().GetPlayers(*item, vecCores);
-      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::Get().SelectPlayerDialog(vecCores);
+      CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
+      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(vecCores);
       if( g_application.m_eForcedNextPlayer != EPC_NONE )
         OnClick(itemNumber);
       return true;
@@ -604,7 +604,7 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
   {
-    std::string playlist = CProfilesManager::Get().GetUserDataItem("PartyMode.xsp");
+    std::string playlist = CProfilesManager::GetInstance().GetUserDataItem("PartyMode.xsp");
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

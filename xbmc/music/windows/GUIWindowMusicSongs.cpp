@@ -84,7 +84,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        message.SetStringParam(CMediaSourceSettings::Get().GetDefaultSource("music"));
+        message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource("music"));
 
       return CGUIWindowMusicBase::OnMessage(message);
     }
@@ -203,7 +203,7 @@ bool CGUIWindowMusicSongs::GetDirectory(const std::string &strDirectory, CFileIt
   items.FilterCueItems();
 
   std::string label;
-  if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("music"), &label)) 
+  if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("music"), &label)) 
     items.SetLabel(label);
 
   return true;
@@ -347,7 +347,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
 
       // enable CDDB lookup if the current dir is CDDA
       if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
-         (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+         (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
       }
@@ -355,7 +355,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       if (!item->IsParentFolder() && !item->IsReadOnly())
       {
         // either we're at the playlist location or its been explicitly allowed
-        if (inPlaylists || CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION))
+        if (inPlaylists || CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION))
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
@@ -370,7 +370,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
              !item->IsPath("add") && !item->IsParentFolder() &&
              !item->IsPlugin()                                         &&
              !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
-            (CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+            (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
     }
@@ -381,7 +381,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
 
-  CContextMenuManager::Get().AddVisibleItems(item, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

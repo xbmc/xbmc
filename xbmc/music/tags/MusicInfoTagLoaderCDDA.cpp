@@ -62,7 +62,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
 
     // Prepare cddb
     Xcddb cddb;
-    cddb.setCacheDir(CProfilesManager::Get().GetCDDBFolder());
+    cddb.setCacheDir(CProfilesManager::GetInstance().GetCDDBFolder());
 
     int iTrack = atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
 

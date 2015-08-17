@@ -78,7 +78,7 @@ CUPnPServer::CUPnPServer(const char* friendly_name, const char* uuid /*= NULL*/,
 
 CUPnPServer::~CUPnPServer()
 {
-    ANNOUNCEMENT::CAnnouncementManager::Get().RemoveAnnouncer(this);
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
 }
 
 /*----------------------------------------------------------------------
@@ -115,7 +115,7 @@ CUPnPServer::SetupServices()
     OnScanCompleted(VideoLibrary);
 
     // now safe to start passing on new notifications
-    ANNOUNCEMENT::CAnnouncementManager::Get().AddAnnouncer(this);
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
 
     return result;
 }
@@ -165,7 +165,7 @@ CUPnPServer::PropagateUpdates()
     string buffer;
     map<string,pair<bool, unsigned long> >::iterator itr;
 
-    if (m_scanning || !CSettings::Get().GetBool(CSettings::SETTING_SERVICES_UPNPANNOUNCE))
+    if (m_scanning || !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPANNOUNCE))
         return;
 
     NPT_CHECK_LABEL(FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service), failed);
@@ -1077,7 +1077,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
               CVariant data;
               data["id"] = updated.GetVideoInfoTag()->m_iDbId;
               data["type"] = updated.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
             }
             updatelisting = true;
         }

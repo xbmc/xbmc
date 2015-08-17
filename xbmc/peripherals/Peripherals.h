@@ -37,14 +37,14 @@ class CKey;
 
 namespace PERIPHERALS
 {
-  #define g_peripherals CPeripherals::Get()
+  #define g_peripherals CPeripherals::GetInstance()
 
   class CPeripherals :  public ISettingCallback,
                         public Observable,
                         public KODI::MESSAGING::IMessageTarget
   {
   public:
-    static CPeripherals &Get(void);
+    static CPeripherals &GetInstance();
     virtual ~CPeripherals(void);
 
     /*!

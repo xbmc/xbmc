@@ -46,14 +46,14 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_iClientIndex        = -1;
   m_iParentClientIndex  = PVR_TIMER_NO_PARENT;
   m_iClientChannelUid   = PVR_INVALID_CHANNEL_UID;
-  m_iPriority           = CSettings::Get().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTPRIORITY);
-  m_iLifetime           = CSettings::Get().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTLIFETIME);
-  m_iPreventDupEpisodes = CSettings::Get().GetInt(CSettings::SETTING_PVRRECORD_PREVENTDUPLICATEEPISODES);
+  m_iPriority           = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTPRIORITY);
+  m_iLifetime           = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTLIFETIME);
+  m_iPreventDupEpisodes = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_PREVENTDUPLICATEEPISODES);
   m_iRecordingGroup     = 0;
   m_iChannelNumber      = 0;
   m_bIsRadio            = bRadio;
-  m_iMarginStart        = CSettings::Get().GetInt(CSettings::SETTING_PVRRECORD_MARGINSTART);
-  m_iMarginEnd          = CSettings::Get().GetInt(CSettings::SETTING_PVRRECORD_MARGINEND);
+  m_iMarginStart        = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_MARGINSTART);
+  m_iMarginEnd          = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRRECORD_MARGINEND);
   m_iGenreType          = 0;
   m_iGenreSubType       = 0;
   m_StartTime           = CDateTime::GetUTCDateTime();
@@ -849,7 +849,7 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
 
 void CPVRTimerInfoTag::QueueNotification(void) const
 {
-  if (CSettings::Get().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
   {
     std::string strMessage;
     GetNotificationText(strMessage);

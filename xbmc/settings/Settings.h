@@ -375,7 +375,7 @@ public:
   /*!
    \brief Creates a new settings wrapper around a new settings manager.
 
-   For access to the "global" settings wrapper the static Get() method should
+   For access to the "global" settings wrapper the static GetInstance() method should
    be used.
    */
   CSettings();
@@ -386,7 +386,7 @@ public:
 
    \return "global" settings wrapper
    */
-  static CSettings& Get();
+  static CSettings& GetInstance();
 
   CSettingsManager* GetSettingsManager() const { return m_settingsManager; }
 

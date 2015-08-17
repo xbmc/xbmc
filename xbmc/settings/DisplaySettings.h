@@ -35,7 +35,7 @@ class CDisplaySettings : public ISettingCallback, public ISubSettings,
                          public Observable
 {
 public:
-  static CDisplaySettings& Get();
+  static CDisplaySettings& GetInstance();
 
   virtual bool Load(const TiXmlNode *settings);
   virtual bool Save(TiXmlNode *settings) const;

@@ -38,14 +38,14 @@ CWebinterface::CWebinterface(const cp_extension_t *ext)
     m_entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT)
 {
   // determine the type of the webinterface
-  std::string webinterfaceType = CAddonMgr::Get().GetExtValue(ext->configuration, "@type");
+  std::string webinterfaceType = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@type");
   if (StringUtils::EqualsNoCase(webinterfaceType.c_str(), "wsgi"))
     m_type = WebinterfaceTypeWsgi;
   else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "static") && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "html"))
     CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", ID().c_str(), webinterfaceType.c_str());
 
   // determine the entry point of the webinterface
-  std::string entryPoint = CAddonMgr::Get().GetExtValue(ext->configuration, "@entry");
+  std::string entryPoint = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@entry");
   if (!entryPoint.empty())
     m_entryPoint = entryPoint;
 }

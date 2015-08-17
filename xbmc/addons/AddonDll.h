@@ -97,7 +97,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
 {
   // if library attribute isn't present, look for a system-dependent one
   if (ext && m_strLibName.empty())
-    m_strLibName = CAddonMgr::Get().GetPlatformLibraryName(ext->configuration);
+    m_strLibName = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);
 
   m_pStruct     = NULL;
   m_initialized = false;
@@ -237,7 +237,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
     if (status == ADDON_STATUS_OK)
     {
       m_initialized = true;
-      ANNOUNCEMENT::CAnnouncementManager::Get().AddAnnouncer(this);
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
     }
     else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
     {
@@ -303,7 +303,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
-  ANNOUNCEMENT::CAnnouncementManager::Get().RemoveAnnouncer(this);
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
 
   /* Unload library file */
   try

@@ -281,11 +281,11 @@ bool CMediaManager::SetLocationPath(const std::string& oldPath, const std::strin
 
 void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 {
-  CMediaSourceSettings::Get().AddShare("files", share);
-  CMediaSourceSettings::Get().AddShare("video", share);
-  CMediaSourceSettings::Get().AddShare("pictures", share);
-  CMediaSourceSettings::Get().AddShare("music", share);
-  CMediaSourceSettings::Get().AddShare("programs", share);
+  CMediaSourceSettings::GetInstance().AddShare("files", share);
+  CMediaSourceSettings::GetInstance().AddShare("video", share);
+  CMediaSourceSettings::GetInstance().AddShare("pictures", share);
+  CMediaSourceSettings::GetInstance().AddShare("music", share);
+  CMediaSourceSettings::GetInstance().AddShare("programs", share);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   g_windowManager.SendThreadMessage( msg );
 
@@ -297,11 +297,11 @@ void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 
 void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 {
-  CMediaSourceSettings::Get().DeleteSource("files", share.strName, share.strPath, true);
-  CMediaSourceSettings::Get().DeleteSource("video", share.strName, share.strPath, true);
-  CMediaSourceSettings::Get().DeleteSource("pictures", share.strName, share.strPath, true);
-  CMediaSourceSettings::Get().DeleteSource("music", share.strName, share.strPath, true);
-  CMediaSourceSettings::Get().DeleteSource("programs", share.strName, share.strPath, true);
+  CMediaSourceSettings::GetInstance().DeleteSource("files", share.strName, share.strPath, true);
+  CMediaSourceSettings::GetInstance().DeleteSource("video", share.strName, share.strPath, true);
+  CMediaSourceSettings::GetInstance().DeleteSource("pictures", share.strName, share.strPath, true);
+  CMediaSourceSettings::GetInstance().DeleteSource("music", share.strName, share.strPath, true);
+  CMediaSourceSettings::GetInstance().DeleteSource("programs", share.strName, share.strPath, true);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   g_windowManager.SendThreadMessage( msg );
 
@@ -679,8 +679,8 @@ std::vector<std::string> CMediaManager::GetDiskUsage()
 void CMediaManager::OnStorageAdded(const std::string &label, const std::string &path)
 {
 #ifdef HAS_DVD_DRIVE
-  if (CSettings::Get().GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) != AUTOCD_NONE || CSettings::Get().GetBool(CSettings::SETTING_DVDS_AUTORUN))
-    if (CSettings::Get().GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) != AUTOCD_NONE || CSettings::GetInstance().GetBool(CSettings::SETTING_DVDS_AUTORUN))
+    if (CSettings::GetInstance().GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP)
       CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_LOW);
     else
       CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);

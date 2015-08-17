@@ -29,7 +29,7 @@ class TiXmlNode;
 class CMediaSourceSettings : public ISettingsHandler
 {
 public:
-  static CMediaSourceSettings& Get();
+  static CMediaSourceSettings& GetInstance();
 
   static std::string GetSourcesFile();
   
