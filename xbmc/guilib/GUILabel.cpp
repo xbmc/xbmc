@@ -105,7 +105,7 @@ void CGUILabel::Render()
   bool renderSolid = (m_color == COLOR_DISABLED);
   bool overFlows = (m_renderRect.Width() + 0.5f < m_textLayout.GetTextWidth()); // 0.5f to deal with floating point rounding issues
   if (overFlows && m_scrolling && !renderSolid)
-    m_textLayout.RenderScrolling(m_renderRect.x1, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, 0, m_renderRect.Width(), m_scrollInfo);
+    m_textLayout.RenderScrolling(m_renderRect.x1, m_renderRect.y1, color, m_label.shadowColor, 0, m_renderRect.Width(), m_scrollInfo);
   else
   {
     float posX = m_renderRect.x1;
@@ -120,13 +120,13 @@ void CGUILabel::Render()
         posX += m_renderRect.Width();
       else if (m_label.align & XBFONT_CENTER_X)
         posX += m_renderRect.Width() * 0.5f;
-      if (m_label.align & XBFONT_CENTER_Y) // need to pass a centered Y so that <angle> will rotate around the correct point.
+      if (m_label.align & XBFONT_CENTER_Y) // need to pass a centered Y so we rotate around the correct point.
         posY += m_renderRect.Height() * 0.5f;
       align = m_label.align;
     }
     else
       align |= XBFONT_TRUNCATED;
-    m_textLayout.Render(posX, posY, m_label.angle, color, m_label.shadowColor, align, m_overflowType == OVER_FLOW_CLIP ? m_textLayout.GetTextWidth() : m_renderRect.Width(), renderSolid);
+    m_textLayout.Render(posX, posY, color, m_label.shadowColor, align, m_overflowType == OVER_FLOW_CLIP ? m_textLayout.GetTextWidth() : m_renderRect.Width(), renderSolid);
   }
 }
 

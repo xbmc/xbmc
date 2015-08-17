@@ -70,8 +70,8 @@ public:
   bool UpdateScrollinfo(CScrollInfo &scrollInfo);
 
   // main function to render strings
-  void Render(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, bool solid = false);
-  void RenderScrolling(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, const CScrollInfo &scrollInfo);
+  void Render(float x, float y, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, bool solid = false);
+  void RenderScrolling(float x, float y, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, const CScrollInfo &scrollInfo);
   void RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t alignment, float maxWidth);
 
   /*! \brief Returns the precalculated width and height of the text to be rendered (in constant time).

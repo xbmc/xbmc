@@ -286,7 +286,6 @@ namespace XBMCAddon
       label.align = align;
       label.offsetX = (float)textOffsetX;
       label.offsetY = (float)textOffsetY;
-      label.angle = (float)-iAngle;
       pGUIControl = new CGUIButtonControl(
         iParentId,
         iControlId,
@@ -719,7 +718,6 @@ namespace XBMCAddon
       label.align = align;
       label.offsetX = (float)textOffsetX;
       label.offsetY = (float)textOffsetY;
-      label.angle = (float)-iAngle;
       pGUIControl = new CGUIRadioButtonControl(
         iParentId,
         iControlId,
@@ -1018,7 +1016,6 @@ namespace XBMCAddon
       label.textColor = label.focusedColor = textColor;
       label.disabledColor = disabledColor;
       label.align = align;
-      label.angle = (float)-iAngle;
       pGUIControl = new CGUILabelControl(
         iParentId,
         iControlId,
