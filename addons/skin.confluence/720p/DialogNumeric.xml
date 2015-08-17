@@ -123,19 +123,19 @@
 			</control>
 			<control type="button" id="23">
 				<description>Backspace button</description>
-				<left>180</left>
-				<top>0</top>
-				<width>60</width>
-				<height>120</height>
+				<left>0</left>
+				<top>-240</top>
+				<width>120</width>
+				<height>60</height>
 				<font>font12</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus flipx="true" border="5,25,25,5">KeyboardCornerTopNF.png</texturenofocus>
-				<texturefocus flipx="true" border="5,35,25,5">KeyboardCornerTop.png</texturefocus>
+				<texturenofocus border="5,25,25,5">KeyboardCornerTopNF.png</texturenofocus>
+				<texturefocus border="5,35,25,5">KeyboardCornerTop.png</texturefocus>
 				<textwidth>120</textwidth>
 				<label>20181</label>
 				<focusedcolor>black</focusedcolor>
-				<angle>270</angle>
+				<animation effect="rotate" start="0" end="270" time="0" condition="true">Conditional</animation>
 				<onleft>13</onleft>
 				<onright>11</onright>
 				<onup>21</onup>
@@ -251,19 +251,19 @@
 			</control>
 			<control type="button" id="21">
 				<description>Done button</description>
-				<left>180</left>
-				<top>120</top>
-				<width>60</width>
-				<height>120</height>
+				<left>120</left>
+				<top>-240</top>
+				<width>120</width>
+				<height>60</height>
 				<font>font12</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus flipx="true" border="5,5,25,25">KeyboardCornerBottomNF.png</texturenofocus>
-				<texturefocus flipx="true" border="5,30,25,25">KeyboardCornerBottom.png</texturefocus>
+				<texturenofocus flipx="true" flipy="true" border="5,5,25,25">KeyboardCornerBottomNF.png</texturenofocus>
+				<texturefocus flipx="true" flipy="true" border="5,30,25,25">KeyboardCornerBottom.png</texturefocus>
 				<textwidth>120</textwidth>
 				<label>20177</label>
 				<focusedcolor>black</focusedcolor>
-				<angle>270</angle>
+				<animation effect="rotate" start="0" end="270" time="0" condition="true">Conditional</animation>
 				<onleft>19</onleft>
 				<onright>17</onright>
 				<onup>23</onup>
