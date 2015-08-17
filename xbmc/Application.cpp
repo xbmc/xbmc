@@ -1398,7 +1398,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     if (!StringUtils::EqualsNoCase(colorTheme, CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS)))
       CSettings::Get().SetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS, colorTheme);
     else
-      CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
+      CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
   }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
   {
