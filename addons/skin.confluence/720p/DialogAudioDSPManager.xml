@@ -117,7 +117,6 @@
 				</control>
 			</focusedlayout>
 			<content>
-				<description>processing mode selection list</description>
 				<item id="91">
 					<label>1. $LOCALIZE[15057]</label>
 					<label2>$LOCALIZE[15114]</label2>
@@ -260,8 +259,8 @@
 							<top>8</top>
 							<width>30</width>
 							<height>30</height>
-							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
-							<aspectratio>keep</aspectratio>
+							<texture>$INFO[ListItem.Property(Icon)]</texture>
+							<aspectratio aligny="center" align="left">keep</aspectratio>
 							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
 						</control>
 						<control type="image">
@@ -269,8 +268,8 @@
 							<top>8</top>
 							<width>30</width>
 							<height>30</height>
-							<texture aligny="center" align="left">DefaultAudioDSP.png</texture>
-							<aspectratio>keep</aspectratio>
+							<texture>DefaultAudioDSP.png</texture>
+							<aspectratio aligny="center" align="left">keep</aspectratio>
 							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
 						</control>
 						<control type="label">
@@ -302,8 +301,8 @@
 							<top>8</top>
 							<width>50</width>
 							<height>50</height>
-							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
-							<aspectratio>keep</aspectratio>
+							<texture>$INFO[ListItem.Property(Icon)]</texture>
+							<aspectratio aligny="center" align="left">keep</aspectratio>
 							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
 						</control>
 						<control type="image">
@@ -311,8 +310,8 @@
 							<top>8</top>
 							<height>50</height>
 							<width>50</width>
-							<texture aligny="center" align="left">DefaultAudioDSP.png</texture>
-							<aspectratio>keep</aspectratio>
+							<texture>DefaultAudioDSP.png</texture>
+							<aspectratio aligny="center" align="left">keep</aspectratio>
 							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
 						</control>
 						<control type="label">
@@ -430,8 +429,8 @@
 							<top>8</top>
 							<width>30</width>
 							<height>30</height>
-							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
-							<aspectratio>keep</aspectratio>
+							<texture>$INFO[ListItem.Property(Icon)]</texture>
+							<aspectratio aligny="center" align="left">keep</aspectratio>
 							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
 						</control>
 						<control type="image">
@@ -439,8 +438,8 @@
 							<top>8</top>
 							<width>30</width>
 							<height>30</height>
-							<texture aligny="center" align="left">DefaultAudioDSP.png</texture>
-							<aspectratio>keep</aspectratio>
+							<texture>DefaultAudioDSP.png</texture>
+							<aspectratio aligny="center" align="left">keep</aspectratio>
 							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
 						</control>
 						<control type="label">
@@ -472,8 +471,8 @@
 							<top>8</top>
 							<width>50</width>
 							<height>50</height>
-							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
-							<aspectratio>keep</aspectratio>
+							<texture>$INFO[ListItem.Property(Icon)]</texture>
+							<aspectratio aligny="center" align="left">keep</aspectratio>
 							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
 						</control>
 						<control type="image">
@@ -481,8 +480,8 @@
 							<top>8</top>
 							<height>50</height>
 							<width>50</width>
-							<texture aligny="center" align="left">DefaultAudioDSP.png</texture>
-							<aspectratio>keep</aspectratio>
+							<texture>DefaultAudioDSP.png</texture>
+							<aspectratio aligny="center" align="left">keep</aspectratio>
 							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
 						</control>
 						<control type="label">
