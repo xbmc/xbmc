@@ -331,7 +331,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
   CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
   if (!pItem)
     return false;
-  if (CProfilesManager::Get().GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+  if (CProfilesManager::GetInstance().GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
     return false;
 
   // setup our thumb list
@@ -361,10 +361,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
 
   std::string strThumb;
   VECSOURCES shares;
-  if (CSettings::Get().GetString(CSettings::SETTING_PVRMENU_ICONPATH) != "")
+  if (CSettings::GetInstance().GetString(CSettings::SETTING_PVRMENU_ICONPATH) != "")
   {
     CMediaSource share1;
-    share1.strPath = CSettings::Get().GetString(CSettings::SETTING_PVRMENU_ICONPATH);
+    share1.strPath = CSettings::GetInstance().GetString(CSettings::SETTING_PVRMENU_ICONPATH);
     share1.strName = g_localizeStrings.Get(19066);
     shares.push_back(share1);
   }

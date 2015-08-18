@@ -87,20 +87,20 @@ JSONRPC_STATUS CPlayerOperations::GetPlayers(const std::string &method, ITranspo
   VECPLAYERCORES players;
 
   if (media == "all")
-    CPlayerCoreFactory::Get().GetPlayers(players);
+    CPlayerCoreFactory::GetInstance().GetPlayers(players);
   else
   {
     bool video = false;
     if (media == "video")
       video = true;
 
-    CPlayerCoreFactory::Get().GetPlayers(players, true, video);
+    CPlayerCoreFactory::GetInstance().GetPlayers(players, true, video);
   }
 
   for (VECPLAYERCORES::const_iterator itPlayer = players.begin(); itPlayer != players.end(); ++itPlayer)
   {
     PLAYERCOREID playerId = *itPlayer;
-    const CPlayerCoreConfig* playerConfig = CPlayerCoreFactory::Get().GetPlayerConfig(playerId);
+    const CPlayerCoreConfig* playerConfig = CPlayerCoreFactory::GetInstance().GetPlayerConfig(playerId);
     if (playerConfig == NULL)
       continue;
 
@@ -296,12 +296,12 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const std::string &method, ITranspor
         if (parameterObject["play"].asBoolean())
         {
           if (g_application.m_pPlayer->IsPausedPlayback())
-            CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
+            CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
           else if (g_application.m_pPlayer->GetPlaySpeed() != 1)
             g_application.m_pPlayer->SetPlaySpeed(1, g_application.IsMutedInternal());
         }
         else if (!g_application.m_pPlayer->IsPausedPlayback())
-          CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PAUSE);
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
       }
       result["speed"] = g_application.m_pPlayer->IsPausedPlayback() ? 0 : g_application.m_pPlayer->GetPlaySpeed();
       return OK;
@@ -331,7 +331,7 @@ JSONRPC_STATUS CPlayerOperations::Stop(const std::string &method, ITransportLaye
   {
     case Video:
     case Audio:
-      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP, static_cast<int>(parameterObject["playerid"].asInteger()));
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP, static_cast<int>(parameterObject["playerid"].asInteger()));
       return ACK;
 
     case Picture:
@@ -414,7 +414,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
           return InvalidParams;
       }
       else if (value.isObject() && value.isMember("seconds") && value.size() == 1)
-        CSeekHandler::Get().SeekSeconds(static_cast<int>(value["seconds"].asInteger()));
+        CSeekHandler::GetInstance().SeekSeconds(static_cast<int>(value["seconds"].asInteger()));
       else if (value.isObject())
         g_application.SeekTime(ParseTimeInSeconds(value.isMember("time") ? value["time"] : value));
       else
@@ -455,9 +455,9 @@ JSONRPC_STATUS CPlayerOperations::Move(const std::string &method, ITransportLaye
     case Video:
     case Audio:
       if (direction == "left" || direction == "up")
-        CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
       else if (direction == "right" || direction == "down")
-        CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
       else
         return InvalidParams;
 
@@ -547,7 +547,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     {
       case PLAYLIST_MUSIC:
       case PLAYLIST_VIDEO:
-        CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PLAY, playlistid, playlistStartPosition);
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PLAY, playlistid, playlistStartPosition);
         OnPlaylistChanged();
         break;
 
@@ -583,7 +583,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   {
     if (g_partyModeManager.IsEnabled())
       g_partyModeManager.Disable();
-    CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
     return ACK;
   }
   else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("channelid"))
@@ -606,7 +606,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     {
       CFileItemList *l = new CFileItemList; //don't delete,
       l->Add(std::make_shared<CFileItem>(channel));
-      CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
     }
 
     return ACK;
@@ -626,7 +626,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
     CFileItemList *l = new CFileItemList; //don't delete,
     l->Add(std::make_shared<CFileItem>(*fileItem));
-    CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
     return ACK;
   }
@@ -668,12 +668,12 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
           {
             playerId = (PLAYERCOREID)optionPlayer.asInteger();
             // check if the there's actually a player with the given player ID
-            if (CPlayerCoreFactory::Get().GetPlayerConfig(playerId) == NULL)
+            if (CPlayerCoreFactory::GetInstance().GetPlayerConfig(playerId) == NULL)
               return InvalidParams;
 
             // check if the player can handle at least the first item in the list
             VECPLAYERCORES possiblePlayers;
-            CPlayerCoreFactory::Get().GetPlayers(*list.Get(0).get(), possiblePlayers);
+            CPlayerCoreFactory::GetInstance().GetPlayers(*list.Get(0).get(), possiblePlayers);
             VECPLAYERCORES::const_iterator matchingPlayer = std::find(possiblePlayers.begin(), possiblePlayers.end(), playerId);
             if (matchingPlayer == possiblePlayers.end())
               return InvalidParams;
@@ -704,7 +704,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
         auto l = new CFileItemList(); //don't delete
         l->Copy(list);
-        CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
       }
 
       return ACK;
@@ -734,15 +734,15 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const std::string &method, ITransportLaye
         else
           return InvalidParams;
 
-        CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
       }
       else if (to.isInteger())
       {
         if (IsPVRChannel())
-          CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
             new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(to.asInteger()))));
         else
-          CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, static_cast<int>(to.asInteger()));
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, static_cast<int>(to.asInteger()));
       }
       else
         return InvalidParams;
@@ -793,7 +793,7 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
         if ((shuffle.isBoolean() && !shuffle.asBoolean()) ||
             (shuffle.isString() && shuffle.asString() == "toggle"))
         {
-          CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlistid, 0);
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlistid, 0);
           OnPlaylistChanged();
         }
       }
@@ -802,7 +802,7 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
         if ((shuffle.isBoolean() && shuffle.asBoolean()) ||
             (shuffle.isString() && shuffle.asString() == "toggle"))
         {
-          CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlistid, 1);
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlistid, 1);
           OnPlaylistChanged();
         }
       }
@@ -858,7 +858,7 @@ JSONRPC_STATUS CPlayerOperations::SetRepeat(const std::string &method, ITranspor
       else
         repeat = (REPEAT_STATE)ParseRepeatState(parameterObject["repeat"]);
 
-      CApplicationMessenger::Get().SendMsg(TMSG_PLAYLISTPLAYER_REPEAT, playlistid, repeat);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_REPEAT, playlistid, repeat);
       OnPlaylistChanged();
       break;
     }
@@ -912,7 +912,7 @@ JSONRPC_STATUS CPlayerOperations::SetPartymode(const std::string &method, ITrans
       }
 
       if (change)
-        CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + strContext + "))");
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + strContext + "))");
       break;
     }
 
@@ -1115,14 +1115,14 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
 
   CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
   msg.SetStringParams(params);
-  CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
+  CApplicationMessenger::GetInstance().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
 
   return ACK;
 }
 
 void CPlayerOperations::SendSlideshowAction(int actionID)
 {
-  CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(actionID)));
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(actionID)));
 }
 
 void CPlayerOperations::OnPlaylistChanged()

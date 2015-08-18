@@ -47,7 +47,7 @@ public:
    \brief The only way through which the global instance of the CTextureCache should be accessed.
    \return the global instance.
    */
-  static CTextureCache &Get();
+  static CTextureCache &GetInstance();
 
   /*! \brief Initalize the texture cache
    */

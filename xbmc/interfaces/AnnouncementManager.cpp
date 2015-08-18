@@ -44,7 +44,7 @@ CAnnouncementManager::~CAnnouncementManager()
   Deinitialize();
 }
 
-CAnnouncementManager& CAnnouncementManager::Get()
+CAnnouncementManager& CAnnouncementManager::GetInstance()
 {
   static CAnnouncementManager s_instance;
   return s_instance;

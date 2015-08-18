@@ -49,7 +49,7 @@ CPlayerCoreFactory::~CPlayerCoreFactory()
     delete *it;
 }
 
-CPlayerCoreFactory& CPlayerCoreFactory::Get()
+CPlayerCoreFactory& CPlayerCoreFactory::GetInstance()
 {
   static CPlayerCoreFactory sPlayerCoreFactory;
   return sPlayerCoreFactory;
@@ -58,7 +58,7 @@ CPlayerCoreFactory& CPlayerCoreFactory::Get()
 void CPlayerCoreFactory::OnSettingsLoaded()
 {
   LoadConfiguration("special://xbmc/system/" PLAYERCOREFACTORY_XML, true);
-  LoadConfiguration(CProfilesManager::Get().GetUserDataItem(PLAYERCOREFACTORY_XML), false);
+  LoadConfiguration(CProfilesManager::GetInstance().GetUserDataItem(PLAYERCOREFACTORY_XML), false);
 }
 
 /* generic function to make a vector unique, removes later duplicates */

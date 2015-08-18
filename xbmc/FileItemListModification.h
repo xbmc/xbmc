@@ -28,7 +28,7 @@ class CFileItemListModification : public IFileItemListModifier
 public:
   ~CFileItemListModification();
 
-  static CFileItemListModification& Get();
+  static CFileItemListModification& GetInstance();
 
   virtual bool CanModify(const CFileItemList &items) const;
   virtual bool Modify(CFileItemList &items) const;

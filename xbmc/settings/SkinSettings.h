@@ -31,7 +31,7 @@ class TiXmlNode;
 class CSkinSettings : public ISubSettings
 {
 public:
-  static CSkinSettings& Get();
+  static CSkinSettings& GetInstance();
 
   virtual bool Load(const TiXmlNode *settings);
   virtual bool Save(TiXmlNode *settings) const;

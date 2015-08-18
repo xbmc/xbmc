@@ -170,7 +170,7 @@ bool CLibraryDirectory::Exists(const CURL& url)
 
 std::string CLibraryDirectory::GetNode(const CURL& url)
 {
-  std::string libDir = URIUtils::AddFileToFolder(CProfilesManager::Get().GetLibraryFolder(), url.GetHostName() + "/");
+  std::string libDir = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetLibraryFolder(), url.GetHostName() + "/");
   if (!CDirectory::Exists(libDir))
     libDir = URIUtils::AddFileToFolder("special://xbmc/system/library/", url.GetHostName() + "/");
 

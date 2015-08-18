@@ -93,7 +93,7 @@ void CGUIDialogNumeric::OnInitWindow()
     data["title"] = control->GetDescription();
 
   data["value"] = GetOutput();
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
 }
 
 void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
@@ -101,7 +101,7 @@ void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
   // call base class
   CGUIDialog::OnDeinitWindow(nextWindowID);
 
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputFinished");
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputFinished");
 }
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)

@@ -40,12 +40,12 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
   m_updateRA = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
   
-  CAnnouncementManager::Get().AddAnnouncer(this);
+  CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
 {
-  CAnnouncementManager::Get().RemoveAnnouncer(this);
+  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
 }
 
 bool CGUIWindowHome::OnAction(const CAction &action)

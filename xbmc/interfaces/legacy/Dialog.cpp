@@ -193,7 +193,7 @@ namespace XBMCAddon
       DelayedCallGuard dcguard(languageHook);
       std::string value;
       std::string mask = maskparam;
-      VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
+      VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(s_shares);
       if (!shares) 
         throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
@@ -215,7 +215,7 @@ namespace XBMCAddon
                           bool useFileDirectories, const String& defaultt )
     {
       DelayedCallGuard dcguard(languageHook);
-      VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
+      VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(s_shares);
       std::vector<String> valuelist;
       String lmask = mask;
       if (!shares) 

@@ -306,7 +306,7 @@ void CGUIDialogMusicInfo::Update()
   }
 
   // disable the GetThumb button if the user isn't allowed it
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
 }
 
 void CGUIDialogMusicInfo::SetLabel(int iControl, const std::string& strLabel)
@@ -370,7 +370,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
     item->SetLabel(g_localizeStrings.Get(20015));
     
     // TODO: Do we need to clear the cached image?
-    //    CTextureCache::Get().ClearCachedImage(thumb);
+    //    CTextureCache::GetInstance().ClearCachedImage(thumb);
     items.Add(item);
   }
 
@@ -406,7 +406,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
 
   std::string result;
   bool flip=false;
-  VECSOURCES sources(*CMediaSourceSettings::Get().GetSources("music"));
+  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
   AddItemPathToFileBrowserSources(sources, *m_albumItem);
   g_mediaManager.GetLocalDrives(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), result, &flip))
@@ -472,7 +472,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
     item->SetLabel(g_localizeStrings.Get(20441));
 
     // TODO: Do we need to clear the cached image?
-    //    CTextureCache::Get().ClearCachedImage(thumb);
+    //    CTextureCache::GetInstance().ClearCachedImage(thumb);
     items.Add(item);
   }
 
@@ -490,7 +490,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
     itemLocal->SetLabel(g_localizeStrings.Get(20438));
 
     // TODO: Do we need to clear the cached image?
-    CTextureCache::Get().ClearCachedImage(strLocal);
+    CTextureCache::GetInstance().ClearCachedImage(strLocal);
     items.Add(itemLocal);
   }
   else
@@ -502,7 +502,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   }
 
   std::string result;
-  VECSOURCES sources = *CMediaSourceSettings::Get().GetSources("music");
+  VECSOURCES sources = *CMediaSourceSettings::GetInstance().GetSources("music");
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445))

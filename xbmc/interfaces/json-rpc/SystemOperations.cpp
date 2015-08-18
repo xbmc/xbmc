@@ -55,7 +55,7 @@ JSONRPC_STATUS CSystemOperations::Shutdown(const std::string &method, ITransport
 {
   if (g_powerManager.CanPowerdown())
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_POWERDOWN);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_POWERDOWN);
     return ACK;
   }
   else
@@ -66,7 +66,7 @@ JSONRPC_STATUS CSystemOperations::Suspend(const std::string &method, ITransportL
 {
   if (g_powerManager.CanSuspend())
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_SUSPEND);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
     return ACK;
   }
   else
@@ -77,7 +77,7 @@ JSONRPC_STATUS CSystemOperations::Hibernate(const std::string &method, ITranspor
 {
   if (g_powerManager.CanHibernate())
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_HIBERNATE);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
     return ACK;
   }
   else
@@ -88,7 +88,7 @@ JSONRPC_STATUS CSystemOperations::Reboot(const std::string &method, ITransportLa
 {
   if (g_powerManager.CanReboot())
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_RESTART);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTART);
     return ACK;
   }
   else

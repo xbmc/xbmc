@@ -252,7 +252,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           StringUtils::Replace(action, "$ID", m_addon->ID());
           if (option)
             bCloseDialog = (strcmpi(option, "close") == 0);
-          CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, action);
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, action);
         }
         break;
       }
@@ -356,7 +356,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           // setup the shares
           VECSOURCES *shares = NULL;
           if (source && strcmpi(source, "") != 0)
-            shares = CMediaSourceSettings::Get().GetSources(source);
+            shares = CMediaSourceSettings::GetInstance().GetSources(source);
 
           VECSOURCES localShares;
           if (!shares)
@@ -917,7 +917,7 @@ std::string CGUIDialogAddonSettings::GetAddonNames(const std::string& addonIDsli
     if (!retVal.empty())
       retVal += ", ";
     AddonPtr addon;
-    if (CAddonMgr::Get().GetAddon(*it ,addon))
+    if (CAddonMgr::GetInstance().GetAddon(*it ,addon))
       retVal += addon->Name();
     else
       retVal += *it;

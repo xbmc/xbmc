@@ -66,7 +66,7 @@ CPeripherals::~CPeripherals(void)
   Clear();
 }
 
-CPeripherals &CPeripherals::Get(void)
+CPeripherals &CPeripherals::GetInstance()
 {
   static CPeripherals peripheralsInstance;
   return peripheralsInstance;
@@ -103,7 +103,7 @@ void CPeripherals::Initialise(void)
     }
 
     m_bInitialised = true;
-    KODI::MESSAGING::CApplicationMessenger::Get().RegisterReceiver(this);
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
   }
 }
 

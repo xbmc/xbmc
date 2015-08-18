@@ -35,7 +35,7 @@ class CGUIDialogProgressBarHandle;
 
 namespace EPG
 {
-  #define g_EpgContainer CEpgContainer::Get()
+  #define g_EpgContainer CEpgContainer::GetInstance()
 
   struct SUpdateRequest
   {
@@ -64,7 +64,7 @@ namespace EPG
     /*!
      * @return An instance of this singleton.
      */
-    static CEpgContainer &Get(void);
+    static CEpgContainer &GetInstance();
 
     /*!
      * @brief Get a pointer to the database instance.

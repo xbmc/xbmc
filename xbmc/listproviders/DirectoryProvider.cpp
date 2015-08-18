@@ -301,12 +301,12 @@ void CDirectoryProvider::RegisterListProvider(bool hasLibraryContent)
   if (hasLibraryContent && !m_isAnnounced)
   {
     m_isAnnounced = true;
-    CAnnouncementManager::Get().AddAnnouncer(this);
+    CAnnouncementManager::GetInstance().AddAnnouncer(this);
   }
   else if (!hasLibraryContent && m_isAnnounced)
   {
     m_isAnnounced = false;
-    CAnnouncementManager::Get().RemoveAnnouncer(this);
+    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
   }
 }
 

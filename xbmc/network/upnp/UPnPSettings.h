@@ -26,7 +26,7 @@
 class CUPnPSettings : public ISettingsHandler
 {
 public:
-  static CUPnPSettings& Get();
+  static CUPnPSettings& GetInstance();
   
   virtual void OnSettingsUnloaded();
 

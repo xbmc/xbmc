@@ -223,13 +223,13 @@ void CGUIAudioManager::UnLoad()
 
 std::string GetSoundSkinPath()
 {
-  auto setting = static_cast<CSettingString*>(CSettings::Get().GetSetting(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN));
+  auto setting = static_cast<CSettingString*>(CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN));
   auto value = setting->GetValue();
   if (value.empty())
     return "";
 
   ADDON::AddonPtr addon;
-  if (!ADDON::CAddonMgr::Get().GetAddon(value, addon, ADDON::ADDON_RESOURCE_UISOUNDS))
+  if (!ADDON::CAddonMgr::GetInstance().GetAddon(value, addon, ADDON::ADDON_RESOURCE_UISOUNDS))
   {
     CLog::Log(LOGNOTICE, "Unknown sounds addon '%s'. Setting default sounds.", value.c_str());
     setting->Reset();
@@ -399,7 +399,7 @@ IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const std::s
 void CGUIAudioManager::Enable(bool bEnable)
 {
   // always deinit audio when we don't want gui sounds
-  if (CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN).empty())
+  if (CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN).empty())
     bEnable = false;
 
   CSingleLock lock(m_cs);

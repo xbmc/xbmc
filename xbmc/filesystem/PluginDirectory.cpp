@@ -92,9 +92,9 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   CURL url(strPath);
 
   // try the plugin type first, and if not found, try an unknown type
-  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) &&
-      !CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN) &&
-      !CAddonInstaller::Get().InstallModal(url.GetHostName(), m_addon))
+  if (!CAddonMgr::GetInstance().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) &&
+      !CAddonMgr::GetInstance().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN) &&
+      !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), m_addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -130,7 +130,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
   bool success = false;
   std::string file = m_addon->LibPath();
-  int id = CScriptInvocationManager::Get().ExecuteAsync(file, m_addon, argv);
+  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv);
   if (id >= 0)
   { // wait for our script to finish
     std::string scriptName = m_addon->Name();
@@ -229,25 +229,25 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
     case SORT_METHOD_LABEL:
     case SORT_METHOD_LABEL_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByLabel, 551, LABEL_MASKS("%T", label2Mask), CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByLabel, 551, LABEL_MASKS("%T", label2Mask), CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_TITLE:
     case SORT_METHOD_TITLE_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByTitle, 556, LABEL_MASKS("%T", label2Mask), CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByTitle, 556, LABEL_MASKS("%T", label2Mask), CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_ARTIST:
     case SORT_METHOD_ARTIST_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByArtist, 557, LABEL_MASKS("%T", "%A"), CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByArtist, 557, LABEL_MASKS("%T", "%A"), CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_ALBUM:
     case SORT_METHOD_ALBUM_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByAlbum, 558, LABEL_MASKS("%T", "%B"), CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByAlbum, 558, LABEL_MASKS("%T", "%B"), CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_DATE:
@@ -310,7 +310,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
     case SORT_METHOD_VIDEO_SORT_TITLE:
     case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortBySortTitle, 556, LABEL_MASKS("%T", label2Mask), CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortBySortTitle, 556, LABEL_MASKS("%T", label2Mask), CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_MPAA_RATING:
@@ -321,7 +321,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
     case SORT_METHOD_STUDIO:
     case SORT_METHOD_STUDIO_IGNORE_THE:
       {
-        dir->m_listItems->AddSortMethod(SortByStudio, 572, LABEL_MASKS("%T", "%U"), CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+        dir->m_listItems->AddSortMethod(SortByStudio, 572, LABEL_MASKS("%T", "%U"), CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
         break;
       }
     case SORT_METHOD_PROGRAM_COUNT:
@@ -346,8 +346,8 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
       }
     case SORT_METHOD_PLAYLIST_ORDER:
       {
-        std::string strTrackLeft=CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
-        std::string strTrackRight=CSettings::Get().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT);
+        std::string strTrackLeft=CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
+        std::string strTrackRight=CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMATRIGHT);
 
         dir->m_listItems->AddSortMethod(SortByPlaylistOrder, 559, LABEL_MASKS(strTrackLeft, strTrackRight));
         break;
@@ -422,7 +422,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
     return false;
 
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) && !CAddonInstaller::Get().InstallModal(url.GetHostName(), addon))
+  if (!CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) && !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -444,7 +444,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
 
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
-  if (CScriptInvocationManager::Get().ExecuteAsync(addon->LibPath(), addon, argv) >= 0)
+  if (CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon, argv) >= 0)
     return true;
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", addon->Name().c_str());
@@ -475,7 +475,7 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
       }
     }
     // check our script is still running
-    if (!CScriptInvocationManager::Get().IsRunning(scriptId))
+    if (!CScriptInvocationManager::GetInstance().IsRunning(scriptId))
     { // check whether we exited normally
       if (!m_fetchComplete.WaitMSec(0))
       { // python didn't return correctly
@@ -528,17 +528,17 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
     }
     if ((cancelled && XbmcThreads::SystemClockMillis() - startTime > timeToKillScript) || g_application.m_bStop)
     { // cancel our script
-      if (scriptId != -1 && CScriptInvocationManager::Get().IsRunning(scriptId))
+      if (scriptId != -1 && CScriptInvocationManager::GetInstance().IsRunning(scriptId))
       {
         CLog::Log(LOGDEBUG, "%s- cancelling plugin %s (id=%d)", __FUNCTION__, scriptName.c_str(), scriptId);
-        CScriptInvocationManager::Get().Stop(scriptId);
+        CScriptInvocationManager::GetInstance().Stop(scriptId);
         break;
       }
     }
   }
 
   if (progressBar)
-    CApplicationMessenger::Get().PostMsg(TMSG_GUI_WINDOW_CLOSE, -1, 0, static_cast<void*>(progressBar));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_WINDOW_CLOSE, -1, 0, static_cast<void*>(progressBar));
 
   return !cancelled && m_success;
 }

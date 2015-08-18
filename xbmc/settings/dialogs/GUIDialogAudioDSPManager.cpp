@@ -560,7 +560,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     * Open audio dsp addon mode help text dialog
     */
     AE_DSP_ADDON addon;
-    if (CActiveAEDSP::Get().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
+    if (CActiveAEDSP::GetInstance().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
     {
       CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
       pDlgInfo->SetHeading(g_localizeStrings.Get(15062) + " - " + pItem->GetProperty("Name").asString());
@@ -656,7 +656,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     if (hookId > 0)
     {
       AE_DSP_ADDON addon;
-      if (CActiveAEDSP::Get().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
+      if (CActiveAEDSP::GetInstance().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
       {
         AE_DSP_MENUHOOK       hook;
         AE_DSP_MENUHOOK_DATA  hookData;
@@ -793,7 +793,7 @@ void CGUIDialogAudioDSPManager::SaveList(void)
   /* persist all modes */
   if (UpdateDatabase(pDlgBusy))
   {
-    CActiveAEDSP::Get().TriggerModeUpdate();
+    CActiveAEDSP::GetInstance().TriggerModeUpdate();
 
     m_bContainsChanges = false;
     SetItemsUnchanged();
@@ -960,13 +960,13 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
   const int AddonID = ModePointer->AddonID();
 
   string addonName;
-  if (!CActiveAEDSP::Get().GetAudioDSPAddonName(AddonID, addonName))
+  if (!CActiveAEDSP::GetInstance().GetAudioDSPAddonName(AddonID, addonName))
   {
     return pItem;
   }
 
   AE_DSP_ADDON addon;
-  if (!CActiveAEDSP::Get().GetAudioDSPAddon(AddonID, addon))
+  if (!CActiveAEDSP::GetInstance().GetAudioDSPAddon(AddonID, addon))
   {
     return pItem;
   }
@@ -1034,7 +1034,7 @@ int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePoint
     AE_DSP_MENUHOOKS hooks;
 
     // Find first general settings dialog about mode
-    if (CActiveAEDSP::Get().GetMenuHooks(ModePointer->AddonID(), AE_DSP_MENUHOOK_SETTING, hooks))
+    if (CActiveAEDSP::GetInstance().GetMenuHooks(ModePointer->AddonID(), AE_DSP_MENUHOOK_SETTING, hooks))
     {
       for (unsigned int i = 0; i < hooks.size() && dialogId == 0; i++)
       {
@@ -1046,7 +1046,7 @@ int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePoint
     }
 
     // If nothing was present, check for playback settings
-    if (dialogId == 0 && CActiveAEDSP::Get().GetMenuHooks(ModePointer->AddonID(), MenuHook, hooks))
+    if (dialogId == 0 && CActiveAEDSP::GetInstance().GetMenuHooks(ModePointer->AddonID(), MenuHook, hooks))
     {
       for (unsigned int i = 0; i < hooks.size() && (dialogId == 0 || dialogId != -1); i++)
       {

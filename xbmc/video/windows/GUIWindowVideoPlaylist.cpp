@@ -128,8 +128,8 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         if (!g_partyModeManager.IsEnabled())
         {
           g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, !(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO)));
-          CMediaSettings::Get().SetVideoPlaylistShuffled(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO));
-          CSettings::Get().Save();
+          CMediaSettings::GetInstance().SetVideoPlaylistShuffled(g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO));
+          CSettings::GetInstance().Save();
           UpdateButtons();
           Refresh();
         }
@@ -171,8 +171,8 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
           g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, PLAYLIST::REPEAT_NONE);
 
         // save settings
-        CMediaSettings::Get().SetVideoPlaylistRepeat(g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO) == PLAYLIST::REPEAT_ALL);
-        CSettings::Get().Save();
+        CMediaSettings::GetInstance().SetVideoPlaylistRepeat(g_playlistPlayer.GetRepeat(PLAYLIST_VIDEO) == PLAYLIST::REPEAT_ALL);
+        CSettings::GetInstance().Save();
 
         UpdateButtons();
       }
@@ -376,7 +376,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
   if (CGUIKeyboardFactory::ShowAndGetInput(strNewFileName, CVariant{g_localizeStrings.Get(16012)}, false))
   {
     // need 2 rename it
-    std::string strFolder = URIUtils::AddFileToFolder(CSettings::Get().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "video");
+    std::string strFolder = URIUtils::AddFileToFolder(CSettings::GetInstance().GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), "video");
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
     std::string strPath = URIUtils::AddFileToFolder(strFolder, strNewFileName);
@@ -409,10 +409,10 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons 
       if (item->IsVideoDb())
       {
         CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
-        CPlayerCoreFactory::Get().GetPlayers(item2, vecCores);
+        CPlayerCoreFactory::GetInstance().GetPlayers(item2, vecCores);
       }
       else
-        CPlayerCoreFactory::Get().GetPlayers(*item, vecCores);
+        CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
       if (vecCores.size() > 1)
         buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
 
@@ -438,7 +438,7 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons 
   }
 
   if(itemNumber > 0 && itemNumber < m_vecItems->Size())
-    CContextMenuManager::Get().AddVisibleItems(m_vecItems->Get(itemNumber), buttons);
+    CContextMenuManager::GetInstance().AddVisibleItems(m_vecItems->Get(itemNumber), buttons);
 }
 
 bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -457,11 +457,11 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       if (item->IsVideoDb())
       {
         CFileItem item2(*item->GetVideoInfoTag());
-        CPlayerCoreFactory::Get().GetPlayers(item2, vecCores);
+        CPlayerCoreFactory::GetInstance().GetPlayers(item2, vecCores);
       }
       else
-        CPlayerCoreFactory::Get().GetPlayers(*item, vecCores);
-      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::Get().SelectPlayerDialog(vecCores);
+        CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
+      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().SelectPlayerDialog(vecCores);
       if (g_application.m_eForcedNextPlayer != EPC_NONE)
         OnClick(itemNumber);
       return true;

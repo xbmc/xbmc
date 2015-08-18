@@ -43,7 +43,7 @@ CVideoLibraryQueue::~CVideoLibraryQueue()
   m_jobs.clear();
 }
 
-CVideoLibraryQueue& CVideoLibraryQueue::Get()
+CVideoLibraryQueue& CVideoLibraryQueue::GetInstance()
 {
   static CVideoLibraryQueue s_instance;
   return s_instance;

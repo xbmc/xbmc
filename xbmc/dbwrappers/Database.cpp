@@ -312,7 +312,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   }
 
   // check our database manager to see if this database can be opened
-  if (!CDatabaseManager::Get().CanOpen(GetBaseDBName()))
+  if (!CDatabaseManager::GetInstance().CanOpen(GetBaseDBName()))
     return false;
 
   DatabaseSettings dbSettings = settings;
@@ -345,7 +345,7 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
   {
     dbSettings.type = "sqlite3";
     if (dbSettings.host.empty())
-      dbSettings.host = CSpecialProtocol::TranslatePath(CProfilesManager::Get().GetDatabaseFolder());
+      dbSettings.host = CSpecialProtocol::TranslatePath(CProfilesManager::GetInstance().GetDatabaseFolder());
   }
 
   // use separate, versioned database

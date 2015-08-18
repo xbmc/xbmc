@@ -46,7 +46,7 @@ CUPnPSettings::~CUPnPSettings()
   Clear();
 }
 
-CUPnPSettings& CUPnPSettings::Get()
+CUPnPSettings& CUPnPSettings::GetInstance()
 {
   static CUPnPSettings sUPnPSettings;
   return sUPnPSettings;

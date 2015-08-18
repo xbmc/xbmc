@@ -130,7 +130,7 @@ bool CTextureBundleXPR::OpenBundle()
   {
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
-    std::string theme = CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
+    std::string theme = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
     if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
       std::string themeXPR(URIUtils::ReplaceExtension(theme, ".xpr"));

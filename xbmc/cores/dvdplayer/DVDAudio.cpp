@@ -87,7 +87,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool ne
   if (m_pAudioStream->HasDSP())
     m_pAudioStream->SetFFmpegInfo(audioframe.profile, audioframe.matrix_encoding, audioframe.audio_service_type);
 
-  SetDynamicRangeCompression((long)(CMediaSettings::Get().GetCurrentVideoSettings().m_VolumeAmplification * 100));
+  SetDynamicRangeCompression((long)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_VolumeAmplification * 100));
 
   return true;
 }

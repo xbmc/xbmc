@@ -81,23 +81,23 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
     {
       if (!enabled.isBoolean())
       {
-        CAddonMgr::Get().GetAllAddons(typeAddons, false);
-        CAddonMgr::Get().GetAllAddons(typeAddons, true);
+        CAddonMgr::GetInstance().GetAllAddons(typeAddons, false);
+        CAddonMgr::GetInstance().GetAllAddons(typeAddons, true);
       }
       else
-        CAddonMgr::Get().GetAllAddons(typeAddons, enabled.asBoolean());
+        CAddonMgr::GetInstance().GetAllAddons(typeAddons, enabled.asBoolean());
     }
     else
     {
       if (!enabled.isBoolean())
       {
-        CAddonMgr::Get().GetAddons(*typeIt, typeAddons, false);
+        CAddonMgr::GetInstance().GetAddons(*typeIt, typeAddons, false);
         VECADDONS enabledAddons;
-        CAddonMgr::Get().GetAddons(*typeIt, enabledAddons, true);
+        CAddonMgr::GetInstance().GetAddons(*typeIt, enabledAddons, true);
         typeAddons.insert(typeAddons.end(), enabledAddons.begin(), enabledAddons.end());
       }
       else
-        CAddonMgr::Get().GetAddons(*typeIt, typeAddons, enabled.asBoolean());
+        CAddonMgr::GetInstance().GetAddons(*typeIt, typeAddons, enabled.asBoolean());
     }
 
     addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
@@ -132,7 +132,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
 {
   string id = parameterObject["addonid"].asString();
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon.get() == NULL ||
+  if (!CAddonMgr::GetInstance().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon.get() == NULL ||
       addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
     return InvalidParams;
     
@@ -150,11 +150,11 @@ JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITr
     disabled = !parameterObject["enabled"].asBoolean();
   // we need to toggle the current disabled state of the addon
   else if (parameterObject["enabled"].isString())
-    disabled = !CAddonMgr::Get().IsAddonDisabled(id);
+    disabled = !CAddonMgr::GetInstance().IsAddonDisabled(id);
   else
     return InvalidParams;
 
-  bool success = disabled ? CAddonMgr::Get().DisableAddon(id) : CAddonMgr::Get().EnableAddon(id);
+  bool success = disabled ? CAddonMgr::GetInstance().DisableAddon(id) : CAddonMgr::GetInstance().EnableAddon(id);
   return success ? ACK : InvalidParams;
 }
 
@@ -162,7 +162,7 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
 {
   string id = parameterObject["addonid"].asString();
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(id, addon) || addon.get() == NULL ||
+  if (!CAddonMgr::GetInstance().GetAddon(id, addon) || addon.get() == NULL ||
       addon->Type() < ADDON_VIZ || addon->Type() >= ADDON_MAX)
     return InvalidParams;
     
@@ -199,9 +199,9 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
     cmd = StringUtils::Format("RunAddon(%s, %s)", id.c_str(), argv.c_str());
 
   if (params["wait"].asBoolean())
-    CApplicationMessenger::Get().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   else
-    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   
   return ACK;
 }
@@ -226,7 +226,7 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
     // from the addon database because it can't be read from addon.xml
     if (field == "enabled")
     {
-      object[field] = !CAddonMgr::Get().IsAddonDisabled(addon->ID());
+      object[field] = !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID());
     }
     else if (field == "fanart" || field == "thumbnail")
     {
@@ -234,7 +234,7 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
       // We need to check the existence of fanart and thumbnails as the addon simply
       // holds where the art will be, not whether it exists.
       bool needsRecaching;
-      std::string image = CTextureCache::Get().CheckCachedImage(url, false, needsRecaching);
+      std::string image = CTextureCache::GetInstance().CheckCachedImage(url, false, needsRecaching);
       if (!image.empty() || CFile::Exists(url))
         object[field] = CTextureUtils::GetWrappedImageURL(url);
       else

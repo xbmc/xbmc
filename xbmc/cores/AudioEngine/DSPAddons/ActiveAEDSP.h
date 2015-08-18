@@ -51,7 +51,7 @@ namespace ActiveAE
   typedef std::map< int, AE_DSP_ADDON >::iterator         AE_DSP_ADDONMAP_ITR;
   typedef std::map< int, AE_DSP_ADDON >::const_iterator   AE_DSP_ADDONMAP_CITR;
 
-  #define g_AEDSPManager       CActiveAEDSP::Get()
+  #define g_AEDSPManager       CActiveAEDSP::GetInstance()
 
   //@{
   /*!
@@ -81,7 +81,7 @@ namespace ActiveAE
      * @brief Get the instance of the ActiveAEDSP.
      * @return The ActiveAEDSP instance.
      */
-    static CActiveAEDSP &Get(void);
+    static CActiveAEDSP &GetInstance();
   //@}
 
   /*! @name message handling methods */

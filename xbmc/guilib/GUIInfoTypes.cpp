@@ -279,7 +279,7 @@ std::string AddonReplacer(const std::string &str)
   size_t length = str.find(" ");
   std::string id = str.substr(0, length);
   int stringid = atoi(str.substr(length + 1).c_str());
-  return CAddonMgr::Get().GetString(id, stringid);
+  return CAddonMgr::GetInstance().GetString(id, stringid);
 }
 
 std::string NumberReplacer(const std::string &str)

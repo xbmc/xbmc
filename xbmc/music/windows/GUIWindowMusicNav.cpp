@@ -108,7 +108,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        message.SetStringParam(CSettings::Get().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW));
+        message.SetStringParam(CSettings::GetInstance().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW));
       
       DisplayEmptyDatabaseMessage(false); // reset message state
 
@@ -515,9 +515,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
          nodetype == NODE_TYPE_OVERVIEW ||
          nodetype == NODE_TYPE_TOP100))
     {
-      if (!item->IsPath(CSettings::Get().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW)))
+      if (!item->IsPath(CSettings::GetInstance().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW)))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
-      if (!CSettings::Get().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW).empty())
+      if (!CSettings::GetInstance().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW).empty())
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->GetPath());
@@ -557,7 +557,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
       else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-      if ((CProfilesManager::Get().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsPlugin())
+      if ((CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsPlugin())
       {
         buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
         buttons.Add(CONTEXT_BUTTON_DELETE, 646);
@@ -574,7 +574,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
 
-  CContextMenuManager::Get().AddVisibleItems(item, buttons);
+  CContextMenuManager::GetInstance().AddVisibleItems(item, buttons);
 }
 
 bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -642,13 +642,13 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_SET_DEFAULT:
-    CSettings::Get().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, GetQuickpathName(item->GetPath()));
-    CSettings::Get().Save();
+    CSettings::GetInstance().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, GetQuickpathName(item->GetPath()));
+    CSettings::GetInstance().Save();
     return true;
 
   case CONTEXT_BUTTON_CLEAR_DEFAULT:
-    CSettings::Get().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, "");
-    CSettings::Get().Save();
+    CSettings::GetInstance().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, "");
+    CSettings::GetInstance().Save();
     return true;
 
   case CONTEXT_BUTTON_GO_TO_ARTIST:
@@ -668,7 +668,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       database.Open();
       CVideoInfoTag details;
       database.GetMusicVideoInfo("",details,database.GetMatchingMusicVideo(StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()));
-      CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(details)));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(details)));
       return true;
     }
 
@@ -715,7 +715,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (!m_musicdatabase.GetScraperForPath(path, scraper, ADDON::ScraperTypeFromContent(content)))
       {
         ADDON::AddonPtr defaultScraper;
-        if (ADDON::CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(content), defaultScraper))
+        if (ADDON::CAddonMgr::GetInstance().GetDefault(ADDON::ScraperTypeFromContent(content), defaultScraper))
         {
           scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
         }

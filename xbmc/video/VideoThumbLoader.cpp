@@ -110,7 +110,7 @@ bool CThumbExtractor::DoWork()
     result = CDVDFileInfo::ExtractThumb(m_item.GetPath(), details, m_fillStreamDetails ? &m_item.GetVideoInfoTag()->m_streamDetails : NULL, (int) m_pos);
     if(result)
     {
-      CTextureCache::Get().AddCachedTexture(m_target, details);
+      CTextureCache::GetInstance().AddCachedTexture(m_target, details);
       m_item.SetProperty("HasAutoThumb", true);
       m_item.SetProperty("AutoThumbImage", m_target);
       m_item.SetArt("thumb", m_target);
@@ -346,7 +346,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
       if (!art.empty()) // cache it
       {
         SetCachedImage(*pItem, type, art);
-        CTextureCache::Get().BackgroundCacheImage(art);
+        CTextureCache::GetInstance().BackgroundCacheImage(art);
         artwork.insert(std::make_pair(type, art));
       }
     }
@@ -358,16 +358,16 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   {
     // An auto-generated thumb may have been cached on a different device - check we have it here
     std::string url = pItem->GetArt("thumb");
-    if (StringUtils::StartsWith(url, "image://video@") && !CTextureCache::Get().HasCachedImage(url))
+    if (StringUtils::StartsWith(url, "image://video@") && !CTextureCache::GetInstance().HasCachedImage(url))
       pItem->SetArt("thumb", "");
 
     if (!pItem->HasArt("thumb"))
     {
       // create unique thumb for auto generated thumbs
       std::string thumbURL = GetEmbeddedThumbURL(*pItem);
-      if (CTextureCache::Get().HasCachedImage(thumbURL))
+      if (CTextureCache::GetInstance().HasCachedImage(thumbURL))
       {
-        CTextureCache::Get().BackgroundCacheImage(thumbURL);
+        CTextureCache::GetInstance().BackgroundCacheImage(thumbURL);
         pItem->SetProperty("HasAutoThumb", true);
         pItem->SetProperty("AutoThumbImage", thumbURL);
         pItem->SetArt("thumb", thumbURL);
@@ -380,8 +380,8 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
             m_videoDatabase->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
         }
       }
-      else if (CSettings::Get().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
-               CSettings::Get().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+      else if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
+               CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
       {
         CFileItem item(*pItem);
         std::string path(item.GetPath());
@@ -397,7 +397,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
     }
 
     // flag extraction
-    if (CSettings::Get().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
        (!pItem->HasVideoInfoTag()                     ||
         !pItem->GetVideoInfoTag()->HasStreamDetails() ) )
     {
@@ -571,14 +571,14 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     CVideoSettings itemVideoSettings;
     m_videoDatabase->Open();
     if (m_videoDatabase->GetVideoSettings(item, itemVideoSettings) && itemVideoSettings.m_StereoMode != RENDER_STEREO_MODE_OFF)
-      stereoMode = CStereoscopicsManager::Get().ConvertGuiStereoModeToString( (RENDER_STEREO_MODE) itemVideoSettings.m_StereoMode );
+      stereoMode = CStereoscopicsManager::GetInstance().ConvertGuiStereoModeToString( (RENDER_STEREO_MODE) itemVideoSettings.m_StereoMode );
     m_videoDatabase->Close();
 
     // still empty, try grabbing from filename
     // TODO: in case of too many false positives due to using the full path, extract the filename only using string utils
     if (stereoMode.empty())
-      stereoMode = CStereoscopicsManager::Get().DetectStereoModeByString( path );
+      stereoMode = CStereoscopicsManager::GetInstance().DetectStereoModeByString( path );
   }
   if (!stereoMode.empty())
-    item.SetProperty("stereomode", CStereoscopicsManager::Get().NormalizeStereoMode(stereoMode));
+    item.SetProperty("stereomode", CStereoscopicsManager::GetInstance().NormalizeStereoMode(stereoMode));
 }

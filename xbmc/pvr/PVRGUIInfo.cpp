@@ -222,7 +222,7 @@ void CPVRGUIInfo::UpdateQualityData(void)
   ClearQualityInfo(qualityInfo);
 
   PVR_CLIENT client;
-  if (CSettings::Get().GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY) &&
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY) &&
       g_PVRClients->GetPlayingClient(client))
   {
     client->SignalQuality(qualityInfo);

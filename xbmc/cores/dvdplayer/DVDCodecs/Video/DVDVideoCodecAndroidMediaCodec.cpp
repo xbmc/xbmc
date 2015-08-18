@@ -1261,7 +1261,7 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
     callbackData.userptr  = (void*)this;
 
     // wait for it.
-    CApplicationMessenger::Get().SendMsg(TMSG_CALLBACK, -1, -1, static_cast<void*>(&callbackData));
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_CALLBACK, -1, -1, static_cast<void*>(&callbackData));
   }
 
   return;

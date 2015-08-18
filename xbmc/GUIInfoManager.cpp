@@ -1210,12 +1210,12 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         if (prop.name == "string")
         {
           if (prop.num_params() == 2)
-            return AddMultiInfo(GUIInfo(SKIN_STRING, CSkinSettings::Get().TranslateString(prop.param(0)), ConditionalStringParameter(prop.param(1))));
+            return AddMultiInfo(GUIInfo(SKIN_STRING, CSkinSettings::GetInstance().TranslateString(prop.param(0)), ConditionalStringParameter(prop.param(1))));
           else
-            return AddMultiInfo(GUIInfo(SKIN_STRING, CSkinSettings::Get().TranslateString(prop.param(0))));
+            return AddMultiInfo(GUIInfo(SKIN_STRING, CSkinSettings::GetInstance().TranslateString(prop.param(0))));
         }
         if (prop.name == "hassetting")
-          return AddMultiInfo(GUIInfo(SKIN_BOOL, CSkinSettings::Get().TranslateBool(prop.param(0))));
+          return AddMultiInfo(GUIInfo(SKIN_BOOL, CSkinSettings::GetInstance().TranslateBool(prop.param(0))));
         else if (prop.name == "hastheme")
           return AddMultiInfo(GUIInfo(SKIN_HAS_THEME, ConditionalStringParameter(prop.param(0))));
       }
@@ -1509,7 +1509,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case ADSP_MASTER_INFO:
   case ADSP_MASTER_OWN_ICON:
   case ADSP_MASTER_OVERRIDE_ICON:
-    ActiveAE::CActiveAEDSP::Get().TranslateCharInfo(info, strLabel);
+    ActiveAE::CActiveAEDSP::GetInstance().TranslateCharInfo(info, strLabel);
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
@@ -1528,7 +1528,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     URIUtils::RemoveExtension(strLabel);
     break;
   case WEATHER_PLUGIN:
-    strLabel = CSettings::Get().GetString(CSettings::SETTING_WEATHER_ADDON);
+    strLabel = CSettings::GetInstance().GetString(CSettings::SETTING_WEATHER_ADDON);
     break;
   case SYSTEM_DATE:
     strLabel = GetDate();
@@ -1540,10 +1540,10 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(g_application.GetVolume(false)));
     break;
   case PLAYER_SUBTITLE_DELAY:
-    strLabel = StringUtils::Format("%2.3f s", CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
+    strLabel = StringUtils::Format("%2.3f s", CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay);
     break;
   case PLAYER_AUDIO_DELAY:
-    strLabel = StringUtils::Format("%2.3f s", CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
+    strLabel = StringUtils::Format("%2.3f s", CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay);
     break;
   case PLAYER_CHAPTER:
     if(g_application.m_pPlayer->IsPlaying())
@@ -1604,7 +1604,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
           CEpgInfoTagPtr tag(m_currentFile->GetPVRChannelInfoTag()->GetEPGNow());
           return tag ?
                    tag->Title() :
-                   CSettings::Get().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
+                   CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
                             "" : g_localizeStrings.Get(19055); // no information available
         }
         if (m_currentFile->HasPVRRecordingInfoTag() && !m_currentFile->GetPVRRecordingInfoTag()->m_strTitle.empty())
@@ -1797,14 +1797,14 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SYSTEM_SCREEN_RESOLUTION:
     if(g_Windowing.IsFullScreen())
       strLabel = StringUtils::Format("%ix%i@%.2fHz - %s",
-        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth,
-        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight,
-        CDisplaySettings::Get().GetCurrentResolutionInfo().fRefreshRate,
+        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth,
+        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight,
+        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().fRefreshRate,
         g_localizeStrings.Get(244).c_str());
     else
       strLabel = StringUtils::Format("%ix%i - %s",
-        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth,
-        CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight,
+        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth,
+        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight,
         g_localizeStrings.Get(242).c_str());
     return strLabel;
     break;
@@ -1949,7 +1949,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     return g_localizeStrings.Get(g_windowManager.GetFocusedWindow());
     break;
   case SYSTEM_STARTUP_WINDOW:
-    strLabel = StringUtils::Format("%i", CSettings::Get().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
+    strLabel = StringUtils::Format("%i", CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
     break;
   case SYSTEM_CURRENT_CONTROL:
     {
@@ -1980,15 +1980,15 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_PROFILENAME:
-    strLabel = CProfilesManager::Get().GetCurrentProfile().getName();
+    strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
     break;
   case SYSTEM_PROFILECOUNT:
-    strLabel = StringUtils::Format("%" PRIuS, CProfilesManager::Get().GetNumberOfProfiles());
+    strLabel = StringUtils::Format("%" PRIuS, CProfilesManager::GetInstance().GetNumberOfProfiles());
     break;
   case SYSTEM_PROFILEAUTOLOGIN:
     {
-      int profileId = CProfilesManager::Get().GetAutoLoginProfileId();
-      if ((profileId < 0) || (!CProfilesManager::Get().GetProfileName(profileId, strLabel)))
+      int profileId = CProfilesManager::GetInstance().GetAutoLoginProfileId();
+      if ((profileId < 0) || (!CProfilesManager::GetInstance().GetProfileName(profileId, strLabel)))
         strLabel = g_localizeStrings.Get(37014); // Last used profile
     }
     break;
@@ -2010,16 +2010,16 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case SYSTEM_STEREOSCOPIC_MODE:
     {
-      int stereoMode = CSettings::Get().GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
+      int stereoMode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
       strLabel = StringUtils::Format("%i", stereoMode);
     }
     break;
 
   case SKIN_THEME:
-    strLabel = CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
+    strLabel = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
     break;
   case SKIN_COLOUR_THEME:
-    strLabel = CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
+    strLabel = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
     break;
   case SKIN_ASPECT_RATIO:
     if (g_SkinInfo)
@@ -2098,8 +2098,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VISUALISATION_NAME:
     {
       AddonPtr addon;
-      strLabel = CSettings::Get().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-      if (CAddonMgr::Get().GetAddon(strLabel,addon) && addon)
+      strLabel = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
+      if (CAddonMgr::GetInstance().GetAddon(strLabel,addon) && addon)
         strLabel = addon->Name();
     }
     break;
@@ -2431,13 +2431,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
   }
   else if (condition == SYSTEM_HASLOCKS)
-    bReturn = CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+    bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_HAS_PVR)
     bReturn = true;
   else if (condition == SYSTEM_HAS_ADSP)
     bReturn = true;
   else if (condition == SYSTEM_ISMASTER)
-    bReturn = CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+    bReturn = CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_ISFULLSCREEN)
     bReturn = g_Windowing.IsFullScreen();
   else if (condition == SYSTEM_ISSTANDALONE)
@@ -2445,13 +2445,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_ISINHIBIT)
     bReturn = g_application.IsIdleShutdownInhibited();
   else if (condition == SYSTEM_HAS_SHUTDOWN)
-    bReturn = (CSettings::Get().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
+    bReturn = (CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
   else if (condition == SYSTEM_LOGGEDON)
     bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_SHOW_EXIT_BUTTON)
     bReturn = g_advancedSettings.m_showExitButton;
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
-    bReturn = CProfilesManager::Get().UsingLoginScreen();
+    bReturn = CProfilesManager::GetInstance().UsingLoginScreen();
   else if (condition == SYSTEM_HAS_MODAL_DIALOG)
     bReturn = g_windowManager.HasModalDialog();
   else if (condition == WEATHER_IS_FETCHED)
@@ -2459,7 +2459,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)
     bReturn = g_PVRManager.TranslateBoolInfo(condition);
   else if (condition >= ADSP_CONDITIONS_START && condition <= ADSP_CONDITIONS_END)
-    bReturn = ActiveAE::CActiveAEDSP::Get().TranslateBoolInfo(condition);
+    bReturn = ActiveAE::CActiveAEDSP::GetInstance().TranslateBoolInfo(condition);
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
@@ -2662,7 +2662,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     break;
     case PLAYER_SEEKING:
-      bReturn = CSeekHandler::Get().InProgress();
+      bReturn = CSeekHandler::GetInstance().InProgress();
     break;
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
@@ -2700,7 +2700,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
       break;
     case VIDEOPLAYER_USING_OVERLAYS:
-      bReturn = (CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD) == RENDER_OVERLAYS);
+      bReturn = (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD) == RENDER_OVERLAYS);
     break;
     case VIDEOPLAYER_ISFULLSCREEN:
       bReturn = g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
@@ -2742,7 +2742,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     break;
     case VISUALISATION_ENABLED:
-      bReturn = !CSettings::Get().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty();
+      bReturn = !CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty();
     break;
     case VIDEOPLAYER_HAS_EPG:
       if (m_currentFile->HasPVRChannelInfoTag())
@@ -2757,7 +2757,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
       if (m_currentFile->HasPVRRecordingInfoTag())
       {
-        EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->EpgEvent());
+        EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->EpgEvent());
         bReturn = (epgTag && epgTag->IsActive() && epgTag->ChannelTag());
       }
       break;
@@ -2811,20 +2811,20 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
     {
       case SKIN_BOOL:
         {
-          bReturn = CSkinSettings::Get().GetBool(info.GetData1());
+          bReturn = CSkinSettings::GetInstance().GetBool(info.GetData1());
         }
         break;
       case SKIN_STRING:
         {
           if (info.GetData2())
-            bReturn = StringUtils::EqualsNoCase(CSkinSettings::Get().GetString(info.GetData1()), m_stringParameters[info.GetData2()]);
+            bReturn = StringUtils::EqualsNoCase(CSkinSettings::GetInstance().GetString(info.GetData1()), m_stringParameters[info.GetData2()]);
           else
-            bReturn = !CSkinSettings::Get().GetString(info.GetData1()).empty();
+            bReturn = !CSkinSettings::GetInstance().GetString(info.GetData1()).empty();
         }
         break;
       case SKIN_HAS_THEME:
         {
-          std::string theme = CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
+          std::string theme = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
           URIUtils::RemoveExtension(theme);
           bReturn = StringUtils::EqualsNoCase(theme, m_stringParameters[info.GetData1()]);
         }
@@ -2999,7 +2999,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         bReturn = g_alarmClock.HasAlarm(m_stringParameters[info.GetData1()]);
         break;
       case SYSTEM_GET_BOOL:
-        bReturn = CSettings::Get().GetBool(m_stringParameters[info.GetData1()]);
+        bReturn = CSettings::GetInstance().GetBool(m_stringParameters[info.GetData1()]);
         break;
       case SYSTEM_HAS_CORE_ID:
         bReturn = g_cpuInfo.HasCoreId(info.GetData1());
@@ -3010,14 +3010,14 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           {
             CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
-              bReturn = CMediaSettings::Get().GetWatchedMode(((CGUIMediaWindow *)window)->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
+              bReturn = CMediaSettings::GetInstance().GetWatchedMode(((CGUIMediaWindow *)window)->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
           }
         }
         break;
       case SYSTEM_HAS_ADDON:
       {
         AddonPtr addon;
-        bReturn = CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
+        bReturn = CAddonMgr::GetInstance().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
         break;
       }
       case CONTAINER_SCROLL_PREVIOUS:
@@ -3252,11 +3252,11 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
 {
   if (info.m_info == SKIN_STRING)
   {
-    return CSkinSettings::Get().GetString(info.GetData1());
+    return CSkinSettings::GetInstance().GetString(info.GetData1());
   }
   else if (info.m_info == SKIN_BOOL)
   {
-    bool bInfo = CSkinSettings::Get().GetBool(info.GetData1());
+    bool bInfo = CSkinSettings::GetInstance().GetBool(info.GetData1());
     if (bInfo)
       return g_localizeStrings.Get(20122);
   }
@@ -3347,7 +3347,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   }
   else if (info.m_info == PLAYER_SEEKSTEPSIZE)
   {
-    int seekSize = CSeekHandler::Get().GetSeekSize();
+    int seekSize = CSeekHandler::GetInstance().GetSeekSize();
     std::string strSeekSize = StringUtils::SecondsToTimeString(abs(seekSize), (TIME_FORMAT)info.GetData1());
     if (seekSize < 0)
       return "-" + strSeekSize;
@@ -3462,9 +3462,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     // in the future.
     AddonPtr addon;
     if (info.GetData2() == 0)
-      CAddonMgr::Get().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon,ADDON_UNKNOWN,false);
+      CAddonMgr::GetInstance().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon,ADDON_UNKNOWN,false);
     else
-      CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon,ADDON_UNKNOWN,false);
+      CAddonMgr::GetInstance().GetAddon(m_stringParameters[info.GetData1()],addon,ADDON_UNKNOWN,false);
     if (addon && info.m_info == SYSTEM_ADDON_TITLE)
       return addon->Name();
     if (addon && info.m_info == SYSTEM_ADDON_ICON)
@@ -3499,7 +3499,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   else if (info == SYSTEM_PROFILETHUMB)
   {
-    std::string thumb = CProfilesManager::Get().GetCurrentProfile().getThumb();
+    std::string thumb = CProfilesManager::GetInstance().GetCurrentProfile().getThumb();
     if (thumb.empty())
       thumb = "unknown-user.png";
     return thumb;
@@ -3910,7 +3910,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       epgTag = tag->GetEPGNow();
       return epgTag ?
           epgTag->Title() :
-          CSettings::Get().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
+          CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
                             "" : g_localizeStrings.Get(19055); // no information available
     case VIDEOPLAYER_GENRE:
       epgTag = tag->GetEPGNow();
@@ -3971,7 +3971,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       epgTag = tag->GetEPGNext();
       return epgTag ?
           epgTag->Title() :
-          CSettings::Get().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
+          CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
                             "" : g_localizeStrings.Get(19055); // no information available
     case VIDEOPLAYER_NEXT_GENRE:
       epgTag = tag->GetEPGNext();
@@ -4184,7 +4184,7 @@ std::string CGUIInfoManager::GetCurrentSeekTime(TIME_FORMAT format) const
 {
   if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
     format = TIME_FORMAT_HH_MM_SS;
-  return StringUtils::SecondsToTimeString(g_application.GetTime() + CSeekHandler::Get().GetSeekSize(), format);
+  return StringUtils::SecondsToTimeString(g_application.GetTime() + CSeekHandler::GetInstance().GetSeekSize(), format);
 }
 
 int CGUIInfoManager::GetTotalPlayTime() const
@@ -4206,7 +4206,7 @@ float CGUIInfoManager::GetSeekPercent() const
 
   float percentPlayTime = static_cast<float>(GetPlayTime()) / GetTotalPlayTime() * 0.1f;
   float percentPerSecond = 100.0f / static_cast<float>(GetTotalPlayTime());
-  float percent = percentPlayTime + percentPerSecond * CSeekHandler::Get().GetSeekSize();
+  float percent = percentPlayTime + percentPerSecond * CSeekHandler::GetInstance().GetSeekSize();
 
   if (percent > 100.0f)
     percent = 100.0f;
@@ -4635,7 +4635,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       CEpgInfoTagPtr epgTag(item->GetPVRChannelInfoTag()->GetEPGNow());
       return epgTag ?
           epgTag->Title() :
-          CSettings::Get().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
+          CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
                             "" : g_localizeStrings.Get(19055); // no information available
     }
     if (item->HasPVRRecordingInfoTag())
@@ -4929,7 +4929,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->HasVideoInfoTag())
     {
       if (item->GetVideoInfoTag()->m_type != MediaTypeTvShow)
-        if (item->GetVideoInfoTag()->m_playCount == 0 && !CSettings::Get().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS))
+        if (item->GetVideoInfoTag()->m_playCount == 0 && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS))
           return g_localizeStrings.Get(20370);
 
       return item->GetVideoInfoTag()->m_strPlot;
@@ -5392,7 +5392,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     {
       std::string stereoMode = item->GetProperty("stereomode").asString();
       if (stereoMode.empty() && item->HasVideoInfoTag())
-        stereoMode = CStereoscopicsManager::Get().NormalizeStereoMode(item->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
+        stereoMode = CStereoscopicsManager::GetInstance().NormalizeStereoMode(item->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
       return stereoMode;
     }
   case LISTITEM_IMDBNUMBER:
@@ -5595,7 +5595,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       std::string stereoMode = pItem->GetProperty("stereomode").asString();
       if (stereoMode.empty() && pItem->HasVideoInfoTag())
-          stereoMode = CStereoscopicsManager::Get().NormalizeStereoMode(pItem->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
+          stereoMode = CStereoscopicsManager::GetInstance().NormalizeStereoMode(pItem->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
       if (!stereoMode.empty() && stereoMode != "mono")
         return true;
     }

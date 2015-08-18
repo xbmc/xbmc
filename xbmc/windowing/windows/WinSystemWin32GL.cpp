@@ -83,7 +83,7 @@ bool CWinSystemWin32GL::InitRenderSystem()
 
   CWIN32Util::CheckGLVersion();
 
-  CSettings::Get().SetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN, true);
+  CSettings::GetInstance().SetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN, true);
 
   return true;
 }

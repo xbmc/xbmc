@@ -37,7 +37,7 @@ enum {
 class CAddonInstaller : public IJobCallback
 {
 public:
-  static CAddonInstaller &Get();
+  static CAddonInstaller &GetInstance();
 
   bool IsDownloading() const;
   void GetInstallList(ADDON::VECADDONS &addons) const;

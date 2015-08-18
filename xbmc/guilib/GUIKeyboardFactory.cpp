@@ -59,12 +59,12 @@ void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typed
       case FILTERING_SEARCH:
         message.SetParam1(GUI_MSG_SEARCH_UPDATE);
         message.SetStringParam(typedString);
-        CApplicationMessenger::Get().SendGUIMessage(message, g_windowManager.GetActiveWindow());
+        CApplicationMessenger::GetInstance().SendGUIMessage(message, g_windowManager.GetActiveWindow());
         break;
       case FILTERING_CURRENT:
         message.SetParam1(GUI_MSG_FILTER_ITEMS);
         message.SetStringParam(typedString);
-        CApplicationMessenger::Get().SendGUIMessage(message);
+        CApplicationMessenger::GetInstance().SendGUIMessage(message);
         break;
       case FILTERING_NONE:
         break;
@@ -206,7 +206,7 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(std::string& strPassword, const s
   else
     strHeadingTemp = StringUtils::Format("%s - %i %s",
                                          g_localizeStrings.Get(12326).c_str(),
-                                         CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) - iRetries,
+                                         CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) - iRetries,
                                          g_localizeStrings.Get(12343).c_str());
 
   std::string strUserInput;

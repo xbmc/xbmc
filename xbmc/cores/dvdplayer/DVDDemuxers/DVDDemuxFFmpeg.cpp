@@ -1209,7 +1209,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case AVMEDIA_TYPE_SUBTITLE:
       {
-        if (pStream->codec->codec_id == AV_CODEC_ID_DVB_TELETEXT && CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTENABLED))
+        if (pStream->codec->codec_id == AV_CODEC_ID_DVB_TELETEXT && CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTENABLED))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
           stream = st;

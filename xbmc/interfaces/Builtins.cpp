@@ -280,7 +280,7 @@ bool CBuiltins::IsSystemPowerdownCommand(const std::string& execString)
   }
   else if (execute == "shutdown")
   {
-    switch (CSettings::Get().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))
+    switch (CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))
     {
       case POWERSTATE_SHUTDOWN:
       case POWERSTATE_SUSPEND:
@@ -327,55 +327,55 @@ int CBuiltins::Execute(const std::string& execString)
 
   if (execute == "reboot" || execute == "restart" || execute == "reset")  //Will reboot the system
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_RESTART);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTART);
   }
   else if (execute == "shutdown")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
   }
   else if (execute == "powerdown")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_POWERDOWN);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_POWERDOWN);
   }
   else if (execute == "restartapp")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_RESTARTAPP);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTARTAPP);
   }
   else if (execute == "hibernate")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_HIBERNATE);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
   }
   else if (execute == "suspend")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_SUSPEND);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
   }
   else if (execute == "quit")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
   }
   else if (execute == "inhibitidleshutdown")
   {
     bool inhibit = (params.size() == 1 && StringUtils::EqualsNoCase(params[0], "true"));
-    CApplicationMessenger::Get().PostMsg(TMSG_INHIBITIDLESHUTDOWN, inhibit);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_INHIBITIDLESHUTDOWN, inhibit);
   }
   else if (execute == "activatescreensaver")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_ACTIVATESCREENSAVER);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_ACTIVATESCREENSAVER);
   }
   else if (execute == "minimize")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
   }
   else if (execute == "loadprofile")
   {
-    int index = CProfilesManager::Get().GetProfileIndex(parameter);
+    int index = CProfilesManager::GetInstance().GetProfileIndex(parameter);
     bool prompt = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "prompt"));
     bool bCanceled;
     if (index >= 0
-        && (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
+        && (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
             || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
     {
-      CApplicationMessenger::Get().PostMsg(TMSG_LOADPROFILE, index);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, index);
     }
   }
   else if (execute == "mastermode")
@@ -401,7 +401,7 @@ int CBuiltins::Execute(const std::string& execString)
   {
     if (params.size())
     {
-      CApplicationMessenger::Get().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, params[0]);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, params[0]);
     }
   }
   else if (execute == "takescreenshot")
@@ -522,20 +522,20 @@ int CBuiltins::Execute(const std::string& execString)
       AddonPtr addon;
       std::string scriptpath;
       // Test to see if the param is an addon ID
-      if (CAddonMgr::Get().GetAddon(params[0], addon))
+      if (CAddonMgr::GetInstance().GetAddon(params[0], addon))
       {
         //Get the correct extension point to run
-        if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-            CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
-            CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
-            CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
+        if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
+            CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
+            CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
+            CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
         {
           scriptpath = addon->LibPath();
         }
         else
         {
           //Run a random extension point (old behaviour).
-          CAddonMgr::Get().GetAddon(params[0], addon);
+          CAddonMgr::GetInstance().GetAddon(params[0], addon);
           scriptpath = addon->LibPath();
           CLog::Log(LOGWARNING, "RunScript called for a non-script addon '%s'. This behaviour is deprecated.", params[0].c_str());
         }
@@ -549,7 +549,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (!filename.empty())
         argv[0] = filename;
 
-      CScriptInvocationManager::Get().ExecuteAsync(scriptpath, addon, argv);
+      CScriptInvocationManager::GetInstance().ExecuteAsync(scriptpath, addon, argv);
     }
   }
 #if defined(TARGET_DARWIN_OSX)
@@ -567,20 +567,20 @@ int CBuiltins::Execute(const std::string& execString)
       std::string scriptpath(params[0]);
       // Test to see if the param is an addon ID
       AddonPtr script;
-      if (CAddonMgr::Get().GetAddon(params[0], script))
+      if (CAddonMgr::GetInstance().GetAddon(params[0], script))
         scriptpath = script->LibPath();
-      CScriptInvocationManager::Get().Stop(scriptpath);
+      CScriptInvocationManager::GetInstance().Stop(scriptpath);
     }
   }
   else if (execute == "system.exec")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
-    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_OS, 0, -1, nullptr, parameter);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_OS, 0, -1, nullptr, parameter);
   }
   else if (execute == "system.execwait")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_MINIMIZE);
-    CApplicationMessenger::Get().PostMsg(TMSG_EXECUTE_OS, 1, -1, nullptr, parameter);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_OS, 1, -1, nullptr, parameter);
   }
   else if (execute == "resolution")
   {
@@ -597,7 +597,7 @@ int CBuiltins::Execute(const std::string& execString)
     else if (paramlow == "1080i") res = RES_HDTV_1080i;
     if (g_graphicsContext.IsValidResolution(res))
     {
-      CDisplaySettings::Get().SetCurrentResolution(res, true);
+      CDisplaySettings::GetInstance().SetCurrentResolution(res, true);
       g_application.ReloadSkin();
     }
   }
@@ -642,7 +642,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (params.size())
     {
       AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_PLUGIN))
+      if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_PLUGIN))
       {
         PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
         std::string addonid = params[0];
@@ -678,10 +678,10 @@ int CBuiltins::Execute(const std::string& execString)
           cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
         Execute(cmd);
       }
-      else if (CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-               CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
-               CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
-               CAddonMgr::Get().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
+      else if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
+               CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
+               CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
+               CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
       {
         // Pass the script name (params[0]) and all the parameters
         // (params[1] ... params[x]) separated by a comma to RunScript
@@ -703,7 +703,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (params.size() > 2)
         data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
 
-      ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
     }
     else
       CLog::Log(LOGERROR, "NotifyAll needs two parameters");
@@ -738,7 +738,7 @@ int CBuiltins::Execute(const std::string& execString)
       if (StringUtils::EqualsNoCase(params[i], "isdir"))
         item.m_bIsFolder = true;
       else if (params[i] == "1") // set fullscreen or windowed
-        CMediaSettings::Get().SetVideoStartWindowed(true);
+        CMediaSettings::GetInstance().SetVideoStartWindowed(true);
       else if (StringUtils::EqualsNoCase(params[i], "resume"))
       {
         // force the item to resume (if applicable) (see CApplication::PlayMedia)
@@ -824,7 +824,7 @@ int CBuiltins::Execute(const std::string& execString)
       return -3;
     }
     if (g_application.m_pPlayer->IsPlaying())
-      CSeekHandler::Get().SeekSeconds(atoi(params[0].c_str()));
+      CSeekHandler::GetInstance().SeekSeconds(atoi(params[0].c_str()));
   }
   else if (execute == "showpicture")
   {
@@ -890,7 +890,7 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "refreshrss")
   {
-    CRssManager::Get().Reload();
+    CRssManager::GetInstance().Reload();
   }
   else if (execute == "playercontrol")
   {
@@ -1035,12 +1035,12 @@ int CBuiltins::Execute(const std::string& execString)
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        CMediaSettings::Get().SetMusicPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
-        CSettings::Get().Save();
+        CMediaSettings::GetInstance().SetMusicPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
+        CSettings::GetInstance().Save();
         break;
       case PLAYLIST_VIDEO:
-        CMediaSettings::Get().SetVideoPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
-        CSettings::Get().Save();
+        CMediaSettings::GetInstance().SetVideoPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
+        CSettings::GetInstance().Save();
       }
 
       // send message
@@ -1079,12 +1079,12 @@ int CBuiltins::Execute(const std::string& execString)
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        CMediaSettings::Get().SetMusicPlaylistRepeat(state == PLAYLIST::REPEAT_ALL);
-        CSettings::Get().Save();
+        CMediaSettings::GetInstance().SetMusicPlaylistRepeat(state == PLAYLIST::REPEAT_ALL);
+        CSettings::GetInstance().Save();
         break;
       case PLAYLIST_VIDEO:
-        CMediaSettings::Get().SetVideoPlaylistRepeat(state == PLAYLIST::REPEAT_ALL);
-        CSettings::Get().Save();
+        CMediaSettings::GetInstance().SetVideoPlaylistRepeat(state == PLAYLIST::REPEAT_ALL);
+        CSettings::GetInstance().Save();
       }
 
       // send messages so now playing window can get updated
@@ -1109,7 +1109,7 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "playwith")
   {
-    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::Get().GetPlayerCore(parameter);
+    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().GetPlayerCore(parameter);
     g_application.OnAction(CAction(ACTION_PLAYER_PLAY));
   }
   else if (execute == "mute")
@@ -1126,7 +1126,7 @@ int CBuiltins::Execute(const std::string& execString)
     {
       if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
       {
-        CApplicationMessenger::Get().PostMsg(TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
       }
     }
   }
@@ -1258,33 +1258,33 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "skin.togglesetting")
   {
-    int setting = CSkinSettings::Get().TranslateBool(parameter);
-    CSkinSettings::Get().SetBool(setting, !CSkinSettings::Get().GetBool(setting));
-    CSettings::Get().Save();
+    int setting = CSkinSettings::GetInstance().TranslateBool(parameter);
+    CSkinSettings::GetInstance().SetBool(setting, !CSkinSettings::GetInstance().GetBool(setting));
+    CSettings::GetInstance().Save();
   }
   else if (execute == "skin.setbool" && params.size())
   {
     if (params.size() > 1)
     {
-      int string = CSkinSettings::Get().TranslateBool(params[0]);
-      CSkinSettings::Get().SetBool(string, StringUtils::EqualsNoCase(params[1], "true"));
-      CSettings::Get().Save();
+      int string = CSkinSettings::GetInstance().TranslateBool(params[0]);
+      CSkinSettings::GetInstance().SetBool(string, StringUtils::EqualsNoCase(params[1], "true"));
+      CSettings::GetInstance().Save();
       return 0;
     }
     // default is to set it to true
-    int setting = CSkinSettings::Get().TranslateBool(params[0]);
-    CSkinSettings::Get().SetBool(setting, true);
-    CSettings::Get().Save();
+    int setting = CSkinSettings::GetInstance().TranslateBool(params[0]);
+    CSkinSettings::GetInstance().SetBool(setting, true);
+    CSettings::GetInstance().Save();
   }
   else if (execute == "skin.reset")
   {
-    CSkinSettings::Get().Reset(parameter);
-    CSettings::Get().Save();
+    CSkinSettings::GetInstance().Reset(parameter);
+    CSettings::GetInstance().Save();
   }
   else if (execute == "skin.resetsettings")
   {
-    CSkinSettings::Get().Reset();
-    CSettings::Get().Save();
+    CSkinSettings::GetInstance().Reset();
+    CSettings::GetInstance().Save();
   }
   else if (execute == "skin.theme")
   {
@@ -1295,11 +1295,11 @@ int CBuiltins::Execute(const std::string& execString)
     int iTheme = -1;
 
     // find current theme
-    if (!StringUtils::EqualsNoCase(CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME), "SKINDEFAULT"))
+    if (!StringUtils::EqualsNoCase(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME), "SKINDEFAULT"))
     {
       for (unsigned int i=0;i<vecTheme.size();++i)
       {
-        std::string strTmpTheme(CSettings::Get().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME));
+        std::string strTmpTheme(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME));
         URIUtils::RemoveExtension(strTmpTheme);
         if (StringUtils::EqualsNoCase(vecTheme[i], strTmpTheme))
         {
@@ -1323,12 +1323,12 @@ int CBuiltins::Execute(const std::string& execString)
     if (iTheme != -1 && iTheme < (int)vecTheme.size())
       strSkinTheme = vecTheme[iTheme];
 
-    CSettings::Get().SetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME, strSkinTheme);
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME, strSkinTheme);
     // also set the default color theme
     std::string colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
     if (StringUtils::EqualsNoCase(colorTheme, "Textures.xml"))
       colorTheme = "defaults.xml";
-    CSettings::Get().SetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS, colorTheme);
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS, colorTheme);
     g_application.ReloadSkin();
   }
   else if (execute == "skin.setstring"  || execute == "skin.setimage" ||
@@ -1339,28 +1339,28 @@ int CBuiltins::Execute(const std::string& execString)
     int string = 0;
     if (params.size() > 1)
     {
-      string = CSkinSettings::Get().TranslateString(params[0]);
+      string = CSkinSettings::GetInstance().TranslateString(params[0]);
       if (execute == "skin.setstring")
       {
-        CSkinSettings::Get().SetString(string, params[1]);
-        CSettings::Get().Save();
+        CSkinSettings::GetInstance().SetString(string, params[1]);
+        CSettings::GetInstance().Save();
         return 0;
       }
     }
     else
-      string = CSkinSettings::Get().TranslateString(params[0]);
-    std::string value = CSkinSettings::Get().GetString(string);
+      string = CSkinSettings::GetInstance().TranslateString(params[0]);
+    std::string value = CSkinSettings::GetInstance().GetString(string);
     VECSOURCES localShares;
     g_mediaManager.GetLocalDrives(localShares);
     if (execute == "skin.setstring")
     {
       if (CGUIKeyboardFactory::ShowAndGetInput(value, CVariant{g_localizeStrings.Get(1029)}, true))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::GetInstance().SetString(string, value);
     }
     else if (execute == "skin.setnumeric")
     {
       if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(611)))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::GetInstance().SetString(string, value);
     }
     else if (execute == "skin.setimage")
     {
@@ -1378,14 +1378,14 @@ int CBuiltins::Execute(const std::string& execString)
         }
       }
       if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::GetInstance().SetString(string, value);
     }
     else if (execute == "skin.setlargeimage")
     {
-      VECSOURCES *shares = CMediaSourceSettings::Get().GetSources("pictures");
+      VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources("pictures");
       if (!shares) shares = &localShares;
       if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::GetInstance().SetString(string, value);
     }
     else if (execute == "skin.setfile")
     {
@@ -1412,9 +1412,9 @@ int CBuiltins::Execute(const std::string& execString)
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {
           if (StringUtils::StartsWithNoCase(replace, "addons://"))
-            CSkinSettings::Get().SetString(string, URIUtils::GetFileName(replace));
+            CSkinSettings::GetInstance().SetString(string, URIUtils::GetFileName(replace));
           else
-            CSkinSettings::Get().SetString(string, replace);
+            CSkinSettings::GetInstance().SetString(string, replace);
         }
       }
       else 
@@ -1433,7 +1433,7 @@ int CBuiltins::Execute(const std::string& execString)
           }
         }
         if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
-          CSkinSettings::Get().SetString(string, value);
+          CSkinSettings::GetInstance().SetString(string, value);
       }
     }
     else // execute == "skin.setpath"))
@@ -1453,13 +1453,13 @@ int CBuiltins::Execute(const std::string& execString)
         }
       }
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
-        CSkinSettings::Get().SetString(string, value);
+        CSkinSettings::GetInstance().SetString(string, value);
     }
-    CSettings::Get().Save();
+    CSettings::GetInstance().Save();
   }
   else if (execute == "skin.setaddon" && params.size() > 1)
   {
-    int string = CSkinSettings::Get().TranslateString(params[0]);
+    int string = CSkinSettings::GetInstance().TranslateString(params[0]);
     vector<ADDON::TYPE> types;
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
@@ -1470,8 +1470,8 @@ int CBuiltins::Execute(const std::string& execString)
     std::string result;
     if (types.size() > 0 && CGUIWindowAddonBrowser::SelectAddonID(types, result, true) == 1)
     {
-      CSkinSettings::Get().SetString(string, result);
-      CSettings::Get().Save();
+      CSkinSettings::GetInstance().SetString(string, result);
+      CSettings::GetInstance().Save();
     }
   }
   else if (execute == "skin.toggledebug")
@@ -1507,19 +1507,19 @@ int CBuiltins::Execute(const std::string& execString)
     if (g_application.IsMusicScanning())
       g_application.StopMusicScan();
 
-    if (CVideoLibraryQueue::Get().IsRunning())
-      CVideoLibraryQueue::Get().CancelAllJobs();
+    if (CVideoLibraryQueue::GetInstance().IsRunning())
+      CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
-    ADDON::CAddonMgr::Get().StopServices(true);
+    ADDON::CAddonMgr::GetInstance().StopServices(true);
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    CProfilesManager::Get().LoadMasterProfileForLogin();
+    CProfilesManager::GetInstance().LoadMasterProfileForLogin();
     g_passwordManager.bMasterUser = false;
 
     if (!ActivateWindow(WINDOW_LOGIN_SCREEN))
       return false;
 
-    if (!CNetworkServices::Get().StartEventServer()) // event server could be needed in some situations
+    if (!CNetworkServices::GetInstance().StartEventServer()) // event server could be needed in some situations
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
   }
   else if (execute == "pagedown")
@@ -1747,7 +1747,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
       int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
-      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, windowID, -1, static_cast<void*>(new CAction(actionID)));
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, windowID, -1, static_cast<void*>(new CAction(actionID)));
     }
   }
   else if (execute == "setproperty" && params.size() >= 2)
@@ -1770,7 +1770,7 @@ int CBuiltins::Execute(const std::string& execString)
   {
     AddonPtr addon;
     ADDON::TYPE type = TranslateType(params[0]);
-    if (CAddonMgr::Get().GetDefault(type, addon))
+    if (CAddonMgr::GetInstance().GetDefault(type, addon))
     {
       bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addon);
       if (type == ADDON_VIZ && changed)
@@ -1788,7 +1788,7 @@ int CBuiltins::Execute(const std::string& execString)
     if (type != ADDON_UNKNOWN && 
         CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
     {
-      CAddonMgr::Get().SetDefault(type,addonID);
+      CAddonMgr::GetInstance().SetDefault(type,addonID);
       if (type == ADDON_VIZ)
         g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
     }
@@ -1796,16 +1796,16 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "addon.opensettings" && params.size() == 1)
   {
     AddonPtr addon;
-    if (CAddonMgr::Get().GetAddon(params[0], addon))
+    if (CAddonMgr::GetInstance().GetAddon(params[0], addon))
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (execute == "updateaddonrepos")
   {
-    CAddonInstaller::Get().UpdateRepos(true);
+    CAddonInstaller::GetInstance().UpdateRepos(true);
   }
   else if (execute == "updatelocaladdons")
   {
-    CAddonMgr::Get().FindAddons();
+    CAddonMgr::GetInstance().FindAddons();
   }
   else if (execute == "toggledpms")
   {
@@ -1814,15 +1814,15 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "cectogglestate")
   {
     bool result;
-    CApplicationMessenger::Get().SendMsg(TMSG_CECTOGGLESTATE, 0, 0, static_cast<void*>(&result));
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_CECTOGGLESTATE, 0, 0, static_cast<void*>(&result));
   }
   else if (execute == "cecactivatesource")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_CECACTIVATESOURCE);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_CECACTIVATESOURCE);
   }
   else if (execute == "cecstandby")
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_CECSTANDBY);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_CECSTANDBY);
   }
   else if (execute == "weather.locationset" && !params.empty())
   {
@@ -1852,8 +1852,8 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "toggledebug")
   {
-    bool debug = CSettings::Get().GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
-    CSettings::Get().SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
+    bool debug = CSettings::GetInstance().GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
+    CSettings::GetInstance().SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
     g_advancedSettings.SetDebugMode(!debug);
   }
   //TODO deprecated. To be replaced by pvr.startmanager
@@ -1876,17 +1876,17 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "pvr.searchmissingchannelicons")
   {
-    PVR::CPVRManager::Get().TriggerSearchMissingChannelIcons();
+    PVR::CPVRManager::GetInstance().TriggerSearchMissingChannelIcons();
   }
   else if (execute == "startandroidactivity" && !params.empty())
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_START_ANDROID_ACTIVITY, -1, -1, static_cast<void*>(&params));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_START_ANDROID_ACTIVITY, -1, -1, static_cast<void*>(&params));
   }
   else if (execute == "setstereomode" && !parameter.empty())
   {
-    CAction action = CStereoscopicsManager::Get().ConvertActionCommandToAction(execute, parameter);
+    CAction action = CStereoscopicsManager::GetInstance().ConvertActionCommandToAction(execute, parameter);
     if (action.GetID() != ACTION_NONE)
-      CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
     else
     {
       CLog::Log(LOGERROR,"Builtin 'SetStereoMode' called with unknown parameter: %s", parameter.c_str());
@@ -1894,6 +1894,6 @@ int CBuiltins::Execute(const std::string& execString)
     }
   }
   else
-    return CInputManager::Get().ExecuteBuiltin(execute, params);
+    return CInputManager::GetInstance().ExecuteBuiltin(execute, params);
   return 0;
 }

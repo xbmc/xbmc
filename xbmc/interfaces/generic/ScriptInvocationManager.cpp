@@ -43,7 +43,7 @@ CScriptInvocationManager::~CScriptInvocationManager()
   Uninitialize();
 }
 
-CScriptInvocationManager& CScriptInvocationManager::Get()
+CScriptInvocationManager& CScriptInvocationManager::GetInstance()
 {
   static CScriptInvocationManager s_instance;
   return s_instance;

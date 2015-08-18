@@ -58,7 +58,7 @@ const PLAYERCOREID PCID_PAPLAYER = EPC_PAPLAYER;
 class CPlayerCoreFactory : public ISettingsHandler
 {
 public:
-  static CPlayerCoreFactory& Get();
+  static CPlayerCoreFactory& GetInstance();
 
   virtual void OnSettingsLoaded();
 

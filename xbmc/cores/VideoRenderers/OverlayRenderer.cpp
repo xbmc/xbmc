@@ -189,7 +189,7 @@ void CRenderer::Render(int idx)
 
   float total_height = 0.0f;
   float cur_height = 0.0f;
-  int subalign = CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
+  int subalign = CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   for (std::vector<COverlay*>::iterator it = render.begin(); it != render.end(); ++it)
   {
     COverlay* o = *it;
@@ -335,7 +335,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   int targetHeight = MathUtils::round_int(target.Height());
   int useMargin;
 
-  int subalign = CSettings::Get().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
+  int subalign = CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   if(subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE
   || subalign == SUBTITLE_ALIGN_TOP_OUTSIDE
   ||(subalign == SUBTITLE_ALIGN_MANUAL && g_advancedSettings.m_videoAssFixedWorks))

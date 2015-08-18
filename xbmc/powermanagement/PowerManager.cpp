@@ -123,7 +123,7 @@ void CPowerManager::Initialize()
 
 void CPowerManager::SetDefaults()
 {
-  int defaultShutdown = CSettings::Get().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
+  int defaultShutdown = CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
 
   switch (defaultShutdown)
   {
@@ -162,7 +162,7 @@ void CPowerManager::SetDefaults()
     break;
   }
 
-  ((CSettingInt*)CSettings::Get().GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
+  ((CSettingInt*)CSettings::GetInstance().GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
 }
 
 bool CPowerManager::Powerdown()
@@ -195,7 +195,7 @@ bool CPowerManager::Reboot()
 
   if (success)
   {
-    CAnnouncementManager::Get().Announce(System, "xbmc", "OnRestart");
+    CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnRestart");
 
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
     if (dialog)
@@ -237,7 +237,7 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
-  CAnnouncementManager::Get().Announce(System, "xbmc", "OnSleep");
+  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnSleep");
 
   CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
   if (dialog)
@@ -251,7 +251,7 @@ void CPowerManager::OnSleep()
   CBuiltins::Execute("LIRC.Stop");
 #endif
 
-  PVR::CPVRManager::Get().SetWakeupCommand();
+  PVR::CPVRManager::GetInstance().SetWakeupCommand();
   g_application.SaveFileState(true);
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
@@ -292,7 +292,7 @@ void CPowerManager::OnWake()
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
 
-  CAnnouncementManager::Get().Announce(System, "xbmc", "OnWake");
+  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");
 }
 
 void CPowerManager::OnLowBattery()
@@ -301,7 +301,7 @@ void CPowerManager::OnLowBattery()
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
-  CAnnouncementManager::Get().Announce(System, "xbmc", "OnLowBattery");
+  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnLowBattery");
 }
 
 void CPowerManager::SettingOptionsShutdownStatesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)

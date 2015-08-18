@@ -26,7 +26,7 @@
 
 using namespace KODI::MESSAGING;
 
-CGenericTouchActionHandler &CGenericTouchActionHandler::Get()
+CGenericTouchActionHandler &CGenericTouchActionHandler::GetInstance()
 {
   static CGenericTouchActionHandler sTouchAction;
   return sTouchAction;

@@ -502,7 +502,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
     newTag->Update(*tag);
     if (newTag->EpgEvent() > 0)
     {
-      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(newTag->EpgEvent());
+      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(newTag->EpgEvent());
       if (epgTag)
         epgTag->SetRecording(newTag);
     }
@@ -520,7 +520,7 @@ void CPVRRecordings::UpdateEpgTags(void)
     iEpgEvent = it->second->EpgEvent();
     if (iEpgEvent > 0 && !it->second->IsDeleted())
     {
-      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::Get().GetTagById(iEpgEvent);
+      EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(iEpgEvent);
       if (epgTag)
         epgTag->SetRecording(it->second);
     }

@@ -96,13 +96,13 @@ CPVRManager::CPVRManager(void) :
     m_progressHandle(NULL),
     m_managerState(ManagerStateStopped)
 {
-  CAnnouncementManager::Get().AddAnnouncer(this);
+  CAnnouncementManager::GetInstance().AddAnnouncer(this);
   ResetProperties();
 }
 
 CPVRManager::~CPVRManager(void)
 {
-  CAnnouncementManager::Get().RemoveAnnouncer(this);
+  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
   Stop();
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
@@ -129,7 +129,7 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
   }
 }
 
-CPVRManager &CPVRManager::Get(void)
+CPVRManager &CPVRManager::GetInstance()
 {
   static CPVRManager pvrManagerInstance;
   return pvrManagerInstance;
@@ -153,16 +153,16 @@ void CPVRManager::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRMANAGER_ENABLED)
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_SETPVRMANAGERSTATE, ((CSettingBool*)setting)->GetValue() ? 1 : 0);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SETPVRMANAGERSTATE, ((CSettingBool*)setting)->GetValue() ? 1 : 0);
   }
   else if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
   {
-    if (((CSettingBool*)setting)->GetValue() && CSettings::Get().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
+    if (((CSettingBool*)setting)->GetValue() && CSettings::GetInstance().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
     {
       std::string newPassword = "";
       // password set... save it
       if (CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword))
-        CSettings::Get().SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
+        CSettings::GetInstance().SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
       // password not set... disable parental
       else
         ((CSettingBool*)setting)->SetValue(false);
@@ -273,7 +273,7 @@ bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
 
 void CPVRManager::MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer)
 {
-  if (IsStarted() && CSettings::Get().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
+  if (IsStarted() && CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
   {
     CSingleLock lock(m_critSection);
     m_outdatedAddons.insert(make_pair(strAddonId, strReferer));
@@ -311,7 +311,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   for (std::map<std::string, std::string>::iterator it = outdatedAddons.begin(); it != outdatedAddons.end(); ++it)
   {
     CLog::Log(LOGINFO, "PVR - updating add-on '%s'", it->first.c_str());
-    CAddonInstaller::Get().Install(it->first, true, it->second, false);
+    CAddonInstaller::GetInstance().Install(it->first, true, it->second, false);
   }
 
   // reload
@@ -363,7 +363,7 @@ void CPVRManager::Cleanup(void)
   m_pendingUpdates.clear();
 
   /* unregister application action listener */
-  g_application.UnregisterActionListener(&CPVRActionListener::Get());
+  g_application.UnregisterActionListener(&CPVRActionListener::GetInstance());
 
   HideProgressDialog();
 
@@ -416,7 +416,7 @@ void CPVRManager::Start(bool bAsync /* = false */)
   Stop();
 
   /* don't start if Settings->Video->TV->Enable isn't checked */
-  if (!CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
     return;
 
   ResetProperties();
@@ -428,7 +428,7 @@ void CPVRManager::Start(bool bAsync /* = false */)
   m_database->Open();
 
   /* register application action listener */
-  g_application.RegisterActionListener(&CPVRActionListener::Get());
+  g_application.RegisterActionListener(&CPVRActionListener::GetInstance());
 
   /* create the supervisor thread to do all background activities */
   StartUpdateThreads();
@@ -451,7 +451,7 @@ void CPVRManager::Stop(void)
   if (IsPlaying())
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
-    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
   }
 
   /* stop all update threads */
@@ -551,16 +551,16 @@ void CPVRManager::Process(void)
   if (IsStarted())
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
-    CApplicationMessenger::Get().PostMsg(TMSG_SETPVRMANAGERSTATE, 1);
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SETPVRMANAGERSTATE, 1);
   }
 }
 
 bool CPVRManager::SetWakeupCommand(void)
 {
-  if (!CSettings::Get().GetBool(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED))
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED))
     return false;
 
-  const std::string strWakeupCommand = CSettings::Get().GetString(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD);
+  const std::string strWakeupCommand = CSettings::GetInstance().GetString(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD);
   if (!strWakeupCommand.empty() && m_timers)
   {
     time_t iWakeupTime;
@@ -728,7 +728,7 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
 
 bool CPVRManager::ContinueLastChannel(void)
 {
-  if (CSettings::Get().GetInt(CSettings::SETTING_PVRPLAYBACK_STARTLAST) == CONTINUE_LAST_CHANNEL_OFF)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_STARTLAST) == CONTINUE_LAST_CHANNEL_OFF)
     return false;
 
   CFileItemPtr channel = m_channelGroups->GetLastPlayedChannel();
@@ -736,7 +736,7 @@ bool CPVRManager::ContinueLastChannel(void)
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - continue playback on channel '%s'", __FUNCTION__, channel->GetPVRChannelInfoTag()->ChannelName().c_str());
     SetPlayingGroup(m_channelGroups->GetLastPlayedGroup(channel->GetPVRChannelInfoTag()->ChannelID()));
-    StartPlayback(channel->GetPVRChannelInfoTag(), (CSettings::Get().GetInt(CSettings::SETTING_PVRPLAYBACK_STARTLAST) == CONTINUE_LAST_CHANNEL_IN_BACKGROUND));
+    StartPlayback(channel->GetPVRChannelInfoTag(), (CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPLAYBACK_STARTLAST) == CONTINUE_LAST_CHANNEL_IN_BACKGROUND));
     return true;
   }
 
@@ -761,7 +761,7 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   if (m_addons && m_addons->IsPlaying())
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - stopping playback", __FUNCTION__);
-    CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
   }
 
   pDlgProgress->SetPercentage(10);
@@ -821,7 +821,7 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
 
   CLog::Log(LOGNOTICE,"PVRManager - %s - %s database cleared", __FUNCTION__, bResetEPGOnly ? "EPG" : "PVR and EPG");
 
-  if (CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
     m_database->Open();
@@ -952,11 +952,11 @@ bool CPVRManager::IsParentalLocked(const CPVRChannelPtr &channel)
   if (// different channel
       (!currentChannel || channel != currentChannel) &&
       // parental control enabled
-      CSettings::Get().GetBool(CSettings::SETTING_PVRPARENTAL_ENABLED) &&
+      CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPARENTAL_ENABLED) &&
       // channel is locked
       channel && channel->IsLocked())
   {
-    float parentalDurationMs = CSettings::Get().GetInt(CSettings::SETTING_PVRPARENTAL_DURATION) * 1000.0f;
+    float parentalDurationMs = CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPARENTAL_DURATION) * 1000.0f;
     bReturn = m_parentalTimer &&
         (!m_parentalTimer->IsRunning() ||
           m_parentalTimer->GetElapsedMilliseconds() > parentalDurationMs);
@@ -967,9 +967,9 @@ bool CPVRManager::IsParentalLocked(const CPVRChannelPtr &channel)
 
 bool CPVRManager::CheckParentalPIN(const std::string& strTitle /* = "" */)
 {
-  std::string pinCode = CSettings::Get().GetString(CSettings::SETTING_PVRPARENTAL_PIN);
+  std::string pinCode = CSettings::GetInstance().GetString(CSettings::SETTING_PVRPARENTAL_PIN);
 
-  if (!CSettings::Get().GetBool(CSettings::SETTING_PVRPARENTAL_ENABLED) || pinCode.empty())
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPARENTAL_ENABLED) || pinCode.empty())
     return true;
 
   // Locked channel. Enter PIN:
@@ -1114,7 +1114,7 @@ bool CPVRManager::PlayMedia(const CFileItem& item)
   {
     CFileItemList *l = new CFileItemList; //don't delete,
     l->Add(std::make_shared<CFileItem>(pvrItem));
-    CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
     return true;
   }
 
@@ -1172,7 +1172,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     {
       musictag->SetTitle(epgTagNow ?
           epgTagNow->Title() :
-          CSettings::Get().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
+          CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
               "" :
               g_localizeStrings.Get(19055)); // no information available
       if (epgTagNow)
@@ -1193,7 +1193,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     {
       videotag->m_strTitle = epgTagNow ?
           epgTagNow->Title() :
-          CSettings::Get().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
+          CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
               "" :
               g_localizeStrings.Get(19055); // no information available
       if (epgTagNow)
@@ -1211,11 +1211,11 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 
 bool CPVRManager::StartPlayback(const CPVRChannelPtr &channel, bool bMinimised /* = false */)
 {
-  CMediaSettings::Get().SetVideoStartWindowed(bMinimised);
+  CMediaSettings::GetInstance().SetVideoStartWindowed(bMinimised);
   
   CFileItemList *l = new CFileItemList; //don't delete,
   l->Add(std::make_shared<CFileItem>(channel));
-  CApplicationMessenger::Get().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
   CLog::Log(LOGNOTICE, "PVRManager - %s - started playback on channel '%s'",
       __FUNCTION__, channel->ChannelName().c_str());
@@ -1453,7 +1453,7 @@ bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
             const CDateTime now(CDateTime::GetUTCDateTime());
             const CDateTime start(cause->StartAsUTC());
             const CDateTimeSpan prestart(0, 0, cause->MarginStart(), 0);
-            const CDateTimeSpan prewakeup(0, 0, CSettings::Get().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP), 0);
+            const CDateTimeSpan prewakeup(0, 0, CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP), 0);
 
             CDateTimeSpan diff(start - now);
             diff -= prestart - prewakeup;
@@ -1483,7 +1483,7 @@ bool CPVRManager::CanSystemPowerdown(bool bAskUser /*= true*/) const
           const CDateTime now(CDateTime::GetUTCDateTime());
 
           CDateTime dailywakeuptime;
-          dailywakeuptime.SetFromDBTime(CSettings::Get().GetString(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
+          dailywakeuptime.SetFromDBTime(CSettings::GetInstance().GetString(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
           dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
           const CDateTimeSpan diff(dailywakeuptime - now);
@@ -1574,7 +1574,7 @@ bool CPVRManager::IsNextEventWithinBackendIdleTime(void) const
   // timers going off soon?
   const CDateTime now(CDateTime::GetUTCDateTime());
   const CDateTimeSpan idle(
-    0, 0, CSettings::Get().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
+    0, 0, CSettings::GetInstance().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
   const CDateTime next(m_timers->GetNextEventTime());
   const CDateTimeSpan delta(next - now);
 
@@ -1722,7 +1722,7 @@ bool CPVRChannelSwitchJob::DoWork(void)
   {
     CVariant data(CVariant::VariantTypeObject);
     data["end"] = true;
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", CFileItemPtr(m_previous), data);
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", CFileItemPtr(m_previous), data);
   }
 
   // announce OnPlay if the switch was successful
@@ -1731,7 +1731,7 @@ bool CPVRChannelSwitchJob::DoWork(void)
     CVariant param;
     param["player"]["speed"] = 1;
     param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", CFileItemPtr(new CFileItem(*m_next)), param);
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", CFileItemPtr(new CFileItem(*m_next)), param);
   }
 
   return true;

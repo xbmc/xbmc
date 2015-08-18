@@ -208,7 +208,7 @@ void CGUIDialog::Open()
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    CApplicationMessenger::Get().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, -1, static_cast<void*>(this));
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, -1, static_cast<void*>(this));
   }
   else
     Open_Internal();
