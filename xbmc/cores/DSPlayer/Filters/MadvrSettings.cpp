@@ -27,6 +27,10 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+#ifndef countof
+#define countof(array) (sizeof(array)/sizeof(array[0]))
+#endif
+
 CMadvrSettings::CMadvrSettings()
 {
   m_Resolution = -1;
@@ -145,4 +149,44 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_superResFirst != right.m_superResFirst) return true;
 
   return false;
+}
+
+int CMadvrSettings::GetSettingId(const MADVR_SETTINGS *setsArray, std::string sValue)
+{
+  for (unsigned int i = 0; i < countof(&setsArray); i++)
+  {
+    if (sValue == setsArray[i].name)
+      return i;
+  }
+  return -1;
+}
+
+int CMadvrSettings::GetScalingId(std::string sValue)
+{
+  for (unsigned int i = 0; i < countof(MadvrScaling); i++)
+  {
+    if (sValue == MadvrScaling[i].name)
+      return i;
+  }
+  return -1;
+}
+
+int CMadvrSettings::GetDoubleId(int iValue)
+{
+  for (unsigned int i = 0; i < countof(MadvrDoubleQuality); i++)
+  {
+    if (iValue == MadvrDoubleQuality[i].id)
+      return i;
+  }
+  return -1;
+}
+
+int CMadvrSettings::GeDoubleAlgo(std::string sValue)
+{
+  for (unsigned int i = 0; i < countof(MadvrDoubleQuality); i++)
+  {
+    if (sValue == MadvrDoubleQuality[i].algo)
+      return i;
+  }
+  return -1;
 }

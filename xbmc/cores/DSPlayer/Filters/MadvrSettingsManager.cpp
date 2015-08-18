@@ -210,9 +210,97 @@ void CMadvrSettingsManager::GetFloat(std::string path, float* fValue, int iConv)
   int iValue;
   std::wstring pathW;
   g_charsetConverter.utf8ToW(path, pathW, false);
-  SetSettings(MADVR_SETTINGS_INT, pathW.c_str(), NULL, NULL, iValue);
-  *fValue = (float)(iValue / iConv);
+  GetSettings(MADVR_SETTINGS_INT, pathW.c_str(), 0, NULL, NULL, &iValue, NULL);
+  if (iValue > 0)
+    *fValue = (float)iValue / (float)iConv;
+  else
+    *fValue = 0.0f;
 };
+
+void CMadvrSettingsManager::GetDoubling(CStdString path, int* iValue)
+{
+  CStdString strBool = "nnedi" + path + "Enable";
+  CStdString strInt = "nnedi" + path + "Quality";
+  CStdString strAlgo = path + "Algo";
+  BOOL bValue;
+  int aValue;
+  int result = -1;
+  std::string sValue;
+
+  GetBool(strBool, &bValue);
+  if (bValue)
+  {
+    GetStr(strAlgo, &sValue);
+    if (sValue != "NNEDI3")
+    {
+      result = CMadvrSettings::GeDoubleAlgo("sValue");
+    }
+    else
+    {
+      GetInt(strInt, &aValue);
+      result = CMadvrSettings::GetDoubleId(aValue);
+    }
+  };
+
+  *iValue = result;
+}
+
+void CMadvrSettingsManager::GetDeintActive(CStdString path, int* iValue)
+{
+  CStdString strAuto = "autoActivateDeinterlacing";
+  CStdString strIfDoubt = "ifInDoubtDeinterlace";
+
+  BOOL bValue1;
+  BOOL bValue2;
+  int result = 0;
+
+  GetBool(strAuto, &bValue1);
+  if (bValue1)
+  {
+    GetBool(strIfDoubt, &bValue2);
+    result = !bValue2;
+  };
+
+  *iValue = result;
+}
+
+void CMadvrSettingsManager::GetSmoothmotion(CStdString path, int* iValue)
+{
+  CStdString stEnabled = "smoothMotionEnabled";
+  CStdString strMode = "smoothMotionMode";
+
+  BOOL bValue;
+  std::string sValue;
+  int result = -1;
+
+  GetBool(stEnabled, &bValue);
+  if (bValue)
+  {
+    GetStr(strMode, &sValue);
+    result = CMadvrSettings::GetSettingId(MadvrSmoothMotion, sValue);
+  };
+
+  *iValue = result;
+}
+
+void CMadvrSettingsManager::GetDithering(CStdString path, int* iValue)
+{
+  CStdString stDisable = "dontDither";
+  CStdString strMode = "ditheringAlgo";
+
+  BOOL bValue;
+  std::string sValue;
+  int result = -1;
+
+  GetBool(stDisable, &bValue);
+  if (!bValue)
+  {
+    GetStr(strMode, &sValue);
+    result = CMadvrSettings::GetSettingId(MadvrDithering, sValue);
+  };
+
+  *iValue = result;
+}
 
 void CMadvrSettingsManager::SetStr(std::string path, std::string str)
 {

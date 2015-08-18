@@ -31,6 +31,7 @@
 #include "streams.h"
 #include "utils/CharsetConverter.h"
 #include "system.h"
+#include "cores\DSPlayer\Filters\MadvrSettings.h"
 
 enum MADVR_RENDER_LAYER
 {
@@ -49,6 +50,7 @@ public:
   virtual void EnableExclusive(bool bEnable){};
   virtual void SetMadvrPixelShader(){};
   virtual void RestoreMadvrSettings(){};
+  virtual void LoadMadvrSettings(MADVR_LOAD_TYPE type){};
   virtual void SetResolution(){};
   virtual void Flush(){};
   virtual void RenderToTexture(MADVR_RENDER_LAYER layer){};

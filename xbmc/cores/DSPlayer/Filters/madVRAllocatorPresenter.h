@@ -146,6 +146,7 @@ public:
   virtual void EnableExclusive(bool bEnable);
   virtual void SetMadvrPixelShader();
   virtual void RestoreMadvrSettings();
+  virtual void LoadMadvrSettings(MADVR_LOAD_TYPE type);
   virtual void SetResolution();
   virtual void Flush(){ m_pMadvrShared->Flush(); };
   virtual void RenderToTexture(MADVR_RENDER_LAYER layer){ m_pMadvrShared->RenderToTexture(layer); };

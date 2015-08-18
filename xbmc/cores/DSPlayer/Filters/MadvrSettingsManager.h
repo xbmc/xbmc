@@ -63,6 +63,11 @@ public:
   virtual void SetSmoothmotion(CStdString path, int iValue);
   virtual void SetDithering(CStdString path, int iValue);
 
+  virtual void GetDoubling(CStdString path, int* iValue);
+  virtual void GetDeintActive(CStdString path, int* iValue);
+  virtual void GetSmoothmotion(CStdString path, int* iValue);
+  virtual void GetDithering(CStdString path, int* iValue);
+
   void ListSettings(std::string path);
 
 private:

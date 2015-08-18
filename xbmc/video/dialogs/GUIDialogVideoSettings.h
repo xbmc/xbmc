@@ -47,6 +47,7 @@ protected:
 private:
   bool m_viewModeChanged;
 #ifdef HAS_DS_PLAYER
+  void LoadMadvrSettings();
   void SaveChoice();
   void HideUnused();
   void SetVisible(CStdString id, bool visible);

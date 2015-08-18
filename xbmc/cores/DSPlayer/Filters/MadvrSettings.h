@@ -84,7 +84,7 @@ static const MADVR_SCALING MadvrScaling[] =
   { "SuperXbr100", 70037, true, false, false },
   { "SuperXbr125", 70038, true, false, false },
   { "SuperXbr150", 70039, true, false, false },
-  { "Nedi", true, false, false },
+  { "Nedi", 70040, true, false, false },
   { "Nnedi16", 70023, true, false, false },
   { "Nnedi32", 70024, true, false, false },
   { "Nnedi64", 70025, true, false, false },
@@ -135,7 +135,7 @@ static const MADVR_SETTINGS MadvrDeintForce[] =
   { "video", 70204 }
 };
 
-static const int MadvrDeintActiveDef = 1; //AUTO
+static const int MadvrDeintActiveDef = 1; //AUTO deactive
 static const MADVR_SETTINGS MadvrDeintActive[] =
 {
   { "ifdoubt_active", 70205 },
@@ -176,6 +176,13 @@ enum MADVR_RES_SETTINGS
   MADVR_RES_ALL
 };
 
+enum MADVR_LOAD_TYPE
+{
+  MADVR_LOAD_GENERAL,
+  MADVR_LOAD_SCALING
+};
+
+
 class CMadvrSettings
 {
 public:
@@ -183,6 +190,11 @@ public:
   ~CMadvrSettings() {};
 
   bool operator!=(const CMadvrSettings &right) const;
+
+  static int GetSettingId(const MADVR_SETTINGS *setsArray, std::string sValue);
+  static int GetScalingId(std::string sValue);
+  static int GeDoubleAlgo(std::string sValue);
+  static int GetDoubleId(int iValue);
 
   int m_Resolution;
 

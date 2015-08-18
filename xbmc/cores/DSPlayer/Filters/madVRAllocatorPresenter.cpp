@@ -478,7 +478,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::SetPixelShader(LPCSTR pSrcData, LPCSTR pT
 
 void CmadVRAllocatorPresenter::RestoreMadvrSettings()
 {
-  if (!CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
+  //if (!CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
     return;
 
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
@@ -532,3 +532,93 @@ void CmadVRAllocatorPresenter::RestoreMadvrSettings()
   SettingSetBool("superResFirst", madvrSettings.m_superResFirst);
 }
 
+void CmadVRAllocatorPresenter::LoadMadvrSettings(MADVR_LOAD_TYPE type)
+{
+  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  
+  std::string sValue;
+  BOOL bValue;
+
+  if (type == MADVR_LOAD_GENERAL)
+  {
+    m_pSettingsManager->GetDeintActive("", &madvrSettings.m_deintactive);  
+    m_pSettingsManager->GetStr("contentType", &sValue);
+    madvrSettings.m_deintforce = CMadvrSettings::GetSettingId(MadvrDeintForce, sValue);  
+    m_pSettingsManager->GetBool("scanPartialFrame", &bValue);
+    madvrSettings.m_deintlookpixels = (bool)bValue;   
+    m_pSettingsManager->GetBool("debandActive", &bValue);
+    madvrSettings.m_deband = (bool)bValue;  
+    m_pSettingsManager->GetInt("debandLevel", &madvrSettings.m_debandLevel);  
+    m_pSettingsManager->GetInt("debandFadeLevel", &madvrSettings.m_debandFadeLevel);    
+    m_pSettingsManager->GetDithering("", &madvrSettings.m_dithering);   
+    m_pSettingsManager->GetBool("coloredDither", &bValue);
+    madvrSettings.m_ditheringColoredNoise = (bool)bValue;  
+    m_pSettingsManager->GetBool("dynamicDither", &bValue);
+    madvrSettings.m_ditheringEveryFrame = (bool)bValue;  
+    m_pSettingsManager->GetSmoothmotion("", &madvrSettings.m_smoothMotion);
+  }
+
+  if (type == MADVR_LOAD_SCALING)
+  { 
+    m_pSettingsManager->GetStr("chromaUp", &sValue);
+    madvrSettings.m_ChromaUpscaling = CMadvrSettings::GetScalingId(sValue);
+    m_pSettingsManager->GetBool("chromaAntiRinging", &bValue);
+    madvrSettings.m_ChromaAntiRing = (bool)bValue;
+    m_pSettingsManager->GetBool("superChromaRes", &bValue);
+    madvrSettings.m_ChromaSuperRes = (bool)bValue;
+    m_pSettingsManager->GetStr("LumaUp", &sValue);
+    madvrSettings.m_ImageUpscaling = CMadvrSettings::GetScalingId(sValue);
+
+    m_pSettingsManager->GetBool("lumaUpAntiRinging", &bValue);
+    madvrSettings.m_ImageUpAntiRing = (bool)bValue;
+    m_pSettingsManager->GetBool("lumaUpLinear", &bValue);
+    madvrSettings.m_ImageUpLinear = (bool)bValue;
+    m_pSettingsManager->GetStr("LumaDown", &sValue);
+    madvrSettings.m_ImageDownscaling = CMadvrSettings::GetScalingId(sValue);
+    m_pSettingsManager->GetBool("lumaDownAntiRinging", &bValue);
+    madvrSettings.m_ImageDownAntiRing = (bool)bValue;
+    m_pSettingsManager->GetBool("lumaDownLinear", &bValue);
+    madvrSettings.m_ImageDownLinear = (bool)bValue;
+    m_pSettingsManager->GetDoubling("DL", &madvrSettings.m_ImageDoubleLuma);
+    m_pSettingsManager->GetStr("nnediDLScalingFactor", &sValue);
+    madvrSettings.m_ImageDoubleLumaFactor = CMadvrSettings::GetSettingId(MadvrDoubleFactor, sValue);
+    m_pSettingsManager->GetDoubling("DC", &madvrSettings.m_ImageDoubleChroma);
+    m_pSettingsManager->GetStr("nnediDCScalingFactor", &sValue);
+    madvrSettings.m_ImageDoubleChromaFactor = CMadvrSettings::GetSettingId(MadvrDoubleFactor, sValue);
+    m_pSettingsManager->GetDoubling("QL", &madvrSettings.m_ImageQuadrupleLuma);
+    m_pSettingsManager->GetStr("nnediQLScalingFactor", &sValue);
+    madvrSettings.m_ImageQuadrupleLumaFactor = CMadvrSettings::GetSettingId(MadvrQuadrupleFactor, sValue);
+    m_pSettingsManager->GetDoubling("QC", &madvrSettings.m_ImageQuadrupleChroma);
+    m_pSettingsManager->GetStr("nnediQCScalingFactor", &sValue);
+    madvrSettings.m_ImageQuadrupleChromaFactor = CMadvrSettings::GetSettingId(MadvrQuadrupleFactor, sValue);
+
+    m_pSettingsManager->GetBool("fineSharp", &bValue);
+    madvrSettings.m_fineSharp = (bool)bValue;
+    m_pSettingsManager->GetFloat("fineSharpStrength", &madvrSettings.m_fineSharpStrength, 10);
+    m_pSettingsManager->GetBool("lumaSharpen", &bValue);
+    madvrSettings.m_lumaSharpen = (bool)bValue;
+    m_pSettingsManager->GetFloat("lumaSharpenStrength", &madvrSettings.m_lumaSharpenStrength);
+    m_pSettingsManager->GetBool("adaptiveSharpen", &bValue);
+    madvrSettings.m_adaptiveSharpen = (bool)bValue;
+    m_pSettingsManager->GetFloat("adaptiveSharpenStrength", &madvrSettings.m_adaptiveSharpenStrength, 10);
+
+    m_pSettingsManager->GetBool("upRefFineSharp", &bValue);
+    madvrSettings.m_UpRefFineSharp = (bool)bValue;
+    m_pSettingsManager->GetFloat("upRefFineSharpStrength", &madvrSettings.m_UpRefFineSharpStrength, 10);
+    m_pSettingsManager->GetBool("upRefLumaSharpen", &bValue);
+    madvrSettings.m_UpRefLumaSharpen = (bool)bValue;
+    m_pSettingsManager->GetFloat("upRefLumaSharpenStrength", &madvrSettings.m_UpRefLumaSharpenStrength);
+    m_pSettingsManager->GetBool("upRefAdaptiveSharpen", &bValue);
+    madvrSettings.m_UpRefAdaptiveSharpen = (bool)bValue;
+    m_pSettingsManager->GetFloat("upRefAdaptiveSharpenStrength", &madvrSettings.m_UpRefAdaptiveSharpenStrength, 10);
+
+    m_pSettingsManager->GetBool("superRes", &bValue);
+    madvrSettings.m_superRes = (bool)bValue;
+    m_pSettingsManager->GetFloat("superResStrength", &madvrSettings.m_superResStrength, 1);
+
+    m_pSettingsManager->GetBool("refineOnce", &bValue);
+    madvrSettings.m_refineOnce = !bValue;
+    m_pSettingsManager->GetBool("superResFirst", &bValue);
+    madvrSettings.m_superResFirst = (bool)bValue;
+  }
+}

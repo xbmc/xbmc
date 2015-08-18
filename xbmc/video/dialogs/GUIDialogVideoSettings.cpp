@@ -736,8 +736,25 @@ void CGUIDialogVideoSettings::OnInitWindow()
 {
   CGUIDialogSettingsManualBase::OnInitWindow();
   m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && CSettings::Get().GetBool("dsplayer.managemadvrsettings");
-
+  LoadMadvrSettings();
   HideUnused();
+}
+
+void CGUIDialogVideoSettings::LoadMadvrSettings()
+{
+  CMadvrCallback::Get()->GetCallback()->LoadMadvrSettings(MADVR_LOAD_GENERAL);
+  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+
+  m_settingsManager->SetInt(SETTING_MADVR_DEINT_ACTIVE, madvrSettings.m_deintactive);
+  m_settingsManager->SetInt(SETTING_MADVR_DEINT_FORCE, madvrSettings.m_deintforce);
+  m_settingsManager->SetBool(SETTING_MADVR_DEINT_LOOKPIXELS, madvrSettings.m_deintlookpixels);
+  m_settingsManager->SetBool(SETTING_MADVR_DEBAND, madvrSettings.m_deband);
+  m_settingsManager->SetInt(SETTING_MADVR_DEBANDLEVEL, madvrSettings.m_debandLevel);
+  m_settingsManager->SetInt(SETTING_MADVR_DEBANDFADELEVEL, madvrSettings.m_debandFadeLevel);
+  m_settingsManager->SetInt(SETTING_MADVR_DITHERING, madvrSettings.m_dithering);
+  m_settingsManager->SetBool(SETTING_MADVR_DITHERINGCOLORED, madvrSettings.m_ditheringColoredNoise);
+  m_settingsManager->SetBool(SETTING_MADVR_DITHERINGEVERYFRAME, madvrSettings.m_ditheringEveryFrame);
+  m_settingsManager->SetBool(SETTING_MADVR_SMOOTHMOTION, madvrSettings.m_smoothMotion);
 }
 
 void CGUIDialogVideoSettings::HideUnused()

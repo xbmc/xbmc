@@ -229,7 +229,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultMadvrSettings.m_fineSharpStrength = 2.0f;
     XMLUtils::GetBoolean(pElement, "lumasharpen", m_defaultMadvrSettings.m_lumaSharpen);
     if (!XMLUtils::GetFloat(pElement, "lumasharpenstrength", m_defaultMadvrSettings.m_lumaSharpenStrength))
-      m_defaultMadvrSettings.m_lumaSharpenStrength = 0.65f;
+      m_defaultMadvrSettings.m_lumaSharpenStrength = 0.66f;
     XMLUtils::GetBoolean(pElement, "adaptivesharpen", m_defaultMadvrSettings.m_adaptiveSharpen);
     if (!XMLUtils::GetFloat(pElement, "adaptivesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength))
       m_defaultMadvrSettings.m_adaptiveSharpenStrength = 0.5f;
@@ -239,7 +239,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultMadvrSettings.m_UpRefFineSharpStrength = 2.0f;
     XMLUtils::GetBoolean(pElement, "upreflumasharpen", m_defaultMadvrSettings.m_UpRefLumaSharpen);
     if (!XMLUtils::GetFloat(pElement, "upreflumasharpenstrength", m_defaultMadvrSettings.m_UpRefLumaSharpenStrength))
-      m_defaultMadvrSettings.m_UpRefLumaSharpenStrength = 0.65f;
+      m_defaultMadvrSettings.m_UpRefLumaSharpenStrength = 0.66f;
     XMLUtils::GetBoolean(pElement, "uprefadaptivesharpen", m_defaultMadvrSettings.m_UpRefAdaptiveSharpen);
     if (!XMLUtils::GetFloat(pElement, "uprefadaptivesharpenstrength", m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength))
       m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength = 0.5f;
