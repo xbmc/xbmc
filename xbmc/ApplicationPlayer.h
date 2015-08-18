@@ -79,6 +79,7 @@ public:
   void SetPlaySpeed(int iSpeed, bool bApplicationMuted);
 
   // proxy calls
+  int   PreloadFileInfo(const CFileItem& file, const CPlayerOptions &options);
   void   AddSubtitle(const std::string& strSubPath);
   bool  CanPause();
   bool  CanRecord();

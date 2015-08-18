@@ -309,6 +309,7 @@ protected:
 
   virtual void OnStartup();
   virtual void OnExit();
+  virtual int  PreloadFileInfo(const CFileItem& file, const CPlayerOptions &options);
   virtual void Process();
 
   void CreatePlayers();

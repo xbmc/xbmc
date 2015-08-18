@@ -161,6 +161,11 @@
  */
 #define GUI_MSG_UI_READY       49
 
+/*!
+ \brief Select the given fileItem in the target containter
+ */
+#define GUI_MSG_FILEITEM_SELECT 50
+
 #define GUI_MSG_USER         1000
 
 /*!
@@ -333,6 +338,26 @@ do { \
 do { \
  CGUIMessage msg(GUI_MSG_CLICKED, id, parentID, action); \
  SendWindowMessage(msg); \
+} while(0)
+
+/*!
+\ingroup winmsg
+\brief Send message to select a fileItem in the given container.
+ */
+#define SELECT_FILEITEM(id, item) \
+do { \
+ CGUIMessage msg(GUI_MSG_FILEITEM_SELECT, GetID(), id, item, 0); \
+ OnMessage(msg); \
+} while(0)
+
+/*!
+\ingroup winmsg
+\brief Bind the given fileItem list with the given container.
+ */
+#define BIND_LABELS_TO_FILEITEMS(id, list) \
+do { \
+ CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), id, 0, 0, list); \
+ OnMessage(msg); \
 } while(0)
 
 #include <string>

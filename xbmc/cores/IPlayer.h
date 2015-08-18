@@ -159,6 +159,8 @@ public:
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};
 
+  virtual int PreloadFileInfo(const CFileItem& file, const CPlayerOptions &options) { return -1;};
+
   virtual void  SetAVDelay(float fValue = 0.0f) { return; }
   virtual float GetAVDelay()                    { return 0.0f;};
 
