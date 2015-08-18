@@ -88,7 +88,7 @@
 					<font>font13_title</font>
 					<aligny>center</aligny>
 					<align>center</align>
-					<info>ListItem.Label</info>
+					<label>$INFO[ListItem.Label]</label>
 					<scroll>false</scroll>
 					<scrollspeed>0</scrollspeed>
 				</control>
@@ -111,7 +111,7 @@
 					<font>font13_title</font>
 					<aligny>center</aligny>
 					<align>center</align>
-					<info>ListItem.Label</info>
+					<label>$INFO[ListItem.Label]</label>
 					<scroll>false</scroll>
 					<scrollspeed>0</scrollspeed>
 				</control>
