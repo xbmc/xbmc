@@ -277,7 +277,7 @@ namespace XBMCAddon
       /**
        * getAvailableSubtitleStreams() -- get Subtitle stream names
        */
-      std::vector<String>* getAvailableSubtitleStreams();
+      std::vector<String> getAvailableSubtitleStreams();
 
       // Player_setSubtitleStream
       /**
@@ -317,7 +317,7 @@ namespace XBMCAddon
       /**
        * getAvailableAudioStreams() -- get Audio stream names
        */
-      std::vector<String>* getAvailableAudioStreams();
+      std::vector<String> getAvailableAudioStreams();
 
       /**
        * setAudioStream(stream) -- set Audio Stream.

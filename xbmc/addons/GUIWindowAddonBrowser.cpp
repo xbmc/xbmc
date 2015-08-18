@@ -612,10 +612,9 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, vect
     return 0;
 
   addonIDs.clear();
-  const CFileItemList& list = dialog->GetSelectedItems();
-  for (int i = 0; i < list.Size(); i++)
+  for (int i : dialog->GetSelectedItems())
   {
-    const CFileItemPtr& item = list.Get(i);
+    const CFileItemPtr& item = items.Get(i);
 
     // check if one of the selected addons needs to be installed
     if (showInstallable)

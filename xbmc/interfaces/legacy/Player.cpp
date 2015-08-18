@@ -426,26 +426,26 @@ namespace XBMCAddon
       }
     }
 
-    std::vector<String>* Player::getAvailableSubtitleStreams()
+    std::vector<String> Player::getAvailableSubtitleStreams()
     {
       if (g_application.m_pPlayer->HasPlayer())
       {
         int subtitleCount = g_application.m_pPlayer->GetSubtitleCount();
-        std::vector<String>* ret = new std::vector<String>(subtitleCount);
+        std::vector<String> ret(subtitleCount);
         for (int iStream=0; iStream < subtitleCount; iStream++)
         {
           SPlayerSubtitleStreamInfo info;
           g_application.m_pPlayer->GetSubtitleStreamInfo(iStream, info);
 
           if (info.language.length() > 0)
-            (*ret)[iStream] = info.language;
+            ret[iStream] = info.language;
           else
-            (*ret)[iStream] = info.name;
+            ret[iStream] = info.name;
         }
         return ret;
       }
 
-      return NULL;
+      return std::vector<String>();
     }
 
     void Player::setSubtitleStream(int iStream)
@@ -461,26 +461,26 @@ namespace XBMCAddon
       }
     }
 
-    std::vector<String>* Player::getAvailableAudioStreams()
+    std::vector<String> Player::getAvailableAudioStreams()
     {
       if (g_application.m_pPlayer->HasPlayer())
       {
         int streamCount = g_application.m_pPlayer->GetAudioStreamCount();
-        std::vector<String>* ret = new std::vector<String>(streamCount);
+        std::vector<String> ret(streamCount);
         for (int iStream=0; iStream < streamCount; iStream++)
         {
           SPlayerAudioStreamInfo info;
           g_application.m_pPlayer->GetAudioStreamInfo(iStream, info);
 
           if (info.language.length() > 0)
-            (*ret)[iStream] = info.language;
+            ret[iStream] = info.language;
           else
-            (*ret)[iStream] = info.name;
+            ret[iStream] = info.name;
         }
         return ret;
       }
     
-      return NULL;
+      return std::vector<String>();
     } 
 
     void Player::setAudioStream(int iStream)

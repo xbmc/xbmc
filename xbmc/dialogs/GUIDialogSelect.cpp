@@ -39,7 +39,6 @@ CGUIDialogSelect::CGUIDialogSelect(void)
   m_buttonString = -1;
   m_useDetails = false;
   m_vecList = new CFileItemList;
-  m_selectedItems = new CFileItemList;
   m_multiSelection = false;
   m_iSelected = -1;
   m_loadType = KEEP_IN_MEMORY;
@@ -48,7 +47,6 @@ CGUIDialogSelect::CGUIDialogSelect(void)
 CGUIDialogSelect::~CGUIDialogSelect(void)
 {
   delete m_vecList;
-  delete m_selectedItems;
 }
 
 bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
@@ -65,14 +63,14 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       m_multiSelection = false;
 
       // construct selected items list
-      m_selectedItems->Clear();
+      m_selectedItems.clear();
       m_iSelected = -1;
       for (int i = 0 ; i < m_vecList->Size() ; i++)
       {
         CFileItemPtr item = m_vecList->Get(i);
         if (item->IsSelected())
         {
-          m_selectedItems->Add(item);
+          m_selectedItems.push_back(i);
           if (m_iSelected == -1)
             m_iSelected = i;
         }
@@ -156,7 +154,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 bool CGUIDialogSelect::OnBack(int actionID)
 {
   m_iSelected = -1;
-  m_selectedItems->Clear();
+  m_selectedItems.clear();
   m_bConfirmed = false;
   return CGUIDialog::OnBack(actionID);
 }
@@ -170,7 +168,7 @@ void CGUIDialogSelect::Reset()
   m_multiSelection = false;
   m_iSelected = -1;
   m_vecList->Clear();
-  m_selectedItems->Clear();
+  m_selectedItems.clear();
 }
 
 int CGUIDialogSelect::Add(const std::string& strLabel)
@@ -211,7 +209,9 @@ int CGUIDialogSelect::GetSelectedLabel() const
 
 const CFileItemPtr CGUIDialogSelect::GetSelectedItem() const
 {
-  return m_selectedItems->Size() > 0 ? m_selectedItems->Get(0) : CFileItemPtr(new CFileItem);
+  if (m_selectedItems.size() > 0 && m_vecList->Size() > 0)
+    return m_vecList->Get(m_selectedItems.front());
+  return CFileItemPtr(new CFileItem);
 }
 
 const std::string& CGUIDialogSelect::GetSelectedLabelText() const
@@ -219,9 +219,9 @@ const std::string& CGUIDialogSelect::GetSelectedLabelText() const
   return GetSelectedItem()->GetLabel();
 }
 
-const CFileItemList& CGUIDialogSelect::GetSelectedItems() const
+const std::vector<int>& CGUIDialogSelect::GetSelectedItems() const
 {
-  return *m_selectedItems;
+  return m_selectedItems;
 }
 
 void CGUIDialogSelect::EnableButton(bool enable, int string)
@@ -256,7 +256,7 @@ void CGUIDialogSelect::SetSelected(int iSelected)
   if (!m_multiSelection || m_iSelected < 0 || m_iSelected > iSelected)
     m_iSelected = iSelected;
   m_vecList->Get(iSelected)->Select(true);
-  m_selectedItems->Add(m_vecList->Get(iSelected));
+  m_selectedItems.push_back(iSelected);
 }
 
 void CGUIDialogSelect::SetSelected(const std::string &strSelectedLabel)
@@ -321,7 +321,7 @@ void CGUIDialogSelect::OnWindowLoaded()
 void CGUIDialogSelect::OnInitWindow()
 {
   m_viewControl.SetItems(*m_vecList);
-  m_selectedItems->Clear();
+  m_selectedItems.clear();
   if (m_iSelected == -1)
   {
     for(int i = 0 ; i < m_vecList->Size(); i++)

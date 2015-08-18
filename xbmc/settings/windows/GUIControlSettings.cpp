@@ -378,11 +378,10 @@ bool CGUIControlListSetting::OnClick()
   if (!dialog->IsConfirmed())
     return false;
 
-  const CFileItemList &items = dialog->GetSelectedItems();
   std::vector<CVariant> values;
-  for (int index = 0; index < items.Size(); index++)
+  for (int i : dialog->GetSelectedItems())
   {
-    const CFileItemPtr item = items[index];
+    const CFileItemPtr item = options.Get(i);
     if (item == NULL || !item->HasProperty("value"))
       return false;
 
