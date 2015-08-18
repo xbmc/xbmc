@@ -40,7 +40,6 @@ public:
     align = XBFONT_LEFT;
     offsetX = offsetY = 0;
     width = 0;
-    angle = 0;
     scrollSpeed = CScrollInfo::defaultSpeed;
   };
   bool UpdateColors()
@@ -67,7 +66,6 @@ public:
   float offsetX;
   float offsetY;
   float width;
-  float angle;
   CGUIFont *font;
   int scrollSpeed; 
   std::string scrollSuffix;

@@ -103,13 +103,6 @@ public:
     alpha = 1.0f;
     identity = (angle == 0);
   }
-  static TransformMatrix CreateZRotation(float angle, float x, float y, float ar = 1.0f)
-  { // angle about the Z axis, centered at x,y where our coordinate system has aspect ratio ar.
-    // Trans(x,y,0)*Scale(1/ar,1,1)*RotateZ(angle)*Scale(ar,1,1)*Trans(-x,-y,0)
-    TransformMatrix rot;
-    rot.SetZRotation(angle, x, y, ar);
-    return rot;
-  }
   void SetZRotation(float angle, float x, float y, float ar = 1.0f)
   { // angle about the Z axis, centered at x,y where our coordinate system has aspect ratio ar.
     // Trans(x,y,0)*Scale(1/ar,1,1)*RotateZ(angle)*Scale(ar,1,1)*Trans(-x,-y,0)

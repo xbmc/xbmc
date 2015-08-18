@@ -137,11 +137,11 @@ void CGUIMultiSelectTextControl::Render()
   {
     CSelectableString &string = m_items[i];
     if (IsDisabled()) // all text is rendered with disabled color
-      string.m_text.Render(posX, posY, 0, m_label.disabledColor, m_label.shadowColor, m_label.align, 0, true);
+      string.m_text.Render(posX, posY, m_label.disabledColor, m_label.shadowColor, m_label.align, 0, true);
     else if (HasFocus() && string.m_selectable && num_selectable == m_selectedItem) // text is rendered with focusedcolor
-      string.m_text.Render(posX, posY, 0, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
+      string.m_text.Render(posX, posY, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
     else // text is rendered with textcolor
-      string.m_text.Render(posX, posY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
+      string.m_text.Render(posX, posY, m_label.textColor, m_label.shadowColor, m_label.align, 0);
     posX += string.m_length;
     if (string.m_selectable)
       num_selectable++;

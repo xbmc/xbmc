@@ -202,7 +202,7 @@ void CGUIFadeLabelControl::Render()
     m_textLayout.Render(posX, posY, 0, m_label.textColor, m_label.shadowColor, m_label.align, m_width);
   }
   else
-    m_textLayout.RenderScrolling(m_posX, posY, 0, m_label.textColor, m_label.shadowColor, (m_label.align & ~3), m_width, m_scrollInfo);
+    m_textLayout.RenderScrolling(m_posX, posY, m_label.textColor, m_label.shadowColor, (m_label.align & ~3), m_width, m_scrollInfo);
   g_graphicsContext.RemoveTransform();
   CGUIControl::Render();
 }

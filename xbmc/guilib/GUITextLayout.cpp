@@ -58,7 +58,7 @@ void CGUITextLayout::SetWrap(bool bWrap)
   m_wrap = bWrap;
 }
 
-void CGUITextLayout::Render(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, bool solid)
+void CGUITextLayout::Render(float x, float y, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, bool solid)
 {
   if (!m_font)
     return;
@@ -67,12 +67,6 @@ void CGUITextLayout::Render(float x, float y, float angle, color_t color, color_
   if (m_colors.size())
     m_colors[0] = color;
 
-  // render the text at the required location, angle, and size
-  if (angle)
-  {
-    static const float degrees_to_radians = 0.01745329252f;
-    g_graphicsContext.AddTransform(TransformMatrix::CreateZRotation(angle * degrees_to_radians, x, y, g_graphicsContext.GetScalingPixelRatio()));
-  }
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
   {
@@ -93,8 +87,6 @@ void CGUITextLayout::Render(float x, float y, float angle, color_t color, color_
     y += m_font->GetLineHeight();
   }
   m_font->End();
-  if (angle)
-    g_graphicsContext.RemoveTransform();
 }
 
 bool CGUITextLayout::UpdateScrollinfo(CScrollInfo &scrollInfo)
@@ -108,7 +100,7 @@ bool CGUITextLayout::UpdateScrollinfo(CScrollInfo &scrollInfo)
 }
 
 
-void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, const CScrollInfo &scrollInfo)
+void CGUITextLayout::RenderScrolling(float x, float y, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, const CScrollInfo &scrollInfo)
 {
   if (!m_font)
     return;
@@ -117,12 +109,6 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t colo
   if (m_colors.size())
     m_colors[0] = color;
 
-  // render the text at the required location, angle, and size
-  if (angle)
-  {
-    static const float degrees_to_radians = 0.01745329252f;
-    g_graphicsContext.AddTransform(TransformMatrix::CreateZRotation(angle * degrees_to_radians, x, y, g_graphicsContext.GetScalingPixelRatio()));
-  }
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
   {
@@ -143,8 +129,6 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t colo
     y += m_font->GetLineHeight();
   }
   m_font->End();
-  if (angle)
-    g_graphicsContext.RemoveTransform();
 }
 
 void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t alignment, float maxWidth)
