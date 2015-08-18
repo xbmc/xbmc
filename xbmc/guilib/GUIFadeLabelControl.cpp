@@ -80,9 +80,10 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
   if (m_currentLabel >= m_infoLabels.size() )
     m_currentLabel = 0;
 
+  bool dirty = false;
   if (m_textLayout.Update(GetLabel()))
   { // changed label - update our suffix based on length of available text
-    MarkDirtyRegion();
+    dirty = true;
     float width, height;
     m_textLayout.GetTextExtent(width, height);
     float spaceWidth = m_label.font->GetCharWidth(L' ');
@@ -102,12 +103,11 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
     m_scrollInfo.Reset();
     m_fadeAnim.QueueAnimation(ANIM_PROCESS_REVERSE);
     m_lastLabel = m_currentLabel;
+    dirty = true;
   }
 
   if (m_infoLabels.size() > 1 || !m_shortText)
   { // have scrolling text
-    MarkDirtyRegion();
-
     bool moveToNextLabel = false;
     if (!m_scrollOut)
     {
@@ -140,14 +140,21 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
           m_currentLabel = 0;
         m_scrollInfo.Reset();
         m_fadeAnim.QueueAnimation(ANIM_PROCESS_REVERSE);
+        dirty = true;
       }
     }
 
     if (m_scroll)
-      m_textLayout.UpdateScrollinfo(m_scrollInfo);
+    {
+      if (m_textLayout.UpdateScrollinfo(m_scrollInfo))
+        dirty = true;
+    }
 
     g_graphicsContext.RemoveTransform();
   }
+
+  if (dirty)
+    MarkDirtyRegion();
 
   CGUIControl::Process(currentTime, dirtyregions);
 }
