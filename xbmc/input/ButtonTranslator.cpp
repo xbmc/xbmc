@@ -1155,9 +1155,8 @@ int CButtonTranslator::GetFallbackWindow(int windowID)
     if (fallbackWindows[index].origin == windowID)
       return fallbackWindows[index].target;
   }
-  // for addon windows use WINDOW_ADDON_START
-  // because id is dynamic
-  if (windowID >= WINDOW_ADDON_START && windowID <= WINDOW_ADDON_END)
+  // for addon windows use WINDOW_ADDON_START because id is dynamic
+  if (windowID > WINDOW_ADDON_START && windowID <= WINDOW_ADDON_END)
     return WINDOW_ADDON_START;
 
   return -1;
@@ -1193,9 +1192,13 @@ bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
   map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
   if (it == m_translatorMap.end())
   {
-    if (window > -1)
-      return HasLonpressMapping(GetFallbackWindow(window), key);
-    return false;
+    // first check if we have a fallback for the window
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1 && HasLonpressMapping(fallbackWindow, key))
+      return true;
+
+    // fallback to default section if there is no key mapping found
+    return HasLonpressMapping(-1, key);
   }
 
   uint32_t code = key.GetButtonCode();
@@ -1215,8 +1218,7 @@ bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
       return true;
   }
 #endif
-  if (window > -1)
-    return HasLonpressMapping(GetFallbackWindow(window), key);
+
   return false;
 }
 
