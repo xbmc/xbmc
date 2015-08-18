@@ -135,32 +135,36 @@ static const MADVR_SETTINGS MadvrDeintForce[] =
   { "video", 70204 }
 };
 
-enum MADVR_DEINT_ACTIVE
+static const int MadvrDeintActiveDef = 1; //AUTO
+static const MADVR_SETTINGS MadvrDeintActive[] =
 {
-  MADVR_DEINT_IFDOUBT_ACTIVE,
-  MADVR_DEINT_IFDOUBT_DEACTIVE
+  { "ifdoubt_active", 70205 },
+  { "ifdoubt_deactive", 70206 }
 };
 
-enum MADVR_SMOOTHMOTION
+static const MADVR_SETTINGS MadvrSmoothMotion[] =
 {
-  MADVR_SMOOTHMOTION_AVOIDJUDDER,
-  MADVR_SMOOTHMOTION_ALMOSTALWAYS,
-  MADVR_SMOOTHMOTION_ALWAYS
+  { "avoidJudder", 70301 },
+  { "almostAlways", 70302 },
+  { "always", 70303 }
 };
 
-enum MADVR_DITHERING
+static const int MadvrDitheringDef = 1; //ORDERED
+static const MADVR_SETTINGS MadvrDithering[] =
 {
-  MADVR_DITHERING_RANDOM,
-  MADVR_DITHERING_ORDERED,
-  MADVR_DITHERING_ERRORD1,
-  MADVR_DITHERING_ERRORD2
+  { "random", 70401 },
+  { "ordered", 70402 },
+  { "errorDifMedNoise", 70403 },
+  { "errorDifLowNoise", 70404 }
 };
 
-enum MADVR_DEBAND
+static const int MadvrDebandLevelDef = 0; //LOW
+static const int MadvrDebandFadeLevelDef = 2; //HIGH
+static const MADVR_SETTINGS MadvrDeband[] =
 {
-  MADVR_DEBAND_LOW,
-  MADVR_DEBAND_MEDIUM,
-  MADVR_DEBAND_HIGH
+  { "debandlow", 70503 },
+  { "debandmedium", 70504 },
+  { "debandhigh", 70505 }
 };
 
 enum MADVR_RES_SETTINGS
@@ -217,6 +221,25 @@ public:
   bool m_deband;
   int m_debandLevel;
   int m_debandFadeLevel;
+
+  bool m_fineSharp;
+  float m_fineSharpStrength;
+  bool m_lumaSharpen;
+  float m_lumaSharpenStrength;
+  bool m_adaptiveSharpen;
+  float m_adaptiveSharpenStrength;
+
+  bool m_UpRefFineSharp;
+  float m_UpRefFineSharpStrength;
+  bool m_UpRefLumaSharpen;
+  float m_UpRefLumaSharpenStrength;
+  bool m_UpRefAdaptiveSharpen;
+  float m_UpRefAdaptiveSharpenStrength;
+  bool m_superRes;
+  float m_superResStrength;
+
+  bool m_refineOnce;
+  bool m_superResFirst;
 
 private:
 };

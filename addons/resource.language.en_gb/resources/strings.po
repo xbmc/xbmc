@@ -18081,19 +18081,19 @@ msgid "- super-res filter"
 msgstr 
 
 msgctxt "#70100"
-msgid "NNEDI3 to double Luma resolution"
+msgid "Double Luma resolution"
 msgstr ""
 
 msgctxt "#70101"
-msgid "NNEDI3 to double Chroma resolution"
+msgid "Double Chroma resolution"
 msgstr ""
 
 msgctxt "#70102"
-msgid "NNEDI3 to quadruple Luma resolution"
+msgid "Quadruple Luma resolution"
 msgstr ""
 
 msgctxt "#70103"
-msgid "NNEDI3 to quadruple Chroma resolution"
+msgid "Quadruple Chroma resolution"
 msgstr ""
 
 msgctxt "#70104"
@@ -18150,6 +18150,46 @@ msgstr ""
 
 msgctxt "#70117"
 msgid "(disabled)"
+msgstr ""
+
+msgctxt "#70118"
+msgid "Fine Sharp (image enhancement)"
+msgstr ""
+
+msgctxt "#70119"
+msgid "Luma Sharpen (image enhancement)"
+msgstr ""
+
+msgctxt "#70120"
+msgid "Adaptive Sharpen (image enhancement)"
+msgstr ""
+
+msgctxt "#70121"
+msgid "Super Resolution (up refinement)"
+msgstr ""
+
+msgctxt "#70122"
+msgid "- strength"
+msgstr ""
+
+msgctxt "#70123"
+msgid "Fine Sharp (up refinement)"
+msgstr ""
+
+msgctxt "#70124"
+msgid "Luma Sharpen (up refinement)"
+msgstr ""
+
+msgctxt "#70125"
+msgid "Adaptive Sharpen (up refinement)"
+msgstr ""
+
+msgctxt "#70126"
+msgid "Refine image (2x upscaling step)"
+msgstr ""
+
+msgctxt "#70127"
+msgid "Apply super-res first"
 msgstr ""
 
 msgctxt "#70200"

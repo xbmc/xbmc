@@ -205,6 +205,15 @@ void CMadvrSettingsManager::GetInt(std::string path, int* iValue)
   GetSettings(MADVR_SETTINGS_INT, pathW.c_str(), 0, NULL, NULL, iValue, NULL);
 }
 
+void CMadvrSettingsManager::GetFloat(std::string path, float* fValue, int iConv)
+{
+  int iValue;
+  std::wstring pathW;
+  g_charsetConverter.utf8ToW(path, pathW, false);
+  SetSettings(MADVR_SETTINGS_INT, pathW.c_str(), NULL, NULL, iValue);
+  *fValue = (float)(iValue / iConv);
+};
+
 void CMadvrSettingsManager::SetStr(std::string path, std::string str)
 {
   std::wstring pathW;
@@ -228,6 +237,14 @@ void CMadvrSettingsManager::SetInt(std::string path, int iValue)
   SetSettings(MADVR_SETTINGS_INT, pathW.c_str(), NULL, NULL, iValue);
 }
 
+void CMadvrSettingsManager::SetFloat(std::string path, float fValue, int iConv)
+{
+  int iValue = (int)round(fValue * iConv);
+  std::wstring pathW;
+  g_charsetConverter.utf8ToW(path, pathW, false);
+  SetSettings(MADVR_SETTINGS_INT, pathW.c_str(), NULL, NULL, iValue);
+};
+
 void CMadvrSettingsManager::SetDoubling(CStdString path, int iValue)
 {
   CStdString strBool = "nnedi" + path + "Enable";
@@ -248,29 +265,27 @@ void CMadvrSettingsManager::SetDeintActive(CStdString path, int iValue)
   CStdString strIfDoubt = "ifInDoubtDeinterlace";
 
   SetBool(strAuto, (iValue > -1));
-  SetBool(strIfDoubt, (iValue == MADVR_DEINT_IFDOUBT_ACTIVE));
+  SetBool(strIfDoubt, (iValue != MadvrDeintActiveDef));
 }
 
 void CMadvrSettingsManager::SetSmoothmotion(CStdString path, int iValue)
 {
   CStdString stEnabled = "smoothMotionEnabled";
   CStdString strMode = "smoothMotionMode";
-  std::vector<std::string> vecMadvrMode = { "avoidJudder", "almostAlways", "always" };
 
   SetBool(stEnabled, (iValue > -1));
   if (iValue > -1)
-    SetStr(strMode, vecMadvrMode[iValue].c_str());
+    SetStr(strMode, MadvrSmoothMotion[iValue].name);
 }
 
 void CMadvrSettingsManager::SetDithering(CStdString path, int iValue)
 {
   CStdString stDisable = "dontDither";
   CStdString strMode = "ditheringAlgo";
-  std::vector<std::string> vecMadvrMode = { "random", "ordered", "errorDifMedNoise", "errorDifLowNoise" };
 
   SetBool(stDisable, (iValue == -1));
   if (iValue > -1)
-    SetStr(strMode, vecMadvrMode[iValue].c_str());
+    SetStr(strMode, MadvrDithering[iValue].name);
 }
 
 void CMadvrSettingsManager::ListSettings(std::string path)

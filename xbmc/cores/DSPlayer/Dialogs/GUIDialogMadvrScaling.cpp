@@ -44,6 +44,7 @@
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "addons/Skin.h"
 
 #define SET_CHROMA_UPSCALING                   "madvr.chromaupscaling"
 #define SET_CHROMA_ANTIRING                    "madvr.chromaantiring"
@@ -68,6 +69,25 @@
 #define SET_IMAGE_DOUBLE_CHROMA_FACTOR         "madvr.imagedoublechromafactor"
 #define SET_IMAGE_QUADRUPLE_LUMA_FACTOR        "madvr.imagequadruplelumafactor"
 #define SET_IMAGE_QUADRUPLE_CHROMA_FACTOR      "madvr.imagequadruplechromafactor"
+
+#define SET_IMAGE_FINESHARP                    "madvr.finsharp"
+#define SET_IMAGE_FINESHARP_STRENGTH           "madvr.finsharpstrength"
+#define SET_IMAGE_LUMASHARPEN                  "madvr.lumasharpen"
+#define SET_IMAGE_LUMASHARPEN_STRENGTH         "madvr.lumasharpenstrength"
+#define SET_IMAGE_ADAPTIVESHARPEN              "madvr.adaptivesharpen"
+#define SET_IMAGE_ADAPTIVESHARPEN_STRENGTH     "madvr.adaptivesharpenstrength"
+
+#define SET_IMAGE_UPFINESHARP                  "madvr.upfinsharp"
+#define SET_IMAGE_UPFINESHARP_STRENGTH         "madvr.upfinsharpstrength"
+#define SET_IMAGE_UPLUMASHARPEN                "madvr.uplumasharpen"
+#define SET_IMAGE_UPLUMASHARPEN_STRENGTH       "madvr.uplumasharpenstrength"
+#define SET_IMAGE_UPADAPTIVESHARPEN            "madvr.upadaptivesharpen"
+#define SET_IMAGE_UPADAPTIVESHARPEN_STRENGTH   "madvr.upadaptivesharpenstrength"
+#define SET_IMAGE_SUPER_RES                    "madvr.superres"
+#define SET_IMAGE_SUPER_RES_STRENGTH           "madvr.superresstrength"
+
+#define SET_IMAGE_REFINE_ONCE                  "madvr.refineonce"
+#define SET_IMAGE_SUPER_RES_FIRST              "madvr.superresfirst"
 
 #ifndef countof
 #define countof(array) (sizeof(array)/sizeof(array[0]))
@@ -103,6 +123,8 @@ void CGUIDialogMadvrScaling::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
+  bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
+
   CSettingCategory *category = AddCategory("dsplayermadvrsettings", -1);
   if (category == NULL)
   {
@@ -136,6 +158,20 @@ void CGUIDialogMadvrScaling::InitializeSettings()
 
   CSettingGroup *groupMadvrDoubling = AddGroup(category);
   if (groupMadvrDoubling == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+
+  CSettingGroup *groupMadvrSharp = AddGroup(category);
+  if (groupMadvrSharp == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
+
+  CSettingGroup *groupMadvrUpSharp = AddGroup(category);
+  if (groupMadvrUpSharp == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
@@ -203,6 +239,26 @@ void CGUIDialogMadvrScaling::InitializeSettings()
   AddList(groupMadvrDoubling, SET_IMAGE_QUADRUPLE_CHROMA, 70103, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleChroma), entries, 70103);
   AddList(groupMadvrDoubling, SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, 70116, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleChromaFactor), entriesQuadrupleFactor, 70116);
 
+  //IMAGE ENHANCEMENTS
+  AddToggle(groupMadvrSharp, SET_IMAGE_FINESHARP, 70118, 0, madvrSettings.m_fineSharp);
+  AddSlider(groupMadvrSharp, SET_IMAGE_FINESHARP_STRENGTH, 70122, 0, madvrSettings.m_fineSharpStrength, "%1.1f", 0.0f, 0.1f, 8.0f, 70118, usePopup);
+  AddToggle(groupMadvrSharp, SET_IMAGE_LUMASHARPEN, 70119, 0, madvrSettings.m_lumaSharpen);
+  AddSlider(groupMadvrSharp, SET_IMAGE_LUMASHARPEN_STRENGTH, 70122, 0, madvrSettings.m_lumaSharpenStrength, "%1.2f", 0.0f, 0.01f, 3.0f, 70119, usePopup);
+  AddToggle(groupMadvrSharp, SET_IMAGE_ADAPTIVESHARPEN, 70120, 0, madvrSettings.m_adaptiveSharpen);
+  AddSlider(groupMadvrSharp, SET_IMAGE_ADAPTIVESHARPEN_STRENGTH, 70122, 0, madvrSettings.m_adaptiveSharpenStrength, "%1.1f", 0.0f, 0.1f, 1.5f, 70120, usePopup);
+
+  //UPSCALING REFINEMENTS
+  AddToggle(groupMadvrUpSharp, SET_IMAGE_UPFINESHARP, 70123, 0, madvrSettings.m_UpRefFineSharp);
+  AddSlider(groupMadvrUpSharp, SET_IMAGE_UPFINESHARP_STRENGTH, 70122, 0, madvrSettings.m_UpRefFineSharpStrength, "%1.1f", 0.0f, 0.1f, 8.0f, 70123, usePopup);
+  AddToggle(groupMadvrUpSharp, SET_IMAGE_UPLUMASHARPEN, 70124, 0, madvrSettings.m_UpRefLumaSharpen);
+  AddSlider(groupMadvrUpSharp, SET_IMAGE_UPLUMASHARPEN_STRENGTH, 70122, 0, madvrSettings.m_UpRefLumaSharpenStrength, "%1.2f", 0.0f, 0.01f, 3.0f, 70124, usePopup);
+  AddToggle(groupMadvrUpSharp, SET_IMAGE_UPADAPTIVESHARPEN, 70125, 0, madvrSettings.m_UpRefAdaptiveSharpen);
+  AddSlider(groupMadvrUpSharp, SET_IMAGE_UPADAPTIVESHARPEN_STRENGTH, 70122, 0, madvrSettings.m_UpRefAdaptiveSharpenStrength, "%1.1f", 0.0f, 0.1f, 1.5f, 70125, usePopup);
+  AddToggle(groupMadvrUpSharp, SET_IMAGE_SUPER_RES, 70121, 0, madvrSettings.m_superRes);
+  AddSlider(groupMadvrUpSharp, SET_IMAGE_SUPER_RES_STRENGTH, 70122, 0, madvrSettings.m_superResStrength, "%1.0f", 0.0f, 1.0f, 4.0f, 70121, usePopup);
+
+  AddToggle(groupMadvrUpSharp, SET_IMAGE_REFINE_ONCE, 70126, 0, madvrSettings.m_refineOnce);
+  AddToggle(groupMadvrUpSharp, SET_IMAGE_SUPER_RES_FIRST, 70127, 0, madvrSettings.m_superResFirst);
 }
 
 void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
@@ -305,7 +361,88 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
     madvrSettings.m_ImageQuadrupleChromaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
     CMadvrCallback::Get()->GetCallback()->SettingSetStr("nnediQCScalingFactor", MadvrQuadrupleFactor[madvrSettings.m_ImageQuadrupleChromaFactor].name);
   }
+  else if (settingId == SET_IMAGE_FINESHARP)
+  {
+    madvrSettings.m_fineSharp = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("fineSharp", madvrSettings.m_fineSharp);
+  }
+  else if (settingId == SET_IMAGE_FINESHARP_STRENGTH)
+  {
+    madvrSettings.m_fineSharpStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    CMadvrCallback::Get()->GetCallback()->SettingSetFloat("fineSharpStrength", madvrSettings.m_fineSharpStrength,10);
+  }
+  else if (settingId == SET_IMAGE_LUMASHARPEN)
+  {
+    madvrSettings.m_lumaSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("lumaSharpen", madvrSettings.m_lumaSharpen);
+  }
+  else if (settingId == SET_IMAGE_LUMASHARPEN_STRENGTH)
+  {
+    madvrSettings.m_lumaSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    CMadvrCallback::Get()->GetCallback()->SettingSetFloat("lumaSharpenStrength", madvrSettings.m_lumaSharpenStrength);
+  }
+  else if (settingId == SET_IMAGE_ADAPTIVESHARPEN)
+  {
+    madvrSettings.m_adaptiveSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("adaptiveSharpen", madvrSettings.m_adaptiveSharpen);
+  }
+  else if (settingId == SET_IMAGE_ADAPTIVESHARPEN_STRENGTH)
+  {
+    madvrSettings.m_adaptiveSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    CMadvrCallback::Get()->GetCallback()->SettingSetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength,10);
+  }
 
+  else if (settingId == SET_IMAGE_UPFINESHARP)
+  {
+    madvrSettings.m_UpRefFineSharp = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("upRefFineSharp", madvrSettings.m_UpRefFineSharp);
+  }
+  else if (settingId == SET_IMAGE_UPFINESHARP_STRENGTH)
+  {
+    madvrSettings.m_UpRefFineSharpStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    CMadvrCallback::Get()->GetCallback()->SettingSetFloat("upRefFineSharpStrength", madvrSettings.m_UpRefFineSharpStrength,10);
+  }
+  else if (settingId == SET_IMAGE_UPLUMASHARPEN)
+  {
+    madvrSettings.m_UpRefLumaSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("upRefLumaSharpen", madvrSettings.m_UpRefLumaSharpen);
+  }
+  else if (settingId == SET_IMAGE_UPLUMASHARPEN_STRENGTH)
+  {
+    madvrSettings.m_UpRefLumaSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    CMadvrCallback::Get()->GetCallback()->SettingSetFloat("upRefLumaSharpenStrength", madvrSettings.m_UpRefLumaSharpenStrength);
+  }
+  else if (settingId == SET_IMAGE_UPADAPTIVESHARPEN)
+  {
+    madvrSettings.m_UpRefAdaptiveSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("upRefAdaptiveSharpen", madvrSettings.m_UpRefAdaptiveSharpen);
+  }
+  else if (settingId == SET_IMAGE_UPADAPTIVESHARPEN_STRENGTH)
+  {
+    madvrSettings.m_UpRefAdaptiveSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    CMadvrCallback::Get()->GetCallback()->SettingSetFloat("UpRefAdaptiveSharpenStrength", madvrSettings.m_UpRefAdaptiveSharpenStrength,10);
+  }
+
+  else if (settingId == SET_IMAGE_SUPER_RES)
+  {
+    madvrSettings.m_superRes = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("superRes", madvrSettings.m_superRes);
+  }
+  else if (settingId == SET_IMAGE_SUPER_RES_STRENGTH)
+  {
+    madvrSettings.m_superResStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    CMadvrCallback::Get()->GetCallback()->SettingSetFloat("superResStrength", madvrSettings.m_superResStrength,1);
+  }
+  else if (settingId == SET_IMAGE_REFINE_ONCE)
+  {
+    madvrSettings.m_refineOnce = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("refineOnce", !madvrSettings.m_refineOnce);
+  }
+  else if (settingId == SET_IMAGE_SUPER_RES_FIRST)
+  {
+    madvrSettings.m_superResFirst = static_cast<const CSettingBool*>(setting)->GetValue();
+    CMadvrCallback::Get()->GetCallback()->SettingSetBool("superResFirst", madvrSettings.m_superResFirst);
+  }
   HideUnused();
 }
 
@@ -327,6 +464,11 @@ void CGUIDialogMadvrScaling::HideUnused()
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
 
   int value;
+  bool bValue;
+  bool bValue1;
+  bool bValue2;
+  bool bValue3;
+
   CSetting *setting;
 
   // HIDE / SHOW
@@ -345,6 +487,42 @@ void CGUIDialogMadvrScaling::HideUnused()
   setting = m_settingsManager->GetSetting(SET_IMAGE_QUADRUPLE_CHROMA);
   value = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   SetVisible(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, (value > -1));
+
+  setting = m_settingsManager->GetSetting(SET_IMAGE_FINESHARP);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(SET_IMAGE_FINESHARP_STRENGTH , bValue);
+
+  setting = m_settingsManager->GetSetting(SET_IMAGE_LUMASHARPEN);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(SET_IMAGE_LUMASHARPEN_STRENGTH, bValue);
+
+  setting = m_settingsManager->GetSetting(SET_IMAGE_ADAPTIVESHARPEN);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(SET_IMAGE_ADAPTIVESHARPEN_STRENGTH, bValue);
+
+  setting = m_settingsManager->GetSetting(SET_IMAGE_UPFINESHARP);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(SET_IMAGE_UPFINESHARP_STRENGTH, bValue);
+
+  setting = m_settingsManager->GetSetting(SET_IMAGE_UPLUMASHARPEN);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(SET_IMAGE_UPLUMASHARPEN_STRENGTH, bValue);
+
+  setting = m_settingsManager->GetSetting(SET_IMAGE_UPADAPTIVESHARPEN);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(SET_IMAGE_UPADAPTIVESHARPEN_STRENGTH, bValue);
+
+  setting = m_settingsManager->GetSetting(SET_IMAGE_SUPER_RES);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(SET_IMAGE_SUPER_RES_STRENGTH, bValue);
+  SetVisible(SET_IMAGE_SUPER_RES_FIRST, bValue);
+  setting = m_settingsManager->GetSetting(SET_IMAGE_UPFINESHARP);
+  bValue1 = static_cast<const CSettingBool*>(setting)->GetValue();
+  setting = m_settingsManager->GetSetting(SET_IMAGE_UPLUMASHARPEN);
+  bValue2 = static_cast<const CSettingBool*>(setting)->GetValue();
+  setting = m_settingsManager->GetSetting(SET_IMAGE_UPADAPTIVESHARPEN);
+  bValue3 = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(SET_IMAGE_REFINE_ONCE, (bValue||bValue1||bValue2||bValue3));
 
   m_allowchange = true;
 }

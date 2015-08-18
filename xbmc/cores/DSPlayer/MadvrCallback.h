@@ -57,6 +57,7 @@ public:
   virtual void SettingSetStr(CStdString path, CStdString sValue) {};
   virtual void SettingSetBool(CStdString path, BOOL bValue) {};
   virtual void SettingSetInt(CStdString path, int iValue) {};
+  virtual void SettingSetFloat(CStdString path, float fValue, int iConv = 100) {};
   virtual void SettingSetDoubling(CStdString path, int iValue) {};
   virtual void SettingSetDeintActive(CStdString path, int iValue) {};
   virtual void SettingSetSmoothmotion(CStdString path, int iValue) {};

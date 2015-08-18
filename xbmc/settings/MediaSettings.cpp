@@ -206,7 +206,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor = MadvrQuadrupleFactorDef;
 
     if (!XMLUtils::GetInt(pElement, "deintactive", m_defaultMadvrSettings.m_deintactive))
-      m_defaultMadvrSettings.m_deintactive = MADVR_DEINT_IFDOUBT_DEACTIVE;
+      m_defaultMadvrSettings.m_deintactive = MadvrDeintActiveDef;
     if (!XMLUtils::GetInt(pElement, "deintforce", m_defaultMadvrSettings.m_deintforce))
       m_defaultMadvrSettings.m_deintforce = MadvrDeintForceDef;
     XMLUtils::GetBoolean(pElement, "deintlookpixels", m_defaultMadvrSettings.m_deintlookpixels);
@@ -214,15 +214,41 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     if (!XMLUtils::GetInt(pElement, "smoothmotion", m_defaultMadvrSettings.m_smoothMotion))
       m_defaultMadvrSettings.m_smoothMotion = -1;
     if (!XMLUtils::GetInt(pElement, "dithering", m_defaultMadvrSettings.m_dithering))
-      m_defaultMadvrSettings.m_dithering = MADVR_DITHERING_ORDERED;
+      m_defaultMadvrSettings.m_dithering = MadvrDitheringDef;
     XMLUtils::GetBoolean(pElement, "ditheringcolorednoise", m_defaultMadvrSettings.m_ditheringColoredNoise);
     XMLUtils::GetBoolean(pElement, "ditheringeveryframe", m_defaultMadvrSettings.m_ditheringEveryFrame);
 
     XMLUtils::GetBoolean(pElement, "deband", m_defaultMadvrSettings.m_deband);
     if (!XMLUtils::GetInt(pElement, "debandlevel", m_defaultMadvrSettings.m_debandLevel))
-      m_defaultMadvrSettings.m_debandLevel = MADVR_DEBAND_LOW;
+      m_defaultMadvrSettings.m_debandLevel = MadvrDebandLevelDef;
     if (!XMLUtils::GetInt(pElement, "debandfadelevel", m_defaultMadvrSettings.m_debandFadeLevel))
-      m_defaultMadvrSettings.m_debandFadeLevel = MADVR_DEBAND_HIGH;
+      m_defaultMadvrSettings.m_debandFadeLevel = MadvrDebandFadeLevelDef;
+
+    XMLUtils::GetBoolean(pElement, "finesharp", m_defaultMadvrSettings.m_fineSharp);
+    if (!XMLUtils::GetFloat(pElement, "finesharpstrength", m_defaultMadvrSettings.m_fineSharpStrength))
+      m_defaultMadvrSettings.m_fineSharpStrength = 2.0f;
+    XMLUtils::GetBoolean(pElement, "lumasharpen", m_defaultMadvrSettings.m_lumaSharpen);
+    if (!XMLUtils::GetFloat(pElement, "lumasharpenstrength", m_defaultMadvrSettings.m_lumaSharpenStrength))
+      m_defaultMadvrSettings.m_lumaSharpenStrength = 0.65f;
+    XMLUtils::GetBoolean(pElement, "adaptivesharpen", m_defaultMadvrSettings.m_adaptiveSharpen);
+    if (!XMLUtils::GetFloat(pElement, "adaptivesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength))
+      m_defaultMadvrSettings.m_adaptiveSharpenStrength = 0.5f;
+
+    XMLUtils::GetBoolean(pElement, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
+    if (!XMLUtils::GetFloat(pElement, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength))
+      m_defaultMadvrSettings.m_UpRefFineSharpStrength = 2.0f;
+    XMLUtils::GetBoolean(pElement, "upreflumasharpen", m_defaultMadvrSettings.m_UpRefLumaSharpen);
+    if (!XMLUtils::GetFloat(pElement, "upreflumasharpenstrength", m_defaultMadvrSettings.m_UpRefLumaSharpenStrength))
+      m_defaultMadvrSettings.m_UpRefLumaSharpenStrength = 0.65f;
+    XMLUtils::GetBoolean(pElement, "uprefadaptivesharpen", m_defaultMadvrSettings.m_UpRefAdaptiveSharpen);
+    if (!XMLUtils::GetFloat(pElement, "uprefadaptivesharpenstrength", m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength))
+      m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength = 0.5f;
+    XMLUtils::GetBoolean(pElement, "superres", m_defaultMadvrSettings.m_superRes);
+    if (!XMLUtils::GetFloat(pElement, "superresstrength", m_defaultMadvrSettings.m_superResStrength))
+      m_defaultMadvrSettings.m_superResStrength = 1.0f;
+
+    XMLUtils::GetBoolean(pElement, "refineonce", m_defaultMadvrSettings.m_refineOnce);
+    XMLUtils::GetBoolean(pElement, "superresfirst", m_defaultMadvrSettings.m_superResFirst);
   }
 #endif
   // mymusic settings
@@ -365,6 +391,25 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetBoolean(pNode, "deband", m_defaultMadvrSettings.m_deband); 
   XMLUtils::SetInt(pNode, "debandlevel", m_defaultMadvrSettings.m_debandLevel);
   XMLUtils::SetInt(pNode, "debandfadelevel", m_defaultMadvrSettings.m_debandFadeLevel);
+
+  XMLUtils::SetBoolean(pNode, "finesharp", m_defaultMadvrSettings.m_fineSharp);
+  XMLUtils::SetFloat(pNode, "finesharpstrength", m_defaultMadvrSettings.m_fineSharpStrength);
+  XMLUtils::SetBoolean(pNode, "lumasharpen", m_defaultMadvrSettings.m_lumaSharpen);
+  XMLUtils::SetFloat(pNode, "lumasharpenstrength", m_defaultMadvrSettings.m_lumaSharpenStrength);
+  XMLUtils::SetBoolean(pNode, "adpativesharpen", m_defaultMadvrSettings.m_adaptiveSharpen);
+  XMLUtils::SetFloat(pNode, "adpativesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength);
+
+  XMLUtils::SetBoolean(pNode, "upreffinesharp", m_defaultMadvrSettings.m_UpRefFineSharp);
+  XMLUtils::SetFloat(pNode, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength);
+  XMLUtils::SetBoolean(pNode, "upreflumasharpen", m_defaultMadvrSettings.m_UpRefLumaSharpen);
+  XMLUtils::SetFloat(pNode, "upreflumasharpenstrength", m_defaultMadvrSettings.m_UpRefLumaSharpenStrength);
+  XMLUtils::SetBoolean(pNode, "uprefadpativesharpen", m_defaultMadvrSettings.m_UpRefAdaptiveSharpen);
+  XMLUtils::SetFloat(pNode, "uprefadpativesharpenstrength", m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength);
+  XMLUtils::SetBoolean(pNode, "superres", m_defaultMadvrSettings.m_superRes);
+  XMLUtils::SetFloat(pNode, "superresstrength", m_defaultMadvrSettings.m_superResStrength);
+
+  XMLUtils::SetBoolean(pNode, "refineonce", !m_defaultMadvrSettings.m_refineOnce);
+  XMLUtils::SetBoolean(pNode, "superresfirst", m_defaultMadvrSettings.m_superResFirst);
   
 #endif
 

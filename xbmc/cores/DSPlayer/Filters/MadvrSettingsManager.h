@@ -52,9 +52,11 @@ public:
   void GetStr(std::string path, std::string *str);
   void GetBool(std::string path, BOOL *bValue);
   void GetInt(std::string path, int *iValue);
+  void GetFloat(std::string path, float* fValue, int iConv = 100);
   void SetStr(std::string path, std::string str);
   void SetBool(std::string path, BOOL bValue);
   void SetInt(std::string path, int iValue);
+  void SetFloat(std::string path, float fValue, int iConv = 100);
 
   virtual void SetDoubling(CStdString path, int iValue);
   virtual void SetDeintActive(CStdString path, int iValue);

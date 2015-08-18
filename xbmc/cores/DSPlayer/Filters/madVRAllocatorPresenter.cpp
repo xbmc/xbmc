@@ -510,5 +510,25 @@ void CmadVRAllocatorPresenter::RestoreMadvrSettings()
   SettingSetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
   SettingSetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
   SettingSetSmoothmotion("", madvrSettings.m_smoothMotion);
+
+  SettingSetBool("fineSharp", madvrSettings.m_fineSharp);
+  SettingSetFloat("fineSharpStrength", madvrSettings.m_fineSharpStrength,10);
+  SettingSetBool("lumaSharpen", madvrSettings.m_lumaSharpen);
+  SettingSetFloat("lumaSharpenStrength", madvrSettings.m_lumaSharpenStrength);
+  SettingSetBool("adaptiveSharpen", madvrSettings.m_adaptiveSharpen);
+  SettingSetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength,10);
+
+  SettingSetBool("upRefFineSharp", madvrSettings.m_UpRefFineSharp);
+  SettingSetFloat("upRefFineSharpStrength", madvrSettings.m_UpRefFineSharpStrength,10);
+  SettingSetBool("upRefLumaSharpen", madvrSettings.m_UpRefLumaSharpen);
+  SettingSetFloat("upRefLumaSharpenStrength", madvrSettings.m_UpRefLumaSharpenStrength);
+  SettingSetBool("upRefAdaptiveSharpen", madvrSettings.m_UpRefAdaptiveSharpen);
+  SettingSetFloat("upRefAdaptiveSharpenStrength", madvrSettings.m_UpRefAdaptiveSharpenStrength,10);
+
+  SettingSetBool("superRes", madvrSettings.m_superRes);
+  SettingSetFloat("superResStrength", madvrSettings.m_superResStrength, 1);
+
+  SettingSetBool("refineOnce", !madvrSettings.m_refineOnce);
+  SettingSetBool("superResFirst", madvrSettings.m_superResFirst);
 }
 

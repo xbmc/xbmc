@@ -53,19 +53,38 @@ CMadvrSettings::CMadvrSettings()
   m_ImageQuadrupleLumaFactor = MadvrQuadrupleFactorDef;
   m_ImageQuadrupleChromaFactor = MadvrQuadrupleFactorDef;
 
-  m_deintactive = MADVR_DEINT_IFDOUBT_DEACTIVE;
+  m_deintactive = MadvrDeintActiveDef;
   m_deintforce = MadvrDeintForceDef;
   m_deintlookpixels = true;
 
   m_smoothMotion = -1;
 
-  m_dithering = MADVR_DITHERING_ORDERED;
+  m_dithering = MadvrDitheringDef;
   m_ditheringColoredNoise = true;
   m_ditheringEveryFrame = true;
 
   m_deband = false;
-  m_debandLevel = MADVR_DEBAND_LOW;
-  m_debandFadeLevel = MADVR_DEBAND_HIGH;
+  m_debandLevel = MadvrDebandLevelDef;
+  m_debandFadeLevel = MadvrDebandFadeLevelDef;
+
+  m_fineSharp = false;
+  m_fineSharpStrength = 2.0f;
+  m_lumaSharpen = false;
+  m_lumaSharpenStrength = 0.65f;
+  m_adaptiveSharpen = false;
+  m_adaptiveSharpenStrength = 0.5f;
+
+  m_UpRefFineSharp = false;
+  m_UpRefFineSharpStrength = 2.0f;
+  m_UpRefLumaSharpen = false;
+  m_UpRefLumaSharpenStrength = 0.65f;
+  m_UpRefAdaptiveSharpen = false;
+  m_UpRefAdaptiveSharpenStrength = 0.5f;
+  m_superRes = false;
+  m_superResStrength = 1.0f;
+
+  m_refineOnce = false;
+  m_superResFirst = false;
 }
 
 bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
@@ -105,6 +124,25 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_deband != right.m_deband) return true;
   if (m_debandLevel != right.m_debandLevel) return true;
   if (m_debandFadeLevel != right.m_debandFadeLevel) return true;
+
+  if (m_fineSharp != right.m_fineSharp) return true;
+  if (m_fineSharpStrength != right.m_fineSharpStrength) return true;
+  if (m_lumaSharpen != right.m_lumaSharpen) return true;
+  if (m_lumaSharpenStrength != right.m_lumaSharpenStrength) return true;
+  if (m_adaptiveSharpen != right.m_adaptiveSharpen) return true;
+  if (m_adaptiveSharpenStrength != right.m_adaptiveSharpenStrength) return true;
+
+  if (m_UpRefFineSharp != right.m_UpRefFineSharp) return true;
+  if (m_UpRefFineSharpStrength != right.m_UpRefFineSharpStrength) return true;
+  if (m_UpRefLumaSharpen != right.m_UpRefLumaSharpen) return true;
+  if (m_UpRefLumaSharpenStrength != right.m_UpRefLumaSharpenStrength) return true;
+  if (m_UpRefAdaptiveSharpen != right.m_UpRefAdaptiveSharpen) return true;
+  if (m_UpRefAdaptiveSharpenStrength != right.m_UpRefAdaptiveSharpenStrength) return true;
+  if (m_superRes != right.m_superRes) return true;
+  if (m_superResStrength != right.m_superResStrength) return true;
+
+  if (m_refineOnce != right.m_refineOnce) return true;
+  if (m_superResFirst != right.m_superResFirst) return true;
 
   return false;
 }
