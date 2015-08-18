@@ -305,16 +305,23 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-static bool FilterVar(bool valid, const CVariant& variant, const std::string& check)
+static bool IsForeign(const std::string& languages)
 {
-  if (!valid)
+  if (languages.empty())
     return false;
 
-  if (variant.isNull() || variant.asString().empty())
-    return false;
+  for (const auto& lang : StringUtils::Split(languages, " "))
+  {
+    if (lang == "en" ||
+        lang == g_langInfo.GetLocale().GetLanguageCode() ||
+        lang == g_langInfo.GetLocale().ToShortString())
+      return false;
 
-  std::string regions = variant.asString();
-  return regions.find(check) == std::string::npos;
+    // for backwards compatibility
+    if (lang == "no" && g_langInfo.GetLocale().ToShortString() == "nb_NO")
+      return false;
+  }
+  return true;
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFileItemList& items)
@@ -351,14 +358,11 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
         int i = 0;
         while (i < items.Size())
         {
-          if (!FilterVar(true, items[i]->GetProperty("Addon.Language"), "en") ||
-              !FilterVar(true, items[i]->GetProperty("Addon.Language"), g_langInfo.GetLocale().GetLanguageCode()) ||
-              !FilterVar(true, items[i]->GetProperty("Addon.Language"), g_langInfo.GetLocale().ToShortString()))
-          {
-            i++;
-          }
-          else
+          auto prop = items[i]->GetProperty("Addon.Language");
+          if (!prop.isNull() && IsForeign(prop.asString()))
             items.Remove(i);
+          else
+            ++i;
         }
       }
       if (CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER))
