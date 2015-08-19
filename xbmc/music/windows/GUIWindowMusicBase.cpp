@@ -346,6 +346,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
   m_musicdatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
   while (1)
   {
+    INFO_RET artistScrapeStatus = INFO_NOT_FOUND;
     // Check if we have the information in the database first
     if (!m_musicdatabase.HasArtistBeenScraped(params.GetArtistId()))
     {
@@ -369,7 +370,8 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
       }
 
       CMusicInfoScanner scanner;
-      if (scanner.UpdateDatabaseArtistInfo(artist, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
+      artistScrapeStatus = scanner.UpdateDatabaseArtistInfo(artist, scraper, bShowInfo, m_dlgProgress);
+      if (artistScrapeStatus != INFO_ADDED)
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{21889}, CVariant{20199});
         break;
@@ -390,7 +392,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
         m_musicdatabase.ClearArtistLastScrapedTime(params.GetArtistId());
         continue;
       } 
-      else if (pDlgArtistInfo->HasUpdatedThumb()) 
+      else if (artistScrapeStatus == INFO_ADDED || pDlgArtistInfo->HasUpdatedThumb())
       {
         Update(m_vecItems->GetPath());
       }
@@ -417,6 +419,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
   m_musicdatabase.GetAlbumPath(params.GetAlbumId(), album.strPath);
   while (1)
   {
+    INFO_RET albumScrapeStatus = INFO_NOT_FOUND;
     if (!m_musicdatabase.HasAlbumBeenScraped(params.GetAlbumId()))
     {
       if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
@@ -446,7 +449,8 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
       }
 
       CMusicInfoScanner scanner;
-      if (scanner.UpdateDatabaseAlbumInfo(album, scraper, bShowInfo, m_dlgProgress) != INFO_ADDED)
+      albumScrapeStatus = scanner.UpdateDatabaseAlbumInfo(album, scraper, bShowInfo, m_dlgProgress);
+      if (albumScrapeStatus != INFO_ADDED)
       {
         CGUIDialogOK::ShowAndGetInput(CVariant{185}, CVariant{500});
         if (m_dlgProgress)
@@ -469,7 +473,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
         m_musicdatabase.ClearAlbumLastScrapedTime(params.GetAlbumId());
         continue;
       }
-      else if (pDlgAlbumInfo->HasUpdatedThumb())
+      else if (albumScrapeStatus == INFO_ADDED || pDlgAlbumInfo->HasUpdatedThumb())
       {
         UpdateThumb(album, album.strPath);
       }
