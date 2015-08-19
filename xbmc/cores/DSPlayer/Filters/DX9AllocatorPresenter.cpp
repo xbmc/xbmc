@@ -1931,14 +1931,14 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
         // Map brightness and contrast settings
 
         // Range from 0 and 2
-        contrast = (float)CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast / 50.f;
+        contrast = (float)CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast / 50.f;
 
         // Range from -1 and 1
-        brightness = (float)(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness - 50.f) / 50.f;
+        brightness = (float)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness - 50.f) / 50.f;
 
         if (m_bscShader.IsValid()
-          && ((abs(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast - 50) >= 1)
-          || (abs(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness - 50) >= 1)))
+          && ((abs(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast - 50) >= 1)
+          || (abs(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness - 50) >= 1)))
         {
           Com::SmartPtr<IDirect3DSurface9> pRT;
           hr = m_pD3DDev->GetRenderTarget(0, &pRT);
@@ -2025,7 +2025,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       Vector dst[4];
       Transform(rDstVid, dst);
 
-      EDSSCALINGMETHOD iDX9Resizer = CMediaSettings::Get().GetCurrentVideoSettings().GetDSPlayerScalingMethod();
+      EDSSCALINGMETHOD iDX9Resizer = CMediaSettings::GetInstance().GetCurrentVideoSettings().GetDSPlayerScalingMethod();
 
       float A = 0;
 

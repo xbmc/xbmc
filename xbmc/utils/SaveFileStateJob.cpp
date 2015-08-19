@@ -81,7 +81,7 @@ bool CSaveFileStateJob::DoWork()
 	  {
 		  dspdb.AddEdition(progressTrackingFile, m_bookmark.edition);
 	  }
-      if (m_madvrSettings != CMediaSettings::Get().GetAtStartMadvrSettings() && CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") == KODIGUI_LOAD_DSPLAYER)
+      if (m_madvrSettings != CMediaSettings::GetInstance().GetAtStartMadvrSettings() && CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) == KODIGUI_LOAD_DSPLAYER)
       {
           dspdb.SetVideoSettings(progressTrackingFile, m_madvrSettings);
       }
@@ -146,7 +146,7 @@ bool CSaveFileStateJob::DoWork()
           }
         }
 #ifdef HAS_DS_PLAYER
-        if (m_videoSettings != CMediaSettings::Get().GetAtStartVideoSettings())
+        if (m_videoSettings != CMediaSettings::GetInstance().GetAtStartVideoSettings())
 #else
         if (m_videoSettings != CMediaSettings::GetInstance().GetDefaultVideoSettings())
 #endif

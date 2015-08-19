@@ -214,7 +214,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if (item.IsVideo() || !item.IsAudio())
   {
 #ifdef HAS_DS_PLAYER
-    bool dsplayer = CSettings::Get().GetBool("dsplayer.defaultvideoplayer");
+    bool dsplayer = CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_DEFAULTVIDEOPLAYER);
     PLAYERCOREID eVideoDefault = dsplayer ? EPC_DSPLAYER : GetPlayerCore("videodefaultplayer");
 #else
     PLAYERCOREID eVideoDefault = GetPlayerCore("videodefaultplayer");

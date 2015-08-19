@@ -54,7 +54,7 @@ CDSSettings::CDSSettings(void)
 void CDSSettings::Initialize()
 {
   CStdString videoRender;
-  videoRender = CSettings::Get().GetString("dsplayer.videorenderer");
+  videoRender = CSettings::GetInstance().GetString("dsplayer.videorenderer");
 
   if (videoRender == "EVR")
   {
@@ -84,7 +84,7 @@ CDSSettings::~CDSSettings(void)
 
 void CDSSettings::LoadConfig()
 {
-  CStdString strDsConfigFile = CProfilesManager::Get().GetUserDataItem("dsplayer/renderersettings.xml");
+  CStdString strDsConfigFile = CProfilesManager::GetInstance().GetUserDataItem("dsplayer/renderersettings.xml");
   if (!CFile::Exists(strDsConfigFile))
   {
     CLog::Log(LOGNOTICE, "No renderersettings.xml to load (%s)", strDsConfigFile.c_str());

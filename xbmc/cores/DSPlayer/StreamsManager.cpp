@@ -652,10 +652,10 @@ void CStreamsManager::LoadStreams()
   {
     SubtitleManager->AddSubtitle(*it);
   }
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleCached = true;
+  CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleCached = true;
   SubtitleManager->SelectBestSubtitle();
 
-  SubtitleManager->SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+  SubtitleManager->SetSubtitleVisible(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn);
 }
 
 int CStreamsManager::GetSubfilter()
@@ -701,7 +701,7 @@ bool CStreamsManager::GetSubfilterVisible()
 
 void CStreamsManager::SetSubfilterVisible(bool bVisible)
 {
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
+  CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
   m_bSubfilterVisible = bVisible;
 
   if (!m_bIsXYVSFilter)
@@ -862,7 +862,7 @@ void CStreamsManager::SetSubfilter(int iStream)
   m_readyEvent.Reset();
   CAutoSetEvent event(&m_readyEvent);
 
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = enableIndex;
+  CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleStream = enableIndex;
 
   if (m_subfilterStreams[enableIndex]->m_subType == EXTERNAL)
   {
@@ -890,7 +890,7 @@ void CStreamsManager::SetSubfilter(int iStream)
     }
   }
   CLog::Log(LOGDEBUG, "%s Successfully selected subfilter stream number %i", __FUNCTION__, enableIndex);
-  SetSubfilterVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+  SetSubfilterVisible(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn);
 }
 
 void CStreamsManager::SubInterface(SelectSubType action)
@@ -935,7 +935,7 @@ void CStreamsManager::SelectBestSubtitle()
   int iLibrary;
 
   // set previuos selected stream
-  iLibrary = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
+  iLibrary = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleStream;
   if ((iLibrary < g_application.m_pPlayer->GetSubtitleCount()) && !(iLibrary < 0))
     select = iLibrary;
 
@@ -1218,7 +1218,7 @@ void CStreamsManager::MediaTypeToStreamDetail(AM_MEDIA_TYPE *pMediaType, CStream
     infos.subtype = pMediaType->subtype;
   }
 
-  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail") ||
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_SHOWSPLITTERDETAIL) ||
       CGraphFilters::Get()->UsingMediaPortalTsReader())
     FormatStreamName(s);
   else
@@ -1347,8 +1347,8 @@ m_dll(), m_pStreamManager(pStreamManager), m_rtSubtitleDelay(0)
   memset(&m_subtitleMediaType, 0, sizeof(AM_MEDIA_TYPE));
   m_subtitleMediaType.majortype = MEDIATYPE_Subtitle;
 
-  m_bSubtitlesVisible = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn;
-  SetSubtitleDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay);
+  m_bSubtitlesVisible = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn;
+  SetSubtitleDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay);
 
   m_pManager.reset();
 }
@@ -1396,13 +1396,13 @@ void CSubtitleManager::Initialize()
   SSubStyle style; //auto default on constructor
 
   // Build style based on XBMC settings
-  style.colors[0] = color[CSettings::Get().GetInt("subtitles.color")];
-  style.alpha[0] = CSettings::Get().GetInt("subtitles.alpha");
+  style.colors[0] = color[CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_COLOR)];
+  style.alpha[0] = CSettings::GetInstance().GetInt("subtitles.alpha");
 
   g_graphicsContext.SetScalingResolution(RES_PAL_4x3, true);
-  style.fontSize = (float)(CSettings::Get().GetInt("subtitles.height")) * 50.0 / 72.0;
+  style.fontSize = (float)(CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT)) * 50.0 / 72.0;
 
-  int fontStyle = CSettings::Get().GetInt("subtitles.style");
+  int fontStyle = CSettings::GetInstance().GetInt(CSettings::SETTING_SUBTITLES_STYLE);
   switch (fontStyle)
   {
   case FONT_STYLE_NORMAL:
@@ -1426,17 +1426,17 @@ void CSubtitleManager::Initialize()
 
   style.charSet = g_charsetConverter.getCharsetIdByName(g_langInfo.GetSubtitleCharSet());
 
-  style.borderStyle = CSettings::Get().GetInt("subtitles.border");
-  style.shadowDepthX = style.shadowDepthY = CSettings::Get().GetInt("subtitles.shadowdepth");
-  style.outlineWidthX = style.outlineWidthY = CSettings::Get().GetInt("subtitles.outlinewidth");
+  style.borderStyle = CSettings::GetInstance().GetInt("subtitles.border");
+  style.shadowDepthX = style.shadowDepthY = CSettings::GetInstance().GetInt("subtitles.shadowdepth");
+  style.outlineWidthX = style.outlineWidthY = CSettings::GetInstance().GetInt("subtitles.outlinewidth");
 
   CStdStringW fontName;
-  g_charsetConverter.utf8ToW(CSettings::Get().GetString("subtitles.dsfont"), fontName);
+  g_charsetConverter.utf8ToW(CSettings::GetInstance().GetString("subtitles.dsfont"), fontName);
   style.fontName = (wchar_t *)CoTaskMemAlloc(fontName.length() * sizeof(wchar_t) + 2);
   if (style.fontName)
     wcscpy_s(style.fontName, fontName.length() + 1, fontName.c_str());
 
-  bool override = CSettings::Get().GetBool("subtitles.overrideassfonts");
+  bool override = CSettings::GetInstance().GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS);
   m_pManager->SetStyle(&style, override);
 
   if (FAILED(m_pManager->InsertPassThruFilter(g_dsGraph->pFilterGraph)))
@@ -1573,7 +1573,7 @@ void CSubtitleManager::SetSubtitle(int iStream)
   CStdString subtitlePath = "";
   Com::SmartPtr<IPin> newAudioStreamPin;
 
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream = enableIndex;
+  CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleStream = enableIndex;
 
   if (m_subtitleStreams[enableIndex]->m_subType == EXTERNAL)
   {
@@ -1587,7 +1587,7 @@ void CSubtitleManager::SetSubtitle(int iStream)
     s->flags = AMSTREAMSELECTINFO_ENABLED; // for gui
     s->connected = true;
 
-    SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+    SetSubtitleVisible(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn);
     return;
   }
 
@@ -1601,7 +1601,7 @@ void CSubtitleManager::SetSubtitle(int iStream)
       m_pManager->SetSubPicProviderToInternal();
       m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
       m_subtitleStreams[enableIndex]->connected = true;
-      SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+      SetSubtitleVisible(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn);
       CLog::Log(LOGDEBUG, "%s Successfully selected subtitle stream", __FUNCTION__);
     }
   }
@@ -1687,7 +1687,7 @@ bool CSubtitleManager::GetSubtitleVisible()
 
 void CSubtitleManager::SetSubtitleVisible(bool bVisible)
 {
-  CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
+  CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn = bVisible;
   m_bSubtitlesVisible = bVisible;
   if (m_pManager)
     m_pManager->SetEnable(bVisible);
@@ -1980,7 +1980,7 @@ void CSubtitleManager::SelectBestSubtitle()
   int iLibrary;
 
   // set previuos selected stream
-  iLibrary = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleStream;
+  iLibrary = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleStream;
   if ((iLibrary < g_application.m_pPlayer->GetSubtitleCount()) && !(iLibrary < 0))
     select = iLibrary;
 
@@ -2002,7 +2002,7 @@ void CSubtitleManager::SelectBestSubtitle()
   if (select != -1)
     SetSubtitle(select);
 
-  SetSubtitleVisible(CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn);
+  SetSubtitleVisible(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn);
 }
 
 #endif

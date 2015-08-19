@@ -76,7 +76,7 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
 
   ChooseBestResolution(fps);
 
-  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
   m_bConfigured = true;
@@ -172,7 +172,7 @@ void CWinDsRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 void CWinDsRenderer::Flush()
 {
   PreInit();
-  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
   m_bConfigured = true;
@@ -184,7 +184,7 @@ unsigned int CWinDsRenderer::PreInit()
   m_bConfigured = false;
 
   UnInit();
-  m_resolution = CDisplaySettings::Get().GetCurrentResolution();
+  m_resolution = CDisplaySettings::GetInstance().GetCurrentResolution();
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
 

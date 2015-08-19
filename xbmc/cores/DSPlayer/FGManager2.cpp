@@ -37,7 +37,7 @@ HRESULT CFGManager2::RenderFileXbmc(const CFileItem& pFileItem)
 {
 
   CFileItem FileItem = pFileItem;
-  bool bIsAutoRender = CSettings::Get().GetBool("dsplayer.autofiltersettings");
+  bool bIsAutoRender = CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_AUTOFILTERSETTINGS);
 
   if (FileItem.IsDVDFile() || !bIsAutoRender)
     return __super::RenderFileXbmc(FileItem);
@@ -49,7 +49,7 @@ HRESULT CFGManager2::RenderFileXbmc(const CFileItem& pFileItem)
   // We *need* those informations for filter loading. If the user wants it, be sure it's loaded
   // before using it.
   bool hasStreamDetails = false;
-  if (CSettings::Get().GetBool("myvideos.extractflags") && FileItem.HasVideoInfoTag() && !FileItem.GetVideoInfoTag()->HasStreamDetails())
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) && FileItem.HasVideoInfoTag() && !FileItem.GetVideoInfoTag()->HasStreamDetails())
   {
     CLog::Log(LOGDEBUG, "%s - trying to extract filestream details from video file %s", __FUNCTION__, FileItem.GetPath().c_str());
     hasStreamDetails = CDVDFileInfo::GetFileStreamDetails(&FileItem);
@@ -146,7 +146,7 @@ HRESULT CFGManager2::RenderFileXbmc(const CFileItem& pFileItem)
   END_PERFORMANCE_COUNTER("Loading streams informations");
 
   if (!hasStreamDetails) {
-    if (CSettings::Get().GetBool("myvideos.extractflags")) // Only warn user if the option is enabled
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS)) // Only warn user if the option is enabled
       CLog::Log(LOGWARNING, __FUNCTION__" DVDPlayer failed to fetch streams details. Using DirectShow ones");
 
     FileItem.GetVideoInfoTag()->m_streamDetails.AddStream(new CDSStreamDetailVideo((const CDSStreamDetailVideo &)(*CStreamsManager::Get()->GetVideoStreamDetail())));

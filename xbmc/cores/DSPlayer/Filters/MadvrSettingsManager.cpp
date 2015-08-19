@@ -463,10 +463,10 @@ void CMadvrSettingsManager::ListSettings(std::string path)
 
 void CMadvrSettingsManager::RestoreSettings()
 {
-  if (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_DSPLAYER)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_DSPLAYER)
     return;
 
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   SetStr("chromaUp", MadvrScaling[madvrSettings.m_ChromaUpscaling].name);
   SetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
@@ -519,7 +519,7 @@ void CMadvrSettingsManager::RestoreSettings()
 
 void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
 {
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   std::string sValue;
   bool bValue;

@@ -1777,10 +1777,10 @@ int CGUIWindowVideoBase::GetDefaultPlayer(const CFileItemPtr &item)
 	if (item->IsVideoDb())
 	{
 		CFileItem item2(*item->GetVideoInfoTag());
-		CPlayerCoreFactory::Get().GetPlayers(item2, vecCores);
+		CPlayerCoreFactory::GetInstance().GetPlayers(item2, vecCores);
 	}
 	else
-		CPlayerCoreFactory::Get().GetPlayers(*item, vecCores);
+		CPlayerCoreFactory::GetInstance().GetPlayers(*item, vecCores);
 
 	if (vecCores.size())
 		return vecCores[0];
@@ -1790,7 +1790,7 @@ int CGUIWindowVideoBase::GetDefaultPlayer(const CFileItemPtr &item)
 
 bool CGUIWindowVideoBase::IsLaunchBD(const CFileItemPtr &item)
 {
-	return (g_application.m_eForcedNextPlayer == EPC_DSPLAYER || (GetDefaultPlayer(item) == EPC_DSPLAYER && g_application.m_eForcedNextPlayer == EPC_NONE)) && CSettings::Get().GetBool("dsplayer.bdautoloadindex");
+	return (g_application.m_eForcedNextPlayer == EPC_DSPLAYER || (GetDefaultPlayer(item) == EPC_DSPLAYER && g_application.m_eForcedNextPlayer == EPC_NONE)) && CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_BDAUTOLOADINDEX);
 }
 
 const CStdString CGUIWindowVideoBase::GetBDPath(const CFileItemPtr &item)

@@ -94,10 +94,10 @@ int CGUIDialogSimpleMenu::GetDefaultPlayer(const CFileItem &item)
 	if (item.IsVideoDb())
 	{
 		CFileItem item2(*item.GetVideoInfoTag());
-		CPlayerCoreFactory::Get().GetPlayers(item2, vecCores);
+		CPlayerCoreFactory::GetInstance().GetPlayers(item2, vecCores);
 	}
 	else
-		CPlayerCoreFactory::Get().GetPlayers(item, vecCores);
+		CPlayerCoreFactory::GetInstance().GetPlayers(item, vecCores);
 
 	if (vecCores.size())
 		return vecCores[0];

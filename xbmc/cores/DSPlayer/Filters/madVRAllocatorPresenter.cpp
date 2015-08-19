@@ -133,8 +133,8 @@ void CmadVRAllocatorPresenter::SetResolution()
     fps = 10000000.0 / frameRate;
   }
 
-  if (CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF
-    && (CSettings::Get().GetInt("videoplayer.changerefreshwith") == ADJUST_REFRESHRATE_WITH_BOTH || CSettings::Get().GetInt("videoplayer.changerefreshwith") == ADJUST_REFRESHRATE_WITH_DSPLAYER)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF
+    && (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_CHANGEREFRESHWITH) == ADJUST_REFRESHRATE_WITH_BOTH || CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_CHANGEREFRESHWITH) == ADJUST_REFRESHRATE_WITH_DSPLAYER)
     && g_graphicsContext.IsFullScreenRoot())
   {
     RESOLUTION bestRes = g_renderManager.m_pRenderer->ChooseBestMadvrResolution(fps);
@@ -173,14 +173,14 @@ void CmadVRAllocatorPresenter::ConfigureMadvr()
   if (Com::SmartQIPtr<IMadVRCommand> pMadVrCmd = m_pDXR)
     pMadVrCmd->SendCommandBool("disableSeekbar", true);
 
-  m_pSettingsManager->SetBool("delayPlaybackStart2", CSettings::Get().GetBool("dsplayer.delaymadvrplayback"));
+  m_pSettingsManager->SetBool("delayPlaybackStart2", CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_DELAYMADVRPLAYBACK));
   m_pSettingsManager->SetStr("flushAfterPresent", "flush");
   m_pSettingsManager->SetStr("flushAfterPresentExcl", "flush");
 
   if (Com::SmartQIPtr<IMadVRExclusiveModeCallback> pEXL = m_pDXR)
     pEXL->Register(m_exclusiveCallback, this);
 
-  if (CSettings::Get().GetBool("dsplayer.madvrexclusivemode"))
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_MADVREXCLUSIVEMODE))
   {
       m_pSettingsManager->SetBool("exclusiveDelay", true);
       m_pSettingsManager->SetBool("enableExclusive", true);

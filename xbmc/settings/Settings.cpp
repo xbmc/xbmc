@@ -418,6 +418,22 @@ const std::string CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS = "general.addon
 const std::string CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER = "general.addonforeignfilter";
 const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonbrokenfilter";
 
+#ifdef HAS_DS_PLAYER
+const std::string CSettings::SETTING_DSPLAYER_DEFAULTVIDEOPLAYER = "dsplayer.defaultvideoplayer";
+const std::string CSettings::SETTING_DSPLAYER_AUTOFILTERSETTINGS = "dsplayer.autofiltersettings";
+const std::string CSettings::SETTING_DSPLAYER_CHANGEREFRESHWITH = "videoplayer.changerefreshwith";
+const std::string CSettings::SETTING_DSPLAYER_TVSHOWSELECTITEM = "videolibrary.tvshowsselectitem";
+const std::string CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI = "dsplayer.madvrsettingswithkodi";
+const std::string CSettings::SETTING_DSPLAYER_DELAYMADVRPLAYBACK = "dsplayer.delaymadvrplayback";
+const std::string CSettings::SETTING_DSPLAYER_MADVREXCLUSIVEMODE = "dsplayer.madvrexclusivemode ";
+const std::string CSettings::SETTING_DSPLAYER_EXITMADVRFULLSCREEN = "dsplayer.exitmadvrfullscreen";
+const std::string CSettings::SETTING_DSPLAYER_MINTITLELENGTH = "dsplayer.mintitlelength";
+const std::string CSettings::SETTING_DSPLAYER_SHOWBDTITLECHOICE = "dsplayer.showbdtitlechoice";
+const std::string CSettings::SETTING_DSPLAYER_BDAUTOLOADINDEX = "dsplayer.bdautoloadindex";
+const std::string CSettings::SETTING_DSPLAYER_SHOWSPLITTERDETAIL = "dsplayer.showsplitterdetail";
+const std::string CSettings::SETTING_DSPLAYER_VIDEOSUBSEX = "dsplayer.videosubsexpandedselector";
+const std::string CSettings::SETTING_DSPLAYER_VIDEOAUDIOEX = "dsplayer.videoaudioexpandedselector";
+#endif
 
 //todo dsplayer
 

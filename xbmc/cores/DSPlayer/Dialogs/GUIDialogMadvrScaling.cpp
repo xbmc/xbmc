@@ -115,11 +115,11 @@ void CGUIDialogMadvrScaling::OnInitWindow()
 
 void CGUIDialogMadvrScaling::LoadMadvrSettings()
 {
-  if (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_MADVR)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_MADVR)
     return;
 
   CMadvrCallback::Get()->GetSetting()->LoadSettings(MADVR_LOAD_SCALING);
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   m_settingsManager->SetInt(SET_CHROMA_UPSCALING, madvrSettings.m_ChromaUpscaling);
   m_settingsManager->SetBool(SET_CHROMA_ANTIRING, madvrSettings.m_ChromaAntiRing);
@@ -162,7 +162,7 @@ void CGUIDialogMadvrScaling::SetupView()
 
   SetHeading(70000);
 
-  if (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") == KODIGUI_LOAD_MADVR)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) == KODIGUI_LOAD_MADVR)
   {
     std::string profile;
     CMadvrCallback::Get()->GetCallback()->GetProfileActiveName(&profile);
@@ -234,7 +234,7 @@ void CGUIDialogMadvrScaling::InitializeSettings()
   }
 
   StaticIntegerSettingOptions entries, entriesDoubleFactor, entriesQuadrupleFactor;
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   //MADVR CHROMA UPSCALING
   entries.clear();
@@ -324,7 +324,7 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   const std::string &settingId = setting->GetId();
 
@@ -515,7 +515,7 @@ void CGUIDialogMadvrScaling::HideUnused()
 
   m_allowchange = false;
 
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   int value;
   bool bValue;

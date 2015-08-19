@@ -116,7 +116,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
 
   CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 #ifdef HAS_DS_PLAYER
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 #endif
 
   const std::string &settingId = setting->GetId();
@@ -376,7 +376,7 @@ void CGUIDialogVideoSettings::SaveChoice()
         return;
 
       dspdb.EraseVideoSettings(selected);
-      dspdb.CreateVideoSettings(selected, CMediaSettings::Get().GetCurrentMadvrSettings());
+      dspdb.CreateVideoSettings(selected, CMediaSettings::GetInstance().GetCurrentMadvrSettings());
       dspdb.Close();
     }
   }
@@ -426,7 +426,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") > KODIGUI_NEVER);
+  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) > KODIGUI_NEVER);
 
   CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
   if (category == NULL)
@@ -500,7 +500,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 #ifdef HAS_DS_PLAYER
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 #endif
 
   StaticIntegerSettingOptions entries;
@@ -734,7 +734,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 void CGUIDialogVideoSettings::OnInitWindow()
 {
   CGUIDialogSettingsManualBase::OnInitWindow();
-  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") > KODIGUI_NEVER);
+  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) > KODIGUI_NEVER);
 
   LoadMadvrSettings();
   HideUnused();
@@ -742,11 +742,11 @@ void CGUIDialogVideoSettings::OnInitWindow()
 
 void CGUIDialogVideoSettings::LoadMadvrSettings()
 {
-  if (!CMadvrCallback::Get()->UsingMadvr() || CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_MADVR)
+  if (!CMadvrCallback::Get()->UsingMadvr() || CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_MADVR)
     return;
 
   CMadvrCallback::Get()->GetSetting()->LoadSettings(MADVR_LOAD_GENERAL);
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   m_settingsManager->SetInt(SETTING_MADVR_DEINT_ACTIVE, madvrSettings.m_deintactive);
   m_settingsManager->SetInt(SETTING_MADVR_DEINT_FORCE, madvrSettings.m_deintforce);
@@ -767,7 +767,7 @@ void CGUIDialogVideoSettings::HideUnused()
 
   m_allowchange = false;
 
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   int iValue;
   bool bValue;

@@ -212,7 +212,7 @@ void CDSGraph::CloseFile()
     CLog::Log(LOGDEBUG, "%s ... done!", __FUNCTION__);
     CGraphFilters::Get()->DVD.Clear();
 
-    if (CSettings::Get().GetBool("dsplayer.exitmadvrfullscreen"))
+    if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_EXITMADVRFULLSCREEN))
       CMadvrCallback::Get()->GetCallback()->EnableExclusive(false);
 
     pFilterGraph.Release();
@@ -401,19 +401,19 @@ HRESULT CDSGraph::HandleGraphEvent()
     {
     case EC_STEP_COMPLETE:
       CLog::Log(LOGDEBUG, "%s EC_STEP_COMPLETE", __FUNCTION__);
-      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
       break;
     case EC_COMPLETE:
       CLog::Log(LOGDEBUG, "%s EC_COMPLETE", __FUNCTION__);
       m_State.eof = true;
-      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
       break;
     case EC_BUFFERING_DATA:
       CLog::Log(LOGDEBUG, "%s EC_BUFFERING_DATA", __FUNCTION__);
       break;
     case EC_USERABORT:
       CLog::Log(LOGDEBUG, "%s EC_USERABORT", __FUNCTION__);
-      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
       break;
     case EC_ERRORABORT:
     case EC_ERRORABORTEX:
@@ -424,7 +424,7 @@ HRESULT CDSGraph::HandleGraphEvent()
       }
       else
         CLog::Log(LOGDEBUG, "%s EC_ERRORABORT. Error code: 0x%X", __FUNCTION__, evParam1);
-      CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
       break;
     case EC_STATE_CHANGE:
       CLog::Log(LOGDEBUG, "%s EC_STATE_CHANGE", __FUNCTION__);
@@ -843,7 +843,7 @@ CStdString CDSGraph::GetAudioInfo()
   if (!c)
     return "File closed";
 
-  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail") ||
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_SHOWSPLITTERDETAIL) ||
       CGraphFilters::Get()->UsingMediaPortalTsReader())
   {
     audioInfo.Format("Audio: (%s, %d Hz, %d Channels) | Renderer: %s",
@@ -871,7 +871,7 @@ CStdString CDSGraph::GetVideoInfo()
   if (!c)
     return "File closed";
   
-  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail") ||
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_SHOWSPLITTERDETAIL) ||
       CGraphFilters::Get()->UsingMediaPortalTsReader())
   {
     videoInfo.Format("Video: (%s, %dx%d) | Renderer: %s",

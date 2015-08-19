@@ -134,7 +134,7 @@ static INT_PTR CALLBACK prop_sheet_proc(HWND hwnd, UINT msg, WPARAM wparam,
 void CDSPropertyPage::Process()
 {
   bool wasfullscreen = false;
-  if (g_Windowing.IsFullScreen() && !CSettings::Get().GetBool("videoscreen.fakefullscreen"))
+  if (g_Windowing.IsFullScreen() && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
   {
     wasfullscreen = true;
     CLog::Log(LOGERROR, "true fullscreen and com property page don't mix so switching to windowed");

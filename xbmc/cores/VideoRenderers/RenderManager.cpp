@@ -962,7 +962,7 @@ void CXBMCRenderManager::UpdateDisplayLatencyForMadvr(float fps)
   float refresh = fps;
   m_displayLatency = (double)g_advancedSettings.GetDisplayLatency(refresh);
   CLog::Log(LOGDEBUG, "CRenderManager::UpdateDisplayLatencyForMadvr - Latency set to %1.0f msec", m_displayLatency * 1000.0f);
-  g_application.m_pPlayer->SetAVDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
+  g_application.m_pPlayer->SetAVDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay);
 }
 #endif
 
@@ -975,7 +975,7 @@ void CXBMCRenderManager::UpdateDisplayLatency()
   CLog::Log(LOGDEBUG, "CRenderManager::UpdateDisplayLatency - Latency set to %1.0f msec", m_displayLatency * 1000.0f);
 #ifdef HAS_DS_PLAYER
   if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
-    g_application.m_pPlayer->SetAVDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
+    g_application.m_pPlayer->SetAVDelay(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay);
 #endif
 }
 

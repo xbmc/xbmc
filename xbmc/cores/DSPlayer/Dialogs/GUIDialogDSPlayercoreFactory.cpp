@@ -257,7 +257,7 @@ void CGUIDialogDSPlayercoreFactory::OnSettingAction(const CSetting *setting)
 
     m_dsmanager->SaveDsXML(PLAYERCOREFACTORY);
 
-    CPlayerCoreFactory::Get().OnSettingsLoaded();
+    CPlayerCoreFactory::GetInstance().OnSettingsLoaded();
 
     CGUIDialogDSPlayercoreFactory::Close();
   }
@@ -292,7 +292,7 @@ void CGUIDialogDSPlayercoreFactory::OnSettingAction(const CSetting *setting)
     isEdited = false;
     m_dsmanager->SaveDsXML(PLAYERCOREFACTORY);
 
-    CPlayerCoreFactory::Get().OnSettingsLoaded();
+    CPlayerCoreFactory::GetInstance().OnSettingsLoaded();
 
     CGUIDialogDSPlayercoreFactory::Close();
   }

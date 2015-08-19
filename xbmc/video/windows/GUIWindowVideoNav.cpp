@@ -196,7 +196,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 int CGUIWindowVideoNav::GetSettingSelecTvShow()
 {
   int res = -1;
-  int iValue = CSettings::Get().GetInt("videolibrary.tvshowsselectitem");
+  int iValue = CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_TVSHOWSELECTITEM);
   
   if (m_vecItems->IsVideoDb() && iValue > SelectTvShowItem::NOSELECT)
   {

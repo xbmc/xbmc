@@ -87,7 +87,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
   if (fps == 0.0) return;
 
 #ifdef HAS_DS_PLAYER
-  int iValue = CSettings::Get().GetInt("videoplayer.changerefreshwith");
+  int iValue = CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_CHANGEREFRESHWITH);
   bool canChange = true;
   if (iValue != ADJUST_REFRESHRATE_WITH_BOTH)
   { 

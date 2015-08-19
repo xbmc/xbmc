@@ -82,7 +82,7 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
 {
   m_HasVideo = false;
   m_HasAudio = false;
-  m_isMadvr = (CSettings::Get().GetString("dsplayer.videorenderer") == "madVR");
+  m_isMadvr = (CSettings::GetInstance().GetString("dsplayer.videorenderer") == "madVR");
   if (m_isMadvr)
   { 
     if (InitMadvrWindow(m_hWnd))
@@ -231,7 +231,7 @@ void CDSPlayer::ShowEditionDlg(bool playStart)
   CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
   bool listAllTitles = false;
-  UINT minLength = CSettings::Get().GetInt("dsplayer.mintitlelength");
+  UINT minLength = CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MINTITLELENGTH);
 
   while (true)
   {
@@ -313,13 +313,13 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
       float fValue;
 
       // Select Audio Stream
-      int iLibrary = CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream;
+      int iLibrary = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioStream;
 
       if ((iLibrary < GetAudioStreamCount()) && !(iLibrary < 0))
         g_application.m_pPlayer->SetAudioStream(iLibrary);
 
       // Select Subtitle Stream and set Delay
-      fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleDelay;
+      fValue = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleDelay;
       if (CGraphFilters::Get()->HasSubFilter())
       {
         if (CStreamsManager::Get()) CStreamsManager::Get()->SelectBestSubtitle();
@@ -336,7 +336,7 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
       {
         if (CStreamsManager::Get()->SetAudioInterface())
         {
-          fValue = CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay;
+          fValue = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay;
           CStreamsManager::Get()->SetAVDelay(fValue);
         }
       }
@@ -358,7 +358,7 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
       PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false);
 
       // Select Editions
-      if (GetEditionsCount() > 1 && CSettings::Get().GetBool("dsplayer.showbdtitlechoice"))
+      if (GetEditionsCount() > 1 && CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_SHOWBDTITLECHOICE))
       {
         //MSG Pause After because lavfilter don't select editions until the playback has started
         PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PAUSE, true), false);
@@ -463,7 +463,7 @@ void CDSPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
   codecname = (CStreamsManager::Get()) ? CStreamsManager::Get()->GetAudioCodecDisplayName(index) : "";
   StringUtils::ToUpper(codecname);
 
-  if (!CSettings::Get().GetBool("dsplayer.showsplitterdetail") ||
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_SHOWSPLITTERDETAIL) ||
       CGraphFilters::Get()->UsingMediaPortalTsReader())
   { 
     label.Format("%s - (%s, %d Hz, %i Channels)", strStreamName, codecname, info.samplerate, info.channels);
@@ -618,7 +618,7 @@ void CDSPlayer::Process()
     if (g_pPVRStream->UpdateItem(item))
     {
       g_application.CurrentFileItem() = item;
-      CApplicationMessenger::Get().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(item)));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(item)));
     }
   }
 
@@ -651,7 +651,7 @@ bool CDSPlayer::InitMadvrWindow(HWND &hWnd)
   if (m_hInstance == NULL)
     CLog::Log(LOGDEBUG, "%s : GetModuleHandle failed with %d", __FUNCTION__, GetLastError());
 
-  RESOLUTION_INFO res = CDisplaySettings::Get().GetCurrentResolutionInfo();
+  RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
   int nWidth = res.iWidth;
   int nHeight = res.iHeight;
   m_className = "Kodi:DSPlayer";
@@ -1057,13 +1057,13 @@ bool CDSPlayer::OnAction(const CAction &action)
 
 void CDSPlayer::SetMadvrResolution()
 {
-  if (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_DSPLAYER)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_DSPLAYER)
     return;
 
   CStreamDetails streamDetails;
   int res = streamDetails.VideoDimsToResolution(GetPictureWidth(), GetPictureHeight());
 
-  CMediaSettings::Get().GetCurrentMadvrSettings().m_Resolution = res;
+  CMediaSettings::GetInstance().GetCurrentMadvrSettings().m_Resolution = res;
 }
 
 // Time is in millisecond
@@ -1108,7 +1108,7 @@ bool CDSPlayer::SelectChannel(bool bNext)
 {
   m_PlayerOptions.identify = true;
 
-  bool bShowPreview = false;/*(CSettings::Get().GetInt("pvrplayback.channelentrytimeout") > 0);*/ // TODO
+  bool bShowPreview = false;/*(CSettings::GetInstance().GetInt("pvrplayback.channelentrytimeout") > 0);*/ // TODO
 
   if (!bShowPreview)
   {
@@ -1122,9 +1122,9 @@ bool CDSPlayer::ShowPVRChannelInfo()
 {
   bool bReturn(false);
 
-  if (CSettings::Get().GetInt("pvrmenu.displaychannelinfo") > 0)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
   {
-    g_PVRManager.ShowPlayerInfo(CSettings::Get().GetInt("pvrmenu.displaychannelinfo"));
+    g_PVRManager.ShowPlayerInfo(CSettings::GetInstance().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
 
     bReturn = true;
   }
@@ -1189,7 +1189,7 @@ void CGraphManagementThread::Process()
         }
         else if (newPos >= g_dsGraph->GetTotalTime())
         {
-          CApplicationMessenger::Get().SendMsg(TMSG_MEDIA_STOP);
+          CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
           break;
         }
 

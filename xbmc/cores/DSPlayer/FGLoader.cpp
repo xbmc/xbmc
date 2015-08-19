@@ -304,7 +304,7 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
   END_PERFORMANCE_COUNTER("Loaded audio renderer list");
 
   //see if there a config first 
-  const CStdString renderer = CSettings::Get().GetString("dsplayer.audiorenderer");
+  const CStdString renderer = CSettings::GetInstance().GetString("dsplayer.audiorenderer");
   for (std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin(); !renderer.empty() && (iter != deviceList.end()); ++iter)
   {
     DSFilterInfo dev = *iter;
@@ -346,7 +346,7 @@ HRESULT CFGLoader::InsertVideoRenderer()
   HRESULT hr = S_OK;
 
   CStdString videoRender;
-  videoRender = CSettings::Get().GetString("dsplayer.videorenderer");
+  videoRender = CSettings::GetInstance().GetString("dsplayer.videorenderer");
 
   if (videoRender == "EVR")
   { 
@@ -421,7 +421,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
   // We *need* those informations for filter loading. If the user wants it, be sure it's loaded
   // before using it.
   bool hasStreamDetails = false;
-  if (CSettings::Get().GetBool("myvideos.extractflags") &&
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
     pFileItem.HasVideoInfoTag() && !pFileItem.GetVideoInfoTag()->HasStreamDetails())
   {
     CLog::Log(LOGDEBUG, "%s - trying to extract filestream details from video file %s", __FUNCTION__, pFileItem.GetPath().c_str());
@@ -479,7 +479,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
       // We will use our own stream detail
       // We need to make a copy of our streams details because
       // Reset() delete the streams
-      if (CSettings::Get().GetBool("myvideos.extractflags")) // Only warn user if the option is enabled
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS)) // Only warn user if the option is enabled
         CLog::Log(LOGWARNING, __FUNCTION__" DVDPlayer failed to fetch streams details. Using DirectShow ones");
 
       pFileItem.GetVideoInfoTag()->m_streamDetails.AddStream(
@@ -571,11 +571,11 @@ HRESULT CFGLoader::LoadConfig()
   // Two steps
 
   // First, filters
-  LoadFilterCoreFactorySettings(CProfilesManager::Get().GetUserDataItem("dsplayer/filtersconfig.xml"), FILTERS, true);
+  LoadFilterCoreFactorySettings(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/filtersconfig.xml"), FILTERS, true);
   LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/filtersconfig.xml", FILTERS, false);
 
   // Second, medias rules
-  LoadFilterCoreFactorySettings(CProfilesManager::Get().GetUserDataItem("dsplayer/mediasconfig.xml"), MEDIAS, false);
+  LoadFilterCoreFactorySettings(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/mediasconfig.xml"), MEDIAS, false);
   LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/mediasconfig.xml", MEDIAS, false);
 
   return S_OK;

@@ -47,7 +47,7 @@ CPixelShaderList::~CPixelShaderList()
 
 void CPixelShaderList::SaveXML()
 {
-  CStdString userDataDSPlayer = URIUtils::AddFileToFolder(CProfilesManager::Get().GetUserDataFolder(), "dsplayer");
+  CStdString userDataDSPlayer = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetUserDataFolder(), "dsplayer");
   if (!XFILE::CDirectory::Exists(userDataDSPlayer))
   {
     if (!XFILE::CDirectory::Create(userDataDSPlayer))
@@ -77,7 +77,7 @@ void CPixelShaderList::SaveXML()
 
 void CPixelShaderList::Load()
 {
-  LoadXMLFile(CProfilesManager::Get().GetUserDataItem("dsplayer/shaders.xml"));
+  LoadXMLFile(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/shaders.xml"));
   LoadXMLFile("special://xbmc/system/players/dsplayer/shaders/shaders.xml");
 }
 

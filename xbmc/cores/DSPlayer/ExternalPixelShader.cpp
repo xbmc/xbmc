@@ -69,7 +69,7 @@ CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
   if (!XFILE::CFile::Exists(m_SourceFile))
   {
     CStdString originalFile = m_SourceFile;
-    m_SourceFile = CProfilesManager::Get().GetUserDataItem("dsplayer/shaders/" + originalFile);
+    m_SourceFile = CProfilesManager::GetInstance().GetUserDataItem("dsplayer/shaders/" + originalFile);
     if (!XFILE::CFile::Exists(m_SourceFile))
     {
       m_SourceFile = "special://xbmc/system/players/dsplayer/shaders/" + originalFile;
@@ -97,7 +97,7 @@ CExternalPixelShader::CExternalPixelShader(CStdString strFile, CStdString strPro
   if (!XFILE::CFile::Exists(m_SourceFile))
   {
     CStdString originalFile = m_SourceFile;
-    m_SourceFile = CProfilesManager::Get().GetUserDataItem("dsplayer/shaders/" + originalFile);
+    m_SourceFile = CProfilesManager::GetInstance().GetUserDataItem("dsplayer/shaders/" + originalFile);
     if (!XFILE::CFile::Exists(m_SourceFile))
     {
       m_SourceFile = "special://xbmc/system/players/dsplayer/shaders/" + originalFile;

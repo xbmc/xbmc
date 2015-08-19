@@ -651,7 +651,7 @@ void CGUIDialogAudioSubtitleSettings::ShowAudioSelector()
 
   if (selected != -1 && g_application.m_pPlayer->GetAudioStream() != selected)
   {
-    CMediaSettings::Get().GetCurrentVideoSettings().m_AudioStream = selected;
+    CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioStream = selected;
     g_application.m_pPlayer->SetAudioStream(selected);    // Set the audio stream to the one selected
   }
 }
@@ -688,7 +688,7 @@ void CGUIDialogAudioSubtitleSettings::ShowSubsSelector()
 
   pDlg->SetHeading(462);
   pDlg->SetSelected(selected);
-  pDlg->EnableButton(true, CMediaSettings::Get().GetCurrentVideoSettings().m_SubtitleOn ? 55058 : 13397);
+  pDlg->EnableButton(true, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleOn ? 55058 : 13397);
   pDlg->Open();
 
   selected = pDlg->GetSelectedLabel();
