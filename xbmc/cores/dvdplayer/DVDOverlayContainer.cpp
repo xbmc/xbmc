@@ -192,9 +192,7 @@ void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, 
 
         if(pStream->GetCurrentButtonInfo(pOverlaySpu, pSpu, iAction))
         {
-          if(pOverlaySpu->m_overlay)
-            pOverlaySpu->m_overlay->Release();
-          pOverlaySpu->m_overlay = NULL;
+          pOverlaySpu->m_textureid = 0;
         }
 
       }

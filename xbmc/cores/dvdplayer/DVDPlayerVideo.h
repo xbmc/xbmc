@@ -57,9 +57,10 @@ public:
 class CDVDPlayerVideo : public CThread, public IDVDStreamPlayerVideo
 {
 public:
-  CDVDPlayerVideo( CDVDClock* pClock
-                 , CDVDOverlayContainer* pOverlayContainer
-                 , CDVDMessageQueue& parent);
+  CDVDPlayerVideo(CDVDClock* pClock
+                 ,CDVDOverlayContainer* pOverlayContainer
+                 ,CDVDMessageQueue& parent
+                 ,CRenderManager& renderManager);
   virtual ~CDVDPlayerVideo();
 
   bool OpenStream(CDVDStreamInfo &hint);
@@ -82,11 +83,6 @@ public:
   bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
 
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
-
-#ifdef HAS_VIDEO_PLAYBACK
-  void GetVideoRect(CRect& SrcRect, CRect& DestRect, CRect& ViewRect) const { g_renderManager.GetVideoRect(SrcRect, DestRect, ViewRect); }
-  float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
-#endif
 
   double GetDelay()                                { return m_iVideoDelay; }
   void SetDelay(double delay)                      { m_iVideoDelay = delay; }
@@ -177,13 +173,10 @@ protected:
   // classes
   CDVDStreamInfo m_hints;
   CDVDVideoCodec* m_pVideoCodec;
-
   DVDVideoPicture* m_pTempOverlayPicture;
-
   CPullupCorrection m_pullupCorrection;
-
   std::list<DVDMessageListItem> m_packets;
-
   CDroppingStats m_droppingStats;
+  CRenderManager& m_renderManager;
 };
 

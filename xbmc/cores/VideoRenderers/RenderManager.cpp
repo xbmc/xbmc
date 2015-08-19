@@ -129,7 +129,7 @@ static std::string GetRenderFormatName(ERenderFormat format)
   return "UNKNOWN";
 }
 
-CXBMCRenderManager::CXBMCRenderManager()
+CRenderManager::CRenderManager() : m_overlays(this)
 {
   m_pRenderer = NULL;
   m_renderState = STATE_UNCONFIGURED;
@@ -150,19 +150,19 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_renderedOverlay = false;
 }
 
-CXBMCRenderManager::~CXBMCRenderManager()
+CRenderManager::~CRenderManager()
 {
   delete m_pRenderer;
 }
 
-void CXBMCRenderManager::GetVideoRect(CRect &source, CRect &dest, CRect &view)
+void CRenderManager::GetVideoRect(CRect &source, CRect &dest, CRect &view)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->GetVideoRect(source, dest, view);
 }
 
-float CXBMCRenderManager::GetAspectRatio()
+float CRenderManager::GetAspectRatio()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -172,7 +172,7 @@ float CXBMCRenderManager::GetAspectRatio()
 }
 
 /* These is based on CurrentHostCounter() */
-double CXBMCRenderManager::GetPresentTime()
+double CRenderManager::GetPresentTime()
 {
   return CDVDClock::GetAbsoluteClock(false) / DVD_TIME_BASE;
 }
@@ -190,7 +190,7 @@ static double wrap(double x, double minimum, double maximum)
   return x;
 }
 
-void CXBMCRenderManager::WaitPresentTime(double presenttime)
+void CRenderManager::WaitPresentTime(double presenttime)
 {
   double frametime;
   double fps = g_VideoReferenceClock.GetRefreshRate(&frametime);
@@ -245,7 +245,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   g_VideoReferenceClock.SetFineAdjust(1.0 - avgerror * 0.01 - m_presentcorr * 0.01);
 }
 
-std::string CXBMCRenderManager::GetVSyncState()
+std::string CRenderManager::GetVSyncState()
 {
   double avgerror = 0.0;
   for (int i = 0; i < ERRORBUFFSIZE; i++)
@@ -259,7 +259,7 @@ std::string CXBMCRenderManager::GetVSyncState()
   return state;
 }
 
-bool CXBMCRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
+bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
 {
 
   // check if something has changed
@@ -288,7 +288,7 @@ bool CXBMCRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned
   }
 
   std::string formatstr = GetRenderFormatName(picture.format);
-  CLog::Log(LOGDEBUG, "CXBMCRenderManager::Configure - change configuration. %dx%d. display: %dx%d. framerate: %4.2f. format: %s", picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, formatstr.c_str());
+  CLog::Log(LOGDEBUG, "CRenderManager::Configure - change configuration. %dx%d. display: %dx%d. framerate: %4.2f. format: %s", picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, formatstr.c_str());
 
   // make sure any queued frame was fully presented
   {
@@ -337,7 +337,7 @@ bool CXBMCRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned
   return true;
 }
 
-bool CXBMCRenderManager::Configure()
+bool CRenderManager::Configure()
 {
   CExclusiveLock lock(m_sharedSection);
   CSingleLock lock2(m_presentlock);
@@ -370,7 +370,7 @@ bool CXBMCRenderManager::Configure()
     if(m_QueueSize < 2)
     {
       m_QueueSize = 2;
-      CLog::Log(LOGWARNING, "CXBMCRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, renderbuffers, m_NumberBuffers);
+      CLog::Log(LOGWARNING, "CRenderManager::Configure - queue size too small (%d, %d, %d)", m_QueueSize, renderbuffers, m_NumberBuffers);
     }
 
     m_pRenderer->SetBufferSize(m_QueueSize);
@@ -394,7 +394,7 @@ bool CXBMCRenderManager::Configure()
 
     m_renderState = STATE_CONFIGURED;
 
-    CLog::Log(LOGDEBUG, "CXBMCRenderManager::Configure - %d", m_QueueSize);
+    CLog::Log(LOGDEBUG, "CRenderManager::Configure - %d", m_QueueSize);
   }
   else
     m_renderState = STATE_UNCONFIGURED;
@@ -403,7 +403,7 @@ bool CXBMCRenderManager::Configure()
   return result;
 }
 
-bool CXBMCRenderManager::IsConfigured() const
+bool CRenderManager::IsConfigured() const
 {
   CSharedLock lock(m_sharedSection);
   if (m_renderState == STATE_CONFIGURED)
@@ -412,7 +412,7 @@ bool CXBMCRenderManager::IsConfigured() const
     return false;
 }
 
-void CXBMCRenderManager::Update()
+void CRenderManager::Update()
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -420,7 +420,7 @@ void CXBMCRenderManager::Update()
     m_pRenderer->Update();
 }
 
-void CXBMCRenderManager::FrameWait(int ms)
+void CRenderManager::FrameWait(int ms)
 {
   XbmcThreads::EndTime timeout(ms);
   CSingleLock lock(m_presentlock);
@@ -428,7 +428,7 @@ void CXBMCRenderManager::FrameWait(int ms)
     m_presentevent.wait(lock, timeout.MillisLeft());
 }
 
-bool CXBMCRenderManager::HasFrame()
+bool CRenderManager::HasFrame()
 {
   CSingleLock lock(m_presentlock);
   if (m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2)
@@ -437,7 +437,7 @@ bool CXBMCRenderManager::HasFrame()
     return false;
 }
 
-void CXBMCRenderManager::FrameMove()
+void CRenderManager::FrameMove()
 {
   CSharedLock lock(m_sharedSection);
 
@@ -501,7 +501,7 @@ void CXBMCRenderManager::FrameMove()
   m_bRenderGUI = true;
 }
 
-void CXBMCRenderManager::FrameFinish()
+void CRenderManager::FrameFinish()
 {
   /* wait for this present to be valid */
   SPresent& m = m_Queue[m_presentsource];
@@ -538,11 +538,11 @@ void CXBMCRenderManager::FrameFinish()
   }
 }
 
-void CXBMCRenderManager::PreInit()
+void CRenderManager::PreInit()
 {
   if (!g_application.IsCurrentThread())
   {
-    CLog::Log(LOGERROR, "CXBMCRenderManager::UnInit - not called from render thread");
+    CLog::Log(LOGERROR, "CRenderManager::UnInit - not called from render thread");
     return;
   }
 
@@ -565,11 +565,11 @@ void CXBMCRenderManager::PreInit()
   m_QueueSkip   = 0;
 }
 
-void CXBMCRenderManager::UnInit()
+void CRenderManager::UnInit()
 {
   if (!g_application.IsCurrentThread())
   {
-    CLog::Log(LOGERROR, "CXBMCRenderManager::UnInit - not called from render thread");
+    CLog::Log(LOGERROR, "CRenderManager::UnInit - not called from render thread");
     return;
   }
 
@@ -584,7 +584,7 @@ void CXBMCRenderManager::UnInit()
   m_renderState = STATE_UNCONFIGURED;
 }
 
-bool CXBMCRenderManager::Flush()
+bool CRenderManager::Flush()
 {
   if (!m_pRenderer)
     return true;
@@ -625,7 +625,7 @@ bool CXBMCRenderManager::Flush()
 
   return true;
 }
-void CXBMCRenderManager::CreateRenderer()
+void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
   {
@@ -665,7 +665,7 @@ void CXBMCRenderManager::CreateRenderer()
   }
 }
 
-void CXBMCRenderManager::DeleteRenderer()
+void CRenderManager::DeleteRenderer()
 {
   CLog::Log(LOGDEBUG, "%s - deleting renderer", __FUNCTION__);
 
@@ -676,19 +676,12 @@ void CXBMCRenderManager::DeleteRenderer()
   }
 }
 
-void CXBMCRenderManager::SetupScreenshot()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    m_pRenderer->SetupScreenshot();
-}
-
-CRenderCapture* CXBMCRenderManager::AllocRenderCapture()
+CRenderCapture* CRenderManager::AllocRenderCapture()
 {
   return new CRenderCapture;
 }
 
-void CXBMCRenderManager::ReleaseRenderCapture(CRenderCapture* capture)
+void CRenderManager::ReleaseRenderCapture(CRenderCapture* capture)
 {
   CSingleLock lock(m_captCritSect);
 
@@ -709,7 +702,7 @@ void CXBMCRenderManager::ReleaseRenderCapture(CRenderCapture* capture)
     m_hasCaptures = true;
 }
 
-void CXBMCRenderManager::Capture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags)
+void CRenderManager::Capture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags)
 {
   CSingleLock lock(m_captCritSect);
 
@@ -748,7 +741,7 @@ void CXBMCRenderManager::Capture(CRenderCapture* capture, unsigned int width, un
     m_hasCaptures = true;
 }
 
-void CXBMCRenderManager::ManageCaptures()
+void CRenderManager::ManageCaptures()
 {
   //no captures, return here so we don't do an unnecessary lock
   if (!m_hasCaptures)
@@ -804,14 +797,14 @@ void CXBMCRenderManager::ManageCaptures()
     m_hasCaptures = false;
 }
 
-void CXBMCRenderManager::RenderCapture(CRenderCapture* capture)
+void CRenderManager::RenderCapture(CRenderCapture* capture)
 {
   CSharedLock lock(m_sharedSection);
   if (!m_pRenderer || !m_pRenderer->RenderCapture(capture))
     capture->SetState(CAPTURESTATE_FAILED);
 }
 
-void CXBMCRenderManager::RemoveCapture(CRenderCapture* capture)
+void CRenderManager::RemoveCapture(CRenderCapture* capture)
 {
   //remove this CRenderCapture from the list
   std::list<CRenderCapture*>::iterator it;
@@ -819,7 +812,7 @@ void CXBMCRenderManager::RemoveCapture(CRenderCapture* capture)
     m_captures.erase(it);
 }
 
-void CXBMCRenderManager::SetViewMode(int iViewMode)
+void CRenderManager::SetViewMode(int iViewMode)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -827,7 +820,7 @@ void CXBMCRenderManager::SetViewMode(int iViewMode)
   g_dataCacheCore.SignalVideoInfoChange();
 }
 
-void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, double pts /* = 0 */, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   { CSharedLock lock(m_sharedSection);
 
@@ -912,7 +905,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   }
 }
 
-RESOLUTION CXBMCRenderManager::GetResolution()
+RESOLUTION CRenderManager::GetResolution()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -921,7 +914,7 @@ RESOLUTION CXBMCRenderManager::GetResolution()
     return RES_INVALID;
 }
 
-float CXBMCRenderManager::GetMaximumFPS()
+float CRenderManager::GetMaximumFPS()
 {
   float fps;
 
@@ -936,19 +929,19 @@ float CXBMCRenderManager::GetMaximumFPS()
   return fps;
 }
 
-void CXBMCRenderManager::RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn)
+void CRenderManager::RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn)
 {
   if (m_pRenderer)
     m_pRenderer->RegisterRenderUpdateCallBack(ctx, fn);
 }
 
-void CXBMCRenderManager::RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn)
+void CRenderManager::RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn)
 {
   if (m_pRenderer)
     m_pRenderer->RegisterRenderFeaturesCallBack(ctx, fn);
 }
 
-void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
+void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 {
   CSharedLock lock(m_sharedSection);
 
@@ -981,7 +974,7 @@ void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
   }
 }
 
-bool CXBMCRenderManager::IsGuiLayer()
+bool CRenderManager::IsGuiLayer()
 {
   { CSharedLock lock(m_sharedSection);
 
@@ -994,7 +987,7 @@ bool CXBMCRenderManager::IsGuiLayer()
   return false;
 }
 
-bool CXBMCRenderManager::IsVideoLayer()
+bool CRenderManager::IsVideoLayer()
 {
   { CSharedLock lock(m_sharedSection);
 
@@ -1008,7 +1001,7 @@ bool CXBMCRenderManager::IsVideoLayer()
 }
 
 /* simple present method */
-void CXBMCRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
+void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
   SPresent& m = m_Queue[m_presentsource];
@@ -1023,7 +1016,7 @@ void CXBMCRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 
 /* new simpler method of handling interlaced material, *
  * we just render the two fields right after eachother */
-void CXBMCRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
+void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
   SPresent& m = m_Queue[m_presentsource];
@@ -1044,7 +1037,7 @@ void CXBMCRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
   }
 }
 
-void CXBMCRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
+void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
   SPresent& m = m_Queue[m_presentsource];
@@ -1061,12 +1054,7 @@ void CXBMCRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
   }
 }
 
-void CXBMCRenderManager::Recover()
-{
-  UpdateDisplayLatency();
-}
-
-void CXBMCRenderManager::UpdateDisplayLatency()
+void CRenderManager::UpdateDisplayLatency()
 {
   float refresh = g_graphicsContext.GetFPS();
   if (g_graphicsContext.GetVideoResolution() == RES_WINDOW)
@@ -1075,7 +1063,7 @@ void CXBMCRenderManager::UpdateDisplayLatency()
   //CLog::Log(LOGDEBUG, "CRenderManager::UpdateDisplayLatency - Latency set to %1.0f msec", m_displayLatency * 1000.0f);
 }
 
-void CXBMCRenderManager::UpdateResolution()
+void CRenderManager::UpdateResolution()
 {
   if (m_bReconfigured)
   {
@@ -1084,6 +1072,7 @@ void CXBMCRenderManager::UpdateResolution()
     {
       RESOLUTION res = GetResolution();
       g_graphicsContext.SetVideoResolution(res);
+      UpdateDisplayLatency();
     }
     m_bReconfigured = false;
     g_dataCacheCore.SignalVideoInfoChange();
@@ -1091,7 +1080,7 @@ void CXBMCRenderManager::UpdateResolution()
 }
 
 // Get renderer info, can be called before configure
-CRenderInfo CXBMCRenderManager::GetRenderInfo()
+CRenderInfo CRenderManager::GetRenderInfo()
 {
   CSharedLock lock(m_sharedSection);
   CRenderInfo info;
@@ -1103,7 +1092,7 @@ CRenderInfo CXBMCRenderManager::GetRenderInfo()
   return m_pRenderer->GetRenderInfo();
 }
 
-int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
+int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 {
   CSharedLock lock(m_sharedSection);
   if (!m_pRenderer)
@@ -1157,7 +1146,7 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   return index;
 }
 
-bool CXBMCRenderManager::Supports(ERENDERFEATURE feature)
+bool CRenderManager::Supports(ERENDERFEATURE feature)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -1166,7 +1155,7 @@ bool CXBMCRenderManager::Supports(ERENDERFEATURE feature)
     return false;
 }
 
-bool CXBMCRenderManager::Supports(EDEINTERLACEMODE method)
+bool CRenderManager::Supports(EDEINTERLACEMODE method)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -1175,7 +1164,7 @@ bool CXBMCRenderManager::Supports(EDEINTERLACEMODE method)
     return false;
 }
 
-bool CXBMCRenderManager::Supports(EINTERLACEMETHOD method)
+bool CRenderManager::Supports(EINTERLACEMETHOD method)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -1184,7 +1173,7 @@ bool CXBMCRenderManager::Supports(EINTERLACEMETHOD method)
     return false;
 }
 
-bool CXBMCRenderManager::Supports(ESCALINGMETHOD method)
+bool CRenderManager::Supports(ESCALINGMETHOD method)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -1193,13 +1182,13 @@ bool CXBMCRenderManager::Supports(ESCALINGMETHOD method)
     return false;
 }
 
-EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethod(EINTERLACEMETHOD mInt)
+EINTERLACEMETHOD CRenderManager::AutoInterlaceMethod(EINTERLACEMETHOD mInt)
 {
   CSharedLock lock(m_sharedSection);
   return AutoInterlaceMethodInternal(mInt);
 }
 
-EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt)
+EINTERLACEMETHOD CRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt)
 {
   if (mInt == VS_INTERLACEMETHOD_NONE)
     return VS_INTERLACEMETHOD_NONE;
@@ -1213,7 +1202,7 @@ EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHO
   return mInt;
 }
 
-int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
+int CRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
 {
   CSingleLock lock(m_presentlock);
 
@@ -1269,7 +1258,7 @@ int CXBMCRenderManager::WaitForBuffer(volatile bool& bStop, int timeout)
   return m_queued.size() + m_discard.size();
 }
 
-void CXBMCRenderManager::PrepareNextRender()
+void CRenderManager::PrepareNextRender()
 {
   CSingleLock lock(m_presentlock);
 
@@ -1331,7 +1320,7 @@ void CXBMCRenderManager::PrepareNextRender()
   }
 }
 
-void CXBMCRenderManager::DiscardBuffer()
+void CRenderManager::DiscardBuffer()
 {
   CSharedLock lock(m_sharedSection);
   CSingleLock lock2(m_presentlock);
@@ -1346,7 +1335,7 @@ void CXBMCRenderManager::DiscardBuffer()
   m_presentevent.notifyAll();
 }
 
-bool CXBMCRenderManager::GetStats(double &sleeptime, double &pts, int &queued, int &discard)
+bool CRenderManager::GetStats(double &sleeptime, double &pts, int &queued, int &discard)
 {
   CSingleLock lock(m_presentlock);
   sleeptime = m_sleeptime;

@@ -34,12 +34,12 @@
 #include <vector>
 #include <string>
 #include "threads/SingleLock.h"
-#include "cores/VideoRenderers/RenderManager.h"
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
 #include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
 #include "CompileInfo.h"
+#include "messaging/ApplicationMessenger.h"
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
 
@@ -612,7 +612,7 @@ void CWinSystemX11::OnLostDevice()
   CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
 
   // make sure renderer has no invalid references
-  g_renderManager.Flush();
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().SendMsg(TMSG_RENDERER_FLUSH);
 
   { CSingleLock lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)

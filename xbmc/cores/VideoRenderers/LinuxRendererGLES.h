@@ -129,7 +129,6 @@ public:
   virtual ~CLinuxRendererGLES();
 
   virtual void Update();
-  virtual void SetupScreenshot() {};
 
   bool RenderCapture(CRenderCapture* capture);
 

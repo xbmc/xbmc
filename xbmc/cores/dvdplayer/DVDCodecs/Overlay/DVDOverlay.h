@@ -20,7 +20,6 @@
  *
  */
 
-#include "cores/VideoRenderers/OverlayRenderer.h"
 #include "threads/Atomics.h"
 #include <assert.h>
 #include <vector>
@@ -46,9 +45,7 @@ public:
     iPTSStopTime = 0LL;
     bForced = false;
     replace = false;
-
     m_references = 1;
-    m_overlay = NULL;
   }
 
   CDVDOverlay(const CDVDOverlay& src)
@@ -58,18 +55,12 @@ public:
     iPTSStopTime  = src.iPTSStopTime;
     bForced       = src.bForced;
     replace       = src.replace;
-    if(src.m_overlay)
-      m_overlay   = src.m_overlay->Acquire();
-    else
-      m_overlay   = NULL;
     m_references  = 1;
   }
 
   virtual ~CDVDOverlay()
   {
     assert(m_references == 0);
-    if(m_overlay)
-      m_overlay->Release();
   }
 
   /**
@@ -87,7 +78,8 @@ public:
   long Release()
   {
     long count = AtomicDecrement(&m_references);
-    if (count == 0) delete this;
+    if (count == 0)
+      delete this;
     return count;
   }
 
@@ -111,7 +103,7 @@ public:
   double iPTSStopTime;
   bool bForced; // display, no matter what
   bool replace; // replace by next nomatter what stoptime it has
-  OVERLAY::COverlay* m_overlay;
+  unsigned long m_textureid;
 protected:
   DVDOverlayType m_type;
 

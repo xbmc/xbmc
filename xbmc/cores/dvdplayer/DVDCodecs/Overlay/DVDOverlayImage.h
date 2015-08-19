@@ -104,12 +104,7 @@ public:
       t += linesize;
     }
 
-    // replacement for SAFE_RELEASE(m_overlay) to avoid including "system.h"
-    if (m_overlay)
-    {
-      m_overlay->Release();
-      m_overlay = NULL;
-    }
+    m_textureid = 0;
   }
 
   ~CDVDOverlayImage()

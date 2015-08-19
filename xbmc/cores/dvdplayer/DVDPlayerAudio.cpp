@@ -712,7 +712,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
       limit *= DVD_TIME_BASE;
 
       //make error a multiple of limit, rounded towards zero,
-      //so it won't interfere with the sync methods in CXBMCRenderManager::WaitPresentTime
+      //so it won't interfere with the sync methods in CRenderManager::WaitPresentTime
       if (m_error > 0.0)
         error = limit * floor(m_error / limit);
       else

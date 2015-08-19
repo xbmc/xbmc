@@ -23,6 +23,7 @@
 #include <list>
 
 #include "cores/VideoRenderers/BaseRenderer.h"
+#include "cores/VideoRenderers/OverlayRenderer.h"
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "threads/SharedSection.h"
@@ -47,11 +48,11 @@ class CLinuxRenderer;
 class CLinuxRendererGL;
 class CLinuxRendererGLES;
 
-class CXBMCRenderManager
+class CRenderManager
 {
 public:
-  CXBMCRenderManager();
-  ~CXBMCRenderManager();
+  CRenderManager();
+  ~CRenderManager();
 
   // Functions called from render thread
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
@@ -67,13 +68,11 @@ public:
   RESOLUTION GetResolution();
   void UpdateResolution();
   void SetViewMode(int iViewMode);
-  void Recover(); // called after resolution switch if something special is needed
   void PreInit();
   void UnInit();
   bool Flush();
   bool IsConfigured() const;
 
-  void SetupScreenshot();
   CRenderCapture* AllocRenderCapture();
   void ReleaseRenderCapture(CRenderCapture* capture);
   void Capture(CRenderCapture *capture, unsigned int width, unsigned int height, int flags);
@@ -128,12 +127,6 @@ public:
     }
     CSharedLock lock(m_sharedSection);
     m_overlays.AddOverlay(o, pts, m_free.front());
-  }
-
-  void AddCleanup(OVERLAY::COverlay* o)
-  {
-    CSharedLock lock(m_sharedSection);
-    m_overlays.AddCleanup(o);
   }
 
   // Get renderer info, can be called before configure
@@ -261,5 +254,3 @@ protected:
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
   bool m_hasCaptures;
 };
-
-extern CXBMCRenderManager g_renderManager;

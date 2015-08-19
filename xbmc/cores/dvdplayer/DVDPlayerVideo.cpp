@@ -33,7 +33,6 @@
 #include "DVDCodecs/Video/DVDVideoPPFFmpeg.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
-#include "DVDOverlayRenderer.h"
 #include "guilib/GraphicContext.h"
 #include <sstream>
 #include <iomanip>
@@ -115,12 +114,14 @@ public:
 };
 
 
-CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
-                                , CDVDOverlayContainer* pOverlayContainer
-                                , CDVDMessageQueue& parent)
+CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock
+                                ,CDVDOverlayContainer* pOverlayContainer
+                                ,CDVDMessageQueue& parent
+                                ,CRenderManager& renderManager)
 : CThread("DVDPlayerVideo")
 , m_messageQueue("video")
 , m_messageParent(parent)
+, m_renderManager(renderManager)
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
@@ -177,9 +178,7 @@ double CDVDPlayerVideo::GetOutputDelay()
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
   CRenderInfo info;
-  #ifdef HAS_VIDEO_PLAYBACK
-  info = g_renderManager.GetRenderInfo();
-  #endif
+  info = m_renderManager.GetRenderInfo();
 
   m_pullupCorrection.ResetVFRDetection();
   if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
@@ -434,7 +433,7 @@ void CDVDPlayerVideo::Process()
       m_stalled = true;
       m_started = false;
 
-      g_renderManager.DiscardBuffer();
+      m_renderManager.DiscardBuffer();
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -546,7 +545,7 @@ void CDVDPlayerVideo::Process()
 
       // ask codec to do deinterlacing if possible
       EDEINTERLACEMODE mDeintMode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
-      EINTERLACEMETHOD mInt       = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+      EINTERLACEMETHOD mInt = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
       unsigned int     mFilters = 0;
 
@@ -561,7 +560,7 @@ void CDVDPlayerVideo::Process()
           mFilters |=  CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
       }
 
-      if (!g_renderManager.Supports(RENDERFEATURE_ROTATION))
+      if (!m_renderManager.Supports(RENDERFEATURE_ROTATION))
         mFilters |= CDVDVideoCodec::FILTER_ROTATE;
 
       mFilters = m_pVideoCodec->SetFilters(mFilters);
@@ -604,7 +603,7 @@ void CDVDPlayerVideo::Process()
           m_pVideoCodec->Reset();
           m_packets.clear();
           picture.iFlags &= ~DVP_FLAG_ALLOCATED;
-          g_renderManager.DiscardBuffer();
+          m_renderManager.DiscardBuffer();
           break;
         }
 
@@ -621,7 +620,7 @@ void CDVDPlayerVideo::Process()
           m_pVideoCodec->Reopen();
           m_packets.clear();
           picture.iFlags &= ~DVP_FLAG_ALLOCATED;
-          g_renderManager.DiscardBuffer();
+          m_renderManager.DiscardBuffer();
           break;
         }
 
@@ -818,54 +817,6 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
   if (m_started)
     m_pOverlayContainer->CleanUp(pts - m_iSubtitleDelay);
 
-  enum EOverlay
-  { OVERLAY_AUTO // select mode auto
-  , OVERLAY_GPU  // render osd using gpu
-  , OVERLAY_BUF  // render osd on buffer
-  } render = OVERLAY_AUTO;
-
-  if(pSource->format == RENDER_FMT_YUV420P)
-  {
-    if(g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_MAJORMEMLEAK_OVERLAYRENDERER)
-    {
-      // for now use cpu for ssa overlays as it currently allocates and
-      // frees textures for each frame this causes a hugh memory leak
-      // on some mesa intel drivers
-
-      if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU)
-      || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE)
-      || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) )
-        render = OVERLAY_BUF;
-    }
-
-    if(render == OVERLAY_BUF)
-    {
-      // rendering spu overlay types directly on video memory costs a lot of processing power.
-      // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
-      // then do all the rendering on that temp picture and finaly copy it to video memory.
-      // In almost all cases this is 5 or more times faster!.
-
-      if(m_pTempOverlayPicture && ( m_pTempOverlayPicture->iWidth  != pSource->iWidth
-                                 || m_pTempOverlayPicture->iHeight != pSource->iHeight))
-      {
-        CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
-        m_pTempOverlayPicture = NULL;
-      }
-
-      if(!m_pTempOverlayPicture)
-        m_pTempOverlayPicture = CDVDCodecUtils::AllocatePicture(pSource->iWidth, pSource->iHeight);
-      if(!m_pTempOverlayPicture)
-        return;
-
-      CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);
-      memcpy(pSource->data     , m_pTempOverlayPicture->data     , sizeof(pSource->data));
-      memcpy(pSource->iLineSize, m_pTempOverlayPicture->iLineSize, sizeof(pSource->iLineSize));
-    }
-  }
-
-  if(render == OVERLAY_AUTO)
-    render = OVERLAY_GPU;
-
   VecOverlays overlays;
 
   {
@@ -899,11 +850,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
     {
       double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
 
-      if (render == OVERLAY_GPU)
-        g_renderManager.AddOverlay(*it, pts2);
-
-      if (render == OVERLAY_BUF)
-        CDVDOverlayRenderer::Render(pSource, *it, pts2);
+      m_renderManager.AddOverlay(*it, pts2);
     }
   }
 
@@ -960,7 +907,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   flags |= stereo_flags;
 
-  if(!g_renderManager.Configure(picture,
+  if(!m_renderManager.Configure(picture,
                                 config_framerate,
                                 flags,
                                 m_hints.orientation,
@@ -997,7 +944,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   if (picture.format != RENDER_FMT_BYPASS)
   {
     // Correct pts by user set delay and rendering delay
-    pts += m_iVideoDelay - DVD_SEC_TO_TIME(g_renderManager.GetDisplayLatency());
+    pts += m_iVideoDelay - DVD_SEC_TO_TIME(m_renderManager.GetDisplayLatency());
   }
 
   // calculate the time we need to delay this picture before displaying
@@ -1029,7 +976,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     double sleepTime, renderPts;
     int queued, discard;
     double inputPts = m_droppingStats.m_lastPts;
-    g_renderManager.GetStats(sleepTime, renderPts, queued, discard);
+    m_renderManager.GetStats(sleepTime, renderPts, queued, discard);
     if (pts_org > renderPts || queued > 0)
     {
       if (inputPts >= renderPts)
@@ -1050,7 +997,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   {
     double sleepTime, renderPts;
     int bufferLevel, queued, discard;
-    g_renderManager.GetStats(sleepTime, renderPts, queued, discard);
+    m_renderManager.GetStats(sleepTime, renderPts, queued, discard);
     bufferLevel = queued + discard;
 
     // estimate the time it will take for the next frame to get rendered
@@ -1100,7 +1047,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
     maxWaitTime = std::max(DVD_TIME_TO_MSEC(iSleepTime), 0);
-  int buffer = g_renderManager.WaitForBuffer(m_bStop, maxWaitTime);
+  int buffer = m_renderManager.WaitForBuffer(m_bStop, maxWaitTime);
   if (buffer < 0)
   {
     m_droppingStats.AddOutputDropGain(pts, 1/m_fFrameRate);
@@ -1109,14 +1056,14 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   ProcessOverlays(pPicture, pts_org);
 
-  int index = g_renderManager.AddVideoPicture(*pPicture);
+  int index = m_renderManager.AddVideoPicture(*pPicture);
 
   // video device might not be done yet
   while (index < 0 && !CThread::m_bStop &&
          CDVDClock::GetAbsoluteClock(false) < iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500) )
   {
     Sleep(1);
-    index = g_renderManager.AddVideoPicture(*pPicture);
+    index = m_renderManager.AddVideoPicture(*pPicture);
   }
 
   if (index < 0)
@@ -1125,7 +1072,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     return EOS_DROPPED;
   }
 
-  g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, pts_org, -1, mDisplayField);
+  m_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, pts_org, -1, mDisplayField);
 
   return result;
 }
@@ -1138,7 +1085,7 @@ std::string CDVDPlayerVideo::GetPlayerInfo()
   s << ", dc:"   << m_codecname;
   s << ", Mb/s:" << std::fixed << std::setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;
-  s << ", skip:" << g_renderManager.GetSkippedFrames();
+  s << ", skip:" << m_renderManager.GetSkippedFrames();
 
   int pc = m_pullupCorrection.GetPatternLength();
   if (pc > 0)
@@ -1171,7 +1118,7 @@ double CDVDPlayerVideo::GetCurrentPts()
   int queued, discard;
 
   // get render stats
-  g_renderManager.GetStats(iSleepTime, iRenderPts, queued, discard);
+  m_renderManager.GetStats(iSleepTime, iRenderPts, queued, discard);
 
   if (iRenderPts == DVD_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
@@ -1292,7 +1239,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts, bool updateOnly)
     iDecoderPts = pts;
 
   // get render stats
-  g_renderManager.GetStats(iSleepTime, iRenderPts, queued, discard);
+  m_renderManager.GetStats(iSleepTime, iRenderPts, queued, discard);
   iBufferLevel = queued + discard;
 
   if (iBufferLevel < 0)

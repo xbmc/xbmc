@@ -43,7 +43,6 @@
 
 using namespace OVERLAY;
 
-
 COverlay::COverlay()
 {
   m_x      = 0.0f;
@@ -53,44 +52,17 @@ COverlay::COverlay()
   m_type   = TYPE_NONE;
   m_align  = ALIGN_SCREEN;
   m_pos    = POSITION_RELATIVE;
-  m_references = 1;
 }
 
 COverlay::~COverlay()
 {
 }
 
-COverlay* COverlay::Acquire()
+unsigned int CRenderer::m_textureid = 1;
+
+CRenderer::CRenderer(CRenderManager *renderManager)
 {
-  AtomicIncrement(&m_references);
-  return this;
-}
-
-long COverlay::Release()
-{
-  long count = AtomicDecrement(&m_references);
-  if (count == 0)
-    delete this;
-
-  return count;
-}
-
-long COverlayMainThread::Release()
-{
-  long count = AtomicDecrement(&m_references);
-  if (count == 0)
-  {
-    if (g_application.IsCurrentThread())
-      delete this;
-    else
-      g_renderManager.AddCleanup(this);
-  }
-  return count;
-}
-
-
-CRenderer::CRenderer()
-{
+  m_pRenderManager = renderManager;
 }
 
 CRenderer::~CRenderer()
@@ -109,43 +81,16 @@ void CRenderer::AddOverlay(CDVDOverlay* o, double pts, int index)
   m_buffers[index].push_back(e);
 }
 
-void CRenderer::AddOverlay(COverlay* o, double pts, int index)
+void CRenderer::Release(std::vector<SElement>& list)
 {
-  CSingleLock lock(m_section);
-
-  SElement   e;
-  e.pts = pts;
-  e.overlay = o->Acquire();
-  m_buffers[index].push_back(e);
-}
-
-void CRenderer::AddCleanup(COverlay* o)
-{
-  CSingleLock lock(m_section);
-  m_cleanup.push_back(o->Acquire());
-}
-
-void CRenderer::Release(SElementV& list)
-{
-  SElementV l = list;
+  std::vector<SElement> l = list;
   list.clear();
 
-  for(SElementV::iterator it = l.begin(); it != l.end(); ++it)
+  for(std::vector<SElement>::iterator it = l.begin(); it != l.end(); ++it)
   {
-    if(it->overlay)
-      it->overlay->Release();
-    if(it->overlay_dvd)
+    if (it->overlay_dvd)
       it->overlay_dvd->Release();
   }
-}
-
-void CRenderer::Release(COverlayV& list)
-{
-  COverlayV l = list;
-  list.clear();
-
-  for(COverlayV::iterator it = l.begin(); it != l.end(); ++it)
-    (*it)->Release();
 }
 
 void CRenderer::Flush()
@@ -155,7 +100,7 @@ void CRenderer::Flush()
   for(int i = 0; i < NUM_BUFFERS; i++)
     Release(m_buffers[i]);
 
-  Release(m_cleanup);
+  ReleaseCache();
 }
 
 void CRenderer::Release(int idx)
@@ -164,21 +109,55 @@ void CRenderer::Release(int idx)
   Release(m_buffers[idx]);
 }
 
+void CRenderer::ReleaseCache()
+{
+  for (auto& overlay : m_textureCache)
+  {
+    delete overlay.second;
+  }
+  m_textureCache.clear();
+  m_textureid++;
+}
+
+void CRenderer::ReleaseUnused()
+{
+  for (auto it = m_textureCache.begin(); it != m_textureCache.end(); )
+  {
+    bool found = false;
+    for (auto& buffer : m_buffers)
+    {
+      for (auto& dvdoverlay : buffer)
+      {
+        if (dvdoverlay.overlay_dvd && dvdoverlay.overlay_dvd->m_textureid == it->first)
+        {
+          found = true;
+          break;
+        }
+      }
+      if (found)
+        break;
+    }
+    if (!found)
+    {
+      delete it->second;
+      it = m_textureCache.erase(it);
+    }
+    else
+      ++it;
+  }
+}
+
 void CRenderer::Render(int idx)
 {
   CSingleLock lock(m_section);
 
-  Release(m_cleanup);
-
   std::vector<COverlay*> render;
-  SElementV& list = m_buffers[idx];
-  for(SElementV::iterator it = list.begin(); it != list.end(); ++it)
+  std::vector<SElement>& list = m_buffers[idx];
+  for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
   {
     COverlay* o = NULL;
 
-    if(it->overlay)
-      o = it->overlay->Acquire();
-    else if(it->overlay_dvd)
+    if(it->overlay_dvd)
       o = Convert(it->overlay_dvd, it->pts);
 
     if(!o)
@@ -219,15 +198,15 @@ void CRenderer::Render(int idx)
     }
 
     Render(o, adjust_height);
-
-    o->Release();
   }
+
+  ReleaseUnused();
 }
 
 void CRenderer::Render(COverlay* o, float adjust_height)
 {
   CRect rs, rd, rv;
-  g_renderManager.GetVideoRect(rs, rd, rv);
+  m_pRenderManager->GetVideoRect(rs, rd, rv);
 
   SRenderState state;
   state.x       = o->m_x;
@@ -271,7 +250,7 @@ void CRenderer::Render(COverlay* o, float adjust_height)
     {
       if(align == COverlay::ALIGN_SUBTITLE)
       {
-        RESOLUTION_INFO res = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
+        RESOLUTION_INFO res = g_graphicsContext.GetResInfo(m_pRenderManager->GetResolution());
         state.x += rv.x1 + rv.Width() * 0.5f;
         state.y += rv.y1  + (res.iSubtitles - res.Overscan.top);
       }
@@ -310,10 +289,10 @@ bool CRenderer::HasOverlay(int idx)
 
   CSingleLock lock(m_section);
 
-  SElementV& list = m_buffers[idx];
-  for(SElementV::iterator it = list.begin(); it != list.end(); ++it)
+  std::vector<SElement>& list = m_buffers[idx];
+  for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
   {
-    if (it->overlay || it->overlay_dvd)
+    if (it->overlay_dvd)
     {
       hasOverlay = true;
       break;
@@ -328,7 +307,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   // and including margins between video to frame edge. libass allow to render subtitles into the margins.
   // this has been used to show subtitles in the top or bottom "black bar" between video to frame border.
   CRect src, dst, target;
-  g_renderManager.GetVideoRect(src, dst, target);
+  m_pRenderManager->GetVideoRect(src, dst, target);
   int videoWidth = MathUtils::round_int(dst.Width());
   int videoHeight = MathUtils::round_int(dst.Height());
   int targetWidth = MathUtils::round_int(target.Width());
@@ -351,7 +330,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   else if (subalign == SUBTITLE_ALIGN_MANUAL && g_advancedSettings.m_videoAssFixedWorks)
   {
     RESOLUTION_INFO res;
-    res = g_graphicsContext.GetResInfo(g_renderManager.GetResolution());
+    res = g_graphicsContext.GetResInfo(m_pRenderManager->GetResolution());
     position = 100.0 - (res.iSubtitles - res.Overscan.top) * 100 / res.iHeight;
   }
   else
@@ -359,10 +338,14 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   int changes = 0;
   ASS_Image* images = o->m_libass->RenderImage(targetWidth, targetHeight, videoWidth, videoHeight, pts, useMargin, position, &changes);
 
-  if(o->m_overlay)
+  if(o->m_textureid)
   {
     if(changes == 0)
-      return o->m_overlay->Acquire();
+    {
+      std::map<unsigned int, COverlay*>::iterator it = m_textureCache.find(o->m_textureid);
+      if (it != m_textureCache.end())
+        return it->second;
+    }
   }
 
   COverlay *overlay = NULL;
@@ -379,6 +362,9 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
     overlay->m_x = ((float)videoWidth - targetWidth) / 2 / videoWidth;
     overlay->m_y = ((float)videoHeight - targetHeight) / 2 / videoHeight;
   }
+  m_textureCache[m_textureid] = overlay;
+  o->m_textureid = m_textureid;
+  m_textureid++;
   return overlay;
 }
 
@@ -389,24 +375,25 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
 
   if(o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
     r = Convert((CDVDOverlaySSA*)o, pts);
-  else if(o->m_overlay)
-    r = o->m_overlay->Acquire();
-
-  if(r)
+  else if(o->m_textureid)
   {
-    if(o->m_overlay)
-      o->m_overlay->Release();
-    o->m_overlay = r->Acquire();
+    std::map<unsigned int, COverlay*>::iterator it = m_textureCache.find(o->m_textureid);
+    if (it != m_textureCache.end())
+      r = it->second;
+  }
+
+  if (r)
+  {
     return r;
   }
 
 #if defined(HAS_GL) || defined(HAS_GLES)
-  if     (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
+  if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
     r = new COverlayTextureGL((CDVDOverlayImage*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayTextureGL((CDVDOverlaySpu*)o);
 #elif defined(HAS_DX)
-  if     (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
+  if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
     r = new COverlayImageDX((CDVDOverlayImage*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayImageDX((CDVDOverlaySpu*)o);
@@ -415,8 +402,10 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
   if(!r && o->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
     r = new COverlayText((CDVDOverlayText*)o);
 
-  if(r)
-    o->m_overlay = r->Acquire();
+  m_textureCache[m_textureid] = r;
+  o->m_textureid = m_textureid;
+  m_textureid++;
+
   return r;
 }
 

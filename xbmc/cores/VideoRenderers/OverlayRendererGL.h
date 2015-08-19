@@ -33,8 +33,7 @@ typedef struct ass_image ASS_Image;
 
 namespace OVERLAY {
 
-  class COverlayTextureGL
-      : public COverlayMainThread
+  class COverlayTextureGL : public COverlay
   {
   public:
      COverlayTextureGL(CDVDOverlayImage* o);
@@ -49,8 +48,7 @@ namespace OVERLAY {
     bool   m_pma; /*< is alpha in texture premultipled in the values */
   };
 
-  class COverlayGlyphGL
-     : public COverlayMainThread
+  class COverlayGlyphGL : public COverlay
   {
   public:
    COverlayGlyphGL(ASS_Image* images, int width, int height);

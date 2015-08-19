@@ -21,6 +21,9 @@
  */
 
 #include <utility>
+#include "cores/IPlayer.h"
+#include "cores/VideoRenderers/RenderManager.h"
+#include "threads/Thread.h"
 
 #include "cores/IPlayer.h"
 #include "DVDClock.h"
@@ -294,6 +297,29 @@ public:
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
   virtual bool CachePVRStream(void) const;
 
+  virtual void FrameMove();
+  virtual void FrameWait(int ms);
+  virtual bool HasFrame();
+  virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true);
+  virtual void AfterRender();
+  virtual void FlushRenderer();
+  virtual void SetRenderViewMode(int mode);
+  float GetRenderAspectRatio();
+  virtual RESOLUTION GetRenderResolution();
+  virtual bool IsRenderingVideo();
+  virtual bool IsRenderingGuiLayer();
+  virtual bool IsRenderingVideoLayer();
+  virtual bool Supports(EDEINTERLACEMODE mode);
+  virtual bool Supports(EINTERLACEMETHOD method);
+  virtual bool Supports(ESCALINGMETHOD method);
+  virtual bool Supports(ERENDERFEATURE feature);
+
+  virtual CRenderCapture *RenderCaptureAlloc();
+  virtual void RenderCapture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags);
+  virtual void RenderCaptureRelease(CRenderCapture* capture);
+
+  virtual std::string GetRenderVSyncState();
+
   enum ECacheState
   { CACHESTATE_DONE = 0
   , CACHESTATE_FULL     // player is filling up the demux queue
@@ -441,6 +467,8 @@ protected:
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
   CDVDDemuxCC* m_pCCDemuxer;
+
+  CRenderManager m_renderManager;
 
   struct SDVDInfo
   {

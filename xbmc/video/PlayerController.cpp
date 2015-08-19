@@ -30,7 +30,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/OverlayRendererGUI.h"
 #endif
 #include "Application.h"
@@ -232,7 +231,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount > 2.f)
           CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount = 2.f;
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_renderManager.SetViewMode(ViewModeCustom);
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
         ShowSlider(action.GetID(), 216, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
         return true;
       }
@@ -243,7 +242,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount < 0.5f)
           CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount = 0.5f;
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_renderManager.SetViewMode(ViewModeCustom);
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
         ShowSlider(action.GetID(), 216, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
         return true;
       }
@@ -254,7 +253,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio > 2.f)
           CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount = 2.f;
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_renderManager.SetViewMode(ViewModeCustom);
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
         ShowSlider(action.GetID(), 217, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
         return true;
       }
@@ -265,7 +264,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount < 0.5f)
           CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio = 0.5f;
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_renderManager.SetViewMode(ViewModeCustom);
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
         ShowSlider(action.GetID(), 217, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
         return true;
       }
@@ -276,7 +275,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift < -2.0f)
           CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift = -2.0f;
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_renderManager.SetViewMode(ViewModeCustom);
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
         ShowSlider(action.GetID(), 225, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
         return true;
       }
@@ -287,7 +286,7 @@ bool CPlayerController::OnAction(const CAction &action)
         if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift > 2.0f)
           CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift = 2.0f;
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
-        g_renderManager.SetViewMode(ViewModeCustom);
+        g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
         ShowSlider(action.GetID(), 225, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
         return true;
       }

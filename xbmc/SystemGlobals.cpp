@@ -18,7 +18,6 @@
  *
  */
 #include "system.h"
-#include "cores/VideoRenderers/RenderManager.h"
 #include "cores/DataCacheCore.h"
 #include "GUILargeTextureManager.h"
 #include "guilib/TextureManager.h"
@@ -44,7 +43,6 @@
 #include "linux/RBP.h"
 #endif
 
-  CXBMCRenderManager g_renderManager;
   CLangCodeExpander  g_LangCodeExpander;
   CLocalizeStrings   g_localizeStrings;
   CLocalizeStrings   g_localizeStringsTemp;

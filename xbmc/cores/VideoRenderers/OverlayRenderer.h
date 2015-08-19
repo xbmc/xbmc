@@ -25,11 +25,13 @@
 #include "BaseRenderer.h"
 
 #include <vector>
+#include <map>
 
 class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
+class CRenderManager;
 
 namespace OVERLAY {
 
@@ -44,13 +46,11 @@ namespace OVERLAY {
   class COverlay
   {
   public:
-             COverlay();
+    COverlay();
     virtual ~COverlay();
 
-    virtual COverlay* Acquire();
-    virtual long      Release();
-    virtual void      Render(SRenderState& state) = 0;
-    virtual void      PrepareRender() {};
+    virtual void Render(SRenderState& state) = 0;
+    virtual void PrepareRender() {};
 
     enum EType
     { TYPE_NONE
@@ -74,29 +74,15 @@ namespace OVERLAY {
     float m_y;
     float m_width;
     float m_height;
-
-  protected:
-    long m_references;
   };
-
-  class COverlayMainThread
-      : public COverlay
-  {
-  public:
-    virtual ~COverlayMainThread() {}
-    virtual long Release();
-  };
-
 
   class CRenderer
   {
   public:
-     CRenderer();
-    ~CRenderer();
+    CRenderer(CRenderManager *renderManager);
+    virtual ~CRenderer();
 
     void AddOverlay(CDVDOverlay* o, double pts, int index);
-    void AddOverlay(COverlay*    o, double pts, int index);
-    void AddCleanup(COverlay*    o);
     void Render(int idx);
     void Flush();
     void Release(int idx);
@@ -109,27 +95,24 @@ namespace OVERLAY {
       SElement()
       {
         overlay_dvd = NULL;
-        overlay     = NULL;
-        pts         = 0.0;
+        pts = 0.0;
       }
       double pts;
       CDVDOverlay* overlay_dvd;
-      COverlay*    overlay;
     };
 
-    typedef std::vector<COverlay*>  COverlayV;
-    typedef std::vector<SElement>   SElementV;
-
-    void      Render(COverlay* o, float adjust_height);
+    void Render(COverlay* o, float adjust_height);
     COverlay* Convert(CDVDOverlay* o, double pts);
     COverlay* Convert(CDVDOverlaySSA* o, double pts);
 
-    void      Release(COverlayV& list);
-    void      Release(SElementV& list);
+    void Release(std::vector<SElement>& list);
+    void ReleaseCache();
+    void ReleaseUnused();
 
     CCriticalSection m_section;
-    SElementV        m_buffers[NUM_BUFFERS];
-
-    COverlayV        m_cleanup;
+    std::vector<SElement> m_buffers[NUM_BUFFERS];
+    CRenderManager *m_pRenderManager;
+    std::map<unsigned int, COverlay*> m_textureCache;
+    static unsigned int m_textureid;
   };
 }
