@@ -248,10 +248,9 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
   }
 
   // no, unlock since we are allowed to prompt
-  int iVerifyPasswordResult = -1;
   std::string strHeading = g_localizeStrings.Get(20075);
   std::string strPassword = CProfilesManager::GetInstance().GetMasterProfile().getLockCode();
-  iVerifyPasswordResult = VerifyPassword(CProfilesManager::GetInstance().GetMasterProfile().getLockMode(), strPassword, strHeading);
+  int iVerifyPasswordResult = VerifyPassword(CProfilesManager::GetInstance().GetMasterProfile().getLockMode(), strPassword, strHeading);
   if (1 == iVerifyPasswordResult)
     UpdateMasterLockRetryCount(false);
 
@@ -314,9 +313,8 @@ bool CGUIPassword::CheckLock(LockType btnType, const std::string& strPassword, i
       CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser)
     return true;
 
-  int iVerifyPasswordResult = -1;
   std::string strHeading = g_localizeStrings.Get(iHeading);
-  iVerifyPasswordResult = VerifyPassword(btnType, strPassword, strHeading);
+  int iVerifyPasswordResult = VerifyPassword(btnType, strPassword, strHeading);
 
   if (iVerifyPasswordResult == -1)
     bCanceled = true;

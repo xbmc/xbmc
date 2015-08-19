@@ -362,13 +362,13 @@ bool CActiveAEDSP::IsInUse(const string &strAddonId) const
   return false;
 }
 
-bool CActiveAEDSP::IsKnownAudioDSPAddon(const AddonPtr addon) const
+bool CActiveAEDSP::IsKnownAudioDSPAddon(const AddonPtr &addon) const
 {
   // database IDs start at 1
   return GetAudioDSPAddonId(addon) > 0;
 }
 
-int CActiveAEDSP::GetAudioDSPAddonId(const AddonPtr addon) const
+int CActiveAEDSP::GetAudioDSPAddonId(const AddonPtr &addon) const
 {
   CSingleLock lock(m_critUpdateSection);
 
@@ -976,7 +976,7 @@ bool CActiveAEDSP::IsReadyAudioDSPAddon(int iAddonId) const
   return GetReadyAudioDSPAddon(iAddonId, addon);
 }
 
-bool CActiveAEDSP::IsReadyAudioDSPAddon(const AddonPtr addon)
+bool CActiveAEDSP::IsReadyAudioDSPAddon(const AddonPtr &addon)
 {
   CSingleLock lock(m_critUpdateSection);
 
