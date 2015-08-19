@@ -99,6 +99,7 @@ const std::string CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW = "lookandfeel.st
 const std::string CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN = "lookandfeel.soundskin";
 const std::string CSettings::SETTING_LOOKANDFEEL_ENABLERSSFEEDS = "lookandfeel.enablerssfeeds";
 const std::string CSettings::SETTING_LOOKANDFEEL_RSSEDIT = "lookandfeel.rssedit";
+const std::string CSettings::SETTING_LOOKANDFEEL_STEREOSTRENGTH = "lookandfeel.stereostrength";
 const std::string CSettings::SETTING_LOCALE_LANGUAGE = "locale.language";
 const std::string CSettings::SETTING_LOCALE_COUNTRY = "locale.country";
 const std::string CSettings::SETTING_LOCALE_CHARSET = "locale.charset";
