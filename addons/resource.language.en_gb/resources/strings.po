@@ -17675,15 +17675,15 @@ msgid "DSPlayer filters list..."
 msgstr ""
 
 msgctxt "#55063"
-msgid "- Use in fullscreen (exclusive mode)"
+msgid "Use in fullscreen (exclusive mode)"
 msgstr ""
 
 msgctxt "#55064"
-msgid "- Manage settings with Kodi"
+msgid "Manage settings with Kodi"
 msgstr ""
 
 msgctxt "#55065"
-msgid "- Delay playback until render queue is full"
+msgid "Delay playback until render queue is full"
 msgstr ""
 
 msgctxt "#55066"
@@ -17715,7 +17715,7 @@ msgid "DVDPlayer"
 msgstr ""
 
 msgctxt "#55074"
-msgid "- Force to exit from fullscreen before stop"
+msgid "Force to exit from fullscreen before stop"
 msgstr ""
 
 msgctxt "#55075"

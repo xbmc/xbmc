@@ -145,8 +145,6 @@ public:
   virtual bool IsEnteringExclusive(){ return m_isEnteringExclusive; }
   virtual void EnableExclusive(bool bEnable);
   virtual void SetMadvrPixelShader();
-  virtual void RestoreMadvrSettings();
-  virtual void LoadMadvrSettings(MADVR_LOAD_TYPE type);
   virtual void GetProfileActiveName(std::string *profile){ m_pSettingsManager->GetProfileActiveName(profile); };
   virtual void SetResolution();
   virtual void Flush(){ m_pMadvrShared->Flush(); };
@@ -155,6 +153,8 @@ public:
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
 
   //Madvr Settings
+  virtual void RestoreMadvrSettings(){ m_pSettingsManager->RestoreMadvrSettings(); };
+  virtual void LoadMadvrSettings(MADVR_LOAD_TYPE type){ m_pSettingsManager->LoadMadvrSettings(type); };
   virtual void SettingSetStr(CStdString path, CStdString sValue) { m_pSettingsManager->SetStr(path, sValue); };
   virtual void SettingSetBool(CStdString path, BOOL bValue) { m_pSettingsManager->SetBool(path, bValue); };
   virtual void SettingSetInt(CStdString path, int iValue) { m_pSettingsManager->SetInt(path, iValue); };

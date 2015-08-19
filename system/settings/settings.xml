@@ -1195,7 +1195,7 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.madvrsettingswithkodi" type="integer" label="55064" help="">
+        <setting id="dsplayer.madvrsettingswithkodi" parent="dsplayer.videorenderer" type="integer" label="55064" help="">
           <level>0</level>
           <default>1</default> <!-- never -->
           <constraints>
@@ -1210,7 +1210,7 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.delaymadvrplayback" type="boolean" label="55065" help="">
+        <setting id="dsplayer.delaymadvrplayback" parent="dsplayer.videorenderer" type="boolean" label="55065" help="">
           <level>0</level>
           <default>true</default>
           <dependencies>
@@ -1218,7 +1218,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.madvrexclusivemode" type="boolean" label="55063" help="">
+        <setting id="dsplayer.madvrexclusivemode" parent="dsplayer.videorenderer" type="boolean" label="55063" help="">
           <level>0</level>
           <default>false</default>
           <dependencies>
@@ -1226,7 +1226,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.exitmadvrfullscreen" type="boolean" label="55074" help="">
+        <setting id="dsplayer.exitmadvrfullscreen" parent="dsplayer.videorenderer" type="boolean" label="55074" help="">
           <level>0</level>
           <default>false</default>
           <dependencies>

@@ -24,7 +24,7 @@
 #pragma once
 
 #include "AllocatorCommon.h"
-#include "Utils\Log.h"
+#include "MadvrSettings.h"
 
 enum MADVR_SETTINGS_TYPE
 {
@@ -72,6 +72,9 @@ public:
   void GetProfileActiveName(std::string *profile);
 
   void ListSettings(std::string path);
+
+  void LoadMadvrSettings(MADVR_LOAD_TYPE type);
+  void RestoreMadvrSettings();
 
 private:
   BOOL GetSettings(MADVR_SETTINGS_TYPE type, LPCWSTR path, int enumIndex, LPCWSTR sValue, BOOL* bValue, int* iValue, int *bufSize);
