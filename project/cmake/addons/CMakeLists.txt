@@ -16,7 +16,11 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 if(NOT CORE_SYSTEM_NAME)
-  string(TOLOWER ${CMAKE_SYSTEM_NAME} CORE_SYSTEM_NAME)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(CORE_SYSTEM_NAME "osx")
+  else()
+    string(TOLOWER ${CMAKE_SYSTEM_NAME} CORE_SYSTEM_NAME)
+  endif()
 endif()
 
 include(ExternalProject)
