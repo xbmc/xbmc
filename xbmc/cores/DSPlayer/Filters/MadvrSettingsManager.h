@@ -50,11 +50,11 @@ public:
   void EnumValues(std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
  
   void GetStr(std::string path, std::string *str);
-  void GetBool(std::string path, BOOL *bValue);
+  void GetBool(std::string path, bool *bValue);
   void GetInt(std::string path, int *iValue);
   void GetFloat(std::string path, float* fValue, int iConv = 100);
   void SetStr(std::string path, std::string str);
-  void SetBool(std::string path, BOOL bValue);
+  void SetBool(std::string path, bool bValue);
   void SetInt(std::string path, int iValue);
   void SetFloat(std::string path, float fValue, int iConv = 100);
 

@@ -156,7 +156,7 @@ public:
   virtual void RestoreMadvrSettings(){ m_pSettingsManager->RestoreMadvrSettings(); };
   virtual void LoadMadvrSettings(MADVR_LOAD_TYPE type){ m_pSettingsManager->LoadMadvrSettings(type); };
   virtual void SettingSetStr(CStdString path, CStdString sValue) { m_pSettingsManager->SetStr(path, sValue); };
-  virtual void SettingSetBool(CStdString path, BOOL bValue) { m_pSettingsManager->SetBool(path, bValue); };
+  virtual void SettingSetBool(CStdString path, bool bValue) { m_pSettingsManager->SetBool(path, bValue); };
   virtual void SettingSetInt(CStdString path, int iValue) { m_pSettingsManager->SetInt(path, iValue); };
   virtual void SettingSetFloat(CStdString path, float fValue, int iConv = 100) { m_pSettingsManager->SetFloat(path, fValue, iConv); };
   virtual void SettingSetDoubling(CStdString path, int iValue) { m_pSettingsManager->SetDoubling(path, iValue); };

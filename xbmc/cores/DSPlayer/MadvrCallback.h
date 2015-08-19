@@ -58,7 +58,7 @@ public:
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; }
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
   virtual void SettingSetStr(CStdString path, CStdString sValue) {};
-  virtual void SettingSetBool(CStdString path, BOOL bValue) {};
+  virtual void SettingSetBool(CStdString path,bool bValue) {};
   virtual void SettingSetInt(CStdString path, int iValue) {};
   virtual void SettingSetFloat(CStdString path, float fValue, int iConv = 100) {};
   virtual void SettingSetDoubling(CStdString path, int iValue) {};
