@@ -38,7 +38,11 @@ endif
 
 LIBDYLIB=$(PLATFORM)/lib$(LIBNAME).a
 
-all: .installed-$(PLATFORM)
+.PHONY: .installed-$(PLATFORM)
+
+all: .installed-$(PLATFORM) $(PREFIX)/lib/lib$(LIBNAME).a
+$(PREFIX)/lib/lib$(LIBNAME).a:
+	@make .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
