@@ -233,7 +233,7 @@ void CMadvrSettingsManager::GetDoubling(CStdString path, int* iValue)
     GetStr(strAlgo, &sValue);
     if (sValue != "NNEDI3")
     {
-      result = CMadvrSettings::GeDoubleAlgo("sValue");
+      result = CMadvrSettings::GeDoubleAlgo(sValue);
     }
     else
     {
@@ -252,7 +252,7 @@ void CMadvrSettingsManager::GetDeintActive(CStdString path, int* iValue)
 
   BOOL bValue1;
   BOOL bValue2;
-  int result = 0;
+  int result = -1;
 
   GetBool(strAuto, &bValue1);
   if (bValue1)
@@ -277,7 +277,7 @@ void CMadvrSettingsManager::GetSmoothmotion(CStdString path, int* iValue)
   if (bValue)
   {
     GetStr(strMode, &sValue);
-    result = CMadvrSettings::GetSettingId(MadvrSmoothMotion, sValue);
+    result = CMadvrSettings::GetSmoothMotionId(sValue);
   };
 
   *iValue = result;
@@ -296,7 +296,7 @@ void CMadvrSettingsManager::GetDithering(CStdString path, int* iValue)
   if (!bValue)
   {
     GetStr(strMode, &sValue);
-    result = CMadvrSettings::GetSettingId(MadvrDithering, sValue);
+    result = CMadvrSettings::GetDitheringId(sValue);
   };
 
   *iValue = result;
@@ -374,6 +374,46 @@ void CMadvrSettingsManager::SetDithering(CStdString path, int iValue)
   SetBool(stDisable, (iValue == -1));
   if (iValue > -1)
     SetStr(strMode, MadvrDithering[iValue].name);
+}
+
+bool CMadvrSettingsManager::IsProfileActive(std::string path, std::string profile)
+{
+  bool result = false;
+  if (Com::SmartQIPtr<IMadVRSettings2> pMadvrSettings2 = m_pDXR)
+  {
+    std::wstring pathW;
+    std::wstring profileW;
+    g_charsetConverter.utf8ToW(path, pathW, false);
+    g_charsetConverter.utf8ToW(profile, profileW, false);
+    result = (bool)pMadvrSettings2->SettingsIsProfileActive(pathW.c_str(), profileW.c_str());
+  }
+  return result;
+}
+
+
+void CMadvrSettingsManager::GetProfileActiveName(std::string *profile)
+{
+  std::vector<std::string> vecProfileGroups;
+  std::vector<std::string> vecProfileName;
+  std::string path = "scalingParent";
+  std::string result = "";
+
+  EnumGroups(path, &vecProfileGroups);
+  for (unsigned int i = 0; i < vecProfileGroups.size(); i++)
+  {
+    CLog::Log(0, "madVR Profile Groups: %s", vecProfileGroups[i].c_str());
+
+    EnumProfiles(path + "\\" + vecProfileGroups[i], &vecProfileName);
+    for (unsigned int a = 0; a < vecProfileName.size(); a++)
+    {
+      if (IsProfileActive(path + "\\" + vecProfileGroups[i], vecProfileName[a]))
+      {
+        result = vecProfileName[a];
+        break;
+      }
+    }
+  }
+  *profile = result;
 }
 
 void CMadvrSettingsManager::ListSettings(std::string path)

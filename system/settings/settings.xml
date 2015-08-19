@@ -1195,13 +1195,20 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.managemadvrsettings" type="boolean" label="55064" help="">
+        <setting id="dsplayer.madvrsettingswithkodi" type="integer" label="55064" help="">
           <level>0</level>
-          <default>true</default>
+          <default>1</default> <!-- never -->
+          <constraints>
+            <options>
+              <option label="20420">0</option> <!-- never -->
+              <option label="55075">1</option> <!-- load by dsplayer db -->
+              <option label="55076">2</option> <!-- load by madvr profile -->
+            </options>
+          </constraints>
           <dependencies>
             <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
           </dependencies>
-          <control type="toggle" />
+          <control type="list" format="string" />
         </setting>
         <setting id="dsplayer.delaymadvrplayback" type="boolean" label="55065" help="">
           <level>0</level>

@@ -427,7 +427,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && CSettings::Get().GetBool("dsplayer.managemadvrsettings");
+  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") > KODIGUI_NEVER);
 
   CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
   if (category == NULL)
@@ -735,13 +735,17 @@ void CGUIDialogVideoSettings::InitializeSettings()
 void CGUIDialogVideoSettings::OnInitWindow()
 {
   CGUIDialogSettingsManualBase::OnInitWindow();
-  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && CSettings::Get().GetBool("dsplayer.managemadvrsettings");
+  m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") > KODIGUI_NEVER);
+
   LoadMadvrSettings();
   HideUnused();
 }
 
 void CGUIDialogVideoSettings::LoadMadvrSettings()
 {
+  if (!CMadvrCallback::Get()->UsingMadvr() || CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_MADVR)
+    return;
+
   CMadvrCallback::Get()->GetCallback()->LoadMadvrSettings(MADVR_LOAD_GENERAL);
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
 
@@ -754,7 +758,7 @@ void CGUIDialogVideoSettings::LoadMadvrSettings()
   m_settingsManager->SetInt(SETTING_MADVR_DITHERING, madvrSettings.m_dithering);
   m_settingsManager->SetBool(SETTING_MADVR_DITHERINGCOLORED, madvrSettings.m_ditheringColoredNoise);
   m_settingsManager->SetBool(SETTING_MADVR_DITHERINGEVERYFRAME, madvrSettings.m_ditheringEveryFrame);
-  m_settingsManager->SetBool(SETTING_MADVR_SMOOTHMOTION, madvrSettings.m_smoothMotion);
+  m_settingsManager->SetInt(SETTING_MADVR_SMOOTHMOTION, madvrSettings.m_smoothMotion);
 }
 
 void CGUIDialogVideoSettings::HideUnused()

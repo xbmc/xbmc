@@ -478,7 +478,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::SetPixelShader(LPCSTR pSrcData, LPCSTR pT
 
 void CmadVRAllocatorPresenter::RestoreMadvrSettings()
 {
-  //if (!CSettings::Get().GetBool("dsplayer.managemadvrsettings"))
+  if (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_DSPLAYER)
     return;
 
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
@@ -543,7 +543,7 @@ void CmadVRAllocatorPresenter::LoadMadvrSettings(MADVR_LOAD_TYPE type)
   {
     m_pSettingsManager->GetDeintActive("", &madvrSettings.m_deintactive);  
     m_pSettingsManager->GetStr("contentType", &sValue);
-    madvrSettings.m_deintforce = CMadvrSettings::GetSettingId(MadvrDeintForce, sValue);  
+    madvrSettings.m_deintforce = CMadvrSettings::GetDeintForceId(sValue);  
     m_pSettingsManager->GetBool("scanPartialFrame", &bValue);
     madvrSettings.m_deintlookpixels = (bool)bValue;   
     m_pSettingsManager->GetBool("debandActive", &bValue);
@@ -581,16 +581,16 @@ void CmadVRAllocatorPresenter::LoadMadvrSettings(MADVR_LOAD_TYPE type)
     madvrSettings.m_ImageDownLinear = (bool)bValue;
     m_pSettingsManager->GetDoubling("DL", &madvrSettings.m_ImageDoubleLuma);
     m_pSettingsManager->GetStr("nnediDLScalingFactor", &sValue);
-    madvrSettings.m_ImageDoubleLumaFactor = CMadvrSettings::GetSettingId(MadvrDoubleFactor, sValue);
+    madvrSettings.m_ImageDoubleLumaFactor = CMadvrSettings::GetDoubleFactorId(sValue);
     m_pSettingsManager->GetDoubling("DC", &madvrSettings.m_ImageDoubleChroma);
     m_pSettingsManager->GetStr("nnediDCScalingFactor", &sValue);
-    madvrSettings.m_ImageDoubleChromaFactor = CMadvrSettings::GetSettingId(MadvrDoubleFactor, sValue);
+    madvrSettings.m_ImageDoubleChromaFactor = CMadvrSettings::GetDoubleFactorId(sValue);
     m_pSettingsManager->GetDoubling("QL", &madvrSettings.m_ImageQuadrupleLuma);
     m_pSettingsManager->GetStr("nnediQLScalingFactor", &sValue);
-    madvrSettings.m_ImageQuadrupleLumaFactor = CMadvrSettings::GetSettingId(MadvrQuadrupleFactor, sValue);
+    madvrSettings.m_ImageQuadrupleLumaFactor = CMadvrSettings::GetQuadrupleFactorId(sValue);
     m_pSettingsManager->GetDoubling("QC", &madvrSettings.m_ImageQuadrupleChroma);
     m_pSettingsManager->GetStr("nnediQCScalingFactor", &sValue);
-    madvrSettings.m_ImageQuadrupleChromaFactor = CMadvrSettings::GetSettingId(MadvrQuadrupleFactor, sValue);
+    madvrSettings.m_ImageQuadrupleChromaFactor = CMadvrSettings::GetQuadrupleFactorId(sValue);
 
     m_pSettingsManager->GetBool("fineSharp", &bValue);
     madvrSettings.m_fineSharp = (bool)bValue;

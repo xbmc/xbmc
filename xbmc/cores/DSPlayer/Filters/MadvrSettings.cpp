@@ -151,15 +151,7 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   return false;
 }
 
-int CMadvrSettings::GetSettingId(const MADVR_SETTINGS *setsArray, std::string sValue)
-{
-  for (unsigned int i = 0; i < countof(&setsArray); i++)
-  {
-    if (sValue == setsArray[i].name)
-      return i;
-  }
-  return -1;
-}
+
 
 int CMadvrSettings::GetScalingId(std::string sValue)
 {
@@ -171,11 +163,21 @@ int CMadvrSettings::GetScalingId(std::string sValue)
   return -1;
 }
 
+int CMadvrSettings::GetDeintForceId(std::string sValue)
+{
+  for (unsigned int i = 0; i < countof(MadvrDeintForce); i++)
+  {
+    if (sValue == MadvrDeintForce[i].name)
+      return i;
+  }
+  return -1;
+}
+
 int CMadvrSettings::GetDoubleId(int iValue)
 {
   for (unsigned int i = 0; i < countof(MadvrDoubleQuality); i++)
   {
-    if (iValue == MadvrDoubleQuality[i].id)
+    if (iValue == MadvrDoubleQuality[i].id && "NNEDI3" == MadvrDoubleQuality[i].algo)
       return i;
   }
   return -1;
@@ -186,6 +188,46 @@ int CMadvrSettings::GeDoubleAlgo(std::string sValue)
   for (unsigned int i = 0; i < countof(MadvrDoubleQuality); i++)
   {
     if (sValue == MadvrDoubleQuality[i].algo)
+      return i;
+  }
+  return -1;
+}
+
+int CMadvrSettings::GetDoubleFactorId(std::string sValue)
+{
+  for (unsigned int i = 0; i < countof(MadvrDoubleFactor); i++)
+  {
+    if (sValue == MadvrDoubleFactor[i].name)
+      return i;
+  }
+  return -1;
+}
+
+int CMadvrSettings::GetQuadrupleFactorId(std::string sValue)
+{
+  for (unsigned int i = 0; i < countof(MadvrQuadrupleFactor); i++)
+  {
+    if (sValue == MadvrQuadrupleFactor[i].name)
+      return i;
+  }
+  return -1;
+}
+
+int CMadvrSettings::GetSmoothMotionId(std::string sValue)
+{
+  for (unsigned int i = 0; i < countof(MadvrSmoothMotion); i++)
+  {
+    if (sValue == MadvrSmoothMotion[i].name)
+      return i;
+  }
+  return -1;
+}
+
+int CMadvrSettings::GetDitheringId(std::string sValue)
+{
+  for (unsigned int i = 0; i < countof(MadvrDithering); i++)
+  {
+    if (sValue == MadvrDithering[i].name)
       return i;
   }
   return -1;

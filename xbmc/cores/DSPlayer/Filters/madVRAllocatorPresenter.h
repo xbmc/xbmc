@@ -147,6 +147,7 @@ public:
   virtual void SetMadvrPixelShader();
   virtual void RestoreMadvrSettings();
   virtual void LoadMadvrSettings(MADVR_LOAD_TYPE type);
+  virtual void GetProfileActiveName(std::string *profile){ m_pSettingsManager->GetProfileActiveName(profile); };
   virtual void SetResolution();
   virtual void Flush(){ m_pMadvrShared->Flush(); };
   virtual void RenderToTexture(MADVR_RENDER_LAYER layer){ m_pMadvrShared->RenderToTexture(layer); };

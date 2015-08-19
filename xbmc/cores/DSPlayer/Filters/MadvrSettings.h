@@ -57,7 +57,7 @@ static const MADVR_SCALING MadvrScaling[] =
 {
   { "Nearest Neighbor", 70001, true, true, true },
   { "Bilinear", 70002, true, true, true },
-  { "Dvxa", 70003, false, true, true },
+  { "Dxva", 70003, false, true, true },
   { "Mitchell-Netravali", 70004, true, true, true },
   { "Catmull-Rom", 70005, true, true, true },
   { "Bicubic50", 70006, true, true, true },
@@ -182,6 +182,13 @@ enum MADVR_LOAD_TYPE
   MADVR_LOAD_SCALING
 };
 
+enum MADVR_GUI_SETTINGS
+{
+  KODIGUI_NEVER,
+  KODIGUI_LOAD_DSPLAYER,
+  KODIGUI_LOAD_MADVR
+};
+
 
 class CMadvrSettings
 {
@@ -191,10 +198,14 @@ public:
 
   bool operator!=(const CMadvrSettings &right) const;
 
-  static int GetSettingId(const MADVR_SETTINGS *setsArray, std::string sValue);
   static int GetScalingId(std::string sValue);
+  static int GetDeintForceId(std::string sValue);
   static int GeDoubleAlgo(std::string sValue);
-  static int GetDoubleId(int iValue);
+  static int GetDoubleId(int iValue);  
+  static int GetDoubleFactorId(std::string sValue);
+  static int GetQuadrupleFactorId(std::string sValue);
+  static int GetSmoothMotionId(std::string sValue);
+  static int GetDitheringId(std::string sValue);
 
   int m_Resolution;
 

@@ -37,6 +37,7 @@
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #ifdef HAS_DS_PLAYER
 #include "DSPlayerDatabase.h"
+#include "settings/Settings.h"
 #endif
 
 bool CSaveFileStateJob::DoWork()
@@ -80,9 +81,9 @@ bool CSaveFileStateJob::DoWork()
 	  {
 		  dspdb.AddEdition(progressTrackingFile, m_bookmark.edition);
 	  }
-      if (m_madvrSettings != CMediaSettings::Get().GetAtStartMadvrSettings())
+      if (m_madvrSettings != CMediaSettings::Get().GetAtStartMadvrSettings() && CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") == KODIGUI_LOAD_DSPLAYER)
       {
-        dspdb.SetVideoSettings(progressTrackingFile, m_madvrSettings);
+          dspdb.SetVideoSettings(progressTrackingFile, m_madvrSettings);
       }
 #endif
       CVideoDatabase videodatabase;

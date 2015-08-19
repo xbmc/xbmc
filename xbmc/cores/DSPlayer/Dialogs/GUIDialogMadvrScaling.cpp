@@ -108,12 +108,16 @@ CGUIDialogMadvrScaling::~CGUIDialogMadvrScaling()
 void CGUIDialogMadvrScaling::OnInitWindow()
 {
   CGUIDialogSettingsManualBase::OnInitWindow();
+
   LoadMadvrSettings();
   HideUnused();
 }
 
 void CGUIDialogMadvrScaling::LoadMadvrSettings()
 {
+  if (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_MADVR)
+    return;
+
   CMadvrCallback::Get()->GetCallback()->LoadMadvrSettings(MADVR_LOAD_SCALING);
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
 
@@ -157,6 +161,18 @@ void CGUIDialogMadvrScaling::SetupView()
   CGUIDialogSettingsManualBase::SetupView();
 
   SetHeading(70000);
+
+  if (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") == KODIGUI_LOAD_MADVR)
+  {
+    std::string profile;
+    CMadvrCallback::Get()->GetCallback()->GetProfileActiveName(&profile);
+    if (profile != "")
+    {
+      CStdString sHeading;
+      sHeading.Format("%s %s: %s", g_localizeStrings.Get(70000).c_str(), g_localizeStrings.Get(20093).c_str(), profile.c_str());
+      SetHeading(sHeading);
+    }
+  }
 }
 
 void CGUIDialogMadvrScaling::InitializeSettings()

@@ -58,15 +58,18 @@ public:
   void SetInt(std::string path, int iValue);
   void SetFloat(std::string path, float fValue, int iConv = 100);
 
-  virtual void SetDoubling(CStdString path, int iValue);
-  virtual void SetDeintActive(CStdString path, int iValue);
-  virtual void SetSmoothmotion(CStdString path, int iValue);
-  virtual void SetDithering(CStdString path, int iValue);
+  void SetDoubling(CStdString path, int iValue);
+  void SetDeintActive(CStdString path, int iValue);
+  void SetSmoothmotion(CStdString path, int iValue);
+  void SetDithering(CStdString path, int iValue);
 
-  virtual void GetDoubling(CStdString path, int* iValue);
-  virtual void GetDeintActive(CStdString path, int* iValue);
-  virtual void GetSmoothmotion(CStdString path, int* iValue);
-  virtual void GetDithering(CStdString path, int* iValue);
+  void GetDoubling(CStdString path, int* iValue);
+  void GetDeintActive(CStdString path, int* iValue);
+  void GetSmoothmotion(CStdString path, int* iValue);
+  void GetDithering(CStdString path, int* iValue);
+
+  bool IsProfileActive(std::string path, std::string profile);
+  void GetProfileActiveName(std::string *profile);
 
   void ListSettings(std::string path);
 
