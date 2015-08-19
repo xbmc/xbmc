@@ -963,8 +963,8 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera, const float &fa
   {
     RESOLUTION_INFO res = GetResInfo();
     RESOLUTION_INFO desktop = GetResInfo(RES_DESKTOP);
-    // currently use 5 as max. 
-    float scaleX = 5.f * (static_cast<float>(res.iWidth) / static_cast<float>(desktop.iWidth));
+    float scaleRes = (static_cast<float>(res.iWidth) / static_cast<float>(desktop.iWidth));
+    float scaleX = static_cast<float>(CSettings::GetInstance().GetInt(CSettings::SETTING_LOOKANDFEEL_STEREOSTRENGTH)) * scaleRes;
     stereoFactor = factor * (m_stereoView == RENDER_STEREO_VIEW_LEFT ? scaleX : -scaleX);
   }
   g_Windowing.SetCameraPosition(camera, m_iScreenWidth, m_iScreenHeight, stereoFactor);
