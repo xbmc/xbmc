@@ -26,7 +26,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
-#include "cores/VideoRenderers/RenderManager.h"
 #include "windowing/WindowingFactory.h"
 #include "TextureManager.h"
 #include "input/InputManager.h"
@@ -333,7 +332,7 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
   {
     bool allowDesktopRes = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
     if(m_bFullScreenVideo || (!allowDesktopRes && g_application.m_pPlayer->IsPlayingVideo()))
-      SetVideoResolution(g_renderManager.GetResolution());
+      SetVideoResolution(g_application.m_pPlayer->GetRenderResolution());
     else if(CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
       SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
     else
@@ -484,7 +483,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   SetStereoView(RENDER_STEREO_VIEW_OFF);
 
   // update anyone that relies on sizing information
-  g_renderManager.Recover();
   CInputManager::GetInstance().SetMouseResolution(info_org.iWidth, info_org.iHeight, 1, 1);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 
@@ -1029,14 +1027,14 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     {
       /* we need to trick renderer that we are fullscreen already so it gives us a valid value */
       m_bFullScreenRoot = true;
-      uiRes = g_renderManager.GetResolution();
+      uiRes = g_application.m_pPlayer->GetRenderResolution();
       m_bFullScreenRoot = false;
     }
     // if video is playing we need to switch to resolution chosen by RenderManager
     if (IsFullScreenVideo())
     {
       m_bFullScreenRoot = true;
-      videoRes = g_renderManager.GetResolution();
+      videoRes = g_application.m_pPlayer->GetRenderResolution();
       m_bFullScreenRoot = false;
       setVideoRes = true;
     }

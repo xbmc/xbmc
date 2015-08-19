@@ -20,12 +20,12 @@
 
 #pragma once
 
-#include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderCapture.h"
 #include "AddonClass.h"
 #include "LanguageHook.h"
 #include "Exception.h"
 #include "commons/Buffer.h"
+#include "Application.h"
 
 namespace XBMCAddon
 {
@@ -37,8 +37,8 @@ namespace XBMCAddon
     {
       CRenderCapture* m_capture;
     public:
-      inline RenderCapture() : m_capture(g_renderManager.AllocRenderCapture()) {}
-      inline virtual ~RenderCapture() { g_renderManager.ReleaseRenderCapture(m_capture); }
+      inline RenderCapture() : m_capture(g_application.m_pPlayer->RenderCaptureAlloc()) {}
+      inline virtual ~RenderCapture() { g_application.m_pPlayer->RenderCaptureRelease(m_capture); }
 
       /**
        * getWidth() -- returns width of captured image as set during\n
@@ -66,7 +66,7 @@ namespace XBMCAddon
        * getAspectRatio() -- returns aspect ratio of currently displayed video.\n
        *     This may be called prior to calling RenderCapture.capture().\n
        */
-      inline float getAspectRatio() { return g_renderManager.GetAspectRatio(); }
+      inline float getAspectRatio() { return g_application.m_pPlayer->GetRenderAspectRatio(); }
 
       /**
        * getImageFormat() -- returns format of captured image: 'BGRA' or 'RGBA'.
@@ -104,7 +104,7 @@ namespace XBMCAddon
        */
       inline void capture(int width, int height, int flags = 0)
       {
-        g_renderManager.Capture(m_capture, (unsigned int)width, (unsigned int)height, flags);
+        g_application.m_pPlayer->RenderCapture(m_capture, (unsigned int)width, (unsigned int)height, flags);
       }
 
       /**

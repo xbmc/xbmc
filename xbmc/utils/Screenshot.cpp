@@ -33,10 +33,6 @@
 #include "xbmc/linux/RBP.h"
 #endif
 
-#ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
-#endif
-
 #ifdef HAS_IMXVPU
 // This has to go into another header file
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
@@ -80,12 +76,6 @@ bool CScreenshotSurface::capture()
     return false;
 #elif defined(HAS_DX)
   g_graphicsContext.Lock();
-  if (g_application.m_pPlayer->IsPlayingVideo())
-  {
-#ifdef HAS_VIDEO_PLAYBACK
-    g_renderManager.SetupScreenshot();
-#endif
-  }
 
   g_application.RenderNoPresent();
   g_Windowing.FinishCommandList();
@@ -143,12 +133,6 @@ bool CScreenshotSurface::capture()
 #elif defined(HAS_GL) || defined(HAS_GLES)
 
   g_graphicsContext.BeginPaint();
-  if (g_application.m_pPlayer->IsPlayingVideo())
-  {
-#ifdef HAS_VIDEO_PLAYBACK
-    g_renderManager.SetupScreenshot();
-#endif
-  }
   g_application.RenderNoPresent();
 #ifndef HAS_GLES
   glReadBuffer(GL_BACK);

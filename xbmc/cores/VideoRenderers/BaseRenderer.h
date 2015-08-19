@@ -26,7 +26,7 @@
 #include "guilib/Resolution.h"
 #include "guilib/Geometry.h"
 #include "RenderFormats.h"
-#include "RenderFeatures.h"
+#include "cores/IPlayer.h"
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
@@ -68,7 +68,7 @@ enum RenderMethods
 };
 
 typedef void (*RenderUpdateCallBackFn)(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
-typedef void (*RenderFeaturesCallBackFn)(const void *ctx, Features &renderFeatures);
+typedef void (*RenderFeaturesCallBackFn)(const void *ctx, std::vector<int> &renderFeatures);
 
 struct DVDVideoPicture;
 class CRenderCapture;
@@ -99,7 +99,6 @@ public:
   virtual CRenderInfo GetRenderInfo() { return CRenderInfo(); }
   virtual void Update() = 0;
   virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) = 0;
-  virtual void SetupScreenshot() = 0;
   virtual bool RenderCapture(CRenderCapture* capture) = 0;
   virtual EINTERLACEMETHOD AutoInterlaceMethod() = 0;
 

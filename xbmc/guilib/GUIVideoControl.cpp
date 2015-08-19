@@ -24,7 +24,6 @@
 #include "Application.h"
 #include "input/Key.h"
 #include "WindowIDs.h"
-#include "cores/VideoRenderers/RenderManager.h"
 #ifndef HAS_VIDEO_PLAYBACK
 #include "cores/DummyVideoPlayer.h"
 #endif
@@ -40,10 +39,8 @@ CGUIVideoControl::~CGUIVideoControl(void)
 
 void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  g_renderManager.FrameMove();
-
   // TODO Proper processing which marks when its actually changed. Just mark always for now.
-  if (g_renderManager.IsGuiLayer())
+  if (g_application.m_pPlayer->IsRenderingGuiLayer())
     MarkDirtyRegion();
 
   CGUIControl::Process(currentTime, dirtyregions);
@@ -51,16 +48,8 @@ void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
 
 void CGUIVideoControl::Render()
 {
-#ifdef HAS_VIDEO_PLAYBACK
-  // don't render if we aren't playing video, or if the renderer isn't started
-  // (otherwise the lock we have from CApplication::Render() may clash with the startup
-  // locks in the RenderManager.)
-  if (g_application.m_pPlayer->IsPlayingVideo() && g_renderManager.IsConfigured())
+  if (g_application.m_pPlayer->IsRenderingVideo())
   {
-#else
-  if (g_application.m_pPlayer->IsPlayingVideo())
-  {
-#endif
     if (!g_application.m_pPlayer->IsPausedPlayback())
       g_application.ResetScreenSaver();
 
@@ -68,9 +57,8 @@ void CGUIVideoControl::Render()
     TransformMatrix mat;
     g_graphicsContext.SetTransform(mat, 1.0, 1.0);
 
-#ifdef HAS_VIDEO_PLAYBACK
     color_t alpha = g_graphicsContext.MergeAlpha(0xFF000000) >> 24;
-    if (g_renderManager.IsVideoLayer())
+    if (g_application.m_pPlayer->IsRenderingVideoLayer())
     {
       CRect old = g_graphicsContext.GetScissors();
       CRect region = GetRenderRegion();
@@ -86,10 +74,7 @@ void CGUIVideoControl::Render()
       g_graphicsContext.EndPaint();
     }
     else
-      g_renderManager.Render(false, 0, alpha);
-#else
-    ((CDummyVideoPlayer *)(g_application.m_pPlayer->GetInternal()).get())->Render();
-#endif
+      g_application.m_pPlayer->Render(false, alpha);
 
     g_graphicsContext.RemoveTransform();
   }
@@ -100,11 +85,9 @@ void CGUIVideoControl::Render()
 
 void CGUIVideoControl::RenderEx()
 {
-#ifdef HAS_VIDEO_PLAYBACK
-  if (g_application.m_pPlayer->IsPlayingVideo() && g_renderManager.IsConfigured())
-    g_renderManager.Render(false, 0, 255, false);
-  g_renderManager.FrameFinish();
-#endif
+  if (g_application.m_pPlayer->IsRenderingVideo())
+    g_application.m_pPlayer->Render(false, 255, false);
+  
   CGUIControl::RenderEx();
 }
 

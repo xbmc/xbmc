@@ -22,6 +22,7 @@
 
 #include "DVDOverlay.h"
 #include <string.h>
+#include <stdint.h>
 
 class CDVDOverlaySpu : public CDVDOverlay
 {

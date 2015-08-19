@@ -23,7 +23,6 @@
 #include "video/VideoDatabase.h"
 #include "Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
 #include "cores/VideoRenderers/RenderCapture.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/ScreenshotAML.h"
@@ -423,11 +422,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   bookmark.player = CPlayerCoreFactory::GetInstance().GetPlayerName(g_application.GetCurrentPlayer());
 
   // create the thumbnail image
-#ifdef HAS_VIDEO_PLAYBACK
-  float aspectRatio = g_renderManager.GetAspectRatio();
-#else
-  float aspectRatio = 1.0f;
-#endif
+  float aspectRatio = g_application.m_pPlayer->GetRenderAspectRatio();
   int width = BOOKMARK_THUMB_WIDTH;
   int height = (int)(BOOKMARK_THUMB_WIDTH / aspectRatio);
   if (height > (int)BOOKMARK_THUMB_WIDTH)
@@ -437,11 +432,11 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   }
   {
 #ifdef HAS_VIDEO_PLAYBACK
-    CRenderCapture* thumbnail = g_renderManager.AllocRenderCapture();
+    CRenderCapture* thumbnail = g_application.m_pPlayer->RenderCaptureAlloc();
 
     if (thumbnail)
     {
-      g_renderManager.Capture(thumbnail, width, height, CAPTUREFLAG_IMMEDIATELY);
+      g_application.m_pPlayer->RenderCapture(thumbnail, width, height, CAPTUREFLAG_IMMEDIATELY);
 
 #if !defined(HAS_LIBAMCODEC)
       if (thumbnail->GetUserState() == CAPTURESTATE_DONE)
@@ -463,7 +458,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
         CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail");
 #endif
 
-      g_renderManager.ReleaseRenderCapture(thumbnail);
+      g_application.m_pPlayer->RenderCaptureRelease(thumbnail);
     }
 #endif
   }

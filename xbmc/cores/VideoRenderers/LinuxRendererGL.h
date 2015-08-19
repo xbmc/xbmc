@@ -128,7 +128,6 @@ public:
   virtual void SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   virtual void Update();
-  virtual void SetupScreenshot() {};
   virtual bool RenderCapture(CRenderCapture* capture);
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
   virtual CRenderInfo GetRenderInfo();

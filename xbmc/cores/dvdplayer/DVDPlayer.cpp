@@ -48,9 +48,7 @@
 #include "messaging/ApplicationMessenger.h"
 
 #include "DVDDemuxers/DVDDemuxCC.h"
-#ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
-#endif
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "xbmc/utils/PerformanceSample.h"
 #else
@@ -555,7 +553,7 @@ void CDVDPlayer::CreatePlayers()
   }
   else
   {
-    m_dvdPlayerVideo = new CDVDPlayerVideo(&m_clock, &m_overlayContainer, m_messenger);
+    m_dvdPlayerVideo = new CDVDPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager);
     m_dvdPlayerAudio = new CDVDPlayerAudio(&m_clock, m_messenger);
   }
   m_dvdPlayerSubtitle = new CDVDPlayerSubtitle(&m_overlayContainer);
@@ -661,9 +659,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     m_ready.Reset();
 
-#if defined(HAS_VIDEO_PLAYBACK)
-    g_renderManager.PreInit();
-#endif
+    m_renderManager.PreInit();
 
     Create();
 
@@ -708,9 +704,7 @@ bool CDVDPlayer::CloseFile(bool reopen)
   m_HasAudio = false;
 
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
-#if defined(HAS_VIDEO_PLAYBACK)
-  g_renderManager.UnInit();
-#endif
+  m_renderManager.UnInit();
   return true;
 }
 
@@ -2622,11 +2616,10 @@ void CDVDPlayer::HandleMessages()
         {
           SAFE_DELETE(m_pDemuxer);
           m_playSpeed = DVD_PLAYSPEED_NORMAL;
-#ifdef HAS_VIDEO_PLAYBACK
+
           // when using fast channel switching some shortcuts are taken which 
           // means we'll have to update the view mode manually
-          g_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-#endif
+          m_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
@@ -2688,11 +2681,10 @@ void CDVDPlayer::HandleMessages()
               m_playSpeed = DVD_PLAYSPEED_NORMAL;
 
               g_infoManager.SetDisplayAfterSeek();
-#ifdef HAS_VIDEO_PLAYBACK
+
               // when using fast channel switching some shortcuts are taken which 
               // means we'll have to update the view mode manually
-              g_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-#endif
+              m_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
             }
           }
           else
@@ -3079,7 +3071,7 @@ void CDVDPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     }
     else
     {
-      double dDelay = m_dvdPlayerVideo->GetDelay() / DVD_TIME_BASE - g_renderManager.GetDisplayLatency();
+      double dDelay = m_dvdPlayerVideo->GetDelay() / DVD_TIME_BASE - m_renderManager.GetDisplayLatency();
 
       double apts = m_dvdPlayerAudio->GetCurrentPts();
       double vpts = m_dvdPlayerVideo->GetCurrentPts();
@@ -4130,7 +4122,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_MOUSE_LEFT_CLICK:
         {
           CRect rs, rd, rv;
-          m_dvdPlayerVideo->GetVideoRect(rs, rd, rv);
+          m_renderManager.GetVideoRect(rs, rd, rv);
           CPoint pt(action.GetAmount(), action.GetAmount(1));
           if (!rd.PtInRect(pt))
             return false; // out of bounds
@@ -4388,9 +4380,9 @@ void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
     }
   }
   info.videoCodecName = retVal;
-  info.videoAspectRatio = m_dvdPlayerVideo->GetAspectRatio();
+  info.videoAspectRatio = m_renderManager.GetAspectRatio();
   CRect viewRect;
-  m_dvdPlayerVideo->GetVideoRect(info.SrcRect, info.DestRect, viewRect);
+  m_renderManager.GetVideoRect(info.SrcRect, info.DestRect, viewRect);
   info.stereoMode = m_dvdPlayerVideo->GetStereoMode();
   if (info.stereoMode == "mono")
     info.stereoMode = "";
@@ -4735,7 +4727,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
        * and UpdatePlayState() has been called at least once. In this case dvdplayer duration/AR will
        * return 0 and we'll have to fallback to the (less accurate) info from the demuxer.
        */
-      float aspect = m_dvdPlayerVideo->GetAspectRatio();
+      float aspect = m_renderManager.GetAspectRatio();
       if (aspect > 0.0f)
         ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect = aspect;
 
@@ -4785,4 +4777,106 @@ bool CDVDPlayer::CachePVRStream(void) const
   return m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
       !g_PVRManager.IsPlayingRecording() &&
       g_advancedSettings.m_bPVRCacheInDvdPlayer;
+}
+
+void CDVDPlayer::FrameMove()
+{
+  m_renderManager.FrameMove();
+  m_renderManager.UpdateResolution();
+  m_renderManager.ManageCaptures();
+}
+
+void CDVDPlayer::FrameWait(int ms)
+{
+  m_renderManager.FrameWait(ms);
+}
+
+bool CDVDPlayer::HasFrame()
+{
+  m_renderManager.HasFrame();
+}
+
+void CDVDPlayer::Render(bool clear, uint32_t alpha, bool gui)
+{
+  m_renderManager.Render(clear, 0, alpha, gui);
+}
+
+void CDVDPlayer::AfterRender()
+{
+  m_renderManager.FrameFinish();
+}
+
+void CDVDPlayer::FlushRenderer()
+{
+  m_renderManager.Flush();
+}
+
+void CDVDPlayer::SetRenderViewMode(int mode)
+{
+  m_renderManager.SetViewMode(mode);
+}
+
+float CDVDPlayer::GetRenderAspectRatio()
+{
+  return m_renderManager.GetAspectRatio();
+}
+
+RESOLUTION CDVDPlayer::GetRenderResolution()
+{
+  return m_renderManager.GetResolution();
+}
+
+bool CDVDPlayer::IsRenderingVideo()
+{
+  return m_renderManager.IsConfigured();
+}
+
+bool CDVDPlayer::IsRenderingGuiLayer()
+{
+  return m_renderManager.IsGuiLayer();
+}
+
+bool CDVDPlayer::IsRenderingVideoLayer()
+{
+  return m_renderManager.IsVideoLayer();
+}
+
+bool CDVDPlayer::Supports(EDEINTERLACEMODE mode)
+{
+  return m_renderManager.Supports(mode);
+}
+
+bool CDVDPlayer::Supports(EINTERLACEMETHOD method)
+{
+  return m_renderManager.Supports(method);
+}
+
+bool CDVDPlayer::Supports(ESCALINGMETHOD method)
+{
+  return m_renderManager.Supports(method);
+}
+
+bool CDVDPlayer::Supports(ERENDERFEATURE feature)
+{
+  return m_renderManager.Supports(feature);
+}
+
+CRenderCapture *CDVDPlayer::RenderCaptureAlloc()
+{
+  return m_renderManager.AllocRenderCapture();
+}
+
+void CDVDPlayer::RenderCapture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags)
+{
+  m_renderManager.Capture(capture, width, height, flags);
+}
+
+void CDVDPlayer::RenderCaptureRelease(CRenderCapture* capture)
+{
+  m_renderManager.ReleaseRenderCapture(capture);
+}
+
+std::string CDVDPlayer::GetRenderVSyncState()
+{
+  return m_renderManager.GetVSyncState();
 }
