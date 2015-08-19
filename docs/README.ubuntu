@@ -121,7 +121,7 @@ Use prepackaged from the Kodi build-depends PPA.
 
 We also supply a Makefile in tools/depends/target/crossguid
 to make it easy to install into /usr/local.
-1.  $ make -C tools/depends/target/crossguid PREFIX=/usr/local/crossguid
+1.  $ make -C tools/depends/target/crossguid PREFIX=/usr/local
 
 Unless you are proficient with how Linux libraries and versions work, do not
 try to provide it yourself, as you will likely mess up for other programs.
