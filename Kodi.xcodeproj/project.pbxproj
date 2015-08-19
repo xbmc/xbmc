@@ -255,6 +255,9 @@
 		39B4F3701B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */; };
 		39B4F3711B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */; };
 		39B4F3721B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */; };
+		39BD2AD81B845D40004A5A15 /* DialogHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */; };
+		39BD2AD91B845D40004A5A15 /* DialogHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */; };
+		39BD2ADA1B845D40004A5A15 /* DialogHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */; };
 		4260D5C71B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		4260D5C91B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
@@ -3652,6 +3655,8 @@
 		3994427E1A8DD96F006C39E9 /* VideoLibraryQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryQueue.h; sourceTree = "<group>"; };
 		39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RepositoryUpdater.cpp; sourceTree = "<group>"; };
 		39B4F36F1B96F845009B2D88 /* RepositoryUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepositoryUpdater.h; sourceTree = "<group>"; };
+		39BD2AD61B845D40004A5A15 /* DialogHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DialogHelper.h; path = helpers/DialogHelper.h; sourceTree = "<group>"; };
+		39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DialogHelper.cpp; path = helpers/DialogHelper.cpp; sourceTree = "<group>"; };
 		4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowSplash.cpp; sourceTree = "<group>"; };
 		4260D5C61B67BB8F003F6F2D /* GUIWindowSplash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSplash.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
@@ -6453,6 +6458,15 @@
 			path = jobs;
 			sourceTree = "<group>";
 		};
+		39BD2AD51B845D1E004A5A15 /* helpers */ = {
+			isa = PBXGroup;
+			children = (
+				39BD2AD71B845D40004A5A15 /* DialogHelper.cpp */,
+				39BD2AD61B845D40004A5A15 /* DialogHelper.h */,
+			);
+			name = helpers;
+			sourceTree = "<group>";
+		};
 		430C880812D649B10098821A /* powermanagement */ = {
 			isa = PBXGroup;
 			children = (
@@ -7966,6 +7980,7 @@
 		DF4A3BAC1B4B0FC100F9CDC0 /* messaging */ = {
 			isa = PBXGroup;
 			children = (
+				39BD2AD51B845D1E004A5A15 /* helpers */,
 				DF4A3BAD1B4B0FC100F9CDC0 /* ApplicationMessenger.cpp */,
 				DF4A3BAE1B4B0FC100F9CDC0 /* ApplicationMessenger.h */,
 				DF4A3BAF1B4B0FC100F9CDC0 /* IMessageTarget.h */,
@@ -10744,6 +10759,7 @@
 				18B7C3841294203F009E7A26 /* AddonDatabase.cpp in Sources */,
 				18B7C38A12942090009E7A26 /* GUIDialogAddonInfo.cpp in Sources */,
 				18B7C38B12942090009E7A26 /* GUIViewStateAddonBrowser.cpp in Sources */,
+				39BD2AD81B845D40004A5A15 /* DialogHelper.cpp in Sources */,
 				18B7C392129420E5009E7A26 /* Settings.cpp in Sources */,
 				18B7C3A812942132009E7A26 /* AdvancedSettings.cpp in Sources */,
 				395C29DB1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */,
@@ -11514,6 +11530,7 @@
 				B5011E4319AF3B56005ADF89 /* PosixFile.cpp in Sources */,
 				DFF0F19E17528350002DA3A4 /* Edl.cpp in Sources */,
 				DFF0F19F17528350002DA3A4 /* ExternalPlayer.cpp in Sources */,
+				39BD2ADA1B845D40004A5A15 /* DialogHelper.cpp in Sources */,
 				DFF0F1A217528350002DA3A4 /* AudioDecoder.cpp in Sources */,
 				DFF0F1A317528350002DA3A4 /* CodecFactory.cpp in Sources */,
 				DFF0F1A417528350002DA3A4 /* DVDPlayerCodec.cpp in Sources */,
@@ -12967,6 +12984,7 @@
 				E49913B6174E5F3C00741B6D /* AirPlayServer.cpp in Sources */,
 				E49913B7174E5F3C00741B6D /* AirTunesServer.cpp in Sources */,
 				E49913B8174E5F3C00741B6D /* cddb.cpp in Sources */,
+				39BD2AD91B845D40004A5A15 /* DialogHelper.cpp in Sources */,
 				E49913B9174E5F3C00741B6D /* DNSNameCache.cpp in Sources */,
 				E49913BA174E5F3C00741B6D /* EventClient.cpp in Sources */,
 				E49913BB174E5F3C00741B6D /* EventPacket.cpp in Sources */,
