@@ -24,6 +24,7 @@
 #pragma once
 
 #include "AllocatorCommon.h"
+#include "MadvrCallback.h"
 #include "MadvrSettings.h"
 
 enum MADVR_SETTINGS_TYPE
@@ -37,12 +38,24 @@ enum MADVR_SETTINGS_TYPE
   MADVR_SETTINGS_INT
 };
 
-class CMadvrSettingsManager
+class CMadvrSettingsManager :public ISettingCallbackMadvr
 {
 public:
 
   CMadvrSettingsManager(IUnknown* pUnk);
   virtual ~CMadvrSettingsManager();
+
+  //ISettingCallbackMadvr
+  virtual void LoadSettings(MADVR_LOAD_TYPE type);
+  virtual void RestoreSettings();
+  virtual void SetStr(std::string path, std::string str);
+  virtual void SetBool(std::string path, bool bValue);
+  virtual void SetInt(std::string path, int iValue);
+  virtual void SetFloat(std::string path, float fValue, int iConv = 100);
+  virtual void SetDoubling(CStdString path, int iValue);
+  virtual void SetDeintActive(CStdString path, int iValue);
+  virtual void SetSmoothmotion(CStdString path, int iValue);
+  virtual void SetDithering(CStdString path, int iValue);
 
   void EnumGroups(std::string path, std::vector<std::string> *sVector);
   void EnumProfiles(std::string path, std::vector<std::string> *sVector);
@@ -53,15 +66,6 @@ public:
   void GetBool(std::string path, bool *bValue);
   void GetInt(std::string path, int *iValue);
   void GetFloat(std::string path, float* fValue, int iConv = 100);
-  void SetStr(std::string path, std::string str);
-  void SetBool(std::string path, bool bValue);
-  void SetInt(std::string path, int iValue);
-  void SetFloat(std::string path, float fValue, int iConv = 100);
-
-  void SetDoubling(CStdString path, int iValue);
-  void SetDeintActive(CStdString path, int iValue);
-  void SetSmoothmotion(CStdString path, int iValue);
-  void SetDithering(CStdString path, int iValue);
 
   void GetDoubling(CStdString path, int* iValue);
   void GetDeintActive(CStdString path, int* iValue);
@@ -72,9 +76,6 @@ public:
   void GetProfileActiveName(std::string *profile);
 
   void ListSettings(std::string path);
-
-  void LoadMadvrSettings(MADVR_LOAD_TYPE type);
-  void RestoreMadvrSettings();
 
 private:
   BOOL GetSettings(MADVR_SETTINGS_TYPE type, LPCWSTR path, int enumIndex, LPCWSTR sValue, BOOL* bValue, int* iValue, int *bufSize);

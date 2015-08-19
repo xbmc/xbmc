@@ -139,7 +139,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   {
     CMadvrCallback::Get()->GetCallback()->SetResolution();
     CMadvrCallback::Get()->GetCallback()->SetMadvrPixelShader();
-    CMadvrCallback::Get()->GetCallback()->RestoreMadvrSettings();
+    CMadvrCallback::Get()->GetSetting()->RestoreSettings();
   }
 
   //TODO Ti-Ben

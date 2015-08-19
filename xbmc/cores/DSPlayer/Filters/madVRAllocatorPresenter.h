@@ -152,18 +152,6 @@ public:
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
 
-  //Madvr Settings
-  virtual void RestoreMadvrSettings(){ m_pSettingsManager->RestoreMadvrSettings(); };
-  virtual void LoadMadvrSettings(MADVR_LOAD_TYPE type){ m_pSettingsManager->LoadMadvrSettings(type); };
-  virtual void SettingSetStr(CStdString path, CStdString sValue) { m_pSettingsManager->SetStr(path, sValue); };
-  virtual void SettingSetBool(CStdString path, bool bValue) { m_pSettingsManager->SetBool(path, bValue); };
-  virtual void SettingSetInt(CStdString path, int iValue) { m_pSettingsManager->SetInt(path, iValue); };
-  virtual void SettingSetFloat(CStdString path, float fValue, int iConv = 100) { m_pSettingsManager->SetFloat(path, fValue, iConv); };
-  virtual void SettingSetDoubling(CStdString path, int iValue) { m_pSettingsManager->SetDoubling(path, iValue); };
-  virtual void SettingSetDeintActive(CStdString path, int iValue) { m_pSettingsManager->SetDeintActive(path, iValue); };
-  virtual void SettingSetSmoothmotion(CStdString path, int iValue) { m_pSettingsManager->SetSmoothmotion(path, iValue); };
-  virtual void SettingSetDithering(CStdString path, int iValue) { m_pSettingsManager->SetDithering(path, iValue); };
-
 private:
   void ConfigureMadvr();
   Com::SmartPtr<IUnknown> m_pDXR;

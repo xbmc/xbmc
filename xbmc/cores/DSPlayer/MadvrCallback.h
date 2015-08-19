@@ -49,25 +49,32 @@ public:
   virtual bool IsEnteringExclusive(){ return false; }
   virtual void EnableExclusive(bool bEnable){};
   virtual void SetMadvrPixelShader(){};
-  virtual void RestoreMadvrSettings(){};
-  virtual void LoadMadvrSettings(MADVR_LOAD_TYPE type){};
   virtual void GetProfileActiveName(std::string *profile){};
   virtual void SetResolution(){};
   virtual void Flush(){};
   virtual void RenderToTexture(MADVR_RENDER_LAYER layer){};
   virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; }
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
-  virtual void SettingSetStr(CStdString path, CStdString sValue) {};
-  virtual void SettingSetBool(CStdString path,bool bValue) {};
-  virtual void SettingSetInt(CStdString path, int iValue) {};
-  virtual void SettingSetFloat(CStdString path, float fValue, int iConv = 100) {};
-  virtual void SettingSetDoubling(CStdString path, int iValue) {};
-  virtual void SettingSetDeintActive(CStdString path, int iValue) {};
-  virtual void SettingSetSmoothmotion(CStdString path, int iValue) {};
-  virtual void SettingSetDithering(CStdString path, int iValue) {};
 };
 
-class CMadvrCallback : public IPaintCallbackMadvr
+class ISettingCallbackMadvr
+{
+public:
+  virtual ~ISettingCallbackMadvr() {};
+
+  virtual void RestoreSettings(){};
+  virtual void LoadSettings(MADVR_LOAD_TYPE type){};
+  virtual void SetStr(CStdString path, CStdString sValue) {};
+  virtual void SetBool(CStdString path, bool bValue) {};
+  virtual void SetInt(CStdString path, int iValue) {};
+  virtual void SetFloat(CStdString path, float fValue, int iConv = 100) {};
+  virtual void SetDoubling(CStdString path, int iValue) {};
+  virtual void SetDeintActive(CStdString path, int iValue) {};
+  virtual void SetSmoothmotion(CStdString path, int iValue) {};
+  virtual void SetDithering(CStdString path, int iValue) {};
+};
+
+class CMadvrCallback : public IPaintCallbackMadvr, public ISettingCallbackMadvr
 {
 public:
   /// Retrieve singleton instance
@@ -80,7 +87,9 @@ public:
   }
 
   IPaintCallbackMadvr* GetCallback() { return m_pMadvr != NULL ? m_pMadvr : this; }
+  ISettingCallbackMadvr* GetSetting() { return m_pSettingMadvr != NULL ? m_pSettingMadvr : this; }
   void SetCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
+  void SetSettingCallback(ISettingCallbackMadvr* pSettingMadvr) { m_pSettingMadvr = pSettingMadvr; }
   bool UsingMadvr();
   bool ReadyMadvr();
   bool IsEnteringExclusiveMadvr();
@@ -99,6 +108,7 @@ private:
 
   static CMadvrCallback* m_pSingleton;
   IPaintCallbackMadvr* m_pMadvr;
+  ISettingCallbackMadvr* m_pSettingMadvr;
   bool m_isInitMadvr;
   bool m_renderOnMadvr;
   int m_renderUnderCount;

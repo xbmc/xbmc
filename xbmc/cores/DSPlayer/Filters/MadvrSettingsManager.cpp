@@ -30,6 +30,7 @@
 CMadvrSettingsManager::CMadvrSettingsManager(IUnknown* pUnk)
 {
   m_pDXR = pUnk;
+  CMadvrCallback::Get()->SetSettingCallback(this);
 }
 CMadvrSettingsManager::~CMadvrSettingsManager()
 {
@@ -460,7 +461,7 @@ void CMadvrSettingsManager::ListSettings(std::string path)
   }
 }
 
-void CMadvrSettingsManager::RestoreMadvrSettings()
+void CMadvrSettingsManager::RestoreSettings()
 {
   if (CSettings::Get().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_DSPLAYER)
     return;
@@ -516,7 +517,7 @@ void CMadvrSettingsManager::RestoreMadvrSettings()
   SetBool("superResFirst", madvrSettings.m_superResFirst);
 }
 
-void CMadvrSettingsManager::LoadMadvrSettings(MADVR_LOAD_TYPE type)
+void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
 {
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
 
