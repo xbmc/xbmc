@@ -239,13 +239,21 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
     LOG(LOGERROR, "CreateFile '%s' failed with error id %d", dumpFileName.c_str(), GetLastError());
     goto cleanup;
   }
-
+#if defined(_WIN64)
+  frame.AddrPC.Offset     = pEp->ContextRecord->Rip;      // Current location in program
+  frame.AddrPC.Mode       = AddrModeFlat;                 // Address mode for this pointer: flat 32 bit addressing
+  frame.AddrStack.Offset  = pEp->ContextRecord->Rsp;      // Stack pointers current value
+  frame.AddrStack.Mode    = AddrModeFlat;                 // Address mode for this pointer: flat 32 bit addressing
+  frame.AddrFrame.Offset  = pEp->ContextRecord->Rbp;      // Value of register used to access local function variables.
+  frame.AddrFrame.Mode    = AddrModeFlat;                 // Address mode for this pointer: flat 32 bit addressing
+#else
   frame.AddrPC.Offset         = pEp->ContextRecord->Eip;      // Current location in program
   frame.AddrPC.Mode           = AddrModeFlat;                 // Address mode for this pointer: flat 32 bit addressing
   frame.AddrStack.Offset      = pEp->ContextRecord->Esp;      // Stack pointers current value
   frame.AddrStack.Mode        = AddrModeFlat;                 // Address mode for this pointer: flat 32 bit addressing
   frame.AddrFrame.Offset      = pEp->ContextRecord->Ebp;      // Value of register used to access local function variables.
   frame.AddrFrame.Mode        = AddrModeFlat;                 // Address mode for this pointer: flat 32 bit addressing
+#endif
 
   if(pSI(hCurProc, NULL, TRUE) == FALSE)
     goto cleanup;
