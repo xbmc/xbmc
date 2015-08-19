@@ -323,7 +323,7 @@ CWakeOnAccess::CWakeOnAccess()
 {
 }
 
-CWakeOnAccess &CWakeOnAccess::Get()
+CWakeOnAccess &CWakeOnAccess::GetInstance()
 {
   static CWakeOnAccess sWakeOnAccess;
   return sWakeOnAccess;
@@ -540,7 +540,7 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
   vector<string> hosts;
 
   // add media sources
-  CMediaSourceSettings& ms = CMediaSourceSettings::Get();
+  CMediaSourceSettings& ms = CMediaSourceSettings::GetInstance();
 
   AddHostsFromVecSource(ms.GetSources("video"), hosts);
   AddHostsFromVecSource(ms.GetSources("music"), hosts);
@@ -649,7 +649,7 @@ void CWakeOnAccess::OnSettingsLoaded()
 
 void CWakeOnAccess::OnSettingsSaved()
 {
-  bool enabled = CSettings::Get().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
+  bool enabled = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
 
   if (enabled != IsEnabled())
   {
@@ -669,7 +669,7 @@ void CWakeOnAccess::SetEnabled(bool enabled)
 
 void CWakeOnAccess::LoadFromXML()
 {
-  bool enabled = CSettings::Get().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
+  bool enabled = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(GetSettingFile()))

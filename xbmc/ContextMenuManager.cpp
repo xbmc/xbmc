@@ -43,7 +43,7 @@ CContextMenuManager::CContextMenuManager()
   Init();
 }
 
-CContextMenuManager& CContextMenuManager::Get()
+CContextMenuManager& CContextMenuManager::GetInstance()
 {
   static CContextMenuManager mgr;
   return mgr;
@@ -52,7 +52,7 @@ CContextMenuManager& CContextMenuManager::Get()
 void CContextMenuManager::Init()
 {
   VECADDONS addons;
-  if (CAddonMgr::Get().GetAddons(ADDON_CONTEXT_ITEM, addons))
+  if (CAddonMgr::GetInstance().GetAddons(ADDON_CONTEXT_ITEM, addons))
     for (const auto& addon : addons)
       Register(std::static_pointer_cast<CContextMenuAddon>(addon));
 }

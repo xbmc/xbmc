@@ -408,7 +408,7 @@ bool CWinEventsX11Imp::MessagePump()
       case ClientMessage:
       {
         if ((unsigned int)xevent.xclient.data.l[0] == WinEvents->m_wmDeleteMessage)
-          if (!g_application.m_bStop) CApplicationMessenger::Get().PostMsg(TMSG_QUIT);
+          if (!g_application.m_bStop) CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
         break;
       }
 
@@ -537,7 +537,7 @@ bool CWinEventsX11Imp::MessagePump()
       // lose mouse coverage
       case LeaveNotify:
       {
-        CInputManager::Get().SetMouseActive(false);
+        CInputManager::GetInstance().SetMouseActive(false);
         break;
       }
 
@@ -609,7 +609,7 @@ bool CWinEventsX11Imp::MessagePump()
       case SDL_JOYHATMOTION:
       case SDL_JOYDEVICEADDED:
       case SDL_JOYDEVICEREMOVED:
-        CInputManager::Get().UpdateJoystick(event);
+        CInputManager::GetInstance().UpdateJoystick(event);
         ret = true;
         break;
 

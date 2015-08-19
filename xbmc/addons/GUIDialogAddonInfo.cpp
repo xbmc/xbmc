@@ -92,7 +92,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       {
         if (m_localAddon)
         {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
+          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
           {
             CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
             return true;
@@ -119,7 +119,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       {
         if (m_localAddon)
         {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::Get().IsProcessing())
+          if (m_localAddon->Type() == ADDON_ADSPDLL && ActiveAE::CActiveAEDSP::GetInstance().IsProcessing())
           {
             CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
             return true;
@@ -179,7 +179,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   if (isInstalled)
     GrabRollbackVersions();
 
-  bool canDisable = isInstalled && CAddonMgr::Get().CanAddonBeDisabled(m_localAddon->ID());
+  bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 
@@ -199,13 +199,13 @@ void CGUIDialogAddonInfo::UpdateControls()
 void CGUIDialogAddonInfo::OnUpdate()
 {
   std::string referer = StringUtils::Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().asString().c_str());
-  CAddonInstaller::Get().Install(m_addon->ID(), true, referer); // force install
+  CAddonInstaller::GetInstance().Install(m_addon->ID(), true, referer); // force install
   Close();
 }
 
 void CGUIDialogAddonInfo::OnInstall()
 {
-  CAddonInstaller::Get().Install(m_addon->ID());
+  CAddonInstaller::GetInstance().Install(m_addon->ID());
   Close();
 }
 
@@ -225,7 +225,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
   VECADDONS addons;
   vector<string> deps;
-  CAddonMgr::Get().GetAllAddons(addons);
+  CAddonMgr::GetInstance().GetAllAddons(addons);
   for (VECADDONS::const_iterator it  = addons.begin();
        it != addons.end();++it)
   {
@@ -261,7 +261,7 @@ void CGUIDialogAddonInfo::OnUninstall()
     return;
 
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),
-                                    &CAddonInstaller::Get());
+                                    &CAddonInstaller::GetInstance());
   Close();
 }
 
@@ -277,9 +277,9 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
     return;
 
   if (enable)
-    CAddonMgr::Get().EnableAddon(m_localAddon->ID());
+    CAddonMgr::GetInstance().EnableAddon(m_localAddon->ID());
   else
-    CAddonMgr::Get().DisableAddon(m_localAddon->ID());
+    CAddonMgr::GetInstance().DisableAddon(m_localAddon->ID());
   SetItem(m_item);
   UpdateControls();
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
@@ -356,8 +356,8 @@ void CGUIDialogAddonInfo::OnRollback()
     // needed as cpluff won't downgrade
     if (!m_localAddon->IsType(ADDON_SERVICE))
       //we will handle this for service addons in CAddonInstallJob::OnPostInstall
-      CAddonMgr::Get().UnregisterAddon(m_localAddon->ID());
-    CAddonInstaller::Get().InstallFromZip(path);
+      CAddonMgr::GetInstance().UnregisterAddon(m_localAddon->ID());
+    CAddonInstaller::GetInstance().InstallFromZip(path);
     database.RemoveAddonFromBlacklist(m_localAddon->ID(),m_rollbackVersions[choice]);
     Close();
   }
@@ -383,7 +383,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   // grab the local addon, if it's available
   m_localAddon.reset();
   m_addon.reset();
-  if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon)) // sets m_localAddon if installed regardless of enabled state
+  if (CAddonMgr::GetInstance().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon)) // sets m_localAddon if installed regardless of enabled state
     m_item->SetProperty("Addon.Enabled", "true");
   else
     m_item->SetProperty("Addon.Enabled", "false");

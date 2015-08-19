@@ -52,7 +52,7 @@ bool CFavouritesDirectory::Exists(const CURL& url)
   if (url.IsProtocol("favourites"))
   {
     return XFILE::CFile::Exists("special://xbmc/system/favourites.xml") 
-        || XFILE::CFile::Exists(URIUtils::AddFileToFolder(CProfilesManager::Get().GetProfileUserDataFolder(), "favourites.xml"));
+        || XFILE::CFile::Exists(URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetProfileUserDataFolder(), "favourites.xml"));
   }
   return XFILE::CDirectory::Exists(url); //directly load the given file
 }
@@ -67,7 +67,7 @@ bool CFavouritesDirectory::Load(CFileItemList &items)
     CFavouritesDirectory::LoadFavourites(favourites, items);
   else
     CLog::Log(LOGDEBUG, "CFavourites::Load - no system favourites found, skipping");
-  favourites = URIUtils::AddFileToFolder(CProfilesManager::Get().GetProfileUserDataFolder(), "favourites.xml");
+  favourites = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetProfileUserDataFolder(), "favourites.xml");
   if(XFILE::CFile::Exists(favourites))
     CFavouritesDirectory::LoadFavourites(favourites, items);
   else
@@ -135,7 +135,7 @@ bool CFavouritesDirectory::Save(const CFileItemList &items)
     rootNode->InsertEndChild(favNode);
   }
 
-  favourites = URIUtils::AddFileToFolder(CProfilesManager::Get().GetProfileUserDataFolder(), "favourites.xml");
+  favourites = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetProfileUserDataFolder(), "favourites.xml");
   return doc.SaveFile(favourites);
 }
 

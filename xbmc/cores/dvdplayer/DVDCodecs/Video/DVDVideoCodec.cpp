@@ -72,7 +72,7 @@ bool CDVDVideoCodec::IsCodecDisabled(DVDCodecAvailableType* map, unsigned int si
     }
   }
   if(index > -1)
-    return (!CSettings::Get().GetBool(map[index].setting) || !CDVDVideoCodec::IsSettingVisible("unused", "unused", CSettings::Get().GetSetting(map[index].setting), NULL));
+    return (!CSettings::GetInstance().GetBool(map[index].setting) || !CDVDVideoCodec::IsSettingVisible("unused", "unused", CSettings::GetInstance().GetSetting(map[index].setting), NULL));
 
   return false; //don't disable what we don't have
 }

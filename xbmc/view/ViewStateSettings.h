@@ -34,7 +34,7 @@ class TiXmlNode;
 class CViewStateSettings : public ISubSettings
 {
 public:
-  static CViewStateSettings& Get();
+  static CViewStateSettings& GetInstance();
 
   virtual bool Load(const TiXmlNode *settings);
   virtual bool Save(TiXmlNode *settings) const;

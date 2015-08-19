@@ -461,13 +461,13 @@ BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
 
-  bool remoteUsed = CInputManager::Get().IsRemoteControlEnabled();
-  CInputManager::Get().DisableRemoteControl();
+  bool remoteUsed = CInputManager::GetInstance().IsRemoteControlEnabled();
+  CInputManager::GetInstance().DisableRemoteControl();
 
   int ret = system(strSwitches);
 
   if (remoteUsed)
-    CInputManager::Get().EnableRemoteControl();
+    CInputManager::GetInstance().EnableRemoteControl();
 
   if (ret != 0)
   {

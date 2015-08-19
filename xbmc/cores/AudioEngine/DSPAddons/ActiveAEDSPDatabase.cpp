@@ -91,12 +91,12 @@ void CActiveAEDSPDatabase::CreateTables()
 
   // disable all Audio DSP add-on when started the first time
   ADDON::VECADDONS addons;
-  if (CAddonMgr::Get().GetAddons(ADDON_ADSPDLL, addons, true))
+  if (CAddonMgr::GetInstance().GetAddons(ADDON_ADSPDLL, addons, true))
     CLog::Log(LOGERROR, "Audio DSP - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
   else
   {
     for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-      CAddonMgr::Get().DisableAddon(it->get()->ID());
+      CAddonMgr::GetInstance().DisableAddon(it->get()->ID());
   }
 }
 
@@ -338,7 +338,7 @@ int CActiveAEDSPDatabase::GetModes(AE_DSP_MODELIST &results, int modeType)
         CLog::Log(LOGDEBUG, "Audio DSP - %s - mode '%s' loaded from the database", __FUNCTION__, mode->m_strModeName.c_str());
 #endif
         AE_DSP_ADDON addon;
-        if (CActiveAEDSP::Get().GetAudioDSPAddon(mode->m_iAddonId, addon))
+        if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(mode->m_iAddonId, addon))
           results.push_back(AE_DSP_MODEPAIR(mode, addon));
 
         m_pDS->next();
@@ -526,7 +526,7 @@ int CActiveAEDSPDatabase::GetAudioDSPAddonId(const string &strAddonUid)
   return strtol(strValue.c_str(), NULL, 10);
 }
 
-int CActiveAEDSPDatabase::Persist(const AddonPtr addon)
+int CActiveAEDSPDatabase::Persist(const AddonPtr& addon)
 {
   int iReturn(-1);
 

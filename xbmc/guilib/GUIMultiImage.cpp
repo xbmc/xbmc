@@ -229,7 +229,7 @@ void CGUIMultiImage::LoadDirectory()
    3. Bundled folder
    */
   CFileItem item(m_currentPath, false);
-  if (item.IsPicture() || CTextureCache::Get().HasCachedImage(m_currentPath))
+  if (item.IsPicture() || CTextureCache::GetInstance().HasCachedImage(m_currentPath))
     m_files.push_back(m_currentPath);
   else // bundled folder?
     g_TextureManager.GetBundledTexturesFromPath(m_currentPath, m_files);

@@ -94,7 +94,7 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
 
   if (g_application.m_pPlayer->HasPlayer())
   {
-    const CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+    const CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 
     // these settings can change on the fly
 
@@ -110,7 +110,7 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
       m_settingsManager->SetNumber(SETTING_AUDIO_DELAY, videoSettings.m_AudioDelay);
       m_settingsManager->SetBool(SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS, videoSettings.m_OutputToAllSpeakers);
     }
-    m_settingsManager->SetBool(SETTING_AUDIO_PASSTHROUGH, CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH));
+    m_settingsManager->SetBool(SETTING_AUDIO_PASSTHROUGH, CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH));
 
     // TODO: m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, g_application.m_pPlayer->GetSubtitleVisible());
     //   \-> Unless subtitle visibility can change on the fly, while Dialog is up, this code should be removed.
@@ -153,7 +153,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_AUDIO_VOLUME)
   {
@@ -193,7 +193,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_AUDIO_PASSTHROUGH)
   {
     m_passthrough = static_cast<const CSettingBool*>(setting)->GetValue();
-    CSettings::Get().SetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH, m_passthrough);
+    CSettings::GetInstance().SetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH, m_passthrough);
   }
   else if (settingId == SETTING_SUBTITLE_ENABLE)
   {
@@ -240,13 +240,13 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
     std::string strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
-    VECSOURCES shares(*CMediaSourceSettings::Get().GetSources("video"));
-    if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryChecked() != -1 && !CSettings::Get().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
+    VECSOURCES shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
+    if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
     {
       CMediaSource share;
       std::vector<std::string> paths;
       paths.push_back(URIUtils::GetDirectory(strPath));
-      paths.push_back(CSettings::Get().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH));
+      paths.push_back(CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH));
       share.FromNameAndPaths("video", g_localizeStrings.Get(21367), paths);
       shares.push_back(share);
       strPath = share.strPath;
@@ -276,7 +276,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
 void CGUIDialogAudioSubtitleSettings::Save()
 {
   if (!g_passwordManager.CheckSettingLevelLock(SettingLevelExpert) &&
-    CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+    CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     return;
 
   // prompt user if they are sure
@@ -291,10 +291,10 @@ void CGUIDialogAudioSubtitleSettings::Save()
   db.EraseVideoSettings();
   db.Close();
 
-  CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
-  CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleStream = -1;
-  CMediaSettings::Get().GetDefaultVideoSettings().m_AudioStream = -1;
-  CSettings::Get().Save();
+  CMediaSettings::GetInstance().GetDefaultVideoSettings() = CMediaSettings::GetInstance().GetCurrentVideoSettings();
+  CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
+  CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
+  CSettings::GetInstance().Save();
 }
 
 void CGUIDialogAudioSubtitleSettings::SetupView()
@@ -352,7 +352,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
 
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
-  CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 
   if (g_application.m_pPlayer->HasPlayer())
   {
@@ -370,7 +370,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   SettingDependencies depsAudioOutputPassthroughDisabled;
   depsAudioOutputPassthroughDisabled.push_back(dependencyAudioOutputPassthroughDisabled);
 
-  m_dspEnabled = CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
+  m_dspEnabled = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
 
   // audio settings
   // audio volume setting
@@ -408,7 +408,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   // audio digital/analog setting
   if (SupportsAudioFeature(IPC_AUD_SELECT_OUTPUT))
   {
-    m_passthrough = CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
+    m_passthrough = CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
     AddToggle(groupAudio, SETTING_AUDIO_PASSTHROUGH, 348, 0, m_passthrough);
   }
 

@@ -76,7 +76,7 @@ using EVENTSERVER::CEventServer;
 using namespace KODI::MESSAGING;
 using PERIPHERALS::CPeripherals;
 
-CInputManager& CInputManager::Get()
+CInputManager& CInputManager::GetInstance()
 {
   static CInputManager inputManager;
   return inputManager;
@@ -96,7 +96,7 @@ void CInputManager::InitializeInputs()
   m_Keyboard.Initialize();
 
   m_Mouse.Initialize();
-  m_Mouse.SetEnabled(CSettings::Get().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+  m_Mouse.SetEnabled(CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 }
 
 void CInputManager::ReInitializeJoystick()
@@ -512,21 +512,21 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
         || (actionId >= ACTION_MOUSE_START && actionId <= ACTION_MOUSE_END))
     {
       auto action = new CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2, newEvent.touch.y2);
-      CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(action));
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(action));
     }
     else
     {
       if (actionId == ACTION_BUILT_IN_FUNCTION && !actionString.empty())
-        CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionId, actionString)));
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionId, actionString)));
       else
-        CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionId)));
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionId)));
     }
 
     // Post an unfocus message for touch device after the action.
     if (newEvent.touch.action == ACTION_GESTURE_END || newEvent.touch.action == ACTION_TOUCH_TAP)
     {
       CGUIMessage msg(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
-      CApplicationMessenger::Get().SendGUIMessage(msg);
+      CApplicationMessenger::GetInstance().SendGUIMessage(msg);
     }
     break;
   } //case
@@ -565,13 +565,13 @@ bool CInputManager::OnKey(const CKey& key)
     {
       CLog::LogF(LOGDEBUG, "action %s [%d], toggling state of playing device", action.GetName().c_str(), action.GetID());
       bool result;
-      CApplicationMessenger::Get().SendMsg(TMSG_CECTOGGLESTATE, 0, 0, static_cast<void*>(&result));
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_CECTOGGLESTATE, 0, 0, static_cast<void*>(&result));
       if (!result)
         return true;
     }
     else
     {
-      CApplicationMessenger::Get().PostMsg(TMSG_CECSTANDBY);
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_CECSTANDBY);
       return true;
     }
   }

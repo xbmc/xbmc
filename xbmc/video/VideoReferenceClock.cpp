@@ -73,7 +73,7 @@ CVideoReferenceClock::~CVideoReferenceClock()
 void CVideoReferenceClock::Start()
 {
   CSingleExit lock(g_graphicsContext);
-  if(CSettings::Get().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) && !IsRunning())
+  if(CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) && !IsRunning())
     Create();
 }
 

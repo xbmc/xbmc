@@ -60,7 +60,7 @@ static const SettingGroup s_settingGroupMap[] = { { SETTINGS_PICTURES,    "pictu
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
     : CGUIDialogSettingsManagerBase(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml"),
-      m_settings(CSettings::Get()),
+      m_settings(CSettings::GetInstance()),
       m_iSection(0),
       m_returningFromSkinLoad(false)
 {
@@ -112,9 +112,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     {
       if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
       {
-        if (IsActive() && CDisplaySettings::Get().GetCurrentResolution() != g_graphicsContext.GetVideoResolution())
+        if (IsActive() && CDisplaySettings::GetInstance().GetCurrentResolution() != g_graphicsContext.GetVideoResolution())
         {
-          CDisplaySettings::Get().SetCurrentResolution(g_graphicsContext.GetVideoResolution(), true);
+          CDisplaySettings::GetInstance().SetCurrentResolution(g_graphicsContext.GetVideoResolution(), true);
           CreateSettings();
         }
       }
@@ -132,18 +132,18 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
     case ACTION_SETTINGS_LEVEL_CHANGE:
     {
       //Test if we can access the new level
-      if (!g_passwordManager.CheckSettingLevelLock(CViewStateSettings::Get().GetNextSettingLevel(), true))
+      if (!g_passwordManager.CheckSettingLevelLock(CViewStateSettings::GetInstance().GetNextSettingLevel(), true))
         return false;
       
-      CViewStateSettings::Get().CycleSettingLevel();
-      CSettings::Get().Save();
+      CViewStateSettings::GetInstance().CycleSettingLevel();
+      CSettings::GetInstance().Save();
 
       // try to keep the current position
       std::string oldCategory;
       if (m_iCategory >= 0 && m_iCategory < (int)m_categories.size())
         oldCategory = m_categories[m_iCategory]->GetId();
 
-      SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::Get().GetSettingLevel());
+      SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
       // only re-create the categories, the settings will be created later
       SetupControls(false);
 
@@ -180,13 +180,13 @@ bool CGUIWindowSettingsCategory::OnBack(int actionID)
 
 void CGUIWindowSettingsCategory::OnWindowLoaded()
 {
-  SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::Get().GetSettingLevel());
+  SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
   CGUIDialogSettingsManagerBase::OnWindowLoaded();
 }
 
 int CGUIWindowSettingsCategory::GetSettingLevel() const
 {
-  return (int)CViewStateSettings::Get().GetSettingLevel();
+  return (int)CViewStateSettings::GetInstance().GetSettingLevel();
 }
 
 CSettingSection* CGUIWindowSettingsCategory::GetSection()

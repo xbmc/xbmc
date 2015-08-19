@@ -230,7 +230,7 @@ void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
   if (itemPos < m_vecItems->Size())
   {
     std::string time = StringUtils::Format("chapter://%s/%i", m_filePath.c_str(), chapterIdx);
-    std::string cachefile = CTextureCache::Get().GetCachedPath(CTextureCache::Get().GetCacheFile(time) + ".jpg");
+    std::string cachefile = CTextureCache::GetInstance().GetCachedPath(CTextureCache::GetInstance().GetCacheFile(time) + ".jpg");
     if (XFILE::CFile::Exists(cachefile))
     {
       (*m_vecItems)[itemPos]->SetArt("thumb", cachefile);
@@ -294,10 +294,10 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     item->SetLabel2(time);
 
     std::string chapterPath = StringUtils::Format("chapter://%s/%i", m_filePath.c_str(), i);
-    std::string cachefile = CTextureCache::Get().GetCachedPath(CTextureCache::Get().GetCacheFile(chapterPath)+".jpg");
+    std::string cachefile = CTextureCache::GetInstance().GetCachedPath(CTextureCache::GetInstance().GetCacheFile(chapterPath)+".jpg");
     if (XFILE::CFile::Exists(cachefile))
       item->SetArt("thumb", cachefile);
-    else if (i > m_jobsStarted && CSettings::Get().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
+    else if (i > m_jobsStarted && CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
     {
       CFileItem item(m_filePath, false);
       CJob* job = new CThumbExtractor(item, m_filePath, true, chapterPath, pos * 1000, false);
@@ -420,7 +420,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   else
     bookmark.playerState.clear();
 
-  bookmark.player = CPlayerCoreFactory::Get().GetPlayerName(g_application.GetCurrentPlayer());
+  bookmark.player = CPlayerCoreFactory::GetInstance().GetPlayerName(g_application.GetCurrentPlayer());
 
   // create the thumbnail image
 #ifdef HAS_VIDEO_PLAYBACK
@@ -453,7 +453,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
         Crc32 crc;
         crc.ComputeFromLowerCase(g_application.CurrentFile());
         bookmark.thumbNailImage = StringUtils::Format("%08x_%i.jpg", (unsigned __int32) crc, (int)bookmark.timeInSeconds);
-        bookmark.thumbNailImage = URIUtils::AddFileToFolder(CProfilesManager::Get().GetBookmarksThumbFolder(), bookmark.thumbNailImage);
+        bookmark.thumbNailImage = URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetBookmarksThumbFolder(), bookmark.thumbNailImage);
         if (!CPicture::CreateThumbnailFromSurface(thumbnail->GetPixels(), width, height, thumbnail->GetWidth() * 4,
                                             bookmark.thumbNailImage))
           bookmark.thumbNailImage.clear();
@@ -592,7 +592,7 @@ void CGUIDialogVideoBookmarks::OnJobComplete(unsigned int jobID,
     {
       unsigned int chapterIdx = (*iter).second;
       CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 1, chapterIdx);
-      CApplicationMessenger::Get().SendGUIMessage(m);
+      CApplicationMessenger::GetInstance().SendGUIMessage(m);
       m_mapJobsChapter.erase(iter);
     }
   }

@@ -73,6 +73,10 @@ bool CGUIFontTTFDX::FirstBegin()
   if (CMadvrCallback::Get()->ReadyMadvr())
     CMadvrCallback::Get()->IncRenderCount();
 #endif
+
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+  pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
+
   return true;
 }
 
@@ -89,13 +93,12 @@ void CGUIFontTTFDX::LastEnd()
   if (m_vertex.empty() && transIsEmpty)
     return;
 
-  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
-  pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
   CreateStaticIndexBuffer();
 
   unsigned int offset = 0;
   unsigned int stride = sizeof(SVertex);
 
+  CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
   // Set font texture as shader resource
   ID3D11ShaderResourceView* resources[] = { m_speedupTexture->GetShaderResource() };
   pGUIShader->SetShaderViews(1, resources);

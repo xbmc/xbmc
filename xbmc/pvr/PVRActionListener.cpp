@@ -41,7 +41,7 @@ CPVRActionListener::CPVRActionListener()
 {
 }
 
-CPVRActionListener &CPVRActionListener::Get()
+CPVRActionListener &CPVRActionListener::GetInstance()
 {
   static CPVRActionListener instance;
   return instance;
@@ -107,14 +107,14 @@ bool CPVRActionListener::OnAction(const CAction &action)
               if (fileItem && fileItem->HasPVRChannelInfoTag())
               {
                 CLog::Log(LOGDEBUG, "%s - switch to channel number %d", __FUNCTION__, fileItem->GetPVRChannelInfoTag()->ChannelNumber());
-                CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,static_cast<void*>(
+                CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,static_cast<void*>(
                   new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(fileItem->GetPVRChannelInfoTag()->ChannelNumber()))));
               }
             }
           }
           else
           {
-            int autoCloseTime = CSettings::Get().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
+            int autoCloseTime = CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
             std::string strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
             if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
             {
@@ -126,7 +126,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
                 if (!channel || !channel->HasPVRChannelInfoTag())
                   return false;
 
-                CApplicationMessenger::Get().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
+                CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
                   new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(iChannelNumber))));
               }
             }

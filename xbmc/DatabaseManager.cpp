@@ -37,7 +37,7 @@ using namespace EPG;
 using namespace PVR;
 using namespace ActiveAE;
 
-CDatabaseManager &CDatabaseManager::Get()
+CDatabaseManager &CDatabaseManager::GetInstance()
 {
   static CDatabaseManager s_manager;
   return s_manager;

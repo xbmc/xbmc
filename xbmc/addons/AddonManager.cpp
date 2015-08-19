@@ -137,7 +137,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         }
         if (type == ADDON_SCREENSAVER)
         { // Python screensaver
-          std::string library = CAddonMgr::Get().GetExtValue(props->configuration, "@library");
+          std::string library = CAddonMgr::GetInstance().GetExtValue(props->configuration, "@library");
           if (URIUtils::HasExtension(library, ".py"))
             return AddonPtr(new CScreenSaver(props));
         }
@@ -233,7 +233,7 @@ CAddonMgr::~CAddonMgr()
   DeInit();
 }
 
-CAddonMgr &CAddonMgr::Get()
+CAddonMgr &CAddonMgr::GetInstance()
 {
   static CAddonMgr sAddonMgr;
   return sAddonMgr;
@@ -312,7 +312,7 @@ bool CAddonMgr::Init()
   }
 
   status = m_cpluff->register_logger(m_cp_context, cp_logger,
-      &CAddonMgr::Get(), clog_to_cp(g_advancedSettings.m_logLevel));
+      &CAddonMgr::GetInstance(), clog_to_cp(g_advancedSettings.m_logLevel));
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);
@@ -454,7 +454,7 @@ bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool getLocalVersion /*=
   for (int i = ADDON_UNKNOWN+1; i < ADDON_MAX; ++i)
   {
     VECADDONS temp;
-    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, true))
+    if (CAddonMgr::GetInstance().GetAddons((TYPE)i, temp, true))
     {
       AddonPtr repoAddon;
       for (unsigned int j = 0; j < temp.size(); j++)
@@ -558,31 +558,31 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
   switch (type)
   {
   case ADDON_VIZ:
-    setting = CSettings::Get().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
     break;
   case ADDON_SCREENSAVER:
-    setting = CSettings::Get().GetString(CSettings::SETTING_SCREENSAVER_MODE);
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCREENSAVER_MODE);
     break;
   case ADDON_SCRAPER_ALBUMS:
-    setting = CSettings::Get().GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER);
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER);
     break;
   case ADDON_SCRAPER_ARTISTS:
-    setting = CSettings::Get().GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER);
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER);
     break;
   case ADDON_SCRAPER_MOVIES:
-    setting = CSettings::Get().GetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT);
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT);
     break;
   case ADDON_SCRAPER_MUSICVIDEOS:
-    setting = CSettings::Get().GetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT);
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT);
     break;
   case ADDON_SCRAPER_TVSHOWS:
-    setting = CSettings::Get().GetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT);
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT);
     break;
   case ADDON_WEB_INTERFACE:
-    setting = CSettings::Get().GetString(CSettings::SETTING_SERVICES_WEBSKIN);
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_SERVICES_WEBSKIN);
     break;
   case ADDON_RESOURCE_LANGUAGE:
-    setting = CSettings::Get().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
+    setting = CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
     break;
   default:
     return false;
@@ -595,28 +595,28 @@ bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
   switch (type)
   {
   case ADDON_VIZ:
-    CSettings::Get().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION,addonID);
     break;
   case ADDON_SCREENSAVER:
-    CSettings::Get().SetString(CSettings::SETTING_SCREENSAVER_MODE,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE,addonID);
     break;
   case ADDON_SCRAPER_ALBUMS:
-    CSettings::Get().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER,addonID);
     break;
   case ADDON_SCRAPER_ARTISTS:
-    CSettings::Get().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER,addonID);
     break;
   case ADDON_SCRAPER_MOVIES:
-    CSettings::Get().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT,addonID);
     break;
   case ADDON_SCRAPER_MUSICVIDEOS:
-    CSettings::Get().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,addonID);
     break;
   case ADDON_SCRAPER_TVSHOWS:
-    CSettings::Get().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT,addonID);
     break;
   case ADDON_RESOURCE_LANGUAGE:
-    CSettings::Get().SetString(CSettings::SETTING_LOCALE_LANGUAGE, addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOCALE_LANGUAGE, addonID);
     break;
   default:
     return false;
@@ -801,6 +801,8 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
         translatedValues.insert(std::make_pair(lang, child.value != NULL ? child.value : ""));
       else if (lang == NULL || strcmp(lang, "en") == 0 || strcmp(lang, "en_GB") == 0)
         translatedValues.insert(std::make_pair("en_GB", child.value != NULL ? child.value : ""));
+      else if (strcmp(lang, "no") == 0)
+        translatedValues.insert(std::make_pair("nb_NO", child.value != NULL ? child.value : ""));
     }
   }
 
@@ -889,12 +891,12 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
     return false;
   const cp_extension_t *metadata = GetExtension(plugin, "xbmc.addon.metadata"); //<! backword compatibilty
   if (!metadata)
-    metadata = CAddonMgr::Get().GetExtension(plugin, "kodi.addon.metadata");
+    metadata = CAddonMgr::GetInstance().GetExtension(plugin, "kodi.addon.metadata");
   if (!metadata)
     return false;
 
   vector<std::string> platforms;
-  if (CAddonMgr::Get().GetExtList(metadata->configuration, "platform", platforms))
+  if (CAddonMgr::GetInstance().GetExtList(metadata->configuration, "platform", platforms))
   {
     for (vector<std::string>::const_iterator platform = platforms.begin(); platform != platforms.end(); ++platform)
     {

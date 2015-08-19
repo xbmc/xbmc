@@ -57,22 +57,22 @@ CActiveAEDSPAddon::~CActiveAEDSPAddon(void)
 void CActiveAEDSPAddon::OnDisabled()
 {
   // restart the ADSP manager if we're disabling a client
-  if (CActiveAEDSP::Get().IsActivated())
-    CActiveAEDSP::Get().Activate(true);
+  if (CActiveAEDSP::GetInstance().IsActivated())
+    CActiveAEDSP::GetInstance().Activate(true);
 }
 
 void CActiveAEDSPAddon::OnEnabled()
 {
   // restart the ADSP manager if we're enabling a client
-  CActiveAEDSP::Get().Activate(true);
+  CActiveAEDSP::GetInstance().Activate(true);
 }
 
 AddonPtr CActiveAEDSPAddon::GetRunningInstance() const
 {
-  if (CActiveAEDSP::Get().IsActivated())
+  if (CActiveAEDSP::GetInstance().IsActivated())
   {
     AddonPtr adspAddon;
-    if (CActiveAEDSP::Get().GetAudioDSPAddon(ID(), adspAddon))
+    if (CActiveAEDSP::GetInstance().GetAudioDSPAddon(ID(), adspAddon))
       return adspAddon;
   }
   return CAddon::GetRunningInstance();
@@ -81,32 +81,32 @@ AddonPtr CActiveAEDSPAddon::GetRunningInstance() const
 void CActiveAEDSPAddon::OnPreInstall()
 {
   // stop the ADSP manager, so running ADSP add-ons are stopped and closed
-  CActiveAEDSP::Get().Deactivate();
+  CActiveAEDSP::GetInstance().Deactivate();
 }
 
 void CActiveAEDSPAddon::OnPostInstall(bool restart, bool update)
 {
   // (re)start the ADSP manager
-  CActiveAEDSP::Get().Activate(true);
+  CActiveAEDSP::GetInstance().Activate(true);
 }
 
 void CActiveAEDSPAddon::OnPreUnInstall()
 {
   // stop the ADSP manager, so running ADSP add-ons are stopped and closed
-  CActiveAEDSP::Get().Deactivate();
+  CActiveAEDSP::GetInstance().Deactivate();
 }
 
 void CActiveAEDSPAddon::OnPostUnInstall()
 {
-  if (CSettings::Get().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
-    CActiveAEDSP::Get().Activate(true);
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED))
+    CActiveAEDSP::GetInstance().Activate(true);
 }
 
 bool CActiveAEDSPAddon::CanInstall(const std::string &referer)
 {
-  if (!CActiveAEDSP::Get().InstallAddonAllowed(ID()))
+  if (!CActiveAEDSP::GetInstance().InstallAddonAllowed(ID()))
   {
-    CActiveAEDSP::Get().MarkAsOutdated(ID(), referer);
+    CActiveAEDSP::GetInstance().MarkAsOutdated(ID(), referer);
     return false;
   }
   return CAddon::CanInstall(referer);

@@ -460,12 +460,12 @@ void CGUIDialogContentSettings::FillContentTypes(CONTENT_TYPE content)
   // grab all scrapers which support this content-type
   VECADDONS addons;
   TYPE type = ADDON::ScraperTypeFromContent(content);
-  if (!CAddonMgr::Get().GetAddons(type, addons))
+  if (!CAddonMgr::GetInstance().GetAddons(type, addons))
     return;
 
   AddonPtr addon;
   std::string defaultID;
-  if (CAddonMgr::Get().GetDefault(type, addon))
+  if (CAddonMgr::GetInstance().GetDefault(type, addon))
     defaultID = addon->ID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); ++it)
@@ -506,7 +506,7 @@ void CGUIDialogContentSettings::FillScraperList()
   else
   {
     AddonPtr scraperAddon;
-    CAddonMgr::Get().GetDefault(ADDON::ScraperTypeFromContent(m_content), scraperAddon);
+    CAddonMgr::GetInstance().GetDefault(ADDON::ScraperTypeFromContent(m_content), scraperAddon);
     m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
   }
 

@@ -294,7 +294,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
     return;
 
   // always show "all" items by default
-  if (!CSettings::Get().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWALLITEMS))
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWALLITEMS))
     return;
 
   // no need for "all" item when only one item

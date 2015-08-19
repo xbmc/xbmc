@@ -240,7 +240,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   ChooseBestResolution(fps);
   m_destWidth = g_graphicsContext.GetResInfo(m_resolution).iWidth;
   m_destHeight = g_graphicsContext.GetResInfo(m_resolution).iHeight;
-  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
   m_bConfigured = true;
@@ -388,7 +388,7 @@ unsigned int CWinRenderer::PreInit()
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
-  m_resolution = CDisplaySettings::Get().GetCurrentResolution();
+  m_resolution = CDisplaySettings::GetInstance().GetCurrentResolution();
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
 
@@ -398,7 +398,7 @@ unsigned int CWinRenderer::PreInit()
   m_formats.clear();
   m_formats.push_back(RENDER_FMT_YUV420P);
 
-  m_iRequestedMethod = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+  m_iRequestedMethod = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
 
   if (g_advancedSettings.m_DXVAForceProcessorRenderer
   ||  m_iRequestedMethod == RENDER_METHOD_DXVA)
@@ -466,7 +466,7 @@ void CWinRenderer::UnInit()
 void CWinRenderer::Flush()
 {
   PreInit();
-  SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+  SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageDisplay();
 
   m_bConfigured = true;
@@ -648,12 +648,12 @@ void CWinRenderer::UpdatePSVideoFilter()
 
 void CWinRenderer::UpdateVideoFilter()
 {
-  if (m_scalingMethodGui == (ESCALINGMETHOD)CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod && m_bFilterInitialized)
+  if (m_scalingMethodGui == (ESCALINGMETHOD)CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod && m_bFilterInitialized)
     return;
 
   m_bFilterInitialized = true;
 
-  m_scalingMethodGui = (ESCALINGMETHOD)CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod;
+  m_scalingMethodGui = (ESCALINGMETHOD)CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
   if (!Supports(m_scalingMethod))
@@ -769,9 +769,9 @@ void CWinRenderer::ScaleGUIShader()
   float srcWidth  = (float)srcDesc.Width;
   float srcHeight = (float)srcDesc.Height;
 
-  bool cbcontrol          = (CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast != 50.0f || CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness != 50.0f);
-  unsigned int contrast   = (unsigned int)(CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast *.01f * 255.0f); // we have to divide by two here/multiply by two later
-  unsigned int brightness = (unsigned int)(CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness * .01f * 255.0f);
+  bool cbcontrol          = (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast != 50.0f || CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness != 50.0f);
+  unsigned int contrast   = (unsigned int)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast *.01f * 255.0f); // we have to divide by two here/multiply by two later
+  unsigned int brightness = (unsigned int)(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * .01f * 255.0f);
 
   CRect tu = { m_sourceRect.x1 / srcWidth, m_sourceRect.y1 / srcHeight, m_sourceRect.x2 / srcWidth, m_sourceRect.y2 / srcHeight };
 
@@ -813,8 +813,8 @@ void CWinRenderer::Stage1()
     pContext->OMSetRenderTargets(1, &oldRT, nullptr);
     // render video frame
     m_colorShader->Render(m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect),
-                            CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast,
-                            CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness,
+                            CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast,
+                            CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness,
                             m_iFlags, (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
   }
   else
@@ -835,8 +835,8 @@ void CWinRenderer::Stage1()
     CRect srcRect(0.0f, 0.0f, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight));
 
     m_colorShader->Render(srcRect, srcRect,
-                          CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast,
-                          CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness,
+                          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast,
+                          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness,
                           m_iFlags, (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
 
     // Restore our view port.
@@ -1126,7 +1126,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
         // if scaling is below level, avoid hq scaling
         float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
         float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-        int minScale = CSettings::Get().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+        int minScale = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
         if (scaleX < minScale && scaleY < minScale)
           return false;
         return true;

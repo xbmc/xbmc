@@ -46,7 +46,7 @@ typedef enum {
 class CMediaSettings : public ISettingCallback, public ISettingsHandler, public ISubSettings
 {
 public:
-  static CMediaSettings& Get();
+  static CMediaSettings& GetInstance();
 
   virtual bool Load(const TiXmlNode *settings);
   virtual bool Save(TiXmlNode *settings) const;

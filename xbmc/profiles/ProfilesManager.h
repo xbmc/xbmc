@@ -31,7 +31,7 @@ class TiXmlNode;
 class CProfilesManager : public ISettingsHandler
 {
 public:
-  static CProfilesManager& Get();
+  static CProfilesManager& GetInstance();
 
   virtual void OnSettingsLoaded();
   virtual void OnSettingsSaved();

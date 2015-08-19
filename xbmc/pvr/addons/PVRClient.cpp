@@ -59,10 +59,10 @@ CPVRClient::CPVRClient(const cp_extension_t *ext) :
 {
   ResetProperties();
 
-  m_strAvahiType = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_type");
-  m_strAvahiIpSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_ip_setting");
-  m_strAvahiPortSetting = CAddonMgr::Get().GetExtValue(ext->configuration, "@avahi_port_setting");
-  m_bNeedsConfiguration = !(CAddonMgr::Get().GetExtValue(ext->configuration, "@needs_configuration") == "false");
+  m_strAvahiType = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_type");
+  m_strAvahiIpSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_ip_setting");
+  m_strAvahiPortSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_port_setting");
+  m_bNeedsConfiguration = !(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@needs_configuration") == "false");
 }
 
 CPVRClient::~CPVRClient(void)
@@ -76,15 +76,15 @@ CPVRClient::~CPVRClient(void)
 void CPVRClient::OnDisabled()
 {
   // restart the PVR manager if we're disabling a client
-  if (CPVRManager::Get().IsStarted() && CPVRManager::Get().RestartManagerOnAddonDisabled())
-    CPVRManager::Get().Start(true);
+  if (CPVRManager::GetInstance().IsStarted() && CPVRManager::GetInstance().RestartManagerOnAddonDisabled())
+    CPVRManager::GetInstance().Start(true);
 }
 
 void CPVRClient::OnEnabled()
 {
   // restart the PVR manager if we're enabling a client
-  if (CPVRManager::Get().RestartManagerOnAddonDisabled())
-    CPVRManager::Get().Start(true);
+  if (CPVRManager::GetInstance().RestartManagerOnAddonDisabled())
+    CPVRManager::GetInstance().Start(true);
 }
 
 AddonPtr CPVRClient::GetRunningInstance() const
@@ -101,32 +101,32 @@ AddonPtr CPVRClient::GetRunningInstance() const
 void CPVRClient::OnPreInstall()
 {
   // stop the pvr manager, so running pvr add-ons are stopped and closed
-  PVR::CPVRManager::Get().Stop();
+  PVR::CPVRManager::GetInstance().Stop();
 }
 
 void CPVRClient::OnPostInstall(bool update, bool modal)
 {
   // (re)start the pvr manager
-  PVR::CPVRManager::Get().Start(true);
+  PVR::CPVRManager::GetInstance().Start(true);
 }
 
 void CPVRClient::OnPreUnInstall()
 {
   // stop the pvr manager, so running pvr add-ons are stopped and closed
-  PVR::CPVRManager::Get().Stop();
+  PVR::CPVRManager::GetInstance().Stop();
 }
 
 void CPVRClient::OnPostUnInstall()
 {
-  if (CSettings::Get().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
-    PVR::CPVRManager::Get().Start(true);
+  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRMANAGER_ENABLED))
+    PVR::CPVRManager::GetInstance().Start(true);
 }
 
 bool CPVRClient::CanInstall(const std::string &referer)
 {
-  if (!PVR::CPVRManager::Get().InstallAddonAllowed(ID()))
+  if (!PVR::CPVRManager::GetInstance().InstallAddonAllowed(ID()))
   {
-    PVR::CPVRManager::Get().MarkAsOutdated(ID(), referer);
+    PVR::CPVRManager::GetInstance().MarkAsOutdated(ID(), referer);
     return false;
   }
   return CAddon::CanInstall(referer);

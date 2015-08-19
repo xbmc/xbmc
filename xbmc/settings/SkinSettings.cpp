@@ -40,7 +40,7 @@ CSkinSettings::CSkinSettings()
 CSkinSettings::~CSkinSettings()
 { }
 
-CSkinSettings& CSkinSettings::Get()
+CSkinSettings& CSkinSettings::GetInstance()
 {
   static CSkinSettings sSkinSettings;
   return sSkinSettings;
@@ -185,7 +185,7 @@ void CSkinSettings::MigrateSettings(const ADDON::SkinPtr& skin)
     skin->SaveSettings();
 
     // save the guisettings.xml
-    CSettings::Get().Save();
+    CSettings::GetInstance().Save();
   }
 }
 

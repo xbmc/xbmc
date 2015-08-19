@@ -114,7 +114,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 #ifdef HAS_DS_PLAYER
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
 #endif
@@ -268,8 +268,8 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
   if (settingId == SETTING_VIDEO_CALIBRATION)
   {
     // launch calibration window
-    if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE  &&
-        g_passwordManager.CheckSettingLevelLock(CSettings::Get().GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)->GetLevel()))
+    if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE  &&
+        g_passwordManager.CheckSettingLevelLock(CSettings::GetInstance().GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)->GetLevel()))
       return;
     g_windowManager.ForceActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
@@ -383,7 +383,7 @@ void CGUIDialogVideoSettings::SaveChoice()
 }
 void CGUIDialogVideoSettings::Save()
 {
-  if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+  if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
       !g_passwordManager.CheckSettingLevelLock(::SettingLevelExpert))
     return;
 
@@ -404,14 +404,14 @@ void CGUIDialogVideoSettings::Save()
         return;
       dspdb.EraseVideoSettings();
       dspdb.Close();
-      CMediaSettings::Get().GetDefaultMadvrSettings() = CMediaSettings::Get().GetCurrentMadvrSettings();
+      CMediaSettings::GetInstance().GetDefaultMadvrSettings() = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
     }
 #endif
 
-    CMediaSettings::Get().GetDefaultVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
-    CMediaSettings::Get().GetDefaultVideoSettings().m_SubtitleStream = -1;
-    CMediaSettings::Get().GetDefaultVideoSettings().m_AudioStream = -1;
-    CSettings::Get().Save();
+    CMediaSettings::GetInstance().GetDefaultVideoSettings() = CMediaSettings::GetInstance().GetCurrentVideoSettings();
+    CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
+    CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
+    CSettings::GetInstance().Save();
   }
 }
 
@@ -498,7 +498,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
-  CVideoSettings &videoSettings = CMediaSettings::Get().GetCurrentVideoSettings();
+  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 #ifdef HAS_DS_PLAYER
   CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
 #endif

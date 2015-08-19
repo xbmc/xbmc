@@ -440,7 +440,7 @@ bool CRenderSystemGLES::TestRender()
 {
   static float theta = 0.0;
 
-  //RESOLUTION_INFO resInfo = CDisplaySettings::Get().GetCurrentResolutionInfo();
+  //RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
   //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
 
   glMatrixModview.Push();

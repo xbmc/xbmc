@@ -64,7 +64,7 @@ const PLAYERCOREID PCID_DSPLAYER = EPC_DSPLAYER;
 class CPlayerCoreFactory : public ISettingsHandler
 {
 public:
-  static CPlayerCoreFactory& Get();
+  static CPlayerCoreFactory& GetInstance();
 
   virtual void OnSettingsLoaded();
 

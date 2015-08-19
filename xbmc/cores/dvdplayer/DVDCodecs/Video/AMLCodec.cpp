@@ -1680,12 +1680,12 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
   g_renderManager.RegisterRenderFeaturesCallBack((const void*)this, RenderFeaturesCallBack);
 
-  m_display_rect = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight);
+  m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
 
   std::string strScaler;
   SysfsUtils::GetString("/sys/class/ppmgr/ppscaler", strScaler);
   if (strScaler.find("enabled") == std::string::npos)     // Scaler not enabled, use screen size
-    m_display_rect = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iScreenHeight);
+    m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight);
 
 /*
   // if display is set to 1080xxx, then disable deinterlacer for HD content
@@ -2021,7 +2021,7 @@ void CAMLCodec::Process()
 
         double app_pts = GetPlayerPtsSeconds();
         // add in audio delay/display latency contribution
-        double offset  = g_renderManager.GetDisplayLatency() - CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay;
+        double offset  = g_renderManager.GetDisplayLatency() - CMediaSettings::GetInstance().GetCurrentVideoSettings().m_AudioDelay;
         // correct video pts by user set delay and rendering delay
         app_pts += offset;
 
@@ -2141,14 +2141,14 @@ std::string CAMLCodec::GetStereoMode()
 {
   std::string  stereo_mode;
 
-  switch(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoMode)
+  switch(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoMode)
   {
     case RENDER_STEREO_MODE_SPLIT_VERTICAL:   stereo_mode = "left_right"; break;
     case RENDER_STEREO_MODE_SPLIT_HORIZONTAL: stereo_mode = "top_bottom"; break;
     default:                                  stereo_mode = m_hints.stereo_mode; break;
   }
 
-  if(CMediaSettings::Get().GetCurrentVideoSettings().m_StereoInvert)
+  if(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_StereoInvert)
     stereo_mode = RenderManager::GetStereoModeInvert(stereo_mode);
   return stereo_mode;
 }
@@ -2168,20 +2168,20 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   bool update = false;
 
   // video zoom adjustment.
-  float zoom = CMediaSettings::Get().GetCurrentVideoSettings().m_CustomZoomAmount;
+  float zoom = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount;
   if ((int)(zoom * 1000) != (int)(m_zoom * 1000))
   {
     m_zoom = zoom;
   }
   // video contrast adjustment.
-  int contrast = CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast;
+  int contrast = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast;
   if (contrast != m_contrast)
   {
     SetVideoContrast(contrast);
     m_contrast = contrast;
   }
   // video brightness adjustment.
-  int brightness = CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness;
+  int brightness = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness;
   if (brightness != m_brightness)
   {
     SetVideoBrightness(brightness);
@@ -2189,7 +2189,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   }
 
   // video view mode
-  int view_mode = CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode;
+  int view_mode = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode;
   if (m_view_mode != view_mode)
   {
     m_view_mode = view_mode;
@@ -2244,7 +2244,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   }
 
   CRect gui, display;
-  gui = CRect(0, 0, CDisplaySettings::Get().GetCurrentResolutionInfo().iWidth, CDisplaySettings::Get().GetCurrentResolutionInfo().iHeight);
+  gui = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
 
 #ifdef TARGET_ANDROID
   display = m_display_rect;

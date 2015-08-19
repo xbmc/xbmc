@@ -106,7 +106,7 @@ IFile* CFileFactory::CreateLoader(const std::string& strFileName)
 
 IFile* CFileFactory::CreateLoader(const CURL& url)
 {
-  if (!CWakeOnAccess::Get().WakeUpHost(url))
+  if (!CWakeOnAccess::GetInstance().WakeUpHost(url))
     return NULL;
 
 #if defined(TARGET_ANDROID)

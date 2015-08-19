@@ -59,10 +59,9 @@ public:
     , param1{ p1 }
     , param2{ p2 }
     , lpVoid{ payload }
-
+    , strParam( param )
+    , params( vecParams )
   {
-    strParam = param;
-    params = vecParams;
   }
 
   ThreadMessage(const ThreadMessage& other)

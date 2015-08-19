@@ -62,7 +62,7 @@ bool CContextMenuItem::Execute(const CFileItemPtr& item) const
     return false;
 
   LanguageInvokerPtr invoker(new CContextItemAddonInvoker(&g_pythonParser, item));
-  return (CScriptInvocationManager::Get().ExecuteAsync(m_library, invoker, m_addon) != -1);
+  return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, m_addon) != -1);
 }
 
 bool CContextMenuItem::operator==(const CContextMenuItem& other) const

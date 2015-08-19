@@ -31,7 +31,7 @@ public:
   static const CContextMenuItem MAIN;
   static const CContextMenuItem MANAGE;
 
-  static CContextMenuManager& Get();
+  static CContextMenuManager& GetInstance();
 
   /*!
    * \param id - id of the context button clicked on.

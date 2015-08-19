@@ -71,7 +71,7 @@ CViewStateSettings::~CViewStateSettings()
   m_viewStates.clear();
 }
 
-CViewStateSettings& CViewStateSettings::Get()
+CViewStateSettings& CViewStateSettings::GetInstance()
 {
   static CViewStateSettings sViewStateSettings;
   return sViewStateSettings;

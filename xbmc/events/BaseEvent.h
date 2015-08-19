@@ -43,7 +43,7 @@ protected:
   CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, EventLevel level = EventLevelInformation);
   CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, EventLevel level = EventLevelInformation);
   CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, EventLevel level = EventLevelInformation);
-  CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level = EventLevelInformation);
+  CBaseEvent(const std::string& identifier, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level = EventLevelInformation);
 
   EventLevel m_level;
   std::string m_identifier;

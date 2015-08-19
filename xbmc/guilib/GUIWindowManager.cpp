@@ -72,8 +72,6 @@
 #include "windows/GUIWindowStartup.h"
 #include "video/windows/GUIWindowFullScreen.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
-#include "music/dialogs/GUIDialogMusicOverlay.h"
-#include "video/dialogs/GUIDialogVideoOverlay.h"
 
 
 // Dialog includes
@@ -183,7 +181,7 @@ void CGUIWindowManager::Initialize()
 
   LoadNotOnDemandWindows();
 
-  CApplicationMessenger::Get().RegisterReceiver(this);
+  CApplicationMessenger::GetInstance().RegisterReceiver(this);
 }
 
 void CGUIWindowManager::CreateWindows()
@@ -312,8 +310,6 @@ void CGUIWindowManager::CreateWindows()
 #endif
 
   Add(new CGUIDialogVideoOSD);
-  Add(new CGUIDialogMusicOverlay);
-  Add(new CGUIDialogVideoOverlay);
   Add(new CGUIWindowScreensaver);
   Add(new CGUIWindowWeather);
   Add(new CGUIWindowStartup);
@@ -421,8 +417,6 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_SYSTEM_INFORMATION);
     Delete(WINDOW_SCREENSAVER);
     Delete(WINDOW_DIALOG_VIDEO_OSD);
-    Delete(WINDOW_DIALOG_MUSIC_OVERLAY);
-    Delete(WINDOW_DIALOG_VIDEO_OVERLAY);
     Delete(WINDOW_SLIDESHOW);
     Delete(WINDOW_ADDON_BROWSER);
     Delete(WINDOW_SKIN_SETTINGS);
@@ -758,7 +752,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<string>& para
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    CApplicationMessenger::Get().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, iWindowID, swappingWindows ? 1 : 0, nullptr, "", params);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, iWindowID, swappingWindows ? 1 : 0, nullptr, "", params);
   }
   else
   {
@@ -773,7 +767,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<stri
   // virtual music window which returns the last open music window (aka the music start window)
   if (iWindowID == WINDOW_MUSIC)
   {
-    iWindowID = CSettings::Get().GetInt(CSettings::SETTING_MYMUSIC_STARTWINDOW);
+    iWindowID = CSettings::GetInstance().GetInt(CSettings::SETTING_MYMUSIC_STARTWINDOW);
     // ensure the music virtual window only returns music files and music library windows
     if (iWindowID != WINDOW_MUSIC_NAV)
       iWindowID = WINDOW_MUSIC_FILES;
@@ -986,14 +980,6 @@ bool CGUIWindowManager::OnAction(const CAction &action) const
         return false;
       }
       return true; // do nothing with the action until the anim is finished
-    }
-    // music or video overlay are handled as a special case, as they're modeless, but we allow
-    // clicking on them with the mouse.
-    if (action.IsMouse() && (dialog->GetID() == WINDOW_DIALOG_VIDEO_OVERLAY ||
-                             dialog->GetID() == WINDOW_DIALOG_MUSIC_OVERLAY))
-    {
-      if (dialog->OnAction(action))
-        return true;
     }
     lock.Enter();
     if (topMost > m_activeDialogs.size())

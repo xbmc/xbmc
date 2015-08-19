@@ -62,38 +62,38 @@ CRepository::CRepository(const cp_extension_t *ext)
   {
     AddonVersion version("0.0.0");
     AddonPtr addonver;
-    if (CAddonMgr::Get().GetAddon("xbmc.addon", addonver))
+    if (CAddonMgr::GetInstance().GetAddon("xbmc.addon", addonver))
       version = addonver->Version();
     for (size_t i = 0; i < ext->configuration->num_children; ++i)
     {
       if(ext->configuration->children[i].name &&
          strcmp(ext->configuration->children[i].name, "dir") == 0)
       {
-        AddonVersion min_version(CAddonMgr::Get().GetExtValue(&ext->configuration->children[i], "@minversion"));
+        AddonVersion min_version(CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "@minversion"));
         if (min_version <= version)
         {
           DirInfo dir;
           dir.version    = min_version;
-          dir.checksum   = CAddonMgr::Get().GetExtValue(&ext->configuration->children[i], "checksum");
-          dir.compressed = CAddonMgr::Get().GetExtValue(&ext->configuration->children[i], "info@compressed") == "true";
-          dir.info       = CAddonMgr::Get().GetExtValue(&ext->configuration->children[i], "info");
-          dir.datadir    = CAddonMgr::Get().GetExtValue(&ext->configuration->children[i], "datadir");
-          dir.zipped     = CAddonMgr::Get().GetExtValue(&ext->configuration->children[i], "datadir@zip") == "true";
-          dir.hashes     = CAddonMgr::Get().GetExtValue(&ext->configuration->children[i], "hashes") == "true";
+          dir.checksum   = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "checksum");
+          dir.compressed = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info@compressed") == "true";
+          dir.info       = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info");
+          dir.datadir    = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir");
+          dir.zipped     = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir@zip") == "true";
+          dir.hashes     = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "hashes") == "true";
           m_dirs.push_back(dir);
         }
       }
     }
     // backward compatibility
-    if (!CAddonMgr::Get().GetExtValue(ext->configuration, "info").empty())
+    if (!CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info").empty())
     {
       DirInfo info;
-      info.checksum   = CAddonMgr::Get().GetExtValue(ext->configuration, "checksum");
-      info.compressed = CAddonMgr::Get().GetExtValue(ext->configuration, "info@compressed") == "true";
-      info.info       = CAddonMgr::Get().GetExtValue(ext->configuration, "info");
-      info.datadir    = CAddonMgr::Get().GetExtValue(ext->configuration, "datadir");
-      info.zipped     = CAddonMgr::Get().GetExtValue(ext->configuration, "datadir@zip") == "true";
-      info.hashes     = CAddonMgr::Get().GetExtValue(ext->configuration, "hashes") == "true";
+      info.checksum   = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "checksum");
+      info.compressed = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info@compressed") == "true";
+      info.info       = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info");
+      info.datadir    = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir");
+      info.zipped     = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir@zip") == "true";
+      info.hashes     = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
       m_dirs.push_back(info);
     }
   }
@@ -170,7 +170,7 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
 
   CXBMCTinyXML doc;
   if (doc.LoadFile(file) && doc.RootElement() &&
-      CAddonMgr::Get().AddonsFromRepoXML(doc.RootElement(), result))
+      CAddonMgr::GetInstance().AddonsFromRepoXML(doc.RootElement(), result))
   {
     for (IVECADDONS i = result.begin(); i != result.end(); ++i)
     {
@@ -200,7 +200,7 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
 void CRepository::OnPostInstall(bool update, bool modal)
 {
   // force refresh of addon repositories
-  CAddonInstaller::Get().UpdateRepos(true, false, true);
+  CAddonInstaller::GetInstance().UpdateRepos(true, false, true);
 }
 
 void CRepository::OnPostUnInstall()
@@ -210,7 +210,7 @@ void CRepository::OnPostUnInstall()
   database.DeleteRepository(ID());
 
   // force refresh of addon repositories
-  CAddonInstaller::Get().UpdateRepos(true, false, true);
+  CAddonInstaller::GetInstance().UpdateRepos(true, false, true);
 }
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
@@ -262,13 +262,9 @@ bool CRepositoryUpdateJob::DoWork()
       break;
 
     AddonPtr newAddon = i->second;
-    bool markedAsBroken = false;
-    bool deps_met = CAddonInstaller::Get().CheckDependencies(newAddon, &database);
+    bool deps_met = CAddonInstaller::GetInstance().CheckDependencies(newAddon, &database);
     if (!deps_met && newAddon->Props().broken.empty())
-    {
       newAddon->Props().broken = "DEPSNOTMET";
-      markedAsBroken = true;
-    }
 
     // invalidate the art associated with this item
     if (!newAddon->Props().fanart.empty())
@@ -277,19 +273,19 @@ bool CRepositoryUpdateJob::DoWork()
       textureDB.InvalidateCachedTexture(newAddon->Props().icon);
 
     AddonPtr addon;
-    CAddonMgr::Get().GetAddon(newAddon->ID(),addon);
+    CAddonMgr::GetInstance().GetAddon(newAddon->ID(),addon);
     if (addon && newAddon->Version() > addon->Version() &&
         !database.IsAddonBlacklisted(newAddon->ID(),newAddon->Version().asString()) &&
         deps_met)
     {
-      if (CSettings::Get().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
+      if (CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
       {
         string referer;
         if (URIUtils::IsInternetStream(newAddon->Path()))
           referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().asString().c_str());
 
         if (newAddon->CanInstall(referer))
-          CAddonInstaller::Get().Install(addon->ID(), true, referer);
+          CAddonInstaller::GetInstance().Install(addon->ID(), true, referer);
       }
       else
         notifications.push_back(addon);
@@ -301,27 +297,25 @@ bool CRepositoryUpdateJob::DoWork()
                      database.GetAddonVersion(newAddon->ID()) > newAddon->Version();
     if (!haveNewer)
     {
-      if (!newAddon->Props().broken.empty())
+      // if the add-on is installed and has just been marked as broken (but not in the database yet)
+      // ask the user whether he wants to disable the add-on
+      if (addon && !newAddon->Props().broken.empty() && database.IsAddonBroken(newAddon->ID()).empty())
       {
-        if (database.IsAddonBroken(newAddon->ID()).empty())
-        {
-          std::string line = g_localizeStrings.Get(24096);
-          if (newAddon->Props().broken == "DEPSNOTMET")
-            line = g_localizeStrings.Get(24104);
-          if (addon && CGUIDialogYesNo::ShowAndGetInput(CVariant{newAddon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}))
-            CAddonMgr::Get().DisableAddon(newAddon->ID());
-        }
+        std::string line = g_localizeStrings.Get(24096);
+        if (newAddon->Props().broken == "DEPSNOTMET")
+          line = g_localizeStrings.Get(24104);
+        if (CGUIDialogYesNo::ShowAndGetInput(CVariant{newAddon->Name()}, CVariant{line}, CVariant{24097}, CVariant{""}))
+          CAddonMgr::GetInstance().DisableAddon(newAddon->ID());
+
+        CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(newAddon, 24096)));
       }
       database.BreakAddon(newAddon->ID(), newAddon->Props().broken);
-
-      if (markedAsBroken)
-        CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(newAddon, 24096)));
     }
   }
   database.CommitMultipleExecute();
   textureDB.CommitMultipleExecute();
   MarkFinished();
-  if (!notifications.empty() && CSettings::Get().GetBool(CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS))
+  if (!notifications.empty() && CSettings::GetInstance().GetBool(CSettings::SETTING_GENERAL_ADDONNOTIFICATIONS))
   {
     if (notifications.size() == 1)
       CGUIDialogKaiToast::QueueNotification(notifications[0]->Icon(),

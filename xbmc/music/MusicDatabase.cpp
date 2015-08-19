@@ -91,7 +91,7 @@ static void AnnounceRemove(const std::string& content, int id)
   data["id"] = id;
   if (g_application.IsMusicScanning())
     data["transaction"] = true;
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnRemove", data);
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnRemove", data);
 }
 
 static void AnnounceUpdate(const std::string& content, int id)
@@ -101,7 +101,7 @@ static void AnnounceUpdate(const std::string& content, int id)
   data["id"] = id;
   if (g_application.IsMusicScanning())
     data["transaction"] = true;
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
 }
 
 CMusicDatabase::CMusicDatabase(void)
@@ -2660,7 +2660,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   CGUIDialogProgress* pDlgProgress = NULL;
   unsigned int time = XbmcThreads::SystemClockMillis();
   CLog::Log(LOGNOTICE, "%s: Starting musicdatabase cleanup ..", __FUNCTION__);
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnCleanStarted");
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnCleanStarted");
 
   // first cleanup any songs with invalid paths
   if (bShowProgress)
@@ -2751,7 +2751,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   }
   time = XbmcThreads::SystemClockMillis() - time;
   CLog::Log(LOGNOTICE, "%s: Cleaning musicdatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnCleanFinished");
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnCleanFinished");
 
   if (!Compress(false))
   {
@@ -2761,14 +2761,14 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
 
 error:
   RollbackTransaction();
-  ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnCleanFinished");
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnCleanFinished");
   return ret;
 }
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
 #ifdef HAS_DVD_DRIVE
-  if (!CSettings::Get().GetBool(CSettings::SETTING_AUDIOCDS_USECDDB))
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOCDS_USECDDB))
     return false;
 
   // check network connectivity
@@ -2789,12 +2789,12 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   if (bRequery)
   {
     std::string strFile = StringUtils::Format("%x.cddb", pCdInfo->GetCddbDiscId());
-    CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::Get().GetCDDBFolder(), strFile));
+    CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetCDDBFolder(), strFile));
   }
 
   // Prepare cddb
   Xcddb cddb;
-  cddb.setCacheDir(CProfilesManager::Get().GetCDDBFolder());
+  cddb.setCacheDir(CProfilesManager::GetInstance().GetCDDBFolder());
 
   // Do we have to look for cddb information
   if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
@@ -2880,7 +2880,7 @@ void CMusicDatabase::DeleteCDDBInfo()
 {
 #ifdef HAS_DVD_DRIVE
   CFileItemList items;
-  if (!CDirectory::GetDirectory(CProfilesManager::Get().GetCDDBFolder(), items, ".cddb", DIR_FLAG_NO_FILE_DIRS))
+  if (!CDirectory::GetDirectory(CProfilesManager::GetInstance().GetCDDBFolder(), items, ".cddb", DIR_FLAG_NO_FILE_DIRS))
   {
     CGUIDialogOK::ShowAndGetInput(CVariant{313}, CVariant{426});
     return ;
@@ -2902,7 +2902,7 @@ void CMusicDatabase::DeleteCDDBInfo()
       strFile.erase(strFile.size() - 5, 5);
       ULONG lDiscId = strtoul(strFile.c_str(), NULL, 16);
       Xcddb cddb;
-      cddb.setCacheDir(CProfilesManager::Get().GetCDDBFolder());
+      cddb.setCacheDir(CProfilesManager::GetInstance().GetCDDBFolder());
 
       if (!cddb.queryCache(lDiscId))
         continue;
@@ -2939,7 +2939,7 @@ void CMusicDatabase::DeleteCDDBInfo()
       if (it->second == strSelectedAlbum)
       {
         std::string strFile = StringUtils::Format("%x.cddb", (unsigned int) it->first);
-        CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::Get().GetCDDBFolder(), strFile));
+        CFile::Delete(URIUtils::AddFileToFolder(CProfilesManager::GetInstance().GetCDDBFolder(), strFile));
         break;
       }
     }
@@ -3720,8 +3720,8 @@ void CMusicDatabase::UpdateTables(int version)
   {
     m_pDS->exec("ALTER TABLE album_artist ADD strJoinPhrase text\n");
     m_pDS->exec("ALTER TABLE song_artist ADD strJoinPhrase text\n");
-    CMediaSettings::Get().SetMusicNeedsUpdate(35);
-    CSettings::Get().Save();
+    CMediaSettings::GetInstance().SetMusicNeedsUpdate(35);
+    CSettings::GetInstance().Save();
   }
 
   if (version < 36)
@@ -3859,8 +3859,8 @@ void CMusicDatabase::UpdateTables(int version)
   if (version < 53)
   {
     m_pDS->exec("ALTER TABLE song ADD dateAdded text");
-    CMediaSettings::Get().SetMusicNeedsUpdate(53);
-    CSettings::Get().Save();
+    CMediaSettings::GetInstance().SetMusicNeedsUpdate(53);
+    CSettings::GetInstance().Save();
   }
 }
 
@@ -4524,7 +4524,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
       if (content != CONTENT_NONE)
       { // content set, use pre configured or default scraper
         ADDON::AddonPtr addon;
-        if (!scraperUUID.empty() && ADDON::CAddonMgr::Get().GetAddon(scraperUUID, addon) && addon)
+        if (!scraperUUID.empty() && ADDON::CAddonMgr::GetInstance().GetAddon(scraperUUID, addon) && addon)
         {
           info = std::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
           if (!info)
@@ -4536,7 +4536,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
       else
       { // use default scraper of the requested type
         ADDON::AddonPtr defaultScraper;
-        if (ADDON::CAddonMgr::Get().GetDefault(type, defaultScraper))
+        if (ADDON::CAddonMgr::GetInstance().GetDefault(type, defaultScraper))
         {
           info = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
         }
@@ -4547,7 +4547,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
     if (!info)
     { // use default music scraper instead
       ADDON::AddonPtr addon;
-      if(ADDON::CAddonMgr::Get().GetDefault(type, addon))
+      if(ADDON::CAddonMgr::GetInstance().GetDefault(type, addon))
       {
         info = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
         return info != NULL;
@@ -4602,7 +4602,7 @@ bool CMusicDatabase::GetItems(const std::string &strBaseDir, const std::string &
   else if (StringUtils::EqualsNoCase(itemType, "years"))
     return GetYearsNav(strBaseDir, items, filter);
   else if (StringUtils::EqualsNoCase(itemType, "artists"))
-    return GetArtistsNav(strBaseDir, items, !CSettings::Get().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1, -1, -1, filter, sortDescription);
+    return GetArtistsNav(strBaseDir, items, !CSettings::GetInstance().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1, -1, -1, filter, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, "albums"))
     return GetAlbumsByWhere(strBaseDir, filter, items, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, "songs"))
@@ -4703,7 +4703,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
           {
             string thumb = GetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb");
             if (!thumb.empty() && (overwrite || !CFile::Exists(URIUtils::AddFileToFolder(strPath,"folder.jpg"))))
-              CTextureCache::Get().Export(thumb, URIUtils::AddFileToFolder(strPath,"folder.jpg"));
+              CTextureCache::GetInstance().Export(thumb, URIUtils::AddFileToFolder(strPath,"folder.jpg"));
           }
           xmlDoc.Clear();
           TiXmlDeclaration decl("1.0", "UTF-8", "yes");
@@ -4778,9 +4778,9 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
             std::string savedThumb = URIUtils::AddFileToFolder(strPath,"folder.jpg");
             std::string savedFanart = URIUtils::AddFileToFolder(strPath,"fanart.jpg");
             if (artwork.find("thumb") != artwork.end() && (overwrite || !CFile::Exists(savedThumb)))
-              CTextureCache::Get().Export(artwork["thumb"], savedThumb);
+              CTextureCache::GetInstance().Export(artwork["thumb"], savedThumb);
             if (artwork.find("fanart") != artwork.end() && (overwrite || !CFile::Exists(savedFanart)))
-              CTextureCache::Get().Export(artwork["fanart"], savedFanart);
+              CTextureCache::GetInstance().Export(artwork["fanart"], savedFanart);
           }
           xmlDoc.Clear();
           TiXmlDeclaration decl("1.0", "UTF-8", "yes");
@@ -4812,7 +4812,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFiles, b
       if (iFailCount > 0)
         data["failcount"] = iFailCount;
     }
-    ANNOUNCEMENT::CAnnouncementManager::Get().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnExport", data);
+    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnExport", data);
   }
   catch (...)
   {
@@ -5654,7 +5654,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
       if (xsp.GetOrder() != SortByNone)
         sorting.sortBy = xsp.GetOrder();
       sorting.sortOrder = xsp.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
-      if (CSettings::Get().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
         sorting.sortAttributes = SortAttributeIgnoreArticle;
     }
   }

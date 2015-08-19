@@ -81,7 +81,7 @@ namespace PVR
     CONTINUE_LAST_CHANNEL_IN_FOREGROUND
   };
 
-  #define g_PVRManager       CPVRManager::Get()
+  #define g_PVRManager       CPVRManager::GetInstance()
   #define g_PVRChannelGroups g_PVRManager.ChannelGroups()
   #define g_PVRTimers        g_PVRManager.Timers()
   #define g_PVRRecordings    g_PVRManager.Recordings()
@@ -117,7 +117,7 @@ namespace PVR
      * @brief Get the instance of the PVRManager.
      * @return The PVRManager instance.
      */
-    static CPVRManager &Get(void);
+    static CPVRManager &GetInstance();
 
     virtual void OnSettingChanged(const CSetting *setting);
     virtual void OnSettingAction(const CSetting *setting);

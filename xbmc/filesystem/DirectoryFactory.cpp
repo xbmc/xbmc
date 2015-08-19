@@ -112,7 +112,7 @@ using namespace XFILE;
  */
 IDirectory* CDirectoryFactory::Create(const CURL& url)
 {
-  if (!CWakeOnAccess::Get().WakeUpHost(url))
+  if (!CWakeOnAccess::GetInstance().WakeUpHost(url))
     return NULL;
 
   CFileItem item(url.Get(), false);

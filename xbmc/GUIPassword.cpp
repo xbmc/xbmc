@@ -56,7 +56,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
   // \param pItem The share folder item to access
   // \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
   // \return If access is granted, returns \e true
-  if (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+  if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
     return true;
 
   while (pItem->m_iHasLock > 1)
@@ -71,7 +71,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
     }
     else
     {
-      if (0 != CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) && pItem->m_iBadPwdCount >= CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
+      if (0 != CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) && pItem->m_iBadPwdCount >= CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
       { // user previously exhausted all retries, show access denied error
         CGUIDialogOK::ShowAndGetInput(CVariant{12345}, CVariant{12346});
         return false;
@@ -99,18 +99,18 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
         pItem->m_iHasLock = 1;
         g_passwordManager.LockSource(strType,strLabel,false);
         sprintf(buffer,"%i",pItem->m_iBadPwdCount);
-        CMediaSourceSettings::Get().UpdateSource(strType, strLabel, "badpwdcount", buffer);
-        CMediaSourceSettings::Get().Save();
+        CMediaSourceSettings::GetInstance().UpdateSource(strType, strLabel, "badpwdcount", buffer);
+        CMediaSourceSettings::GetInstance().Save();
         break;
       }
     case 1:
       {
         // password entry failed
-        if (0 != CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
+        if (0 != CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
           pItem->m_iBadPwdCount++;
         sprintf(buffer,"%i",pItem->m_iBadPwdCount);
-        CMediaSourceSettings::Get().UpdateSource(strType, strLabel, "badpwdcount", buffer);
-        CMediaSourceSettings::Get().Save();
+        CMediaSourceSettings::GetInstance().UpdateSource(strType, strLabel, "badpwdcount", buffer);
+        CMediaSourceSettings::GetInstance().Save();
         break;
       }
     default:
@@ -130,16 +130,16 @@ bool CGUIPassword::CheckStartUpLock()
   int iVerifyPasswordResult = -1;
   std::string strHeader = g_localizeStrings.Get(20075);
   if (iMasterLockRetriesLeft == -1)
-    iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+    iMasterLockRetriesLeft = CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
   if (g_passwordManager.iMasterLockRetriesLeft == 0) g_passwordManager.iMasterLockRetriesLeft = 1;
-  std::string strPassword = CProfilesManager::Get().GetMasterProfile().getLockCode();
-  if (CProfilesManager::Get().GetMasterProfile().getLockMode() == 0)
+  std::string strPassword = CProfilesManager::GetInstance().GetMasterProfile().getLockCode();
+  if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == 0)
     iVerifyPasswordResult = 0;
   else
   {
     for (int i=1; i <= g_passwordManager.iMasterLockRetriesLeft; i++)
     {
-      iVerifyPasswordResult = VerifyPassword(CProfilesManager::Get().GetMasterProfile().getLockMode(), strPassword, strHeader);
+      iVerifyPasswordResult = VerifyPassword(CProfilesManager::GetInstance().GetMasterProfile().getLockMode(), strPassword, strHeader);
       if (iVerifyPasswordResult != 0 )
       {
         std::string strLabel1;
@@ -157,19 +157,19 @@ bool CGUIPassword::CheckStartUpLock()
 
   if (iVerifyPasswordResult == 0)
   {
-    g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+    g_passwordManager.iMasterLockRetriesLeft = CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     return true;  // OK The MasterCode Accepted! XBMC Can Run!
   }
   else
   {
-    CApplicationMessenger::Get().PostMsg(TMSG_SHUTDOWN); // Turn off the box
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN); // Turn off the box
     return false;
   }
 }
 
 bool CGUIPassword::SetMasterLockMode(bool bDetails)
 {
-  CProfile* profile = CProfilesManager::Get().GetProfile(0);
+  CProfile* profile = CProfilesManager::GetInstance().GetProfile(0);
   if (profile)
   {
     CProfile::CLock locks = profile->GetLocks();
@@ -194,12 +194,12 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled, bool pro
     return true;
   int iProfileToCheck=iProfile;
   if (iProfile == -1)
-    iProfileToCheck = CProfilesManager::Get().GetCurrentProfileIndex();
+    iProfileToCheck = CProfilesManager::GetInstance().GetCurrentProfileIndex();
   if (iProfileToCheck == 0)
     return IsMasterLockUnlocked(prompt,bCanceled);
   else
   {
-    CProfile *profile = CProfilesManager::Get().GetProfile(iProfileToCheck);
+    CProfile *profile = CProfilesManager::GetInstance().GetProfile(iProfileToCheck);
     if (!profile)
       return false;
 
@@ -207,7 +207,7 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled, bool pro
       return (profile->getLockMode() == LOCK_MODE_EVERYONE);
 
     if (profile->getDate().empty() &&
-       (CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+       (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
         profile->getLockMode() == LOCK_MODE_EVERYONE))
     {
       // user hasn't set a password and this is the first time they've used this account
@@ -216,7 +216,7 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled, bool pro
         return true;
     }
     else
-       if (CProfilesManager::Get().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+       if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
         return CheckLock(profile->getLockMode(),profile->getLockCode(),20095,bCanceled);
   }
 
@@ -233,12 +233,12 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
 {
   bCanceled = false;
   if (iMasterLockRetriesLeft == -1)
-    iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
-  if ((LOCK_MODE_EVERYONE < CProfilesManager::Get().GetMasterProfile().getLockMode() && !bMasterUser) && !bPromptUser)
+    iMasterLockRetriesLeft = CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+  if ((LOCK_MODE_EVERYONE < CProfilesManager::GetInstance().GetMasterProfile().getLockMode() && !bMasterUser) && !bPromptUser)
     // not unlocked, but calling code doesn't want to prompt user
     return false;
 
-  if (g_passwordManager.bMasterUser || CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+  if (g_passwordManager.bMasterUser || CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
     return true;
 
   if (iMasterLockRetriesLeft == 0)
@@ -248,10 +248,9 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
   }
 
   // no, unlock since we are allowed to prompt
-  int iVerifyPasswordResult = -1;
   std::string strHeading = g_localizeStrings.Get(20075);
-  std::string strPassword = CProfilesManager::Get().GetMasterProfile().getLockCode();
-  iVerifyPasswordResult = VerifyPassword(CProfilesManager::Get().GetMasterProfile().getLockMode(), strPassword, strHeading);
+  std::string strPassword = CProfilesManager::GetInstance().GetMasterProfile().getLockCode();
+  int iVerifyPasswordResult = VerifyPassword(CProfilesManager::GetInstance().GetMasterProfile().getLockMode(), strPassword, strHeading);
   if (1 == iVerifyPasswordResult)
     UpdateMasterLockRetryCount(false);
 
@@ -273,7 +272,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
   if (!bResetCount)
   {
     // Bad mastercode entered
-    if (0 < CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
+    if (0 < CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
     {
       // We're keeping track of how many bad passwords are entered
       if (1 < g_passwordManager.iMasterLockRetriesLeft)
@@ -298,7 +297,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     CGUIDialogOK::ShowAndGetInput(CVariant{20075}, CVariant{12345}, CVariant{std::move(dlgLine1)}, CVariant{0});
   }
   else
-    g_passwordManager.iMasterLockRetriesLeft = CSettings::Get().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES); // user entered correct mastercode, reset retries to max allowed
+    g_passwordManager.iMasterLockRetriesLeft = CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES); // user entered correct mastercode, reset retries to max allowed
 }
 
 bool CGUIPassword::CheckLock(LockType btnType, const std::string& strPassword, int iHeading)
@@ -311,12 +310,11 @@ bool CGUIPassword::CheckLock(LockType btnType, const std::string& strPassword, i
 {
   bCanceled = false;
   if (btnType == LOCK_MODE_EVERYONE || strPassword == "-"        ||
-      CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser)
+      CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || g_passwordManager.bMasterUser)
     return true;
 
-  int iVerifyPasswordResult = -1;
   std::string strHeading = g_localizeStrings.Get(iHeading);
-  iVerifyPasswordResult = VerifyPassword(btnType, strPassword, strHeading);
+  int iVerifyPasswordResult = VerifyPassword(btnType, strPassword, strHeading);
 
   if (iVerifyPasswordResult == -1)
     bCanceled = true;
@@ -326,14 +324,14 @@ bool CGUIPassword::CheckLock(LockType btnType, const std::string& strPassword, i
 
 bool CGUIPassword::CheckSettingLevelLock(const SettingLevel& level, bool enforce /*=false*/)
 {
-  LOCK_LEVEL::SETTINGS_LOCK lockLevel = CProfilesManager::Get().GetCurrentProfile().settingsLockLevel();
+  LOCK_LEVEL::SETTINGS_LOCK lockLevel = CProfilesManager::GetInstance().GetCurrentProfile().settingsLockLevel();
   
   if (lockLevel == LOCK_LEVEL::NONE)
     return true;
   
     //check if we are already in settings and in an level that needs unlocking
   int windowID = g_windowManager.GetActiveWindow();
-  if ((int)lockLevel-1 <= (short)CViewStateSettings::Get().GetSettingLevel() && 
+  if ((int)lockLevel-1 <= (short)CViewStateSettings::GetInstance().GetSettingLevel() && 
      (windowID == WINDOW_SETTINGS_MENU || 
          (windowID >= WINDOW_SCREEN_CALIBRATION &&
           windowID <= WINDOW_SETTINGS_MYPVR)))
@@ -349,7 +347,7 @@ bool CGUIPassword::CheckSettingLevelLock(const SettingLevel& level, bool enforce
     {
       //Current Setting level is higher than our permission... so lower the viewing level
       SettingLevel newLevel = (SettingLevel)(short)(lockLevel-2);
-      CViewStateSettings::Get().SetSettingLevel(newLevel);
+      CViewStateSettings::GetInstance().SetSettingLevel(newLevel);
     }
   }
   return true;
@@ -394,25 +392,25 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
   switch (iSwitch)
   {
     case WINDOW_SETTINGS_MENU:  // Settings
-      return CheckSettingLevelLock(CViewStateSettings::Get().GetSettingLevel());
+      return CheckSettingLevelLock(CViewStateSettings::GetInstance().GetSettingLevel());
       break;
     case WINDOW_ADDON_BROWSER:  // Addons
-      bCheckPW = CProfilesManager::Get().GetCurrentProfile().addonmanagerLocked();
+      bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().addonmanagerLocked();
       break;
     case WINDOW_FILES:          // Files
-      bCheckPW = CProfilesManager::Get().GetCurrentProfile().filesLocked();
+      bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().filesLocked();
       break;
     case WINDOW_PROGRAMS:       // Programs
-      bCheckPW = CProfilesManager::Get().GetCurrentProfile().programsLocked();
+      bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().programsLocked();
       break;
     case WINDOW_MUSIC_FILES:    // Music
-      bCheckPW = CProfilesManager::Get().GetCurrentProfile().musicLocked();
+      bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().musicLocked();
       break;
     case WINDOW_VIDEO_FILES:    // Video
-      bCheckPW = CProfilesManager::Get().GetCurrentProfile().videoLocked();
+      bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().videoLocked();
       break;
     case WINDOW_PICTURES:       // Pictures
-      bCheckPW = CProfilesManager::Get().GetCurrentProfile().picturesLocked();
+      bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().picturesLocked();
       break;
     case WINDOW_SETTINGS_PROFILES:
       bCheckPW = true;
@@ -429,7 +427,7 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
 
 bool CGUIPassword::LockSource(const std::string& strType, const std::string& strName, bool bState)
 {
-  VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(strType);
+  VECSOURCES* pShares = CMediaSourceSettings::GetInstance().GetSources(strType);
   bool bResult = false;
   for (IVECSOURCES it=pShares->begin();it != pShares->end();++it)
   {
@@ -455,7 +453,7 @@ void CGUIPassword::LockSources(bool lock)
   const char* strType[5] = {"programs","music","video","pictures","files"};
   for (int i=0;i<5;++i)
   {
-    VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(strType[i]);
+    VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType[i]);
     for (IVECSOURCES it=shares->begin();it != shares->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
         it->m_iHasLock = lock ? 2 : 1;
@@ -470,23 +468,23 @@ void CGUIPassword::RemoveSourceLocks()
   const char* strType[5] = {"programs","music","video","pictures","files"};
   for (int i=0;i<5;++i)
   {
-    VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(strType[i]);
+    VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType[i]);
     for (IVECSOURCES it=shares->begin();it != shares->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE) // remove old info
       {
         it->m_iHasLock = 0;
         it->m_iLockMode = LOCK_MODE_EVERYONE;
-        CMediaSourceSettings::Get().UpdateSource(strType[i], it->strName, "lockmode", "0"); // removes locks from xml
+        CMediaSourceSettings::GetInstance().UpdateSource(strType[i], it->strName, "lockmode", "0"); // removes locks from xml
       }
   }
-  CMediaSourceSettings::Get().Save();
+  CMediaSourceSettings::GetInstance().Save();
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_SOURCES);
   g_windowManager.SendThreadMessage(msg);
 }
 
 bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources)
 {
-  if (g_passwordManager.bMasterUser || CProfilesManager::Get().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+  if (g_passwordManager.bMasterUser || CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
     return true;
 
   // try to find the best matching source

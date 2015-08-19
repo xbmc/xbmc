@@ -1222,9 +1222,6 @@
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicOSD.cpp">
       <Filter>music\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicOverlay.cpp">
-      <Filter>music\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogSongInfo.cpp">
       <Filter>music\dialogs</Filter>
     </ClCompile>
@@ -1580,9 +1577,6 @@
       <Filter>video\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoOSD.cpp">
-      <Filter>video\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoOverlay.cpp">
       <Filter>video\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.cpp">
@@ -4352,9 +4346,6 @@
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicOSD.h">
       <Filter>music\dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicOverlay.h">
-      <Filter>music\dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogSongInfo.h">
       <Filter>music\dialogs</Filter>
     </ClInclude>
@@ -4740,9 +4731,6 @@
       <Filter>video\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoOSD.h">
-      <Filter>video\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoOverlay.h">
       <Filter>video\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.h">

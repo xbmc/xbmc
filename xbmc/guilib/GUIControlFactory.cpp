@@ -1190,8 +1190,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       control = new CGUIRSSControl(
         parentID, id, posX, posY, width, height,
         labelInfo, textColor3, headlineColor, strRSSTags);
-      RssUrls::const_iterator iter = CRssManager::Get().GetUrls().find(iUrlSet);
-      if (iter != CRssManager::Get().GetUrls().end())
+      RssUrls::const_iterator iter = CRssManager::GetInstance().GetUrls().find(iUrlSet);
+      if (iter != CRssManager::GetInstance().GetUrls().end())
         ((CGUIRSSControl *)control)->SetUrlSet(iUrlSet);
     }
     break;
