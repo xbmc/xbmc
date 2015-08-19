@@ -789,6 +789,8 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
         translatedValues.insert(std::make_pair(lang, child.value != NULL ? child.value : ""));
       else if (lang == NULL || strcmp(lang, "en") == 0 || strcmp(lang, "en_GB") == 0)
         translatedValues.insert(std::make_pair("en_GB", child.value != NULL ? child.value : ""));
+      else if (strcmp(lang, "no") == 0)
+        translatedValues.insert(std::make_pair("nb_NO", child.value != NULL ? child.value : ""));
     }
   }
 
