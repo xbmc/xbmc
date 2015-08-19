@@ -482,14 +482,14 @@
 					<visible>!Control.IsVisible(50)</visible>
 				</control>
 				<control type="image">
-					<description>Actor image</description>
+					<description>Album cover</description>
 					<left>210</left>
 					<top>480</top>
 					<width>160</width>
 					<height>160</height>
 					<texture fallback="DefaultAlbumCover.png">$INFO[Container(50).Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>Control.IsVisible(50)</visible>
+					<visible>Control.IsVisible(50) + Container.Content(Artists)</visible>
 				</control>
 				<control type="panel" id="50">
 					<left>380</left>
