@@ -2543,7 +2543,12 @@ msgctxt "#577"
 msgid "Date taken"
 msgstr ""
 
-#empty strings from id 578 to 579
+#: xbmc/utils/SortUtils.cpp
+msgctxt "#578"
+msgid "Artist / Year"
+msgstr ""
+
+#empty string with id 579
 
 msgctxt "#580"
 msgid "Sort direction"

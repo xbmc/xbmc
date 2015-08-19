@@ -57,6 +57,7 @@ typedef enum {
   SortByTrackNumber,
   SortByTime,
   SortByArtist,
+  SortByArtistThenYear,
   SortByAlbum,
   SortByAlbumType,
   SortByGenre,
