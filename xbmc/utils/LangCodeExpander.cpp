@@ -629,7 +629,7 @@ extern const LCENTRY g_iso639_1[186] =
   { MAKECODE('\0','\0','m','t'), "Maltese" },
   { MAKECODE('\0','\0','m','y'), "Burmese" },
   { MAKECODE('\0','\0','n','a'), "Nauru" },
-  { MAKECODE('\0','\0','n','b'), "Bokm\xC3\xA5l, Norwegian" },
+  { MAKECODE('\0','\0','n','b'), "Norwegian Bokm\xC3\xA5l" },
   { MAKECODE('\0','\0','n','d'), "Ndebele, North" },
   { MAKECODE('\0','\0','n','e'), "Nepali" },
   { MAKECODE('\0','\0','n','g'), "Ndonga" },
