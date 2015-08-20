@@ -45,7 +45,6 @@ class IPaintCallbackMadvr
 public:
   virtual ~IPaintCallbackMadvr() {};
 
-  virtual bool IsCurrentThreadId() { return false; }
   virtual bool IsEnteringExclusive(){ return false; }
   virtual void EnableExclusive(bool bEnable){};
   virtual void SetMadvrPixelShader(){};

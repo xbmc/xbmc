@@ -5270,24 +5270,10 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
   }
   return false;
 }
-#ifdef HAS_DS_PLAYER
-bool CApplication::IsCurrentThread(bool checkForMadvr) const
-#else
+
 bool CApplication::IsCurrentThread() const
-#endif
 {
-#ifdef HAS_DS_PLAYER
-  if (CMadvrCallback::Get()->UsingMadvr() && checkForMadvr)
-  {
-    bool isMadvrThread = CMadvrCallback::Get()->GetCallback()->IsCurrentThreadId();
-    bool isApplicationThread = CThread::IsCurrentThread(m_threadID);
-    return (isMadvrThread || isApplicationThread);
-  }
-  else
-    return CThread::IsCurrentThread(m_threadID);
-#else
   return CThread::IsCurrentThread(m_threadID);
-#endif
 }
 
 void CApplication::SetRenderGUI(bool renderGUI)

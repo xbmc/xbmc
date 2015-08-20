@@ -152,11 +152,7 @@ public:
 
   void StartPVRManager();
   void StopPVRManager();
-#ifdef HAS_DS_PLAYER
-  bool IsCurrentThread(bool checkForMadvr = true) const;
-#else
   bool IsCurrentThread() const;
-#endif
   void Stop(int exitCode);
   void RestartApp();
   void UnloadSkin(bool forReload = false);

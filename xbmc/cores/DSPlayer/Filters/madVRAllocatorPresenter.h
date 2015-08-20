@@ -25,10 +25,8 @@
 #include "AllocatorCommon.h"
 #include "mvrInterfaces.h"
 #include "MadvrCallback.h"
-#include "threads/Thread.h"
 #include "MadvrSharedRender.h"
 #include "MadvrSettingsManager.h"
-#include "utils/log.h"
 
 class CmadVRAllocatorPresenter
   : public ISubPicAllocatorPresenterImpl,
@@ -141,7 +139,6 @@ public:
   STDMETHODIMP SetPixelShader(LPCSTR pSrcData, LPCSTR pTarget);
 
   //IPaintCallbackMadvr
-  virtual bool IsCurrentThreadId();
   virtual bool IsEnteringExclusive(){ return m_isEnteringExclusive; }
   virtual void EnableExclusive(bool bEnable);
   virtual void SetMadvrPixelShader();
@@ -159,7 +156,6 @@ private:
   Com::SmartPtr<ISubRenderCallback2> m_pSRCB;
   Com::SmartSize m_ScreenSize;
   EXCLUSIVEMODECALLBACK m_exclusiveCallback;
-  static ThreadIdentifier m_threadID;
   bool m_bIsFullscreen;
   bool m_firstBoot;
   bool m_isEnteringExclusive;
