@@ -649,10 +649,11 @@ int CMusicDatabase::AddSong(const int idAlbum,
                           idAlbum,
                           strMusicBrainzTrackID.c_str());
     else
-      strSQL = PrepareSQL("SELECT * FROM song WHERE idAlbum=%i AND strFileName='%s' AND strTitle='%s' AND strMusicBrainzTrackID IS NULL",
+      strSQL = PrepareSQL("SELECT * FROM song WHERE idAlbum=%i AND strFileName='%s' AND strTitle='%s' AND iTrack=%i AND strMusicBrainzTrackID IS NULL",
                           idAlbum,
                           strFileName.c_str(),
-                          strTitle.c_str());
+                          strTitle.c_str(),
+                          iTrack);
 
     if (!m_pDS->query(strSQL.c_str()))
       return -1;
