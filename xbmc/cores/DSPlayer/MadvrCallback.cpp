@@ -83,12 +83,12 @@ bool CMadvrCallback::GuiVisible(MADVR_RENDER_LAYER layer)
 
 bool CMadvrCallback::UsingMadvr()
 {
-  return m_pAllocatorCallback;
+  return (m_pAllocatorCallback != NULL);
 }
 
 bool CMadvrCallback::ReadyMadvr()
 {
-  return (m_pAllocatorCallback && m_renderOnMadvr);
+  return (m_pAllocatorCallback != NULL && m_renderOnMadvr);
 }
 
 // IMadvrAllocatorCallback
