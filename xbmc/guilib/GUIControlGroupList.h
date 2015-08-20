@@ -52,6 +52,7 @@ public:
   virtual void AddControl(CGUIControl *control, int position = -1);
   virtual void ClearAll();
 
+  virtual std::string GetLabel(int info) const;
   virtual bool GetCondition(int condition, int data) const;
   /**
    * Calculate total size of child controls area (including gaps between controls)
@@ -69,6 +70,9 @@ protected:
   inline float Size(const CGUIControl *control) const;
   void ScrollTo(float offset);
   float GetAlignOffset() const;
+
+  int GetNumItems() const;
+  int GetSelectedItem() const;
 
   float m_itemGap;
   int m_pageControl;

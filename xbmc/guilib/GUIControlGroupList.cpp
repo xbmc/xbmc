@@ -22,6 +22,7 @@
 #include "input/Key.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "GUIControlProfiler.h"
+#include "utils/StringUtils.h"
 #include "GUIFont.h" // for XBFONT_* definitions
 
 CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, const CScroller& scroller)
@@ -417,6 +418,42 @@ bool CGUIControlGroupList::GetCondition(int condition, int data) const
   default:
     return false;
   }
+}
+
+std::string CGUIControlGroupList::GetLabel(int info) const
+{
+  switch (info)
+  {
+  case CONTAINER_CURRENT_ITEM:
+    return StringUtils::Format("%i", GetSelectedItem());
+  case CONTAINER_NUM_ITEMS:
+    return StringUtils::Format("%i", GetNumItems());
+  default:
+    break;
+  }
+  return "";
+}
+
+int CGUIControlGroupList::GetNumItems() const
+{
+  return std::count_if(m_children.begin(), m_children.end(), [&](const CGUIControl *child) {
+    return (child->IsVisible() && child->CanFocus());
+  });
+}
+
+int CGUIControlGroupList::GetSelectedItem() const
+{
+  int index = 1;
+  for (const auto& child : m_children)
+  {
+    if (child->IsVisible() && child->CanFocus())
+    {
+      if (child->HasFocus())
+        return index;
+      index++;
+    }
+  }
+  return -1;
 }
 
 bool CGUIControlGroupList::IsFirstFocusableControl(const CGUIControl *control) const
