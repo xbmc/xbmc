@@ -31,6 +31,7 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
 {
   m_itemGap = itemGap;
   m_pageControl = pageControl;
+  m_focusedPosition = 0;
   m_totalSize = 0;
   m_orientation = orientation;
   m_alignment = alignment;
@@ -67,6 +68,7 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
     SendWindowMessage(message2);
   }
   // we run through the controls, rendering as we go
+  int index = 0;
   float pos = GetAlignOffset();
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
@@ -78,6 +80,13 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
     else
       g_graphicsContext.SetOrigin(m_posX + pos - m_scroller.GetValue(), m_posY);
     control->DoProcess(currentTime, dirtyregions);
+
+    if (pos >= m_scroller.GetValue() && pos + Size(control) <= m_scroller.GetValue() + Size())
+    {
+      if (control->HasFocus())
+        m_focusedPosition = index;
+      index++;
+    }
 
     if (control->IsVisible())
       pos += Size(control) + m_itemGap;
@@ -415,6 +424,8 @@ bool CGUIControlGroupList::GetCondition(int condition, int data) const
     return (m_totalSize >= Size() && m_scroller.GetValue() < m_totalSize - Size());
   case CONTAINER_HAS_PREVIOUS:
     return (m_scroller.GetValue() > 0);
+  case CONTAINER_POSITION:
+    return (m_focusedPosition == data);
   default:
     return false;
   }
@@ -428,6 +439,8 @@ std::string CGUIControlGroupList::GetLabel(int info) const
     return StringUtils::Format("%i", GetSelectedItem());
   case CONTAINER_NUM_ITEMS:
     return StringUtils::Format("%i", GetNumItems());
+  case CONTAINER_POSITION:
+    return StringUtils::Format("%i", m_focusedPosition);
   default:
     break;
   }

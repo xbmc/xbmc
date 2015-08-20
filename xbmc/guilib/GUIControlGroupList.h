@@ -76,6 +76,7 @@ protected:
 
   float m_itemGap;
   int m_pageControl;
+  int m_focusedPosition;
 
   float m_totalSize;
 
