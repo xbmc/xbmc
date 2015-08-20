@@ -2,7 +2,6 @@
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<coordinates>
-		<system>1</system>
 		<left>185</left>
 		<top>40</top>
 		<origin x="185" y="10">!IsEmpty(ListItem.Property(Addon.broken))</origin>

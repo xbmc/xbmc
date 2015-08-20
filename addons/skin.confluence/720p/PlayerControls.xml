@@ -4,7 +4,6 @@
 	<include>dialogeffect</include>
 	<visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo) + !Window.IsActive(Visualisation)</visible>
 	<coordinates>
-		<system>1</system>
 		<left>390</left>
 		<top>250</top>
 	</coordinates>

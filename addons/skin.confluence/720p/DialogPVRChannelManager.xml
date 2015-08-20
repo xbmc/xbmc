@@ -3,7 +3,6 @@
 	<defaultcontrol always="true">20</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<coordinates>
-		<system>1</system>
 		<left>80</left>
 		<top>65</top>
 	</coordinates>

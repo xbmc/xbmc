@@ -2,7 +2,6 @@
 <window type="dialog">
 	<include>dialogeffect</include>
 	<coordinates>
-		<system>1</system>
 		<left>415</left>
 		<top>275</top>
 	</coordinates>

@@ -3,7 +3,6 @@
 	<defaultcontrol>450</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
-		<system>1</system>
 		<left>315</left>
 		<top>260</top>
 	</coordinates>
