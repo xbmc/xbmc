@@ -135,12 +135,9 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   }
 
   // if needed set resolution to match fps then set pixelshader & settings for madVR
-  if (CMadvrCallback::Get()->UsingMadvr())
-  {
-    CMadvrCallback::Get()->GetCallback()->SetResolution();
-    CMadvrCallback::Get()->GetCallback()->SetMadvrPixelShader();
-    CMadvrCallback::Get()->GetSetting()->RestoreSettings();
-  }
+  CMadvrCallback::Get()->SetResolution();
+  CMadvrCallback::Get()->SetMadvrPixelShader();
+  CMadvrCallback::Get()->RestoreSettings();
 
   //TODO Ti-Ben
   //with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
@@ -213,7 +210,7 @@ void CDSGraph::CloseFile()
     CGraphFilters::Get()->DVD.Clear();
 
     if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_EXITMADVRFULLSCREEN))
-      CMadvrCallback::Get()->GetCallback()->EnableExclusive(false);
+      CMadvrCallback::Get()->EnableExclusive(false);
 
     pFilterGraph.Release();
 
@@ -332,7 +329,7 @@ void CDSGraph::UpdateMadvrWindowPosition()
 {
   CRect srcRect, destRect, viewRect;
   g_renderManager.GetVideoRect(srcRect, destRect, viewRect);
-  CMadvrCallback::Get()->GetCallback()->SetMadvrPosition(viewRect, destRect);
+  CMadvrCallback::Get()->SetMadvrPosition(viewRect, destRect);
 }
 
 void CDSGraph::UpdateWindowPosition()

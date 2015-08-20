@@ -70,7 +70,6 @@ bool CGUIFontTTFDX::FirstBegin()
 
 #ifdef HAS_DS_PLAYER
   // Render count to detect when the GUI it's active or deactive (useful for madVR latency mode)
-  if (CMadvrCallback::Get()->ReadyMadvr())
     CMadvrCallback::Get()->IncRenderCount();
 #endif
 

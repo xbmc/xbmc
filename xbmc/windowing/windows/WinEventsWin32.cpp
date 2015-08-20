@@ -828,15 +828,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   }
 #ifdef HAS_DS_PLAYER
   LRESULT ret = 0;
-  bool bCallOurProc = true;
-  
-  if (CMadvrCallback::Get()->UsingMadvr())
-    bCallOurProc = !CMadvrCallback::Get()->GetCallback()->ParentWindowProc(hWnd, uMsg, &wParam, &lParam, &ret);
-
-  if (bCallOurProc)
-    return(DefWindowProc(hWnd, uMsg, wParam, lParam));
-  else
-    return ret;
+  return (CMadvrCallback::Get()->ParentWindowProc(hWnd, uMsg, &wParam, &lParam, &ret)) ? ret : DefWindowProc(hWnd, uMsg, wParam, lParam);
 #else
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
 #endif

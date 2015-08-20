@@ -356,7 +356,7 @@ STDMETHODIMP CmadVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   // Configure initial Madvr Settings
   ConfigureMadvr();
 
-  CMadvrCallback::Get()->SetCallback(this);
+  CMadvrCallback::Get()->Register(this);
 
   (*ppRenderer = (IUnknown*)(INonDelegatingUnknown*)(this))->AddRef();
 

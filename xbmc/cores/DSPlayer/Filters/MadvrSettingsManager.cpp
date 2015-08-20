@@ -30,8 +30,9 @@
 CMadvrSettingsManager::CMadvrSettingsManager(IUnknown* pUnk)
 {
   m_pDXR = pUnk;
-  CMadvrCallback::Get()->SetSettingCallback(this);
+  CMadvrCallback::Get()->Register(this);
 }
+
 CMadvrSettingsManager::~CMadvrSettingsManager()
 {
 }
@@ -388,13 +389,15 @@ void CMadvrSettingsManager::SetDithering(CStdString path, int iValue)
 bool CMadvrSettingsManager::IsProfileActive(std::string path, std::string profile)
 {
   bool result = false;
+  BOOL b;
   if (Com::SmartQIPtr<IMadVRSettings2> pMadvrSettings2 = m_pDXR)
   {
     std::wstring pathW;
     std::wstring profileW;
     g_charsetConverter.utf8ToW(path, pathW, false);
     g_charsetConverter.utf8ToW(profile, profileW, false);
-    result = (bool)pMadvrSettings2->SettingsIsProfileActive(pathW.c_str(), profileW.c_str());
+    b = pMadvrSettings2->SettingsIsProfileActive(pathW.c_str(), profileW.c_str());
+    result = b != 0;
   }
   return result;
 }

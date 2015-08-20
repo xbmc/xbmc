@@ -38,17 +38,20 @@ public:
   bool bGuiVisibleOver;
 };
 
-class CMadvrSharedRender
+class CMadvrSharedRender: public IMadvrPaintCallback
 {
+
 public:
   CMadvrSharedRender();
   virtual ~CMadvrSharedRender();
 
+  // IMadvrPaintCallback
+  virtual HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
+  virtual void Flush();
+
   HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height);
   HRESULT Render(MADVR_RENDER_LAYER layer);  
-  HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
-  void Flush();
-  
+
 private:
   HRESULT CreateSharedResource(IDirect3DTexture9** ppTexture9, ID3D11Texture2D** ppTexture11, ID3D11RenderTargetView** ppSurface11);
   HRESULT CreateSharedQueueResource();

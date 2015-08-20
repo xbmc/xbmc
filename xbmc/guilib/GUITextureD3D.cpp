@@ -43,7 +43,6 @@ void CGUITextureD3D::Begin(color_t color)
 
 #ifdef HAS_DS_PLAYER
   // Render count to notice when GUI it's active or deactive (useful for madVR latency mode)
-  if (CMadvrCallback::Get()->ReadyMadvr())
     CMadvrCallback::Get()->IncRenderCount();
 #endif
 

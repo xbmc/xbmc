@@ -128,52 +128,52 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_MADVR_DEINT_ACTIVE)
   { 
     madvrSettings.m_deintactive = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->GetSetting()->SetDeintActive("", madvrSettings.m_deintactive);
+    CMadvrCallback::Get()->SetDeintActive("", madvrSettings.m_deintactive);
   }
   else if (settingId == SETTING_MADVR_DEINT_FORCE)
   {
     madvrSettings.m_deintforce = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->GetSetting()->SetStr("contentType", MadvrDeintForce[madvrSettings.m_deintforce].name);
+    CMadvrCallback::Get()->SetStr("contentType", MadvrDeintForce[madvrSettings.m_deintforce].name);
   }
   else if (settingId == SETTING_MADVR_DEINT_LOOKPIXELS)
   {
     madvrSettings.m_deintlookpixels = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->GetSetting()->SetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
+    CMadvrCallback::Get()->SetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
   }
   else if (settingId == SETTING_MADVR_SMOOTHMOTION)
   {
     madvrSettings.m_smoothMotion = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->GetSetting()->SetSmoothmotion("", madvrSettings.m_smoothMotion);
+    CMadvrCallback::Get()->SetSmoothmotion("", madvrSettings.m_smoothMotion);
   }
   else if (settingId == SETTING_MADVR_DITHERING)
   {
     madvrSettings.m_dithering = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->GetSetting()->SetDithering("", madvrSettings.m_dithering);
+    CMadvrCallback::Get()->SetDithering("", madvrSettings.m_dithering);
   }
   else if (settingId == SETTING_MADVR_DITHERINGCOLORED)
   {
     madvrSettings.m_ditheringColoredNoise = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->GetSetting()->SetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
+    CMadvrCallback::Get()->SetBool("coloredDither", madvrSettings.m_ditheringColoredNoise);
   }
   else if (settingId == SETTING_MADVR_DITHERINGEVERYFRAME)
   {
     madvrSettings.m_ditheringEveryFrame = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->GetSetting()->SetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
+    CMadvrCallback::Get()->SetBool("dynamicDither", madvrSettings.m_ditheringEveryFrame);
   }
   else if (settingId == SETTING_MADVR_DEBAND)
   {
     madvrSettings.m_deband = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->GetSetting()->SetBool("debandActive", madvrSettings.m_deband);
+    CMadvrCallback::Get()->SetBool("debandActive", madvrSettings.m_deband);
   }
   else if (settingId == SETTING_MADVR_DEBANDLEVEL)
   {
     madvrSettings.m_debandLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->GetSetting()->SetInt("debandLevel", madvrSettings.m_debandLevel);
+    CMadvrCallback::Get()->SetInt("debandLevel", madvrSettings.m_debandLevel);
   }
   else if (settingId == SETTING_MADVR_DEBANDFADELEVEL)
   {
     madvrSettings.m_debandFadeLevel = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->GetSetting()->SetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
+    CMadvrCallback::Get()->SetInt("debandFadeLevel", madvrSettings.m_debandFadeLevel);
   }
   else if (settingId == VIDEO_SETTINGS_DS_STATS)
   {
@@ -745,7 +745,7 @@ void CGUIDialogVideoSettings::LoadMadvrSettings()
   if (!CMadvrCallback::Get()->UsingMadvr() || CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_MADVR)
     return;
 
-  CMadvrCallback::Get()->GetSetting()->LoadSettings(MADVR_LOAD_GENERAL);
+  CMadvrCallback::Get()->LoadSettings(MADVR_LOAD_GENERAL);
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   m_settingsManager->SetInt(SETTING_MADVR_DEINT_ACTIVE, madvrSettings.m_deintactive);

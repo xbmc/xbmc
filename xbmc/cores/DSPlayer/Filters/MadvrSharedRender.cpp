@@ -84,6 +84,8 @@ HRESULT CMadvrSharedRender::CreateSharedResource(IDirect3DTexture9** ppTexture9,
   if (FAILED(hr = m_pD3DDeviceKodi->CreateRenderTargetView(*ppTexture11, &rtDesc, ppSurface11)))
     return hr;
 
+  CMadvrCallback::Get()->Register(this);
+
   return hr;
 }
 

@@ -40,29 +40,36 @@ enum MADVR_RENDER_LAYER
   RENDER_LAYER_OVER
 };
 
-class IPaintCallbackMadvr
+class IMadvrAllocatorCallback
 {
 public:
-  virtual ~IPaintCallbackMadvr() {};
+  virtual ~IMadvrAllocatorCallback() {};
 
-  virtual bool IsEnteringExclusive(){ return false; }
+  virtual bool IsEnteringExclusive(){ return false; };
   virtual void EnableExclusive(bool bEnable){};
   virtual void SetMadvrPixelShader(){};
-  virtual void GetProfileActiveName(std::string *profile){};
   virtual void SetResolution(){};
-  virtual void Flush(){};
-  virtual void RenderToTexture(MADVR_RENDER_LAYER layer){};
-  virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; }
+  virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) { return false; };
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect) {};
 };
 
-class ISettingCallbackMadvr
+class IMadvrPaintCallback
 {
 public:
-  virtual ~ISettingCallbackMadvr() {};
+  virtual ~IMadvrPaintCallback() {};
+
+  virtual HRESULT RenderToTexture(MADVR_RENDER_LAYER layer){ return E_UNEXPECTED; };
+  virtual void Flush(){};
+};
+
+class IMadvrSettingCallback
+{
+public:
+  virtual ~IMadvrSettingCallback() {};
 
   virtual void RestoreSettings(){};
   virtual void LoadSettings(MADVR_LOAD_TYPE type){};
+  virtual void GetProfileActiveName(std::string *profile){};
   virtual void SetStr(CStdString path, CStdString sValue) {};
   virtual void SetBool(CStdString path, bool bValue) {};
   virtual void SetInt(CStdString path, int iValue) {};
@@ -73,9 +80,10 @@ public:
   virtual void SetDithering(CStdString path, int iValue) {};
 };
 
-class CMadvrCallback : public IPaintCallbackMadvr, public ISettingCallbackMadvr
+class CMadvrCallback : public IMadvrAllocatorCallback, public IMadvrSettingCallback
 {
 public:
+
   /// Retrieve singleton instance
   static CMadvrCallback* Get();
   /// Destroy singleton instance
@@ -85,13 +93,11 @@ public:
     m_pSingleton = NULL;
   }
 
-  IPaintCallbackMadvr* GetCallback() { return m_pMadvr != NULL ? m_pMadvr : this; }
-  ISettingCallbackMadvr* GetSetting() { return m_pSettingMadvr != NULL ? m_pSettingMadvr : this; }
-  void SetCallback(IPaintCallbackMadvr* pMadvr) { m_pMadvr = pMadvr; }
-  void SetSettingCallback(ISettingCallbackMadvr* pSettingMadvr) { m_pSettingMadvr = pSettingMadvr; }
+  void Register(IMadvrAllocatorCallback* pAllocatorCallback) { m_pAllocatorCallback = pAllocatorCallback; }
+  void Register(IMadvrSettingCallback* pSettingMadvr) { m_pSettingCallback = pSettingMadvr; }
+  void Register(IMadvrPaintCallback* pPaintCallback) { m_pPaintCallback = pPaintCallback; }
   bool UsingMadvr();
   bool ReadyMadvr();
-  bool IsEnteringExclusiveMadvr();
   bool IsInitMadvr() { return m_isInitMadvr; };
   void SetInitMadvr(bool b) { m_isInitMadvr = b; }
   bool GetRenderOnMadvr() { return m_renderOnMadvr; }
@@ -101,13 +107,39 @@ public:
   void ResetRenderCount();
   bool GuiVisible(MADVR_RENDER_LAYER layer = RENDER_LAYER_ALL);
   
+  // IMadvrAllocatorCallback
+  virtual bool IsEnteringExclusive();
+  virtual void EnableExclusive(bool bEnable);
+  virtual void SetMadvrPixelShader();
+  virtual void SetResolution();
+  virtual bool ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret);
+  virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
+
+  // IMadvrPaintCallback
+  virtual HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
+  virtual void Flush();
+
+  // IMadvrSettingCallback
+  virtual void RestoreSettings();
+  virtual void LoadSettings(MADVR_LOAD_TYPE type);
+  virtual void GetProfileActiveName(std::string *profile);
+  virtual void SetStr(CStdString path, CStdString sValue);
+  virtual void SetBool(CStdString path, bool bValue);
+  virtual void SetInt(CStdString path, int iValue);
+  virtual void SetFloat(CStdString path, float fValue, int iConv = 100);
+  virtual void SetDoubling(CStdString path, int iValue);
+  virtual void SetDeintActive(CStdString path, int iValue);
+  virtual void SetSmoothmotion(CStdString path, int iValue);
+  virtual void SetDithering(CStdString path, int iValue);
+
 private:
   CMadvrCallback();
   ~CMadvrCallback();
 
   static CMadvrCallback* m_pSingleton;
-  IPaintCallbackMadvr* m_pMadvr;
-  ISettingCallbackMadvr* m_pSettingMadvr;
+  IMadvrAllocatorCallback* m_pAllocatorCallback;
+  IMadvrSettingCallback* m_pSettingCallback;
+  IMadvrPaintCallback* m_pPaintCallback;
   bool m_isInitMadvr;
   bool m_renderOnMadvr;
   int m_renderUnderCount;

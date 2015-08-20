@@ -38,16 +38,17 @@ enum MADVR_SETTINGS_TYPE
   MADVR_SETTINGS_INT
 };
 
-class CMadvrSettingsManager :public ISettingCallbackMadvr
+class CMadvrSettingsManager :public IMadvrSettingCallback
 {
 public:
 
   CMadvrSettingsManager(IUnknown* pUnk);
   virtual ~CMadvrSettingsManager();
 
-  //ISettingCallbackMadvr
+  // IMadvrSettingCallback
   virtual void LoadSettings(MADVR_LOAD_TYPE type);
   virtual void RestoreSettings();
+  virtual void GetProfileActiveName(std::string *profile);
   virtual void SetStr(std::string path, std::string str);
   virtual void SetBool(std::string path, bool bValue);
   virtual void SetInt(std::string path, int iValue);
@@ -73,7 +74,6 @@ public:
   void GetDithering(CStdString path, int* iValue);
 
   bool IsProfileActive(std::string path, std::string profile);
-  void GetProfileActiveName(std::string *profile);
 
   void ListSettings(std::string path);
 
