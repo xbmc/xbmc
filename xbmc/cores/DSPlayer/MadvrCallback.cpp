@@ -166,48 +166,48 @@ void CMadvrCallback::GetProfileActiveName(std::string *profile)
     m_pSettingCallback->GetProfileActiveName(profile);
 };
 
-void CMadvrCallback::SetStr(CStdString path, CStdString sValue) 
+void CMadvrCallback::SetStr(std::string path, std::string sValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetStr(path, sValue);
 };
 
-void CMadvrCallback::SetBool(CStdString path, bool bValue) 
+void CMadvrCallback::SetBool(std::string path, bool bValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetBool(path, bValue);
 };
-void CMadvrCallback::SetInt(CStdString path, int iValue) 
+void CMadvrCallback::SetInt(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetInt(path, iValue);
 };
 
-void CMadvrCallback::SetFloat(CStdString path, float fValue, int iConv) 
+void CMadvrCallback::SetFloat(std::string path, float fValue, int iConv) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetFloat(path, fValue);
 };
 
-void CMadvrCallback::SetDoubling(CStdString path, int iValue) 
+void CMadvrCallback::SetDoubling(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetDoubling(path, iValue);
 };
 
-void CMadvrCallback::SetDeintActive(CStdString path, int iValue) 
+void CMadvrCallback::SetDeintActive(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetDeintActive(path, iValue);
 };
 
-void CMadvrCallback::SetSmoothmotion(CStdString path, int iValue) 
+void CMadvrCallback::SetSmoothmotion(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetSmoothmotion(path, iValue);
 };
 
-void CMadvrCallback::SetDithering(CStdString path, int iValue) 
+void CMadvrCallback::SetDithering(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetDithering(path, iValue);

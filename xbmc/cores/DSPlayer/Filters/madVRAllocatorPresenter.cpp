@@ -189,7 +189,7 @@ void CmadVRAllocatorPresenter::ConfigureMadvr()
 bool CmadVRAllocatorPresenter::ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret)
 {
   if (Com::SmartQIPtr<IMadVRSubclassReplacement> pMVRSR = m_pDXR)
-    return pMVRSR->ParentWindowProc(hWnd, uMsg, wParam, lParam, ret);
+    return (pMVRSR->ParentWindowProc(hWnd, uMsg, wParam, lParam, ret) != 0);
   else
     return false;
 }

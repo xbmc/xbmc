@@ -53,10 +53,10 @@ public:
   virtual void SetBool(std::string path, bool bValue);
   virtual void SetInt(std::string path, int iValue);
   virtual void SetFloat(std::string path, float fValue, int iConv = 100);
-  virtual void SetDoubling(CStdString path, int iValue);
-  virtual void SetDeintActive(CStdString path, int iValue);
-  virtual void SetSmoothmotion(CStdString path, int iValue);
-  virtual void SetDithering(CStdString path, int iValue);
+  virtual void SetDoubling(std::string path, int iValue);
+  virtual void SetDeintActive(std::string path, int iValue);
+  virtual void SetSmoothmotion(std::string path, int iValue);
+  virtual void SetDithering(std::string path, int iValue);
 
   void EnumGroups(std::string path, std::vector<std::string> *sVector);
   void EnumProfiles(std::string path, std::vector<std::string> *sVector);
@@ -68,10 +68,10 @@ public:
   void GetInt(std::string path, int *iValue);
   void GetFloat(std::string path, float* fValue, int iConv = 100);
 
-  void GetDoubling(CStdString path, int* iValue);
-  void GetDeintActive(CStdString path, int* iValue);
-  void GetSmoothmotion(CStdString path, int* iValue);
-  void GetDithering(CStdString path, int* iValue);
+  void GetDoubling(std::string path, int* iValue);
+  void GetDeintActive(std::string path, int* iValue);
+  void GetSmoothmotion(std::string path, int* iValue);
+  void GetDithering(std::string path, int* iValue);
 
   bool IsProfileActive(std::string path, std::string profile);
 

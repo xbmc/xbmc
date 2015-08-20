@@ -67,17 +67,17 @@ class IMadvrSettingCallback
 public:
   virtual ~IMadvrSettingCallback() {};
 
-  virtual void RestoreSettings(){};
   virtual void LoadSettings(MADVR_LOAD_TYPE type){};
+  virtual void RestoreSettings(){};
   virtual void GetProfileActiveName(std::string *profile){};
-  virtual void SetStr(CStdString path, CStdString sValue) {};
-  virtual void SetBool(CStdString path, bool bValue) {};
-  virtual void SetInt(CStdString path, int iValue) {};
-  virtual void SetFloat(CStdString path, float fValue, int iConv = 100) {};
-  virtual void SetDoubling(CStdString path, int iValue) {};
-  virtual void SetDeintActive(CStdString path, int iValue) {};
-  virtual void SetSmoothmotion(CStdString path, int iValue) {};
-  virtual void SetDithering(CStdString path, int iValue) {};
+  virtual void SetStr(std::string path, std::string str){};
+  virtual void SetBool(std::string path, bool bValue){};
+  virtual void SetInt(std::string path, int iValue){};
+  virtual void SetFloat(std::string path, float fValue, int iConv = 100){};
+  virtual void SetDoubling(std::string path, int iValue){};
+  virtual void SetDeintActive(std::string path, int iValue){};
+  virtual void SetSmoothmotion(std::string path, int iValue){};
+  virtual void SetDithering(std::string path, int iValue){};
 };
 
 class CMadvrCallback : public IMadvrAllocatorCallback, public IMadvrSettingCallback
@@ -120,17 +120,17 @@ public:
   virtual void Flush();
 
   // IMadvrSettingCallback
-  virtual void RestoreSettings();
   virtual void LoadSettings(MADVR_LOAD_TYPE type);
+  virtual void RestoreSettings();
   virtual void GetProfileActiveName(std::string *profile);
-  virtual void SetStr(CStdString path, CStdString sValue);
-  virtual void SetBool(CStdString path, bool bValue);
-  virtual void SetInt(CStdString path, int iValue);
-  virtual void SetFloat(CStdString path, float fValue, int iConv = 100);
-  virtual void SetDoubling(CStdString path, int iValue);
-  virtual void SetDeintActive(CStdString path, int iValue);
-  virtual void SetSmoothmotion(CStdString path, int iValue);
-  virtual void SetDithering(CStdString path, int iValue);
+  virtual void SetStr(std::string path, std::string str);
+  virtual void SetBool(std::string path, bool bValue);
+  virtual void SetInt(std::string path, int iValue);
+  virtual void SetFloat(std::string path, float fValue, int iConv = 100);
+  virtual void SetDoubling(std::string path, int iValue);
+  virtual void SetDeintActive(std::string path, int iValue);
+  virtual void SetSmoothmotion(std::string path, int iValue);
+  virtual void SetDithering(std::string path, int iValue);
 
 private:
   CMadvrCallback();

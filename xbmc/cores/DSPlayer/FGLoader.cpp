@@ -534,7 +534,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
       START_PERFORMANCE_COUNTER
         if (SUCCEEDED(CFilterCoreFactory::GetShaders(pFileItem, shaders, shadersStages, CGraphFilters::Get()->IsUsingDXVADecoder())))
         {
-        for (int i = 0; i < shaders.size(); i++)
+        for (int unsigned i = 0; i < shaders.size(); i++)
         {
           g_dsSettings.pixelShaderList->EnableShader(shaders[i], shadersStages[i]);
         }

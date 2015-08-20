@@ -225,11 +225,11 @@ void CMadvrSettingsManager::GetFloat(std::string path, float* fValue, int iConv)
     *fValue = 0.0f;
 };
 
-void CMadvrSettingsManager::GetDoubling(CStdString path, int* iValue)
+void CMadvrSettingsManager::GetDoubling(std::string path, int* iValue)
 {
-  CStdString strBool = "nnedi" + path + "Enable";
-  CStdString strInt = "nnedi" + path + "Quality";
-  CStdString strAlgo = path + "Algo";
+  std::string strBool = "nnedi" + path + "Enable";
+  std::string strInt = "nnedi" + path + "Quality";
+  std::string strAlgo = path + "Algo";
   bool bValue;
   int aValue;
   int result = -1;
@@ -253,10 +253,10 @@ void CMadvrSettingsManager::GetDoubling(CStdString path, int* iValue)
   *iValue = result;
 }
 
-void CMadvrSettingsManager::GetDeintActive(CStdString path, int* iValue)
+void CMadvrSettingsManager::GetDeintActive(std::string path, int* iValue)
 {
-  CStdString strAuto = "autoActivateDeinterlacing";
-  CStdString strIfDoubt = "ifInDoubtDeinterlace";
+  std::string strAuto = "autoActivateDeinterlacing";
+  std::string strIfDoubt = "ifInDoubtDeinterlace";
 
   bool bValue1;
   bool bValue2;
@@ -272,10 +272,10 @@ void CMadvrSettingsManager::GetDeintActive(CStdString path, int* iValue)
   *iValue = result;
 }
 
-void CMadvrSettingsManager::GetSmoothmotion(CStdString path, int* iValue)
+void CMadvrSettingsManager::GetSmoothmotion(std::string path, int* iValue)
 {
-  CStdString stEnabled = "smoothMotionEnabled";
-  CStdString strMode = "smoothMotionMode";
+  std::string stEnabled = "smoothMotionEnabled";
+  std::string strMode = "smoothMotionMode";
 
   bool bValue;
   std::string sValue;
@@ -291,10 +291,10 @@ void CMadvrSettingsManager::GetSmoothmotion(CStdString path, int* iValue)
   *iValue = result;
 }
 
-void CMadvrSettingsManager::GetDithering(CStdString path, int* iValue)
+void CMadvrSettingsManager::GetDithering(std::string path, int* iValue)
 {
-  CStdString stDisable = "dontDither";
-  CStdString strMode = "ditheringAlgo";
+  std::string stDisable = "dontDither";
+  std::string strMode = "ditheringAlgo";
 
   bool bValue;
   std::string sValue;
@@ -343,11 +343,11 @@ void CMadvrSettingsManager::SetFloat(std::string path, float fValue, int iConv)
   SetSettings(MADVR_SETTINGS_INT, pathW.c_str(), NULL, NULL, iValue);
 };
 
-void CMadvrSettingsManager::SetDoubling(CStdString path, int iValue)
+void CMadvrSettingsManager::SetDoubling(std::string path, int iValue)
 {
-  CStdString strBool = "nnedi" + path + "Enable";
-  CStdString strInt = "nnedi" + path + "Quality";
-  CStdString strAlgo = path + "Algo";
+  std::string strBool = "nnedi" + path + "Enable";
+  std::string strInt = "nnedi" + path + "Quality";
+  std::string strAlgo = path + "Algo";
 
   SetBool(strBool, (iValue>-1));
   if (iValue > -1)
@@ -357,29 +357,29 @@ void CMadvrSettingsManager::SetDoubling(CStdString path, int iValue)
   }
 }
 
-void CMadvrSettingsManager::SetDeintActive(CStdString path, int iValue)
+void CMadvrSettingsManager::SetDeintActive(std::string path, int iValue)
 {
-  CStdString strAuto = "autoActivateDeinterlacing";
-  CStdString strIfDoubt = "ifInDoubtDeinterlace";
+  std::string strAuto = "autoActivateDeinterlacing";
+  std::string strIfDoubt = "ifInDoubtDeinterlace";
 
   SetBool(strAuto, (iValue > -1));
   SetBool(strIfDoubt, (iValue != MadvrDeintActiveDef));
 }
 
-void CMadvrSettingsManager::SetSmoothmotion(CStdString path, int iValue)
+void CMadvrSettingsManager::SetSmoothmotion(std::string path, int iValue)
 {
-  CStdString stEnabled = "smoothMotionEnabled";
-  CStdString strMode = "smoothMotionMode";
+  std::string stEnabled = "smoothMotionEnabled";
+  std::string strMode = "smoothMotionMode";
 
   SetBool(stEnabled, (iValue > -1));
   if (iValue > -1)
     SetStr(strMode, MadvrSmoothMotion[iValue].name);
 }
 
-void CMadvrSettingsManager::SetDithering(CStdString path, int iValue)
+void CMadvrSettingsManager::SetDithering(std::string path, int iValue)
 {
-  CStdString stDisable = "dontDither";
-  CStdString strMode = "ditheringAlgo";
+  std::string stDisable = "dontDither";
+  std::string strMode = "ditheringAlgo";
 
   SetBool(stDisable, (iValue == -1));
   if (iValue > -1)
