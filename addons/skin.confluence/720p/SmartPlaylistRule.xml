@@ -3,7 +3,6 @@
 	<defaultcontrol always="true">9001</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<coordinates>
-		<system>1</system>
 		<left>240</left>
 		<top>220</top>
 	</coordinates>

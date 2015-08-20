@@ -4,7 +4,6 @@
 	<onload condition="!VideoPlayer.Content(LiveTV)">SetFocus(202)</onload>
 	<include>dialogeffect</include>
 	<coordinates>
-		<system>1</system>
 		<left>0</left>
 		<top>0</top>
 	</coordinates>

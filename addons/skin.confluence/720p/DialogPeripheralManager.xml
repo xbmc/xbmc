@@ -2,7 +2,6 @@
 <window>
 	<defaultcontrol always="true">20</defaultcontrol>
 	<coordinates>
-		<system>1</system>
 		<left>335</left>
 		<top>30</top>
 	</coordinates>
