@@ -22,13 +22,12 @@
 #include "windowing/WindowingFactory.h"
 #include <moreuuids.h>
 #include "RendererSettings.h"
-#include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "cores/DSPlayer/Filters/MadvrSettings.h"
 #include "PixelShaderList.h"
 #include "DSPlayer.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
 using namespace KODI::MESSAGING;

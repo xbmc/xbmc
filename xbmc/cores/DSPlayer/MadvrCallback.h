@@ -25,13 +25,9 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
+#include "cores/DSPlayer/Filters/MadvrSettings.h"
 #include "DSUtil/DSUtil.h"
-#include "DSUtil/SmartPtr.h"
-#include "IPaintCallback.h"
-#include "streams.h"
-#include "utils/CharsetConverter.h"
-#include "system.h"
-#include "cores\DSPlayer\Filters\MadvrSettings.h"
+#include "guilib/Geometry.h"
 
 enum MADVR_RENDER_LAYER
 {
@@ -94,7 +90,7 @@ public:
   }
 
   void Register(IMadvrAllocatorCallback* pAllocatorCallback) { m_pAllocatorCallback = pAllocatorCallback; }
-  void Register(IMadvrSettingCallback* pSettingMadvr) { m_pSettingCallback = pSettingMadvr; }
+  void Register(IMadvrSettingCallback* pSettingCallback) { m_pSettingCallback = pSettingCallback; }
   void Register(IMadvrPaintCallback* pPaintCallback) { m_pPaintCallback = pPaintCallback; }
   bool UsingMadvr();
   bool ReadyMadvr();
