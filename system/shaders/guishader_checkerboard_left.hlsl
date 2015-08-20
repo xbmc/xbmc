@@ -22,7 +22,7 @@
 
 Texture2D texView : register(t0);
 
-cbuffer cbViewPort : register(b0)
+cbuffer cbViewPort : register(b1)
 {
   float g_viewPortX;
   float g_viewPortY;

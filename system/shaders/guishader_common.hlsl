@@ -42,6 +42,18 @@ SamplerState LinearSampler : register(s0)
   Comparison = NEVER;
 };
 
+cbuffer cbWorld : register(b0)
+{
+  float4x4 worldViewProj;
+  float blackLevel;
+  float colorRange;
+};
+
+inline float4 adjustColorRange(float4 color)
+{
+  return float4(blackLevel + colorRange * color.rgb, color.a);
+}
+
 #define STEREO_LEFT_EYE_INDEX  0
 #define STEREO_RIGHT_EYE_INDEX 1
 
