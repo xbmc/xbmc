@@ -43,15 +43,7 @@ void CGUITextureD3D::Begin(color_t color)
   if (m_diffuse.size()) 
 	  m_diffuse.m_textures[0]->LoadToGPU();
 
-  if(g_Windowing.UseLimitedColor())
-  {
-    m_col = D3DCOLOR_RGBA(GET_R(color) * (235 - 16) / 255
-                        , GET_G(color) * (235 - 16) / 255
-                        , GET_B(color) * (235 - 16) / 255
-                        , GET_A(color));
-  }
-  else
-    m_col = color;
+  m_col = color;
 
   g_Windowing.SetAlphaBlendEnable(true);
 }
