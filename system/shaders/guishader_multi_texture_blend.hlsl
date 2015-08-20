@@ -24,8 +24,8 @@ Texture2D txDiffuse[2] : register(t0);
 
 float4 PS(PS_INPUT input) : SV_TARGET
 {
-  return input.color * txDiffuse[0].Sample(LinearSampler, input.tex)
-                     * txDiffuse[1].Sample(LinearSampler, input.tex2);
+  return adjustColorRange(input.color * txDiffuse[0].Sample(LinearSampler, input.tex)
+                          * txDiffuse[1].Sample(LinearSampler, input.tex2));
 }
 
 
