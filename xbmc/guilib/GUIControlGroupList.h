@@ -64,6 +64,7 @@ public:
   void SetMinSize(float minWidth, float minHeight);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  bool IsControlOnScreen(float pos, const CGUIControl* control) const;
   bool IsFirstFocusableControl(const CGUIControl *control) const;
   bool IsLastFocusableControl(const CGUIControl *control) const;
   void ValidateOffset();
