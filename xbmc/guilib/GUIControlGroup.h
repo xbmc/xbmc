@@ -84,10 +84,6 @@ public:
 
   virtual bool IsGroup() const { return true; };
 
-  virtual std::string GetLabel(int info) const;
-  int GetNumItems() const;
-  int GetSelectedItem() const;
-
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
