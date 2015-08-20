@@ -1147,13 +1147,16 @@ void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std
   list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
 
   std::string dummy;
-  SettingOptionsISO6391LanguagesFiller(NULL, list, dummy, NULL);
-  SettingOptionsLanguageNamesFiller(NULL, list, dummy, NULL);
+  std::vector<std::pair<std::string, std::string>> languages;
+  SettingOptionsISO6391LanguagesFiller(NULL, languages, dummy, NULL);
+  SettingOptionsLanguageNamesFiller(NULL, languages, dummy, NULL);
 
-  // convert the vector to a set and back again to remove duplicates
-  std::set<std::pair<std::string, std::string>> languages(list.begin(), list.end());
-  list.assign(languages.begin(), languages.end());
-  std::sort(list.begin(), list.end(), SortLanguage());
+  // convert the vector to a set to remove duplicates
+  std::set<std::pair<std::string, std::string>, SortLanguage> tmp(
+      languages.begin(), languages.end(), SortLanguage());
+
+  list.reserve(list.size() + tmp.size());
+  list.insert(list.end(), tmp.begin(), tmp.end());
 }
 
 void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
