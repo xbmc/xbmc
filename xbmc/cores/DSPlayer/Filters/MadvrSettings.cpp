@@ -73,20 +73,20 @@ CMadvrSettings::CMadvrSettings()
   m_debandFadeLevel = MADVR_DEFAULT_DEBAND_FADELEVEL;
 
   m_fineSharp = false;
-  m_fineSharpStrength = 2.0f;
+  m_fineSharpStrength = MADVR_DEFAULT_FINESHARPSTRENGTH;
   m_lumaSharpen = false;
-  m_lumaSharpenStrength = 0.65f;
+  m_lumaSharpenStrength = MADVR_DEFAULT_LUMASHARPENSTRENGTH;
   m_adaptiveSharpen = false;
-  m_adaptiveSharpenStrength = 0.5f;
+  m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPENSTRENGTH;
 
   m_UpRefFineSharp = false;
-  m_UpRefFineSharpStrength = 2.0f;
+  m_UpRefFineSharpStrength = MADVR_DEFAULT_UPFINESHARPSTRENGTH;
   m_UpRefLumaSharpen = false;
-  m_UpRefLumaSharpenStrength = 0.65f;
+  m_UpRefLumaSharpenStrength = MADVR_DEFAULT_UPLUMASHARPENSTRENGTH;
   m_UpRefAdaptiveSharpen = false;
-  m_UpRefAdaptiveSharpenStrength = 0.5f;
+  m_UpRefAdaptiveSharpenStrength = MADVR_DEFAULT_UPADAPTIVESHARPENSTRENGTH;
   m_superRes = false;
-  m_superResStrength = 1.0f;
+  m_superResStrength = MADVR_DEFAULT_SUPERRESSTRENGTH;
 
   m_refineOnce = false;
   m_superResFirst = false;
