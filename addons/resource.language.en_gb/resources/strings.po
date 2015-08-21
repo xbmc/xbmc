@@ -13418,9 +13418,9 @@ msgctxt "#24060"
 msgid "Would you like to disable this add-on?"
 msgstr ""
 
-#: xbmc/addons/Repository.cpp
+#: xbmc/addons/RepositoryUpdater.cpp
 msgctxt "#24061"
-msgid "Add-on update available!"
+msgid "Add-on updates available"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
@@ -13456,6 +13456,7 @@ msgctxt "#24067"
 msgid "Currently downloading add-ons"
 msgstr ""
 
+#: xbmc/addons/RepositoryUpdater.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24068"
 msgid "Update available"

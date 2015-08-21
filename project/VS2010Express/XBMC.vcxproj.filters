@@ -765,6 +765,9 @@
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\RepositoryUpdater.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Skin.cpp">
       <Filter>addons</Filter>
     </ClCompile>
@@ -3681,6 +3684,9 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\Repository.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\RepositoryUpdater.h">
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\Skin.h">

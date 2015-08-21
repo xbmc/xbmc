@@ -25,8 +25,6 @@
 
 namespace ADDON
 {
-  class CRepository;
-  typedef std::shared_ptr<CRepository> RepositoryPtr;
   class CRepository : public CAddon
   {
   public:
@@ -66,18 +64,29 @@ namespace ADDON
     CRepository(const CRepository &rhs);
   };
 
+  typedef std::shared_ptr<CRepository> RepositoryPtr;
+
+
   class CRepositoryUpdateJob : public CProgressJob
   {
   public:
-    CRepositoryUpdateJob(const VECADDONS& repos);
+    CRepositoryUpdateJob(const RepositoryPtr& repo);
     virtual ~CRepositoryUpdateJob() {}
-
-    virtual const char *GetType() const { return "repoupdate"; };
     virtual bool DoWork();
-  private:
-    bool GrabAddons(const RepositoryPtr& repo, VECADDONS& addons);
+    const RepositoryPtr& GetAddon() const { return m_repo; };
 
-    VECADDONS m_repos;
+  private:
+    enum FetchStatus
+    {
+      STATUS_OK,
+      STATUS_NOT_MODIFIED,
+      STATUS_ERROR
+    };
+
+    FetchStatus FetchIfChanged(const std::string& oldChecksum,
+        std::string& checksum, VECADDONS& addons);
+
+    const RepositoryPtr m_repo;
   };
 }
 

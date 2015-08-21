@@ -26,6 +26,7 @@
 #include "LangInfo.h"
 #include "Util.h"
 #include "events/EventLog.h"
+#include "addons/RepositoryUpdater.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
@@ -611,6 +612,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&g_passwordManager);
   m_settingsManager->UnregisterCallback(&PVR::g_PVRManager);
   m_settingsManager->UnregisterCallback(&CRssManager::GetInstance());
+  m_settingsManager->UnregisterCallback(&ADDON::CRepositoryUpdater::GetInstance());
 #if defined(TARGET_LINUX)
   m_settingsManager->UnregisterCallback(&g_timezone);
 #endif // defined(TARGET_LINUX)
@@ -1202,6 +1204,10 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB);
   m_settingsManager->RegisterCallback(&ActiveAE::CActiveAEDSP::GetInstance(), settingSet);
+
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_GENERAL_ADDONUPDATES);
+  m_settingsManager->RegisterCallback(&ADDON::CRepositoryUpdater::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()

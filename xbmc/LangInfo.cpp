@@ -26,6 +26,7 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/LanguageResource.h"
+#include "addons/RepositoryUpdater.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
@@ -658,7 +659,8 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
       if (addondb.Open())
       {
         // update the addon repositories to check if there's a matching language addon available for download
-        CAddonInstaller::GetInstance().UpdateRepos(true, true);
+        ADDON::CRepositoryUpdater::GetInstance().CheckForUpdates();
+        ADDON::CRepositoryUpdater::GetInstance().Await();
 
         ADDON::VECADDONS languageAddons;
         if (addondb.GetAddons(languageAddons, ADDON::ADDON_RESOURCE_LANGUAGE) && !languageAddons.empty())

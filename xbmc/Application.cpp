@@ -170,6 +170,7 @@
 #include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
+#include "addons/RepositoryUpdater.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "CompileInfo.h"
@@ -1242,6 +1243,8 @@ bool CApplication::Initialize()
   // register action listeners
   RegisterActionListener(&CSeekHandler::GetInstance());
   RegisterActionListener(&CPlayerController::GetInstance());
+
+  CRepositoryUpdater::GetInstance().Start();
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -4648,10 +4651,6 @@ void CApplication::ProcessSlow()
 #endif
 
   g_mediaManager.ProcessEvents();
-
-  if (!m_pPlayer->IsPlayingVideo() &&
-      CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) != AUTO_UPDATES_NEVER)
-    CAddonInstaller::GetInstance().UpdateRepos();
 
   CAEFactory::GarbageCollect();
 
