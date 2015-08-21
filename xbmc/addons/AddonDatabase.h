@@ -52,8 +52,13 @@ public:
   void DeleteRepository(const std::string& id);
   void DeleteRepository(int id);
   int GetRepoChecksum(const std::string& id, std::string& checksum);
-  bool GetRepository(const std::string& id, ADDON::VECADDONS& addons);
-  bool GetRepository(int id, ADDON::VECADDONS& addons);
+
+  /*!
+   \brief Get addons in repository `id`
+   \param id id of the repository
+   \returns true on success, false on error or if repository have never been synced.
+   */
+  bool GetRepositoryContent(const std::string& id, ADDON::VECADDONS& addons);
   bool SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
 
   /*!

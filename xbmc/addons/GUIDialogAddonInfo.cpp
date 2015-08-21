@@ -398,9 +398,9 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
     database.Open();
     VECADDONS addons;
     if (m_addon)
-      database.GetRepository(m_addon->ID(), addons);
+      database.GetRepositoryContent(m_addon->ID(), addons);
     else if (m_localAddon) // sanity
-      database.GetRepository(m_localAddon->ID(), addons);
+      database.GetRepositoryContent(m_localAddon->ID(), addons);
     int tot=0;
     for (int i = ADDON_UNKNOWN+1;i<ADDON_MAX;++i)
     {
