@@ -717,7 +717,7 @@ void CMadvrSettingsManager::InitSettings()
   AddSettingsListScaler("Nearest Neighbor", 70001, 0, true, true, true);
   AddSettingsListScaler("Bilinear", 70002, 1, true, true, true);
   AddSettingsListScaler("Dxva", 70003, 2, false, true, true);
-  AddSettingsListScaler("Mitchell-Netravali", 3, 70004, true, true, true);
+  AddSettingsListScaler("Mitchell-Netravali", 70004, 3, true, true, true);
   AddSettingsListScaler("Catmull-Rom", 70005, 4, true, true, true);
   AddSettingsListScaler("Bicubic50", 70006, 5, true, true, true);
   AddSettingsListScaler("Bicubic60", 70007, 6, true, true, true);
