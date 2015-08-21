@@ -26,7 +26,7 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/Archive.h"
 #ifdef HAS_DS_PLAYER
-#include "cores/DSPlayer/Filters/MadvrSettings.h"
+#include "MadvrCallback.h"
 #endif
 
 const float VIDEOASPECT_EPSILON = 0.025f;

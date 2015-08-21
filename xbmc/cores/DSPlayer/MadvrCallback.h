@@ -25,15 +25,68 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "cores/DSPlayer/Filters/MadvrSettings.h"
+
 #include "DSUtil/DSUtil.h"
 #include "guilib/Geometry.h"
+#include "settings/lib/SettingDefinitions.h"
+
+// DEFAULT SETTINGS
+const int MADVR_DEFAULT_CHROMAUP = 7; // BICUBIC75
+const int MADVR_DEFAULT_LUMAUP = 14; // LANCZOS3
+const int MADVR_DEFAULT_LUMADOWN = 4; // CATMUL-ROM
+const int MADVR_DEFAULT_DOUBLEFACTOR = 1; // 1.5x
+const int MADVR_DEFAULT_QUADRUPLEFACTOR =  1; // 3.0x
+const int MADVR_DEFAULT_DEINTFORCE = 0; // AUTO
+const int MADVR_DEFAULT_DEINTACTIVE = 1; // DEACTIVE
+const int MADVR_DEFAULT_DITHERING = 1; // ORDERED
+const int MADVR_DEFAULT_DEBAND_LEVEL = 0; // LOW
+const int MADVR_DEFAULT_DEBAND_FADELEVEL = 2; // HIGH
+
 
 enum MADVR_RENDER_LAYER
 {
   RENDER_LAYER_ALL,
   RENDER_LAYER_UNDER,
   RENDER_LAYER_OVER
+};
+
+enum MADVR_SETTINGS_LIST
+{
+  MADVR_LIST_CHROMAUP,
+  MADVR_LIST_LUMAUP,
+  MADVR_LIST_LUMADOWN,
+  MADVR_LIST_DOUBLEQUALITY,
+  MADVR_LIST_DOUBLEFACTOR,
+  MADVR_LIST_QUADRUPLEFACTOR,
+  MADVR_LIST_DEINTFORCE,
+  MADVR_LIST_DEINTACTIVE,
+  MADVR_LIST_SMOOTHMOTION,
+  MADVR_LIST_DITHERING,
+  MADVR_LIST_DEBAND,
+  MADVR_LIST_DEBAND_LEVEL,
+  MADVR_LIST_DEBAND_FADELEVEL
+};
+
+enum MADVR_LOAD_TYPE
+{
+  MADVR_LOAD_GENERAL,
+  MADVR_LOAD_SCALING
+};
+
+enum MADVR_GUI_SETTINGS
+{
+  KODIGUI_NEVER,
+  KODIGUI_LOAD_DSPLAYER,
+  KODIGUI_LOAD_MADVR
+};
+
+enum MADVR_RES_SETTINGS
+{
+  MADVR_RES_SD,
+  MADVR_RES_720,
+  MADVR_RES_1080,
+  MADVR_RES_2160,
+  MADVR_RES_ALL
 };
 
 class IMadvrAllocatorCallback
@@ -74,6 +127,8 @@ public:
   virtual void SetDeintActive(std::string path, int iValue){};
   virtual void SetSmoothmotion(std::string path, int iValue){};
   virtual void SetDithering(std::string path, int iValue){};
+  virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue){ return ""; };
+  virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry){};
 };
 
 class CMadvrCallback : public IMadvrAllocatorCallback, public IMadvrSettingCallback
@@ -127,6 +182,8 @@ public:
   virtual void SetDeintActive(std::string path, int iValue);
   virtual void SetSmoothmotion(std::string path, int iValue);
   virtual void SetDithering(std::string path, int iValue);
+  virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
+  virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
 
 private:
   CMadvrCallback();

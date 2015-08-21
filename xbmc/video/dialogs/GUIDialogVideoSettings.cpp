@@ -133,7 +133,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(const CSetting *setting)
   else if (settingId == SETTING_MADVR_DEINT_FORCE)
   {
     madvrSettings.m_deintforce = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("contentType", MadvrDeintForce[madvrSettings.m_deintforce].name);
+    CMadvrCallback::Get()->SetStr("contentType", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_DEINTFORCE, madvrSettings.m_deintforce));
   }
   else if (settingId == SETTING_MADVR_DEINT_LOOKPIXELS)
   {
@@ -635,21 +635,21 @@ void CGUIDialogVideoSettings::InitializeSettings()
       // MADVR DEINT
       entries.clear();
       entries.push_back(std::make_pair(70117, -1));
-      for (unsigned int i = 0; i < countof(MadvrDeintActive); i++)
-        entries.push_back(std::make_pair(MadvrDeintActive[i].label, i));
+      CMadvrCallback::Get()->AddEntry(MADVR_LIST_DEINTACTIVE, &entries);
+
       AddList(groupMadvrProcessing, SETTING_MADVR_DEINT_ACTIVE, 70200, 0, static_cast<int>(madvrSettings.m_deintactive), entries,70200);
 
       entries.clear();
-      for (unsigned int i = 0; i < countof(MadvrDeintForce); i++)
-        entries.push_back(std::make_pair(MadvrDeintForce[i].label, i));
+      CMadvrCallback::Get()->AddEntry(MADVR_LIST_DEINTFORCE, &entries);
+
       AddList(groupMadvrProcessing, SETTING_MADVR_DEINT_FORCE, 70201, 0, static_cast<int>(madvrSettings.m_deintforce), entries, 70201);
       AddToggle(groupMadvrProcessing, SETTING_MADVR_DEINT_LOOKPIXELS, 70207, 0, madvrSettings.m_deintlookpixels);
 
       // MADVR DEBAND
       AddToggle(groupMadvrProcessing, SETTING_MADVR_DEBAND, 70500, 0, madvrSettings.m_deband);
       entries.clear();
-      for (unsigned int i = 0; i < countof(MadvrDeband); i++)
-        entries.push_back(std::make_pair(MadvrDeband[i].label, i));
+      CMadvrCallback::Get()->AddEntry(MADVR_LIST_DEBAND, &entries);
+
       AddList(groupMadvrProcessing, SETTING_MADVR_DEBANDLEVEL, 70501, 0, static_cast<int>(madvrSettings.m_debandLevel), entries, 70501);
       AddList(groupMadvrProcessing, SETTING_MADVR_DEBANDFADELEVEL, 70502, 0, static_cast<int>(madvrSettings.m_debandFadeLevel), entries, 70502);
 
@@ -659,15 +659,15 @@ void CGUIDialogVideoSettings::InitializeSettings()
       // MADVR SMOOTHMOTION
       entries.clear();
       entries.push_back(std::make_pair(70117, -1));
-      for (unsigned int i = 0; i < countof(MadvrSmoothMotion); i++)
-        entries.push_back(std::make_pair(MadvrSmoothMotion[i].label, i));
+      CMadvrCallback::Get()->AddEntry(MADVR_LIST_SMOOTHMOTION, &entries);
+
       AddList(groupMadvrRendering, SETTING_MADVR_SMOOTHMOTION, 70300, 0, static_cast<int>(madvrSettings.m_smoothMotion), entries,70300);
 
       // MADVR DITHERING
       entries.clear();
       entries.push_back(std::make_pair(70117, -1));
-      for (unsigned int i = 0; i < countof(MadvrDithering); i++)
-        entries.push_back(std::make_pair(MadvrDithering[i].label, i));
+      CMadvrCallback::Get()->AddEntry(MADVR_LIST_DITHERING, &entries);
+
       AddList(groupMadvrRendering, SETTING_MADVR_DITHERING, 70400, 0, static_cast<int>(madvrSettings.m_dithering), entries, 70400);
 
       AddToggle(groupMadvrRendering, SETTING_MADVR_DITHERINGCOLORED, 70405, 0, madvrSettings.m_ditheringColoredNoise);

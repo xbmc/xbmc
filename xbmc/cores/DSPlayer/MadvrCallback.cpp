@@ -23,6 +23,7 @@
 #ifdef HAS_DS_PLAYER
 
 #include "MadvrCallback.h"
+#include "cores/DSPlayer/Filters/MadvrSettingsManager.h"
 
 CMadvrCallback *CMadvrCallback::m_pSingleton = NULL;
 
@@ -104,19 +105,19 @@ void CMadvrCallback::EnableExclusive(bool bEnable)
 {
   if (UsingMadvr())
     m_pAllocatorCallback->EnableExclusive(bEnable);
-};
+}
 
 void CMadvrCallback::SetMadvrPixelShader()
 {
   if (UsingMadvr())
     m_pAllocatorCallback->SetMadvrPixelShader();
-};
+}
 
 void CMadvrCallback::SetResolution()
 {
   if (UsingMadvr())
     m_pAllocatorCallback->SetResolution();
-};
+}
 
 bool CMadvrCallback::ParentWindowProc(HWND hWnd, UINT uMsg, WPARAM *wParam, LPARAM *lParam, LRESULT *ret) 
 { 
@@ -130,7 +131,7 @@ void CMadvrCallback::SetMadvrPosition(CRect wndRect, CRect videoRect)
 {
   if (UsingMadvr())
     m_pAllocatorCallback->SetMadvrPosition(wndRect, videoRect);
-};
+}
 
 // IMadvrPaintCallback
 HRESULT CMadvrCallback::RenderToTexture(MADVR_RENDER_LAYER layer)
@@ -139,38 +140,38 @@ HRESULT CMadvrCallback::RenderToTexture(MADVR_RENDER_LAYER layer)
     return m_pPaintCallback->RenderToTexture(layer);
 
   return E_UNEXPECTED;
-};
+}
 
 void CMadvrCallback::Flush()
 {
   if (m_pPaintCallback && ReadyMadvr())
     m_pPaintCallback->Flush();
-};
+}
 
 // IMadvrSettingCallback
 void CMadvrCallback::RestoreSettings()
 {
   if (m_pSettingCallback)
     m_pSettingCallback->RestoreSettings();
-};
+}
 
 void CMadvrCallback::LoadSettings(MADVR_LOAD_TYPE type)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->LoadSettings(type);
-};
+}
 
 void CMadvrCallback::GetProfileActiveName(std::string *profile)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->GetProfileActiveName(profile);
-};
+}
 
 void CMadvrCallback::SetStr(std::string path, std::string sValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetStr(path, sValue);
-};
+}
 
 void CMadvrCallback::SetBool(std::string path, bool bValue) 
 {
@@ -181,37 +182,50 @@ void CMadvrCallback::SetInt(std::string path, int iValue)
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetInt(path, iValue);
-};
+}
 
 void CMadvrCallback::SetFloat(std::string path, float fValue, int iConv) 
 {
   if (m_pSettingCallback)
-    m_pSettingCallback->SetFloat(path, fValue);
-};
+    m_pSettingCallback->SetFloat(path, fValue, iConv);
+}
 
 void CMadvrCallback::SetDoubling(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetDoubling(path, iValue);
-};
+}
 
 void CMadvrCallback::SetDeintActive(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetDeintActive(path, iValue);
-};
+}
 
 void CMadvrCallback::SetSmoothmotion(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetSmoothmotion(path, iValue);
-};
+}
 
 void CMadvrCallback::SetDithering(std::string path, int iValue) 
 {
   if (m_pSettingCallback)
     m_pSettingCallback->SetDithering(path, iValue);
-};
+}
 
+std::string CMadvrCallback::GetSettingsName(MADVR_SETTINGS_LIST type, int iValue)
+{
+  if (m_pSettingCallback)
+    return m_pSettingCallback->GetSettingsName(type, iValue);
+
+  return "";
+}
+
+void CMadvrCallback::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry)
+{
+  if (m_pSettingCallback)
+    m_pSettingCallback->AddEntry(type, entry);
+}
 
 #endif

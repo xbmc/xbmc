@@ -47,6 +47,7 @@
 #include "cores/DSPlayer/Dialogs/GUIDialogDSRules.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSFilters.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSPlayercoreFactory.h"
+#include "MadvrCallback.h"
 #endif
 CMediaSettings::CMediaSettings()
 {
@@ -173,17 +174,17 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
   if (pElement != NULL)
   {
     if (!XMLUtils::GetInt(pElement, "chromaupscaling", m_defaultMadvrSettings.m_ChromaUpscaling))
-      m_defaultMadvrSettings.m_ChromaUpscaling = ChromaUpDef;
+      m_defaultMadvrSettings.m_ChromaUpscaling = MADVR_DEFAULT_CHROMAUP;
     XMLUtils::GetBoolean(pElement, "chromaantiring", m_defaultMadvrSettings.m_ChromaAntiRing);
     XMLUtils::GetBoolean(pElement, "chromasuperres", m_defaultMadvrSettings.m_ChromaSuperRes);
 
     if (!XMLUtils::GetInt(pElement, "imageupscaling", m_defaultMadvrSettings.m_ImageUpscaling))
-      m_defaultMadvrSettings.m_ImageUpscaling = LumaUpDef;
+      m_defaultMadvrSettings.m_ImageUpscaling = MADVR_DEFAULT_LUMAUP;
     XMLUtils::GetBoolean(pElement, "imageupantiring", m_defaultMadvrSettings.m_ImageUpAntiRing);
     XMLUtils::GetBoolean(pElement, "imageuplinear", m_defaultMadvrSettings.m_ImageUpLinear);
 
     if (!XMLUtils::GetInt(pElement, "imagedownscaling", m_defaultMadvrSettings.m_ImageDownscaling))
-      m_defaultMadvrSettings.m_ImageDownscaling = LumaDownDef;
+      m_defaultMadvrSettings.m_ImageDownscaling = MADVR_DEFAULT_LUMADOWN;
     XMLUtils::GetBoolean(pElement, "imagedownantiring", m_defaultMadvrSettings.m_ImageDownAntiRing);
     XMLUtils::GetBoolean(pElement, "imagedownlinear", m_defaultMadvrSettings.m_ImageDownLinear);
 
@@ -197,32 +198,32 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultMadvrSettings.m_ImageQuadrupleChroma = -1;
 
     if (!XMLUtils::GetInt(pElement, "imagedoublelumafactor", m_defaultMadvrSettings.m_ImageDoubleLumaFactor))
-      m_defaultMadvrSettings.m_ImageDoubleLumaFactor = MadvrDoubleFactorDef;
+      m_defaultMadvrSettings.m_ImageDoubleLumaFactor = MADVR_DEFAULT_DOUBLEFACTOR;
     if (!XMLUtils::GetInt(pElement, "imagedoublechromafactor", m_defaultMadvrSettings.m_ImageDoubleChromaFactor))
-      m_defaultMadvrSettings.m_ImageDoubleChromaFactor = MadvrDoubleFactorDef;
+      m_defaultMadvrSettings.m_ImageDoubleChromaFactor = MADVR_DEFAULT_DOUBLEFACTOR;
     if (!XMLUtils::GetInt(pElement, "imagequadruplelumafactor", m_defaultMadvrSettings.m_ImageQuadrupleLumaFactor))
-      m_defaultMadvrSettings.m_ImageQuadrupleLumaFactor = MadvrQuadrupleFactorDef;
+      m_defaultMadvrSettings.m_ImageQuadrupleLumaFactor = MADVR_DEFAULT_QUADRUPLEFACTOR;
     if (!XMLUtils::GetInt(pElement, "imagequadruplechromafactor", m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor))
-      m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor = MadvrQuadrupleFactorDef;
+      m_defaultMadvrSettings.m_ImageQuadrupleChromaFactor = MADVR_DEFAULT_QUADRUPLEFACTOR;
 
     if (!XMLUtils::GetInt(pElement, "deintactive", m_defaultMadvrSettings.m_deintactive))
-      m_defaultMadvrSettings.m_deintactive = MadvrDeintActiveDef;
+      m_defaultMadvrSettings.m_deintactive = MADVR_DEFAULT_DEINTACTIVE;
     if (!XMLUtils::GetInt(pElement, "deintforce", m_defaultMadvrSettings.m_deintforce))
-      m_defaultMadvrSettings.m_deintforce = MadvrDeintForceDef;
+      m_defaultMadvrSettings.m_deintforce = MADVR_DEFAULT_DEINTFORCE;
     XMLUtils::GetBoolean(pElement, "deintlookpixels", m_defaultMadvrSettings.m_deintlookpixels);
 
     if (!XMLUtils::GetInt(pElement, "smoothmotion", m_defaultMadvrSettings.m_smoothMotion))
       m_defaultMadvrSettings.m_smoothMotion = -1;
     if (!XMLUtils::GetInt(pElement, "dithering", m_defaultMadvrSettings.m_dithering))
-      m_defaultMadvrSettings.m_dithering = MadvrDitheringDef;
+      m_defaultMadvrSettings.m_dithering = MADVR_DEFAULT_DITHERING;
     XMLUtils::GetBoolean(pElement, "ditheringcolorednoise", m_defaultMadvrSettings.m_ditheringColoredNoise);
     XMLUtils::GetBoolean(pElement, "ditheringeveryframe", m_defaultMadvrSettings.m_ditheringEveryFrame);
 
     XMLUtils::GetBoolean(pElement, "deband", m_defaultMadvrSettings.m_deband);
     if (!XMLUtils::GetInt(pElement, "debandlevel", m_defaultMadvrSettings.m_debandLevel))
-      m_defaultMadvrSettings.m_debandLevel = MadvrDebandLevelDef;
+      m_defaultMadvrSettings.m_debandLevel = MADVR_DEFAULT_DEBAND_LEVEL;
     if (!XMLUtils::GetInt(pElement, "debandfadelevel", m_defaultMadvrSettings.m_debandFadeLevel))
-      m_defaultMadvrSettings.m_debandFadeLevel = MadvrDebandFadeLevelDef;
+      m_defaultMadvrSettings.m_debandFadeLevel = MADVR_DEFAULT_DEBAND_FADELEVEL;
 
     XMLUtils::GetBoolean(pElement, "finesharp", m_defaultMadvrSettings.m_fineSharp);
     if (!XMLUtils::GetFloat(pElement, "finesharpstrength", m_defaultMadvrSettings.m_fineSharpStrength))

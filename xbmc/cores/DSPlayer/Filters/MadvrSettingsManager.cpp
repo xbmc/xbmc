@@ -31,6 +31,7 @@ CMadvrSettingsManager::CMadvrSettingsManager(IUnknown* pUnk)
 {
   m_pDXR = pUnk;
   CMadvrCallback::Get()->Register(this);
+  InitSettings();
 }
 
 CMadvrSettingsManager::~CMadvrSettingsManager()
@@ -182,6 +183,42 @@ void CMadvrSettingsManager::EnumValues(std::string path, std::vector<std::string
   EnumFoldersValues(MADVR_SETTINGS_VALUES, path, sVectorId, sVectorName, sVectorType);
 }
 
+void CMadvrSettingsManager::ListSettings(std::string path)
+{
+  std::vector<std::string> vecProfileGroups;
+  std::vector<std::string> vecProfileName;
+  std::vector<std::string> vecFoldersId;
+  std::vector<std::string> vecFoldersName;
+  std::vector<std::string> vecFoldersType;
+  std::vector<std::string> vecValuesId;
+  std::vector<std::string> vecValuesName;
+  std::vector<std::string> vecValuesType;
+
+  EnumGroups(path, &vecProfileGroups);
+  for (unsigned int i = 0; i < vecProfileGroups.size(); i++)
+  {
+    CLog::Log(0, "madVR Profile Groups: %s", vecProfileGroups[i].c_str());
+
+    EnumProfiles(path + "\\" + vecProfileGroups[i], &vecProfileName);
+    for (unsigned int a = 0; a < vecProfileName.size(); a++)
+    {
+      CLog::Log(0, "madVR Profiles: %s", vecProfileName[a].c_str());
+
+      EnumFolders(path + "\\" + vecProfileGroups[i] + "\\" + vecProfileName[a], &vecFoldersId, &vecFoldersName, &vecFoldersType);
+      for (unsigned int b = 0; b < vecFoldersId.size(); b++)
+      {
+        CLog::Log(0, "madVR Folders %s %s %s", vecFoldersId[b].c_str(), vecFoldersName[b].c_str(), vecFoldersType[b].c_str());
+
+        EnumValues(path + "\\" + vecProfileGroups[i] + "\\" + vecProfileName[a] + "\\" + vecFoldersId[b], &vecValuesId, &vecValuesName, &vecValuesType);
+        for (unsigned int c = 0; c < vecValuesId.size(); c++)
+        {
+          CLog::Log(0, "madVR Values %s %s %s", vecValuesId[c].c_str(), vecValuesName[c].c_str(), vecValuesType[c].c_str());
+        }
+      }
+    }
+  }
+}
+
 void CMadvrSettingsManager::GetStr(std::string path, std::string *str)
 {
   std::wstring pathW;
@@ -241,12 +278,12 @@ void CMadvrSettingsManager::GetDoubling(std::string path, int* iValue)
     GetStr(strAlgo, &sValue);
     if (sValue != "NNEDI3")
     {
-      result = CMadvrSettings::GeDoubleAlgo(sValue);
+      result = GetSettingsId(MADVR_LIST_DOUBLEQUALITY, sValue);
     }
     else
     {
       GetInt(strInt, &aValue);
-      result = CMadvrSettings::GetDoubleId(aValue);
+      result = GetSettingsId(MADVR_LIST_DOUBLEQUALITY, aValue);
     }
   };
 
@@ -285,7 +322,7 @@ void CMadvrSettingsManager::GetSmoothmotion(std::string path, int* iValue)
   if (bValue)
   {
     GetStr(strMode, &sValue);
-    result = CMadvrSettings::GetSmoothMotionId(sValue);
+    result = GetSettingsId(MADVR_LIST_SMOOTHMOTION, sValue);
   };
 
   *iValue = result;
@@ -304,7 +341,7 @@ void CMadvrSettingsManager::GetDithering(std::string path, int* iValue)
   if (!bValue)
   {
     GetStr(strMode, &sValue);
-    result = CMadvrSettings::GetDitheringId(sValue);
+    result = GetSettingsId(MADVR_LIST_DITHERING, sValue);
   };
 
   *iValue = result;
@@ -352,8 +389,8 @@ void CMadvrSettingsManager::SetDoubling(std::string path, int iValue)
   SetBool(strBool, (iValue>-1));
   if (iValue > -1)
   {
-    SetInt(strInt, MadvrDoubleQuality[iValue].id);
-    SetStr(strAlgo, MadvrDoubleQuality[iValue].algo);
+    SetInt(strInt, GetSettingsId(MADVR_LIST_DOUBLEQUALITY, iValue));
+    SetStr(strAlgo, GetSettingsName(MADVR_LIST_DOUBLEQUALITY,iValue));
   }
 }
 
@@ -363,7 +400,7 @@ void CMadvrSettingsManager::SetDeintActive(std::string path, int iValue)
   std::string strIfDoubt = "ifInDoubtDeinterlace";
 
   SetBool(strAuto, (iValue > -1));
-  SetBool(strIfDoubt, (iValue != MadvrDeintActiveDef));
+  SetBool(strIfDoubt, (iValue != MADVR_DEFAULT_DEINTACTIVE));
 }
 
 void CMadvrSettingsManager::SetSmoothmotion(std::string path, int iValue)
@@ -373,7 +410,7 @@ void CMadvrSettingsManager::SetSmoothmotion(std::string path, int iValue)
 
   SetBool(stEnabled, (iValue > -1));
   if (iValue > -1)
-    SetStr(strMode, MadvrSmoothMotion[iValue].name);
+    SetStr(strMode, GetSettingsName(MADVR_LIST_SMOOTHMOTION, iValue));
 }
 
 void CMadvrSettingsManager::SetDithering(std::string path, int iValue)
@@ -383,7 +420,7 @@ void CMadvrSettingsManager::SetDithering(std::string path, int iValue)
 
   SetBool(stDisable, (iValue == -1));
   if (iValue > -1)
-    SetStr(strMode, MadvrDithering[iValue].name);
+    SetStr(strMode, GetSettingsName(MADVR_LIST_DITHERING, iValue));
 }
 
 bool CMadvrSettingsManager::IsProfileActive(std::string path, std::string profile)
@@ -401,7 +438,6 @@ bool CMadvrSettingsManager::IsProfileActive(std::string path, std::string profil
   }
   return result;
 }
-
 
 void CMadvrSettingsManager::GetProfileActiveName(std::string *profile)
 {
@@ -428,42 +464,6 @@ void CMadvrSettingsManager::GetProfileActiveName(std::string *profile)
   *profile = result;
 }
 
-void CMadvrSettingsManager::ListSettings(std::string path)
-{
-  std::vector<std::string> vecProfileGroups;
-  std::vector<std::string> vecProfileName;
-  std::vector<std::string> vecFoldersId;
-  std::vector<std::string> vecFoldersName;
-  std::vector<std::string> vecFoldersType;
-  std::vector<std::string> vecValuesId;
-  std::vector<std::string> vecValuesName;
-  std::vector<std::string> vecValuesType;
-
-  EnumGroups(path, &vecProfileGroups);
-  for (unsigned int i = 0; i < vecProfileGroups.size(); i++)
-  {
-    CLog::Log(0, "madVR Profile Groups: %s", vecProfileGroups[i].c_str());
-
-    EnumProfiles(path + "\\" + vecProfileGroups[i], &vecProfileName);
-    for (unsigned int a = 0; a < vecProfileName.size(); a++)
-    {
-      CLog::Log(0, "madVR Profiles: %s", vecProfileName[a].c_str());
-
-      EnumFolders(path + "\\" + vecProfileGroups[i] + "\\" + vecProfileName[a], &vecFoldersId, &vecFoldersName, &vecFoldersType);
-      for (unsigned int b = 0; b < vecFoldersId.size(); b++)
-      {
-        CLog::Log(0, "madVR Folders %s %s %s", vecFoldersId[b].c_str(), vecFoldersName[b].c_str(), vecFoldersType[b].c_str());
-
-        EnumValues(path + "\\" + vecProfileGroups[i] + "\\" + vecProfileName[a] + "\\" + vecFoldersId[b], &vecValuesId, &vecValuesName, &vecValuesType);
-        for (unsigned int c = 0; c < vecValuesId.size(); c++)
-        {
-          CLog::Log(0, "madVR Values %s %s %s", vecValuesId[c].c_str(), vecValuesName[c].c_str(), vecValuesType[c].c_str());
-        }
-      }
-    }
-  }
-}
-
 void CMadvrSettingsManager::RestoreSettings()
 {
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_DSPLAYER)
@@ -471,25 +471,25 @@ void CMadvrSettingsManager::RestoreSettings()
 
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
-  SetStr("chromaUp", MadvrScaling[madvrSettings.m_ChromaUpscaling].name);
+  SetStr("chromaUp", GetSettingsName(MADVR_LIST_CHROMAUP, madvrSettings.m_ChromaUpscaling));
   SetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
   SetBool("superChromaRes", madvrSettings.m_ChromaSuperRes);
-  SetStr("LumaUp", MadvrScaling[madvrSettings.m_ImageUpscaling].name);
+  SetStr("LumaUp", GetSettingsName(MADVR_LIST_LUMAUP, madvrSettings.m_ImageUpscaling));
   SetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
   SetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
-  SetStr("LumaDown", MadvrScaling[madvrSettings.m_ImageDownscaling].name);
+  SetStr("LumaDown", GetSettingsName(MADVR_LIST_LUMADOWN, madvrSettings.m_ImageDownscaling));
   SetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
   SetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
   SetDoubling("DL", madvrSettings.m_ImageDoubleLuma);
-  SetStr("nnediDLScalingFactor", MadvrDoubleFactor[madvrSettings.m_ImageDoubleLumaFactor].name);
+  SetStr("nnediDLScalingFactor", GetSettingsName(MADVR_LIST_DOUBLEFACTOR, madvrSettings.m_ImageDoubleLumaFactor));
   SetDoubling("DC", madvrSettings.m_ImageDoubleChroma);
-  SetStr("nnediDCScalingFactor", MadvrDoubleFactor[madvrSettings.m_ImageDoubleChromaFactor].name);
+  SetStr("nnediDCScalingFactor", GetSettingsName(MADVR_LIST_DOUBLEFACTOR, madvrSettings.m_ImageDoubleChromaFactor));
   SetDoubling("QL", madvrSettings.m_ImageQuadrupleLuma);
-  SetStr("nnediQLScalingFactor", MadvrQuadrupleFactor[madvrSettings.m_ImageQuadrupleLumaFactor].name);
+  SetStr("nnediQLScalingFactor", GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, madvrSettings.m_ImageQuadrupleLumaFactor));
   SetDoubling("QC", madvrSettings.m_ImageQuadrupleChroma);
-  SetStr("nnediQCScalingFactor", MadvrQuadrupleFactor[madvrSettings.m_ImageQuadrupleChromaFactor].name);
+  SetStr("nnediQCScalingFactor", GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, madvrSettings.m_ImageQuadrupleChromaFactor));
   SetDeintActive("", madvrSettings.m_deintactive);
-  SetStr("contentType", MadvrDeintForce[madvrSettings.m_deintforce].name);
+  SetStr("contentType", GetSettingsName(MADVR_LIST_DEINTFORCE, madvrSettings.m_deintforce));
   SetBool("scanPartialFrame", madvrSettings.m_deintlookpixels);
   SetBool("debandActive", madvrSettings.m_deband);
   SetInt("debandLevel", madvrSettings.m_debandLevel);
@@ -531,7 +531,7 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
   {
     GetDeintActive("", &madvrSettings.m_deintactive);
     GetStr("contentType", &sValue);
-    madvrSettings.m_deintforce = CMadvrSettings::GetDeintForceId(sValue);
+    madvrSettings.m_deintforce = GetSettingsId(MADVR_LIST_DEINTFORCE, sValue);
     GetBool("scanPartialFrame", &bValue);
     madvrSettings.m_deintlookpixels = bValue;
     GetBool("debandActive", &bValue);
@@ -549,36 +549,36 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
   if (type == MADVR_LOAD_SCALING)
   {
     GetStr("chromaUp", &sValue);
-    madvrSettings.m_ChromaUpscaling = CMadvrSettings::GetScalingId(sValue);
+    madvrSettings.m_ChromaUpscaling = GetSettingsId(MADVR_LIST_CHROMAUP, sValue);
     GetBool("chromaAntiRinging", &bValue);
     madvrSettings.m_ChromaAntiRing = bValue;
     GetBool("superChromaRes", &bValue);
     madvrSettings.m_ChromaSuperRes = bValue;
     GetStr("LumaUp", &sValue);
-    madvrSettings.m_ImageUpscaling = CMadvrSettings::GetScalingId(sValue);
+    madvrSettings.m_ImageUpscaling = GetSettingsId(MADVR_LIST_LUMAUP, sValue);
 
     GetBool("lumaUpAntiRinging", &bValue);
     madvrSettings.m_ImageUpAntiRing = bValue;
     GetBool("lumaUpLinear", &bValue);
     madvrSettings.m_ImageUpLinear = bValue;
     GetStr("LumaDown", &sValue);
-    madvrSettings.m_ImageDownscaling = CMadvrSettings::GetScalingId(sValue);
+    madvrSettings.m_ImageDownscaling = GetSettingsId(MADVR_LIST_LUMADOWN, sValue);
     GetBool("lumaDownAntiRinging", &bValue);
     madvrSettings.m_ImageDownAntiRing = bValue;
     GetBool("lumaDownLinear", &bValue);
     madvrSettings.m_ImageDownLinear = bValue;
     GetDoubling("DL", &madvrSettings.m_ImageDoubleLuma);
     GetStr("nnediDLScalingFactor", &sValue);
-    madvrSettings.m_ImageDoubleLumaFactor = CMadvrSettings::GetDoubleFactorId(sValue);
+    madvrSettings.m_ImageDoubleLumaFactor = GetSettingsId(MADVR_LIST_DOUBLEFACTOR, sValue);
     GetDoubling("DC", &madvrSettings.m_ImageDoubleChroma);
     GetStr("nnediDCScalingFactor", &sValue);
-    madvrSettings.m_ImageDoubleChromaFactor = CMadvrSettings::GetDoubleFactorId(sValue);
+    madvrSettings.m_ImageDoubleChromaFactor = GetSettingsId(MADVR_LIST_DOUBLEFACTOR, sValue);
     GetDoubling("QL", &madvrSettings.m_ImageQuadrupleLuma);
     GetStr("nnediQLScalingFactor", &sValue);
-    madvrSettings.m_ImageQuadrupleLumaFactor = CMadvrSettings::GetQuadrupleFactorId(sValue);
+    madvrSettings.m_ImageQuadrupleLumaFactor = GetSettingsId(MADVR_LIST_QUADRUPLEFACTOR, sValue);
     GetDoubling("QC", &madvrSettings.m_ImageQuadrupleChroma);
     GetStr("nnediQCScalingFactor", &sValue);
-    madvrSettings.m_ImageQuadrupleChromaFactor = CMadvrSettings::GetQuadrupleFactorId(sValue);
+    madvrSettings.m_ImageQuadrupleChromaFactor = GetSettingsId(MADVR_LIST_QUADRUPLEFACTOR, sValue);
 
     GetBool("fineSharp", &bValue);
     madvrSettings.m_fineSharp = bValue;
@@ -609,4 +609,202 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
     GetBool("superResFirst", &bValue);
     madvrSettings.m_superResFirst = bValue;
   }
+}
+
+std::vector<CMadvrSettingsList*>* CMadvrSettingsManager::GetSettingsVector(MADVR_SETTINGS_LIST type)
+{
+  std::vector< CMadvrSettingsList *> *vec;
+  switch (type)
+  {
+  case MADVR_LIST_CHROMAUP:
+    vec = &m_settingsChromaUp;
+    break;
+  case MADVR_LIST_LUMAUP:
+    vec = &m_settingsLumaUp;
+    break;
+  case MADVR_LIST_LUMADOWN:
+    vec = &m_settingsLumaDown;
+    break;
+  case MADVR_LIST_DOUBLEQUALITY:
+    vec = &m_settingsDoubleQuality;
+    break;
+  case MADVR_LIST_DOUBLEFACTOR:
+    vec = &m_settingsDoubleFactor;
+    break;
+  case MADVR_LIST_QUADRUPLEFACTOR:
+    vec = &m_settingsQuadrupleFactor;
+    break;
+  case MADVR_LIST_DEINTFORCE:
+    vec = &m_settingsDeintForce;
+    break;
+  case MADVR_LIST_DEINTACTIVE:
+    vec = &m_settingsDeintActive;
+    break;
+  case MADVR_LIST_SMOOTHMOTION:
+    vec = &m_settingsSmoothMotion;
+    break;
+  case MADVR_LIST_DITHERING:
+    vec = &m_settingsDithering;
+    break;
+  case MADVR_LIST_DEBAND:
+    vec = &m_settingsDeband;
+    break;
+  }
+  return vec;
+}
+
+void CMadvrSettingsManager::AddSettingsListScaler(std::string name, int label, bool chromaUp, bool lumaUp, bool lumaDown)
+{
+  if (chromaUp)
+    m_settingsChromaUp.push_back(DNew CMadvrSettingsList(name, label));
+  if (lumaUp)
+    m_settingsLumaUp.push_back(DNew CMadvrSettingsList(name, label));
+  if (lumaDown)
+    m_settingsLumaDown.push_back(DNew CMadvrSettingsList(name, label));
+}
+
+void CMadvrSettingsManager::AddSettingsList(MADVR_SETTINGS_LIST type, std::string name, int label, int id)
+{
+  GetSettingsVector(type)->push_back(DNew CMadvrSettingsList(name, label, id));
+}
+
+
+int CMadvrSettingsManager::GetSettingsId(MADVR_SETTINGS_LIST type, std::string sValue)
+{
+  std::vector<CMadvrSettingsList *> *vec = GetSettingsVector(type);
+  int result = -1;
+
+  for (unsigned int i = 0; i < vec->size(); i++)
+  {
+    if ((*vec)[i]->m_name == sValue)
+    {
+      result = i;
+      break;
+    }
+  }
+  return result;
+}
+
+int CMadvrSettingsManager::GetSettingsId(MADVR_SETTINGS_LIST type, int iValue)
+{
+  std::vector<CMadvrSettingsList *> *vec = GetSettingsVector(type);
+  int result = -1;
+
+  for (unsigned int i = 0; i < vec->size(); i++)
+  {
+    if (i == iValue)
+    {
+      result = (*vec)[i]->m_id;
+      break;
+    }
+  }
+  return result;
+}
+
+std::string CMadvrSettingsManager::GetSettingsName(MADVR_SETTINGS_LIST type, int iValue)
+{
+  return (*GetSettingsVector(type))[iValue]->m_name;
+}
+
+void CMadvrSettingsManager::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry)
+{
+  std::vector<CMadvrSettingsList *> *vec = GetSettingsVector(type);
+
+  for (unsigned int i = 0; i < vec->size(); i++)
+  {
+    entry->push_back(std::make_pair((*vec)[i]->m_label, i));
+  }
+}
+
+void CMadvrSettingsManager::InitSettings()
+{
+  //Scalers
+  AddSettingsListScaler("Nearest Neighbor", 70001, true, true, true);
+  AddSettingsListScaler("Bilinear", 70002, true, true, true);
+  AddSettingsListScaler("Dxva", 70003, false, true, true);
+  AddSettingsListScaler("Mitchell-Netravali", 70004, true, true, true);
+  AddSettingsListScaler("Catmull-Rom", 70005, true, true, true);
+  AddSettingsListScaler("Bicubic50", 70006, true, true, true);
+  AddSettingsListScaler("Bicubic60", 70007, true, true, true);
+  AddSettingsListScaler("Bicubic75", 70008, true, true, true);
+  AddSettingsListScaler("Bicubic100", 70009, true, true, true);
+  AddSettingsListScaler("SoftCubic50", 70010, true, true, true);
+  AddSettingsListScaler("SoftCubic60", 70011, true, true, true);
+  AddSettingsListScaler("SoftCubic70", 70012, true, true, true);
+  AddSettingsListScaler("SoftCubic80", 70013, true, true, true);
+  AddSettingsListScaler("SoftCubic100", 70014, true, true, true);
+  AddSettingsListScaler("Lanczos3", 70015, true, true, true);
+  AddSettingsListScaler("Lanczos4", 70016, true, true, true);
+  AddSettingsListScaler("Lanczos8", 70017, false, false, false);
+  AddSettingsListScaler("Spline36", 70018, true, true, true);
+  AddSettingsListScaler("Spline64", 70019, true, true, true);
+  AddSettingsListScaler("Jinc3", 70020, true, true, false);
+  AddSettingsListScaler("Jinc4", 70021, false, false, false);
+  AddSettingsListScaler("Jinc8", 70022, false, false, false);
+  AddSettingsListScaler("Bilateral", 70033, true, false, false);
+  AddSettingsListScaler("SuperXbr25", 70034, true, false, false);
+  AddSettingsListScaler("SuperXbr50", 70035, true, false, false);
+  AddSettingsListScaler("SuperXbr75", 70036, true, false, false);
+  AddSettingsListScaler("SuperXbr100", 70037, true, false, false);
+  AddSettingsListScaler("SuperXbr125", 70038, true, false, false);
+  AddSettingsListScaler("SuperXbr150", 70039, true, false, false);
+  AddSettingsListScaler("Nedi", 70040, true, false, false);
+  AddSettingsListScaler("Nnedi16", 70023, true, false, false);
+  AddSettingsListScaler("Nnedi32", 70024, true, false, false);
+  AddSettingsListScaler("Nnedi64", 70025, true, false, false);
+  AddSettingsListScaler("Nnedi128", 70026, true, false, false);
+  AddSettingsListScaler("Nnedi256", 70027, true, false, false);
+
+  //Image Double Quality
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr25", 70034);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr50", 70035);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr75", 70036);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr100", 70037);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr125", 70038);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr150", 70039);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NEDI", 70040);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70023, 0); //16NEURONS
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70024, 1); //32NEURONS
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70025, 2); //64NEURONS
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70026, 3); //128NEURONS
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70027, 3); //256NEURONS
+
+  //Image Double Factor
+  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "2.0x", 70109);
+  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "1.5x", 70110);
+  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "1.2x", 70111);
+  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "always", 70112);
+
+  //Image Quadruple Factor
+  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "4.0x", 70113);
+  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "3.0x", 70114);
+  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "2.4x", 70115);
+  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "always", 70112);
+
+  // Deint Force
+  AddSettingsList(MADVR_LIST_DEINTFORCE, "auto", 70202 );
+  AddSettingsList(MADVR_LIST_DEINTFORCE, "film", 70203 );
+  AddSettingsList(MADVR_LIST_DEINTFORCE, "video", 70204 );
+
+  // Deint Active
+  AddSettingsList(MADVR_LIST_DEINTACTIVE, "ifdoubt_active", 70205);
+  AddSettingsList(MADVR_LIST_DEINTACTIVE, "ifdoubt_deactive", 70206);
+
+  // Smoothmotion
+  AddSettingsList(MADVR_LIST_SMOOTHMOTION, "avoidJudder", 70301);
+  AddSettingsList(MADVR_LIST_SMOOTHMOTION, "almostAlways", 70302);
+  AddSettingsList(MADVR_LIST_SMOOTHMOTION, "always", 70303);
+
+  // Dithering
+  AddSettingsList(MADVR_LIST_DITHERING, "random", 70401 );
+  AddSettingsList(MADVR_LIST_DITHERING, "ordered", 70402);
+  AddSettingsList(MADVR_LIST_DITHERING, "errorDifMedNoise", 70403);
+  AddSettingsList(MADVR_LIST_DITHERING, "errorDifLowNoise", 70404);
+
+  // Deband
+  AddSettingsList(MADVR_LIST_DEBAND, "debandlow", 70503 );
+  AddSettingsList(MADVR_LIST_DEBAND, "debandmedium", 70504);
+  AddSettingsList(MADVR_LIST_DEBAND, "debandhigh", 70505);
+
+
 }

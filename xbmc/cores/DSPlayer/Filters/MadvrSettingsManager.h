@@ -27,6 +27,18 @@
 #include "MadvrCallback.h"
 #include "MadvrSettings.h"
 
+
+class CMadvrSettingsList
+{
+public:
+  CMadvrSettingsList(std::string name, int label, int id = -1):m_name(name), m_label(label), m_id(id) {};
+  virtual ~CMadvrSettingsList(){};
+
+  std::string m_name;
+  int m_label;
+  int m_id;
+};
+
 enum MADVR_SETTINGS_TYPE
 {
   MADVR_SETTINGS_PROFILES,
@@ -57,32 +69,52 @@ public:
   virtual void SetDeintActive(std::string path, int iValue);
   virtual void SetSmoothmotion(std::string path, int iValue);
   virtual void SetDithering(std::string path, int iValue);
-
-  void EnumGroups(std::string path, std::vector<std::string> *sVector);
-  void EnumProfiles(std::string path, std::vector<std::string> *sVector);
-  void EnumFolders(std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
-  void EnumValues(std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
- 
-  void GetStr(std::string path, std::string *str);
-  void GetBool(std::string path, bool *bValue);
-  void GetInt(std::string path, int *iValue);
-  void GetFloat(std::string path, float* fValue, int iConv = 100);
-
-  void GetDoubling(std::string path, int* iValue);
-  void GetDeintActive(std::string path, int* iValue);
-  void GetSmoothmotion(std::string path, int* iValue);
-  void GetDithering(std::string path, int* iValue);
-
-  bool IsProfileActive(std::string path, std::string profile);
-
-  void ListSettings(std::string path);
+  virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
+  virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
 
 private:
+
   BOOL GetSettings(MADVR_SETTINGS_TYPE type, LPCWSTR path, int enumIndex, LPCWSTR sValue, BOOL* bValue, int* iValue, int *bufSize);
   BOOL GetSettings2(MADVR_SETTINGS_TYPE mType, LPCWSTR path, int enumIndex, LPCWSTR id, LPCWSTR type, LPCWSTR name, int *idBufSize, int *nameBufSize, int *typeBufSize);
   BOOL SetSettings(MADVR_SETTINGS_TYPE type, LPCWSTR path, LPCWSTR sValue, BOOL bValue, int iValue);
   void EnumProfilesGroups(MADVR_SETTINGS_TYPE type, std::string path, std::vector<std::string> *sVector);
   void EnumFoldersValues(MADVR_SETTINGS_TYPE type, std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
+  
+  void EnumGroups(std::string path, std::vector<std::string> *sVector);
+  void EnumProfiles(std::string path, std::vector<std::string> *sVector);
+  void EnumFolders(std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
+  void EnumValues(std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
+  void ListSettings(std::string path);
+
+  void GetStr(std::string path, std::string *str);
+  void GetBool(std::string path, bool *bValue);
+  void GetInt(std::string path, int *iValue);
+  void GetFloat(std::string path, float* fValue, int iConv = 100);
+  void GetDoubling(std::string path, int* iValue);
+  void GetDeintActive(std::string path, int* iValue);
+  void GetSmoothmotion(std::string path, int* iValue);
+  void GetDithering(std::string path, int* iValue);
+  bool IsProfileActive(std::string path, std::string profile);
+
+  void AddSettingsListScaler(std::string name, int label, bool chromaUp, bool lumaUp, bool lumaDown);
+  void AddSettingsList(MADVR_SETTINGS_LIST type, std::string name, int label, int id = -1);
+  std::vector<CMadvrSettingsList*>* GetSettingsVector(MADVR_SETTINGS_LIST type);
+  int GetSettingsId(MADVR_SETTINGS_LIST type, std::string sValue);
+  int GetSettingsId(MADVR_SETTINGS_LIST type, int iValue);
+  void InitSettings();
+  
+
+  std::vector<CMadvrSettingsList* > m_settingsChromaUp;
+  std::vector<CMadvrSettingsList* > m_settingsLumaUp;
+  std::vector<CMadvrSettingsList* > m_settingsLumaDown;
+  std::vector<CMadvrSettingsList* > m_settingsDoubleQuality;
+  std::vector<CMadvrSettingsList* > m_settingsDoubleFactor;
+  std::vector<CMadvrSettingsList* > m_settingsQuadrupleFactor;
+  std::vector<CMadvrSettingsList* > m_settingsDeintForce;
+  std::vector<CMadvrSettingsList* > m_settingsDeintActive;
+  std::vector<CMadvrSettingsList* > m_settingsSmoothMotion;
+  std::vector<CMadvrSettingsList* > m_settingsDithering;
+  std::vector<CMadvrSettingsList* > m_settingsDeband;
 
   IUnknown* m_pDXR;
 };

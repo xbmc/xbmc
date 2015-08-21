@@ -22,6 +22,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "MadvrSettings.h"
+#include "MadvrCallback.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -35,15 +36,15 @@ CMadvrSettings::CMadvrSettings()
 {
   m_Resolution = -1;
 
-  m_ChromaUpscaling = ChromaUpDef;
+  m_ChromaUpscaling = MADVR_DEFAULT_CHROMAUP;
   m_ChromaAntiRing = false;
   m_ChromaSuperRes = false;
   
-  m_ImageUpscaling = LumaUpDef;
+  m_ImageUpscaling = MADVR_DEFAULT_LUMAUP;
   m_ImageUpAntiRing = false;
   m_ImageUpLinear = false;
 
-  m_ImageDownscaling = LumaDownDef;
+  m_ImageDownscaling = MADVR_DEFAULT_LUMADOWN;
   m_ImageDownAntiRing = false;
   m_ImageDownLinear = false;
 
@@ -52,24 +53,24 @@ CMadvrSettings::CMadvrSettings()
   m_ImageQuadrupleLuma = -1;
   m_ImageQuadrupleChroma = -1;
 
-  m_ImageDoubleLumaFactor = MadvrDoubleFactorDef;
-  m_ImageDoubleChromaFactor = MadvrDoubleFactorDef;
-  m_ImageQuadrupleLumaFactor = MadvrQuadrupleFactorDef;
-  m_ImageQuadrupleChromaFactor = MadvrQuadrupleFactorDef;
+  m_ImageDoubleLumaFactor = MADVR_DEFAULT_DOUBLEFACTOR;
+  m_ImageDoubleChromaFactor = MADVR_DEFAULT_DOUBLEFACTOR;
+  m_ImageQuadrupleLumaFactor = MADVR_DEFAULT_QUADRUPLEFACTOR;
+  m_ImageQuadrupleChromaFactor = MADVR_DEFAULT_QUADRUPLEFACTOR;
 
-  m_deintactive = MadvrDeintActiveDef;
-  m_deintforce = MadvrDeintForceDef;
+  m_deintactive = MADVR_DEFAULT_DEINTACTIVE;
+  m_deintforce = MADVR_DEFAULT_DEINTFORCE;
   m_deintlookpixels = true;
 
   m_smoothMotion = -1;
 
-  m_dithering = MadvrDitheringDef;
+  m_dithering = MADVR_DEFAULT_DITHERING;
   m_ditheringColoredNoise = true;
   m_ditheringEveryFrame = true;
 
   m_deband = false;
-  m_debandLevel = MadvrDebandLevelDef;
-  m_debandFadeLevel = MadvrDebandFadeLevelDef;
+  m_debandLevel = MADVR_DEFAULT_DEBAND_LEVEL;
+  m_debandFadeLevel = MADVR_DEFAULT_DEBAND_FADELEVEL;
 
   m_fineSharp = false;
   m_fineSharpStrength = 2.0f;
@@ -149,86 +150,4 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_superResFirst != right.m_superResFirst) return true;
 
   return false;
-}
-
-
-
-int CMadvrSettings::GetScalingId(std::string sValue)
-{
-  for (unsigned int i = 0; i < countof(MadvrScaling); i++)
-  {
-    if (sValue == MadvrScaling[i].name)
-      return i;
-  }
-  return -1;
-}
-
-int CMadvrSettings::GetDeintForceId(std::string sValue)
-{
-  for (unsigned int i = 0; i < countof(MadvrDeintForce); i++)
-  {
-    if (sValue == MadvrDeintForce[i].name)
-      return i;
-  }
-  return -1;
-}
-
-int CMadvrSettings::GetDoubleId(int iValue)
-{
-  for (unsigned int i = 0; i < countof(MadvrDoubleQuality); i++)
-  {
-    if (iValue == MadvrDoubleQuality[i].id && "NNEDI3" == MadvrDoubleQuality[i].algo)
-      return i;
-  }
-  return -1;
-}
-
-int CMadvrSettings::GeDoubleAlgo(std::string sValue)
-{
-  for (unsigned int i = 0; i < countof(MadvrDoubleQuality); i++)
-  {
-    if (sValue == MadvrDoubleQuality[i].algo)
-      return i;
-  }
-  return -1;
-}
-
-int CMadvrSettings::GetDoubleFactorId(std::string sValue)
-{
-  for (unsigned int i = 0; i < countof(MadvrDoubleFactor); i++)
-  {
-    if (sValue == MadvrDoubleFactor[i].name)
-      return i;
-  }
-  return -1;
-}
-
-int CMadvrSettings::GetQuadrupleFactorId(std::string sValue)
-{
-  for (unsigned int i = 0; i < countof(MadvrQuadrupleFactor); i++)
-  {
-    if (sValue == MadvrQuadrupleFactor[i].name)
-      return i;
-  }
-  return -1;
-}
-
-int CMadvrSettings::GetSmoothMotionId(std::string sValue)
-{
-  for (unsigned int i = 0; i < countof(MadvrSmoothMotion); i++)
-  {
-    if (sValue == MadvrSmoothMotion[i].name)
-      return i;
-  }
-  return -1;
-}
-
-int CMadvrSettings::GetDitheringId(std::string sValue)
-{
-  for (unsigned int i = 0; i < countof(MadvrDithering); i++)
-  {
-    if (sValue == MadvrDithering[i].name)
-      return i;
-  }
-  return -1;
 }
