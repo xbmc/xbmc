@@ -96,7 +96,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
       return false;
     }
 
-    GetPresets();
+    m_hasPresets = GetPresets();
 
     if (GetSubModules())
       m_pInfo->submodule = strdup(CSpecialProtocol::TranslatePath(m_submodules.front()).c_str());
