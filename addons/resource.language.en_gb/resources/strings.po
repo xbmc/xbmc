@@ -13882,7 +13882,13 @@ msgctxt "#24147"
 msgid "Failed to scan %s: %s"
 msgstr ""
 
-#empty strings from id 24148 to 24991
+#empty strings from id 24148 to 24990
+
+#. Used as error message in add-on browser when add-on repository data could not be downloaded
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24991"
+msgid "Could not connect to repository."
+msgstr ""
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
