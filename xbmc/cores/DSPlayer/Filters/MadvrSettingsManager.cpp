@@ -474,10 +474,10 @@ void CMadvrSettingsManager::RestoreSettings()
   SetStr("chromaUp", GetSettingsName(MADVR_LIST_CHROMAUP, madvrSettings.m_ChromaUpscaling));
   SetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
   SetBool("superChromaRes", madvrSettings.m_ChromaSuperRes);
-  SetStr("LumaUp", GetSettingsName(MADVR_LIST_LUMAUP, madvrSettings.m_ImageUpscaling));
+  SetStr("lumaUp", GetSettingsName(MADVR_LIST_LUMAUP, madvrSettings.m_ImageUpscaling));
   SetBool("lumaUpAntiRinging", madvrSettings.m_ImageUpAntiRing);
   SetBool("lumaUpLinear", madvrSettings.m_ImageUpLinear);
-  SetStr("LumaDown", GetSettingsName(MADVR_LIST_LUMADOWN, madvrSettings.m_ImageDownscaling));
+  SetStr("lumaDown", GetSettingsName(MADVR_LIST_LUMADOWN, madvrSettings.m_ImageDownscaling));
   SetBool("lumaDownAntiRinging", madvrSettings.m_ImageDownAntiRing);
   SetBool("lumaDownLinear", madvrSettings.m_ImageDownLinear);
   SetDoubling("DL", madvrSettings.m_ImageDoubleLuma);
@@ -554,14 +554,14 @@ void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
     madvrSettings.m_ChromaAntiRing = bValue;
     GetBool("superChromaRes", &bValue);
     madvrSettings.m_ChromaSuperRes = bValue;
-    GetStr("LumaUp", &sValue);
+    GetStr("lumaUp", &sValue);
     madvrSettings.m_ImageUpscaling = GetSettingsId(MADVR_LIST_LUMAUP, sValue);
 
     GetBool("lumaUpAntiRinging", &bValue);
     madvrSettings.m_ImageUpAntiRing = bValue;
     GetBool("lumaUpLinear", &bValue);
     madvrSettings.m_ImageUpLinear = bValue;
-    GetStr("LumaDown", &sValue);
+    GetStr("lumaDown", &sValue);
     madvrSettings.m_ImageDownscaling = GetSettingsId(MADVR_LIST_LUMADOWN, sValue);
     GetBool("lumaDownAntiRinging", &bValue);
     madvrSettings.m_ImageDownAntiRing = bValue;

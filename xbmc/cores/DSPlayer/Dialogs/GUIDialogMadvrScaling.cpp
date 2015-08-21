@@ -334,7 +334,7 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
   else if (settingId == SET_IMAGE_UPSCALING)
   {
     madvrSettings.m_ImageUpscaling = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("LumaUp", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_LUMAUP, madvrSettings.m_ImageUpscaling));
+    CMadvrCallback::Get()->SetStr("lumaUp", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_LUMAUP, madvrSettings.m_ImageUpscaling));
   }
   else if (settingId == SET_IMAGE_UP_ANTIRING)
   {
@@ -349,7 +349,7 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
   else if (settingId == SET_IMAGE_DOWNSCALING)
   {
     madvrSettings.m_ImageDownscaling = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("LumaDown", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_LUMADOWN, madvrSettings.m_ImageDownscaling));
+    CMadvrCallback::Get()->SetStr("lumaDown", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_LUMADOWN, madvrSettings.m_ImageDownscaling));
   }
   else if (settingId == SET_IMAGE_DOWN_ANTIRING)
   {
