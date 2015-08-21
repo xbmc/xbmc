@@ -214,13 +214,7 @@ class UpdateAddons : public IRunnable
 {
   virtual void Run()
   {
-    VECADDONS addons;
-    CAddonMgr::GetInstance().GetAllOutdatedAddons(addons, true); // get local
-    for (VECADDONS::iterator i = addons.begin(); i != addons.end(); ++i)
-    {
-      std::string referer = StringUtils::Format("Referer=%s-%s.zip",(*i)->ID().c_str(),(*i)->Version().asString().c_str());
-      CAddonInstaller::GetInstance().Install((*i)->ID(), true, referer); // force install
-    }
+    CAddonInstaller::GetInstance().InstallUpdates();
   }
 };
 
