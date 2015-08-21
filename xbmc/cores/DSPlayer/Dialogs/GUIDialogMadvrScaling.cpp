@@ -169,7 +169,7 @@ void CGUIDialogMadvrScaling::SetupView()
     if (profile != "")
     {
       CStdString sHeading;
-      sHeading.Format("%s %s: %s", g_localizeStrings.Get(70000).c_str(), g_localizeStrings.Get(20093).c_str(), profile.c_str());
+      sHeading.Format("%s: %s", g_localizeStrings.Get(20093).c_str(), profile.c_str());
       SetHeading(sHeading);
     }
   }
