@@ -283,7 +283,7 @@ void CMadvrSettingsManager::GetDoubling(std::string path, int* iValue)
     else
     {
       GetInt(strInt, &aValue);
-      result = GetSettingsId(MADVR_LIST_DOUBLEQUALITY, aValue);
+      result = aValue;
     }
   };
 
@@ -389,7 +389,7 @@ void CMadvrSettingsManager::SetDoubling(std::string path, int iValue)
   SetBool(strBool, (iValue>-1));
   if (iValue > -1)
   {
-    SetInt(strInt, GetSettingsId(MADVR_LIST_DOUBLEQUALITY, iValue));
+    SetInt(strInt, iValue);
     SetStr(strAlgo, GetSettingsName(MADVR_LIST_DOUBLEQUALITY,iValue));
   }
 }
@@ -653,21 +653,20 @@ std::vector<CMadvrSettingsList*>* CMadvrSettingsManager::GetSettingsVector(MADVR
   return vec;
 }
 
-void CMadvrSettingsManager::AddSettingsListScaler(std::string name, int label, bool chromaUp, bool lumaUp, bool lumaDown)
+void CMadvrSettingsManager::AddSettingsListScaler(std::string name, int label, int id, bool chromaUp, bool lumaUp, bool lumaDown)
 {
   if (chromaUp)
-    m_settingsChromaUp.push_back(DNew CMadvrSettingsList(name, label));
+    m_settingsChromaUp.push_back(DNew CMadvrSettingsList(name, label, id));
   if (lumaUp)
-    m_settingsLumaUp.push_back(DNew CMadvrSettingsList(name, label));
+    m_settingsLumaUp.push_back(DNew CMadvrSettingsList(name, label, id));
   if (lumaDown)
-    m_settingsLumaDown.push_back(DNew CMadvrSettingsList(name, label));
+    m_settingsLumaDown.push_back(DNew CMadvrSettingsList(name, label, id));
 }
 
 void CMadvrSettingsManager::AddSettingsList(MADVR_SETTINGS_LIST type, std::string name, int label, int id)
 {
   GetSettingsVector(type)->push_back(DNew CMadvrSettingsList(name, label, id));
 }
-
 
 int CMadvrSettingsManager::GetSettingsId(MADVR_SETTINGS_LIST type, std::string sValue)
 {
@@ -678,22 +677,6 @@ int CMadvrSettingsManager::GetSettingsId(MADVR_SETTINGS_LIST type, std::string s
   {
     if ((*vec)[i]->m_name == sValue)
     {
-      result = i;
-      break;
-    }
-  }
-  return result;
-}
-
-int CMadvrSettingsManager::GetSettingsId(MADVR_SETTINGS_LIST type, int iValue)
-{
-  std::vector<CMadvrSettingsList *> *vec = GetSettingsVector(type);
-  int result = -1;
-
-  for (unsigned int i = 0; i < vec->size(); i++)
-  {
-    if (i == iValue)
-    {
       result = (*vec)[i]->m_id;
       break;
     }
@@ -703,114 +686,118 @@ int CMadvrSettingsManager::GetSettingsId(MADVR_SETTINGS_LIST type, int iValue)
 
 std::string CMadvrSettingsManager::GetSettingsName(MADVR_SETTINGS_LIST type, int iValue)
 {
-  if (iValue > GetSettingsVector(type)->size() - 1)
+  std::vector<CMadvrSettingsList *> *vec = GetSettingsVector(type);
+  std::string result = "";
+
+  for (unsigned int i = 0; i < vec->size(); i++)
   {
-    iValue = GetSettingsVector(type)->size() - 1;
-    CLog::Log(LOGDEBUG, "%s Failed to select right settings, it will be necessary to reset default madVR settings values stored in guisettings.xml", __FUNCTION__);
+    if ((*vec)[i]->m_id == iValue)
+    {
+      result = (*vec)[i]->m_name;
+      break;
+    }
   }
 
-  return (*GetSettingsVector(type))[iValue]->m_name;
+  return result;
 }
+
 
 void CMadvrSettingsManager::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry)
 {
   std::vector<CMadvrSettingsList *> *vec = GetSettingsVector(type);
-
   for (unsigned int i = 0; i < vec->size(); i++)
   {
-    entry->push_back(std::make_pair((*vec)[i]->m_label, i));
+    entry->push_back(std::make_pair((*vec)[i]->m_label, (*vec)[i]->m_id));
   }
 }
 
 void CMadvrSettingsManager::InitSettings()
 {
   //Scalers
-  AddSettingsListScaler("Nearest Neighbor", 70001, true, true, true);
-  AddSettingsListScaler("Bilinear", 70002, true, true, true);
-  AddSettingsListScaler("Dxva", 70003, false, true, true);
-  AddSettingsListScaler("Mitchell-Netravali", 70004, true, true, true);
-  AddSettingsListScaler("Catmull-Rom", 70005, true, true, true);
-  AddSettingsListScaler("Bicubic50", 70006, true, true, true);
-  AddSettingsListScaler("Bicubic60", 70007, true, true, true);
-  AddSettingsListScaler("Bicubic75", 70008, true, true, true);
-  AddSettingsListScaler("Bicubic100", 70009, true, true, true);
-  AddSettingsListScaler("SoftCubic50", 70010, true, true, true);
-  AddSettingsListScaler("SoftCubic60", 70011, true, true, true);
-  AddSettingsListScaler("SoftCubic70", 70012, true, true, true);
-  AddSettingsListScaler("SoftCubic80", 70013, true, true, true);
-  AddSettingsListScaler("SoftCubic100", 70014, true, true, true);
-  AddSettingsListScaler("Lanczos3", 70015, true, true, true);
-  AddSettingsListScaler("Lanczos4", 70016, true, true, true);
-  AddSettingsListScaler("Lanczos8", 70017, false, false, false);
-  AddSettingsListScaler("Spline36", 70018, true, true, true);
-  AddSettingsListScaler("Spline64", 70019, true, true, true);
-  AddSettingsListScaler("Jinc3", 70020, true, true, false);
-  AddSettingsListScaler("Jinc4", 70021, false, false, false);
-  AddSettingsListScaler("Jinc8", 70022, false, false, false);
-  AddSettingsListScaler("Bilateral", 70033, true, false, false);
-  AddSettingsListScaler("SuperXbr25", 70034, true, false, false);
-  AddSettingsListScaler("SuperXbr50", 70035, true, false, false);
-  AddSettingsListScaler("SuperXbr75", 70036, true, false, false);
-  AddSettingsListScaler("SuperXbr100", 70037, true, false, false);
-  AddSettingsListScaler("SuperXbr125", 70038, true, false, false);
-  AddSettingsListScaler("SuperXbr150", 70039, true, false, false);
-  AddSettingsListScaler("Nedi", 70040, true, false, false);
-  AddSettingsListScaler("Nnedi16", 70023, true, false, false);
-  AddSettingsListScaler("Nnedi32", 70024, true, false, false);
-  AddSettingsListScaler("Nnedi64", 70025, true, false, false);
-  AddSettingsListScaler("Nnedi128", 70026, true, false, false);
-  AddSettingsListScaler("Nnedi256", 70027, true, false, false);
+  AddSettingsListScaler("Nearest Neighbor", 70001, 0, true, true, true);
+  AddSettingsListScaler("Bilinear", 70002, 1, true, true, true);
+  AddSettingsListScaler("Dxva", 70003, 2, false, true, true);
+  AddSettingsListScaler("Mitchell-Netravali", 3, 70004, true, true, true);
+  AddSettingsListScaler("Catmull-Rom", 70005, 4, true, true, true);
+  AddSettingsListScaler("Bicubic50", 70006, 5, true, true, true);
+  AddSettingsListScaler("Bicubic60", 70007, 6, true, true, true);
+  AddSettingsListScaler("Bicubic75", 70008, 7, true, true, true);
+  AddSettingsListScaler("Bicubic100", 70009, 8, true, true, true);
+  AddSettingsListScaler("SoftCubic50", 70010, 9, true, true, true);
+  AddSettingsListScaler("SoftCubic60", 70011, 10, true, true, true);
+  AddSettingsListScaler("SoftCubic70", 70012, 11, true, true, true);
+  AddSettingsListScaler("SoftCubic80", 70013, 12, true, true, true);
+  AddSettingsListScaler("SoftCubic100", 70014, 13, true, true, true);
+  AddSettingsListScaler("Lanczos3", 70015, 14, true, true, true);
+  AddSettingsListScaler("Lanczos4", 70016, 15, true, true, true);
+  AddSettingsListScaler("Lanczos8", 70017, 16, false, false, false);
+  AddSettingsListScaler("Spline36", 70018, 17, true, true, true);
+  AddSettingsListScaler("Spline64", 70019, 18, true, true, true);
+  AddSettingsListScaler("Jinc3", 70020, 19, true, true, false);
+  AddSettingsListScaler("Jinc4", 70021, 20, false, false, false);
+  AddSettingsListScaler("Jinc8", 70022, 21, false, false, false);
+  AddSettingsListScaler("Bilateral", 70033, 22,  true, false, false);
+  AddSettingsListScaler("SuperXbr25", 70034, 23, true, false, false);
+  AddSettingsListScaler("SuperXbr50", 70035, 24, true, false, false);
+  AddSettingsListScaler("SuperXbr75", 70036, 25, true, false, false);
+  AddSettingsListScaler("SuperXbr100", 70037, 26, true, false, false);
+  AddSettingsListScaler("SuperXbr125", 70038, 27, true, false, false);
+  AddSettingsListScaler("SuperXbr150", 70039, 28,  true, false, false);
+  AddSettingsListScaler("Nedi", 70040, 29, true, false, false);
+  AddSettingsListScaler("Nnedi16", 70023, 30, true, false, false);
+  AddSettingsListScaler("Nnedi32", 70024, 31, true, false, false);
+  AddSettingsListScaler("Nnedi64", 70025, 32, true, false, false);
+  AddSettingsListScaler("Nnedi128", 70026, 33, true, false, false);
+  AddSettingsListScaler("Nnedi256", 70027, 34,  true, false, false);
 
   //Image Double Quality
-  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr25", 70034);
-  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr50", 70035);
-  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr75", 70036);
-  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr100", 70037);
-  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr125", 70038);
-  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr150", 70039);
-  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NEDI", 70040);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr25", 70034, 5);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr50", 70035, 6);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr75", 70036, 7);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr100", 70037, 8);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr125", 70038, 9);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "SuperXbr150", 70039, 10);
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NEDI", 70040, 11);
   AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70023, 0); //16NEURONS
   AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70024, 1); //32NEURONS
   AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70025, 2); //64NEURONS
   AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70026, 3); //128NEURONS
-  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70027, 3); //256NEURONS
+  AddSettingsList(MADVR_LIST_DOUBLEQUALITY, "NNEDI3", 70027, 4); //256NEURONS
 
   //Image Double Factor
-  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "2.0x", 70109);
-  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "1.5x", 70110);
-  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "1.2x", 70111);
-  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "always", 70112);
+  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "2.0x", 70109, 0);
+  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "1.5x", 70110, 1);
+  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "1.2x", 70111, 2);
+  AddSettingsList(MADVR_LIST_DOUBLEFACTOR, "always", 70112, 3);
 
   //Image Quadruple Factor
-  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "4.0x", 70113);
-  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "3.0x", 70114);
-  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "2.4x", 70115);
-  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "always", 70112);
+  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "4.0x", 70113, 0);
+  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "3.0x", 70114, 1);
+  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "2.4x", 70115, 2);
+  AddSettingsList(MADVR_LIST_QUADRUPLEFACTOR, "always", 70112, 3);
 
   // Deint Force
-  AddSettingsList(MADVR_LIST_DEINTFORCE, "auto", 70202 );
-  AddSettingsList(MADVR_LIST_DEINTFORCE, "film", 70203 );
-  AddSettingsList(MADVR_LIST_DEINTFORCE, "video", 70204 );
+  AddSettingsList(MADVR_LIST_DEINTFORCE, "auto", 70202, 0 );
+  AddSettingsList(MADVR_LIST_DEINTFORCE, "film", 70203, 1 );
+  AddSettingsList(MADVR_LIST_DEINTFORCE, "video", 70204, 2 );
 
   // Deint Active
-  AddSettingsList(MADVR_LIST_DEINTACTIVE, "ifdoubt_active", 70205);
-  AddSettingsList(MADVR_LIST_DEINTACTIVE, "ifdoubt_deactive", 70206);
+  AddSettingsList(MADVR_LIST_DEINTACTIVE, "ifdoubt_active", 70205, 0 );
+  AddSettingsList(MADVR_LIST_DEINTACTIVE, "ifdoubt_deactive", 70206, 1);
 
   // Smoothmotion
-  AddSettingsList(MADVR_LIST_SMOOTHMOTION, "avoidJudder", 70301);
-  AddSettingsList(MADVR_LIST_SMOOTHMOTION, "almostAlways", 70302);
-  AddSettingsList(MADVR_LIST_SMOOTHMOTION, "always", 70303);
+  AddSettingsList(MADVR_LIST_SMOOTHMOTION, "avoidJudder", 70301, 0 );
+  AddSettingsList(MADVR_LIST_SMOOTHMOTION, "almostAlways", 70302, 1);
+  AddSettingsList(MADVR_LIST_SMOOTHMOTION, "always", 70303, 2);
 
   // Dithering
-  AddSettingsList(MADVR_LIST_DITHERING, "random", 70401 );
-  AddSettingsList(MADVR_LIST_DITHERING, "ordered", 70402);
-  AddSettingsList(MADVR_LIST_DITHERING, "errorDifMedNoise", 70403);
-  AddSettingsList(MADVR_LIST_DITHERING, "errorDifLowNoise", 70404);
+  AddSettingsList(MADVR_LIST_DITHERING, "random", 70401, 0 );
+  AddSettingsList(MADVR_LIST_DITHERING, "ordered", 70402, 1);
+  AddSettingsList(MADVR_LIST_DITHERING, "errorDifMedNoise", 70403, 2);
+  AddSettingsList(MADVR_LIST_DITHERING, "errorDifLowNoise", 70404, 3);
 
   // Deband
-  AddSettingsList(MADVR_LIST_DEBAND, "debandlow", 70503 );
-  AddSettingsList(MADVR_LIST_DEBAND, "debandmedium", 70504);
-  AddSettingsList(MADVR_LIST_DEBAND, "debandhigh", 70505);
-
-
+  AddSettingsList(MADVR_LIST_DEBAND, "debandlow", 70503, 0 );
+  AddSettingsList(MADVR_LIST_DEBAND, "debandmedium", 70504, 1);
+  AddSettingsList(MADVR_LIST_DEBAND, "debandhigh", 70505, 2);
 }

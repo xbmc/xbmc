@@ -96,11 +96,10 @@ private:
   void GetDithering(std::string path, int* iValue);
   bool IsProfileActive(std::string path, std::string profile);
 
-  void AddSettingsListScaler(std::string name, int label, bool chromaUp, bool lumaUp, bool lumaDown);
-  void AddSettingsList(MADVR_SETTINGS_LIST type, std::string name, int label, int id = -1);
+  void AddSettingsListScaler(std::string name, int label, int id, bool chromaUp, bool lumaUp, bool lumaDown);
+  void AddSettingsList(MADVR_SETTINGS_LIST type, std::string name, int label, int id);
   std::vector<CMadvrSettingsList*>* GetSettingsVector(MADVR_SETTINGS_LIST type);
   int GetSettingsId(MADVR_SETTINGS_LIST type, std::string sValue);
-  int GetSettingsId(MADVR_SETTINGS_LIST type, int iValue);
   void InitSettings();
   
 
