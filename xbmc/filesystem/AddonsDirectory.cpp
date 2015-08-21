@@ -28,6 +28,7 @@
 #include "FileItem.h"
 #include "addons/AddonInstaller.h"
 #include "addons/PluginSource.h"
+#include "addons/RepositoryUpdater.h"
 #include "guilib/TextureManager.h"
 #include "File.h"
 #include "SpecialProtocol.h"
@@ -330,8 +331,7 @@ static bool HaveOrphaned()
 static void OutdatedAddons(const CURL& path, CFileItemList &items)
 {
   VECADDONS addons;
-  // Wait for running update to complete
-  CAddonInstaller::GetInstance().UpdateRepos(false, true);
+  CRepositoryUpdater::GetInstance().Await();
   CAddonMgr::GetInstance().GetAllOutdatedAddons(addons);
   CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24043));
 
@@ -372,8 +372,9 @@ static bool Browse(const CURL& path, CFileItemList &items)
     AddonPtr addon;
     if (!CAddonMgr::GetInstance().GetAddon(repo, addon, ADDON_REPOSITORY))
       return false;
-    //Wait for runnig update to complete
-    CAddonInstaller::GetInstance().UpdateRepos(false, true);
+
+    CRepositoryUpdater::GetInstance().Await();
+
     CAddonDatabase database;
     database.Open();
     if (!database.GetRepository(addon->ID(), addons))

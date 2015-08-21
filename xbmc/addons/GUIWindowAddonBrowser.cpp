@@ -20,6 +20,7 @@
 
 #include "GUIWindowAddonBrowser.h"
 #include "addons/AddonManager.h"
+#include "addons/RepositoryUpdater.h"
 #include "GUIDialogAddonInfo.h"
 #include "GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogBusy.h"
@@ -119,7 +120,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_CHECK_FOR_UPDATES)
       {
-        CAddonInstaller::GetInstance().UpdateRepos(true, false, true);
+        CRepositoryUpdater::GetInstance().CheckForUpdates(true);
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
