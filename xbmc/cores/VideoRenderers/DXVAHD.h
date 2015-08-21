@@ -98,7 +98,7 @@ protected:
 
   unsigned int                    m_procIndex;
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps;
-  std::map<ID3D11VideoProcessorInputView*, ID3D11Texture2D*> m_mappedResource;
+  D3D11_TEXTURE2D_DESC            m_texDesc;
 };
 
 };

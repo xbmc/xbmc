@@ -24,10 +24,6 @@
 #include "utils/log.h"
 #include "cores/FFmpeg.h"
 #include "Util.h"
-#ifdef HAS_DX
-#include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
-#include "windowing/WindowingFactory.h"
-#endif
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "avcodec.lib")
@@ -355,104 +351,6 @@ bool CDVDCodecUtils::CopyYUV422PackedPicture(YV12Image* pImage, DVDVideoPicture 
   }
   
   return true;
-}
-
-bool CDVDCodecUtils::CopyDXVA2Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
-{
-#ifdef HAS_DX
-  HRESULT hr;
-  switch (pSrc->extended_format)
-  {
-    case DXGI_FORMAT_NV12: // MAKEFOURCC('N', 'V', '1', '2'):
-    // Future...
-    //case DXGI_FORMAT_420_OPAQUE: // MAKEFOURCC('Y', 'V', '1', '2'):
-    //case MAKEFOURCC('Y','V','V','Y'): - what is it?
-      break;
-    default:
-      CLog::Log(LOGWARNING, "CDVDCodecUtils::CopyDXVA2Picture colorspace not supported");
-      return false;
-  }
-
-  // TODO: Optimize this later using shaders/swscale/etc. 
-  ID3D11VideoDecoderOutputView* view = reinterpret_cast<ID3D11VideoDecoderOutputView*>(pSrc->dxva->view);
-  if (!view)
-    return false;
-
-  ID3D11Resource* resource = nullptr;
-  ID3D11Texture2D* surface = nullptr;
-  view->GetResource(&resource);
-  hr = resource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&surface));
-  SAFE_RELEASE(resource);
-  if (FAILED(hr))
-    return false;
-
-  D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vpivd;
-  view->GetDesc(&vpivd);
-
-  D3D11_TEXTURE2D_DESC tDesc;
-  surface->GetDesc(&tDesc);
-
-  int subresource = D3D11CalcSubresource(0, vpivd.Texture2D.ArraySlice, tDesc.MipLevels);
-
-  // we cannot read from dxva decoder texture so create new one with read access and copy content to it.
-  CD3D11_TEXTURE2D_DESC sDesc(tDesc);
-  sDesc.ArraySize = 1;
-  sDesc.Usage = D3D11_USAGE_STAGING;
-  sDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-  sDesc.BindFlags = 0;
-
-  ID3D11Texture2D* staging = nullptr;
-  hr = g_Windowing.Get3D11Device()->CreateTexture2D(&sDesc, nullptr, &staging);
-  if (FAILED(hr))
-  {
-    SAFE_RELEASE(surface);
-    return false;
-  }
-
-  ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
-  // copy content from decoder texture to temporary texture.
-  pContext->CopySubresourceRegion(staging, D3D11CalcSubresource(0, 0, tDesc.MipLevels), 0, 0, 0, surface, subresource, nullptr);
-
-  D3D11_MAPPED_SUBRESOURCE rectangle;
-  if (FAILED(pContext->Map(staging, 0, D3D11_MAP_READ, 0, &rectangle)))
-    return false;
-
-  switch (pSrc->extended_format)
-  {
-  case DXGI_FORMAT_NV12:
-    {
-      uint8_t* s_y = (uint8_t*)(rectangle.pData);
-      uint8_t* d_y = pImage->plane[0];
-      uint8_t *s_uv = ((uint8_t*)(rectangle.pData)) + sDesc.Height * rectangle.RowPitch;
-      uint8_t *d_uv = pImage->plane[1];
-      for (unsigned y = 0; y < pSrc->iHeight >> 1; ++y)
-      {
-        // Copy Y
-        memcpy(d_y, s_y, pSrc->iWidth);
-        s_y += rectangle.RowPitch;
-        d_y += pImage->stride[0];
-        // Copy Y
-        memcpy(d_y, s_y, pSrc->iWidth);
-        s_y += rectangle.RowPitch;
-        d_y += pImage->stride[0];
-        // Copy UV
-        memcpy(d_uv, s_uv, pSrc->iWidth);
-        s_uv += rectangle.RowPitch;
-        d_uv += pImage->stride[1];
-      }
-    }
-    break;
-  case DXGI_FORMAT_420_OPAQUE:
-    // not implemented yet
-    break;
-  }
-  pContext->Unmap(staging, 0);
-  SAFE_RELEASE(surface);
-  SAFE_RELEASE(staging);
-  return true;
-
-#endif // HAS_DX
-  return false;
 }
 
 bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)
