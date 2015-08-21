@@ -502,6 +502,20 @@ void CAddonInstaller::PrunePackageCache()
     delete it->second;
 }
 
+void CAddonInstaller::InstallUpdates()
+{
+  VECADDONS addons;
+  if (CAddonMgr::GetInstance().GetAllOutdatedAddons(addons, true))
+  {
+    for (const auto& addon : addons)
+    {
+      std::string referer = StringUtils::Format("Referer=%s-%s.zip",
+          addon->ID().c_str(), addon->Version().asString().c_str());
+      CAddonInstaller::GetInstance().Install(addon->ID(), true, referer);
+    }
+  }
+}
+
 int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result)
 {
   CFileItemList items;

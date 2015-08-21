@@ -110,6 +110,8 @@ public:
   CDateTime LastRepoUpdate() const;
   void UpdateRepos(bool force = false, bool wait = false, bool showProgress = false);
 
+  void InstallUpdates();
+
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
