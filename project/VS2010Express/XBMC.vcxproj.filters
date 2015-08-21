@@ -6571,6 +6571,12 @@
     <ClInclude Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.h">
       <Filter>video\jobs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\win32\gpu_memcpy_sse4.h">
+      <Filter>utils\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\win32\memcpy_sse2.h">
+      <Filter>utils\win32</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\MadvrSettingsManager.h">
       <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
     </ClInclude>

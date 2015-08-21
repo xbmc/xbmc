@@ -23,7 +23,6 @@
 #include "URL.h"
 #include "Util.h"
 #include "XBDateTime.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -140,9 +139,23 @@ string ByArtist(SortAttribute attributes, const SortItem &values)
 {
   std::string label = ArrayToString(attributes, values.at(FieldArtist));
 
+  const CVariant &album = values.at(FieldAlbum);
+  if (!album.isNull())
+    label += " " + SortUtils::RemoveArticles(album.asString());
+
+  const CVariant &track = values.at(FieldTrackNumber);
+  if (!track.isNull())
+    label += StringUtils::Format(" %i", (int)track.asInteger());
+
+  return label;
+}
+
+string ByArtistThenYear(SortAttribute attributes, const SortItem &values)
+{
+  std::string label = ArrayToString(attributes, values.at(FieldArtist));
+
   const CVariant &year = values.at(FieldYear);
-  if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear &&
-      !year.isNull())
+  if (!year.isNull())
     label += StringUtils::Format(" %i", (int)year.asInteger());
 
   const CVariant &album = values.at(FieldAlbum);
@@ -521,6 +534,7 @@ map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByTrackNumber]              = ByTrackNumber;
   preparators[SortByTime]                     = ByTime;
   preparators[SortByArtist]                   = ByArtist;
+  preparators[SortByArtistThenYear]           = ByArtistThenYear;
   preparators[SortByAlbum]                    = ByAlbum;
   preparators[SortByAlbumType]                = ByAlbumType;
   preparators[SortByGenre]                    = ByGenre;
@@ -582,6 +596,10 @@ map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByArtist].insert(FieldYear);
   sortingFields[SortByArtist].insert(FieldAlbum);
   sortingFields[SortByArtist].insert(FieldTrackNumber);
+  sortingFields[SortByArtistThenYear].insert(FieldArtist);
+  sortingFields[SortByArtistThenYear].insert(FieldYear);
+  sortingFields[SortByArtistThenYear].insert(FieldAlbum);
+  sortingFields[SortByArtistThenYear].insert(FieldTrackNumber);
   sortingFields[SortByAlbum].insert(FieldAlbum);
   sortingFields[SortByAlbum].insert(FieldArtist);
   sortingFields[SortByAlbum].insert(FieldTrackNumber);
@@ -817,6 +835,7 @@ const sort_map table[] = {
   { SortByTitle,                    SORT_METHOD_TITLE_IGNORE_THE,             SortAttributeIgnoreArticle, 556 },
   { SortByTitle,                    SORT_METHOD_VIDEO_TITLE,                  SortAttributeNone,          556 },
   { SortByArtist,                   SORT_METHOD_ARTIST,                       SortAttributeNone,          557 },
+  { SortByArtistThenYear,           SORT_METHOD_ARTIST_AND_YEAR,              SortAttributeNone,          578 },
   { SortByArtist,                   SORT_METHOD_ARTIST_IGNORE_THE,            SortAttributeIgnoreArticle, 557 },
   { SortByAlbum,                    SORT_METHOD_ALBUM,                        SortAttributeNone,          558 },
   { SortByAlbum,                    SORT_METHOD_ALBUM_IGNORE_THE,             SortAttributeIgnoreArticle, 558 },

@@ -958,7 +958,12 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
   if (CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LONGDATEFORMAT) == SETTING_REGIONAL_DEFAULT)
     SetLongDateFormat(m_currentRegion->m_strDateFormatLong);
   if (CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_USE24HOURCLOCK) == SETTING_REGIONAL_DEFAULT)
+  {
     Set24HourClock(m_currentRegion->m_strTimeFormat);
+
+    // update the time format
+    SetTimeFormat(CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_TIMEFORMAT));
+  }
   if (CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_TIMEFORMAT) == SETTING_REGIONAL_DEFAULT)
     SetTimeFormat(m_currentRegion->m_strTimeFormat);
   if (CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_TEMPERATUREUNIT) == SETTING_REGIONAL_DEFAULT)
@@ -1142,13 +1147,16 @@ void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std
   list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
 
   std::string dummy;
-  SettingOptionsISO6391LanguagesFiller(NULL, list, dummy, NULL);
-  SettingOptionsLanguageNamesFiller(NULL, list, dummy, NULL);
+  std::vector<std::pair<std::string, std::string>> languages;
+  SettingOptionsISO6391LanguagesFiller(NULL, languages, dummy, NULL);
+  SettingOptionsLanguageNamesFiller(NULL, languages, dummy, NULL);
 
-  // convert the vector to a set and back again to remove duplicates
-  std::set<std::pair<std::string, std::string>> languages(list.begin(), list.end());
-  list.assign(languages.begin(), languages.end());
-  std::sort(list.begin(), list.end(), SortLanguage());
+  // convert the vector to a set to remove duplicates
+  std::set<std::pair<std::string, std::string>, SortLanguage> tmp(
+      languages.begin(), languages.end(), SortLanguage());
+
+  list.reserve(list.size() + tmp.size());
+  list.insert(list.end(), tmp.begin(), tmp.end());
 }
 
 void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)

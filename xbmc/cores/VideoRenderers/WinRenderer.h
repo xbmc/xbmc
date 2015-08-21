@@ -105,7 +105,10 @@ struct SVideoPlane
 
 struct YUVBuffer : SVideoBuffer
 {
-  YUVBuffer() : m_width(0), m_height(0), m_format(RENDER_FMT_NONE), m_activeplanes(0), m_locked(false) {}
+  YUVBuffer() : m_width(0), m_height(0), m_format(RENDER_FMT_NONE), m_activeplanes(0), m_locked(false), m_staging(nullptr)
+  {
+    memset(&m_sDesc, 0, sizeof(CD3D11_TEXTURE2D_DESC));
+  }
   ~YUVBuffer();
   bool Create(ERenderFormat format, unsigned int width, unsigned int height, bool dynamic);
   virtual void Release();
@@ -114,16 +117,21 @@ struct YUVBuffer : SVideoBuffer
   virtual void Clear();
   unsigned int GetActivePlanes() { return m_activeplanes; }
   virtual bool IsReadyToRender();
+  bool CopyFromDXVA(ID3D11VideoDecoderOutputView* pView);
 
   SVideoPlane planes[MAX_PLANES];
 
 private:
+  void PerformCopy();
+
   unsigned int     m_width;
   unsigned int     m_height;
   ERenderFormat    m_format;
   unsigned int     m_activeplanes;
   bool             m_locked;
   D3D11_MAP        m_mapType;
+  ID3D11Texture2D* m_staging;
+  CD3D11_TEXTURE2D_DESC m_sDesc;
 };
 
 struct DXVABuffer : SVideoBuffer
@@ -196,6 +204,7 @@ protected:
   void SelectPSVideoFilter();
   void UpdatePSVideoFilter();
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height);
+  bool CopyDXVA2YUVBuffer(ID3D11VideoDecoderOutputView* pView, YUVBuffer *pBuf);
 
   void RenderProcessor(DWORD flags);
   int  m_iYV12RenderBuffer;

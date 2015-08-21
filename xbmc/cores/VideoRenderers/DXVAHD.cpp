@@ -34,6 +34,7 @@
 #include "settings/MediaSettings.h"
 #include "utils/AutoPtrHandle.h"
 #include "utils/Log.h"
+#include "utils/win32/memcpy_sse2.h"
 #include "win32/WIN32Util.h"
 #include "windowing/WindowingFactory.h"
 
@@ -58,7 +59,6 @@ CProcessorHD::CProcessorHD()
   g_Windowing.Register(this);
 
   m_context = nullptr;
-  m_mappedResource.clear();
   m_width = 0;
   m_height = 0;
 }
@@ -83,12 +83,6 @@ void CProcessorHD::Close()
   SAFE_RELEASE(m_pEnumerator);
   SAFE_RELEASE(m_pVideoProcessor);
   SAFE_RELEASE(m_context);
-  std::map<ID3D11VideoProcessorInputView*, ID3D11Texture2D*>::iterator it = m_mappedResource.begin();
-  for (; it != m_mappedResource.end(); ++it)
-  {
-    if (it->second) it->second->Release();
-  }
-  m_mappedResource.clear();
 }
 
 bool CProcessorHD::UpdateSize(const DXVA2_VideoDesc& dsc)
@@ -124,6 +118,7 @@ bool CProcessorHD::PreInit()
     return false;
   }
 
+  memset(&m_texDesc, 0, sizeof(D3D11_TEXTURE2D_DESC));
   return true;
 }
 
@@ -381,42 +376,38 @@ bool CProcessorHD::OpenProcessor()
 
 bool CProcessorHD::CreateSurfaces()
 {
+  HRESULT hr;
+  size_t idx;
   ID3D11Device* pD3DDevice = g_Windowing.Get3D11Device();
 
   // we cannot use texture array (like in decoder) for USAGE_DYNAMIC, so create separete textures
-  CD3D11_TEXTURE2D_DESC desc(m_textureFormat, (m_width + 15) & ~15, (m_height + 15) & ~15, 1, 1, D3D11_BIND_DECODER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
-  D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC pivd = {0};
-  pivd.FourCC = 0;
-  pivd.ViewDimension = D3D11_VPIV_DIMENSION_TEXTURE2D;
+  CD3D11_TEXTURE2D_DESC texDesc(m_textureFormat, FFALIGN(m_width, 16), FFALIGN(m_height, 16), 1, 1, D3D11_BIND_DECODER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+  D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC pivd = { 0, D3D11_VPIV_DIMENSION_TEXTURE2D };
   pivd.Texture2D.ArraySlice = 0;
   pivd.Texture2D.MipSlice = 0;
 
-  ID3D11Texture2D* resource[32];
-  ID3D11VideoProcessorInputView* views[32];
-  memset(views, 0, 32 * sizeof(ID3D11VideoProcessorInputView*));
-  memset(resource, 0, 32 * sizeof(ID3D11Texture2D*));
-  bool needRelease = false;
-
+  ID3D11VideoProcessorInputView* views[32] = { 0 };
   CLog::Log(LOGDEBUG, "%s - Creating %d processor surfaces with format %d.", __FUNCTION__, m_size, m_textureFormat);
 
-  for (unsigned idx = 0; idx < m_size; idx++)
+  for (idx = 0; idx < m_size; idx++)
   {
-    if ( FAILED(pD3DDevice->CreateTexture2D(&desc, NULL, &resource[idx]))
-      || FAILED(m_pVideoDevice->CreateVideoProcessorInputView(resource[idx], m_pEnumerator, &pivd, &views[idx])))
-    {
-      SAFE_RELEASE(resource[idx]);
-      SAFE_RELEASE(views[idx]);
-      needRelease = true;
-    }
+    ID3D11Texture2D* pTexture = nullptr;
+    hr = pD3DDevice->CreateTexture2D(&texDesc, NULL, &pTexture);
+    if (FAILED(hr))
+      break;
+
+    hr = m_pVideoDevice->CreateVideoProcessorInputView(pTexture, m_pEnumerator, &pivd, &views[idx]);
+    SAFE_RELEASE(pTexture);
+    if (FAILED(hr))
+      break;
   }
 
-  if (needRelease) 
+  if (idx != m_size)
   {
+    // something goes wrong
     CLog::Log(LOGERROR, "%s - Failed to create processor surfaces.", __FUNCTION__);
-
     for (unsigned idx = 0; idx < m_size; idx++)
     {
-      SAFE_RELEASE(resource[idx]);
       SAFE_RELEASE(views[idx]);
     }
     return false;
@@ -425,18 +416,19 @@ bool CProcessorHD::CreateSurfaces()
   m_context = new CSurfaceContext();
   for (unsigned int i = 0; i < m_size; i++)
   {
-    m_mappedResource[views[i]] = resource[i];
     m_context->AddSurface(views[i]);
   }
+
+  m_texDesc = texDesc;
   return true;
 }
 
 CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
 {
   // RENDER_FMT_YUV420P -> DXGI_FORMAT_NV12
-  // RENDER_FMT_YUV420P10 -> DXGI_FORMAT_P010/DXGI_FORMAT_Y410
-  // RENDER_FMT_YUV420P16 -> DXGI_FORMAT_P016/DXGI_FORMAT_Y416
-  if (picture->format != RENDER_FMT_YUV420P
+  // RENDER_FMT_YUV420P10 -> DXGI_FORMAT_P010
+  // RENDER_FMT_YUV420P16 -> DXGI_FORMAT_P016
+  if ( picture->format != RENDER_FMT_YUV420P
     && picture->format != RENDER_FMT_YUV420P10
     && picture->format != RENDER_FMT_YUV420P16)
   {
@@ -452,49 +444,59 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
   }
 
   ID3D11VideoProcessorInputView* view = reinterpret_cast<ID3D11VideoProcessorInputView*>(pView);
-  ID3D11Texture2D* texture = m_mappedResource[view];
+
+  ID3D11Resource* pResource = nullptr;
+  view->GetResource(&pResource);
 
   D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd;
   view->GetDesc(&vpivd);
-  int subresource = D3D11CalcSubresource(0, vpivd.Texture2D.ArraySlice, 1);
-
-  D3D11_TEXTURE2D_DESC sDesc;
-  texture->GetDesc(&sDesc);
+  UINT subresource = D3D11CalcSubresource(0, vpivd.Texture2D.ArraySlice, 1);
 
   D3D11_MAPPED_SUBRESOURCE rectangle;
   ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
-  if (FAILED(pContext->Map(texture, subresource, D3D11_MAP_WRITE_DISCARD, 0, &rectangle)))
+  if (FAILED(pContext->Map(pResource, subresource, D3D11_MAP_WRITE_DISCARD, 0, &rectangle)))
   {
     CLog::Log(LOGERROR, "%s - could not lock rect", __FUNCTION__);
     m_context->ClearReference(view);
     return nullptr;
   }
 
-  // Convert to NV12 - Luma
-  // TODO: Optimize this later using shaders/swscale/etc.
-  uint8_t *s = picture->data[0];
-  uint8_t* bits = (uint8_t*)rectangle.pData;
-  for (unsigned y = 0; y < picture->iHeight; y++)
+  if (picture->format == RENDER_FMT_YUV420P)
   {
-    memcpy(bits, s, picture->iWidth);
-    s += picture->iLineSize[0];
-    bits += rectangle.RowPitch;
+    uint8_t*  pData = static_cast<uint8_t*>(rectangle.pData);
+    uint8_t*  dst[] = { pData, pData + m_texDesc.Height * rectangle.RowPitch };
+    int dstStride[] = { rectangle.RowPitch, rectangle.RowPitch };
+    convert_yuv420_nv12(picture->data, picture->iLineSize, picture->iHeight, picture->iWidth, dst, dstStride);
   }
-
-  // Convert to NV12 - Chroma
-  uint8_t *s_u, *s_v, *d_uv;
-  for (unsigned y = 0; y < picture->iHeight / 2; y++)
+  else
   {
-    s_u = picture->data[1] + y * picture->iLineSize[1];
-    s_v = picture->data[2] + y * picture->iLineSize[2];
-    d_uv = (uint8_t*)rectangle.pData + (sDesc.Height + y) * rectangle.RowPitch;
-    for (unsigned x = 0; x < picture->iWidth / 2; x++)
+    // TODO: Optimize this later using sse2/sse4
+    uint16_t * d_y = static_cast<uint16_t*>(rectangle.pData);
+    uint16_t * d_uv = d_y + m_texDesc.Height * rectangle.RowPitch;
+    // Convert to NV12 - Luma
+    for (size_t line = 0; line < picture->iHeight; ++line)
     {
-      *d_uv++ = *s_u++;
-      *d_uv++ = *s_v++;
+      uint16_t * y = (uint16_t*)(picture->data[0] + picture->iLineSize[0] * line);
+      uint16_t * d = d_y + rectangle.RowPitch * line;
+      memcpy(d, y, picture->iLineSize[0]);
+    }
+    // Convert to NV12 - Chroma
+    size_t chromaWidth = (picture->iWidth + 1) >> 1;
+    size_t chromaHeight = picture->iHeight >> 1;
+    for (size_t line = 0; line < chromaHeight; ++line)
+    {
+      uint16_t * u = (uint16_t*)picture->data[1] + line * picture->iLineSize[1];
+      uint16_t * v = (uint16_t*)picture->data[2] + line * picture->iLineSize[2];
+      uint16_t * d = d_uv + line * rectangle.RowPitch;
+      for (size_t x = 0; x < chromaWidth; x++)
+      {
+        *d++ = *u++; 
+        *d++ = *v++;
+      }
     }
   }
-  pContext->Unmap(texture, subresource);
+  pContext->Unmap(pResource, subresource);
+  SAFE_RELEASE(pResource);
 
   m_context->ClearReference(view);
   m_context->MarkRender(view);
@@ -502,7 +504,6 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture* picture)
   pic->view           = view;
   return pic;
 }
-
 
 bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def)
 {

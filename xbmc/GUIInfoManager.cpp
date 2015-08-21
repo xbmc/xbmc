@@ -4766,6 +4766,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         if (tag->Year() > 0)
           year = StringUtils::Format("%i", tag->Year());
       }
+      if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_iYear > 0)
+          year = StringUtils::Format("%i", item->GetPVRRecordingInfoTag()->m_iYear);
       return year;
     }
   case LISTITEM_PREMIERED:
@@ -4988,6 +4990,11 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         if (tag->EpisodeNumber() > 0)
           iEpisode = tag->EpisodeNumber();
       }
+      else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_iEpisode > 0)
+      {
+        iSeason = item->GetPVRRecordingInfoTag()->m_iSeason;
+        iEpisode = item->GetPVRRecordingInfoTag()->m_iEpisode;
+      }
       else if (item->HasVideoInfoTag())
       {
         iSeason = item->GetVideoInfoTag()->m_iSeason;
@@ -5019,6 +5026,9 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
                item->GetPVRTimerInfoTag()->HasEpgInfoTag() &&
                item->GetPVRTimerInfoTag()->GetEpgInfoTag()->SeriesNumber() > 0)
         iSeason = item->GetPVRTimerInfoTag()->GetEpgInfoTag()->SeriesNumber();
+      else if (item->HasPVRRecordingInfoTag() &&
+               item->GetPVRRecordingInfoTag()->m_iSeason > 0)
+        iSeason = item->GetPVRRecordingInfoTag()->m_iSeason;
       else if (item->HasVideoInfoTag())
         iSeason = item->GetVideoInfoTag()->m_iSeason;
 
@@ -5438,6 +5448,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         return item->GetEPGInfoTag()->EpisodeName();
       if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->HasEpgInfoTag())
         return item->GetPVRTimerInfoTag()->GetEpgInfoTag()->EpisodeName();
+      if (item->HasPVRRecordingInfoTag())
+        return item->GetPVRRecordingInfoTag()->EpisodeName();
       break;
     }
   case LISTITEM_TIMERTYPE:

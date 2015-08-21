@@ -30,7 +30,9 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
+#include "utils/CPUInfo.h"
 #include "utils/log.h"
+#include "utils/win32/gpu_memcpy_sse4.h"
 #include "VideoShaders/WinVideoFilter.h"
 #include "windowing/WindowingFactory.h"
 
@@ -285,6 +287,18 @@ bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture, int index)
     buf->frameIdx = m_frameIdx;
     m_frameIdx += 2;
     return true;
+  }
+  else if (picture->format == RENDER_FMT_DXVA)
+  {
+    int source = index;
+    if (source < 0 || NextYV12Texture() < 0)
+      return false;
+
+    YUVBuffer *buf = (YUVBuffer*)m_VideoBuffers[source];
+    if (buf->IsReadyToRender())
+      return false;
+
+    return buf->CopyFromDXVA(reinterpret_cast<ID3D11VideoDecoderOutputView*>(picture->dxva->view));
   }
   return false;
 }
@@ -1261,6 +1275,7 @@ bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int he
 
 void YUVBuffer::Release()
 {
+  SAFE_RELEASE(m_staging);
   for(unsigned i = 0; i < m_activeplanes; i++)
   {
     planes[i].texture.Release();
@@ -1275,9 +1290,9 @@ void YUVBuffer::StartRender()
 
   m_locked = false;
 
-  for(unsigned i = 0; i < m_activeplanes; i++)
+  for (unsigned i = 0; i < m_activeplanes; i++)
   {
-    if(planes[i].texture.Get() && planes[i].rect.pData)
+    if (planes[i].texture.Get() && planes[i].rect.pData)
       if (!planes[i].texture.UnlockRect(0))
         CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock texture %d", i);
     memset(&planes[i].rect, 0, sizeof(planes[i].rect));
@@ -1354,9 +1369,103 @@ void YUVBuffer::Clear()
 
 bool YUVBuffer::IsReadyToRender()
 {
+  return !m_locked;
+}
+
+bool YUVBuffer::CopyFromDXVA(ID3D11VideoDecoderOutputView* pView)
+{
+  if (!pView)
+    return false;
+
+  HRESULT hr = S_OK;
+  D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vpivd;
+  pView->GetDesc(&vpivd);
+  ID3D11Resource* resource = nullptr;
+  pView->GetResource(&resource);
+
+  if (!m_staging)
+  {
+    // create staging texture
+    ID3D11Texture2D* surface = nullptr;
+    hr = resource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&surface));
+    if (SUCCEEDED(hr))
+    {
+      D3D11_TEXTURE2D_DESC tDesc;
+      surface->GetDesc(&tDesc);
+      SAFE_RELEASE(surface);
+
+      CD3D11_TEXTURE2D_DESC sDesc(tDesc);
+      sDesc.ArraySize = 1;
+      sDesc.Usage = D3D11_USAGE_STAGING;
+      sDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+      sDesc.BindFlags = 0;
+
+      hr = g_Windowing.Get3D11Device()->CreateTexture2D(&sDesc, nullptr, &m_staging);
+      if (SUCCEEDED(hr))
+        m_sDesc = sDesc;
+    }
+  }
+
+  if (m_staging)
+  {
+    ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
+    // copy content from decoder texture to temporary texture.
+    pContext->CopySubresourceRegion(m_staging,
+                                    D3D11CalcSubresource(0, 0, 1),
+                                    0, 0, 0,
+                                    resource,
+                                    D3D11CalcSubresource(0, vpivd.Texture2D.ArraySlice, 1),
+                                    nullptr);
+    PerformCopy();
+  }
+  SAFE_RELEASE(resource);
+
+  return SUCCEEDED(hr);
+}
+
+void YUVBuffer::PerformCopy()
+{
   if (!m_locked)
-    return true;
-  return false;
+    return;
+
+  ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
+  D3D11_MAPPED_SUBRESOURCE rectangle;
+  if (SUCCEEDED(pContext->Map(m_staging, 0, D3D11_MAP_READ, 0, &rectangle)))
+  {
+    void* (*copy_func)(void* d, const void* s, size_t size) =
+        ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_SSE4) != 0) ? gpu_memcpy : memcpy;
+
+    uint8_t* s_y = static_cast<uint8_t*>(rectangle.pData);
+    uint8_t *s_uv = static_cast<uint8_t*>(rectangle.pData) + m_sDesc.Height * rectangle.RowPitch;
+    uint8_t* d_y = static_cast<uint8_t*>(planes[PLANE_Y].rect.pData);
+    uint8_t *d_uv = static_cast<uint8_t*>(planes[PLANE_UV].rect.pData);
+
+    if ( planes[PLANE_Y ].rect.RowPitch == rectangle.RowPitch
+      && planes[PLANE_UV].rect.RowPitch == rectangle.RowPitch)
+    {
+      copy_func(d_y, s_y, rectangle.RowPitch * m_height);
+      copy_func(d_uv, s_uv, rectangle.RowPitch * m_height >> 1);
+    }
+    else
+    {
+      for (unsigned y = 0; y < m_sDesc.Height >> 1; ++y)
+      {
+        // Copy Y
+        copy_func(d_y, s_y, planes[PLANE_Y].rect.RowPitch);
+        s_y += rectangle.RowPitch;
+        d_y += planes[PLANE_Y].rect.RowPitch;
+        // Copy Y
+        copy_func(d_y, s_y, planes[PLANE_Y].rect.RowPitch);
+        s_y += rectangle.RowPitch;
+        d_y += planes[PLANE_Y].rect.RowPitch;
+        // Copy UV
+        copy_func(d_uv, s_uv, planes[PLANE_UV].rect.RowPitch);
+        s_uv += rectangle.RowPitch;
+        d_uv += planes[PLANE_UV].rect.RowPitch;
+      }
+    }
+    pContext->Unmap(m_staging, 0);
+  }
 }
 
 #endif
