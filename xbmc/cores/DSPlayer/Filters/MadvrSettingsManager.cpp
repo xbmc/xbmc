@@ -703,6 +703,12 @@ int CMadvrSettingsManager::GetSettingsId(MADVR_SETTINGS_LIST type, int iValue)
 
 std::string CMadvrSettingsManager::GetSettingsName(MADVR_SETTINGS_LIST type, int iValue)
 {
+  if (iValue > GetSettingsVector(type)->size() - 1)
+  {
+    iValue = GetSettingsVector(type)->size() - 1;
+    CLog::Log(LOGDEBUG, "%s Failed to select right settings, it will be necessary to reset default madVR settings values stored in guisettings.xml", __FUNCTION__);
+  }
+
   return (*GetSettingsVector(type))[iValue]->m_name;
 }
 
