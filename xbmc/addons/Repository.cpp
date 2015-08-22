@@ -197,18 +197,6 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
   return false;
 }
 
-void CRepository::OnPostInstall(bool update, bool modal)
-{
-  // Notify updater there is a new repo
-  CRepositoryUpdater::GetInstance().ScheduleUpdate();
-}
-
-void CRepository::OnPostUnInstall()
-{
-  CAddonDatabase database;
-  database.Open();
-  database.DeleteRepository(ID());
-}
 
 CRepositoryUpdateJob::CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(repo) {}
 
