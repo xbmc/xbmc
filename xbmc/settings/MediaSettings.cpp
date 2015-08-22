@@ -177,6 +177,12 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultMadvrSettings.m_ChromaUpscaling = MADVR_DEFAULT_CHROMAUP;
     XMLUtils::GetBoolean(pElement, "chromaantiring", m_defaultMadvrSettings.m_ChromaAntiRing);
     XMLUtils::GetBoolean(pElement, "chromasuperres", m_defaultMadvrSettings.m_ChromaSuperRes);
+    if (!XMLUtils::GetInt(pElement, "chromasuperrespasses", m_defaultMadvrSettings.m_ChromaSuperResPasses))
+      m_defaultMadvrSettings.m_ChromaSuperResPasses = MADVR_DEFAULT_CHROMAUP_SUPERRESPASSES;
+    if (!XMLUtils::GetFloat(pElement, "cchromasuperresstrength", m_defaultMadvrSettings.m_ChromaSuperResStrength))
+      m_defaultMadvrSettings.m_ChromaSuperResStrength = MADVR_DEFAULT_CHROMAUP_SUPERRESSTRENGTH;
+    if (!XMLUtils::GetFloat(pElement, "chromaupscalingsoftness", m_defaultMadvrSettings.m_ChromaSuperResSoftness))
+      m_defaultMadvrSettings.m_ChromaSuperResSoftness = MADVR_DEFAULT_CHROMAUP_SUPERRESSOFTNESS;
 
     if (!XMLUtils::GetInt(pElement, "imageupscaling", m_defaultMadvrSettings.m_ImageUpscaling))
       m_defaultMadvrSettings.m_ImageUpscaling = MADVR_DEFAULT_LUMAUP;
@@ -231,6 +237,10 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     XMLUtils::GetBoolean(pElement, "lumasharpen", m_defaultMadvrSettings.m_lumaSharpen);
     if (!XMLUtils::GetFloat(pElement, "lumasharpenstrength", m_defaultMadvrSettings.m_lumaSharpenStrength))
       m_defaultMadvrSettings.m_lumaSharpenStrength = MADVR_DEFAULT_LUMASHARPENSTRENGTH;
+    if (!XMLUtils::GetFloat(pElement, "lumasharpenclamp", m_defaultMadvrSettings.m_lumaSharpenClamp))
+      m_defaultMadvrSettings.m_lumaSharpenClamp = MADVR_DEFAULT_LUMASHARPENCLAMP;
+    if (!XMLUtils::GetFloat(pElement, "lumasharpenradius", m_defaultMadvrSettings.m_lumaSharpenRadius))
+      m_defaultMadvrSettings.m_lumaSharpenRadius = MADVR_DEFAULT_LUMASHARPENRADIUS;
     XMLUtils::GetBoolean(pElement, "adaptivesharpen", m_defaultMadvrSettings.m_adaptiveSharpen);
     if (!XMLUtils::GetFloat(pElement, "adaptivesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength))
       m_defaultMadvrSettings.m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPENSTRENGTH;
@@ -241,12 +251,18 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     XMLUtils::GetBoolean(pElement, "upreflumasharpen", m_defaultMadvrSettings.m_UpRefLumaSharpen);
     if (!XMLUtils::GetFloat(pElement, "upreflumasharpenstrength", m_defaultMadvrSettings.m_UpRefLumaSharpenStrength))
       m_defaultMadvrSettings.m_UpRefLumaSharpenStrength = MADVR_DEFAULT_UPLUMASHARPENSTRENGTH;
+    if (!XMLUtils::GetFloat(pElement, "upreflumasharpenclamp", m_defaultMadvrSettings.m_UpRefLumaSharpenClamp))
+      m_defaultMadvrSettings.m_UpRefLumaSharpenClamp = MADVR_DEFAULT_UPLUMASHARPENCLAMP;
+    if (!XMLUtils::GetFloat(pElement, "upreflumasharpenradius", m_defaultMadvrSettings.m_UpRefLumaSharpenRadius))
+      m_defaultMadvrSettings.m_UpRefLumaSharpenRadius = MADVR_DEFAULT_UPLUMASHARPENRADIUS;
     XMLUtils::GetBoolean(pElement, "uprefadaptivesharpen", m_defaultMadvrSettings.m_UpRefAdaptiveSharpen);
     if (!XMLUtils::GetFloat(pElement, "uprefadaptivesharpenstrength", m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength))
       m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength = MADVR_DEFAULT_UPADAPTIVESHARPENSTRENGTH;
     XMLUtils::GetBoolean(pElement, "superres", m_defaultMadvrSettings.m_superRes);
     if (!XMLUtils::GetFloat(pElement, "superresstrength", m_defaultMadvrSettings.m_superResStrength))
       m_defaultMadvrSettings.m_superResStrength = MADVR_DEFAULT_SUPERRESSTRENGTH;
+    if (!XMLUtils::GetFloat(pElement, "superresradius", m_defaultMadvrSettings.m_superResRadius))
+      m_defaultMadvrSettings.m_superResRadius = MADVR_DEFAULT_SUPERRESRADIUS;
 
     XMLUtils::GetBoolean(pElement, "refineonce", m_defaultMadvrSettings.m_refineOnce);
     XMLUtils::GetBoolean(pElement, "superresfirst", m_defaultMadvrSettings.m_superResFirst);
@@ -362,6 +378,9 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetInt(pNode, "chromaupscaling", m_defaultMadvrSettings.m_ChromaUpscaling);
   XMLUtils::SetBoolean(pNode, "chromaantiring", m_defaultMadvrSettings.m_ChromaAntiRing);
   XMLUtils::SetBoolean(pNode, "chromasuperres", m_defaultMadvrSettings.m_ChromaSuperRes);
+  XMLUtils::SetInt(pNode, "chromasuperrespasses", m_defaultMadvrSettings.m_ChromaSuperResPasses);
+  XMLUtils::SetFloat(pNode, "chromasuperresstrength", m_defaultMadvrSettings.m_ChromaSuperResStrength);
+  XMLUtils::SetFloat(pNode, "chromasuperressoftness", m_defaultMadvrSettings.m_ChromaSuperResSoftness);
   XMLUtils::SetInt(pNode, "imageupscaling", m_defaultMadvrSettings.m_ImageUpscaling);
   XMLUtils::SetBoolean(pNode, "imageupantiring", m_defaultMadvrSettings.m_ImageUpAntiRing);
   XMLUtils::SetBoolean(pNode, "imageuplinear", m_defaultMadvrSettings.m_ImageUpLinear);
@@ -397,6 +416,8 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetFloat(pNode, "finesharpstrength", m_defaultMadvrSettings.m_fineSharpStrength);
   XMLUtils::SetBoolean(pNode, "lumasharpen", m_defaultMadvrSettings.m_lumaSharpen);
   XMLUtils::SetFloat(pNode, "lumasharpenstrength", m_defaultMadvrSettings.m_lumaSharpenStrength);
+  XMLUtils::SetFloat(pNode, "lumasharpenclamp", m_defaultMadvrSettings.m_lumaSharpenClamp);
+  XMLUtils::SetFloat(pNode, "lumasharpenradius", m_defaultMadvrSettings.m_lumaSharpenRadius);
   XMLUtils::SetBoolean(pNode, "adpativesharpen", m_defaultMadvrSettings.m_adaptiveSharpen);
   XMLUtils::SetFloat(pNode, "adpativesharpenstrength", m_defaultMadvrSettings.m_adaptiveSharpenStrength);
 
@@ -404,10 +425,13 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetFloat(pNode, "upreffinesharpstrength", m_defaultMadvrSettings.m_UpRefFineSharpStrength);
   XMLUtils::SetBoolean(pNode, "upreflumasharpen", m_defaultMadvrSettings.m_UpRefLumaSharpen);
   XMLUtils::SetFloat(pNode, "upreflumasharpenstrength", m_defaultMadvrSettings.m_UpRefLumaSharpenStrength);
+  XMLUtils::SetFloat(pNode, "upreflumasharpenclamp", m_defaultMadvrSettings.m_UpRefLumaSharpenClamp);
+  XMLUtils::SetFloat(pNode, "upreflumasharpenradius", m_defaultMadvrSettings.m_UpRefLumaSharpenRadius);
   XMLUtils::SetBoolean(pNode, "uprefadpativesharpen", m_defaultMadvrSettings.m_UpRefAdaptiveSharpen);
   XMLUtils::SetFloat(pNode, "uprefadpativesharpenstrength", m_defaultMadvrSettings.m_UpRefAdaptiveSharpenStrength);
   XMLUtils::SetBoolean(pNode, "superres", m_defaultMadvrSettings.m_superRes);
   XMLUtils::SetFloat(pNode, "superresstrength", m_defaultMadvrSettings.m_superResStrength);
+  XMLUtils::SetFloat(pNode, "superresradius", m_defaultMadvrSettings.m_superResRadius);
 
   XMLUtils::SetBoolean(pNode, "refineonce", !m_defaultMadvrSettings.m_refineOnce);
   XMLUtils::SetBoolean(pNode, "superresfirst", m_defaultMadvrSettings.m_superResFirst);

@@ -39,6 +39,9 @@ CMadvrSettings::CMadvrSettings()
   m_ChromaUpscaling = MADVR_DEFAULT_CHROMAUP;
   m_ChromaAntiRing = false;
   m_ChromaSuperRes = false;
+  m_ChromaSuperResPasses = MADVR_DEFAULT_CHROMAUP_SUPERRESPASSES;
+  m_ChromaSuperResStrength= MADVR_DEFAULT_CHROMAUP_SUPERRESSTRENGTH;
+  m_ChromaSuperResSoftness = MADVR_DEFAULT_CHROMAUP_SUPERRESSOFTNESS;
   
   m_ImageUpscaling = MADVR_DEFAULT_LUMAUP;
   m_ImageUpAntiRing = false;
@@ -76,6 +79,8 @@ CMadvrSettings::CMadvrSettings()
   m_fineSharpStrength = MADVR_DEFAULT_FINESHARPSTRENGTH;
   m_lumaSharpen = false;
   m_lumaSharpenStrength = MADVR_DEFAULT_LUMASHARPENSTRENGTH;
+  m_lumaSharpenClamp = MADVR_DEFAULT_LUMASHARPENCLAMP;
+  m_lumaSharpenRadius = MADVR_DEFAULT_LUMASHARPENRADIUS;
   m_adaptiveSharpen = false;
   m_adaptiveSharpenStrength = MADVR_DEFAULT_ADAPTIVESHARPENSTRENGTH;
 
@@ -83,10 +88,14 @@ CMadvrSettings::CMadvrSettings()
   m_UpRefFineSharpStrength = MADVR_DEFAULT_UPFINESHARPSTRENGTH;
   m_UpRefLumaSharpen = false;
   m_UpRefLumaSharpenStrength = MADVR_DEFAULT_UPLUMASHARPENSTRENGTH;
+  m_UpRefLumaSharpenClamp = MADVR_DEFAULT_UPLUMASHARPENCLAMP;
+  m_UpRefLumaSharpenRadius = MADVR_DEFAULT_UPLUMASHARPENRADIUS;
   m_UpRefAdaptiveSharpen = false;
   m_UpRefAdaptiveSharpenStrength = MADVR_DEFAULT_UPADAPTIVESHARPENSTRENGTH;
   m_superRes = false;
   m_superResStrength = MADVR_DEFAULT_SUPERRESSTRENGTH;
+  m_superResRadius = MADVR_DEFAULT_SUPERRESRADIUS;
+
 
   m_refineOnce = false;
   m_superResFirst = false;
@@ -97,6 +106,9 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_ChromaUpscaling != right.m_ChromaUpscaling) return true;
   if (m_ChromaAntiRing != right.m_ChromaAntiRing) return true;
   if (m_ChromaSuperRes != right.m_ChromaSuperRes) return true;
+  if (m_ChromaSuperResPasses != right.m_ChromaSuperResPasses) return true;
+  if (m_ChromaSuperResStrength != right.m_ChromaSuperResStrength) return true;
+  if (m_ChromaSuperResSoftness != right.m_ChromaSuperResSoftness) return true;
 
   if (m_ImageUpscaling != right.m_ImageUpscaling) return true;
   if (m_ImageUpAntiRing != right.m_ImageUpAntiRing) return true;
@@ -134,6 +146,8 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_fineSharpStrength != right.m_fineSharpStrength) return true;
   if (m_lumaSharpen != right.m_lumaSharpen) return true;
   if (m_lumaSharpenStrength != right.m_lumaSharpenStrength) return true;
+  if (m_lumaSharpenClamp != right.m_lumaSharpenClamp) return true;
+  if (m_lumaSharpenRadius != right.m_lumaSharpenRadius) return true;
   if (m_adaptiveSharpen != right.m_adaptiveSharpen) return true;
   if (m_adaptiveSharpenStrength != right.m_adaptiveSharpenStrength) return true;
 
@@ -141,10 +155,13 @@ bool CMadvrSettings::operator!=(const CMadvrSettings &right) const
   if (m_UpRefFineSharpStrength != right.m_UpRefFineSharpStrength) return true;
   if (m_UpRefLumaSharpen != right.m_UpRefLumaSharpen) return true;
   if (m_UpRefLumaSharpenStrength != right.m_UpRefLumaSharpenStrength) return true;
+  if (m_UpRefLumaSharpenClamp != right.m_UpRefLumaSharpenClamp) return true;
+  if (m_UpRefLumaSharpenRadius != right.m_UpRefLumaSharpenRadius) return true;
   if (m_UpRefAdaptiveSharpen != right.m_UpRefAdaptiveSharpen) return true;
   if (m_UpRefAdaptiveSharpenStrength != right.m_UpRefAdaptiveSharpenStrength) return true;
   if (m_superRes != right.m_superRes) return true;
   if (m_superResStrength != right.m_superResStrength) return true;
+  if (m_superResRadius != right.m_superResRadius) return true;
 
   if (m_refineOnce != right.m_refineOnce) return true;
   if (m_superResFirst != right.m_superResFirst) return true;

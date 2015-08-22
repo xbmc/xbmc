@@ -501,6 +501,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 #ifdef HAS_DS_PLAYER
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
+  LoadMadvrSettings();
 #endif
 
   StaticIntegerSettingOptions entries;
@@ -736,7 +737,6 @@ void CGUIDialogVideoSettings::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
   m_isMadvr = CMadvrCallback::Get()->UsingMadvr() && (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) > KODIGUI_NEVER);
 
-  LoadMadvrSettings();
   HideUnused();
 }
 

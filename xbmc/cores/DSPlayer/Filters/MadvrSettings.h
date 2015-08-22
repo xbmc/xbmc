@@ -39,6 +39,9 @@ public:
   int m_ChromaUpscaling;
   bool m_ChromaAntiRing;
   bool m_ChromaSuperRes;
+  int m_ChromaSuperResPasses;
+  float m_ChromaSuperResStrength;
+  float m_ChromaSuperResSoftness;
 
   int m_ImageUpscaling;
   bool m_ImageUpAntiRing;
@@ -76,6 +79,8 @@ public:
   float m_fineSharpStrength;
   bool m_lumaSharpen;
   float m_lumaSharpenStrength;
+  float m_lumaSharpenClamp;
+  float m_lumaSharpenRadius;
   bool m_adaptiveSharpen;
   float m_adaptiveSharpenStrength;
 
@@ -83,10 +88,13 @@ public:
   float m_UpRefFineSharpStrength;
   bool m_UpRefLumaSharpen;
   float m_UpRefLumaSharpenStrength;
+  float m_UpRefLumaSharpenClamp;
+  float m_UpRefLumaSharpenRadius;
   bool m_UpRefAdaptiveSharpen;
   float m_UpRefAdaptiveSharpenStrength;
   bool m_superRes;
   float m_superResStrength;
+  float m_superResRadius;
 
   bool m_refineOnce;
   bool m_superResFirst;

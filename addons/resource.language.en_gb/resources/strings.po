@@ -18211,7 +18211,23 @@ msgid "Refine image (2x upscaling step)"
 msgstr ""
 
 msgctxt "#70127"
-msgid "Apply super-res first"
+msgid "- apply super-res first"
+msgstr ""
+
+msgctxt "#70128"
+msgid "- clamp"
+msgstr ""
+
+msgctxt "#70129"
+msgid "- radius"
+msgstr ""
+
+msgctxt "#70130"
+msgid "- passes"
+msgstr ""
+
+msgctxt "#70131"
+msgid "- softness"
 msgstr ""
 
 msgctxt "#70200"
