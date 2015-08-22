@@ -1,5 +1,4 @@
-SRCS=GUIDialogPeripheralSettings.cpp \
-     GUIDialogPeripheralManager.cpp
+SRCS=GUIDialogPeripheralSettings.cpp
 
 LIB=peripheral-dialogs.a
 
