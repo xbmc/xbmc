@@ -488,6 +488,7 @@ msgctxt "#125"
 msgid "Would you like to delete the selected file(s)?[CR]Warning - this action can't be undone!"
 msgstr ""
 
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#126"
@@ -5602,6 +5603,7 @@ msgctxt "#13105"
 msgid "Vertical blank sync"
 msgstr ""
 
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
 msgctxt "#13106"
 msgid "Disabled"
@@ -5792,6 +5794,8 @@ msgid "Last loaded profile:"
 msgstr ""
 
 #: xbmc/music/karaoke/GUIDialogKaraokeSongSelector.cpp
+#: xbmc/peripherals/devices/Peripheral.cpp
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 msgctxt "#13205"
 msgid "Unknown"
 msgstr ""
@@ -13336,6 +13340,7 @@ msgctxt "#24050"
 msgid "Available add-ons"
 msgstr ""
 
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/addons/AddonVersion.cpp
 msgctxt "#24051"
 msgid "Version:"

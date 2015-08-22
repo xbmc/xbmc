@@ -29,12 +29,14 @@
 #include "devices/PeripheralCecAdapter.h"
 #include "devices/PeripheralImon.h"
 #include "bus/PeripheralBusUSB.h"
-#include "dialogs/GUIDialogPeripheralManager.h"
+#include "dialogs/GUIDialogPeripheralSettings.h"
+#include "dialogs/GUIDialogSelect.h"
 
 #if defined(HAVE_LIBCEC)
 #include "bus/virtual/PeripheralBusCEC.h"
 #endif
 
+#include "FileItem.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
@@ -722,9 +724,35 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_PERIPHERALS)
   {
-    CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
-    if (dialog != NULL)
-      dialog->Open();
+
+    CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+
+    CFileItemList items;
+    GetDirectory("peripherals://all/", items);
+
+    int iPos = -1;
+    do
+    {
+      pDialog->Reset();
+      pDialog->SetHeading(CVariant{35000});
+      pDialog->SetUseDetails(true);
+      pDialog->SetItems(&items);
+      pDialog->SetSelected(iPos);
+      pDialog->Open();
+
+      iPos = pDialog->IsConfirmed() ? pDialog->GetSelectedLabel() : -1;
+
+      if (iPos >= 0)
+      {
+        CFileItemPtr pItem = items.Get(iPos);
+        CGUIDialogPeripheralSettings *pSettingsDialog = (CGUIDialogPeripheralSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
+        if (pItem && pSettingsDialog)
+        {
+          pSettingsDialog->SetFileItem(pItem.get());
+          pSettingsDialog->Open();
+        }
+      }
+    } while (pDialog->IsConfirmed());
   }
 }
 
