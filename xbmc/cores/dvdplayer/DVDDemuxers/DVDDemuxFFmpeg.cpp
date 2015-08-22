@@ -428,10 +428,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     m_checkvideo = true;
     skipCreateStreams = true;
   }
-  else if (!iformat || (strcmp(iformat->name, "mpegts") != 0))
-  {
-    m_streaminfo = true;
-  }
 
   // we need to know if this is matroska or avi later
   m_bMatroska = strncmp(m_pFormatContext->iformat->name, "matroska", 8) == 0;	// for "matroska.webm"
