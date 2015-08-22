@@ -1654,7 +1654,6 @@
 		DFF0F34F17528350002DA3A4 /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10526140AA38000175026 /* PeripheralNIC.cpp */; };
 		DFF0F35017528350002DA3A4 /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10528140AA38000175026 /* PeripheralNyxboard.cpp */; };
 		DFF0F35117528350002DA3A4 /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052A140AA38000175026 /* PeripheralTuner.cpp */; };
-		DFF0F35217528350002DA3A4 /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */; };
 		DFF0F35317528350002DA3A4 /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */; };
 		DFF0F35417528350002DA3A4 /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10533140AA38000175026 /* Peripherals.cpp */; };
 		DFF0F35517528350002DA3A4 /* GUIDialogPictureInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C60D25F9FA00618676 /* GUIDialogPictureInfo.cpp */; };
@@ -2822,7 +2821,6 @@
 		E49913D0174E5F8100741B6D /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10526140AA38000175026 /* PeripheralNIC.cpp */; };
 		E49913D1174E5F8100741B6D /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10528140AA38000175026 /* PeripheralNyxboard.cpp */; };
 		E49913D2174E5F8100741B6D /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052A140AA38000175026 /* PeripheralTuner.cpp */; };
-		E49913D3174E5F8600741B6D /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */; };
 		E49913D4174E5F8600741B6D /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */; };
 		E49913D5174E5F8600741B6D /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10533140AA38000175026 /* Peripherals.cpp */; };
 		E49913D6174E5F8D00741B6D /* GUIDialogPictureInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C60D25F9FA00618676 /* GUIDialogPictureInfo.cpp */; };
@@ -3233,7 +3231,6 @@
 		F5E10540140AA38100175026 /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10526140AA38000175026 /* PeripheralNIC.cpp */; };
 		F5E10541140AA38100175026 /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10528140AA38000175026 /* PeripheralNyxboard.cpp */; };
 		F5E10542140AA38100175026 /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052A140AA38000175026 /* PeripheralTuner.cpp */; };
-		F5E10543140AA38100175026 /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */; };
 		F5E10544140AA38100175026 /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */; };
 		F5E10547140AA38100175026 /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10533140AA38000175026 /* Peripherals.cpp */; };
 		F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10520140AA38000175026 /* PeripheralCecAdapter.cpp */; };
@@ -5812,8 +5809,6 @@
 		F5E10529140AA38000175026 /* PeripheralNyxboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNyxboard.h; sourceTree = "<group>"; };
 		F5E1052A140AA38000175026 /* PeripheralTuner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralTuner.cpp; sourceTree = "<group>"; };
 		F5E1052B140AA38000175026 /* PeripheralTuner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTuner.h; sourceTree = "<group>"; };
-		F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralManager.cpp; sourceTree = "<group>"; };
-		F5E1052E140AA38000175026 /* GUIDialogPeripheralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralManager.h; sourceTree = "<group>"; };
 		F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralSettings.cpp; sourceTree = "<group>"; };
 		F5E10530140AA38000175026 /* GUIDialogPeripheralSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralSettings.h; sourceTree = "<group>"; };
 		F5E10533140AA38000175026 /* Peripherals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripherals.cpp; sourceTree = "<group>"; };
@@ -9867,8 +9862,6 @@
 		F5E1052C140AA38000175026 /* dialogs */ = {
 			isa = PBXGroup;
 			children = (
-				F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */,
-				F5E1052E140AA38000175026 /* GUIDialogPeripheralManager.h */,
 				F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */,
 				F5E10530140AA38000175026 /* GUIDialogPeripheralSettings.h */,
 			);
@@ -10924,7 +10917,6 @@
 				F5E10540140AA38100175026 /* PeripheralNIC.cpp in Sources */,
 				F5E10541140AA38100175026 /* PeripheralNyxboard.cpp in Sources */,
 				F5E10542140AA38100175026 /* PeripheralTuner.cpp in Sources */,
-				F5E10543140AA38100175026 /* GUIDialogPeripheralManager.cpp in Sources */,
 				F5E10544140AA38100175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				F5E10547140AA38100175026 /* Peripherals.cpp in Sources */,
 				F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */,
@@ -11935,7 +11927,6 @@
 				397877DA1AAAF87700F98A45 /* Temperature.cpp in Sources */,
 				DFF0F35017528350002DA3A4 /* PeripheralNyxboard.cpp in Sources */,
 				DFF0F35117528350002DA3A4 /* PeripheralTuner.cpp in Sources */,
-				DFF0F35217528350002DA3A4 /* GUIDialogPeripheralManager.cpp in Sources */,
 				DFF0F35317528350002DA3A4 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				DFF0F35417528350002DA3A4 /* Peripherals.cpp in Sources */,
 				DFF0F35517528350002DA3A4 /* GUIDialogPictureInfo.cpp in Sources */,
@@ -13001,7 +12992,6 @@
 				E49913D0174E5F8100741B6D /* PeripheralNIC.cpp in Sources */,
 				E49913D1174E5F8100741B6D /* PeripheralNyxboard.cpp in Sources */,
 				E49913D2174E5F8100741B6D /* PeripheralTuner.cpp in Sources */,
-				E49913D3174E5F8600741B6D /* GUIDialogPeripheralManager.cpp in Sources */,
 				E49913D4174E5F8600741B6D /* GUIDialogPeripheralSettings.cpp in Sources */,
 				395C2A1A1A9F074C00EBC7AD /* Locale.cpp in Sources */,
 				E49913D5174E5F8600741B6D /* Peripherals.cpp in Sources */,

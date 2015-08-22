@@ -333,10 +333,6 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
 
 void CPeripherals::OnDeviceChanged()
 {
-  // refresh peripherals manager
-  CGUIMessage msgManager(GUI_MSG_UPDATE, WINDOW_DIALOG_PERIPHERAL_MANAGER, 0);
-  g_windowManager.SendThreadMessage(msgManager, WINDOW_DIALOG_PERIPHERAL_MANAGER);
-
   // refresh settings (peripherals manager could be enabled/disabled now)
   CGUIMessage msgSettings(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
   g_windowManager.SendThreadMessage(msgSettings, WINDOW_SETTINGS_SYSTEM);

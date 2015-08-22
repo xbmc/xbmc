@@ -1870,9 +1870,6 @@
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralTuner.cpp">
       <Filter>peripherals\devices</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralManager.cpp">
-      <Filter>peripherals\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralSettings.cpp">
       <Filter>peripherals\dialogs</Filter>
     </ClCompile>
@@ -4896,9 +4893,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralTuner.h">
       <Filter>peripherals\devices</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralManager.h">
-      <Filter>peripherals\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralSettings.h">
       <Filter>peripherals\dialogs</Filter>
