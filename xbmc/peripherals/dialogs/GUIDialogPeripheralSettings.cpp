@@ -120,7 +120,7 @@ void CGUIDialogPeripheralSettings::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
 
-  SetHeading(5);
+  SetHeading(m_item->GetLabel());
 }
 
 void CGUIDialogPeripheralSettings::InitializeSettings()
