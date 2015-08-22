@@ -288,7 +288,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
   else if (settingId == SETTING_MADVR_SCALING)
     g_windowManager.ActivateWindow(WINDOW_DIALOG_MADVR);
 
-  if ( (g_application.GetCurrentPlayer() == PCID_DSPLAYER) && (settingId == VIDEO_SETTINGS_DS_FILTERS) )
+  else if (settingId == VIDEO_SETTINGS_DS_FILTERS)
   {
     CGUIDialogSelect *pDlg = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
       if (!pDlg)

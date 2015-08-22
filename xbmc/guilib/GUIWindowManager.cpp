@@ -1046,7 +1046,20 @@ void CGUIWindowManager::RenderPass() const
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())
+#ifdef HAS_DS_PLAYER
+    {
+      // Don't show video settings dialog under madVR scalers settings
+      if ((*it)->GetID() == WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
+      {
+        CGUIDialog* pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
+        if (pDialog && pDialog->IsDialogRunning())
+          continue;
+      }
       (*it)->DoRender();
+    }
+#else
+      (*it)->DoRender();
+#endif
   }
 }
 
