@@ -19,7 +19,9 @@
  */
 
 #include "PeripheralBus.h"
+#include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "FileItem.h"
@@ -291,7 +293,18 @@ void CPeripheralBus::GetDirectory(const std::string &strPath, CFileItemList &ite
     peripheralFile->SetProperty("bus", PeripheralTypeTranslator::BusTypeToString(peripheral->GetBusType()));
     peripheralFile->SetProperty("location", peripheral->Location());
     peripheralFile->SetProperty("class", PeripheralTypeTranslator::TypeToString(peripheral->Type()));
-    peripheralFile->SetProperty("version", peripheral->GetVersionInfo());
+
+    std::string strVersion(peripheral->GetVersionInfo());
+    if (strVersion.empty())
+      strVersion = g_localizeStrings.Get(13205);
+
+    std::string strDetails = StringUtils::Format("%s %s", g_localizeStrings.Get(24051).c_str(), strVersion.c_str());
+    if (peripheral->GetBusType() == PERIPHERAL_BUS_CEC && !peripheral->GetSettingBool("enabled"))
+      strDetails = StringUtils::Format("%s: %s", g_localizeStrings.Get(126).c_str(), g_localizeStrings.Get(13106).c_str());
+
+    peripheralFile->SetProperty("version", strVersion);
+    peripheralFile->SetProperty("Addon.Summary", strDetails);
+    peripheralFile->SetIconImage("DefaultAddon.png");
     items.Add(peripheralFile);
   }
 }
