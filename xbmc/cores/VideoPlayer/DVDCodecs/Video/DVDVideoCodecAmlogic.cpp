@@ -121,7 +121,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_pFormatName = "am-h264";
       // convert h264-avcC to h264-annex-b as h264-avcC
       // under streamers can have issues when seeking.
-      if (m_hints.extradata && *(uint8_t*)m_hints.extradata == 1)
+      if (m_hints.extradata)
       {
         m_bitstream = new CBitstreamConverter;
         m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true);
@@ -184,13 +184,16 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         return false;
       }
       m_pFormatName = "am-h265";
-      m_bitstream = new CBitstreamConverter();
-      m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true);
-      // make sure we do not leak the existing m_hints.extradata
-      free(m_hints.extradata);
-      m_hints.extrasize = m_bitstream->GetExtraSize();
-      m_hints.extradata = malloc(m_hints.extrasize);
-      memcpy(m_hints.extradata, m_bitstream->GetExtraData(), m_hints.extrasize);
+      if (m_hints.extradata)
+      {
+        m_bitstream = new CBitstreamConverter();
+        m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true);
+        // make sure we do not leak the existing m_hints.extradata
+        free(m_hints.extradata);
+        m_hints.extrasize = m_bitstream->GetExtraSize();
+        m_hints.extradata = malloc(m_hints.extrasize);
+        memcpy(m_hints.extradata, m_bitstream->GetExtraData(), m_hints.extrasize);
+      }
       break;
     default:
       CLog::Log(LOGDEBUG, "%s: Unknown hints.codec(%d", __MODULE_NAME__, m_hints.codec);
