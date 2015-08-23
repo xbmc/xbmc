@@ -563,8 +563,14 @@ void CGUIDialogPVRTimerSettings::Save()
     m_timerInfoTag->m_iClientId         = m_timerType->GetClientId();
   }
 
-  m_timerInfoTag->m_bStartAnyTime = m_bStartAnyTime;
-  m_timerInfoTag->m_bEndAnyTime = m_bEndAnyTime;
+  if (m_timerType->SupportsStartAnyTime() && m_timerType->IsEpgBased()) // Start anytime toggle is displayed
+    m_timerInfoTag->m_bStartAnyTime = m_bStartAnyTime;
+  else
+    m_bStartAnyTime = false; // Assume start time change needs checking for
+  if (m_timerType->SupportsEndAnyTime() && m_timerType->IsEpgBased()) // End anytime toggle is displayed
+    m_timerInfoTag->m_bEndAnyTime = m_bEndAnyTime;
+  else
+    m_bEndAnyTime = false; // Assume end time change needs checking for
   // Begin and end time
   const CDateTime now(CDateTime::GetCurrentDateTime());
   if (!m_bStartAnyTime && !m_bEndAnyTime)
