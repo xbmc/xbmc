@@ -612,7 +612,9 @@ void CGUIDialogPVRTimerSettings::Save()
   else
     m_timerInfoTag->m_iWeekdays = PVR_WEEKDAY_NONE;
 
-  // First day (only for repeating timers)
+  // First day (only for specifically supported types)
+  if (!m_timerType->SupportsFirstDay())
+    m_firstDayLocalTime.SetValid(false);
   m_timerInfoTag->SetFirstDayFromLocalTime(m_firstDayLocalTime);
 
   // "New episodes only" (only for repeating timers)
