@@ -46,7 +46,7 @@ macro (build_addon target prefix libs)
   ENDIF(OS STREQUAL "android")
 
   SET(LIBRARY_LOCATION $<TARGET_FILE:${target}>)
-  SET(LIBRARY_FILENAME $<TARGET_FILE_NAME:${target}>)
+  SET(LIBRARY_FILENAME $<TARGET_LINKER_FILE_NAME:${target}>)
 
   # if there's an addon.xml.in we need to generate the addon.xml
   IF(EXISTS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
