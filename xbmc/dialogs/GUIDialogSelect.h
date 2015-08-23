@@ -63,7 +63,7 @@ protected:
   bool m_bButtonEnabled;
   int m_buttonString;
   bool m_bButtonPressed;
-  int m_iSelected;
+  CFileItemPtr m_selectedItem;
   bool m_useDetails;
   bool m_multiSelection;
 
