@@ -748,6 +748,16 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
         CGUIDialogPeripheralSettings *pSettingsDialog = (CGUIDialogPeripheralSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
         if (pItem && pSettingsDialog)
         {
+          // pass peripheral item properties to settings dialog so skin authors
+          // can use it to show more detailed information about the device
+          pSettingsDialog->SetProperty("vendor", pItem->GetProperty("vendor"));
+          pSettingsDialog->SetProperty("product", pItem->GetProperty("product"));
+          pSettingsDialog->SetProperty("bus", pItem->GetProperty("bus"));
+          pSettingsDialog->SetProperty("location", pItem->GetProperty("location"));
+          pSettingsDialog->SetProperty("class", pItem->GetProperty("class"));
+          pSettingsDialog->SetProperty("version", pItem->GetProperty("version"));
+
+          // open settings dialog
           pSettingsDialog->SetFileItem(pItem.get());
           pSettingsDialog->Open();
         }
