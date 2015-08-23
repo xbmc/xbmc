@@ -1129,7 +1129,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
   CQueryParams params;
   CDirectoryNode::GetDatabaseInfo(items.GetPath(), params);
 
-  if (params.GetAlbumId())
+  if (params.GetAlbumId() > 0)
   {
     map<string, string> artistArt;
     if (m_musicdatabase.GetArtistArtForItem(params.GetAlbumId(), MediaTypeAlbum, artistArt))
@@ -1138,6 +1138,12 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     map<string, string> albumArt;
     if (m_musicdatabase.GetArtForItem(params.GetAlbumId(), MediaTypeAlbum, albumArt))
       items.AppendArt(albumArt, MediaTypeAlbum);
+  }
+  if (params.GetArtistId() > 0)
+  {
+    map<string, string> artistArt;
+    if (m_musicdatabase.GetArtForItem(params.GetArtistId(), "artist", artistArt))
+      items.AppendArt(artistArt, MediaTypeArtist);
   }
 
   // add in the "New Playlist" item if we're in the playlists folder
