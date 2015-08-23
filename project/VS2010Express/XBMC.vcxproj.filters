@@ -1522,9 +1522,6 @@
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp">
       <Filter>video\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogFileStacking.cpp">
-      <Filter>video\dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.cpp">
       <Filter>video\dialogs</Filter>
     </ClCompile>
@@ -4523,9 +4520,6 @@
       <Filter>video</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.h">
-      <Filter>video\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogFileStacking.h">
       <Filter>video\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.h">
