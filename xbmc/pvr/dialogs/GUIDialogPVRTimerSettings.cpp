@@ -1129,6 +1129,10 @@ bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string &con
   if (!pThis->m_timerType->IsEpgBased())
     return true;
 
+  // If 'Start anytime' option isn't supported, don't hide start time
+  if (!pThis->m_timerType->SupportsStartAnyTime())
+    return true;
+
   std::string cond(condition);
   cond.erase(cond.find(START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX));
 
@@ -1166,6 +1170,10 @@ bool CGUIDialogPVRTimerSettings::EndAnytimeSetCondition(const std::string &condi
 
   // "any time" setting is only relevant for epg-based timers.
   if (!pThis->m_timerType->IsEpgBased())
+    return true;
+
+  // If 'End anytime' option isn't supported, don't hide end time
+  if (!pThis->m_timerType->SupportsEndAnyTime())
     return true;
 
   std::string cond(condition);
