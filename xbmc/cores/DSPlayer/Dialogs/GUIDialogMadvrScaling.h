@@ -45,7 +45,6 @@ protected:
   virtual void SetupView();
   virtual void Save() {};
 
-  void LoadMadvrSettings();
   void HideUnused();
   void SetVisible(CStdString id, bool visible);
 

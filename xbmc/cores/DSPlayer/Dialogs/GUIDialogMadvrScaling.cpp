@@ -73,15 +73,6 @@
 #define SET_IMAGE_QUADRUPLE_LUMA_FACTOR        "madvr.imagequadruplelumafactor"
 #define SET_IMAGE_QUADRUPLE_CHROMA_FACTOR      "madvr.imagequadruplechromafactor"
 
-#define SET_IMAGE_FINESHARP                    "madvr.finsharp"
-#define SET_IMAGE_FINESHARP_STRENGTH           "madvr.finsharpstrength"
-#define SET_IMAGE_LUMASHARPEN                  "madvr.lumasharpen"
-#define SET_IMAGE_LUMASHARPEN_STRENGTH         "madvr.lumasharpenstrength"
-#define SET_IMAGE_LUMASHARPEN_CLAMP            "madvr.lumasharpenclamp"
-#define SET_IMAGE_LUMASHARPEN_RADIUS           "madvr.lumasharpenradius"
-#define SET_IMAGE_ADAPTIVESHARPEN              "madvr.adaptivesharpen"
-#define SET_IMAGE_ADAPTIVESHARPEN_STRENGTH     "madvr.adaptivesharpenstrength"
-
 #define SET_IMAGE_UPFINESHARP                  "madvr.upfinsharp"
 #define SET_IMAGE_UPFINESHARP_STRENGTH         "madvr.upfinsharpstrength"
 #define SET_IMAGE_UPLUMASHARPEN                "madvr.uplumasharpen"
@@ -118,49 +109,6 @@ void CGUIDialogMadvrScaling::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
 
   HideUnused();
-}
-
-void CGUIDialogMadvrScaling::LoadMadvrSettings()
-{
-  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_MADVR)
-    return;
-
-  CMadvrCallback::Get()->LoadSettings(MADVR_LOAD_SCALING);
-  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
-
-  m_settingsManager->SetInt(SET_CHROMA_UPSCALING, madvrSettings.m_ChromaUpscaling);
-  m_settingsManager->SetBool(SET_CHROMA_ANTIRING, madvrSettings.m_ChromaAntiRing);
-  m_settingsManager->SetBool(SET_CHROMA_SUPER_RES, madvrSettings.m_ChromaSuperRes);
-  m_settingsManager->SetInt(SET_IMAGE_UPSCALING, madvrSettings.m_ImageUpscaling);
-  m_settingsManager->SetBool(SET_IMAGE_UP_ANTIRING, madvrSettings.m_ImageUpAntiRing);
-  m_settingsManager->SetBool(SET_IMAGE_UP_LINEAR, madvrSettings.m_ImageUpLinear);
-  m_settingsManager->SetInt(SET_IMAGE_DOWNSCALING, madvrSettings.m_ImageDownscaling);
-  m_settingsManager->SetBool(SET_IMAGE_DOWN_ANTIRING, madvrSettings.m_ImageDownAntiRing);
-  m_settingsManager->SetBool(SET_IMAGE_DOWN_LINEAR, madvrSettings.m_ImageDownLinear);
-  m_settingsManager->SetInt(SET_IMAGE_DOUBLE_LUMA, madvrSettings.m_ImageDoubleLuma);
-  m_settingsManager->SetInt(SET_IMAGE_DOUBLE_LUMA_FACTOR, madvrSettings.m_ImageDoubleLumaFactor);
-  m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA, madvrSettings.m_ImageDoubleChroma);
-  m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA_FACTOR, madvrSettings.m_ImageDoubleChromaFactor);
-  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_LUMA, madvrSettings.m_ImageQuadrupleLuma);
-  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_LUMA_FACTOR, madvrSettings.m_ImageQuadrupleLumaFactor);
-  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA, madvrSettings.m_ImageQuadrupleChroma);
-  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, madvrSettings.m_ImageQuadrupleChromaFactor);
-  m_settingsManager->SetBool(SET_IMAGE_FINESHARP, madvrSettings.m_fineSharp);
-  m_settingsManager->SetNumber(SET_IMAGE_FINESHARP_STRENGTH, madvrSettings.m_fineSharpStrength);
-  m_settingsManager->SetBool(SET_IMAGE_LUMASHARPEN, madvrSettings.m_lumaSharpen);
-  m_settingsManager->SetNumber(SET_IMAGE_LUMASHARPEN_STRENGTH, madvrSettings.m_lumaSharpenStrength);
-  m_settingsManager->SetBool(SET_IMAGE_ADAPTIVESHARPEN, madvrSettings.m_adaptiveSharpen);
-  m_settingsManager->SetNumber(SET_IMAGE_ADAPTIVESHARPEN_STRENGTH, madvrSettings.m_adaptiveSharpenStrength);
-  m_settingsManager->SetBool(SET_IMAGE_UPFINESHARP, madvrSettings.m_UpRefFineSharp);
-  m_settingsManager->SetNumber(SET_IMAGE_UPFINESHARP_STRENGTH, madvrSettings.m_UpRefFineSharpStrength);
-  m_settingsManager->SetBool(SET_IMAGE_UPLUMASHARPEN, madvrSettings.m_UpRefLumaSharpen);
-  m_settingsManager->SetNumber(SET_IMAGE_UPLUMASHARPEN_STRENGTH, madvrSettings.m_UpRefLumaSharpenStrength);
-  m_settingsManager->SetBool(SET_IMAGE_UPADAPTIVESHARPEN, madvrSettings.m_UpRefAdaptiveSharpen);
-  m_settingsManager->SetNumber(SET_IMAGE_UPADAPTIVESHARPEN_STRENGTH, madvrSettings.m_UpRefAdaptiveSharpenStrength);
-  m_settingsManager->SetBool(SET_IMAGE_SUPER_RES, madvrSettings.m_superRes);
-  m_settingsManager->SetNumber(SET_IMAGE_SUPER_RES_STRENGTH, madvrSettings.m_superResStrength);
-  m_settingsManager->SetBool(SET_IMAGE_REFINE_ONCE, madvrSettings.m_refineOnce);
-  m_settingsManager->SetBool(SET_IMAGE_SUPER_RES_FIRST, madvrSettings.m_superResFirst);
 }
 
 void CGUIDialogMadvrScaling::SetupView()
@@ -226,13 +174,6 @@ void CGUIDialogMadvrScaling::InitializeSettings()
     return;
   }
 
-  CSettingGroup *groupMadvrSharp = AddGroup(category);
-  if (groupMadvrSharp == NULL)
-  {
-    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
-    return;
-  }
-
   CSettingGroup *groupMadvrUpSharp = AddGroup(category);
   if (groupMadvrUpSharp == NULL)
   {
@@ -242,7 +183,7 @@ void CGUIDialogMadvrScaling::InitializeSettings()
 
   StaticIntegerSettingOptions entries, entriesDoubleFactor, entriesQuadrupleFactor;
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
-  LoadMadvrSettings();
+  CMadvrCallback::Get()->LoadSettings(MADVR_LOAD_SCALING);
 
   //MADVR CHROMA UPSCALING
   entries.clear();
@@ -293,16 +234,6 @@ void CGUIDialogMadvrScaling::InitializeSettings()
 
   AddList(groupMadvrDoubling, SET_IMAGE_QUADRUPLE_CHROMA, 70103, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleChroma), entries, 70103);
   AddList(groupMadvrDoubling, SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, 70116, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleChromaFactor), entriesQuadrupleFactor, 70116);
-
-  //IMAGE ENHANCEMENTS
-  AddToggle(groupMadvrSharp, SET_IMAGE_FINESHARP, 70118, 0, madvrSettings.m_fineSharp);
-  AddSlider(groupMadvrSharp, SET_IMAGE_FINESHARP_STRENGTH, 70122, 0, madvrSettings.m_fineSharpStrength, "%1.1f", 0.0f, 0.1f, 8.0f, 70118, usePopup);
-  AddToggle(groupMadvrSharp, SET_IMAGE_LUMASHARPEN, 70119, 0, madvrSettings.m_lumaSharpen);
-  AddSlider(groupMadvrSharp, SET_IMAGE_LUMASHARPEN_STRENGTH, 70122, 0, madvrSettings.m_lumaSharpenStrength, "%1.2f", 0.0f, 0.01f, 3.0f, 70119, usePopup);
-  AddSlider(groupMadvrSharp, SET_IMAGE_LUMASHARPEN_CLAMP, 70128, 0, madvrSettings.m_lumaSharpenClamp, "%1.3f", 0.0f, 0.001f, 1.0f, 70119, usePopup);
-  AddSlider(groupMadvrSharp, SET_IMAGE_LUMASHARPEN_RADIUS, 70129, 0, madvrSettings.m_lumaSharpenRadius, "%1.1f", 0.0f, 0.1f, 6.0f, 70119, usePopup);
-  AddToggle(groupMadvrSharp, SET_IMAGE_ADAPTIVESHARPEN, 70120, 0, madvrSettings.m_adaptiveSharpen);
-  AddSlider(groupMadvrSharp, SET_IMAGE_ADAPTIVESHARPEN_STRENGTH, 70122, 0, madvrSettings.m_adaptiveSharpenStrength, "%1.1f", 0.0f, 0.1f, 1.5f, 70120, usePopup);
 
   //UPSCALING REFINEMENTS
   AddToggle(groupMadvrUpSharp, SET_IMAGE_UPFINESHARP, 70123, 0, madvrSettings.m_UpRefFineSharp);
@@ -436,47 +367,6 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
     madvrSettings.m_ImageQuadrupleChromaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
     CMadvrCallback::Get()->SetStr("nnediQCScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, madvrSettings.m_ImageQuadrupleChromaFactor));
   }
-  else if (settingId == SET_IMAGE_FINESHARP)
-  {
-    madvrSettings.m_fineSharp = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("fineSharp", madvrSettings.m_fineSharp);
-  }
-  else if (settingId == SET_IMAGE_FINESHARP_STRENGTH)
-  {
-    madvrSettings.m_fineSharpStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("fineSharpStrength", madvrSettings.m_fineSharpStrength, 10);
-  }
-  else if (settingId == SET_IMAGE_LUMASHARPEN)
-  {
-    madvrSettings.m_lumaSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("lumaSharpen", madvrSettings.m_lumaSharpen);
-  }
-  else if (settingId == SET_IMAGE_LUMASHARPEN_STRENGTH)
-  {
-    madvrSettings.m_lumaSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("lumaSharpenStrength", madvrSettings.m_lumaSharpenStrength);
-  }
-  else if (settingId == SET_IMAGE_LUMASHARPEN_CLAMP)
-  {
-    madvrSettings.m_lumaSharpenClamp = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("lumaSharpenClamp", madvrSettings.m_lumaSharpenClamp,1000);
-  }
-  else if (settingId == SET_IMAGE_LUMASHARPEN_RADIUS)
-  {
-    madvrSettings.m_lumaSharpenRadius = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("lumaSharpenRadius", madvrSettings.m_lumaSharpenRadius,10);
-  }
-  else if (settingId == SET_IMAGE_ADAPTIVESHARPEN)
-  {
-    madvrSettings.m_adaptiveSharpen = static_cast<const CSettingBool*>(setting)->GetValue();
-    CMadvrCallback::Get()->SetBool("adaptiveSharpen", madvrSettings.m_adaptiveSharpen);
-  }
-  else if (settingId == SET_IMAGE_ADAPTIVESHARPEN_STRENGTH)
-  {
-    madvrSettings.m_adaptiveSharpenStrength = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetFloat("adaptiveSharpenStrength", madvrSettings.m_adaptiveSharpenStrength, 10);
-  }
-
   else if (settingId == SET_IMAGE_UPFINESHARP)
   {
     madvrSettings.m_UpRefFineSharp = static_cast<const CSettingBool*>(setting)->GetValue();
@@ -570,12 +460,15 @@ void CGUIDialogMadvrScaling::HideUnused()
   CSetting *setting;
 
   // HIDE / SHOW
+
+  // CHROMAUP
   setting = m_settingsManager->GetSetting(SET_CHROMA_SUPER_RES);
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();
   SetVisible(SET_CHROMA_SUPER_RES_PASSES, bValue);
   SetVisible(SET_CHROMA_SUPER_RES_STRENGTH, bValue);
   SetVisible(SET_CHROMA_SUPER_RES_SOFTNESS, bValue);
 
+  // IMAGEDOUBLE
   setting = m_settingsManager->GetSetting(SET_IMAGE_DOUBLE_LUMA);
   value = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   SetVisible(SET_IMAGE_DOUBLE_LUMA_FACTOR, (value>-1));
@@ -592,20 +485,7 @@ void CGUIDialogMadvrScaling::HideUnused()
   value = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   SetVisible(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, (value > -1));
 
-  setting = m_settingsManager->GetSetting(SET_IMAGE_FINESHARP);
-  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
-  SetVisible(SET_IMAGE_FINESHARP_STRENGTH , bValue);
-
-  setting = m_settingsManager->GetSetting(SET_IMAGE_LUMASHARPEN);
-  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
-  SetVisible(SET_IMAGE_LUMASHARPEN_STRENGTH, bValue);
-  SetVisible(SET_IMAGE_LUMASHARPEN_CLAMP, bValue);
-  SetVisible(SET_IMAGE_LUMASHARPEN_RADIUS, bValue);
-
-  setting = m_settingsManager->GetSetting(SET_IMAGE_ADAPTIVESHARPEN);
-  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
-  SetVisible(SET_IMAGE_ADAPTIVESHARPEN_STRENGTH, bValue);
-
+  // SHARP
   setting = m_settingsManager->GetSetting(SET_IMAGE_UPFINESHARP);
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();
   SetVisible(SET_IMAGE_UPFINESHARP_STRENGTH, bValue);

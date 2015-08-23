@@ -219,7 +219,7 @@ void CMadvrSettingsManager::ListSettings(std::string path)
   }
 }
 
-void CMadvrSettingsManager::GetStr(std::string path, std::string *str)
+void CMadvrSettingsManager::GetStr(std::string path, std::string *sValue)
 {
   std::wstring pathW;
   g_charsetConverter.utf8ToW(path, pathW, false);
@@ -230,9 +230,18 @@ void CMadvrSettingsManager::GetStr(std::string path, std::string *str)
   if (GetSettings(MADVR_SETTINGS_STRING, pathW.c_str(), 0, buf, NULL, NULL, &bufSize))
   {
     std::wstring strW(buf);
-    g_charsetConverter.wToUTF8(strW, *str);
+    g_charsetConverter.wToUTF8(strW, *sValue);
   }
 }
+
+void CMadvrSettingsManager::GetStr(std::string path, int *iValue, MADVR_SETTINGS_LIST type)
+{
+  std::wstring pathW;
+  std::string sValue;
+  GetStr(path, &sValue);
+  *iValue = GetSettingsId(type, sValue);
+}
+
 
 void CMadvrSettingsManager::GetBool(std::string path, bool *bValue)
 {
@@ -530,100 +539,75 @@ void CMadvrSettingsManager::RestoreSettings()
 
 void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
 {
+  if (CSettings::GetInstance().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_MADVR)
+    return;
+
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
-  std::string sValue;
-  bool bValue;
-
-  if (type == MADVR_LOAD_GENERAL)
+  if (type == MADVR_LOAD_PROCESSING)
   {
     GetDeintActive("", &madvrSettings.m_deintactive);
-    GetStr("contentType", &sValue);
-    madvrSettings.m_deintforce = GetSettingsId(MADVR_LIST_DEINTFORCE, sValue);
-    GetBool("scanPartialFrame", &bValue);
-    madvrSettings.m_deintlookpixels = bValue;
-    GetBool("debandActive", &bValue);
-    madvrSettings.m_deband = bValue;
+    GetStr("contentType", &madvrSettings.m_deintforce, MADVR_LIST_DEINTFORCE);
+    GetBool("scanPartialFrame", &madvrSettings.m_deintlookpixels);
+    GetBool("debandActive", &madvrSettings.m_deband);
     GetInt("debandLevel", &madvrSettings.m_debandLevel);
     GetInt("debandFadeLevel", &madvrSettings.m_debandFadeLevel);
+
+    GetBool("fineSharp", &madvrSettings.m_fineSharp);
+    GetFloat("fineSharpStrength", &madvrSettings.m_fineSharpStrength, 10);
+    GetBool("lumaSharpen", &madvrSettings.m_lumaSharpen);
+    GetFloat("lumaSharpenStrength", &madvrSettings.m_lumaSharpenStrength);
+    GetFloat("lumaSharpenClamp", &madvrSettings.m_lumaSharpenClamp, 1000);
+    GetFloat("lumaSharpenRadius", &madvrSettings.m_lumaSharpenRadius, 10);
+    GetBool("adaptiveSharpen", &madvrSettings.m_adaptiveSharpen);
+    GetFloat("adaptiveSharpenStrength", &madvrSettings.m_adaptiveSharpenStrength, 10);
+
     GetDithering("", &madvrSettings.m_dithering);
-    GetBool("coloredDither", &bValue);
-    madvrSettings.m_ditheringColoredNoise = bValue;
-    GetBool("dynamicDither", &bValue);
-    madvrSettings.m_ditheringEveryFrame = bValue;
+    GetBool("coloredDither", &madvrSettings.m_ditheringColoredNoise);
+    GetBool("dynamicDither", &madvrSettings.m_ditheringEveryFrame);
     GetSmoothmotion("", &madvrSettings.m_smoothMotion);
   }
 
   if (type == MADVR_LOAD_SCALING)
   {
-    GetStr("chromaUp", &sValue);
-    madvrSettings.m_ChromaUpscaling = GetSettingsId(MADVR_LIST_CHROMAUP, sValue);
-    GetBool("chromaAntiRinging", &bValue);
-    madvrSettings.m_ChromaAntiRing = bValue;
-    GetBool("superChromaRes", &bValue);
+    GetStr("chromaUp", &madvrSettings.m_ChromaUpscaling,MADVR_LIST_CHROMAUP);
+    GetBool("chromaAntiRinging", & madvrSettings.m_ChromaAntiRing);
+    GetBool("superChromaRes", &madvrSettings.m_ChromaSuperRes);
     GetInt("superChromaResPasses", &madvrSettings.m_ChromaSuperResPasses);
     GetFloat("superChromaResStrength", &madvrSettings.m_ChromaSuperResStrength);
     GetFloat("superChromaResSoftness", &madvrSettings.m_ChromaSuperResSoftness);
-    madvrSettings.m_ChromaSuperRes = bValue;
-    GetStr("lumaUp", &sValue);
-    madvrSettings.m_ImageUpscaling = GetSettingsId(MADVR_LIST_LUMAUP, sValue);
+    GetStr("lumaUp", &madvrSettings.m_ImageUpscaling, MADVR_LIST_LUMAUP);
 
-    GetBool("lumaUpAntiRinging", &bValue);
-    madvrSettings.m_ImageUpAntiRing = bValue;
-    GetBool("lumaUpLinear", &bValue);
-    madvrSettings.m_ImageUpLinear = bValue;
-    GetStr("lumaDown", &sValue);
-    madvrSettings.m_ImageDownscaling = GetSettingsId(MADVR_LIST_LUMADOWN, sValue);
-    GetBool("lumaDownAntiRinging", &bValue);
-    madvrSettings.m_ImageDownAntiRing = bValue;
-    GetBool("lumaDownLinear", &bValue);
-    madvrSettings.m_ImageDownLinear = bValue;
+    GetBool("lumaUpAntiRinging", &madvrSettings.m_ImageUpAntiRing);
+    GetBool("lumaUpLinear", &madvrSettings.m_ImageUpLinear);
+    GetStr("lumaDown", &madvrSettings.m_ImageDownscaling,MADVR_LIST_LUMADOWN);
+    GetBool("lumaDownAntiRinging", &madvrSettings.m_ImageDownAntiRing);
+    GetBool("lumaDownLinear", &madvrSettings.m_ImageDownLinear);
     GetDoubling("DL", &madvrSettings.m_ImageDoubleLuma);
-    GetStr("nnediDLScalingFactor", &sValue);
-    madvrSettings.m_ImageDoubleLumaFactor = GetSettingsId(MADVR_LIST_DOUBLEFACTOR, sValue);
+    GetStr("nnediDLScalingFactor", &madvrSettings.m_ImageDoubleLumaFactor,MADVR_LIST_DOUBLEFACTOR);
     GetDoubling("DC", &madvrSettings.m_ImageDoubleChroma);
-    GetStr("nnediDCScalingFactor", &sValue);
-    madvrSettings.m_ImageDoubleChromaFactor = GetSettingsId(MADVR_LIST_DOUBLEFACTOR, sValue);
+    GetStr("nnediDCScalingFactor", &madvrSettings.m_ImageDoubleChromaFactor,MADVR_LIST_DOUBLEFACTOR);
     GetDoubling("QL", &madvrSettings.m_ImageQuadrupleLuma);
-    GetStr("nnediQLScalingFactor", &sValue);
-    madvrSettings.m_ImageQuadrupleLumaFactor = GetSettingsId(MADVR_LIST_QUADRUPLEFACTOR, sValue);
+    GetStr("nnediQLScalingFactor", &madvrSettings.m_ImageQuadrupleLumaFactor,MADVR_LIST_QUADRUPLEFACTOR);
     GetDoubling("QC", &madvrSettings.m_ImageQuadrupleChroma);
-    GetStr("nnediQCScalingFactor", &sValue);
-    madvrSettings.m_ImageQuadrupleChromaFactor = GetSettingsId(MADVR_LIST_QUADRUPLEFACTOR, sValue);
+    GetStr("nnediQCScalingFactor", &madvrSettings.m_ImageQuadrupleChromaFactor,MADVR_LIST_QUADRUPLEFACTOR);
 
-    GetBool("fineSharp", &bValue);
-    madvrSettings.m_fineSharp = bValue;
-    GetFloat("fineSharpStrength", &madvrSettings.m_fineSharpStrength, 10);
-    GetBool("lumaSharpen", &bValue);
-    madvrSettings.m_lumaSharpen = bValue;
-    GetFloat("lumaSharpenStrength", &madvrSettings.m_lumaSharpenStrength);
-    GetFloat("lumaSharpenClamp", &madvrSettings.m_lumaSharpenClamp,1000);
-    GetFloat("lumaSharpenRadius", &madvrSettings.m_lumaSharpenRadius,10);
-    GetBool("adaptiveSharpen", &bValue);
-    madvrSettings.m_adaptiveSharpen = bValue;
-    GetFloat("adaptiveSharpenStrength", &madvrSettings.m_adaptiveSharpenStrength, 10);
-
-    GetBool("upRefFineSharp", &bValue);
-    madvrSettings.m_UpRefFineSharp = bValue;
+    GetBool("upRefFineSharp", &madvrSettings.m_UpRefFineSharp);
     GetFloat("upRefFineSharpStrength", &madvrSettings.m_UpRefFineSharpStrength, 10);
-    GetBool("upRefLumaSharpen", &bValue);
-    madvrSettings.m_UpRefLumaSharpen = bValue;
+    GetBool("upRefLumaSharpen", &madvrSettings.m_UpRefLumaSharpen);
     GetFloat("upRefLumaSharpenStrength", &madvrSettings.m_UpRefLumaSharpenStrength);
     GetFloat("upRefLumaSharpenClamp", &madvrSettings.m_UpRefLumaSharpenClamp,1000);
     GetFloat("upRefLumaSharpenRadius", &madvrSettings.m_UpRefLumaSharpenRadius,10);
-    GetBool("upRefAdaptiveSharpen", &bValue);
-    madvrSettings.m_UpRefAdaptiveSharpen = bValue;
+    GetBool("upRefAdaptiveSharpen", &madvrSettings.m_UpRefAdaptiveSharpen);
     GetFloat("upRefAdaptiveSharpenStrength", &madvrSettings.m_UpRefAdaptiveSharpenStrength, 10);
 
-    GetBool("superRes", &bValue);
-    madvrSettings.m_superRes = bValue;
+    GetBool("superRes", &madvrSettings.m_superRes);
     GetFloat("superResStrength", &madvrSettings.m_superResStrength, 1);
     GetFloat("superResRadius", &madvrSettings.m_superResRadius);
 
-    GetBool("refineOnce", &bValue);
-    madvrSettings.m_refineOnce = !bValue;
-    GetBool("superResFirst", &bValue);
-    madvrSettings.m_superResFirst = bValue;
+    GetBool("refineOnce", &madvrSettings.m_refineOnce);
+    madvrSettings.m_refineOnce = !madvrSettings.m_refineOnce;
+    GetBool("superResFirst", &madvrSettings.m_superResFirst);
   }
 }
 

@@ -86,7 +86,8 @@ private:
   void EnumValues(std::string path, std::vector<std::string> *sVectorId, std::vector<std::string> *sVectorName, std::vector<std::string> *sVectorType);
   void ListSettings(std::string path);
 
-  void GetStr(std::string path, std::string *str);
+  void GetStr(std::string path, std::string *sValue);
+  void GetStr(std::string path, int *iValue, MADVR_SETTINGS_LIST type);
   void GetBool(std::string path, bool *bValue);
   void GetInt(std::string path, int *iValue);
   void GetFloat(std::string path, float* fValue, int iConv = 100);
