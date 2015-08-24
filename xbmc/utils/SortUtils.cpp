@@ -925,3 +925,103 @@ int SortUtils::GetSortLabel(SortBy sortBy)
   }
   return 16018; // None
 }
+
+template<typename T>
+T TypeFromString(const std::map<std::string, T>& typeMap, const std::string& name, const T& defaultType)
+{
+  auto it = typeMap.find(name);
+  if (it == typeMap.end())
+    return defaultType;
+
+  return it->second;
+}
+
+template<typename T>
+const std::string& TypeToString(const std::map<std::string, T>& typeMap, const T& value)
+{
+  auto it = std::find_if(typeMap.begin(), typeMap.end(),
+    [&value](const std::pair<std::string, T>& pair)
+  {
+    return pair.second == value;
+  });
+
+  if (it == typeMap.end())
+    return StringUtils::Empty;
+
+  return it->first;
+}
+
+const std::map<std::string, SortBy> sortMethods = {
+  { "label",            SortByLabel },
+  { "date",             SortByDate },
+  { "size",             SortBySize },
+  { "file",             SortByFile },
+  { "path",             SortByPath },
+  { "drivetype",        SortByDriveType },
+  { "title",            SortByTitle },
+  { "track",            SortByTrackNumber },
+  { "time",             SortByTime },
+  { "artist",           SortByArtist },
+  { "artistyear",       SortByArtistThenYear },
+  { "album",            SortByAlbum },
+  { "albumtype",        SortByAlbumType },
+  { "genre",            SortByGenre },
+  { "country",          SortByCountry },
+  { "year",             SortByYear },
+  { "rating",           SortByRating },
+  { "votes",            SortByVotes },
+  { "top250",           SortByTop250 },
+  { "programcount",     SortByProgramCount },
+  { "playlist",         SortByPlaylistOrder },
+  { "episode",          SortByEpisodeNumber },
+  { "season",           SortBySeason },
+  { "totalepisodes",    SortByNumberOfEpisodes },
+  { "watchedepisodes",  SortByNumberOfWatchedEpisodes },
+  { "tvshowstatus",     SortByTvShowStatus },
+  { "tvshowtitle",      SortByTvShowTitle },
+  { "sorttitle",        SortBySortTitle },
+  { "productioncode",   SortByProductionCode },
+  { "mpaa",             SortByMPAA },
+  { "videoresolution",  SortByVideoResolution },
+  { "videocodec",       SortByVideoCodec },
+  { "videoaspectratio", SortByVideoAspectRatio },
+  { "audiochannels",    SortByAudioChannels },
+  { "audiocodec",       SortByAudioCodec },
+  { "audiolanguage",    SortByAudioLanguage },
+  { "subtitlelanguage", SortBySubtitleLanguage },
+  { "studio",           SortByStudio },
+  { "dateadded",        SortByDateAdded },
+  { "lastplayed",       SortByLastPlayed },
+  { "playcount",        SortByPlaycount },
+  { "listeners",        SortByListeners },
+  { "bitrate",          SortByBitrate },
+  { "random",           SortByRandom },
+  { "channel",          SortByChannel },
+  { "channelnumber",    SortByChannelNumber },
+  { "datetaken",        SortByDateTaken }
+};
+
+SortBy SortUtils::SortMethodFromString(const std::string& sortMethod)
+{
+  return TypeFromString<SortBy>(sortMethods, sortMethod, SortByNone);
+}
+
+const std::string& SortUtils::SortMethodToString(SortBy sortMethod)
+{
+  return TypeToString<SortBy>(sortMethods, sortMethod);
+}
+
+const std::map<std::string, SortOrder> sortOrders = {
+  { "ascending", SortOrderAscending },
+  { "descending", SortOrderDescending }
+};
+
+SortOrder SortUtils::SortOrderFromString(const std::string& sortOrder)
+{
+  return TypeFromString<SortOrder>(sortOrders, sortOrder, SortOrderNone);
+}
+
+const std::string& SortUtils::SortOrderToString(SortOrder sortOrder)
+{
+  return TypeToString<SortOrder>(sortOrders, sortOrder);
+}
