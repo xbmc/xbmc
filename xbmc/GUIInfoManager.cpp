@@ -23,6 +23,8 @@
 #include "CompileInfo.h"
 #include "GUIInfoManager.h"
 #include "windows/GUIMediaWindow.h"
+#include "dialogs/GUIDialogKeyboardGeneric.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "Application.h"
 #include "Util.h"
@@ -244,6 +246,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "dvdready",         SYSTEM_DVDREADY },
                                   { "trayopen",         SYSTEM_TRAYOPEN },
                                   { "haslocks",         SYSTEM_HASLOCKS },
+                                  { "hashiddeninput",   SYSTEM_HAS_INPUT_HIDDEN },
                                   { "hasloginscreen",   SYSTEM_HAS_LOGINSCREEN },
                                   { "hasmodaldialog",   SYSTEM_HAS_MODAL_DIALOG },
                                   { "ismaster",         SYSTEM_ISMASTER },
@@ -2462,6 +2465,16 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     g_sysinfo.GetInfo(condition);
     bReturn = g_sysinfo.HasInternet();
+  }
+  else if (condition == SYSTEM_HAS_INPUT_HIDDEN)
+  {
+    CGUIDialogNumeric *pNumeric = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+    CGUIDialogKeyboardGeneric *pKeyboard = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+
+    if (pNumeric && pNumeric->IsActive())
+      bReturn = pNumeric->IsInputHidden();
+    else if (pKeyboard && pKeyboard->IsActive())
+      bReturn = pKeyboard->IsInputHidden();
   }
   else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
   {
