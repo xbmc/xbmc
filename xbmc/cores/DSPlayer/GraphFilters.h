@@ -107,6 +107,22 @@ struct SDVDFilters
   Com::SmartQIPtr<IDvdInfo2> dvdInfo; ///< Pointer to IDvdInfo2 interface. May be NULL
 };
 
+enum LAVFILTERS_TYPE
+{
+  LAVSPLITTER,
+  LAVVIDEO,
+  LAVAUDIO,
+  XYSUBFILTER
+};
+
+enum FILTERSMAN_TYPE
+{
+  INTERNALFILTERS,
+  MEDIARULES,
+  DSMERITS,
+};
+
+
 /*MADVR*/
 enum DIRECTSHOW_RENDERER
 {
@@ -173,6 +189,7 @@ public:
   bool HasSubFilter() { return m_hsubfilter; }
   void SetHasSubFilter(bool b) { m_hsubfilter = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
+  void ShowLavFiltersPage(LAVFILTERS_TYPE type);
   bool UsingMediaPortalTsReader() 
   { 
     return ((Splitter.guid != GUID_NULL) && !(StringFromGUID(Splitter.guid).compare(L"{B9559486-E1BB-45D3-A2A2-9A7AFE49B23F}"))); 

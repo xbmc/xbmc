@@ -1,0 +1,29 @@
+<filtersconfig>
+  <filters>
+    <filter name="lavvideo_internal" type="videodec">
+     <path>LAVFilters/LAVVideo.ax</path>
+     <guid>{EE30215D-164F-4A92-A4EB-9D4C13390F9F}</guid>
+     <osdname>(i) LAV Video</osdname>
+    </filter>
+    <filter name="lavaudio_internal" type="audiodec">
+     <path>LAVFilters/LAVAudio.ax</path>
+     <guid>{E8E73B6B-4CB3-44A4-BE99-4F7BCB96E491}</guid>
+     <osdname>(i) LAV Audio</osdname>
+    </filter>
+    <filter name="lavsource_internal" type="source">
+     <path>LAVFilters/LAVSplitter.ax</path>
+     <osdname>(i) LAV Splitter Source</osdname>
+     <guid>{B98D13E7-55DB-4385-A33D-09FD1BA26338}</guid>
+    </filter>
+    <filter name="lavsplitter_internal" type="source">
+     <path>LAVFilters/LAVSplitter.ax</path>
+     <osdname>(i) LAV Splitter</osdname>
+     <guid>{171252A0-8820-4AFE-9DF8-5C92B2D66B04}</guid>
+    </filter>
+    <filter name="xysubfilter_internal" type="subs">
+     <path>XySubFilter/XySubFilter.dll</path>
+     <osdname>(i) XySubFilter</osdname>
+     <guid>{2DFCB782-EC20-4A7C-B530-4577ADB33F21}</guid>
+    </filter>
+  </filters>
+</filtersconfig>

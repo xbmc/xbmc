@@ -1245,22 +1245,60 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="dsplayer.autofiltersettings" type="boolean" label="55021" help="">
+        <setting id="dsplayer.filtersmanagement" type="integer" label="55021" help="">
           <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
+          <default>0</default> <!-- internal lav filters -->
+          <constraints>
+            <options>
+              <option label="55081">0</option> <!-- internal lav filters -->
+              <option label="55082">1</option> <!-- internal media rules and filters configuration -->
+              <option label="55083">2</option> <!-- system filters ds merits -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.videorenderer" operator="is">madVR</dependency>
+          </dependencies>
+          <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.rules" type="action" parent="dsplayer.autofiltersettings" label="60001">
+        <setting id="dsplayer.rules" type="action" parent="dsplayer.filtersmanagement" label="60001">
           <level>0</level>
           <dependencies>
-            <dependency type="enable" setting="dsplayer.autofiltersettings" operator="is">false</dependency>
+            <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">1</dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="dsplayer.filters" type="action" parent="dsplayer.autofiltersettings" label="65001">
+        <setting id="dsplayer.filters" type="action" parent="dsplayer.filtersmanagement" label="65001">
           <level>0</level>
           <dependencies>
-            <dependency type="enable" setting="dsplayer.autofiltersettings" operator="is">false</dependency>
+            <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">1</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="dsplayer.lavsplitter" type="action" parent="dsplayer.filtersmanagement" label="55079">
+          <level>0</level>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="dsplayer.lavvideo" type="action" parent="dsplayer.filtersmanagement" label="55077">
+          <level>0</level>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="dsplayer.lavaudio" type="action" parent="dsplayer.filtersmanagement" label="55078">
+          <level>0</level>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="dsplayer.xysubfilter" type="action" parent="dsplayer.filtersmanagement" label="55080">
+          <level>0</level>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>

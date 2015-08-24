@@ -37,7 +37,7 @@ HRESULT CFGManager2::RenderFileXbmc(const CFileItem& pFileItem)
 {
 
   CFileItem FileItem = pFileItem;
-  bool bIsAutoRender = CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_AUTOFILTERSETTINGS);
+  bool bIsAutoRender = CSettings::GetInstance().GetInt("dsplayer.filtersmanagement") == DSMERITS;
 
   if (FileItem.IsDVDFile() || !bIsAutoRender)
     return __super::RenderFileXbmc(FileItem);

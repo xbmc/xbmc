@@ -570,14 +570,21 @@ HRESULT CFGLoader::LoadConfig()
   }
   // Two steps
 
-  // First, filters
-  LoadFilterCoreFactorySettings(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/filtersconfig.xml"), FILTERS, true);
-  LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/filtersconfig.xml", FILTERS, false);
+  if (CSettings::GetInstance().GetInt("dsplayer.filtersmanagement") == MEDIARULES)
+  {
+    // First, filters
+    LoadFilterCoreFactorySettings(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/filtersconfig.xml"), FILTERS, true);
+    LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/filtersconfig.xml", FILTERS, false);
 
-  // Second, medias rules
-  LoadFilterCoreFactorySettings(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/mediasconfig.xml"), MEDIAS, false);
-  LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/mediasconfig.xml", MEDIAS, false);
-
+    // Second, medias rules
+    LoadFilterCoreFactorySettings(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/mediasconfig.xml"), MEDIAS, false);
+    LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/mediasconfig.xml", MEDIAS, false);
+  }
+  if (CSettings::GetInstance().GetInt("dsplayer.filtersmanagement") == INTERNALFILTERS)
+  {
+    LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/filtersconfig_internal.xml", FILTERS, true);
+    LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/mediasconfig_internal.xml", MEDIAS, false);
+  }
   return S_OK;
 }
 
@@ -616,12 +623,9 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
 
 void CFGLoader::SettingOptionsDSVideoRendererFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  //todo dx11
-  list.push_back(std::make_pair("madshi Video Renderer (madVR)", "madVR"));
-  return;
-  
-  list.push_back(std::make_pair("Enhanced Video Renderer (EVR)", "EVR"));
-  list.push_back(std::make_pair("Video Mixing Renderer 9 (VMR9)", "VMR9"));
+  //todo dx11 
+  //list.push_back(std::make_pair("Enhanced Video Renderer (EVR)", "EVR"));
+  //list.push_back(std::make_pair("Video Mixing Renderer 9 (VMR9)", "VMR9"));
   
   CDSFilterEnumerator p_dsfilter;
   std::vector<DSFiltersInfo> dsfilterList;

@@ -48,6 +48,7 @@
 #include "cores/DSPlayer/Dialogs/GUIDialogDSFilters.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSPlayercoreFactory.h"
 #include "MadvrCallback.h"
+#include "GraphFilters.h"
 #endif
 CMediaSettings::CMediaSettings()
 {
@@ -566,6 +567,14 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
 #ifdef HAS_DS_PLAYER
   else if (settingId == "dsplayer.rules")
     CGUIDialogDSRules::ShowDSRulesList();
+  else if (settingId == "dsplayer.lavsplitter")
+    CGraphFilters::Get()->ShowLavFiltersPage(LAVSPLITTER);
+  else if (settingId == "dsplayer.lavvideo")
+    CGraphFilters::Get()->ShowLavFiltersPage(LAVVIDEO);
+  else if (settingId == "dsplayer.lavaudio")
+    CGraphFilters::Get()->ShowLavFiltersPage(LAVAUDIO);
+  else if (settingId == "dsplayer.xysubfilter")
+    CGraphFilters::Get()->ShowLavFiltersPage(XYSUBFILTER);
   else if (settingId == "dsplayer.filters")
     CGUIDialogDSFilters::ShowDSFiltersList();
   else if (settingId == "dsplayer.playercore")

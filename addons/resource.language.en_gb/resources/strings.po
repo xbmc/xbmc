@@ -17598,7 +17598,7 @@ msgid "There is no shader loaded"
 msgstr ""
 
 msgctxt "#55021"
-msgid "Use system filters (DirectShow merits)"
+msgid "Filters management"
 msgstr ""
 
 msgctxt "#55022"
@@ -17740,6 +17740,34 @@ msgstr ""
 
 msgctxt "#55076"
 msgid "Load from madVR active profile"
+msgstr ""
+
+msgctxt "#55077"
+msgid "LAV Video"
+msgstr ""
+
+msgctxt "#55078"
+msgid "LAV Audio"
+msgstr ""
+
+msgctxt "#55079"
+msgid "LAV Splitter"
+msgstr ""
+
+msgctxt "#55080"
+msgid "XySubFilter"
+msgstr ""
+
+msgctxt "#55081"
+msgid "Internal LavFilters / XySubFilter"
+msgstr ""
+
+msgctxt "#55082"
+msgid "Media rules and Filters configuration"
+msgstr ""
+
+msgctxt "#55083"
+msgid "System filters (DirectShow merits)"
 msgstr ""
 
 msgctxt "#60001"
