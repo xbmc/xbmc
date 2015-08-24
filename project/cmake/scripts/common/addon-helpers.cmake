@@ -45,8 +45,15 @@ macro (build_addon target prefix libs)
     SET_TARGET_PROPERTIES(${target} PROPERTIES PREFIX "lib")
   ENDIF(OS STREQUAL "android")
 
+  # get the library's location
   SET(LIBRARY_LOCATION $<TARGET_FILE:${target}>)
-  SET(LIBRARY_FILENAME $<TARGET_FILE_NAME:${target}>)
+  # get the library's filename
+  if("${CORE_SYSTEM_NAME}" STREQUAL "android")
+    # for android we need the filename without any version numbers
+    set(LIBRARY_FILENAME $<TARGET_LINKER_FILE_NAME:${target}>)
+  else()
+    SET(LIBRARY_FILENAME $<TARGET_FILE_NAME:${target}>)
+  endif()
 
   # if there's an addon.xml.in we need to generate the addon.xml
   IF(EXISTS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
