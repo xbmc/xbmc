@@ -85,6 +85,10 @@
       <guid>{9852A670-F845-491B-9BE6-EBD841B8A613}</guid>
       <osdname>XyVSFilter Auto</osdname>
     </filter>
+    <filter name="xysubfilter" type="subs">
+     <osdname>XySubFilter</osdname>
+     <guid>{2DFCB782-EC20-4A7C-B530-4577ADB33F21}</guid>
+    </filter>
     
     <!-- Extra filters -->
     <filter name="dcgraphiceq" type="extra">

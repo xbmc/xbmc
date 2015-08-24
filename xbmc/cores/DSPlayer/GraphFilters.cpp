@@ -35,6 +35,7 @@
 #include "FGFilter.h"
 #include "DSPlayerDatabase.h"
 #include "filtercorefactory/filtercorefactory.h"
+#include "Utils/DSFilterEnumerator.h"
 
 CGraphFilters *CGraphFilters::m_pSingleton = NULL;
 
@@ -46,6 +47,9 @@ m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER
 
 bool CGraphFilters::SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF)
 {
+  if (type != LAVVIDEO && type != LAVAUDIO && type != LAVSPLITTER)
+    return false;
+
   if (type == LAVVIDEO)
   {
     Com::SmartQIPtr<ILAVVideoSettings> pLAVFSettings = pBF;
@@ -67,6 +71,9 @@ bool CGraphFilters::SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF)
 
 void CGraphFilters::SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
 {
+  if (type != LAVVIDEO && type != LAVAUDIO && type != LAVSPLITTER)
+    return;
+
   SetLavInternal(type, pBF);
 
   if (!LoadLavSettings(type))
@@ -80,6 +87,26 @@ void CGraphFilters::SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
   }
 }
 
+bool CGraphFilters::IsRegisteredXYSubFilter()
+{
+  CDSFilterEnumerator p_dsfilter;
+  std::vector<DSFiltersInfo> dsfilterList;
+  p_dsfilter.GetDSFilters(dsfilterList);
+  std::vector<DSFiltersInfo>::const_iterator iter = dsfilterList.begin();
+
+  for (int i = 1; iter != dsfilterList.end(); i++)
+  {
+    DSFiltersInfo dev = *iter;
+    if (dev.lpstrName == "XySubFilter")
+    {
+      return true;
+      break;
+    }
+    ++iter;
+  }
+  return false;
+}
+
 void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type)
 {
   std::string filterName;
@@ -90,7 +117,7 @@ void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type)
   if (type == LAVSPLITTER)
     filterName = "lavsplitter_internal";
   if (type == XYSUBFILTER)
-    filterName = "xysubfilter_internal";
+    IsRegisteredXYSubFilter() ? filterName = "xysubfilter" : filterName = "xysubfilter_internal";
 
   CFGLoader *pLoader = new CFGLoader();
   pLoader->LoadConfig();

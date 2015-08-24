@@ -199,6 +199,7 @@ public:
   bool SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool LoadLavSettings(LAVFILTERS_TYPE type );
   bool SaveLavSettings(LAVFILTERS_TYPE type );
+  bool IsRegisteredXYSubFilter();
   bool UsingMediaPortalTsReader() 
   { 
     return ((Splitter.guid != GUID_NULL) && !(StringFromGUID(Splitter.guid).compare(L"{B9559486-E1BB-45D3-A2A2-9A7AFE49B23F}"))); 

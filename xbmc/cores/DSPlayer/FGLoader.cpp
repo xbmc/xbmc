@@ -468,6 +468,9 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
     CGraphFilters::Get()->SetHasSubFilter(false);
     }
     else {
+      if (filter == "xysubfilter_internal")
+        CGraphFilters::Get()->IsRegisteredXYSubFilter() ? filter = "xysubfilter" : filter = "xysubfilter_internal";
+
       if (FAILED(InsertFilter(filter, CGraphFilters::Get()->Subs)))
         return E_FAIL;
       CGraphFilters::Get()->SetHasSubFilter(true);
