@@ -112,7 +112,8 @@ enum LAVFILTERS_TYPE
   LAVSPLITTER,
   LAVVIDEO,
   LAVAUDIO,
-  XYSUBFILTER
+  XYSUBFILTER,
+  NULLFILTER
 };
 
 enum FILTERSMAN_TYPE
@@ -190,6 +191,11 @@ public:
   void SetHasSubFilter(bool b) { m_hsubfilter = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
   void ShowLavFiltersPage(LAVFILTERS_TYPE type);
+  bool SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF);
+  bool GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
+  bool SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
+  bool LoadLavSettings(LAVFILTERS_TYPE type );
+  bool SaveLavSettings(LAVFILTERS_TYPE type );
   bool UsingMediaPortalTsReader() 
   { 
     return ((Splitter.guid != GUID_NULL) && !(StringFromGUID(Splitter.guid).compare(L"{B9559486-E1BB-45D3-A2A2-9A7AFE49B23F}"))); 

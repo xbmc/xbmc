@@ -29,6 +29,7 @@
 #include "settings/VideoSettings.h"
 #ifdef HAS_DS_PLAYER
 #include "cores/DSplayer/Filters/MadvrSettings.h"
+#include "cores/DSplayer/Filters/LavSettings.h"
 #endif
 #include "threads/CriticalSection.h"
 
@@ -74,6 +75,9 @@ public:
   CMadvrSettings& GetAtStartMadvrSettings() { return m_atstartMadvrSettings; }
   const CMadvrSettings& GetCurrentMadvrSettings() const { return m_currentMadvrSettings; }
   CMadvrSettings& GetCurrentMadvrSettings() { return m_currentMadvrSettings; }
+
+  const CLavSettings& GetCurrentLavSettings() const { return m_currentLavSettings; }
+  CLavSettings& GetCurrentLavSettings() { return m_currentLavSettings; }
 #endif
 
   /*! \brief Retreive the watched mode for the given content type
@@ -132,6 +136,7 @@ private:
   CMadvrSettings m_defaultMadvrSettings;
   CMadvrSettings m_atstartMadvrSettings;
   CMadvrSettings m_currentMadvrSettings;
+  CLavSettings m_currentLavSettings;
 #endif
 
   typedef std::map<std::string, WatchedMode> WatchedModes;

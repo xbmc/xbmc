@@ -24,11 +24,11 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "cores/DSplayer/Filters/MadvrSettings.h"
+#include "Filters/MadvrSettings.h"
+#include "Filters/LavSettings.h"
 #include "dbwrappers/Database.h"
 #include "FileItem.h"
 #include "utils/StdString.h"
-
 
 class CEdition
 {
@@ -61,6 +61,12 @@ public:
   void EraseVideoSettings(const int resolution);
   bool GetDefResMadvrSettings(int resolution, CMadvrSettings &settings);
   void CreateVideoSettings(int resolution, const CMadvrSettings &setting);
+  bool GetLAVVideoSettings(CLavSettings &settings);
+  bool GetLAVAudioSettings(CLavSettings &settings);
+  bool GetLAVSplitterSettings(CLavSettings &settings);
+  void SetLAVVideoSettings(CLavSettings &settings);
+  void SetLAVAudioSettings(CLavSettings &settings);
+  void SetLAVSplitterSettings(CLavSettings &settings);
 
 protected:
   virtual void CreateTables();

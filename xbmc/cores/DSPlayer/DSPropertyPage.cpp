@@ -57,8 +57,8 @@ LONG GdiGetCharDimensions(HDC hdc, LPTEXTMETRICW lptm, LONG *height)
 }
 
 
-CDSPropertyPage::CDSPropertyPage(IBaseFilter* pBF)
-  : m_pBF(pBF), CThread("CDSPropertyPage thread")
+CDSPropertyPage::CDSPropertyPage(IBaseFilter* pBF, LAVFILTERS_TYPE type)
+  : m_pBF(pBF), m_type(type), CThread("CDSPropertyPage thread")
 {
 }
 
@@ -258,6 +258,11 @@ void CDSPropertyPage::Process()
 
 void CDSPropertyPage::OnExit()
 {
+  if (m_type != LAVVIDEO && m_type !=LAVAUDIO && m_type != LAVSPLITTER)
+    return;
+
+  CGraphFilters::Get()->GetLavSettings(m_type, m_pBF);
+  CGraphFilters::Get()->SaveLavSettings(m_type);
 }
 
 

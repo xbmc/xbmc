@@ -31,6 +31,7 @@
 #include "streams.h"
 #include "threads/Thread.h"
 #include "DSUtil/SmartPtr.h"
+#include "GraphFilters.h"
 
 class CDSPlayerPropertyPageSite : public IPropertyPageSite, public CUnknown
 {
@@ -104,7 +105,7 @@ struct OLEPropertyFrame {
 class CDSPropertyPage : public CThread
 {
 public:
-  CDSPropertyPage(IBaseFilter* pBF);
+  CDSPropertyPage(IBaseFilter* pBF, LAVFILTERS_TYPE type = NULLFILTER);
   virtual ~CDSPropertyPage();
 
   virtual bool Initialize();
@@ -112,4 +113,5 @@ protected:
   virtual void OnExit();
   virtual void Process();
   IBaseFilter* m_pBF;
+  LAVFILTERS_TYPE m_type;
 };
