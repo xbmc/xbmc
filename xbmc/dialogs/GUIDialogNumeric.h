@@ -36,6 +36,7 @@ public:
 
   bool IsConfirmed() const;
   bool IsCanceled() const;
+  bool IsInputHidden() const { return m_mode == INPUT_PASSWORD; };
 
   static bool ShowAndVerifyNewPassword(std::string& strNewPassword);
   static int ShowAndVerifyPassword(std::string& strPassword, const std::string& strHeading, int iRetries);
