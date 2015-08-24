@@ -352,7 +352,6 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
 
       Com::SmartQIPtr<ISpecifyPropertyPages> pProp = pBF;
       CAUUID pPages;
-      std::vector<bool> internaLav;
       if (pProp)
       {
         pProp->GetPages(&pPages);
@@ -364,7 +363,6 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
           else
             g_charsetConverter.wToUTF8(GetFilterName(pBF), filterName);
           pDlg->Add(filterName);
-          
         }
         CoTaskMemFree(pPages.pElems);
       }
