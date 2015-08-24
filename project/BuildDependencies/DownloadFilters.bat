@@ -6,11 +6,6 @@ SET CUR_PATH=%CD%
 SET APP_PATH=%CD%\..\..
 SET TMP_PATH=%CD%\scripts\tmp
 
-rem can't run rmdir and md back to back. access denied error otherwise.
-IF EXIST lib rmdir lib /S /Q
-IF EXIST include rmdir include /S /Q
-IF EXIST %TMP_PATH% rmdir %TMP_PATH% /S /Q
-
 IF $%1$ == $$ (
   SET DL_PATH="%CD%\downloads"
 ) ELSE (
