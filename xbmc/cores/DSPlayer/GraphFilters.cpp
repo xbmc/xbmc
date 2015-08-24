@@ -64,6 +64,22 @@ bool CGraphFilters::SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF)
 
   return true;
 }
+
+void CGraphFilters::SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
+{
+  SetLavInternal(type, pBF);
+
+  if (!LoadLavSettings(type))
+  {
+    GetLavSettings(type, pBF);
+    SaveLavSettings(type);
+  }
+  else
+  {
+    SetLavSettings(type, pBF);
+  }
+}
+
 void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type)
 {
   std::string filterName;
@@ -85,19 +101,9 @@ void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type)
 
   IBaseFilter* pBF;
   pFilter->Create(&pBF);
-  SetLavInternal(type, pBF);
   CDSPropertyPage *pDSPropertyPage = DNew CDSPropertyPage(pBF,type);
   pDSPropertyPage->Initialize();
-
-  if (!LoadLavSettings(type))
-  {
-    GetLavSettings(type,pBF);
-    SaveLavSettings(type);
-  }
-  else
-  {
-    SetLavSettings(type,pBF);
-  }
+  SetupLavSettings(type, pBF);
 
   SAFE_DELETE(pLoader);
 }

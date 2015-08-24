@@ -993,6 +993,8 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LavSettings.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVSplitterSettings.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVVideoSettings.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\madVRAllocatorPresenter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IDirectVobSub.h" />

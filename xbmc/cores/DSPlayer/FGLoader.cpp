@@ -453,8 +453,14 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
     {
       return E_FAIL;
     }
-    }
+    }  
+    if (filter == "lavsplitter_internal" || filter == "lavsource_internal")
+    {
+      CGraphFilters::Get()->Splitter.internalLav = true;
+      CGraphFilters::Get()->SetupLavSettings(LAVSPLITTER, CGraphFilters::Get()->Splitter.pBF);
+    }  
   END_PERFORMANCE_COUNTER("Loading splitter filter");
+
 
   START_PERFORMANCE_COUNTER
     if (FAILED(CFilterCoreFactory::GetSubsFilter(pFileItem, filter, CGraphFilters::Get()->IsUsingDXVADecoder())))
@@ -517,6 +523,12 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
 
     if (FAILED(InsertFilter(filter, CGraphFilters::Get()->Video)))
       goto clean;
+
+    if (filter == "lavvideo_internal")
+    {
+      CGraphFilters::Get()->Video.internalLav = true;
+      CGraphFilters::Get()->SetupLavSettings(LAVVIDEO, CGraphFilters::Get()->Video.pBF);
+    }
     END_PERFORMANCE_COUNTER("Loading video filter");
 
     START_PERFORMANCE_COUNTER
@@ -525,7 +537,14 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
 
     if (FAILED(InsertFilter(filter, CGraphFilters::Get()->Audio)))
       goto clean;
+
+    if (filter == "lavaudio_internal")
+    {
+      CGraphFilters::Get()->Audio.internalLav = true;
+      CGraphFilters::Get()->SetupLavSettings(LAVAUDIO, CGraphFilters::Get()->Audio.pBF);
+    }
     END_PERFORMANCE_COUNTER("Loading audio filter");
+
 
     // Shaders
     {

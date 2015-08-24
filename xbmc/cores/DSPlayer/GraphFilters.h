@@ -54,6 +54,7 @@ struct SFilterInfos
     osdname = "";
     guid = GUID_NULL;
     isinternal = false;
+    internalLav = false;
     pData = NULL;
   }
 
@@ -69,6 +70,7 @@ struct SFilterInfos
   CStdString osdname; ///< OSD Name of the filter
   GUID guid; ///< GUID of the filter
   bool isinternal; ///<  Releasing is not done the same way for internal filters
+  bool internalLav = false;
   void *pData; ///< If the filter is internal, there may be some additionnal data
 };
 
@@ -191,6 +193,7 @@ public:
   void SetHasSubFilter(bool b) { m_hsubfilter = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
   void ShowLavFiltersPage(LAVFILTERS_TYPE type);
+  void SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);

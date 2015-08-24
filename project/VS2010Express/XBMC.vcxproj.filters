@@ -6586,6 +6586,12 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LavSettings.h">
       <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVVideoSettings.h">
+      <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVSplitterSettings.h">
+      <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

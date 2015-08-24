@@ -17759,7 +17759,7 @@ msgid "XySubFilter"
 msgstr ""
 
 msgctxt "#55081"
-msgid "Internal LavFilters / XySubFilter"
+msgid "Internal filters"
 msgstr ""
 
 msgctxt "#55082"
