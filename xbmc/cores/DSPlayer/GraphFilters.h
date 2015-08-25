@@ -199,6 +199,7 @@ public:
   bool SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool LoadLavSettings(LAVFILTERS_TYPE type );
   bool SaveLavSettings(LAVFILTERS_TYPE type );
+  bool IsInternalFilter(IBaseFilter *pBF);
   bool IsRegisteredXYSubFilter();
   bool UsingMediaPortalTsReader() 
   { 

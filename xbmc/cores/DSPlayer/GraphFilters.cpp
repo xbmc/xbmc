@@ -45,6 +45,27 @@ m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER
   m_isKodiRealFS = false;
 }
 
+bool CGraphFilters::IsInternalFilter(IBaseFilter *pBF)
+{
+  if (CGraphFilters::Get()->Splitter.pBF == pBF && CGraphFilters::Get()->Splitter.internalLav)
+  {
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVSPLITTER);
+    return true;
+  }
+  if (CGraphFilters::Get()->Video.pBF == pBF && CGraphFilters::Get()->Video.internalLav)
+  {
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVVIDEO);
+    return true;
+  }
+  if (CGraphFilters::Get()->Audio.pBF == pBF && CGraphFilters::Get()->Audio.internalLav)
+  {
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVAUDIO);
+    return true;
+  }
+
+  return false;
+}
+
 bool CGraphFilters::SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF)
 {
   if (type != LAVVIDEO && type != LAVAUDIO && type != LAVSPLITTER)

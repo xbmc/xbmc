@@ -1057,11 +1057,18 @@ void CGUIWindowManager::RenderPass() const
     if ((*it)->IsDialogRunning())
 #ifdef HAS_DS_PLAYER
     {
-      // Don't show video settings dialog under madVR scalers settings
+      // Don't show video settings dialog under madVR/lavvideo/lavaudio/lavsplitter settings
       if ((*it)->GetID() == WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
       {
-        CGUIDialog* pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
-        if (pDialog && pDialog->IsDialogRunning())
+        CGUIDialog* pDialogMadvr = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
+        CGUIDialog* pDialogLAVVideo = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVVIDEO);
+        CGUIDialog* pDialogLAVAudio = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVAUDIO);
+        CGUIDialog* pDialogLAVSplitter = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVSPLITTER);
+
+        if ((pDialogMadvr && pDialogMadvr->IsDialogRunning())
+          || (pDialogLAVVideo && pDialogLAVVideo->IsDialogRunning())
+          || (pDialogLAVAudio && pDialogLAVAudio->IsDialogRunning())
+          || (pDialogLAVSplitter && pDialogLAVSplitter->IsDialogRunning()))
           continue;
       }
       (*it)->DoRender();
