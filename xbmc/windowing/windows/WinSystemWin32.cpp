@@ -341,14 +341,24 @@ void CWinSystemWin32::RestoreDesktopResolution(int screen)
   ChangeResolution(CDisplaySettings::GetInstance().GetResolutionInfo(resIdx));
 }
 
-const MONITOR_DETAILS &CWinSystemWin32::GetMonitor(int screen) const
+const MONITOR_DETAILS* CWinSystemWin32::GetMonitor(int screen) const
 {
   for (unsigned int monitor = 0; monitor < m_MonitorsInfo.size(); monitor++)
     if (m_MonitorsInfo[monitor].ScreenNumber == screen)
-      return m_MonitorsInfo[monitor];
+      return &m_MonitorsInfo[monitor];
 
   // What to do if monitor is not found? Not sure... use the primary screen as a default value.
-  return m_MonitorsInfo[m_nPrimary];
+  if (m_nPrimary >= 0 && static_cast<size_t>(m_nPrimary) < m_MonitorsInfo.size())
+  {
+    CLog::LogFunction(LOGDEBUG, __FUNCTION__, "no monitor found for screen %i, "
+                      "will use primary screen %i", screen, m_nPrimary);
+    return &m_MonitorsInfo[m_nPrimary];
+  }
+  else
+  {
+    CLog::LogFunction(LOGERROR, __FUNCTION__, "no monitor found for screen %i", screen);
+    return nullptr;
+  }
 }
 
 int CWinSystemWin32::GetCurrentScreen()
@@ -363,12 +373,17 @@ int CWinSystemWin32::GetCurrentScreen()
 
 RECT CWinSystemWin32::ScreenRect(int screen)
 {
-  const MONITOR_DETAILS &details = GetMonitor(screen);
+  const MONITOR_DETAILS* details = GetMonitor(screen);
+
+  if (!details)
+  {
+    CLog::LogFunction(LOGERROR, __FUNCTION__, "no monitor found for screen %i", screen);
+  }
 
   DEVMODEW sDevMode;
   ZeroMemory(&sDevMode, sizeof(sDevMode));
   sDevMode.dmSize = sizeof(sDevMode);
-  if(!EnumDisplaySettingsW(details.DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode))
+  if(!EnumDisplaySettingsW(details->DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode))
     CLog::Log(LOGERROR, "%s : EnumDisplaySettings failed with %d", __FUNCTION__, GetLastError());
 
   RECT rc;
@@ -450,14 +465,17 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
 
 bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res, bool forceChange /*= false*/)
 {
-  const MONITOR_DETAILS &details = GetMonitor(res.iScreen);
+  const MONITOR_DETAILS* details = GetMonitor(res.iScreen);
+
+  if (!details)
+    return false;
 
   DEVMODEW sDevMode;
   ZeroMemory(&sDevMode, sizeof(sDevMode));
   sDevMode.dmSize = sizeof(sDevMode);
 
   // If we can't read the current resolution or any detail of the resolution is different than res
-  if (!EnumDisplaySettingsW(details.DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode) ||
+  if (!EnumDisplaySettingsW(details->DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode) ||
       sDevMode.dmPelsWidth != res.iWidth || sDevMode.dmPelsHeight != res.iHeight ||
       sDevMode.dmDisplayFrequency != (int)res.fRefreshRate ||
       ((sDevMode.dmDisplayFlags & DM_INTERLACED) && !(res.dwFlags & D3DPRESENTFLAG_INTERLACED)) ||
@@ -485,14 +503,14 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res, bool forceChange /*=
       DEVMODEW sDevModeRegistry;
       ZeroMemory(&sDevModeRegistry, sizeof(sDevModeRegistry));
       sDevModeRegistry.dmSize = sizeof(sDevModeRegistry);
-      if (EnumDisplaySettingsW(details.DeviceNameW.c_str(), ENUM_REGISTRY_SETTINGS, &sDevModeRegistry))
+      if (EnumDisplaySettingsW(details->DeviceNameW.c_str(), ENUM_REGISTRY_SETTINGS, &sDevModeRegistry))
       {
         // Set requested mode in registry without actually changing resolution
-        rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), &sDevMode, NULL, CDS_UPDATEREGISTRY | CDS_NORESET, NULL);
+        rc = ChangeDisplaySettingsExW(details->DeviceNameW.c_str(), &sDevMode, NULL, CDS_UPDATEREGISTRY | CDS_NORESET, NULL);
         if (rc == DISP_CHANGE_SUCCESSFUL)
         {
           // Change resolution based on registry setting
-          rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), NULL, NULL, CDS_FULLSCREEN, NULL);
+          rc = ChangeDisplaySettingsExW(details->DeviceNameW.c_str(), NULL, NULL, CDS_FULLSCREEN, NULL);
           if (rc == DISP_CHANGE_SUCCESSFUL)
             bResChanged = true;
           else
@@ -502,7 +520,7 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res, bool forceChange /*=
           sDevModeRegistry.dmSize = sizeof(sDevModeRegistry);
           sDevModeRegistry.dmDriverExtra = 0;
           sDevModeRegistry.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_DISPLAYFLAGS;
-          rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), &sDevModeRegistry, NULL, CDS_UPDATEREGISTRY | CDS_NORESET, NULL);
+          rc = ChangeDisplaySettingsExW(details->DeviceNameW.c_str(), &sDevModeRegistry, NULL, CDS_UPDATEREGISTRY | CDS_NORESET, NULL);
           if (rc != DISP_CHANGE_SUCCESSFUL)
             CLog::Log(LOGERROR, "%s : ChangeDisplaySettingsEx (W8+ restore registry) failed with %d", __FUNCTION__, rc);
         }
@@ -518,7 +536,7 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res, bool forceChange /*=
     {
       // CDS_FULLSCREEN is for temporary fullscreen mode and prevents icons and windows from moving
       // to fit within the new dimensions of the desktop
-      rc = ChangeDisplaySettingsExW(details.DeviceNameW.c_str(), &sDevMode, NULL, CDS_FULLSCREEN, NULL);
+      rc = ChangeDisplaySettingsExW(details->DeviceNameW.c_str(), &sDevMode, NULL, CDS_FULLSCREEN, NULL);
       if (rc == DISP_CHANGE_SUCCESSFUL)
         bResChanged = true;
       else
