@@ -956,7 +956,7 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
     Set24HourClock(m_currentRegion->m_strTimeFormat);
 
     // update the time format
-    SetTimeFormat(CSettings::GetInstance().GetString("locale.timeformat"));
+    SetTimeFormat(CSettings::Get().GetString("locale.timeformat"));
   }
   if (CSettings::Get().GetString("locale.timeformat") == SETTING_REGIONAL_DEFAULT)
     SetTimeFormat(m_currentRegion->m_strTimeFormat);
