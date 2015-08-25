@@ -77,6 +77,7 @@
 #define LAVAUDIO_MIXINGCENTER      "lavaudio.mixingcenter"
 #define LAVAUDIO_MIXINGSURROUND    "lavaudio.mixingsurround"
 #define LAVAUDIO_MIXINGLFE         "lavaudio.mixinglfe"
+#define LAVAUDIO_RESET             "lavaudio.reset"
 
 using namespace std;
 
@@ -195,6 +196,12 @@ void CGUIDialogLAVAudio::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogLAVAudio: unable to setup settings");
     return;
   }
+  CSettingGroup *groupReset = AddGroup(category);
+  if (groupReset == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogLAVAudio: unable to setup settings");
+    return;
+  }
 
   StaticIntegerSettingOptions entries;
   CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
@@ -249,6 +256,9 @@ void CGUIDialogLAVAudio::InitializeSettings()
   entries.push_back(make_pair(81029, 1));
   entries.push_back(make_pair(81030, 2));
   AddList(groupEncoding, LAVAUDIO_MIXINGMODE, 81027, 0, LavSettings.audio_dwMixingMode, entries, 81027);
+
+  // BUTTON RESET
+  AddButton(groupReset, LAVAUDIO_RESET, 10041, 0);
 }
 
 void CGUIDialogLAVAudio::OnSettingChanged(const CSetting *setting)
@@ -325,6 +335,15 @@ void CGUIDialogLAVAudio::OnSettingAction(const CSetting *setting)
   if (settingId == LAVAUDIO_PROPERTYPAGE)
   {
     CGraphFilters::Get()->ShowLavFiltersPage(LAVAUDIO, true);
+    this->Close();
+  }
+
+  if (settingId == LAVAUDIO_RESET)
+  {
+    if (!CGUIDialogYesNo::ShowAndGetInput(10041, 10042, 0, 0))
+      return;
+
+    CGraphFilters::Get()->EraseLavSetting(LAVAUDIO);
     this->Close();
   }
 }

@@ -68,6 +68,7 @@
 #define LAVSPLITTER_REMAUDIOSTREAM    "lavsplitter.remaudiostream"
 #define LAVSPLITTER_PREFHQAUDIO       "lavsplitter.prefhqaudio"
 #define LAVSPLITTER_IMPAIREDAUDIO     "lavsplitter.impairedaudio"
+#define LAVSPLITTER_RESET             "lavsplitter.reset"
 
 using namespace std;
 
@@ -166,6 +167,12 @@ void CGUIDialogLAVSplitter::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogLAVSplitter: unable to setup settings");
     return;
   }
+  CSettingGroup *groupReset = AddGroup(category);
+  if (groupReset == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogLAVAudio: unable to setup settings");
+    return;
+  }
 
   StaticIntegerSettingOptions entries;
   CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
@@ -204,6 +211,9 @@ void CGUIDialogLAVSplitter::InitializeSettings()
   AddToggle(groupDemuxer, LAVSPLITTER_REMAUDIOSTREAM, 82013, 0, LavSettings.splitter_bStreamSwitchRemoveAudio);
   AddToggle(groupDemuxer, LAVSPLITTER_PREFHQAUDIO, 82014, 0, LavSettings.splitter_bPreferHighQualityAudio);
   AddToggle(groupDemuxer, LAVSPLITTER_IMPAIREDAUDIO, 82015, 0, LavSettings.splitter_bImpairedAudio);
+
+  // BUTTON RESET
+  AddButton(groupReset, LAVSPLITTER_RESET, 10041, 0);
 }
 
 void CGUIDialogLAVSplitter::OnSettingChanged(const CSetting *setting)
@@ -264,6 +274,15 @@ void CGUIDialogLAVSplitter::OnSettingAction(const CSetting *setting)
   if (settingId == LAVSPLITTER_PROPERTYPAGE)
   {
     CGraphFilters::Get()->ShowLavFiltersPage(LAVSPLITTER, true);
+    this->Close();
+  }
+
+  if (settingId == LAVSPLITTER_RESET)
+  {
+    if (!CGUIDialogYesNo::ShowAndGetInput(10041, 10042, 0, 0))
+      return;
+
+    CGraphFilters::Get()->EraseLavSetting(LAVSPLITTER);
     this->Close();
   }
 }

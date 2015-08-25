@@ -68,6 +68,7 @@
 #define LAVVIDEO_HWDEINTHQ         "lavvideo.bhwdeinthq"
 #define LAVVIDEO_SWDEINTMODE       "lavvideo.dwswdeintmode"
 #define LAVVIDEO_SWDEINTOUT        "lavvideo.dwswdeintoutput"
+#define LAVVIDEO_RESET             "lavvideo.reset"
 
 using namespace std;
 
@@ -163,6 +164,12 @@ void CGUIDialogLAVVideo::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogLAVVideo: unable to setup settings");
     return;
   }
+  CSettingGroup *groupReset = AddGroup(category);
+  if (groupReset == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogLAVAudio: unable to setup settings");
+    return;
+  }
 
   StaticIntegerSettingOptions entries;
   CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
@@ -225,6 +232,9 @@ void CGUIDialogLAVVideo::InitializeSettings()
   entries.push_back(make_pair(80210, 1));
   entries.push_back(make_pair(80211, 0));
   AddList(groupDeintSW, LAVVIDEO_SWDEINTOUT, 80007, 0, LavSettings.video_dwSWDeintOutput, entries, 80007);
+
+  // BUTTON RESET
+  AddButton(groupReset, LAVVIDEO_RESET, 10041, 0);
 }
 
 void CGUIDialogLAVVideo::OnSettingChanged(const CSetting *setting)
@@ -281,6 +291,15 @@ void CGUIDialogLAVVideo::OnSettingAction(const CSetting *setting)
   if (settingId == LAVVIDEO_PROPERTYPAGE)
   {
     CGraphFilters::Get()->ShowLavFiltersPage(LAVVIDEO, true);
+    this->Close();
+  }
+
+  if (settingId == LAVVIDEO_RESET)
+  {
+    if (!CGUIDialogYesNo::ShowAndGetInput(10041, 10042, 0, 0))
+      return;
+
+    CGraphFilters::Get()->EraseLavSetting(LAVVIDEO);
     this->Close();
   }
 }

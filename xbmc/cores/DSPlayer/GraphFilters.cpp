@@ -45,6 +45,20 @@ m_isDVD(false), m_UsingDXVADecoder(false), m_CurrentRenderer(DIRECTSHOW_RENDERER
   m_isKodiRealFS = false;
 }
 
+CGraphFilters::~CGraphFilters()
+{
+  if (m_isKodiRealFS)
+  {
+    CSettings::Get().SetBool("videoscreen.fakefullscreen", false);
+    m_isKodiRealFS = false;
+  }
+}
+
+CGraphFilters* CGraphFilters::Get()
+{
+  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGraphFilters());
+}
+
 bool CGraphFilters::IsInternalFilter(IBaseFilter *pBF)
 {
   if (CGraphFilters::Get()->Splitter.pBF == pBF && CGraphFilters::Get()->Splitter.internalLav)
@@ -428,18 +442,23 @@ bool CGraphFilters::LoadLavSettings(LAVFILTERS_TYPE type)
   return result;
 }
 
-
-CGraphFilters::~CGraphFilters()
+void CGraphFilters::EraseLavSetting(LAVFILTERS_TYPE type)
 {
-  if (m_isKodiRealFS)
+  if (type != LAVVIDEO && type != LAVAUDIO && type != LAVSPLITTER)
+    return;
+
+  CDSPlayerDatabase dsdbs;
+  if (dsdbs.Open())
   {
-    CSettings::GetInstance().SetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN, false);
-    m_isKodiRealFS = false;
+    if (type == LAVVIDEO)
+      dsdbs.EraseLAVVideo();
+    if (type == LAVAUDIO)
+      dsdbs.EraseLAVAudio();
+    if (type == LAVSPLITTER)
+      dsdbs.EraseLAVSplitter();
+
+    dsdbs.Close();
   }
 }
 
-CGraphFilters* CGraphFilters::Get()
-{
-  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGraphFilters());
-}
 #endif

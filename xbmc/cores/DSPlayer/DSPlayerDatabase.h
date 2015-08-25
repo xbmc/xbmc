@@ -67,6 +67,10 @@ public:
   void SetLAVVideoSettings(CLavSettings &settings);
   void SetLAVAudioSettings(CLavSettings &settings);
   void SetLAVSplitterSettings(CLavSettings &settings);
+  void EraseLAVVideo();
+  void EraseLAVAudio();
+  void EraseLAVSplitter();
+
 
 protected:
   virtual void CreateTables();

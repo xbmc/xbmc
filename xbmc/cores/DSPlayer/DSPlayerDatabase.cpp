@@ -876,6 +876,46 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
   }
 }
 
+void CDSPlayerDatabase::EraseLAVVideo()
+{
+  try
+  {
+    std::string sql = "DELETE FROM lavvideoSettings";
+    m_pDS->exec(sql);
+    CLog::Log(LOGINFO, "Deleting LAVVideo settings");
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+void CDSPlayerDatabase::EraseLAVAudio()
+{
+  try
+  {
+    std::string sql = "DELETE FROM lavaudioSettings";
+    m_pDS->exec(sql);
+    CLog::Log(LOGINFO, "Deleting LAVAudio settings");
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+void CDSPlayerDatabase::EraseLAVSplitter()
+{
+  try
+  {
+    std::string sql = "DELETE FROM lavsplitterSettings";
+    m_pDS->exec(sql);
+    CLog::Log(LOGINFO, "Deleting LAVSplitter settings");
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+
 void CDSPlayerDatabase::EraseVideoSettings(const std::string &path /* = ""*/)
 {
   try
