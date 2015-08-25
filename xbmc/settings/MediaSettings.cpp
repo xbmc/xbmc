@@ -568,13 +568,13 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
   else if (settingId == "dsplayer.rules")
     CGUIDialogDSRules::ShowDSRulesList();
   else if (settingId == "dsplayer.lavsplitter")
-    CGraphFilters::Get()->ShowLavFiltersPage(LAVSPLITTER);
+    CGraphFilters::Get()->ShowLavFiltersPage(LAVSPLITTER,false);
   else if (settingId == "dsplayer.lavvideo")
-    CGraphFilters::Get()->ShowLavFiltersPage(LAVVIDEO);
+    CGraphFilters::Get()->ShowLavFiltersPage(LAVVIDEO,false);
   else if (settingId == "dsplayer.lavaudio")
-    CGraphFilters::Get()->ShowLavFiltersPage(LAVAUDIO);
+    CGraphFilters::Get()->ShowLavFiltersPage(LAVAUDIO,false);
   else if (settingId == "dsplayer.xysubfilter")
-    CGraphFilters::Get()->ShowLavFiltersPage(XYSUBFILTER);
+    CGraphFilters::Get()->ShowLavFiltersPage(XYSUBFILTER,true);
   else if (settingId == "dsplayer.filters")
     CGUIDialogDSFilters::ShowDSFiltersList();
   else if (settingId == "dsplayer.playercore")

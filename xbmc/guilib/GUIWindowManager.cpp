@@ -153,6 +153,7 @@
 #include "cores/DSPlayer/Dialogs/GUIDialogDSRules.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSFilters.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogDSPlayercoreFactory.h"
+#include "cores/DSPlayer/Dialogs/GUIDialogLAVVideo.h"
 #include "cores/DSPlayer/Dialogs/GUIDIalogMadvrScaling.h"
 #endif
 
@@ -236,6 +237,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogDSRules);
   Add(new CGUIDialogDSFilters);
   Add(new CGUIDialogDSPlayercoreFactory);
+  Add(new CGUIDialogLAVVideo);
   Add(new CGUIDialogMadvrScaling);
 #endif
   Add(new CGUIDialogVideoBookmarks);
@@ -361,6 +363,9 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_DSFILTERS);
     Delete(WINDOW_DIALOG_DSPLAYERCORE);
     Delete(WINDOW_DIALOG_MADVR);
+    Delete(WINDOW_DIALOG_LAVVIDEO);
+    Delete(WINDOW_DIALOG_LAVAUDIO);
+    Delete(WINDOW_DIALOG_LAVSPLITTER);
 #endif
     Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
     Delete(WINDOW_DIALOG_CONTENT_SETTINGS);

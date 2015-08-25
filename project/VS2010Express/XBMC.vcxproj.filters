@@ -3379,6 +3379,9 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\LavSettings.cpp">
       <Filter>cores\DSPlayer\Filters\Video Renderers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.cpp">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6591,6 +6594,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\LAVSplitterSettings.h">
       <Filter>cores\DSPlayer\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.h">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

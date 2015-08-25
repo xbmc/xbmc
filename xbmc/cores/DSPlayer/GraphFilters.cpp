@@ -107,7 +107,7 @@ bool CGraphFilters::IsRegisteredXYSubFilter()
   return false;
 }
 
-void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type)
+void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPage)
 {
   std::string filterName;
   if (type == LAVVIDEO)
@@ -128,9 +128,18 @@ void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type)
 
   IBaseFilter* pBF;
   pFilter->Create(&pBF);
-  CDSPropertyPage *pDSPropertyPage = DNew CDSPropertyPage(pBF,type);
-  pDSPropertyPage->Initialize();
   SetupLavSettings(type, pBF);
+
+  if (showPropertyPage)
+  {
+    CDSPropertyPage *pDSPropertyPage = DNew CDSPropertyPage(pBF, type);
+    pDSPropertyPage->Initialize();
+  }
+  else
+  {
+    if (type == LAVVIDEO)
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVVIDEO);
+  }
 
   SAFE_DELETE(pLoader);
 }

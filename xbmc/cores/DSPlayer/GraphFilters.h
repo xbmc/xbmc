@@ -192,7 +192,7 @@ public:
   bool HasSubFilter() { return m_hsubfilter; }
   void SetHasSubFilter(bool b) { m_hsubfilter = b; }
   void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
-  void ShowLavFiltersPage(LAVFILTERS_TYPE type);
+  void ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPage);
   void SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);

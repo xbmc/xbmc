@@ -17743,19 +17743,19 @@ msgid "Load from madVR active profile"
 msgstr ""
 
 msgctxt "#55077"
-msgid "LAV Video"
+msgid "Video decoder"
 msgstr ""
 
 msgctxt "#55078"
-msgid "LAV Audio"
+msgid "Audio decoder"
 msgstr ""
 
 msgctxt "#55079"
-msgid "LAV Splitter"
+msgid "Splitter"
 msgstr ""
 
 msgctxt "#55080"
-msgid "XySubFilter"
+msgid "Subtitle filter"
 msgstr ""
 
 msgctxt "#55081"
@@ -18380,6 +18380,194 @@ msgstr ""
 
 msgctxt "#70604"
 msgid "Set as default for 2160p videos"
+msgstr ""
+
+msgctxt "#80001"
+msgid "Enable system tray icon"
+msgstr ""
+
+msgctxt "#80002"
+msgid "Use stream aspect ratio"
+msgstr ""
+
+msgctxt "#80003"
+msgid "Thread for multi-threading"
+msgstr ""
+
+msgctxt "#80004"
+msgid "RGB output levels (for YUV -> RGB conversion)"
+msgstr ""
+
+msgctxt "#80005"
+msgid "Hardware decoder to use"
+msgstr ""
+
+msgctxt "#80006"
+msgid "Hardware/GPU deinterlacing (CUVID/QS only)"
+msgstr ""
+
+msgctxt "#80007"
+msgid "- output mode"
+msgstr ""
+
+msgctxt "#80008"
+msgid "- high quality processing"
+msgstr ""
+
+msgctxt "#80009"
+msgid "Field Order"
+msgstr ""
+
+msgctxt "#80010"
+msgid "Deinterlacing Mode"
+msgstr ""
+
+msgctxt "#80011"
+msgid "Software deinterlacing (YADIF)"
+msgstr ""
+
+msgctxt "#80012"
+msgid "Dithering mode"
+msgstr ""
+
+msgctxt "#80013"
+msgid "Open property page"
+msgstr ""
+
+msgctxt "#80100"
+msgid "Auto"
+msgstr ""
+
+msgctxt "#80101"
+msgid "1"
+msgstr ""
+
+msgctxt "#80102"
+msgid "2"
+msgstr ""
+
+msgctxt "#80103"
+msgid "3"
+msgstr ""
+
+msgctxt "#80104"
+msgid "4"
+msgstr ""
+
+msgctxt "#80105"
+msgid "5"
+msgstr ""
+
+msgctxt "#80106"
+msgid "6"
+msgstr ""
+
+msgctxt "#80107"
+msgid "7"
+msgstr ""
+
+msgctxt "#80108"
+msgid "8"
+msgstr ""
+
+msgctxt "#80109"
+msgid "9"
+msgstr ""
+
+msgctxt "#80110"
+msgid "10"
+msgstr ""
+
+msgctxt "#80111"
+msgid "11"
+msgstr ""
+
+msgctxt "#80112"
+msgid "12"
+msgstr ""
+
+msgctxt "#80113"
+msgid "13"
+msgstr ""
+
+msgctxt "#80114"
+msgid "14"
+msgstr ""
+
+msgctxt "#80115"
+msgid "15"
+msgstr ""
+
+msgctxt "#80116"
+msgid "16"
+msgstr ""
+
+msgctxt "#80200"
+msgid "None"
+msgstr ""
+
+msgctxt "#80201"
+msgid "NVIDIA CUVID"
+msgstr ""
+
+msgctxt "#80202"
+msgid "Intel QuickSync"
+msgstr ""
+
+msgctxt "#80203"
+msgid "DXVA2 (copy-back)"
+msgstr ""
+
+msgctxt "#80204"
+msgid "DXVA2 (native)"
+msgstr ""
+
+msgctxt "#80205"
+msgid "Top-Field first"
+msgstr ""
+
+msgctxt "#80206"
+msgid "Bottom-Field first"
+msgstr ""
+
+msgctxt "#80207"
+msgid "Aggressive"
+msgstr ""
+
+msgctxt "#80208"
+msgid "Force"
+msgstr ""
+
+msgctxt "#80209"
+msgid "Disabled (progressive)"
+msgstr ""
+
+msgctxt "#80210"
+msgid "25p/30p (Film)"
+msgstr ""
+
+msgctxt "#80211"
+msgid "50p/60p (Video)"
+msgstr ""
+
+msgctxt "#80212"
+msgid "Ordered Dithering"
+msgstr ""
+
+msgctxt "#80213"
+msgid "Random Dithering"
+msgstr ""
+
+msgctxt "#80214"
+msgid "TV (16/235)"
+msgstr ""
+
+msgctxt "#80215"
+msgid "PC (0-255)"
+msgstr ""
+
+msgctxt "#80216"
+msgid "Untouched (as input)"
 msgstr ""
 
 msgctxt "#909001"

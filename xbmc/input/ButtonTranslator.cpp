@@ -387,6 +387,9 @@ static const ActionMapping windows[] =
     {"dsrulesettings"           , WINDOW_DIALOG_DSRULES},
     {"dsfiltersettings"         , WINDOW_DIALOG_DSFILTERS},
     {"dsplayercoresettings"     , WINDOW_DIALOG_DSPLAYERCORE},
+        {"dsplayerlavvideo"         , WINDOW_DIALOG_LAVVIDEO},
+        {"dsplayerlavaudio"         , WINDOW_DIALOG_LAVAUDIO},
+        {"dsplayerlavsplitter"      , WINDOW_DIALOG_LAVSPLITTER},
 #endif
     { "filestackingdialog"       , WINDOW_DIALOG_FILESTACKING },
     { "karaoke"                  , WINDOW_KARAOKELYRICS },
