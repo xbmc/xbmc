@@ -76,7 +76,6 @@ CGUIDialogLAVSplitter::CGUIDialogLAVSplitter()
 {
 }
 
-
 CGUIDialogLAVSplitter::~CGUIDialogLAVSplitter()
 { }
 
@@ -175,7 +174,7 @@ void CGUIDialogLAVSplitter::InitializeSettings()
   AddButton(groupProperty, LAVSPLITTER_PROPERTYPAGE, 80013, 0);
 
   // TRAYICON
-  AddToggle(group, LAVSPLITTER_TRAYICON, 80001, 0, LavSettings.audio_bTrayIcon);
+  AddToggle(group, LAVSPLITTER_TRAYICON, 80001, 0, LavSettings.splitter_bTrayIcon);
 
   // PREFLANG
   std::string str;
