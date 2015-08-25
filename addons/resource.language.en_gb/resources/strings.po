@@ -18690,6 +18690,66 @@ msgctxt "#81030"
 msgid "Dolby Pro Logic II"
 msgstr ""
 
+msgctxt "#82001"
+msgid "Preferred audio language"
+msgstr ""
+
+msgctxt "#82002"
+msgid "Preferred subtitles language"
+msgstr ""
+
+msgctxt "#82003"
+msgid "Subtitle selection mode"
+msgstr ""
+
+msgctxt "#82004"
+msgid "No subtitles"
+msgstr ""
+
+msgctxt "#82005"
+msgid "Only forced subtitles"
+msgstr ""
+
+msgctxt "#82006"
+msgid "Default"
+msgstr ""
+
+msgctxt "#82007"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "#82008"
+msgid "Bluray (PGS) enable automatic forced subtitle"
+msgstr ""
+
+msgctxt "#82009"
+msgid "BluRay (PGS) deliver only forced subtitles"
+msgstr ""
+
+msgctxt "#82010"
+msgid "Enable VC-1 timestamp correction"
+msgstr ""
+
+msgctxt "#82011"
+msgid "Load matroska segments from external files"
+msgstr ""
+
+msgctxt "#82012"
+msgid "Demux sub-stream separately"
+msgstr ""
+
+msgctxt "#82013"
+msgid "Remove audio decoder on audio stream switch"
+msgstr ""
+
+msgctxt "#82014"
+msgid "Prefer audio stream with the hightest quality"
+msgstr ""
+
+msgctxt "#82015"
+msgid "Prefer audio stream for the hearing/visually impaired"
+msgstr ""
+
 msgctxt "#909001"
 msgid "Rus"
 msgstr ""

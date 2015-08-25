@@ -141,6 +141,8 @@ void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPa
       g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVVIDEO);
     if (type == LAVAUDIO)
       g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVAUDIO);
+    if (type == LAVSPLITTER)
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVSPLITTER);
   }
 
   SAFE_DELETE(pLoader);

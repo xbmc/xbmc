@@ -248,7 +248,7 @@ void CGUIDialogLAVAudio::InitializeSettings()
   entries.push_back(make_pair(81028, 0));
   entries.push_back(make_pair(81029, 1));
   entries.push_back(make_pair(81030, 2));
-  AddList(groupEncoding, LAVAUDIO_MIXINGMODE, 81027, 0, LavSettings.video_deintMode, entries, 81027);
+  AddList(groupEncoding, LAVAUDIO_MIXINGMODE, 81027, 0, LavSettings.audio_dwMixingMode, entries, 81027);
 }
 
 void CGUIDialogLAVAudio::OnSettingChanged(const CSetting *setting)

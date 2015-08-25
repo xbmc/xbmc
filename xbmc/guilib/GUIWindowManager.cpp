@@ -155,6 +155,7 @@
 #include "cores/DSPlayer/Dialogs/GUIDialogDSPlayercoreFactory.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogLAVVideo.h"
 #include "cores/DSPlayer/Dialogs/GUIDialogLAVAudio.h"
+#include "cores/DSPlayer/Dialogs/GUIDialogLAVSplitter.h"
 #include "cores/DSPlayer/Dialogs/GUIDIalogMadvrScaling.h"
 #endif
 
@@ -240,6 +241,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogDSPlayercoreFactory);
   Add(new CGUIDialogLAVVideo);
   Add(new CGUIDialogLAVAudio);
+  Add(new CGUIDialogLAVSplitter);
   Add(new CGUIDialogMadvrScaling);
 #endif
   Add(new CGUIDialogVideoBookmarks);

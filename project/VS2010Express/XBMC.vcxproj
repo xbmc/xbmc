@@ -256,6 +256,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSPlayercoreFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSRules.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVAudio.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVSplitter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSGraph.cpp" />
@@ -975,6 +976,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSPlayercoreFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogDSRules.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVAudio.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVSplitter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogMadvrScaling.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSGraph.h" />
