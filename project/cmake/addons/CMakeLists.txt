@@ -1,6 +1,11 @@
 project(kodi-addons)
 
-cmake_minimum_required(VERSION 2.8)
+if(WIN32)
+  # there seems to be a bug in the CMake generator implementation in CMake 2.8.x releases for WIN32
+  cmake_minimum_required(VERSION 3.0)
+else()
+  cmake_minimum_required(VERSION 2.8)
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
