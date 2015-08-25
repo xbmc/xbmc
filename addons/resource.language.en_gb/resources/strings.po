@@ -18570,6 +18570,126 @@ msgctxt "#80216"
 msgid "Untouched (as input)"
 msgstr ""
 
+msgctxt "#81001"
+msgid "Dynamic rance compression (AC3, EAC3)"
+msgstr ""
+
+msgctxt "#81002"
+msgid "- level"
+msgstr ""
+
+msgctxt "#81003"
+msgid "Bitstreaming Dolby Digital (AC-3)"
+msgstr ""
+
+msgctxt "#81004"
+msgid "Bitstreaming Dolby Digital Plus (E-AC3)"
+msgstr ""
+
+msgctxt "#81005"
+msgid "Bitstreaming Dolby TrueHD"
+msgstr ""
+
+msgctxt "#81006"
+msgid "Bitstreaming DTS"
+msgstr ""
+
+msgctxt "#81007"
+msgid "Bitstreaming DTS-HD"
+msgstr ""
+
+msgctxt "#81008"
+msgid "Use DTS-HD framing for all DTS types"
+msgstr ""
+
+msgctxt "#81009"
+msgid "Auto A/V sync correction"
+msgstr ""
+
+msgctxt "#81010"
+msgid "Convert output to standard channel layouts"
+msgstr ""
+
+msgctxt "#81011"
+msgid "Expand mono to stereo"
+msgstr ""
+
+msgctxt "#81012"
+msgid "Expand 6.1 to 7.1"
+msgstr ""
+
+msgctxt "#81013"
+msgid "Enable mixing"
+msgstr ""
+
+msgctxt "#81014"
+msgid "- output speaker configuration"
+msgstr "
+
+msgctxt "#81015"
+msgid "Mono"
+msgstr "
+
+msgctxt "#81016"
+msgid "Stereo"
+msgstr "
+
+msgctxt "#81017"
+msgid "4.0"
+msgstr "
+
+msgctxt "#81018"
+msgid "5.1"
+msgstr "
+
+msgctxt "#81019"
+msgid "6.1"
+msgstr "
+
+msgctxt "#81020"
+msgid "7.1"
+msgstr "
+
+msgctxt "#81021"
+msgid "- center mix level"
+msgstr ""
+
+msgctxt "#81022"
+msgid "- surround mix level"
+msgstr ""
+
+msgctxt "#81023"
+msgid "- lfe mix level"
+msgstr ""
+
+msgctxt "#81024"
+msgid "Don't mix stereo sources"
+msgstr ""
+
+msgctxt "#81025"
+msgid "Normalize matrix"
+msgstr ""
+
+msgctxt "#81026"
+msgid "Clipping protection"
+msgstr ""
+
+msgctxt "#81027"
+msgid "Matrix Encoding"
+msgstr ""
+
+msgctxt "#81028"
+msgid "None"
+msgstr ""
+
+msgctxt "#81029"
+msgid "Dolby Pro Logic"
+msgstr ""
+
+msgctxt "#81030"
+msgid "Dolby Pro Logic II"
+msgstr ""
+
 msgctxt "#909001"
 msgid "Rus"
 msgstr ""

@@ -139,6 +139,8 @@ void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPa
   {
     if (type == LAVVIDEO)
       g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVVIDEO);
+    if (type == LAVAUDIO)
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVAUDIO);
   }
 
   SAFE_DELETE(pLoader);
@@ -201,6 +203,8 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     LavSettings.audio_dwMixingMode = pLAVFSettings->GetMixingMode();
     pLAVFSettings->GetMixingLevels(&LavSettings.audio_dwMixingCenterLevel, &LavSettings.audio_dwMixingSurroundLevel, &LavSettings.audio_dwMixingLFELevel);
     pLAVFSettings->GetAudioDelay(&LavSettings.audio_bAudioDelayEnabled, &LavSettings.audio_iAudioDelay);
+
+    CLog::Log(0, "%u, %u, %u", LavSettings.audio_dwMixingCenterLevel, LavSettings.audio_dwMixingSurroundLevel, LavSettings.audio_dwMixingLFELevel);
 
     for (int i = 0; i < Bitstream_NB; ++i) {
       LavSettings.audio_bBitstream[i] = pLAVFSettings->GetBitstreamConfig((LAVBitstreamCodec)i);

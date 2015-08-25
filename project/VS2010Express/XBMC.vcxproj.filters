@@ -3382,6 +3382,9 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.cpp">
       <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVAudio.cpp">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6596,6 +6599,9 @@
       <Filter>cores\DSPlayer\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVVideo.h">
+      <Filter>cores\DSPlayer\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Dialogs\GUIDialogLAVAudio.h">
       <Filter>cores\DSPlayer\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>

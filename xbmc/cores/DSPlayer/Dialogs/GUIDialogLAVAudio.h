@@ -26,11 +26,11 @@
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "utils/stdstring.h"
 
-class CGUIDialogLAVVideo : public CGUIDialogSettingsManualBase
+class CGUIDialogLAVAudio : public CGUIDialogSettingsManualBase
 {
 public:
-  CGUIDialogLAVVideo();
-  virtual ~CGUIDialogLAVVideo();
+  CGUIDialogLAVAudio();
+  virtual ~CGUIDialogLAVAudio();
 
 protected:
 
@@ -51,5 +51,14 @@ protected:
   void HideUnused();
   void SetVisible(CStdString id, bool visible);
 
+  void FlagsToBool(int flags);
+  int BoolToFlags();
+  float DWToFloat(int i) { return (i <= 0) ? 0.0f : (float)i / 10000.0f;};
+  int FloatToDw(float f) { return round(f * 10000.0f); };
+
   bool m_allowchange;
+  bool m_dontMix;
+  bool m_normalize;
+  bool m_clip;
+
 };

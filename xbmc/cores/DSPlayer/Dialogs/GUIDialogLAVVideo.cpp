@@ -74,7 +74,7 @@ using namespace std;
 CGUIDialogLAVVideo::CGUIDialogLAVVideo()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_LAVVIDEO, "VideoOSDSettings.xml")
 {
-
+  m_allowchange = true;
 }
 
 
@@ -84,6 +84,8 @@ CGUIDialogLAVVideo::~CGUIDialogLAVVideo()
 void CGUIDialogLAVVideo::OnInitWindow()
 {
   CGUIDialogSettingsManualBase::OnInitWindow();
+
+  HideUnused();
 }
 
 void CGUIDialogLAVVideo::OnDeinitWindow(int nextWindowID)
@@ -127,6 +129,12 @@ void CGUIDialogLAVVideo::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogLAVVideo: unable to setup settings");
     return;
   }
+  CSettingGroup *groupHW = AddGroup(category);
+  if (groupHW == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogLAVVideo: unable to setup settings");
+    return;
+  }
   // get all necessary setting groups
   CSettingGroup *groupSettings = AddGroup(category);
   if (groupSettings == NULL)
@@ -162,18 +170,19 @@ void CGUIDialogLAVVideo::InitializeSettings()
   // BUTTON
   AddButton(groupProperty, LAVVIDEO_PROPERTYPAGE, 80013, 0);
 
-  // MAIN
+  // TRAYICON
+  AddToggle(group, LAVVIDEO_TRAYICON, 80001, 0, LavSettings.video_bTrayIcon);
+
+  // HW ACCELERATION
   entries.clear();
   for (unsigned int i = 0; i < 5; i++)
     entries.push_back(make_pair(80200 + i, i));
-  AddList(group, LAVVIDEO_HWACCEL, 80005, 0, LavSettings.video_dwHWAccel, entries, 80005);
+  AddList(groupHW, LAVVIDEO_HWACCEL, 80005, 0, LavSettings.video_dwHWAccel, entries, 80005);
 
   entries.clear();
   for (unsigned int i = 0; i < 17; i++)
     entries.push_back(make_pair(80100 + i, i));
-  AddList(group, LAVVIDEO_NUMTHREADS, 80003, 0, LavSettings.video_dwNumThreads, entries, 80003);
-
-  AddToggle(group, LAVVIDEO_TRAYICON, 80001, 0, LavSettings.video_bTrayIcon);
+  AddList(groupHW, LAVVIDEO_NUMTHREADS, 80003, 0, LavSettings.video_dwNumThreads, entries, 80003);
 
   // SETTINGS
   AddToggle(groupSettings, LAVVIDEO_STREAMAR, 80002, 0, LavSettings.video_dwStreamAR);
@@ -233,9 +242,9 @@ void CGUIDialogLAVVideo::OnSettingChanged(const CSetting *setting)
   if (settingId == LAVVIDEO_NUMTHREADS)
     LavSettings.video_dwNumThreads = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   if (settingId == LAVVIDEO_TRAYICON)
-    LavSettings.video_bTrayIcon = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    LavSettings.video_bTrayIcon = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVVIDEO_STREAMAR)
-    LavSettings.video_dwStreamAR = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    LavSettings.video_dwStreamAR = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVVIDEO_DEINTFILEDORDER)
     LavSettings.video_dwDeintFieldOrder = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   if (settingId == LAVVIDEO_DEINTMODE)
@@ -245,15 +254,17 @@ void CGUIDialogLAVVideo::OnSettingChanged(const CSetting *setting)
   if (settingId == LAVVIDEO_DITHERMODE)
     LavSettings.video_dwDitherMode = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   if (settingId == LAVVIDEO_HWDEINTMODE)
-    LavSettings.video_dwHWDeintMode = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    LavSettings.video_dwHWDeintMode = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVVIDEO_HWDEINTOUT)
     LavSettings.video_dwHWDeintOutput = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   if (settingId == LAVVIDEO_HWDEINTHQ)
-    LavSettings.video_bHWDeintHQ = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    LavSettings.video_bHWDeintHQ = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVVIDEO_SWDEINTMODE)
-    LavSettings.video_dwSWDeintMode = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    LavSettings.video_dwSWDeintMode = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
   if (settingId == LAVVIDEO_SWDEINTOUT)
-    LavSettings.video_dwSWDeintMode = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+    LavSettings.video_dwSWDeintOutput = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
+
+  HideUnused();
 
   CGraphFilters::Get()->SaveLavSettings(LAVVIDEO);
   CGraphFilters::Get()->SaveLavSettings(LAVVIDEO);
@@ -274,4 +285,40 @@ void CGUIDialogLAVVideo::OnSettingAction(const CSetting *setting)
   }
 }
 
+void CGUIDialogLAVVideo::HideUnused()
+{
+  if (!m_allowchange)
+    return;
+
+  m_allowchange = false;
+
+  bool bValue;
+
+  CSetting *setting;
+
+  // HIDE / SHOW
+
+  // HWDEINT
+  setting = m_settingsManager->GetSetting(LAVVIDEO_HWDEINTMODE);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(LAVVIDEO_HWDEINTOUT, bValue);
+  SetVisible(LAVVIDEO_HWDEINTHQ, bValue);
+
+  // SWDEINT
+  setting = m_settingsManager->GetSetting(LAVVIDEO_SWDEINTMODE);
+  bValue = static_cast<const CSettingBool*>(setting)->GetValue();
+  SetVisible(LAVVIDEO_SWDEINTOUT, bValue);
+
+  m_allowchange = true;
+}
+
+void CGUIDialogLAVVideo::SetVisible(CStdString id, bool visible)
+{
+  CSetting *setting = m_settingsManager->GetSetting(id);
+  if (setting->IsEnabled() && visible)
+    return;
+
+  setting->SetVisible(true);
+  setting->SetEnabled(visible);
+}
 
