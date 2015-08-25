@@ -786,7 +786,7 @@ string SortUtils::RemoveArticles(const string &label)
   std::set<std::string> sortTokens = g_langInfo.GetSortTokens();
   for (std::set<std::string>::const_iterator token = sortTokens.begin(); token != sortTokens.end(); ++token)
   {
-    if (token->size() < label.size() && StringUtils::StartsWith(label, *token))
+    if (token->size() < label.size() && StringUtils::StartsWithNoCase(label, *token))
       return label.substr(token->size());
   }
 
