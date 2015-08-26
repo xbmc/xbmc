@@ -30,12 +30,9 @@ TextureDX::TextureDX(ID3D11Texture2D* pTexture)
 
 TextureDX::~TextureDX()
 {
-  if (m_texture)
-    m_texture->Release();
-  if (m_renderTarget)
-    m_renderTarget->Release();
-  if (m_shaderView)
-    m_shaderView->Release();
+  SAFE_RELEASE( m_shaderView );
+  SAFE_RELEASE( m_renderTarget );
+  SAFE_RELEASE( m_texture );
 }
 
 ID3D11RenderTargetView* TextureDX::GetRenderTarget()

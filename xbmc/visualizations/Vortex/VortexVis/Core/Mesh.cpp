@@ -29,11 +29,7 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
-	if ( m_pMesh )
-	{
-		m_pMesh->Release();
-		m_pMesh = NULL;
-	}
+  SAFE_RELEASE( m_pMesh );
 }
 
 //--------------------
@@ -53,10 +49,6 @@ void Mesh::Release()
 
 void Mesh::CreateTextMesh( std::string& InString, bool bCentered )
 {
-	if ( m_pMesh )
-	{
-		m_pMesh->Release();
-	}
-
-	m_pMesh = Renderer::CreateD3DXTextMesh( InString.c_str(), bCentered );
+  SAFE_RELEASE(m_pMesh);
+  m_pMesh = Renderer::CreateD3DXTextMesh(InString.c_str(), bCentered);
 }

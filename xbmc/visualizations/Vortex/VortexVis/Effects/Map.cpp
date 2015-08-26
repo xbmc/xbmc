@@ -123,10 +123,10 @@ Map::~Map()
     Renderer::GetContext()->Unmap(m_vBuffer, 0);
 		m_vertices = NULL;
 	}
-	m_vBuffer->Release();
-	m_iBuffer->Release();
-	m_tex1->Release();
-	m_tex2->Release();
+  SAFE_RELEASE(m_vBuffer);
+  SAFE_RELEASE(m_iBuffer);
+  SAFE_RELEASE(m_tex1);
+  SAFE_RELEASE(m_tex2);
 }
 
 __inline float MapCol( float a )
