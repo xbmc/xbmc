@@ -28,14 +28,18 @@
 #include "utils/SysfsUtils.h"
 #include "utils/AMLUtils.h"
 
+bool CEGLNativeTypeAmlAndroid::m_isWritable = false;
+
 bool CEGLNativeTypeAmlAndroid::CheckCompatibility()
 {
   if (aml_present())
   {
+    m_isWritable = false;
     if (SysfsUtils::HasRW("/sys/class/display/mode"))
-      return true;
+      m_isWritable = true;
     else
-      CLog::Log(LOGERROR, "AMLEGL: no rw on /sys/class/display/mode");
+      CLog::Log(LOGINFO, "AMLEGL: no rw on /sys/class/display/mode");
+    return true;
   }
   return false;
 }
@@ -62,6 +66,9 @@ bool CEGLNativeTypeAmlAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
 {
+  if (!m_isWritable)
+    return false;
+
   switch((int)(res.fRefreshRate*10))
   {
     default:
