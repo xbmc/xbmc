@@ -43,9 +43,9 @@
 #include "input/windows/IRServerSuite.h"
 #endif
 
-#if SDL_VERSION == 1
+#if HAVE_SDL_VERSION == 1
 #include <SDL/SDL.h>
-#elif SDL_VERSION == 2
+#elif HAVE_SDL_VERSION == 2
 #include <SDL2/SDL.h>
 #endif
 
