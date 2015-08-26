@@ -243,6 +243,16 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     m_height = m_pCodecContext->height;
     m_width  = m_pCodecContext->width;
 
+    // ETSI EN 300 743 V1.3.1
+    // 5.3.1
+    // Absence of a DDS in a stream implies that the stream is coded in accordance with EN 300 743 (V1.2.1) [5] and that a
+    // display width of 720 pixels and a display height of 576 lines may be assumed.
+    if (!m_height && !m_width)
+    {
+      m_width = 720;
+      m_height = 576;
+    }
+
     RENDER_STEREO_MODE render_stereo_mode = g_graphicsContext.GetStereoMode();
     if (render_stereo_mode != RENDER_STEREO_MODE_OFF)
     {
