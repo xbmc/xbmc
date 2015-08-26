@@ -1179,7 +1179,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     {
       control = new CGUIFadeLabelControl(
         parentID, id, posX, posY, width, height,
-        labelInfo, scrollOut, timeToPauseAtEnd, resetOnLabelChange);
+        labelInfo, scrollOut, timeToPauseAtEnd, resetOnLabelChange, randomized);
 
       ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
 
