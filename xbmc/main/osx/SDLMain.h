@@ -13,6 +13,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface XBMCDelegate : NSObject
+@interface XBMCDelegate : NSObject<NSApplicationDelegate>
 @end
 #endif
