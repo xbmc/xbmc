@@ -209,7 +209,7 @@ void CGUIDialogLAVAudio::InitializeSettings()
   CGraphFilters::Get()->GetLavSettings(LAVAUDIO, pBF);
 
   StaticIntegerSettingOptions entries;
-  CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+  CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
   // BUTTON
   AddButton(groupProperty, LAVAUDIO_PROPERTYPAGE, 80013, 0);
@@ -272,7 +272,7 @@ void CGUIDialogLAVAudio::OnSettingChanged(const CSetting *setting)
   if (setting == NULL)
     return;
 
-  CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+  CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
   const std::string &settingId = setting->GetId();

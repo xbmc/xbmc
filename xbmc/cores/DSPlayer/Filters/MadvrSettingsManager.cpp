@@ -539,7 +539,7 @@ void CMadvrSettingsManager::RestoreSettings()
 
 void CMadvrSettingsManager::LoadSettings(MADVR_LOAD_TYPE type)
 {
-  if (CSettings::GetInstance().GetInt("dsplayer.madvrsettingswithkodi") != KODIGUI_LOAD_MADVR)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_MADVR)
     return;
 
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();

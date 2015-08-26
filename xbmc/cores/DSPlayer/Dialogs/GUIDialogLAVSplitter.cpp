@@ -180,7 +180,7 @@ void CGUIDialogLAVSplitter::InitializeSettings()
   CGraphFilters::Get()->GetLavSettings(LAVSPLITTER, pBF);
 
   StaticIntegerSettingOptions entries;
-  CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+  CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
   // BUTTON
   AddButton(groupProperty, LAVSPLITTER_PROPERTYPAGE, 80013, 0);
@@ -227,7 +227,7 @@ void CGUIDialogLAVSplitter::OnSettingChanged(const CSetting *setting)
   if (setting == NULL)
     return;
 
-  CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+  CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
   const std::string &settingId = setting->GetId();

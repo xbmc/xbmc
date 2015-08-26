@@ -54,7 +54,7 @@ CDSSettings::CDSSettings(void)
 void CDSSettings::Initialize()
 {
   CStdString videoRender;
-  videoRender = CSettings::GetInstance().GetString("dsplayer.videorenderer");
+  videoRender = CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER);
 
   if (videoRender == "EVR")
   {

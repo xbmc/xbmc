@@ -433,6 +433,9 @@ const std::string CSettings::SETTING_DSPLAYER_BDAUTOLOADINDEX = "dsplayer.bdauto
 const std::string CSettings::SETTING_DSPLAYER_SHOWSPLITTERDETAIL = "dsplayer.showsplitterdetail";
 const std::string CSettings::SETTING_DSPLAYER_VIDEOSUBSEX = "dsplayer.videosubsexpandedselector";
 const std::string CSettings::SETTING_DSPLAYER_VIDEOAUDIOEX = "dsplayer.videoaudioexpandedselector";
+const std::string CSettings::SETTING_DSPLAYER_VIDEORENDERER = "dsplayer.videorenderer";
+const std::string CSettings::SETTING_DSPLAYER_AUDIORENDERER = "dsplayer.audiorenderer ";
+const std::string CSettings::SETTING_DSPLAYER_FILTERSMANAGEMENT = "dsplayer.filtersmanagement ";
 #endif
 
 //todo dsplayer

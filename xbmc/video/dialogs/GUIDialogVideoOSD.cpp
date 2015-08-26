@@ -111,18 +111,20 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
       if (pDialog && pDialog->IsDialogRunning()) 
         pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MADVR);
+      if (pDialog && pDialog->IsDialogRunning())
+        pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVVIDEO);
       if (pDialog && pDialog->IsDialogRunning()) 
         pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVAUDIO);
+      if (pDialog && pDialog->IsDialogRunning()) 
+        pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVSPLITTER);
+      if (pDialog && pDialog->IsDialogRunning()) 
+        pDialog->Close(true);
+      break;
 #endif
     }
-    pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVVIDEO);
-    if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
-    pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVAUDIO);
-    if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
-    pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_LAVSPLITTER);
-    if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
-    break;
-
   }
   return CGUIDialog::OnMessage(message);
 }

@@ -82,7 +82,7 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
 {
   m_HasVideo = false;
   m_HasAudio = false;
-  m_isMadvr = (CSettings::GetInstance().GetString("dsplayer.videorenderer") == "madVR");
+  m_isMadvr = (CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER) == "madVR");
   if (m_isMadvr)
   { 
     if (InitMadvrWindow(m_hWnd))

@@ -49,7 +49,7 @@ CGraphFilters::~CGraphFilters()
 {
   if (m_isKodiRealFS)
   {
-    CSettings::Get().SetBool("videoscreen.fakefullscreen", false);
+    CSettings::GetInstance().SetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN, false);
     m_isKodiRealFS = false;
   }
 
@@ -216,7 +216,7 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
   {
     Com::SmartQIPtr<ILAVVideoSettings> pLAVFSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
     if (!pLAVFSettings)
       return false;
@@ -246,7 +246,7 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
   {
     Com::SmartQIPtr<ILAVAudioSettings> pLAVFSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
     if (!pLAVFSettings)
       return false;
@@ -279,7 +279,7 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
   {
     Com::SmartQIPtr<ILAVFSettings> pLAVFSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
     if (!pLAVFSettings)
       return false;
@@ -331,7 +331,7 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
   {
     Com::SmartQIPtr<ILAVVideoSettings> pLAVFSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
     if (!pLAVFSettings)
       return false;
@@ -361,7 +361,7 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
   {
     Com::SmartQIPtr<ILAVAudioSettings> pLAVFSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
     if (!pLAVFSettings)
       return false;
@@ -398,7 +398,7 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
   {
     Com::SmartQIPtr<ILAVFSettings> pLAVFSettings = pBF;
 
-    CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+    CLavSettings &LavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
     if (!pLAVFSettings)
       return false;
@@ -427,7 +427,7 @@ bool CGraphFilters::SaveLavSettings(LAVFILTERS_TYPE type)
   if (type != LAVVIDEO && type != LAVAUDIO && type != LAVSPLITTER)
     return false;
 
-  CLavSettings &lavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+  CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
 
   CDSPlayerDatabase dsdbs;
   if (dsdbs.Open())
@@ -449,7 +449,7 @@ bool CGraphFilters::LoadLavSettings(LAVFILTERS_TYPE type)
   if (type != LAVVIDEO && type != LAVAUDIO && type != LAVSPLITTER)
     return false;
 
-  CLavSettings &lavSettings = CMediaSettings::Get().GetCurrentLavSettings();
+  CLavSettings &lavSettings = CMediaSettings::GetInstance().GetCurrentLavSettings();
   bool result = false;
   CDSPlayerDatabase dsdbs;
   if (dsdbs.Open())

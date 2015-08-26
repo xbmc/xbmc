@@ -304,7 +304,7 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
   END_PERFORMANCE_COUNTER("Loaded audio renderer list");
 
   //see if there a config first 
-  const CStdString renderer = CSettings::GetInstance().GetString("dsplayer.audiorenderer");
+  const CStdString renderer = CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_AUDIORENDERER);
   for (std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin(); !renderer.empty() && (iter != deviceList.end()); ++iter)
   {
     DSFilterInfo dev = *iter;
@@ -346,7 +346,7 @@ HRESULT CFGLoader::InsertVideoRenderer()
   HRESULT hr = S_OK;
 
   CStdString videoRender;
-  videoRender = CSettings::GetInstance().GetString("dsplayer.videorenderer");
+  videoRender = CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_VIDEORENDERER);
 
   if (videoRender == "EVR")
   { 
@@ -592,7 +592,7 @@ HRESULT CFGLoader::LoadConfig()
   }
   // Two steps
 
-  if (CSettings::GetInstance().GetInt("dsplayer.filtersmanagement") == MEDIARULES)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_FILTERSMANAGEMENT) == MEDIARULES)
   {
     // First, filters
     LoadFilterCoreFactorySettings(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/filtersconfig.xml"), FILTERS, true);
@@ -602,7 +602,7 @@ HRESULT CFGLoader::LoadConfig()
     LoadFilterCoreFactorySettings(CProfilesManager::GetInstance().GetUserDataItem("dsplayer/mediasconfig.xml"), MEDIAS, false);
     LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/mediasconfig.xml", MEDIAS, false);
   }
-  if (CSettings::GetInstance().GetInt("dsplayer.filtersmanagement") == INTERNALFILTERS)
+  if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_FILTERSMANAGEMENT) == INTERNALFILTERS)
   {
     LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/filtersconfig_internal.xml", FILTERS, true);
     LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/mediasconfig_internal.xml", MEDIAS, false);
