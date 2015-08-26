@@ -721,7 +721,8 @@ case $host in
      USE_STATIC_FFMPEG=1
      ;;
   *)
-     AC_MSG_ERROR(unsupported host ($host))
+    ARCH=$host_cpu"-"$host_os
+    AC_MSG_WARN([unsupported host ($host), guessing ARCH as $ARCH.])
 esac
 AC_SUBST([ARCH])
 
