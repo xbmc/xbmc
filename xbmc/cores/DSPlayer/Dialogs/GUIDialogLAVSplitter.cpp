@@ -218,7 +218,8 @@ void CGUIDialogLAVSplitter::InitializeSettings()
   AddToggle(groupDemuxer, LAVSPLITTER_IMPAIREDAUDIO, 82015, 0, LavSettings.splitter_bImpairedAudio);
 
   // BUTTON RESET
-  AddButton(groupReset, LAVSPLITTER_RESET, 10041, 0);
+  if (!g_application.m_pPlayer->IsPlayingVideo())
+    AddButton(groupReset, LAVSPLITTER_RESET, 10041, 0);
 }
 
 void CGUIDialogLAVSplitter::OnSettingChanged(const CSetting *setting)

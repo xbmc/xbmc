@@ -263,7 +263,8 @@ void CGUIDialogLAVAudio::InitializeSettings()
   AddList(groupEncoding, LAVAUDIO_MIXINGMODE, 81027, 0, LavSettings.audio_dwMixingMode, entries, 81027);
 
   // BUTTON RESET
-  AddButton(groupReset, LAVAUDIO_RESET, 10041, 0);
+  if (!g_application.m_pPlayer->IsPlayingVideo())
+    AddButton(groupReset, LAVAUDIO_RESET, 10041, 0);
 }
 
 void CGUIDialogLAVAudio::OnSettingChanged(const CSetting *setting)

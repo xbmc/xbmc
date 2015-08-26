@@ -239,7 +239,8 @@ void CGUIDialogLAVVideo::InitializeSettings()
   AddList(groupDeintSW, LAVVIDEO_SWDEINTOUT, 80007, 0, LavSettings.video_dwSWDeintOutput, entries, 80007);
 
   // BUTTON RESET
-  AddButton(groupReset, LAVVIDEO_RESET, 10041, 0);
+  if (!g_application.m_pPlayer->IsPlayingVideo())
+    AddButton(groupReset, LAVVIDEO_RESET, 10041, 0);
 }
 
 void CGUIDialogLAVVideo::OnSettingChanged(const CSetting *setting)
