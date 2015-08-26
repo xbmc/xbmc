@@ -174,6 +174,11 @@ void CGUIDialogLAVSplitter::InitializeSettings()
     return;
   }
 
+  // Get settings from the current running filter
+  IBaseFilter *pBF;
+  CGraphFilters::Get()->GetCurrentFilter(LAVSPLITTER, &pBF);
+  CGraphFilters::Get()->GetLavSettings(LAVSPLITTER, pBF);
+
   StaticIntegerSettingOptions entries;
   CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
 
@@ -259,7 +264,14 @@ void CGUIDialogLAVSplitter::OnSettingChanged(const CSetting *setting)
   if (settingId == LAVSPLITTER_IMPAIREDAUDIO)
     LavSettings.splitter_bImpairedAudio = static_cast<BOOL>(static_cast<const CSettingBool*>(setting)->GetValue());
 
-  CGraphFilters::Get()->SaveLavSettings(LAVSPLITTER);
+  // Get current running filter
+  IBaseFilter *pBF;
+  CGraphFilters::Get()->GetCurrentFilter(LAVSPLITTER, &pBF);
+
+  // Set settings changes into the running rilter
+  CGraphFilters::Get()->SetLavSettings(LAVSPLITTER, pBF);
+
+  // Save new settings into DSPlayer DB
   CGraphFilters::Get()->SaveLavSettings(LAVSPLITTER);
 }
 

@@ -203,6 +203,11 @@ void CGUIDialogLAVAudio::InitializeSettings()
     return;
   }
 
+  // Get settings from the current running filter
+  IBaseFilter *pBF;
+  CGraphFilters::Get()->GetCurrentFilter(LAVAUDIO, &pBF);
+  CGraphFilters::Get()->GetLavSettings(LAVAUDIO, pBF);
+
   StaticIntegerSettingOptions entries;
   CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
 
@@ -320,7 +325,14 @@ void CGUIDialogLAVAudio::OnSettingChanged(const CSetting *setting)
 
   HideUnused();
 
-  CGraphFilters::Get()->SaveLavSettings(LAVAUDIO);
+  // Get current running filter
+  IBaseFilter *pBF;
+  CGraphFilters::Get()->GetCurrentFilter(LAVAUDIO, &pBF);
+
+  // Set settings changes into the running rilter
+  CGraphFilters::Get()->SetLavSettings(LAVAUDIO, pBF);
+
+  // Save new settings into DSPlayer DB
   CGraphFilters::Get()->SaveLavSettings(LAVAUDIO);
 }
 

@@ -171,6 +171,11 @@ void CGUIDialogLAVVideo::InitializeSettings()
     return;
   }
 
+  // Get settings from the current running filter
+  IBaseFilter *pBF;
+  CGraphFilters::Get()->GetCurrentFilter(LAVVIDEO, &pBF);
+  CGraphFilters::Get()->GetLavSettings(LAVVIDEO, pBF);
+
   StaticIntegerSettingOptions entries;
   CLavSettings &LavSettings = CMediaSettings::Get().GetCurrentLavSettings();
 
@@ -276,7 +281,14 @@ void CGUIDialogLAVVideo::OnSettingChanged(const CSetting *setting)
 
   HideUnused();
 
-  CGraphFilters::Get()->SaveLavSettings(LAVVIDEO);
+  // Get current running filter
+  IBaseFilter *pBF;
+  CGraphFilters::Get()->GetCurrentFilter(LAVVIDEO, &pBF);
+
+  // Set settings changes into the running rilter
+  CGraphFilters::Get()->SetLavSettings(LAVVIDEO, pBF);
+
+  // Save new settings into DSPlayer DB
   CGraphFilters::Get()->SaveLavSettings(LAVVIDEO);
 }
 

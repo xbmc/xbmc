@@ -52,6 +52,23 @@ CGraphFilters::~CGraphFilters()
     CSettings::Get().SetBool("videoscreen.fakefullscreen", false);
     m_isKodiRealFS = false;
   }
+
+  // Store into DSPlayer DB changes made for internal lavfilters directly from the trayicon
+  if (Video.pBF && Video.internalLav)
+  {
+    GetLavSettings(LAVVIDEO, Video.pBF);
+    SaveLavSettings(LAVVIDEO);
+  }
+  if (Audio.pBF && Audio.internalLav)
+  {
+    GetLavSettings(LAVAUDIO, Audio.pBF);
+    SaveLavSettings(LAVAUDIO);
+  }
+  if (Splitter.pBF && Splitter.internalLav)
+  {
+    GetLavSettings(LAVSPLITTER, Splitter.pBF);
+    SaveLavSettings(LAVSPLITTER);
+  }
 }
 
 CGraphFilters* CGraphFilters::Get()
@@ -59,25 +76,111 @@ CGraphFilters* CGraphFilters::Get()
   return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CGraphFilters());
 }
 
+void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPage)
+{
+  m_pBF = NULL;
+
+  // If there is a playback don't recreate the filter to show the GUI/Property page
+  GetCurrentFilter(type, &m_pBF);
+
+  if (m_pBF == NULL)
+    CreateInternalFilter(type, &m_pBF);
+
+  if (showPropertyPage)
+  {
+    CDSPropertyPage *pDSPropertyPage = DNew CDSPropertyPage(m_pBF, type);
+    pDSPropertyPage->Initialize();
+  }
+  else
+  {
+    if (type == LAVVIDEO)
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVVIDEO);
+    if (type == LAVAUDIO)
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVAUDIO);
+    if (type == LAVSPLITTER)
+      g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVSPLITTER);
+  }
+}
+
+void CGraphFilters::GetCurrentFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF)
+{
+  if (type == LAVVIDEO && Video.pBF && Video.internalLav)
+    m_pBF = Video.pBF;
+
+  if (type == LAVAUDIO && Audio.pBF && Audio.internalLav)
+    m_pBF = Audio.pBF;
+
+  if (type == LAVSPLITTER && Splitter.pBF && Splitter.internalLav)
+    m_pBF = Splitter.pBF;
+
+  *ppBF = m_pBF;
+}
+
+void CGraphFilters::CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF)
+{
+  std::string filterName;
+  if (type == LAVVIDEO)
+    filterName = "lavvideo_internal";
+  if (type == LAVAUDIO)
+    filterName = "lavaudio_internal";
+  if (type == LAVSPLITTER)
+    filterName = "lavsplitter_internal";
+  if (type == XYSUBFILTER)
+    IsRegisteredXYSubFilter() ? filterName = "xysubfilter" : filterName = "xysubfilter_internal";
+
+  CFGLoader *pLoader = new CFGLoader();
+  pLoader->LoadConfig();
+
+  CFGFilter *pFilter = NULL;
+  if (!(pFilter = CFilterCoreFactory::GetFilterFromName(filterName)))
+    return;
+
+  pFilter->Create(ppBF);
+
+  // Init LavFilters settings
+  SetupLavSettings(type, *ppBF);
+}
+
 bool CGraphFilters::IsInternalFilter(IBaseFilter *pBF)
 {
-  if (CGraphFilters::Get()->Splitter.pBF == pBF && CGraphFilters::Get()->Splitter.internalLav)
-  {
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVSPLITTER);
-    return true;
-  }
-  if (CGraphFilters::Get()->Video.pBF == pBF && CGraphFilters::Get()->Video.internalLav)
+  if (Video.pBF == pBF && Video.internalLav)
   {
     g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVVIDEO);
     return true;
   }
-  if (CGraphFilters::Get()->Audio.pBF == pBF && CGraphFilters::Get()->Audio.internalLav)
+  if (Audio.pBF == pBF && Audio.internalLav)
   {
     g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVAUDIO);
     return true;
   }
-
+  if (Splitter.pBF == pBF && Splitter.internalLav)
+  {
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVSPLITTER);
+    return true;
+  }
   return false;
+}
+
+void CGraphFilters::SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
+{
+  if (type != LAVVIDEO && type != LAVAUDIO && type != LAVSPLITTER)
+    return;
+
+  // Set LavFilters in RunTimeConfig to have personal settings only for DSPlayer
+  // this will reset LavFilters to default settings
+  SetLavInternal(type, pBF);
+
+  // Use LavFilters settings stored in DSPlayer DB if they are present
+  if (LoadLavSettings(type))
+  {
+    SetLavSettings(type, pBF);
+  }
+  else
+  {    
+    // If DSPlayer DB it's empty load default LavFilters settings and then save into DB
+    GetLavSettings(type, pBF);
+    SaveLavSettings(type);  
+  }
 }
 
 bool CGraphFilters::SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF)
@@ -102,85 +205,6 @@ bool CGraphFilters::SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF)
   }
 
   return true;
-}
-
-void CGraphFilters::SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
-{
-  if (type != LAVVIDEO && type != LAVAUDIO && type != LAVSPLITTER)
-    return;
-
-  SetLavInternal(type, pBF);
-
-  if (!LoadLavSettings(type))
-  {
-    GetLavSettings(type, pBF);
-    SaveLavSettings(type);
-  }
-  else
-  {
-    SetLavSettings(type, pBF);
-  }
-}
-
-bool CGraphFilters::IsRegisteredXYSubFilter()
-{
-  CDSFilterEnumerator p_dsfilter;
-  std::vector<DSFiltersInfo> dsfilterList;
-  p_dsfilter.GetDSFilters(dsfilterList);
-  std::vector<DSFiltersInfo>::const_iterator iter = dsfilterList.begin();
-
-  for (int i = 1; iter != dsfilterList.end(); i++)
-  {
-    DSFiltersInfo dev = *iter;
-    if (dev.lpstrName == "XySubFilter")
-    {
-      return true;
-      break;
-    }
-    ++iter;
-  }
-  return false;
-}
-
-void CGraphFilters::ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPage)
-{
-  std::string filterName;
-  if (type == LAVVIDEO)
-    filterName = "lavvideo_internal";
-  if (type == LAVAUDIO)
-    filterName = "lavaudio_internal";
-  if (type == LAVSPLITTER)
-    filterName = "lavsplitter_internal";
-  if (type == XYSUBFILTER)
-    IsRegisteredXYSubFilter() ? filterName = "xysubfilter" : filterName = "xysubfilter_internal";
-
-  CFGLoader *pLoader = new CFGLoader();
-  pLoader->LoadConfig();
-
-  CFGFilter *pFilter = NULL;
-  if (!(pFilter = CFilterCoreFactory::GetFilterFromName(filterName)))
-    return;
-
-  IBaseFilter* pBF;
-  pFilter->Create(&pBF);
-  SetupLavSettings(type, pBF);
-
-  if (showPropertyPage)
-  {
-    CDSPropertyPage *pDSPropertyPage = DNew CDSPropertyPage(pBF, type);
-    pDSPropertyPage->Initialize();
-  }
-  else
-  {
-    if (type == LAVVIDEO)
-      g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVVIDEO);
-    if (type == LAVAUDIO)
-      g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVAUDIO);
-    if (type == LAVSPLITTER)
-      g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVSPLITTER);
-  }
-
-  SAFE_DELETE(pLoader);
 }
 
 bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
@@ -459,6 +483,26 @@ void CGraphFilters::EraseLavSetting(LAVFILTERS_TYPE type)
 
     dsdbs.Close();
   }
+}
+
+bool CGraphFilters::IsRegisteredXYSubFilter()
+{
+  CDSFilterEnumerator p_dsfilter;
+  std::vector<DSFiltersInfo> dsfilterList;
+  p_dsfilter.GetDSFilters(dsfilterList);
+  std::vector<DSFiltersInfo>::const_iterator iter = dsfilterList.begin();
+
+  for (int i = 1; iter != dsfilterList.end(); i++)
+  {
+    DSFiltersInfo dev = *iter;
+    if (dev.lpstrName == "XySubFilter")
+    {
+      return true;
+      break;
+    }
+    ++iter;
+  }
+  return false;
 }
 
 #endif

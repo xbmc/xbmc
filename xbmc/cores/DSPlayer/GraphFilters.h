@@ -189,19 +189,23 @@ public:
   void SetIsDVD(bool val) { m_isDVD = val; }
   void SetCurrentRenderer(DIRECTSHOW_RENDERER renderer) { m_CurrentRenderer = renderer; }
 
-  bool HasSubFilter() { return m_hsubfilter; }
-  void SetHasSubFilter(bool b) { m_hsubfilter = b; }
-  void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
+  // Internal Filters
   void ShowLavFiltersPage(LAVFILTERS_TYPE type, bool showPropertyPage);
+  void CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF);
+  void GetCurrentFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF);
+  bool IsInternalFilter(IBaseFilter *pBF);
   void SetupLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool SetLavInternal(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
   bool SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter *pBF);
-  bool LoadLavSettings(LAVFILTERS_TYPE type );
-  bool SaveLavSettings(LAVFILTERS_TYPE type );
+  bool LoadLavSettings(LAVFILTERS_TYPE type);
+  bool SaveLavSettings(LAVFILTERS_TYPE type);
   void EraseLavSetting(LAVFILTERS_TYPE type);
-  bool IsInternalFilter(IBaseFilter *pBF);
   bool IsRegisteredXYSubFilter();
+
+  bool HasSubFilter() { return m_hsubfilter; }
+  void SetHasSubFilter(bool b) { m_hsubfilter = b; }
+  void SetKodiRealFS(bool b) { m_isKodiRealFS = b; }
   bool UsingMediaPortalTsReader() 
   { 
     return ((Splitter.guid != GUID_NULL) && !(StringFromGUID(Splitter.guid).compare(L"{B9559486-E1BB-45D3-A2A2-9A7AFE49B23F}"))); 
@@ -217,5 +221,6 @@ private:
   bool m_hsubfilter;
   bool m_isDVD;
   bool m_UsingDXVADecoder;
+  Com::SmartPtr<IBaseFilter> m_pBF;
   DIRECTSHOW_RENDERER m_CurrentRenderer;
 };
