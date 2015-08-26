@@ -32,8 +32,14 @@ public:
 
   ~XMMatrixStack()
   {
+    Reset();
+  }
+
+  void Reset()
+  {
     while (!m_stack.empty())
       m_stack.pop();
+    LoadIdentity();
   }
 
   XMMATRIX* GetTop()
@@ -43,16 +49,18 @@ public:
 
   void Pop()
   {
-    if (!m_stack.empty())
-    {
-      m_current = m_stack.top();
-      m_stack.pop();
-    }
+    if (m_stack.empty())
+      return;
+
+    m_current = XMLoadFloat4x4(&m_stack.top());
+    m_stack.pop();
   }
 
   void Push()
   {
-    m_stack.push(m_current);
+    XMFLOAT4X4 tmp;
+    XMStoreFloat4x4(&tmp, m_current);
+    m_stack.push(tmp);
   }
 
   void MultMatrix(const XMMATRIX* pMat)
@@ -82,7 +90,7 @@ public:
 
   void* operator new(size_t i)
   {
-    return _aligned_malloc(i, 16);
+    return _aligned_malloc(i, __alignof(XMMATRIX));
   }
 
   void operator delete(void* p)
@@ -92,7 +100,7 @@ public:
 
 private:
   XMMATRIX m_current;
-  std::stack<XMMATRIX> m_stack;
+  std::stack<XMFLOAT4X4> m_stack;
 
 }; // class XMMatrixStack
 

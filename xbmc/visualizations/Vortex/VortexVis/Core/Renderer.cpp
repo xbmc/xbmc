@@ -101,7 +101,7 @@ namespace
 	float g_tex0V;
 	XMFLOAT4 g_fColour;
   XMVECTOR g_normal;
-	XMMatrixStack* g_matrixStack = NULL;
+	XMMatrixStack g_matrixStack;
 	int g_matrixStackLevel;
 	bool g_envMapSet;
 	bool g_textureSet;
@@ -159,7 +159,7 @@ void Renderer::Init( ID3D11DeviceContext* pD3DContext, int iXPos, int iYPos, int
 		m_pTextureFont = LoadTexture( fullname, false );
 	}
 
-  g_matrixStack = new XMMatrixStack();
+  g_matrixStack.Reset();
   g_matrixStackLevel = 0;
 
 	g_scratchTexture = CreateTexture( 512, 512 );
@@ -787,7 +787,7 @@ void Renderer::LookAt(float eyeX, float eyeY, float eyeZ, float centerX, float c
   XMVECTOR center = XMVectorSet(centerX, centerY, centerZ, 1.0f);
   XMVECTOR up = XMVectorSet(upX, upY, upZ*2, 1.0f);
   XMMATRIX matOut = XMMatrixLookAtLH(eye, center, up);
-  g_matrixStack->MultMatrix(&matOut);
+  g_matrixStack.MultMatrix(&matOut);
 
 } // LookAt
 
@@ -799,10 +799,10 @@ void Renderer::SetDefaults()
 {
 	for (;g_matrixStackLevel > 0; g_matrixStackLevel--)
 	{
-		g_matrixStack->Pop();
+		g_matrixStack.Pop();
 	}
 
-	g_matrixStack->LoadIdentity();
+	g_matrixStack.LoadIdentity();
 
   // Renderstates
   m_pD3D11Contex->RSSetState(states->CullNone());
@@ -858,7 +858,7 @@ void Renderer::SetView(const XMMATRIX& matView)
 //-----------------------------------------------------------------------------
 void Renderer::Translate(float x, float y, float z)
 {
-	g_matrixStack->TranslateLocal(x, y, z);
+	g_matrixStack.TranslateLocal(x, y, z);
 
 } // Translate
 
@@ -867,7 +867,7 @@ void Renderer::Translate(float x, float y, float z)
 //-----------------------------------------------------------------------------
 void Renderer::Scale(float x, float y, float z)
 {
-	g_matrixStack->ScaleLocal(x, y, z);
+	g_matrixStack.ScaleLocal(x, y, z);
 
 } // Scale
 
@@ -877,7 +877,7 @@ void Renderer::Scale(float x, float y, float z)
 void Renderer::CommitTransforms( Shader* pShader )
 {
 	XMMATRIX worldView, worldViewProjection;
-	XMMATRIX worldMat = *(g_matrixStack->GetTop());
+	XMMATRIX worldMat = *(g_matrixStack.GetTop());
 
   worldView = XMMatrixMultiply(worldMat, g_matView);
   worldViewProjection = XMMatrixMultiply(worldMat, g_matProj);
@@ -1110,7 +1110,7 @@ void Renderer::Vertex( float x, float y, float z )
 void Renderer::RotateAxis( float angle, float x, float y, float z )
 {
   XMVECTOR axis = XMVectorSet( x, y, z, 1.0f );
-  g_matrixStack->RotateAxisLocal(&axis, XMConvertToRadians(angle));
+  g_matrixStack.RotateAxisLocal(&axis, XMConvertToRadians(angle));
 
 } // RotateAxis
 
@@ -1360,7 +1360,7 @@ void Renderer::CompileShaders()
 //-----------------------------------------------------------------------------
 void Renderer::PushMatrix()
 {
-	g_matrixStack->Push();
+	g_matrixStack.Push();
 } // PushMatrix
 
 //-- PopMatrix ----------------------------------------------------------------
@@ -1368,7 +1368,7 @@ void Renderer::PushMatrix()
 //-----------------------------------------------------------------------------
 void Renderer::PopMatrix()
 {
-	g_matrixStack->Pop();
+	g_matrixStack.Pop();
 
 } // PopMatrix
 
@@ -1518,7 +1518,7 @@ float Renderer::GetAspect()
 //-----------------------------------------------------------------------------
 void Renderer::SetIdentity()
 {
-	g_matrixStack->LoadIdentity();
+	g_matrixStack.LoadIdentity();
 
 } // SetIdentity
 
