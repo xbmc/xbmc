@@ -173,7 +173,7 @@ ssize_t CXbtFile::Read(void* lpBuf, size_t uiBufSize)
     return 0;
 
   // we can't read more than is left
-  if (uiBufSize > GetLength() - m_positionTotal)
+  if (static_cast<int64_t>(uiBufSize) > GetLength() - m_positionTotal)
     uiBufSize = static_cast<ssize_t>(GetLength() - m_positionTotal);
 
   // we can't read more than we can signal with the return value
