@@ -375,7 +375,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const CSetting *setting)
     CStdStringW strNameW;
 
     //todo jarvis
-    g_charsetConverter.utf8ToW(pDlg->GetSelectedLabelText(), strNameW);z
+    g_charsetConverter.utf8ToW(pDlg->GetSelectedLabelText(), strNameW);
     if (SUCCEEDED(g_dsGraph->pFilterGraph->FindFilterByName(strNameW, &pBF)))
     {
       if (!CGraphFilters::Get()->IsInternalFilter(pBF))
