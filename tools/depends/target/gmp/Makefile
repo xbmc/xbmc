@@ -21,6 +21,9 @@ endif
 ifeq ($(OS),ios)
 CONFIGURE_FLAGS=CC_FOR_BUILD=llvm-gcc CPP_FOR_BUILD="llvm-gcc -E" --disable-assembly
 endif
+ifeq ($(OS),osx)
+CONFIGURE_FLAGS=--with-pic
+endif
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
