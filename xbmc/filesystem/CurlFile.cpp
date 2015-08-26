@@ -940,6 +940,12 @@ void CCurlFile::Reset()
 
 bool CCurlFile::Open(const CURL& url)
 {
+  if (!g_curlInterface.IsLoaded())
+  {
+    CLog::Log(LOGERROR, "CurlFile::Open: curl interface not loaded");
+    return false;
+  }
+
   m_opened = true;
   m_seekable = true;
 

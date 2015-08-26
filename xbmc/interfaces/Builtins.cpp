@@ -1236,9 +1236,9 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "cancelalarm")
   {
-    bool silent = false;
-    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
-      silent = true;
+    bool silent = (params.size() > 1 &&
+        (StringUtils::EqualsNoCase(params[1], "true") ||
+         StringUtils::EqualsNoCase(params[1], "silent")));
     g_alarmClock.Stop(params[0],silent);
   }
   else if (execute == "playdvd")
