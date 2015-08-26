@@ -103,7 +103,8 @@ namespace XBMCAddon
         label,
         true,
         0,
-        true);
+        true,
+        false);
 
       CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
       pGUIControl->OnMessage(msg);
