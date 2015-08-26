@@ -440,7 +440,7 @@ namespace XBMCAddon
      * alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n
      * focusTexture   : [opt] string - filename for focus texture.\n
      * noFocusTexture : [opt] string - filename for no focus texture.\n
-     * isPassword     : [opt] bool - if true, mask text value.
+     * isPassword     : [opt] bool - True=mask text value with ****.
      * 
      * *Note, You can use the above as keywords for arguments and skip certain optional arguments.\n
      *        Once you use a keyword, all following arguments require the keyword.\n
@@ -983,13 +983,14 @@ namespace XBMCAddon
                    const char* colorDiffuse = NULL);
 
       /**
-       * setImage(filename, useCache) -- Changes the image.
+       * setImage(filename[, useCache]) -- Changes the image.
        * 
-       * filename       : string - image filename.
-       * useCache       : [opt] bool - true/use cache, false/don't use cache
+       * filename       : string - image filename.\n
+       * useCache       : [opt] bool - True=use cache (default) / False=don't use cache.
        * 
        * example:
        *   - self.image.setImage('special://home/scripts/test.png')
+       *   - self.image.setImage('special://home/scripts/test.png', False)
        */
       virtual void setImage(const char* imageFilename, const bool useCache = true);
 
