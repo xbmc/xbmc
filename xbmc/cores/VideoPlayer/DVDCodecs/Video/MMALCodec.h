@@ -123,6 +123,8 @@ protected:
   bool SendCodecConfigData();
 
   CDVDStreamInfo    m_hints;
+  float             m_fps;
+  unsigned          m_num_decoded;
   // Components
   MMAL_INTERLACETYPE_T m_interlace_mode;
   EINTERLACEMETHOD  m_interlace_method;

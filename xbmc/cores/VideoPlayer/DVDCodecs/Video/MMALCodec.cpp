@@ -126,6 +126,8 @@ CMMALVideo::CMMALVideo()
   m_es_format = mmal_format_alloc();
   m_preroll = true;
   m_speed = DVD_PLAYSPEED_NORMAL;
+  m_fps = 0.0f;
+  m_num_decoded = 0;
 }
 
 CMMALVideo::~CMMALVideo()
@@ -256,8 +258,15 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
     {
       assert(!(buffer->flags & MMAL_BUFFER_HEADER_FLAG_DECODEONLY));
       CMMALVideoBuffer *omvb = NULL;
-      if (!g_advancedSettings.m_omxDecodeStartWithValidFrame || !(buffer->flags & MMAL_BUFFER_HEADER_FLAG_CORRUPTED))
+      bool wanted = true;
+      // we don't keep up when running at 60fps in the background so switch to half rate
+      if (m_fps > 40.0f && !g_graphicsContext.IsFullScreenVideo() && !(m_num_decoded & 1))
+        wanted = false;
+      if (g_advancedSettings.m_omxDecodeStartWithValidFrame && (buffer->flags & MMAL_BUFFER_HEADER_FLAG_CORRUPTED))
+        wanted = false;
+      if (wanted)
         omvb = new CMMALVideoBuffer(this);
+      m_num_decoded++;
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
         CLog::Log(LOGDEBUG, "%s::%s - %p (%p) buffer_size(%u) dts:%.3f pts:%.3f flags:%x:%x",
           CLASSNAME, __func__, buffer, omvb, buffer->length, buffer->dts*1e-6, buffer->pts*1e-6, buffer->flags, buffer->type->video.flags);
@@ -629,7 +638,10 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   {
     m_dec_input->format->es->video.frame_rate.num = hints.fpsrate;
     m_dec_input->format->es->video.frame_rate.den = hints.fpsscale;
+    m_fps = hints.fpsrate / hints.fpsscale;
   }
+  else
+    m_fps = 0.0f;
   m_dec_input->format->flags |= MMAL_ES_FORMAT_FLAG_FRAMED;
 
   status = mmal_port_parameter_set_boolean(m_dec_input, MMAL_PARAMETER_VIDEO_DECODE_ERROR_CONCEALMENT, MMAL_FALSE);
