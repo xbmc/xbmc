@@ -3,7 +3,7 @@
 SET cur_dir=%CD%
 
 SET base_dir=%cur_dir%\..\..
-SET groovy_dir=%base_dir%\lib\groovy
+SET groovy_dir=%base_dir%\tools\codegenerator\groovy
 SET generator_dir=%base_dir%\tools\codegenerator
 SET bin_dir=%cur_dir%\..\BuildDependencies\bin
 SET java_exe=java.exe

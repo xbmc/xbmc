@@ -27,7 +27,7 @@ endif
 endif
 
 GENDIR = $(INTERFACES_DIR)/python/generated
-GROOVY_DIR = $(TOPDIR)/lib/groovy
+GROOVY_DIR = $(TOPDIR)/tools/codegenerator/groovy
 
 GENERATED =  $(GENDIR)/AddonModuleXbmc.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcgui.cpp
