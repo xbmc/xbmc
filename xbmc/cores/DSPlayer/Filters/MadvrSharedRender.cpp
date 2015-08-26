@@ -56,7 +56,6 @@ CMadvrSharedRender::~CMadvrSharedRender()
   SAFE_RELEASE(m_pKodiOverTexture);
 
   SAFE_RELEASE(m_pUnderTexture9);
-  SAFE_RELEASE(m_pUnderSurface11);
   SAFE_RELEASE(m_pUnderTexture11);
   
   SAFE_RELEASE(m_pD3D11Queue);
@@ -250,7 +249,7 @@ HRESULT CMadvrSharedRender::RenderToTexture(MADVR_RENDER_LAYER layer)
       pContext->ClearRenderTargetView(pRenderTargetView, m_fColor);   
       
       m_pUnderTexture11 = pSurface11;
-      m_pUnderSurface11 = pRenderTargetView;    
+      pRenderTargetView->Release();
     }
   }
   else
@@ -270,7 +269,6 @@ void CMadvrSharedRender::Flush()
 
   m_pD3D11Producer->Enqueue(m_pUnderTexture11, &metaData, sizeof(metaData), NULL);
   m_pD3D11Producer->Flush(NULL, NULL);
-  SAFE_RELEASE(m_pUnderSurface11);
   SAFE_RELEASE(m_pUnderTexture11);
 }
 

@@ -73,7 +73,6 @@ private:
 
   IDirect3DTexture9*        m_pUnderTexture9 = nullptr;
   ID3D11Texture2D*          m_pUnderTexture11 = nullptr;
-  ID3D11RenderTargetView*   m_pUnderSurface11 = nullptr;
   
   ISurfaceQueue*            m_pD3D11Queue = nullptr;
   ISurfaceQueue*            m_pD3D9Queue = nullptr;
