@@ -541,9 +541,9 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::STREAMFFMPEGINFO:
           MsgStreamFFmpegInfo *info;
           info = (MsgStreamFFmpegInfo*)msg->data;
-          par->stream->m_profile = info->profile;
-          par->stream->m_matrixEncoding = info->matrix_encoding;
-          par->stream->m_audioServiceType = info->audio_service_type;
+          info->stream->m_profile = info->profile;
+          info->stream->m_matrixEncoding = info->matrix_encoding;
+          info->stream->m_audioServiceType = info->audio_service_type;
           return;
         case CActiveAEControlProtocol::STREAMFADE:
           MsgStreamFade *fade;
