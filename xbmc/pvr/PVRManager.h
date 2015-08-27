@@ -522,6 +522,13 @@ namespace PVR
     bool IsPlayingRecording(void) const;
 
     /*!
+     * @brief Check if a recording in progress is playing.
+     * @return True if it's playing a recording in progress, false otherwise.
+     * This is only determined on playback start.
+     */
+    bool IsPlayingRecordingInProgress(void) const;
+
+    /*!
      * @return True when a channel scan is currently running, false otherwise.
      */
     bool IsRunningChannelScan(void) const;
