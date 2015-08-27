@@ -1336,9 +1336,6 @@ fi
   fi
 fi
 
-XB_FIND_SONAME([OGG],         [ogg])
-XB_FIND_SONAME([VORBIS],      [vorbis])
-XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
 
