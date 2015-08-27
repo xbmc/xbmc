@@ -1,1 +1,1 @@
-pvr.pctv https://github.com/kodi-pvr/pvr.pctv d23160c
+pvr.pctv https://github.com/kodi-pvr/pvr.pctv bca8165
