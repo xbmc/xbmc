@@ -2481,35 +2481,12 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
   
   case TMSG_SHUTDOWN:
-  {
-    switch (CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))
-    {
-    case POWERSTATE_SHUTDOWN:
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_POWERDOWN);
-      break;
+    HandleShutdownMessage();
+    break;
 
-    case POWERSTATE_SUSPEND:
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
-      break;
-
-    case POWERSTATE_HIBERNATE:
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
-      break;
-
-    case POWERSTATE_QUIT:
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
-      break;
-
-    case POWERSTATE_MINIMIZE:
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
-      break;
-
-    case TMSG_RENDERER_FLUSH:
-      g_renderManager.Flush();
-      break;
-    }
-  }
-  break;
+  case TMSG_RENDERER_FLUSH:
+    g_renderManager.Flush();
+    break;
 
   case TMSG_HIBERNATE:
     g_powerManager.Hibernate();
@@ -2734,11 +2711,42 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_LOADPROFILE:
-  {
     CGUIWindowLoginScreen::LoadProfile(pMsg->param1);
     break;
-  }
 
+  default:
+    CLog::Log(LOGERROR, "%s: Unhandled threadmessage sent, %u", __FUNCTION__, pMsg->dwMessage);
+    break;
+  }
+}
+
+void CApplication::HandleShutdownMessage()
+{
+  switch (CSettings::GetInstance().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))
+  {
+  case POWERSTATE_SHUTDOWN:
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_POWERDOWN);
+    break;
+
+  case POWERSTATE_SUSPEND:
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
+    break;
+
+  case POWERSTATE_HIBERNATE:
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
+    break;
+
+  case POWERSTATE_QUIT:
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+    break;
+
+  case POWERSTATE_MINIMIZE:
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
+    break;
+
+  default:
+    CLog::Log(LOGERROR, "%s: No valid shutdownstate matched", __FUNCTION__);
+    break;
   }
 }
 
