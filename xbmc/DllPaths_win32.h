@@ -37,10 +37,6 @@
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav.dll"
 #define DLL_PATH_LIBRTMP       "special://xbmcbin/system/players/dvdplayer/librtmp.dll"
 
-/* cdrip */
-#define DLL_PATH_OGG           "special://xbmcbin/system/cdrip/ogg.dll"
-#define DLL_PATH_VORBIS        "special://xbmcbin/system/cdrip/vorbis.dll"
-
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "special://xbmcbin/system/players/dvdplayer/libbluray.dll"
 
