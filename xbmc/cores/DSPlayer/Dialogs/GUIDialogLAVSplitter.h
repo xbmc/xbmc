@@ -48,7 +48,10 @@ protected:
   virtual void InitializeSettings();
   virtual void SetupView();
 
+  void HideUnused();
+  void SetVisible(CStdString id, bool visible);
 
+  bool m_allowchange;
   bool m_dontMix;
   bool m_normalize;
   bool m_clip;

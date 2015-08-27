@@ -64,6 +64,11 @@ CGraphFilters::~CGraphFilters()
     GetLavSettings(LAVAUDIO, Audio.pBF);
     SaveLavSettings(LAVAUDIO);
   }
+  if (Source.pBF && Source.internalLav)
+  {
+    GetLavSettings(LAVSPLITTER, Source.pBF);
+    SaveLavSettings(LAVSPLITTER);
+  }
   if (Splitter.pBF && Splitter.internalLav)
   {
     GetLavSettings(LAVSPLITTER, Splitter.pBF);
@@ -113,6 +118,9 @@ void CGraphFilters::GetCurrentFilter(LAVFILTERS_TYPE type, IBaseFilter **ppBF)
   if (type == LAVSPLITTER && Splitter.pBF && Splitter.internalLav)
     m_pBF = Splitter.pBF;
 
+  if (type == LAVSPLITTER && Source.pBF && Source.internalLav)
+    m_pBF = Source.pBF;
+
   *ppBF = m_pBF;
 }
 
@@ -153,7 +161,7 @@ bool CGraphFilters::IsInternalFilter(IBaseFilter *pBF)
     g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVAUDIO);
     return true;
   }
-  if (Splitter.pBF == pBF && Splitter.internalLav)
+  if ((Source.pBF == pBF && Source.internalLav) || (Splitter.pBF == pBF && Splitter.internalLav))
   {
     g_windowManager.ActivateWindow(WINDOW_DIALOG_LAVSPLITTER);
     return true;

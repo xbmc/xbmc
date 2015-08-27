@@ -453,12 +453,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
     {
       return E_FAIL;
     }
-    }  
-    if (filter == "lavsplitter_internal" || filter == "lavsource_internal")
-    {
-      CGraphFilters::Get()->Splitter.internalLav = true;
-      CGraphFilters::Get()->SetupLavSettings(LAVSPLITTER, CGraphFilters::Get()->Splitter.pBF);
-    }  
+    }
   END_PERFORMANCE_COUNTER("Loading splitter filter");
 
 
@@ -467,7 +462,8 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
     {
     CGraphFilters::Get()->SetHasSubFilter(false);
     }
-    else {
+    else 
+    {
       if (filter == "xysubfilter_internal")
         CGraphFilters::Get()->IsRegisteredXYSubFilter() ? filter = "xysubfilter" : filter = "xysubfilter_internal";
 
@@ -527,11 +523,6 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
     if (FAILED(InsertFilter(filter, CGraphFilters::Get()->Video)))
       goto clean;
 
-    if (filter == "lavvideo_internal")
-    {
-      CGraphFilters::Get()->Video.internalLav = true;
-      CGraphFilters::Get()->SetupLavSettings(LAVVIDEO, CGraphFilters::Get()->Video.pBF);
-    }
     END_PERFORMANCE_COUNTER("Loading video filter");
 
     START_PERFORMANCE_COUNTER
@@ -541,11 +532,6 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
     if (FAILED(InsertFilter(filter, CGraphFilters::Get()->Audio)))
       goto clean;
 
-    if (filter == "lavaudio_internal")
-    {
-      CGraphFilters::Get()->Audio.internalLav = true;
-      CGraphFilters::Get()->SetupLavSettings(LAVAUDIO, CGraphFilters::Get()->Audio.pBF);
-    }
     END_PERFORMANCE_COUNTER("Loading audio filter");
 
 
@@ -621,6 +607,23 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
 
   if (SUCCEEDED(hr = filter->Create(&f.pBF)))
   {
+    // Setup InternalFilters settings
+    if (filterName == "lavsplitter_internal" || filterName == "lavsource_internal")
+    {
+      f.internalLav = true;
+      CGraphFilters::Get()->SetupLavSettings(LAVSPLITTER, f.pBF);
+    }
+    if (filterName == "lavvideo_internal")
+    {
+      f.internalLav = true;
+      CGraphFilters::Get()->SetupLavSettings(LAVVIDEO, f.pBF);
+    }
+    if (filterName == "lavaudio_internal")
+    {
+      f.internalLav = true;
+      CGraphFilters::Get()->SetupLavSettings(LAVAUDIO, f.pBF);
+    }
+
     g_charsetConverter.wToUTF8(filter->GetName(), f.osdname);
     if (filter->GetType() == CFGFilter::INTERNAL)
     {

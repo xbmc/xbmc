@@ -18750,6 +18750,10 @@ msgctxt "#82015"
 msgid "Prefer audio stream for the hearing/visually impaired"
 msgstr ""
 
+msgctxt "#82016"
+msgid "Preferred subtitles language (advanced)"
+msgstr ""
+
 msgctxt "#909001"
 msgid "Rus"
 msgstr ""
