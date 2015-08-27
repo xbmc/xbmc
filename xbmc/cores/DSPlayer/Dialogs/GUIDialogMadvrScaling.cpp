@@ -457,6 +457,16 @@ void CGUIDialogMadvrScaling::HideUnused()
   bool bValue2;
   bool bValue3;
 
+  // DOUBLE VARIABLES
+  int iDoubleLuma;
+  int iDoubleLumaFactor;
+  int iDoubleChroma;
+  int iDoubleChromaFactor;
+  int iQuadrupleLuma;
+  int iQuadrupleLumaFactor;
+  int iQuadrupleChroma;
+  int iQuadrupleChromaFactor;
+
   CSetting *setting;
 
   // HIDE / SHOW
@@ -468,23 +478,73 @@ void CGUIDialogMadvrScaling::HideUnused()
   SetVisible(SET_CHROMA_SUPER_RES_STRENGTH, bValue);
   SetVisible(SET_CHROMA_SUPER_RES_SOFTNESS, bValue);
 
-  // IMAGEDOUBLE
-  setting = m_settingsManager->GetSetting(SET_IMAGE_DOUBLE_LUMA);
-  value = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-  SetVisible(SET_IMAGE_DOUBLE_LUMA_FACTOR, (value>-1));
+  // IMAGE DOUBLE RULES
+  iDoubleLuma = m_settingsManager->GetInt(SET_IMAGE_DOUBLE_LUMA);
+  iDoubleChroma = m_settingsManager->GetInt(SET_IMAGE_DOUBLE_CHROMA);
+  iQuadrupleLuma = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_LUMA);
+  iQuadrupleChroma = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_CHROMA);
+  iDoubleLumaFactor = m_settingsManager->GetInt(SET_IMAGE_DOUBLE_LUMA_FACTOR);
+  iDoubleChromaFactor = m_settingsManager->GetInt(SET_IMAGE_DOUBLE_CHROMA_FACTOR);
+  iQuadrupleLumaFactor = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_LUMA_FACTOR);
+  iQuadrupleChromaFactor = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR);
 
-  setting = m_settingsManager->GetSetting(SET_IMAGE_DOUBLE_CHROMA);
-  value = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-  SetVisible(SET_IMAGE_DOUBLE_CHROMA_FACTOR, (value > -1));
+  // double factor rules
+  if ( !IsNNEDI3(iDoubleLuma) || (IsNNEDI3(iDoubleLuma) && iDoubleChromaFactor > iDoubleLumaFactor) ) 
+    iDoubleChromaFactor = iDoubleLumaFactor;
 
-  setting = m_settingsManager->GetSetting(SET_IMAGE_QUADRUPLE_LUMA);
-  value = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-  SetVisible(SET_IMAGE_QUADRUPLE_LUMA_FACTOR, (value > -1));
+  // quadruple factor rules
+  if (!IsNNEDI3(iQuadrupleLuma) || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChromaFactor > iQuadrupleLumaFactor) )
+    iQuadrupleChromaFactor = iQuadrupleLumaFactor;
 
-  setting = m_settingsManager->GetSetting(SET_IMAGE_QUADRUPLE_CHROMA);
-  value = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-  SetVisible(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, (value > -1));
+  //double chroma
+  if ((!IsNNEDI3(iDoubleLuma) || (IsNNEDI3(iDoubleLuma) && iDoubleChroma > iDoubleLuma)) && (iDoubleChroma != -1) ) 
+    iDoubleChroma = iDoubleLuma;
 
+  //quadruple luma
+  if (((!IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma)) || (IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma) && iQuadrupleLuma > iDoubleLuma)) && (iQuadrupleLuma != -1))
+    iQuadrupleLuma = iDoubleLuma;
+
+  //quadruple chroma
+  if ((!IsNNEDI3(iQuadrupleLuma) || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iQuadrupleLuma)) && (iQuadrupleChroma != -1))
+    iQuadrupleChroma = iQuadrupleLuma;
+
+  if ((IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iDoubleChroma) && (iQuadrupleChroma != -1))
+    iQuadrupleChroma = iDoubleChroma;
+
+  // SET NEW DOUBLE VALUE
+  m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA_FACTOR, iDoubleChromaFactor);
+  madvrSettings.m_ImageDoubleChromaFactor = iDoubleChromaFactor;
+  CMadvrCallback::Get()->SetStr("nnediDCScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_DOUBLEFACTOR, iDoubleChromaFactor));
+
+  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, iQuadrupleLumaFactor);
+  madvrSettings.m_ImageQuadrupleChromaFactor = iQuadrupleLumaFactor;
+  CMadvrCallback::Get()->SetStr("nnediQCScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, iQuadrupleLumaFactor));
+
+  m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA, iDoubleChroma);
+  madvrSettings.m_ImageDoubleChroma = iDoubleChroma;
+  CMadvrCallback::Get()->SetDoubling("DC", iDoubleChroma);
+
+  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_LUMA, iQuadrupleLuma);
+  madvrSettings.m_ImageQuadrupleLuma = iQuadrupleLuma;
+  CMadvrCallback::Get()->SetDoubling("QL", iQuadrupleLuma);
+
+  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA, iQuadrupleChroma);
+  madvrSettings.m_ImageQuadrupleChroma = iQuadrupleChroma;
+  CMadvrCallback::Get()->SetDoubling("QC", iQuadrupleChroma);
+
+  // IMAGE DOUBLE VISIBILITY
+
+  // quality visibility
+  SetVisible(SET_IMAGE_DOUBLE_CHROMA, (iDoubleLuma > -1));
+  SetVisible(SET_IMAGE_QUADRUPLE_LUMA, (iDoubleLuma > -1));
+  SetVisible(SET_IMAGE_QUADRUPLE_CHROMA, (iDoubleLuma > -1) && (iDoubleChroma > -1) && (iQuadrupleLuma > -1));
+
+  // factor visibility
+  SetVisible(SET_IMAGE_DOUBLE_LUMA_FACTOR, (iDoubleLuma > -1));
+  SetVisible(SET_IMAGE_DOUBLE_CHROMA_FACTOR, (iDoubleLuma > -1) && (iDoubleChroma > -1));
+  SetVisible(SET_IMAGE_QUADRUPLE_LUMA_FACTOR, (iDoubleLuma > -1) && (iQuadrupleLuma > -1));
+  SetVisible(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, (iDoubleLuma > -1) && (iDoubleChroma > -1) && (iQuadrupleLuma > -1) && (iQuadrupleChroma > -1));
+  
   // SHARP
   setting = m_settingsManager->GetSetting(SET_IMAGE_UPFINESHARP);
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();

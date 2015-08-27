@@ -45,6 +45,7 @@ protected:
   virtual void SetupView();
   virtual void Save() {};
 
+  bool IsNNEDI3(int iValue) { return iValue < 5; }
   void HideUnused();
   void SetVisible(CStdString id, bool visible);
 

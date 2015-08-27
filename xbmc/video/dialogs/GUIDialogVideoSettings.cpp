@@ -819,18 +819,31 @@ void CGUIDialogVideoSettings::HideUnused()
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   int iValue;
+  int iValueA;
+  int iValueB;
   bool bValue;
   CSetting *setting;
 
   // HIDE / SHOW
 
-  // DEBAND
+  // DEBAND VISIBILITY
   setting = m_settingsManager->GetSetting(SETTING_MADVR_DEBAND);
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();
   SetVisible(SETTING_MADVR_DEBANDLEVEL, bValue);
   SetVisible(SETTING_MADVR_DEBANDFADELEVEL, bValue);
 
-  // SHARP
+  // DEBAND SETTING RULES
+  iValueA = m_settingsManager->GetInt(SETTING_MADVR_DEBANDLEVEL);
+  iValueB = m_settingsManager->GetInt(SETTING_MADVR_DEBANDFADELEVEL);
+
+  if (iValueB < iValueA)
+  {
+    m_settingsManager->SetInt(SETTING_MADVR_DEBANDFADELEVEL, iValueA);
+    madvrSettings.m_debandFadeLevel = iValueA;
+    CMadvrCallback::Get()->SetInt("debandFadeLevel", iValueA);
+  }
+
+  // SHARP VISIBILITY
   setting = m_settingsManager->GetSetting(SET_IMAGE_FINESHARP);
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();
   SetVisible(SET_IMAGE_FINESHARP_STRENGTH, bValue);
@@ -845,7 +858,7 @@ void CGUIDialogVideoSettings::HideUnused()
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();
   SetVisible(SET_IMAGE_ADAPTIVESHARPEN_STRENGTH, bValue);
 
-  //DITHERING
+  //DITHERING VISIBILITY
   setting = m_settingsManager->GetSetting(SETTING_MADVR_DITHERING);
   iValue = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
   SetVisible(SETTING_MADVR_DITHERINGCOLORED, (iValue>-1));
