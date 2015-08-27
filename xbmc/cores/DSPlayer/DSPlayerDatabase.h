@@ -58,9 +58,9 @@ public:
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CMadvrSettings &settings);
   void SetVideoSettings(const CStdString &strFilenameAndPath, const CMadvrSettings &settings);
   void EraseVideoSettings(const std::string &path = "");
-  void EraseVideoSettings(const int resolution);
-  bool GetDefResMadvrSettings(int resolution, CMadvrSettings &settings);
-  void CreateVideoSettings(int resolution, const CMadvrSettings &setting);
+  void EraseVideoSettings(int resolution, int resolutionInternal, std::string tvShowName);
+  bool GetDefResMadvrSettings(int resolution, std::string tvShowName, CMadvrSettings &settings);
+  void CreateVideoSettings(int resolution, int resolutionInternal, std::string tvShowName, const CMadvrSettings &setting);
   bool GetLAVVideoSettings(CLavSettings &settings);
   bool GetLAVAudioSettings(CLavSettings &settings);
   bool GetLAVSplitterSettings(CLavSettings &settings);
@@ -76,9 +76,9 @@ protected:
   virtual void CreateTables();
   virtual void CreateAnalytics();
 
-  virtual int GetMinSchemaVersion() const { return 4; };
+  virtual int GetMinSchemaVersion() const { return 5; };
   virtual int GetExportVersion() const { return 1; };
-  virtual int GetSchemaVersion() const { return 4; };
+  virtual int GetSchemaVersion() const { return 5; };
   const char *GetBaseDBName() const { return "DSPlayer"; };
 
 };

@@ -396,10 +396,17 @@ void CGUIDialogVideoSettings::SaveChoice()
   if (!pDlg)
     return;
 
+  CFileItem &item = g_application.CurrentFileItem();
+  std::string tvShowName = CMediaSettings::GetInstance().GetCurrentMadvrSettings().m_TvShowName;
+  int currentRes = CMediaSettings::GetInstance().GetCurrentMadvrSettings().m_Resolution;
+
   pDlg->Add(g_localizeStrings.Get(70601).c_str());
   pDlg->Add(g_localizeStrings.Get(70602).c_str());
   pDlg->Add(g_localizeStrings.Get(70603).c_str());
   pDlg->Add(g_localizeStrings.Get(70604).c_str());
+  if (item.HasVideoInfoTag() && (item.GetVideoContentType() == VIDEODB_CONTENT_EPISODES || item.GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS))
+    
+    pDlg->Add(StringUtils::Format(g_localizeStrings.Get(70605).c_str(), tvShowName.c_str()));
   pDlg->Add(g_localizeStrings.Get(12376).c_str());
 
   pDlg->SetHeading(70600);
@@ -420,16 +427,26 @@ void CGUIDialogVideoSettings::SaveChoice()
       label = 70603;
     if (selected == MADVR_RES_2160)
       label = 70604;
-    
-    if (CGUIDialogYesNo::ShowAndGetInput(label, 750, 0, 12377))
+    if (selected == MADVR_RES_EPISODES)
+      label = 70605;
+
+    if (CGUIDialogYesNo::ShowAndGetInput(StringUtils::Format(g_localizeStrings.Get(label).c_str(), tvShowName.c_str()), 750, 0, 12377))
     { // reset the settings
 
       CDSPlayerDatabase dspdb;
       if (!dspdb.Open())
         return;
 
-      dspdb.EraseVideoSettings(selected);
-      dspdb.CreateVideoSettings(selected, CMediaSettings::GetInstance().GetCurrentMadvrSettings());
+      if (selected == MADVR_RES_EPISODES)
+      {
+        dspdb.EraseVideoSettings(-1, currentRes, tvShowName);
+        dspdb.CreateVideoSettings(-1, currentRes, tvShowName, CMediaSettings::GetInstance().GetCurrentMadvrSettings());
+      }
+      else
+      {
+        dspdb.EraseVideoSettings(selected, selected, "");
+        dspdb.CreateVideoSettings(selected, selected, "", CMediaSettings::GetInstance().GetCurrentMadvrSettings());
+      }
       dspdb.Close();
     }
   }

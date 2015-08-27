@@ -456,7 +456,7 @@ void CGUIDialogMadvrScaling::HideUnused()
 
   // UPDATE IMAGE DOUBLE
   CMadvrCallback::Get()->UpdateImageDouble();
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   int iDoubleLuma = madvrSettings.m_ImageDoubleLuma;
   int iDoubleChroma = madvrSettings.m_ImageDoubleChroma;

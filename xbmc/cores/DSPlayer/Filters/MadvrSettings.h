@@ -35,6 +35,7 @@ public:
   bool operator!=(const CMadvrSettings &right) const;
 
   int m_Resolution;
+  std::string m_TvShowName;
 
   int m_ChromaUpscaling;
   bool m_ChromaAntiRing;

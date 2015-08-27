@@ -35,6 +35,7 @@
 CMadvrSettings::CMadvrSettings()
 {
   m_Resolution = -1;
+  m_TvShowName = "NOTVSHOW_NULL";
 
   m_ChromaUpscaling = MADVR_DEFAULT_CHROMAUP;
   m_ChromaAntiRing = false;

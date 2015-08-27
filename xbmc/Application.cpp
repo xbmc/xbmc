@@ -3924,13 +3924,18 @@ void CApplication::LoadVideoSettings(const CFileItem& item)
     CFileItem item = CurrentFileItem();
     CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
     int res = streamDetails.VideoDimsToResolution(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight());
-   
+    std::string tvShowName = item.GetVideoInfoTag()->m_strShowTitle;
+
     CLog::Log(LOGDEBUG, "Loading madvr settings for %s with resolution id: %i", item.GetPath().c_str(), res);
 
-    // Load stored settings if they exist, otherwise use default
+    // Load stored files settings
     if (!dsdbs.GetVideoSettings(item.GetPath().c_str(), CMediaSettings::GetInstance().GetCurrentMadvrSettings()))
-      if (!dsdbs.GetDefResMadvrSettings(res, CMediaSettings::GetInstance().GetCurrentMadvrSettings())) 
-        CMediaSettings::GetInstance().GetCurrentMadvrSettings() = CMediaSettings::GetInstance().GetDefaultMadvrSettings();
+      // if not present Load stored TvShowName settings
+      if (!dsdbs.GetDefResMadvrSettings(-1, tvShowName, CMediaSettings::GetInstance().GetCurrentMadvrSettings()))
+        // if not present Load stored Resolution settings
+        if (!dsdbs.GetDefResMadvrSettings(res, "", CMediaSettings::GetInstance().GetCurrentMadvrSettings())) 
+          // if not present Load default setting
+          CMediaSettings::GetInstance().GetCurrentMadvrSettings() = CMediaSettings::GetInstance().GetDefaultMadvrSettings();
 
     CMediaSettings::GetInstance().GetAtStartMadvrSettings() = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 

@@ -18382,6 +18382,10 @@ msgctxt "#70604"
 msgid "Set as default for 2160p videos"
 msgstr ""
 
+msgctxt "#70605"
+msgid "Set as default for \"%s\" episodes"
+msgstr ""
+
 msgctxt "#80001"
 msgid "Enable system tray icon"
 msgstr ""

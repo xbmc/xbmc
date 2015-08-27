@@ -713,7 +713,7 @@ void CMadvrSettingsManager::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSett
 
 void CMadvrSettingsManager::UpdateImageDouble()
 {
-  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
 
   int &iDoubleLuma = madvrSettings.m_ImageDoubleLuma;
   int &iDoubleChroma = madvrSettings.m_ImageDoubleChroma;

@@ -66,7 +66,7 @@ void CDSPlayerDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE edition (idEdition integer primary key, file text, editionName text, editionNumber integer)\n");
 
   CLog::Log(LOGINFO, "create madvr setting table");
-  m_pDS->exec("CREATE TABLE madvrSettings ( file text, Resolution integer,"
+  m_pDS->exec("CREATE TABLE madvrSettings ( file text, Resolution integer, TvShowName txt, "
     "ChromaUpscaling integer, ChromaAntiRing bool, ChromaSuperRes bool, ChromaSuperResPasses integer, ChromaSuperResStrength float, ChromaSuperResSoftness float, ImageUpscaling integer, ImageUpAntiRing bool, ImageUpLinear bool, ImageDownscaling integer, ImageDownAntiRing bool, ImageDownLinear bool, "
     "ImageDoubleLuma integer, ImageDoubleChroma integer, ImageQuadrupleLuma integer, ImageQuadrupleChroma integer, " 
     "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer, "
@@ -79,7 +79,7 @@ void CDSPlayerDatabase::CreateTables()
     ")\n");
 
   CLog::Log(LOGINFO, "create madvr resolution for resolution table");
-  m_pDS->exec("CREATE TABLE madvrDefResSettings ( Resolution integer,"
+  m_pDS->exec("CREATE TABLE madvrDefResSettings ( Resolution integer, ResolutionInternal integer, TvShowName txt, "
     "ChromaUpscaling integer, ChromaAntiRing bool, ChromaSuperRes bool, ChromaSuperResPasses integer, ChromaSuperResStrength float, ChromaSuperResSoftness float, ImageUpscaling integer, ImageUpAntiRing bool, ImageUpLinear bool, ImageDownscaling integer, ImageDownAntiRing bool, ImageDownLinear bool, "
     "ImageDoubleLuma integer, ImageDoubleChroma integer, ImageQuadrupleLuma integer, ImageQuadrupleChroma integer, "
     "ImageDoubleLumaFactor integer, ImageDoubleChromaFactor integer, ImageQuadrupleLumaFactor integer, ImageQuadrupleChromaFactor integer, "
@@ -231,15 +231,25 @@ void CDSPlayerDatabase::ClearEditionOfFile(const CStdString& strFilenameAndPath)
   }
 }
 
-bool CDSPlayerDatabase::GetDefResMadvrSettings(int resolution, CMadvrSettings &settings)
+bool CDSPlayerDatabase::GetDefResMadvrSettings(int resolution, std::string tvShowName, CMadvrSettings &settings)
 {
   try
   {
-    if (resolution < 0) return false;
+    if (resolution < 0 && tvShowName == "") return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
     // ok, now obtain the settings for this file
-    CStdString strSQL = PrepareSQL("select * from madvrDefResSettings where madvrDefResSettings.Resolution=%i", resolution);
+
+    CStdString strSQL = "";
+
+    if (resolution > -1)
+      strSQL = PrepareSQL("select * from madvrDefResSettings where madvrDefResSettings.Resolution=%i", resolution);
+
+    else if (tvShowName != "")
+      strSQL = PrepareSQL("select * from madvrDefResSettings where madvrDefResSettings.TvShowName='%s'", tvShowName.c_str());
+
+    if (strSQL == "")
+      return false;
 
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
@@ -809,7 +819,7 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
       m_pDS->close();
       // update the item
       strSQL = PrepareSQL("update madvrSettings "
-        "set Resolution=%i, "
+        "set Resolution=%i, set TvShowName='%s', "
         "ChromaUpscaling=%i,ChromaAntiRing=%i,ChromaSuperRes=%i, ChromaSuperResPasses=%i, ChromaSuperResStrength=%f, ChromaSuperResSoftness=%f, "
         "ImageUpscaling=%i,ImageUpAntiRing=%i,ImageUpLinear=%i, "
         "ImageDownscaling=%i,ImageDownAntiRing=%i,ImageDownLinear=%i, "
@@ -822,7 +832,7 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "UpRefFineSharp=%i, UpRefFineSharpStrength=%f, UpRefLumaSharpen=%i, UpRefLumaSharpenStrength=%f, UpRefLumaSharpenClamp=%f, UpRefLumaSharpenRadius=%f, UpRefAdaptiveSharpen=%i, UpRefAdaptiveSharpenStrength=%f, SuperRes=%i, SuperResStrength=%f, SuperResRadius=%f, "
         "RefineOnce=%i, SuperResFirst=%i "
         "where file='%s'",
-        setting.m_Resolution,
+        setting.m_Resolution, setting.m_TvShowName.c_str(),
         setting.m_ChromaUpscaling,setting.m_ChromaAntiRing,setting.m_ChromaSuperRes,setting.m_ChromaSuperResPasses,setting.m_ChromaSuperResStrength,setting.m_ChromaSuperResSoftness,
         setting.m_ImageUpscaling,setting.m_ImageUpAntiRing,setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear, 
@@ -841,7 +851,7 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
     else
     { // add the items
       m_pDS->close();
-      strSQL = "INSERT INTO madvrSettings (file, Resolution, "
+      strSQL = "INSERT INTO madvrSettings (file, Resolution, TvShowName, "
         "ChromaUpscaling, ChromaAntiRing, ChromaSuperRes, ChromaSuperResPasses, ChromaSuperResStrength, ChromaSuperResSoftness, "
         "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
         "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
@@ -854,8 +864,8 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
         "UpRefFineSharp, UpRefFineSharpStrength, UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefLumaSharpenClamp, UpRefLumaSharpenRadius, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, SuperResRadius, "
         "RefineOnce, SuperResFirst"
         ") VALUES ";
-      strSQL += PrepareSQL("('%s',%i,%i,%i,%i,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%f,%i,%i)",
-        strFilenameAndPath.c_str(), setting.m_Resolution, setting.m_ChromaUpscaling, setting.m_ChromaAntiRing, setting.m_ChromaSuperRes, setting.m_ChromaSuperResPasses, setting.m_ChromaSuperResStrength, setting.m_ChromaSuperResSoftness,
+      strSQL += PrepareSQL("('%s',%i,'%s',%i,%i,%i,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%f,%i,%i)",
+        strFilenameAndPath.c_str(), setting.m_Resolution, setting.m_TvShowName.c_str(), setting.m_ChromaUpscaling, setting.m_ChromaAntiRing, setting.m_ChromaSuperRes, setting.m_ChromaSuperResPasses, setting.m_ChromaSuperResStrength, setting.m_ChromaSuperResSoftness,
         setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
         setting.m_ImageDoubleLuma,setting.m_ImageDoubleChroma,setting.m_ImageQuadrupleLuma,setting.m_ImageQuadrupleChroma,
@@ -935,15 +945,29 @@ void CDSPlayerDatabase::EraseVideoSettings(const std::string &path /* = ""*/)
   }
 }
 
-void CDSPlayerDatabase::EraseVideoSettings(int resolution)
+void CDSPlayerDatabase::EraseVideoSettings(int resolution, int resolutionInternal, std::string tvShowName)
 {
   try
   {
-    CStdString strSQL = StringUtils::Format("DELETE FROM madvrSettings where Resolution=%i", resolution);
+    if (resolution < 0 && tvShowName == "") return;
+    CStdString strSQL = "";
 
-    CLog::Log(LOGINFO, "Deleting madvr settings information for %ip files",resolution);
+    if (resolution > -1)
+    {
+      strSQL = StringUtils::Format("DELETE FROM madvrSettings where Resolution=%i", resolution);
+      CLog::Log(LOGINFO, "Deleting madvr settings information for %i files", resolution);
+      m_pDS->exec(strSQL);
 
-    m_pDS->exec(strSQL);
+      strSQL = StringUtils::Format("DELETE FROM madvrDefResSettings where ResolutionInternal=%i", resolutionInternal);
+      CLog::Log(LOGINFO, "Deleting madvr default settings information for %i files", resolutionInternal);
+      m_pDS->exec(strSQL);
+    }
+    else
+    {
+      strSQL = StringUtils::Format("DELETE FROM madvrSettings where TvShowName='%s'", tvShowName.c_str());
+      CLog::Log(LOGINFO, "Deleting madvr settings information for %s files", tvShowName.c_str());
+      m_pDS->exec(strSQL);
+    }
   }
   catch (...)
   {
@@ -951,14 +975,31 @@ void CDSPlayerDatabase::EraseVideoSettings(int resolution)
   }
 }
 
-void CDSPlayerDatabase::CreateVideoSettings(int resolution, const CMadvrSettings &setting)
+void CDSPlayerDatabase::CreateVideoSettings(int resolution, int resolutionInternal, std::string tvShowName, const CMadvrSettings &setting)
 {
   try
   {
+    if (resolution < 0 && tvShowName == "") return;
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    CStdString strSQL = StringUtils::Format("select * from madvrDefResSettings where Resolution='%i'", resolution);
+    CStdString strSQL = "";
+    CStdString strWhere = "";
+
+    if (resolution > -1)
+    {
+      strSQL = StringUtils::Format("select * from madvrDefResSettings where Resolution='%i'", resolution);
+      strWhere = StringUtils::Format("where Resolution=%i", resolution);
+      tvShowName = "NOTVSHOW_NULL";
+    }
+    else if (tvShowName != "")
+    {
+      strSQL = StringUtils::Format("select * from madvrDefResSettings where TvShowName='%s'", tvShowName.c_str());
+      strWhere = StringUtils::Format("where TvShowNamen='%s'", tvShowName.c_str());
+    }
+    if (strSQL == "") 
+      return;
+
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
     {
@@ -975,8 +1016,7 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, const CMadvrSettings
         "Deband=%i, DebandLevel=%i, DebandFadeLevel=%i, "
         "FineSharp=%i, FineSharpStrength=%f, LumaSharpen=%i, LumaSharpenStrength=%f, LumaSharpenClamp=%f, LumaSharpenRadius=%f, AdaptiveSharpen=%i, AdaptiveSharpenStrength=%f, "
         "UpRefFineSharp=%i, UpRefFineSharpStrength=%f, UpRefLumaSharpen=%i, UpRefLumaSharpenStrength=%f, UpRefLumaSharpenClamp=%f, UpRefLumaSharpenRadius=%f, UpRefAdaptiveSharpen=%i, UpRefAdaptiveSharpenStrength=%f, SuperRes=%i, SuperResStrength=%f, SuperResRadius=%f, "
-        "RefineOnce=%i, SuperResFirst=%i "
-        "where Resolution=%i",
+        "RefineOnce=%i, SuperResFirst=%i ",
         setting.m_ChromaUpscaling, setting.m_ChromaAntiRing, setting.m_ChromaSuperRes, setting.m_ChromaSuperResPasses, setting.m_ChromaSuperResStrength, setting.m_ChromaSuperResSoftness,
         setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
@@ -987,15 +1027,17 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, const CMadvrSettings
         setting.m_deband, setting.m_debandLevel, setting.m_debandFadeLevel,
         setting.m_fineSharp, setting.m_fineSharpStrength, setting.m_lumaSharpen, setting.m_lumaSharpenStrength, setting.m_lumaSharpenClamp, setting.m_lumaSharpenRadius, setting.m_adaptiveSharpen, setting.m_adaptiveSharpenStrength,
         setting.m_UpRefFineSharp, setting.m_UpRefFineSharpStrength, setting.m_UpRefLumaSharpen, setting.m_UpRefLumaSharpenStrength, setting.m_UpRefLumaSharpenClamp, setting.m_UpRefLumaSharpenRadius, setting.m_UpRefAdaptiveSharpen, setting.m_UpRefAdaptiveSharpenStrength, setting.m_superRes, setting.m_superResStrength, setting.m_superResRadius,
-        setting.m_refineOnce, setting.m_superResFirst,
-        resolution);
+        setting.m_refineOnce, setting.m_superResFirst
+        );
+      
+      strSQL += strSQL + strWhere;
       m_pDS->exec(strSQL.c_str());
       return;
     }
     else
     { // add the items
       m_pDS->close();
-      strSQL = "INSERT INTO madvrDefResSettings (Resolution, "
+      strSQL = "INSERT INTO madvrDefResSettings (Resolution, ResolutionInternal, TvShowName,"
         "ChromaUpscaling, ChromaAntiRing, ChromaSuperRes, ChromaSuperResPasses, ChromaSuperResStrength, ChromaSuperResSoftness, "
         "ImageUpscaling, ImageUpAntiRing, ImageUpLinear, "
         "ImageDownscaling, ImageDownAntiRing, ImageDownLinear, "
@@ -1008,8 +1050,8 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, const CMadvrSettings
         "UpRefFineSharp, UpRefFineSharpStrength, UpRefLumaSharpen, UpRefLumaSharpenStrength, UpRefLumaSharpenClamp, UpRefLumaSharpenRadius, UpRefAdaptiveSharpen, UpRefAdaptiveSharpenStrength, SuperRes, SuperResStrength, SuperResRadius, "
         "RefineOnce, SuperResFirst"
         ") VALUES ";
-      strSQL += PrepareSQL("(%i,%i,%i,%i,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%f,%i,%i)",
-        resolution, setting.m_ChromaUpscaling, setting.m_ChromaAntiRing, setting.m_ChromaSuperRes, setting.m_ChromaSuperResPasses, setting.m_ChromaSuperResStrength, setting.m_ChromaSuperResSoftness,
+      strSQL += PrepareSQL("(%i,%i,'%s',%i,%i,%i,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%i,%f,%f,%f,%i,%f,%i,%f,%f,%i,%i)",
+        resolution, resolutionInternal, tvShowName.c_str(), setting.m_ChromaUpscaling, setting.m_ChromaAntiRing, setting.m_ChromaSuperRes, setting.m_ChromaSuperResPasses, setting.m_ChromaSuperResStrength, setting.m_ChromaSuperResSoftness,
         setting.m_ImageUpscaling, setting.m_ImageUpAntiRing, setting.m_ImageUpLinear,
         setting.m_ImageDownscaling, setting.m_ImageDownAntiRing, setting.m_ImageDownLinear,
         setting.m_ImageDoubleLuma, setting.m_ImageDoubleChroma, setting.m_ImageQuadrupleLuma, setting.m_ImageQuadrupleChroma,
