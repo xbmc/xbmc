@@ -36,6 +36,7 @@ public:
 protected:
   mutable std::string m_curHdmiResolution;
   mutable RESOLUTION_INFO m_fb_res;
+  static bool m_isWritable;
 
   bool SetDisplayResolution(const char *resolution);
 };
