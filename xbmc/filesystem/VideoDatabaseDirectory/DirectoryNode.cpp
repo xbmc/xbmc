@@ -45,7 +45,6 @@
 #include "video/VideoDatabase.h"
 #include "settings/Settings.h"
 
-using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 //  Constructor is protected use ParseURL()
@@ -69,7 +68,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const std::string& strPath)
   std::string strDirectory=url.GetFileName();
   URIUtils::RemoveSlashAtEnd(strDirectory);
 
-  vector<string> Path = StringUtils::Split(strDirectory, '/');
+  std::vector<std::string> Path = StringUtils::Split(strDirectory, '/');
   Path.insert(Path.begin(), "");
 
   CDirectoryNode* pNode=NULL;
@@ -93,7 +92,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const std::string& strPath)
 //  returns the database ids of the path,
 void CDirectoryNode::GetDatabaseInfo(const std::string& strPath, CQueryParams& params)
 {
-  unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
   if (!pNode.get())
     return;
@@ -193,7 +192,7 @@ bool CDirectoryNode::GetContent(CFileItemList& items) const
 //  Creates a videodb url
 std::string CDirectoryNode::BuildPath() const
 {
-  vector<string> array;
+  std::vector<std::string> array;
 
   if (!m_strName.empty())
     array.insert(array.begin(), m_strName);
@@ -212,7 +211,7 @@ std::string CDirectoryNode::BuildPath() const
   for (int i=0; i<(int)array.size(); ++i)
     strPath+=array[i]+"/";
 
-  string options = m_options.GetOptionsString();
+  std::string options = m_options.GetOptionsString();
   if (!options.empty())
     strPath += "?" + options;
 
@@ -255,7 +254,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   if (CanCache() && items.Load())
     return true;
 
-  unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
+  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
 
   bool bSuccess=false;
   if (pNode.get())
@@ -296,7 +295,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
     return;
 
   // hack - as the season node might return episodes
-  unique_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
+  std::unique_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
 
   switch (pNode->GetChildType())
   {
