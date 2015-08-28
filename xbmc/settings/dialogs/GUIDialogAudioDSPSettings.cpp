@@ -81,7 +81,6 @@
 
 #define CONTROL_SETTINGS_LABEL                    2
 
-using namespace std;
 using namespace ActiveAE;
 
 CGUIDialogAudioDSPSettings::CGUIDialogAudioDSPSettings()
@@ -273,7 +272,7 @@ void CGUIDialogAudioDSPSettings::FrameMove()
       m_settingsManager->SetString(SETTING_STREAM_INFO_CPU_USAGE, m_CPUUsage);
       for (unsigned int i = 0; i < m_ActiveModes.size(); i++)
       {
-        string settingId = StringUtils::Format("%s%i", SETTING_STREAM_INFO_MODE_CPU_USAGE, i);
+        std::string settingId = StringUtils::Format("%s%i", SETTING_STREAM_INFO_MODE_CPU_USAGE, i);
         m_ActiveModesData[i].CPUUsage = StringUtils::Format("%.02f %%", m_ActiveModes[i]->CPUUsage());
         m_settingsManager->SetString(settingId, m_ActiveModesData[i].CPUUsage);
       }
@@ -472,21 +471,21 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
     /* about size() > 1, it is always the fallback (ignore of master processing) present. */
     StaticIntegerSettingOptions modeEntries;
     if (m_MasterModes[AE_DSP_ASTREAM_BASIC].size() > 1)
-      modeEntries.push_back(pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_BASIC),   AE_DSP_ASTREAM_BASIC));
+      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_BASIC),   AE_DSP_ASTREAM_BASIC));
     if (m_MasterModes[AE_DSP_ASTREAM_MUSIC].size() > 1)
-      modeEntries.push_back(pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_MUSIC),   AE_DSP_ASTREAM_MUSIC));
+      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_MUSIC),   AE_DSP_ASTREAM_MUSIC));
     if (m_MasterModes[AE_DSP_ASTREAM_MOVIE].size() > 1)
-      modeEntries.push_back(pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_MOVIE),   AE_DSP_ASTREAM_MOVIE));
+      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_MOVIE),   AE_DSP_ASTREAM_MOVIE));
     if (m_MasterModes[AE_DSP_ASTREAM_GAME].size() > 1)
-      modeEntries.push_back(pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_GAME),    AE_DSP_ASTREAM_GAME));
+      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_GAME),    AE_DSP_ASTREAM_GAME));
     if (m_MasterModes[AE_DSP_ASTREAM_APP].size() > 1)
-      modeEntries.push_back(pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_APP),     AE_DSP_ASTREAM_APP));
+      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_APP),     AE_DSP_ASTREAM_APP));
     if (m_MasterModes[AE_DSP_ASTREAM_MESSAGE].size() > 1)
-      modeEntries.push_back(pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_MESSAGE), AE_DSP_ASTREAM_MESSAGE));
+      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_MESSAGE), AE_DSP_ASTREAM_MESSAGE));
     if (m_MasterModes[AE_DSP_ASTREAM_PHONE].size() > 1)
-      modeEntries.push_back(pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_PHONE),   AE_DSP_ASTREAM_PHONE));
+      modeEntries.push_back(std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_PHONE),   AE_DSP_ASTREAM_PHONE));
     if (modesAvailable > 1 && m_MasterModes[m_streamTypeUsed].size() > 1)
-      modeEntries.insert(modeEntries.begin(), pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_AUTO), AE_DSP_ASTREAM_AUTO));
+      modeEntries.insert(modeEntries.begin(), std::pair<int, int>(CActiveAEDSP::GetInstance().GetStreamTypeName(AE_DSP_ASTREAM_AUTO), AE_DSP_ASTREAM_AUTO));
 
     AddSpinner(groupAudioModeSel,
                 SETTING_AUDIO_MAIN_STREAMTYPE, 15021, 0,
@@ -590,7 +589,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
               menu.hook.iRelevantModeId     = hooks[j].iRelevantModeId;
               m_Menus.push_back(menu);
 
-              string setting = StringUtils::Format("%s%i", SETTING_AUDIO_MASTER_SETTINGS_MENUS, (int)m_Menus.size()-1);
+              std::string setting = StringUtils::Format("%s%i", SETTING_AUDIO_MASTER_SETTINGS_MENUS, (int)m_Menus.size()-1);
               AddButton(groupMasterMode, setting, 15041, 0);
               break;
             }
@@ -813,7 +812,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
         }
         m_ActiveModesData[i].MenuName = label;
 
-        string settingId = StringUtils::Format("%s%i", SETTING_STREAM_INFO_MODE_CPU_USAGE, i);
+        std::string settingId = StringUtils::Format("%s%i", SETTING_STREAM_INFO_MODE_CPU_USAGE, i);
         AddInfoLabelButton(group, settingId, 15041, 0, m_ActiveModesData[i].CPUUsage);
       }
     }
@@ -898,7 +897,7 @@ bool CGUIDialogAudioDSPSettings::HaveActiveMenuHooks(AE_DSP_MENUHOOK_CAT categor
   return false;
 }
 
-string CGUIDialogAudioDSPSettings::GetSettingsLabel(CSetting *pSetting)
+std::string CGUIDialogAudioDSPSettings::GetSettingsLabel(CSetting *pSetting)
 {
   if (pSetting->GetLabel() == 15041)
   {
@@ -964,7 +963,7 @@ void CGUIDialogAudioDSPSettings::GetAudioDSPMenus(CSettingGroup *group, AE_DSP_M
       if (modeName.empty())
         modeName = g_localizeStrings.Get(15041);
 
-      string setting = StringUtils::Format("%s%i", SETTING_AUDIO_PROC_SETTINGS_MENUS, i);
+      std::string setting = StringUtils::Format("%s%i", SETTING_AUDIO_PROC_SETTINGS_MENUS, i);
       AddButton(group, setting, 15041, 0);
     }
   }
