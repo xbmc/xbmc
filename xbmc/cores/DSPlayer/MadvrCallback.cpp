@@ -228,4 +228,10 @@ void CMadvrCallback::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOpti
     m_pSettingCallback->AddEntry(type, entry);
 }
 
+void CMadvrCallback::UpdateImageDouble()
+{
+  if (m_pSettingCallback)
+    m_pSettingCallback->UpdateImageDouble();
+}
+
 #endif

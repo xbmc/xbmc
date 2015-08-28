@@ -71,6 +71,7 @@ public:
   virtual void SetDithering(std::string path, int iValue);
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
   virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
+  virtual void UpdateImageDouble();
 
 private:
 
@@ -102,7 +103,9 @@ private:
   std::vector<CMadvrSettingsList*>* GetSettingsVector(MADVR_SETTINGS_LIST type);
   int GetSettingsId(MADVR_SETTINGS_LIST type, std::string sValue);
   void InitSettings();
-  
+
+  bool IsNNEDI3(int iValue) { return iValue < 5; }
+  bool IsEnabled(int iValue) { return iValue > -1; }
 
   std::vector<CMadvrSettingsList* > m_settingsChromaUp;
   std::vector<CMadvrSettingsList* > m_settingsLumaUp;

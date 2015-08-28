@@ -711,6 +711,60 @@ void CMadvrSettingsManager::AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSett
   }
 }
 
+void CMadvrSettingsManager::UpdateImageDouble()
+{
+  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
+
+  int &iDoubleLuma = madvrSettings.m_ImageDoubleLuma;
+  int &iDoubleChroma = madvrSettings.m_ImageDoubleChroma;
+  int &iQuadrupleLuma = madvrSettings.m_ImageQuadrupleLuma;
+  int &iQuadrupleChroma = madvrSettings.m_ImageQuadrupleChroma;
+  int &iDoubleLumaFactor = madvrSettings.m_ImageDoubleLumaFactor;
+  int &iDoubleChromaFactor = madvrSettings.m_ImageDoubleChromaFactor;
+  int &iQuadrupleLumaFactor = madvrSettings.m_ImageQuadrupleLumaFactor;
+  int &iQuadrupleChromaFactor = madvrSettings.m_ImageQuadrupleChromaFactor;
+
+  // Update double factor
+  if (!IsNNEDI3(iDoubleLuma)
+    || (IsNNEDI3(iDoubleLuma) && iDoubleChromaFactor > iDoubleLumaFactor))
+    iDoubleChromaFactor = iDoubleLumaFactor;
+
+  // Update quadruple factor
+  if (!IsNNEDI3(iQuadrupleLuma)
+    || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChromaFactor > iQuadrupleLumaFactor))
+    iQuadrupleChromaFactor = iQuadrupleLumaFactor;
+
+  // Update double chroma
+  if (!IsNNEDI3(iDoubleLuma)
+    || (IsNNEDI3(iDoubleLuma) && iDoubleChroma > iDoubleLuma))
+    iDoubleChroma = iDoubleLuma;
+
+  // Update quadruple luma
+  if (((!IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma))
+    || (IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma) && iQuadrupleLuma > iDoubleLuma)
+    || (!IsEnabled(iDoubleLuma)))
+    && IsEnabled(iQuadrupleLuma))
+    iQuadrupleLuma = iDoubleLuma;
+
+  // Update quadruple chroma
+  if (!IsNNEDI3(iQuadrupleLuma)
+    || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iQuadrupleLuma))
+    iQuadrupleChroma = iQuadrupleLuma;
+
+  if (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iDoubleChroma)
+    iQuadrupleChroma = iDoubleChroma;
+
+  // Set New settings in madVR
+  SetStr("nnediDLScalingFactor", GetSettingsName(MADVR_LIST_DOUBLEFACTOR, iDoubleLumaFactor));
+  SetStr("nnediDCScalingFactor", GetSettingsName(MADVR_LIST_DOUBLEFACTOR, iDoubleChromaFactor));
+  SetStr("nnediQLScalingFactor", GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, iQuadrupleLumaFactor));
+  SetStr("nnediQCScalingFactor", GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, iQuadrupleChromaFactor));
+  SetDoubling("DL", iDoubleLuma);
+  SetDoubling("DC", iDoubleChroma);
+  SetDoubling("QL", iQuadrupleLuma);
+  SetDoubling("QC", iQuadrupleChroma);
+}
+
 void CMadvrSettingsManager::InitSettings()
 {
   //Scalers

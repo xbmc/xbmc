@@ -145,6 +145,7 @@ public:
   virtual void SetDithering(std::string path, int iValue){};
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue){ return ""; };
   virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry){};
+  virtual void UpdateImageDouble(){};
 };
 
 class CMadvrCallback : public IMadvrAllocatorCallback, public IMadvrSettingCallback
@@ -200,6 +201,7 @@ public:
   virtual void SetDithering(std::string path, int iValue);
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
   virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
+  virtual void UpdateImageDouble();
 
 private:
   CMadvrCallback();

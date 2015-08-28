@@ -326,46 +326,34 @@ void CGUIDialogMadvrScaling::OnSettingChanged(const CSetting *setting)
   else if (settingId == SET_IMAGE_DOUBLE_LUMA)
   {
     madvrSettings.m_ImageDoubleLuma = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetDoubling("DL", madvrSettings.m_ImageDoubleLuma);
-    CMadvrCallback::Get()->SetStr("nnediDLScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_DOUBLEFACTOR, madvrSettings.m_ImageDoubleLumaFactor));
   }
   else if (settingId == SET_IMAGE_DOUBLE_CHROMA)
   {
     madvrSettings.m_ImageDoubleChroma = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetDoubling("DC", madvrSettings.m_ImageDoubleChroma);
-    CMadvrCallback::Get()->SetStr("nnediDCScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_DOUBLEFACTOR, madvrSettings.m_ImageDoubleChromaFactor));
   }
   else if (settingId == SET_IMAGE_QUADRUPLE_LUMA)
   {
     madvrSettings.m_ImageQuadrupleLuma = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetDoubling("QL", madvrSettings.m_ImageQuadrupleLuma);
-    CMadvrCallback::Get()->SetStr("nnediQLScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, madvrSettings.m_ImageQuadrupleLumaFactor));
   }
   else if (settingId == SET_IMAGE_QUADRUPLE_CHROMA)
   {
     madvrSettings.m_ImageQuadrupleChroma = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetDoubling("QC", madvrSettings.m_ImageQuadrupleChroma);
-    CMadvrCallback::Get()->SetStr("nnediQCScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, madvrSettings.m_ImageQuadrupleChromaFactor));
   }
   else if (settingId == SET_IMAGE_DOUBLE_LUMA_FACTOR)
   {
     madvrSettings.m_ImageDoubleLumaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("nnediDLScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_DOUBLEFACTOR, madvrSettings.m_ImageDoubleLumaFactor));
   }
   else if (settingId == SET_IMAGE_DOUBLE_CHROMA_FACTOR)
   {
     madvrSettings.m_ImageDoubleChromaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("nnediDCScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_DOUBLEFACTOR, madvrSettings.m_ImageDoubleChromaFactor));
   }
   else if (settingId == SET_IMAGE_QUADRUPLE_LUMA_FACTOR)
   {
     madvrSettings.m_ImageQuadrupleLumaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("nnediQLScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, madvrSettings.m_ImageQuadrupleLumaFactor));
   }
   else if (settingId == SET_IMAGE_QUADRUPLE_CHROMA_FACTOR)
   {
     madvrSettings.m_ImageQuadrupleChromaFactor = static_cast<int>(static_cast<const CSettingInt*>(setting)->GetValue());
-    CMadvrCallback::Get()->SetStr("nnediQCScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, madvrSettings.m_ImageQuadrupleChromaFactor));
   }
   else if (settingId == SET_IMAGE_UPFINESHARP)
   {
@@ -449,23 +437,11 @@ void CGUIDialogMadvrScaling::HideUnused()
 
   m_allowchange = false;
 
-  CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
-
   int value;
   bool bValue;
   bool bValue1;
   bool bValue2;
   bool bValue3;
-
-  // DOUBLE VARIABLES
-  int iDoubleLuma;
-  int iDoubleLumaFactor;
-  int iDoubleChroma;
-  int iDoubleChromaFactor;
-  int iQuadrupleLuma;
-  int iQuadrupleLumaFactor;
-  int iQuadrupleChroma;
-  int iQuadrupleChromaFactor;
 
   CSetting *setting;
 
@@ -478,76 +454,34 @@ void CGUIDialogMadvrScaling::HideUnused()
   SetVisible(SET_CHROMA_SUPER_RES_STRENGTH, bValue);
   SetVisible(SET_CHROMA_SUPER_RES_SOFTNESS, bValue);
 
-  // IMAGE DOUBLE RULES
-  iDoubleLuma = m_settingsManager->GetInt(SET_IMAGE_DOUBLE_LUMA);
-  iDoubleChroma = m_settingsManager->GetInt(SET_IMAGE_DOUBLE_CHROMA);
-  iQuadrupleLuma = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_LUMA);
-  iQuadrupleChroma = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_CHROMA);
-  iDoubleLumaFactor = m_settingsManager->GetInt(SET_IMAGE_DOUBLE_LUMA_FACTOR);
-  iDoubleChromaFactor = m_settingsManager->GetInt(SET_IMAGE_DOUBLE_CHROMA_FACTOR);
-  iQuadrupleLumaFactor = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_LUMA_FACTOR);
-  iQuadrupleChromaFactor = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR);
+  // UPDATE IMAGE DOUBLE
+  CMadvrCallback::Get()->UpdateImageDouble();
+  CMadvrSettings &madvrSettings = CMediaSettings::Get().GetCurrentMadvrSettings();
 
-  // double factor
-  if (!IsNNEDI3(iDoubleLuma) 
-    || (IsNNEDI3(iDoubleLuma) && iDoubleChromaFactor > iDoubleLumaFactor)) 
-    iDoubleChromaFactor = iDoubleLumaFactor;
+  int iDoubleLuma = madvrSettings.m_ImageDoubleLuma;
+  int iDoubleChroma = madvrSettings.m_ImageDoubleChroma;
+  int iQuadrupleLuma = madvrSettings.m_ImageQuadrupleLuma;
+  int iQuadrupleChroma = madvrSettings.m_ImageQuadrupleChroma;
+  int iDoubleLumaFactor = madvrSettings.m_ImageDoubleLumaFactor;
+  int iDoubleChromaFactor = madvrSettings.m_ImageDoubleChromaFactor;
+  int iQuadrupleLumaFactor = madvrSettings.m_ImageQuadrupleLumaFactor;
+  int iQuadrupleChromaFactor = madvrSettings.m_ImageQuadrupleChromaFactor;
 
-  // quadruple factor
-  if (!IsNNEDI3(iQuadrupleLuma) 
-    || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChromaFactor > iQuadrupleLumaFactor))
-    iQuadrupleChromaFactor = iQuadrupleLumaFactor;
-
-  //double chroma
-  if (!IsNNEDI3(iDoubleLuma) 
-    || (IsNNEDI3(iDoubleLuma) && iDoubleChroma > iDoubleLuma))
-    iDoubleChroma = iDoubleLuma;
-
-  //quadruple luma
-  if (((!IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma)) 
-    || (IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma) && iQuadrupleLuma > iDoubleLuma)) 
-    && IsEnabled(iQuadrupleLuma))
-    iQuadrupleLuma = iDoubleLuma;
-
-  //quadruple chroma
-  if (!IsNNEDI3(iQuadrupleLuma) 
-    || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iQuadrupleLuma))
-    iQuadrupleChroma = iQuadrupleLuma;
-
-  if (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iDoubleChroma)
-    iQuadrupleChroma = iDoubleChroma;
-  
   // IMAGE DOUBLE VISIBILITY  
-  
   SetVisible(SET_IMAGE_DOUBLE_LUMA_FACTOR, IsEnabled(iDoubleLuma));
   SetVisible(SET_IMAGE_DOUBLE_CHROMA_FACTOR, IsEnabled(iDoubleChroma) && IsNNEDI3(iDoubleLuma));
   SetVisible(SET_IMAGE_QUADRUPLE_LUMA_FACTOR, IsEnabled(iQuadrupleLuma));
   SetVisible(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, IsEnabled(iQuadrupleChroma) && IsNNEDI3(iQuadrupleLuma));
-
   SetVisible(SET_IMAGE_DOUBLE_CHROMA, IsEnabled(iDoubleLuma) && IsNNEDI3(iDoubleLuma));
   SetVisible(SET_IMAGE_QUADRUPLE_LUMA, IsEnabled(iDoubleLuma));
   SetVisible(SET_IMAGE_QUADRUPLE_CHROMA, IsEnabled(iQuadrupleLuma) && IsNNEDI3(iQuadrupleLuma) && (IsEnabled(iDoubleChroma) || !IsNNEDI3(iQuadrupleLuma)));
   
   // SET NEW DOUBLE VALUE
   m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA_FACTOR, iDoubleChromaFactor);
-  madvrSettings.m_ImageDoubleChromaFactor = iDoubleChromaFactor;
-  CMadvrCallback::Get()->SetStr("nnediDCScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_DOUBLEFACTOR, iDoubleChromaFactor));
-
   m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, iQuadrupleLumaFactor);
-  madvrSettings.m_ImageQuadrupleChromaFactor = iQuadrupleLumaFactor;
-  CMadvrCallback::Get()->SetStr("nnediQCScalingFactor", CMadvrCallback::Get()->GetSettingsName(MADVR_LIST_QUADRUPLEFACTOR, iQuadrupleLumaFactor));
-
   m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA, iDoubleChroma);
-  madvrSettings.m_ImageDoubleChroma = iDoubleChroma;
-  CMadvrCallback::Get()->SetDoubling("DC", iDoubleChroma);
-
   m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_LUMA, iQuadrupleLuma);
-  madvrSettings.m_ImageQuadrupleLuma = iQuadrupleLuma;
-  CMadvrCallback::Get()->SetDoubling("QL", iQuadrupleLuma);
-
   m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA, iQuadrupleChroma);
-  madvrSettings.m_ImageQuadrupleChroma = iQuadrupleChroma;
-  CMadvrCallback::Get()->SetDoubling("QC", iQuadrupleChroma);
 
   // SHARP
   setting = m_settingsManager->GetSetting(SET_IMAGE_UPFINESHARP);
