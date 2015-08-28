@@ -108,7 +108,7 @@ void CActiveAEDSPProcess::ResetStreamFunctionsSelection()
   m_usedMap.clear();
 }
 
-bool CActiveAEDSPProcess::Create(AEAudioFormat inputFormat, AEAudioFormat outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE iStreamType,
+bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE iStreamType,
                                  enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type, int profile)
 {
   m_inputFormat       = inputFormat;                        /*!< Input format of processed stream */
