@@ -23,7 +23,6 @@
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 
-using namespace std;
 using namespace MUSIC_GRABBER;
 
 CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL):
