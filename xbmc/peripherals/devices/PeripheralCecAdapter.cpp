@@ -41,7 +41,6 @@ using namespace KODI::MESSAGING;
 using namespace PERIPHERALS;
 using namespace ANNOUNCEMENT;
 using namespace CEC;
-using namespace std;
 
 #define CEC_LIB_SUPPORTED_VERSION LIBCEC_VERSION_TO_UINT(3, 0, 0)
 
@@ -756,7 +755,7 @@ void CPeripheralCecAdapter::GetNextKey(void)
   m_bHasButton = false;
   if (m_bIsReady)
   {
-    vector<CecButtonPress>::iterator it = m_buttonQueue.begin();
+    std::vector<CecButtonPress>::iterator it = m_buttonQueue.begin();
     if (it != m_buttonQueue.end())
     {
       m_currentButton = (*it);
@@ -782,7 +781,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const CecButtonPress &key)
       return;
     }
     // if we received a keypress with a duration set, try to find the same one without a duration set, and replace it
-    for (vector<CecButtonPress>::reverse_iterator it = m_buttonQueue.rbegin(); it != m_buttonQueue.rend(); ++it)
+    for (std::vector<CecButtonPress>::reverse_iterator it = m_buttonQueue.rbegin(); it != m_buttonQueue.rend(); ++it)
     {
       if ((*it).iButton == key.iButton)
       {
@@ -1427,7 +1426,7 @@ void CPeripheralCecAdapter::ReadLogicalAddresses(int iLocalisedId, cec_logical_a
   }
 }
 
-bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& addresses, const string& strSettingName, const string& strAdvancedSettingName)
+bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& addresses, const std::string& strSettingName, const std::string& strAdvancedSettingName)
 {
   bool bChanged(false);
 
