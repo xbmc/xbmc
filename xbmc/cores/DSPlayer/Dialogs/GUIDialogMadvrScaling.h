@@ -46,6 +46,7 @@ protected:
   virtual void Save() {};
 
   bool IsNNEDI3(int iValue) { return iValue < 5; }
+  bool IsEnabled(int iValue) { return iValue > -1; }
   void HideUnused();
   void SetVisible(CStdString id, bool visible);
 

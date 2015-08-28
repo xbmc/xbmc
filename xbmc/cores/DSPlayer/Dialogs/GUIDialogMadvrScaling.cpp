@@ -488,29 +488,46 @@ void CGUIDialogMadvrScaling::HideUnused()
   iQuadrupleLumaFactor = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_LUMA_FACTOR);
   iQuadrupleChromaFactor = m_settingsManager->GetInt(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR);
 
-  // double factor rules
-  if ( !IsNNEDI3(iDoubleLuma) || (IsNNEDI3(iDoubleLuma) && iDoubleChromaFactor > iDoubleLumaFactor) ) 
+  // double factor
+  if (!IsNNEDI3(iDoubleLuma) 
+    || (IsNNEDI3(iDoubleLuma) && iDoubleChromaFactor > iDoubleLumaFactor)) 
     iDoubleChromaFactor = iDoubleLumaFactor;
 
-  // quadruple factor rules
-  if (!IsNNEDI3(iQuadrupleLuma) || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChromaFactor > iQuadrupleLumaFactor) )
+  // quadruple factor
+  if (!IsNNEDI3(iQuadrupleLuma) 
+    || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChromaFactor > iQuadrupleLumaFactor))
     iQuadrupleChromaFactor = iQuadrupleLumaFactor;
 
   //double chroma
-  if ((!IsNNEDI3(iDoubleLuma) || (IsNNEDI3(iDoubleLuma) && iDoubleChroma > iDoubleLuma)) && (iDoubleChroma != -1) ) 
+  if (!IsNNEDI3(iDoubleLuma) 
+    || (IsNNEDI3(iDoubleLuma) && iDoubleChroma > iDoubleLuma))
     iDoubleChroma = iDoubleLuma;
 
   //quadruple luma
-  if (((!IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma)) || (IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma) && iQuadrupleLuma > iDoubleLuma)) && (iQuadrupleLuma != -1))
+  if (((!IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma)) 
+    || (IsNNEDI3(iDoubleLuma) && IsNNEDI3(iQuadrupleLuma) && iQuadrupleLuma > iDoubleLuma)) 
+    && IsEnabled(iQuadrupleLuma))
     iQuadrupleLuma = iDoubleLuma;
 
   //quadruple chroma
-  if ((!IsNNEDI3(iQuadrupleLuma) || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iQuadrupleLuma)) && (iQuadrupleChroma != -1))
+  if (!IsNNEDI3(iQuadrupleLuma) 
+    || (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iQuadrupleLuma))
     iQuadrupleChroma = iQuadrupleLuma;
 
-  if ((IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iDoubleChroma) && (iQuadrupleChroma != -1))
+  if (IsNNEDI3(iQuadrupleLuma) && iQuadrupleChroma > iDoubleChroma)
     iQuadrupleChroma = iDoubleChroma;
+  
+  // IMAGE DOUBLE VISIBILITY  
+  
+  SetVisible(SET_IMAGE_DOUBLE_LUMA_FACTOR, IsEnabled(iDoubleLuma));
+  SetVisible(SET_IMAGE_DOUBLE_CHROMA_FACTOR, IsEnabled(iDoubleChroma) && IsNNEDI3(iDoubleLuma));
+  SetVisible(SET_IMAGE_QUADRUPLE_LUMA_FACTOR, IsEnabled(iQuadrupleLuma));
+  SetVisible(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, IsEnabled(iQuadrupleChroma) && IsNNEDI3(iQuadrupleLuma));
 
+  SetVisible(SET_IMAGE_DOUBLE_CHROMA, IsEnabled(iDoubleLuma) && IsNNEDI3(iDoubleLuma));
+  SetVisible(SET_IMAGE_QUADRUPLE_LUMA, IsEnabled(iDoubleLuma));
+  SetVisible(SET_IMAGE_QUADRUPLE_CHROMA, IsEnabled(iQuadrupleLuma) && IsNNEDI3(iQuadrupleLuma) && (IsEnabled(iDoubleChroma) || !IsNNEDI3(iQuadrupleLuma)));
+  
   // SET NEW DOUBLE VALUE
   m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA_FACTOR, iDoubleChromaFactor);
   madvrSettings.m_ImageDoubleChromaFactor = iDoubleChromaFactor;
@@ -532,19 +549,6 @@ void CGUIDialogMadvrScaling::HideUnused()
   madvrSettings.m_ImageQuadrupleChroma = iQuadrupleChroma;
   CMadvrCallback::Get()->SetDoubling("QC", iQuadrupleChroma);
 
-  // IMAGE DOUBLE VISIBILITY
-
-  // quality visibility
-  SetVisible(SET_IMAGE_DOUBLE_CHROMA, (iDoubleLuma > -1));
-  SetVisible(SET_IMAGE_QUADRUPLE_LUMA, (iDoubleLuma > -1));
-  SetVisible(SET_IMAGE_QUADRUPLE_CHROMA, (iDoubleLuma > -1) && (iDoubleChroma > -1) && (iQuadrupleLuma > -1));
-
-  // factor visibility
-  SetVisible(SET_IMAGE_DOUBLE_LUMA_FACTOR, (iDoubleLuma > -1));
-  SetVisible(SET_IMAGE_DOUBLE_CHROMA_FACTOR, (iDoubleLuma > -1) && (iDoubleChroma > -1));
-  SetVisible(SET_IMAGE_QUADRUPLE_LUMA_FACTOR, (iDoubleLuma > -1) && (iQuadrupleLuma > -1));
-  SetVisible(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, (iDoubleLuma > -1) && (iDoubleChroma > -1) && (iQuadrupleLuma > -1) && (iQuadrupleChroma > -1));
-  
   // SHARP
   setting = m_settingsManager->GetSetting(SET_IMAGE_UPFINESHARP);
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();
@@ -581,6 +585,7 @@ void CGUIDialogMadvrScaling::SetVisible(CStdString id, bool visible)
   CSetting *setting = m_settingsManager->GetSetting(id);
   if (setting->IsVisible() && visible)
     return;
+
   setting->SetVisible(visible);
   setting->SetEnabled(visible);
 }
