@@ -22,7 +22,7 @@
 
 #include "threads/Thread.h"
 #include "xbmc/guilib/FrameBufferObject.h"
-#include "cores/VideoRenderers/RenderFormats.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFormats.h"
 
 #include <android/native_window.h>
 #include <android/native_window_jni.h>

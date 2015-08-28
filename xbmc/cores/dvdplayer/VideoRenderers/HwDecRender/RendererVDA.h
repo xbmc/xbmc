@@ -24,7 +24,7 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
-#include "cores/VideoRenderers/LinuxRendererGL.h"
+#include "cores/dvdplayer/VideoRenderers/LinuxRendererGL.h"
 
 class CRendererVDA : public CLinuxRendererGL
 {

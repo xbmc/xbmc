@@ -48,7 +48,7 @@
 #include "messaging/ApplicationMessenger.h"
 
 #include "DVDDemuxers/DVDDemuxCC.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "xbmc/utils/PerformanceSample.h"
 #else

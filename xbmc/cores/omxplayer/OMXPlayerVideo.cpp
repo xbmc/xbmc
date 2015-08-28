@@ -43,8 +43,8 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
-#include "cores/VideoRenderers/RenderFormats.h"
-#include "cores/VideoRenderers/RenderFlags.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFormats.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFlags.h"
 #include "guilib/GraphicContext.h"
 
 #include "DVDPlayer.h"

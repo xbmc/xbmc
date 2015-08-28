@@ -21,7 +21,7 @@
  */
 
 #include "Video/DVDVideoCodec.h"
-#include "cores/VideoRenderers/RenderFormats.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFormats.h"
 
 struct YV12Image;
 

@@ -28,7 +28,7 @@
 #include <dxva2api.h>
 #include <windows.h>
 #include "DXVAHD.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #include "RenderFlags.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"

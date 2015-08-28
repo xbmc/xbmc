@@ -55,7 +55,7 @@
 
 #include "LanguageHook.h"
 
-#include "cores/VideoRenderers/RenderCapture.h"
+#include "cores/dvdplayer/VideoRenderers/RenderCapture.h"
 
 #include "threads/SystemClock.h"
 #include <vector>

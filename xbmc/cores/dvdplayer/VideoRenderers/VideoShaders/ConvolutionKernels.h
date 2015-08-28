@@ -22,7 +22,7 @@
 #define CONVOLUTIONKERNELS
 
 #include "system.h"
-#include "../../../settings/VideoSettings.h"
+#include "settings/VideoSettings.h"
 
 class CConvolutionKernel
 {

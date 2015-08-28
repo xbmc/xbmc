@@ -26,7 +26,7 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayText.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #include "guilib/GraphicContext.h"
 #include "Application.h"
 #include "settings/Settings.h"

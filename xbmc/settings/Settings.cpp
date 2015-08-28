@@ -31,7 +31,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "cores/VideoRenderers/BaseRenderer.h"
+#include "cores/dvdplayer/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIAudioManager.h"

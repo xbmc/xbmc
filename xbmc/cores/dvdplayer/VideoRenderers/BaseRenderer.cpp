@@ -33,7 +33,7 @@
 #include "utils/MathUtils.h"
 #include "utils/SystemInfo.h"
 #include "settings/AdvancedSettings.h"
-#include "cores/VideoRenderers/RenderFlags.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFlags.h"
 
 
 CBaseRenderer::CBaseRenderer()

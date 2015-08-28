@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#include "cores/VideoRenderers/RenderFlags.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFlags.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"

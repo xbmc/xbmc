@@ -24,7 +24,7 @@
 
 #ifdef HAVE_LIBVA
 
-#include "cores/VideoRenderers/LinuxRendererGL.h"
+#include "cores/dvdplayer/VideoRenderers/LinuxRendererGL.h"
 
 class CRendererVAAPI : public CLinuxRendererGL
 {

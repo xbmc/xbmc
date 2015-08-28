@@ -26,7 +26,7 @@
 
 #include <string>
 #include <vector>
-#include "cores/VideoRenderers/RenderFormats.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFormats.h"
 
 // 0x100000 is the video starting range
 

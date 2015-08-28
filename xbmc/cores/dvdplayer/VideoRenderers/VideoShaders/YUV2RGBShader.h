@@ -22,7 +22,7 @@
  */
 
 #include "guilib/TransformMatrix.h"
-#include "cores/VideoRenderers/RenderFormats.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFormats.h"
 
 void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags
