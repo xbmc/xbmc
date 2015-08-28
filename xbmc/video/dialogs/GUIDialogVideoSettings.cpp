@@ -400,36 +400,57 @@ void CGUIDialogVideoSettings::SaveChoice()
   std::string tvShowName = CMediaSettings::GetInstance().GetCurrentMadvrSettings().m_TvShowName;
   int currentRes = CMediaSettings::GetInstance().GetCurrentMadvrSettings().m_Resolution;
 
+  if (item.HasVideoInfoTag() && (item.GetVideoContentType() == VIDEODB_CONTENT_EPISODES || item.GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS))
+    pDlg->Add(StringUtils::Format(g_localizeStrings.Get(70605).c_str(), tvShowName.c_str()));
+
   pDlg->Add(g_localizeStrings.Get(70601).c_str());
   pDlg->Add(g_localizeStrings.Get(70602).c_str());
   pDlg->Add(g_localizeStrings.Get(70603).c_str());
   pDlg->Add(g_localizeStrings.Get(70604).c_str());
-  if (item.HasVideoInfoTag() && (item.GetVideoContentType() == VIDEODB_CONTENT_EPISODES || item.GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS))
-    
-    pDlg->Add(StringUtils::Format(g_localizeStrings.Get(70605).c_str(), tvShowName.c_str()));
-  pDlg->Add(g_localizeStrings.Get(12376).c_str());
+  pDlg->Add(g_localizeStrings.Get(70606).c_str());
 
   pDlg->SetHeading(70600);
   pDlg->Open();
 
-  int selected = pDlg->GetSelectedLabel();
+  int label;
+  int selected = -1;
+  std::string strSelected = pDlg->GetSelectedLabelText();
 
-  if (selected == MADVR_RES_ALL)
+  //SD
+  if (strSelected == g_localizeStrings.Get(70601))
+  {
+    selected = MADVR_RES_SD;
+    label = 70601;
+  }
+  //720
+  if (strSelected == g_localizeStrings.Get(70602))
+  {
+    selected = MADVR_RES_720;
+    label = 70602;
+  }
+  //1080
+  if (strSelected == g_localizeStrings.Get(70603))
+  {
+    selected = MADVR_RES_1080;
+    label = 70603;
+  }
+  //2160
+  if (strSelected == g_localizeStrings.Get(70604))
+  {
+    selected = MADVR_RES_2160;
+    label = 70604;
+  }
+  //EPISODES
+  if (strSelected == StringUtils::Format(g_localizeStrings.Get(70605).c_str(), tvShowName.c_str()))
+  {
+    selected = MADVR_RES_EPISODES;
+    label = 70605;
+  }
+  //ALL
+  if (strSelected == g_localizeStrings.Get(70606))
     Save();
   else if (selected > -1 )
   {
-    int label;
-    if (selected == MADVR_RES_SD)
-      label = 70601;
-    if (selected == MADVR_RES_720)
-      label = 70602;
-    if (selected == MADVR_RES_1080)
-      label = 70603;
-    if (selected == MADVR_RES_2160)
-      label = 70604;
-    if (selected == MADVR_RES_EPISODES)
-      label = 70605;
-
     if (CGUIDialogYesNo::ShowAndGetInput(StringUtils::Format(g_localizeStrings.Get(label).c_str(), tvShowName.c_str()), 750, 0, 12377))
     { // reset the settings
 
@@ -507,6 +528,12 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
 #ifdef HAS_DS_PLAYER
   // get all necessary setting groups
+  CSettingGroup *groupMadvrSave = AddGroup(category);
+  if (groupMadvrSave == NULL)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
+    return;
+  }
   CSettingGroup *groupMadvrProcessing = AddGroup(category);
   if (groupMadvrProcessing == NULL)
   {
@@ -531,8 +558,8 @@ void CGUIDialogVideoSettings::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
   }
-  CSettingGroup *groupMadvrSave = AddGroup(category);
-  if (groupMadvrRendering == NULL)
+  CSettingGroup *groupFilters = AddGroup(category);
+  if (groupFilters == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogVideoSettings: unable to setup settings");
     return;
@@ -709,6 +736,9 @@ void CGUIDialogVideoSettings::InitializeSettings()
     } 
     else
     { 
+      //SAVE DEFAULT SETTINGS...
+      AddButton(groupMadvrSave, SETTING_VIDEO_MAKE_DEFAULT, 70600, 0);
+
       // MADVR DEINT
       entries.clear();
       entries.push_back(std::make_pair(70117, -1));
@@ -762,7 +792,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
       
     }
 
-    AddButton(groupVideo, VIDEO_SETTINGS_DS_FILTERS, 55062, 0);
+    AddButton(groupFilters, VIDEO_SETTINGS_DS_FILTERS, 55062, 0);
   }
 #endif
 
@@ -806,9 +836,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   // general settings
 #ifdef HAS_DS_PLAYER
-  if (m_isMadvr)
-    AddButton(groupMadvrSave, SETTING_VIDEO_MAKE_DEFAULT, 70600, 0);
-  else
+  if (!m_isMadvr)
     AddButton(groupSaveAsDefault, SETTING_VIDEO_MAKE_DEFAULT, 12376, 0);
 #else
   AddButton(groupSaveAsDefault, SETTING_VIDEO_MAKE_DEFAULT, 12376, 0);
