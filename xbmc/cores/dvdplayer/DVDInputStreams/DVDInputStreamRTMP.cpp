@@ -35,7 +35,6 @@
 #include <string>
 
 using namespace XFILE;
-using namespace std;
 
 static int RTMP_level=0;
 extern "C" 
@@ -166,7 +165,7 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content, 
    */
   std::string url = strFile;
   size_t iPosBlank = url.find(' ');
-  if (iPosBlank != string::npos && (url.find("live=true") != string::npos || url.find("live=1") != string::npos))
+  if (iPosBlank != std::string::npos && (url.find("live=true") != std::string::npos || url.find("live=1") != std::string::npos))
   {
     m_canSeek = false;
     m_canPause = false;
