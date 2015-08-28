@@ -478,7 +478,7 @@ void CGUIDialogMadvrScaling::HideUnused()
   
   // SET NEW DOUBLE VALUE
   m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA_FACTOR, iDoubleChromaFactor);
-  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, iQuadrupleLumaFactor);
+  m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, iQuadrupleChromaFactor);
   m_settingsManager->SetInt(SET_IMAGE_DOUBLE_CHROMA, iDoubleChroma);
   m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_LUMA, iQuadrupleLuma);
   m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA, iQuadrupleChroma);
