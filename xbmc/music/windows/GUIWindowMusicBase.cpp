@@ -62,7 +62,6 @@
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 
 
-using namespace std;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace PLAYLIST;
@@ -514,7 +513,7 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
   OnRetrieveMusicInfo(*m_vecItems);
 
   // \todo Scan for multitrack items here...
-  vector<string> itemsForRemove;
+  std::vector<std::string> itemsForRemove;
   CFileItemList itemsForAdd;
   for (int i = 0; i < m_vecItems->Size(); ++i)
   {
@@ -652,7 +651,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
   {
     if (pItem->IsPlayList())
     {
-      unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
+      std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
       if (pPlayList.get())
       {
         // load it
@@ -947,7 +946,7 @@ void CGUIWindowMusicBase::LoadPlayList(const std::string& strPlayList)
 
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
+  std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if (pPlayList.get())
   {
     // load it
@@ -1131,17 +1130,17 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 
   if (params.GetAlbumId() > 0)
   {
-    map<string, string> artistArt;
+    std::map<std::string, std::string> artistArt;
     if (m_musicdatabase.GetArtistArtForItem(params.GetAlbumId(), MediaTypeAlbum, artistArt))
       items.AppendArt(artistArt, MediaTypeArtist);
 
-    map<string, string> albumArt;
+    std::map<std::string, std::string> albumArt;
     if (m_musicdatabase.GetArtForItem(params.GetAlbumId(), MediaTypeAlbum, albumArt))
       items.AppendArt(albumArt, MediaTypeAlbum);
   }
   if (params.GetArtistId() > 0)
   {
-    map<string, string> artistArt;
+    std::map<std::string, std::string> artistArt;
     if (m_musicdatabase.GetArtForItem(params.GetArtistId(), "artist", artistArt))
       items.AppendArt(artistArt, MediaTypeArtist);
   }
