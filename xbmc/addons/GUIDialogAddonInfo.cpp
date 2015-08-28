@@ -52,7 +52,6 @@
 #define CONTROL_BTN_ROLLBACK        11
 #define CONTROL_BTN_SELECT          12
 
-using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 
@@ -224,7 +223,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
     return false;
 
   VECADDONS addons;
-  vector<string> deps;
+  std::vector<std::string> deps;
   CAddonMgr::GetInstance().GetAllAddons(addons);
   for (VECADDONS::const_iterator it  = addons.begin();
        it != addons.end();++it)
@@ -236,8 +235,8 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
   if (!deps.empty())
   {
-    string line0 = StringUtils::Format(g_localizeStrings.Get(24046).c_str(), m_localAddon->Name().c_str());
-    string line1 = StringUtils::Join(deps, ", ");
+    std::string line0 = StringUtils::Format(g_localizeStrings.Get(24046).c_str(), m_localAddon->Name().c_str());
+    std::string line1 = StringUtils::Join(deps, ", ");
     CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{std::move(line0)}, CVariant{std::move(line1)}, CVariant{line2});
     return true;
   }
