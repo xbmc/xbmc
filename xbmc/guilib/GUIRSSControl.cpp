@@ -25,8 +25,6 @@
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
-
 CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, std::string& strRSSTags)
 : CGUIControl(parentID, controlID, posX, posY, width, height),
   m_strRSSTags(strRSSTags),
@@ -123,8 +121,8 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
       {
         if (m_strRSSTags != "")
         {
-          vector<string> tags = StringUtils::Split(m_strRSSTags, ",");
-          for (vector<string>::const_iterator i = tags.begin(); i != tags.end(); ++i)
+          std::vector<std::string> tags = StringUtils::Split(m_strRSSTags, ",");
+          for (std::vector<std::string>::const_iterator i = tags.begin(); i != tags.end(); ++i)
             m_pReader->AddTag(*i);
         }
         // use half the width of the control as spacing between feeds, and double this between feed sets

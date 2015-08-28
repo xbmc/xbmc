@@ -27,8 +27,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
-using namespace std;
-
 CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 {
   m_effect = effect;
@@ -187,7 +185,7 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
   const char *startPos = node->Attribute("start");
   if (startPos)
   {
-    vector<string> commaSeparated = StringUtils::Split(startPos, ",");
+    std::vector<std::string> commaSeparated = StringUtils::Split(startPos, ",");
     if (commaSeparated.size() > 1)
       m_startY = (float)atof(commaSeparated[1].c_str());
     if (!commaSeparated.empty())
@@ -196,7 +194,7 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
   const char *endPos = node->Attribute("end");
   if (endPos)
   {
-    vector<string> commaSeparated = StringUtils::Split(endPos, ",");
+    std::vector<std::string> commaSeparated = StringUtils::Split(endPos, ",");
     if (commaSeparated.size() > 1)
       m_endY = (float)atof(commaSeparated[1].c_str());
     if (!commaSeparated.empty())
@@ -227,7 +225,7 @@ CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAn
       m_autoCenter = true;
     else
     {
-      vector<string> commaSeparated = StringUtils::Split(centerPos, ",");
+      std::vector<std::string> commaSeparated = StringUtils::Split(centerPos, ",");
       if (commaSeparated.size() > 1)
         m_center.y = (float)atof(commaSeparated[1].c_str());
       if (!commaSeparated.empty())
@@ -261,13 +259,13 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
   float endPosX = rect.x1;
   float endPosY = rect.y1;
 
-  float width = max(rect.Width(), 0.001f);
-  float height = max(rect.Height(),0.001f);
+  float width = std::max(rect.Width(), 0.001f);
+  float height = std::max(rect.Height(),0.001f);
 
   const char *start = node->Attribute("start");
   if (start)
   {
-    vector<string> params = StringUtils::Split(start, ",");
+    std::vector<std::string> params = StringUtils::Split(start, ",");
     if (params.size() == 1)
     {
       m_startX = (float)atof(params[0].c_str());
@@ -292,7 +290,7 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
   const char *end = node->Attribute("end");
   if (end)
   {
-    vector<string> params = StringUtils::Split(end, ",");
+    std::vector<std::string> params = StringUtils::Split(end, ",");
     if (params.size() == 1)
     {
       m_endX = (float)atof(params[0].c_str());
@@ -321,7 +319,7 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
       m_autoCenter = true;
     else
     {
-      vector<string> commaSeparated = StringUtils::Split(centerPos, ",");
+      std::vector<std::string> commaSeparated = StringUtils::Split(centerPos, ",");
       if (commaSeparated.size() > 1)
         m_center.y = (float)atof(commaSeparated[1].c_str());
       if (!commaSeparated.empty())
@@ -673,10 +671,10 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   // compute the minimum delay and maximum length
   m_delay = 0xffffffff;
   unsigned int total = 0;
-  for (vector<CAnimEffect*>::const_iterator i = m_effects.begin(); i != m_effects.end(); ++i)
+  for (std::vector<CAnimEffect*>::const_iterator i = m_effects.begin(); i != m_effects.end(); ++i)
   {
-    m_delay = min(m_delay, (*i)->GetDelay());
-    total   = max(total, (*i)->GetLength());
+    m_delay = std::min(m_delay, (*i)->GetDelay());
+    total   = std::max(total, (*i)->GetLength());
   }
   m_length = total - m_delay;
 }

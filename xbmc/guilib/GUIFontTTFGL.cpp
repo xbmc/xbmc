@@ -37,10 +37,7 @@
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
 
-using namespace std;
-
 #if defined(HAS_GL) || defined(HAS_GLES)
-
 
 CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName)
 : CGUIFontTTFBase(strFileName)
