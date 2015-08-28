@@ -24,7 +24,6 @@
 #include "utils/log.h"
 #include "FileItem.h"
 
-using namespace std;
 using namespace PERIPHERALS;
 
 #define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 5000
@@ -74,7 +73,7 @@ void CPeripheralBus::Clear(void)
 void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &results)
 {
   CSingleLock lock(m_critSection);
-  vector<CPeripheral *> removedPeripherals;
+  std::vector<CPeripheral *> removedPeripherals;
   for (int iDevicePtr = (int) m_peripherals.size() - 1; iDevicePtr >= 0; iDevicePtr--)
   {
     CPeripheral *peripheral = m_peripherals.at(iDevicePtr);
@@ -92,7 +91,7 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
   for (unsigned int iDevicePtr = 0; iDevicePtr < removedPeripherals.size(); iDevicePtr++)
   {
     CPeripheral *peripheral = removedPeripherals.at(iDevicePtr);
-    vector<PeripheralFeature> features;
+    std::vector<PeripheralFeature> features;
     peripheral->GetFeatures(features);
     bool peripheralHasFeatures = features.size() > 1 || (features.size() == 1 && features.at(0) != FEATURE_UNKNOWN);
     if (peripheral->Type() != PERIPHERAL_UNKNOWN || peripheralHasFeatures)
@@ -173,7 +172,7 @@ CPeripheral *CPeripheralBus::GetPeripheral(const std::string &strLocation) const
   return peripheral;
 }
 
-int CPeripheralBus::GetPeripheralsWithFeature(vector<CPeripheral *> &results, const PeripheralFeature feature) const
+int CPeripheralBus::GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature) const
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
