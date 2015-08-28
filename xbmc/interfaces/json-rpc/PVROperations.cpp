@@ -30,7 +30,6 @@
 #include "epg/EpgContainer.h"
 #include "utils/Variant.h"
 
-using namespace std;
 using namespace JSONRPC;
 using namespace PVR;
 using namespace EPG;
@@ -73,7 +72,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroups(const std::string &method, ITran
 
   int start, end;
 
-  vector<CPVRChannelGroupPtr> groupList = channelGroups->GetMembers();
+  std::vector<CPVRChannelGroupPtr> groupList = channelGroups->GetMembers();
   HandleLimits(parameterObject, result, groupList.size(), start, end);
   for (int index = start; index < end; index++)
     FillChannelGroupDetails(groupList.at(index), parameterObject, result["channelgroups"], true);
