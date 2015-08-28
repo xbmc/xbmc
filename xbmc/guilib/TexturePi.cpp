@@ -29,8 +29,6 @@
 #if defined(HAS_OMXPLAYER)
 #include "cores/omxplayer/OMXImage.h"
 
-using namespace std;
-
 /************************************************************************/
 /*    CPiTexture                                                       */
 /************************************************************************/

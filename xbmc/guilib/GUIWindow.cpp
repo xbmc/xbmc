@@ -43,7 +43,6 @@
 #include "utils/PerformanceSample.h"
 #endif
 
-using namespace std;
 using namespace KODI::MESSAGING;
 
 bool CGUIWindow::icompare::operator()(const std::string &s1, const std::string &s2) const
@@ -939,7 +938,7 @@ void CGUIWindow::SaveControlStates()
 
 void CGUIWindow::RestoreControlStates()
 {
-  for (vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
+  for (std::vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
   {
     CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
     OnMessage(message);
@@ -971,7 +970,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
               fromControl, GetID());
     return false;
   }
-  vector<int> moveHistory;
+  std::vector<int> moveHistory;
   int nextControl = fromControl;
   while (control)
   { // grab the next control direction

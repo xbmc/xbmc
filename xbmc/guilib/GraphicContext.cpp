@@ -33,7 +33,6 @@
 #include "GUIWindowManager.h"
 #include "video/VideoReferenceClock.h"
 
-using namespace std;
 using namespace KODI::MESSAGING;
 
 extern bool g_fullScreen;
@@ -941,10 +940,10 @@ CRect CGraphicContext::generateAABB(const CRect &rect) const
   ScaleFinalCoords(x4, y4, z);
   g_Windowing.Project(x4, y4, z);
 
-  return CRect( min(min(min(x1, x2), x3), x4),
-                min(min(min(y1, y2), y3), y4),
-                max(max(max(x1, x2), x3), x4),
-                max(max(max(y1, y2), y3), y4));
+  return CRect( std::min(std::min(std::min(x1, x2), x3), x4),
+                std::min(std::min(std::min(y1, y2), y3), y4),
+                std::max(std::max(std::max(x1, x2), x3), x4),
+                std::max(std::max(std::max(y1, y2), y3), y4));
 }
 
 // NOTE: This routine is currently called (twice) every time there is a <camera>
@@ -1082,7 +1081,7 @@ void CGraphicContext::RestoreHardwareTransform()
   g_Windowing.RestoreHardwareTransform();
 }
 
-void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
+void CGraphicContext::GetAllowedResolutions(std::vector<RESOLUTION> &res)
 {
   res.clear();
 

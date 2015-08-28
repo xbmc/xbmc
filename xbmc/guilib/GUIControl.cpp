@@ -28,8 +28,6 @@
 #include "input/InputManager.h"
 #include "input/Key.h"
 
-using namespace std;
-
 CGUIControl::CGUIControl() :
   m_diffuseColor(0xffffffff)
 {
@@ -652,7 +650,7 @@ void CGUIControl::SetVisibleCondition(const std::string &expression, const std::
   m_allowHiddenFocus.Parse(allowHiddenFocus, GetParentID());
 }
 
-void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
+void CGUIControl::SetAnimations(const std::vector<CAnimation> &animations)
 {
   m_animations = animations;
   MarkDirtyRegion();
@@ -905,7 +903,7 @@ bool CGUIControl::HasVisibleID(int id) const
   return GetID() == id && IsVisible();
 }
 
-void CGUIControl::SaveStates(vector<CControlState> &states)
+void CGUIControl::SaveStates(std::vector<CControlState> &states)
 {
   // empty for now - do nothing with the majority of controls
 }
