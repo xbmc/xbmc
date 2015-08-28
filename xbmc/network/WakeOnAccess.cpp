@@ -44,8 +44,6 @@
 
 #include "WakeOnAccess.h"
 
-using namespace std;
-
 #define DEFAULT_NETWORK_INIT_SEC      (20)   // wait 20 sec for network after startup or resume
 #define DEFAULT_NETWORK_SETTLE_MS     (500)  // require 500ms of consistent network availability before trusting it
 
@@ -108,8 +106,8 @@ bool CMACDiscoveryJob::DoWork()
     return false;
   }
 
-  vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
-  for (vector<CNetworkInterface*>::const_iterator it = ifaces.begin(); it != ifaces.end(); ++it)
+  std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
+  for (std::vector<CNetworkInterface*>::const_iterator it = ifaces.begin(); it != ifaces.end(); ++it)
   {
     if ((*it)->GetHostMacAddress(ipAddress, m_macAddres))
       return true;
@@ -221,7 +219,7 @@ public:
         unsigned ms_passed = timeOutMs - end_time.MillisLeft();
 
         int percentage = (ms_passed * 100) / timeOutMs;
-        m_dialog->SetPercentage(max(percentage, 1)); // avoid flickering , keep minimum 1%
+        m_dialog->SetPercentage(std::max(percentage, 1)); // avoid flickering , keep minimum 1%
       }
 
       Sleep (m_dialog ? 20 : 200);
@@ -338,7 +336,7 @@ bool CWakeOnAccess::WakeUpHost(const CURL& url)
   return true;
 }
 
-bool CWakeOnAccess::WakeUpHost (const std::string& hostName, const string& customMessage)
+bool CWakeOnAccess::WakeUpHost (const std::string& hostName, const std::string& customMessage)
 {
   if (!IsEnabled())
     return true; // bail if feature is turned off
@@ -486,9 +484,9 @@ void CWakeOnAccess::TouchHostEntry (const std::string& hostName)
   }
 }
 
-static void AddHost (const std::string& host, vector<string>& hosts)
+static void AddHost (const std::string& host, std::vector<std::string>& hosts)
 {
-  for (vector<string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
     if (StringUtils::EqualsNoCase(host, *it))
       return; // allready there ..
 
@@ -496,7 +494,7 @@ static void AddHost (const std::string& host, vector<string>& hosts)
     hosts.push_back(host);
 }
 
-static void AddHostFromDatabase(const DatabaseSettings& setting, vector<string>& hosts)
+static void AddHostFromDatabase(const DatabaseSettings& setting, std::vector<std::string>& hosts)
 {
   if (StringUtils::EqualsNoCase(setting.type, "mysql"))
     AddHost(setting.host, hosts);
@@ -515,7 +513,7 @@ void CWakeOnAccess::QueueMACDiscoveryForHost(const std::string& host)
 
 static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std::string>& hosts)
 {
-  for (vector<string>::const_iterator it = source.vecPaths.begin() ; it != source.vecPaths.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = source.vecPaths.begin() ; it != source.vecPaths.end(); ++it)
   {
     CURL url(*it);
 
@@ -523,13 +521,13 @@ static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std:
   }
 }
 
-static void AddHostsFromVecSource(const VECSOURCES& sources, vector<string>& hosts)
+static void AddHostsFromVecSource(const VECSOURCES& sources, std::vector<std::string>& hosts)
 {
   for (VECSOURCES::const_iterator it = sources.begin(); it != sources.end(); ++it)
     AddHostsFromMediaSource(*it, hosts);
 }
 
-static void AddHostsFromVecSource(const VECSOURCES* sources, vector<string>& hosts)
+static void AddHostsFromVecSource(const VECSOURCES* sources, std::vector<std::string>& hosts)
 {
   if (sources)
     AddHostsFromVecSource(*sources, hosts);
@@ -537,7 +535,7 @@ static void AddHostsFromVecSource(const VECSOURCES* sources, vector<string>& hos
 
 void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
 {
-  vector<string> hosts;
+  std::vector<std::string> hosts;
 
   // add media sources
   CMediaSourceSettings& ms = CMediaSourceSettings::GetInstance();
@@ -562,7 +560,7 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
     AddHost (url.GetHostName(), hosts);
   }
 
-  for (vector<string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
     QueueMACDiscoveryForHost(*it);
 }
 
