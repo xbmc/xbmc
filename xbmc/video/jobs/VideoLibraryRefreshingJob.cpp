@@ -197,9 +197,22 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       }
     }
 
-    // if the URL is still empty there's nothing else we can do
+    // if the URL is still empty, check whether or not we're allowed
+    // to prompt and ask the user to input a new search title
     if (!hasDetails && scraperUrl.m_url.empty())
     {
+      if (m_showDialogs)
+      {
+        // ask the user to input a title to use
+        if (!CGUIKeyboardFactory::ShowAndGetInput(itemTitle, g_localizeStrings.Get(scraper->Content() == CONTENT_TVSHOWS ? 20357 : 16009), false))
+          return false;
+
+        // go through the whole process again
+        needsRefresh = true;
+        continue;
+      }
+
+      // nothing else we can do
       failure = true;
       break;
     }
