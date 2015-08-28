@@ -33,7 +33,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-using namespace std;
 using namespace XFILE;
 
 CFileOperationJob::CFileOperationJob()
