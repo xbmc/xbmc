@@ -26,8 +26,6 @@
 #include <memory>
 #include <dinput.h>
 
-using namespace std;
-
 extern HWND g_hWnd;
 
 #define MAX_AXISAMOUNT  32768
