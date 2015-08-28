@@ -212,6 +212,20 @@ bool CDarwinUtils::IsMavericks(void)
   return isMavericks == 1;
 }
 
+bool CDarwinUtils::IsLion(void)  
+{  
+  static int isLion = -1;  
+#if defined(TARGET_DARWIN_OSX)  
+  if (isLion == -1)  
+  {  
+    double appKitVersion = floor(NSAppKitVersionNumber);  
+    // everything lower 10.8 is 10.7.x because 10.7 is deployment target...  
+    isLion = (appKitVersion < NSAppKitVersionNumber10_8) ? 1 : 0;  
+  }  
+#endif  
+  return isLion == 1;  
+}
+
 bool CDarwinUtils::IsSnowLeopard(void)
 {
   static int isSnowLeopard = -1;
