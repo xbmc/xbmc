@@ -819,7 +819,7 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
       m_pDS->close();
       // update the item
       strSQL = PrepareSQL("update madvrSettings "
-        "set Resolution=%i, set TvShowName='%s', "
+        "set Resolution=%i, TvShowName='%s', "
         "ChromaUpscaling=%i,ChromaAntiRing=%i,ChromaSuperRes=%i, ChromaSuperResPasses=%i, ChromaSuperResStrength=%f, ChromaSuperResSoftness=%f, "
         "ImageUpscaling=%i,ImageUpAntiRing=%i,ImageUpLinear=%i, "
         "ImageDownscaling=%i,ImageDownAntiRing=%i,ImageDownLinear=%i, "
