@@ -93,10 +93,10 @@ void CDSPlayerDatabase::CreateTables()
 
   CStdString strSQL = "CREATE TABLE lavvideoSettings (id integer, bTrayIcon integer, dwStreamAR integer, dwNumThreads integer, ";
   for (int i = 0; i < LAVOutPixFmt_NB; ++i)
-    strSQL += StringUtils::Format("bPixFmts%i integer, ", i);
+    strSQL += PrepareSQL("bPixFmts%i integer, ", i);
   strSQL += "dwRGBRange integer, dwHWAccel integer, ";
   for (int i = 0; i < HWCodec_NB; ++i)
-    strSQL += StringUtils::Format("bHWFormats%i integer, ", i);
+    strSQL += PrepareSQL("bHWFormats%i integer, ", i);
   strSQL += "dwHWAccelResFlags integer, dwHWDeintMode integer, dwHWDeintOutput integer, bHWDeintHQ integer, dwDeintFieldOrder integer, deintMode integer, dwSWDeintMode integer, "
     "dwSWDeintOutput integer, dwDitherMode integer"
     ")\n";
@@ -106,10 +106,10 @@ void CDSPlayerDatabase::CreateTables()
 
   strSQL = "CREATE TABLE lavaudioSettings (id integer, bTrayIcon integer, bDRCEnabled integer, iDRCLevel integer, ";
   for (int i = 0; i < Bitstream_NB; ++i)
-    strSQL += StringUtils::Format("bBitstream%i integer, ", i);
+    strSQL += PrepareSQL("bBitstream%i integer, ", i);
   strSQL += "bDTSHDFraming integer, bAutoAVSync integer, bExpandMono integer, bExpand61 integer, bOutputStandardLayout integer, bAllowRawSPDIF integer, ";
   for (int i = 0; i < SampleFormat_NB; ++i)
-    strSQL += StringUtils::Format("bSampleFormats%i integer, ", i);
+    strSQL += PrepareSQL("bSampleFormats%i integer, ", i);
   strSQL += "bSampleConvertDither integer, bAudioDelayEnabled integer, iAudioDelay integer, bMixingEnabled integer, dwMixingLayout integer, dwMixingFlags integer, dwMixingMode integer, "
     "dwMixingCenterLevel integer, dwMixingSurroundLevel integer, dwMixingLFELevel integer"
     ")\n";
@@ -435,11 +435,11 @@ bool CDSPlayerDatabase::GetLAVVideoSettings(CLavSettings &settings)
       settings.video_dwStreamAR = m_pDS->fv("dwStreamAR").get_asInt();
       settings.video_dwNumThreads = m_pDS->fv("dwNumThreads").get_asInt();
       for (int i = 0; i < LAVOutPixFmt_NB; ++i)
-        settings.video_bPixFmts[i] = m_pDS->fv(StringUtils::Format("bPixFmts%i", i).c_str()).get_asInt();
+        settings.video_bPixFmts[i] = m_pDS->fv(PrepareSQL("bPixFmts%i", i).c_str()).get_asInt();
       settings.video_dwRGBRange = m_pDS->fv("dwRGBRange").get_asInt();
       settings.video_dwHWAccel = m_pDS->fv("dwHWAccel").get_asInt();
       for (int i = 0; i < HWCodec_NB; ++i)
-        settings.video_bHWFormats[i] = m_pDS->fv(StringUtils::Format("bHWFormats%i", i).c_str()).get_asInt();
+        settings.video_bHWFormats[i] = m_pDS->fv(PrepareSQL("bHWFormats%i", i).c_str()).get_asInt();
       settings.video_dwHWAccelResFlags = m_pDS->fv("dwHWAccelResFlags").get_asInt();
       settings.video_dwHWDeintMode = m_pDS->fv("dwHWDeintMode").get_asInt();
       settings.video_dwHWDeintOutput = m_pDS->fv("dwHWDeintOutput").get_asInt();
@@ -479,7 +479,7 @@ bool CDSPlayerDatabase::GetLAVAudioSettings(CLavSettings &settings)
       settings.audio_bDRCEnabled = m_pDS->fv("bDRCEnabled").get_asInt();
       settings.audio_iDRCLevel = m_pDS->fv("iDRCLevel").get_asInt();
       for (int i = 0; i < Bitstream_NB; ++i)
-        settings.audio_bBitstream[i] = m_pDS->fv(StringUtils::Format("bBitstream%i", i).c_str()).get_asInt();
+        settings.audio_bBitstream[i] = m_pDS->fv(PrepareSQL("bBitstream%i", i).c_str()).get_asInt();
       settings.audio_bDTSHDFraming = m_pDS->fv("bDTSHDFraming").get_asInt();
       settings.audio_bAutoAVSync = m_pDS->fv("bAutoAVSync").get_asInt();
       settings.audio_bExpandMono = m_pDS->fv("bExpandMono").get_asInt();
@@ -487,7 +487,7 @@ bool CDSPlayerDatabase::GetLAVAudioSettings(CLavSettings &settings)
       settings.audio_bOutputStandardLayout = m_pDS->fv("bOutputStandardLayout").get_asInt();
       settings.audio_bAllowRawSPDIF = m_pDS->fv("bAllowRawSPDIF").get_asInt();
       for (int i = 0; i < SampleFormat_NB; ++i)
-        settings.audio_bSampleFormats[i] = m_pDS->fv(StringUtils::Format("bSampleFormats%i", i).c_str()).get_asInt();
+        settings.audio_bSampleFormats[i] = m_pDS->fv(PrepareSQL("bSampleFormats%i", i).c_str()).get_asInt();
       settings.audio_bSampleConvertDither = m_pDS->fv("bSampleConvertDither").get_asInt();
       settings.audio_bAudioDelayEnabled = m_pDS->fv("bAudioDelayEnabled").get_asInt();
       settings.audio_iAudioDelay = m_pDS->fv("iAudioDelay").get_asInt();
@@ -565,7 +565,7 @@ void CDSPlayerDatabase::SetLAVVideoSettings(CLavSettings &settings)
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    CStdString strSQL = StringUtils::Format("select * from lavvideoSettings where id = 0");
+    CStdString strSQL = PrepareSQL("select * from lavvideoSettings where id = 0");
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
     {
@@ -573,24 +573,24 @@ void CDSPlayerDatabase::SetLAVVideoSettings(CLavSettings &settings)
 
       // update the item
       strSQL = "update lavvideoSettings set ";
-      strSQL += StringUtils::Format("bTrayIcon=%i, ", settings.video_bTrayIcon);
-      strSQL += StringUtils::Format("dwStreamAR=%i, ", settings.video_dwStreamAR);
-      strSQL += StringUtils::Format("dwNumThreads=%i, ", settings.video_dwNumThreads);
+      strSQL += PrepareSQL("bTrayIcon=%i, ", settings.video_bTrayIcon);
+      strSQL += PrepareSQL("dwStreamAR=%i, ", settings.video_dwStreamAR);
+      strSQL += PrepareSQL("dwNumThreads=%i, ", settings.video_dwNumThreads);
       for (int i = 0; i < LAVOutPixFmt_NB; ++i)
-        strSQL += StringUtils::Format("bPixFmts%i=%i, ", i, settings.video_bPixFmts[i]);
-      strSQL += StringUtils::Format("dwRGBRange=%i, ", settings.video_dwRGBRange);
-      strSQL += StringUtils::Format("dwHWAccel=%i, ", settings.video_dwHWAccel);
+        strSQL += PrepareSQL("bPixFmts%i=%i, ", i, settings.video_bPixFmts[i]);
+      strSQL += PrepareSQL("dwRGBRange=%i, ", settings.video_dwRGBRange);
+      strSQL += PrepareSQL("dwHWAccel=%i, ", settings.video_dwHWAccel);
       for (int i = 0; i < HWCodec_NB; ++i)
-        strSQL += StringUtils::Format("bHWFormats%i=%i, ", i, settings.video_bHWFormats[i]);
-      strSQL += StringUtils::Format("dwHWAccelResFlags=%i, ", settings.video_dwHWAccelResFlags);
-      strSQL += StringUtils::Format("dwHWDeintMode=%i, ", settings.video_dwHWDeintMode);
-      strSQL += StringUtils::Format("dwHWDeintOutput=%i, ", settings.video_dwHWDeintOutput);
-      strSQL += StringUtils::Format("bHWDeintHQ=%i, ", settings.video_bHWDeintHQ);
-      strSQL += StringUtils::Format("dwDeintFieldOrder=%i, ", settings.video_dwDeintFieldOrder);
-      strSQL += StringUtils::Format("deintMode=%i, ", settings.video_deintMode);
-      strSQL += StringUtils::Format("dwSWDeintMode=%i, ", settings.video_dwSWDeintMode);
-      strSQL += StringUtils::Format("dwSWDeintOutput=%i, ", settings.video_dwSWDeintOutput);
-      strSQL += StringUtils::Format("dwDitherMode=%i ", settings.video_dwDitherMode);
+        strSQL += PrepareSQL("bHWFormats%i=%i, ", i, settings.video_bHWFormats[i]);
+      strSQL += PrepareSQL("dwHWAccelResFlags=%i, ", settings.video_dwHWAccelResFlags);
+      strSQL += PrepareSQL("dwHWDeintMode=%i, ", settings.video_dwHWDeintMode);
+      strSQL += PrepareSQL("dwHWDeintOutput=%i, ", settings.video_dwHWDeintOutput);
+      strSQL += PrepareSQL("bHWDeintHQ=%i, ", settings.video_bHWDeintHQ);
+      strSQL += PrepareSQL("dwDeintFieldOrder=%i, ", settings.video_dwDeintFieldOrder);
+      strSQL += PrepareSQL("deintMode=%i, ", settings.video_deintMode);
+      strSQL += PrepareSQL("dwSWDeintMode=%i, ", settings.video_dwSWDeintMode);
+      strSQL += PrepareSQL("dwSWDeintOutput=%i, ", settings.video_dwSWDeintOutput);
+      strSQL += PrepareSQL("dwDitherMode=%i ", settings.video_dwDitherMode);
       strSQL += "where id=0";
       m_pDS->exec(strSQL.c_str());
       return;
@@ -601,32 +601,32 @@ void CDSPlayerDatabase::SetLAVVideoSettings(CLavSettings &settings)
 
       strSQL = "INSERT INTO lavvideoSettings (id, bTrayIcon, dwStreamAR, dwNumThreads, ";
       for (int i = 0; i < LAVOutPixFmt_NB; ++i)
-        strSQL += StringUtils::Format("bPixFmts%i, ", i);
+        strSQL += PrepareSQL("bPixFmts%i, ", i);
       strSQL += "dwRGBRange, dwHWAccel, ";
       for (int i = 0; i < HWCodec_NB; ++i)
-        strSQL += StringUtils::Format("bHWFormats%i, ", i);
+        strSQL += PrepareSQL("bHWFormats%i, ", i);
       strSQL += "dwHWAccelResFlags, dwHWDeintMode, dwHWDeintOutput, bHWDeintHQ, dwDeintFieldOrder, deintMode, dwSWDeintMode, "
         "dwSWDeintOutput, dwDitherMode"
         ") VALUES (0, ";
 
-      strSQL += StringUtils::Format("%i, ", settings.video_bTrayIcon);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwStreamAR);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwNumThreads);
+      strSQL += PrepareSQL("%i, ", settings.video_bTrayIcon);
+      strSQL += PrepareSQL("%i, ", settings.video_dwStreamAR);
+      strSQL += PrepareSQL("%i, ", settings.video_dwNumThreads);
       for (int i = 0; i < LAVOutPixFmt_NB; ++i)
-        strSQL += StringUtils::Format("%i, ", settings.video_bPixFmts[i]);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwRGBRange);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwHWAccel);
+        strSQL += PrepareSQL("%i, ", settings.video_bPixFmts[i]);
+      strSQL += PrepareSQL("%i, ", settings.video_dwRGBRange);
+      strSQL += PrepareSQL("%i, ", settings.video_dwHWAccel);
       for (int i = 0; i < HWCodec_NB; ++i)
-        strSQL += StringUtils::Format("%i, ", settings.video_bHWFormats[i]);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwHWAccelResFlags);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwHWDeintMode);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwHWDeintOutput);
-      strSQL += StringUtils::Format("%i, ", settings.video_bHWDeintHQ);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwDeintFieldOrder);
-      strSQL += StringUtils::Format("%i, ", settings.video_deintMode);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwSWDeintMode);
-      strSQL += StringUtils::Format("%i, ", settings.video_dwSWDeintOutput);
-      strSQL += StringUtils::Format("%i ", settings.video_dwDitherMode);
+        strSQL += PrepareSQL("%i, ", settings.video_bHWFormats[i]);
+      strSQL += PrepareSQL("%i, ", settings.video_dwHWAccelResFlags);
+      strSQL += PrepareSQL("%i, ", settings.video_dwHWDeintMode);
+      strSQL += PrepareSQL("%i, ", settings.video_dwHWDeintOutput);
+      strSQL += PrepareSQL("%i, ", settings.video_bHWDeintHQ);
+      strSQL += PrepareSQL("%i, ", settings.video_dwDeintFieldOrder);
+      strSQL += PrepareSQL("%i, ", settings.video_deintMode);
+      strSQL += PrepareSQL("%i, ", settings.video_dwSWDeintMode);
+      strSQL += PrepareSQL("%i, ", settings.video_dwSWDeintOutput);
+      strSQL += PrepareSQL("%i ", settings.video_dwDitherMode);
       strSQL += ")";
 
       m_pDS->exec(strSQL.c_str());
@@ -645,7 +645,7 @@ void CDSPlayerDatabase::SetLAVAudioSettings(CLavSettings &settings)
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    CStdString strSQL = StringUtils::Format("select * from lavaudioSettings where id = 0");
+    CStdString strSQL = PrepareSQL("select * from lavaudioSettings where id = 0");
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
     {
@@ -653,29 +653,29 @@ void CDSPlayerDatabase::SetLAVAudioSettings(CLavSettings &settings)
 
       // update the item
       strSQL = "update lavaudioSettings set ";
-      strSQL += StringUtils::Format("bTrayIcon=%i, ", settings.audio_bTrayIcon);
-      strSQL += StringUtils::Format("bDRCEnabled=%i, ", settings.audio_bDRCEnabled);
-      strSQL += StringUtils::Format("iDRCLevel=%i, ", settings.audio_iDRCLevel);
+      strSQL += PrepareSQL("bTrayIcon=%i, ", settings.audio_bTrayIcon);
+      strSQL += PrepareSQL("bDRCEnabled=%i, ", settings.audio_bDRCEnabled);
+      strSQL += PrepareSQL("iDRCLevel=%i, ", settings.audio_iDRCLevel);
       for (int i = 0; i < Bitstream_NB; ++i)
-        strSQL += StringUtils::Format("bBitstream%i=%i, ", i, settings.audio_bBitstream[i]);
-      strSQL += StringUtils::Format("bDTSHDFraming=%i, ", settings.audio_bDTSHDFraming);
-      strSQL += StringUtils::Format("bAutoAVSync=%i, ", settings.audio_bAutoAVSync);
-      strSQL += StringUtils::Format("bExpandMono=%i, ", settings.audio_bExpandMono);
-      strSQL += StringUtils::Format("bExpand61=%i, ", settings.audio_bExpand61);
-      strSQL += StringUtils::Format("bOutputStandardLayout=%i, ", settings.audio_bOutputStandardLayout);
-      strSQL += StringUtils::Format("bAllowRawSPDIF=%i, ", settings.audio_bAllowRawSPDIF);
+        strSQL += PrepareSQL("bBitstream%i=%i, ", i, settings.audio_bBitstream[i]);
+      strSQL += PrepareSQL("bDTSHDFraming=%i, ", settings.audio_bDTSHDFraming);
+      strSQL += PrepareSQL("bAutoAVSync=%i, ", settings.audio_bAutoAVSync);
+      strSQL += PrepareSQL("bExpandMono=%i, ", settings.audio_bExpandMono);
+      strSQL += PrepareSQL("bExpand61=%i, ", settings.audio_bExpand61);
+      strSQL += PrepareSQL("bOutputStandardLayout=%i, ", settings.audio_bOutputStandardLayout);
+      strSQL += PrepareSQL("bAllowRawSPDIF=%i, ", settings.audio_bAllowRawSPDIF);
       for (int i = 0; i < SampleFormat_NB; ++i)
-        strSQL += StringUtils::Format("bSampleFormats%i=%i, ", i, settings.audio_bSampleFormats[i]);
-      strSQL += StringUtils::Format("bSampleConvertDither=%i, ", settings.audio_bSampleConvertDither);
-      strSQL += StringUtils::Format("bAudioDelayEnabled=%i, ", settings.audio_bAudioDelayEnabled);
-      strSQL += StringUtils::Format("iAudioDelay=%i, ", settings.audio_iAudioDelay);
-      strSQL += StringUtils::Format("bMixingEnabled=%i, ", settings.audio_bMixingEnabled);
-      strSQL += StringUtils::Format("dwMixingLayout=%i, ", settings.audio_dwMixingLayout);
-      strSQL += StringUtils::Format("dwMixingFlags=%i, ", settings.audio_dwMixingFlags);
-      strSQL += StringUtils::Format("dwMixingMode=%i, ", settings.audio_dwMixingMode);
-      strSQL += StringUtils::Format("dwMixingCenterLevel=%i, ", settings.audio_dwMixingCenterLevel);
-      strSQL += StringUtils::Format("dwMixingSurroundLevel=%i, ", settings.audio_dwMixingSurroundLevel);
-      strSQL += StringUtils::Format("dwMixingLFELevel=%i ", settings.audio_dwMixingLFELevel);
+        strSQL += PrepareSQL("bSampleFormats%i=%i, ", i, settings.audio_bSampleFormats[i]);
+      strSQL += PrepareSQL("bSampleConvertDither=%i, ", settings.audio_bSampleConvertDither);
+      strSQL += PrepareSQL("bAudioDelayEnabled=%i, ", settings.audio_bAudioDelayEnabled);
+      strSQL += PrepareSQL("iAudioDelay=%i, ", settings.audio_iAudioDelay);
+      strSQL += PrepareSQL("bMixingEnabled=%i, ", settings.audio_bMixingEnabled);
+      strSQL += PrepareSQL("dwMixingLayout=%i, ", settings.audio_dwMixingLayout);
+      strSQL += PrepareSQL("dwMixingFlags=%i, ", settings.audio_dwMixingFlags);
+      strSQL += PrepareSQL("dwMixingMode=%i, ", settings.audio_dwMixingMode);
+      strSQL += PrepareSQL("dwMixingCenterLevel=%i, ", settings.audio_dwMixingCenterLevel);
+      strSQL += PrepareSQL("dwMixingSurroundLevel=%i, ", settings.audio_dwMixingSurroundLevel);
+      strSQL += PrepareSQL("dwMixingLFELevel=%i ", settings.audio_dwMixingLFELevel);
       strSQL += "where id=0";
       m_pDS->exec(strSQL.c_str());
       return;
@@ -686,37 +686,37 @@ void CDSPlayerDatabase::SetLAVAudioSettings(CLavSettings &settings)
 
       strSQL = "INSERT INTO lavaudioSettings (id, bTrayIcon, bDRCEnabled, iDRCLevel, ";
       for (int i = 0; i < Bitstream_NB; ++i)
-        strSQL += StringUtils::Format("bBitstream%i, ", i);
+        strSQL += PrepareSQL("bBitstream%i, ", i);
       strSQL += "bDTSHDFraming, bAutoAVSync, bExpandMono, bExpand61, bOutputStandardLayout, bAllowRawSPDIF, ";
       for (int i = 0; i < SampleFormat_NB; ++i)
-        strSQL += StringUtils::Format("bSampleFormats%i, ", i);
+        strSQL += PrepareSQL("bSampleFormats%i, ", i);
       strSQL += "bSampleConvertDither, bAudioDelayEnabled, iAudioDelay, bMixingEnabled, dwMixingLayout, dwMixingFlags, dwMixingMode, "
         "dwMixingCenterLevel, dwMixingSurroundLevel, dwMixingLFELevel"
         ") VALUES (0, ";
 
-      strSQL += StringUtils::Format("%i, ", settings.audio_bTrayIcon);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bDRCEnabled);
-      strSQL += StringUtils::Format("%i, ", settings.audio_iDRCLevel);
+      strSQL += PrepareSQL("%i, ", settings.audio_bTrayIcon);
+      strSQL += PrepareSQL("%i, ", settings.audio_bDRCEnabled);
+      strSQL += PrepareSQL("%i, ", settings.audio_iDRCLevel);
       for (int i = 0; i < Bitstream_NB; ++i)
-        strSQL += StringUtils::Format("%i, ", settings.audio_bBitstream[i]);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bDTSHDFraming);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bAutoAVSync);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bExpandMono);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bExpand61);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bOutputStandardLayout);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bAllowRawSPDIF);
+        strSQL += PrepareSQL("%i, ", settings.audio_bBitstream[i]);
+      strSQL += PrepareSQL("%i, ", settings.audio_bDTSHDFraming);
+      strSQL += PrepareSQL("%i, ", settings.audio_bAutoAVSync);
+      strSQL += PrepareSQL("%i, ", settings.audio_bExpandMono);
+      strSQL += PrepareSQL("%i, ", settings.audio_bExpand61);
+      strSQL += PrepareSQL("%i, ", settings.audio_bOutputStandardLayout);
+      strSQL += PrepareSQL("%i, ", settings.audio_bAllowRawSPDIF);
       for (int i = 0; i < SampleFormat_NB; ++i)
-        strSQL += StringUtils::Format("%i, ", i, settings.audio_bSampleFormats[i]);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bSampleConvertDither);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bAudioDelayEnabled);
-      strSQL += StringUtils::Format("%i, ", settings.audio_iAudioDelay);
-      strSQL += StringUtils::Format("%i, ", settings.audio_bMixingEnabled);
-      strSQL += StringUtils::Format("%i, ", settings.audio_dwMixingLayout);
-      strSQL += StringUtils::Format("%i, ", settings.audio_dwMixingFlags);
-      strSQL += StringUtils::Format("%i, ", settings.audio_dwMixingMode);
-      strSQL += StringUtils::Format("%i, ", settings.audio_dwMixingCenterLevel);
-      strSQL += StringUtils::Format("%i, ", settings.audio_dwMixingSurroundLevel);
-      strSQL += StringUtils::Format("%i ", settings.audio_dwMixingLFELevel);
+        strSQL += PrepareSQL("%i, ", i, settings.audio_bSampleFormats[i]);
+      strSQL += PrepareSQL("%i, ", settings.audio_bSampleConvertDither);
+      strSQL += PrepareSQL("%i, ", settings.audio_bAudioDelayEnabled);
+      strSQL += PrepareSQL("%i, ", settings.audio_iAudioDelay);
+      strSQL += PrepareSQL("%i, ", settings.audio_bMixingEnabled);
+      strSQL += PrepareSQL("%i, ", settings.audio_dwMixingLayout);
+      strSQL += PrepareSQL("%i, ", settings.audio_dwMixingFlags);
+      strSQL += PrepareSQL("%i, ", settings.audio_dwMixingMode);
+      strSQL += PrepareSQL("%i, ", settings.audio_dwMixingCenterLevel);
+      strSQL += PrepareSQL("%i, ", settings.audio_dwMixingSurroundLevel);
+      strSQL += PrepareSQL("%i ", settings.audio_dwMixingLFELevel);
       strSQL += ")";
 
       m_pDS->exec(strSQL.c_str());
@@ -736,7 +736,7 @@ void CDSPlayerDatabase::SetLAVSplitterSettings(CLavSettings &settings)
     if (NULL == m_pDS.get()) return;
 
     std::string str;
-    CStdString strSQL = StringUtils::Format("select * from lavsplitterSettings where id = 0");
+    CStdString strSQL = PrepareSQL("select * from lavsplitterSettings where id = 0");
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
     {
@@ -744,24 +744,24 @@ void CDSPlayerDatabase::SetLAVSplitterSettings(CLavSettings &settings)
 
       // update the item
       strSQL = "update lavsplitterSettings set ";
-      strSQL += StringUtils::Format("bTrayIcon=%i, ", settings.splitter_bTrayIcon);
+      strSQL += PrepareSQL("bTrayIcon=%i, ", settings.splitter_bTrayIcon);
       g_charsetConverter.wToUTF8(settings.splitter_prefAudioLangs, str, false);
-      strSQL += StringUtils::Format("prefAudioLangs='%s', ", str.c_str());
+      strSQL += PrepareSQL("prefAudioLangs='%s', ", str.c_str());
       g_charsetConverter.wToUTF8(settings.splitter_prefSubLangs, str, false);
-      strSQL += StringUtils::Format("prefSubLangs='%s', ", str.c_str());
+      strSQL += PrepareSQL("prefSubLangs='%s', ", str.c_str());
       g_charsetConverter.wToUTF8(settings.splitter_subtitleAdvanced, str, false);
-      strSQL += StringUtils::Format("subtitleAdvanced='%s', ", str.c_str());
-      strSQL += StringUtils::Format("subtitleMode=%i, ", settings.splitter_subtitleMode);
-      strSQL += StringUtils::Format("bPGSForcedStream=%i, ", settings.splitter_bPGSForcedStream);
-      strSQL += StringUtils::Format("bPGSOnlyForced=%i, ", settings.splitter_bPGSOnlyForced);
-      strSQL += StringUtils::Format("iVC1Mode=%i, ", settings.splitter_iVC1Mode);
-      strSQL += StringUtils::Format("bSubstreams=%i, ", settings.splitter_bSubstreams);
-      strSQL += StringUtils::Format("bMatroskaExternalSegments=%i, ", settings.splitter_bMatroskaExternalSegments);
-      strSQL += StringUtils::Format("bStreamSwitchRemoveAudio=%i, ", settings.splitter_bStreamSwitchRemoveAudio);
-      strSQL += StringUtils::Format("bImpairedAudio=%i, ", settings.splitter_bImpairedAudio);
-      strSQL += StringUtils::Format("bPreferHighQualityAudio=%i, ", settings.splitter_bPreferHighQualityAudio);
-      strSQL += StringUtils::Format("dwQueueMaxSize=%i, ", settings.splitter_dwQueueMaxSize);
-      strSQL += StringUtils::Format("dwNetworkAnalysisDuration=%i ", settings.splitter_dwNetworkAnalysisDuration);
+      strSQL += PrepareSQL("subtitleAdvanced='%s', ", str.c_str());
+      strSQL += PrepareSQL("subtitleMode=%i, ", settings.splitter_subtitleMode);
+      strSQL += PrepareSQL("bPGSForcedStream=%i, ", settings.splitter_bPGSForcedStream);
+      strSQL += PrepareSQL("bPGSOnlyForced=%i, ", settings.splitter_bPGSOnlyForced);
+      strSQL += PrepareSQL("iVC1Mode=%i, ", settings.splitter_iVC1Mode);
+      strSQL += PrepareSQL("bSubstreams=%i, ", settings.splitter_bSubstreams);
+      strSQL += PrepareSQL("bMatroskaExternalSegments=%i, ", settings.splitter_bMatroskaExternalSegments);
+      strSQL += PrepareSQL("bStreamSwitchRemoveAudio=%i, ", settings.splitter_bStreamSwitchRemoveAudio);
+      strSQL += PrepareSQL("bImpairedAudio=%i, ", settings.splitter_bImpairedAudio);
+      strSQL += PrepareSQL("bPreferHighQualityAudio=%i, ", settings.splitter_bPreferHighQualityAudio);
+      strSQL += PrepareSQL("dwQueueMaxSize=%i, ", settings.splitter_dwQueueMaxSize);
+      strSQL += PrepareSQL("dwNetworkAnalysisDuration=%i ", settings.splitter_dwNetworkAnalysisDuration);
 
       strSQL += "where id=0";
       m_pDS->exec(strSQL.c_str());
@@ -775,24 +775,24 @@ void CDSPlayerDatabase::SetLAVSplitterSettings(CLavSettings &settings)
         "iVC1Mode, bSubstreams, bMatroskaExternalSegments, bStreamSwitchRemoveAudio, bImpairedAudio, bPreferHighQualityAudio, dwQueueMaxSize, dwNetworkAnalysisDuration"
         ") VALUES (0, ";
 
-      strSQL += StringUtils::Format("%i, ", settings.splitter_bTrayIcon);
+      strSQL += PrepareSQL("%i, ", settings.splitter_bTrayIcon);
       g_charsetConverter.wToUTF8(settings.splitter_prefAudioLangs, str, false);
-      strSQL += StringUtils::Format("'%s', ", str.c_str());
+      strSQL += PrepareSQL("'%s', ", str.c_str());
       g_charsetConverter.wToUTF8(settings.splitter_prefSubLangs, str, false);
-      strSQL += StringUtils::Format("'%s', ", str.c_str());
+      strSQL += PrepareSQL("'%s', ", str.c_str());
       g_charsetConverter.wToUTF8(settings.splitter_subtitleAdvanced, str, false);
-      strSQL += StringUtils::Format("'%s', ", str.c_str());
-      strSQL += StringUtils::Format("%i, ", settings.splitter_subtitleMode);
-      strSQL += StringUtils::Format("%i, ", settings.splitter_bPGSForcedStream);
-      strSQL += StringUtils::Format("%i, ", settings.splitter_bPGSOnlyForced);
-      strSQL += StringUtils::Format("%i, ", settings.splitter_iVC1Mode);
-      strSQL += StringUtils::Format("%i, ", settings.splitter_bSubstreams);
-      strSQL += StringUtils::Format("%i, ", settings.splitter_bMatroskaExternalSegments);
-      strSQL += StringUtils::Format("%i, ", settings.splitter_bStreamSwitchRemoveAudio);
-      strSQL += StringUtils::Format("%i, ", settings.splitter_bImpairedAudio);
-      strSQL += StringUtils::Format("%i, ", settings.splitter_bPreferHighQualityAudio);
-      strSQL += StringUtils::Format("%i, ", settings.splitter_dwQueueMaxSize);
-      strSQL += StringUtils::Format("%i ", settings.splitter_dwNetworkAnalysisDuration);
+      strSQL += PrepareSQL("'%s', ", str.c_str());
+      strSQL += PrepareSQL("%i, ", settings.splitter_subtitleMode);
+      strSQL += PrepareSQL("%i, ", settings.splitter_bPGSForcedStream);
+      strSQL += PrepareSQL("%i, ", settings.splitter_bPGSOnlyForced);
+      strSQL += PrepareSQL("%i, ", settings.splitter_iVC1Mode);
+      strSQL += PrepareSQL("%i, ", settings.splitter_bSubstreams);
+      strSQL += PrepareSQL("%i, ", settings.splitter_bMatroskaExternalSegments);
+      strSQL += PrepareSQL("%i, ", settings.splitter_bStreamSwitchRemoveAudio);
+      strSQL += PrepareSQL("%i, ", settings.splitter_bImpairedAudio);
+      strSQL += PrepareSQL("%i, ", settings.splitter_bPreferHighQualityAudio);
+      strSQL += PrepareSQL("%i, ", settings.splitter_dwQueueMaxSize);
+      strSQL += PrepareSQL("%i ", settings.splitter_dwNetworkAnalysisDuration);
       strSQL += ")";
 
       m_pDS->exec(strSQL.c_str());
@@ -812,7 +812,7 @@ void CDSPlayerDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, c
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    CStdString strSQL = StringUtils::Format("select * from madvrSettings where file='%s'", strFilenameAndPath.c_str());
+    CStdString strSQL = PrepareSQL("select * from madvrSettings where file='%s'", strFilenameAndPath.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() > 0)
     {
@@ -954,17 +954,17 @@ void CDSPlayerDatabase::EraseVideoSettings(int resolution, int resolutionInterna
 
     if (resolution > -1)
     {
-      strSQL = StringUtils::Format("DELETE FROM madvrSettings where Resolution=%i", resolution);
+      strSQL = PrepareSQL("DELETE FROM madvrSettings where Resolution=%i", resolution);
       CLog::Log(LOGINFO, "Deleting madvr settings information for %i files", resolution);
       m_pDS->exec(strSQL);
 
-      strSQL = StringUtils::Format("DELETE FROM madvrDefResSettings where ResolutionInternal=%i", resolutionInternal);
+      strSQL = PrepareSQL("DELETE FROM madvrDefResSettings where ResolutionInternal=%i", resolutionInternal);
       CLog::Log(LOGINFO, "Deleting madvr default settings information for %i files", resolutionInternal);
       m_pDS->exec(strSQL);
     }
     else
     {
-      strSQL = StringUtils::Format("DELETE FROM madvrSettings where TvShowName='%s'", tvShowName.c_str());
+      strSQL = PrepareSQL("DELETE FROM madvrSettings where TvShowName='%s'", tvShowName.c_str());
       CLog::Log(LOGINFO, "Deleting madvr settings information for %s files", tvShowName.c_str());
       m_pDS->exec(strSQL);
     }
@@ -988,14 +988,14 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, int resolutionIntern
 
     if (resolution > -1)
     {
-      strSQL = StringUtils::Format("select * from madvrDefResSettings where Resolution='%i'", resolution);
-      strWhere = StringUtils::Format("where Resolution=%i", resolution);
+      strSQL = PrepareSQL("select * from madvrDefResSettings where Resolution='%i'", resolution);
+      strWhere = PrepareSQL("where Resolution=%i", resolution);
       tvShowName = "NOTVSHOW_NULL";
     }
     else if (tvShowName != "")
     {
-      strSQL = StringUtils::Format("select * from madvrDefResSettings where TvShowName='%s'", tvShowName.c_str());
-      strWhere = StringUtils::Format("where TvShowNamen='%s'", tvShowName.c_str());
+      strSQL = PrepareSQL("select * from madvrDefResSettings where TvShowName='%s'", tvShowName.c_str());
+      strWhere = PrepareSQL("where TvShowName='%s'", tvShowName.c_str());
     }
     if (strSQL == "") 
       return;
@@ -1005,7 +1005,7 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, int resolutionIntern
     {
       m_pDS->close();
       // update the item
-      strSQL = PrepareSQL("update madvrDefResSettings "
+      strSQL = PrepareSQL("update madvrDefResSettings set "
         "ChromaUpscaling=%i,ChromaAntiRing=%i,ChromaSuperRes=%i, ChromaSuperResPasses=%i, ChromaSuperResStrength=%f, ChromaSuperResSoftness=%f, "
         "ImageUpscaling=%i,ImageUpAntiRing=%i,ImageUpLinear=%i, "
         "ImageDownscaling=%i,ImageDownAntiRing=%i,ImageDownLinear=%i, "
@@ -1030,7 +1030,7 @@ void CDSPlayerDatabase::CreateVideoSettings(int resolution, int resolutionIntern
         setting.m_refineOnce, setting.m_superResFirst
         );
       
-      strSQL += strSQL + strWhere;
+      strSQL += strWhere;
       m_pDS->exec(strSQL.c_str());
       return;
     }

@@ -412,6 +412,9 @@ void CGUIDialogVideoSettings::SaveChoice()
   pDlg->SetHeading(70600);
   pDlg->Open();
 
+  if (pDlg->GetSelectedLabel() < 0)
+    return;
+
   int label;
   int selected = -1;
   std::string strSelected = pDlg->GetSelectedLabelText();
