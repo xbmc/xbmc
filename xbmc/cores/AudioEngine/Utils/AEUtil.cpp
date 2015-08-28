@@ -31,8 +31,6 @@ extern "C" {
 #include "libavutil/channel_layout.h"
 }
 
-using namespace std;
-
 /* declare the rng seed and initialize it */
 unsigned int CAEUtil::m_seed = (unsigned int)(CurrentHostCounter() / 1000.0f);
 #ifdef __SSE2__
