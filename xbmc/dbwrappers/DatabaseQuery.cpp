@@ -27,8 +27,6 @@
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 
-using namespace std;
-
 typedef struct
 {
   char string[15];
@@ -172,7 +170,7 @@ bool CDatabaseQueryRule::Save(TiXmlNode *parent) const
   rule.SetAttribute("field", TranslateField(m_field).c_str());
   rule.SetAttribute("operator", TranslateOperator(m_operator).c_str());
 
-  for (vector<std::string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
   {
     TiXmlElement value("value");
     TiXmlText text(*it);
@@ -252,8 +250,8 @@ std::string CDatabaseQueryRule::FormatParameter(const std::string &operatorStrin
   std::string parameter;
   if (GetFieldType(m_field) == TEXTIN_FIELD)
   {
-    vector<string> split = StringUtils::Split(param, ',');
-    for (vector<string>::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
+    std::vector<std::string> split = StringUtils::Split(param, ',');
+    for (std::vector<std::string>::iterator itIn = split.begin(); itIn != split.end(); ++itIn)
     {
       if (!parameter.empty())
         parameter += ",";
@@ -366,7 +364,7 @@ std::string CDatabaseQueryRule::GetWhereClause(const CDatabase &db, const std::s
 
   // now the query parameter
   std::string wholeQuery;
-  for (vector<string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = m_parameter.begin(); it != m_parameter.end(); ++it)
   {
     std::string query = '(' + FormatWhereClause(negate, operatorString, *it, db, strType) + ')';
 
@@ -392,7 +390,7 @@ std::string CDatabaseQueryRule::FormatWhereClause(const std::string &negate, con
   std::string query;
   if (m_field != 0)
   {
-    string fmt = "%s";
+    std::string fmt = "%s";
     if (GetFieldType(m_field) == NUMERIC_FIELD)
       fmt = "CAST(%s as DECIMAL(5,1))";
     else if (GetFieldType(m_field) == SECONDS_FIELD)

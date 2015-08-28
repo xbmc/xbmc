@@ -39,8 +39,6 @@
 #define MYSQL_OK          0
 #define ER_BAD_DB_ERROR   1049
 
-using namespace std;
-
 namespace dbiplus {
 
 //************* MysqlDatabase implementation ***************
@@ -512,17 +510,17 @@ bool MysqlDatabase::exists(void) {
 
 // methods for formatting
 // ---------------------------------------------
-string MysqlDatabase::vprepare(const char *format, va_list args)
+std::string MysqlDatabase::vprepare(const char *format, va_list args)
 {
-  string strFormat = format;
-  string strResult = "";
+  std::string strFormat = format;
+  std::string strResult = "";
   char *p;
   size_t pos;
 
   //  %q is the sqlite format string for %s.
   //  Any bad character, like "'", will be replaced with a proper one
   pos = 0;
-  while ( (pos = strFormat.find("%s", pos)) != string::npos )
+  while ( (pos = strFormat.find("%s", pos)) != std::string::npos )
     strFormat.replace(pos++, 2, "%q");
 
   p = mysql_vmprintf(strFormat.c_str(), args);
@@ -533,7 +531,7 @@ string MysqlDatabase::vprepare(const char *format, va_list args)
 
     //  RAND() is the mysql form of RANDOM()
     pos = 0;
-    while ( (pos = strResult.find("RANDOM()", pos)) != string::npos )
+    while ( (pos = strResult.find("RANDOM()", pos)) != std::string::npos )
     {
       strResult.replace(pos++, 8, "RAND()");
       pos += 6;
@@ -1326,14 +1324,14 @@ MYSQL* MysqlDataset::handle(){
 }
 
 void MysqlDataset::make_query(StringList &_sql) {
-  string query;
+  std::string query;
   int result = 0;
   if (db == NULL) throw DbErrors("No Database Connection");
   try
   {
     if (autocommit) db->start_transaction();
 
-    for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); ++i)
+    for (std::list<std::string>::iterator i =_sql.begin(); i!=_sql.end(); ++i)
     {
       query = *i;
       Dataset::parse_sql(query);
@@ -1406,8 +1404,8 @@ void MysqlDataset::fill_fields() {
 //------------- public functions implementation -----------------//
 bool MysqlDataset::dropIndex(const char *table, const char *index)
 {
-  string sql;
-  string sql_prepared;
+  std::string sql;
+  std::string sql_prepared;
 
   sql = "SELECT * FROM information_schema.statistics WHERE TABLE_SCHEMA=DATABASE() AND table_name='%s' AND index_name='%s'";
   sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
@@ -1432,37 +1430,37 @@ static bool ci_test(char l, char r)
   return tolower(l) == tolower(r);
 }
 
-static size_t ci_find(const string& where, const string& what)
+static size_t ci_find(const std::string& where, const std::string& what)
 {
   std::string::const_iterator loc = std::search(where.begin(), where.end(), what.begin(), what.end(), ci_test);
   if (loc == where.end())
-    return string::npos;
+    return std::string::npos;
   else
     return loc - where.begin();
 }
 
-int MysqlDataset::exec(const string &sql) {
+int MysqlDataset::exec(const std::string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
-  string qry = sql;
+  std::string qry = sql;
   int res = 0;
   exec_res.clear();
 
   // enforce the "auto_increment" keyword to be appended to "integer primary key"
   size_t loc;
 
-  if ( (loc=ci_find(qry, "integer primary key")) != string::npos)
+  if ( (loc=ci_find(qry, "integer primary key")) != std::string::npos)
   {
     qry = qry.insert(loc + 19, " auto_increment ");
   }
 
   // force the charset and collation to UTF-8
-  if ( ci_find(qry, "CREATE TABLE") != string::npos 
-    || ci_find(qry, "CREATE TEMPORARY TABLE") != string::npos )
+  if ( ci_find(qry, "CREATE TABLE") != std::string::npos 
+    || ci_find(qry, "CREATE TEMPORARY TABLE") != std::string::npos )
   {
     // If CREATE TABLE ... SELECT Syntax is used we need to add the encoding after the table before the select
     // e.g. CREATE TABLE x CHARACTER SET utf8 COLLATE utf8_general_ci [AS] SELECT * FROM y
-    if ((loc = qry.find(" AS SELECT ")) != string::npos ||
-        (loc = qry.find(" SELECT ")) != string::npos)
+    if ((loc = qry.find(" AS SELECT ")) != std::string::npos ||
+        (loc = qry.find(" SELECT ")) != std::string::npos)
     {
       qry = qry.insert(loc, " CHARACTER SET utf8 COLLATE utf8_general_ci");
     }
@@ -1505,7 +1503,7 @@ bool MysqlDataset::query(const std::string &query) {
   size_t loc;
 
   // mysql doesn't understand CAST(foo as integer) => change to CAST(foo as signed integer)
-  while ((loc = ci_find(qry, "as integer)")) != string::npos)
+  while ((loc = ci_find(qry, "as integer)")) != std::string::npos)
     qry = qry.insert(loc + 3, "signed ");
 
   MYSQL_RES *stmt = NULL;
@@ -1591,7 +1589,7 @@ bool MysqlDataset::query(const std::string &query) {
   return true;
 }
 
-void MysqlDataset::open(const string &sql) {
+void MysqlDataset::open(const std::string &sql) {
    set_select_sql(sql);
    open();
 }
