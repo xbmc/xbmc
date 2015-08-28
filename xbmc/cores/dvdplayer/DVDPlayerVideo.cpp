@@ -41,7 +41,6 @@
 #include <iterator>
 #include "utils/log.h"
 
-using namespace std;
 using namespace RenderManager;
 
 class CPulldownCorrection
@@ -1156,7 +1155,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   // timestamp when we think next picture should be displayed based on current duration
   m_FlipTimeStamp  = iCurrentClock;
-  m_FlipTimeStamp += max(0.0, iSleepTime);
+  m_FlipTimeStamp += std::max(0.0, iSleepTime);
   m_FlipTimePts    = pts;
 
   if ((pPicture->iFlags & DVP_FLAG_DROPPED))
@@ -1218,10 +1217,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "fr:"     << fixed << setprecision(3) << m_fFrameRate;
-  s << ", vq:"   << setw(2) << min(99,GetLevel()) << "%";
+  s << "fr:"     << std::fixed << std::setprecision(3) << m_fFrameRate;
+  s << ", vq:"   << std::setw(2) << std::min(99,GetLevel()) << "%";
   s << ", dc:"   << m_codecname;
-  s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
+  s << ", Mb/s:" << std::fixed << std::setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;
   s << ", skip:" << g_renderManager.GetSkippedFrames();
 
@@ -1264,7 +1263,7 @@ double CDVDPlayerVideo::GetCurrentPts()
     return DVD_NOPTS_VALUE;
   else if (m_speed == DVD_PLAYSPEED_NORMAL)
   {
-    iRenderPts -= max(0.0, DVD_SEC_TO_TIME(iSleepTime));
+    iRenderPts -= std::max(0.0, DVD_SEC_TO_TIME(iSleepTime));
 
     if (iRenderPts < 0)
       iRenderPts = 0;

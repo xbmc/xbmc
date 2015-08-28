@@ -41,7 +41,6 @@
 
 #define LIBBLURAY_BYTESEEK 0
 
-using namespace std;
 using namespace XFILE;
 
 void DllLibbluray::file_close(BD_FILE_H *file)
@@ -713,7 +712,7 @@ void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int
             , (*it)->x + (*it)->width
             , (*it)->y + (*it)->height);
 
-    vector<CRectInt> rem = old.SubtractRect(ovr);
+    std::vector<CRectInt> rem = old.SubtractRect(ovr);
 
     /* if no overlap we are done */
     if(rem.size() == 1 && !(rem[0] != old))
@@ -723,7 +722,7 @@ void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int
     }
 
     SOverlays add;
-    for(vector<CRectInt>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
+    for(std::vector<CRectInt>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
     {
       SOverlay overlay(new CDVDOverlayImage(*(*it)
                                             , itr->x1

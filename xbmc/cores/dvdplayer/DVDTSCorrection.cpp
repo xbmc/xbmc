@@ -27,8 +27,6 @@
 
 #define MAXERR DVD_MSEC_TO_TIME(2.5)
 
-using namespace std;
-
 CPullupCorrection::CPullupCorrection()
 {
   ResetVFRDetection();
@@ -81,7 +79,7 @@ void CPullupCorrection::Add(double pts)
     return;
 
   //get the current pattern in the ringbuffer
-  vector<double> pattern;
+  std::vector<double> pattern;
   GetPattern(pattern);
 
   //check if the pattern is the same as the saved pattern
@@ -169,7 +167,7 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
                                    //difftypesbuff[1] the one added before that etc
 
   //get the difftypes
-  vector<double> difftypes;
+  std::vector<double> difftypes;
   GetDifftypes(difftypes);
 
   //mark each diff with what difftype it is
@@ -227,7 +225,7 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
 }
 
 //calculate the different types of diffs we have
-void CPullupCorrection::GetDifftypes(vector<double>& difftypes)
+void CPullupCorrection::GetDifftypes(std::vector<double>& difftypes)
 {
   for (int i = 0; i < m_ringfill; i++)
   {

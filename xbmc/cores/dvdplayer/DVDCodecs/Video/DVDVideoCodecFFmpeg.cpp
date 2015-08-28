@@ -68,8 +68,6 @@ extern "C" {
 #include "libavfilter/buffersrc.h"
 }
 
-using namespace std;
-
 enum DecoderState
 {
   STATE_NONE,

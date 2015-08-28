@@ -24,9 +24,7 @@
 #include "utils/StringUtils.h"
 #include "DVDSubtitleTagSami.h"
 
-using namespace std;
-
-CDVDSubtitleParserSubrip::CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const string& strFile)
+CDVDSubtitleParserSubrip::CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const std::string& strFile)
     : CDVDSubtitleParserText(pStream, strFile)
 {
 }
