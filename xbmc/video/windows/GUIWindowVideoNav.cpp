@@ -421,7 +421,20 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       }
       else if (node == NODE_TYPE_TITLE_MOVIES ||
                node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
+      {
+        if (params.GetSetId() > 0)
+        {
+          CGUIListItem::ArtMap setArt;
+          if (m_database.GetArtForItem(params.GetSetId(), MediaTypeVideoCollection, setArt))
+          {
+            items.AppendArt(setArt, MediaTypeVideoCollection);
+            items.SetArtFallback("fanart", "set.fanart");
+            if (items.HasArt("set.poster"))
+              items.SetArtFallback("thumb", "set.poster");
+          }
+        }
         items.SetContent("movies");
+      }
       else if (node == NODE_TYPE_TITLE_TVSHOWS)
         items.SetContent("tvshows");
       else if (node == NODE_TYPE_TITLE_MUSICVIDEOS ||
