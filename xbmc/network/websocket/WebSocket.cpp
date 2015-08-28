@@ -42,8 +42,6 @@
 
 #define LENGTH_MIN    0x2
 
-using namespace std;
-
 CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
 {
   reset();
@@ -160,7 +158,7 @@ CWebSocketFrame::CWebSocketFrame(WebSocketFrameOpcode opcode, const char* data /
   m_final = final;
   m_extension = extension;
 
-  string buffer;
+  std::string buffer;
   char dataByte = 0;
 
   // Set the FIN flag

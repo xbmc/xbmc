@@ -29,7 +29,6 @@
 #include <vector>
 
 using namespace SOCKETS;
-//using namespace std; On VS2010, bind conflicts with std::bind
 
 #ifdef WINSOCK_VERSION
 #define close closesocket

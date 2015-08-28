@@ -85,7 +85,6 @@
 #include "utils/Variant.h"
 
 using namespace KODI::MESSAGING;
-using namespace std;
 #ifdef HAS_JSONRPC
 using namespace JSONRPC;
 #endif // HAS_JSONRPC
@@ -568,9 +567,9 @@ bool CNetworkServices::StartAirPlayServer()
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
-  txt.push_back(make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
-  txt.push_back(make_pair("model", "Xbmc,1"));
-  txt.push_back(make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
+  txt.push_back(std::make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
+  txt.push_back(std::make_pair("model", "Xbmc,1"));
+  txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
 
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_AIRPLAYIOS8COMPAT))
   {
@@ -578,11 +577,11 @@ bool CNetworkServices::StartAirPlayServer()
     // else we won't get video urls anymore.
     // We also announce photo caching support (as it seems faster and
     // we have implemented it anyways). 
-    txt.push_back(make_pair("features", "0x20F7"));
+    txt.push_back(std::make_pair("features", "0x20F7"));
   }
   else
   {
-    txt.push_back(make_pair("features", "0x77"));
+    txt.push_back(std::make_pair("features", "0x77"));
   }
 
   CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_airPlayPort, txt);
