@@ -65,8 +65,8 @@ public:
   BOOL audio_bAllowRawSPDIF;
   BOOL audio_bSampleFormats[SampleFormat_NB];
   BOOL audio_bSampleConvertDither;
-  BOOL audio_bAudioDelayEnabled;
-  int  audio_iAudioDelay;
+  BOOL audio_bAudioDelayEnabled = FALSE;
+  int  audio_iAudioDelay = 0;
   BOOL audio_bMixingEnabled;
   DWORD audio_dwMixingLayout;
   DWORD audio_dwMixingFlags;

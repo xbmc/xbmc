@@ -271,7 +271,7 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     LavSettings.audio_dwMixingFlags = pLAVFSettings->GetMixingFlags();
     LavSettings.audio_dwMixingMode = pLAVFSettings->GetMixingMode();
     pLAVFSettings->GetMixingLevels(&LavSettings.audio_dwMixingCenterLevel, &LavSettings.audio_dwMixingSurroundLevel, &LavSettings.audio_dwMixingLFELevel);
-    pLAVFSettings->GetAudioDelay(&LavSettings.audio_bAudioDelayEnabled, &LavSettings.audio_iAudioDelay);
+    //pLAVFSettings->GetAudioDelay(&LavSettings.audio_bAudioDelayEnabled, &LavSettings.audio_iAudioDelay);
 
     CLog::Log(0, "%u, %u, %u", LavSettings.audio_dwMixingCenterLevel, LavSettings.audio_dwMixingSurroundLevel, LavSettings.audio_dwMixingLFELevel);
 
@@ -386,7 +386,7 @@ bool CGraphFilters::SetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     pLAVFSettings->SetMixingFlags(LavSettings.audio_dwMixingFlags);
     pLAVFSettings->SetMixingMode((LAVAudioMixingMode)LavSettings.audio_dwMixingMode);
     pLAVFSettings->SetMixingLevels(LavSettings.audio_dwMixingCenterLevel, LavSettings.audio_dwMixingSurroundLevel, LavSettings.audio_dwMixingLFELevel);
-    pLAVFSettings->SetAudioDelay(LavSettings.audio_bAudioDelayEnabled, LavSettings.audio_iAudioDelay);
+    //pLAVFSettings->SetAudioDelay(LavSettings.audio_bAudioDelayEnabled, LavSettings.audio_iAudioDelay);
     for (int i = 0; i < Bitstream_NB; ++i) {
       pLAVFSettings->SetBitstreamConfig((LAVBitstreamCodec)i, LavSettings.audio_bBitstream[i]);
     }
