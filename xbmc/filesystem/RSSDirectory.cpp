@@ -35,7 +35,6 @@
 #include "threads/SingleLock.h"
 
 using namespace XFILE;
-using namespace std;
 using namespace MUSIC_INFO;
 
 namespace {

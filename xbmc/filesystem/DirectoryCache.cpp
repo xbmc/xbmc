@@ -28,7 +28,6 @@
 
 #include <algorithm>
 
-using namespace std;
 using namespace XFILE;
 
 CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType)
@@ -115,7 +114,7 @@ void CDirectoryCache::SetDirectory(const std::string& strPath, const CFileItemLi
   CDir* dir = new CDir(cacheType);
   dir->m_Items->Copy(items);
   dir->SetLastAccess(m_accessCounter);
-  m_cache.insert(pair<std::string, CDir*>(storedPath, dir));
+  m_cache.insert(std::pair<std::string, CDir*>(storedPath, dir));
 }
 
 void CDirectoryCache::ClearFile(const std::string& strFile)
@@ -206,9 +205,9 @@ void CDirectoryCache::Clear()
     Delete(i++);
 }
 
-void CDirectoryCache::InitCache(set<std::string>& dirs)
+void CDirectoryCache::InitCache(std::set<std::string>& dirs)
 {
-  set<std::string>::iterator it;
+  std::set<std::string>::iterator it;
   for (it = dirs.begin(); it != dirs.end(); ++it)
   {
     const std::string& strDir = *it;
@@ -218,7 +217,7 @@ void CDirectoryCache::InitCache(set<std::string>& dirs)
   }
 }
 
-void CDirectoryCache::ClearCache(set<std::string>& dirs)
+void CDirectoryCache::ClearCache(std::set<std::string>& dirs)
 {
   iCache i = m_cache.begin();
   while (i != m_cache.end())
@@ -271,7 +270,7 @@ void CDirectoryCache::PrintStats() const
   for (ciCache i = m_cache.begin(); i != m_cache.end(); i++)
   {
     CDir *dir = i->second;
-    oldest = min(oldest, dir->GetLastAccess());
+    oldest = std::min(oldest, dir->GetLastAccess());
     numItems += dir->m_Items->Size();
     numDirs++;
   }
