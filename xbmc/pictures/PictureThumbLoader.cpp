@@ -34,7 +34,6 @@
 #include "URL.h"
 
 using namespace XFILE;
-using namespace std;
 
 CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(), CJobQueue(true, 1, CJob::PRIORITY_LOW_PAUSABLE)
 {
@@ -233,7 +232,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       {
         // ok, now we've got the files to get the thumbs from, lets create it...
         // we basically load the 4 images and combine them
-        vector<string> files;
+        std::vector<std::string> files;
         for (int thumb = 0; thumb < 4; thumb++)
           files.push_back(items[thumb]->GetPath());
         std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "picturefolder");

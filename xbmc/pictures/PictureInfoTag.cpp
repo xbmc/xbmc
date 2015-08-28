@@ -28,8 +28,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Archive.h"
 
-using namespace std;
-
 void CPictureInfoTag::Reset()
 {
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));
@@ -283,7 +281,7 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t le
 {
   std::string temp;
   ar >> temp;
-  length = min((size_t)temp.size(), length - 1);
+  length = std::min((size_t)temp.size(), length - 1);
   if (!temp.empty())
     memcpy(string, temp.c_str(), length);
   string[length] = 0;
@@ -626,7 +624,7 @@ void CPictureInfoTag::SetInfo(int info, const std::string& value)
   {
   case SLIDE_RESOLUTION:
     {
-      vector<std::string> dimension;
+      std::vector<std::string> dimension;
       StringUtils::Tokenize(value, dimension, ",");
       if (dimension.size() == 2)
       {
