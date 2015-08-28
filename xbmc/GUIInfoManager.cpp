@@ -3385,6 +3385,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   }
   else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
            info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION ||
+           info.m_info == CONTAINER_ROW || info.m_info == CONTAINER_COLUMN ||
            info.m_info == CONTAINER_CURRENT_ITEM)
   {
     const CGUIControl *control = NULL;
