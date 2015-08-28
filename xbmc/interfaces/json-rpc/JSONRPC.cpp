@@ -36,7 +36,6 @@
 
 using namespace ANNOUNCEMENT;
 using namespace JSONRPC;
-using namespace std;
 
 bool CJSONRPC::m_initialized = false;
 
@@ -46,7 +45,7 @@ void CJSONRPC::Initialize()
     return;
 
   // Add some types/enums at runtime
-  vector<string> enumList;
+  std::vector<std::string> enumList;
   for (int addonType = ADDON::ADDON_UNKNOWN; addonType < ADDON::ADDON_MAX; addonType++)
     enumList.push_back(ADDON::TranslateType(static_cast<ADDON::TYPE>(addonType), false));
   CJSONServiceDescription::AddEnum("Addon.Types", enumList);
@@ -60,7 +59,7 @@ void CJSONRPC::Initialize()
   CJSONServiceDescription::AddEnum("GUI.Window", enumList);
 
   // filter-related enums
-  vector<string> smartplaylistList;
+  std::vector<std::string> smartplaylistList;
   CDatabaseQueryRule::GetAvailableOperators(smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Operators", smartplaylistList);
 
@@ -137,7 +136,7 @@ JSONRPC_STATUS CJSONRPC::Version(const std::string &method, ITransportLayer *tra
   const char* version = CJSONServiceDescription::GetVersion();
   if (version != NULL)
   {
-    vector<string> parts = StringUtils::Split(version, ".");
+    std::vector<std::string> parts = StringUtils::Split(version, ".");
     if (parts.size() > 0)
       result["version"]["major"] = (int)strtol(parts[0].c_str(), NULL, 10);
     if (parts.size() > 1)

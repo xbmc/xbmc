@@ -22,7 +22,6 @@
 #include "GUIInfoManager.h"
 #include "utils/XBMCTinyXML.h"
 
-using namespace std;
 using namespace INFO;
 
 const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node, int context)

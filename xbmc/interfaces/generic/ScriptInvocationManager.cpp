@@ -31,7 +31,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-using namespace std;
 using namespace XFILE;
 
 CScriptInvocationManager::CScriptInvocationManager()
@@ -53,7 +52,7 @@ void CScriptInvocationManager::Process()
 {
   CSingleLock lock(m_critSection);
   // go through all active threads and find and remove all which are done
-  vector<LanguageInvokerThread> tempList;
+  std::vector<LanguageInvokerThread> tempList;
   for (LanguageInvokerThreadMap::iterator it = m_scripts.begin(); it != m_scripts.end(); )
   {
     if (it->second.done)
@@ -66,7 +65,7 @@ void CScriptInvocationManager::Process()
   }
 
   // remove the finished scripts from the script path map as well
-  for (vector<LanguageInvokerThread>::const_iterator it = tempList.begin(); it != tempList.end(); ++it)
+  for (std::vector<LanguageInvokerThread>::const_iterator it = tempList.begin(); it != tempList.end(); ++it)
     m_scriptPaths.erase(it->script);
 
   // we can leave the lock now
@@ -89,7 +88,7 @@ void CScriptInvocationManager::Uninitialize()
   Process();
 
   // make sure all scripts are done
-  vector<LanguageInvokerThread> tempList;
+  std::vector<LanguageInvokerThread> tempList;
   for (LanguageInvokerThreadMap::iterator script = m_scripts.begin(); script != m_scripts.end(); ++script)
     tempList.push_back(script->second);
 
@@ -102,7 +101,7 @@ void CScriptInvocationManager::Uninitialize()
   // finally stop and remove the finished threads but we do it outside of any
   // locks in case of any callbacks from the stop or destruction logic of
   // CLanguageInvokerThread or the ILanguageInvoker implementation
-  for (vector<LanguageInvokerThread>::iterator it = tempList.begin(); it != tempList.end(); ++it)
+  for (std::vector<LanguageInvokerThread>::iterator it = tempList.begin(); it != tempList.end(); ++it)
   {
     if (!it->done)
       it->thread->Stop(true);
@@ -122,7 +121,7 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
   if (invocationHandler == NULL || extension.empty())
     return;
 
-  string ext = extension;
+  std::string ext = extension;
   StringUtils::ToLower(ext);
   if (!StringUtils::StartsWithNoCase(ext, "."))
     ext = "." + ext;
@@ -131,7 +130,7 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
   if (m_invocationHandlers.find(ext) != m_invocationHandlers.end())
     return;
 
-  m_invocationHandlers.insert(make_pair(extension, invocationHandler));
+  m_invocationHandlers.insert(std::make_pair(extension, invocationHandler));
 
   bool known = false;
   for (std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.begin(); it != m_invocationHandlers.end(); ++it)
@@ -153,7 +152,7 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
   if (invocationHandler == NULL || extensions.empty())
     return;
 
-  for (set<string>::const_iterator extension = extensions.begin(); extension != extensions.end(); ++extension)
+  for (std::set<std::string>::const_iterator extension = extensions.begin(); extension != extensions.end(); ++extension)
     RegisterLanguageInvocationHandler(invocationHandler, *extension);
 }
 
@@ -164,7 +163,7 @@ void CScriptInvocationManager::UnregisterLanguageInvocationHandler(ILanguageInvo
 
   CSingleLock lock(m_critSection);
   //  get all extensions of the given language invoker
-  for (map<string, ILanguageInvocationHandler*>::iterator it = m_invocationHandlers.begin(); it != m_invocationHandlers.end(); )
+  for (std::map<std::string, ILanguageInvocationHandler*>::iterator it = m_invocationHandlers.begin(); it != m_invocationHandlers.end(); )
   {
     if (it->second == invocationHandler)
       m_invocationHandlers.erase(it++);
@@ -182,7 +181,7 @@ bool CScriptInvocationManager::HasLanguageInvoker(const std::string &script) con
   StringUtils::ToLower(extension);
 
   CSingleLock lock(m_critSection);
-  map<string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
+  std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
   return it != m_invocationHandlers.end() && it->second != NULL;
 }
 
@@ -192,7 +191,7 @@ LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::strin
   StringUtils::ToLower(extension);
 
   CSingleLock lock(m_critSection);
-  map<string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
+  std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
   if (it != m_invocationHandlers.end() && it->second != NULL)
     return LanguageInvokerPtr(it->second->CreateInvoker());
 
@@ -237,8 +236,8 @@ int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageIn
   lock.Leave();
 
   LanguageInvokerThread thread = { invokerThread, script, false };
-  m_scripts.insert(make_pair(invokerThread->GetId(), thread));
-  m_scriptPaths.insert(make_pair(script, invokerThread->GetId()));
+  m_scripts.insert(std::make_pair(invokerThread->GetId(), thread));
+  m_scriptPaths.insert(std::make_pair(script, invokerThread->GetId()));
   invokerThread->Execute(script, arguments);
 
   return invokerThread->GetId();

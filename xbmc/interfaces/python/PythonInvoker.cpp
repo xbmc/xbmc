@@ -65,7 +65,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 // Time before ill-behaved scripts are terminated
 #define PYTHON_SCRIPT_TIMEOUT 5000 // ms
 
-using namespace std;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
 
