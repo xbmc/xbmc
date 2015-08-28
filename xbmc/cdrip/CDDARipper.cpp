@@ -47,7 +47,6 @@
 #include "addons/AddonManager.h"
 #include "addons/AudioEncoder.h"
 
-using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -113,7 +112,7 @@ bool CCDDARipper::RipCD()
   {
     CFileItemPtr pItem = vecItems[i];
     CMusicInfoTagLoaderFactory factory;
-    unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(*pItem));
+    std::unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(*pItem));
     if (NULL != pLoader.get())
     {
       pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag()); // get tag from file
