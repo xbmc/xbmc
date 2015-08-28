@@ -511,7 +511,7 @@ lib/cpluff/stamp-h1
 /xbmc/cores/paplayer/Makefile
 /xbmc/cores/playercorefactory/Makefile
 /xbmc/cores/Makefile
-/xbmc/cores/VideoRenderers/Makefile
+/xbmc/cores/dvdplayer/VideoRenderers/Makefile
 
 # /xbmc/filesystem/
 /xbmc/filesystem/Makefile

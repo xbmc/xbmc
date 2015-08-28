@@ -29,7 +29,7 @@
 #include <d3d11.h>
 #include <Initguid.h>
 #include <windows.h>
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #include "../DVDCodecUtils.h"
 #include "DXVA.h"
 #include "settings/AdvancedSettings.h"

@@ -20,7 +20,7 @@
 
 #include "DVDCodecUtils.h"
 #include "DVDClock.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #include "utils/log.h"
 #include "cores/FFmpeg.h"
 #include "Util.h"

@@ -44,8 +44,8 @@
 #define RINT lrint
 #endif
 
-#include "cores/VideoRenderers/RenderManager.h"
-#include "cores/VideoRenderers/RenderFormats.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFormats.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"

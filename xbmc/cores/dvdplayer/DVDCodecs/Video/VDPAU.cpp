@@ -25,7 +25,7 @@
 #include "windowing/WindowingFactory.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/TextureManager.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "DVDClock.h"
 #include "settings/Settings.h"
@@ -35,7 +35,7 @@
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
 #include "DVDCodecs/DVDCodecUtils.h"
-#include "cores/VideoRenderers/RenderFlags.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFlags.h"
 #include "utils/log.h"
 
 using namespace Actor;

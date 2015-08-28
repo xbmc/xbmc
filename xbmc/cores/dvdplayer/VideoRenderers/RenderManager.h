@@ -22,8 +22,8 @@
 
 #include <list>
 
-#include "cores/VideoRenderers/BaseRenderer.h"
-#include "cores/VideoRenderers/OverlayRenderer.h"
+#include "cores/dvdplayer/VideoRenderers/BaseRenderer.h"
+#include "cores/dvdplayer/VideoRenderers/OverlayRenderer.h"
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
 #include "threads/SharedSection.h"

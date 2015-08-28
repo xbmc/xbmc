@@ -36,7 +36,7 @@
 #include "DVDMessageQueue.h"
 #include "utils/BitstreamStats.h"
 #include "linux/DllBCM.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 
 class OMXPlayerVideo : public CThread, public IDVDStreamPlayerVideo
 {

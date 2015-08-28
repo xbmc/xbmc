@@ -24,8 +24,8 @@
 #include "DynamicDll.h"
 
 #include "cores/dvdplayer/DVDClock.h"
-#include "cores/VideoRenderers/RenderFlags.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFlags.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"

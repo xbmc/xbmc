@@ -31,7 +31,7 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #include "xbmc/guilib/GraphicContext.h"
 #include "settings/Settings.h"
 #include "utils/BitstreamConverter.h"

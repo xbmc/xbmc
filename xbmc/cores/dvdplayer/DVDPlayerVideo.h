@@ -28,7 +28,7 @@
 #include "DVDOverlayContainer.h"
 #include "DVDTSCorrection.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #endif
 #include "utils/BitstreamStats.h"
 

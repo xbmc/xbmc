@@ -24,7 +24,7 @@
 #include <DirectXPackedVector.h>
 #include "Application.h"
 #include "RenderSystemDX.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #include "guilib/D3DResource.h"
 #include "guilib/GUIShaderDX.h"
 #include "guilib/GUITextureD3D.h"

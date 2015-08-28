@@ -24,7 +24,7 @@
 
 #ifdef HAVE_LIBVDPAU
 
-#include "cores/VideoRenderers/LinuxRendererGL.h"
+#include "cores/dvdplayer/VideoRenderers/LinuxRendererGL.h"
 
 class CRendererVDPAU : public CLinuxRendererGL
 {

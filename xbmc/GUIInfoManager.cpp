@@ -96,7 +96,7 @@
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPProcess.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/VideoRenderers/BaseRenderer.h"
+#include "cores/dvdplayer/VideoRenderers/BaseRenderer.h"
 #include "interfaces/info/InfoExpression.h"
 
 #if defined(TARGET_DARWIN_OSX)

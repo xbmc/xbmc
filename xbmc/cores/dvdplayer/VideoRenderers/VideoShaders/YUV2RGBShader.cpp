@@ -29,7 +29,7 @@
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "utils/GLUtils.h"
 #endif
-#include "cores/VideoRenderers/RenderFormats.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFormats.h"
 
 #include <string>
 #include <sstream>

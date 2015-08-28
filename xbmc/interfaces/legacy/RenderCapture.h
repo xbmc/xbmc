@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "cores/VideoRenderers/RenderCapture.h"
+#include "cores/dvdplayer/VideoRenderers/RenderCapture.h"
 #include "AddonClass.h"
 #include "LanguageHook.h"
 #include "Exception.h"

@@ -39,9 +39,9 @@
 #include "Application.h"
 #include "threads/Atomics.h"
 #include "guilib/GUIWindowManager.h"
-#include "cores/VideoRenderers/RenderFlags.h"
+#include "cores/dvdplayer/VideoRenderers/RenderFlags.h"
 #include "settings/DisplaySettings.h"
-#include "cores/VideoRenderers/RenderManager.h"
+#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
 #include "settings/AdvancedSettings.h"
 
 #include "linux/RBP.h"

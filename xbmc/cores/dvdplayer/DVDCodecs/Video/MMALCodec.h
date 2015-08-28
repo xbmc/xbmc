@@ -39,7 +39,7 @@
 #include <string>
 #include "guilib/Geometry.h"
 #include "rendering/RenderSystem.h"
-#include "cores/VideoRenderers/BaseRenderer.h"
+#include "cores/dvdplayer/VideoRenderers/BaseRenderer.h"
 
 class CMMALVideo;
 
