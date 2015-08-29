@@ -184,6 +184,8 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& 
     AddonPtr addon;
     if (CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_UNKNOWN, false) && addon->HasSettings())
       buttons.Add(CONTEXT_BUTTON_SETTINGS, 24020);
+    if (CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_REPOSITORY))
+      buttons.Add(CONTEXT_BUTTON_CHECK_FOR_UPDATES, 24034);
   }
 
   CContextMenuManager::GetInstance().AddVisibleItems(pItem, buttons);
@@ -205,6 +207,12 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber, CONTEXT_BUTTON butt
       AddonPtr addon;
       if (CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_UNKNOWN, false))
         return CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    }
+    else if (button == CONTEXT_BUTTON_CHECK_FOR_UPDATES)
+    {
+      AddonPtr addon;
+      if (CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_REPOSITORY))
+        CRepositoryUpdater::GetInstance().CheckForUpdates(std::static_pointer_cast<CRepository>(addon), true);
     }
   }
 
