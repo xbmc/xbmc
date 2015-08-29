@@ -713,6 +713,7 @@ void CStreamsManager::SetSubfilterVisible(bool bVisible)
 void CStreamsManager::resetDelayInterface()
 {
   int iValueAudio = m_InitialAudioDelay * 1000;
+  BOOL bValue = iValueAudio != 0;
   int iValueSubs = m_InitialSubsDelay * 1000;
 
   if (m_bIsFFDSAudio)
@@ -722,7 +723,7 @@ void CStreamsManager::resetDelayInterface()
     m_pIDirectVobSub->put_SubtitleTiming(iValueSubs, 1000, 1000);
 
   if (m_bIsLavAudio)
-    m_pILAVAudioSettings->SetAudioDelay(true, iValueAudio);
+    m_pILAVAudioSettings->SetAudioDelay(bValue, iValueAudio);
 }
 
 bool CStreamsManager::SetAudioInterface()
@@ -759,7 +760,7 @@ bool CStreamsManager::SetAudioInterface()
 void CStreamsManager::SetAVDelay(float fValue)
 {
   //delay float secs to int msecs
-  int iValue = fValue * 1000;
+  int iValue = round(fValue * 1000.0f);
 
   //get displaylatency and invert the sign because kodi interface
   int displayLatency = -(g_renderManager.GetDisplayLatency() * 1000);
@@ -767,9 +768,10 @@ void CStreamsManager::SetAVDelay(float fValue)
 
   //get delay and invert the sign because kodi interface
   iValue = -iValue;
+  BOOL bValue = iValue != 0;
 
   if (m_bIsLavAudio)
-    m_pILAVAudioSettings->SetAudioDelay(true, iValue);
+    m_pILAVAudioSettings->SetAudioDelay(bValue, iValue);
 
   if (m_bIsFFDSAudio)
     m_pIFFDSwhoAudioSettings->putParam(IDFF_audio_decoder_delay, iValue);
@@ -790,14 +792,14 @@ float CStreamsManager::GetAVDelay()
   if (m_bIsFFDSAudio)
     m_pIFFDSwhoAudioSettings->getParam(IDFF_audio_decoder_delay, &iValue);
 
-  fValue = (float)iValue / 1000;
+  fValue = (float)iValue / 1000.0f;
 
   return -fValue;
 }
 
 void CStreamsManager::SetSubTitleDelay(float fValue)
 {
-  int iValue = fValue * 1000;
+  int iValue = round(fValue * 1000.0f);
 
   //get delay and invert the sign because kodi interface
   iValue = -iValue;
@@ -817,7 +819,7 @@ float CStreamsManager::GetSubTitleDelay()
   if (m_bIsXYVSFilter)
     m_pIDirectVobSub->get_SubtitleTiming(&iValue, &a, &b);
 
-  fValue = (float)iValue / 1000;
+  fValue = (float)iValue / 1000.0f;
   return fValue;
 }
 
