@@ -70,6 +70,8 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
         }
       }
     }
+    if (pItem->GetEPGInfoTag()->HasRecording())
+      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19687);       /* Play recording */
 
     buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Epg info button */
     if (pItem->GetEPGInfoTag()->HasPVRChannel() &&
@@ -99,6 +101,7 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonStopRecord(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
+      OnContextButtonPlay(pItem.get(), button) ||
       CGUIWindowPVRBase::OnContextButton(itemNumber, button);
 }
 
@@ -243,6 +246,19 @@ bool CGUIWindowPVRSearch::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON bu
     bReturn = true;
 
     ShowEPGInfo(item);
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRSearch::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_PLAY_ITEM)
+  {
+    ActionPlayEpg(item, true /* play recording, not channel */);
+    bReturn = true;
   }
 
   return bReturn;
