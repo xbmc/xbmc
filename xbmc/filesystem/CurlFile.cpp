@@ -1528,8 +1528,9 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
                   msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
               CURLresult = msg->data.result;
-            else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR     ||
-                       httpCode == 416 /* = Requested Range Not Satisfiable */) &&
+            else if ( (msg->data.result == CURLE_HTTP_RANGE_ERROR              ||
+                       httpCode == 416 /* = Requested Range Not Satisfiable */ ||
+                       httpCode == 406 /* = Not Acceptable (fixes issues with non compliant HDHomerun servers */) &&
                        m_bFirstLoop                                   &&
                        m_filePos == 0                                 &&
                        m_sendRange)
