@@ -63,9 +63,11 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
       {
         if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
           buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* stop recording */
-        else if (pItem->GetPVRTimerInfoTag()->HasTimerType() &&
-                 !pItem->GetPVRTimerInfoTag()->GetTimerType()->IsReadOnly())
-          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* delete timer */
+        else if (pItem->GetEPGInfoTag()->Timer()->HasTimerType())
+        {
+          if (!pItem->GetEPGInfoTag()->Timer()->GetTimerType()->IsReadOnly())
+            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* delete timer */
+        }
       }
     }
 
