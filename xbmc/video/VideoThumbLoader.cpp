@@ -557,6 +557,27 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
 {
   if (item.m_bIsFolder) return;
 
+  if (item.HasVideoInfoTag())
+  {
+    CStreamDetails& details = item.GetVideoInfoTag()->m_streamDetails;
+
+    // add audio language properties
+    for (int i = 1; i <= details.GetAudioStreamCount(); i++)
+    {
+      std::string index = StringUtils::Format("%i", i);
+      item.SetProperty("AudioChannels." + index, details.GetAudioChannels(i));
+      item.SetProperty("AudioCodec."    + index, details.GetAudioCodec(i).c_str());
+      item.SetProperty("AudioLanguage." + index, details.GetAudioLanguage(i).c_str());
+    }
+
+    // add subtitle language properties
+    for (int i = 1; i <= details.GetSubtitleStreamCount(); i++)
+    {
+      std::string index = StringUtils::Format("%i", i);
+      item.SetProperty("SubtitleLanguage." + index, details.GetSubtitleLanguage(i).c_str());
+    }
+  }
+
   std::string stereoMode;
   // detect stereomode for videos
   if (item.HasVideoInfoTag())
