@@ -120,7 +120,6 @@ config.log
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
 /addons/visualization.fishbmc/fishbmc.vis
-/addons/script.module.pil/
 /addons/audioencoder.*
 /addons/pvr.*
 /addons/adsp.*
