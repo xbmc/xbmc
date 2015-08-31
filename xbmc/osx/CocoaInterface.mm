@@ -41,9 +41,6 @@
 #import "AutoPool.h"
 
 
-// hack for Cocoa_GL_ResizeWindow
-//extern "C" void SDL_SetWidthHeight(int w, int h);
-
 //#define MAX_DISPLAYS 32
 //static NSWindow* blankingWindows[MAX_DISPLAYS];
 
