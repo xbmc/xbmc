@@ -214,9 +214,10 @@ void CMusicDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxSong6 ON song( idPath, strFileName(255) )");
   m_pDS->exec("CREATE UNIQUE INDEX idxSong7 ON song( idAlbum, strMusicBrainzTrackID(36) )");
 
-  m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist )");
-  m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_2 ON song_artist ( idArtist, idSong )");
+  m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist, idRole )");
+  m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_2 ON song_artist ( idArtist, idSong, idRole )");
   m_pDS->exec("CREATE INDEX idxSongArtist_3 ON song_artist ( boolFeatured )");
+  m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_4 ON song_artist ( idSong, idArtist, idRole )");
 
   m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_1 ON song_genre ( idSong, idGenre )");
   m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_2 ON song_genre ( idGenre, idSong )");
@@ -327,6 +328,7 @@ void CMusicDatabase::CreateViews()
   m_pDS->exec("CREATE VIEW albumartistview AS SELECT"
               "  album_artist.idAlbum AS idAlbum, "
               "  album_artist.idArtist AS idArtist, "
+              "  album_artist.idRole AS idRole, "
               "  artist.strArtist AS strArtist, "
               "  artist.strMusicBrainzArtistID AS strMusicBrainzArtistID, "
               "  album_artist.boolFeatured AS boolFeatured, "
@@ -340,6 +342,7 @@ void CMusicDatabase::CreateViews()
   m_pDS->exec("CREATE VIEW songartistview AS SELECT"
               "  song_artist.idSong AS idSong, "
               "  song_artist.idArtist AS idArtist, "
+              "  song_artist.idRole AS idRole, "
               "  artist.strArtist AS strArtist, "
               "  artist.strMusicBrainzArtistID AS strMusicBrainzArtistID, "
               "  song_artist.boolFeatured AS boolFeatured, "
@@ -374,7 +377,8 @@ std::string GetArtistString(const VECARTISTCREDITS &credits)
 {
   std::string artistString;
   for (VECARTISTCREDITS::const_iterator i = credits.begin(); i != credits.end(); ++i)
-    artistString += i->GetArtist() + i->GetJoinPhrase();
+//    if (i->GetRole() < Role_Composer) 
+      artistString += i->GetArtist() + i->GetJoinPhrase();
   return artistString;
 }
 
@@ -481,9 +485,15 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
 {
   BeginTransaction();
 
+  std::string artistDesc;
+  if (!album.strArtistDesc.empty())
+    artistDesc = album.strArtistDesc;
+  else
+    artistDesc = GetArtistString(album.artistCredits);
+
   album.idAlbum = AddAlbum(album.strAlbum,
                            album.strMusicBrainzAlbumID,
-                           GetArtistString(album.artistCredits),
+                           artistDesc,
                            album.GetGenreString(),
                            album.iYear,
                            album.bCompilation, album.releaseType);
@@ -494,6 +504,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
     artistCredit->idArtist = AddArtist(artistCredit->GetArtist(), artistCredit->GetMusicBrainzArtistID());
     AddAlbumArtist(artistCredit->idArtist,
                    album.idAlbum,
+                   artistCredit->GetRole(),
                    artistCredit->GetArtist(),
                    artistCredit->GetJoinPhrase(),
                    artistCredit == album.artistCredits.begin() ? false : true,
@@ -503,11 +514,16 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
   for (VECSONGS::iterator song = album.songs.begin(); song != album.songs.end(); ++song)
   {
     song->idAlbum = album.idAlbum;
+    if (!song->strArtistDesc.empty())
+      artistDesc = song->strArtistDesc;
+    else
+      artistDesc = GetArtistString(song->artistCredits);
+
     song->idSong = AddSong(song->idAlbum,
                            song->strTitle, song->strMusicBrainzTrackID,
                            song->strFileName, song->strComment,
                            song->strMood, song->strThumb,
-                           GetArtistString(song->artistCredits), song->genre,
+                           artistDesc, song->genre,
                            song->iTrack, song->iDuration, song->iYear,
                            song->iTimesPlayed, song->iStartOffset,
                            song->iEndOffset,
@@ -521,6 +537,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
                                          artistCredit->GetMusicBrainzArtistID());
       AddSongArtist(artistCredit->idArtist,
                     song->idSong,
+                    artistCredit->GetRole(),
                     artistCredit->GetArtist(),
                     artistCredit->GetJoinPhrase(), // we don't have song artist breakdowns from scrapers, yet
                     artistCredit == song->artistCredits.begin() ? false : true,
@@ -564,6 +581,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
                                        artistCredit->GetMusicBrainzArtistID());
     AddAlbumArtist(artistCredit->idArtist,
                    album.idAlbum,
+                   artistCredit->GetRole(),
                    artistCredit->GetArtist(),
                    artistCredit->GetJoinPhrase(),
                    artistCredit == album.artistCredits.begin() ? false : true,
@@ -597,6 +615,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
                                          artistCredit->GetMusicBrainzArtistID());
       AddSongArtist(artistCredit->idArtist,
                     song->idSong,
+                    artistCredit->GetRole(),
                     artistCredit->GetArtist(),
                     artistCredit->GetJoinPhrase(),
                     artistCredit == song->artistCredits.begin() ? false : true,
@@ -1179,7 +1198,16 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       if (m_pDS->num_rows() > 0)
       {
         int idArtist = (int)m_pDS->fv("idArtist").get_asInt();
+        bool update = false;
+        if (m_pDS->fv("strArtist").get_asString().compare(strMusicBrainzArtistID) == 0)
+          update = true;
         m_pDS->close();
+        if (update)
+        {
+          strSQL = PrepareSQL("UPDATE artist SET strArtist = '%s' WHERE idArtist = %i", strArtist.c_str(), idArtist);
+          m_pDS->exec(strSQL.c_str());
+          m_pDS->close();
+        }
         return idArtist;
       }
       m_pDS->close();
@@ -1358,11 +1386,11 @@ bool CMusicDatabase::DeleteArtistDiscography(int idArtist)
   return ExecuteQuery(strSQL);
 }
 
-bool CMusicDatabase::AddSongArtist(int idArtist, int idSong, std::string strArtist, std::string joinPhrase, bool featured, int iOrder)
+bool CMusicDatabase::AddSongArtist(int idArtist, int idSong, int idRole, std::string strArtist, std::string joinPhrase, bool featured, int iOrder)
 {
   std::string strSQL;
-  strSQL=PrepareSQL("replace into song_artist (idArtist, idSong, strArtist, strJoinPhrase, boolFeatured, iOrder) values(%i,%i,'%s','%s',%i,%i)",
-                    idArtist, idSong, strArtist.c_str(), joinPhrase.c_str(), featured == true ? 1 : 0, iOrder);
+  strSQL=PrepareSQL("replace into song_artist (idArtist, idSong, idRole, strArtist, strJoinPhrase, boolFeatured, iOrder) values(%i,%i,%i,'%s','%s',%i,%i)",
+                    idArtist, idSong, idRole, strArtist.c_str(), joinPhrase.c_str(), featured == true ? 1 : 0, iOrder);
   return ExecuteQuery(strSQL);
 };
 
@@ -1371,11 +1399,11 @@ bool CMusicDatabase::DeleteSongArtistsBySong(int idSong)
   return ExecuteQuery(PrepareSQL("DELETE FROM song_artist WHERE idSong = %i", idSong));
 }
 
-bool CMusicDatabase::AddAlbumArtist(int idArtist, int idAlbum, std::string strArtist, std::string joinPhrase, bool featured, int iOrder)
+bool CMusicDatabase::AddAlbumArtist(int idArtist, int idAlbum, int idRole, std::string strArtist, std::string joinPhrase, bool featured, int iOrder)
 {
   std::string strSQL;
-  strSQL=PrepareSQL("replace into album_artist (idArtist, idAlbum, strArtist, strJoinPhrase, boolFeatured, iOrder) values(%i,%i,'%s','%s',%i,%i)",
-                    idArtist, idAlbum, strArtist.c_str(), joinPhrase.c_str(), featured == true ? 1 : 0, iOrder);
+  strSQL=PrepareSQL("replace into album_artist (idArtist, idAlbum, idRole, strArtist, strJoinPhrase, boolFeatured, iOrder) values(%i,%i,%i,'%s','%s',%i,%i)",
+                    idArtist, idAlbum, idRole, strArtist.c_str(), joinPhrase.c_str(), featured == true ? 1 : 0, iOrder);
   return ExecuteQuery(strSQL);
 };
 
@@ -1763,6 +1791,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
     album.strAlbum = g_localizeStrings.Get(1050);
   album.strMusicBrainzAlbumID = record->at(offset + album_strMusicBrainzAlbumID).get_asString();
   album.artist = StringUtils::Split(record->at(offset + album_strArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.strArtistDesc = record->at(offset + album_strArtists).get_asString();
   album.genre = StringUtils::Split(record->at(offset + album_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
   album.iYear = record->at(offset + album_iYear).get_asInt();
   if (imageURL)
@@ -1785,6 +1814,7 @@ CArtistCredit CMusicDatabase::GetArtistCreditFromDataset(const dbiplus::sql_reco
 {
   CArtistCredit artistCredit;
   artistCredit.idArtist = record->at(offset + artistCredit_idArtist).get_asInt();
+  artistCredit.idArtist = record->at(offset + artistCredit_idRole).get_asInt();
   artistCredit.m_strArtist = record->at(offset + artistCredit_strArtist).get_asString();
   artistCredit.m_strMusicBrainzArtistID = record->at(offset + artistCredit_strMusicBrainzArtistID).get_asString();
   artistCredit.m_boolFeatured = record->at(offset + artistCredit_bFeatured).get_asBool();
@@ -3863,11 +3893,29 @@ void CMusicDatabase::UpdateTables(int version)
     CMediaSettings::GetInstance().SetMusicNeedsUpdate(53);
     CSettings::GetInstance().Save();
   }
+  if (version < 54)
+  {
+    m_pDS->exec("ALTER TABLE song_artist ADD idRole integer");
+	  std::string strSQL = PrepareSQL("UPDATE song_artist set idRole = %i where boolfeatured = 1", Role_FeaturedArtist);
+	  m_pDS->exec(strSQL.c_str());
+	  strSQL = PrepareSQL("UPDATE song_artist set idRole = %i where boolfeatured = 0", Role_MainArtist);
+	  m_pDS->exec(strSQL.c_str());
+
+    m_pDS->exec("ALTER TABLE album_artist ADD idRole integer");
+    strSQL = PrepareSQL("UPDATE album_artist set idRole = %i where boolfeatured = 1", Role_FeaturedArtist);
+    m_pDS->exec(strSQL.c_str());
+    strSQL = PrepareSQL("UPDATE album_artist set idRole = %i where boolfeatured = 0", Role_MainArtist);
+    m_pDS->exec(strSQL.c_str());
+
+	//TODO:what about updating triggers? 
+    CMediaSettings::GetInstance().SetMusicNeedsUpdate(54);
+    CSettings::GetInstance().Save();
+  }
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 53;
+  return 54;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
@@ -5457,6 +5505,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
   {
     int idArtist = -1, idGenre = -1, idAlbum = -1, idSong = -1;
     bool albumArtistsOnly = false;
+	  int idRole = -1;
 
     option = options.find("artistid");
     if (option != options.end())
@@ -5486,6 +5535,10 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
     if (option != options.end())
       idSong = (int)option->second.asInteger();
 
+  	option = options.find("roleid");
+	  if (option != options.end())
+		  idRole = (int)option->second.asInteger();
+
     option = options.find("albumartistsonly");
     if (option != options.end())
       albumArtistsOnly = option->second.asBoolean();
@@ -5499,27 +5552,48 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
       strSQL += PrepareSQL("(SELECT song_artist.idArtist FROM song_artist WHERE song_artist.idSong = %i)", idSong);
     else if (idGenre > 0)
     { // same statements as below, but limit to the specified genre
-      // in this case we show the whole lot always - there is no limitation to just album artists
-      if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
-        strSQL+=PrepareSQL("(SELECT song_artist.idArtist FROM song_artist" // All artists linked to extra genres
-                           " JOIN song_genre ON song_artist.idSong = song_genre.idSong"
-                           " WHERE song_genre.idGenre = %i)"
-                           " OR idArtist IN ", idGenre);
-      // and add any artists linked to an album (may be different from above due to album artist tag)
-      strSQL += PrepareSQL("(SELECT album_artist.idArtist FROM album_artist" // All album artists linked to extra genres
-                           " JOIN album_genre ON album_artist.idAlbum = album_genre.idAlbum"
-                           " WHERE album_genre.idGenre = %i)", idGenre);
+        if (idRole > 0)
+        {
+            if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
+                strSQL += PrepareSQL("(SELECT song_artist.idArtist FROM song_artist" // All artists linked to extra genres
+                " JOIN song_genre ON song_artist.idSong = song_genre.idSong"
+                " WHERE song_genre.idGenre = %i and song_artist.idRole = %i)"
+                " OR idArtist IN ", idGenre, idRole);
+            // and add any artists linked to an album (may be different from above due to album artist tag)
+            strSQL += PrepareSQL("(SELECT album_artist.idArtist FROM album_artist" // All album artists linked to extra genres
+                " JOIN album_genre ON album_artist.idAlbum = album_genre.idAlbum"
+                " WHERE album_genre.idGenre = %i and album_artist.idRole = %i)", idGenre, idRole);
+        }
+        else
+        {
+            // in this case we show the whole lot always - there is no limitation to just album artists
+            if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
+                strSQL += PrepareSQL("(SELECT song_artist.idArtist FROM song_artist" // All artists linked to extra genres
+                " JOIN song_genre ON song_artist.idSong = song_genre.idSong"
+                " WHERE song_genre.idGenre = %i)"
+                " OR idArtist IN ", idGenre);
+            // and add any artists linked to an album (may be different from above due to album artist tag)
+            strSQL += PrepareSQL("(SELECT album_artist.idArtist FROM album_artist" // All album artists linked to extra genres
+                " JOIN album_genre ON album_artist.idAlbum = album_genre.idAlbum"
+                " WHERE album_genre.idGenre = %i)", idGenre);
+        }
     }
     else
     {
       if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
-        strSQL += "(SELECT song_artist.idArtist FROM song_artist)"
-                  " OR artistview.idArtist IN ";
+      {
+        strSQL += "(SELECT song_artist.idArtist FROM song_artist";
+        if (idRole > 0)
+          strSQL += PrepareSQL(" WHERE song_artist.idRole = %i", idRole);
+        strSQL += ") OR artistview.idArtist IN ";
+      }
 
       // and always show any artists linked to an album (may be different from above due to album artist tag)
-      strSQL +=   "(SELECT album_artist.idArtist FROM album_artist)"; // Includes compliation albums hence "Various artists"
+      strSQL += "(SELECT album_artist.idArtist FROM album_artist"; // Includes compliation albums hence "Various artists"
+      if (idRole > 0)
+        strSQL += PrepareSQL(" WHERE album_artist.idRole = %i", idRole);
+      strSQL += ")";
     }
-
     // remove the null string
     strSQL += ") and artistview.strArtist != ''";
 

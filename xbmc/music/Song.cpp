@@ -35,6 +35,8 @@ CSong::CSong(CFileItem& item)
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
   artist = tag.GetArtist();
+  std::vector<std::string> musicBrainArtistHints = tag.GetMusicBrainzArtistHints();
+  strArtistDesc = tag.GetArtistDesc();
   if (!tag.GetMusicBrainzArtistID().empty())
   { // have musicbrainz artist info, so use it
     for (size_t i = 0; i < tag.GetMusicBrainzArtistID().size(); i++)
@@ -42,15 +44,19 @@ CSong::CSong(CFileItem& item)
       std::string artistId = tag.GetMusicBrainzArtistID()[i];
       std::string artistName;
       /*
-       We try and get the corresponding artist name from the album artist tag.
+       We try and get the corresponding artist name from the hints list.
+       If the hints list is missing or the wrong length, it will try the artist list.
        We match on the same index, and if that fails just use the first name we have.
        */
-      if (!artist.empty())
+      if (i < musicBrainArtistHints.size())
+        artistName = musicBrainArtistHints[i];
+      else if (!artist.empty())
         artistName = (i < artist.size()) ? artist[i] : artist[0];
       if (artistName.empty())
         artistName = artistId;
       std::string strJoinPhrase = (i == tag.GetMusicBrainzArtistID().size()-1) ? "" : g_advancedSettings.m_musicItemSeparator;
-      CArtistCredit artistCredit(artistName, artistId, strJoinPhrase);
+	    MusicArtistRoles role = (i == 0) ? Role_MainArtist : Role_FeaturedArtist;
+      CArtistCredit artistCredit(artistName, artistId, strJoinPhrase, role);
       artistCredits.push_back(artistCredit);
     }
   }
@@ -59,7 +65,8 @@ CSong::CSong(CFileItem& item)
     for (vector<string>::const_iterator it = tag.GetArtist().begin(); it != tag.GetArtist().end(); ++it)
     {
       std::string strJoinPhrase = (it == --tag.GetArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-      CArtistCredit artistCredit(*it, "", strJoinPhrase);
+	    MusicArtistRoles role = (it == tag.GetArtist().begin()) ? Role_MainArtist : Role_FeaturedArtist;
+      CArtistCredit artistCredit(*it, "", strJoinPhrase, role);
       artistCredits.push_back(artistCredit);
     }
   }
@@ -69,6 +76,61 @@ CSong::CSong(CFileItem& item)
   strComment = tag.GetComment();
   strCueSheet = tag.GetCueSheet();
   strMood = tag.GetMood();
+  strComposer = tag.GetComposer();
+  if (!strComposer.empty())
+  {
+    CArtistCredit ComposerCredit(strComposer, "", Role_Composer);
+    // Set role if composer already in song artist credits, or add composer to song artist credits
+    VECARTISTCREDITS::iterator credit = find(artistCredits.begin(), artistCredits.end(), ComposerCredit);
+    if (credit != artistCredits.end() && credit->GetRole() < Role_Composer)
+      credit->SetRole(Role_Composer);
+    else
+    {
+      if (artistCredits.begin() != artistCredits.end())
+        artistCredits.back().SetJoinPhrase(g_advancedSettings.m_musicItemSeparator);
+      artistCredits.push_back(ComposerCredit);
+    }
+  }
+  /*
+  if (!strComposer.empty())
+  {
+    //Add composer, no separators as not built into song artist string
+    CArtistCredit ComposerCredit(strComposer, "", Role_Composer);
+    artistCredits.push_back(ComposerCredit);
+  }
+  */
+  strEnsemble = tag.GetEnsemble();
+  // Add ensemble to song artist credits
+  if (!strEnsemble.empty())
+  {
+    CArtistCredit EnsembleCredit(strEnsemble, "", Role_Ensemble);
+    // Add ensemble to song artist credits, or set role if exists as artist generally (not Composer or Conductor)
+    VECARTISTCREDITS::iterator credit = find(artistCredits.begin(), artistCredits.end(), EnsembleCredit);
+    if (credit != artistCredits.end() && credit->GetRole() < Role_Composer) 
+      credit->SetRole(Role_Ensemble);
+    else
+    {  
+      if (artistCredits.begin() != artistCredits.end())
+        artistCredits.back().SetJoinPhrase(g_advancedSettings.m_musicItemSeparator);
+      artistCredits.push_back(EnsembleCredit);
+    }  
+  }
+
+  strConductor = tag.GetConductor();
+  if (!strConductor.empty())
+  {
+    CArtistCredit ConductorCredit(strConductor, "", Role_Conductor);
+    // Add Conductor to song artist credits, or set role if exists as artist generally (not Composer or Ensemble)
+    VECARTISTCREDITS::iterator credit = find(artistCredits.begin(), artistCredits.end(), ConductorCredit);
+    if (credit != artistCredits.end() && credit->GetRole() < Role_Composer)
+      credit->SetRole(Role_Conductor);
+    else
+    {
+      if (artistCredits.begin() != artistCredits.end())
+        artistCredits.back().SetJoinPhrase(g_advancedSettings.m_musicItemSeparator);
+      artistCredits.push_back(ConductorCredit);
+    }
+  }
   rating = tag.GetRating();
   iYear = stTime.wYear;
   iTrack = tag.GetTrackAndDiscNumber();
@@ -119,6 +181,9 @@ void CSong::Serialize(CVariant& value) const
   value["musicbrainztrackid"] = strMusicBrainzTrackID;
   value["comment"] = strComment;
   value["mood"] = strMood;
+  value["composer"] = strComposer;
+  value["ensemble"] = strEnsemble;
+  value["conductor"] = strConductor;
   value["rating"] = rating;
   value["timesplayed"] = iTimesPlayed;
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
@@ -139,6 +204,9 @@ void CSong::Clear()
   strMusicBrainzTrackID.clear();
   strComment.clear();
   strMood.clear();
+  strComposer.clear();
+  strEnsemble.clear();
+  strConductor.clear();
   rating = '0';
   iTrack = 0;
   iDuration = 0;

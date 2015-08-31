@@ -47,6 +47,7 @@ public:
     strMusicBrainzAlbumID.clear();
     artist.clear();
     artistCredits.clear();
+    strArtistDesc.clear();
     genre.clear();
     thumbURL.Clear();
     moods.clear();
@@ -95,6 +96,7 @@ public:
   std::string strAlbum;
   std::string strMusicBrainzAlbumID;
   std::vector<std::string> artist;
+  std::string strArtistDesc;
   VECARTISTCREDITS artistCredits;
   std::vector<std::string> genre;
   CScraperUrl thumbURL;

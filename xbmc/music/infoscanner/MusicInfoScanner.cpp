@@ -711,11 +711,12 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
        */
       CAlbum album;
       album.strAlbum = songsByAlbumName->first;
+      album.strArtistDesc = StringUtils::Join(common, g_advancedSettings.m_musicItemSeparator);
       album.artist = common;
       for (vector<string>::iterator it = common.begin(); it != common.end(); ++it)
       {
         std::string strJoinPhrase = (it == --common.end() ? "" : g_advancedSettings.m_musicItemSeparator);
-        CArtistCredit artistCredit(*it, strJoinPhrase);
+		    CArtistCredit artistCredit(*it, strJoinPhrase, Role_AlbumArtist);
         album.artistCredits.push_back(artistCredit);
       }
       album.bCompilation = compilation;
@@ -732,6 +733,50 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       albums.push_back(album);
     }
   }
+
+  //For each album set the role(s) of the album artist from the role(s) of that artist in the album's songs (if present)
+  //Composer, Conductor, Ensemble etc. are held in song file tags
+  VECARTISTCREDITS tempAlbumCredits;
+  for (VECALBUMS::iterator album = albums.begin(); album != albums.end(); ++album)
+  {
+    for (VECARTISTCREDITS::iterator albumArtistCredit = album->artistCredits.begin(); albumArtistCredit != album->artistCredits.end(); ++albumArtistCredit)
+    {
+      //For album artist find distinct role(s) from role(s) of song artists (if name OR mbid matches)
+      set<int> aaroles;
+      for (VECSONGS::iterator song = album->songs.begin(); song != album->songs.end(); ++song)     
+      {
+        for (VECARTISTCREDITS::iterator credit = song->artistCredits.begin(); credit != song->artistCredits.end(); ++credit)
+        { 
+          if (*credit == *albumArtistCredit && credit->GetRole() >= Role_Composer)
+            aaroles.insert(int(credit->GetRole()));
+        }
+      }
+      //
+      for (set<int>::iterator role = aaroles.begin(); role != aaroles.end(); role++)
+      {
+        if (role == aaroles.begin())
+          albumArtistCredit->SetRole(MusicArtistRoles(*role));
+        else
+        {
+          //Additional artist credits for album artist with multiple roles.
+          //To maintain iterator keep new credits in separate vector for later.
+          CArtistCredit artistCredit(albumArtistCredit->GetArtist(),
+                                     albumArtistCredit->GetMusicBrainzArtistID(),
+                                     "",
+                                     MusicArtistRoles(*role));
+          tempAlbumCredits.push_back(artistCredit);
+        }
+      }
+    }
+    //Add extra artist credits to album artistcredits vector (now iteration complete)
+    if (tempAlbumCredits.size() > 0)
+    {
+      album->artistCredits.reserve(album->artistCredits.size() + tempAlbumCredits.size());
+      album->artistCredits.insert(album->artistCredits.end(), tempAlbumCredits.begin(), tempAlbumCredits.end());
+      tempAlbumCredits.clear();
+    }
+  }
+
 }
 
 int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileItemList& items)
