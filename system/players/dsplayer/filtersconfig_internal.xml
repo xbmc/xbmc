@@ -29,5 +29,32 @@
      <osdname>(i) XySubFilter</osdname>
      <guid>{2DFCB782-EC20-4A7C-B530-4577ADB33F21}</guid>
     </filter>
+    <filter name="wmasfreader" type="source">
+      <guid>{187463A0-5BB7-11D3-ACBE-0080C75E246E}</guid>
+      <osdname>WM ASF Reader</osdname>
+    </filter>
+    <filter name="urlfilesource" type="source">
+      <guid>{E436EBB6-524F-11CE-9F53-0020AF0BA770}</guid>
+      <issplitter>false</issplitter>
+      <osdname>File Source (URL)</osdname>
+    </filter>
+    <filter name="avsource" type="source">
+      <path>AVSplitter.ax</path>
+      <guid>{D8980E15-E1F6-4916-A10F-D7EB4E9E10B8}</guid>
+      <osdname>AV Source</osdname>
+    </filter>
+    <filter name="dvdnavigator" type="source">
+      <guid>{9B8C4620-2C1A-11D0-8493-00A02438AD48}</guid>
+      <osdname>DVD Navigator</osdname>
+    </filter>
+    <filter name="oggsource" type="source">
+      <path>OggSplitter.ax</path>
+      <guid>{6D3688CE-3E9D-42F4-92CA-8A11119D25CD}</guid>
+      <osdname>Ogg Source</osdname>
+    </filter>
+    <filter name="realsource" type="source">
+      <guid>{765035B3-5944-4A94-806B-20EE3415F26F}</guid>
+      <osdname>RealAlternative Source</osdname>
+    </filter>
   </filters>
 </filtersconfig>
