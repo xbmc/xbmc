@@ -314,14 +314,14 @@ namespace PVR
      * @param channel The current channel.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelUp(const CFileItem &channel) const;
+    CFileItemPtr GetByChannelUp(const CPVRChannelPtr &channel) const;
 
     /*!
      * @brief Get the previous channel in this group.
      * @param channel The current channel.
      * @return The channel or NULL if it wasn't found.
      */
-    CFileItemPtr GetByChannelDown(const CFileItem &channel) const;
+    CFileItemPtr GetByChannelDown(const CPVRChannelPtr &channel) const;
 
     /*!
      * Get the current members of this group

@@ -499,27 +499,27 @@ CFileItemPtr CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNumber, u
   return retval;
 }
 
-CFileItemPtr CPVRChannelGroup::GetByChannelUp(const CFileItem &channel) const
+CFileItemPtr CPVRChannelGroup::GetByChannelUp(const CPVRChannelPtr &channel) const
 {
   CFileItemPtr retval;
 
-  if (channel.HasPVRChannelInfoTag())
+  if (channel)
   {
     CSingleLock lock(m_critSection);
     for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); !retval && it != m_sortedMembers.end(); ++it)
     {
-      if ((*it).channel == channel.GetPVRChannelInfoTag())
+      if ((*it).channel == channel)
       {
         do
         {
           if ((++it) == m_sortedMembers.end())
             it = m_sortedMembers.begin();
           if ((*it).channel && !(*it).channel->IsHidden())
-            retval = CFileItemPtr(new CFileItem((*it).channel));
-        } while (!retval && (*it).channel != channel.GetPVRChannelInfoTag());
+            retval = std::make_shared<CFileItem>((*it).channel);
+        } while (!retval && (*it).channel != channel);
 
         if (!retval)
-          retval = CFileItemPtr(new CFileItem);
+          retval = std::make_shared<CFileItem>();
       }
     }
   }
@@ -527,27 +527,27 @@ CFileItemPtr CPVRChannelGroup::GetByChannelUp(const CFileItem &channel) const
   return retval;
 }
 
-CFileItemPtr CPVRChannelGroup::GetByChannelDown(const CFileItem &channel) const
+CFileItemPtr CPVRChannelGroup::GetByChannelDown(const CPVRChannelPtr &channel) const
 {
   CFileItemPtr retval;
 
-  if (channel.HasPVRChannelInfoTag())
+  if (channel)
   {
     CSingleLock lock(m_critSection);
     for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_reverse_iterator it = m_sortedMembers.rbegin(); !retval && it != m_sortedMembers.rend(); ++it)
     {
-      if ((*it).channel == channel.GetPVRChannelInfoTag())
+      if ((*it).channel == channel)
       {
         do
         {
           if ((++it) == m_sortedMembers.rend())
             it = m_sortedMembers.rbegin();
           if ((*it).channel && !(*it).channel->IsHidden())
-            retval = CFileItemPtr(new CFileItem((*it).channel));
-        } while (!retval && (*it).channel != channel.GetPVRChannelInfoTag());
+            retval = std::make_shared<CFileItem>((*it).channel);
+        } while (!retval && (*it).channel != channel);
 
         if (!retval)
-          retval = CFileItemPtr(new CFileItem);
+          retval = std::make_shared<CFileItem>();
       }
     }
   }
