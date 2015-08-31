@@ -53,6 +53,7 @@ CGUIControl::CGUIControl() :
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
   m_controlIsDirty = true;
+  m_stereo = 0.0f;
 }
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
@@ -79,6 +80,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
   m_controlIsDirty = false;
+  m_stereo = 0.0f;
 }
 
 
@@ -174,14 +176,22 @@ void CGUIControl::DoRender()
 {
   if (IsVisible())
   {
+    bool hasStereo = m_stereo != 0.0
+                  && g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_MONO
+                  && g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_OFF;
+
     g_graphicsContext.SetTransform(m_cachedTransform);
     if (m_hasCamera)
       g_graphicsContext.SetCameraPosition(m_camera);
+    if (hasStereo)
+      g_graphicsContext.SetStereoFactor(m_stereo);
 
     GUIPROFILER_RENDER_BEGIN(this);
     Render();
     GUIPROFILER_RENDER_END(this);
 
+    if (hasStereo)
+      g_graphicsContext.RestoreStereoFactor();
     if (m_hasCamera)
       g_graphicsContext.RestoreCameraPosition();
     g_graphicsContext.RemoveTransform();
@@ -919,4 +929,9 @@ CPoint CGUIControl::GetRenderPosition() const
   if (m_parentControl)
     point += m_parentControl->GetRenderPosition();
   return point;
+}
+
+void CGUIControl::SetStereoFactor(const float &factor)
+{
+  m_stereo = factor;
 }

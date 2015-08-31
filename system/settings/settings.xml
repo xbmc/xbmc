@@ -93,6 +93,19 @@
             <show more="true" details="true">installed</show>
           </control>
         </setting>
+        <setting id="lookandfeel.stereostrength" type="integer" label="36550" help="36551">
+          <level>2</level>
+          <default>5</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>10</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="update" setting="lookandfeel.skin" />
+          </dependencies>
+          <control type="spinner" format="string" />
+        </setting>
       </group>
       <group id="2">
         <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
