@@ -67,7 +67,31 @@ namespace CEC
 
 namespace PERIPHERALS
 {
+   // libcec_configuration2 constants
+   // Actions can be done on CEC standby incoming command
+   #define CEC_DO_NOTHING_ON_STANDBY          0
+   #define CEC_SHUTDOWN_ON_STANDBY            1
+   #define CEC_PAUSE_PLAYBACK_ON_STANDBY      2
+   #define CEC_STOP_PLAYBACK_ON_STANDBY       3
+   #define CEC_SUSPEND_ON_STANDBY             4
+
   class CPeripheralCecAdapterUpdateThread;
+
+  // Addition to libcec_configuration ( original can not be changed because implemented in pulse-eight\libcec project )
+  struct libcec_configuration2
+  {
+    int standbyAction;
+
+    libcec_configuration2(void) { Clear(); };
+    ~libcec_configuration2(void) { Clear(); };
+	
+    bool operator==(const libcec_configuration2 &other) const;
+    bool operator!=(const libcec_configuration2 &other) const;
+
+    void Clear(void);
+    void SetOnStandbyAction(int action);
+    int GetOnStandbyAction(void);
+  };
 
   typedef struct
   {
@@ -124,6 +148,7 @@ namespace PERIPHERALS
     bool ReopenConnection(void);
 
     void SetConfigurationFromSettings(void);
+    void SetConfiguration2FromSettings(void);
     void SetConfigurationFromLibCEC(const CEC::libcec_configuration &config);
     void SetVersionInfo(const CEC::libcec_configuration &configuration);
 
@@ -172,6 +197,7 @@ namespace PERIPHERALS
     CEC::ICECCallbacks                m_callbacks;
     CCriticalSection                  m_critSection;
     CEC::libcec_configuration         m_configuration;
+    libcec_configuration2             m_configuration2;
     bool                              m_bActiveSourcePending;
     bool                              m_bStandbyPending;
     CDateTime                         m_preventActivateSourceOnPlay;

@@ -140,6 +140,7 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_currentButton.iDuration  = 0;
   m_standbySent.SetValid(false);
   m_configuration.Clear();
+  m_configuration2.Clear();
 }
 
 void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
@@ -237,6 +238,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
       SetSettingVisible("standby_devices", false);
 
     SetConfigurationFromSettings();
+    SetConfiguration2FromSettings();
     m_callbacks.Clear();
     m_callbacks.CBCecLogMessage           = &CecLogMessage;
     m_callbacks.CBCecKeyPress             = &CecKeyPress;
@@ -621,15 +623,31 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
     {
     case CEC_OPCODE_STANDBY:
       /* a device was put in standby mode */
+      adapter->SetConfiguration2FromSettings(); //FIXME/ Force to update settings (m_configuration2) because can not decide how it works :-(
       if (command.initiator == CECDEVICE_TV &&
-          (adapter->m_configuration.bPowerOffOnStandby == 1 || adapter->m_configuration.bShutdownOnStandby == 1) &&
+          (adapter->m_configuration2.standbyAction != CEC_DO_NOTHING_ON_STANDBY) &&
           (!adapter->m_standbySent.IsValid() || CDateTime::GetCurrentDateTime() - adapter->m_standbySent > CDateTimeSpan(0, 0, 0, SCREENSAVER_TIMEOUT)))
       {
+        
         adapter->m_bStarted = false;
-        if (adapter->m_configuration.bPowerOffOnStandby == 1)
+        if (adapter->m_configuration2.standbyAction == CEC_SUSPEND_ON_STANDBY)
           g_application.ExecuteXBMCAction("Suspend");
-        else if (adapter->m_configuration.bShutdownOnStandby == 1)
+        else if (adapter->m_configuration2.standbyAction == CEC_SHUTDOWN_ON_STANDBY)
           g_application.ExecuteXBMCAction("Shutdown");
+        else if (adapter->m_configuration2.standbyAction == CEC_PAUSE_PLAYBACK_ON_STANDBY) 
+        {
+            if (g_application.m_pPlayer->IsPlaying() && (!g_application.m_pPlayer->IsPausedPlayback()) && g_application.m_pPlayer->CanPause())
+                g_application.m_pPlayer->Pause();
+            else
+                CLog::Log(LOGDEBUG, "%s - Can not pause player now", __FUNCTION__);
+        }
+        else if (adapter->m_configuration2.standbyAction = CEC_STOP_PLAYBACK_ON_STANDBY)
+        {
+            if (g_application.m_pPlayer)
+                g_application.m_pPlayer->ClosePlayer();
+            else
+                CLog::Log(LOGDEBUG, "%s - No player yet", __FUNCTION__);
+        }
       }
       break;
     case CEC_OPCODE_SET_MENU_LANGUAGE:
@@ -1122,6 +1140,7 @@ void CPeripheralCecAdapter::OnSettingChanged(const std::string &strChangedSettin
     {
       CLog::Log(LOGDEBUG, "%s - starting the CEC connection", __FUNCTION__);
       SetConfigurationFromSettings();
+      SetConfiguration2FromSettings();
       InitialiseFeature(FEATURE_CEC);
     }
   }
@@ -1131,6 +1150,7 @@ void CPeripheralCecAdapter::OnSettingChanged(const std::string &strChangedSettin
     {
       CLog::Log(LOGDEBUG, "%s - sending the updated configuration to libCEC", __FUNCTION__);
       SetConfigurationFromSettings();
+      SetConfiguration2FromSettings();
       m_queryThread->UpdateConfiguration(&m_configuration);
     }
   }
@@ -1138,6 +1158,7 @@ void CPeripheralCecAdapter::OnSettingChanged(const std::string &strChangedSettin
   {
     CLog::Log(LOGDEBUG, "%s - restarting the CEC connection", __FUNCTION__);
     SetConfigurationFromSettings();
+    SetConfiguration2FromSettings();
     InitialiseFeature(FEATURE_CEC);
   }
 }
@@ -1276,12 +1297,19 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 
   SetVersionInfo(m_configuration);
 
-  bChanged |= SetSetting("standby_pc_on_tv_standby",
-             m_configuration.bPowerOffOnStandby == 1 ? 13011 :
-             m_configuration.bShutdownOnStandby == 1 ? 13005 : 36028);
+  bChanged |= SetSetting("standby_pc_on_tv_standby", m_configuration2.GetOnStandbyAction());
 
   if (bChanged)
     CLog::Log(LOGDEBUG, "SetConfigurationFromLibCEC - settings updated by libCEC");
+}
+
+void CPeripheralCecAdapter::SetConfiguration2FromSettings(void) 
+{
+    // read the mutually exclusive boolean settings
+    int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
+    m_configuration2.SetOnStandbyAction(iStandbyAction);
+    m_configuration.bPowerOffOnStandby = m_configuration2.standbyAction == CEC_SUSPEND_ON_STANDBY ? 1 : 0;
+    m_configuration.bShutdownOnStandby = m_configuration2.standbyAction == CEC_SHUTDOWN_ON_STANDBY ? 1 : 0;
 }
 
 void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
@@ -1360,10 +1388,6 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_configuration.bPowerOnScreensaver  = GetSettingBool("cec_wake_screensaver") ? 1 : 0;
   m_configuration.bSendInactiveSource  = GetSettingBool("send_inactive_source") ? 1 : 0;
 
-  // read the mutually exclusive boolean settings
-  int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
-  m_configuration.bPowerOffOnStandby = iStandbyAction == 13011 ? 1 : 0;
-  m_configuration.bShutdownOnStandby = iStandbyAction == 13005 ? 1 : 0;
 
 #if defined(CEC_DOUBLE_TAP_TIMEOUT_MS_OLD)
   // double tap prevention timeout in ms. libCEC uses 50ms units for this in 2.2.0, so divide by 50
@@ -1740,6 +1764,65 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
   }
 
   return false;
+}
+
+void libcec_configuration2::Clear(void)
+{
+    standbyAction = CEC_DO_NOTHING_ON_STANDBY;
+}
+
+bool libcec_configuration2::operator == (const libcec_configuration2 &other) const
+{
+    return (
+        standbyAction == other.standbyAction
+        );
+};
+
+bool libcec_configuration2::operator != (const libcec_configuration2 &other) const
+{
+    return !(*this == other);
+}
+
+void libcec_configuration2::SetOnStandbyAction(int action) {
+    switch (action)
+    {
+    case 13011:
+        standbyAction = CEC_SUSPEND_ON_STANDBY;
+        break;
+    case 13005:
+        standbyAction = CEC_SHUTDOWN_ON_STANDBY;
+        break;
+    case 38017:
+        standbyAction = CEC_PAUSE_PLAYBACK_ON_STANDBY;
+        break;
+    case 38018:
+        standbyAction = CEC_STOP_PLAYBACK_ON_STANDBY;
+        break;
+    default:
+        standbyAction = CEC_DO_NOTHING_ON_STANDBY;
+        break;
+    }
+}
+
+int libcec_configuration2::GetOnStandbyAction(void) {
+    switch (standbyAction)
+    {
+    case CEC_SUSPEND_ON_STANDBY:
+        return 13011;
+        break;
+    case CEC_SHUTDOWN_ON_STANDBY:
+        return 13005;
+        break;
+    case CEC_PAUSE_PLAYBACK_ON_STANDBY:
+        return 38017;
+        break;
+    case CEC_STOP_PLAYBACK_ON_STANDBY:
+        return 38018;
+        break;
+    default:
+        return 36028;
+        break;
+    }
 }
 
 #endif

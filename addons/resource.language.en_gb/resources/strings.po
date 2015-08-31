@@ -17519,3 +17519,17 @@ msgstr ""
 msgctxt "#38016"
 msgid "%d fps"
 msgstr ""
+
+#. Label for a select option of action done when CEC TV is gone to standby
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
+#: system/peripherals.xml
+msgctxt "#38017"
+msgid "Pause Playback"
+msgstr ""
+
+#. Label for a select option of action done when CEC TV is gone to standby
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
+#: system/peripherals.xml
+msgctxt "#38018"
+msgid "Stop Playback"
+msgstr ""
