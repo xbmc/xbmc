@@ -189,6 +189,7 @@ void CVideoThumbLoader::OnLoaderStart()
 {
   m_videoDatabase->Open();
   m_showArt.clear();
+  m_seasonArt.clear();
   CThumbLoader::OnLoaderStart();
 }
 
@@ -196,6 +197,7 @@ void CVideoThumbLoader::OnLoaderFinish()
 {
   m_videoDatabase->Close();
   m_showArt.clear();
+  m_seasonArt.clear();
   CThumbLoader::OnLoaderFinish();
 }
 
@@ -451,21 +453,39 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       if (database.GetArtForItem(idAlbum, MediaTypeAlbum, artwork))
         item.SetArt(artwork);
     }
-    // For episodes and seasons, we want to set fanart for that of the show
-    if (!item.HasArt("fanart") && tag.m_iIdShow >= 0)
+
+    if (tag.m_type == MediaTypeEpisode || tag.m_type == MediaTypeSeason)
     {
-      ArtCache::const_iterator i = m_showArt.find(tag.m_iIdShow);
-      if (i == m_showArt.end())
+      // For episodes and seasons, we want to set fanart for that of the show
+      if (!item.HasArt("fanart") && tag.m_iIdShow >= 0)
       {
-        std::map<std::string, std::string> showArt;
-        m_videoDatabase->GetArtForItem(tag.m_iIdShow, MediaTypeTvShow, showArt);
-        i = m_showArt.insert(std::make_pair(tag.m_iIdShow, showArt)).first;
+        ArtCache::const_iterator i = m_showArt.find(tag.m_iIdShow);
+        if (i == m_showArt.end())
+        {
+          std::map<std::string, std::string> showArt;
+          m_videoDatabase->GetArtForItem(tag.m_iIdShow, MediaTypeTvShow, showArt);
+          i = m_showArt.insert(std::make_pair(tag.m_iIdShow, showArt)).first;
+        }
+        if (i != m_showArt.end())
+        {
+          item.AppendArt(i->second, "tvshow");
+          item.SetArtFallback("fanart", "tvshow.fanart");
+          item.SetArtFallback("tvshow.thumb", "tvshow.poster");
+        }
       }
-      if (i != m_showArt.end())
+
+      if (!item.HasArt("season.poster") && tag.m_iSeason > -1)
       {
-        item.AppendArt(i->second, "tvshow");
-        item.SetArtFallback("fanart", "tvshow.fanart");
-        item.SetArtFallback("tvshow.thumb", "tvshow.poster");
+        ArtCache::const_iterator i = m_seasonArt.find(tag.m_iIdSeason);
+        if (i == m_seasonArt.end())
+        {
+          std::map<std::string, std::string> seasonArt;
+          m_videoDatabase->GetArtForItem(tag.m_iIdSeason, MediaTypeSeason, seasonArt);
+          i = m_seasonArt.insert(std::make_pair(tag.m_iIdSeason, seasonArt)).first;
+        }
+
+        if (i != m_seasonArt.end())
+          item.AppendArt(i->second, MediaTypeSeason);
       }
     }
     m_videoDatabase->Close();
