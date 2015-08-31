@@ -47,15 +47,12 @@ public:
   virtual const char *GetType() const { return "VideoLibraryRefreshingJob"; }
   virtual bool operator==(const CJob* job) const;
 
-  void SetShowDialogs(bool showDialogs) { m_showDialogs = showDialogs; }
-
 protected:
   // implementation of CVideoLibraryJob
   virtual bool Work(CVideoDatabase &db);
 
 private:
   CFileItemPtr m_item;
-  bool m_showDialogs;
   bool m_forceRefresh;
   bool m_refreshAll;
   bool m_ignoreNfo;
