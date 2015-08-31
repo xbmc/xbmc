@@ -673,8 +673,6 @@ bool CApplication::Create()
     return false;
   }
 
-  g_peripherals.Initialise();
-
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
   CInputManager::Get().InitializeInputs();
@@ -1116,6 +1114,8 @@ bool CApplication::Initialize()
   // load the language and its translated strings
   if (!LoadLanguage(false))
     return false;
+
+  g_peripherals.Initialise();
 
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
