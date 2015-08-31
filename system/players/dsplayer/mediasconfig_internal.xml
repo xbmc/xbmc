@@ -1,15 +1,8 @@
 <mediasconfig>
   <rules>
-    <rule filetypes="mkv|avi|divx|ogm|mp4|mov|m4v|flv|m2v|mpeg|mpg|mts|m2ts|vob|bdmv">
+    <rule filetypes="mkv|avi|divx|ogm|mp4|mov|m4v|flv|m2v|mpeg|mpg|ts|mts|m2ts|vob|bdmv">
       <source filter="lavsource_internal" />
       <splitter filter="lavsplitter_internal" />
-      <video filter="lavvideo_internal" />
-      <audio filter="lavaudio_internal" />
-      <subs filter="xysubfilter_internal" />
-    </rule>
-    <rule filetypes="ts">
-      <source filter="tsreader" />
-      <splitter filter="tsreader" />
       <video filter="lavvideo_internal" />
       <audio filter="lavaudio_internal" />
       <subs filter="xysubfilter_internal" />
