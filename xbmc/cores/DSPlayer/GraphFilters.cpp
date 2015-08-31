@@ -273,8 +273,6 @@ bool CGraphFilters::GetLavSettings(LAVFILTERS_TYPE type, IBaseFilter* pBF)
     pLAVFSettings->GetMixingLevels(&LavSettings.audio_dwMixingCenterLevel, &LavSettings.audio_dwMixingSurroundLevel, &LavSettings.audio_dwMixingLFELevel);
     //pLAVFSettings->GetAudioDelay(&LavSettings.audio_bAudioDelayEnabled, &LavSettings.audio_iAudioDelay);
 
-    CLog::Log(0, "%u, %u, %u", LavSettings.audio_dwMixingCenterLevel, LavSettings.audio_dwMixingSurroundLevel, LavSettings.audio_dwMixingLFELevel);
-
     for (int i = 0; i < Bitstream_NB; ++i) {
       LavSettings.audio_bBitstream[i] = pLAVFSettings->GetBitstreamConfig((LAVBitstreamCodec)i);
     }
