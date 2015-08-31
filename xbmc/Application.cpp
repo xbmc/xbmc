@@ -2061,11 +2061,15 @@ void CApplication::Render()
     if (frameTime < singleFrameTime)
       Sleep(singleFrameTime - frameTime);
   }
-    if (flip)
-      g_graphicsContext.Flip(dirtyRegions);
+
+#ifdef HAS_DS_PLAYER   
+  if (!CMadvrCallback::Get()->ReadyMadvr())
+#endif
+  if (flip)
+    g_graphicsContext.Flip(dirtyRegions);
 
 #ifdef HAS_DS_PLAYER    
-  CMadvrCallback::Get()->Flush();
+  CMadvrCallback::Get()->EnQueueD3D11();
 
   if (!CMadvrCallback::Get()->ReadyMadvr())
 #endif

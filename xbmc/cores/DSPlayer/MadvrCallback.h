@@ -124,7 +124,7 @@ public:
   virtual ~IMadvrPaintCallback() {};
 
   virtual HRESULT RenderToTexture(MADVR_RENDER_LAYER layer){ return E_UNEXPECTED; };
-  virtual void Flush(){};
+  virtual void EnQueueD3D11(){};
 };
 
 class IMadvrSettingCallback
@@ -160,20 +160,6 @@ public:
     delete m_pSingleton;
     m_pSingleton = NULL;
   }
-
-  void Register(IMadvrAllocatorCallback* pAllocatorCallback) { m_pAllocatorCallback = pAllocatorCallback; }
-  void Register(IMadvrSettingCallback* pSettingCallback) { m_pSettingCallback = pSettingCallback; }
-  void Register(IMadvrPaintCallback* pPaintCallback) { m_pPaintCallback = pPaintCallback; }
-  bool UsingMadvr();
-  bool ReadyMadvr();
-  bool IsInitMadvr() { return m_isInitMadvr; };
-  void SetInitMadvr(bool b) { m_isInitMadvr = b; }
-  bool GetRenderOnMadvr() { return m_renderOnMadvr; }
-  void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
-  void SetCurrentVideoLayer(MADVR_RENDER_LAYER layer) { m_currentVideoLayer = layer; }
-  void IncRenderCount();
-  void ResetRenderCount();
-  bool GuiVisible(MADVR_RENDER_LAYER layer = RENDER_LAYER_ALL);
   
   // IMadvrAllocatorCallback
   virtual bool IsEnteringExclusive();
@@ -185,7 +171,7 @@ public:
 
   // IMadvrPaintCallback
   virtual HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
-  virtual void Flush();
+  virtual void EnQueueD3D11();
 
   // IMadvrSettingCallback
   virtual void LoadSettings(MADVR_LOAD_TYPE type);
@@ -202,6 +188,20 @@ public:
   virtual std::string GetSettingsName(MADVR_SETTINGS_LIST type, int iValue);
   virtual void AddEntry(MADVR_SETTINGS_LIST type, StaticIntegerSettingOptions *entry);
   virtual void UpdateImageDouble();
+
+  void Register(IMadvrAllocatorCallback* pAllocatorCallback) { m_pAllocatorCallback = pAllocatorCallback; }
+  void Register(IMadvrSettingCallback* pSettingCallback) { m_pSettingCallback = pSettingCallback; }
+  void Register(IMadvrPaintCallback* pPaintCallback) { m_pPaintCallback = pPaintCallback; }
+  bool UsingMadvr();
+  bool ReadyMadvr();
+  bool IsInitMadvr() { return m_isInitMadvr; };
+  void SetInitMadvr(bool b) { m_isInitMadvr = b; }
+  bool GetRenderOnMadvr() { return m_renderOnMadvr; }
+  void SetRenderOnMadvr(bool b) { m_renderOnMadvr = b; }
+  void SetCurrentVideoLayer(MADVR_RENDER_LAYER layer) { m_currentVideoLayer = layer; }
+  void IncRenderCount();
+  void ResetRenderCount();
+  bool GuiVisible(MADVR_RENDER_LAYER layer = RENDER_LAYER_ALL);
 
 private:
   CMadvrCallback();

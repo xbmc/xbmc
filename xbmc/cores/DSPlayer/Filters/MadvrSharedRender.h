@@ -47,33 +47,35 @@ public:
 
   // IMadvrPaintCallback
   virtual HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
-  virtual void Flush();
-
+  virtual void EnQueueD3D11();
+  
   HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height);
   HRESULT Render(MADVR_RENDER_LAYER layer);  
 
 private:
-  HRESULT CreateSharedResource(IDirect3DTexture9** ppTexture9, ID3D11Texture2D** ppTexture11, ID3D11RenderTargetView** ppSurface11);
+  HRESULT CreateSharedResource(IDirect3DTexture9** ppTexture9, ID3D11Texture2D** ppTexture11);
   HRESULT CreateSharedQueueResource();
-  void DeQueue(MADVR_RENDER_LAYER layer);
   HRESULT RenderMadvr(MADVR_RENDER_LAYER layer);  
   HRESULT RenderTexture(MADVR_RENDER_LAYER layer);
   HRESULT SetupVertex();
   HRESULT StoreMadDeviceState();
   HRESULT SetupMadDeviceState();
   HRESULT RestoreMadDeviceState();
-
+  void DeQueueD3D9(MADVR_RENDER_LAYER layer);
+  void EnQueueD3D9();
+  
   ID3D11Device*             m_pD3DDeviceKodi = nullptr;
   IDirect3DDevice9Ex*       m_pD3DDeviceMadVR = nullptr;
 
   IDirect3DVertexBuffer9*   m_pMadvrVertexBuffer = nullptr;
-  ID3D11Texture2D*          m_pKodiOverTexture = nullptr;
-  ID3D11RenderTargetView*   m_pKodiOverSurface = nullptr;
+  IDirect3DTexture9*        m_pMadvrUnderTexture = nullptr;
   IDirect3DTexture9*        m_pMadvrOverTexture = nullptr;
 
-  IDirect3DTexture9*        m_pUnderTexture9 = nullptr;
-  ID3D11Texture2D*          m_pUnderTexture11 = nullptr;
-  
+  ID3D11Texture2D*          m_pKodiUnderTexture = nullptr;
+  ID3D11Texture2D*          m_pKodiOverTexture = nullptr;
+
+  IDirect3DTexture9*        m_pFakeTexture9 = nullptr;
+  ID3D11Texture2D*          m_pFakeTexture11 = nullptr;
   ISurfaceQueue*            m_pD3D11Queue = nullptr;
   ISurfaceQueue*            m_pD3D9Queue = nullptr;
   ISurfaceProducer*         m_pD3D11Producer = nullptr;
