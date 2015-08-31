@@ -53,6 +53,9 @@ CAlbum::CAlbum(const CFileItem& item)
   strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
   genre = tag.GetGenre();
   artist = tag.GetAlbumArtist();
+  std::vector<std::string> musicBrainAlbumArtistHints = tag.GetMusicBrainzAlbumArtistHints();
+  strArtistDesc = tag.GetAlbumArtistDesc();
+
   if (!tag.GetMusicBrainzAlbumArtistID().empty())
   { // have musicbrainz artist info, so use it
     for (size_t i = 0; i < tag.GetMusicBrainzAlbumArtistID().size(); i++)
@@ -60,25 +63,35 @@ CAlbum::CAlbum(const CFileItem& item)
       std::string artistId = tag.GetMusicBrainzAlbumArtistID()[i];
       std::string artistName;
       /*
-       We try and get the corresponding artist name from the album artist tag.
-       We match on the same index, and if that fails just use the first name we have.
-       If no albumartist exists, try matching on artist if the MBArtistID matches.
-       */
-      if (!artist.empty())
-        artistName = (i < artist.size()) ? artist[i] : artist[0];
+         We try and get the mbrainzid <-> name matching from the hints and match on the same index.
+         If not found, we try and use the mbrainz <-> name matching from the artists fields
+         If still not found, try and use the same index of the albumartist field.
+         If still not found, use the mbrainzid and hope we later on can update that entry
+         */
+
+      if (i < musicBrainAlbumArtistHints.size())
+        artistName = musicBrainAlbumArtistHints[i];
       else if (!tag.GetMusicBrainzArtistID().empty() && !tag.GetArtist().empty())
       {
-        vector<string>::const_iterator j = std::find(tag.GetMusicBrainzArtistID().begin(), tag.GetMusicBrainzArtistID().end(), artistId);
-        if (j != tag.GetMusicBrainzArtistID().end())
-        { // find corresponding artist
-          size_t d = std::distance(j,tag.GetMusicBrainzArtistID().begin());
-          artistName = (d < tag.GetArtist().size()) ? tag.GetArtist()[d] : tag.GetArtist()[0];
+        for (size_t j = 0; j < tag.GetMusicBrainzArtistID().size(); j++)
+        {
+          if (artistId == tag.GetMusicBrainzArtistID()[j])
+          {
+            if (j < tag.GetMusicBrainzArtistHints().size())
+              artistName = tag.GetMusicBrainzArtistHints()[j];
+            else
+              artistName = (j < tag.GetArtist().size()) ? tag.GetArtist()[j] : tag.GetArtist()[0];
+          }
         }
       }
+
+      if (artistName.empty() && tag.GetMusicBrainzAlbumArtistID().size() == artist.size())
+        artistName = artist[i];
+
       if (artistName.empty())
         artistName = artistId;
       std::string strJoinPhrase = (i == tag.GetMusicBrainzAlbumArtistID().size()-1) ? "" : g_advancedSettings.m_musicItemSeparator;
-      CArtistCredit artistCredit(artistName, tag.GetMusicBrainzAlbumArtistID()[i], strJoinPhrase);
+      CArtistCredit artistCredit(artistName, tag.GetMusicBrainzAlbumArtistID()[i], strJoinPhrase, Role_AlbumArtist);
       artistCredits.push_back(artistCredit);
     }
   }
@@ -87,7 +100,7 @@ CAlbum::CAlbum(const CFileItem& item)
     for (vector<string>::const_iterator it = tag.GetAlbumArtist().begin(); it != tag.GetAlbumArtist().end(); ++it)
     {
       std::string strJoinPhrase = (it == --tag.GetAlbumArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
-      CArtistCredit artistCredit(*it, "", strJoinPhrase);
+      CArtistCredit artistCredit(*it, "", strJoinPhrase, Role_AlbumArtist);
       artistCredits.push_back(artistCredit);
     }
   }
@@ -298,7 +311,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     for (vector<string>::const_iterator it = artist.begin(); it != artist.end(); ++it)
     {
       CArtistCredit artistCredit(*it, "",
-                                 it == --artist.end() ? "" : g_advancedSettings.m_musicItemSeparator);
+                                 it == --artist.end() ? "" : g_advancedSettings.m_musicItemSeparator, Role_AlbumArtist);
       artistCredits.push_back(artistCredit);
     }
   }

@@ -87,6 +87,7 @@ public:
   std::string strFileName;
   std::string strTitle;
   std::vector<std::string> artist;
+  std::string strArtistDesc;
   VECARTISTCREDITS artistCredits;
   std::string strAlbum;
   std::vector<std::string> albumArtist;
@@ -96,6 +97,9 @@ public:
   std::string strMusicBrainzTrackID;
   std::string strComment;
   std::string strMood;
+  std::string strComposer;
+  std::string strEnsemble;
+  std::string strConductor;
   std::string strCueSheet;
   char rating;
   int iTrack;

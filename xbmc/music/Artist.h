@@ -26,6 +26,7 @@
 
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
+#include "utils/StringUtils.h"
 
 class TiXmlNode;
 class CAlbum;
@@ -98,6 +99,8 @@ public:
   std::vector<std::pair<std::string,std::string> > discography;
 };
 
+enum MusicArtistRoles { Role_Unknown, Role_MainArtist, Role_FeaturedArtist, Role_AlbumArtist, Role_Composer, Role_Conductor, Role_Ensemble };
+
 class CArtistCredit
 {
   friend class CAlbum;
@@ -108,6 +111,9 @@ public:
   CArtistCredit(std::string strArtist, std::string strJoinPhrase) : m_strArtist(strArtist), m_strJoinPhrase(strJoinPhrase), m_boolFeatured(false) { }
   CArtistCredit(std::string strArtist, std::string strMusicBrainzArtistID, std::string strJoinPhrase)
   : m_strArtist(strArtist), m_strMusicBrainzArtistID(strMusicBrainzArtistID), m_strJoinPhrase(strJoinPhrase), m_boolFeatured(false)  {  }
+  CArtistCredit(std::string strArtist, std::string strJoinPhrase, MusicArtistRoles Role) : m_strArtist(strArtist), m_strJoinPhrase(strJoinPhrase), m_boolFeatured(false), m_Role(Role) { }
+  CArtistCredit(std::string strArtist, std::string strMusicBrainzArtistID, std::string strJoinPhrase, MusicArtistRoles Role)
+	  : m_strArtist(strArtist), m_strMusicBrainzArtistID(strMusicBrainzArtistID), m_strJoinPhrase(strJoinPhrase), m_boolFeatured(false), m_Role(Role)  {  }
   bool operator<(const CArtistCredit& a) const
   {
     if (m_strMusicBrainzArtistID.empty() && a.m_strMusicBrainzArtistID.empty())
@@ -121,15 +127,25 @@ public:
     if (m_strMusicBrainzArtistID > a.m_strMusicBrainzArtistID) return false;
     return false;
   }
+  bool operator==(const CArtistCredit& a) const
+  {
+    if (m_strMusicBrainzArtistID.empty() || a.m_strMusicBrainzArtistID.empty())
+    {
+      return StringUtils::EqualsNoCase(m_strArtist, a.m_strArtist);
+    }
+    return m_strMusicBrainzArtistID == a.m_strMusicBrainzArtistID;
+  }
 
   std::string GetArtist() const                { return m_strArtist; }
   std::string GetMusicBrainzArtistID() const   { return m_strMusicBrainzArtistID; }
   std::string GetJoinPhrase() const            { return m_strJoinPhrase; }
   int         GetArtistId() const              { return idArtist; }
+  int         GetRole() const                  { return m_Role; }
   void SetArtist(const std::string &strArtist) { m_strArtist = strArtist; }
   void SetMusicBrainzArtistID(const std::string &strMusicBrainzArtistID) { m_strMusicBrainzArtistID = strMusicBrainzArtistID; }
   void SetJoinPhrase(const std::string &strJoinPhrase) { m_strJoinPhrase = strJoinPhrase; }
   void SetArtistId(int idArtist)               { this->idArtist = idArtist; }
+  void SetRole(int role)                      { m_Role = role; }
 
 private:
   long idArtist;
@@ -137,6 +153,7 @@ private:
   std::string m_strMusicBrainzArtistID;
   std::string m_strJoinPhrase;
   bool m_boolFeatured;
+  int m_Role;
 };
 
 typedef std::vector<CArtist> VECARTISTS;
