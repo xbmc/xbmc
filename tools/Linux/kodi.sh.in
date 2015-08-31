@@ -78,14 +78,14 @@ print_crash_report()
   echo "############## $APP CRASH LOG ###############" >> $FILE
   echo >> $FILE
   echo "################ SYSTEM INFO ################" >> $FILE
-  echo -n " Date: " >> $FILE
+  printf " Date: " >> $FILE
   date >> $FILE
   echo " $APP Options: $*" >> $FILE
-  echo -n " Arch: " >> $FILE
+  printf " Arch: " >> $FILE
   uname -m >> $FILE
-  echo -n " Kernel: " >> $FILE
+  printf " Kernel: " >> $FILE
   uname -rvs >> $FILE
-  echo -n " Release: " >> $FILE
+  printf " Release: " >> $FILE
   if [ -f /etc/os-release ]; then
 	  . /etc/os-release
 	  echo $NAME $VERSION >> $FILE
