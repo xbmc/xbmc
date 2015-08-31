@@ -96,6 +96,7 @@ typedef unsigned long kernel_ulong_t;
 #include "LinuxInputDevices.h"
 #include "input/MouseStat.h"
 #include "utils/log.h"
+#include "settings/AdvancedSettings.h"
 
 #ifndef BITS_PER_LONG
 #define BITS_PER_LONG        (sizeof(long) * 8)
@@ -460,6 +461,13 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
 {
   int code = levt.code;
 
+  if((levt.code == BTN_TOUCH || levt.code == BTN_TOOL_FINGER || levt.code == BTN_MOUSE)
+      && levt.value == 1 && (levt.type == EV_ABS || g_advancedSettings.m_TouchMouse))
+  {
+    m_mouseX = g_graphicsContext.GetWidth() + 2;
+    m_mouseY = g_graphicsContext.GetHeight() + 2;
+  }
+
   /* map touchscreen and smartpad events to button mouse */
   if (code == BTN_TOUCH || code == BTN_TOOL_FINGER)
     code = BTN_MOUSE;
@@ -634,11 +642,19 @@ bool CLinuxInputDevice::AbsEvent(const struct input_event& levt, XBMC_Event& dev
   switch (levt.code)
   {
   case ABS_X:
-    m_mouseX = levt.value;
+    if(!g_advancedSettings.m_SwapAxes)
+      m_mouseX = (int)((float)levt.value * g_advancedSettings.m_xStretchFactor) + g_advancedSettings.m_xOffset; // stretch and shift touch x coordinates
+    else
+      m_mouseX = (int)((float)levt.value * g_advancedSettings.m_yStretchFactor) + g_advancedSettings.m_yOffset; // stretch and shift touch x coordinates wit y values
+    break;
+
     break;
 
   case ABS_Y:
-    m_mouseY = levt.value;
+    if(!g_advancedSettings.m_SwapAxes)
+      m_mouseY = (int)((float)levt.value * g_advancedSettings.m_yStretchFactor) + g_advancedSettings.m_yOffset; // stretch and shift touch y coordinates
+    else
+      m_mouseY = (int)((float)levt.value * g_advancedSettings.m_xStretchFactor) + g_advancedSettings.m_xOffset; // stretch and shift touch y coordinates with x values
     break;
   
   case ABS_MISC:
