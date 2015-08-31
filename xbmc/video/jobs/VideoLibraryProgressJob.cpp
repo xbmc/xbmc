@@ -29,11 +29,8 @@ CVideoLibraryProgressJob::~CVideoLibraryProgressJob()
 
 bool CVideoLibraryProgressJob::DoWork()
 {
-  SetProgress(0.0f);
-
   bool result = CVideoLibraryJob::DoWork();
 
-  SetProgress(100.0f);
   MarkFinished();
 
   return result;
