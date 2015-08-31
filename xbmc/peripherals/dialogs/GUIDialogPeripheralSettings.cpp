@@ -30,7 +30,6 @@
 
 #define CONTROL_BUTTON_DEFAULTS 50
 
-using namespace std;
 using namespace PERIPHERALS;
 
 CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings()
@@ -160,8 +159,8 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
     return;
   }
   
-  vector<CSetting*> settings = peripheral->GetSettings();
-  for (vector<CSetting*>::iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
+  std::vector<CSetting*> settings = peripheral->GetSettings();
+  for (std::vector<CSetting*>::iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
   {
     CSetting *setting = *itSetting;
     if (setting == NULL)

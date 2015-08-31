@@ -99,8 +99,6 @@
 
 #include "utils/StringUtils.h"
 
-using namespace std;
-
 // In milliseconds
 #define MINIMUM_TIME_BETWEEN_READS 500
 
@@ -634,7 +632,7 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
 
 bool CCPUInfo::HasCoreId(int nCoreId) const
 {
-  map<int, CoreInfo>::const_iterator iter = m_cores.find(nCoreId);
+  std::map<int, CoreInfo>::const_iterator iter = m_cores.find(nCoreId);
   if (iter != m_cores.end())
     return true;
   return false;
@@ -642,7 +640,7 @@ bool CCPUInfo::HasCoreId(int nCoreId) const
 
 const CoreInfo &CCPUInfo::GetCoreInfo(int nCoreId)
 {
-  map<int, CoreInfo>::iterator iter = m_cores.find(nCoreId);
+  std::map<int, CoreInfo>::iterator iter = m_cores.find(nCoreId);
   if (iter != m_cores.end())
     return iter->second;
 
@@ -731,7 +729,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     coreIO     = cptimes[i * CPUSTATES + CP_INTR];
     coreIdle   = cptimes[i * CPUSTATES + CP_IDLE];
 
-    map<int, CoreInfo>::iterator iter = m_cores.find(i);
+    std::map<int, CoreInfo>::iterator iter = m_cores.find(i);
     if (iter != m_cores.end())
     {
       coreUser -= iter->second.m_user;
@@ -789,7 +787,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     if (num < 6)
       coreIO = 0;
 
-    map<int, CoreInfo>::iterator iter = m_cores.find(nCpu);
+    std::map<int, CoreInfo>::iterator iter = m_cores.find(nCpu);
     if (num > 4 && iter != m_cores.end())
     {
       coreUser -= iter->second.m_user;

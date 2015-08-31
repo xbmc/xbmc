@@ -36,7 +36,6 @@
 
 #include <memory>
 
-using namespace std;
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
@@ -66,7 +65,7 @@ public:
     if (CDirectory::GetDirectory(m_url, items, ""))
     {
       // limit must not exceed the number of items
-      int limit = (m_limit == 0) ? items.Size() : min((int) m_limit, items.Size());
+      int limit = (m_limit == 0) ? items.Size() : std::min((int) m_limit, items.Size());
       // convert to CGUIStaticItem's and set visibility and targets
       m_items.reserve(limit);
       for (int i = 0; i < limit; i++)
@@ -181,7 +180,7 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   if (fireJob)
     FireJob();
 
-  for (vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
+  for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
     changed |= (*i)->UpdateVisibility(m_parentID);
   return changed; // TODO: Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
@@ -216,11 +215,11 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
   }
 }
 
-void CDirectoryProvider::Fetch(vector<CGUIListItemPtr> &items) const
+void CDirectoryProvider::Fetch(std::vector<CGUIListItemPtr> &items) const
 {
   CSingleLock lock(m_section);
   items.clear();
-  for (vector<CGUIStaticItemPtr>::const_iterator i = m_items.begin(); i != m_items.end(); ++i)
+  for (std::vector<CGUIStaticItemPtr>::const_iterator i = m_items.begin(); i != m_items.end(); ++i)
   {
     if ((*i)->IsVisible())
       items.push_back(*i);
@@ -263,7 +262,7 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
 bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
-  string target = fileItem.GetProperty("node.target").asString();
+  std::string target = fileItem.GetProperty("node.target").asString();
   if (target.empty())
     target = m_currentTarget;
   if (target.empty())
@@ -271,7 +270,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
   if (fileItem.HasProperty("node.target_url"))
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
   // grab the execute string
-  string execute = CFavouritesDirectory::GetExecutePath(fileItem, target);
+  std::string execute = CFavouritesDirectory::GetExecutePath(fileItem, target);
   if (!execute.empty())
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);

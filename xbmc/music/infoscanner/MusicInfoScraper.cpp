@@ -24,7 +24,6 @@
 
 using namespace MUSIC_GRABBER;
 using namespace ADDON;
-using namespace std;
 
 CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr &scraper) : CThread("MusicInfoScraper")
 {

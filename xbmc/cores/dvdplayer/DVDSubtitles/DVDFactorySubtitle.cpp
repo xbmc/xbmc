@@ -29,10 +29,7 @@
 #include "DVDSubtitleParserSSA.h"
 #include "DVDSubtitleParserVplayer.h"
 
-using namespace std;
-
-
-CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
+CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
 {
   char line[1024];
   int i;

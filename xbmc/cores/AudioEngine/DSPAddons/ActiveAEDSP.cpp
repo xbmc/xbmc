@@ -49,7 +49,6 @@ extern "C" {
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
 
-using namespace std;
 using namespace ADDON;
 using namespace ActiveAE;
 using namespace KODI::MESSAGING;
@@ -251,7 +250,7 @@ void CActiveAEDSP::Cleanup(void)
     m_modes[i].clear();
 }
 
-bool CActiveAEDSP::InstallAddonAllowed(const string &strAddonId) const
+bool CActiveAEDSP::InstallAddonAllowed(const std::string &strAddonId) const
 {
   return !m_isActive ||
          !IsInUse(strAddonId) ||
@@ -352,7 +351,7 @@ bool CActiveAEDSP::RequestRemoval(AddonPtr addon)
   return StopAudioDSPAddon(addon, false);
 }
 
-bool CActiveAEDSP::IsInUse(const string &strAddonId) const
+bool CActiveAEDSP::IsInUse(const std::string &strAddonId) const
 {
   CSingleLock lock(m_critSection);
 
@@ -815,7 +814,7 @@ void CActiveAEDSP::ShowDialogNoAddonsEnabled(void)
 
   CGUIDialogOK::ShowAndGetInput(15048, 15049, 0, 0);
 
-  vector<string> params;
+  std::vector<std::string> params;
   params.push_back("addons://disabled/kodi.adsp");
   params.push_back("return");
   g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
@@ -1010,7 +1009,7 @@ bool CActiveAEDSP::GetReadyAudioDSPAddon(int iAddonId, AE_DSP_ADDON &addon) cons
   return false;
 }
 
-bool CActiveAEDSP::GetAudioDSPAddonName(int iAddonId, string &strName) const
+bool CActiveAEDSP::GetAudioDSPAddonName(int iAddonId, std::string &strName) const
 {
   bool bReturn(false);
   AE_DSP_ADDON addon;
@@ -1038,7 +1037,7 @@ bool CActiveAEDSP::GetAudioDSPAddon(int iAddonId, AE_DSP_ADDON &addon) const
   return bReturn;
 }
 
-bool CActiveAEDSP::GetAudioDSPAddon(const string &strId, AddonPtr &addon) const
+bool CActiveAEDSP::GetAudioDSPAddon(const std::string &strId, AddonPtr &addon) const
 {
   CSingleLock lock(m_critUpdateSection);
   for (AE_DSP_ADDONMAP_CITR itr = m_addonMap.begin(); itr != m_addonMap.end(); itr++)

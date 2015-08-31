@@ -25,8 +25,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"
 
-using namespace std;
-
 static const char *ContextStateToString(pa_context_state s)
 {
   switch (s)
@@ -374,8 +372,8 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
   {
     CAEDeviceInfo device;
     bool valid = true;
-    device.m_deviceName = string(i->name);
-    device.m_displayName = string(i->description);
+    device.m_deviceName = std::string(i->name);
+    device.m_displayName = std::string(i->description);
     if (i->active_port && i->active_port->description)
       device.m_displayNameExtra = std::string((i->active_port->description)).append(" (PULSEAUDIO)");
     else

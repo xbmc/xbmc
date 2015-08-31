@@ -66,7 +66,6 @@
 #include "GUIAction.h"
 #include "Util.h"
 
-using namespace std;
 using namespace EPG;
 
 typedef struct
@@ -271,26 +270,26 @@ bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTa
   {
     if (hasRight)
     {
-      width = max(0.0f, right - left); // if left=0, this fills to size of parent
+      width = std::max(0.0f, right - left); // if left=0, this fills to size of parent
       hasLeft = true;
     }
     else if (hasCenter)
     {
       if (hasLeft)
       {
-        width = max(0.0f, (center - left) * 2);
+        width = std::max(0.0f, (center - left) * 2);
         hasWidth = true;
       }
       else if (center > 0 && center < parentSize)
       { // centre given, so fill to edge of parent
-        width = max(0.0f, min(parentSize - center, center) * 2);
+        width = std::max(0.0f, std::min(parentSize - center, center) * 2);
         left = center - width/2;
         hasLeft = hasWidth = true;
       }
     }
     else if (hasLeft) // neither right nor center specified
     {
-      width = max(0.0f, parentSize - left); // if left=0, this fills to parent
+      width = std::max(0.0f, parentSize - left); // if left=0, this fills to parent
     }
   }
   return hasLeft && hasWidth;
@@ -422,7 +421,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, std:
 {
   const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
-  vector<std::string> conditions;
+  std::vector<std::string> conditions;
   while (node)
   {
     const char *hidden = node->Attribute("allowhiddenfocus");
@@ -453,7 +452,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, std:
   return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
-bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, int context, vector<CAnimation> &animations)
+bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, int context, std::vector<CAnimation> &animations)
 {
   TiXmlElement* node = control->FirstChildElement("animation");
   bool ret = false;
@@ -566,7 +565,7 @@ bool CGUIControlFactory::GetInfoColor(const TiXmlNode *control, const char *strT
 
 void CGUIControlFactory::GetInfoLabel(const TiXmlNode *pControlNode, const std::string &labelTag, CGUIInfoLabel &infoLabel, int parentID)
 {
-  vector<CGUIInfoLabel> labels;
+  std::vector<CGUIInfoLabel> labels;
   GetInfoLabels(pControlNode, labelTag, labels, parentID);
   if (labels.size())
     infoLabel = labels[0];
@@ -592,7 +591,7 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
   return true;
 }
 
-void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const std::string &labelTag, vector<CGUIInfoLabel> &infoLabels, int parentID)
+void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const std::string &labelTag, std::vector<CGUIInfoLabel> &infoLabels, int parentID)
 {
   // we can have the following infolabels:
   // 1.  <number>1234</number> -> direct number
@@ -743,7 +742,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   std::string allowHiddenFocus;
   std::string enableCondition;
 
-  vector<CAnimation> animations;
+  std::vector<CAnimation> animations;
 
   CGUIControl::GUISCROLLVALUE scrollValue = CGUIControl::FOCUS;
   bool bPulse = true;
@@ -808,13 +807,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         posX -= width;
     }
     if (!width) // no width specified, so compute from parent
-      width = max(rect.Width() - posX, 0.0f);
+      width = std::max(rect.Width() - posX, 0.0f);
   }
   if (!GetDimensions(pControlNode, "top", "bottom", "centertop", "centerbottom", "height", rect.Height(), posY, height, minHeight))
   {
     GetPosition(pControlNode, "posy", rect.Height(), posY);
     if (!height)
-      height = max(rect.Height() - posY, 0.0f);
+      height = std::max(rect.Height() - posY, 0.0f);
   }
 
   XMLUtils::GetFloat(pControlNode, "offsetx", offset.x);
@@ -982,7 +981,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "imagefolderfocus", imageFocus);
 
   // fade label can have a whole bunch, but most just have one
-  vector<CGUIInfoLabel> infoLabels;
+  std::vector<CGUIInfoLabel> infoLabels;
   GetInfoLabels(pControlNode, "label", infoLabels, parentID);
 
   GetString(pControlNode, "label", strLabel);

@@ -22,8 +22,6 @@
 #include "GUIFontManager.h"
 #include "input/Key.h"
 
-using namespace std;
-
 CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo, bool wrapMultiline)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgFocus(posX, posY, width, height, textureFocus)
@@ -264,7 +262,7 @@ void CGUIButtonControl::SetInvalid()
   m_imgNoFocus.SetInvalid();
 }
 
-void CGUIButtonControl::SetLabel(const string &label)
+void CGUIButtonControl::SetLabel(const std::string &label)
 { // NOTE: No fallback for buttons at this point
   if (m_info.GetLabel(GetParentID(), false) != label)
   {
@@ -273,7 +271,7 @@ void CGUIButtonControl::SetLabel(const string &label)
   }
 }
 
-void CGUIButtonControl::SetLabel2(const string &label2)
+void CGUIButtonControl::SetLabel2(const std::string &label2)
 { // NOTE: No fallback for buttons at this point
   if (m_info2.GetLabel(GetParentID(), false) != label2)
   {
@@ -337,7 +335,7 @@ std::string CGUIButtonControl::GetLabel2() const
   return strLabel;
 }
 
-void CGUIButtonControl::PythonSetLabel(const std::string &strFont, const string &strText, color_t textColor, color_t shadowColor, color_t focusedColor)
+void CGUIButtonControl::PythonSetLabel(const std::string &strFont, const std::string &strText, color_t textColor, color_t shadowColor, color_t focusedColor)
 {
   m_label.GetLabelInfo().font = g_fontManager.GetFont(strFont);
   m_label.GetLabelInfo().textColor = textColor;

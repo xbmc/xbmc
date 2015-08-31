@@ -27,8 +27,6 @@
 #include "GUIImage.h"
 #include "utils/XBMCTinyXML.h"
 
-using namespace std;
-
 CGUIListItemLayout::CGUIListItemLayout()
 : m_group(0, 0, 0, 0, 0, 0)
 {

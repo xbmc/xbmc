@@ -48,9 +48,6 @@
 #pragma comment(lib, "freetype246MT.lib")
 #endif
 
-using namespace std;
-
-
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
@@ -567,7 +564,7 @@ float CGUIFontTTFBase::GetTextWidthInternal(vecText::const_iterator start, vecTe
       // and not advance distance - this makes sure that italic text isn't
       // choped on the end (as render width is larger than advance then).
       if (start == end)
-        width += max(c->right - c->left + c->offsetX, c->advance);
+        width += std::max(c->right - c->left + c->offsetX, c->advance);
       else
         width += c->advance;
     }
@@ -780,13 +777,13 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   if (!isEmptyGlyph)
   {
     // ensure our rect will stay inside the texture (it *should* but we need to be certain)
-    unsigned int x1 = max(m_posX + ch->offsetX, 0);
-    unsigned int y1 = max(m_posY + ch->offsetY, 0);
-    unsigned int x2 = min(x1 + bitmap.width, m_textureWidth);
-    unsigned int y2 = min(y1 + bitmap.rows, m_textureHeight);
+    unsigned int x1 = std::max(m_posX + ch->offsetX, 0);
+    unsigned int y1 = std::max(m_posY + ch->offsetY, 0);
+    unsigned int x2 = std::min(x1 + bitmap.width, m_textureWidth);
+    unsigned int y2 = std::min(y1 + bitmap.rows, m_textureHeight);
     CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
   
-    m_posX += spacing_between_characters_in_texture + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
+    m_posX += spacing_between_characters_in_texture + (unsigned short)std::max(ch->right - ch->left + ch->offsetX, ch->advance);
   }
   m_numChars++;
 

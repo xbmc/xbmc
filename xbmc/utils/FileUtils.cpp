@@ -37,7 +37,6 @@
 #include "utils/Variant.h"
 
 using namespace XFILE;
-using namespace std;
 
 bool CFileUtils::DeleteItem(const std::string &strPath, bool force)
 {
@@ -89,7 +88,7 @@ bool CFileUtils::RenameFile(const std::string &strFile)
     CLog::Log(LOGINFO,"FileUtils: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
     if (URIUtils::IsMultiPath(strFileAndPath))
     { // special case for multipath renames - rename all the paths.
-      vector<std::string> paths;
+      std::vector<std::string> paths;
       CMultiPathDirectory::GetPaths(strFileAndPath, paths);
       bool success = false;
       for (unsigned int i = 0; i < paths.size(); ++i)
@@ -113,7 +112,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   const unsigned int SourcesSize = 5;
   std::string SourceNames[] = { "programs", "files", "video", "music", "pictures" };
 
-  string realPath = URIUtils::GetRealPath(strPath);
+  std::string realPath = URIUtils::GetRealPath(strPath);
   // for rar:// and zip:// paths we need to extract the path to the archive
   // instead of using the VFS path
   while (URIUtils::IsInArchive(realPath))
@@ -200,10 +199,10 @@ CDateTime CFileUtils::GetModificationDate(const std::string& strFileNameAndPath,
       // Use the newer of the creation and modification time
       else
       {
-        addedTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+        addedTime = std::max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
         // if the newer of the two dates is in the future, we try it with the older one
         if (addedTime > now)
-          addedTime = min((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+          addedTime = std::min((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
       }
 
       // make sure the datetime does is not in the future

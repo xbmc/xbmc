@@ -30,7 +30,6 @@
 #define BUTTON_SETTINGS  11
 #define CONTROL_LIST     20
 
-using namespace std;
 using namespace PERIPHERALS;
 
 CGUIDialogPeripheralManager::CGUIDialogPeripheralManager(void) :

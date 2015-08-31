@@ -23,8 +23,6 @@
 #include "utils/log.h"
 #include "system.h"
 
-using namespace std;
-
 namespace ADDON
 {
 
@@ -97,7 +95,7 @@ void CService::BuildServiceType()
   std::string ext;
 
   size_t p = str.find_last_of('.');
-  if (p != string::npos)
+  if (p != std::string::npos)
     ext = str.substr(p + 1);
 
 #ifdef HAS_PYTHON
