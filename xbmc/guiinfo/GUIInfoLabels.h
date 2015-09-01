@@ -319,6 +319,7 @@
 #define VISUALISATION_PRESET        401
 #define VISUALISATION_NAME          402
 #define VISUALISATION_ENABLED       403
+#define VISUALISATION_HAS_PRESETS   404
 
 #define STRING_IS_EMPTY             410
 #define STRING_COMPARE              411

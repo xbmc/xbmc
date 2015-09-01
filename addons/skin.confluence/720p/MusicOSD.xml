@@ -308,6 +308,8 @@
 				<texturefocus>OSDPreFO.png</texturefocus>
 				<texturenofocus>OSDPreNF.png</texturenofocus>
 				<onclick>ActivateWindow(122)</onclick>
+				<enable>Visualisation.HasPresets</enable>
+				<animation effect="fade" start="100" end="50" time="75" condition="!Visualisation.HasPresets">Conditional</animation>
 			</control>
 			<control type="button" id="704">
 				<width>55</width>
