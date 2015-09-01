@@ -381,7 +381,6 @@ static const ActionMapping windows[] =
     { "fullscreenradio"          , WINDOW_FULLSCREEN_RADIO },          // virtual window for fullscreen radio, uses WINDOW_VISUALISATION as fallback
     { "visualisation"            , WINDOW_VISUALISATION },
     { "slideshow"                , WINDOW_SLIDESHOW },
-    { "filestackingdialog"       , WINDOW_DIALOG_FILESTACKING },
     { "karaoke"                  , WINDOW_KARAOKELYRICS },
     { "weather"                  , WINDOW_WEATHER },
     { "screensaver"              , WINDOW_SCREENSAVER },

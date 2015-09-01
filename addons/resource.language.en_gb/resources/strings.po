@@ -14296,10 +14296,7 @@ msgctxt "#33080"
 msgid "Hate"
 msgstr ""
 
-#: Unknown
-msgctxt "#33081"
-msgid "This file is stacked, select the part you want to play from."
-msgstr ""
+#empty string with id 33081
 
 #: Unknown
 msgctxt "#33082"

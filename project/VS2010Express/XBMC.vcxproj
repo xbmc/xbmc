@@ -1530,7 +1530,6 @@
     <ClCompile Include="..\..\xbmc\utils\XMLUtils.cpp" />
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp" />
-    <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogFileStacking.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogTeletext.cpp" />
@@ -2191,7 +2190,6 @@
     <ClInclude Include="..\..\xbmc\utils\XMLUtils.h" />
     <ClInclude Include="..\..\xbmc\video\Bookmark.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.h" />
-    <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogFileStacking.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogTeletext.h" />
