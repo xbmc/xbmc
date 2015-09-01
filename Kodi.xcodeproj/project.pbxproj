@@ -1654,7 +1654,6 @@
 		DFF0F34F17528350002DA3A4 /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10526140AA38000175026 /* PeripheralNIC.cpp */; };
 		DFF0F35017528350002DA3A4 /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10528140AA38000175026 /* PeripheralNyxboard.cpp */; };
 		DFF0F35117528350002DA3A4 /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052A140AA38000175026 /* PeripheralTuner.cpp */; };
-		DFF0F35217528350002DA3A4 /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */; };
 		DFF0F35317528350002DA3A4 /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */; };
 		DFF0F35417528350002DA3A4 /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10533140AA38000175026 /* Peripherals.cpp */; };
 		DFF0F35517528350002DA3A4 /* GUIDialogPictureInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C60D25F9FA00618676 /* GUIDialogPictureInfo.cpp */; };
@@ -1809,7 +1808,6 @@
 		DFF0F3FD17528350002DA3A4 /* XBMCTinyXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */; };
 		DFF0F3FE17528350002DA3A4 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
 		DFF0F3FF17528350002DA3A4 /* GUIDialogAudioSubtitleSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8FE12942761009E7A26 /* GUIDialogAudioSubtitleSettings.cpp */; };
-		DFF0F40017528350002DA3A4 /* GUIDialogFileStacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17AA0D25F9FA00618676 /* GUIDialogFileStacking.cpp */; };
 		DFF0F40117528350002DA3A4 /* GUIDialogFullScreenInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */; };
 		DFF0F40217528350002DA3A4 /* GUIDialogTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */; };
 		DFF0F40317528350002DA3A4 /* GUIDialogVideoBookmarks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */; };
@@ -2094,7 +2092,6 @@
 		E38E207F0D25F9FD00618676 /* GUIDialogContextMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A40D25F9FA00618676 /* GUIDialogContextMenu.cpp */; };
 		E38E20800D25F9FD00618676 /* GUIDialogFavourites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A60D25F9FA00618676 /* GUIDialogFavourites.cpp */; };
 		E38E20810D25F9FD00618676 /* GUIDialogFileBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17A80D25F9FA00618676 /* GUIDialogFileBrowser.cpp */; };
-		E38E20820D25F9FD00618676 /* GUIDialogFileStacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17AA0D25F9FA00618676 /* GUIDialogFileStacking.cpp */; };
 		E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17AC0D25F9FA00618676 /* GUIDialogGamepad.cpp */; };
 		E38E20890D25F9FD00618676 /* GUIDialogMediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17B80D25F9FA00618676 /* GUIDialogMediaSource.cpp */; };
 		E38E208A0D25F9FD00618676 /* GUIDialogMusicOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17BA0D25F9FA00618676 /* GUIDialogMusicOSD.cpp */; };
@@ -2824,7 +2821,6 @@
 		E49913D0174E5F8100741B6D /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10526140AA38000175026 /* PeripheralNIC.cpp */; };
 		E49913D1174E5F8100741B6D /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10528140AA38000175026 /* PeripheralNyxboard.cpp */; };
 		E49913D2174E5F8100741B6D /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052A140AA38000175026 /* PeripheralTuner.cpp */; };
-		E49913D3174E5F8600741B6D /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */; };
 		E49913D4174E5F8600741B6D /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */; };
 		E49913D5174E5F8600741B6D /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10533140AA38000175026 /* Peripherals.cpp */; };
 		E49913D6174E5F8D00741B6D /* GUIDialogPictureInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17C60D25F9FA00618676 /* GUIDialogPictureInfo.cpp */; };
@@ -2979,7 +2975,6 @@
 		E4991481174E605900741B6D /* XBMCTinyXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */; };
 		E4991482174E605900741B6D /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
 		E4991483174E606500741B6D /* GUIDialogAudioSubtitleSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C8FE12942761009E7A26 /* GUIDialogAudioSubtitleSettings.cpp */; };
-		E4991484174E606500741B6D /* GUIDialogFileStacking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17AA0D25F9FA00618676 /* GUIDialogFileStacking.cpp */; };
 		E4991485174E606500741B6D /* GUIDialogFullScreenInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */; };
 		E4991486174E606500741B6D /* GUIDialogTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */; };
 		E4991487174E606500741B6D /* GUIDialogVideoBookmarks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */; };
@@ -3236,7 +3231,6 @@
 		F5E10540140AA38100175026 /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10526140AA38000175026 /* PeripheralNIC.cpp */; };
 		F5E10541140AA38100175026 /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10528140AA38000175026 /* PeripheralNyxboard.cpp */; };
 		F5E10542140AA38100175026 /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052A140AA38000175026 /* PeripheralTuner.cpp */; };
-		F5E10543140AA38100175026 /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */; };
 		F5E10544140AA38100175026 /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */; };
 		F5E10547140AA38100175026 /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10533140AA38000175026 /* Peripherals.cpp */; };
 		F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10520140AA38000175026 /* PeripheralCecAdapter.cpp */; };
@@ -5162,8 +5156,6 @@
 		E38E17A70D25F9FA00618676 /* GUIDialogFavourites.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogFavourites.h; sourceTree = "<group>"; };
 		E38E17A80D25F9FA00618676 /* GUIDialogFileBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogFileBrowser.cpp; sourceTree = "<group>"; };
 		E38E17A90D25F9FA00618676 /* GUIDialogFileBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogFileBrowser.h; sourceTree = "<group>"; };
-		E38E17AA0D25F9FA00618676 /* GUIDialogFileStacking.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogFileStacking.cpp; sourceTree = "<group>"; };
-		E38E17AB0D25F9FA00618676 /* GUIDialogFileStacking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogFileStacking.h; sourceTree = "<group>"; };
 		E38E17AC0D25F9FA00618676 /* GUIDialogGamepad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogGamepad.cpp; sourceTree = "<group>"; };
 		E38E17AD0D25F9FA00618676 /* GUIDialogGamepad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogGamepad.h; sourceTree = "<group>"; };
 		E38E17B80D25F9FA00618676 /* GUIDialogMediaSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMediaSource.cpp; sourceTree = "<group>"; };
@@ -5817,8 +5809,6 @@
 		F5E10529140AA38000175026 /* PeripheralNyxboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNyxboard.h; sourceTree = "<group>"; };
 		F5E1052A140AA38000175026 /* PeripheralTuner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralTuner.cpp; sourceTree = "<group>"; };
 		F5E1052B140AA38000175026 /* PeripheralTuner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTuner.h; sourceTree = "<group>"; };
-		F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralManager.cpp; sourceTree = "<group>"; };
-		F5E1052E140AA38000175026 /* GUIDialogPeripheralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralManager.h; sourceTree = "<group>"; };
 		F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralSettings.cpp; sourceTree = "<group>"; };
 		F5E10530140AA38000175026 /* GUIDialogPeripheralSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralSettings.h; sourceTree = "<group>"; };
 		F5E10533140AA38000175026 /* Peripherals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripherals.cpp; sourceTree = "<group>"; };
@@ -6900,8 +6890,6 @@
 			children = (
 				18B7C8FE12942761009E7A26 /* GUIDialogAudioSubtitleSettings.cpp */,
 				18B7C8FF12942761009E7A26 /* GUIDialogAudioSubtitleSettings.h */,
-				E38E17AA0D25F9FA00618676 /* GUIDialogFileStacking.cpp */,
-				E38E17AB0D25F9FA00618676 /* GUIDialogFileStacking.h */,
 				886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */,
 				886328160E07B37200BB3DAB /* GUIDialogFullScreenInfo.h */,
 				7C4E6F701829AA9700F1068F /* GUIDialogSubtitles.cpp */,
@@ -9874,8 +9862,6 @@
 		F5E1052C140AA38000175026 /* dialogs */ = {
 			isa = PBXGroup;
 			children = (
-				F5E1052D140AA38000175026 /* GUIDialogPeripheralManager.cpp */,
-				F5E1052E140AA38000175026 /* GUIDialogPeripheralManager.h */,
 				F5E1052F140AA38000175026 /* GUIDialogPeripheralSettings.cpp */,
 				F5E10530140AA38000175026 /* GUIDialogPeripheralSettings.h */,
 			);
@@ -10446,7 +10432,6 @@
 				E38E207F0D25F9FD00618676 /* GUIDialogContextMenu.cpp in Sources */,
 				E38E20800D25F9FD00618676 /* GUIDialogFavourites.cpp in Sources */,
 				E38E20810D25F9FD00618676 /* GUIDialogFileBrowser.cpp in Sources */,
-				E38E20820D25F9FD00618676 /* GUIDialogFileStacking.cpp in Sources */,
 				E38E20830D25F9FD00618676 /* GUIDialogGamepad.cpp in Sources */,
 				E38E20890D25F9FD00618676 /* GUIDialogMediaSource.cpp in Sources */,
 				E38E208A0D25F9FD00618676 /* GUIDialogMusicOSD.cpp in Sources */,
@@ -10932,7 +10917,6 @@
 				F5E10540140AA38100175026 /* PeripheralNIC.cpp in Sources */,
 				F5E10541140AA38100175026 /* PeripheralNyxboard.cpp in Sources */,
 				F5E10542140AA38100175026 /* PeripheralTuner.cpp in Sources */,
-				F5E10543140AA38100175026 /* GUIDialogPeripheralManager.cpp in Sources */,
 				F5E10544140AA38100175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				F5E10547140AA38100175026 /* Peripherals.cpp in Sources */,
 				F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */,
@@ -11943,7 +11927,6 @@
 				397877DA1AAAF87700F98A45 /* Temperature.cpp in Sources */,
 				DFF0F35017528350002DA3A4 /* PeripheralNyxboard.cpp in Sources */,
 				DFF0F35117528350002DA3A4 /* PeripheralTuner.cpp in Sources */,
-				DFF0F35217528350002DA3A4 /* GUIDialogPeripheralManager.cpp in Sources */,
 				DFF0F35317528350002DA3A4 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				DFF0F35417528350002DA3A4 /* Peripherals.cpp in Sources */,
 				DFF0F35517528350002DA3A4 /* GUIDialogPictureInfo.cpp in Sources */,
@@ -12111,7 +12094,6 @@
 				DFF0F3FD17528350002DA3A4 /* XBMCTinyXML.cpp in Sources */,
 				DFF0F3FE17528350002DA3A4 /* XMLUtils.cpp in Sources */,
 				DFF0F3FF17528350002DA3A4 /* GUIDialogAudioSubtitleSettings.cpp in Sources */,
-				DFF0F40017528350002DA3A4 /* GUIDialogFileStacking.cpp in Sources */,
 				DFF0F40117528350002DA3A4 /* GUIDialogFullScreenInfo.cpp in Sources */,
 				DFF0F40217528350002DA3A4 /* GUIDialogTeletext.cpp in Sources */,
 				DF1D2DF21B6E85EE002BB9DB /* XbtFile.cpp in Sources */,
@@ -13010,7 +12992,6 @@
 				E49913D0174E5F8100741B6D /* PeripheralNIC.cpp in Sources */,
 				E49913D1174E5F8100741B6D /* PeripheralNyxboard.cpp in Sources */,
 				E49913D2174E5F8100741B6D /* PeripheralTuner.cpp in Sources */,
-				E49913D3174E5F8600741B6D /* GUIDialogPeripheralManager.cpp in Sources */,
 				E49913D4174E5F8600741B6D /* GUIDialogPeripheralSettings.cpp in Sources */,
 				395C2A1A1A9F074C00EBC7AD /* Locale.cpp in Sources */,
 				E49913D5174E5F8600741B6D /* Peripherals.cpp in Sources */,
@@ -13176,7 +13157,6 @@
 				395F6DE31A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
 				E4991482174E605900741B6D /* XMLUtils.cpp in Sources */,
 				E4991483174E606500741B6D /* GUIDialogAudioSubtitleSettings.cpp in Sources */,
-				E4991484174E606500741B6D /* GUIDialogFileStacking.cpp in Sources */,
 				E4991485174E606500741B6D /* GUIDialogFullScreenInfo.cpp in Sources */,
 				E4991486174E606500741B6D /* GUIDialogTeletext.cpp in Sources */,
 				5EE4F9181A9FF36F002E20F8 /* CueInfoLoader.cpp in Sources */,

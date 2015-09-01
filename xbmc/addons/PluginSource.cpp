@@ -21,8 +21,6 @@
 #include "AddonManager.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
-
 namespace ADDON
 {
 
@@ -58,8 +56,8 @@ void CPluginSource::SetProvides(const std::string &content)
 {
   if (!content.empty())
   {
-    vector<string> provides = StringUtils::Split(content, ' ');
-    for (vector<string>::const_iterator i = provides.begin(); i != provides.end(); ++i)
+    std::vector<std::string> provides = StringUtils::Split(content, ' ');
+    for (std::vector<std::string>::const_iterator i = provides.begin(); i != provides.end(); ++i)
     {
       Content content = Translate(*i);
       if (content != UNKNOWN)

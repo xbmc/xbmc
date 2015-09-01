@@ -40,8 +40,6 @@
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
-using namespace std;
-
 
 struct ButtonStateFinder
 {
@@ -59,8 +57,8 @@ struct ButtonStateFinder
   }
   private:
   unsigned short m_keycode;
-  string    m_map;
-  string    m_button;
+  std::string    m_map;
+  std::string    m_button;
 };
 
 /************************************************************************/
@@ -92,7 +90,7 @@ void CEventButtonState::Load()
                 (StringUtils::StartsWith(m_mapName, "LI:")) ) // starts with LI: ?
       {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-        string lircDevice = m_mapName.substr(3);
+        std::string lircDevice = m_mapName.substr(3);
         m_iKeyCode = CButtonTranslator::GetInstance().TranslateLircRemoteString( lircDevice.c_str(),
                                                                    m_buttonName.c_str() );
 #else
@@ -304,7 +302,7 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
   ParseUInt32(payload, psize, reserved);
 
   // image data if any
-  string iconfile = "special://temp/helo";
+  std::string iconfile = "special://temp/helo";
   if (m_eLogoType != LT_NONE && psize>0)
   {
     switch (m_eLogoType)
@@ -361,7 +359,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
 
-  string map, button;
+  std::string map, button;
   unsigned short flags;
   unsigned short bcode;
   unsigned short amount;
@@ -433,7 +431,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       state.m_fAmount = 0.0;
     }
 
-    list<CEventButtonState>::reverse_iterator it;
+    std::list<CEventButtonState>::reverse_iterator it;
     it = find_if( m_buttonQueue.rbegin() , m_buttonQueue.rend(), ButtonStateFinder(state));
 
     if(it == m_buttonQueue.rend())
@@ -446,7 +444,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       if(!active && it->m_bActive)
       {
         /* since modifying the list invalidates the referse iteratator */
-        list<CEventButtonState>::iterator it2 = (++it).base();
+        std::list<CEventButtonState>::iterator it2 = (++it).base();
 
         /* if last event had an amount, we must resend without amount */
         if(it2->m_bUseAmount && it2->m_fAmount != 0.0)
@@ -551,7 +549,7 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
 {
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
-  string title, message;
+  std::string title, message;
 
   // parse caption
   if (!ParseString(payload, psize, title))
@@ -572,7 +570,7 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
   ParseUInt32(payload, psize, reserved);
 
   // image data if any
-  string iconfile = "special://temp/notification";
+  std::string iconfile = "special://temp/notification";
   if (m_eLogoType != LT_NONE && psize>0)
   {
     switch (m_eLogoType)
@@ -616,7 +614,7 @@ bool CEventClient::OnPacketLOG(CEventPacket *packet)
 {
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
-  string logmsg;
+  std::string logmsg;
   unsigned char ltype;
 
   if (!ParseByte(payload, psize, ltype))
@@ -632,7 +630,7 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
 {
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
-  string actionString;
+  std::string actionString;
   unsigned char actionType;
 
   if (!ParseByte(payload, psize, actionType))
@@ -658,7 +656,7 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
   return true;
 }
 
-bool CEventClient::ParseString(unsigned char* &payload, int &psize, string& parsedVal)
+bool CEventClient::ParseString(unsigned char* &payload, int &psize, std::string& parsedVal)
 {
   if (psize <= 0)
     return false;
@@ -715,7 +713,7 @@ void CEventClient::FreePacketQueues()
     m_readyPackets.pop();
   }
 
-  map<unsigned int, EVENTPACKET::CEventPacket*>::iterator iter = m_seqPackets.begin();
+  std::map<unsigned int, EVENTPACKET::CEventPacket*>::iterator iter = m_seqPackets.begin();
   while (iter != m_seqPackets.end())
   {
     if (iter->second)
@@ -727,7 +725,7 @@ void CEventClient::FreePacketQueues()
   m_seqPackets.clear();
 }
 
-unsigned int CEventClient::GetButtonCode(string& joystickName, bool& isAxis, float& amount)
+unsigned int CEventClient::GetButtonCode(std::string& joystickName, bool& isAxis, float& amount)
 {
   CSingleLock lock(m_critSection);
   unsigned int bcode = 0;
@@ -753,8 +751,8 @@ unsigned int CEventClient::GetButtonCode(string& joystickName, bool& isAxis, flo
     return 0;
 
 
-  list<CEventButtonState> repeat;
-  list<CEventButtonState>::iterator it;
+  std::list<CEventButtonState> repeat;
+  std::list<CEventButtonState>::iterator it;
   for(it = m_buttonQueue.begin(); bcode == 0 && it != m_buttonQueue.end(); ++it)
   {
     bcode        = it->KeyCode();

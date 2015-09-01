@@ -44,8 +44,6 @@
 #define CONTROL_CANCEL          19
 #define CONTROL_BROWSE          20
 
-using namespace std;
-
 CGUIDialogSmartPlaylistRule::CGUIDialogSmartPlaylistRule(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_RULE, "SmartPlaylistRule.xml")
 {
@@ -391,7 +389,7 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
 
 std::pair<std::string, int> OperatorLabel(CDatabaseQueryRule::SEARCH_OPERATOR op)
 {
-  return make_pair(CSmartPlaylistRule::GetLocalizedOperator(op), op);
+  return std::make_pair(CSmartPlaylistRule::GetLocalizedOperator(op), op);
 }
 
 void CGUIDialogSmartPlaylistRule::UpdateButtons()
@@ -501,9 +499,9 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
 
   // add the fields to the field spincontrol
   std::vector< std::pair<std::string, int> > labels;
-  vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
+  std::vector<Field> fields = CSmartPlaylistRule::GetFields(m_type);
   for (unsigned int i = 0; i < fields.size(); i++)
-    labels.push_back(make_pair(CSmartPlaylistRule::GetLocalizedField(fields[i]), fields[i]));
+    labels.push_back(std::make_pair(CSmartPlaylistRule::GetLocalizedField(fields[i]), fields[i]));
 
   SET_CONTROL_LABELS(CONTROL_FIELD, 0, &labels);
 

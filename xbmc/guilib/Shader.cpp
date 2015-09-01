@@ -35,12 +35,11 @@
 
 using namespace Shaders;
 using namespace XFILE;
-using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // CShader
 //////////////////////////////////////////////////////////////////////
-bool CShader::LoadSource(const string& filename, const string& prefix)
+bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
 {
   if(filename.empty())
     return true;

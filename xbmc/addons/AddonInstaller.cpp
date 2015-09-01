@@ -46,12 +46,11 @@
 
 #include <functional>
 
-using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 
-struct find_map : public binary_function<CAddonInstaller::JobMap::value_type, unsigned int, bool>
+struct find_map : public std::binary_function<CAddonInstaller::JobMap::value_type, unsigned int, bool>
 {
   bool operator() (CAddonInstaller::JobMap::value_type t, unsigned int id) const
   {
@@ -123,7 +122,7 @@ bool CAddonInstaller::IsDownloading() const
 void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 {
   CSingleLock lock(m_critSection);
-  vector<std::string> addonIDs;
+  std::vector<std::string> addonIDs;
   for (JobMap::const_iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
   {
     if (i->second.jobID)
@@ -133,7 +132,7 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 
   CAddonDatabase database;
   database.Open();
-  for (vector<std::string>::iterator it = addonIDs.begin(); it != addonIDs.end(); ++it)
+  for (std::vector<std::string>::iterator it = addonIDs.begin(); it != addonIDs.end(); ++it)
   {
     AddonPtr addon;
     if (database.GetAddon(*it, addon))

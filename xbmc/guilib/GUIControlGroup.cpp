@@ -20,11 +20,8 @@
 
 #include "GUIControlGroup.h"
 #include "guiinfo/GUIInfoLabels.h"
-#include "utils/StringUtils.h"
 
 #include <cassert>
-
-using namespace std;
 
 CGUIControlGroup::CGUIControlGroup()
 {
@@ -496,7 +493,7 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
   if (m_focusedControl)
   {
     // we may have multiple controls with same id - we pick first that has focus
-    pair<LookupMap::const_iterator, LookupMap::const_iterator> range = m_lookup.equal_range(m_focusedControl);
+    std::pair<LookupMap::const_iterator, LookupMap::const_iterator> range = m_lookup.equal_range(m_focusedControl);
     for (LookupMap::const_iterator i = range.first; i != range.second; ++i)
     {
       if (i->second->HasFocus())
@@ -555,52 +552,16 @@ void CGUIControlGroup::AddControl(CGUIControl *control, int position /* = -1*/)
   SetInvalid();
 }
 
-std::string CGUIControlGroup::GetLabel(int info) const
-{
-  switch (info)
-  {
-  case CONTAINER_CURRENT_ITEM:
-    return StringUtils::Format("%i", GetSelectedItem());
-  case CONTAINER_NUM_ITEMS:
-    return StringUtils::Format("%i", GetNumItems());
-  default:
-    break;
-  }
-  return "";
-}
-
-int CGUIControlGroup::GetNumItems() const
-{
-  return std::count_if(m_children.begin(), m_children.end(), [&](const CGUIControl *child) {
-    return (child->IsVisible() && child->CanFocus());
-  });
-}
-
-int CGUIControlGroup::GetSelectedItem() const
-{
-  int index = 1;
-  for (const auto& child : m_children)
-  {
-    if (child->IsVisible() && child->CanFocus())
-    {
-      if (child->HasFocus())
-        return index;
-      index++;
-    }
-  }
-  return -1;
-}
-
 void CGUIControlGroup::AddLookup(CGUIControl *control)
 {
   if (control->IsGroup())
   { // first add all the subitems of this group (if they exist)
     const LookupMap map = ((CGUIControlGroup *)control)->GetLookup();
     for (LookupMap::const_iterator i = map.begin(); i != map.end(); ++i)
-      m_lookup.insert(m_lookup.upper_bound(i->first), make_pair(i->first, i->second));
+      m_lookup.insert(m_lookup.upper_bound(i->first), std::make_pair(i->first, i->second));
   }
   if (control->GetID())
-    m_lookup.insert(m_lookup.upper_bound(control->GetID()), make_pair(control->GetID(), control));
+    m_lookup.insert(m_lookup.upper_bound(control->GetID()), std::make_pair(control->GetID(), control));
   // ensure that our size is what it should be
   if (m_parentControl)
     ((CGUIControlGroup *)m_parentControl)->AddLookup(control);
@@ -669,7 +630,7 @@ bool CGUIControlGroup::InsertControl(CGUIControl *control, const CGUIControl *in
   return false;
 }
 
-void CGUIControlGroup::SaveStates(vector<CControlState> &states)
+void CGUIControlGroup::SaveStates(std::vector<CControlState> &states)
 {
   // save our state, and that of our children
   states.push_back(CControlState(GetID(), m_focusedControl));
@@ -716,7 +677,7 @@ void CGUIControlGroup::ClearAll()
   SetInvalid();
 }
 
-void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
+void CGUIControlGroup::GetContainers(std::vector<CGUIControl *> &containers) const
 {
   for (ciControls it = m_children.begin();it != m_children.end(); ++it)
   {

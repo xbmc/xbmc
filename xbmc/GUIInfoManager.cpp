@@ -23,6 +23,8 @@
 #include "CompileInfo.h"
 #include "GUIInfoManager.h"
 #include "windows/GUIMediaWindow.h"
+#include "dialogs/GUIDialogKeyboardGeneric.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "Application.h"
 #include "Util.h"
@@ -244,6 +246,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "dvdready",         SYSTEM_DVDREADY },
                                   { "trayopen",         SYSTEM_TRAYOPEN },
                                   { "haslocks",         SYSTEM_HASLOCKS },
+                                  { "hashiddeninput",   SYSTEM_HAS_INPUT_HIDDEN },
                                   { "hasloginscreen",   SYSTEM_HAS_LOGINSCREEN },
                                   { "hasmodaldialog",   SYSTEM_HAS_MODAL_DIALOG },
                                   { "ismaster",         SYSTEM_ISMASTER },
@@ -622,6 +625,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
+                                  { "haspresets",       VISUALISATION_HAS_PRESETS },
                                   { "name",             VISUALISATION_NAME },
                                   { "enabled",          VISUALISATION_ENABLED }};
 
@@ -2463,6 +2467,16 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     g_sysinfo.GetInfo(condition);
     bReturn = g_sysinfo.HasInternet();
   }
+  else if (condition == SYSTEM_HAS_INPUT_HIDDEN)
+  {
+    CGUIDialogNumeric *pNumeric = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+    CGUIDialogKeyboardGeneric *pKeyboard = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+
+    if (pNumeric && pNumeric->IsActive())
+      bReturn = pNumeric->IsInputHidden();
+    else if (pKeyboard && pKeyboard->IsActive())
+      bReturn = pKeyboard->IsInputHidden();
+  }
   else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
   {
     CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -2751,6 +2765,18 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = (epgTag && epgTag->IsActive() && epgTag->ChannelTag());
       }
       break;
+    case VISUALISATION_HAS_PRESETS:
+    {
+      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+      g_windowManager.SendMessage(msg);
+      if (msg.GetPointer())
+      {
+        CVisualisation* viz = NULL;
+        viz = (CVisualisation*)msg.GetPointer();
+        bReturn = (viz && viz->HasPresets());
+      }
+    }
+    break;
     default: // default, use integer value different from 0 as true
       {
         int val;
@@ -3359,6 +3385,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   }
   else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
            info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION ||
+           info.m_info == CONTAINER_ROW || info.m_info == CONTAINER_COLUMN ||
            info.m_info == CONTAINER_CURRENT_ITEM)
   {
     const CGUIControl *control = NULL;
@@ -3410,6 +3437,20 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
       return ((CGUIMediaWindow *)window)->CurrentDirectory().GetArt(m_stringParameters[info.GetData2()]);
+  }
+  else if (info.m_info == CONTAINER_CONTENT)
+  {
+    CGUIWindow *window = NULL;
+    if (info.GetData1())
+    { // container specified
+      window = GetWindowWithCondition(contextWindow, 0);
+    }
+    else
+    { // no container specified - assume a mediawindow
+      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    }
+    if (window)
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
   }
   else if (info.m_info == CONTROL_GET_LABEL)
   {

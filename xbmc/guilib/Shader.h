@@ -31,8 +31,6 @@
 
 namespace Shaders {
 
-  using namespace std;
-
   //////////////////////////////////////////////////////////////////////
   // CShader - base class
   //////////////////////////////////////////////////////////////////////
@@ -44,14 +42,14 @@ namespace Shaders {
     virtual bool Compile() = 0;
     virtual void Free() = 0;
     virtual GLuint Handle() = 0;
-    virtual void SetSource(const string& src) { m_source = src; }
-    virtual bool LoadSource(const string& filename, const string& prefix = "");
+    virtual void SetSource(const std::string& src) { m_source = src; }
+    virtual bool LoadSource(const std::string& filename, const std::string& prefix = "");
     bool OK() const { return m_compiled; }
 
   protected:
-    string m_source;
-    string m_lastLog;
-    vector<string> m_attr;
+    std::string m_source;
+    std::string m_lastLog;
+    std::vector<std::string> m_attr;
     bool m_compiled;
 
   };

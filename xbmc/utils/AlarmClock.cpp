@@ -29,7 +29,6 @@
 #include "utils/StringUtils.h"
 
 using namespace KODI::MESSAGING;
-using namespace std;
 
 CAlarmClock::CAlarmClock() : CThread("AlarmClock"), m_bIsRunning(false)
 {
@@ -88,7 +87,7 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
 
   std::string lowerName(strName);
   StringUtils::ToLower(lowerName);          // lookup as lowercase only
-  map<std::string,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
+  std::map<std::string,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
 
   if (iter == m_event.end())
     return;
@@ -142,7 +141,7 @@ void CAlarmClock::Process()
     std::string strLast;
     {
       CSingleLock lock(m_events);
-      for (map<std::string,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
+      for (std::map<std::string,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
         if ( iter->second.watch.IsRunning()
           && iter->second.watch.GetElapsedSeconds() >= iter->second.m_fSecs)
         {

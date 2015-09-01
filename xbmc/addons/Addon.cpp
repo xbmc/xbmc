@@ -47,7 +47,6 @@
 
 using XFILE::CDirectory;
 using XFILE::CFile;
-using namespace std;
 
 namespace ADDON
 {
@@ -177,7 +176,7 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     std::string language;
     language = CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "language");
     if (!language.empty())
-      extrainfo.insert(make_pair("language",language));
+      extrainfo.insert(std::make_pair("language",language));
     broken = CAddonMgr::GetInstance().GetExtValue(metadata->configuration, "broken");
     EMPTY_IF("nofanart",fanart)
     EMPTY_IF("noicon",icon)
@@ -257,8 +256,8 @@ void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
   if (!plugin)
     return;
   for (unsigned int i = 0; i < plugin->num_imports; ++i)
-    dependencies.insert(make_pair(std::string(plugin->imports[i].plugin_id),
-                                  make_pair(AddonVersion(SS(plugin->imports[i].version)), plugin->imports[i].optional != 0)));
+    dependencies.insert(std::make_pair(std::string(plugin->imports[i].plugin_id),
+                                  std::make_pair(AddonVersion(SS(plugin->imports[i].version)), plugin->imports[i].optional != 0)));
 }
 
 /**
@@ -544,7 +543,7 @@ std::string CAddon::GetSetting(const std::string& key)
   if (!LoadSettings())
     return ""; // no settings available
 
-  map<std::string, std::string>::const_iterator i = m_settings.find(key);
+  std::map<std::string, std::string>::const_iterator i = m_settings.find(key);
   if (i != m_settings.end())
     return i->second;
   return "";
@@ -593,7 +592,7 @@ void CAddon::SettingsToXML(CXBMCTinyXML &doc) const
 {
   TiXmlElement node("settings");
   doc.InsertEndChild(node);
-  for (map<std::string, std::string>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
+  for (std::map<std::string, std::string>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
   {
     TiXmlElement nodeSetting("setting");
     nodeSetting.SetAttribute("id", i->first.c_str());

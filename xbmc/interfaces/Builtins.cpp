@@ -108,7 +108,6 @@
 #include "powermanagement/PowerManager.h"
 #include "filesystem/Directory.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
@@ -251,7 +250,7 @@ const BUILT_IN commands[] = {
 bool CBuiltins::HasCommand(const std::string& execString)
 {
   std::string function;
-  vector<string> parameters;
+  std::vector<std::string> parameters;
   CUtil::SplitExecFunction(execString, function, parameters);
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
@@ -264,7 +263,7 @@ bool CBuiltins::HasCommand(const std::string& execString)
 bool CBuiltins::IsSystemPowerdownCommand(const std::string& execString)
 {
   std::string execute;
-  vector<string> params;
+  std::vector<std::string> params;
   CUtil::SplitExecFunction(execString, execute, params);
   StringUtils::ToLower(execute);
 
@@ -318,7 +317,7 @@ int CBuiltins::Execute(const std::string& execString)
 {
   // Deprecated. Get the text after the "XBMC."
   std::string execute;
-  vector<string> params;
+  std::vector<std::string> params;
   CUtil::SplitExecFunction(execString, execute, params);
   StringUtils::ToLower(execute);
   std::string parameter = params.size() ? params[0] : "";
@@ -544,7 +543,7 @@ int CBuiltins::Execute(const std::string& execString)
         scriptpath = params[0];
 
       // split the path up to find the filename
-      vector<string> argv = params;
+      std::vector<std::string> argv = params;
       std::string filename = URIUtils::GetFileName(scriptpath);
       if (!filename.empty())
         argv[0] = filename;
@@ -647,7 +646,7 @@ int CBuiltins::Execute(const std::string& execString)
         PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
         std::string addonid = params[0];
         std::string urlParameters;
-        vector<string> parameters;
+        std::vector<std::string> parameters;
         if (params.size() == 2 &&
            (StringUtils::StartsWith(params[1], "/") || StringUtils::StartsWith(params[1], "?")))
           urlParameters = params[1];
@@ -781,7 +780,7 @@ int CBuiltins::Execute(const std::string& execString)
           break;
       }
 
-      unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC, items));
+      std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC, items));
       if (state.get())
         items.Sort(state->GetSortMethod());
       else
@@ -872,7 +871,7 @@ int CBuiltins::Execute(const std::string& execString)
     }
 
     CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
-    vector<string> strParams;
+    std::vector<std::string> strParams;
     strParams.push_back(params[0]);
     strParams.push_back(beginSlidePath);
     msg.SetStringParams(strParams);
@@ -1289,7 +1288,7 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "skin.theme")
   {
     // enumerate themes
-    vector<std::string> vecTheme;
+    std::vector<std::string> vecTheme;
     CUtil::GetSkinThemes(vecTheme);
 
     int iTheme = -1;
@@ -1460,7 +1459,7 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "skin.setaddon" && params.size() > 1)
   {
     int string = CSkinSettings::GetInstance().TranslateString(params[0]);
-    vector<ADDON::TYPE> types;
+    std::vector<ADDON::TYPE> types;
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
       ADDON::TYPE type = TranslateType(params[i]);

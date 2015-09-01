@@ -29,8 +29,6 @@
 
 #define LANGUAGE_ADDON_PREFIX   "resource.language."
 
-using namespace std;
-
 namespace ADDON
 {
 

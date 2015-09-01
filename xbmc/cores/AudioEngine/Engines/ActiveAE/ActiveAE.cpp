@@ -163,10 +163,22 @@ void CEngineStats::SetDSP(bool state)
   m_hasDSP = state;
 }
 
+void CEngineStats::SetCurrentSinkFormat(AEAudioFormat SinkFormat)
+{
+  CSingleLock lock(m_lock);
+  m_sinkFormat = SinkFormat;
+}
+
 bool CEngineStats::HasDSP()
 {
   CSingleLock lock(m_lock);
   return m_hasDSP;
+}
+
+AEAudioFormat CEngineStats::GetCurrentSinkFormat()
+{
+  CSingleLock lock(m_lock);
+  return m_sinkFormat;
 }
 
 CActiveAE::CActiveAE() :
@@ -1644,6 +1656,7 @@ bool CActiveAE::InitSink()
       m_sinkHasVolume = data->hasVolume;
       m_stats.SetSinkCacheTotal(data->cacheTotal);
       m_stats.SetSinkLatency(data->latency);
+      m_stats.SetCurrentSinkFormat(m_sinkFormat);
     }
     reply->Release();
   }
@@ -1652,6 +1665,9 @@ bool CActiveAE::InitSink()
     CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
     m_stats.SetSinkCacheTotal(0);
     m_stats.SetSinkLatency(0);
+    AEAudioFormat invalidFormat;
+    invalidFormat.m_dataFormat = AE_FMT_INVALID;
+    m_stats.SetCurrentSinkFormat(invalidFormat);
     m_extError = true;
     return false;
   }
@@ -2499,6 +2515,11 @@ bool CActiveAE::HasDSP()
 {
   return m_stats.HasDSP();
 };
+
+AEAudioFormat CActiveAE::GetCurrentSinkFormat()
+{
+  return m_stats.GetCurrentSinkFormat();
+}
 
 void CActiveAE::OnLostDevice()
 {

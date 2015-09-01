@@ -24,8 +24,6 @@
 #include "GUIControl.h"
 #include "GUIInfoManager.h"
 
-using namespace std;
-
 CGUIAction::CGUIAction()
 {
   m_sendThreadMessages = false;
@@ -41,7 +39,7 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID) const
 {
   if (m_actions.size() == 0) return false;
   // take a copy of actions that satisfy our conditions
-  vector<std::string> actions;
+  std::vector<std::string> actions;
   for (ciActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
   {
     if (it->condition.empty() || g_infoManager.EvaluateBool(it->condition))
@@ -52,7 +50,7 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID) const
   }
   // execute them
   bool retval = false;
-  for (vector<std::string>::iterator i = actions.begin(); i != actions.end(); ++i)
+  for (std::vector<std::string>::iterator i = actions.begin(); i != actions.end(); ++i)
   {
     CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID);
     msg.SetStringParam(*i);

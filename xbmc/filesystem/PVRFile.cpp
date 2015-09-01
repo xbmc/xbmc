@@ -28,7 +28,6 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace PVR;
 
