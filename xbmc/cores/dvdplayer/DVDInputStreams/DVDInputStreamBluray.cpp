@@ -38,6 +38,8 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
+#include "utils/LangCodeExpander.h"
+#include "filesystem/SpecialProtocol.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -186,6 +188,7 @@ CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player) :
 {
   m_title = NULL;
   m_clip  = (uint32_t)-1;
+  m_angle = 0;
   m_playlist = (uint32_t)-1;
   m_menu  = false;
   m_bd    = NULL;
@@ -210,6 +213,11 @@ CDVDInputStreamBluray::~CDVDInputStreamBluray()
 {
   Close();
   delete m_dll;
+}
+
+void CDVDInputStreamBluray::Abort()
+{
+  m_hold = HOLD_EXIT;
 }
 
 bool CDVDInputStreamBluray::IsEOF()
@@ -383,19 +391,8 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
 
   if(m_navmode)
   {
-    int region = CSettings::GetInstance().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
-    if(region == 0)
-    {
-      CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Open - region dvd must be set in setting, assuming region 1");
-      region = 1;
-    }
-    m_dll->bd_set_player_setting    (m_bd, BLURAY_PLAYER_SETTING_REGION_CODE,  region);
-    m_dll->bd_set_player_setting    (m_bd, BLURAY_PLAYER_SETTING_PARENTAL,     0);
-    m_dll->bd_set_player_setting    (m_bd, BLURAY_PLAYER_SETTING_PLAYER_PROFILE, 0);
-    m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_AUDIO_LANG,   g_langInfo.GetDVDAudioLanguage().c_str());
-    m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_PG_LANG,      g_langInfo.GetDVDSubtitleLanguage().c_str());
-    m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG,    g_langInfo.GetDVDMenuLanguage().c_str());
-    m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, "us");
+    SetupPlayerSettings();
+
     m_dll->bd_register_overlay_proc (m_bd, this, bluray_overlay_cb);
 #ifdef HAVE_LIBBLURAY_BDJ
     m_dll->bd_register_argb_overlay_proc (m_bd, this, bluray_overlay_argb_cb, NULL);
@@ -585,6 +582,8 @@ void CDVDInputStreamBluray::ProcessEvent() {
   case BD_EVENT_SECONDARY_VIDEO:
   case BD_EVENT_SECONDARY_VIDEO_SIZE:
   case BD_EVENT_SECONDARY_VIDEO_STREAM:
+  case BD_EVENT_PLAYMARK:
+    break;
 
   case BD_EVENT_NONE:
     break;
@@ -610,7 +609,8 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
       if(m_hold == HOLD_HELD)
         return 0;
 
-      if(m_hold == HOLD_ERROR)
+      if(  m_hold == HOLD_ERROR
+        || m_hold == HOLD_EXIT)
         return -1;
 
       result = m_dll->bd_read_ext (m_bd, buf, buf_size, &m_event);
@@ -1016,7 +1016,7 @@ void CDVDInputStreamBluray::GetStreamInfo(int pid, char* language)
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
 {
-  if(!m_navmode)
+  if(!m_navmode || m_hold == HOLD_EXIT)
     return NEXTSTREAM_NONE;
 
   if (m_hold == HOLD_ERROR)
@@ -1125,6 +1125,41 @@ void CDVDInputStreamBluray::SkipStill()
 bool CDVDInputStreamBluray::HasMenu()
 {
   return m_navmode;
+}
+
+void CDVDInputStreamBluray::SetupPlayerSettings()
+{
+  int region = CSettings::GetInstance().GetInt(CSettings::SETTING_BLURAY_PLAYERREGION);
+  if ( region != BLURAY_REGION_A
+    && region != BLURAY_REGION_B
+    && region != BLURAY_REGION_C)
+  {
+    CLog::Log(LOGWARNING, "CDVDInputStreamBluray::Open - Blu-ray region must be set in setting, assuming region A");
+    region = BLURAY_REGION_A;
+  }
+  m_dll->bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_REGION_CODE, region);
+  m_dll->bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PARENTAL, 99);
+  m_dll->bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PLAYER_PROFILE, BLURAY_PLAYER_PROFILE_2_v2_0);
+
+  std::string langCode;
+  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDAudioLanguage(), langCode);
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_AUDIO_LANG, langCode.c_str());
+
+  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDSubtitleLanguage(), langCode);
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_PG_LANG, langCode.c_str());
+
+  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
+
+  g_LangCodeExpander.ConvertToISO6391(g_langInfo.GetRegionLocale(), langCode);
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, langCode.c_str());
+
+#ifdef HAVE_LIBBLURAY_BDJ
+  std::string cacheDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/cache");
+  std::string persitentDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/persistent");
+  m_dll->bd_set_player_setting_str(m_bd, 400, persitentDir.c_str());
+  m_dll->bd_set_player_setting_str(m_bd, 401, cacheDir.c_str());
+#endif
 }
 
 #endif
