@@ -103,7 +103,7 @@ namespace Shaders {
     float m_contrast;
     float m_stretch;
 
-    string m_defines;
+    std::string m_defines;
 
     // shader attribute handles
     GLint m_hYTex;

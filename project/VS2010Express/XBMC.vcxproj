@@ -782,7 +782,6 @@
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralNyxboard.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralImon.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralTuner.cpp" />
-    <ClCompile Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralManager.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralSettings.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\Peripherals.cpp" />
     <ClCompile Include="..\..\xbmc\pictures\GUIDialogPictureInfo.cpp" />
@@ -1654,7 +1653,6 @@
     <ClCompile Include="..\..\xbmc\utils\XMLUtils.cpp" />
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp" />
-    <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogFileStacking.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogTeletext.cpp" />
@@ -2140,7 +2138,6 @@
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralNIC.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralNyxboard.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralTuner.h" />
-    <ClInclude Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralManager.h" />
     <ClInclude Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralSettings.h" />
     <ClInclude Include="..\..\xbmc\peripherals\Peripherals.h" />
     <ClInclude Include="..\..\xbmc\peripherals\PeripheralTypes.h" />
@@ -2315,7 +2312,6 @@
     <ClInclude Include="..\..\xbmc\utils\XMLUtils.h" />
     <ClInclude Include="..\..\xbmc\video\Bookmark.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.h" />
-    <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogFileStacking.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogFullScreenInfo.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogSubtitles.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogTeletext.h" />

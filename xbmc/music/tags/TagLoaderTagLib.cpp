@@ -49,7 +49,6 @@
 #include "utils/Base64.h"
 #include "settings/AdvancedSettings.h"
 
-using namespace std;
 using namespace TagLib;
 using namespace MUSIC_INFO;
 
@@ -80,9 +79,9 @@ CTagLoaderTagLib::~CTagLoaderTagLib()
   
 }
 
-static const vector<string> StringListToVectorString(const StringList& stringList)
+static const std::vector<std::string> StringListToVectorString(const StringList& stringList)
 {
-  vector<string> values;
+  std::vector<std::string> values;
   for (StringList::ConstIterator it = stringList.begin(); it != stringList.end(); ++it)
     values.push_back(it->to8Bit(true));
   return values;
@@ -519,7 +518,7 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
   for (int i = 0; i < 3; ++i)
     if (pictures[i])
     {
-      string      mime =             pictures[i]->mimeType().to8Bit(true);
+      std::string  mime =            pictures[i]->mimeType().to8Bit(true);
       TagLib::uint size =            pictures[i]->picture().size();
       tag.SetCoverArtInfo(size, mime);
       if (art)
@@ -712,7 +711,7 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
   for (int i = 0; i < 3; ++i)
     if (pictures[i].data().size())
     {
-      string      mime =             pictures[i].mimeType().toCString();
+      std::string mime = pictures[i].mimeType().toCString();
       if (mime.compare(0, 6, "image/") != 0)
         continue;
       TagLib::uint size =            pictures[i].data().size();
@@ -779,7 +778,7 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
       MP4::CoverArtList coverArtList = it->second.toCoverArtList();
       for (MP4::CoverArtList::ConstIterator pt = coverArtList.begin(); pt != coverArtList.end(); ++pt)
       {
-        string mime;
+        std::string mime;
         switch (pt->format())
         {
           case MP4::CoverArt::PNG:
@@ -856,23 +855,23 @@ void CTagLoaderTagLib::SetFlacArt(FLAC::File *flacFile, EmbeddedArt *art, CMusic
   }
 }
 
-const vector<string> CTagLoaderTagLib::GetASFStringList(const List<ASF::Attribute>& list)
+const std::vector<std::string> CTagLoaderTagLib::GetASFStringList(const List<ASF::Attribute>& list)
 {
-  vector<string> values;
+  std::vector<std::string> values;
   for (List<ASF::Attribute>::ConstIterator at = list.begin(); at != list.end(); ++at)
     values.push_back(at->toString().to8Bit(true));
   return values;
 }
 
-const vector<string> CTagLoaderTagLib::GetID3v2StringList(const ID3v2::FrameList& frameList) const
+const std::vector<std::string> CTagLoaderTagLib::GetID3v2StringList(const ID3v2::FrameList& frameList) const
 {
   const ID3v2::TextIdentificationFrame *frame = dynamic_cast<ID3v2::TextIdentificationFrame *>(frameList.front());
   if (frame)
     return StringListToVectorString(frame->fieldList());
-  return vector<string>();
+  return std::vector<std::string>();
 }
 
-void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const vector<string> &values)
+void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
   if (values.size() == 1)
     tag.SetArtist(values[0]);
@@ -900,7 +899,7 @@ const std::vector<std::string> CTagLoaderTagLib::SplitMBID(const std::vector<std
   return ret;
 }
 
-void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const vector<string> &values)
+void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
   if (values.size() == 1)
     tag.SetAlbumArtist(values[0]);
@@ -908,16 +907,16 @@ void CTagLoaderTagLib::SetAlbumArtist(CMusicInfoTag &tag, const vector<string> &
     tag.SetAlbumArtist(values);
 }
 
-void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const vector<string> &values)
+void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
   /*
    TagLib doesn't resolve ID3v1 genre numbers in the case were only
    a number is specified, thus this workaround.
    */
-  vector<string> genres;
-  for (vector<string>::const_iterator i = values.begin(); i != values.end(); ++i)
+  std::vector<std::string> genres;
+  for (std::vector<std::string>::const_iterator i = values.begin(); i != values.end(); ++i)
   {
-    string genre = *i;
+    std::string genre = *i;
     if (StringUtils::IsNaturalNumber(genre))
     {
       int number = strtol(i->c_str(), NULL, 10);

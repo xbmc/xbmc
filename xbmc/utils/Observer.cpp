@@ -24,8 +24,6 @@
 
 #include <algorithm>
 
-using namespace std;
-
 Observer::~Observer(void)
 {
   StopObserving();
@@ -55,7 +53,7 @@ void Observer::RegisterObservable(Observable *obs)
 void Observer::UnregisterObservable(Observable *obs)
 {
   CSingleLock lock(m_obsCritSection);
-  vector<Observable *>::iterator it = find(m_observables.begin(), m_observables.end(), obs);
+  std::vector<Observable *>::iterator it = find(m_observables.begin(), m_observables.end(), obs);
   if (it != m_observables.end())
     m_observables.erase(it);
 }
@@ -109,7 +107,7 @@ void Observable::RegisterObserver(Observer *obs)
 void Observable::UnregisterObserver(Observer *obs)
 {
   CSingleLock lock(m_obsCritSection);
-  vector<Observer *>::iterator it = find(m_observers.begin(), m_observers.end(), obs);
+  std::vector<Observer *>::iterator it = find(m_observers.begin(), m_observers.end(), obs);
   if (it != m_observers.end())
   {
     obs->UnregisterObservable(this);

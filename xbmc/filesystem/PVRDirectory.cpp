@@ -31,7 +31,6 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace PVR;
 

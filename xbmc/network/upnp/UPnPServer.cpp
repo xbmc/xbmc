@@ -50,7 +50,6 @@
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.server")
 
-using namespace std;
 using namespace ANNOUNCEMENT;
 using namespace XFILE;
 
@@ -144,13 +143,13 @@ CUPnPServer::OnScanCompleted(int type)
 |   CUPnPServer::UpdateContainer
 +---------------------------------------------------------------------*/
 void
-CUPnPServer::UpdateContainer(const string& id)
+CUPnPServer::UpdateContainer(const std::string& id)
 {
-    map<string,pair<bool, unsigned long> >::iterator itr = m_UpdateIDs.find(id);
+    std::map<std::string, std::pair<bool, unsigned long> >::iterator itr = m_UpdateIDs.find(id);
     unsigned long count = 0;
     if (itr != m_UpdateIDs.end())
         count = ++itr->second.second;
-    m_UpdateIDs[id] = make_pair(true, count);
+    m_UpdateIDs[id] = std::make_pair(true, count);
     PropagateUpdates();
 }
 
@@ -162,8 +161,8 @@ CUPnPServer::PropagateUpdates()
 {
     PLT_Service* service = NULL;
     NPT_String current_ids;
-    string buffer;
-    map<string,pair<bool, unsigned long> >::iterator itr;
+    std::string buffer;
+    std::map<std::string, std::pair<bool, unsigned long> >::iterator itr;
 
     if (m_scanning || !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPANNOUNCE))
         return;
@@ -414,7 +413,7 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
 {
     NPT_String path;
     int item_id;
-    string item_type;
+    std::string item_type;
 
     if (strcmp(sender, "xbmc"))
         return;
@@ -677,10 +676,10 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             // this is the only way to hide unplayable items in the 'files'
             // view as we cannot tell what context (eg music vs video) the
             // request came from
-            string supported = g_advancedSettings.m_pictureExtensions + "|"
-                             + g_advancedSettings.m_videoExtensions + "|"
-                             + g_advancedSettings.GetMusicExtensions() + "|"
-                             + g_advancedSettings.m_discStubExtensions;
+            std::string supported = g_advancedSettings.m_pictureExtensions + "|"
+                                  + g_advancedSettings.m_videoExtensions + "|"
+                                  + g_advancedSettings.GetMusicExtensions() + "|"
+                                  + g_advancedSettings.m_discStubExtensions;
             CDirectory::GetDirectory((const char*)parent_id, items, supported);
             DefaultSortItems(items);
         }
@@ -771,8 +770,8 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
 
     // won't return more than UPNP_MAX_RETURNED_ITEMS items at a time to keep things smooth
     // 0 requested means as many as possible
-    NPT_UInt32 max_count  = (requested_count == 0)?m_MaxReturnedItems:min((unsigned long)requested_count, (unsigned long)m_MaxReturnedItems);
-    NPT_UInt32 stop_index = min((unsigned long)(starting_index + max_count), (unsigned long)items.Size()); // don't return more than we can
+    NPT_UInt32 max_count  = (requested_count == 0)?m_MaxReturnedItems:std::min((unsigned long)requested_count, (unsigned long)m_MaxReturnedItems);
+    NPT_UInt32 stop_index = std::min((unsigned long)(starting_index + max_count), (unsigned long)items.Size()); // don't return more than we can
 
     NPT_Cardinal count = 0;
     NPT_Cardinal total = items.Size();
@@ -1234,8 +1233,8 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
   }
 
   bool sorted = false;
-  vector<string> tokens = StringUtils::Split(criteria, ",");
-  for (vector<string>::reverse_iterator itr = tokens.rbegin(); itr != tokens.rend(); ++itr) {
+  std::vector<std::string> tokens = StringUtils::Split(criteria, ",");
+  for (std::vector<std::string>::reverse_iterator itr = tokens.rbegin(); itr != tokens.rend(); ++itr) {
     SortDescription sorting;
     /* Platinum guarantees 1st char is - or + */
     sorting.sortOrder = StringUtils::StartsWith(*itr, "+") ? SortOrderAscending : SortOrderDescending;

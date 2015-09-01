@@ -43,7 +43,6 @@
 #include "utils/PerformanceSample.h"
 #endif
 
-using namespace std;
 using namespace KODI::MESSAGING;
 
 bool CGUIWindow::icompare::operator()(const std::string &s1, const std::string &s2) const
@@ -252,6 +251,11 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
       pChild->QueryFloatAttribute("x", &m_camera.x);
       pChild->QueryFloatAttribute("y", &m_camera.y);
       m_hasCamera = true;
+    }
+    else if (strValue == "depth" && pChild->FirstChild())
+    { 
+      float stereo = (float)atof(pChild->FirstChild()->Value());;
+      m_stereo = std::max(-1.f, std::min(1.f, stereo));
     }
     else if (strValue == "controls")
     {
@@ -934,7 +938,7 @@ void CGUIWindow::SaveControlStates()
 
 void CGUIWindow::RestoreControlStates()
 {
-  for (vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
+  for (std::vector<CControlState>::iterator it = m_controlStates.begin(); it != m_controlStates.end(); ++it)
   {
     CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
     OnMessage(message);
@@ -966,7 +970,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
               fromControl, GetID());
     return false;
   }
-  vector<int> moveHistory;
+  std::vector<int> moveHistory;
   int nextControl = fromControl;
   while (control)
   { // grab the next control direction
@@ -1005,6 +1009,7 @@ void CGUIWindow::SetDefaults()
   m_animations.clear();
   m_origins.clear();
   m_hasCamera = false;
+  m_stereo = 0.f;
   m_animationsEnabled = true;
   m_clearBackground = 0xff000000; // opaque black -> clear
   m_hitRect.SetRect(0, 0, (float)m_coordsRes.iWidth, (float)m_coordsRes.iHeight);

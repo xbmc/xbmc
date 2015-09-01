@@ -57,6 +57,7 @@ public:
   static const std::string SETTING_LOOKANDFEEL_SOUNDSKIN;
   static const std::string SETTING_LOOKANDFEEL_ENABLERSSFEEDS;
   static const std::string SETTING_LOOKANDFEEL_RSSEDIT;
+  static const std::string SETTING_LOOKANDFEEL_STEREOSTRENGTH;
   static const std::string SETTING_LOCALE_LANGUAGE;
   static const std::string SETTING_LOCALE_COUNTRY;
   static const std::string SETTING_LOCALE_CHARSET;
@@ -160,6 +161,7 @@ public:
   static const std::string SETTING_DVDS_PLAYERREGION;
   static const std::string SETTING_DVDS_AUTOMENU;
   static const std::string SETTING_DISC_PLAYBACK;
+  static const std::string SETTING_BLURAY_PLAYERREGION;
   static const std::string SETTING_ACCESSIBILITY_AUDIOVISUAL;
   static const std::string SETTING_ACCESSIBILITY_AUDIOHEARING;
   static const std::string SETTING_ACCESSIBILITY_SUBHEARING;

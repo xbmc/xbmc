@@ -266,6 +266,7 @@
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
+      <menu>OSD</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>
@@ -301,6 +302,7 @@
       <i>Back</i>
       <d mod="ctrl">Back</d>
       <m>OSD</m>
+      <menu>OSD</menu>
     </keyboard>
   </FullscreenInfo>
   <PlayerControls>
@@ -320,6 +322,7 @@
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
+      <menu>OSD</menu>
       <i>Info</i>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
@@ -342,6 +345,7 @@
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <m>Back</m>
+      <menu>Back</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
@@ -418,6 +422,7 @@
   <VideoOSD>
     <keyboard>
       <m>Back</m>
+      <menu>Back</menu>
       <g mod="ctrl">Back</g> <!-- MCE Guide button -->
       <i>Info</i>
       <o>CodecInfo</o>
@@ -428,6 +433,7 @@
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <m>OSD</m>
+      <menu>OSD</menu>
       <i>Info</i>
       <o>CodecInfo</o>
       <z>AspectRatio</z>

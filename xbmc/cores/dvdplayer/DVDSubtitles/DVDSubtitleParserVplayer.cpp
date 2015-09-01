@@ -23,9 +23,7 @@
 #include "DVDClock.h"
 #include "utils/RegExp.h"
 
-using namespace std;
-
-CDVDSubtitleParserVplayer::CDVDSubtitleParserVplayer(CDVDSubtitleStream* pStream, const string& strFile)
+CDVDSubtitleParserVplayer::CDVDSubtitleParserVplayer(CDVDSubtitleStream* pStream, const std::string& strFile)
     : CDVDSubtitleParserText(pStream, strFile), m_framerate(DVD_TIME_BASE)
 {
 }

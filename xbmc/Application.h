@@ -412,6 +412,7 @@ protected:
   bool NotifyActionListeners(const CAction &action) const;
 
   bool m_skinReverting;
+  std::string m_skinReloadSettingIgnore;
 
   bool m_loggingIn;
 
@@ -492,6 +493,10 @@ protected:
   bool InitDirectoriesOSX();
   bool InitDirectoriesWin32();
   void CreateUserDirs();
+
+  /*! \brief Helper method to determine how to handle TMSG_SHUTDOWN
+  */
+  void HandleShutdownMessage();
 
   CInertialScrollingHandler *m_pInertialScrollingHandler;
   CNetwork    *m_network;

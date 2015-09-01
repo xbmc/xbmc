@@ -43,8 +43,6 @@ static char THIS_FILE[] = __FILE__;
 #define VOLUME_LOCAL        1
 #define VOLUME_NETWORK      2
 
-using namespace std;
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -57,7 +55,7 @@ CWindowsShortcut::~CWindowsShortcut()
 {
 }
 
-bool CWindowsShortcut::GetShortcut(const string& strFileName, string& strFileOrDir)
+bool CWindowsShortcut::GetShortcut(const std::string& strFileName, std::string& strFileOrDir)
 {
   strFileOrDir = "";
   if (!IsShortcut(strFileName) ) return false;
@@ -117,7 +115,7 @@ bool CWindowsShortcut::GetShortcut(const string& strFileName, string& strFileOrD
   return true;
 }
 
-bool CWindowsShortcut::IsShortcut(const string& strFileName)
+bool CWindowsShortcut::IsShortcut(const std::string& strFileName)
 {
   CFile file;
   if (!file.Open(strFileName.c_str(), CFile::typeBinary | CFile::modeRead)) return false;

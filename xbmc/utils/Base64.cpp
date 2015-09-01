@@ -22,8 +22,6 @@
 
 #define PADDING '='
 
-using namespace std;
-
 const std::string Base64::m_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                          "abcdefghijklmnopqrstuvwxyz"
                                          "0123456789+/";
@@ -127,7 +125,7 @@ std::string Base64::Decode(const char* input, unsigned int length)
 void Base64::Decode(const std::string &input, std::string &output)
 {
   size_t length = input.find_first_of(PADDING);
-  if (length == string::npos)
+  if (length == std::string::npos)
     length = input.size();
 
   Decode(input.c_str(), length, output);

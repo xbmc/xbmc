@@ -27,7 +27,7 @@ endif
 endif
 
 GENDIR = $(INTERFACES_DIR)/python/generated
-GROOVY_DIR = $(TOPDIR)/lib/groovy
+GROOVY_DIR = $(TOPDIR)/tools/codegenerator/groovy
 
 GENERATED =  $(GENDIR)/AddonModuleXbmc.cpp
 GENERATED += $(GENDIR)/AddonModuleXbmcgui.cpp
@@ -42,9 +42,9 @@ vpath %.i $(INTERFACES_DIR)/swig
 
 $(GENDIR)/%.cpp: $(GENDIR)/%.xml $(JAVA) $(SWIG) $(DOXY_XML_PATH)
 	# Work around potential groovy bug reported at: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733234
-	$(JAVA) -cp "$(GROOVY_DIR)/groovy-all-2.1.7.jar:$(GROOVY_DIR)/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
+	$(JAVA) -cp "$(GROOVY_DIR)/groovy-all-2.4.4.jar:$(GROOVY_DIR)/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
           org.codehaus.groovy.tools.FileSystemCompiler -d $(TOPDIR)/tools/codegenerator $(TOPDIR)/tools/codegenerator/Helper.groovy  $(TOPDIR)/tools/codegenerator/SwigTypeParser.groovy $(INTERFACES_DIR)/python/MethodType.groovy $(INTERFACES_DIR)/python/PythonTools.groovy
-	$(JAVA) -cp "$(GROOVY_DIR)/groovy-all-2.1.7.jar:$(GROOVY_DIR)/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
+	$(JAVA) -cp "$(GROOVY_DIR)/groovy-all-2.4.4.jar:$(GROOVY_DIR)/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
           groovy.ui.GroovyMain $(TOPDIR)/tools/codegenerator/Generator.groovy $< $(INTERFACES_DIR)/python/PythonSwig.cpp.template $@ $(DOXY_XML_PATH)
 	rm $<
 

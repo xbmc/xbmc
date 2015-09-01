@@ -34,7 +34,6 @@
 #include "Album.h"
 #include "MusicThumbLoader.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 
@@ -110,7 +109,7 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   // we load up the actual tag for this file in order to
   // fetch the lyrics and add it to the current music info tag
   CFileItem tempItem(path, false);
-  unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(tempItem));
+  std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(tempItem));
   if (NULL != pLoader.get())
   {
     CMusicInfoTag tag;
@@ -195,7 +194,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       { // Nothing found, load tag from file,
         // always try to load cddb info
         // get correct tag parser
-        unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
+        std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
         if (NULL != pLoader.get())
           // get tag
           pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag());

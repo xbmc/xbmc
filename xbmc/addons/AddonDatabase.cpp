@@ -27,7 +27,6 @@
 #include "dbwrappers/dataset.h"
 
 using namespace ADDON;
-using namespace std;
 
 CAddonDatabase::CAddonDatabase()
 {
@@ -310,9 +309,9 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
       {
         const dbiplus::sql_record* const record = *i;
         if (!record->at(addonextra_key).get_asString().empty())
-          props.extrainfo.insert(make_pair(record->at(addonextra_key).get_asString(), record->at(addonextra_value).get_asString()));
+          props.extrainfo.insert(std::make_pair(record->at(addonextra_key).get_asString(), record->at(addonextra_value).get_asString()));
         if (!m_pDS2->fv(dependencies_addon).get_asString().empty())
-          props.dependencies.insert(make_pair(record->at(dependencies_addon).get_asString(), make_pair(AddonVersion(record->at(dependencies_version).get_asString()), record->at(dependencies_optional).get_asBool())));
+          props.dependencies.insert(std::make_pair(record->at(dependencies_addon).get_asString(), std::make_pair(AddonVersion(record->at(dependencies_version).get_asString()), record->at(dependencies_optional).get_asBool())));
       }
 
       addon = CAddonMgr::AddonFromProps(props);

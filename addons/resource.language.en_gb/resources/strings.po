@@ -488,6 +488,7 @@ msgctxt "#125"
 msgid "Would you like to delete the selected file(s)?[CR]Warning - this action can't be undone!"
 msgstr ""
 
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#126"
@@ -1008,12 +1009,14 @@ msgctxt "#230"
 msgid "Video filters"
 msgstr ""
 
+#. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
 #: system/peripherals.xml
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: system/settings/settings.xml
 #: xbmc/LangInfo.cpp
+#: ###this documented usage does not cover all usecases yet###
 msgctxt "#231"
 msgid "None"
 msgstr ""
@@ -5600,6 +5603,7 @@ msgctxt "#13105"
 msgid "Vertical blank sync"
 msgstr ""
 
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
 msgctxt "#13106"
 msgid "Disabled"
@@ -5790,6 +5794,8 @@ msgid "Last loaded profile:"
 msgstr ""
 
 #: xbmc/music/karaoke/GUIDialogKaraokeSongSelector.cpp
+#: xbmc/peripherals/devices/Peripheral.cpp
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 msgctxt "#13205"
 msgid "Unknown"
 msgstr ""
@@ -7310,7 +7316,31 @@ msgctxt "#14120"
 msgid "Show higher levels"
 msgstr ""
 
-#empty strings from id 14121 to 15003
+#. Name of a setting for Blu-ray region codes
+#: system/settings/settings.xml
+msgctxt "#14121"
+msgid "Blu-ray region Code"
+msgstr ""
+
+#. Region Code option for Blu-ray
+#: system/settings/settings.xml
+msgctxt "#14122"
+msgid "Region A"
+msgstr ""
+
+#. Region Code option for Blu-ray
+#: system/settings/settings.xml
+msgctxt "#14123"
+msgid "Region B"
+msgstr ""
+
+#. Region Code option for Blu-ray
+#: system/settings/settings.xml
+msgctxt "#14124"
+msgid "Region C"
+msgstr ""
+
+#empty strings from id 14125 to 15003
 
 #. Name of a class/preset for audio DSP
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
@@ -13334,6 +13364,7 @@ msgctxt "#24050"
 msgid "Available add-ons"
 msgstr ""
 
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/addons/AddonVersion.cpp
 msgctxt "#24051"
 msgid "Version:"
@@ -14294,10 +14325,7 @@ msgctxt "#33080"
 msgid "Hate"
 msgstr ""
 
-#: Unknown
-msgctxt "#33081"
-msgid "This file is stacked, select the part you want to play from."
-msgstr ""
+#empty string with id 33081
 
 #: Unknown
 msgctxt "#33082"
@@ -14863,7 +14891,7 @@ msgstr ""
 
 #: system/peripherals.xml
 msgctxt "#36033"
-msgid "Pause playback when switching to another source"
+msgid "Action when switching to another source"
 msgstr ""
 
 #empty string with id 36034
@@ -14914,7 +14942,23 @@ msgctxt "#36042"
 msgid "Use limited colour range (16-235)"
 msgstr ""
 
-#empty strings from id 36043 to 36100
+#empty strings from id 36043
+
+#. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
+#: system/peripherals.xml
+msgctxt "#36044"
+msgid "Stop Playback"
+msgstr ""
+
+#. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
+#: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
+#: system/peripherals.xml
+msgctxt "#36045"
+msgid "Pause Playback"
+msgstr ""
+
+#empty strings from id 36046 to 36100
 #strings from 36100 to 36999 are reserved for settings descriptions
 
 #. Description of settings section "Appearance"
@@ -17131,7 +17175,19 @@ msgctxt "#36549"
 msgid "Use iOS8 compatible AirPlay support. If you have trouble with older iOS devices detecting this application as a valid target try switching this off. This option requires a restart to take effect!"
 msgstr ""
 
-#empty strings from id 36550 to 36599
+#. Name of a setting
+#: system/settings/settings.xml
+msgctxt "#36550"
+msgid "Stereoscopic 3D effect strength"
+msgstr ""
+
+#. Description of setting "Appearance -> Skin -> Stereoscopic 3D effect strength" with label #36550
+#: system/settings/settings.xml
+msgctxt "#36551"
+msgid "Defines the strength of the stereoscopic 3D effect in the GUI. This is done by controlling the depth of perception within the GUI, so the higher the value, the more elements will pop out of the screen. [Zero] Disables the stereoscopic 3D effect of the GUI.[CR]For a good visual experience, the value should be higher for small screens and lower for large screens. Note: this is not supported by all skins."
+msgstr ""
+
+#empty strings from id 36552 to 36599
 #reserved strings 365XX
 
 #. Description of settings category "Music -> Library" with label #14022
@@ -17518,6 +17574,12 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#38016"
 msgid "%d fps"
+msgstr ""
+
+#. Description of setting #14111 Settings -> Video -> Discs -> Blu-ray region code
+#: system/settings/settings.xml
+msgctxt "#38017"
+msgid "Region A - Americas, East Asia and Southeast Asia. Region B - Africa, Middle East, Southwest Asia, Europe, Australia, New Zealand. Region C - Central Asia, mainland China, Mongolia, South Asia, Belarus, Russia, Ukraine, Kazakhstan."
 msgstr ""
 
 #. 55000-55100 reserved for DSPlayer

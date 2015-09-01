@@ -25,8 +25,6 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
-
 CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileItem()
 {
   m_visState = false;
@@ -51,10 +49,10 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     SetLabel2(label2.GetLabel(parentID));
     SetArt("thumb", thumb.GetLabel(parentID, true));
     SetIconImage(icon.GetLabel(parentID, true));
-    if (!label.IsConstant())  m_info.push_back(make_pair(label, "label"));
-    if (!label2.IsConstant()) m_info.push_back(make_pair(label2, "label2"));
-    if (!thumb.IsConstant())  m_info.push_back(make_pair(thumb, "thumb"));
-    if (!icon.IsConstant())   m_info.push_back(make_pair(icon, "icon"));
+    if (!label.IsConstant())  m_info.push_back(std::make_pair(label, "label"));
+    if (!label2.IsConstant()) m_info.push_back(std::make_pair(label2, "label2"));
+    if (!thumb.IsConstant())  m_info.push_back(std::make_pair(thumb, "thumb"));
+    if (!icon.IsConstant())   m_info.push_back(std::make_pair(icon, "icon"));
     m_iprogramCount = id ? atoi(id) : 0;
     // add any properties
     const TiXmlElement *property = item->FirstChildElement("property");
@@ -66,7 +64,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
       {
         SetProperty(name, prop.GetLabel(parentID, true).c_str());
         if (!prop.IsConstant())
-          m_info.push_back(make_pair(prop, name));
+          m_info.push_back(std::make_pair(prop, name));
       }
       property = property->NextSiblingElement("property");
     }

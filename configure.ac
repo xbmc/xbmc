@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([kodi], [15.9.702], [http://trac.kodi.tv])
+AC_INIT([kodi], [15.9.703], [http://trac.kodi.tv])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_prog_cc_for_build.m4])
@@ -1336,9 +1336,6 @@ fi
   fi
 fi
 
-XB_FIND_SONAME([OGG],         [ogg])
-XB_FIND_SONAME([VORBIS],      [vorbis])
-XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
 

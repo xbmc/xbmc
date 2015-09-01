@@ -43,6 +43,7 @@ namespace PVR
   private:
     bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 

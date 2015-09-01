@@ -61,7 +61,6 @@ class iso9660 m_isoReader;
 #define BUFFER_SIZE MODE2_DATA_SIZE
 #define RET_ERR -1
 
-using namespace std;
 
 #ifndef HAS_DVD_DRIVE
 extern "C"
@@ -71,9 +70,9 @@ extern "C"
 #endif
 
 //******************************************************************************************************************
-const string iso9660::ParseName(struct iso9660_Directory& isodir)
+const std::string iso9660::ParseName(struct iso9660_Directory& isodir)
 {
-  string temp_text = (char*)isodir.FileName;
+  std::string temp_text = (char*)isodir.FileName;
   temp_text.resize(isodir.Len_Fi);
   int iPos = isodir.Len_Fi;
 
@@ -261,7 +260,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     {
       break;
     }
-    int isize = min(sizeof(isodir), sizeof(m_info.isodir));
+    int isize = std::min(sizeof(isodir), sizeof(m_info.isodir));
     memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer, isize);
     if (!isodir.ucRecordLength)
       continue;
@@ -269,7 +268,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     {
       if ( (!( isodir.byFlags & Flag_Directory )) && ( isodir.Len_Fi > 1) )
       {
-        string temp_text ;
+        std::string temp_text ;
         bool bContinue = false;
 
         if ( m_info.joliet )
@@ -352,14 +351,14 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
       pCurr_dir_cache = NULL;
       return pDir;
     }
-    memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer, min(sizeof(isodir), sizeof(m_info.isodir)));
+    memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer, std::min(sizeof(isodir), sizeof(m_info.isodir)));
     if (!isodir.ucRecordLength)
       continue;
     if ( !(isodir.byFlags & Flag_NotExist) )
     {
       if ( (( isodir.byFlags & Flag_Directory )) && ( isodir.Len_Fi > 1) )
       {
-        string temp_text ;
+        std::string temp_text ;
         bool bContinue = false;
         if ( m_info.joliet )
         {
@@ -423,7 +422,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
           IsoDateTimeToFileTime(&isodir.DateTime, &pFile_Pointer->filetime);
 
-          string strPath = path;
+          std::string strPath = path;
           if ( strlen( path ) > 1 ) strPath += "\\";
           strPath += temp_text;
 
@@ -505,7 +504,7 @@ void iso9660::Scan()
     else
       iso9660searchpointer = (iso9660searchpointer - (iso9660searchpointer % wSectorSize)) + wSectorSize;
 
-    memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer,min(sizeof(isodir), sizeof(m_info.isodir)));
+    memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer, std::min(sizeof(isodir), sizeof(m_info.isodir)));
     free(pCurr_dir_cache);
     if (bResult && lpNumberOfBytesRead == wSectorSize)
       bResult = IsRockRidge(isodir);
@@ -696,7 +695,7 @@ bool iso9660::FindClose( HANDLE szLocalFolder )
 
 
 //******************************************************************************************************************
-string iso9660::GetThinText(BYTE* strTxt, int iLen )
+std::string iso9660::GetThinText(BYTE* strTxt, int iLen )
 {
   // convert from "fat" text (UTF-16BE) to "thin" text (UTF-8)
   std::u16string strTxtUnicode((char16_t*)strTxt, iLen / 2);

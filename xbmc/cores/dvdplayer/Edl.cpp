@@ -29,8 +29,6 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/PVRManager.h"
 
-using namespace std;
-
 #define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
 #define VIDEOREDO_HEADER "<Version>2"
 #define VIDEOREDO_TAG_CUT "<Cut>"
@@ -185,7 +183,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       continue;
     }
 
-    vector<string> strFields(2);
+    std::vector<std::string> strFields(2);
     strFields[0] = buffer1;
     strFields[1] = buffer2;
 
@@ -204,7 +202,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
     {
       if (strFields[i].find(":") != std::string::npos) // HH:MM:SS.sss format
       {
-        vector<string> fieldParts = StringUtils::Split(strFields[i], '.');
+        std::vector<std::string> fieldParts = StringUtils::Split(strFields[i], '.');
         if (fieldParts.size() == 1) // No ms
         {
           iCutStartEnd[i] = StringUtils::TimeStringToSeconds(fieldParts[0]) * (int64_t)1000; // seconds to ms
@@ -707,7 +705,7 @@ bool CEdl::AddCut(Cut& cut)
   }
   else
   {
-    vector<Cut>::iterator pCurrentCut;
+    std::vector<Cut>::iterator pCurrentCut;
     for (pCurrentCut = m_vecCuts.begin(); pCurrentCut != m_vecCuts.end(); ++pCurrentCut)
     {
       if (cut.start < pCurrentCut->start)

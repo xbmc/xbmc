@@ -343,6 +343,7 @@ void CVideoDatabase::CreateViews()
                                       "  files.lastPlayed AS lastPlayed,"
                                       "  files.dateAdded AS dateAdded,"
                                       "  tvshow.c%02d AS strTitle,"
+                                      "  tvshow.c%02d AS genre,"
                                       "  tvshow.c%02d AS studio,"
                                       "  tvshow.c%02d AS premiered,"
                                       "  tvshow.c%02d AS mpaa,"
@@ -359,7 +360,10 @@ void CVideoDatabase::CreateViews()
                                       "  JOIN path ON"
                                       "    files.idPath=path.idPath"
                                       "  LEFT JOIN bookmark ON"
-                                      "    bookmark.idFile=episode.idFile AND bookmark.type=1", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA,VIDEODB_ID_EPISODE_SEASON);
+                                      "    bookmark.idFile=episode.idFile AND bookmark.type=1",
+                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE,
+                                      VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED,
+                                      VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_SEASON);
   m_pDS->exec(episodeview.c_str());
 
   CLog::Log(LOGINFO, "create tvshowcounts");
@@ -3602,6 +3606,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_dateAdded.SetFromDBDateTime(record->at(VIDEODB_DETAILS_EPISODE_DATEADDED).get_asString());
   details.m_strMPAARating = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA).get_asString();
   details.m_strShowTitle = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
+  details.m_genre = StringUtils::Split(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_GENRE).get_asString(), g_advancedSettings.m_videoItemSeparator);
   details.m_studio = StringUtils::Split(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString(), g_advancedSettings.m_videoItemSeparator);
   details.m_premiered.SetFromDBDate(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString());
   details.m_iIdShow = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
@@ -4595,7 +4600,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 94;
+  return 95;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -7878,30 +7883,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
     {
       sql = "DELETE FROM tvshow WHERE idShow IN (" + StringUtils::TrimRight(tvshowsToDelete, ",") + ")";
       m_pDS->exec(sql.c_str());
-    }
-
-    // Keep empty series if the user wants to hide them
-    if (!g_advancedSettings.m_bVideoLibraryHideEmptySeries)
-    {
-      tvshowsToDelete = "";
-      sql = "SELECT tvshow.idShow FROM tvshow "
-              "JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow "
-              "JOIN path ON path.idPath = tvshowlinkpath.idPath "
-            "WHERE NOT EXISTS (SELECT 1 FROM episode WHERE episode.idShow = tvshow.idShow) "
-              "AND (path.strContent IS NULL OR path.strContent = '')";
-      m_pDS->query(sql.c_str());
-      while (!m_pDS->eof())
-      {
-        tvshowIDs.push_back(m_pDS->fv(0).get_asInt());
-        tvshowsToDelete += m_pDS->fv(0).get_asString() + ",";
-        m_pDS->next();
-      }
-      m_pDS->close();
-      if (!tvshowsToDelete.empty())
-      {
-        sql = "DELETE FROM tvshow WHERE idShow IN (" + StringUtils::TrimRight(tvshowsToDelete, ",") + ")";
-        m_pDS->exec(sql.c_str());
-      }
     }
 
     if (!musicVideoIDs.empty())

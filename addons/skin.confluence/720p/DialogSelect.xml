@@ -68,6 +68,14 @@
 				<textcolor>selected</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
+			<control type="label" id="4">
+				<description>No Settings Label</description>
+				<left>20</left>
+				<top>120</top>
+				<width>550</width>
+				<align>center</align>
+				<font>font13</font>
+			</control>
 			<control type="button">
 				<description>Close Window button</description>
 				<left>760</left>

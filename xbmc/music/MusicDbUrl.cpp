@@ -24,7 +24,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 

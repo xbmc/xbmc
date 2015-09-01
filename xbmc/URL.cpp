@@ -160,6 +160,17 @@ void CURL::Parse(const std::string& strURL1)
     return;
   }
 
+  if (IsProtocol("udf"))
+  {
+    std::string lower(strURL);
+    StringUtils::ToLower(lower);
+    size_t isoPos = lower.find(".iso\\", iPos);
+    if (isoPos != std::string::npos)
+    {
+      strURL = strURL.replace(isoPos + 4, 1, "/");
+    }
+  }
+
   // check for username/password - should occur before first /
   if (iPos == std::string::npos) iPos = 0;
 

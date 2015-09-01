@@ -35,7 +35,6 @@ extern "C" {
 #include "libavutil/opt.h"
 }
 
-using namespace std;
 using namespace ADDON;
 using namespace ActiveAE;
 
@@ -108,7 +107,7 @@ void CActiveAEDSPProcess::ResetStreamFunctionsSelection()
   m_usedMap.clear();
 }
 
-bool CActiveAEDSPProcess::Create(AEAudioFormat inputFormat, AEAudioFormat outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE iStreamType,
+bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE iStreamType,
                                  enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type, int profile)
 {
   m_inputFormat       = inputFormat;                        /*!< Input format of processed stream */
@@ -611,7 +610,7 @@ bool CActiveAEDSPProcess::Create(AEAudioFormat inputFormat, AEAudioFormat output
     CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", m_addonSettings.iInSamplerate);
     CLog::Log(LOGDEBUG, "  | Sample Format        : %s", CAEUtil::DataFormatToStr(m_inputFormat.m_dataFormat));
     CLog::Log(LOGDEBUG, "  | Channel Count        : %d", m_inputFormat.m_channelLayout.Count());
-    CLog::Log(LOGDEBUG, "  | Channel Layout       : %s", ((string)m_inputFormat.m_channelLayout).c_str());
+    CLog::Log(LOGDEBUG, "  | Channel Layout       : %s", ((std::string)m_inputFormat.m_channelLayout).c_str());
     CLog::Log(LOGDEBUG, "  | Frames               : %d", m_addonSettings.iInFrames);
     CLog::Log(LOGDEBUG, "  ----  Process format ----");
     CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", m_addonSettings.iProcessSamplerate);
@@ -622,7 +621,7 @@ bool CActiveAEDSPProcess::Create(AEAudioFormat inputFormat, AEAudioFormat output
     CLog::Log(LOGDEBUG, "  | Sample Rate          : %d", m_outputSamplerate);
     CLog::Log(LOGDEBUG, "  | Sample Format        : %s", CAEUtil::DataFormatToStr(m_outputFormat.m_dataFormat));
     CLog::Log(LOGDEBUG, "  | Channel Count        : %d", m_outputFormat.m_channelLayout.Count());
-    CLog::Log(LOGDEBUG, "  | Channel Layout       : %s", ((string)m_outputFormat.m_channelLayout).c_str());
+    CLog::Log(LOGDEBUG, "  | Channel Layout       : %s", ((std::string)m_outputFormat.m_channelLayout).c_str());
     CLog::Log(LOGDEBUG, "  | Frames               : %d", m_outputFrames);
   }
 
@@ -868,7 +867,7 @@ unsigned int CActiveAEDSPProcess::GetInputChannels()
   return m_inputFormat.m_channelLayout.Count();
 }
 
-string CActiveAEDSPProcess::GetInputChannelNames()
+std::string CActiveAEDSPProcess::GetInputChannelNames()
 {
   return m_inputFormat.m_channelLayout;
 }
@@ -888,7 +887,7 @@ unsigned int CActiveAEDSPProcess::GetOutputChannels()
   return m_outputFormat.m_channelLayout.Count();
 }
 
-string CActiveAEDSPProcess::GetOutputChannelNames()
+std::string CActiveAEDSPProcess::GetOutputChannelNames()
 {
   return m_outputFormat.m_channelLayout;
 }
@@ -964,7 +963,7 @@ AE_DSP_BASETYPE CActiveAEDSPProcess::GetUsedBaseType()
   return GetBaseType(&m_addonStreamProperties);
 }
 
-bool CActiveAEDSPProcess::GetMasterModeStreamInfoString(string &strInfo)
+bool CActiveAEDSPProcess::GetMasterModeStreamInfoString(std::string &strInfo)
 {
   if (m_activeMode <= AE_DSP_MASTER_MODE_ID_PASSOVER)
   {

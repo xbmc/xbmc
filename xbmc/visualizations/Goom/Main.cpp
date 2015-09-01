@@ -55,8 +55,6 @@ unsigned char* g_goom_buffer = NULL;
 short          g_audio_data[2][512];
 std::string    g_configFile;
 
-using namespace std;
-
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
@@ -68,8 +66,8 @@ extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
   VIS_PROPS* visprops = (VIS_PROPS*)props;
 
   strcpy(g_visName, visprops->name);
-  g_configFile = string(visprops->profile) + string("/goom.conf");
-  std::string presetsDir = string(visprops->presets) + string("/resources");
+  g_configFile = std::string(visprops->profile) + std::string("/goom.conf");
+  std::string presetsDir = std::string(visprops->presets) + std::string("/resources");
 
   /** Initialise Goom */
   if (g_goom)

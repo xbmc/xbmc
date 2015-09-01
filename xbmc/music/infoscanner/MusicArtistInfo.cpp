@@ -21,7 +21,6 @@
 #include "MusicArtistInfo.h"
 #include "addons/Scraper.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace MUSIC_GRABBER;
 

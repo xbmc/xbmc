@@ -79,7 +79,6 @@
 #include "utils/Environment.h"
 #include "utils/StringUtils.h"
 
-using namespace std;
 using namespace XFILE;
 
 struct SDirData
@@ -142,29 +141,29 @@ extern "C" void __stdcall init_emu_environ()
   {
     // using external python, it's build looking for xxx/lib/python2.6
     // so point it to frameworks which is where python2.6 is located
-    dll_putenv(string("PYTHONPATH=" +
+    dll_putenv(std::string("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
-    dll_putenv(string("PYTHONHOME=" +
+    dll_putenv(std::string("PYTHONHOME=" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
-    dll_putenv(string("PATH=.;" +
+    dll_putenv(std::string("PATH=.;" +
       CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
   }
   else
   {
-    dll_putenv(string("PYTHONPATH=" +
+    dll_putenv(std::string("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib")).c_str());
-    dll_putenv(string("PYTHONHOME=" +
+    dll_putenv(std::string("PYTHONHOME=" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
-    dll_putenv(string("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
+    dll_putenv(std::string("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
   }
 
 #if defined(TARGET_ANDROID)
-  string apkPath = getenv("XBMC_ANDROID_APK");
+  std::string apkPath = getenv("XBMC_ANDROID_APK");
   apkPath += "/assets/python2.6";
-  dll_putenv(string("PYTHONHOME=" + apkPath).c_str());
+  dll_putenv(std::string("PYTHONHOME=" + apkPath).c_str());
   dll_putenv("PYTHONOPTIMIZE=");
   dll_putenv("PYTHONNOUSERSITE=1");
   dll_putenv("PYTHONPATH=");
@@ -855,18 +854,18 @@ extern "C"
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     std::string strURL(file);
     std::string strMask;
-    if (url.GetFileName().find("*.*") != string::npos)
+    if (url.GetFileName().find("*.*") != std::string::npos)
     {
       std::string strReplaced = url.GetFileName();
       StringUtils::Replace(strReplaced, "*.*","");
       url.SetFileName(strReplaced);
     }
-    else if (url.GetFileName().find("*.") != string::npos)
+    else if (url.GetFileName().find("*.") != std::string::npos)
     {
       strMask = URIUtils::GetExtension(url.GetFileName());
       url.SetFileName(url.GetFileName().substr(0, url.GetFileName().find("*.")));
     }
-    else if (url.GetFileName().find("*") != string::npos)
+    else if (url.GetFileName().find("*") != std::string::npos)
     {
       std::string strReplaced = url.GetFileName();
       StringUtils::Replace(strReplaced, "*","");
