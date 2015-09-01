@@ -21,6 +21,7 @@
 #include "GUIPanelContainer.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
+#include "utils/StringUtils.h"
 
 #include <cassert>
 
@@ -487,12 +488,24 @@ bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
   return true;
 }
 
+int CGUIPanelContainer::GetCurrentRow() const
+{
+  return m_itemsPerRow > 0 ? GetCursor() / m_itemsPerRow : 0;
+}
+
+int CGUIPanelContainer::GetCurrentColumn() const
+{
+  return GetCursor() % m_itemsPerRow;
+}
+
 bool CGUIPanelContainer::GetCondition(int condition, int data) const
-{ // probably only works vertically atm...
-  int row = GetCursor() / m_itemsPerRow;
-  int col = GetCursor() % m_itemsPerRow;
+{
+  int row = GetCurrentRow();
+  int col = GetCurrentColumn();
+
   if (m_orientation == HORIZONTAL)
     std::swap(row, col);
+
   switch (condition)
   {
   case CONTAINER_ROW:
@@ -502,6 +515,26 @@ bool CGUIPanelContainer::GetCondition(int condition, int data) const
   default:
     return CGUIBaseContainer::GetCondition(condition, data);
   }
+}
+
+std::string CGUIPanelContainer::GetLabel(int info) const
+{
+  int row = GetCurrentRow();
+  int col = GetCurrentColumn();
+
+  if (m_orientation == HORIZONTAL)
+    std::swap(row, col);
+
+  switch (info)
+  {
+  case CONTAINER_ROW:
+    return StringUtils::Format("%i", row);
+  case CONTAINER_COLUMN:
+    return StringUtils::Format("%i", col);
+  default:
+    return CGUIBaseContainer::GetLabel(info);
+  }
+  return StringUtils::Empty;
 }
 
 void CGUIPanelContainer::SelectItem(int item)
