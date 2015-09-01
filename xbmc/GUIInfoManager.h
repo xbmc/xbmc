@@ -265,7 +265,7 @@ protected:
   std::string GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, std::string *fallback = NULL);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const std::string &info) const;
-  TIME_FORMAT TranslateTimeFormat(const std::string &format);
+  TIME_FORMAT TranslateTimeFormat(const std::string &format) const;
   bool GetItemBool(const CGUIListItem *item, int condition) const;
 
   /*! \brief Split an info string into it's constituent parts and parameters
