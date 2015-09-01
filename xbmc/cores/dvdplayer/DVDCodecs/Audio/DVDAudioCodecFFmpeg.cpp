@@ -29,8 +29,8 @@ extern "C" {
 #include "libavutil/opt.h"
 }
 
-#if defined(TARGET_DARWIN)
 #include "settings/Settings.h"
+#if defined(TARGET_DARWIN)
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #endif
 
@@ -54,10 +54,15 @@ CDVDAudioCodecFFmpeg::~CDVDAudioCodecFFmpeg()
 
 bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  AVCodec* pCodec;
+  AVCodec* pCodec = NULL;
   m_bOpenedCodec = false;
 
-  pCodec = avcodec_find_decoder(hints.codec);
+  if (hints.codec == AV_CODEC_ID_DTS && CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_SUPPORTSDTSHDCPUDECODING))
+    pCodec = avcodec_find_decoder_by_name("libdcadec");
+
+  if (!pCodec)
+    pCodec = avcodec_find_decoder(hints.codec);
+
   if (!pCodec)
   {
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to find codec %d", hints.codec);

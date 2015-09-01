@@ -1,0 +1,13 @@
+diff --git a/libdcadec/dca_stream.c b/libdcadec/dca_stream.c
+index 156f874..acbd139 100644
+--- a/libdcadec/dca_stream.c
++++ b/libdcadec/dca_stream.c
+@@ -37,7 +37,7 @@
+ #if (defined _WIN32)
+ #define DCA_FGETC   _fgetc_nolock
+ #elif (defined _BSD_SOURCE)
+-#define DCA_FGETC   fgetc_unlocked
++#define DCA_FGETC   fgetc
+ #else
+ #define DCA_FGETC   fgetc
+ #endif
