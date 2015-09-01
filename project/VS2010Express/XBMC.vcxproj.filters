@@ -3261,6 +3261,12 @@
     <ClCompile Include="..\..\xbmc\input\InputCodingTableKorean.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guiinfo\FileItemInfoProvider.cpp">
+      <Filter>guiinfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guiinfo\RadioRDSInfoProvider.cpp">
+      <Filter>guiinfo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6327,6 +6333,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\InputCodingTableKorean.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guiinfo\FileItemInfoProvider.h">
+      <Filter>guiinfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guiinfo\RadioRDSInfoProvider.h">
+      <Filter>guiinfo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

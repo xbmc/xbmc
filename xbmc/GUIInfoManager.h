@@ -3,9 +3,7 @@
 \brief
 */
 
-#ifndef GUIINFOMANAGER_H_
-#define GUIINFOMANAGER_H_
-
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -26,16 +24,16 @@
  *
  */
 
-#include "threads/CriticalSection.h"
-#include "guilib/IMsgTargetCallback.h"
-#include "messaging/IMessageTarget.h"
-#include "inttypes.h"
 #include "XBDateTime.h"
-#include "utils/Observer.h"
-#include "utils/Temperature.h"
+#include "cores/IPlayer.h"
+#include "guilib/IMsgTargetCallback.h"
 #include "interfaces/info/InfoBool.h"
 #include "interfaces/info/SkinVariable.h"
-#include "cores/IPlayer.h"
+#include "inttypes.h"
+#include "messaging/IMessageTarget.h"
+#include "threads/CriticalSection.h"
+#include "utils/Observer.h"
+#include "utils/Temperature.h"
 
 #include <list>
 #include <map>
@@ -168,7 +166,6 @@ public:
   const PVR::CPVRRadioRDSInfoTagPtr GetCurrentRadioRDSInfoTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
-  std::string GetRadioRDSLabel(int item);
   std::string GetMusicLabel(int item);
   std::string GetMusicTagLabel(int info, const CFileItem *item);
   std::string GetVideoLabel(int item);
@@ -350,7 +347,6 @@ protected:
  \brief
  */
 extern CGUIInfoManager g_infoManager;
-#endif
 
 
 
