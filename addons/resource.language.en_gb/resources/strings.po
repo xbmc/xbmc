@@ -11462,7 +11462,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20369"
-msgid "Show plot for unwatched items"
+msgid "Show spoilers for all unwatched items"
 msgstr ""
 
 msgctxt "#20370"
@@ -15198,10 +15198,10 @@ msgctxt "#36140"
 msgid "Choose which temperature unit is used for displaying temperatures in the user interface."
 msgstr ""
 
-#. Description of setting "Videos -> Library -> Show plot for unwatched items" with label #20369
+#. Description of setting "Videos -> Library -> Show spoilers for all unwatched items" with label #20369
 #: system/settings/settings.xml
 msgctxt "#36141"
-msgid "Show plot information for unwatched media in the video library."
+msgid "[Enabled] Shows plot information for movies and episodes plus episode thumbnails for all unwatched items.[CR][Disabled] Hides plot information for movies and episodes plus episode thumbnails for all unwatched items to prevent spoilers."
 msgstr ""
 
 #. Description of setting "Appearance -> International -> Speed unit" with label #14106
