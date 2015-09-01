@@ -22,6 +22,7 @@
 #include "input/Key.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "GUIControlProfiler.h"
+#include "utils/StringUtils.h"
 #include "GUIFont.h" // for XBFONT_* definitions
 
 CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, const CScroller& scroller)
@@ -30,6 +31,7 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
 {
   m_itemGap = itemGap;
   m_pageControl = pageControl;
+  m_focusedPosition = 0;
   m_totalSize = 0;
   m_orientation = orientation;
   m_alignment = alignment;
@@ -66,6 +68,7 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
     SendWindowMessage(message2);
   }
   // we run through the controls, rendering as we go
+  int index = 0;
   float pos = GetAlignOffset();
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
@@ -77,6 +80,13 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
     else
       g_graphicsContext.SetOrigin(m_posX + pos - m_scroller.GetValue(), m_posY);
     control->DoProcess(currentTime, dirtyregions);
+
+    if (IsControlOnScreen(pos, control))
+    {
+      if (control->HasFocus())
+        m_focusedPosition = index;
+      index++;
+    }
 
     if (control->IsVisible())
       pos += Size(control) + m_itemGap;
@@ -171,7 +181,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
           continue;
         if (control->HasID(m_focusedControl))
         {
-          if (offset >= m_scroller.GetValue() && offset + Size(control) <= m_scroller.GetValue() + Size())
+          if (IsControlOnScreen(offset, control))
             return CGUIControlGroup::OnMessage(message);
           break;
         }
@@ -184,7 +194,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         CGUIControl *control = *it;
         if (!control->IsVisible())
           continue;
-        if (control->CanFocus() && offset >= m_scroller.GetValue() && offset + Size(control) <= m_scroller.GetValue() + Size())
+        if (control->CanFocus() && IsControlOnScreen(offset, control))
         {
           m_focusedControl = control->GetID();
           break;
@@ -362,7 +372,7 @@ EVENT_RESULT CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMo
       CGUIControl *child = *i;
       if (child->IsVisible())
       {
-        if (pos + Size(child) > m_scroller.GetValue() && pos < m_scroller.GetValue() + Size())
+        if (IsControlOnScreen(pos, child))
         { // we're on screen
           float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + alignOffset + pos - m_scroller.GetValue();
           float offsetY = m_orientation == VERTICAL ? m_posY + alignOffset + pos - m_scroller.GetValue() : m_posY;
@@ -395,7 +405,7 @@ void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
     CGUIControl *child = *it;
     if (child->IsVisible())
     {
-      if (pos + Size(child) > m_scroller.GetValue() && pos < m_scroller.GetValue() + Size())
+      if (IsControlOnScreen(pos, child))
       { // we're on screen
         CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posY + alignOffset + pos - m_scroller.GetValue()) : CPoint(m_posX + alignOffset + pos - m_scroller.GetValue(), m_posY);
         child->UnfocusFromPoint(controlCoords - offset);
@@ -414,9 +424,54 @@ bool CGUIControlGroupList::GetCondition(int condition, int data) const
     return (m_totalSize >= Size() && m_scroller.GetValue() < m_totalSize - Size());
   case CONTAINER_HAS_PREVIOUS:
     return (m_scroller.GetValue() > 0);
+  case CONTAINER_POSITION:
+    return (m_focusedPosition == data);
   default:
     return false;
   }
+}
+
+std::string CGUIControlGroupList::GetLabel(int info) const
+{
+  switch (info)
+  {
+  case CONTAINER_CURRENT_ITEM:
+    return StringUtils::Format("%i", GetSelectedItem());
+  case CONTAINER_NUM_ITEMS:
+    return StringUtils::Format("%i", GetNumItems());
+  case CONTAINER_POSITION:
+    return StringUtils::Format("%i", m_focusedPosition);
+  default:
+    break;
+  }
+  return "";
+}
+
+int CGUIControlGroupList::GetNumItems() const
+{
+  return std::count_if(m_children.begin(), m_children.end(), [&](const CGUIControl *child) {
+    return (child->IsVisible() && child->CanFocus());
+  });
+}
+
+int CGUIControlGroupList::GetSelectedItem() const
+{
+  int index = 1;
+  for (const auto& child : m_children)
+  {
+    if (child->IsVisible() && child->CanFocus())
+    {
+      if (child->HasFocus())
+        return index;
+      index++;
+    }
+  }
+  return -1;
+}
+
+bool CGUIControlGroupList::IsControlOnScreen(float pos, const CGUIControl *control) const
+{
+  return (pos >= m_scroller.GetValue() && pos + Size(control) <= m_scroller.GetValue() + Size());
 }
 
 bool CGUIControlGroupList::IsFirstFocusableControl(const CGUIControl *control) const
