@@ -74,8 +74,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "subtitles", "..\..\xbmc\cor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libssf", "..\..\xbmc\cores\DSPlayer\Subtitles\subtitles\libssf\libssf.vcxproj", "{DD9D2D92-2241-408A-859E-B85D444B7E3C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SurfaceQueueLib", "..\..\xbmc\cores\DSPlayer\SurfaceQueueLib\SurfaceQueueLib.vcxproj", "{007ECB80-A7F7-48FD-8D17-DB2A70B3A8FB}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Effects11", "..\..\lib\win32\Effects11\Effects11_2013.vcxproj", "{DF460EAB-570D-4B50-9089-2E2FC801BF38}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libKODI_adsp", "..\..\lib\addons\library.kodi.adsp\project\VS2010Express\libKODI_adsp.vcxproj", "{44F93C4D-85DD-4452-99BB-F1D196174024}"

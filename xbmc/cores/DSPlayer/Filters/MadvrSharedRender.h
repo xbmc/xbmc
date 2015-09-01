@@ -22,20 +22,22 @@
  */
 
 #include "MadvrCallback.h"
-#include "SurfaceQueueLib/SurfaceQueue.h"
+#include "threads/Event.h"
 
-class CMetaData
+enum SHAREDRENDER_STATE
 {
-public:  
-  CMetaData() 
-  { 
-    bGuiVisible = false;
-    bGuiVisibleOver = false; 
-  };
-  virtual ~CMetaData(){};
+  RENDERFRAME_LOCK,
+  RENDERFRAME_UNLOCK
+};
 
-  bool bGuiVisible;
-  bool bGuiVisibleOver;
+class CRenderWait
+{
+public:
+  void Wait(int ms);
+  void Unlock();
+  XbmcThreads::ConditionVariable m_presentevent;
+  CCriticalSection m_presentlock;
+  SHAREDRENDER_STATE m_renderState;
 };
 
 class CMadvrSharedRender: public IMadvrPaintCallback
@@ -46,24 +48,25 @@ public:
   virtual ~CMadvrSharedRender();
 
   // IMadvrPaintCallback
-  virtual HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
-  virtual void EnQueueD3D11();
+  virtual void RenderToUnderTexture();
+  virtual void RenderToOverTexture();
+  virtual void EndRender();
   
   HRESULT CreateTextures(ID3D11Device* pD3DDeviceKodi, IDirect3DDevice9Ex* pD3DDeviceMadVR, int width, int height);
   HRESULT Render(MADVR_RENDER_LAYER layer);  
 
 private:
   HRESULT CreateSharedResource(IDirect3DTexture9** ppTexture9, ID3D11Texture2D** ppTexture11);
-  HRESULT CreateSharedQueueResource();
+  HRESULT CreateFakeStaging(ID3D11Texture2D** ppTexture);
+  HRESULT ForceComplete();
+  
   HRESULT RenderMadvr(MADVR_RENDER_LAYER layer);  
   HRESULT RenderTexture(MADVR_RENDER_LAYER layer);
   HRESULT SetupVertex();
   HRESULT StoreMadDeviceState();
   HRESULT SetupMadDeviceState();
   HRESULT RestoreMadDeviceState();
-  void DeQueueD3D9(MADVR_RENDER_LAYER layer);
-  void EnQueueD3D9();
-  
+
   ID3D11Device*             m_pD3DDeviceKodi = nullptr;
   IDirect3DDevice9Ex*       m_pD3DDeviceMadVR = nullptr;
 
@@ -73,15 +76,7 @@ private:
 
   ID3D11Texture2D*          m_pKodiUnderTexture = nullptr;
   ID3D11Texture2D*          m_pKodiOverTexture = nullptr;
-
-  IDirect3DTexture9*        m_pFakeTexture9 = nullptr;
-  ID3D11Texture2D*          m_pFakeTexture11 = nullptr;
-  ISurfaceQueue*            m_pD3D11Queue = nullptr;
-  ISurfaceQueue*            m_pD3D9Queue = nullptr;
-  ISurfaceProducer*         m_pD3D11Producer = nullptr;
-  ISurfaceConsumer*         m_pD3D11Consumer = nullptr;
-  ISurfaceProducer*         m_pD3D9Producer = nullptr;
-  ISurfaceConsumer*         m_pD3D9Consumer = nullptr;
+  ID3D11Texture2D*          m_pKodiFakeStaging = nullptr;
 
   DWORD m_dwWidth = 0;
   DWORD m_dwHeight = 0;
@@ -89,6 +84,8 @@ private:
   bool m_bUnderRender;
   bool m_bGuiVisible;
   bool m_bGuiVisibleOver;
+  CRenderWait m_kodiWait;
+  CCritSec m_madvrLock;
 
   // stored madVR device state
   IDirect3DVertexShader9* m_pOldVS = nullptr;

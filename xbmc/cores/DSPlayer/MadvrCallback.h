@@ -124,8 +124,9 @@ class IMadvrPaintCallback
 public:
   virtual ~IMadvrPaintCallback() {};
 
-  virtual HRESULT RenderToTexture(MADVR_RENDER_LAYER layer){ return E_UNEXPECTED; };
-  virtual void EnQueueD3D11(){};
+  virtual void RenderToUnderTexture(){};
+  virtual void RenderToOverTexture(){};
+  virtual void EndRender(){};
 };
 
 class IMadvrSettingCallback
@@ -171,8 +172,9 @@ public:
   virtual void SetMadvrPosition(CRect wndRect, CRect videoRect);
 
   // IMadvrPaintCallback
-  virtual HRESULT RenderToTexture(MADVR_RENDER_LAYER layer);
-  virtual void EnQueueD3D11();
+  virtual void RenderToUnderTexture();
+  virtual void RenderToOverTexture();
+  virtual void EndRender();
 
   // IMadvrSettingCallback
   virtual void LoadSettings(MADVR_LOAD_TYPE type);

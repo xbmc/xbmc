@@ -2013,7 +2013,7 @@ void CApplication::Render()
     return;
 
 #ifdef HAS_DS_PLAYER
-    CMadvrCallback::Get()->RenderToTexture(RENDER_LAYER_UNDER);
+  CMadvrCallback::Get()->RenderToUnderTexture();
 #endif
   CDirtyRegionList dirtyRegions;
 
@@ -2048,6 +2048,9 @@ void CApplication::Render()
   g_windowManager.RenderEx();
 
   g_Windowing.EndRender();
+#ifdef HAS_DS_PLAYER
+  CMadvrCallback::Get()->EndRender();
+#endif
 
   // reset our info cache - we do this at the end of Render so that it is
   // fresh for the next process(), or after a windowclose animation (where process()
@@ -2090,8 +2093,6 @@ void CApplication::Render()
     g_graphicsContext.Flip(dirtyRegions);
 
 #ifdef HAS_DS_PLAYER    
-  CMadvrCallback::Get()->EnQueueD3D11();
-
   if (!CMadvrCallback::Get()->ReadyMadvr())
 #endif
   if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_pPlayer->IsPausedPlayback())
