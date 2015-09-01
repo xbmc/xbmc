@@ -1,11 +1,37 @@
 <mediasconfig>
   <rules>
-    <rule filetypes="mkv|avi|divx|ogm|mp4|mov|m4v|flv|m2v|mpeg|mpg|ts|mts|m2ts|vob|bdmv">
+    <rule filetypes="mkv|avi|divx|ogm|mp4|mov|m4v|flv|m2v|mpeg|mpg|mts|m2ts|vob|bdmv">
       <source filter="lavsource_internal" />
       <splitter filter="lavsplitter_internal" />
       <video filter="lavvideo_internal" />
       <audio filter="lavaudio_internal" />
       <subs filter="xysubfilter_internal" />
+    </rule>
+    <rule filetypes="ts">
+      <source filter="tsreader_internal" />
+      <splitter filter="tsreader_internal" />
+      <video filter="lavvideo_internal" />
+      <audio filter="lavaudio_internal" />
+      <subs filter="xysubfilter_internal" />
+    </rule>
+    <rule protocols="rtsp">
+      <video filter="lavvideo_internal" />
+      <audio filter="lavaudio_internal" />
+    </rule>
+    <rule url="true" protocols="rtsp">
+      <source filter="tsreader_internal" />
+    </rule>
+    <rule protocols="https|http" url="false">
+      <splitter filter="lavsplitter_internal" />                      
+      <video filter="lavvideo_internal" />                            
+      <audio filter="lavaudio_internal" />
+      <subs filter="xysubfilter_internal" />      
+    </rule>  
+    <rule filetypes="ifo">
+      <source filter="dvdnavigator" />
+      <splitter filter="dvdnavigator" />
+      <video filter="lavvideo_internal" />
+      <audio filter="lavaudio_internal" />
     </rule>
     <rule filetypes="wmv">
       <source filter="wmasfreader" />
@@ -14,25 +40,9 @@
       <audio filter="wmaudiodecoder" />
       <subs filter="xysubfilter_internal" />
     </rule>
-    <rule protocols="rtsp">
-      <video filter="lavvideo_internal" />
-      <audio filter="lavaudio_internal" />
-    </rule>
-    <rule protocols="http">
-      <source filter="urlfilesource" />
-      <splitter filter="lavsplitter_internal" />
-      <video filter="lavvideo_internal" />
-      <audio filter="lavaudio_internal" />
-    </rule>
     <rule filetypes="iso">
       <source filter="avsource" />
       <splitter filter="avsource" />
-      <video filter="lavvideo_internal" />
-      <audio filter="lavaudio_internal" />
-    </rule>
-    <rule filetypes="ifo">
-      <source filter="dvdnavigator" />
-      <splitter filter="dvdnavigator" />
       <video filter="lavvideo_internal" />
       <audio filter="lavaudio_internal" />
     </rule>

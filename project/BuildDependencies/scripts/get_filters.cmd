@@ -10,8 +10,9 @@ SET SUB_HTTP="https://github.com/Cyberbeing/xy-VSFilter/releases/download/3.1.0.
 SET SUB_FILE="XySubFilter_3.1.0.705_x86_BETA2.zip"
 SET SUB_PATH="%TMP_PATH%\XySubFilter_3.1.0.705_x86_BETA2\system\players\dsplayer\XySubFilter"
 
-SET CUR_HTTP=%LAV_HTTP%
-SET CUR_PATH=%LAV_PATH%
+SET TSR_HTTP="https://github.com/Romank1/MediaPortal-1/releases/download/v4.1.0.4/"
+SET TSR_FILE="TsReader_v4_1_0_4_for_DSPlayer.zip"
+SET TSR_PATH="%TMP_PATH%\TsReader_v4_1_0_4_for_DSPlayer\system\players\dsplayer\TsReader"
 
 REM Clear succeed flag
 IF EXIST %FORMED_OK_FLAG% (
@@ -30,6 +31,11 @@ IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
 SET CUR_HTTP=%SUB_HTTP%
 SET CUR_PATH=%SUB_PATH%
 CALL :processFile %SUB_FILE%
+IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
+
+SET CUR_HTTP=%TSR_HTTP%
+SET CUR_PATH=%TSR_PATH%
+CALL :processFile %TSR_FILE%
 IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
 
 CALL :setStageName All formed packages ready.
