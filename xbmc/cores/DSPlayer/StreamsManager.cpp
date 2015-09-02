@@ -41,6 +41,7 @@
 #include "utils/StringUtils.h"
 #include "utils/StdString.h"
 #include "utils/DSFileUtils.h"
+#include "guilib/LocalizeStrings.h"
 
 CDSStreamDetail::CDSStreamDetail()
   : IAMStreamSelect_Index(0), flags(0), pObj(NULL), pUnk(NULL), lcid(0),
@@ -908,17 +909,29 @@ void CStreamsManager::SubInterface(SelectSubType action)
     WCHAR* pszName = nullptr;
     if (SUCCEEDED(m_pIAMStreamSelectSub->Info(i, nullptr, nullptr, nullptr, &group, &pszName, nullptr, nullptr)))
     {
-      CStdString str;
-      g_charsetConverter.wToUTF8(pszName, str);
+      CStdString fileName;
+      CStdString langName;
+      g_charsetConverter.wToUTF8(pszName, fileName);
       if (action == ADD_EXTERNAL_SUB)
       {
         if (group == XYVSFILTER_SUB_EXTERNAL)
         {
           std::auto_ptr<CDSStreamDetailSubfilter> s(new CDSStreamDetailSubfilter(EXTERNAL));
-          s->displayname = str + " [External]";
+
+          langName = ISOToLanguage(fileName);
+          if (!langName.empty() && !fileName.empty())
+            s->displayname.Format("%s (%s)", langName, fileName);
+          else if (!fileName.empty())
+            s->displayname = fileName;
+          else
+            s->displayname = "Unknown";
+
+          s->displayname += " " + g_localizeStrings.Get(21602);
+
+          s->isolang = fileName;
           s->IAMStreamSelect_Index = i;
           m_subfilterStreams.push_back(s.release());
-          CLog::Log(LOGNOTICE, "%s Successfully loaded external subtitle name  \"%s\" ", __FUNCTION__, str.c_str());
+          CLog::Log(LOGNOTICE, "%s Successfully loaded external subtitle name  \"%s\" ", __FUNCTION__, fileName.c_str());
         }
       }
       if (action == SELECT_INTERNAL_SUB)
@@ -933,6 +946,7 @@ void CStreamsManager::SubInterface(SelectSubType action)
 
 void CStreamsManager::SelectBestSubtitle()
 {
+  int selectFirst = -1;
   int select = -1;
   int iLibrary;
 
@@ -940,8 +954,8 @@ void CStreamsManager::SelectBestSubtitle()
   iLibrary = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_SubtitleStream;
   if ((iLibrary < g_application.m_pPlayer->GetSubtitleCount()) && !(iLibrary < 0))
     select = iLibrary;
-
-  // set first external sub
+    
+  // set prefered external sub or first external sub
   else if (m_subfilterStreams.size() != 0)
   {
     int i = 0;
@@ -950,9 +964,23 @@ void CStreamsManager::SelectBestSubtitle()
     {
       if ((*it)->m_subType & EXTERNAL)
       {
-        select = i;
-        break;
+        if (selectFirst == -1)
+          selectFirst = i;
+
+        if (CSettings::Get().GetString("dsplayer.exsubtitlelanguage") != "original"
+          && CSettings::Get().GetString("dsplayer.exsubtitlelanguage") != "default")
+        {
+          std::string sPref = CSettings::Get().GetString("dsplayer.exsubtitlelanguage");
+          std::string sName = ProbeLangForLanguage((*it)->isolang);
+          if (StringUtils::EqualsNoCase(sName, sPref))
+          {
+            select = i;
+            break;
+          }
+        }
       }
+      if (select == -1)
+        select = selectFirst;
     }
   }
 

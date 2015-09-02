@@ -17836,6 +17836,10 @@ msgctxt "#55084"
 msgid "Extra external filter"
 msgstr ""
 
+msgctxt "#55085"
+msgid "Preferred external subtitle language"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""

@@ -341,6 +341,8 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
         }
       }
 
+      CMediaSettings::Get().GetAtStartVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
+
       m_HasVideo = true;
       m_HasAudio = true;
 

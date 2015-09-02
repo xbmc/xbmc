@@ -1395,6 +1395,14 @@
 	</setting>
       </group>
       <group id="4">
+        <setting id="dsplayer.exsubtitlelanguage" type="string" label="55085" help="36120">
+          <level>0</level>
+          <default>original</default>
+          <constraints>
+            <options>streamlanguages</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="dsplayer.videoaudioexpandedselector" type="boolean" label="55060" help="">
           <level>0</level>
           <default>true</default>
