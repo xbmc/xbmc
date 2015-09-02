@@ -49,6 +49,7 @@ protected:
   bool IsEnabled(int iValue) { return iValue > -1; }
   void HideUnused();
   void SetVisible(CStdString id, bool visible);
+  void SetVisibleFake(CStdString id, bool visible);
 
   bool m_allowchange;
 

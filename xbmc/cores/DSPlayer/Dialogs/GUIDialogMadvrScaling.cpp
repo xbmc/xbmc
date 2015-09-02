@@ -73,6 +73,12 @@
 #define SET_IMAGE_QUADRUPLE_LUMA_FACTOR        "madvr.imagequadruplelumafactor"
 #define SET_IMAGE_QUADRUPLE_CHROMA_FACTOR      "madvr.imagequadruplechromafactor"
 
+#define SET_FAKE_DOUBLE_CHROMA                "madvr.fakedoublechroma"
+#define SET_FAKE_QUADRUPLE_CHROMA             "madvr.fakequadruplechroma"
+#define SET_FAKE_DOUBLE_CHROMA_FACTOR         "madvr.fakedoublechromafactor"
+#define SET_FAKE_QUADRUPLE_CHROMA_FACTOR      "madvr.fakequadruplechromafactor"
+
+
 #define SET_IMAGE_UPFINESHARP                  "madvr.upfinsharp"
 #define SET_IMAGE_UPFINESHARP_STRENGTH         "madvr.upfinsharpstrength"
 #define SET_IMAGE_UPLUMASHARPEN                "madvr.uplumasharpen"
@@ -228,12 +234,16 @@ void CGUIDialogMadvrScaling::InitializeSettings()
 
   AddList(groupMadvrDoubling, SET_IMAGE_DOUBLE_CHROMA, 70101, 0, static_cast<int>(madvrSettings.m_ImageDoubleChroma), entries, 70101);
   AddList(groupMadvrDoubling, SET_IMAGE_DOUBLE_CHROMA_FACTOR, 70116, 0, static_cast<int>(madvrSettings.m_ImageDoubleChromaFactor), entriesDoubleFactor, 70116);
+  AddList(groupMadvrDoubling, SET_FAKE_DOUBLE_CHROMA, 70101, 0, static_cast<int>(madvrSettings.m_ImageDoubleChroma), entries, 70101);
+  AddList(groupMadvrDoubling, SET_FAKE_DOUBLE_CHROMA_FACTOR, 70116, 0, static_cast<int>(madvrSettings.m_ImageDoubleChromaFactor), entriesDoubleFactor, 70116);
 
   AddList(groupMadvrDoubling, SET_IMAGE_QUADRUPLE_LUMA, 70102, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleLuma), entries, 70102);
   AddList(groupMadvrDoubling, SET_IMAGE_QUADRUPLE_LUMA_FACTOR, 70116, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleLumaFactor), entriesQuadrupleFactor, 70116);
 
   AddList(groupMadvrDoubling, SET_IMAGE_QUADRUPLE_CHROMA, 70103, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleChroma), entries, 70103);
   AddList(groupMadvrDoubling, SET_IMAGE_QUADRUPLE_CHROMA_FACTOR, 70116, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleChromaFactor), entriesQuadrupleFactor, 70116);
+  AddList(groupMadvrDoubling, SET_FAKE_QUADRUPLE_CHROMA, 70103, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleChroma), entries, 70103);
+  AddList(groupMadvrDoubling, SET_FAKE_QUADRUPLE_CHROMA_FACTOR, 70116, 0, static_cast<int>(madvrSettings.m_ImageQuadrupleChromaFactor), entriesQuadrupleFactor, 70116);
 
   //UPSCALING REFINEMENTS
   AddToggle(groupMadvrUpSharp, SET_IMAGE_UPFINESHARP, 70123, 0, madvrSettings.m_UpRefFineSharp);
@@ -483,6 +493,16 @@ void CGUIDialogMadvrScaling::HideUnused()
   m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_LUMA, iQuadrupleLuma);
   m_settingsManager->SetInt(SET_IMAGE_QUADRUPLE_CHROMA, iQuadrupleChroma);
 
+  // SET FAKE DISABLED BUTTON FOR DOUBLEHCROMA E QUADRUPLECHROMA
+  m_settingsManager->SetInt(SET_FAKE_DOUBLE_CHROMA, iDoubleChroma);
+  m_settingsManager->SetInt(SET_FAKE_QUADRUPLE_CHROMA, iQuadrupleChroma);
+  m_settingsManager->SetInt(SET_FAKE_DOUBLE_CHROMA_FACTOR, iDoubleChromaFactor);
+  m_settingsManager->SetInt(SET_FAKE_QUADRUPLE_CHROMA_FACTOR, iQuadrupleChromaFactor);  
+  SetVisibleFake(SET_FAKE_DOUBLE_CHROMA, IsEnabled(iDoubleLuma) && !IsNNEDI3(iDoubleLuma));
+  SetVisibleFake(SET_FAKE_DOUBLE_CHROMA_FACTOR, IsEnabled(iDoubleChroma) && !IsNNEDI3(iDoubleLuma));
+  SetVisibleFake(SET_FAKE_QUADRUPLE_CHROMA, IsEnabled(iQuadrupleLuma) && !IsNNEDI3(iQuadrupleLuma) && (IsEnabled(iDoubleChroma) || !IsNNEDI3(iQuadrupleLuma)));
+  SetVisibleFake(SET_FAKE_QUADRUPLE_CHROMA_FACTOR, IsEnabled(iQuadrupleChroma) && !IsNNEDI3(iQuadrupleLuma));
+
   // SHARP
   setting = m_settingsManager->GetSetting(SET_IMAGE_UPFINESHARP);
   bValue = static_cast<const CSettingBool*>(setting)->GetValue();
@@ -522,4 +542,13 @@ void CGUIDialogMadvrScaling::SetVisible(CStdString id, bool visible)
 
   setting->SetVisible(visible);
   setting->SetEnabled(visible);
+}
+
+void CGUIDialogMadvrScaling::SetVisibleFake(CStdString id, bool visible)
+{
+  CSetting *setting = m_settingsManager->GetSetting(id);
+
+  setting->SetVisible(visible);  
+  setting->SetEnabled(visible);
+  setting->SetEnabled(!visible);
 }
