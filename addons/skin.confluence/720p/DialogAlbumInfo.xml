@@ -491,140 +491,18 @@
 					<aspectratio>keep</aspectratio>
 					<visible>Control.IsVisible(50) + Container.Content(Artists)</visible>
 				</control>
-				<control type="panel" id="50">
-					<left>380</left>
-					<top>520</top>
-					<width>860</width>
-					<height>120</height>
-					<onleft>9000</onleft>
-					<onright>61</onright>
-					<onup>61</onup>
-					<ondown>9000</ondown>
-					<viewtype label="">list</viewtype>
-					<pagecontrol>61</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<orientation>vertical</orientation>
-					<itemlayout condition="Container.Content(Albums)" height="40" width="430">
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>430</width>
-							<height>40</height>
-							<texture border="5">button-nofocus.png</texture>
-						</control>
-						<control type="label">
-							<left>10</left>
-							<top>0</top>
-							<width>410</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<label>([COLOR=selected][B]$INFO[ListItem.TrackNumber][/B][/COLOR]) - $INFO[ListItem.Label]</label>
-						</control>
-						<control type="label">
-							<left>220</left>
-							<top>0</top>
-							<width>200</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>right</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Duration]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout condition="Container.Content(Albums)" height="40" width="430">
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>430</width>
-							<height>40</height>
-							<visible>!Control.HasFocus(50)</visible>
-							<texture border="5">button-nofocus.png</texture>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>430</width>
-							<height>40</height>
-							<visible>Control.HasFocus(50)</visible>
-							<texture border="5">button-focus2.png</texture>
-						</control>
-						<control type="label">
-							<left>10</left>
-							<top>0</top>
-							<width>410</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<label>([COLOR=selected][B]$INFO[ListItem.TrackNumber][/B][/COLOR]) - $INFO[ListItem.Label]</label>
-						</control>
-						<control type="label">
-							<left>220</left>
-							<top>0</top>
-							<width>200</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>right</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Duration]</label>
-						</control>
-					</focusedlayout>
-					<itemlayout condition="Container.Content(Artists)" height="40" width="430">
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>430</width>
-							<height>40</height>
-							<texture border="5">button-nofocus.png</texture>
-						</control>
-						<control type="label">
-							<left>10</left>
-							<top>0</top>
-							<width>410</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout condition="Container.Content(Artists)" height="40" width="430">
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>430</width>
-							<height>40</height>
-							<visible>!Control.HasFocus(50)</visible>
-							<texture border="5">button-nofocus.png</texture>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>430</width>
-							<height>40</height>
-							<visible>Control.HasFocus(50)</visible>
-							<texture border="5">button-focus2.png</texture>
-						</control>
-						<control type="label">
-							<left>10</left>
-							<top>0</top>
-							<width>410</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-					</focusedlayout>
-				</control>
+				<include name="AlbumInfoPanel" condition="Container.Content(Artists)">
+					<param name="panel-left" value="380"/>
+					<param name="panel-width" value="860"/>
+					<param name="item-width" value="430"/>
+					<param name="label-width" value="410"/>
+				</include>
+				<include name="AlbumInfoPanel" condition="Container.Content(Albums)">
+					<param name="panel-left" value="210"/>
+					<param name="panel-width" value="1030"/>
+					<param name="item-width" value="515"/>
+					<param name="label-width" value="495"/>
+				</include>
 				<control type="grouplist" id="9000">
 					<left>210</left>
 					<top>660</top>
