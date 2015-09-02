@@ -189,7 +189,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       // artist / year
       AddSortMethod(SortByArtistThenYear, sortAttribute, 578, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));  // Filename, empty | Userdefined, Userdefined
       // year
-      AddSortMethod(SortByYear, 562, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));
+      AddSortMethod(SortByYear, 562, LABEL_MASKS("%F", "", strAlbumLeft + " - " + strAlbumRight, "%Y"));  // Filename, empty | Userdefined - Userdefined, Year
 
       const CViewState *viewState = CViewStateSettings::GetInstance().Get("musicnavalbums");
       SetSortMethod(viewState->m_sortDescription);
