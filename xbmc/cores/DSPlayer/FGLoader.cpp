@@ -527,6 +527,8 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
           if (SUCCEEDED(InsertFilter(filter, f)))
             CGraphFilters::Get()->Extras.push_back(f);
         }
+        else
+          break;
       }
     }
     extras.clear();
