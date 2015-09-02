@@ -95,19 +95,20 @@ namespace JSONRPC
       StringUtils::ToLower(method);
       StringUtils::ToLower(order);
 
+      // parse the sort attributes
       sortAttributes = SortAttributeNone;
       if (parameterObject["sort"]["ignorearticle"].asBoolean())
         sortAttributes = SortAttributeIgnoreArticle;
       else
         sortAttributes = SortAttributeNone;
 
+      // parse the sort order
       sortOrder = SortUtils::SortOrderFromString(order);
       if (sortOrder == SortOrderNone)
         return false;
 
+      // parse the sort method
       sortBy = SortUtils::SortMethodFromString(method);
-      if (sortBy == SortByNone)
-        return false;
 
       return true;
     }
