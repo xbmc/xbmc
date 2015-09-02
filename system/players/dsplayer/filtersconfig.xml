@@ -16,6 +16,10 @@
       <guid>{0B0EFF97-C750-462C-9488-B10E7D87F1A6}</guid>
       <osdname>ffdshow DXVA Decoder</osdname>
     </filter>
+     <filter name="ffdshowraw" type="extra">
+       <guid>{0B390488-D80F-4A68-8408-48DC199F0E97}</guid>
+       <osdname>ffdshow raw video filter</osdname>
+    </filter>
     <filter name="coreavcvideodec" type="videodec">
       <guid>{09571A4B-F1FE-4C60-9760-DE6D310C7C31}</guid>
       <osdname>CoreAVC Video Decoder</osdname>

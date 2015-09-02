@@ -1327,6 +1327,50 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
+        <setting id="dsplayer.extrafilter0" type="string" parent="dsplayer.filtersmanagement" label="55084" help="">
+          <level>0</level>
+          <default>[null]</default>
+          <constraints>
+            <options>dsextrafilter</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="dsplayer.extrafilter1" type="string" parent="dsplayer.filtersmanagement" label="55084" help="">
+          <level>0</level>
+          <default>[null]</default>
+          <constraints>
+            <options>dsextrafilter</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition on="setting" setting="dsplayer.filtersmanagement" operator="is">0</condition>
+                <condition on="setting" setting="dsplayer.extrafilter0" operator="!is">[null]</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="dsplayer.extrafilter2" type="string" parent="dsplayer.filtersmanagement" label="55084" help="">
+          <level>0</level>
+          <default>[null]</default>
+          <constraints>
+            <options>dsextrafilter</options>
+          </constraints>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition on="setting" setting="dsplayer.filtersmanagement" operator="is">0</condition>
+                <condition on="setting" setting="dsplayer.extrafilter0" operator="!is">[null]</condition>
+                <condition on="setting" setting="dsplayer.extrafilter1" operator="!is">[null]</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
       </group>
       <group id="3">
         <setting id="dsplayer.showbdtitlechoice" type="boolean" label="55030" help="">

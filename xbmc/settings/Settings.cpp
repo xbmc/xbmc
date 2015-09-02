@@ -86,6 +86,7 @@
 
 #ifdef HAS_DS_PLAYER  
 #include "FGLoader.h"
+#include "cores/DSPlayer/Dialogs/GUIDialogDSManager.h"
 #endif
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
@@ -585,6 +586,7 @@ void CSettings::Uninitialize()
 #ifdef HAS_DS_PLAYER 
   m_settingsManager->UnregisterSettingOptionsFiller("dsvideorenderer");
   m_settingsManager->UnregisterSettingOptionsFiller("dsaudiorenderer");
+  m_settingsManager->UnregisterSettingOptionsFiller("dsextrafilter");
 #endif
   m_settingsManager->UnregisterSettingOptionsFiller("audiodevicespassthrough");
   m_settingsManager->UnregisterSettingOptionsFiller("audiostreamsilence");
@@ -957,6 +959,7 @@ void CSettings::InitializeOptionFillers()
 #ifdef HAS_DS_PLAYER  
   m_settingsManager->RegisterSettingOptionsFiller("dsvideorenderer", CFGLoader::SettingOptionsDSVideoRendererFiller);
   m_settingsManager->RegisterSettingOptionsFiller("dsaudiorenderer", CFGLoader::SettingOptionsDSAudioRendererFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("dsextrafilter", CGUIDialogDSManager::AllFiltersConfigOptionFiller);
 #endif
   m_settingsManager->RegisterSettingOptionsFiller("audiodevicespassthrough", CAEFactory::SettingOptionsAudioDevicesPassthroughFiller);
   m_settingsManager->RegisterSettingOptionsFiller("audiostreamsilence", CAEFactory::SettingOptionsAudioStreamsilenceFiller);

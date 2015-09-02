@@ -17832,6 +17832,10 @@ msgctxt "#55083"
 msgid "System filters (DirectShow merits)"
 msgstr ""
 
+msgctxt "#55084"
+msgid "Extra external filter"
+msgstr ""
+
 msgctxt "#60001"
 msgid "Media rules"
 msgstr ""

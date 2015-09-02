@@ -513,6 +513,22 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
       if (SUCCEEDED(InsertFilter(extras[i], f)))
         CGraphFilters::Get()->Extras.push_back(f);
     }
+    if (CSettings::Get().GetInt("dsplayer.filtersmanagement") == INTERNALFILTERS)
+    {
+      for (unsigned int i = 0; i < 3; i++)
+      {
+        CStdString filter;
+        CStdString setting;
+        setting.Format("dsplayer.extrafilter%i", i);
+        filter = CSettings::Get().GetString(setting);
+        if (filter != "[null]")
+        {
+          SFilterInfos f;
+          if (SUCCEEDED(InsertFilter(filter, f)))
+            CGraphFilters::Get()->Extras.push_back(f);
+        }
+      }
+    }
     extras.clear();
     END_PERFORMANCE_COUNTER("Loading extra filters");
 
@@ -590,7 +606,10 @@ HRESULT CFGLoader::LoadConfig()
   }
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_FILTERSMANAGEMENT) == INTERNALFILTERS)
   {
+    
     LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/filtersconfig_internal.xml", FILTERS, true);
+    LoadFilterCoreFactorySettings(CProfilesManager::Get().GetUserDataItem("dsplayer/filtersconfig.xml"), FILTERS, false);
+    LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/filtersconfig.xml", FILTERS, false);
     LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/mediasconfig_internal.xml", MEDIAS, false);
   }
   return S_OK;
