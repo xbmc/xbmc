@@ -530,6 +530,7 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
   SetArtist(artist.strArtist);
   SetAlbumArtist(artist.strArtist);
   SetGenre(artist.genre);
+  m_dateAdded = artist.dateAdded;
   m_iDbId = artist.idArtist;
   m_type = MediaTypeArtist;
   m_bLoaded = true;
@@ -549,6 +550,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
   SetAlbumReleaseType(album.releaseType);
+  m_dateAdded = album.dateAdded;
   m_iTimesPlayed = album.iTimesPlayed;
   m_iDbId = album.idAlbum;
   m_type = MediaTypeAlbum;

@@ -44,6 +44,7 @@ public:
     album_strLabel = CMusicDatabase::album_strLabel;
     album_strType = CMusicDatabase::album_strType;
     album_iRating = CMusicDatabase::album_iRating;
+    album_dtDateAdded = CMusicDatabase::album_dtDateAdded;
 
     song_idSong = CMusicDatabase::song_idSong;
     song_strTitle = CMusicDatabase::song_strTitle;
@@ -75,6 +76,7 @@ public:
   int album_strLabel;
   int album_strType;
   int album_iRating;
+  int album_dtDateAdded;
 
   int song_idSong;
   int song_strTitle;
@@ -177,13 +179,13 @@ TEST(TestDatabaseUtils, GetField_MediaTypeAlbum)
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  refstr = "albumview.idalbum";
+  refstr = "albumview.dateAdded";
   varstr = DatabaseUtils::GetField(FieldDateAdded, MediaTypeAlbum,
-                                   DatabaseQueryPartOrderBy);
+                                   DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "";
-  varstr = DatabaseUtils::GetField(FieldDateAdded, MediaTypeAlbum,
+  varstr = DatabaseUtils::GetField(FieldNone, MediaTypeAlbum,
                                    DatabaseQueryPartSelect);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
@@ -833,6 +835,10 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeAlbum)
 
   refindex = a.album_iRating;
   varindex = DatabaseUtils::GetFieldIndex(FieldRating, MediaTypeAlbum);
+  EXPECT_EQ(refindex, varindex);
+
+  refindex = a.album_dtDateAdded;
+  varindex = DatabaseUtils::GetFieldIndex(FieldDateAdded, MediaTypeAlbum);
   EXPECT_EQ(refindex, varindex);
 
   refindex = -1;
