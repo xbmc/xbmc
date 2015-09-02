@@ -29,6 +29,10 @@
 		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
+	<variable name="AlbumInfoPanelLabel">
+		<value condition="Container.Content(Artists)">$INFO[ListItem.Label]</value>
+		<value>$INFO[ListItem.TrackNumber,([COLOR=selected][B],[/B][/COLOR]) - ]$INFO[ListItem.Label]</value>
+	</variable>
 	<variable name="PlayList">
 		<value condition="Window.IsActive(videolibrary) + !StringCompare(Playlist.Length(video),0)">ActivateWindow(videoplaylist)</value>
 		<value>ActivateWindow(musicplaylist)</value>
@@ -82,6 +86,93 @@
 		<value condition="!IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
 	</variable>
+	<include name="AlbumInfoPanel">
+		<control type="panel" id="50">
+			<left>$PARAM[panel-left]</left>
+			<top>520</top>
+			<width>$PARAM[panel-width]</width>
+			<height>120</height>
+			<onleft>9000</onleft>
+			<onright>61</onright>
+			<onup>61</onup>
+			<ondown>9000</ondown>
+			<viewtype label="">list</viewtype>
+			<pagecontrol>61</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<orientation>vertical</orientation>
+			<itemlayout height="40" width="$PARAM[item-width]">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>$PARAM[item-width]</width>
+					<height>40</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<left>10</left>
+					<top>0</top>
+					<width>$PARAM[label-width]</width>
+					<height>40</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$VAR[AlbumInfoPanelLabel]</label>
+				</control>
+				<control type="label">
+					<left>10</left>
+					<top>0</top>
+					<width>$PARAM[label-width]</width>
+					<height>40</height>
+					<font>font12</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$INFO[ListItem.Duration]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40" width="$PARAM[item-width]">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>$PARAM[item-width]</width>
+					<height>40</height>
+					<visible>!Control.HasFocus(50)</visible>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>$PARAM[item-width]</width>
+					<height>40</height>
+					<visible>Control.HasFocus(50)</visible>
+					<texture border="5">button-focus2.png</texture>
+				</control>
+				<control type="label">
+					<left>10</left>
+					<top>0</top>
+					<width>$PARAM[label-width]</width>
+					<height>40</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$VAR[AlbumInfoPanelLabel]</label>
+				</control>
+				<control type="label">
+					<left>10</left>
+					<top>0</top>
+					<width>$PARAM[label-width]</width>
+					<height>40</height>
+					<font>font12</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$INFO[ListItem.Duration]</label>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
 	<include name="DialogBackgroundCommons">
 		<control type="image">
 			<description>background image</description>
