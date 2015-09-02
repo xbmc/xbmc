@@ -170,7 +170,7 @@ HRESULT CMadvrSharedRender::Render(MADVR_RENDER_LAYER layer)
   // Render the GUI on madVR
   RenderMadvr(layer);
 
-  // Pull the on the wait for the main Kodi application thread
+  // Pull the trigger on the wait for the main Kodi application thread
   if (layer == RENDER_LAYER_OVER)
     m_kodiWait.Unlock();
 
