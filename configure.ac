@@ -1265,16 +1265,16 @@ fi
 # check for libbluray
 AS_CASE([x$use_libbluray],
   [xyes],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.7.0],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
   ],
   [xauto],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], [use_libbluray="no"])
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.7.0],[use_libbluray="yes"], [use_libbluray="no"])
   ])
 
 AS_CASE([x$use_libbluray],
   [xyes],[
     INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
-    LIBBLURAY_LIB_BASENAME=`$PKG_CONFIG --libs-only-L "libbluray >= 0.2.1"`;
+    LIBBLURAY_LIB_BASENAME=`$PKG_CONFIG --libs-only-L "libbluray >= 0.7.0"`;
     XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray], [$LIBBLURAY_LIB_BASENAME])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
