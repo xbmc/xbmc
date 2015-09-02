@@ -236,6 +236,7 @@ const BUILT_IN commands[] = {
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
+  { "ToggleDirtyRegionVisualization", false, "Enables/disables dirty-region visualization" },
   { "StartPVRManager",            false,  "(Re)Starts the PVR manager (Deprecated)" },
   { "StopPVRManager",             false,  "Stops the PVR manager (Deprecated)" },
   { "PVR.StartManager",            false,  "(Re)Starts the PVR manager" },
@@ -1854,6 +1855,10 @@ int CBuiltins::Execute(const std::string& execString)
     bool debug = CSettings::GetInstance().GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
     CSettings::GetInstance().SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
     g_advancedSettings.SetDebugMode(!debug);
+  }
+  else if (execute == "toggledirtyregionvisualization")
+  {
+    g_advancedSettings.ToggleDirtyRegionVisualization();
   }
   //TODO deprecated. To be replaced by pvr.startmanager
   else if (execute == "startpvrmanager")
