@@ -19,6 +19,7 @@
  */
 
 #include <algorithm>
+#include <string.h>
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib,"liblzo2.lib")
