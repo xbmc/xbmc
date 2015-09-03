@@ -27,6 +27,8 @@
 
 #include <algorithm>
 
+using namespace std;
+
 CGUITextBox::CGUITextBox(int parentID, int controlID, float posX, float posY, float width, float height,
                          const CLabelInfo& labelInfo, int scrollTime)
     : CGUIControl(parentID, controlID, posX, posY, width, height)

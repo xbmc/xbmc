@@ -142,6 +142,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
 #if defined(HAS_GL) || HAS_GLES == 2
 
 using namespace Shaders;
+using namespace std;
 
 static void CalculateYUVMatrixGL(GLfloat      res[4][4]
                                , unsigned int flags
@@ -366,7 +367,7 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
   m_black      = 0.0f;
   m_contrast   = 1.0f;
 
-  std::string shaderfile;
+  string shaderfile;
 
   if (m_format == RENDER_FMT_YUYV422)
   {

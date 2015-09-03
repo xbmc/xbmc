@@ -23,6 +23,8 @@
 
 #include <cassert>
 
+using namespace std;
+
 CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_texture(posX, posY, width, height, texture)
@@ -122,7 +124,7 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
 
     if (m_fadingTextures.size())  // have some fading images
     { // anything other than the last old texture needs to be faded out as per usual
-      for (std::vector<CFadingTexture *>::iterator i = m_fadingTextures.begin(); i != m_fadingTextures.end() - 1;)
+      for (vector<CFadingTexture *>::iterator i = m_fadingTextures.begin(); i != m_fadingTextures.end() - 1;)
       {
         if (!ProcessFading(*i, frameTime, currentTime))
           i = m_fadingTextures.erase(i);
@@ -174,7 +176,7 @@ void CGUIImage::Render()
 {
   if (!IsVisible()) return;
 
-  for (std::vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); ++itr)
+  for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); ++itr)
     (*itr)->m_texture->Render();
 
   m_texture.Render();
@@ -297,7 +299,7 @@ CRect CGUIImage::CalcRenderRegion() const
 {
   CRect region = m_texture.GetRenderRect();
 
-  for (std::vector<CFadingTexture *>::const_iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); ++itr)
+  for (vector<CFadingTexture *>::const_iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); ++itr)
     region.Union( (*itr)->m_texture->GetRenderRect() );
 
   return CGUIControl::CalcRenderRegion().Intersect(region);

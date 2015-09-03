@@ -24,6 +24,7 @@
 #include "Application.h"
 
 using namespace PERIPHERALS;
+using namespace std;
 
 CPeripheralNyxboard::CPeripheralNyxboard(const PeripheralScanResult& scanResult) :
   CPeripheralHID(scanResult)

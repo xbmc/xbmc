@@ -107,12 +107,6 @@ private:
     float Width;
     float Height;
   };
-  struct cbWorld
-  {
-    XMMATRIX wvp;
-    float blackLevel;
-    float colorRange;
-  };
 
   void Release(void);
   bool CreateBuffers(void);

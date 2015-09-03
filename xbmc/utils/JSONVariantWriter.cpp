@@ -23,9 +23,11 @@
 #include "JSONVariantWriter.h"
 #include "utils/Variant.h"
 
-std::string CJSONVariantWriter::Write(const CVariant &value, bool compact)
+using namespace std;
+
+string CJSONVariantWriter::Write(const CVariant &value, bool compact)
 {
-  std::string output;
+  string output;
 
   yajl_gen g = yajl_gen_alloc(NULL);
   yajl_gen_config(g, yajl_gen_beautify, compact ? 0 : 1);
@@ -56,7 +58,7 @@ std::string CJSONVariantWriter::Write(const CVariant &value, bool compact)
 
     size_t length;
     yajl_gen_get_buf(g, &buffer, &length);
-    output = std::string((const char *)buffer, length);
+    output = string((const char *)buffer, length);
   }
 
   // Re-set locale to what it was before using yajl

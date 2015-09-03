@@ -27,14 +27,14 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 
-#define CONTROL_HEADER_LABEL   1
+#define CONTROL_HEADER_LABEL   2
 #define CONTROL_NONE_AVAILABLE 4
-#define CONTROL_LIST           3
+#define CONTROL_LIST           5
 
 using ADDON::CVisualisation;
 
 CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
-    : CGUIDialog(WINDOW_DIALOG_VIS_PRESET_LIST, "DialogSelect.xml")
+    : CGUIDialog(WINDOW_DIALOG_VIS_PRESET_LIST, "VisualisationPresetList.xml")
 {
   m_currentPreset = 0;
   m_vecPresets = new CFileItemList;
@@ -158,15 +158,11 @@ void CGUIDialogVisualisationPresetList::Update()
 
   // update our dialog's label
   SET_CONTROL_LABEL(CONTROL_HEADER_LABEL, strHeading);
-  // hide / show proper controls from DialogSelect (5: add more button, 6: detailed list)
-  SET_CONTROL_VISIBLE(CONTROL_LIST);
-  SET_CONTROL_HIDDEN(5);
-  SET_CONTROL_HIDDEN(6);
+
   // if there is no presets, add a label saying so
   if (m_vecPresets->Size() == 0)
   {
     SET_CONTROL_VISIBLE(CONTROL_NONE_AVAILABLE);
-    SET_CONTROL_LABEL(CONTROL_NONE_AVAILABLE, 13389);
   }
   else
   {

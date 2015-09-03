@@ -27,11 +27,8 @@ are:
 The buildsystem uses the following variables (which can be passed into it when
 executing cmake with the -D<variable-name>=<value> option) to e.g. access
 specific paths:
-  * ADDONS_TO_BUILD has two variations, which are tested in order:
-     - a quoted, space delimited list of <addon-id>s that
-       you want to build (default is "all").
-     - a regular expression that every <addon-id> is matched against
-       e.g.: ADDONS_TO_BUILD=pvr.* to build all pvr addons
+  * ADDONS_TO_BUILD is a quoted, space delimited list of <addon-id>s that
+    you want to build (default is "all").
   * ADDON_SRC_PREFIX can be used to override the addon repository location.
     It must point to the locally available parent directory of the addon(s) to build
     <addon-id> will be appended to this path automatically

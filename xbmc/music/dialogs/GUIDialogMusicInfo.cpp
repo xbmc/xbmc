@@ -39,6 +39,7 @@
 #include "music/MusicThumbLoader.h"
 #include "filesystem/Directory.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_IMAGE            3
@@ -165,7 +166,7 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const std::string &path)
   {
     CMusicDatabase db;
     db.Open();
-    std::map<std::string, std::string> artwork;
+    map<string, string> artwork;
     if (db.GetArtistArtForItem(m_album.idAlbum, MediaTypeAlbum, artwork))
     {
       if (artwork.find("thumb") != artwork.end())
@@ -217,7 +218,7 @@ void CGUIDialogMusicInfo::SetDiscography()
   CMusicDatabase database;
   database.Open();
 
-  std::vector<int> albumsByArtist;
+  vector<int> albumsByArtist;
   database.GetAlbumsByArtist(m_artist.idArtist, true, albumsByArtist);
 
   for (unsigned int i=0;i<m_artist.discography.size();++i)
@@ -226,7 +227,7 @@ void CGUIDialogMusicInfo::SetDiscography()
     item->SetLabel2(m_artist.discography[i].second);
 
     int idAlbum = -1;
-    for (std::vector<int>::const_iterator album = albumsByArtist.begin(); album != albumsByArtist.end(); ++album)
+    for (vector<int>::const_iterator album = albumsByArtist.begin(); album != albumsByArtist.end(); ++album)
     {
       if (StringUtils::EqualsNoCase(database.GetAlbumById(*album), item->GetLabel()))
       {
@@ -353,7 +354,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   }
 
   // Grab the thumbnail(s) from the web
-  std::vector<std::string> thumbs;
+  vector<std::string> thumbs;
   if (m_bArtistInfo)
     m_artist.thumbURL.GetThumbURLs(thumbs);
   else

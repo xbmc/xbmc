@@ -28,6 +28,7 @@
 
 using namespace PERIPHERALS;
 using namespace CEC;
+using namespace std;
 
 class DllLibCECInterface
 {

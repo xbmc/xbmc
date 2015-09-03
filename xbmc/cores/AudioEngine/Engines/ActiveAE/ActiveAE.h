@@ -183,12 +183,10 @@ public:
   int Discontinuity(bool reset = false);
   void SetSuspended(bool state);
   void SetDSP(bool state);
-  void SetCurrentSinkFormat(AEAudioFormat SinkFormat);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
   bool IsSuspended();
   bool HasDSP();
-  AEAudioFormat GetCurrentSinkFormat();
   CCriticalSection *GetLock() { return &m_lock; }
 protected:
   int64_t m_playingPTS;
@@ -200,7 +198,6 @@ protected:
   AEDelayStatus m_sinkDelay;
   bool m_suspended;
   bool m_hasDSP;
-  AEAudioFormat m_sinkFormat;
   CCriticalSection m_lock;
 };
 
@@ -254,7 +251,6 @@ public:
   virtual void KeepConfiguration(unsigned int millis);
   virtual void DeviceChange();
   virtual bool HasDSP();
-  virtual AEAudioFormat GetCurrentSinkFormat();
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnregisterAudioCallback();

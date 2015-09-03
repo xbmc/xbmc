@@ -51,6 +51,7 @@
 #define CONTROL_BTNSORTASC          4
 #define CONTROL_LABELFILES         12
 
+using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
 
@@ -561,7 +562,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
 {
   CLog::Log(LOGDEBUG,"CGUIWindowPictures::LoadPlayList()... converting playlist into slideshow: %s", strPlayList.c_str());
-  std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
+  unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
   if ( NULL != pPlayList.get())
   {
     if (!pPlayList->Load(strPlayList))

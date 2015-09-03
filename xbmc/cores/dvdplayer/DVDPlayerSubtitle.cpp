@@ -31,6 +31,8 @@
 #include "config.h"
 #endif
 
+using namespace std;
+
 CDVDPlayerSubtitle::CDVDPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer)
 {
   m_pOverlayContainer = pOverlayContainer;
@@ -131,7 +133,7 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg, int priority)
   pMsg->Release();
 }
 
-bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filename)
+bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
 {
   CSingleLock lock(m_section);
 

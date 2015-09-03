@@ -48,6 +48,10 @@
 #define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
 #define DLL_PATH_LIBSTAGEFRIGHTICS    "libXBMCvcodec_stagefrightICS-@ARCH@.so"
 
+/* cdrip */
+#define DLL_PATH_OGG           "@OGG_SONAME@"
+#define DLL_PATH_VORBIS        "@VORBIS_SONAME@"
+
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
 

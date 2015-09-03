@@ -99,7 +99,7 @@ namespace XBMCAddon
        * options        : list of string - options to choose from.
        * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
        *
-       * *Note, Returns the selected items as a list of indices, or None if cancelled.
+       * *Note, Returns the selcted items as a list of indices, or None if cancelled.
        *
        * example:
        *   - dialog = xbmcgui.Dialog()

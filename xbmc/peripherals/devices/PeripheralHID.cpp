@@ -24,6 +24,7 @@
 #include "input/ButtonTranslator.h"
 
 using namespace PERIPHERALS;
+using namespace std;
 
 CPeripheralHID::CPeripheralHID(const PeripheralScanResult& scanResult) :
   CPeripheral(scanResult)

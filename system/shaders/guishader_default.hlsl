@@ -22,7 +22,7 @@
 
 float4 PS(PS_INPUT input) : SV_TARGET
 {
-  return adjustColorRange(input.color);
+  return input.color;
 }
 
 

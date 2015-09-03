@@ -19,13 +19,12 @@
  */
 
 #include "PeripheralBus.h"
-#include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
-#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "FileItem.h"
 
+using namespace std;
 using namespace PERIPHERALS;
 
 #define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 5000
@@ -75,7 +74,7 @@ void CPeripheralBus::Clear(void)
 void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &results)
 {
   CSingleLock lock(m_critSection);
-  std::vector<CPeripheral *> removedPeripherals;
+  vector<CPeripheral *> removedPeripherals;
   for (int iDevicePtr = (int) m_peripherals.size() - 1; iDevicePtr >= 0; iDevicePtr--)
   {
     CPeripheral *peripheral = m_peripherals.at(iDevicePtr);
@@ -93,7 +92,7 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
   for (unsigned int iDevicePtr = 0; iDevicePtr < removedPeripherals.size(); iDevicePtr++)
   {
     CPeripheral *peripheral = removedPeripherals.at(iDevicePtr);
-    std::vector<PeripheralFeature> features;
+    vector<PeripheralFeature> features;
     peripheral->GetFeatures(features);
     bool peripheralHasFeatures = features.size() > 1 || (features.size() == 1 && features.at(0) != FEATURE_UNKNOWN);
     if (peripheral->Type() != PERIPHERAL_UNKNOWN || peripheralHasFeatures)
@@ -174,7 +173,7 @@ CPeripheral *CPeripheralBus::GetPeripheral(const std::string &strLocation) const
   return peripheral;
 }
 
-int CPeripheralBus::GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature) const
+int CPeripheralBus::GetPeripheralsWithFeature(vector<CPeripheral *> &results, const PeripheralFeature feature) const
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
@@ -293,18 +292,7 @@ void CPeripheralBus::GetDirectory(const std::string &strPath, CFileItemList &ite
     peripheralFile->SetProperty("bus", PeripheralTypeTranslator::BusTypeToString(peripheral->GetBusType()));
     peripheralFile->SetProperty("location", peripheral->Location());
     peripheralFile->SetProperty("class", PeripheralTypeTranslator::TypeToString(peripheral->Type()));
-
-    std::string strVersion(peripheral->GetVersionInfo());
-    if (strVersion.empty())
-      strVersion = g_localizeStrings.Get(13205);
-
-    std::string strDetails = StringUtils::Format("%s %s", g_localizeStrings.Get(24051).c_str(), strVersion.c_str());
-    if (peripheral->GetBusType() == PERIPHERAL_BUS_CEC && !peripheral->GetSettingBool("enabled"))
-      strDetails = StringUtils::Format("%s: %s", g_localizeStrings.Get(126).c_str(), g_localizeStrings.Get(13106).c_str());
-
-    peripheralFile->SetProperty("version", strVersion);
-    peripheralFile->SetProperty("Addon.Summary", strDetails);
-    peripheralFile->SetIconImage("DefaultAddon.png");
+    peripheralFile->SetProperty("version", peripheral->GetVersionInfo());
     items.Add(peripheralFile);
   }
 }

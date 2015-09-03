@@ -41,8 +41,9 @@
 #include <string.h>
 #include <vector>
 #include <stdlib.h>
+using namespace std;
 
-std::vector<std::string> m_vecAtoms;
+vector<string> m_vecAtoms;
 
 //#define API_DEBUG
 
@@ -55,7 +56,7 @@ extern "C" UINT WINAPI dllGetAtomNameA( ATOM nAtom, LPTSTR lpBuffer, int nSize)
 {
   if (nAtom < 1 || nAtom > m_vecAtoms.size() ) return 0;
   nAtom--;
-  std::string& strAtom = m_vecAtoms[nAtom];
+  string& strAtom = m_vecAtoms[nAtom];
   strcpy(lpBuffer, strAtom.c_str());
   return strAtom.size();
 }
@@ -64,7 +65,7 @@ extern "C" ATOM WINAPI dllFindAtomA( LPCTSTR lpString)
 {
   for (int i = 0; i < (int)m_vecAtoms.size(); ++i)
   {
-    std::string& strAtom = m_vecAtoms[i];
+    string& strAtom = m_vecAtoms[i];
     if (strAtom == lpString) return i + 1;
   }
   return 0;

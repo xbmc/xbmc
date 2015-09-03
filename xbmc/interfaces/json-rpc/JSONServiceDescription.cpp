@@ -41,11 +41,12 @@
 #include "TextureOperations.h"
 #include "SettingsOperations.h"
 
+using namespace std;
 using namespace JSONRPC;
 
-std::map<std::string, CVariant> CJSONServiceDescription::m_notifications = std::map<std::string, CVariant>();
+map<string, CVariant> CJSONServiceDescription::m_notifications = map<string, CVariant>();
 CJSONServiceDescription::CJsonRpcMethodMap CJSONServiceDescription::m_actionMap;
-std::map<std::string, JSONSchemaTypeDefinitionPtr> CJSONServiceDescription::m_types = std::map<std::string, JSONSchemaTypeDefinitionPtr>();
+map<string, JSONSchemaTypeDefinitionPtr> CJSONServiceDescription::m_types = map<string, JSONSchemaTypeDefinitionPtr>();
 CJSONServiceDescription::IncompleteSchemaDefinitionMap CJSONServiceDescription::m_incompleteDefinitions = CJSONServiceDescription::IncompleteSchemaDefinitionMap();
 
 JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
@@ -526,13 +527,13 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
   {
     if ((type & NumberValue) == NumberValue)
     {
-      minimum = value["minimum"].asDouble(-std::numeric_limits<double>::max());
-      maximum = value["maximum"].asDouble(std::numeric_limits<double>::max());
+      minimum = value["minimum"].asDouble(-numeric_limits<double>::max());
+      maximum = value["maximum"].asDouble(numeric_limits<double>::max());
     }
     else if ((type  & IntegerValue) == IntegerValue)
     {
-      minimum = (double)value["minimum"].asInteger(std::numeric_limits<int>::min());
-      maximum = (double)value["maximum"].asInteger(std::numeric_limits<int>::max());
+      minimum = (double)value["minimum"].asInteger(numeric_limits<int>::min());
+      maximum = (double)value["maximum"].asInteger(numeric_limits<int>::max());
     }
 
     exclusiveMinimum = value["exclusiveMinimum"].asBoolean(false);
@@ -747,7 +748,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
       // are either no more schemas in the "items"
       // array or no more elements in the value's array
       unsigned int arrayIndex;
-      for (arrayIndex = 0; arrayIndex < std::min(items.size(), (size_t)value.size()); arrayIndex++)
+      for (arrayIndex = 0; arrayIndex < min(items.size(), (size_t)value.size()); arrayIndex++)
       {
         JSONRPC_STATUS status = items.at(arrayIndex)->Check(value[arrayIndex], outputValue[arrayIndex], errorData["property"]);
         if (status != OK)
@@ -1031,16 +1032,16 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
     {
       if (CJSONUtils::HasType(type, NumberValue))
       {
-        if (minimum > -std::numeric_limits<double>::max())
+        if (minimum > -numeric_limits<double>::max())
           output["minimum"] = minimum;
-        if (maximum < std::numeric_limits<double>::max())
+        if (maximum < numeric_limits<double>::max())
           output["maximum"] = maximum;
       }
       else
       {
-        if (minimum > std::numeric_limits<int>::min())
+        if (minimum > numeric_limits<int>::min())
           output["minimum"] = (int)minimum;
-        if (maximum < std::numeric_limits<int>::max())
+        if (maximum < numeric_limits<int>::max())
           output["maximum"] = (int)maximum;
       }
 
@@ -1129,8 +1130,8 @@ void JSONSchemaTypeDefinition::Set(const JSONSchemaTypeDefinitionPtr typeDefinit
   if (typeDefinition.get() == NULL)
     return;
 
-  std::string origName = name;
-  std::string origDescription = description;
+  string origName = name;
+  string origDescription = description;
   bool origOptional = optional;
   CVariant origDefaultValue = defaultValue;
   JSONSchemaTypeDefinitionPtr referencedTypeDef = referencedType;
@@ -1958,7 +1959,7 @@ void CJSONServiceDescription::removeReferenceTypeDefinition(const std::string &t
   if (typeID.empty())
     return;
 
-  std::map<std::string, JSONSchemaTypeDefinitionPtr>::iterator type = m_types.find(typeID);
+  map<string, JSONSchemaTypeDefinitionPtr>::iterator type = m_types.find(typeID);
   if (type != m_types.end())
     m_types.erase(type);
 }

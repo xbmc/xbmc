@@ -25,6 +25,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+using namespace std;
+
 CUrlOptions::CUrlOptions()
   : m_strLead("")
 { }
@@ -67,7 +69,7 @@ void CUrlOptions::AddOption(const std::string &key, const char *value)
   if (key.empty() || value == NULL)
     return;
 
-  return AddOption(key, std::string(value));
+  return AddOption(key, string(value));
 }
 
 void CUrlOptions::AddOption(const std::string &key, const std::string &value)
@@ -115,7 +117,7 @@ void CUrlOptions::AddOptions(const std::string &options)
   if (options.empty())
     return;
 
-  std::string strOptions = options;
+  string strOptions = options;
 
   // if matching the preset leading str, remove from options.
   if (!m_strLead.empty() && strOptions.compare(0, m_strLead.length(), m_strLead) == 0)
@@ -130,17 +132,17 @@ void CUrlOptions::AddOptions(const std::string &options)
   }
 
   // split the options by & and process them one by one
-  std::vector<std::string> optionList = StringUtils::Split(strOptions, "&");
-  for (std::vector<std::string>::const_iterator option = optionList.begin(); option != optionList.end(); ++option)
+  vector<string> optionList = StringUtils::Split(strOptions, "&");
+  for (vector<string>::const_iterator option = optionList.begin(); option != optionList.end(); ++option)
   {
     if (option->empty())
       continue;
 
-    std::string key, value;
+    string key, value;
 
     size_t pos = option->find('=');
     key = CURL::Decode(option->substr(0, pos));
-    if (pos != std::string::npos)
+    if (pos != string::npos)
       value = CURL::Decode(option->substr(pos + 1));
 
     // the key cannot be empty

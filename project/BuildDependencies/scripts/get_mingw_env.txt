@@ -29,4 +29,3 @@ libiconv-1.13.1-1-mingw32-dev.tar.lzma                   $KODI_MIRROR/build-deps
 make-3.82-5-mingw32-bin.tar.lzma                         $KODI_MIRROR/build-deps/win32/mingw-msys/      http://sourceforge.net/projects/mingw/files/MinGW/Extension/make/make-3.82-mingw32/
 pkg-config-lite-0.28-1_bin-win32.zip                     $KODI_MIRROR/build-deps/win32/mingw-msys/      http://sourceforge.net/projects/pkgconfiglite/files/http://sourceforge.net/projects/pkgconfiglite/files/
 gnutls-3.2.3-mingw32.zip                                 $KODI_MIRROR/build-deps/win32/mingw-msys/      ftp://ftp.gnutls.org/gcrypt/gnutls/w32/ 
-libdcadec-git-396e75652-win32.zip                        $KODI_MIRROR/build-deps/win32/mingw-msys/      https://github.com/foo86/dcadec/

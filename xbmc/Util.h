@@ -83,6 +83,7 @@ public:
 
   static void ClearSubtitles();
   static void ScanForExternalSubtitles(const std::string& strMovie, std::vector<std::string>& vecSubtitles );
+  static int ScanArchiveForSubtitles( const std::string& strArchivePath, const std::string& strMovieFileNameNoExt, std::vector<std::string>& vecSubtitles );
   static void GetExternalStreamDetailsFromFilename(const std::string& strMovie, const std::string& strSubtitles, ExternalStreamInfo& info); 
   static bool FindVobSubPair( const std::vector<std::string>& vecSubtitles, const std::string& strIdxPath, std::string& strSubPath );
   static bool IsVobSub(const std::vector<std::string>& vecSubtitles, const std::string& strSubPath);
@@ -195,50 +196,6 @@ public:
 private:
   static unsigned int s_randomSeed;
 #endif
-
-  protected:
-    /** \brief Retrieves the base path and the filename of a given video.
-    *   \param[in]  videoPath The full path of the video file.
-    *   \param[out] basePath The base path of the given video.
-    *   \param[out] videoFileName The file name of the given video..
-    */
-    static void GetVideoBasePathAndFileName(const std::string& videoPath,
-                                            std::string& basePath,
-                                            std::string& videoFileName);
-
-    /** \brief Retrieves FileItems that could contain associated files of a given video.
-    *   \param[in]  videoPath The full path of the video file.
-    *   \param[in]  item_exts A | separated string of extensions specifying the associated files.
-    *   \param[in]  sub_dirs A vector of sub directory names to look for.
-    *   \param[out] items A List of FileItems to scan for associated files.
-    */
-    static void GetItemsToScan(const std::string& videoPath,
-                               const std::string& item_exts,
-                               const std::vector<std::string>& sub_dirs,
-                               CFileItemList& items);
-
-    /** \brief Searches for associated files of a given video.
-    *   \param[in]  videoName The name of the video file.
-    *   \param[in]  items A List of FileItems to scan for associated files.
-    *   \param[in]  item_exts A vector of extensions specifying the associated files.
-    *   \param[out] associatedFiles A vector containing the full paths of all found associated files.
-    */
-    static void ScanPathsForAssociatedItems(const std::string& videoName,
-                                            const CFileItemList& items,
-                                            const std::vector<std::string>& item_exts,
-                                            std::vector<std::string>& associatedFiles);
-
-    /** \brief Searches in an archive for associated files of a given video.
-    *   \param[in]  strArchivePath The full path of the archive.
-    *   \param[in]  videoNameNoExt The filename of the video without extension for which associated files should be retrieved.
-    *   \param[in]  item_exts A vector of extensions specifying the associated files.
-    *   \param[out] associatedFiles A vector containing the full paths of all found associated files.
-    */
-    static int ScanArchiveForAssociatedItems(const std::string& strArchivePath,
-                                             const std::string& videoNameNoExt,
-                                             const std::vector<std::string>& item_exts,
-                                             std::vector<std::string>& associatedFiles);
-
 };
 
 

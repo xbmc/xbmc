@@ -33,6 +33,7 @@
 #endif
 
 using namespace XFILE;
+using namespace std;
 
 CZipManager::CZipManager()
 {
@@ -43,7 +44,7 @@ CZipManager::~CZipManager()
 
 }
 
-bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
+bool CZipManager::GetZipList(const CURL& url, vector<SZipEntry>& items)
 {
   CLog::Log(LOGDEBUG, "%s - Processing %s", __FUNCTION__, url.GetRedacted().c_str());
 
@@ -57,10 +58,10 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     return false;
   }
 
-  std::map<std::string, std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  map<std::string,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
-    std::map<std::string,int64_t>::iterator it2=mZipDate.find(strFile);
+    map<std::string,int64_t>::iterator it2=mZipDate.find(strFile);
     CLog::Log(LOGDEBUG,"statdata: %" PRId64" new: %" PRIu64, it2->second, (uint64_t)m_StatData.st_mtime);
 
       if (m_StatData.st_mtime == it2->second)
@@ -201,7 +202,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   }
 
   /* go through list and figure out file header lengths */
-  for(std::vector<SZipEntry>::iterator it = items.begin(); it != items.end(); ++it)
+  for(vector<SZipEntry>::iterator it = items.begin(); it != items.end(); ++it)
   {
     SZipEntry& ze = *it;
     // Go to the local file header to get the extra field length
@@ -225,8 +226,8 @@ bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
 {
   std::string strFile = url.GetHostName();
 
-  std::map<std::string, std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
-  std::vector<SZipEntry> items;
+  map<std::string,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  vector<SZipEntry> items;
   if (it == mZipMap.end()) // we need to list the zip
   {
     GetZipList(url,items);
@@ -237,7 +238,7 @@ bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
   }
 
   std::string strFileName = url.GetFileName();
-  for (std::vector<SZipEntry>::iterator it2=items.begin();it2 != items.end();++it2)
+  for (vector<SZipEntry>::iterator it2=items.begin();it2 != items.end();++it2)
   {
     if (std::string(it2->name) == strFileName)
     {
@@ -256,10 +257,10 @@ bool CZipManager::ExtractArchive(const std::string& strArchive, const std::strin
 
 bool CZipManager::ExtractArchive(const CURL& archive, const std::string& strPath)
 {
-  std::vector<SZipEntry> entry;
+  vector<SZipEntry> entry;
   CURL url = URIUtils::CreateArchivePath("zip", archive);
   GetZipList(url, entry);
-  for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
+  for (vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
@@ -313,10 +314,10 @@ void CZipManager::readCHeader(const char* buffer, SZipEntry& info)
 void CZipManager::release(const std::string& strPath)
 {
   CURL url(strPath);
-  std::map<std::string, std::vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
+  map<std::string,vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
   if (it != mZipMap.end())
   {
-    std::map<std::string,int64_t>::iterator it2=mZipDate.find(url.GetHostName());
+    map<std::string,int64_t>::iterator it2=mZipDate.find(url.GetHostName());
     mZipMap.erase(it);
     mZipDate.erase(it2);
   }

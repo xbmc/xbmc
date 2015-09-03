@@ -24,6 +24,8 @@
 #include <limits>
 #include "utils/MathUtils.h"
 
+using namespace std;
+
 CTimeSmoother::CTimeSmoother()
 : m_diffs(num_diffs),
   m_periods(num_periods),
@@ -40,17 +42,17 @@ void CTimeSmoother::AddTimeStamp(unsigned int currentTime)
   if (diff)
     m_diffs.push_back(diff);
 
-  std::vector<double> bins;
+  vector<double> bins;
   BinData(m_diffs, bins, 0.15, 2);
 
   if (bins.size() && m_diffs.size() == num_diffs)
   {
     // have enough data to update our estimate
-    std::vector<unsigned int> binMultipliers;
+    vector<unsigned int> binMultipliers;
     GetGCDMultipliers(bins, binMultipliers, 2);
     assert(binMultipliers.size() == bins.size());
 
-    std::vector<unsigned int> intRepresentation;
+    vector<unsigned int> intRepresentation;
     GetIntRepresentation(m_diffs, intRepresentation, bins, binMultipliers);
     assert(intRepresentation.size() == m_diffs.size());
 
@@ -91,13 +93,13 @@ unsigned int CTimeSmoother::GetNextFrameTime(unsigned int currentTime)
   return currentTime;
 }
 
-void CTimeSmoother::BinData(const boost::circular_buffer<double> &data, std::vector<double> &bins, const double threshold, const unsigned int minbinsize)
+void CTimeSmoother::BinData(const boost::circular_buffer<double> &data, vector<double> &bins, const double threshold, const unsigned int minbinsize)
 {
   if (!data.size())
     return;
 
   bins.clear();
-  std::vector<unsigned int> counts;
+  vector<unsigned int> counts;
 
   for (boost::circular_buffer<double>::const_iterator i = data.begin(); i != data.end(); ++i)
   {
@@ -159,7 +161,7 @@ void CTimeSmoother::GetConvergent(double value, unsigned int &num, unsigned int 
       break; // value out of range of unsigned int
     unsigned int new_n = f * num   + old_n;
     unsigned int new_d = f * denom + old_d;
-    if (std::min(new_n, new_d) > maxnumden)
+    if (min(new_n, new_d) > maxnumden)
       break;
     old_n = num; old_d = denom;
     num = new_n; denom = new_d;
@@ -171,14 +173,14 @@ void CTimeSmoother::GetConvergent(double value, unsigned int &num, unsigned int 
   assert(num > 0 && denom > 0);
 }
 
-void CTimeSmoother::GetGCDMultipliers(const std::vector<double> &data, std::vector<unsigned int> &multipliers, const unsigned int maxminmult)
+void CTimeSmoother::GetGCDMultipliers(const vector<double> &data, vector<unsigned int> &multipliers, const unsigned int maxminmult)
 {
-  std::vector<double>::const_iterator i = std::min_element(data.begin(), data.end());
+  vector<double>::const_iterator i = std::min_element(data.begin(), data.end());
   
   multipliers.clear();
 
-  std::vector<unsigned int> num, denom;
-  for (std::vector<double>::const_iterator j = data.begin(); j != data.end(); ++j)
+  vector<unsigned int> num, denom;
+  for (vector<double>::const_iterator j = data.begin(); j != data.end(); ++j)
   {
     if (j != i)
     {
@@ -193,17 +195,17 @@ void CTimeSmoother::GetGCDMultipliers(const std::vector<double> &data, std::vect
       denom.push_back(1);
     }
   }
-  std::vector<unsigned int>::const_iterator k = std::max_element(num.begin(), num.end());
+  vector<unsigned int>::const_iterator k = std::max_element(num.begin(), num.end());
   for (unsigned int i = 0; i < num.size(); ++i)
     multipliers.push_back(denom[i] * (*k) / num[i]);
 }
 
-void CTimeSmoother::GetIntRepresentation(const boost::circular_buffer<double> &data, std::vector<unsigned int> &intData, const std::vector<double> &bins, const std::vector<unsigned int> &intBins)
+void CTimeSmoother::GetIntRepresentation(const boost::circular_buffer<double> &data, vector<unsigned int> &intData, const vector<double> &bins, const vector<unsigned int> &intBins)
 {
   intData.clear();
   for (boost::circular_buffer<double>::const_iterator i = data.begin(); i != data.end(); ++i)
   {
-    double min_r2 = std::numeric_limits<double>::max();
+    double min_r2 = numeric_limits<double>::max();
     unsigned int min_j = 0;
     for (unsigned int j = 0; j < bins.size(); ++j)
     {
@@ -219,7 +221,7 @@ void CTimeSmoother::GetIntRepresentation(const boost::circular_buffer<double> &d
   }
 }
 
-double CTimeSmoother::EstimatePeriod(const boost::circular_buffer<double> &data, const std::vector<unsigned int> &intData)
+double CTimeSmoother::EstimatePeriod(const boost::circular_buffer<double> &data, const vector<unsigned int> &intData)
 {
   double sxy = 0, sxx = 0;
   for (unsigned int i = 0; i < data.size(); ++i)
@@ -235,7 +237,7 @@ double CTimeSmoother::EstimateFrameTime(unsigned int currentTime)
   assert(m_prevIn.size() == m_prevOut.size());
   if (m_period)
   {
-    std::vector<double> outTimes;
+    vector<double> outTimes;
     for (unsigned int i = 0; i < m_prevIn.size(); ++i)
       outTimes.push_back(m_prevOut[i] + m_period * MathUtils::round_int((currentTime - m_prevIn[i]) / m_period));
     sort(outTimes.begin(), outTimes.end());

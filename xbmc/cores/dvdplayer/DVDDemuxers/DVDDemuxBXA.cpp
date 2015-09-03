@@ -26,18 +26,20 @@
 
 // AirTunes audio Demuxer.
 
+using namespace std;
+
 class CDemuxStreamAudioBXA
   : public CDemuxStreamAudio
 {
   CDVDDemuxBXA  *m_parent;
-  std::string    m_codec;
+  string         m_codec;
 public:
-  CDemuxStreamAudioBXA(CDVDDemuxBXA *parent, const std::string& codec)
+  CDemuxStreamAudioBXA(CDVDDemuxBXA *parent, const string& codec)
     : m_parent(parent)
     , m_codec(codec)
 
   {}
-  void GetStreamInfo(std::string& strInfo)
+  void GetStreamInfo(string& strInfo)
   {
     strInfo = StringUtils::Format("%s", m_codec.c_str());
   }

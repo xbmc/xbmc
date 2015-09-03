@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
 using namespace ADDON;
 using namespace ActiveAE;
 
@@ -292,7 +293,7 @@ bool CActiveAEDSPAddon::CheckAPIVersion(void)
 
 bool CActiveAEDSPAddon::GetAddonProperties(void)
 {
-  std::string strDSPName, strFriendlyName, strAudioDSPVersion;
+  string strDSPName, strFriendlyName, strAudioDSPVersion;
   AE_DSP_ADDON_CAPABILITIES addonCapabilities;
 
   /* get the capabilities */
@@ -692,9 +693,9 @@ unsigned int CActiveAEDSPAddon::MasterProcess(const ADDON_HANDLE handle, float *
   return 0;
 }
 
-std::string CActiveAEDSPAddon::MasterProcessGetStreamInfoString(const ADDON_HANDLE handle)
+string CActiveAEDSPAddon::MasterProcessGetStreamInfoString(const ADDON_HANDLE handle)
 {
-  std::string strReturn;
+  string strReturn;
 
   if (!m_bReadyToUse)
     return strReturn;

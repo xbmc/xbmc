@@ -81,6 +81,7 @@
 #endif
 #include "DVDPlayerAudio.h"
 
+using namespace std;
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
@@ -421,7 +422,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
   if(input && input->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CDVDInputStreamNavigator* nav = (CDVDInputStreamNavigator*)input;
-    std::string filename = nav->GetFileName();
+    string filename = nav->GetFileName();
     int source = Source(STREAM_SOURCE_NAV, filename);
 
     int count;
@@ -463,7 +464,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
   }
   else if(demuxer)
   {
-    std::string filename = demuxer->GetFileName();
+    string filename = demuxer->GetFileName();
     int count = demuxer->GetNrOfStreams();
     int source;
     if(input) /* hack to know this is sub decoder */
@@ -1877,7 +1878,7 @@ void CDVDPlayer::HandlePlaySpeed()
         {
           error  = (int)DVD_TIME_TO_MSEC(m_clock.GetClock()) - m_SpeedState.lastseekpts;
 
-          if(std::abs(error) > 1000)
+          if(abs(error) > 1000)
           {
             CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
             m_SpeedState.lastseekpts = (int)DVD_TIME_TO_MSEC(m_clock.GetClock());
@@ -2033,7 +2034,7 @@ void CDVDPlayer::UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket)
 
   /* send a playback state structure periodically */
   if(current.dts_state == DVD_NOPTS_VALUE
-  || std::abs(current.dts - current.dts_state) > DVD_MSEC_TO_TIME(200))
+  || abs(current.dts - current.dts_state) > DVD_MSEC_TO_TIME(200))
   {
     current.dts_state = current.dts;
     if (current.inited)
@@ -2162,7 +2163,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
   || m_CurrentVideo.dts == DVD_NOPTS_VALUE)
     return;
 
-  const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(std::min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
+  const int64_t clock = m_omxplayer_mode ? GetTime() : DVD_TIME_TO_MSEC(min(m_CurrentAudio.dts, m_CurrentVideo.dts) + m_offset_pts);
 
   CEdl::Cut cut;
   if(!m_Edl.InCut(clock, &cut))
@@ -3288,7 +3289,7 @@ bool CDVDPlayer::OpenStream(CCurrentStream& current, int iStream, int source, bo
     if(!m_pSubtitleDemuxer || m_pSubtitleDemuxer->GetFileName() != st.filename)
     {
       CLog::Log(LOGNOTICE, "Opening Subtitle file: %s", st.filename.c_str());
-      std::unique_ptr<CDVDDemuxVobsub> demux(new CDVDDemuxVobsub());
+      unique_ptr<CDVDDemuxVobsub> demux(new CDVDDemuxVobsub());
       if(!demux->Open(st.filename, source, st.filename2))
         return false;
       m_pSubtitleDemuxer = demux.release();
@@ -4290,7 +4291,7 @@ double CDVDPlayer::GetQueueTime()
 {
   int a = m_dvdPlayerAudio->GetLevel();
   int v = m_dvdPlayerVideo->GetLevel();
-  return std::max(a, v) * 8000.0 / 100;
+  return max(a, v) * 8000.0 / 100;
 }
 
 void CDVDPlayer::GetVideoStreamInfo(SPlayerVideoStreamInfo &info)
@@ -4561,14 +4562,14 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   double level, delay, offset;
   if(GetCachingTimes(level, delay, offset))
   {
-    state.cache_delay  = std::max(0.0, delay);
-    state.cache_level  = std::max(0.0, std::min(1.0, level));
+    state.cache_delay  = max(0.0, delay);
+    state.cache_level  = max(0.0, min(1.0, level));
     state.cache_offset = offset;
   }
   else
   {
     state.cache_delay  = 0.0;
-    state.cache_level  = std::min(1.0, GetQueueTime() / 8000.0);
+    state.cache_level  = min(1.0, GetQueueTime() / 8000.0);
     state.cache_offset = GetQueueTime() / state.time_total;
   }
 

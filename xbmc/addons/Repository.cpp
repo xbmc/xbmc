@@ -40,6 +40,7 @@
 #include "TextureDatabase.h"
 #include "URL.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 
@@ -107,7 +108,7 @@ CRepository::~CRepository()
 {
 }
 
-std::string CRepository::FetchChecksum(const std::string& url)
+string CRepository::FetchChecksum(const string& url)
 {
   CFile file;
   try
@@ -131,9 +132,9 @@ std::string CRepository::FetchChecksum(const std::string& url)
   }
 }
 
-std::string CRepository::GetAddonHash(const AddonPtr& addon) const
+string CRepository::GetAddonHash(const AddonPtr& addon) const
 {
-  std::string checksum;
+  string checksum;
   DirList::const_iterator it;
   for (it = m_dirs.begin();it != m_dirs.end(); ++it)
     if (URIUtils::IsInPath(addon->Path(), it->datadir))
@@ -142,7 +143,7 @@ std::string CRepository::GetAddonHash(const AddonPtr& addon) const
   {
     checksum = FetchChecksum(addon->Path()+".md5");
     size_t pos = checksum.find_first_of(" \n");
-    if (pos != std::string::npos)
+    if (pos != string::npos)
       return checksum.substr(0, pos);
   }
   return checksum;
@@ -156,11 +157,11 @@ std::string CRepository::GetAddonHash(const AddonPtr& addon) const
 
 bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
 {
-  std::string file = dir.info;
+  string file = dir.info;
   if (dir.compressed)
   {
     CURL url(dir.info);
-    std::string opts = url.GetProtocolOptions();
+    string opts = url.GetProtocolOptions();
     if (!opts.empty())
       opts += "&";
     url.SetProtocolOptions(opts+"Encoding=gzip");
@@ -176,7 +177,7 @@ bool CRepository::Parse(const DirInfo& dir, VECADDONS &result)
       AddonPtr addon = *i;
       if (dir.zipped)
       {
-        std::string file = StringUtils::Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().asString().c_str());
+        string file = StringUtils::Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().asString().c_str());
         addon->Props().path = URIUtils::AddFileToFolder(dir.datadir,file);
         SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(dir.datadir,addon->ID()+"/icon.png"))
         file = StringUtils::Format("%s/changelog-%s.txt", addon->ID().c_str(), addon->Version().asString().c_str());
@@ -217,11 +218,11 @@ CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
 {
 }
 
-void MergeAddons(std::map<std::string, AddonPtr> &addons, const VECADDONS &new_addons)
+void MergeAddons(map<string, AddonPtr> &addons, const VECADDONS &new_addons)
 {
   for (VECADDONS::const_iterator it = new_addons.begin(); it != new_addons.end(); ++it)
   {
-    std::map<std::string, AddonPtr>::iterator existing = addons.find((*it)->ID());
+    map<string, AddonPtr>::iterator existing = addons.find((*it)->ID());
     if (existing != addons.end())
     { // already got it - replace if we have a newer version
       if (existing->second->Version() < (*it)->Version())
@@ -234,7 +235,7 @@ void MergeAddons(std::map<std::string, AddonPtr> &addons, const VECADDONS &new_a
 
 bool CRepositoryUpdateJob::DoWork()
 {
-  std::map<std::string, AddonPtr> addons;
+  map<string, AddonPtr> addons;
   for (VECADDONS::const_iterator i = m_repos.begin(); i != m_repos.end(); ++i)
   {
     const RepositoryPtr repo = std::dynamic_pointer_cast<CRepository>(*i);
@@ -254,7 +255,7 @@ bool CRepositoryUpdateJob::DoWork()
   textureDB.Open();
   textureDB.BeginMultipleExecute();
   VECADDONS notifications;
-  for (std::map<std::string, AddonPtr>::const_iterator i = addons.begin(); i != addons.end(); ++i)
+  for (map<string, AddonPtr>::const_iterator i = addons.begin(); i != addons.end(); ++i)
   {
     // manager told us to feck off
     if (ShouldCancel(0,0))
@@ -279,7 +280,7 @@ bool CRepositoryUpdateJob::DoWork()
     {
       if (CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
       {
-        std::string referer;
+        string referer;
         if (URIUtils::IsInternetStream(newAddon->Path()))
           referer = StringUtils::Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().asString().c_str());
 
@@ -339,18 +340,18 @@ bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addo
 
   CAddonDatabase database;
   database.Open();
-  std::string oldReposum;
+  string oldReposum;
   if (!database.GetRepoChecksum(repo->ID(), oldReposum))
     oldReposum = "";
 
-  std::string reposum;
+  string reposum;
   for (CRepository::DirList::const_iterator it  = repo->m_dirs.begin(); it != repo->m_dirs.end(); ++it)
   {
     if (ShouldCancel(std::distance(repo->m_dirs.cbegin(), it), total))
       return false;
     if (!it->checksum.empty())
     {
-      const std::string dirsum = CRepository::FetchChecksum(it->checksum);
+      const string dirsum = CRepository::FetchChecksum(it->checksum);
       if (dirsum.empty())
       {
         CLog::Log(LOGERROR, "Failed to fetch checksum for directory listing %s for repository %s. ", (*it).info.c_str(), repo->ID().c_str());
@@ -362,7 +363,7 @@ bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addo
 
   if (oldReposum != reposum || oldReposum.empty())
   {
-    std::map<std::string, AddonPtr> uniqueAddons;
+    map<string, AddonPtr> uniqueAddons;
     for (CRepository::DirList::const_iterator it = repo->m_dirs.begin(); it != repo->m_dirs.end(); ++it)
     {
       if (ShouldCancel(repo->m_dirs.size() + std::distance(repo->m_dirs.cbegin(), it), total))
@@ -381,12 +382,12 @@ bool CRepositoryUpdateJob::GrabAddons(const RepositoryPtr& repo, VECADDONS& addo
     if (!repo->Props().libname.empty())
     {
       CFileItemList dummy;
-      std::string s = StringUtils::Format("plugin://%s/?action=update", repo->ID().c_str());
+      string s = StringUtils::Format("plugin://%s/?action=update", repo->ID().c_str());
       add = CDirectory::GetDirectory(s, dummy);
     }
     if (add)
     {
-      for (std::map<std::string, AddonPtr>::const_iterator i = uniqueAddons.begin(); i != uniqueAddons.end(); ++i)
+      for (map<string, AddonPtr>::const_iterator i = uniqueAddons.begin(); i != uniqueAddons.end(); ++i)
         addons.push_back(i->second);
       database.AddRepository(repo->ID(), addons, reposum, repo->Version());
     }

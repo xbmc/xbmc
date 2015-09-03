@@ -34,6 +34,7 @@
 
 #define HOLD_THRESHOLD 250
 
+using namespace std;
 using namespace PERIPHERALS;
 
 bool operator==(const XBMC_keysym& lhs, const XBMC_keysym& rhs)
@@ -60,7 +61,7 @@ void CKeyboardStat::Initialize()
 
 bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode)
 {
-  std::vector<CPeripheral *> hidDevices;
+  vector<CPeripheral *> hidDevices;
   if (g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID))
   {
     for (unsigned int iDevicePtr = 0; iDevicePtr < hidDevices.size(); iDevicePtr++)

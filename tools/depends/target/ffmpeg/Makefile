@@ -19,7 +19,6 @@ ffmpg_config += --enable-muxer=asf --enable-muxer=ipod
 ffmpg_config += --enable-encoder=ac3 --enable-encoder=aac
 ffmpg_config += --enable-encoder=wmav2 --enable-protocol=http
 ffmpg_config += --enable-gnutls
-ffmpg_config += --enable-libdcadec
 
 ifeq ($(CROSS_COMPILING), yes)
   ffmpg_config += --arch=$(CPU) --enable-cross-compile

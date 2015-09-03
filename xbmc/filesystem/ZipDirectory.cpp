@@ -30,6 +30,7 @@
 
 #include <vector>
 
+using namespace std;
 namespace XFILE
 {
 
@@ -61,7 +62,7 @@ namespace XFILE
     if (!urlOrig.IsProtocol("zip"))
       urlZip = URIUtils::CreateArchivePath("zip", urlOrig);
 
-    std::vector<SZipEntry> zipEntries;
+    vector<SZipEntry> zipEntries;
     if (!g_ZipManager.GetZipList(urlZip, zipEntries))
       return false;
 
@@ -79,7 +80,7 @@ namespace XFILE
 
   bool CZipDirectory::ContainsFiles(const CURL& url)
   {
-    std::vector<SZipEntry> items;
+    vector<SZipEntry> items;
     g_ZipManager.GetZipList(url, items);
     if (items.size())
     {

@@ -1334,7 +1334,7 @@ void CRenderSystemDX::ApplyStateBlock()
   m_pGUIShader->ApplyStateBlock();
 }
 
-void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor)
+void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
 {
   if (!m_bRenderCreated)
     return;
@@ -1353,7 +1353,7 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   // position.
   XMMATRIX flipY, translate;
   flipY = XMMatrixScaling(1.0, -1.0f, 1.0f);
-  translate = XMMatrixTranslation(-(w + offset.x - stereoFactor), -(h + offset.y), 2 * h);
+  translate = XMMatrixTranslation(-(w + offset.x), -(h + offset.y), 2 * h);
   m_pGUIShader->SetView(XMMatrixMultiply(translate, flipY));
 
   // projection onto screen space

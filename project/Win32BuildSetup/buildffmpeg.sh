@@ -84,8 +84,7 @@ OPTIONS="
 --enable-runtime-cpudetect \
 --enable-dxva2 \
 --cpu=i686 \
---enable-gnutls \
---enable-libdcadec"
+--enable-gnutls"
 
 echo configuring $LIBNAME
 ./configure --extra-cflags="-fno-common -I/xbmc/lib/win32/ffmpeg_dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&

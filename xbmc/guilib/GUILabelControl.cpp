@@ -22,6 +22,8 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 
+using namespace std;
+
 CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_label(posX, posY, width, height, labelInfo, wrapMultiLine ? CGUILabel::OVER_FLOW_WRAP : CGUILabel::OVER_FLOW_TRUNCATE)
@@ -152,7 +154,7 @@ bool CGUILabelControl::CanFocus() const
   return false;
 }
 
-void CGUILabelControl::SetLabel(const std::string &strLabel)
+void CGUILabelControl::SetLabel(const string &strLabel)
 {
   // NOTE: this optimization handles fixed labels only (i.e. not info labels).
   // One way it might be extended to all labels would be for GUIInfoLabel ( or here )

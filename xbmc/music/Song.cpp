@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 CSong::CSong(CFileItem& item)
@@ -55,7 +56,7 @@ CSong::CSong(CFileItem& item)
   }
   else
   { // no musicbrainz info, so fill in directly
-    for (std::vector<std::string>::const_iterator it = tag.GetArtist().begin(); it != tag.GetArtist().end(); ++it)
+    for (vector<string>::const_iterator it = tag.GetArtist().begin(); it != tag.GetArtist().end(); ++it)
     {
       std::string strJoinPhrase = (it == --tag.GetArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
       CArtistCredit artistCredit(*it, "", strJoinPhrase);

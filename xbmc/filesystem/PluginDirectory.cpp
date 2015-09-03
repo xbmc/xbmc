@@ -39,10 +39,11 @@
 #include "URL.h"
 
 using namespace XFILE;
+using namespace std;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 
-std::map<int, CPluginDirectory *> CPluginDirectory::globalHandles;
+map<int, CPluginDirectory *> CPluginDirectory::globalHandles;
 int CPluginDirectory::handleCounter = 0;
 CCriticalSection CPluginDirectory::m_handleLock;
 
@@ -79,7 +80,7 @@ void CPluginDirectory::removeHandle(int handle)
 CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
 {
   CSingleLock lock(m_handleLock);
-  std::map<int, CPluginDirectory *>::iterator i = globalHandles.find(handle);
+  map<int, CPluginDirectory *>::iterator i = globalHandles.find(handle);
   if (i != globalHandles.end())
     return i->second;
   CLog::Log(LOGWARNING, "Attempt to use invalid handle %i", handle);
@@ -120,7 +121,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
 
   // setup our parameters to send the script
   std::string strHandle = StringUtils::Format("%i", handle);
-  std::vector<std::string> argv;
+  vector<string> argv;
   argv.push_back(basePath);
   argv.push_back(strHandle);
   argv.push_back(options);
@@ -436,7 +437,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
 
   // setup our parameters to send the script
   std::string strHandle = StringUtils::Format("%i", -1);
-  std::vector<std::string> argv;
+  vector<string> argv;
   argv.push_back(basePath);
   argv.push_back(strHandle);
   argv.push_back(options);

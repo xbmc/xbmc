@@ -37,6 +37,7 @@
 #include "commons/Exception.h"
 
 using namespace XFILE;
+using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -93,7 +94,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
     CFile newFile;
     if (URIUtils::IsHD(pathToUrl)) // create possible missing dirs
     {
-      std::vector<std::string> tokens;
+      vector<std::string> tokens;
       std::string strDirectory = URIUtils::GetDirectory(pathToUrl);
       URIUtils::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
@@ -114,7 +115,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
         } // If the directory has a / at the beginning, don't forget it
         else if (strDirectory[0] == pathsep[0])
           strCurrPath += pathsep;
-        for (std::vector<std::string>::iterator iter=tokens.begin();iter!=tokens.end();++iter)
+        for (vector<std::string>::iterator iter=tokens.begin();iter!=tokens.end();++iter)
         {
           strCurrPath += *iter+pathsep;
           CDirectory::Create(strCurrPath);
@@ -268,7 +269,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
       SAFE_DELETE(m_pFile);
       if (pRedirectEx && pRedirectEx->m_pNewFileImp)
       {
-        std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
+        unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
         m_pFile = pRedirectEx->m_pNewFileImp;
         delete pRedirectEx;
         
@@ -371,7 +372,7 @@ bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
         return false;
     }
 
-    std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return false;
 
@@ -385,8 +386,8 @@ bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
     CLog::Log(LOGDEBUG,"File::Exists - redirecting implementation for %s", file.GetRedacted().c_str());
     if (pRedirectEx && pRedirectEx->m_pNewFileImp)
     {
-      std::unique_ptr<IFile> pImp(pRedirectEx->m_pNewFileImp);
-      std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
+      unique_ptr<IFile> pImp(pRedirectEx->m_pNewFileImp);
+      unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
       delete pRedirectEx;
 
       if (pImp.get())
@@ -453,7 +454,7 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
 
   try
   {
-    std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return -1;
     return pFile->Stat(url, buffer);
@@ -466,8 +467,8 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
     CLog::Log(LOGDEBUG,"File::Stat - redirecting implementation for %s", file.GetRedacted().c_str());
     if (pRedirectEx && pRedirectEx->m_pNewFileImp)
     {
-      std::unique_ptr<IFile> pImp(pRedirectEx->m_pNewFileImp);
-      std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
+      unique_ptr<IFile> pImp(pRedirectEx->m_pNewFileImp);
+      unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
       delete pRedirectEx;
         
       if (pNewUrl.get())
@@ -518,7 +519,7 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
     if(m_flags & READ_TRUNCATED)
     {
       const ssize_t nBytes = m_pBuffer->sgetn(
-        (char *)lpBuf, std::min<std::streamsize>((std::streamsize)uiBufSize,
+        (char *)lpBuf, min<streamsize>((streamsize)uiBufSize,
                                                   m_pBuffer->in_avail()));
       if (m_bitStreamStats && nBytes>0)
         m_bitStreamStats->AddSampleBytes(nBytes);
@@ -614,11 +615,11 @@ int64_t CFile::Seek(int64_t iFilePosition, int iWhence)
   if (m_pBuffer)
   {
     if(iWhence == SEEK_CUR)
-      return m_pBuffer->pubseekoff(iFilePosition, std::ios_base::cur);
+      return m_pBuffer->pubseekoff(iFilePosition,ios_base::cur);
     else if(iWhence == SEEK_END)
-      return m_pBuffer->pubseekoff(iFilePosition, std::ios_base::end);
+      return m_pBuffer->pubseekoff(iFilePosition,ios_base::end);
     else if(iWhence == SEEK_SET)
-      return m_pBuffer->pubseekoff(iFilePosition, std::ios_base::beg);
+      return m_pBuffer->pubseekoff(iFilePosition,ios_base::beg);
   }
 
   try
@@ -675,7 +676,7 @@ int64_t CFile::GetPosition() const
     return -1;
 
   if (m_pBuffer)
-    return m_pBuffer->pubseekoff(0, std::ios_base::cur);
+    return m_pBuffer->pubseekoff(0, ios_base::cur);
 
   try
   {
@@ -791,7 +792,7 @@ bool CFile::Delete(const CURL& file)
   {
     CURL url(URIUtils::SubstitutePath(file));
 
-    std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return false;
 
@@ -825,7 +826,7 @@ bool CFile::Rename(const CURL& file, const CURL& newFile)
     CURL url(URIUtils::SubstitutePath(file));
     CURL urlnew(URIUtils::SubstitutePath(newFile));
 
-    std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return false;
 
@@ -857,7 +858,7 @@ bool CFile::SetHidden(const CURL& file, bool hidden)
   {
     CURL url(URIUtils::SubstitutePath(file));
 
-    std::unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    unique_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return false;
 
@@ -989,7 +990,7 @@ CFileStreamBuffer::~CFileStreamBuffer()
 }
 
 CFileStreamBuffer::CFileStreamBuffer(int backsize)
-  : std::streambuf()
+  : streambuf()
   , m_file(NULL)
   , m_buffer(NULL)
   , m_backsize(backsize)
@@ -1027,7 +1028,7 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
   size_t backsize = 0;
   if(m_backsize)
   {
-    backsize = (size_t)std::min<ptrdiff_t>((ptrdiff_t)m_backsize, egptr()-eback());
+    backsize = (size_t)min<ptrdiff_t>((ptrdiff_t)m_backsize, egptr()-eback());
     memmove(m_buffer, egptr()-backsize, backsize);
   }
 
@@ -1047,20 +1048,20 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
 
 CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   off_type offset,
-  std::ios_base::seekdir way,
-  std::ios_base::openmode mode)
+  ios_base::seekdir way,
+  ios_base::openmode mode)
 {
   // calculate relative offset
   off_type pos  = m_file->GetPosition() - (egptr() - gptr());
   off_type offset2;
-  if(way == std::ios_base::cur)
+  if(way == ios_base::cur)
     offset2 = offset;
-  else if(way == std::ios_base::beg)
+  else if(way == ios_base::beg)
     offset2 = offset - pos;
-  else if(way == std::ios_base::end)
+  else if(way == ios_base::end)
     offset2 = offset + m_file->GetLength() - pos;
   else
-    return std::streampos(-1);
+    return streampos(-1);
 
   // a non seek shouldn't modify our buffer
   if(offset2 == 0)
@@ -1079,34 +1080,34 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   setp(0,0);
 
   int64_t position = -1;
-  if(way == std::ios_base::cur)
+  if(way == ios_base::cur)
     position = m_file->Seek(offset, SEEK_CUR);
-  else if(way == std::ios_base::end)
+  else if(way == ios_base::end)
     position = m_file->Seek(offset, SEEK_END);
   else
     position = m_file->Seek(offset, SEEK_SET);
 
   if(position<0)
-    return std::streampos(-1);
+    return streampos(-1);
 
   return position;
 }
 
 CFileStreamBuffer::pos_type CFileStreamBuffer::seekpos(
   pos_type pos,
-  std::ios_base::openmode mode)
+  ios_base::openmode mode)
 {
-  return seekoff(pos, std::ios_base::beg, mode);
+  return seekoff(pos, ios_base::beg, mode);
 }
 
-std::streamsize CFileStreamBuffer::showmanyc()
+streamsize CFileStreamBuffer::showmanyc()
 {
   underflow();
   return egptr() - gptr();
 }
 
 CFileStream::CFileStream(int backsize /*= 0*/) :
-    std::istream(&m_buffer),
+    istream(&m_buffer),
     m_buffer(backsize),
     m_file(NULL)
 {

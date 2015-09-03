@@ -33,6 +33,7 @@
 #include <sstream>
 #include <cstring>
 
+using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 
@@ -577,7 +578,7 @@ void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool d
     result[iBuf] = defvalue;
   if (attribute)
   {
-    std::vector<std::string> vecBufs;
+    vector<std::string> vecBufs;
     StringUtils::Tokenize(attribute,vecBufs,",");
     for (size_t nToken=0; nToken < vecBufs.size(); nToken++)
     {

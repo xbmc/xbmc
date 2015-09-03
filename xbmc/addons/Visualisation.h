@@ -69,7 +69,6 @@ namespace ADDON
     void GetInfo(VIS_INFO *info);
     bool OnAction(VIS_ACTION action, void *param = NULL);
     bool UpdateTrack();
-    bool HasPresets() { return m_hasPresets; };
     bool HasSubModules() { return !m_submodules.empty(); }
     bool IsLocked();
     unsigned GetPreset();
@@ -107,7 +106,6 @@ namespace ADDON
     bool m_bWantsFreq;
     float m_fFreq[AUDIO_BUFFER_SIZE];         // Frequency data
     bool m_bCalculate_Freq;       // True if the vis wants freq data
-    bool m_hasPresets;
     std::unique_ptr<RFFT> m_transform;
 
     // track information

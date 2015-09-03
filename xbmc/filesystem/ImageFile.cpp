@@ -23,6 +23,7 @@
 #include "TextureCache.h"
 
 using namespace XFILE;
+using namespace std;
 
 CImageFile::CImageFile(void)
 {

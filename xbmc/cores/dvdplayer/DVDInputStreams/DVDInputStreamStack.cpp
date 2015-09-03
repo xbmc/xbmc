@@ -27,6 +27,7 @@
 #include <limits.h>
 
 using namespace XFILE;
+using namespace std;
 
 CDVDInputStreamStack::CDVDInputStreamStack() : CDVDInputStream(DVDSTREAM_TYPE_FILE)
 {

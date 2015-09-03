@@ -39,6 +39,7 @@
 #endif
 
 using namespace XFILE;
+using namespace std;
 
 #define SEEKTIMOUT 30000
 
@@ -551,13 +552,13 @@ void CRarFile::InitFromUrl(const CURL& url)
   m_strPassword = url.GetUserName();
   m_strPathInRar = url.GetFileName();
 
-  std::vector<std::string> options;
+  vector<std::string> options;
   if (!url.GetOptions().empty())
     StringUtils::Tokenize(url.GetOptions().substr(1), options, "&");
 
   m_bFileOptions = 0;
 
-  for(std::vector<std::string>::iterator it = options.begin();it != options.end(); ++it)
+  for( vector<std::string>::iterator it = options.begin();it != options.end(); ++it)
   {
     size_t iEqual = (*it).find('=');
     if(iEqual != std::string::npos)

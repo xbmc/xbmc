@@ -28,6 +28,7 @@
 
 #include <algorithm>
 
+using namespace std;
 using namespace MUSIC_INFO;
 
 typedef struct ReleaseTypeInfo {
@@ -67,7 +68,7 @@ CAlbum::CAlbum(const CFileItem& item)
         artistName = (i < artist.size()) ? artist[i] : artist[0];
       else if (!tag.GetMusicBrainzArtistID().empty() && !tag.GetArtist().empty())
       {
-        std::vector<std::string>::const_iterator j = std::find(tag.GetMusicBrainzArtistID().begin(), tag.GetMusicBrainzArtistID().end(), artistId);
+        vector<string>::const_iterator j = std::find(tag.GetMusicBrainzArtistID().begin(), tag.GetMusicBrainzArtistID().end(), artistId);
         if (j != tag.GetMusicBrainzArtistID().end())
         { // find corresponding artist
           size_t d = std::distance(j,tag.GetMusicBrainzArtistID().begin());
@@ -83,7 +84,7 @@ CAlbum::CAlbum(const CFileItem& item)
   }
   else
   { // no musicbrainz info, so fill in directly
-    for (std::vector<std::string>::const_iterator it = tag.GetAlbumArtist().begin(); it != tag.GetAlbumArtist().end(); ++it)
+    for (vector<string>::const_iterator it = tag.GetAlbumArtist().begin(); it != tag.GetAlbumArtist().end(); ++it)
     {
       std::string strJoinPhrase = (it == --tag.GetAlbumArtist().end() ? "" : g_advancedSettings.m_musicItemSeparator);
       CArtistCredit artistCredit(*it, "", strJoinPhrase);
@@ -294,7 +295,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   // or removed entirely in preference for better tags (MusicBrainz?)
   if (artistCredits.empty() && !artist.empty())
   {
-    for (std::vector<std::string>::const_iterator it = artist.begin(); it != artist.end(); ++it)
+    for (vector<string>::const_iterator it = artist.begin(); it != artist.end(); ++it)
     {
       CArtistCredit artistCredit(*it, "",
                                  it == --artist.end() ? "" : g_advancedSettings.m_musicItemSeparator);

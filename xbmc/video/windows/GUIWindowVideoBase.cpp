@@ -35,6 +35,7 @@
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "filesystem/StackDirectory.h"
+#include "video/dialogs/GUIDialogFileStacking.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "PartyModeManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -907,28 +908,18 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     return false;
 
   CFileItemList parts;
-  CDirectory::GetDirectory(path, parts);
-
-  for (int i = 0; i < parts.Size(); i++)
-    parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051).c_str(), i+1));
-
-  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-
-  pDialog->Reset();
-  pDialog->SetHeading(CVariant{20324});
-  pDialog->SetItems(&parts);
-  pDialog->Open();
-
-  if (!pDialog->IsConfirmed())
-    return false;
-
-  int selectedFile = pDialog->GetSelectedLabel();
-  if (selectedFile >= 0)
+  CDirectory::GetDirectory(path,parts);
+  CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)g_windowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
+  if (!dlg) return true;
+  dlg->SetNumberOfFiles(parts.Size());
+  dlg->Open();
+  int selectedFile = dlg->GetSelectedFile();
+  if (selectedFile > 0)
   {
     // ISO stack
     if (CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
     {
-      std::string resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile].get()));
+      std::string resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile - 1].get()));
       stack->m_lStartOffset = 0;
       if (!resumeString.empty()) 
       {
@@ -937,7 +928,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
         choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
         int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
         if (value == SELECT_ACTION_RESUME)
-          GetResumeItemOffset(parts[selectedFile].get(), stack->m_lStartOffset, stack->m_lStartPartNumber);
+          GetResumeItemOffset(parts[selectedFile - 1].get(), stack->m_lStartOffset, stack->m_lStartPartNumber);
         else if (value != SELECT_ACTION_PLAY)
           return false; // if not selected PLAY, then we changed our mind so return
       }
@@ -946,11 +937,11 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     // regular stack
     else
     {
-      if (selectedFile > 0)
+      if (selectedFile > 1)
       {
         std::vector<int> times;
         if (m_database.GetStackTimes(path,times))
-          stack->m_lStartOffset = times[selectedFile - 1] * 75;
+          stack->m_lStartOffset = times[selectedFile-2]*75; // wtf?
       }
       else
         stack->m_lStartOffset = 0;

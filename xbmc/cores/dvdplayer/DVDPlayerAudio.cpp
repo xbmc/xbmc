@@ -42,11 +42,13 @@
 #define PROPDIVMAX   40.0
 #define INTEGRAL    200.0
 
+using namespace std;
+
 void CPTSInputQueue::Add(int64_t bytes, double pts)
 {
   CSingleLock lock(m_sync);
 
-  m_list.insert(m_list.begin(), std::make_pair(bytes, pts));
+  m_list.insert(m_list.begin(), make_pair(bytes, pts));
 }
 
 void CPTSInputQueue::Flush()
@@ -476,15 +478,15 @@ void CDVDPlayerAudio::OnStartup()
 void CDVDPlayerAudio::UpdatePlayerInfo()
 {
   std::ostringstream s;
-  s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_dvdAudio.GetCacheTime())) << "%";
-  s << ", Kb/s:" << std::fixed << std::setprecision(2) << (double)GetAudioBitrate() / 1024.0;
+  s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_dvdAudio.GetCacheTime())) << "%";
+  s << ", Kb/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
 
   //print the inverse of the resample ratio, since that makes more sense
   //if the resample ratio is 0.5, then we're playing twice as fast
   if (m_synctype == SYNC_RESAMPLE)
-    s << ", rr:" << std::fixed << std::setprecision(5) << 1.0 / m_resampleratio;
+    s << ", rr:" << fixed << setprecision(5) << 1.0 / m_resampleratio;
 
-  s << ", att:" << std::fixed << std::setprecision(1) << log(GetCurrentAttenuation()) * 20.0f << " dB";
+  s << ", att:" << fixed << setprecision(1) << log(GetCurrentAttenuation()) * 20.0f << " dB";
 
   SInfo info;
   info.info        = s.str();
@@ -890,7 +892,7 @@ bool CDVDPlayerAudio::SwitchCodecIfNeeded()
   return true;
 }
 
-std::string CDVDPlayerAudio::GetPlayerInfo()
+string CDVDPlayerAudio::GetPlayerInfo()
 {
   CSingleLock lock(m_info_section);
   return m_info.info;

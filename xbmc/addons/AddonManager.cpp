@@ -59,6 +59,7 @@
 #include "Util.h"
 #include "addons/Webinterface.h"
 
+using namespace std;
 using namespace XFILE;
 
 namespace ADDON
@@ -73,7 +74,7 @@ void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void 
  *
  */
 
-std::map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
+map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 {
@@ -894,10 +895,10 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   if (!metadata)
     return false;
 
-  std::vector<std::string> platforms;
+  vector<std::string> platforms;
   if (CAddonMgr::GetInstance().GetExtList(metadata->configuration, "platform", platforms))
   {
-    for (std::vector<std::string>::const_iterator platform = platforms.begin(); platform != platforms.end(); ++platform)
+    for (vector<std::string>::const_iterator platform = platforms.begin(); platform != platforms.end(); ++platform)
     {
       if (*platform == "all")
         return true;
@@ -973,7 +974,7 @@ std::string CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path) con
     return "";
 }
 
-bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const
+bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<std::string> &result) const
 {
   result.clear();
   if (!base || !path)

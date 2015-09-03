@@ -40,6 +40,7 @@
 CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(CFileItemPtr item, bool forceRefresh, bool refreshAll, bool ignoreNfo /* = false */, const std::string& searchTitle /* = "" */)
   : CVideoLibraryProgressJob(nullptr),
     m_item(item),
+    m_showDialogs(false),
     m_forceRefresh(forceRefresh),
     m_refreshAll(refreshAll),
     m_ignoreNfo(ignoreNfo),
@@ -86,6 +87,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   bool hasDetails = false;
   bool ignoreNfo = m_ignoreNfo;
 
+  if (m_showDialogs)
+    SetProgressDialog(static_cast<CGUIDialogProgress*>(g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS)));
+
   // run this in a loop in case we need to refresh again
   bool failure = false;
   do
@@ -102,7 +106,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
 
       // if we are performing a forced refresh ask the user to choose between using a valid NFO and a valid scraper
-      if (needsRefresh && IsModal() && !scraper->IsNoop() &&
+      if (needsRefresh && m_showDialogs && !scraper->IsNoop() &&
          (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO))
       {
         int heading = 20159;
@@ -142,17 +146,15 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       // try to find a matching item
       MOVIELIST itemResultList;
       int result = infoDownloader.FindMovie(itemTitle, itemResultList, GetProgressDialog());
-
-      // close the progress dialog
-      MarkFinished();
-
       if (result > 0)
       {
+        MarkFinished();
+
         // there are multiple matches for the item
         if (!itemResultList.empty())
         {
           // choose the first match
-          if (!IsModal())
+          if (!m_showDialogs)
             scraperUrl = itemResultList.at(0);
           else
           {
@@ -199,7 +201,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // to prompt and ask the user to input a new search title
     if (!hasDetails && scraperUrl.m_url.empty())
     {
-      if (IsModal())
+      if (m_showDialogs)
       {
         // ask the user to input a title to use
         if (!CGUIKeyboardFactory::ShowAndGetInput(itemTitle, g_localizeStrings.Get(scraper->Content() == CONTENT_TVSHOWS ? 20357 : 16009), false))
@@ -298,7 +300,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       MarkFinished();
 
       // check if the user cancelled
-      if (!IsCancelled() && IsModal())
+      if (!IsCancelled() && m_showDialogs)
         CGUIDialogOK::ShowAndGetInput(195, itemTitle);
 
       return false;
@@ -323,7 +325,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     break;
   } while (needsRefresh);
 
-  if (failure && IsModal())
+  if (failure && m_showDialogs)
     CGUIDialogOK::ShowAndGetInput(195, itemTitle);
 
   return true;

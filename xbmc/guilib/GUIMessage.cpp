@@ -21,6 +21,8 @@
 #include "GUIMessage.h"
 #include "LocalizeStrings.h"
 
+using namespace std;
+
 std::string CGUIMessage::empty_string;
 
 CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int param2)
@@ -131,12 +133,12 @@ void CGUIMessage::SetPointer(void* lpVoid)
   m_pointer = lpVoid;
 }
 
-void CGUIMessage::SetLabel(const std::string& strLabel)
+void CGUIMessage::SetLabel(const string& strLabel)
 {
   m_strLabel = strLabel;
 }
 
-const std::string& CGUIMessage::GetLabel() const
+const string& CGUIMessage::GetLabel() const
 {
   return m_strLabel;
 }
@@ -146,14 +148,14 @@ void CGUIMessage::SetLabel(int iString)
   m_strLabel = g_localizeStrings.Get(iString);
 }
 
-void CGUIMessage::SetStringParam(const std::string& strParam)
+void CGUIMessage::SetStringParam(const string& strParam)
 {
   m_params.clear();
   if (strParam.size())
     m_params.push_back(strParam);
 }
 
-void CGUIMessage::SetStringParams(const std::vector<std::string> &params)
+void CGUIMessage::SetStringParams(const vector<string> &params)
 {
   m_params = params;
 }

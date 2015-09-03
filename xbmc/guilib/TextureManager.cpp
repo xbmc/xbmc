@@ -40,6 +40,9 @@
 #include "windowing/WindowingFactory.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
 #endif
 
+using namespace std;
+
+
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
@@ -440,7 +443,7 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
       {
         //CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
         // add to our textures to free
-        m_unusedTextures.push_back(std::make_pair(pMap, immediately ? 0 : XbmcThreads::SystemClockMillis()));
+        m_unusedTextures.push_back(make_pair(pMap, immediately ? 0 : XbmcThreads::SystemClockMillis()));
         i = m_vecTextures.erase(i);
       }
       return;
@@ -565,7 +568,7 @@ void CGUITextureManager::AddTexturePath(const std::string &texturePath)
 void CGUITextureManager::RemoveTexturePath(const std::string &texturePath)
 {
   CSingleLock lock(m_section);
-  for (std::vector<std::string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+  for (vector<std::string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
   {
     if (*it == texturePath)
     {
@@ -582,7 +585,7 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
   else
   { // texture doesn't include the full path, so check all fallbacks
     CSingleLock lock(m_section);
-    for (std::vector<std::string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
+    for (vector<std::string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
     {
       std::string path = URIUtils::AddFileToFolder(it->c_str(), "media");
       path = URIUtils::AddFileToFolder(path, textureName);

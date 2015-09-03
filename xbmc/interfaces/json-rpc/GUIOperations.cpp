@@ -32,6 +32,7 @@
 #include "guilib/StereoscopicsManager.h"
 #include "windowing/WindowingFactory.h"
 
+using namespace std;
 using namespace JSONRPC;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
@@ -72,9 +73,9 @@ JSONRPC_STATUS CGUIOperations::ActivateWindow(const std::string &method, ITransp
 
 JSONRPC_STATUS CGUIOperations::ShowNotification(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  std::string image = parameterObject["image"].asString();
-  std::string title = parameterObject["title"].asString();
-  std::string message = parameterObject["message"].asString();
+  string image = parameterObject["image"].asString();
+  string title = parameterObject["title"].asString();
+  string message = parameterObject["message"].asString();
   unsigned int displaytime = (unsigned int)parameterObject["displaytime"].asUnsignedInteger();
 
   if (image.compare("info") == 0)

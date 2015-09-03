@@ -35,7 +35,9 @@
 #define WS_HEADER_VERSION       "Sec-WebSocket-Version"
 #define WS_HEADER_VERSION_LC    "sec-websocket-version"     // "Sec-WebSocket-Version"
 
-CWebSocket* CWebSocketManager::Handle(const char* data, unsigned int length, std::string &response)
+using namespace std;
+
+CWebSocket* CWebSocketManager::Handle(const char* data, unsigned int length, string &response)
 {
   if (data == NULL || length <= 0)
     return NULL;

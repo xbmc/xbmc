@@ -39,9 +39,11 @@
 #endif // TARGET_WINDOWS
 #endif // strtoll
 
-std::string trimRight(const std::string &str)
+using namespace std;
+
+string trimRight(const string &str)
 {
-  std::string tmp = str;
+  string tmp = str;
   // find_last_not_of will return string::npos (which is defined as -1)
   // or a value between 0 and size() - 1 => find_last_not_of() + 1 will
   // always result in a valid index between 0 and size()
@@ -50,9 +52,9 @@ std::string trimRight(const std::string &str)
   return tmp;
 }
 
-std::wstring trimRight(const std::wstring &str)
+wstring trimRight(const wstring &str)
 {
-  std::wstring tmp = str;
+  wstring tmp = str;
   // find_last_not_of will return string::npos (which is defined as -1)
   // or a value between 0 and size() - 1 => find_last_not_of() + 1 will
   // always result in a valid index between 0 and size()
@@ -61,10 +63,10 @@ std::wstring trimRight(const std::wstring &str)
   return tmp;
 }
 
-int64_t str2int64(const std::string &str, int64_t fallback /* = 0 */)
+int64_t str2int64(const string &str, int64_t fallback /* = 0 */)
 {
   char *end = NULL;
-  std::string tmp = trimRight(str);
+  string tmp = trimRight(str);
   int64_t result = strtoll(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
@@ -72,10 +74,10 @@ int64_t str2int64(const std::string &str, int64_t fallback /* = 0 */)
   return fallback;
 }
 
-int64_t str2int64(const std::wstring &str, int64_t fallback /* = 0 */)
+int64_t str2int64(const wstring &str, int64_t fallback /* = 0 */)
 {
   wchar_t *end = NULL;
-  std::wstring tmp = trimRight(str);
+  wstring tmp = trimRight(str);
   int64_t result = wcstoll(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
@@ -83,10 +85,10 @@ int64_t str2int64(const std::wstring &str, int64_t fallback /* = 0 */)
   return fallback;
 }
 
-uint64_t str2uint64(const std::string &str, uint64_t fallback /* = 0 */)
+uint64_t str2uint64(const string &str, uint64_t fallback /* = 0 */)
 {
   char *end = NULL;
-  std::string tmp = trimRight(str);
+  string tmp = trimRight(str);
   uint64_t result = strtoull(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
@@ -94,10 +96,10 @@ uint64_t str2uint64(const std::string &str, uint64_t fallback /* = 0 */)
   return fallback;
 }
 
-uint64_t str2uint64(const std::wstring &str, uint64_t fallback /* = 0 */)
+uint64_t str2uint64(const wstring &str, uint64_t fallback /* = 0 */)
 {
   wchar_t *end = NULL;
-  std::wstring tmp = trimRight(str);
+  wstring tmp = trimRight(str);
   uint64_t result = wcstoull(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
@@ -105,10 +107,10 @@ uint64_t str2uint64(const std::wstring &str, uint64_t fallback /* = 0 */)
   return fallback;
 }
 
-double str2double(const std::string &str, double fallback /* = 0.0 */)
+double str2double(const string &str, double fallback /* = 0.0 */)
 {
   char *end = NULL;
-  std::string tmp = trimRight(str);
+  string tmp = trimRight(str);
   double result = strtod(tmp.c_str(), &end);
   if (end == NULL || *end == '\0')
     return result;
@@ -116,10 +118,10 @@ double str2double(const std::string &str, double fallback /* = 0.0 */)
   return fallback;
 }
 
-double str2double(const std::wstring &str, double fallback /* = 0.0 */)
+double str2double(const wstring &str, double fallback /* = 0.0 */)
 {
   wchar_t *end = NULL;
-  std::wstring tmp = trimRight(str);
+  wstring tmp = trimRight(str);
   double result = wcstod(tmp.c_str(), &end);
   if (end == NULL || *end == '\0')
     return result;
@@ -148,10 +150,10 @@ CVariant::CVariant(VariantType type)
       m_data.dvalue = 0.0;
       break;
     case VariantTypeString:
-      m_data.string = new std::string();
+      m_data.string = new string();
       break;
     case VariantTypeWideString:
-      m_data.wstring = new std::wstring();
+      m_data.wstring = new wstring();
       break;
     case VariantTypeArray:
       m_data.array = new VariantArray();
@@ -210,43 +212,43 @@ CVariant::CVariant(bool boolean)
 CVariant::CVariant(const char *str)
 {
   m_type = VariantTypeString;
-  m_data.string = new std::string(str);
+  m_data.string = new string(str);
 }
 
 CVariant::CVariant(const char *str, unsigned int length)
 {
   m_type = VariantTypeString;
-  m_data.string = new std::string(str, length);
+  m_data.string = new string(str, length);
 }
 
-CVariant::CVariant(const std::string &str)
+CVariant::CVariant(const string &str)
 {
   m_type = VariantTypeString;
-  m_data.string = new std::string(str);
+  m_data.string = new string(str);
 }
 
 CVariant::CVariant(std::string &&str)
 {
   m_type = VariantTypeString;
-  m_data.string = new std::string(std::move(str));
+  m_data.string = new string(std::move(str));
 }
 
 CVariant::CVariant(const wchar_t *str)
 {
   m_type = VariantTypeWideString;
-  m_data.wstring = new std::wstring(str);
+  m_data.wstring = new wstring(str);
 }
 
 CVariant::CVariant(const wchar_t *str, unsigned int length)
 {
   m_type = VariantTypeWideString;
-  m_data.wstring = new std::wstring(str, length);
+  m_data.wstring = new wstring(str, length);
 }
 
-CVariant::CVariant(const std::wstring &str)
+CVariant::CVariant(const wstring &str)
 {
   m_type = VariantTypeWideString;
-  m_data.wstring = new std::wstring(str);
+  m_data.wstring = new wstring(str);
 }
 
 CVariant::CVariant(std::wstring &&str)
@@ -591,10 +593,10 @@ CVariant &CVariant::operator=(const CVariant &rhs)
     m_data.dvalue = rhs.m_data.dvalue;
     break;
   case VariantTypeString:
-    m_data.string = new std::string(*rhs.m_data.string);
+    m_data.string = new string(*rhs.m_data.string);
     break;
   case VariantTypeWideString:
-    m_data.wstring = new std::wstring(*rhs.m_data.wstring);
+    m_data.wstring = new wstring(*rhs.m_data.wstring);
     break;
   case VariantTypeArray:
     m_data.array = new VariantArray(rhs.m_data.array->begin(), rhs.m_data.array->end());

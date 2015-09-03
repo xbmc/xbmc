@@ -33,6 +33,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 
+using namespace std;
 using namespace PVR;
 
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool fileinfo)
@@ -45,7 +46,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
   {
     // audio/x-xbmc-pcm this is the used codec for AirTunes
     // (apples audio only streaming)
-    std::unique_ptr<CDVDDemuxBXA> demuxer(new CDVDDemuxBXA());
+    unique_ptr<CDVDDemuxBXA> demuxer(new CDVDDemuxBXA());
     if(demuxer->Open(pInputStream))
       return demuxer.release();
     else
@@ -60,7 +61,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
     {
       CLog::Log(LOGDEBUG, "DVDFactoryDemuxer: Stream is probably CD audio. Creating CDDA demuxer.");
 
-      std::unique_ptr<CDVDDemuxCDDA> demuxer(new CDVDDemuxCDDA());
+      unique_ptr<CDVDDemuxCDDA> demuxer(new CDVDDemuxCDDA());
       if (demuxer->Open(pInputStream))
       {
         return demuxer.release();
@@ -76,7 +77,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
     /* check so we got the meta information as requested in our http header */
     if( header->GetValue("icy-metaint").length() > 0 )
     {
-      std::unique_ptr<CDVDDemuxShoutcast> demuxer(new CDVDDemuxShoutcast());
+      unique_ptr<CDVDDemuxShoutcast> demuxer(new CDVDDemuxShoutcast());
       if(demuxer->Open(pInputStream))
         return demuxer.release();
       else
@@ -99,7 +100,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
       /* Used for MediaPortal PVR addon (uses PVR otherstream for playback of rtsp streams) */
       if (pOtherStream->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
       {
-        std::unique_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
+        unique_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
         if(demuxer->Open(pOtherStream, streaminfo))
           return demuxer.release();
         else
@@ -114,7 +115,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
       if (g_PVRClients->GetPlayingClient(client) &&
           client->HandlesDemuxing())
       {
-        std::unique_ptr<CDVDDemuxPVRClient> demuxer(new CDVDDemuxPVRClient());
+        unique_ptr<CDVDDemuxPVRClient> demuxer(new CDVDDemuxPVRClient());
         if(demuxer->Open(pInputStream))
           return demuxer.release();
         else
@@ -129,7 +130,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream, bool
     streaminfo = !useFastswitch;
   }
 
-  std::unique_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
+  unique_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
   if(demuxer->Open(pInputStream, streaminfo, fileinfo))
     return demuxer.release();
   else

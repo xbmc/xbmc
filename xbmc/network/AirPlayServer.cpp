@@ -50,6 +50,7 @@
 
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
+using namespace std;
 
 #ifdef TARGET_WINDOWS
 #define close closesocket
@@ -641,12 +642,12 @@ std::string calcResponse(const std::string& username,
 //from a string field1="value1", field2="value2" it parses the value to a field
 std::string getFieldFromString(const std::string &str, const char* field)
 {
-  std::vector<std::string> tmpAr1 = StringUtils::Split(str, ",");
-  for(std::vector<std::string>::const_iterator i = tmpAr1.begin(); i != tmpAr1.end(); ++i)
+  vector<string> tmpAr1 = StringUtils::Split(str, ",");
+  for(vector<string>::const_iterator i = tmpAr1.begin(); i != tmpAr1.end(); ++i)
   {
     if (i->find(field) != std::string::npos)
     {
-      std::vector<std::string> tmpAr2 = StringUtils::Split(*i, "=");
+      vector<string> tmpAr2 = StringUtils::Split(*i, "=");
       if (tmpAr2.size() == 2)
       {
         StringUtils::Replace(tmpAr2[1], "\"", "");//remove quotes

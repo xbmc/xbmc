@@ -28,6 +28,8 @@
 #include "utils/StringUtils.h"
 #include "interfaces/info/SkinVariable.h"
 
+using namespace std;
+
 CGUIIncludes::CGUIIncludes()
 {
   m_constantAttributes.insert("x");
@@ -169,7 +171,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     if (node->Attribute("type") && node->FirstChild())
     {
       std::string tagName = node->Attribute("type");
-      m_defaults.insert(std::pair<std::string, TiXmlElement>(tagName, *node));
+      m_defaults.insert(pair<std::string, TiXmlElement>(tagName, *node));
     }
     node = node->NextSiblingElement("default");
   }
@@ -231,7 +233,7 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
   if (node->ValueStr() == "control")
   {
     type = XMLUtils::GetAttribute(node, "type");
-    std::map<std::string, TiXmlElement>::const_iterator it = m_defaults.find(type);
+    map<std::string, TiXmlElement>::const_iterator it = m_defaults.find(type);
     if (it != m_defaults.end())
     {
       // we don't insert <left> et. al. if <posx> or <posy> is specified
@@ -479,10 +481,10 @@ CGUIIncludes::ResolveParamsResult CGUIIncludes::ResolveParameters(const std::str
 
 std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
 {
-  std::vector<std::string> values = StringUtils::Split(constant, ",");
-  for (std::vector<std::string>::iterator i = values.begin(); i != values.end(); ++i)
+  vector<string> values = StringUtils::Split(constant, ",");
+  for (vector<string>::iterator i = values.begin(); i != values.end(); ++i)
   {
-    std::map<std::string, std::string>::const_iterator it = m_constants.find(*i);
+    map<std::string, std::string>::const_iterator it = m_constants.find(*i);
     if (it != m_constants.end())
       *i = it->second;
   }
@@ -491,7 +493,7 @@ std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
 
 const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const std::string& name, int context)
 {
-  std::map<std::string, TiXmlElement>::const_iterator it = m_skinvariables.find(name);
+  map<std::string, TiXmlElement>::const_iterator it = m_skinvariables.find(name);
   if (it != m_skinvariables.end())
     return INFO::CSkinVariable::CreateFromXML(it->second, context);
   return NULL;

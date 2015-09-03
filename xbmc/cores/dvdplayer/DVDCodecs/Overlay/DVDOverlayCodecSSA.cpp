@@ -28,6 +28,7 @@
 #include "utils/StringUtils.h"
 
 using namespace AUTOPTR;
+using namespace std;
 
 CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Decoder")
 {

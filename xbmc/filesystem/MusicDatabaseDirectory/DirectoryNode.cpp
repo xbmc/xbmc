@@ -48,6 +48,7 @@
 #include "music/MusicDbUrl.h"
 #include "settings/Settings.h"
 
+using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 //  Constructor is protected use ParseURL()
@@ -71,7 +72,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const std::string& strPath)
   std::string strDirectory=url.GetFileName();
   URIUtils::RemoveSlashAtEnd(strDirectory);
 
-  std::vector<std::string> Path = StringUtils::Split(strDirectory, '/');
+  vector<string> Path = StringUtils::Split(strDirectory, '/');
   Path.insert(Path.begin(), "");
 
   CDirectoryNode* pNode=NULL;
@@ -95,7 +96,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const std::string& strPath)
 //  returns the database ids of the path,
 void CDirectoryNode::GetDatabaseInfo(const std::string& strPath, CQueryParams& params)
 {
-  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
+  unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
   if (!pNode.get())
     return;
@@ -198,7 +199,7 @@ bool CDirectoryNode::GetContent(CFileItemList& items) const
 //  Creates a musicdb url
 std::string CDirectoryNode::BuildPath() const
 {
-  std::vector<std::string> array;
+  vector<string> array;
 
   if (!m_strName.empty())
     array.insert(array.begin(), m_strName);
@@ -217,7 +218,7 @@ std::string CDirectoryNode::BuildPath() const
   for (int i=0; i<(int)array.size(); ++i)
     strPath+=array[i]+"/";
 
-  std::string options = m_options.GetOptionsString();
+  string options = m_options.GetOptionsString();
   if (!options.empty())
     strPath += "?" + options;
 
@@ -260,7 +261,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   if (CanCache() && items.Load())
     return true;
 
-  std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
+  unique_ptr<CDirectoryNode> pNode(CDirectoryNode::CreateNode(GetChildType(), "", this));
 
   bool bSuccess=false;
   if (pNode.get())

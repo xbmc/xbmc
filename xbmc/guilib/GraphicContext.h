@@ -164,8 +164,6 @@ public:
   void SetStereoMode(RENDER_STEREO_MODE mode) { m_nextStereoMode = mode; }
   RENDER_STEREO_MODE GetStereoMode()  { return m_stereoMode; }
   void RestoreCameraPosition();
-  void SetStereoFactor(float factor);
-  void RestoreStereoFactor();
   /*! \brief Set a region in which to clip all rendering
    Anything that is rendered after setting a clip region will be clipped so that no part renders
    outside of the clip region.  Successive calls to SetClipRegion intersect the clip region, which
@@ -271,7 +269,7 @@ private:
     float scaleX;
     float scaleY;
   };
-  void UpdateCameraPosition(const CPoint &camera, const float &factor);
+  void UpdateCameraPosition(const CPoint &camera);
   // this method is indirectly called by the public SetVideoResolution
   // it only works when called from mainthread (thats what SetVideoResolution ensures)
   void SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate);
@@ -279,7 +277,6 @@ private:
   std::stack<CPoint> m_cameras;
   std::stack<CPoint> m_origins;
   std::stack<CRect>  m_clipRegions;
-  std::stack<float>  m_stereoFactors;
 
   UITransform m_guiTransform;
   UITransform m_finalTransform;

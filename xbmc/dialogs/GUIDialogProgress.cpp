@@ -28,6 +28,8 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 
+using namespace std;
+
 #define CONTROL_CANCEL_BUTTON 10
 #define CONTROL_PROGRESS_BAR 20
 
@@ -114,7 +116,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_CANCEL_BUTTON && m_bCanCancel && !m_bCanceled)
       {
-        std::string strHeading = m_strHeading;
+        string strHeading = m_strHeading;
         strHeading.append(" : ");
         strHeading.append(g_localizeStrings.Get(16024));
         CGUIDialogBoxBase::SetHeading(CVariant{strHeading});

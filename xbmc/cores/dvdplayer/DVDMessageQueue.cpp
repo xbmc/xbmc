@@ -24,7 +24,9 @@
 #include "DVDClock.h"
 #include "utils/MathUtils.h"
 
-CDVDMessageQueue::CDVDMessageQueue(const std::string &owner) : m_hEvent(true), m_owner(owner)
+using namespace std;
+
+CDVDMessageQueue::CDVDMessageQueue(const string &owner) : m_hEvent(true), m_owner(owner)
 {
   m_iDataSize     = 0;
   m_bAbortRequest = false;
@@ -254,9 +256,9 @@ int CDVDMessageQueue::GetLevel() const
     return 0;
 
   if(IsDataBased())
-    return std::min(100, 100 * m_iDataSize / m_iMaxDataSize);
+    return min(100, 100 * m_iDataSize / m_iMaxDataSize);
 
-  return std::min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
+  return min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
 }
 
 int CDVDMessageQueue::GetTimeSize() const

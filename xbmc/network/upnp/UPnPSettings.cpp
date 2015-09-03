@@ -33,6 +33,7 @@
 #define XML_RENDERER_UUID "UUIDRenderer"
 #define XML_RENDERER_PORT "PortRenderer"
 
+using namespace std;
 using namespace XFILE;
 
 CUPnPSettings::CUPnPSettings()

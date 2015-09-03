@@ -255,12 +255,5 @@ public:
    * Indicates if dsp addon system is active.
    */
   virtual bool HasDSP() { return false; };
-
-  /**
-   * Gets the currently used sink format.
-   *
-   * @return The current sink format.
-   */
-  virtual AEAudioFormat GetCurrentSinkFormat() = 0;
 };
 

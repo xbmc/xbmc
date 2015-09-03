@@ -45,9 +45,11 @@
 #define WS_PROTOCOL_JSONRPC     "jsonrpc.xbmc.org"
 #define WS_HEADER_UPGRADE_VALUE "websocket"
 
+using namespace std;
+
 bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &response)
 {
-  std::string strHeader(data, length);
+  string strHeader(data, length);
   const char *value;
   HttpParser header;
   if (header.addBytes(data, length) != HttpParser::Done)
@@ -66,14 +68,14 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
 
   // The request must be HTTP/1.1 or higher
   size_t pos;
-  if ((pos = strHeader.find(WS_HTTP_TAG)) == std::string::npos)
+  if ((pos = strHeader.find(WS_HTTP_TAG)) == string::npos)
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: invalid handshake received");
     return false;
   }
 
   pos += strlen(WS_HTTP_TAG);
-  std::istringstream converter(strHeader.substr(pos, strHeader.find_first_of(" \r\n\t", pos) - pos));
+  istringstream converter(strHeader.substr(pos, strHeader.find_first_of(" \r\n\t", pos) - pos));
   float fVersion;
   converter >> fVersion;
 
@@ -83,7 +85,7 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
     return false;
   }
 
-  std::string websocketKey, websocketProtocol;
+  string websocketKey, websocketProtocol;
   // There must be a "Host" header
   value = header.getValue("host");
   if (value == NULL || strlen(value) == 0)
@@ -120,8 +122,8 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
   value = header.getValue(WS_HEADER_PROTOCOL_LC);
   if (value && strlen(value) > 0)
   {
-    std::vector<std::string> protocols = StringUtils::Split(value, ",");
-    for (std::vector<std::string>::iterator protocol = protocols.begin(); protocol != protocols.end(); ++protocol)
+    vector<string> protocols = StringUtils::Split(value, ",");
+    for (vector<string>::iterator protocol = protocols.begin(); protocol != protocols.end(); ++protocol)
     {
       StringUtils::Trim(*protocol);
       if (*protocol == WS_PROTOCOL_JSONRPC)

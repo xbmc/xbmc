@@ -27,6 +27,9 @@
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "settings/MediaSettings.h"
 
+using namespace std;
+
+
 CDVDAudio::CDVDAudio(volatile bool &bStop)
   : m_bStop(bStop)
 {
