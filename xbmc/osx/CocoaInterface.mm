@@ -246,7 +246,6 @@ const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconNa
     NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithData:[icon TIFFRepresentation]];
     NSData* png = [rep representationUsingType:NSPNGFileType properties:nil];
     [png writeToFile:pngFile atomically:YES];
-    [png release];
     [rep release];
     [icon release];
   }
