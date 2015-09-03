@@ -1200,19 +1200,19 @@
     </category>
     <category id="dsplayer" label="55000" help="">
       <group id="1">
-        <setting id="dsplayer.defaultvideoplayer" type="boolean" label="55031" help="">
+        <setting id="dsplayer.defaultvideoplayer" type="boolean" label="55031" help="90000">
           <level>0</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.playercore" type="action" parent="dsplayer.autofiltersettings" label="66001">
+        <setting id="dsplayer.playercore" type="action" parent="dsplayer.defaultvideoplayer" label="66001" help="90001">
           <level>0</level>
           <dependencies>
             <dependency type="enable" setting="dsplayer.defaultvideoplayer" operator="is">true</dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="dsplayer.videorenderer" type="string" label="55001" help="">
+        <setting id="dsplayer.videorenderer" type="string" label="55001" help="90002">
           <level>0</level>
           <default>madVR</default>
           <constraints>
@@ -1220,7 +1220,7 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.madvrsettingswithkodi" parent="dsplayer.videorenderer" type="integer" label="55064" help="">
+        <setting id="dsplayer.madvrsettingswithkodi" parent="dsplayer.videorenderer" type="integer" label="55064" help="90003">
           <level>0</level>
           <default>1</default> <!-- never -->
           <constraints>
@@ -1235,7 +1235,7 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.delaymadvrplayback" parent="dsplayer.videorenderer" type="boolean" label="55065" help="">
+        <setting id="dsplayer.delaymadvrplayback" parent="dsplayer.videorenderer" type="boolean" label="55065" help="90004">
           <level>0</level>
           <default>true</default>
           <dependencies>
@@ -1243,7 +1243,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.madvrexclusivemode" parent="dsplayer.videorenderer" type="boolean" label="55063" help="">
+        <setting id="dsplayer.madvrexclusivemode" parent="dsplayer.videorenderer" type="boolean" label="55063" help="90005">
           <level>0</level>
           <default>false</default>
           <dependencies>
@@ -1251,7 +1251,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.exitmadvrfullscreen" parent="dsplayer.videorenderer" type="boolean" label="55074" help="">
+        <setting id="dsplayer.exitmadvrfullscreen" parent="dsplayer.videorenderer" type="boolean" label="55074" help="90006">
           <level>0</level>
           <default>false</default>
           <dependencies>
@@ -1260,7 +1260,7 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.audiorenderer" type="string" label="55003" help="">
+        <setting id="dsplayer.audiorenderer" type="string" label="55003" help="90007">
           <level>0</level>
           <default>System Default</default>
           <constraints>
@@ -1270,7 +1270,7 @@
         </setting>
       </group>
       <group id="2">
-        <setting id="dsplayer.filtersmanagement" type="integer" label="55021" help="">
+        <setting id="dsplayer.filtersmanagement" type="integer" label="55021" help="90008">
           <level>0</level>
           <default>0</default> <!-- internal lav filters -->
           <constraints>
@@ -1285,49 +1285,49 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.rules" type="action" parent="dsplayer.filtersmanagement" label="60001">
+        <setting id="dsplayer.rules" type="action" parent="dsplayer.filtersmanagement" label="60001" help="90019">
           <level>0</level>
           <dependencies>
             <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">1</dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="dsplayer.filters" type="action" parent="dsplayer.filtersmanagement" label="65001">
+        <setting id="dsplayer.filters" type="action" parent="dsplayer.filtersmanagement" label="65001" help="90020">
           <level>0</level>
           <dependencies>
             <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">1</dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="dsplayer.lavsplitter" type="action" parent="dsplayer.filtersmanagement" label="55079">
+        <setting id="dsplayer.lavsplitter" type="action" parent="dsplayer.filtersmanagement" label="55079" help="90014">
           <level>0</level>
           <dependencies>
             <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="dsplayer.lavvideo" type="action" parent="dsplayer.filtersmanagement" label="55077">
+        <setting id="dsplayer.lavvideo" type="action" parent="dsplayer.filtersmanagement" label="55077" help="90015">
           <level>0</level>
           <dependencies>
             <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="dsplayer.lavaudio" type="action" parent="dsplayer.filtersmanagement" label="55078">
+        <setting id="dsplayer.lavaudio" type="action" parent="dsplayer.filtersmanagement" label="55078" help="90016">
           <level>0</level>
           <dependencies>
             <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="dsplayer.xysubfilter" type="action" parent="dsplayer.filtersmanagement" label="55080">
+        <setting id="dsplayer.xysubfilter" type="action" parent="dsplayer.filtersmanagement" label="55080" help="90017">
           <level>0</level>
           <dependencies>
             <dependency type="visible" setting="dsplayer.filtersmanagement" operator="is">0</dependency>
           </dependencies>
           <control type="button" format="action" />
         </setting>
-        <setting id="dsplayer.extrafilter0" type="string" parent="dsplayer.filtersmanagement" label="55084" help="">
+        <setting id="dsplayer.extrafilter0" type="string" parent="dsplayer.filtersmanagement" label="55084" help="90018">
           <level>0</level>
           <default>[null]</default>
           <constraints>
@@ -1338,7 +1338,7 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.extrafilter1" type="string" parent="dsplayer.filtersmanagement" label="55084" help="">
+        <setting id="dsplayer.extrafilter1" type="string" parent="dsplayer.filtersmanagement" label="55084" help="90018">
           <level>0</level>
           <default>[null]</default>
           <constraints>
@@ -1354,7 +1354,7 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.extrafilter2" type="string" parent="dsplayer.filtersmanagement" label="55084" help="">
+        <setting id="dsplayer.extrafilter2" type="string" parent="dsplayer.filtersmanagement" label="55084" help="90018">
           <level>0</level>
           <default>[null]</default>
           <constraints>
@@ -1373,17 +1373,17 @@
         </setting>
       </group>
       <group id="3">
-        <setting id="dsplayer.showbdtitlechoice" type="boolean" label="55030" help="">
+        <setting id="dsplayer.showbdtitlechoice" type="boolean" label="55030" help="90008">
           <level>0</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.showbdtitlechoice" type="boolean" label="55032" help="">
+        <setting id="dsplayer.showbdtitlechoice" type="boolean" label="55032" help="90009">
           <level>0</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.mintitlelength" type="integer" label="55022" help="">
+        <setting id="dsplayer.mintitlelength" type="integer" label="55022" help="90010">
           <level>0</level>
           <default>30</default>
           <constraints>
@@ -1395,7 +1395,7 @@
 	</setting>
       </group>
       <group id="4">
-        <setting id="dsplayer.exsubtitlelanguage" type="string" label="55085" help="">
+        <setting id="dsplayer.exsubtitlelanguage" type="string" label="55085" help="36120">
           <level>0</level>
           <default>original</default>
           <constraints>
@@ -1403,17 +1403,17 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="dsplayer.videoaudioexpandedselector" type="boolean" label="55060" help="">
+        <setting id="dsplayer.videoaudioexpandedselector" type="boolean" label="55060" help="90011">
           <level>0</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.videosubsexpandedselector" type="boolean" label="55061" help="">
+        <setting id="dsplayer.videosubsexpandedselector" type="boolean" label="55061" help="90012">
           <level>0</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="dsplayer.showsplitterdetail" type="boolean" label="55066" help="">
+        <setting id="dsplayer.showsplitterdetail" type="boolean" label="55066" help="90013">
           <level>0</level>
           <default>false</default>
           <control type="toggle" />
