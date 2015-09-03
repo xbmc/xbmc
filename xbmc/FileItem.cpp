@@ -221,7 +221,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_strPath = artist.strArtist;
   m_bIsFolder = true;
   URIUtils::AddSlashAtEnd(m_strPath);
-  GetMusicInfoTag()->SetArtist(artist.strArtist);
+  GetMusicInfoTag()->SetArtist(artist);
   FillInMimeType(false);
 }
 

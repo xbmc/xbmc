@@ -191,3 +191,8 @@ bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& s
   return true;
 }
 
+void CArtist::SetDateAdded(const std::string& strDateAdded)
+{
+  dateAdded.SetFromDBDateTime(strDateAdded);
+}
+

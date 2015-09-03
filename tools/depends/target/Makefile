@@ -15,9 +15,9 @@ DEPENDS = \
 	python26 libshairplay \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
 	libamplayer libssh taglib libusb libnfs libmp3lame \
-	pythonmodule-pil libxslt ffmpeg platform crossguid
+	pythonmodule-pil libxslt ffmpeg platform crossguid libdcadec
 
-FFMPEG_DEPENDS = gnutls
+FFMPEG_DEPENDS = gnutls libdcadec
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3

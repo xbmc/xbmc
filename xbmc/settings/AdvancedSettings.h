@@ -387,6 +387,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     void SetDebugMode(bool debug);
 
+    //! \brief Toggles dirty-region visualization
+    void ToggleDirtyRegionVisualization() { m_guiVisualizeDirtyRegions = !m_guiVisualizeDirtyRegions; };
+
     // runtime settings which cannot be set from advancedsettings.xml
     std::string m_pictureExtensions;
     std::string m_videoExtensions;

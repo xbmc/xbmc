@@ -235,13 +235,12 @@ bool CGUIDialogVideoInfo::OnAction(const CAction &action)
 void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 {
   *m_movieItem = *item;
-  // setup cast list + determine type.  We need to do this here as it makes
-  // sure that content type (among other things) is set correctly for the
-  // old fixed id labels that we have floating around (they may be using
-  // content type to determine visibility, so we'll set the wrong label)
+
+  // setup cast list
   ClearCastList();
-  VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType();
-  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+  MediaType type = item->GetVideoInfoTag()->m_type;
+
+  if (type == MediaTypeMusicVideo)
   { // music video
     CMusicDatabase database;
     database.Open();
@@ -256,7 +255,6 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       item->SetIconImage("DefaultArtist.png");
       m_castList->Add(item);
     }
-    m_castList->SetContent("musicvideos");
   }
   else
   { // movie/show/episode
@@ -279,77 +277,34 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       item->SetLabel2(it->strRole);
       m_castList->Add(item);
     }
-    // determine type:
-    if (type == VIDEODB_CONTENT_TVSHOWS)
-    {
-      m_castList->SetContent("tvshows");
-      // special case stuff for shows (not currently retrieved from the library in filemode (ref: GetTvShowInfo vs GetTVShowsByWhere)
-      m_movieItem->m_dateTime = m_movieItem->GetVideoInfoTag()->m_premiered;
-      if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
-        m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
-      if (!m_movieItem->HasProperty("totalepisodes"))
-      {
-        m_movieItem->SetProperty("totalepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode);
-        m_movieItem->SetProperty("numepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode); // info view has no concept of current watched/unwatched filter as we could come here from files view, but set for consistency
-        m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
-        m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
-        m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
-      }
-    }
-    else if (type == VIDEODB_CONTENT_EPISODES)
-    {
-      m_castList->SetContent("episodes");
-      // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
-      m_movieItem->m_dateTime = m_movieItem->GetVideoInfoTag()->m_firstAired;
-      if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
-        m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
-      // retrieve the season thumb.
-      // TODO: should we use the thumbloader for this?
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
-        {
-          int seasonID = m_movieItem->GetVideoInfoTag()->m_iIdSeason;
-          if (seasonID < 0)
-            seasonID = db.GetSeasonId(m_movieItem->GetVideoInfoTag()->m_iIdShow,
-                                      m_movieItem->GetVideoInfoTag()->m_iSeason);
-          CGUIListItem::ArtMap thumbs;
-          if (db.GetArtForItem(seasonID, MediaTypeSeason, thumbs))
-          {
-            for (CGUIListItem::ArtMap::iterator i = thumbs.begin(); i != thumbs.end(); ++i)
-              m_movieItem->SetArt("season." + i->first, i->second);
-          }
-        }
-        db.Close();
-      }
-    }
-    else if (type == VIDEODB_CONTENT_MOVIES)
-    {
-      m_castList->SetContent("movies");
+  }
 
-      // local trailers should always override non-local, so check 
-      // for a local one if the registered trailer is online
-      if (m_movieItem->GetVideoInfoTag()->m_strTrailer.empty() ||
-          URIUtils::IsInternetStream(m_movieItem->GetVideoInfoTag()->m_strTrailer))
+  if (type == MediaTypeMovie)
+  {
+    // local trailers should always override non-local, so check
+    // for a local one if the registered trailer is online
+    if (m_movieItem->GetVideoInfoTag()->m_strTrailer.empty() ||
+        URIUtils::IsInternetStream(m_movieItem->GetVideoInfoTag()->m_strTrailer))
+    {
+      std::string localTrailer = m_movieItem->FindTrailer();
+      if (!localTrailer.empty())
       {
-        std::string localTrailer = m_movieItem->FindTrailer();
-        if (!localTrailer.empty())
+        m_movieItem->GetVideoInfoTag()->m_strTrailer = localTrailer;
+        CVideoDatabase database;
+        if(database.Open())
         {
-          m_movieItem->GetVideoInfoTag()->m_strTrailer = localTrailer;
-          CVideoDatabase database;
-          if(database.Open())
-          {
-            database.SetSingleValue(VIDEODB_CONTENT_MOVIES, VIDEODB_ID_TRAILER,
-                                    m_movieItem->GetVideoInfoTag()->m_iDbId,
-                                    m_movieItem->GetVideoInfoTag()->m_strTrailer);
-            database.Close();
-            CUtil::DeleteVideoDatabaseDirectoryCache();
-          }
+          database.SetSingleValue(VIDEODB_CONTENT_MOVIES, VIDEODB_ID_TRAILER,
+                                  m_movieItem->GetVideoInfoTag()->m_iDbId,
+                                  m_movieItem->GetVideoInfoTag()->m_strTrailer);
+          database.Close();
+          CUtil::DeleteVideoDatabaseDirectoryCache();
         }
       }
     }
   }
+
+  m_castList->SetContent(MediaTypes::ToPlural(type));
+
   CVideoThumbLoader loader;
   loader.LoadItem(m_movieItem.get());
 }

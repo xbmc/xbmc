@@ -2280,6 +2280,39 @@ bool CApplication::OnAction(const CAction &action)
     }
     return true;
   }
+  else if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_pPlayer->IsPlayingVideo())
+  {
+    const CVideoInfoTag *tag = g_infoManager.GetCurrentMovieTag();
+    if (tag)
+    {
+      *m_itemCurrentFile->GetVideoInfoTag() = *tag;
+      int rating = tag->m_iUserRating;
+      bool needsUpdate(false);
+      if (rating > 1 && action.GetID() == ACTION_DECREASE_RATING)
+      {
+        m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating = rating - 1;
+        needsUpdate = true;
+      }
+      else if (rating < 10 && action.GetID() == ACTION_INCREASE_RATING)
+      {
+        m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating = rating + 1;
+        needsUpdate = true;
+      }
+      if (needsUpdate)
+      {
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          db.SetVideoUserRating(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId, m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating, m_itemCurrentFile->GetVideoInfoTag()->m_type);
+          db.Close();
+        }
+        // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
+        g_windowManager.SendMessage(msg);
+      }
+    }
+    return true;
+  }
 
   // Now check with the playlist player if action can be handled.
   // In case of the action PREV_ITEM, we only allow the playlist player to take it if we're less than 3 seconds into playback.

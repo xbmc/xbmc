@@ -1194,34 +1194,38 @@ CAction CButtonTranslator::GetGlobalAction(const CKey &key)
 bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
 {
   std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
-  if (it == m_translatorMap.end())
+  if (it != m_translatorMap.end())
+  {
+    uint32_t code = key.GetButtonCode();
+    code |= CKey::MODIFIER_LONG;
+    buttonMap::const_iterator it2 = (*it).second.find(code);
+
+    if (it2 != (*it).second.end())
+      return true;
+
+#ifdef TARGET_POSIX
+    // Some buttoncodes changed in Hardy
+    if ((code & KEY_VKEY) == KEY_VKEY && (code & 0x0F00))
+    {
+      code &= ~0x0F00;
+      it2 = (*it).second.find(code);
+      if (it2 != (*it).second.end())
+        return true;
+    }
+#endif
+  }
+
+  // no key mapping found for the current window do the fallback handling
+  if (window > -1)
   {
     // first check if we have a fallback for the window
     int fallbackWindow = GetFallbackWindow(window);
     if (fallbackWindow > -1 && HasLonpressMapping(fallbackWindow, key))
       return true;
 
-    // fallback to default section if there is no key mapping found
+    // fallback to default section
     return HasLonpressMapping(-1, key);
   }
-
-  uint32_t code = key.GetButtonCode();
-  code |= CKey::MODIFIER_LONG;
-  buttonMap::const_iterator it2 = (*it).second.find(code);
-
-  if (it2 != (*it).second.end())
-    return true;
-
-#ifdef TARGET_POSIX
-  // Some buttoncodes changed in Hardy
-  if ((code & KEY_VKEY) == KEY_VKEY && (code & 0x0F00))
-  {
-    code &= ~0x0F00;
-    it2 = (*it).second.find(code);
-    if (it2 != (*it).second.end())
-      return true;
-  }
-#endif
 
   return false;
 }

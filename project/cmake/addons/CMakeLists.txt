@@ -183,8 +183,18 @@ foreach(addon ${addons})
     separate_arguments(def)
     list(GET def 0 id)
 
+    set(ADDON_FOUND FALSE)
+    # try to find a perfect match
     list(FIND ADDONS_TO_BUILD ${id} idx)
     if(idx GREATER -1 OR ADDONS_TO_BUILD STREQUAL "all")
+      set(ADDON_FOUND TRUE)
+    # Maybe we have a regex
+    elseif(id MATCHES "${ADDONS_TO_BUILD}")
+      message(STATUS "Pattern ${ADDONS_TO_BUILD} matches ${id}, building addon")
+      set(ADDON_FOUND TRUE)
+    endif()
+
+    if(ADDON_FOUND)
       get_filename_component(dir ${addon} PATH)
 
       # check if the addon has a platforms.txt
