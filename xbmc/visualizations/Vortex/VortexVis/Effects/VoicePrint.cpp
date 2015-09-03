@@ -60,18 +60,10 @@ VoicePrint::VoicePrint()
 
 VoicePrint::~VoicePrint()
 {
-	if ( m_colourMap )
-    m_colourMap->Release();
-
-	if ( m_tex1 )
-		m_tex1->Release();
-
-	if ( m_tex2 )
-		m_tex2->Release();
-
-	if ( m_spectrumTexture )
-		m_spectrumTexture->Release();
-
+  SAFE_RELEASE( m_colourMap );
+	SAFE_RELEASE( m_tex1 );
+  SAFE_RELEASE( m_tex2 );
+	SAFE_RELEASE( m_spectrumTexture );
 } // Destructor
 
 void VoicePrint::LoadColourMap(std::string& filename)

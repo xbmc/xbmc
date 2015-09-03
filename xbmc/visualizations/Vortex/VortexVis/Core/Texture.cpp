@@ -32,16 +32,7 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-  if (!m_renderTarget)
-  {
-	  Renderer::ReleaseTexture(m_pTexture);
-  }
-  else if (m_pTexture != NULL)
-	{
-		m_pTexture->Release();
-		m_pTexture = NULL;
-	}
-
+  SAFE_RELEASE( m_pTexture );
 } // Destructor
 
 //--------------------

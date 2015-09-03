@@ -426,32 +426,11 @@ void Vortex::Shutdown()
 
 	delete[] g_randomPresetIndices;
 
-	if ( m_pScriptEngine )
-	{
-		m_pScriptEngine->Release();
-		m_pScriptEngine = NULL;
-	}
-
-	if ( g_vortexLogo )
-	{
-		Renderer::ReleaseTexture( g_vortexLogo );
-	}
-
-	if ( g_albumArt )
-	{
-		g_albumArt->Release();
-		g_albumArt = NULL;
-	}
-	if ( g_currPresetTex )
-	{
-		g_currPresetTex->Release();
-		g_currPresetTex = NULL;
-	}
-	if ( g_newPresetTex )
-	{
-		g_newPresetTex->Release();
-		g_newPresetTex = NULL;
-	}
+  SAFE_RELEASE( m_pScriptEngine );
+  SAFE_RELEASE( g_vortexLogo );
+	SAFE_RELEASE( g_albumArt );
+	SAFE_RELEASE( g_currPresetTex );
+	SAFE_RELEASE( g_newPresetTex );
 
 	Renderer::Exit();
 	g_fftobj.CleanUp();
@@ -1434,7 +1413,7 @@ bool Vortex::InitAngelScript()
 
 void Vortex::UpdateAlbumArt( char* artFilename )
 {
-	Renderer::ReleaseTexture( g_albumArt );
+	SAFE_RELEASE( g_albumArt );
 	g_albumArt = Renderer::LoadTexture( artFilename );
 }
 

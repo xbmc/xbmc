@@ -101,7 +101,7 @@ namespace
 	float g_tex0V;
 	XMFLOAT4 g_fColour;
   XMVECTOR g_normal;
-	XMMatrixStack* g_matrixStack = NULL;
+	XMMatrixStack g_matrixStack;
 	int g_matrixStackLevel;
 	bool g_envMapSet;
 	bool g_textureSet;
@@ -159,7 +159,7 @@ void Renderer::Init( ID3D11DeviceContext* pD3DContext, int iXPos, int iYPos, int
 		m_pTextureFont = LoadTexture( fullname, false );
 	}
 
-  g_matrixStack = new XMMatrixStack();
+  g_matrixStack.Reset();
   g_matrixStackLevel = 0;
 
 	g_scratchTexture = CreateTexture( 512, 512 );
@@ -487,52 +487,24 @@ void Renderer::Exit()
 {
 	DeleteObject( g_hFont );
 
-	if ( g_pPosNormalColUVDeclaration )
-		g_pPosNormalColUVDeclaration->Release();
-
-	if ( g_pPosColUVDeclaration )
-		g_pPosColUVDeclaration->Release();
-
-	if ( g_pPosNormalDeclaration )
-		g_pPosNormalDeclaration->Release();
+  SAFE_RELEASE( g_pPosNormalColUVDeclaration );
+	SAFE_RELEASE( g_pPosColUVDeclaration );
+	SAFE_RELEASE( g_pPosNormalDeclaration );
 
 	Shader::ReleaseAllShaders();
 
-	if ( g_pCubeIbuffer )
-		g_pCubeIbuffer->Release();
-
-	if ( g_pCubeVbuffer )
-		g_pCubeVbuffer->Release();
-
-  if ( g_pFanIbuffer )
-    g_pFanIbuffer->Release();
-
-  if ( g_pFixVbuffer )
-    g_pFixVbuffer->Release();
-
-  if (g_matrixStack)
-    delete g_matrixStack;
+	SAFE_RELEASE( g_pCubeIbuffer );
+	SAFE_RELEASE( g_pCubeVbuffer );
+  SAFE_RELEASE( g_pFanIbuffer );
+  SAFE_RELEASE( g_pFixVbuffer );
 
   if (states.get())
     states.reset();
 
-	if ( g_scratchTexture )
-	{
-		g_scratchTexture->Release();
-		g_scratchTexture = NULL;
-	}
-
-	if ( m_pTextureFont )
-	{
-		m_pTextureFont->Release();
-		m_pTextureFont = NULL;
-	}
-
-	if ( g_depthView )
-    g_depthView->Release();
-
-  if ( m_pD3D11Device )
-    m_pD3D11Device->Release();
+	SAFE_RELEASE( g_scratchTexture );
+	SAFE_RELEASE( m_pTextureFont );
+  SAFE_RELEASE( g_depthView );
+  SAFE_RELEASE( m_pD3D11Device );
 }
 
 //-- SetDrawMode2d ------------------------------------------------------------
@@ -714,14 +686,6 @@ TextureDX* Renderer::LoadTexture(char* pFilename, bool bAutoResize)
 	return new TextureDX(pTexture2D);
 }
 
-void Renderer::ReleaseTexture( TextureDX* pTexture )
-{
-	if ( pTexture )
-	{
-		pTexture->Release();
-	}
-}
-
 void Renderer::DrawText( float x, float y, char* txt, DWORD Col )
 {
 	unsigned char* pCol = (unsigned char*)&Col;
@@ -823,7 +787,7 @@ void Renderer::LookAt(float eyeX, float eyeY, float eyeZ, float centerX, float c
   XMVECTOR center = XMVectorSet(centerX, centerY, centerZ, 1.0f);
   XMVECTOR up = XMVectorSet(upX, upY, upZ*2, 1.0f);
   XMMATRIX matOut = XMMatrixLookAtLH(eye, center, up);
-  g_matrixStack->MultMatrix(&matOut);
+  g_matrixStack.MultMatrix(&matOut);
 
 } // LookAt
 
@@ -835,10 +799,10 @@ void Renderer::SetDefaults()
 {
 	for (;g_matrixStackLevel > 0; g_matrixStackLevel--)
 	{
-		g_matrixStack->Pop();
+		g_matrixStack.Pop();
 	}
 
-	g_matrixStack->LoadIdentity();
+	g_matrixStack.LoadIdentity();
 
   // Renderstates
   m_pD3D11Contex->RSSetState(states->CullNone());
@@ -894,7 +858,7 @@ void Renderer::SetView(const XMMATRIX& matView)
 //-----------------------------------------------------------------------------
 void Renderer::Translate(float x, float y, float z)
 {
-	g_matrixStack->TranslateLocal(x, y, z);
+	g_matrixStack.TranslateLocal(x, y, z);
 
 } // Translate
 
@@ -903,7 +867,7 @@ void Renderer::Translate(float x, float y, float z)
 //-----------------------------------------------------------------------------
 void Renderer::Scale(float x, float y, float z)
 {
-	g_matrixStack->ScaleLocal(x, y, z);
+	g_matrixStack.ScaleLocal(x, y, z);
 
 } // Scale
 
@@ -913,7 +877,7 @@ void Renderer::Scale(float x, float y, float z)
 void Renderer::CommitTransforms( Shader* pShader )
 {
 	XMMATRIX worldView, worldViewProjection;
-	XMMATRIX worldMat = *(g_matrixStack->GetTop());
+	XMMATRIX worldMat = *(g_matrixStack.GetTop());
 
   worldView = XMMatrixMultiply(worldMat, g_matView);
   worldViewProjection = XMMatrixMultiply(worldMat, g_matProj);
@@ -1146,7 +1110,7 @@ void Renderer::Vertex( float x, float y, float z )
 void Renderer::RotateAxis( float angle, float x, float y, float z )
 {
   XMVECTOR axis = XMVectorSet( x, y, z, 1.0f );
-  g_matrixStack->RotateAxisLocal(&axis, XMConvertToRadians(angle));
+  g_matrixStack.RotateAxisLocal(&axis, XMConvertToRadians(angle));
 
 } // RotateAxis
 
@@ -1327,7 +1291,7 @@ void Renderer::SetRenderTarget(TextureDX* texture)
   // depth view dimension must be equals render target dimension
   if (txDesc.Width != dtxDesc.Width || txDesc.Height != dtxDesc.Height)
   {
-    g_depthView->Release();
+    SAFE_RELEASE( g_depthView );
 
     CD3D11_TEXTURE2D_DESC depthBufferDesc(DXGI_FORMAT_D24_UNORM_S8_UINT, txDesc.Width, txDesc.Height, 1, 1, D3D11_BIND_DEPTH_STENCIL);
     m_pD3D11Device->CreateTexture2D(&depthBufferDesc, NULL, &pDepthTexture);
@@ -1351,13 +1315,15 @@ void Renderer::SetRenderTarget(TextureDX* texture)
 
 void Renderer::GetBackBuffer()
 {
+  SAFE_RELEASE(g_backBuffer);
+  SAFE_RELEASE(g_oldDepthBuffer);
   m_pD3D11Contex->OMGetRenderTargets(1, &g_backBuffer, &g_oldDepthBuffer);
 }
 
 void Renderer::ReleaseBackbuffer()
 {
-	g_oldDepthBuffer->Release();
-	g_backBuffer->Release();
+  SAFE_RELEASE(g_backBuffer);
+  SAFE_RELEASE(g_oldDepthBuffer);
 }
 
 //-- SetRenderTargetBackBuffer ------------------------------------------------
@@ -1394,7 +1360,7 @@ void Renderer::CompileShaders()
 //-----------------------------------------------------------------------------
 void Renderer::PushMatrix()
 {
-	g_matrixStack->Push();
+	g_matrixStack.Push();
 } // PushMatrix
 
 //-- PopMatrix ----------------------------------------------------------------
@@ -1402,7 +1368,7 @@ void Renderer::PushMatrix()
 //-----------------------------------------------------------------------------
 void Renderer::PopMatrix()
 {
-	g_matrixStack->Pop();
+	g_matrixStack.Pop();
 
 } // PopMatrix
 
@@ -1552,7 +1518,7 @@ float Renderer::GetAspect()
 //-----------------------------------------------------------------------------
 void Renderer::SetIdentity()
 {
-	g_matrixStack->LoadIdentity();
+	g_matrixStack.LoadIdentity();
 
 } // SetIdentity
 
@@ -1589,14 +1555,20 @@ void Renderer::SetFillMode( int fillMode )
 
 void Renderer::CreateRenderTarget(ID3D11Texture2D* pTexture, ID3D11RenderTargetView** ppRTView)
 {
-  CD3D11_RENDER_TARGET_VIEW_DESC rtDesc(pTexture, D3D11_RTV_DIMENSION_TEXTURE2D);
-  m_pD3D11Device->CreateRenderTargetView(pTexture, &rtDesc, ppRTView);
+  if (pTexture)
+  {
+    CD3D11_RENDER_TARGET_VIEW_DESC rtDesc(pTexture, D3D11_RTV_DIMENSION_TEXTURE2D);
+    m_pD3D11Device->CreateRenderTargetView(pTexture, &rtDesc, ppRTView);
+  }
 }
 
 void Renderer::CreateShaderView(ID3D11Texture2D* pTexture, ID3D11ShaderResourceView** ppSRView)
 {
-  CD3D11_SHADER_RESOURCE_VIEW_DESC srDesc(pTexture, D3D11_SRV_DIMENSION_TEXTURE2D);
-  m_pD3D11Device->CreateShaderResourceView(pTexture, &srDesc, ppSRView);
+  if (pTexture)
+  {
+    CD3D11_SHADER_RESOURCE_VIEW_DESC srDesc(pTexture, D3D11_SRV_DIMENSION_TEXTURE2D);
+    m_pD3D11Device->CreateShaderResourceView(pTexture, &srDesc, ppSRView);
+  }
 }
 
 CommonStates* Renderer::GetStates()

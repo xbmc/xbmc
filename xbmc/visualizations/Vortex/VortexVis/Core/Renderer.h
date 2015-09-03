@@ -20,6 +20,9 @@
 #ifndef _RENDERER_H_
 #define _RENDERER_H_
 
+#define SAFE_RELEASE(p)      do { if(p) { (p)->Release(); (p)=NULL; } } while (0)
+#define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)
+
 #include <d3d9.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -91,7 +94,6 @@ public:
 
 	static TextureDX* CreateTexture( int iWidth, int iHeight, DXGI_FORMAT Format = DXGI_FORMAT_B8G8R8A8_UNORM, bool bDynamic = FALSE );
   static TextureDX* LoadTexture(char* pFilename, bool bAutoResize = true);
-	static void ReleaseTexture( TextureDX* pTexture );
 	static void DrawText( float x, float y, char* txt, DWORD Col = 0xffffffff);
 
 	static float GetViewportWidth();

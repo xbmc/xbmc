@@ -24,18 +24,16 @@ void Shader::ReleaseAllShaders()
 {
 	std::vector<Shader*>&  ShaderList = GetShaderList();
 
-	std::vector<Shader*>::iterator ShaderIterator;
-
-	for (ShaderIterator = ShaderList.begin(); 
+	for (auto ShaderIterator = ShaderList.begin(); 
 		ShaderIterator != ShaderList.end();
-		ShaderIterator++ )
+		++ShaderIterator )
 	{
 		if ( (*ShaderIterator)->m_pVShader )
-			(*ShaderIterator)->m_pVShader->Release();
+      SAFE_RELEASE((*ShaderIterator)->m_pVShader);
 		if ( (*ShaderIterator)->m_pPShader )
-			(*ShaderIterator)->m_pPShader->Release();
+      SAFE_RELEASE((*ShaderIterator)->m_pPShader);
     if ((*ShaderIterator)->m_pConstantBuffer)
-      (*ShaderIterator)->m_pConstantBuffer->Release();
+      SAFE_RELEASE((*ShaderIterator)->m_pConstantBuffer);
   }
 }
 
@@ -43,11 +41,9 @@ bool Shader::CompileAllShaders()
 {
 	std::vector<Shader*>&  ShaderList = GetShaderList();
 
-	std::vector<Shader*>::iterator ShaderIterator;
-
-	for (ShaderIterator = ShaderList.begin(); 
+	for (auto ShaderIterator = ShaderList.begin(); 
 		ShaderIterator != ShaderList.end();
-		ShaderIterator++ )
+		++ShaderIterator )
 	{
 		if ( (*ShaderIterator)->CompileShader() == false )
 			return false;
