@@ -23,7 +23,7 @@
 #include "video/VideoDatabase.h"
 #include "Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/dvdplayer/VideoRenderers/RenderCapture.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/ScreenshotAML.h"
 #endif//HAS_LIBAMCODEC

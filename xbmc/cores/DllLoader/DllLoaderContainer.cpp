@@ -35,12 +35,12 @@
 
 #define ENV_PARTIAL_PATH "special://xbmcbin/system/;" \
                  "special://xbmcbin/system/players/mplayer/;" \
-                 "special://xbmcbin/system/players/dvdplayer/;" \
+                 "special://xbmcbin/system/players/VideoPlayer/;" \
                  "special://xbmcbin/system/players/paplayer/;" \
                  "special://xbmcbin/system/python/;" \
                  "special://xbmc/system/;" \
                  "special://xbmc/system/players/mplayer/;" \
-                 "special://xbmc/system/players/dvdplayer/;" \
+                 "special://xbmc/system/players/VideoPlayer/;" \
                  "special://xbmc/system/players/paplayer/;" \
                  "special://xbmc/system/python/"
 

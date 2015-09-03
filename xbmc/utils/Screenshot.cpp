@@ -35,7 +35,7 @@
 
 #ifdef HAS_IMXVPU
 // This has to go into another header file
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
 #endif
 
 #include "filesystem/File.h"

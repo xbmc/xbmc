@@ -978,9 +978,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       CFileItem fileToPlay(location, false);
       fileToPlay.SetProperty("StartPercent", position*100.0f);
       ServerInstance->AnnounceToClients(EVENT_LOADING);
-      // froce to internal dvdplayer cause it is the only
+      // froce to internal VideoPlayer cause it is the only
       // one who will work well with airplay
-      g_application.m_eForcedNextPlayer = EPC_DVDPLAYER;
+      g_application.m_eForcedNextPlayer = EPC_VideoPlayer;
 
       CFileItemList *l = new CFileItemList; //don't delete,
       l->Add(std::make_shared<CFileItem>(fileToPlay));

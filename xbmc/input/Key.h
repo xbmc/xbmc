@@ -318,13 +318,13 @@
 #define ACTION_INCREASE_PAR           219
 #define ACTION_DECREASE_PAR           220
 
-#define ACTION_VSHIFT_UP              227 // shift up video image in DVDPlayer
-#define ACTION_VSHIFT_DOWN            228 // shift down video image in DVDPlayer
+#define ACTION_VSHIFT_UP              227 // shift up video image in VideoPlayer
+#define ACTION_VSHIFT_DOWN            228 // shift down video image in VideoPlayer
 
 #define ACTION_PLAYER_PLAYPAUSE       229 // Play/pause. If playing it pauses, if paused it plays.
 
-#define ACTION_SUBTITLE_VSHIFT_UP     230 // shift up subtitles in DVDPlayer
-#define ACTION_SUBTITLE_VSHIFT_DOWN   231 // shift down subtitles in DVDPlayer
+#define ACTION_SUBTITLE_VSHIFT_UP     230 // shift up subtitles in VideoPlayer
+#define ACTION_SUBTITLE_VSHIFT_DOWN   231 // shift down subtitles in VideoPlayer
 #define ACTION_SUBTITLE_ALIGN         232 // toggle vertical alignment of subtitles
 
 #define ACTION_FILTER                 233

@@ -45,7 +45,7 @@ struct OMXCoreVideoBuffer;
 // should be entirely filled by all codecs
 struct DVDVideoPicture
 {
-  double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
+  double pts; // timestamp in seconds, used in the CVideoPlayer class to keep track of pts
   double dts;
 
   union

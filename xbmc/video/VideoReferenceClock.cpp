@@ -264,7 +264,7 @@ int64_t CVideoReferenceClock::GetFrequency()
 void CVideoReferenceClock::SetSpeed(double Speed)
 {
   CSingleLock SingleLock(m_CritSection);
-  //dvdplayer can change the speed to fit the rereshrate
+  //VideoPlayer can change the speed to fit the rereshrate
   if (m_UseVblank)
   {
     if (Speed != m_ClockSpeed)
@@ -279,7 +279,7 @@ double CVideoReferenceClock::GetSpeed()
 {
   CSingleLock SingleLock(m_CritSection);
 
-  //dvdplayer needs to know the speed for the resampler
+  //VideoPlayer needs to know the speed for the resampler
   if (m_UseVblank)
     return m_ClockSpeed;
   else
@@ -295,7 +295,7 @@ void CVideoReferenceClock::UpdateRefreshrate()
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %.3f hertz", m_RefreshRate);
 }
 
-//dvdplayer needs to know the refreshrate for matching the fps of the video playing to it
+//VideoPlayer needs to know the refreshrate for matching the fps of the video playing to it
 double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/)
 {
   CSingleLock SingleLock(m_CritSection);

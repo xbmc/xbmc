@@ -20,7 +20,7 @@
 
 #include "PlayerCoreFactory.h"
 #include "threads/SingleLock.h"
-#include "cores/dvdplayer/DVDPlayer.h"
+#include "cores/VideoPlayer/VideoPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "URL.h"
@@ -95,7 +95,7 @@ PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const std::string& strCoreName) c
     std::string strRealCoreName;
     if (StringUtils::EqualsNoCase(strCoreName, "audiodefaultplayer")) strRealCoreName = g_advancedSettings.m_audioDefaultPlayer;
     else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultplayer")) strRealCoreName = g_advancedSettings.m_videoDefaultPlayer;
-    else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultdvdplayer")) strRealCoreName = g_advancedSettings.m_videoDefaultDVDPlayer;
+    else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultVideoPlayer")) strRealCoreName = g_advancedSettings.m_videoDefaultVideoPlayer;
     else strRealCoreName = strCoreName;
 
     for(PLAYERCOREID i = 0; i < m_vecCoreConfigs.size(); i++)
@@ -180,7 +180,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     else if (item.IsType(".wma"))
     {
 //      bAdd = true;
-//      DVDPlayerCodec codec;
+//      VideoPlayerCodec codec;
 //      if (!codec.Init(item.GetPath(),2048))
 //        bAdd = false;
 //      codec.DeInit();
@@ -190,8 +190,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     {
       if (url.IsFileType("ac3") || url.IsFileType("dts"))
       {
-        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding DVDPlayer (%d)", EPC_DVDPLAYER);
-        vecCores.push_back(EPC_DVDPLAYER);
+        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding VideoPlayer (%d)", EPC_VideoPlayer);
+        vecCores.push_back(EPC_VideoPlayer);
       }
       else
       {
@@ -320,12 +320,12 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
       delete *it;
     m_vecCoreConfigs.clear();
     // Builtin players; hard-coded because re-ordering them would break scripts
-    CPlayerCoreConfig* dvdplayer = new CPlayerCoreConfig("DVDPlayer", EPC_DVDPLAYER, NULL);
-    dvdplayer->m_bPlaysAudio = dvdplayer->m_bPlaysVideo = true;
-    m_vecCoreConfigs.push_back(dvdplayer);
+    CPlayerCoreConfig* VideoPlayer = new CPlayerCoreConfig("VideoPlayer", EPC_VideoPlayer, NULL);
+    VideoPlayer->m_bPlaysAudio = VideoPlayer->m_bPlaysVideo = true;
+    m_vecCoreConfigs.push_back(VideoPlayer);
 
      // Don't remove this, its a placeholder for the old MPlayer core, it would break scripts
-    CPlayerCoreConfig* mplayer = new CPlayerCoreConfig("oldmplayercore", EPC_DVDPLAYER, NULL);
+    CPlayerCoreConfig* mplayer = new CPlayerCoreConfig("oldmplayercore", EPC_VideoPlayer, NULL);
     m_vecCoreConfigs.push_back(mplayer);
 
     CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", EPC_PAPLAYER, NULL);
@@ -355,7 +355,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
       StringUtils::ToLower(type);
 
       EPLAYERCORES eCore = EPC_NONE;
-      if (type == "dvdplayer" || type == "mplayer") eCore = EPC_DVDPLAYER;
+      if (type == "VideoPlayer" || type == "mplayer") eCore = EPC_VideoPlayer;
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
       if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
 

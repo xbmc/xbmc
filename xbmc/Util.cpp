@@ -85,8 +85,8 @@
 #include "utils/log.h"
 #include "utils/Environment.h"
 
-#include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
-#include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
+#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
+#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "URL.h"
 #include "utils/LangCodeExpander.h"
 #include "video/VideoInfoTag.h"
@@ -94,7 +94,7 @@
   #include <sys/capability.h>
 #endif
 
-#include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;

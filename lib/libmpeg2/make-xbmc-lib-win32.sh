@@ -27,7 +27,7 @@ fi
 make $MAKEFLAGS &&
 
 strip libmpeg2/.libs/*.dll &&
-cp libmpeg2/.libs/*.dll /xbmc/system/players/dvdplayer/
+cp libmpeg2/.libs/*.dll /xbmc/system/players/VideoPlayer/
 
 #remove the bgprocessfile for signaling the process end
 rm $BGPROCESSFILE

@@ -22,7 +22,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "cores/IPlayer.h"
 #include "PlayerCoreFactory.h"
-#include "cores/dvdplayer/DVDPlayer.h"
+#include "cores/VideoPlayer/VideoPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
 #include "cores/ExternalPlayer/ExternalPlayer.h"
 #ifdef HAS_UPNP
@@ -94,7 +94,7 @@ public:
     switch(m_eCore)
     {
       case EPC_MPLAYER:
-      case EPC_DVDPLAYER: pPlayer = new CDVDPlayer(callback); break;
+      case EPC_VideoPlayer: pPlayer = new CVideoPlayer(callback); break;
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
 #if defined(HAS_UPNP)

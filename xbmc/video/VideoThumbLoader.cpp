@@ -23,7 +23,7 @@
 #include <cstdlib>
 #include <utility>
 
-#include "cores/dvdplayer/DVDFileInfo.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "FileItem.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/StackDirectory.h"

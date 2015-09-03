@@ -29,7 +29,7 @@
 #include "android/activity/AndroidFeatures.h"
 #endif // defined(TARGET_ANDROID)
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "profiles/ProfilesManager.h"

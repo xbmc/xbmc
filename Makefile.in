@@ -14,19 +14,19 @@ DVDPCODECS_DIRS= \
 	lib/libdvd 
 
 ifeq (@USE_LIBSTAGEFRIGHT@,1)
-DVDPCODECS_DIRS += xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
+DVDPCODECS_DIRS += xbmc/cores/VideoPlayer/DVDCodecs/Video/libstagefrightICS
 endif
 
-DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
-                   xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
-                   xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a \
-                   xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a \
-                   xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a \
-                   xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
-                   xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
-                   xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a
+VideoPlayer_ARCHIVES=xbmc/cores/VideoPlayer/VideoPlayer.a \
+                   xbmc/cores/VideoPlayer/DVDCodecs/DVDCodecs.a \
+                   xbmc/cores/VideoPlayer/DVDCodecs/Audio/Audio.a \
+                   xbmc/cores/VideoPlayer/DVDCodecs/Overlay/Overlay.a \
+                   xbmc/cores/VideoPlayer/DVDCodecs/Video/Video.a \
+                   xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxers.a \
+                   xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreams.a \
+                   xbmc/cores/VideoPlayer/DVDSubtitles/DVDSubtitles.a
 
-DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
+DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
                    xbmc/contrib/kissfft/kissfft.a \
@@ -35,9 +35,9 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/cores/DllLoader/exports/exports.a \
                    xbmc/cores/DllLoader/exports/util/exports_utils.a \
                    xbmc/cores/ExternalPlayer/ExternalPlayer.a \
-                   xbmc/cores/dvdplayer/VideoRenderers/VideoRenderer.a \
-                   xbmc/cores/dvdplayer/VideoRenderers/VideoShaders/VideoShaders.a \
-                   xbmc/cores/dvdplayer/VideoRenderers/HwDecRender/HwDecRender.a \
+                   xbmc/cores/VideoPlayer/VideoRenderers/VideoRenderer.a \
+                   xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/VideoShaders.a \
+                   xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/HwDecRender.a \
                    xbmc/cores/cores.a \
                    xbmc/cores/paplayer/paplayer.a \
                    xbmc/cores/playercorefactory/playercorefactory.a \
@@ -310,7 +310,7 @@ endif
 
 # Setup some dependencies for subdir makes
 xbmc/cores/paplayer/paplayer.a:
-$(DVDPLAYER_ARCHIVES)         : dvdpcodecs
+$(VideoPlayer_ARCHIVES)         : dvdpcodecs
 
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
 	$(MAKE) -C lib/cpluff/libcpluff
@@ -343,7 +343,7 @@ dvdpcodecs: dllloader
 
 ifeq (@USE_LIBSTAGEFRIGHT@,1)
 dvdpextcodecs: lib@APP_NAME_LC@.so
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS
+	$(MAKE) -C xbmc/cores/VideoPlayer/DVDCodecs/Video/libstagefrightICS
 else
 dvdpextcodecs:
 endif

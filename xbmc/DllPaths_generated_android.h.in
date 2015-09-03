@@ -42,7 +42,7 @@
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
 #endif
 
-/* dvdplayer */
+/* VideoPlayer */
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"
 #define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"
 #define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
