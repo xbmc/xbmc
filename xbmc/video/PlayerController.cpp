@@ -30,7 +30,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #ifdef HAS_VIDEO_PLAYBACK
-#include "cores/dvdplayer/VideoRenderers/OverlayRendererGUI.h"
+#include "cores/VideoPlayer/VideoRenderers/OverlayRendererGUI.h"
 #endif
 #include "Application.h"
 #include "utils/LangCodeExpander.h"

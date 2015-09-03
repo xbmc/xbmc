@@ -51,7 +51,7 @@
 
 #include "filesystem/File.h"
 
-#include "cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.h"
+#include "cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinStorageProvider.h"

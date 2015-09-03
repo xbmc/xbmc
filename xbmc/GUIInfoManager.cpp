@@ -96,7 +96,7 @@
 #include "cores/IPlayer.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPProcess.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/dvdplayer/VideoRenderers/BaseRenderer.h"
+#include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "interfaces/info/InfoExpression.h"
 
 #if defined(TARGET_DARWIN_OSX)
@@ -1679,7 +1679,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
           return m_currentFile->GetVideoInfoTag()->m_strTitle;
         if (m_currentFile->HasMusicInfoTag() && !m_currentFile->GetMusicInfoTag()->GetTitle().empty())
           return m_currentFile->GetMusicInfoTag()->GetTitle();
-        // don't have the title, so use dvdplayer, label, or drop down to title from path
+        // don't have the title, so use VideoPlayer, label, or drop down to title from path
         if (!g_application.m_pPlayer->GetPlayingTitle().empty())
           return g_application.m_pPlayer->GetPlayingTitle();
         if (!m_currentFile->GetLabel().empty())

@@ -21,7 +21,7 @@
 #include "system.h"
 #include "CodecFactory.h"
 #include "URL.h"
-#include "DVDPlayerCodec.h"
+#include "VideoPlayerCodec.h"
 #include "utils/StringUtils.h"
 #include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
@@ -46,7 +46,7 @@ ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
     }
   }
 
-  DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+  VideoPlayerCodec *dvdcodec = new VideoPlayerCodec();
   return dvdcodec;
 }
 
@@ -88,13 +88,13 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
       content == "application/x-flac"
       )
   {
-    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    VideoPlayerCodec *dvdcodec = new VideoPlayerCodec();
     dvdcodec->SetContentType(content);
     return dvdcodec;
   }
   else if (urlFile.IsProtocol("shout"))
   {
-    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    VideoPlayerCodec *dvdcodec = new VideoPlayerCodec();
     dvdcodec->SetContentType("audio/mp3");
     return dvdcodec; // if we got this far with internet radio - content-type was wrong. gamble on mp3.
   }
@@ -102,14 +102,14 @@ ICodec* CodecFactory::CreateCodecDemux(const std::string& strFile, const std::st
       content == "audio/wav" ||
       content == "audio/x-wav")
   {
-    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    VideoPlayerCodec *dvdcodec = new VideoPlayerCodec();
     dvdcodec->SetContentType("audio/x-spdif-compressed");
     if (dvdcodec->Init(strFile, filecache))
     {
       return dvdcodec;
     }
 
-    dvdcodec = new DVDPlayerCodec();
+    dvdcodec = new VideoPlayerCodec();
     dvdcodec->SetContentType(content);
     return dvdcodec;
   }

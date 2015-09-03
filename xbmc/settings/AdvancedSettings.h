@@ -145,7 +145,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_ac3Gain;
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
-    bool m_dvdplayerIgnoreDTSinWAV;
+    bool m_VideoPlayerIgnoreDTSinWAV;
     float m_limiterHold;
     float m_limiterRelease;
 
@@ -204,7 +204,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_mediacodecForceSoftwareRendring;
 
     std::string m_videoDefaultPlayer;
-    std::string m_videoDefaultDVDPlayer;
+    std::string m_videoDefaultVideoPlayer;
     float m_videoPlayCountMinimumPercent;
 
     float m_slideshowBlackBarCompensation;
@@ -338,7 +338,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
     int m_iPVRMinVideoCacheLevel;      /*!< @brief cache up to this level in the video buffer buffer before resuming playback if the buffers run dry */
     int m_iPVRMinAudioCacheLevel;      /*!< @brief cache up to this level in the audio buffer before resuming playback if the buffers run dry */
-    bool m_bPVRCacheInDvdPlayer; /*!< @brief true to use "CACHESTATE_PVR" in CDVDPlayer (default) */
+    bool m_bPVRCacheInVideoPlayer; /*!< @brief true to use "CACHESTATE_PVR" in CVideoPlayer (default) */
     bool m_bPVRChannelIconsAutoScan; /*!< @brief automatically scan user defined folder for channel icons when loading internal channel groups */
     bool m_bPVRAutoScanIconsUserSet; /*!< @brief mark channel icons populated by auto scan as "user set" */
     int m_iPVRNumericChannelSwitchTimeout; /*!< @brief time in ms before the numeric dialog auto closes when confirmchannelswitch is disabled */

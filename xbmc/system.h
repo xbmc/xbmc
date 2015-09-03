@@ -29,7 +29,7 @@
  * All platforms
  *****************/
 #define HAS_DVD_SWSCALE
-#define HAS_DVDPLAYER
+#define HAS_VideoPlayer
 #define HAS_EVENT_SERVER
 #define HAS_SCREENSAVER
 #define HAS_PYTHON

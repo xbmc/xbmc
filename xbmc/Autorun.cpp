@@ -304,11 +304,11 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
             item.m_lStartOffset = STARTOFFSET_RESUME;
 
             // get playername
-            std::string hddvdplayer = CPlayerCoreFactory::GetInstance().GetPlayerName(CPlayerCoreFactory::GetInstance().GetDefaultPlayer(item));
+            std::string hdVideoPlayer = CPlayerCoreFactory::GetInstance().GetPlayerName(CPlayerCoreFactory::GetInstance().GetDefaultPlayer(item));
             
             // Single *.xpl or *.ifo files require an external player to handle playback.
-            // If no matching rule was found, DVDPlayer will be default player.
-            if (hddvdplayer != "DVDPlayer")
+            // If no matching rule was found, VideoPlayer will be default player.
+            if (hdVideoPlayer != "VideoPlayer")
             {
               CLog::Log(LOGINFO,"HD DVD: External singlefile playback initiated: %s",hddvdname.c_str());
               g_application.PlayFile(item, false);

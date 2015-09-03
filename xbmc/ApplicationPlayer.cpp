@@ -63,7 +63,7 @@ void CApplicationPlayer::ClosePlayerGapless(PLAYERCOREID newCore)
   if (!player)
     return;
 
-  bool gaplessSupported = (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer == EPC_PAPLAYER);
+  bool gaplessSupported = (m_eCurrentPlayer == EPC_VideoPlayer || m_eCurrentPlayer == EPC_PAPLAYER);
   gaplessSupported = gaplessSupported && (m_eCurrentPlayer == newCore);
   if (!gaplessSupported)
   {
@@ -71,7 +71,7 @@ void CApplicationPlayer::ClosePlayerGapless(PLAYERCOREID newCore)
   }
   else
   {
-    // XXX: we had to stop the previous playing item, it was done in dvdplayer::OpenFile.
+    // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
     // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
     // but if we do not stop it, we can not distingush callbacks from previous
     // item and current item, it will confused us then we can not make correct delay

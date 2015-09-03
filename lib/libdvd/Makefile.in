@@ -3,7 +3,7 @@ ARCH=@ARCH@
 CC=@CC@
 CXX=@CXX@
 
-SYSDIR=@abs_top_srcdir@/system/players/dvdplayer
+SYSDIR=@abs_top_srcdir@/system/players/VideoPlayer
 SOS= libdvdnav-$(ARCH).so
 DIRS=	libdvdread \
 	libdvdnav

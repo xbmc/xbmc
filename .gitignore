@@ -375,8 +375,8 @@ lib/cpluff/stamp-h1
 /system/cdrip/vorbis.dll
 /system/cdrip/vorbisenc.dll
 
-# /system/players/dvdplayer
-/system/players/dvdplayer/*
+# /system/players/VideoPlayer
+/system/players/VideoPlayer/*
 
 # /system/players/paplayer
 /system/players/paplayer/libmodplug.dll
@@ -499,19 +499,19 @@ lib/cpluff/stamp-h1
 /xbmc/cores/DllLoader/exports/wrapper.def
 /xbmc/cores/DllLoader/Makefile
 /xbmc/cores/DllLoader/exports/Makefile
-/xbmc/cores/dvdplayer/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile
-/xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile
-/xbmc/cores/dvdplayer/DVDDemuxers/Makefile
-/xbmc/cores/dvdplayer/DVDSubtitles/Makefile
+/xbmc/cores/VideoPlayer/Makefile
+/xbmc/cores/VideoPlayer/DVDCodecs/Audio/Makefile
+/xbmc/cores/VideoPlayer/DVDCodecs/Makefile
+/xbmc/cores/VideoPlayer/DVDCodecs/Overlay/Makefile
+/xbmc/cores/VideoPlayer/DVDCodecs/Video/libstagefrightICS/Makefile
+/xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile
+/xbmc/cores/VideoPlayer/DVDDemuxers/Makefile
+/xbmc/cores/VideoPlayer/DVDSubtitles/Makefile
 /xbmc/cores/omxplayer/Makefile
 /xbmc/cores/paplayer/Makefile
 /xbmc/cores/playercorefactory/Makefile
 /xbmc/cores/Makefile
-/xbmc/cores/dvdplayer/VideoRenderers/Makefile
+/xbmc/cores/VideoPlayer/VideoRenderers/Makefile
 
 # /xbmc/filesystem/
 /xbmc/filesystem/Makefile

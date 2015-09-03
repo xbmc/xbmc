@@ -43,11 +43,11 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
-#include "cores/dvdplayer/VideoRenderers/RenderFormats.h"
-#include "cores/dvdplayer/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "guilib/GraphicContext.h"
 
-#include "DVDPlayer.h"
+#include "VideoPlayer.h"
 #include "linux/RBP.h"
 
 using namespace RenderManager;
@@ -358,11 +358,11 @@ void OMXPlayerVideo::Process()
 
       if(pMsgGeneralResync->m_clock && pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
       {
-        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, %f, 1)", m_iCurrentPts, pMsgGeneralResync->m_timestamp);
+        CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, %f, 1)", m_iCurrentPts, pMsgGeneralResync->m_timestamp);
         m_av_clock->Discontinuity(pMsgGeneralResync->m_timestamp - delay);
       }
       else
-        CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_iCurrentPts);
+        CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_iCurrentPts);
 
       m_nextOverlay = DVD_NOPTS_VALUE;
       m_iCurrentPts = DVD_NOPTS_VALUE;
@@ -408,15 +408,15 @@ void OMXPlayerVideo::Process()
     {
       CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::PLAYER_STARTED %d", m_started);
       if(m_started)
-        m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+        m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, VideoPlayer_VIDEO));
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
     {
-      CDVDPlayer::SPlayerState& state = ((CDVDMsgType<CDVDPlayer::SPlayerState>*)pMsg)->m_value;
+      CVideoPlayer::SPlayerState& state = ((CDVDMsgType<CVideoPlayer::SPlayerState>*)pMsg)->m_value;
 
       if (m_speed != DVD_PLAYSPEED_NORMAL && m_speed != DVD_PLAYSPEED_PAUSE)
       {
-        if(state.time_src == CDVDPlayer::ETIMESOURCE_CLOCK)
+        if(state.time_src == CVideoPlayer::ETIMESOURCE_CLOCK)
           state.time      = DVD_TIME_TO_MSEC(m_av_clock->GetClock(state.timestamp) + state.time_offset);
         else
           state.timestamp = CDVDClock::GetAbsoluteClock();
@@ -425,7 +425,7 @@ void OMXPlayerVideo::Process()
       {
         double pts = m_iCurrentPts;
         double stamp = m_av_clock->OMXMediaTime();
-        if(state.time_src == CDVDPlayer::ETIMESOURCE_CLOCK)
+        if(state.time_src == CVideoPlayer::ETIMESOURCE_CLOCK)
           state.time      = stamp == 0.0 ? state.time : DVD_TIME_TO_MSEC(stamp + state.time_offset);
         else
           state.time      = stamp == 0.0 || pts == DVD_NOPTS_VALUE ? state.time : state.time + DVD_TIME_TO_MSEC(stamp - pts);
@@ -433,7 +433,7 @@ void OMXPlayerVideo::Process()
         if (stamp == 0.0) // cause message to be ignored
           state.player = 0;
       }
-      state.player    = DVDPLAYER_VIDEO;
+      state.player    = VideoPlayer_VIDEO;
       m_messageParent.Put(pMsg->Acquire());
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
@@ -508,7 +508,7 @@ void OMXPlayerVideo::Process()
         {
           m_codecname = m_omxVideo.GetDecoderName();
           m_started = true;
-          m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+          m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, VideoPlayer_VIDEO));
         }
 
         break;

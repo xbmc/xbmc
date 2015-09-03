@@ -200,7 +200,7 @@ float CDummyVideoPlayer::GetPercentage()
   return 0.0f;
 }
 
-//This is how much audio is delayed to video, we count the oposite in the dvdplayer
+//This is how much audio is delayed to video, we count the oposite in the VideoPlayer
 void CDummyVideoPlayer::SetAVDelay(float fValue)
 {
 }

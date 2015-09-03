@@ -29,7 +29,7 @@
 #include "OMXAudio.h"
 #include "OMXAudioCodecOMX.h"
 #include "threads/Thread.h"
-#include "IDVDPlayer.h"
+#include "IVideoPlayer.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageQueue.h"

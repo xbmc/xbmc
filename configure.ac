@@ -2358,18 +2358,18 @@ OUTPUT_FILES="Makefile \
     xbmc/Makefile \
     xbmc/cdrip/Makefile \
     xbmc/cores/Makefile \
-    xbmc/cores/dvdplayer/VideoRenderers/Makefile \
-    xbmc/cores/dvdplayer/VideoRenderers/HwDecRender/Makefile \
-    xbmc/cores/dvdplayer/Makefile \
+    xbmc/cores/VideoPlayer/VideoRenderers/Makefile \
+    xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/Makefile \
+    xbmc/cores/VideoPlayer/Makefile \
     lib/libdvd/Makefile \
     xbmc/cores/DllLoader/Makefile \
     xbmc/cores/DllLoader/exports/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile \
-    xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile \
-    xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
-    xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
+    xbmc/cores/VideoPlayer/DVDCodecs/Makefile \
+    xbmc/cores/VideoPlayer/DVDCodecs/Audio/Makefile \
+    xbmc/cores/VideoPlayer/DVDCodecs/Overlay/Makefile \
+    xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile \
+    xbmc/cores/VideoPlayer/DVDDemuxers/Makefile \
+    xbmc/cores/VideoPlayer/DVDSubtitles/Makefile \
     xbmc/cores/AudioEngine/Makefile \
     xbmc/cores/paplayer/Makefile \
     xbmc/cores/omxplayer/Makefile \
@@ -2447,7 +2447,7 @@ OUTPUT_FILES="$OUTPUT_FILES addons/skin.re-touched/media/Makefile"
 fi
 
 if test "$use_codec_libstagefright" = "yes"; then
-OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/libstagefrightICS/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES xbmc/cores/VideoPlayer/DVDCodecs/Video/libstagefrightICS/Makefile"
 fi
 
 if test "$use_sse4" = "yes"; then

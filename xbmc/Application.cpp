@@ -33,7 +33,7 @@
 #include "URL.h"
 #include "guilib/TextureManager.h"
 #include "cores/IPlayer.h"
-#include "cores/dvdplayer/DVDFileInfo.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -973,7 +973,7 @@ bool CApplication::InitDirectoriesOSX()
 
 #if defined(TARGET_DARWIN_IOS)
   std::string fontconfigPath;
-  fontconfigPath = appPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
+  fontconfigPath = appPath + "/system/players/VideoPlayer/etc/fonts/fonts.conf";
   setenv("FONTCONFIG_FILE", fontconfigPath.c_str(), 0);
 #endif
 
@@ -3494,7 +3494,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   // We should restart the player, unless the previous and next tracks are using
-  // one of the players that allows gapless playback (paplayer, dvdplayer)
+  // one of the players that allows gapless playback (paplayer, VideoPlayer)
   m_pPlayer->ClosePlayerGapless(eNewCore);
 
   // now reset play state to starting, since we already stopped the previous playing item if there is.

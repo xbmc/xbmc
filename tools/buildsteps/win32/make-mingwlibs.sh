@@ -82,21 +82,21 @@ echo "################################"
 echo "##### building ffmpeg dlls #####"
 cd /xbmc/project/Win32BuildSetup
 runBackgroundProcess "./buildffmpeg.sh $MAKECLEAN"
-setfilepath /xbmc/system/players/dvdplayer
+setfilepath /xbmc/system/players/VideoPlayer
 checkfiles avcodec-56.dll avformat-56.dll avutil-54.dll postproc-53.dll swscale-3.dll avfilter-5.dll swresample-1.dll
 echo "##### building of ffmpeg dlls done #####"
 
 echo "##### building libdvd dlls #####"
 cd /xbmc/lib/libdvd/
 runBackgroundProcess "./build-xbmc-win32.sh $MAKECLEAN"
-setfilepath /xbmc/system/players/dvdplayer
+setfilepath /xbmc/system/players/VideoPlayer
 checkfiles libdvdcss-2.dll libdvdnav.dll
 echo "##### building of libdvd dlls done #####"
 
 echo "##### building libmpeg2 dlls #####"
 cd /xbmc/lib/libmpeg2/
 runBackgroundProcess "./make-xbmc-lib-win32.sh $MAKECLEAN"
-setfilepath /xbmc/system/players/dvdplayer
+setfilepath /xbmc/system/players/VideoPlayer
 checkfiles libmpeg2-0.dll
 echo "##### building of libmpeg2 dlls done #####"
 

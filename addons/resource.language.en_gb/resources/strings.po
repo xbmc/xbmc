@@ -6401,23 +6401,23 @@ msgid "Render method"
 msgstr ""
 
 #: system/settings/settings.xml
-#: xbmc/cores/dvdplayer/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13416"
 msgid "Auto detect"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13417"
 msgid "Basic shaders (ARB)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13418"
 msgid "Advanced shaders (GLSL)"
 msgstr ""
 
 #: system/settings/settings.xml
-#: xbmc/cores/dvdplayer/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13419"
 msgid "Software"
 msgstr ""
@@ -6472,7 +6472,7 @@ msgid "Allow hardware acceleration - OpenMax"
 msgstr ""
 
 #: system/settings/settings.xml
-#: xbmc/cores/dvdplayer/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13431"
 msgid "Pixel shaders"
 msgstr ""
@@ -8237,7 +8237,7 @@ msgctxt "#16318"
 msgid "Temporal / Spatial (half)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#16319"
 msgid "DXVA"
 msgstr ""
@@ -8272,7 +8272,7 @@ msgctxt "#16325"
 msgid "VDPAU - Bob"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/VideoRenderers/BaseRenderer.cpp
+#: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#16326"
 msgid "DXVA-HD"
 msgstr ""
@@ -14057,12 +14057,12 @@ msgctxt "#25007"
 msgid "Chapters: %u - duration: %s"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayer.cpp
 msgctxt "#25008"
 msgid "Playback of Blu-ray failed"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDPlayer.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayer.cpp
 msgctxt "#25009"
 msgid "The menu of this Blu-ray is not supported"
 msgstr ""
@@ -17400,7 +17400,7 @@ msgstr ""
 #. Description of setting "Videos -> Playback -> Enable MMAL hardware decoding of video files"
 #: system/settings/settings.xml
 msgctxt "#36435"
-msgid "Use DVDPlayer for decoding of video files with MMAL acceleration."
+msgid "Use VideoPlayer for decoding of video files with MMAL acceleration."
 msgstr ""
 
 #. Button on settings "System -> Audio output" to opend DSP manager dialog
@@ -17866,34 +17866,34 @@ msgstr ""
 
 #empty strings from id 36922 to 36999
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"
 msgid "(Visually impaired)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37001"
 msgid "(Director's comments)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37002"
 msgid "(Director's comments 2)"
 msgstr ""
 
 #empty strings from id 37003 to 37010
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37011"
 msgid "(CC)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37012"
 msgid "(Forced)"
 msgstr ""
 
-#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37013"
 msgid "(Director's comments)"
 msgstr ""

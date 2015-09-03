@@ -28,7 +28,7 @@
  * The recording information tag holds data about name, length, recording time
  * and so on of recorded stream stored on the backend.
  *
- * The filename string is used to by the PVRManager and passed to DVDPlayer
+ * The filename string is used to by the PVRManager and passed to VideoPlayer
  * to stream data from the backend to Kodi.
  *
  * It is a also CVideoInfoTag and some of his variables must be set!

@@ -28,7 +28,7 @@
 #include "DVDStreamInfo.h"
 #include "OMXVideo.h"
 #include "threads/Thread.h"
-#include "IDVDPlayer.h"
+#include "IVideoPlayer.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
@@ -36,7 +36,7 @@
 #include "DVDMessageQueue.h"
 #include "utils/BitstreamStats.h"
 #include "linux/DllBCM.h"
-#include "cores/dvdplayer/VideoRenderers/RenderManager.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 
 class OMXPlayerVideo : public CThread, public IDVDStreamPlayerVideo
 {
