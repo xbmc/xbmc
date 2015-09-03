@@ -26,10 +26,16 @@
 class IInputCodingTable
 {
 public:
+  enum { TYPE_WORD_LIST, TYPE_CONVERT_STRING };
+  virtual int GetType() { return TYPE_WORD_LIST; }
+
   virtual ~IInputCodingTable() {}
   virtual bool GetWordListPage(const std::string& strCode, bool isFirstPage) = 0;
   virtual std::vector<std::wstring> GetResponse(int response) = 0;
   const std::string& GetCodeChars() const { return m_codechars; }
+
+  virtual void SetTextPrev(const std::string& strTextPrev) {}
+  virtual std::string ConvertString(const std::string& strCode) { return std::string(""); }
 
 protected:
   std::string m_codechars;

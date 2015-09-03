@@ -194,32 +194,37 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
     handled = false;
   else
   {
-    std::wstring wch = L"";
-    wch.insert(wch.begin(), action.GetUnicode());
-    std::string ch;
-    g_charsetConverter.wToUTF8(wch, ch);
-    handled = CodingCharacter(ch);
-    if (!handled)
+    handled = false;
+    wchar_t unicode = action.GetUnicode();
+    if (unicode)
     {
-      // send action to edit control
-      CGUIControl *edit = GetControl(CTL_EDIT);
-      if (edit)
-        handled = edit->OnAction(action);
-      if (!handled && action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
+      std::wstring wch = L"";
+      wch.insert(wch.begin(), unicode);
+      std::string ch;
+      g_charsetConverter.wToUTF8(wch, ch);
+      handled = CodingCharacter(ch);
+      if (!handled)
       {
-        BYTE b = action.GetID() & 0xFF;
-        if (b == XBMCVK_TAB)
+        // send action to edit control
+        CGUIControl *edit = GetControl(CTL_EDIT);
+        if (edit)
+          handled = edit->OnAction(action);
+        if (!handled && action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
         {
-          // Toggle left/right key mode
-          m_isKeyboardNavigationMode = !m_isKeyboardNavigationMode;
-          if (m_isKeyboardNavigationMode)
+          BYTE b = action.GetID() & 0xFF;
+          if (b == XBMCVK_TAB)
           {
-            m_previouslyFocusedButton = GetFocusedControlID();
-            SET_CONTROL_FOCUS(edit->GetID(), 0);
+            // Toggle left/right key mode
+            m_isKeyboardNavigationMode = !m_isKeyboardNavigationMode;
+            if (m_isKeyboardNavigationMode)
+            {
+              m_previouslyFocusedButton = GetFocusedControlID();
+              SET_CONTROL_FOCUS(edit->GetID(), 0);
+            }
+            else
+              SET_CONTROL_FOCUS(m_previouslyFocusedButton, 0);
+            handled = true;
           }
-          else
-            SET_CONTROL_FOCUS(m_previouslyFocusedButton, 0);
-          handled = true;
         }
       }
     }
@@ -371,9 +376,22 @@ void CGUIDialogKeyboardGeneric::Backspace()
 {
   if (m_codingtable && m_hzcode.length() > 0)
   {
-    m_hzcode.erase(m_hzcode.length() - 1, 1);
-    SetControlLabel(CTL_LABEL_HZCODE, m_hzcode);
-    ChangeWordList(0);
+    std::wstring tmp;
+    g_charsetConverter.utf8ToW(m_hzcode, tmp);
+    tmp.erase(tmp.length() - 1, 1);
+    g_charsetConverter.wToUTF8(tmp, m_hzcode);
+    
+    switch (m_codingtable->GetType())
+    {
+    case IInputCodingTable::TYPE_WORD_LIST:
+      SetControlLabel(CTL_LABEL_HZCODE, m_hzcode);
+      ChangeWordList(0);
+      break;
+
+    case IInputCodingTable::TYPE_CONVERT_STRING:
+      SetEditText(m_codingtable->ConvertString(m_hzcode));
+      break;
+    }
   }
   else
   {
@@ -381,6 +399,9 @@ void CGUIDialogKeyboardGeneric::Backspace()
     CGUIControl *edit = GetControl(CTL_EDIT);
     if (edit)
       edit->OnAction(CAction(ACTION_BACKSPACE));
+
+    if (m_codingtable && m_codingtable->GetType() == IInputCodingTable::TYPE_CONVERT_STRING)
+      m_codingtable->SetTextPrev(GetText());
   }
 }
 
@@ -417,7 +438,24 @@ void CGUIDialogKeyboardGeneric::UpdateButtons()
     m_currentLayout = 0;
   CKeyboardLayout layout = m_layouts.empty() ? CKeyboardLayout() : m_layouts[m_currentLayout];
   m_codingtable = layout.GetCodingTable();
+
+  bool bShowWordList = false;
   if (m_codingtable)
+  {
+    switch (m_codingtable->GetType())
+    {
+    case IInputCodingTable::TYPE_WORD_LIST:
+      bShowWordList = true;
+      break;
+
+    case IInputCodingTable::TYPE_CONVERT_STRING:
+      m_codingtable->SetTextPrev(GetText());
+      m_hzcode.clear();
+      break;
+    }
+  }
+
+  if (bShowWordList)
   {
     SET_CONTROL_VISIBLE(CTL_LABEL_HZCODE);
     SET_CONTROL_VISIBLE(CTL_LABEL_HZLIST);
@@ -667,25 +705,37 @@ bool CGUIDialogKeyboardGeneric::CodingCharacter(const std::string &ch)
 {
   if (!m_codingtable)
     return false;
-  if (m_codingtable->GetCodeChars().find(ch) != std::string::npos)
+
+  switch (m_codingtable->GetType())
   {
+  case IInputCodingTable::TYPE_CONVERT_STRING:
     m_hzcode += ch;
-    SetControlLabel(CTL_LABEL_HZCODE, m_hzcode);
-    ChangeWordList(0);
+    SetEditText(m_codingtable->ConvertString(m_hzcode));
     return true;
-  }
-  if (ch[0] >= '0' && ch[0] <= '9')
-  {
-    int i = m_pos + (int)ch[0] - 48;
-    if (i < (m_pos + m_num))
+
+  case IInputCodingTable::TYPE_WORD_LIST:
+    if (m_codingtable->GetCodeChars().find(ch) != std::string::npos)
     {
-      m_hzcode = "";
+      m_hzcode += ch;
       SetControlLabel(CTL_LABEL_HZCODE, m_hzcode);
-      std::string utf8String;
-      g_charsetConverter.wToUTF8(m_words[i], utf8String);
-      NormalCharacter(utf8String);
+      ChangeWordList(0);
+      return true;
     }
-    return true;
+    if (ch[0] >= '0' && ch[0] <= '9')
+    {
+      int i = m_pos + (int)ch[0] - 48;
+      if (i < (m_pos + m_num))
+      {
+        m_hzcode = "";
+        SetControlLabel(CTL_LABEL_HZCODE, m_hzcode);
+        std::string utf8String;
+        g_charsetConverter.wToUTF8(m_words[i], utf8String);
+        NormalCharacter(utf8String);
+      }
+      return true;
+    }
+    break;
   }
+
   return false;
 }

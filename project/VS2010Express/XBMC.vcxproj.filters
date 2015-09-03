@@ -3258,6 +3258,9 @@
     <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAudioEngine.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\InputCodingTableKorean.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -6321,6 +6324,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\ScopeGuard.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\InputCodingTableKorean.h">
+      <Filter>input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

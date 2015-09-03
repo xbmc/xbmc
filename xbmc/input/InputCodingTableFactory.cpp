@@ -21,6 +21,7 @@
 #include "InputCodingTableFactory.h"
 #include "InputCodingTableBaiduPY.h"
 #include "InputCodingTableBasePY.h"
+#include "InputCodingTableKorean.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -38,5 +39,7 @@ IInputCodingTable* CInputCodingTableFactory::CreateCodingTable(const std::string
   }
   if (strTableName == "BasePY")
     return new CInputCodingTableBasePY();
+  if (strTableName == "Korean")
+    return new CInputCodingTableKorean();
   return nullptr;
 }
