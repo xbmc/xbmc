@@ -17584,6 +17584,7 @@ msgid "Region A - Americas, East Asia and Southeast Asia. Region B - Africa, Mid
 
 #. Used for the viewstate selection
 #: xbmc/video/GUIViewStateVideo.xml
+#: skin.confluence
 msgctxt "#38018"
 msgid "User rating"
 msgstr ""
