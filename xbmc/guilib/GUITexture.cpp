@@ -24,6 +24,8 @@
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
 
+using namespace std;
+
 CTextureInfo::CTextureInfo()
 {
   orientation = 0;

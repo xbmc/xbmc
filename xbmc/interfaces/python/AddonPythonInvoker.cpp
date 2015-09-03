@@ -86,6 +86,7 @@ namespace PythonBindings {
   void initModule_xbmcvfs(void);
 }
 
+using namespace std;
 using namespace PythonBindings;
 
 typedef struct
@@ -118,7 +119,7 @@ std::map<std::string, CPythonInvoker::PythonModuleInitialization> CAddonPythonIn
   if (modules.empty())
   {
     for (size_t i = 0; i < PythonModulesSize; i++)
-      modules.insert(std::make_pair(PythonModules[i].name, PythonModules[i].initialization));
+      modules.insert(make_pair(PythonModules[i].name, PythonModules[i].initialization));
   }
 
   return modules;

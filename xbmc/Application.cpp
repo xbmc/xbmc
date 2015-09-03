@@ -137,6 +137,7 @@
 #endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/dialogs/GUIDialogPeripheralManager.h"
 #include "peripherals/devices/PeripheralImon.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 
@@ -688,6 +689,8 @@ bool CApplication::Create()
     return false;
   }
 
+  g_peripherals.Initialise();
+
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
   CInputManager::GetInstance().InitializeInputs();
@@ -1133,8 +1136,6 @@ bool CApplication::Initialize()
     StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
     "special://xbmc/media/icon256x256.png", EventLevelBasic)));
 
-  g_peripherals.Initialise();
-
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
   // To quote man curl_global_init:
@@ -1358,68 +1359,46 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     return;
 
   const std::string &settingId = setting->GetId();
-  // check if we should ignore this change event due to changing skins in which case we have to
-  // change several settings and each one of them could lead to a complete skin reload which would
-  // result in multiple skin reloads. Therefore we manually specify to ignore specific settings
-  // which are going to be changed.
-  if (settingId == m_skinReloadSettingIgnore)
-  {
-    m_skinReloadSettingIgnore.clear();
-    return;
-  }
-
   if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN ||
       settingId == CSettings::SETTING_LOOKANDFEEL_FONT ||
-      settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME ||
       settingId == CSettings::SETTING_LOOKANDFEEL_SKINCOLORS)
   {
-    // if the skin changes and the current color/theme/font is not the default one, reset
-    // the it to the default value
-    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN)
+    // if the skin changes and the current theme is not the default one, reset
+    // the theme to the default value (which will also change lookandfeel.skincolors
+    // which in turn will reload the skin.  Similarly, if the current skin font is not
+    // the default, reset it as well.
+    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME) != "SKINDEFAULT")
     {
-      CSetting* skinRelatedSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
-      if (!skinRelatedSetting->IsDefault())
-      {
-        m_skinReloadSettingIgnore = skinRelatedSetting->GetId();
-        skinRelatedSetting->Reset();
-      }
-
-      skinRelatedSetting = CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
-      if (!skinRelatedSetting->IsDefault())
-      {
-        m_skinReloadSettingIgnore = skinRelatedSetting->GetId();
-        skinRelatedSetting->Reset();
-      }
-
-      setting = CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_FONT);
-      if (!setting->IsDefault())
-      {
-        m_skinReloadSettingIgnore = skinRelatedSetting->GetId();
-        skinRelatedSetting->Reset();
-      }
+      CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME, "SKINDEFAULT");
+      return;
     }
-    else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME)
+    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_FONT) != "Default")
     {
-      CSettingString* skinColorsSetting = static_cast<CSettingString*>(CSettings::GetInstance().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
-      m_skinReloadSettingIgnore = skinColorsSetting->GetId();
-
-      // we also need to adjust the skin color setting
-      std::string colorTheme = ((CSettingString*)setting)->GetValue();
-      URIUtils::RemoveExtension(colorTheme);
-      if (setting->IsDefault() || StringUtils::EqualsNoCase(colorTheme, "Textures"))
-        skinColorsSetting->Reset();
-      else
-        skinColorsSetting->SetValue(colorTheme);
+      CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_FONT, "Default");
+      return;
     }
 
-    // reset the settings to ignore during changing skins
-    m_skinReloadSettingIgnore.clear();
-
-    // now we can finally reload skins
     std::string builtin("ReloadSkin");
     if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && !m_skinReverting)
       builtin += "(confirm)";
     CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+  }
+  else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME)
+  {
+    // also set the default color theme
+    std::string colorTheme = ((CSettingString*)setting)->GetValue();
+    URIUtils::RemoveExtension(colorTheme);
+    if (StringUtils::EqualsNoCase(colorTheme, "Textures"))
+      colorTheme = "defaults";
+
+    // check if we have to change the skin color
+    // if yes, it will trigger a call to ReloadSkin() in
+    // it's OnSettingChanged() callback
+    // if no we have to call ReloadSkin() ourselves
+    if (!StringUtils::EqualsNoCase(colorTheme, CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS)))
+      CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS, colorTheme);
+    else
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
   }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
   {

@@ -31,6 +31,7 @@
 #include "utils/Variant.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using namespace XFILE;
 
 //
@@ -50,7 +51,7 @@ bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   CLog::Log(LOGDEBUG,"CMultiPathDirectory::GetDirectory(%s)", url.GetRedacted().c_str());
 
-  std::vector<std::string> vecPaths;
+  vector<std::string> vecPaths;
   if (!GetPaths(url, vecPaths))
     return false;
 
@@ -117,7 +118,7 @@ bool CMultiPathDirectory::Exists(const CURL& url)
 {
   CLog::Log(LOGDEBUG,"Testing Existence (%s)", url.GetRedacted().c_str());
 
-  std::vector<std::string> vecPaths;
+  vector<std::string> vecPaths;
   if (!GetPaths(url, vecPaths))
     return false;
 
@@ -132,7 +133,7 @@ bool CMultiPathDirectory::Exists(const CURL& url)
 
 bool CMultiPathDirectory::Remove(const CURL& url)
 {
-  std::vector<std::string> vecPaths;
+  vector<std::string> vecPaths;
   if (!GetPaths(url, vecPaths))
     return false;
 
@@ -153,7 +154,7 @@ std::string CMultiPathDirectory::GetFirstPath(const std::string &strPath)
   return "";
 }
 
-bool CMultiPathDirectory::GetPaths(const CURL& url, std::vector<std::string>& vecPaths)
+bool CMultiPathDirectory::GetPaths(const CURL& url, vector<std::string>& vecPaths)
 {
   const std::string pathToUrl(url.Get());
   return GetPaths(pathToUrl, vecPaths);
@@ -168,7 +169,7 @@ bool CMultiPathDirectory::GetPaths(const std::string& path, std::vector<std::str
   path1.erase(path1.find_last_not_of('/')+1);
 
   // split on "/"
-  std::vector<std::string> temp = StringUtils::Split(path1, '/');
+  vector<string> temp = StringUtils::Split(path1, '/');
   if (temp.size() == 0)
     return false;
 
@@ -185,7 +186,7 @@ bool CMultiPathDirectory::HasPath(const std::string& strPath, const std::string&
   URIUtils::RemoveSlashAtEnd(strPath1);
 
   // split on "/"
-  std::vector<std::string> vecTemp = StringUtils::Split(strPath1, '/');
+  vector<string> vecTemp = StringUtils::Split(strPath1, '/');
   if (vecTemp.empty())
     return false;
 
@@ -198,7 +199,7 @@ bool CMultiPathDirectory::HasPath(const std::string& strPath, const std::string&
   return false;
 }
 
-std::string CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, const std::vector<int> &stack)
+std::string CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, const vector<int> &stack)
 {
   // we replace all instances of comma's with double comma's, then separate
   // the paths using " , "
@@ -220,23 +221,23 @@ void CMultiPathDirectory::AddToMultiPath(std::string& strMultiPath, const std::s
   strMultiPath += "/";
 }
 
-std::string CMultiPathDirectory::ConstructMultiPath(const std::vector<std::string> &vecPaths)
+std::string CMultiPathDirectory::ConstructMultiPath(const vector<string> &vecPaths)
 {
   // we replace all instances of comma's with double comma's, then separate
   // the paths using " , "
   //CLog::Log(LOGDEBUG, "Building multipath");
   std::string newPath = "multipath://";
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-  for (std::vector<std::string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); ++path)
+  for (vector<string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); ++path)
     AddToMultiPath(newPath, *path);
   //CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
   return newPath;
 }
 
-std::string CMultiPathDirectory::ConstructMultiPath(const std::set<std::string> &setPaths)
+std::string CMultiPathDirectory::ConstructMultiPath(const set<string> &setPaths)
 {
   std::string newPath = "multipath://";
-  for (std::set<std::string>::const_iterator path = setPaths.begin(); path != setPaths.end(); ++path)
+  for (set<string>::const_iterator path = setPaths.begin(); path != setPaths.end(); ++path)
     AddToMultiPath(newPath, *path);
 
   return newPath;
@@ -264,7 +265,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
     if (!pItem1->m_bIsFolder)
       break;
 
-    std::vector<int> stack;
+    vector<int> stack;
     stack.push_back(i);
     CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, pItem1->GetPath().c_str());
 
@@ -307,7 +308,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 
 bool CMultiPathDirectory::SupportsWriteFileOperations(const std::string &strPath)
 {
-  std::vector<std::string> paths;
+  vector<std::string> paths;
   GetPaths(strPath, paths);
   for (unsigned int i = 0; i < paths.size(); ++i)
     if (CUtil::SupportsWriteFileOperations(paths[i]))

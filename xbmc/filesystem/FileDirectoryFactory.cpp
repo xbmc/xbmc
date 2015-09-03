@@ -49,6 +49,7 @@
 using namespace ADDON;
 using namespace XFILE;
 using namespace PLAYLIST;
+using namespace std;
 
 CFileDirectoryFactory::CFileDirectoryFactory(void)
 {}
@@ -134,7 +135,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   }
   if (url.IsFileType("rar") || url.IsFileType("001"))
   {
-    std::vector<std::string> tokens;
+    vector<std::string> tokens;
     const std::string strPath = url.Get();
     StringUtils::Tokenize(strPath,tokens,".");
     if (tokens.size() > 2)

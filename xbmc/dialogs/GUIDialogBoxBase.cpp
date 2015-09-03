@@ -25,6 +25,9 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+
+using namespace std;
+
 #define CONTROL_HEADING 1
 #define CONTROL_LINES_START 2
 #define CONTROL_TEXTBOX     9
@@ -77,7 +80,7 @@ void CGUIDialogBoxBase::SetLine(unsigned int iLine, CVariant line)
 {
   std::string label = GetLocalized(line);
   CSingleLock lock(m_section);
-  std::vector<std::string> lines = StringUtils::Split(m_text, '\n');
+  vector<string> lines = StringUtils::Split(m_text, '\n');
   if (iLine >= lines.size())
     lines.resize(iLine+1);
   lines[iLine] = label;
@@ -115,8 +118,8 @@ void CGUIDialogBoxBase::Process(unsigned int currentTime, CDirtyRegionList &dirt
 {
   if (m_bInvalidated)
   { // take a copy of our labels to save holding the lock for too long
-    std::string heading, text;
-    std::vector<std::string> choices;
+    string heading, text;
+    vector<string> choices;
     choices.reserve(DIALOG_MAX_CHOICES);
     {
       CSingleLock lock(m_section);
@@ -132,7 +135,7 @@ void CGUIDialogBoxBase::Process(unsigned int currentTime, CDirtyRegionList &dirt
     }
     else
     {
-      std::vector<std::string> lines = StringUtils::Split(text, "\n", DIALOG_MAX_LINES);
+      vector<string> lines = StringUtils::Split(text, "\n", DIALOG_MAX_LINES);
       lines.resize(DIALOG_MAX_LINES);
       for (size_t i = 0 ; i < lines.size(); ++i)
         SET_CONTROL_LABEL(CONTROL_LINES_START + i, lines[i]);

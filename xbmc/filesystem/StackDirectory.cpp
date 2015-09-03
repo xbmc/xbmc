@@ -27,6 +27,7 @@
 #include "settings/AdvancedSettings.h"
 #include "URL.h"
 
+using namespace std;
 namespace XFILE
 {
   CStackDirectory::CStackDirectory()
@@ -40,12 +41,12 @@ namespace XFILE
   bool CStackDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   {
     items.Clear();
-    std::vector<std::string> files;
+    vector<std::string> files;
     const std::string pathToUrl(url.Get());
     if (!GetPaths(pathToUrl, files))
       return false;   // error in path
 
-    for (std::vector<std::string>::const_iterator i = files.begin(); i != files.end(); ++i)
+    for (vector<std::string>::const_iterator i = files.begin(); i != files.end(); ++i)
     {
       CFileItemPtr item(new CFileItem(*i));
       item->SetPath(*i);
@@ -60,8 +61,8 @@ namespace XFILE
     // Load up our REs
     VECCREGEXP  RegExps;
     CRegExp     tempRE(true, CRegExp::autoUtf8);
-    const std::vector<std::string>& strRegExps = g_advancedSettings.m_videoStackRegExps;
-    std::vector<std::string>::const_iterator itRegExp = strRegExps.begin();
+    const vector<std::string>& strRegExps = g_advancedSettings.m_videoStackRegExps;
+    vector<std::string>::const_iterator itRegExp = strRegExps.begin();
     while (itRegExp != strRegExps.end())
     {
       (void)tempRE.RegComp(*itRegExp);
@@ -173,7 +174,7 @@ namespace XFILE
     return URIUtils::AddFileToFolder(folder, file);
   }
 
-  bool CStackDirectory::GetPaths(const std::string& strPath, std::vector<std::string>& vecPaths)
+  bool CStackDirectory::GetPaths(const std::string& strPath, vector<std::string>& vecPaths)
   {
     // format is:
     // stack://file1 , file2 , file3 , file4
@@ -187,13 +188,13 @@ namespace XFILE
       return false;
 
     // because " , " is used as a seperator any "," in the real paths are double escaped
-    for (std::vector<std::string>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); ++itPath)
+    for (vector<std::string>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); ++itPath)
       StringUtils::Replace(*itPath, ",,", ",");
 
     return true;
   }
 
-  std::string CStackDirectory::ConstructStackPath(const CFileItemList &items, const std::vector<int> &stack)
+  std::string CStackDirectory::ConstructStackPath(const CFileItemList &items, const vector<int> &stack)
   {
     // no checks on the range of stack here.
     // we replace all instances of comma's with double comma's, then separate
@@ -217,7 +218,7 @@ namespace XFILE
     return stackedPath;
   }
 
-  bool CStackDirectory::ConstructStackPath(const std::vector<std::string> &paths, std::string& stackedPath)
+  bool CStackDirectory::ConstructStackPath(const vector<std::string> &paths, std::string& stackedPath)
   {
     if (paths.size() < 2)
       return false;

@@ -21,6 +21,8 @@
 #include "TextSearch.h"
 #include "StringUtils.h"
 
+using namespace std;
+
 CTextSearch::CTextSearch(const std::string &strSearchTerms, bool bCaseSensitive /* = false */, TextSearchDefault defaultSearchMode /* = SEARCH_DEFAULT_OR */)
 {
   m_bCaseSensitive = bCaseSensitive;

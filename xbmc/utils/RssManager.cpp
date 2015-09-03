@@ -33,6 +33,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+using namespace std;
 using namespace XFILE;
 
 CRssManager::CRssManager()
@@ -101,7 +102,7 @@ void CRssManager::Stop()
 bool CRssManager::Load()
 {
   CSingleLock lock(m_critical);
-  std::string rssXML = CProfilesManager::GetInstance().GetUserDataItem("RssFeeds.xml");
+  string rssXML = CProfilesManager::GetInstance().GetUserDataItem("RssFeeds.xml");
   if (!CFile::Exists(rssXML))
     return false;
 
@@ -142,14 +143,14 @@ bool CRssManager::Load()
         {
           // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
           //              What about the xml encoding?
-          std::string strUrl = pFeed->FirstChild()->ValueStr();
+          string strUrl = pFeed->FirstChild()->ValueStr();
           set.url.push_back(strUrl);
           set.interval.push_back(iInterval);
         }
         pFeed = pFeed->NextSiblingElement("feed");
       }
 
-      m_mapRssUrls.insert(std::make_pair(iId,set));
+      m_mapRssUrls.insert(make_pair(iId,set));
     }
     else
       CLog::Log(LOGERROR, "CRssManager: found rss url set with no id in RssFeeds.xml, ignored");

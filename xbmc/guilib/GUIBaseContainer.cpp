@@ -33,6 +33,8 @@
 #include "settings/Settings.h"
 #include "guiinfo/GUIInfoLabels.h"
 
+using namespace std;
+
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000
 #define SCROLLING_GAP   200U
@@ -787,7 +789,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
   CGUIControl::SetFocus(bOnOff);
 }
 
-void CGUIBaseContainer::SaveStates(std::vector<CControlState> &states)
+void CGUIBaseContainer::SaveStates(vector<CControlState> &states)
 {
   if (!m_listProvider || !m_listProvider->AlwaysFocusDefaultItem())
     states.push_back(CControlState(GetID(), GetSelectedItem()));

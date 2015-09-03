@@ -44,6 +44,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "addons/GUIDialogAddonSettings.h"
 
+using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 
@@ -135,8 +136,8 @@ void CWeatherJob::LocalizeOverviewToken(std::string &token)
 
 void CWeatherJob::LocalizeOverview(std::string &str)
 {
-  std::vector<std::string> words = StringUtils::Split(str, " ");
-  for (std::vector<std::string>::iterator i = words.begin(); i != words.end(); ++i)
+  vector<string> words = StringUtils::Split(str, " ");
+  for (vector<string>::iterator i = words.begin(); i != words.end(); ++i)
     LocalizeOverviewToken(*i);
   str = StringUtils::Join(words, " ");
 }

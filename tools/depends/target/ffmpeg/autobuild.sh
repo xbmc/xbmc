@@ -159,7 +159,6 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 	--disable-mips32r2 \
 	--disable-mipsdspr1 \
 	--disable-mipsdspr2 \
-	--enable-libdcadec \
         ${FLAGS}
 
 make -j ${BUILDTHREADS} 

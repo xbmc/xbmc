@@ -49,6 +49,7 @@
 #include "Util.h"
 #include "utils/SystemInfo.h"
 
+using namespace std;
 using namespace UPNP;
 using namespace KODI::MESSAGING;
 
@@ -234,7 +235,7 @@ public:
 
     bool SaveFileState(const CFileItem& item, const CBookmark& bookmark, const bool updatePlayCount)
     {
-        std::string path = item.GetProperty("original_listitem_url").asString();
+        string path = item.GetProperty("original_listitem_url").asString();
         if (!item.HasVideoInfoTag() || path.empty())  {
           return false;
         }
@@ -682,7 +683,7 @@ CUPnP::StartServer()
         CUPnPServer::m_MaxReturnedItems = UPNP_DEFAULT_MAX_RETURNED_ITEMS;
         if (CUPnPSettings::GetInstance().GetMaximumReturnedItems() > 0) {
             // must be > UPNP_DEFAULT_MIN_RETURNED_ITEMS
-            CUPnPServer::m_MaxReturnedItems = std::max(UPNP_DEFAULT_MIN_RETURNED_ITEMS, CUPnPSettings::GetInstance().GetMaximumReturnedItems());
+            CUPnPServer::m_MaxReturnedItems = max(UPNP_DEFAULT_MIN_RETURNED_ITEMS, CUPnPSettings::GetInstance().GetMaximumReturnedItems());
         }
         CUPnPSettings::GetInstance().SetMaximumReturnedItems(CUPnPServer::m_MaxReturnedItems);
     }

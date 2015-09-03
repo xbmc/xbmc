@@ -22,6 +22,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/TimeUtils.h"
 
+using namespace std;
+
 CStaticListProvider::CStaticListProvider(const TiXmlElement *element, int parentID)
 : IListProvider(parentID),
   m_defaultItem(-1),
@@ -70,18 +72,18 @@ bool CStaticListProvider::Update(bool forceRefresh)
   else if (CTimeUtils::GetFrameTime() - m_updateTime > 1000)
   {
     m_updateTime = CTimeUtils::GetFrameTime();
-    for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
+    for (vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
       (*i)->UpdateProperties(m_parentID);
   }
-  for (std::vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
+  for (vector<CGUIStaticItemPtr>::iterator i = m_items.begin(); i != m_items.end(); ++i)
     changed |= (*i)->UpdateVisibility(m_parentID);
   return changed; // TODO: Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 
-void CStaticListProvider::Fetch(std::vector<CGUIListItemPtr> &items) const
+void CStaticListProvider::Fetch(vector<CGUIListItemPtr> &items) const
 {
   items.clear();
-  for (std::vector<CGUIStaticItemPtr>::const_iterator i = m_items.begin(); i != m_items.end(); ++i)
+  for (vector<CGUIStaticItemPtr>::const_iterator i = m_items.begin(); i != m_items.end(); ++i)
   {
     if ((*i)->IsVisible())
       items.push_back(*i);
@@ -99,7 +101,7 @@ int CStaticListProvider::GetDefaultItem() const
   if (m_defaultItem >= 0)
   {
     unsigned int offset = 0;
-    for (std::vector<CGUIStaticItemPtr>::const_iterator i = m_items.begin(); i != m_items.end(); ++i)
+    for (vector<CGUIStaticItemPtr>::const_iterator i = m_items.begin(); i != m_items.end(); ++i)
     {
       if ((*i)->IsVisible())
       {

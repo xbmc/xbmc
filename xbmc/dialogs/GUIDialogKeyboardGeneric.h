@@ -43,7 +43,6 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     const std::string &GetText() const;
     bool IsConfirmed() { return m_bIsConfirmed; };
     void SetHiddenInput(bool hiddenInput) { m_hiddenInput = hiddenInput; };
-    bool IsInputHidden() const { return m_hiddenInput; };
 
   protected:
     virtual void OnWindowLoaded();

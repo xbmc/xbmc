@@ -70,12 +70,9 @@ private:
   unsigned int     m_jobID;
   CGUIInfoLabel    m_url;
   CGUIInfoLabel    m_target;
-  CGUIInfoLabel    m_sortMethod;
-  CGUIInfoLabel    m_sortOrder;
   CGUIInfoLabel    m_limit;
   std::string      m_currentUrl;
   std::string      m_currentTarget;   ///< \brief node.target property on the list as a whole
-  SortDescription  m_currentSort;
   unsigned int     m_currentLimit;
   std::vector<CGUIStaticItemPtr> m_items;
   std::vector<InfoTagType> m_itemTypes;
@@ -85,5 +82,4 @@ private:
   void RegisterListProvider(bool hasLibraryContent);
   bool UpdateURL();
   bool UpdateLimit();
-  bool UpdateSort();
 };

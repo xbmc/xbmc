@@ -101,12 +101,88 @@ namespace JSONRPC
       else
         sortAttributes = SortAttributeNone;
 
-      sortOrder = SortUtils::SortOrderFromString(order);
-      if (sortOrder == SortOrderNone)
+      if (order == "ascending")
+        sortOrder = SortOrderAscending;
+      else if (order == "descending")
+        sortOrder = SortOrderDescending;
+      else
         return false;
 
-      sortBy = SortUtils::SortMethodFromString(method);
-      if (sortBy == SortByNone)
+      if (method == "none")
+        sortBy = SortByNone;
+      else if (method == "label")
+        sortBy = SortByLabel;
+      else if (method == "date")
+        sortBy = SortByDate;
+      else if (method == "size")
+        sortBy = SortBySize;
+      else if (method == "file")
+        sortBy = SortByFile;
+      else if (method == "path")
+        sortBy = SortByPath;
+      else if (method == "drivetype")
+        sortBy = SortByDriveType;
+      else if (method == "title")
+        sortBy = SortByTitle;
+      else if (method == "track")
+        sortBy = SortByTrackNumber;
+      else if (method == "time")
+        sortBy = SortByTime;
+      else if (method == "artist")
+        sortBy = SortByArtist;
+      else if (method == "album")
+        sortBy = SortByAlbum;
+      else if (method == "albumtype")
+        sortBy = SortByAlbumType;
+      else if (method == "genre")
+        sortBy = SortByGenre;
+      else if (method == "country")
+        sortBy = SortByCountry;
+      else if (method == "year")
+        sortBy = SortByYear;
+      else if (method == "rating")
+        sortBy = SortByRating;
+      else if (method == "votes")
+        sortBy = SortByVotes;
+      else if (method == "top250")
+        sortBy = SortByTop250;
+      else if (method == "programcount")
+        sortBy = SortByProgramCount;
+      else if (method == "playlist")
+        sortBy = SortByPlaylistOrder;
+      else if (method == "episode")
+        sortBy = SortByEpisodeNumber;
+      else if (method == "season")
+        sortBy = SortBySeason;
+      else if (method == "totalepisodes")
+        sortBy = SortByNumberOfEpisodes;
+      else if (method == "watchedepisodes")
+        sortBy = SortByNumberOfWatchedEpisodes;
+      else if (method == "tvshowstatus")
+        sortBy = SortByTvShowStatus;
+      else if (method == "tvshowtitle")
+        sortBy = SortByTvShowTitle;
+      else if (method == "sorttitle")
+        sortBy = SortBySortTitle;
+      else if (method == "productioncode")
+        sortBy = SortByProductionCode;
+      else if (method == "mpaa")
+        sortBy = SortByMPAA;
+      else if (method == "studio")
+        sortBy = SortByStudio;
+      else if (method == "dateadded")
+        sortBy = SortByDateAdded;
+      else if (method == "lastplayed")
+        sortBy = SortByLastPlayed;
+      else if (method == "playcount")
+        sortBy = SortByPlaycount;
+      else if (method == "listeners")
+        sortBy = SortByListeners;
+      else if (method == "bitrate")
+        sortBy = SortByBitrate;
+      else if (method == "random")
+        sortBy = SortByRandom;
+      else
         return false;
 
       return true;

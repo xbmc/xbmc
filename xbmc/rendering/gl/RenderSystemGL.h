@@ -57,7 +57,7 @@ public:
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();
 
-  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.0f);
+  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight);
 
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();

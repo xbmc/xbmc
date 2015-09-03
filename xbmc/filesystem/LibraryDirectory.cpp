@@ -34,6 +34,7 @@
 #include "GUIInfoManager.h"
 #include "utils/log.h"
 
+using namespace std;
 using namespace XFILE;
 
 CLibraryDirectory::CLibraryDirectory(void)

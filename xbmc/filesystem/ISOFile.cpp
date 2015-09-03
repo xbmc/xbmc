@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <sys/stat.h>
 
+using namespace std;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////
@@ -50,7 +51,7 @@ CISOFile::~CISOFile()
 //*********************************************************************************************
 bool CISOFile::Open(const CURL& url)
 {
-  std::string strFName = "\\";
+  string strFName = "\\";
   strFName += url.GetFileName();
   for (int i = 0; i < (int)strFName.size(); ++i )
   {
@@ -140,7 +141,7 @@ int64_t CISOFile::GetPosition()
 
 bool CISOFile::Exists(const CURL& url)
 {
-  std::string strFName = "\\";
+  string strFName = "\\";
   strFName += url.GetFileName();
   for (int i = 0; i < (int)strFName.size(); ++i )
   {
@@ -156,7 +157,7 @@ bool CISOFile::Exists(const CURL& url)
 
 int CISOFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  std::string strFName = "\\";
+  string strFName = "\\";
   strFName += url.GetFileName();
   for (int i = 0; i < (int)strFName.size(); ++i )
   {

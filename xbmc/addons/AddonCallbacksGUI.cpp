@@ -50,6 +50,7 @@
 #define CONTROL_BTNSORTASC      4
 #define CONTROL_LABELFILES      12
 
+using namespace std;
 using namespace KODI::MESSAGING;
 
 namespace ADDON
@@ -698,7 +699,7 @@ const char* CAddonCallbacksGUI::Window_GetProperty(void *addonData, GUIHANDLE ha
   StringUtils::ToLower(lowerKey);
 
   Lock();
-  std::string value = pWindow->GetProperty(lowerKey).asString();
+  string value = pWindow->GetProperty(lowerKey).asString();
   Unlock();
 
   return strdup(value.c_str());
@@ -1616,7 +1617,7 @@ const char* CAddonCallbacksGUI::ListItem_GetProperty(void *addonData, GUIHANDLE 
   if (!helper || !handle)
     return NULL;
 
-  std::string string = ((CFileItem*)handle)->GetProperty(key).asString();
+  string string = ((CFileItem*)handle)->GetProperty(key).asString();
   char *buffer = (char*) malloc (string.length()+1);
   strcpy(buffer, string.c_str());
   return buffer;

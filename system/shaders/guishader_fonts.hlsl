@@ -25,7 +25,7 @@ Texture2D texFont : register(t0);
 float4 PS(PS_INPUT input) : SV_TARGET
 {
   input.color.a *= texFont.Sample(LinearSampler, input.tex).r;
-  return adjustColorRange(input.color);
+  return input.color;
 }
 
 

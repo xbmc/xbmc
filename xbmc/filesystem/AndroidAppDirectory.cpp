@@ -33,6 +33,7 @@
 #include "CompileInfo.h"
 
 using namespace XFILE;
+using namespace std;
 
 CAndroidAppDirectory::CAndroidAppDirectory(void)
 {
@@ -53,7 +54,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   if (dirname == "apps")
   {
-    std::vector<androidPackage> applications = CXBMCApp::GetApplications();
+    vector<androidPackage> applications = CXBMCApp::GetApplications();
     if (applications.empty())
     {
       CLog::Log(LOGERROR, "CAndroidAppDirectory::GetDirectory Application lookup listing failed");

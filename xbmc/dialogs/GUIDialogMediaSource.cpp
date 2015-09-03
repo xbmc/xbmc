@@ -44,6 +44,7 @@
 #include "filesystem/File.h"
 #endif
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_HEADING          2
@@ -516,9 +517,9 @@ void CGUIDialogMediaSource::OnPathAdd()
   HighlightItem(m_paths->Size() - 1);
 }
 
-std::vector<std::string> CGUIDialogMediaSource::GetPaths() const
+vector<string> CGUIDialogMediaSource::GetPaths() const
 {
-  std::vector<std::string> paths;
+  vector<string> paths;
   for (int i = 0; i < m_paths->Size(); i++)
   {
     if (!m_paths->Get(i)->GetPath().empty())

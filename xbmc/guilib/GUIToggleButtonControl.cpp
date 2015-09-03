@@ -24,6 +24,8 @@
 #include "GUIInfoManager.h"
 #include "input/Key.h"
 
+using namespace std;
+
 CGUIToggleButtonControl::CGUIToggleButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo, bool wrapMultiLine)
     : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo, wrapMultiLine)
     , m_selectButton(parentID, controlID, posX, posY, width, height, altTextureFocus, altTextureNoFocus, labelInfo, wrapMultiLine)
@@ -139,13 +141,13 @@ bool CGUIToggleButtonControl::UpdateColors()
   return changed;
 }
 
-void CGUIToggleButtonControl::SetLabel(const std::string &strLabel)
+void CGUIToggleButtonControl::SetLabel(const string &strLabel)
 {
   CGUIButtonControl::SetLabel(strLabel);
   m_selectButton.SetLabel(strLabel);
 }
 
-void CGUIToggleButtonControl::SetAltLabel(const std::string &label)
+void CGUIToggleButtonControl::SetAltLabel(const string &label)
 {
   if (label.size())
     m_selectButton.SetLabel(label);

@@ -33,6 +33,7 @@
 
 #define LOOKUP_PROPERTY "database-lookup"
 
+using namespace std;
 using namespace ANNOUNCEMENT;
 
 CAnnouncementManager::CAnnouncementManager()

@@ -28,6 +28,8 @@
 #include "input/InputManager.h"
 #include "input/Key.h"
 
+using namespace std;
+
 CGUIControl::CGUIControl() :
   m_diffuseColor(0xffffffff)
 {
@@ -51,7 +53,6 @@ CGUIControl::CGUIControl() :
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
   m_controlIsDirty = true;
-  m_stereo = 0.0f;
 }
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
@@ -78,7 +79,6 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
   m_controlIsDirty = false;
-  m_stereo = 0.0f;
 }
 
 
@@ -174,22 +174,14 @@ void CGUIControl::DoRender()
 {
   if (IsVisible())
   {
-    bool hasStereo = m_stereo != 0.0
-                  && g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_MONO
-                  && g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_OFF;
-
     g_graphicsContext.SetTransform(m_cachedTransform);
     if (m_hasCamera)
       g_graphicsContext.SetCameraPosition(m_camera);
-    if (hasStereo)
-      g_graphicsContext.SetStereoFactor(m_stereo);
 
     GUIPROFILER_RENDER_BEGIN(this);
     Render();
     GUIPROFILER_RENDER_END(this);
 
-    if (hasStereo)
-      g_graphicsContext.RestoreStereoFactor();
     if (m_hasCamera)
       g_graphicsContext.RestoreCameraPosition();
     g_graphicsContext.RemoveTransform();
@@ -650,7 +642,7 @@ void CGUIControl::SetVisibleCondition(const std::string &expression, const std::
   m_allowHiddenFocus.Parse(allowHiddenFocus, GetParentID());
 }
 
-void CGUIControl::SetAnimations(const std::vector<CAnimation> &animations)
+void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
 {
   m_animations = animations;
   MarkDirtyRegion();
@@ -903,7 +895,7 @@ bool CGUIControl::HasVisibleID(int id) const
   return GetID() == id && IsVisible();
 }
 
-void CGUIControl::SaveStates(std::vector<CControlState> &states)
+void CGUIControl::SaveStates(vector<CControlState> &states)
 {
   // empty for now - do nothing with the majority of controls
 }
@@ -927,9 +919,4 @@ CPoint CGUIControl::GetRenderPosition() const
   if (m_parentControl)
     point += m_parentControl->GetRenderPosition();
   return point;
-}
-
-void CGUIControl::SetStereoFactor(const float &factor)
-{
-  m_stereo = factor;
 }

@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
+using namespace std;
 using XFILE::auto_buffer;
 
 CDVDSubtitleStream::CDVDSubtitleStream()
@@ -40,7 +41,7 @@ CDVDSubtitleStream::~CDVDSubtitleStream()
 {
 }
 
-bool CDVDSubtitleStream::Open(const std::string& strFile)
+bool CDVDSubtitleStream::Open(const string& strFile)
 {
   CDVDInputStream* pInputStream;
   pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
@@ -134,17 +135,17 @@ long CDVDSubtitleStream::Seek(long offset, int whence)
   {
     case SEEK_CUR:
     {
-      m_stringstream.seekg(offset, std::ios::cur);
+      m_stringstream.seekg(offset, ios::cur);
       break;
     }
     case SEEK_END:
     {
-      m_stringstream.seekg(offset, std::ios::end);
+      m_stringstream.seekg(offset, ios::end);
       break;
     }
     case SEEK_SET:
     {
-      m_stringstream.seekg(offset, std::ios::beg);
+      m_stringstream.seekg(offset, ios::beg);
       break;
     }
   }

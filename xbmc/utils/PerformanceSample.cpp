@@ -32,9 +32,11 @@
 #include "PerformanceStats.h"
 #endif
 
+using namespace std;
+
 int64_t CPerformanceSample::m_tmFreq;
 
-CPerformanceSample::CPerformanceSample(const std::string &statName, bool bCheckWhenDone) : m_statName(statName)
+CPerformanceSample::CPerformanceSample(const string &statName, bool bCheckWhenDone) : m_statName(statName)
 {
   m_bCheckWhenDone = bCheckWhenDone;
   if (m_tmFreq == 0LL)

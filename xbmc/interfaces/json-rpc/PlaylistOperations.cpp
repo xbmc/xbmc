@@ -30,6 +30,7 @@
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
+using namespace std;
 using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CPlaylistOperations::GetPlaylists(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -299,14 +300,14 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(int playlist, const std::st
 
 bool CPlaylistOperations::HandleItemsParameter(int playlistid, const CVariant &itemParam, CFileItemList &items)
 {
-  std::vector<CVariant> vecItems;
+  vector<CVariant> vecItems;
   if (itemParam.isArray())
     vecItems.assign(itemParam.begin_array(), itemParam.end_array());
   else
     vecItems.push_back(itemParam);
 
   bool success = false;
-  for (std::vector<CVariant>::iterator itemIt = vecItems.begin(); itemIt != vecItems.end(); ++itemIt)
+  for (vector<CVariant>::iterator itemIt = vecItems.begin(); itemIt != vecItems.end(); ++itemIt)
   {
     if (!CheckMediaParameter(playlistid, *itemIt))
       continue;

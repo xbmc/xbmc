@@ -32,6 +32,8 @@
 #ifdef HAS_SDL_JOYSTICK
 #include <SDL2/SDL.h>
 
+using namespace std;
+
 CJoystick::CJoystick()
 {
   m_joystickEnabled = false;

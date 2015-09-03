@@ -28,6 +28,7 @@
 #include "utils/StringUtils.h"
 #include "addons/Skin.h"
 
+using namespace std;
 using ADDON::CAddonMgr;
 
 CGUIInfoBool::CGUIInfoBool(bool value)
@@ -149,7 +150,7 @@ const std::string &CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, 
   bool needsUpdate = m_dirty;
   if (!m_info.empty())
   {
-    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
     {
       if (portion->m_info)
       {
@@ -173,7 +174,7 @@ const std::string &CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool pr
   bool needsUpdate = m_dirty;
   if (item->IsFileItem() && !m_info.empty())
   {
-    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
     {
       if (portion->m_info)
       {
@@ -197,7 +198,7 @@ const std::string &CGUIInfoLabel::CacheLabel(bool rebuild) const
   if (rebuild)
   {
     m_label.clear();
-    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
       m_label += portion->Get();
     m_dirty = false;
   }
@@ -333,7 +334,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
     for (size_t i = 0; i < sizeof(infoformatmap) / sizeof(infoformat); i++)
     {
       pos2 = work.find(infoformatmap[i].str);
-      if (pos2 != std::string::npos && pos2 < pos1)
+      if (pos2 != string::npos && pos2 < pos1)
       {
         pos1 = pos2;
         len = strlen(infoformatmap[i].str);
@@ -351,7 +352,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
       {
         // decipher the block
         std::string block = work.substr(pos1 + len, pos2 - pos1 - len);
-        std::vector<std::string> params = StringUtils::Split(block, ",");
+        vector<string> params = StringUtils::Split(block, ",");
         if (!params.empty())
         {
           int info;

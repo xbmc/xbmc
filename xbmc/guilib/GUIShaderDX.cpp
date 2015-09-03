@@ -22,8 +22,6 @@
 #include <d3dcompiler.h>
 #include "GUIShaderDX.h"
 #include "guilib/GraphicContext.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 
@@ -114,7 +112,7 @@ bool CGUIShaderDX::Initialize()
       m_pixelShader[j].Release();
   }
 
-  if (!bSuccess || !CreateBuffers() || !CreateSamplers())
+  if (!CreateBuffers() || !CreateSamplers())
     return false;
 
   m_bCreated = true;
@@ -134,8 +132,7 @@ bool CGUIShaderDX::CreateBuffers()
   }
 
   // Create the constant buffer for WVP
-  size_t buffSize = (sizeof(cbWorld) + 15) & ~15;
-  CD3D11_BUFFER_DESC cbbd(buffSize, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE); // it can change very frequently
+  CD3D11_BUFFER_DESC cbbd(sizeof(XMMATRIX), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE); // it can change very frequently
   if (FAILED(pDevice->CreateBuffer(&cbbd, NULL, &m_pWVPBuffer)))
   {
     CLog::Log(LOGERROR, __FUNCTION__ " - Failed to create the constant buffer.");
@@ -198,8 +195,7 @@ void CGUIShaderDX::ApplyStateBlock(void)
   pContext->VSSetConstantBuffers(0, 1, &m_pWVPBuffer);
 
   m_pixelShader[m_currentShader].BindShader();
-  pContext->PSSetConstantBuffers(0, 1, &m_pWVPBuffer);
-  pContext->PSSetConstantBuffers(1, 1, &m_pVPBuffer);
+  pContext->PSSetConstantBuffers(0, 1, &m_pVPBuffer);
 
   ID3D11SamplerState* samplers[] = { m_pSampLinear, m_pSampPoint };
   pContext->PSSetSamplers(0, ARRAYSIZE(samplers), samplers);
@@ -349,13 +345,9 @@ void CGUIShaderDX::ApplyChanges(void)
     if (SUCCEEDED(pContext->Map(m_pWVPBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
       XMMATRIX worldView = XMMatrixMultiply(m_cbWorldViewProj.world, m_cbWorldViewProj.view);
-      XMMATRIX worldViewProj = XMMatrixMultiplyTranspose(worldView, m_cbWorldViewProj.projection);
+      XMMATRIX worldViewProj = XMMatrixTranspose(XMMatrixMultiply(worldView, m_cbWorldViewProj.projection));
 
-      cbWorld* buffer = (cbWorld*)res.pData;
-      buffer->wvp = worldViewProj;
-      buffer->blackLevel = (g_Windowing.UseLimitedColor() ? 16.f / 255.f : 0.f);
-      buffer->colorRange = (g_Windowing.UseLimitedColor() ? (235.f - 16.f) / 255.f : 1.0f);
-
+      *(XMMATRIX*)res.pData = worldViewProj;
       pContext->Unmap(m_pWVPBuffer, 0);
       m_bIsWVPDirty = false;
     }

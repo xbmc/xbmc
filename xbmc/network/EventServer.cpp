@@ -45,6 +45,7 @@ using namespace EVENTSERVER;
 using namespace EVENTPACKET;
 using namespace EVENTCLIENT;
 using namespace SOCKETS;
+using namespace std;
 
 /************************************************************************/
 /* CEventServer                                                         */
@@ -123,7 +124,7 @@ void CEventServer::Cleanup()
   }
   CSingleLock lock(m_critSection);
 
-  std::map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
   while (iter != m_clients.end())
   {
     if (iter->second)
@@ -263,7 +264,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
   CSingleLock lock(m_critSection);
 
   // first check if we have a client for this address
-  std::map<unsigned long, CEventClient*>::iterator iter = m_clients.find(clientToken);
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.find(clientToken);
 
   if ( iter == m_clients.end() )
   {
@@ -291,7 +292,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 void CEventServer::RefreshClients()
 {
   CSingleLock lock(m_critSection);
-  std::map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while ( iter != m_clients.end() )
   {
@@ -318,7 +319,7 @@ void CEventServer::RefreshClients()
 void CEventServer::ProcessEvents()
 {
   CSingleLock lock(m_critSection);
-  std::map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while (iter != m_clients.end())
   {
@@ -332,7 +333,7 @@ bool CEventServer::ExecuteNextAction()
   CSingleLock lock(m_critSection);
 
   CEventAction actionEvent;
-  std::map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while (iter != m_clients.end())
   {
@@ -367,7 +368,7 @@ bool CEventServer::ExecuteNextAction()
 unsigned int CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, float& fAmount)
 {
   CSingleLock lock(m_critSection);
-  std::map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
   unsigned int bcode = 0;
 
   while (iter != m_clients.end())
@@ -383,7 +384,7 @@ unsigned int CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, 
 bool CEventServer::GetMousePos(float &x, float &y)
 {
   CSingleLock lock(m_critSection);
-  std::map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
+  map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while (iter != m_clients.end())
   {

@@ -25,6 +25,8 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+using namespace std;
+
 bool CGUIListItem::icompare::operator()(const std::string &s1, const std::string &s2) const
 {
   return StringUtils::CompareNoCase(s1, s2) < 0;

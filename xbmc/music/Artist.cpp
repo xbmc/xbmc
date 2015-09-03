@@ -24,6 +24,8 @@
 
 #include <algorithm>
 
+using namespace std;
+
 void CArtist::MergeScrapedArtist(const CArtist& source, bool override /* = true */)
 {
   /*
@@ -173,7 +175,7 @@ bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& s
   }
 
   // albums
-  for (std::vector<std::pair<std::string,std::string> >::const_iterator it = discography.begin(); it != discography.end(); ++it)
+  for (vector< pair<std::string,std::string> >::const_iterator it = discography.begin(); it != discography.end(); ++it)
   {
     // add a <album> tag
     TiXmlElement cast("album");

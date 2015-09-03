@@ -56,6 +56,7 @@
 
 #include <algorithm>
 
+using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
@@ -437,7 +438,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   m_seenPaths.insert(strDirectory);
 
   // Discard all excluded files defined by m_musicExcludeRegExps
-  std::vector<std::string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  vector<string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
 
@@ -512,7 +513,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
 
 INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& scannedItems)
 {
-  std::vector<std::string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  vector<string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
 
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -532,7 +533,7 @@ INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items, CFileItemList& 
     CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
     if (!tag.Loaded())
     {
-      std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
+      unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
       if (NULL != pLoader.get())
         pLoader->Load(pItem->GetPath(), tag);
     }
@@ -571,7 +572,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
    * If they're MB tagged, create albums directly from the FileItems.
    * If they're non-MB tagged, index them by album name ready for step 2.
    */
-  std::map<std::string, VECSONGS> songsByAlbumNames;
+  map<string, VECSONGS> songsByAlbumNames;
   for (int i = 0; i < items.Size(); ++i)
   {
     CMusicInfoTag& tag = *items[i]->GetMusicInfoTag();
@@ -616,7 +617,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
    In the case where the album artist is unknown, we use the primary artist
    (i.e. first artist from each song).
    */
-  for (std::map<std::string, VECSONGS>::iterator songsByAlbumName = songsByAlbumNames.begin(); songsByAlbumName != songsByAlbumNames.end(); ++songsByAlbumName)
+  for (map<string, VECSONGS>::iterator songsByAlbumName = songsByAlbumNames.begin(); songsByAlbumName != songsByAlbumNames.end(); ++songsByAlbumName)
   {
     VECSONGS &songs = songsByAlbumName->second;
     // sort the songs by tracknumber to identify duplicate track numbers
@@ -627,7 +628,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     bool hasAlbumArtist = false;
     bool isCompilation = true;
 
-    std::map<std::string, std::vector<CSong *> > artists;
+    map<string, vector<CSong *> > artists;
     for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
     {
       // test for song overlap
@@ -638,7 +639,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         isCompilation = false;
 
       // get primary artist
-      std::string primary;
+      string primary;
       if (!song->albumArtist.empty())
       {
         primary = song->albumArtist[0];
@@ -662,7 +663,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     bool compilation = !songsByAlbumName->first.empty() && (isCompilation || !tracksOverlap); // 1+2b+2a
     if (artists.size() == 1)
     {
-      std::string artist = artists.begin()->first; StringUtils::ToLower(artist);
+      string artist = artists.begin()->first; StringUtils::ToLower(artist);
       if (!StringUtils::EqualsNoCase(artist, "various") &&
           !StringUtils::EqualsNoCase(artist, "various artists")) // 3a
         compilation = false;
@@ -675,7 +676,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       CLog::Log(LOGDEBUG, "Album '%s' is a compilation as there's no overlapping tracks and %s", songsByAlbumName->first.c_str(), hasAlbumArtist ? "the album artist is 'Various'" : "there is more than one unique artist");
       artists.clear();
       std::string various = g_localizeStrings.Get(340); // Various Artists
-      std::vector<std::string> va; va.push_back(various);
+      vector<string> va; va.push_back(various);
       for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
       {
         song->albumArtist = va;
@@ -687,15 +688,15 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
      Step 3: Find the common albumartist for each song and assign
      albumartist to those tracks that don't have it set.
      */
-    for (std::map<std::string, std::vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
+    for (map<string, vector<CSong *> >::iterator j = artists.begin(); j != artists.end(); ++j)
     {
       // find the common artist for these songs
-      std::vector<CSong *> &artistSongs = j->second;
-      std::vector<std::string> common = artistSongs.front()->albumArtist.empty() ? artistSongs.front()->artist : artistSongs.front()->albumArtist;
-      for (std::vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
+      vector<CSong *> &artistSongs = j->second;
+      vector<string> common = artistSongs.front()->albumArtist.empty() ? artistSongs.front()->artist : artistSongs.front()->albumArtist;
+      for (vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
       {
         unsigned int match = 0;
-        std::vector<std::string> &compare = (*k)->albumArtist.empty() ? (*k)->artist : (*k)->albumArtist;
+        vector<string> &compare = (*k)->albumArtist.empty() ? (*k)->artist : (*k)->albumArtist;
         for (; match < common.size() && match < compare.size(); match++)
         {
           if (compare[match] != common[match])
@@ -711,14 +712,14 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       CAlbum album;
       album.strAlbum = songsByAlbumName->first;
       album.artist = common;
-      for (std::vector<std::string>::iterator it = common.begin(); it != common.end(); ++it)
+      for (vector<string>::iterator it = common.begin(); it != common.end(); ++it)
       {
         std::string strJoinPhrase = (it == --common.end() ? "" : g_advancedSettings.m_musicItemSeparator);
         CArtistCredit artistCredit(*it, strJoinPhrase);
         album.artistCredits.push_back(artistCredit);
       }
       album.bCompilation = compilation;
-      for (std::vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
+      for (vector<CSong *>::iterator k = artistSongs.begin(); k != artistSongs.end(); ++k)
       {
         if ((*k)->albumArtist.empty())
           (*k)->albumArtist = common;
@@ -1144,7 +1145,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
 
           // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
           // otherwise, perfect matches only
-          if (relevance >= std::max(minRelevance, bestRelevance))
+          if (relevance >= max(minRelevance, bestRelevance))
           { // we auto-select the best of these
             bestRelevance = relevance;
             iSelectedAlbum = i;
@@ -1245,7 +1246,7 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
   {
     if (m_musicDatabase.GetArtForItem(id, MediaTypeAlbum, "thumb").empty())
     {
-      std::string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
+      string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
       if (!thumb.empty())
       {
         CTextureCache::GetInstance().BackgroundCacheImage(thumb);
@@ -1443,9 +1444,9 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
   return bMusicBrainz;
 }
 
-std::map<std::string, std::string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
+map<string, string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist)
 {
-  std::map<std::string, std::string> artwork;
+  map<string, string> artwork;
 
   // check thumb
   std::string strFolder;
@@ -1496,7 +1497,7 @@ std::map<std::string, std::string> CMusicInfoScanner::GetArtistArtwork(const CAr
 void CMusicInfoScanner::Run()
 {
   int count = 0;
-  for (std::set<std::string>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end() && !m_bStop; ++it)
+  for (set<std::string>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end() && !m_bStop; ++it)
   {
     count+=CountFilesRecursively(*it);
   }

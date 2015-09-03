@@ -24,6 +24,8 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
+using namespace std;
+
 const uint8_t rev_lut[32] =
 {
   0x00,0x08,0x04,0x0c, /*  upper nibble */

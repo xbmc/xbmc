@@ -29,6 +29,8 @@
 #include "threads/SingleLock.h"
 #include "guilib/GraphicContext.h"
 
+using namespace std;
+
 static void libass_log(int level, const char *fmt, va_list args, void *data)
 {
   if(level >= 5)

@@ -49,6 +49,7 @@
 #define LIST_POST_PROCESS                       3
 #define LIST_OUTPUT_RESAMPLE                    4
 
+using namespace std;
 using namespace ActiveAE;
 
 typedef struct
@@ -142,7 +143,7 @@ bool CGUIDialogAudioDSPManager::OnActionMove(const CAction &action)
           iLines  = m_activeItems[m_iCurrentType]->Size() - 1;
         }
 
-        std::string strNumber;
+        string strNumber;
         for (unsigned int iLine = 0; iLine < iLines; iLine++)
         {
           unsigned int iNewSelect = bMoveUp ? m_iSelected[LIST_ACTIVE] - 1 : m_iSelected[LIST_ACTIVE] + 1;
@@ -410,7 +411,7 @@ bool CGUIDialogAudioDSPManager::OnMessage(CGUIMessage& message)
           CGUIListItemPtr modeListItem = modeListPtr->GetListItem(0); // get current selected list item
           if (modeListItem)
           {
-            std::string currentModeString = modeListItem->GetProperty("currentMode").asString();
+            string currentModeString = modeListItem->GetProperty("currentMode").asString();
             int newModeType = helper_TranslateModeType(currentModeString);
 
             if (m_iCurrentType != newModeType)
@@ -913,7 +914,7 @@ void CGUIDialogAudioDSPManager::SetItemsUnchanged()
 void CGUIDialogAudioDSPManager::Renumber(void)
 {
   int iNextModeNumber(0);
-  std::string strNumber;
+  string strNumber;
   CFileItemPtr pItem;
 
   for (int iModePtr = 0; iModePtr < m_activeItems[m_iCurrentType]->Size(); iModePtr++)
@@ -932,7 +933,7 @@ void CGUIDialogAudioDSPManager::helper_LogError(const char *function)
   CLog::Log(LOGERROR, "DSP Manager - %s - GUI value error", function);
 }
 
-int CGUIDialogAudioDSPManager::helper_TranslateModeType(std::string ModeString)
+int CGUIDialogAudioDSPManager::helper_TranslateModeType(string ModeString)
 {
   int iType = AE_DSP_MODE_TYPE_UNDEFINED;
   for (unsigned int ii = 0; ii < ARRAY_SIZE(dsp_mode_types) && iType == AE_DSP_MODE_TYPE_UNDEFINED; ii++)
@@ -958,7 +959,7 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
   // start to get Addon and Mode properties
   const int AddonID = ModePointer->AddonID();
 
-  std::string addonName;
+  string addonName;
   if (!CActiveAEDSP::GetInstance().GetAudioDSPAddonName(AddonID, addonName))
   {
     return pItem;
@@ -970,9 +971,9 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
     return pItem;
   }
 
-  std::string modeName = addon->GetString(ModePointer->ModeName());
+  string modeName = addon->GetString(ModePointer->ModeName());
 
-  std::string description;
+  string description;
   if (ModePointer->ModeDescription() > -1)
   {
     description = addon->GetString(ModePointer->ModeDescription());
@@ -995,7 +996,7 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
       (*ContinuesNo)++;
     }
 
-    std::string str = StringUtils::Format("%i:%i:%i:%s",
+    string str = StringUtils::Format("%i:%i:%i:%s",
                                       number,
                                       AddonID,
                                       ModePointer->AddonModeNumber(),
@@ -1024,7 +1025,7 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
   return pItem;
 }
 
-int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePointer, AE_DSP_MENUHOOK_CAT &MenuHook, AE_DSP_ADDON &Addon, std::string AddonName)
+int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePointer, AE_DSP_MENUHOOK_CAT &MenuHook, AE_DSP_ADDON &Addon, string AddonName)
 {
   int dialogId = 0;
 

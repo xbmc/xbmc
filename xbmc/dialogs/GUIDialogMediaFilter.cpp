@@ -114,6 +114,8 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
 
 #define NUM_FILTERS sizeof(filterList) / sizeof(CGUIDialogMediaFilter::Filter)
 
+using namespace std;
+
 CGUIDialogMediaFilter::CGUIDialogMediaFilter()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_MEDIA_FILTER, "DialogMediaFilter.xml"),
     m_dbUrl(NULL),
@@ -136,7 +138,7 @@ bool CGUIDialogMediaFilter::OnMessage(CGUIMessage& message)
         m_filter->Reset();
         m_filter->SetType(m_mediaType);
 
-        for (std::map<std::string, Filter>::iterator filter = m_filters.begin(); filter != m_filters.end(); filter++)
+        for (map<std::string, Filter>::iterator filter = m_filters.begin(); filter != m_filters.end(); filter++)
         {
           filter->second.rule = NULL;
           filter->second.setting->Reset();
@@ -204,7 +206,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const CSetting *setting)
 {
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  std::map<std::string, Filter>::iterator it = m_filters.find(setting->GetId());
+  map<std::string, Filter>::iterator it = m_filters.find(setting->GetId());
   if (it == m_filters.end())
     return;
   
@@ -421,9 +423,9 @@ void CGUIDialogMediaFilter::InitializeSettings()
         value = filter.rule->m_operator == CDatabaseQueryRule::OPERATOR_TRUE ? CHECK_YES : CHECK_NO;
 
       StaticIntegerSettingOptions entries;
-      entries.push_back(std::pair<int, int>(CHECK_LABEL_ALL, CHECK_ALL));
-      entries.push_back(std::pair<int, int>(CHECK_LABEL_NO,  CHECK_NO));
-      entries.push_back(std::pair<int, int>(CHECK_LABEL_YES, CHECK_YES));
+      entries.push_back(pair<int, int>(CHECK_LABEL_ALL, CHECK_ALL));
+      entries.push_back(pair<int, int>(CHECK_LABEL_NO,  CHECK_NO));
+      entries.push_back(pair<int, int>(CHECK_LABEL_YES, CHECK_YES));
 
       filter.setting = AddSpinner(group, settingId, filter.label, 0, value, entries, true);
     }
@@ -567,7 +569,7 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
 
 void CGUIDialogMediaFilter::UpdateControls()
 {
-  for (std::map<std::string, Filter>::iterator itFilter = m_filters.begin(); itFilter != m_filters.end(); itFilter++)
+  for (map<std::string, Filter>::iterator itFilter = m_filters.begin(); itFilter != m_filters.end(); itFilter++)
   {
     if (itFilter->second.controlType != "list")
       continue;

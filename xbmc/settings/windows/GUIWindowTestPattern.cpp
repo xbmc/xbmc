@@ -85,14 +85,13 @@ void CGUIWindowTestPattern::Process(unsigned int currentTime, CDirtyRegionList &
   CGUIWindow::Process(currentTime, dirtyregions);
   m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 
-#ifndef HAS_DX
+
   if(g_Windowing.UseLimitedColor())
   {
     m_white = 235.0f / 255;
     m_black =  16.0f / 255;
   }
   else
-#endif
   {
     m_white = 1.0f;
     m_black = 0.0f;

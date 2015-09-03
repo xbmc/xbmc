@@ -30,20 +30,22 @@
 
 #define ITEM_SWITCH_TIME_MS       2000
 
-std::string CGUIDialogProgressBarHandle::Text(void) const
+using namespace std;
+
+string CGUIDialogProgressBarHandle::Text(void) const
 {
   CSingleLock lock(m_critSection);
-  std::string retVal(m_strText);
+  string retVal(m_strText);
   return retVal;
 }
 
-void CGUIDialogProgressBarHandle::SetText(const std::string &strText)
+void CGUIDialogProgressBarHandle::SetText(const string &strText)
 {
   CSingleLock lock(m_critSection);
   m_strText = strText;
 }
 
-void CGUIDialogProgressBarHandle::SetTitle(const std::string &strTitle)
+void CGUIDialogProgressBarHandle::SetTitle(const string &strTitle)
 {
   CSingleLock lock(m_critSection);
   m_strTitle = strTitle;
@@ -64,7 +66,7 @@ CGUIDialogExtendedProgressBar::CGUIDialogExtendedProgressBar(void)
   m_iCurrentItem    = 0;
 }
 
-CGUIDialogProgressBarHandle *CGUIDialogExtendedProgressBar::GetHandle(const std::string &strTitle)
+CGUIDialogProgressBarHandle *CGUIDialogExtendedProgressBar::GetHandle(const string &strTitle)
 {
   CGUIDialogProgressBarHandle *handle = new CGUIDialogProgressBarHandle(strTitle);
   {
@@ -106,8 +108,8 @@ void CGUIDialogExtendedProgressBar::Process(unsigned int currentTime, CDirtyRegi
 
 void CGUIDialogExtendedProgressBar::UpdateState(unsigned int currentTime)
 {
-  std::string strHeader;
-  std::string strTitle;
+  string strHeader;
+  string strTitle;
   float  fProgress(-1.0f);
 
   {

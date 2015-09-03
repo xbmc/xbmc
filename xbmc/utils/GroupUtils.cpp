@@ -29,7 +29,9 @@
 #include "utils/URIUtils.h"
 #include "filesystem/MultiPathDirectory.h"
 
-typedef std::map<int, std::set<CFileItemPtr> > SetMap;
+using namespace std;
+
+typedef map<int, set<CFileItemPtr> > SetMap;
 
 bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, CFileItemList &groupedItems, GroupAttribute groupAttributes /* = GroupAttributeNone */)
 {

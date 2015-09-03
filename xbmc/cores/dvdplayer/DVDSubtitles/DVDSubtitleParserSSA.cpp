@@ -23,7 +23,9 @@
 #include "DVDClock.h"
 #include "utils/log.h"
 
-CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(CDVDSubtitleStream* pStream, const std::string& strFile)
+using namespace std;
+
+CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(CDVDSubtitleStream* pStream, const string& strFile)
     : CDVDSubtitleParserText(pStream, strFile)
 {
   m_libass = new CDVDSubtitlesLibass();

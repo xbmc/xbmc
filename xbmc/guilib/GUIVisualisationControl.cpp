@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "input/Key.h"
 
+using namespace std;
 using namespace ADDON;
 
 #define LABEL_ROW1 10

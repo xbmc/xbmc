@@ -20,6 +20,11 @@
 
 #include "guishader_common.hlsl"
 
+cbuffer cbWorld : register(b0)
+{
+  float4x4 worldViewProj;
+};
+
 PS_INPUT VS(VS_INPUT input)
 {
   PS_INPUT output = (PS_INPUT)0;

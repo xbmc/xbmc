@@ -39,6 +39,8 @@
 #include "filesystem/SpecialProtocol.h"
 #endif
 
+using namespace std;
+
 GUIFontManager::GUIFontManager(void)
 {
   m_canReload = true;
@@ -240,7 +242,7 @@ void GUIFontManager::ReloadTTFFonts(void)
 
 void GUIFontManager::Unload(const std::string& strFontName)
 {
-  for (std::vector<CGUIFont*>::iterator iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
+  for (vector<CGUIFont*>::iterator iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
   {
     if (StringUtils::EqualsNoCase((*iFont)->GetFontName(), strFontName))
     {
@@ -253,7 +255,7 @@ void GUIFontManager::Unload(const std::string& strFontName)
 
 void GUIFontManager::FreeFontFile(CGUIFontTTFBase *pFont)
 {
-  for (std::vector<CGUIFontTTFBase*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
+  for (vector<CGUIFontTTFBase*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
   {
     if (pFont == *it)
     {
@@ -426,8 +428,8 @@ void GUIFontManager::GetStyle(const TiXmlNode *fontNode, int &iStyle)
   iStyle = FONT_STYLE_NORMAL;
   if (XMLUtils::GetString(fontNode, "style", style))
   {
-    std::vector<std::string> styles = StringUtils::Tokenize(style, " ");
-    for (std::vector<std::string>::const_iterator i = styles.begin(); i != styles.end(); ++i)
+    vector<string> styles = StringUtils::Tokenize(style, " ");
+    for (vector<string>::const_iterator i = styles.begin(); i != styles.end(); ++i)
     {
       if (*i == "bold")
         iStyle |= FONT_STYLE_BOLD;

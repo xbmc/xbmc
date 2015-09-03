@@ -26,7 +26,6 @@
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "settings/Settings.h"
 
 // the size of the audio_render output port buffers
 #define AUDIO_DECODE_OUTPUT_BUFFER (32*1024)
@@ -63,15 +62,10 @@ COMXAudioCodecOMX::~COMXAudioCodecOMX()
 
 bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
 {
-  AVCodec* pCodec = NULL;
+  AVCodec* pCodec;
   m_bOpenedCodec = false;
 
-  if (hints.codec == AV_CODEC_ID_DTS && CSettings::GetInstance().GetBool(CSettings::SETTING_AUDIOOUTPUT_SUPPORTSDTSHDCPUDECODING))
-    pCodec = avcodec_find_decoder_by_name("libdcadec");
-
-  if (!pCodec)
-    pCodec = avcodec_find_decoder(hints.codec);
-
+  pCodec = avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
     CLog::Log(LOGDEBUG,"COMXAudioCodecOMX::Open() Unable to find codec %d", hints.codec);

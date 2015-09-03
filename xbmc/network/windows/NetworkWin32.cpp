@@ -39,6 +39,8 @@
 #endif
 
 
+using namespace std;
+
 CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, IP_ADAPTER_INFO adapter):
    m_adaptername(adapter.Description)
 {
@@ -160,7 +162,7 @@ CNetworkWin32::~CNetworkWin32(void)
 
 void CNetworkWin32::CleanInterfaceList()
 {
-  std::vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
+  vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
   while(it != m_interfaces.end())
   {
     CNetworkInterface* nInt = *it;

@@ -26,6 +26,7 @@
 #include "utils/StringUtils.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
+using namespace std;
 
 Node MovieChildren[] = {
                         { NODE_TYPE_GENRE,        "genres",     135 },

@@ -25,7 +25,9 @@
 #include "DVDStreamInfo.h"
 #include "DVDSubtitleTagMicroDVD.h"
 
-CDVDSubtitleParserMPL2::CDVDSubtitleParserMPL2(CDVDSubtitleStream* stream, const std::string& filename)
+using namespace std;
+
+CDVDSubtitleParserMPL2::CDVDSubtitleParserMPL2(CDVDSubtitleStream* stream, const string& filename)
     : CDVDSubtitleParserText(stream, filename), m_framerate(DVD_TIME_BASE / 10.0)
 {
 

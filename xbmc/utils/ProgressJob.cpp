@@ -26,6 +26,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/Variant.h"
 
+using namespace std;
+
 CProgressJob::CProgressJob()
   : m_modal(false),
     m_autoClose(true),

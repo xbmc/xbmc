@@ -47,6 +47,7 @@
 
 #define JOYSTICK_DEFAULT_MAP "_xbmc_"
 
+using namespace std;
 using namespace XFILE;
 
 typedef struct
@@ -381,6 +382,7 @@ static const ActionMapping windows[] =
     { "fullscreenradio"          , WINDOW_FULLSCREEN_RADIO },          // virtual window for fullscreen radio, uses WINDOW_VISUALISATION as fallback
     { "visualisation"            , WINDOW_VISUALISATION },
     { "slideshow"                , WINDOW_SLIDESHOW },
+    { "filestackingdialog"       , WINDOW_DIALOG_FILESTACKING },
     { "karaoke"                  , WINDOW_KARAOKELYRICS },
     { "weather"                  , WINDOW_WEATHER },
     { "screensaver"              , WINDOW_SCREENSAVER },
@@ -389,6 +391,7 @@ static const ActionMapping windows[] =
     { "videotimeseek"            , WINDOW_VIDEO_TIME_SEEK },
     { "startwindow"              , WINDOW_START },
     { "startup"                  , WINDOW_STARTUP_ANIM },
+    { "peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER },
     { "peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS },
     { "extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS },
     { "mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER },
@@ -479,13 +482,13 @@ CButtonTranslator::CButtonTranslator()
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
 void CButtonTranslator::ClearLircButtonMapEntries()
 {
-  std::vector<lircButtonMap*> maps;
-  for (std::map<std::string,lircButtonMap*>::iterator it  = lircRemotesMap.begin();
+  vector<lircButtonMap*> maps;
+  for (map<std::string,lircButtonMap*>::iterator it  = lircRemotesMap.begin();
                                                  it != lircRemotesMap.end();++it)
     maps.push_back(it->second);
   sort(maps.begin(),maps.end());
-  std::vector<lircButtonMap*>::iterator itend = unique(maps.begin(),maps.end());
-  for (std::vector<lircButtonMap*>::iterator it = maps.begin(); it != itend;++it)
+  vector<lircButtonMap*>::iterator itend = unique(maps.begin(),maps.end());
+  for (vector<lircButtonMap*>::iterator it = maps.begin(); it != itend;++it)
     delete *it;
 }
 #endif
@@ -712,8 +715,8 @@ bool CButtonTranslator::LoadLircMap(const std::string &lircmapPath)
 void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 {
   CLog::Log(LOGINFO, "* Adding remote mapping for device '%s'", szDevice);
-  std::vector<std::string> RemoteNames;
-  std::map<std::string, lircButtonMap*>::iterator it = lircRemotesMap.find(szDevice);
+  vector<string> RemoteNames;
+  map<std::string, lircButtonMap*>::iterator it = lircRemotesMap.find(szDevice);
   if (it == lircRemotesMap.end())
     lircRemotesMap[szDevice] = new lircButtonMap;
   lircButtonMap& buttons = *lircRemotesMap[szDevice];
@@ -730,7 +733,7 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
     }
     pButton = pButton->NextSiblingElement();
   }
-  for (std::vector<std::string>::iterator it  = RemoteNames.begin();
+  for (vector<string>::iterator it  = RemoteNames.begin();
                                 it != RemoteNames.end();++it)
   {
     CLog::Log(LOGINFO, "* Linking remote mapping for '%s' to '%s'", szDevice, it->c_str());
@@ -741,7 +744,7 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)
 {
   // Find the device
-  std::map<std::string, lircButtonMap*>::iterator it = lircRemotesMap.find(szDevice);
+  map<std::string, lircButtonMap*>::iterator it = lircRemotesMap.find(szDevice);
   if (it == lircRemotesMap.end())
     return 0;
 
@@ -792,8 +795,8 @@ void CButtonTranslator::MapJoystickFamily(TiXmlNode *pNode)
 void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 {
   std::string joyFamilyName;
-  std::map<int, std::string> buttonMap;
-  std::map<int, std::string> axisMap;
+  map<int, string> buttonMap;
+  map<int, string> axisMap;
   AxesConfig axesConfig;
   ActionMap hatMap;
 
@@ -802,7 +805,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
     joyFamilyName = pJoy->Attribute("family");
   else if (pJoy) {
     // transform loose name to new family, including altnames
-    std::string joyName = JOYSTICK_DEFAULT_MAP; // default global map name
+    string joyName = JOYSTICK_DEFAULT_MAP; // default global map name
     if (pJoy->Attribute("name"))
       joyName = pJoy->Attribute("name");
     joyFamilyName = joyName;    
@@ -895,7 +898,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
       }
       else if (type == "hat")
       {
-        std::string position;
+        string position;
         if (pButton->QueryValueAttribute("position", &position) == TIXML_SUCCESS)
         {
           uint32_t hatID = id|0xFFF00000;
@@ -1072,7 +1075,7 @@ bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int to
 
 int CButtonTranslator::GetActionCode(int window, int action)
 {
-  std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
+  map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
   if (it == m_translatorMap.end())
     return 0;
 
@@ -1094,8 +1097,8 @@ int CButtonTranslator::GetActionCode(int window, int id, const WindowMap &wmap, 
   WindowMap::const_iterator it = wmap.find(window);
   if (it != wmap.end())
   {
-    const std::map<int, std::string> &windowbmap = it->second;
-    std::map<int, std::string>::const_iterator it2 = windowbmap.find(id);
+    const map<int, string> &windowbmap = it->second;
+    map<int, string>::const_iterator it2 = windowbmap.find(id);
     if (it2 != windowbmap.end())
     {
       strAction = (it2->second).c_str();
@@ -1184,7 +1187,7 @@ CAction CButtonTranslator::GetGlobalAction(const CKey &key)
 
 bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
 {
-  std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
+  map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
   if (it == m_translatorMap.end())
   {
     // first check if we have a fallback for the window
@@ -1221,7 +1224,7 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &s
 {
   uint32_t code = key.GetButtonCode();
 
-  std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
+  map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
   if (it == m_translatorMap.end())
     return 0;
   buttonMap::const_iterator it2 = (*it).second.find(code);
@@ -1271,7 +1274,7 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, but
     CButtonAction button;
     button.id = action;
     button.strID = szAction;
-    map.insert(std::pair<uint32_t, CButtonAction>(buttonCode, button));
+    map.insert(pair<uint32_t, CButtonAction>(buttonCode, button));
   }
 }
 
@@ -1328,7 +1331,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 
       // add our map to our table
       if (!map.empty())
-        m_translatorMap.insert(std::pair<int, buttonMap>( windowID, map));
+        m_translatorMap.insert(pair<int, buttonMap>( windowID, map));
     }
   }
 
@@ -1609,10 +1612,10 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   {
     StringUtils::ToLower(strMod);
 
-    std::vector<std::string> modArray = StringUtils::Split(strMod, ",");
-    for (std::vector<std::string>::const_iterator i = modArray.begin(); i != modArray.end(); ++i)
+    vector<string> modArray = StringUtils::Split(strMod, ",");
+    for (vector<string>::const_iterator i = modArray.begin(); i != modArray.end(); ++i)
     {
-      std::string substr = *i;
+      string substr = *i;
       StringUtils::Trim(substr);
 
       if (substr == "ctrl" || substr == "control")

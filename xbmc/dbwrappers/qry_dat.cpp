@@ -41,6 +41,8 @@
 #pragma warning (disable:4715)
 #endif
 
+using namespace std;
+
 namespace dbiplus {
 
 //Constructors 
@@ -167,8 +169,8 @@ field_value::~field_value(){
 
   
 //Conversations functions
-std::string field_value::get_asString() const {
-    std::string tmp;
+string field_value::get_asString() const {
+    string tmp;
     switch (field_type) {
     case ft_String: {
       tmp = str_value;
@@ -653,7 +655,7 @@ void field_value::set_asString(const char *s) {
   str_value = s;
   field_type = ft_String;}
 
-void field_value::set_asString(const std::string & s) {
+void field_value::set_asString(const string & s) {
   str_value = s;
   field_type = ft_String;}
   
@@ -700,8 +702,8 @@ fType field_value::get_field_type() {
   return field_type;}
 
   
-std::string field_value::gft() {
-    std::string tmp;
+string field_value::gft() {
+    string tmp;
     switch (field_type) {
     case ft_String: {
       tmp.assign("string");

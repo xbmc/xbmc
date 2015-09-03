@@ -125,7 +125,9 @@ void CVideoLibraryQueue::CleanLibraryModal(const std::set<int>& paths /* = std::
 
 void CVideoLibraryQueue::RefreshItem(CFileItemPtr item, bool ignoreNfo /* = false */, bool forceRefresh /* = true */, bool refreshAll /* = false */, const std::string& searchTitle /* = "" */)
 {
-  AddJob(new CVideoLibraryRefreshingJob(item, forceRefresh, refreshAll, ignoreNfo, searchTitle));
+  CVideoLibraryRefreshingJob* refreshingJob = new CVideoLibraryRefreshingJob(item, forceRefresh, refreshAll, ignoreNfo, searchTitle);
+  refreshingJob->SetShowDialogs(false);
+  AddJob(refreshingJob);
 }
 
 bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /* = true */, bool refreshAll /* = false */)
@@ -136,8 +138,9 @@ bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /
 
   m_modal = true;
   CVideoLibraryRefreshingJob refreshingJob(item, forceRefresh, refreshAll);
+  refreshingJob.SetShowDialogs(true);
 
-  bool result = refreshingJob.DoModal();
+  bool result = refreshingJob.DoWork();
   m_modal = false;
 
   return result;

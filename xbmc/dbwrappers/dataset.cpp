@@ -35,6 +35,8 @@
 #pragma warning (disable:4800)
 #endif
 
+using namespace std;
+
 namespace dbiplus {
 //************* Database implementation ***************
 
@@ -72,11 +74,11 @@ int Database::connectFull(const char *newHost, const char *newPort, const char *
   return connect(true);
 }
 
-std::string Database::prepare(const char *format, ...)
+string Database::prepare(const char *format, ...)
 {
   va_list args;
   va_start(args, format);
-  std::string result = vprepare(format, args);
+  string result = vprepare(format, args);
   va_end(args);
 
   return result;
@@ -165,13 +167,13 @@ void Dataset::set_select_sql(const char *sel_sql) {
  select_sql = sel_sql;
 }
 
-void Dataset::set_select_sql(const std::string &sel_sql) {
+void Dataset::set_select_sql(const string &sel_sql) {
  select_sql = sel_sql;
 }
 
 
-void Dataset::parse_sql(std::string &sql) {
-  std::string fpattern,by_what;
+void Dataset::parse_sql(string &sql) {
+  string fpattern,by_what;
   for (unsigned int i=0;i< fields_object->size();i++) {
     fpattern = ":OLD_"+(*fields_object)[i].props.name;
     by_what = "'"+(*fields_object)[i].val.get_asString()+"'";
@@ -427,10 +429,10 @@ const field_value Dataset::f_old(const char *f_name) {
 }
 
 int Dataset::str_compare(const char * s1, const char * s2) {
- 	std::string ts1 = s1; 
- 	std::string ts2 = s2;
- 	std::string::const_iterator p = ts1.begin();
- 	std::string::const_iterator p2 = ts2.begin();
+ 	string ts1 = s1; 
+ 	string ts2 = s2;
+ 	string::const_iterator p = ts1.begin();
+ 	string::const_iterator p2 = ts2.begin();
  	while (p!=ts1.end() && p2 != ts2.end()) {
  	if (toupper(*p)!=toupper(*p2))
  		return (toupper(*p)<toupper(*p2)) ? -1 : 1;
@@ -451,7 +453,7 @@ bool Dataset::locate(){
   bool result;
   if (plist.empty()) return false;
 
-  std::map<std::string, field_value>::const_iterator i;
+  std::map<string,field_value>::const_iterator i;
   first();
   while (!eof()) {
     result = true;
@@ -475,7 +477,7 @@ bool Dataset::findNext(void) {
   bool result;
   if (plist.empty()) return false;
 
-  std::map<std::string, field_value>::const_iterator i;
+  std::map<string,field_value>::const_iterator i;
   while (!eof()) {
     result = true;
     for (i=plist.begin();i!=plist.end();++i)
@@ -491,32 +493,32 @@ bool Dataset::findNext(void) {
 
 
 void Dataset::add_update_sql(const char *upd_sql){
-  std::string s = upd_sql;
+  string s = upd_sql;
   update_sql.push_back(s);
 }
 
 
-void Dataset::add_update_sql(const std::string &upd_sql){
+void Dataset::add_update_sql(const string &upd_sql){
   update_sql.push_back(upd_sql);
 }
 
 void Dataset::add_insert_sql(const char *ins_sql){
-  std::string s = ins_sql;
+  string s = ins_sql;
   insert_sql.push_back(s);
 }
 
 
-void Dataset::add_insert_sql(const std::string &ins_sql){
+void Dataset::add_insert_sql(const string &ins_sql){
   insert_sql.push_back(ins_sql);
 }
 
 void Dataset::add_delete_sql(const char *del_sql){
-  std::string s = del_sql;
+  string s = del_sql;
   delete_sql.push_back(s);
 }
 
 
-void Dataset::add_delete_sql(const std::string &del_sql){
+void Dataset::add_delete_sql(const string &del_sql){
   delete_sql.push_back(del_sql);
 }
 
