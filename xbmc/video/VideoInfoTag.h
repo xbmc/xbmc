@@ -124,7 +124,6 @@ public:
   void SetAlbum(std::string album);
   void SetShowLink(std::vector<std::string> showLink);
   void SetUniqueId(std::string uniqueId);
-  void SetUserRating(int userrating);
 
 
   std::string m_basePath; // the base path of the video, for folder-based lookups
