@@ -433,7 +433,7 @@
     "extends": "Media.Details.Base",
     "properties": {
       "genre": { "$ref": "Array.String" },
-      "dateadded": { "$ref": "string" }
+      "dateadded": { "type": "string" }
     }
   },
   "Audio.Details.Media": {
