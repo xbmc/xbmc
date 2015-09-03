@@ -42,6 +42,7 @@
 #include "utils/StdString.h"
 #include "utils/DSFileUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "LangInfo.h"
 
 CDSStreamDetail::CDSStreamDetail()
   : IAMStreamSelect_Index(0), flags(0), pObj(NULL), pUnk(NULL), lcid(0),
@@ -967,10 +968,18 @@ void CStreamsManager::SelectBestSubtitle()
         if (selectFirst == -1)
           selectFirst = i;
 
-        if (CSettings::Get().GetString("dsplayer.exsubtitlelanguage") != "original"
-          && CSettings::Get().GetString("dsplayer.exsubtitlelanguage") != "default")
+        if (CSettings::Get().GetString("dsplayer.exsubtitlelanguage") != "original")
         {
-          std::string sPref = CSettings::Get().GetString("dsplayer.exsubtitlelanguage");
+
+          std::string sPref;
+          if (CSettings::Get().GetString("dsplayer.exsubtitlelanguage") == "default")
+          {
+            sPref = g_langInfo.GetLocale().GetLanguageCode();
+            sPref = ProbeLangForLanguage(sPref.c_str());
+          }
+          else
+            sPref = CSettings::Get().GetString("dsplayer.exsubtitlelanguage");
+
           std::string sName = ProbeLangForLanguage((*it)->isolang);
           if (StringUtils::EqualsNoCase(sName, sPref))
           {

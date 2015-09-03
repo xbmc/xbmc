@@ -1395,7 +1395,7 @@
 	</setting>
       </group>
       <group id="4">
-        <setting id="dsplayer.exsubtitlelanguage" type="string" label="55085" help="36120">
+        <setting id="dsplayer.exsubtitlelanguage" type="string" label="55085" help="">
           <level>0</level>
           <default>original</default>
           <constraints>
