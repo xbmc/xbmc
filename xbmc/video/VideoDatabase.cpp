@@ -4599,7 +4599,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE movie ADD userrating integer");
     m_pDS->exec("ALTER TABLE episode ADD userrating integer");
     m_pDS->exec("ALTER TABLE tvshow ADD userrating integer");
-    m_pDS->exec("ALTER TABLE musicvideo ADD userrating integerc");
+    m_pDS->exec("ALTER TABLE musicvideo ADD userrating integer");
   }
 }
 
