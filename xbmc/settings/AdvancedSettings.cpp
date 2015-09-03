@@ -314,6 +314,7 @@ void CAdvancedSettings::Initialize()
   m_yOffset= 0;
   m_xStretchFactor = 1.0;
   m_yStretchFactor = 1.0;
+  m_confines = 8;
 
   m_curlconnecttimeout = 10;
   m_curllowspeedtime = 20;
@@ -902,6 +903,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "y_offset", m_yOffset, 0, 1920);
     XMLUtils::GetFloat(pElement, "x_stretch_factor", m_xStretchFactor );
     XMLUtils::GetFloat(pElement, "y_stretch_factor", m_yStretchFactor );
+    XMLUtils::GetInt(pElement, "confines", m_confines );
   }
 
   // picture exclude regexps
