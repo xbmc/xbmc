@@ -24,7 +24,7 @@
 #include "cores/AudioEngine/Sinks/osx/CoreAudioDevice.h"
 
 class AERingBuffer;
-class AEDelayStatus;
+struct AEDelayStatus;
 
 class CAESinkDARWINOSX : public IAESink
 {
