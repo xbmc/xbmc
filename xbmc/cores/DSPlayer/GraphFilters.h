@@ -34,6 +34,9 @@
 #include "utils/CharsetConverter.h"
 #include "system.h"
 
+static const std::string XYSUBFILTER_FILTERSTR = "XySubFilter";
+static const std::string MADVR_FILTERSTR = "madVR";
+
 /// Informations about a filter
 struct SFilterInfos
 {
@@ -201,7 +204,7 @@ public:
   bool LoadLavSettings(LAVFILTERS_TYPE type);
   bool SaveLavSettings(LAVFILTERS_TYPE type);
   void EraseLavSetting(LAVFILTERS_TYPE type);
-  bool IsRegisteredXYSubFilter();
+  bool IsRegisteredFilter(const std::string filter);
 
   bool HasSubFilter() { return m_hsubfilter; }
   void SetHasSubFilter(bool b) { m_hsubfilter = b; }

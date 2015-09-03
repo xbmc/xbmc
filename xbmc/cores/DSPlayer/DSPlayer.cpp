@@ -45,6 +45,7 @@
 #include "PixelShaderList.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "messaging/ApplicationMessenger.h"
@@ -383,6 +384,22 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
 
 bool CDSPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
+  if (m_isMadvr && !CGraphFilters::Get()->IsRegisteredFilter(MADVR_FILTERSTR))
+  {
+    CLog::Log(LOGDEBUG, "%s - madVR it's not installed on the system pls download it before to use it with DSPlayer", __FUNCTION__);
+
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(90023), g_localizeStrings.Get(90024), 6000L, false);
+    return false;
+  }
+
+  if (!CSettings::Get().GetBool("videoscreen.fakefullscreen"))
+  {
+    CLog::Log(LOGDEBUG, "%s - Kodi is in Fullscreen-Exclusive mode playback will be stopped", __FUNCTION__);
+
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(90021), g_localizeStrings.Get(90022), 6000L, false);
+    return false;
+  }
+
   CLog::Log(LOGNOTICE, "%s - DSPlayer: Opening: %s", __FUNCTION__, file.GetPath().c_str());
 
   CFileItem fileItem = file;

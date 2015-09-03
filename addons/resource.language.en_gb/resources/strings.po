@@ -18916,6 +18916,22 @@ msgctxt "#90020"
 msgid "Filters configuration provides a master list of all filters available to DSPlayer. Like Media rules, Filters configuration relies on system filters by default. Adding custom filters is a manual process."
 msgstr ""
 
+msgctxt "#90021"
+msgid "Disable Kodi Fullscreen-mode."
+msgstr ""
+
+msgctxt "#90022"
+msgid "System > Video output > Use fullscreen window [checked]"
+msgstr ""
+
+msgctxt "#90023"
+msgid "madVR not installed."
+msgstr ""
+
+msgctxt "#90024"
+msgid "Download and install madVR from http://madshi.net/madVR.zip"
+msgstr ""
+
 msgctxt "#909001"
 msgid "Rus"
 msgstr ""

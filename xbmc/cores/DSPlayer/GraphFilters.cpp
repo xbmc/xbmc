@@ -134,7 +134,7 @@ void CGraphFilters::CreateInternalFilter(LAVFILTERS_TYPE type, IBaseFilter **ppB
   if (type == LAVSPLITTER)
     filterName = "lavsplitter_internal";
   if (type == XYSUBFILTER)
-    IsRegisteredXYSubFilter() ? filterName = "xysubfilter" : filterName = "xysubfilter_internal";
+    IsRegisteredFilter(XYSUBFILTER_FILTERSTR) ? filterName = "xysubfilter" : filterName = "xysubfilter_internal";
 
   CFGLoader *pLoader = new CFGLoader();
   pLoader->LoadConfig();
@@ -491,7 +491,7 @@ void CGraphFilters::EraseLavSetting(LAVFILTERS_TYPE type)
   }
 }
 
-bool CGraphFilters::IsRegisteredXYSubFilter()
+bool CGraphFilters::IsRegisteredFilter(const std::string filter)
 {
   CDSFilterEnumerator p_dsfilter;
   std::vector<DSFiltersInfo> dsfilterList;
@@ -501,7 +501,7 @@ bool CGraphFilters::IsRegisteredXYSubFilter()
   for (int i = 1; iter != dsfilterList.end(); i++)
   {
     DSFiltersInfo dev = *iter;
-    if (dev.lpstrName == "XySubFilter")
+    if (dev.lpstrName == filter)
     {
       return true;
       break;
