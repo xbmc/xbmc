@@ -38,7 +38,7 @@ public:
   void SetAddonType(ADDON::TYPE addonType) { m_addonType = addonType; }
 
 private:
-  void copy(const CSettingAddon &setting);
+  void copyaddontype(const CSettingAddon &setting);
 
   ADDON::TYPE m_addonType;
 };
