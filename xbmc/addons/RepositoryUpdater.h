@@ -23,6 +23,7 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
+#include "XBDateTime.h"
 #include <vector>
 
 namespace ADDON
@@ -58,6 +59,11 @@ public:
    * about. Any previously scheduled update will be cancelled.
    */
   void ScheduleUpdate();
+
+  /**
+   * Returns the time of the last check (oldest). Invalid time if never checked.
+   */
+  CDateTime LastUpdated() const;
 
   virtual void OnSettingChanged(const CSetting* setting) override;
 

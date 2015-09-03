@@ -343,25 +343,6 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
   return true;
 }
 
-CDateTime CAddonInstaller::LastRepoUpdate() const
-{
-  CDateTime update;
-  CAddonDatabase database;
-  if (!database.Open())
-    return update;
-
-  VECADDONS addons;
-  CAddonMgr::GetInstance().GetAddons(ADDON_REPOSITORY, addons);
-  for (unsigned int i = 0; i < addons.size(); i++)
-  {
-    std::pair<CDateTime, AddonVersion> lastUpdate = database.LastChecked(addons[i]->ID());
-    if (lastUpdate.first.IsValid() && lastUpdate.first > update)
-      update = lastUpdate.first;
-  }
-
-  return update;
-}
-
 bool CAddonInstaller::HasJob(const std::string& ID) const
 {
   CSingleLock lock(m_critSection);

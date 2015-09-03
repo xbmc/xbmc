@@ -96,11 +96,6 @@ public:
    */
   bool HasJob(const std::string& ID) const;
 
-  /*! \brief Fetch the last repository update time.
-   \return the last time a repository was updated.
-   */
-  CDateTime LastRepoUpdate() const;
-
   void InstallUpdates();
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
