@@ -165,9 +165,9 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
 
 void CGUIWindowAddonBrowser::SetProperties()
 {
-  auto lastChecked = CAddonInstaller::GetInstance().LastRepoUpdate();
-  if (lastChecked.IsValid())
-    SetProperty("Updated", lastChecked.GetAsLocalizedDateTime());
+  auto lastUpdated = CRepositoryUpdater::GetInstance().LastUpdated();
+  SetProperty("Updated", lastUpdated.IsValid() ?
+    lastUpdated.GetAsLocalizedDateTime() : g_localizeStrings.Get(21337));
 }
 
 void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber, CContextButtons& buttons)

@@ -144,6 +144,27 @@ void CRepositoryUpdater::OnSettingChanged(const CSetting* setting)
     ScheduleUpdate();
 }
 
+CDateTime CRepositoryUpdater::LastUpdated() const
+{
+  VECADDONS repos;
+  if (!CAddonMgr::GetInstance().GetAddons(ADDON_REPOSITORY, repos) || repos.empty())
+    return CDateTime();
+
+  CAddonDatabase db;
+  db.Open();
+  std::vector<CDateTime> updateTimes;
+  std::transform(repos.begin(), repos.end(), std::back_inserter(updateTimes),
+    [&](const AddonPtr& repo)
+    {
+      auto lastCheck = db.LastChecked(repo->ID());
+      if (lastCheck.first.IsValid() && lastCheck.second == repo->Version())
+        return lastCheck.first;
+      return CDateTime();
+    });
+
+  return *std::min_element(updateTimes.begin(), updateTimes.end());
+}
+
 void CRepositoryUpdater::ScheduleUpdate()
 {
   const CDateTimeSpan interval(0, 24, 0, 0);
@@ -154,25 +175,10 @@ void CRepositoryUpdater::ScheduleUpdate()
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_NEVER)
     return;
 
-  VECADDONS repos;
-  if (!CAddonMgr::GetInstance().GetAddons(ADDON_REPOSITORY, repos))
+  if (!CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
     return;
 
-  // Get next update based on previous update times
-  CAddonDatabase db;
-  db.Open();
-  std::vector<CDateTime> updateTimes;
-  std::transform(repos.begin(), repos.end(), std::back_inserter(updateTimes),
-      [&](const AddonPtr& repo)
-      {
-        auto lastCheck = db.LastChecked(repo->ID());
-        if (!lastCheck.first.IsValid() || lastCheck.second != repo->Version())
-          return CDateTime();
-        return lastCheck.first;
-      });
-
-  auto previous = *std::min_element(updateTimes.begin(), updateTimes.end());
-  auto next = std::max(CDateTime::GetCurrentDateTime(), previous + interval);
+  auto next = std::max(CDateTime::GetCurrentDateTime(), LastUpdated() + interval);
   int delta = std::max(1, (next - CDateTime::GetCurrentDateTime()).GetSecondsTotal() * 1000);
 
   CLog::Log(LOGDEBUG,"CRepositoryUpdater: next update at %s", next.GetAsLocalizedDateTime().c_str());

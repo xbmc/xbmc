@@ -11959,7 +11959,13 @@ msgctxt "#21336"
 msgid "Connecting to: %s"
 msgstr ""
 
-#empty strings from id 21337 to 21358
+#. Used in the add-on browser under "Last updated" when a repository has never been updated
+#: xbmc/addons/RepositoryUpdater.cpp
+msgctxt "#21337"
+msgid "Never"
+msgstr ""
+
+#empty strings from id 21338 to 21358
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"
