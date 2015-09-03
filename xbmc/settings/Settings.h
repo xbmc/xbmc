@@ -392,6 +392,7 @@ public:
   static const std::string CSettings::SETTING_DSPLAYER_VIDEORENDERER;
   static const std::string CSettings::SETTING_DSPLAYER_AUDIORENDERER;
   static const std::string CSettings::SETTING_DSPLAYER_FILTERSMANAGEMENT;
+  static const std::string CSettings::SETTING_DSPLAYER_EXSUBTITLELANGUAGE;
 #endif
 
 

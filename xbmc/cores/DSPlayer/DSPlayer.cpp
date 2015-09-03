@@ -342,7 +342,7 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
         }
       }
 
-      CMediaSettings::Get().GetAtStartVideoSettings() = CMediaSettings::Get().GetCurrentVideoSettings();
+      CMediaSettings::GetInstance().GetAtStartVideoSettings() = CMediaSettings::GetInstance().GetCurrentVideoSettings();
 
       m_HasVideo = true;
       m_HasAudio = true;
@@ -392,7 +392,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     return false;
   }
 
-  if (!CSettings::Get().GetBool("videoscreen.fakefullscreen"))
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
   {
     CLog::Log(LOGDEBUG, "%s - Kodi is in Fullscreen-Exclusive mode playback will be stopped", __FUNCTION__);
 

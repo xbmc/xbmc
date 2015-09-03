@@ -968,17 +968,17 @@ void CStreamsManager::SelectBestSubtitle()
         if (selectFirst == -1)
           selectFirst = i;
 
-        if (CSettings::Get().GetString("dsplayer.exsubtitlelanguage") != "original")
+        if (CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_EXSUBTITLELANGUAGE) != "original")
         {
 
           std::string sPref;
-          if (CSettings::Get().GetString("dsplayer.exsubtitlelanguage") == "default")
+          if (CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_EXSUBTITLELANGUAGE) == "default")
           {
             sPref = g_langInfo.GetLocale().GetLanguageCode();
             sPref = ProbeLangForLanguage(sPref.c_str());
           }
           else
-            sPref = CSettings::Get().GetString("dsplayer.exsubtitlelanguage");
+            sPref = CSettings::GetInstance().GetString(CSettings::SETTING_DSPLAYER_EXSUBTITLELANGUAGE);
 
           std::string sName = ProbeLangForLanguage((*it)->isolang);
           if (StringUtils::EqualsNoCase(sName, sPref))
