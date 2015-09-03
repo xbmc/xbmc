@@ -298,6 +298,8 @@ namespace XBMCAddon
             item->m_iprogramCount = strtol(value.c_str(), NULL, 10);
           else if (key == "rating")
             item->GetVideoInfoTag()->m_fRating = (float)strtod(value.c_str(), NULL);
+          else if (key == "userrating")
+            item->GetVideoInfoTag()->m_iUserRating = strtol(value.c_str(), NULL, 10);
           else if (key == "size")
             item->m_dwSize = (int64_t)strtoll(value.c_str(), NULL, 10);
           else if (key == "watched") // backward compat - do we need it?

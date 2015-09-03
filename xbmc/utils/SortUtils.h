@@ -64,6 +64,7 @@ typedef enum {
   SortByCountry,
   SortByYear,
   SortByRating,
+  SortByUserRating,
   SortByVotes,
   SortByTop250,
   SortByProgramCount,

@@ -243,6 +243,11 @@ std::string ByRating(SortAttribute attributes, const SortItem &values)
   return StringUtils::Format("%f %s", values.at(FieldRating).asFloat(), ByLabel(attributes, values).c_str());
 }
 
+std::string ByUserRating(SortAttribute attributes, const SortItem &values)
+{
+  return StringUtils::Format("%d %s", values.at(FieldUserRating).asInteger(), ByLabel(attributes, values).c_str());
+}
+
 std::string ByVotes(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("%d %s", (int)values.at(FieldVotes).asInteger(), ByLabel(attributes, values).c_str());
@@ -539,6 +544,7 @@ std::map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByCountry]                  = ByCountry;
   preparators[SortByYear]                     = ByYear;
   preparators[SortByRating]                   = ByRating;
+  preparators[SortByUserRating]               = ByUserRating;
   preparators[SortByVotes]                    = ByVotes;
   preparators[SortByTop250]                   = ByTop250;
   preparators[SortByProgramCount]             = ByProgramCount;
@@ -609,6 +615,7 @@ std::map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByYear].insert(FieldAlbum);
   sortingFields[SortByYear].insert(FieldTrackNumber);
   sortingFields[SortByRating].insert(FieldRating);
+  sortingFields[SortByUserRating].insert(FieldUserRating);
   sortingFields[SortByVotes].insert(FieldVotes);
   sortingFields[SortByTop250].insert(FieldTop250);
   sortingFields[SortByProgramCount].insert(FieldProgramCount);
@@ -843,6 +850,7 @@ const sort_map table[] = {
   { SortByFile,                     SORT_METHOD_FILE,                         SortAttributeIgnoreFolders, 561 },
   { SortByRating,                   SORT_METHOD_SONG_RATING,                  SortAttributeNone,          563 },
   { SortByRating,                   SORT_METHOD_VIDEO_RATING,                 SortAttributeIgnoreFolders, 563 },
+  { SortByUserRating,               SORT_METHOD_VIDEO_USER_RATING,            SortAttributeIgnoreFolders, 38018 },
   { SortBySortTitle,                SORT_METHOD_VIDEO_SORT_TITLE,             SortAttributeIgnoreFolders, 171 },
   { SortBySortTitle,                SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE,  (SortAttribute)(SortAttributeIgnoreFolders | SortAttributeIgnoreArticle), 171 },
   { SortByYear,                     SORT_METHOD_YEAR,                         SortAttributeIgnoreFolders, 562 },
@@ -996,7 +1004,8 @@ const std::map<std::string, SortBy> sortMethods = {
   { "random",           SortByRandom },
   { "channel",          SortByChannel },
   { "channelnumber",    SortByChannelNumber },
-  { "datetaken",        SortByDateTaken }
+  { "datetaken",        SortByDateTaken },
+  { "userrating",       SortByUserRating }
 };
 
 SortBy SortUtils::SortMethodFromString(const std::string& sortMethod)
