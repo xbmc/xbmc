@@ -340,7 +340,7 @@ bool CJpegIO::Read(unsigned char* buffer, unsigned int bufSize, unsigned int min
   }
 }
 
-bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)
+bool CJpegIO::Decode(unsigned char* const pixels, unsigned int pitch, unsigned int format)
 {
   unsigned char *dst = (unsigned char*)pixels;
 
