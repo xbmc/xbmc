@@ -113,7 +113,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_SELECT)
       {
-        OnLaunch();
+        OnSelect();
         return true;
       }
       else if (iControl == CONTROL_BTN_ENABLE)
@@ -190,8 +190,12 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_LABEL(CONTROL_BTN_ENABLE, isEnabled ? 24021 : 24022);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, isInstalled);
+
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, isEnabled && (CanOpen() ||
+      CanRun() || (CanUse() && !m_localAddon->IsInUse())));
+  SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
+
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, isExecutable);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG, !isRepo);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ROLLBACK, m_rollbackVersions.size() > 1);
 }
@@ -261,13 +265,38 @@ void CGUIDialogAddonInfo::OnInstall()
   Close();
 }
 
-void CGUIDialogAddonInfo::OnLaunch()
+void CGUIDialogAddonInfo::OnSelect()
 {
   if (!m_localAddon)
     return;
 
   Close();
-  CBuiltins::GetInstance().Execute("RunAddon(" + m_localAddon->ID() + ")");
+
+  if (CanOpen() || CanRun())
+    CBuiltins::GetInstance().Execute("RunAddon(" + m_localAddon->ID() + ")");
+  else if (CanUse())
+    CAddonMgr::GetInstance().SetDefault(m_localAddon->Type(), m_localAddon->ID());
+}
+
+bool CGUIDialogAddonInfo::CanOpen() const
+{
+  return m_localAddon && m_localAddon->Type() == ADDON_PLUGIN;
+}
+
+bool CGUIDialogAddonInfo::CanRun() const
+{
+  return m_localAddon && m_localAddon->Type() == ADDON_SCRIPT;
+}
+
+bool CGUIDialogAddonInfo::CanUse() const
+{
+  return m_localAddon && (
+    m_localAddon->Type() == ADDON_SKIN ||
+    m_localAddon->Type() == ADDON_SCREENSAVER ||
+    m_localAddon->Type() == ADDON_VIZ ||
+    m_localAddon->Type() == ADDON_SCRIPT_WEATHER ||
+    m_localAddon->Type() == ADDON_RESOURCE_LANGUAGE ||
+    m_localAddon->Type() == ADDON_RESOURCE_UISOUNDS);
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
