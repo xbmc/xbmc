@@ -56,8 +56,8 @@
       <pageplus>PageUp</pageplus>
       <pageminus>PageDown</pageminus>
       <back>Back</back>
-      <menu>Menu</menu>
-      <menu mod="logpress">PreviousMenu</menu>
+      <menu>ContextMenu</menu>
+      <menu mod="longpress">Menu</menu>
       <contentsmenu>PreviousMenu</contentsmenu>
       <rootmenu>PreviousMenu</rootmenu>
       <title>ContextMenu</title>

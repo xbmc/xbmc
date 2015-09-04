@@ -4619,7 +4619,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
       }
     }
   }
-  if (iVersion < 95)
+
+  if (iVersion < 96)
   {
     m_pDS->exec("ALTER TABLE movie ADD userrating integer");
     m_pDS->exec("ALTER TABLE episode ADD userrating integer");
@@ -4630,7 +4631,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 95;
+  return 96;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
