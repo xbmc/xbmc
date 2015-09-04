@@ -2,41 +2,24 @@
 
 SETLOCAL
 
-SET LAV_HTTP="https://github.com/Nevcairiel/LAVFilters/releases/download/0.65/"
-SET LAV_FILE="LAVFilters-0.65-x86.zip"
-SET LAV_PATH="%TMP_PATH%\LAVFilters-0.65-x86\system\players\dsplayer\LAVFilters"
-
-SET SUB_HTTP="https://github.com/Cyberbeing/xy-VSFilter/releases/download/3.1.0.705/"
-SET SUB_FILE="XySubFilter_3.1.0.705_x86_BETA2.zip"
-SET SUB_PATH="%TMP_PATH%\XySubFilter_3.1.0.705_x86_BETA2\system\players\dsplayer\XySubFilter"
-
-SET TSR_HTTP="https://github.com/Romank1/MediaPortal-1/releases/download/v4.1.0.4/"
-SET TSR_FILE="TsReader_v4_1_0_4_for_DSPlayer.zip"
-SET TSR_PATH="%TMP_PATH%\TsReader_v4_1_0_4_for_DSPlayer\system\players\dsplayer\TsReader"
+REM Check presence of required file
+dir 0_package_filters.list >NUL 2>NUL || (
+ECHO 0_package_filters.list not found!
+ECHO Aborting...
+EXIT /B 20
+)
 
 REM Clear succeed flag
 IF EXIST %FORMED_OK_FLAG% (
   del /F /Q "%FORMED_OK_FLAG%" || EXIT /B 4
 )
 
-CALL :setStageName Starting downloads of formed packages...
 SET SCRIPT_PATH=%CD%
 CD %DL_PATH% || EXIT /B 10
-
-SET CUR_HTTP=%LAV_HTTP%
-SET CUR_PATH=%LAV_PATH%
-CALL :processFile %LAV_FILE%
+FOR /F "eol=; tokens=1* delims==" %%a IN (%SCRIPT_PATH%\0_package_filters.list) DO (
+CALL :processFile %%b %%a
 IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
-
-SET CUR_HTTP=%SUB_HTTP%
-SET CUR_PATH=%SUB_PATH%
-CALL :processFile %SUB_FILE%
-IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
-
-SET CUR_HTTP=%TSR_HTTP%
-SET CUR_PATH=%TSR_PATH%
-CALL :processFile %TSR_FILE%
-IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
+)
 
 CALL :setStageName All formed packages ready.
 ECHO %DATE% %TIME% > "%FORMED_OK_FLAG%"
@@ -44,28 +27,29 @@ EXIT /B 0
 REM End of main body
 
 :processFile
-CALL :setStageName Getting %1...
+CALL :setStageName Getting %~nx1...
 SET RetryDownload=YES
 :startDownloadingFile
-IF EXIST %1 (
-  ECHO Using downloaded %1
+IF EXIST %~nx1 (
+  ECHO Using downloaded %~nx1
 ) ELSE (
-  CALL :setSubStageName Downloading %1...
-  %WGET% --no-check-certificate --output-document="%DL_PATH%/%1" "%CUR_HTTP%/%1" || EXIT /B 7
+  CALL :setSubStageName Downloading %~nx1...
+  %WGET% --no-check-certificate --output-document="%DL_PATH%/%~nx1" "%1" || EXIT /B 7
   TITLE Getting  %i
 )
 
-IF NOT EXIST %CUR_PATH% md %CUR_PATH%
+SET FILTER_PATH=%TMP_PATH%\%~n1\system\players\dsplayer\%2
+IF NOT EXIST %FILTER_PATH% md %FILTER_PATH%
 
-CALL :setSubStageName Extracting %1...
-copy /b "%1" "%TMP_PATH%" || EXIT /B 5
+CALL :setSubStageName Extracting %~nx1...
+copy /b "%~nx1" "%TMP_PATH%" || EXIT /B 5
 PUSHD "%TMP_PATH%" || EXIT /B 10
-%ZIP% x %1 -o%CUR_PATH% || (
+%ZIP% x %~nx1 -o%FILTER_PATH% || (
   IF %RetryDownload%==YES (
     POPD || EXIT /B 5
-    ECHO WARNNING! Can't extract files from archive %1!
-    ECHO WARNNING! Deleting %1 and will retry downloading.
-    del /f "%1"
+    ECHO WARNNING! Can't extract files from archive %~nx1!
+    ECHO WARNNING! Deleting %~nx1 and will retry downloading.
+    del /f "%~nx1"
     SET RetryDownload=NO
     GOTO startDownloadingFile
   )

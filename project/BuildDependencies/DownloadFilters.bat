@@ -6,8 +6,11 @@ SET CUR_PATH=%CD%
 SET APP_PATH=%CD%\..\..
 SET TMP_PATH=%CD%\scripts\tmp
 
+rem can't run rmdir and md back to back. access denied error otherwise.
+IF EXIST %TMP_PATH% rmdir %TMP_PATH% /S /Q
+
 IF $%1$ == $$ (
-  SET DL_PATH="%CD%\downloads"
+  SET DL_PATH="%CD%\downloads1"
 ) ELSE (
   SET DL_PATH="%1"
 )
@@ -17,8 +20,6 @@ SET ZIP=%CUR_PATH%\..\Win32BuildSetup\tools\7z\7za
 
 IF NOT EXIST %DL_PATH% md %DL_PATH%
 
-md lib
-md include
 md %TMP_PATH%
 
 cd scripts
