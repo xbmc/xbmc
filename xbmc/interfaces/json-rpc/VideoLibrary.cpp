@@ -44,7 +44,9 @@ JSONRPC_STATUS CVideoLibrary::GetMovies(const std::string &method, ITransportLay
     return InvalidParams;
 
   CVideoDbUrl videoUrl;
-  videoUrl.FromString("videodb://movies/titles/");
+  if (!videoUrl.FromString("videodb://movies/titles/"))
+    return InternalError;
+
   int genreID = -1, year = -1, setID = 0;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
@@ -152,7 +154,9 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const std::string &method, ITransportLa
     return InvalidParams;
 
   CVideoDbUrl videoUrl;
-  videoUrl.FromString("videodb://tvshows/titles/");
+  if (!videoUrl.FromString("videodb://tvshows/titles/"))
+    return InternalError;
+
   int genreID = -1, year = -1;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
@@ -272,7 +276,9 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const std::string &method, ITransportL
   std::string strPath = StringUtils::Format("videodb://tvshows/titles/%i/%i/", tvshowID, season);
 
   CVideoDbUrl videoUrl;
-  videoUrl.FromString(strPath);
+  if (!videoUrl.FromString(strPath))
+    return InternalError;
+
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
     videoUrl.AddOption("genreid", (int)filter["genreid"].asInteger());
@@ -347,7 +353,9 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideos(const std::string &method, ITranspo
     return InvalidParams;
 
   CVideoDbUrl videoUrl;
-  videoUrl.FromString("videodb://musicvideos/titles/");
+  if (!videoUrl.FromString("videodb://musicvideos/titles/"))
+    return InternalError;
+
   int genreID = -1, year = -1;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("artist"))
