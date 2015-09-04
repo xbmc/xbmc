@@ -351,6 +351,9 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
       if (CMadvrCallback::Get()->UsingMadvr())
         SetMadvrResolution();
 
+      if (CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_SHOWBDTITLECHOICE))
+        ShowEditionDlg(true);
+
       // Seek
       if (m_PlayerOptions.starttime > 0)
         PostMessage(new CDSMsgPlayerSeekTime(SEC_TO_DS_TIME(m_PlayerOptions.starttime), 1U, false), false);
@@ -359,15 +362,6 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
 
       // Starts playback
       PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false);
-
-      // Select Editions
-      if (GetEditionsCount() > 1 && CSettings::GetInstance().GetBool(CSettings::SETTING_DSPLAYER_SHOWBDTITLECHOICE))
-      {
-        //MSG Pause After because lavfilter don't select editions until the playback has started
-        PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PAUSE, true), false);
-        ShowEditionDlg(true);
-        PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false);
-      }
 
       if (CGraphFilters::Get()->IsDVD())
         CStreamsManager::Get()->LoadDVDStreams();
