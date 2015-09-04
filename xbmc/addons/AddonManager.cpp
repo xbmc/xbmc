@@ -594,28 +594,37 @@ bool CAddonMgr::SetDefault(const TYPE &type, const std::string &addonID)
   switch (type)
   {
   case ADDON_VIZ:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
     break;
   case ADDON_SCREENSAVER:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCREENSAVER_MODE, addonID);
     break;
   case ADDON_SCRAPER_ALBUMS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, addonID);
     break;
   case ADDON_SCRAPER_ARTISTS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, addonID);
     break;
   case ADDON_SCRAPER_MOVIES:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MOVIESDEFAULT, addonID);
     break;
   case ADDON_SCRAPER_MUSICVIDEOS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT, addonID);
     break;
   case ADDON_SCRAPER_TVSHOWS:
-    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT,addonID);
+    CSettings::GetInstance().SetString(CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT, addonID);
     break;
   case ADDON_RESOURCE_LANGUAGE:
     CSettings::GetInstance().SetString(CSettings::SETTING_LOCALE_LANGUAGE, addonID);
+    break;
+  case ADDON_SCRIPT_WEATHER:
+     CSettings::GetInstance().SetString(CSettings::SETTING_WEATHER_ADDON, addonID);
+    break;
+  case ADDON_SKIN:
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, addonID);
+    break;
+  case ADDON_RESOURCE_UISOUNDS:
+    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN, addonID);
     break;
   default:
     return false;
