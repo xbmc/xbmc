@@ -735,7 +735,6 @@ bool CNetworkServices::StartEventServer()
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "ES: Starting event server");
   server->StartServer();
 
   return true;
