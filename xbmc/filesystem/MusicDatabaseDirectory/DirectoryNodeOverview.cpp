@@ -29,16 +29,17 @@ namespace XFILE
   namespace MUSICDATABASEDIRECTORY
   {
     Node OverviewChildren[] = {
-                                { NODE_TYPE_GENRE,                 "genres",               135 },
-                                { NODE_TYPE_ARTIST,                "artists",              133 },
-                                { NODE_TYPE_ALBUM,                 "albums",               132 },
-                                { NODE_TYPE_SINGLES,               "singles",              1050 },
-                                { NODE_TYPE_SONG,                  "songs",                134 },
-                                { NODE_TYPE_YEAR,                  "years",                652 },
-                                { NODE_TYPE_TOP100,                "top100",               271 },
-                                { NODE_TYPE_ALBUM_RECENTLY_ADDED,  "recentlyaddedalbums",  359 },
-                                { NODE_TYPE_ALBUM_RECENTLY_PLAYED, "recentlyplayedalbums", 517 },
-                                { NODE_TYPE_ALBUM_COMPILATIONS,    "compilations",         521 },
+                                { NODE_TYPE_GENRE,                      "genres",                  135 },
+                                { NODE_TYPE_ARTIST,                     "artists",                 133 },
+                                { NODE_TYPE_ALBUM,                      "albums",                  132 },
+                                { NODE_TYPE_SINGLES,                    "singles",                 1050 },
+                                { NODE_TYPE_SONG,                       "songs",                   134 },
+                                { NODE_TYPE_YEAR,                       "years",                   652 },
+                                { NODE_TYPE_TOP100,                     "top100",                  271 },
+                                { NODE_TYPE_ALBUM_RECENTLY_ADDED,       "recentlyaddedalbums",     359 },
+                                { NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS, "recentlyaddedalbumsongs", 38120 },
+                                { NODE_TYPE_ALBUM_RECENTLY_PLAYED,      "recentlyplayedalbums",    517 },
+                                { NODE_TYPE_ALBUM_COMPILATIONS,         "compilations",            521 },
                               };
   };
 };
