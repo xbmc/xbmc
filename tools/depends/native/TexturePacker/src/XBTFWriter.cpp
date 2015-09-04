@@ -26,6 +26,7 @@
 #include <malloc.h>
 #endif
 #include <memory.h>
+#include <string.h>
 
 #include "XBTFWriter.h"
 #include "guilib/XBTFReader.h"
@@ -116,12 +117,16 @@ bool CXBTFWriter::UpdateHeader(const std::vector<unsigned int>& dupes)
   {
     CXBTFFile& file = files[i];
 
-    // Convert path to lower case
+    // Convert path to lower case and store it into a fixed size array because
+    // we need to store the path as a fixed length 256 byte character array.
     std::string path = file.GetPath();
-    for (std::string::iterator ch = path.begin(); ch != path.end(); ++ch)
-      *ch = tolower(*ch);
+    char pathMem[CXBTFFile::MaximumPathLength];
+    memset(pathMem, 0, sizeof(pathMem));
 
-    WRITE_STR(path.c_str(), CXBTFFile::MaximumPathLength, m_file);
+    for (std::string::iterator ch = path.begin(); ch != path.end(); ++ch)
+      pathMem[std::distance(path.begin(), ch)] = tolower(*ch);
+
+    WRITE_STR(pathMem, CXBTFFile::MaximumPathLength, m_file);
     WRITE_U32(file.GetLoop(), m_file);
 
     std::vector<CXBTFFrame>& frames = file.GetFrames();
