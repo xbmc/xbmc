@@ -1,7 +1,0 @@
-/* Localized versions of Info.plist keys */
-
-CFBundleName = "iGoom";
-CFBundleShortVersionString = "2.0";
-CFBundleGetInfoString = "iGoom version 2.0, Copyright 2001~2005, iOS-Software.\nhttp://www.ios-software.com/";
-NSHumanReadableCopyright = "Copyright 2001~2005, iOS-Software.\nhttp://www.ios-software.com/";
-CFBundleVersion = "2.0";

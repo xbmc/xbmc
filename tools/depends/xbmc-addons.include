@@ -74,22 +74,23 @@ $(TOOLCHAIN_FILE): $(abs_top_srcdir)/target/Toolchain_binaddons.cmake
 
 linux-system-libs:
 	mkdir -p $(ADDON_DEPS_DIR)/lib/pkgconfig $(ADDON_DEPS_DIR)/include
-	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/x11.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/x11.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/x11.pc
-	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xproto.pc ] || ln -s /usr/share/pkgconfig/xproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xproto.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/x11.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/x*.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/
+	[ -f $(ADDON_DEPS_DIR)/lib/libX11.so ] || ln -s /usr/lib/$(HOST)/libX11.so* $(ADDON_DEPS_DIR)/lib/
+	[ -L $(ADDON_DEPS_DIR)/include/X11 ] || ln -s /usr/include/X11 $(ADDON_DEPS_DIR)/include/X11
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xproto.pc ] || ln -s /usr/share/pkgconfig/x*.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/kbproto.pc ] || ln -s /usr/share/pkgconfig/kbproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/kbproto.pc
-	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xcb.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xcb.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xcb.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/damageproto.pc ] || ln -s /usr/share/pkgconfig/damageproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/damageproto.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/fixesproto.pc ] || ln -s /usr/share/pkgconfig/fixesproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/fixesproto.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/pthread-stubs.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/pthread-stubs.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/pthread-stubs.pc
-	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xau.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xau.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xau.pc
-	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xdmcp.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xdmcp.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xdmcp.pc
-	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xext.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xext.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xext.pc
-	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xextproto.pc ] || ln -s /usr/share/pkgconfig/xextproto.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xextproto.pc
-	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xt.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xt.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xt.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/ice.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/ice.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/ice.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/sm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/sm.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/sm.pc
-	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/xmu.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/xmu.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/xmu.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/libdrm.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/libdrm.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/gl.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/gl.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/glu.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/glu.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/glu.pc
+	[ -f $(ADDON_DEPS_DIR)/lib/pkgconfig/glew.pc ] || ln -s /usr/lib/$(HOST)/pkgconfig/glew.pc $(ADDON_DEPS_DIR)/lib/pkgconfig/glew.pc
 	[ -f $(ADDON_DEPS_DIR)/lib/libGL.so ] || \
           (ln -s /usr/lib/$(HOST)/mesa $(ADDON_DEPS_DIR)/lib/mesa && ln -s $(ADDON_DEPS_DIR)/lib/mesa/libGL.so $(ADDON_DEPS_DIR)/lib/libGL.so)
-	[ -f $(ADDON_DEPS_DIR)/include/GL ] || ln -s /usr/include/GL $(ADDON_DEPS_DIR)/include/GL
+	[ -f $(ADDON_DEPS_DIR)/lib/libGLEW.so ] || ln -s /usr/lib/$(HOST)/libGLEW.so* $(ADDON_DEPS_DIR)/lib/
+	[ -L $(ADDON_DEPS_DIR)/include/GL ] || ln -s /usr/include/GL $(ADDON_DEPS_DIR)/include/GL
+	[ -f $(ADDON_DEPS_DIR)/lib/libm.so ] || ln -s /usr/lib/$(HOST)/libm.so $(ADDON_DEPS_DIR)/lib/
 

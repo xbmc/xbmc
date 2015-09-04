@@ -51,9 +51,7 @@ a 32 bit machine requires slightly different setting)
        --disable-x11 --disable-xrandr --disable-openmax \
        --disable-optical-drive --disable-dvdcss --disable-joystick \
        --disable-crystalhd --disable-vtbdecoder --disable-vaapi \
-       --disable-vdpau --disable-projectm --disable-rsxs --disable-fishbmc \
-       --enable-alsa --disable-solarwinds --disable-euphoria \
-       --disable-plasma" \
+       --disable-vdpau --enable-alsa" \
        make -C tools/depends/target/xbmc
 
     make
