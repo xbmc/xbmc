@@ -438,7 +438,41 @@
 				</control>
 			</control>
 		</control>
-		<include condition="!Skin.HasSetting(HomepageHideRecentlyAddedVideo) | !Skin.HasSetting(HomepageHideRecentlyAddedAlbums)">HomeRecentlyAddedInfo</include>
+		<!-- Recently Added / Playlist Preview -->
+		<control type="group" id="9003">
+			<onup>20</onup>
+			<ondown condition="System.HasAddon(script.globalsearch)">608</ondown>
+			<ondown condition="!System.HasAddon(script.globalsearch)">603</ondown>
+			<visible>!Window.IsVisible(Favourites) + [!Skin.HasSetting(HomepageHideRecentlyAddedVideo) | !Skin.HasSetting(HomepageHideRecentlyAddedAlbums)]</visible>
+			<include>VisibleFadeEffect</include>
+			<animation effect="fade" time="225" delay="750">WindowOpen</animation>
+			<animation effect="fade" time="150">WindowClose</animation>
+			<!-- Movie Playlist -->
+			<include name="HomePlaylist5">
+				<param name="ID">8000</param>
+				<param name="controlID">10</param>
+				<param name="label">20386</param>
+				<param name="sourceContent">Movies</param>
+				<param name="content">videodb://recentlyaddedmovies/</param>
+			</include>
+			<!-- TVShow Playlist -->
+			<include name="HomePlaylist4">
+				<param name="ID">8001</param>
+				<param name="controlID">11</param>
+				<param name="label">20387</param>
+				<param name="sourceContent">TVShows</param>
+				<param name="content">videodb://recentlyaddedepisodes/</param>
+			</include>
+			<!-- Music Playlist -->
+			<include name="HomePlaylist4">
+				<param name="ID">8002</param>
+				<param name="controlID">3</param>
+				<param name="label">38120</param>
+				<param name="sourceContent">Music</param>
+				<param name="content">musicdb://recentlyaddedalbumsongs</param>
+				<param name="defaultIcon">DefaultAudio.png</param>
+			</include>
+		</control>
 		<control type="button" id="9003">
 			<description>Hidden Button to pass through navigation when recently added is disabled</description>
 			<left>-20</left>

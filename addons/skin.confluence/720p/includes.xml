@@ -10,8 +10,8 @@
 	<include file="ViewsPVRGuide.xml" />
 	<include file="ViewsWeather.xml" />
 	<include file="IncludesCodecFlagging.xml" />
-	<include file="IncludesHomeRecentlyAdded.xml" />
 	<include file="IncludesHomeMenuItems.xml" />
+	<include file="IncludesHomePlaylist.xml" />
 	<include file="IncludesPVR.xml" />
 	<include file="IncludesBackgroundBuilding.xml" />
 	<constant name="FanartCrossfadeTime">500</constant>
