@@ -78,6 +78,10 @@ SRCS += VisibleEffect.cpp
 SRCS += XBTF.cpp
 SRCS += XBTFReader.cpp
 
+ifeq (@USE_LIBGIF@,1)
+SRCS += Gif.cpp
+endif
+
 ifeq (@USE_OPENGL@,1)
 SRCS += TextureGL.cpp
 SRCS += GUIFontTTFGL.cpp

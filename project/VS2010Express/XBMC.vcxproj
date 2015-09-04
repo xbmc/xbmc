@@ -441,6 +441,7 @@
     <ClCompile Include="..\..\xbmc\guilib\DirectXGraphics.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionSolvers.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\Gif.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIAction.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIAudioManager.cpp" />
@@ -963,6 +964,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\XbtManager.h" />
     <ClInclude Include="..\..\xbmc\guiinfo\GUIInfoLabels.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
+    <ClInclude Include="..\..\xbmc\guilib\Gif.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIShaderDX.h" />
