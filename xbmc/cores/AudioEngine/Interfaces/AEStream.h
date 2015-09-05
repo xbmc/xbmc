@@ -21,7 +21,7 @@
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEStreamData.h"
-#include "cores/IAudioCallback.h"
+#include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include <stdint.h>
 
 extern "C" {

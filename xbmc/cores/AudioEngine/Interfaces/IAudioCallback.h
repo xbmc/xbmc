@@ -2,9 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_IAUDIOCALLBACK_H__5A6AC7CF_C60E_45B9_8113_599F036FBBF8__INCLUDED_)
-#define AFX_IAUDIOCALLBACK_H__5A6AC7CF_C60E_45B9_8113_599F036FBBF8__INCLUDED_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -25,9 +22,7 @@
  *
  */
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class IAudioCallback
 {
@@ -36,7 +31,5 @@ public:
   virtual ~IAudioCallback() {};
   virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample) = 0;
   virtual void OnAudioData(const float* pAudioData, int iAudioDataLength) = 0;
-
 };
 
-#endif // !defined(AFX_IAUDIOCALLBACK_H__5A6AC7CF_C60E_45B9_8113_599F036FBBF8__INCLUDED_)
