@@ -2640,7 +2640,7 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="audiooutput.supportdtshdcpudecoding" type="boolean" label="38118" help="38119">
+        <setting id="audiooutput.supportdtshdcpudecoding" type="boolean" label="38019" help="38020">
           <level>2</level>
           <default>false</default>
           <control type="toggle" />

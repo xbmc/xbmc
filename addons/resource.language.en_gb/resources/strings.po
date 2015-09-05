@@ -17580,7 +17580,7 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#38017"
 msgid "Region A - Americas, East Asia and Southeast Asia. Region B - Africa, Middle East, Southwest Asia, Europe, Australia, New Zealand. Region C - Central Asia, mainland China, Mongolia, South Asia, Belarus, Russia, Ukraine, Kazakhstan."
-
+msgstr ""
 
 #. Used for the viewstate selection
 #: xbmc/video/GUIViewStateVideo.xml
@@ -17588,14 +17588,14 @@ msgctxt "#38018"
 msgid "User rating"
 msgstr ""
 
-#. Setting #38118 "Settings -> System -> Audio output -> Support 8 channel DTS-HD audio decoding"
+#. Setting #38019 "Settings -> System -> Audio output -> Support 8 channel DTS-HD audio decoding"
 #: system/settings/settings.xml
-msgctxt "#38118"
+msgctxt "#38019"
 msgid "Support 8 channel DTS-HD audio decoding"
 msgstr ""
 
-#. Description of setting #38118 Settings -> System -> Audio output -> Support 8 channel DTS-HD audio decoding
+#. Description of setting #38019 Settings -> System -> Audio output -> Support 8 channel DTS-HD audio decoding
 #: system/settings/settings.xml
-msgctxt "#38119"
+msgctxt "#38020"
 msgid "Enables decoding of high quality DTS-HD audio streams. Note: This increases CPU load and is only available when DTS and DTS-HD audio passthrough are disabled."
 msgstr ""
