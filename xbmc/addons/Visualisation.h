@@ -20,7 +20,7 @@
 #pragma once
 
 #include "AddonDll.h"
-#include "cores/IAudioCallback.h"
+#include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include "include/xbmc_vis_types.h"
 #include "guilib/IRenderingCallback.h"
 #include "utils/rfft.h"

@@ -28,7 +28,7 @@
 #include "threads/SharedSection.h"
 #include "utils/Job.h"
 
-#include "cores/IAudioCallback.h"
+#include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 
 class IAEStream;
