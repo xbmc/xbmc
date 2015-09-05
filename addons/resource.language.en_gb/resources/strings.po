@@ -18950,6 +18950,10 @@ msgctxt "#90024"
 msgid "Download and install madVR from http://madshi.net/madVR.zip"
 msgstr ""
 
+msgctxt "#90025"
+msgid "This category contains the settings for how DSPlayer is handled."
+msgstr ""
+
 msgctxt "#909001"
 msgid "Rus"
 msgstr ""

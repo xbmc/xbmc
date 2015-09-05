@@ -1198,7 +1198,7 @@
         </setting>
       </group>
     </category>
-    <category id="dsplayer" label="55000" help="">
+    <category id="dsplayer" label="55000" help="90025">
       <group id="1">
         <setting id="dsplayer.defaultvideoplayer" type="boolean" label="55031" help="90000">
           <level>0</level>
