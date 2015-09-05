@@ -91,7 +91,7 @@ void CTextureArray::Add(CBaseTexture *texture, int delay)
     return;
 
   m_textures.push_back(texture);
-  m_delays.push_back(delay ? delay * 2 : 100);
+  m_delays.push_back(delay);
 
   m_texWidth = texture->GetTextureWidth();
   m_texHeight = texture->GetTextureHeight();
@@ -104,7 +104,7 @@ void CTextureArray::Set(CBaseTexture *texture, int width, int height)
   m_width = width;
   m_height = height;
   m_orientation = texture ? texture->GetOrientation() : 0;
-  Add(texture, 100);
+  Add(texture, 2);
 }
 
 void CTextureArray::Free()
