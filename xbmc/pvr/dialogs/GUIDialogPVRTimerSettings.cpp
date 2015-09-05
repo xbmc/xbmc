@@ -276,7 +276,7 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   if (m_iWeekdays & PVR_WEEKDAY_SUNDAY)
     weekdaysPreselect.push_back(PVR_WEEKDAY_SUNDAY);
 
-  setting = AddList(group, SETTING_TMR_WEEKDAYS, 19079, 0, weekdaysPreselect, WeekdaysFiller, 19079, 1);
+  setting = AddList(group, SETTING_TMR_WEEKDAYS, 19079, 0, weekdaysPreselect, WeekdaysFiller, 19079, 1, -1, true, -1, WeekdaysValueFormatter);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_WEEKDAYS);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_WEEKDAYS);
 
@@ -359,6 +359,29 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_REC_GROUP);
 }
 
+int CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting(const CSetting *setting)
+{
+  const CSettingList *settingList = static_cast<const CSettingList*>(setting);
+  if (settingList->GetElementType() != SettingTypeInteger)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting - wrong weekdays element type");
+    return 0;
+  }
+  int weekdays = 0;
+  std::vector<CVariant> list = CSettingUtils::GetList(settingList);
+  for (const auto &value : list)
+  {
+    if (!value.isInteger())
+    {
+      CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting - wrong weekdays value type");
+      return 0;
+    }
+    weekdays += static_cast<int>(value.asInteger());
+  }
+
+  return weekdays;
+}
+
 void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
 {
   if (setting == NULL)
@@ -418,24 +441,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_TMR_WEEKDAYS)
   {
-    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
-    if (settingList->GetElementType() != SettingTypeInteger)
-    {
-      CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::OnSettingChanged - wrong weekdays element type");
-      return;
-    }
-    int weekdays = 0;
-    std::vector<CVariant> list = CSettingUtils::GetList(settingList);
-    for (const auto &value : list)
-    {
-      if (!value.isInteger())
-      {
-        CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::OnSettingChanged - wrong weekdays value type");
-        return;
-      }
-      weekdays += static_cast<int>(value.asInteger());
-    }
-    m_iWeekdays = weekdays;
+    m_iWeekdays = GetWeekdaysFromSetting(setting);
   }
   else if (settingId == SETTING_TMR_START_ANYTIME)
   {
@@ -666,13 +672,6 @@ void CGUIDialogPVRTimerSettings::SetButtonLabels()
   {
     SET_CONTROL_LABEL2(settingControl->GetID(), m_timerEndTimeStr);
   }
-
-  // weekdays
-  settingControl = GetSettingControl(SETTING_TMR_WEEKDAYS);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
-    SET_CONTROL_LABEL2(settingControl->GetID(),
-                       CPVRTimerInfoTag::GetWeekdaysString(
-                        m_iWeekdays, m_timerType->IsEpgBased(), true));
 }
 
 void CGUIDialogPVRTimerSettings::AddCondition(
@@ -964,6 +963,11 @@ void CGUIDialogPVRTimerSettings::RecordingGroupFiller(
   }
   else
     CLog::Log(LOGERROR, "CGUIDialogPVRTimerSettings::RecordingGroupFiller - No dialog");
+}
+
+std::string CGUIDialogPVRTimerSettings::WeekdaysValueFormatter(const CSetting *setting)
+{
+  return CPVRTimerInfoTag::GetWeekdaysString(GetWeekdaysFromSetting(setting), true, true);
 }
 
 void CGUIDialogPVRTimerSettings::AddTypeDependentEnableCondition(CSetting *setting, const std::string &identifier)
