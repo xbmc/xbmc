@@ -427,21 +427,30 @@ void CGUIControlListSetting::Update(bool updateDisplayOnly /* = false */)
   CGUIControlBaseSetting::Update();
   
   CFileItemList options;
+  const CSettingControlList *control = static_cast<const CSettingControlList*>(m_pSetting->GetControl());
   bool optionsValid = GetItems(m_pSetting, options);
-  if (optionsValid && !static_cast<const CSettingControlList*>(m_pSetting->GetControl())->HideValue())
+  std::string label2;
+  if (optionsValid && !control->HideValue())
   {
-    std::vector<std::string> labels;
-    for (int index = 0; index < options.Size(); index++)
-    {
-      const CFileItemPtr pItem = options.Get(index);
-      if (pItem->IsSelected())
-        labels.push_back(pItem->GetLabel());
-    }
+    SettingControlListValueFormatter formatter = control->GetFormatter();
+    if (formatter)
+      label2 = formatter(m_pSetting);
 
-    m_pButton->SetLabel2(StringUtils::Join(labels, ", "));
+    if (label2.empty())
+    {
+      std::vector<std::string> labels;
+      for (int index = 0; index < options.Size(); index++)
+      {
+        const CFileItemPtr pItem = options.Get(index);
+        if (pItem->IsSelected())
+          labels.push_back(pItem->GetLabel());
+      }
+
+      label2 = StringUtils::Join(labels, ", ");
+    }
   }
-  else
-    m_pButton->SetLabel2(StringUtils::Empty);
+
+  m_pButton->SetLabel2(label2);
 
   // disable the control if it has less than two items
   if (!m_pButton->IsDisabled() && options.Size() <= 1)

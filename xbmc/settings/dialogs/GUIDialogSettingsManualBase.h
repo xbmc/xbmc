@@ -106,7 +106,7 @@ protected:
   CSettingList* AddList(CSettingGroup *group, const std::string &id, int label, int level, std::vector<int> values, const StaticIntegerSettingOptions &entries,
                         int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1);
   CSettingList* AddList(CSettingGroup *group, const std::string &id, int label, int level, std::vector<int> values, IntegerSettingOptionsFiller filler,
-                        int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1);
+                        int heading, int minimumItems = 0, int maximumItems = -1, bool visible = true, int help = -1, SettingControlListValueFormatter formatter = NULL);
 
   // slider controls
   CSettingInt* AddPercentageSlider(CSettingGroup *group, const std::string &id, int label, int level, int value, int formatLabel, int step = 1, int heading = -1,
@@ -151,7 +151,7 @@ protected:
   ISettingControl* GetButtonControl(const std::string &format, bool delayed = false, int heading = -1, bool hideValue = false, bool showInstalledAddons = true,
                                     bool showInstallableAddons = false, bool showMoreAddons = true);
   ISettingControl* GetSpinnerControl(const std::string &format, bool delayed = false, int minimumLabel = -1, int formatLabel = -1, const std::string &formatString = "");
-  ISettingControl* GetListControl(const std::string &format, bool delayed = false, int heading = -1, bool multiselect = false);
+  ISettingControl* GetListControl(const std::string &format, bool delayed = false, int heading = -1, bool multiselect = false, SettingControlListValueFormatter formatter = NULL);
   ISettingControl* GetSliderControl(const std::string &format, bool delayed = false, int heading = -1, bool usePopup = false, int formatLabel = -1, const std::string &formatString = "");
   ISettingControl* GetRangeControl(const std::string &format, bool delayed = false, int formatLabel = -1, int valueFormatLabel = -1, const std::string &valueFormatString = "");
 
