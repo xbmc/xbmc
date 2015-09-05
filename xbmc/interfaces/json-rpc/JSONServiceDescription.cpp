@@ -237,12 +237,33 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 };
 
 JSONSchemaTypeDefinition::JSONSchemaTypeDefinition()
-  : missingReference(""), referencedTypeSet(false),
-    type(AnyValue), minimum(-std::numeric_limits<double>::max()), maximum(std::numeric_limits<double>::max()),
-    exclusiveMinimum(false), exclusiveMaximum(false), divisibleBy(0),
-    minLength(-1), maxLength(-1),
-    minItems(0), maxItems(0), uniqueItems(false),
-    hasAdditionalProperties(false)
+  : missingReference(),
+    name(),
+    ID(),
+    referencedType(nullptr),
+    referencedTypeSet(false),
+    extends(),
+    description(),
+    type(AnyValue),
+    unionTypes(),
+    optional(true),
+    defaultValue(),
+    minimum(-std::numeric_limits<double>::max()),
+    maximum(std::numeric_limits<double>::max()),
+    exclusiveMinimum(false),
+    exclusiveMaximum(false),
+    divisibleBy(0),
+    minLength(-1),
+    maxLength(-1),
+    enums(),
+    items(),
+    minItems(0),
+    maxItems(0),
+    uniqueItems(false),
+    additionalItems(),
+    properties(),
+    hasAdditionalProperties(false),
+    additionalProperties(nullptr)
 { }
 
 bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* = false */)
@@ -1190,7 +1211,13 @@ unsigned int JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::size() const
 }
 
 JsonRpcMethod::JsonRpcMethod()
-  : missingReference(""), method(NULL),
+  : missingReference(),
+    name(),
+    method(NULL),
+    transportneed(Response),
+    permission(ReadData),
+    description(),
+    parameters(),
     returns(new JSONSchemaTypeDefinition())
 { }
 
