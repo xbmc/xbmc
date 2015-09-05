@@ -2821,12 +2821,9 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       g_graphicsContext.Lock();
       // check if there are notifications to display
       CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-      if (toast && toast->DoWork())
+      if (toast && !toast->IsDialogRunning() && CGUIDialogKaiToast::HasWork())
       {
-        if (!toast->IsDialogRunning())
-        {
-          toast->Open();
-        }
+        toast->Open();
       }
       g_graphicsContext.Unlock();
     }
