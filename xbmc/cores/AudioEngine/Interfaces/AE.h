@@ -36,6 +36,7 @@ class IAEStream;
 class IAESound;
 class IAEPacketizer;
 class IAudioCallback;
+class IAEClockCallback;
 
 /* sound options */
 #define AE_SOUND_OFF    0 /* disable sounds */
@@ -158,7 +159,7 @@ public:
    * @param options A bit field of stream options (see: enum AEStreamOptions)
    * @return a new IAEStream that will accept data in the requested format
    */
-  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo& channelLayout, unsigned int options = 0) = 0;
+  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo& channelLayout, unsigned int options = 0, IAEClockCallback *clock = NULL) = 0;
 
   /**
    * This method will remove the specifyed stream from the engine.
@@ -166,7 +167,7 @@ public:
    * @param stream The stream to be altered
    * @return NULL
    */
-  virtual IAEStream *FreeStream(IAEStream *stream) = 0;
+  virtual bool FreeStream(IAEStream *stream) = 0;
 
   /**
    * Creates a new IAESound that is ready to play the specified file

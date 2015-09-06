@@ -373,14 +373,16 @@ void CVideoPlayerVideo::Process()
 
       double absolute = m_pClock->GetAbsoluteClock();
       double delay = m_FlipTimeStamp - absolute;
-      if( delay > frametime ) delay = frametime;
-      else if( delay < 0 )    delay = 0;
+      if (delay > frametime)
+        delay = frametime;
+      else if (delay < 0)
+        delay = 0;
       m_FlipTimePts = pts -frametime;
 
-      if(pMsgGeneralResync->m_clock)
+      if (pMsgGeneralResync->m_clock)
       {
         CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 1)", pts);
-        m_pClock->Discontinuity(m_FlipTimePts, absolute);
+        m_pClock->Discontinuity(m_FlipTimePts - DVD_MSEC_TO_TIME(300), absolute);
       }
       else
         CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", pts);

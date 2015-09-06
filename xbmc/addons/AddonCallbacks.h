@@ -429,7 +429,7 @@ typedef const unsigned int      (*AudioEngine_Stream_GetSampleRate)(void *addonD
 typedef const unsigned int      (*AudioEngine_Stream_GetEncodedSampleRate)(void *addonData, AEStreamHandle *handle);
 typedef const AEDataFormat      (*AudioEngine_Stream_GetDataFormat)(void *addonData, AEStreamHandle *handle);
 typedef double                  (*AudioEngine_Stream_GetResampleRatio)(void *addonData, AEStreamHandle *handle);
-typedef bool                    (*AudioEngine_Stream_SetResampleRatio)(void *addonData, AEStreamHandle *handle, double Ratio);
+typedef void                    (*AudioEngine_Stream_SetResampleRatio)(void *addonData, AEStreamHandle *handle, double Ratio);
 typedef void                    (*AudioEngine_Stream_Discontinuity)(void *addonData, AEStreamHandle *handle);
 
 typedef struct CB_AudioEngineLib

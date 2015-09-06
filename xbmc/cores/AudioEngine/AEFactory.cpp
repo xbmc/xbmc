@@ -271,20 +271,20 @@ void CAEFactory::Shutdown()
 }
 
 IAEStream *CAEFactory::MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, 
-  unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options)
+  unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options, IAEClockCallback *clock)
 {
   if(AE)
-    return AE->MakeStream(dataFormat, sampleRate, encodedSampleRate, channelLayout, options);
+    return AE->MakeStream(dataFormat, sampleRate, encodedSampleRate, channelLayout, options, clock);
 
   return NULL;
 }
 
-IAEStream *CAEFactory::FreeStream(IAEStream *stream)
+bool CAEFactory::FreeStream(IAEStream *stream)
 {
   if(AE)
     return AE->FreeStream(stream);
 
-  return NULL;
+  return false;
 }
 
 void CAEFactory::GarbageCollect()
