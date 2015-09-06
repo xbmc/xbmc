@@ -14,7 +14,7 @@ DEPENDS = \
 	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
 	python26 libshairplay \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc \
-	libamplayer libssh taglib libusb libnfs libmp3lame \
+	libamplayer libssh taglib libusb libnfs \
 	pythonmodule-pil libxslt ffmpeg platform crossguid libdcadec
 
 FFMPEG_DEPENDS = gnutls libdcadec
@@ -89,7 +89,6 @@ libbluray: $(ICONV) libxml2
 libssh: openssl
 mysql: openssl
 libzip: $(ZLIB)
-libmp3lame: $(ICONV)
 libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
