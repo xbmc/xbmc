@@ -73,6 +73,28 @@ enum DSPLAYER_STATE
 
 class CDSInputStreamPVRManager;
 class CDSPlayer;
+class CDSPlayerMessages : public CThread
+{
+private:
+  CDSPlayer*    m_pPlayer;
+public:
+  CDSPlayerMessages(CDSPlayer * pPlayer);
+  static ThreadIdentifier m_threadID;
+  void StopThread(bool bWait = true)
+  {
+    if (m_threadID)
+    {
+      PostThreadMessage(m_threadID, WM_QUIT, 0, 0);
+      m_threadID = 0;
+    }
+    CThread::StopThread(bWait);
+  }
+
+protected:
+  void OnStartup();
+  void Process();
+
+};
 class CGraphManagementThread : public CThread
 {
 private:
@@ -232,7 +254,7 @@ public:
   
   static void PostMessage(CDSMsg *msg, bool wait = true)
   {
-    if (!m_threadID)
+    if (!CDSPlayerMessages::m_threadID)
     {
       msg->Release();
       return;
@@ -242,8 +264,8 @@ public:
       msg->Acquire();
 
     if (msg->GetMessageType() != CDSMsg::MADVR_SET_WINDOW_POS)
-      CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
-    PostThreadMessage(m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM)msg);
+      CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), CDSPlayerMessages::m_threadID);
+    PostThreadMessage(CDSPlayerMessages::m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM)msg);
 
     if (wait)
     {
@@ -252,7 +274,7 @@ public:
     }
   }
 
-  static bool IsCurrentThread() { return CThread::IsCurrentThread(m_threadID); }
+  static bool IsCurrentThread() { return CThread::IsCurrentThread(CDSPlayerMessages::m_threadID); }
   static HWND GetDShWnd(){ return m_hWnd; }
   static void SetDsWndVisible(bool bVisible);
 
@@ -273,6 +295,7 @@ protected:
   bool ShowPVRChannelInfo();
 
   CGraphManagementThread m_pGraphThread;
+  CDSPlayerMessages m_pDSPlayerMessages;
   CDVDClock m_pClock;
   CPlayerOptions m_PlayerOptions;
   CEvent m_hReadyEvent;
