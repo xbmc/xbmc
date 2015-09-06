@@ -1,4 +1,4 @@
-include ../../Makefile.include
+-include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile libdcadec_android.patch
 
 # lib name, version
