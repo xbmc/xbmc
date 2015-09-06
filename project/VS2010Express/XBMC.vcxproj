@@ -289,6 +289,10 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\MadvrCallback.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSArgusTV.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSMediaPortal.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSPVRBackend.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PVR\DSSocket.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\StreamsManager.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.cpp" />
@@ -1025,6 +1029,10 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\moreuuids.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSArgusTV.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSMediaPortal.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSPVRBackend.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PVR\DSSocket.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ShadersSelectionRule.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\StreamsManager.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.h" />
