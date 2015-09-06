@@ -206,6 +206,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
     else
       aSong.strTitle = track.strTitle;
     aSong.strFileName = track.strFile;
+    aSong.strComment = track.strComment;
     aSong.iStartOffset = track.iStartTime;
     aSong.iEndOffset = track.iEndTime;
     if (aSong.iEndOffset)
@@ -380,6 +381,10 @@ bool CCueDocument::Parse(CueReader& reader, const std::string& strFile)
         // Genre applies to single track
         m_tracks[totalTracks].strGenre = ExtractInfo(strLine.substr(9));
       }
+    }
+    else if (StringUtils::StartsWithNoCase(strLine, "REM COMMENT"))
+    {
+      m_tracks[totalTracks].strComment = ExtractInfo(strLine.substr(11));
     }
     else if (StringUtils::StartsWithNoCase(strLine, "REM REPLAYGAIN_ALBUM_GAIN"))
       m_albumReplayGain.SetGain(strLine.substr(26));
