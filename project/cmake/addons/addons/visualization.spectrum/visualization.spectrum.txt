@@ -1,1 +1,0 @@
-visualization.spectrum https://github.com/afedchin/visualization.spectrum master
