@@ -19,12 +19,13 @@
  */
 
 #include "ApplicationMessenger.h"
-#include "Application.h"
-
-#include "threads/SingleLock.h"
-#include "guilib/GraphicContext.h"
 
 #include <memory>
+#include <utility>
+
+#include "Application.h"
+#include "guilib/GraphicContext.h"
+#include "threads/SingleLock.h"
 
 namespace KODI
 {

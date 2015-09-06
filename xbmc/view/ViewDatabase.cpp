@@ -19,18 +19,22 @@
  */
 
 #include "ViewDatabase.h"
-#include "utils/URIUtils.h"
-#include "view/ViewState.h"
+
+#include <utility>
+
+#include "dbwrappers/dataset.h"
+#include "SortFileItem.h"
+#include "system.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "view/ViewState.h"
+
 #ifdef TARGET_POSIX
 #include "linux/ConvUtils.h" // GetLastError()
 #endif
-#include "dbwrappers/dataset.h"
-#include "SortFileItem.h"
-
 CViewDatabase::CViewDatabase(void)
 { }
 

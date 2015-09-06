@@ -19,9 +19,11 @@
  *
  */
 
+#include <utility>
 #include <vector>
-#include "ContextMenuItem.h"
+
 #include "addons/ContextMenuAddon.h"
+#include "ContextMenuItem.h"
 #include "dialogs/GUIDialogContextMenu.h"
 
 

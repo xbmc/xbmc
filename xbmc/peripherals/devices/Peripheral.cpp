@@ -19,13 +19,16 @@
  */
 
 #include "Peripheral.h"
+
+#include <utility>
+
+#include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "settings/lib/Setting.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
-#include "guilib/LocalizeStrings.h"
 
 using namespace PERIPHERALS;
 

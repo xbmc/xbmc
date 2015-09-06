@@ -19,9 +19,11 @@
  */
 
 #include "GUIControlGroup.h"
-#include "guiinfo/GUIInfoLabels.h"
 
 #include <cassert>
+#include <utility>
+
+#include "guiinfo/GUIInfoLabels.h"
 
 CGUIControlGroup::CGUIControlGroup()
 {

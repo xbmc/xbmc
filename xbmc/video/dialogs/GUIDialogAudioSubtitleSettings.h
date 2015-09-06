@@ -20,6 +20,8 @@
  *
  */
 
+#include <utility>
+
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
 class CVariant;

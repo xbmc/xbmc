@@ -21,28 +21,32 @@
 #if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
   #include "config.h"
 #endif
+
 #include "Weather.h"
-#include "filesystem/ZipManager.h"
-#include "XMLUtils.h"
-#include "utils/POUtils.h"
-#include "utils/Temperature.h"
-#include "network/Network.h"
+
+#include <utility>
+
+#include "addons/AddonManager.h"
+#include "addons/GUIDialogAddonSettings.h"
 #include "Application.h"
+#include "filesystem/Directory.h"
+#include "filesystem/ZipManager.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/WindowIDs.h"
+#include "GUIUserMessages.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
+#include "LangInfo.h"
+#include "log.h"
+#include "network/Network.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
-#include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
-#include "XBDateTime.h"
-#include "LangInfo.h"
-#include "guilib/WindowIDs.h"
-#include "guilib/LocalizeStrings.h"
-#include "filesystem/Directory.h"
 #include "StringUtils.h"
 #include "URIUtils.h"
-#include "log.h"
-#include "addons/AddonManager.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
-#include "addons/GUIDialogAddonSettings.h"
+#include "utils/POUtils.h"
+#include "utils/Temperature.h"
+#include "XBDateTime.h"
+#include "XMLUtils.h"
 
 using namespace ADDON;
 using namespace XFILE;

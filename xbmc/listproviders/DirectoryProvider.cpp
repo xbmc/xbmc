@@ -19,24 +19,26 @@
  */
 
 #include "DirectoryProvider.h"
+
+#include <memory>
+#include <utility>
+
+#include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/Settings.h"
-#include "utils/JobManager.h"
-#include "utils/SortUtils.h"
-#include "utils/XMLUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#include "threads/SingleLock.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
-#include "FileItem.h"
-#include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
-#include "interfaces/AnnouncementManager.h"
-
-#include <memory>
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/JobManager.h"
+#include "utils/SortUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/XMLUtils.h"
+#include "video/VideoThumbLoader.h"
 
 using namespace XFILE;
 using namespace ANNOUNCEMENT;

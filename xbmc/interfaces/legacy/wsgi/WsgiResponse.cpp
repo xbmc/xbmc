@@ -19,8 +19,12 @@
  */
 
 #include "WsgiResponse.h"
+
+#include <utility>
+
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+
 
 namespace XBMCAddon
 {

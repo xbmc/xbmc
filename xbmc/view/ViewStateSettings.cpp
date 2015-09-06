@@ -18,9 +18,11 @@
  *
  */
 
-#include <string.h>
-
 #include "ViewStateSettings.h"
+
+#include <cstring>
+#include <utility>
+
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/SortUtils.h"

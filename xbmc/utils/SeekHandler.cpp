@@ -21,13 +21,14 @@
 #include "SeekHandler.h"
 
 #include <stdlib.h>
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GraphicContext.h"
+
 #include "Application.h"
 #include "FileItem.h"
+#include "guilib/GraphicContext.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "settings/lib/Setting.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"

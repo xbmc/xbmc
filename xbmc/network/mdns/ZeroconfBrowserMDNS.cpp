@@ -19,17 +19,21 @@
  */
 
 #include "ZeroconfBrowserMDNS.h"
-#include <utils/log.h>
-#include <threads/SingleLock.h>
-#include "guilib/GUIWindowManager.h"
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "network/DNSNameCache.h"
+#include "system.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
+
 #if defined(TARGET_WINDOWS)
 #include "win32/WIN32Util.h"
 #endif //TARGET_WINDOWS
-#include "network/DNSNameCache.h"
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
 #pragma comment(lib, "dnssd.lib")
 

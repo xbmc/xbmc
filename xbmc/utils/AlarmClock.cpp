@@ -19,13 +19,16 @@
  */
 
 #include "AlarmClock.h"
+
+#include <utility>
+
+#include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
-#include "messaging/ApplicationMessenger.h"
 #include "guilib/LocalizeStrings.h"
-#include "threads/SingleLock.h"
 #include "log.h"
-#include "dialogs/GUIDialogKaiToast.h"
+#include "messaging/ApplicationMessenger.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI::MESSAGING;

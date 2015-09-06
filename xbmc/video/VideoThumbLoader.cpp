@@ -18,28 +18,30 @@
  *
  */
 
-#include <cstdlib>
-
 #include "VideoThumbLoader.h"
-#include "filesystem/StackDirectory.h"
-#include "utils/URIUtils.h"
-#include "URL.h"
-#include "filesystem/DirectoryCache.h"
+
+#include <cstdlib>
+#include <utility>
+
+#include "cores/dvdplayer/DVDFileInfo.h"
 #include "FileItem.h"
-#include "settings/Settings.h"
-#include "settings/VideoSettings.h"
-#include "GUIUserMessages.h"
+#include "filesystem/DirectoryCache.h"
+#include "filesystem/StackDirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
-#include "rendering/RenderSystem.h"
-#include "TextureCache.h"
-#include "utils/log.h"
-#include "video/VideoInfoTag.h"
-#include "video/VideoDatabase.h"
-#include "cores/dvdplayer/DVDFileInfo.h"
+#include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
-#include "utils/StringUtils.h"
+#include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/VideoSettings.h"
+#include "TextureCache.h"
+#include "URL.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "video/VideoDatabase.h"
+#include "video/VideoInfoTag.h"
 
 using namespace XFILE;
 using namespace VIDEO;

@@ -19,20 +19,23 @@
  */
 
 #include "GUIDialogSmartPlaylistEditor.h"
+
+#include <utility>
+
+#include "FileItem.h"
+#include "filesystem/File.h"
+#include "GUIDialogSmartPlaylistRule.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
+#include "profiles/ProfilesManager.h"
+#include "settings/Settings.h"
 #include "Util.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "GUIDialogSmartPlaylistRule.h"
-#include "guilib/GUIWindowManager.h"
-#include "filesystem/File.h"
-#include "profiles/ProfilesManager.h"
-#include "settings/Settings.h"
-#include "FileItem.h"
-#include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
 
 #define CONTROL_HEADING         2
 #define CONTROL_RULE_LIST       10
