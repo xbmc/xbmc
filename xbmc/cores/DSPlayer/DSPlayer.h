@@ -242,7 +242,9 @@ public:
 
   void ShowEditionDlg(bool playStart);
   bool OpenFileInternal(const CFileItem& file);
-
+  void UpdateApplication();
+  void UpdateChannelSwitchSettings();
+  
   //madVR Window
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
   static HWND m_hWnd;
