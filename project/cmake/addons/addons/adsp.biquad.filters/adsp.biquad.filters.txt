@@ -1,1 +1,1 @@
-adsp.biquad.filters https://github.com/kodi-adsp/adsp.biquad.filters b6a31a9
+adsp.biquad.filters https://github.com/kodi-adsp/adsp.biquad.filters master
