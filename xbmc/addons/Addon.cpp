@@ -19,14 +19,27 @@
  */
 
 #include "Addon.h"
+
+#include <string.h>
+#include <ostream>
+#include <utility>
+#include <vector>
+
 #include "AddonManager.h"
 #include "addons/Service.h"
 #include "ContextMenuManager.h"
-#include "RepositoryUpdater.h"
-#include "settings/Settings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "RepositoryUpdater.h"
+#include "settings/Settings.h"
 #include "system.h"
+#include "URL.h"
+#include "Util.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -36,15 +49,6 @@
 #ifdef TARGET_FREEBSD
 #include "freebsd/FreeBSDGNUReplacements.h"
 #endif
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#include "URL.h"
-#include "Util.h"
-#include <vector>
-#include <string.h>
-#include <ostream>
 
 using XFILE::CDirectory;
 using XFILE::CFile;

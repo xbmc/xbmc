@@ -18,17 +18,18 @@
  *
  */
 
-#include <set>
-
 #include "GUIControlSettings.h"
-#include "FileItem.h"
-#include "Util.h"
+
+#include <set>
+#include <utility>
+
 #include "addons/AddonManager.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"
+#include "FileItem.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUILabelControl.h"
@@ -37,13 +38,14 @@
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/lib/Setting.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
 #include "settings/SettingPath.h"
 #include "settings/SettingUtils.h"
-#include "settings/MediaSourceSettings.h"
-#include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
+#include "Util.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 

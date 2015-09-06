@@ -18,26 +18,28 @@
  *
  */
 
-#include "system.h"
-#include "interfaces/builtins/Builtins.h"
 #include "ButtonTranslator.h"
-#include "profiles/ProfilesManager.h"
-#include "utils/URIUtils.h"
-#include "input/Key.h"
-#include "guilib/WindowIDs.h"
-#include "input/MouseStat.h"
-#include "input/XBMC_keytable.h"
-#include "filesystem/File.h"
-#include "filesystem/Directory.h"
-#include "FileItem.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
-#include "utils/XBMCTinyXML.h"
-#include "utils/RegExp.h"
-#include "XBIRRemote.h"
-#include "Util.h"
 
 #include <algorithm>
+#include <utility>
+
+#include "FileItem.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "guilib/WindowIDs.h"
+#include "input/Key.h"
+#include "input/MouseStat.h"
+#include "input/XBMC_keytable.h"
+#include "interfaces/builtins/Builtins.h"
+#include "profiles/ProfilesManager.h"
+#include "system.h"
+#include "Util.h"
+#include "utils/log.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "XBIRRemote.h"
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"

@@ -21,6 +21,7 @@
 
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "pictures/PictureScalingAlgorithm.h"

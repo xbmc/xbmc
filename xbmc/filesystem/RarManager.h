@@ -1,6 +1,3 @@
-#if !defined(AFX_RARMANAGER_H__06BA7C2E_3FCA_11D9_8186_0050FC718317__INCLUDED_)
-#define AFX_RARMANAGER_H__06BA7C2E_3FCA_11D9_8186_0050FC718317__INCLUDED_
-
 #pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
@@ -22,10 +19,12 @@
  *
  */
 
-#include <string>
-#include "threads/CriticalSection.h"
 #include <map>
+#include <string>
+#include <utility>
 #include <vector>
+
+#include "threads/CriticalSection.h"
 #include "UnrarXLib/UnrarX.hpp"
 #include "utils/Stopwatch.h"
 
@@ -88,5 +87,4 @@ protected:
 };
 
 extern CRarManager g_RarManager;
-#endif
 

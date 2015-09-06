@@ -19,25 +19,28 @@
  */
 
 #include "TextureManager.h"
-#include "Texture.h"
-#if defined(HAS_GIFLIB)
-#include "guilib/Gif.h"
-#endif//HAS_GIFLIB
-#include "GraphicContext.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
+
+#include <cassert>
+
 #include "addons/Skin.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "GraphicContext.h"
+#include "system.h"
+#include "Texture.h"
+#include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
+#include "URL.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+
 #ifdef _DEBUG_TEXTURES
 #include "utils/TimeUtils.h"
 #endif
-#include "threads/SystemClock.h"
-#include "filesystem/File.h"
-#include "filesystem/Directory.h"
-#include "URL.h"
-#include <assert.h>
-
+#if defined(HAS_GIFLIB)
+#include "guilib/Gif.h"
+#endif//HAS_GIFLIB
 #if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
 #include "windowing/WindowingFactory.h" // for g_Windowing in CGUITextureManager::FreeUnusedTextures
 #endif

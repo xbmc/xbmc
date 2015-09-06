@@ -41,6 +41,7 @@
 
 #include "GUIDialogPVRChannelManager.h"
 #include "GUIDialogPVRGroupManager.h"
+#include <utility>
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5

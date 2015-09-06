@@ -18,22 +18,23 @@
  *
  */
 
-#include "Application.h"
-#include "settings/MediaSettings.h"
-
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
-#include "cores/AudioEngine/AEResampleFactory.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/IPlayer.h"
-#include "utils/TimeUtils.h"
-
 #include "ActiveAEDSPProcess.h"
-#include "ActiveAEDSPMode.h"
+
+#include <utility>
 
 extern "C" {
 #include "libavutil/channel_layout.h"
 #include "libavutil/opt.h"
 }
+
+#include "ActiveAEDSPMode.h"
+#include "Application.h"
+#include "cores/AudioEngine/AEResampleFactory.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/IPlayer.h"
+#include "settings/MediaSettings.h"
+#include "utils/TimeUtils.h"
 
 using namespace ADDON;
 using namespace ActiveAE;

@@ -18,9 +18,10 @@
  *
  */
 
-#include <cstring>
-
 #include "XBTF.h"
+
+#include <cstring>
+#include <utility>
 
 CXBTFFrame::CXBTFFrame()
 {

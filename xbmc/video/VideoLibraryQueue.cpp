@@ -19,16 +19,19 @@
  */
 
 #include "VideoLibraryQueue.h"
-#include "GUIUserMessages.h"
-#include "Util.h"
+
+#include <utility>
+
 #include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
 #include "threads/SingleLock.h"
-#include "video/VideoDatabase.h"
+#include "Util.h"
 #include "video/jobs/VideoLibraryCleaningJob.h"
 #include "video/jobs/VideoLibraryJob.h"
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
 #include "video/jobs/VideoLibraryRefreshingJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
+#include "video/VideoDatabase.h"
 
 CVideoLibraryQueue::CVideoLibraryQueue()
   : CJobQueue(false, 1, CJob::PRIORITY_LOW),

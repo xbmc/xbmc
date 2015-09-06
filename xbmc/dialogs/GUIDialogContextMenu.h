@@ -20,7 +20,10 @@
  *
  */
 
+#include <utility>
+
 #include "guilib/GUIDialog.h"
+
 
 class CMediaSource;
 

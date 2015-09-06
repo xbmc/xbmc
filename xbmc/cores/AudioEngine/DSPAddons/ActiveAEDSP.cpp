@@ -19,35 +19,37 @@
  */
 
 #include "ActiveAEDSP.h"
-#include "ActiveAEDSPProcess.h"
+
+#include <utility>
 
 extern "C" {
 #include "libavutil/channel_layout.h"
 }
 
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
-#include "cores/AudioEngine/Interfaces/AEResample.h"
-#include "cores/IPlayer.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-
-#include "Application.h"
-#include "guiinfo/GUIInfoLabels.h"
-#include "GUIUserMessages.h"
+#include "ActiveAEDSPProcess.h"
 #include "addons/AddonInstaller.h"
 #include "addons/GUIDialogAddonSettings.h"
+#include "Application.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
+#include "cores/AudioEngine/Interfaces/AEResample.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/IPlayer.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogKaiToast.h"
+#include "guiinfo/GUIInfoLabels.h"
 #include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/dialogs/GUIDialogAudioDSPManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
-#include "settings/dialogs/GUIDialogAudioDSPManager.h"
-#include "utils/StringUtils.h"
 #include "utils/JobManager.h"
+#include "utils/StringUtils.h"
+
 
 using namespace ADDON;
 using namespace ActiveAE;

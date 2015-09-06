@@ -18,18 +18,19 @@
  *
  */
 
-#include "FileItem.h"
+#include "PVRRecordings.h"
+
+#include <utility>
+
 #include "epg/EpgContainer.h"
+#include "FileItem.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/PVRManager.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
-
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
-
-#include "PVRRecordings.h"
 
 using namespace PVR;
 

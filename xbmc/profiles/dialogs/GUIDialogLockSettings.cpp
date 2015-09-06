@@ -19,16 +19,19 @@
  */
 
 #include "GUIDialogLockSettings.h"
-#include "URL.h"
+
+#include <utility>
+
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogGamepad.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
+#include "URL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 

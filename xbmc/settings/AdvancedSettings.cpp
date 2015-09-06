@@ -18,34 +18,34 @@
  *
  */
 
+#include "AdvancedSettings.h"
+
+#include <climits>
 #include <algorithm>
 #include <string>
 #include <vector>
-#include <utility>
 
-#include <limits.h>
-
-#include "system.h"
-#include "AdvancedSettings.h"
+#include "addons/AddonManager.h"
+#include "addons/AudioDecoder.h"
+#include "addons/IAddon.h"
 #include "Application.h"
-#include "network/DNSNameCache.h"
 #include "filesystem/File.h"
-#include "utils/LangCodeExpander.h"
+#include "filesystem/SpecialProtocol.h"
 #include "LangInfo.h"
+#include "network/DNSNameCache.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingUtils.h"
+#include "system.h"
+#include "utils/LangCodeExpander.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
-#include "filesystem/SpecialProtocol.h"
-#include "addons/IAddon.h"
-#include "addons/AddonManager.h"
-#include "addons/AudioDecoder.h"
+#include "utils/XMLUtils.h"
+
 #if defined(TARGET_DARWIN_IOS)
 #include "osx/DarwinUtils.h"
 #endif

@@ -19,11 +19,13 @@
  *
  */
 
-#include "utils/FileOperationJob.h"
+#include <utility>
+
 #include "addons/Addon.h"
 #include "addons/Repository.h"
-#include "utils/Stopwatch.h"
 #include "threads/Event.h"
+#include "utils/FileOperationJob.h"
+#include "utils/Stopwatch.h"
 
 class CAddonDatabase;
 

@@ -22,6 +22,8 @@
  *
  */
 
+#include <vector>
+
 #include "LibraryLoader.h"
 
 class Win32DllLoader : public LibraryLoader

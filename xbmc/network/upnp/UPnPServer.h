@@ -18,10 +18,11 @@
  *
  */
 #pragma once
+#include <utility>
 #include <Platinum/Source/Devices/MediaConnect/PltMediaConnect.h>
 
-#include "interfaces/IAnnouncer.h"
 #include "FileItem.h"
+#include "interfaces/IAnnouncer.h"
 
 class CVariant;
 class CThumbLoader;

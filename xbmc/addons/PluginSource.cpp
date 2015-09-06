@@ -17,7 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "PluginSource.h"
+
+#include <utility>
+
 #include "AddonManager.h"
 #include "utils/StringUtils.h"
 

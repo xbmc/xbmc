@@ -19,16 +19,16 @@
  */
 
 #pragma once
-#include "threads/Thread.h"
+#include <list>
+#include <utility>
 
 #include "DVDAudio.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
 #include "DVDStreamInfo.h"
-#include "utils/BitstreamStats.h"
 #include "IDVDPlayer.h"
-
-#include <list>
+#include "threads/Thread.h"
+#include "utils/BitstreamStats.h"
 
 class CDVDPlayer;
 class CDVDAudioCodec;

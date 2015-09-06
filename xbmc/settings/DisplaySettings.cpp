@@ -18,15 +18,15 @@
  *
  */
 
-#include <algorithm>
+#include "DisplaySettings.h"
+
 #include <cstdlib>
+#include <float.h>
+#include <algorithm>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include <float.h>
-
-#include "DisplaySettings.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/gui3d.h"
 #include "guilib/LocalizeStrings.h"

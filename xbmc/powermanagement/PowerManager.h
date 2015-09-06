@@ -22,6 +22,7 @@
 #define _POWER_MANAGER_H_
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "IPowerSyscall.h"

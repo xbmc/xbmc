@@ -23,6 +23,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <utility>
 
 #include "addons/Addon.h"
 #include "guilib/GraphicContext.h" // needed for the RESOLUTION members

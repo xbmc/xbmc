@@ -29,6 +29,8 @@
 #include "system.h"
 #include "AddonPythonInvoker.h"
 
+#include <utility>
+
 #define MODULE "xbmc"
 
 #define RUNSCRIPT_PRAMBLE \

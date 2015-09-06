@@ -18,26 +18,26 @@
  *
  */
 
+#include "PVRClients.h"
+
+#include <cassert>
+#include <utility>
+
 #include "Application.h"
-#include "GUIUserMessages.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/Settings.h"
-#include "utils/Variant.h"
-
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-
-#include "PVRClients.h"
-
-#include <assert.h>
+#include "settings/Settings.h"
+#include "utils/Variant.h"
 
 using namespace ADDON;
 using namespace PVR;

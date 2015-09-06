@@ -18,24 +18,26 @@
  *
  */
 
-#include <memory>
-#include <list>
-#include "system.h"
 #include "PowerManager.h"
+
+#include <list>
+#include <memory>
+
 #include "Application.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "windowing/WindowingFactory.h"
-#include "utils/log.h"
-#include "utils/Weather.h"
-#include "interfaces/builtins/Builtins.h"
-#include "interfaces/AnnouncementManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "interfaces/AnnouncementManager.h"
+#include "interfaces/builtins/Builtins.h"
 #include "pvr/PVRManager.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "system.h"
+#include "utils/log.h"
+#include "utils/Weather.h"
+#include "windowing/WindowingFactory.h"
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"

@@ -19,9 +19,6 @@
  *
  */
 
-#include <string>
-#include <map>
-
 #include <sys/types.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -29,6 +26,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <map>
+#include <string>
+
 #include <microhttpd.h>
 
 #include "utils/HttpRangeUtils.h"

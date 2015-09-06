@@ -18,15 +18,17 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "dbwrappers/Database.h"
-#include "VideoInfoTag.h"
-#include "addons/Scraper.h"
-#include "Bookmark.h"
-#include "utils/SortUtils.h"
-#include "video/VideoDbUrl.h"
 
 #include <memory>
 #include <set>
+#include <utility>
+
+#include "addons/Scraper.h"
+#include "Bookmark.h"
+#include "dbwrappers/Database.h"
+#include "utils/SortUtils.h"
+#include "video/VideoDbUrl.h"
+#include "VideoInfoTag.h"
 
 class CFileItem;
 class CFileItemList;

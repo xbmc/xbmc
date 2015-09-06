@@ -18,7 +18,30 @@
  *
  */
 
+#include "DVDDemuxFFmpeg.h"
+
+#include <utility>
+
+#include "commons/Exception.h"
+#include "cores/FFmpeg.h"
+#include "DVDClock.h" // for DVD_TIME_BASE
+#include "DVDDemuxUtils.h"
+#include "DVDInputStreams/DVDInputStream.h"
+#include "DVDInputStreams/DVDInputStreamFFmpeg.h"
+#include "filesystem/CurlFile.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "system.h"
+#include "threads/SystemClock.h"
+#include "URL.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+
+#ifdef HAVE_LIBBLURAY
+#include "DVDInputStreams/DVDInputStreamBluray.h"
+#endif
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
 #endif
@@ -28,29 +51,11 @@
 #ifdef TARGET_POSIX
 #include "stdint.h"
 #endif
-#include "DVDDemuxFFmpeg.h"
-#include "DVDInputStreams/DVDInputStream.h"
-#ifdef HAVE_LIBBLURAY
-#include "DVDInputStreams/DVDInputStreamBluray.h"
-#endif
-#include "DVDInputStreams/DVDInputStreamFFmpeg.h"
-#include "DVDDemuxUtils.h"
-#include "DVDClock.h" // for DVD_TIME_BASE
-#include "commons/Exception.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "filesystem/File.h"
-#include "filesystem/CurlFile.h"
-#include "filesystem/Directory.h"
-#include "utils/log.h"
-#include "threads/SystemClock.h"
-#include "utils/StringUtils.h"
-#include "URL.h"
-#include "cores/FFmpeg.h"
 
 extern "C" {
 #include "libavutil/opt.h"
 }
+
 
 struct StereoModeConversionMap
 {

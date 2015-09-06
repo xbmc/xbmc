@@ -21,6 +21,7 @@
 
 #include <map>
 #include <set>
+#include <utility>
 #include <vector>
 
 #include "guilib/Resolution.h"

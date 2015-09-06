@@ -19,11 +19,14 @@
  */
 
 #include "MusicThumbLoader.h"
+
+#include <utility>
+
 #include "FileItem.h"
-#include "TextureDatabase.h"
+#include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
-#include "music/infoscanner/MusicInfoScanner.h"
+#include "TextureDatabase.h"
 #include "video/VideoThumbLoader.h"
 
 using namespace MUSIC_INFO;

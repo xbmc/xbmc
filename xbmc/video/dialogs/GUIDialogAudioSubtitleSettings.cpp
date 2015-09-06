@@ -19,33 +19,35 @@
  */
 
 #include "GUIDialogAudioSubtitleSettings.h"
-#include "Application.h"
-#include "FileItem.h"
-#include "GUIPassword.h"
-#include "URL.h"
+
+#include <string>
+#include <vector>
+
 #include "addons/Skin.h"
-#include "cores/IPlayer.h"
+#include "Application.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/IPlayer.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "FileItem.h"
 #include "filesystem/File.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "GUIPassword.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
-#include "settings/lib/Setting.h"
-#include "settings/lib/SettingsManager.h"
+#include "URL.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
-#include <string>
-#include <vector>
 
 #define SETTING_AUDIO_VOLUME                   "audio.volume"
 #define SETTING_AUDIO_VOLUME_AMPLIFICATION     "audio.volumeamplification"

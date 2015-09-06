@@ -19,12 +19,16 @@
  */
 
 #include "AddonDatabase.h"
+
+#include <utility>
+
 #include "addons/AddonManager.h"
-#include "utils/log.h"
-#include "utils/Variant.h"
-#include "utils/StringUtils.h"
-#include "XBDateTime.h"
 #include "dbwrappers/dataset.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "XBDateTime.h"
+
 
 using namespace ADDON;
 

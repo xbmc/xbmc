@@ -21,43 +21,45 @@
  *
  */
 
+#include "system.h"
+
+#ifdef HAS_AIRTUNES
+#include "AirTunesServer.h"
+
+#include <map>
+#include <string>
+#include <utility>
+
+#include "Application.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemuxBXA.h"
+#include "FileItem.h"
+#include "filesystem/File.h"
+#include "filesystem/PipeFile.h"
+#include "GUIInfoManager.h"
+#include "guilib/GUIWindowManager.h"
+#include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "music/tags/MusicInfoTag.h"
+#include "network/dacp/dacp.h"
 #include "network/Network.h"
+#include "network/Zeroconf.h"
+#include "network/ZeroconfBrowser.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "URL.h"
+#include "utils/EndianSwap.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
+#include "utils/Variant.h"
+
 #if !defined(TARGET_WINDOWS)
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 #endif
 
-#include "AirTunesServer.h"
-
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"
 #endif
-
-#ifdef HAS_AIRTUNES
-
-#include "utils/log.h"
-#include "network/Zeroconf.h"
-#include "messaging/ApplicationMessenger.h"
-#include "filesystem/PipeFile.h"
-#include "Application.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDDemuxBXA.h"
-#include "filesystem/File.h"
-#include "music/tags/MusicInfoTag.h"
-#include "FileItem.h"
-#include "GUIInfoManager.h"
-#include "guilib/GUIWindowManager.h"
-#include "utils/Variant.h"
-#include "utils/SystemInfo.h"
-#include "utils/StringUtils.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "utils/EndianSwap.h"
-#include "URL.h"
-#include "interfaces/AnnouncementManager.h"
-#include "network/ZeroconfBrowser.h"
-#include "network/dacp/dacp.h"
-
-#include <map>
-#include <string>
 
 #define TMP_COVERART_PATH_JPG "special://temp/airtunes_album_thumb.jpg"
 #define TMP_COVERART_PATH_PNG "special://temp/airtunes_album_thumb.png"

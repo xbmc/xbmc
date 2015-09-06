@@ -19,6 +19,8 @@
  *
  */
 
+#include <utility>
+
 #include "cores/AudioEngine/DSPAddons/ActiveAEDSPProcess.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 

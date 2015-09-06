@@ -19,12 +19,12 @@
  */
 
 #include "system.h"
-#include <utility>
 
 #ifdef HAS_DVD_DRIVE
+#include "Autorun.h"
+
 #include <stdlib.h>
 
-#include "Autorun.h"
 #include "Application.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -46,6 +46,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif

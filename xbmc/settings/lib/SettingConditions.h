@@ -22,6 +22,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <utility>
 
 #include "SettingDefinitions.h"
 #include "utils/BooleanLogic.h"

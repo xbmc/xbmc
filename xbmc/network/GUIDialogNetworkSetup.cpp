@@ -19,13 +19,16 @@
  */
 
 #include "GUIDialogNetworkSetup.h"
+
+#include <utility>
+
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/GUIEditControl.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-#include "URL.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "URL.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #define CONTROL_PROTOCOL        10
 #define CONTROL_SERVER_ADDRESS  11

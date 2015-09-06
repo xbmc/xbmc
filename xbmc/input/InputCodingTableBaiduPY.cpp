@@ -18,8 +18,11 @@
 *
 */
 
-#include <stdlib.h>
 #include "InputCodingTableBaiduPY.h"
+
+#include <stdlib.h>
+#include <utility>
+
 #include "filesystem/CurlFile.h"
 #include "utils/StringUtils.h"
 #include "utils/RegExp.h"

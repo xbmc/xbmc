@@ -28,14 +28,16 @@
  *
  */
 
-#include "GUIWindow.h"
-#include "IWindowManagerCallback.h"
-#include "IMsgTargetCallback.h"
-#include "DirtyRegionTracker.h"
-#include "utils/GlobalsHandling.h"
-#include "guilib/WindowIDs.h"
-#include "messaging/IMessageTarget.h"
 #include <list>
+#include <utility>
+
+#include "DirtyRegionTracker.h"
+#include "guilib/WindowIDs.h"
+#include "GUIWindow.h"
+#include "IMsgTargetCallback.h"
+#include "IWindowManagerCallback.h"
+#include "messaging/IMessageTarget.h"
+#include "utils/GlobalsHandling.h"
 
 class CGUIDialog;
 enum class DialogModalityType;

@@ -21,6 +21,7 @@
 
 #include <map>
 #include <string>
+#include <utility>
 
 #include "dbwrappers/Database.h"
 #include "dbwrappers/DatabaseQuery.h"

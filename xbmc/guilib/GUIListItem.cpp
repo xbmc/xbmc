@@ -19,6 +19,9 @@
  */
 
 #include "GUIListItem.h"
+
+#include <utility>
+
 #include "GUIListItemLayout.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"

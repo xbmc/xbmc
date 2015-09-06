@@ -19,14 +19,16 @@
  */
 
 #include "SettingsManager.h"
+
+#include <algorithm>
+#include <utility>
+
 #include "SettingDefinitions.h"
 #include "SettingSection.h"
 #include "Setting.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
-
-#include <algorithm>
 
 CSettingsManager::CSettingsManager()
   : m_initialized(false), m_loaded(false)

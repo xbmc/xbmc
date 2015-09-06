@@ -22,11 +22,12 @@
 
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
-#include "XBDateTime.h"
-#include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
+#include "utils/ScraperUrl.h"
+#include "XBDateTime.h"
 
 class TiXmlNode;
 class CAlbum;

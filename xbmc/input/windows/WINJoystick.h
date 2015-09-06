@@ -19,12 +19,14 @@
  *
  */
 
-#include <vector>
-#include <string>
-#include <map>
 #include <list>
+#include <map>
 #include <memory>
+#include <string>
 #include <stdint.h>
+#include <utility>
+#include <vector>
+
 #include "threads/CriticalSection.h"
 
 #define JACTIVE_BUTTON 0x00000001

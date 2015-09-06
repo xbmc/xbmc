@@ -19,20 +19,23 @@
  */
 
 #include "GUIDialogProfileSettings.h"
-#include "FileItem.h"
-#include "GUIPassword.h"
-#include "Util.h"
+
+#include <utility>
+
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "profiles/ProfilesManager.h"
+#include "GUIPassword.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
+#include "Util.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

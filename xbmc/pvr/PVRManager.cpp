@@ -18,16 +18,20 @@
  *
  */
 
-#include "Application.h"
-#include "GUIInfoManager.h"
-#include "Util.h"
+#include "PVRManager.h"
+
+#include <cassert>
+#include <utility>
+
 #include "addons/AddonInstaller.h"
-#include "epg/EpgContainer.h"
-#include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogProgress.h"
+#include "Application.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogNumeric.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "epg/EpgContainer.h"
+#include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
@@ -35,33 +39,29 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
-#include "settings/MediaSettings.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "threads/SingleLock.h"
-#include "utils/JobManager.h"
-#include "utils/log.h"
-#include "utils/Stopwatch.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
-#include "video/VideoDatabase.h"
-
-#include "pvr/PVRActionListener.h"
-#include "pvr/PVRDatabase.h"
-#include "pvr/PVRGUIInfo.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
+#include "pvr/PVRActionListener.h"
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRGUIInfo.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
-
-#include "PVRManager.h"
-
-#include <assert.h>
+#include "settings/lib/Setting.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "Util.h"
+#include "utils/JobManager.h"
+#include "utils/log.h"
+#include "utils/Stopwatch.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+#include "video/VideoDatabase.h"
 
 using namespace MUSIC_INFO;
 using namespace PVR;

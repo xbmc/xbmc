@@ -18,24 +18,24 @@
  *
  */
 
-#include "FileItem.h"
+#include "PVRTimers.h"
+
+#include <cassert>
+#include <cstdlib>
+#include <utility>
+
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "epg/EpgContainer.h"
+#include "FileItem.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-
-#include "PVRTimers.h"
-
-#include <assert.h>
-#include <cstdlib>
 
 using namespace PVR;
 using namespace EPG;

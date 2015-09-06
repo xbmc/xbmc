@@ -19,40 +19,43 @@
  */
 
 #include "Peripherals.h"
+
+#include <utility>
+
 #include "bus/PeripheralBus.h"
+#include "bus/PeripheralBusUSB.h"
 #include "devices/PeripheralBluetooth.h"
+#include "devices/PeripheralCecAdapter.h"
 #include "devices/PeripheralDisk.h"
 #include "devices/PeripheralHID.h"
+#include "devices/PeripheralImon.h"
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
-#include "devices/PeripheralCecAdapter.h"
-#include "devices/PeripheralImon.h"
-#include "bus/PeripheralBusUSB.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogPeripheralSettings.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "FileItem.h"
+#include "filesystem/Directory.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "GUIUserMessages.h"
+#include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/ThreadMessage.h"
+#include "settings/lib/Setting.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "Util.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 
 #if defined(HAVE_LIBCEC)
 #include "bus/virtual/PeripheralBusCEC.h"
 #endif
 
-#include "FileItem.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/XMLUtils.h"
-#include "utils/XBMCTinyXML.h"
-#include "filesystem/Directory.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "GUIUserMessages.h"
-#include "utils/StringUtils.h"
-#include "Util.h"
-#include "input/Key.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
-#include "messaging/ThreadMessage.h"
-#include "messaging/ApplicationMessenger.h"
 
 using namespace PERIPHERALS;
 using namespace XFILE;

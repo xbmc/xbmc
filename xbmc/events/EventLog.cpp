@@ -29,6 +29,8 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 
+#include <utility>
+
 std::map<int, std::unique_ptr<CEventLog> > CEventLog::s_eventLogs;
 CCriticalSection CEventLog::s_critical;
 

@@ -19,19 +19,20 @@
  *
  */
 
+#include <locale>
+#include <map>
+#include <memory>
+#include <set>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/Locale.h"
 #include "utils/Speed.h"
 #include "utils/Temperature.h"
-
-#include <map>
-#include <memory>
-#include <set>
-#include <string>
-#include <vector>
-#include <locale>
 
 #ifdef TARGET_WINDOWS
 #ifdef GetDateFormat

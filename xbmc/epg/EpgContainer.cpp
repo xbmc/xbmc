@@ -18,12 +18,18 @@
  *
  */
 
+#include "EpgContainer.h"
+
+#include <utility>
+
 #include "Application.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "Epg.h"
+#include "EpgSearchFilter.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -31,9 +37,6 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "Epg.h"
-#include "EpgContainer.h"
-#include "EpgSearchFilter.h"
 
 using namespace EPG;
 using namespace PVR;

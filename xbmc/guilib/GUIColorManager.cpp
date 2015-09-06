@@ -19,12 +19,15 @@
  */
 
 #include "GUIColorManager.h"
-#include "filesystem/SpecialProtocol.h"
+
+#include <utility>
+
 #include "addons/Skin.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "utils/StringUtils.h"
 
 CGUIColorManager g_colorManager;
 

@@ -18,25 +18,24 @@
  *
  */
 
-#include "FileItem.h"
+#include "GUIDialogPVRTimerSettings.h"
+
 #include "addons/include/xbmc_pvr_types.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/SettingUtils.h"
+#include "pvr/addons/PVRClient.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/PVRManager.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerType.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "settings/SettingUtils.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-
-#include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClient.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/timers/PVRTimerType.h"
-
-#include "GUIDialogPVRTimerSettings.h"
 
 using namespace PVR;
 
