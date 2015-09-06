@@ -629,15 +629,7 @@ void CDSPlayer::Process()
 
   CLog::Log(LOGNOTICE, "%s - Successfully creating DS Graph", __FUNCTION__);
 
-  if (g_pPVRStream)
-  {
-    CFileItem item(g_application.CurrentFileItem());
-    if (g_pPVRStream->UpdateItem(item))
-    {
-      g_application.CurrentFileItem() = item;
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(item)));
-    }
-  }
+  UpdateApplication();
 
   g_dsSettings.pRendererSettings->bAllowFullscreen = m_PlayerOptions.fullscreen;
 
@@ -1032,30 +1024,61 @@ bool CDSPlayer::OnAction(const CAction &action)
     case ACTION_MOVE_UP:
     case ACTION_NEXT_ITEM:
     case ACTION_CHANNEL_UP:
-      SelectChannel(true);
-      g_infoManager.SetDisplayAfterSeek();
-      ShowPVRChannelInfo();
+      if (SelectChannel(true))
+      {
+        g_infoManager.SetDisplayAfterSeek();
+        ShowPVRChannelInfo();
+      }
+      else if (CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+      {
+        m_callback.OnPlayBackStopped();
+      }
+      else
+      {
+        CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
+        CApplicationMessenger::Get().MediaStop(false);
+      }
       return true;
       break;
 
     case ACTION_MOVE_DOWN:
     case ACTION_PREV_ITEM:
     case ACTION_CHANNEL_DOWN:
-      SelectChannel(false);
-      g_infoManager.SetDisplayAfterSeek();
-      ShowPVRChannelInfo();
+      if (SelectChannel(false))
+      {
+        g_infoManager.SetDisplayAfterSeek();
+        ShowPVRChannelInfo();
+      }
+      else if (CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+      {
+        m_callback.OnPlayBackStopped();
+      }
+      else
+      {
+        CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
+        CApplicationMessenger::Get().MediaStop(false);
+      }
       return true;
       break;
 
     case ACTION_CHANNEL_SWITCH:
-    {
       // Offset from key codes back to button number
-      int channel = action.GetAmount();
-      SwitchChannel(channel);
-      g_infoManager.SetDisplayAfterSeek();
-      ShowPVRChannelInfo();
+      int channel = (int)action.GetAmount();
+      if (SwitchChannel(channel))
+      {
+        g_infoManager.SetDisplayAfterSeek();
+        ShowPVRChannelInfo();
+      }
+      else if (CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+      {
+        m_callback.OnPlayBackStopped();
+      }
+      else
+      {
+        CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
+        CApplicationMessenger::Get().MediaStop(false);
+      }
       return true;
-    }
       break;
     }
   }
@@ -1116,6 +1139,41 @@ bool CDSPlayer::SeekTimeRelative(__int64 iTime)
   PostMessage(new CDSMsgPlayerSeekTime(MSEC_TO_DS_TIME((abstime < 0) ? 0 : abstime)));
   m_callback.OnPlayBackSeek((int)abstime, (int)iTime);
   return true;
+}
+
+void CDSPlayer::UpdateApplication()
+{
+  if (g_pPVRStream)
+  {
+    CFileItem item(g_application.CurrentFileItem());
+    if (g_pPVRStream->UpdateItem(item))
+    {
+      g_application.CurrentFileItem() = item;
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1, static_cast<void*>(new CFileItem(item)));
+    }
+  }
+}
+
+// Called after fast channel switch.
+void CDSPlayer::UpdateChannelSwitchSettings()
+{
+  if (g_dsGraph->GetTime(true) + MSEC_TO_DS_TIME(3000) < g_dsGraph->GetTotalTime(true))
+  {
+    // Pause playback
+    PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PAUSE, true), false);
+    // Seek to the end of timeshift buffer
+    PostMessage(new CDSMsgPlayerSeekTime(g_dsGraph->GetTotalTime(true) - MSEC_TO_DS_TIME(3000)));
+    // Start playback
+    PostMessage(new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false);
+  }
+
+#ifdef HAS_VIDEO_PLAYBACK
+  // when using fast channel switching some shortcuts are taken which 
+  // means we'll have to update the view mode manually
+  g_renderManager.SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+#endif
+
+  m_PlayerOptions.identify = false;
 }
 
 bool CDSPlayer::SwitchChannel(unsigned int iChannelNumber)
