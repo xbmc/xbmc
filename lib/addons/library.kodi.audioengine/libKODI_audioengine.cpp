@@ -224,9 +224,9 @@ double CAddonAEStream::GetResampleRatio()
   return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_GetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle);
 }
 
-bool CAddonAEStream::SetResampleRatio(double Ratio)
+void CAddonAEStream::SetResampleRatio(double Ratio)
 {
-  return ((CB_AudioEngineLib*)m_Callbacks)->AEStream_SetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle, Ratio);
+  ((CB_AudioEngineLib*)m_Callbacks)->AEStream_SetResampleRatio(((AddonCB*)m_AddonHandle)->addonData, m_StreamHandle, Ratio);
 }
 
 void CAddonAEStream::Discontinuity()

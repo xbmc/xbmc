@@ -29,6 +29,32 @@ extern "C" {
 }
 
 /**
+ * Callback interafce for VideoPlayer clock needed by AE for sync
+ */
+class IAEClockCallback
+{
+public:
+  virtual double GetClock() = 0;
+  virtual double GetClockSpeed() { return 1.0; };
+};
+
+class CAESyncInfo
+{
+public:
+  double delay;
+  double error;
+  double rr;
+  unsigned int errortime;
+  enum AESyncState
+  {
+    SYNC_OFF,
+    SYNC_PLAY,
+    SYNC_ACTIVE
+  };
+  AESyncState state;
+};
+
+/**
  * IAEStream Stream Interface for streaming audio
  */
 class IAEStream
@@ -61,6 +87,12 @@ public:
    * @return seconds
    */
   virtual double GetDelay() = 0;
+
+  /**
+   * Returns info about audio to clock synchronization
+   * @return CAESyncInfo
+   */
+  virtual CAESyncInfo GetSyncInfo() = 0;
 
   /**
    * Returns playing PTS
@@ -204,7 +236,12 @@ public:
    * @note This function may return false if the stream is not resampling, if you wish to use this be sure to set the AESTREAM_FORCE_RESAMPLE option
    * @param ratio the new sample rate ratio, calculated by ((double)desiredRate / (double)GetSampleRate())
    */
-  virtual bool SetResampleRatio(double ratio) = 0;
+  virtual void SetResampleRatio(double ratio) = 0;
+
+  /**
+   * Sets the resamplling on/ff
+   */
+  virtual void SetResampleMode(int mode) = 0;
 
   /**
    * Registers the audio callback to call with each block of data, this is used by Audio Visualizations

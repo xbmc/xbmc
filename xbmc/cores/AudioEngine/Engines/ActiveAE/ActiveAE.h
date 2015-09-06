@@ -88,6 +88,7 @@ public:
     STREAMVOLUME,
     STREAMAMP,
     STREAMRESAMPLERATIO,
+    STREAMRESAMPLEMODE,
     STREAMFADE,
     STREAMFFMPEGINFO,
     STOPSOUND,
@@ -133,6 +134,7 @@ struct MsgStreamNew
 {
   AEAudioFormat format;
   unsigned int options;
+  IAEClockCallback *clock;
 };
 
 struct MsgStreamSample
@@ -176,6 +178,7 @@ public:
   void AddSamples(int samples, std::list<CActiveAEStream*> &streams);
   void GetDelay(AEDelayStatus& status);
   void GetDelay(AEDelayStatus& status, CActiveAEStream *stream);
+  void GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream);
   float GetCacheTime(CActiveAEStream *stream);
   float GetCacheTotal(CActiveAEStream *stream);
   float GetWaterLevel();
@@ -234,8 +237,8 @@ public:
   virtual void  SetSoundMode(const int mode);
 
   /* returns a new stream for data in the specified format */
-  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo& channelLayout, unsigned int options = 0);
-  virtual IAEStream *FreeStream(IAEStream *stream);
+  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo& channelLayout, unsigned int options = 0, IAEClockCallback *clock = NULL);
+  virtual bool FreeStream(IAEStream *stream);
 
   /* returns a new sound object */
   virtual IAESound *MakeSound(const std::string& file);
@@ -268,6 +271,7 @@ protected:
   uint8_t **AllocSoundSample(SampleConfig &config, int &samples, int &bytes_per_sample, int &planes, int &linesize);
   void FreeSoundSample(uint8_t **data);
   void GetDelay(AEDelayStatus& status, CActiveAEStream *stream) { m_stats.GetDelay(status, stream); }
+  void GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream) { m_stats.GetSyncInfo(info, stream); }
   int64_t GetPlayingPTS() { return m_stats.GetPlayingPTS(); }
   int Discontinuity() { return m_stats.Discontinuity(); }
   float GetCacheTime(CActiveAEStream *stream) { return m_stats.GetCacheTime(stream); }
@@ -279,6 +283,7 @@ protected:
   void SetStreamReplaygain(CActiveAEStream *stream, float rgain);
   void SetStreamVolume(CActiveAEStream *stream, float volume);
   void SetStreamResampleRatio(CActiveAEStream *stream, double ratio);
+  void SetStreamResampleMode(CActiveAEStream *stream, int mode);
   void SetStreamFFmpegInfo(CActiveAEStream *stream, int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type);
   void SetStreamFade(CActiveAEStream *stream, float from, float target, unsigned int millis);
 
@@ -307,6 +312,7 @@ protected:
 
   bool RunStages();
   bool HasWork();
+  CSampleBuffer* SyncStream(CActiveAEStream *stream);
 
   void ResampleSounds();
   bool ResampleSound(CActiveAESound *sound);

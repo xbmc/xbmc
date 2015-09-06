@@ -205,7 +205,7 @@ public:
   * @note This function may return false if the stream is not resampling, if you wish to use this be sure to set the AESTREAM_FORCE_RESAMPLE option
   * @param ratio the new sample rate ratio, calculated by ((double)desiredRate / (double)GetSampleRate())
   */
-  static bool AEStream_SetResampleRatio(void *AddonData, AEStreamHandle *StreamHandle, double Ratio);
+  static void AEStream_SetResampleRatio(void *AddonData, AEStreamHandle *StreamHandle, double Ratio);
 
   /**
   * Sginal a clock change

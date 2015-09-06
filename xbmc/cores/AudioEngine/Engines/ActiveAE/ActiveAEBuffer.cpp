@@ -464,7 +464,10 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
       {
         if (!timestamp)
         {
-          m_lastSamplePts = in->timestamp;
+          if (in->timestamp)
+            m_lastSamplePts = in->timestamp;
+          else
+            in->pkt_start_offset = 0;
           m_procSample->clockId = in->clockId;
         }
         else
@@ -475,13 +478,13 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
         }
 
         // pts of last sample we added to the buffer
-        m_lastSamplePts += (in->pkt->nb_samples-in->pkt_start_offset)/m_format.m_sampleRate * 1000;
+        m_lastSamplePts += (in->pkt->nb_samples-in->pkt_start_offset) * 1000 / m_format.m_sampleRate;
       }
 
       // calculate pts for last sample in m_procSample
       int bufferedSamples = m_resampler->GetBufferedSamples();
       m_procSample->pkt_start_offset = m_procSample->pkt->nb_samples;
-      m_procSample->timestamp = m_lastSamplePts - bufferedSamples/m_format.m_sampleRate*1000;
+      m_procSample->timestamp = m_lastSamplePts - bufferedSamples * 1000 / m_format.m_sampleRate;
 
       if ((m_drain || m_changeResampler || m_changeDSP) && m_empty)
       {

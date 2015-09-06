@@ -401,17 +401,17 @@ double CAddonCallbacksAudioEngine::AEStream_GetResampleRatio(void *AddonData, AE
   return ((IAEStream*)StreamHandle)->GetResampleRatio();
 }
 
-bool CAddonCallbacksAudioEngine::AEStream_SetResampleRatio(void *AddonData, AEStreamHandle *StreamHandle, double Ratio)
+void CAddonCallbacksAudioEngine::AEStream_SetResampleRatio(void *AddonData, AEStreamHandle *StreamHandle, double Ratio)
 {
   // prevent compiler warnings
   void *addonData = AddonData;
   if (!addonData || !StreamHandle)
   {
     CLog::Log(LOGERROR, "libKODI_audioengine - %s - invalid stream data", __FUNCTION__);
-    return false;
+    return;
   }
 
-  return ((IAEStream*)StreamHandle)->SetResampleRatio(Ratio);
+  ((IAEStream*)StreamHandle)->SetResampleRatio(Ratio);
 }
 
 void CAddonCallbacksAudioEngine::AEStream_Discontinuity(void *AddonData, AEStreamHandle *StreamHandle)

@@ -2007,15 +2007,19 @@ bool CVideoPlayer::CheckPlayerInit(CCurrentStream& current)
     current.startpts = current.dts;
 
     bool setclock = false;
-    if(m_playSpeed == DVD_PLAYSPEED_NORMAL)
+    if (m_playSpeed == DVD_PLAYSPEED_NORMAL)
     {
-      if(     current.player == VideoPlayer_AUDIO)
-        setclock = m_clock.GetMaster() == MASTER_CLOCK_AUDIO
-                || m_clock.GetMaster() == MASTER_CLOCK_AUDIO_VIDEOREF
-                || !m_CurrentVideo.inited;
-      else if(current.player == VideoPlayer_VIDEO)
-        setclock = m_clock.GetMaster() == MASTER_CLOCK_VIDEO
-                || !m_CurrentAudio.inited;
+      if (current.player == VideoPlayer_AUDIO)
+      {
+        setclock = (m_clock.GetMaster() == MASTER_CLOCK_AUDIO)
+                   || (m_clock.GetMaster() == MASTER_CLOCK_AUDIO_VIDEOREF)
+                   || !m_CurrentVideo.inited;
+      }
+      else if (current.player == VideoPlayer_VIDEO)
+      {
+        setclock = (m_clock.GetMaster() == MASTER_CLOCK_VIDEO)
+                   || !m_CurrentAudio.inited;
+      }
     }
     else
     {

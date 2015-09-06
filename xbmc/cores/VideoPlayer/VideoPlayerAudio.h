@@ -53,51 +53,6 @@ public:
   void   Flush();
 };
 
-class CDVDErrorAverage
-{
-public:
-  CDVDErrorAverage()
-  {
-    Flush();
-  }
-  void Add(double error)
-  {
-    m_buffer += error;
-    m_count++;
-  }
-
-  void Flush(int interval = 100)
-  {
-    m_buffer = 0.0f;
-    m_count  = 0;
-    m_timer.Set(interval);
-  }
-
-  double Get()
-  {
-    if(m_count)
-      return m_buffer / m_count;
-    else
-      return 0.0;
-  }
-
-  bool Get(double& error, int interval = 100)
-  {
-    if(m_timer.IsTimePast())
-    {
-      error = Get();
-      Flush(interval);
-      return true;
-    }
-    else
-      return false;
-  }
-
-  double m_buffer; //place to store average errors
-  int m_count;  //number of errors stored
-  XbmcThreads::EndTime m_timer;
-};
-
 class CVideoPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
@@ -218,17 +173,10 @@ protected:
   int    m_setsynctype;
   int    m_prevsynctype; //so we can print to the log
 
-  double m_error;    //last average error
-
   void   SetSyncType(bool passthrough);
-  void   HandleSyncError(double duration);
-  CDVDErrorAverage m_errors;
-  bool   m_syncclock;
 
-  double m_integral; //integral correction for resampler
   bool   m_prevskipped;
   double m_maxspeedadjust;
-  double m_resampleratio; //resample ratio when using SYNC_RESAMPLE, used for the codec info
 
   struct SInfo
   {
