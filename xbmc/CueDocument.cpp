@@ -193,7 +193,10 @@ void CCueDocument::GetSongs(VECSONGS &songs)
     //Pass album artist to MusicInfoTag object by setting album artist vector.
     aSong.SetAlbumArtist(StringUtils::Split(m_strArtist, advancedSettings->m_musicItemSeparator));
     aSong.strAlbum = m_strAlbum;
-    aSong.genre = StringUtils::Split(m_strGenre, advancedSettings->m_musicItemSeparator);
+    if ((track.strGenre.length() == 0) && (m_strGenre.length() > 0))
+      aSong.genre = StringUtils::Split(m_strGenre, advancedSettings->m_musicItemSeparator);
+    else
+      aSong.genre = StringUtils::Split(track.strGenre, advancedSettings->m_musicItemSeparator);
     aSong.iYear = m_iYear;
     aSong.iTrack = track.iTrackNumber;
     if (m_iDiscNumber > 0)
@@ -367,7 +370,16 @@ bool CCueDocument::Parse(CueReader& reader, const std::string& strFile)
     }
     else if (StringUtils::StartsWithNoCase(strLine, "REM GENRE"))
     {
-      m_strGenre = ExtractInfo(strLine.substr(9));
+      if (totalTracks == -1) // No tracks yet
+      {
+        // Genre applies to whole disc
+        m_strGenre = ExtractInfo(strLine.substr(9));
+      }
+      else
+      {
+        // Genre applies to single track
+        m_tracks[totalTracks].strGenre = ExtractInfo(strLine.substr(9));
+      }
     }
     else if (StringUtils::StartsWithNoCase(strLine, "REM REPLAYGAIN_ALBUM_GAIN"))
       m_albumReplayGain.SetGain(strLine.substr(26));
