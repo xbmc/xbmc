@@ -30,7 +30,6 @@
 #define DLL_PATH_CPLUFF        "libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "libImageLib-@ARCH@.so"
 #define DLL_PATH_LIBEXIF       "libexif-@ARCH@.so"
-#define DLL_PATH_MEDIAINFO     "libmediainfo-@ARCH@.so"
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"
