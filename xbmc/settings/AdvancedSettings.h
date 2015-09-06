@@ -361,6 +361,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     DatabaseSettings m_databaseADSP;  /*!< advanced audio dsp database setup */
 #ifdef HAS_DS_PLAYER
     DatabaseSettings m_databaseDSPlayer; // advanced DSPlayer database setup
+    bool m_bDSPlayerFastChannelSwitching; // Live TV fast channel switching (don't stop timeshift), only for MediaPortal TV-Server and ArgusTV PVR backends
+    bool m_bDSPlayerUseUNCPathsForLiveTV; // Use UNC paths for Live TV, only for MediaPortal TV-Server and ArgusTV PVR backends
 #endif
 
     bool m_guiVisualizeDirtyRegions;
