@@ -146,6 +146,9 @@
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 #include "addons/AddonCallbacksGUI.h"
 
+#include <algorithm>
+#include <utility>
+
 using namespace PVR;
 using namespace PERIPHERALS;
 using namespace KODI::MESSAGING;
@@ -519,6 +522,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
       if (window->OnMessage(message)) handled = true;
     }
   }
+
   return handled;
 }
 
@@ -732,6 +736,37 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const std::vector<std::str
   {
     CSingleLock lock(g_graphicsContext);
     ActivateWindow_Internal(iWindowID, params, swappingWindows, force);
+  }
+}
+
+std::vector<int> CGUIWindowManager::GetTrackersForMessage(int message, int64_t tracked) const
+{
+  if (m_TrackedMessages.find(message) != m_TrackedMessages.end())
+  {
+    if (m_TrackedMessages.at(message).find(tracked) != m_TrackedMessages.at(message).end())
+      return m_TrackedMessages.at(message).at(tracked);
+  }
+  return std::vector<int>();
+}
+
+void CGUIWindowManager::NotifyTrackers(CGUIMessage message)
+{ 
+  //Check if this message is tracked by any window and if so, send to all the
+  //trackers
+  if (message.GetMessage() == GUI_MSG_NOTIFY_TRACKER)
+  {
+    int64_t tracked = static_cast<int64_t>(message.GetSenderId()) << 32;
+    tracked |= message.GetControlId();
+    auto vec = GetTrackersForMessage(message.GetParam1(), tracked);
+    if (!vec.empty())
+    {
+      for (const auto& it : vec)
+      {
+        auto pWindow = GetWindow(it);
+        if (pWindow)
+          pWindow->OnMessage(message);
+      }
+    }
   }
 }
 
@@ -1532,6 +1567,26 @@ CGUIWindow *CGUIWindowManager::GetTopMostDialog() const
 
   // return the last window in the list
   return *renderList.rbegin();
+}
+
+void CGUIWindowManager::TrackMessageForWindow(int message, int tracker, int64_t tracked)
+{
+  m_TrackedMessages[message][tracked].push_back(tracker);
+}
+
+void CGUIWindowManager::UnTrackMessageForWindow(int message, int tracker, int64_t tracked)
+{
+  if (m_TrackedMessages.find(message) != m_TrackedMessages.end())
+  {
+    if (m_TrackedMessages[message].find(tracked) != m_TrackedMessages[message].end())
+    {
+      auto& vec = m_TrackedMessages[message][tracked];
+    
+      auto it = std::find(vec.begin(), vec.end(), tracker);
+      if (it != vec.end())
+        vec.erase(it);
+    }
+  }
 }
 
 bool CGUIWindowManager::IsWindowTopMost(int id) const

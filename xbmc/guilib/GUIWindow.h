@@ -168,6 +168,7 @@ public:
 
   OVERLAY_STATE GetOverlayState() const { return m_overlayState; };
 
+  virtual bool QueueAnimation(ANIMATION_TYPE animType) override;
   virtual bool IsAnimating(ANIMATION_TYPE animType);
   void DisableAnimations();
 

@@ -161,6 +161,11 @@
  */
 #define GUI_MSG_UI_READY       49
 
+/*!
+  \brief notify windowmanager about events that windows might be listening for
+ */
+#define GUI_MSG_NOTIFY_TRACKER  50
+
 #define GUI_MSG_USER         1000
 
 /*!

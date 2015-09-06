@@ -702,11 +702,12 @@ bool CGUIControl::CheckAnimation(ANIMATION_TYPE animType)
   return true;
 }
 
-void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
+bool CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
   MarkDirtyRegion();
   if (!CheckAnimation(animType))
-    return;
+    return false;
+
   CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType, false);
   CAnimation *forwardAnim = GetAnimation(animType);
   // we first check whether the reverse animation is in progress (and reverse it)
@@ -727,6 +728,7 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
     if (reverseAnim) reverseAnim->ResetAnimation();
     UpdateStates(animType, ANIM_PROCESS_NORMAL, ANIM_STATE_APPLIED);
   }
+  return true;
 }
 
 CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions /* = true */)

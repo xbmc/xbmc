@@ -89,6 +89,10 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
       SetSound(toast.withSound);
     }
     break;
+
+  case GUI_MSG_NOTIFY_TRACKER:
+    QueueAnimation(static_cast<ANIMATION_TYPE>(message.GetParam1()));
+    break;
   }
   return CGUIDialog::OnMessage(message);
 }
