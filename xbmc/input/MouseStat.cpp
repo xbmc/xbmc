@@ -22,6 +22,7 @@
 #include "input/Key.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
+#include "settings/AdvancedSettings.h"
 
 CMouseStat::CMouseStat()
 {
@@ -287,7 +288,7 @@ bool CMouseStat::CButtonState::InClickRange(int x, int y) const
 {
   int dx = x - m_x;
   int dy = y - m_y;
-  return (unsigned int)(dx*dx + dy*dy) <= click_confines*click_confines;
+  return (unsigned int)(dx*dx + dy*dy) <= g_advancedSettings.m_confines*g_advancedSettings.m_confines;
 }
 
 CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigned int time, int x, int y, bool down)

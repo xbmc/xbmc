@@ -344,6 +344,13 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_cpuTempCmd;
     std::string m_gpuTempCmd;
 
+    // Touchscreen allignment advanced settings
+    int m_xOffset;		// x axis offset of touch panel coordinate origin
+    int m_yOffset;		// y axis offset of touch panel coordinate origin
+    float m_xStretchFactor;	// x axis stretch factor
+    float m_yStretchFactor;	// y axis stretch factor
+    int m_confines; 		// click or touch confines setting
+
     /* PVR/TV related advanced settings */
     int m_iPVRTimeCorrection;     /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. defaults to 0. */
     int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */

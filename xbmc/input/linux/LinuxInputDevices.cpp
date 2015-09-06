@@ -96,6 +96,7 @@ typedef unsigned long kernel_ulong_t;
 #include "LinuxInputDevices.h"
 #include "input/MouseStat.h"
 #include "utils/log.h"
+#include "settings/AdvancedSettings.h"
 
 #ifndef BITS_PER_LONG
 #define BITS_PER_LONG        (sizeof(long) * 8)
@@ -635,13 +636,13 @@ bool CLinuxInputDevice::AbsEvent(const struct input_event& levt, XBMC_Event& dev
   switch (levt.code)
   {
   case ABS_X:
-    m_mouseX = levt.value;
+    m_mouseX = (int)((float)levt.value * g_advancedSettings.m_xStretchFactor) + g_advancedSettings.m_xOffset; // stretch and shift touch x coordinates
     break;
 
   case ABS_Y:
-    m_mouseY = levt.value;
+    m_mouseY = (int)((float)levt.value * g_advancedSettings.m_yStretchFactor) + g_advancedSettings.m_yOffset; // stretch and shift touch y coordinates
     break;
-  
+
   case ABS_MISC:
     remoteStatus = levt.value & 0xFF;
     break;
