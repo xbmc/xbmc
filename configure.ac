@@ -677,18 +677,6 @@ case $host in
 esac
 AC_SUBST([ARCH])
 
-case $host in
-  *-apple-darwin*)
-     check_sdl_arch=[`file $NATIVE_ROOT/lib/libSDL_image.dylib | awk '{print $NF}'`]
-     if test "x$check_sdl_arch" = "xi386" ; then
-       DARWIN_NATIVE_ARCH=-m32
-     elif test "x$check_sdl_arch" = "xx86_64" ; then
-       DARWIN_NATIVE_ARCH=-m64
-     fi
-     ;;
-esac
-AC_SUBST([DARWIN_NATIVE_ARCH])
-
 if test "$target_platform" = "target_android" ; then
   USE_ANDROID=1
   webserver_checkdepends=yes
