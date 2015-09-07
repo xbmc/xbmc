@@ -65,7 +65,8 @@
 
 #define MAX_TEXT_LENGTH 1024
 
-COMXVideo::COMXVideo() : m_video_codec_name("")
+COMXVideo::COMXVideo(CRenderManager& renderManager) : m_video_codec_name("")
+, m_renderManager(renderManager)
 {
   m_is_open           = false;
   m_extradata         = NULL;
@@ -252,7 +253,7 @@ bool COMXVideo::PortSettingsChanged()
 
   if(m_deinterlace)
   {
-    EINTERLACEMETHOD interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+    EINTERLACEMETHOD interlace_method = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
     bool advanced_deinterlace = (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF) &&
         port_image.format.video.nFrameWidth * port_image.format.video.nFrameHeight <= 576 * 720;
     bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;

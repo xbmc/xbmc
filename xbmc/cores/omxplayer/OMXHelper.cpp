@@ -109,7 +109,7 @@ bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer
 }
 
 bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, IDVDStreamPlayerVideo *m_VideoPlayerVideo, IDVDStreamPlayerAudio *m_VideoPlayerAudio,
-                     CCurrentStream m_CurrentAudio, CCurrentStream m_CurrentVideo, bool m_HasVideo, bool m_HasAudio)
+                     CCurrentStream m_CurrentAudio, CCurrentStream m_CurrentVideo, bool m_HasVideo, bool m_HasAudio, CRenderManager& m_renderManager)
 {
   bool reopen_stream = false;
   double now = CDVDClock::GetAbsoluteClock();
@@ -130,19 +130,19 @@ bool OMXDoProcessing(struct SOmxPlayerState &m_OmxPlayerState, int m_playSpeed, 
     bool audio_fifo_low = false, video_fifo_low = false, audio_fifo_high = false, video_fifo_high = false;
 
     if (m_OmxPlayerState.interlace_method == VS_INTERLACEMETHOD_MAX)
-      m_OmxPlayerState.interlace_method = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+      m_OmxPlayerState.interlace_method = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 
     // if deinterlace setting has changed, we should close and open video
     if (m_OmxPlayerState.current_deinterlace != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode ||
        (m_OmxPlayerState.current_deinterlace != VS_DEINTERLACEMODE_OFF &&
-        m_OmxPlayerState.interlace_method != g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)))
+        m_OmxPlayerState.interlace_method != m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)))
     {
       CLog::Log(LOGNOTICE, "%s - Reopen stream due to interlace change (%d,%d,%d,%d)", __FUNCTION__,
         m_OmxPlayerState.current_deinterlace, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode,
-        m_OmxPlayerState.interlace_method, g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod));
+        m_OmxPlayerState.interlace_method, m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod));
 
       m_OmxPlayerState.current_deinterlace = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_DeinterlaceMode;
-      m_OmxPlayerState.interlace_method    = g_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+      m_OmxPlayerState.interlace_method    = m_renderManager.AutoInterlaceMethod(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
       reopen_stream = true;
     }
 

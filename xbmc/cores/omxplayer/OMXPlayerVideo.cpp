@@ -39,7 +39,6 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "windowing/WindowingFactory.h"
-#include "DVDOverlayRenderer.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSettings.h"
@@ -70,11 +69,13 @@ public:
 
 OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
                                CDVDOverlayContainer* pOverlayContainer,
-                               CDVDMessageQueue& parent)
+                               CDVDMessageQueue& parent, CRenderManager& renderManager)
 : CThread("OMXPlayerVideo")
 , m_messageQueue("video")
 , m_codecname("")
 , m_messageParent(parent)
+, m_omxVideo(renderManager)
+, m_renderManager(renderManager)
 {
   m_av_clock              = av_clock;
   m_pOverlayContainer     = pOverlayContainer;
@@ -259,7 +260,7 @@ void OMXPlayerVideo::ProcessOverlays(double pts)
   for(it = overlays.begin(); it != overlays.end(); ++it)
   {
     double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
-    g_renderManager.AddOverlay(*it, pts2);
+    m_renderManager.AddOverlay(*it, pts2);
   }
 }
 
@@ -281,8 +282,8 @@ std::string OMXPlayerVideo::GetStereoMode()
 
 void OMXPlayerVideo::Output(double pts, bool bDropPacket)
 {
-  if (!g_renderManager.IsStarted()) {
-    CLog::Log(LOGINFO, "%s - renderer not started", __FUNCTION__);
+  if (!m_renderManager.IsConfigured()) {
+    CLog::Log(LOGINFO, "%s - renderer not configured", __FUNCTION__);
     return;
   }
 
@@ -300,7 +301,7 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   if (m_nextOverlay != DVD_NOPTS_VALUE && media_pts != 0.0 && media_pts + preroll <= m_nextOverlay)
     return;
 
-  int buffer = g_renderManager.WaitForBuffer(CThread::m_bStop);
+  int buffer = m_renderManager.WaitForBuffer(CThread::m_bStop);
   if (buffer < 0)
     return;
 
@@ -312,7 +313,7 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   ProcessOverlays(media_pts + preroll);
 
   time += m_av_clock->GetAbsoluteClock();
-  g_renderManager.FlipPage(CThread::m_bStop, time/DVD_TIME_BASE);
+  m_renderManager.FlipPage(CThread::m_bStop, time/DVD_TIME_BASE);
 }
 
 void OMXPlayerVideo::Process()
@@ -478,10 +479,10 @@ void OMXPlayerVideo::Process()
         double pts = pPacket->pts;
 
         if (dts != DVD_NOPTS_VALUE)
-          dts += m_iVideoDelay - DVD_SEC_TO_TIME(g_renderManager.GetDisplayLatency());
+          dts += m_iVideoDelay - DVD_SEC_TO_TIME(m_renderManager.GetDisplayLatency());
 
         if (pts != DVD_NOPTS_VALUE)
-          pts += m_iVideoDelay - DVD_SEC_TO_TIME(g_renderManager.GetDisplayLatency());
+          pts += m_iVideoDelay - DVD_SEC_TO_TIME(m_renderManager.GetDisplayLatency());
 
         m_omxVideo.Decode(pPacket->pData, pPacket->iSize, dts, m_hints.ptsinvalid ? DVD_NOPTS_VALUE : pts, settings_changed);
 
@@ -789,9 +790,16 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   CLog::Log(LOGDEBUG,"%s - change configuration. video:%dx%d. framerate: %4.2f. %dx%d format: BYPASS",
       __FUNCTION__, video_width, video_height, m_fFrameRate, iDisplayWidth, iDisplayHeight);
 
-  if(!g_renderManager.Configure(width, height,
-        iDisplayWidth, iDisplayHeight, m_fFrameRate, flags, format, 0,
-        m_hints.orientation, 3))
+  DVDVideoPicture picture;
+  memset(&picture, 0, sizeof(DVDVideoPicture));
+
+  picture.iWidth = width;
+  picture.iHeight = height;
+  picture.iDisplayWidth = iDisplayWidth;
+  picture.iDisplayHeight = iDisplayHeight;
+  picture.format = format;
+
+  if(!m_renderManager.Configure(picture, m_fFrameRate, flags, m_hints.orientation, 3))
   {
     CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
     return;
