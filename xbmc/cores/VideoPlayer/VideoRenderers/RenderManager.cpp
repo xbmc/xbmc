@@ -44,7 +44,7 @@
 #include "HwDecRender/RendererVDA.h"
 #endif
 #elif defined(HAS_MMAL)
-  #include "MMALRenderer.h"
+  #include "HwDecRender/MMALRenderer.h"
 #elif HAS_GLES == 2
   #include "LinuxRendererGLES.h"
 #elif defined(HAS_DX)

@@ -261,8 +261,9 @@ CMMALRenderer::~CMMALRenderer()
   UnInit();
 }
 
-void CMMALRenderer::AddProcessor(CMMALVideoBuffer *buffer, int index)
+void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
 {
+  CMMALVideoBuffer *buffer = pic.MMALBuffer;
 #if defined(MMAL_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::%s - %p (%p) %i", CLASSNAME, __func__, buffer, buffer->mmal_buffer, index);
 #endif
@@ -527,7 +528,7 @@ void CMMALRenderer::FlipPage(int source)
   m_iYV12RenderBuffer = source;
 }
 
-unsigned int CMMALRenderer::PreInit()
+void CMMALRenderer::PreInit()
 {
   CSingleLock lock(m_sharedSection);
   m_bConfigured = false;
@@ -549,8 +550,6 @@ unsigned int CMMALRenderer::PreInit()
   memset(m_buffers, 0, sizeof m_buffers);
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = NUM_BUFFERS;
-
-  return 0;
 }
 
 void CMMALRenderer::ReleaseBuffers()
