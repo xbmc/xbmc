@@ -521,7 +521,7 @@ bool CPVRTimers::InstantTimer(const CPVRChannelPtr &channel)
   {
     newTimer.reset(new CPVRTimerInfoTag);
     /* set the timer data */
-    newTimer->m_iClientIndex      = -1;
+    newTimer->m_iClientIndex      = PVR_TIMER_NO_CLIENT_INDEX;
     newTimer->m_strTitle          = channel->ChannelName();
     newTimer->m_strSummary        = g_localizeStrings.Get(19056);
     newTimer->m_iChannelNumber    = channel->ChannelNumber();
