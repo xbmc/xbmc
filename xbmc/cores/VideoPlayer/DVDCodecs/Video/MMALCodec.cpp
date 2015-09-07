@@ -255,11 +255,14 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
     if (buffer->length > 0)
     {
       assert(!(buffer->flags & MMAL_BUFFER_HEADER_FLAG_DECODEONLY));
+      CMMALVideoBuffer *omvb = NULL;
+      if (!g_advancedSettings.m_omxDecodeStartWithValidFrame || !(buffer->flags & MMAL_BUFFER_HEADER_FLAG_CORRUPTED))
+        omvb = new CMMALVideoBuffer(this);
+      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+        CLog::Log(LOGDEBUG, "%s::%s - %p (%p) buffer_size(%u) dts:%.3f pts:%.3f flags:%x:%x",
+          CLASSNAME, __func__, buffer, omvb, buffer->length, buffer->dts*1e-6, buffer->pts*1e-6, buffer->flags, buffer->type->video.flags);
+      if (omvb)
       {
-        CMMALVideoBuffer *omvb = new CMMALVideoBuffer(this);
-        if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-          CLog::Log(LOGDEBUG, "%s::%s - %p (%p) buffer_size(%u) dts:%.3f pts:%.3f flags:%x:%x",
-            CLASSNAME, __func__, buffer, omvb, buffer->length, buffer->dts*1e-6, buffer->pts*1e-6, buffer->flags, buffer->type->video.flags);
         omvb->mmal_buffer = buffer;
         buffer->user_data = (void *)omvb;
         omvb->width = m_decoded_width;
@@ -521,7 +524,6 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_hints = hints;
   m_vout_input_pool = (MMAL_POOL_T *)options.m_opaque_pointer;
   MMAL_STATUS_T status;
-  MMAL_PARAMETER_BOOLEAN_T error_concealment;
 
   m_decoded_width  = hints.width;
   m_decoded_height = hints.height;
@@ -630,10 +632,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   }
   m_dec_input->format->flags |= MMAL_ES_FORMAT_FLAG_FRAMED;
 
-  error_concealment.hdr.id = MMAL_PARAMETER_VIDEO_DECODE_ERROR_CONCEALMENT;
-  error_concealment.hdr.size = sizeof(MMAL_PARAMETER_BOOLEAN_T);
-  error_concealment.enable = g_advancedSettings.m_omxDecodeStartWithValidFrame;
-  status = mmal_port_parameter_set(m_dec_input, &error_concealment.hdr);
+  status = mmal_port_parameter_set_boolean(m_dec_input, MMAL_PARAMETER_VIDEO_DECODE_ERROR_CONCEALMENT, MMAL_FALSE);
   if (status != MMAL_SUCCESS)
     CLog::Log(LOGERROR, "%s::%s Failed to disable error concealment on %s (status=%x %s)", CLASSNAME, __func__, m_dec_input->name, status, mmal_status_to_string(status));
 
