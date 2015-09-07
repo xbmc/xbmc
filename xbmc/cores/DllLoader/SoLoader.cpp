@@ -72,7 +72,6 @@ bool SoLoader::Load()
 
 void SoLoader::Unload()
 {
-  CLog::Log(LOGDEBUG, "Unloading: %s\n", GetName());
 
   if (m_soHandle)
   {
