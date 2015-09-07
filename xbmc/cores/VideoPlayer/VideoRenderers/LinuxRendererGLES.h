@@ -138,7 +138,7 @@ public:
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual void         FlipPage(int source);
-  virtual unsigned int PreInit();
+  virtual void         PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual void         Flush();
