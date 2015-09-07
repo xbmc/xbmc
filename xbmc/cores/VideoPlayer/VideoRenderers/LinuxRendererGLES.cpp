@@ -732,7 +732,7 @@ void CLinuxRendererGLES::FlipPage(int source)
   return;
 }
 
-unsigned int CLinuxRendererGLES::PreInit()
+void CLinuxRendererGLES::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
@@ -768,8 +768,6 @@ unsigned int CLinuxRendererGLES::PreInit()
 
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
-
-  return true;
 }
 
 void CLinuxRendererGLES::UpdateVideoFilter()
