@@ -537,6 +537,8 @@ int CDarwinUtils::BatteryLevel(void)
 
     batteryLevel = (double)curLevel/(double)maxLevel;
   }
+  CFRelease(powerSources);
+  CFRelease(powerSourceInfo);
 #endif
   return batteryLevel * 100;  
 }
@@ -547,7 +549,7 @@ void CDarwinUtils::SetScheduling(int message)
   struct sched_param param;
   pthread_t this_pthread_self = pthread_self();
 
-  int32_t result = pthread_getschedparam(this_pthread_self, &policy, &param );
+  pthread_getschedparam(this_pthread_self, &policy, &param );
 
   policy = SCHED_OTHER;
   thread_extended_policy_data_t theFixedPolicy={true};
@@ -558,12 +560,12 @@ void CDarwinUtils::SetScheduling(int message)
     theFixedPolicy.timeshare = false;
   }
 
-  result = thread_policy_set(pthread_mach_thread_np(this_pthread_self),
+  thread_policy_set(pthread_mach_thread_np(this_pthread_self),
     THREAD_EXTENDED_POLICY, 
     (thread_policy_t)&theFixedPolicy,
     THREAD_EXTENDED_POLICY_COUNT);
 
-  result = pthread_setschedparam(this_pthread_self, policy, &param );
+  pthread_setschedparam(this_pthread_self, policy, &param );
 }
 
 bool CFStringRefToStringWithEncoding(CFStringRef source, std::string &destination, CFStringEncoding encoding)
