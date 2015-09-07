@@ -48,6 +48,7 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "addons/RepositoryUpdater.h"
 #include "addons/Skin.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/AnnouncementManager.h"
@@ -1801,7 +1802,7 @@ int CBuiltins::Execute(const std::string& execString)
   }
   else if (execute == "updateaddonrepos")
   {
-    CAddonInstaller::GetInstance().UpdateRepos(true);
+    CRepositoryUpdater::GetInstance().CheckForUpdates();
   }
   else if (execute == "updatelocaladdons")
   {

@@ -59,7 +59,6 @@ struct find_map : public std::binary_function<CAddonInstaller::JobMap::value_typ
 };
 
 CAddonInstaller::CAddonInstaller()
-  : m_repoUpdateJob(nullptr)
 { }
 
 CAddonInstaller::~CAddonInstaller()
@@ -77,22 +76,12 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     CAddonMgr::GetInstance().FindAddons();
 
   CSingleLock lock(m_critSection);
-  if (strncmp(job->GetType(), "repoupdate", 10) == 0)
-  {
-    // repo job finished
-    m_repoUpdateDone.Set();
-    m_repoUpdateJob = nullptr;
-    lock.Leave();
-  }
-  else
-  {
-    // download job
-    JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
-    if (i != m_downloadJobs.end())
-      m_downloadJobs.erase(i);
-    lock.Leave();
-    PrunePackageCache();
-  }
+
+  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+  if (i != m_downloadJobs.end())
+    m_downloadJobs.erase(i);
+  lock.Leave();
+  PrunePackageCache();
 
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
   g_windowManager.SendThreadMessage(msg);
@@ -354,94 +343,6 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
   return true;
 }
 
-CDateTime CAddonInstaller::LastRepoUpdate() const
-{
-  CDateTime update;
-  CAddonDatabase database;
-  if (!database.Open())
-    return update;
-
-  VECADDONS addons;
-  CAddonMgr::GetInstance().GetAddons(ADDON_REPOSITORY, addons);
-  for (unsigned int i = 0; i < addons.size(); i++)
-  {
-    CDateTime lastUpdate = database.GetRepoTimestamp(addons[i]->ID());
-    if (lastUpdate.IsValid() && lastUpdate > update)
-      update = lastUpdate;
-  }
-
-  return update;
-}
-
-void CAddonInstaller::UpdateRepos(bool force /*= false*/, bool wait /*= false*/, bool showProgress /*= false*/)
-{
-  CSingleLock lock(m_critSection);
-  if (m_repoUpdateJob != nullptr)
-  {
-    //Hook up dialog to running job
-    if (showProgress && !m_repoUpdateJob->HasProgressIndicator())
-    {
-      auto* dialog = static_cast<CGUIDialogExtendedProgressBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
-      if (dialog)
-        m_repoUpdateJob->SetProgressIndicators(dialog->GetHandle(g_localizeStrings.Get(24092)), nullptr);
-    }
-
-    if (wait)
-    {
-      // wait for our job to complete
-      lock.Leave();
-      CLog::Log(LOGDEBUG, "%s - waiting for repository update job to finish...", __FUNCTION__);
-      m_repoUpdateDone.Wait();
-    }
-    return;
-  }
-
-  // don't run repo update jobs while on the login screen which runs under the master profile
-  if(!force && (g_windowManager.GetActiveWindow() & WINDOW_ID_MASK) == WINDOW_LOGIN_SCREEN)
-    return;
-
-  if (!force && m_repoUpdateWatch.IsRunning() && m_repoUpdateWatch.GetElapsedSeconds() < 600)
-    return;
-
-  CAddonDatabase database;
-  if (!database.Open())
-    return;
-
-  m_repoUpdateWatch.StartZero();
-
-  VECADDONS addons;
-  if (CAddonMgr::GetInstance().GetAddons(ADDON_REPOSITORY, addons))
-  {
-    for (const auto& repo : addons)
-    {
-      CDateTime lastUpdate = database.GetRepoTimestamp(repo->ID());
-      if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0, 24, 0, 0) < CDateTime::GetCurrentDateTime()
-        || repo->Version() != database.GetRepoVersion(repo->ID()))
-      {
-        CLog::Log(LOGDEBUG, "Checking repositories for updates (triggered by %s)", repo->Name().c_str());
-
-        m_repoUpdateJob = new CRepositoryUpdateJob(addons);
-        if (showProgress)
-        {
-          auto* dialog = static_cast<CGUIDialogExtendedProgressBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
-          if (dialog)
-            m_repoUpdateJob->SetProgressIndicators(dialog->GetHandle(g_localizeStrings.Get(24092)), nullptr);
-        }
-        CJobManager::GetInstance().AddJob(m_repoUpdateJob, this);
-        if (wait)
-        {
-          // wait for our job to complete
-          lock.Leave();
-          CLog::Log(LOGDEBUG, "%s - waiting for this repository update job to finish...", __FUNCTION__);
-          m_repoUpdateDone.Wait();
-        }
-
-        return;
-      }
-    }
-  }
-}
-
 bool CAddonInstaller::HasJob(const std::string& ID) const
 {
   CSingleLock lock(m_critSection);
@@ -500,6 +401,20 @@ void CAddonInstaller::PrunePackageCache()
   // clean up our mess
   for (std::map<std::string,CFileItemList*>::iterator it = packs.begin(); it != packs.end(); ++it)
     delete it->second;
+}
+
+void CAddonInstaller::InstallUpdates()
+{
+  VECADDONS addons;
+  if (CAddonMgr::GetInstance().GetAllOutdatedAddons(addons, true))
+  {
+    for (const auto& addon : addons)
+    {
+      std::string referer = StringUtils::Format("Referer=%s-%s.zip",
+          addon->ID().c_str(), addon->Version().asString().c_str());
+      CAddonInstaller::GetInstance().Install(addon->ID(), true, referer);
+    }
+  }
 }
 
 int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result)

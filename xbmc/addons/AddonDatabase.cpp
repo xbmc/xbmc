@@ -464,53 +464,33 @@ int CAddonDatabase::GetRepoChecksum(const std::string& id, std::string& checksum
   return -1;
 }
 
-CDateTime CAddonDatabase::GetRepoTimestamp(const std::string& id)
+std::pair<CDateTime, ADDON::AddonVersion> CAddonDatabase::LastChecked(const std::string& id)
 {
   CDateTime date;
+  AddonVersion version("0.0.0");
   try
   {
-    if (NULL == m_pDB.get()) return date;
-    if (NULL == m_pDS.get()) return date;
-
-    std::string strSQL = PrepareSQL("select * from repo where addonID='%s'",id.c_str());
-    m_pDS->query(strSQL.c_str());
-    if (!m_pDS->eof())
+    if (m_pDB.get() != nullptr && m_pDS.get() != nullptr)
     {
-      date.SetFromDBDateTime(m_pDS->fv("lastcheck").get_asString());
-      return date;
+      std::string strSQL = PrepareSQL("select * from repo where addonID='%s'",id.c_str());
+      m_pDS->query(strSQL.c_str());
+      if (!m_pDS->eof())
+      {
+        date.SetFromDBDateTime(m_pDS->fv("lastcheck").get_asString());
+        version = AddonVersion(m_pDS->fv("version").get_asString());
+      }
     }
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on repo '%s'", __FUNCTION__, id.c_str());
   }
-  return date;
+  return std::make_pair(date, version);
 }
 
 
-AddonVersion CAddonDatabase::GetRepoVersion(const std::string& id)
-{
-  AddonVersion version("0.0.0");
-  try
-  {
-    if (NULL == m_pDB.get()) return version;
-    if (NULL == m_pDS2.get()) return version;
-
-    std::string strSQL = PrepareSQL("select * from repo where addonID='%s'",id.c_str());
-    m_pDS->query(strSQL.c_str());
-    if (!m_pDS->eof())
-    {
-      return AddonVersion(m_pDS->fv("version").get_asString());
-    }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, id.c_str());
-  }
-  return version;
-}
-
-bool CAddonDatabase::SetRepoTimestamp(const std::string& id, const std::string& time, const ADDON::AddonVersion& version)
+bool CAddonDatabase::SetLastChecked(const std::string& id,
+    const ADDON::AddonVersion& version, const std::string& time)
 {
   try
   {
@@ -530,42 +510,29 @@ bool CAddonDatabase::SetRepoTimestamp(const std::string& id, const std::string& 
   return false;
 }
 
-bool CAddonDatabase::GetRepository(int id, VECADDONS& addons)
+bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addons)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    std::string strSQL = PrepareSQL("select * from addonlinkrepo where idRepo=%i",id);
-    m_pDS->query(strSQL.c_str());
+    std::string query = PrepareSQL("select id from repo where addonID='%s'"
+        " AND checksum != '' and lastcheck != ''", id.c_str());
+    m_pDS->query(query.c_str());
+    if (m_pDS->eof())
+      return false;
+
+    query = PrepareSQL("select * from addonlinkrepo where idRepo=%i", m_pDS->fv(0).get_asInt());
+    m_pDS->query(query.c_str());
     while (!m_pDS->eof())
     {
       AddonPtr addon;
-      if (GetAddon(m_pDS->fv("idAddon").get_asInt(),addon))
+      if (GetAddon(m_pDS->fv("idAddon").get_asInt(), addon))
         addons.push_back(addon);
       m_pDS->next();
     }
     return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on repo %i", __FUNCTION__, id);
-  }
-  return false;
-}
-
-bool CAddonDatabase::GetRepository(const std::string& id, VECADDONS& addons)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    std::string strSQL = PrepareSQL("select id from repo where addonID='%s'",id.c_str());
-    m_pDS->query(strSQL.c_str());
-    if (!m_pDS->eof())
-      return GetRepository(m_pDS->fv(0).get_asInt(),addons);
   }
   catch (...)
   {

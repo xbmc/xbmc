@@ -11959,7 +11959,13 @@ msgctxt "#21336"
 msgid "Connecting to: %s"
 msgstr ""
 
-#empty strings from id 21337 to 21358
+#. Used in the add-on browser under "Last updated" when a repository has never been updated
+#: xbmc/addons/RepositoryUpdater.cpp
+msgctxt "#21337"
+msgid "Never"
+msgstr ""
+
+#empty strings from id 21338 to 21358
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"
@@ -13418,9 +13424,9 @@ msgctxt "#24060"
 msgid "Would you like to disable this add-on?"
 msgstr ""
 
-#: xbmc/addons/Repository.cpp
+#: xbmc/addons/RepositoryUpdater.cpp
 msgctxt "#24061"
-msgid "Add-on update available!"
+msgid "Add-on updates available"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
@@ -13456,6 +13462,7 @@ msgctxt "#24067"
 msgid "Currently downloading add-ons"
 msgstr ""
 
+#: xbmc/addons/RepositoryUpdater.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24068"
 msgid "Update available"
@@ -13881,7 +13888,13 @@ msgctxt "#24147"
 msgid "Failed to scan %s: %s"
 msgstr ""
 
-#empty strings from id 24148 to 24991
+#empty strings from id 24148 to 24990
+
+#. Used as error message in add-on browser when add-on repository data could not be downloaded
+#: xbmc/filesystem/AddonsDirectory.cpp
+msgctxt "#24991"
+msgid "Could not connect to repository."
+msgstr ""
 
 #: xbmc/addons/CGUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp

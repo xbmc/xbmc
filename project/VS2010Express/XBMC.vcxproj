@@ -200,6 +200,7 @@
     <ClCompile Include="..\..\xbmc\addons\LanguageResource.cpp" />
     <ClCompile Include="..\..\xbmc\addons\PluginSource.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\RepositoryUpdater.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Service.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Skin.cpp" />
     <ClCompile Include="..\..\xbmc\addons\UISoundsResource.cpp" />
@@ -1753,6 +1754,7 @@
     <ClInclude Include="..\..\xbmc\addons\GUIWindowAddonBrowser.h" />
     <ClInclude Include="..\..\xbmc\addons\PluginSource.h" />
     <ClInclude Include="..\..\xbmc\addons\Repository.h" />
+    <ClInclude Include="..\..\xbmc\addons\RepositoryUpdater.h" />
     <ClInclude Include="..\..\xbmc\addons\Service.h" />
     <ClInclude Include="..\..\xbmc\addons\Skin.h" />
     <ClInclude Include="..\..\xbmc\Application.h" />

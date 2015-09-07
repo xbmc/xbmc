@@ -90,25 +90,13 @@ public:
    */
   bool CheckDependencies(const ADDON::AddonPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database = NULL);
 
-  /*! \brief Update all repositories (if needed)
-   Runs through all available repositories and queues an update of them if they
-   need it (according to the set timeouts) or if forced.  Optionally busy wait
-   until the repository updates are complete.
-   \param force whether we should run an update regardless of the normal update cycle. Defaults to false.
-   \param wait whether we should busy wait for the updates to be performed. Defaults to false.
-   */
-
   /*! \brief Check if an installation job for a given add-on is already queued up
    *  \param ID The ID of the add-on
    *  \return true if a job exists, false otherwise
    */
   bool HasJob(const std::string& ID) const;
 
-  /*! \brief Fetch the last repository update time.
-   \return the last time a repository was updated.
-   */
-  CDateTime LastRepoUpdate() const;
-  void UpdateRepos(bool force = false, bool wait = false, bool showProgress = false);
+  void InstallUpdates();
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
@@ -160,9 +148,6 @@ private:
 
   CCriticalSection m_critSection;
   JobMap m_downloadJobs;
-  CStopWatch m_repoUpdateWatch;   ///< repository updates are done based on this counter
-  ADDON::CRepositoryUpdateJob* m_repoUpdateJob;
-  CEvent m_repoUpdateDone;        ///< event set when the repository updates are complete
 };
 
 class CAddonInstallJob : public CFileOperationJob
