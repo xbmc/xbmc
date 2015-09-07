@@ -28,7 +28,7 @@ class CUPnPSettings : public ISettingsHandler
 public:
   static CUPnPSettings& GetInstance();
   
-  virtual void OnSettingsUnloaded();
+  virtual void OnSettingsUnloaded() override;
 
   bool Load(const std::string &file);
   bool Save(const std::string &file) const;

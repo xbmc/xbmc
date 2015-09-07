@@ -57,10 +57,10 @@ public:
   virtual ~CSettingsManager();
 
   // implementation of ISettingCreator
-  virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const;
+  virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const override;
 
   // implementation of ISettingControlCreator
-  virtual ISettingControl* CreateControl(const std::string &controlType) const;
+  virtual ISettingControl* CreateControl(const std::string &controlType) const override;
 
   /*!
    \brief Initializes the settings manager using the setting definitions
@@ -86,7 +86,7 @@ public:
    \param root XML node
    \return True if the setting values were successfully saved, false otherwise
    */
-  virtual bool Save(TiXmlNode *root) const;
+  virtual bool Save(TiXmlNode *root) const override;
   /*!
    \brief Unloads the previously loaded setting values.
 
@@ -396,22 +396,22 @@ public:
 
 private:
   // implementation of ISettingCallback
-  virtual bool OnSettingChanging(const CSetting *setting);
-  virtual void OnSettingChanged(const CSetting *setting);
-  virtual void OnSettingAction(const CSetting *setting);
-  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode);
-  virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName);
+  virtual bool OnSettingChanging(const CSetting *setting) override;
+  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual void OnSettingAction(const CSetting *setting) override;
+  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName) override;
 
   // implementation of ISettingsHandler
-  virtual bool OnSettingsLoading();
-  virtual void OnSettingsLoaded();
-  virtual void OnSettingsUnloaded();
-  virtual bool OnSettingsSaving() const;
-  virtual void OnSettingsSaved() const;
-  virtual void OnSettingsCleared();
+  virtual bool OnSettingsLoading() override;
+  virtual void OnSettingsLoaded() override;
+  virtual void OnSettingsUnloaded() override;
+  virtual bool OnSettingsSaving() const override;
+  virtual void OnSettingsSaved() const override;
+  virtual void OnSettingsCleared() override;
 
   // implementation of ISubSettings
-  virtual bool Load(const TiXmlNode *settings);
+  virtual bool Load(const TiXmlNode *settings) override;
 
   bool Serialize(TiXmlNode *parent) const;
   bool Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, CSetting*> *loadedSettings = NULL);

@@ -79,7 +79,7 @@ public:
    */
   CAction ConvertActionCommandToAction(const std::string &command, const std::string &parameter);
   std::string NormalizeStereoMode(const std::string &mode);
-  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingChanged(const CSetting *setting) override;
   virtual bool OnMessage(CGUIMessage &message);
   /*!
    * @brief Handle 3D specific cActions

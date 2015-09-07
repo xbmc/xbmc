@@ -223,7 +223,7 @@ public:
    */
   int ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params);
 
-  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingChanged(const CSetting *setting) override;
 
 private:
 

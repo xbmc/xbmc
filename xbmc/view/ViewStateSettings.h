@@ -36,9 +36,9 @@ class CViewStateSettings : public ISubSettings
 public:
   static CViewStateSettings& GetInstance();
 
-  virtual bool Load(const TiXmlNode *settings);
-  virtual bool Save(TiXmlNode *settings) const;
-  virtual void Clear();
+  virtual bool Load(const TiXmlNode *settings) override;
+  virtual bool Save(TiXmlNode *settings) const override;
+  virtual void Clear() override;
 
   const CViewState* Get(const std::string &viewState) const;
   CViewState* Get(const std::string &viewState);

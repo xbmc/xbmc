@@ -209,8 +209,8 @@ namespace PERIPHERALS
 #endif
     }
     
-    virtual void OnSettingChanged(const CSetting *setting);
-    virtual void OnSettingAction(const CSetting *setting);
+    virtual void OnSettingChanged(const CSetting *setting) override;
+    virtual void OnSettingAction(const CSetting *setting) override;
 
     virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
     virtual int GetMessageMask() override;
