@@ -294,7 +294,7 @@ bool CGUIWindowPVRTimers::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON 
 
     bool bDeleteSchedule(false);
     if (ConfirmDeleteTimer(item, bDeleteSchedule))
-      g_PVRTimers->DeleteTimer(*item, false, bDeleteSchedule);
+      CPVRTimers::DeleteTimer(*item, false, bDeleteSchedule);
   }
 
   return bReturn;
@@ -361,7 +361,7 @@ bool CGUIWindowPVRTimers::ActionDeleteTimer(CFileItem *item)
     return false;
 
   /* delete the timer */
-  bool bReturn = g_PVRTimers->DeleteTimer(*item, false, bDeleteSchedule);
+  bool bReturn = CPVRTimers::DeleteTimer(*item, false, bDeleteSchedule);
 
   if (bReturn && (m_vecItems->GetObjectCount() == 0))
   {
