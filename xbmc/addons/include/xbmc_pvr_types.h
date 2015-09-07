@@ -523,7 +523,7 @@ extern "C" {
     int          (__cdecl* GetTimersAmount)(void);
     PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE);
     PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER&);
-    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool, bool);
+    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool);
     PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER&);
     bool         (__cdecl* OpenLiveStream)(const PVR_CHANNEL&);
     void         (__cdecl* CloseLiveStream)(void);
