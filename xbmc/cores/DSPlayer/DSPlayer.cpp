@@ -390,12 +390,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   }
 
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
-  {
-    CLog::Log(LOGDEBUG, "%s - Kodi is in Fullscreen-Exclusive mode playback will be stopped", __FUNCTION__);
-
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(90021), g_localizeStrings.Get(90022), 6000L, false);
-    return false;
-  }
+    g_Windowing.SetWindowedForMadvr();
 
   CLog::Log(LOGNOTICE, "%s - DSPlayer: Opening: %s", __FUNCTION__, file.GetPath().c_str());
 

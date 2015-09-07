@@ -302,6 +302,31 @@ inline void DXWait(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
   SAFE_RELEASE(wait);
 }
 
+#ifdef HAS_DS_PLAYER
+void CRenderSystemDX::SetWindowedForMadvr()
+{
+  if (!m_bRenderCreated)
+    return;
+
+  HRESULT hr;
+  BOOL bFullScreen;
+  m_pSwapChain->GetFullscreenState(&bFullScreen, NULL);
+
+  if (!!bFullScreen)
+  {
+    CLog::Log(LOGDEBUG, "%s - Switching swap chain to windowed mode.", __FUNCTION__);
+    hr = m_pSwapChain->SetFullscreenState(false, NULL);
+    m_bResizeRequred = S_OK == hr;
+
+    if (S_OK != hr)
+      CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
+    // wait until switching screen state is done
+    DXWait(m_pD3DDev, m_pImdContext);
+    return;
+  }
+}
+#endif
+
 void CRenderSystemDX::SetFullScreenInternal()
 {
   if (!m_bRenderCreated)

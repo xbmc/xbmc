@@ -97,6 +97,9 @@ public:
   bool                    Interlaced()         { return m_interlaced; }
   int                     GetBackbufferCount() const { return 2; }
   void                    SetAlphaBlendEnable(bool enable);
+#ifdef HAS_DS_PLAYER
+  void                    SetWindowedForMadvr();
+#endif
 
   /*!
    \brief Register as a dependent of the DirectX Render System
