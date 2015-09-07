@@ -21,14 +21,13 @@
  */
 
 #include "guilib/GraphicContext.h"
-#include "RenderFlags.h"
-#include "RenderFormats.h"
-#include "BaseRenderer.h"
-#include "RenderCapture.h"
+#include "../RenderFlags.h"
+#include "../RenderFormats.h"
+#include "../BaseRenderer.h"
+#include "../RenderCapture.h"
 #include "settings/VideoSettings.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "guilib/Geometry.h"
-#include "BaseRenderer.h"
 
 #include <interface/mmal/mmal.h>
 #include <interface/mmal/util/mmal_util.h>
@@ -76,14 +75,15 @@ public:
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual void         ReleaseBuffer(int idx);
   virtual void         FlipPage(int source);
-  virtual unsigned int PreInit();
+  virtual void         PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual void         Flush();
   virtual bool         IsConfigured() { return m_bConfigured; }
-  virtual void         AddProcessor(CMMALVideoBuffer *buffer, int index);
+  virtual void         AddVideoPictureHW(DVDVideoPicture& pic, int index);
   virtual CRenderInfo GetRenderInfo();
 
+  virtual bool         SupportsMultiPassRendering() { return false; };
   virtual bool         Supports(ERENDERFEATURE feature);
   virtual bool         Supports(EDEINTERLACEMODE mode);
   virtual bool         Supports(EINTERLACEMETHOD method);
