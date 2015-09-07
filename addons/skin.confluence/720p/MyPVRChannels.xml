@@ -82,6 +82,19 @@
 				<visible>Player.HasVideo</visible>
 				<animation effect="slide" start="0,0" end="-2000,0" time="0">WindowClose</animation>
 			</control>
+			<control type="button" id="9901">
+				<description>Overlay button to go to fullscreen Playback</description>
+				<left>0</left>
+				<top>0</top>
+				<width>690</width>
+				<height>400</height>
+				<onleft>70</onleft>
+				<onright>100</onright>
+				<texturefocus border="5" colordiffuse="AAFFFFFF">button-focus.png</texturefocus>
+				<include>ButtonCommonValues</include>
+				<onclick>fullscreen</onclick>
+				<visible>Player.HasVideo</visible>
+			</control>
 			<control type="image">
 				<left>1</left>
 				<top>1</top>
@@ -393,7 +406,7 @@
 				<textureslidernib>ScrollBarNib.png</textureslidernib>
 				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
 				<onleft>50</onleft>
-				<onright>100</onright>
+				<onright>9901</onright>
 				<showonepage>false</showonepage>
 				<orientation>vertical</orientation>
 			</control>

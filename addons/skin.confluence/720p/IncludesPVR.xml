@@ -97,7 +97,7 @@
 					<description>Channels</description>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
-					<label>19019</label>
+					<label>$LOCALIZE[19019]: $INFO[Control.GetLabel(29)]</label>
 					<onclick condition="Window.IsActive(TVChannels) | Window.IsActive(RadioChannels)">NextChannelGroup</onclick>
 					<onclick condition="IsEmpty(Window.Property(IsRadio))">ActivateWindow(TVChannels)</onclick>
 					<onclick condition="!IsEmpty(Window.Property(IsRadio))">ActivateWindow(RadioChannels)</onclick>
