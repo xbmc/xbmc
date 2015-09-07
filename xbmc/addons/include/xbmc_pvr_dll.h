@@ -373,12 +373,10 @@ extern "C"
    * Delete a timer on the backend.
    * @param timer The timer to delete.
    * @param bForceDelete Set to true to delete a timer that is currently recording a program.
-   * @param bDeleteScheduled For repeating timers, set to true to not only delete the repeating timer itself, but also all
-            timers scheduled by the repeating timer. For non-repeating timers, this parameter will be ignored.
    * @return PVR_ERROR_NO_ERROR if the timer has been deleted successfully.
    * @remarks Required if bSupportsTimers is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
-  PVR_ERROR DeleteTimer(const PVR_TIMER& timer, bool bForceDelete, bool bDeleteScheduled);
+  PVR_ERROR DeleteTimer(const PVR_TIMER& timer, bool bForceDelete);
 
   /*!
    * Update the timer information on the backend.
