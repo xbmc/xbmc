@@ -1297,7 +1297,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int iId)
     if (langTag)
       strncpy(stream->language, langTag->value, 3);
 
-    if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
+    if( stream->type != STREAM_NONE && pStream->codec->extradata && pStream->codec->extradata_size > 0 )
     {
       stream->ExtraSize = pStream->codec->extradata_size;
       stream->ExtraData = new uint8_t[pStream->codec->extradata_size];
