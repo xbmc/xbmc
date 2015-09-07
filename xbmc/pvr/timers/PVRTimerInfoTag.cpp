@@ -527,16 +527,16 @@ bool CPVRTimerInfoTag::AddToClient(void) const
   return true;
 }
 
-bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */ , bool bDeleteSchedule /* = false */ ) const
+bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
 {
-  PVR_ERROR error = g_PVRClients->DeleteTimer(*this, bForce, bDeleteSchedule);
+  PVR_ERROR error = g_PVRClients->DeleteTimer(*this, bForce);
   if (error == PVR_ERROR_RECORDING_RUNNING)
   {
     // recording running. ask the user if it should be deleted anyway
     if (HELPERS::ShowYesNoDialogText(CVariant{122}, CVariant{19122}) != DialogResponse::YES)
       return false;
 
-    error = g_PVRClients->DeleteTimer(*this, true, bDeleteSchedule);
+    error = g_PVRClients->DeleteTimer(*this, true);
   }
 
   if (error != PVR_ERROR_NO_ERROR)

@@ -196,7 +196,7 @@ namespace PVR
 
     /* Client control functions */
     bool AddToClient() const;
-    bool DeleteFromClient(bool bForce = false, bool bDeleteSchedule = false) const;
+    bool DeleteFromClient(bool bForce = false) const;
     bool RenameOnClient(const std::string &strNewName);
     bool UpdateOnClient();
 
