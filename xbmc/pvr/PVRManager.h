@@ -119,8 +119,8 @@ namespace PVR
      */
     static CPVRManager &GetInstance();
 
-    virtual void OnSettingChanged(const CSetting *setting);
-    virtual void OnSettingAction(const CSetting *setting);
+    virtual void OnSettingChanged(const CSetting *setting) override;
+    virtual void OnSettingAction(const CSetting *setting) override;
 
     /*!
      * @brief Get the channel groups container.

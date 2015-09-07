@@ -33,8 +33,8 @@ public:
 
   static std::string GetSourcesFile();
   
-  virtual void OnSettingsLoaded();
-  virtual void OnSettingsUnloaded();
+  virtual void OnSettingsLoaded() override;
+  virtual void OnSettingsUnloaded() override;
 
   bool Load();
   bool Load(const std::string &file);

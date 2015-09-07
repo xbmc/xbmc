@@ -37,12 +37,12 @@ class CDisplaySettings : public ISettingCallback, public ISubSettings,
 public:
   static CDisplaySettings& GetInstance();
 
-  virtual bool Load(const TiXmlNode *settings);
-  virtual bool Save(TiXmlNode *settings) const;
-  virtual void Clear();
+  virtual bool Load(const TiXmlNode *settings) override;
+  virtual bool Save(TiXmlNode *settings) const override;
+  virtual void Clear() override;
 
-  virtual bool OnSettingChanging(const CSetting *setting);
-  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode);
+  virtual bool OnSettingChanging(const CSetting *setting) override;
+  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   /*!
    \brief Returns the currently active resolution
