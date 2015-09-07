@@ -313,7 +313,7 @@ uint8_t* CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader, const CXBTFFr
     return nullptr;
   }
 
-  delete packedBuffer;
+  delete[] packedBuffer;
 
   return unpackedBuffer;
 }
