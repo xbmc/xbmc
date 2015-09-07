@@ -94,9 +94,14 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_NONE = 0; /*!< @brief "Null" value for a numeric timer type. */
 
   /*!
+   * @brief special PVR_TIMER.iClientIndex value to indicate that a timer has not (yet) a valid client index.
+   */
+  const unsigned int PVR_TIMER_NO_CLIENT_INDEX = 0; /*!< @brief timer has not (yet) a valid client index. */
+
+  /*!
    * @brief special PVR_TIMER.iParentClientIndex value to indicate that a timer has no parent.
    */
-  const unsigned int PVR_TIMER_NO_PARENT = 0; /*!< @brief timer has no parent; it was not scheduled by a repeating timer. */
+  const unsigned int PVR_TIMER_NO_PARENT = PVR_TIMER_NO_CLIENT_INDEX; /*!< @brief timer has no parent; it was not scheduled by a repeating timer. */
 
   /*!
    * @brief special PVR_TIMER.iClientChannelUid value to indicate "any channel". Useful for some repeating timer types.
@@ -386,7 +391,8 @@ extern "C" {
    * @brief Representation of a timer event.
    */
   typedef struct PVR_TIMER {
-    unsigned int    iClientIndex;                              /*!< @brief (required) the index of this timer given by the client */
+    unsigned int    iClientIndex;                              /*!< @brief (required) the index of this timer given by the client. PVR_TIMER_NO_CLIENT_INDEX indicates that the index was not yet set by the client, for example for new timers created by
+                                                                    Kodi and passed the first time to the client. A valid index must be greater than PVR_TIMER_NO_CLIENT_INDEX. */
     unsigned int    iParentClientIndex;                        /*!< @brief (optional) for timers scheduled by a repeating timer, the index of the repeating timer that scheduled this timer (it's PVR_TIMER.iClientIndex value). Use PVR_TIMER_NO_PARENT
                                                                     to indicate that this timer was no scheduled by a repeating timer. */
     int             iClientChannelUid;                         /*!< @brief (optional) unique identifier of the channel to record on. PVR_TIMER_ANY_CHANNEL will denote "any channel", not a specifoc one. */
