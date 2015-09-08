@@ -261,7 +261,6 @@ public:
   static const std::string SETTING_MYMUSIC_STARTWINDOW;
   static const std::string SETTING_MYMUSIC_SONGTHUMBINVIS;
   static const std::string SETTING_MYMUSIC_DEFAULTLIBVIEW;
-  static const std::string SETTING_PICTURES_USETAGS;
   static const std::string SETTING_PICTURES_GENERATETHUMBS;
   static const std::string SETTING_PICTURES_USEEXIFROTATION;
   static const std::string SETTING_PICTURES_SHOWVIDEOS;
