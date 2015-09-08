@@ -732,7 +732,6 @@
 		7CF80DCB19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CF80DC719710DC2003B2B34 /* KeyboardLayout.cpp */; };
 		815EE6350E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
 		820023DB171A28A300667D1C /* OSXTextInputResponder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 820023DA171A28A300667D1C /* OSXTextInputResponder.mm */; };
-		83A72B970FBC8E3B00171871 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; settings = {COMPILER_FLAGS = "-O0"; }; };
 		83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
 		880DBE550DC224A100E26B71 /* MusicFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */; };
@@ -1743,7 +1742,6 @@
 		DFF0F3B317528350002DA3A4 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
 		DFF0F3B417528350002DA3A4 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		DFF0F3B517528350002DA3A4 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E350D25F9FD00618676 /* Event.cpp */; };
-		DFF0F3B617528350002DA3A4 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
 		DFF0F3B717528350002DA3A4 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		DFF0F3B817528350002DA3A4 /* Thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E850D25F9FD00618676 /* Thread.cpp */; };
 		DFF0F3B917528350002DA3A4 /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD928F116384B6800709DAE /* Timer.cpp */; };
@@ -2910,7 +2908,6 @@
 		E4991437174E604700741B6D /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
 		E4991438174E604700741B6D /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		E4991439174E604700741B6D /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E350D25F9FD00618676 /* Event.cpp */; };
-		E499143A174E604700741B6D /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
 		E499143B174E604700741B6D /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		E499143C174E604700741B6D /* Thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E850D25F9FD00618676 /* Thread.cpp */; };
 		E499143D174E604700741B6D /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD928F116384B6800709DAE /* Timer.cpp */; };
@@ -4242,8 +4239,6 @@
 		820023D9171A28A300667D1C /* OSXTextInputResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXTextInputResponder.h; sourceTree = "<group>"; };
 		820023DA171A28A300667D1C /* OSXTextInputResponder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OSXTextInputResponder.mm; sourceTree = "<group>"; };
 		82F6F0EA16F269BB0081CC3C /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Buffer.h; path = commons/Buffer.h; sourceTree = "<group>"; };
-		83A72B950FBC8E3B00171871 /* LockFree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LockFree.cpp; sourceTree = "<group>"; };
-		83A72B960FBC8E3B00171871 /* LockFree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockFree.h; sourceTree = "<group>"; };
 		83E0B2470F7C95FF0091643F /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
 		83E0B2480F7C95FF0091643F /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
 		880DBE490DC223FF00E26B71 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
@@ -6811,8 +6806,6 @@
 				E38E1E360D25F9FD00618676 /* Event.h */,
 				38F4E55E13CCCB3B00664821 /* Helpers.h */,
 				38F4E55F13CCCB3B00664821 /* Lockables.h */,
-				83A72B950FBC8E3B00171871 /* LockFree.cpp */,
-				83A72B960FBC8E3B00171871 /* LockFree.h */,
 				E38E1E7A0D25F9FD00618676 /* SharedSection.h */,
 				E38E1E7C0D25F9FD00618676 /* SingleLock.h */,
 				3802709813D5A653009493DD /* SystemClock.cpp */,
@@ -10670,7 +10663,6 @@
 				F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */,
 				F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
 				F59876C00FBA351D008EF4FB /* VideoReferenceClock.cpp in Sources */,
-				83A72B970FBC8E3B00171871 /* LockFree.cpp in Sources */,
 				F5987F050FBDF274008EF4FB /* DPMSSupport.cpp in Sources */,
 				F5987FDB0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */,
 				F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */,
@@ -12031,7 +12023,6 @@
 				DFF0F3B417528350002DA3A4 /* Atomics.cpp in Sources */,
 				DFF0F3B517528350002DA3A4 /* Event.cpp in Sources */,
 				DF29BCFC1B5D911800904347 /* GUIViewStateEventLog.cpp in Sources */,
-				DFF0F3B617528350002DA3A4 /* LockFree.cpp in Sources */,
 				DFF0F3B717528350002DA3A4 /* SystemClock.cpp in Sources */,
 				DFF0F3B817528350002DA3A4 /* Thread.cpp in Sources */,
 				DFF0F3B917528350002DA3A4 /* Timer.cpp in Sources */,
@@ -13092,7 +13083,6 @@
 				E4991437174E604700741B6D /* Implementation.cpp in Sources */,
 				E4991438174E604700741B6D /* Atomics.cpp in Sources */,
 				E4991439174E604700741B6D /* Event.cpp in Sources */,
-				E499143A174E604700741B6D /* LockFree.cpp in Sources */,
 				E499143B174E604700741B6D /* SystemClock.cpp in Sources */,
 				E499143C174E604700741B6D /* Thread.cpp in Sources */,
 				E499143D174E604700741B6D /* Timer.cpp in Sources */,
