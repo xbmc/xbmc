@@ -210,13 +210,13 @@ NOTE: if you only want to build specific addons you can specify like this:
 This build was designed to be massively parallel. Don't be afraid to
 give it a 'make -j20' or so.
 
-Verify that all deps built correctly (it will tell you so) before
-continuing. You will get crazy build errors otherwise. If in doubt
-run another 'make' (single threaded) until the message
-"Dependencies built successfully." appears. If the single make
-fails keep cleaning the dependes library in charge by issuing
-    $ make -C target/<name_of_failed_lib> distclean. Then try make again.
+Verify that all dependencies are built correctly (it will tell you so)
+before continuing to avoid errors. If in doubt run another 'make' (single threaded)
+until the message "Dependencies built successfully." appears. If the single make
+fails, keep cleaning the specific library by issuing:
+    $ make -C target/<name_of_failed_lib> distclean
 
+Then try make again.
 Rinse and repeat until you are really done and all libs are built.
 
 --------------------------------------------------------------------

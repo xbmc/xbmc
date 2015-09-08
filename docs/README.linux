@@ -102,14 +102,14 @@ Tip: By adding -j<number> to the make command, you describe how many
 
     $ make -j2
 
-.3  $ make install
+.3  $ sudo make install
 
 This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
 
 Tip: To override the location that Kodi is installed, use PREFIX=<path>.
 For example.
 
-    $ sudo make install DESTDIR=$HOME/kodi
+    $ make install DESTDIR=$HOME/kodi
 
 -----------------------------------------------------------------------------
 4.4. Binary addons - compile
