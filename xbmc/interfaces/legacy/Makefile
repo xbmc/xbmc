@@ -10,6 +10,7 @@ SRCS=	\
 	Dialog.cpp \
 	File.cpp \
 	InfoTagMusic.cpp \
+	InfoTagRadioRDS.cpp \
 	InfoTagVideo.cpp \
 	Keyboard.cpp \
 	LanguageHook.cpp \

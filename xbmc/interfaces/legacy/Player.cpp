@@ -319,6 +319,12 @@ namespace XBMCAddon
       return g_application.m_pPlayer->IsPlayingVideo();
     }
 
+    bool Player::isPlayingRDS()
+    {
+      XBMC_TRACE;
+      return g_application.m_pPlayer->IsPlayingRDS();
+    }
+
     String Player::getPlayingFile()
     {
       XBMC_TRACE;
@@ -352,6 +358,19 @@ namespace XBMCAddon
         return new InfoTagMusic(*tag);
 
       return new InfoTagMusic();
+    }
+
+    InfoTagRadioRDS* Player::getRadioRDSInfoTag() throw (PlayerException)
+    {
+      XBMC_TRACE;
+      if (g_application.m_pPlayer->IsPlayingVideo() || !g_application.m_pPlayer->IsPlayingRDS())
+        throw PlayerException("XBMC is not playing any music file with RDS");
+
+      const PVR::CPVRRadioRDSInfoTagPtr tag = g_infoManager.GetCurrentRadioRDSInfoTag();
+      if (tag)
+        return new InfoTagRadioRDS(tag);
+
+      return new InfoTagRadioRDS();
     }
 
     double Player::getTotalTime()
