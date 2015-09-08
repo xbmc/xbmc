@@ -305,6 +305,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\DSTemplate.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\uri.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
@@ -1047,6 +1048,7 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\IPinHook.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\MacrovisionKicker.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\SmartList.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\uri.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\contrib\cc_decoder708.h" />
