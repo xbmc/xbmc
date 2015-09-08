@@ -298,6 +298,12 @@
 								<visible>!IsEmpty(ListItem.RatingAndVotes)</visible>
 							</item>
 							<item>
+								<label>$LOCALIZE[38018]:</label>
+								<label2>$INFO[ListItem.UserRating]</label2>
+								<onclick>noop</onclick>
+								<visible>!IsEmpty(ListItem.UserRating)</visible>
+							</item>
+							<item>
 								<label>$LOCALIZE[202]:</label>
 								<label2>$INFO[ListItem.TagLine]</label2>
 								<onclick>noop</onclick>
@@ -458,6 +464,12 @@
 								<label2>$INFO[ListItem.RatingAndVotes]</label2>
 								<onclick>noop</onclick>
 								<visible>!IsEmpty(ListItem.RatingAndVotes)</visible>
+							</item>
+							<item>
+								<label>$LOCALIZE[38018]:</label>
+								<label2>$INFO[ListItem.UserRating]</label2>
+								<onclick>noop</onclick>
+								<visible>!IsEmpty(ListItem.UserRating)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[15311]</label>
@@ -635,6 +647,12 @@
 								<visible>!IsEmpty(ListItem.RatingAndVotes)</visible>
 							</item>
 							<item>
+								<label>$LOCALIZE[38018]:</label>
+								<label2>$INFO[ListItem.UserRating]</label2>
+								<onclick>noop</onclick>
+								<visible>!IsEmpty(ListItem.UserRating)</visible>
+							</item>
+							<item>
 								<label>$LOCALIZE[15311]</label>
 								<label2>$INFO[ListItem.FilenameAndPath]</label2>
 								<onclick>noop</onclick>
@@ -786,6 +804,12 @@
 								<label2>$INFO[ListItem.Duration] $LOCALIZE[12391]</label2>
 								<onclick>noop</onclick>
 								<visible>!IsEmpty(ListItem.Duration)</visible>
+							</item>
+							<item>
+								<label>$LOCALIZE[38018]:</label>
+								<label2>$INFO[ListItem.UserRating]</label2>
+								<onclick>noop</onclick>
+								<visible>!IsEmpty(ListItem.UserRating)</visible>
 							</item>
 							<item>
 								<label>$LOCALIZE[15311]</label>

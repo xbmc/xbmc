@@ -17597,6 +17597,7 @@ msgstr ""
 
 #. Used for the viewstate selection
 #: xbmc/video/GUIViewStateVideo.xml
+#: skin.confluence
 msgctxt "#38018"
 msgid "User rating"
 msgstr ""
