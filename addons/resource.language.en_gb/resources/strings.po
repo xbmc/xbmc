@@ -18851,43 +18851,43 @@ msgid "Preferred subtitles language (advanced)"
 msgstr ""
 
 msgctxt "#90000"
-msgid "DSPlayer it's set as default player for all media. Unchecking this box, DSPlayer can be accessed from the Context Menu (C) Play using -> DSPlayer."
+msgid "DSPlayer is set as default player for all media. Unchecking this box, DSPlayer can be accessed from the Context Menu (C) through Play using -> DSPlayer."
 msgstr ""
 
 msgctxt "#90001"
-msgid "This setting allows rules to be created governing what media should be played with DVDPlayer."
+msgid "This menu allows rules to be created governing what media should be played by DVDPlayer."
 msgstr ""
 
 msgctxt "#90002"
-msgid "DSPlayer uses the madshi Video Renderer. madVR must be installed manually before playback."
+msgid "DSPlayer uses the madshi Video Renderer (madVR). madVR must be installed manually before playback."
 msgstr ""
 
 msgctxt "#90003"
-msgid "These settings determine the way madVR settings are managed: [CR][Never] The Kodi madVR GUI is disabled. [CR][Load and Save with DSPlayer database] madVR settings are configurable in OSD Video Settings. Global profiles will be loaded and saved in the DSPlayer database. [CR][Load from madVR active profile] madVR settings are configurable in OSD Video Settings. The appropriate profile is loaded from madVR for the selected video."
+msgid "These settings determine the way madVR settings are managed: [CR][Never] The Kodi madVR GUI is disabled. [CR][Load and Save with DSPlayer database] madVR settings are configurable in OSD Video Settings. Global profiles will be loaded and saved in the DSPlayer database. [CR][Load from madVR active profile] madVR settings are configurable in OSD Video Settings. Settings profiles are loaded externally from madVR."
 msgstr ""
 
 msgctxt "#90004"
-msgid "Delay the start of video playback until the amount frames set in the pre-buffer are rendered. This can help with Kodi refresh rate change mechanism interacting with madVR."
+msgid "Delay the start of video playback until the amount frames set in the pre-buffer are rendered. This can improve the stability of the Kodi refresh rate change mechanism when interacting with madVR."
 msgstr ""
 
 msgctxt "#90005"
-msgid "Enable madVR’s fullscreen exclusive mode, which takes full control of the display during playback making it impossible to take screen captures or steal focus away from the player. This may reduce screen tearing and improve player stability slightly but can cause compatibility issues with many graphics cards."
+msgid "Enable madVR’s fullscreen exclusive mode, which takes full control of the display during playback making it impossible to take screen captures or steal focus away from the player. This may reduce screen tearing and improve player stability slightly but can cause compatibility issues with some graphics cards."
 msgstr ""
 
 msgctxt "#90006"
-msgid "This setting should only be used if experiencing problems when stopping playback. Black screens and failure to return to the Kodi menu can often be countered by forcing madVR to exit fullscreen before stopping."
+msgid "This setting should only be used if experiencing problems during playback stop. Black screens and failure to return to the Kodi menu can often be countered by forcing madVR to exit fullscreen before stopping."
 msgstr ""
 
 msgctxt "#90007"
-msgid "The choice of audio renderer in this menu overrides the same setting in System, Audio output. Keep in mind, any DirectShow audio renderer such as ReClock can be used with DSPlayer."
+msgid "The choice of audio renderer in this menu overrides the same setting in System -> Audio output. DSPlayer is compatible with any DirectShow audio renderer."
 msgstr ""
 
 msgctxt "#90008"
-msgid "Defines the source of audio & video filters: [CR][Internal filters] Internal LAV Filters and XySubFilter with preconfigured media rules for all compatible media. [CR][Media rules and Filters configuration] Media rules are used to provide instruction on what combination of filters and shaders are used when a media file is played. [CR][System filters (DirectShow merits)] DSPlayer will use the default system directshow merits to load the filters."
+msgid "Defines the source of audio & video filters: [CR][Internal filters] Internal LAV Filters and XySubFilter with preconfigured media rules for all compatible media. [CR][Media rules and Filters configuration] Media rules are used to provide instruction on what combination of filters and shaders are used when a media file is played. [CR][System filters (DirectShow merits)] DSPlayer will rely on the default system directshow merits when selecting filters."
 msgstr ""
 
 msgctxt "#90009"
-msgid "A selection of video streams with Blu-ray folder structures (BDMV) is possible with this option enabled. Also, some MKV files contain multi-chapter list support. The Matroska Edition choice dialog allows a choice between the various chapter lists. LAV Filters supports multiple chapter files through Matroska Editions."
+msgid "Allows a selection of the video stream for Blu-ray folder structures (BDMV). Also, some MKV files contain multi-chapter list support. LAV Filters supports multiple chapter lists through Matroska Editions."
 msgstr ""
 
 msgctxt "#90010"
@@ -18903,7 +18903,7 @@ msgid "Adds an option in the Audio Settings menu during playback allowing the se
 msgstr ""
 
 msgctxt "#90013"
-msgid "Stream details from LAV Splitter provides more accurate and detailed information about the audio stream including the codec, channel layout and bitrate. This information is provided by DSPlayer by default. By comparison, DSPlayer is localized for the selected language, but may lack information such as the codec and bitrate. This setting also impacts the information displayed when pressing O (codec info)."
+msgid "Stream details from LAV Splitter provides more accurate and detailed information about the audio stream including the codec, channel layout and bitrate. This information is provided by DSPlayer by default. DSPlayer is localized for the selected language, but may lack information such as the codec and bitrate. This setting also impacts the information displayed when pressing O (codec info)."
 msgstr ""
 
 msgctxt "#90014"
@@ -18923,15 +18923,15 @@ msgid "Configure the Internal filter XySubFilter."
 msgstr ""
 
 msgctxt "#90018"
-msgid "Add an Extra external filter to the configuration, the Extra filter will be applied to the all played media."
+msgid "Add an extra external filter to the configuration. The Extra filter will be applied to all media based on its defined type."
 msgstr ""
 
 msgctxt "#90019"
-msgid "Media rules are used to provide instruction on what combination of filters and shaders are used when a media file is played. The player is pre-configured to use system filters. Using any combination of custom filters requires the creation of player rules from this menu. "
+msgid "Media rules are used to provide instruction on what combination of filters and shaders are used when a media file is played. Using any combination of custom filters requires the creation of player rules from this menu. "
 msgstr ""
 
 msgctxt "#90020"
-msgid "Filters configuration provides a master list of all filters available to DSPlayer. Like Media rules, Filters configuration relies on system filters by default. Adding custom filters is a manual process."
+msgid "Filters configuration provides a master list of all filters available to DSPlayer. External filters are added from this menu."
 msgstr ""
 
 msgctxt "#90021"
@@ -18951,7 +18951,7 @@ msgid "Download and install madVR from http://madshi.net/madVR.zip"
 msgstr ""
 
 msgctxt "#90025"
-msgid "This category contains the settings for how DSPlayer is handled."
+msgid "This category contains settings governing how DSPlayer is configured."
 msgstr ""
 
 msgctxt "#909001"
