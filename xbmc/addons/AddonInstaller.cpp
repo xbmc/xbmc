@@ -200,17 +200,17 @@ bool CAddonInstaller::Install(const std::string &addonID, bool force /* = false 
   if (!CAddonInstallJob::GetAddonWithHash(addonID, addon, hash))
     return false;
 
-  return DoInstall(addon, hash, addonInstalled, referer, background, modal);
+  return DoInstall(addon, hash, referer, background, modal);
 }
 
-bool CAddonInstaller::DoInstall(const AddonPtr &addon, const std::string &hash /* = "" */, bool update /* = false */, const std::string &referer /* = "" */, bool background /* = true */, bool modal /* = false */)
+bool CAddonInstaller::DoInstall(const AddonPtr &addon, const std::string &hash /* = "" */, const std::string &referer /* = "" */, bool background /* = true */, bool modal /* = false */)
 {
   // check whether we already have the addon installing
   CSingleLock lock(m_critSection);
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
     return false;
 
-  CAddonInstallJob* installJob = new CAddonInstallJob(addon, hash, update, referer);
+  CAddonInstallJob* installJob = new CAddonInstallJob(addon, hash, referer);
   if (background)
   {
     unsigned int jobID = CJobManager::GetInstance().AddJob(installJob, this);
@@ -438,12 +438,14 @@ int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemLi
   return size;
 }
 
-CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const std::string &hash /* = "" */, bool update /* = false */, const std::string &referer /* = "" */)
+CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const std::string &hash /* = "" */, const std::string &referer /* = "" */)
   : m_addon(addon),
     m_hash(hash),
-    m_update(update),
     m_referer(referer)
-{ }
+{
+  AddonPtr dummy;
+  m_update = CAddonMgr::GetInstance().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN, false);
+}
 
 AddonPtr CAddonInstallJob::GetRepoForAddon(const AddonPtr& addon)
 {
@@ -708,7 +710,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
       if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
       {
         // we have it but our version isn't good enough, or we don't have it and we need it
-        bool force = dependency != NULL;
+        const bool force = dependency != NULL;
 
         // dependency is already queued up for install - ::Install will fail
         // instead we wait until the Job has finished. note that we
@@ -717,7 +719,6 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
         {
           while (CAddonInstaller::GetInstance().HasJob(addonID))
             Sleep(50);
-          force = false;
 
           if (!CAddonMgr::GetInstance().IsAddonInstalled(addonID))
           {
@@ -738,7 +739,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
             return false;
           }
 
-          CAddonInstallJob dependencyJob(addon, hash, force, referer);
+          CAddonInstallJob dependencyJob(addon, hash, referer);
 
           // pass our progress indicators to the temporary job and don't allow it to
           // show progress or information updates (no progress, title or text changes)

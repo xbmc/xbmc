@@ -125,12 +125,11 @@ private:
   /*! \brief Install an addon from a repository or zip
    \param addon the AddonPtr describing the addon
    \param hash the hash to verify the install. Defaults to "".
-   \param update whether this is an update of an existing addon, or a new install. Defaults to false.
    \param referer string to use for referer for http fetch. Defaults to "".
    \param background whether to install in the background or not. Defaults to true.
    \return true on successful install, false on failure.
    */
-  bool DoInstall(const ADDON::AddonPtr &addon, const std::string &hash = "", bool update = false, const std::string &referer = "", bool background = true, bool modal = false);
+  bool DoInstall(const ADDON::AddonPtr &addon, const std::string &hash = "", const std::string &referer = "", bool background = true, bool modal = false);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -153,7 +152,7 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr &addon, const std::string &hash = "", bool update = false, const std::string &referer = "");
+  CAddonInstallJob(const ADDON::AddonPtr &addon, const std::string &hash = "", const std::string &referer = "");
 
   virtual bool DoWork();
 
