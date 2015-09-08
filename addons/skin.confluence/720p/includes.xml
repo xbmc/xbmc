@@ -305,7 +305,7 @@
 		<pulseonselect>false</pulseonselect>
 	</include>
 	<include name="SideBladeLeft">
-		<animation effect="slide" start="0,0" end="250,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001) | Control.HasFocus(8999)">Conditional</animation>
+		<animation effect="slide" start="0,0" end="250,0" time="300" tween="quadratic" easing="out" condition="[ControlGroup(9000).HasFocus | Control.HasFocus(9001) | Control.HasFocus(8999)] + ![Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRadioRDSInfo)]">Conditional</animation>
 		<animation effect="slide" start="0,0" end="-300,0" time="300" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001)">WindowClose</animation>
 		<animation effect="slide" start="0,0" end="-50,0" time="225" tween="quadratic" easing="out" condition="![ControlGroup(9000).HasFocus | Control.HasFocus(9001)]">WindowClose</animation>
 		<animation effect="slide" start="-50,0" end="0,0" time="225" tween="quadratic" easing="out">WindowOpen</animation>
@@ -790,7 +790,7 @@
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="button" id="600">
-				<left>20</left>
+				<left>5</left>
 				<top>2</top>
 				<width>39</width>
 				<height>39</height>
@@ -804,7 +804,7 @@
 				<onclick>ChannelDown</onclick>
 			</control>
 			<control type="button" id="601">
-				<left>60</left>
+				<left>45</left>
 				<top>2</top>
 				<width>39</width>
 				<height>39</height>
@@ -818,7 +818,7 @@
 				<onclick>ChannelUp</onclick>
 			</control>
 			<control type="button" id="603">
-				<left>100</left>
+				<left>85</left>
 				<top>2</top>
 				<width>39</width>
 				<height>39</height>
@@ -833,7 +833,7 @@
 				<onclick>PlayerControl(Stop)</onclick>
 			</control>
 			<control type="togglebutton" id="604">
-				<left>140</left>
+				<left>125</left>
 				<top>2</top>
 				<width>39</width>
 				<height>39</height>
@@ -853,7 +853,7 @@
 				<animation effect="fade" start="100" end="30" time="75" condition="!Player.PauseEnabled">Conditional</animation>
 			</control>
 			<control type="button" id="605">
-				<left>180</left>
+				<left>165</left>
 				<top>2</top>
 				<width>39</width>
 				<height>39</height>
@@ -861,12 +861,42 @@
 				<texturefocus>OSDRecordOffFO.png</texturefocus>
 				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onleft>604</onleft>
-				<onright>50</onright>
+				<onright>606</onright>
 				<onup>610</onup>
 				<ondown>611</ondown>
 				<onclick>PlayerControl(record)</onclick>
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="30" time="75" condition="!Player.CanRecord">Conditional</animation>
+			</control>
+			<control type="button" id="606">
+				<left>205</left>
+				<top>2</top>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<visible>RDS.HasRadiotextPlus</visible>
+				<texturefocus>OSDRadioRDSFO.png</texturefocus>
+				<texturenofocus>OSDRadioRDSNF.png</texturenofocus>
+				<onleft>605</onleft>
+				<onright>50</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
+			</control>
+			<control type="button" id="606">
+				<left>205</left>
+				<top>2</top>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<visible>!RDS.HasRadiotextPlus</visible>
+				<texturefocus>OSDChannelListFO.png</texturefocus>
+				<texturenofocus>OSDChannelListNF.png</texturenofocus>
+				<onleft>605</onleft>
+				<onright>50</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>ActivateWindow(PVRGuideInfo)</onclick>
 			</control>
 		</control>
 		<control type="group" id="9005">

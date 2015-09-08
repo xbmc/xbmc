@@ -308,6 +308,18 @@
 						<selected>Skin.HasSetting(ActivateTvTunes)</selected>
 						<visible>System.HasAddon(script.tvtunes)</visible>
 					</control>
+					<control type="radiobutton" id="116">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>31122</label>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.ToggleSetting(HideEPGwithRDS)</onclick>
+						<selected>Skin.HasSetting(HideEPGwithRDS)</selected>
+					</control>
 					<control type="label" id="106">
 						<width>750</width>
 						<height>45</height>
