@@ -10991,10 +10991,7 @@ msgctxt "#20183"
 msgid "Reload skin"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#20184"
-msgid "Rotate pictures using EXIF information"
-msgstr ""
+#empty string with id 20184
 
 msgctxt "#20185"
 msgid "Use poster view styles for TV shows"
@@ -16129,11 +16126,7 @@ msgctxt "#36307"
 msgid "Automatically generate picture thumbnails when entering picture folder."
 msgstr ""
 
-#. Description of setting "Pictures -> Rotate pictures using EXIF information" with label #20184
-#: system/settings/settings.xml
-msgctxt "#36308"
-msgid "Pictures will automatically rotate according to information in the EXIF tag, if found."
-msgstr ""
+#empty string with id 36308
 
 #. Description of setting "Pictures -> Show video files in listings" with label #22022
 #: system/settings/settings.xml

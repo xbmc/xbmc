@@ -2054,11 +2054,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="pictures.useexifrotation" type="boolean" label="20184" help="36308">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="pictures.showvideos" type="boolean" label="22022" help="36309">
           <level>1</level>
           <default>true</default>
