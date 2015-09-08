@@ -68,6 +68,8 @@ private:
 };
 }
 
+//Disabled for windows because there is no implementation to get the CPU temp and there will probably never be one
+#ifndef TARGET_WINDOWS
 TEST(TestCPUInfo, getTemperature)
 {
   TemporarySetting command(g_advancedSettings.m_cpuTempCmd, "echo '50 c'");
@@ -75,6 +77,7 @@ TEST(TestCPUInfo, getTemperature)
   EXPECT_TRUE(g_cpuInfo.getTemperature(t));
   EXPECT_TRUE(t.IsValid());
 }
+#endif
 
 TEST(TestCPUInfo, getCPUModel)
 {
