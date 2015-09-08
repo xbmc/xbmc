@@ -829,6 +829,18 @@
 		DF0ABB74183A94A30018445D /* Utf8Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0ABB71183A94A30018445D /* Utf8Utils.cpp */; };
 		DF0ABB75183A94A30018445D /* Utf8Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0ABB71183A94A30018445D /* Utf8Utils.cpp */; };
 		DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
+		DF0E4AC51AD597ED00A75430 /* DVDPlayerRadioRDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AC31AD597ED00A75430 /* DVDPlayerRadioRDS.cpp */; };
+		DF0E4AC61AD597ED00A75430 /* DVDPlayerRadioRDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AC31AD597ED00A75430 /* DVDPlayerRadioRDS.cpp */; };
+		DF0E4AC71AD597ED00A75430 /* DVDPlayerRadioRDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AC31AD597ED00A75430 /* DVDPlayerRadioRDS.cpp */; };
+		DF0E4ACA1AD5982500A75430 /* InfoTagRadioRDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AC81AD5982500A75430 /* InfoTagRadioRDS.cpp */; };
+		DF0E4ACB1AD5982500A75430 /* InfoTagRadioRDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AC81AD5982500A75430 /* InfoTagRadioRDS.cpp */; };
+		DF0E4ACC1AD5982500A75430 /* InfoTagRadioRDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AC81AD5982500A75430 /* InfoTagRadioRDS.cpp */; };
+		DF0E4ACF1AD5984600A75430 /* PVRRadioRDSInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4ACD1AD5984600A75430 /* PVRRadioRDSInfoTag.cpp */; };
+		DF0E4AD01AD5984600A75430 /* PVRRadioRDSInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4ACD1AD5984600A75430 /* PVRRadioRDSInfoTag.cpp */; };
+		DF0E4AD11AD5984600A75430 /* PVRRadioRDSInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4ACD1AD5984600A75430 /* PVRRadioRDSInfoTag.cpp */; };
+		DF0E4AD41AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AD21AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp */; };
+		DF0E4AD51AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AD21AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp */; };
+		DF0E4AD61AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0E4AD21AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp */; };
 		DF14CF7E1A77782E00396CC9 /* InputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF14CF7C1A77782E00396CC9 /* InputManager.cpp */; };
 		DF14CF7F1A77782E00396CC9 /* InputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF14CF7C1A77782E00396CC9 /* InputManager.cpp */; };
 		DF14CF801A77782E00396CC9 /* InputManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF14CF7C1A77782E00396CC9 /* InputManager.cpp */; };
@@ -4410,6 +4422,14 @@
 		DF0ABB72183A94A30018445D /* Utf8Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utf8Utils.h; sourceTree = "<group>"; };
 		DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF15A13A3ADA7008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
+		DF0E4AC31AD597ED00A75430 /* DVDPlayerRadioRDS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerRadioRDS.cpp; sourceTree = "<group>"; };
+		DF0E4AC41AD597ED00A75430 /* DVDPlayerRadioRDS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerRadioRDS.h; sourceTree = "<group>"; };
+		DF0E4AC81AD5982500A75430 /* InfoTagRadioRDS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoTagRadioRDS.cpp; sourceTree = "<group>"; };
+		DF0E4AC91AD5982500A75430 /* InfoTagRadioRDS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoTagRadioRDS.h; sourceTree = "<group>"; };
+		DF0E4ACD1AD5984600A75430 /* PVRRadioRDSInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRRadioRDSInfoTag.cpp; sourceTree = "<group>"; };
+		DF0E4ACE1AD5984600A75430 /* PVRRadioRDSInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRRadioRDSInfoTag.h; sourceTree = "<group>"; };
+		DF0E4AD21AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPVRRadioRDSInfo.cpp; sourceTree = "<group>"; };
+		DF0E4AD31AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPVRRadioRDSInfo.h; sourceTree = "<group>"; };
 		DF14CF7C1A77782E00396CC9 /* InputManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputManager.cpp; sourceTree = "<group>"; };
 		DF14CF7D1A77782E00396CC9 /* InputManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputManager.h; sourceTree = "<group>"; };
 		DF1ACFD115FCE50700E10810 /* AddonModuleXbmc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonModuleXbmc.cpp; sourceTree = "<group>"; };
@@ -7671,6 +7691,8 @@
 				C8482881156CFCD8005A996F /* PVRChannelGroups.h */,
 				C8482882156CFCD8005A996F /* PVRChannelGroupsContainer.cpp */,
 				C8482883156CFCD8005A996F /* PVRChannelGroupsContainer.h */,
+				DF0E4ACD1AD5984600A75430 /* PVRRadioRDSInfoTag.cpp */,
+				DF0E4ACE1AD5984600A75430 /* PVRRadioRDSInfoTag.h */,
 			);
 			path = channels;
 			sourceTree = "<group>";
@@ -7690,6 +7712,8 @@
 				C8482892156CFCD8005A996F /* GUIDialogPVRGuideOSD.h */,
 				C8482893156CFCD8005A996F /* GUIDialogPVRGuideSearch.cpp */,
 				C8482894156CFCD8005A996F /* GUIDialogPVRGuideSearch.h */,
+				DF0E4AD21AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp */,
+				DF0E4AD31AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.h */,
 				C8482895156CFCD8005A996F /* GUIDialogPVRRecordingInfo.cpp */,
 				C8482896156CFCD8005A996F /* GUIDialogPVRRecordingInfo.h */,
 				C8482897156CFCD8005A996F /* GUIDialogPVRTimerSettings.cpp */,
@@ -7829,6 +7853,8 @@
 				DF1AD1A215FCE77900E10810 /* File.h */,
 				DF1AD1A515FCE77900E10810 /* InfoTagMusic.cpp */,
 				DF1AD1A615FCE77900E10810 /* InfoTagMusic.h */,
+				DF0E4AC81AD5982500A75430 /* InfoTagRadioRDS.cpp */,
+				DF0E4AC91AD5982500A75430 /* InfoTagRadioRDS.h */,
 				DF1AD1A915FCE77900E10810 /* InfoTagVideo.cpp */,
 				DF1AD1AA15FCE77900E10810 /* InfoTagVideo.h */,
 				DF1AD1AD15FCE77900E10810 /* Keyboard.cpp */,
@@ -8569,6 +8595,8 @@
 				E38E15850D25F9FA00618676 /* DVDPlayer.h */,
 				E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */,
 				E38E15870D25F9FA00618676 /* DVDPlayerAudio.h */,
+				DF0E4AC31AD597ED00A75430 /* DVDPlayerRadioRDS.cpp */,
+				DF0E4AC41AD597ED00A75430 /* DVDPlayerRadioRDS.h */,
 				E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */,
 				E38E15890D25F9FA00618676 /* DVDPlayerSubtitle.h */,
 				F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */,
@@ -10512,6 +10540,7 @@
 				E38E22430D25F9FE00618676 /* filestr.cpp in Sources */,
 				E38E22440D25F9FE00618676 /* find.cpp in Sources */,
 				E38E22450D25F9FE00618676 /* getbits.cpp in Sources */,
+				DF0E4ACA1AD5982500A75430 /* InfoTagRadioRDS.cpp in Sources */,
 				E38E22460D25F9FE00618676 /* global.cpp in Sources */,
 				E38E22470D25F9FE00618676 /* int64.cpp in Sources */,
 				E38E22480D25F9FE00618676 /* isnt.cpp in Sources */,
@@ -10720,6 +10749,7 @@
 				F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */,
 				F5DC87E2110A287400EE1B15 /* RingBuffer.cpp in Sources */,
 				F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */,
+				DF0E4AC51AD597ED00A75430 /* DVDPlayerRadioRDS.cpp in Sources */,
 				F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 				F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */,
@@ -10912,6 +10942,7 @@
 				DF34892A13FD9C780026A711 /* AirPlayServer.cpp in Sources */,
 				DF34898213FDAAF60026A711 /* HttpParser.cpp in Sources */,
 				18968DC814155D7C005BA742 /* ApplicationOperations.cpp in Sources */,
+				DF0E4AD41AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp in Sources */,
 				32C631281423A90F00F18420 /* JpegIO.cpp in Sources */,
 				DF448457140048A60069344B /* AirTunesServer.cpp in Sources */,
 				DF44845E140048C80069344B /* PipesManager.cpp in Sources */,
@@ -11273,6 +11304,7 @@
 				7CCDA238192753E30074CF51 /* PltMediaItem.cpp in Sources */,
 				7CCDA241192753E30074CF51 /* PltMediaServer.cpp in Sources */,
 				7CCDA24A192753E30074CF51 /* PltSyncMediaBrowser.cpp in Sources */,
+				DF0E4ACF1AD5984600A75430 /* PVRRadioRDSInfoTag.cpp in Sources */,
 				7CCDA779192756250074CF51 /* Neptune.cpp in Sources */,
 				7CCDA782192756250074CF51 /* NptAutomaticCleaner.cpp in Sources */,
 				7CCDA785192756250074CF51 /* NptBase64.cpp in Sources */,
@@ -11695,6 +11727,7 @@
 				DFEA4B511B5271EB00562321 /* ActiveAEDSP.cpp in Sources */,
 				DFF0F26917528350002DA3A4 /* VirtualDirectory.cpp in Sources */,
 				395C29C31A98A0A000EBC7AD /* Webinterface.cpp in Sources */,
+				DF0E4AD11AD5984600A75430 /* PVRRadioRDSInfoTag.cpp in Sources */,
 				DFF0F26D17528350002DA3A4 /* ZeroconfDirectory.cpp in Sources */,
 				DFF0F26E17528350002DA3A4 /* ZipDirectory.cpp in Sources */,
 				DFF0F26F17528350002DA3A4 /* ZipFile.cpp in Sources */,
@@ -11784,6 +11817,7 @@
 				DFF0F2BA17528350002DA3A4 /* JpegIO.cpp in Sources */,
 				4260D5C91B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */,
 				DFF0F2BC17528350002DA3A4 /* LocalizeStrings.cpp in Sources */,
+				DF0E4AC71AD597ED00A75430 /* DVDPlayerRadioRDS.cpp in Sources */,
 				DFF0F2BD17528350002DA3A4 /* MatrixGLES.cpp in Sources */,
 				DFF0F2BE17528350002DA3A4 /* Shader.cpp in Sources */,
 				DFF0F2BF17528350002DA3A4 /* Texture.cpp in Sources */,
@@ -12035,6 +12069,7 @@
 				DFF0F3B717528350002DA3A4 /* SystemClock.cpp in Sources */,
 				DFF0F3B817528350002DA3A4 /* Thread.cpp in Sources */,
 				DFF0F3B917528350002DA3A4 /* Timer.cpp in Sources */,
+				DF0E4AD61AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp in Sources */,
 				DFF0F3BA17528350002DA3A4 /* AlarmClock.cpp in Sources */,
 				DFF0F3BB17528350002DA3A4 /* AliasShortcutUtils.cpp in Sources */,
 				DFF0F3BC17528350002DA3A4 /* Archive.cpp in Sources */,
@@ -12154,6 +12189,7 @@
 				DFF0F43617528350002DA3A4 /* BackgroundInfoLoader.cpp in Sources */,
 				DFF0F43717528350002DA3A4 /* CueDocument.cpp in Sources */,
 				DFF0F43817528350002DA3A4 /* DatabaseManager.cpp in Sources */,
+				DF0E4ACC1AD5982500A75430 /* InfoTagRadioRDS.cpp in Sources */,
 				DFF0F43917528350002DA3A4 /* DbUrl.cpp in Sources */,
 				DFF0F43A17528350002DA3A4 /* DynamicDll.cpp in Sources */,
 				DFF0F43C17528350002DA3A4 /* FileItem.cpp in Sources */,
@@ -12726,6 +12762,7 @@
 				E49912AC174E5D9900741B6D /* SFTPDirectory.cpp in Sources */,
 				E49912AD174E5D9900741B6D /* SFTPFile.cpp in Sources */,
 				E49912AE174E5D9900741B6D /* ShoutcastFile.cpp in Sources */,
+				DF0E4AD51AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp in Sources */,
 				395C29C21A98A0A000EBC7AD /* Webinterface.cpp in Sources */,
 				E49912B2174E5D9900741B6D /* SmartPlaylistDirectory.cpp in Sources */,
 				E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */,
@@ -13054,6 +13091,7 @@
 				E4991405174E5FB900741B6D /* PVRTimerInfoTag.cpp in Sources */,
 				E4991406174E5FB900741B6D /* PVRTimers.cpp in Sources */,
 				E4991407174E5FB900741B6D /* GUIViewStatePVR.cpp in Sources */,
+				DF0E4AD01AD5984600A75430 /* PVRRadioRDSInfoTag.cpp in Sources */,
 				E4991408174E5FB900741B6D /* GUIWindowPVRBase.cpp in Sources */,
 				E4991409174E5FB900741B6D /* GUIWindowPVRChannels.cpp in Sources */,
 				E499140B174E5FB900741B6D /* GUIWindowPVRGuide.cpp in Sources */,
@@ -13187,6 +13225,7 @@
 				E4991496174E606600741B6D /* VideoDbUrl.cpp in Sources */,
 				E4991497174E606600741B6D /* VideoInfoDownloader.cpp in Sources */,
 				E4991498174E606600741B6D /* VideoInfoScanner.cpp in Sources */,
+				DF0E4AC61AD597ED00A75430 /* DVDPlayerRadioRDS.cpp in Sources */,
 				E4991499174E606600741B6D /* VideoInfoTag.cpp in Sources */,
 				E499149A174E606600741B6D /* VideoReferenceClock.cpp in Sources */,
 				E499149B174E606600741B6D /* VideoThumbLoader.cpp in Sources */,
@@ -13345,6 +13384,7 @@
 				7CC7B6B41918699000DDB120 /* GUIDialogSettingsBase.cpp in Sources */,
 				7CC7B6B71918699000DDB120 /* GUIDialogSettingsManagerBase.cpp in Sources */,
 				7CC7B6BA1918699000DDB120 /* GUIDialogSettingsManualBase.cpp in Sources */,
+				DF0E4ACB1AD5982500A75430 /* InfoTagRadioRDS.cpp in Sources */,
 				7CC7B6C1191869EA00DDB120 /* SettingCreator.cpp in Sources */,
 				7CC7B6C4191869EA00DDB120 /* SettingUtils.cpp in Sources */,
 				7CC7B6C919186A8800DDB120 /* SettingConditions.cpp in Sources */,

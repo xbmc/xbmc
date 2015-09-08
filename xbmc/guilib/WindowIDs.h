@@ -138,6 +138,7 @@
 #define WINDOW_RADIO_TIMERS               10623
 #define WINDOW_RADIO_SEARCH               10624
 #define WINDOW_FULLSCREEN_RADIO           10625 // virtual window for PVR radio specific keymaps with fallback to WINDOW_VISUALISATION
+#define WINDOW_DIALOG_PVR_RADIO_RDS_INFO  10626
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 // WINDOW_ID's from 11100 to 11199 reserved for Skins
