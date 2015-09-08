@@ -51,9 +51,11 @@ namespace PVR
   class CPVRChannel;
   class CPVRRecording;
   class CPVRTimerInfoTag;
+  class CPVRRadioRDSInfoTag;
   typedef std::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
   typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
   typedef std::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
+  typedef std::shared_ptr<PVR::CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
 }
 class CPictureInfoTag;
 
@@ -213,6 +215,7 @@ public:
   bool IsUsablePVRRecording() const;
   bool IsDeletedPVRRecording() const;
   bool IsPVRTimer() const;
+  bool IsPVRRadioRDS() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
@@ -305,6 +308,21 @@ public:
   inline const PVR::CPVRTimerInfoTagPtr GetPVRTimerInfoTag() const
   {
     return m_pvrTimerInfoTag;
+  }
+
+  inline bool HasPVRRadioRDSInfoTag() const
+  {
+    return m_pvrRadioRDSInfoTag.get() != NULL;
+  }
+
+  inline const PVR::CPVRRadioRDSInfoTagPtr GetPVRRadioRDSInfoTag() const
+  {
+    return m_pvrRadioRDSInfoTag;
+  }
+
+  inline void SetPVRRadioRDSInfoTag(const PVR::CPVRRadioRDSInfoTagPtr& tag)
+  {
+    m_pvrRadioRDSInfoTag = tag;
   }
 
   /*!
@@ -503,6 +521,7 @@ private:
   PVR::CPVRChannelPtr m_pvrChannelInfoTag;
   PVR::CPVRRecordingPtr m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTagPtr m_pvrTimerInfoTag;
+  PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
 

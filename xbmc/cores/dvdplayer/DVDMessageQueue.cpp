@@ -157,7 +157,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     return MSGQ_NOT_INITIALIZED;
   }
 
-  if(m_list.empty() && m_bEmptied == false && priority == 0 && m_owner != "teletext")
+  if(m_list.empty() && m_bEmptied == false && priority == 0 && m_owner != "teletext" && m_owner != "rds")
   {
 #if !defined(TARGET_RASPBERRY_PI)
     CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - asked for new data packet, with nothing available", m_owner.c_str());

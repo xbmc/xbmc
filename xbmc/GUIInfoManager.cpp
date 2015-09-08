@@ -83,6 +83,7 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "epg/EpgContainer.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -731,6 +732,52 @@ const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE }
                                   { "masterownicon",            ADSP_MASTER_OWN_ICON },
                                   { "masteroverrideicon",       ADSP_MASTER_OVERRIDE_ICON }};
 
+const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
+                                  { "hasradiotext",             RDS_HAS_RADIOTEXT },
+                                  { "hasradiotextplus",         RDS_HAS_RADIOTEXT_PLUS },
+                                  { "audiolanguage",            RDS_AUDIO_LANG },
+                                  { "channelcountry",           RDS_CHANNEL_COUNTRY },
+                                  { "title",                    RDS_TITLE },
+                                  { "getline",                  RDS_GET_RADIOTEXT_LINE },
+                                  { "artist",                   RDS_ARTIST },
+                                  { "band",                     RDS_BAND },
+                                  { "composer",                 RDS_COMPOSER },
+                                  { "conductor",                RDS_CONDUCTOR },
+                                  { "album",                    RDS_ALBUM },
+                                  { "tracknumber",              RDS_ALBUM_TRACKNUMBER },
+                                  { "radiostyle",               RDS_GET_RADIO_STYLE },
+                                  { "comment",                  RDS_COMMENT },
+                                  { "infonews",                 RDS_INFO_NEWS },
+                                  { "infonewslocal",            RDS_INFO_NEWS_LOCAL },
+                                  { "infostock",                RDS_INFO_STOCK },
+                                  { "infostocksize",            RDS_INFO_STOCK_SIZE },
+                                  { "infosport",                RDS_INFO_SPORT },
+                                  { "infosportsize",            RDS_INFO_SPORT_SIZE },
+                                  { "infolottery",              RDS_INFO_LOTTERY },
+                                  { "infolotterysize",          RDS_INFO_LOTTERY_SIZE },
+                                  { "infoweather",              RDS_INFO_WEATHER },
+                                  { "infoweathersize",          RDS_INFO_WEATHER_SIZE },
+                                  { "infocinema",               RDS_INFO_CINEMA },
+                                  { "infocinemasize",           RDS_INFO_CINEMA_SIZE },
+                                  { "infohoroscope",            RDS_INFO_HOROSCOPE },
+                                  { "infohoroscopesize",        RDS_INFO_HOROSCOPE_SIZE },
+                                  { "infoother",                RDS_INFO_OTHER },
+                                  { "infoothersize",            RDS_INFO_OTHER_SIZE },
+                                  { "progstation",              RDS_PROG_STATION },
+                                  { "prognow",                  RDS_PROG_NOW },
+                                  { "prognext",                 RDS_PROG_NEXT },
+                                  { "proghost",                 RDS_PROG_HOST },
+                                  { "progeditstaff",            RDS_PROG_EDIT_STAFF },
+                                  { "proghomepage",             RDS_PROG_HOMEPAGE },
+                                  { "progstyle",                RDS_PROG_STYLE },
+                                  { "phonehotline",             RDS_PHONE_HOTLINE },
+                                  { "phonestudio",              RDS_PHONE_STUDIO },
+                                  { "smsstudio",                RDS_SMS_STUDIO },
+                                  { "emailhotline",             RDS_EMAIL_HOTLINE },
+                                  { "emailstudio",              RDS_EMAIL_STUDIO },
+                                  { "hashotline",               RDS_HAS_HOTLINE_DATA },
+                                  { "hasstudio",                RDS_HAS_STUDIO_DATA }};
+
 const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
                                   { "isactive",         SLIDESHOW_ISACTIVE },
                                   { "isvideo",          SLIDESHOW_ISVIDEO },
@@ -1306,6 +1353,20 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return adsp[i].val;
       }
     }
+    else if (cat.name == "rds")
+    {
+      if (prop.name == "getline")
+      {
+        std::string cat = prop.param(0);
+        StringUtils::ToLower(cat);
+        return AddMultiInfo(GUIInfo(RDS_GET_RADIOTEXT_LINE, atoi(cat.c_str())));
+      }
+      for (size_t i = 0; i < sizeof(rds) / sizeof(infomap); i++)
+      {
+        if (prop.name == rds[i].str)
+          return rds[i].val;
+      }
+    }
   }
   else if (info.size() == 3 || info.size() == 4)
   {
@@ -1603,6 +1664,15 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     {
       if(m_currentFile)
       {
+        if (m_currentFile->HasPVRRadioRDSInfoTag())
+        {
+          /*! Load the RDS Radiotext+ if present */
+          if (!m_currentFile->GetPVRRadioRDSInfoTag()->GetTitle().empty())
+            return m_currentFile->GetPVRRadioRDSInfoTag()->GetTitle();
+          /*! If no plus present load the RDS Radiotext info line 0 if present */
+          if (!g_application.m_pPlayer->GetRadioText(0).empty())
+            return g_application.m_pPlayer->GetRadioText(0);
+        }
         if (m_currentFile->HasPVRChannelInfoTag())
         {
           CEpgInfoTagPtr tag(m_currentFile->GetPVRChannelInfoTag()->GetEPGNow());
@@ -1758,6 +1828,47 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       strLabel = info.language;
     }
     break;
+  case RDS_AUDIO_LANG:
+  case RDS_CHANNEL_COUNTRY:
+  case RDS_TITLE:
+  case RDS_BAND:
+  case RDS_COMPOSER:
+  case RDS_CONDUCTOR:
+  case RDS_ALBUM:
+  case RDS_ALBUM_TRACKNUMBER:
+  case RDS_GET_RADIO_STYLE:
+  case RDS_COMMENT:
+  case RDS_ARTIST:
+  case RDS_INFO_NEWS:
+  case RDS_INFO_NEWS_LOCAL:
+  case RDS_INFO_STOCK:
+  case RDS_INFO_STOCK_SIZE:
+  case RDS_INFO_SPORT:
+  case RDS_INFO_SPORT_SIZE:
+  case RDS_INFO_LOTTERY:
+  case RDS_INFO_LOTTERY_SIZE:
+  case RDS_INFO_WEATHER:
+  case RDS_INFO_WEATHER_SIZE:
+  case RDS_INFO_CINEMA:
+  case RDS_INFO_CINEMA_SIZE:
+  case RDS_INFO_HOROSCOPE:
+  case RDS_INFO_HOROSCOPE_SIZE:
+  case RDS_INFO_OTHER:
+  case RDS_INFO_OTHER_SIZE:
+  case RDS_PROG_STATION:
+  case RDS_PROG_NOW:
+  case RDS_PROG_NEXT:
+  case RDS_PROG_HOST:
+  case RDS_PROG_EDIT_STAFF:
+  case RDS_PROG_HOMEPAGE:
+  case RDS_PROG_STYLE:
+  case RDS_PHONE_HOTLINE:
+  case RDS_PHONE_STUDIO:
+  case RDS_SMS_STUDIO:
+  case RDS_EMAIL_HOTLINE:
+  case RDS_EMAIL_STUDIO:
+    strLabel = GetRadioRDSLabel(info);
+  break;
   case PLAYLIST_LENGTH:
   case PLAYLIST_POSITION:
   case PLAYLIST_RANDOM:
@@ -2780,6 +2891,28 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     }
     break;
+    case RDS_HAS_RDS:
+      bReturn = g_application.m_pPlayer->IsPlayingRDS();
+    break;
+    case RDS_HAS_RADIOTEXT:
+      if (m_currentFile->HasPVRRadioRDSInfoTag())
+        bReturn = m_currentFile->GetPVRRadioRDSInfoTag()->IsPlayingRadiotext();
+    break;
+    case RDS_HAS_RADIOTEXT_PLUS:
+      if (m_currentFile->HasPVRRadioRDSInfoTag())
+        bReturn = m_currentFile->GetPVRRadioRDSInfoTag()->IsPlayingRadiotextPlus();
+    break;
+    case RDS_HAS_HOTLINE_DATA:
+      if (m_currentFile->HasPVRRadioRDSInfoTag())
+        bReturn = (!m_currentFile->GetPVRRadioRDSInfoTag()->GetEMailHotline().empty() ||
+                   !m_currentFile->GetPVRRadioRDSInfoTag()->GetPhoneHotline().empty());
+    break;
+    case RDS_HAS_STUDIO_DATA:
+      if (m_currentFile->HasPVRRadioRDSInfoTag())
+        bReturn = (!m_currentFile->GetPVRRadioRDSInfoTag()->GetEMailStudio().empty() ||
+                   !m_currentFile->GetPVRRadioRDSInfoTag()->GetSMSStudio().empty() ||
+                   !m_currentFile->GetPVRRadioRDSInfoTag()->GetPhoneStudio().empty());
+    break;
     default: // default, use integer value different from 0 as true
       {
         int val;
@@ -3515,6 +3648,10 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     if (playlistid > PLAYLIST_NONE)
       return GetPlaylistLabel(info.m_info, playlistid);
   }
+  else if (info.m_info == RDS_GET_RADIOTEXT_LINE)
+  {
+    return g_application.m_pPlayer->GetRadioText(info.GetData1());
+  }
 
   return "";
 }
@@ -3767,6 +3904,174 @@ std::string CGUIInfoManager::GetPlaylistLabel(int item, int playlistid /* = PLAY
   return "";
 }
 
+std::string CGUIInfoManager::GetRadioRDSLabel(int item)
+{
+  if (!g_application.m_pPlayer->IsPlaying() ||
+      !m_currentFile->HasPVRChannelInfoTag() ||
+      !m_currentFile->HasPVRRadioRDSInfoTag())
+    return "";
+
+  const PVR::CPVRRadioRDSInfoTag &tag = *m_currentFile->GetPVRRadioRDSInfoTag();
+  switch (item)
+  {
+  case RDS_CHANNEL_COUNTRY:
+    return tag.GetCountry();
+
+  case RDS_AUDIO_LANG:
+    {
+      if (!tag.GetLanguage().empty())
+        return tag.GetLanguage();
+
+      SPlayerAudioStreamInfo info;
+      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
+      return info.language;
+    }
+
+  case RDS_TITLE:
+    return tag.GetTitle();
+
+  case RDS_ARTIST:
+    return tag.GetArtist();
+
+  case RDS_BAND:
+    return tag.GetBand();
+
+  case RDS_COMPOSER:
+    return tag.GetComposer();
+
+  case RDS_CONDUCTOR:
+    return tag.GetConductor();
+
+  case RDS_ALBUM:
+    return tag.GetAlbum();
+
+  case RDS_ALBUM_TRACKNUMBER:
+    {
+      if (!tag.GetAlbumTrackNumber() > 0)
+        return StringUtils::Format("%i", tag.GetAlbumTrackNumber());
+      break;
+    }
+  case RDS_GET_RADIO_STYLE:
+    return tag.GetRadioStyle();
+
+  case RDS_COMMENT:
+    return tag.GetComment();
+
+  case RDS_INFO_NEWS:
+    return tag.GetInfoNews();
+
+  case RDS_INFO_NEWS_LOCAL:
+    return tag.GetInfoNewsLocal();
+
+  case RDS_INFO_STOCK:
+    return tag.GetInfoStock();
+
+  case RDS_INFO_STOCK_SIZE:
+    return StringUtils::Format("%i", (int)tag.GetInfoStock().size());
+
+  case RDS_INFO_SPORT:
+    return tag.GetInfoSport();
+
+  case RDS_INFO_SPORT_SIZE:
+    return StringUtils::Format("%i", (int)tag.GetInfoSport().size());
+
+  case RDS_INFO_LOTTERY:
+    return tag.GetInfoLottery();
+
+  case RDS_INFO_LOTTERY_SIZE:
+    return StringUtils::Format("%i", (int)tag.GetInfoLottery().size());
+
+  case RDS_INFO_WEATHER:
+    return tag.GetInfoWeather();
+
+  case RDS_INFO_WEATHER_SIZE:
+    return StringUtils::Format("%i", (int)tag.GetInfoWeather().size());
+
+  case RDS_INFO_HOROSCOPE:
+    return tag.GetInfoHoroscope();
+
+  case RDS_INFO_HOROSCOPE_SIZE:
+    return StringUtils::Format("%i", (int)tag.GetInfoHoroscope().size());
+
+  case RDS_INFO_CINEMA:
+    return tag.GetInfoCinema();
+
+  case RDS_INFO_CINEMA_SIZE:
+    return StringUtils::Format("%i", (int)tag.GetInfoCinema().size());
+
+  case RDS_INFO_OTHER:
+    return tag.GetInfoOther();
+
+  case RDS_INFO_OTHER_SIZE:
+    return StringUtils::Format("%i", (int)tag.GetInfoOther().size());
+
+  case RDS_PROG_STATION:
+    {
+      if (!tag.GetProgStation().empty())
+        return tag.GetProgStation();
+      const CPVRChannelPtr channeltag = m_currentFile->GetPVRChannelInfoTag();
+      if (channeltag)
+        return channeltag->ChannelName();
+      break;
+    }
+
+  case RDS_PROG_NOW:
+    {
+      if (!tag.GetProgNow().empty())
+        return tag.GetProgNow();
+
+      CEpgInfoTagPtr epgNow(m_currentFile->GetPVRChannelInfoTag()->GetEPGNow());
+      return epgNow ?
+                epgNow->Title() :
+                CSettings::GetInstance().GetBool("epg.hidenoinfoavailable") ? "" : g_localizeStrings.Get(19055); // no information available
+      break;
+    }
+
+  case RDS_PROG_NEXT:
+    {
+      if (!tag.GetProgNext().empty())
+        return tag.GetProgNext();
+
+      CEpgInfoTagPtr epgNext(m_currentFile->GetPVRChannelInfoTag()->GetEPGNext());
+      return epgNext ?
+                epgNext->Title() :
+                CSettings::GetInstance().GetBool("epg.hidenoinfoavailable") ? "" : g_localizeStrings.Get(19055); // no information available
+      break;
+    }
+
+  case RDS_PROG_HOST:
+    return tag.GetProgHost();
+
+  case RDS_PROG_EDIT_STAFF:
+    return tag.GetEditorialStaff();
+
+  case RDS_PROG_HOMEPAGE:
+    return tag.GetProgWebsite();
+
+  case RDS_PROG_STYLE:
+    return tag.GetProgStyle();
+
+  case RDS_PHONE_HOTLINE:
+    return tag.GetPhoneHotline();
+
+  case RDS_PHONE_STUDIO:
+    return tag.GetPhoneStudio();
+
+  case RDS_SMS_STUDIO:
+    return tag.GetSMSStudio();
+
+  case RDS_EMAIL_HOTLINE:
+    return tag.GetEMailHotline();
+
+  case RDS_EMAIL_STUDIO:
+    return tag.GetEMailStudio();
+
+  default:
+    break;
+  }
+  return "";
+}
+
 std::string CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!g_application.m_pPlayer->IsPlaying() || !m_currentFile->HasMusicInfoTag()) return "";
@@ -3875,7 +4180,15 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
   case MUSICPLAYER_CHANNEL_NAME:
     {
       if (m_currentFile->HasPVRChannelInfoTag())
+      {
+        if (m_currentFile->HasPVRRadioRDSInfoTag())
+        {
+          const CPVRRadioRDSInfoTagPtr rdstag(m_currentFile->GetPVRRadioRDSInfoTag());
+          if (rdstag && !rdstag->GetProgStation().empty())
+            return rdstag->GetProgStation();
+        }
         return m_currentFile->GetPVRChannelInfoTag()->ChannelName();
+      }
     }
     break;
   case MUSICPLAYER_CHANNEL_NUMBER:
@@ -4281,6 +4594,8 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
   else
     SetCurrentMovie(item);
 
+  if (item.HasPVRRadioRDSInfoTag())
+    m_currentFile->SetPVRRadioRDSInfoTag(item.GetPVRRadioRDSInfoTag());
   if (item.HasEPGInfoTag())
     m_currentFile->SetEPGInfoTag(item.GetEPGInfoTag());
   else if (item.HasPVRChannelInfoTag())
@@ -5773,6 +6088,15 @@ const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const
     return m_currentFile->GetMusicInfoTag();
 
   return NULL;
+}
+
+const PVR::CPVRRadioRDSInfoTagPtr CGUIInfoManager::GetCurrentRadioRDSInfoTag() const
+{
+  if (m_currentFile->HasPVRRadioRDSInfoTag())
+    return m_currentFile->GetPVRRadioRDSInfoTag();
+
+  PVR::CPVRRadioRDSInfoTagPtr empty;
+  return empty;
 }
 
 const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const

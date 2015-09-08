@@ -25,6 +25,11 @@ void CDemuxStreamTeletext::GetStreamInfo(std::string& strInfo)
   strInfo = "Teletext Data Stream";
 }
 
+void CDemuxStreamRadioRDS::GetStreamInfo(std::string& strInfo)
+{
+  strInfo = "Radio Data Stream (RDS)";
+}
+
 void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
 {
   char sInfo[64];
@@ -110,6 +115,19 @@ int CDVDDemux::GetNrOfTeletextStreams()
   return iCounter;
 }
 
+const int CDVDDemux::GetNrOfRadioRDSStreams()
+{
+  int iCounter = 0;
+
+  for (int i = 0; i < GetNrOfStreams(); i++)
+  {
+    CDemuxStream* pStream = GetStream(i);
+    if (pStream->type == STREAM_RADIO_RDS) iCounter++;
+  }
+
+  return iCounter;
+}
+
 CDemuxStreamAudio* CDVDDemux::GetStreamFromAudioId(int iAudioIndex)
 {
   int counter = -1;
@@ -162,6 +180,20 @@ CDemuxStreamTeletext* CDVDDemux::GetStreamFromTeletextId(int iTeletextIndex)
     if (pStream->type == STREAM_TELETEXT) counter++;
     if (iTeletextIndex == counter)
       return (CDemuxStreamTeletext*)pStream;
+  }
+  return NULL;
+}
+
+const CDemuxStreamRadioRDS* CDVDDemux::GetStreamFromRadioRDSId(int iRadioRDSIndex)
+{
+  int counter = -1;
+  for (int i = 0; i < GetNrOfStreams(); i++)
+  {
+    CDemuxStream* pStream = GetStream(i);
+
+    if (pStream->type == STREAM_RADIO_RDS) counter++;
+    if (iRadioRDSIndex == counter)
+      return (CDemuxStreamRadioRDS*)pStream;
   }
   return NULL;
 }
