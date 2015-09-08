@@ -30,18 +30,75 @@
 
 #include "DSPVRBackend.h"
 
+class CDSMediaPortalCards;
 class CDSMediaPortal : public CDSPVRBackend
 {
 public:
   CDSMediaPortal(const CStdString& strBackendBaseAddress, const CStdString& strBackendName);
   virtual ~CDSMediaPortal();
-  virtual bool        ConvertStreamURLToTimeShiftFilePath(const CStdString& strUrl, CStdString& strTimeShiftFile);
-  virtual bool        SupportsStreamConversion(const CStdString& strUrl) const { return true; };
-  virtual bool        SupportsFastChannelSwitch() const { return true; };
-  virtual bool        GetRecordingStreamURL(const CStdString& strRecordingId, CStdString& strRecordingUrl, bool bGetUNCPath = false);
+  virtual bool          ConvertStreamURLToTimeShiftFilePath(const CStdString& strUrl, CStdString& strTimeShiftFile);
+  virtual bool          SupportsStreamConversion(const CStdString& strUrl) const { return true; };
+  virtual bool          SupportsFastChannelSwitch() const { return true; };
+  virtual bool          GetRecordingStreamURL(const CStdString& strRecordingId, CStdString& strRecordingUrl, bool bGetUNCPath = false);
 
 private:
-  bool                SendCommandToMPTVServer(const CStdString& strCommand, CStdString & strResponse);
-  bool                ConnectToMPTVServer();
-  bool                ConvertRtspStreamUrlToTimeShiftFilePath(const CStdString& strUrl, CStdString& strTimeShiftFile);
+  bool                  SendCommandToMPTVServer(const CStdString& strCommand, CStdString & strResponse);
+  bool                  ConnectToMPTVServer();
+  bool                  ConvertRtspStreamUrlToTimeShiftFilePath(const CStdString& strUrl, CStdString& strTimeShiftFile);
+  bool                  LoadCardSettings();
+  bool                  TranslatePathToUNC(const CStdString& strFilePath, CStdString& strTranslatedFilePath);
+
+  CDSMediaPortalCards  *m_pCardsSettings;
+};
+
+
+
+/* From Kodi's MediaPortal TVServer client addon: https://github.com/kodi-pvr/pvr.mediaportal.tvserver */
+
+/**
+* MediaPortal TVServer card settings ("card" table in the database)
+*/
+typedef struct MPCard
+{
+  int       IdCard;
+  string    DevicePath;
+  string    Name;
+  int       Priority;
+  bool      GrabEPG;
+  CDateTime LastEpgGrab;
+  string    RecordingFolder;
+  string    RecordingFolderUNC;
+  int       IdServer;
+  bool      Enabled;
+  int       CamType;
+  string    TimeshiftFolder;
+  string    TimeshiftFolderUNC;
+  int       RecordingFormat;
+  int       DecryptLimit;
+  bool      Preload;
+  bool      CAM;
+  int       NetProvider;
+  bool      StopGraph;
+} MPCard;
+
+class CDSMediaPortalCards : public vector<MPCard>
+{
+public:
+
+  /**
+  * \brief Parse the multi-line string response from the TVServerXBMC plugin command "GetCardSettings"
+  * The data is stored in "struct MediaPortalCard" item.
+  *
+  * \param lines Vector with response lines
+  * \return True on success, False on failure
+  */
+  bool ParseLines(vector<string>& lines);
+
+  /**
+  * \brief Return the data for the card with the given id
+  * \param id The card id
+  * \param card Return value: card data or NULL if not found.
+  * \return True on success, False on failure
+  */
+  bool GetCard(int id, MPCard& card);
 };
