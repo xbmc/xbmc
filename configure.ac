@@ -677,18 +677,6 @@ case $host in
 esac
 AC_SUBST([ARCH])
 
-case $host in
-  *-apple-darwin*)
-     check_sdl_arch=[`file $NATIVE_ROOT/lib/libSDL_image.dylib | awk '{print $NF}'`]
-     if test "x$check_sdl_arch" = "xi386" ; then
-       DARWIN_NATIVE_ARCH=-m32
-     elif test "x$check_sdl_arch" = "xx86_64" ; then
-       DARWIN_NATIVE_ARCH=-m64
-     fi
-     ;;
-esac
-AC_SUBST([DARWIN_NATIVE_ARCH])
-
 if test "$target_platform" = "target_android" ; then
   USE_ANDROID=1
   webserver_checkdepends=yes
@@ -1251,7 +1239,7 @@ if test "$host_vendor" = "apple" ; then
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
-    AC_DEFINE([SDL_VERSION],[1],["SDL major version"])
+    AC_DEFINE([HAVE_SDL_VERSION],[1],["SDL major version"])
   fi
 else
 if test "$target_platform" != "target_android" ; then
@@ -1274,7 +1262,7 @@ fi
   # joystick
   if test "$use_joystick" != "no"; then
     PKG_CHECK_MODULES([SDL2], [sdl2],
-      [AC_DEFINE([SDL_VERSION],[2],["SDL major version"])
+      [AC_DEFINE([HAVE_SDL_VERSION],[2],["SDL major version"])
        AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
        INCLUDES="$INCLUDES $SDL2_CFLAGS"; LIBS="$LIBS $SDL2_LIBS"; use_joystick="yes"],
       [if test "$use_joystick" = "yes"; then
