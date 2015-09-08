@@ -26,7 +26,8 @@
 
 #include "DSArgusTV.h"
 
-CDSArgusTV::CDSArgusTV(const CStdString& strBackendBaseAddress, const CStdString& strBackendName) : CDSPVRBackend(strBackendBaseAddress, strBackendName)
+CDSArgusTV::CDSArgusTV(const CStdString& strBackendBaseAddress, const CStdString& strBackendName) 
+  : CDSPVRBackend(strBackendBaseAddress, strBackendName)
 {
   CLog::Log(LOGNOTICE, "%s PVR Backend name: %s, Base Address: %s", __FUNCTION__, strBackendName.c_str(), strBackendBaseAddress.c_str());
 }
