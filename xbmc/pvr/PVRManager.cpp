@@ -311,7 +311,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   for (std::map<std::string, std::string>::iterator it = outdatedAddons.begin(); it != outdatedAddons.end(); ++it)
   {
     CLog::Log(LOGINFO, "PVR - updating add-on '%s'", it->first.c_str());
-    CAddonInstaller::GetInstance().Install(it->first, true, it->second, false);
+    CAddonInstaller::GetInstance().InstallOrUpdate(it->first, it->second, false);
   }
 
   // reload

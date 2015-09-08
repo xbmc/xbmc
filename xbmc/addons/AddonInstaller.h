@@ -55,14 +55,13 @@ public:
 
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install
-   \param force whether to force the install even if the addon is already installed (eg for updating). Defaults to false.
    \param referer string to use for referer for http fetch. Set to previous version when updating, parent when fetching a dependency
    \param background whether to install in the background or not. Defaults to true.
    \param modal whether to show a modal dialog when not installing in background
    \return true on successful install, false on failure.
    \sa DoInstall
    */
-  bool Install(const std::string &addonID, bool force = false, const std::string &referer="", bool background = true, bool modal = false);
+  bool InstallOrUpdate(const std::string &addonID, const std::string &referer="", bool background = true, bool modal = false);
 
   /*! \brief Install an addon from the given zip path
    \param path the zip file to install from

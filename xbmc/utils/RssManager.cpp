@@ -75,7 +75,7 @@ void CRssManager::OnSettingAction(const CSetting *setting)
     {
       if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24076}, CVariant{24100}, CVariant{"RSS Editor"}, CVariant{24101}))
         return;
-      CAddonInstaller::GetInstance().Install("script.rss.editor", true, "", false);
+      CAddonInstaller::GetInstance().InstallOrUpdate("script.rss.editor", "", false);
     }
     CBuiltins::Execute("RunScript(script.rss.editor)");
   }
