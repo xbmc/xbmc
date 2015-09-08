@@ -69,11 +69,13 @@ bool CDSInputStreamPVRManager::CloseAndOpenFile(const CURL& url)
 
   // In case opened channel need to be closed before opening new channel
   bool bReturnVal = false;
-  if (CDSPlayer::PlayerState == DSPLAYER_PLAYING || CDSPlayer::PlayerState == DSPLAYER_PAUSED)
+  if ( CDSPlayer::PlayerState == DSPLAYER_PLAYING 
+    || CDSPlayer::PlayerState == DSPLAYER_PAUSED 
+    || CDSPlayer::PlayerState == DSPLAYER_STOPPED)
   {
     // New channel cannot be opened, try to close the file
     m_pPlayer->CloseFile(false);
-    bReturnVal = m_pPlayer->WaitForThreadExit(100);
+    bReturnVal = m_pPlayer->WaitForFileClose();
 
     if (!bReturnVal)
       CLog::Log(LOGERROR, "%s Closing file failed", __FUNCTION__);
@@ -89,6 +91,8 @@ bool CDSInputStreamPVRManager::CloseAndOpenFile(const CURL& url)
         else
           Sleep(500);
       }
+      if (!bReturnVal)
+        CLog::Log(LOGERROR, "%s Opening file failed", __FUNCTION__);
     }
   }
 
