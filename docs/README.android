@@ -161,9 +161,9 @@ in the error message.
 3.5. Create a (new) debug key to sign debug APKs
 --------------------------------------------------------------------
 
-  All packages must be signed. The following command will generate a
-  self-signed debug key. If the result is a cryptic error, it
-  probably just means a debug key already existed, no cause for alarm.
+All packages must be signed. The following command will generate a
+self-signed debug key. If the result is a cryptic error, it
+probably just means a debug key already existed, no cause for alarm.
 
     $ keytool -genkey -keystore ~/.android/debug.keystore -v -alias \
       androiddebugkey -dname "CN=Android Debug,O=Android,C=US" -keypass \
@@ -194,29 +194,30 @@ on with the Android toolchain and creating an Android Application Package
     $ ./bootstrap
     $ ./configure --help
 
-   Run configure with the correct settings for you local configuration.
-   See tools/depends/README for examples.
+Run configure with the correct settings for you local configuration.
+See tools/depends/README for examples.
 
-   Anyone working on the dependencies themselves will want to set the
-   environment variables specified in ~/.bashrc or similar, to avoid
-   having to input these with each configure.
+Anyone working on the dependencies themselves will want to set the
+environment variables specified in ~/.bashrc or similar, to avoid
+having to input these with each configure.
 
     $ make -j <jobs>
     $ make -j <jobs> -C target/binary-addons
 
-   NOTE: if you only want to build specific addons you can specify like this:
+NOTE: if you only want to build specific addons you can specify like this:
     $ make -C target/binary-addons ADDONS="pvr.hts pvr.dvblink"
 
-   This build was designed to be massively parallel. Don't be afraid to
-   give it a 'make -j20' or so.
+This build was designed to be massively parallel. Don't be afraid to
+give it a 'make -j20' or so.
 
-   Verify that all deps built correctly (it will tell you so) before
-   continuing. You will get crazy build errors otherwise. If in doubt
-   run another 'make' (single threaded) until the message
-   "Dependencies built successfully." appears. If the single make
-   fails keep cleaning the dependes library in charge by issuing
+Verify that all deps built correctly (it will tell you so) before
+continuing. You will get crazy build errors otherwise. If in doubt
+run another 'make' (single threaded) until the message
+"Dependencies built successfully." appears. If the single make
+fails keep cleaning the dependes library in charge by issuing
     $ make -C target/<name_of_failed_lib> distclean. Then try make again.
-   Rinse and repeat until you are really done and all libs are built.
+
+Rinse and repeat until you are really done and all libs are built.
 
 --------------------------------------------------------------------
 5.2. Building Kodi
@@ -227,8 +228,8 @@ on with the Android toolchain and creating an Android Application Package
     $ make
     $ make apk
 
-   After the first build (assuming bootstrap and configure are successful),
-   subsequent builds can be run with a simple 'make' and 'make apk'.
+After the first build (assuming bootstrap and configure are successful),
+subsequent builds can be run with a simple 'make' and 'make apk'.
 
 -----------------------------------------------------------------------------
 6. Installing Kodi in an Android system
@@ -275,7 +276,7 @@ when using the emulator):
   - Applications
     [X] Unknown sources
      -  Development
-      [X] USB debugging
+        [X] USB debugging
 
 To access the log output of your Android system run (the -s parameter
 and the <device-id> may not be needed when using the Android emulator)

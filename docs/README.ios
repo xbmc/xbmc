@@ -2,16 +2,17 @@ TOC
 1. Introduction
 2. Getting the source code
 3. Install required libs
-  3.1. Install Xcode
-  3.1.1 Supported Xcode and OSX constellations
-  3.2. Install Cross libs and runtime environment
+   3.1. Install Xcode
+   3.1.1 Supported Xcode and OSX constellations
+   3.2. Install Cross libs and runtime environment
 4. How to compile and run
-	4.1 Using XCode
-	4.2 Using Command line
+   4.1 Using XCode
+   4.2 Using Command line
 5. Packaging
 6. Gesture Handling on iPad/iPhone/iPod touch
 7. Usage/Development on un-jailbroken devices (only interesting for official
    apple developers!)
+
 -----------------------------------------------------------------------------
 1. Introduction
 -----------------------------------------------------------------------------
@@ -84,21 +85,21 @@ constellations of Xcode and OSX versions (to be updated once we know more):
     $ make
     $ make -C target/binary-addons
 
- NOTE: if you only want to build specific addons you can specify like this:
-     $ make -C target/binary-addons ADDONS="pvr.hts pvr.dvblink"
+NOTE: if you only want to build specific addons you can specify like this:
+    $ make -C target/binary-addons ADDONS="pvr.hts pvr.dvblink"
 
- NOTE: You can speedup compilation on multicore systems by doing
-       "make -j<number of cores>" instead of "make". For a dualcore this would read:
+NOTE: You can speedup compilation on multicore systems by doing
+      "make -j<number of cores>" instead of "make". For a dualcore this would read:
     $ make -j2
 
- ADVANCED developers only! If you want to specify an iOS SDK version (if
- multiple versions are installed) - then append it to the configure line
- above (example below would use iOS SDK 8.0):
+ADVANCED developers only! If you want to specify an iOS SDK version (if
+multiple versions are installed) - then append it to the configure line
+above (example below would use iOS SDK 8.0):
 
     $ ./configure --host=arm-apple-darwin --with-sdk=8.0
 
- Ensure that you also adapt the xcode project to use this SDK version or
- if building via cmdline the SDKROOT parameter of the xcodebuild command.
+Ensure that you also adapt the xcode project to use this SDK version or
+if building via cmdline the SDKROOT parameter of the xcodebuild command.
 
 -----------------------------------------------------------------------------
 4. How to compile
@@ -132,9 +133,9 @@ to adapt the active target to use the same iOS SDK version. Else build will fail
     $ xcodebuild -project Kodi.xcodeproj -target Kodi-iOS -configuration Release build \
       ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 SDKROOT=iphoneos8.0
 
- Make sure to set SDKROOT to the iOS SDK you want to use. This should be the same
- you used on point 3.2! If latest SDK should be used (and you didn't specify anything
- in step 3.2) - just remove the SDKROOT=iphoneos8.0 from the command line.
+Make sure to set SDKROOT to the iOS SDK you want to use. This should be the same
+you used on point 3.2! If latest SDK should be used (and you didn't specify anything
+in step 3.2) - just remove the SDKROOT=iphoneos8.0 from the command line.
 
 -----------------------------------------------------------------------------
 5. Packaging
@@ -168,7 +169,7 @@ distribution.
  - Dragging                                   -> For scrollbars and sliders
  - Zoom gesture                               -> In the pictureviewer
 
- Gestures can be adapted in system/keymaps/touchscreen.xml
+Gestures can be adapted in system/keymaps/touchscreen.xml
 
 ------------------------------------------------------------------------------
 7. Usage/Development on un-jailbroken devices (only interesting for official apple developers!)
