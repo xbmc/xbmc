@@ -704,7 +704,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
       const AddonVersion &version = it->second.first;
       bool optional = it->second.second;
       AddonPtr dependency;
-      bool haveAddon = CAddonMgr::GetInstance().GetAddon(addonID, dependency);
+      bool haveAddon = CAddonMgr::GetInstance().GetAddon(addonID, dependency, ADDON_UNKNOWN, false);
       if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
       {
         // we have it but our version isn't good enough, or we don't have it and we need it
