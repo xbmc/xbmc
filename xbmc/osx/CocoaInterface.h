@@ -57,13 +57,8 @@ extern "C"
   // Version.
   //
   bool Cocoa_GPUForDisplayIsNvidiaPureVideo3();
-  int Cocoa_GetOSVersion();
 
-  
-  void  Cocoa_MakeChildWindow();
-  void  Cocoa_DestroyChildWindow();
-
-  const char *Cocoa_Paste() ;  
+  const char *Cocoa_Paste() ;
 
 #ifdef __cplusplus
 }
