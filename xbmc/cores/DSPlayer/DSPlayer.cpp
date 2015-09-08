@@ -288,6 +288,14 @@ void CDSPlayer::ShowEditionDlg(bool playStart)
   }
 }
 
+bool CDSPlayer::WaitForFileClose()
+{
+  if (!WaitForThreadExit(100) || !m_pGraphThread.WaitForThreadExit(100) || !m_pDSPlayerMessages.WaitForThreadExit(100))
+    return false;
+
+  return true;
+}
+
 bool CDSPlayer::OpenFileInternal(const CFileItem& file)
 {
   try
@@ -296,10 +304,8 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
     if (PlayerState != DSPLAYER_CLOSED)
       CloseFile();
 
-    if (!WaitForThreadExit(100) || !m_pGraphThread.WaitForThreadExit(100) || !m_pDSPlayerMessages.WaitForThreadExit(100))
-    {
+    if(!WaitForFileClose())
       return false;
-    }
 
     PlayerState = DSPLAYER_LOADING;
     currentFileItem = file;
@@ -1167,15 +1173,17 @@ void CDSPlayer::UpdateChannelSwitchSettings()
   // means we'll have to update the view mode manually
   g_renderManager.SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
 #endif
-
-  m_PlayerOptions.identify = false;
 }
 
 bool CDSPlayer::SwitchChannel(unsigned int iChannelNumber)
 {
   m_PlayerOptions.identify = true;
 
-  return g_pPVRStream->SelectChannelByNumber(iChannelNumber);
+  bool bResult = g_pPVRStream->SelectChannelByNumber(iChannelNumber);
+  
+  m_PlayerOptions.identify = false;
+
+  return bResult;
 }
 
 bool CDSPlayer::SwitchChannel(const CPVRChannelPtr &channel)
@@ -1189,7 +1197,11 @@ bool CDSPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 
   m_PlayerOptions.identify = true;
 
-  return g_pPVRStream->SelectChannel(channel);
+  bool bResult = g_pPVRStream->SelectChannel(channel);
+
+  m_PlayerOptions.identify = false;
+
+  return bResult;
 }
 
 bool CDSPlayer::SelectChannel(bool bNext)
@@ -1203,7 +1215,11 @@ bool CDSPlayer::SelectChannel(bool bNext)
     g_infoManager.SetDisplayAfterSeek(100000);
   }
 
-  return bNext ? g_pPVRStream->NextChannel(bShowPreview) : g_pPVRStream->PrevChannel(bShowPreview);
+  bool bResult = (bNext ? g_pPVRStream->NextChannel(bShowPreview) : g_pPVRStream->PrevChannel(bShowPreview));
+  
+  m_PlayerOptions.identify = false;
+
+  return bResult;
 }
 
 bool CDSPlayer::ShowPVRChannelInfo()
