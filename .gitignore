@@ -337,6 +337,7 @@ lib/cpluff/stamp-h1
 /project/VS2010Express/*.vsp
 /project/VS2010Express/*.metaproj
 /project/VS2010Express/*.metaproj.tmp
+/project/VS2010Express/.vs
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
@@ -827,3 +828,9 @@ xbmc/main/posix/Makefile
 
 /pvr-addons
 /adsp-addons
+
+# files removed in Jarvis
+/addons/visualization.dxspectrum/*
+/addons/visualization.milkdrop/*
+/addons/visualization.vortex/*
+/addons/visualization.waveform/*
