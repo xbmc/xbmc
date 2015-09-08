@@ -20,10 +20,6 @@
 
 /*Class for managing the UIScreens/resolutions of an iOS device*/
 
-#ifdef TARGET_DARWIN_IOS_ATV2
-#import <BackRow/BackRow.h>
-#else
-#endif
 #import <UIKit/UIKit.h>
 
 @class IOSEAGLView;

@@ -59,22 +59,7 @@ bool CWinEventsIOS::MessagePump()
       pumpEvent = events.front();
       events.pop_front();
     }  
-    
-    if (pumpEvent.type == XBMC_USEREVENT)
-    {
-      // On ATV2, we push in events as a XBMC_USEREVENT,
-      // the jbutton.which will be the keyID to translate using joystick.AppleRemote.xml
-      // jbutton.holdTime is the time the button is hold in ms (for repeated keypresses)
-      std::string joystickName = "AppleRemote";
-      float fAmount = 1.0;
-      unsigned char wKeyID = pumpEvent.jbutton.which;
-      unsigned int holdTime = pumpEvent.jbutton.holdTime;
-
-      CLog::Log(LOGDEBUG,"CWinEventsIOS: Button press keyID = %i", wKeyID);
-      ret |= CInputManager::GetInstance().ProcessJoystickEvent(g_windowManager.GetActiveWindowID(), joystickName, wKeyID, JACTIVE_BUTTON, fAmount, holdTime);
-    }
-    else
-      ret |= g_application.OnEvent(pumpEvent);
+    ret = g_application.OnEvent(pumpEvent);
   }
   return ret;
 }

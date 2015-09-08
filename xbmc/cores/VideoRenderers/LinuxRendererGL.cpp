@@ -3346,8 +3346,7 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   }
 
 #ifdef TARGET_DARWIN_IOS
-  // iOS has not the power for YADIF - TODO evaluate if its
-  // enough to disable it for TARGET_DARWIN_IOS_ATV2
+  // iOS does not have the ponies for YADIF
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return false;
 #endif

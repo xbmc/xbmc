@@ -37,9 +37,7 @@
 #include <objc/runtime.h>
 
 #import "IOSScreenManager.h"
-#if defined(TARGET_DARWIN_IOS_ATV2)
-#import "xbmc/osx/atv2/KodiController.h"
-#elif defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
 #import "xbmc/osx/ios/XBMCController.h"
 #endif
 #import "IOSExternalTouchController.h"
@@ -258,16 +256,6 @@ static CEvent screenChangeEvent;
 + (CGRect) getLandscapeResolution:(UIScreen *)screen
 {
   CGRect res = [screen bounds];
-#ifdef TARGET_DARWIN_IOS_ATV2
-  //because bounds returns f00bar on atv2 - we return the preferred resolution (which mostly is the
-  //right resolution
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_2
-  res.size = screen.preferredMode.size;
-#else
-  Class brwin = objc_getClass("BRWindow");
-  res.size = [brwin interfaceFrame].size;
-#endif
-#else
   #if __IPHONE_8_0
   if (CDarwinUtils::GetIOSVersion() < 8.0)
   #endif
@@ -280,7 +268,6 @@ static CEvent screenChangeEvent;
       res.size = CGSizeMake(frame.size.height, frame.size.width);
     }
   }
-#endif
   return res;
 }
 //--------------------------------------------------------------

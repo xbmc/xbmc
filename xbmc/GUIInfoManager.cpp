@@ -1373,7 +1373,6 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       else if (platform == "darwin")  return SYSTEM_PLATFORM_DARWIN;
       else if (platform == "osx")  return SYSTEM_PLATFORM_DARWIN_OSX;
       else if (platform == "ios")  return SYSTEM_PLATFORM_DARWIN_IOS;
-      else if (platform == "atv2") return SYSTEM_PLATFORM_DARWIN_ATV2;
       else if (platform == "android") return SYSTEM_PLATFORM_ANDROID;
     }
     if (info[0].name == "musicplayer")
@@ -2486,12 +2485,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #endif
   else if (condition == SYSTEM_PLATFORM_DARWIN_IOS)
 #ifdef TARGET_DARWIN_IOS
-    bReturn = true;
-#else
-    bReturn = false;
-#endif
-  else if (condition == SYSTEM_PLATFORM_DARWIN_ATV2)
-#ifdef TARGET_DARWIN_IOS_ATV2
     bReturn = true;
 #else
     bReturn = false;

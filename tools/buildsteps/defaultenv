@@ -15,12 +15,6 @@ DEPLOYED_BINARY_ADDONS="-e /addons"
 #set platform defaults
 #$XBMC_PLATFORM_DIR matches the platform subdirs!
 case $XBMC_PLATFORM_DIR in
-  atv2)
-    DEFAULT_SDK_VERSION=8.1
-    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
-    DEFAULT_CONFIGURATION="Debug"
-    ;;
-
   ios)
     DEFAULT_SDK_VERSION=8.1
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends

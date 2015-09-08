@@ -2415,13 +2415,10 @@ OUTPUT_FILES="Makefile \
     tools/darwin/Configurations/App.xcconfig \
     tools/darwin/Configurations/Common.xcconfig \
     tools/darwin/packaging/ios/mkdeb-ios.sh \
-    tools/darwin/packaging/atv2/mkdeb-atv2.sh \
     tools/darwin/packaging/osx/mkdmg-osx.sh \
     tools/darwin/packaging/migrate_to_kodi_ios.sh \
-    tools/darwin/packaging/seatbeltunlock/mkdeb-seatbeltunlock.sh \
     xbmc/osx/Info.plist \
     xbmc/osx/ios/XBMCIOS-Info.plist \
-    xbmc/osx/atv2/XBMCATV2-Info.plist \
     project/cmake/kodi-config.cmake \
     project/cmake/xbmc-config.cmake \
     tools/android/packaging/xbmc/AndroidManifest.xml \

@@ -202,8 +202,6 @@ void CLinuxTimezone::SetTimezone(std::string timezoneName)
   bool use_timezone = true;
 #else
   bool use_timezone = false;
-  if (g_sysinfo.IsAppleTV2())
-    use_timezone = true;
 #endif
   
   if (use_timezone)

@@ -96,7 +96,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant hea
   else if (heading.isInteger() && heading.asInteger())
     headingStr = g_localizeStrings.Get((uint32_t)heading.asInteger());
 
-#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#if defined(TARGET_DARWIN_IOS)
   if (g_Windowing.GetCurrentScreen() == 0)
     kb = new CIOSKeyboard();
 #endif
