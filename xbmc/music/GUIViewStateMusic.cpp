@@ -328,21 +328,11 @@ void CGUIViewStateMusicDatabase::SaveViewState()
     case NODE_TYPE_YEAR_ALBUM:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV, CViewStateSettings::GetInstance().Get("musicnavalbums"));
       break;
-    case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-    case NODE_TYPE_ALBUM_TOP100:
-    case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-      SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV);
-      break;
     case NODE_TYPE_SINGLES:
     case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     case NODE_TYPE_SONG:
     case NODE_TYPE_YEAR_SONG:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV, CViewStateSettings::GetInstance().Get("musicnavsongs"));
-      break;
-    case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
-    case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
-    case NODE_TYPE_SONG_TOP100:
-      SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV);
       break;
     default:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV);
