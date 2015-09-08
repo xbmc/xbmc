@@ -31,7 +31,6 @@ class CDarwinUtils
 {
 public:
   static const char *getIosPlatformString(void);
-  static bool        IsAppleTV2(void);
   static bool        IsMavericks(void);
   static bool        IsSnowLeopard(void);
   static bool        DeviceHasRetina(double &scale);
