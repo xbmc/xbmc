@@ -7113,10 +7113,7 @@ msgctxt "#14081"
 msgid "File lists"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14082"
-msgid "Show EXIF picture information"
-msgstr ""
+#empty string with id 14082
 
 #: system/settings/settings.xml
 msgctxt "#14083"
@@ -16124,11 +16121,7 @@ msgctxt "#36305"
 msgid "This category contains the settings for how picture file lists are handled."
 msgstr ""
 
-#. Description of setting "Pictures -> Show EXIF picture information" with label #14082
-#: system/settings/settings.xml
-msgctxt "#36306"
-msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
-msgstr ""
+#empty string with id 36306
 
 #. Description of setting "Pictures -> Automatically generate thumbnails" with label #13360
 #: system/settings/settings.xml

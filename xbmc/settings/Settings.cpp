@@ -304,7 +304,6 @@ const std::string CSettings::SETTING_KARAOKE_IMPORTCSV = "karaoke.importcsv";
 const std::string CSettings::SETTING_MYMUSIC_STARTWINDOW = "mymusic.startwindow";
 const std::string CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS = "mymusic.songthumbinvis";
 const std::string CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW = "mymusic.defaultlibview";
-const std::string CSettings::SETTING_PICTURES_USETAGS = "pictures.usetags";
 const std::string CSettings::SETTING_PICTURES_GENERATETHUMBS = "pictures.generatethumbs";
 const std::string CSettings::SETTING_PICTURES_USEEXIFROTATION = "pictures.useexifrotation";
 const std::string CSettings::SETTING_PICTURES_SHOWVIDEOS = "pictures.showvideos";
