@@ -305,7 +305,6 @@ const std::string CSettings::SETTING_MYMUSIC_STARTWINDOW = "mymusic.startwindow"
 const std::string CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS = "mymusic.songthumbinvis";
 const std::string CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW = "mymusic.defaultlibview";
 const std::string CSettings::SETTING_PICTURES_GENERATETHUMBS = "pictures.generatethumbs";
-const std::string CSettings::SETTING_PICTURES_USEEXIFROTATION = "pictures.useexifrotation";
 const std::string CSettings::SETTING_PICTURES_SHOWVIDEOS = "pictures.showvideos";
 const std::string CSettings::SETTING_PICTURES_DISPLAYRESOLUTION = "pictures.displayresolution";
 const std::string CSettings::SETTING_SLIDESHOW_STAYTIME = "slideshow.staytime";
