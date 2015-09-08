@@ -850,11 +850,6 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   CEventLog::GetInstance().Add(activity, !IsModal(), false);
 }
 
-std::string CAddonInstallJob::AddonID() const
-{
-  return m_addon ? m_addon->ID() : "";
-}
-
 CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon)
   : m_addon(addon)
 { }
