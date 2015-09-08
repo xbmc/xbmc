@@ -1,22 +1,21 @@
 TOC
 1. Introduction
 2. Using Scratchbox
-	2.1 Automatic Installation
-	2.2 Manual Installation
-	2.3 Installation Continued for both Automatic and Manual Methods
-	2.4 Setup Scratchbox
+   2.1 Automatic Installation
+   2.2 Manual Installation
+   2.3 Installation Continued for both Automatic and Manual Methods
+   2.4 Setup Scratchbox
 3. Getting the source code
 4. Installing the required ARMEL packages
 5. Obtaining the SGX files
 6. How to compile
-	6.1 Configure & Make
-	6.2 Install
+   6.1 Configure & Make
+   6.2 Install
 7. How to run
-	7.1 Obtaining the Packages
-	7.2 Installing the Files
-	7.3 Running Kodi
+   7.1 Obtaining the Packages
+   7.2 Installing the Files
+   7.3 Running Kodi
 8. Troubleshooting
-
 
 -----------------------------------------------------------------------------
 1. Introduction
