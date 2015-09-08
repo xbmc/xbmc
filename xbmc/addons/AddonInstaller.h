@@ -157,11 +157,6 @@ public:
 
   virtual bool DoWork();
 
-  /*! \brief return the id of the addon being installed
-   \return id of the installing addon
-   */
-  std::string AddonID() const;
-
   /*! \brief Find which repository hosts an add-on
    *  \param addon The add-on to find the repository for
    *  \return The hosting repository
