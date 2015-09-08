@@ -4261,7 +4261,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STARTED:
     {
-#ifdef TARGET_DARWIN
+#ifdef TARGET_DARWIN_IOS
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       CPlayList playList = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
@@ -4379,7 +4379,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (m_pKaraokeMgr )
         m_pKaraokeMgr->Stop();
 #endif
-#ifdef TARGET_DARWIN
+#ifdef TARGET_DARWIN_IOS
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       // first check if we still have items in the stack to play
