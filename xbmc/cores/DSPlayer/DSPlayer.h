@@ -241,6 +241,7 @@ public:
   CCriticalSection m_CleanSection;
 
   void ShowEditionDlg(bool playStart);
+  bool WaitForFileClose();
   bool OpenFileInternal(const CFileItem& file);
   void UpdateApplication();
   void UpdateChannelSwitchSettings();
