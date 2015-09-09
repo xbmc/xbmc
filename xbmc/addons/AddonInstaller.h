@@ -99,6 +99,12 @@ public:
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
+  /*! \brief Find which repository hosts an add-on
+   *  \param addon The add-on to find the repository for
+   *  \return The hosting repository
+   */
+  static ADDON::AddonPtr GetRepoForAddon(const std::string& addonId);
+
   class CDownloadJob
   {
   public:
@@ -149,15 +155,9 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr &addon, const std::string &hash = "");
+  CAddonInstallJob(const ADDON::AddonPtr &addon, const ADDON::AddonPtr &repo, const std::string &hash = "");
 
   virtual bool DoWork();
-
-  /*! \brief Find which repository hosts an add-on
-   *  \param addon The add-on to find the repository for
-   *  \return The hosting repository
-   */
-  static ADDON::AddonPtr GetRepoForAddon(const ADDON::AddonPtr& addon);
 
   /*! \brief Find the add-on and itshash for the given add-on ID
    *  \param addonID ID of the add-on to find
@@ -165,7 +165,7 @@ public:
    *  \param hash Hash of the add-on
    *  \return True if the add-on and its hash were found, false otherwise.
    */
-  static bool GetAddonWithHash(const std::string& addonID, ADDON::AddonPtr& addon, std::string& hash);
+  static bool GetAddonWithHash(const std::string& addonID, const std::string &repoID, ADDON::AddonPtr& addon, std::string& hash);
 
 private:
   void OnPreInstall();
@@ -188,6 +188,7 @@ private:
   void ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message = "");
 
   ADDON::AddonPtr m_addon;
+  ADDON::AddonPtr m_repo;
   std::string m_hash;
   bool m_update;
 };

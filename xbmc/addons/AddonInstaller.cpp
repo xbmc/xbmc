@@ -195,8 +195,12 @@ bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool backgroun
   CAddonMgr::GetInstance().GetAddon(addonID, addon, ADDON_UNKNOWN, false);
 
   // check whether we have it available in a repository
+  AddonPtr repo = GetRepoForAddon(addonID);
+  if (repo == NULL)
+    return false;
+
   std::string hash;
-  if (!CAddonInstallJob::GetAddonWithHash(addonID, addon, hash))
+  if (!CAddonInstallJob::GetAddonWithHash(addonID, repo->ID(), addon, hash))
     return false;
 
   return DoInstall(addon, hash, background, modal);
@@ -209,7 +213,8 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const std::string &hash /
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
     return false;
 
-  CAddonInstallJob* installJob = new CAddonInstallJob(addon, hash);
+  AddonPtr repo = CAddonInstaller::GetRepoForAddon(addon->ID());
+  CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, hash);
   if (background)
   {
     unsigned int jobID = CJobManager::GetInstance().AddJob(installJob, this);
@@ -414,6 +419,30 @@ void CAddonInstaller::InstallUpdates()
   }
 }
 
+AddonPtr CAddonInstaller::GetRepoForAddon(const std::string& addonId)
+{
+  AddonPtr repoPtr;
+
+  CAddonDatabase database;
+  if (!database.Open())
+    return repoPtr;
+
+  std::string repo;
+  if (!database.GetRepoForAddon(addonId, repo))
+    return repoPtr;
+
+  if (!CAddonMgr::GetInstance().GetAddon(repo, repoPtr))
+    return repoPtr;
+
+  if (std::dynamic_pointer_cast<CRepository>(repoPtr) == NULL)
+  {
+    repoPtr.reset();
+    return repoPtr;
+  }
+
+  return repoPtr;
+}
+
 int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result)
 {
   CFileItemList items;
@@ -435,39 +464,16 @@ int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemLi
   return size;
 }
 
-CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const std::string &hash /* = "" */)
+CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const AddonPtr &repo, const std::string &hash /* = "" */)
   : m_addon(addon),
+    m_repo(repo),
     m_hash(hash)
 {
   AddonPtr dummy;
   m_update = CAddonMgr::GetInstance().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN, false);
 }
 
-AddonPtr CAddonInstallJob::GetRepoForAddon(const AddonPtr& addon)
-{
-  AddonPtr repoPtr;
-
-  CAddonDatabase database;
-  if (!database.Open())
-    return repoPtr;
-
-  std::string repo;
-  if (!database.GetRepoForAddon(addon->ID(), repo))
-    return repoPtr;
-
-  if (!CAddonMgr::GetInstance().GetAddon(repo, repoPtr))
-    return repoPtr;
-
-  if (std::dynamic_pointer_cast<CRepository>(repoPtr) == NULL)
-  {
-    repoPtr.reset();
-    return repoPtr;
-  }
-
-  return repoPtr;
-}
-
-bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, ADDON::AddonPtr& addon, std::string& hash)
+bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, const std::string& repoID, ADDON::AddonPtr& addon, std::string& hash)
 {
   CAddonDatabase database;
   if (!database.Open())
@@ -476,15 +482,11 @@ bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, ADDON::Addon
   if (!database.GetAddon(addonID, addon))
     return false;
 
-  AddonPtr ptr = GetRepoForAddon(addon);
-  if (ptr == NULL)
+  AddonPtr repo;
+  if (!CAddonMgr::GetInstance().GetAddon(repoID, repo, ADDON_REPOSITORY))
     return false;
 
-  RepositoryPtr repo = std::dynamic_pointer_cast<CRepository>(ptr);
-  if (repo == NULL)
-    return false;
-
-  hash = repo->GetAddonHash(addon);
+  hash = std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon);
   return true;
 }
 
@@ -504,9 +506,8 @@ bool CAddonInstallJob::DoWork()
     return false;
   }
 
-  AddonPtr repoPtr = GetRepoForAddon(m_addon);
   std::string installFrom;
-  if (!repoPtr || repoPtr->Props().libname.empty())
+  if (!m_repo || m_repo->Props().libname.empty())
   {
     // Addons are installed by downloading the .zip package on the server to the local
     // packages folder, then extracting from the local .zip package into the addons folder
@@ -590,14 +591,14 @@ bool CAddonInstallJob::DoWork()
 
       installFrom = archivedFiles[0]->GetPath();
     }
-    repoPtr.reset();
+    m_repo.reset();
   }
 
   // run any pre-install functions
   ADDON::OnPreInstall(m_addon);
 
   // perform install
-  if (!Install(installFrom, repoPtr))
+  if (!Install(installFrom, m_repo))
     return false;
 
   // run any post-install guff
@@ -717,16 +718,17 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
         // don't have the addon or the addon isn't new enough - grab it (no new job for these)
         else if (IsModal())
         {
+          AddonPtr repoForDep = CAddonInstaller::GetRepoForAddon(addonID);
           AddonPtr addon;
           std::string hash;
-          if (!CAddonInstallJob::GetAddonWithHash(addonID, addon, hash))
+          if (!repoForDep || !CAddonInstallJob::GetAddonWithHash(addonID, repoForDep->ID(), addon, hash))
           {
             CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to find dependency %s", m_addon->ID().c_str(), addonID.c_str());
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
             return false;
           }
 
-          CAddonInstallJob dependencyJob(addon, hash);
+          CAddonInstallJob dependencyJob(addon, repoForDep, hash);
 
           // pass our progress indicators to the temporary job and don't allow it to
           // show progress or information updates (no progress, title or text changes)
@@ -846,7 +848,7 @@ bool CAddonUnInstallJob::DoWork()
 {
   ADDON::OnPreUnInstall(m_addon);
 
-  AddonPtr repoPtr = CAddonInstallJob::GetRepoForAddon(m_addon);
+  AddonPtr repoPtr = CAddonInstaller::GetRepoForAddon(m_addon->ID());
   RepositoryPtr therepo = std::dynamic_pointer_cast<CRepository>(repoPtr);
   if (therepo != NULL && !therepo->Props().libname.empty())
   {
