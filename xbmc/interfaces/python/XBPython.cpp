@@ -114,7 +114,9 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
      OnDPMSActivated();
   }
 
-  OnNotification(sender, std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." + std::string(message), CJSONVariantWriter::Write(data, g_advancedSettings.m_jsonOutputCompact));
+  std::string jsonData;
+  if (CJSONVariantWriter::Write(data, jsonData, g_advancedSettings.m_jsonOutputCompact))
+    OnNotification(sender, std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." + std::string(message), jsonData);
 }
 
 // message all registered callbacks that we started playing

@@ -274,7 +274,10 @@ std::string CJSONRPC::MethodCall(const std::string &inputString, ITransportLayer
     hasResponse = true;
   }
 
-  std::string str = hasResponse ? CJSONVariantWriter::Write(outputroot, g_advancedSettings.m_jsonOutputCompact) : "";
+  std::string str;
+  if (hasResponse)
+    CJSONVariantWriter::Write(outputroot, str, g_advancedSettings.m_jsonOutputCompact);
+
   return str;
 }
 
@@ -301,7 +304,10 @@ bool CJSONRPC::HandleMethodCall(const CVariant& request, CVariant& response, ITr
   }
   else
   {
-    CLog::Log(LOGERROR, "JSONRPC: Failed to parse '%s'\n", CJSONVariantWriter::Write(request, true).c_str());
+    std::string str;
+    CJSONVariantWriter::Write(request, str, true);
+
+    CLog::Log(LOGERROR, "JSONRPC: Failed to parse '%s'\n", str.c_str());
     errorCode = InvalidRequest;
   }
 

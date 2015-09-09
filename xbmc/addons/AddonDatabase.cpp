@@ -76,7 +76,9 @@ static std::string SerializeMetadata(const IAddon& addon)
     variant["extrainfo"].push_back(std::move(info));
   }
 
-  return CJSONVariantWriter::Write(variant, true);
+  std::string json;
+  CJSONVariantWriter::Write(variant, json, true);
+  return json;
 }
 
 static void DeserializeMetadata(const std::string& document, CAddonBuilder& builder)
