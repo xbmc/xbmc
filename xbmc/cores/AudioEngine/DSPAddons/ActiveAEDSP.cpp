@@ -259,16 +259,16 @@ bool CActiveAEDSP::InstallAddonAllowed(const std::string &strAddonId) const
          m_usedProcessesCnt == 0;
 }
 
-void CActiveAEDSP::MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer)
+void CActiveAEDSP::MarkAsOutdated(const std::string& strAddonId)
 {
   if (IsActivated() && CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
   {
     CSingleLock lock(m_critSection);
-    m_outdatedAddons.insert(make_pair(strAddonId, strReferer));
+    m_outdatedAddons.push_back(strAddonId);
   }
 }
 
-bool CActiveAEDSP::HasOutdatedAddons(std::map<std::string, std::string> &outdatedAddons)
+bool CActiveAEDSP::HasOutdatedAddons(std::vector<std::string> &outdatedAddons)
 {
   CSingleLock lock(m_critSection);
   if (!m_outdatedAddons.empty())

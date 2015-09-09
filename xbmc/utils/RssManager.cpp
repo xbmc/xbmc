@@ -74,15 +74,10 @@ void CRssManager::OnSettingAction(const CSetting *setting)
   if (settingId == CSettings::SETTING_LOOKANDFEEL_RSSEDIT)
   {
     ADDON::AddonPtr addon;
-    ADDON::CAddonMgr::GetInstance().GetAddon("script.rss.editor",addon);
-    if (!addon)
+    if (!ADDON::CAddonMgr::GetInstance().GetAddon("script.rss.editor", addon))
     {
-      if (HELPERS::ShowYesNoDialogLines(CVariant{24076}, CVariant{24100}, CVariant{"RSS Editor"}, CVariant{24101}) !=
-        DialogResponse::YES)
-      {
+      if (!CAddonInstaller::GetInstance().InstallModal("script.rss.editor", addon))
         return;
-      }
-      CAddonInstaller::GetInstance().InstallOrUpdate("script.rss.editor", "", false);
     }
     CBuiltins::Execute("RunScript(script.rss.editor)");
   }

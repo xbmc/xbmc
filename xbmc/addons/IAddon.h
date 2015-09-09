@@ -127,7 +127,7 @@ namespace ADDON
     virtual void OnPostInstall(bool update, bool modal) =0;
     virtual void OnPreUnInstall() =0;
     virtual void OnPostUnInstall() =0;
-    virtual bool CanInstall(const std::string& referer) =0;
+    virtual bool CanInstall() =0;
 
   protected:
     virtual bool LoadSettings(bool bForce = false) =0;
