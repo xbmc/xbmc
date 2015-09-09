@@ -56,6 +56,10 @@ void CImageResource::OnPreUnInstall()
 
 bool CImageResource::IsAllowed(const std::string &file) const
 {
+  // check if the file path points to a directory
+  if (URIUtils::HasSlashAtEnd(file, true))
+    return true;
+
   std::string ext = URIUtils::GetExtension(file);
   return file.empty() ||
          StringUtils::EqualsNoCase(ext, ".png") ||
