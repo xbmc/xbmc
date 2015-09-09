@@ -49,12 +49,16 @@ void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
   return ;
 }
 
+// WTF is this ?, we get the original server cache only
+// to set the server cache to this function which call the
+// original one anyway. Seems quite silly.
 smbc_get_cached_srv_fn orig_cache;
-
 SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const char* workgroup, const char* username)
 {
   return orig_cache(c, server, share, workgroup, username);
 }
+
+bool CSMB::IsFirstInit = true;
 
 CSMB::CSMB()
 {
@@ -135,6 +139,12 @@ void CSMB::Init()
 
     // reads smb.conf so this MUST be after we create smb.conf
     // multiple smbc_init calls are ignored by libsmbclient.
+    // note: this is important as it initilizes the smb old
+    // interface compatibility. Samba 3.4.0 or higher has the new interface.
+    // note: we leak the following here once, not sure why yet.
+    // 48 bytes -> smb_xmalloc_array
+    // 32 bytes -> set_param_opt
+    // 16 bytes -> set_param_opt
     smbc_init(xb_smbc_auth, 0);
 
     // setup our context
@@ -147,9 +157,11 @@ void CSMB::Init()
     smbc_setOptionOneSharePerServer(m_context, false);
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
     smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
+    // we do not need to strdup these, smbc_setXXX below will make their own copies
     if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      smbc_setWorkgroup(m_context, strdup(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
-    smbc_setUser(m_context, strdup("guest"));
+      smbc_setWorkgroup(m_context, (char*)CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
+    std::string guest = "guest";
+    smbc_setUser(m_context, (char*)guest.c_str());
 #else
     m_context->debug = (g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
     m_context->callbacks.auth_fn = xb_smbc_auth;
@@ -158,16 +170,28 @@ void CSMB::Init()
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
+    // we need to strdup these, they will get free'ed on smbc_free_context
     if (CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      m_context->workgroup = strdup(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
-    m_context->user = strdup("guest");
+      m_context->workgroup = strdup(CSettings::GetInstance().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
+    m_context->user = strdup("guest"));
 #endif
 
     // initialize samba and do some hacking into the settings
     if (smbc_init_context(m_context))
     {
-      /* setup old interface to use this context */
-      smbc_set_context(m_context);
+      // setup context using the smb old interface compatibility
+      SMBCCTX *old_context = smbc_set_context(m_context);
+      // free previous context or we leak it, this comes from smbc_init above.
+      // there is a bug in smbclient (old interface), if we init/set a context
+      // then set(null)/free it in DeInit above, the next smbc_set_context
+      // return the already freed previous context, free again and bang, crash.
+      // so we setup a stic bool to track the first init so we can free the
+      // context associated with the initial smbc_init.
+      if (old_context && IsFirstInit)
+      {
+        smbc_free_context(old_context, 1);
+        IsFirstInit = false;
+      }
     }
     else
     {
