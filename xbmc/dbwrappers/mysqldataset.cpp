@@ -269,7 +269,7 @@ int MysqlDatabase::copy(const char *backup_name) {
     while ( (row=mysql_fetch_row(res)) != NULL )
     {
       // copy the table definition
-      sprintf(sql, "CREATE TABLE %s.%s LIKE %s",
+      sprintf(sql, "CREATE TABLE `%s`.%s LIKE %s",
               backup_name, row[0], row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
@@ -279,7 +279,7 @@ int MysqlDatabase::copy(const char *backup_name) {
       }
 
       // copy the table data
-      sprintf(sql, "INSERT INTO %s.%s SELECT * FROM %s",
+      sprintf(sql, "INSERT INTO `%s`.%s SELECT * FROM %s",
               backup_name, row[0], row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
@@ -324,7 +324,7 @@ int MysqlDatabase::drop_analytics(void) {
   {
     while ( (row=mysql_fetch_row(res)) != NULL )
     {
-      sprintf(sql, "ALTER TABLE %s.%s DROP INDEX %s", db.c_str(), row[0], row[1]);
+      sprintf(sql, "ALTER TABLE `%s`.%s DROP INDEX %s", db.c_str(), row[0], row[1]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
       {
@@ -349,7 +349,7 @@ int MysqlDatabase::drop_analytics(void) {
     while ( (row=mysql_fetch_row(res)) != NULL )
     {
       /* we do not need IF EXISTS because these views are exist */
-      sprintf(sql, "DROP VIEW %s.%s", db.c_str(), row[0]);
+      sprintf(sql, "DROP VIEW `%s`.%s", db.c_str(), row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
       {
@@ -373,7 +373,7 @@ int MysqlDatabase::drop_analytics(void) {
   {
     while ( (row=mysql_fetch_row(res)) != NULL )
     {
-      sprintf(sql, "DROP TRIGGER %s.%s", db.c_str(), row[0]);
+      sprintf(sql, "DROP TRIGGER `%s`.%s", db.c_str(), row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
       {
