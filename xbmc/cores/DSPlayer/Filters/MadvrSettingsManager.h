@@ -97,6 +97,8 @@ private:
   void GetSmoothmotion(std::string path, int* iValue);
   void GetDithering(std::string path, int* iValue);
   bool IsProfileActive(std::string path, std::string profile);
+  void CreateProfile(std::string path, std::string pageList, std::string profileGroup, std::string profile);
+  void ActivateProfile(std::string path, std::string profile);
 
   void AddSettingsListScaler(std::string name, int label, int id, bool chromaUp, bool lumaUp, bool lumaDown);
   void AddSettingsList(MADVR_SETTINGS_LIST type, std::string name, int label, int id);
@@ -118,6 +120,9 @@ private:
   std::vector<CMadvrSettingsList* > m_settingsSmoothMotion;
   std::vector<CMadvrSettingsList* > m_settingsDithering;
   std::vector<CMadvrSettingsList* > m_settingsDeband;
+
+  static const std::string DSPROFILE;
+  static const std::string DSGROUP;
 
   IUnknown* m_pDXR;
 };

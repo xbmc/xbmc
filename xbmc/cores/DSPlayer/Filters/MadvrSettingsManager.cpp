@@ -27,6 +27,9 @@
 #include "settings/MediaSettings.h"
 #include "Utils/Log.h"
 
+const std::string CMadvrSettingsManager::DSPROFILE = "DSPlayer Profile";
+const std::string CMadvrSettingsManager::DSGROUP = "DSPlayer Profile Group";
+
 CMadvrSettingsManager::CMadvrSettingsManager(IUnknown* pUnk)
 {
   m_pDXR = pUnk;
@@ -473,12 +476,94 @@ void CMadvrSettingsManager::GetProfileActiveName(std::string *profile)
   *profile = result;
 }
 
+void CMadvrSettingsManager::CreateProfile(std::string path, std::string pageList, std::string profileGroup, std::string profile)
+{
+  Com::SmartQIPtr<IMadVRSettings2> pMadvrSettings2 = m_pDXR;
+  if (pMadvrSettings2 == NULL)
+    return;
+
+  bool existProfile;
+  std::vector<std::string> vecProfileGroups;
+  std::vector<std::string> vecProfilesName;
+  std::wstring pathW;
+  std::wstring newPathW;
+  std::wstring profileW;
+  std::wstring profileGroupW;
+  g_charsetConverter.utf8ToW(path, pathW, false);
+  g_charsetConverter.utf8ToW(profile, profileW, false);
+
+  // Enum madVR Groups
+  EnumGroups(path, &vecProfileGroups);  
+  for (unsigned int a = 0; a < vecProfileGroups.size(); a++)
+  {
+    existProfile = false;
+
+    // Enum madVR profiles and add a DSPlayer profile if don't exist
+    EnumProfiles(path + "\\" + vecProfileGroups[a], &vecProfilesName);
+    for (unsigned int b = 0; b < vecProfilesName.size(); b++)
+    {
+      if (vecProfilesName[b] == profile)
+      {
+        existProfile = true;
+        break;
+      }
+    }
+    if (!existProfile)
+    {
+      g_charsetConverter.utf8ToW(vecProfileGroups[a], profileGroupW, false);
+      newPathW = pathW + L"\\" + profileGroupW;
+      pMadvrSettings2->SettingsAddProfile(newPathW.c_str(), profileW.c_str());
+    }
+  }
+
+  // to be sure that all madVR folders are handled by the DSPlayer profiles add a complete DSPlayer Group
+  std::wstring pageListW;
+  g_charsetConverter.utf8ToW(pageList, pageListW, false);
+  g_charsetConverter.utf8ToW(profileGroup, profileGroupW, false);
+  pMadvrSettings2->SettingsCreateProfileGroup(pathW.c_str(), pageListW.c_str(), profileGroupW.c_str(), profileW.c_str());
+}
+
+void CMadvrSettingsManager::ActivateProfile(std::string path, std::string profile)
+{
+  Com::SmartQIPtr<IMadVRSettings2> pMadvrSettings2 = m_pDXR;
+  if (pMadvrSettings2 == NULL)
+    return;
+
+  std::vector<std::string> vecProfileGroups;
+  std::wstring pathW;
+  std::wstring newPathW;
+  std::wstring profileW;
+  std::wstring profileGroupW;
+  g_charsetConverter.utf8ToW(path, pathW, false);
+  g_charsetConverter.utf8ToW(profile, profileW, false);
+
+  // Enum madVR groups and activate all DSPlayer profiles
+  EnumGroups(path, &vecProfileGroups);
+  for (unsigned int i = 0; i < vecProfileGroups.size(); i++)
+  {
+    g_charsetConverter.utf8ToW(vecProfileGroups[i], profileGroupW, false);
+    newPathW = pathW + L"\\" + profileGroupW;
+    pMadvrSettings2->SettingsActivateProfile(newPathW.c_str(), profileW.c_str());
+  }
+}
+
+
 void CMadvrSettingsManager::RestoreSettings()
 {
   if (CSettings::GetInstance().GetInt(CSettings::SETTING_DSPLAYER_MANAGEMADVRWITHKODI) != KODIGUI_LOAD_DSPLAYER)
     return;
 
   CMadvrSettings &madvrSettings = CMediaSettings::GetInstance().GetCurrentMadvrSettings();
+
+  // Create dummy DSPlayer Profile
+  CreateProfile("processing", "deinterlacing|artifactRemoval|enhancements", DSGROUP, DSPROFILE);
+  CreateProfile("scalingParent", "chromaUp|lumaUp|lumaDown|imageDoubling|upRefine", DSGROUP, DSPROFILE);
+  CreateProfile("rendering", "smoothMotion|dithering", DSGROUP, DSPROFILE);
+
+  // Activate dymmy DSPlayer Profile
+  ActivateProfile("processing", DSPROFILE);
+  ActivateProfile("scalingParent", DSPROFILE);
+  ActivateProfile("rendering", DSPROFILE);
 
   SetStr("chromaUp", GetSettingsName(MADVR_LIST_CHROMAUP, madvrSettings.m_ChromaUpscaling));
   SetBool("chromaAntiRinging", madvrSettings.m_ChromaAntiRing);
