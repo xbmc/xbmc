@@ -513,7 +513,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
 void CPVRRecordings::UpdateEpgTags(void)
 {
   CSingleLock lock(m_critSection);
-  int iEpgEvent;
+  unsigned int iEpgEvent;
   for (PVR_RECORDINGMAP_ITR it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
     iEpgEvent = it->second->EpgEvent();

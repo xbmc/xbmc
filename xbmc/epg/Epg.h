@@ -209,7 +209,7 @@ namespace EPG
      * @param uniqueID The unique ID of the event to find.
      * @return The found tag or an empty tag if it wasn't found.
      */
-    CEpgInfoTagPtr GetTag(int uniqueID) const;
+    CEpgInfoTagPtr GetTag(unsigned int uniqueID) const;
 
     /*!
      * @brief Update an entry in this EPG.

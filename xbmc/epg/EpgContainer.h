@@ -164,7 +164,7 @@ namespace EPG
      * @param iBroadcastId The event id to get
      * @return The requested event, or an empty tag when not found
      */
-    virtual CEpgInfoTagPtr GetTagById(int iBroadcastId) const;
+    virtual CEpgInfoTagPtr GetTagById(unsigned int iBroadcastId) const;
 
     /*!
      * @brief Get an EPG table given a PVR channel.

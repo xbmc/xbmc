@@ -260,7 +260,7 @@ CEpgInfoTagPtr CEpg::GetTag(const CDateTime &StartTime) const
   return CEpgInfoTagPtr();
 }
 
-CEpgInfoTagPtr CEpg::GetTag(int uniqueID) const
+CEpgInfoTagPtr CEpg::GetTag(unsigned int uniqueID) const
 {
   CEpgInfoTagPtr retval;
   CSingleLock lock(m_critSection);
