@@ -142,7 +142,7 @@ namespace ActiveAE
 
   /*! @name Settings and action callback methods */
   //@{
-    virtual void OnSettingAction(const CSetting *setting);
+    virtual void OnSettingAction(const CSetting *setting) override;
   //@}
 
   /*! @name Backend methods */

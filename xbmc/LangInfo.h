@@ -63,10 +63,10 @@ public:
   virtual ~CLangInfo();
 
   // implementation of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingChanged(const CSetting *setting) override;
 
   // implementation of ISettingsHandler
-  virtual void OnSettingsLoaded();
+  virtual void OnSettingsLoaded() override;
 
   bool Load(const std::string& strLanguage);
 

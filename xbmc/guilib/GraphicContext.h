@@ -78,7 +78,7 @@ public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
 
-  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingChanged(const CSetting *setting) override;
 
   // the following two functions should wrap any
   // GL calls to maintain thread safety

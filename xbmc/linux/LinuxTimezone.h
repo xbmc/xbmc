@@ -34,9 +34,9 @@ class CLinuxTimezone : public ISettingCallback, public ISettingsHandler
 public:
    CLinuxTimezone();
 
-   virtual void OnSettingChanged(const CSetting *setting);
+   virtual void OnSettingChanged(const CSetting *setting) override;
 
-   virtual void OnSettingsLoaded();
+   virtual void OnSettingsLoaded() override;
 
    std::string GetOSConfiguredTimezone();
 

@@ -95,8 +95,8 @@ public:
   CSysInfo(void);
   virtual ~CSysInfo();
 
-  virtual bool Load(const TiXmlNode *settings);
-  virtual bool Save(TiXmlNode *settings) const;
+  virtual bool Load(const TiXmlNode *settings) override;
+  virtual bool Save(TiXmlNode *settings) const override;
 
   char MD5_Sign[32 + 1];
 

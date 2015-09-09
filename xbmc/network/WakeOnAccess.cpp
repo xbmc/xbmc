@@ -633,6 +633,23 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
 }
 
+void CWakeOnAccess::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string& settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS)
+  {
+    bool enabled = static_cast<const CSettingBool*>(setting)->GetValue();
+
+    SetEnabled(enabled);
+
+    if (enabled)
+      QueueMACDiscoveryForAllRemotes();
+  }
+}
+
 std::string CWakeOnAccess::GetSettingFile()
 {
   return CSpecialProtocol::TranslatePath("special://profile/wakeonlan.xml");
@@ -643,19 +660,6 @@ void CWakeOnAccess::OnSettingsLoaded()
   CSingleLock lock (m_entrylist_protect);
 
   LoadFromXML();
-}
-
-void CWakeOnAccess::OnSettingsSaved()
-{
-  bool enabled = CSettings::GetInstance().GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
-
-  if (enabled != IsEnabled())
-  {
-    SetEnabled(enabled);
-
-    if (enabled)
-      QueueMACDiscoveryForAllRemotes();
-  }
 }
 
 void CWakeOnAccess::SetEnabled(bool enabled) 

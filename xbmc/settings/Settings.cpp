@@ -622,6 +622,7 @@ void CSettings::Uninitialize()
   m_settingsManager->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
   m_settingsManager->UnregisterCallback(&ActiveAE::CActiveAEDSP::GetInstance());
+  m_settingsManager->UnregisterCallback(&CWakeOnAccess::GetInstance());
 
   // cleanup the settings manager
   m_settingsManager->Clear();
@@ -1208,6 +1209,10 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_GENERAL_ADDONUPDATES);
   m_settingsManager->RegisterCallback(&ADDON::CRepositoryUpdater::GetInstance(), settingSet);
+
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
+  m_settingsManager->RegisterCallback(&CWakeOnAccess::GetInstance(), settingSet);
 }
 
 bool CSettings::Reset()
