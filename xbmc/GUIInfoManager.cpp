@@ -5298,7 +5298,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return item->GetPVRTimerInfoTag()->GetEpgInfoTag()->Plot();
     if (item->HasVideoInfoTag())
     {
-      if (item->GetVideoInfoTag()->m_type != MediaTypeTvShow)
+      if (item->GetVideoInfoTag()->m_type != MediaTypeTvShow && item->GetVideoInfoTag()->m_type != MediaTypeVideoCollection)
         if (item->GetVideoInfoTag()->m_playCount == 0 && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS))
           return g_localizeStrings.Get(20370);
 

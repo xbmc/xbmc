@@ -98,6 +98,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       CVideoInfoTag* setInfo = pItem->GetVideoInfoTag();
       setInfo->m_strPath = pItem->GetPath();
       setInfo->m_strTitle = pItem->GetLabel();
+      setInfo->m_strPlot = (*set->second.begin())->GetVideoInfoTag()->m_strSetOverview;
 
       int ratings = 0;
       int iWatched = 0; // have all the movies been played at least once?

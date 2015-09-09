@@ -51,6 +51,7 @@ void CVideoInfoTag::Reset()
   m_cast.clear();
   m_strSet.clear();
   m_iSetId = -1;
+  m_strSetOverview.clear();
   m_tags.clear();
   m_strFile.clear();
   m_strPath.clear();
@@ -175,7 +176,14 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
   XMLUtils::SetStringArray(movie, "genre", m_genre);
   XMLUtils::SetStringArray(movie, "country", m_country);
-  XMLUtils::SetString(movie, "set", m_strSet);
+  if (!m_strSet.empty())
+  {
+    TiXmlElement set("set");
+    XMLUtils::SetString(&set, "name", m_strSet);
+    if (!m_strSetOverview.empty())
+      XMLUtils::SetString(&set, "overview", m_strSetOverview);
+    movie->InsertEndChild(set);
+  }
   XMLUtils::SetStringArray(movie, "tag", m_tags);
   XMLUtils::SetStringArray(movie, "credits", m_writingCredits);
   XMLUtils::SetStringArray(movie, "director", m_director);
@@ -288,6 +296,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
 
     ar << m_strSet;
     ar << m_iSetId;
+    ar << m_strSetOverview;
     ar << m_tags;
     ar << m_duration;
     ar << m_strFile;
@@ -366,6 +375,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
 
     ar >> m_strSet;
     ar >> m_iSetId;
+    ar >> m_strSetOverview;
     ar >> m_tags;
     ar >> m_duration;
     ar >> m_strFile;
@@ -440,6 +450,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   }
   value["set"] = m_strSet;
   value["setid"] = m_iSetId;
+  value["setoverview"] = m_strSetOverview;
   value["tag"] = m_tags;
   value["runtime"] = GetDuration();
   value["file"] = m_strFile;
@@ -746,8 +757,23 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     node = node->NextSiblingElement("actor");
   }
 
+  // Pre-Jarvis NFO file:
+  // <set>A set</set>
   if (XMLUtils::GetString(movie, "set", value))
     SetSet(value);
+  // Jarvis+:
+  // <set><name>A set</name><overview>A set with a number of movies...</overview></set>
+  node = movie->FirstChildElement("set");
+  if (node)
+  {
+    // No name, no set
+    if (XMLUtils::GetString(node, "name", value))
+    {
+      SetSet(value);
+      if (XMLUtils::GetString(node, "overview", value))
+        SetSetOverview(value);
+    }
+  }
 
   std::vector<std::string> tags(m_tags);
   if (XMLUtils::GetStringArray(movie, "tag", tags, prioritise, g_advancedSettings.m_videoItemSeparator))
@@ -985,6 +1011,11 @@ void CVideoInfoTag::SetArtist(std::vector<std::string> artist)
 void CVideoInfoTag::SetSet(std::string set)
 {
   m_strSet = Trim(std::move(set));
+}
+
+void CVideoInfoTag::SetSetOverview(std::string setOverview)
+{
+  m_strSetOverview = Trim(std::move(setOverview));
 }
 
 void CVideoInfoTag::SetTags(std::vector<std::string> tags)
