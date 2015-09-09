@@ -109,6 +109,7 @@ public:
   void SetVotes(std::string votes);
   void SetArtist(std::vector<std::string> artist);
   void SetSet(std::string set);
+  void SetSetOverview(std::string setOverview);
   void SetTags(std::vector<std::string> tags);
   void SetFile(std::string file);
   void SetPath(std::string path);
@@ -145,6 +146,7 @@ public:
   typedef std::vector< SActorInfo >::const_iterator iCast;
   std::string m_strSet;
   int m_iSetId;
+  std::string m_strSetOverview;
   std::vector<std::string> m_tags;
   std::string m_strFile;
   std::string m_strPath;
