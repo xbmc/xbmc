@@ -144,12 +144,12 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
       unsigned int iMustHave    = PVR_TIMER_TYPE_ATTRIBUTE_NONE;
       unsigned int iMustNotHave = PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
 
-      if (timer.iEpgUid == 0 && timer.iWeekdays != PVR_WEEKDAY_NONE)
+      if (timer.iEpgUid == PVR_TIMER_NO_EPG_UID && timer.iWeekdays != PVR_WEEKDAY_NONE)
         iMustHave |= PVR_TIMER_TYPE_IS_REPEATING;
       else
         iMustNotHave |= PVR_TIMER_TYPE_IS_REPEATING;
 
-      if (timer.iEpgUid == 0)
+      if (timer.iEpgUid == PVR_TIMER_NO_EPG_UID)
         iMustHave |= PVR_TIMER_TYPE_IS_MANUAL;
       else
         iMustNotHave |= PVR_TIMER_TYPE_IS_MANUAL;

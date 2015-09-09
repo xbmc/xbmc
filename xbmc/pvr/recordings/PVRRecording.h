@@ -209,7 +209,7 @@ namespace PVR
     /*!
      * @return Broadcast id of the EPG event associated with this recording
      */
-    int EpgEvent(void) const { return m_iEpgEventId; }
+    unsigned int EpgEvent(void) const { return m_iEpgEventId; }
 
     /*!
      * @return Get the channel on which this recording is/was running
@@ -230,10 +230,10 @@ namespace PVR
     std::string EpisodeName(void) const { return m_strShowTitle; };
 
   private:
-    CDateTime m_recordingTime; /*!< start time of the recording */
-    bool      m_bGotMetaData;
-    bool      m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
-    int       m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
+    CDateTime    m_recordingTime; /*!< start time of the recording */
+    bool         m_bGotMetaData;
+    bool         m_bIsDeleted;    /*!< set if entry is a deleted recording which can be undelete */
+    unsigned int m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;
