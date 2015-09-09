@@ -1149,11 +1149,19 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_NET_WM_STATE", True), XA_ATOM, 32, PropModeReplace, (unsigned char *) &fs, 1);
       // disable desktop compositing for KDE, when Kodi is in full-screen mode
       int one = 1;
-      XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_KDE_NET_WM_BLOCK_COMPOSITING", True), XA_CARDINAL, 32,
-                      PropModeReplace, (unsigned char*) &one,  1);
-      // standard way for Gnome 3
-      XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_NET_WM_BYPASS_COMPOSITOR", True), XA_CARDINAL, 32,
-                      PropModeReplace, (unsigned char*) &one,  1);
+      Atom composite = XInternAtom(m_dpy, "_KDE_NET_WM_BLOCK_COMPOSITING", True);
+      if (composite != None)
+      {
+        XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_KDE_NET_WM_BLOCK_COMPOSITING", True), XA_CARDINAL, 32,
+                        PropModeReplace, (unsigned char*) &one,  1);
+      }
+      composite = XInternAtom(m_dpy, "_NET_WM_BYPASS_COMPOSITOR", True);
+      if (composite != None)
+      {
+        // standard way for Gnome 3
+        XChangeProperty(m_dpy, m_mainWindow, XInternAtom(m_dpy, "_NET_WM_BYPASS_COMPOSITOR", True), XA_CARDINAL, 32,
+                        PropModeReplace, (unsigned char*) &one,  1);
+      }
     }
 
     // define invisible cursor
