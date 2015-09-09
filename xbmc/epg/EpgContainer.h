@@ -121,7 +121,7 @@ namespace EPG
      */
     virtual void Notify(const Observable &obs, const ObservableMessage msg);
 
-    virtual void OnSettingChanged(const CSetting *setting);
+    virtual void OnSettingChanged(const CSetting *setting) override;
 
     CEpg *CreateChannelEpg(PVR::CPVRChannelPtr channel);
 

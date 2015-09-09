@@ -76,6 +76,22 @@ IF EXIST BUILD_WIN32\addons\adsp.* (
 )
 
 SET Counter=1
+IF EXIST BUILD_WIN32\addons\visualization.* (
+  ECHO SectionGroup "Music Visualization Add-ons" SecVisualizationAddons >> visualization-addons.nsi
+  FOR /F "tokens=*" %%P IN ('dir /B /AD BUILD_WIN32\addons\visualization.*') DO (
+    SET "output=%%P"
+    SET output=!output:visualization.=!
+    ECHO Section "!output!" SecVisualizationAddons!Counter! >> visualization-addons.nsi
+    ECHO SectionIn 1 2 3 #section is in installtype Full >> visualization-addons.nsi
+    ECHO SetOutPath "$INSTDIR\addons\%%P" >> visualization-addons.nsi
+    ECHO File /r "${app_root}\addons\%%P\*.*" >> visualization-addons.nsi
+    ECHO SectionEnd >> visualization-addons.nsi
+    SET /A Counter = !Counter! + 1
+    )
+  ECHO SectionGroupEnd >> visualization-addons.nsi
+)
+
+SET Counter=1
 IF EXIST BUILD_WIN32\addons\skin.* (
   ECHO SectionGroup "Skin Add-ons" SecSkinAddons >> skin-addons.nsi
   FOR /F "tokens=*" %%P IN ('dir /B /AD BUILD_WIN32\addons\skin.*') DO (

@@ -47,7 +47,9 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  musicUrl.FromString("musicdb://artists/");
+  if (!musicUrl.FromString("musicdb://artists/"))
+    return InternalError;
+
   int genreID = -1, albumID = -1, songID = -1;
   const CVariant &filter = parameterObject["filter"];
   if (filter.isMember("genreid"))
@@ -131,7 +133,9 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  musicUrl.FromString("musicdb://albums/");
+  if (!musicUrl.FromString("musicdb://albums/"))
+    return InternalError;
+
 
   if (parameterObject["includesingles"].asBoolean())
     musicUrl.AddOption("show_singles", true);
@@ -213,7 +217,9 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  musicUrl.FromString("musicdb://songs/");
+  if (!musicUrl.FromString("musicdb://songs/"))
+    return InternalError;
+
 
   if (!parameterObject["includesingles"].asBoolean())
     musicUrl.AddOption("singles", false);

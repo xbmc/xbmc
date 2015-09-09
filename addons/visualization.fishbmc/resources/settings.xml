@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<settings>
-<setting id="detail" label="30000" type="enum" lvalues="30001|30002|30003|30004" default="2"/>
-<setting id="divisor" label="30006" type="enum" lvalues="30007|30008|30009|30010" default="2"/>
-<setting id="nervous" label="30005" type="bool" default="false"/>
-<setting id="filemode" label="30011" type="bool" default="false"/>
-</settings>

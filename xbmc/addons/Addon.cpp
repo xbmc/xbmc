@@ -22,6 +22,7 @@
 #include "AddonManager.h"
 #include "addons/Service.h"
 #include "ContextMenuManager.h"
+#include "RepositoryUpdater.h"
 #include "settings/Settings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -646,6 +647,9 @@ void OnEnabled(const std::string& id)
 
   if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_CONTEXT_ITEM))
     CContextMenuManager::GetInstance().Register(std::static_pointer_cast<CContextMenuAddon>(addon));
+
+  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_REPOSITORY))
+    CRepositoryUpdater::GetInstance().ScheduleUpdate(); //notify updater there is a new addon
 }
 
 void OnDisabled(const std::string& id)
@@ -687,6 +691,9 @@ void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
   if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
     CContextMenuManager::GetInstance().Register(std::static_pointer_cast<CContextMenuAddon>(localAddon));
 
+  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_REPOSITORY))
+    CRepositoryUpdater::GetInstance().ScheduleUpdate(); //notify updater there is a new addon or version
+
   addon->OnPostInstall(update, modal);
 }
 
@@ -698,6 +705,13 @@ void OnPreUnInstall(const AddonPtr& addon)
 
   if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
     CContextMenuManager::GetInstance().Unregister(std::static_pointer_cast<CContextMenuAddon>(localAddon));
+
+  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_REPOSITORY))
+  {
+    CAddonDatabase database;
+    database.Open();
+    database.DeleteRepository(addon->ID());
+  }
 
   addon->OnPreUnInstall();
 }

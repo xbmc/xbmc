@@ -86,8 +86,8 @@ protected:
   virtual void OnTimeout();
 
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
-  virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName);
+  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName) override;
 
   // new virtual methods
   virtual bool AllowResettingSettings() const { return true; }

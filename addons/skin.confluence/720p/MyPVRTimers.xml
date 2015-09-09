@@ -160,6 +160,14 @@
 						</control>
 						<control type="group">
 							<visible>!IsEmpty(ListItem.Date)</visible>
+							<control type="image">
+								<left>0</left>
+								<top>8</top>
+								<width>50</width>
+								<height>26</height>
+								<texture border="1">$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
+							</control>
 							<control type="label">
 								<left>50</left>
 								<top>0</top>
@@ -244,6 +252,14 @@
 						</control>
 						<control type="group">
 							<visible>!IsEmpty(ListItem.Date)</visible>
+							<control type="image">
+								<left>0</left>
+								<top>8</top>
+								<width>50</width>
+								<height>26</height>
+								<texture border="1">$INFO[ListItem.Icon]</texture>
+								<aspectratio>keep</aspectratio>
+							</control>
 							<control type="label">
 								<left>50</left>
 								<top>0</top>

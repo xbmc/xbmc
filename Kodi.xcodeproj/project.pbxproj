@@ -253,6 +253,9 @@
 		3994427F1A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
 		399442801A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
 		399442811A8DD96F006C39E9 /* VideoLibraryQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */; };
+		39B4F3701B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */; };
+		39B4F3711B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */; };
+		39B4F3721B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */; };
 		4260D5C71B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		4260D5C81B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
 		4260D5C91B67BB8F003F6F2D /* GUIWindowSplash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */; };
@@ -3652,6 +3655,8 @@
 		3994426A1A8DD920006C39E9 /* VideoLibraryScanningJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryScanningJob.h; sourceTree = "<group>"; };
 		3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryQueue.cpp; sourceTree = "<group>"; };
 		3994427E1A8DD96F006C39E9 /* VideoLibraryQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryQueue.h; sourceTree = "<group>"; };
+		39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RepositoryUpdater.cpp; sourceTree = "<group>"; };
+		39B4F36F1B96F845009B2D88 /* RepositoryUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepositoryUpdater.h; sourceTree = "<group>"; };
 		4260D5C51B67BB8F003F6F2D /* GUIWindowSplash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowSplash.cpp; sourceTree = "<group>"; };
 		4260D5C61B67BB8F003F6F2D /* GUIWindowSplash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowSplash.h; sourceTree = "<group>"; };
 		42DAC16B1A6E780C0066B4C8 /* IActionListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IActionListener.h; sourceTree = "<group>"; };
@@ -6012,6 +6017,8 @@
 				183FDF8911AF0B0500B81E9C /* PluginSource.h */,
 				C85EB75A1174614E0008E5A5 /* Repository.cpp */,
 				C85EB75B1174614E0008E5A5 /* Repository.h */,
+				39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */,
+				39B4F36F1B96F845009B2D88 /* RepositoryUpdater.h */,
 				395C2A0C1A9F06F500EBC7AD /* Resource.h */,
 				18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */,
 				18B49FFD1152BFA5001AF8A6 /* Scraper.h */,
@@ -10369,6 +10376,7 @@
 				E38E20270D25F9FD00618676 /* IDirectory.cpp in Sources */,
 				E38E20280D25F9FD00618676 /* IFile.cpp in Sources */,
 				E38E20290D25F9FD00618676 /* iso9660.cpp in Sources */,
+				39B4F3701B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */,
 				E38E202A0D25F9FD00618676 /* ISO9660Directory.cpp in Sources */,
 				E38E20330D25F9FD00618676 /* MultiPathDirectory.cpp in Sources */,
 				E38E20340D25F9FD00618676 /* DirectoryNode.cpp in Sources */,
@@ -11850,6 +11858,7 @@
 				DFF0F30217528350002DA3A4 /* karaokelyricstextkar.cpp in Sources */,
 				DFF0F30317528350002DA3A4 /* karaokelyricstextlrc.cpp in Sources */,
 				DFF0F30417528350002DA3A4 /* karaokelyricstextustar.cpp in Sources */,
+				39B4F3721B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */,
 				DFF0F30517528350002DA3A4 /* karaokevideobackground.cpp in Sources */,
 				DFF0F30617528350002DA3A4 /* karaokewindowbackground.cpp in Sources */,
 				DFF0F30717528350002DA3A4 /* MusicInfoTag.cpp in Sources */,
@@ -12610,6 +12619,7 @@
 				E499123A174E5D7E00741B6D /* GUIDialogFileBrowser.cpp in Sources */,
 				E499123B174E5D7E00741B6D /* GUIDialogGamepad.cpp in Sources */,
 				E499123C174E5D7E00741B6D /* GUIDialogKaiToast.cpp in Sources */,
+				39B4F3711B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */,
 				E499123D174E5D7E00741B6D /* GUIDialogKeyboardGeneric.cpp in Sources */,
 				E499123E174E5D7E00741B6D /* GUIDialogMediaFilter.cpp in Sources */,
 				E499123F174E5D7E00741B6D /* GUIDialogMediaSource.cpp in Sources */,

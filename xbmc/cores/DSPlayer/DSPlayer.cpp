@@ -1016,7 +1016,7 @@ bool CDSPlayer::OnAction(const CAction &action)
       else
       {
         CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-        CApplicationMessenger::Get().MediaStop(false);
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
       }
       return true;
       break;
@@ -1036,7 +1036,7 @@ bool CDSPlayer::OnAction(const CAction &action)
       else
       {
         CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-        CApplicationMessenger::Get().MediaStop(false);
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
       }
       return true;
       break;
@@ -1056,7 +1056,7 @@ bool CDSPlayer::OnAction(const CAction &action)
       else
       {
         CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-        CApplicationMessenger::Get().MediaStop(false);
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
       }
       return true;
       break;
@@ -1150,7 +1150,7 @@ void CDSPlayer::UpdateChannelSwitchSettings()
 #ifdef HAS_VIDEO_PLAYBACK
   // when using fast channel switching some shortcuts are taken which 
   // means we'll have to update the view mode manually
-  g_renderManager.SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
+  g_renderManager.SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
 #endif
 }
 

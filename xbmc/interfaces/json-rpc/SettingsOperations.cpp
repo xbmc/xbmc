@@ -644,9 +644,6 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   if (type == "spinner")
   {
     const CSettingControlSpinner* spinner = static_cast<const CSettingControlSpinner*>(control);
-    if (spinner == NULL)
-      return false;
-
     if (spinner->GetFormatLabel() >= 0)
       obj["formatlabel"] = g_localizeStrings.Get(spinner->GetFormatLabel());
     else if (!spinner->GetFormatString().empty() && spinner->GetFormatString() != "%i")
@@ -657,9 +654,6 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   else if (type == "edit")
   {
     const CSettingControlEdit* edit = static_cast<const CSettingControlEdit*>(control);
-    if (edit == NULL)
-      return false;
-
     obj["hidden"] = edit->IsHidden();
     obj["verifynewvalue"] = edit->VerifyNewValue();
     if (edit->GetHeading() >= 0)
@@ -668,18 +662,12 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   else if (type == "button")
   {
     const CSettingControlButton* button = static_cast<const CSettingControlButton*>(control);
-    if (button == NULL)
-      return false;
-
     if (button->GetHeading() >= 0)
       obj["heading"] = g_localizeStrings.Get(button->GetHeading());
   }
   else if (type == "list")
   {
     const CSettingControlList* list = static_cast<const CSettingControlList*>(control);
-    if (list == NULL)
-      return false;
-
     if (list->GetHeading() >= 0)
       obj["heading"] = g_localizeStrings.Get(list->GetHeading());
     obj["multiselect"] = list->CanMultiSelect();
@@ -687,9 +675,6 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   else if (type == "slider")
   {
     const CSettingControlSlider* slider = static_cast<const CSettingControlSlider*>(control);
-    if (slider == NULL)
-      return false;
-
     if (slider->GetHeading() >= 0)
       obj["heading"] = g_localizeStrings.Get(slider->GetHeading());
     obj["popup"] = slider->UsePopup();
@@ -701,9 +686,6 @@ bool CSettingsOperations::SerializeSettingControl(const ISettingControl* control
   else if (type == "range")
   {
     const CSettingControlRange* range = static_cast<const CSettingControlRange*>(control);
-    if (range == NULL)
-      return false;
-
     if (range->GetFormatLabel() >= 0)
       obj["formatlabel"] = g_localizeStrings.Get(range->GetFormatLabel());
     else

@@ -59,8 +59,8 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, libyajl-dev (>=2.0), lsb-release,
   nasm [!amd64], python-dev, python-imaging, python-support, swig, unzip, uuid-dev, yasm,
   zip, zlib1g-dev
-  
-[NOTICE] crossguid / libcrossguid-dev all Linux destributions.
+
+[NOTICE] crossguid / libcrossguid-dev all Linux distributions.
 Kodi now requires crossguid which is not available in Ubuntu repositories at this time.
 We supply a Makefile in tools/depends/target/crossguid
 to make it easy to install into /usr/local.
@@ -101,19 +101,16 @@ Tip: By adding -j<number> to the make command, you describe how many
      concurrent jobs will be used. So for dualcore the command is:
 
     $ make -j2
- 	
-.3  $ make install
+
+.3  $ sudo make install
 
 This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
-
-Note: You may need to run this with sudo (sudo make install) if your user doesn't have write permissions
-to the prefix you have provided (as in the default case, /usr/local).
 
 Tip: To override the location that Kodi is installed, use PREFIX=<path>.
 For example.
 
     $ make install DESTDIR=$HOME/kodi
-	
+
 -----------------------------------------------------------------------------
 4.4. Binary addons - compile
 -----------------------------------------------------------------------------
@@ -134,7 +131,7 @@ PVR addons:
     pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hts, pvr.iptvsimple, pvr.mediaportal.tvserver,
     pvr.mythtv, pvr.nextpvr, pvr.njoy, pvr.pctv, pvr.stalker, pvr.vbox, pvr.vdr.vnsi, pvr.vuplus
 
-Audio decoders: 
+Audio decoders:
     audiodecoder.modplug, audiodecoder.nosefart, audiodecoder.sidplay, audiodecoder.snesapu,
     audiodecoder.stsound, audiodecoder.timidity, audiodecoder.vgmstream
 
@@ -168,7 +165,7 @@ The most useful options are,
     --gtest_list_tests
       List the names of all tests instead of running them.
 	  The name of TEST(Foo, Bar) is "Foo.Bar".
-      
+
     --gtest_filter=POSTIVE_PATTERNS[-NEGATIVE_PATTERNS]
       Run only the tests whose name matches one of the positive patterns but
       none of the negative patterns. '?' matches any single character; '*'

@@ -99,7 +99,7 @@ void CProfilesManager::OnSettingsLoaded()
   CDirectory::Create(URIUtils::AddFileToFolder(strDir,"mixed"));
 }
 
-void CProfilesManager::OnSettingsSaved()
+void CProfilesManager::OnSettingsSaved() const
 {
   // save mastercode
   Save();
@@ -189,7 +189,7 @@ bool CProfilesManager::Load(const std::string &file)
   return ret;
 }
 
-bool CProfilesManager::Save()
+bool CProfilesManager::Save() const
 {
   return Save(PROFILES_FILE);
 }

@@ -52,17 +52,21 @@ public:
   void DeleteRepository(const std::string& id);
   void DeleteRepository(int id);
   int GetRepoChecksum(const std::string& id, std::string& checksum);
-  bool GetRepository(const std::string& id, ADDON::VECADDONS& addons);
-  bool GetRepository(int id, ADDON::VECADDONS& addons);
-  bool SetRepoTimestamp(const std::string& id, const std::string& timestamp, const ADDON::AddonVersion& version);
 
-  /*! \brief Retrieve the time a repository was last checked
+  /*!
+   \brief Get addons in repository `id`
+   \param id id of the repository
+   \returns true on success, false on error or if repository have never been synced.
+   */
+  bool GetRepositoryContent(const std::string& id, ADDON::VECADDONS& addons);
+  bool SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
+
+  /*!
+   \brief Retrieve the time a repository was last checked and the version it was for
    \param id id of the repo
-   \return last time the repo was checked, current time if not available
-   \sa SetRepoTimestamp */
-  CDateTime GetRepoTimestamp(const std::string& id);
-
-  ADDON::AddonVersion GetRepoVersion(const std::string& id);
+   \return last time the repo was checked, or invalid CDateTime if never checked
+   */
+  std::pair<CDateTime, ADDON::AddonVersion> LastChecked(const std::string& id);
 
   bool Search(const std::string& search, ADDON::VECADDONS& items);
   static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 

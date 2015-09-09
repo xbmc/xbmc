@@ -141,7 +141,8 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVa
   {
     std::string skinId = CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     AddonPtr addon;
-    CAddonMgr::GetInstance().GetAddon(skinId, addon, ADDON_SKIN);
+    if (!CAddonMgr::GetInstance().GetAddon(skinId, addon, ADDON_SKIN))
+      return InternalError;
 
     result["id"] = skinId;
     if (addon.get())

@@ -66,7 +66,7 @@ class CPlayerCoreFactory : public ISettingsHandler
 public:
   static CPlayerCoreFactory& GetInstance();
 
-  virtual void OnSettingsLoaded();
+  virtual void OnSettingsLoaded() override;
 
   PLAYERCOREID GetPlayerCore(const std::string& strCoreName) const;
   CPlayerCoreConfig* GetPlayerConfig(const std::string& strCoreName) const;

@@ -58,14 +58,6 @@ fi
 ac_cv_func_gethostbyname_r=no
 ac_cv_header_sys_un_h=yes
 
-#rsxs/projectm
-jm_cv_func_gettimeofday_clobber=no
-mac_cv_pkg_ldflags=-lz
-if test "@platform_os@" = "osx"; then
-  ac_cv_func_strnlen_working=no
-  ac_cv_header_stdbool_h=yes
-fi
-
 #gnutls
 gl_cv_func_gettimeofday_clobber=no
 

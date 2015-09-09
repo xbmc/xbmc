@@ -14,8 +14,7 @@ CONFIGURE = cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
     --disable-sdl --disable-x11 --disable-xrandr --disable-openmax \
     --disable-optical-drive --disable-dvdcss --disable-joystick \
     --disable-crystalhd --disable-vtbdecoder --disable-vaapi \
-    --disable-vdpau --disable-projectm --disable-rsxs --disable-fishbmc \
-    --disable-alsa
+    --disable-vdpau --disable-alsa
 
 all: $(SOURCE)/libxbmc.so
 

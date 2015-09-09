@@ -381,12 +381,10 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
   ReplayGain replayGainInfo;
 
   ID3v2::AttachedPictureFrame *pictures[3] = {};
-  bool artistsTagFound = false;
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
   for (ID3v2::FrameListMap::ConstIterator it = frameListMap.begin(); it != frameListMap.end(); ++it)
   {
-    // If the ARTISTS tag has been set the information in that tag should be prefered compared to TPE1
-    if      (it->first == "TPE1" && ! artistsTagFound )  SetArtist(tag, GetID3v2StringList(it->second));
+    if      (it->first == "TPE1")   SetArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TALB")   tag.SetAlbum(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TPE2")   SetAlbumArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TIT2")   tag.SetTitle(it->second.front()->toString().to8Bit(true));
@@ -445,18 +443,21 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
           replayGainInfo.ParsePeak(ReplayGain::TRACK, stringList.front().toCString(true));
         else if (desc == "REPLAYGAIN_ALBUM_PEAK")
           replayGainInfo.ParsePeak(ReplayGain::ALBUM, stringList.front().toCString(true));
-        else if (desc == "ALBUMARTIST")
+        else if (desc == "ALBUMARTIST" || desc == "ALBUM ARTIST")
           SetAlbumArtist(tag, StringListToVectorString(stringList));
-        else if (desc == "ALBUM ARTIST")
-          SetAlbumArtist(tag, StringListToVectorString(stringList));
-        else if (desc == "ARTISTS" ) 
+        else if (desc == "ARTISTS")
         {
-          artistsTagFound = true;
-          // id3v2.3 uses / as the separator in the field
           if (id3v2->header()->majorVersion() < 4)
-            SetArtist(tag,StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
-          else 
-            SetArtist(tag,StringListToVectorString(stringList));
+            tag.SetMusicBrainzArtistHints(StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
+          else
+            tag.SetMusicBrainzArtistHints(StringListToVectorString(stringList));
+        }
+        else if (desc == "ALBUMARTISTS" || desc == "ALBUM ARTISTS")
+        {
+          if (id3v2->header()->majorVersion() < 4)
+            tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(TagLib::StringList::split(stringList.front(), TagLib::String("/"))));
+          else
+            tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(stringList));
         }
         else if (desc == "MOOD")
           tag.SetMood(stringList.front().to8Bit(true));
@@ -538,19 +539,17 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
     return false;
 
   ReplayGain replayGainInfo;
-  bool artistsTagFound = false;
   const APE::ItemListMap itemListMap = ape->itemListMap();
   for (APE::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
   {
-    if (it->first == "ARTIST" && ! artistsTagFound)
+    if (it->first == "ARTIST")
       SetArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ARTISTS")
-    {
-      artistsTagFound = true;
-      SetArtist(tag, StringListToVectorString(it->second.toStringList()));
-    }
-    else if (it->first == "ALBUM ARTIST" || it->first == "ALBUMARTIST")
+      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ALBUMARTIST" || it->first == "ALBUM ARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ALBUMARTISTS" || it->first == "ALBUM ARTISTS")
+      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUM")
       tag.SetAlbum(it->second.toString().to8Bit(true));
     else if (it->first == "TITLE")
@@ -606,22 +605,18 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
 
   FLAC::Picture pictures[3];
   ReplayGain replayGainInfo;
-  bool artistsTagFound = false;
 
   const Ogg::FieldListMap& fieldListMap = xiph->fieldListMap();
   for (Ogg::FieldListMap::ConstIterator it = fieldListMap.begin(); it != fieldListMap.end(); ++it)
   {
-    if (it->first == "ARTIST" && ! artistsTagFound )
+    if (it->first == "ARTIST")
       SetArtist(tag, StringListToVectorString(it->second));
     else if (it->first == "ARTISTS")
-    {
-      SetArtist(tag, StringListToVectorString(it->second));
-      artistsTagFound = true;
-    }
-    else if (it->first == "ALBUMARTIST")
+      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second));
+    else if (it->first == "ALBUMARTIST" || it->first == "ALBUM ARTIST")
       SetAlbumArtist(tag, StringListToVectorString(it->second));
-    else if (it->first == "ALBUM ARTIST")
-      SetAlbumArtist(tag, StringListToVectorString(it->second));
+    else if (it->first == "ALBUMARTISTS" || it->first == "ALBUM ARTISTS")
+      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second));
     else if (it->first == "ALBUM")
       tag.SetAlbum(it->second.front().to8Bit(true));
     else if (it->first == "TITLE")
@@ -739,10 +734,14 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
       tag.SetTitle(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "\251ART")
       SetArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:ARTISTS")
+      tag.SetMusicBrainzArtistHints(StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251alb")
       tag.SetAlbum(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "aART")
       SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "----:com.apple.iTunes:ALBUMARTISTS")
+      tag.SetMusicBrainzAlbumArtistHints(StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251gen")
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "\251cmt")
