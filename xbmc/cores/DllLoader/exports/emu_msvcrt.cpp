@@ -1751,7 +1751,7 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
-      return clearerr(stream);
+      clearerr(stream);
     }
   }
 
