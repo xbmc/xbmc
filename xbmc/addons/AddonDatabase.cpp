@@ -81,7 +81,9 @@ static std::string SerializeMetadata(const IAddon& addon)
 
 static void DeserializeMetadata(const std::string& document, CAddonBuilder& builder)
 {
-  CVariant variant = CJSONVariantParser::Parse(document);
+  CVariant variant;
+  if (!CJSONVariantParser::Parse(document, variant))
+    return;
 
   builder.SetAuthor(variant["author"].asString());
   builder.SetDisclaimer(variant["disclaimer"].asString());

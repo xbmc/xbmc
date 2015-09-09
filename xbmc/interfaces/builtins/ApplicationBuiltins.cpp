@@ -91,7 +91,13 @@ static int NotifyAll(const std::vector<std::string>& params)
 {
   CVariant data;
   if (params.size() > 2)
-    data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
+  {
+    if (!CJSONVariantParser::Parse(params[2], data))
+    {
+      CLog::Log(LOGERROR, "NotifyAll failed to parse data: %s", params[2].c_str());
+      return -3;
+    }
+  }
 
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
 
