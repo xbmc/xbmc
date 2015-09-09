@@ -73,12 +73,12 @@ enum DSPLAYER_STATE
 
 class CDSInputStreamPVRManager;
 class CDSPlayer;
-class CDSPlayerMessages : public CThread
+class CDSGraphThread : public CThread
 {
 private:
   CDSPlayer*    m_pPlayer;
 public:
-  CDSPlayerMessages(CDSPlayer * pPlayer);
+  CDSGraphThread(CDSPlayer * pPlayer);
   static ThreadIdentifier m_threadID;
   void StopThread(bool bWait = true)
   {
@@ -91,8 +91,10 @@ public:
   }
 
 protected:
-  void OnStartup();
-  void Process();
+  void HandleMessages();
+  virtual void OnStartup();
+  virtual void Process();
+  virtual void OnExit();
 
 };
 class CGraphManagementThread : public CThread
@@ -236,6 +238,9 @@ public:
   static DSPLAYER_STATE PlayerState;
   static CFileItem currentFileItem;
   static CGUIDialogBoxBase* errorWindow;
+  CPlayerOptions m_PlayerOptions;
+  CEvent m_hDSGraphEvent;
+  HRESULT m_hDSGraph;
 
   CCriticalSection m_StateSection;
   CCriticalSection m_CleanSection;
@@ -257,7 +262,7 @@ public:
   
   static void PostMessage(CDSMsg *msg, bool wait = true)
   {
-    if (!CDSPlayerMessages::m_threadID)
+    if (!m_threadID)
     {
       msg->Release();
       return;
@@ -267,8 +272,8 @@ public:
       msg->Acquire();
 
     if (msg->GetMessageType() != CDSMsg::MADVR_SET_WINDOW_POS)
-      CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), CDSPlayerMessages::m_threadID);
-    PostThreadMessage(CDSPlayerMessages::m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM)msg);
+      CLog::Log(LOGDEBUG, "%s Message posted : %d on thread 0x%X", __FUNCTION__, msg->GetMessageType(), m_threadID);
+    PostThreadMessage(m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM)msg);
 
     if (wait)
     {
@@ -277,7 +282,7 @@ public:
     }
   }
 
-  static bool IsCurrentThread() { return CThread::IsCurrentThread(CDSPlayerMessages::m_threadID); }
+  static bool IsCurrentThread() { return CThread::IsCurrentThread(m_threadID); }
   static HWND GetDShWnd(){ return m_hWnd; }
   static void SetDsWndVisible(bool bVisible);
 
@@ -298,9 +303,8 @@ protected:
   bool ShowPVRChannelInfo();
 
   CGraphManagementThread m_pGraphThread;
-  CDSPlayerMessages m_pDSPlayerMessages;
+  CDSGraphThread m_pDSGraphThread;
   CDVDClock m_pClock;
-  CPlayerOptions m_PlayerOptions;
   CEvent m_hReadyEvent;
   static ThreadIdentifier m_threadID;
   bool m_bEof;

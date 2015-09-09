@@ -72,7 +72,7 @@ DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
 CFileItem CDSPlayer::currentFileItem;
 CGUIDialogBoxBase *CDSPlayer::errorWindow = NULL;
 ThreadIdentifier CDSPlayer::m_threadID = 0;
-ThreadIdentifier CDSPlayerMessages::m_threadID = 0;
+ThreadIdentifier CDSGraphThread::m_threadID = 0;
 HWND CDSPlayer::m_hWnd = 0;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
@@ -80,7 +80,7 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
   CThread("CDSPlayer thread"),
   m_hReadyEvent(true),
   m_pGraphThread(this),
-  m_pDSPlayerMessages(this),
+  m_pDSGraphThread(this),
   m_bEof(false)
 {
   m_HasVideo = false;
@@ -290,7 +290,7 @@ void CDSPlayer::ShowEditionDlg(bool playStart)
 
 bool CDSPlayer::WaitForFileClose()
 {
-  if (!WaitForThreadExit(100) || !m_pGraphThread.WaitForThreadExit(100) || !m_pDSPlayerMessages.WaitForThreadExit(100))
+  if (!WaitForThreadExit(100) || !m_pGraphThread.WaitForThreadExit(100) || !m_pDSGraphThread.WaitForThreadExit(100))
     return false;
 
   return true;
@@ -312,9 +312,8 @@ bool CDSPlayer::OpenFileInternal(const CFileItem& file)
 
     m_hReadyEvent.Reset();
 
-     m_pDSPlayerMessages.Create();
     Create();
-   
+
     // wait for the ready event
     CGUIDialogBusy::WaitOnEvent(m_hReadyEvent, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
 
@@ -440,8 +439,8 @@ bool CDSPlayer::CloseFile(bool reopen)
   PlayerState = DSPLAYER_CLOSED;
 
   // Stop threads
+  m_pDSGraphThread.StopThread(false);
   m_pGraphThread.StopThread(false);
-  m_pDSPlayerMessages.StopThread(false);
   StopThread(false);
 
   CLog::Log(LOGDEBUG, "%s File closed", __FUNCTION__);
@@ -607,18 +606,21 @@ void CDSPlayer::OnExit()
 
 void CDSPlayer::Process()
 {
-  HRESULT hr = E_FAIL;
+  m_hDSGraph = E_FAIL;
   CLog::Log(LOGNOTICE, "%s - Creating DS Graph", __FUNCTION__);
 
-  START_PERFORMANCE_COUNTER
-    hr = g_dsGraph->SetFile(currentFileItem, m_PlayerOptions);
-  END_PERFORMANCE_COUNTER("Loading file");
+  // Create DS Graph thread
+  m_hDSGraphEvent.Reset();
+  m_pDSGraphThread.Create();
+
+  // Wait for DS Graph creation;
+  m_hDSGraphEvent.Wait();
 
   // Start playback
   // If there's an error, the lock must be released in order to show the error dialog
   m_hReadyEvent.Set();
 
-  if (FAILED(hr))
+  if (FAILED(m_hDSGraph))
   {
     CLog::Log(LOGERROR, "%s - Failed creating DS Graph", __FUNCTION__);
     PlayerState = DSPLAYER_ERROR;
@@ -733,29 +735,6 @@ LRESULT CALLBACK CDSPlayer::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 }
 
 void CDSPlayer::HandleMessages()
-{
-  MSG msg;
-  while (GetMessage(&msg, NULL, 0, 0) != 0)
-  {    
-    if (msg.message != WM_GRAPHMESSAGE)
-    { 
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-    }
-  }
-}
-
-CDSPlayerMessages::CDSPlayerMessages(CDSPlayer * pPlayer)
-  : CThread("CDSPlayerMessages thread")
-{
-}
-
-void CDSPlayerMessages::OnStartup()
-{
-  m_threadID = CThread::GetCurrentThreadId();
-}
-
-void CDSPlayerMessages::Process()
 {
   MSG msg;
   while (GetMessage(&msg, (HWND)-1, 0, 0) != 0 && msg.message == WM_GRAPHMESSAGE)
@@ -1239,6 +1218,46 @@ bool CDSPlayer::ShowPVRChannelInfo()
 bool CDSPlayer::CachePVRStream(void) const
 {
   return g_pPVRStream && !g_PVRManager.IsPlayingRecording() && g_advancedSettings.m_bPVRCacheInDvdPlayer;
+}
+
+CDSGraphThread::CDSGraphThread(CDSPlayer * pPlayer)
+  : m_pPlayer(pPlayer), CThread("CDSGraphThread thread")
+{
+}
+
+void CDSGraphThread::OnStartup()
+{
+  m_threadID = CThread::GetCurrentThreadId();
+}
+
+void CDSGraphThread::Process()
+{
+  START_PERFORMANCE_COUNTER
+    m_pPlayer->m_hDSGraph = g_dsGraph->SetFile(m_pPlayer->currentFileItem, m_pPlayer->m_PlayerOptions);
+  END_PERFORMANCE_COUNTER("Loading file");
+  m_pPlayer->m_hDSGraphEvent.Set();
+
+  while (!m_bStop && CDSPlayer::PlayerState != DSPLAYER_CLOSED && CDSPlayer::PlayerState != DSPLAYER_LOADING)
+    HandleMessages();
+}
+
+void CDSGraphThread::HandleMessages()
+{
+  MSG msg;
+  while (GetMessage(&msg, NULL, 0, 0) != 0)
+  {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
+}
+
+void CDSGraphThread::OnExit()
+{
+  // In case of, set the ready event
+  // Prevent a dead loop
+  m_pPlayer->m_hDSGraphEvent.Set();
+  m_bStop = true;
+  m_threadID = 0;
 }
 
 CGraphManagementThread::CGraphManagementThread(CDSPlayer * pPlayer)
