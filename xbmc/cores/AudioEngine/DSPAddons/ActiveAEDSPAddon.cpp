@@ -101,14 +101,14 @@ void CActiveAEDSPAddon::OnPostUnInstall()
     CActiveAEDSP::GetInstance().Activate(true);
 }
 
-bool CActiveAEDSPAddon::CanInstall(const std::string &referer)
+bool CActiveAEDSPAddon::CanInstall()
 {
   if (!CActiveAEDSP::GetInstance().InstallAddonAllowed(ID()))
   {
-    CActiveAEDSP::GetInstance().MarkAsOutdated(ID(), referer);
+    CActiveAEDSP::GetInstance().MarkAsOutdated(ID());
     return false;
   }
-  return CAddon::CanInstall(referer);
+  return CAddon::CanInstall();
 }
 
 void CActiveAEDSPAddon::ResetProperties(int iClientId /* = AE_DSP_INVALID_ADDON_ID */)

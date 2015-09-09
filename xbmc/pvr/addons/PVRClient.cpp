@@ -127,14 +127,14 @@ void CPVRClient::OnPostUnInstall()
     PVR::CPVRManager::GetInstance().Start(true);
 }
 
-bool CPVRClient::CanInstall(const std::string &referer)
+bool CPVRClient::CanInstall()
 {
   if (!PVR::CPVRManager::GetInstance().InstallAddonAllowed(ID()))
   {
-    PVR::CPVRManager::GetInstance().MarkAsOutdated(ID(), referer);
+    PVR::CPVRManager::GetInstance().MarkAsOutdated(ID());
     return false;
   }
-  return CAddon::CanInstall(referer);
+  return CAddon::CanInstall();
 }
 
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)

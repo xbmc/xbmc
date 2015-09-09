@@ -197,13 +197,15 @@ void CGUIDialogAddonInfo::UpdateControls()
 
 void CGUIDialogAddonInfo::OnUpdate()
 {
-  std::string referer = StringUtils::Format("Referer=%s-%s.zip",m_localAddon->ID().c_str(),m_localAddon->Version().asString().c_str());
-  CAddonInstaller::GetInstance().InstallOrUpdate(m_addon->ID(), referer);
+  CAddonInstaller::GetInstance().InstallOrUpdate(m_addon->ID());
   Close();
 }
 
 void CGUIDialogAddonInfo::OnInstall()
 {
+  if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
+    return;
+
   CAddonInstaller::GetInstance().InstallOrUpdate(m_addon->ID());
   Close();
 }

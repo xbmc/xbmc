@@ -69,7 +69,7 @@ namespace PVR
     virtual void OnPostInstall(bool update, bool modal);
     virtual void OnPreUnInstall();
     virtual void OnPostUnInstall();
-    virtual bool CanInstall(const std::string &referer);
+    virtual bool CanInstall();
     bool NeedsConfiguration(void) const { return m_bNeedsConfiguration; }
 
     /** @name PVR add-on methods */
