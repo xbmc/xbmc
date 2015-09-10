@@ -6,6 +6,7 @@ SRCS += GUIContainerBuiltins.cpp
 SRCS += GUIControlBuiltins.cpp
 SRCS += LibraryBuiltins.cpp
 SRCS += PictureBuiltins.cpp
+SRCS += PlayerBuiltins.cpp
 SRCS += ProfileBuiltins.cpp
 SRCS += PVRBuiltins.cpp
 SRCS += SkinBuiltins.cpp
