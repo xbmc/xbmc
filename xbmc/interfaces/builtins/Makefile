@@ -5,6 +5,7 @@ SRCS += GUIBuiltins.cpp
 SRCS += GUIContainerBuiltins.cpp
 SRCS += GUIControlBuiltins.cpp
 SRCS += LibraryBuiltins.cpp
+SRCS += OpticalBuiltins.cpp
 SRCS += PictureBuiltins.cpp
 SRCS += PlayerBuiltins.cpp
 SRCS += ProfileBuiltins.cpp
