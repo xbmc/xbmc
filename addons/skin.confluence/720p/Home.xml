@@ -1209,7 +1209,7 @@
 			<description>Date label</description>
 			<right>20</right>
 			<top>35</top>
-			<width>200</width>
+			<width>300</width>
 			<height>15</height>
 			<align>right</align>
 			<aligny>center</aligny>
