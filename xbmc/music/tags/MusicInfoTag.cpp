@@ -513,7 +513,9 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
 {
   SetArtist(artist.strArtist);
   SetAlbumArtist(artist.strArtist);
+  SetMusicBrainzArtistID({ artist.strMusicBrainzArtistID });
   SetGenre(artist.genre);
+  SetMood(StringUtils::Join(artist.moods, g_advancedSettings.m_musicItemSeparator));
   SetDatabaseId(artist.idArtist, MediaTypeArtist);
 
   SetLoaded();
@@ -526,7 +528,9 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetAlbum(album.strAlbum);
   SetTitle(album.strAlbum);
   SetAlbumArtist(album.artist);
+  SetMusicBrainzAlbumID(album.strMusicBrainzAlbumID);
   SetGenre(album.genre);
+  SetMood(StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator));
   SetRating('0' + album.iRating);
   SetCompilation(album.bCompilation);
   SYSTEMTIME stTime;
@@ -534,6 +538,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetReleaseDate(stTime);
   SetAlbumReleaseType(album.releaseType);
   SetPlayCount(album.iTimesPlayed);
+  SetCompilation(album.bCompilation);
   SetDatabaseId(album.idAlbum, MediaTypeAlbum);
 
   SetLoaded();
@@ -560,6 +565,8 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetTrackNumber(song.iTrack);
   SetDuration(song.iDuration);
   SetPlayCount(song.iTimesPlayed);
+  SetMood(song.strMood);
+  SetCompilation(song.bCompilation);
   SetAlbumId(song.idAlbum);
   SetDatabaseId(song.idSong, MediaTypeSong);
 
