@@ -25,7 +25,7 @@
 #include "input/Key.h"
 #include "GUIUserMessages.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "PartyModeManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "FileItem.h"

@@ -30,7 +30,7 @@
 #ifdef HAS_JSONRPC
 #include "interfaces/json-rpc/JSONRPC.h"
 #endif
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "utils/log.h"
 #include "utils/Weather.h"
 #include "utils/StringUtils.h"
