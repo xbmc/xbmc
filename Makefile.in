@@ -60,6 +60,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/main/posix/MessagePrinter.a \
                    xbmc/media/media.a \
                    xbmc/messaging/messaging.a \
+                   xbmc/messaging/helpers/messagingHelpers.a \
                    xbmc/music/dialogs/musicdialogs.a \
                    xbmc/music/infoscanner/musicscanner.a \
                    xbmc/music/karaoke/karaoke.a \
