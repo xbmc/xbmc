@@ -111,6 +111,7 @@
 
 #include "AddonBuiltins.h"
 #include "GUIBuiltins.h"
+#include "GUIControlBuiltins.h"
 #include "LibraryBuiltins.h"
 #include "ProfileBuiltins.h"
 #include "SkinBuiltins.h"
@@ -150,9 +151,6 @@ const BUILT_IN commands[] = {
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Mute",                       false,  "Mute the player" },
   { "SetVolume",                  true,   "Set the current volume" },
-  { "SetFocus",                   true,   "Change current focus to a different control id" },
-  { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
-  { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
   { "Container.Refresh",          false,  "Refresh current listing" },
   { "Container.Update",           false,  "Update current listing. Send Container.Update(path,replace) to reset the path history" },
   { "Container.NextViewMode",     false,  "Move to the next view type (and refresh the listing)" },
@@ -162,10 +160,6 @@ const BUILT_IN commands[] = {
   { "Container.PreviousSortMethod",false, "Change to the previous sort method" },
   { "Container.SetSortMethod",    true,   "Change to the specified sort method" },
   { "Container.SortDirection",    false,  "Toggle the sort direction" },
-  { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
-  { "Control.SetFocus",           true,   "Change current focus to a different control id" },
-  { "Control.Message",            true,   "Send a given message to a control within a given window" },
-  { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
@@ -197,6 +191,7 @@ CBuiltins::CBuiltins()
 {
   RegisterCommands<CAddonBuiltins>();
   RegisterCommands<CGUIBuiltins>();
+  RegisterCommands<CGUIControlBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
   RegisterCommands<CProfileBuiltins>();
   RegisterCommands<CSkinBuiltins>();
@@ -315,14 +310,7 @@ int CBuiltins::Execute(const std::string& execString)
     }
   }
 
-  if ((execute == "setfocus" || execute == "control.setfocus") && params.size())
-  {
-    int controlID = atol(params[0].c_str());
-    int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
-    CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
-    g_windowManager.SendMessage(msg);
-  }
-  else if (execute == "extract" && params.size())
+  if (execute == "extract" && params.size())
   {
     // Detects if file is zip or rar then extracts
     std::string strDestDirect;
@@ -830,23 +818,6 @@ int CBuiltins::Execute(const std::string& execString)
     CCDDARipper::GetInstance().RipCD();
 #endif
   }
-  else if (execute == "pagedown")
-  {
-    int id = atoi(parameter.c_str());
-    CGUIMessage message(GUI_MSG_PAGE_DOWN, g_windowManager.GetFocusedWindow(), id);
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "pageup")
-  {
-    int id = atoi(parameter.c_str());
-    CGUIMessage message(GUI_MSG_PAGE_UP, g_windowManager.GetFocusedWindow(), id);
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "control.move" && params.size() > 1)
-  {
-    CGUIMessage message(GUI_MSG_MOVE_OFFSET, g_windowManager.GetFocusedWindow(), atoi(params[0].c_str()), atoi(params[1].c_str()));
-    g_windowManager.SendMessage(message);
-  }
   else if (execute == "container.refresh")
   { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
     //       This shouldn't stop a dialog intercepting it though.
@@ -896,36 +867,6 @@ int CBuiltins::Execute(const std::string& execString)
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, g_windowManager.GetActiveWindow(), 0, 0);
     g_windowManager.SendMessage(message);
-  }
-  else if (execute == "control.message" && params.size() >= 2)
-  {
-    int controlID = atoi(params[0].c_str());
-    int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindow(params[2]) : g_windowManager.GetActiveWindow();
-    if (params[1] == "moveup")
-      g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
-    else if (params[1] == "movedown")
-      g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
-    else if (params[1] == "pageup")
-      g_windowManager.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
-    else if (params[1] == "pagedown")
-      g_windowManager.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
-    else if (params[1] == "click")
-      g_windowManager.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
-  }
-  else if (execute == "sendclick" && !params.empty())
-  {
-    if (params.size() == 2)
-    {
-      // have a window - convert it
-      int windowID = CButtonTranslator::TranslateWindow(params[0]);
-      CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
-      g_windowManager.SendMessage(message);
-    }
-    else
-    { // single param - assume you meant the active window
-      CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetActiveWindow());
-      g_windowManager.SendMessage(message);
-    }
   }
   else if (execute == "wakeonlan")
   {
