@@ -109,6 +109,7 @@
 #include "powermanagement/PowerManager.h"
 #include "filesystem/Directory.h"
 
+#include "AddonBuiltins.h"
 #include "LibraryBuiltins.h"
 
 using namespace XFILE;
@@ -150,13 +151,6 @@ const BUILT_IN commands[] = {
   { "ReplaceWindowAndFocus",      true,   "Replaces the current window with the new one and sets focus to the specified id" },
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
-  { "RunScript",                  true,   "Run the specified script" },
-  { "StopScript",                 true,   "Stop the script by ID or path, if running" },
-#if defined(TARGET_DARWIN)
-  { "RunAppleScript",             true,   "Run the specified AppleScript command" },
-#endif
-  { "RunPlugin",                  true,   "Run the specified plugin" },
-  { "RunAddon",                   true,   "Run the specified plugin/script" },
   { "NotifyAll",                  true,   "Notify all connected clients" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
@@ -218,11 +212,6 @@ const BUILT_IN commands[] = {
   { "ClearProperty",              true,   "Clears a window property for the current focused window/dialog (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
-  { "Addon.Default.OpenSettings", true,   "Open a settings dialog for the default addon of the given type" },
-  { "Addon.Default.Set",          true,   "Open a select dialog to allow choosing the default addon of the given type" },
-  { "Addon.OpenSettings",         true,   "Open a settings dialog for the addon of the given id" },
-  { "UpdateAddonRepos",           false,  "Check add-on repositories for updates" },
-  { "UpdateLocalAddons",          false,  "Check for local add-on changes" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
   { "CECToggleState",             false,  "Toggle state of playing device via a CEC peripheral"},
   { "CECActivateSource",          false,  "Wake up playing device via a CEC peripheral"},
@@ -251,6 +240,7 @@ const BUILT_IN commands[] = {
 
 CBuiltins::CBuiltins()
 {
+  RegisterCommands<CAddonBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
 }
 
@@ -557,70 +547,6 @@ int CBuiltins::Execute(const std::string& execString)
       return false;
     }
   }
-  else if (execute == "runscript" && params.size())
-  {
-#if defined(TARGET_DARWIN_OSX)
-    if (URIUtils::HasExtension(parameter, ".applescript|.scpt"))
-    {
-      std::string osxPath = CSpecialProtocol::TranslatePath(parameter);
-      Cocoa_DoAppleScriptFile(osxPath.c_str());
-    }
-    else
-#endif
-    {
-      AddonPtr addon;
-      std::string scriptpath;
-      // Test to see if the param is an addon ID
-      if (CAddonMgr::GetInstance().GetAddon(params[0], addon))
-      {
-        //Get the correct extension point to run
-        if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-            CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
-            CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
-            CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
-        {
-          scriptpath = addon->LibPath();
-        }
-        else
-        {
-          //Run a random extension point (old behaviour).
-          CAddonMgr::GetInstance().GetAddon(params[0], addon);
-          scriptpath = addon->LibPath();
-          CLog::Log(LOGWARNING, "RunScript called for a non-script addon '%s'. This behaviour is deprecated.", params[0].c_str());
-        }
-      }
-      else
-        scriptpath = params[0];
-
-      // split the path up to find the filename
-      std::vector<std::string> argv = params;
-      std::string filename = URIUtils::GetFileName(scriptpath);
-      if (!filename.empty())
-        argv[0] = filename;
-
-      CScriptInvocationManager::GetInstance().ExecuteAsync(scriptpath, addon, argv);
-    }
-  }
-#if defined(TARGET_DARWIN_OSX)
-  else if (execute == "runapplescript")
-  {
-    Cocoa_DoAppleScript(parameter.c_str());
-  }
-#endif
-  else if (execute == "stopscript")
-  {
-    // FIXME: This does not work for addons with multiple extension points!
-    // Are there any use for this? TODO: Fix hack in CScreenSaver::Destroy() and deprecate.
-    if (!params.empty())
-    {
-      std::string scriptpath(params[0]);
-      // Test to see if the param is an addon ID
-      AddonPtr script;
-      if (CAddonMgr::GetInstance().GetAddon(params[0], script))
-        scriptpath = script->LibPath();
-      CScriptInvocationManager::GetInstance().Stop(scriptpath);
-    }
-  }
   else if (execute == "system.exec")
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
@@ -669,80 +595,6 @@ int CBuiltins::Execute(const std::string& execString)
 #endif
     else
       CLog::Log(LOGERROR, "Extract, No archive given");
-  }
-  else if (execute == "runplugin")
-  {
-    if (params.size())
-    {
-      CFileItem item(params[0]);
-      if (!item.m_bIsFolder)
-      {
-        item.SetPath(params[0]);
-        CPluginDirectory::RunScriptWithParams(item.GetPath());
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "RunPlugin called with no arguments.");
-    }
-  }
-  else if (execute == "runaddon")
-  {
-    if (params.size())
-    {
-      AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_PLUGIN))
-      {
-        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
-        std::string addonid = params[0];
-        std::string urlParameters;
-        std::vector<std::string> parameters;
-        if (params.size() == 2 &&
-           (StringUtils::StartsWith(params[1], "/") || StringUtils::StartsWith(params[1], "?")))
-          urlParameters = params[1];
-        else if (params.size() > 1)
-        {
-          parameters.insert(parameters.begin(), params.begin() + 1, params.end());
-          urlParameters = "?" + StringUtils::Join(parameters, "&");
-        }
-        else
-        {
-          // Add '/' if addon is run without params (will be removed later so it's safe)
-          // Otherwise there are 2 entries for the same plugin in ViewModesX.db
-          urlParameters = "/";
-        }
-
-        std::string cmd;
-        if (plugin->Provides(CPluginSource::VIDEO))
-          cmd = StringUtils::Format("ActivateWindow(Videos,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-        else if (plugin->Provides(CPluginSource::AUDIO))
-          cmd = StringUtils::Format("ActivateWindow(Music,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-        else if (plugin->Provides(CPluginSource::EXECUTABLE))
-          cmd = StringUtils::Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-        else if (plugin->Provides(CPluginSource::IMAGE))
-          cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-        else
-          // Pass the script name (params[0]) and all the parameters
-          // (params[1] ... params[x]) separated by a comma to RunPlugin
-          cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
-        Execute(cmd);
-      }
-      else if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-               CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
-               CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
-               CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
-      {
-        // Pass the script name (params[0]) and all the parameters
-        // (params[1] ... params[x]) separated by a comma to RunScript
-        Execute(StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str()));
-      }
-      else
-        CLog::Log(LOGERROR, "RunAddon: unknown add-on id '%s', or unexpected add-on type (not a script or plugin).", params[0].c_str());
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "RunAddon called with no arguments.");
-    }
   }
   else if (execute == "notifyall")
   {
@@ -1693,47 +1545,6 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "wakeonlan")
   {
     g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
-  }
-  else if (execute == "addon.default.opensettings" && params.size() == 1)
-  {
-    AddonPtr addon;
-    ADDON::TYPE type = TranslateType(params[0]);
-    if (CAddonMgr::GetInstance().GetDefault(type, addon))
-    {
-      bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addon);
-      if (type == ADDON_VIZ && changed)
-        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
-    }
-  }
-  else if (execute == "addon.default.set" && params.size() == 1)
-  {
-    std::string addonID;
-    TYPE type = TranslateType(params[0]);
-    bool allowNone = false;
-    if (type == ADDON_VIZ)
-      allowNone = true;
-
-    if (type != ADDON_UNKNOWN && 
-        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
-    {
-      CAddonMgr::GetInstance().SetDefault(type,addonID);
-      if (type == ADDON_VIZ)
-        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
-    }
-  }
-  else if (execute == "addon.opensettings" && params.size() == 1)
-  {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(params[0], addon))
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
-  }
-  else if (execute == "updateaddonrepos")
-  {
-    CRepositoryUpdater::GetInstance().CheckForUpdates();
-  }
-  else if (execute == "updatelocaladdons")
-  {
-    CAddonMgr::GetInstance().FindAddons();
   }
   else if (execute == "toggledpms")
   {
