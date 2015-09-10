@@ -110,6 +110,7 @@
 #include "filesystem/Directory.h"
 
 #include "AddonBuiltins.h"
+#include "GUIBuiltins.h"
 #include "LibraryBuiltins.h"
 #include "ProfileBuiltins.h"
 #include "SkinBuiltins.h"
@@ -134,12 +135,6 @@ typedef struct
 
 const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
-  { "SetGUILanguage",             true,   "Set GUI Language" },
-  { "ActivateWindow",             true,   "Activate the specified window" },
-  { "ActivateWindowAndFocus",     true,   "Activate the specified window and sets focus to the specified id" },
-  { "ReplaceWindowAndFocus",      true,   "Replaces the current window with the new one and sets focus to the specified id" },
-  { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
-  { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "NotifyAll",                  true,   "Notify all connected clients" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
@@ -147,21 +142,14 @@ const BUILT_IN commands[] = {
   { "ShowPicture",                true,   "Display a picture by file path" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
-  { "RefreshRSS",                 false,  "Reload RSS feeds from RSSFeeds.xml"},
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
   { "Playlist.Clear",             false,  "Clear the current playlist" },
   { "EjectTray",                  false,  "Close or open the DVD tray" },
-  { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
-  { "CancelAlarm",                true,   "Cancels an alarm" },
-  { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
-  { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Mute",                       false,  "Mute the player" },
   { "SetVolume",                  true,   "Set the current volume" },
-  { "Dialog.Close",               true,   "Close a dialog" },
-  { "Resolution",                 true,   "Change Kodi's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
   { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
@@ -178,8 +166,6 @@ const BUILT_IN commands[] = {
   { "Control.SetFocus",           true,   "Change current focus to a different control id" },
   { "Control.Message",            true,   "Send a given message to a control within a given window" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
-  { "SetProperty",                true,   "Sets a window property for the current focused window/dialog (key,value)" },
-  { "ClearProperty",              true,   "Clears a window property for the current focused window/dialog (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
@@ -205,12 +191,12 @@ const BUILT_IN commands[] = {
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
-  { "SetStereoMode",              true,   "Changes the stereo mode of the GUI. Params can be: toggle, next, previous, select, tomono or any of the supported stereomodes (off, split_vertical, split_horizontal, row_interleaved, hardware_based, anaglyph_cyan_red, anaglyph_green_magenta, anaglyph_yellow_blue, monoscopic)" }
 };
 
 CBuiltins::CBuiltins()
 {
   RegisterCommands<CAddonBuiltins>();
+  RegisterCommands<CGUIBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
   RegisterCommands<CProfileBuiltins>();
   RegisterCommands<CSkinBuiltins>();
@@ -305,14 +291,6 @@ void CBuiltins::GetHelp(std::string &help)
   }
 }
 
-bool CBuiltins::ActivateWindow(int iWindowID, const std::vector<std::string>& params /* = {} */, bool swappingWindows /* = false */)
-{
-  // disable the screensaver
-  g_application.WakeUpScreenSaverAndDPMS();
-  g_windowManager.ActivateWindow(iWindowID, params, swappingWindows);
-  return true;
-}
-
 int CBuiltins::Execute(const std::string& execString)
 {
   // Deprecated. Get the text after the "XBMC."
@@ -337,135 +315,12 @@ int CBuiltins::Execute(const std::string& execString)
     }
   }
 
-  if (execute == "setguilanguage")
-  {
-    if (params.size())
-    {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, params[0]);
-    }
-  }
-  else if (execute == "takescreenshot")
-  {
-    if (params.size())
-    {
-      // get the parameters
-      std::string strSaveToPath = params[0];
-      bool sync = false;
-      if (params.size() >= 2)
-        sync = StringUtils::EqualsNoCase(params[1], "sync");
-
-      if (!strSaveToPath.empty())
-      {
-        if (CDirectory::Exists(strSaveToPath))
-        {
-          std::string file = CUtil::GetNextFilename(URIUtils::AddFileToFolder(strSaveToPath, "screenshot%03d.png"), 999);
-
-          if (!file.empty())
-          {
-            CScreenShot::TakeScreenshot(file, sync);
-          }
-          else
-          {
-            CLog::Log(LOGWARNING, "Too many screen shots or invalid folder %s", strSaveToPath.c_str());
-          }
-        }
-        else
-          CScreenShot::TakeScreenshot(strSaveToPath, sync);
-      }
-    }
-    else
-      CScreenShot::TakeScreenshot();
-  }
-  else if (execute == "activatewindow" || execute == "replacewindow")
-  {
-    // get the parameters
-    std::string strWindow;
-    if (params.size())
-    {
-      strWindow = params[0];
-      params.erase(params.begin());
-    }
-
-    // confirm the window destination is valid prior to switching
-    int iWindow = CButtonTranslator::TranslateWindow(strWindow);
-    if (iWindow != WINDOW_INVALID)
-    {
-      // compate the given directory param with the current active directory
-      bool bIsSameStartFolder = true;
-      if (!params.empty())
-      {
-        CGUIWindow *activeWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-        if (activeWindow && activeWindow->IsMediaWindow())
-          bIsSameStartFolder = ((CGUIMediaWindow*) activeWindow)->IsSameStartFolder(params[0]);
-      }
-
-      // activate window only if window and path differ from the current active window
-      if (iWindow != g_windowManager.GetActiveWindow() || !bIsSameStartFolder)
-      {
-        return ActivateWindow(iWindow, params, execute != "activatewindow");
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid destination window: %s", strWindow.c_str());
-      return false;
-    }
-  }
-  else if ((execute == "setfocus" || execute == "control.setfocus") && params.size())
+  if ((execute == "setfocus" || execute == "control.setfocus") && params.size())
   {
     int controlID = atol(params[0].c_str());
     int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
     CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
-  }
-  else if ((execute == "activatewindowandfocus" || execute == "replacewindowandfocus") && params.size())
-  {
-    std::string strWindow = params[0];
-
-    // confirm the window destination is valid prior to switching
-    int iWindow = CButtonTranslator::TranslateWindow(strWindow);
-    if (iWindow != WINDOW_INVALID)
-    {
-      if (iWindow != g_windowManager.GetActiveWindow())
-      {
-        if (!ActivateWindow(iWindow, {}, execute != "activatewindowandfocus"))
-          return false;
-
-        unsigned int iPtr = 1;
-        while (params.size() > iPtr + 1)
-        {
-          CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(),
-              atol(params[iPtr].c_str()),
-              (params.size() >= iPtr + 2) ? atol(params[iPtr + 1].c_str())+1 : 0);
-          g_windowManager.SendMessage(msg);
-          iPtr += 2;
-        }
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Replace/ActivateWindowAndFocus called with invalid destination window: %s", strWindow.c_str());
-      return false;
-    }
-  }
-  else if (execute == "resolution")
-  {
-    RESOLUTION res = RES_PAL_4x3;
-    if (paramlow == "pal") res = RES_PAL_4x3;
-    else if (paramlow == "pal16x9") res = RES_PAL_16x9;
-    else if (paramlow == "ntsc") res = RES_NTSC_4x3;
-    else if (paramlow == "ntsc16x9") res = RES_NTSC_16x9;
-    else if (paramlow == "720p") res = RES_HDTV_720p;
-    else if (paramlow == "720psbs") res = RES_HDTV_720pSBS;
-    else if (paramlow == "720ptb") res = RES_HDTV_720pTB;
-    else if (paramlow == "1080psbs") res = RES_HDTV_1080pSBS;
-    else if (paramlow == "1080ptb") res = RES_HDTV_1080pTB;
-    else if (paramlow == "1080i") res = RES_HDTV_1080i;
-    if (g_graphicsContext.IsValidResolution(res))
-    {
-      CDisplaySettings::GetInstance().SetCurrentResolution(res, true);
-      g_application.ReloadSkin();
-    }
   }
   else if (execute == "extract" && params.size())
   {
@@ -670,10 +525,6 @@ int CBuiltins::Execute(const std::string& execString)
     msg.SetStringParams(strParams);
     CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
-  }
-  else if (execute == "refreshrss")
-  {
-    CRssManager::GetInstance().Reload();
   }
   else if (execute == "playercontrol")
   {
@@ -964,66 +815,6 @@ int CBuiltins::Execute(const std::string& execString)
     g_mediaManager.ToggleTray();
   }
 #endif
-  else if (execute == "alarmclock" && params.size() > 1)
-  {
-    // format is alarmclock(name,command[,seconds,true]);
-    float seconds = 0;
-    if (params.size() > 2)
-    {
-      if (params[2].find(':') == std::string::npos)
-        seconds = static_cast<float>(atoi(params[2].c_str())*60);
-      else
-        seconds = (float)StringUtils::TimeStringToSeconds(params[2]);
-    }
-    else
-    { // check if shutdown is specified in particular, and get the time for it
-      std::string strHeading;
-      if (StringUtils::EqualsNoCase(parameter, "shutdowntimer"))
-        strHeading = g_localizeStrings.Get(20145);
-      else
-        strHeading = g_localizeStrings.Get(13209);
-      std::string strTime;
-      if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
-        seconds = static_cast<float>(atoi(strTime.c_str())*60);
-      else
-        return false;
-    }
-    bool silent = false;
-    bool loop = false;
-    for (unsigned int i = 3; i < params.size() ; i++)
-    {
-      // check "true" for backward comp
-      if (StringUtils::EqualsNoCase(params[i], "true") || StringUtils::EqualsNoCase(params[i], "silent"))
-        silent = true;
-      else if (StringUtils::EqualsNoCase(params[i], "loop"))
-        loop = true;
-    }
-
-    if( g_alarmClock.IsRunning() )
-      g_alarmClock.Stop(params[0],silent);
-    // no negative times not allowed, loop must have a positive time
-    if (seconds < 0 || (seconds == 0 && loop))
-      return false;
-    g_alarmClock.Start(params[0], seconds, params[1], silent, loop);
-  }
-  else if (execute == "notification")
-  {
-    if (params.size() < 2)
-      return -1;
-    if (params.size() == 4)
-      CGUIDialogKaiToast::QueueNotification(params[3],params[0],params[1],atoi(params[2].c_str()));
-    else if (params.size() == 3)
-      CGUIDialogKaiToast::QueueNotification("",params[0],params[1],atoi(params[2].c_str()));
-    else
-      CGUIDialogKaiToast::QueueNotification(params[0],params[1]);
-  }
-  else if (execute == "cancelalarm")
-  {
-    bool silent = (params.size() > 1 &&
-        (StringUtils::EqualsNoCase(params[1], "true") ||
-         StringUtils::EqualsNoCase(params[1], "silent")));
-    g_alarmClock.Stop(params[0],silent);
-  }
   else if (execute == "playdvd")
   {
 #ifdef HAS_DVD_DRIVE
@@ -1038,23 +829,6 @@ int CBuiltins::Execute(const std::string& execString)
 #ifdef HAS_CDDA_RIPPER
     CCDDARipper::GetInstance().RipCD();
 #endif
-  }
-  else if (execute == "dialog.close" && params.size())
-  {
-    bool bForce = false;
-    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
-      bForce = true;
-    if (StringUtils::EqualsNoCase(params[0], "all"))
-    {
-      g_windowManager.CloseDialogs(bForce);
-    }
-    else
-    {
-      int id = CButtonTranslator::TranslateWindow(params[0]);
-      CGUIWindow *window = (CGUIWindow *)g_windowManager.GetWindow(id);
-      if (window && window->IsDialog())
-        ((CGUIDialog *)window)->Close(bForce);
-    }
   }
   else if (execute == "pagedown")
   {
@@ -1153,28 +927,6 @@ int CBuiltins::Execute(const std::string& execString)
       g_windowManager.SendMessage(message);
     }
   }
-  else if (execute == "action" && !params.empty())
-  {
-    // try translating the action from our ButtonTranslator
-    int actionID;
-    if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
-    {
-      int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, windowID, -1, static_cast<void*>(new CAction(actionID)));
-    }
-  }
-  else if (execute == "setproperty" && params.size() >= 2)
-  {
-    CGUIWindow *window = g_windowManager.GetWindow(params.size() > 2 ? CButtonTranslator::TranslateWindow(params[2]) : g_windowManager.GetFocusedWindow());
-    if (window)
-      window->SetProperty(params[0],params[1]);
-  }
-  else if (execute == "clearproperty" && !params.empty())
-  {
-    CGUIWindow *window = g_windowManager.GetWindow(params.size() > 1 ? CButtonTranslator::TranslateWindow(params[1]) : g_windowManager.GetFocusedWindow());
-    if (window)
-      window->SetProperty(params[0],"");
-  }
   else if (execute == "wakeonlan")
   {
     g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
@@ -1252,17 +1004,6 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "startandroidactivity" && !params.empty())
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_START_ANDROID_ACTIVITY, -1, -1, static_cast<void*>(&params));
-  }
-  else if (execute == "setstereomode" && !parameter.empty())
-  {
-    CAction action = CStereoscopicsManager::GetInstance().ConvertActionCommandToAction(execute, parameter);
-    if (action.GetID() != ACTION_NONE)
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
-    else
-    {
-      CLog::Log(LOGERROR,"Builtin 'SetStereoMode' called with unknown parameter: %s", parameter.c_str());
-      return -2;
-    }
   }
   else
     return CInputManager::GetInstance().ExecuteBuiltin(execute, params);
