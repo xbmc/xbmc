@@ -111,6 +111,7 @@
 
 #include "AddonBuiltins.h"
 #include "LibraryBuiltins.h"
+#include "SkinBuiltins.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -158,8 +159,6 @@ const BUILT_IN commands[] = {
   { "ShowPicture",                true,   "Display a picture by file path" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
-  { "ReloadSkin",                 false,  "Reload Kodi's skin" },
-  { "UnloadSkin",                 false,  "Unload Kodi's skin" },
   { "RefreshRSS",                 false,  "Reload RSS feeds from RSSFeeds.xml"},
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
@@ -171,19 +170,6 @@ const BUILT_IN commands[] = {
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
-  { "Skin.ToggleSetting",         true,   "Toggles a skin setting on or off" },
-  { "Skin.ToggleDebug",           false,  "Toggles skin debug info on or off" },
-  { "Skin.SetString",             true,   "Prompts and sets skin string" },
-  { "Skin.SetNumeric",            true,   "Prompts and sets numeric input" },
-  { "Skin.SetPath",               true,   "Prompts and sets a skin path" },
-  { "Skin.Theme",                 true,   "Control skin theme" },
-  { "Skin.SetImage",              true,   "Prompts and sets a skin image" },
-  { "Skin.SetLargeImage",         true,   "Prompts and sets a large skin images" },
-  { "Skin.SetFile",               true,   "Prompts and sets a file" },
-  { "Skin.SetAddon",              true,   "Prompts and set an addon" },
-  { "Skin.SetBool",               true,   "Sets a skin setting on" },
-  { "Skin.Reset",                 true,   "Resets a skin setting to default" },
-  { "Skin.ResetSettings",         false,  "Resets all skin settings" },
   { "Mute",                       false,  "Mute the player" },
   { "SetVolume",                  true,   "Set the current volume" },
   { "Dialog.Close",               true,   "Close a dialog" },
@@ -242,6 +228,7 @@ CBuiltins::CBuiltins()
 {
   RegisterCommands<CAddonBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
+  RegisterCommands<CSkinBuiltins>();
 }
 
 CBuiltins::~CBuiltins()
@@ -780,15 +767,6 @@ int CBuiltins::Execute(const std::string& execString)
     CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
-  else if (execute == "reloadskin")
-  {
-    //  Reload the skin
-    g_application.ReloadSkin(!params.empty() && StringUtils::EqualsNoCase(params[0], "confirm"));
-  }
-  else if (execute == "unloadskin")
-  {
-    g_application.UnloadSkin(true); // we're reloading the skin after this
-  }
   else if (execute == "refreshrss")
   {
     CRssManager::GetInstance().Reload();
@@ -1156,228 +1134,6 @@ int CBuiltins::Execute(const std::string& execString)
 #ifdef HAS_CDDA_RIPPER
     CCDDARipper::GetInstance().RipCD();
 #endif
-  }
-  else if (execute == "skin.togglesetting")
-  {
-    int setting = CSkinSettings::GetInstance().TranslateBool(parameter);
-    CSkinSettings::GetInstance().SetBool(setting, !CSkinSettings::GetInstance().GetBool(setting));
-    CSettings::GetInstance().Save();
-  }
-  else if (execute == "skin.setbool" && params.size())
-  {
-    if (params.size() > 1)
-    {
-      int string = CSkinSettings::GetInstance().TranslateBool(params[0]);
-      CSkinSettings::GetInstance().SetBool(string, StringUtils::EqualsNoCase(params[1], "true"));
-      CSettings::GetInstance().Save();
-      return 0;
-    }
-    // default is to set it to true
-    int setting = CSkinSettings::GetInstance().TranslateBool(params[0]);
-    CSkinSettings::GetInstance().SetBool(setting, true);
-    CSettings::GetInstance().Save();
-  }
-  else if (execute == "skin.reset")
-  {
-    CSkinSettings::GetInstance().Reset(parameter);
-    CSettings::GetInstance().Save();
-  }
-  else if (execute == "skin.resetsettings")
-  {
-    CSkinSettings::GetInstance().Reset();
-    CSettings::GetInstance().Save();
-  }
-  else if (execute == "skin.theme")
-  {
-    // enumerate themes
-    std::vector<std::string> vecTheme;
-    CUtil::GetSkinThemes(vecTheme);
-
-    int iTheme = -1;
-
-    // find current theme
-    if (!StringUtils::EqualsNoCase(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME), "SKINDEFAULT"))
-    {
-      for (unsigned int i=0;i<vecTheme.size();++i)
-      {
-        std::string strTmpTheme(CSettings::GetInstance().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME));
-        URIUtils::RemoveExtension(strTmpTheme);
-        if (StringUtils::EqualsNoCase(vecTheme[i], strTmpTheme))
-        {
-          iTheme=i;
-          break;
-        }
-      }
-    }
-
-    int iParam = atoi(parameter.c_str());
-    if (iParam == 0 || iParam == 1)
-      iTheme++;
-    else if (iParam == -1)
-      iTheme--;
-    if (iTheme > (int)vecTheme.size()-1)
-      iTheme = -1;
-    if (iTheme < -1)
-      iTheme = vecTheme.size()-1;
-
-    std::string strSkinTheme = "SKINDEFAULT";
-    if (iTheme != -1 && iTheme < (int)vecTheme.size())
-      strSkinTheme = vecTheme[iTheme];
-
-    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME, strSkinTheme);
-    // also set the default color theme
-    std::string colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
-    if (StringUtils::EqualsNoCase(colorTheme, "Textures.xml"))
-      colorTheme = "defaults.xml";
-    CSettings::GetInstance().SetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS, colorTheme);
-    g_application.ReloadSkin();
-  }
-  else if (execute == "skin.setstring"  || execute == "skin.setimage" ||
-           execute == "skin.setfile"    || execute == "skin.setpath"  ||
-           execute == "skin.setnumeric" || execute == "skin.setlargeimage")
-  {
-    // break the parameter up if necessary
-    int string = 0;
-    if (params.size() > 1)
-    {
-      string = CSkinSettings::GetInstance().TranslateString(params[0]);
-      if (execute == "skin.setstring")
-      {
-        CSkinSettings::GetInstance().SetString(string, params[1]);
-        CSettings::GetInstance().Save();
-        return 0;
-      }
-    }
-    else
-      string = CSkinSettings::GetInstance().TranslateString(params[0]);
-    std::string value = CSkinSettings::GetInstance().GetString(string);
-    VECSOURCES localShares;
-    g_mediaManager.GetLocalDrives(localShares);
-    if (execute == "skin.setstring")
-    {
-      if (CGUIKeyboardFactory::ShowAndGetInput(value, CVariant{g_localizeStrings.Get(1029)}, true))
-        CSkinSettings::GetInstance().SetString(string, value);
-    }
-    else if (execute == "skin.setnumeric")
-    {
-      if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(611)))
-        CSkinSettings::GetInstance().SetString(string, value);
-    }
-    else if (execute == "skin.setimage")
-    {
-      if (params.size() > 2)
-      {
-        value = params[2];
-        URIUtils::AddSlashAtEnd(value);
-        bool bIsSource;
-        if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
-        {
-          CMediaSource share;
-          share.strName = g_localizeStrings.Get(13278);
-          share.strPath = value;
-          localShares.push_back(share);
-        }
-      }
-      if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
-        CSkinSettings::GetInstance().SetString(string, value);
-    }
-    else if (execute == "skin.setlargeimage")
-    {
-      VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources("pictures");
-      if (!shares) shares = &localShares;
-      if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
-        CSkinSettings::GetInstance().SetString(string, value);
-    }
-    else if (execute == "skin.setfile")
-    {
-      // Note. can only browse one addon type from here
-      // if browsing for addons, required param[1] is addontype string, with optional param[2]
-      // as contenttype string see IAddon.h & ADDON::TranslateXX
-      std::string strMask = (params.size() > 1) ? params[1] : "";
-      StringUtils::ToLower(strMask);
-      ADDON::TYPE type;
-      if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
-      {
-        CURL url;
-        url.SetProtocol("addons");
-        url.SetHostName("enabled");
-        url.SetFileName(strMask+"/");
-        localShares.clear();
-        std::string content = (params.size() > 2) ? params[2] : "";
-        StringUtils::ToLower(content);
-        url.SetPassword(content);
-        std::string strMask;
-        if (type == ADDON_SCRIPT)
-          strMask = ".py";
-        std::string replace;
-        if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
-        {
-          if (StringUtils::StartsWithNoCase(replace, "addons://"))
-            CSkinSettings::GetInstance().SetString(string, URIUtils::GetFileName(replace));
-          else
-            CSkinSettings::GetInstance().SetString(string, replace);
-        }
-      }
-      else 
-      {
-        if (params.size() > 2)
-        {
-          value = params[2];
-          URIUtils::AddSlashAtEnd(value);
-          bool bIsSource;
-          if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
-          {
-            CMediaSource share;
-            share.strName = g_localizeStrings.Get(13278);
-            share.strPath = value;
-            localShares.push_back(share);
-          }
-        }
-        if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
-          CSkinSettings::GetInstance().SetString(string, value);
-      }
-    }
-    else // execute == "skin.setpath"))
-    {
-      g_mediaManager.GetNetworkLocations(localShares);
-      if (params.size() > 1)
-      {
-        value = params[1];
-        URIUtils::AddSlashAtEnd(value);
-        bool bIsSource;
-        if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
-        {
-          CMediaSource share;
-          share.strName = g_localizeStrings.Get(13278);
-          share.strPath = value;
-          localShares.push_back(share);
-        }
-      }
-      if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
-        CSkinSettings::GetInstance().SetString(string, value);
-    }
-    CSettings::GetInstance().Save();
-  }
-  else if (execute == "skin.setaddon" && params.size() > 1)
-  {
-    int string = CSkinSettings::GetInstance().TranslateString(params[0]);
-    std::vector<ADDON::TYPE> types;
-    for (unsigned int i = 1 ; i < params.size() ; i++)
-    {
-      ADDON::TYPE type = TranslateType(params[i]);
-      if (type != ADDON_UNKNOWN)
-        types.push_back(type);
-    }
-    std::string result;
-    if (types.size() > 0 && CGUIWindowAddonBrowser::SelectAddonID(types, result, true) == 1)
-    {
-      CSkinSettings::GetInstance().SetString(string, result);
-      CSettings::GetInstance().Save();
-    }
-  }
-  else if (execute == "skin.toggledebug")
-  {
-    g_SkinInfo->ToggleDebug();
   }
   else if (execute == "dialog.close" && params.size())
   {
