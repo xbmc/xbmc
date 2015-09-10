@@ -52,8 +52,6 @@ protected:
   virtual ~CBuiltins();
 
 private:
-  bool ActivateWindow(int iWindowID, const std::vector<std::string>& params = std::vector<std::string>(), bool swappingWindows = false);
-
   CommandMap m_command; //!< Map of registered commands
 
 
