@@ -9,7 +9,7 @@ DEPENDS = \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls curl \
 	libjpeg-turbo libpng fribidi libass \
-	libxml2 yajl libmicrohttpd mysql libffi \
+	libxml2 rapidjson libmicrohttpd mysql libffi \
 	python27 libshairplay libfmt \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libssh taglib libusb libnfs \

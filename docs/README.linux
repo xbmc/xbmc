@@ -56,7 +56,7 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssh-dev, libssl-dev, libswscale-dev,
   libtag1-dev (>= 1.8), libtinyxml-dev (>= 2.6.2), libtool, libudev-dev,
   libusb-dev, libva-dev, libvdpau-dev, libxml2-dev,
-  libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, libyajl-dev (>=2.0), lsb-release,
+  libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, lsb-release, rapidjson-dev,
   nasm [!amd64], python-dev, python-imaging, python-support, swig, unzip, uuid-dev, yasm,
   zip, zlib1g-dev
 
