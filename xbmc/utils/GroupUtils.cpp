@@ -18,20 +18,27 @@
  *
  */
 
+#include "GroupUtils.h"
+
 #include <map>
 #include <set>
 
-#include "GroupUtils.h"
 #include "FileItem.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
-#include "utils/URIUtils.h"
-#include "filesystem/MultiPathDirectory.h"
 
-typedef std::map<int, std::set<CFileItemPtr> > SetMap;
+using SetMap = std::map<int, std::set<CFileItemPtr> >;
 
 bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, CFileItemList &groupedItems, GroupAttribute groupAttributes /* = GroupAttributeNone */)
+{
+  CFileItemList ungroupedItems;
+  return Group(groupBy, baseDir, items, groupedItems, ungroupedItems, groupAttributes);
+}
+
+bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, CFileItemList &groupedItems, CFileItemList &ungroupedItems, GroupAttribute groupAttributes /* = GroupAttributeNone */)
 {
   if (groupBy == GroupByNone)
     return false;
@@ -43,19 +50,19 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
   SetMap setMap;
   for (int index = 0; index < items.Size(); index++)
   {
-    bool add = true;
+    bool ungrouped = true;
     const CFileItemPtr item = items.Get(index);
 
     // group by sets
     if ((groupBy & GroupBySet) &&
-        item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iSetId > 0)
+      item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iSetId > 0)
     {
-      add = false;
+      ungrouped = false;
       setMap[item->GetVideoInfoTag()->m_iSetId].insert(item);
     }
 
-    if (add)
-      groupedItems.Add(item);
+    if (ungrouped)
+      ungroupedItems.Add(item);
   }
 
   if ((groupBy & GroupBySet) && !setMap.empty())
@@ -66,10 +73,10 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
 
     for (SetMap::const_iterator set = setMap.begin(); set != setMap.end(); ++set)
     {
-      // only one item in the set, so just re-add it
+      // only one item in the set, so add it to the ungrouped items
       if (set->second.size() == 1 && (groupAttributes & GroupAttributeIgnoreSingleItems))
       {
-        groupedItems.Add(*set->second.begin());
+        ungroupedItems.Add(*set->second.begin());
         continue;
       }
 
@@ -104,19 +111,19 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
           ratings++;
           setInfo->m_fRating += movieInfo->m_fRating;
         }
-        
+
         // handle year
         if (movieInfo->m_iYear > setInfo->m_iYear)
           setInfo->m_iYear = movieInfo->m_iYear;
-        
+
         // handle lastplayed
         if (movieInfo->m_lastPlayed.IsValid() && movieInfo->m_lastPlayed > setInfo->m_lastPlayed)
           setInfo->m_lastPlayed = movieInfo->m_lastPlayed;
-        
+
         // handle dateadded
         if (movieInfo->m_dateAdded.IsValid() && movieInfo->m_dateAdded > setInfo->m_dateAdded)
           setInfo->m_dateAdded = movieInfo->m_dateAdded;
-        
+
         // handle playcount/watched
         setInfo->m_playCount += movieInfo->m_playCount;
         if (movieInfo->m_playCount > 0)
@@ -133,7 +140,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
 
       if (ratings > 1)
         pItem->GetVideoInfoTag()->m_fRating /= ratings;
-        
+
       setInfo->m_playCount = iWatched >= (int)set->second.size() ? (setInfo->m_playCount / set->second.size()) : 0;
       pItem->SetProperty("total", (int)set->second.size());
       pItem->SetProperty("watched", iWatched);
@@ -143,6 +150,18 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       groupedItems.Add(pItem);
     }
   }
+
+  return true;
+}
+
+bool GroupUtils::GroupAndMix(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, CFileItemList &groupedItemsMixed, GroupAttribute groupAttributes /* = GroupAttributeNone */)
+{
+  CFileItemList ungroupedItems;
+  if (!Group(groupBy, baseDir, items, groupedItemsMixed, ungroupedItems, groupAttributes))
+    return false;
+
+  // add all the ungrouped items as well
+  groupedItemsMixed.Append(ungroupedItems);
 
   return true;
 }
