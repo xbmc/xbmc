@@ -555,17 +555,17 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
   return 0; // success
 }
 
-bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
+bool CNetwork::PingHost(const std::string &ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
 {
   if (port == 0) // use icmp ping
-    return PingHost (ipaddr, timeOutMs);
+    return PingHostImpl (ipaddr, timeOutMs);
 
-  struct sockaddr_in addr; 
-  addr.sin_family = AF_INET; 
-  addr.sin_port = htons(port); 
-  addr.sin_addr.s_addr = ipaddr; 
+  struct sockaddr_storage *addr = ConvIP(ipaddr, port);
 
-  SOCKET soc = socket(AF_INET, SOCK_STREAM, 0); 
+  if (!addr)
+    return false;
+
+  SOCKET soc = socket(addr->ss_family, SOCK_STREAM, 0);
 
   const char* err_msg = "invalid socket";
 
@@ -575,7 +575,7 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
     tmout.tv_sec = timeOutMs / 1000; 
     tmout.tv_usec = (timeOutMs % 1000) * 1000; 
 
-    err_msg = ConnectHostPort (soc, addr, tmout, readability_check);
+    err_msg = ConnectHostPort (soc, (const struct sockaddr_in&)addr, tmout, readability_check);
 
     (void) closesocket (soc);
   }
@@ -588,9 +588,10 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
     std::string sock_err = strerror(errno);
 #endif
 
-    CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, inet_ntoa(addr.sin_addr), port, err_msg, sock_err.c_str());
+    CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, ipaddr.c_str(), port, err_msg, sock_err.c_str());
   }
 
+  free(addr);
   return err_msg == 0;
 }
 

@@ -77,7 +77,7 @@ public:
    virtual bool SupportsIPv6() { return true; }
 
    // Ping remote host
-   virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
+   virtual bool PingHostImpl(const std::string &target, unsigned int timeout_ms = 2000);
 
    // Get/set the nameserver(s)
    virtual std::vector<std::string> GetNameServers(void);

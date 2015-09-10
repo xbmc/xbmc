@@ -537,19 +537,21 @@ void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
 #endif
 }
 
-bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
+bool CNetworkLinux::PingHostImpl(const std::string &target, unsigned int timeout_ms)
 {
-  char cmd_line [64];
+  bool isIPv6 = CNetwork::ConvIPv6(target);
+  if (isIPv6 && !SupportsIPv6())
+    return false;
 
-  struct in_addr host_ip; 
-  host_ip.s_addr = remote_ip;
+  char cmd_line [64];
+  std::string ping = isIPv6 ? "ping6" : "ping";
 
 #if defined (TARGET_DARWIN_IOS) // no timeout option available
-  sprintf(cmd_line, "ping -c 1 %s", inet_ntoa(host_ip));
+  sprintf(cmd_line, "%s -c 1 %s", ping.c_str(), target.c_str());
 #elif defined (TARGET_DARWIN) || defined (TARGET_FREEBSD)
-  sprintf(cmd_line, "ping -c 1 -t %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+  sprintf(cmd_line, "%s -c 1 -%s %d %s", ping.c_str(), isIPv6 ? "i" : "t", timeout_ms / 1000 + (timeout_ms % 1000) != 0, target.c_str());
 #else
-  sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+  sprintf(cmd_line, "%s -c 1 -w %d %s", ping.c_str(), timeout_ms / 1000 + (timeout_ms % 1000) != 0, target.c_str());
 #endif
 
   int status = system (cmd_line);

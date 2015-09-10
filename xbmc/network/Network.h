@@ -151,9 +151,23 @@ public:
    //       configuration, returns false for IPv6 only stack)
    bool WakeOnLan(const char *mac);
 
-   // Return true if host replies to ping
-   bool PingHost(unsigned long host, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false);
-   virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) = 0;
+   /*!
+    \brief  Ping remote host
+    \param  IP host address, port (optional)
+    \return Return true if host replies to ping, false otherwise
+            Function is IPv6/v4 compatible
+            - If port is not specified, system cmd ping/ping6 is called
+            - If port is specified, host is contacted via sock connect()
+    */
+   bool PingHost(const std::string &ipaddr, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false);
+
+   /*!
+    \brief  Ping remote host (compatibility wrapper, see PingHost(std::string&...))
+    */
+   bool PingHost(unsigned long ipaddr, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false)
+     { return PingHost(GetIpStr(ipaddr), port, timeout_ms, readability_check); }
+
+   virtual bool PingHostImpl(const std::string &target, unsigned int timeout_ms = 2000) = 0;
 
    // Get/set the nameserver(s)
    virtual std::vector<std::string> GetNameServers(void) = 0;

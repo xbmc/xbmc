@@ -254,15 +254,19 @@ void CNetworkWin32::SetNameServers(const std::vector<std::string>& nameServers)
   return;
 }
 
-bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 2000 */)
+bool CNetworkWin32::PingHostImpl(const std::string &target, unsigned int timeout_ms /* = 2000 */)
 {
+  struct sockaddr_in sa;
+  if (!CNetwork::ConvIPv4(target, &sa))
+    return false;
+
   char SendData[]    = "poke";
   HANDLE hIcmpFile   = IcmpCreateFile();
   BYTE ReplyBuffer [sizeof(ICMP_ECHO_REPLY) + sizeof(SendData)];
 
   SetLastError(ERROR_SUCCESS);
 
-  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, host, SendData, sizeof(SendData), 
+  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, ntohl(sa.sin_addr), SendData, sizeof(SendData),
                                 NULL, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
 
   DWORD lastErr = GetLastError();
