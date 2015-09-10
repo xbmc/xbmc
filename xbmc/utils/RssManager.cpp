@@ -22,7 +22,7 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "filesystem/File.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"

@@ -50,7 +50,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "input/Key.h"
 #include "network/Network.h"

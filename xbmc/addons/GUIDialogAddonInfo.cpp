@@ -40,7 +40,7 @@
 #include "utils/Variant.h"
 #include "addons/AddonInstaller.h"
 #include "Util.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 
 #include <utility>
 

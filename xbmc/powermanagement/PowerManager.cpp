@@ -29,7 +29,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/Weather.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "interfaces/AnnouncementManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
