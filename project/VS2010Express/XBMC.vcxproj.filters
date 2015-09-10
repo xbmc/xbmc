@@ -934,9 +934,6 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
     <ClCompile Include="..\..\xbmc\xbmc.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\AnimatedGif.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -3192,6 +3189,9 @@
     <ClCompile Include="..\..\xbmc\video\jobs\VideoLibraryRefreshingJob.cpp">
       <Filter>video\jobs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\Gif.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -3856,9 +3856,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\Application.h" />
     <ClInclude Include="..\..\xbmc\system.h" />
-    <ClInclude Include="..\..\xbmc\guilib\AnimatedGif.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\D3DResource.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -4823,6 +4820,9 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DllLibGif.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h">
@@ -6186,6 +6186,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\win32\memcpy_sse2.h">
       <Filter>utils\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\Gif.h">
+      <Filter>guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

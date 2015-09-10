@@ -29,7 +29,6 @@
 		18B7C38B12942090009E7A26 /* GUIViewStateAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C38812942090009E7A26 /* GUIViewStateAddonBrowser.cpp */; };
 		18B7C392129420E5009E7A26 /* Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C38E129420E5009E7A26 /* Settings.cpp */; };
 		18B7C3A812942132009E7A26 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C3A612942132009E7A26 /* AdvancedSettings.cpp */; };
-		18B7C7A91294222E009E7A26 /* AnimatedGif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7541294222E009E7A26 /* AnimatedGif.cpp */; };
 		18B7C7AB1294222E009E7A26 /* D3DResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7561294222E009E7A26 /* D3DResource.cpp */; };
 		18B7C7AC1294222E009E7A26 /* DDSImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7571294222E009E7A26 /* DDSImage.cpp */; };
 		18B7C7AD1294222E009E7A26 /* DirectXGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7581294222E009E7A26 /* DirectXGraphics.cpp */; };
@@ -847,6 +846,9 @@
 		DF2401261B41A26F001E02DA /* ImageResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2401241B41A26E001E02DA /* ImageResource.cpp */; };
 		DF2401271B41A26F001E02DA /* ImageResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2401241B41A26E001E02DA /* ImageResource.cpp */; };
 		DF2401281B41A26F001E02DA /* ImageResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2401241B41A26E001E02DA /* ImageResource.cpp */; };
+		DF2863B719918B07008994AB /* Gif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2863B519918B07008994AB /* Gif.cpp */; };
+		DF2863B819918B07008994AB /* Gif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2863B519918B07008994AB /* Gif.cpp */; };
+		DF2863B919918B07008994AB /* Gif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF2863B519918B07008994AB /* Gif.cpp */; };
 		DF28DF4D17B8379E0077F41A /* ProfilesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */; };
 		DF28DF4E17B8379E0077F41A /* ProfilesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */; };
 		DF28DF4F17B8379E0077F41A /* ProfilesOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */; };
@@ -1441,7 +1443,6 @@
 		DFF0F26E17528350002DA3A4 /* ZipDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17930D25F9FA00618676 /* ZipDirectory.cpp */; };
 		DFF0F26F17528350002DA3A4 /* ZipFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6971444A8B0007C6459 /* ZipFile.cpp */; };
 		DFF0F27017528350002DA3A4 /* ZipManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17950D25F9FA00618676 /* ZipManager.cpp */; };
-		DFF0F27117528350002DA3A4 /* AnimatedGif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7541294222E009E7A26 /* AnimatedGif.cpp */; };
 		DFF0F27217528350002DA3A4 /* cximage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3416B9896C00D8023E /* cximage.cpp */; };
 		DFF0F27317528350002DA3A4 /* D3DResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7561294222E009E7A26 /* D3DResource.cpp */; };
 		DFF0F27417528350002DA3A4 /* DDSImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7571294222E009E7A26 /* DDSImage.cpp */; };
@@ -2607,7 +2608,6 @@
 		E49912D7174E5DA000741B6D /* ZipDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17930D25F9FA00618676 /* ZipDirectory.cpp */; };
 		E49912D8174E5DA000741B6D /* ZipFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6971444A8B0007C6459 /* ZipFile.cpp */; };
 		E49912D9174E5DA000741B6D /* ZipManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17950D25F9FA00618676 /* ZipManager.cpp */; };
-		E49912DA174E5DAD00741B6D /* AnimatedGif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7541294222E009E7A26 /* AnimatedGif.cpp */; };
 		E49912DB174E5DAD00741B6D /* cximage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3416B9896C00D8023E /* cximage.cpp */; };
 		E49912DC174E5DAD00741B6D /* D3DResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7561294222E009E7A26 /* D3DResource.cpp */; };
 		E49912DD174E5DAD00741B6D /* DDSImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C7571294222E009E7A26 /* DDSImage.cpp */; };
@@ -3316,7 +3316,6 @@
 		18B7C38F129420E5009E7A26 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
 		18B7C3A612942132009E7A26 /* AdvancedSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AdvancedSettings.cpp; sourceTree = "<group>"; };
 		18B7C3A712942132009E7A26 /* AdvancedSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedSettings.h; sourceTree = "<group>"; };
-		18B7C6F61294222D009E7A26 /* AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatedGif.h; sourceTree = "<group>"; };
 		18B7C6F81294222D009E7A26 /* D3DResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = D3DResource.h; sourceTree = "<group>"; };
 		18B7C6F91294222D009E7A26 /* DDSImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDSImage.h; sourceTree = "<group>"; };
 		18B7C6FA1294222D009E7A26 /* DirectXGraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectXGraphics.h; sourceTree = "<group>"; };
@@ -3404,7 +3403,6 @@
 		18B7C7511294222E009E7A26 /* VisibleEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisibleEffect.h; sourceTree = "<group>"; };
 		18B7C7521294222E009E7A26 /* XBTF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBTF.h; sourceTree = "<group>"; };
 		18B7C7531294222E009E7A26 /* XBTFReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBTFReader.h; sourceTree = "<group>"; };
-		18B7C7541294222E009E7A26 /* AnimatedGif.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimatedGif.cpp; sourceTree = "<group>"; };
 		18B7C7561294222E009E7A26 /* D3DResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = D3DResource.cpp; sourceTree = "<group>"; };
 		18B7C7571294222E009E7A26 /* DDSImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DDSImage.cpp; sourceTree = "<group>"; };
 		18B7C7581294222E009E7A26 /* DirectXGraphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectXGraphics.cpp; sourceTree = "<group>"; };
@@ -4491,6 +4489,9 @@
 		DF2345E015FA639500A934F6 /* UPnPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPServer.h; sourceTree = "<group>"; };
 		DF2401241B41A26E001E02DA /* ImageResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageResource.cpp; sourceTree = "<group>"; };
 		DF2401251B41A26E001E02DA /* ImageResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageResource.h; sourceTree = "<group>"; };
+		DF2863B419918B07008994AB /* DllLibGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibGif.h; sourceTree = "<group>"; };
+		DF2863B519918B07008994AB /* Gif.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Gif.cpp; sourceTree = "<group>"; };
+		DF2863B619918B07008994AB /* Gif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gif.h; sourceTree = "<group>"; };
 		DF28DF4B17B8379E0077F41A /* ProfilesOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProfilesOperations.cpp; sourceTree = "<group>"; };
 		DF28DF4C17B8379E0077F41A /* ProfilesOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfilesOperations.h; sourceTree = "<group>"; };
 		DF28ED94170E1A11005FA9D2 /* GUIDialogLockSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogLockSettings.cpp; sourceTree = "<group>"; };
@@ -6037,8 +6038,6 @@
 			isa = PBXGroup;
 			children = (
 				391416BE1B4A3EFA00BBF0AA /* guiinfo */,
-				18B7C7541294222E009E7A26 /* AnimatedGif.cpp */,
-				18B7C6F61294222D009E7A26 /* AnimatedGif.h */,
 				DF404A3416B9896C00D8023E /* cximage.cpp */,
 				DF404A3516B9896C00D8023E /* cximage.h */,
 				18B7C7561294222E009E7A26 /* D3DResource.cpp */,
@@ -6052,9 +6051,12 @@
 				F558F27A13ABD56600631E12 /* DirtyRegionSolvers.h */,
 				F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */,
 				F558F27E13ABD57400631E12 /* DirtyRegionTracker.h */,
+				DF2863B419918B07008994AB /* DllLibGif.h */,
 				18B7C7591294222E009E7A26 /* FrameBufferObject.cpp */,
 				18B7C6FB1294222D009E7A26 /* FrameBufferObject.h */,
 				18B7C6FC1294222D009E7A26 /* Geometry.h */,
+				DF2863B519918B07008994AB /* Gif.cpp */,
+				DF2863B619918B07008994AB /* Gif.h */,
 				18B7C75A1294222E009E7A26 /* GraphicContext.cpp */,
 				18B7C6FD1294222D009E7A26 /* GraphicContext.h */,
 				18B7C6FE1294222D009E7A26 /* gui3d.h */,
@@ -10745,7 +10747,6 @@
 				18B7C392129420E5009E7A26 /* Settings.cpp in Sources */,
 				18B7C3A812942132009E7A26 /* AdvancedSettings.cpp in Sources */,
 				395C29DB1A98A11C00EBC7AD /* WsgiResponse.cpp in Sources */,
-				18B7C7A91294222E009E7A26 /* AnimatedGif.cpp in Sources */,
 				18B7C7AB1294222E009E7A26 /* D3DResource.cpp in Sources */,
 				18B7C7AC1294222E009E7A26 /* DDSImage.cpp in Sources */,
 				18B7C7AD1294222E009E7A26 /* DirectXGraphics.cpp in Sources */,
@@ -11330,6 +11331,7 @@
 				7CF34D9F1930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				7C973CFA1B5038580002A874 /* GUIDialogAudioDSPManager.cpp in Sources */,
 				7CF80DC919710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
+				DF2863B719918B07008994AB /* Gif.cpp in Sources */,
 				B179BD6B1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
 				B179BD6E1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
 				B179BD711AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */,
@@ -11691,7 +11693,6 @@
 				DFF0F26E17528350002DA3A4 /* ZipDirectory.cpp in Sources */,
 				DFF0F26F17528350002DA3A4 /* ZipFile.cpp in Sources */,
 				DFF0F27017528350002DA3A4 /* ZipManager.cpp in Sources */,
-				DFF0F27117528350002DA3A4 /* AnimatedGif.cpp in Sources */,
 				DFF0F27217528350002DA3A4 /* cximage.cpp in Sources */,
 				DFF0F27317528350002DA3A4 /* D3DResource.cpp in Sources */,
 				DFEA4B591B5271FA00562321 /* ActiveAEDSPProcess.cpp in Sources */,
@@ -12385,6 +12386,7 @@
 				7CF34DA11930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				DF6F52B01AF6D03F001BC57D /* dacp.cpp in Sources */,
 				7CF80DCB19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
+				DF2863B919918B07008994AB /* Gif.cpp in Sources */,
 				B179BD6D1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
 				B179BD701AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
 				B179BD731AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */,
@@ -12759,7 +12761,6 @@
 				E49912D7174E5DA000741B6D /* ZipDirectory.cpp in Sources */,
 				E49912D8174E5DA000741B6D /* ZipFile.cpp in Sources */,
 				E49912D9174E5DA000741B6D /* ZipManager.cpp in Sources */,
-				E49912DA174E5DAD00741B6D /* AnimatedGif.cpp in Sources */,
 				E49912DB174E5DAD00741B6D /* cximage.cpp in Sources */,
 				E49912DC174E5DAD00741B6D /* D3DResource.cpp in Sources */,
 				E49912DD174E5DAD00741B6D /* DDSImage.cpp in Sources */,
@@ -13442,6 +13443,7 @@
 				7CF34DA01930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				395C29F71A98B44B00EBC7AD /* AddonModuleXbmcwsgi.cpp in Sources */,
 				7CF80DCA19710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
+				DF2863B819918B07008994AB /* Gif.cpp in Sources */,
 				B179BD6C1AD8EA7B00EA8D49 /* InputCodingTableBaiduPY.cpp in Sources */,
 				B179BD6F1AD8EA7B00EA8D49 /* InputCodingTableBasePY.cpp in Sources */,
 				B179BD721AD8EA7B00EA8D49 /* InputCodingTableFactory.cpp in Sources */,
