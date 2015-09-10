@@ -55,14 +55,13 @@ public:
 
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install
-   \param force whether to force the install even if the addon is already installed (eg for updating). Defaults to false.
    \param referer string to use for referer for http fetch. Set to previous version when updating, parent when fetching a dependency
    \param background whether to install in the background or not. Defaults to true.
    \param modal whether to show a modal dialog when not installing in background
    \return true on successful install, false on failure.
    \sa DoInstall
    */
-  bool Install(const std::string &addonID, bool force = false, const std::string &referer="", bool background = true, bool modal = false);
+  bool InstallOrUpdate(const std::string &addonID, const std::string &referer="", bool background = true, bool modal = false);
 
   /*! \brief Install an addon from the given zip path
    \param path the zip file to install from
@@ -125,12 +124,11 @@ private:
   /*! \brief Install an addon from a repository or zip
    \param addon the AddonPtr describing the addon
    \param hash the hash to verify the install. Defaults to "".
-   \param update whether this is an update of an existing addon, or a new install. Defaults to false.
    \param referer string to use for referer for http fetch. Defaults to "".
    \param background whether to install in the background or not. Defaults to true.
    \return true on successful install, false on failure.
    */
-  bool DoInstall(const ADDON::AddonPtr &addon, const std::string &hash = "", bool update = false, const std::string &referer = "", bool background = true, bool modal = false);
+  bool DoInstall(const ADDON::AddonPtr &addon, const std::string &hash = "", const std::string &referer = "", bool background = true, bool modal = false);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -153,14 +151,9 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr &addon, const std::string &hash = "", bool update = false, const std::string &referer = "");
+  CAddonInstallJob(const ADDON::AddonPtr &addon, const std::string &hash = "", const std::string &referer = "");
 
   virtual bool DoWork();
-
-  /*! \brief return the id of the addon being installed
-   \return id of the installing addon
-   */
-  std::string AddonID() const;
 
   /*! \brief Find which repository hosts an add-on
    *  \param addon The add-on to find the repository for
