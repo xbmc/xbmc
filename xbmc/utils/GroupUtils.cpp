@@ -146,12 +146,3 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
 
   return true;
 }
-
-bool GroupUtils::GroupAndSort(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, const SortDescription &sortDescription, CFileItemList &groupedItems, GroupAttribute groupAttributes /* = GroupAttributeNone */)
-{
-  if (!Group(groupBy, baseDir, items, groupedItems, groupAttributes))
-    return false;
-
-  groupedItems.Sort(sortDescription);
-  return true;
-}
