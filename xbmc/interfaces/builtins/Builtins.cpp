@@ -116,6 +116,7 @@
 #include "GUIContainerBuiltins.h"
 #include "LibraryBuiltins.h"
 #include "ProfileBuiltins.h"
+#include "PVRBuiltins.h"
 #include "SkinBuiltins.h"
 #include "SystemBuiltins.h"
 #include "WeatherBuiltins.h"
@@ -158,12 +159,6 @@ const BUILT_IN commands[] = {
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
-  { "ToggleDirtyRegionVisualization", false, "Enables/disables dirty-region visualization" },
-  { "StartPVRManager",            false,  "(Re)Starts the PVR manager (Deprecated)" },
-  { "StopPVRManager",             false,  "Stops the PVR manager (Deprecated)" },
-  { "PVR.StartManager",            false,  "(Re)Starts the PVR manager" },
-  { "PVR.StopManager",             false,  "Stops the PVR manager" },
-  { "PVR.SearchMissingChannelIcons", false,  "Search for missing channel icons" },
 #if defined(TARGET_ANDROID)
   { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
 #endif
@@ -177,6 +172,7 @@ CBuiltins::CBuiltins()
   RegisterCommands<CGUIControlBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
   RegisterCommands<CProfileBuiltins>();
+  RegisterCommands<CPVRBuiltins>();
   RegisterCommands<CSkinBuiltins>();
   RegisterCommands<CSystemBuiltins>();
   RegisterCommands<CWeatherBuiltins>();
@@ -815,32 +811,6 @@ int CBuiltins::Execute(const std::string& execString)
     bool debug = CSettings::GetInstance().GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
     CSettings::GetInstance().SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
     g_advancedSettings.SetDebugMode(!debug);
-  }
-  else if (execute == "toggledirtyregionvisualization")
-  {
-    g_advancedSettings.ToggleDirtyRegionVisualization();
-  }
-  //TODO deprecated. To be replaced by pvr.startmanager
-  else if (execute == "startpvrmanager")
-  {
-    g_application.StartPVRManager();
-  }
-  else if (execute == "pvr.startmanager")
-  {
-    g_application.StartPVRManager();
-  }
-  //TODO deprecated. To be replaced by pvr.stopmanager
-  else if (execute == "stoppvrmanager")
-  {
-    g_application.StopPVRManager();
-  }
-  else if (execute == "pvr.stopmanager")
-  {
-    g_application.StopPVRManager();
-  }
-  else if (execute == "pvr.searchmissingchannelicons")
-  {
-    PVR::CPVRManager::GetInstance().TriggerSearchMissingChannelIcons();
   }
   else if (execute == "startandroidactivity" && !params.empty())
   {
