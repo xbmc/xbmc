@@ -2,6 +2,7 @@ SRCS  = AddonBuiltins.cpp
 SRCS += Builtins.cpp
 SRCS += LibraryBuiltins.cpp
 SRCS += SkinBuiltins.cpp
+SRCS += SystemBuiltins.cpp
 
 LIB=builtins.a
 
