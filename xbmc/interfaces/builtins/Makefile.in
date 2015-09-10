@@ -15,6 +15,10 @@ SRCS += SkinBuiltins.cpp
 SRCS += SystemBuiltins.cpp
 SRCS += WeatherBuiltins.cpp
 
+ifeq (@USE_ANDROID@,1)
+SRCS += AndroidBuiltins.cpp
+endif
+
 LIB=builtins.a
 
 include ../../../Makefile.include
