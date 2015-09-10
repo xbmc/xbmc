@@ -45,8 +45,6 @@ public:
   virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t **data, unsigned int frames, unsigned int offset);
   virtual void         Drain           ();
-  virtual bool         HasVolume       ();
-  virtual void         SetVolume       (float scale);
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
 protected:
