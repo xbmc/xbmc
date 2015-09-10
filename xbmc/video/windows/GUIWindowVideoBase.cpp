@@ -1400,7 +1400,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
        (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) || (StringUtils::EqualsNoCase(group, "sets") && mixed)))
     {
       CFileItemList groupedItems;
-      if (GroupUtils::Group(GroupBySet, m_strFilterPath, items, groupedItems, GroupAttributeIgnoreSingleItems))
+      if (GroupUtils::GroupAndMix(GroupBySet, m_strFilterPath, items, groupedItems, GroupAttributeIgnoreSingleItems))
       {
         items.ClearItems();
         items.Append(groupedItems);
