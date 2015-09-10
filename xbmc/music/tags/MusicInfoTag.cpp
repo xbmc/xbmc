@@ -582,10 +582,10 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
   SetArtist(artist.strArtist);
   SetAlbumArtist(artist.strArtist);
   SetGenre(artist.genre);
-  m_dateAdded = artist.dateAdded;
-  m_iDbId = artist.idArtist;
-  m_type = MediaTypeArtist;
-  m_bLoaded = true;
+  SetDateAdded(artist.dateAdded);
+  SetDatabaseId(artist.idArtist, MediaTypeArtist);
+
+  SetLoaded();
 }
 
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
@@ -602,11 +602,11 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
   SetAlbumReleaseType(album.releaseType);
-  m_dateAdded = album.dateAdded;
-  m_iTimesPlayed = album.iTimesPlayed;
-  m_iDbId = album.idAlbum;
-  m_type = MediaTypeAlbum;
-  m_bLoaded = true;
+  SetDateAdded(album.dateAdded);
+  SetPlayCount(album.iTimesPlayed);
+  SetDatabaseId(album.idAlbum, MediaTypeAlbum);
+
+  SetLoaded();
 }
 
 void CMusicInfoTag::SetSong(const CSong& song)
@@ -623,23 +623,23 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetLastPlayed(song.lastPlayed);
   SetDateAdded(song.dateAdded);
   SetCoverArtInfo(song.embeddedArt.size, song.embeddedArt.mime);
-  m_rating = song.rating;
-  m_strURL = song.strFileName;
+  SetRating(song.rating);
+  SetURL(song.strFileName);
   SYSTEMTIME stTime;
   stTime.wYear = song.iYear;
   SetReleaseDate(stTime);
-  m_iTrack = song.iTrack;
-  m_iDuration = song.iDuration;
-  m_iDbId = song.idSong;
-  m_type = MediaTypeSong;
-  m_bLoaded = true;
-  m_iTimesPlayed = song.iTimesPlayed;
-  m_iAlbumId = song.idAlbum;
+  SetTrackNumber(song.iTrack);
+  SetDuration(song.iDuration);
+  SetPlayCount(song.iTimesPlayed);
+  SetAlbumId(song.idAlbum);
+  SetDatabaseId(song.idSong, MediaTypeSong);
 
   if (song.replayGain.Get(ReplayGain::TRACK).Valid())
     m_replayGain.Set(ReplayGain::TRACK, song.replayGain.Get(ReplayGain::TRACK));
   if (song.replayGain.Get(ReplayGain::ALBUM).Valid())
     m_replayGain.Set(ReplayGain::ALBUM, song.replayGain.Get(ReplayGain::ALBUM));
+
+  SetLoaded();
 }
 
 void CMusicInfoTag::Serialize(CVariant& value) const
