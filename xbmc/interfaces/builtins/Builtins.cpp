@@ -110,6 +110,7 @@
 #include "filesystem/Directory.h"
 
 #include "AddonBuiltins.h"
+#include "CECBuiltins.h"
 #include "GUIBuiltins.h"
 #include "GUIControlBuiltins.h"
 #include "LibraryBuiltins.h"
@@ -163,9 +164,6 @@ const BUILT_IN commands[] = {
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
-  { "CECToggleState",             false,  "Toggle state of playing device via a CEC peripheral"},
-  { "CECActivateSource",          false,  "Wake up playing device via a CEC peripheral"},
-  { "CECStandby",                 false,  "Put playing device on standby via a CEC peripheral"},
   { "Weather.Refresh",            false,  "Force weather data refresh"},
   { "Weather.LocationNext",       false,  "Switch to next weather location"},
   { "Weather.LocationPrevious",   false,  "Switch to previous weather location"},
@@ -875,19 +873,6 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "toggledpms")
   {
     g_application.ToggleDPMS(true);
-  }
-  else if (execute == "cectogglestate")
-  {
-    bool result;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_CECTOGGLESTATE, 0, 0, static_cast<void*>(&result));
-  }
-  else if (execute == "cecactivatesource")
-  {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_CECACTIVATESOURCE);
-  }
-  else if (execute == "cecstandby")
-  {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_CECSTANDBY);
   }
   else if (execute == "weather.locationset" && !params.empty())
   {
