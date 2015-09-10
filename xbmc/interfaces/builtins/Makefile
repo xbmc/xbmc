@@ -1,6 +1,7 @@
 SRCS  = AddonBuiltins.cpp
 SRCS += Builtins.cpp
 SRCS += GUIBuiltins.cpp
+SRCS += GUIControlBuiltins.cpp
 SRCS += LibraryBuiltins.cpp
 SRCS += ProfileBuiltins.cpp
 SRCS += SkinBuiltins.cpp
