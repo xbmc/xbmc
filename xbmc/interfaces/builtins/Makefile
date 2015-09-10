@@ -1,4 +1,5 @@
-SRCS=Builtins.cpp
+SRCS  = Builtins.cpp
+SRCS += LibraryBuiltins.cpp
 
 LIB=builtins.a
 
