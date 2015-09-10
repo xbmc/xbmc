@@ -111,6 +111,7 @@
 
 #include "AddonBuiltins.h"
 #include "LibraryBuiltins.h"
+#include "ProfileBuiltins.h"
 #include "SkinBuiltins.h"
 #include "SystemBuiltins.h"
 
@@ -133,7 +134,6 @@ typedef struct
 
 const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
-  { "Mastermode",                 false,  "Control master mode" },
   { "SetGUILanguage",             true,   "Set GUI Language" },
   { "ActivateWindow",             true,   "Activate the specified window" },
   { "ActivateWindowAndFocus",     true,   "Activate the specified window and sets focus to the specified id" },
@@ -161,7 +161,6 @@ const BUILT_IN commands[] = {
   { "Mute",                       false,  "Mute the player" },
   { "SetVolume",                  true,   "Set the current volume" },
   { "Dialog.Close",               true,   "Close a dialog" },
-  { "System.LogOff",              false,  "Log off current user" },
   { "Resolution",                 true,   "Change Kodi's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
@@ -179,7 +178,6 @@ const BUILT_IN commands[] = {
   { "Control.SetFocus",           true,   "Change current focus to a different control id" },
   { "Control.Message",            true,   "Send a given message to a control within a given window" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
-  { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current focused window/dialog (key,value)" },
   { "ClearProperty",              true,   "Clears a window property for the current focused window/dialog (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
@@ -214,6 +212,7 @@ CBuiltins::CBuiltins()
 {
   RegisterCommands<CAddonBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
+  RegisterCommands<CProfileBuiltins>();
   RegisterCommands<CSkinBuiltins>();
   RegisterCommands<CSystemBuiltins>();
 }
@@ -338,38 +337,7 @@ int CBuiltins::Execute(const std::string& execString)
     }
   }
 
-  if (execute == "loadprofile")
-  {
-    int index = CProfilesManager::GetInstance().GetProfileIndex(parameter);
-    bool prompt = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "prompt"));
-    bool bCanceled;
-    if (index >= 0
-        && (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
-            || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
-    {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, index);
-    }
-  }
-  else if (execute == "mastermode")
-  {
-    if (g_passwordManager.bMasterUser)
-    {
-      g_passwordManager.bMasterUser = false;
-      g_passwordManager.LockSources(true);
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
-    }
-    else if (g_passwordManager.IsMasterLockUnlocked(true))
-    {
-      g_passwordManager.LockSources(false);
-      g_passwordManager.bMasterUser = true;
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
-    }
-
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-    g_windowManager.SendMessage(msg);
-  }
-  else if (execute == "setguilanguage")
+  if (execute == "setguilanguage")
   {
     if (params.size())
     {
@@ -1087,33 +1055,6 @@ int CBuiltins::Execute(const std::string& execString)
       if (window && window->IsDialog())
         ((CGUIDialog *)window)->Close(bForce);
     }
-  }
-  else if (execute == "system.logoff")
-  {
-    // there was a commit from cptspiff here which was reverted
-    // for keeping the behaviour from Eden in Frodo - see
-    // git rev 9ee5f0047b
-    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
-      return -1;
-
-    g_application.StopPlaying();
-    if (g_application.IsMusicScanning())
-      g_application.StopMusicScan();
-
-    if (CVideoLibraryQueue::GetInstance().IsRunning())
-      CVideoLibraryQueue::GetInstance().CancelAllJobs();
-
-    ADDON::CAddonMgr::GetInstance().StopServices(true);
-
-    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    CProfilesManager::GetInstance().LoadMasterProfileForLogin();
-    g_passwordManager.bMasterUser = false;
-
-    if (!ActivateWindow(WINDOW_LOGIN_SCREEN))
-      return false;
-
-    if (!CNetworkServices::GetInstance().StartEventServer()) // event server could be needed in some situations
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
   }
   else if (execute == "pagedown")
   {
