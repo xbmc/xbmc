@@ -249,14 +249,31 @@ void CDSGraph::UpdateTime()
   LONGLONG Position;
 
   if (g_pPVRStream)
-  {
-	  if (SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-		  m_State.time = Position;
+  { 
+    // Current Playback Time
+    if (SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
+      m_State.time = Position;
 
-	  if (SUCCEEDED(m_pMediaSeeking->GetDuration(&Position)))
-		  m_State.time_total = Position;
-	  return;
+    // Total Playback Time
+    if (SUCCEEDED(m_pMediaSeeking->GetDuration(&Position)))
+      m_State.time_total = Position;
+
+    if (g_PVRManager.IsPlayingTV() && g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
+    {
+      // LiveTV EPG time
+      m_State.time_live = MSEC_TO_DS_TIME(g_pPVRStream->GetTime());
+      m_State.time_total_live = MSEC_TO_DS_TIME(g_pPVRStream->GetTotalTime());
+      m_State.isPVR = true;
+    }
+    else
+    {
+      m_State.isPVR = false;
+    }
+	
+    return;
   }
+
+  m_State.isPVR = false;
 
   if (SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
     m_State.time = Position;
@@ -765,33 +782,15 @@ void CDSGraph::SeekPercentage(float iPercent)
 // return time in DS_TIME_BASE unit
 uint64_t CDSGraph::GetTime(bool forcePlaybackTime)
 {
-  CSingleLock lock(m_ObjectLock);
-
-  if (!g_pPVRStream || CDSPlayer::IsCurrentThread() || forcePlaybackTime) // Used by seek or none PVR video
-    return m_State.time;
-  else                                                                    // Used by GUI on PVR video
-  {
-    if (g_PVRManager.IsPlayingTV() && g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
-      return MSEC_TO_DS_TIME(g_pPVRStream->GetTime());  // LiveTV EPG time
-    else
-      return m_State.time;                              // Playback Time
-  }
+  // Returns Playback Time or LiveTV EPG Time, depends on player mode(LiveTV video or none PVR video) and OSD state
+  return (CDSPlayer::IsCurrentThread() || forcePlaybackTime || !m_State.isPVR) ? m_State.time : m_State.time_live;
 }
 
 // return length in DS_TIME_BASE unit
 uint64_t CDSGraph::GetTotalTime(bool forcePlaybackTime)
 {
-  CSingleLock lock(m_ObjectLock);
-
-  if (!g_pPVRStream || CDSPlayer::IsCurrentThread() || forcePlaybackTime) // Used by seek or none PVR video
-    return m_State.time_total;
-  else 												                                            // Used by GUI on PVR video
-  {
-    if (g_PVRManager.IsPlayingTV() && g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD))
-      return MSEC_TO_DS_TIME(g_pPVRStream->GetTotalTime()); // LiveTV EPG time
-    else
-      return m_State.time_total;                            // Playback Time
-  }
+  // Returns Playback Time or LiveTV EPG Time, depends on player mode(LiveTV video or none PVR video) and OSD state
+  return (CDSPlayer::IsCurrentThread() || forcePlaybackTime || !m_State.isPVR) ? m_State.time_total : m_State.time_total_live;
 }
 
 float CDSGraph::GetPercentage()
