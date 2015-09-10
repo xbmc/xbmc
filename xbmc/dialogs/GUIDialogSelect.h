@@ -37,9 +37,8 @@ public:
 
   void Reset();
   int  Add(const std::string& strLabel);
-  int  Add(const CFileItem* pItem);
-  void Add(const CFileItemList& items);
-  void SetItems(CFileItemList* items);
+  int  Add(const CFileItem& item);
+  void SetItems(const CFileItemList& items);
   int GetSelectedLabel() const;
   const std::string& GetSelectedLabelText() const;
   const CFileItemPtr GetSelectedItem() const;

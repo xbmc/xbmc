@@ -732,7 +732,7 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
       pDialog->Reset();
       pDialog->SetHeading(CVariant{35000});
       pDialog->SetUseDetails(true);
-      pDialog->SetItems(&items);
+      pDialog->SetItems(items);
       pDialog->SetSelected(iPos);
       pDialog->Open();
 
