@@ -636,7 +636,7 @@ CPVRTimerInfoTagPtr CPVRTimers::GetByClient(int iClientId, unsigned int iClientT
     for (VecTimerInfoTag::const_iterator timerIt = it->second->begin(); timerIt != it->second->end(); ++timerIt)
     {
       if ((*timerIt)->m_iClientId == iClientId &&
-          (*timerIt)->m_iClientIndex == iClientTimerId)
+          (*timerIt)->m_iClientIndex == static_cast<int>(iClientTimerId))
         return *timerIt;
     }
   }

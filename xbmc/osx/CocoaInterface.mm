@@ -41,9 +41,6 @@
 #import "AutoPool.h"
 
 
-// hack for Cocoa_GL_ResizeWindow
-//extern "C" void SDL_SetWidthHeight(int w, int h);
-
 //#define MAX_DISPLAYS 32
 //static NSWindow* blankingWindows[MAX_DISPLAYS];
 
@@ -246,7 +243,6 @@ const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconNa
     NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithData:[icon TIFFRepresentation]];
     NSData* png = [rep representationUsingType:NSPNGFileType properties:nil];
     [png writeToFile:pngFile atomically:YES];
-    [png release];
     [rep release];
     [icon release];
   }
@@ -404,50 +400,7 @@ bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
   return(result);
 }
 
-int Cocoa_GetOSVersion()
-{
-  static SInt32 version = -1;
-
-  if (version == -1)
-    Gestalt(gestaltSystemVersion, &version);
-  
-  return(version);
-}
-
-
-NSWindow* childWindow = nil;
-NSWindow* mainWindow = nil;
-
-
-void Cocoa_MakeChildWindow()
-{
-  NSOpenGLContext* context = Cocoa_GL_GetCurrentContext();
-  NSView* view = [context view];
-  NSWindow* window = [view window];
-
-  // Create a child window.
-  childWindow = [[NSWindow alloc] initWithContentRect:[window frame]
-                                            styleMask:NSBorderlessWindowMask
-                                              backing:NSBackingStoreBuffered
-                                                defer:NO];
-                                          
-  [childWindow setContentSize:[view frame].size];
-  [childWindow setBackgroundColor:[NSColor blackColor]];
-  [window addChildWindow:childWindow ordered:NSWindowAbove];
-  mainWindow = window;
-  //childWindow.alphaValue = 0.5; 
-}
-
-void Cocoa_DestroyChildWindow()
-{
-  if (childWindow != nil)
-  {
-    [mainWindow removeChildWindow:childWindow];
-    [childWindow close];
-    childWindow = nil;
-  }
-}
-const char *Cocoa_Paste() 
+const char *Cocoa_Paste()
 {
   NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
   NSString *type = [pasteboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]];
