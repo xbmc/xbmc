@@ -53,6 +53,11 @@
 #define NSAppKitVersionNumber10_6 1038
 #endif
 
+#ifndef NSAppKitVersionNumber10_9
+#define NSAppKitVersionNumber10_9 1265
+#endif
+
+
 enum iosPlatform
 {
   iDeviceUnknown = -1,
@@ -249,6 +254,16 @@ bool CDarwinUtils::DeviceHasRetina(double &scale)
   }
 
   return (platform >= iPhone4);
+}
+
+bool CDarwinUtils::DeviceHasLeakyVDA(void)
+{
+  static int hasLeakyVDA = -1;
+#if defined(TARGET_DARWIN_OSX)
+  if (hasLeakyVDA == -1)
+    hasLeakyVDA = NSAppKitVersionNumber <= NSAppKitVersionNumber10_9 ? 1 : 0;
+#endif
+  return hasLeakyVDA == 1;
 }
 
 const char *CDarwinUtils::GetOSReleaseString(void)

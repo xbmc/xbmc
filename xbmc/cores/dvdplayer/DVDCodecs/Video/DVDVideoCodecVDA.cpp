@@ -33,6 +33,7 @@ extern "C" {
 #include "cores/dvdplayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/FFmpeg.h"
 #include "osx/CocoaInterface.h"
+#include "osx/DarwinUtils.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
@@ -355,6 +356,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
     CFRelease(decoderConfiguration);
     CFRelease(destinationImageBufferAttributes);
+    if (CDarwinUtils::DeviceHasLeakyVDA())
+      CFRelease(pixelFormat);
     if (status != kVDADecoderNoErr)
     {
       if (status == kVDADecoderDecoderFailedErr)
@@ -387,6 +390,11 @@ void CDVDVideoCodecVDA::Dispose()
     free(m_videobuffer.data[1]), m_videobuffer.data[1] = NULL;
     free(m_videobuffer.data[2]), m_videobuffer.data[2] = NULL;
     m_videobuffer.iFlags = 0;
+  }
+  else
+  {
+    while (m_queue_depth)
+      DisplayQueuePop();
   }
 
   if (m_bitstream)
