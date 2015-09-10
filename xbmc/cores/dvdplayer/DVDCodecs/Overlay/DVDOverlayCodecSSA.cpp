@@ -19,15 +19,15 @@
  */
 
 #include "DVDOverlayCodecSSA.h"
+#include <memory>
+
 #include "DVDOverlaySSA.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDClock.h"
 #include "Util.h"
-#include "utils/AutoPtrHandle.h"
 #include "utils/StringUtils.h"
 
-using namespace AUTOPTR;
 
 CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Decoder")
 {
@@ -90,7 +90,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
     {
       line = lines[i];
       StringUtils::Trim(line);
-      auto_aptr<char> layer(new char[line.length()+1]);
+      std::unique_ptr<char[]> layer(new char[line.length() + 1]);
 
       if(sscanf(line.c_str(), "%*[^:]:%[^,],%d:%d:%d%*c%d,%d:%d:%d%*c%d"
                             , layer.get(), &sh, &sm, &ss, &sc, &eh,&em, &es, &ec) != 9)

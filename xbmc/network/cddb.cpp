@@ -42,12 +42,12 @@
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 
+#include <memory>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 
 using namespace MEDIA_DETECT;
-using namespace AUTOPTR;
 using namespace CDDB;
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ bool Xcddb::closeSocket()
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::Send( const void *buffer, int bytes )
 {
-  auto_aptr<char> tmp_buffer (new char[bytes + 10]);
+  std::unique_ptr<char[]> tmp_buffer(new char[bytes + 10]);
   strcpy(tmp_buffer.get(), (const char*)buffer);
   tmp_buffer.get()[bytes] = '.';
   tmp_buffer.get()[bytes + 1] = 0x0d;
