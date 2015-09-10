@@ -11930,7 +11930,12 @@ msgctxt "#20469"
 msgid "Keep current set (%s)"
 msgstr ""
 
-#empty strings from id 20470 to 21329
+#: system/settings/settings.xml
+msgctxt "#20470"
+msgid "Group single movies into sets"
+msgstr ""
+
+#empty strings from id 20471 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
@@ -15795,7 +15800,11 @@ msgctxt "#36156"
 msgid "Enable VAAPI hardware decoding of video files, mainly used for Intel graphics and in some circumstances AMD graphics."
 msgstr ""
 
-#empty string with id 36157
+#. Description of setting "Videos -> Library -> Group single movies into sets" with label #20470
+#: system/settings/settings.xml
+msgctxt "#36157"
+msgid "When scanned into the library a movie may be identified as forming part of a \"Movie set\". With this setting enabled you may get movie sets displayed that contain only a single movie. If it is disabled only movie sets with multiple movies will be displayed."
+msgstr ""
 
 #. Description of setting "Videos -> Playback -> Allow hardware acceleration (DXVA2)" with label #13427
 #: system/settings/settings.xml
