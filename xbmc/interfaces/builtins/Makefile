@@ -7,6 +7,7 @@ SRCS += LibraryBuiltins.cpp
 SRCS += ProfileBuiltins.cpp
 SRCS += SkinBuiltins.cpp
 SRCS += SystemBuiltins.cpp
+SRCS += WeatherBuiltins.cpp
 
 LIB=builtins.a
 

@@ -117,6 +117,7 @@
 #include "ProfileBuiltins.h"
 #include "SkinBuiltins.h"
 #include "SystemBuiltins.h"
+#include "WeatherBuiltins.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -164,15 +165,6 @@ const BUILT_IN commands[] = {
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
-  { "Weather.Refresh",            false,  "Force weather data refresh"},
-  { "Weather.LocationNext",       false,  "Switch to next weather location"},
-  { "Weather.LocationPrevious",   false,  "Switch to previous weather location"},
-  { "Weather.LocationSet",        true,   "Switch to given weather location (parameter can be 1-3)"},
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  { "LIRC.Stop",                  false,  "Removes Kodi as LIRC client" },
-  { "LIRC.Start",                 false,  "Adds Kodi as LIRC client" },
-  { "LIRC.Send",                  true,   "Sends a command to LIRC" },
-#endif
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
   { "ToggleDirtyRegionVisualization", false, "Enables/disables dirty-region visualization" },
   { "StartPVRManager",            false,  "(Re)Starts the PVR manager (Deprecated)" },
@@ -194,6 +186,7 @@ CBuiltins::CBuiltins()
   RegisterCommands<CProfileBuiltins>();
   RegisterCommands<CSkinBuiltins>();
   RegisterCommands<CSystemBuiltins>();
+  RegisterCommands<CWeatherBuiltins>();
 }
 
 CBuiltins::~CBuiltins()
@@ -873,27 +866,6 @@ int CBuiltins::Execute(const std::string& execString)
   else if (execute == "toggledpms")
   {
     g_application.ToggleDPMS(true);
-  }
-  else if (execute == "weather.locationset" && !params.empty())
-  {
-    int loc = atoi(params[0].c_str());
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, 0, loc);
-    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
-  }
-  else if (execute == "weather.locationnext")
-  {
-    CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 1);
-    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
-  }
-  else if (execute == "weather.locationprevious")
-  {
-    CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, -1);
-    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
-  }
-  else if (execute == "weather.refresh")
-  {
-    CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 0);
-    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
   }
   else if (execute == "toggledebug")
   {
