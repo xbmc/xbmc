@@ -165,10 +165,12 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   if (ret && !firstrun)
     return ret;
 
-  std::string gpuvendor = "";
+  std::string gpuvendor;
   if (ret)
   {
-    gpuvendor = (const char*) glGetString(GL_VENDOR);
+    const char* vend = (const char*) glGetString(GL_VENDOR);
+    if (vend)
+      gpuvendor = vend;
   }
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   if (firstrun && (!ret || gpuvendor.compare(0, 5, "intel") != 0))
