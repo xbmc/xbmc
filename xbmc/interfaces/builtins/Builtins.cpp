@@ -115,6 +115,7 @@
 #include "GUIControlBuiltins.h"
 #include "GUIContainerBuiltins.h"
 #include "LibraryBuiltins.h"
+#include "PictureBuiltins.h"
 #include "ProfileBuiltins.h"
 #include "PVRBuiltins.h"
 #include "SkinBuiltins.h"
@@ -144,9 +145,6 @@ const BUILT_IN commands[] = {
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "Seek",                       true,   "Performs a seek in seconds on the current playing media file" },
-  { "ShowPicture",                true,   "Display a picture by file path" },
-  { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
-  { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
   { "Playlist.Clear",             false,  "Clear the current playlist" },
@@ -171,6 +169,7 @@ CBuiltins::CBuiltins()
   RegisterCommands<CGUIContainerBuiltins>();
   RegisterCommands<CGUIControlBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
+  RegisterCommands<CPictureBuiltins>();
   RegisterCommands<CProfileBuiltins>();
   RegisterCommands<CPVRBuiltins>();
   RegisterCommands<CSkinBuiltins>();
@@ -440,59 +439,6 @@ int CBuiltins::Execute(const std::string& execString)
     }
     if (g_application.m_pPlayer->IsPlaying())
       CSeekHandler::GetInstance().SeekSeconds(atoi(params[0].c_str()));
-  }
-  else if (execute == "showpicture")
-  {
-    if (!params.size())
-    {
-      CLog::Log(LOGERROR, "ShowPicture called with empty parameter");
-      return -2;
-    }
-    CGUIMessage msg(GUI_MSG_SHOW_PICTURE, 0, 0);
-    msg.SetStringParam(params[0]);
-    CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-    if (pWindow) pWindow->OnMessage(msg);
-  }
-  else if (execute == "slideshow" || execute == "recursiveslideshow")
-  {
-    if (!params.size())
-    {
-      CLog::Log(LOGERROR, "SlideShow called with empty parameter");
-      return -2;
-    }
-    std::string beginSlidePath;
-    // leave RecursiveSlideShow command as-is
-    unsigned int flags = 0;
-    if (execute == "recursiveslideshow")
-      flags |= 1;
-
-    // SlideShow(dir[,recursive][,[not]random][,pause][,beginslide="/path/to/start/slide.jpg"])
-    // the beginslide value need be escaped (for '"' or '\' in it, by backslash)
-    // and then quoted, or not. See CUtil::SplitParams()
-    else
-    {
-      for (unsigned int i = 1 ; i < params.size() ; i++)
-      {
-        if (StringUtils::EqualsNoCase(params[i], "recursive"))
-          flags |= 1;
-        else if (StringUtils::EqualsNoCase(params[i], "random")) // set fullscreen or windowed
-          flags |= 2;
-        else if (StringUtils::EqualsNoCase(params[i], "notrandom"))
-          flags |= 4;
-        else if (StringUtils::EqualsNoCase(params[i], "pause"))
-          flags |= 8;
-        else if (StringUtils::StartsWithNoCase(params[i], "beginslide="))
-          beginSlidePath = params[i].substr(11);
-      }
-    }
-
-    CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
-    std::vector<std::string> strParams;
-    strParams.push_back(params[0]);
-    strParams.push_back(beginSlidePath);
-    msg.SetStringParams(strParams);
-    CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-    if (pWindow) pWindow->OnMessage(msg);
   }
   else if (execute == "playercontrol")
   {
