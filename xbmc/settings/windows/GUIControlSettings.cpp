@@ -371,7 +371,7 @@ bool CGUIControlListSetting::OnClick()
   
   dialog->Reset();
   dialog->SetHeading(CVariant{g_localizeStrings.Get(m_pSetting->GetLabel())});
-  dialog->SetItems(&options);
+  dialog->SetItems(options);
   dialog->SetMultiSelection(control->CanMultiSelect());
   dialog->Open();
 

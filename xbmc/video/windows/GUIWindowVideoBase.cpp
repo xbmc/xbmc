@@ -916,7 +916,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
 
   pDialog->Reset();
   pDialog->SetHeading(CVariant{20324});
-  pDialog->SetItems(&parts);
+  pDialog->SetItems(parts);
   pDialog->Open();
 
   if (!pDialog->IsConfirmed())
@@ -1461,7 +1461,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   CFileItemList items;
   if (!CDirectory::GetDirectory("videodb://movies/genres/", items))
     return;
-  pSelect->SetItems(&items);
+  pSelect->SetItems(items);
   pSelect->EnableButton(true, 531); // New Genre
   pSelect->Open();
   std::string strGenre;

@@ -100,7 +100,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
   {
     dialog->Reset();
     dialog->SetHeading(CVariant{25006}); // Select playback item
-    dialog->SetItems(&items);
+    dialog->SetItems(items);
     dialog->SetUseDetails(true);
     dialog->Open();
 

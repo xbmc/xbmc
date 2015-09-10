@@ -310,7 +310,7 @@ bool CGUIWindowPVRBase::OpenGroupSelectionDialog(void)
 
   dialog->Reset();
   dialog->SetHeading(CVariant{g_localizeStrings.Get(19146)});
-  dialog->SetItems(&options);
+  dialog->SetItems(options);
   dialog->SetMultiSelection(false);
   dialog->SetSelected(m_group->GroupName());
   dialog->Open();

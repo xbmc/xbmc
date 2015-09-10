@@ -261,7 +261,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
 
   dialog->SetHeading(CVariant{20093}); // Profile name
   dialog->Reset();
-  dialog->SetItems(&items);
+  dialog->SetItems(items);
   dialog->SetSelected(autoLoginProfileId);
   dialog->Open();
 

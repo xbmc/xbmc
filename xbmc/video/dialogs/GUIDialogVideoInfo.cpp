@@ -593,7 +593,7 @@ std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, std::
     items.Add(item);
   }
 
-  dialog->SetItems(&items);
+  dialog->SetItems(items);
   dialog->Open();
 
   if (dialog->IsButtonPressed())
@@ -1295,7 +1295,7 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
   dialog->Reset();
   dialog->SetMultiSelection(true);
   dialog->SetHeading(CVariant{g_localizeStrings.Get(20457)});
-  dialog->SetItems(&listItems);
+  dialog->SetItems(listItems);
   std::vector<int> selectedIndices;
   for (int i = 0; i < originalMovies.Size(); i++)
   {
@@ -1366,7 +1366,7 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
 
   dialog->Reset();
   dialog->SetHeading(CVariant{g_localizeStrings.Get(20466)});
-  dialog->SetItems(&listItems);
+  dialog->SetItems(listItems);
   if (currentSetId >= 0)
   {
     for (int listIndex = 0; listIndex < listItems.Size(); listIndex++) 
@@ -1476,7 +1476,7 @@ bool CGUIDialogVideoInfo::GetItemsForTag(const std::string &strHeading, const st
   dialog->Reset();
   dialog->SetMultiSelection(true);
   dialog->SetHeading(CVariant{strHeading});
-  dialog->SetItems(&listItems);
+  dialog->SetItems(listItems);
   dialog->EnableButton(true, 186);
   dialog->Open();
 
@@ -1825,7 +1825,7 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemo
     list.Sort(SortByLabel, SortOrderAscending, CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
     CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDialog->Reset();
-    pDialog->SetItems(&list);
+    pDialog->SetItems(list);
     pDialog->SetHeading(CVariant{20356});
     pDialog->Open();
     iSelectedLabel = pDialog->GetSelectedLabel();
