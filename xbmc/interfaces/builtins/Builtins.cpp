@@ -116,6 +116,7 @@
 #include "GUIContainerBuiltins.h"
 #include "LibraryBuiltins.h"
 #include "PictureBuiltins.h"
+#include "PlayerBuiltins.h"
 #include "ProfileBuiltins.h"
 #include "PVRBuiltins.h"
 #include "SkinBuiltins.h"
@@ -143,17 +144,10 @@ const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
   { "NotifyAll",                  true,   "Notify all connected clients" },
   { "Extract",                    true,   "Extracts the specified archive" },
-  { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
-  { "Seek",                       true,   "Performs a seek in seconds on the current playing media file" },
-  { "PlayerControl",              true,   "Control the music or video player" },
-  { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
-  { "Playlist.Clear",             false,  "Clear the current playlist" },
   { "EjectTray",                  false,  "Close or open the DVD tray" },
-  { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Mute",                       false,  "Mute the player" },
   { "SetVolume",                  true,   "Set the current volume" },
-  { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
@@ -170,6 +164,7 @@ CBuiltins::CBuiltins()
   RegisterCommands<CGUIControlBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
   RegisterCommands<CPictureBuiltins>();
+  RegisterCommands<CPlayerBuiltins>();
   RegisterCommands<CProfileBuiltins>();
   RegisterCommands<CPVRBuiltins>();
   RegisterCommands<CSkinBuiltins>();
@@ -322,344 +317,6 @@ int CBuiltins::Execute(const std::string& execString)
     else
       CLog::Log(LOGERROR, "NotifyAll needs two parameters");
   }
-  else if (execute == "playmedia")
-  {
-    if (!params.size())
-    {
-      CLog::Log(LOGERROR, "PlayMedia called with empty parameter");
-      return -3;
-    }
-
-    CFileItem item(params[0], false);
-    if (URIUtils::HasSlashAtEnd(params[0]))
-      item.m_bIsFolder = true;
-
-    // restore to previous window if needed
-    if( g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-        g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-        g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION )
-        g_windowManager.PreviousWindow();
-
-    // reset screensaver
-    g_application.ResetScreenSaver();
-    g_application.WakeUpScreenSaverAndDPMS();
-
-    // ask if we need to check guisettings to resume
-    bool askToResume = true;
-    int playOffset = 0;
-    for (unsigned int i = 1 ; i < params.size() ; i++)
-    {
-      if (StringUtils::EqualsNoCase(params[i], "isdir"))
-        item.m_bIsFolder = true;
-      else if (params[i] == "1") // set fullscreen or windowed
-        CMediaSettings::GetInstance().SetVideoStartWindowed(true);
-      else if (StringUtils::EqualsNoCase(params[i], "resume"))
-      {
-        // force the item to resume (if applicable) (see CApplication::PlayMedia)
-        item.m_lStartOffset = STARTOFFSET_RESUME;
-        askToResume = false;
-      }
-      else if (StringUtils::EqualsNoCase(params[i], "noresume"))
-      {
-        // force the item to start at the beginning (m_lStartOffset is initialized to 0)
-        askToResume = false;
-      }
-      else if (StringUtils::StartsWithNoCase(params[i], "playoffset=")) {
-        playOffset = atoi(params[i].substr(11).c_str()) - 1;
-        item.SetProperty("playlist_starting_track", playOffset);
-      }
-    }
-
-    if (!item.m_bIsFolder && item.IsPlugin())
-      item.SetProperty("IsPlayable", true);
-
-    if ( askToResume == true )
-    {
-      if ( CGUIWindowVideoBase::ShowResumeMenu(item) == false )
-        return false;
-    }
-    if (item.m_bIsFolder)
-    {
-      CFileItemList items;
-      std::string extensions = g_advancedSettings.m_videoExtensions + "|" + g_advancedSettings.GetMusicExtensions();
-      CDirectory::GetDirectory(item.GetPath(),items,extensions);
-
-      bool containsMusic = false, containsVideo = false;
-      for (int i = 0; i < items.Size(); i++)
-      {
-        bool isVideo = items[i]->IsVideo();
-        containsMusic |= !isVideo;
-        containsVideo |= isVideo;
-        
-        if (containsMusic && containsVideo)
-          break;
-      }
-
-      std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC, items));
-      if (state.get())
-        items.Sort(state->GetSortMethod());
-      else
-        items.Sort(SortByLabel, SortOrderAscending);
-
-      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
-      if (containsMusic && containsVideo) //mixed content found in the folder
-      {
-        for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
-        {
-          if (!items[i]->IsVideo())
-            items.Remove(i);
-        }
-      }
-      
-      g_playlistPlayer.ClearPlaylist(playlist);
-      g_playlistPlayer.Add(playlist, items);
-      g_playlistPlayer.SetCurrentPlaylist(playlist);
-      g_playlistPlayer.Play(playOffset);
-    }
-    else
-    {
-      int playlist = item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
-      g_playlistPlayer.ClearPlaylist(playlist);
-      g_playlistPlayer.SetCurrentPlaylist(playlist);
-
-      // play media
-      if (!g_application.PlayMedia(item, playlist))
-      {
-        CLog::Log(LOGERROR, "PlayMedia could not play media: %s", params[0].c_str());
-        return false;
-      }
-    }
-  }
-  else if (execute == "seek")
-  {
-    if (!params.size())
-    {
-      CLog::Log(LOGERROR, "Seek called with empty parameter");
-      return -3;
-    }
-    if (g_application.m_pPlayer->IsPlaying())
-      CSeekHandler::GetInstance().SeekSeconds(atoi(params[0].c_str()));
-  }
-  else if (execute == "playercontrol")
-  {
-    g_application.ResetScreenSaver();
-    g_application.WakeUpScreenSaverAndDPMS();
-    if (!params.size())
-    {
-      CLog::Log(LOGERROR, "PlayerControl called with empty parameter");
-      return -3;
-    }
-    if (paramlow ==  "play")
-    { // play/pause
-      // either resume playing, or pause
-      if (g_application.m_pPlayer->IsPlaying())
-      {
-        if (g_application.m_pPlayer->GetPlaySpeed() != 1)
-          g_application.m_pPlayer->SetPlaySpeed(1, g_application.IsMutedInternal());
-        else
-          g_application.m_pPlayer->Pause();
-      }
-    }
-    else if (paramlow == "stop")
-    {
-      g_application.StopPlaying();
-    }
-    else if (paramlow =="rewind" || paramlow == "forward")
-    {
-      if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
-      {
-        int iPlaySpeed = g_application.m_pPlayer->GetPlaySpeed();
-        if (paramlow == "rewind" && iPlaySpeed == 1) // Enables Rewinding
-          iPlaySpeed *= -2;
-        else if (paramlow ==  "rewind" && iPlaySpeed > 1) //goes down a notch if you're FFing
-          iPlaySpeed /= 2;
-        else if (paramlow == "forward" && iPlaySpeed < 1) //goes up a notch if you're RWing
-        {
-          iPlaySpeed /= 2;
-          if (iPlaySpeed == -1) iPlaySpeed = 1;
-        }
-        else
-          iPlaySpeed *= 2;
-
-        if (iPlaySpeed > 32 || iPlaySpeed < -32)
-          iPlaySpeed = 1;
-
-        g_application.m_pPlayer->SetPlaySpeed(iPlaySpeed, g_application.IsMutedInternal());
-      }
-    }
-    else if (paramlow == "next")
-    {
-      g_application.OnAction(CAction(ACTION_NEXT_ITEM));
-    }
-    else if (paramlow == "previous")
-    {
-      g_application.OnAction(CAction(ACTION_PREV_ITEM));
-    }
-    else if (paramlow == "bigskipbackward")
-    {
-      if (g_application.m_pPlayer->IsPlaying())
-        g_application.m_pPlayer->Seek(false, true);
-    }
-    else if (paramlow == "bigskipforward")
-    {
-      if (g_application.m_pPlayer->IsPlaying())
-        g_application.m_pPlayer->Seek(true, true);
-    }
-    else if (paramlow == "smallskipbackward")
-    {
-      if (g_application.m_pPlayer->IsPlaying())
-        g_application.m_pPlayer->Seek(false, false);
-    }
-    else if (paramlow == "smallskipforward")
-    {
-      if (g_application.m_pPlayer->IsPlaying())
-        g_application.m_pPlayer->Seek(true, false);
-    }
-    else if (StringUtils::StartsWithNoCase(parameter, "seekpercentage"))
-    {
-      std::string offset;
-      if (parameter.size() == 14)
-        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with no argument");
-      else if (parameter.size() < 17) // arg must be at least "(N)"
-        CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) called with invalid argument: \"%s\"", parameter.substr(14).c_str());
-      else
-      {
-        // Don't bother checking the argument: an invalid arg will do seek(0)
-        offset = parameter.substr(15);
-        StringUtils::TrimRight(offset, ")");
-        float offsetpercent = (float) atof(offset.c_str());
-        if (offsetpercent < 0 || offsetpercent > 100)
-          CLog::Log(LOGERROR,"PlayerControl(seekpercentage(n)) argument, %f, must be 0-100", offsetpercent);
-        else if (g_application.m_pPlayer->IsPlaying())
-          g_application.SeekPercentage(offsetpercent);
-      }
-    }
-    else if (paramlow == "showvideomenu")
-    {
-      if( g_application.m_pPlayer->IsPlaying() )
-        g_application.m_pPlayer->OnAction(CAction(ACTION_SHOW_VIDEOMENU));
-    }
-    else if (paramlow == "record")
-    {
-      if( g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->CanRecord())
-        g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
-    }
-    else if (StringUtils::StartsWithNoCase(parameter, "partymode"))
-    {
-      std::string strXspPath;
-      //empty param=music, "music"=music, "video"=video, else xsp path
-      PartyModeContext context = PARTYMODECONTEXT_MUSIC;
-      if (parameter.size() > 9)
-      {
-        if (parameter.size() == 16 && StringUtils::EndsWithNoCase(parameter, "video)"))
-          context = PARTYMODECONTEXT_VIDEO;
-        else if (parameter.size() != 16 || !StringUtils::EndsWithNoCase(parameter, "music)"))
-        {
-          strXspPath = parameter.substr(10);
-          StringUtils::TrimRight(strXspPath, ")");
-          context = PARTYMODECONTEXT_UNKNOWN;
-        }
-      }
-      if (g_partyModeManager.IsEnabled())
-        g_partyModeManager.Disable();
-      else
-        g_partyModeManager.Enable(context, strXspPath);
-    }
-    else if (paramlow == "random" || paramlow == "randomoff" || paramlow == "randomon")
-    {
-      // get current playlist
-      int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
-
-      // reverse the current setting
-      bool shuffled = g_playlistPlayer.IsShuffled(iPlaylist);
-      if ((shuffled && paramlow == "randomon") || (!shuffled && paramlow == "randomoff"))
-        return 0;
-
-      // check to see if we should notify the user
-      bool notify = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "notify"));
-      g_playlistPlayer.SetShuffle(iPlaylist, !shuffled, notify);
-
-      // save settings for now playing windows
-      switch (iPlaylist)
-      {
-      case PLAYLIST_MUSIC:
-        CMediaSettings::GetInstance().SetMusicPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
-        CSettings::GetInstance().Save();
-        break;
-      case PLAYLIST_VIDEO:
-        CMediaSettings::GetInstance().SetVideoPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
-        CSettings::GetInstance().Save();
-      }
-
-      // send message
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_RANDOM, 0, 0, iPlaylist, g_playlistPlayer.IsShuffled(iPlaylist));
-      g_windowManager.SendThreadMessage(msg);
-
-    }
-    else if (StringUtils::StartsWithNoCase(parameter, "repeat"))
-    {
-      // get current playlist
-      int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
-      PLAYLIST::REPEAT_STATE previous_state = g_playlistPlayer.GetRepeat(iPlaylist);
-
-      PLAYLIST::REPEAT_STATE state;
-      if (paramlow == "repeatall")
-        state = PLAYLIST::REPEAT_ALL;
-      else if (paramlow == "repeatone")
-        state = PLAYLIST::REPEAT_ONE;
-      else if (paramlow == "repeatoff")
-        state = PLAYLIST::REPEAT_NONE;
-      else if (previous_state == PLAYLIST::REPEAT_NONE)
-        state = PLAYLIST::REPEAT_ALL;
-      else if (previous_state == PLAYLIST::REPEAT_ALL)
-        state = PLAYLIST::REPEAT_ONE;
-      else
-        state = PLAYLIST::REPEAT_NONE;
-
-      if (state == previous_state)
-        return 0;
-
-      // check to see if we should notify the user
-      bool notify = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "notify"));
-      g_playlistPlayer.SetRepeat(iPlaylist, state, notify);
-
-      // save settings for now playing windows
-      switch (iPlaylist)
-      {
-      case PLAYLIST_MUSIC:
-        CMediaSettings::GetInstance().SetMusicPlaylistRepeat(state == PLAYLIST::REPEAT_ALL);
-        CSettings::GetInstance().Save();
-        break;
-      case PLAYLIST_VIDEO:
-        CMediaSettings::GetInstance().SetVideoPlaylistRepeat(state == PLAYLIST::REPEAT_ALL);
-        CSettings::GetInstance().Save();
-      }
-
-      // send messages so now playing window can get updated
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, (int)state);
-      g_windowManager.SendThreadMessage(msg);
-    }
-    else if (StringUtils::StartsWithNoCase(parameter, "resumelivetv"))
-    {
-      CFileItem& fileItem(g_application.CurrentFileItem());
-      PVR::CPVRChannelPtr channel = fileItem.HasPVRRecordingInfoTag() ? fileItem.GetPVRRecordingInfoTag()->Channel() : PVR::CPVRChannelPtr();
-
-      if (channel)
-      {
-        CFileItem playItem(channel);
-        if (!g_application.PlayMedia(playItem, channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
-        {
-          CLog::Log(LOGERROR, "ResumeLiveTv could not play channel: %s", channel->ChannelName().c_str());
-          return false;
-        }
-      }
-    }
-  }
-  else if (execute == "playwith")
-  {
-    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetInstance().GetPlayerCore(parameter);
-    g_application.OnAction(CAction(ACTION_PLAYER_PLAY));
-  }
   else if (execute == "mute")
   {
     g_application.ToggleMute();
@@ -678,66 +335,12 @@ int CBuiltins::Execute(const std::string& execString)
       }
     }
   }
-  else if (execute == "playlist.playoffset")
-  {
-    // playlist.playoffset(offset)
-    // playlist.playoffset(music|video,offset)
-    std::string strPos = parameter;
-    if (params.size() > 1)
-    {
-      // ignore any other parameters if present
-      std::string strPlaylist = params[0];
-      strPos = params[1];
-
-      int iPlaylist = PLAYLIST_NONE;
-      if (paramlow == "music")
-        iPlaylist = PLAYLIST_MUSIC;
-      else if (paramlow == "video")
-        iPlaylist = PLAYLIST_VIDEO;
-
-      // unknown playlist
-      if (iPlaylist == PLAYLIST_NONE)
-      {
-        CLog::Log(LOGERROR,"Playlist.PlayOffset called with unknown playlist: %s", strPlaylist.c_str());
-        return false;
-      }
-
-      // user wants to play the 'other' playlist
-      if (iPlaylist != g_playlistPlayer.GetCurrentPlaylist())
-      {
-        g_application.StopPlaying();
-        g_playlistPlayer.Reset();
-        g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
-      }
-    }
-    // play the desired offset
-    int pos = atol(strPos.c_str());
-    // playlist is already playing
-    if (g_application.m_pPlayer->IsPlaying())
-      g_playlistPlayer.PlayNext(pos);
-    // we start playing the 'other' playlist so we need to use play to initialize the player state
-    else
-      g_playlistPlayer.Play(pos);
-  }
-  else if (execute == "playlist.clear")
-  {
-    g_playlistPlayer.Clear();
-  }
 #ifdef HAS_DVD_DRIVE
   else if (execute == "ejecttray")
   {
     g_mediaManager.ToggleTray();
   }
 #endif
-  else if (execute == "playdvd")
-  {
-#ifdef HAS_DVD_DRIVE
-    bool restart = false;
-    if (params.size() > 0 && StringUtils::EqualsNoCase(params[0], "restart"))
-      restart = true;
-    CAutorun::PlayDisc(g_mediaManager.GetDiscPath(), true, restart);
-#endif
-  }
   else if (execute == "ripcd")
   {
 #ifdef HAS_CDDA_RIPPER
