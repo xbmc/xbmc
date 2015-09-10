@@ -715,6 +715,8 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       {
         std::string strJoinPhrase = (it == --common.end() ? "" : g_advancedSettings.m_musicItemSeparator);
         CArtistCredit artistCredit(*it, strJoinPhrase);
+        if (it->compare(g_localizeStrings.Get(340)) == 0)
+          artistCredit.SetMusicBrainzArtistID(VA_MUSICBRAINZARTISTID);
         album.artistCredits.push_back(artistCredit);
       }
       album.bCompilation = compilation;

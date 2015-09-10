@@ -5528,8 +5528,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
     // and the various artist entry if applicable
     if (!albumArtistsOnly)
     {
-      std::string strVariousArtists = g_localizeStrings.Get(340);
-      strSQL += PrepareSQL(" and artistview.strArtist <> '%s'", strVariousArtists.c_str());
+      strSQL += PrepareSQL(" AND (artistview.strMusicBrainzArtistID is NULL OR artistview.strMusicBrainzArtistID <> '%s')", VA_MUSICBRAINZARTISTID.c_str());
     }
 
     filter.AppendWhere(strSQL);
