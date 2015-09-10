@@ -191,15 +191,22 @@ private:
     void Clear()
     {
       eof = false;
+      isPVR = false;
       time = 0;
       time_total = 0;
+      time_live = 0;
+      time_total_live = 0;
       player_state = "";
+
       cache_offset = 0.0;
       current_filter_state = State_Stopped;
     }
     bool eof;
+    bool isPVR;
     uint64_t time;              // current playback time in millisec
     uint64_t time_total;        // total playback time in millisec
+    uint64_t time_live;         // current LiveTV EPG time in millisec
+    uint64_t time_total_live;   // end LiveTV EPG time in millisec
     double  cache_offset;       // percentage of file ahead of current position
     FILTER_STATE current_filter_state;
 
