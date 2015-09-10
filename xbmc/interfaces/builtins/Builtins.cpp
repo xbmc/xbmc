@@ -113,6 +113,7 @@
 #include "CECBuiltins.h"
 #include "GUIBuiltins.h"
 #include "GUIControlBuiltins.h"
+#include "GUIContainerBuiltins.h"
 #include "LibraryBuiltins.h"
 #include "ProfileBuiltins.h"
 #include "SkinBuiltins.h"
@@ -153,15 +154,6 @@ const BUILT_IN commands[] = {
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Mute",                       false,  "Mute the player" },
   { "SetVolume",                  true,   "Set the current volume" },
-  { "Container.Refresh",          false,  "Refresh current listing" },
-  { "Container.Update",           false,  "Update current listing. Send Container.Update(path,replace) to reset the path history" },
-  { "Container.NextViewMode",     false,  "Move to the next view type (and refresh the listing)" },
-  { "Container.PreviousViewMode", false,  "Move to the previous view type (and refresh the listing)" },
-  { "Container.SetViewMode",      true,   "Move to the view with the given id" },
-  { "Container.NextSortMethod",   false,  "Change to the next sort method" },
-  { "Container.PreviousSortMethod",false, "Change to the previous sort method" },
-  { "Container.SetSortMethod",    true,   "Change to the specified sort method" },
-  { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
@@ -181,6 +173,7 @@ CBuiltins::CBuiltins()
 {
   RegisterCommands<CAddonBuiltins>();
   RegisterCommands<CGUIBuiltins>();
+  RegisterCommands<CGUIContainerBuiltins>();
   RegisterCommands<CGUIControlBuiltins>();
   RegisterCommands<CLibraryBuiltins>();
   RegisterCommands<CProfileBuiltins>();
@@ -808,56 +801,6 @@ int CBuiltins::Execute(const std::string& execString)
 #ifdef HAS_CDDA_RIPPER
     CCDDARipper::GetInstance().RipCD();
 #endif
-  }
-  else if (execute == "container.refresh")
-  { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
-    //       This shouldn't stop a dialog intercepting it though.
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
-    message.SetStringParam(parameter);
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "container.update" && !params.empty())
-  {
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
-    message.SetStringParam(params[0]);
-    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "replace"))
-      message.SetParam2(1); // reset the history
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "container.nextviewmode")
-  {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, 0, 1);
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "container.previousviewmode")
-  {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, 0, -1);
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "container.setviewmode")
-  {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "container.nextsortmethod")
-  {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, 0, 1);
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "container.previoussortmethod")
-  {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, 0, -1);
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "container.setsortmethod")
-  {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
-    g_windowManager.SendMessage(message);
-  }
-  else if (execute == "container.sortdirection")
-  {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, g_windowManager.GetActiveWindow(), 0, 0);
-    g_windowManager.SendMessage(message);
   }
   else if (execute == "wakeonlan")
   {
