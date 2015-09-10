@@ -125,6 +125,10 @@
 #include "SystemBuiltins.h"
 #include "WeatherBuiltins.h"
 
+#if defined(TARGET_ANDROID)
+#include "AndroidBuiltins.h"
+#endif
+
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
@@ -144,9 +148,6 @@ typedef struct
 
 const BUILT_IN commands[] = {
   { "Help",                       false,  "This help message" },
-#if defined(TARGET_ANDROID)
-  { "StartAndroidActivity",       true,   "Launch an Android native app with the given package name.  Optional parms (in order): intent, dataType, dataURI." },
-#endif
 };
 
 CBuiltins::CBuiltins()
@@ -165,6 +166,10 @@ CBuiltins::CBuiltins()
   RegisterCommands<CSkinBuiltins>();
   RegisterCommands<CSystemBuiltins>();
   RegisterCommands<CWeatherBuiltins>();
+
+#if defined(TARGET_ANDROID)
+  RegisterCommands<CAndroidBuiltins>();
+#endif
 }
 
 CBuiltins::~CBuiltins()

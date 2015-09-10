@@ -2380,6 +2380,7 @@ OUTPUT_FILES="Makefile \
     xbmc/guilib/Makefile \
     xbmc/input/linux/Makefile \
     xbmc/interfaces/Makefile \
+    xbmc/interfaces/builtins/Makefile \
     xbmc/network/Makefile \
     xbmc/network/upnp/Makefile \
     lib/libexif/Makefile \
