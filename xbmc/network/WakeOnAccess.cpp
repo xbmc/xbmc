@@ -110,12 +110,9 @@ bool CMACDiscoveryJob::DoWork()
     return false;
   }
 
-  std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
-  for (std::vector<CNetworkInterface*>::const_iterator it = ifaces.begin(); it != ifaces.end(); ++it)
-  {
-    if ((*it)->GetHostMacAddress(ipAddress, m_macAddres))
+  for (auto &&iface : g_application.getNetwork().GetInterfaceList())
+    if (iface->GetHostMacAddress(ipAddress, m_macAddres))
       return true;
-  }
 
   return false;
 }

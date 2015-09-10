@@ -144,6 +144,11 @@ public:
    bool IsConnected(void);
 
    // Return true if the magic packet was send
+   // TODO: current implementation uses ARP for MAC resolution.
+   //       as IPv6 has no ARP, it will provide expected result
+   //       only if target host is accessible via IPv4.
+   //       (anyhow it's use is safe regardless actual.
+   //       configuration, returns false for IPv6 only stack)
    bool WakeOnLan(const char *mac);
 
    // Return true if host replies to ping

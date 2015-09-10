@@ -424,6 +424,9 @@ bool CNetwork::WakeOnLan(const char* mac)
   unsigned char buf [128];
   unsigned char *ptr;
 
+  if (GetFirstConnectedFamily() == AF_INET6)
+    return false;
+
   // Fetch the hardware address
   if (!in_ether(mac, ethaddr))
   {
