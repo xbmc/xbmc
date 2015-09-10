@@ -7,26 +7,29 @@
       <audio filter="lavaudio_internal" />
       <subs filter="xysubfilter_internal" />
     </rule>
-    <rule filetypes="ts">
+    <rule protocols="https|http" url="false">
+      <splitter filter="lavsplitter_internal" />
+      <video filter="lavvideo_internal" />
+      <audio filter="lavaudio_internal" />
+      <subs filter="xysubfilter_internal" />
+    </rule>
+    <rule filetypes="ts" url="false" >
       <source filter="tsreader_internal" />
       <splitter filter="tsreader_internal" />
       <video filter="lavvideo_internal" />
       <audio filter="lavaudio_internal" />
       <subs filter="xysubfilter_internal" />
     </rule>
-    <rule protocols="rtsp">
-      <video filter="lavvideo_internal" />
-      <audio filter="lavaudio_internal" />
+    <rule url="true" filetypes="tsbuffer" >
+      <source filter="tsreader_internal" />
     </rule>
     <rule url="true" protocols="rtsp">
       <source filter="tsreader_internal" />
     </rule>
-    <rule protocols="https|http" url="false">
-      <splitter filter="lavsplitter_internal" />                      
-      <video filter="lavvideo_internal" />                            
+    <rule protocols="rtsp">
+      <video filter="lavvideo_internal" />
       <audio filter="lavaudio_internal" />
-      <subs filter="xysubfilter_internal" />      
-    </rule>  
+    </rule>
     <rule filetypes="ifo">
       <source filter="dvdnavigator" />
       <splitter filter="dvdnavigator" />
