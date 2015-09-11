@@ -182,9 +182,8 @@ namespace PVR
     /*!
      * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
      * @param strAddonId The add-on to mark as outdated
-     * @param strReferer The referer to use when downloading
      */
-    void MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer);
+    void MarkAsOutdated(const std::string& strAddonId);
 
     /*!
      * @return True when updated, false when the pvr manager failed to load after the attempt
@@ -679,7 +678,7 @@ namespace PVR
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
-    std::map<std::string, std::string> m_outdatedAddons;
+    std::vector<std::string>        m_outdatedAddons;
     static int                      m_pvrWindowIds[10];
   };
 

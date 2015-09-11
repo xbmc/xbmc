@@ -668,7 +668,7 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
           // try to get the proper language addon by its name from all available language addons
           if (ADDON::CLanguageResource::FindLanguageAddonByName(language, newLanguage, languageAddons))
           {
-            if (CAddonInstaller::GetInstance().InstallOrUpdate(newLanguage, "", false, false))
+            if (CAddonInstaller::GetInstance().InstallOrUpdate(newLanguage, false, false))
             {
               CLog::Log(LOGINFO, "CLangInfo: successfully installed language addon \"%s\" matching current language \"%s\"", newLanguage.c_str(), language.c_str());
               foundMatchingAddon = true;

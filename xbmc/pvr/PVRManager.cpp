@@ -273,12 +273,12 @@ bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
       (!IsPVRWindowActive() && !IsPlaying());
 }
 
-void CPVRManager::MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer)
+void CPVRManager::MarkAsOutdated(const std::string& strAddonId)
 {
   if (IsStarted() && CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
   {
     CSingleLock lock(m_critSection);
-    m_outdatedAddons.insert(make_pair(strAddonId, strReferer));
+    m_outdatedAddons.push_back(strAddonId);
   }
 }
 
@@ -289,9 +289,9 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
     return true;
 
   // there's add-ons that couldn't be updated
-  for (std::map<std::string, std::string>::iterator it = m_outdatedAddons.begin(); it != m_outdatedAddons.end(); ++it)
+  for (auto it = m_outdatedAddons.begin(); it != m_outdatedAddons.end(); ++it)
   {
-    if (!InstallAddonAllowed(it->first))
+    if (!InstallAddonAllowed(*it))
     {
       // we can't upgrade right now
       return true;
@@ -301,7 +301,7 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   // all outdated add-ons can be upgraded now
   CLog::Log(LOGINFO, "PVR - upgrading outdated add-ons");
 
-  std::map<std::string, std::string> outdatedAddons = m_outdatedAddons;
+  auto outdatedAddons = m_outdatedAddons;
   // stop threads and unload
   SetState(ManagerStateInterrupted);
   g_EpgContainer.Stop();
@@ -310,10 +310,10 @@ bool CPVRManager::UpgradeOutdatedAddons(void)
   Cleanup();
 
   // upgrade all add-ons
-  for (std::map<std::string, std::string>::iterator it = outdatedAddons.begin(); it != outdatedAddons.end(); ++it)
+  for (auto it = outdatedAddons.begin(); it != outdatedAddons.end(); ++it)
   {
-    CLog::Log(LOGINFO, "PVR - updating add-on '%s'", it->first.c_str());
-    CAddonInstaller::GetInstance().InstallOrUpdate(it->first, it->second, false);
+    CLog::Log(LOGINFO, "PVR - updating add-on '%s'", (*it).c_str());
+    CAddonInstaller::GetInstance().InstallOrUpdate(*it, false);
   }
 
   // reload
