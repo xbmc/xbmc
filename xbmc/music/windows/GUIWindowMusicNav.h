@@ -50,12 +50,9 @@ protected:
   virtual std::string GetStartFolder(const std::string &url);
 
   bool GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items);
-  void DisplayEmptyDatabaseMessage(bool bDisplay);
   std::string GetQuickpathName(const std::string& strPath) const;
 
   VECSOURCES m_shares;
-
-  bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
 
   // searching
   void OnSearchUpdate();
