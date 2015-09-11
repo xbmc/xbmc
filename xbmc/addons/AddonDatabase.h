@@ -34,10 +34,17 @@ public:
   int GetAddonId(const ADDON::AddonPtr& item);
   int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
+
+  /*! \brief Get an addon with a specific version and repository. */
+  bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
+
   bool GetAddons(ADDON::VECADDONS& addons, const ADDON::TYPE &type = ADDON::ADDON_UNKNOWN);
 
   /*! Get the addon IDs that has been set to disabled */
   bool GetDisabled(std::vector<std::string>& addons);
+
+  bool GetAvailableVersions(const std::string& addonId,
+      std::vector<std::pair<ADDON::AddonVersion, std::string>>& versionsInfo);
 
   /*! \brief grab the (largest) add-on version for an add-on */
   ADDON::AddonVersion GetAddonVersion(const std::string &id);

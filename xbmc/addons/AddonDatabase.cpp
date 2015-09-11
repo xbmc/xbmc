@@ -201,6 +201,67 @@ AddonVersion CAddonDatabase::GetAddonVersion(const std::string &id)
   return maxversion;
 }
 
+bool CAddonDatabase::GetAvailableVersions(const std::string& addonId,
+    std::vector<std::pair<ADDON::AddonVersion, std::string>>& versionsInfo)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    std::string sql = PrepareSQL(
+        "SELECT addon.version, repo.addonID AS repoID FROM addon "
+        "JOIN addonlinkrepo ON addonlinkrepo.idAddon=addon.id "
+        "JOIN repo ON repo.id=addonlinkrepo.idRepo "
+        "WHERE NOT EXISTS (SELECT * FROM  disabled WHERE disabled.addonID=repoID) "
+        "AND NOT EXISTS (SELECT * FROM  broken WHERE broken.addonID=addon.addonID) "
+        "AND addon.addonID='%s'", addonId.c_str());
+
+    m_pDS->query(sql.c_str());
+    while (!m_pDS->eof())
+    {
+      AddonVersion version(m_pDS->fv(0).get_asString());
+      std::string repo = m_pDS->fv(1).get_asString();
+      versionsInfo.push_back(std::make_pair(version, repo));
+      m_pDS->next();
+    }
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonId.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::GetAddon(const std::string& addonID, const AddonVersion& version, const std::string& repoId, AddonPtr& addon)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+  std::string sql = PrepareSQL(
+      "SELECT addon.id, addon.addonID, repo.addonID AS repoID FROM addon "
+      "JOIN addonlinkrepo ON addonlinkrepo.idAddon=addon.id "
+      "JOIN repo ON repo.id=addonlinkrepo.idRepo "
+      "WHERE addon.addonID='%s' AND addon.version='%s' AND repoID='%s'",
+      addonID.c_str(), version.asString().c_str(), repoId.c_str());
+
+    m_pDS->query(sql.c_str());
+    if (m_pDS->eof())
+      return false;
+
+    return GetAddon(m_pDS->fv(0).get_asInt(), addon);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
+  }
+  return false;
+
+}
+
 bool CAddonDatabase::GetAddon(const std::string& id, AddonPtr& addon)
 {
   try
@@ -523,12 +584,16 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
     if (m_pDS->eof())
       return false;
 
-    query = PrepareSQL("select * from addonlinkrepo where idRepo=%i", m_pDS->fv(0).get_asInt());
+    query = PrepareSQL("SELECT addon.id FROM addon "
+        "JOIN addonlinkrepo ON addonlinkrepo.idAddon=addon.id "
+        "WHERE addonlinkrepo.idRepo=%i GROUP BY addon.addonID",
+        m_pDS->fv(0).get_asInt());
+
     m_pDS->query(query.c_str());
     while (!m_pDS->eof())
     {
       AddonPtr addon;
-      if (GetAddon(m_pDS->fv("idAddon").get_asInt(), addon))
+      if (GetAddon(m_pDS->fv(0).get_asInt(), addon))
         addons.push_back(addon);
       m_pDS->next();
     }
