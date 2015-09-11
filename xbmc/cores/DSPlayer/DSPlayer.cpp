@@ -616,10 +616,6 @@ void CDSPlayer::Process()
   // Wait for DS Graph creation;
   m_hDSGraphEvent.Wait();
 
-  // Start playback
-  // If there's an error, the lock must be released in order to show the error dialog
-  m_hReadyEvent.Set();
-
   if (FAILED(m_hDSGraph))
   {
     CLog::Log(LOGERROR, "%s - Failed creating DS Graph", __FUNCTION__);
@@ -637,6 +633,10 @@ void CDSPlayer::Process()
   g_dsSettings.pRendererSettings->bAllowFullscreen = m_PlayerOptions.fullscreen;
 
   if (m_PlayerOptions.identify == false) m_callback.OnPlayBackStarted();
+
+  // Start playback
+  // If there's an error, the lock must be released in order to show the error dialog
+  m_hReadyEvent.Set();
 
   while (!m_bStop && PlayerState != DSPLAYER_CLOSED && PlayerState != DSPLAYER_LOADING)
     HandleMessages();
