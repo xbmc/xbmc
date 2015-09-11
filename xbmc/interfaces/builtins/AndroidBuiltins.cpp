@@ -20,7 +20,7 @@
 
 #include "AndroidBuiltins.h"
 
-#include "ApplicationMessenger.h"
+#include "messaging/ApplicationMessenger.h"
 
 /*! \brief Launch an android system activity.
  *  \param params The parameters.
@@ -31,7 +31,8 @@
  */
 static int LaunchAndroidActivity(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::Get().StartAndroidActivity(params);
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
+    TMSG_START_ANDROID_ACTIVITY, -1, -1, nullptr, "", params);
 
   return 0;
 }

@@ -17,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include "Builtins.h"
+
 #include "AddonBuiltins.h"
 #include "ApplicationBuiltins.h"
 #include "CECBuiltins.h"
@@ -161,6 +163,7 @@ int CBuiltins::Execute(const std::string& execString)
                           execute.c_str(), it->second.parameters, params.size());
       return -1;
     }
-  } else
+  } 
+  else
     return CInputManager::GetInstance().ExecuteBuiltin(execute, params);
 }

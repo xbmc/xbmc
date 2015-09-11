@@ -20,6 +20,8 @@
 
 #include "AddonBuiltins.h"
 
+#include <memory>
+
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"

@@ -102,7 +102,7 @@ static int NotifyAll(const std::vector<std::string>& params)
 static int SetVolume(const std::vector<std::string>& params)
 {
   float oldVolume = g_application.GetVolume();
-  float volume = (float)strtod(params[0].c_str(), NULL);
+  float volume = (float)strtod(params[0].c_str(), nullptr);
 
   g_application.SetVolume(volume);
   if(oldVolume != volume)
@@ -144,7 +144,7 @@ static int ToggleDPMS(const std::vector<std::string>& params)
  */
 static int WakeOnLAN(const std::vector<std::string>& params)
 {
-  g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
+  g_application.getNetwork().WakeOnLan(params[0].c_str());
 
   return 0;
 }
