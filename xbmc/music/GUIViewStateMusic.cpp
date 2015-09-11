@@ -356,6 +356,8 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   if (CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     sortAttribute = SortAttributeIgnoreArticle;
 
+  const CViewState *viewState = CViewStateSettings::GetInstance().Get("musicnavsongs");
+
   if (items.GetContent() == "songs" || items.GetContent() == "mixed") 
   {
     std::string strTrackLeft=CSettings::GetInstance().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
@@ -369,7 +371,14 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     AddSortMethod(SortByLabel, sortAttribute, 551, LABEL_MASKS(strTrackLeft, strTrackRight));
     AddSortMethod(SortByTime, 180, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
     AddSortMethod(SortByRating, 563, LABEL_MASKS("%T - %A", "%R"));  // Titel, Artist, Rating| empty, empty
-    AddPlaylistOrder(items, LABEL_MASKS(strTrackLeft, strTrackRight));
+
+    if (items.IsSmartPlayList() || items.IsLibraryFolder())
+      AddPlaylistOrder(items, LABEL_MASKS(strTrackLeft, strTrackRight));
+    else
+    {
+      SetSortMethod(viewState->m_sortDescription);
+      SetSortOrder(viewState->m_sortDescription.sortOrder);
+    }
 
     SetViewAsControl(CViewStateSettings::GetInstance().Get("musicnavsongs")->m_viewMode);
   } 
@@ -391,7 +400,13 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     // year
     AddSortMethod(SortByYear, 562, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));
 
-    AddPlaylistOrder(items, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));
+    if (items.IsSmartPlayList() || items.IsLibraryFolder())
+      AddPlaylistOrder(items, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));
+    else
+    {
+      SetSortMethod(viewState->m_sortDescription);
+      SetSortOrder(viewState->m_sortDescription.sortOrder);
+    }
 
     SetViewAsControl(CViewStateSettings::GetInstance().Get("musicnavalbums")->m_viewMode);
   } 
