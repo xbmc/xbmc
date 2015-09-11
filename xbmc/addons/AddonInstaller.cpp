@@ -202,6 +202,25 @@ bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool backgroun
   return DoInstall(addon, hash, background, modal);
 }
 
+void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& version, const std::string& repoId)
+{
+  CLog::Log(LOGDEBUG, "CAddonInstaller: intalling '%s' version '%s' from repository '%s'",
+      addonId.c_str(), version.asString().c_str(), repoId.c_str());
+
+  AddonPtr addon;
+  CAddonDatabase database;
+
+  if (!database.Open() || !database.GetAddon(addonId, version, repoId, addon))
+    return;
+
+  AddonPtr repo;
+  if (!CAddonMgr::GetInstance().GetAddon(repoId, repo, ADDON_REPOSITORY))
+    return;
+
+  std::string hash = std::static_pointer_cast<CRepository>(repo)->GetAddonHash(addon);
+  DoInstall(addon, hash, true, false);
+}
+
 bool CAddonInstaller::DoInstall(const AddonPtr &addon, const std::string &hash /* = "" */, bool background /* = true */, bool modal /* = false */)
 {
   // check whether we already have the addon installing

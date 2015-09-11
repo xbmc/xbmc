@@ -5798,6 +5798,7 @@ msgctxt "#13204"
 msgid "Last loaded profile:"
 msgstr ""
 
+#: xbmc/addons/GUIDialogAddonInfo.cpp
 #: xbmc/music/karaoke/GUIDialogKaraokeSongSelector.cpp
 #: xbmc/peripherals/devices/Peripheral.cpp
 #: xbmc/peripherals/bus/PeripheralBus.cpp
@@ -11979,7 +11980,17 @@ msgctxt "#21337"
 msgid "Never"
 msgstr ""
 
-#empty strings from id 21338 to 21358
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21338"
+msgid "Select version"
+msgstr ""
+
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21339"
+msgid "Version %s"
+msgstr ""
+
+#empty strings from id 21340 to 21358
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"
