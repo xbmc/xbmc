@@ -118,28 +118,59 @@ public:
    CNetwork();
    virtual ~CNetwork();
 
-   // Return our hostname
+   /*!
+    \brief  Returns local hostname
+    */
    virtual bool GetHostName(std::string& hostname);
 
-   // Return the list of interfaces
+   /*!
+    \brief  Return the list of interfaces
+    */
    virtual std::forward_list<CNetworkInterface*>& GetInterfaceList(void) = 0;
 
+   /*!
+    \brief  Returns interface with specific name
+          - in the current implementation, interface as the basic configutation item
+            represents specific IP configuration
+          - this means InterfaceName is not unique key. IP address is
+
+    \return With respect above comment, it returns first valid configuration on interface
+            holding searched interface name.
+    */
    CNetworkInterface* GetInterfaceByName(const std::string& name);
 
-   // Return the first interface which is active
+   /*!
+    \brief  Return the first interface which is active
+            - list of available interfaces is always sorted: by AF_FAMILY, dependence of their type
+              on other types and alphabetically at last. AF_PACKET comes first, then AF_INET, AF_INET6.
+              physical interfaces (eg network cards) come first. Bridges later before virtual
+              itnerfaces, then tunnels...
+            - This assures that ppp0 won't be picked up (presented as
+              GetFirstConnectedInterface()) at the expense of eth0 for instance / thus providing
+              non-sense info to services expecting interface with MAC address.
+    */
    virtual CNetworkInterface* GetFirstConnectedInterface(void);
 
-   // Return address family of GetFirstConnectedInterface() interface. With respect to above
-   // comment this means:
-   //  - in case of returned AF_INET6 - host is configured with IPv6 stack only (we don't need
-   //    iterate over interfaces list further, or trying socket() results to confirm this)
-   //  - AF_INET - host is configured with IPv4 stack. IPv6 availability unknown, we would need
-   //    to loop over the list.
+    /*!
+     \brief  Address family of GetFirstConnectedInterface() interface
+     \sa     GetFirstConnectedInterface()
+     \return with respect to comment in GetFirstConnectedInterface()
+             - in case of returned AF_INET6 - host is configured with IPv6 stack only (we don't need
+               iterate over interfaces list further, or trying socket() results to confirm this)
+             - AF_INET - host is configured with IPv4 stack. IPv6 availability unknown, we would need
+               to loop over the list.
+    */
    int GetFirstConnectedFamily() { return (GetFirstConnectedInterface() && GetFirstConnectedInterface()->isIPv6() ? AF_INET6 : AF_INET); }
 
-   // Return true if there is a interface for the same network as address
+    /*!
+     \brief Return true if there is a interface for the same network as address
+    */
    bool HasInterfaceForIP(const std::string &address);
-   // Backward compatibility call. It wraps IPv6 compatible function above
+
+    /*!
+     \brief Compat wrapper to
+     \sa    HasInterfaceForIP(const std::string &address)
+    */
    bool HasInterfaceForIP(unsigned long address);
 
    // Return true if there's at least one defined network interface
@@ -148,12 +179,15 @@ public:
    // Return true if there's at least one interface which is connected
    bool IsConnected(void);
 
-   // Return true if the magic packet was send
-   // TODO: current implementation uses ARP for MAC resolution.
-   //       as IPv6 has no ARP, it will provide expected result
-   //       only if target host is accessible via IPv4.
-   //       (anyhow it's use is safe regardless actual.
-   //       configuration, returns false for IPv6 only stack)
+   /*!
+    \return  Return true if the magic packet was send
+
+      TODO: current implementation uses ARP for MAC resolution.
+            as IPv6 has no ARP, it will provide expected result
+            only if target host is accessible via IPv4.
+            (anyhow it's use is safe regardless actual.
+            configuration, returns false for IPv6 only stack)
+    */
    bool WakeOnLan(const char *mac);
 
    /*!
@@ -167,7 +201,8 @@ public:
    bool PingHost(const std::string &ipaddr, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false);
 
    /*!
-    \brief  Ping remote host (compatibility wrapper, see PingHost(std::string&...))
+    \brief  Ping remote host (compatibility wrapper)
+    \sa     PingHost(const std::string &ipaddr, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false)
     */
    bool PingHost(unsigned long ipaddr, unsigned short port, unsigned int timeout_ms = 2000, bool readability_check = false)
      { return PingHost(GetIpStr(ipaddr), port, timeout_ms, readability_check); }
@@ -186,14 +221,16 @@ public:
 
    /*!
     \brief  Tests if parameter specifies valid IPv6 address (as specified by RFCs)
-    \param  IP as std::string, struct sockaddr* (non mandatory),
-            port specification (non mandatory)
+    \param  ipaddress to convert/test
+    \param  *sockaddr non mandatory destination for conversion
+    \param  port non mandatory port specification to connect to
     \return Function is dual purpose. With just one parameter (IP),
             it return true if that IP represents IPv6 address.
             If case of second / third supplied argument, it directly
             converts parameters into binary struct pointed by 2nd param.
             (structure needs to be pre-allocated)
 
+    \sa     ConvIP
             For direct conversion into (sockaddr*) see ConvIP() variants.
             (it is universal wrapper to ConvIPv6/v4())
     */
@@ -201,14 +238,16 @@ public:
 
    /*!
     \brief  Tests if parameter specifies valid IPv4 address (as specified by RFCs)
-    \param  IP as std::string, struct sockaddr* (non mandatory),
-            port specification (non mandatory)
+    \param  ipaddress stored as std::string
+    \param  sockaddr* non mandatory
+    \param  port non mandatory
     \return Function is dual purpose. With just one parameter (IP),
             it return true if that IP represents IPv4 address.
             If case of second / third supplied argument, it directly
             converts parameters into binary struct pointed by 2nd param.
             (structure needs to be pre-allocated)
 
+    \sa     ConvIP
             For direct conversion into (sockaddr*) see ConvIP() variants.
             (it is universal wrapper to ConvIPv6/v4())
     */
@@ -247,10 +286,11 @@ public:
    static std::string GetIpStr(const struct sockaddr *sa);
 
    /*!
-    \brief  Converts IP(v4) from ulong to std::string
-    \param  (unsigned long) IP address
-    \return Function converts from host byte order to network
-            byte order first. Result is returned as std::string.
+    \brief  Converts IPv4 address stored in unsigned long to std::string
+            Function converts from host byte order to network
+            byte order first
+    \param  IPaddress unsigned long
+    \return Result is returned as std::string
     */
    static std::string GetIpStr(unsigned long address);
 
@@ -278,23 +318,42 @@ public:
    //                  doesn't comply to standard)
    static int     PrefixLengthIPv6(const std::string &address);
 
-   // fully IPv4/IPv6 compatible (IPv6 part is limited to addr/mask match only (IPv4 way))
-   // TODO: beside addr/match matching IPv6 introduced NetworkDiscoveryProtocol(NDP)
-   //       currently not implemented.
+   /*!
+    \brief fully IPv4/IPv6 compatible
+           - IPv6 part is limited to addr/mask match only (IPv4 way)
+
+    \param ipaddr1 to match
+    \param ipaddr2 to match agains
+    \param   mask2 to match agains
+
+    \return TRUE if: ipaddr1 & mask2 == ipaddr2 & mask2 , FALSE otherwise
+
+            TODO: beside addr/match matching IPv6 introduced NetworkDiscoveryProtocol(NDP)
+                  currently not implemented.
+    */
    static bool AddrMatch(const std::string &addr, const std::string &match_ip, const std::string &match_mask);
 
-   // Per platform implementation. CNetwork class has both IPv6/IPv4 support,
-   // but doesn't require each derived class to support IPv6 as well.
-   // By default we assume IPv6 support not existend (or IPv6 stack unconfigured).
-   // As the class functions do check that internally, it makes the calls safe
-   // with no prior checking for actual stack availability.
-   // In such situations, all calls with IPv6-like parameters will return
-   // false, -1, or std::string being empty.
-   // static functions providing only type<>type conversions or formal
-   // valididy check are unaffected.
+   /*!
+    \brief Per platform implementation.
+           - CNetwork class has both IPv6/IPv4 support, but doesn't require each derived
+             class to support IPv6 as well
+           - By default we assume IPv6 support not existend (or IPv6 stack unconfigured)
+           - CNetwork class functions check IPv6 support automatically based on this call
+             and avoid IPv6 depending code automatically.
+             This makes the calls safe for the caller without prior checks or deep knowledge
+             of CNetwork internals
+
+           - for calls dealing with IPv6 stack - and no IPv6 available - calls return safely
+             returning string.empty() / FALSE / -1 or NULL
+
+    \return  Static functions providing only type<>type conversions or formal valididy checking
+             are independent on actual IPv6 stack availability
+    */
    virtual bool SupportsIPv6(void) { return false; }
 
-   // Return true if given name or ip address corresponds to localhost
+   /*!
+    \brief Return true if given name or ip address corresponds to localhost
+    */
    bool IsLocalHost(const std::string& hostname);
 
    // Waits for the first network interface to become available

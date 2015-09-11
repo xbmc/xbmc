@@ -97,20 +97,11 @@ public:
    CNetworkLinux(void);
    virtual ~CNetworkLinux(void);
 
-   // Return the list of interfaces
    virtual std::forward_list<CNetworkInterface*>& GetInterfaceList(void);
-   // list of available interfaces is always sorted: by AF_FAMILY, dependence of their type
-   // on other types and alphabetically at last.
-   // AF_PACKET comes first, then AF_INET, AF_INET6. physical interfaces (eg network cards)
-   // come first. bridges later before virtual itnerfaces, then tunnels ...
-   // this assures that ppp0 won't be picked up (presented as GetFirstConnectedInterface())
-   // at the expense of eth0 for instance / thus providing nonsense info to services expecting
-   // interface with MAC address.
-   virtual CNetworkInterface* GetFirstConnectedInterface(void);        
+   virtual CNetworkInterface* GetFirstConnectedInterface(void);
 
    virtual bool SupportsIPv6() { return true; }
 
-   // Ping remote host
    virtual bool PingHostImpl(const std::string &target, unsigned int timeout_ms = 2000);
 
    // Get/set the nameserver(s)
