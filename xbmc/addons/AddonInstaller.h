@@ -69,6 +69,9 @@ public:
    */
   bool InstallFromZip(const std::string &path);
 
+   /*! Install an addon with a specific version and repository */
+  void Install(const std::string& addonId, const ADDON::AddonVersion& version, const std::string& repoId);
+
   /*! \brief Check whether dependencies of an addon exist or are installable.
   Iterates through the addon's dependencies, checking they're installed or installable.
   Each dependency must also satisfies CheckDependencies in turn.
