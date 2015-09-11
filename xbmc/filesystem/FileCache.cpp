@@ -19,7 +19,6 @@
  */
 
 #include "threads/SystemClock.h"
-#include "utils/AutoPtrHandle.h"
 #include "FileCache.h"
 #include "threads/Thread.h"
 #include "File.h"
@@ -29,6 +28,10 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+
+#if !defined(TARGET_WINDOWS)
+#include "linux/ConvUtils.h" //GetLastError()
+#endif
 
 #include <cassert>
 #include <algorithm>

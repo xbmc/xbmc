@@ -32,14 +32,12 @@
 #include "RenderFlags.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
-#include "utils/AutoPtrHandle.h"
 #include "utils/Log.h"
 #include "utils/win32/memcpy_sse2.h"
 #include "win32/WIN32Util.h"
 #include "windowing/WindowingFactory.h"
 
 using namespace DXVA;
-using namespace AUTOPTR;
 
 #define LOGIFERROR(a) \
 do { \

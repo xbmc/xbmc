@@ -52,7 +52,11 @@ using namespace CDDB;
 
 //-------------------------------------------------------------------------------------------------------------------
 Xcddb::Xcddb()
-    : m_cddb_socket(INVALID_SOCKET)
+#if defined(TARGET_WINDOWS)
+    : m_cddb_socket(closesocket, INVALID_SOCKET)
+#else
+    : m_cddb_socket(close, -1)
+#endif
     , m_cddb_ip_adress(g_advancedSettings.m_cddbAddress)
 {
   m_lastError = 0;
@@ -123,7 +127,7 @@ bool Xcddb::openSocket()
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::closeSocket()
 {
-  if ( m_cddb_socket.isValid() )
+  if (m_cddb_socket)
   {
     m_cddb_socket.reset();
   }

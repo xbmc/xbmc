@@ -33,13 +33,11 @@
 #include "../DVDCodecUtils.h"
 #include "DXVA.h"
 #include "settings/AdvancedSettings.h"
-#include "utils/AutoPtrHandle.h"
 #include "utils/Log.h"
 #include "utils/StringUtils.h"
 #include "windowing/WindowingFactory.h"
 
 using namespace DXVA;
-using namespace AUTOPTR;
 
 static void RelBufferS(void *opaque, uint8_t *data)
 { ((CDecoder*)opaque)->RelBuffer(data); }
