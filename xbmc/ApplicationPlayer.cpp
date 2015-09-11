@@ -171,6 +171,12 @@ int CApplicationPlayer::GetPreferredPlaylist() const
   return PLAYLIST_NONE;
 }
 
+bool CApplicationPlayer::HasRDS() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  return (player && player->HasRDS());
+}
+
 bool CApplicationPlayer::IsPaused() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -196,6 +202,11 @@ bool CApplicationPlayer::IsPlayingAudio() const
 bool CApplicationPlayer::IsPlayingVideo() const
 {
   return (IsPlaying() && HasVideo());
+}
+
+bool CApplicationPlayer::IsPlayingRDS() const
+{
+  return (IsPlaying() && HasRDS());
 }
 
 void CApplicationPlayer::Pause()
@@ -404,6 +415,15 @@ TextCacheStruct_t* CApplicationPlayer::GetTeletextCache()
     return player->GetTeletextCache();
   else
     return NULL;
+}
+
+std::string CApplicationPlayer::GetRadioText(unsigned int line)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->GetRadioText(line);
+  else
+    return "";
 }
 
 int64_t CApplicationPlayer::GetTotalTime() const

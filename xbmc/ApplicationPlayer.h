@@ -112,6 +112,7 @@ public:
   void  GetSubtitleStreamInfo(int index, SPlayerSubtitleStreamInfo &info);
   bool  GetSubtitleVisible();
   TextCacheStruct_t* GetTeletextCache();
+  std::string GetRadioText(unsigned int line);
   int64_t GetTime() const;
   int64_t GetDisplayTime() const;
   int64_t GetTotalTime() const;
@@ -120,6 +121,7 @@ public:
   bool  HasAudio() const;
   bool  HasMenu() const;
   bool  HasVideo() const;
+  bool  HasRDS() const;
   bool  IsCaching() const;
   bool  IsInMenu() const;
   bool  IsPaused() const;
@@ -128,6 +130,7 @@ public:
   bool  IsPlaying() const;
   bool  IsPlayingAudio() const;
   bool  IsPlayingVideo() const;
+  bool  IsPlayingRDS() const;
   bool  IsRecording() const;
   void  LoadPage(int p, int sp, unsigned char* buffer);
   bool  OnAction(const CAction &action);
