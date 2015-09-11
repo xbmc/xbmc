@@ -19,7 +19,7 @@
  */
 
 #include "system.h"
-#include "DVDPlayerRadioRDS.h"
+#include "VideoPlayerRadioRDS.h"
 #include "VideoPlayer.h"
 
 #include "DVDInputStreams/DVDInputStream.h"
@@ -583,7 +583,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
       m_CurrentVideo(STREAM_VIDEO, VideoPlayer_VIDEO),
       m_CurrentSubtitle(STREAM_SUBTITLE, VideoPlayer_SUBTITLE),
       m_CurrentTeletext(STREAM_TELETEXT, VideoPlayer_TELETEXT),
-      m_CurrentRadioRDS(STREAM_RADIO_RDS, DVDPLAYER_RDS),
+      m_CurrentRadioRDS(STREAM_RADIO_RDS, VideoPlayer_RDS),
       m_messenger("player"),
       m_ready(true),
       m_DemuxerPausePending(false)
@@ -3229,7 +3229,7 @@ std::string CVideoPlayer::GetRadioText(unsigned int line)
   if (m_CurrentRadioRDS.id < 0)
       return "";
 
-  return m_dvdPlayerRadioRDS->GetRadioText(line);
+  return m_VideoPlayerRadioRDS->GetRadioText(line);
 }
 
 void CVideoPlayer::SeekTime(int64_t iTime)
@@ -3580,7 +3580,7 @@ bool CVideoPlayer::OpenTeletextStream(CDVDStreamInfo& hint)
 
 bool CVideoPlayer::OpenRadioRDSStream(CDVDStreamInfo& hint)
 {
-  if (!m_dvdPlayerRadioRDS->CheckStream(hint))
+  if (!m_VideoPlayerRadioRDS->CheckStream(hint))
     return false;
 
   if(!OpenStreamPlayer(m_CurrentRadioRDS, hint, true))

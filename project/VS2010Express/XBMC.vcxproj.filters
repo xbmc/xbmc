@@ -417,8 +417,8 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerAudio.cpp">
       <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.cpp">
-      <Filter>cores\dvdplayer</Filter>
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerRadioRDS.cpp">
+      <Filter>cores\VideoPlayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerSubtitle.cpp">
       <Filter>cores\VideoPlayer</Filter>
@@ -3281,8 +3281,8 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerAudio.h">
       <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.h">
-      <Filter>cores\dvdplayer</Filter>
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerRadioRDS.h">
+      <Filter>cores\VideoPlayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerSubtitle.h">
       <Filter>cores\VideoPlayer</Filter>
