@@ -195,8 +195,8 @@ bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool backgroun
   CAddonMgr::GetInstance().GetAddon(addonID, addon, ADDON_UNKNOWN, false);
 
   // check whether we have it available in a repository
-  AddonPtr repo = GetRepoForAddon(addonID);
-  if (repo == NULL)
+  RepositoryPtr repo;
+  if (!GetRepoForAddon(addonID, repo))
     return false;
 
   std::string hash;
@@ -213,7 +213,10 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const std::string &hash /
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
     return false;
 
-  AddonPtr repo = CAddonInstaller::GetRepoForAddon(addon->ID());
+  RepositoryPtr repo;
+  if (!CAddonInstaller::GetRepoForAddon(addon->ID(), repo))
+    return false;
+
   CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, hash);
   if (background)
   {
@@ -419,28 +422,24 @@ void CAddonInstaller::InstallUpdates()
   }
 }
 
-AddonPtr CAddonInstaller::GetRepoForAddon(const std::string& addonId)
+bool CAddonInstaller::GetRepoForAddon(const std::string& addonId, RepositoryPtr& repoPtr)
 {
-  AddonPtr repoPtr;
-
   CAddonDatabase database;
   if (!database.Open())
-    return repoPtr;
+    return false;
 
-  std::string repo;
-  if (!database.GetRepoForAddon(addonId, repo))
-    return repoPtr;
+  std::vector<std::pair<ADDON::AddonVersion, std::string>> versions;
+  if (!database.GetAvailableVersions(addonId, versions) || versions.empty())
+    return false;
 
-  if (!CAddonMgr::GetInstance().GetAddon(repo, repoPtr))
-    return repoPtr;
+  auto repoId = std::min_element(versions.begin(), versions.end())->second;
 
-  if (std::dynamic_pointer_cast<CRepository>(repoPtr) == NULL)
-  {
-    repoPtr.reset();
-    return repoPtr;
-  }
+  AddonPtr tmp;
+  if (!CAddonMgr::GetInstance().GetAddon(repoId, tmp, ADDON_REPOSITORY))
+    return false;
 
-  return repoPtr;
+  repoPtr = std::static_pointer_cast<CRepository>(tmp);
+  return true;
 }
 
 int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result)
@@ -718,10 +717,11 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
         // don't have the addon or the addon isn't new enough - grab it (no new job for these)
         else if (IsModal())
         {
-          AddonPtr repoForDep = CAddonInstaller::GetRepoForAddon(addonID);
+          RepositoryPtr repoForDep;
           AddonPtr addon;
           std::string hash;
-          if (!repoForDep || !CAddonInstallJob::GetAddonWithHash(addonID, repoForDep->ID(), addon, hash))
+          if (!CAddonInstaller::GetRepoForAddon(addonID, repoForDep) ||
+              !CAddonInstallJob::GetAddonWithHash(addonID, repoForDep->ID(), addon, hash))
           {
             CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to find dependency %s", m_addon->ID().c_str(), addonID.c_str());
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
@@ -848,12 +848,14 @@ bool CAddonUnInstallJob::DoWork()
 {
   ADDON::OnPreUnInstall(m_addon);
 
-  AddonPtr repoPtr = CAddonInstaller::GetRepoForAddon(m_addon->ID());
-  RepositoryPtr therepo = std::dynamic_pointer_cast<CRepository>(repoPtr);
-  if (therepo != NULL && !therepo->Props().libname.empty())
+  //TODO: looks broken. it just calls the repo with the most recent version, not the owner
+  RepositoryPtr repoPtr;
+  if (!CAddonInstaller::GetRepoForAddon(m_addon->ID(), repoPtr))
+    return false;
+  if (repoPtr != NULL && !repoPtr->Props().libname.empty())
   {
     CFileItemList dummy;
-    std::string s = StringUtils::Format("plugin://%s/?action=uninstall&package=%s", therepo->ID().c_str(), m_addon->ID().c_str());
+    std::string s = StringUtils::Format("plugin://%s/?action=uninstall&package=%s", repoPtr->ID().c_str(), m_addon->ID().c_str());
     if (!CDirectory::GetDirectory(s, dummy))
       return false;
   }

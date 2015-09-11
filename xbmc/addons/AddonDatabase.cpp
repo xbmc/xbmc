@@ -300,29 +300,6 @@ bool CAddonDatabase::GetAddon(const std::string& id, AddonPtr& addon)
   return false;
 }
 
-bool CAddonDatabase::GetRepoForAddon(const std::string& addonID, std::string& repo)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS2.get()) return false;
-
-    std::string sql = PrepareSQL("select repo.addonID from repo join addonlinkrepo on repo.id=addonlinkrepo.idRepo join addon on addonlinkrepo.idAddon=addon.id where addon.addonID like '%s'", addonID.c_str()); 
-    m_pDS2->query(sql.c_str());
-    if (!m_pDS2->eof())
-    {
-      repo = m_pDS2->fv(0).get_asString();
-      m_pDS2->close();
-      return true;
-    }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed for addon %s", __FUNCTION__, addonID.c_str());
-  }
-  return false;
-}
-
 bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
 {
   try
