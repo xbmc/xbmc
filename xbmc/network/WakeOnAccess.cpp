@@ -170,12 +170,6 @@ public:
       m_dialog->SetLine(0, CVariant{""});
       m_dialog->SetLine(1, CVariant{""});
       m_dialog->SetLine(2, CVariant{""});
-
-      int nest_level = NestDetect::Level();
-      if (nest_level > 1)
-      {
-        m_dialog->SetLine(2, CVariant{StringUtils::Format("Nesting:%d", nest_level)});
-      }
     }
   }
   ~ProgressDialogHelper ()
@@ -194,7 +188,7 @@ public:
 
     if (m_dialog)
     {
-      m_dialog->SetLine(1, CVariant{line1});
+      m_dialog->SetLine(0, CVariant{line1});
 
       m_dialog->SetPercentage(1); // avoid flickering by starting at 1% ..
     }
