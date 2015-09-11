@@ -76,6 +76,32 @@ bool CEGLNativeTypeAmlAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
       switch(res.iScreenWidth)
       {
         default:
+        case 720:
+          if (!aml_IsHdmiConnected())
+          {
+            if (res.iScreenHeight == 480)
+              return SetDisplayResolution("480cvbs");
+            else
+              return SetDisplayResolution("576cvbs");
+          }
+          else
+          {
+            if (res.iScreenHeight == 480)
+            {
+              if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+                return SetDisplayResolution("480i");
+              else
+                return SetDisplayResolution("480p");
+            }
+            else
+            {
+              if (res.dwFlags & D3DPRESENTFLAG_INTERLACED)
+                return SetDisplayResolution("576i");
+              else
+                return SetDisplayResolution("576p");
+            }
+          }
+          break;
         case 1280:
           return SetDisplayResolution("720p");
           break;
