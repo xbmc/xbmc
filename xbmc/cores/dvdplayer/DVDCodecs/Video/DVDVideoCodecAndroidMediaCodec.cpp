@@ -31,7 +31,6 @@
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "DVDClock.h"
-#include "threads/Atomics.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
@@ -185,7 +184,7 @@ CDVDMediaCodecInfo::~CDVDMediaCodecInfo()
 
 CDVDMediaCodecInfo* CDVDMediaCodecInfo::Retain()
 {
-  AtomicIncrement(&m_refs);
+  ++m_refs;
   m_isReleased = false;
 
   return this;
@@ -193,7 +192,7 @@ CDVDMediaCodecInfo* CDVDMediaCodecInfo::Retain()
 
 long CDVDMediaCodecInfo::Release()
 {
-  long count = AtomicDecrement(&m_refs);
+  long count = --m_refs
   if (count == 1)
     ReleaseOutputBuffer(false);
   if (count == 0)

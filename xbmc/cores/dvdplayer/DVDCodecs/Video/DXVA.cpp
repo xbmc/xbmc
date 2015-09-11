@@ -232,14 +232,14 @@ CDXVADecoderWrapper::~CDXVADecoderWrapper()
 
 STDMETHODIMP_(ULONG) CDXVADecoderWrapper::AddRef(void) 
 {
-  return AtomicIncrement(&m_refs); 
+  return ++m_refs; 
 }
 
 STDMETHODIMP_(ULONG) CDXVADecoderWrapper::Release(void)
 {
-  AtomicDecrement(&m_refs);
-  assert(m_refs >= 0);
-  if (m_refs == 0) delete this;
+  long ct = --m_refs;
+  assert(ct >= 0);
+  if (ct == 0) delete this;
   return m_refs;
 };
 

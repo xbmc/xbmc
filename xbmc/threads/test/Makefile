@@ -1,7 +1,6 @@
 SRCS=	\
 	TestEvent.cpp \
 	TestSharedSection.cpp \
-	TestAtomics.cpp \
 	TestThreadLocal.cpp
 
 LIB=threadTest.a

@@ -20,6 +20,7 @@
  *
  */
 
+#include <atomic>
 #include <queue>
 #include <vector>
 #include <memory>
@@ -71,7 +72,7 @@ private:
   // private because we are reference counted
   virtual            ~CDVDMediaCodecInfo();
 
-  long                m_refs;
+  std::atomic<long>   m_refs;
   bool                m_valid;
   bool                m_isReleased;
   int                 m_index;

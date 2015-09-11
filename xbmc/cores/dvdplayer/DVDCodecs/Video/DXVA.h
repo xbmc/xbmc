@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include <atomic>
 #include <list>
 #include <vector>
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
@@ -101,7 +102,7 @@ public:
 
   ID3D11VideoDecoder*  m_pDecoder;
 private:
-  volatile long        m_refs;
+  std::atomic<long>    m_refs;
   ID3D11VideoContext*  m_pContext;
 };
 

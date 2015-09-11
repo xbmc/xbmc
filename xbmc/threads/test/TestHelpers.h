@@ -20,10 +20,11 @@
 
 #pragma once
 
+#include <atomic>
+
 #include "gtest/gtest.h"
 
 #include "threads/Thread.h"
-#include "threads/Atomics.h"
 
 #define MILLIS(x) x
 
@@ -58,10 +59,10 @@ inline static bool waitForThread(volatile long& mutex, int numWaiters, int milli
 
 class AtomicGuard
 {
-  volatile long* val;
+  std::atomic<long>* val;
 public:
-  inline AtomicGuard(volatile long* val_) : val(val_) { if (val) AtomicIncrement(val); }
-  inline ~AtomicGuard() { if (val) AtomicDecrement(val); }
+  inline AtomicGuard(std::atomic<long>* val_) : val(val_) { if (val) ++(*val); }
+  inline ~AtomicGuard() { if (val) --(*val); }
 };
 
 class thread
@@ -102,4 +103,3 @@ public:
     return cthread->WaitForThreadExit(millis);
   }
 };
-

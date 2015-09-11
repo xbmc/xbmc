@@ -19,7 +19,6 @@
  */
 
 #include "Util.h"
-#include "threads/Atomics.h"
 #include "MMALRenderer.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "filesystem/File.h"
@@ -55,7 +54,7 @@ CYUVVideoBuffer::~CYUVVideoBuffer()
 
 CYUVVideoBuffer *CYUVVideoBuffer::Acquire()
 {
-  long count = AtomicIncrement(&m_refs);
+  long count = ++m_refs;
 #ifdef MMAL_DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "%s::%s omvb:%p mmal:%p ref:%ld", CLASSNAME, __func__, this, mmal_buffer, count);
 #endif
@@ -65,7 +64,7 @@ CYUVVideoBuffer *CYUVVideoBuffer::Acquire()
 
 long CYUVVideoBuffer::Release()
 {
-  long count = AtomicDecrement(&m_refs);
+  long count = --m_refs;
 #ifdef MMAL_DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "%s::%s omvb:%p mmal:%p ref:%ld", CLASSNAME, __func__, this, mmal_buffer, count);
 #endif

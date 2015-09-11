@@ -22,7 +22,6 @@
 
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
-#include "threads/Atomics.h"
 #include "utils/log.h"
 #include "DVDClock.h"
 
@@ -1177,16 +1176,16 @@ void CDVDVideoCodecIMXBuffer::SetDts(double dts)
 void CDVDVideoCodecIMXBuffer::Lock()
 {
 #ifdef TRACE_FRAMES
-  long count = AtomicIncrement(&m_iRefs);
+  long count = ++m_iRefs;
   CLog::Log(LOGDEBUG, "R+ %02d  -  ref : %d  (VPU)\n", m_idx, count);
 #else
-  AtomicIncrement(&m_iRefs);
+  ++m_iRefs;
 #endif
 }
 
 long CDVDVideoCodecIMXBuffer::Release()
 {
-  long count = AtomicDecrement(&m_iRefs);
+  long count = --m_iRefs;
 #ifdef TRACE_FRAMES
   CLog::Log(LOGDEBUG, "R- %02d  -  ref : %d  (VPU)\n", m_idx, count);
 #endif
