@@ -662,9 +662,6 @@ bool CApplication::Create()
     return false;
   }
 
-  // start AudioDSP engine with a blocking message
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
-
   // restore AE's previous volume state
   SetHardwareVolume(m_volumeLevel);
   CAEFactory::SetMute     (m_muted);
