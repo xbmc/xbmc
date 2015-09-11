@@ -1611,7 +1611,7 @@
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDMessageQueue.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayContainer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayRenderer.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerRadioRDS.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerAudio.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerSubtitle.cpp" />
@@ -2262,7 +2262,7 @@
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDMessageQueue.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayContainer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\DVDOverlayRenderer.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.h" />
+    <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerRadioRDS.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerAudio.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoPlayer\VideoPlayerSubtitle.h" />

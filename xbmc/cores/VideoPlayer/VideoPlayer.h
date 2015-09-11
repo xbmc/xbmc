@@ -30,7 +30,7 @@
 #include "VideoPlayerVideo.h"
 #include "VideoPlayerSubtitle.h"
 #include "VideoPlayerTeletext.h"
-#include "DVDPlayerRadioRDS.h"
+#include "VideoPlayerRadioRDS.h"
 #include "Edl.h"
 #include "FileItem.h"
 #include "system.h"

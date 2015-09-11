@@ -22,7 +22,7 @@
 
 #include <deque>
 
-#include "IDVDPlayer.h"
+#include "IVideoPlayer.h"
 #include "DVDMessageQueue.h"
 #include "FileItem.h"
 #include "threads/Thread.h"
