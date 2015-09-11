@@ -73,7 +73,6 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTNPARTYMODE      16
 #define CONTROL_BTNMANUALINFO     17
 #define CONTROL_BTN_FILTER        19
-#define CONTROL_LABELEMPTY        18
 
 #define CONTROL_UPDATE_LIBRARY    20
 
@@ -81,7 +80,6 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_NAV, "MyMusicNav.xml")
 {
   m_vecItems->SetPath("?");
-  m_bDisplayEmptyDatabaseMessage = false;
   m_searchWithEdit = false;
 }
 
@@ -104,23 +102,9 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
         message.SetStringParam(CSettings::GetInstance().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW));
-      
-      DisplayEmptyDatabaseMessage(false); // reset message state
 
       if (!CGUIWindowMusicBase::OnMessage(message))
         return false;
-
-      //  base class has opened the database, do our check
-      DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
-
-      if (m_bDisplayEmptyDatabaseMessage)
-      {
-        // no library - make sure we focus on a known control, and default to the root.
-        SET_CONTROL_FOCUS(CONTROL_BTNTYPE, 0);
-        m_vecItems->SetPath("");
-        SetHistoryForPath("");
-        Update("");
-      }
 
       return true;
     }
@@ -293,9 +277,6 @@ bool CGUIWindowMusicNav::Update(const std::string &strDirectory, bool updateFilt
 
 bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
-  if (m_bDisplayEmptyDatabaseMessage)
-    return true;
-
   if (strDirectory.empty())
     AddSearchFolder();
 
@@ -814,11 +795,6 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CF
   return true;
 }
 
-void CGUIWindowMusicNav::DisplayEmptyDatabaseMessage(bool bDisplay)
-{
-  m_bDisplayEmptyDatabaseMessage = bDisplay;
-}
-
 void CGUIWindowMusicNav::OnSearchUpdate()
 {
   std::string search(CURL::Encode(GetProperty("search").asString()));
@@ -843,10 +819,6 @@ void CGUIWindowMusicNav::FrameMove()
     m_searchTimer.Stop();
     OnSearchUpdate();
   }
-  if (m_bDisplayEmptyDatabaseMessage)
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));
-  else
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"");
   CGUIWindowMusicBase::FrameMove();
 }
 
