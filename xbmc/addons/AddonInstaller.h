@@ -99,11 +99,11 @@ public:
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
-  /*! \brief Find which repository hosts an add-on
+  /*! \brief Get the repository which hosts the most recent version of add-on
    *  \param addon The add-on to find the repository for
-   *  \return The hosting repository
+   *  \param repo [out] The hosting repository
    */
-  static ADDON::AddonPtr GetRepoForAddon(const std::string& addonId);
+  static bool GetRepoForAddon(const std::string& addonId, ADDON::RepositoryPtr& repo);
 
   class CDownloadJob
   {

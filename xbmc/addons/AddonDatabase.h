@@ -49,12 +49,6 @@ public:
   /*! \brief grab the (largest) add-on version for an add-on */
   ADDON::AddonVersion GetAddonVersion(const std::string &id);
 
-  /*! \brief Grab the repository from which a given addon came
-   \param addonID - the id of the addon in question
-   \param repo [out] - the id of the repository
-   \return true if a repo was found, false otherwise.
-   */
-  bool GetRepoForAddon(const std::string& addonID, std::string& repo);
   int AddRepository(const std::string& id, const ADDON::VECADDONS& addons, const std::string& checksum, const ADDON::AddonVersion& version);
   void DeleteRepository(const std::string& id);
   void DeleteRepository(int id);
