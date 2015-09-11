@@ -74,11 +74,7 @@ CAddonInstaller &CAddonInstaller::GetInstance()
 
 void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  if (success)
-    CAddonMgr::GetInstance().FindAddons();
-
   CSingleLock lock(m_critSection);
-
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
   if (i != m_downloadJobs.end())
     m_downloadJobs.erase(i);
@@ -600,6 +596,9 @@ bool CAddonInstallJob::DoWork()
   if (!Install(installFrom, m_repo))
     return false;
 
+  CAddonMgr::GetInstance().UnregisterAddon(m_addon->ID());
+  CAddonMgr::GetInstance().FindAddons();
+
   // run any post-install guff
   CEventLog::GetInstance().Add(
     EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
@@ -792,9 +791,6 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
       ReportInstallError(addonID, addonID);
       return false;
     }
-
-    // Update the addon manager so that it has the newly installed add-on.
-    CAddonMgr::GetInstance().FindAddons();
   }
   SetProgress(100);
 
