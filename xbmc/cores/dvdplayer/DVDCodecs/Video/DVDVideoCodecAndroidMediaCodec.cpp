@@ -349,6 +349,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_mime = "video/x-vnd.on2.vp8";
       m_formatname = "amc-vpX";
       break;
+    case AV_CODEC_ID_VP9:
+      m_mime = "video/x-vnd.on2.vp9";
+      m_formatname = "amc-vp9";
+      break;
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
     case AV_CODEC_ID_H264:
@@ -384,10 +388,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         }
       }
       break;
-    case AV_CODEC_ID_VC1:
     case AV_CODEC_ID_WMV3:
+      m_mime = "video/x-ms-wmv";
+      m_formatname = "amc-wmv";
+      break;
+    case AV_CODEC_ID_VC1:
       m_mime = "video/wvc1";
-      //m_mime = "video/wmv9";
       m_formatname = "amc-vc1";
       break;
     default:
