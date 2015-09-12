@@ -245,7 +245,8 @@ void CActiveAEDSP::Cleanup(void)
 
   m_isActive                  = false;
   m_usedProcessesCnt          = 0;
-  m_isValidAudioDSPSettings  = false;
+  m_isValidAudioDSPSettings   = false;
+  m_noAddonWarningDisplayed   = false;
   m_outdatedAddons.clear();
 
   for (unsigned int i = 0; i < AE_DSP_MODE_TYPE_MAX; ++i)
@@ -767,11 +768,14 @@ bool CActiveAEDSP::UpdateAddons(void)
       !CAddonMgr::GetInstance().HasAddons(ADDON_ADSPDLL, false) &&
       IsActivated())
   {
+    // No audio DSP add-ons could be found
+    // You need a add-on installed for the process of audio DSP signal. System becomes disabled.
     m_noAddonWarningDisplayed = true;
+    CGUIDialogOK::ShowAndGetInput(CVariant{19273}, CVariant{19274});
     CSettings::GetInstance().SetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED, false);
-    CGUIDialogOK::ShowAndGetInput(24055, 24056, 24057, 24058);
     CGUIMessage msg(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
     g_windowManager.SendThreadMessage(msg, WINDOW_SETTINGS_SYSTEM);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_OFF);
   }
 
   return bReturn;
@@ -790,9 +794,9 @@ void CActiveAEDSP::Process(void)
   CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_ADSPDLL, this);
   CAddonMgr::GetInstance().RegisterObserver(this);
 
-  UpdateAddons();
-
   m_isActive = true;
+
+  UpdateAddons();
 
   while (!g_application.m_bStop && !m_bStop)
   {
