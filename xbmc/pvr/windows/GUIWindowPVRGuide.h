@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,9 +19,9 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
 #include "epg/GUIEPGGridContainer.h"
 #include "threads/SystemClock.h"
+#include "GUIWindowPVRBase.h"
 
 class CSetting;
 

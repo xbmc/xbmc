@@ -19,9 +19,10 @@
  *
  */
 
-#include "PVRManager.h"
 #include "dbwrappers/Database.h"
 #include "utils/log.h"
+
+#include "pvr/PVRManager.h"
 
 class CVideoSettings;
 

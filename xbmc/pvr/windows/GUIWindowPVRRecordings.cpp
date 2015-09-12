@@ -18,25 +18,26 @@
  *
  */
 
-#include "GUIWindowPVRRecordings.h"
-
 #include "ContextMenuManager.h"
-#include "guilib/GUIKeyboardFactory.h"
+#include "GUIInfoManager.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "guilib/LocalizeStrings.h"
-#include "GUIInfoManager.h"
-#include "pvr/PVRManager.h"
-#include "pvr/recordings/PVRRecordings.h"
-#include "pvr/timers/PVRTimers.h"
+#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "threads/SingleLock.h"
-#include "pvr/addons/PVRClients.h"
 #include "video/windows/GUIWindowVideoNav.h"
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
+
+#include "GUIWindowPVRRecordings.h"
 
 using namespace PVR;
 

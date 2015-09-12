@@ -18,12 +18,13 @@
  *
  */
 
-#include "GUIViewStatePVR.h"
-
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "view/ViewStateSettings.h"
+
 #include "pvr/timers/PVRTimers.h"
+
+#include "GUIViewStatePVR.h"
 
 using namespace PVR;
 

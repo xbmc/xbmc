@@ -18,14 +18,12 @@
  *
  */
 
-#include "PVRActionListener.h"
-
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "input/Key.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogNumeric.h"
+#include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -33,6 +31,8 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+
+#include "PVRActionListener.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

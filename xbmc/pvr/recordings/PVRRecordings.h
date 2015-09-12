@@ -19,10 +19,11 @@
  *
  */
 
-#include "PVRRecording.h"
+#include "FileItem.h"
 #include "utils/Observer.h"
 #include "video/VideoDatabase.h"
-#include "FileItem.h"
+
+#include "PVRRecording.h"
 
 #define PVR_ALL_RECORDINGS_PATH_EXTENSION "-1"
 
