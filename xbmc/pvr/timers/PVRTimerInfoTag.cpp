@@ -879,6 +879,18 @@ bool CPVRTimerInfoTag::HasEpgInfoTag(void) const
   return m_epgTag != NULL;
 }
 
+bool CPVRTimerInfoTag::HasSeriesEpgInfoTag(void) const
+{
+  if (m_epgTag &&
+      (m_epgTag->IsSeries() ||
+       m_epgTag->SeriesNumber() > 0 ||
+       m_epgTag->EpisodeNumber() > 0 ||
+       m_epgTag->EpisodePart() > 0))
+    return true;
+  else
+    return false;
+}
+
 void CPVRTimerInfoTag::ClearEpgTag(void)
 {
   CEpgInfoTagPtr deletedTag;
