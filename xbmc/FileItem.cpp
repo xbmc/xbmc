@@ -1428,6 +1428,7 @@ void CFileItem::SetFromAlbum(const CAlbum &album)
   m_bIsFolder = true;
   m_strLabel2 = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
   GetMusicInfoTag()->SetAlbum(album);
+  SetArt(album.art);
   m_bIsAlbum = true;
   CMusicDatabase::SetPropertiesFromAlbum(*this,album);
   FillInMimeType(false);
