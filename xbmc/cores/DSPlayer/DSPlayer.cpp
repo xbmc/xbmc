@@ -79,7 +79,6 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
   : IPlayer(callback),
   CThread("CDSPlayer thread"),
   m_hReadyEvent(true),
-  m_DSPVRThread(),
   m_pGraphThread(this),
   m_pDSGraphThread(this),
   m_bEof(false)
@@ -412,7 +411,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   else if (fileItem.IsPVR())
   {
     g_pPVRStream = new CDSInputStreamPVRManager(this);
-    return GetPVR(fileItem);
+    return g_pPVRStream->Open(fileItem);
   }
 
   return OpenFileInternal(fileItem);
@@ -592,7 +591,6 @@ void CDSPlayer::OnExit()
   // In case of, set the ready event
   // Prevent a dead loop
   m_hReadyEvent.Set();
-  m_DSPVRThread.m_hReadyEvent.Set();
   m_bStop = true;
   m_threadID = 0;
   if (m_PlayerOptions.identify == false)
@@ -1160,7 +1158,7 @@ bool CDSPlayer::SwitchChannel(unsigned int iChannelNumber)
 {
   m_PlayerOptions.identify = true;
 
-  bool bResult = GetPVR(iChannelNumber);
+  bool bResult = g_pPVRStream->SelectChannelByNumber(iChannelNumber);
   
   m_PlayerOptions.identify = false;
 
@@ -1178,7 +1176,7 @@ bool CDSPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 
   m_PlayerOptions.identify = true;
 
-  bool bResult = GetPVR(channel);
+  bool bResult = g_pPVRStream->SelectChannel(channel);
 
   m_PlayerOptions.identify = false;
 
@@ -1196,7 +1194,7 @@ bool CDSPlayer::SelectChannel(bool bNext)
     g_infoManager.SetDisplayAfterSeek(100000);
   }
 
-  bool bResult = GetPVR(bShowPreview, bNext);
+  bool bResult = (bNext ? g_pPVRStream->NextChannel(bShowPreview) : g_pPVRStream->PrevChannel(bShowPreview));
   
   m_PlayerOptions.identify = false;
 
@@ -1220,67 +1218,6 @@ bool CDSPlayer::ShowPVRChannelInfo()
 bool CDSPlayer::CachePVRStream(void) const
 {
   return g_pPVRStream && !g_PVRManager.IsPlayingRecording() && g_advancedSettings.m_bPVRCacheInDvdPlayer;
-}
-
-bool CDSPlayer::GetPVR(CFileItem fileItem)
-{
-  m_DSPVRThread.m_fileItem = fileItem;
-  return PVRAction(PVR_OPEN);
-}
-bool CDSPlayer::GetPVR(CPVRChannelPtr channel)
-{
-  m_DSPVRThread.m_Channel = channel;
-  return PVRAction(PVR_SELECT_CHANNEL);
-}
-bool CDSPlayer::GetPVR(int iChannel)
-{
-  m_DSPVRThread.m_iChannel = iChannel;
-  return PVRAction(PVR_SELECT_CHANNEL_BY_NUMBER);
-}
-bool CDSPlayer::GetPVR(bool bShowPreview, bool bNext)
-{
-  m_DSPVRThread.m_bShowPreview = bShowPreview;
-  return (bNext ? PVRAction(PVR_NEXT) : PVRAction(PVR_PREV));
-}
-
-bool CDSPlayer::PVRAction(DSPLAYER_PVR state)
-{
-  m_DSPVRThread.m_State = state;
-  m_DSPVRThread.Create();
-  m_DSPVRThread.m_hReadyEvent.Reset();
-  CGUIDialogBusy::WaitOnEvent(m_DSPVRThread.m_hReadyEvent, g_advancedSettings.m_videoBusyDialogDelay_ms, false);
-  return m_DSPVRThread.m_bResult;
-}
-
-CDSPVRThread::CDSPVRThread()
-  :  CThread("CDSPVRThread thread")
-{
-}
-
-void CDSPVRThread::Process()
-{
-  START_PERFORMANCE_COUNTER
-    switch (m_State)
-  {
-    case PVR_OPEN:
-      m_bResult = g_pPVRStream->Open(m_fileItem);
-      break;
-    case PVR_SELECT_CHANNEL_BY_NUMBER:
-      m_bResult = g_pPVRStream->SelectChannelByNumber(m_iChannel);
-      break;
-    case PVR_SELECT_CHANNEL:
-      m_bResult = g_pPVRStream->SelectChannel(m_Channel);
-      break;
-    case PVR_NEXT:
-      m_bResult = g_pPVRStream->NextChannel(m_bShowPreview);
-      break;
-    case PVR_PREV:
-      m_bResult = g_pPVRStream->PrevChannel(m_bShowPreview);
-      break;
-  }
-  END_PERFORMANCE_COUNTER("pvr");
-
-  m_hReadyEvent.Set();
 }
 
 CDSGraphThread::CDSGraphThread(CDSPlayer * pPlayer)

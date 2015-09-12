@@ -70,33 +70,9 @@ enum DSPLAYER_STATE
   DSPLAYER_ERROR
 };
 
-enum DSPLAYER_PVR
-{
-  PVR_OPEN,
-  PVR_SELECT_CHANNEL,
-  PVR_SELECT_CHANNEL_BY_NUMBER,
-  PVR_NEXT,
-  PVR_PREV
-};
-
-using namespace PVR;
 
 class CDSInputStreamPVRManager;
 class CDSPlayer;
-class CDSPVRThread : public CThread
-{
-public:
-  CDSPVRThread();
-  DSPLAYER_PVR m_State;
-  CEvent m_hReadyEvent;
-  CFileItem m_fileItem;
-  CPVRChannelPtr m_Channel;
-  int m_iChannel;
-  bool m_bShowPreview;
-  bool m_bResult;  
-protected:
-  virtual void Process();
-};
 class CDSGraphThread : public CThread
 {
 private:
@@ -322,31 +298,26 @@ protected:
     CThread::StopThread(bWait);
   }
 
-  // CThread
-  virtual void OnStartup();
-  virtual void OnExit();
-  virtual void Process();
-
-  // PVR
-  bool ShowPVRChannelInfo();
-  bool SelectChannel(bool bNext);
-  bool SwitchChannel(unsigned int iChannelNumber);
-  bool GetPVR(CFileItem fileItem);
-  bool GetPVR(CPVRChannelPtr channel);
-  bool GetPVR(int iChannel);
-  bool GetPVR(bool bShowPreview, bool bNext);
-  bool PVRAction(DSPLAYER_PVR state);
-
   void HandleMessages();
-  void SetMadvrResolution();
+
+  bool ShowPVRChannelInfo();
 
   CGraphManagementThread m_pGraphThread;
   CDSGraphThread m_pDSGraphThread;
-  CDSPVRThread m_DSPVRThread;
   CDVDClock m_pClock;
   CEvent m_hReadyEvent;
   static ThreadIdentifier m_threadID;
   bool m_bEof;
+
+
+  bool SelectChannel(bool bNext);
+  bool SwitchChannel(unsigned int iChannelNumber);
+  void SetMadvrResolution();
+
+  // CThread
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
 
   bool m_HasVideo;
   bool m_HasAudio;
