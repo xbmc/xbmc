@@ -29,7 +29,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/Weather.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "interfaces/AnnouncementManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
@@ -248,7 +248,7 @@ void CPowerManager::OnSleep()
   // stop lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Stopping lirc", __FUNCTION__);
-  CBuiltins::Execute("LIRC.Stop");
+  CBuiltins::GetInstance().Execute("LIRC.Stop");
 #endif
 
   PVR::CPVRManager::GetInstance().SetWakeupCommand();
@@ -285,7 +285,7 @@ void CPowerManager::OnWake()
   // restart lirc
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
-  CBuiltins::Execute("LIRC.Start");
+  CBuiltins::GetInstance().Execute("LIRC.Start");
 #endif
 
   CAEFactory::Resume();

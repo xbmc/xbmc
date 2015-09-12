@@ -40,7 +40,7 @@
 #include "utils/Variant.h"
 #include "addons/AddonInstaller.h"
 #include "Util.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 
 #include <utility>
 
@@ -216,7 +216,7 @@ void CGUIDialogAddonInfo::OnLaunch()
     return;
 
   Close();
-  CBuiltins::Execute("RunAddon(" + m_localAddon->ID() + ")");
+  CBuiltins::GetInstance().Execute("RunAddon(" + m_localAddon->ID() + ")");
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
