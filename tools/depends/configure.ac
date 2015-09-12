@@ -17,8 +17,7 @@ AC_ARG_WITH([toolchain],
 AC_ARG_WITH([platform],
   [AS_HELP_STRING([--with-platform],
   [target platform [auto]])],
-  [use_platform=$withval],
-  [target_platform=$withval])
+  [use_platform=$withval])
 
 AC_ARG_WITH([firmware],
   [AS_HELP_STRING([--with-firmware],
@@ -305,7 +304,7 @@ esac
 
 case $use_platform in
   raspberry-pi)
-     target_platform=raspberry_pi
+     target_platform=raspberry-pi
      use_neon=no
      use_cpu=arm1176jzf-s
      platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
@@ -313,7 +312,7 @@ case $use_platform in
      platform_ldflags=""
      ;;
   raspberry-pi2)
-     target_platform=raspberry_pi
+     target_platform=raspberry-pi
      use_neon=yes
      use_cpu=cortex-a7
      platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
@@ -322,7 +321,7 @@ case $use_platform in
      ;;
 esac
 
-if test "$target_platform" = "raspberry_pi" ; then
+if test "$target_platform" = "raspberry-pi" ; then
   if test -d "${use_firmware}/opt/vc/include"; then
     :
   else
@@ -507,7 +506,7 @@ AC_SUBST(use_cpu)
 AC_SUBST(use_toolchain)
 AC_SUBST(use_build_toolchain)
 AC_SUBST(use_tarballs)
-AC_SUBST(use_platform)
+AC_SUBST(target_platform)
 AC_SUBST(use_firmware)
 AC_SUBST(cross_compiling)
 AC_SUBST(platform_cflags)
