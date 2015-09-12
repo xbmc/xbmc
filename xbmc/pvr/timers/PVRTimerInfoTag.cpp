@@ -93,6 +93,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId) :
   m_strTitle(timer.strTitle),
+  m_strSubtitle(timer.strSubtitle),
   m_strEpgSearchString(timer.strEpgSearchString),
   m_bFullTextEpgSearch(timer.bFullTextEpgSearch),
   m_strDirectory(timer.strDirectory)
@@ -199,6 +200,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iMaxRecordings      == right.m_iMaxRecordings &&
           m_strFileNameAndPath  == right.m_strFileNameAndPath &&
           m_strTitle            == right.m_strTitle &&
+          m_strSubtitle         == right.m_strSubtitle &&
           m_strEpgSearchString  == right.m_strEpgSearchString &&
           m_bFullTextEpgSearch  == right.m_bFullTextEpgSearch &&
           m_strDirectory        == right.m_strDirectory &&
@@ -256,6 +258,7 @@ void CPVRTimerInfoTag::Serialize(CVariant &value) const
   value["priority"] = m_iPriority;
   value["lifetime"] = m_iLifetime;
   value["title"] = m_strTitle;
+  value["subtitle"] = m_strSubtitle;
   value["directory"] = m_strDirectory;
   value["startmargin"] = m_iMarginStart;
   value["endmargin"] = m_iMarginEnd;
@@ -581,6 +584,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTagPtr &tag)
   m_iClientIndex        = tag->m_iClientIndex;
   m_iParentClientIndex  = tag->m_iParentClientIndex;
   m_strTitle            = tag->m_strTitle;
+  m_strSubtitle         = tag->m_strSubtitle;
   m_strEpgSearchString  = tag->m_strEpgSearchString;
   m_bFullTextEpgSearch  = tag->m_bFullTextEpgSearch;
   m_strDirectory        = tag->m_strDirectory;
@@ -714,6 +718,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, b
   newTag->m_iClientIndex       = PVR_TIMER_NO_CLIENT_INDEX;
   newTag->m_iParentClientIndex = PVR_TIMER_NO_PARENT;
   newTag->m_strTitle           = tag->Title().empty() ? channel->ChannelName() : tag->Title();
+  newTag->m_strSubtitle        = tag->EpisodeName();
   newTag->m_iChannelNumber     = channel->ChannelNumber();
   newTag->m_iClientChannelUid  = channel->UniqueID();
   newTag->m_iClientId          = channel->ClientID();
@@ -921,6 +926,11 @@ void CPVRTimerInfoTag::UpdateChannel(void)
 const std::string& CPVRTimerInfoTag::Title(void) const
 {
   return m_strTitle;
+}
+
+const std::string& CPVRTimerInfoTag::Subtitle(void) const
+{
+  return m_strSubtitle;
 }
 
 const std::string& CPVRTimerInfoTag::Summary(void) const
