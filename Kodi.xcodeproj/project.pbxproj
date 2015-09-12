@@ -373,6 +373,57 @@
 		7C8AE850189DE3CD00C33786 /* CoreAudioHardware.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8AE84B189DE3CD00C33786 /* CoreAudioHardware.cpp */; };
 		7C8AE851189DE3CD00C33786 /* CoreAudioStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8AE84C189DE3CD00C33786 /* CoreAudioStream.cpp */; };
 		7C8AE854189DE47F00C33786 /* CoreAudioHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8AE852189DE47400C33786 /* CoreAudioHelpers.cpp */; };
+		7C8E02191BA35D0B0072E8B2 /* AddonBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01F71BA35D0B0072E8B2 /* AddonBuiltins.cpp */; };
+		7C8E021A1BA35D0B0072E8B2 /* AddonBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01F71BA35D0B0072E8B2 /* AddonBuiltins.cpp */; };
+		7C8E021B1BA35D0B0072E8B2 /* AddonBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01F71BA35D0B0072E8B2 /* AddonBuiltins.cpp */; };
+		7C8E021C1BA35D0B0072E8B2 /* AndroidBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01F91BA35D0B0072E8B2 /* AndroidBuiltins.cpp */; };
+		7C8E021D1BA35D0B0072E8B2 /* AndroidBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01F91BA35D0B0072E8B2 /* AndroidBuiltins.cpp */; };
+		7C8E021E1BA35D0B0072E8B2 /* AndroidBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01F91BA35D0B0072E8B2 /* AndroidBuiltins.cpp */; };
+		7C8E021F1BA35D0B0072E8B2 /* ApplicationBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01FB1BA35D0B0072E8B2 /* ApplicationBuiltins.cpp */; };
+		7C8E02201BA35D0B0072E8B2 /* ApplicationBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01FB1BA35D0B0072E8B2 /* ApplicationBuiltins.cpp */; };
+		7C8E02211BA35D0B0072E8B2 /* ApplicationBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01FB1BA35D0B0072E8B2 /* ApplicationBuiltins.cpp */; };
+		7C8E02221BA35D0B0072E8B2 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01FD1BA35D0B0072E8B2 /* Builtins.cpp */; };
+		7C8E02231BA35D0B0072E8B2 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01FD1BA35D0B0072E8B2 /* Builtins.cpp */; };
+		7C8E02241BA35D0B0072E8B2 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01FD1BA35D0B0072E8B2 /* Builtins.cpp */; };
+		7C8E02251BA35D0B0072E8B2 /* CECBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01FF1BA35D0B0072E8B2 /* CECBuiltins.cpp */; };
+		7C8E02261BA35D0B0072E8B2 /* CECBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01FF1BA35D0B0072E8B2 /* CECBuiltins.cpp */; };
+		7C8E02271BA35D0B0072E8B2 /* CECBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E01FF1BA35D0B0072E8B2 /* CECBuiltins.cpp */; };
+		7C8E02281BA35D0B0072E8B2 /* GUIBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02011BA35D0B0072E8B2 /* GUIBuiltins.cpp */; };
+		7C8E02291BA35D0B0072E8B2 /* GUIBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02011BA35D0B0072E8B2 /* GUIBuiltins.cpp */; };
+		7C8E022A1BA35D0B0072E8B2 /* GUIBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02011BA35D0B0072E8B2 /* GUIBuiltins.cpp */; };
+		7C8E022B1BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02031BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp */; };
+		7C8E022C1BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02031BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp */; };
+		7C8E022D1BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02031BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp */; };
+		7C8E022E1BA35D0B0072E8B2 /* GUIControlBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02051BA35D0B0072E8B2 /* GUIControlBuiltins.cpp */; };
+		7C8E022F1BA35D0B0072E8B2 /* GUIControlBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02051BA35D0B0072E8B2 /* GUIControlBuiltins.cpp */; };
+		7C8E02301BA35D0B0072E8B2 /* GUIControlBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02051BA35D0B0072E8B2 /* GUIControlBuiltins.cpp */; };
+		7C8E02311BA35D0B0072E8B2 /* LibraryBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02071BA35D0B0072E8B2 /* LibraryBuiltins.cpp */; };
+		7C8E02321BA35D0B0072E8B2 /* LibraryBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02071BA35D0B0072E8B2 /* LibraryBuiltins.cpp */; };
+		7C8E02331BA35D0B0072E8B2 /* LibraryBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02071BA35D0B0072E8B2 /* LibraryBuiltins.cpp */; };
+		7C8E02341BA35D0B0072E8B2 /* OpticalBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02091BA35D0B0072E8B2 /* OpticalBuiltins.cpp */; };
+		7C8E02351BA35D0B0072E8B2 /* OpticalBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02091BA35D0B0072E8B2 /* OpticalBuiltins.cpp */; };
+		7C8E02361BA35D0B0072E8B2 /* OpticalBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02091BA35D0B0072E8B2 /* OpticalBuiltins.cpp */; };
+		7C8E02371BA35D0B0072E8B2 /* PictureBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E020B1BA35D0B0072E8B2 /* PictureBuiltins.cpp */; };
+		7C8E02381BA35D0B0072E8B2 /* PictureBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E020B1BA35D0B0072E8B2 /* PictureBuiltins.cpp */; };
+		7C8E02391BA35D0B0072E8B2 /* PictureBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E020B1BA35D0B0072E8B2 /* PictureBuiltins.cpp */; };
+		7C8E023A1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E020D1BA35D0B0072E8B2 /* PlayerBuiltins.cpp */; };
+		7C8E023B1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E020D1BA35D0B0072E8B2 /* PlayerBuiltins.cpp */; };
+		7C8E023C1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E020D1BA35D0B0072E8B2 /* PlayerBuiltins.cpp */; };
+		7C8E023D1BA35D0B0072E8B2 /* ProfileBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E020F1BA35D0B0072E8B2 /* ProfileBuiltins.cpp */; };
+		7C8E023E1BA35D0B0072E8B2 /* ProfileBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E020F1BA35D0B0072E8B2 /* ProfileBuiltins.cpp */; };
+		7C8E023F1BA35D0B0072E8B2 /* ProfileBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E020F1BA35D0B0072E8B2 /* ProfileBuiltins.cpp */; };
+		7C8E02401BA35D0B0072E8B2 /* PVRBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02111BA35D0B0072E8B2 /* PVRBuiltins.cpp */; };
+		7C8E02411BA35D0B0072E8B2 /* PVRBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02111BA35D0B0072E8B2 /* PVRBuiltins.cpp */; };
+		7C8E02421BA35D0B0072E8B2 /* PVRBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02111BA35D0B0072E8B2 /* PVRBuiltins.cpp */; };
+		7C8E02431BA35D0B0072E8B2 /* SkinBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02131BA35D0B0072E8B2 /* SkinBuiltins.cpp */; };
+		7C8E02441BA35D0B0072E8B2 /* SkinBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02131BA35D0B0072E8B2 /* SkinBuiltins.cpp */; };
+		7C8E02451BA35D0B0072E8B2 /* SkinBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02131BA35D0B0072E8B2 /* SkinBuiltins.cpp */; };
+		7C8E02461BA35D0B0072E8B2 /* SystemBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02151BA35D0B0072E8B2 /* SystemBuiltins.cpp */; };
+		7C8E02471BA35D0B0072E8B2 /* SystemBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02151BA35D0B0072E8B2 /* SystemBuiltins.cpp */; };
+		7C8E02481BA35D0B0072E8B2 /* SystemBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02151BA35D0B0072E8B2 /* SystemBuiltins.cpp */; };
+		7C8E02491BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02171BA35D0B0072E8B2 /* WeatherBuiltins.cpp */; };
+		7C8E024A1BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02171BA35D0B0072E8B2 /* WeatherBuiltins.cpp */; };
+		7C8E024B1BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02171BA35D0B0072E8B2 /* WeatherBuiltins.cpp */; };
 		7C8FC6EE1829A4580045153D /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */; };
 		7C8FC6EF1829A4580045153D /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */; };
 		7C8FC6F01829A4580045153D /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */; };
@@ -710,7 +761,6 @@
 		7CCDACCA19275D790074CF51 /* NptAppleLogConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDACC019275D790074CF51 /* NptAppleLogConfig.mm */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		7CCDACCB19275D790074CF51 /* NptAppleLogConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDACC019275D790074CF51 /* NptAppleLogConfig.mm */; };
 		7CCDACCC19275D790074CF51 /* NptAppleLogConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7CCDACC019275D790074CF51 /* NptAppleLogConfig.mm */; };
-		7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
@@ -1574,7 +1624,6 @@
 		DFF0F2E517528350002DA3A4 /* swig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFF0160F36AD00C96C76 /* swig.cpp */; };
 		DFF0F2E617528350002DA3A4 /* XBPython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFE6160F34FE00C96C76 /* XBPython.cpp */; };
 		DFF0F2E817528350002DA3A4 /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
-		DFF0F2E917528350002DA3A4 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
 		DFF0F2EA17528350002DA3A4 /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */; };
 		DFF0F2EB17528350002DA3A4 /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */; };
 		DFF0F2EC17528350002DA3A4 /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */; };
@@ -2739,7 +2788,6 @@
 		E4991366174E5EEF00741B6D /* swig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFF0160F36AD00C96C76 /* swig.cpp */; };
 		E4991367174E5EEF00741B6D /* XBPython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFE6160F34FE00C96C76 /* XBPython.cpp */; };
 		E4991369174E5EEF00741B6D /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
-		E499136A174E5EEF00741B6D /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
 		E499136B174E5EF700741B6D /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */; };
 		E499136C174E5EF700741B6D /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */; };
 		E499136D174E5EF700741B6D /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */; };
@@ -3832,6 +3880,40 @@
 		7C8AE84C189DE3CD00C33786 /* CoreAudioStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioStream.cpp; path = Sinks/osx/CoreAudioStream.cpp; sourceTree = "<group>"; };
 		7C8AE852189DE47400C33786 /* CoreAudioHelpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioHelpers.cpp; path = Sinks/osx/CoreAudioHelpers.cpp; sourceTree = "<group>"; };
 		7C8AE853189DE47700C33786 /* CoreAudioHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioHelpers.h; path = Sinks/osx/CoreAudioHelpers.h; sourceTree = "<group>"; };
+		7C8E01F71BA35D0B0072E8B2 /* AddonBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonBuiltins.cpp; path = builtins/AddonBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E01F81BA35D0B0072E8B2 /* AddonBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonBuiltins.h; path = builtins/AddonBuiltins.h; sourceTree = "<group>"; };
+		7C8E01F91BA35D0B0072E8B2 /* AndroidBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AndroidBuiltins.cpp; path = builtins/AndroidBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E01FA1BA35D0B0072E8B2 /* AndroidBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AndroidBuiltins.h; path = builtins/AndroidBuiltins.h; sourceTree = "<group>"; };
+		7C8E01FB1BA35D0B0072E8B2 /* ApplicationBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ApplicationBuiltins.cpp; path = builtins/ApplicationBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E01FC1BA35D0B0072E8B2 /* ApplicationBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ApplicationBuiltins.h; path = builtins/ApplicationBuiltins.h; sourceTree = "<group>"; };
+		7C8E01FD1BA35D0B0072E8B2 /* Builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Builtins.cpp; path = builtins/Builtins.cpp; sourceTree = "<group>"; };
+		7C8E01FE1BA35D0B0072E8B2 /* Builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Builtins.h; path = builtins/Builtins.h; sourceTree = "<group>"; };
+		7C8E01FF1BA35D0B0072E8B2 /* CECBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CECBuiltins.cpp; path = builtins/CECBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02001BA35D0B0072E8B2 /* CECBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CECBuiltins.h; path = builtins/CECBuiltins.h; sourceTree = "<group>"; };
+		7C8E02011BA35D0B0072E8B2 /* GUIBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIBuiltins.cpp; path = builtins/GUIBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02021BA35D0B0072E8B2 /* GUIBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIBuiltins.h; path = builtins/GUIBuiltins.h; sourceTree = "<group>"; };
+		7C8E02031BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIContainerBuiltins.cpp; path = builtins/GUIContainerBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02041BA35D0B0072E8B2 /* GUIContainerBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIContainerBuiltins.h; path = builtins/GUIContainerBuiltins.h; sourceTree = "<group>"; };
+		7C8E02051BA35D0B0072E8B2 /* GUIControlBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIControlBuiltins.cpp; path = builtins/GUIControlBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02061BA35D0B0072E8B2 /* GUIControlBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIControlBuiltins.h; path = builtins/GUIControlBuiltins.h; sourceTree = "<group>"; };
+		7C8E02071BA35D0B0072E8B2 /* LibraryBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LibraryBuiltins.cpp; path = builtins/LibraryBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02081BA35D0B0072E8B2 /* LibraryBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LibraryBuiltins.h; path = builtins/LibraryBuiltins.h; sourceTree = "<group>"; };
+		7C8E02091BA35D0B0072E8B2 /* OpticalBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OpticalBuiltins.cpp; path = builtins/OpticalBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E020A1BA35D0B0072E8B2 /* OpticalBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpticalBuiltins.h; path = builtins/OpticalBuiltins.h; sourceTree = "<group>"; };
+		7C8E020B1BA35D0B0072E8B2 /* PictureBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PictureBuiltins.cpp; path = builtins/PictureBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E020C1BA35D0B0072E8B2 /* PictureBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PictureBuiltins.h; path = builtins/PictureBuiltins.h; sourceTree = "<group>"; };
+		7C8E020D1BA35D0B0072E8B2 /* PlayerBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlayerBuiltins.cpp; path = builtins/PlayerBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E020E1BA35D0B0072E8B2 /* PlayerBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerBuiltins.h; path = builtins/PlayerBuiltins.h; sourceTree = "<group>"; };
+		7C8E020F1BA35D0B0072E8B2 /* ProfileBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ProfileBuiltins.cpp; path = builtins/ProfileBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02101BA35D0B0072E8B2 /* ProfileBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProfileBuiltins.h; path = builtins/ProfileBuiltins.h; sourceTree = "<group>"; };
+		7C8E02111BA35D0B0072E8B2 /* PVRBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PVRBuiltins.cpp; path = builtins/PVRBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02121BA35D0B0072E8B2 /* PVRBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PVRBuiltins.h; path = builtins/PVRBuiltins.h; sourceTree = "<group>"; };
+		7C8E02131BA35D0B0072E8B2 /* SkinBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SkinBuiltins.cpp; path = builtins/SkinBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02141BA35D0B0072E8B2 /* SkinBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SkinBuiltins.h; path = builtins/SkinBuiltins.h; sourceTree = "<group>"; };
+		7C8E02151BA35D0B0072E8B2 /* SystemBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SystemBuiltins.cpp; path = builtins/SystemBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02161BA35D0B0072E8B2 /* SystemBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SystemBuiltins.h; path = builtins/SystemBuiltins.h; sourceTree = "<group>"; };
+		7C8E02171BA35D0B0072E8B2 /* WeatherBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WeatherBuiltins.cpp; path = builtins/WeatherBuiltins.cpp; sourceTree = "<group>"; };
+		7C8E02181BA35D0B0072E8B2 /* WeatherBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeatherBuiltins.h; path = builtins/WeatherBuiltins.h; sourceTree = "<group>"; };
 		7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryProvider.cpp; path = xbmc/listproviders/DirectoryProvider.cpp; sourceTree = SOURCE_ROOT; };
 		7C8FC6ED1829A4580045153D /* DirectoryProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryProvider.h; path = xbmc/listproviders/DirectoryProvider.h; sourceTree = SOURCE_ROOT; };
 		7C908892196358A8003D0619 /* auto_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = auto_buffer.cpp; sourceTree = "<group>"; };
@@ -4226,8 +4308,6 @@
 		7CCDACA019275D1E0074CF51 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcEnvironment.cpp; sourceTree = "<group>"; };
 		7CCDACBD19275D790074CF51 /* NptAppleAutoreleasePool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NptAppleAutoreleasePool.mm; sourceTree = "<group>"; };
 		7CCDACC019275D790074CF51 /* NptAppleLogConfig.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NptAppleLogConfig.mm; sourceTree = "<group>"; };
-		7CCF7F1B1069F3AE00992676 /* Builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Builtins.cpp; sourceTree = "<group>"; };
-		7CCF7F1C1069F3AE00992676 /* Builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Builtins.h; sourceTree = "<group>"; };
 		7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeUtils.cpp; sourceTree = "<group>"; };
 		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
@@ -6784,6 +6864,7 @@
 		4367217312D6640E002508E6 /* interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				7C8E01F61BA35CBA0072E8B2 /* builtins */,
 				DF40BC21178B4C07009DB567 /* generic */,
 				7C89674213C03B21003631FE /* info */,
 				F5AE407F13415D9E0004BD79 /* json-rpc */,
@@ -6791,8 +6872,6 @@
 				DF1ACFE815FCE53900E10810 /* python */,
 				F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */,
 				F5A7A701112893E50059D6AA /* AnnouncementManager.h */,
-				7CCF7F1B1069F3AE00992676 /* Builtins.cpp */,
-				7CCF7F1C1069F3AE00992676 /* Builtins.h */,
 				42DAC16B1A6E780C0066B4C8 /* IActionListener.h */,
 				436721A612D66A09002508E6 /* IAnnouncer.h */,
 			);
@@ -7108,6 +7187,47 @@
 				7C8AE847189DE3CD00C33786 /* CoreAudioStream.h */,
 			);
 			name = osx;
+			sourceTree = "<group>";
+		};
+		7C8E01F61BA35CBA0072E8B2 /* builtins */ = {
+			isa = PBXGroup;
+			children = (
+				7C8E01F71BA35D0B0072E8B2 /* AddonBuiltins.cpp */,
+				7C8E01F81BA35D0B0072E8B2 /* AddonBuiltins.h */,
+				7C8E01F91BA35D0B0072E8B2 /* AndroidBuiltins.cpp */,
+				7C8E01FA1BA35D0B0072E8B2 /* AndroidBuiltins.h */,
+				7C8E01FB1BA35D0B0072E8B2 /* ApplicationBuiltins.cpp */,
+				7C8E01FC1BA35D0B0072E8B2 /* ApplicationBuiltins.h */,
+				7C8E01FD1BA35D0B0072E8B2 /* Builtins.cpp */,
+				7C8E01FE1BA35D0B0072E8B2 /* Builtins.h */,
+				7C8E01FF1BA35D0B0072E8B2 /* CECBuiltins.cpp */,
+				7C8E02001BA35D0B0072E8B2 /* CECBuiltins.h */,
+				7C8E02011BA35D0B0072E8B2 /* GUIBuiltins.cpp */,
+				7C8E02021BA35D0B0072E8B2 /* GUIBuiltins.h */,
+				7C8E02031BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp */,
+				7C8E02041BA35D0B0072E8B2 /* GUIContainerBuiltins.h */,
+				7C8E02051BA35D0B0072E8B2 /* GUIControlBuiltins.cpp */,
+				7C8E02061BA35D0B0072E8B2 /* GUIControlBuiltins.h */,
+				7C8E02071BA35D0B0072E8B2 /* LibraryBuiltins.cpp */,
+				7C8E02081BA35D0B0072E8B2 /* LibraryBuiltins.h */,
+				7C8E02091BA35D0B0072E8B2 /* OpticalBuiltins.cpp */,
+				7C8E020A1BA35D0B0072E8B2 /* OpticalBuiltins.h */,
+				7C8E020B1BA35D0B0072E8B2 /* PictureBuiltins.cpp */,
+				7C8E020C1BA35D0B0072E8B2 /* PictureBuiltins.h */,
+				7C8E020D1BA35D0B0072E8B2 /* PlayerBuiltins.cpp */,
+				7C8E020E1BA35D0B0072E8B2 /* PlayerBuiltins.h */,
+				7C8E020F1BA35D0B0072E8B2 /* ProfileBuiltins.cpp */,
+				7C8E02101BA35D0B0072E8B2 /* ProfileBuiltins.h */,
+				7C8E02111BA35D0B0072E8B2 /* PVRBuiltins.cpp */,
+				7C8E02121BA35D0B0072E8B2 /* PVRBuiltins.h */,
+				7C8E02131BA35D0B0072E8B2 /* SkinBuiltins.cpp */,
+				7C8E02141BA35D0B0072E8B2 /* SkinBuiltins.h */,
+				7C8E02151BA35D0B0072E8B2 /* SystemBuiltins.cpp */,
+				7C8E02161BA35D0B0072E8B2 /* SystemBuiltins.h */,
+				7C8E02171BA35D0B0072E8B2 /* WeatherBuiltins.cpp */,
+				7C8E02181BA35D0B0072E8B2 /* WeatherBuiltins.h */,
+			);
+			name = builtins;
 			sourceTree = "<group>";
 		};
 		7C973CE61B5037B80002A874 /* DSPAddons */ = {
@@ -10323,6 +10443,7 @@
 			files = (
 				E38E1F370D25F9FD00618676 /* Application.cpp in Sources */,
 				399442771A8DD920006C39E9 /* VideoLibraryProgressJob.cpp in Sources */,
+				7C8E02431BA35D0B0072E8B2 /* SkinBuiltins.cpp in Sources */,
 				E38E1F3C0D25F9FD00618676 /* Autorun.cpp in Sources */,
 				E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */,
 				E38E1F3E0D25F9FD00618676 /* BackgroundInfoLoader.cpp in Sources */,
@@ -10359,6 +10480,7 @@
 				E38E1F8E0D25F9FD00618676 /* DVDVideoCodecLibMpeg2.cpp in Sources */,
 				E38E1F8F0D25F9FD00618676 /* DVDVideoPPFFmpeg.cpp in Sources */,
 				E38E1F910D25F9FD00618676 /* DVDDemux.cpp in Sources */,
+				7C8E023A1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */,
 				E38E1F930D25F9FD00618676 /* DVDDemuxShoutcast.cpp in Sources */,
 				E38E1F940D25F9FD00618676 /* DVDDemuxUtils.cpp in Sources */,
 				E38E1F970D25F9FD00618676 /* DVDDemuxSPU.cpp in Sources */,
@@ -10456,6 +10578,7 @@
 				E38E20650D25F9FD00618676 /* DirectoryNodeOverview.cpp in Sources */,
 				E38E20660D25F9FD00618676 /* DirectoryNodeRecentlyAddedEpisodes.cpp in Sources */,
 				DF4BF01D1A4EF3410053AC56 /* DVDDemuxCC.cpp in Sources */,
+				7C8E02281BA35D0B0072E8B2 /* GUIBuiltins.cpp in Sources */,
 				E38E20670D25F9FD00618676 /* DirectoryNodeRecentlyAddedMovies.cpp in Sources */,
 				E38E20680D25F9FD00618676 /* DirectoryNodeRecentlyAddedMusicVideos.cpp in Sources */,
 				E38E20690D25F9FD00618676 /* DirectoryNodeRoot.cpp in Sources */,
@@ -10517,6 +10640,7 @@
 				E38E20BB0D25F9FD00618676 /* GUIDialogVideoOSD.cpp in Sources */,
 				DFC6F4B91AFF7CB10039A7FA /* kiss_fftr.c in Sources */,
 				E38E20BC0D25F9FD00618676 /* GUIWindowPictures.cpp in Sources */,
+				7C8E022E1BA35D0B0072E8B2 /* GUIControlBuiltins.cpp in Sources */,
 				E38E20BD0D25F9FD00618676 /* GUIWindowPointer.cpp in Sources */,
 				E38E20BE0D25F9FD00618676 /* GUIWindowPrograms.cpp in Sources */,
 				E38E20BF0D25F9FD00618676 /* GUIWindowScreensaver.cpp in Sources */,
@@ -10564,6 +10688,7 @@
 				E38E22520D25F9FE00618676 /* rawread.cpp in Sources */,
 				E38E22530D25F9FE00618676 /* rdwrfn.cpp in Sources */,
 				E38E22540D25F9FE00618676 /* recvol.cpp in Sources */,
+				7C8E02191BA35D0B0072E8B2 /* AddonBuiltins.cpp in Sources */,
 				E38E22550D25F9FE00618676 /* resource.cpp in Sources */,
 				E38E22560D25F9FE00618676 /* rijndael.cpp in Sources */,
 				E38E22570D25F9FE00618676 /* rs.cpp in Sources */,
@@ -10655,6 +10780,7 @@
 				E3E91FFF0D8C61DF002BF43D /* Socket.cpp in Sources */,
 				E3E920020D8C622A002BF43D /* EventClient.cpp in Sources */,
 				E38A06CE0D95AA5500FF8227 /* GUIDialogKaiToast.cpp in Sources */,
+				7C8E023D1BA35D0B0072E8B2 /* ProfileBuiltins.cpp in Sources */,
 				E3B53E7C0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp in Sources */,
 				E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */,
 				E36C29E00DA72429001F0C9D /* Album.cpp in Sources */,
@@ -10685,6 +10811,7 @@
 				7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */,
 				F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */,
 				397877D51AAAF87700F98A45 /* Speed.cpp in Sources */,
+				7C8E02341BA35D0B0072E8B2 /* OpticalBuiltins.cpp in Sources */,
 				F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */,
 				DF29BCF71B5D911800904347 /* MediaLibraryEvent.cpp in Sources */,
 				2F4564D51970129A00396109 /* GUIFontCache.cpp in Sources */,
@@ -10725,6 +10852,7 @@
 				DF6F52AE1AF6D03F001BC57D /* dacp.cpp in Sources */,
 				E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */,
 				F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */,
+				7C8E02491BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */,
 				7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */,
 				7C779E3B104A57E500F444C4 /* RenderSystemGL.cpp in Sources */,
 				7C779E3C104A57E500F444C4 /* WinEventsSDL.cpp in Sources */,
@@ -10735,10 +10863,10 @@
 				7C779E54104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */,
 				7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */,
 				7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
-				7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */,
 				7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */,
 				F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */,
 				F5E55B5D10741272006E788A /* DVDPlayerTeletext.cpp in Sources */,
+				7C8E02371BA35D0B0072E8B2 /* PictureBuiltins.cpp in Sources */,
 				F5E55B66107412DE006E788A /* GUIDialogTeletext.cpp in Sources */,
 				F5E55B7010741340006E788A /* Teletext.cpp in Sources */,
 				43348AA4107747CD00F859CF /* Edl.cpp in Sources */,
@@ -10942,6 +11070,7 @@
 				DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */,
 				7C89619213B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
 				18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */,
+				7C8E02401BA35D0B0072E8B2 /* PVRBuiltins.cpp in Sources */,
 				F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */,
 				3802709A13D5A653009493DD /* SystemClock.cpp in Sources */,
@@ -10970,6 +11099,7 @@
 				F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */,
 				F54BCC5F1439345300F86B0F /* HotKeyController.m in Sources */,
 				DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */,
+				7C8E022B1BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp in Sources */,
 				DFDE5D511AE5658200EE53AD /* PictureScalingAlgorithm.cpp in Sources */,
 				F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
 				DF5276E1151BAEDA00B5B63B /* Base64.cpp in Sources */,
@@ -11013,6 +11143,7 @@
 				EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */,
 				EC720A9D1550927000FFD782 /* XbmcContext.cpp in Sources */,
 				F5ED8D6C1551F91400842059 /* BlurayDirectory.cpp in Sources */,
+				7C8E02251BA35D0B0072E8B2 /* CECBuiltins.cpp in Sources */,
 				F5ED908815538DCE00842059 /* XBMCTinyXML.cpp in Sources */,
 				F5ED908E15538E2300842059 /* POUtils.cpp in Sources */,
 				DFB65FB515373AE7006B8FF1 /* AEFactory.cpp in Sources */,
@@ -11156,6 +11287,7 @@
 				DFB02DEA16629DBA00F37752 /* PyContext.cpp in Sources */,
 				DF07252E168734D7008DCAAD /* karaokevideobackground.cpp in Sources */,
 				DF072534168734ED008DCAAD /* FFmpegVideoDecoder.cpp in Sources */,
+				7C8E02221BA35D0B0072E8B2 /* Builtins.cpp in Sources */,
 				395F6DE21A81FACF0088CC74 /* HTTPImageTransformationHandler.cpp in Sources */,
 				DF64FE3D16C07AAA00D028FB /* GUIViewControl.cpp in Sources */,
 				DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */,
@@ -11204,6 +11336,7 @@
 				DF529BAE1741697B00523FB4 /* Environment.cpp in Sources */,
 				DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */,
 				0E3036EC1760F68A00D93596 /* FavouritesDirectory.cpp in Sources */,
+				7C8E02461BA35D0B0072E8B2 /* SystemBuiltins.cpp in Sources */,
 				551C3A45175A12010051AAAD /* VDA.cpp in Sources */,
 				DFBB431B178B5E6F006CC20A /* CompileInfo.cpp in Sources */,
 				DF40BC20178B4BEC009DB567 /* PythonInvoker.cpp in Sources */,
@@ -11286,6 +11419,7 @@
 				7CCDA150192753E30074CF51 /* PltIconsData.cpp in Sources */,
 				7CCDA159192753E30074CF51 /* PltMimeType.cpp in Sources */,
 				7C973CF51B5037EF0002A874 /* ActiveAEDSPProcess.cpp in Sources */,
+				7C8E021F1BA35D0B0072E8B2 /* ApplicationBuiltins.cpp in Sources */,
 				7CCDA162192753E30074CF51 /* PltProtocolInfo.cpp in Sources */,
 				7CCDA16B192753E30074CF51 /* PltService.cpp in Sources */,
 				7CCDA174192753E30074CF51 /* PltSsdp.cpp in Sources */,
@@ -11323,6 +11457,7 @@
 				7CCDA7A3192756250074CF51 /* NptCrypto.cpp in Sources */,
 				7CCDA7A6192756250074CF51 /* NptDataBuffer.cpp in Sources */,
 				DF4BF0161A4EF30F0053AC56 /* cc_decoder708.cpp in Sources */,
+				7C8E021C1BA35D0B0072E8B2 /* AndroidBuiltins.cpp in Sources */,
 				7CCDA7AF192756250074CF51 /* NptDebug.cpp in Sources */,
 				7CCDA7B8192756250074CF51 /* NptDigest.cpp in Sources */,
 				399442741A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */,
@@ -11361,6 +11496,7 @@
 				7CCDAA8E192756250074CF51 /* NptPosixQueue.cpp in Sources */,
 				7CCDAA97192756250074CF51 /* NptPosixSystem.cpp in Sources */,
 				7CCDAAA0192756250074CF51 /* NptPosixThreads.cpp in Sources */,
+				7C8E02311BA35D0B0072E8B2 /* LibraryBuiltins.cpp in Sources */,
 				7CCDAAA9192756250074CF51 /* NptPosixTime.cpp in Sources */,
 				7CCDAAB2192756250074CF51 /* NptSelectableMessageQueue.cpp in Sources */,
 				7CCDAC8619275CA70074CF51 /* NptBsdNetwork.cpp in Sources */,
@@ -11424,6 +11560,7 @@
 				DFF0F10C17528350002DA3A4 /* rijndael.cpp in Sources */,
 				DFF0F10D17528350002DA3A4 /* rs.cpp in Sources */,
 				DFF0F10E17528350002DA3A4 /* savepos.cpp in Sources */,
+				7C8E02391BA35D0B0072E8B2 /* PictureBuiltins.cpp in Sources */,
 				DFF0F10F17528350002DA3A4 /* scantree.cpp in Sources */,
 				DFF0F11017528350002DA3A4 /* sha1.cpp in Sources */,
 				395C29FD1A9CD20C00EBC7AD /* ContextMenuManager.cpp in Sources */,
@@ -11451,6 +11588,7 @@
 				DFF0F12417528350002DA3A4 /* GUIDialogAddonSettings.cpp in Sources */,
 				DFF0F12517528350002DA3A4 /* GUIViewStateAddonBrowser.cpp in Sources */,
 				DFF0F12617528350002DA3A4 /* GUIWindowAddonBrowser.cpp in Sources */,
+				7C8E02421BA35D0B0072E8B2 /* PVRBuiltins.cpp in Sources */,
 				DFF0F12717528350002DA3A4 /* PluginSource.cpp in Sources */,
 				DFF0F12817528350002DA3A4 /* Repository.cpp in Sources */,
 				DFF0F12917528350002DA3A4 /* Scraper.cpp in Sources */,
@@ -11458,6 +11596,7 @@
 				395C2A261AA4C32100EBC7AD /* AudioDecoder.cpp in Sources */,
 				DFF0F12B17528350002DA3A4 /* Service.cpp in Sources */,
 				DFF0F12C17528350002DA3A4 /* Skin.cpp in Sources */,
+				7C8E02241BA35D0B0072E8B2 /* Builtins.cpp in Sources */,
 				DFF0F12D17528350002DA3A4 /* Visualisation.cpp in Sources */,
 				DFF0F12E17528350002DA3A4 /* CDDARipJob.cpp in Sources */,
 				DFF0F12F17528350002DA3A4 /* CDDARipper.cpp in Sources */,
@@ -11620,10 +11759,12 @@
 				DFF0F1E317528350002DA3A4 /* GUIDialogTextViewer.cpp in Sources */,
 				DF1D2DEF1B6E85EE002BB9DB /* XbtDirectory.cpp in Sources */,
 				DFF0F1E417528350002DA3A4 /* GUIDialogVolumeBar.cpp in Sources */,
+				7C8E02211BA35D0B0072E8B2 /* ApplicationBuiltins.cpp in Sources */,
 				DFF0F1E517528350002DA3A4 /* GUIDialogYesNo.cpp in Sources */,
 				DFF0F1E617528350002DA3A4 /* AddonsDirectory.cpp in Sources */,
 				DFEA4B551B5271F300562321 /* ActiveAEDSPDatabase.cpp in Sources */,
 				DFF0F1EA17528350002DA3A4 /* BlurayDirectory.cpp in Sources */,
+				7C8E022A1BA35D0B0072E8B2 /* GUIBuiltins.cpp in Sources */,
 				DFF0F1EB17528350002DA3A4 /* CacheStrategy.cpp in Sources */,
 				DFF0F1EC17528350002DA3A4 /* CDDADirectory.cpp in Sources */,
 				DFF0F1ED17528350002DA3A4 /* CDDAFile.cpp in Sources */,
@@ -11830,6 +11971,7 @@
 				DF0E4AC71AD597ED00A75430 /* DVDPlayerRadioRDS.cpp in Sources */,
 				DFF0F2BD17528350002DA3A4 /* MatrixGLES.cpp in Sources */,
 				DFF0F2BE17528350002DA3A4 /* Shader.cpp in Sources */,
+				7C8E02301BA35D0B0072E8B2 /* GUIControlBuiltins.cpp in Sources */,
 				DFF0F2BF17528350002DA3A4 /* Texture.cpp in Sources */,
 				DFF0F2C017528350002DA3A4 /* TextureBundle.cpp in Sources */,
 				DF3E5EFA199D41300039675D /* kodiclientwrapper.mm in Sources */,
@@ -11840,6 +11982,7 @@
 				DFF0F2C517528350002DA3A4 /* TextureManager.cpp in Sources */,
 				DFF0F2C617528350002DA3A4 /* VisibleEffect.cpp in Sources */,
 				F597B05D18A804E0005AADAE /* DVDVideoCodec.cpp in Sources */,
+				7C8E02481BA35D0B0072E8B2 /* SystemBuiltins.cpp in Sources */,
 				DFF0F2C717528350002DA3A4 /* XBTF.cpp in Sources */,
 				DFF0F2C817528350002DA3A4 /* XBTFReader.cpp in Sources */,
 				DFF0F2C917528350002DA3A4 /* GenericTouchActionHandler.cpp in Sources */,
@@ -11859,6 +12002,7 @@
 				DFF0F2D717528350002DA3A4 /* PlayerOperations.cpp in Sources */,
 				DFF0F2D817528350002DA3A4 /* PlaylistOperations.cpp in Sources */,
 				DFF0F2D917528350002DA3A4 /* PVROperations.cpp in Sources */,
+				7C8E024B1BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */,
 				DFF0F2DA17528350002DA3A4 /* SystemOperations.cpp in Sources */,
 				DFF0F2DB17528350002DA3A4 /* VideoLibrary.cpp in Sources */,
 				DFF0F2DC17528350002DA3A4 /* XBMCOperations.cpp in Sources */,
@@ -11873,7 +12017,6 @@
 				DFF0F2E517528350002DA3A4 /* swig.cpp in Sources */,
 				DFF0F2E617528350002DA3A4 /* XBPython.cpp in Sources */,
 				DFF0F2E817528350002DA3A4 /* AnnouncementManager.cpp in Sources */,
-				DFF0F2E917528350002DA3A4 /* Builtins.cpp in Sources */,
 				DFF0F2EA17528350002DA3A4 /* ConvUtils.cpp in Sources */,
 				DFF0F2EB17528350002DA3A4 /* LinuxResourceCounter.cpp in Sources */,
 				DFF0F2EC17528350002DA3A4 /* LinuxTimezone.cpp in Sources */,
@@ -11889,6 +12032,7 @@
 				7CEE587F1B5A3FFB007C2B5A /* AudioDSPSettings.cpp in Sources */,
 				DFF0F2F617528350002DA3A4 /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				DFF0F2F717528350002DA3A4 /* MusicAlbumInfo.cpp in Sources */,
+				7C8E02361BA35D0B0072E8B2 /* OpticalBuiltins.cpp in Sources */,
 				DFF0F2F817528350002DA3A4 /* MusicArtistInfo.cpp in Sources */,
 				DFF0F2F917528350002DA3A4 /* MusicInfoScanner.cpp in Sources */,
 				DFF0F2FA17528350002DA3A4 /* MusicInfoScraper.cpp in Sources */,
@@ -11919,6 +12063,7 @@
 				DFF0F31717528350002DA3A4 /* GUIWindowMusicPlaylistEditor.cpp in Sources */,
 				DFF0F31817528350002DA3A4 /* GUIWindowMusicSongs.cpp in Sources */,
 				DFF0F31917528350002DA3A4 /* GUIWindowVisualisation.cpp in Sources */,
+				7C8E02331BA35D0B0072E8B2 /* LibraryBuiltins.cpp in Sources */,
 				DFF0F31A17528350002DA3A4 /* Album.cpp in Sources */,
 				DFF0F31B17528350002DA3A4 /* Artist.cpp in Sources */,
 				DFEA4B571B5271F600562321 /* ActiveAEDSPMode.cpp in Sources */,
@@ -11928,6 +12073,7 @@
 				DFF0F31F17528350002DA3A4 /* MusicInfoLoader.cpp in Sources */,
 				DFF0F32017528350002DA3A4 /* MusicThumbLoader.cpp in Sources */,
 				DFF0F32117528350002DA3A4 /* Song.cpp in Sources */,
+				7C8E02451BA35D0B0072E8B2 /* SkinBuiltins.cpp in Sources */,
 				DFF0F32217528350002DA3A4 /* HTTPImageHandler.cpp in Sources */,
 				DFF0F32317528350002DA3A4 /* HTTPJsonRpcHandler.cpp in Sources */,
 				DFF0F32417528350002DA3A4 /* HTTPVfsHandler.cpp in Sources */,
@@ -12010,6 +12156,7 @@
 				DFF0F36917528350002DA3A4 /* PowerManager.cpp in Sources */,
 				DFF0F36A17528350002DA3A4 /* GUIDialogLockSettings.cpp in Sources */,
 				DFF0F36B17528350002DA3A4 /* GUIDialogProfileSettings.cpp in Sources */,
+				7C8E023F1BA35D0B0072E8B2 /* ProfileBuiltins.cpp in Sources */,
 				DFF0F36C17528350002DA3A4 /* GUIWindowSettingsProfile.cpp in Sources */,
 				DFF0F36D17528350002DA3A4 /* Profile.cpp in Sources */,
 				DFF0F36E17528350002DA3A4 /* ProfilesManager.cpp in Sources */,
@@ -12089,6 +12236,7 @@
 				DFF0F3C117528350002DA3A4 /* BitstreamStats.cpp in Sources */,
 				DFF0F3C217528350002DA3A4 /* BooleanLogic.cpp in Sources */,
 				DFF0F3C317528350002DA3A4 /* CharsetConverter.cpp in Sources */,
+				7C8E022D1BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp in Sources */,
 				DFF0F3C417528350002DA3A4 /* CPUInfo.cpp in Sources */,
 				DFF0F3C517528350002DA3A4 /* Crc32.cpp in Sources */,
 				DFF0F3C617528350002DA3A4 /* CryptThreading.cpp in Sources */,
@@ -12112,6 +12260,7 @@
 				DFF0F3DC17528350002DA3A4 /* LangCodeExpander.cpp in Sources */,
 				399442731A8DD920006C39E9 /* VideoLibraryJob.cpp in Sources */,
 				DFF0F3DD17528350002DA3A4 /* LegacyPathTranslation.cpp in Sources */,
+				7C8E021E1BA35D0B0072E8B2 /* AndroidBuiltins.cpp in Sources */,
 				DFF0F3DE17528350002DA3A4 /* log.cpp in Sources */,
 				DFF0F3DF17528350002DA3A4 /* md5.cpp in Sources */,
 				DFF0F3E017528350002DA3A4 /* Mime.cpp in Sources */,
@@ -12252,6 +12401,7 @@
 				DFF0F46717528350002DA3A4 /* Monitor.cpp in Sources */,
 				DFF0F46817528350002DA3A4 /* Player.cpp in Sources */,
 				DFF0F46917528350002DA3A4 /* PlayList.cpp in Sources */,
+				7C8E023C1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */,
 				DFF0F46A17528350002DA3A4 /* String.cpp in Sources */,
 				DFF0F46B17528350002DA3A4 /* Window.cpp in Sources */,
 				DFF0F46C17528350002DA3A4 /* WindowDialog.cpp in Sources */,
@@ -12296,6 +12446,7 @@
 				7C920CFB181669FF00DA1477 /* TextureOperations.cpp in Sources */,
 				DFEF0BAE180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
 				DFEF0BC3180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
+				7C8E02271BA35D0B0072E8B2 /* CECBuiltins.cpp in Sources */,
 				7CC82C9518284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
 				DF6D1DFF18312525009DB64F /* OverlayRendererGUI.cpp in Sources */,
 				7C26126E182068660086E04D /* SettingsOperations.cpp in Sources */,
@@ -12320,6 +12471,7 @@
 				7C15DCBE1892481400FCE564 /* InfoBool.cpp in Sources */,
 				F5CC228F1814F7F7006B5E91 /* AESinkDARWINIOS.cpp in Sources */,
 				F5CC22E51814FF3B006B5E91 /* ActiveAE.cpp in Sources */,
+				7C8E021B1BA35D0B0072E8B2 /* AddonBuiltins.cpp in Sources */,
 				F5CC22E61814FF3B006B5E91 /* ActiveAEBuffer.cpp in Sources */,
 				F5CC22E81814FF3B006B5E91 /* ActiveAESink.cpp in Sources */,
 				DF4A3BB41B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */,
@@ -12566,6 +12718,7 @@
 				E49911C8174E5D2500741B6D /* DVDOverlayCodecFFmpeg.cpp in Sources */,
 				E49911C9174E5D2500741B6D /* DVDOverlayCodecSSA.cpp in Sources */,
 				E49911CA174E5D2500741B6D /* DVDOverlayCodecText.cpp in Sources */,
+				7C8E02471BA35D0B0072E8B2 /* SystemBuiltins.cpp in Sources */,
 				E49911CB174E5D2500741B6D /* DVDOverlayCodecTX3G.cpp in Sources */,
 				E49911CE174E5D2500741B6D /* DVDVideoCodecFFmpeg.cpp in Sources */,
 				E49911CF174E5D2500741B6D /* DVDVideoCodecLibMpeg2.cpp in Sources */,
@@ -12758,6 +12911,7 @@
 				E499129D174E5D9900741B6D /* PipeFile.cpp in Sources */,
 				E499129E174E5D9900741B6D /* PipesManager.cpp in Sources */,
 				E499129F174E5D9900741B6D /* PlaylistDirectory.cpp in Sources */,
+				7C8E02411BA35D0B0072E8B2 /* PVRBuiltins.cpp in Sources */,
 				E49912A0174E5D9900741B6D /* PlaylistFileDirectory.cpp in Sources */,
 				E49912A1174E5D9900741B6D /* PluginDirectory.cpp in Sources */,
 				E49912A2174E5D9900741B6D /* PVRDirectory.cpp in Sources */,
@@ -12769,6 +12923,7 @@
 				E49912A7174E5D9900741B6D /* RSSDirectory.cpp in Sources */,
 				E49912AA174E5D9900741B6D /* SAPDirectory.cpp in Sources */,
 				E49912AB174E5D9900741B6D /* SAPFile.cpp in Sources */,
+				7C8E02231BA35D0B0072E8B2 /* Builtins.cpp in Sources */,
 				E49912AC174E5D9900741B6D /* SFTPDirectory.cpp in Sources */,
 				E49912AD174E5D9900741B6D /* SFTPFile.cpp in Sources */,
 				E49912AE174E5D9900741B6D /* ShoutcastFile.cpp in Sources */,
@@ -12857,6 +13012,7 @@
 				E4991301174E5DAD00741B6D /* GUIListItemLayout.cpp in Sources */,
 				E4991302174E5DAD00741B6D /* GUIListLabel.cpp in Sources */,
 				E4991303174E5DAD00741B6D /* GUIMessage.cpp in Sources */,
+				7C8E023E1BA35D0B0072E8B2 /* ProfileBuiltins.cpp in Sources */,
 				E4991304174E5DAD00741B6D /* GUIMoverControl.cpp in Sources */,
 				399442751A8DD920006C39E9 /* VideoLibraryMarkWatchedJob.cpp in Sources */,
 				E4991305174E5DAD00741B6D /* GUIMultiImage.cpp in Sources */,
@@ -12897,6 +13053,7 @@
 				E4991322174E5DAD00741B6D /* IWindowManagerCallback.cpp in Sources */,
 				E4991323174E5DAD00741B6D /* JpegIO.cpp in Sources */,
 				E4991325174E5DAD00741B6D /* LocalizeStrings.cpp in Sources */,
+				7C8E024A1BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */,
 				E4991326174E5DAD00741B6D /* MatrixGLES.cpp in Sources */,
 				E4991327174E5DAD00741B6D /* Shader.cpp in Sources */,
 				E4991328174E5DAD00741B6D /* Texture.cpp in Sources */,
@@ -12945,7 +13102,6 @@
 				E4991366174E5EEF00741B6D /* swig.cpp in Sources */,
 				E4991367174E5EEF00741B6D /* XBPython.cpp in Sources */,
 				E4991369174E5EEF00741B6D /* AnnouncementManager.cpp in Sources */,
-				E499136A174E5EEF00741B6D /* Builtins.cpp in Sources */,
 				E499136B174E5EF700741B6D /* ConvUtils.cpp in Sources */,
 				E499136C174E5EF700741B6D /* LinuxResourceCounter.cpp in Sources */,
 				E499136D174E5EF700741B6D /* LinuxTimezone.cpp in Sources */,
@@ -12967,6 +13123,7 @@
 				E499137C174E5F0E00741B6D /* GUIDialogKaraokeSongSelector.cpp in Sources */,
 				E499137D174E5F0E00741B6D /* GUIWindowKaraokeLyrics.cpp in Sources */,
 				E499137E174E5F0E00741B6D /* karaokelyrics.cpp in Sources */,
+				7C8E022C1BA35D0B0072E8B2 /* GUIContainerBuiltins.cpp in Sources */,
 				DF54F8041B6580C8000FCBA4 /* ContextMenuAddon.cpp in Sources */,
 				E499137F174E5F0E00741B6D /* karaokelyricscdg.cpp in Sources */,
 				E4991380174E5F0E00741B6D /* karaokelyricsfactory.cpp in Sources */,
@@ -13080,6 +13237,7 @@
 				E49913EE174E5FB000741B6D /* Profile.cpp in Sources */,
 				E49913EF174E5FB000741B6D /* ProfilesManager.cpp in Sources */,
 				E49913F0174E5FB000741B6D /* GUIViewStatePrograms.cpp in Sources */,
+				7C8E023B1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */,
 				E49913F1174E5FB000741B6D /* GUIWindowPrograms.cpp in Sources */,
 				E49913F2174E5FB000741B6D /* PVRClient.cpp in Sources */,
 				E49913F3174E5FB000741B6D /* PVRClients.cpp in Sources */,
@@ -13252,9 +13410,11 @@
 				E49914A6174E607200741B6D /* GUIWindowLoginScreen.cpp in Sources */,
 				E49914A7174E607200741B6D /* GUIWindowPointer.cpp in Sources */,
 				E49914A8174E607200741B6D /* GUIWindowScreensaver.cpp in Sources */,
+				7C8E02441BA35D0B0072E8B2 /* SkinBuiltins.cpp in Sources */,
 				E49914A9174E607200741B6D /* GUIWindowScreensaverDim.cpp in Sources */,
 				E49914AA174E607200741B6D /* GUIWindowStartup.cpp in Sources */,
 				E49914AB174E607200741B6D /* GUIWindowSystemInfo.cpp in Sources */,
+				7C8E022F1BA35D0B0072E8B2 /* GUIControlBuiltins.cpp in Sources */,
 				E49914AC174E607200741B6D /* GUIWindowWeather.cpp in Sources */,
 				E499152C174E640800741B6D /* Application.cpp in Sources */,
 				E499152E174E642900741B6D /* AppParamParser.cpp in Sources */,
@@ -13273,8 +13433,10 @@
 				E499153B174E642900741B6D /* LangInfo.cpp in Sources */,
 				E499153C174E642900741B6D /* MediaSource.cpp in Sources */,
 				E499153D174E642900741B6D /* NfoFile.cpp in Sources */,
+				7C8E02261BA35D0B0072E8B2 /* CECBuiltins.cpp in Sources */,
 				E499153E174E642900741B6D /* PartyModeManager.cpp in Sources */,
 				E499153F174E642900741B6D /* PasswordManager.cpp in Sources */,
+				7C8E021A1BA35D0B0072E8B2 /* AddonBuiltins.cpp in Sources */,
 				E4991540174E642900741B6D /* PlayListPlayer.cpp in Sources */,
 				E4991541174E642900741B6D /* SectionLoader.cpp in Sources */,
 				E4991542174E642900741B6D /* SystemGlobals.cpp in Sources */,
@@ -13310,6 +13472,7 @@
 				E499155F174E656E00741B6D /* ModuleXbmcgui.cpp in Sources */,
 				E4991560174E656E00741B6D /* ModuleXbmcplugin.cpp in Sources */,
 				E4991561174E656E00741B6D /* ModuleXbmcvfs.cpp in Sources */,
+				7C8E021D1BA35D0B0072E8B2 /* AndroidBuiltins.cpp in Sources */,
 				E4991562174E656E00741B6D /* Monitor.cpp in Sources */,
 				E4991563174E656E00741B6D /* Player.cpp in Sources */,
 				E4991564174E656E00741B6D /* PlayList.cpp in Sources */,
@@ -13330,6 +13493,7 @@
 				E4991582174E682F00741B6D /* AutoPool.mm in Sources */,
 				E4991583174E684000741B6D /* CocoaInterface.mm in Sources */,
 				E4991584174E684000741B6D /* DarwinUtils.mm in Sources */,
+				7C8E02321BA35D0B0072E8B2 /* LibraryBuiltins.cpp in Sources */,
 				E4991586174E684000741B6D /* OSXGNUReplacements.c in Sources */,
 				E499158A174E68D800741B6D /* LinuxRendererGLES.cpp in Sources */,
 				E499158B174E68EE00741B6D /* DVDCodecUtils.cpp in Sources */,
@@ -13422,6 +13586,7 @@
 				7CCDA17E192753E30074CF51 /* PltStateVariable.cpp in Sources */,
 				7CCDA187192753E30074CF51 /* PltTaskManager.cpp in Sources */,
 				7CCDA190192753E30074CF51 /* PltThreadTask.cpp in Sources */,
+				7C8E02201BA35D0B0072E8B2 /* ApplicationBuiltins.cpp in Sources */,
 				7CCDA199192753E30074CF51 /* PltUPnP.cpp in Sources */,
 				DF54F7FF1B6580AD000FCBA4 /* ContextMenuItem.cpp in Sources */,
 				7CCDA1A2192753E30074CF51 /* PltMediaConnect.cpp in Sources */,
@@ -13432,6 +13597,7 @@
 				7CCDA1D1192753E30074CF51 /* PltMediaRenderer.cpp in Sources */,
 				7CCDA1DC192753E30074CF51 /* RdrConnectionManagerSCPD.cpp in Sources */,
 				7CCDA1E7192753E30074CF51 /* RenderingControlSCPD.cpp in Sources */,
+				7C8E02381BA35D0B0072E8B2 /* PictureBuiltins.cpp in Sources */,
 				7CCDA1F4192753E30074CF51 /* ConnectionManagerSCPD.cpp in Sources */,
 				7CCDA1FF192753E30074CF51 /* ContentDirectorySCPD.cpp in Sources */,
 				7CCDA20A192753E30074CF51 /* ContentDirectorywSearchSCPD.cpp in Sources */,
@@ -13459,6 +13625,7 @@
 				7CCDA7D1192756250074CF51 /* NptHttp.cpp in Sources */,
 				7CCDA7DA192756250074CF51 /* NptJson.cpp in Sources */,
 				7CCDA7DD192756250074CF51 /* NptList.cpp in Sources */,
+				7C8E02291BA35D0B0072E8B2 /* GUIBuiltins.cpp in Sources */,
 				7CCDA7E6192756250074CF51 /* NptLogging.cpp in Sources */,
 				7CCDA7E9192756250074CF51 /* NptMessaging.cpp in Sources */,
 				7CCDA7F2192756250074CF51 /* NptNetwork.cpp in Sources */,
@@ -13480,6 +13647,7 @@
 				7CCDA86D192756250074CF51 /* NptZip.cpp in Sources */,
 				B5011E4219AF3B56005ADF89 /* PosixFile.cpp in Sources */,
 				7CCDAA83192756250074CF51 /* NptPosixDynamicLibraries.cpp in Sources */,
+				7C8E02351BA35D0B0072E8B2 /* OpticalBuiltins.cpp in Sources */,
 				7CCDAA86192756250074CF51 /* NptPosixEnvironment.cpp in Sources */,
 				7CCDAA8C192756250074CF51 /* NptPosixNetwork.cpp in Sources */,
 				7CCDAA8F192756250074CF51 /* NptPosixQueue.cpp in Sources */,
