@@ -32,8 +32,8 @@
 
 #include <cassert>
 #include <algorithm>
+#include <memory>
 
-using namespace AUTOPTR;
 using namespace XFILE;
 
 #define READ_CACHE_CHUNK_SIZE (64*1024)
@@ -249,7 +249,7 @@ void CFileCache::Process()
   }
 
   // create our read buffer
-  auto_aptr<char> buffer(new char[m_chunkSize]);
+  std::unique_ptr<char[]> buffer(new char[m_chunkSize]);
   if (buffer.get() == NULL)
   {
     CLog::Log(LOGERROR, "%s - failed to allocate read buffer", __FUNCTION__);

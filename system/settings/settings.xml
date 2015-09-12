@@ -522,7 +522,7 @@
           <level>1</level>
           <default>original</default>
           <constraints>
-            <options>streamlanguages</options>
+            <options>audiostreamlanguages</options>
           </constraints>
           <control type="list" format="string" />
         </setting>
@@ -903,7 +903,7 @@
           <level>1</level>
           <default>original</default>
           <constraints>
-            <options>streamlanguages</options>
+            <options>subtitlestreamlanguages</options>
           </constraints>
           <control type="list" format="string" />
         </setting>
@@ -1060,7 +1060,7 @@
           <level>1</level>
           <default>English</default>
           <constraints>
-            <options>streamlanguages</options>
+            <options>subtitledownloadlanguages</options>
             <delimiter>,</delimiter>
             <minimumitems>1</minimumitems>
           </constraints>

@@ -406,6 +406,9 @@
     <Filter Include="messaging\helpers">
       <UniqueIdentifier>{b0eadc46-feeb-4aca-9898-590e6b8d29b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="interfaces\builtins">
+      <UniqueIdentifier>{248ffbc4-43f5-4aaf-b259-2dd4f840fcef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -1620,9 +1623,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogCache.cpp">
       <Filter>dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp">
-      <Filter>interfaces</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\AnnouncementManager.cpp">
       <Filter>interfaces</Filter>
@@ -3421,6 +3421,57 @@
     <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp">
       <Filter>messaging\helpers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\AddonBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\AndroidBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\ApplicationBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\Builtins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\CECBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\GUIBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\GUIContainerBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\GUIControlBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\LibraryBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\OpticalBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\PictureBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\PlayerBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\ProfileBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\PVRBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\SkinBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\SystemBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.cpp">
+      <Filter>interfaces\builtins</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4822,9 +4873,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogCache.h">
       <Filter>dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\interfaces\Builtins.h">
-      <Filter>interfaces</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\IActionListener.h">
       <Filter>interfaces</Filter>
@@ -6672,6 +6720,57 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\messaging\helpers\DialogHelper.h">
       <Filter>messaging\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\AddonBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\AndroidBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\ApplicationBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\Builtins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\CECBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\GUIBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\GUIContainerBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\GUIControlBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\LibraryBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\OpticalBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\PictureBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\PlayerBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\ProfileBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\PVRBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\SkinBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\SystemBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\builtins\WeatherBuiltins.h">
+      <Filter>interfaces\builtins</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

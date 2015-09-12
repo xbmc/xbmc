@@ -27,7 +27,7 @@
 #include "PlayListPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "interfaces/Builtins.h"
+#include "interfaces/builtins/Builtins.h"
 #include "music/MusicDatabase.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -545,7 +545,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
       g_application.StartMusicCleanup(true);
   }
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_EXPORT)
-    CBuiltins::Execute("exportlibrary(music)");
+    CBuiltins::GetInstance().Execute("exportlibrary(music)");
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_IMPORT)
   {
     std::string path;
@@ -568,7 +568,7 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
       g_application.StartVideoCleanup(true);
   }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_EXPORT)
-    CBuiltins::Execute("exportlibrary(video)");
+    CBuiltins::GetInstance().Execute("exportlibrary(video)");
 #ifdef HAS_DS_PLAYER
   else if (settingId == "dsplayer.rules")
     CGUIDialogDSRules::ShowDSRulesList();
