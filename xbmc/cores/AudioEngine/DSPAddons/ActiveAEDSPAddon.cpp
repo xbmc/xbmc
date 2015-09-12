@@ -374,7 +374,7 @@ bool CActiveAEDSPAddon::HaveMenuHooks(AE_DSP_MENUHOOK_CAT cat) const
 {
   if (m_bReadyToUse && m_menuhooks.size() > 0)
   {
-    for (unsigned int i = 0; i < m_menuhooks.size(); i++)
+    for (unsigned int i = 0; i < m_menuhooks.size(); ++i)
     {
       if (m_menuhooks[i].category == cat || m_menuhooks[i].category == AE_DSP_MENUHOOK_ALL)
         return true;

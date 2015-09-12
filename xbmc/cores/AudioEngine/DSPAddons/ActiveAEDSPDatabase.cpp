@@ -94,7 +94,7 @@ void CActiveAEDSPDatabase::CreateTables()
     CLog::Log(LOGERROR, "Audio DSP - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
   else
   {
-    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
+    for (IVECADDONS it = addons.begin(); it != addons.end(); ++it)
       CAddonMgr::GetInstance().DisableAddon(it->get()->ID());
   }
 }
@@ -175,7 +175,7 @@ bool CActiveAEDSPDatabase::PersistModes(std::vector<CActiveAEDSPModePtr> &modes,
 {
   bool bReturn(true);
 
-  for (unsigned int iModePtr = 0; iModePtr < modes.size(); iModePtr++)
+  for (unsigned int iModePtr = 0; iModePtr < modes.size(); ++iModePtr)
   {
     CActiveAEDSPModePtr member = modes.at(iModePtr);
     if (!member->IsInternal() && (member->IsChanged() || member->IsNew()))
