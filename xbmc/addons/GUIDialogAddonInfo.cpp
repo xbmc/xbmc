@@ -348,6 +348,7 @@ void CGUIDialogAddonInfo::OnRollback()
   if ((choice=dlg->ShowAndGetChoice(buttons)) > -1)
   {
     // blacklist everything newer
+    //FIXME: broken. never been possible to have multiple versions in the blacklist
     for (unsigned int j=choice+1;j<m_rollbackVersions.size();++j)
       database.BlacklistAddon(m_localAddon->ID(),m_rollbackVersions[j]);
     std::string path = "special://home/addons/packages/";
