@@ -1141,24 +1141,30 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(const CSetting *setting, st
     list.push_back(std::make_pair(*language, *language));
 }
 
-void CLangInfo::SettingOptionsStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  list.push_back(make_pair(g_localizeStrings.Get(308), "original"));
+  list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
+
+  AddLanguages(list);
+}
+
+void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   list.push_back(make_pair(g_localizeStrings.Get(231), "none"));
   list.push_back(make_pair(g_localizeStrings.Get(13207), "forced_only"));
   list.push_back(make_pair(g_localizeStrings.Get(308), "original"));
   list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
 
-  std::string dummy;
-  std::vector<std::pair<std::string, std::string>> languages;
-  SettingOptionsISO6391LanguagesFiller(NULL, languages, dummy, NULL);
-  SettingOptionsLanguageNamesFiller(NULL, languages, dummy, NULL);
+  AddLanguages(list);
+}
 
-  // convert the vector to a set to remove duplicates
-  std::set<std::pair<std::string, std::string>, SortLanguage> tmp(
-      languages.begin(), languages.end(), SortLanguage());
+void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  list.push_back(make_pair(g_localizeStrings.Get(308), "original"));
+  list.push_back(make_pair(g_localizeStrings.Get(309), "default"));
 
-  list.reserve(list.size() + tmp.size());
-  list.insert(list.end(), tmp.begin(), tmp.end());
+  AddLanguages(list);
 }
 
 void CLangInfo::SettingOptionsRegionsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
@@ -1398,4 +1404,19 @@ void CLangInfo::SettingOptionsSpeedUnitsFiller(const CSetting *setting, std::vec
 
   if (!match && !list.empty())
     current = list[0].second;
+}
+
+void CLangInfo::AddLanguages(std::vector< std::pair<std::string, std::string> > &list)
+{
+  std::string dummy;
+  std::vector<std::pair<std::string, std::string>> languages;
+  SettingOptionsISO6391LanguagesFiller(NULL, languages, dummy, NULL);
+  SettingOptionsLanguageNamesFiller(NULL, languages, dummy, NULL);
+
+  // convert the vector to a set to remove duplicates
+  std::set<std::pair<std::string, std::string>, SortLanguage> tmp(
+    languages.begin(), languages.end(), SortLanguage());
+
+  list.reserve(list.size() + tmp.size());
+  list.insert(list.end(), tmp.begin(), tmp.end());
 }
