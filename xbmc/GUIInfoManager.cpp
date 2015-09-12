@@ -3947,7 +3947,7 @@ std::string CGUIInfoManager::GetRadioRDSLabel(int item)
 
   case RDS_ALBUM_TRACKNUMBER:
     {
-      if (!tag.GetAlbumTrackNumber() > 0)
+      if (tag.GetAlbumTrackNumber() > 0)
         return StringUtils::Format("%i", tag.GetAlbumTrackNumber());
       break;
     }
