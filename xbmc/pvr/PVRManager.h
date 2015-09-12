@@ -19,17 +19,18 @@
  *
  */
 
-#include <map>
-
+#include "FileItem.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "interfaces/IAnnouncer.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
-#include "interfaces/IAnnouncer.h"
+
 #include "pvr/recordings/PVRRecording.h"
-#include "FileItem.h"
+
+#include <map>
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;

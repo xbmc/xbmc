@@ -20,16 +20,15 @@
 
 #include "FileItem.h"
 #include "epg/EpgContainer.h"
-#include "URL.h"
-#include "utils/log.h"
 #include "threads/SingleLock.h"
-#include "video/VideoDatabase.h"
-
+#include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "video/VideoDatabase.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+
 #include "PVRRecordings.h"
 
 using namespace PVR;

@@ -18,39 +18,39 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
-
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "dialogs/GUIDialogNumeric.h"
+#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "epg/Epg.h"
+#include "epg/GUIEPGGridContainer.h"
 #include "filesystem/StackDirectory.h"
-#include "input/Key.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIWindowPVRRecordings.h"
+#include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
+#include "utils/Observer.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
+
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/timers/PVRTimers.h"
-#include "epg/Epg.h"
-#include "epg/GUIEPGGridContainer.h"
-#include "settings/MediaSettings.h"
-#include "settings/Settings.h"
-#include "threads/SingleLock.h"
-#include "utils/StringUtils.h"
-#include "utils/Observer.h"
-#include "utils/Variant.h"
+
+#include "GUIWindowPVRBase.h"
+#include "GUIWindowPVRRecordings.h"
 
 #include <utility>
-
-#include "cores/AudioEngine/DSPAddons/ActiveAEDSP.h"
 
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
 

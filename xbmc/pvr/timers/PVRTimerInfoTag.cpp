@@ -20,6 +20,9 @@
 
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "epg/Epg.h"
+#include "epg/EpgContainer.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
@@ -28,13 +31,11 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-#include "PVRTimers.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "epg/EpgContainer.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
-#include "epg/Epg.h"
+#include "PVRTimers.h"
 
 using namespace PVR;
 using namespace EPG;

@@ -19,10 +19,11 @@
  *
  */
 
-#include "PVRTimerInfoTag.h"
 #include "XBDateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "utils/Observer.h"
+
+#include "PVRTimerInfoTag.h"
 
 class CFileItem;
 namespace EPG

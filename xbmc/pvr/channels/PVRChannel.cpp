@@ -19,19 +19,21 @@
  */
 
 #include "FileItem.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
+#include "epg/EpgContainer.h"
 #include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "threads/SingleLock.h"
 
-#include "pvr/channels/PVRChannelGroupInternal.h"
-#include "epg/EpgContainer.h"
-#include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/timers/PVRTimers.h"
+
+#include "PVRChannel.h"
+#include "PVRChannelGroupInternal.h"
 
 #include <assert.h>
 

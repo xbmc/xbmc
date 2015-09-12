@@ -19,16 +19,18 @@
  */
 
 #include "dialogs/GUIDialogOK.h"
+#include "epg/Epg.h"
 #include "epg/EpgContainer.h"
-#include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
-#include "pvr/addons/PVRClients.h"
 #include "utils/StringUtils.h"
 #include "utils/RegExp.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
-#include "epg/Epg.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+
+#include "PVRRecording.h"
 
 using namespace PVR;
 using namespace EPG;

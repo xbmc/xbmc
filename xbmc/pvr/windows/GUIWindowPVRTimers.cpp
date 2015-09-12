@@ -18,23 +18,24 @@
  *
  */
 
-#include "GUIWindowPVRTimers.h"
-
 #include "ContextMenuManager.h"
 #include "GUIInfoManager.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "pvr/PVRManager.h"
-#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
-#include "pvr/timers/PVRTimers.h"
-#include "pvr/addons/PVRClients.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/addons/PVRClients.h"
+
+#include "GUIWindowPVRTimers.h"
 
 using namespace PVR;
 

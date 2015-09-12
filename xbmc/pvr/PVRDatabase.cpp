@@ -18,17 +18,18 @@
  *
  */
 
-#include "PVRDatabase.h"
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-#include "PVRManager.h"
-#include "channels/PVRChannelGroupsContainer.h"
-#include "channels/PVRChannelGroupInternal.h"
-#include "addons/PVRClient.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/addons/PVRClient.h"
+
+#include "PVRDatabase.h"
 
 using namespace dbiplus;
 using namespace PVR;

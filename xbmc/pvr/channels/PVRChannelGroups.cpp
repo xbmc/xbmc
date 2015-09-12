@@ -18,18 +18,18 @@
  *
  */
 
-#include "PVRChannelGroups.h"
-
 #include "FileItem.h"
+#include "URL.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "URL.h"
 
-#include "PVRChannelGroupInternal.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+
+#include "PVRChannelGroups.h"
+#include "PVRChannelGroupInternal.h"
 
 #include <algorithm>
 

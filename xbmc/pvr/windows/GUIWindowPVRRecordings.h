@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,9 +19,10 @@
  *
  */
 
-#include "GUIWindowPVRBase.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoDatabase.h"
+
+#include "GUIWindowPVRBase.h"
 
 namespace PVR
 {

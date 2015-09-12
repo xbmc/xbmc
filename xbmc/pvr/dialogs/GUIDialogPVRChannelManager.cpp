@@ -18,28 +18,29 @@
  *
  */
 
-#include "GUIDialogPVRChannelManager.h"
-
 #include "FileItem.h"
-#include "GUIDialogPVRGroupManager.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
 #include "profiles/ProfilesManager.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/addons/PVRClients.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+
+#include "GUIDialogPVRChannelManager.h"
+#include "GUIDialogPVRGroupManager.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5

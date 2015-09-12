@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -20,8 +19,9 @@
  *
  */
 
-#include "PVRChannelGroup.h"
 #include "utils/Observer.h"
+
+#include "PVRChannelGroup.h"
 
 namespace PVR
 {

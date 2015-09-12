@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://xbmc.org
@@ -22,9 +21,9 @@
 
 #include "FileItem.h"
 #include "addons/include/xbmc_pvr_types.h"
-#include "utils/Observer.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
+#include "utils/Observer.h"
 
 #include <memory>
 

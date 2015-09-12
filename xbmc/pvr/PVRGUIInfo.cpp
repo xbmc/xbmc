@@ -19,20 +19,23 @@
  */
 
 #include "Application.h"
-#include "PVRGUIInfo.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/StringUtils.h"
 #include "GUIInfoManager.h"
-#include "threads/SingleLock.h"
-#include "PVRManager.h"
-#include "pvr/timers/PVRTimers.h"
-#include "pvr/recordings/PVRRecordings.h"
-#include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "epg/EpgInfoTag.h"
+#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
+
+#include "PVRGUIInfo.h"
 
 using namespace PVR;
 using namespace EPG;

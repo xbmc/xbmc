@@ -18,22 +18,24 @@
  *
  */
 
-#include "PVRClients.h"
-
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "GUIUserMessages.h"
+#include "cores/IPlayer.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "pvr/PVRManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
+#include "utils/Variant.h"
+
+#include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-#include "utils/Variant.h"
+
+#include "PVRClients.h"
 
 #include <assert.h>
 

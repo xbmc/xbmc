@@ -19,16 +19,18 @@
  *
  */
 
+#include "addons/AddonDatabase.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
-#include "PVRClient.h"
+
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
-#include "addons/AddonDatabase.h"
 
-#include <vector>
+#include "PVRClient.h"
+
 #include <deque>
+#include <vector>
 
 namespace EPG
 {

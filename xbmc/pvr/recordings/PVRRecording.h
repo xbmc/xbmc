@@ -22,22 +22,22 @@
 /*
  * DESCRIPTION:
  *
- * CPVRRecordingInfoTag is part of the XBMC PVR system to support recording entrys,
+ * CPVRRecordingInfoTag is part of the Kodi PVR system to support recording entrys,
  * stored on a other Backend like VDR or MythTV.
  *
  * The recording information tag holds data about name, length, recording time
  * and so on of recorded stream stored on the backend.
  *
  * The filename string is used to by the PVRManager and passed to DVDPlayer
- * to stream data from the backend to XBMC.
+ * to stream data from the backend to Kodi.
  *
  * It is a also CVideoInfoTag and some of his variables must be set!
  *
  */
 
+#include "XBDateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
-#include "XBDateTime.h"
 
 #define PVR_RECORDING_BASE_PATH     "recordings"
 #define PVR_RECORDING_DELETED_PATH  "deleted"

@@ -18,20 +18,21 @@
  *
  */
 
-#include "GUIWindowPVRGuide.h"
-
 #include "ContextMenuManager.h"
 #include "GUIUserMessages.h"
-#include "input/Key.h"
-#include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "epg/EpgContainer.h"
+#include "input/Key.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
+
+#include "GUIWindowPVRGuide.h"
 
 #define MAX_UPDATE_FREQUENCY 3000 // limit to maximum one update/refresh in x milliseconds
 

@@ -19,8 +19,8 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
 #include "XBDateTime.h"
+#include "guilib/GUIDialog.h"
 
 namespace EPG
 {

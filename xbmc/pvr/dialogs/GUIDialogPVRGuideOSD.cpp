@@ -18,15 +18,16 @@
  *
  */
 
-#include "GUIDialogPVRGuideOSD.h"
 #include "FileItem.h"
-#include "GUIDialogPVRGuideInfo.h"
+#include "epg/Epg.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "view/ViewState.h"
-#include "epg/Epg.h"
 
 #include "pvr/PVRManager.h"
+
+#include "GUIDialogPVRGuideInfo.h"
+#include "GUIDialogPVRGuideOSD.h"
 
 using namespace PVR;
 
