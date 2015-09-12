@@ -114,8 +114,10 @@ public:
    \sa BreakAddon */
   std::string IsAddonBroken(const std::string &addonID);
 
+  bool BlacklistAddon(const std::string& addonID);
   bool BlacklistAddon(const std::string& addonID, const std::string& version);
   bool IsAddonBlacklisted(const std::string& addonID, const std::string& version);
+  bool RemoveAddonFromBlacklist(const std::string& addonID);
   bool RemoveAddonFromBlacklist(const std::string& addonID,
                                 const std::string& version);
 

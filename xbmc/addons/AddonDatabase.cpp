@@ -765,6 +765,11 @@ bool CAddonDatabase::HasDisabledAddons()
   return false;
 }
 
+bool CAddonDatabase::BlacklistAddon(const std::string& addonID)
+{
+  return BlacklistAddon(addonID, "");
+}
+
 bool CAddonDatabase::BlacklistAddon(const std::string& addonID,
                                     const std::string& version)
 {
@@ -773,7 +778,8 @@ bool CAddonDatabase::BlacklistAddon(const std::string& addonID,
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    std::string sql = PrepareSQL("insert into blacklist(id, addonID, version) values(NULL, '%s', '%s')", addonID.c_str(),version.c_str());
+    std::string sql = PrepareSQL("INSERT OR REPLACE INTO blacklist(id, addonID, version) "
+        "VALUES(NULL, '%s', '%s')", addonID.c_str(), version.c_str());
     m_pDS->exec(sql);
 
     return true;
@@ -788,8 +794,13 @@ bool CAddonDatabase::BlacklistAddon(const std::string& addonID,
 bool CAddonDatabase::IsAddonBlacklisted(const std::string& addonID,
                                         const std::string& version)
 {
-  std::string where = PrepareSQL("addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
+  std::string where = PrepareSQL("addonID='%s' and (version='%s' OR version='')",addonID.c_str(),version.c_str());
   return !GetSingleValue("blacklist","addonID",where).empty();
+}
+
+bool CAddonDatabase::RemoveAddonFromBlacklist(const std::string& addonID)
+{
+  return RemoveAddonFromBlacklist(addonID, "");
 }
 
 bool CAddonDatabase::RemoveAddonFromBlacklist(const std::string& addonID,
