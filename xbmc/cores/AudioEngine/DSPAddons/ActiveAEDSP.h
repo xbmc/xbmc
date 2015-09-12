@@ -122,16 +122,15 @@ namespace ActiveAE
     /*!
      * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
      * @param strAddonId The add-on to mark as outdated
-     * @param strReferer The referer to use when downloading
      */
-    void MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer);
+    void MarkAsOutdated(const std::string& strAddonId);
 
     /*!
      * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
      * @param outdatedAddons The generated list of outdated add-on's
      * @return True when outdated addons are present.
      */
-    bool HasOutdatedAddons(std::map<std::string, std::string> &outdatedAddons);
+    bool HasOutdatedAddons(std::vector<std::string> &outdatedAddons);
 
     /*!
      * @brief Get the audio dsp database pointer.
@@ -468,7 +467,7 @@ namespace ActiveAE
     unsigned int            m_activeProcessId;                          /*!< The currently active audio stream id of a playing file source */
     bool                    m_isValidAudioDSPSettings;                  /*!< if settings load was successfull it becomes true */
     AE_DSP_MODELIST         m_modes[AE_DSP_MODE_TYPE_MAX];              /*!< list of currently used dsp processing calls */
-    std::map<std::string, std::string> m_outdatedAddons;
+    std::vector<std::string> m_outdatedAddons;
   };
   //@}
 }

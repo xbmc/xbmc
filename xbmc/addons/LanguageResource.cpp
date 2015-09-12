@@ -21,11 +21,15 @@
 #include "LangInfo.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "messaging/helpers/DialogHelper.h"
+
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #define LANGUAGE_ADDON_PREFIX   "resource.language."
 
@@ -109,7 +113,8 @@ bool CLanguageResource::IsInUse() const
 void CLanguageResource::OnPostInstall(bool update, bool modal)
 {
   if (IsInUse() ||
-     (!update && !modal && CGUIDialogYesNo::ShowAndGetInput(CVariant{Name()}, CVariant{24132})))
+     (!update && !modal && 
+       (HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24132}) == DialogResponse::YES)))
   {
     CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (toast)

@@ -21,9 +21,10 @@
 #include "RssManager.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/File.h"
 #include "interfaces/Builtins.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -34,6 +35,9 @@
 #include "utils/Variant.h"
 
 using namespace XFILE;
+using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CRssManager::CRssManager()
 {
@@ -70,12 +74,10 @@ void CRssManager::OnSettingAction(const CSetting *setting)
   if (settingId == CSettings::SETTING_LOOKANDFEEL_RSSEDIT)
   {
     ADDON::AddonPtr addon;
-    ADDON::CAddonMgr::GetInstance().GetAddon("script.rss.editor",addon);
-    if (!addon)
+    if (!ADDON::CAddonMgr::GetInstance().GetAddon("script.rss.editor", addon))
     {
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24076}, CVariant{24100}, CVariant{"RSS Editor"}, CVariant{24101}))
+      if (!CAddonInstaller::GetInstance().InstallModal("script.rss.editor", addon))
         return;
-      CAddonInstaller::GetInstance().Install("script.rss.editor", true, "", false);
     }
     CBuiltins::Execute("RunScript(script.rss.editor)");
   }

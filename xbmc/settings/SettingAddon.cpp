@@ -38,7 +38,7 @@ CSettingAddon::CSettingAddon(const std::string &id, int label, const std::string
 CSettingAddon::CSettingAddon(const std::string &id, const CSettingAddon &setting)
   : CSettingString(id, setting)
 {
-  copy(setting);
+  copyaddontype(setting);
 }
 
 CSetting* CSettingAddon::Clone(const std::string &id) const
@@ -83,7 +83,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
   return true;
 }
 
-void CSettingAddon::copy(const CSettingAddon &setting)
+void CSettingAddon::copyaddontype(const CSettingAddon &setting)
 {
   CSettingString::Copy(setting);
   

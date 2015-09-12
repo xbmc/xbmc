@@ -60,6 +60,7 @@
 #include "input/InertialScrollingHandler.h"
 #include "messaging/ThreadMessage.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIUserMessages.h"
@@ -96,9 +97,9 @@
 
 #include "input/KeyboardLayoutManager.h"
 
-#if SDL_VERSION == 1
+#if HAVE_SDL_VERSION == 1
 #include <SDL/SDL.h>
-#elif SDL_VERSION == 2
+#elif HAVE_SDL_VERSION == 2
 #include <SDL2/SDL.h>
 #endif
 
@@ -149,7 +150,6 @@
 
 // Dialog includes
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSubMenu.h"
@@ -257,6 +257,8 @@ using namespace KODI::MESSAGING;
 using namespace ActiveAE;
 
 using namespace XbmcThreads;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1580,8 +1582,8 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
        user as to whether they want to keep the current skin. */
     if (confirm && !m_skinReverting)
     {
-      bool cancelled;
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{13123}, CVariant{13111}, cancelled, CVariant{""}, CVariant{""}, 10000))
+      if (HELPERS::ShowYesNoDialogText(CVariant{13123}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) != 
+        DialogResponse::YES)
       {
         m_skinReverting = true;
         if (oldSkin.empty())
@@ -4348,7 +4350,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STARTED:
     {
-#ifdef TARGET_DARWIN
+#ifdef TARGET_DARWIN_IOS
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       CPlayList playList = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
@@ -4466,7 +4468,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (m_pKaraokeMgr )
         m_pKaraokeMgr->Stop();
 #endif
-#ifdef TARGET_DARWIN
+#ifdef TARGET_DARWIN_IOS
       CDarwinUtils::SetScheduling(message.GetMessage());
 #endif
       // first check if we still have items in the stack to play

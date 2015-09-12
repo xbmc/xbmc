@@ -491,13 +491,13 @@
     <ClCompile Include="..\..\xbmc\filesystem\ZipManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUIInfoManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUILargeTextureManager.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\AnimatedGif.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\cximage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DDSImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirectXGraphics.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionSolvers.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\Gif.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIAction.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIAudioManager.cpp" />
@@ -631,6 +631,7 @@
     <ClCompile Include="..\..\xbmc\interfaces\legacy\Dialog.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\File.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\InfoTagMusic.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\InfoTagRadioRDS.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\InfoTagVideo.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\Keyboard.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\legacy\LanguageHook.cpp" />
@@ -683,6 +684,7 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\media\MediaType.cpp" />
     <ClCompile Include="..\..\xbmc\messaging\ApplicationMessenger.cpp" />
+    <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp" />
     <ClCompile Include="..\..\xbmc\music\Album.cpp" />
     <ClCompile Include="..\..\xbmc\music\Artist.cpp" />
     <ClCompile Include="..\..\xbmc\music\CueInfoLoader.cpp" />
@@ -828,12 +830,14 @@
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroupInternal.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroups.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroupsContainer.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\channels\PVRRadioRDSInfoTag.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelManager.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideOSD.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRadioRDSInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRActionListener.cpp" />
@@ -1097,6 +1101,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\XbtManager.h" />
     <ClInclude Include="..\..\xbmc\guiinfo\GUIInfoLabels.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
+    <ClInclude Include="..\..\xbmc\guilib\Gif.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIShaderDX.h" />
@@ -1142,6 +1147,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\legacy\Exception.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\File.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\InfoTagMusic.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\InfoTagRadioRDS.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\InfoTagVideo.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\Keyboard.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\LanguageHook.h" />
@@ -1178,6 +1184,7 @@
     <ClInclude Include="..\..\xbmc\main\win32\MessagePrinter.h" />
     <ClInclude Include="..\..\xbmc\media\MediaType.h" />
     <ClInclude Include="..\..\xbmc\messaging\ApplicationMessenger.h" />
+    <ClInclude Include="..\..\xbmc\messaging\helpers\DialogHelper.h" />
     <ClInclude Include="..\..\xbmc\messaging\IMessageTarget.h" />
     <ClInclude Include="..\..\xbmc\messaging\ThreadMessage.h" />
     <ClInclude Include="..\..\xbmc\music\CueInfoLoader.h" />
@@ -1713,6 +1720,7 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDOverlayRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudio.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerTeletext.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerVideo.cpp" />
@@ -1947,13 +1955,13 @@
     <ClInclude Include="..\..\xbmc\filesystem\PVRFile.h" />
     <ClInclude Include="..\..\xbmc\GUIInfoManager.h" />
     <ClInclude Include="..\..\xbmc\GUILargeTextureManager.h" />
-    <ClInclude Include="..\..\xbmc\guilib\AnimatedGif.h" />
     <ClInclude Include="..\..\xbmc\guilib\D3DResource.h" />
     <ClInclude Include="..\..\xbmc\guilib\DDSImage.h" />
     <ClInclude Include="..\..\xbmc\guilib\DirectXGraphics.h" />
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h" />
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h" />
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h" />
+    <ClInclude Include="..\..\xbmc\guilib\DllLibGif.h" />
     <ClInclude Include="..\..\xbmc\guilib\Geometry.h" />
     <ClInclude Include="..\..\xbmc\guilib\GraphicContext.h" />
     <ClInclude Include="..\..\xbmc\guilib\gui3d.h" />
@@ -2187,12 +2195,14 @@
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroupInternal.h" />
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroups.h" />
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroupsContainer.h" />
+    <ClInclude Include="..\..\xbmc\pvr\channels\PVRRadioRDSInfoTag.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelManager.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideOSD.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.h" />
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRadioRDSInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRActionListener.h" />
@@ -2377,6 +2387,7 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDOverlayRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudio.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerTeletext.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerVideo.h" />

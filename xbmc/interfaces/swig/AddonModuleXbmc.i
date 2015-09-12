@@ -58,6 +58,7 @@ using namespace xbmc;
 %include "interfaces/legacy/RenderCapture.h"
 
 %include "interfaces/legacy/InfoTagMusic.h"
+%include "interfaces/legacy/InfoTagRadioRDS.h"
 %include "interfaces/legacy/InfoTagVideo.h"
 %include "interfaces/legacy/Keyboard.h"
 %include "interfaces/legacy/PlayList.h"

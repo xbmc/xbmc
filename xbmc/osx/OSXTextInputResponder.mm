@@ -177,7 +177,7 @@ void SendEditingText(const char *text, unsigned int location, unsigned int lengt
 //  CLog::Log(LOGDEBUG, "firstRectForCharacterRange: (%lu, %lu): windowHeight = %g, rect = %s",
 //            theRange.location, theRange.length, windowHeight,
 //            [NSStringFromRect(rect) UTF8String]);
-  rect.origin = [[self window] convertBaseToScreen: rect.origin];
+  rect.origin = [[self window] convertRectToScreen:rect].origin;
 
   return rect;
 }

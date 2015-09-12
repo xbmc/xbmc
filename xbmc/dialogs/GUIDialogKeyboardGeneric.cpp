@@ -600,7 +600,7 @@ void CGUIDialogKeyboardGeneric::ChangeWordList(int direct)
   else
   {
     ShowWordList(direct);
-    if (direct > 0 && m_pos + m_num == m_words.size())
+    if (direct > 0 && m_pos + m_num == static_cast<int>(m_words.size()))
       m_codingtable->GetWordListPage(m_hzcode, false);
   }
 }
@@ -619,9 +619,9 @@ void CGUIDialogKeyboardGeneric::ShowWordList(int direct)
   {
     if (direct > 0)
       m_pos += m_num;
-    if (m_pos > m_words.size() - 1)
+    if (m_pos > static_cast<int>(m_words.size()) - 1)
       m_pos = 0;
-    for (i = 0; m_pos + i < m_words.size(); i++)
+    for (i = 0; m_pos + i < static_cast<int>(m_words.size()); i++)
     {
       if ((i > 0 && width + GetStringWidth(m_words[m_pos + i]) + numwidth > m_listwidth) || i > 9)
         break;
@@ -656,7 +656,7 @@ void CGUIDialogKeyboardGeneric::ShowWordList(int direct)
   hzlist.erase(hzlist.find_last_not_of(L" ") + 1);
   if (m_pos > 0)
     hzlist.insert(0, 1, L'<');
-  if (m_pos + m_num < m_words.size())
+  if (m_pos + m_num < static_cast<int>(m_words.size()))
     hzlist.insert(hzlist.length(), 1, L'>');
   std::string utf8String;
   g_charsetConverter.wToUTF8(hzlist, utf8String);

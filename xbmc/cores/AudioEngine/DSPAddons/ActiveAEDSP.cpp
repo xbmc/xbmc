@@ -31,7 +31,6 @@ extern "C" {
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "GUIUserMessages.h"
 #include "addons/AddonInstaller.h"
@@ -39,8 +38,9 @@ extern "C" {
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -52,6 +52,8 @@ extern "C" {
 using namespace ADDON;
 using namespace ActiveAE;
 using namespace KODI::MESSAGING;
+
+using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #define MIN_DSP_ARRAY_SIZE 4096
 
@@ -257,16 +259,16 @@ bool CActiveAEDSP::InstallAddonAllowed(const std::string &strAddonId) const
          m_usedProcessesCnt == 0;
 }
 
-void CActiveAEDSP::MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer)
+void CActiveAEDSP::MarkAsOutdated(const std::string& strAddonId)
 {
   if (IsActivated() && CSettings::GetInstance().GetInt(CSettings::SETTING_GENERAL_ADDONUPDATES) == AUTO_UPDATES_ON)
   {
     CSingleLock lock(m_critSection);
-    m_outdatedAddons.insert(make_pair(strAddonId, strReferer));
+    m_outdatedAddons.push_back(strAddonId);
   }
 }
 
-bool CActiveAEDSP::HasOutdatedAddons(std::map<std::string, std::string> &outdatedAddons)
+bool CActiveAEDSP::HasOutdatedAddons(std::vector<std::string> &outdatedAddons)
 {
   CSingleLock lock(m_critSection);
   if (!m_outdatedAddons.empty())
@@ -330,7 +332,8 @@ void CActiveAEDSP::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB)
   {
-    if (CGUIDialogYesNo::ShowAndGetInput(19098, 36440, 750, 0))
+    if (HELPERS::ShowYesNoDialogLines(CVariant{19098}, CVariant{36440}, CVariant{750}) ==
+      DialogResponse::YES)
     {
       CDateTime::ResetTimezoneBias();
       ResetDatabase();

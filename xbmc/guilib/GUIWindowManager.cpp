@@ -23,6 +23,7 @@
 #include "GUIDialog.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "GUIPassword.h"
 #include "GUIInfoManager.h"
 #include "threads/SingleLock.h"
@@ -127,6 +128,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRGuideOSD.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
+#include "pvr/dialogs/GUIDialogPVRRadioRDSInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 
@@ -286,6 +288,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowPVRRecordings(true));
   Add(new CGUIWindowPVRGuide(true));
   Add(new CGUIWindowPVRTimers(true));
+  Add(new CGUIDialogPVRRadioRDSInfo);
   Add(new CGUIWindowPVRSearch(true));
   Add(new CGUIDialogPVRGuideInfo);
   Add(new CGUIDialogPVRRecordingInfo);
@@ -399,6 +402,7 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
     Delete(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
     Delete(WINDOW_DIALOG_PVR_CHANNEL_SCAN);
+    Delete(WINDOW_DIALOG_PVR_RADIO_RDS_INFO);
     Delete(WINDOW_DIALOG_PVR_UPDATE_PROGRESS);
     Delete(WINDOW_DIALOG_PVR_OSD_CHANNELS);
     Delete(WINDOW_DIALOG_PVR_OSD_GUIDE);
@@ -945,15 +949,33 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_GUI_MESSAGE:
-  {
     if (pMsg->lpVoid)
     {
       CGUIMessage *message = static_cast<CGUIMessage *>(pMsg->lpVoid);
       SendMessage(*message, pMsg->param1);
       delete message;
     }
-  }
-  break;
+    break;
+
+  case TMSG_GUI_DIALOG_YESNO:
+    if (!pMsg->lpVoid && pMsg->param1 < 0 && pMsg->param2 < 0)
+      return;
+
+    auto dialog = static_cast<CGUIDialogYesNo*>(GetWindow(WINDOW_DIALOG_YES_NO));
+    if (!dialog)
+      return;
+
+    if (pMsg->lpVoid)
+      pMsg->SetResult(dialog->ShowAndGetInput(*static_cast<HELPERS::DialogYesNoMessage*>(pMsg->lpVoid)));
+    else
+    {
+      HELPERS::DialogYesNoMessage options;
+      options.heading = pMsg->param1;
+      options.text = pMsg->param2;
+      pMsg->SetResult(dialog->ShowAndGetInput(options));
+    }
+
+    break;
   }
 }
 

@@ -44,7 +44,7 @@ ifeq ($(OS), ios)
 endif
 ifeq ($(OS), osx)
   ffmpg_config += --disable-outdev=sdl
-  ffmpg_config += --disable-decoder=mpeg_xvmc --enable-vda --disable-crystalhd
+  ffmpg_config += --disable-decoder=mpeg_xvmc --enable-vda --disable-crystalhd --disable-videotoolbox
   ffmpg_config += --target-os=darwin
   ffmpg_config += --disable-securetransport
 endif

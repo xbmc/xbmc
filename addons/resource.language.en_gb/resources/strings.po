@@ -14018,7 +14018,491 @@ msgctxt "#29802"
 msgid "Passthrough audio in use"
 msgstr ""
 
-#empty strings from id 29803 to 33000
+#empty strings from id 29803 to 29899
+
+#. Header string on RDS Radiotext+ Info dialog
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29900"
+msgid "RadiotextPlus info"
+msgstr ""
+
+#. Music band name which make the song (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29901"
+msgid "Band"
+msgstr ""
+
+#. Style of the current playing radio
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29902"
+msgid "Style"
+msgstr ""
+
+#. Concert composer of the music (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29903"
+msgid "Composer"
+msgstr ""
+
+#. Artits which sing the music (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29904"
+msgid "Artist"
+msgstr ""
+
+#. Conductor of the classic music (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29905"
+msgid "Conductor"
+msgstr ""
+
+#. Moderator currently on radio (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29906"
+msgid "Moderator"
+msgstr ""
+
+#. List of editoral staff (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29907"
+msgid "Editorial Staff"
+msgstr ""
+
+#. Current playing program name
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29908"
+msgid "Program"
+msgstr ""
+
+#. Studio name (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29909"
+msgid "Studio"
+msgstr ""
+
+#. Phone number (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29910"
+msgid "Phone"
+msgstr ""
+
+#. EMail address (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29911"
+msgid "EMail"
+msgstr ""
+
+#. SMS message number (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29912"
+msgid "SMS"
+msgstr ""
+
+#. Hotline phone (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29913"
+msgid "Hotline"
+msgstr ""
+
+#. Website address (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29914"
+msgid "Website"
+msgstr ""
+
+#. General information news, in list selector (if present)
+#: addons/skin.confluence/720p/DialogPVRRadioRDSInfo.xml
+msgctxt "#29915"
+msgid "Info"
+msgstr ""
+
+#. News, in list selector (if present)
+#: xbmc/pvr/dialogs/GUIDialogPVRRadioRDSInfo.cpp
+msgctxt "#29916"
+msgid "News"
+msgstr ""
+
+#. Local news, in list selector (if present)
+#: xbmc/pvr/dialogs/GUIDialogPVRRadioRDSInfo.cpp
+msgctxt "#29917"
+msgid "News local"
+msgstr ""
+
+#. Sport news, in list selector (if present)
+#: xbmc/pvr/dialogs/GUIDialogPVRRadioRDSInfo.cpp
+msgctxt "#29918"
+msgid "Sport"
+msgstr ""
+
+#. Lottery information, in list selector (if present)
+#: xbmc/pvr/dialogs/GUIDialogPVRRadioRDSInfo.cpp
+msgctxt "#29919"
+msgid "Lottery"
+msgstr ""
+
+# Stock information, in list selector (if present)
+#: xbmc/pvr/dialogs/GUIDialogPVRRadioRDSInfo.cpp
+msgctxt "#29920"
+msgid "Stock"
+msgstr ""
+
+#. Other informations, in list selector (if present)
+#: xbmc/pvr/dialogs/GUIDialogPVRRadioRDSInfo.cpp
+msgctxt "#29921"
+msgid "Other"
+msgstr ""
+
+#. Horoscope messages, in list selector (if present)
+#: xbmc/pvr/dialogs/GUIDialogPVRRadioRDSInfo.cpp
+msgctxt "#29922"
+msgid "Horoscope"
+msgstr ""
+
+#empty strings from id 29923 to 29925
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29926"
+msgid "Adult hits"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29927"
+msgid "Spanish talk"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29928"
+msgid "Spanish music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29929"
+msgid "Hip hop"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29930"
+msgid "Radio Traffic advisory message!"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29931"
+msgid "Radio message"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29932"
+msgid "Language"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29933"
+msgid "College"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29934"
+msgid "Personality"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29935"
+msgid "Public"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29936"
+msgid "Soft music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29937"
+msgid "Adult hits"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29938"
+msgid "Soft rock"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29939"
+msgid "Talk"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29940"
+msgid "No programme type"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29941"
+msgid "News"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29942"
+msgid "Current affairs"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29943"
+msgid "Information"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29944"
+msgid "Sport"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29945"
+msgid "Education"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29946"
+msgid "Drama"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29947"
+msgid "Culture"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29948"
+msgid "Science"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29949"
+msgid "Varied"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29950"
+msgid "Pop music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29951"
+msgid "Rock music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29952"
+msgid "Easy listening music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29953"
+msgid "Light classical"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29954"
+msgid "Serious classical"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29955"
+msgid "Other music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29956"
+msgid "Weather"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29957"
+msgid "Finance"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29958"
+msgid "Children's Programmes"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29959"
+msgid "Social Affairs"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29960"
+msgid "Religion"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29961"
+msgid "Phone-in"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29962"
+msgid "Travel"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29963"
+msgid "Leisure"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29964"
+msgid "Jazz Music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29965"
+msgid "Country Music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29966"
+msgid "National Music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29967"
+msgid "Oldies Music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29968"
+msgid "Folk Music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29969"
+msgid "Documentary"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29960"
+msgid "Alarm Test"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29971"
+msgid "Alarm"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29977"
+msgid "Classic rock music"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29978"
+msgid "Classical"
+msgstr ""
+
+#. Program style name
+#: xbmc/cores/dvdplayer/DVDPlayerRadioRDS.cpp
+msgctxt "#29979"
+msgid "Nostalgia"
+msgstr ""
+
+#. Settings boolean value to enable/disable RDS
+#: system/settings/settings.xml
+msgctxt "#29980"
+msgid "Enable RDS for radio channels"
+msgstr ""
+
+#. Help text for RDS enable/disable
+#: system/settings/settings.xml
+msgctxt "#29981"
+msgid "RDS data can be used if present"
+msgstr ""
+
+#. Boolean value to enable traffic advisory from RDS
+#: system/settings/settings.xml
+msgctxt "#29982"
+msgid "Message traffic advisory"
+msgstr ""
+
+#. Help text of boolean on/off value
+#: system/settings/settings.xml
+msgctxt "#29983"
+msgid "RDS inform you about traffic advisory messages"
+msgstr ""
+
+#. Boolean value on settings
+#: system/settings/settings.xml
+msgctxt "#29984"
+msgid "Increase volume on traffic advisory"
+msgstr ""
+
+#. Help text of boolean on/off value
+#: system/settings/settings.xml
+msgctxt "#29985"
+msgid "If traffic advisory is send from RDS, volume is increased"
+msgstr ""
+
+#. Boolean value on settings
+#: system/settings/settings.xml
+msgctxt "#29986"
+msgid "Publicate traffic messages"
+msgstr ""
+
+#. Help text of boolean on/off value
+#: system/settings/settings.xml
+msgctxt "#29987"
+msgid "Send present traffic messages around and can be handled from addons (nothing inisde KODI)"
+msgstr ""
+
+#empty strings from id 29888 to 33000
 #strings 30000 thru 30999 reserved for plug-ins and plug-in settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts

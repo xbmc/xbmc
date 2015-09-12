@@ -24,6 +24,7 @@
 #include "threads/SingleLock.h"
 #include "guilib/GraphicContext.h"
 
+#include <memory>
 
 namespace KODI
 {
@@ -88,35 +89,41 @@ void CApplicationMessenger::Cleanup()
   }
 }
 
-void CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
+int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
 {
   std::shared_ptr<CEvent> waitEvent;
+  std::shared_ptr<int> result;
+
   if (wait)
-  { // check that we're not being called from our application thread, else we'll be waiting
+  { 
+    //Initialize result here as it's not needed for posted messages
+    message.result = std::make_shared<int>(-1);
+    // check that we're not being called from our application thread, else we'll be waiting
     // forever!
     if (!g_application.IsCurrentThread())
     {
       message.waitEvent.reset(new CEvent(true));
       waitEvent = message.waitEvent;
+      result = message.result;
     }
     else
     {
       //OutputDebugString("Attempting to wait on a SendMessage() from our application thread will cause lockup!\n");
       //OutputDebugString("Sending immediately\n");
       ProcessMessage(&message);
-      return;
+      return *message.result;
     }
   }
 
 
   if (g_application.m_bStop)
-    return;
+    return -1;
 
   ThreadMessage* msg = new ThreadMessage(std::move(message));
   
   CSingleLock lock (m_critSection);
 
-  if (msg->dwMessage == TMSG_GUI_MESSAGE)
+  if (msg->dwMessage & TMSG_MASK_WINDOWMANAGER)
     m_vecWindowMessages.push(msg);
   else
     m_vecMessages.push(msg);
@@ -132,27 +139,30 @@ void CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
     // ensure the thread doesn't hold the graphics lock
     CSingleExit exit(g_graphicsContext);
     waitEvent->Wait();
+    return *result;
   }
+
+  return -1;
 }
 
-void CApplicationMessenger::SendMsg(uint32_t messageId)
+int CApplicationMessenger::SendMsg(uint32_t messageId)
 {
-   SendMsg(ThreadMessage{ messageId }, true);
+   return SendMsg(ThreadMessage{ messageId }, true);
 }
 
-void CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload)
+int CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload)
 {
-  SendMsg(ThreadMessage{ messageId, param1, param2, payload }, true);
+  return SendMsg(ThreadMessage{ messageId, param1, param2, payload }, true);
 }
 
-void CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam)
+int CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam)
 {
-  SendMsg(ThreadMessage{ messageId, param1, param2, payload, strParam, std::vector<std::string>{} }, true);
+  return SendMsg(ThreadMessage{ messageId, param1, param2, payload, strParam, std::vector<std::string>{} }, true);
 }
 
-void CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params)
+int CApplicationMessenger::SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params)
 {
-  SendMsg(ThreadMessage{ messageId, param1, param2, payload, strParam, params }, true);
+  return SendMsg(ThreadMessage{ messageId, param1, param2, payload, strParam, params }, true);
 }
 
 void CApplicationMessenger::PostMsg(uint32_t messageId)
@@ -192,6 +202,7 @@ void CApplicationMessenger::ProcessMessages()
     lock.Leave(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
+    
     if (waitEvent)
       waitEvent->Set();
     delete pMsg;

@@ -204,7 +204,7 @@ public:
   virtual void OnPostInstall(bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
-  virtual bool CanInstall(const std::string& referer) { return true; }
+  virtual bool CanInstall() { return true; }
 protected:
   friend class CAddonCallbacksAddon;
 

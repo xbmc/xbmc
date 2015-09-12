@@ -198,6 +198,8 @@ librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
+libgif_not_found="== Could not find libgif. libgif support disabled. =="
+libgif_disabled="== libgif support disabled. =="
 libshairplay_not_found="== Could not find libshairplay. =="
 samba_disabled="== SAMBA support disabled. =="
 libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
@@ -363,6 +365,12 @@ AC_ARG_ENABLE([nfs],
   [enable NFS support via libnfs (default is auto)])],
   [use_libnfs=$enableval],
   [use_libnfs=auto])
+
+AC_ARG_ENABLE([gif],
+  [AS_HELP_STRING([--enable-gif],
+  [enable gif support via libgif (default is auto)])],
+  [use_libgif=$enableval],
+  [use_libgif=auto])
 
 AC_ARG_ENABLE([airplay],
   [AS_HELP_STRING([--enable-airplay],
@@ -676,18 +684,6 @@ case $host in
      AC_MSG_ERROR(unsupported host ($host))
 esac
 AC_SUBST([ARCH])
-
-case $host in
-  *-apple-darwin*)
-     check_sdl_arch=[`file $NATIVE_ROOT/lib/libSDL_image.dylib | awk '{print $NF}'`]
-     if test "x$check_sdl_arch" = "xi386" ; then
-       DARWIN_NATIVE_ARCH=-m32
-     elif test "x$check_sdl_arch" = "xx86_64" ; then
-       DARWIN_NATIVE_ARCH=-m64
-     fi
-     ;;
-esac
-AC_SUBST([DARWIN_NATIVE_ARCH])
 
 if test "$target_platform" = "target_android" ; then
   USE_ANDROID=1
@@ -1250,7 +1246,7 @@ if test "$host_vendor" = "apple" ; then
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
-    AC_DEFINE([SDL_VERSION],[1],["SDL major version"])
+    AC_DEFINE([HAVE_SDL_VERSION],[1],["SDL major version"])
   fi
 else
 if test "$target_platform" != "target_android" ; then
@@ -1273,7 +1269,7 @@ fi
   # joystick
   if test "$use_joystick" != "no"; then
     PKG_CHECK_MODULES([SDL2], [sdl2],
-      [AC_DEFINE([SDL_VERSION],[2],["SDL major version"])
+      [AC_DEFINE([HAVE_SDL_VERSION],[2],["SDL major version"])
        AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
        INCLUDES="$INCLUDES $SDL2_CFLAGS"; LIBS="$LIBS $SDL2_LIBS"; use_joystick="yes"],
       [if test "$use_joystick" = "yes"; then
@@ -1477,6 +1473,29 @@ else
   AC_MSG_NOTICE($libnfs_disabled)
 fi
 
+# libgif
+if test "$use_libgif" != "no"; then
+  AC_CHECK_HEADERS([gif_lib.h],,
+   [if test "$use_libgif" = "yes"; then
+      AC_MSG_ERROR($libgif_not_found)
+      USE_LIBGIF=0
+    elif test "$use_libgif" != "no"; then
+      AC_MSG_NOTICE($libgif_not_found)
+      use_libgif="no"
+      USE_LIBGIF=0
+    fi
+   ])
+  if test "$use_libgif" != "no"; then
+    XB_FIND_SONAME([GIF], [gif], [use_libgif])
+  fi
+  if test "$use_libgif" != "no"; then
+    AC_DEFINE([HAVE_LIBGIF], [1], [Whether to use libgif library.])
+    USE_LIBGIF=1
+  fi
+else
+  USE_LIBGIF=0
+  AC_MSG_NOTICE($libgif_disabled)
+fi
 
 # libplist for airplay feature
 USE_AIRPLAY=0
@@ -2248,6 +2267,12 @@ else
   final_message="$final_message\n  libnfs client support:No"
 fi
 
+if test "$use_libgif" != "no"; then
+  final_message="$final_message\n  libgif support:\tYes"
+else
+  final_message="$final_message\n  libgif support:\tNo"
+fi
+
 if test "$use_airplay" != "no"; then
   final_message="$final_message\n  AirPlay support:\tYes"
 else
@@ -2349,6 +2374,7 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/omxplayer/Makefile \
     xbmc/cores/playercorefactory/Makefile \
     xbmc/messaging/Makefile \
+    xbmc/messaging/helpers/Makefile \
     xbmc/music/karaoke/Makefile \
     xbmc/osx/Makefile \
     xbmc/guilib/Makefile \
@@ -2489,6 +2515,7 @@ AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_LIBSMBCLIENT)
 AC_SUBST(USE_LIBNFS)
+AC_SUBST(USE_LIBGIF)
 AC_SUBST(USE_AIRPLAY)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)

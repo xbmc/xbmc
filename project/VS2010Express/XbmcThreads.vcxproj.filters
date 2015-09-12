@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp">
@@ -21,7 +20,6 @@
     <ClInclude Include="..\..\xbmc\threads\Event.h" />
     <ClInclude Include="..\..\xbmc\threads\Helpers.h" />
     <ClInclude Include="..\..\xbmc\threads\Lockables.h" />
-    <ClInclude Include="..\..\xbmc\threads\LockFree.h" />
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\threads\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\threads\Thread.h" />

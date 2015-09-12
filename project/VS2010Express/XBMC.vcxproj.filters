@@ -403,6 +403,9 @@
     <Filter Include="events\windows">
       <UniqueIdentifier>{87d4e872-1a96-49a2-9ef0-78dd9fc30da9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="messaging\helpers">
+      <UniqueIdentifier>{b0eadc46-feeb-4aca-9898-590e6b8d29b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -451,6 +454,9 @@
       <Filter>cores\dvdplayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudio.cpp">
+      <Filter>cores\dvdplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.cpp">
       <Filter>cores\dvdplayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.cpp">
@@ -973,9 +979,6 @@
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
     <ClCompile Include="..\..\xbmc\xbmc.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\AnimatedGif.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1741,6 +1744,9 @@
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.cpp">
       <Filter>pvr\dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRadioRDSInfo.cpp">
+      <Filter>pvr\dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.cpp">
       <Filter>pvr\dialogs</Filter>
     </ClCompile>
@@ -1760,6 +1766,9 @@
       <Filter>pvr\channels</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroupsContainer.cpp">
+      <Filter>pvr\channels</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\channels\PVRRadioRDSInfoTag.cpp">
       <Filter>pvr\channels</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\addons\PVRClient.cpp">
@@ -2570,6 +2579,9 @@
       <Filter>interfaces\legacy</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\legacy\InfoTagMusic.cpp">
+      <Filter>interfaces\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\legacy\InfoTagRadioRDS.cpp">
       <Filter>interfaces\legacy</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\legacy\InfoTagVideo.cpp">
@@ -3403,6 +3415,12 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Utils\uri.cpp">
       <Filter>cores\DSPlayer\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\Gif.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\messaging\helpers\DialogHelper.cpp">
+      <Filter>messaging\helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -3460,6 +3478,9 @@
       <Filter>cores\dvdplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAudio.h">
+      <Filter>cores\dvdplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerRadioRDS.h">
       <Filter>cores\dvdplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.h">
@@ -4073,9 +4094,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\Application.h" />
     <ClInclude Include="..\..\xbmc\system.h" />
-    <ClInclude Include="..\..\xbmc\guilib\AnimatedGif.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\D3DResource.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -4937,6 +4955,9 @@
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.h">
       <Filter>pvr\dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRadioRDSInfo.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.h">
       <Filter>pvr\dialogs</Filter>
     </ClInclude>
@@ -4953,6 +4974,9 @@
       <Filter>pvr\channels</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroups.h">
+      <Filter>pvr\channels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\channels\PVRRadioRDSInfoTag.h">
       <Filter>pvr\channels</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\addons\PVRClient.h">
@@ -5040,6 +5064,9 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DllLibGif.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h">
@@ -5664,6 +5691,9 @@
       <Filter>interfaces\legacy</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\legacy\InfoTagMusic.h">
+      <Filter>interfaces\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\legacy\InfoTagRadioRDS.h">
       <Filter>interfaces\legacy</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\legacy\InfoTagVideo.h">
@@ -6636,6 +6666,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Utils\uri.h">
       <Filter>cores\DSPlayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\Gif.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\messaging\helpers\DialogHelper.h">
+      <Filter>messaging\helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

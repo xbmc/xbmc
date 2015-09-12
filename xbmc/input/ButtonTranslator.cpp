@@ -293,6 +293,7 @@ static const ActionMapping windows[] =
     { "radiosearch"              , WINDOW_RADIO_SEARCH },
     { "pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO },
     { "pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO },
+    { "pvrradiordsinfo"          , WINDOW_DIALOG_PVR_RADIO_RDS_INFO },
     { "pvrtimersetting"          , WINDOW_DIALOG_PVR_TIMER_SETTING },
     { "pvrgroupmanager"          , WINDOW_DIALOG_PVR_GROUP_MANAGER },
     { "pvrchannelmanager"        , WINDOW_DIALOG_PVR_CHANNEL_MANAGER },

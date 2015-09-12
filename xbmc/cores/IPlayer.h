@@ -144,6 +144,7 @@ public:
   virtual bool IsPaused() const = 0;
   virtual bool HasVideo() const = 0;
   virtual bool HasAudio() const = 0;
+  virtual bool HasRDS() const { return false; }
   virtual bool IsPassthrough() const { return false;}
   virtual bool CanSeek() {return true;}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
@@ -196,6 +197,8 @@ public:
 
   virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
+
+  virtual std::string GetRadioText(unsigned int line) { return ""; };
 
   virtual int  GetChapterCount()                               { return 0; }
   virtual int  GetChapter()                                    { return -1; }

@@ -126,9 +126,10 @@ protected:
   bool CalculateSize();
   void LoadDiffuseImage();
   bool AllocateOnDemand();
-  bool UpdateAnimFrame();
+  bool UpdateAnimFrame(unsigned int currentTime);
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, float u3, float v3);
   static void OrientateTexture(CRect &rect, float width, float height, int orientation);
+  void ResetAnimState();
 
   // functions that our implementation classes handle
   virtual void Allocate() {}; ///< called after our textures have been allocated
@@ -156,7 +157,7 @@ protected:
   // animations
   int m_currentLoop;
   unsigned int m_currentFrame;
-  uint32_t m_frameCounter;
+  uint32_t m_lasttime;
 
   float m_diffuseU, m_diffuseV;           // size of the diffuse frame (in tex coords)
   float m_diffuseScaleU, m_diffuseScaleV; // scale factor of the diffuse frame (from texture coords to diffuse tex coords)
