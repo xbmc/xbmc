@@ -19,12 +19,12 @@
  *
  */
 
+#include "addons/include/xbmc_pvr_types.h"
+#include "pvr/addons/PVRClients.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
-#include "utils/Observer.h"
 #include "threads/Thread.h"
-#include "pvr/addons/PVRClients.h"
-#include "addons/include/xbmc_pvr_types.h"
+#include "utils/Observer.h"
 
 namespace EPG
 {

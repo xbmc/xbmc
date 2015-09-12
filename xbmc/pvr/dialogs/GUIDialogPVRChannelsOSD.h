@@ -20,9 +20,11 @@
  */
 
 #include "guilib/GUIDialog.h"
-#include "view/GUIViewControl.h"
 #include "utils/Observer.h"
+#include "view/GUIViewControl.h"
+
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+
 #include <map>
 
 class CFileItemList;
