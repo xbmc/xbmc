@@ -642,9 +642,9 @@ bool CApplication::Create()
   CSettings::GetInstance().SetLoaded();
 
   CLog::Log(LOGINFO, "creating subdirectories");
-  CLog::Log(LOGINFO, "userdata folder: %s", CProfilesManager::GetInstance().GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "recording folder: %s", CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH).c_str());
-  CLog::Log(LOGINFO, "screenshots folder: %s", CSettings::GetInstance().GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH).c_str());
+  CLog::Log(LOGINFO, "userdata folder: %s", CURL::GetRedacted(CProfilesManager::GetInstance().GetProfileUserDataFolder()).c_str());
+  CLog::Log(LOGINFO, "recording folder: %s", CURL::GetRedacted(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)).c_str());
+  CLog::Log(LOGINFO, "screenshots folder: %s", CURL::GetRedacted(CSettings::GetInstance().GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH)).c_str());
   CDirectory::Create(CProfilesManager::GetInstance().GetUserDataFolder());
   CDirectory::Create(CProfilesManager::GetInstance().GetProfileUserDataFolder());
   CProfilesManager::GetInstance().CreateProfileFolders();
