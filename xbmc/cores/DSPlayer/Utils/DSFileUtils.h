@@ -30,7 +30,6 @@
 class CDSFile
 {
 public:
-  static std::string SmbToUncPath(const std::string& strFileName);
   static bool Exists(const std::string& strFileName, long* errCode = NULL);
 };
 

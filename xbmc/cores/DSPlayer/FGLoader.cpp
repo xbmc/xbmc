@@ -183,7 +183,7 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   * SMB: smb://user:pass@HOSTNAME/share/file.ts
   * windows UNC: \\\\HOSTNAME\share\file.ts
   */
-  pWinFilePath = CDSFile::SmbToUncPath(pWinFilePath);
+  pWinFilePath = CWIN32Util::SmbToUnc(pWinFilePath);
 
   if (!pFileItem.IsInternetStream())
     pWinFilePath.Replace("/", "\\");

@@ -20,35 +20,13 @@
 #include "DSUtil/DSUtil.h"
 #include "utils/charsetconverter.h"
 #include "utils/StringUtils.h"
+#include "win32/WIN32Util.h"
 
 #ifdef HAS_DS_PLAYER
 
-std::string CDSFile::SmbToUncPath(const std::string& strFileName)
-{
-  if (!StringUtils::StartsWithNoCase(strFileName, "smb://"))
-    return strFileName;
-
-  CStdString strWinFileName;
-  std::size_t found = strFileName.find_first_of('@');
-
-  if (found != std::string::npos)
-  {
-    strWinFileName = "\\\\" + strFileName.substr(found + 1);
-  }
-  else
-  {
-    strWinFileName = strFileName;
-    strWinFileName.Replace("smb://", "\\\\");
-  }
-
-  strWinFileName.Replace('/', '\\');
-
-  return strWinFileName;
-}
-
 bool CDSFile::Exists(const std::string& strFileName, long* errCode)
 {
-  CStdString strWinFile = SmbToUncPath(strFileName);
+  CStdString strWinFile = CWIN32Util::SmbToUnc(strFileName);
   CStdStringW strFileW;
   g_charsetConverter.utf8ToW(strWinFile, strFileW, false);
 
