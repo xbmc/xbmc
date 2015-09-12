@@ -833,7 +833,7 @@ int CStreamsManager::AddSubtitle(const std::string& subFilePath)
   CStdStringW subFileW;
   std::string subFile;
 
-  subFile = CWIN32Util::SmbToUnc(subFilePath);
+  subFile = CDSFile::SmbToUncPath(subFilePath);
 
   g_charsetConverter.utf8ToW(subFile, subFileW);
 
