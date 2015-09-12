@@ -1814,7 +1814,6 @@
 		DFF0F3BB17528350002DA3A4 /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		DFF0F3BC17528350002DA3A4 /* Archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E250D25F9FD00618676 /* Archive.cpp */; };
 		DFF0F3BD17528350002DA3A4 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
-		DFF0F3BE17528350002DA3A4 /* AutoPtrHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB81F120203C200F0B710 /* AutoPtrHandle.cpp */; };
 		DFF0F3BF17528350002DA3A4 /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52769A151BAEDA00B5B63B /* Base64.cpp */; };
 		DFF0F3C017528350002DA3A4 /* BitstreamConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56353BD16E9BB3500D21BAD /* BitstreamConverter.cpp */; };
 		DFF0F3C117528350002DA3A4 /* BitstreamStats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E270D25F9FD00618676 /* BitstreamStats.cpp */; };
@@ -2974,7 +2973,6 @@
 		E499143F174E605900741B6D /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		E4991440174E605900741B6D /* Archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E250D25F9FD00618676 /* Archive.cpp */; };
 		E4991441174E605900741B6D /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
-		E4991442174E605900741B6D /* AutoPtrHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB81F120203C200F0B710 /* AutoPtrHandle.cpp */; };
 		E4991443174E605900741B6D /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52769A151BAEDA00B5B63B /* Base64.cpp */; };
 		E4991444174E605900741B6D /* BitstreamConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56353BD16E9BB3500D21BAD /* BitstreamConverter.cpp */; };
 		E4991445174E605900741B6D /* BitstreamStats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E270D25F9FD00618676 /* BitstreamStats.cpp */; };
@@ -3241,7 +3239,6 @@
 		F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
-		F5BDB820120203C200F0B710 /* AutoPtrHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB81F120203C200F0B710 /* AutoPtrHandle.cpp */; };
 		F5CC228B1814F7E9006B5E91 /* AESinkDARWINOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC22891814F7E9006B5E91 /* AESinkDARWINOSX.cpp */; };
 		F5CC228E1814F7F7006B5E91 /* AESinkDARWINIOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC228C1814F7F7006B5E91 /* AESinkDARWINIOS.cpp */; };
 		F5CC228F1814F7F7006B5E91 /* AESinkDARWINIOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CC228C1814F7F7006B5E91 /* AESinkDARWINIOS.cpp */; };
@@ -3706,6 +3703,7 @@
 		3994426A1A8DD920006C39E9 /* VideoLibraryScanningJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryScanningJob.h; sourceTree = "<group>"; };
 		3994427D1A8DD96F006C39E9 /* VideoLibraryQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibraryQueue.cpp; sourceTree = "<group>"; };
 		3994427E1A8DD96F006C39E9 /* VideoLibraryQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibraryQueue.h; sourceTree = "<group>"; };
+		399B860B1BA49A230017F660 /* ScopeGuard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScopeGuard.h; sourceTree = "<group>"; };
 		39B4F36E1B96F845009B2D88 /* RepositoryUpdater.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RepositoryUpdater.cpp; sourceTree = "<group>"; };
 		39B4F36F1B96F845009B2D88 /* RepositoryUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RepositoryUpdater.h; sourceTree = "<group>"; };
 		39BD2AD61B845D40004A5A15 /* DialogHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DialogHelper.h; path = helpers/DialogHelper.h; sourceTree = "<group>"; };
@@ -5850,8 +5848,6 @@
 		F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleTagSami.cpp; sourceTree = "<group>"; };
 		F5BDB8181202032400F0B710 /* DVDSubtitleTagMicroDVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagMicroDVD.h; sourceTree = "<group>"; };
 		F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleTagMicroDVD.cpp; sourceTree = "<group>"; };
-		F5BDB81E120203C200F0B710 /* AutoPtrHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPtrHandle.h; sourceTree = "<group>"; };
-		F5BDB81F120203C200F0B710 /* AutoPtrHandle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AutoPtrHandle.cpp; sourceTree = "<group>"; };
 		F5CC22891814F7E9006B5E91 /* AESinkDARWINOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AESinkDARWINOSX.cpp; path = Sinks/AESinkDARWINOSX.cpp; sourceTree = "<group>"; };
 		F5CC228A1814F7E9006B5E91 /* AESinkDARWINOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AESinkDARWINOSX.h; path = Sinks/AESinkDARWINOSX.h; sourceTree = "<group>"; };
 		F5CC228C1814F7F7006B5E91 /* AESinkDARWINIOS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AESinkDARWINIOS.cpp; path = Sinks/AESinkDARWINIOS.cpp; sourceTree = "<group>"; };
@@ -9483,8 +9479,6 @@
 				F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */,
 				7C908892196358A8003D0619 /* auto_buffer.cpp */,
 				7C908893196358A8003D0619 /* auto_buffer.h */,
-				F5BDB81F120203C200F0B710 /* AutoPtrHandle.cpp */,
-				F5BDB81E120203C200F0B710 /* AutoPtrHandle.h */,
 				DF52769A151BAEDA00B5B63B /* Base64.cpp */,
 				DF52769B151BAEDA00B5B63B /* Base64.h */,
 				F56353BD16E9BB3500D21BAD /* BitstreamConverter.cpp */,
@@ -9583,6 +9577,7 @@
 				E38E1E760D25F9FD00618676 /* RssReader.h */,
 				7C525DF4195E2D8100BE3482 /* SaveFileStateJob.cpp */,
 				7C1A495B15A96918004AF4A4 /* SaveFileStateJob.h */,
+				399B860B1BA49A230017F660 /* ScopeGuard.h */,
 				E38E1E770D25F9FD00618676 /* ScraperParser.cpp */,
 				E38E1E780D25F9FD00618676 /* ScraperParser.h */,
 				E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */,
@@ -10879,7 +10874,6 @@
 				F58E293911FFC103006F4D46 /* DVDInputStreamBluray.cpp in Sources */,
 				F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */,
 				F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */,
-				F5BDB820120203C200F0B710 /* AutoPtrHandle.cpp in Sources */,
 				7CF1FB0C123B1AF000B2CBCB /* Variant.cpp in Sources */,
 				C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */,
 				7CBEBB8412912BA400431822 /* fstrcmp.c in Sources */,
@@ -12201,7 +12195,6 @@
 				DFF0F3BB17528350002DA3A4 /* AliasShortcutUtils.cpp in Sources */,
 				DFF0F3BC17528350002DA3A4 /* Archive.cpp in Sources */,
 				DFF0F3BD17528350002DA3A4 /* AsyncFileCopy.cpp in Sources */,
-				DFF0F3BE17528350002DA3A4 /* AutoPtrHandle.cpp in Sources */,
 				DFF0F3BF17528350002DA3A4 /* Base64.cpp in Sources */,
 				DFF0F3C017528350002DA3A4 /* BitstreamConverter.cpp in Sources */,
 				DFF0F3C117528350002DA3A4 /* BitstreamStats.cpp in Sources */,
@@ -13277,7 +13270,6 @@
 				E499143F174E605900741B6D /* AliasShortcutUtils.cpp in Sources */,
 				E4991440174E605900741B6D /* Archive.cpp in Sources */,
 				E4991441174E605900741B6D /* AsyncFileCopy.cpp in Sources */,
-				E4991442174E605900741B6D /* AutoPtrHandle.cpp in Sources */,
 				E4991443174E605900741B6D /* Base64.cpp in Sources */,
 				E4991444174E605900741B6D /* BitstreamConverter.cpp in Sources */,
 				E4991445174E605900741B6D /* BitstreamStats.cpp in Sources */,
