@@ -365,8 +365,8 @@ void CAdvancedSettings::Initialize()
   m_jsonTcpPort = 9090;
 
 #ifdef HAS_DS_PLAYER
-  m_bDSPlayerFastChannelSwitching = false;
-  m_bDSPlayerUseUNCPathsForLiveTV = false;
+  m_bDSPlayerFastChannelSwitching = true;
+  m_bDSPlayerUseUNCPathsForLiveTV = true;
 #endif
 
   m_enableMultimediaKeys = false;
