@@ -478,13 +478,22 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     OrphanedAddons(path, items);
     return true;
   }
-  //Pvr hardcodes this view so keep for compatibility
-  else if (endpoint == "disabled" && path.GetFileName() == "xbmc.pvrclient")
+  // PVR & adsp hardcodes this view so keep for compatibility
+  else if (endpoint == "disabled")
   {
     VECADDONS addons;
-    if (CAddonMgr::GetInstance().GetAddons(ADDON_PVRDLL, addons, false))
+    ADDON::TYPE type;
+
+    if (path.GetFileName() == "xbmc.pvrclient")
+      type = ADDON_PVRDLL;
+    else if (path.GetFileName() == "kodi.adsp")
+      type = ADDON_ADSPDLL;
+    else
+      type = ADDON_UNKNOWN;
+
+    if (type != ADDON_UNKNOWN && CAddonMgr::GetInstance().GetAddons(type, addons, false))
     {
-      CAddonsDirectory::GenerateAddonListing(path, addons, items, TranslateType(ADDON_PVRDLL, true));
+      CAddonsDirectory::GenerateAddonListing(path, addons, items, TranslateType(type, true));
       return true;
     }
     return false;
