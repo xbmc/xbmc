@@ -9602,7 +9602,17 @@ msgctxt "#19272"
 msgid "You need a tuner, backend software, and an add-on for the backend to be able to use PVR. Please visit http://kodi.wiki/view/PVR to learn more."
 msgstr ""
 
-#empty strings from id 19273 to 19274
+#. Header on DialogOK
+#: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
+msgctxt "#19273"
+msgid "No audio DSP add-ons could be found"
+msgstr ""
+
+#. DialogOK for no installed ADSP add-on available
+#: xbmc/cores/AudioEngine/DSPAddons/ActiveAEDSP.cpp
+msgctxt "#19274"
+msgid "You need a add-on installed for the process of audio DSP signal. System becomes disabled."
+msgstr ""
 
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19275"
