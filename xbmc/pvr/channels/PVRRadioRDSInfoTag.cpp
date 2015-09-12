@@ -372,7 +372,6 @@ const std::string CPVRRadioRDSInfoTag::GetInfoNews() const
   for (unsigned i = 0; i < m_strInfoNews.size(); i++)
   {
     std::string tmpStr = m_strInfoNews[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
@@ -417,7 +416,6 @@ const std::string CPVRRadioRDSInfoTag::GetInfoNewsLocal() const
   for (unsigned i = 0; i < m_strInfoNewsLocal.size(); i++)
   {
     std::string tmpStr = m_strInfoNewsLocal[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
@@ -462,7 +460,6 @@ const std::string CPVRRadioRDSInfoTag::GetInfoSport() const
   for (unsigned i = 0; i < m_strInfoSport.size(); i++)
   {
     std::string tmpStr = m_strInfoSport[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
@@ -507,7 +504,6 @@ const std::string CPVRRadioRDSInfoTag::GetInfoStock() const
   for (unsigned i = 0; i < m_strInfoStock.size(); i++)
   {
     std::string tmpStr = m_strInfoStock[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
@@ -551,7 +547,6 @@ const std::string CPVRRadioRDSInfoTag::GetInfoWeather() const
   for (unsigned i = 0; i < m_strInfoWeather.size(); i++)
   {
     std::string tmpStr = m_strInfoWeather[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
@@ -595,7 +590,6 @@ const std::string CPVRRadioRDSInfoTag::GetInfoLottery() const
   for (unsigned i = 0; i < m_strInfoLottery.size(); i++)
   {
     std::string tmpStr = m_strInfoLottery[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
@@ -639,7 +633,6 @@ const std::string CPVRRadioRDSInfoTag::GetEditorialStaff() const
   for (unsigned i = 0; i < m_strEditorialStaff.size(); i++)
   {
     std::string tmpStr = m_strEditorialStaff[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
@@ -683,7 +676,6 @@ const std::string CPVRRadioRDSInfoTag::GetInfoHoroscope() const
   for (unsigned i = 0; i < m_strInfoHoroscope.size(); i++)
   {
     std::string tmpStr = m_strInfoHoroscope[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
@@ -727,7 +719,6 @@ const std::string CPVRRadioRDSInfoTag::GetInfoCinema() const
   for (unsigned i = 0; i < m_strInfoCinema.size(); i++)
   {
     std::string tmpStr = m_strInfoCinema[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
@@ -771,7 +762,6 @@ const std::string CPVRRadioRDSInfoTag::GetInfoOther() const
   for (unsigned i = 0; i < m_strInfoOther.size(); i++)
   {
     std::string tmpStr = m_strInfoOther[i];
-    tmpStr.insert(0, "- ");
     tmpStr.insert(tmpStr.end(),'\n');
     retStr += tmpStr;
   }
