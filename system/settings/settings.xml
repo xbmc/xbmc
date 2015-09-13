@@ -2085,17 +2085,7 @@
   <section id="pictures" label="1" help="36304">
     <category id="pictures" label="14081" help="36305">
       <group id="1">
-        <setting id="pictures.usetags" type="boolean" label="14082" help="36306">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="pictures.generatethumbs" type="boolean" label="13360" help="36307">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="pictures.useexifrotation" type="boolean" label="20184" help="36308">
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
