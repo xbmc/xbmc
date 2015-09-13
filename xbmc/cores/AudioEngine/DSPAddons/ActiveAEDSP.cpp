@@ -93,7 +93,7 @@ void CActiveAEDSP::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
     case TMSG_SETAUDIODSPSTATE:
       if(pMsg->param1 == ACTIVE_AE_DSP_STATE_ON)
       {
-        if(pMsg->param1 == ACTIVE_AE_DSP_ASYNC_ACTIVATE)
+        if(pMsg->param2 == ACTIVE_AE_DSP_ASYNC_ACTIVATE)
         {
           Activate(true);
         }
