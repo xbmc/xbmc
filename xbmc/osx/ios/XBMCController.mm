@@ -385,6 +385,19 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   return NO;
 }
 //--------------------------------------------------------------
+- (void)addSwipeGesture:(UISwipeGestureRecognizerDirection)direction numTouches : (NSUInteger)numTouches
+{
+  UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc]
+                                          initWithTarget:self action:@selector(handleSwipe:)];
+
+  swipe.delaysTouchesBegan = NO;
+  swipe.numberOfTouchesRequired = numTouches;
+  swipe.direction = direction;
+  swipe.delegate = self;
+  [m_glView addGestureRecognizer:swipe];
+  [swipe release];
+}
+//--------------------------------------------------------------
 - (void)createGestureRecognizers 
 {
   //1 finger single tab
@@ -419,61 +432,42 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   [m_glView addGestureRecognizer:singleFingerSingleLongTap];
   [singleFingerSingleLongTap release];
 
-  //double finger swipe left for backspace ... i like this fast backspace feature ;)
-  UISwipeGestureRecognizer *swipeLeft2 = [[UISwipeGestureRecognizer alloc]
-                                            initWithTarget:self action:@selector(handleSwipe:)];
+  //triple finger swipe left
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:3];
 
-  swipeLeft2.delaysTouchesBegan = NO;
-  swipeLeft2.numberOfTouchesRequired = 2;
-  swipeLeft2.direction = UISwipeGestureRecognizerDirectionLeft;
-  swipeLeft2.delegate = self;
-  [m_glView addGestureRecognizer:swipeLeft2];
-  [swipeLeft2 release];
+  //double finger swipe left for backspace ... i like this fast backspace feature ;)
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:2];
 
   //single finger swipe left
-  UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
-                                          initWithTarget:self action:@selector(handleSwipe:)];
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionLeft numTouches:1];
 
-  swipeLeft.delaysTouchesBegan = NO;
-  swipeLeft.numberOfTouchesRequired = 1;
-  swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-  swipeLeft.delegate = self;
-  [m_glView addGestureRecognizer:swipeLeft];
-  [swipeLeft release];
-  
+  //triple finger swipe right
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionRight numTouches:3];
+
+  //double finger swipe right
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionRight numTouches:2];
+
   //single finger swipe right
-  UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipe:)];
-  
-  swipeRight.delaysTouchesBegan = NO;
-  swipeRight.numberOfTouchesRequired = 1;
-  swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-  swipeRight.delegate = self;
-  [m_glView addGestureRecognizer:swipeRight];
-  [swipeRight release];
-  
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionRight numTouches:1];
+
+  //triple finger swipe up
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionUp numTouches:3];
+
+  //double finger swipe up
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionUp numTouches:2];
+
   //single finger swipe up
-  UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipe:)];
-  
-  swipeUp.delaysTouchesBegan = NO;
-  swipeUp.numberOfTouchesRequired = 1;
-  swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
-  swipeUp.delegate = self;
-  [m_glView addGestureRecognizer:swipeUp];
-  [swipeUp release];
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionUp numTouches:1];
+
+  //triple finger swipe down
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionDown numTouches:3];
+
+  //double finger swipe down
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionDown numTouches:2];
 
   //single finger swipe down
-  UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipe:)];
-  
-  swipeDown.delaysTouchesBegan = NO;
-  swipeDown.numberOfTouchesRequired = 1;
-  swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
-  swipeDown.delegate = self;
-  [m_glView addGestureRecognizer:swipeDown];
-  [swipeDown release];
-  
+  [self addSwipeGesture:UISwipeGestureRecognizerDirectionDown numTouches:1];
+
   //for pan gestures with one finger
   UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]
     initWithTarget:self action:@selector(handlePan:)];
