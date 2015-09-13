@@ -530,6 +530,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
+/xbmc/interfaces/builtins/Makefile
 /xbmc/interfaces/json-rpc/ServiceDescription.h
 /xbmc/interfaces/python/Makefile
 /xbmc/interfaces/python/generated/
@@ -544,6 +545,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/messaging/
 /xbmc/messaging/Makefile
+/xbmc/messaging/helpers/Makefile
 
 # /xbmc/music/
 /xbmc/music/karaoke/Makefile
