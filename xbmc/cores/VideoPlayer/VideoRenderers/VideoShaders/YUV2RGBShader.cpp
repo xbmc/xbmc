@@ -188,6 +188,12 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
   m_hStretch = -1;
   m_hStep    = -1;
 
+  // get defines from the output stage if used
+  m_glslOutput = output;
+  if (m_glslOutput) {
+    m_defines += m_glslOutput->GetDefines();
+  }
+
 #ifdef HAS_GL
   if(rect)
     m_defines += "#define XBMC_texture_rectangle 1\n";
@@ -204,12 +210,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
     m_defines += "#define XBMC_STRETCH 1\n";
   else
     m_defines += "#define XBMC_STRETCH 0\n";
-
-  // get defines from the output stage if used
-  m_glslOutput = output;
-  if (m_glslOutput) {
-    m_defines += m_glslOutput->GetDefines();
-  }
 
   if (m_format == RENDER_FMT_YUV420P ||
       m_format == RENDER_FMT_YUV420P10 ||
