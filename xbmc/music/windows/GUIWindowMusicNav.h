@@ -25,7 +25,7 @@
 
 class CFileItemList;
 
-class CGUIWindowMusicNav : public CGUIWindowMusicBase, public IBackgroundLoaderObserver
+class CGUIWindowMusicNav : public CGUIWindowMusicBase
 {
 public:
 
@@ -50,14 +50,9 @@ protected:
   virtual std::string GetStartFolder(const std::string &url);
 
   bool GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items);
-  void DisplayEmptyDatabaseMessage(bool bDisplay);
   std::string GetQuickpathName(const std::string& strPath) const;
 
   VECSOURCES m_shares;
-
-  bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
-
-  CMusicThumbLoader m_thumbLoader;      ///< used for the loading of thumbs in the special://musicplaylist folder
 
   // searching
   void OnSearchUpdate();
