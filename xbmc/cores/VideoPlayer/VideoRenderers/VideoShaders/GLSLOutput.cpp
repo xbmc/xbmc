@@ -82,7 +82,9 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
     glActiveTexture(GL_TEXTURE0 + m_uDither);
     glBindTexture(GL_TEXTURE_2D, m_tDitherTex);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#if HAS_GLES != 2
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
