@@ -47,6 +47,9 @@
   #include "HwDecRender/MMALRenderer.h"
 #elif HAS_GLES == 2
   #include "LinuxRendererGLES.h"
+#if defined(HAVE_VIDEOTOOLBOXDECODER)
+#include "HWDecRender/RendererVTB.h"
+#endif
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
 #elif defined(HAS_SDL)
@@ -633,7 +636,16 @@ void CRenderManager::CreateRenderer()
 #if defined(HAS_MMAL)
     m_pRenderer = new CMMALRenderer();
 #elif HAS_GLES == 2
-    m_pRenderer = new CLinuxRendererGLES();
+    if (m_format == RENDER_FMT_CVBREF)
+    {
+#if defined(HAVE_VIDEOTOOLBOXDECODER)
+      m_pRenderer = new CRendererVTB;
+#endif
+    }
+    else if (m_format != RENDER_FMT_NONE)
+    {
+      m_pRenderer = new CLinuxRendererGLES;
+    }
 #elif defined(HAS_DX)
     m_pRenderer = new CWinRenderer();
 #endif
