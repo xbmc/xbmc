@@ -58,13 +58,6 @@ extern "C" {
 #include "yuv2rgb.neon.h"
 #include "utils/CPUInfo.h"
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-#include "DVDCodecs/Video/DVDVideoCodecVideoToolBox.h"
-#include <CoreVideo/CoreVideo.h>
-#endif
-#ifdef TARGET_DARWIN_IOS
-#include "osx/DarwinUtils.h"
-#endif
 #if defined(HAS_LIBSTAGEFRIGHT)
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -103,9 +96,6 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
 #ifdef HAVE_LIBOPENMAX
   openMaxBufferHolder = NULL;
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  cvBufferRef = NULL;
-#endif
 #ifdef HAS_LIBSTAGEFRIGHT
   stf = NULL;
   eglimg = EGL_NO_IMAGE_KHR;
@@ -116,6 +106,7 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
 #ifdef HAS_IMXVPU
   IMXBuffer = NULL;
 #endif
+  hwDec = NULL;
 }
 
 CLinuxRendererGLES::YUVBUFFER::~YUVBUFFER()
@@ -141,11 +132,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
-
-  // default texture handlers to YUV
-  m_textureUpload = &CLinuxRendererGLES::UploadYV12Texture;
-  m_textureCreate = &CLinuxRendererGLES::CreateYV12Texture;
-  m_textureDelete = &CLinuxRendererGLES::DeleteYV12Texture;
 
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
@@ -203,13 +189,13 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
     // call to LoadShaders
     glFinish();
     for (int i = 0 ; i < NUM_BUFFERS ; i++)
-      (this->*m_textureDelete)(i);
+      DeleteTexture(i);
 
      // create the yuv textures
     LoadShaders();
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-      (this->*m_textureCreate)(i);
+      CreateTexture(i);
 
     m_bValidated = true;
     return true;
@@ -304,13 +290,6 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
   {
     return source;
   }
-
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  if (m_renderMethod & RENDER_CVREF )
-  {
-    return source;
-  }
-#endif
 
   YV12Image &im = m_buffers[source].image;
 
@@ -492,7 +471,7 @@ void CLinuxRendererGLES::Flush()
   glFinish();
 
   for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-    (this->*m_textureDelete)(i);
+    DeleteTexture(i);
 
   glFinish();
   m_bValidated = false;
@@ -835,97 +814,78 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
 void CLinuxRendererGLES::LoadShaders(int field)
 {
-#ifdef TARGET_DARWIN_IOS
-  float ios_version = CDarwinUtils::GetIOSVersion();
-#endif
-  int requestedMethod = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
-  CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
-
-  ReleaseShaders();
-
-  switch(requestedMethod)
+  if (!LoadShadersHook())
   {
-    case RENDER_METHOD_AUTO:
-    case RENDER_METHOD_GLSL:
-      if (m_format == RENDER_FMT_OMXEGL)
-      {
-        CLog::Log(LOGNOTICE, "GL: Using OMXEGL RGBA render method");
-        m_renderMethod = RENDER_OMXEGL;
-        break;
-      }
-      else if (m_format == RENDER_FMT_EGLIMG)
-      {
-        CLog::Log(LOGNOTICE, "GL: Using EGL Image render method");
-        m_renderMethod = RENDER_EGLIMG;
-        break;
-      }
-      else if (m_format == RENDER_FMT_MEDIACODEC)
-      {
-        CLog::Log(LOGNOTICE, "GL: Using MediaCodec render method");
-        m_renderMethod = RENDER_MEDIACODEC;
-        break;
-      }
-      else if (m_format == RENDER_FMT_MEDIACODECSURFACE)
-      {
-        CLog::Log(LOGNOTICE, "GL: Using MediaCodec (Surface) render method");
-        m_renderMethod = RENDER_MEDIACODECSURFACE;
-        break;
-      }
-      else if (m_format == RENDER_FMT_IMXMAP)
-      {
-        CLog::Log(LOGNOTICE, "GL: Using IMXMAP render method");
-        m_renderMethod = RENDER_IMXMAP;
-        break;
-      }
-      else if (m_format == RENDER_FMT_BYPASS)
-      {
-        CLog::Log(LOGNOTICE, "GL: Using BYPASS render method");
-        m_renderMethod = RENDER_BYPASS;
-        break;
-      }
-      else if (m_format == RENDER_FMT_CVBREF)
-      {
-        CLog::Log(LOGNOTICE, "GL: Using CoreVideoRef RGBA render method");
-        m_renderMethod = RENDER_CVREF;
-        break;
-      }
-      #if defined(TARGET_DARWIN_IOS)
-      else if (ios_version < 5.0 && m_format == RENDER_FMT_YUV420P)
-      {
-        CLog::Log(LOGNOTICE, "GL: Using software color conversion/RGBA render method");
-        m_renderMethod = RENDER_SW;
-        break;
-      }
-      #endif
-      // Try GLSL shaders if supported and user requested auto or GLSL.
-      if (glCreateProgram)
-      {
-        // create regular scan shader
-        CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
+    int requestedMethod = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+    CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
 
-        m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format);
-        m_pYUVBobShader = new YUV2RGBBobShader(false, m_iFlags, m_format);
-        if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
-            && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
+    ReleaseShaders();
+
+    switch(requestedMethod)
+    {
+      case RENDER_METHOD_AUTO:
+      case RENDER_METHOD_GLSL:
+        if (m_format == RENDER_FMT_OMXEGL)
         {
-          m_renderMethod = RENDER_GLSL;
-          UpdateVideoFilter();
+          CLog::Log(LOGNOTICE, "GL: Using OMXEGL RGBA render method");
+          m_renderMethod = RENDER_OMXEGL;
           break;
         }
-        else
+        else if (m_format == RENDER_FMT_EGLIMG)
         {
-          ReleaseShaders();
-          CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
-          // drop through and try SW
+          CLog::Log(LOGNOTICE, "GL: Using EGL Image render method");
+          m_renderMethod = RENDER_EGLIMG;
+          break;
         }
-      }
-    case RENDER_METHOD_SOFTWARE:
-    default:
-      {
-        // Use software YUV 2 RGB conversion if user requested it or GLSL failed
-        m_renderMethod = RENDER_SW ;
-        CLog::Log(LOGNOTICE, "GL: Using software color conversion/RGBA rendering");
-      }
+        else if (m_format == RENDER_FMT_MEDIACODEC)
+        {
+          CLog::Log(LOGNOTICE, "GL: Using MediaCodec render method");
+          m_renderMethod = RENDER_MEDIACODEC;
+          break;
+        }
+        else if (m_format == RENDER_FMT_IMXMAP)
+        {
+          CLog::Log(LOGNOTICE, "GL: Using IMXMAP render method");
+          m_renderMethod = RENDER_IMXMAP;
+          break;
+        }
+        else if (m_format == RENDER_FMT_BYPASS)
+        {
+          CLog::Log(LOGNOTICE, "GL: Using BYPASS render method");
+          m_renderMethod = RENDER_BYPASS;
+          break;
+        }
+
+        // Try GLSL shaders if supported and user requested auto or GLSL.
+        if (glCreateProgram)
+        {
+          // create regular scan shader
+          CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
+
+          m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format);
+          m_pYUVBobShader = new YUV2RGBBobShader(false, m_iFlags, m_format);
+          if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
+              && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
+          {
+            m_renderMethod = RENDER_GLSL;
+            UpdateVideoFilter();
+            break;
+          }
+          else
+          {
+            ReleaseShaders();
+            CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+            // drop through and try SW
+          }
+        }
+      case RENDER_METHOD_SOFTWARE:
+      default:
+        {
+          // Use software YUV 2 RGB conversion if user requested it or GLSL failed
+          m_renderMethod = RENDER_SW ;
+          CLog::Log(LOGNOTICE, "GL: Using software color conversion/RGBA rendering");
+        }
+    }
   }
 
   // determine whether GPU supports NPOT textures
@@ -938,6 +898,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
   else
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
+<<<<<<< f39d6eae0c9750db6cb93ada217d785add2d1c99
   // Now that we now the render method, setup texture function handlers
   if (m_format == RENDER_FMT_CVBREF)
   {
@@ -989,6 +950,8 @@ void CLinuxRendererGLES::LoadShaders(int field)
     m_textureDelete = &CLinuxRendererGLES::DeleteYV12Texture;
   }
 
+=======
+>>>>>>> [VideoRendererGLES] - refactor to support derived hw dec renderer - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs))
   if (m_oldRenderMethod != m_renderMethod)
   {
     CLog::Log(LOGDEBUG, "CLinuxRendererGLES: Reorder drawpoints due to method change from %i to %i", m_oldRenderMethod, m_renderMethod);
@@ -1027,7 +990,7 @@ void CLinuxRendererGLES::UnInit()
 
   // YV12 textures
   for (int i = 0; i < NUM_BUFFERS; ++i)
-    (this->*m_textureDelete)(i);
+    DeleteTexture(i);
 
   if (m_sw_context)
   {
@@ -1067,14 +1030,6 @@ inline void CLinuxRendererGLES::ReorderDrawPoints()
 void CLinuxRendererGLES::ReleaseBuffer(int idx)
 {
   YUVBUFFER &buf = m_buffers[idx];
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  if (m_renderMethod & RENDER_CVREF )
-  {
-    if (buf.cvBufferRef)
-      CVBufferRelease(buf.cvBufferRef);
-    buf.cvBufferRef = NULL;
-  }
-#endif
 #if defined(TARGET_ANDROID)
   if ( m_renderMethod & RENDER_MEDIACODEC )
   {
@@ -1095,6 +1050,123 @@ void CLinuxRendererGLES::ReleaseBuffer(int idx)
 #endif
 }
 
+bool CLinuxRendererGLES::CreateTexture(int index)
+{
+  if (m_format == RENDER_FMT_BYPASS)
+  {
+    CreateBYPASSTexture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_EGLIMG)
+  {
+    CreateEGLIMGTexture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_MEDIACODEC)
+  {
+    CreateSurfaceTexture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_NV12)
+  {
+    CreateNV12Texture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_IMXMAP)
+  {
+    CreateIMXMAPTexture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_OMXEGL)
+  {
+    CreateOpenMaxTexture(index);
+    return true;
+  }
+  else
+  {
+    // default to YV12 texture handlers
+    CreateYV12Texture(index);
+    return true;
+  }
+
+  return false;
+}
+
+void CLinuxRendererGLES::DeleteTexture(int index)
+{
+  if (m_format == RENDER_FMT_BYPASS)
+  {
+    DeleteBYPASSTexture(index);
+  }
+  else if (m_format == RENDER_FMT_EGLIMG)
+  {
+    DeleteEGLIMGTexture(index);
+  }
+  else if (m_format == RENDER_FMT_MEDIACODEC)
+  {
+    DeleteSurfaceTexture(index);
+  }
+  else if (m_format == RENDER_FMT_NV12)
+  {
+    DeleteNV12Texture(index);
+  }
+  else if (m_format == RENDER_FMT_IMXMAP)
+  {
+    DeleteIMXMAPTexture(index);
+  }
+  else if (m_format == RENDER_FMT_OMXEGL)
+  {
+    DeleteOpenMaxTexture(index);
+  }
+  else
+  {
+    // default to YV12 texture handlers
+    DeleteYV12Texture(index);
+  }
+}
+
+bool CLinuxRendererGLES::UploadTexture(int index)
+{
+  // Now that we now the render method, setup texture function handlers
+  if (m_format == RENDER_FMT_BYPASS)
+  {
+    UploadBYPASSTexture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_EGLIMG)
+  {
+    UploadEGLIMGTexture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_MEDIACODEC)
+  {
+    UploadSurfaceTexture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_NV12)
+  {
+    UploadNV12Texture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_IMXMAP)
+  {
+    UploadIMXMAPTexture(index);
+    return true;
+  }
+  else if (m_format == RENDER_FMT_OMXEGL)
+  {
+    UploadOpenMaxTexture(index);
+    return true;
+  }
+  else
+  {
+    // default to YV12 texture handlers
+    UploadYV12Texture(index);
+    return true;
+  }
+  return false;
+}
+
 void CLinuxRendererGLES::Render(DWORD flags, int index)
 {
   // If rendered directly by the hardware
@@ -1111,9 +1183,13 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   else
     m_currentField = FIELD_FULL;
 
-  (this->*m_textureUpload)(index);
-
-  if (m_renderMethod & RENDER_GLSL)
+  // call texture load function
+  if (!UploadTexture(index))
+    return;
+  
+  if (RenderHook(index))
+    ;
+  else if (m_renderMethod & RENDER_GLSL)
   {
     UpdateVideoFilter();
     switch(m_renderQuality)
@@ -1143,11 +1219,6 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   else if (m_renderMethod & RENDER_EGLIMG)
   {
     RenderEglImage(index, m_currentField);
-    VerifyGLState();
-  }
-  else if (m_renderMethod & RENDER_CVREF)
-  {
-    RenderCoreVideoRef(index, m_currentField);
     VerifyGLState();
   }
   else if (m_renderMethod & RENDER_MEDIACODEC)
@@ -1807,70 +1878,6 @@ void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
 #endif
 }
 
-void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
-{
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  YUVPLANE &plane = m_buffers[index].fields[field][0];
-
-  glDisable(GL_DEPTH_TEST);
-
-  glEnable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, plane.id);
-
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
-
-  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
-  glUniform1f(contrastLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
-  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
-  glUniform1f(brightnessLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-  GLfloat ver[4][4];
-  GLfloat tex[4][2];
-  GLfloat col[3] = {1.0f, 1.0f, 1.0f};
-
-  GLint   posLoc = g_Windowing.GUIShaderGetPos();
-  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
-  GLint   colLoc = g_Windowing.GUIShaderGetCol();
-
-  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
-  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(texLoc);
-  glEnableVertexAttribArray(colLoc);
-
-  // Set vertex coordinates
-  for(int i = 0; i < 4; i++)
-  {
-    ver[i][0] = m_rotatedDestCoords[i].x;
-    ver[i][1] = m_rotatedDestCoords[i].y;
-    ver[i][2] = 0.0f;// set z to 0
-    ver[i][3] = 1.0f;
-  }
-
-  // Set texture coordinates (corevideo is flipped in y)
-  tex[0][0] = tex[3][0] = plane.rect.x1;
-  tex[0][1] = tex[1][1] = plane.rect.y2;
-  tex[1][0] = tex[2][0] = plane.rect.x2;
-  tex[2][1] = tex[3][1] = plane.rect.y1;
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(texLoc);
-  glDisableVertexAttribArray(colLoc);
-
-  g_Windowing.DisableGUIShader();
-  VerifyGLState();
-
-  glDisable(m_textureTarget);
-  VerifyGLState();
-#endif
-}
-
 void CLinuxRendererGLES::RenderIMXMAPTexture(int index, int field)
 {
 }
@@ -2457,140 +2464,6 @@ void CLinuxRendererGLES::DeleteNV12Texture(int index)
 }
 
 //********************************************************************************************************
-// CoreVideoRef Texture creation, deletion, copying + clearing
-//********************************************************************************************************
-void CLinuxRendererGLES::UploadCVRefTexture(int index)
-{
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  CVBufferRef cvBufferRef = m_buffers[index].cvBufferRef;
-
-  if (cvBufferRef)
-  {
-    YUVPLANE &plane = m_buffers[index].fields[0][0];
-
-    CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
-    #if !TARGET_OS_IPHONE
-      int rowbytes = CVPixelBufferGetBytesPerRow(cvBufferRef);
-    #endif
-    int bufferWidth = CVPixelBufferGetWidth(cvBufferRef);
-    int bufferHeight = CVPixelBufferGetHeight(cvBufferRef);
-    unsigned char *bufferBase = (unsigned char *)CVPixelBufferGetBaseAddress(cvBufferRef);
-
-    glEnable(m_textureTarget);
-    VerifyGLState();
-
-    glBindTexture(m_textureTarget, plane.id);
-    #if !TARGET_OS_IPHONE
-      #ifdef GL_UNPACK_ROW_LENGTH
-        // Set row pixels
-        glPixelStorei( GL_UNPACK_ROW_LENGTH, rowbytes);
-      #endif
-      #ifdef GL_TEXTURE_STORAGE_HINT_APPLE
-        // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-        glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-      #endif
-    #endif
-
-    // Using BGRA extension to pull in video frame data directly
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, bufferWidth, bufferHeight, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bufferBase);
-
-    #if !TARGET_OS_IPHONE
-      #ifdef GL_UNPACK_ROW_LENGTH
-        // Unset row pixels
-        glPixelStorei( GL_UNPACK_ROW_LENGTH, 0);
-      #endif
-    #endif
-    glBindTexture(m_textureTarget, 0);
-
-    glDisable(m_textureTarget);
-    VerifyGLState();
-
-    CVPixelBufferUnlockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
-    CVBufferRelease(m_buffers[index].cvBufferRef);
-    m_buffers[index].cvBufferRef = NULL;
-
-    plane.flipindex = m_buffers[index].flipindex;
-  }
-
-  CalculateTextureSourceRects(index, 1);
-#endif
-}
-void CLinuxRendererGLES::DeleteCVRefTexture(int index)
-{
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  YUVPLANE &plane = m_buffers[index].fields[0][0];
-
-  if (m_buffers[index].cvBufferRef)
-    CVBufferRelease(m_buffers[index].cvBufferRef);
-  m_buffers[index].cvBufferRef = NULL;
-
-  if(plane.id && glIsTexture(plane.id))
-    glDeleteTextures(1, &plane.id);
-  plane.id = 0;
-#endif
-}
-bool CLinuxRendererGLES::CreateCVRefTexture(int index)
-{
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  YV12Image &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[0][0];
-
-  DeleteCVRefTexture(index);
-
-  memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
-
-  im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
-
-  plane.texwidth  = im.width;
-  plane.texheight = im.height;
-  plane.pixpertex_x = 1;
-  plane.pixpertex_y = 1;
-
-  if(m_renderMethod & RENDER_POT)
-  {
-    plane.texwidth  = NP2(plane.texwidth);
-    plane.texheight = NP2(plane.texheight);
-  }
-  glEnable(m_textureTarget);
-  glGenTextures(1, &plane.id);
-  VerifyGLState();
-
-  glBindTexture(m_textureTarget, plane.id);
-  #if !TARGET_OS_IPHONE
-    #ifdef GL_UNPACK_ROW_LENGTH
-      // Set row pixels
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, m_sourceWidth);
-    #endif
-    #ifdef GL_TEXTURE_STORAGE_HINT_APPLE
-      // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-      glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-      // Set client storage
-    #endif
-    glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
-  #endif
-
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// This is necessary for non-power-of-two textures
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, NULL);
-
-  #if !TARGET_OS_IPHONE
-    // turn off client storage so it doesn't get picked up for the next texture
-    glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_FALSE);
-  #endif
-  glBindTexture(m_textureTarget, 0);
-  glDisable(m_textureTarget);
-#endif
-  return true;
-}
-
-//********************************************************************************************************
 // BYPASS creation, deletion, copying + clearing
 //********************************************************************************************************
 void CLinuxRendererGLES::UploadBYPASSTexture(int index)
@@ -2933,8 +2806,6 @@ bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
   if(m_renderMethod & RENDER_OMXEGL)
     return false;
 
-  if(m_renderMethod & RENDER_CVREF)
-    return false;
 
   if(mode == VS_DEINTERLACEMODE_AUTO
   || mode == VS_DEINTERLACEMODE_FORCE)
@@ -2971,12 +2842,15 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
       return false;
   }
 
+<<<<<<< f39d6eae0c9750db6cb93ada217d785add2d1c99
   if(m_renderMethod & RENDER_MEDIACODECSURFACE)
     return false;
 
   if(m_renderMethod & RENDER_CVREF)
     return false;
 
+=======
+>>>>>>> [VideoRendererGLES] - refactor to support derived hw dec renderer - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs))
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
@@ -3045,12 +2919,15 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   if(m_renderMethod & RENDER_MEDIACODEC)
     return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
 
+<<<<<<< f39d6eae0c9750db6cb93ada217d785add2d1c99
   if(m_renderMethod & RENDER_MEDIACODECSURFACE)
     return VS_INTERLACEMETHOD_NONE;
 
   if(m_renderMethod & RENDER_CVREF)
     return VS_INTERLACEMETHOD_NONE;
 
+=======
+>>>>>>> [VideoRendererGLES] - refactor to support derived hw dec renderer - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs - similar to VideoRendererGL (atm only VTB is implemented. All other hw dec renderers are still in VideoRendererGLES and need to be moved into seperate implementations by the platform devs))
   if(m_renderMethod & RENDER_IMXMAP)
     return VS_INTERLACEMETHOD_IMX_FASTMOTION;
 
@@ -3093,17 +2970,6 @@ void CLinuxRendererGLES::AddProcessor(COpenMax* openMax, DVDVideoPicture *pictur
   if (buf.openMaxBufferHolder) {
     buf.openMaxBufferHolder->Acquire();
   }
-}
-#endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef, int index)
-{
-  YUVBUFFER &buf = m_buffers[index];
-  if (buf.cvBufferRef)
-    CVBufferRelease(buf.cvBufferRef);
-  buf.cvBufferRef = cvBufferRef;
-  // retain another reference, this way VideoPlayer and renderer can issue releases.
-  CVBufferRetain(buf.cvBufferRef);
 }
 #endif
 #ifdef HAS_LIBSTAGEFRIGHT
