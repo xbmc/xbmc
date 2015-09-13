@@ -437,8 +437,12 @@ void CGUIDialogContentSettings::FillContentTypes()
 
   if (m_content == CONTENT_ALBUMS || m_content == CONTENT_ARTISTS)
   {
-    FillContentTypes(m_content);
-    labels.push_back(std::make_pair(ADDON::TranslateContent(m_content, true), m_content));
+    FillContentTypes(CONTENT_ALBUMS);
+    FillContentTypes(CONTENT_ARTISTS);
+
+    labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_ALBUMS, true), CONTENT_ALBUMS));
+    labels.push_back(std::make_pair(ADDON::TranslateContent(CONTENT_ARTISTS, true), CONTENT_ARTISTS));
+    // We might want to add CONTENT_NONE later, but it's not capable of handling this now
   }
   else
   {

@@ -4278,11 +4278,38 @@ void CMusicDatabase::UpdateTables(int version)
    {
      m_pDS->exec("DROP TABLE karaokedata");
    }
+  if (version < 56)
+  {
+      // Convert the content table from using musicdb:// paths to actual paths
+      if (NULL == m_pDB.get()) return;
+      if (NULL == m_pDS.get()) return;
+      //Genres are no longer supported here
+      m_pDS->exec(PrepareSQL("DELETE FROM content WHERE strPath LIKE 'musicdb://genres/%%'"));
+
+      m_pDS->query(PrepareSQL("SELECT strPath FROM content"));
+
+      std::vector<std::string> oldPaths;
+      // get data from returned rows
+      while (!m_pDS->eof())
+      {
+        oldPaths.push_back(m_pDS->fv(0).get_asString());
+        m_pDS->next();
+      }
+      m_pDS->close(); // cleanup recordset data
+
+      for (const auto& oldPath : oldPaths)
+      {
+        m_pDS2->close(); // cleanup recordset data
+        std::string newPath = TranslateVfsToPath(oldPath).c_str();
+
+        m_pDS2->exec(PrepareSQL("UPDATE content SET strPath = '%s' WHERE strPath = '%s'", newPath.c_str(), oldPath.c_str()));
+      }
+  }
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 56;
+  return 57;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, std::vector<std::pair<int,int> > &songIDs)
@@ -4893,6 +4920,12 @@ bool CMusicDatabase::SetScraperForPath(const std::string& strPath, const ADDON::
 
 bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::ScraperPtr& info, const ADDON::TYPE &type)
 {
+  CONTENT_TYPE dummy;
+  return GetScraperForPath(strPath, info, type, dummy);
+}
+
+bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::ScraperPtr& info, const ADDON::TYPE &type, CONTENT_TYPE &content)
+{
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -4906,12 +4939,14 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
       CDirectoryNode::GetDatabaseInfo(strPath, params);
       if (params.GetGenreId() != -1) // check genre
       {
-        strSQL = PrepareSQL("select * from content where strPath='musicdb://genres/%i/'",params.GetGenreId());
+        strSQL = PrepareSQL("select * from content where strPath='%s'", 
+                            TranslateVfsToPath(StringUtils::Format("musicdb://genres/%i/", params.GetGenreId())));
         m_pDS->query(strSQL);
       }
       if (m_pDS->eof() && params.GetAlbumId() != -1) // check album
       {
-        strSQL = PrepareSQL("select * from content where strPath='musicdb://albums/%i/'",params.GetAlbumId());
+        strSQL = PrepareSQL("select * from content where strPath='%s'",
+                            TranslateVfsToPath(StringUtils::Format("musicdb://albums/%i/", params.GetAlbumId())));
         m_pDS->query(strSQL);
         if (m_pDS->eof()) // general albums setting
         {
@@ -4921,7 +4956,8 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
       }
       if (m_pDS->eof() && params.GetArtistId() != -1) // check artist
       {
-        strSQL = PrepareSQL("select * from content where strPath='musicdb://artists/%i/'",params.GetArtistId());
+        strSQL = PrepareSQL("select * from content where strPath='%s'",
+                            TranslateVfsToPath(StringUtils::Format("musicdb://artists/%i/", params.GetArtistId())));
         m_pDS->query(strSQL);
 
         if (m_pDS->eof()) // general artist setting
@@ -4934,7 +4970,7 @@ bool CMusicDatabase::GetScraperForPath(const std::string& strPath, ADDON::Scrape
 
     if (!m_pDS->eof())
     { // try and ascertain scraper for this path
-      CONTENT_TYPE content = ADDON::TranslateContent(m_pDS->fv("content.strContent").get_asString());
+      content = ADDON::TranslateContent(m_pDS->fv("content.strContent").get_asString());
       std::string scraperUUID = m_pDS->fv("content.strScraperPath").get_asString();
 
       if (content != CONTENT_NONE)
@@ -5769,3 +5805,43 @@ void CMusicDatabase::UpdateFileDateAdded(int songId, const std::string& strFileN
     CLog::Log(LOGERROR, "%s (%s, %s) failed", __FUNCTION__, CURL::GetRedacted(strFileNameAndPath).c_str(), dateAdded.GetAsDBDateTime().c_str());
   }
 }
+
+std::string CMusicDatabase::TranslateVfsToPath(std::string path)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return path;
+    if (NULL == m_pDS2.get()) return path; // using dataset 2 as we're likely called in loops on dataset 1
+
+    std::string id;
+    std::string result;
+    if (StringUtils::StartsWithNoCase(path, "musicdb://albums/"))
+    {
+      id = path.substr(17, path.rfind("/") - 17);
+      // this query needs to join, because the view can be dropped when we're calling it in the schema migrations
+      std::string strSQL = PrepareSQL("SELECT path.strPath FROM song JOIN path ON path.idPath = song.idPath WHERE song.idAlbum = %s LIMIT 1", id.c_str());
+      result = GetSingleValue(strSQL, m_pDS2).c_str();
+      return result.empty() ? path : result;
+    }
+    else if (StringUtils::StartsWithNoCase(path, "musicdb://artists/"))
+    {
+      id = path.substr(18, path.rfind("/") - 18);
+      std::string strSQL = PrepareSQL("SELECT strPath FROM song_artist "
+        "JOIN song "
+        "ON song.idSong = song_artist.idSong "
+        "JOIN path "
+        "ON path.idPath = song.idPath "
+        "WHERE idArtist = %s LIMIT 1", id.c_str());
+      result = GetSingleValue(strSQL, m_pDS2).c_str();
+      URIUtils::GetParentPath(result); // unfortunatly this query can only return the song specific path, so lets hope the parent is a artist folder
+      return result.empty() ? path : result;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, path.c_str());
+  }
+
+  return path;
+}
+
