@@ -11852,7 +11852,10 @@ msgctxt "#20443"
 msgid "Do you want to refresh information for all items within this path?"
 msgstr ""
 
-#empty string with id 20444
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#20444"
+msgid "Add to library"
+msgstr ""
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#20445"
@@ -11863,7 +11866,10 @@ msgctxt "#20446"
 msgid "Locally stored information found. Ignore and refresh from Internet?"
 msgstr ""
 
-#empty string with id 20447
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#20447"
+msgid "Do you want to add the media from this source to your library?"
+msgstr ""
 
 #: xbmc/video/VideoInfoScanner.cpp
 msgctxt "#20448"
