@@ -1460,3 +1460,9 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
   if (!items.IsMusicDb())
     RetrieveMusicInfo();
 }
+
+void CGUIWindowMusicBase::OnNewMusicDirectoryAdded(const std::string &path)
+{
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 13349 }, CVariant{ 20443 }))
+    g_application.StartMusicScan(path, true);
+}
