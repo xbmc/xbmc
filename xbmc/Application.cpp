@@ -1209,7 +1209,7 @@ bool CApplication::Initialize()
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
 
       CStereoscopicsManager::GetInstance().Initialize();
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON); // send a blocking message to active AudioDSP engine
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE); // send a blocking message to active AudioDSP engine
     }
 
   }
@@ -1434,7 +1434,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     {
       if (((CSettingBool *) setting)->GetValue())
       {
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE);
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_RESTART); // send non blocking media restart message
       }
       else

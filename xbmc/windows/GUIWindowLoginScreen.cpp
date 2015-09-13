@@ -337,7 +337,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   CStereoscopicsManager::GetInstance().Initialize();
 
   // start audio DSP related services with a blocking message
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON);
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_SETAUDIODSPSTATE, ACTIVE_AE_DSP_STATE_ON, ACTIVE_AE_DSP_SYNC_ACTIVATE);
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
