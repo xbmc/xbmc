@@ -76,7 +76,7 @@ namespace ActiveAE
      * @brief Stop the ActiveAEDSP and destroy all objects it created.
      */
     virtual ~CActiveAEDSP();
-    //@{
+
     /*!
      * @brief Get the instance of the ActiveAEDSP.
      * @return The ActiveAEDSP instance.
