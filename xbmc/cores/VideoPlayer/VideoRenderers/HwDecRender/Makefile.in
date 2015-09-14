@@ -8,6 +8,10 @@ endif
 ifeq (@USE_MMAL@,1)
 SRCS += MMALRenderer.cpp
 endif
+
+ifeq (@USE_OPENGLES@,1)
+SRCS += RendererVTB.cpp
+endif
      
 LIB=HwDecRender.a
 
