@@ -793,55 +793,64 @@ CDateTime CPVRTimerInfoTag::FirstDayAsLocalTime(void) const
 void CPVRTimerInfoTag::GetNotificationText(std::string &strText) const
 {
   CSingleLock lock(m_critSection);
+
+  int stringID = 0;
+
   switch (m_state)
   {
   case PVR_TIMER_STATE_ABORTED:
   case PVR_TIMER_STATE_CANCELLED:
-      strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19224).c_str(), m_strTitle.c_str()); // Recording aborted
+      stringID = 19224; // Recording aborted
     break;
   case PVR_TIMER_STATE_SCHEDULED:
     if (IsRepeating())
-      strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(826).c_str(), m_strTitle.c_str()); // Timer activated
+      stringID = 826; // Timer activated
     else
-      strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19225).c_str(), m_strTitle.c_str()); // Recording scheduled
+      stringID = 19225; // Recording scheduled
     break;
   case PVR_TIMER_STATE_RECORDING:
-    strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19226).c_str(), m_strTitle.c_str()); // Recording started
+    stringID = 19226; // Recording started
     break;
   case PVR_TIMER_STATE_COMPLETED:
-    strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19227).c_str(), m_strTitle.c_str()); // Recording completed
+    stringID = 19227; // Recording completed
     break;
   case PVR_TIMER_STATE_CONFLICT_OK:
   case PVR_TIMER_STATE_CONFLICT_NOK:
-    strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19277).c_str(), m_strTitle.c_str()); // Recording conflict
+    stringID = 19277; // Recording conflict
     break;
   case PVR_TIMER_STATE_ERROR:
-    strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19278).c_str(), m_strTitle.c_str()); // Recording error
+    stringID = 19278; // Recording error
     break;
   case PVR_TIMER_STATE_DISABLED:
-    strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(827).c_str(), m_strTitle.c_str()); // Timer deactivated
+    stringID = 827; // Timer deactivated
     break;
   default:
     break;
   }
+  if (stringID != 0)
+    strText = StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
 }
 
 std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
 {
   CSingleLock lock(m_critSection);
 
+  int stringID = 0;
   // The state in this case is the state the timer had when it was last seen
   switch (m_state)
   {
   case PVR_TIMER_STATE_RECORDING:
-    return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19227).c_str(), m_strTitle.c_str()); // Recording completed
+    stringID = 19227; // Recording completed
+    break;
   case PVR_TIMER_STATE_SCHEDULED:
   default:
     if (IsRepeating())
-      return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(828).c_str(), m_strTitle.c_str()); // Repeating timer deleted
+      stringID = 828; // Repeating timer deleted
     else
-      return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(19228).c_str(), m_strTitle.c_str()); // Timer deleted
+      stringID = 19228; // Timer deleted
   }
+
+  return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
 }
 
 void CPVRTimerInfoTag::QueueNotification(void) const
