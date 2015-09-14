@@ -1356,11 +1356,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     else if (cat.name == "rds")
     {
       if (prop.name == "getline")
-      {
-        std::string cat = prop.param(0);
-        StringUtils::ToLower(cat);
-        return AddMultiInfo(GUIInfo(RDS_GET_RADIOTEXT_LINE, atoi(cat.c_str())));
-      }
+        return AddMultiInfo(GUIInfo(RDS_GET_RADIOTEXT_LINE, atoi(prop.param(0).c_str())));
+
       for (size_t i = 0; i < sizeof(rds) / sizeof(infomap); i++)
       {
         if (prop.name == rds[i].str)
@@ -3947,7 +3944,7 @@ std::string CGUIInfoManager::GetRadioRDSLabel(int item)
 
   case RDS_ALBUM_TRACKNUMBER:
     {
-      if (!tag.GetAlbumTrackNumber() > 0)
+      if (tag.GetAlbumTrackNumber() > 0)
         return StringUtils::Format("%i", tag.GetAlbumTrackNumber());
       break;
     }

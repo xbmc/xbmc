@@ -870,7 +870,7 @@
 			</control>
 		</control>
 
-		<control type="group">
+		<control type="group" id="70">
 			<description>Radio text info list</description>
 			<left>40</left>
 			<top>455</top>
