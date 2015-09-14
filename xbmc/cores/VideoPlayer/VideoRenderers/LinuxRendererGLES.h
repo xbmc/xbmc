@@ -48,6 +48,7 @@ typedef std::vector<int>     Features;
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
 
+#define NOSOURCE   -2
 #define AUTOSOURCE -1
 
 #define IMAGE_FLAG_WRITING   0x01 /* image is in use after a call to GetImage, caller may be reading or writing */
@@ -157,9 +158,6 @@ public:
 
   virtual CRenderInfo GetRenderInfo();
 
-#ifdef HAS_LIBSTAGEFRIGHT
-  virtual void         AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index);
-#endif
 #if defined(TARGET_ANDROID)
   // mediaCodec
   virtual void         AddProcessor(CDVDMediaCodecInfo *mediacodec, int index);
@@ -194,10 +192,6 @@ protected:
   void DeleteBYPASSTexture(int index);
   bool CreateBYPASSTexture(int index);
 
-  void UploadEGLIMGTexture(int index);
-  void DeleteEGLIMGTexture(int index);
-  bool CreateEGLIMGTexture(int index);
-
   void UploadSurfaceTexture(int index);
   void DeleteSurfaceTexture(int index);
   bool CreateSurfaceTexture(int index);
@@ -208,13 +202,13 @@ protected:
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
-  void RenderEglImage(int index, int field);       // Android OES texture
   void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
   
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; };
   virtual bool RenderHook(int idx) { return false; };
   virtual bool RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha) { return false; };
+  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return NOSOURCE; }
   virtual void AddSupportedHwRenderFormats() { };
 
   CFrameBufferObject m_fbo;
@@ -268,10 +262,6 @@ protected:
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
 
-#ifdef HAS_LIBSTAGEFRIGHT
-    CDVDVideoCodecStageFright* stf;
-    EGLImageKHR eglimg;
-#endif
 #if defined(TARGET_ANDROID)
     // mediacodec
     CDVDMediaCodecInfo *mediacodec;

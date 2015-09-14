@@ -62,6 +62,11 @@
   #include "LinuxRenderer.h"
 #endif
 
+// stagefright can be either gl or gles (arm & x86)
+#if defined(HAS_LIBSTAGEFRIGHT)
+#include "HWDecRender/RendererStagefright.h"
+#endif
+
 #include "RenderCapture.h"
 
 /* to use the same as player */
@@ -639,8 +644,10 @@ void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
   {
-#if defined(HAS_MMAL)
-    m_pRenderer = new CMMALRenderer();
+#if defined(HAS_LIBSTAGEFRIGHT)
+    m_pRenderer = new CRendererStagefright
+#elifdefined(HAS_MMAL)
+    m_pRenderer = new CMMALRenderer
 #elif HAS_GLES == 2
     if (m_format == RENDER_FMT_CVBREF)
     {
