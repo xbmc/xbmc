@@ -67,6 +67,10 @@
 #include "HWDecRender/RendererStagefright.h"
 #endif
 
+#if defined(TARGET_ANDROID)
+#include "HWDecRender/RendererMediaCodec.h"
+#endif
+
 #include "RenderCapture.h"
 
 /* to use the same as player */
@@ -644,9 +648,18 @@ void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
   {
+#if defined(HAS_LIBSTAGEFRIGHT) || defined (TARGET_ANDROID)
+    if (m_format == RENDER_FMT_MEDIACODEC)
+    {
+      m_pRenderer = new CRendererMediaCodec;
+    }
+    else if (m_format == RENDER_FMT_EGLIMG)
+    {
 #if defined(HAS_LIBSTAGEFRIGHT)
-    m_pRenderer = new CRendererStagefright
-#elifdefined(HAS_MMAL)
+      m_pRenderer = new CRendererStagefright
+#endif
+    }
+#elif defined(HAS_MMAL)
     m_pRenderer = new CMMALRenderer
 #elif HAS_GLES == 2
     if (m_format == RENDER_FMT_CVBREF)
