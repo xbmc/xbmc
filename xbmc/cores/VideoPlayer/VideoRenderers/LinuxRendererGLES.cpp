@@ -43,7 +43,6 @@
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/Texture.h"
-#include "../VideoPlayer/DVDCodecs/Video/OpenMaxVideo.h"
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
 #include "RenderFormats.h"
@@ -88,9 +87,6 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
   memset(&fields, 0, sizeof(fields));
   memset(&image , 0, sizeof(image));
   flipindex = 0;
-#ifdef HAVE_LIBOPENMAX
-  openMaxBufferHolder = NULL;
-#endif
 #ifdef HAS_LIBSTAGEFRIGHT
   stf = NULL;
   eglimg = EGL_NO_IMAGE_KHR;
@@ -263,10 +259,6 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
   if( source == AUTOSOURCE )
    source = NextYV12Texture();
 
-  if ( m_renderMethod & RENDER_OMXEGL )
-  {
-    return source;
-  }
 #ifdef HAS_LIBSTAGEFRIGHT
   if ( m_renderMethod & RENDER_EGLIMG )
   {
@@ -494,7 +486,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   int index = m_iYV12RenderBuffer;
   YUVBUFFER& buf =  m_buffers[index];
 
-  if (m_format != RENDER_FMT_OMXEGL && m_format != RENDER_FMT_EGLIMG && m_format != RENDER_FMT_MEDIACODEC)
+  if (RenderUpdateCheckForEmptyField() && m_format != RENDER_FMT_EGLIMG && m_format != RENDER_FMT_MEDIACODEC)
   {
     if (!buf.fields[FIELD_FULL][0].id) return;
   }
@@ -692,13 +684,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
     {
       case RENDER_METHOD_AUTO:
       case RENDER_METHOD_GLSL:
-        if (m_format == RENDER_FMT_OMXEGL)
-        {
-          CLog::Log(LOGNOTICE, "GL: Using OMXEGL RGBA render method");
-          m_renderMethod = RENDER_OMXEGL;
-          break;
-        }
-        else if (m_format == RENDER_FMT_EGLIMG)
+        if (m_format == RENDER_FMT_EGLIMG)
         {
           CLog::Log(LOGNOTICE, "GL: Using EGL Image render method");
           m_renderMethod = RENDER_EGLIMG;
@@ -862,11 +848,6 @@ bool CLinuxRendererGLES::CreateTexture(int index)
     CreateNV12Texture(index);
     return true;
   }
-  else if (m_format == RENDER_FMT_OMXEGL)
-  {
-    CreateOpenMaxTexture(index);
-    return true;
-  }
   else
   {
     // default to YV12 texture handlers
@@ -894,10 +875,6 @@ void CLinuxRendererGLES::DeleteTexture(int index)
   else if (m_format == RENDER_FMT_NV12)
   {
     DeleteNV12Texture(index);
-  }
-  else if (m_format == RENDER_FMT_OMXEGL)
-  {
-    DeleteOpenMaxTexture(index);
   }
   else
   {
@@ -927,11 +904,6 @@ bool CLinuxRendererGLES::UploadTexture(int index)
   else if (m_format == RENDER_FMT_NV12)
   {
     UploadNV12Texture(index);
-    return true;
-  }
-  else if (m_format == RENDER_FMT_OMXEGL)
-  {
-    UploadOpenMaxTexture(index);
     return true;
   }
   else
@@ -986,11 +958,6 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
       VerifyGLState();
       break;
     }
-  }
-  else if (m_renderMethod & RENDER_OMXEGL)
-  {
-    RenderOpenMax(index, m_currentField);
-    VerifyGLState();
   }
   else if (m_renderMethod & RENDER_EGLIMG)
   {
@@ -1367,86 +1334,6 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
   VerifyGLState();
 }
 
-void CLinuxRendererGLES::RenderOpenMax(int index, int field)
-{
-#if defined(HAVE_LIBOPENMAX)
-  OpenMaxVideoBufferHolder *bufferHolder = m_buffers[index].openMaxBufferHolder;
-  if (!bufferHolder)
-    return;
-  OpenMaxVideoBuffer *buffer = bufferHolder->m_openMaxVideoBuffer;
-
-  GLuint textureId = buffer->texture_id;
-
-  glDisable(GL_DEPTH_TEST);
-
-  // Y
-  glEnable(m_textureTarget);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, textureId);
-
-  g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
-
-  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
-  glUniform1f(contrastLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
-  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
-  glUniform1f(brightnessLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-  GLfloat ver[4][4];
-  GLfloat tex[4][2];
-  GLfloat col[3] = {1.0f, 1.0f, 1.0f};
-
-  GLint   posLoc = g_Windowing.GUIShaderGetPos();
-  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
-  GLint   colLoc = g_Windowing.GUIShaderGetCol();
-
-  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
-  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(texLoc);
-  glEnableVertexAttribArray(colLoc);
-
-  // Set vertex coordinates
-  for(int i = 0; i < 4; i++)
-  {
-    ver[i][0] = m_rotatedDestCoords[i].x;
-    ver[i][1] = m_rotatedDestCoords[i].y;
-    ver[i][2] = 0.0f;// set z to 0
-    ver[i][3] = 1.0f;
-  }
-
-  // Set texture coordinates
-  tex[0][0] = tex[3][0] = 0;
-  tex[0][1] = tex[1][1] = 1;
-  tex[1][0] = tex[2][0] = 1;
-  tex[2][1] = tex[3][1] = 0;
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(texLoc);
-  glDisableVertexAttribArray(colLoc);
-
-  g_Windowing.DisableGUIShader();
-
-  VerifyGLState();
-
-  glDisable(m_textureTarget);
-  VerifyGLState();
-
-#if defined(EGL_KHR_reusable_sync)
-  if (buffer->eglSync) {
-    eglDestroySyncKHR(buffer->eglDisplay, buffer->eglSync);
-  }
-  buffer->eglSync = eglCreateSyncKHR(buffer->eglDisplay, EGL_SYNC_FENCE_KHR, NULL);
-  glFlush(); // flush to ensure the sync later will succeed
-#endif
-
-#endif
-}
-
 void CLinuxRendererGLES::RenderEglImage(int index, int field)
 {
 #if defined(HAS_LIBSTAGEFRIGHT)
@@ -1722,11 +1609,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   YUVFIELDS& fields =  buf.fields;
 
 
-#if defined(HAVE_LIBOPENMAX)
-  if (!(im->flags&IMAGE_FLAG_READY) || m_buffers[source].openMaxBufferHolder)
-#else
-  if (!(im->flags&IMAGE_FLAG_READY))
-#endif
+  if (!(im->flags&IMAGE_FLAG_READY) || SkipUploadYV12(source))
   {
     return;
   }
@@ -2396,29 +2279,6 @@ bool CLinuxRendererGLES::CreateSurfaceTexture(int index)
 //********************************************************************************************************
 // SurfaceTexture creation, deletion, copying + clearing
 //********************************************************************************************************
-void CLinuxRendererGLES::UploadOpenMaxTexture(int index)
-{
-}
-
-void CLinuxRendererGLES::DeleteOpenMaxTexture(int index)
-{
-#ifdef HAVE_LIBOPENMAX
-  if (m_buffers[index].openMaxBufferHolder) {
-    m_buffers[index].openMaxBufferHolder->Release();
-    m_buffers[index].openMaxBufferHolder = 0;
-  }
-#endif
-}
-
-bool CLinuxRendererGLES::CreateOpenMaxTexture(int index)
-{
-#ifdef HAVE_LIBOPENMAX
-  m_buffers[index].openMaxBufferHolder = 0;
-#endif
-  return true;
-}
-
-
 void CLinuxRendererGLES::SetTextureFilter(GLenum method)
 {
   for (int i = 0 ; i<m_NumYV12Buffers ; i++)
@@ -2504,10 +2364,6 @@ bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
   if (mode == VS_DEINTERLACEMODE_OFF)
     return true;
 
-  if(m_renderMethod & RENDER_OMXEGL)
-    return false;
-
-
   if(mode == VS_DEINTERLACEMODE_AUTO
   || mode == VS_DEINTERLACEMODE_FORCE)
     return true;
@@ -2523,9 +2379,6 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
     Features::iterator itr = std::find(m_deinterlaceMethods.begin(),m_deinterlaceMethods.end(), method);
     return itr != m_deinterlaceMethods.end();
   }
-
-  if(m_renderMethod & RENDER_OMXEGL)
-    return false;
 
   if(m_renderMethod & RENDER_EGLIMG)
   {
@@ -2587,9 +2440,6 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
       return VS_INTERLACEMETHOD_NONE;
   }
 
-  if(m_renderMethod & RENDER_OMXEGL)
-    return VS_INTERLACEMETHOD_NONE;
-
   if(m_renderMethod & RENDER_EGLIMG)
     return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
 
@@ -2608,29 +2458,15 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
   CRenderInfo info;
   info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
-  if(m_format == RENDER_FMT_OMXEGL ||
-     m_format == RENDER_FMT_EGLIMG ||
-     m_format == RENDER_FMT_MEDIACODEC ||
-    m_format == RENDER_FMT_MEDIACODECSURFACE)
+
+  if(m_format == RENDER_FMT_EGLIMG ||
+     m_format == RENDER_FMT_MEDIACODEC)
     info.optimal_buffer_size = 2;
   else
     info.optimal_buffer_size = 3;
   return info;
 }
 
-#ifdef HAVE_LIBOPENMAX
-void CLinuxRendererGLES::AddProcessor(COpenMax* openMax, DVDVideoPicture *picture, int index)
-{
-  YUVBUFFER &buf = m_buffers[index];
-  if (buf.openMaxBufferHolder) {
-    buf.openMaxBufferHolder->Release();
-  }
-  buf.openMaxBufferHolder = picture->openMaxBufferHolder;
-  if (buf.openMaxBufferHolder) {
-    buf.openMaxBufferHolder->Acquire();
-  }
-}
-#endif
 #ifdef HAS_LIBSTAGEFRIGHT
 void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index)
 {

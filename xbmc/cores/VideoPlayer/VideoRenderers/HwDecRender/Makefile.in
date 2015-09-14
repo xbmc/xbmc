@@ -12,6 +12,7 @@ endif
 ifeq (@USE_OPENGLES@,1)
 SRCS += RendererVTB.cpp
 SRCS += RendererIMX.cpp
+SRCS += RendererOMX.cpp
 endif
      
 LIB=HwDecRender.a

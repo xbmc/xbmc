@@ -53,6 +53,9 @@
 #if defined(HAS_IMXVPU)
 #include "HWDecRender/RendererIMX.h"
 #endif
+#if defined(HAVE_LIBOPENMAX)
+#include "HWDecRender/RendererOMX.h"
+#endif
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
 #elif defined(HAS_SDL)
@@ -649,6 +652,12 @@ void CRenderManager::CreateRenderer()
     {
 #if defined(HAS_IMXVPU)
       m_pRenderer = new CRendererIMX;
+#endif
+    }
+    else if (m_format == RENDER_FMT_OMXEGL)
+    {
+#if defined(HAVE_LIBOPENMAX)
+      m_pRenderer = new CRendererOMX;
 #endif
     }
     else if (m_format != RENDER_FMT_NONE)

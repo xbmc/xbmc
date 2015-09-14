@@ -39,12 +39,8 @@ class CRenderCapture;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
-class COpenMaxVideo;
 class CDVDVideoCodecStageFright;
 class CDVDMediaCodecInfo;
-#ifdef HAS_IMXVPU
-class CDVDVideoCodecIMXBuffer;
-#endif
 typedef std::vector<int>     Features;
 
 
@@ -148,6 +144,7 @@ public:
   virtual bool         IsGuiLayer();
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual bool RenderUpdateCheckForEmptyField() { return true; }
 
   // Feature support
   virtual bool SupportsMultiPassRendering();
@@ -160,9 +157,6 @@ public:
 
   virtual CRenderInfo GetRenderInfo();
 
-#ifdef HAVE_LIBOPENMAX
-  virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture, int index);
-#endif
 #ifdef HAS_LIBSTAGEFRIGHT
   virtual void         AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index);
 #endif
@@ -190,6 +184,7 @@ protected:
   void UploadYV12Texture(int index);
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
+  virtual bool SkipUploadYV12(int index) { return false; }
 
   void UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
@@ -207,17 +202,12 @@ protected:
   void DeleteSurfaceTexture(int index);
   bool CreateSurfaceTexture(int index);
 
-  void UploadOpenMaxTexture(int index);
-  void DeleteOpenMaxTexture(int index);
-  bool CreateOpenMaxTexture(int index);
-
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
-  void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
   void RenderEglImage(int index, int field);       // Android OES texture
   void RenderSurfaceTexture(int index, int field);// MediaCodec rendering using SurfaceTexture
   
@@ -277,9 +267,6 @@ protected:
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
 
-#ifdef HAVE_LIBOPENMAX
-    OpenMaxVideoBufferHolder *openMaxBufferHolder;
-#endif
 #ifdef HAS_LIBSTAGEFRIGHT
     CDVDVideoCodecStageFright* stf;
     EGLImageKHR eglimg;
