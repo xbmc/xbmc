@@ -35,19 +35,21 @@ public:
   // Player functions
   virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
   virtual void ReleaseBuffer(int idx);
-  virtual int  GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+  virtual void ReorderDrawPoints();
 
   // Feature support
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(EDEINTERLACEMODE mode);
   
-  // hooks for hw dec renderer
-  virtual bool RenderHook(int index);  
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
+  virtual CRenderInfo GetRenderInfo();
 
 protected:
+  // hooks for hw dec renderer
   virtual bool LoadShadersHook();
+  virtual bool RenderHook(int index);  
+  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
 
   // textures
   virtual bool UploadTexture(int index);

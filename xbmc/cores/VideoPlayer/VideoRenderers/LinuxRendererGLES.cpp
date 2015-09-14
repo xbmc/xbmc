@@ -1011,20 +1011,7 @@ void CLinuxRendererGLES::UnInit()
 
 inline void CLinuxRendererGLES::ReorderDrawPoints()
 {
-
   CBaseRenderer::ReorderDrawPoints();//call base impl. for rotating the points
-
-  //corevideo and EGL are flipped in y
-  if(m_renderMethod & RENDER_CVREF)
-  {
-    CPoint tmp;
-    tmp = m_rotatedDestCoords[0];
-    m_rotatedDestCoords[0] = m_rotatedDestCoords[3];
-    m_rotatedDestCoords[3] = tmp;
-    tmp = m_rotatedDestCoords[1];
-    m_rotatedDestCoords[1] = m_rotatedDestCoords[2];
-    m_rotatedDestCoords[2] = tmp;
-  }
 }
 
 void CLinuxRendererGLES::ReleaseBuffer(int idx)

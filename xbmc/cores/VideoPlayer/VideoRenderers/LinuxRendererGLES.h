@@ -198,10 +198,6 @@ protected:
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
 
-  void UploadCVRefTexture(int index);
-  void DeleteCVRefTexture(int index);
-  bool CreateCVRefTexture(int index);
-
   void UploadBYPASSTexture(int index);
   void DeleteBYPASSTexture(int index);
   bool CreateBYPASSTexture(int index);
