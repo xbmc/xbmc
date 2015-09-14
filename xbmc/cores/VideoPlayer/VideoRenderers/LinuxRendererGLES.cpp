@@ -587,21 +587,15 @@ void CLinuxRendererGLES::PreInit()
   m_formats.push_back(RENDER_FMT_YUV420P);
   m_formats.push_back(RENDER_FMT_NV12);
   m_formats.push_back(RENDER_FMT_BYPASS);
-#if defined(HAVE_LIBOPENMAX)
-  m_formats.push_back(RENDER_FMT_OMXEGL);
-#endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  m_formats.push_back(RENDER_FMT_CVBREF);
-#endif
+  
+  //add formats from hw decoder renderers if we are one of those...
+  AddSupportedHwRenderFormats();
 #ifdef HAS_LIBSTAGEFRIGHT
   m_formats.push_back(RENDER_FMT_EGLIMG);
 #endif
 #if defined(TARGET_ANDROID)
   m_formats.push_back(RENDER_FMT_MEDIACODEC);
   m_formats.push_back(RENDER_FMT_MEDIACODECSURFACE);
-#endif
-#ifdef HAS_IMXVPU
-  m_formats.push_back(RENDER_FMT_IMXMAP);
 #endif
 
   // setup the background colour

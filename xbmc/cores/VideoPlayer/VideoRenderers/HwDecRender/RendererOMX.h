@@ -55,7 +55,8 @@ protected:
   
   // hooks for hw dec renderer
   virtual bool LoadShadersHook();
-  virtual bool RenderHook(int index);  
+  virtual bool RenderHook(int index);
+  virtual void AddSupportedHwRenderFormats();
 };
 
 #endif

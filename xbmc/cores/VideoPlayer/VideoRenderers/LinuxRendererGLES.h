@@ -215,6 +215,7 @@ protected:
   virtual bool LoadShadersHook() { return false; };
   virtual bool RenderHook(int idx) { return false; };
   virtual bool RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha) { return false; };
+  virtual void AddSupportedHwRenderFormats() { };
 
   CFrameBufferObject m_fbo;
 

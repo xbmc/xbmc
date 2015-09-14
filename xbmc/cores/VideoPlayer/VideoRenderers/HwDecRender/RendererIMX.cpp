@@ -214,6 +214,11 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
   return true;
 }
 
+void CRendererIMX::AddSupportedHwRenderFormats()
+{
+  m_formats.push_back(RENDER_FMT_IMXMAP);
+}
+
 bool CRendererIMX::CreateTexture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
