@@ -18,7 +18,7 @@ TOC
 -----------------------------------------------------------------------------
 
 This is a platform port of Kodi for the Apple iOS operating system.
-The current build system supports Xcode 6.0.1 and 6.1.0 with iOS SDK 8.1
+The current build system supports Xcode 6.x and 7.x with iOS SDK 8.x and 9.x
 There are two ways to build Kodi for Mac.
 
 1) command-line or
@@ -57,6 +57,8 @@ Install latest Xcode (6.1.0 as of the writing). You can download it from
 
 
 Xcode 6.1.0 only runs on 10.9.5 and later (at least Mavericks).
+Xcode 6.4.0 only runs on 10.10 and later (at least Yosemite).
+Xcode 7.x only runs on 10.10 and later (at least Yosemite).
 
 The preferred iOS SDK Version is 8.1.
 
@@ -70,6 +72,7 @@ constellations of Xcode and OSX versions (to be updated once we know more):
 2. Xcode 6.1.0 against iOS SDK 8.1 on 10.10.x (Yosemite)
 3. Xcode 6.3.0 against iOS SDK 8.3 on 10.10.x (Yosemite)
 4. Xcode 6.4.0 against iOS SDK 8.4 on 10.10.x (Yosemite)
+5. Xcode 7.x against iOS SDK 9.x on 10.10.x (Yosemite)
 
 -----------------------------------------------------------------------------
 3.2 Install Cross libs and runtime environment
@@ -177,9 +180,8 @@ Gestures can be adapted in system/keymaps/touchscreen.xml
 
 If you are a developer with an official apple code signing identity you can deploy Kodi
 via xcode to work on it on non-jailbroken devices. For this to happen you just need to alter the
-Xcode project by setting your codesign identity. Be sure to not just select the "iPhone Developer" shortcut
-but instead select your full identity "iPhone Developer: your name (your id)" (this is important else our sign
-script won't detect a real sign identity). Its also important that you select the signing on all 4 spots
+Xcode project by setting your codesign identity. Just select the "iPhone Developer" shortcut. 
+Its also important that you select the signing on all 4 spots
 in the project settings. After that the last buildstep in our support script
 will do a full sign of all binaries and the bundle with the given identity (all *.viz, *.pvr, *.so files
 Xcode doesn't know anything about). This should allow you to deploy Kodi to all non-jailbroken devices
@@ -187,3 +189,5 @@ which you can deploy normal apps to. In that case (Kodi will be sandboxed like a
 files are then located in the sandboxed "Documents" folder and can be easily accessed via iTunes file
 sharing.
 Keep in mind that no hardware acceleration will be possible without jailbreaking when using iOS < Version 8.
+
+From Xcode7 on - this approach is also available for non paying app developers (apple allows self signing from now on)
