@@ -408,10 +408,11 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
       return;
 
   m_musicdatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
+  bool refresh = false;
   while (1)
   {
-    // Check if we have the information in the database first
-    if (!m_musicdatabase.HasArtistBeenScraped(params.GetArtistId()))
+    // Check if the entry should be refreshed (Only happens if a user pressed refresh)
+    if (refresh)
     {
       if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
         break; // should display a dialog saying no permissions
@@ -452,6 +453,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
       if (pDlgArtistInfo->NeedRefresh())
       {
         m_musicdatabase.ClearArtistLastScrapedTime(params.GetArtistId());
+        refresh = true;
         continue;
       } 
       else if (pDlgArtistInfo->HasUpdatedThumb()) 
@@ -479,9 +481,11 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
     return false;
 
   m_musicdatabase.GetAlbumPath(params.GetAlbumId(), album.strPath);
+  bool refresh = false;
   while (1)
   {
-    if (!m_musicdatabase.HasAlbumBeenScraped(params.GetAlbumId()))
+    // Check if the entry should be refreshed (Only happens if a user pressed refresh)
+    if (refresh)
     {
       if (!CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
       {
@@ -531,6 +535,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
       if (pDlgAlbumInfo->NeedRefresh())
       {
         m_musicdatabase.ClearAlbumLastScrapedTime(params.GetAlbumId());
+        refresh = true;
         continue;
       }
       else if (pDlgAlbumInfo->HasUpdatedThumb())
