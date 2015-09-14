@@ -179,6 +179,11 @@ bool CRendererOMX::RenderHook(int index)
   return true;
 }
 
+void CRendererOMX::AddSupportedHwRenderFormats()
+{
+  m_formats.push_back(RENDER_FMT_OMXEGL);
+}
+
 bool CRendererOMX::CreateTexture(int index)
 {
   m_buffers[index].hwDec = NULL;
