@@ -67,6 +67,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_TEXTAREA             4
 #define CONTROL_BTN_TRACKS           5
 #define CONTROL_BTN_REFRESH          6
+#define CONTROL_BTN_USERRATING       7
 #define CONTROL_BTN_PLAY             8
 #define CONTROL_BTN_RESUME           9
 #define CONTROL_BTN_GET_THUMB       10
@@ -89,8 +90,10 @@ CGUIDialogVideoInfo::CGUIDialogVideoInfo(void)
   m_bRefreshAll = true;
   m_bRefresh = false;
   m_hasUpdatedThumb = false;
+  m_hasUpdatedUserrating = false;
   m_castList = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
+  m_startUserrating = -1;
 }
 
 CGUIDialogVideoInfo::~CGUIDialogVideoInfo(void)
@@ -105,6 +108,17 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       ClearCastList();
+
+      if (m_startUserrating != m_movieItem->GetVideoInfoTag()->m_iUserRating)
+      {
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          m_hasUpdatedUserrating = true;
+          db.SetVideoUserRating(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_iUserRating, m_movieItem->GetVideoInfoTag()->m_type);
+          db.Close();
+        }
+      }
     }
     break;
 
@@ -144,6 +158,10 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTN_PLAY)
       {
         Play();
+      }
+      else if (iControl == CONTROL_BTN_USERRATING)
+      {
+        OnSetUserrating();
       }
       else if (iControl == CONTROL_BTN_RESUME)
       {
@@ -206,6 +224,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   m_bRefresh = false;
   m_bRefreshAll = true;
   m_hasUpdatedThumb = false;
+  m_hasUpdatedUserrating = false;
   m_bViewReview = true;
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (CProfilesManager::GetInstance().GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->m_strIMDBNumber, "xx"));
@@ -224,12 +243,37 @@ void CGUIDialogVideoInfo::OnInitWindow()
 
 bool CGUIDialogVideoInfo::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_SHOW_INFO)
+  int userrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
+  if (action.GetID() == ACTION_INCREASE_RATING)
+  {
+    SetUserrating(userrating + 1);
+    return true;
+  }
+  else if (action.GetID() == ACTION_DECREASE_RATING)
+  {
+    SetUserrating(userrating - 1);
+    return true;
+  }
+  else if (action.GetID() == ACTION_SHOW_INFO)
   {
     Close();
     return true;
   }
   return CGUIDialog::OnAction(action);
+}
+
+void CGUIDialogVideoInfo::SetUserrating(int userrating)
+{
+  userrating = std::max(userrating, 0);
+  userrating = std::min(userrating, 10);
+  if (userrating != m_movieItem->GetVideoInfoTag()->m_iUserRating)
+  {
+    m_movieItem->GetVideoInfoTag()->SetUserrating(userrating);
+    
+    // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_movieItem);
+    g_windowManager.SendMessage(msg);
+  }
 }
 
 void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
@@ -239,6 +283,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   // setup cast list
   ClearCastList();
   MediaType type = item->GetVideoInfoTag()->m_type;
+
+  m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
 
   if (type == MediaTypeMusicVideo)
   { // music video
@@ -817,6 +863,26 @@ void CGUIDialogVideoInfo::OnGetFanart()
 
   // Update our screen
   Update();
+}
+
+void CGUIDialogVideoInfo::OnSetUserrating()
+{
+  CGUIDialogSelect *dialog = (CGUIDialogSelect *)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (dialog)
+  {
+    dialog->SetHeading(CVariant{ 38023 });
+    dialog->Add(g_localizeStrings.Get(38022));
+    for (int i = 1; i <= 10; i++)
+      dialog->Add(StringUtils::Format("%s: %i", g_localizeStrings.Get(563).c_str(), i));
+
+    dialog->Open();
+
+    int iItem = dialog->GetSelectedLabel();
+    if (iItem < 0)
+      return;
+
+    SetUserrating(iItem);
+  }
 }
 
 void CGUIDialogVideoInfo::PlayTrailer()
