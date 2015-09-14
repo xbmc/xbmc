@@ -57,18 +57,6 @@ extern "C" {
 #include "yuv2rgb.neon.h"
 #include "utils/CPUInfo.h"
 #endif
-#if defined(HAS_LIBSTAGEFRIGHT)
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#include "windowing/egl/EGLWrapper.h"
-#include "android/activity/XBMCApp.h"
-#include "DVDCodecs/Video/DVDVideoCodecStageFright.h"
-
-// EGL extension functions
-static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
-static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
-static PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
-#endif
 
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
 static PFNEGLCREATESYNCKHRPROC eglCreateSyncKHR;
@@ -87,10 +75,6 @@ CLinuxRendererGLES::YUVBUFFER::YUVBUFFER()
   memset(&fields, 0, sizeof(fields));
   memset(&image , 0, sizeof(image));
   flipindex = 0;
-#ifdef HAS_LIBSTAGEFRIGHT
-  stf = NULL;
-  eglimg = EGL_NO_IMAGE_KHR;
-#endif
 #if defined(TARGET_ANDROID)
   mediacodec = NULL;
 #endif
@@ -132,15 +116,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_bImageReady = false;
   m_StrictBinding = false;
   m_clearColour = 0.0f;
-
-#ifdef HAS_LIBSTAGEFRIGHT
-  if (!eglCreateImageKHR)
-    eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC) CEGLWrapper::GetProcAddress("eglCreateImageKHR");
-  if (!eglDestroyImageKHR)
-    eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC) CEGLWrapper::GetProcAddress("eglDestroyImageKHR");
-  if (!glEGLImageTargetTexture2DOES)
-    glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC) CEGLWrapper::GetProcAddress("glEGLImageTargetTexture2DOES");
-#endif
 
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
   if (!eglCreateSyncKHR) {
@@ -259,13 +234,12 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
   if( source == AUTOSOURCE )
    source = NextYV12Texture();
 
-#ifdef HAS_LIBSTAGEFRIGHT
-  if ( m_renderMethod & RENDER_EGLIMG )
+ 
+  if ((int hwSource = GetImageHook(image, source, readonly)) != NOSOURCE)
   {
-    return source;
+    return hwSource;
   }
-
-#endif
+ 
   if ( m_renderMethod & RENDER_MEDIACODEC )
   {
     return source;
@@ -486,7 +460,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   int index = m_iYV12RenderBuffer;
   YUVBUFFER& buf =  m_buffers[index];
 
-  if (RenderUpdateCheckForEmptyField() && m_format != RENDER_FMT_EGLIMG && m_format != RENDER_FMT_MEDIACODEC)
+  if (RenderUpdateCheckForEmptyField() && m_format != RENDER_FMT_MEDIACODEC)
   {
     if (!buf.fields[FIELD_FULL][0].id) return;
   }
@@ -590,9 +564,6 @@ void CLinuxRendererGLES::PreInit()
   
   //add formats from hw decoder renderers if we are one of those...
   AddSupportedHwRenderFormats();
-#ifdef HAS_LIBSTAGEFRIGHT
-  m_formats.push_back(RENDER_FMT_EGLIMG);
-#endif
 #if defined(TARGET_ANDROID)
   m_formats.push_back(RENDER_FMT_MEDIACODEC);
   m_formats.push_back(RENDER_FMT_MEDIACODECSURFACE);
@@ -678,13 +649,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
     {
       case RENDER_METHOD_AUTO:
       case RENDER_METHOD_GLSL:
-        if (m_format == RENDER_FMT_EGLIMG)
-        {
-          CLog::Log(LOGNOTICE, "GL: Using EGL Image render method");
-          m_renderMethod = RENDER_EGLIMG;
-          break;
-        }
-        else if (m_format == RENDER_FMT_MEDIACODEC)
+        if (m_format == RENDER_FMT_MEDIACODEC)
         {
           CLog::Log(LOGNOTICE, "GL: Using MediaCodec render method");
           m_renderMethod = RENDER_MEDIACODEC;
@@ -827,11 +792,6 @@ bool CLinuxRendererGLES::CreateTexture(int index)
     CreateBYPASSTexture(index);
     return true;
   }
-  else if (m_format == RENDER_FMT_EGLIMG)
-  {
-    CreateEGLIMGTexture(index);
-    return true;
-  }
   else if (m_format == RENDER_FMT_MEDIACODEC)
   {
     CreateSurfaceTexture(index);
@@ -858,10 +818,6 @@ void CLinuxRendererGLES::DeleteTexture(int index)
   {
     DeleteBYPASSTexture(index);
   }
-  else if (m_format == RENDER_FMT_EGLIMG)
-  {
-    DeleteEGLIMGTexture(index);
-  }
   else if (m_format == RENDER_FMT_MEDIACODEC)
   {
     DeleteSurfaceTexture(index);
@@ -883,11 +839,6 @@ bool CLinuxRendererGLES::UploadTexture(int index)
   if (m_format == RENDER_FMT_BYPASS)
   {
     UploadBYPASSTexture(index);
-    return true;
-  }
-  else if (m_format == RENDER_FMT_EGLIMG)
-  {
-    UploadEGLIMGTexture(index);
     return true;
   }
   else if (m_format == RENDER_FMT_MEDIACODEC)
@@ -952,11 +903,6 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
       VerifyGLState();
       break;
     }
-  }
-  else if (m_renderMethod & RENDER_EGLIMG)
-  {
-    RenderEglImage(index, m_currentField);
-    VerifyGLState();
   }
   else if (m_renderMethod & RENDER_MEDIACODEC)
   {
@@ -1326,100 +1272,6 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 
   glDisable(m_textureTarget);
   VerifyGLState();
-}
-
-void CLinuxRendererGLES::RenderEglImage(int index, int field)
-{
-#if defined(HAS_LIBSTAGEFRIGHT)
-#ifdef DEBUG_VERBOSE
-  unsigned int time = XbmcThreads::SystemClockMillis();
-#endif
-
-  YUVPLANE &plane = m_buffers[index].fields[0][0];
-  YUVPLANE &planef = m_buffers[index].fields[field][0];
-
-  glDisable(GL_DEPTH_TEST);
-
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, plane.id);
-
-  if (field != FIELD_FULL)
-  {
-    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA_BOB);
-    GLint   fieldLoc = g_Windowing.GUIShaderGetField();
-    GLint   stepLoc = g_Windowing.GUIShaderGetStep();
-
-    if     (field == FIELD_TOP)
-      glUniform1i(fieldLoc, 1);
-    else if(field == FIELD_BOT)
-      glUniform1i(fieldLoc, 0);
-    glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
-  }
-  else
-    g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
-
-  GLint   contrastLoc = g_Windowing.GUIShaderGetContrast();
-  glUniform1f(contrastLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast * 0.02f);
-  GLint   brightnessLoc = g_Windowing.GUIShaderGetBrightness();
-  glUniform1f(brightnessLoc, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness * 0.01f - 0.5f);
-
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-  GLfloat ver[4][4];
-  GLfloat tex[4][2];
-  GLfloat col[3] = {1.0f, 1.0f, 1.0f};
-
-  GLint   posLoc = g_Windowing.GUIShaderGetPos();
-  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
-  GLint   colLoc = g_Windowing.GUIShaderGetCol();
-
-  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
-  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(texLoc);
-  glEnableVertexAttribArray(colLoc);
-
-  // Set vertex coordinates
-  for(int i = 0; i < 4; i++)
-  {
-    ver[i][0] = m_rotatedDestCoords[i].x;
-    ver[i][1] = m_rotatedDestCoords[i].y;
-    ver[i][2] = 0.0f;// set z to 0
-    ver[i][3] = 1.0f;
-  }
-
-  if (field == FIELD_FULL)
-  {
-    tex[0][0] = tex[3][0] = plane.rect.x1;
-    tex[0][1] = tex[1][1] = plane.rect.y1;
-    tex[1][0] = tex[2][0] = plane.rect.x2;
-    tex[2][1] = tex[3][1] = plane.rect.y2;
-  }
-  else
-  {
-    tex[0][0] = tex[3][0] = planef.rect.x1;
-    tex[0][1] = tex[1][1] = planef.rect.y1 * 2.0f;
-    tex[1][0] = tex[2][0] = planef.rect.x2;
-    tex[2][1] = tex[3][1] = planef.rect.y2 * 2.0f;
-  }
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(texLoc);
-  glDisableVertexAttribArray(colLoc);
-
-  g_Windowing.DisableGUIShader();
-  VerifyGLState();
-
-  glBindTexture(m_textureTarget, 0);
-  VerifyGLState();
-
-#ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "RenderEglImage %d: tm:%d\n", index, XbmcThreads::SystemClockMillis() - time);
-#endif
-#endif
 }
 
 void CLinuxRendererGLES::RenderSurfaceTexture(int index, int field)
@@ -2110,99 +1962,6 @@ bool CLinuxRendererGLES::CreateBYPASSTexture(int index)
 }
 
 //********************************************************************************************************
-// EGLIMG creation, deletion, copying + clearing
-//********************************************************************************************************
-void CLinuxRendererGLES::UploadEGLIMGTexture(int index)
-{
-#ifdef HAS_LIBSTAGEFRIGHT
-#ifdef DEBUG_VERBOSE
-  unsigned int time = XbmcThreads::SystemClockMillis();
-#endif
-
-  if(m_buffers[index].eglimg != EGL_NO_IMAGE_KHR)
-  {
-    YUVPLANE &plane = m_buffers[index].fields[0][0];
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(m_textureTarget, plane.id);
-    glEGLImageTargetTexture2DOES(m_textureTarget, (EGLImageKHR)m_buffers[index].eglimg);
-    glBindTexture(m_textureTarget, 0);
-
-    plane.flipindex = m_buffers[index].flipindex;
-  }
-
-  CalculateTextureSourceRects(index, 1);
-
-#ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "UploadEGLIMGTexture %d: img:%p, tm:%d\n", index, m_buffers[index].eglimg, XbmcThreads::SystemClockMillis() - time);
-#endif
-#endif
-}
-void CLinuxRendererGLES::DeleteEGLIMGTexture(int index)
-{
-#ifdef HAS_LIBSTAGEFRIGHT
-  YUVBUFFER &buf = m_buffers[index];
-  YUVPLANE &plane = buf.fields[0][0];
-
-  if(plane.id && glIsTexture(plane.id))
-    glDeleteTextures(1, &plane.id);
-  plane.id = 0;
-
-  buf.stf = NULL;
-  buf.eglimg = EGL_NO_IMAGE_KHR;
-#endif
-}
-bool CLinuxRendererGLES::CreateEGLIMGTexture(int index)
-{
-#ifdef HAS_LIBSTAGEFRIGHT
-  YV12Image &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-
-  DeleteEGLIMGTexture(index);
-
-  memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
-
-  im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
-
-  for (int f=0; f<3; ++f)
-  {
-    YUVPLANE  &plane  = fields[f][0];
-
-    plane.texwidth  = im.width;
-    plane.texheight = im.height;
-    plane.pixpertex_x = 1;
-    plane.pixpertex_y = 1;
-
-    if(m_renderMethod & RENDER_POT)
-    {
-      plane.texwidth  = NP2(plane.texwidth);
-      plane.texheight = NP2(plane.texheight);
-    }
-  }
-
-  YUVPLANE  &plane  = fields[0][0];
-  glEnable(m_textureTarget);
-  glGenTextures(1, &plane.id);
-  VerifyGLState();
-
-  glBindTexture(m_textureTarget, plane.id);
-
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// This is necessary for non-power-of-two textures
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-  glDisable(m_textureTarget);
-#endif
-  return true;
-}
-
-//********************************************************************************************************
 // SurfaceTexture creation, deletion, copying + clearing
 //********************************************************************************************************
 void CLinuxRendererGLES::UploadSurfaceTexture(int index)
@@ -2374,14 +2133,6 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
     return itr != m_deinterlaceMethods.end();
   }
 
-  if(m_renderMethod & RENDER_EGLIMG)
-  {
-    if (method == VS_INTERLACEMETHOD_RENDER_BOB || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
-      return true;
-    else
-      return false;
-  }
-
   if(m_renderMethod & RENDER_MEDIACODEC)
   {
     if (method == VS_INTERLACEMETHOD_RENDER_BOB || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
@@ -2434,9 +2185,6 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
       return VS_INTERLACEMETHOD_NONE;
   }
 
-  if(m_renderMethod & RENDER_EGLIMG)
-    return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
-
   if(m_renderMethod & RENDER_MEDIACODEC)
     return VS_INTERLACEMETHOD_RENDER_BOB_INVERTED;
 
@@ -2453,34 +2201,12 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
   info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
 
-  if(m_format == RENDER_FMT_EGLIMG ||
-     m_format == RENDER_FMT_MEDIACODEC)
+  if(m_format == RENDER_FMT_MEDIACODEC)
     info.optimal_buffer_size = 2;
   else
     info.optimal_buffer_size = 3;
   return info;
 }
-
-#ifdef HAS_LIBSTAGEFRIGHT
-void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecStageFright* stf, EGLImageKHR eglimg, int index)
-{
-#ifdef DEBUG_VERBOSE
-  unsigned int time = XbmcThreads::SystemClockMillis();
-#endif
-
-  YUVBUFFER &buf = m_buffers[index];
-  if (buf.eglimg != EGL_NO_IMAGE_KHR)
-    stf->ReleaseBuffer(buf.eglimg);
-  stf->LockBuffer(eglimg);
-
-  buf.stf = stf;
-  buf.eglimg = eglimg;
-
-#ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "AddProcessor %d: img:%p: tm:%d\n", index, eglimg, XbmcThreads::SystemClockMillis() - time);
-#endif
-}
-#endif
 
 #if defined(TARGET_ANDROID)
 void CLinuxRendererGLES::AddProcessor(CDVDMediaCodecInfo *mediacodec, int index)
