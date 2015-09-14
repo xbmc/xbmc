@@ -3597,11 +3597,10 @@ msgstr ""
 
 #empty strings from id 838 to 839
 
-#. Message in a dialog when a user wants to delete a repeating timer
+#. Message in a dialog when a user wants to delete a timer that was scheduled by a repeating timer
 #: xbmc/pvr/windows/GUIWindowPVRBase.cpp
-#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 msgctxt "#840"
-msgid "You are about to delete a repeating timer. Do you also want to delete all timers currently scheduled by this timer?"
+msgid "Do you only want to delete this timer or also the repeating timer that has scheduled it?"
 msgstr ""
 
 #. Label of a context menu entry to create a new recording timer with advanced configuration options
@@ -3629,7 +3628,19 @@ msgctxt "#844"
 msgid "Deactivate"
 msgstr ""
 
-#empty strings from id 845 to 849
+#. Message in a dialog when a user wants to delete a repeating timer
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+msgctxt "#845"
+msgid "Are you sure you want to delete this repeating timer and all timers it has scheduled?"
+msgstr ""
+
+#. Message in a dialog when a user wants to delete a non-repeating timer
+#: xbmc/pvr/windows/GUIWindowPVRBase.cpp
+msgctxt "#846"
+msgid "Are you sure you want to delete this timer?"
+msgstr ""
+
+#empty strings from id 847 to 849
 
 msgctxt "#850"
 msgid "Invalid port number entered"

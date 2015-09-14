@@ -313,7 +313,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   addonTimer.bStartAnyTime             = xbmcTimer.m_bStartAnyTime;
   addonTimer.bEndAnyTime               = xbmcTimer.m_bEndAnyTime;
   addonTimer.firstDay                  = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
-  addonTimer.iEpgUid                   = epgTag ? epgTag->UniqueBroadcastID() : -1;
+  addonTimer.iEpgUid                   = epgTag ? epgTag->UniqueBroadcastID() : PVR_TIMER_NO_EPG_UID;
   strncpy(addonTimer.strSummary, xbmcTimer.m_strSummary.c_str(), sizeof(addonTimer.strSummary) - 1);
   addonTimer.iMarginStart              = xbmcTimer.m_iMarginStart;
   addonTimer.iMarginEnd                = xbmcTimer.m_iMarginEnd;
@@ -1222,7 +1222,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
   return retVal;
 }
 
-PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* = false */, bool bDeleteSchedule /* = false */)
+PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* = false */)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_REJECTED;
@@ -1236,7 +1236,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* 
     PVR_TIMER tag;
     WriteClientTimerInfo(timer, tag);
 
-    retVal = m_pStruct->DeleteTimer(tag, bForce, bDeleteSchedule);
+    retVal = m_pStruct->DeleteTimer(tag, bForce);
 
     LogError(retVal, __FUNCTION__);
   }

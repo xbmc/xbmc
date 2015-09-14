@@ -365,10 +365,9 @@ namespace PVR
      * @brief Delete a timer on the backend.
      * @param timer The timer to delete.
      * @param bForce Set to true to delete a timer that is currently recording a program.
-     * @param bDeleteSchedule Set to true to delete the complete timer schedule instead of the given timer only.
      * @return PVR_ERROR_NO_ERROR if the timer has been deleted successfully.
      */
-    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce = false, bool bDeleteSchedule = false);
+    PVR_ERROR DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce = false);
 
     /*!
      * @brief Rename a timer on the server.

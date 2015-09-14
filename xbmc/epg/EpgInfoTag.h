@@ -143,13 +143,13 @@ namespace EPG
      * @brief Change the unique broadcast ID of this event.
      * @param iUniqueBroadcastId The new unique broadcast ID.
      */
-    void SetUniqueBroadcastID(int iUniqueBroadcastID);
+    void SetUniqueBroadcastID(unsigned int iUniqueBroadcastID);
 
     /*!
      * @brief Get the unique broadcast ID.
      * @return The unique broadcast ID.
      */
-    int UniqueBroadcastID(void) const;
+    unsigned int UniqueBroadcastID(void) const;
 
     /*!
      * @brief Get the event's database ID.
@@ -432,7 +432,7 @@ namespace EPG
     int                      m_iSeriesNumber;      /*!< series number */
     int                      m_iEpisodeNumber;     /*!< episode number */
     int                      m_iEpisodePart;       /*!< episode part number */
-    int                      m_iUniqueBroadcastID; /*!< unique broadcast ID */
+    unsigned int             m_iUniqueBroadcastID; /*!< unique broadcast ID */
     std::string              m_strTitle;           /*!< title */
     std::string              m_strPlotOutline;     /*!< plot outline */
     std::string              m_strPlot;            /*!< plot */
