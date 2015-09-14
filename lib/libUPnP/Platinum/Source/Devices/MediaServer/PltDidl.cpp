@@ -175,6 +175,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_XBMC_UNIQUE_IDENTIFIER;
         } else if (NPT_String::CompareN(s + i, PLT_FILTER_FIELD_XBMC_COUNTRY, len, true) == 0) {
           mask |= PLT_FILTER_MASK_XBMC_COUNTRY;
+        } else if (NPT_String::CompareN(s + i, PLT_FILTER_FIELD_XBMC_USERRATING, len, true) == 0) {
+          mask |= PLT_FILTER_MASK_XBMC_USERRATING;
         }
 
         if (next_comma < 0) {
