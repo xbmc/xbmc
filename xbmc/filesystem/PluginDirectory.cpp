@@ -147,21 +147,20 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
 bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &resultItem)
 {
   CURL url(strPath);
-  CPluginDirectory* newDir = new CPluginDirectory();
+  CPluginDirectory newDir;
 
-  bool success = newDir->StartScript(strPath, false);
+  bool success = newDir.StartScript(strPath, false);
 
   if (success)
   { // update the play path and metadata, saving the old one as needed
     if (!resultItem.HasProperty("original_listitem_url"))
       resultItem.SetProperty("original_listitem_url", resultItem.GetPath());
-    resultItem.SetPath(newDir->m_fileResult->GetPath());
-    resultItem.SetMimeType(newDir->m_fileResult->GetMimeType());
-    resultItem.UpdateInfo(*newDir->m_fileResult);
-    if (newDir->m_fileResult->HasVideoInfoTag() && newDir->m_fileResult->GetVideoInfoTag()->m_resumePoint.IsSet())
+    resultItem.SetPath(newDir.m_fileResult->GetPath());
+    resultItem.SetMimeType(newDir.m_fileResult->GetMimeType());
+    resultItem.UpdateInfo(*newDir.m_fileResult);
+    if (newDir.m_fileResult->HasVideoInfoTag() && newDir.m_fileResult->GetVideoInfoTag()->m_resumePoint.IsSet())
       resultItem.m_lStartOffset = STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
   }
-  delete newDir;
 
   return success;
 }
